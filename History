@@ -2,14 +2,31 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+11/4/97:
+	lib/init.c: increase default dynamic space to 64K descrs
+	Makefile2.m4: removed -d512k arg from SNOBOL4 command
+		(could reduce workspace in 64bit environs)
+	genc.sno: use X_BKSIZE and X_GETLTH macros
+	include/macros: add X_BKSIZE and X_GETLTH macros
+
+10/30/97:
+	lib/pat.c: make inlinable
+	parms.h: inline pat.c
+		8% reduction in genc.sno compile time
+	v311.sil: catch bad data ar PATBRA
+
+10/29/97:
+	lib/vms/{tty,getredirect,term}.c: flushed xxx_file hacks
+		always use fgetname()
+
 10/28/97:
 	genc.sno: add IND before "hash()"
 	v311.sil: merge scanner functions into SCIN1
 	globals, procs: removed scanner functions
+		genc runtime reduced 15%
 		avoids nasty mutual recursions, stack overflows
 		atn.sno runtime reduced by 63%!! (2.7x faster)
 		worst case (4096 char string) reduced 69% (4.8x faster)
-		genc runtime reduced 15%
 		snocone self-compile runtime reduced 5%
 
 10/27/97:
