@@ -32,7 +32,7 @@
 #endif /* DCMP_BYTES not defined */
 
 /* clear B+1 descriptor block */
-#define ZERBLK(A,B) bzero(A, (B)+DESCR)
+#define ZERBLK(A,B) bzero((void *)(A), (B)+DESCR)
 
 /*
  * copy descriptor block
@@ -40,7 +40,7 @@
  * NOTE: may overlap!!
  * (bcopy deals with this but some memcpy's do not)!!!
  */
-#define MOVBLK(A,B,C) bcopy( (B)+DESCR, (A)+DESCR, (C) )
+#define MOVBLK(A,B,C) bcopy( (void *)((B)+DESCR), (void *)((A)+DESCR), (C) )
 
 /****************
  * string specifiers (qualifiers)
