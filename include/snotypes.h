@@ -38,7 +38,10 @@ union addr {
 /* only one bit left! */
 
 #ifdef NO_BITFIELDS
-#define VFLD(name) long name		/* at least 31 bits */
+#ifndef VFLD_T
+#define VFLD_T int			/* at least 31 bits */
+#endif
+#define VFLD(name) VFLD_T name
 #define SIZLIM 0x7fffffff		/* maximum object size (in addrs) */
 #else  /* NO_BITFIELDS not defined */
 #define VFLD(name) unsigned name : 24
