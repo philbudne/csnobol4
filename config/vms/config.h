@@ -4,14 +4,15 @@
 
 #define HAVE_STRING_H
 
-/* other include files defines?? HAVE_xxx_H */
-
 /* use tty_read routines; tty_mode() is a noop */
 #define TTY_READ_COOKED
 #define TTY_READ_RAW
 
-/* cannot pass on command line? */
-#define SOCKLEN_T unsigned
+#ifdef SOCKELEN_INT
+#define SOCKLEN_T int
+#else  /* SOCKLEN_INT not defined */
+#define SOCKLEN_T unsigned int
+#endif /* SOCKLEN_INT not defined */
 
 /* have osdep_open() routine */
 #define OSDEP_OPEN
