@@ -15,8 +15,6 @@
 	MAINBOL = IDENT(.NAME,"NAME") 1
 
 	&ANCHOR = 1
-	&TRIM = 1
-	&STLIMIT = 100000
 
 ****************************************************************
 *	initialization
@@ -158,7 +156,7 @@ TOP	LINE = INPUT					:F(END)
 
 **************** start new table
 
-	SYN.H = 'extern struct syntab ' TABNAM ';'
+	SYN.H = 'extern const struct syntab ' TABNAM ';'
 
 	SYN.C =
 	SYN.C = '/*'
@@ -208,7 +206,7 @@ DUMP	N = 0
 	ATAB = TABNAM '_actions'
 	SYN.C = ' */'
 	SYN.C =
-	SYN.C = 'static struct acts ' ATAB '[] = {'
+	SYN.C = 'static const struct acts ' ATAB '[] = {'
 DUMPAL	GE(N,NACTIONS)					:S(DUMPAEN)
 	LINE = HT '{ (int_t)' PUT<N> ', AC_' ACT<N> ', ' GO<N> '}'
  	N = N + 1
@@ -224,7 +222,7 @@ DUMPAEN	SYN.C = '};'
 	C = 0
 	OL =
 	SYN.C =
-	SYN.C = 'struct syntab ' TABNAM ' = {'
+	SYN.C = 'struct const syntab ' TABNAM ' = {'
 	SYN.C = HT '"' TABNAM '",'
 	SYN.C = HT '{'
 
