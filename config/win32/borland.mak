@@ -44,7 +44,7 @@ OBJ=	snobol4.obj data.obj data_init.obj main.obj syn.obj \
 	environ.obj exit.obj file.obj getstring.obj host.obj log.obj \
 	logic.obj ord.obj rename.obj retstring.obj sin.obj spcint.obj \
 	spreal.obj sqrt.obj sset.obj tan.obj sys.obj tty.obj inet.obj \
-	execute.obj exists.obj rresvport.obj term.obj findunit.obj exp.obj
+	execute.obj exists.obj term.obj findunit.obj exp.obj
 
 # Ensure Psdk directory (containing wsock32.lib) is included in the library
 # search path in both BCC32.CFGg and ILINK.CFG , both found in BCC55\BIN\
@@ -147,13 +147,13 @@ bzero.obj : $(SRCDIR)lib\auxil\bzero.c
 getopt.obj : $(SRCDIR)lib\auxil\getopt.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\auxil\getopt.c
 
+bindresvport.obj : $(SRCDIR)lib\auxil\bindresvport.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\auxil\bindresvport.c
+
 ################ dummy
 
 execute.obj : $(SRCDIR)lib\dummy\execute.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\dummy\execute.c
-
-rresvport.obj : $(SRCDIR)lib\dummy\rresvport.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib\dummy\rresvport.c
 
 ################ generic
 

@@ -39,7 +39,7 @@ OBJ=	isnobol4.o data.o data_init.o main.o syn.o \
 	host.o log.o logic.o ord.o rename.o retstring.o sin.o \
 	spcint.o spreal.o sprintf.o sqrt.o sset.o \
 	tan.o sys.o tty.o inet.o execute.o exists.o \
-	rresvport.o term.o findunit.o
+	term.o findunit.o
 
 snobol4.exe: $(OBJ)
 	$(CC) -o snobol4 $(OBJ) $(INET_LIBS)
@@ -137,13 +137,13 @@ bzero.o: $(SRCDIR)lib/auxil/bzero.c
 getopt.o: $(SRCDIR)lib/auxil/getopt.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/auxil/getopt.c
 
+bindresvport.o: $(SRCDIR)lib/auxil/bindresvport.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/auxil/bindresvport.c
+
 ################ dummy
 
 execute.o: $(SRCDIR)lib/dummy/execute.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/dummy/execute.c
-
-rresvport.o: $(SRCDIR)lib/dummy/rresvport.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib/dummy/rresvport.c
 
 ################ generic
 
