@@ -857,7 +857,7 @@ if [ -f $INCDIR/sys/socket.h ]; then
 	if grep '_vfork' $INCDIR/unistd.h >/dev/null 2>&1; then
 	    # SGI
 	    NO_VFORK=1
-	elif grep '_vfork' $INCDIR/unistd.h >/dev/null 2>&1; then
+	elif grep 'vfork' $INCDIR/unistd.h >/dev/null 2>&1; then
 	    echo 'using vfork from unistd.h' 1>&2
 	    echo '/* vfork in unistd.h */'	>> $CONFIG_H
 	elif [ -f $INCDIR/vfork.h ]; then
