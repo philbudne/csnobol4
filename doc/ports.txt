@@ -87,7 +87,7 @@ HP 425T (68040)	26    HP-UX 8.00    c89		0.99	 4485	pb 10/96
 HP 375 (68030)	50    NetBSD 1.2E   gcc		0.99.3++ 4156*	pb 8/97
 HP 370 (68030)	33.3  NetBSD 1.2E   gcc		0.99.3++ 3167*	pb 6/97
 HP 370 (68030)	33.3  Mt Xinu 4.3   gcc		0.99	 3064	pb 10/96
-pc532 (ns32532)	25    NetBSD 1.2    gcc		0.99	 2823*	pb 10/96
+pc532 (ns32532)	25    NetBSD 1.2D   gcc		0.99.3++ 2858*	pb 8/97
 Sun-4/110	14.28 NetBSD 1.2    gcc		0.99.1	 2751	pb 11/96
 A3000 (68030)	25    NetBSD 1.2E   gcc		0.99.3++ 1979*	pb 8/97
 IBM RT/6152	??    ACIS/AOS 4.3  gcc		0.99	 1780*	pb 10/96
