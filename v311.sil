@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.51  1996/09/25  07:46:20  phil
+* [PLB42] added auto-load; uses pm_prototypes from pml.c
+*
 * Revision 1.50  1996/09/24  06:45:22  phil
 * [PLB41] removed PDLBLK (pm stack); now allocated in init.c
 * dropped SPDLDZ back to 5000
@@ -548,16 +551,16 @@ INITD1 GETDC   XPTR,INITB,0	   Get specifier to convert
        RCALL   FILENM,GENVAR,(XSPPTR)				[PLB38]
 *
 * spin through list of functions to auto-load
-       SETAC   XCL,0		   Loop index			[PLB42]
+       SETAC   TMVAL,0		   Loop index			[PLB42]
 AUTLOP LHERE			   Top of autoload loop		[PLB42]
-%{					/*			[PLB42] */
+%{	/* escape to C to build specifier for prototype		[PLB42] */
 	extern char *pm_prototypes[];	/*			[PLB42] */
 					/*			[PLB42] */
-	S_A(XSP) = (int_t) pm_prototypes[D_A(XCL)]; /*		[PLB42] */
+	S_A(XSP) = (int_t) pm_prototypes[D_A(TMVAL)]; /* OY!	[PLB42] */
 	S_F(XSP) = 0;			/* NOTE: *not* a PTR! 	[PLB42] */
 	S_V(XSP) = 0;			/*			[PLB42] */
 	S_O(XSP) = 0;			/*			[PLB42] */
-	S_L(XSP) = strlen(pm_prototypes[D_A(XCL)]); /*		[PLB42] */
+	S_L(XSP) = strlen(pm_prototypes[D_A(TMVAL)]); /*	[PLB42] */
 	CLR_S_UNUSED(XSP);		/*			[PLB42] */
 %}
        LEQLC   XSP,0,,XLATRN	   Empty string? end of loop	[PLB42]
@@ -567,7 +570,7 @@ AUTLOP LHERE			   Top of autoload loop		[PLB42]
        INCRA   ERRLCL,1		   Make sure &ERRLIMIT nonzero	[PLB42]
        RCALL   ,LOAD2		   Call into LOAD		[PLB42]
        SETAC   ERRLCL,0		   Clear &ERRLIMIT		[PLB42]
-       INCRA   XCL,1		   Next!			[PLB42]
+       INCRA   TMVAL,1		   Next!			[PLB42]
        BRANCH  AUTLOP		   Go back, jack		[PLB42]
 *_
 *---------------------------------------------------------------------*
