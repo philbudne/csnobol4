@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.77  1997/10/29  06:36:09  phil
+* XRTNL3 typo
+*
 * Revision 1.76  1997/10/29  06:21:53  phil
 * [PLB65] merged matching functions into SCIN1
 *
@@ -3216,6 +3219,7 @@ SALT2  GETDC   XCL,PDLPTR,DESCR	   Get then-or descriptor
        GETDC   PTBRCL,PATICL,0	   Get index			[PLB65]
 PATBRA SELBRA  PTBRCL,(ANYC,ARBF,ARBN,ATP,CHR,BAL,BALF,BRKC,BRKX,BRKXF,DNME,DNME1,EARB,DSAR,ENME,ENMI,FARB,FNME,LNTH,NME,NNYC,ONAR,ONRF,POSI,RPSI,RTB,FAIL,SALF,SCOK,SCON,SPNC,STAR,TB,RTNUL3,FNCE,SUCF)
 *				   Dispatch on index		[PLB65]
+       BRANCH  INTR13		   Catch bad data		[PLB66]
 *_
 SALT3  AEQLC   LENFCL,0,SALT1	   Check length failure
        BRANCH  SALF1		   Go to nonlength failure
