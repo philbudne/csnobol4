@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+3/3/2004
+	configure: attempt to fix pre-panther socklen_t lossage
+	version.c: update to 1.0+
+
 **************** release 1.0 (CVS tag REL_1_0)
 
 2/18/2004
