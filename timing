@@ -22,15 +22,23 @@ ls -l config.m4 xsnobol4
 echo ''
 echo 'config.m4:'
 cat config.m4
-echo '===== end config.m4 ====='
 echo ''
 echo 'size xsnobol4:'
 size xsnobol4
 
+if [ -x /usr/bin/uptime ]; then
+	echo ''
+	echo 'uptime:'
+	/usr/bin/uptime
+elif [ -x /usr/ucb/uptime ]; then
+	echo ''
+	echo 'uptime:'
+	/usr/ucb/uptime
+fi
+
 echo ''
 echo 'timing run of genc.sno:'
 
-## NOTE: return value is returned by xsnobol4;
 TDIR=timdir.$$
 (
 	rm -rf $TDIR
@@ -41,11 +49,11 @@ LNFILES='../xsnobol4 ../procs ../globals ../v311.sil ../genc.sno ../snobol4.c'
 	ln $LNFILES . || ln -s $LNFILES .
 	
 # NOTE! 2>&1 *BEFORE* >x
-	time ./xsnobol4 genc.sno 2>&1 >x
+	time ./xsnobol4 -s genc.sno 2>&1 >x
 	echo ==== diff
 	diff snobol4.c x
 
 	cd ..
 	rm -rf $TDIR
-) | ./xsnobol4 -bs timing.sno
+) | ./xsnobol4 -b timing.sno
 # NOTE: do not add commands here; xsnobol4 exit status is shell exit status!!
