@@ -12,6 +12,7 @@
 
 #include <stdio.h>
 #include <windows.h>
+#include <io.h>
 
 #include "h.h"
 #include "snotypes.h"
@@ -20,7 +21,7 @@
 /* keep settings for each fd in a list; */
 struct save {
     struct save *next;
-    int fd;				/* XXX use HANDLE instead? */
+    HANDLE h;
     DWORD flags;			/* saved flags */
     int cbreak, noecho;			/* current state */
 };
@@ -38,6 +39,7 @@ fisatty(f, fname)
     char *fname;
 {
     DWORD flags;
+    HANDLE h;
 
     /*
      * See if it's something we can handle
@@ -49,7 +51,8 @@ fisatty(f, fname)
      * use GetCommState() to detect serial lines
      */
 
-    return GetConsoleMode((HANDLE)_get_osfhandle(fileno(f)), &flags);
+    h = (HANDLE)_get_osfhandle(fileno(f));
+    return GetConsoleMode(h, &flags);
 }
 
 void
@@ -57,17 +60,13 @@ tty_mode( fp, cbreak, noecho, recl )
     FILE *fp;
     int cbreak, noecho, recl;
 {
-    int fd;
     DWORD new;
-    HANDLE hand;
+    HANDLE h;
     struct save *sp;
 
-    fd = fileno(fp);
-    hand = (HANDLE)_get_osfhandle(fd);
-
-    /* XXX move to tty_save_fd()?? */
+    h = (HANDLE)_get_osfhandle(fileno(fp));
     for (sp = list; sp; sp = sp->next) {
-	if (sp->fd == fd)
+	if (h == sp->h)
 	    goto found;
     }
     sp = (struct save *)malloc(sizeof(struct save));
@@ -75,8 +74,8 @@ tty_mode( fp, cbreak, noecho, recl )
 	return;				/* ??? */
 
     /* save "original" settings (used for "cooked" I/O) */
-    sp->fd = fd;
-    GetConsoleMode(hand, &sp->flags);
+    sp->h = h;
+    GetConsoleMode(h, &sp->flags);
     sp->noecho = sp->cbreak = 0;	/* ??? */
 
     /* link into list */
@@ -90,46 +89,37 @@ tty_mode( fp, cbreak, noecho, recl )
 
     new = sp->flags;			/* start with original */
     if (cbreak) {
-	new &= ~ENABLE_LINE_INPUT;
+	/* MUST clear ECHO to disable LINE_INPUT */
+	new &= ~(ENABLE_LINE_INPUT|ENABLE_ECHO_INPUT);
 #ifdef TTY_RAW
-	new &= ~(ENABLE_PROCESSED_INPUT|
-		 ENABLE_PROCESSED_OUTPUT|
-		 ENABLE_WRAP_AT_EOL_OUTPUT);
+	new &= ~ENABLE_PROCESSED_INPUT;	/* ^C processing */
 #endif /* TTY_RAW defined */
-#ifdef NEED_SETMODE
-	setmode(fd, O_BINARY);		/* needed?? */
-#endif /* NEED_SETMODE defined */
-    }
-    else {
-#ifdef NEED_SETMODE
-	setmode(fd, O_TEXT);		/* needed?? */
-#endif /* NEED_SETMODE defined */
     }
 
-    if (noecho) {
-	/* only works in line mode? */
-	new &= ~ENABLE_ECHO_INPUT;
-    }
+    if (noecho)
+	new &= ~ENABLE_ECHO_INPUT;	/* only works in line mode? */
 
-    SetConsoleMode(hand, new);
+    FlushConsoleInputBuffer(h);		/* else gets CR LF? */
+    SetConsoleMode(h, new);
 
     /* save current state */
     sp->cbreak = cbreak;
     sp->noecho = noecho;
 }
 
-/* advisory notice; discard saved info.
+/*
+ * advisory notice; discard saved info.
  * NOTE: this loses if device remains open
  *	(ie; in use by a child proc, or has been dup'ed)
  */
 static void
-tty_close_fd(fd)
-    int fd;
+tty_close_handle(h)
+    HANDLE h;
 {
     struct save *sp, *pp;
 
     for (pp = NULL, sp = list; sp; pp = sp, sp = sp->next) {
-	if (sp->fd == fd) {
+	if (sp->h == h) {
 	    if (pp) {
 		pp->next = sp->next;
 	    }
@@ -147,5 +137,40 @@ void
 tty_close(f)
     FILE *f;
 {
-    tty_close_fd(fileno(f));
+    tty_close_handle((HANDLE)_get_osfhandle(fileno(f)));
 }
+
+/* called for raw tty reads if TTY_READ_RAW defined */
+int
+tty_read(f, buf, len, raw, noecho, keepeol, fname)
+    FILE *f;
+    char *buf;
+    int len;
+    int raw;
+    int noecho;
+    int keepeol;
+    char *fname;
+{
+    DWORD cc;
+    HANDLE h;
+
+    if (!raw)				/* paranoia */
+	return -1;
+
+    h = (HANDLE)_get_osfhandle(fileno(f));
+    if (!ReadFile(h, buf, len, &cc, NULL))
+	return -1;
+
+    /*
+     * perform raw mode echo
+     * OUCH!! too many system calls
+     * save output handle in struct save??
+     */
+    if (cc > 0 && !noecho && h == GetStdHandle(STD_INPUT_HANDLE)) {
+      DWORD occ;
+      WriteFile(GetStdHandle(STD_OUTPUT_HANDLE), buf, cc, &occ, NULL);
+    }
+
+    /* cc == 0 means EOF */
+    return cc;
+} /* tty_read */
