@@ -1,11 +1,13 @@
 $Id$
 
-INSTALL:
-	document autoconf options
+man page:
+	more on I/O options (esp update)
+		if neither Append nor Update, file is truncated
+		must specify record len for INPUT() on update!
+			recl is per-VARIABLE
+		note, update on INPUT() will not create file???
 
-test "make install"
-
-==== before beta release
+==== before beta releases
 
 update man page date, CHANGES, README
 
