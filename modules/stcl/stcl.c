@@ -13,9 +13,6 @@
 #endif /* HAVE_CONFIG_H defined */
 
 #include <tcl.h>
-#ifndef STCL_NO_TK
-#include <tk.h>
-#endif
 
 #include "h.h"
 #include "equ.h"
@@ -35,10 +32,8 @@ static struct handle_list tcl_handles;
 int
 STCL_CREATE( LA_ALIST ) LA_DCL
 {
-    Tcl_Interp *interp;
     snohandle_t h;
-
-    interp = Tcl_CreateInterp();
+    Tcl_Interp *interp = Tcl_CreateInterp();
     if (!interp)
 	RETFAIL;
 
@@ -46,14 +41,6 @@ STCL_CREATE( LA_ALIST ) LA_DCL
 	Tcl_DeleteInterp(interp);
 	RETFAIL;
     }
-
-#ifndef STCL_NO_TK
-    /* bring in Tk; define tk functions */
-    if (Tk_Init(interp) == TCL_ERROR) {
-	Tcl_DeleteInterp(interp);
-	RETFAIL;
-    }
-#endif
 
     h = new_handle(&tcl_handles, interp);
     if (h == BAD_HANDLE) {
@@ -65,17 +52,14 @@ STCL_CREATE( LA_ALIST ) LA_DCL
 
 /*
  * LOAD("STCL_EVALFILE(INTEGER,STRING)STRING")
- * Create and initialize TCL interpreter
  *
- * return null string, or failure
+ * return result string, or failure
  */
 int
 STCL_EVALFILE( LA_ALIST ) LA_DCL
 {
     char file[1024];			/* XXX */
-    Tcl_Interp *interp;
-
-    interp = lookup_handle(&tcl_handles, LA_INT(0));
+    Tcl_Interp *interp = lookup_handle(&tcl_handles, LA_INT(0));
     if (!interp)
 	RETFAIL;
 
@@ -83,7 +67,7 @@ STCL_EVALFILE( LA_ALIST ) LA_DCL
     if (Tcl_EvalFile(interp, file) != TCL_OK)
 	RETFAIL;
 
-    RETNULL;
+    RETSTR(interp->result);
 }
 
 /*
@@ -95,9 +79,7 @@ STCL_GETVAR( LA_ALIST ) LA_DCL
 {
     char name[1024];			/* XXX */
     char *val;
-    Tcl_Interp *interp;
-
-    interp = lookup_handle(&tcl_handles, LA_INT(0));
+    Tcl_Interp *interp = lookup_handle(&tcl_handles, LA_INT(0));
     if (!interp)
 	RETFAIL;
 
@@ -117,9 +99,7 @@ STCL_SETVAR( LA_ALIST ) LA_DCL
 {
     char name[1024];			/* XXX */
     char value[1024];			/* XXX */
-    Tcl_Interp *interp;
-
-    interp = lookup_handle(&tcl_handles, LA_INT(0));
+    Tcl_Interp *interp = lookup_handle(&tcl_handles, LA_INT(0));
     if (!interp)
 	RETFAIL;
 
@@ -134,15 +114,13 @@ STCL_SETVAR( LA_ALIST ) LA_DCL
  * LOAD("STCL_EVAL(INTEGER,STRING)STRING")
  * Eval a tcl command
  *
- * returns null string or failure
+ * returns result string or failure
  */
 int
 STCL_EVAL( LA_ALIST ) LA_DCL
 {
     char cmd[1024];			/* XXX */
-    Tcl_Interp *interp;
-
-    interp = lookup_handle(&tcl_handles, LA_INT(0));
+    Tcl_Interp *interp = lookup_handle(&tcl_handles, LA_INT(0));
     if (!interp)
 	RETFAIL;
 
@@ -150,21 +128,19 @@ STCL_EVAL( LA_ALIST ) LA_DCL
     if (Tcl_Eval(interp, cmd) != TCL_OK)
 	RETFAIL;
 
-    RETNULL;
+    RETSTR(interp->result);
 }
 
 /*
  * LOAD("STCL_DELETE(INTEGER)STRING")
- * Create and initialize TCL interpreter
+ * Delete TCL interpreter
  *
  * return null string, or failure
  */
 int
 STCL_DELETE( LA_ALIST ) LA_DCL
 {
-    Tcl_Interp *interp;
-
-    interp = lookup_handle(&tcl_handles, LA_INT(0));
+    Tcl_Interp *interp = lookup_handle(&tcl_handles, LA_INT(0));
     if (!interp)
 	RETFAIL;
 
