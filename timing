@@ -125,8 +125,8 @@ if [ "$UNAME" ]; then
 fi
 
 if [ -f 00README.CVS ]; then
-	echo 'found 00README.CVS'
 	echo ''
+	echo 'found 00README.CVS'
 fi
 
 # kinda redundant, but timing script could be run on a different host!
