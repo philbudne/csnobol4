@@ -12,13 +12,13 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
+#include <stdio.h>			/* rename */
+
 #include "h.h"
 #include "equ.h"
 #include "snotypes.h"
 #include "macros.h"
 #include "load.h"
-
-#include <stdio.h>			/* rename */
 
 int
 RENAME( LA_ALIST ) LA_DCL
