@@ -2,6 +2,10 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
+8/8/94
+	lib/ordvst: got rid of a warning
+	config/posix-cc.m4: new. used/tested on SunOS 5.3
+
 8/1/94
 	lib/ordvst.c: real code, thanks to Martin D. Waller!!
 	README, TODO: updated
