@@ -21,6 +21,7 @@ MAINBOL for Un*x history (and personal SNOBOL history);
 	lib/ordvst: got rid of a warning
 	config/posix-cc.m4: new. used/tested on SunOS 5.3
 	config/sunos5.m4: now a symlink to posix.m4
+	charset.c: make ALPHA unsigned (for Sun SC3.0 compiler)
 
 8/1/94
 	lib/ordvst.c: real code, thanks to Martin D. Waller!!
