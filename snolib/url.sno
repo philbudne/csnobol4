@@ -1,0 +1,69 @@
+*	open connection to a URL (text only) for C-MAINBOL
+*	Phil Budne <phil@ultimate.com>
+*	Sept 24, 1997
+*	$Id$
+
+-include "http.sno"
+
+****************
+*	URL.OPEN()
+*
+*	args;
+*	Variable name to associate for I/O
+*	URL
+*	"GET" or "PUT"
+
+	URL.TABLE = TABLE()
+
+	DEFINE("URL.OPEN(URL.NAME,URL,URL.DIR)"
++		"URL.HOST,URL.PORT,URL.PROTO,URL.FILE")
++							:(URL.OPEN.END)
+
+URL.OPEN
+	URL POS(0)
++		('http' | 'ftp') . URL.PROTO
++		'://'
++		BREAK(':/') . URL.HOST
++		((':' SPAN('0123456789') . URL.PORT) | '')
++		(('/' REM) | '') . URL.FILE		:F(FRETURN)
+
+	URL.TABLE[URL.NAME] = URL.PROTO
+	IDENT(URL.PROTO,'http')				:S(URL.OPEN.HTTP)
+	IDENT(URL.PROTO,'ftp')				:S(URL.OPEN.FTP)
+							:F(FRETURN)
+
+URL.OPEN.HTTP
+	HTTP.OPEN(URL.NAME,URL.HOST,URL.FILE,URL.PORT)	:S(RETURN)F(FRETURN)
+
+URL.OPEN.FTP
+* FTP NOT YET IMPLEMENTED
+							:(FRETURN)
+
+URL.OPEN.END
+
+****************
+*	URL.CLOSE
+*
+*	args;
+*	I/O var
+
+	DEFINE("URL.CLOSE(URL.NAME)")			:(URL.CLOSE.END)
+URL.CLOSE
+	URL.TABLE[URL.NAME] = URL.PROTO
+	IDENT(URL.TABLE[URL.NAME],'http')		:S(URL.CLOSE.HTTP)
+	IDENT(URL.PROTO,'ftp')				:S(URL.CLOSE.FTP)
+							:F(FRETURN)
+
+URL.CLOSE.HTTP
+	HTTP.CLOSE(URL.NAME)				:(RETURN)
+
+URL.CLOSE.FTP
+	FTP.CLOSE(URL.NAME)				:(RETURN)
+
+URL.CLOSE.END
+
+
+	URL.OPEN(.FOO, "http://www.tiac.net/users/philb/") :F(END)
+LOOP	OUTPUT = FOO					:S(LOOP)
+	URL.CLOSE(.FOO)
+END

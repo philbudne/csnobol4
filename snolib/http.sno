@@ -1,0 +1,40 @@
+*	open an HTTP connection (text only) for C-MAINBOL
+*	Phil Budne <phil@ultimate.com>
+*	Sept 24, 1997
+*	$Id$
+
+-include "tcp.sno"
+
+*	whatever needs to be appended to line to make a CRLF
+	HTTP.EOL = CHAR(13)
+
+****************
+*	HTTP.OPEN()
+*
+*	args;
+*	Name to associate for I/O
+*	Internet hostname
+*	Filename (needs to start with "/"?)
+*	TCP port (or null)
+
+	DEFINE("HTTP.OPEN(HTTP.NAME,HTTP.HOST,HTTP.FILE,HTTP.PORT)")
++							:(HTTP.OPEN.END)
+
+HTTP.OPEN
+	HTTP.PORT = IDENT(HTTP.PORT) "80" 
+	TCP.OPEN(HTTP.NAME,HTTP.HOST,HTTP.PORT)		:F(FRETURN)
+	$HTTP.NAME = "GET " HTTP.FILE " HTTP/1.0" HTTP.EOL
+	$HTTP.NAME = HTTP.EOL				:(RETURN)
+HTTP.OPEN.END
+
+
+****************
+*	HHTP.CLOSE
+*
+*	args;
+*	I/O var
+
+	DEFINE("HTTP.CLOSE(HTTP.NAME)")			:(HTTP.CLOSE.END)
+HTTP.CLOSE
+	TCP.CLOSE(HTTP.NAME)				:(RETURN)
+HTTP.CLOSE.END
