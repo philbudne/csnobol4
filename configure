@@ -816,7 +816,7 @@ if [ -f $INCDIR/sys/socket.h ]; then
 	    esac
 	else
 	    echo 'using private socklen_t type' 1>&2
-	    echo '#define NEED_SOCKLEN_T'	>> $CONFIG_H
+	    echo '#define SOCKLEN_T int'	>> $CONFIG_H
 	fi
 	echo 'ADD_OBJS([bindresvport.o])'	>> $CONFIG_M4
 	echo 'ADD_SRCS([$(BINDRESVPORT)])'	>> $CONFIG_M4
