@@ -851,9 +851,20 @@ if [ -f $INCDIR/sys/socket.h ]; then
 	echo 'ADD_SRCS([$(POPEN_C)])'		>> $CONFIG_M4
 	if [ -f $INCDIR/paths.h ]; then
 	    echo '#define HAVE_PATHS_H'		>> $CONFIG_H
-	elif [ ! -f /bin/sh ]; then
-	    # XXX look for it elsewhere!
-	    echo 'WARNING: /bin/sh does not exist!!' 1>&2
+	else
+	    # XXX outer loop for sh, ksh, bash, csh, tcsh?
+	    for DIR in `echo $PATH | tr ':' ' '`; do
+		if [ -x $DIR/sh ]; then
+		    BSHELL=$DIR/sh
+		    break
+		fi
+	    done
+	    if [ "$BSHELL" ]; then
+		echo "using $BSHELL for popen() shell" 1>&2
+		echo '#define _PATH_BSHELL "'$BSHELL'"'	>> $CONFIG_H
+	    else
+		echo 'WARNING: could not find shell for popen()' 1>&2
+	    fi
 	fi
 
 	# GNU libc 2.0 has __vfork
