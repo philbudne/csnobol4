@@ -14,7 +14,6 @@
 
 FORK( LA_ALIST ) LA_DCL
 {
-    char cmd[256];			/* XXX */
     int pid;
 
     pid = fork();
