@@ -13,7 +13,9 @@
 #include "macros.h"
 #include "load.h"
 #include "equ.h"
+#include "lib.h"
 
+int
 IO_FINDUNIT( LA_ALIST ) LA_DCL
 {
     int i;
