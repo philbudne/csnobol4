@@ -32,6 +32,7 @@ TDIR=timdir.$$
 	cd $TDIR
 # NOTE! 2>&1 *BEFORE* >x
 	time ./xsnobol4 genc.sno 2>&1 >x
+	echo ==== diff
 	diff snobol4.c x
 	cd ..
 	rm -rf $TDIR
