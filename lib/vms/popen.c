@@ -3,6 +3,10 @@
  * from Chris Janton's (chj) VMS Icon port. -pb 9/97
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H defined */
+
 #undef __HIDE_FORBIDDEN_NAMES		/* for _NFILE */
 #include <stdio.h>
 #include <types.h>

@@ -21,6 +21,10 @@
  * ../../include for /usr/local/lib/snobol4
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H defined */
+
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <signal.h>

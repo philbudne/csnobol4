@@ -1,5 +1,9 @@
 /* $Id$ */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H defined */
+
 # ifdef VAXC
 # include <types.h>			/* time_t */
 # else  /* VAXC not defined */

@@ -24,6 +24,10 @@
  */
 
 /* phil 12/16/98; include system files first (for __P on NetBSD) */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H defined */
+
 #ifdef ANSI_STRINGS
 #include <string.h>
 #else

@@ -5,6 +5,10 @@
  * generic version using "%g"
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H defined */
+
 #include <ctype.h>
 #include <stdio.h>
 

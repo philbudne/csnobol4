@@ -5,6 +5,10 @@
  * 10/27/93
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H defined */
+
 #ifndef STATIC_PAIR			/* not included */
 #include "h.h"
 #include "snotypes.h"

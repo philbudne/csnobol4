@@ -1,5 +1,9 @@
 /* $Id$ */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H defined */
+
 #ifdef USE_STDARG_H			/* only if varargs not available */
 #include <stdarg.h>
 #else  /* USE_STDARG_H not defined */

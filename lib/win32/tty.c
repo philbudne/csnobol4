@@ -6,6 +6,10 @@
  * started 1/28/98 -phil
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H defined */
+
 #include <stdio.h>
 #include <windows.h>
 

@@ -2,6 +2,10 @@
 
 /* generic support for HOST() on systems with no uname(2) */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H defined */
+
 #ifndef CONFIG_GUESS
 #define CONFIG_GUESS ""
 #endif /* CONFIG_GUESS not defined */

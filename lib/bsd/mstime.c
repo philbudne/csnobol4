@@ -1,5 +1,9 @@
 /* $Id$ */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H defined */
+
 #include "snotypes.h"			/* for int_t */
 
 #include <sys/types.h>

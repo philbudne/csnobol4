@@ -9,6 +9,10 @@
 typedef unsigned int size_t;
 typedef long word_t;
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H defined */
+
 #define WSIZE sizeof(word_t)
 #define WMASK (WSIZE-1)			/* WSIZE must be power of two! */
 

@@ -2,6 +2,10 @@
 
 /* allocate dynamic region on BSD */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H defined */
+
 #include <sys/vadvise.h>
 
 #ifdef HAVE_STDLIB_H			/* before stdio */

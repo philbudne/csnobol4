@@ -2,6 +2,10 @@
 
 /* snobol4 main program (make this mlink.c??) */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H defined */
+
 # ifdef HAVE_STDLIB_H
 # include <stdlib.h>			/* for malloc */
 # endif /* HAVE_STDLIB_H */

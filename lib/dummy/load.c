@@ -5,6 +5,10 @@
  * now allows user to link in functions at build time!
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H defined */
+
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"

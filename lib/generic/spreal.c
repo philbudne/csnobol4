@@ -7,6 +7,10 @@
  * using scanf to detect whether we've matched the whole string.
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H defined */
+
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"

@@ -16,6 +16,10 @@
  * relocation bits which tend to be CPU/port dependant.
  */
  
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H defined */
+
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"

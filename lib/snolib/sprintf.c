@@ -19,6 +19,10 @@
  * Returns;	string (fails if second argument not INTEGER or REAL)
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H defined */
+
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"

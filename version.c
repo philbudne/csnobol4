@@ -2,6 +2,9 @@
 
 /*
  * $Log$
+ * Revision 1.24  1998/06/01  04:24:26  phil
+ * include vars.h
+ *
  * Revision 1.23  1997/08/12  03:52:46  phil
  * 0.99.4
  *
@@ -66,6 +69,10 @@
  * Initial revision
  * 
  */
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H defined */
 
 #include "h.h"				/* const */
 

@@ -2,6 +2,10 @@
 
 /* allocate dynamic region for POSIX 1003.1b-1993 systems */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H defined */
+
 #include <sys/types.h>
 #include <sys/mman.h>
 

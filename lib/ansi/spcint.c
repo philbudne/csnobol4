@@ -5,6 +5,10 @@
  * strtol are in SVID2, XPG2, XPG3, ANSI C
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H defined */
+
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"

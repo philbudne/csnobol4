@@ -36,6 +36,10 @@
  * SUCH DAMAGE.
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H defined */
+
 #if defined(LIBC_SCCS) && !defined(lint)
 static char sccsid[] = "@(#)bcopy.c	5.11 (Berkeley) 6/21/91";
 #endif /* LIBC_SCCS and not lint */

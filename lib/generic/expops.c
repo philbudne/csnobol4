@@ -8,6 +8,10 @@
  * see dummy/exp.c for dummy version of this file
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H defined */
+
 # include <math.h>
 
 # include "h.h"

@@ -5,6 +5,10 @@
  * September 24, 1997
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H defined */
+
 #ifdef HAVE_STDLIB_H			/* before stdio */
 #include <stdlib.h>			/* for malloc */
 #else  /* HAVE_STDLIB_H not defined */

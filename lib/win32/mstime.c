@@ -2,6 +2,10 @@
 
 /* get user runtime on Win32 pb 12/22/97 */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H defined */
+
 #include <windows.h>
 #include "snotypes.h"
 

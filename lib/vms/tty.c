@@ -6,6 +6,10 @@
  * started 9/17/97 -pb
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H defined */
+
 #include <stdio.h>
 #include <errno.h>
 
