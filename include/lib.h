@@ -90,7 +90,7 @@ void insert __P((struct descr *,struct descr *));
 int spcint __P((struct descr *,struct spec *));
 
 /* from intspc.c */
-void intspc __P(struct spec *sp, struct descr *dp));
+void intspc __P((struct spec *sp, struct descr *dp));
 
 /* from spreal.c */
 int spreal __P((struct descr *,struct spec *));
