@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.74  1997/09/09  20:14:14  phil
+* [PLB63] call io_pad() to fix up for -LIST RIGHT
+*
 * Revision 1.73  1997/09/08  05:22:19  phil
 * [PLB62] set LNBFSP length from TEXTSP after input
 * so listings don't end up showing old, long lines
@@ -2333,11 +2336,15 @@ INTV1  AEQLC   INSW,0,,INTV3	   Check &INPUT
        RCALL   XPTR,PUTIN,(ZPTR,XPTR),FAIL
 *				   Perform input
 INTV   LOCSP   XSP,XPTR		   Get specifier for string
-       SPCINT  XPTR,XSP,INTR1,RTXNAM
+       SPCINT  XPTR,XSP,,RTXNAM					[PLB64]
 *				   Convert to integer
+       SPREAL  XPTR,XSP,INTR1					[PLB64]
+*				   Try conversion to REAL	[PLB64]
+INTRI  RLINT   XPTR,XPTR,INTR1,RTXNAM				[PLB64]
 *_
 INTV3  GETDC   XPTR,XPTR,DESCR	   Get value
 INTV2  VEQLC   XPTR,I,,RTXNAM	   INTEGER desired
+       VEQLC   XPTR,R,,INTRI	   REAL allowed			[PLB64]
        VEQLC   XPTR,S,INTR1,INTV   STRING must be converted
 *_
 INTVC  RCALL   XPTR,INVOKE,(XPTR),(FAIL,INTV1,INTV2)
