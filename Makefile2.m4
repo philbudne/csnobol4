@@ -247,9 +247,8 @@ vfprintf.o: $(VFPRINTF_C)
 # housekeeping
 
 # generated files to include in kit
-# XXX include both snobol4.c, isnobol4.c??
 GENERATED=syn.c syn.h syn.h2 data.c data.h proc.h equ.h \
-	$(SNOBOL4).c data_init.h 
+	snobol4.c isnobol4.c data_init.h 
 
 # disposables
 G2=*.o callgraph reverse prolog subr
