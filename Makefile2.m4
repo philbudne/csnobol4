@@ -392,7 +392,7 @@ SNOLIB_OBJS= chop.o cos.o delete.o environ.o execute.o exists.o exit.o \
 
 $(SNOLIB_A): $(SNOLIB_OBJS)
 	rm -f $(SNOLIB_A)
-	ar $(ARFLAGS) rv $(SNOLIB_A) $(SNOLIB_OBJS)
+	ar $(ARXFLAGS) rv $(SNOLIB_A) $(SNOLIB_OBJS)
 	$(RANLIB) $(SNOLIB_A)
 
 ################
