@@ -122,7 +122,7 @@ isnobol4.c: procs genc.sno global.procs v311.sil inline.sno reverse
 				> ../isnobol4.c.TMP
 	mv isnobol4.c.TMP isnobol4.c
 	rm -rf prolog subr
-changequote()
+changequote(`,')
 
 reverse: reverse.c
 	$(CC) $(CFLAGS) -o reverse reverse.c
