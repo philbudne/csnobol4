@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.3  93/11/02  13:26:11  phil
+* Fixed garbled characters near END2 and AERROR
+* 
 * Revision 1.2  93/11/02  13:25:46  phil
 * Added RCS Id and Log keywords
 * 
@@ -245,7 +248,7 @@ ESASIZ EQU     50		   Limit on number of syntactic errors
 FBLKSZ EQU     10*DESCR 	   Size of function descriptor block
 ARRLEN EQU     20		   Limit on length of array print image
 CARDSZ EQU     80		   Width of compiler input
-SEQSIZ EQU     8		   Width of sequence field
+SEQSIZ EQU     0		   Width of sequence field [PLB1]
 STNOSZ EQU     8		   Length of statement number field
 DSTSZ  EQU     2*STNOSZ 	   Space for left and right numbering
 CNODSZ EQU     4*DESCR		   Size of code node
