@@ -59,7 +59,8 @@ osname(cp)
     OSVERSIONINFO osv;
     int vnum;
 
-    vnum = 1;
+    vnum = 0;
+    ZeroMemory(&osv, sizeof(osv));
     osv.dwOSVersionInfoSize = sizeof(osv);
     if (!GetVersionEx(&osv)) {
 	strcpy(cp, "Win????");
@@ -87,33 +88,45 @@ osname(cp)
 	    switch (osv.dwMinorVersion) {
 	    case 0:
 		os = "Win95";
-		vnum = 0;		/* suppress version number */
+		if (osv.szCSDVersion[1] == 'A' ||
+		    osv.szCSDVersion[1] == 'B') {
+		    os = "Win95OSR2";
+		    osv.szCSDVersion[0] = '\0';
+		}
 		break;
 	    case 10:
 		os = "Win98";
-		vnum = 0;		/* suppress version number */
+		if (osv.szCSDVersion[1] == 'A') {
+		    os = "Win98SE";
+		    osv.szCSDVersion[0] = '\0';
+		}
 		break;
 	    case 90:
 		os = "WinME";
-		vnum = 0;		/* suppress version number */
 		break;
 	    default:
+		vnum = 1;
 		break;
 	    }
 	}
 	break;
 
     case VER_PLATFORM_WIN32_NT:
+	/* also osv.wProductType, wSuiteMask */
 	os = "WinNT";
 	if (osv.dwMajorVersion == 5) {
 	    switch (osv.dwMinorVersion) {
 	    case 0:
 		os = "Win2K";
-		vnum = 0;		/* suppress version number */
 		break;
 	    case 1:
 		os = "WinXP";
-		vnum = 0;		/* suppress version number */
+		break;
+	    case 2:
+		os = "WinServer2003";
+		break;
+	    default:
+		vnum = 1;
 		break;
 	    }
 	}
@@ -122,6 +135,7 @@ osname(cp)
     default:
 	sprintf(osname, "Win#%d", osv.dwPlatformId);
 	os = osname;
+	vnum = 1;
 	break;
     }
 
