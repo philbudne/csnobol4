@@ -219,12 +219,10 @@ snobol4: xsnobol4 snobol4.c test/tests.in
 	-rm -f snobol4$(EXT)
 	ln xsnobol4$(EXT) snobol4$(EXT)
 	@touch snobol4$(EXT)
-	@echo '***************************************************************'
-	@echo Please consider mailing timing.out to timing@snobol4.org 1>&2
-	@echo along with information on your \
-		system model and CPU clock rate 1>&2
-	@echo see doc/ports.doc for the current list 1>&2
-	@echo '***************************************************************'
+	@echo '********************************************************' 1>&2
+	@echo 'Please consider mailing timing.out to timing@snobol4.org' 1>&2
+	@echo 'along with information on your system model and CPU speed' 1>&2
+	@echo '********************************************************' 1>&2
 
 ################
 
@@ -497,7 +495,7 @@ INSTALL_H=[include]/h.h [include]/snotypes.h [include]/macros.h \
 # generated SNOLIB files (at top level)
 GENSNOLIB=host.sno
 
-SNOLIB_FILES=snolib/*.sno $(INSTALL_H) doc/load.doc README $(GENSNOLIB)
+SNOLIB_FILES=snolib/*.sno $(INSTALL_H) doc/load.txt README $(GENSNOLIB)
 
 VERS=`./pv`
 install: snobol4 pv
@@ -511,9 +509,9 @@ install: snobol4 pv
 	for F in $(SNOLIB_FILES); do \
 		$(INSTALL) -m 644 $$F $(SNOLIB_DIR); \
 	done
-	@echo '************************************************'
-	@echo '*** Have you mailed a copy of timing.out to' \
-		'timing@snobol4.org ?' 1>&2
+	@echo '*********************************************************' 1>&2
+	@echo 'Have you mailed a copy of timing.out to timing@snobol4.org ?' 1>&2
+	@echo '*********************************************************' 1>&2
 
 pv:	version.c
 	make -f Makefile pv
