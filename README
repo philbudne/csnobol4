@@ -90,6 +90,10 @@ The following SNOBOL4 library routines are installed in /usr/local/lib/snobol4
 bq.sno
 	run a program in a subprocess and capture all output
 
+chars.sno
+	defines a variable for each non-printing character
+	in the local character set
+
 fence.sno
 not.sno
 unique.sno
