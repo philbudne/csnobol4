@@ -516,6 +516,8 @@ INSTALL_H=[include]/h.h [include]/snotypes.h [include]/macros.h \
 # generated SNOLIB files (at top level)
 GENSNOLIB=host.sno
 
+SNOLIB_FILES=snolib/*.sno $(INSTALL_H) doc/load.doc README $(GENSNOLIB)
+
 VERS=`./pv`
 install: snobol4 pv
 	$(INSTALL) -d $(BINDIR)
@@ -525,7 +527,7 @@ install: snobol4 pv
 	$(INSTALL) -d $(MAN1DIR)
 	$(INSTALL) -m 644 doc/snobol4.1 $(MAN1DIR)
 	$(INSTALL) -d $(SNOLIB_DIR)
-	for F in snolib/*.sno $(INSTALL_H) doc/load.doc $(GENSNOLIB); do \
+	for F in $(SNOLIB_FILES); do \
 		$(INSTALL) -m 644 $$F $(SNOLIB_DIR); \
 	done
 	@echo '************************************************'
