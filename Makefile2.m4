@@ -1,14 +1,35 @@
 # $Id$
+changequote([,])dnl
+define([CMT],[dnl])dnl
+CMT([################################################################])
+CMT([establish m4 macros to collect various options])
+CMT()
+CMT([extra C compiler cpp flags for all c files])
+define([ADD_CPPFLAGS],[define([_CPPFLAGS],_CPPFLAGS $1)dnl])dnl
+define([_CPPFLAGS],)dnl
+CMT()
+CMT([extra C compiler optimize/debug flags for all c files])
+define([ADD_OPT],[define([_OPT],_OPT $1)dnl])dnl
+define([_OPT],)dnl
+CMT()
+CMT([extra source files for make depend])
+define([ADD_SRCS],[define([_SRCS],_SRCS $1)dnl])dnl
+define([_SRCS],)dnl
+CMT()
+CMT([extra object files for final link])
+define([ADD_OBJS],[define([_OBJS],_OBJS $1)dnl])dnl
+define([_OBJS],)dnl
+CMT()
+CMT([extra C compiler flags for final link])
+define([ADD_LDFLAGS],[define([_LDFLAGS],_LDFLAGS $1)dnl])dnl
+define([_LDFLAGS],)dnl
 
 ################################################################
 # defaults (may be overridden in config.h)
 
-# GCC is preferred C compiler; turn on inlining!
-CC=gcc
-OPT=-O -finline-functions
+OPT=-O
 
-# May substitute ./cc-M here if C compiler doesn't support -M flag
-CCM=$(CC) -M
+CCM=./cc-M
 
 # for pow(3)
 MATHLIB=-lm
@@ -52,27 +73,29 @@ VFPRINTF_C=lib/aux/vfprintf.c
 
 # end of defaults
 ################################################################
-
-# include local config (copied or linked from config/ directory)
+CMT()
+CMT([establish base values:])
+ADD_OPT([$(OPT)])
+ADD_LDFLAGS([$(MATHLIB)])
+CMT()
+# local config:
 include(config.m4)
 
 # end of local config
 ################################################################
 
 # NOTE: NOT named CPPFLAGS; some versions of make include CPPFLAGS in cc cmd
-MYCPPFLAGS=`-I./include -I. $(CONFIG_CPPFLAGS)'
+MYCPPFLAGS=-I./[include] -I. _CPPFLAGS
 
-CFLAGS=$(OPT) $(MYCPPFLAGS) $(CONFIG_CFLAGS)
+CFLAGS=[]_OPT $(MYCPPFLAGS)
 
-LIBS=$(MATHLIB)
-
-LDFLAGS=$(LIBS) $(CONFIG_LDFLAGS)
+LDFLAGS=[]_LDFLAGS
 
 # bootstrapped using Catspaw SPARC SPITBOL
 #SNO=spitbol -i512k -b
 #SMALL_SNO=spitbol -b
-SNO=snobol4 -d50000
-SMALL_SNO=snobol4
+SNO=snobol4 -d50000 -b
+SMALL_SNO=snobol4 -b
 
 ################
 
@@ -80,14 +103,14 @@ OBJS=	main.o $(SNOBOL4).o data.o data_init.o syn.o bal.o convert.o \
 	date.o dump.o dynamic.o endex.o exp.o hash.o init.o intspc.o \
 	io.o lexcmp.o load.o mstime.o ordvst.o pair.o pat.o pml.o \
 	realst.o replace.o str.o stream.o top.o tree.o version.o \
-	$(CONFIG_OBJ) $(AUX_OBJ) $(PML_OBJ)
+	_OBJS $(PML_OBJS)
 
 SRCS=	main.c $(SNOBOL4).c data.c data_init.c $(BAL_C) $(CONVERT_C) \
 	$(DATE_C) $(DUMP_C) $(DYNAMIC_C) $(ENDEX_C) $(EXP_C) $(HASH_C) \
 	$(INIT_C) $(INTSPC_C) $(IO_C) $(LEXCMP_C) $(LOAD_C) \
 	$(MSTIME_C) $(ORDVST_C) $(PAIR_C) $(PAT_C) $(PML_C) \
 	$(REALST_C) $(REPLACE_C) $(STREAM_C) $(STR_C) $(TOP_C) \
-	$(TREE_C) version.c $(CONFIG_SRC) $(AUX_SRC)
+	$(TREE_C) version.c _SRCS
 
 TESTED:	xsnobol4 snobol4.c
 	@echo Running regression tests...
@@ -104,7 +127,7 @@ xsnobol4: $(OBJS)
 
 # may need special options due to size!!
 $(SNOBOL4).o: $(SNOBOL4).c 
-	$(CC) $(CFLAGS) $(SNOBOL4_C_CFLAGS) -c $(SNOBOL4).c
+	$(CC) $(SNOBOL4_C_CFLAGS) $(CFLAGS) -c $(SNOBOL4).c
 
 # regular version
 snobol4.c: procs genc.sno global.procs v311.sil 
@@ -112,7 +135,6 @@ snobol4.c: procs genc.sno global.procs v311.sil
 	$(SNO) genc.sno > snobol4.c.TMP
 	mv snobol4.c.TMP snobol4.c
 
-changequote(%,@)
 # inline version (functions reordered)
 isnobol4.c: procs genc.sno global.procs v311.sil inline.sno
 	rm -rf isnobol4.c.TMP prolog subr
@@ -123,7 +145,6 @@ isnobol4.c: procs genc.sno global.procs v311.sil inline.sno
 			> ../isnobol4.c.TMP
 	mv isnobol4.c.TMP isnobol4.c
 	rm -rf prolog subr
-changequote(`,')
 
 ########
 
@@ -265,7 +286,7 @@ clean:
 realclean: clean
 	rm -f $(GENERATED)
 
-`TAR=	README doc History TODO TODO.soon \
+[TAR=	README doc History TODO TODO.soon \
 	Makefile Makefile2.m4 \
 	v311.sil syntax.tbl procs global.procs \
 	genc.sno gensyn.sno gendata.sno inline.sno \
@@ -274,7 +295,7 @@ realclean: clean
 	lib include config test bugs snolib \
 	timing timing.sno \
 	$(GENERATED) \
-	cc-M'
+	cc-M]
 
 # XXX perform general cleanup (remove ~ and # files) first?
 KIT=snobol.tar.Z
@@ -299,6 +320,6 @@ uu:	$(KIT)
 MAKEFILE2=Makefile2
 depend:
 	sed '/^# DO NOT DELETE THIS LINE/q' $(MAKEFILE2) > $(MAKEFILE2).tmp
-	$(CCM) $(MYCPPFLAGS) $(CONFIG_CFLAGS) $(SRCS) >> $(MAKEFILE2).tmp
+	$(CCM) $(MYCPPFLAGS) $(SRCS) >> $(MAKEFILE2).tmp
 	mv $(MAKEFILE2).tmp $(MAKEFILE2)
 
