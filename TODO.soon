@@ -1,0 +1,29 @@
+$Id$
+
+update ports.doc for sun4/670
+
+add RCS BETA1 tag, rebuild
+
+================
+
+Run genc.sno in test/run.sh??
+
+Improve porting.doc
+	talk about C compilers (sun cc vs. gcc)
+	optimization (none/-O/-O2 etc)
+
+Write man page
+
+Describe language extensions
+
+Describe SIL extensions
+
+-INCLUDE
+
+Improve I/O;
+	process "!" "[flags]"
+
+MOVBLK_MEMMOVE?
+MOVBLK_MEMCPY???
+APDSP_MEMCPY?
+
