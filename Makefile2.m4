@@ -493,7 +493,8 @@ install: snobol4 doc/snobol4.1 pv
 	for F in snolib/*.sno $(INSTALL_H) doc/load.doc $(GENSNOLIB); do \
 		rm -f $(SNOLIB_DIR)/`basename $$F`; cp $$F $(SNOLIB_DIR); \
 	done
-	@echo 'Have you mailed a copy of timing.out to' \
+	@echo '************************************************'
+	@echo '*** Have you mailed a copy of timing.out to' \
 		'snobol4-timing@ultimate.com ?' 1>&2
 	
 ################
