@@ -34,9 +34,8 @@ endex( x )
     for (i = 0; i < MAX_DEPTH; i++)
 	if (returns[i])
 	    fprintf( stderr, "%8d %8d\n", i, returns[i]);
-#endif /* TRACE_DEPTH defined */,
+#endif /* TRACE_DEPTH defined */
 
     /* else exit w/ &CODE */
     exit(D_A(RETCOD));
 }
-
