@@ -37,6 +37,7 @@ IBM RS/6K 40P	66	AIX 4.1	      cc     0.99   aix-rs6000	 19557	pb 10/96
 Sun SS-10/51	50	SunOS 4.1.3C  gcc    0.98.1 sunos4	 18985	pb 9/96
 SGI IP20 (R4K)	100	IRIX 5.2      cc     0.99   posix	 17939	pb 10/96
 HP 9000/720	50	HP-UX 10.10   c89    0.99   hp-pa	 17813	pb 10/96
+Sun SS5		110	SunOS 5.5.1   SUNpro 0.99.1 posix	 17072	db 11/96
 DEC 3000/300	30/150	NetBSD 1.2    gcc    0.99   bsd44	 16340	pb 10/96
 P5?		??	Linux 2.0.14  gcc    0.99.1 posix	 13900	pb 10/96
 Sun SS5		85	SunOS 4.1.4   gcc    0.99   sunos4	 11858	pb 10/96
@@ -112,7 +113,10 @@ Who's Who key
 =============
 
 al	Arne Larsson
-	<larsson@ntcclu.ntc.nokia.com,arne@tlingva.pp.fi>
+	<arne@tlingva.pp.fi>
+
+db 	David J Birnbaum	University of Pittsburgh, Slavic Languages
+	<djb@kathleen.slavic.pitt.edu>
 
 bm	Burkhard Meissner
 	<meissner@altertum.uni-halle.d400.de>
