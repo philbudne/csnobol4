@@ -189,14 +189,11 @@ io_close(unit)				/* internal (zero-based unit) */
 
     if (fp->f) {
 	/* XXX call close hook? */
-#ifndef NO_POPEN
 	if (fp->flags & FL_PIPE) {
 	    ret = (pclose(fp->f) == 0);
 	    fp->f = NULL;
 	}
-	else
-#endif /* NO_POPEN not defined */
-	{				/* not a pipe */
+	else {				/* not a pipe */
 	    if (fp->flags & FL_TTY) {
 		tty_close(fp->f);	/* advisory */
 	    }
@@ -242,12 +239,10 @@ io_fopen2( fp, mode )
     /* handle magic filenames (have a table (prefix or full str)??) */
 
     if (fp->fname[0] == '|') {
-#ifndef NO_POPEN
 	/* filename with leading '|' opens a pipe! */
 	/* SPITBOL: leading '!' means pipe, (with escaping?) */
 	fp->flags |= FL_PIPE;		/* XXX set close hook? */
 	fp->f = popen(fp->fname+1, mode);
-#endif /* NO_POPEN not defined */
 	return;
     }
 
