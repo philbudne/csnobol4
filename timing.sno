@@ -3,6 +3,9 @@
 
 	&ANCHOR = 1
 
+	OUTPUT =
+	OUTPUT = "timing.sno $Revision$"
+
 * constants
 	DIGIT = '0123456789'
 	TAB = '	'
@@ -39,7 +42,6 @@ VLOP	LINE = INPUT					:F(NOVERS)
 	LINE "The Macro Implementation of SNOBOL4" BREAKX("V") "Version "
 +		SPAN('0123456789.') . VERS		:F(VLOP)
 
-	OUTPUT =
 	OUTPUT = 'Version:' TAB TAB VERS		:(CLOP)
 
 NOVERS	OUTPUT = "could not find SNOBOL4 SIGNON/VERSION" :(FATAL)
