@@ -1,10 +1,10 @@
 /* $Id$ */
 
+#ifndef STATIC_HASH
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#ifndef STATIC_HASH
 #include <stdio.h>
 #include "h.h"
 #include "snotypes.h"

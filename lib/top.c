@@ -1,10 +1,10 @@
 /* $Id$ */
 
+#ifndef STATIC_TOP
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#ifndef STATIC_TOP
 #include <stdio.h>
 
 #include "h.h"

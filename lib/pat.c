@@ -5,11 +5,11 @@
  * 10/27/93
  */
 
+#ifndef STATIC_PAT
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#ifndef STATIC_PAT
 #include <stdio.h>
 
 #include "h.h"
