@@ -212,9 +212,9 @@ snobol4: xsnobol4 snobol4.c
 
 ################
 
-# may need special options due to size!!
-$(SNOBOL4).o: $(SNOBOL4).c 
-	$(CC) $(SNOBOL4_C_CFLAGS) $(CFLAGS) -c $(SNOBOL4).c
+# may need additional options due to size!!
+$(SNOBOL4).o: $(SRCDIR)$(SNOBOL4).c 
+	$(CC) $(SNOBOL4_C_CFLAGS) $(CFLAGS) -c $(SRCDIR)$(SNOBOL4).c
 
 version.o: $(SRCDIR)version.c
 	$(CC) $(CFLAGS) -c $(SRCDIR)version.c
@@ -224,6 +224,16 @@ main.o: $(SRCDIR)main.c
 
 data.o: $(SRCDIR)data.c
 	$(CC) $(CFLAGS) -c $(SRCDIR)data.c
+
+# NOTE: private options; includes data_init.h, which is huge and tends
+# to gum up the optimizer.  For development, I keep a local-config
+# file with the line "DATA_INIT_CFLAGS=$(MYCPPFLAGS)" so that no
+# attempt to optimize compilation of data_init.c occurs.  This may
+# result in a slightly larger executable, or slower startup, but since
+# I may compile data_init.c many times in the course of a debug
+# session, it's worth it.
+data_init.o: $(SRCDIR)data_init.c 
+	$(CC) $(DATA_INIT_CFLAGS) -c $(SRCDIR)data_init.c
 
 syn.o: $(SRCDIR)syn.c
 	$(CC) $(CFLAGS) -c $(SRCDIR)syn.c
