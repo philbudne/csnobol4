@@ -33,9 +33,18 @@ Documentation;
 For a good SNOBOL4 tutorial look in the Catspaw "vanilla snobol"
 distribution.
 
+INSTALL
+	Information on building and installing C-MAINBOL
+
+README
+	This file
+
+CHANGES
+	Important changes since last release
+
 doc/snobol4.1
-	man page for snobol4 (uses (ANY('nt') 'roff') -man macros)
-	only describes changes from the "green book".
+	man page for snobol4.
+	describes changes from the SNOBOL4 reference ("green book").
 
 doc/snobol4.0
 	text formatted output of snobol4 man page
@@ -56,15 +65,19 @@ doc/porting.doc
 doc/porting.ps
 	porting information in PostScript.
 
+doc/porting.html
+	porting information in HTML.
+
 TODO.soon
 	current top priority tasks (hopefully small in any release)
 
 TODO
 	older identified tasks / wish list.
 
-See the Catspaw vanilla.arc or vanilla.tar for a DOS/PC port of
-	SNOBOL4, many demo programs, SNOBOL4 language documentation,
-	and ordering information for books & products from Catspaw!
+See the Catspaw Vanilla SNOBOL4 vanilla.arc or vanilla.tar for a
+	DOS/PC port of SNOBOL4, many demo programs, SNOBOL4 language
+	documentation, and ordering information for books & products
+	from Catspaw!
 
 Acknowledgments;
 
@@ -75,9 +88,11 @@ Acknowledgments;
 
 	I would also never have succeeded without the help of Mark
 	Emmer of Catspaw and his excellent SPARC SPITBOL product!!
-	Mark's donation of SNOBOL4+ source code has allowed me to
-	advance the state of C-MAINBOL in ways that would have taken
-	years otherwise!
+
+	The contributions of source code by Mark Emmer (SNOBOL4+) and
+	Viktors Berstis (Minnestoa SNOBOL4) have allowed me to advance
+	the state of C-MAINBOL in ways that would have been otherwise
+	impossible.
 
 The following have also provided help, encouragement, support, input,
 historical background, testing, fixes, etc (in chronological order);
