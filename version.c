@@ -2,6 +2,9 @@
 
 /*
  * $Log$
+ * Revision 1.26  2002/03/03 05:02:52  phil
+ * update version to 0.99.44
+ *
  * Revision 1.25  2001/12/03 01:15:35  phil
  * add HAVE_CONFIG_H
  *
@@ -79,8 +82,8 @@
 
 #include "h.h"				/* const */
 
-const char vers[] = "0.99.44";
-const char vdate[] = "March 3, 2002";
+const char vers[] = "0.99.44+";
+const char vdate[] = "March 13, 2002";
 const char snoname[] = "CSNOBOL4";
 
 #ifdef MAIN
