@@ -41,7 +41,7 @@
 #define RETINT(x) { D_A(retval) = (x); return TRUE; }
 #define RETREAL(x) { D_RV(retval) = (x); return TRUE; }
 /* strings */
-#define RETSTR(CP,LEN) { retstr(retval, (CP), (LEN)); return TRUE; }
+#define RETSTR(CP,LEN) { retstring(retval, (CP), (LEN)); return TRUE; }
 #define RETNULL { D_A(retval) = 0; return TRUE; }
 
 #define RETFAIL return FALSE
