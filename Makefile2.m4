@@ -119,6 +119,9 @@ SRCS=	main.c $(SNOBOL4).c data.c data_init.c syn.c $(BAL_C) $(CONVERT_C) \
 	$(REALST_C) $(REPLACE_C) $(STREAM_C) $(STR_C) $(TOP_C) $(TERM_C) \
 	$(TREE_C) version.c _SRCS
 
+# SIL source file
+SIL=	v311.sil
+
 TESTED:	xsnobol4 snobol4.c
 	@echo Running regression tests...
 	cd test; ./run.sh ../xsnobol4 > ../test.out
@@ -137,16 +140,16 @@ $(SNOBOL4).o: $(SNOBOL4).c
 	$(CC) $(SNOBOL4_C_CFLAGS) $(CFLAGS) -c $(SNOBOL4).c
 
 # regular version
-snobol4.c: procs genc.sno globals v311.sil 
+snobol4.c: procs genc.sno globals $(SIL) 
 	rm -f snobol4.c2 proc.h2
-	$(SNO) genc.sno > snobol4.c2
+	$(SNO) genc.sno < $(SIL) > snobol4.c2
 	mv snobol4.c2 snobol4.c
 
 # inline version (functions reordered)
-isnobol4.c: procs genc.sno globals v311.sil inline.sno
+isnobol4.c: procs genc.sno globals $(SIL) inline.sno
 	rm -rf isnobol4.c2 proc.h2 prolog subr
 	mkdir subr
-	$(SNO) inline.sno > prolog
+	$(SNO) inline.sno < $(SIL) > prolog
 	cd subr; cat ../prolog \
 		`awk '{print $$2, $$1}' ../callgraph | tsort 2>/dev/null` \
 			> ../isnobol4.c2
@@ -172,9 +175,9 @@ syn.h:	syn.h2
 
 ################
 
-data.h2 data.c2 equ.h2 data_init.h2: v311.sil gendata.sno
+data.h2 data.c2 equ.h2 data_init.h2: $(SIL) gendata.sno
 	rm -rf data.h2 data.c2 equ.h2 data_init.h2
-	$(SNO) gendata.sno
+	$(SNO) gendata.sno < $(SIL)
 
 data.h:	data.h2
 	cmp data.h data.h2 || cp data.h2 data.h
@@ -200,8 +203,8 @@ version.o: Makefile2
 # doesn't change much!!
 
 #procs:	gendep.sno
-#	$(SNO) gendep.sno > procs.TMP
-#	mv procs.TMP procs
+#	$(SNO) gendep.sno < $(SIL) > procs2
+#	mv procs2 procs
 
 #################################################################
 # lib files
@@ -324,7 +327,7 @@ realclean: clean
 # generated files copied to ensure newer than source files!
 [TAR=	README doc History TODO TODO.soon \
 	Makefile Makefile2.m4 configure config.guess \
-	v311.sil syntax.tbl procs globals \
+	$(SIL) syntax.tbl procs globals \
 	genc.sno gensyn.sno gendata.sno inline.sno \
 	main.c charset.c data_init.c version.c \
 	parms.h mlink.h mdata.h pml.h \
