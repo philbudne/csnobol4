@@ -65,7 +65,7 @@ static char *rcsid = "$OpenBSD: bindresvport.c,v 1.13 2000/01/26 03:43:21 deraad
 #include "str.h"			/* bzero() */
 
 #ifdef NEED_SOCKLEN_T
-/* VMS 7.3 wants unsigned */
+/* VMS 7.3 (X/OPEN 4.0?) uses size_t */
 typedef unsigned int socklen_t;
 #endif /* NEED_SOCKLEN_T defined */
 
