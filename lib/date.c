@@ -1,11 +1,15 @@
 /* $Id$ */
 
-#include "h.h"
-#include "snotypes.h"
-#include "macros.h"
+# include "h.h"
+# include "snotypes.h"
+# include "macros.h"
 
-#include <sys/types.h>			/* time_t */
-#include <time.h>			/* struct tm */
+# ifdef VAXC
+# include <types.h>			/* time_t */
+# else  /* VAXC not defined */
+# include <sys/types.h>			/* time_t */
+# endif /* VAXC not defined */
+# include <time.h>			/* struct tm */
 
 /*
  * The format of DATE() is (in principle) system dependant,
