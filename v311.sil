@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.63  1996/10/20  04:06:15  phil
+* [PLB52] add SPITBOL SET() function (from SNOBOL4+ SEEK/TELL)
+*
 * Revision 1.62  1996/10/17  02:31:18  phil
 * [PLB51] Implement format/options for INPUT()
 * Pass format/options to OUTPUT()
@@ -6330,14 +6333,16 @@ GENVIX RCALL   XPTR,GNVARI,XPTR,RTXNAM
 *				   Generate variable from integer
 *_
        TITLE   'Termination'
-END    AEQLC   BANRCL,0,,FTLEN2	   Skip message if banner (stats?) off [PLB12]
+END    XCALLC  io_flushall,(0)	   Empty output buffers		[PLB53]
+       AEQLC   BANRCL,0,,FTLEN2	   Skip message if banner (stats?) off [PLB12]
        OUTPUT  PUNCH,NRMEND,(LVLCL)				[PLB5]
 *				   End procedure
        OUTPUT  PUNCH,LASTSF,(FILENM,LNNOCL,STNOCL)		[PLB5][PLB38]
 *				   Print status
        BRANCH  FTLEN2		   Join termination procedure
 *_
-FTLEND OUTPUT  PUNCH,FTLCF,(FILENM,LNNOCL,ERRTYP,STNOCL,LVLCL)	[PLB5][PLB38]
+FTLEND XCALLC  io_flushall,(0)	   Empty output buffers		[PLB53]
+       OUTPUT  PUNCH,FTLCF,(FILENM,LNNOCL,ERRTYP,STNOCL,LVLCL)	[PLB5][PLB38]
        SETAC   RETCOD,1		   set exit code (use an EQU? ERRTYP?) [PLB13]
        AEQLC   INICOM,0,FTLEN3	   BE SURE OF INITIALIZATION	E3.10.6
        OUTPUT  PUNCH,ALOCFL	   WARN USER			[PLB5] E3.10.6
@@ -6397,7 +6402,8 @@ END2   INTRL   EXN2CL,EXN2CL	   Convert execution total to REAL
 AVTIME OUTPUT  PUNCH,TIMEPS,(FCL)  Print average time		[PLB5]
 ENDALL ENDEX   ABNDCL						E3.2.2
 *_
-SYSCUT OUTPUT  PUNCH,SYSCMT,(FILENM,LNNOCL,SIGNCL,STNOCL,LVLCL)	[PLB5][PLB38]
+SYSCUT XCALLC  io_flushall,(0)	   Empty output buffers		[PLB53]
+       OUTPUT  PUNCH,SYSCMT,(FILENM,LNNOCL,SIGNCL,STNOCL,LVLCL)	[PLB5][PLB38]
 *								[PLB47]
 *				   System cut exit
        AEQLC   CUTNO,0,ENDALL					E3.2.2
