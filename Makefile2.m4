@@ -260,10 +260,7 @@ $(KIT):	$(TAR)
 	cd test; ./clean.sh
 	rm -rf snobol
 	mkdir snobol
-	tar cf - $(TAR) | (cd snobol; tar xfpB -)
-	find snobol -name RCS -exec rm -rf {} \; -prune
-	find snobol -name '*~' -exec rm {} \;
-	find snobol -name '#*' -exec rm {} \;
+	find $(TAR) -name RCS -prune -o -print | cpio -pldm snobol
 	tar cf - snobol | compress > $(KIT)
 	rm -rf snobol
 
