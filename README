@@ -19,7 +19,7 @@ The latest release can be found at http://www.snobol4.org
 
 ****************************************************************
 
-Copyright (c) 1993-2002, Philip L. Budne
+Copyright (c) 1993-2003, Philip L. Budne
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -54,6 +54,7 @@ For a good SNOBOL4 tutorial look at the Catspaw SNOBOL4 tutorial;
 
 Also useful are the Catspaw Vanilla SNOBOL4 manual;
     http://burks.bton.ac.uk/burks/language/snobol/catspaw/manual/contents.htm
+
 and the Catspaw SPITBOL manual
     ftp://ftp.snobol4.com/spitman.pdf
 
@@ -122,6 +123,9 @@ unique.sno
 
 host.sno
 	Function codes for HOST() function
+
+logic.sno
+	Prototypes for Catspaw Macro SPITBOL compatible LOGIC() function
 
 serv.sno
 	Example TCP server program
