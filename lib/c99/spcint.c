@@ -10,6 +10,7 @@
 
 #include <stdlib.h>			/* strtoll() */
 #include <stdio.h>
+#include <errno.h>
 
 #include "h.h"
 #include "snotypes.h"
@@ -51,9 +52,14 @@ spcint(dp, sp)
     bcopy( cp, buffer, (long)len );	/* XXX SIZE_T */
     buffer[len] = '\0';
 
+    errno = 0;
     temp = strtoll( buffer, &cp, 10);	/* always decimal */
     if (*cp)
 	return FALSE;			/* failure */
+#ifdef ERANGE
+    if (errno == ERANGE)
+	return FALSE;
+#endif /* ERANGE defined */
 
     D_A(dp) = temp;
     D_F(dp) = 0;			/* clear flags */
