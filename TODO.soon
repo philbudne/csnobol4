@@ -1,25 +1,22 @@
 $Id$
 
-simple output tests;
-	output = 1
-	output = "hello"
-	a = 1
-	output = a
-	a = "hello"
-	output = a
+create host.sno w/ constants for HOST() functions
+	HOST_SYSENV
+
+LARGEFILE support busted under glibc 2.1
+awk '$1 ~ /^#define/ && $2 ~ /_GLIBC_/ { print $3 }' /usr/include/features.h
+if X=`getconf --version 2>&1 | awk '/GNU libc/ { print $NF }'`; then
+rpm -q -f /usr/lib/libc.a
+
+Add --no-inline??
 
 rename /ansi/ to /c89/ ??
+	change autoconf messages too?
 rename /borland/ to /msdos/ ??
 
---longlong loses on sparc?
-
-	include file for bcopy() prototype??
-		always cast to size_t??  int??
-		do includes in h.h?? macros.h??
-		bcmp defines in macros.h and h.h??
-			USE_MEMCMP never set
-
-spec2str should use bcopy???
+include file for bcopy() prototype??
+	do includes in h.h?? macros.h??
+	bcmp defines in macros.h and h.h?? USE_MEMCMP never set?
 
 all S_L fetches should use int_t variables!
 
@@ -35,16 +32,16 @@ create README.CVS??
 
 use SNOCONE tsort program???
 	include tsort.sno in repository?
-
-Add --no-inline??
+	(leave generation rule for tsort.sno commented out)
 
 man page:
-	document HOST(200x)
+	document HOST(2xxx) -- pointer to host.sno?
 	document SERV_LISTEN()
 	discuss largefile support (may not work on all (file)systems)
+		under SSET()
 	discuss terminal binary mode
 
-add build_hostname?? build_user???
+add build_user???
 	move to mkbuild script?
 
 ports.doc
@@ -154,11 +151,9 @@ have tests cleanup after themselves?  Add Makefile for "make clean"?
 cygwin isnobol4.c build problems with filename "subr/CON" !!
 	change label to CONC?
 
-HOST() functions for;
-	INTEGER and REAL sizes?
-	DESCR?
-
 ================
+
+inline apdsp()?
 
 change tty_mode to take single "mode" argument (flags + recl)?
 	add "superbinary mode"?
