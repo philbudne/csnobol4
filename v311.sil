@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.10  93/11/19  16:32:38  budd
+* [PLB6] default &TRIM to 1
+* 
 * Revision 1.9  93/11/10  20:52:49  phil
 * [PLB5] send all termination msgs, stats to stderr (PUNCH)
 * 
@@ -280,7 +283,7 @@ NODESZ EQU     3*DESCR		   Size of pattern node
 OBSIZ  EQU     256		   Number of bin headers
 OBARY  EQU     OBSIZ+3		   Total number for bins
 OCASIZ EQU     1500		   Descriptors of initial object code
-SPDLSZ EQU     1000		   Descriptors of pattern stack
+SPDLSZ EQU     5000		   Descriptors of pattern stack [PLB7]
 STSIZE EQU     1000		   Descriptors of interpreter stack
 SPDR   EQU     SPEC+DESCR	   Descriptor plus specifier
 OBOFF  EQU     OBSIZ-2		   Offset length in bins
