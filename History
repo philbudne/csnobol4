@@ -2,6 +2,19 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+******** RCS tag BETA7
+
+8/11/97:
+	version.c: upped to 0.99.4
+	CHANGES, README: updated
+	doc/snobol4.1: updated date
+	doc/load.doc: new sections on shared libraries, I/O functions
+	doc/ports.doc: updated version numbers
+
+8/10/97:
+	timing.sno: calculate FACTOR before using it! use CHECKHZ()!!
+	new test: any
+
 8/8/97:
 	doc/ports.doc: updated
 
