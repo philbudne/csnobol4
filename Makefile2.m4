@@ -541,8 +541,8 @@ bsplitu: bsplitu.c
 # XXX make hard link from $(BINDEST) to $(BINDEST)-`./pv`??
 
 install: TESTED doc/snobol4.1
-	rm -f $(BINDEST).old
-	mv -f $(BINDEST) $(BINDEST).old
+	-rm -f $(BINDEST).old
+	-mv -f $(BINDEST) $(BINDEST).old
 	cp xsnobol4 $(BINDEST); strip $(BINDEST); chmod 755 $(BINDEST)
 	cp doc/snobol4.1 $(MANDEST)
 	test -d $(SNOLIB_DIR) || mkdir $(SNOLIB_DIR)
