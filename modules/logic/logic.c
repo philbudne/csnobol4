@@ -15,7 +15,7 @@
 #include "config.h"			/* before ANYTHING */
 
 #ifdef HAVE_STDLIB_H			/* before stdio, h.h */
-#include <stdlib.h>			/* for malloc */
+#include <stdlib.h>			/* for malloc(), strtol() */
 #else  /* HAVE_STDLIB_H not defined */
 extern void *malloc();
 #endif /* HAVE_STDLIB_H not defined */
