@@ -4,7 +4,14 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
 10/26/96:
 	Makefile2.m4: have io.o, load.o depend on $(MAKEFILE)
-	INSTALL: update with above
+		use $(LD_PATH) for load.o
+	INSTALL: no longer need to fuss with io.o, load.o
+	autoconf: use generic/term.c if no unistd.h
+	config/bsd43.m4: set LD_PATH, removed TERM_C
+	timing: search PATH for uname
+	lib/bsd/tty.c, lib/posix/tty.c:
+		use tty_mode(stdin,0,0,0) for tty_save() AND tty_restore()!!
+	lib/io.c: call tty_mode() in io_flushall if FL_TTY set
 
 10/25/96:
 	v311.sil: call io_flushall
@@ -19,6 +26,7 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 	config/bsd43.m4: add getopt, isnan
 	doc/ports.doc: hp370/bsd43, pc532/netbsd
 	include/macros.h: compare first char in LEXEQ macro
+		NOTE: all timings for 0.99.1 include LEXEQ change
 	tested on Mt. Xinu 4.3
 
 10/24/96:
@@ -34,9 +42,9 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 	removed lib/dummy/execl.c
 	lib/snolib/exit.c: use execute function
 	Makefile2.m4: add execute.o EXECUTE_C, removed execl.o EXECL_C
-	version.c: upped to 0.99.1
 	CHANGES: updated
 	README: updated
+	version.c: upped to 0.99.1
 	tested on SunOS 5.4, IRIX 5.2
 
 10/22/96:
