@@ -1,9 +1,5 @@
 $Id$
 
-replace PROC with XPROC for scanner functions which are no longer
-	seperate functions?
-	(add to XPROC to genc)
-
 Tests;
 	add "scan.sno" test
 	add outerr.sno test?
@@ -11,10 +7,6 @@ Tests;
 Talk about snolib files in INSTALL & README!!
 
 man page;
-	document "Output error" in extensions section of man page?
-	document all non-standard ERRTYPEs??
-	document all errtypes!!!
-
 	document INTVAL extension;
 		TABLE, ITEM, array indices, INPUT, OUTPUT, SET,
 		keyword values, CHAR, RPAD, LPAD, FIELD, COLLECT,
@@ -34,13 +26,7 @@ man page;
 	    + POSIX (& ANSI?) definition of SIGFPE
 		    (normal return behvior is undefined)
 
-Install include files for loadables in SNOLIB?
-	h.h snotypes.h macros.h load.h dt.h
-
 load.doc: mention dt.h
-
-porting.doc;
-	NO_UNBUF_RW (merged READ & WRITE)
 
 look at tty_close() thrashing;
 	never discard info?
@@ -257,11 +243,9 @@ Add DIAGNOSTICS section to man page???
 	document all error numbers/strings and reasons!!
 
 	-INCLUDE/-COPY
-		describe "program error" vs. "reading error" in man page?
 		improve error handling???
 
-have all genc, gendata, gensyn output .[ch]2 files
-	use cmp || cp??
+have all genc, gendata, gensyn output .[ch]3 files; mv to .[ch]2 on exit??
 
 Have gensyn read character classes from input
 	(seperate with %%?)
@@ -377,3 +361,7 @@ SPITBOL x ^ y (y < 0) always yields REAL?
 ================
 
 Implement SPITBOL EXIT [+-][34] freeze functionality
+
+================
+
+perform live/dead analysis of variables for each function?!
