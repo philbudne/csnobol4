@@ -78,19 +78,9 @@ GETSTAT	LINE = INPUT					:F(NOSTAT)
 	OUTPUT = 'Execution time:' TAB TAB EXEC ' milliseconds'
 	OUTPUT = 'Statements executed:' TAB STMTS
 
-* beware dummy versions!
-
-* on fast systems with bad resolution, exec time shows in compiler time,
-* and exec time is zero?!
-	GT(EXEC,0)					:S(EXECOK)
-	GT(EXEC,COMP)					:S(EXECOK)
-	EQ(COMP,0)					:S(NOET)
-
-	OUTPUT = 'Execution time zero, but non-zero compiler time!!'
-	EXEC = COMP
-	COMP = 0
-
-EXECOK	OUTPUT = 'Statements per second:' TAB STMTS * 1000 / EXEC
+* beware dummy/mstime.c
+	EQ(EXEC,0)					:S(NOET)
+	OUTPUT = 'Statements per second:' TAB STMTS * 1000 / EXEC
 
 * calculate usec/stmt
 	A1 = EXEC * 1000 / STMTS
