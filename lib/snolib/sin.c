@@ -16,6 +16,7 @@
 #include "snotypes.h"
 #include "macros.h"
 #include "load.h"
+#include "equ.h"
 
 SIN( LA_ALIST ) LA_DCL
 {

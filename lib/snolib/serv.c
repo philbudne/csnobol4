@@ -8,19 +8,6 @@
  * with a single call!!
  */
 
-/*
- * On SunOS4/5 (using gcc);
- *	gcc -I/usr/local/lib/snobol4 -shared -fPIC -o serv.so serv.c
- *
- * on FreeBSD x86;
- *	cc -I/usr/local/lib/snobol4 -shared -fPIC -o serv.so serv.c 
- *
- *
- * the include path above assumes you have done a "make install"
- * if you have not, and are compiling serv.c in place, substitute
- * ../../include for /usr/local/lib/snobol4
- */
-
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
@@ -42,6 +29,7 @@
 #include "snotypes.h"
 #include "macros.h"
 #include "load.h"
+#include "equ.h"
 
 #ifndef SIGFUNC_T
 #define SIGFUNC_T void

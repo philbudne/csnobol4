@@ -8,6 +8,7 @@
 #include "snotypes.h"
 #include "macros.h"
 #include "load.h"
+#include "equ.h"
 
 /*
  * LOAD("FORK()INTEGER")
