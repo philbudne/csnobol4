@@ -92,6 +92,7 @@ ORDVST_C=$(SRCDIR)lib/ordvst.c
 PAIR_C=$(SRCDIR)lib/pair.c
 PAT_C=$(SRCDIR)lib/pat.c
 PML_C=$(SRCDIR)lib/pml.c
+POPEN_C=$(SRCDIR)lib/bsd/popen.c
 REALST_C=$(SRCDIR)lib/realst.c
 REPLACE_C=$(SRCDIR)lib/replace.c
 SPCINT_C=$(SRCDIR)lib/ansi/spcint.c
@@ -334,6 +335,9 @@ pat.o:	$(PAT_C)
 
 pml.o:	$(PML_C)
 	$(CC) $(CFLAGS) -c $(PML_C)
+
+popen.o: $(POPEN_C)
+	$(CC) $(CFLAGS) -c $(POPEN_C)
 
 realst.o: $(REALST_C)
 	$(CC) $(CFLAGS) -c $(REALST_C)
