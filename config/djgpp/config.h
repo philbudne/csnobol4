@@ -15,6 +15,7 @@
 /* WATTCP support */
 #ifdef HAVE_WATTCP
 #define FOLD_HOSTNAMES
+#define NEED_BINDRESVPORT
 #define udp_open myudp_open
 #define tcp_open mytcp_open
 #endif /* HAVE_WATTCP defined */
