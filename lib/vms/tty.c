@@ -12,6 +12,7 @@
 #include <iodef.h>
 #include <ssdef.h>
 
+#define SUCCESS(_STAT) ((_STAT) & STS$M_SUCCESS)
 #define SETERR(_STAT) do { vaxc$errno = (_STAT); errno = EVMSERR; } while(0)
 
 extern char *stdin_file, *stdout_file;	/* from getredirect.c */
@@ -94,6 +95,7 @@ tty_read(f, buf, len, noecho, fname)
     int chan;
     int op;
     int status;
+    int term[2];
     struct ttychan *tp;
     
     /* see if we have an open channel */
@@ -136,15 +138,16 @@ tty_read(f, buf, len, noecho, fname)
 	chans = tp;
     }
     chan = tp->chan;
-    op = IO$_READVBLK;
+    op = IO$_READVBLK | IO$_NOFILTR;	/* read; no edit chars */
     if (noecho)
 	op |= IO$M_NOECHO;
-    status = SYS$QIOW(0, chan, op, &iosb, 0, 0, buf, len, 0, 0, 0, 0);
-    if (status != SS$_NORMAL) {
+    term[0] = term[1] = 0;		/* no break chars */
+    status = SYS$QIOW(0, chan, op, &iosb, 0, 0, buf, len, 0, term, 0, 0);
+    if (!SUCCESS(status)) {
 	SETERR(status);
 	return -1;
     }
-    if (iosb.status != SS$_NORMAL) {
+    if (!SUCCESS(iosb.status)) {
 	SETERR(iosb.status);
 	return -1;
     }
