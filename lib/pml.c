@@ -17,6 +17,7 @@
 #include "macros.h"
 #include "load.h"			/* LOAD_PROTO */
 #include "lib.h"
+#include "str.h"
 
 struct pmlfunc {
     char *name;

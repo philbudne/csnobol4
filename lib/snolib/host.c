@@ -25,6 +25,7 @@
 #include "equ.h"			/* datatypes I/S */
 #include "host.h"			/* HOST() function codes */
 #include "lib.h"			/* osname(),hwname(),io_flushall() */
+#include "str.h"
 
 #ifdef NO_STATIC_VARS
 #include "vars.h"
