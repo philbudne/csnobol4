@@ -20,6 +20,8 @@
 #include "equ.h"
 #include "data.h"
 
+char *malloc();
+
 #ifdef ORDVST_DEBUG
 /* PLB: dump a descriptor */
 static void
