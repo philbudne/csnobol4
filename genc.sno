@@ -236,7 +236,8 @@ BPROC2	STAT = "static "
 	OUTPUT = IND 'ENTER(' NAME ');'
 *	sigh; for branch to top of proc (only a few actually do)!!
 * XXX only needed for "created" procedures !!!!
-	OUTPUT = L_ NAME ': ;'
+	OUTPUT = L_ NAME ':'
+	OLABEL = 1
 	LIVE = 1					:(RETURN)
 EBPROC
 
@@ -253,7 +254,9 @@ EPROC	CFLUSH()
 	BRANCH(NAME)					:(EPROC2)
 
 EPROC1	OUTPUT = IND 'PANIC("fell out of ' INPROC '"); /* SNH */'
-EPROC2	UNINDENT()
+EPROC2
+*	OUTPUT = DIFFER(OLABEL) IND ';'
+	UNINDENT()
 	OUTPUT = IND '}'
 	IDENT(INLINE)					:(RETURN)
 *	if inlining close file
@@ -325,7 +328,7 @@ EXRAPPLY2
 SELBRA	LL SELBRA_P1					:F(FRETURN)
 	L = L COMMA
 	I = 0
-	OUTPUT = IND 'switch( ' V  ' ) {'
+	OUTPUT = IND 'switch (' V  ') {'
 	INDENT()
 
 	PREVL = 
@@ -360,7 +363,7 @@ DOCMP3	IDENT(L,G)					:S(DOCMPNE)
 	IDENT(L)					:S(DOCMPE)
 	IDENT(L,E)					:S(DOCMPLE)
 
-	OUTPUT = IND 'if( ' X ' < ' Y ' )'
+	OUTPUT = IND 'if (' X ' < ' Y ')'
 	INDENT()
 	BRANCH(L)
 	UNINDENT()
@@ -374,7 +377,7 @@ DOCMPEL	OUTPUT = IND 'else'
 	BRANCH(ELSE)
 	UNINDENT()					:(RETURN)
 
-DOCMPLE	OUTPUT = IND 'if( ' X ' <= ' Y ' )'
+DOCMPLE	OUTPUT = IND 'if (' X ' <= ' Y ')'
 	INDENT()
 	BRANCH(L)
 	UNINDENT()
@@ -385,12 +388,12 @@ DOCMPNE	DOCMP2(X,Y,L,E)					:(RETURN)
 
 DOCMPE	IDENT(E)					:S(DOCMPG)
 	IDENT(G,E)					:S(DOCMPGE)
-	OUTPUT = IND 'if( ' X ' == ' Y ' )'
+	OUTPUT = IND 'if (' X ' == ' Y ')'
 	INDENT()
 	BRANCH(E)
 	UNINDENT()					:(DOCMPG)
 
-DOCMPGE	OUTPUT = IND 'if( ' X ' >= ' Y ' )'
+DOCMPGE	OUTPUT = IND 'if (' X ' >= ' Y ')'
 	INDENT()
 	BRANCH(E)
 	UNINDENT()					:(DOCMPD)
@@ -398,7 +401,7 @@ DOCMPGE	OUTPUT = IND 'if( ' X ' >= ' Y ' )'
 DOCMPG	IDENT(G)					:S(DOCMPD)
 	(DIFFER(E) DIFFER(L))				:S(DOCMPG2)
 * here with one (or more of L/E labels missing)
-	OUTPUT = IND 'if( ' X ' > ' Y ' )'
+	OUTPUT = IND 'if (' X ' > ' Y ')'
 	INDENT()
 	BRANCH(G)
 	UNINDENT()					:(DOCMPR)
@@ -422,7 +425,7 @@ EDOCMP3
 
 	DEFINE("DOCMP2(X,Y,N,E)")			:(EDOCMP2)
 DOCMP2	IDENT(E)					:S(DOCMP22)
-	OUTPUT = IND 'if( ' X ' == ' Y ' )'
+	OUTPUT = IND 'if (' X ' == ' Y ')'
 	INDENT()
 	BRANCH(E)
 	UNINDENT()
@@ -433,7 +436,7 @@ DOCMP2	IDENT(E)					:S(DOCMP22)
 	UNINDENT()					:(RETURN)
 
 DOCMP22	IDENT(N)					:S(DOCMP2L)
-	OUTPUT = IND 'if( ' X ' != ' Y ' )'
+	OUTPUT = IND 'if (' X ' != ' Y ')'
 	INDENT()
 	BRANCH(N)
 	UNINDENT()
@@ -448,7 +451,7 @@ EDOCMP2
 DOBOOL	IDENT(T)					:S(DOBOOL2)
 * here with label for true
 	IDENT(F,T)					:S(DOBOOL3)
-	OUTPUT = IND 'if( ' B ' )'
+	OUTPUT = IND 'if (' B ')'
 	INDENT()
 	BRANCH(T)
 	UNINDENT()
@@ -460,7 +463,7 @@ DOBOOL	IDENT(T)					:S(DOBOOL2)
 
 * here with no label for true
 DOBOOL2	IDENT(F)					:S(DOBOOL3)
-	OUTPUT = IND 'if( !' B ' )'
+	OUTPUT = IND 'if (!' B ')'
 	INDENT()
 	BRANCH(F)
 	UNINDENT()
@@ -731,7 +734,8 @@ PARSED	LINE WS =
 NOTPROC	IDENT(INPROC)					:S(DISPATCH)
 *	in a procedure; end block comment,  output label
 	CFLUSH()
-	OUTPUT = L_ LBL ': ;'
+	OUTPUT = L_ LBL ':'
+	OLABEL = 1
 	LIVE = 1
 	LLBL = LBL
 
@@ -753,6 +757,7 @@ NOCOMM
 NOHASH
 
 *	TERMINAL = OP
+	OLABEL =
 GOTO_X_OP						:($('X' OP))
  
 ****************
@@ -783,7 +788,10 @@ XMOVA	OUTPUT = IND D_A(ARGV<1>) ' = ' D_A(ARGV<2>) ';' :(OPDONE)
 
 ****************
 *	SIL SETAC (MOVVC) MACRO
-XSETAC	OUTPUT = IND D_A(ARGV<1>) ' = (int_t) (' ARGV<2> ');'	:(OPDONE)
+XSETAC	X = ARGV<2>
+	X BREAK('-*') ANY('-*')				:F(XSETAC2)
+	X = '(' X ')'
+XSETAC2	OUTPUT = IND D_A(ARGV<1>) ' = (int_t) ' X ';'	:(OPDONE)
 
 ****************
 *	SIL SETAV (MOVVT) MACRO
@@ -871,7 +879,7 @@ XPUTLG	OUTPUT = IND S_L(ARGV<1>) ' = ' D_A(ARGV<2>) ';' :(OPDONE)
 
 ****************
 *	SIL SETLC (MOVLC) MACRO
-XSETLC	OUTPUT = IND S_L(ARGV<1>) ' = (int_t) (' ARGV<2> ');'	:(OPDONE)
+XSETLC	OUTPUT = IND S_L(ARGV<1>) ' = ' ARGV<2> ';'	:(OPDONE)
 
 ****************
 *	SIL GETSPC (GETQC) MACRO
@@ -911,7 +919,7 @@ XTRIMSP	OUTPUT = IND 'trimsp(' ARGV<1> ',' ARGV<2> ');'	:(OPDONE)
 ****************
 *	SIL SUBSP (SUBQQ) MACRO 10/27/93
 XSUBSP	IDENT(ARGV<4>)					:S(XSUBSP2)
-	OUTPUT = IND 'if( ' S_L(ARGV<3>) ' < ' S_L(ARGV<2>) ' )'
+	OUTPUT = IND 'if (' S_L(ARGV<3>) ' < ' S_L(ARGV<2>) ')'
 	INDENT()
 	BRANCH(ARGV<4>)
 	UNINDENT()
@@ -964,7 +972,7 @@ XMULT	OP = '*'					:(INT_OP)
 *	SIL DIVIDE (DIVVV) MACRO
 XDIVIDE	OP = '/'					
 	IDENT(ARGV<4>)					:S(INT_OP)
-	OUTPUT = IND 'if( ' D_A(ARGV<3>) ' == 0 )'
+	OUTPUT = IND 'if (' D_A(ARGV<3>) ' == 0)'
 	INDENT()
 	BRANCH(ARGV<4>)
 	UNINDENT()					:(INT_OP)
@@ -988,7 +996,7 @@ INT_OP3	OUTPUT = IND X ' = ' Y ' ' OP ' ' Z ';'
 	OUTPUT = IND D_V(ARGV<1>) ' = ' D_V(ARGV<2>) ';'
 
 INT_OP4	IDENT(ARGV<4>)					:S(INT_OP5)
-	OUTPUT = IND 'if( MATH_ERROR() )'
+	OUTPUT = IND 'if (MATH_ERROR())'
 	INDENT()
 	BRANCH(ARGV<4>)
 	UNINDENT()
@@ -1033,7 +1041,7 @@ XMNSINT	OUTPUT = DIFFER(ARGV<3>) IND 'CLR_MATH_ERROR();'
 	OUTPUT = DIFFER(ARGV<1>,ARGV<2>) IND D(ARGV<1>) ' = ' D(ARGV<2>) ';'
 	OUTPUT = IND D_A(ARGV<1>) ' = -' D_A(ARGV<1>) ';'
 	IDENT(ARGV<3>)					:S(XMNSIN2)
-	OUTPUT = IND 'if( MATH_ERROR() )'
+	OUTPUT = IND 'if (MATH_ERROR())'
 	INDENT()
 	BRANCH(ARGV<3>)
 	UNINDENT()
@@ -1085,7 +1093,7 @@ REALOP3	OUTPUT = IND X ' = ' Y ' ' ROP ' ' Z ';'
 
 * common tail; check if any branch labels
 REALOP4	IDENT(ARGV<4>)					:S(REALOP5)
-	OUTPUT = IND 'if( RMATH_ERROR(' RV(ARGV<1>) ') )'
+	OUTPUT = IND 'if (RMATH_ERROR(' RV(ARGV<1>) '))'
 	INDENT()
 	BRANCH(ARGV<4>)
 	UNINDENT()
@@ -1101,11 +1109,11 @@ XMNREAL	OUTPUT = DIFFER(ARGV<1>,ARGV<2>) IND D(ARGV<1>) ' = ' D(ARGV<2>) ';'
 ****************
 *	SIL RLINT (CVTIR) MACRO
 XRLINT	OUTPUT = DIFFER(ARGV<3>) IND 'CLR_MATH_ERROR();'
-	OUTPUT = IND D_A(ARGV<1>) ' = (int_t)' RV(ARGV<2>) ';'
+	OUTPUT = IND D_A(ARGV<1>) ' = (int_t) ' RV(ARGV<2>) ';'
 	OUTPUT = IND D_F(ARGV<1>) ' = 0;'
 	OUTPUT = IND D_V(ARGV<1>) ' = I;'
 	IDENT(ARGV<3>)					:S(RLINT2)
-	OUTPUT = IND 'if( MATH_ERROR() )'
+	OUTPUT = IND 'if (MATH_ERROR())'
 	INDENT()
 	BRANCH(ARGV<3>)
 	UNINDENT()
@@ -1395,13 +1403,13 @@ ERCALL							:(OPDONEL)
 ****************
 *	SIL RRTURN (=) macro
 XRRTURN	IDENT(ARGV<1>)					:S(RRTURN1)
-*	OUTPUT = IND 'if( retval )'
+*	OUTPUT = IND 'if (retval)'
 *	INDENT()
 	OUTPUT = IND 'D(retval) = ' D(ARGV<1>) ';'
 *	UNINDENT()
 RRTURN1	ALT = '0'
 	ALT = DIFFER(ARGV<2>) ARGV<2>
-	OUTPUT = IND 'RETURN( ' ALT ' )'
+	OUTPUT = IND 'RETURN(' ALT ')'
 	LIVE =						:(OPDONE)
 
 ****************************************************************
