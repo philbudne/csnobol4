@@ -14,6 +14,8 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 		RCS Id's, for cleaner rcsdiffing
 	INSTALL: talk more about what autoconf, Makefile2 do
 		document autoconf options
+	Makefile2.m4: remove old files in SNOLIB_DIR before installing new ones
+		(thanks to Jerry Leichter)
 
 10/29/96:
 	config/hpux-pa.m4: add gcc -mlong-calls comments
