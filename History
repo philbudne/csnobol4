@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+5/17/97:
+	lib/str.c: TRIM tabs as well as spaces, like SPITBOL
+	test/trim{0,1}.{sno.ref}: added tab tests
+
 4/24/97:
 	autoconf: added comments, $(SRCDIR) on XXX_C= lines
 

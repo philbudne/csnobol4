@@ -15,14 +15,20 @@ void
 trimsp( sp1, sp2 )
     struct spec *sp1, *sp2;
 {
-    char *cp;
-    int len;
+    register char *cp;
+    register int len;
 
     len = S_L(sp2);
     cp = S_SP(sp2);
 
-    while (len > 0 && cp[len-1] == ' ')
-	len--;
+    while (len > 0) {
+	register char c;
+
+	c = cp[len-1];			/* get last char */
+	if (c != ' ' && c != '\t')	/* not space or tab? */
+	    break;			/* done */
+	len--;				/* was space or tab; move back */
+    }
 
     _SPEC(sp1) = _SPEC(sp2);
     S_L(sp1) = len;
