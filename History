@@ -11,6 +11,7 @@ MAINBOL for Un*x history (and personal SNOBOL history);
 	Include both snobol4.c and isnobol4.c in kit
 	Use register in data_init.c
 	Implemented TRACE_DEPTH
+	Ran "prof" profiling
 	Inline pair.c!!
 
 6/21/94
