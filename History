@@ -1,5 +1,10 @@
 $Id$
 
+12/27/93
+	Announced alpha dist (finally got a place to put it)!
+	Have gendata.sno (was data.sno) generate data.h, data.c, init.h
+	Created init.c
+
 12/9/93
 	*** First Alpha release (tag ALPHA1)
 	Updated usage message, README.alpha, Make tar
