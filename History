@@ -2,9 +2,15 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+**************** release 1.0 (CVS tag REL_1_0)
+
 2/18/2004
-	doc/snobol4.1 doc/snolib.3: ran ispell, update date
-	README, INSTALL: ran ispell
+	doc/snobol4.1 doc/snolib.3: ran ispell, update dates, version
+	README, INSTALL: ran ispell, update version
+	Switched development from RCS to CVS
+	Makefile: add syn.c to GENERATED; remove make tar
+	pkg/{bsd,debian,rpm,solaris}: add packaging files
+	History: cleanup add RCS tag names, versions
 
 2/17/2004
 	lib/bsd/inet.c: add (const void *) cast for MSVC
@@ -559,7 +565,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	Makefile2.m4: add "lint"
 	Makefile: remove *.ln
 
-**************** released 0.99.44
+**************** released 0.99.44 (RCS tag BETA8)
 
 3/2/2002
 	version.c: update to 0.99.44
@@ -1805,7 +1811,7 @@ Gave to Phillip Thomas 11/23? for tcp/findunit fixes
 	INSTALL: replaced autoconf references with configure
 	timing: redirect sunmodel standard error output
 
-******** RCS tag BETA7
+**************** version 0.99.4 (RCS tag BETA7)
 
 8/11/97:
 	version.c: upped to 0.99.4
@@ -2011,7 +2017,7 @@ Gave to Phillip Thomas 11/23? for tcp/findunit fixes
 	doc/ports.doc: lots of new stuff from Rik Faith
 		reformatted: removed "conf" column, added "opt"
 
-******** RCS tag BETA6
+**************** version 0.99.3 (RCS tag BETA6)
 
 2/12/97:
 	autoconf: added sun4u and define __SPARCV9__
@@ -2048,7 +2054,7 @@ Gave to Phillip Thomas 11/23? for tcp/findunit fixes
 12/04/96:
 	autoconf: grep strings.h for "index" before using BSD functions
 
-******** RCS tag BETA5
+**************** version 0.99.2 (RCS tag BETA5)
 
 11/28/96:
 	timing.sno: made NOTIME error non-fatal
@@ -2137,7 +2143,7 @@ Gave to Phillip Thomas 11/23? for tcp/findunit fixes
 	config/hpux-pa.m4: add gcc -mlong-calls comments
 	doc/ports.doc: got an Alpha model number
 
-******** RCS tag BETA4
+**************** version 0.99.1 (RCS tag BETA4)
 
 10/28/96:
 	autoconf: fix c89 test, add isnan.o for m68k-hp-bsd
@@ -2273,7 +2279,7 @@ Gave to Phillip Thomas 11/23? for tcp/findunit fixes
 	looked at longjmp'ing out of deep tail-calls
 		(analyzed tail-call depths)
 
-******** RCS tag BETA3
+**************** version 0.99 (RCS tag BETA3)
 
 10/7/96
 	TODO: updated
@@ -2304,6 +2310,8 @@ Gave to Phillip Thomas 11/23? for tcp/findunit fixes
 	doc/ports.doc: updated
 	tested on SunOS 4.1.3U1, 4.1.4, 5.4, 5.5;
 		HP-UX 10.10; IRIX 5.2; AIX 4.1; OSF/1 3.2
+
+**************** version 0.98.5
 
 10/5/96
 	README: updated
@@ -2364,6 +2372,8 @@ Gave to Phillip Thomas 11/23? for tcp/findunit fixes
 	Makefile2.m4: fixed SNOLIB_A path
 		add SNOLIB_DEFS (supply SNOLIB_DIR and SNOLIB_A values)
 		add *.a to disposables
+
+**************** 0.98.4
 
 9/29/96
 	v311.sil, procs, globals: renamed EXP to EXPOP
@@ -2426,6 +2436,8 @@ Gave to Phillip Thomas 11/23? for tcp/findunit fixes
 	procs: add LOAD2
 	pml.c: add PMPROTO macro for autoload
 
+**************** version 0.98.3?
+
 9/23/96
 	genc.sno: twiddle &INPUT (reduces some overhead)
 	ports.doc: updated
@@ -2458,6 +2470,8 @@ Gave to Phillip Thomas 11/23? for tcp/findunit fixes
 	config/bsd43.m4 removed vfprintf
 	deleted lib/auxil/vfprintf
 	doc/snobol4.1: updated
+
+**************** version 0.98.2
 
 9/19/96 & 9/20/96
 	v311.sil:
@@ -2508,6 +2522,8 @@ Gave to Phillip Thomas 11/23? for tcp/findunit fixes
 	test/tests.in: removed punch, added substr, lexcmp, space, space2
 	Makefile: renamed configure to autoconf
 
+**************** version 0.98.1
+
 9/17/96
 	lib/tree.c: fixed INSERT (from SNOBOL4+)
 	lib/dump.c: added dumpcode()
@@ -2555,6 +2571,8 @@ Gave to Phillip Thomas 11/23? for tcp/findunit fixes
 	Makefile2.m4: added COPT, use -d<n>k
 	doc/snobol4.1: updated
 	globals: updated
+
+**************** version 0.98
 
 9/4/96
 	v311.sil: &STLIMIT < 0 means no limit, default to -1
@@ -2667,7 +2685,7 @@ Gave to Phillip Thomas 11/23? for tcp/findunit fixes
 	lib/aux/getopt.c: fix endless comment
 	Makefile2.m4: include CONFIG_CFLAGS in "make depend"
 
-** BETA2 patch2 version 0.91.2 (tag BETA2_patch2)
+**************** BETA2 patch2 version 0.91.2 (tag BETA2_patch2)
 
 1/20/95
 	lib/io.c: check for std{in,out,err} before fclose()
@@ -2761,7 +2779,7 @@ Gave to Phillip Thomas 11/23? for tcp/findunit fixes
 	config/aix-rs6000.m4: new file (thanks to Phillip Lee Thomas)
 	Makefile2.m4: fixed awk command
 
-** BETA2 patch1 version 0.91.1 (tag BETA2_patch1)
+**************** BETA2 patch1 version 0.91.1 (RCS tag BETA2_patch1)
 
 7/5/94
 	h.h: only define NULL if not already defined
@@ -2775,7 +2793,7 @@ Gave to Phillip Thomas 11/23? for tcp/findunit fixes
 	version.c: clean up for non-ansi compilation
 	timing.sno: Output bad diff results, loosten ms/stmt check
 
-*** Second Beta release (tag BETA2) version 0.91
+**************** Second Beta release (RCS tag BETA2) version 0.91
 
 6/24/94
 	Made isnobol4 the default
@@ -2907,8 +2925,10 @@ Gave to Phillip Thomas 11/23? for tcp/findunit fixes
 	cleaned up bsd load.c, for use on bsd44 systems
 	added SIGFUNC_T to init.c, made default void
 
+**************** First Beta release (RCS tag BETA1) version 0.90
+
 2/18/94
-	*** First Beta release (tag BETA1) 
+	*** First Beta release (RCStag BETA1) 
 	updated README, late entry in ports.doc
 	include tests in tar!
 	
@@ -2981,8 +3001,10 @@ Gave to Phillip Thomas 11/23? for tcp/findunit fixes
 
 	Compiled and ran on HP 9000/8xx (PA RISC) machine!
 
+**************** First Alpha release (RCS tag ALPHA1)
+
 12/9/93
-	*** First Alpha release (tag ALPHA1)
+	*** First Alpha release (RCS tag ALPHA1)
 	Updated usage message, README.alpha, Make tar
 	put this (and other files) under RCS
 
