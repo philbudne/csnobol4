@@ -97,13 +97,13 @@ bcopy(src0, dst0, length)
 		/*
 		 * Copy forward.
 		 */
-		t = (int)src;	/* only need low bits */
-		if ((t | (int)dst) & wmask) {
+		t = (long)src;	/* only need low bits */
+		if ((t | (long)dst) & wmask) {
 			/*
 			 * Try to align operands.  This cannot be done
 			 * unless the low bits match.
 			 */
-			if ((t ^ (int)dst) & wmask || length < wsize)
+			if ((t ^ (long)dst) & wmask || length < wsize)
 				t = length;
 			else
 				t = wsize - (t & wmask);
@@ -125,9 +125,9 @@ bcopy(src0, dst0, length)
 		 */
 		src += length;
 		dst += length;
-		t = (int)src;
-		if ((t | (int)dst) & wmask) {
-			if ((t ^ (int)dst) & wmask || length <= wsize)
+		t = (long)src;
+		if ((t | (long)dst) & wmask) {
+			if ((t ^ (long)dst) & wmask || length <= wsize)
 				t = length;
 			else
 				t &= wmask;
