@@ -1,24 +1,75 @@
 $Id$
 
-update ports.doc for sun4/670
+================
 
-add RCS BETA1 tag, rebuild
+update ports.doc for
+		sgi, hp720, rs6000, ss10
+		Solaris 2, 4.4 BSD, VMS
+
+change types.h to snotypes.h
+
+fix syn.h.new (for VMS)
+
+use m4 for Makefile2/config files?
+	new config file for sgi?
+	have common and posix configs include common source?
 
 ================
 
+Move UNIXF messages to init.c?  main.c??  version.c???
+
+Look at run of genc.sno w/o v311.sno (loops??)
+	need error return from INPUT()???
+
+Implement -CASE
+
 Run genc.sno in test/run.sh??
+	create "timing" script
+		size xsnobol4
+		time ./xsnobol4 genc.sno > x
+		diff snobol4.c x
 
 Improve porting.doc
-	talk about C compilers (sun cc vs. gcc)
+	talk about C compilers
+		sun cc vs. gcc
+		hp cc vs. gcc
 	optimization (none/-O/-O2 etc)
+	mention "timing" script!!
 
 Write man page
 
-Describe language extensions
+Document;
+    SITBOL / Catspaw SPITBOL precidents
 
-Describe SIL extensions
+    command line options
+	    example of #! usage!!!
 
--INCLUDE
+    language extensions
+	INPUT()
+	OUTPUT()
+	-ERROR/-NOERRORS
+
+    changes;
+	&TRIM default
+	-LIST defaults
+
+    character set usage (move defns to synchars?)
+	NOTSYM ~\
+	ORSYM |!
+	RAISE ^
+	EOS ;
+	EQUALS =_
+	LEFTBR [<
+	RIGHTBR ]>
+	BREAK ._
+	CMT *|#
+
+    default I/O behavior
+	listing
+	OUTPUT
+	PUNCH
+
+Implement -INCLUDE
 
 Improve I/O;
 	process "!" "[flags]"
