@@ -3,6 +3,11 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
+3/7/95
+	Thanks to Leigh Smith;
+	lib/io.c: struct unit (better rewind) 
+	lib/pml.c: fix for nextstep compilation
+
 2/10/95
 	lib/init.c, include/macros.h: implement [CLR_]MATH_ERROR()
 
