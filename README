@@ -1,6 +1,6 @@
 $Id$
 
-Beta release of ``The Macro Implementation of SNOBOL4''
+Second Beta release of ``The Macro Implementation of SNOBOL4''
 	(aka "BTL SNOBOL4", MAINBOL) for Un*x.
 
 This is a port of the original SIL (SNOBOL4 Implementation Language)
@@ -29,6 +29,10 @@ application.
 ****************************************************************
 
 Documentation directory;
+
+doc/snobol4.1
+	man page for snobol4 (uses -man macros)
+	snobol4.0 is nroff output
 
 doc/goals.doc
 	a description of the overall goals,
@@ -72,41 +76,16 @@ I/O;
 
 	named files can be opened by supplying an optional fourth
 	argument to INPUT() and OUTPUT(), like in Catspaw SNOBOL4.
-
+	If first character is 
 	by default INPUT is attached to unit 5, and standard input.
 	by default OUTPUT is attached to unit 6, and standard output.
 	by default PUNCH is attached to unit 7, and standard error!!!
 
 Command line args;
 
-	snobol4 [ options ... ] [ files ... ]
-
-	-b
-		Toggle startup banner output (by default on).
-
-	-d NNN
-		Have dynamic region contain space for NNN descriptors
-		default is 25000.
-
-	-f
-		disable folding of identifiers to upper case
-
-	-k
-		Run programs with compilation errors
-
-	-l
-		Reenable listing to OUTPUT. default is -UNLIST
-		-l means '-LIST LEFT'
-
-	-r
-		Continue reading INPUT from input file(s) after END
-		label.  otherwise INPUT defaults (back) to stdin after
-		compilation.
-
-	-s
-		Toggle termination statistics (by default on).
+	see man page
 
-Acknowldgements;
+Acknowledgments;
 
 	First and foremost, I would like to thank Ralph Griswold, for
 	all his invaluable help and time digging up old documentation!
@@ -140,11 +119,11 @@ historical background, testing, etc (in chronological order);
 To build;
 
 Select a config file (see doc/ports.doc) from the config directory,
-and link to config.h.
+and link to config.m4.
 
 		If you cannot find a config file for your system, try
 		"posix.m4", and if that fails (ie; sysconfig() is not
-		available), try "generic.h" (but beware -- timings may
+		available), try "generic.m4" (but beware -- timings may
 		not be correct)!!
 
 	ln -s config/sunos4.m4 config.m4
@@ -154,29 +133,27 @@ The tar does not contain any binaries; THEY SHOULD NOT BE NEEDED
 (unless you touch the source files) As all generated files are
 provided.  The generated files are NOT system dependant!!!
 
-Changes from "alpha" distribution;
-	Now portable!!
-		Has run on 7 different Un*x systems (see doc/ports.doc).
-
-		gendata.sno now creates init_data.h
-			which initializes resident data at runtime.
-
-		The only architectural assumption is that
-			sizeof(long) == sizeof(float)
-			(see include/types.h)
-
-	DCMP() now done inline (did profiling).
-
-	genc.sno runs 30% faster!
-
-	descriptors are now "packed" using bit fields
-		(now 8 bytes rather than 12)
-		string length "limited" to 2^24 bytes,
-		all other objects limited to 2^21 descriptors
-			see types.h for discussion of sizes.
+Changes from "beta1" distribution;
+	Now have man page (describes all extensions)!!!
+	Tested on more systems (IBM, SGI, LINUX, VMS).
+	Now using m4 to create Makefile2 -- cpp was problematic.
+	Implemented case folding (&CASE and -CASE).
+	Impplemented pipe opens (if filename starts with '|').
+	Input no longer space padded, &TRIM no longer on by default.
+	NUL's not translated to space on output.
+	8-bit clean; &ALPHABET is 256 bytes long.
+	"Poor-Man's LOAD" -- support for linked in external functions.
+	Small "snolib.a" library of loadable functions.
+	Upper and lower case letters available as keywords &LCASE/&UCASE.
+	Even more characters accepted as start-of-line comment chars.
+	Generated code for boolean is cleaner.
+	Should build cleanly on AIX, Irix.
+	Resolved problems for build on VMS (using gcc only)
+		see lib/vms for library routines.  no BUILD.COM supplied.
 
 If you make any changes/fixes/improvements, or port it to a new
 system, please notify me!  If you are interested in getting mailings
 about new releases, send me mail.
 
-Phil Budne <budd@gnu.ai.mit.edu>
+Phil Budne <phil@Ultimate.COM>
+

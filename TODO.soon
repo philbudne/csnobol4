@@ -6,9 +6,11 @@ have all genc, gendata, gensyn output .[ch]2 files
 Move ports.doc information to config files?
 	use script to generate ports.doc!!!?
 
-document use of pml!
-
-call pml from bsd/load.c?
+improve load.doc
+	document use of pml!
+	document snolib
+		getstring
+	document return data type 'L'
 
 ================
 
