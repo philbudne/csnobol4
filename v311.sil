@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.15  94/01/07  16:23:28  budd
+* [PLB10] converted FORMAT strings to printf-style, mixed-case
+* 
 * Revision 1.14  93/12/09  14:37:00  budd
 * ALPHA1 release
 * 
@@ -5704,20 +5707,20 @@ CMASP  STRING  ','
 EJCTSP STRING  'EJECT'
 EQLSP  STRING  '= '
 ERORSP STRING  'ERRORS'						[PLB9]
-ETIMSP STRING  ',TIME = '
+ETIMSP STRING  ', time = '					[PLB11]
 EXDTSP STRING  'EXTERNAL'
 LEFTSP STRING  'LEFT'
 LISTSP STRING  'LIST'
 LPRNSP STRING  '('
 NERRSP STRING  'NOERRORS'					[PLB9]
-OFSP   STRING  ' OF '
+OFSP   STRING  ' of '						[PLB11]
 RPRNSP STRING  ')'
 STARSP STRING  '*** '
-TRCLSP STRING  ' CALL OF '
-TRLVSP STRING  'LEVEL '
-TRSTSP STRING  '    STATEMENT '
+TRCLSP STRING  ' call of '					[PLB11]
+TRLVSP STRING  'level '						[PLB11]
+TRSTSP STRING  '    statement '					[PLB11]
 UNLSP  STRING  'UNLIST'
-XFERSP STRING  'TRANSFER TO'
+XFERSP STRING  'transfer to'					[PLB11]
 *
 *      Character Buffers
 *
@@ -6580,48 +6583,50 @@ MSGLST DESCR   0,0,0
 *
 *      Fatal Error Messages
 *
-MSG1   STRING  'ILLEGAL DATA TYPE'
-MSG2   STRING  'ERROR IN ARITHMETIC OPERATION'
-MSG3   STRING  'ERRONEOUS ARRAY OR TABLE REFERENCE'
-MSG4   STRING  'NULL STRING IN ILLEGAL CONTEXT'
-MSG5   STRING  'UNDEFINED FUNCTION OR OPERATION'
-MSG6   STRING  'ERRONEOUS PROTOTYPE'
-MSG7   STRING  'UNKNOWN KEYWORD'
-MSG8   STRING  'VARIABLE NOT PRESENT WHERE REQUIRED'
-MSG9   STRING  'ENTRY POINT OF FUNCTION NOT LABEL'
-MSG10  STRING  'ILLEGAL ARGUMENT TO PRIMITIVE FUNCTION'
-MSG11  STRING  'READING ERROR'
-MSG12  STRING  'ILLEGAL I/O UNIT'
-MSG13  STRING  'LIMIT ON DEFINED DATA TYPES EXCEEDED'
-MSG14  STRING  'NEGATIVE NUMBER IN ILLEGAL CONTEXT'
-MSG15  STRING  'STRING OVERFLOW'
-MSG16  STRING  'OVERFLOW DURING PATTERN MATCHING'
-MSG17  STRING  'ERROR IN SNOBOL4 SYSTEM'
-MSG18  STRING  'RETURN FROM LEVEL ZERO'
-MSG19  STRING  'FAILURE DURING GOTO EVALUATION'
-MSG20  STRING  'INSUFFICIENT STORAGE TO CONTINUE'
-MSG21  STRING  'STACK OVERFLOW'
-MSG22  STRING  'LIMIT ON STATEMENT EXECUTION EXCEEDED'
-MSG23  STRING  'OBJECT EXCEEDS SIZE LIMIT'
-MSG24  STRING  'UNDEFINED OR ERRONEOUS GOTO'
-MSG25  STRING  'INCORRECT NUMBER OF ARGUMENTS'
-MSG26  STRING  'LIMIT ON COMPILATION ERRORS EXCEEDED'
-MSG27  STRING  'ERRONEOUS END STATEMENT'
-MSG28  STRING  'EXECUTION OF STATEMENT WITH COMPILATION ERROR'
+* [PLB11] made mixed case
+MSG1   STRING  'Illegal data type'
+MSG2   STRING  'Error in arithmetic operation'
+MSG3   STRING  'Erroneous array or table reference'
+MSG4   STRING  'Null string in illegal context'
+MSG5   STRING  'Undefined function or operation'
+MSG6   STRING  'Erroneous prototype'
+MSG7   STRING  'Unknown keyword'
+MSG8   STRING  'Variable not present where required'
+MSG9   STRING  'Entry point of function not label'
+MSG10  STRING  'Illegal argument to primitive function'
+MSG11  STRING  'Reading error'
+MSG12  STRING  'Illegal i/o unit'
+MSG13  STRING  'Limit on defined data types exceeded'
+MSG14  STRING  'Negative number in illegal context'
+MSG15  STRING  'String overflow'
+MSG16  STRING  'Overflow during pattern matching'
+MSG17  STRING  'Error in SNOBOL4 system'
+MSG18  STRING  'Return from level zero'
+MSG19  STRING  'Failure during goto evaluation'
+MSG20  STRING  'Insufficient storage to continue'
+MSG21  STRING  'Stack overflow'
+MSG22  STRING  'Limit on statement execution exceeded'
+MSG23  STRING  'Object exceeds size limit'
+MSG24  STRING  'Undefined or erroneous goto'
+MSG25  STRING  'Incorrect number of arguments'
+MSG26  STRING  'Limit on compilation errors exceeded'
+MSG27  STRING  'Erroneous END statement'
+MSG28  STRING  'Execution of statement with compilation error'
 *
 *      Compiler Error Messages
 *
-EMSG1  STRING  'ERRONEOUS LABEL'
-EMSG2  STRING  'PREVIOUSLY DEFINED LABEL'
-EMSG3  STRING  'ERRONEOUS SUBJECT'
-EMSG14 STRING  'ERROR IN GOTO'
-ILCHAR STRING  'ILLEGAL CHARACTER IN ELEMENT'
-ILLBIN STRING  'BINARY OPERATOR MISSING OR IN ERROR'
-ILLBRK STRING  'ERRONEOUS OR MISSING BREAK CHARACTER'
-ILLDEC STRING  'ERRONEOUS REAL NUMBER'
-ILLEOS STRING  'IMPROPERLY TERMINATED STATEMENT'
-ILLINT STRING  'ERRONEOUS INTEGER'
-OPNLIT STRING  'UNCLOSED LITERAL'
+* [PLB11] made mixed case
+EMSG1  STRING  'Erroneous label'
+EMSG2  STRING  'Previously defined label'
+EMSG3  STRING  'Erroneous subject'
+EMSG14 STRING  'Error in goto'
+ILCHAR STRING  'Illegal character in element'
+ILLBIN STRING  'Binary operator missing or in error'
+ILLBRK STRING  'Erroneous or missing break character'
+ILLDEC STRING  'Erroneous real number'
+ILLEOS STRING  'Improperly terminated statement'
+ILLINT STRING  'Erroneous integer'
+OPNLIT STRING  'Unclosed literal'
 *
 *      Formats
 *
@@ -6640,7 +6645,7 @@ LASTSF FORMAT  'Last statement executed was %d\n'
 NODMPF FORMAT  'TERMINAL DUMP NOT POSSIBLE.\n'
 NRMEND FORMAT  'Normal termination at level %d\n'
 NVARF  FORMAT  'Natural variables\n\n'
-PKEYF  FORMAT  'Unprotected keywords\n\n'
+PKEYF  FORMAT  '\nUnprotected keywords\n\n'
 PRTOVF FORMAT  '***PRINT REQUEST TOO LONG***\n'
 READNO FORMAT  '%15i Reads performed\n'
 SCANNO FORMAT  '%15i Pattern matches performed\n'
@@ -6651,7 +6656,7 @@ STGENO FORMAT  '%15i Regenerations of dynamic storage\n'
 SUCCF  FORMAT  'No errors detected in source program\n\n'
 SYSCMT FORMAT  'Caught signal in statement %d at level %d\n'
 *								E3.4.1
-TIMEPS FORMAT  '%15.2d ms. Average per statement executed\n'
+TIMEPS FORMAT  '%15.2f ms. Average per statement executed\n'
 TITLEF FORMAT  'SNOBOL4 (Version 3.11, May 19, 1975)\n'
 *								V3.11
 WRITNO FORMAT  '%15i Writes performed\n'
