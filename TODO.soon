@@ -1,52 +1,18 @@
 $Id$
 
-optimization w/ native compilers;
-Add --fast??
-SunPRO;	honor !INLINE_OK (drop to -xO3?)
-
-OSF1; -O2
-	-no_inline
-	fast: -arch host -fast
-	CCVERS? -V?
-
-fix depend;
-	lib/posix/dynamic.o -> dynamic.o
+change timing e-mail address to timing@snobol4.org??
 
 use install.sh from thttpd (X11)
 
-have DOUBLE force NO_BITFIELDS??
-	check alignment?? sparc double is 64 bit aligned
-			x86 is 32-bit aligned
-
-scanerr.sno fails on Darwin!!!
-
-config.guess
-	replace?
-	note modification?
-	use unmodified version???
-
 mention web page/ftp locations in README!!!
 
-INSTALL
-    talk about utilities needed;
-	make (basic)
-	m4
-	sed
-	shell (bourne or korn)
-
-    to build from CVS;
-	awk
-	snobol4 binary (0.99.4 or later)
-
-    to build documentation distributed with kit from CVS sources;
-	groff w/ html support (1.15 or later?)
-	ghostscript (ps2pdf)
-
-Include advertizements about users (announcements?) mailing list???
+include advertizements about users (announcements?) mailing list???
 (and snobol4 list);
 	INSTALL
 	README
 	End of Makefile
+
+change mailing list name to users@snobol4.org, announce@snobol4.org??
 
 change name from C-MAINBOL to CSNOBOL4
 	version.c
@@ -74,10 +40,6 @@ man page
 	reference documents available on web (see next item)
 		http://burks.bton.ac.uk/burks/language/snobol/....
 		ftp://ftp.snobol4.com/spitman.pdf
-
-always send timing.out via e-mail?
-	(unless (.)timing.out.hostname exists?)
-	only if part of a real kit???
 
 test
 	VMS port (RDIXON@seattleschools.org)
@@ -126,6 +88,17 @@ check in all files (incl History, TODO.soon)
 rcs tag all files
 
 ================
+
+LEXCMP@CVV1 is 3-way (comment in genc.sno is obsolete),
+and results in multiple calls to lexcmp() -- "only" used for SORT().
+
+always send timing.out via e-mail?
+	(unless (.)timing.out.hostname exists?)
+	only if part of a real kit???
+
+have DOUBLE force NO_BITFIELDS??
+	check alignment?? sparc double is 64 bit aligned
+			x86 is 32-bit aligned
 
 keep track of time spent in GC?
 	TRACE() GC?

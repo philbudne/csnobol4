@@ -2,13 +2,29 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
-1/5/2002
+2/6/2002
+	new install-sh (X11 install script)
+	configure: find install program/script, set INSTALL
+	Makefile2.m4: use INSTALL for make install
+
+2/5/2002
+	configure: improve help/usage output
+		deal with cc==gcc and --no-gcc
+	lib/snolib/ord.c: fix comments; fail on null string
+	lib/snolib/environ.c: include config.h
+	lib/bsd/suspend.c lib/generic/suspend.c lib/posix/suspend.c: config.h
+	new test/ord.{sno,ref} test ORD() function
+	test/tests.in: add ord.sno
+
+2/4/2002
 	configure: get along without config.guess
 		add more non-gcc compiler opt(timizat)ions
 		add --fast
+		Use -O2 w/ SunOS4 cc (don't optimize data_init.c)
 	timing: check if config.guess exists
-
-2/4/2002
+	removed config.guess
+	genc.sno: handle 3-way LEXCMP (used in SORT)
+	Makefile2.m4: include h.h in build.c for non-ansi compilers
 	cc-M: perform basename on object files
 
 1/30/2002
