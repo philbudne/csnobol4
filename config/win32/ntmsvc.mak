@@ -42,7 +42,7 @@ OBJ=	isnobol4.obj data.obj data_init.obj main.obj syn.obj \
 	init.obj load.obj mstime.obj chop.obj cos.obj delete.obj \
 	environ.obj exit.obj file.obj getstring.obj host.obj log.obj \
 	logic.obj ord.obj rename.obj retstring.obj sin.obj spcint.obj \
-	spreal.obj sqrt.obj sset.obj tan.obj sys.obj popen.obj tty.obj \
+	spreal.obj sqrt.obj sset.obj tan.obj sys.obj tty.obj \
 	inet.obj bindresvport.obj execute.obj exists.obj term.obj \
 	findunit.obj exp.obj
 
@@ -174,9 +174,6 @@ load.obj : $(SRCDIR)lib\win32\load.c
 
 mstime.obj : $(SRCDIR)lib\win32\mstime.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\mstime.c
-
-popen.obj : $(SRCDIR)lib\win32\popen.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\popen.c
 
 sys.obj : $(SRCDIR)lib\win32\sys.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\sys.c
