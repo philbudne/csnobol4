@@ -50,9 +50,10 @@ HOST( LA_ALIST ) LA_DCL
 {
     char buf[512];			/* XXX */
     char *env;
-    int n;
+    int_t n;
 
-    if (LA_TYPE(0) == S) {
+    switch (LA_TYPE(0)) {
+    case S:				/* STRING */
 	/*
 	 * handle arbitrary strings!!
 	 */
@@ -72,26 +73,37 @@ HOST( LA_ALIST ) LA_DCL
 	    sprintf(buf, "%s:%s:%s %s", hw, os, snoname, vers);
 	    RETSTR(buf);
 	}
+	else {
+	    char *cp = buf;
+
+	    /* try to convert to int */
+	    n = 0;
+	    while(*cp && isdigit((unsigned char)*cp))
+		n = n*10 + *cp++ - '0';
+	    if (*cp)
+		RETFAIL;
+	}
+	break;
+    case I:				/* INTEGER */
+	n = LA_INT(0);
+	break;
+    case R:				/* REAL */
+	n = (int_t)LA_REAL(0);
+	break;
+    default:
 	RETFAIL;
     }
 
-
-    /* first arg must be int (try to convert to int?) */
-    if (LA_TYPE(0) != I) {
-	RETFAIL;
-    }
-
-    switch (LA_INT(0)) {
+    switch (n) {
     case HOST_PARAMS:			/* HOST(0); all parameters (or -u) */
 	RETSTR(params);
 
-    case HOST_SYSTEM:			/* HOST(1,s); run subprocess */
-	RETTYPE = I;			/* oof! blast return type! */
+    case HOST_SYSCMD:			/* HOST(1,s); run subprocess */
 	if (nargs < 2 || LA_TYPE(1) != S) {
-	    /* GNAT programs expect HOST(1) to return zero; */
+	    /* GNAT programs expect "HOST(1)" to return zero; */
 	    RETINT(0);
 	}
-	getstring( LA_PTR(1), buf, sizeof(buf)); /* get arg as c-string */
+	getstring(LA_PTR(1), buf, sizeof(buf)); /* get arg as c-string */
 	io_flushall(0);			/* flush output buffers */
 	RETINT(system(buf));		/* run in sub-shell */
 
@@ -105,14 +117,13 @@ HOST( LA_ALIST ) LA_DCL
 	break;
 
     case HOST_FIRSTARG:			/* HOST(3); first unused argument */
-	RETTYPE = I;			/* oof! blast return type! */
 	RETINT(firstarg);
 
     case HOST_GETENV:			/* HOST(4,s); environment var s */
 	if (nargs >= 2 && LA_TYPE(1) == S) {
 	    getstring(LA_PTR(1), buf, sizeof(buf));
 	    env = getenv(buf);
-	    /* retstr handles NULL as empty string, we want to RETFAIL */
+	    /* RETSTR handles NULL as empty string, we want to RETFAIL */
 	    if (env)
 		RETSTR(env);
 	}
@@ -170,33 +181,24 @@ HOST( LA_ALIST ) LA_DCL
 
 /* integer constants; */
     case HOST_INTEGER_BITS:
-	RETTYPE = I;			/* oof! blast return type! */
 	RETINT(sizeof(INT_T)*BPC);	/* INTEGER size */
     case HOST_REAL_BITS:
-	RETTYPE = I;			/* oof! blast return type! */
 	RETINT(sizeof(REAL_T)*BPC);	/* REAL size */
     case HOST_POINTER_BITS:
-	RETTYPE = I;			/* oof! blast return type! */
 	RETINT(sizeof(void *)*BPC);	/* pointer size */
     case HOST_LONG_BITS:
-	RETTYPE = I;			/* oof! blast return type! */
 	RETINT(sizeof(long)*BPC);	/* long size */
     case HOST_DESCR_BITS:
-	RETTYPE = I;			/* oof! blast return type! */
 	RETINT(DESCR*BPC);		/* descriptor size */
     case HOST_SPEC_BITS:
-	RETTYPE = I;			/* oof! blast return type! */
 	RETINT(SPEC*BPC);		/* specifier size */
     case HOST_CHAR_BITS:
-	RETTYPE = I;			/* oof! blast return type! */
 	RETINT(sizeof(char)*BPC);	/* char size */
 
 /* integer variables; */
     case HOST_DYNAMIC_SIZE:
-	RETTYPE = I;			/* oof! blast return type! */
 	RETINT(ndynamic/DESCR);		/* dynamic region in DESCRs */
     case HOST_PMSTACK_SIZE:
-	RETTYPE = I;			/* oof! blast return type! */
 	RETINT(pmstack/DESCR);		/* pattern match stack length */
 
 /*
