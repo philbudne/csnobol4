@@ -185,21 +185,17 @@ io_close(unit)				/* internal (zero-based unit) */
 	}
 	else
 #endif /* NO_POPEN not defined */
-	{				/* not a pipe */
+	if (fp->flags & FL_NOCLOSE) {
+	    ret = (fflush(fp->f) != EOF);
+	}
+	else {
 	    /* XXX call close hook? */
-	    if (fp->flags & FL_NOCLOSE) {
-		if (fflush(fp->f) == EOF)
-		    ret = FALSE;
-		else
-		    ret = TRUE;
-	    }
-	    else {
-		if (fp->flags & FL_TTY)
-		    tty_close(fp->f);	/* advisory */
-		ret = (fclose(fp->f) == 0);
-		fp->f = NULL;
-	    }
-	} /* not a pipe */
+	    if (fp->flags & FL_TTY)
+		tty_close(fp->f);	/* advisory */
+
+	    ret = (fclose(fp->f) == 0);
+	    fp->f = NULL;
+	}
     } /* have fp->f */
 
     up->curr = fp->next;
@@ -739,33 +735,41 @@ io_read( dp, sp )			/* STREAD */
 		break;
 	}
 	else {				/* not binary */
-	    register char *tp;
-	    register int c;
+	    /* fgets() returns at most recl-1 characters + NUL */
+	    if (fgets(cp, recl, f) != NULL) {
+		len = strlen(cp);
 
-	    tp = cp;
-	    c = 0;
-	    len = 0;
-	    while (len < recl) {
-		c = getc(f);
-		if (c == '\n') {
-		    if (!(fp->flags & FL_EOL)) { /* keep EOL? */
-			*tp++ = c;
-			len++;
+		/* ASSERT(len > 0) ??? */
+		if (cp[len-1] == '\n') {	/* saw EOL */
+		    if (fp->flags & FL_EOL) {	/* hide eol? */
+			len--;			/* yes. */
 		    }
-		    break;
 		}
-		if (c == EOF)
-		    break;
-		*tp++ = c;
-		len++;
-	    }
+		else {				/* no EOL seen */
+		    register int c;
 
-	    if (c != EOF || len > 0) {
-		while (c != EOF && c != '\n')
+		    /* ASSERT(len == recl-1) ??? */
+
+		    /* read one more character, to fill in for NUL byte */
 		    c = getc(f);
-		/* don't care if line terminated by EOL or EOF? */
+		    if (c != EOF) {
+			/* save additional character if not EOL
+			 * or if EOL should be returned
+			 */
+			if (c != '\n' || !(fp->flags & FL_EOL)) {
+			    cp[len] = c;
+			    len++;
+			} /* not EOL or not hiding EOL */
+		    }
+
+		    /* if not at EOL or EOF, discard rest of "record" */
+		    while (c != EOF && c != '\n')
+			c = getc(f);
+
+		    /* don't care if line terminated by EOL or EOF? */
+		} /* got something */
 		break;
-	    } /* got something */
+	    } /* fgets OK */
 	} /* not binary */
 
 	/* here when read failed */
