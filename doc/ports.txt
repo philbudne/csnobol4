@@ -24,6 +24,12 @@ the same release of SNOBOL!
 
 System		Speed	OS	      C	     REL    config	 st/sec who
 ===============================================================================
+Sun SS-1000	50	SunOS 5.3     SUNpro 0.98.3 posix	 18431	pb 9/96
+Sun SS/IPC	25	SunOS 4.1.4   gcc    0.98.3 sunos4	 4421	pb 9/96
+IBM RT/6152	??	ACIS/AOS 4.3  gcc    0.98.3 bsd43	 1791	pb 9/96
+
+==
+
 Sun SS-1000	50	SunOS 5.3     SUNpro 0.98.1 posix	 21088	pb 9/96
 Sun SS/IPC	25	SunOS 4.1.4   gcc    0.98.1 sunos4	 4667	pb 9/96
 
