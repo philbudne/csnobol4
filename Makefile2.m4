@@ -25,7 +25,7 @@ define([ADD_LDFLAGS],[define([_LDFLAGS],_LDFLAGS $1)dnl])dnl
 define([_LDFLAGS],)dnl
 
 ################################################################
-# defaults (may be overridden in config.h)
+# defaults (may be overridden in config.m4)
 
 OPT=-O
 
@@ -50,13 +50,16 @@ SNOLIB_A=snolib.a
 SNOLIB_FILE=snolib.a
 
 # directory name for default SNOLIB (used by -INCLUDE and LOAD())
-SNOLIB_DIR=/usr/local/lib/snobol4
+SNOLIB_DIR=${PREFIX}/lib/snobol4
 
 # default name for installed binary
-BINDEST=/usr/local/bin/snobol4
+BINDEST=${PREFIX}/bin/snobol4
 
 # default name for installed man page
-MANDEST=/usr/local/man/man1/snobol4.1
+MANDEST=${PREFIX}/man/man1/snobol4.1
+
+# directory prefix
+PREFIX=/usr/local
 
 ########
 # default lib source files
