@@ -29,24 +29,6 @@
 #include "path.h"
 #include "load.h"
 
-#ifndef NO_UNDERSCORE
-/*
- * On a.out based BSD platforms dlopen the underscore prefix must be
- * supplied (this is NOT true on SunOS4, which is an a.out platform,
- * and the origintor of the dlopen/dylsym interface!!
- */
-
-#if __NetBSD__
-#define TRY_UNDERSCORE
-#endif /* __NetBSD__ defined */
-
-#if __FreeBSD__
-#define TRY_UNDERSCORE
-#endif /* __FreeBSD__ defined */
-#endif /* NO_UNDERSCORE not defined */
-
-/* OpenBSD? BSDI?? */
-
 /* external function returning pointer to loaded function */
 extern int (*pml_find())(LOAD_PROTO);
 
