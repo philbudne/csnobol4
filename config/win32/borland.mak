@@ -25,8 +25,11 @@ TTY_DEFS=-DTTY_READ_RAW
 #TTY_C=lib\win32\tty.c
 #TTY_DEFS=
 
+# crocks for winsock I/O on Win9x
+INET_DEFS=-DINET_IO
+
 CFLAGS= -c $(OPT) -WC -O -Tml -w- -Iconfig\borland -Iinclude -I. \
-	-DHAVE_CONFIG_H $(NO_BITFIELDS) $(TTY_DEFS)
+	-DHAVE_CONFIG_H $(NO_BITFIELDS) $(TTY_DEFS) $(INET_DEFS)
 
 OBJ=	snobol4.obj data.obj data_init.obj main.obj syn.obj \
 	version.obj bal.obj date.obj dump.obj endex.obj hash.obj \
