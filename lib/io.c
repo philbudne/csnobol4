@@ -83,6 +83,18 @@ typedef long off_t;
 #define SEEK_END 2
 #endif /* SEEK_END not defined */
 
+#ifndef STDIN_FILENO
+#define STDIN_FILENO 0
+#endif /* STDIN_FILENO not defined */
+
+#ifndef STDOUT_FILENO
+#define STDOUT_FILENO 1
+#endif /* STDOUT_FILENO not defined */
+
+#ifndef STDERR_FILENO
+#define STDERR_FILENO 2
+#endif /* STDERR_FILENO not defined */
+
 #define NUNITS 256			/* XXX set at runtime? */
 
 /* names associated with UNITI, UNITO, UNITP(!), UNITT */
@@ -399,12 +411,17 @@ io_fopen2( fp, mode )
     }
 #ifndef NO_FDOPEN
     if (strncmp(fp->fname, "/dev/fd/", 8) == 0) {
-	int i;
+	int fd;
 
-	if (sscanf(fp->fname+8, "%d", &i) == 1) {
-	    fp->f = fdopen(i, mode);
-	    /* XXX only if fd is one of STD{IN,OUT,ERR}_FILENO?? */
-	    fp->flags |= FL_NOCLOSE;
+	if (sscanf(fp->fname+8, "%d", &fd) == 1) {
+	    fp->f = fdopen(fd, mode);
+	    switch (fd) {
+	    case STDIN_FILENO:
+	    case STDOUT_FILENO:
+	    case STDERR_FILENO:
+		fp->flags |= FL_NOCLOSE;
+		break;
+	    }
 	}
 	return;
     }
