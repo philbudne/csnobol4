@@ -6,6 +6,15 @@ man page:
 		must specify record len for INPUT() on update!
 			recl is per-VARIABLE
 		note, update on INPUT() will not create file???
+	mention load.doc located in SNOLIB dir
+	check -INCLUDE mentions SNOLIB dir
+
+load.doc:
+	mention SNOLIB dir
+	describe io_mkfile(), io_freeunit(), io_closeall()
+
+read from unit opened for OUTPUT() only can succeed???!!!
+	need to keep direction flag???
 
 ==== before beta releases
 

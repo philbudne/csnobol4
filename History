@@ -2,6 +2,19 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+11/06/96:
+	lib/io.c: export io_mkfile(), call io_closeall(), return a value
+		add /udp magic path
+		add {STDOUT,STDERR,TERMIN}_NAME defines
+		add io_findunit(), io_getfp(),
+			export io_closeall() for PML'ed I/O
+		renamed FOPEN_NO_B to NO_FOPEN_B
+		add comments (incl. "close hook" idea)
+	lib/bsd/inet.c: make "priv" open for UDP fail
+		use INADDR_NONE; define our own if none avail
+	Makefile: add xsnobol4 tag, $(TARGET)
+	doc/ports.doc: timing for 110Mhz SS5
+
 11/05/96:
 	doc/ports.doc: timing for netbsd/sparc on 4/110
 		clock speeds for A3000, 4/100
