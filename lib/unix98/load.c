@@ -12,6 +12,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#include <stdio.h>			/* sprintf() */
 #include <dlfcn.h>
 #ifdef ANSI_STRINGS
 #include <string.h>
@@ -28,6 +29,11 @@
 #include "macros.h"
 #include "path.h"
 #include "load.h"
+#include "lib.h"			/* spec2str() */
+
+#ifndef RTLD_LAZY
+#define RTLD_LAZY 0			/* Needed on FreeBSD 2.2.1-RELEASE */
+#endif /* RTLD_LAZY not defined */
 
 /* external function returning pointer to loaded function */
 extern int (*pml_find())(LOAD_PROTO);
@@ -101,13 +107,7 @@ load(addr, sp1, sp2)
 	 * SunOS4 (and others) only support LAZY mode.
 	 * set RTLD_GLOBAL (if available)?? nah; avoid module collisions
 	 */
-#ifdef RTLD_LAZY
 	mode = RTLD_LAZY;
-#else  /* RTLD_LAZY not defined */
-	/* Needed on FreeBSD 2.2.1-RELEASE */
-	mode = 0;
-#endif /* RTLD_LAZY not defined */
-
 	fp->handle = dlopen(pp, mode);
 	if (fp->handle == NULL) {
 #ifdef DEBUG
