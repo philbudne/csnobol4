@@ -22,8 +22,11 @@ it manually by typing "./configure OPTIONS" with zero or more of the
 following options;
 
 	--add-cppflags=STRING
-		Add additional C preprocessor flags (ie; -DXXX) to
-		compile commands
+		Add additional C preprocessor flags to compile command
+		lines (see also --add-define)
+	--add-define=NAME=VALUE
+		Add additional C preprocessor '#define NAME VALUE' to
+		config.h (available to seperately compiled loadable modules)
 	--add-ldflags=STRING
 		Add additional flags to final load command (ie; -lxxx)
 	--add-objs=STRING
@@ -43,9 +46,27 @@ following options;
 	--largefile
 		Force the use of defines for "large file" (64 bit offsets).
 		Requires existance of fseeko() and ftello() stdio functions.
+	--longlong
+		Attempt to use C "long long" datatype to represent SNOBOL4
+		INTEGERs, and "double" for REAL on systems where pointers
+		are only 32-bits.  Requires "long long" support in the
+		chosen C compiler, but will attempt to supply numeric
+		conversion routines if the C runtime lacks them.
+
+		Use of this option will not increase the address space
+		available to SNOBOL4, but will incur increased storage
+		and processing overhead (see --lp64 for more information).
+
+		Expect to see large numbers of C compiler warnings when
+		using this option.
 	--lp64
 		Force the use of defines for LP64 (64-bit longs and
-		pointers) datatype model where available.
+		pointers) datatype model where available, but not the
+		default.
+
+		This option attempts to set native compiler options
+		for LP64 environment where it's not the default.  This
+		may require --no-gcc to disable selection of GNU C Compiler.
 
 		Under the LP64 model, SNOBOL4 INTEGERs are represented
 		by C longs and REALs are represented as 64-bit C doubles.
@@ -62,11 +83,9 @@ following options;
 		as the C datatypes used to represent REALs and pointers.
 
 		It does NOT select use of "long long" to represent
-		SNOBOL4 integers, so --lp64 is useless on 32-bit systems.
+		SNOBOL4 integers, so --lp64 is useless on 32-bit systems
+		(see --longlong).
 
-		This option attempts to set native compiler options
-		for LP64 environment where it's not the default.  This
-		may require --no-gcc to disable selection of GNU C Compiler.
 	--no-dlopen
 		Disable use of Unix98 dlopen() API for dynamic LOAD() support
 	--no-dynlib
