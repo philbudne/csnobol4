@@ -4,6 +4,9 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
 ******** RCS tag BETA4
 
+10/28/96:
+	autoconf: fix c89 test
+
 10/27/96:
 	lib/io.c: add USE_STDARG_H ifdefs (just in case)
 
