@@ -5,9 +5,9 @@
 
 /* DXE2 support */
 #ifdef HAVE_DXE2
-#define HAVE_OSINIT			/* may not be needed! */
+#define HAVE_OS_INIT
 #define TRY_UNDERSCORE
-#define SNOLIB_DIR "/snobol"
+#define SNOLIB_DIR "/snobol4"
 #define SNOLIB_FILE "snolib.dxe"
 #endif /* HAVE_DXE2 defined */
 
