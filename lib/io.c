@@ -156,7 +156,7 @@ io_addfile( unit, path, append )
 	up->head = up->curr = fp;
 	up->offset = 0;
     }
-
+    return TRUE;
 } /* io_addfile */
 
 /* close currently open file on a unit */
@@ -206,8 +206,6 @@ int
 io_closeall(unit)			/* internal (zero-based unit) */
     int unit;
 {
-    struct file *fp;
-
     while (io_units[unit].curr != NULL)
 	io_close(unit);			/* XXX check for error? */
 
@@ -430,7 +428,7 @@ io_mkfile( unit, f, fname )
     FILE *f;
     char *fname;			/* "filename" for error reports */
 {
-    return io_mkfile( unit, f, fname, 0 );
+    return io_mkfile2( unit, f, fname, 0 );
 }
 
 /*
@@ -520,7 +518,6 @@ io_printf
 	struct descr *dp;
 	struct spec *sp;
 	char *cp;
-	int wid;
 
 	/* scan forward until first %, and print all at once? */
 	if (c != '%') {
