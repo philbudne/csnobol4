@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+3/2/2002
+	version.c: update to 0.99.44
+
 3/1/2002
 	config/djgpp/Makefile: tested, make DXE loading optional
 	config/djgpp/config.h: remove unneeded stuff!
