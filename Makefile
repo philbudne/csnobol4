@@ -43,10 +43,11 @@ SNOBOL4=isnobol4
 # must be named "all" for FreeBSD "ports"?
 all:	snobol4
 
+.PRECIOUS: snobol4 xsnobol4 Makefile2 snobol4.c isnobol4.c snobol4 data_init.h 
+#	just add $(GENERATED)?
+
 snobol4 xsnobol4 install: Makefile2 ALWAYS .depend  $(GENERATED)
 	$(MAKE) -f Makefile2 $@ SIL=$(SIL) SNOBOL4=$(SNOBOL4)
-
-.PRECIOUS: snobol4 xsnobol4
 
 ALWAYS:
 
@@ -61,8 +62,6 @@ config.m4:
 
 ################
 # make second level makefile
-
-.PRECIOUS: Makefile2
 
 M4=m4
 
@@ -79,8 +78,6 @@ Makefile2 .depend: config.m4 Makefile2.m4 $(GENERATED)
 
 ################
 # code
-
-.PRECIOUS: snobol4.c isnobol4.c snobol4
 
 # regular version
 snobol4.c: procs genc.sno globals $(SIL) 
