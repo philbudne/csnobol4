@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.12  93/12/04  00:13:25  budd
+* [PLB8] send errors to stderr (via ERRBLK) as well as listing
+* 
 * Revision 1.11  93/11/23  11:05:43  budd
 * [PLB7] upped SPDLSZ to 5000 to run atn.sno
 * 
@@ -416,6 +419,7 @@ XLATP  AEQLC   STYPE,EOSTYP,,XLAEND
 *				   Analyze remainder of card
 XLAEND AEQLC   ESAICL,0,,XLATSC    Were there any compilation errors?
        OUTPUT  PUNCH,ERRCF	   [PLB3] Print message of errors
+       AEQLC   NERRCL,0,END	   [PLB9] Abort execution if -NOERROR set
        BRANCH  XLATND
 *_
 XLATSC OUTPUT  PUNCH,SUCCF	   [PLB3] Print message of no errors
@@ -1455,11 +1459,21 @@ CTLCR1 LEXCMP  XSP,LISTSP,CTLCR3,,CTLCR3
 CTLCR2 SETAC   LLIST,0		   Zero left listing as default
        BRANCH  CMTCLR		   Join terminal processing
 *_
-CTLCR3 LEXCMP  XSP,EJCTSP,CMTCLR,,CMTCLR
+CTLCR3 LEXCMP  XSP,EJCTSP,CRLCR4,,CRLCR4			[PLB9]
 *				   Is it EJECT?
        AEQLC   LISTCL,0,,CMTCLR    Skip eject if not listing
        OUTPUT  OUTPUT,EJECTF	   Eject page
        BRANCH  CMTCLR		   Join terminal processing
+*_
+CRLCR4 LEXCMP  XSP,ERORSP,CRLCR5,,CRLCR5			[PLB9]
+*				   Is it ERRORS?		[PLB9]
+       SETAC   NERRCL,0		   Clear NOERRORS switch	[PLB9]
+       BRANCH  CMTCLR		   Join terminal processing	[PLB9]
+*_
+CRLCR5 LEXCMP  XSP,NERRSP,CMTCLR,,CMTCLR			[PLB9]
+*				   Is it NOERRORS?		[PLB9]
+       SETAC   NERRCL,1		   Set NOERRORS switch		[PLB9]
+       BRANCH  CMTCLR		   Join terminal processing	[PLB9]
 *_
 *---------------------------------------------------------------------*
 *
@@ -5508,6 +5522,7 @@ LISTCL DESCR   1,0,0		   Compiler listing switch
 LLIST  DESCR   0,0,0		   Left listing switch
 NAMGCL DESCR   0,0,0		   Naming switch for SJSR
 SCERCL DESCR   0,0,0		   Error branch switch
+NERRCL DESCR   1,0,0		   NOERROR switch		[PLB9]
 *
 *      Constants
 *
@@ -5682,11 +5697,13 @@ BLEQSP STRING  ' = '
 CMASP  STRING  ','
 EJCTSP STRING  'EJECT'
 EQLSP  STRING  '= '
+ERORSP STRING  'ERRORS'						[PLB9]
 ETIMSP STRING  ',TIME = '
 EXDTSP STRING  'EXTERNAL'
 LEFTSP STRING  'LEFT'
 LISTSP STRING  'LIST'
 LPRNSP STRING  '('
+NERRSP STRING  'NOERRORS'					[PLB9]
 OFSP   STRING  ' OF '
 RPRNSP STRING  ')'
 STARSP STRING  '*** '
