@@ -34,7 +34,8 @@ GETENV( LA_ALIST ) LA_DCL
     getstring( LA_PTR(0), buf, sizeof(buf) );
     env = getenv(buf);
 
-    if (env)
+    if (env) {
 	RETSTR(env, strlen(env));
+    }
     RETNULL;
 }
