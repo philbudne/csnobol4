@@ -1,11 +1,8 @@
 /* $Id$ */
 
 /*
- * load and run external functions for systems using a.out (v7/BSD)
+ * load and run external functions for systems using v7/BSD style a.out
  * -plb 11/9/93
- *
- * Unlikely to port easily to COFF systems where giving "ld" a load
- * address often involves creating a "command file"!
  */
 
 /*
@@ -26,15 +23,21 @@
 #include "load.h"
 
 #include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <a.out.h>
+#include <strings.h>
 
 extern char *malloc();
+extern char *getenv();
 
-#define N_SIZE(A) ((A).a_text + (A).a_data + (A).a_bss) /* is this right? */
+/* is this right? -- ok for OMAGIC */
+#define N_SIZE(A) ((A).a_text + (A).a_data + (A).a_bss)
 
+/* NetBSD compatibility */
 #ifndef N_GETMAGIC
 #define N_GETMAGIC(A) ((A).a_magic)
-#endif
+#endif /* N_GETMAGIC not defined */
 
 #ifndef SYM_PREFIX
 #define SYM_PREFIX "_"			/* XXX most (all?) a.out systems? */
@@ -68,19 +71,20 @@ ld( output, addr, func, input )
      * -o output	output file
      * -T addr		text addr (data follows)
      * -e name		entry point
-     * input		relocatable object file
+     * input		relocatable object file (plus libs)!
      */
 
     /* XXX -A <path of mainbol executable??? */
     /* XXX -lm -lc ?? */
 
-#define REDIRECT "2>/dev/null"		/* send stderr to /dev/null */
-    sprintf( command, "%s -N -o %s -T %x -e %s%s %s %s",
-	    LD_PATH, output, addr, SYM_PREFIX, func, input, REDIRECT );
+    sprintf( command, "%s -N -o %s -T %x -e %s%s %s",
+	    LD_PATH, output, addr, SYM_PREFIX, func, input );
 
     /* XXX use direct execvp of ld? pass argv? */
     return system(command) == 0;
 }
+
+#define PATHLEN 256			/* XXX use MAXPATHLEN from param.h? */
 
 int
 load(addr, sp1, sp2)
@@ -88,13 +92,7 @@ load(addr, sp1, sp2)
     struct spec *sp1, *sp2;		/* function, library */
 {
     struct func *fp; 
-    char path[128];			/* XXX max path */
-    struct exec a;
-    char temp[128];			/* XXX max path? */
-    int l1, l2;
-    long len;				/* size of code+data */
-    int trypml;
-    int f;
+    int l1;
 
     fp = (struct func *) malloc( sizeof (struct func) + S_L(sp1) );
     if (fp == NULL)
@@ -103,109 +101,121 @@ load(addr, sp1, sp2)
     l1 = S_L(sp1);			/* XXX check if <= sizeof(fp->name)? */
     strncpy( fp->name, S_SP(sp1), l1);
     fp->name[l1] = '\0';
+    fp->data = NULL;			/* assume internal! */
 
-    /* XXX try pml here? */
-    l2 = S_L(sp2);			/* XXX check if .le. sizeof(path)? */
-    if (sp2 && S_A(sp2) && l2) {
-	/* NOTE! no check if file exists!
-	 * Could contain ld flags (ie; -l<libname>) or multiple files!!!
-	 */
-	strncpy(path, S_SP(sp2), l2 );
-	path[l2] = '\0';
-	trypml = FALSE;
-    }
-    else {
-	sprintf( path, "%s/%s", SNOLIB_DIR, SNOLIB_A );
-	trypml = TRUE;
-    }
+    /* try "poor mans load" first!!! */
+    fp->entry = pml_find(fp->name);
+    if (fp->entry == NULL) {		/* not found by pml */
+	char path[PATHLEN];
+	char temp[PATHLEN];
+	struct exec a;
+	char *snolib;
+	long len;			/* size of code+data */
+	int f;
+	int l2;
 
-    sprintf( temp, "%s/snoXXXXXX", TMP_DIR);
-    mktemp( temp );			/* exists in v6 */
-    /* XXX check for error (empty string, or "/")?! */
+	snolib = getenv("SNOLIB");
+	if (snolib == NULL)
+	    snolib = SNOLIB_DIR;
 
-    /* link once to get total size! */
-    if (!ld( temp, 0, fp->name, path )) {
-	/* default to pml! */
-	/* XXX check for magic path? do pml regardless?? do pml first??? */
-	if (trypml) {
-	    fp->entry = pml_find(fp->name);
-	    if (fp->entry) {
-		fp->data = NULL;	/* internal! */
-		unlink(temp);		/* clean up any ld mess */
-		goto success;		/* link into list */
-	    }
+	/* XXX try pml here? */
+	l2 = S_L(sp2);			/* XXX check if .le. sizeof(path)? */
+	if (sp2 && S_A(sp2) && l2) {
+	    char *tp;
+	    char temp2[PATHLEN];
+	    struct stat st;
+
+	    strncpy(temp, S_SP(sp2), l2 );
+	    strcpy(temp2, temp);
+	    temp[l2] = '\0';
+	    tp = index(temp, ' ');
+	    if (tp)
+		*tp = '\0';
+
+	    if (stat(temp, &st) < 0)
+		sprintf( path, "%s/%s", snolib, temp2 );
+	    else
+		strcpy( path, temp2 );
 	}
-	/* XXX error message? */
-	goto ld_error;
-    }
+	else {				/* no path */
+	    sprintf( path, "%s/%s", snolib, SNOLIB_A );
+	}
 
-    f = open(temp, 0);			/* XXX O_RDONLY? */
-    if (f < 0) {
-	/* XXX error message? */
-	goto ld_error;
-    }
+	sprintf( temp, "%s/snoXXXXXX", TMP_DIR);
+	mktemp( temp );			/* exists in v6 */
+	/* XXX check for error (empty string, or "/")?! */
 
-    if (read( f, &a, sizeof(a)) != sizeof(a)) {
-	/* XXX error message? */
-	goto header_error;
-    }
+	/* link once to get total size! */
+	if (!ld( temp, 0, fp->name, path )) {
+	    goto ld_error;
+	}
 
-    if (N_GETMAGIC(a) != OMAGIC) {
-	/* XXX error message? */
-    header_error:
+	f = open(temp, O_RDONLY);
+	if (f < 0) {
+	    /* XXX error message? */
+	    goto ld_error;
+	}
+
+	if (read( f, &a, sizeof(a)) != sizeof(a)) {
+	    /* XXX error message? */
+	    goto header_error;
+	}
+
+	if (N_GETMAGIC(a) != OMAGIC) {
+	    /* XXX error message? */
+	header_error:
+	    close(f);
+	ld_error:
+	    unlink(temp);
+	    free(fp);
+	    return FALSE;		/* fail */
+	}
 	close(f);
-    ld_error:
 	unlink(temp);
-	free(fp);
-	return FALSE;			/* fail */
-    }
-    close(f);
-    unlink(temp);
 
-    len = N_SIZE(a);			/* total size (code+data+bss) */
+	len = N_SIZE(a);		/* total size (code+data+bss) */
 
-    /* fix here for NMAGIC or ZMAGIC;  use valloc? */
-    fp->data = malloc(len);
-    if (fp->data == NULL) {
-	free(fp);
-	return FALSE;
-    }
+	/* fix here for NMAGIC or ZMAGIC;  use valloc? */
+	fp->data = malloc(len);
+	if (fp->data == NULL) {
+	    free(fp);
+	    return FALSE;
+	}
 
-    /* XXX need only zero bss! */
-    bzero( fp->data, len );
+	/* XXX need only zero bss! */
+	bzero( fp->data, len );
 
-    /*
-     * could chain all of the following together in one big if stmt,
-     * but it would be a pain to debug!
-     */
+	/*
+	 * could chain all of the following together in one big if stmt,
+	 * but it would be a pain to debug!
+	 */
 
-    /* re-link at new addr */
-    if (!ld( temp, fp->data, fp->name, path ) || (f = open(temp, 0)) < 0) {
-	goto file_open_error;
-    }
+	/* re-link at new addr */
+	if (!ld( temp, fp->data, fp->name, path ) || (f = open(temp, 0)) < 0) {
+	    goto file_open_error;
+	}
 
-    if (read( f, &a, sizeof(a)) != sizeof(a)) {
-    data_read_error:
+	if (read( f, &a, sizeof(a)) != sizeof(a)) {
+	data_read_error:
+	    close(f);
+	file_open_error:
+	    unlink(temp);
+	    free(fp->data);
+	    free(fp);
+	    return FALSE;
+	}
+
+	if (N_GETMAGIC(a) != OMAGIC || a.a_entry == 0 || N_SIZE(a) > len) {
+	    goto data_read_error;
+	}
+
+	if (read(f, fp->data, len) != len) {
+	    goto data_read_error;
+	}
+
+	fp->entry = (int (*)(LOAD_PROTO)) a.a_entry;
 	close(f);
-    file_open_error:
-	unlink(temp);
-	free(fp->data);
-	free(fp);
-	return FALSE;
-    }
-
-    if (N_GETMAGIC(a) != OMAGIC || a.a_entry == 0 || N_SIZE(a) > len) {
-	goto data_read_error;
-    }
-
-    if (read(f, fp->data, len) != len) {
-	goto data_read_error;
-    }
-
-    fp->entry = (int (*)(LOAD_PROTO)) a.a_entry;
-    close(f);
-
- success:
+    } /* not found by pml */
     fp->self = fp;			/* make valid */
     fp->next = fp;			/* link into list (for unload) */
     funcs = fp;
@@ -214,6 +224,7 @@ load(addr, sp1, sp2)
     return TRUE;			/* success */
 }
 
+/* support for SIL "LINK" opcode -- call external function */
 int
 link(retval, args, nargs, addr)
     struct descr *retval, *args, *nargs, *addr;
@@ -248,6 +259,7 @@ unload(sp)
     if (fp == NULL)			/* not found */
 	return;
 
+    /* unlink from list */
     if (pp == NULL) {			/* first */
 	funcs = fp->next;
     }
@@ -258,5 +270,5 @@ unload(sp)
     fp->self = 0;			/* invalidate self pointer!! */
     if (fp->data)			/* may be internal (PML) */
 	free(fp->data);
-    free(fp);
+    free(fp);				/* free name block */
 }
