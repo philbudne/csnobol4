@@ -13,6 +13,9 @@
 #endif /* HAVE_CONFIG_H defined */
 
 #include <tcl.h>
+#ifndef STCL_NO_TK
+#include <tk.h>
+#endif
 
 #include "h.h"
 #include "equ.h"
@@ -43,6 +46,14 @@ STCL_CREATE( LA_ALIST ) LA_DCL
 	Tcl_DeleteInterp(interp);
 	RETFAIL;
     }
+
+#ifndef STCL_NO_TK
+    /* bring in Tk; define tk functions */
+    if (Tk_Init(interp) == TCL_ERROR) {
+	Tcl_DeleteInterp(interp);
+	RETFAIL;
+    }
+#endif
 
     h = new_handle(&tcl_handles, interp);
     if (h == BAD_HANDLE) {
