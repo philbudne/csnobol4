@@ -67,7 +67,7 @@
 *	beginning of line;
 	CLASS<"CMT">	= "*#|;!"
 	CLASS<"CTL">	= "-"
-	CLASS<"CNT">	= "+"
+	CLASS<"CNT">	= "+."
 
 	CLASS<"DQUOTE"> = '"'
 	CLASS<"SQUOTE"> = "'"
