@@ -82,6 +82,13 @@ if [ "$UNAME" ]; then
 			cat /proc/meminfo
 			echo ''
 		fi
+		for RELEASE in /etc/redhat-release /etc/SuSe-release; do
+			if [ -f ${RELEASE} ]; then
+				echo ${RELEASE}:
+				cat ${RELEASE}
+				echo ''
+			fi
+		done
 		;;
 	SunOS)
 		echo 'sunmodel:'
