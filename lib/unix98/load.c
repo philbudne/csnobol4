@@ -41,6 +41,8 @@
 #endif /* __FreeBSD__ defined */
 #endif /* NO_UNDERSCORE not defined */
 
+/* OpenBSD? BSDI?? */
+
 /* external function returning pointer to loaded function */
 extern int (*pml_find())(LOAD_PROTO);
 
