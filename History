@@ -4,6 +4,8 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
 11/23/97:
 	lib/init.c: catch SIGPIPE!
+	lib/io.c: write newline directly if unbuffered
+	Makefile2.m4: send test results to stdout
 
 11/22/97:
 	lib/bsd/inet.c: removed extra "int port" decl

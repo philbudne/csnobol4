@@ -7,11 +7,6 @@ Tests;
 Talk about snolib files in INSTALL & README!!
 
 man page;
-	document INTVAL extension;
-		TABLE, ITEM, array indices, INPUT, OUTPUT, SET,
-		keyword values, CHAR, RPAD, LPAD, FIELD, COLLECT,
-		DUMP, DUPL, OPSYN, SUBSTR
-
 	document math error catching problems in BUGS section;
 	    "hampered by";
 
@@ -25,6 +20,8 @@ man page;
 
 	    + POSIX (& ANSI?) definition of SIGFPE
 		    (normal return behvior is undefined)
+
+		    restart/looping
 
 load.doc: mention dt.h
 
@@ -41,7 +38,12 @@ make NO_BITFIELDS VFLD_T "long"??
 
 ================
 
-replace inline.sno with command line option to genc.sno?
+add options to genc.sno
+	-i	inline (replace inline.sno)
+	-e	eol comments
+	-b	block comments
+	-l	#line
+
 
 Implement REALCVT??
 	using sprintf?
