@@ -67,6 +67,11 @@ Changes since 0.99.4 release;
 
 	Extended HOST() functions (see host.sno) for system diagnosis
 
+	TIME() function now returns REAL datatype
+
+	Statistics reports compiler and execution times as REAL numbers
+		Average statement runtime reported in microseconds (us).
+
 	Allow a REAL any place an INTEGER is required (from SNOBOL4+)
 		Contexts include TABLE(),  ITEM(),  array  indices,
 		INPUT(),  OUTPUT(),  SET(), keyword values, CHAR(),
