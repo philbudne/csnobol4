@@ -63,14 +63,14 @@ void realst __P((struct spec *,struct descr *));
 void rplace __P((struct spec *,struct spec *,struct spec *));
 
 /* from str.c */
-void pad __P((struct descr *,struct spec *,struct spec *,struct spec *));
+int pad __P((struct descr *,struct spec *,struct spec *,struct spec *));
 void raise1 __P((struct spec *));
 int raise2 __P((struct spec *,struct spec *));
-void reverse __P((struct spec *,struct spec *));
-void substr __P((struct spec *,struct spec *,struct descr *));
+int reverse __P((struct spec *,struct spec *));
+int substr __P((struct spec *,struct spec *,struct descr *));
 void trimsp __P((struct spec *,struct spec *));
 void spec2str __P((struct spec *,char *,int));
-void apdsp __P(struct spec *, struct spec *));
+void apdsp __P((struct spec *, struct spec *));
 
 /* stream.c declarations in include/syntab.h */
 
