@@ -175,16 +175,20 @@ G1=data.c2 data.h2 data_init.h2 proc.h2 equ.h2 syn.h2 syn_init.h2 \
 G2=data.c data.h data_init.h proc.h equ.h res.h syn.c syn.h syn_init.h \
 	host.sno
 
-# disposables
-DISP=*.o *.a callgraph prolog bsplitu pv vers build.c bsdtsort
-
-# remove objects, turds; leave generated sources, final binary, Makefile2
-clean:
-	rm -f $(DISP)
+# remove turds
+tidy:
 	rm -rf subr
+	cd test; ./clean.sh
 	find . -type f -a \( \
 		-name '*~' -o -name '#*' -o -name '*.tmp' -o -name '.#*' \) \
 		-print | xargs -t rm -f
+
+# disposables
+DISP=*.o *.a callgraph prolog bsplitu pv vers build.c bsdtsort
+
+# remove objects, turds; leave generated sources, final binary, config files
+clean:	tidy
+	rm -f $(DISP)
 
 # make ready for compilation on another platform (leave binaries)
 realclean: clean
@@ -195,7 +199,7 @@ distclean: realclean
 	rm -f snobol4 xsnobol4 timing.out
 
 # remove objects, generated files
-# leave only final binary??
+# DANGER: requires installed binary to rebuild!!
 spotless: distclean
 	rm -f $(G1) $(G2) snobol4.c isnobol4.c snobol xsnobol4
 
@@ -215,20 +219,29 @@ pv:	version.c
 # but need to make pv first!!
 VERS=`./pv`
 
-DIR=snobol-$(VERS)
-KIT=snobol-$(VERS).tar.$(Z)
+DIR=snobol4-$(VERS)
+KIT=snobol4-$(VERS).tar.$(Z)
 
-tar vers: clean snobol4 pv
+# change to;
+#tar:	snobol4 pv
+#	mkdir dir
+#	cd tmp; cvs -d ...anonymous... co snobol4
+#	mv tmp/snobol4 tmp/$(DIR)
+#	cd tmp/$(DIR); make generated
+#	cd tmp/$(DIR)/doc; make
+#	rm -f $(KIT)
+#	cd tmp; ln ../pv .; tar cf - $(DIR) | $(COMP) > ../$(KIT)
+#	rm -rf tmp
+
+tar:	clean snobol4 pv
 	cd doc; make
 	cd test; ./clean.sh
-	rm -rf snobol-[0-9]*
-	rm -f *~ */*~ */*/*~ *.tmp
+	rm -rf $(DIR)
 	mkdir $(DIR)
 	find $(TAR) -name RCS -prune -o -print | cpio -pldm $(DIR)
 	cp $(G2) $(DIR)
 	tar cf - $(DIR) | $(COMP) > $(KIT)
 	rm -rf $(DIR)
-	./pv > vers
 
 # make a mailable kit by splitting up binary, and uuencoding pieces
 # (no editing necessary for reassembly)
