@@ -27,6 +27,9 @@ define([_LDFLAGS],)dnl
 ################################################################
 # defaults (may be overridden in config.h)
 
+VERS=0.98.1
+VDATE=Sept 19, 1996
+
 OPT=-O
 
 CCM=./cc-M
@@ -188,6 +191,9 @@ data_init.h: data_init.h2
 data_init.o: data_init.c data_init.h equ.h data.h proc.h
 	$(CC) $(CFLAGS) -c data_init.c
 
+version.o: Makefile2
+	$(CC) $(CFLAGS) -DVERS='"'$(VERS)'"' -DVDATE='"'$(VDATE)'"' version.c
+
 #################
 # dependency generation is slow and ugly.
 # doesn't change much!!
@@ -322,17 +328,17 @@ realclean: clean
 	cc-M]
 
 # XXX perform general cleanup (remove ~ and # files) first?
-KIT=snobol.tar.Z
+KIT=snobol-$(VERS).tar.Z
 tar:	$(KIT)
 
 $(KIT):	$(TAR)
 	cd doc; make
 	cd test; ./clean.sh
-	rm -rf snobol
-	mkdir snobol
+	rm -rf snobol-[0-9]*
+	mkdir snobol-$(VERS)
 	find $(TAR) -name RCS -prune -o -print | cpio -pldm snobol
 	tar cf - snobol | compress > $(KIT)
-	rm -rf snobol
+	rm -rf snobol-$(VERS)
 
 # make a mailable kit by taring, compressing, uuencoding and splitting!
 uu:	$(KIT)

@@ -2,6 +2,10 @@
 
 /*
  * $Log$
+ * Revision 1.9  1996/09/05  04:24:57  phil
+ * updated to 0.98
+ * added ifdef MAIN
+ *
  * Revision 1.8  1995/01/21  17:48:53  budd
  * version 0.91.2 (BETA2_patch2)
  *
@@ -34,15 +38,9 @@
 #include "snotypes.h"
 #include "data.h"
 
-const char vers[] = "0.98";
-const char vdate[] = "Sept 4, 1996";
+const char vers[] = VERS;
+const char vdate[] = VDATE;
 
-#ifdef MAIN
-main()
-{
-    puts(vers);
-}
-#else
 void
 version()
 {
@@ -50,7 +48,6 @@ version()
 	return;
 
     io_printf(D_A(PUNCH),
-"The Macro Implementation of SNOBOL4 for Un*x, (Version %s)\n", vers);
+"The Macro Implementation of SNOBOL4 in C (C-MAINBOL) Version %s\n", vers);
     io_printf(D_A(PUNCH), "    Philip L. Budne, %s\n", vdate);
 }
-#endif
