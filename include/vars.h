@@ -47,6 +47,9 @@ struct vars {
     /* lib/X/mstime.c */
     void *v_timeptr;
 
+#ifdef ENDEX_LONGJMP
+    void *v_endex_jmpbuf;
+#endif /* ENDEX_LONGJMP defined */
 };
 
 #define res	(varp->v_res)
@@ -70,5 +73,6 @@ struct vars {
 #define ttylist	(varp->v_ttylist)
 #define loadptr (varp->v_loadptr)
 #define timeptr	(varp->v_timeptr)
+#define endex_jmpbuf (varp->v_endex_jmpbuf)
 
 extern struct vars *varp;

@@ -7,6 +7,15 @@
 #include "res.h"
 #include "data.h"			/* for RETCOD */
 
+#ifdef NO_STATIC_VARS
+#include "vars.h"
+#else  /* NO_STATIC_VARS not defined */
+#ifdef ENDEX_LONGJMP
+#include <setjmp.h>
+extern jmp_buf endex_jmpbuf;
+#endif /* ENDEX_LONGJMP defined */
+#endif /* NO_STATIC_VARS not defined */
+
 #ifdef TRACE_DEPTH
 #include <stdio.h>
 
@@ -27,7 +36,6 @@ endex( x )
 
     /* if &ABEND set, dump core?! */
     if (x) {
-	/* XXX perform I/O cleanup?! */
 	abort();
     }
 
@@ -37,6 +45,10 @@ endex( x )
 	    fprintf( stderr, "%8d %8d\n", i, returns[i]);
 #endif /* TRACE_DEPTH defined */
 
+#ifdef ENDEX_LONGJMP
+    longjmp(endex_jmpbuf, 1);
+#else  /* ENDEX_LONGJMP not defined */
     /* else exit w/ &CODE */
     exit(D_A(RETCOD));
+#endif /* ENDEX_LONGJMP not defined */
 }
