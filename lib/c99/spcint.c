@@ -13,6 +13,7 @@
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
+#include "lib.h"
 
 #include "equ.h"			/* for I and R */
 #include "res.h"

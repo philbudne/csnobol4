@@ -13,6 +13,10 @@
 #include <stdio.h>			/* NULL */
 #include <signal.h>
 
+#include "h.h"
+#include "snotypes.h"
+#include "lib.h"
+
 void
 proc_suspend()
 {

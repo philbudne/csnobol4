@@ -30,6 +30,7 @@ extern void *malloc();
 #include "equ.h"
 #include "res.h"
 #include "data.h"
+#include "lib.h"
 
 #ifdef NO_STATIC_VARS
 #include "vars.h"
