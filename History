@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+4/19/2002
+	lib/next/load.c: check NSLinkModule() return
+		add comments
+
 4/12/2002
 	lib/next/load.c: remove unused variable & label
 
