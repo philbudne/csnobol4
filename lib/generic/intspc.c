@@ -1,8 +1,7 @@
 /* $Id$ */
 
 /*
- * convert from integer to string
- * generic version sprintf()
+ * convert from integer to string using sprintf()
  */
 
 #ifdef HAVE_CONFIG_H
@@ -15,6 +14,7 @@
 #include "snotypes.h"
 #include "macros.h"
 #include "lib.h"
+#include "str.h"
 
 #include "equ.h"
 

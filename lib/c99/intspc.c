@@ -1,16 +1,19 @@
 /* $Id$ */
 
 /*
- * convert from integer to string using printf %lld (in ISO C99)
+ * convert from integer to string using sprintf %lld (in ISO C99)
  */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
+#include <stdio.h>
+
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
+#include "str.h"
 
 #include "equ.h"
 

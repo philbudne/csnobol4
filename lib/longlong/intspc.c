@@ -1,17 +1,20 @@
 /* $Id$ */
 
 /*
- * convert from integer to string
- * generic version (using ato[ld] rather than superior strto[ld])
+ * long long to string (systems without long long library support)
  */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
+#include <stdio.h>
+
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
+#include "lib.h"
+#include "str.h"
 
 #include "equ.h"
 
