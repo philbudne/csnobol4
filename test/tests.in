@@ -50,3 +50,5 @@ reg alph.sno
 reg 8bit.sno
 # 6/21/94
 reg contin.sno
+# 11/3/94
+reg local.sno
