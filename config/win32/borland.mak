@@ -3,8 +3,8 @@
 # Win95 Borland BCC32.EXE V5.5 compatible make file by Greg White 9/2/2000
 # should also work for WinNT 
 #
-# Adapted from ntmsvc.mak; nmake file for VC++ 5.0 on WinNT 4.0
-# P. Budne 2/4/1998 (from batch file by David Feustel)
+# from ntmsvc.mak; nmake file for VC++ 5.0 on WinNT 4.0 by P. Budne 2/4/1998
+# from batch file by David Feustel
 
 CC=bcc32.exe
 
@@ -25,7 +25,7 @@ TTY_DEFS=-DTTY_READ_RAW
 #TTY_C=lib\win32\tty.c
 #TTY_DEFS=
 
-CFLAGS= -c $(OPT) -WC -O -Tml -w- -Iconfig\borland -Iinclude \
+CFLAGS= -c $(OPT) -WC -O -Tml -w- -Iconfig\borland -Iinclude -I. \
 	-DHAVE_CONFIG_H $(NO_BITFIELDS) $(TTY_DEFS)
 
 OBJ=	snobol4.obj data.obj data_init.obj main.obj syn.obj \
@@ -86,9 +86,6 @@ hash.obj : lib\hash.c
 init.obj : lib\init.c
 	$(CC) $(CFLAGS) lib\init.c
 
-intspc.obj : lib\generic\intspc.c
-	$(CC) $(CFLAGS) lib\generic\intspc.c
-
 io.obj : lib\io.c
 	$(CC) $(CFLAGS) lib\io.c
 
@@ -126,6 +123,9 @@ tree.obj : lib\tree.c
 	$(CC) $(CFLAGS) lib\tree.c
 
 ################ ansi
+
+intspc.obj : lib\ansi\intspc.c
+	$(CC) $(CFLAGS) lib\ansi\intspc.c
 
 spcint.obj : lib\ansi\spcint.c
 	$(CC) $(CFLAGS) lib\ansi\spcint.c
@@ -166,7 +166,7 @@ term.obj : lib\generic\term.c
 ################ win32!
 
 inet.obj : lib\win32\inet.c
-        $(CC) $(CFLAGS) lib\win32\inet.c
+	$(CC) $(CFLAGS) lib\win32\inet.c
 
 load.obj : lib\win32\load.c
 	$(CC) $(CFLAGS) lib\win32\load.c
