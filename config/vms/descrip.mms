@@ -106,6 +106,7 @@ IO_C=[.lib]io.c
 LEXCMP_C=[.lib]lexcmp.c
 LOAD_C=[.lib.vms]load.c
 ORDVST_C=[.lib]ordvst.c
+OSOPEN_C=[.lib.cms]osopen.c
 PAIR_C=[.lib]pair.c
 PAT_C=[.lib]pat.c
 PML_C=[.lib]pml.c
@@ -164,7 +165,7 @@ CFLAGS=	$(CCFLAGS) /DEFINE=(HAVE_CONFIG_H$(CCDEFS)$(INETDEFS)) \
 OBJS=	main.obj, $(SNOBOL4).obj, data.obj, data_init.obj, syn.obj, \
 	bal.obj, date.obj, dynamic.obj, endex.obj, exists.obj, \
 	expops.obj, hash.obj, init.obj, $(INETOBJ), intspc.obj, io.obj, \
-	lexcmp.obj, load.obj, mstime.obj, ordvst.obj, pair.obj, \
+	lexcmp.obj, load.obj, mstime.obj, ordvst.obj, osopen.obj, pair.obj, \
 	pat.obj, pml.obj, realst.obj, replace.obj, spcint.obj, \
 	spreal.obj, str.obj, stream.obj, term.obj, top.obj, tty.obj, \
 	tree.obj, version.obj, getredirect.obj, $(AUX_OBJ) $(PML_OBJ)
@@ -225,6 +226,9 @@ mstime.obj : $(MSTIME_C)
 
 ordvst.obj : $(ORDVST_C)
 	$(CC) $(CFLAGS) $(ORDVST_C)
+
+osopen.obj : $(OSOPEN_C)
+	$(CC) $(CFLAGS) $(OSOPEN_C)
 
 pair.obj : $(PAIR_C)
 	$(CC) $(CFLAGS) $(PAIR_C)
