@@ -18,7 +18,7 @@ modifications as well as the original source.
 
 The responsibility for the use of this material resides entirely
 with you.  We make no warranty of any kind concerning this material,
-nor do we make any claim as to the suitability of Icon for any application.
+nor do we make any claim as to the suitability of SNOBOL4 for any application.
 
 Status;
 	runs on Sun4 under SunOS 4.x (Solaris 1.x)
@@ -33,7 +33,7 @@ Status;
 		should be split up into system-independant functions
 		and system-specific versions of system-dependant functions!
 
-	Runs VERY slowly;
+	May run VERY slowly;
 
 		genc.sno itself runs "only" 10x slower than under
 		Catspaw SPARC (Macro) SPITBOL.  This is quite respectable.
