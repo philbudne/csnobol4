@@ -27,11 +27,11 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#ifdef HAVE_STDARG_H
+#ifdef __STDC__
 #include <stdarg.h>
-#else  /* HAVE_STDARG_H not defined */
+#else  /* __STDC__ not defined */
 #include <varargs.h>
-#endif /* HAVE_STDARG_H not defined */
+#endif /* __STDC__ not defined */
 
 #ifdef HAVE_STDLIB_H			/* before stdio */
 #include <stdlib.h>
@@ -669,11 +669,11 @@ io_init()				/* here from INIT */
 /* limited printf */
 void
 io_printf
-#ifdef HAVE_STDARG_H
+#ifdef __STDC__
     (int_t unit, ...)
-#else  /* HAVE_STDARG_H not defined */
+#else  /* __STDC__ not defined */
     (va_alist) va_dcl
-#endif /* HAVE_STDARG_H not defined */
+#endif /* __STDC__ not defined */
 {
     va_list vp;
     char *format;
@@ -682,14 +682,14 @@ io_printf
     char line[1024];			/* XXX */
     char *lp;
     struct unit *up;
-#ifdef HAVE_STDARG_H
+#ifdef __STDC__
     va_start(vp,unit);
-#else  /* HAVE_STDARG_H not defined */
+#else  /* __STDC__ not defined */
     int_t unit;
     va_start(vp);
 
     unit = va_arg(vp, int_t);
-#endif /* HAVE_STDARG_H not defined */
+#endif /* __STDC__ not defined */
 
     unit = INTERN(unit);
     if (BADUNIT(unit))
