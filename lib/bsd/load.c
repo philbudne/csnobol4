@@ -20,13 +20,6 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#include "h.h"
-#include "snotypes.h"
-#include "macros.h"
-#include "path.h"
-#include "load.h"
-#include "str.h"
-
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -38,6 +31,15 @@
 extern void *malloc();
 extern char *getenv();
 #endif /* HAVE_STDLIB_H not defined */
+#include <stdio.h>
+
+#include "h.h"
+#include "snotypes.h"
+#include "macros.h"
+#include "path.h"
+#include "load.h"
+#include "lib.h"
+#include "str.h"
 
 /* is this right? -- ok for OMAGIC */
 #undef N_SIZE				/* defined in NetBSD nlist.h */

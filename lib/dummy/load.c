@@ -9,10 +9,13 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
+#include <stdio.h>
+
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
 #include "load.h"
+#include "lib.h"
 
 extern int (*pml_find())(LOAD_PROTO);
 

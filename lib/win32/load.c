@@ -9,15 +9,17 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
+#include <windows.h>
+#include <stdlib.h>			/* malloc(), getenv() */
+#include <stdio.h>			/* for lib.h */
+
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
 #include "path.h"
 #include "load.h"
+#include "lib.h"
 #include "str.h"
-
-#include <windows.h>
-#include <stdlib.h>			/* malloc(), getenv() */
 
 /* external function returning pointer to loaded function */
 extern int (*pml_find())(LOAD_PROTO);

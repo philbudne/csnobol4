@@ -9,13 +9,6 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#include "h.h"
-#include "snotypes.h"
-#include "macros.h"
-#include "path.h"
-#include "load.h"
-#include "str.h"
-
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <dl.h>
@@ -23,6 +16,15 @@
 #ifdef HAVE_STDLIB_H			/* before stdio */
 #include <stdlib.h>			/* for malloc, getenv */
 #endif /* HAVE_STDLIB_H defined */
+#include <stdio.h>
+
+#include "h.h"
+#include "snotypes.h"
+#include "macros.h"
+#include "path.h"
+#include "load.h"
+#include "lib.h"
+#include "str.h"
 
 /* external function returning pointer to loaded function */
 extern int (*pml_find())(LOAD_PROTO);

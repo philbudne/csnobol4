@@ -19,12 +19,14 @@
 #ifdef HAVE_STDLIB_H			/* before stdio */
 #include <stdlib.h>			/* malloc(), getenv() */
 #endif /* HAVE_STDLIB_H */
+#include <stdio.h>
 
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
 #include "path.h"
 #include "load.h"
+#include "lib.h"
 #include "str.h"
 
 /* external function returning pointer to loaded function */
