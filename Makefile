@@ -20,6 +20,12 @@ SNO=snobol4 -b
 SMALL_SNO=snobol4 -b
 
 ################
+# topological sort
+# BSD44 and AT&T tsort's handle cycles; GNU tsort (found on Linux) does not
+TSORT=	tsort
+#TSORT=	snobol4 -b tsort.sno
+
+################
 # machine generated files;
 
 GENERATED=data.c data_init.h proc.h syn.h data.h \
@@ -28,15 +34,6 @@ GENERATED=data.c data_init.h proc.h syn.h data.h \
 ################
 # SIL source file
 SIL=	v311.sil
-
-################
-# either snobol4 or isnobol4;
-# isnobol4 has had functions reordered for better inlining.
-# if compiler does not perform inlining, snobol4 can be used
-# with no penalty (and slightly simpler build process).
-
-SNOBOL4=isnobol4
-#SNOBOL4=snobol4
 
 ################
 # AIX4 makes all targets, so added this;
@@ -50,7 +47,7 @@ all:	snobol4
 #	just add $(GENERATED)?
 
 snobol4 xsnobol4 install: Makefile2 ALWAYS .depend  $(GENERATED)
-	$(MAKE) -f Makefile2 $@ SNOBOL4=$(SNOBOL4)
+	$(MAKE) -f Makefile2 $@
 
 ALWAYS:
 
@@ -74,7 +71,7 @@ Makefile2 .depend: config.m4 Makefile2.m4 $(GENERATED)
 	echo '# add local changes to local-config'		>> $(M2TMP)
 	$(M4) Makefile2.m4 >> $(M2TMP)
 	echo '# DO NOT DELETE THIS LINE. make depend uses it.' >> $(M2TMP)
-	make -f $(M2TMP) depend MAKEFILE2=$(M2TMP) SNOBOL4=$(SNOBOL4)
+	make -f $(M2TMP) depend MAKEFILE2=$(M2TMP)
 	mv -f $(M2TMP) Makefile2
 	rm -f .depend
 	touch .depend
@@ -83,7 +80,7 @@ Makefile2 .depend: config.m4 Makefile2.m4 $(GENERATED)
 # code
 
 # regular version
-snobol4.c: procs genc.sno globals $(SIL) 
+snobol4.c proc.h2: procs genc.sno globals $(SIL) 
 	rm -f snobol4.c2 proc.h2
 	$(SNO) genc.sno $(SIL) > snobol4.c2
 	mv -f snobol4.c2 snobol4.c
@@ -93,12 +90,10 @@ isnobol4.c: procs genc.sno globals $(SIL)
 	rm -rf isnobol4.c2 proc.h2 prolog subr
 	mkdir subr
 	$(SNO) -- genc.sno --inline $(SIL) > prolog
-	cd subr && tsort ../callgraph > order && \
+	cd subr && $(TSORT) ../callgraph > order && \
 		cat ../prolog `cat order` > ../isnobol4.c2
 	mv -f isnobol4.c2 isnobol4.c
 	rm -rf prolog subr
-
-proc.h2: $(SNOBOL4).c
 
 proc.h:	proc.h2
 	@cmp proc.h proc.h2 || cp proc.h2 proc.h
