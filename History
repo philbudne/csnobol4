@@ -2,6 +2,28 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+9/25/97:
+	lib/vms/tty.c: added SUCCESS() macro, NOFILTR flag, term[] mask
+	lib/vms/popen.c: added SUCCESS() macro
+
+9/24/97:
+	autoconf: accept null string as an option for HPUX9
+		problem reported by Yuli Barcohen
+	config/borland/build.bat: added lib/generic/popen.c
+	lib/io.c: removed NO_POPEN ifdefs
+		TTY_READ for binary only, pass fname
+	lib/bsd/tty.c: removed "old" and "TTY_SAVE_RECL"
+	lib/vms/tty.c: use filenames to assign tty channels
+	lib/posix/tty.c: removed "old"; fixed recl saving
+	lib/vms/term.c: add term_file, term_fd globals
+	lib/vms/getredirect.c: add std{in,out}_file globals
+	New: lib/dummy/popen.c: does nothing
+	New: lib/generic/popen.c: uses system()
+
+9/23/97:
+	lib/generic/expops.c: check for overflow
+	New: snolib/smtp.sno snolib/http.sno snolib/url.sno
+
 9/22/97:
 	config/vms/{descrip.mms,build.com}: add READ_TTY define
 	lib/generic/expops.c: use repeated multiply for expint()
