@@ -13,6 +13,9 @@ CCM=$(CC) -M
 # for pow(3)
 MATHLIB=-lm
 
+# either snobol4 or isnobol4
+SNOBOL4=isnobol4
+
 ########
 # default lib source files
 
@@ -72,8 +75,6 @@ SNO=snobol4 -d50000
 SMALL_SNO=snobol4
 
 ################
-# either snobol4 or isnobol4
-SNOBOL4=snobol4
 
 .PRECIOUS: $(SNOBOL4).c $(SNOBOL4).o data_init.o
 
@@ -105,8 +106,6 @@ xsnobol4: $(OBJS)
 $(SNOBOL4).o: $(SNOBOL4).c 
 	$(CC) $(CFLAGS) $(SNOBOL4_C_CFLAGS) -c $(SNOBOL4).c
 
-proc.h:	$(SNOBOL4).c
-
 # regular version
 snobol4.c: procs genc.sno global.procs v311.sil 
 	rm -f snobol4.c.TMP
@@ -119,7 +118,7 @@ isnobol4.c: procs genc.sno global.procs v311.sil inline.sno reverse
 	rm -rf isnobol4.c.TMP prolog subr
 	mkdir subr
 	$(SNO) inline.sno > prolog
-	cd subr; cat ../prolog `tsort ../callgraph 2>/dev/null | reverse` \
+	cd subr; cat ../prolog `tsort ../callgraph 2>/dev/null | ../reverse` \
 				> ../isnobol4.c.TMP
 	mv isnobol4.c.TMP isnobol4.c
 	rm -rf prolog subr
@@ -127,6 +126,13 @@ changequote()
 
 reverse: reverse.c
 	$(CC) $(CFLAGS) -o reverse reverse.c
+
+########
+
+proc.h2: $(SNOBOL4).c
+
+proc.h:	proc.h2
+	cmp proc.h proc.h2 || cp proc.h2 proc.h
 
 ################
 
@@ -247,7 +253,7 @@ vfprintf.o: $(VFPRINTF_C)
 # housekeeping
 
 # generated files to include in kit
-GENERATED=syn.c syn.h syn.h2 data.c data.h proc.h equ.h \
+GENERATED=syn.c syn.h syn.h2 data.c data.h proc.h proc.h2 equ.h \
 	snobol4.c isnobol4.c data_init.h 
 
 # disposables
@@ -265,7 +271,7 @@ realclean: clean
 	Makefile Makefile2.m4 \
 	v311.sil syntax.tbl procs global.procs \
 	genc.sno gensyn.sno gendata.sno inline.sno \
-	main.c charset.c data_init.c version.c \
+	main.c charset.c data_init.c version.c reverse.c \
 	parms.h mlink.h mdata.h pml.h \
 	lib include config test bugs snolib \
 	timing timing.sno \
