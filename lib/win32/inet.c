@@ -103,23 +103,17 @@ inet_socket( host, service, port, priv, type )
     else
 	return -1;
 
-    if (priv) {
-	if (type == SOCK_STREAM) {
-	    int lport;
-
-	    lport = IPPORT_RESERVED - 1;
-	    s = rresvport(&lport);
-	}
-	else
-	    return -1;			/* UDP and "priv" set */
-    }
-    else
-	s = socket( AF_INET, type, 0 );
+    s = socket( AF_INET, type, 0 );
 
     /* XXX hopefully never zero (when INET_IO in use)!!! */
-
     if (s < 0)
 	return -1;
+
+    if (priv) {
+	/* XXX bindresvport() */
+	closesocket(s);
+	return -1;
+    }
 
     hp = gethostbyname( host );
     if (hp != NULL) {
