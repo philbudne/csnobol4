@@ -222,7 +222,7 @@ DUMPAEN	SYN.C = '};'
 	C = 0
 	OL =
 	SYN.C =
-	SYN.C = 'struct const syntab ' TABNAM ' = {'
+	SYN.C = 'const struct syntab ' TABNAM ' = {'
 	SYN.C = HT '"' TABNAM '",'
 	SYN.C = HT '{'
 
