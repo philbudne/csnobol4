@@ -23,8 +23,16 @@ extern int depth;
 extern int calls[];
 #endif /* TRACE_DEPTH defined */
 
+#ifdef INLINING
+
 #ifndef NO_INLINE_PAIR
 #define STATIC_PAIR static
 #include "lib/pair.c"
 #endif /* NO_INLINE_PAIR not defined */
 
+#ifndef NO_INLINE_HASH
+#define STATIC_HASH static
+#include "lib/hash.c"
+#endif /* NO_INLINE_HASH not defined */
+
+#endif /* INLINING defined */
