@@ -23,20 +23,15 @@
  * However, I am not about to post a copy of anything licensed by AT&T.
  */
 
-#if defined(MSDOS) || defined(USG)
+/* phil 1/4/94; use STDIO */
+#include <stdio.h>
+
+#if defined(MSDOS) || defined(USG) || defined(vms)
 #define index strchr
 #endif
 
 /*LINTLIBRARY*/
-#define NULL	0
-#define EOF	(-1)
-#define ERR(s, c)	if(opterr){\
-	extern int write();\
-	char errbuf[2];\
-	errbuf[0] = c; errbuf[1] = '\n';\
-	(void) write(2, argv[0], (unsigned)strlen(argv[0]));\
-	(void) write(2, s, (unsigned)strlen(s));\
-	(void) write(2, errbuf, 2);}
+#define ERR(s, c) if(opterr){fprintf(stderr, "%s%s%c\n", argv[0], s, c);}
 
 extern char *index();
 
@@ -58,7 +53,7 @@ char	**argv, *opts;
 		if(optind >= argc ||
 		   argv[optind][0] != '-' || argv[optind][1] == '\0')
 			return(EOF);
-		else if(strcmp(argv[optind], "--") == NULL) {
+		else if(strcmp(argv[optind], "--") == 0) {
 			optind++;
 			return(EOF);
 		}
