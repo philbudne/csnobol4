@@ -24,8 +24,8 @@ TTY_DEFS=-DTTY_READ_RAW
 #TTY_DEFS=
 
 # by default __STDC__ is undefined!?
-#	-Za defines __STDC__, but causes includes to turn
-#	off useful "extensions"
+#	-Za defines __STDC__ to 1, but that causes includes to turn
+#	off useful non-ANSI extensions
 
 CFLAGS=	-c $(OPT) \
 	-Iinclude -I. \
@@ -39,6 +39,7 @@ CFLAGS=	-c $(OPT) \
 	$(TTY_DEFS) \
 	-DUSE_WINSOCK_H \
 	-DUSE_STDARG_H \
+	-Dfinite=_finite \
 	-Disnan=_isnan
 
 OBJ=	snobol4.obj data.obj data_init.obj main.obj syn.obj \
