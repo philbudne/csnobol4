@@ -2,6 +2,13 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
+1/7/94
+	cleaned up config/ files. added bsd43., snoy_news, posix
+		checked in changes from 1/3
+	added standards conformance info to various lib files
+	updated README (was README.alpha) for beta test
+	split intspc.c realst.c from convert.c
+
 1/3/94
 	Brought up on Sony News 800 (68020) sqrt.sno works (no changes)!
 	Tested on hp9000s800 (added posix/mstime.c)
