@@ -1,16 +1,25 @@
 $Id$
 
-include serv.sno in kit.  Install in snolib/?
-	build it in? (PML)
+document config.h in doc/load.doc
 
-split convert.c into spcint, spreal?
-	supply spcint/intspc for longlong!!
+document --add-define= in INSTALL
 
-DJGPP stuff from Burkhard Meissner
+update man page re: LOAD() limitations
 
-borland stuff by Greg White
-	makefile/batchfile
-	win32/inet.c changes
+long long support;
+	test via compilation of test programs????
+	use c99 strtoll(), printf %lld if available (check stdlib?)
+	use longlong versions of intspc and spcint "as needed"?
+		test!!! supply BSD strtoll()??
+
+ports;
+	fix VMS port! str/number files
+
+	DJGPP stuff from Burkhard Meissner
+
+	borland stuff by Greg White
+		makefile/batchfile
+		win32/inet.c changes
 
 always send timing.out via e-mail?
 	(unless timing.out.hostname exists?)
@@ -23,20 +32,18 @@ refer to online manuals (in man page, elsewhere?)
     ftp://ftp.snobol4.com/spitman.pdf
 
 Make ANSI_STRINGS the default? (USE_STRINGS_H??)
-		use strchr, memcmp, memmove
+		use strchr, memcmp, memmove?, memset??
 	add USE_BSD_STRINGS? USE_STRING_H?
 
 add config options;
 	if using gcc, enable -fomit-frame-pointer by default (unless --debug)?
-	--OPTIMIZE
+	--optimize
 		gcc: -O5
 		sunpro: -xO5
 	--debug??
 		disable -fomit-frame-pointer
 
-save defines in config.h??
-	copy config.h to SNOLIB
-		(make life easier for people building loadable objects)
+create snolib_pic.a???
 
 keep FL_INET bit? call inet_close(fp)???
 	add close hook??

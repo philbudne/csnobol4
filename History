@@ -2,6 +2,39 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+12/04/2001
+	autoconf: create config.h, add --add-define=
+		use longlong/c99 functions when --longlong given
+	Makefile2.m4: flushed $(CONFIG_GUESS) $(SYSDEFS), install config.h
+	generic/intspc.c: fix comment, add cast
+	tested --longlong (on FreeBSD)
+	data_init.c: include config.h (for INT_T)
+	lib/io.c: use int_t for io_print unit
+	lib/longlong/spcint.c: ad hoc implementation (untested)
+	new: c99/spcint.c c99/intspc.c
+
+12/02/2001
+	LOTS: add 'ifdef HAVE_CONFIG_H/include "config.h"'
+
+11/15/2001
+	split {ansi,generic}/convert.c into {ansi,generic}/{spcint,spreal}.c
+	moved intspc.c to generic/
+	updated Makefile2.m4
+	add serv.sno to snolib/
+
+11/13/2001
+	lib/io.c: move osdep_open to top, move popen() to end
+
+09/26/2001
+	lib/win32/inet.c: added wVersionRequested variable
+
+08/16/2001
+	lib/snolib/serv.c: re-arm fireman at end of handler
+		(to avoid zombie creation)
+
+04/29/2001
+	doc/snobol4.1: document SSET()
+
 04/26/2001
 	autoconf: fix long long, always set PML_SERV
 	pml.h: add SERV_LISTEN (under ifdef PML_SERV)
@@ -17,6 +50,7 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 	autoconf: add --longlong
 	include/macros.h: cast pointer args for bzero/bcopy to void *
 		so that we can use 64-bit ints when pointers are only 32-bits
+	include/snotypes.h: allow INT_T to be redefined (default to long)
 
 01/04/2001
 	timing: add .exe EXTension if needed, for cygwin
