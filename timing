@@ -41,3 +41,4 @@ LNFILES='../xsnobol4 ../procs ../global.procs ../v311.sil ../genc.sno ../snobol4
 	cd ..
 	rm -rf $TDIR
 ) | ./xsnobol4 -bs timing.sno
+# NOTE: do not add commands here; xsnobol4 exit status is shell exit status!!
