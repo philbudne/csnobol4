@@ -8,6 +8,7 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 	Makefile2.m4: added SH=sh
 		replaced TESTED with "snobol4"
 		do all cmp's silently
+	lib/stream.c: stream tweaking; do put outside loop, use for()
 
 9/9/97:
 	v311.sil: Call io_pad() to fix -LIST RIGHT
@@ -18,7 +19,7 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 		while compiling genc.sno; Compile time reduced by 8%
 
 9/7/97:
-	Ran profiling
+	Ran profiling (prof and tcov)
 	lib/io.c: only tack on one space to compiler input
 	v311.sil: have compiler use length returned by STREAD
 		reduces genc.sno compile time by 65%
