@@ -290,6 +290,8 @@ io_close(unit)				/* internal (zero-based unit) */
 	    }
 	} /* not a pipe */
     } /* have fp->f */
+    else
+	ret = TRUE;			/* keep gcc quiet! */
 
     up->curr = fp->next;
     return ret;
