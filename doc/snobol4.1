@@ -365,7 +365,9 @@ Toggle startup banner output (by default on).
 .BI -d NNN
 Allocate dynamic region of
 .I NNN
-descriptors (default is 25000).  A larger dynamic region may result in
+descriptors (default is 25000). A suffix of
+.B k
+multiplies the number by 1000. A larger dynamic region may result in
 fewer garbage collections (storage regenerations), however large
 values may cause collections (when they occur) to run more slowly.
 Most programs do not need an increased dynamic region to run.
