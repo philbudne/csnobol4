@@ -2,12 +2,47 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+1/14/98
+	lib/{win32,vms}/inet.c: removed HAVE_SOCKADDR_LEN
+
+1/8/98
+	INSTALL: updates from John Refling <johnr@spimageworks.com>
+	Makefile2.m4: remove $(MANPATH) first (from John Refling)
+	README: add John Refling!
+
+12/31/98
+	updates from trying to make a FreeBSD "port";
+	autoconf: add --prefix
+	Makefile: change "default" to "all"
+	Makefile2.m4: use PREFIX
+
+12/28/98
+	v311.sil, test/a.ref, test/dump.ref: fixed CASECL position
+
+12/26/98
+	autoconf: add --largefile
+	lib/io.c: use ftello/fseeko thruout (crock ifdef on _LARGEFILE_SOURCE)
+
+12/23/98
+	lib/win32/sys.c: fix typo
+
+12/19/98
+	lib/bsd/inet.c, autoconf: removed HAVE_SOCKADDR_LEN
+
+12/18/98
+	autoconf: experiment: try setting _FILE_OFFSET_BITS to 64
+		on Solaris 2.6 for Phillip Thomas
+
+12/17/98
+	config/vms/descrip.mms: tested, fixed
+
 12/16/98
 	Makefile: add .depend dependancy!
 	Makefile2.m4: removed HAVE_UNISTD_H variable
 		add explicit rules for version.o main.o data.o syn.o
-	autoconfig: check stdlib.h for getopt()
+	autoconf: check stdlib.h for getopt()
 		flushed HAVE_UNISTD_H variable
+		prefer gcc on sun4u systems!
 	config/bsd44.m4 config/ansi.m4 config/bsd43.m4
 		config/generic.m4 config/hpux-68k.m4
 		config/netbsd-alpha.m4 config/nextstep3.m4
