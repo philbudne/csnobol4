@@ -157,6 +157,23 @@ void tty_suspend __P((void));		/* SIG_TSTP */
 int tty_read __P((FILE *,char *,int,int,int,int,char *));
 
 /*
- * functions we provide on some systems:
- * bcmp bcopy bzero isnan popen pclose
+ * other functions we provide on some systems:
+ * bcmp bcopy bzero (see str.h)
+ * isnan
  */
+
+/* from getredirect.c */
+#ifdef vms
+int getredirection __P((int, char **));
+#endif /* vms defined */
+
+/* from rresvport.c */
+#ifdef NEED_RRESVPORT_DECL
+extern int rresvport __P((int *));
+#endif /* NEED_RRESVPORT_DECL */
+
+/* from popen.c */
+#ifdef NEED_POPEN_DECL
+extern FILE *popen __P((char *, char *)); /* from {generic,vms}/popen.c */
+extern int pclose __P((FILE *));
+#endif /* NEED_POPEN_DECL defined */
