@@ -4,10 +4,15 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#include "snotypes.h"
 #include <sys/types.h>
 #include <sys/times.h>			/* appeared post-v7?! */
 #include <unistd.h>			/* for _SC_CLK_TCK */
+#include <stdio.h>
+
+#include "h.h"
+#include "snotypes.h"
+#include "lib.h"
+
 /*
  * times() is venerable (it was in v6)!!
  * use POSIX sysconf() to get hz!

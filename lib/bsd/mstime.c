@@ -4,11 +4,14 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#include "snotypes.h"			/* for int_t */
-
+#include <stdio.h>
 #include <sys/types.h>
 #include <sys/time.h>
 #include <sys/resource.h>
+
+#include "h.h"
+#include "snotypes.h"			/* for int_t */
+#include "lib.h"
 
 /*
  * use Berkeley rusage() call to get runtime

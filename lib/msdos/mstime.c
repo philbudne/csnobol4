@@ -4,8 +4,12 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#include "snotypes.h"
 #include <time.h>
+#include <stdio.h>
+
+#include "h.h"
+#include "snotypes.h"
+#include "lib.h"
 
 static int first_time = -1;
 static long start_time;

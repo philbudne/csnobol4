@@ -4,8 +4,12 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#include "snotypes.h"
 #include <time.h>			/* clock_t, CLK_TCK */
+#include <stdio.h>
+
+#include "h.h"
+#include "snotypes.h"
+#include "lib.h"
 
 /*
  * use ANSI clock() function to get runtime (returns user+system)
@@ -14,10 +18,10 @@
 #ifndef CLK_TCK
 #ifdef CLOCKS_PER_SEC
 #define CLK_TCK CLOCKS_PER_SEC
-#else
+#else  /* CLOCKS_PER_SEC not defined */
 #define CLK_TCK 1000000			/* popular value? */
-#endif
-#endif
+#endif /* CLOCKS_PER_SEC not defined */
+#endif /* CLK_TCK not defined */
 
 real_t
 mstime() {

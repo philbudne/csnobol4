@@ -7,7 +7,11 @@
 #endif /* HAVE_CONFIG_H defined */
 
 #include <windows.h>
+#include <stdio.h>
+
+#include "h.h"
 #include "snotypes.h"
+#include "lib.h"
 
 #ifdef NO_STATIC_VARS
 #include "vars.h"
@@ -56,7 +60,7 @@ mstime()
 	    GetSystemTimeAsFileTime(&t0);
 	    return 0;
 	}
-#else
+#else  /* NO_STATIC_VARS defined */
 	FILETIME *t0p;
 	if (timevars) {
 	    FILETIME t;
@@ -71,6 +75,6 @@ mstime()
 	    GetSystemTimeAsFileTime(t0p);
 	    return 0;
 	}
-#endif
+#endif /* NO_STATIC_VARS defined */
     }
 }

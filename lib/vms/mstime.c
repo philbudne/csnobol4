@@ -4,11 +4,15 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#include "snotypes.h"
 #include <time.h>
+#include <stdio.h>
+
+#include "h.h"
+#include "snotypes.h"
+#include "lib.h"
 
 /*
- * mstime for vms
+ * mstime for VMS
  * J. Leighter
  */
 
