@@ -10,6 +10,9 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
+#include <stdio.h>			/* for lib.h */
+#include <ctype.h>
+
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
@@ -23,8 +26,6 @@
 #ifdef NO_STATIC_VARS
 #include "vars.h"
 #endif /* NO_STATIC_VARS defined */
-
-#include <ctype.h>
 
 int
 spcint(dp, sp)
@@ -55,7 +56,7 @@ spcint(dp, sp)
     }
 
     while (len > 0) {
-	if (!isdigit(*cp))
+	if (!isdigit((unsigned char)*cp))
 	    return FALSE;
 	temp *= 10;
 	/* could just multiply... nah! */

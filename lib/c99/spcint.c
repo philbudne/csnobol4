@@ -9,6 +9,7 @@
 #endif /* HAVE_CONFIG_H defined */
 
 #include <stdlib.h>			/* strtoll() */
+#include <stdio.h>
 
 #include "h.h"
 #include "snotypes.h"
