@@ -104,3 +104,5 @@ reg function.sno
 reg ord.sno
 # 2/22/2002
 reg include.sno
+# 7/7/2003
+reg 8bit2.sno
