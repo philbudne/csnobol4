@@ -64,6 +64,10 @@ static char *rcsid = "$OpenBSD: bindresvport.c,v 1.13 2000/01/26 03:43:21 deraad
 
 #include "str.h"			/* bzero() */
 
+#ifdef NEED_SOCKLEN_T
+typedef int socklen_t;
+#endif /* NEED_SOCKLEN_T defined */
+
 #define STARTPORT 600
 #define ENDPORT (IPPORT_RESERVED - 1)
 #define NPORTS	(ENDPORT - STARTPORT + 1)
@@ -80,7 +84,7 @@ bindresvport_sa(sd, sa)
 	struct sockaddr myaddr;
 	unsigned short *portp;
 	unsigned short port;
-	unsigned int salen;
+	socklen_t salen;
 	int i;
 
 	if (sa == NULL) {
