@@ -245,3 +245,27 @@ init()
     signal(SIGOVER, math_catch);
 #endif /* SIGOVER defined */
 }
+
+/* 9/21/96 - set specifier to point to entire command line for &PARM */
+int
+getparm( sp )
+    struct spec *sp;
+{
+    static char parm[2048];		/* XXX */
+    int i;
+
+    parm[0] = '\0';
+    for (i = 0; i < argc; i++) {
+	if (parm[0])
+	    strcat(parm, " ");
+	strcat(parm, argv[i] );
+    }
+    S_A(sp) = (int_t) parm;		/* OY! */
+    S_F(sp) = 0;			/* NOTE: *not* a PTR! */
+    S_V(sp) = 0;
+    S_O(sp) = 0;
+    S_L(sp) = strlen(parm);
+    CLR_S_UNUSED(sp);
+
+    return 1;
+}
