@@ -4,7 +4,7 @@ System:	System mfgr, type, cpu type
 Speed:	System clock speeds external/internal
 OS:	O/S and version
 C:	C compiler & optimizations
-REL:	C-MAINBOL SNOBOL release
+REL:	CSNOBOL4 release
 st/sec:	statements/second for genc.sno reported by "timing" script
 	"*" if some regression tests failed
 	"?" if results questionable, or estimated
@@ -22,17 +22,24 @@ made when all systems were timed with the same release of SNOBOL!
 
 System		Speed OS	    C	opt	REL    st/sec	who/when
 ===============================================================================
+AMD Athlon	1000  Linux 2.4.9   gcc	-O2	0.99.4 625292	pb 1/02
 AMD Athlon	900   NetBSD 1.5.1  gcc		0.99.4 555815	pb 1/01
+AMD Athlon	900   FreeBSD 4.4   gcc		0.99.4 548317	pb 1/02
+AMD Athlon	900   Linux 2.2.14  gcc		0.99.4 533036	pb 1/02
 Pentium III(?)	1000  Linux 2.4.2   gcc		0.99.4 508050	jb 11/01
 AMD Athlon	900   Linux 2.0.36  gcc		0.99.4 478164	pb 1/01
-AMD Athlon	850   CYGWIN_ME	    gcc		0.99.4 432382	hb 12/01
+AMD Athlon	850   CygWin_ME	    gcc		0.99.4 432382	hb 12/01
 Pentium III	800   FreeBSD 4.1   gcc		0.99.4 427831	pb 7/00
-Pentium III	800x2 CYGWIN_NT4.0  gcc		0.99.4 416327	gb 1/02
+Pentium III	800x2 CygWin_NT4.0  gcc		0.99.4 416327	gb 1/02
 Pentium III	800   Linux 2.2.18  gcc		0.99.4 411584	? 1/01
+AMD Athlon	900   CygWin_98	    gcc		0.99.4 401422	pb 1/01
 Pentium III	600   Linux 2.4.9   gcc		0.99.4 303880	jm 1/02
 Pentium III	600   Linux 2.2.17  gcc		0.99.4 264351	pt 3/01
 Pentium III	600x2 Linux 2.2.16  gcc		0.99.4 264351	pt 12/00
+Strawberry iMac 400   Linux 2.2.15  gcc -O2	0.99.4 240853	pb 10/00
+Pentium III	500x4 Linux 2.2.14  gcc		0.99.4 239082	pb 12/00
 Pentium III	500x2 Linux 2.2.14  gcc		0.99.4 235617	lt 10/00
+Strawberry iMac 400   Linux 2.2.15  gcc		0.99.4 233922	pb 5/00
 Celeron		450   FreeBSD 2.2.7 gcc		0.99.4 231095	pb 7/99
 PPC G4		500   Darwin 1.2    gcc		0.99.4 215052	rwu 11/00
 PPC G3		400   Linux 2.4.1   gcc		0.99.4 213915	prw 1/01
@@ -46,6 +53,8 @@ P6 ?		400   CYGWIN_NT	    gcc		0.99.4 184117	rs 11/98
 Pentium III	650   Linux 2.4.2   gcc		0.99.4 184117	maa 7/01
 Pentium II	?     SunOS 2.6	    spro	0.99.4 167341	pb 6/99
 AlphaPC 164LX	600   Linux 2.2.18j gcc		0.99.4 162332	jwk 9/01
+Sun Blade 100	502   SunOS 5.8	    spro	0.99.4 144512	pb 1/02
+AlphaServer1000A 400  OSF1 V4.0	    cc		0.99.4 135536	pb 5/00
 Sun Ultra 450	296   SunOS 5.6	  sproO5/native	0.99.4 129028	pb 9/98
 Power Mac	233   Linux 2.2.17  gcc		0.99.4 128518	joe 1/00
 Sun Ultra 30	296   SunOS 5.5.1 sproO5/cg92	0.99.4 123163	pb 8/97
@@ -53,6 +62,7 @@ PPro		200   Linux 2.2.12  gcc		0.99.4 117808	mw 2/00
 P5		266   Linux 2.0.34  gcc		0.99.4 114088	pt 1/99
 Dell Opti. GXa	266   FreeBSD 3.3   gcc		0.99.4 106747	jrf 3/00
 P6 (ASUS P6NP5)	200   FreeBSD 2.2   gcc -O2	0.99.1 103491	cl 11/96
+AMD K6		233?  Linux 2.0.34  gcc		0.99.4 101293	pb 10/00
 P6 (GW2K)	200   SunOS 5.5.1   gcc -O2	0.99.4 100978	pb 8/97
 Sun Ultra 30	296   SunOS 5.6	    gcc		0.99.4 100355	ras 10/98
 P6 (ASUS P6NP5)	200   FreeBSD 2.2   gcc		0.99.1  95608	cl 11/96
@@ -98,6 +108,7 @@ AMD K5		133   Linux 2.0.33  gcc		0.99.4	46784	ad 1/98
 P5		120   Linux 2.0.30  gcc		0.99.4	45285	rb 11/97
 P5 (Endeavor)	120   FreeBSD 2.2.1 gcc		0.99.3	44858	db3 6/97
 P54C		120   FreeBSD 2.2.7 gcc		0.99.4	44202	pb 12/98
+P5		133   Linux 2.2.5   gcc		0.99.4  42448	pb 11/99
 IBM RS/6K J40	225?  AIX 4.2       cc		0.99.4  41847	cs 2/98
 Sun SS1000	85    SunOS 5.5     spro	0.99.1  41682	pb 10/96
 HP 9000/778	160   HP-UX 10.20   cc		0.99.3+	40417	pb 6/97
@@ -165,7 +176,7 @@ i486SX		33    Linux 2.1.14  gcc		0.99.3	 4865	ad 4/97
 Sun SS/IPC	25    SunOS 4.1.4   gcc		0.99.4	 4581	pb 8/97
 HP 425T (68040)	26    HP-UX 8.00    c89		0.99	 4485	pb 10/96
 HP 375 (68030)	50    NetBSD 1.2E   gcc		0.99.4	 4156*	pb 8/97
-DEC MIPS 3000	25    NetBSD 1.4.1  gcc		0.99.4	 3416	gz 5/00
+PMAX 5000/120	25    NetBSD 1.4.1  gcc		0.99.4	 3416	gz 5/00
 HP 370 (68030)	33.3  NetBSD 1.2E   gcc		0.99.4	 3167*	pb 8/97
 i486		??    FreeBSD 2.2.1 gcc		0.99.4+	 3367	pb 8/97
 HP 370 (68030)	33.3  Mt Xinu 4.3   gcc		0.99	 3064	pb 10/96
