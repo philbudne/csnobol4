@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.76  1997/10/29  06:21:53  phil
+* [PLB65] merged matching functions into SCIN1
+*
 * Revision 1.75  1997/10/24  20:21:04  phil
 * [PLB64] from SNOBOL4+
 * Allow reals in INTVAL
@@ -623,7 +626,7 @@ XSCON   EQU    30
 XSPNC   EQU    31
 XSTAR   EQU    32
 XTB     EQU    33
-XRTN3   EQU    34
+XRTNL3  EQU    34
 XFNCE   EQU    35
 XSUCF   EQU    36
 *---------------------------------------------------------------------*
