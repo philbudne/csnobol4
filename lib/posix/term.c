@@ -11,6 +11,10 @@
 #define STDERR_FILENO 2
 #endif /* HAVE_UNISTD_H not defined */
 
+#include "h.h"
+#include "snotypes.h"
+#include "lib.h"
+
 /*
  * return a stdio stream for TERMINAL input variable
  * POSIX.1 version; fdopen() on stderr stream

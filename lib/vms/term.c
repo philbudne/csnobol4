@@ -6,6 +6,10 @@
 
 #include <stdio.h>
 
+#include "h.h"
+#include "snotypes.h"
+#include "lib.h"
+
 /*
  * return a stdio stream for TERMINAL input variable
  * VMS version.
