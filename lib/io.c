@@ -652,12 +652,12 @@ io_printf
 	switch (c) {
 	case 'd':			/* plain decimal */
 	    dp = va_arg(vp, struct descr *);
-	    sprintf(lp, "%d", D_A(dp));
+	    sprintf(lp, "%d", (long)D_A(dp)); /* XXX handle LP32LL64 int_t */
 	    lp += strlen(lp);
 	    break;
 	case 'D':			/* padded decimal */
 	    dp = va_arg(vp, struct descr *);
-	    sprintf(lp, "%15d", D_A(dp));
+	    sprintf(lp, "%15d", (long)D_A(dp));	/* XXX handle LP32LL64 int_t */
 	    lp += strlen(lp);
 	    break;
 	case 'F':			/* padded float */
@@ -677,7 +677,7 @@ io_printf
 	    break;
 	case 'S':			/* spec */
 	    sp = va_arg(vp, struct spec *);
-	    strncpy(lp, S_SP(sp), S_L(sp));
+	    strncpy(lp, S_SP(sp), (long)S_L(sp)); /* XXX SIZE_T */
 	    lp += S_L(sp);
 	    break;
 	case 'v':			/* variable */
@@ -704,7 +704,7 @@ io_printf
 void
 io_print( iokey, iob, sp )		/* STPRNT */
     struct descr *iokey;
-    struct descr **iob;
+    struct descr *iob;
     struct spec *sp;
 {
     int unit;
@@ -713,15 +713,15 @@ io_print( iokey, iob, sp )		/* STPRNT */
     FILE *f;
     int ret;
 
-    /*
-     * (*iob)[0]	title descr
-     * (*iob)[1]	integer unit number
-     * (*iob)[2]	pointer to natural var for format
+    /* IOB->
+     * title descr
+     * integer unit number
+     * pointer to natural var for format
      */
 
     D_A(iokey) = FALSE;			/* default to error */
 
-    unit = INTERN(D_A(*iob + 1));
+    unit = INTERN(D_A(D_A(iob) + DESCR));
     if (BADUNIT(unit))
 	return;
 
@@ -812,7 +812,7 @@ io_print( iokey, iob, sp )		/* STPRNT */
 
 int
 io_endfile(unit)			/* ENFILE */
-    int unit;
+    int_t unit;
 {
     struct unit *up;
 
@@ -986,14 +986,14 @@ io_read( dp, sp )			/* STREAD */
 
 void
 io_backspace(unit)			/* BKSPCE */
-    int unit;
+    int_t unit;
 {
     UNDF();
 }
 
 void
 io_rewind(unit)				/* REWIND */
-    int unit;
+    int_t unit;
 {
     FILE *f;
     struct file *fp;
