@@ -59,17 +59,17 @@ include(config.m4)
 
 CPPFLAGS=`-I./include -I. $(CONFIG_CPPFLAGS)'
 
-CFLAGS=$(OPT) $(CONFIG_CFLAGS)
+CFLAGS=$(OPT) $(CPPFLAGS) $(CONFIG_CFLAGS)
 
 LIBS=$(MATHLIB)
 
 LDFLAGS=$(LIBS) $(CONFIG_LDFLAGS)
 
-ifdef(`SPITBOL',`
-SNO=spitbol -i512k -b
-SMALL_SNO=spitbol -b',
-`SNO=snobol4 -d50000
-SMALL_SNO=snobol4')
+# bootstrapped using Catspaw SPARC SPITBOL
+#SNO=spitbol -i512k -b
+#SMALL_SNO=spitbol -b
+SNO=snobol4 -d50000
+SMALL_SNO=snobol4
 
 ################
 
@@ -98,8 +98,9 @@ xsnobol4: $(OBJS)
 
 ################
 
+# may need special options due to size!!
 snobol4.o: snobol4.c 
-	$(CC) $(CFLAGS) $(SNOBOL4_C_CFLAGS) $(CPPFLAGS) -c snobol4.c
+	$(CC) $(CFLAGS) $(SNOBOL4_C_CFLAGS) -c snobol4.c
 
 snobol4.c proc.h: procs genc.sno global.procs v311.sil 
 	rm -f snobol4.c.TMP
@@ -135,88 +136,88 @@ data_init.o:	data_init.c data_init.h equ.h data.h proc.h
 # lib files
 
 bal.o:	$(BAL_C)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $(BAL_C)
+	$(CC) $(CFLAGS) -c $(BAL_C)
 
 convert.o: $(CONVERT_C)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $(CONVERT_C)
+	$(CC) $(CFLAGS) -c $(CONVERT_C)
 
 date.o:	$(DATE_C)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $(DATE_C)
+	$(CC) $(CFLAGS) -c $(DATE_C)
 
 dump.o:	$(DUMP_C)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $(DUMP_C)
+	$(CC) $(CFLAGS) -c $(DUMP_C)
 
 dynamic.o: $(DYNAMIC_C)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $(DYNAMIC_C)
+	$(CC) $(CFLAGS) -c $(DYNAMIC_C)
 
 endex.o: $(ENDEX_C)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $(ENDEX_C)
+	$(CC) $(CFLAGS) -c $(ENDEX_C)
 
 exp.o:	$(EXP_C)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $(EXP_C)
+	$(CC) $(CFLAGS) -c $(EXP_C)
 
 hash.o:	$(HASH_C)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $(HASH_C)
+	$(CC) $(CFLAGS) -c $(HASH_C)
 
 init.o:	$(INIT_C)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $(INIT_C)
+	$(CC) $(CFLAGS) -c $(INIT_C)
 
 intspc.o: $(INTSPC_C)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $(INTSPC_C)
+	$(CC) $(CFLAGS) -c $(INTSPC_C)
 
 io.o:	$(IO_C)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $(IO_C)
+	$(CC) $(CFLAGS) -c $(IO_C)
 
 lexcmp.o: $(LEXCMP_C)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $(LEXCMP_C)
+	$(CC) $(CFLAGS) -c $(LEXCMP_C)
 
 load.o:	$(LOAD_C)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $(LOAD_C)
+	$(CC) $(CFLAGS) -c $(LOAD_C)
 
 mstime.o: $(MSTIME_C)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $(MSTIME_C)
+	$(CC) $(CFLAGS) -c $(MSTIME_C)
 
 ordvst.o: $(ORDVST_C)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $(ORDVST_C)
+	$(CC) $(CFLAGS) -c $(ORDVST_C)
 
 pair.o:	$(PAIR_C)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $(PAIR_C)
+	$(CC) $(CFLAGS) -c $(PAIR_C)
 
 pat.o:	$(PAT_C)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $(PAT_C)
+	$(CC) $(CFLAGS) -c $(PAT_C)
 
 realst.o: $(REALST_C)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $(REALST_C)
+	$(CC) $(CFLAGS) -c $(REALST_C)
 
 replace.o: $(REPLACE_C)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $(REPLACE_C)
+	$(CC) $(CFLAGS) -c $(REPLACE_C)
 
 str.o:	$(STR_C)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $(STR_C)
+	$(CC) $(CFLAGS) -c $(STR_C)
 
 stream.o: $(STREAM_C)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $(STREAM_C)
+	$(CC) $(CFLAGS) -c $(STREAM_C)
 
 top.o:	$(TOP_C)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $(TOP_C)
+	$(CC) $(CFLAGS) -c $(TOP_C)
 
 tree.o:	$(TREE_C)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $(TREE_C)
+	$(CC) $(CFLAGS) -c $(TREE_C)
 
 #################
 # porting aids not used in all builds;
 
 bzero.o: $(BZERO_C)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $(BZERO_C)
+	$(CC) $(CFLAGS) -c $(BZERO_C)
 
 bcopy.o: $(BCOPY_C)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $(BCOPY_C)
+	$(CC) $(CFLAGS) -c $(BCOPY_C)
 
 getopt.o: $(GETOPT_C)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $(GETOPT_C)
+	$(CC) $(CFLAGS) -c $(GETOPT_C)
 
 vfprintf.o: $(VFPRINTF_C)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $(VFPRINTF_C)
+	$(CC) $(CFLAGS) -c $(VFPRINTF_C)
 
 ##################################################################
 # housekeeping
@@ -241,7 +242,7 @@ TAR=	README doc History TODO TODO.soon \
 	$(GENERATED) \
 	cc-M
 
-#/* XXX perform general cleanup (remove ~ and # files) first? */
+# XXX perform general cleanup (remove ~ and # files) first?
 KIT=snobol.tar.Z
 tar:	$(KIT)
 
