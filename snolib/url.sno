@@ -61,9 +61,3 @@ URL.CLOSE.FTP
 	FTP.CLOSE(URL.NAME)				:(RETURN)
 
 URL.CLOSE.END
-
-
-	URL.OPEN(.FOO, "http://www.tiac.net/users/philb/") :F(END)
-LOOP	OUTPUT = FOO					:S(LOOP)
-	URL.CLOSE(.FOO)
-END
