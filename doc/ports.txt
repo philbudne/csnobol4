@@ -22,78 +22,77 @@ made when all systems were timed with the same release of SNOBOL!
 
 System		Speed OS	    C	opt	REL    st/sec	who/when
 ===============================================================================
-Sun Ultra 30	296   SunOS 5.5.1   spro -xO5	0.99.3++123880	pb 7/97
+Sun Ultra 30	296   SunOS 5.5.1   spro -xO5	0.99.3++123163	pb 8/97
 P6 (ASUS P6NP5)	200   FreeBSD 2.2   gcc -O2	0.99.1 103491	cl 11/96
-P6 (GW2K)	200   SunOS 5.5.1   gcc -O2	0.99.3++100868	pb 7/97
+P6 (GW2K)	200   SunOS 5.5.1   gcc -O2	0.99.3++100978	pb 8/97
 P6 (ASUS P6NP5)	200   FreeBSD 2.2   gcc		0.99.1  95608	cl 11/96
-Sun Ultra 30	296   SunOS 5.5.1   sunpro	0.99.3++94163	pb 7/97
-P6 (GW2K)	200   SunOS 5.5.1   sunpro	0.99.3++93891	pb 7/97
-P6 (GW2K)	200   SunOS 5.5.1   gcc		0.99.3++93353	pb 7/97
+Sun Ultra 30	296   SunOS 5.5.1   sunpro	0.99.3++98530	pb 8/97
+P6 (GW2K)	200   SunOS 5.5.1   sunpro	0.99.3++93116	pb 8/97
+P6 (GW2K)	200   SunOS 5.5.1   gcc		0.99.3++93116	pb 8/97
 P6 (DELL)	200   Linux 2.0.23  gcc		0.99.3	91072	rf 2/97
 SGI IP28 (R10K)	195   IRIX 6.2      cc		0.99    89823	rh 10/96
-HP 9000/778	160   HP-UX 10.20   c89		0.99.3++76660	pb 7/97
+HP 9000/778	160   HP-UX 10.20   c89		0.99.3++80483	pb 8/97
 HP 9000/780	160   HP-UX 10.20   c89		0.99.3	72698	rf 2/97
 Sun Ultra2 170E	167   SunOS 5.5.1   sproO5/cg92 0.99.3	70985	rf 2/97
 P6 (DEC 6150XL)	175   FreeBSD 2.2   gcc		0.99.1  70326	lm 10/96
 Sun Ultra2 170E	167   SunOS 5.5.1   gcc -O2	0.99.1  65103	cl 11/96
 Sun Ultra2 170E	167   SunOS 5.5.1   gcc		0.99.1  62524	cl 11/96
 Sun Ultra1	143   SunOS 5.5.1   spro -xO5	0.99.3	57955	pb 3/97
-Sun Ultra2	167   SunOS 5.5.1   spro	0.99.3++54030	pb 7/97
+Sun Ultra2	167   SunOS 5.5.1   spro	0.99.3++57144	pb 8/97
 HP 9000/735	125   HP-UX 9.03    c89		0.99.3	48894	rf 2/97
 P5 (Endeavor)	120   FreeBSD 2.2.1 gcc		0.99.3	44858	db3 6/97
-P5 (ASUS TP4N)	120   Linux 2.0.27  gcc		0.99.3++43909	pb 7/97
+P5 (ASUS TP4N)	120   Linux 2.0.27  gcc		0.99.3++46784	pb 8/97
 Sun SS1000	85    SunOS 5.5     spro	0.99.1  41682	pb 10/96
 HP 9000/778	160   HP-UX 10.20   cc		0.99.3+	40417	pb 6/97
 SGI IP22 (R5K)	180   IRIX 6.2      cc		0.99    39337	rh 10/96
 HP 9000/887-G70 96    HP-UX 9.04    c89		0.99.1  37613	hb 11/96
 P5		100   BSDI 2.1      gcc		0.99.1  35972	db2 11/96
+P5		90    Linux 2.0.27  gcc		0.99.3++34047	pb 8/97
 IBM RS/6K R30	75    AIX 4.1.4     cc		0.99.2  31894	pt 12/96
-P5		90    Linux 2.0.27  gcc		0.99.3++32354	pb 7/97
-DEC 3000/500	150   OSF/1 3.2     gcc		0.99.3++27452	pb 7/97
-DEC 3000/500	150   DU 4.0	    cc		0.99.3++26736	pb 7/97
+DEC 3000/500	150   OSF/1 3.2     gcc		0.99.3++28688	pb 8/97
+DEC 3000/500	150   DU 4.0	    cc		0.99.3++28078	pb 8/97
 P5		100   SCO 3.2v5.0.2 cc		0.98.1  26322	pb 9/96
 DEC 3000/500	150   OSF/1 3.2     cc		0.99.3+ 25594	pb 6/97
 HP 9000/712	80?   HP-UX 9.03    c89		0.99.1  25848	hb 11/96
 Sun SS10/612	60    SunOS 5.5     spro	0.99    25733	ro 10/96
 P5		90    Linux 2.0.23  gcc		0.99.2  23535 	dj 12/96
 IBM RS/6K 970	50    AIX 3.2	    gcc		0.99    22064	bm 10/96
-Sun SS1000	50    SunOS 5.4     spro	0.99.3++21448	pb 7/97
+Sun SS1000	50    SunOS 5.4     spro	0.99.3++22225	pb 8/97
 P5		75    NetBSD 1.1    gcc		0.99    20923 	to 10/96
-Sun SS10/51	50    SunOS 4.1.3C  gcc		0.98.3++20211	pb 7/97
-Sun SS20/51	50    SunOS 4.1.3U1 gcc		0.99.3++19781	pb 7/97
-IBM RS/6K 40P	66    AIX 4.1.2	    cc		0.99.3++19485	pb 7/97
-HP 9000/720	50    HP-UX 10.10   c89		0.99.3+ 19402	pb 6/97
+Sun SS10/51	50    SunOS 4.1.3C  gcc		0.98.3++20710	pb 8/97
+Sun SS20/51	50    SunOS 4.1.3U1 gcc		0.99.3++20644	pb 8/97
+IBM RS/6K 40P	66    AIX 4.1.2	    cc		0.99.3++20108	pb 8/97
+HP 9000/720	50    HP-UX 10.10   c89		0.99.3++20183	pb 8/97
+DEC 3000/300	150   NetBSD 1.2E   gcc		0.99.3++19361	pb 6/97
 HP 9000/720	50    HP-UX 9.05    c89		0.99.3++19120	pb 7/97
-SGI IP20 (R4K)	100   IRIX 5.2      cc		0.99.3++17432	pb 7/97
+SGI IP20 (R4K)	100   IRIX 5.2      cc		0.99.3++17453	pb 8/97
 Sun SS5/110	110   SunOS 5.5.1   spro	0.99.1  17072	db 11/96
-DEC 3000/300	150   NetBSD 1.2E   gcc		0.99.3+ 19696	pb 6/97
 Sun SS5/110	110   SunOS 5.5.1   spro	0.99.3  15075	db 11/96
-i486		??    Linux 2.0.14  gcc -O2	0.99.2  14656	pb 12/96
-i486		??    Linux 2.0.28  gcc		0.99.3+ 13850	pb 6/97
-Sun SS5/85	85    SunOS 4.1.4   gcc		0.99.3++12687	pb 7/97
+i486		??    Linux 2.0.30  gcc		0.99.3++15039	pb 8/97
+Sun SS5/85	85    SunOS 4.1.4   gcc		0.99.3++12756	pb 8/97
 Sun SS10/40	40    SunOS 5.5.1   gcc		0.99.1  12237	jm 11/96
 i486DX2		66    OpenBSD 2.0   gcc		0.99.2	 9376	to 12/96
-Solbourne/5E	40    OS/MP 4.1B    gcc		0.99.3++ 8817	pb 7/97
-IBM RS/6K 320	25    AIX 3.2.5     cc		0.99.3++ 7200	pb 8/97
-Sun SS2		40    SunOS 4.1.4   gcc		0.99.3	 7058	pb 2/97
+Solbourne/5E	40    OS/MP 4.1B    gcc		0.99.3++ 8004	pb 8/97
+IBM RS/6K 320	25    AIX 3.2.5     cc		0.99.3++ 7433	pb 8/97
+Sun SS2		40    SunOS 4.1.3   gcc		0.99.3++ 7116	pb 8/97
+HP 380 (68040)	25    NetBSD 1.2E   gcc		0.99.3++ 7069	pb 8/97
 Sun SS/LX	50    SunOS 5.4     spro	0.99.1	 7016	hb 11/96
-Sun SS2		40    SunOS 4.1.3   gcc		0.99.3++ 6694	pb 7/97
+Sun SS2		40    NetBSD 1.2E   gcc		0.99.3++ 6578*	pb 8/97
 Sun SS/ELC	33    SunOS 5.5     spro	0.99	 6387	pb 10/96
-Sun SS2		40    NetBSD 1.2E   gcc		0.99.3+	 6259*	pb 7/97
-HP 42T (68040)	25    HP-UX 8.00    gcc		0.99.2	 6182	pb 12/96
-Sun SS/ELC	33    SunOS 5.5     gcc		0.99.1	 5311	pb 10/96
+HP 425T (68040)	26    HP-UX 8.00    gcc		0.99.2	 6182	pb 12/96
 HP 9000/834	15    HP-UX 7	    gcc		0.99.2+	 4898	pb 12/96
 i486SX		33    Linux 2.1.14  gcc		0.99.3	 4865	ad 4/97
-HP 42T (68040)	25    HP-UX 8.00    c89		0.99	 4485	pb 10/96
-Sun SS/IPC	25    SunOS 4.1.4   gcc		0.99.3++ 4355	pb 7/97
+Sun SS/IPC	25    SunOS 4.1.4   gcc		0.99.3++ 4581	pb 8/97
+HP 425T (68040)	26    HP-UX 8.00    c89		0.99	 4485	pb 10/96
+HP 375 (68030)	50    NetBSD 1.2E   gcc		0.99.3++ 4156*	pb 8/97
+HP 370 (68030)	33.3  NetBSD 1.2E   gcc		0.99.3++ 3167*	pb 6/97
 HP 370 (68030)	33.3  Mt Xinu 4.3   gcc		0.99	 3064	pb 10/96
-HP 370 (68030)	33.3  NetBSD 1.2E   gcc		0.99.3+	 3052*	pb 6/97
 pc532 (ns32532)	25    NetBSD 1.2    gcc		0.99	 2823*	pb 10/96
 Sun-4/110	14.28 NetBSD 1.2    gcc		0.99.1	 2751	pb 11/96
-A3000 (68030)	25    NetBSD 1.2    gcc		0.99	 1872	pb 10/96
+A3000 (68030)	25    NetBSD 1.2E   gcc		0.99.3++ 1979*	pb 8/97
 IBM RT/6152	??    ACIS/AOS 4.3  gcc		0.99	 1780*	pb 10/96
-Sun-3/80(68030)	20    SunOS 4.1.1   gcc		0.99.3++ 1530	pb 7/97
-Sun-3/80(68030)	20    SunOS 4.1.1   cc		0.99.3++ 1439	pb 7/97
+Sun-3/80(68030)	20    SunOS 4.1.1   gcc		0.99.3++ 1634	pb 7/97
+Sun-3/80(68030)	20    SunOS 4.1.1   cc		0.99.3++ 1502	pb 7/97
 ---
 
 old timings;

@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+8/8/97:
+	doc/ports.doc: updated
+
 8/6/97:
 	Makefile: use ./configure
 	Makefile2.m4: added configure to tar
