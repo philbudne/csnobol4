@@ -280,7 +280,7 @@ EOF
 	echo "# cc is gcc"			>> $CONFIG_M4
 	GCCPATH="${CC-cc}"
     fi
-    rm -f $TMP $TMP.c
+    rm -f $TMP $TMP.c $TMP.exe
 
     # if cc is gcc, disregard --no-gcc
     WANTGCC=true
@@ -615,7 +615,7 @@ if ${CCPATH-cc} -o $TMP $TMP.c && ./$TMP > $TMP.out &&
 	LP64_NATIVE=true
     fi
 fi
-rm -f $TMP $TMP.c $TMP.out
+rm -f $TMP $TMP.c $TMP.out $TMP.exe
 
 # after size checks;
 if [ "$USING_GCC" ]; then
