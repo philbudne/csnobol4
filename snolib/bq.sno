@@ -6,11 +6,14 @@
 
 *	optional second arg is string to use to seperate lines
 
-	DEFINE("BQ(COMMAND,OFS)")			:(END_BQ)
-BQ	INPUT(.X,99,,'|' COMMAND)			:F(FRETURN)
+	DEFINE("BQ(COMMAND,OFS,UNIT)")			:(END_BQ)
+BQ	UNIT = IO_FINDUNIT()				:F(FRETURN)
+	INPUT(.X,UNIT,,'|' COMMAND)			:F(FRETURN)
 	OFS = IDENT(OFS) ' '
-	BQ = X						:F(FRETURN)
+	BQ = X						:F(BQF)
 BQL	BQ = BQ OFS X					:S(BQL)
-	ENDFILE(99)
+	ENDFILE(UNIT)
 	DETACH(.X)					:(RETURN)
+BQF	ENDFILE(UNIT)
+	DETACH(.X)					:(FRETURN)
 END_BQ
