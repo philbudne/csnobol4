@@ -167,10 +167,13 @@ int tty_read __P((FILE *,char *,int,int,int,int,char *));
 int getredirection __P((int, char **));
 #endif /* vms defined */
 
-/* from rresvport.c */
-#ifdef NEED_RRESVPORT_DECL
-extern int rresvport __P((int *));
-#endif /* NEED_RRESVPORT_DECL */
+/* from bindresvport.c */
+#ifdef NEED_BINDRESVPORT
+extern int bindresvport __P((int));
+#endif /* NEED_BINDRESVPORT */
+#ifdef NEED_BINDRESVPORT_SA
+extern int bindresvport_sa __P((int, struct sockaddr *));
+#endif /* NEED_BINDRESVPORT_SA */
 
 /* from popen.c */
 #ifdef NEED_POPEN_DECL
