@@ -3,8 +3,8 @@ $Id$
        ``The Macro Implementation of SNOBOL4 in C'' (CSNOBOL4)
 		      Installation instructions
 
-Unix systems (or systems with POSIX shell, make and m4);
-=======================================================
+Unix systems (or systems with POSIX shell, make, awk and m4);
+============================================================
 
 Compilation
 -----------
@@ -53,7 +53,7 @@ following options (multiple instances of options that begin with
 
 	--add-srcs=STRING
 		Add additional source files for "make depend"
-
+
 	--double
 		Use C "double" data type to represent SNOBOL4 REALs.
 		This is the default when the environment defaults
@@ -67,6 +67,13 @@ following options (multiple instances of options that begin with
 		Does not effect size of INTEGER data type, or the
 		maximum object size (see --no-bitfields).
 
+	--fast
+		Enable use of vendor C compiler options which may make
+		snobol4 run faster, but may make the executable less
+		portable (e.g. by using instructions not available on
+		all systems).  This option should be considered
+		experimental.  If the build fails, try not using it!!
+
 	--force-gcc
 		Force use of GCC, the GNU C Compiler;
 		fail if GCC not available.
@@ -75,7 +82,7 @@ following options (multiple instances of options that begin with
 		Force use of system memmove() function (if present)
 		if no bcopy() function is available.  Otherwise the
 		bcopy.c source file will be used.
-
+
 	--longlong
 		Attempt to use C "long long" data type to represent SNOBOL4
 		INTEGERs, and "double" for REAL on systems where pointers
@@ -102,7 +109,7 @@ following options (multiple instances of options that begin with
 
 		This option is experimental, and has not been extensively
 		tested, particularly with vendor supplied C compilers.
-
+
 	--lp64
 		Force the use of defines for LP64 (64-bit long and
 		pointer) data model where available, but not the
@@ -165,7 +172,7 @@ following options (multiple instances of options that begin with
 		and unpacking a 24-bit field, the larger descriptor
 		means increased memory bandwidth use, and less
 		efficient use of the CPU data cache.
-
+
 	--no-dynlib
 		Disable use of all dynamic LOAD() support mechanisms
 
@@ -176,7 +183,7 @@ following options (multiple instances of options that begin with
 		Disable any compiler options for code inlining, select
 		snobol4.c (which has not been reordered to facilitate
 		inlining) instead of isnobol4.c
-
+
 	--no-largefile
 		Disable automatic selection of large file (>2GB) support.
 		If autoconf manages to turn on 64-bit file set type (off_t)
@@ -219,7 +226,7 @@ following options (multiple instances of options that begin with
 	--prefix=DIR
 		Supply a directory prefix for bin/ and lib/ directories.
 		Default prefix is /usr/local
-
+
 The configure script tries to select from among different versions
 of system support functions, including "dummy" versions which allow
 the software to be built, with reduced functionality.
