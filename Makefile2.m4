@@ -419,7 +419,7 @@ GENERATED=syn.c syn.h data.c data.h data_init.h proc.h equ.h \
 G2=data.c data.h data_init.h proc.h equ.h syn.h
 
 # disposables
-DISP=*.o callgraph prolog subr
+DISP=*.o *.a callgraph prolog subr
 
 # remove objects; leave generated sources, final binary, Makefile2
 clean:
