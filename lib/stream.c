@@ -97,7 +97,7 @@ stream( sp1, sp2, tp )
  break_loop:
     len = S_L(sp2) - len;		/* get match length */
 
-    _S(sp1) = _S(sp2);			/* copy spec for prefix */
+    _SPEC(sp1) = _SPEC(sp2);		/* copy spec for prefix */
     S_L(sp1) = len;			/* set prefix length */
 
     if (ret != ST_EOS)
