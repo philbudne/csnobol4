@@ -333,6 +333,9 @@ init_args( ac, av )
     }
 
     io_init();				/* AFTER io_input calls! */
+#ifdef HAVE_OS_INIT
+    os_init();
+#endif /* HAVE_OS_INIT */
 }
 
 #ifndef NO_STATIC_VARS
