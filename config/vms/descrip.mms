@@ -37,15 +37,16 @@ STR_C=[.lib]str.c
 TERM_C=[.lib.generic]term.c
 TOP_C=[.lib]top.c
 TREE_C=[.lib]tree.c
-TTY_C=[.lib.dummy]tty.c
+TTY_C=[.lib.vms]tty.c
 
 # aux sources
 BZERO_C=[.lib.auxil]bzero.c
 BCOPY_C=[.lib.auxil]bcopy.c
 GETOPT_C=[.lib.auxil]getopt.c
 GETREDIRECT_C=[.lib.vms]getredirect.c
+POPEN_C=[.lib.vms]popen.c
 
-AUX_OBJ=bcopy.obj, bzero.obj, getopt.obj, getredirect.obj
+AUX_OBJ=bcopy.obj, bzero.obj, getopt.obj, getredirect.obj, popen.obj
 
 # snolib sources
 CHOP_C=[.lib.snolib]chop.c
