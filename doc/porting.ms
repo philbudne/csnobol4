@@ -82,8 +82,19 @@ command.  May include system libraries (ie; -lBSD) or linker switches
 CONFIG_OBJ
 .PP
 Additional object files to link into the final image.  Typically one
-or more of the support library routines (bcopy.o, bcmp.o, getopt.o,
-vfprintf.o). 
+or more of the support library routines (ie; vfprintf.o).
+
+.NH 2
+AUX_SRC
+.PP
+Auxillary source files to include in dependancy calculation
+(see AUX_OBJ, and section on source file path variables).
+
+.NH 2
+AUX_OBJ
+.PP
+Auxillary object files to include in snolib.a.  Typically one or more
+of the support library routines (bcopy.o, bcmp.o, getopt.o).
 
 .NH 2
 CONFIG_SRC
