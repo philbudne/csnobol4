@@ -11,17 +11,22 @@ The named function will first be searched for in a table built in at
 compile time (see section 3).  Dynamic loading of functions is
 supported three different ways;
 
-	A. Using dlopen() and dlsym() dynamic library functions
-		(per Unix98 standard) currently available on SunOS4
-		(Solaris 1), SunOS5 (Solaris2) Digital Unix (the
-		operating system formerly known as OSF/1), IRIX,
-		NetBSD, FreeBSD, and Linux.
+	A. Using Unix 98 dlopen() and dlsym() dynamic library functions
+		Currently available under;
+		AIX (4.2 or later), BSD/OS, FreeBSD, NetBSD, OpenBSD,
+		Cygwin, Darwin (MacOS	X), HP-UX (64-bit), IRIX,
+		Linux, SunOS4 (Solaris 1), SunOS5 (Solaris 2.x, 7, 8),
+		Tru64 (the operating system formerly known as OSF/1),
 		(see section 4. for more information)
 
-	B. Using HP-UX shared-library functions.
+	B. Using HP-UX shared-library functions (32-bit HP-UX)
 		(see section 4. for more information)
 
 	C. Systems with BSD/V7 style a.out object format
+
+	D. Using DXE on DJGPP/DOS
+
+	E. Using NSLinkModule on NextStep
 
 The second parameter to LOAD is used as the name of an object file (or
 (shared) library) to load the function from. If no second parameter is
@@ -39,13 +44,14 @@ The following snolib functions are available by default
 (via pml.h);
 
 	RENAME, SQRT, DELETE, FILE, LOG, EXP, CHOP, SIN, COS, TAN,
-	IO_FINDUNIT
+	IO_FINDUNIT, SSET, SERV_LISTEN, ORD
 
 2. Creating a C function to be loaded.
 
 An external C function should be declared as follows (see lib/snolib
 for many examples);
 
+    #include "config.h"
     #include "h.h"
     #include "snotypes.h"
     #include "macros.h"
@@ -63,6 +69,10 @@ If case folding is in effect, the entry point name must be upper case.
 The typedefs int_t and real_t should be used for all SNOBOL integer
 and real values.
 
+The SNOBOL4 functions in "wrapper.sno" installed in
+/usr/local/lib/snobol4 will generate C glue code given a
+LOAD() style prototype.
+
 2.1 Return value
 
 The function should use one of the following macros to return a value
@@ -72,9 +82,9 @@ passed to the LOAD() function;
 	RETINT(i)			/* return INTEGER (int_t) value */
 	RETREAL(a)			/* return REAL (real_t) value */
 	RETNULL				/* return null string, success */
-	RETSTR(buf,len)			/* return string */
+	RETSTR(buf)			/* return C string */
+	RETSTR2(buf,len)		/* return counted string */
 	RETFAIL				/* return failure */
-
 
 The correct behavior for a new predicate is to declare it as returning
 type STRING, and to use RETNULL on success and RETFAIL on failure.
@@ -84,14 +94,17 @@ type STRING, and to use RETNULL on success and RETFAIL on failure.
 Parameters can be accessed via the following macros;
 
 for INTEGER parameters;
-	LA_INT(N)	access the n'th parameter as an integer (int_t)
+	LA_INT(0)	access the 1st parameter as an integer (int_t)
+
 for REAL parameters;
-	LA_REAL(N)	access the n'th parameter as a real (real_t)
+	LA_REAL(1)	access the 2nd parameter as a real (real_t)
+			(where n is zero based)
+
 for STRING parameters;
-	LA_PTR(N)	access the n'th parameter as a pointer (void *) to
+	LA_PTR(2)	access the 3rd parameter as a pointer (void *) to
 			pass to the getstr() function from snolib/getstr.c
 			to retrieve a string, ie;
-				getstr(LA_PTR(n), buffer, sizeof(buffer));
+				getstr(LA_PTR(2), buffer, sizeof(buffer));
 
 2.3 Polymorphic parameters
 
@@ -200,56 +213,61 @@ an arbitrary address in SNOBOL4's address space.  The resulting "PIC"
 object files may also need to processed with "ld" with special options
 to create a shared library file.
 
-System & compiler	compiler flags		ld flags
+System & compiler	compiler flags		link flags
 ================================================================
-SunOS4 "cc"		-pic or -PIC		-assert pure-text (optional)
-SunOS5 "sunpro"		-Kpic or -KPIC		-G
-IRIX 5.3 "cc"		-KPIC (default?)	-shared (ignore warnings)
-DEC UNIX "cc"		none			-shared (ignore warnings)
-HP-UX "c89"		+z or +Z		-b
-most "gcc"		-fpic or -fPIC		-shared or -Bshareable
+SunOS4 cc		-pic or -PIC		-assert pure-text (optional)
+SunOS5 sunpro		-Kpic or -KPIC		-G
+IRIX cc			-KPIC (default?)	-shared (ignore warnings)
+Tru64/DU cc		none			-shared (ignore warnings)
+HP-UX c89		+z or +Z		-b
+most gcc		-fpic or -fPIC		-shared or -Bshareable
+AIX			none			-bM:SRE
 
 NOTES:
+
+The "libtool" (http://www.gnu.org/software/libtool/libtool.html)
+script may be helpful for linking shared libraries in a portable
+way.
 
 On most systems, the shared library will be able to access global
 symbols from the main snobol4 executable, and will not need to be
 linked with support functions like "getstring()" and "retstring()".
 
-However on Linux it appears to be necessary to link these functions
-into each shared library that uses these functions.
-
-On HP-UX there is a getstring() function in libc (and it found before
-the getstring function in the snobol4 executable), so getstring.c must
-be added to each shared library which calls it.
+On HP-UX there is a getstring() function in libc (and it is found
+before the getstring function in the snobol4 executable), so
+getstring.c must be added to each shared library which calls it.
 
 On SGI and DEC UNIX (OSF/1) systems you will see warnings for
 undefined global symbols. These can be ignored if the symbols are
 defined in the main snobol4 executable.
 
-On many systems using dlopen() the shared library must either be
-located in a directory in the LD_LIBRARY_PATH environment variable, OR
-the pathname passed to the SNOBOL4 LOAD() if the pathname does not
-contain any directory information (any "/" characters).  If you wish
-to load a function from the current directory, prefix the filename
-with "./"
+On many systems using dlopen() if you wish to load a function from the
+current directory, you must prefix the filename with "./"
 
 Some systems with dlopen() will call the void function _init(void)
 when the library is first loaded, before the first call, and call the
 void function _fini(void) before the library is unloaded.
 
 Examples;
-	on sunos4;
-		cc -c -pic -I. -I./include lib/snolib/system.c
-		ld -o system.so system.o
 
-	using gcc;
-		gcc -o system.so -shared -I. -I./include lib/snolib/system.c
+    on sunos4;
+	cc -c -pic -I. -I/usr/local/lib/snobol4 source.c
+	ld -o module.so source.o
+
+    using gcc;
+	gcc -shared -o module.so -fPIC -I/usr/local/lib/snobol4 source.c
+
+    On Darwin (MacOS X);
+	dlopen() routine loads modules (bundles), not shared libraries;
+	(see http://fink.sourceforge.net/doc/porting/shared.php)
+
+	cc -fno-common -c -I/usr/local/lib/snobol4 source.c
+	cc -bundle -flat_namespace -undefined suppress -o module.so source.o
 
 5. Callable functions in main snobol4 executable
 
 The following functions are available to facilitate writing loadable
 code which interacts with the snobol4 I/O system.
-
 
 FILE *io_getfp(int unit);
 
@@ -272,6 +290,6 @@ void io_endfile(int unit);
 	Performs ENDFILE(unit) functionality.
 	Closes currently open file.
 
-int io_fundunit(void);
+int io_findunit(void);
 
 	Returns an unassigned I/O unit or -1 on failure.

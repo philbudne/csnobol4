@@ -2,6 +2,16 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+1/13/2002
+	new: 00README.CVS
+	new: bsdtsort.c
+	Makefile: use bsdtsort
+	Makefile2.m4: remove pv reference
+	lib/unix98/load.c: remove NO_UNDERSCORE ifdef
+	autoconf: set TRY_UNDERSCORE directly; set for darwin
+	doc/snobol4.1: updated
+	doc/load.doc: updated
+
 1/12/2002
 	lib/init.c: take -d and -P in descriptors (again)
 		add showk(), rework p() function

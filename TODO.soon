@@ -4,25 +4,6 @@ rename /ansi/ to /c89/ ??
 	change autoconf messages too?
 rename /borland/ to /msdos/ ??
 
-create README.CVS??
-	(make sure it DOESN'T exist in regular kit!!!)
-
-tsort program
-	always use BSD version?
-	use SNOCONE tsort program???
-		include tsort.sno in repository?
-		(leave generation rule for tsort.sno commented out)
-
-man page:
-	document -v
-	document 'm' suffixes
-	-P/-d take DESCRs
-	document host.sno
-	document SERV_LISTEN()
-	discuss largefile support (may not work on all (file)systems)
-		under SSET()
-	discuss terminal binary mode
-
 ports.doc
 	update (with beta test information)
 	remove???
@@ -33,46 +14,15 @@ put sources under CVS
 		move old files to Attic directories!!!
 	prune CVS directories when making kit?? NO!
 		always build kit's from scratch, via anonymous checkout???
+			do checkout on a branch??
 		don't bother with version-based directory name???
 		have tar file named snobol4-VERS.tar
 	put config.guess on vendor branch;
 		ftp://ftp.gnu.org/pub/gnu/config/config.guess
 
 doc/load.doc
-	mention libtool;
-		http://www.gnu.org/software/libtool/libtool.html
-
-	mention Tru64 (others??)
-
-	AIX
-		http://www.faqs.org/faqs/aix-faq/part4/section-21.html
-
-		From: Gary R. Hook <hook@austin.ibm.com>
-
-		Starting with AIX 4.2 a dlopen et. al. are included in
-		the base OS in the libdl.a library. Under AIX 4.1 this
-		is available as SLHS (Shared Library Hookable Symbols)
-		as APAR IX IX71849 for the runtime package and APAR IX
-		IX72973 for the development tools.
-
-	dlopen() under HP-UX11 64-bit world?? shl otherwise
-
-	Darwin:
-		http://fink.sourceforge.net/doc/porting/shared.php
-
-		dlopen() loads modules (bundles);
-			cc -fno-common -c source.c
-			cc -fno-common -c code.c
-			cc -bundle -flat_namespace -undefined suppress \
-				 -o mymodule.so source.o code.o
-
-	Cygwin DLL procedures???
-		dlltool????
-
-	DLL's on Win32
 	document:
 		config.h
-		RETSTR()/RETSTR2()
 		dt.h
 
 doc/porting.doc
@@ -102,6 +52,10 @@ test
 	DJGPP (meissner@altertum.uni-halle.de)
 	QNX (Fred?)
 
+update version
+	version.c
+	doc/snobol4.1 (HOST() example)
+
 packaging;
 	put pkg/ .... files under RCS (CVS)??
 	make snobol*4*-VERSION directory/tarfile???
@@ -130,10 +84,17 @@ make timing.out more machine friendly!
 have tests cleanup after themselves?  Add Makefile for "make clean"?
 	just add files to "make spotless"
 
+man page:
+	document SERV_LISTEN()??
+
 ================
 
-add build_user???
-	move to mkbuild script?
+tsort:
+	use a snocone version?
+
+HOST()
+	add build_user???
+		move to mkbuild script?
 
 "pmake" on csa loses (in depend?)
 
