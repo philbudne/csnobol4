@@ -42,8 +42,6 @@ $Id$
 	LEQ() LGE() LST() LLE() LLT() LNE()
 14b. match and assignment operators
 
-17. implement ordvst() for sorting &DUMP output
-
 20. add to snolib;
 	LINK()
 	SYMLINK()
