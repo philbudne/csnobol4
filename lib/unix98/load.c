@@ -25,10 +25,12 @@
 #include <stdlib.h>			/* malloc(), getenv() */
 
 #if __NetBSD__
+/* Necessary on NetBSD 1.2 on a.out platforms */
 #define TRY_UNDERSCORE
 #endif /* __NetBSD__ defined */
 
 #if __FreeBSD__
+/* Necessary on FreeBSD 2.2.1-RELEASE */
 #define TRY_UNDERSCORE
 #endif /* __FreeBSD__ defined */
 
@@ -131,7 +133,7 @@ load(addr, sp1, sp2)
 	     * underscore.  Rather than trying to figure out when and
 	     * if this is needed at config time, just try it both ways.
 	     *
-	     * FreeBSD has the same problem?
+	     * FreeBSD 2.2.1 has the same problem.
 	     */
 
 	    name2[0] = '_';
