@@ -91,10 +91,10 @@
 #endif /* __P not defined */
 
 /* lib/snolib/getstring.c; */
-void getstring __P((void *, char *, int));
+void getstring __P((const void *, char *, int));
 
 /* lib/snolib/retstring.c; */
-void retstring __P((struct descr *retval, char *cp, int len));
+void retstring __P((struct descr *retval, const char *cp, int len));
 
 /* lib/io.c; */
 int io_findunit __P((void));
