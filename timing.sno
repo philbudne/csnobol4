@@ -131,6 +131,8 @@ GETTIME	LINE = INPUT					:F(NOTIME)
 	LINE 'user' WS NUM . USER			:S(GOTTIME)
 * sunos4 "sh" time '.... 0.0 user ...'
 	LINE DARK WS NUM . USER WS 'user'		:S(GOTTIME)
+* aix4 'User 00.00'
+	LINE 'User' WS NUM . USER			:S(GOTTIME)
 * more here?
 
 * detect flag line for next section;
