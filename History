@@ -2,6 +2,19 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+6/26/2003
+	configure: defend against __vfork, look for popen() shell
+
+6/25/2003
+	doc/snobol4.1: add inet6 for SERV_LISTEN()
+	configure: check for paths.h, vfork
+	lib/bsd/popen.c: use vfork.h
+
+6/24/2003
+	doc/snobol4.1: document SERV_LISTEN(), update HOST() output, date
+		add DIAGNOSTICS section, more AUTHORS
+	lib/snolib/serv.c: update for inet6
+
 6/22/2003
 	new: lib/bsd/popen.c
 	configure: check for socketpair, use bsd popen.c
