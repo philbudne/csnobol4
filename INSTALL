@@ -373,7 +373,7 @@ CSNOBOL4 has been run on VMS (on VAXen using VAXC, and on Alphas
 using DECC), and the DEC C RTL.  config/vms/descrip.mms is an MMS
 description file, which can be used by typing:
 
-	MMS/DESCRIP=[.CONFIG.VMS]DESCRIP.MMS
+	MMS /DESCRIP=[.CONFIG.VMS]DESCRIP.MMS
 
 If using VAXC, /MACRO=(VAX_C=1) should be appended to the command line.
 If using an older version of Alpha DECC, try adding /MACRO=(DECC4=1)
@@ -399,8 +399,8 @@ The Win32 port is in it's infancy, and has only been tested using the
 free MINGW C compiler.
 
 *	binary and no echo support for console I/O has been added recently
-*	LOAD() of DLL's implemented, but not tested
-*	TCP I/O works, but UDP does not
+*	TCP and UDP I/O work (with some hoop jumping)
+*	LOAD() of external functions from DLL's implemented, but not tested
 
 To compile using MINGW (http://www.mingw.org);
 	make -f config/win32/mingw.mak
@@ -426,8 +426,8 @@ To compile using GNU make;
 
 	make -f config/djgpp/Makefile
 
-To enable optional support for WATTCP and DXE2 based loading, see
-the commented out lines in the Makefile.
+To enable optional support for TCP/IP using WATTCP and DXE2 based
+external function loading, see the commented out lines in the Makefile.
 
 Anything else
 -------------
