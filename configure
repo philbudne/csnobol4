@@ -1317,13 +1317,14 @@ if [ ! "$WITHOUT_NDBM" ]; then
 	echo "using $INCDIR/gdbm/ndbm.h" 2>&1
 	echo '#define HAVE_GDBM_SLASH_NDBM_H'	>> $CONFIG_H
 	# XXX check for library??
+	echo 'ADD_LDFLAGS([-lgdbm])'		>> $CONFIG_M4
 	USE_GDBM=1
-    elif [ -f /usr/local/include/gdbm-ndbm.h ]; then
-	echo "using $GDBM_DIR/include/gdbm-ndbm.h" 2>&1
+    elif [ -f $INCDIR/gdbm-ndbm.h ]; then
+	echo "using $INCDIR/gdbm-ndbm.h" 2>&1
 	echo '#define HAVE_GDBM_DASH_NDBM_H'	>> $CONFIG_H
 	USE_GDBM=1
-	GDBM_DIR=/usr/local
 	# XXX check for library?
+	echo 'ADD_LDFLAGS([-lgdbm])'		>> $CONFIG_M4
     else
 	echo 'no ndbm support found' 1>&2
 	NO_NDBM=1
