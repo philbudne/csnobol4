@@ -155,10 +155,10 @@ extern FILE *popen();
  * create generic/fpos.c (use fseek/ftell to implement fseeko/ftello)
  * 	ansi/fpos.c	(use fsetpos/fgetpos)
  */
-#ifndef _LARGEFILE_SOURCE
+#ifndef HAVE_FSEEKO
 #define ftello(FP) ftell(FP)
 #define fseeko(FP,OFF,WHENCE) fseek(FP,(long)(OFF),WHENCE)
-#endif /* _LARGEFILE_SOURCE not defined */
+#endif /* HAVE_FSEEKO not defined */
 
 static struct file *
 io_newfile( path )
