@@ -2,6 +2,18 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
+5/25/94
+	moved Un*x version banner to version.c
+	implemented case insensitivity -CASE/&CASE
+	implemented DOBOOL() in genc for real
+
+5/24/94
+	converted Makefile2, config files to use m4
+
+5/23/94
+	cleaned up bsd load.c, for use on bsd44 systems
+	added SIGFUNC_T to init.c, made default void
+
 2/18/94
 	*** First Beta release (tag BETA1) 
 	updated README, late entry in ports.doc
