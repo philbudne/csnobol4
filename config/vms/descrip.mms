@@ -40,7 +40,6 @@ LIBS=$(INETLIB) $(CLIB)
 SNOBOL4=isnobol4
 
 BAL_C=[.lib]bal.c
-CONVERT_C=[.lib.ansi]convert.c
 DATE_C=[.lib]date.c
 DUMP_C=[.lib]dump.c
 DYNAMIC_C=[.lib.generic]dynamic.c
@@ -50,7 +49,7 @@ EXPOPS_C=[.lib.generic]expops.c
 HASH_C=[.lib]hash.c
 INET_C=[.lib.vms]inet.c
 INIT_C=[.lib]init.c
-INTSPC_C=[.lib]intspc.c
+INTSPC_C=[.lib.generic]intspc.c
 IO_C=[.lib]io.c
 LEXCMP_C=[.lib]lexcmp.c
 LOAD_C=[.lib.dummy]load.c
@@ -62,6 +61,8 @@ PML_C=[.lib]pml.c
 POPEN_C=[.lib.vms]popen.c
 REALST_C=[.lib]realst.c
 REPLACE_C=[.lib]replace.c
+SPCINT_C=[.lib.ansi]spcint.c
+SPREAL_C=[.lib.ansi]spreal.c
 STREAM_C=[.lib]stream.c
 STR_C=[.lib]str.c
 TERM_C=[.lib.vms]term.c
@@ -120,14 +121,13 @@ CFLAGS=	$(CCFLAGS) $(TCPFLAGS)\
 ################
 
 OBJS=	main.obj, $(SNOBOL4).obj, data.obj, data_init.obj, syn.obj, \
-	bal.obj, convert.obj, date.obj, dynamic.obj, endex.obj, exists.obj, \
+	bal.obj, date.obj, dynamic.obj, endex.obj, exists.obj, \
 	expops.obj, hash.obj, init.obj, inet.obj, intspc.obj, io.obj, \
-	lexcmp.obj, load.obj, mstime.obj, ordvst.obj, pair.obj, pat.obj, \
-	pml.obj, realst.obj, replace.obj, str.obj, stream.obj, term.obj, \
-	top.obj, tty.obj, tree.obj, version.obj, \
-	bcopy.obj, bzero.obj, getredirect.obj, \
-	popen.obj, rresvport.obj, unlink.obj, \
-	$(AUX_OBJ) $(PML_OBJ)
+	lexcmp.obj, load.obj, mstime.obj, ordvst.obj, pair.obj, \
+	pat.obj, pml.obj, realst.obj, replace.obj, spcint.obj, \
+	spreal.obj, str.obj, stream.obj, term.obj, top.obj, tty.obj, \
+	tree.obj, version.obj, bcopy.obj, bzero.obj, getredirect.obj, \
+	popen.obj, rresvport.obj, unlink.obj, $(AUX_OBJ) $(PML_OBJ)
 
 snobol4.exe : $(OBJS)
 	link /exec=snobol4.exe $(OBJS) $(LIBS)
@@ -137,9 +137,6 @@ snobol4.exe : $(OBJS)
 
 bal.obj : $(BAL_C)
 	$(CC) $(CFLAGS) $(BAL_C)
-
-convert.obj : $(CONVERT_C)
-	$(CC) $(CFLAGS) $(CONVERT_C)
 
 date.obj : $(DATE_C)
 	$(CC) $(CFLAGS) $(DATE_C)
@@ -200,6 +197,12 @@ realst.obj : $(REALST_C)
 
 replace.obj : $(REPLACE_C)
 	$(CC) $(CFLAGS) $(REPLACE_C)
+
+spcint.obj : $(SPCINT_C)
+	$(CC) $(CFLAGS) $(SPCINT_C)
+
+spreal.obj : $(SPREAL_C)
+	$(CC) $(CFLAGS) $(SPREAL_C)
 
 str.obj : $(STR_C)
 	$(CC) $(CFLAGS) $(STR_C)
