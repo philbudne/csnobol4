@@ -22,7 +22,17 @@ made when all systems were timed with the same release of SNOBOL!
 
 System		Speed OS	    C	opt	REL    st/sec	who/when
 ===============================================================================
-AMD Athlon	850   CYGWIN_ME	    gcc		0.99.4 432382	hbussey1 12/01
+AMD Athlon	900   NetBSD 1.5.1  gcc		0.99.4 555815	pb 1/01
+Pentium III(?)	1000  Linux 2.4.2   gcc		0.99.4 508050	jb 11/01
+AMD Athlon	900   Linux 2.0.36  gcc		0.99.4 478164	pb 1/01
+AMD Athlon	850   CYGWIN_ME	    gcc		0.99.4 432382	hb 12/01
+Pentium III	800   FreeBSD 4.1   gcc		0.99.4 427831	pb 7/00
+Pentium III	800x2 CYGWIN_NT4.0  gcc		0.99.4 416327	gb 1/02
+Pentium III	800   Linux 2.2.18  gcc		0.99.4 411584	? 1/01
+Pentium III	600   Linux 2.4.9   gcc		0.99.4 303880	jm 1/02
+Pentium III	600   Linux 2.2.17  gcc		0.99.4 264351	pt 3/01
+Pentium III	600x2 Linux 2.2.16  gcc		0.99.4 264351	pt 12/00
+Pentium III	500x2 Linux 2.2.14  gcc		0.99.4 235617	lt 10/00
 Celeron		450   FreeBSD 2.2.7 gcc		0.99.4 231095	pb 7/99
 PPC G4		500   Darwin 1.2    gcc		0.99.4 215052	rwu 11/00
 PPC G3		400   Linux 2.4.1   gcc		0.99.4 213915	prw 1/01
@@ -33,6 +43,7 @@ AMD Athlon	700   Linux 2.2.17  gcc		0.99.4 275552	lt 10/00
 Celeron		450   Linux 2.2.15  gcc		0.99.4 191265	rms 10/00
 Pentium II	350x2 Linux 2.2.16  gcc		0.99.4 187704	bm 12/00
 P6 ?		400   CYGWIN_NT	    gcc		0.99.4 184117	rs 11/98
+Pentium III	650   Linux 2.4.2   gcc		0.99.4 184117	maa 7/01
 Pentium II	?     SunOS 2.6	    spro	0.99.4 167341	pb 6/99
 AlphaPC 164LX	600   Linux 2.2.18j gcc		0.99.4 162332	jwk 9/01
 Sun Ultra 450	296   SunOS 5.6	  sproO5/native	0.99.4 129028	pb 9/98
