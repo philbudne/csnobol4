@@ -111,6 +111,11 @@ load(addr, sp1, sp2)
 	    opt = TRUE;			/* old "bindnow" */
 #endif
 	    fp->handle = NSLinkModule(ofi, pp, opt);
+	    if (!fp->handle) {
+		/* XXX NSDestroyObjectFileImage(ofi); ? keep ref count?? */
+		free(fp);
+		return FALSE;		/* fail */
+	    }
 	}
 	else {
 	    free(fp);
@@ -122,6 +127,8 @@ load(addr, sp1, sp2)
 #else
 	sym = NSLookupAndBindSymbol(fp->name);
 #endif
+	/* XXX check return?? */
+
 	fp->entry = (int (*)(LOAD_PROTO)) NSAddressOfSymbol(sym);
 	if (fp->entry == NULL) {
 	    int opt;
@@ -132,6 +139,7 @@ load(addr, sp1, sp2)
 	    opt = FALSE;
 #endif
 	    NSUnLinkModule(fp->handle, opt);
+	    /* XXX NSDestroyObjectFileImage(ofi); ? keep ref count?? */
 	    free(fp);
 	    return FALSE;
 	} /* dlsym failed */
