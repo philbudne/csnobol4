@@ -96,10 +96,11 @@ BCOPY_C=$(SRCDIR)lib/auxil/bcopy.c
 GETOPT_C=$(SRCDIR)lib/auxil/getopt.c
 
 # dummy sources
+EXECL_C=$(SRCDIR)lib/dummy/execl.c
+FINITE_C=$(SRCDIR)lib/dummy/finite.c
+GETENV_C=$(SRCDIR)lib/dummy/getenv.c
 ISNAN_C=$(SRCDIR)lib/dummy/isnan.c
 SYSTEM_C=$(SRCDIR)lib/dummy/system.c
-GETENV_C=$(SRCDIR)lib/dummy/getenv.c
-EXECL_C=$(SRCDIR)lib/dummy/execl.c
 
 # snolib sources
 CHOP_C=$(SRCDIR)lib/snolib/chop.c
