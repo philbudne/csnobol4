@@ -1268,20 +1268,21 @@ XSPOP	XAPPLY('SPOP',ARGV<1>)				:(OPDONE)
 ****************
 *	SIL RCALL (=) macro
 * val, proc, arg(s), ret(s)
-XRCALL	VAL = 'NULL'
+XRCALL	VAL = 'NORET'
 	CALLGRAPH = INPROC TAB ARGV<2>
 	IDENT(ARGV<1>)					:S(NOVAL)
 	VAL = ARGV<1>
 
 NOVAL	OUTPUT = IND '{'
 	INDENT()
-	DIFFER(ARGV<4>)						:F(NOALT1)
-	OUTPUT = IND 'int alt;'
-NOALT1
+
+	ALTS = ARGV<4>
+	OUTPUT = DIFFER(ALTS) IND 'int alt;'
 	OUTPUT = IND 'SAVSTK();'
 	IDENT(ARGV<3>)					:S(NOARGS)
 	XRAPPLY('PUSH',ARGV<3>)
-NOARGS	ALTS = ARGV<4>
+
+NOARGS	OUTPUT = IND 'ENTER();'
 	DIFFER(ALTS)					:F(NOALT2)
 
 *	here with list of alternate rets
@@ -1301,14 +1302,14 @@ ERCALL	UNINDENT()
 ****************
 *	SIL RRTURN (=) macro
 XRRTURN	IDENT(ARGV<1>)					:S(RRTURN1)
-	OUTPUT = IND 'if( retval )'
-	INDENT()
+*	OUTPUT = IND 'if( retval )'
+*	INDENT()
 	OUTPUT = IND 'D(retval) = ' D(ARGV<1>) ';'
-	UNINDENT()
+*	UNINDENT()
 RRTURN1	ALT = '0'
-	IDENT(ARGV<2>)					:S(RRTURN2)
-	ALT = ARGV<2>
-RRTURN2	OUTPUT = IND 'return( ' ALT ' );'
+	ALT = DIFFER(ARGV<2>) ARGV<2>
+	OUTPUT = IND 'LEAVE();'
+	OUTPUT = IND 'return( ' ALT ' );'
 	LIVE =						:(OPDONE)
 
 ****************************************************************
