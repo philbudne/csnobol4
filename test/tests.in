@@ -57,3 +57,7 @@ reg rewind1.sno
 # 8/19/96
 reg conv2.sno
 reg ind.sno
+# 8/26/96
+reg char.sno
+reg pad.sno
+reg breakx.sno
