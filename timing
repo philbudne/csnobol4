@@ -198,7 +198,7 @@ TAIL1='sed -n 2,$p'
 
 	cd $TDIR
 
-LNFILES='../procs ../globals ../v311.sil'
+LNFILES='../procs ../globals ../v311.sil ../host.sno'
 # AFS doesn't allow hard links across directories!
 	ln $LNFILES . || ln -s $LNFILES .
 
