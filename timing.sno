@@ -84,7 +84,7 @@ GETSTAT	LINE = INPUT					:F(NOSTAT)
 * and exec time is zero?!
 	GT(EXEC,0)					:S(EXECOK)
 	GT(EXEC,COMP)					:S(EXECOK)
-	EQ(COMP,0)					:S(NOEXEC)
+	EQ(COMP,0)					:S(NOET)
 
 	OUTPUT = 'Execution time zero, but non-zero compiler time!!'
 	EXEC = COMP
@@ -98,7 +98,7 @@ EXECOK	OUTPUT = 'Statements per second:' TAB STMTS * 1000 / EXEC
 	OUTPUT = 'microseconds per statement: ' A1
 
 * get SNOBOL time in 10ths
-NOEXEC	SNOBOL = (COMP + EXEC + 50) / SNODIV
+NOET	SNOBOL = (COMP + EXEC + 50) / SNODIV
 
 **************** get snobols's average ms/stmt
 
