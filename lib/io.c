@@ -282,13 +282,17 @@ io_print( iob, sp )			/* STPRNT */
 	char *cp;
 
 	len = S_L(sp);
-	while (len-- > 0) {
-	    if (*cp)			/* XXX sigh; deal with NULs */
-		putc( *cp, f );
-	    else
-		putc( ' ', f );
-	    cp++;
+	cp = S_SP(sp);
+	if (compiling) {
+	    while (len-- > 0) {
+		if (*cp == '\0')	/* deal with NUL in listings */
+		    putc( ' ', f );
+		else
+		    putc( *cp, f );
+		cp++;
 	    }
+	}
+	else				/* not compiling */
 	    fwrite( cp, 1, len, f );
     }
     if (fp->flags & FL_EOL)
