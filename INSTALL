@@ -16,8 +16,8 @@ which is in turn used to create Makefile2, which is then run.
 
 Even if your system has not previously been tested (see doc/ports.doc)
 autoconf may succeed. If it does not, you may want to consult
-doc/porting.doc (also available in .ps and .html forms) for
-information on the available options.
+doc/porting.doc (also available as html) for information on the
+available options.
 
 For information on including "external" C functions in the linked
 binary see doc/load.doc.
@@ -25,18 +25,18 @@ binary see doc/load.doc.
 Installation
 ------------
 
+
+Typing "make install" will install the snobol4 binary and man page.
 The snobol4 binary and man page destnations are controlled BINDEST
 (default: /usr/local/bin/snobol4) and MANDEST (default:
 /usr/local/man/man1/snobol4.1) make variables, which can be overridden
 by editing config.m4, or creating "local-config" (and then removing
-config.m4).
-
-Typing "make install" will install the snobol4 binary, man page.
+config.m4 to trigger autoconf).
 
 "make install" also installs the snolib.a object library, and
 snolib/*.sno files to the directory named in the SNOLIB_DIR make
 variable.  SNOLIB_DIR is compiled into io.o and load.o, which must be
-removed if SNOLIB_DIR is changed after xsnobol4 has been linked. 
+removed if SNOLIB_DIR is changed after an xsnobol4 has been linked.
 
 Non-unix systems;
 ================
@@ -75,11 +75,10 @@ Borland C++.  Look in config/borland (or CONFIG\BORLAND).
 VMS using DEC C
 ---------------
 
-Older versions C-MAINBOL has been run under VAX and ALPHA VMS using
-DEC C, and the DEC C library.  config/build.com (or
-[.CONFIG.VMS]BUILD.COM) is a command file to build XSNOBOL4.EXE;
-config/descrip.mms is an MMS description file, which can be used by
-typing MMS/DESCRIP=[.CONFIG.VMS]DESCRIP.MMS.
+Older versions of C-MAINBOL have been run under VAX and ALPHA VMS
+using DEC C, and the DEC C RTL.  config/vms/build.com is a command
+file to build XSNOBOL4.EXE; config/vms/descrip.mms is an MMS description
+file, which can be used by typing MMS/DESCRIP=[.CONFIG.VMS]DESCRIP.MMS.
 
 VMS using GNU C
 ---------------
@@ -92,8 +91,7 @@ Anything else
 -------------
 
 C-MAINBOL has been designed to be modular, and makes only modest
-demands on the C library.  See doc/porting.doc for a full description
-of the requirements.
+demands on the C library.  See doc/porting.doc for information.
 
 Let me know!
 ============
