@@ -40,6 +40,7 @@ Sun SS4		70	SunOS 5.4     gcc    0.91.2 sunos5	 10828	pb 4/95
 Sun 4/670	40	SunOS 4.1.3   gcc    0.91   sunos4	 7833	pb 6/94
 i486DX2 laptop	33/66	Linux 1.1.62  gcc    0.91   linux	 7056	bm 1/95
 i486DX2		33/66	SunOS 5.3     sunpro 0.91.2 sunos5	 7012	pb 11/95
+i486DX2		33/66	Linux 1.2.8   gcc    0.91.2 linux	 6934	ca 3/96
 SWS SS2 clone	40	SunOS 4.1.3   gcc    0.91.2 sunos4	 6551	pb 1/95
 HP 9000/710	50	HP-UX 9.01    c89?   0.90   hpux-pa	 5978	al 5/94
 Sun Classic	50	SunOS 4.1.3U1 gcc    0.91.2 sunos4	 5835	pb 1/95
@@ -70,8 +71,12 @@ al	Arne Larsson
 bm	Burkhard Meissner
 	<meissner@altertum.uni-halle.d400.de>
 
+ca	Chris Anderson
+	<slug@fast.co.za>
+
 jm	John McHugh		Portland State University
 	<mchugh@cs.pdx.edu>
+
 ls	Leigh Smith
 	<leigh@psychokiller.DIALix.oz.au>
 
@@ -82,7 +87,7 @@ mw	Martin D. Waller
 	<100115.1575@compuserve.com>
 
 pb	Phil Budne
-	<phil@ultimate.com>
+	<budd@gnu.ai.mit.edu>
 
 pt	Phillip Thomas		Library Of Congress
 	<ptho@seq1.loc.gov>
