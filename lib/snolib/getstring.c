@@ -12,7 +12,7 @@
 
 EXPORT(void)
 getstring( vp, dp, len )
-    void *vp;				/* pointer to "natural variable" */
+    const void *vp;			/* pointer to "natural variable" */
     char *dp;
     int len;
 {
