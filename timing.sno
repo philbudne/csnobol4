@@ -48,6 +48,7 @@ GETSTAT	LINE = INPUT					:F(NOSTAT)
 	OUTPUT = 'SNOBOL4 Compile time:' TAB COMP ' milliseconds'
 	OUTPUT = 'SNOBOL4 Execution time:' TAB EXEC ' milliseconds'
 	OUTPUT = 'Statements executed:' TAB STMTS
+	OUTPUT = 'Statements per second:' TAB STMTS * 1000 / EXEC
 
 * calculate usec/stmt
 	A1 = EXEC * 1000 / STMTS
