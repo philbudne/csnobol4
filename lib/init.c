@@ -14,8 +14,14 @@
 #define SIGFUNC_T void
 #endif
 
+#ifdef __STDC__
+#ifndef SIGARG_T
+#define SIGARG_T int
+#endif
+#endif
+
 extern char *dynamic();
-extern SIGFUNC_T SYSCUT();		/* never returns */
+extern SIGFUNC_T SYSCUT(SIGARG_T);	/* never returns */
 
 #define NDESCR 25000			/* default */
 
@@ -66,12 +72,15 @@ init_args( ac, av )
     int errs;
     int c;
     char k;
+    int multifile;
 
+    /* save in globals for HOST() */
     argc = ac;
     argv = av;
 
     errs = 0;
     ndescr = NDESCR;
+    multifile = 0;			/* SITBOL behavior */
 
 #ifdef vms
     argc = getredirection(argc, argv);
@@ -85,7 +94,7 @@ init_args( ac, av )
      * * When adding options, update usage() function (above) and man page!!!
      */
 
-    while ((c = getopt(argc, argv, "bd:fklnprsu:")) != -1) {
+    while ((c = getopt(argc, argv, "bd:fklnprsu:M")) != -1) {
 	switch (c) {
 	case 'b':
 	    D_A(BANRCL) = !D_A(BANRCL);	/* toggle banner output */
@@ -141,6 +150,10 @@ init_args( ac, av )
 	    params = optarg;
 	    break;
 
+	case 'M':			/* SITBOL multi-file input */
+	    multifile = !multifile;
+	    break;
+
 	default:
 	    errs++;
 	}
@@ -154,9 +167,11 @@ init_args( ac, av )
 	}
 	io_input( argv[optind] );
 	optind++;
+	if (!multifile)			/* not in multi-file mode? */
+	    break;			/* break out */
     }
 
-    /* process any remaining data as arguments (if no -u option) */
+    /* process any remaining items as arguments (if no -u option) */
     firstarg = optind;
     if (params == NULL && optind < argc) {
 	while (optind < argc) {
@@ -166,6 +181,8 @@ init_args( ac, av )
 	}
 	params = parambuf;
     }
+
+    /* XXX setup specifier pointing to params for &PARM? */
 
     io_init();				/* AFTER io_input calls! */
 
