@@ -28,31 +28,20 @@ static int lflags;
 
 #define STDIN_FILENO 0
 
+/* Research V10 has no stty()? */
+#ifdef TIOCSETP
+/* in case; */
+#undef stty
+#undef gtty
+#define stty(F,P) ioctl(F, TIOCSETP, P)
+#define gtty(F,P) ioctl(F, TIOCGETP, P)
+#endif
+
 int
 fisatty(f)
     FILE *f;
 {
     return isatty(fileno(f));
-}
-
-void
-tty_save()
-{
-    /* XXX call tty_save_fd(STDIN_FILENO)?? */
-    gtty(STDIN_FILENO, &old);
-#if defined(TTY_RAW) && defined(LPASS8)
-    ioctl(STDIN_FILENO, TIOCLGET, &lflags);
-#endif
-}
-
-void
-tty_restore()
-{
-    /* XXX call tty_close_fd(STDIN_FILENO)?? */
-    stty(STDIN_FILENO, &old);		/* use TIOCSETN? */
-#if defined(TTY_RAW) && defined(LPASS8)
-    ioctl(STDIN_FILENO, TIOCLSET, &lflags);
-#endif
 }
 
 void
@@ -98,6 +87,8 @@ tty_mode( fp, cbreak, noecho, recl )
 #endif
 	)
 	return;				/* nothing to do! */
+
+    fflush(fp);				/* flush pending output */
 
     new = sp->t;			/* start with original */
 #if defined(TTY_RAW) && defined(LPASS8)
@@ -152,6 +143,19 @@ tty_close_fd(fd)
 	    break;
 	}
     }
+}
+
+void
+tty_save()
+{
+    tty_mode(stdin, 0, 0, 0);		/* force initial save */
+}
+
+void
+tty_restore()
+{
+    /* XXX call tty_close_fd(STDIN_FILENO)?? */
+    tty_mode(stdin, 0, 0, 0);		/* restore initial settings */
 }
 
 /* advisory notice */

@@ -43,20 +43,6 @@ fisatty(f)
 }
 
 void
-tty_save()
-{
-    /* XXX call tty_save_fd(STDIN_FILENO)?? */
-    tcgetattr(STDIN_FILENO, &old);
-}
-
-void
-tty_restore()
-{
-    /* XXX call tty_close_fd(STDIN_FILENO)?? */
-    tcsetattr(STDIN_FILENO, TCSADRAIN, &old);
-}
-
-void
 tty_mode( fp, cbreak, noecho, recl )
     FILE *fp;
     int cbreak, noecho, recl;
@@ -95,6 +81,8 @@ tty_mode( fp, cbreak, noecho, recl )
 #endif /* TTY_SAVE_RECL defined */
 	)
 	return;				/* nothing to do! */
+
+    fflush(fp);				/* flush pending output */
 
     new = sp->t;			/* start with original */
     if (cbreak) {
@@ -150,6 +138,20 @@ tty_close_fd(fd)
 	    break;
 	}
     }
+}
+
+void
+tty_save()
+{
+    /* XXX call tty_save_fd(STDIN_FILENO)?? */
+    tty_mode(stdin, 0, 0, 0);		/* force initial save */
+}
+
+void
+tty_restore()
+{
+    /* XXX call tty_close_fd(STDIN_FILENO)?? */
+    tty_mode(stdin, 0, 0, 0);		/* restore initial settings */
 }
 
 /* advisory notice */
