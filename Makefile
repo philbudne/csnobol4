@@ -47,7 +47,7 @@ all:	snobol4
 #	just add $(GENERATED)?
 
 snobol4 xsnobol4 install: Makefile2 ALWAYS .depend  $(GENERATED)
-	$(MAKE) -f Makefile2 $@ SIL=$(SIL) SNOBOL4=$(SNOBOL4)
+	$(MAKE) -f Makefile2 $@ SNOBOL4=$(SNOBOL4)
 
 ALWAYS:
 
