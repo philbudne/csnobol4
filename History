@@ -2,6 +2,11 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
+6/19/94
+	Added {generic,posix}-cc.m4 configs
+	Use skel.inc in generic configs
+	Added AUX_{SRC,OBJ}, PML_OBJ
+
 6/17/94
 	Dropped compiler CARDSZ down to 132 for sane listings
 
