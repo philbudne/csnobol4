@@ -12,6 +12,12 @@ else
 	SNOBOL=./xsnobol4
 fi
 
+# for cygwin
+if [ -f ${SNOBOL}.exe ]; then
+	EXT=.exe
+fi
+SNOBOL=${SNOBOL}$EXT
+
 echo 'Date:'
 date
 echo ''
@@ -135,12 +141,6 @@ cat config.h
 echo ''
 echo 'build.c:'
 cat build.c
-
-# for cygwin
-if [ -f ${SNOBOL}.exe ]; then
-	EXT=.exe
-fi
-SNOBOL=${SNOBOL}$EXT
 
 echo ''
 echo "size ${SNOBOL}:"
