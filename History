@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+11/14/96:
+	timing.sno: output $rev$
+
 11/13/96:
 	timing, timing.sno:
 		output on genc.sno to stdout, stderr
