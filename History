@@ -3,6 +3,12 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
+1/7/95
+	Merged in DOS Port (using 32-bit Borland C++ 4.0) by Mark Emmer!
+	lib/generic/convert.c: check for empty strings, changed ifdefs
+	new files: lib/borland/mstime.c
+		config/borland/build.bat config/borland/snobol4.lnk
+
 1/6/95
 	checked in 11/3/94 v311.sno, tests
 	README, History: updated/fixed
