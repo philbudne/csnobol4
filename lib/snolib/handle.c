@@ -70,14 +70,15 @@ remove_handle(hlp, h)
     snohandle_t h;
 {
     struct handle_entry *hp, *pp;
+    int hash = HANDLE_HASH(h);
 
     pp = NULL;
-    for (hp = hlp->hash[HANDLE_HASH(hp->handle)]; hp; pp = hp, hp = hp->next) {
+    for (hp = hlp->hash[hash]; hp; pp = hp, hp = hp->next) {
 	if (hp->handle == h) {
 	    if (pp)
 		pp->next = hp->next;
 	    else
-		hlp->hash[HANDLE_HASH(hp->handle)] = hp->next;
+		hlp->hash[hash] = hp->next;
 	    free(hp);
 	    hlp->entries--;
 	    return;
