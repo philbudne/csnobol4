@@ -110,7 +110,9 @@ if [ "$UNAME" ]; then
 		;;
 	esac
 fi
-#
+
+# kinda redundant, but timing script could be run on a different host!
+echo ''
 echo 'config.guess:'
 ./config.guess
 
