@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+4/21/2003
+	include/snotypes.h: create ptr_t; use void * to avoid gcc3 warnings
+	gendata.sno: use (ptr_t) instead of (char *)
+
 1/13/2003
 	doc/load.doc: cleanup
 	lib/next/load.c: use snolib.so on Darwin
