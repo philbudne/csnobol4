@@ -1,8 +1,8 @@
-# $NetBSD$
+# $Id$
 
 DISTNAME=	snobol4-1.0
 CATEGORIES=	lang
-MASTER_SITES=	ftp://ftp.ultimate.com/snobol/
+MASTER_SITES=	ftp://ftp.snobol4.org/snobol/
 
 MAINTAINER=	phil@ultimate.com
 
