@@ -23,6 +23,10 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>			/* inet_addr() */
 
+#ifdef BINDRESVPORT_IN_RPC_H		/* FreeBSD, NetBSD, but NOT OpenBSD! */
+#include <rpc/rpc.h>
+#endif /* BINDRESVPORT_IN_RPC_H */
+
 #include "h.h"				/* TRUE/FALSE */
 #include "snotypes.h"
 #include "lib.h"			/* own prototypes */
@@ -73,21 +77,14 @@ inet_socket( host, service, port, priv, type )
     else
 	return -1;
 
-    if (priv) {
-	if (type == SOCK_STREAM) {
-	    int lport;
-
-	    lport = IPPORT_RESERVED - 1;
-	    s = rresvport(&lport);
-	}
-	else
-	    return -1;			/* UDP and "priv" set */
-    }
-    else
-	s = socket( AF_INET, type, 0 );
-
+    s = socket( AF_INET, type, 0 );
     if (s < 0)
 	return -1;
+
+    if (priv && bindresvport(s, NULL) < 0) {
+	close(s);
+	return -1;
+    }
 
     hp = gethostbyname( host );
     if (hp != NULL) {

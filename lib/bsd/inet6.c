@@ -25,6 +25,10 @@
 #include <netdb.h>
 #include <netinet/in.h>
 
+#ifdef BINDRESVPORT_SA_IN_RPC_H		/* FreeBSD, NetBSD, but NOT OpenBSD! */
+#include <rpc/rpc.h>
+#endif /* BINDRESVPORT_SA_IN_RPC_H */
+
 #include "h.h"				/* TRUE/FALSE */
 #include "snotypes.h"
 #include "lib.h"			/* own prototypes */
@@ -47,9 +51,6 @@ inet_socket( host, service, port, priv, type )
     if (!host || !service)
 	return -1;
 
-    if (priv && type != SOCK_STREAM)
-	return -1;
-
     bzero((char *)&hint, sizeof(hint));
     hint.ai_family = PF_UNSPEC;
     hint.ai_socktype = type;
@@ -60,17 +61,12 @@ inet_socket( host, service, port, priv, type )
 
     s = -1;
     for (res = res0; res; res = res->ai_next) {
-	if (priv) {
-	    int lport = IPPORT_RESERVED - 1;
-	    s = rresvport_af(&lport, res->ai_family); /* RFC2292 */
-	}
-	else
-	    s = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
-
+	s = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
 	if (s < 0)
 	    continue;
 
-	if (connect(s, res->ai_addr, res->ai_addrlen) < 0) {
+	if (priv && bindresvport_sa(s, NULL) < 0 ||
+	    connect(s, res->ai_addr, res->ai_addrlen) < 0) {
 	    close(s);
 	    s = -1;
 	    continue;
