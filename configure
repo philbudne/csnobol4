@@ -677,8 +677,9 @@ else
 fi
 
 # prefer v7/berkeley string functions
-if [ -f $INCDIR/strings.h ] && \
-    grep index $INCDIR/strings.h >/dev/null; then
+if [ -f $INCDIR/strings.h ] && \  
+    grep index $INCDIR/strings.h >/dev/null &&
+    grep strcmp $INCDIR/strings.h >/dev/null ; then
     echo 'using BSD string functions' 1>&2
 else
     echo 'using ANSI string functions' 1>&2
