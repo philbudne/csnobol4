@@ -1,32 +1,78 @@
 $Id$
 
-rewind tests;
-		split program across files
-		split data across files??
+update README
+	credit SNOBOL4+, Minnesota SNOBOL4
 
-update man page;
-	case folding bugs (and ID context; not just $(str))
+debug SORT/RSORT (test: tab.sno)
 
-include version number in tar file directory
+document new additions;
+	(R)SORT
+
+default stats to off, like SPITBOL
+
+checkin;
+	lib/*/nanchk???
+		replace nanchk with dummy isnan()?
+	lib/str.c
+	doc/snobol.1
+
+Create INSTALL top level doc file
+	mention VMS, Borland command files
+
+test overflow?
+	remove from man page limitations??
+
+have "configure" script output directly to config.m4!
+
+include version number in tar file directory (and .tar filename!)
 	(snobol/ -> snobol-xx.yy/)
+		keep version number in file (sed into version.c?)
+			what about vdate???
+		ifdefs to compile stand-along version program!
 
-make "install"
-
-work on "configure" script
-
-GCCBUILD.COM
+GCCBUILD.COM for VMS?
 
 Eliminate following line after CTLCRD:
        AEQLC   CASECL,0,,CTLCRC	   Case sensitive?		[PLB15]
 
-fix name case folding (VARVUP)
-	GNVARC -> GENVUP
-
 use "SNOLIB" path for -INCLUDE & LOAD()
 
-try adding SOME explicit "inline" decls?
+Add SNOBOL4 PLUSOPS
+
+Add TERMINAL variable?
+
+have gendat output .c2 and .h2 filesl use cmp || cp??
+
+allow STLIMIT < 0
+	test impact?
+
+
+document magic /dev/std{in,out,err} filenames
 
 implement auto-load of pml functions
+
+full lexical compare functions
+	LEQ,LGE,LLE,LLT,LNE
+
+auto-mail timing.out??
+	echo "please consider...."
+
+return year + 1900 in date()?
+
+rewind tests;
+	split program across files
+	split data across files??
+
+have dummy version of pow use repeated multiply for int, exp/log for real?
+	under ifdef??
+
+make install?
+	echo "have you mailed timing.out...."???
+
+add "trace1/2" tests?
+
+strip leading spaces in spcint()
+
 ====
 
 run-time allocation of system & pattern stacks
@@ -44,7 +90,7 @@ snolib;
 run-time allocation of system & pattern stacks
 
 open flags???
-
+	TTY mode (no newlines added or removed)
 	TCP?
 	bidirectional I/O
 
@@ -53,7 +99,6 @@ open flags???
 -INCLUDE/-COPY
 	describe "program error" vs. "reading error" in man page?
 	improve error handling???
-	search getenv("SNOLIB")
 
 ================
 
@@ -63,6 +108,8 @@ load changes;
 		use -A on original / current symtab
 
 	use local dl_xxx if available (HP, SVR4, SOS4??)?
+
+	allow use of GNU dynamic load library?
 
 ================
 
@@ -88,3 +135,6 @@ MOVBLK_MEMMOVE?
 MOVBLK_MEMCPY???
 APDSP_MEMCPY?
 
+have seperate BRKTB/SPNTB?
+
+try adding SOME explicit "inline" decls?
