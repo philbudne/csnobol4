@@ -15,10 +15,6 @@
 #define SUCCESS(_STAT) ((_STAT) & STS$M_SUCCESS)
 #define SETERR(_STAT) do { vaxc$errno = (_STAT); errno = EVMSERR; } while(0)
 
-extern char *stdin_file, *stdout_file;	/* from getredirect.c */
-extern char *term_file;			/* from term.c */
-extern FILE *term_fd;			/* from term.c */
-
 struct read_iosb {
     short status;
     short size;				/* offset to terminator */
@@ -100,7 +96,7 @@ tty_close(f)
 
 /*
  * perform tty reads;
- * must define TTY_READ for this to be called from io.c
+ * must define TTY_READ_RAW for this to be called from io.c
  * not called for cooked (non-raw) reads
  */
 
@@ -141,21 +137,9 @@ tty_read(f, buf, len, raw, noecho, keepeol, fname)
 	if (!tp)
 	    return -1;
 
-#if 1
 	d.ptr = fgetname(f, namebuf, 1); /* 1 forces VMS filename */
-#else
-	/* handle some special cases */
-	if (fd == fileno(stdin))
-	    d.ptr = stdin_file;
-	else if (fd == fileno(stdout))
-	    d.ptr = stdout_file;
-	else if (fd == fileno(stderr))
-	    d.ptr = "SYS$ERROR:";
-	else if (fd == fileno(term_fd))
-	    d.ptr = term_file;
-	else
-	    d.ptr = fname;
-#endif
+	if (!d.ptr)
+	    return -1;
 	d.len = strlen(d.ptr);
 	status = SYS$ASSIGN(&d, &chan, 0, 0);
 	if (!SUCCESS(status)) {
@@ -183,7 +167,7 @@ tty_read(f, buf, len, raw, noecho, keepeol, fname)
 	termp = term;
     }
     else
-	termp = NULL;
+	termp = NULL;			/* default break chars */
 
     status = SYS$QIOW(0, chan, op, &iosb, 0, 0, buf, len, 0, termp, 0, 0);
     if (!SUCCESS(status)) {
@@ -206,8 +190,6 @@ tty_read(f, buf, len, raw, noecho, keepeol, fname)
 } /* tty_read */
 
 #ifdef TEST
-char *stdin_file = "SYS$INPUT:";
-
 #define TRUE 1
 main() {
   char buf[3];
