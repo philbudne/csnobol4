@@ -25,12 +25,9 @@
 #define HAVE_STRING_H
 #define HAVE_STDARG_H
 #define HAVE_STDLIB_H
+#define HAVE_WINSOCK_H
 
-/* directives; */
-#define USE_MEMCMP
-
-/* using own (dummy) rrevport() */
-#define NEED_RRESVPORT_DECL
+#define NEED_BINDRESVPORT
 
 /* DLL import/export macros */
 
