@@ -1,9 +1,17 @@
 /* $Id$ */
 
 /*
+ * Format integers
+ *
+ * this is primarily a test of RETSTR();  
+ * CONVERT() should do radix conversions (like in SITBOL)!!
+ */
+
+/*
  * LOAD("SPRINTF(STRING,INTEGER)STRING")
  *
  * Usage;	SPRINTF(format,int)
+ *			ie; SPRINTF("%x",32)
  * Returns;	null string or failure
  */
 
