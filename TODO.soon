@@ -1,10 +1,30 @@
 $Id$
 
+use HOST(0) in genc.sno, gendata.sno for input file?
+
+switch to unroff for html file prep??
+	RosettaMan???
+
+fix for "	()()"??
+
+unix98/load.c
+	document in man page
+	document in load.doc
+		c/ld commands for various O/S'build
+			no need to link with snolib.a for getstring() &c
+		talk about LD_LIBRARY_PATH, "./" prefix
+	make snolib.shared??
+		alter SNOLIB_A default value?
+	use RTLD_GLOBAL flag, if available??
+	allow null string for object file (no default) to access snobol4 syms?
+
 autoconf:
 	"configure" script wrapper;
 		output to config.m4
 		run m4?
 		flush Makefile??
+		use "configure" from Makefile!!!
+
 	--max-opt
 
 	options for dest dir(s)?
@@ -45,6 +65,17 @@ autoconf:
 Installation;
 	make/install formatted snobol4.cat1/snobol4.0 on bsd44?
 
+SPITBOL compatibility document?
+	'd' exponents
+	data type conversions??
+	no NAME datatype
+	must give full name to CONVERT()
+	table access creates empty entry (see FREEZE/THAW)
+	APPLY() requires arguments
+	no ATAN() function
+	BACKSPACE() not supported
+	CLEAR() does not take args, clears pre-initialized vars (ie; ARB, FENCE)
+
 ==== before beta releases
 
 update man page date, CHANGES, README
@@ -82,9 +113,7 @@ Add to INSTALL;
 
 release updated rebus
 
-distribute snocone diffs?
-
-DOS & VMS;
+VMS;
 	deal with PML files;
 		need /DEFINE=(EXIT=XEXIT) on VMS (with CC)
 		define NO_PML_xxx
@@ -120,6 +149,13 @@ notify free compilers/interpreters list maintainer
 
 ================ later;
 
+hash table entries?
+
+table default values???
+
+add $(OBJDIR) prefix before all .o filenames in Makefile2?
+	add explicit rules for version.o, syn.o
+
 &DUMP protected keywords?
 
 need to keep direction flag(s)???
@@ -139,8 +175,6 @@ I/O;
 	pass back flags with recl (so "T" is per-var?)
 		need to mask off flags to get recl
 	use COMPCL instead of "compiling"???
-
-add explicit rules for version.o, syn.o
 
 malloc system stack (STACK)? [see new/sysstk.diffs]
 	slows down OFCHK(); 2+% overall penalty
@@ -202,11 +236,12 @@ move data_init into (i)snobol4.c,
 
 load changes;
 
-	load "object" once, read symtab for multiple entry points
+	BSD; load "object" once, read symtab for multiple entry points
 		use -A on original / current symtab
 
-	use native dlopen (shl_load on HP-UX)?
-		may require special compiler flags, ld flags to make library
+	use shl_load() on HP-UX?
+
+	use load() on AIX???
 
 	allow use of GNU dynamic load library (dld)
 		version 4.0 is supposed to support COFF & ELF
@@ -286,20 +321,6 @@ make resident storage a struct with named members
 in make depend;
 	sed "s/$(SNOBOL4)\./"'$(SNOBOL4)./'
 
-================ calls
-
-use BRANCH(routine) macro for tail-calls instead of RETURN( routine(retval) )
-	apply tail-call stats diffs?
-
-eliminate indent/brackets around call if no "alt" needed
-
-try using global "retval"
-
-move RSTSTK() to RRTURN?
-	would remove need for "alt" var
-	would NEVER need brackets around call
-
-
 ================
 
 try appending .sno to command line filenames, if not found?
@@ -307,3 +328,14 @@ try appending .sno to command line filenames, if not found?
 ================
 
 CHAR/LPAD/RPAD in wrong section of v311.sil?!
+
+================
+
+implement SPITBOL &DUMP values?
+add DUMP(n) function???
+
+	0	no dump
+	1	partial dump (no null variables, constant keywords)
+	2	include values of non-null array/table elements
+		non-null members of user datatypes
+	3	include null-valued variables, stmt labels
