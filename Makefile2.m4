@@ -114,18 +114,16 @@ snobol4.c: procs genc.sno global.procs v311.sil
 
 changequote(%,@)
 # inline version (functions reordered)
-isnobol4.c: procs genc.sno global.procs v311.sil inline.sno reverse
+isnobol4.c: procs genc.sno global.procs v311.sil inline.sno
 	rm -rf isnobol4.c.TMP prolog subr
 	mkdir subr
 	$(SNO) inline.sno > prolog
-	cd subr; cat ../prolog `tsort ../callgraph 2>/dev/null | ../reverse` \
-				> ../isnobol4.c.TMP
+	cd subr; cat ../prolog \
+		`awk '{print $2, $1}' ../callgraph | tsort 2>/dev/null` \
+			> ../isnobol4.c.TMP
 	mv isnobol4.c.TMP isnobol4.c
 	rm -rf prolog subr
 changequote(`,')
-
-reverse: reverse.c
-	$(CC) $(CFLAGS) -o reverse reverse.c
 
 ########
 
@@ -257,7 +255,7 @@ GENERATED=syn.c syn.h syn.h2 data.c data.h proc.h proc.h2 equ.h \
 	snobol4.c isnobol4.c data_init.h 
 
 # disposables
-G2=*.o callgraph reverse prolog subr
+G2=*.o callgraph prolog subr
 
 # remove objects, leave generated sources, final binary, Makefile2
 clean:
@@ -271,7 +269,7 @@ realclean: clean
 	Makefile Makefile2.m4 \
 	v311.sil syntax.tbl procs global.procs \
 	genc.sno gensyn.sno gendata.sno inline.sno \
-	main.c charset.c data_init.c version.c reverse.c \
+	main.c charset.c data_init.c version.c \
 	parms.h mlink.h mdata.h pml.h \
 	lib include config test bugs snolib \
 	timing timing.sno \
