@@ -124,6 +124,11 @@ if [ "$UNAME" ]; then
 				break
 			fi
 		done
+		if [ -f /usr/bin/emerge ]; then
+			echo ''
+			echo emerge info:
+			/usr/bin/emerge info | head -4
+		fi
 		;;
 	OSF1)
 		if [ -f /usr/sbin/snmp_request ]; then
