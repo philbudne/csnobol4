@@ -36,3 +36,12 @@
 #define LA_INT(N) D_A(LA_DESCR(N))	/* n'th arg as integer */
 #define LA_REAL(N) D_RV(LA_DESCR(N))	/* n'th arg as real */
 #define LA_PTR(N) ((void *)LA_INT(N))	/* n'th arg as pointer */
+
+/* macros to return values; */
+#define RETINT(x) { D_A(retval) = (x); return TRUE; }
+#define RETREAL(x) { D_RV(retval) = (x); return TRUE; }
+/* strings */
+#define RETSTR(CP,LEN) { retstr(retval, (CP), (LEN)); return TRUE; }
+#define RETNULL { D_A(retval) = 0; return TRUE; }
+
+#define RETFAIL return FALSE
