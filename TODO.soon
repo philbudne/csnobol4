@@ -1,5 +1,11 @@
 $Id$
 
+add any/notany tests
+
+check for index() in <string.h>
+
+fix (or remove) "factor" output in timing.sno
+
 load.doc:
 	document dynamic library based LOAD()
 		c/ld commands for various O/S'build
@@ -75,6 +81,9 @@ SPITBOL compatibility document?
 	no ATAN() function
 	BACKSPACE() not supported
 	CLEAR() does not take args, clears pre-initialized vars (ie; ARB, FENCE)
+
+handle output errors
+	return value from io_print()
 
 ==== before beta releases
 
