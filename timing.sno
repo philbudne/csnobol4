@@ -77,7 +77,8 @@ GETSTAT	LINE = INPUT					:F(NOSTAT)
 	OUTPUT = 'Compile time:' TAB TAB COMP ' milliseconds'
 	OUTPUT = 'Execution time:' TAB TAB EXEC ' milliseconds'
 	OUTPUT = 'Statements executed:' TAB STMTS
-	OUTPUT = 'Statements per second:' TAB STMTS * 1000 / EXEC
+* sigh; cygwin on win9x;
+	OUTPUT = NE(EXEC,0) 'Statements per second:' TAB STMTS * 1000 / EXEC
 
 * calculate usec/stmt
 	A1 = EXEC * 1000 / STMTS
