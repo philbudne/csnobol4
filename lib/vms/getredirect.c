@@ -5,6 +5,7 @@
  * From: Jerry Leichter <leichter@lrw.com>
  *
  * Jan 6, 1995: compile under DECC -phil
+ * May 20, 2003: compile without implicit definition warnings -phil
  */
 
 /*
@@ -27,15 +28,23 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#include	<stdio.h>
-#include	<errno.h>
+#ifdef HAVE_STDLIB_H			/* before stdio.h */
+#include <stdlib.h>			/* exit() */
+#endif /* HAVE_STDLIB_H defined */
+
+#include <stdio.h>
+#include <errno.h>
 #ifdef __DECC
-#include	<unixio.h>	/* -phil */
+#include <unixio.h>			/* -phil */
 #endif
+
+#include "h.h"
+#include "snotypes.h"
+#include "lib.h"			/* our prototype */
 
 #ifndef W_OK
 #define W_OK 2
-#endif
+#endif /* W_OK not defined */
 
 int
 getredirection(argc, argv)
