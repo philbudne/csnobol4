@@ -4,7 +4,11 @@
 all:	porting.doc snobol4.0
 
 ## try also -Tcrt -Tman
-NROFF=nroff -Tlp
+# SunOS5/SVR4;
+#NROFF=nroff -Tlp
+# SunOS4;
+NROFF=nroff -Tlpr
+
 MS=-ms
 MAN=-man
 
