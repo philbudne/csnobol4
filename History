@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+3/27/97:
+	doc/snobol4.1: typo tweaks
+	doc/ports.doc: added BOW (BSD4.4 on Windows) i486 timing
+
 3/7/97:
 	doc/ports.doc: lots of new stuff from Rik Faith
 		reformatted: removed "conf" column, added "opt"
