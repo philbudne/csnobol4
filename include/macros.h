@@ -18,8 +18,14 @@
 /* fetch current value for printf */
 # define D_XXX(x) D_A(x)			/* XXX loses for reals!! */
 
-/* compare two descrs (returns zero for equal) XXX just compare A/F/V? */
-# define DCMP(A,B) (bcmp(A, B, DESCR))
+/* compare two descrs (returns boolean) */
+# ifdef DCMP_BYTES
+/* here if sizeof(float) > sizeof(long) */
+# define DCMP(A,B) (bcmp(A, B, DESCR) == 0)
+# else
+/* here if sizeof(float) <= sizeof(long) */
+# define DCMP(A,B) (D_A(A) == D_A(B) && D_F(A) == D_F(B) && D_V(A) == D_V(B))
+# endif
 
 /* clear B+1 descriptor block */
 # define ZERBLK(A,B) bzero(A, (B)+DESCR)
