@@ -159,6 +159,7 @@ extern volatile int math_error;
 
 #define CLR_MATH_ERROR() math_error = FALSE
 #define MATH_ERROR() math_error
+#define RMATH_ERROR(RESULT) (MATH_ERROR() || !finite((RESULT)))
 
 /****************/
 
