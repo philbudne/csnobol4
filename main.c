@@ -8,7 +8,7 @@
 
 # ifdef HAVE_STDLIB_H
 # include <stdlib.h>			/* for malloc */
-# endif /* HAVE_STDLIB_H */
+# endif /* HAVE_STDLIB_H defined */
 
 # include <stdio.h>			/* for lib.h */
 # include "h.h"
