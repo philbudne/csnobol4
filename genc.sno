@@ -1304,7 +1304,7 @@ XVCOMPC	DOCMP3( D_V(ARGV<1>), ARGV<2>, ARGV<3>,  ARGV<4>, ARGV<5>)
 							:(OPDONE)
 ****************
 *	SIL NANCHK (snobol4+ extension) 8/26/96
-XNANCHK	X = 'isnan(' D_RV(ARGV<1>) ')'
+XNANCHK	X = 'isnan(' RV(ARGV<1>) ')'
 	DOBOOL(X,ARGV<2>,ARGV<3>)			:(OPDONE)
 
 *
