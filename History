@@ -2,8 +2,29 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/22/2003
+	timing: use gentoo "emerge" if present
+
+12/18/2003
+	INSTALL: update win32 info
+	config/win32/ntmsvc.mak: add last tested info
+
+12/9/2003
+	Built and tested under WinXP using MS Visual Studio 2003 .NET
+	include/lib.h: use EXPORT() on declarations
+	include/load.h: SNOEXP() -- import or export, depending on build
+	lib/win32/inet.c: handle missing SD_BOTH
+
+11/15/2003
+	timing: add gentoo-release, *-release, move redhat to end
+
 11/14/2003
 	lib/win32/inet.c: add true (from 8/9/2003)
+	lib/ordvst.c: add consts
+	config/vms/descrip.mms: add bindresport.obj
+	tested w/ Compaq C V6.5-001 on OpenVMS Alpha V7.3-1
+	tested w/ hp C X6.6-329 (GEM 50DA7) for I64 on OpenVMS Alpha V7.3-1  
+	tested under Cygwin, MINGW, DJGPP, AIX, IRIX, SunOS, Solaris, HP-UX
 
 11/12/2003
 	configure: add sparc64
