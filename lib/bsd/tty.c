@@ -26,9 +26,9 @@ extern void *malloc();
 
 #ifdef USE_TTYIO
 #include <sys/ttyio.h>			/* Research Version 10 */
-#else
+#else  /* USE_TTYIO not defined */
 #include <sgtty.h>
-#endif
+#endif /* USE_TTYIO not defined */
 
 #include <signal.h>
 #include <sys/types.h>
@@ -36,7 +36,7 @@ extern void *malloc();
 
 #if defined(TTY_RAW) && defined(LPASS8)
 #define TTY_RAW_PASS8			/* shorthand */
-#endif
+#endif /* defined(TTY_RAW) && defined(LPASS8) */
 
 /* keep settings for each fd in a list; */
 static struct save {
@@ -46,14 +46,14 @@ static struct save {
 	struct sgttyb t;
 #ifdef TTY_RAW_PASS8
 	int local;
-#endif
+#endif /* TTY_RAW_PASS8 defined */
     } save, curr;
     int cbreak, noecho;
 } *list;
 
 #ifdef TTY_RAW_PASS8
 static int lflags;
-#endif
+#endif /* TTY_RAW_PASS8 defined */
 
 #define STDIN_FILENO 0
 
@@ -65,7 +65,7 @@ static int lflags;
 /* use TIOCSETN? */
 #define stty(F,P) ioctl(F, TIOCSETP, P)
 #define gtty(F,P) ioctl(F, TIOCGETP, P)
-#endif
+#endif /* TIOCSETP defined */
 
 enum action { FIND, CREATE, REMOVE };
 
@@ -75,6 +75,13 @@ fisatty(f, fname)
     char *fname;
 {
     return isatty(fileno(f));
+}
+
+static void
+tty_invalidate(sp)
+    struct save *sp;
+{
+    sp->noecho = sp->cbreak = -1;
 }
 
 static struct save *
@@ -112,8 +119,8 @@ find_by_fd(fd, action)
     gtty(fd, &sp->save.t);		/* save settings */
 #ifdef TTY_RAW_PASS8
     ioctl(fd, TIOCLGET, &sp->save.local);
-#endif
-    sp->noecho = sp->cbreak = -1;
+#endif /* TTY_RAW_PASS8 defined */
+    tty_invalidate(sp);
     
     /* link into list */
     sp->next = list;
@@ -130,7 +137,7 @@ tty_set(fd, stp)
     stty(fd, &stp->t);
 #ifdef TTY_RAW_PASS8
     ioctl(fd, TIOCLSET, &stp->local);
-#endif
+#endif /* TTY_RAW_PASS8 defined */
 }
 
 void
@@ -161,10 +168,10 @@ tty_mode( fp, cbreak, noecho, recl )
 	sp->curr.t.sg_flags |= RAW;
 #ifdef LPASS8
 	sp->curr.local |= LPASS8|LLITOUT;
-#endif
-#else
+#endif /* LPASS8 defined */
+#else  /* TTY_RAW not defined */
 	sp->curr.t.sg_flags |= CBREAK;
-#endif
+#endif /* TTY_RAW not defined */
 	sp->curr.t.sg_flags &= ~CRMOD;	/* leave LF alone */
     }
 
@@ -188,30 +195,33 @@ tty_close(f)
 
     fd = fileno(f);
 
-    /* try keeping information! */
 #ifdef TTY_CLOSE_FREE
     sp = find_by_fd(fd, REMOVE);
-#else
+#else  /* TTY_CLOSE_FREE not defined */
+    /* try keeping information! */
     sp = find_by_fd(fd, FIND);
-#endif
+#endif /* TTY_CLOSE_FREE not defined */
     if (!sp)
 	return;				/* not found, bad fd, bad device */
     
     stty(fd, &sp->save.t);
 #ifdef TTY_RAW_PASS8
     ioctl(fd, TIOCLSET, &sp->save.local);
-#endif
+#endif /* TTY_RAW_PASS8 defined */
     
 #ifdef TTY_CLOSE_FREE
     free(sp);
-#endif
+#else  /* TTY_CLOSE_FREE not defined */
+    /* if this state reused, force set back to "curr" */
+    tty_invalidate(sp);
+#endif /* TTY_CLOSE_FREE not defined */
 }
 
 #ifdef SIGTSTP
 void
 tty_suspend()
 {
-    struct save *sp, *pp;
+    struct save *sp;
     int fd;
 
     fd = fileno(stdin);

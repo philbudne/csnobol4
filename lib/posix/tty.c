@@ -68,6 +68,14 @@ fisatty(f, fname)
     return isatty(fileno(f));
 }
 
+/* invalid last mode; insure next use sets to "curr" state */
+static void
+tty_invalidate(sp)
+    struct save *sp;
+{
+    sp->noecho = sp->cbreak = sp->recl = -1;
+}
+
 static struct save *
 find_by_fd(fd, action)
     int fd;
@@ -100,7 +108,7 @@ find_by_fd(fd, action)
     /* save "original" settings (used for "cooked" I/O) */
     sp->dev = st.st_rdev;
     tcgetattr(fd, &sp->save);		/* save settings */
-    sp->noecho = sp->cbreak = sp->recl = -1;
+    tty_invalidate(sp);
     
     /* link into list */
     sp->next = list;
@@ -172,10 +180,10 @@ tty_close(f)
 
     fd = fileno(f);
 
-    /* try keeping information! */
 #ifdef TTY_CLOSE_FREE
     sp = find_by_fd(fd, REMOVE);
 #else
+    /* try keeping information! */
     sp = find_by_fd(fd, FIND);
 #endif
     if (!sp)
@@ -185,6 +193,8 @@ tty_close(f)
     
 #ifdef TTY_CLOSE_FREE
     free(sp);
+#else
+    tty_invalidate(sp);
 #endif
 }
 
@@ -199,8 +209,7 @@ tty_suspend()
     sp = find_by_fd(fd, FIND);
     if (sp)
 	tcsetattr(fd, TCSADRAIN, &sp->save);
-    
-    /* XXX MOVE to seperate file suspend.c?  name function proc_suspend()? */
+
     proc_suspend();
 
     /* here on process resume; */
