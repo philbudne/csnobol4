@@ -72,16 +72,16 @@ inet_socket( host, service, port, priv, type )
 	    port = atoi(service);
 	    if (port < 0 || port > 0xffff)
 		return -1;
-	    sin.sin_port = htons(port);
+	    sin.sin_port = htons((short)port);
 	} /* no service; saw digit */
 	else if (port >= 0 && port <= 0xffff) {
-	    sin.sin_port = htons(port);
+	    sin.sin_port = htons((short)port);
 	}
 	else
 	    return -1;
     } /* have service */
     else if (port >= 0 && port <= 0xffff) {
-	sin.sin_port = htons(port);
+	sin.sin_port = htons((short)port);
     }
     else
 	return -1;
