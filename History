@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+6/20/97:
+	lib/aux/bcopy.c: use (long) for casts
+	ports.doc: updated
+
 6/19/97:
 	autoconf: look for /lib/libdl (for Linux)
 	gensyn.sno: removed letter D from EXP class
