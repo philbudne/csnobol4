@@ -4,8 +4,8 @@
  * SPARC SPITBOL compatibility;
  * LOAD("EXIT()")
  *
- * Usage;	varies!
- * Returns;	varies!
+ * Usage;	EXIT("command")
+ * Returns;	fails, or passes execution to command string
  *
  * partial simulation of SPITBOL EXIT()
  */
