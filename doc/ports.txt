@@ -31,6 +31,7 @@ AMD Athlon	900   Linux 2.2.14  gcc		0.99.4 533036	pb 1/02
 Pentium III(?)	1000  Linux 2.4.2   gcc		0.99.4 508050	jb 11/01
 Pentium III	850   FreeBSD 4.3   gcc		0.99.4 497935	gc 2/02
 AMD Athlon	900   Linux 2.0.36  gcc		0.99.4 478164	pb 1/01
+AMD Athlon	850   Linux 2.4.7   gcc		0.99.4 471234	hb 2/01
 AMD Athlon	850   CygWin_ME	    gcc		0.99.4 432382	hb 12/01
 Pentium III	800   FreeBSD 4.1   gcc		0.99.4 427831	pb 7/00
 Pentium III	800x2 CygWin_NT4.0  gcc		0.99.4 416327	gb 1/02
