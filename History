@@ -3,6 +3,9 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
+9/14/94
+	date.c: tweak for VMS compilation (thanks to Martin Waller)
+
 9/13/94
 	timing: AFS doesn't allow hard links across directories!!
 		fix problems with timdir cleanup?
