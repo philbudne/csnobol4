@@ -167,11 +167,6 @@ int tty_read __P((FILE *,char *,int,int,int,int,char *));
 int getredirection __P((int, char **));
 #endif /* vms defined */
 
-/* from bindresvport.c */
-#ifdef NEED_BINDRESVPORT
-extern int bindresvport __P((int));
-#endif /* NEED_BINDRESVPORT */
-
 /* from popen.c */
 #ifdef NEED_POPEN
 extern FILE *popen __P((char *, char *)); /* from {generic,vms}/popen.c */
