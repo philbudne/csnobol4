@@ -3,14 +3,12 @@
 ################################################################
 # defaults (may be overridden in config.h)
 
-# preferred compiler is gcc
+# GCC is preferred C compiler; turn on inlining!
 CC=gcc
-OPT=-O -g
+OPT=-O -finline-functions
 
-# for make depend.
-# NOTE: if -M not supportted by local C compiler, use
-#	CCM=./cc-M
-CCM= $(CC) -M
+# May substitute ./cc-M here if C compiler doesn't support -M flag
+CCM=$(CC) -M
 
 # for pow(3)
 MATHLIB=-lm
