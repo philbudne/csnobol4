@@ -34,6 +34,8 @@ CCM=./cc-M
 # for pow(3)
 MATHLIB=-lm
 
+SH=sh
+
 # either snobol4 or isnobol4
 SNOBOL4=isnobol4
 #SNOBOL4=snobol4
