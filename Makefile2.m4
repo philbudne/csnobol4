@@ -24,11 +24,14 @@ CMT([extra C compiler flags for final link])
 define([ADD_LDFLAGS],[define([_LDFLAGS],_LDFLAGS $1)dnl])dnl
 define([_LDFLAGS],)dnl
 
-################################################################
-# defaults (may be overridden in config.h)
+################
+# version
 
 VERS=0.98.1
 VDATE="Sept 19, 1996"
+
+################################################################
+# defaults (may be overridden in config.h)
 
 OPT=-O
 
@@ -326,7 +329,7 @@ realclean: clean
 # file to hard-link into dist dir
 # generated files copied to ensure newer than source files!
 [TAR=	README doc History TODO TODO.soon \
-	Makefile Makefile2.m4 configure config.guess \
+	Makefile Makefile2.m4 autoconf config.guess \
 	$(SIL) syntax.tbl procs globals \
 	genc.sno gensyn.sno gendata.sno inline.sno \
 	main.c charset.c data_init.c version.c \
