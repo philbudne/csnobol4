@@ -1,35 +1,32 @@
 /* $Id$ */
 
 /*
- * function to init data segment;
+ * init.c - init data segment
+ * 12/28/93
+ *
  * * guarantees that data is in same order as in SIL source
  * * avoids initializers on unions (illegal in K&R style compilers)
  */
 
-#include "types.h"
-#include "flags.h"
-#include "h.h"
-#include "macros.h"
-#include "units.h"
+# include "types.h"
+# include "h.h"
+# include "macros.h"
+# include "units.h"
 
 /* machine generated */
-#include "equ.h"
-#include "data.h"
-#include "proc.h"
+# include "equ.h"
+# include "data.h"
+# include "proc.h"
 
-#define SIZLIM 0x7fffffff		/* XXX move to types.h? */
+# include "charset.c"			/* character set-dependancies */
 
-#define STRLEN(s) (sizeof(s)-1)		/* XXX move to macros.h? */
+const char AMPST[] = "&";
+const char QTSTR[] = "'";
+const char COLSTR[] = ": ";
 
-/* from charset.c */
-extern char AMPST[];
-extern char COLSTR[];
-extern char QTSTR[];
-extern char ALPHA[];
-
-#define ALPHSZ 128			/* XXX */
+# define STRLEN(s) (sizeof(s)-1)	/* support for STRING */
 
 void
 init_data() {
-#include "init.h"
+# include "init.h"
 } /* init_data */
