@@ -18,16 +18,23 @@
 #include "h.h"
 #include "types.h"
 #include "macros.h"
-#include "path.h"
+
+#include "config.h"
 
 #include <sys/types.h>
 #include <a.out.h>
 
 extern char *malloc();
 
-#define N_SIZE(A) ((A).a_text + (A).a_data + (A).a_bss) /* ?? */
+#define N_SIZE(A) ((A).a_text + (A).a_data + (A).a_bss) /* is this right? */
 
+#ifndef PREFIX
 #define PREFIX "_"			/* XXX most (all?) a.out systems? */
+#endif /* PREFIX not defined */
+
+#ifndef LD_PATH
+#define LD_PATH "/bin/ld"
+#endif /* LD_PATH not defined */
 
 /* keep list of loaded functions (for UNLOAD) */
 struct func {
@@ -92,8 +99,7 @@ load(addr, sp1, sp2)
 	path[S_L(sp2)] = '\0';
     }
     else {
-	/* XXX SNOLIB_DIR "/" SNOLIB_A */
-	strcpy(path, SNOLIB_A_PATH );
+	sprintf( path, "%s/%s", SNOLIB_DIR, SNOLIB_A );
     }
 
     /* XXX hide this? (use make_temp(); copy to static storage */
