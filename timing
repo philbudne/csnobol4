@@ -127,6 +127,11 @@ fi
 if [ -f 00README.CVS ]; then
 	echo ''
 	echo 'found 00README.CVS'
+	if [ -f CVS/Entries ]; then
+		echo ''
+		echo 'CVS/Entries:'
+		cat CVS/Entries
+	fi
 fi
 
 # kinda redundant, but timing script could be run on a different host!
