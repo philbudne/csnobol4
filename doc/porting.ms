@@ -167,7 +167,7 @@ Add argument to flags passed to "cc" command used to link snobol4
 executable.
 
 .NH 1
-m4 Macro names
+C Pre-Processor Macro names
 
 .PP
 The following are cpp macro names which can be by adding
@@ -178,17 +178,6 @@ The following are cpp macro names which can be by adding
 
 The following cpp macro names are #ifdef'ed in source and header files;
 
-.NH 3
-DCMP_BYTES
-
-.PP
-DCMP_BYTES should be defined if sizeof(int_t) != sizeof(real_t).  If
-DCMP_BYTES is defined, descriptor equality will be determined using
-bcmp().  THIS MAY NOT WORK!
-
-.PP
-Example: ADD_CPPFLAGS([-DDMP_BYTES]).
-See also INT_T and REAL_T.
 .NH 3
 HZ
 
@@ -202,7 +191,7 @@ INT_T
 If INT_T is defined, it should be the C type to use for integer values
 and addresses.  INT_T must be large enough to hold a pointer. The
 default type used for int_t is "long", except when the configure --longlong
-is used, and then int_t is "long long".  See also REAL_T.
+option is given, and then int_t is "long long".  See also REAL_T.
 .NH 3
 NO_BITFIELDS
 
@@ -306,7 +295,7 @@ REAL_T
 
 .PP
 If REAL_T is defined, it should be the C type to use for SNOBOL4 REAL
-values.  The default type used for real_t is "float". In LP64
+values. The default type used for real_t is "float". In LP64
 environments, or when configure --longlong is used the "a" field will
 be 64-bits (to hold pointers), so REAL_T is declared as a C "double"
 to take advantage of the available space.
