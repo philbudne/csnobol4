@@ -30,6 +30,7 @@ int io_file __P((struct descr *,struct spec *));
 int io_finish __P((void));
 int io_flushall __P((int));
 void io_init __P((void));
+void io_input __P((char *));
 int io_openi __P((struct descr *,struct spec *,struct spec *,struct descr *));
 int io_openo __P((struct descr *,struct spec *,struct spec *));
 int io_pad __P((struct spec *,int));
