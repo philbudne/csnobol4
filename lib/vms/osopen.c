@@ -13,6 +13,7 @@
 #include "h.h"
 #include "snotypes.h"
 #include "lib.h"
+#include "str.h"			/* strcmp */
 
 int
 osdep_open(fname, mode, fpp)
