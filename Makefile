@@ -225,13 +225,18 @@ KIT=snobol4-$(VERS).tar.$(Z)
 
 ANONCVSROOT=':pserver:anonymous@cvs.ultimate.com:/home/cvs'
 
+# NOTE! tmp directory subterfuge only necessary
+# because CVS module has same name as executable!!
+MODULE=snobol4
+
 newtar:	snobol4 pv
 	rm -rf tmp
 	mkdir tmp
-	cd tmp; cvs -d $(ANONCVSROOT) co snobol4
-	mv tmp/snobol4 tmp/$(DIR)
+	cvs -d $(ANONCVSROOT) login
+	cd tmp; cvs -d $(ANONCVSROOT) co $(MODULE)
+	mv tmp/$(MODULE) tmp/$(DIR)
 	cd tmp/$(DIR); make generated
-	cd tmp/doc; make
+	cd tmp/$(DIR)/doc; make
 	rm -f $(KIT)
 	cd tmp; ln ../pv .; tar cf - $(DIR) | $(COMP) > ../$(KIT)
 	rm -rf tmp
