@@ -48,7 +48,9 @@ typedef long off_t;
 #define SEEK_END 2
 #endif /* SEEK_END not defined */
 
-#define NUNITS 100			/* XXX set at runtime? */
+#define NUNITS 256			/* XXX set at runtime? */
+
+/* check an internal (zero based) unit number; */
 #define BADUNIT(U) ((U) < 0 || (U) >= NUNITS)
 
 /* names associated with UNITI, UNITO, UNITP(!), UNITT */
@@ -87,6 +89,7 @@ struct file {
 #define FL_APPEND	040		/* append */
 #define FL_TTY		0100		/* is a tty */
 #define FL_NOECHO	0200		/* tty: no echo */
+#define FL_NOCLOSE	0400		/* don't fclose() */
 
 /* XXX opened by INPUT/OUTPUT flag? */
 
@@ -164,6 +167,7 @@ io_close(unit)				/* internal (zero-based unit) */
 {
     struct file *fp;
     struct unit *up;
+    int ret;
 
     up = io_units + unit;
     fp = up->curr;
@@ -173,27 +177,28 @@ io_close(unit)				/* internal (zero-based unit) */
     if (fp->f) {
 #ifndef NO_POPEN
 	if (fp->flags & FL_PIPE) {
-	    pclose(fp->f);		/* XXX save return? */
+	    ret = (pclose(fp->f) == 0);
 	    fp->f = NULL;
 	}
 	else
 #endif /* NO_POPEN not defined */
-	if (fp->f != stdin &&
-	    fp->f != stdout &&
-	    fp->f != stderr &&
-	    fp->f != termin) {		/* XXX check a flag? */
-
+	{				/* not a pipe */
 	    /* XXX call close hook? */
-	    if (fp->flags & FL_TTY)
-		tty_close(fp->f);	/* advisory */
-
-	    fclose(fp->f);		/* XXX save return? */
-	    fp->f = NULL;
-	}
-    }
+	    if (fp->flags & FL_NOCLOSE) {
+		fflush(fp->f);
+		ret = TRUE;
+	    }
+	    else {
+		if (fp->flags & FL_TTY)
+		    tty_close(fp->f);	/* advisory */
+		ret = (fclose(fp->f) == 0);
+		fp->f = NULL;
+	    }
+	} /* not a pipe */
+    } /* have fp->f */
 
     up->curr = fp->next;
-    return TRUE;			/* XXX */
+    return ret;
 }
 
 /* close a unit, flush current file list */
@@ -211,7 +216,7 @@ io_closeall(unit)			/* internal (zero-based unit) */
     return TRUE;
 }
 
-static FILE *
+static void
 io_fopen2( fp, mode )
     struct file *fp;
     char *mode;
@@ -219,30 +224,55 @@ io_fopen2( fp, mode )
     char *mp;
     char buf[4];			/* x+b<NUL> */
 
+    fp->f = NULL;
+
     /* handle magic filenames (have a table (prefix or full str)??) */
 
 #ifndef NO_POPEN
-    /* filename with leading '|' opens a pipe! */
-    /* SPITBOL: leading '!' means pipe, (with escaping?) */
     if (fp->fname[0] == '|') {
-	fp->flags |= FL_PIPE;
-	/* XXX set close hook? */
-	return (popen(fp->fname+1, mode));
+	/* filename with leading '|' opens a pipe! */
+	/* SPITBOL: leading '!' means pipe, (with escaping?) */
+	fp->flags |= FL_PIPE;		/* XXX set close hook? */
+	fp->f = popen(fp->fname+1, mode);
+	return;
     }
 #endif /* NO_POPEN not defined */
 
     /* filename "-" goes to stdin/out */
     if (strcmp(fp->fname,"-") == 0) {
 	if (mode[0] == 'r')
-	    return (stdin);
-	return (stdout);
+	    fp->f = stdin;
+	else
+	    fp->f = stdout;
+	fp->flags |= FL_NOCLOSE;
+	return;
     }
-    if (strcmp(fp->fname,"/dev/stdin") == 0)
-	return (stdin);
-    if (strcmp(fp->fname,"/dev/stdout") == 0)
-	return (stdout);
-    if (strcmp(fp->fname,"/dev/stderr") == 0)
-	return (stderr);
+    if (strcmp(fp->fname,"/dev/stdin") == 0) {
+	fp->f = stdin;
+	fp->flags |= FL_NOCLOSE;
+	return;
+    }
+    if (strcmp(fp->fname,"/dev/stdout") == 0) {
+	fp->f = stdout;
+	fp->flags |= FL_NOCLOSE;
+	return;
+    }
+    if (strcmp(fp->fname,"/dev/stderr") == 0) {
+	fp->f = stderr;
+	fp->flags |= FL_NOCLOSE;
+	return;
+    }
+#ifndef NO_FDOPEN
+    if (strncmp(fp->fname, "/dev/fd/", 8) == 0) {
+	int i;
+
+	if (sscanf(fp->fname+8, "%d", &i) == 1) {
+	    fp->f = fdopen(i, mode);
+	    fp->flags |= FL_NOCLOSE;
+	}
+	return;
+    }
+#endif /* NO_FDOPEN not defined */
     if (strncmp(fp->fname, "/tcp/", 5) == 0 ||
 	strncmp(fp->fname, "/udp/", 5) == 0) {
 	char fn2[1024];			/* XXX */
@@ -255,7 +285,7 @@ io_fopen2( fp, mode )
 	host = fn2;
 	service = index(host, '/');
 	if (service == NULL)
-	    return NULL;
+	    return;
 	*service++ = '\0';
 
 	/* look for option suffixes, ignore if unknown */
@@ -277,9 +307,10 @@ io_fopen2( fp, mode )
 	} /* have suffixes */
 
 	if (fp->fname[1] == 'u')
-	    return udp_open( host, service, -1, priv );
+	    fp->f = udp_open( host, service, -1, priv );
 	else
-	    return tcp_open( host, service, -1, priv );
+	    fp->f = tcp_open( host, service, -1, priv );
+	return;
     }
 
     /* XXX more hacks here? /dev/fd/n? ??? */
@@ -298,7 +329,7 @@ io_fopen2( fp, mode )
 #endif /* NO_FOPEN_B not defined */
     *mp++ = '\0';
 
-    return (fopen(fp->fname, buf));
+    fp->f = fopen(fp->fname, buf);
 }
 
 static FILE *
@@ -306,7 +337,7 @@ io_fopen( fp, mode )
     struct file *fp;
     char *mode;
 {
-    fp->f = io_fopen2(fp,mode);
+    io_fopen2(fp,mode);
     if (fp->f == NULL)
 	return NULL;
 
@@ -363,11 +394,12 @@ io_input( path )
 }
 
 /* setup a unit given an open fp and a "filename" */
-int
-io_mkfile( unit, f, fname )
+static int
+io_mkfile2( unit, f, fname, flags )
     int unit;				/* external (1-based) unit */
     FILE *f;
     char *fname;			/* "filename" for error reports */
+    int flags;
 {
     struct file *fp;
     struct unit *up;
@@ -376,6 +408,7 @@ io_mkfile( unit, f, fname )
     if (fp == NULL)
 	return FALSE;
     fp->f = f;
+    fp->flags |= flags;
     if (fisatty(f)) {
 	/* XXX set close hook? */
 	fp->flags |= FL_TTY;
@@ -390,6 +423,15 @@ io_mkfile( unit, f, fname )
 
     return TRUE;
 }
+
+int
+io_mkfile( unit, f, fname )
+    int unit;				/* external (1-based) unit */
+    FILE *f;
+    char *fname;			/* "filename" for error reports */
+{
+    return io_mkfile( unit, f, fname, 0 );
+}
 
 /*
  * implement SIL operations;
@@ -399,7 +441,7 @@ void
 io_init()				/* here from INIT */
 {
     if (io_units[UNITI-1].curr == NULL) { /* no input file(s)? */
-	if (!io_mkfile(UNITI, stdin, STDIN_NAME )) {
+	if (!io_mkfile2(UNITI, stdin, STDIN_NAME, FL_NOCLOSE)) {
 	    perror("io_mkfile(stdin)");
 	    exit(1);
 	}
@@ -413,12 +455,12 @@ io_init()				/* here from INIT */
 
     /* XXX support -o outputfile? */
 
-    if (!io_mkfile(UNITO, stdout, STDOUT_NAME)) {
+    if (!io_mkfile2(UNITO, stdout, STDOUT_NAME, FL_NOCLOSE)) {
 	perror("io_mkfile(stdout)");
 	exit(1);
     }
 
-    if (!io_mkfile(UNITP, stderr, STDERR_NAME)) {
+    if (!io_mkfile2(UNITP, stderr, STDERR_NAME, FL_NOCLOSE)) {
 	perror("io_mkfile(stderr)");
 	exit(1);
     }
@@ -431,7 +473,7 @@ io_init()				/* here from INIT */
      */
     termin = term_input();		/* call system dependant function */
     if (termin) {
-	if (!io_mkfile(UNITT, termin, TERMIN_NAME)) {
+	if (!io_mkfile2(UNITT, termin, TERMIN_NAME, FL_NOCLOSE)) {
 	    perror("io_mkfile(termin)");
 	    exit(1);
 	}
@@ -794,7 +836,8 @@ io_ecomp()				/* XECOMP */
     if (rflag == 0) {
 	/* if -r was not given, switch INPUT to stdin!! */
 
-	io_mkfile( UNITI, stdin, STDIN_NAME ); /* XXX check return?! */
+	/* XXX check return?! */
+	io_mkfile2( UNITI, stdin, STDIN_NAME, FL_NOCLOSE );
 	return;
     }
     /*
@@ -1209,27 +1252,38 @@ io_flushall(dummy)
  * (use io_mkfile() to attach open file to unit)
  */
 
+#define MINFIND 20			/* minimum unit to return */
+#define MAXFIND NUNITS			/* maximum unit to return */
+
 int
 io_findunit()
 {
-    register i;
+    static int finger;
+    int start;
 
-    /* XXX keep static counter so we rotate thru unit space? */
-    for (i = NUNITS; i > 0; i--) {
+    for (;;) {
+	if (finger < MINFIND)
+	    finger = MAXFIND;
 
-	/* avoid preassigned units */
-	switch (i) {
-	case UNITI:
-	case UNITO:
-	case UNITP:
-	case UNITT:
-	    continue;
+	start = finger;
+	while (finger >= MINFIND) {
+	    if (io_units[finger-1].curr == NULL &&
+		io_units[finger-1].head == NULL)
+		return finger--;	/* found a free unit */
+	    finger--;
 	}
 
-	if (io_units[i-1].curr == NULL && io_units[i-1].head == NULL)
-	    return i;
+	/*
+	 * if we didn't find anything, and we started from scratch,
+	 * then we're out of luck.  Only REALLY need to search from
+	 * start0 downto MINFIND, then from MAXFIND to start0+1,
+	 * but this code is ugly enough
+	 */
+	if (start == MAXFIND)
+	    return -1;
+
+	/* if we didn't start from scratch, then do that */
     }
-    return -1;
 } /* io_findunit */
 
 /* for PML functions; get current fp on a unit */
