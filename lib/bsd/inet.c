@@ -36,6 +36,11 @@
 #define INADDR_NONE ((unsigned long)0xffffffff)	/* want u_int32_t! */
 #endif /* INADDR_NONE not defined */
 
+/* from bindresvport.c */
+#ifdef NEED_BINDRESVPORT
+extern int bindresvport __P((int, struct sockaddr_in *));
+#endif /* NEED_BINDRESVPORT */
+
 static int
 inet_socket( host, service, port, priv, type )
     char *host, *service;
@@ -81,7 +86,7 @@ inet_socket( host, service, port, priv, type )
     if (s < 0)
 	return -1;
 
-    if (priv && bindresvport(s) < 0) {
+    if (priv && bindresvport(s, NULL) < 0) {
 	close(s);
 	return -1;
     }
