@@ -2,9 +2,11 @@
 
 M4=m4
 
-## include $(MAKEFLAGS)?? 
 it:	Makefile2
-	$(MAKE) -f Makefile2 
+	$(MAKE) -f Makefile2 $(TARGET)
+
+xsnobol4: Makefile2
+	$(MAKE) -f Makefile2 xsnobol4
 
 M2TMP=Makefile2.tmp
 Makefile2 .depend: config.m4 Makefile2.m4
