@@ -4,6 +4,7 @@ MAINBOL for Un*x history (and personal SNOBOL history);
 
 1/8/94
 	output UNIXF UNIXF2 at startup
+	make 'LEFT' default listing side
 	output error name string to stderr
 	implemented -b (BANRCL), -s (STATCL)
 
