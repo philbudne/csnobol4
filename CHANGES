@@ -36,18 +36,19 @@ Changes since 0.99.4 release;
 
 		When using GCC, default to -O2
 
+	Default &MAXLNGTH to largest possible string
+
 	Documentation:
 		README file describes available includes
 
 		Include PDF of manual page
 
-
 	Implement fatal "Output error" for output, ENDFILE() errors
 
-	Autoconfiguration cleanup;
-		Eliminate static config files; autoconf script
+	Configuration script re-write;
+		Eliminate static config files & autoconf script
 		configure generates config.m4 and config.h
-		(with all defines) for use by loadable functions
+			(with all defines) for use by loadable functions
 
 	load.h updates;
 		all RETxxx macros safe in any context
