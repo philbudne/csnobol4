@@ -607,7 +607,7 @@ io_init()				/* here from INIT */
 void
 io_printf
 #ifdef USE_STDARG_H			/* for systems without varargs.h */
-    (int unit, ...)
+    (int_t unit, ...)
 #else  /* USE_STDARG_H not defined */
     (va_alist) va_dcl
 #endif /* USE_STDARG_H not defined */
@@ -622,10 +622,10 @@ io_printf
 #ifdef USE_STDARG_H
     va_start(vp,unit);
 #else  /* USE_STDARG_H not defined */
-    int unit;
+    int_t unit;
     va_start(vp);
 
-    unit = va_arg(vp, int);
+    unit = va_arg(vp, int_t);
 #endif /* USE_STDARG_H not defined */
 
     unit = INTERN(unit);
