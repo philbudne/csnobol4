@@ -14,7 +14,7 @@ CC=cl
 OPT=-O2
 
 # XXX try enabling bitfields? (comment out next line)
-NO_BITFIELDS=-DNO_BITFIELDS -DFFLD_T=char
+NO_BITFIELDS=-DNO_BITFIELDS
 
 # "msdos" version of tty routines uses kbhit() spin loop for raw tty
 # i/o.  This is unfriendly in a multitasking environment, and should
@@ -22,7 +22,7 @@ NO_BITFIELDS=-DNO_BITFIELDS -DFFLD_T=char
 TTY_C=$(SRCDIR)lib\msdos\tty.c
 TTY_DEFS=-DTTY_READ_RAW
 
-# win32 tty.c does not yet work.
+# win32 tty.c does not yet work
 #TTY_C=$(SRCDIR)lib\win32\tty.c
 #TTY_DEFS=
 
@@ -31,7 +31,8 @@ INET_DEFS=-DINET_IO
 # wsock32 present on both Win95 and WinNT
 INET_LIBS=wsock32.lib
 
-CFLAGS=	-c $(OPT) -I$(SRCDIR)config\win32 -I$(SRCDIR)include -I$(SRCDIR). \
+CFLAGS=	-c $(OPT) \
+	-I$(SRCDIR)config\win32 -I$(SRCDIR)include -I$(SRCDIR). \
 	-DHAVE_CONFIG_H $(NO_BITFIELDS) $(TTY_DEFS) $(INET_DEFS)
 
 OBJ=	isnobol4.obj data.obj data_init.obj main.obj syn.obj \
@@ -42,9 +43,8 @@ OBJ=	isnobol4.obj data.obj data_init.obj main.obj syn.obj \
 	init.obj load.obj mstime.obj chop.obj cos.obj delete.obj \
 	environ.obj exit.obj file.obj getstring.obj host.obj log.obj \
 	logic.obj ord.obj rename.obj retstring.obj sin.obj spcint.obj \
-	spreal.obj sqrt.obj sset.obj tan.obj sys.obj tty.obj \
-	inet.obj bindresvport.obj execute.obj exists.obj term.obj \
-	findunit.obj exp.obj
+	spreal.obj sqrt.obj sset.obj tan.obj sys.obj tty.obj inet.obj \
+	bindresvport.obj execute.obj exists.obj term.obj findunit.obj exp.obj
 
 snobol4.exe : $(OBJ)
 	link /out:snobol4.exe $(OBJ) $(INET_LIBS)
