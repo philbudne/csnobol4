@@ -40,7 +40,7 @@ if [ "$UNAME" ]; then
 		fi
 		;;
 	HP-UX)
-		if [ -f /usr/bin/model ]; them
+		if [ -f /usr/bin/model ]; then
 			echo model:
 			/usr/bin/model
 			echo ''
