@@ -30,7 +30,7 @@ realclean: clean
 
 # clean as when it was unpacked; remove binaries too
 distclean: realclean
-	rm -f snobol4 xsnobol4
+	rm -f snobol4 xsnobol4 timing.out
 
 .PRECIOUS: snobol4 xsnobol4
 
