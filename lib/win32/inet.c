@@ -41,6 +41,7 @@ inet_socket( host, service, port, priv, type )
 
     if (!wsock_init) {
 	WSADATA wsaData;
+	int opt;
 
 	if (WSAStartup( MAKEWORD(VMAJOR,VMINOR), &wsaData ) != 0)
 	    return -1;			/* init failed */
@@ -49,6 +50,14 @@ inet_socket( host, service, port, priv, type )
 	 * LOBYTE(ver) is major version, HIBYTE(ver) is minor version
 	 */
  	wsock_init = TRUE;
+
+	/*
+	 * For WinNT; switch to blocking/non-overlapped I/O
+	 * see http://www.telicsolutions.com/techsupport/WinFAQ.htm
+	 */
+	opt = SO_SYNCHRONOUS_NONALERT;
+	setsockopt(INVALID_SOCKET, SOL_SOCKET, SO_OPENTYPE,
+		   (char *)&opt, sizeof(opt));
     }
 
     bzero(&sin, sizeof(sin));
@@ -115,7 +124,7 @@ inet_socket( host, service, port, priv, type )
 		return s;
 	} /* good inet_addr */
     } /* saw digit */
-    close(s);
+    closesocket(s);
     return -1;
 }
 
@@ -124,16 +133,28 @@ inet_open( host, service, port, priv, type )
     char *host, *service;
     int port, priv, type;
 {
-    int s;
+    int s, fd;
     FILE *f;
 
     s = inet_socket(host, service, port, priv, type );
     if (s < 0)
 	return NULL;
 
-    f = fdopen(s, "r+");
-    if (f == NULL)
-	close(s);
+    /*
+     * get fd (C runtime file handle) for Read/Write from socket (OS handle)
+     * Broken under Win95?
+     */
+    fd = _open_osfhandle(s, O_RDWR|O_BINARY);
+    if (fd < 0) {
+	closesocket(s);
+	return NULL;
+    }
+
+    f = fdopen(fd, "r+");
+    if (f == NULL) {
+	/* XXX close fd? */
+	closesocket(s);
+    }
     return f;
 }
 
