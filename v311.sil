@@ -1,6 +1,11 @@
 * $Id$
 *
 * $Log$
+* Revision 1.17  94/01/08  23:37:41  budd
+* output UNIXF UNIXF2 at startup
+* output error name string to stderr
+* implemented -b (BANRCL), -s (STATCL)
+* 
 * Revision 1.16  94/01/07  17:54:04  budd
 * [PLB11] caseifed STRINGS, fixed TIMEPS format
 * 
@@ -6661,7 +6666,7 @@ PKEYF  FORMAT  '\nUnprotected keywords\n\n'
 PRTOVF FORMAT  '***PRINT REQUEST TOO LONG***\n'
 READNO FORMAT  '%15i Reads performed\n'
 SCANNO FORMAT  '%15i Pattern matches performed\n'
-SOURCF FORMAT  'Bell Telephone Laboratories, Incorporated\n\n'
+SOURCF FORMAT  '    Bell Telephone Laboratories, Incorporated\n\n'
 STATHD FORMAT  'SNOBOL4 statistics summary-\n'
 STDMP  FORMAT  '\fDump of variables at termination\n\n'
 STGENO FORMAT  '%15i Regenerations of dynamic storage\n'
@@ -6673,7 +6678,7 @@ TITLEF FORMAT  'SNOBOL4 (Version 3.11, May 19, 1975)\n'
 *								V3.11
 * [PLB12]:
 UNIXF  FORMAT  'The Macro Implementation of SNOBOL4 for Un*x 0.90 (beta)\n'
-UNIXF2 FORMAT  'January 1994, by Philip L. Budne\n'
+UNIXF2 FORMAT  '    January 1994, by Philip L. Budne\n'
 *
 WRITNO FORMAT  '%15i Writes performed\n'
        END
