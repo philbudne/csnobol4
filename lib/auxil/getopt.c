@@ -36,7 +36,7 @@
 #endif
 
 /*LINTLIBRARY*/
-#define ERR(s, c) if(opterr){fprintf(stderr, "%s%s%c\n", argv[0], s, c);}
+#define ERR(S, C) if(opterr){fprintf(stderr, "%s%s%c\n", argv[0], S, C);}
 
 int	opterr = 1;
 int	optind = 1;
