@@ -92,7 +92,8 @@ inet_socket( host, service, port, flags, type )
 
 /* set a boolean option: TRUE iff flag set and attempt fails */
 #define TRYOPT(FLAG,LAYER,OPT) \
-	((flags & FLAG) && setsockopt(s,LAYER,OPT,&true,sizeof(true)) < 0)
+	((flags & FLAG) && \
+	 setsockopt(s,LAYER,OPT,(const void *)&true,sizeof(true)) < 0)
 
     if ((flags & INET_PRIV) && bindresvport(s, NULL) < 0 ||
 	TRYOPT(INET_BROADCAST,SOL_SOCKET,SO_BROADCAST) ||
