@@ -126,7 +126,8 @@ load(addr, sp1, sp2)
 	} /* dlsym failed */
     } /* not found by pml */
     fp->self = fp;			/* make valid */
-    fp->next = fp;			/* link into list (for unload) */
+
+    fp->next = funcs;			/* link into list (for unload) */
     funcs = fp;
 
     D_A(addr) = (int_t) fp;
