@@ -8,6 +8,10 @@
 * NOTE!!! BASE argument must be passed an explicit null string for default!!
 *
 LOGIC.DEFINE
+
+* LOGIC() code linked into snobol4 binary; access it
+	LOAD("LOGIC(INTEGER,,)")
+
 	DEFINE(NOT(ARG))
 	DEFINE(AND(ARG1,ARG2))
 	DEFINE(OR(ARG1,ARG2))
