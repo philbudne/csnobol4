@@ -2,13 +2,20 @@
 
 /* debug functions to call from gdb! */
 
+/*
+ * todo:
+ * ptable(), parray(), pspec()
+ */
+
+/*#define DUMP				/* TEMP */
+
 #ifdef DUMP
+#include <stdio.h>
+
 #include "snotypes.h"
-
 #include "equ.h"
-
-extern struct descr FRSGPT, HDSGPT;
-extern struct descr OBSTRT[OBSIZ];
+#include "data.h"
+#include "macros.h"
 
 void
 more() {
@@ -26,26 +33,27 @@ void
 pdescr(dp)
     struct descr *dp;
 {
-    printf("%#x <", dp->a.i );
-
-    if (dp->f == 0) {
+    printf("v %d f <", D_V(dp) );
+    if (D_F(dp) == 0) {
 	putchar('0');
     }
     else {
-	if (dp->f & FNC)
+	if (D_F(dp) & FNC)
 	    putchar('F');
-	if (dp->f & TTL)
+	if (D_F(dp) & TTL)
 	    putchar('T');
-	if (dp->f & STTL)
+	if (D_F(dp) & STTL)
 	    putchar('S');
-	if (dp->f & MARK)
+	if (D_F(dp) & MARK)
 	    putchar('M');
-	if (dp->f & PTR)
+	if (D_F(dp) & PTR)
 	    putchar('P');
     }
-    printf("> %d", dp->v );
+    printf("> a %#x (%d)", D_A(dp), D_A(dp) );
 
-    if (dp->f & STTL) {
+    /* XXX follow ptr ?? */
+
+    if (D_F(dp) & STTL) {
 	char *cp;
 	int i;
 
@@ -54,7 +62,7 @@ pdescr(dp)
 
 	/* XXX c.f. LOCSP */
 	cp = (char *)dp + BCDFLD;
-	i = dp->v;
+	i = D_V(dp);
 	while (i-- > 0) {
 	    char c;
 
@@ -65,14 +73,17 @@ pdescr(dp)
 	}
 	putchar('\'');
     }
+    putchar('\n');
+    fflush(stdout);
 }
 
+/* dump all of dynamic storage */
 void
 dump_dyn() {
     int a;
 
-    a = HDSGPT.a.i;
-    while (a < FRSGPT.a.i) {
+    a = D_A(HDSGPT);
+    while (a < D_A(FRSGPT)) {
 	struct descr *dp;
 
 	dp = (struct descr *) a;
@@ -82,22 +93,23 @@ dump_dyn() {
 	putchar('\n');
 	more();
 
-	if (!(dp->f & TTL)) {
+	if (!(D_F(dp) & TTL)) {
 	    puts("NO TITLE.");
 	    break;
 	}
 
 	/* XXX this is BKSIZE */
-	if (dp->f & STTL) {
-	    a += DESCR*(4+((dp->v-1)/CPD+1));
+	if (D_F(dp) & STTL) {
+	    a += DESCR*(4+((D_V(dp)-1)/CPD+1));
 	}
 	else {
 	    /* XXX scan for pointers? */
-	    a += dp->v + DESCR;
+	    a += D_V(dp) + DESCR;
 	}
     }
 }
 
+/* dump all strings/names */
 void
 dump_vars() {
     int i;
@@ -105,7 +117,8 @@ dump_vars() {
     for (i = 0; i < OBSIZ; i++) {
 	int_t a;
 
-	a = OBSTRT[i].a.i;
+	/* get start of i'th hash chain */
+	a = D_A(((struct descr *)OBSTRT)+i);
 	while (a) {
 	    pdescr(a);
 	    printf(" :=\t");
@@ -115,8 +128,55 @@ dump_vars() {
 	    putchar('\n');
 	    more();
 
-	    a = ((struct descr *) (a + LNKFLD))->a.i;
+	    a = D_A(a + LNKFLD);	/* get next in chain */
 	}
     }
+}
+
+void
+ptable(dp)
+    struct descr *dp;
+{
+    struct descr *ep;
+    int d;
+
+    if (!(D_F(dp) & TTL)) {		/* XXX check self ptr? */
+	puts("no title");
+	fflush(stdout);
+	return;
+    }
+    d = D_V(dp) / DESCR;
+    printf("initial size %d (%d entries)\n", d, d/2-1);
+    /* XXX dump entries?? */
+    dp = (struct descr *)dp[d].a.ptr;	/* XXX D_PTR? */
+    while (dp != (struct descr *)1) {
+	d = D_V(dp) / DESCR;
+	printf("extent size %d (%d entries)\n", d, d/2-1);
+	/* XXX dump entries?? */
+	dp = (struct descr *)dp[d].a.ptr; /* XXX D_PTR? */
+    }
+    fflush(stdout);
+}
+
+void
+parray(dp)
+    struct descr *dp;
+{
+    int s, n, i;
+    if (!(D_F(dp) & TTL)) {		/* XXX check self ptr? */
+	puts("no title");
+	fflush(stdout);
+	return;
+    }
+    n = D_A(dp+2);
+    s = D_V(dp)/DESCR - 2 - n;
+
+    printf("%d entries, %d dimensions:\n", s, n);
+    /* XXX print prototype string @ D_PTR(dp+1)? */
+
+    for (i = 0; i < n; i++) {
+	printf("%d: s %d l %d\n", i+1, D_V(dp+(n-i+2)), D_A(dp+(n-i+2)));
+    }
+    fflush(stdout);
 }
 #endif /* DUMP defined */
