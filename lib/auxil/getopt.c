@@ -26,14 +26,11 @@
 /* phil 1/4/94; use STDIO */
 #include <stdio.h>
 
-#if defined(MSDOS) || defined(USG) || defined(vms)
-#define index strchr
-#endif
+/* phil 1/13/94 use h.h (for index)
+#include "h.h"
 
 /*LINTLIBRARY*/
 #define ERR(s, c) if(opterr){fprintf(stderr, "%s%s%c\n", argv[0], s, c);}
-
-extern char *index();
 
 int	opterr = 1;
 int	optind = 1;
