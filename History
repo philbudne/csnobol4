@@ -3,6 +3,11 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
+8/29/96
+	Tested on DS3100 (MIPS Ultrix -- 4.3 with a COFF)
+	added config/ultrix-mips.m4
+	updated ports.doc
+
 8/25/96
 	Makefile: use new configure script
 	configure: create config.m4 from thin air, using config.guess
