@@ -24,7 +24,7 @@ extern void *malloc();
 void *
 lookup_handle(hlp, h)
     struct handle_list *hlp;
-    int_t h;
+    snohandle_t h;
 {
     struct handle_entry *hp;
 
@@ -35,12 +35,12 @@ lookup_handle(hlp, h)
     return NULL;
 }
 
-int_t
+snohandle_t
 new_handle(hlp, vp)
     struct handle_list *hlp;
     void *vp;
 {
-    int_t h;
+    snohandle_t h;
     struct handle_entry *hp;
 
     hp = malloc(sizeof(struct handle_entry));
@@ -62,7 +62,7 @@ new_handle(hlp, vp)
 void
 remove_handle(hlp, h)
     struct handle_list *hlp;
-    int_t h;
+    snohandle_t h;
 {
     struct handle_entry *hp, *pp;
 

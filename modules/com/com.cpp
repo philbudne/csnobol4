@@ -106,7 +106,7 @@ COM_LOAD( LA_ALIST ) LA_DCL
     LPOLESTR progid;
     HRESULT hr;
     static bool first = true;			// XXX bad for making DLL!!
-    handle_t h;
+    snohandle_t h;
 
     if (first) {
 	if (FAILED(CoInitialize(NULL)))
