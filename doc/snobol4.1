@@ -466,14 +466,17 @@ The
 .B SET()
 function can be used to seek the file pointer of an open file.  The
 first argument is an I/O unit number, the second is an integer offset.
-The third argument, an integers determins from
+The third argument, an integer determines from
 .B whence
 the file pointer will be adjusted.  If whence is zero the starting
 point is the begining of the file, if whence is one, the starting
 point is the current file pointer, and if whence is two, the starting
 point is the end of the file.
 .B SET()
-returns the new file pointer value.
+returns the new file pointer value.  On systems with 64-bit file
+pointers and 32-bit integers (ie; 4.4BSD on i386) the return value
+will be truncated to 32-bits, and only the first and last 4 gigabytes
+of a file can be accessed directly.
 .TP
 SITBOL file functions
 .br
