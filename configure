@@ -1285,16 +1285,26 @@ fi
 
 ## check if pow() available? use dummy/expops.c if not?
 
-# should always find last item!
+
 # Solaris 8 has both /usr/sbin and /usr/ucb versions?
 # (/usr/sbin version takes TOTALLY different args)
-for INSTALL in /usr/bin/install /usr/ucb/install \
-	/sbin/install /etc/install ./install-sh; do
-   if [ -x $INSTALL ]; then
-	echo "using $INSTALL for make install" 1>&2
-	echo "INSTALL=$INSTALL"			>> $CONFIG_M4
-	break
-   fi
+
+# should always find ./install-sh
+for DIR in /usr/bin /usr/ucb /sbin /etc .; do
+    for INSTALL in install ginstall scoinst install-sh; do
+	if [ "$INSTALL" = install ]; then
+	    IPATH=$DIR/$INSTALL
+	    if [ -x $IPATH ]; then
+		# avoid broken AIX installer
+		if grep dspmsg $IPATH >/dev/null; then
+		    continue
+	        fi
+		echo "using $IPATH for make install" 1>&2
+		echo "INSTALL=$IPATH"			>> $CONFIG_M4
+		break 2
+	    fi
+	fi
+    done
 done
 
 ################################
