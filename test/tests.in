@@ -82,3 +82,5 @@ reg lgt.sno
 reg err.sno
 reg line.sno
 reg reverse.sno
+# 10/2/96
+trace ntrace.sno
