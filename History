@@ -2,9 +2,15 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+4/5/97:
+	doc/snobol4.1: document DATE() args
+
+4/2/97:
+	genc.sno, v311.sil, lib/date.c: support SPITBOL DATE() args
+	doc/ports.doc: 486SX33
+
 3/27/97:
 	doc/snobol4.1: typo tweaks
-	doc/ports.doc: added BOW (BSD4.4 on Windows) i486 timing
 
 3/7/97:
 	doc/ports.doc: lots of new stuff from Rik Faith
