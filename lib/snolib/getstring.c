@@ -1,3 +1,5 @@
+/* $Id$ */
+
 #include "h.h"
 #include "equ.h"			/* BCDFLD, etc */
 #include "snotypes.h"			/* DESCR, etc */
