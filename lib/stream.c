@@ -37,9 +37,9 @@ stream( sp1, sp2, tp )
 
     for (; len > 0; cp++, len--) {
 	register const struct acts *ap;
-	unsigned index;
+	unsigned aindex;
 
-	index = tp->chrs[*cp];
+	aindex = tp->chrs[*cp];
 
 	DEBUGF(2,(" '%c' (%d)", *cp, *cp ));
 
@@ -48,12 +48,12 @@ stream( sp1, sp2, tp )
 	 * always has magic value zero.
 	 * 9/9/97
 	 */
-	if (index == 0) {
+	if (aindex == 0) {
 	    DEBUGF(2,(" CONTIN\n"));
 	    continue;
 	}
 
-	ap = tp->actions + (index - 1);
+	ap = tp->actions + (aindex - 1);
 
 	/* token can never occur with CONTIN or ERROR? */
 	if (ap->put) {
