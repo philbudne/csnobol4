@@ -15,7 +15,7 @@
 CCFLAGS=/OPTIMIZE/WARNINGS=NOWARNINGS
 AUX_OBJ=isnan.obj, finite.obj, \
 	bcopy.obj, bzero.obj, getopt.obj, popen.obj, unlink.obj, 
-CCDEFS=,NEED_POPEN,NEED_OFF_T
+CCDEFS=,NEED_BCOPY,NEED_BZERO,NEED_POPEN,NEED_OFF_T
 
 # need explicit C runtime library
 #CLIB=+SYS$SHARE:VAXCRTL/SHARE
@@ -32,11 +32,10 @@ UCXLIB=+SYS$LIBRARY:UCX$IPC/LIB
 .else
 .ifdef DECC4
 # Tested under AXP OpenVMS 6.2 using DECC 4.0 (November 2000)
-#CCFLAGS=/DECC/PREFIX_LIB=ALL/WARN=(DISABLE=IMPLICITFUNC)/OPTIMIZE
-CCFLAGS=/OPTIMIZE
+CCFLAGS=/PREFIX_LIB=ALL/WARN=(DISABLE=IMPLICITFUNC)/OPTIMIZE
 
 AUX_OBJ=bcopy.obj, bzero.obj, popen.obj, unlink.obj, 
-CCDEFS=,NEED_POPEN,NEED_OFF_T
+CCDEFS=,NEED_BCOPY,NEED_BZERO,NEED_POPEN,SOCKLEN_INT,HAVE_UNIXIO_H
 # no explicit CRT library needed
 
 # alternate library routines
@@ -51,7 +50,7 @@ UCXLIB=+SYS$LIBRARY:UCX$IPC/LIB
 
 # ** DEFAULT**
 # Tested under Compaq C V6.5-001 on OpenVMS Alpha V7.3-1 (May 2003)
-# practically civilized!!
+# downright civilized!!
 
 CCFLAGS=/OPTIMIZE
 CCDEFS=,HAVE_STRINGS_H,HAVE_STDLIB_H,HAVE_UNISTD_H
@@ -67,10 +66,9 @@ UCXDEFS=,NEED_BINDRESVPORT_SA
 
 .ifdef NO_TCP
 # C compiler flags, if any
-INETDEFS=
-
-INETOBJ=inet.obj, bindresvport.obj
 INET_C=[.lib.dummy]inet.c
+INETDEFS=
+INETOBJ=inet.obj
 
 .else
 
@@ -83,8 +81,8 @@ INET_C=[.lib.dummy]inet.c
 # C compiler flags, if any
 INET_C=[.lib.bsd]inet.c
 INETDEFS=$(UCXDEFS)
-INETLIB=$(UCXLIB)
 INETOBJ=$(UCXOBJ)
+INETLIB=$(UCXLIB)
 .endif
 
 LIBS=$(INETLIB) $(CLIB)
