@@ -1,12 +1,30 @@
 $Id$
 
-move pmprotos to loadable files
+OSX:
+	-framework for Tcl/Tk?
+
+Unix domain sockets
+	datagram vs stream
+	allow single accept???
+
+Allow single accept for TCP?
+	ACCEPT1?
+
+DYNAMIC LOADING!!
+
+RANDOM() function(s)
+
+move pmprotos to loadable files?
 	auto-find them????
+	use on dynamic load also?
+	use "include" files to declare?
+		generate from .c sources?!
 
 test for, and pre-include:
 	prolog.sno
 	local.sno
 	current dir??
+	use to pre-load modules???
 
 undefined function (label?) hooks?
 
