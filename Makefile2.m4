@@ -483,7 +483,7 @@ tan.o: $(TAN_C)
 
 # install .h files for dynamicly loaded functions
 INSTALL_H=[include]/h.h [include]/snotypes.h [include]/macros.h \
-	[include]/load.h [include]/dt.h config.h
+	[include]/load.h [include]/dt.h config.h equ.h
 
 # generated SNOLIB files (at top level)
 GENSNOLIB=host.sno
