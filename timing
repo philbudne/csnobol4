@@ -117,8 +117,8 @@ echo 'config.guess:'
 ./config.guess
 
 echo ''
-echo "ls -l config.m4 ${SNOBOL}:"
-ls -l config.m4 config.h $SNOBOL
+echo "ls -l config.m4 config.h build.c ${SNOBOL}:"
+ls -l config.m4 config.h build.c $SNOBOL
 
 echo ''
 echo 'config.m4:'
