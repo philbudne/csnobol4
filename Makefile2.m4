@@ -229,8 +229,13 @@ GENERATED=syn.c syn.h syn.h.new data.c data.h proc.h equ.h \
 # disposables
 G2=*.o callgraph
 
+# remove objects, leave generated sources, final binary, Makefile2
 clean:
-	rm -f $(GENERATED) $(G2) *~
+	rm -f $(G2) *~
+
+# remove objects, generated sources, leave final binary, Makefile2
+realclean: clean
+	rm -f $(GENERATED)
 
 `TAR=	README doc History TODO TODO.soon \
 	Makefile Makefile2.m4 \

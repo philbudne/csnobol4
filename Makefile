@@ -22,6 +22,9 @@ config.h:
 clean:	Makefile2
 	$(MAKE) -f Makefile2 clean
 
+realclean: Makefile2
+	$(MAKE) -f Makefile2 realclean
+
 tar:	Makefile2
 	$(MAKE) -f Makefile2 tar
 
