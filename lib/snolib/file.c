@@ -16,6 +16,7 @@
 #endif /* HAVE_CONFIG_H defined */
 
 #include "h.h"
+#include "equ.h"
 #include "snotypes.h"
 #include "macros.h"
 #include "load.h"
