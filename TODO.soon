@@ -1,5 +1,10 @@
 $Id$
 
+INSTALL:
+	document autoconf options
+
+test "make install"
+
 ==== before beta release
 
 update man page date, CHANGES, README
@@ -9,6 +14,9 @@ check in all files (incl History, TODO.soon)
 rcs tag
 
 ==== before 1.0 release;
+
+sed SNOLIB_PATH into man page?
+	give load.doc full path!!
 
 seperate regression test suite for distribution
 	(only tests likely to uncover port problems)?
@@ -88,13 +96,6 @@ I/O;
 		need to mask off flags t get recl
 	add /udp magic path??
 	use COMPCL instead of "compiling"???
-
-prototype warnings compiling getopt.c on some platforms
-	check for getopt() in unistd.h, stdio.h, stdlib.h??
-		gets it wrong on sunos4
-	search libc.a??
-	try compiling a program that asks for getopt()??
-		only include getopt.o if not found??
 
 add explicit rules for version.o, syn.o
 

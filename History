@@ -2,6 +2,23 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+10/30/96:
+	autoconf: add option processing; --force-gcc, --no-gcc options
+		add check for getopt in stdio.h; add getopt.o $(GETOPT_C)
+		add comments on sgtty use
+		use CCPATH more
+	config/skel.inc, config/bsd43.m4: remove getopt.o $(GETOPT_C)
+	doc/ports.doc: new P75, PPro175(!!) numbers
+	doc/snobol4.1: fix typo
+	checked out fresh copies of all files with old (two digit year)
+		RCS Id's, for cleaner rcsdiffing
+	INSTALL: talk more about what autoconf, Makefile2 do
+		document autoconf options
+
+10/29/96:
+	config/hpux-pa.m4: add gcc -mlong-calls comments
+	doc/ports.doc: got an Alpha model number
+
 ******** RCS tag BETA4
 
 10/28/96:
