@@ -1111,7 +1111,7 @@ void
 io_backspace(unit)			/* BKSPCE */
     int_t unit;
 {
-    UNDF();
+    UNDF(0);
 }
 
 void
