@@ -32,14 +32,22 @@ expint(res,x,y)
 	p = 0;
     }
     else {
+/* perform X *= Y, checking for overflow */
+#define SIGN (((unsigned)1)<<(sizeof(int_t)*8-1))
+#define MULT(X,Y) { \
+    register int_t temp = (X) * (Y); \
+    if (((X) ^ (Y) ^ temp) & SIGN) return 0; \
+    X = temp; \
+}
+
 	p = 1;
 	for (;;) {
 	    if (iy & 1)
-		p *= ix;		/* XXX check overflow */
+		MULT(p,ix);
 	    iy >>= 1;
 	    if (iy == 0)
 		break;
-	    ix *= ix;			/* XXX check overflow */
+	    MULT(ix,ix);
 	}
     }
     D(res) = D(x);			/* XXX copy F&V */
