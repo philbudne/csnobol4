@@ -28,7 +28,8 @@
 #define LA_DCL struct descr *retval, *args; int nargs;
 #endif
 
-/* macros to fetch arguments
+/*
+ * macros to fetch arguments
  * XXX check nargs?  check datatypes???
  */
 #define LA_DESCR(N) (args + (N))	/* pointer to descr for n'th arg */
@@ -37,18 +38,32 @@
 #define LA_REAL(N) D_RV(LA_DESCR(N))	/* n'th arg as real */
 #define LA_PTR(N) ((void *)LA_INT(N))	/* n'th arg as pointer */
 
-/* macros to return values; */
+/*
+ * macros to return values;
+ * NOTE: use of do { .... } while (0) allows user to 
+ * place macro invocations anywhere, and to use a ';' after
+ */
+
 #define RETINT(x) do { D_A(retval) = (x); return TRUE; } while (0)
 #define RETREAL(x) do { D_RV(retval) = (x); return TRUE; } while (0)
 
 /* strings */
-#define RETSTR(CP,LEN) \
+#define RETSTR2(CP,LEN) \
     do { retstring(retval, (CP), (LEN)); return TRUE; } while(0)
-#define RETCSTR(CP) \
-    do { \
-	char *cp = (CP); retstring(retval, cp, strlen(cp)); return TRUE; \
-    } while (0)
 #define RETNULL do { D_A(retval) = 0; return TRUE; } while (0)
+
+/*
+ * improved!! old version now called RETSTR2().
+ * NOTE: evaluates argument once, so it can be a function call.
+ * handles NULL pointer (returns NULL string)
+ *	have an alternate version that returns failure for NULL??
+ */
+#define RETSTR(CP) \
+    do { \
+	char *cp = (CP); \
+        if (cp == NULL) RETNULL; \
+	RETSTR2(cp, strlen(cp)); \
+    } while (0)
 
 /* return failure */
 #define RETFAIL return FALSE
