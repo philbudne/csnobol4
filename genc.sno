@@ -790,9 +790,15 @@ XMOVA	OUTPUT = IND D_A(ARGV<1>) ' = ' D_A(ARGV<2>) ';' :(OPDONE)
 ****************
 *	SIL SETAC (MOVVC) MACRO
 XSETAC	X = ARGV<2>
-	X BREAK('-*') ANY('-*')				:F(XSETAC2)
-	X = '(' X ')'
-XSETAC2	OUTPUT = IND D_A(ARGV<1>) ' = (int_t) ' X ';'	:(OPDONE)
+* no fuss for simple integer
+	X SPAN(DIGS) RPOS(0)				:S(XSETAC3)
+* otherwise need a cast (for pointers)
+	X BREAK(OPERS) ANY(OPERS)			:F(XSETAC2)
+* operators present; parenthesize
+	X = '(int_t) (' X ')'				:(XSETAC3)
+* here with non-integer, but no operators
+XSETAC2	X = '(int_t) ' X
+XSETAC3	OUTPUT = IND D_A(ARGV<1>) ' = ' X ';'		:(OPDONE)
 
 ****************
 *	SIL SETAV (MOVVT) MACRO
