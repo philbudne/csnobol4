@@ -1,6 +1,10 @@
 * $Id$
 *
 * $Log$
+* Revision 1.36  1996/08/08  03:38:01  phil
+* [PLB28] changes from 7/28/95!!
+* VARVUP (copy of VARVAL for now), and calls to it
+*
 * Revision 1.35  1995/07/28  18:40:34  phil
 * [PLB27] change GNVARC to GENVUP (what it's called in SNOBOL4+ sources)
 *
@@ -1955,38 +1959,41 @@ VARVC  RCALL   XPTR,INVOKE,(XPTR),(FAIL,VARV1,VARV2)
 *_
 *---------------------------------------------------------------------*
 *
-* New [PLB28]
-*      Evaluation of argument as identifier, honoring &CASE.
+* New [PLB28][PLB29]
+*
+*      Evaluation of argument as upper case string if case folding.
+*      Just like VARVAL, returns by exit 2.  Source string is not
+*      modified.  If the upper case version already exists, it's
+*      values take precedence.
 *
 *      Thanks to Mark Emmer for the name, behavior and use of this
-*      function.
+*      function!
 *
-*      This is (ugh) a copy of VARVAL.
-*      Just set a flag, and jump to VARVAL?
-
-VARVUP PROC    VARVAL		   Eval argument as identifier
-       AEQLC   CASECL,0,,VARVAL	   Skip out if case sensitve
-       INCRA   OCICL,DESCR	   Increment offset
-       GETD    XPTR,OCBSCL,OCICL   Get object code descriptor
-       TESTF   XPTR,FNC,,VARVUC	   Check for function
-VARVU1 AEQLC   INSW,0,,VARVU4	   Check &INPUT
-       LOCAPV  ZPTR,INATL,XPTR,VARVU4
-*				   Look for input association
-       GETDC   ZPTR,ZPTR,DESCR	   Get input association
-       RCALL   XPTR,PUTIN,(ZPTR,XPTR),(FAIL,RTXVUP)
-*				   Perform input
+VARVUP PROC    VARVAL
+       RCALL   ,VARVAL,,FAIL	   Get string ptr to XPTR
+       BRANCH  VPXPTR
 *_
-VARVU4 GETDC   XPTR,XPTR,DESCR	   Get value
-VARVU2 VEQLC   XPTR,S,,RTXVUP	   Is it STRING?
-       VEQLC   XPTR,I,INTR1,GENVIX Convert INTEGER to STRING
-* NOTE: if REAL->STRING conversion implemented, must fold result!!
-*_
-VARVUC RCALL   XPTR,INVOKE,(XPTR),(FAIL,VARVU1,VARVU2)
-*				   Evaluate function
-*_
-* here with newly evaluated string.
-* XXX check if mixed case, fold if needed.
-RTXVUP BRANCH  RTXNAM		   Return by name
+*
+* New [PLB29]
+* Case-folding version of RTXNAM.
+* here from IND, VARVUP to convert XPTR to upper case
+*
+VPXPTR PROC    VARVAL
+       AEQLC   CASECL,0,,RTXNAM	   Just return if not case folding
+       LOCSP   SPECR1,XPTR	   Get specifier to string
+       LEQLC   SPECR1,0,,RTXNAM	   Avoid null string
+       GETLG   AXPTR,SPECR1	   Get string length
+       RCALL   ,CONVAR,AXPTR,	   Allocate scratch space at FRSGPT
+       LOCSP   XSP,FRSGPT	   Get specifier for scratch string
+       XCALLC  raise2,(SPECR1,XSP),RTXNAM
+*				   Copy & raise; fails if no LC chars
+       MOVDIC  FRSGPT,DESCR,XPTR,DESCR
+*				   Give new string same value and
+       MOVDIC  FRSGPT,ATTRIB,XPTR,ATTRIB
+*				   label as original
+       RCALL   XPTR,GNVARS,AXPTR,RTXNAM
+*				   Make upper case version official
+       BRANCH  RTXNAM		   Return by name
 *_
 *---------------------------------------------------------------------*
 *
@@ -3975,7 +3982,7 @@ FIELD1 MOVV    DT1CL,XPTR	   Set up data type
        GETDC   ZCL,ZCL,2*DESCR	   Get offset
        SUM     XPTR,XPTR,ZCL	   Compute field position
        SETVC   XPTR,N		   Insert NAME data type
-       BRANCH  RTXNAM		   Return name
+       BRANCH  VPXPTR		   [PLB29] Return name
 *_
 *---------------------------------------------------------------------*
        TITLE   'Input and Output'
@@ -4587,9 +4594,8 @@ IND    PROC    ,		   $X
        VEQLC   XPTR,I,,GENVIX	   Convert INTEGER
        VEQLC   XPTR,K,INTR1,RTXNAM KEYWORD is like NAME
 *_
-* XXX check here for folding???
-INDV   AEQLC   XPTR,0,RTXNAM,NONAME
-*				   Be sure string is not null
+INDV   AEQLC   XPTR,0,VPXPTR,NONAME
+*				   [PLB29] Be sure string is not null
 *_
 *---------------------------------------------------------------------*
 *
