@@ -1,5 +1,7 @@
 $Id$
 
+only use PML if file is "INTERNAL"???
+
 document default I/O associations in man page?
 
 test RETSTR
