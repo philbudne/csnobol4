@@ -4,6 +4,10 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>			/* system() */
+#endif /* HAVE_STDLIB_H */
+
 #include "h.h"
 #include "equ.h"
 #include "snotypes.h"
