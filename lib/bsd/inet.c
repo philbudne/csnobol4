@@ -4,17 +4,27 @@
 
 #include <stdio.h>
 #include <ctype.h>
-#ifdef USE_WINSOCK_H
+
 /* Ugly, but better than duplicating the whole file! */
-#include <winsock.h>
-#else
+#ifdef unix
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
 #include <netinet/in.h>
-#endif
+#else /* not unix */
+#ifdef USE_WINSOCK_H
+#include <winsock.h>
+#endif /* USE_WINSOCK_H */
+#ifdef VMS
+#include <types.h>
+#include <socket.h>
+#include <netdb.h>
+#include <in.h>
+#endif /* VMS */
+#endif /* not unix */
 
 #include "h.h"				/* TRUE/FALSE */
+#include "snotypes.h"			/* needed on VAX/VMS for macros.h */
 #include "macros.h"			/* bcopy */
 
 #ifndef INADDR_NONE
