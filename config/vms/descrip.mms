@@ -154,7 +154,7 @@ CFLAGS=	$(CCFLAGS) /DEFINE=(HAVE_CONFIG_H$(CCDEFS)$(INETDEFS)) \
 
 OBJS=	main.obj, $(SNOBOL4).obj, data.obj, data_init.obj, syn.obj, \
 	bal.obj, date.obj, dynamic.obj, endex.obj, exists.obj, \
-	expops.obj, hash.obj, init.obj, $(INET_OBJ), intspc.obj, io.obj, \
+	expops.obj, hash.obj, init.obj, $(INETOBJ), intspc.obj, io.obj, \
 	lexcmp.obj, load.obj, mstime.obj, ordvst.obj, pair.obj, \
 	pat.obj, pml.obj, realst.obj, replace.obj, spcint.obj, \
 	spreal.obj, str.obj, stream.obj, term.obj, top.obj, tty.obj, \
