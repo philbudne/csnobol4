@@ -1,6 +1,12 @@
 * $Id$
 *
 * $Log$
+* Revision 1.62  1996/10/17  02:31:18  phil
+* [PLB51] Implement format/options for INPUT()
+* Pass format/options to OUTPUT()
+* Use XCALLC; XOPEN[IO] deprecated
+* fixed INPUT(V,U,O,N) and OUTPUT(V,U,O,N) comments
+*
 * Revision 1.61  1996/10/13  22:04:16  phil
 * [PLB50] fixes from SNOBOL4+ to avoid "Internal Errors" on bad CODE() args
 *
@@ -4812,12 +4818,16 @@ ENFILE PROC    BKSPCE		   ENDFILE(N)
 *_
 REWIND PROC    BKSPCE		   REWIND(N)
        SETAC   SCL,3		   Indicate rewind
+       BRANCH  IOOP						[PLB52]
+*_
+SET    PROC    BKSPCE		   SET(N,O,W)			[PLB52]
+       SETAC   SCL,4		   Indicate set
 IOOP   PUSH    SCL		   Push indicator
        RCALL   XCL,INTVAL,,FAIL	   Evaluate integer argument
        ACOMPC  XCL,0,,UNTERR,UNTERR
 *				   Reject negative or zero
        POP     SCL		   Restore indicator
-       SELBRA  SCL,(,EOP,ROP)	   Select operation
+       SELBRA  SCL,(,EOP,ROP,SOP)  Select operation		[PLB52]
        BKSPCE  XCL		   Backspace unit
        BRANCH  RETNUL
 *_
@@ -4826,6 +4836,14 @@ EOP    ENFILE  XCL		   End file unit
 *_
 ROP    REWIND  XCL		   Rewind unit
        BRANCH  RETNUL
+*_
+SOP    PUSH    XCL		   Save unit			[PLB52]
+       RCALL   XPTR,INTVAL,,FAIL   Get offset			[PLB52]
+       PUSH    XPTR		   Save offset			[PLB52]
+       RCALL   YPTR,INTVAL,,FAIL   Get whence			[PLB52]
+       POP     (XPTR,XCL)	   Restore offset, unit		[PLB52]
+       XCALLC  io_seek,(XCL,XPTR,YPTR),FAIL,RTXPTR		[PLB52]
+*				   Set (seek) unit		[PLB52]
 *_
 *---------------------------------------------------------------------*
 *
@@ -7231,6 +7249,8 @@ RSRTFN DESCR   RSORT,FNC,1					[PLB31]
        DESCR   0,0,0						[PLB31]
 RTABFN DESCR   RTAB,0,1
        DESCR   0,0,0
+SETFN  DESCR   SET,0,3						[PLB52]
+       DESCR   0,0,0						[PLB52]
 SIZEFN DESCR   SIZE,0,1
        DESCR   0,0,0
 SORTFN DESCR   SORT,FNC,1					[PLB31]
@@ -7388,6 +7408,8 @@ FNLIST DESCR   FNLIST,TTL+MARK,FNCPLE-FNLIST-DESCR
        DESCR   RSRTSP,0,0					[PLB31]
        DESCR   RTABFN,FNC,0	   RTAB(N)
        DESCR   RTABSP,0,0
+       DESCR   SETFN,FNC,0	   SET(N,O,W)			[PLB52]
+       DESCR   SETSP,0,0					[PLB52]
        DESCR   SIZEFN,FNC,0	   SIZE(S)
        DESCR   SIZESP,0,0
        DESCR   SORTFN,FNC,0	   SORT(T,C)			[PLB31]
@@ -7653,6 +7675,7 @@ RPADSP STRING  'RPAD'						[PLB31]
 RSRTSP STRING  'RSORT'						[PLB31]
 RTABSP STRING  'RTAB'
 RTYPSP STRING  'RTNTYPE'
+SETSP  STRING  'SET'						[PLB52]
 SIZESP STRING  'SIZE'
 SSTRSP STRING  'SUBSTR'						[PLB37]
 SORTSP STRING  'SORT'						[PLB31]
