@@ -40,5 +40,6 @@ main( argc, argv )
 	}
 	pclose(out);
     }
+    exit(0);
 }
 
