@@ -55,7 +55,7 @@ PMPROTO("TAN(REAL)REAL")
 #endif /* NO_PML_REAL not defined */
 
 #ifndef NO_PML_FILE
-PMLFUNC(FILE)				/* SITBOL compat */
+PMLFUNC2("FILE",FILE2)			/* SITBOL compat */
 PMPROTO("FILE(STRING)STRING")
 #endif /* NO_PML_FILE not defined */
 

@@ -2,8 +2,9 @@
 
 /*
  * SITBOL compatibility;
- * LOAD("FILE(STRING)STRING")
- *
+ * LOAD("FILE2(STRING)STRING")
+ * OPSYN("FILE2", "FILE")
+
  * Usage;	FILE("filename")
  * Returns;	null string or failure
  *
@@ -25,7 +26,7 @@
 #include "lib.h"			/* exists() */
 
 int
-FILE( LA_ALIST ) LA_DCL
+FILE2( LA_ALIST ) LA_DCL		/* avoid stdio name collision */
 {
     char path[1024];			/* XXX */
 
