@@ -5,7 +5,7 @@
  *
  * pow exists in v6 (buth math.h didn't), SVID2, XPG2, XPG3, POSIX.1, ANSI C
  *
- * see dummy/exp.c for dummy version of this file
+ * see dummy/expops.c for dummy version of this file
  */
 
 #ifdef HAVE_CONFIG_H
@@ -17,6 +17,7 @@
 # include "h.h"
 # include "snotypes.h"
 # include "macros.h"
+# include "lib.h"			/* own prototypes */
 
 # ifdef NO_STATIC_VARS
 # include "equ.h"
