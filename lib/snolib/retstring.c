@@ -5,16 +5,22 @@
 #include "snotypes.h"			/* DESCR, etc */
 #include "macros.h"			/* D_A() etc */
 
+extern char *malloc();			/* use <stdlib.h> if available? */
+
+#ifdef NO_STATIC_VARS
+#include "vars.h"
+#else
+static struct spec retspec[1];
+static char *retbuf;
+static int retbuflen;
+#endif
+
 void
 retstring( retval, cp, len )
     struct descr *retval;
     char *cp;
     int len;
 {
-    static struct spec sp[1];
-    static char *retbuf;
-    static int retbuflen;
-    extern char *malloc();
 
     if (len > retbuflen) {
 	if (retbuf)
@@ -30,17 +36,17 @@ retstring( retval, cp, len )
     bcopy( cp, retbuf, len );		/* copy to buffer! */
 
     /* set up (static) specifier for string */
-    S_A(sp) = (int_t) retbuf;
-    S_F(sp) = 0;			/* NOTE: *not* a PTR! */
-    S_V(sp) = 0;
-    S_O(sp) = 0;
-    S_L(sp) = len;
-    CLR_S_UNUSED(sp);
+    S_A(retspec) = (int_t) retbuf;
+    S_F(retspec) = 0;			/* NOTE: *not* a PTR! */
+    S_V(retspec) = 0;
+    S_O(retspec) = 0;
+    S_L(retspec) = len;
+    CLR_S_UNUSED(retspec);
 
     /* point to specifier */
     D_F(retval) = 0;			/* NOTE: not marked as PTR! */
     D_V(retval) = L;			/* "linked string" */
-    D_A(retval) = (int_t) sp;
+    D_A(retval) = (int_t) retspec;
 
 }
 

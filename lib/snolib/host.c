@@ -18,10 +18,15 @@
 #include "load.h"			/* LA_xxx macros */
 #include "equ.h"			/* datatypes I/S */
 
-extern char *getenv();
-extern char *params;
-extern char **argv;
+#ifdef NO_STATIC_VARS
+#include "vars.h"
+#else
 extern int argc, firstarg;
+extern char **argv;
+extern char *params;
+#endif
+
+extern char *getenv();			/* use <stdlib.h> if avail? */
 
 int
 HOST( LA_ALIST ) LA_DCL
