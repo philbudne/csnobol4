@@ -1,12 +1,11 @@
 /* $Id$ */
 
 /*
- * Functions for Poor-Mans LOAD -- link time funtions
+ * Functions for Poor-Mans LOAD -- link time funtions -- see doc/load.doc
  * used by dummy/load.c
- * could be used as a fallback by real loaders!!
+ * used as a fallback by real loaders too!
  */
 
-#ifndef NO_PML
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
@@ -25,7 +24,7 @@ struct pmlfunc {
 #include "pml.h"
 #undef PMLFUNC2
 
-static struct pmlfunc pmltab[] = {
+static const struct pmlfunc pmltab[] = {
 #define PMLFUNC2(NAME,ADDR) { NAME, ADDR },
 #include "pml.h"
     { NULL, NULL }			/* MUST BE LAST!! */
@@ -33,12 +32,14 @@ static struct pmlfunc pmltab[] = {
 #undef PMLOAD
 };
 
-char *pm_prototypes[] = {
+static const char *pm_prototypes[] = {
 #define PMLFUNC2(NAME,ADDR)
 #define PMLOAD(PROTO) PROTO,
 #include "pml.h"
     ""
 };
+
+#define NPROTO (sizeof(pm_prototypes)/sizeof(pm_prototypes[0]))-1
 
 #ifdef __STDC__
 /* necessary on nextstep? */
@@ -62,4 +63,21 @@ int (*pml_find(NAME1))(LOAD_PROTO)
     }
     return fp->addr;
 } /* pml_find */
-#endif /* NO_PML not defined */
+
+/* return n'th prototype for function to auto-load */
+int
+getpmproto(sp,dp)
+    struct spec *sp;			/* OUT: spec */
+    struct descr *dp;			/* IN: which prototype */
+{
+    if (D_A(dp) >= NPROTO)
+	return FALSE;
+
+    S_A(sp) = (int_t) pm_prototypes[D_A(dp)];
+    S_F(sp) = 0;			/* NOTE: *not* a PTR! */
+    S_V(sp) = 0;
+    S_O(sp) = 0;
+    S_L(sp) = strlen(pm_prototypes[D_A(dp)]);
+    CLR_S_UNUSED(sp);
+    return TRUE;
+}
