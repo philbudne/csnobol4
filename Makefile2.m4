@@ -100,6 +100,7 @@ CHOP_C=$(SRCDIR)lib/snolib/chop.c
 COS_C=$(SRCDIR)lib/snolib/cos.c
 DELETE_C=$(SRCDIR)lib/snolib/delete.c
 ENVIRON_C=$(SRCDIR)lib/snolib/environ.c
+EXECUTE_C=$(SRCDIR)lib/generic/execute.c
 EXIT_C=$(SRCDIR)lib/snolib/exit.c
 EXP_C=$(SRCDIR)lib/snolib/exp.c
 FILE_C=$(SRCDIR)lib/snolib/file.c
@@ -163,17 +164,18 @@ SMALL_SNO=snobol4 -b
 
 OBJS=	main.o $(SNOBOL4).o data.o data_init.o syn.o bal.o convert.o \
 	date.o dump.o dynamic.o endex.o expops.o hash.o inet.o init.o \
-	intspc.o io.o lexcmp.o load.o mstime.o ordvst.o pair.o pat.o pml.o \
-	realst.o replace.o str.o stream.o term.o top.o tree.o tty.o \
-	version.o $(PML_OBJS) $(SNOLIB_A)
+	intspc.o io.o lexcmp.o load.o mstime.o ordvst.o pair.o pat.o \
+	pml.o realst.o replace.o str.o stream.o term.o top.o tree.o \
+	tty.o version.o $(PML_OBJS) $(SNOLIB_A)
 
 AUX_SRCS= _SRCS
-SRCS=	main.c $(SNOBOL4).c data.c data_init.c syn.c $(BAL_C) $(CONVERT_C) \
-	$(DATE_C) $(DUMP_C) $(DYNAMIC_C) $(ENDEX_C) $(EXPOPS_C) $(HASH_C) \
-	$(INET_C) $(INIT_C) $(INTSPC_C) $(IO_C) $(LEXCMP_C) $(LOAD_C) \
-	$(MSTIME_C) $(ORDVST_C) $(PAIR_C) $(PAT_C) $(PML_C) \
-	$(REALST_C) $(REPLACE_C) $(STREAM_C) $(STR_C) $(TOP_C) $(TERM_C) \
-	$(TREE_C) $(TTY_C) version.c $(AUX_SRCS) $(SNOLIB_SRCS)
+SRCS=	main.c $(SNOBOL4).c data.c data_init.c syn.c $(BAL_C) \
+	$(CONVERT_C) $(DATE_C) $(DUMP_C) $(DYNAMIC_C) $(ENDEX_C) \
+	$(EXPOPS_C) $(HASH_C) $(INET_C) $(INIT_C) $(INTSPC_C) $(IO_C) \
+	$(LEXCMP_C) $(LOAD_C) $(MSTIME_C) $(ORDVST_C) $(PAIR_C) \
+	$(PAT_C) $(PML_C) $(REALST_C) $(REPLACE_C) $(STREAM_C) \
+	$(STR_C) $(TOP_C) $(TERM_C) $(TREE_C) $(TTY_C) version.c \
+	$(AUX_SRCS) $(SNOLIB_SRCS)
 
 # SIL source file
 SIL=	v311.sil
@@ -380,10 +382,6 @@ getenv.o: $(GETENV_C)
 system.o: $(SYSTEM_C)
 	$(CC) $(CFLAGS) -c $(SYSTEM_C)
 
-# for snolib/exit.c
-execl.o: $(EXECL_C)
-	$(CC) $(CFLAGS) -c $(EXECL_C)
-
 ################################################################
 # snolib -- library of external functions
 
@@ -402,9 +400,9 @@ $(SNOLIB_A): $(SNOLIB_OBJS)
 # snolib files
 
 SNOLIB_SRCS= $(CHOP_C) $(COS_C) $(DELETE_C) $(ENVIRON_C) $(EXIT_C) \
-	$(EXP_C) $(FILE_C) $(FORK_C) $(GETSTRING_C) $(HOST_C) $(LOG_C) \
-	$(RENAME_C) $(RETSTRING_C) $(SIN_C) $(SPRINTF_C) $(SQRT_C) \
-	$(SYS_C) $(TAN_C)
+	$(EXECUTE) $(EXP_C) $(FILE_C) $(FORK_C) $(GETSTRING_C) \
+	$(HOST_C) $(LOG_C) $(RENAME_C) $(RETSTRING_C) $(SIN_C) \
+	$(SPRINTF_C) $(SQRT_C) $(SYS_C) $(TAN_C)
 
 chop.o: $(CHOP_C)
 	$(CC) $(CFLAGS) -c $(CHOP_C)
@@ -417,6 +415,9 @@ delete.o: $(DELETE_C)
 
 environ.o: $(ENVIRON_C)
 	$(CC) $(CFLAGS) -c $(ENVIRON_C)
+
+execute.o: $(EXECUTE_C)
+	$(CC) $(CFLAGS) -c $(EXECUTE_C)
 
 exit.o: $(EXIT_C)
 	$(CC) $(CFLAGS) -c $(EXIT_C)
@@ -489,17 +490,12 @@ spotless: realclean
 
 # file to hard-link into dist dir
 # generated files copied separately to ensure newer than source files!
-[TAR=	README CHANGES History INSTALL TODO TODO.soon doc \
-	Makefile Makefile2.m4 autoconf config.guess \
-	$(SIL) syntax.tbl procs globals \
-	genc.sno gensyn.sno gendata.sno inline.sno \
-	main.c charset.c data_init.c version.c \
-	parms.h mlink.h mdata.h pml.h \
-	$(GENERATED) \
-	lib include config test bugs \
-	snolib/*.sno \
-	timing timing.sno \
-	cc-M bsplitu.c]
+[TAR=	README CHANGES History INSTALL TODO TODO.soon doc Makefile \
+	Makefile2.m4 autoconf config.guess $(SIL) syntax.tbl procs \
+	globals genc.sno gensyn.sno gendata.sno inline.sno main.c \
+	charset.c data_init.c version.c parms.h mlink.h mdata.h pml.h \
+	$(GENERATED) lib include config test bugs snolib/*.sno timing \
+	timing.sno cc-M bsplitu.c]
 
 # "print version" -- for dir/tar names
 pv:	version.c
