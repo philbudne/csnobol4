@@ -23,6 +23,7 @@ made when all systems were timed with the same release of SNOBOL!
 
 System		Speed	OS	      C	     REL    config	 st/sec who
 ===============================================================================
+SGI IP28 (R10K)	195	IRIX 6.2      cc     0.99   posix	 89823	rh 10/96
 SGI IP22 (R5K)	180	IRIX 6.2      cc     0.99   posix	 39337	rh 10/96
 DEC 3000/500	30/150	OSF/1 3.2     cc     0.99   osf1-alpha	 26071	pb 10/96
 Sun SS-10/??	??	SunOS 5.5     SUNpro 0.99   sunos4	 25733	ro 10/96
@@ -74,7 +75,7 @@ Sun SS-20/51	50	SunOS 4.1.3U1 gcc    0.91.2 sunos4	 17172	pb 5/96
 Sun SS-20/50	50	SunOS 4.1.3U1 gcc    0.91   sunos4	 16353	pb 10/94
 HP 9000/720	50	HP-UX 9.01    c89    0.90   hpux-pa	 16066	pb 3/94
 Sun SS-1000	50	SunOS 5.3     gcc    0.91.2 sunos5	 14954	pb 1/95
-SGI Indigo R4000 100	Irix 4.0.5H   ?	     0.90   irix	 13714? rh 3/94
+SGI Indigo RK	100	Irix 4.0.5H   ?	     0.90   irix	 13714? rh 3/94
 Sun SS-10/30?	30?	SunOS 4.1.3   gcc    0.91   sunos4	 13189?	jm 6/94
 Sun SS-10/40	40	SunOS 4.1.3U1 gcc    0.91.2 sunos4	 12917	pb 1/95
 DEC 3000/800  	40/200	OpenVMS 6.1   DECC   0.91.2 build.com	 12828	pb 1/95
