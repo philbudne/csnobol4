@@ -33,6 +33,10 @@ void
 endex( x )
     int x;
 {
+#ifdef TRACE_DEPTH
+    int i;
+#endif /* TRACE_DEPTH defined */
+
     io_finish();
     inet_cleanup();
 
