@@ -24,13 +24,17 @@ void init __P((void));
 /* from io.c */
 /* io_include(), io_read() in libret.h */
 void io_backspace __P((int_t));
+int io_closeall __P((int));
 void io_ecomp __P((void));
 int io_endfile __P((int_t));
 int io_file __P((struct descr *,struct spec *));
+int io_findunit __P((void));
 int io_finish __P((void));
 int io_flushall __P((int));
+FILE *io_getfp __P((int));
 void io_init __P((void));
 void io_input __P((char *));
+int io_mkfile __P((int, FILE *, char *));
 int io_openi __P((struct descr *,struct spec *,struct spec *,struct descr *));
 int io_openo __P((struct descr *,struct spec *,struct spec *));
 int io_pad __P((struct spec *,int));
