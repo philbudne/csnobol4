@@ -1,0 +1,17 @@
+
+FOO
+BAR
+
+	DEFINE("TEST(L)")	:(ETEST)
+TEST	OUTPUT = LABEL(L) L	:(RETURN)
+ETEST
+
+	TEST('FOO')
+	TEST('TEST')
+	TEST('END')
+	X = 'B'
+	Y = 'AR'
+	TEST(X Y)
+	Y = 'AZ'
+	TEST(X Z)
+END
