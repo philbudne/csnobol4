@@ -1338,7 +1338,7 @@ if [ ! "$WITHOUT_NDBM" ]; then
 
     if [ ! "$NO_NDBM" ]; then
 	if [ "$USE_GDBM" ]; then
-	    # SuSE? assume if it exists, we need it?
+	    # gdbm 1.8.1: assume if it exists, we need it?
 	    if [ -f /usr/lib/libgdbm_compat.a -o \
 		 -f /usr/lib/libgdbm_compat.a ]; then
 		echo "using libgdbm_compat" 2>&1
