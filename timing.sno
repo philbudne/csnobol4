@@ -68,9 +68,9 @@ BADEXEC	OUTPUT = "execution failed"			:(FATAL)
 GETSTAT	LINE = INPUT					:F(NOSTAT)
 	LINE 'SNOBOL4 statistics'			:F(GETSTAT)
 	LINE = INPUT					:F(NOSTAT)
-	LINE WS INT . COMP WS 'ms. Compilation time'	:F(NOSTAT)
+	LINE WS FLOAT . COMP WS 'ms. Compilation time'	:F(NOSTAT)
 	LINE = INPUT					:F(NOSTAT)
-	LINE WS INT . EXEC WS 'ms. Execution time'	:F(NOSTAT)
+	LINE WS FLOAT . EXEC WS 'ms. Execution time'	:F(NOSTAT)
 	LINE = INPUT					:F(NOSTAT)
 	LINE WS INT . STMTS WS 'Statements executed'	:F(NOSTAT)
 
@@ -83,31 +83,36 @@ GETSTAT	LINE = INPUT					:F(NOSTAT)
 	OUTPUT = 'Statements per second:' TAB STMTS * 1000 / EXEC
 
 * calculate usec/stmt
-	A1 = EXEC * 1000 / STMTS
+	A1 = EXEC * 1000.0 / STMTS
 
 	OUTPUT = 'microseconds per statement: ' A1
 
 * get SNOBOL time in 10ths
-NOET	SNOBOL = (COMP + EXEC + 50) / SNODIV
+NOET	SNOBOL = (COMP + EXEC) / SNODIV
 
 **************** get snobols's average ms/stmt
 
 ALOP	LINE = INPUT					:F(NOSTAT)
-	LINE WS FLOAT . AVG WS 'ms. Average'		:F(ALOP)
+	LINE WS FLOAT . AVG WS 'us. Average'		:F(ALOP)
+*	OUTPUT = '>>' LINE
 
 * get usec/stmt (as calculated by snobol)
-	A2 = CONVERT(AVG * 1000, 'INTEGER')
+*	OUTPUT = 'AVG=' AVG
+*	OUTPUT = 'A1=' A1
 
-* compare A1 vs A2 (calculation fails on HP-PA using gcc?)
-	EQ(A1,A2)					:S(GETTIME)
+* compare A1 vs AVG (calculation fails on HP-PA using gcc?)
+	EQ(A1,AVG)					:S(GETTIME)
 
 * check for delta of +/-1us
-	X = A1 - A2
+	X = A1 - AVG
 	EQ(X,1)						:S(GETTIME)
 	EQ(X,-1)					:S(GETTIME)
 
 * get ratio, keep our version on the bottom (less likely to be zero)
-	X = 100 * A2 / A1
+	X = 100 * AVG / A1
+	X = CONVERT(X, 'INTEGER')
+*	OUTPUT = 'X=' X
+
 * ignore errors of less than 4% (difference between 49 and 50us)
 	GE(X,98) LT(X,102)				:S(GETTIME)
 
@@ -146,15 +151,21 @@ GETTIME	LINE = INPUT					:F(NOTIME)
 	OUTPUT = '	(look in timing.sno at GETTIME patterns)'
 	OUTPUT =					:(DIFFCK)
 
-* here with shell runtime
-GOTTIME	SHELL = CONVERT((USER + MIN * 60) * SHMULT, 'INTEGER')
+* here with shell runtime; merge minutes and seconds, convert to 100ths
+GOTTIME	SHELL = (USER + MIN * 60.0) * SHMULT
 
-* see if shell time matches snobols exactly
+*	OUTPUT = '>>' LINE
+*	OUTPUT = 'USER=' USER
+*	OUTPUT = 'MIN=' MIN
+*	OUTPUT = 'SHELL=' SHELL
+*	OUTPUT = 'SNOBOL=' SNOBOL
+
+* see if shell time matches snobols exactly (unlikely with reals)
  	EQ(SNOBOL,SHELL)				:S(TIMEOK)
 
 * quick and easy: allow +/-1
- 	EQ(SNOBOL,SHELL + 1)				:S(TIMEOK)
- 	EQ(SNOBOL,SHELL - 1)				:S(TIMEOK)
+ 	LT(SNOBOL,SHELL + 1)				:S(TIMEOK)
+ 	GT(SNOBOL,SHELL - 1)				:S(TIMEOK)
 
 * avoid attempts to divide by zero!
 	EQ(SHELL,0)					:S(NOTIME)
