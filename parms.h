@@ -37,4 +37,9 @@ extern int returns[];
 #include "lib/hash.c"
 #endif /* NO_INLINE_HASH not defined */
 
+#ifndef NO_INLINE_TOP
+#define STATIC_TOP static
+#include "lib/top.c"
+#endif /* NO_INLINE_TOP not defined */
+
 #endif /* INLINING defined */
