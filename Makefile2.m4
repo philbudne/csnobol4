@@ -211,7 +211,7 @@ changequote([,])dnl
 ################
 # run regression tests.
 
-snobol4: xsnobol4 snobol4.c
+snobol4: xsnobol4 snobol4.c test/tests.in
 	@echo Running regression tests...
 	cd test; ./run.sh ../xsnobol4
 	@echo Passed regression tests.
