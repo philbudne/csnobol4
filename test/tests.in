@@ -93,3 +93,5 @@ reg any.sno
 reg intval.sno
 # 12/14/2001
 reg scanerr.sno
+# 1/7/2002
+reg crlf.sno
