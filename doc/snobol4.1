@@ -122,6 +122,8 @@ The
 function is not implemented. See
 .B SET()
 below.
+.IP \(bu
+I/O unit numbers up to 256 can be used.
 
 .SS "Character set"
 .PP
@@ -357,6 +359,21 @@ is a synonym for
 .B \-INCLUDE
 for compatibility with SPITBOL/370.
 .TP
+.B IO_FINDUNIT()
+.br
+The
+.B IO_FINDUNIT()
+function returns an unused I/O unit number for use with
+the
+.B INPUT()
+or
+.B OUTPUT()
+functions.
+.B IO_FINDUNIT()
+is meant for use in subroutines which can be reused.
+.B IO_FINDUNIT()
+will never return a unit number below 20.
+.TP
 .B &LINE/&FILE
 .br
 The
@@ -430,8 +447,12 @@ The magic filenames
 and
 .B /dev/stderr
 refer to the current process standard input, standard output and
-standard error respectively regardless of whether those special
+standard error I/O streams respectively regardless of whether those special
 filenames exist on your system.  The magic pathname
+.BI /dev/fd/ n,
+opens a new I/O stream associated with file descriptor number
+.IR n .
+The magic pathname
 \fB/tcp/\fIhostname\fB/\fIservice\fR can be used to open connection
 to a TCP server. If the path ends in the optional suffix
 .B /priv
