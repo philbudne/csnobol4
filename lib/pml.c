@@ -19,7 +19,7 @@ struct pmlfunc {
 /* shorthand for function with same name for LOAD() and entry point */
 #define PMLFUNC(NAME) PMLFUNC2(STRING(NAME),NAME)
 
-#define PMLOAD(PROTO)
+#define PMPROTO(PROTO)
 #define PMLFUNC2(NAME,ADDR) extern int ADDR(LOAD_PROTO);
 #include "pml.h"
 #undef PMLFUNC2
@@ -29,12 +29,12 @@ static const struct pmlfunc pmltab[] = {
 #include "pml.h"
     { NULL, NULL }			/* MUST BE LAST!! */
 #undef PMLFUNC2
-#undef PMLOAD
+#undef PMPROTO
 };
 
 static const char *pm_prototypes[] = {
 #define PMLFUNC2(NAME,ADDR)
-#define PMLOAD(PROTO) PROTO,
+#define PMPROTO(PROTO) PROTO,
 #include "pml.h"
     ""
 };
@@ -54,7 +54,7 @@ static const char *pm_prototypes[] = {
 int (*pml_find(NAME1))(LOAD_PROTO)
     NAME2
 {
-    struct pmlfunc *fp;
+    const struct pmlfunc *fp;
 
     for (fp = pmltab; fp->name; fp++) {
 	/* XXX examine CASECL, use strcasecmp? */
