@@ -85,10 +85,9 @@ with "--add-" can appear);
 		bcopy.c source file will be used.
 
 	--longlong
-
 		Attempt to use C "long long" data type to represent
-		SNOBOL4 INTEGERs, and "double" for REAL on systems
-		where pointers are only 32-bits (ILP32 data model).
+		SNOBOL4 INTEGERs when the default data model uses
+		32-bit integers, longs and pointers (ILP32).
 
 		Requires "long long" support in the chosen C compiler,
 		and will use C89 numeric conversion routines if they
@@ -103,10 +102,12 @@ with "--add-" can appear);
 
 		Use of this option will not increase the address space
 		available to SNOBOL4, but will incur increased storage
-		and processing overhead (see --lp64 for more information).
+		and processing overhead (see --lp64 for more
+		information).
 
-		On systems which support the LP64 (64-bit long/pointer)
-		data model as an option, using --lp64 is a better idea.
+		On systems which support the LP64 (64-bit longs and
+		pointers) data model as an option, using --lp64 is a
+		better idea.
 
 				*** WARNING ***
 
@@ -146,7 +147,9 @@ with "--add-" can appear);
 		(see --longlong).
 
 		--lp64 is not necessary on systems where LP64 is the
-		default, or only data model (e.g. Alpha, IA64).
+		default, or only data model (e.g. Alpha).  Note than
+		under HP-UX the default data model for IA-64 (Itanium)
+		is ILP32, while under Linux, the default is LP64.
 
 	--no-dlopen
 		Disable use of Unix98 dlopen() API for dynamic LOAD() support
