@@ -1,6 +1,10 @@
 * $Id$
 *
 * $Log$
+* Revision 1.27  94/06/03  12:50:49  budd
+* [PLB19] always honor length from STREAD
+* otherwise input ends up padded
+* 
 * Revision 1.26  94/05/29  15:00:35  budd
 * [PLB18] Added &LCASE &UCASE
 * Fixed a bug in -CASE processing
@@ -1545,7 +1549,7 @@ CRLCR5 LEXCMP  XSP,NERRSP,CRLCR6,,CRLCR6			[PLB9,15]
        SETAC   NERRCL,1		   Set NOERRORS switch		[PLB9]
        BRANCH  CMTCLR		   Join terminal processing	[PLB9]
 *_
-CRLCR6 LEXCMP  XSP,CASESP,CMTCLR,,CMTCLR			[PLB15]
+CRLCR6 LEXCMP  XSP,CASESP,CRLCR8,,CRLCR8			[PLB15][PLB20]
 *				   Is it CASE?			[PLB15]
        STREAM  XSP,TEXTSP,FRWDTB,COMP3,CRLCR7			[PLB15]
 *				   Get to next nonblank char	[PLB15]
@@ -1558,6 +1562,19 @@ CRLCR6 LEXCMP  XSP,CASESP,CMTCLR,,CMTCLR			[PLB15]
 *_
 CRLCR7 SETAC   CASECL,0		   Clear case folding		[PLB15]
        BRANCH  CMTCLR		   Join terminal processing	[PLB15]
+*_
+CRLCR8 LEXCMP  XSP,INCLSP,,CRLCR9				[PLB20]
+*				   Is it INCLUDE?		[PLB20]
+       LEXCMP  XSP,COPYSP,CMTCLR,,CMTCLR			[PLB20]
+*				   Is it COPY?			[PLB20]
+CRLCR9 STREAM  XSP,TEXTSP,FRWDTB,COMP3,COMP3			[PLB20]
+*				   Get to next nonblank char	[PLB20]
+       AEQLC   STYPE,NBTYP,COMP3   Verify nonbreak		[PLB20]
+       STREAM  XSP,TEXTSP,ELEMTB,CMTCLR,CMTCLR			[PLB20]
+*				   Get value			[PLB20]
+       AEQLC   STYPE,QLITYP,CMTCLR Must be quoted litteral	[PLB20]
+       XINCLD  UNIT,XSP,COMP5,CMTCLR				[PLB20]
+*				   Process include		[PLB20]
 *_
 *---------------------------------------------------------------------*
 *
@@ -5793,11 +5810,13 @@ ASSCSP STRING  'TABLE'
 BLSP   STRING  ' '
 BLEQSP STRING  ' = '
 CMASP  STRING  ','
+COPYSP STRING  'COPY'						[PLB20]
 EJCTSP STRING  'EJECT'
 EQLSP  STRING  '= '
 ERORSP STRING  'ERRORS'						[PLB9]
 ETIMSP STRING  ', time = '					[PLB11]
 EXDTSP STRING  'EXTERNAL'
+INCLSP STRING  'INCLUDE'					[PLB20]
 LEFTSP STRING  'LEFT'
 LISTSP STRING  'LIST'
 LPRNSP STRING  '('
