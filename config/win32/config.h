@@ -27,9 +27,11 @@
 #define HAVE_STDLIB_H
 #define HAVE_WINSOCK_H
 
-#define WIN32_LEAN_AND_MEAN
-#define TTY_READ_RAW
 #define NEED_BINDRESVPORT
+#define OSDEP_OPEN
+#define TTY_READ_RAW
+#define WIN32_LEAN_AND_MEAN
+
 #define SOCKLEN_T int
 
 /* DLL import/export macros */
