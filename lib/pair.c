@@ -10,6 +10,8 @@
 #endif /* HAVE_CONFIG_H defined */
 
 #ifndef STATIC_PAIR			/* not included */
+#include <stdio.h>
+
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"

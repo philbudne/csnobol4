@@ -24,13 +24,15 @@
 extern void *malloc();
 #endif /* HAVE_STDLIB_H not defined */
 
+#include <stdio.h>
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
+#include "lib.h"
+
 #include "equ.h"
 #include "res.h"
 #include "data.h"
-#include "lib.h"
 
 #ifdef NO_STATIC_VARS
 #include "vars.h"

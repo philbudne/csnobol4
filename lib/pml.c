@@ -10,6 +10,8 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
+#include <stdio.h>
+
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
