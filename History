@@ -6,6 +6,12 @@ MAINBOL for Un*x history (and personal SNOBOL history);
 8/19/96
 	Makefile2.m4: renamed lib/aux/ to lib/auxil/
 		AUX is a reserved filename in DOS(?!) thanks to Mark Emmer
+	genc.sno: added XCALLC, %{ %}, allow LC in arguments
+		added -CASE 0 (try and win back some speed)
+	v311.sno: added real VARVUP, VPXPTR (Thanks to Mark Emmer)
+	procs: added VPXPTR
+	str.c: added raise2
+	Makefile2.m4: leave test.out at top level!
 
 7/28/95
 	timing: include config.m4 contents
