@@ -114,7 +114,7 @@ SRCS=	main.c $(SNOBOL4).c data.c data_init.c $(BAL_C) $(CONVERT_C) \
 
 TESTED:	xsnobol4 snobol4.c
 	@echo Running regression tests...
-	cd test; ./run.sh ../xsnobol4 > test.out
+	cd test; ./run.sh ../xsnobol4 > ../test.out
 	./timing > timing.out
 	date > TESTED
 
