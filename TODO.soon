@@ -248,6 +248,8 @@ catching library errs;
 ================
 
 SPITBOL features;
+	FENCE()
+
 	SET()
 	SETEXIT()
 		CONTINUE, SCONTINUE, ABORT system labels
