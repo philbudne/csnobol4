@@ -3,6 +3,10 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
 11/12/96:
+	autoconf: check for sys/ttyio.h, define USE_TTYIO
+	lib/bsd/tty.c: add USE_TTYIO ifdef for Version 10
+
+11/11/96:
 	INSTALL: change tcp.c to inet.c
 
 11/08/96:
