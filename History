@@ -2,6 +2,11 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
+6/15/94
+	Upped compiler CARDSZ and default input size from 80 to 1024.
+	Created snolib/{breakx,lcmp,pad,sort,substr}.sno, {fork,system}.c
+	bsd/load.c; use PML before trying real load. use SNOLIB env var.
+
 6/13/94
 	Prevent multiple inclusions
 	trim include file names (after multiple inclusion test)

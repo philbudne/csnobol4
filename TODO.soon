@@ -1,22 +1,24 @@
 $Id$
 
-only use PML if file is "INTERNAL"???
-
-document default I/O associations in man page?
-
 test RETSTR
 
 improve load.doc
 	document use of pml!
 	document RETxxx macros
+	document search path (internal, current, SNOLIB)
 	document snolib
 		getstring
 
+snolib;
+	move .c files to lib/??? ?
+	move compilation to Makefile2
+		add AUX_OBJ to Makefile2?
+		allow pml use of AUX_OBJS (move to snolib.a, use in xsnobol?)
+	add PML_OBJ to Makefile2?
+
 -INCLUDE/-COPY
-	prevent multiple inclusions of same file?!
-	document (snobol4.1 & README)
-		describe "program error" vs. "reading error"
-	improve error handling
+	describe "program error" vs. "reading error" in man page?
+	improve error handling???
 
 Add DIAGNOSTICS section to man page???
 
