@@ -321,18 +321,23 @@ io_read( dp, sp )			/* STREAD */
 		return IO_EOF;
 	    }
     len = strlen(cp);
-#if 0
-    cp[len] = '\0';
-#else  /* not 0 */
-    if (cp[len-1] == '\n')
+    if (cp[len-1] == '\n') {
 	len--;
+	cp[len] = '\0';
+	len = strlen(cp);
 	if (cp[len-1] == '\n') {
-    /* UGH: pad out to recl with spaces! */
-    cp += len;				/* skip over data */
-    while (len++ < recl)
-	*cp++ = ' ';
-    S_L(sp) = recl;			/* always ignored? */
-#endif /* not 0 */
+	    len--;
+	    cp[len] = '\0';
+	}
+	/* XXX increment line number (fp->line) ? */
+    }
+
+    if (compiling) {
+	/* UGH: compiler ignores output length
+	 * (in fact it depends on us not touching it, so
+	 * pad out to recl with spaces!
+	 */
+	cp += len;			/* skip over data */
 	while (len++ < recl)
 	    *cp++ = ' ';
     }
