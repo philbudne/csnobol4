@@ -19,7 +19,7 @@
 #include "types.h"
 #include "macros.h"
 
-#include "config.h"
+#include "path.h"
 
 #include <sys/types.h>
 #include <a.out.h>
@@ -31,10 +31,6 @@ extern char *malloc();
 #ifndef PREFIX
 #define PREFIX "_"			/* XXX most (all?) a.out systems? */
 #endif /* PREFIX not defined */
-
-#ifndef LD_PATH
-#define LD_PATH "/bin/ld"
-#endif /* LD_PATH not defined */
 
 /* keep list of loaded functions (for UNLOAD) */
 struct func {
@@ -80,35 +76,38 @@ load(addr, sp1, sp2)
     struct func *fp; 
     char path[128];			/* XXX max path */
     struct exec a;
-    char *temp;
+    char temp[128];			/* XXX max path? */
     int f;
     long len;				/* size of code+data */
-    
+    int l1, l2;
+
     fp = (struct func *) malloc( sizeof (struct func) + S_L(sp1) );
     if (fp == NULL)
 	return FALSE;			/* fail */
 
-    strncpy( fp->name, S_SP(sp1), S_L(sp1) );
-    fp->name[S_L(sp1)] = '\0';
+    l1 = S_L(sp1);			/* XXX check if <= sizeof(fp->name)? */
+    strncpy( fp->name, S_SP(sp1), l1);
+    fp->name[l1] = '\0';
 
-    if (sp2 && S_A(sp2) && S_L(sp2)) {	/* XXX check if .le. sizeof(path)? */
+    l2 = S_L(sp2);			/* XXX check if .le. sizeof(path)? */
+    if (sp2 && S_A(sp2) && l2) {
 	/* NOTE! no check if file exists!
-	 * Could contain ld flags (ie; -l<libname>
+	 * Could contain ld flags (ie; -l<libname>) or multiple files!!!
 	 */
-	strncpy(path, S_SP(sp2), S_L(sp2) );
-	path[S_L(sp2)] = '\0';
+	strncpy(path, S_SP(sp2), l2 );
+	path[l2] = '\0';
     }
     else {
 	sprintf( path, "%s/%s", SNOLIB_DIR, SNOLIB_A );
     }
 
-    /* XXX hide this? (use make_temp(); copy to static storage */
-    temp = (char *) tempnam("/usr/tmp", "sno");
+    strcpy( temp, "/usr/tmp/snoXXXXXX"); /* XXX TMP_DIR */
+    mktemp( temp );			/* exists in v6 */
+    /* XXX check for error (empty string, or "/")?! */
 
     /* link once to get total size! */
     if (!ld( temp, 0, fp->name, path ) || (f = open(temp, 0)) < 0) {
 	unlink(temp);			/* paranoia */
-	free(temp);			/* XXX */
 	free(fp);
 	return FALSE;			/* fail */
     }
@@ -116,7 +115,6 @@ load(addr, sp1, sp2)
     if (read( f, &a, sizeof(a)) != sizeof(a) || a.a_magic != OMAGIC) {
 	close(f);
 	unlink(temp);
-	free(temp);			/* XXX */
 	free(fp);
 	return FALSE;			/* fail */
     }
@@ -126,7 +124,6 @@ load(addr, sp1, sp2)
     len = N_SIZE(a);			/* total size (code+data+bss) */
     fp->data = malloc(len);
     if (fp->data == NULL) {
-	free(temp);
 	free(fp);
 	return FALSE;
     }
@@ -137,14 +134,12 @@ load(addr, sp1, sp2)
     /* re-link at new addr */
     if (!ld( temp, fp->data, fp->name, path ) || (f = open(temp, 0)) < 0) {
 	unlink(temp);			/* paranoia */
-	free(temp);
 	free(fp->data);
 	free(fp);
 	return FALSE;
     }
 
     unlink(temp);			/* file now floating!! */
-    free(temp);				/* XXX */
 
     if (read( f, &a, sizeof(a)) != sizeof(a)) {
     data_read_error:
