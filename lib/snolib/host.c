@@ -32,10 +32,12 @@ HOST( LA_ALIST ) LA_DCL
 
     /* if first arg is null string, do HOST() */
     if (LA_TYPE(0) == S && LA_INT(0) == 0) {
-	/* XXX seperate hwname(), osname()?  use defines?? */
-	if (!sysname(buf)) {
-	    RETFAIL;
-	}
+	char os[256], hw[256];
+	extern const char snoname[], vers[];
+
+	osname(os);
+	hwname(hw);
+	sprintf(buf, "%s:%s:%s %s", hw, os, snoname, vers);
 	RETSTR(buf, strlen(buf));
     }
 
@@ -87,25 +89,4 @@ HOST( LA_ALIST ) LA_DCL
 	break;
     }
     RETFAIL;
-}
-
-/* TEMP; */
-#include <sys/utsname.h>
-
-int
-sysname(s)
-    char *s;
-{
-    struct utsname u;
-    extern const char vers[];
-    extern const char snoname[];
-
-    if (uname(&u) < 0)
-	sprintf(s, "unknown:unix:%s %s",	/* XXX include vdate? */
-		snoname, vers);
-    else
-	sprintf(s, "%s:%s %s:%s %s",	/* XXX include vdate? */
-		u.machine, u.sysname, u.release, snoname, vers);
-
-    return 1;
 }
