@@ -1,7 +1,11 @@
 /* $Id$ */
 
 #include <stdio.h>
+#ifdef USE_TTYIO
+#include <sys/ttyio.h>			/* Research Version 10 */
+#else
 #include <sgtty.h>
+#endif
 
 /*
  * tty mode, echo
