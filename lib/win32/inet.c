@@ -225,8 +225,9 @@ inet_read_raw(f, cp, recl)
 
 
 /*
- * awful, but typical of winsock code I've seen if you're on NT,
- * consider trying compilation without INET_IO, or use cygwin
+ * awful, but typical of winsock code I've seen.
+ * On NT consider trying compilation without INET_IO defined,
+ * or use cygwin!!
  */
 int
 inet_read_cooked(f, cp, recl, keepeol)
@@ -235,8 +236,10 @@ inet_read_cooked(f, cp, recl, keepeol)
     int recl;
     int keepeol;
 {
-    int n = 0;
-    while (n < recl) {
+    int n = 0;				/* characters read */
+    int eol = 0;			/* eol seen */
+
+    while (n < recl && !eol) {
 	int cc;
 	char c;
 
@@ -248,17 +251,21 @@ inet_read_cooked(f, cp, recl, keepeol)
 	}
 
 	if (c == '\n') {
-	    if (keepeol) {
-		*cp++ = c;
-		n++;
-	    }
-	    break;
+	    saweol = 1;
+	    if (!keepeol)
+		break;
 	}
-	/* XXX if CR && !keepeol, continue?? */
+	else if (c == '\r' && !keepeol)
+	    continue;
 	*cp++ = c;
 	n++;
     }
-    /* XXX flush extra stuff past EOL */
+    if (!eol) {
+	char c;
+
+	while (recv((SOCKET)f, &c, 1, 0) == 1 && c != '\n')
+	    ;
+    }
     return n;
 }
 
