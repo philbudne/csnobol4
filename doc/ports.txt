@@ -74,9 +74,9 @@ Sun SS5/85	85    SunOS 4.1.4   gcc		0.99.3++12687	pb 7/97
 Sun SS10/40	40    SunOS 5.5.1   gcc		0.99.1  12237	jm 11/96
 i486DX2		66    OpenBSD 2.0   gcc		0.99.2	 9376	to 12/96
 Solbourne/5E	40    OS/MP 4.1B    gcc		0.99.3++ 8817	pb 7/97
+IBM RS/6K 320	25    AIX 3.2.5     cc		0.99.3++ 7200	pb 8/97
 Sun SS2		40    SunOS 4.1.4   gcc		0.99.3	 7058	pb 2/97
 Sun SS/LX	50    SunOS 5.4     spro	0.99.1	 7016	hb 11/96
-IBM RS/6K 320	25    AIX 3.2.5     gcc		0.99	 6970	pb 10/96
 Sun SS2		40    SunOS 4.1.3   gcc		0.99.3++ 6694	pb 7/97
 Sun SS/ELC	33    SunOS 5.5     spro	0.99	 6387	pb 10/96
 Sun SS2		40    NetBSD 1.2E   gcc		0.99.3+	 6259*	pb 7/97
