@@ -1,13 +1,15 @@
 # $Id$
 
 # TARGETS:
-# snobol4	make binary & regression test
-# xsnobol4	make binary, no regression test
+#
+# snobol4	make xsnobol4 binary; regression test; link to snobol4
+# xsnobol4	make xsnobol4 binary; no regression test
+#
 # tidy		remove turds (backup, temp files)
-# clean		removes objects; leave binary, config files
-# realclean	make ready for compilation on another platform (leave binary)
-# distclean	clean as when unpacked (removes binary)
+# cleanmostly	removes objects, turds; leave generated sources, final binary
+# clean		clean as when unpacked (removes binary)
 # spotless	removes snobol4 generated files (requires binary to regenerate)
+#
 # tar		make distribution
 # uu		make uuencoded distribution
 
@@ -29,7 +31,7 @@ SNO=snobol4 -b
 SMALL_SNO=snobol4 -b
 
 ################
-# machine generated files;
+# machine generated files (final products);
 
 GENERATED=data.c data_init.h proc.h syn.h data.h \
 	equ.h res.h syn_init.h isnobol4.c snobol4.c host.sno
@@ -54,6 +56,7 @@ all:	snobol4
 snobol4 xsnobol4 install: $(GENERATED) Makefile2 ALWAYS .depend
 	$(MAKE) -f Makefile2 $@
 
+# a depending on this target will always be run!
 ALWAYS:
 
 # for hand generation of sources
@@ -168,13 +171,8 @@ host.sno: host.awk lib/snolib/host.h
 ##################################################################
 # housekeeping
 
-# generated files to include in kit (hard link to target dir)
-G1=data.c2 data.h2 data_init.h2 proc.h2 equ.h2 syn.h2 syn_init.h2 \
-	res.h2 snobol4.c isnobol4.c 
-
-# generated files to include in kit (copy, so newer than .x2 versions)
-G2=data.c data.h data_init.h proc.h equ.h res.h syn.c syn.h syn_init.h \
-	host.sno
+# directly generated files (to avoid recompilation when no change in outputs)
+G2=data.c2 data.h2 data_init.h2 proc.h2 equ.h2 syn.h2 syn_init.h2 res.h2
 
 # remove turds
 tidy:
@@ -185,32 +183,23 @@ tidy:
 		-print | xargs -t rm -f
 
 # disposables
-DISP=*.o *.a callgraph prolog bsplitu pv vers build.c bsdtsort
+DISP=*.o *.a callgraph prolog bsplitu pv vers build.c bsdtsort \
+	config.m4 config.h Makefile2 .depend
 
-# remove objects, turds; leave generated sources, final binary, config files
-clean:	tidy
+# Inspired by PowederMilk bisquits (made by Norwegian Bachelor farmers,
+# so you know they're pure, mostly);
+# remove objects, turds; leave generated sources, final binary.
+cleanmostly: tidy
 	rm -f $(DISP)
 
-# make ready for compilation on another platform (leave binaries)
-realclean: clean
-	rm -f config.m4 config.h Makefile2 .depend
-
-# clean as when it was unpacked; remove binaries too
-distclean: realclean
+# clean as a freshly unpacked kit; remove binaries, timing file
+clean:	cleanmostly
 	rm -f snobol4 xsnobol4 timing.out
 
-# remove objects, generated files
 # DANGER: requires installed binary to rebuild!!
+# remove objects, generated files (clean as a fresh CVS checkout)
 spotless: distclean
-	rm -f $(G1) $(G2) snobol4.c isnobol4.c snobol4 xsnobol4
-
-# generated files copied separately to ensure newer than source files!
-TAR=	README CHANGES History INSTALL TODO TODO.soon doc Makefile \
-	Makefile2.m4 configure config.guess $(SIL) syntax.tbl \
-	procs globals genc.sno gensyn.sno gendata.sno main.c \
-	data_init.c version.c parms.h mlink.h mdata.h pml.h $(G1) lib \
-	include config test snolib/*.sno sunmodel timing timing.sno \
-	cc-M bsplitu.c host.awk pkg
+	rm -f $(GENERATED) $(G2) snobol4.c isnobol4.c snobol4 xsnobol4
 
 # "print version" -- for dir/tar names
 pv:	version.c
@@ -229,7 +218,7 @@ ANONCVSROOT=':pserver:anonymous@cvs.ultimate.com:/home/cvs'
 # because CVS module has same name as executable!!
 MODULE=snobol4
 
-newtar:	snobol4 pv
+tar:	snobol4 pv
 	rm -rf tmp
 	mkdir tmp
 	cvs -d $(ANONCVSROOT) login
@@ -240,16 +229,6 @@ newtar:	snobol4 pv
 	rm -f $(KIT)
 	cd tmp; ln ../pv .; tar cf - $(DIR) | $(COMP) > ../$(KIT)
 	rm -rf tmp
-
-tar:	clean snobol4 pv
-	cd doc; make
-	cd test; ./clean.sh
-	rm -rf $(DIR)
-	mkdir $(DIR)
-	find $(TAR) -name RCS -prune -o -print | cpio -pldm $(DIR)
-	cp $(G2) $(DIR)
-	tar cf - $(DIR) | $(COMP) > $(KIT)
-	rm -rf $(DIR)
 
 # make a mailable kit by splitting up binary, and uuencoding pieces
 # (no editing necessary for reassembly)
