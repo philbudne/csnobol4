@@ -1,6 +1,6 @@
 /* $Id$ */
 
-/* header files for snobol4.c */
+/* header files for snobol4.c; included by SIL "COPY PARAMS" macro */
 
 # include "types.h"
 # include "h.h"
