@@ -179,6 +179,12 @@ historical background, testing, fixes, etc (in chronological order);
 	Greg White
 	Russ Urquhart
 	Jan Bernard
+	Chris Anderson
+	Rafal M. Sulejman
+	Ed Quillen
+	Robin H. Johnson
+	Guido Milanese
+	David Stodolsky
 
 If you make any changes/fixes/improvements, or port it to a new
 system, please send them to me (please include "timing.out" and tell
@@ -188,4 +194,3 @@ If you are interested in getting mailings about new releases, send me
 mail.  I'm interested in knowing what people are using SNOBOL4 for!
 
 Phil Budne <phil@ultimate.com>
-
