@@ -36,7 +36,7 @@
  * configuration variables, from config.h (written by autoconf script)
  */
  
-/* CSNOBOL4: returns "config.guess" output (arch-vendor-os) */   
+/* CSNOBOL4: returns "config.guess" output (arch-vendor-os) */
 #define HOST_CONFIG_GUESS	2000
 
 /* CSNOBOL4: returns host where configure script was run */
