@@ -851,10 +851,13 @@ if [ -f $INCDIR/sys/socket.h ]; then
 	echo 'ADD_SRCS([$(POPEN_C)])'		>> $CONFIG_M4
 	if [ -f $INCDIR/paths.h ]; then
 	    echo '#define HAVE_PATHS_H'		>> $CONFIG_H
+	elif [ ! -f /bin/sh ]; then
+	    # XXX look for it elsewhere!
+	    echo 'WARNING: /bin/sh does not exist!!' 1>&2
 	fi
-	# XXX else make sure /bin/sh exists, or define _PATH_BSHELL
 
-	if grep '_vfork' $INCDIR/unistd.h >/dev/null 2>&1; then
+	# GNU libc 2.0 has __vfork
+	if grep '[^_]_vfork' $INCDIR/unistd.h >/dev/null 2>&1; then
 	    # SGI
 	    NO_VFORK=1
 	elif grep 'vfork' $INCDIR/unistd.h $INCDIR/sys/unistd.h >/dev/null 2>&1; then
