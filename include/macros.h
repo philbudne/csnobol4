@@ -64,7 +64,8 @@
  * bcopy handles anything else as well as simple loop!!
  *	should NEVER need to check for overlap!
  */
-#define APDSP(BASE,STR) if (S_L(STR) > 0) { apdsp(BASE, STR); }
+#define APDSP(BASE,STR) \
+    if (S_L(STR) > 0) { apdsp((struct spec *)(BASE), (struct spec *)(STR)); }
 
 /* must deal with A == C
  * 10/28/93
@@ -174,3 +175,93 @@ extern volatile int math_error;
 #define BRANCH(NAME) return (NAME (retval));
 #define RETURN(VALUE) {RSTSTK(); return (VALUE);}
 #endif /* TRACE_DEPTH not defined */
+
+struct descr _NORET[1];
+#define NORET ((ptr_t)_NORET)
+
+/****************/
+/* cast parameters for library calls */
+
+#define ADDSIB(A,B) addsib((struct descr *)(A),(struct descr *)(B))
+#define ADDSON(A,B) addson((struct descr *)(A),(struct descr *)(B))
+#define INSERT(A,B) insert((struct descr *)(A),(struct descr *)(B))
+#define LINKOR(A,B) linkor((struct descr *)(A),(struct descr *)(B))
+#define LVALUE(A,B) lvalue((struct descr *)(A),(struct descr *)(B))
+
+#define TOP(A,B,C) \
+     top((struct descr *)(A),(struct descr *)(B),(struct descr *)(C))
+#define LOCAPT(A,B,C) \
+     locapt((struct descr *)(A),(struct descr *)(B),(struct descr *)(C))
+#define LOCAPV(A,B,C) \
+     locapv((struct descr *)(A),(struct descr *)(B),(struct descr *)(C))
+#define EXPINT(A,B,C) \
+     expint((struct descr *)(A),(struct descr *)(B),(struct descr *)(C))
+#define EXREAL(A,B,C) \
+     exreal((struct descr *)(A),(struct descr *)(B),(struct descr *)(C))
+#define IO_SEEK(A,B,C) \
+     io_seek((struct descr *)(A),(struct descr *)(B),(struct descr *)(C))
+
+#define CALLX(A,B,C,D) \
+     callx((struct descr *)(A),(struct descr *)(B),\
+	    (struct descr *)(C),(struct descr *)(D))
+
+#define CPYPAT(A,B,C,D,E,F) \
+     cpypat((struct descr *)(A),(struct descr *)(B),(struct descr *)(C),\
+	    (struct descr *)(D),(struct descr *)(E),(struct descr *)(F))
+#define MAKNOD(A,B,C,D,E,F) \
+     maknod((struct descr *)(A),(struct descr *)(B),(struct descr *)(C),\
+	    (struct descr *)(D),(struct descr *)(E),(struct descr *)(F))
+
+/**/
+
+#define RAISE1(A) raise1((struct spec *)(A))
+#define _UNLOAD(A) unload((struct spec *)(A))
+#define GETPARM(A) getparm((struct spec *)(A))
+
+#define RAISE2(A,B) raise2((struct spec *)(A),(struct spec *)(B))
+#define LEXCMP(A,B) lexcmp((struct spec *)(A),(struct spec *)(B))
+#define TRIMSP(A,B) trimsp((struct spec *)(A),(struct spec *)(B))
+#define REVERSE(A,B) reverse((struct spec *)(A),(struct spec *)(B))
+
+#define _RPLACE(A,B,C) \
+     rplace((struct spec *)(A),(struct spec *)(B),(struct spec *)(C))
+/**/
+
+#define XANY(A,B) any((struct spec *)(A),(struct descr *)(B))
+#define _DATE(A,B) date((struct spec *)(A),(struct descr *)(B))
+#define GETBAL(A,B) getbal((struct spec *)(A),(struct descr *)(B))
+#define REALST(A,B) realst((struct spec *)(A),(struct descr *)(B))
+#define INTSPC(A,B) intspc((struct spec *)(A),(struct descr *)(B))
+#define GETPMPROTO(A,B) getpmproto((struct spec *)(A),(struct descr *)(B))
+
+#define IO_PAD(A,B) io_pad((struct spec *)(A),(B))
+
+#define HASH(A,B) hash((struct descr *)(A),(struct spec *)(B))
+#define SPCINT(A,B) spcint((struct descr *)(A),(struct spec *)(B))
+#define SPREAL(A,B) spreal((struct descr *)(A),(struct spec *)(B))
+#define IO_READ(A,B) io_read((struct descr *)(A),(struct spec *)(B))
+#define IO_FILE(A,B) io_file((struct descr *)(A),(struct spec *)(B))
+#define IO_INCLUDE(A,B) io_include((struct descr *)(A),(struct spec *)(B))
+
+#define IO_OPENO(A,B,C) \
+     io_openo((struct descr *)(A),(struct spec *)(B),(struct spec *)(C))
+#define _LOAD(A,B,C) \
+     load((struct descr *)(A),(struct spec *)(B),(struct spec *)(C))
+
+#define STREAM(A,B,C) stream((struct spec *)(A),(struct spec *)(B),(C))
+#define PLUGTB(A,B,C) plugtb((A),(B),(struct spec *)(C))
+
+#define IO_PRINT(A,B,C)\
+	io_print((struct descr *)(A),(struct descr *)(B),(struct spec *)(C))
+
+#define XSUBSTR(A,B,C) \
+     substr((struct spec *)(A),(struct spec *)(B),(struct descr *)(C))
+
+#define PAD(A,B,C,D) \
+     pad((struct descr *)(A),(struct spec *)(B),\
+	 (struct spec *)(C),(struct spec *)(D))
+
+#define IO_OPENI(A,B,C,D) \
+     io_openi((struct descr *)(A),(struct spec *)(B),\
+	      (struct spec *)(C),(struct descr *)(D))
+
