@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+3/7/97:
+	doc/ports.doc: lots of new stuff from Rik Faith
+		reformatted: removed "conf" column, added "opt"
+
 ******** RCS tag BETA6
 
 2/12/97:
