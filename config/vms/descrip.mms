@@ -45,10 +45,8 @@ BCOPY_C=[.lib.auxil]bcopy.c
 GETOPT_C=[.lib.auxil]getopt.c
 GETREDIRECT_C=[.lib.vms]getredirect.c
 POPEN_C=[.lib.vms]popen.c
-MBX_UTIL_C=[.lib.vms]mbx_util.c
 
-AUX_OBJ=bcopy.obj, bzero.obj, getopt.obj, getredirect.obj, \
-	popen.obj, mbx_util.obj,
+AUX_OBJ=bcopy.obj, bzero.obj, getopt.obj, getredirect.obj, popen.obj,
 
 # snolib sources
 CHOP_C=[.lib.snolib]chop.c
@@ -78,7 +76,7 @@ PML_OBJ=host.obj, sys.obj, exit.obj, execute.obj, sqrt.obj, \
 
 CFLAGS=\
 	/DECC/PREFIX_LIB=ALL/OPTIMIZE\
-	/DEFINE=(ANSI_STRINGS,NO_POPEN,NO_OFF_T,\
+	/DEFINE=(ANSI_STRINGS,NO_OFF_T,\
 		DATE=XDATE,INIT=XINIT,LOAD=XLOAD,UNLOAD=XUNLOAD,\
 		RPLACE=XRPLACE,TIME=XTIME,RAISE=XRAISE,DIV=XDIV,\
 		SUBSTR=XSUBSTR,EXIT=XEXIT,SQRT=XSQRT,EXP=XEXP,LOG=XLOG,\
