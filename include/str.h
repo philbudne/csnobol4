@@ -5,8 +5,12 @@
 #ifdef ANSI_STRINGS
 #include <string.h>
 
+#ifndef index
 #define index strchr
+#endif /* index not defined */
+#ifndef rindex
 #define rindex strrchr
+#endif /* rindex not defined */
 
 #ifdef USE_MEMCMP
 #define bcmp memcmp
