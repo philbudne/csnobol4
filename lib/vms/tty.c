@@ -215,4 +215,3 @@ main() {
   tty_close(stdin);
 }
 #endif /* TEST */
-
