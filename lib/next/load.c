@@ -132,7 +132,24 @@ load(addr, sp1, sp2)
 	fp->entry = (int (*)(LOAD_PROTO)) NSAddressOfSymbol(sym);
 	if (fp->entry == NULL) {
 	    int opt;
+#ifdef TRY_UNDERSCORE
+	    char name2[1024];		/* XXX */
 
+	    name2[0] = '_';
+	    strncpy(name2+1, fp->name, sizeof(name2)-2);
+	    name2[sizeof(name2)-1] = '\0';
+
+#ifdef NSLINKMODULE_OPTION_PRIVATE
+	    sym = NSLookupSymbolInModule(fp->handle, name2);
+#else
+	    sym = NSLookupAndBindSymbol(name2);
+#endif
+	/* XXX check return?? */
+
+	    fp->entry = (int (*)(LOAD_PROTO)) NSAddressOfSymbol(sym);
+	    if (fp->entry != NULL)
+		goto found;
+#endif /* TRY_UNDERSCORE defined */
 #ifdef NSUNLINKMODULE_OPTION_NONE
 	    opt = NSUNLINKMODULE_OPTION_NONE;
 #else
@@ -144,6 +161,9 @@ load(addr, sp1, sp2)
 	    return FALSE;
 	} /* dlsym failed */
     } /* not found by pml */
+#ifdef TRY_UNDERSCORE
+ found:
+#endif
     fp->self = fp;			/* make valid */
 
     fp->next = funcs;			/* link into list (for unload) */

@@ -841,6 +841,9 @@ if [ ! "$NO_DYNLIB" ]; then
 	echo 'using NextStep LOAD() support' 1>&2
 	echo 'LOAD_C=$(SRCDIR)lib/next/load.c'	>> $CONFIG_M4
 	echo 'SNOLIB_FILE=snolib.dyld'		>> $CONFIG_M4
+	if [ "$OS" = Darwin ]; then
+	    echo '#define TRY_UNDERSCORE'	>> $CONFIG_H
+	fi
     elif [ -f $INCDIR/a.out.h ]; then
 	LOAD=aout
 	echo 'using a.out ld for LOAD() support' 1>&2
