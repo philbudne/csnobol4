@@ -174,7 +174,7 @@ SMALL_SNO=snobol4 -b
 #	need to add rules to make shared libraries (to config/xxx.m4 files)
 
 OBJS=	main.o $(SNOBOL4).o data.o data_init.o syn.o bal.o convert.o \
-	date.o dump.o dynamic.o endex.o exists.o expops.o hash.o \
+	date.o dump.o dynamic.o endex.o expops.o hash.o \
 	inet.o init.o intspc.o io.o lexcmp.o load.o mstime.o ordvst.o \
 	pair.o pat.o pml.o realst.o replace.o str.o stream.o term.o \
 	top.o tree.o tty.o version.o $(PML_OBJS) $(SNOLIB_A)
@@ -182,7 +182,7 @@ OBJS=	main.o $(SNOBOL4).o data.o data_init.o syn.o bal.o convert.o \
 AUX_SRCS= _SRCS
 SRCS=	main.c $(SNOBOL4).c data.c data_init.c syn.c $(BAL_C) \
 	$(CONVERT_C) $(DATE_C) $(DUMP_C) $(DYNAMIC_C) $(ENDEX_C) \
-	$(EXISTS_C) $(EXPOPS_C) $(HASH_C) $(INET_C) $(INIT_C) \
+	$(EXPOPS_C) $(HASH_C) $(INET_C) $(INIT_C) \
 	$(INTSPC_C) $(IO_C) $(LEXCMP_C) $(LOAD_C) $(MSTIME_C) \
 	$(ORDVST_C) $(PAIR_C) $(PAT_C) $(PML_C) $(REALST_C) \
 	$(REPLACE_C) $(STREAM_C) $(STR_C) $(TOP_C) $(TERM_C) \
@@ -408,8 +408,8 @@ system.o: $(SYSTEM_C)
 
 AUX_OBJS= _OBJS
 
-SNOLIB_OBJS= chop.o cos.o delete.o environ.o execute.o exit.o exp.o \
-	file.o findunit.o fork.o getstring.o host.o log.o rename.o \
+SNOLIB_OBJS= chop.o cos.o delete.o environ.o execute.o exists.o exit.o \
+	exp.o file.o findunit.o fork.o getstring.o host.o log.o rename.o \
 	retstring.o sin.o sprintf.o sqrt.o sys.o tan.o $(AUX_OBJS)
 
 $(SNOLIB_A): $(SNOLIB_OBJS)
@@ -420,8 +420,8 @@ $(SNOLIB_A): $(SNOLIB_OBJS)
 ################
 # snolib files
 
-SNOLIB_SRCS= $(CHOP_C) $(COS_C) $(DELETE_C) $(ENVIRON_C) $(EXIT_C) \
-	$(EXECUTE) $(EXP_C) $(FILE_C) $(FORK_C) $(GETSTRING_C) \
+SNOLIB_SRCS= $(CHOP_C) $(COS_C) $(DELETE_C) $(ENVIRON_C) $(EXISTS_C)
+	$(EXIT_C) $(EXECUTE_C) $(EXP_C) $(FILE_C) $(FORK_C) $(GETSTRING_C) \
 	$(HOST_C) $(LOG_C) $(RENAME_C) $(RETSTRING_C) $(SIN_C) \
 	$(SPRINTF_C) $(SQRT_C) $(SYS_C) $(TAN_C)
 
