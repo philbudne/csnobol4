@@ -1,12 +1,47 @@
 $Id$
 
+porting.ms;
+	tty.c
+	inet.c
+	HAVE_UNISTD_H?
+	skel.inc refs?
+	search for alpha; garbled sentance?
+
+INSTALL;
+	mention tty.c, inet.c for VMS, DOS???
+
+Test:
+	I/O options
+
+get model info in "timing" script?
+	SGI: run hinv
+	Sun: run sunmodel??
+
+announce on SNOBOL4 list
+
+notify free compilers/interpreters list maintainer
+	free-compilers@idiom.com
+
 ==== before beta release
 
 update man page date
 
+check in all files (incl History)
+
 rcs tag
 
 ==== before 1.0 release;
+
+Add to INSTALL;
+	warn about compile times!!
+	common problems;
+		cannot optimize isnobol4.c or data_init.c
+		try other C compilers
+	gnu as (much) faster (on sparc/sunos4)
+
+release updated rebus
+
+distribute snocone diffs?
 
 DOS & VMS;
 	deal with PML files;
@@ -21,24 +56,35 @@ update v311.sil table of contents?
 
 add utf.sno to snolib??
 
+create snobol4+.inc?
+	INPUT(), OUTPUT(), ENVIRONMENT(), EXECUTE(), SEEK(), TELL()
+	PATHNAME(), ASC(), SETBREAK()
+
+create spitbol.inc;?
+	INPUT(), OUTPUT()
+	SETEXIT()
+
 add UNAME_DOT_VERSION ifdef in posix/sys.c for AIX?
 
 rcs tag
 
-================
-
-create patches for snocone;
-	autodetect MAINBOL, set -+ switch?
-	handle either SNOBOL4 or SPITBOL I/O
-	unix include path (check for DOS via HOST()?)
-	unix makefile (use -P)
-		prepend #! line (must include -P)!?
-			have snocone prepend it to output??
-
 ================ later;
+
+posix/tty.c; enable 8-bit datapath on "raw"?
+		/netbsd/sys/kern/tty_compat.c "RAW" simulation
+		/netbsd/usr/src/lib/libc/termios/cfmakeraw.c
+
+I/O;
+	implement BACKSPACE() if binary???
+		NAH; need to keep recl per unit
+	pass back flags with recl (so "T" is per-var?)
+		need to mask off flags t get recl
+	add /udp magic path??
+	use COMPCL instead of "compiling"???
 
 prototype warnings compiling getopt.c on some platforms
 	check for getopt() in unistd.h, stdio.h, stdlib.h??
+		gets it wrong on sunos4
 	search libc.a??
 	try compiling a program that asks for getopt()??
 		only include getopt.o if not found??
@@ -46,13 +92,16 @@ prototype warnings compiling getopt.c on some platforms
 add explicit rules for version.o, syn.o
 
 malloc system stack (STACK)?
-	slows down OFCHK() 2+% overall penalty
+	slows down OFCHK(); 2+% overall penalty
 
-BUG: gendata punts on ARRAY of constant expression!?
+BUG: gendata punts on ARRAY w/ constant expression!
 
-move -DHAVE_xxx defines to autoconfig generated config.h?
+BUG: &stlimit = -1; output = &stcount; end
+	SPITBOL outputs 1? C-MAINBOL outputs zero!
 
 move SPDLDZ/DPSLDR from SIL to init.c??
+
+move more tests into autoconf, (less stuff in config/*.m4)
 
 have gen*.sno output to xxx.[ch]3, perform mv to .[ch]2 after completion?
 	avoids problems when ^C'ed and partial .h2 files written!
@@ -81,8 +130,8 @@ test overflow?
 have dummy version of pow use repeated multiply for int, exp/log for real?
 	under ifdef??
 
-run-time allocation of system & pattern stacks
-	allow expansion of dynamic storage?
+allow expansion of dynamic storage?
+	(re-write GC in C)
 
 SITBOL features;
 	allow null string in alternation;
@@ -95,15 +144,8 @@ improve lib/auxil/bzero.c?
 	it's already as good as mset()!
 
 move data_init into (i)snobol4.c,
-	get rid of (most) global entries
-
-move more tests into autoconf, (less stuff in config/*.m4)
-====
-
-open flags???
-	TTY mode (no newlines added or removed)
-	TCP (look like bsd4.4 portal: /tcp/host/port)?
-	bidirectional I/O
+	get rid of (most) entries in "globals"
+		[except for SYSCUT, UNDF, INTR10, more? ]
 
 ================
 
@@ -112,10 +154,13 @@ load changes;
 	load "object" once, read symtab for multiple entry points
 		use -A on original / current symtab
 
-	use local dl_xxx if available (HP, SVR4, SOS4??)?
+	use native dlopen (shl_load on HP-UX)?
 		may require special compiler flags, ld flags to make library
 
-	allow use of GNU dynamic load library?
+	allow use of GNU dynamic load library (dld)
+		version 4.0 is supposed to support COFF & ELF
+
+	try to implement load.c using GNU ld (has -Ttext flag) & libbfd?
 
 ================
 
@@ -192,4 +237,16 @@ in make depend;
 
 timing: cleanup on interrupt
 
-try to implement load.c using GNU ld  & libbfd?
+================ calls
+
+use BRANCH(routine) macro for tail-calls instead of RETURN( routine(retval) )
+	apply tail-call stats diffs?
+
+eliminate indent/brackets around call if no "alt" needed
+
+try using global "retval"
+
+move RSTSTK() to RRTURN?
+	would remove need for "alt" var
+	would NEVER need brackets around call
+

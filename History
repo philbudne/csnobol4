@@ -2,13 +2,35 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
-TODO: fix INPUT(V,U,L,N) and OUTPUT(V,U,F,N) 
+10/22/96:
+	new lib/bsd/tty.c
+	new lib/bsd/tty.c
+	new lib/dummy/tty.c
+	lib/posix/tty.c: add USE_TERMIO
+	lib/io.c: free include list at end of compilation
+	new config/irix64.4
+	autoconf: use irix64.m4 on "IRIX64"
+		add -lsocket if libsocket.a exists
+		add -lnsl if libsocket.a exists and on "SunOS"
+		use dummy/inet.c if no socket.h
+		check for termios.h/termio.h/sgtty.h
+	Makefile2.m4: mention ports.doc
+
+10/21/96:
+	lib/io.c: pass recl to tty_mode; use fisatty, tty_close
+	lib/posix/tty.c: add save list, tty_close, tty_mode recl arg
+		add TTY_SAVE_RECL, TTY_RAW ifdefs
+	doc/snobol4.1: updated
+
+10/20/96:
+	lib/io.c: fix so REWIND(5) works on stdin: clear fp->f in io_close
+	lib/posix/tty.c: disable CR/LF translation, signal processing
 
 10/19/96:
 	v311.sil: add SPITBOL SET() function
 	procs, globals: add SET
-	lib/io.c: fix io_open[io] to allow rewind
-		add io_seek
+	lib/io.c: fix io_open[io] to allow rewind (set "head")
+		add io_seek for SET()
 		add /tcp magic path
 	new lib/bsd/inet.c lib/dummy/inet.c
 	Makefile2.m4: add inet.o INET_C
@@ -21,6 +43,11 @@ TODO: fix INPUT(V,U,L,N) and OUTPUT(V,U,F,N)
 	lib/init.c: call tty_save()
 	Makefile2.m4: add tty.o TTY_C
 
+10/17/96:
+	hacked up a version to use gcc &&label construct and compile
+	all of v311.sil as a monolithic function (no SYSCUT or UNDF
+	entry points) benchmarked using genc.sno, snocone2.sno, atn.sno
+
 10/15/96:
 	v311.sil: use XCALLC for io_open[io]
 		replace INPUT() 3'rd arg with options string
@@ -30,9 +57,10 @@ TODO: fix INPUT(V,U,L,N) and OUTPUT(V,U,F,N)
 		deprecated XOPEN[IO]
 	lib/io.c:
 		implement io_options, io_open[io] take new args
+		implemented "terminal" mode
 
 10/13/96:
-	v311.sil: fixes from SNOBOL4+ to avoid "Internal Errors"
+	v311.sil: fixes from SNOBOL4+ to avoid "Internal Errors" on runout
 
 10/12/96:
 	v311.sil: fix error pointer again
