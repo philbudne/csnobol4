@@ -172,7 +172,7 @@ fi
 
 echo ''
 echo 'Ids:'
-grep '^[*#][	 ]*$Id:' v311.sil genc.sno timing timing.sno
+grep '^[*#]*[	 ]*$Id:' genc.sno timing.sno timing v311.sil History
 
 echo ''
 echo 'timing run of genc.sno:'
