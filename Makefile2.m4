@@ -195,7 +195,7 @@ SIL=	v311.sil
 
 snobol4: xsnobol4 snobol4.c
 	@echo Running regression tests...
-	cd test; ./run.sh ../xsnobol4 > ../test.out
+	cd test; ./run.sh ../xsnobol4
 	@echo Passed.
 	./timing > timing.out
 	-rm -f snobol4
