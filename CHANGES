@@ -1,21 +1,34 @@
 $Id$
 
-Changes since last release (0.91.2);
-
-IMPORTANT for users of previous versions;
-========================================
+IMPORTANT for users of versions prior to 0.99;
+=============================================
 	Configuration is now automatic.  DO NOT create config.m4 by
 	hand!  some systems no longer have system specific config files.
 
 	SPITBOL operators are enabled by default, this causes problems
-	for the (very) rare program that OPSYN's the ?  binary operator!
+	for the (very) rare program that OPSYN's the "?" binary operator!
 
 	The PUNCH variable is no longer available; use TERMINAL.
 
 	-d option takes size in bytes, not descriptors.
 
-Language changes (see man page for full descriptions);
-=====================================================
+Changes since 0.99 release;
+==========================
+
+	Added I/O options (binary, noecho, etc)
+
+	Added config file for 64-bit IRIX
+
+	Added magic "/tcp" pathname for opening TCP connections
+
+	Fixed bugs with syntax errors detected by CODE() or EVAL()
+
+	Syntax errors in CODE() or EVAL() set &ERRTEXT
+
+	Fixed bugs with REWIND()
+
+Changes since 0.91.2 release;
+============================
 
 Command line additions;
 	command line arguments available to user (via HOST(2,n) and &PARM)
