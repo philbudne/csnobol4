@@ -17,7 +17,7 @@
 
 * patterns
 	INT = SPAN(DIGIT)
-	FLOAT = INT '.' INT
+	FLOAT = INT '.' (INT | '') (('e' ANY('+-') INT) | '')
 	WS = SPAN(SP TAB)
 	DARK = BREAKX(SP TAB)
 	NUM = FLOAT | INT
