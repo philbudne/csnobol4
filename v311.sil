@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.32  94/06/24  14:53:11  budd
+* [PLB24] Added RTNL3G label so RTNUL3 can be inlined
+* 
 * Revision 1.31  94/06/21  02:43:12  budd
 * [PLB23] fixed problem reported by Phillip Thomas
 * moved XLATNX label so that "card" processing restarts after
@@ -5238,6 +5241,7 @@ TRIM   PROC    ,		   TRIM(S)
 DATA   LHERE   ,
 RT1NUL RRTURN  NULVCL,1 	   Return null string by exit 1
 *_
+FAILG  LHERE   ,		   [PLB25]
 RTN1   LHERE   ,
 FAIL   RRTURN  ,1		   Return by exit 1
 *_
@@ -6388,7 +6392,7 @@ POSIFN DESCR   POSI,0,3 	   Matching for POS(N)
 RPSIFN DESCR   RPSI,0,3 	   Matching for RPOS(N)
 RTBFN  DESCR   RTB,0,3		   Matching for RTAB(N)
 SALFFN DESCR   SALF,0,2
-SCFLFN DESCR   FAIL,0,2
+SCFLFN DESCR   FAILG,0,2					[PLB25]
 SCOKFN DESCR   SCOK,0,2 	   Successful match procedure
 SCONFN DESCR   SCON,0,2
 SPNCFN DESCR   SPNC,0,3 	   Matching for SPAN(S)
