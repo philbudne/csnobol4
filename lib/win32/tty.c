@@ -45,7 +45,7 @@ fisatty(f, fname)
      * use GetCommState() to detect serial lines
      */
 
-    return GetConsoleMode(_get_osfhandle(fileno(f)), &flags);
+    return GetConsoleMode((HANDLE)_get_osfhandle(fileno(f)), &flags);
 }
 
 void
@@ -59,7 +59,7 @@ tty_mode( fp, cbreak, noecho, recl )
     struct save *sp;
 
     fd = fileno(fp);
-    hand = _get_osfhandle(fd);
+    hand = (HANDLE)_get_osfhandle(fd);
 
     /* XXX move to tty_save_fd()?? */
     for (sp = list; sp; sp = sp->next) {
