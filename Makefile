@@ -53,7 +53,7 @@ all:	snobol4
 #	add $(GENERATED)?
 .PRECIOUS: snobol4 xsnobol4 Makefile2 snobol4.c isnobol4.c snobol4 data_init.h 
 
-snobol4 xsnobol4 install: $(GENERATED) Makefile2 ALWAYS .depend
+snobol4 xsnobol4 install lint: $(GENERATED) Makefile2 ALWAYS .depend
 	$(MAKE) -f Makefile2 $@
 
 # a depending on this target will always be run!
