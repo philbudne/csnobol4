@@ -24,16 +24,17 @@
 #include "load.h"
 #include "handle.h"
 
-static struct handle_list tcl_handles;
+static struct handle_list tcl_interps;
+static struct handle_list tcl_objs;
 
 /*
- * LOAD("STCL_CREATE()INTEGER")
- * Create and initialize TCL interpreter
+ * LOAD("STCL_CREATEINTERP()INTEGER")
+ * Create and initialize a TCL interpreter
  *
  * return handle, or failure
  */
 int
-STCL_CREATE( LA_ALIST ) LA_DCL
+STCL_CREATEINTERP( LA_ALIST ) LA_DCL
 {
     snohandle_t h;
     Tcl_Interp *interp = Tcl_CreateInterp();
@@ -50,7 +51,7 @@ STCL_CREATE( LA_ALIST ) LA_DCL
     Tk_Init(interp);
 #endif
 
-    h = new_handle(&tcl_handles, interp);
+    h = new_handle(&tcl_interps, interp);
     if (h == BAD_HANDLE) {
 	Tcl_DeleteInterp(interp);
 	RETFAIL;
@@ -67,7 +68,7 @@ int
 STCL_EVALFILE( LA_ALIST ) LA_DCL
 {
     char file[1024];			/* XXX */
-    Tcl_Interp *interp = lookup_handle(&tcl_handles, LA_INT(0));
+    Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_INT(0));
     if (!interp)
 	RETFAIL;
 
@@ -86,8 +87,8 @@ int
 STCL_GETVAR( LA_ALIST ) LA_DCL
 {
     char name[1024];			/* XXX */
-    char *val;
-    Tcl_Interp *interp = lookup_handle(&tcl_handles, LA_INT(0));
+    const char *val;
+    Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_INT(0));
     if (!interp)
 	RETFAIL;
 
@@ -107,7 +108,7 @@ STCL_SETVAR( LA_ALIST ) LA_DCL
 {
     char name[1024];			/* XXX */
     char value[1024];			/* XXX */
-    Tcl_Interp *interp = lookup_handle(&tcl_handles, LA_INT(0));
+    Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_INT(0));
     if (!interp)
 	RETFAIL;
 
@@ -128,7 +129,7 @@ int
 STCL_EVAL( LA_ALIST ) LA_DCL
 {
     char cmd[1024];			/* XXX */
-    Tcl_Interp *interp = lookup_handle(&tcl_handles, LA_INT(0));
+    Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_INT(0));
     if (!interp)
 	RETFAIL;
 
@@ -140,18 +141,190 @@ STCL_EVAL( LA_ALIST ) LA_DCL
 }
 
 /*
- * LOAD("STCL_DELETE(INTEGER)STRING")
+ * LOAD("STCL_DELETEINTERP(INTEGER)STRING")
  * Delete TCL interpreter
  *
  * return null string, or failure
  */
 int
-STCL_DELETE( LA_ALIST ) LA_DCL
+STCL_DELETEINTERP( LA_ALIST ) LA_DCL
 {
-    Tcl_Interp *interp = lookup_handle(&tcl_handles, LA_INT(0));
+    Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_INT(0));
     if (!interp)
 	RETFAIL;
 
     Tcl_DeleteInterp(interp);
+    RETNULL;
+}
+
+/*
+ * new functions for Tcl Object interface
+ * 9/1/2004
+ */
+
+/*
+ * LOAD("STCL_NEWSTRINGOBJ(STRING)INTEGER")
+ * Create new string object, returns handle
+ */
+int
+STCL_NEWSTRINGOBJ( LA_ALIST ) LA_DCL
+{
+    Tcl_Obj *obj;
+    int h;
+
+    obj = Tcl_NewStringObj(LA_STR_PTR(0), LA_STR_LEN(0));
+
+    if (!obj)
+	RETFAIL;
+
+    h = new_handle(&tcl_objs, obj);
+    if (h == BAD_HANDLE)
+	RETFAIL;
+
+    Tcl_IncrRefCount(obj);
+    RETINT(h);
+}
+
+/*
+ * LOAD("STCL_GETSTRINGFROMOBJ(INTEGER)STRING")
+ * Get string from an Object (given object handle)
+ */
+int
+STCL_GETSTRINGFROMOBJ( LA_ALIST ) LA_DCL
+{
+    int length;
+    Tcl_Obj *obj;
+    char *val;
+
+    obj = lookup_handle(&tcl_objs, LA_INT(0));
+    val = Tcl_GetStringFromObj(obj, &length);
+    if (!val)
+	RETFAIL;
+    RETSTR2(val, length);
+}
+
+/*
+ * LOAD("STCL_APPENDTOOBJ(INTEGER,STRING)STRING")
+ * Append string to an Object.
+ * returns null string, or failure
+ */
+int
+STCL_APPENDTOOBJ( LA_ALIST ) LA_DCL
+{
+    Tcl_Obj *obj;
+
+    obj = lookup_handle(&tcl_objs, LA_INT(0));
+    if (!obj)
+	RETFAIL;
+
+    Tcl_AppendToObj(obj, LA_STR_PTR(1), LA_STR_LEN(1));
+    RETNULL;
+}
+
+/*
+ * LOAD("STCL_EVALOBJEX(INTEGER,INTEGER,INTEGER)STRING")
+ * Evaluate (execute) an object -- saves compiled byte code
+ */
+int
+STCL_EVALOBJEX( LA_ALIST ) LA_DCL
+{
+    Tcl_Interp *interp = lookup_handle(&tcl_objs, LA_INT(0));
+    Tcl_Obj *obj = lookup_handle(&tcl_objs, LA_INT(1));
+    int ret;
+    if (!interp || !obj)
+	RETFAIL;
+
+    ret = Tcl_EvalObjEx(interp, obj, LA_INT(2));
+    RETINT(ret);
+}
+
+/*
+ * LOAD("STCL_GETOBJRESULT(INTEGER)")
+ * return a result object from an interpreter (after Tcl_EvalObjEx)
+ */
+int
+STCL_GETOBJRESULT(LA_ALIST ) LA_DCL
+{
+    Tcl_Interp *interp = lookup_handle(&tcl_objs, LA_INT(0));
+    Tcl_Obj *obj = Tcl_GetObjResult(interp);
+    int h;
+
+    if (!interp || !obj)
+	RETFAIL;
+
+    h = new_handle(&tcl_objs, obj);
+    if (h == BAD_HANDLE)
+	RETFAIL;
+
+    Tcl_IncrRefCount(obj);
+    RETINT(h);
+}
+
+/*
+ * LOAD("STCL_OBJSETVAR2(INTEGER,STRING,STRING,INTEGER,INTEGER)STRING")
+ */
+int
+STCL_OBJSETVAR2( LA_ALIST ) LA_DCL
+{
+    Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_INT(0));
+    Tcl_Obj *part1 = lookup_handle(&tcl_objs, LA_INT(1));
+    Tcl_Obj *part2 = lookup_handle(&tcl_objs, LA_INT(2));
+    Tcl_Obj *val = lookup_handle(&tcl_objs, LA_INT(3));
+    Tcl_Obj *res;
+    int h;
+
+    if (!interp)
+	RETFAIL;
+
+    res = Tcl_ObjSetVar2(interp, part1, part2, val, LA_INT(4));
+    if (!res)
+	RETFAIL;
+
+    h = new_handle(&tcl_objs, res);
+    if (h == BAD_HANDLE)
+	RETFAIL;
+
+    Tcl_IncrRefCount(res);		/* XXX needed? */
+    RETINT(h);
+}
+
+/*
+ * LOAD("STCL_OBJGETVAR2(INTEGER,STRING,STRING,INTEGER)STRING")
+ */
+int
+STCL_OBJGETVAR2( LA_ALIST ) LA_DCL
+{
+    Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_INT(0));
+    Tcl_Obj *part1 = lookup_handle(&tcl_objs, LA_INT(1));
+    Tcl_Obj *part2 = lookup_handle(&tcl_objs, LA_INT(2));
+    Tcl_Obj *res;
+    int h;
+
+    if (!interp)
+	RETFAIL;
+
+    res = Tcl_ObjGetVar2(interp, part1, part2, LA_INT(3));
+    if (!res)
+	RETFAIL;
+
+    h = new_handle(&tcl_objs, res);
+    if (h == BAD_HANDLE)
+	RETFAIL;
+
+    Tcl_IncrRefCount(res);
+    RETINT(h);
+}
+
+/*
+ * LOAD("STCL_RELEASEOBJ(INTEGER)STRING")
+ * release a Tcl Object
+ */
+int
+STCL_RELEASEOBJ( LA_ALIST ) LA_DCL
+{
+    Tcl_Obj *obj = lookup_handle(&tcl_objs, LA_INT(0));
+    if (!obj)
+	RETFAIL;
+    Tcl_DecrRefCount(obj);
     RETNULL;
 }

@@ -21,6 +21,8 @@ extern void *malloc();
 #include "load.h"			/* SNOEXP() */
 #include "handle.h"
 
+#define HANDLE_HASH(H) (((int)(H)) & (HANDLE_HASH_SIZE-1))
+
 void *
 lookup_handle(hlp, h)
     struct handle_list *hlp;
@@ -30,7 +32,7 @@ lookup_handle(hlp, h)
 
     for (hp = hlp->hash[HANDLE_HASH(h)]; hp; hp = hp->next) {
 	if (hp->handle == h)
-	    return hp->value;
+	    return (void *)hp->handle;
     }
     return NULL;
 }
@@ -40,23 +42,18 @@ new_handle(hlp, vp)
     struct handle_list *hlp;
     void *vp;
 {
-    snohandle_t h;
     struct handle_entry *hp;
 
-    /* find a free handle */
-    /* XXX save initial "next" value, avoid infinite loop! */
-    do {
-	h = hlp->next++;
-    } while (h == BAD_HANDLE || lookup_handle(hlp, h));
+    if (lookup_handle(hlp, vp))
+	return BAD_HANDLE;
 
     /* allocate block */
     hp = malloc(sizeof(struct handle_entry));
     if (!hp)
-	return -1;
+	return BAD_HANDLE;
 
-    hp->value = vp;
     hp->next = hlp->hash[HANDLE_HASH(hp->handle)];
-    hp->handle = h;
+    hp->handle = (snohandle_t)vp;
 
     hlp->hash[HANDLE_HASH(hp->handle)] = hp;
     hlp->entries++;
@@ -67,7 +64,7 @@ new_handle(hlp, vp)
 void
 remove_handle(hlp, h)
     struct handle_list *hlp;
-    snohandle_t h;
+    void *h;
 {
     struct handle_entry *hp, *pp;
     int hash = HANDLE_HASH(h);
