@@ -1,5 +1,6 @@
 $Id$
 
+
 IMPORTANT for users of versions prior to 0.99;
 =============================================
 	Configuration is now automatic.  DO NOT create config.m4 by
@@ -12,12 +13,28 @@ IMPORTANT for users of versions prior to 0.99;
 
 	-d option takes size in bytes, not descriptors.
 
+
+For detailed revision history see History file
+
+Changes since 0.99.1 release;
+============================
+
+	Portability/autoconfig improvements
+
+	Added magic "/udp" pathname for UDP data
+
+	Debugged "update" I/O
+
+	Added functions to allow writing I/O subroutines to be
+		added via "Poor Man's Load" (PML)
+
 Changes since 0.99 release;
 ==========================
 
 	Added I/O options (binary, noecho, etc)
 
 	Added config file for 64-bit IRIX
+		(64-bit integers, double-precision reals)
 
 	Added magic "/tcp" pathname for opening TCP connections
 
