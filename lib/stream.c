@@ -17,9 +17,6 @@
 
 #define ACCEPT() { cp++; len--; }
 
-/* only 7-bit ascii for now! */
-#define CHAR_MASK 0177
-#define CHAR_NUM 128
 enum stream_ret
 stream( sp1, sp2, tp )
     struct spec *sp1;			/* OUT: prefix */
@@ -42,7 +39,7 @@ stream( sp1, sp2, tp )
 	struct acts *ap;
 	int tok;
 
-	ap = tp->actions + tp->chrs[*cp & CHAR_MASK];
+	ap = tp->actions + tp->chrs[*cp];
 
 	DEBUGF(2,(" '%c' (%d)", *cp, *cp ));
 
@@ -77,7 +74,7 @@ stream( sp1, sp2, tp )
 	case AC_CONTIN:
 	    break;
 	case AC_STOP:
-	    ACCEPT();
+	    cp++; len--;		/* accept */
 	    /* FALL */
 	case AC_STOPSH:
 	    ret = ST_STOP;
@@ -89,7 +86,7 @@ stream( sp1, sp2, tp )
 	    tp = ap->go;
 	    break;
 	}
-	ACCEPT();
+	cp++; len--;			/* accept */
     }
     /* here when out of subject */
     ret = ST_EOS;
@@ -116,12 +113,12 @@ clertb(tp, act, sp)
 {
     int i, j;
 
-    /* find action index in list */
+    /* find action index in list (SNABTB has one of each action type) */
     for (j = 0; ; j++)
 	if (tp->actions[j].act == act)
 	    break;
 
-    for (i = 0; i < CHAR_NUM; i++)
+    for (i = 0; i < CHARSET; i++)
 	tp->chrs[i] = j;
 }
 
@@ -139,13 +136,13 @@ plugtb(tp, act, sp)
     len = S_L(sp);
     cp = S_SP(sp);
 
-    /* find action index in list */
+    /* find action index in list (SNABTB has one of each action type) */
     for (j = 0; ; j++)
 	if (tp->actions[j].act == act)
 	    break;
 
     while (len-- > 0) {
-	tp->chrs[*cp++ & CHAR_MASK] = j;
+	tp->chrs[*cp++] = j;
     }
 }
 
