@@ -2,18 +2,18 @@
 
 #include <stdio.h>			/* for usage! */
 #include <signal.h>
-#include <sys/vadvise.h>
 
 #include "h.h"
 #include "types.h"
 #include "macros.h"
 
 #include "data.h"			/* SIL data */
-char *malloc();
 
-extern int SYSCUT();
+extern char *dynamic();
+extern int SYSCUT();			/* XXX want void on some systems? */
 
 #define NDESCR 25000			/* default */
+
 int ndescr;
 int rflag;
 
@@ -95,12 +95,11 @@ init()
     /* allocate dynamic data region */
 
     len = DESCR * ndescr;
-    dyn = malloc(len);
-    /* XXX use valloc then madvise on dynamic region?!?? */
-    vadvise(VA_ANOM);			/* warn VM we're random during GC */
+    dyn = dynamic(len);
 
     if (dyn == NULL) {
-	/* XXX output message to stderr! */
+	fprintf( stderr, "could not allocate dynamic region of %d bytes\n",
+		len);
 	exit(1);
     }
 
