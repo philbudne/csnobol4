@@ -96,7 +96,7 @@ NOET	SNOBOL = (COMP + EXEC) / SNODIV
 **************** get snobols's average ms/stmt
 
 ALOP	LINE = INPUT					:F(NOSTAT)
-	LINE WS FLOAT . AVG WS 'us. Average'		:F(ALOP)
+	LINE WS NUM . AVG WS 'us. Average'		:F(ALOP)
 *	OUTPUT = '>>' LINE
 
 * get usec/stmt (as calculated by snobol)
@@ -108,8 +108,8 @@ ALOP	LINE = INPUT					:F(NOSTAT)
 
 * check for delta of +/-1us
 	X = A1 - AVG
-	EQ(X,1)						:S(GETTIME)
-	EQ(X,-1)					:S(GETTIME)
+	LT(X,1)						:S(GETTIME)
+	GT(X,-1)					:S(GETTIME)
 
 * get ratio, keep our version on the bottom (less likely to be zero)
 	X = 100 * AVG / A1
