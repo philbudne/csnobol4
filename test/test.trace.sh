@@ -8,7 +8,7 @@ BASE=`basename $PROG .sno`
 STATUS=1
 #
 if $SNOBOL $ARGS -r $PROG 2>/dev/null | \
-    sed 's/time = [0-9]*/time = xxx/' > ${BASE}.tmp; then
+    sed 's/time = [0-9\.]*/time = xxx/' > ${BASE}.tmp; then
 	if cmp ${BASE}.ref ${BASE}.tmp; then
 		STATUS=0
 		rm -f ${BASE}.tmp
