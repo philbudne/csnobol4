@@ -143,9 +143,11 @@ Changes from "beta1" distribution;
 	Input no longer space padded, &TRIM no longer on by default.
 	NUL's no longer translated to space on output.
 	8-bit clean; &ALPHABET is 256 bytes long.
+	Default line size now 1024 (was 80).
 	Turned off stack underflow checking (should improve performance).
 	"Poor-Man's LOAD" -- support for linked in external functions.
 	Small "snolib.a" library of loadable functions.
+	Small library of S(P)ITBOL compatibility functions in snolib/*.sno
 	Upper and lower case letters available as keywords &LCASE/&UCASE.
 	Even more characters accepted as start-of-line comment chars.
 	Generated code for boolean is cleaner.

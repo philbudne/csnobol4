@@ -1,7 +1,5 @@
 $Id$
 
-test RETSTR
-
 improve load.doc
 	document use of pml!
 	document RETxxx macros
