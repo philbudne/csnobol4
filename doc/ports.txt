@@ -79,6 +79,7 @@ SGI IP20 (R4K)	100   IRIX 5.2      cc		0.99.4	17453	pb 8/97
 Sun SS5/110	110   SunOS 5.5.1   spro	0.99.1  17072	db 11/96
 Sun SS5/110	110   SunOS 5.5.1   spro	0.99.3  15075	db 11/96
 i486		??    Linux 2.0.30  gcc		0.99.4	15039	pb 8/97
+Sun SS5/110	110   SunOS 5.5.1   spro	0.99.4  14867	db 10/97
 HP 9000/712	60    HP-UX 9.03    gcc		0.99.4	13063	yb 9/97
 Sun SS5/85	85    SunOS 4.1.4   gcc		0.99.4	12756	pb 8/97
 Sun SS10/40	40    SunOS 5.5.1   gcc		0.99.1  12237	jm 11/96
