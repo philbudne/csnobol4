@@ -1217,7 +1217,8 @@ XOUTEND	OUTPUT = OL ");"				:(OPDONE)
 
 ****************
 *	SIL STPRNT (PRINTQ) MACRO 10/19/93
-XSTPRNT	OUTPUT = IND 'io_print(' ARGV<2> ', ' ARGV<3> ');' :(OPDONE)
+XSTPRNT	OUTPUT = IND 'io_print(' ARGV<1> ', ' ARGV<2> ', ' ARGV<3> ');'
+							:(OPDONE)
 
 ****************
 *	SIL STREAD (READQ) MACRO 10/19/93
@@ -1257,7 +1258,9 @@ XREWIND	OUTPUT = IND 'io_rewind(' D_A(ARGV<1>) ');'	:(OPDONE)
 
 ****************
 *	SIL ENFILE (???) MACRO 10/27/93
-XENFILE	OUTPUT = IND 'io_endfile(' D_A(ARGV<1>) ');'	:(OPDONE)
+XENFILE	F = 'io_endfile'
+IOFUN1	X = F '(' D_A(ARGV<1>) ')'
+	DOBOOL(X,ARGV<2>,ARGV<3>)			:(OPDONE)
 
 ****************
 *	SIL BKSPCE (???) MACRO 10/27/93
