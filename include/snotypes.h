@@ -117,9 +117,3 @@ struct spec {				/* (new: qualifier) */
 
 /* for generated code which deals with function pointers */
 typedef int (*func_t)();
-
-#ifdef __STDC__
-#define SIL_FUNC_PROTO void *
-#else
-#define SIL_FUNC_PROTO
-#endif
