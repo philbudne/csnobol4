@@ -121,6 +121,7 @@ EIO
 	LC = "abcdefghijlkmnopqrstuvwxyz"
 	DIGS = "0123456789"
 	OPERS = "*+-/"
+	PUNCT = "_"
 
 *	avoid runtime negation!
 	M1 = -1
@@ -138,7 +139,7 @@ EIO
 	WS = SPAN(WHITE)
 
 	ID = ANY(UC) SPAN(UC DIGS)
-	ARGP = SPAN(UC LC DIGS OPERS) | NUL
+	ARGP = SPAN(UC LC DIGS OPERS PUNCT) | NUL
 
 ****************************************************************
 *	functions
@@ -598,7 +599,6 @@ PPPEND
 	NBAL_ARG_PAT = ARGP . ARG
 
 	OUTPUT_PAT1 = LP BREAK(RP) . L RP
-	OUTPUT_PAT2 = ID . I
 
 ****************************************************************
 *	not in a block comment
@@ -1199,17 +1199,8 @@ XENDEX	LIVE =
 *	SIL OUTPUT (=) MACRO
 XOUTPUT	OL = IND "io_printf(" D_A(ARGV<1>) "," ARGV<2>
 	IDENT(ARGV<3>)					:S(XOUTEND)
-	N = ARGV<3>
-	N OUTPUT_PAT1					:F(XOUTEND)
-*	TERMINAL = '>' N
-XOUTLP	L OUTPUT_PAT2 =					:F(XOUTEND)
-	FUN = 'D_A'
-* XXX crock!!!
-	FUN = IDENT(I,'FCL') 'D_RV'
-	OL = OL ',' FUN '(' I ')'
-	L ',' =
-	DIFFER(L)					:S(XOUTLP)
-
+	ARGV<3> OUTPUT_PAT1				:F(XOUTEND)
+	OL = OL ',' L
 XOUTEND	OUTPUT = OL ");"				:(OPDONE)
 *
 ****************************************************************
