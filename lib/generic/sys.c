@@ -4,14 +4,14 @@
 
 #ifndef CONFIG_GUESS
 #define CONFIG_GUESS ""
-#endif
+#endif /* CONFIG_GUESS not defined */
 
 #ifdef ANSI_STRINGS
-#include <strings.h>
-#else
 #include <string.h>
 #define rindex(S,C) strrchr(S,C)	/* XXX move to h.h? */
-#endif
+#else  /* ANSI_STRINGS not defined */
+#include <strings.h>
+#endif /* ANSI_STRINGS not defined */
 
 void
 hwname(cp)
@@ -19,7 +19,7 @@ hwname(cp)
 {
 #ifdef HWNAME
     strcpy(cp, HWNAME);
-#else
+#else  /* HWNAME not defined */
     char *sp, *tp;
     int sl;
 
@@ -35,7 +35,7 @@ hwname(cp)
     }
     strncpy(cp, sp, sl);
     cp[sl] = '\0';
-#endif
+#endif /* HWNAME not defined */
 }
 
 void
@@ -44,7 +44,7 @@ osname(cp)
 {
 #ifdef OSNAME
     strcpy(cp, OSNAME);
-#else
+#else  /* OSNAME not defined */
     char *sp;
 
     /* find last hyphen */
@@ -55,5 +55,5 @@ osname(cp)
 	sp = "unknown";
 
     strcpy(cp, sp);
-#endif
+#endif /* OSNAME not defined */
 }
