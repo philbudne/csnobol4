@@ -2,6 +2,15 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+8/6/97:
+	Makefile: use ./configure
+
+8/5/97:
+	v311.sil procs syntax.tbl: Code from SNOBOL4+
+		seperate syntax tables for BREAK(X) and SPAN
+		simple index lookup for ANY/NOTANY
+	lib/stream.c: new any() function
+
 8/1/97:
 	autoconf: general cleanup
 		commented out irix64 detection (does not yet work)
