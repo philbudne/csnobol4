@@ -7,7 +7,7 @@ static int first_time = -1;
 static long start_time;
 
 /*
- * times() is venerable (it was in v6)!!
+ * sigh; use ansi-ish clock() -- returns Time Of Day!
  */
 
 int_t
