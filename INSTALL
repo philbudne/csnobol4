@@ -379,13 +379,13 @@ description file, which can be used by typing:
 
 	MMS/DESCRIP=[.CONFIG.VMS]DESCRIP.MMS
 
-If using VAXC, /MACRO=(VAX_C=1) should be appended to the command line
-if using an older version of Alpha DECC, try adding /MACRO=(DECC4=1)
+If using VAXC, /MACRO=(VAX_C=1) should be appended to the command line.
+If using an older version of Alpha DECC, try adding /MACRO=(DECC4=1)
 
 The VMS port tries to use native calls to implement TTY I/O, and
 supports binary and noecho input.  TCP/IP I/O is implemented using DEC
 TCP/IP Connection services for OpenVMS (formerly VAX/Ultrix connection
-product). It should be simple to use other TCP packages, but if not,
+product). It should be possible to use other TCP packages, but if not,
 or none is available, add /MACRO=(NO_TCP=1) to the MMS command line.
 
 Win32 using CygWin
@@ -399,12 +399,12 @@ just type "make"!
 Win32
 -----
 
-The Win32 port is in it's infancy.  The snobol4.exe links and seems
-to work, but system dependant code needs work;
+The Win32 port is in it's infancy, and has only been tested using the
+free MINGW C compiler.
 
-*	Binary & noecho TTY I/O has been coded, but does not work.
+*	binary and no echo support for console I/O has been added recently
 *	LOAD() of DLL's implemented, but not tested
-	(document how to make a .DLL)
+*	TCP I/O works, but UDP does not
 
 To compile using MINGW (http://www.mingw.org);
 	make -f config/win32/mingw.mak
