@@ -251,7 +251,6 @@ inet_read_cooked(f, cp, recl, keepeol)
 	}
 
 	if (c == '\n') {
-	    saweol = 1;
 	    if (!keepeol)
 		break;
 	}
