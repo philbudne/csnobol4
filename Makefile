@@ -225,6 +225,7 @@ tar:	snobol4 pv
 	cd tmp; cvs -d $(ANONCVSROOT) co $(MODULE)
 	mv tmp/$(MODULE) tmp/$(DIR)
 	cd tmp/$(DIR); make generated
+	rm tmp/$(DIR)/00README.CVS
 	cd tmp/$(DIR)/doc; make
 	rm -f $(KIT)
 	cd tmp; ln ../pv .; tar cf - $(DIR) | $(COMP) > ../$(KIT)
