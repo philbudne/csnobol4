@@ -13,7 +13,7 @@
 # AIX4 makes all targets, so added this;
 default: snobol4
 
-snobol4 xsnobol4 clean tar uu install: Makefile2 ALWAYS
+snobol4 xsnobol4 tar uu install: Makefile2 ALWAYS
 	$(MAKE) -f Makefile2 $@
 
 # disposables
