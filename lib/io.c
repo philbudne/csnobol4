@@ -65,11 +65,13 @@ typedef long off_t;
 #include "macros.h"
 #include "path.h"
 #include "libret.h"			/* IO_xxx, INC_xxx */
+#include "lib.h"
 
 /* generated */
 #include "equ.h"			/* for BCDFLD (for X_LOCSP), res.h */
 #include "res.h"			/* needed on VAX/VMS for data.h */
 #include "data.h"			/* for FILENM */
+#include "proc.h"			/* UNDF() */
 
 #ifndef SEEK_SET
 #define SEEK_SET 0
