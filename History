@@ -11,6 +11,7 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 	lib/snolib/findunit.c: PML access to io_findunit()
 	pml.h: add IO_FINDUNIT
 	Makefile2.m4: add findunit.c
+	new tests longline, longrec
 
 7/2/97:
 	v311.sil: upped CARDSZ to 1024 again for David J Birnbaum
