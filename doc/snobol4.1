@@ -285,6 +285,15 @@ cause a \*(lqVariable not present where required\*(rq error. The
 .B THAW()
 function restores normal entry creation behavior.
 .TP
+.B FUNCTION()
+.br
+The
+.B FUNCTION()
+predicate evaluates it's argument as a string (with case folding), and
+returns the null string if a function with that name exists and fails
+if it does not.  This is an experimental feature which does not exist
+in any other implementations.
+.TP
 .B HOST()
 .br
 A limited simulation of the SPITBOL
@@ -389,9 +398,11 @@ will never return a unit number below 20.
 .br
 The
 .B LABEL()
-predicate evaluates it's argument as a string, and returns
-the null string if a label with that name has been defined,
-and fails if it does not.
+predicate evaluates it's argument as a string (with case folding), and
+returns the null string if a label with that name has been defined,
+and fails if it does not.  The
+.B LABEL()
+predicate was copied from Steve Duff's version of Macro SPITBOL.
 .TP
 .B &LINE/&FILE
 .br
@@ -734,7 +745,10 @@ function takes two arguments, if they
 the first argument's value is returned.  This is intended to be used
 in contexts where
 .I "DIFFER(X) X"
-would otherwise have been used.
+would otherwise have been used.  The
+.B VDIFFER()
+function was copied from Steve Duff's version of Macro SPITBOL.
+
 .SS "I/O Associations"
 .PP
 I/O is performed by associating a variable name with a numbered I/O
