@@ -77,7 +77,7 @@ find_by_fd(fd, action)
     struct save *sp, *pp;
 
     if (fstat(fd, &st) < 0 || !S_ISCHR(st.st_mode))
-	return;
+	return NULL;
     
     for (pp = NULL, sp = list; sp; pp = sp, sp = sp->next) {
 	if (sp->dev == st.st_rdev) {
