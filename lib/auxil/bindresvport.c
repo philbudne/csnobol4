@@ -69,40 +69,35 @@ bindresvport_sa(sd, sa)
 {
 	int error, af;
 	struct sockaddr myaddr;
-	struct sockaddr_in *sin;
-#ifdef AF_INET6
-	struct sockaddr_in6 *sin6;
-#endif
 	unsigned short *portp;
 	unsigned short port;
 	int salen;
 	int i;
 
 	if (sa == NULL) {
-		bzero(&myaddr, sizeof(myaddr));
-		sa = (struct sockaddr *)&myaddr;
+		sa = &myaddr;
+		bzero(sa, sizeof(myaddr));
 
 		if (getsockname(sd, sa, &salen) == -1)
 			return -1;	/* errno is correctly set */
 
 		af = sa->sa_family;
-		bzero(&myaddr, salen);
+		bzero(sa, salen);
 	} else
 		af = sa->sa_family;
 
-	if (af == AF_INET) {
-		sin = (struct sockaddr_in *)sa;
+	switch (af) {
+	case AF_INET:
 		salen = sizeof(struct sockaddr_in);
-		portp = &sin->sin_port;
-	}
-#ifdef AF_INET6
-	else if (af == AF_INET6) {
-		sin6 = (struct sockaddr_in6 *)sa;
+		portp = &((struct sockaddr_in *)sa)->sin_port;
+		break;
+#if defined(AF_INET6) && defined(NEED_INET6)
+	case AF_INET6:
 		salen = sizeof(struct sockaddr_in6);
-		portp = &sin6->sin6_port;
-	}
+		portp = &((struct sockaddr_in6 *)sa)->sin6_port;
+		break;
 #endif
-	else {
+	default:
 		errno = EPFNOSUPPORT;
 		return (-1);
 	}
