@@ -3,7 +3,8 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
 6/21/97:
-	timing: use HP-UX model command
+	timing: use HP-UX "model" command, if present
+	doc/snobol4.1: updated exponent info
 
 6/20/97:
 	lib/aux/bcopy.c: use (long) for casts
@@ -15,6 +16,10 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 	lib/ansi/convert.c: removed extra strtod() arg
 	lib/realst.c: expanded buffer
 		use "g" format (but make sure output doesn't look like an int)
+		will use exponentials if output smaller.
+		eliminates trailing zeroes, inaccurate output;
+		(ie; 1e12 output as 999999995904.000000,
+		 1.e14 output as 100000000376832.000000)
 	syntax.tbl: allow exponent's without fractions (ie; 1e5), like SPITBOL
 	timing: cat /proc/cpuinfo (if present) on Linux
 		dump hw sysctl info on BSD systems
