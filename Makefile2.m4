@@ -63,6 +63,7 @@ REALST_C=lib/realst.c
 REPLACE_C=lib/replace.c
 STREAM_C=lib/stream.c
 STR_C=lib/str.c
+TERM_C=lib/posix/term.c
 TOP_C=lib/top.c
 TREE_C=lib/tree.c
 
@@ -105,14 +106,14 @@ SMALL_SNO=snobol4 -b
 OBJS=	main.o $(SNOBOL4).o data.o data_init.o syn.o bal.o convert.o \
 	date.o dump.o dynamic.o endex.o exp.o hash.o init.o intspc.o \
 	io.o lexcmp.o load.o mstime.o ordvst.o pair.o pat.o pml.o \
-	realst.o replace.o str.o stream.o top.o tree.o version.o \
+	realst.o replace.o str.o stream.o term.o top.o tree.o version.o \
 	_OBJS $(PML_OBJS)
 
 SRCS=	main.c $(SNOBOL4).c data.c data_init.c syn.c $(BAL_C) $(CONVERT_C) \
 	$(DATE_C) $(DUMP_C) $(DYNAMIC_C) $(ENDEX_C) $(EXP_C) $(HASH_C) \
 	$(INIT_C) $(INTSPC_C) $(IO_C) $(LEXCMP_C) $(LOAD_C) \
 	$(MSTIME_C) $(ORDVST_C) $(PAIR_C) $(PAT_C) $(PML_C) \
-	$(REALST_C) $(REPLACE_C) $(STREAM_C) $(STR_C) $(TOP_C) \
+	$(REALST_C) $(REPLACE_C) $(STREAM_C) $(STR_C) $(TOP_C) $(TERM_C) \
 	$(TREE_C) version.c _SRCS
 
 TESTED:	xsnobol4 snobol4.c
@@ -263,6 +264,9 @@ str.o:	$(STR_C)
 
 stream.o: $(STREAM_C)
 	$(CC) $(CFLAGS) -c $(STREAM_C)
+
+term.o:	$(TERM_C)
+	$(CC) $(CFLAGS) -c $(TERM_C)
 
 top.o:	$(TOP_C)
 	$(CC) $(CFLAGS) -c $(TOP_C)
