@@ -81,6 +81,7 @@ STR_C=$(SRCDIR)lib/str.c
 TERM_C=$(SRCDIR)lib/posix/term.c
 TOP_C=$(SRCDIR)lib/top.c
 TREE_C=$(SRCDIR)lib/tree.c
+TTY_C=$(SRCDIR)lib/posix/tty.c
 
 # aux sources
 BZERO_C=$(SRCDIR)lib/auxil/bzero.c
@@ -162,8 +163,8 @@ SMALL_SNO=snobol4 -b
 OBJS=	main.o $(SNOBOL4).o data.o data_init.o syn.o bal.o convert.o \
 	date.o dump.o dynamic.o endex.o expops.o hash.o init.o intspc.o \
 	io.o lexcmp.o load.o mstime.o ordvst.o pair.o pat.o pml.o \
-	realst.o replace.o str.o stream.o term.o top.o tree.o version.o \
-	$(PML_OBJS) $(SNOLIB_A)
+	realst.o replace.o str.o stream.o term.o top.o tree.o tty.o \
+	version.o $(PML_OBJS) $(SNOLIB_A)
 
 AUX_SRCS= _SRCS
 SRCS=	main.c $(SNOBOL4).c data.c data_init.c syn.c $(BAL_C) $(CONVERT_C) \
@@ -171,7 +172,7 @@ SRCS=	main.c $(SNOBOL4).c data.c data_init.c syn.c $(BAL_C) $(CONVERT_C) \
 	$(INIT_C) $(INTSPC_C) $(IO_C) $(LEXCMP_C) $(LOAD_C) \
 	$(MSTIME_C) $(ORDVST_C) $(PAIR_C) $(PAT_C) $(PML_C) \
 	$(REALST_C) $(REPLACE_C) $(STREAM_C) $(STR_C) $(TOP_C) $(TERM_C) \
-	$(TREE_C) version.c $(AUX_SRCS) $(SNOLIB_SRCS)
+	$(TREE_C) $(TTY_C) version.c $(AUX_SRCS) $(SNOLIB_SRCS)
 
 # SIL source file
 SIL=	v311.sil
@@ -344,6 +345,9 @@ top.o:	$(TOP_C)
 
 tree.o:	$(TREE_C)
 	$(CC) $(CFLAGS) -c $(TREE_C)
+
+tty.o:	$(TTY_C)
+	$(CC) $(CFLAGS) -c $(TTY_C)
 
 #################
 # aux files -- porting aids not used in all builds;
