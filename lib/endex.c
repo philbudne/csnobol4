@@ -36,7 +36,6 @@ endex( x )
     int i;
 
     io_finish();
-    tty_restore();
     inet_cleanup();
 
     /* if &ABEND set, dump core?! */
