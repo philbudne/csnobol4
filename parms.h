@@ -17,6 +17,12 @@
 struct descr NORET[1];
 
 #ifdef TRACE_DEPTH
-int depth;
-int calls[1024];
+extern int depth;
+extern int calls[];
 #endif /* TRACE_DEPTH defined */
+
+#ifndef NO_INLINE_PAIR
+#define PAIR_STATIC static
+#include "lib/pair.c"
+#endif /* NO_INLINE_PAIR not defined */
+
