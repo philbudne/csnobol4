@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.7  93/11/10  11:12:55  phil
+* dropped initial FNLIST user functions back to 10
+* 
 * Revision 1.6  93/11/10  01:38:50  phil
 * [PLB3] send title, attribution and compilation results
 * to stderr (PUNCH)
@@ -402,7 +405,8 @@ XLAEND AEQLC   ESAICL,0,,XLATSC    Were there any compilation errors?
        BRANCH  XLATND
 *_
 XLATSC OUTPUT  PUNCH,SUCCF	   [PLB3] Print message of no errors
-XLATND SETAC   UNIT,0		   Reset input unit
+XLATND XECOMP  ,		   [PLB4] Tell I/O system compile done
+       SETAC   UNIT,0		   Reset input unit
        SETAC   LPTR,0		   Reset last label pointer
        SETAC   OCLIM,0		   Reset limit on object code
        ZERBLK  COMREG,COMDCT	   Clear compiler descriptors
@@ -3773,18 +3777,23 @@ FIELD1 MOVV    DT1CL,XPTR	   Set up data type
 *---------------------------------------------------------------------*
        TITLE   'Input and Output'
 *
-*      INPUT(V,U,L)
+*      INPUT(V,U,L,N)		   [PLB4]
 *
-READ   PROC    ,		   INPUT(V,U,L)
+READ   PROC    ,		   [PLB4] INPUT(V,U,L,N)
        RCALL   XPTR,IND,,FAIL	   Get variable
        PUSH    XPTR		   Save variable
        RCALL   YPTR,INTVAL,,FAIL   Get unit
        PUSH    YPTR		   Save unit
        RCALL   ZPTR,INTVAL,,FAIL   Get length
-       POP     (YPTR,XPTR)	   Restore unit and variable
+       POP     (YPTR)		   [PLB4] Restore unit
        ACOMPC  YPTR,0,,READ5,UNTERR
 *				   Check for defaulted unit
-READ6  ACOMPC  ZPTR,0,READ2,,LENERR
+READ6  PUSH    (YPTR,ZPTR)	   [PLB4] Save unit, length
+       RCALL   TPTR,VARVAL,,FAIL   [PLB4] Get optional file spec!
+       LOCSP   XSP,TPTR		   [PLB4] Get specifier
+       POP     (ZPTR,YPTR,XPTR)	   [PLB4] Restore lenth, unit and variable
+       XOPENI  YPTR,XSP,FAIL	   [PLB4] Tell I/O routines about it filename
+       ACOMPC  ZPTR,0,READ2,,LENERR
 *				   Check for defaulted length
        LOCAPT  TPTR,INSATL,YPTR,READ4
 *				   Look for default length
@@ -3806,15 +3815,19 @@ READ5  SETAC   YPTR,UNITI	   Set up default unit
 *_
 *---------------------------------------------------------------------*
 *
-*      OUTPUT(V,U,F)
+*      OUTPUT(V,U,F,N)		   [PLB4]
 *
-PRINT  PROC    ,		   OUTPUT(V,U,F)
+PRINT  PROC    ,		   [PLB4] OUTPUT(V,U,F,N)
        RCALL   XPTR,IND,,FAIL	   Get variable
        PUSH    XPTR		   Save variable
        RCALL   YPTR,INTVAL,,FAIL   Get unit
        PUSH    YPTR		   Save unit
        RCALL   ZPTR,VARVAL,,FAIL   Get format
-       POP     (YPTR,XPTR)	   Restore unit and variable
+       PUSH    ZPTR		   [PLB4] Save format
+       RCALL   TPTR,VARVAL,,FAIL   [PLB4] Get optional filename
+       POP     (ZPTR,YPTR,XPTR)	   [PLB4] Restore format, unit and variable
+       LOCSP   XSP,TPTR		   [PLB4] Get specifier for filename
+       XOPENO  YPTR,XSP,FAIL	   [PLB4] Tell I/O routines about filename!
        ACOMPC  YPTR,0,,PRINT5,UNTERR
 PRINT6 AEQLC   ZPTR,0,PRINT2	   Check for defaulted format
        LOCAPT  TPTR,OTSATL,YPTR,PRINT4
@@ -5916,7 +5929,7 @@ OPSYFN DESCR   OPSYN,0,3
        DESCR   0,0,0
 POSFN  DESCR   POS,0,1
        DESCR   0,0,0
-PRINFN DESCR   PRINT,0,3
+PRINFN DESCR   PRINT,0,4	   [PLB4]
        DESCR   0,0,0
 PROTFN DESCR   PROTO,0,1
        DESCR   0,0,0
@@ -5924,7 +5937,7 @@ REMDFN DESCR   REMDR,0,2
        DESCR   0,0,0
 RPLAFN DESCR   RPLACE,0,3
        DESCR   0,0,0
-READFN DESCR   READ,0,3
+READFN DESCR   READ,0,4		   [PLB4]
        DESCR   0,0,0
 REWNFN DESCR   REWIND,0,1
        DESCR   0,0,0
@@ -6019,7 +6032,7 @@ FNLIST DESCR   FNLIST,TTL+MARK,FNCPLE-FNLIST-DESCR
        DESCR   GTSP,0,0
        DESCR   IDENFN,FNC,0	   IDENT(V1,V2)
        DESCR   IDENSP,0,0
-       DESCR   READFN,FNC,0	   INPUT(V,N,L)
+       DESCR   READFN,FNC,0	   [PLB4] INPUT(V,N,L,F)
        DESCR   INSP,0,0
        DESCR   INTGFN,FNC,0	   INTEGER(V)
        DESCR   INTGSP,0,0
@@ -6043,7 +6056,7 @@ FNLIST DESCR   FNLIST,TTL+MARK,FNCPLE-FNLIST-DESCR
        DESCR   NNYSP,0,0
        DESCR   OPSYFN,FNC,0	   OPSYN(F1,F2,N)
        DESCR   OPSNSP,0,0
-       DESCR   PRINFN,FNC,0	   OUTPUT(V,N,F)
+       DESCR   PRINFN,FNC,0	   [PLB4] OUTPUT(V,N,F,FN)
        DESCR   OUTSP,0,0
        DESCR   POSFN,FNC,0	   POS(N)
        DESCR   POSSP,0,0
