@@ -4,19 +4,19 @@
 #include <stdio.h>
 #ifdef NO_OFF_T
 typedef long off_t;
-#else
+#else  /* NO_OFF_T not defined */
 #include <sys/types.h>			/* off_t */
-#endif
+#endif /* NO_OFF_T not defined */
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
-#endif
+#endif /* HAVE_UNISTD_H defined */
 
 #ifdef ANSI_STRINGS
 #include <string.h>
-#else
+#else  /* ANSI_STRINGS not defined */
 #include <strings.h>			/* berkeley strings */
-#endif
+#endif /* ANSI_STRINGS not defined */
 
 #include "h.h"
 #include "units.h"
@@ -151,7 +151,7 @@ io_close(unit)				/* internal (zero-based unit) */
 	    fp->f = NULL;
 	}
 	else
-#endif
+#endif /* NO_POPEN not defined */
 	if (fp->f != stdin &&
 	    fp->f != stdout &&
 	    fp->f != stderr &&
@@ -196,7 +196,7 @@ io_fopen2( fp, mode )
 	fp->flags |= FL_PIPE;
 	return (popen(fp->fname+1, mode));
     }
-#endif
+#endif /* NO_POPEN not defined */
     /* filename "-" goes to stdin/out */
     if (strcmp(fp->fname,"-") == 0) {
 	if (mode[0] == 'r')
@@ -256,7 +256,7 @@ io_fopen2( fp, mode )
 #ifndef FOPEN_NO_B
     if (fp->flags & FL_BINARY)
 	*mp++ = 'b';
-#endif
+#endif /* FOPEN_NO_B not defined */
     *mp++ = '\0';
 
     return (fopen(fp->fname, buf));
@@ -276,7 +276,10 @@ io_fopen( fp, mode )
     else
 	fp->flags &= ~FL_TTY;
 
-    /* XXX if FL_UNBUF call setbuf(fp->f, NULL)?? */
+    /* XXX if FL_UNBUF call setbuf(fp->f, NULL)??
+     * this may force a read or write per-character, which
+     * isn't what we're after!
+     */
     return fp->f;
 }
 
@@ -375,7 +378,7 @@ io_init()				/* here from INIT */
     }
 
     compiling = 1;
-}
+} /* io_init */
 
 /* limited printf */
 void
@@ -462,7 +465,7 @@ io_printf(va_alist)			/* OUTPUT */
     va_end(vp);
     *lp = '\0';
     fputs(line, f);
-}
+} /* io_printf */
 
 void
 io_print( iob, sp )			/* STPRNT */
@@ -518,7 +521,7 @@ io_print( iob, sp )			/* STPRNT */
 	    cp = S_SP(sp);
 	} /* compiling */
 
-	/* XXX check FL_UNBUF; read(fileno(f), cp, recl)? */
+	/* XXX check FL_UNBUF; write(fileno(f), cp, recl)? */
 	fwrite( cp, 1, len, f );
     }
     if (fp->flags & FL_EOL)
@@ -526,7 +529,7 @@ io_print( iob, sp )			/* STPRNT */
 
     if (fp->flags & FL_UNBUF)
 	fflush(f);
-}
+} /* io_print */
 
 void
 io_endfile(unit)			/* ENFILE */
@@ -746,8 +749,10 @@ io_options( fp, op, rp )
 	case '7':
 	case '8':
 	case '9':
+#if 0
 	    if (recl)			/* already got one? */
 		return FALSE;		/* boing! */
+#endif /* 0 */
 	    recl = 0;
 	    while (isdigit(*op)) {
 		recl = recl * 10 + *op - '0'; /* XXX works for ASCII */
@@ -772,8 +777,10 @@ io_options( fp, op, rp )
 	case 'c':
 	    flags |= FL_BINARY;
 	    flags &= ~FL_EOL;
+#if 0
 	    if (recl)			/* already have recl? */
 		return FALSE;		/* fail */
+#endif /* 0 */
 	    recl = 1;
 	    op++;
 	    break;
@@ -802,6 +809,9 @@ io_options( fp, op, rp )
 	    op++;
 	    break;
 
+	default:
+	    op++;
+	    break;
 	}
     } /* while *op */
 
@@ -1022,7 +1032,7 @@ io_file( dp, sp )
     
     return 1;
 }
-
+
 /*
  * support for SPITBOL SET() function
  *
@@ -1036,6 +1046,7 @@ io_seek(dunit, doff, dwhence)
     int unit, whence;
     off_t off;
     struct file *fp;
+    FILE *f;
 
     unit = D_A(dunit);
     unit--;
@@ -1046,12 +1057,30 @@ io_seek(dunit, doff, dwhence)
     whence = D_A(dwhence);
     if (whence < 0 || whence > 2)
 	return FALSE;
+
     /* translate n -> SEEK_xxx (if available)? */
 
-    /* XXX need to check fp->f?? */
-    if (fseek(fp->f, off, whence) < 0)
+    f = fp->f;
+    if (f == NULL)
 	return FALSE;
 
-    D_A(doff) = ftell(fp->f);		/* XXX truncation possible! */
+    if (fseek(f, off, whence) < 0)
+	return FALSE;
+
+    D_A(doff) = ftell(f);		/* XXX truncation possible! */
+    return TRUE;
+}
+
+/* flush all pending output before system(), exec(), or death */
+int
+io_flushall(dummy)
+    int dummy;
+{
+    int i;
+
+    for (i = 0; i < NUNITS; i++) {
+	if (io_units[i].curr && io_units[i].curr->f)
+	    fflush(io_units[i].curr->f); /* keep err count?? */
+    }
     return TRUE;
 }
