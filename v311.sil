@@ -1,6 +1,10 @@
 * $Id$
 *
 * $Log$
+* Revision 1.22  94/05/02  19:03:26  budd
+* [PLB14] use %15d formats (were %15i)
+* discovered by Jerry Leichter in port to VMS!
+* 
 * Revision 1.21  94/02/19  00:21:31  budd
 * updated date, for *REAL* BETA1!
 * 
@@ -374,8 +378,6 @@ T      EQU     5		   TABLE
 BEGIN  INIT    ,		   Initialize system
        ISTACK  ,		   Initialize stack
        AEQLC   BANRCL,0,,NOBANR	   [PLB12] Check if banner suppressed
-       OUTPUT  PUNCH,UNIXF	   [PLB12] Un*x title
-       OUTPUT  PUNCH,UNIXF2	   [PLB12] Un*x date
        OUTPUT  PUNCH,TITLEF	   [PLB3] Title listing
        OUTPUT  PUNCH,SOURCF	   [PLB3] Print attribution
 NOBANR LHERE			   [PLB12] here after banner
@@ -444,8 +446,8 @@ XLATP  AEQLC   STYPE,EOSTYP,,XLAEND
        AEQLC   STYPE,NBTYP,COMP7   Error if break character
        STREAM  XSP,TEXTSP,LBLTB,COMP7,COMP7
 *				   Analyze END label
-       RCALL   XPTR,GENVAR,(XSPPTR)
-*				   Generate variable for label
+       RCALL   XPTR,GNVARC,(XSPPTR)
+*				   [PLB15] Generate variable for label
        GETDC   OCBSCL,XPTR,ATTRIB  Get start for interpreter
        AEQLC   OCBSCL,0,,COMP7	   Error if not attribute
        AEQLC   STYPE,EOSTYP,,XLAEND
@@ -694,6 +696,20 @@ GNVARI PROC    GENVAR		   Procedure to generate string
        POP     AXPTR		   Restore integer
        INTSPC  SPECR1,AXPTR	   Convert to string
        BRANCH  LOCA1		   Join processing
+*_
+*---------------------------------------------------------------------*
+*
+* New [PLB15]
+*      Generation of Variable or Label, honoring &CASE
+*
+GNVARC PROC    GENVAR		   Procedure to generate string
+       AEQLC   CASECL,0,,GENVAR	   Skip out if case sensitve
+       POP     AXPTR		   Restore pointer to specifier
+       PUSH    AXPTR		   Put it back
+       GETSPC  SPECR1,AXPTR,0	   Get specifier
+       XRAISP  SPECR1		   Force to upper case
+       BRANCH  GENVAR		   Join regular processing
+*
 *_
 *---------------------------------------------------------------------*
 *
@@ -967,7 +983,7 @@ CMPILE PROC    ,		   Procedure to compile statement
        INCRA   CMBSCL,DESCR	   Increment base
 CMPILO SETAC   CMOFCL,0 	   Zero offset
        SETAC   BOSCL,0		   Zero base offset
-       RCALL   LPTR,GENVAR,XSPPTR  Get variable for label
+       RCALL   LPTR,GNVARC,XSPPTR  [PLB15] Get variable for label
        AEQLIC  LPTR,ATTRIB,0,,CMPILC
 *				   Check for previous definition
        AEQLC   CNSLCL,0,,CERR2	   Check for label redefinition
@@ -1233,8 +1249,8 @@ ELEILT SPCINT  XPTR,XSP,ELEINT,ELEMN5
 ELEFLT SPREAL  XPTR,XSP,ELEDEC,ELEMN5
 *				   Convert string to real
 *_
-ELEVBL RCALL   XPTR,GENVAR,(XSPPTR)
-*				   Generate variable
+ELEVBL RCALL   XPTR,GNVARC,(XSPPTR)
+*				   [PLB15] Generate variable
        RCALL   ELEXND,BLOCK,CNDSIZ Allocate block for tree node
        PUTDC   ELEXND,CODE,XPTR    Insert name
        BRANCH  ELEMN1		   Join exit processing
@@ -1475,7 +1491,9 @@ CTLCRD FSHRTN  TEXTSP,1 	   Delete control character
        AEQLC   STYPE,NBTYP,CMTCRD  Verify nonbreak
        STREAM  XSP,TEXTSP,LBLXTB,CMTCLR,CMTCLR
 *				   Break out command
-       LEXCMP  XSP,UNLSP,CTLCR1,,CTLCR1
+       AEQLC   CASECL,0,,CTLCRC	   Case sensitive?		[PLB15]
+       XRAISP  XSP		   No, raise before compare	[PLB15]
+CTLCRC LEXCMP  XSP,UNLSP,CTLCR1,,CTLCR1				[PLB15]
 *				   Is it UNLIST?
        SETAC   LISTCL,0 	   Zero listing switch
        BRANCH  RTN1		   Return
@@ -1507,10 +1525,24 @@ CRLCR4 LEXCMP  XSP,ERORSP,CRLCR5,,CRLCR5			[PLB9]
        SETAC   NERRCL,0		   Clear NOERRORS switch	[PLB9]
        BRANCH  CMTCLR		   Join terminal processing	[PLB9]
 *_
-CRLCR5 LEXCMP  XSP,NERRSP,CMTCLR,,CMTCLR			[PLB9]
+CRLCR5 LEXCMP  XSP,NERRSP,CRLCR6,,CRLCR6			[PLB9,15]
 *				   Is it NOERRORS?		[PLB9]
        SETAC   NERRCL,1		   Set NOERRORS switch		[PLB9]
        BRANCH  CMTCLR		   Join terminal processing	[PLB9]
+*_
+CRLCR6 LEXCMP  XSP,CASESP,CMTCLR,,CMTCLR			[PLB15]
+*				   Is it CASE?			[PLB15]
+       STREAM  XSP,TEXTSP,FRWDTB,COMP3,CRLCR7			[PLB15]
+*				   Get to next nonblank char	[PLB15]
+       AEQLC   STYPE,NBTYP,CMTCLR  Verify nonbreak		[PLB15]
+       STREAM  XSP,TEXTSP,ELEMTB,CMTCLR,CMTCLR			[PLB15]
+*				   Get value			[PLB15]
+       AEQLC   STYPE,ILITYP,CMTCLR				[PLB15]
+*				   Verify integer		[PLB15]
+       SPCINT  CASECL,TEXTSP,CMTCLR,CMTCLR			[PLB15]
+*_
+CRLCR7 SETAC   CASECL,0		   Clear case folding		[PLB15]
+       BRANCH  CMTCLR		   Join terminal processing	[PLB15]
 *_
 *---------------------------------------------------------------------*
 *
@@ -5443,6 +5475,8 @@ ANCCL  DESCR   0,0,I		   &ANCHOR
        DESCR   ANCHSP,0,0
 ABNDCL DESCR   0,0,I		   &ABEND
        DESCR   ABNDSP,0,0
+CASECL DESCR   1,0,I		   &CASE (folding)	[PLB15]
+       DESCR   CASESP,0,0
 KNEND  LHERE   ,
 *
 KVLIST DESCR   KVLIST,TTL+MARK,KVEND-KVLIST-DESCR
@@ -6321,6 +6355,7 @@ BACKSP STRING  'BACKSPACE'
 BALSP  STRING  'BAL'
 BRKSP  STRING  'BREAK'
 TRFRSP STRING  'CALL'
+CASESP STRING  'CASE'			[PLB15]
 CLERSP STRING  'CLEAR'
 CODESP STRING  'CODE'
 CLSP   STRING  'COLLECT'
@@ -6693,9 +6728,5 @@ SYSCMT FORMAT  'Caught signal in statement %d at level %d\n'
 TIMEPS FORMAT  '%15.2f ms. Average per statement executed\n'
 TITLEF FORMAT  'SNOBOL4 (Version 3.11, May 19, 1975)\n'
 *								V3.11
-* [PLB12]:
-UNIXF  FORMAT  'The Macro Implementation of SNOBOL4 for Un*x, by Phil Budne\n'
-UNIXF2 FORMAT  '    Version 0.90 (beta1) February 18, 1994\n'
-*
 WRITNO FORMAT  '%15d Writes performed\n'
        END
