@@ -1,4 +1,4 @@
-*	open an HTTP connection (text only) for C-MAINBOL
+*	open an HTTP connection (text only) for CSNOBOL4
 *	Phil Budne <phil@ultimate.com>
 *	Sept 24, 1997
 *	$Id$
