@@ -44,7 +44,10 @@ void
 usage( jname )
     char *jname;
 {
-    p( "Usage: %s [options...] [files...] [parameters...]\n", jname );
+    extern const char snoname[], vers[], vdate[];
+    fprintf( stderr, "%s version %s (%s)\n", snoname, vers, vdate );
+    fprintf( stderr,
+	    "Usage: %s [options...] [files...] [parameters...]\n", jname );
 /* XXX stuff about parameters */
     p( "-b\ttoggle display of startup banner\n");
     fprintf(stderr,
@@ -60,9 +63,11 @@ usage( jname )
     p( "-s\ttoggle display of statistics\n");
     p( "-u PARMS\n\tparameter data available via HOST(0)\n");
     p( "-M\tprocess multiple input files\n");
-    fprintf(stderr,
-	    "-P BYTES[k]\n\tsize of pattern match stack in bytes (default: %d)\n",
+    p( "-P BYTES[k]\n");
+    fprintf(stderr, "\tsize of pattern match stack in bytes (default: %d)\n",
 	    SPDLDR);
+    p( "\n");
+    fprintf(stderr, "descriptor size is %d bytes\n", DESCR );
     exit(1);
 }
 
