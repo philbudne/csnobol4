@@ -218,7 +218,7 @@ NO_FDOPEN
 Disable use of the fdopen() stdio function.  Magic pathname /dev/fd/n
 will not be available.
 .NH 3
-NO_OFF_T
+NEED_OFF_T
 
 .PP
 Should be set on systems where there is no system supplied "off_t"

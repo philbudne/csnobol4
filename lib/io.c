@@ -43,11 +43,11 @@ extern char *getenv();
 #include <stdio.h>
 #include <ctype.h>
 
-#ifdef NO_OFF_T
+#ifdef NEED_OFF_T
 typedef long off_t;
-#else  /* NO_OFF_T not defined */
+#else  /* NEED_OFF_T not defined */
 #include <sys/types.h>			/* off_t */
-#endif /* NO_OFF_T not defined */
+#endif /* NEED_OFF_T not defined */
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>			/* SEEK_xxx */
