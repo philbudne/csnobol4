@@ -1,20 +1,29 @@
 $Id$
 
-test osdep_open: VMS
+fix Win32 UDP read?
+
+put sources under CVS
+	add tag for 0.99.44
+	improve rcs2cvs;
+		move old files to Attic directories!!!
+	do CVS check out on branch??
+		move "make release" out to seperate script?
+			do a test build of checked out files???
+manual page:
+	mention files/functions available in snolib/ (mention README)
+
+
+porting.ms:
+	mention s4d58
+
+remove timing lists from dist?  Just on web pages?
 
 make timing output machine friendly??
 	output something like timing.44 entries!
 
-create Makefiles from file list?
-	snobol4 config program?
-	create dummy os_init(), osdep_open()?
-
 always send timing.out via e-mail?
 	(unless (.)timing.out.hostname exists?)
 	only if part of a real kit???
-
-run comdef on lib/*/*.c
-	macros.h, snotypes.h
 
 verify correctness of line.ref, include.ref
 
@@ -30,34 +39,12 @@ create csnobol4 home page (seperate sections for 0.99.4, 0.99.44, new);
 		Changes
 		History
 		porting.html
-		ports.doc.txt
-		load.doc.txt
-
-Install README in snolib
-
-do CVS check out on branch??
-	move "make release" out to seperate script?
-		do a test build of checked out files???
-
-change timing e-mail address to timing@snobol4.org??
-change mailing list name to users@snobol4.org, announce@snobol4.org??
-include advertizements about users (announcements?) mailing list???
-	INSTALL
-	README
-	End of Makefile(2.m4)
-
-put sources under CVS
-	improve rcs2cvs;
-		move old files to Attic directories!!!
-	put tsort on vendor branch?
-
-	mention files/functions available in snolib/ (mention README)
-	reference documents available on web (see next item)
-		http://burks.bton.ac.uk/burks/language/snobol/....
-		ftp://ftp.snobol4.com/spitman.pdf
+		timings.html		generate from timings file(s)
+		load.txt		(note alternate extension)
 
 test
 	VMS, DJGPP, Cygwin, MINGW
+	@HP testdrive & ICS
 	QNX (Fred?)
 
 packaging;
@@ -73,8 +60,10 @@ packaging;
 	release binary RPMs?
 
 	create debian package?
-	    http://www.debian.org/doc/FAQ/debian-faq-7.html
-	    ftp://ftp.debian.org/debian/doc/package-developer/programmer.ps.gz
+		http://www.debian.org/doc/FAQ/ch-pkg_basics.en.html
+		http://people.debian.org/~jaldhar/make_package1.html
+
+
 	create solaris package???
 
 have tests cleanup after themselves?  Add Makefile for "make clean"?
@@ -780,3 +769,8 @@ tweak maxmem up for AIX?
 
 implement tty image mode?
 	pass flags to tty_mode? change "cbreak" to enum cooked/cbreak/raw
+
+create Makefiles from file list?
+	snobol4 config program?
+	create dummy os_init(), osdep_open()?
+

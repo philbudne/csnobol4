@@ -2,6 +2,45 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+7/5/2003
+	README: update copyright dates, add logic.sno
+	INSTALL: update timing e-mail address, add SNOBOL4 listserv info URL
+	Makefile2.m4: add SNOLIB_FILES variable, add README to SNOLIB_FILES
+		update timing e-mail address
+	include/lib.h: add inet_close()
+	lib/io.c: always set TYPE_INET, always call inet_close()
+	lib/{bsd,vms,dummy}/inet.c, lib/bsd/inet6.c: add inet_close()
+	lib/win32/inet.c: create inet_file struct, inet_getc()
+		to try to handle UDP I/O.  inet_close() always called
+
+7/4/2003
+	COPYRIGHT: update year
+	Makefile: removed SMALL_SNO commands
+	INSTALL: update VMS and Win32 info, gcc/lp64 info
+	config/vms/descrip.mms: fix DECC4 support
+		add NEED_BCOPY,NEED_BZERO,SOCKLEN_INT,HAVE_UNIXIO_H
+	config/vms/config.h: add SOCKLEN_INT ifdef
+	lib/io.c: add unixio.h
+	config/win32/config.h lib/ansi/spcint.c lib/bsd/inet.c
+		lib/bsd/inet6.c lib/bsd/popen.c lib/djgpp/osinit.c
+		lib/{c99,generic,longlong}/intspc.c
+		lib/{dummy,hpux,next,unix98,win32}/load.c
+		lib/generic/{execute,popen}.c lib/init.c
+		lib/{posix,vms}/sys.c lib/{posix,vms,win32}/tty.c
+		lib/snolib/retstring.c lib/snolib/system.c
+		lib/vms/getredirect.c lib/vms/popen.c lib/vms/sys.c
+		include/{bindresvport,macros,snotypes,str}.h: ran comdef
+
+7/3/2003
+	configure: check netinet6/in6.h for HAVE_SOCKADDR_IN6
+		always set HAVE_SOCKADDR_IN6, for serv.c
+	lib/snolib/serv.c: set sin*.sin*_family fields
+	config/vms/descrip.mms: fix osopen source path
+		vms7.3 TCP needs bindresvport.obj
+	lib/vms/osopen.c: use str.h for strcmp
+	main.c: comdef fix (leave spaces)
+	include/vars.h: use HAVE_WINSOCK_H
+
 6/26/2003
 	configure: defend against __vfork, look for popen() shell
 
