@@ -39,8 +39,8 @@ of the following options;
 	--no-gcc
 		Eliminate gcc from consideration.
 	--opt=STRING
-		Supply C optimization flags (replaceing default "-O),
-		ie; -O2
+		Supply C optimization flags (replacing default "-O"),
+		for example; -O2
 
 Even if your system has not previously been tested (see doc/ports.doc)
 autoconf will make a guess. If the build does not succeed, you may
