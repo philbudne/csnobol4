@@ -3,6 +3,9 @@
 /*
  * Date: Tue, 31 May 94 08:26:10 EDT
  * From: Jerry Leichter <leichter@lrw.com>
+ *
+ * Jan 6, 1995: compile under DECC -phil
+ * Sept 24, 1997: save filenames for tty.c -phil
  */
 
 /*
@@ -30,6 +33,9 @@
 #ifndef W_OK
 #define W_OK 2
 #endif
+
+char *stdin_file = "SYS$INPUT";
+char *stdout_file = "SYS$OUTPUT";
 
 int
 getredirection(argc, argv)
@@ -62,7 +68,8 @@ char		**argv;
 	for (j = i = 1; i < argc; i++) {   /* Do all arguments	*/
 	    switch (*(ap = argv[i])) {
 	    case '<':			/* <file		*/
-		if (freopen(++ap, "r", stdin,"shr=put") == NULL) {
+		stdin_file = ++ap;
+		if (freopen(ap, "r", stdin,"shr=put") == NULL) {
 		    perror(ap);		/* Can't find file	*/
 		    exit(errno);	/* Is a fatal error	*/
 		}
@@ -79,7 +86,8 @@ char		**argv;
 		     * access(name, 2) is TRUE if we can write on
 		     * the specified file.
 		     */
-		    if (access(++ap, W_OK) == 0) {
+		    stdout_file = ++ap;
+		    if (access(ap, W_OK) == 0) {
 			if (freopen(ap, "a", stdout) != NULL)
 			    break;	/* Exit case statement	*/
 			perror(ap);	/* Error, can't append	*/
@@ -93,6 +101,7 @@ char		**argv;
 		 * "variable length, implied carriage return"
 		 * attributes. dup2() associates the file with stdout.
 		 */
+		stdout_file = ap;
 		if ((file = creat(ap, 0, "rat=cr", "rfm=var", "mrs=512"))
 			== -1
 		 || dup2(file, fileno(stdout)) == -1) {

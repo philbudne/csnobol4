@@ -7,7 +7,12 @@
  * VMS version.
  */
 
+/* for tty.c; */
+char *term_file = "SYS$COMMAND:";
+FILE *term_fd;
+
 FILE *
 term_input() {
-    return fopen("SYS$COMMAND:", "r");	/* this right? */
+    term_fd = fopen(term_file, "r");
+    return term_fd;
 }
