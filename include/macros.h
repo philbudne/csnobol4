@@ -88,7 +88,10 @@
 #define LEXEQ(A,B) (S_L(A) == S_L(B) && \
 		    (S_L(A) == 0 || \
 		     *S_SP(A) == *S_SP(B) && \
-		     (S_L(A) == 1 || bcmp(S_SP(A)+1,S_SP(B)+1,S_L(A)-1) == 0)))
+		     (S_L(A) == 1 || \
+		      S_SP(A)[1] == S_SP(B)[1] && \
+		      (S_L(A) == 2 || \
+		      (bcmp(S_SP(A)+2,S_SP(B)+2,S_L(A)-2) == 0)))))
 
 /* 11/4/97 - get length for string structure */
 #define X_GETLTH(A) (DESCR * (3 + ((S_L(A) - 1) / CPD + 1)))
