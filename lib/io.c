@@ -656,13 +656,13 @@ io_print( iokey, iob, sp )		/* STPRNT */
 	    cp = S_SP(sp);
 	} /* compiling */
 
-#ifndef NO_UNBUF_WRITE
+#ifndef NO_UNBUF_RW
 	if (fp->flags & FL_UNBUF) {
 	    if (write(fileno(f), cp, len) != len)
 		ret = FALSE;
 	}
 	else
-#endif /* NO_UNBUF_WRITE */
+#endif /* NO_UNBUF_RW */
 	if (fwrite( cp, 1, len, f ) != len)
 	    ret = FALSE;
     } /* have string */
@@ -671,12 +671,13 @@ io_print( iokey, iob, sp )		/* STPRNT */
 	    ret = FALSE;
     }
 
-#ifdef NO_UNBUF_WRITE
+#ifdef NO_UNBUF_RW
     if (fp->flags & FL_UNBUF) {
+	/* simulate unbuffered I/O */
 	if (fflush(f) == EOF)
 	    ret = FALSE;
     }
-#endif
+#endif /* NO_UNBUF_RW */
 
     D_A(iokey) = ret;
 } /* io_print */
@@ -757,11 +758,11 @@ io_read( dp, sp )			/* STREAD */
 			       fp->fname);
 	    else
 #endif /* TTY_READ_RAW defined */
-#ifndef NO_UNBUF_READ
+#ifndef NO_UNBUF_RW
 	    if (fp->flags & FL_UNBUF)
 		len = read(fileno(f), cp, recl);
 	    else
-#endif /* NO_UNBUF_READ not defined */
+#endif /* NO_UNBUF_RW not defined */
 		len = fread(cp, 1, recl, f);
 
 	    if (len > 0)
@@ -1283,8 +1284,7 @@ io_seek(dunit, doff, dwhence)
     if (f == NULL)
 	return FALSE;
 
-#if !(defined(NO_UNBUF_READ) && defined(NO_UNBUF_WRITE))
-#ifndef NO_UNBUF_LSEEK
+#ifndef NO_UNBUF_RW
     if (fp->flags & FL_UNBUF) {
 	off_t pos;
 
@@ -1297,8 +1297,7 @@ io_seek(dunit, doff, dwhence)
 	D_A(doff) = pos;		/* XXX truncation possible! */
     }
     else
-#endif /* NO_UNBUF_LSEEK */
-#endif /* some direct I/O allowed */
+#endif /* NO_UNBUF_RW */
     if (fseek(f, off, whence) == 0)
 	D_A(doff) = ftell(f);		/* XXX truncation possible! */
     else
