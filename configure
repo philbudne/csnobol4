@@ -819,6 +819,12 @@ if [ -f $INCDIR/sys/socket.h ]; then
 	    echo 'ADD_LDFLAGS([-lnsl])'		>> $CONFIG_M4
 	fi
     fi
+
+    if grep socklen_t $INCDIR/sys/socket.h >/dev/null 2>&1; then
+	true
+    else
+	echo '#define NEED_SOCKLEN_T'		>> $CONFIG_H
+    fi
 else
     echo 'no sockets; TCP not available' 1>&2
     echo 'INET_C=$(SRCDIR)lib/dummy/inet.c'	>> $CONFIG_M4
