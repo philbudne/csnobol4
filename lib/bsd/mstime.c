@@ -27,7 +27,7 @@ mstime() {
 #ifdef GETRUSAGE_BUG
     /*
      * Ensure we'll never give negative deltas due to "statistical sampling"
-     * in BSD44 systems (problem seen with NetBSD, OpenBSD and BSD/OS.
+     * in BSD44 systems (problem seen with NetBSD, OpenBSD and BSD/OS).
      *
      * Early in a process lifetime the method used to calculate how
      * much of the current tick should be attributed to user or system
