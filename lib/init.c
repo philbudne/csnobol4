@@ -19,7 +19,7 @@
 extern char *dynamic();
 extern char *malloc();
 
-#define NDYNAMIC 25000			/* default dynamic region size */
+#define NDYNAMIC (64*1024)		/* default dynamic region size */
 
 int ndynamic = NDYNAMIC * DESCR;
 int pmstack = SPDLDR;
