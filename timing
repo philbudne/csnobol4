@@ -9,7 +9,7 @@ if [ "$*" ]; then
 	shift
 	ARGS="$*"
 else
-	SNOBOL=xsnobol4
+	SNOBOL=./xsnobol4
 fi
 
 echo 'Date:'
@@ -36,11 +36,11 @@ if [ "$UNAME" ]; then
 	*BSD*)
 		if [ -x /usr/sbin/sysctl ]; then
 			echo /usr/sbin/sysctl hw:
-			/usr/sbin/sysctl hw
+			/usr/sbin/sysctl hw 2>/dev/null
 			echo ''
 		elif [ -x /sbin/sysctl ]; then
 			echo /sbin/sysctl hw:
-			/sbin/sysctl hw
+			/sbin/sysctl hw 2>/dev/null
 			echo ''
 		fi
 		;;
