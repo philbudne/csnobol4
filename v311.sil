@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.45  1996/09/13  03:45:23  phil
+* [PLB36] Add TERMINAL I/O variable; flushed PUNCH
+*
 * Revision 1.44  1996/09/12  00:46:52  phil
 * fix sort; edit [PLB31] added one MULTC too many
 *
@@ -1453,7 +1456,7 @@ ELEMN4 ACOMP   XCL,YCL,ELEMNR,ELEMNR
 ELEARY SHORTN  XSP,1		   Remove left bracket
        RCALL   XPTR,GENVUP,(XSPPTR)
 *				   Generate variable for array or table
-*				   				[PLB17,27]
+*								[PLB17,27]
        RCALL   ELEXND,BLOCK,CNDSIZ Allocate block for tree node
        PUTDC   ELEXND,CODE,XPTR	   Insert ITEM function (?)
 ELEAR2 RCALL   ,ELEARG,ITEMCL,RTN1 Process list for ITEM function [PLB32]
@@ -5249,6 +5252,40 @@ IDENT  PROC    ,		   IDENT(X,Y)
 *_
 *---------------------------------------------------------------------*
 *
+* New [PLB37] copied from LGT
+*      LEQ(X,Y)
+*
+LEQ    PROC    ,		   LEQ(X,Y)
+       RCALL   XPTR,VARVAL,,FAIL   Evaluate first argument
+       PUSH    XPTR		   Save first argument
+       RCALL   YPTR,VARVAL,,FAIL   Evaluate second argument
+       POP     XPTR		   Restore first argument
+       AEQLC   XPTR,0,,FAIL	   Null is not greater than anything
+       AEQLC   YPTR,0,,RETNUL	   Similarly for second argument
+       LOCSP   XSP,XPTR		   Get specifier to first argument
+       LOCSP   YSP,YPTR		   Get specifier to second argument
+       LEXCMP  XSP,YSP,FAIL,RETNUL,FAIL
+*				   Compare lexically
+*_
+*---------------------------------------------------------------------*
+*
+* New [PLB37] copied from LGT
+*      LGE(X,Y)
+*
+LGE    PROC    ,		   LGE(X,Y)
+       RCALL   XPTR,VARVAL,,FAIL   Evaluate first argument
+       PUSH    XPTR		   Save first argument
+       RCALL   YPTR,VARVAL,,FAIL   Evaluate second argument
+       POP     XPTR		   Restore first argument
+       AEQLC   XPTR,0,,FAIL	   Null is not greater than anything
+       AEQLC   YPTR,0,,RETNUL	   Similarly for second argument
+       LOCSP   XSP,XPTR		   Get specifier to first argument
+       LOCSP   YSP,YPTR		   Get specifier to second argument
+       LEXCMP  XSP,YSP,RETNUL,RETNUL,FAIL
+*				   Compare lexically
+*_
+*---------------------------------------------------------------------*
+*
 *      LGT(X,Y)
 *
 LGT    PROC    ,		   LGT(X,Y)
@@ -5261,6 +5298,57 @@ LGT    PROC    ,		   LGT(X,Y)
        LOCSP   XSP,XPTR		   Get specifier to first argument
        LOCSP   YSP,YPTR		   Get specifier to second argument
        LEXCMP  XSP,YSP,RETNUL,FAIL,FAIL
+*				   Compare lexically
+*_
+*---------------------------------------------------------------------*
+*
+* New [PLB37] copied from LGT
+*      LLE(X,Y)
+*
+LLE    PROC    ,		   LLE(X,Y)
+       RCALL   XPTR,VARVAL,,FAIL   Evaluate first argument
+       PUSH    XPTR		   Save first argument
+       RCALL   YPTR,VARVAL,,FAIL   Evaluate second argument
+       POP     XPTR		   Restore first argument
+       AEQLC   XPTR,0,,FAIL	   Null is not greater than anything
+       AEQLC   YPTR,0,,RETNUL	   Similarly for second argument
+       LOCSP   XSP,XPTR		   Get specifier to first argument
+       LOCSP   YSP,YPTR		   Get specifier to second argument
+       LEXCMP  XSP,YSP,FAIL,RETNUL,RETNUL
+*				   Compare lexically
+*_
+*---------------------------------------------------------------------*
+*
+* New [PLB37] copied from LGT
+*      LLT(X,Y)
+*
+LLT    PROC    ,		   LLT(X,Y)
+       RCALL   XPTR,VARVAL,,FAIL   Evaluate first argument
+       PUSH    XPTR		   Save first argument
+       RCALL   YPTR,VARVAL,,FAIL   Evaluate second argument
+       POP     XPTR		   Restore first argument
+       AEQLC   XPTR,0,,FAIL	   Null is not greater than anything
+       AEQLC   YPTR,0,,RETNUL	   Similarly for second argument
+       LOCSP   XSP,XPTR		   Get specifier to first argument
+       LOCSP   YSP,YPTR		   Get specifier to second argument
+       LEXCMP  XSP,YSP,FAIL,FAIL,RETNUL
+*				   Compare lexically
+*_
+*---------------------------------------------------------------------*
+*
+* New [PLB37] copied from LGT
+*      LNE(X,Y)
+*
+LNE    PROC    ,		   LNE(X,Y)
+       RCALL   XPTR,VARVAL,,FAIL   Evaluate first argument
+       PUSH    XPTR		   Save first argument
+       RCALL   YPTR,VARVAL,,FAIL   Evaluate second argument
+       POP     XPTR		   Restore first argument
+       AEQLC   XPTR,0,,FAIL	   Null is not greater than anything
+       AEQLC   YPTR,0,,RETNUL	   Similarly for second argument
+       LOCSP   XSP,XPTR		   Get specifier to first argument
+       LOCSP   YSP,YPTR		   Get specifier to second argument
+       LEXCMP  XSP,YSP,RETNUL,FAIL,RETNUL
 *				   Compare lexically
 *_
 *---------------------------------------------------------------------*
@@ -5899,6 +5987,22 @@ RPLACE PROC    ,		   REPLACE(S1,S2,S3)
 *_
 *---------------------------------------------------------------------*
 *
+* New [PLB37] from Minnesota SNOBOL4
+*      REVERSE(S)
+*
+REVERS PROC    ,		   REVERSE(S)
+       RCALL   XPTR,VARVAL,,FAIL   Get 1st arg=string
+       LOCSP   XSP,XPTR		   Source string
+       GETLG   ZPTR,XSP		   Source string length
+       ACOMPC  ZPTR,0,,RETNUL	   Check for null string
+       MOVA    XCL,ZPTR		   Copy length (for GENVSZ)
+       RCALL   ZPTR,CONVAR,XCL	   Allocate space for string
+       LOCSP   TSP,ZPTR		   Get specifier
+       XCALLC  reverse,(TSP,XSP)   Do function
+       BRANCH  GENVSZ		   Return the string
+*_
+*---------------------------------------------------------------------*
+*
 *      SIZE(S)
 *
 SIZE   PROC    ,		   SIZE(S)
@@ -5907,6 +6011,33 @@ SIZE   PROC    ,		   SIZE(S)
        GETLG   ZPTR,XSP		   Get length
        SETVC   ZPTR,I		   Insert INTEGER data type
        BRANCH  RTZPTR		   Return length
+*_
+*---------------------------------------------------------------------*
+*
+* New [PLB37] from Minnesota SNOBOL4, modified to SPITBOL specs
+*      SUBSTR(S,P,L)
+*
+SUBSTR PROC    ,		   SUBSTR(S,P,L)
+       RCALL   XPTR,VARVAL,,FAIL   Get 1st arg=string
+       PUSH    XPTR		   Save string
+       RCALL   YPTR,INTVAL,,FAIL   Get 2nd arg=integer position
+       PUSH    YPTR		   Save position
+       RCALL   ZPTR,INTVAL,,FAIL   Get 3rd arg=integer length
+       POP     (YPTR,XPTR)	   Restore position, string
+       ACOMPC  YPTR,1,,,FAIL	   Make sure offset is >=1	[PLB37]
+       DECRA   YPTR,1		   Make zero-based		[PLB37]
+       LOCSP   XSP,XPTR		   Source string
+       GETLG   WPTR,XSP		   Source string length
+       SUBTRT  WPTR,WPTR,YPTR	   To see if substring too big
+       ACOMP   ZPTR,WPTR,FAIL	   Fail if substr too long	[PLB37]
+SSLNOK ACOMPC  ZPTR,0,SSNOFX,,FAIL Check length			[PLB37]
+       MOVA    ZPTR,WPTR	   Remaining length if = zero
+SSNOFX ACOMPC  ZPTR,0,,RETNUL,FAIL NULL string?
+       MOVA    XCL,ZPTR		   Copy length (for GENVSZ)
+       RCALL   ZPTR,CONVAR,XCL	   Allocate space for string
+       LOCSP   TSP,ZPTR		   Get specifier
+       XCALLC  substr,(TSP,XSP,YPTR)
+       BRANCH  GENVSZ		   Return the string
 *_
 *---------------------------------------------------------------------*
 *
@@ -6356,6 +6487,7 @@ LLIST  DESCR   1,0,0		   Left listing switch
 NAMGCL DESCR   0,0,0		   Naming switch for SJSR
 NERRCL DESCR   1,0,0		   NOERROR switch		[PLB9]
 SCERCL DESCR   0,0,0		   Error branch switch
+SPITCL DESCR   1,0,I		   SPITBOL features (-PLUSOPS)	[PLB32][PLB33]
 STATCL DESCR   0,0,0		   Display statistics		[PLB12][PLB33]
 *
 *      Constants
@@ -6566,7 +6698,6 @@ ERRBUF BUFFER  CARDSZ+STNOSZ-SEQSIZ+1
 INBUF  BUFFER  CARDSZ+DSTSZ+1	   Card input buffer
 REALBF BUFFER  36		   Buffer for real number conversion
 ICLBLK DESCR   ICLBLK,TTL+MARK,ICLEND-ICLBLK-DESCR
-SPITCL DESCR   1,0,I		   SPITBOL features (-PLUSIOS)	[PLB32][PLB33]
 *
 *      Pointers to Attribute Lists
 *
@@ -6803,8 +6934,18 @@ LEFN   DESCR   LE,0,2
        DESCR   0,0,0
 LENFN  DESCR   LEN,0,1
        DESCR   0,0,0
+LEQFN  DESCR   LEQ,0,2						[PLB37]
+       DESCR   0,0,0						[PLB37]
+LGEFN  DESCR   LGE,0,2						[PLB37]
+       DESCR   0,0,0						[PLB37]
 LGTFN  DESCR   LGT,0,2
        DESCR   0,0,0
+LLEFN  DESCR   LLE,0,2						[PLB37]
+       DESCR   0,0,0						[PLB37]
+LLTFN  DESCR   LLT,0,2						[PLB37]
+       DESCR   0,0,0						[PLB37]
+LNEFN  DESCR   LNE,0,2						[PLB37]
+       DESCR   0,0,0						[PLB37]
 LOADFN DESCR   LOAD,0,2
        DESCR   0,0,0
 LOCFN  DESCR   LOCAL,0,2
@@ -6831,6 +6972,8 @@ RPLAFN DESCR   RPLACE,0,3
        DESCR   0,0,0
 READFN DESCR   READ,0,4						[PLB4]
        DESCR   0,0,0
+REVRFN DESCR   REVERS,0,1					[PLB37]
+       DESCR   0,0,0						[PLB37]
 REWNFN DESCR   REWIND,0,1
        DESCR   0,0,0
 RPOSFN DESCR   RPOS,0,1
@@ -6845,6 +6988,8 @@ SIZEFN DESCR   SIZE,0,1
        DESCR   0,0,0
 SORTFN DESCR   SORT,FNC,1					[PLB31]
        DESCR   0,0,0						[PLB31]
+SSTRFN DESCR   SUBSTR,0,3					[PLB37]
+       DESCR   0,0,0						[PLB37]
 SPANFN DESCR   SPAN,0,1
        DESCR   0,0,0
 STPTFN DESCR   STOPTR,0,2
@@ -6948,8 +7093,18 @@ FNLIST DESCR   FNLIST,TTL+MARK,FNCPLE-FNLIST-DESCR
        DESCR   LENSP,0,0
        DESCR   LEFN,FNC,0	   LE(I1,I2)
        DESCR   LESP,0,0
+       DESCR   LEQFN,FNC,0	   LEQ(S1,S2)			[PLB37]
+       DESCR   LEQSP,0,0					[PLB37]
+       DESCR   LGEFN,FNC,0	   LGE(S1,S2)			[PLB37]
+       DESCR   LGESP,0,0					[PLB37]
        DESCR   LGTFN,FNC,0	   LGT(S1,S2)
        DESCR   LGTSP,0,0
+       DESCR   LLEFN,FNC,0	   LLE(S1,S2)			[PLB37]
+       DESCR   LLESP,0,0					[PLB37]
+       DESCR   LLTFN,FNC,0	   LLT(S1,S2)			[PLB37]
+       DESCR   LLTSP,0,0					[PLB37]
+       DESCR   LNEFN,FNC,0	   LNE(S1,S2)			[PLB37]
+       DESCR   LNESP,0,0					[PLB37]
        DESCR   LOADFN,FNC,0	   LOAD(P)
        DESCR   LOADSP,0,0
        DESCR   LOCFN,FNC,0	   LOCAL(F,N)
@@ -6972,6 +7127,8 @@ FNLIST DESCR   FNLIST,TTL+MARK,FNCPLE-FNLIST-DESCR
        DESCR   PRTSP,0,0
        DESCR   REMDFN,FNC,0	   REMDR(N,M)
        DESCR   REMDSP,0,0
+       DESCR   REVRFN,FNC,0	   REVERSE(S)			[PLB37]
+       DESCR   REVRSP,0,0					[PLB37]
        DESCR   REWNFN,FNC,0	   REWIND(N)
        DESCR   REWNSP,0,0
        DESCR   RPLAFN,FNC,0	   REPLACE(S,CS1,CS2)
@@ -6992,6 +7149,8 @@ FNLIST DESCR   FNLIST,TTL+MARK,FNCPLE-FNLIST-DESCR
        DESCR   SPANSP,0,0
        DESCR   STPTFN,FNC,0	   STOPTR(V,R)
        DESCR   STPTSP,0,0
+       DESCR   SSTRFN,FNC,0	   SUBSTR(S,P,L)		[PLB37]
+       DESCR   SSTRSP,0,0					[PLB37]
        DESCR   TABFN,FNC,0	   TAB(N)
        DESCR   TABSP,0,0
        DESCR   ASSCFN,FNC,0	   TABLE(N,M)
@@ -7212,7 +7371,12 @@ LSTNSP STRING  'LASTNO'
 LCNMSP STRING  'LCASE'						[PLB18]
 LENSP  STRING  'LEN'
 LESP   STRING  'LE'
+LEQSP  STRING  'LEQ'						[PLB37]
+LGESP  STRING  'LGE'						[PLB37]
 LGTSP  STRING  'LGT'
+LLESP  STRING  'LLE'						[PLB37]
+LLTSP  STRING  'LLT'						[PLB37]
+LNESP  STRING  'LNE'						[PLB37]
 LOADSP STRING  'LOAD'
 LOCSP  STRING  'LOCAL'
 LPADSP STRING  'LPAD'						[PLB31]
@@ -7232,6 +7396,7 @@ RLSP   STRING  'REAL'
 REMSP  STRING  'REM'
 REMDSP STRING  'REMDR'
 RETSP  STRING  'RETURN'
+REVRSP STRING  'REVERSE'					[PLB37]
 REWNSP STRING  'REWIND'
 RPLCSP STRING  'REPLACE'
 RPOSSP STRING  'RPOS'
@@ -7240,6 +7405,7 @@ RSRTSP STRING  'RSORT'						[PLB31]
 RTABSP STRING  'RTAB'
 RTYPSP STRING  'RTNTYPE'
 SIZESP STRING  'SIZE'
+SSTRSP STRING  'SUBSTR'						[PLB37]
 SORTSP STRING  'SORT'						[PLB31]
 SPANSP STRING  'SPAN'
 STCTSP STRING  'STCOUNT'
