@@ -2,6 +2,7 @@
 
 #include <varargs.h>
 #include <stdio.h>
+#include <ctype.h>
 #ifdef NO_OFF_T
 typedef long off_t;
 #else  /* NO_OFF_T not defined */

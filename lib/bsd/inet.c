@@ -3,6 +3,7 @@
 /* Berkeley sockets inet interface */
 
 #include <stdio.h>
+#include <ctype.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
