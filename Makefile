@@ -25,7 +25,7 @@ SMALL_SNO=snobol4 -b
 TSORT=	tsort
 
 # NOTE: run from "subr" directory
-#TSORT=	snobol4 -b ../tsort.sno
+#TSORT=	snobol4 -b ../tsort.sno <
 
 ################
 # machine generated files;
