@@ -21,6 +21,7 @@ extern void *malloc();
 #include "equ.h"			/* SIL equ's */
 #include "res.h"			/* for data.h */
 #include "data.h"			/* SIL data */
+#include "proc.h"			/* for SYSCUT() */
 
 /* return type of signal handler functions */
 #ifndef SIGFUNC_T
