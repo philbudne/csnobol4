@@ -111,11 +111,11 @@ snobol4.c proc.h: procs genc.sno global.procs v311.sil
 
 # only change syn.h if it has changed from last run!
 
-syn.c syn.h.new: syntax.tbl gensyn.sno
+syn.c syn.h2: syntax.tbl gensyn.sno
 	$(SNO) gensyn.sno
 
-syn.h:	syn.h.new
-	cmp syn.h syn.h.new || cp syn.h.new syn.h
+syn.h:	syn.h2
+	cmp syn.h syn.h2 || cp syn.h2 syn.h
 
 ################
 
@@ -223,7 +223,7 @@ vfprintf.o: $(VFPRINTF_C)
 # housekeeping
 
 # generated files to include in kit
-GENERATED=syn.c syn.h syn.h.new data.c data.h proc.h equ.h \
+GENERATED=syn.c syn.h syn.h2 data.c data.h proc.h equ.h \
 	snobol4.c data_init.h
 
 # disposables

@@ -123,11 +123,11 @@ EACTION
 **************** spitbol I/O
 	INPUT(.INPUT,1,"syntax.tbl")			:F(IOERR)
 	OUTPUT(.SYN.C,10,"syn.c")
-	OUTPUT(.SYN.H,11,"syn.h.new")			:(EIO)
+	OUTPUT(.SYN.H,11,"syn.h2")			:(EIO)
 **************** mainbol I/O
 MB1	INPUT(.INPUT,1,,"syntax.tbl")			:F(IOERR)
 	OUTPUT(.SYN.C,10,,"syn.c")
-	OUTPUT(.SYN.H,11,,"syn.h.new")			:(EIO)
+	OUTPUT(.SYN.H,11,,"syn.h2")			:(EIO)
 ****************
 IOERR	OUTPUT = "COULD NOT OPEN INPUT FILE"		:(END)
 
