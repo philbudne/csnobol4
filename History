@@ -3,7 +3,6 @@ $Id$
 MAINBOL for Un*x history (and personal SNOBOL history);
 
 5/29/94
-	Only convert NUL to space on output when compiler running
 	Finished &LCASE &UCASE
 	Fixed -CASE n
 
