@@ -3,10 +3,17 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
 9/18/96
-	test on SunOS 5.4
-	lib/auxil/getopt.o: fix ERR() for SUNpro
-	configure: fixed echo to stderr
-	doc/ports.doc: updated
+	lib/auxil/getopt.c: fix ERR() for SUNpro (Sol2 fix)
+	configure: fixed echo to stderr (Sol2 fix)
+	doc/ports.doc: updated (new section for 0.98+)
+	gendata.sno, genc.sno, gendep.sno: use TERMINAL, flush STDERR
+		read SIL source from stdin
+	Makefile2.m4: add SIL=, gendata.sno, genc.sno, gendep.sno read stdin
+	timing: genc.sno takes SIL from stdin
+	v311.sil: add REVERSE(), SUBSTR(), LEQ(), LGE(), LLE(), LLT(), LNE()
+	globals: add REVERSE, SUBSTR, LEQ, LGE, LLE, LLT, LNE
+	lib/str.c: support for REVERSE(), SUBSTR()
+	test/tests.in: removed punch, added substr, lexcmp, space, space2
 
 9/17/96
 	lib/tree.c: fixed INSERT (from SNOBOL4+)
@@ -14,7 +21,7 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 	added test/ops.sno
 	now runs all GNAT SPITBOL programs
 	version.c: use VERS/DATE, changed name to C-MAINBOL
-	Makefile2.m4: Added VERS/VDATE (for version.c)
+	Makefile2.m4: Added VERS/VDATE (for version.c), use in make tar
 		upped version to 0.98.1
 
 9/12/96
