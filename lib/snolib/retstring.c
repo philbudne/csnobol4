@@ -14,6 +14,7 @@ retstring( retval, cp, len )
     static struct spec sp[1];
     static char *retbuf;
     static int retbuflen;
+    extern char *malloc();
 
     if (len > retbuflen) {
 	if (retbuf)
