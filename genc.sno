@@ -14,14 +14,20 @@
 *	kill case folding, for speed
 -CASE 0
 
+*	set STLIMIT so STCOUNT is kept!
+	&STLIMIT = 500000
+
+*	set TRIM, for SNOBOL4+
+	&TRIM = 1
+
 *	identify if mainbol or spitbol
 	MAINBOL = IDENT(.NAME,"NAME") 1
 
 *	faster matching (match only at POS(0))
 	&ANCHOR = 1
 
-*	~sigh~
-	SILPATH = 'sil'
+*	still used in #line, error messages
+	SILPATH = 'v311.sil'
 
 ****************************************************************
 *	initialization
