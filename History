@@ -2,7 +2,11 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
-1/17/93
+1/18/93
+	wrote porting.doc, put all doc files under RCS
+	added getopt to Makefile2.cpp, generic.h
+
+1/16/93
 	set exit code on fatal errors (including when
 	execution aborted due to -NOERRORS)
 
