@@ -61,7 +61,16 @@ default value is '-lm'.
 OPT
 .PP
 Optimization, debug, and profiling flags to pass to the C compiler.
-The default is "-O -g".
+The default is "-O -finline-functions".
+
+.NH 2
+SNOBOL4
+.PP
+Name of the main source file to make and use.  Should be either
+isnobol4 (the default), which has functions reordered so that gcc can
+inline functions more effectively. If you are not using gcc, or not
+using the inline-functions option, you can use the value "snobol4" and
+avoid the function reordering steps in the Makefile.
 
 .NH 2
 CONFIG_CFLAGS
