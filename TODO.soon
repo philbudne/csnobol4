@@ -1,10 +1,24 @@
 $Id$
 
 use snohandle_t's in */load.c!!!
+	move common code out???
+
+	create libtool/load.c??
+		use -lltdl
+
+Test COM
+	InternetExploder??
+
+Test w/ non-libc gdbm??
+
+Test STCL, NDBM on Cygwin!
 
 cygwin:
 	cleanup confNNN.exe
 	"make clean" rm *.exe?
+
+Release 1.1;
+	update History, version.c, README, tag it
 
 win32;
 	link against msvcXX.dll?
@@ -17,11 +31,9 @@ Oversize integer constants not detected on all systems!
 
 Green Book URL(!!) in snobol4.1
 
-put sources under CVS
-	name repository csnobol4?
-	do CVS check out on branch??
-		move "make release" out to seperate script?
-			do a test build of checked out files???
+do CVS check out on branch??
+	move "make release" out to seperate script?
+		do a test build of checked out files???
 
 make timing output machine friendly??
 	output something like timing.44 entries!
