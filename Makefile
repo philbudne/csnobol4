@@ -212,7 +212,9 @@ VERS=`./pv`
 DIR=snobol4-$(VERS)
 KIT=snobol4-$(VERS).tar.$(Z)
 
-ANONCVSROOT=':pserver:anonymous@cvs.ultimate.com:/home/cvs'
+# use CVS1.11 password feature;
+ANONCVSROOT=':pserver:anonymous:anonymous@cvs.snobol4.org:/home/cvs'
+#CVSBRANCH=-rBR_V1_0
 
 # NOTE! tmp directory subterfuge only necessary
 # because CVS module has same name as executable!!
@@ -221,8 +223,7 @@ MODULE=snobol4
 tar:	snobol4 pv
 	rm -rf tmp
 	mkdir tmp
-	cvs -d $(ANONCVSROOT) login
-	cd tmp; cvs -d $(ANONCVSROOT) co $(MODULE)
+	cd tmp; cvs -d $(ANONCVSROOT) co $(MODULE) $(CVSBRANCH)
 	mv tmp/$(MODULE) tmp/$(DIR)
 	cd tmp/$(DIR); make generated
 	rm tmp/$(DIR)/00README.CVS
