@@ -115,8 +115,7 @@ Continuation line:	+\0.
 Both brackets ([]) and angle-brackets (<>) may be used to subscript
 arrays and tables.  The
 .B TAB
-(ASCII 9) character is accepted as whitespace, however the compiler
-does not expand in listings and error messages.  Note that the use of
+(ASCII 9) character is accepted as whitespace.  Note that the use of
 the pound sign for comments allows use of the shell interpreter
 sequence at the top of a file (ie; "#!/usr/local/bin/snobol4 -b").
 Underscore (_) and period (.) are legal within identifiers and labels.
@@ -544,12 +543,4 @@ I/O retains some record oriented flavor.
 .br
 I/O is still tied to unit numbers.
 .br
-Compiler error messages refer to listing line number (not source file line).
-.br
-Listings don't deal well with
-.B TAB
-characters.
-.br
 Dynamic storage cannot be expanded after startup.
-.br
-Listing lines are space padded to 132 characters per line.
