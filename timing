@@ -49,7 +49,7 @@ LNFILES='../xsnobol4 ../procs ../globals ../v311.sil ../genc.sno ../snobol4.c'
 	ln $LNFILES . || ln -s $LNFILES .
 	
 # NOTE! 2>&1 *BEFORE* >x
-	time ./xsnobol4 -s genc.sno 2>&1 >x
+	time ./xsnobol4 -s genc.sno < v311.sil 2>&1 >x
 	echo ==== diff
 	diff snobol4.c x
 
