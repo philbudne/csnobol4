@@ -564,17 +564,17 @@ The
 .B SERV_LISTEN()
 function makes SNOBOL4 into a network server process, and takes three
 STRING arguments: FAMILY, TYPE, SERVICE.  FAMILY must be either "inet"
-for an IP v4 socket, or "unix" for a local ("unix domain") socket.
-The second argument, TYPE must be "stream", and the third argument,
-SERVICE must be a port number or service name (for an "inet" socket),
-or a pathname (for a "unix" socket).  SERV_LISTEN() listens for
-incomming requests, accepts them, then "forks" a child process and
-returns an integer file descriptor which can be opened for
-bidirectional I/O using a "/dev/fd/n" magic pathname.  The original
-("parent") process never returns from the SERV_LISTEN() call.  This
-function is only available on systems with the "fork" system call,
-which makes a child process which is an identical copy of the parent
-process.
+for an Internet Protocol v4 socket, "inet6" for an Internet Protocol
+v6 socket, or "unix" for a local ("unix domain") socket.  The second
+argument, TYPE must be "stream", and the third argument, SERVICE must
+be a port number or service name (for an internet socket), or a
+pathname (for a "unix" socket).  SERV_LISTEN() listens for incomming
+requests, accepts them, then "forks" a child process and returns an
+integer file descriptor which can be opened for bidirectional I/O
+using a "/dev/fd/n" magic pathname.  The original ("parent") process
+never returns from the SERV_LISTEN() call.  This function is only
+available on systems with the "fork" system call, which makes a child
+process which is an identical copy of the parent process.
 .TP
 .B SET()
 .br
