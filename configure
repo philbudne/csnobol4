@@ -821,7 +821,7 @@ if [ -f $INCDIR/sys/socket.h ]; then
 	    echo '#define SOCKLEN_T int'	>> $CONFIG_H
 	fi
 	echo 'ADD_OBJS([bindresvport.o])'	>> $CONFIG_M4
-	echo 'ADD_SRCS([$(BINDRESVPORT)])'	>> $CONFIG_M4
+	echo 'ADD_SRCS([$(BINDRESVPORT_C)])'	>> $CONFIG_M4
     fi
 
     # add network libraries if needed
