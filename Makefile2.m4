@@ -195,7 +195,6 @@ xsnobol4: $(OBJS)
 	rm -f build.c
 	echo '/* MACHINE GENERATED.  EDITING IS FUTILE */'	> build.c
 	echo 'const char build_files[] = "'$(SRCS)'";'		>> build.c
-	echo 'const char build_lib[] = "'"$(SNOLIB_DIR)"'";'	>> build.c
 	echo 'const char build_date[] = "'`date`'";'		>> build.c
 	echo 'const char build_dir[] = "'`pwd`'";'		>> build.c
 	$(CC) $(CFLAGS) -c build.c
@@ -425,7 +424,7 @@ getstring.o: $(GETSTRING_C)
 	$(CC) $(CFLAGS) -c $(GETSTRING_C)
 
 host.o: $(HOST_C)
-	$(CC) $(CFLAGS) -c $(HOST_C)
+	$(CC) $(CFLAGS) $(SNOLIB_DEFINES) -c $(HOST_C)
 
 log.o: $(LOG_C)
 	$(CC) $(CFLAGS) -c $(LOG_C)
