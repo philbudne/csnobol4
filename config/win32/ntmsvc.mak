@@ -3,7 +3,7 @@
 # nmake file for VC++ 5.0 on WinNT 4.0 by P. Budne 2/4/1998
 # from batch file by David Feustel
 
-# tested 12/2003 w/ Visual Studio .NET 2003 (VC71?)
+# tested 12/2003 w/ Visual Studio .NET 2003 (VC71)
 
 # XXX use to define SNOLIB_DIR??
 DEST=\snobol4
@@ -15,9 +15,6 @@ CC=cl
 # -Ox max opt (for space)
 OPT=-O2
 
-# XXX try enabling bitfields? (comment out next line)
-NO_BITFIELDS=-DNO_BITFIELDS
-
 # can also use msdos version (less friendly in multitasking env)
 TTY_C=$(SRCDIR)lib\win32\tty.c
 
@@ -28,7 +25,7 @@ INET_LIBS=wsock32.lib
 
 CFLAGS=	-c $(OPT) \
 	-I$(SRCDIR)config\win32 -I$(SRCDIR)include -I$(SRCDIR). \
-	-DHAVE_CONFIG_H $(NO_BITFIELDS) $(INET_DEFS)
+	-DHAVE_CONFIG_H $(INET_DEFS)
 
 OBJ=	isnobol4.obj data.obj data_init.obj main.obj syn.obj \
 	version.obj bal.obj date.obj dump.obj endex.obj hash.obj \
