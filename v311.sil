@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.37  1996/08/20  04:12:59  phil
+* [PLB29] added real VARVUP, VPXPTR (Thanks to Mark Emmer)
+*
 * Revision 1.36  1996/08/08  03:38:01  phil
 * [PLB28] changes from 7/28/95!!
 * VARVUP (copy of VARVAL for now), and calls to it
@@ -1959,7 +1962,7 @@ VARVC  RCALL   XPTR,INVOKE,(XPTR),(FAIL,VARV1,VARV2)
 *_
 *---------------------------------------------------------------------*
 *
-* New [PLB28][PLB29]
+* New [PLB28,29]
 *
 *      Evaluation of argument as upper case string if case folding.
 *      Just like VARVAL, returns by exit 2.  Source string is not
@@ -1971,7 +1974,8 @@ VARVC  RCALL   XPTR,INVOKE,(XPTR),(FAIL,VARV1,VARV2)
 *
 VARVUP PROC    VARVAL
        RCALL   ,VARVAL,,FAIL	   Get string ptr to XPTR
-       BRANCH  VPXPTR
+       AEQLC   CASECL,0,VPXPTR,RTXNAM
+*				   [PLB30] Return name
 *_
 *
 * New [PLB29]
@@ -1979,7 +1983,6 @@ VARVUP PROC    VARVAL
 * here from IND, VARVUP to convert XPTR to upper case
 *
 VPXPTR PROC    VARVAL
-       AEQLC   CASECL,0,,RTXNAM	   Just return if not case folding
        LOCSP   SPECR1,XPTR	   Get specifier to string
        LEQLC   SPECR1,0,,RTXNAM	   Avoid null string
        GETLG   AXPTR,SPECR1	   Get string length
@@ -3982,7 +3985,8 @@ FIELD1 MOVV    DT1CL,XPTR	   Set up data type
        GETDC   ZCL,ZCL,2*DESCR	   Get offset
        SUM     XPTR,XPTR,ZCL	   Compute field position
        SETVC   XPTR,N		   Insert NAME data type
-       BRANCH  VPXPTR		   [PLB29] Return name
+       AEQLC   CASECL,0,VPXPTR,RTXNAM
+*				   [PLB30] Return name
 *_
 *---------------------------------------------------------------------*
        TITLE   'Input and Output'
@@ -4594,8 +4598,10 @@ IND    PROC    ,		   $X
        VEQLC   XPTR,I,,GENVIX	   Convert INTEGER
        VEQLC   XPTR,K,INTR1,RTXNAM KEYWORD is like NAME
 *_
-INDV   AEQLC   XPTR,0,VPXPTR,NONAME
+INDV   AEQLC   XPTR,0,,NONAME
 *				   [PLB29] Be sure string is not null
+       AEQLC   CASECL,0,VPXPTR,RTXNAM
+*				   [PLB30] Return name
 *_
 *---------------------------------------------------------------------*
 *
