@@ -261,11 +261,24 @@ if [ "$FORCEGCC" -a ! "$GCCPATH" ]; then
     exit 1
 fi
 
+# nearly generic gcc3 option for LP64
+GCC64=-m64
+
 # detect architectures where LP64 is the default.
 # XXX compile a test program (check for alignment as well)??
-case "$MACHINE" in
-alpha|Alpha|ia64|IA64|x86_64)
+#	only we don't know which compiler we're using yet!!
+case "${MACHINE}:${OS}" in
+ia64:HP-UX)
+    # default on HP-UX/ia64 is ILP32!
+
+    # different option to get LP64!
+    GCC64=-mlp64
+    ;;
+alpha:*|x86_64:*|ia64:*)
+    # default is LP64
     LP64=true
+
+    # only need this if gcc might be version 2
     LP64_NATIVE=true
     ;;
 esac
@@ -288,7 +301,7 @@ MORV="${MACHINE}:${OS}:${OSREL}:${OSVERS}"
 
 # library support, C compiler choice
 case "$MORV" in
-9000/[678]??:HP-UX:*:*|ia64:HP-UX:*:*)
+9000/[678]??:HP-UX:*:*)
     # dlfcn.h present on hpux 11 systems,
     # but no library on 32-bit systems
     # (this will be reset below for 64-bit compilation)
@@ -314,6 +327,40 @@ case "$MORV" in
     fi
 
     # hpux9 and hpux10 have finite(). hpux11 has isfinite().
+    if grep '[^s]finite' /usr/include/math.h >/dev/null; then
+	echo 'using system finite() function' 1>&2
+    else
+	echo 'using system isfinite() macro' 1>&2
+        echo '#define finite isfinite'		>> $CONFIG_H
+    fi
+    ;;
+
+ia64:HP-UX:*:*)
+    # ia64 has dlopen(), regardless of data model
+
+    # look for unbundled C; prefer it to gcc
+    if [ ! "$FORCEGCC" ]; then
+	if [ -x /bin/c89 -o -x /usr/bin/c89 ]; then
+	    # ASSume presense of c89 means cc is unbundled compiler
+	    # used to use c89 with -D_HPUX_SOURCE
+	    echo 'using unbundled cc' 1>&2
+	    CCPATH=cc
+	    WANTGCC=
+
+	    # LARGEFILE requires cc -Ae or c89 +e -D__STDC_EXT__
+	    echo 'ADD_OPT([-Ae])'	>> $CONFIG_M4
+	elif [ "$LP64" ]; then
+	    # gcc version 3.2 20020329 (experimental) beats
+	    # (Bundled) cc: HP ANSI C++/C B3910B A.05.36 [Apr 18 2002]
+	    # for ILP32 compilations (but doesn't support LP64?!)
+	    WANTGCC=
+
+	    # compiler ignores -O (complains)
+	    #NO_OPT=true
+	fi
+    fi
+
+    # hpux11 has isfinite() macro
     if grep '[^s]finite' /usr/include/math.h >/dev/null; then
 	echo 'using system finite() function' 1>&2
     else
@@ -386,11 +433,10 @@ if [ "$GCCPATH" -a "$WANTGCC" ]; then
     #	(on systems where it's harmless, it's turned on by -O)
     FASTFLAGS=-fomit-frame-pointer
 
-    # gcc3 has generic -m64 option?
-    # but avoid trying it on systems where LP64 is the default,
-    # and the compiler could be gcc2, which doesn't know about the option.
+    # avoid trying where LP64 is the default, and the compiler could
+    # be gcc2, which doesn't know about any options.
     if [ "$LP64" -a ! "$LP64_NATIVE" ]; then
-	ARCH_OPT=-m64
+	ARCH_OPT="$GCC64"
     fi
 else
     # required options for native compilers
@@ -400,7 +446,7 @@ else
 	# bundled C compiler lacks -O flag??
 	NO_OPT=true
 	;;
-    9000/[678]*:HP-UX:*:*|ia64:HP-UX:*:*)
+    9000/[678]*:HP-UX:*:*)
 	# HP-UX PA-RISC
 	KERNEL_BITS=`(/usr/bin/getconf SC_KERNEL_BITS || echo 32) 2>/dev/null`
 	if [ "$KERNEL_BITS" = 64 -a "$LP64" ]; then
@@ -408,6 +454,17 @@ else
 	    # dlopen available in 64-bit world!
 	    NO_DLOPEN=
 	fi
+	;;
+    ia64:HP-UX:*:*)
+	if [ "$LP64" ]; then
+	    ARCH_OPT=`getconf XBS5_LP64_OFF64_CFLAGS`
+	    # seen under B.11.22!!
+	    if [ "x$ARCH_OPT" = 'x+DA2.0W' ]; then
+	        ARCH_OPT='+DD64'
+	    fi
+	fi
+	# works for unbundled compiler
+	CCVERS=-V
 	;;
     *:IRIX*:*:*)
 	echo 'CCM=$(CC) -M'			>> $CONFIG_M4
