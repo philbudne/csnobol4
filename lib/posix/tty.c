@@ -27,7 +27,7 @@ extern void *malloc();
 
 #include <stdio.h>
 
-#ifdef USE_TERMIO
+#ifdef USE_TERMIO			/* old SVID interface */
 /* awful; but better than duplicating the whole file! */
 #include <termio.h>
 #define tcgetattr(FD,T) ioctl(FD, TCGETA, T)
@@ -67,6 +67,10 @@ static struct save {
 
 enum action { FIND, CREATE, REMOVE };
 
+/* see tty_invalidate() below */
+#define VALID(SP) \
+    ((SP)->cbreak != -1 && (SP)->noecho != -1 && (SP)->recl != -1)
+
 int
 fisatty(f, fname)
     FILE *f;
@@ -80,6 +84,7 @@ static void
 tty_invalidate(sp)
     struct save *sp;
 {
+    /* see VALID() above */
     sp->noecho = sp->cbreak = sp->recl = -1;
 }
 
@@ -197,8 +202,10 @@ tty_close(f)
 #endif
     if (!sp)
 	return;				/* not found, bad fd, bad device */
-    
-    tcsetattr(fd, TCSADRAIN, &sp->save);
+
+    /* if data is valid, reset to saved state */
+    if (VALID(sp))
+	tcsetattr(fd, TCSADRAIN, &sp->save);
     
 #ifdef TTY_CLOSE_FREE
     free(sp);
