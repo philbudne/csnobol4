@@ -2,6 +2,16 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+1/11/2004
+	v311.sil: Fix argument processing for LOADed functions:
+		if there are more actuals than formals, pass extras
+		without conversion (was looking past end of formal list)!
+	pml.h: no longer need (,) in HOST prototype (testing above fix)
+
+1/6/2004
+	include/snotypes.h: make FFLD packable by MSVC
+	config/win32/ntmsvc.mak: no longer need NO_BITFIELDS define
+
 12/23/2003
 	configure: compile test program to get long/pointer sizes
 		for LP64 and LP64_native checks

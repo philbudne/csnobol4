@@ -1,26 +1,25 @@
 $Id$
 
-Green Book URL in snobol4.1
+Green Book URL(!!) in snobol4.1
 
-flush ports.doc
-	remove from kit
+Pass extra args to external functions?!
 
 put sources under CVS
 	name repository csnobol4?
-	improve rcs2cvs;
-		move old files to Attic directories!!!
 	do CVS check out on branch??
 		move "make release" out to seperate script?
 			do a test build of checked out files???
-porting.ms:
-	mention s4d58
-
-remove timing lists from dist?  Just on web pages?
 
 make timing output machine friendly??
 	output something like timing.44 entries!
 
 always send timing.out via e-mail?
+	explain why?
+		Hall of fame
+		Known working platforms
+		Relative speed of hardware (bang for buck)
+	document it (in INSTALL, README)
+	add --opt-out to disable
 	(unless (.)timing.out.hostname exists?)
 	only if part of a real kit???
 
@@ -453,6 +452,7 @@ update ftp areas;
 update web pages;
 	snobol4.html
 	snobol4.man.html
+	timing lists
 
 binary packages;
 	linux: RPM (debian??)
@@ -487,6 +487,9 @@ announce/notify;
 	retrocomputing museum;
 		http://www.tuxedo.org/~esr/retro/
 		point them to my resources page?
+
+	Humanist
+		 http://www.princeton.edu/~mccarty/humanist/
 
 ================ later;
 
