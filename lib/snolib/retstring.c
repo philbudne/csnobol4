@@ -12,15 +12,29 @@ retstring( retval, cp, len )
     int len;
 {
     static struct spec sp[1];
-    static char buffer[512];		/* XXX */
+    static char *retbuf;
+    static int retbuflen;
 
-    bcopy( cp, buffer, len );		/* copy to static buffer?! */
+    if (len > retbuflen) {
+	if (retbuf)
+	    free(retbuf);
+	retbuf = malloc(len);
+	if (!retbuf) {
+	    perror("retstring malloc");
+	    exit(1);
+	}
+	retbuflen = len;
+    }
+
+    bcopy( cp, retbuf, len );		/* copy to buffer! */
 
     /* set up (static) specifier for string */
-    bzero( (char *)sp, sizeof(sp) );
-    S_L(sp) = len;
+    S_A(sp) = (int_t) retbuf;
+    S_F(sp) = 0;			/* NOTE: *not* a PTR! */
+    S_V(sp) = 0;
     S_O(sp) = 0;
-    S_A(sp) = (int_t) buffer;
+    S_L(sp) = len;
+    CLR_S_UNUSED(sp);
 
     /* point to specifier */
     D_F(retval) = 0;			/* NOTE: not marked as PTR! */
