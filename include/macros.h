@@ -1,0 +1,124 @@
+/*
+ * $Id$
+ *
+ * macros for data access and implementation of SIL ops
+ * contains some system dependancies (bcmp, bcopy, bzero)
+ */
+
+/* descriptor at address x */
+#define D(x)	(*(struct descr *)(x))
+
+/* access descr fields */
+#define D_A(x)	(D(x).a.i)
+#define D_F(x)	(D(x).f)
+#define D_V(x)	(D(x).v)
+
+#define D_RV(x) (D(x).a.f)
+
+/* fetch current value for printf */
+#define D_XXX(x) D_A(x)			/* XXX loses for reals!! */
+
+/* compare two descrs (returns zero for equal) XXX just compare A/F/V? */
+#define DCMP(A,B) (bcmp(A, B, DESCR))
+
+/* clear B+1 descriptor block */
+#define ZERBLK(A,B) bzero(A, (B)+DESCR)
+
+/*
+ * copy descriptor block
+ *
+ * NOTE: may overlap!!
+ * (bcopy deals with this but some memcpy's do not)!!!
+ */
+#define MOVBLK(A,B,C) bcopy( (B)+DESCR, (A)+DESCR, (C) )
+
+/****************
+ * string specifiers (qualifiers)
+ */
+
+/* specifier at address x */
+#define _S(x)	(*(struct spec *)(x))
+
+/* access spec fields */
+#define S_A(x) (_S(x).a.i)
+#define S_F(x) (_S(x).f)
+#define S_V(x) (_S(x).v)
+#define S_L(x) (_S(x).l.i)
+#define S_O(x) (_S(x).o)
+
+#define S_SP(x) ((char *)S_A(x) + S_O(x))
+
+#if 0
+#define CLR_S_UNUSED(x) (_S(x).unused = 0)
+#else
+#define CLR_S_UNUSED(x)
+#endif
+
+#define APDSP(A,B) bcopy(S_SP(B), S_SP(A)+S_L(A), S_L(B)); S_L(A) += S_L(B)
+#define FSHRTN(A,B) S_L(A) -= B; S_O(A) += B
+#define SHORTN(A,B) S_L(A) -= B
+
+/* must deal with A == C
+ * 10/28/93
+ */
+#define REMSP(A,B,C) \
+    S_A(A) = S_A(B); \
+    S_F(A) = S_F(B); \
+    S_V(A) = S_V(B); \
+    S_O(A) = S_O(B) + S_L(C); \
+    S_L(A) = S_L(B) - S_L(C); \
+    CLR_S_UNUSED(A)
+
+#define LOCSP(A,B) \
+    if (D_A(B) == 0) S_L(A) = 0; \
+    else { \
+       S_A(A) = D_A(B); S_F(A) = D_F(B); S_V(A) = D_V(B); \
+       S_O(A) = BCDFLD; S_L(A) = D_V(D_A(B)); CLR_S_UNUSED(A); \
+    }
+
+/* fast compare for equality.  check first char before calling bcmp?? */
+#define LEXEQ(A,B) (S_L(A) == S_L(B) && bcmp(S_SP(A),S_SP(B),S_L(A)) == 0)
+
+/****************
+ * system stack
+ */
+
+struct descr *cstack;
+
+
+/* for RCALL */
+/* GC expects RCALL to push SOMETHING on each RCALL!
+ * keep OSTACK/CSTACK by the book??
+ */
+#define SAVSTK() struct descr *ostack = cstack; PUSH(ZEROCL);
+#define RSTSTK() cstack = ostack
+
+#define OFCHK()	{ if ((int)cstack > (int)STACK+STSIZE*DESCR) OVER(NULL); }
+
+#ifdef NO_UFCHK
+#define UFCHK()
+#else  /* NO_UFCHK not defined */
+/* XXX for debug only (internal error); */
+#define UFCHK()	{ if ((int)cstack < (int)STACK) INTR10(NULL); }
+#endif /* NO_UFCHK not defined */
+
+#define PUSH(x)	D(cstack+1) = D(x); cstack++; OFCHK()
+#define POP(x)	cstack--; UFCHK(); D(x) = D(cstack+1)
+
+#define SPUSH(x) _S(cstack+1) = _S(x); cstack += SPEC/DESCR; OFCHK()
+#define SPOP(x)	 cstack -= SPEC/DESCR; UFCHK(); _S(x) = _S(cstack+1)
+
+#define ISTACK() cstack = (struct descr *)STACK
+#define PSTACK(x) D_A(x) = (int)(cstack-1); D_F(x) = D_V(x) = 0
+
+/****************/
+
+#define PANIC(S)
+
+/****************/
+
+/* XXX implement these!! */
+#define CLR_MATH_ERROR()
+#define MATH_ERROR() 0
+/* $Id$ */
+
