@@ -210,7 +210,8 @@ init_args( ac, av )
 int math_error;				/* see macros.h */
 
 static SIGFUNC_T
-math_catch()
+math_catch(sig)
+    int sig;
 {
 #ifdef SIGFPE
     signal(SIGFPE, math_catch);
@@ -218,13 +219,16 @@ math_catch()
 #ifdef SIGOVER
     signal(SIGOVER, math_catch);
 #endif /* SIGOVER defined */
+
     math_error = TRUE;
+    /* XXX need to longjump out on some systems to avoid restarting insn? */
 }
 
 static SIGFUNC_T
-err_catch()
+err_catch(sig)
+    int sig;
 {
-    /* save argument for error message? */
+    /* save sig in resident storage for use in message? */
     SYSCUT();
 }
 
