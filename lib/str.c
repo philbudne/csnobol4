@@ -105,3 +105,40 @@ pad(dir,out,subj,pad)
 
     return 0;
 }
+
+/* support for REVERSE 9/18/96 */
+int
+reverse(dest, src)
+    struct spec *dest, *src;
+{
+    register char *sp, *dp;
+    register int len;
+
+    len = S_L(src);
+    sp = S_SP(src) + len;
+    dp = S_SP(dest);
+
+    while (len--) {
+	*dp++ =  *--sp;
+    }
+    return 0;
+}
+
+/* support for SUBSTR 9/18/96 */
+int
+substr(dest, src, pos)
+    struct spec *dest, *src;
+    struct descr *pos;
+{
+    register char *sp, *dp;
+    register int len;
+
+    sp = S_SP(src) + D_A(pos);
+    dp = S_SP(dest);
+    len = S_L(dest);
+
+    while (len--) {
+	*dp++ =  *sp++;
+    }
+    return 0;
+}
