@@ -2,6 +2,9 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
+7/24/94
+	lib/init.c: fix call to getredirect()
+
 7/7/95
 	v311.sil, global.procs: Added FAILG label so FAIL can be inlined.
 	timing.sno: more tweaks for AIX
