@@ -78,7 +78,7 @@ popen(cmd, mode)
     /* create and open the mailbox */
     status = SYS$CREMBX(0, &chan, 0, 0, 0, 0, 0);
     if (!SUCCESS(status)) {
-	SERERR(status);
+	SETERR(status);
 	LIB$FREE_EF(&efn);
 	return (0);
     }
