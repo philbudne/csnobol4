@@ -918,7 +918,19 @@ io_read( dp, sp )			/* STREAD */
 	}
 #endif /* TTY_READ_COOKED defined */
 	else {				/* not binary */
-	    /* fgets() returns at most recl-1 characters + NUL */
+	    /*
+	     * fgets() returns at most recl-1 characters + NUL; we
+	     * want excactly recl characters, and don't want the NUL
+	     * but the buffer (passed in from SIL) doesn't have room
+	     * for recl+1 characters.  Use fgets(), then fudge the
+	     * last character, since fgets() can be much more
+	     * efficient than a getc() loop (good implementations can
+	     * block transfer characters from stdio buffers to ours).
+	     *
+	     * Handle CRLF for files ftp'ed from DOS in BINARY mode
+	     * or on Cygwin with files transferred in ASCII mode!
+	     * Don't treat a bare CR as an EOL; just discard it.
+	     */
 	    if (fgets(cp, recl, f) != NULL) {
 		len = strlen(cp);
 
@@ -926,6 +938,17 @@ io_read( dp, sp )			/* STREAD */
 		if (cp[len-1] == '\n') {	/* saw EOL */
 		    if (fp->flags & FL_EOL) {	/* hide eol? */
 			len--;			/* yes. */
+
+			if (len > 0 && cp[len-1] == '\r')
+			    len--;
+		    }
+		    else if (len > 1 && cp[len-2] == '\r') {
+			/*
+			 * If not hiding EOL, and saw CRLF
+			 * replace CRLF with just NL
+			 */
+			len--;
+			cp[len-1] = '\n';
 		    }
 		}
 		else {				/* no EOL seen */
@@ -935,6 +958,14 @@ io_read( dp, sp )			/* STREAD */
 
 		    /* read one more character, to fill in for NUL byte */
 		    c = getc(f);
+
+		    /*
+		     * Handle CRLF for files transferred from DOS,
+		     * or on cygwin with files transferred in ASCII mode!
+		     */
+		    if (c == '\r')		/* CR? */
+			c = getc(f);		/* toss it */
+
 		    if (c != EOF) {
 			/* save additional character if not EOL
 			 * or if EOL should be returned
