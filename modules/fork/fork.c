@@ -10,6 +10,11 @@
 #include "load.h"
 #include "equ.h"
 
+#ifdef HAVE_UNISTD_H
+#include <sys/types.h>			/* pid_t */
+#include <unistd.h>			/* fork() */
+#endif /* HAVE_UNISTD_H defined */
+
 /*
  * LOAD("FORK()INTEGER")
  *
@@ -17,6 +22,7 @@
  * Returns;	0 if child, pid if parent, fails if fork() does
  */
 
+int
 FORK( LA_ALIST ) LA_DCL
 {
     int pid;
