@@ -23,12 +23,48 @@
 *	faster matching (match only at POS(0))
 	&ANCHOR = 1
 
-*	get input filename
-	SILPATH = HOST(2,HOST(3))			:F(NOFILE)
-
 ****************************************************************
 *	initialization
 
+
+****************
+*	process options, get input filename
+
+	INLINE_DIR = "subr/"
+
+	IND = HOST(3)
+OPTLOOP	ARG = HOST(2,IND)				:F(NOFILE)
+	ARG POS(0) '-'					:F(OPTEND)
+	IND = IND + 1
+
+*	inline mode -- used to create isnobol4.c
+*		output subroutines to seperate files in inline_dir
+* XXX add --inline_dir/-I option??
+	INLINE = IDENT(ARG,'-i') 'yes'			:S(OPTLOOP)
+	INLINE = IDENT(ARG,'--inline') 'yes'		:S(OPTLOOP)
+
+*	output SIL end of line comments (OFF -- to make snobol4.c smaller)
+	EOL_COMMENTS = IDENT(ARG,'-e') 'yes'		:S(OPTLOOP)
+	EOL_COMMENTS = IDENT(ARG,'--eol-comments') 'yes' :S(OPTLOOP)
+
+*	output block comments (OFF -- problems at end of functions)
+	BLOCK_COMMENTS = IDENT(ARG,'-b') 'yes'		:S(OPTLOOP)
+	BLOCK_COMMENTS = IDENT(ARG,'--block-comments') 'yes' :S(OPTLOOP)
+
+*	un*x '# line' lines (OFF)
+* XXX doesn't work for ops which output more than one line of C!!
+* need to do all output via a function OL(STR) which outputs a #line
+* for each line of output!!!
+	POUND_LINE = IDENT(ARG,'-l') 'yes'		:S(OPTLOOP)
+	POUND_LINE = IDENT(ARG,'--pound-line') 'yes'	:S(OPTLOOP)
+
+	TERMINAL = 'genc.sno: unknown option ' ARG
+* XXX give help?
+	&CODE = 1					:(END)
+
+OPTEND	SILPATH = ARG
+
+****************
 *	different I/O routines for now under MAINBOL!
 	DIFFER(MAINBOL)					:S(MB1)
 
@@ -62,22 +98,6 @@ EIO
 
 ****************************************************************
 *	compile time switches
-
-*	output SIL end of line comments (OFF -- to make snobol4.c smaller)
-	EOL_COMMENTS =
-
-*	output block comments (OFF -- problems at end of functions)
-	BLOCK_COMMENTS =
-
-*	inlining (OFF)
-*	INLINE =
-	INLINE_DIR = "subr/"
-
-*	un*x '# line' lines (OFF)
-* XXX doesn't work for ops which output more than one line of C!!
-* need to do all output via a function OL(STR) which outputs a #line
-* for each line of output!!!
-	POUND_LINE =
 
 ****************************************************************
 *	tables
