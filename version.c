@@ -2,6 +2,9 @@
 
 /*
  * $Log$
+ * Revision 1.14  1996/09/30  06:03:27  phil
+ * 0.98.4
+ *
  * Revision 1.13  1996/09/26  03:47:42  phil
  * added snoname
  * include h.h regardless
@@ -50,13 +53,13 @@
 
 #ifndef MAIN
 #include "units.h"
-#include "macros.h"
 #include "snotypes.h"
+#include "macros.h"
 #include "data.h"
 #endif
 
-const char vers[] = "0.98.4";
-const char vdate[] = "Sept 30, 1996";
+const char vers[] = "0.98.5";
+const char vdate[] = "Oct 5, 1996";
 const char snoname[] = "C-MAINBOL";
 
 #ifdef MAIN
