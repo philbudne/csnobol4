@@ -28,9 +28,21 @@ extern char *malloc();
 
 #define N_SIZE(A) ((A).a_text + (A).a_data + (A).a_bss) /* is this right? */
 
-#ifndef PREFIX
-#define PREFIX "_"			/* XXX most (all?) a.out systems? */
-#endif /* PREFIX not defined */
+#ifndef N_GETMAGIC
+#define N_GETMAGIC(A) ((A).a_magic)
+#endif
+
+#ifndef SYM_PREFIX
+#define SYM_PREFIX "_"			/* XXX most (all?) a.out systems? */
+#endif /* SYM_PREFIX not defined */
+
+#ifndef TMP_DIR
+/* /tmp exists on all systems?
+ * older systems have /usr/tmp, newer (ie; 4.4) have /var/tmp
+ * suns have both (/usr/tmp is a symlink to /var/tmp)!!
+ */
+#define TMP_DIR "/tmp"
+#endif /* TMP_DIR */
 
 /* keep list of loaded functions (for UNLOAD) */
 struct func {
@@ -53,7 +65,7 @@ ld( output, addr, func, input )
     char command[1024];			/* XXX */
 
     /*
-     * -N		old, impure excutable
+     * -N		old, impure excutable (OMAGIC)
      * -o output	output file
      * -T addr		text addr (data follows)
      * -e name		entry point
@@ -63,8 +75,9 @@ ld( output, addr, func, input )
     /* XXX -A <path of mainbol executable??? */
     /* XXX -lm -lc ?? */
     sprintf( command, "%s -N -o %s -T %x -e %s%s %s",
-	    LD_PATH, output, addr, PREFIX, func, input );
+	    LD_PATH, output, addr, SYM_PREFIX, func, input );
 
+    /* XXX use direct execvp of ld? pass argv? */
     return system(command) == 0;
 }
 
@@ -101,19 +114,32 @@ load(addr, sp1, sp2)
 	sprintf( path, "%s/%s", SNOLIB_DIR, SNOLIB_A );
     }
 
-    strcpy( temp, "/usr/tmp/snoXXXXXX"); /* XXX TMP_DIR */
+    sprintf( temp, "%s/snoXXXXXX", TMP_DIR);
     mktemp( temp );			/* exists in v6 */
     /* XXX check for error (empty string, or "/")?! */
 
     /* link once to get total size! */
-    if (!ld( temp, 0, fp->name, path ) || (f = open(temp, 0)) < 0) {
-	unlink(temp);			/* paranoia */
-	free(fp);
-	return FALSE;			/* fail */
+    if (!ld( temp, 0, fp->name, path )) {
+	/* XXX error message? */
+	goto ld_error;
     }
 
-    if (read( f, &a, sizeof(a)) != sizeof(a) || a.a_magic != OMAGIC) {
+    f = open(temp, 0);			/* XXX O_RDONLY? */
+    if (f < 0) {
+	/* XXX error message? */
+	goto ld_error;
+    }
+
+    if (read( f, &a, sizeof(a)) != sizeof(a)) {
+	/* XXX error message? */
+	goto header_error;
+    }
+
+    if (N_GETMAGIC(a) != OMAGIC) {
+	/* XXX error message? */
+    header_error:
 	close(f);
+    ld_error:
 	unlink(temp);
 	free(fp);
 	return FALSE;			/* fail */
@@ -122,6 +148,8 @@ load(addr, sp1, sp2)
     unlink(temp);
 
     len = N_SIZE(a);			/* total size (code+data+bss) */
+
+    /* fix here for NMAGIC or ZMAGIC;  use valloc? */
     fp->data = malloc(len);
     if (fp->data == NULL) {
 	free(fp);
@@ -149,7 +177,7 @@ load(addr, sp1, sp2)
 	return FALSE;
     }
 
-    if (a.a_magic != OMAGIC || a.a_entry == 0 || N_SIZE(a) > len) {
+    if (N_GETMAGIC(a) != OMAGIC || a.a_entry == 0 || N_SIZE(a) > len) {
 	/* XXX could tag onto above if, but would be harder to debug */
 	goto data_read_error;
     }
