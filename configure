@@ -165,14 +165,33 @@ while [ $# -gt 0 ]; do
     '')
 	;;
     *)
-	echo 'See INSTALL for documentation on options' 1>&2
-	echo 'options:' 1>&2
-	echo '	--add-cppflags=STR --add-define=NAME[=VALUE]' 1>&2
-	echo '	--add-ldflags=STR --add-objs=STR' 1>&2
-	echo '	--add-opt=STR --add-srcs=STR --double --force-gcc' 1>&2
-	echo '	--force-memmove --longlong --lp64 --no-dlopen' 1>&2
-	echo '	--no-dynlib --no-gcc --nolargefile --opt=STR' 1>&2
-	echo '	--prefix=PATH' 1>&2
+	cat 1>&2 <<EOF
+See INSTALL for documentation on options;
+
+Makefile additions;
+	--add-cppflags=STR	--add-define=NAME[=VALUE]
+	--add-ldflags=STR	--add-objs=STR
+	--add-srcs=STR
+
+C Compiler selection;
+	--force-gcc		--no-gcc
+
+C Compiler settings;
+	--add-opt=STR		--opt=STR
+	--no-inline
+
+SNOBOL4 Datatype selection;
+	--double		--longlong
+	--lp64			--no-bitfields
+
+C Library support selection;
+	--force-memmove		--no-dlopen
+	--no-dynlib		--no-largefile
+
+Install location;
+	--prefix=PATH
+EOF
+
 	rm -f $CONFIG_M4 $CONFIG_H
 	exit 1
 	;;
