@@ -81,7 +81,17 @@ struct file {
     char fname[1];
 };
 
-#define FL_PIPE		01		/* file was popen'ed */
+/*
+ * Per-file (unit) flags.
+ *
+ * ** NOTE **
+ *
+ * multiple units may refer to same stdio stream (via "-" and
+ * /dev/std{in,out,err} magic files) or the same file descriptors (via
+ * /dev/fd/N magic pathname) and have different behaviors.
+ */
+
+#define FL_PIPE		01		/* file was popen'ed; use pclose() */
 #define FL_EOL		02		/* strip EOL on input, add on output */
 #define FL_BINARY	04		/* binary: no EOL; use recl */
 #define FL_UPDATE	010		/* update: read+write */
@@ -178,6 +188,7 @@ io_close(unit)				/* internal (zero-based unit) */
 	return TRUE;
 
     if (fp->f) {
+	/* XXX call close hook? */
 #ifndef NO_POPEN
 	if (fp->flags & FL_PIPE) {
 	    ret = (pclose(fp->f) == 0);
@@ -185,17 +196,20 @@ io_close(unit)				/* internal (zero-based unit) */
 	}
 	else
 #endif /* NO_POPEN not defined */
-	if (fp->flags & FL_NOCLOSE) {
-	    ret = (fflush(fp->f) != EOF);
-	}
-	else {
-	    /* XXX call close hook? */
-	    if (fp->flags & FL_TTY)
+	{				/* not a pipe */
+	    if (fp->flags & FL_TTY) {
 		tty_close(fp->f);	/* advisory */
+	    }
 
-	    ret = (fclose(fp->f) == 0);
-	    fp->f = NULL;
-	}
+	    if (fp->flags & FL_NOCLOSE) {
+		/* never close stdin, stdout, stderr */
+		ret = (fflush(fp->f) != EOF);
+	    }
+	    else {
+		ret = (fclose(fp->f) == 0);
+		fp->f = NULL;
+	    }
+	} /* not a pipe */
     } /* have fp->f */
 
     up->curr = fp->next;
@@ -227,15 +241,15 @@ io_fopen2( fp, mode )
 
     /* handle magic filenames (have a table (prefix or full str)??) */
 
-#ifndef NO_POPEN
     if (fp->fname[0] == '|') {
+#ifndef NO_POPEN
 	/* filename with leading '|' opens a pipe! */
 	/* SPITBOL: leading '!' means pipe, (with escaping?) */
 	fp->flags |= FL_PIPE;		/* XXX set close hook? */
 	fp->f = popen(fp->fname+1, mode);
+#endif /* NO_POPEN not defined */
 	return;
     }
-#endif /* NO_POPEN not defined */
 
     /* filename "-" goes to stdin/out */
     if (strcmp(fp->fname,"-") == 0) {
@@ -367,8 +381,9 @@ io_next( unit )				/* internal (zero-based unit) */
 
     /* in case called preemptively! */
     if (fp->f != NULL)
-	io_close(unit);
+	io_close(unit);			/* close, and advance */
 
+    /* get new current file (io_close advances to next file in list) */
     fp = io_units[unit].curr;
     if (fp == NULL)
 	return FALSE;
@@ -611,7 +626,7 @@ io_print( iokey, iob, sp )		/* STPRNT */
     /*
      * ANSI C requires that a file positioning function intervene
      * between output and input. Would not be needed if UPDATE I/O
-     * performed using read()/write() (see comment on UNBUF below)
+     * performed using read()/write() (ie; FL_UNBUF)
      */
 
     if ((fp->flags & FL_UPDATE) && fp->last == LAST_INPUT) {
@@ -646,7 +661,13 @@ io_print( iokey, iob, sp )		/* STPRNT */
 	    cp = S_SP(sp);
 	} /* compiling */
 
-	/* XXX check FL_UNBUF; write(fileno(f), cp, recl)? */
+#ifndef NO_UNBUF_WRITE
+	if (fp->flags & FL_UNBUF) {
+	    if (write(fileno(f), cp, len) != len)
+		ret = FALSE;
+	}
+	else
+#endif /* NO_UNBUF_WRITE */
 	if (fwrite( cp, 1, len, f ) != len)
 	    ret = FALSE;
     } /* have string */
@@ -655,10 +676,12 @@ io_print( iokey, iob, sp )		/* STPRNT */
 	    ret = FALSE;
     }
 
+#ifdef NO_UNBUF_WRITE
     if (fp->flags & FL_UNBUF) {
 	if (fflush(f) == EOF)
 	    ret = FALSE;
     }
+#endif
 
     D_A(iokey) = ret;
 } /* io_print */
@@ -709,18 +732,12 @@ io_read( dp, sp )			/* STREAD */
 		return IO_ERR;
 	}
 
-	if (fp->flags & FL_TTY) {
-	    tty_mode( fp->f,
-		     (fp->flags & FL_BINARY) != 0, /* raw (have FL_CHAR?) */
-		     (fp->flags & FL_NOECHO) != 0, /* noecho */
-		     recl
-		     );
-	}
-
 	/*
 	 * ANSI C requires that a file positioning function intervene
 	 * between output and input. Would not be needed if UPDATE I/O
-	 * performed using read()/write() (see comment on UNBUF below)
+	 * performed using read()/write() (ie; FL_UNBUF).
+	 *
+	 * before FL_TTY check, in case tty_read() uses stdio functions.
 	 */
 
 	if ((fp->flags & FL_UPDATE) && fp->last == LAST_OUTPUT) {
@@ -728,9 +745,27 @@ io_read( dp, sp )			/* STREAD */
 	}
 	fp->last = LAST_INPUT;
 
-	/* XXX check FL_UNBUF; read(fileno(f), cp, recl)? */
+	if (fp->flags & FL_TTY) {
+	    int raw, noecho;
+
+	    raw = (fp->flags & FL_BINARY) != 0; /* raw (have FL_CHAR?) */
+	    noecho = (fp->flags & FL_NOECHO) != 0; /* noecho */
+	    tty_mode( fp->f, raw, noecho, recl );
+#ifdef TTY_READ
+	    len = tty_read(f, cp, recl, raw, noecho);
+	    if (len > 0)
+		break;
+#endif /* TTY_READ defined */
+	} /* FL_TTY set */
+
 	if (fp->flags & FL_BINARY) {
-	    len = fread(cp, 1, recl, f);
+#ifndef NO_UNBUF_READ
+	    if (fp->flags & FL_UNBUF)
+		len = read(fileno(f), cp, recl);
+	    else
+#endif /* NO_UNBUF_READ not defined */
+		len = fread(cp, 1, recl, f);
+
 	    if (len > 0)
 		break;
 	}
@@ -760,23 +795,23 @@ io_read( dp, sp )			/* STREAD */
 			    cp[len] = c;
 			    len++;
 			} /* not EOL or not hiding EOL */
-		    }
+		    } /* extra char not EOF */
 
 		    /* if not at EOL or EOF, discard rest of "record" */
 		    while (c != EOF && c != '\n')
 			c = getc(f);
 
 		    /* don't care if line terminated by EOL or EOF? */
-		} /* got something */
+		} /* no EOL */
 		break;
 	    } /* fgets OK */
 	} /* not binary */
 
 	/* here when read failed */
 	if (feof(f)) {
-	    if (!io_next(unit)) {
+	    if (!io_next(unit)) {	/* skip to next file, if any */
 		/* XXX perror? */
-		return IO_EOF;
+		return IO_EOF;		/* no more files */
 	    }
 	    if (COMPILING(unit)) {
 		/* force call to INCCK to pop old FILENM and LNNOCL */
@@ -785,12 +820,15 @@ io_read( dp, sp )			/* STREAD */
 	    continue;			/* try again! */
 	} /* feof */
 
-	/* wasn't eof?! */
+	/* error, wasn't eof?! */
 	return IO_ERR;
     } /* forever */
 
-    if (compiling) {
-	/* tack on a space; INBUF has extra room */
+    /* here on successful read */
+    if (COMPILING(unit)) {
+	/* compiler doesn't handle exaustion well; tack on a space.
+	 * INBUF has extra room (for LIST RIGHT output)
+	 */
 	cp[len++] = ' ';
     }
     S_L(sp) = len;
@@ -843,6 +881,7 @@ void
 io_ecomp()				/* XECOMP */
 {
     struct unit *up;
+    struct file *fp;
 
     compiling = 0;			/* turn off crocks for compiler */
 
@@ -862,9 +901,19 @@ io_ecomp()				/* XECOMP */
      */
 
     up = io_units + UNITI - 1;
-    up->offset = ftell(up->curr->f);	/* save offset for rewind */
-    /* XXX free source file blocks? */
+
+    /* free source files... */
+    fp = up->head;
+    while (fp != up->curr) {
+	struct file *tp;
+
+	tp = fp->next;
+	free(fp);
+	fp = tp;
+    }
+
     up->head = up->curr;		/* save file for rewind */
+    up->offset = ftell(up->curr->f);	/* save offset for rewind */
 
     /* free list of included filenames */
     while (includes) {
@@ -1326,4 +1375,16 @@ io_pad(sp, len)
     S_L(sp) = len;
 
     return 1;				/* for XCALLC */
+}
+
+/* new 9/21/97 called from endex() */
+int
+io_finish() {
+    int i;
+    
+    /* should visit from most recently opened to least recent? */
+    for (i = 0; i < NUNITS; i++)
+	io_closeall(i);
+
+    return TRUE;
 }
