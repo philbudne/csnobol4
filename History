@@ -2,10 +2,22 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
+6/21/94
+	Cleaned up config/ dir.
+	Removed all "cc" configs.
+	Turn on -finline-functions
+	Added rules for isnobol4.c
+
+6/20/94
+	Fixed bug found by Phillip Thomas;
+		Restart "card" processing after a semi.
+	Created scripts for analysis of inlining results.
+
 6/19/94
 	Added {generic,posix}-cc.m4 configs
 	Use skel.inc in generic configs
 	Added AUX_{SRC,OBJ}, PML_OBJ
+	Played with inlining
 
 6/17/94
 	Dropped compiler CARDSZ down to 132 for sane listings
