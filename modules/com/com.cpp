@@ -447,9 +447,9 @@ COM_PUTPROP( LA_ALIST ) LA_DCL
     RETNULL;
 } // COM_PUTPROP
 
-// LOAD("COM_UNLOAD(INTEGER)STRING")
+// LOAD("COM_RELEASE(INTEGER)STRING")
 int
-COM_UNLOAD( LA_ALIST ) LA_DCL
+COM_RELEASE( LA_ALIST ) LA_DCL
 {
     LPDISPATCH pdisp = LA_DISP(0);
     if (!pdisp)
@@ -458,6 +458,6 @@ COM_UNLOAD( LA_ALIST ) LA_DCL
     remove_handle(&com_handles, LA_INT(0));
     pdisp->Release();
     RETNULL;
-} // COM_UNLOAD
+} // COM_RELEASE
 
 } // extern "C"
