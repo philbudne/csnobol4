@@ -12,6 +12,7 @@
 #include "h.h"
 #include "snotypes.h"
 #include "lib.h"
+#include "str.h"
 
 #ifndef SYI$_ARCH_NAME
 #define SYI$_ARCH_NAME 4454

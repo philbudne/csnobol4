@@ -12,6 +12,7 @@
 #include "h.h"
 #include "snotypes.h"
 #include "lib.h"
+#include "str.h"
 
 void
 hwname(cp)
