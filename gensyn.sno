@@ -190,6 +190,7 @@ EIO
 	SYN.C = '# include "h.h"'
 	SYN.C = '# include "snotypes.h"'
 	SYN.C = '# include "syntab.h"'
+	SYN.C = '# include "gen.h"'
 	SYN.C =
 	SYN.C = '# include "syn.h"'
 	SYN.C = '# include "equ.h"'
