@@ -13,6 +13,7 @@
 #define D_V(x)	(D(x).v)
 
 #define D_RV(x) (D(x).a.f)
+#define D_PTR(x) (D(x).a.ptr)
 
 /* compare two descrs (returns boolean) */
 #ifdef DCMP_BYTES
