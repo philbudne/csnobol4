@@ -652,6 +652,21 @@ function is available for compatibility with SPARC SPITBOL.
 .BR SQRT()
 fails if the argument is negative, but does not cause a fatal error.
 .TP
+.B SSET()
+.br
+Experimental "scaled set" function.  Takes arguments unit, offset, whence,
+and scale.  The first three are analogous to the same arguments for the
+.B SET()
+function.
+The last parameter is used as a multiplicative scaling factor on the
+.B offset
+parameter, and as a divisor on the return value.  When used in combination
+with relative
+.B SET()
+calls (whence of one), any file offset can be achieved, even when
+system file offsets are larger than can be represented in a SNOBOL4
+.BR INTEGER .
+.TP
 .B SUBSTR()
 .br
 .B SUBSTR()
