@@ -413,24 +413,24 @@ io_print( iob, sp )			/* STPRNT */
 	cp = S_SP(sp);
 	if (compiling) {
 	    char *ep;
+	    int l2;
 
-	    /* trim spaces (without altering specifier) */
+	    /* trim spaces & NUL's (without altering specifier) */
 	    ep = cp + len - 1;
-	    while (len > 0 && *ep == ' ') { /* XXX check for NUL too? */
+	    while (len > 0 && (*ep == ' ' || *ep == '\0')) {
 		len--;
 		ep--;
 	    }
 
-	    while (len-- > 0) {
-		if (*cp == '\0')	/* deal with NUL in listings */
-		    putc( ' ', f );
-		else
-		    putc( *cp, f );
+	    /* plug remaining NULs with spaces */
+	    for (l2 = len; l2 > 0; l2--) {
+		if (*cp == '\0')
+		    *cp = ' ';
 		cp++;
 	    }
-	}
-	else				/* not compiling */
-	    fwrite( cp, 1, len, f );
+	    cp = S_SP(sp);
+	} /* compiling */
+	fwrite( cp, 1, len, f );
     }
     if (fp->flags & FL_EOL)
 	putc( '\n', f );
