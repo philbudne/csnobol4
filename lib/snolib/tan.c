@@ -18,6 +18,7 @@
 #include "load.h"
 #include "equ.h"
 
+int
 TAN( LA_ALIST ) LA_DCL
 {
     RETREAL( tan( LA_REAL(0) ) );

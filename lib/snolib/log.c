@@ -18,6 +18,7 @@
 #include "load.h"
 #include "equ.h"
 
+int
 LOG( LA_ALIST ) LA_DCL
 {
     RETREAL( log( LA_REAL(0) ) );

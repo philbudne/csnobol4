@@ -25,6 +25,7 @@
  *	(and were in v7 and BSD4.2)
  */
 
+int
 CHOP( LA_ALIST ) LA_DCL
 {
     double x;

@@ -18,6 +18,7 @@
 #include "load.h"
 #include "equ.h"
 
+int
 EXP( LA_ALIST ) LA_DCL
 {
     RETREAL( exp( LA_REAL(0) ) );

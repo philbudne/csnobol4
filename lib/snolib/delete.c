@@ -18,6 +18,10 @@
 #include "macros.h"
 #include "load.h"
 
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>			/* unlink() */
+#endif /* HAVE_UNISTD_H defined */
+
 int
 DELETE( LA_ALIST ) LA_DCL
 {

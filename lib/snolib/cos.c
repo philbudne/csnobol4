@@ -18,6 +18,7 @@
 #include "load.h"
 #include "equ.h"
 
+int
 COS( LA_ALIST ) LA_DCL
 {
     RETREAL( cos( LA_REAL(0) ) );

@@ -18,6 +18,7 @@
 #include "load.h"
 #include "equ.h"
 
+int
 SIN( LA_ALIST ) LA_DCL
 {
     RETREAL( sin( LA_REAL(0) ) );
