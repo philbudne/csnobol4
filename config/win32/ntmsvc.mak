@@ -43,7 +43,8 @@ OBJ=	isnobol4.obj data.obj data_init.obj main.obj syn.obj \
 	environ.obj exit.obj file.obj getstring.obj host.obj log.obj \
 	logic.obj ord.obj rename.obj retstring.obj sin.obj spcint.obj \
 	spreal.obj sqrt.obj sset.obj tan.obj sys.obj popen.obj tty.obj \
-	inet.obj execute.obj exists.obj term.obj findunit.obj exp.obj
+	inet.obj bindresvport.obj execute.obj exists.obj term.obj \
+	findunit.obj exp.obj
 
 snobol4.exe : $(OBJ)
 	link /out:snobol4.exe $(OBJ) $(INET_LIBS)
