@@ -51,7 +51,7 @@ HOST( LA_ALIST ) LA_DCL
 	RETSTR("",0);			/* else return null string */
 
     case 1:				/* HOST(1,s); run subprocess */
-	D_V(retval) = I;		/* oof! blast return type! */
+	RETTYPE = I;			/* oof! blast return type! */
 	if (nargs < 2 || LA_TYPE(1) != S) {
 	    /* GNAT programs expect HOST(1) to return zero; */
 	    RETINT(0);
@@ -70,7 +70,7 @@ HOST( LA_ALIST ) LA_DCL
 	RETSTR(argv[n], strlen(argv[n])); /* return n'th arg */
 
     case 3:				/* HOST(3); first unused argument */
-	D_V(retval) = I;		/* oof! blast return type! */
+	RETTYPE = I;			/* oof! blast return type! */
 	RETINT(firstarg);
 
     case 4:				/* HOST(4,s); environment var s */
