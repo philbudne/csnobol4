@@ -87,7 +87,11 @@
  * system stack
  */
 
-struct descr *cstack;
+#ifndef S4_EXTERN
+#define S4_EXTERN extern
+#endif
+
+S4_EXTERN struct descr *cstack;
 
 
 /* for RCALL

@@ -2,6 +2,8 @@
 
 /* header files for snobol4.c; included by SIL "COPY PARMS" macro */
 
+#define S4_EXTERN			/* for cstack */
+
 #include "snotypes.h"
 #include "h.h"
 #include "libret.h"
