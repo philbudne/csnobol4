@@ -43,7 +43,7 @@ SNOBOL4=isnobol4
 # must be named "all" for FreeBSD "ports"?
 all:	snobol4
 
-xsnobol4 tar uu install: Makefile2 ALWAYS .depend  $(GENERATED)
+snobol4 xsnobol4 install: Makefile2 ALWAYS .depend  $(GENERATED)
 	$(MAKE) -f Makefile2 $@ SIL=$(SIL) SNOBOL4=$(SNOBOL4)
 
 # disposables
