@@ -46,25 +46,6 @@ all:	snobol4
 snobol4 xsnobol4 install: Makefile2 ALWAYS .depend  $(GENERATED)
 	$(MAKE) -f Makefile2 $@ SIL=$(SIL) SNOBOL4=$(SNOBOL4)
 
-# disposables
-DISP=*.o *.a callgraph prolog bsplitu pv vers
-
-# remove objects; leave generated sources, final binary, Makefile2
-clean:
-	rm -f $(DISP) *~ */*~ */*/*~ *.tmp \#*
-	rm -rf subr
-
-# make ready for compilation on another platform (leave binaries)
-realclean: clean
-	rm -f config.m4 config.h Makefile2 .depend
-
-# clean as when it was unpacked; remove binaries too
-distclean: realclean
-	rm -f snobol4 xsnobol4 timing.out
-
-# remove everthing not in CVS; requires snobol4 binary in PATH to build;
-spotless: distclean
-	rm -f $(GENERATED) *.[ch]2 .depend snobol4.c isnobol4.c snobol4 xsnobol4
 
 .PRECIOUS: snobol4 xsnobol4
 
@@ -182,10 +163,26 @@ G1=data.c2 data.h2 data_init.h2 proc.h2 equ.h2 syn.h2 syn_init.h2 \
 # generated files to include in kit (copy, so newer than .x2 versions)
 G2=data.c data.h data_init.h proc.h equ.h res.h syn.c syn.h syn_init.h
 
-# remove objects, generated sources; leave final binary, Makefile2
-# DON'T DO THIS UNLESS YOU HAVE AN EXECUTABLE!!
-spotless:
-	rm -f $(G1)
+# disposables
+DISP=*.o *.a callgraph prolog bsplitu pv vers
+
+# remove objects; leave generated sources, final binary, Makefile2
+clean:
+	rm -f $(DISP) *~ */*~ */*/*~ *.tmp \#*
+	rm -rf subr
+
+# make ready for compilation on another platform (leave binaries)
+realclean: clean
+	rm -f config.m4 config.h Makefile2 .depend
+
+# clean as when it was unpacked; remove binaries too
+distclean: realclean
+	rm -f snobol4 xsnobol4 timing.out
+
+# remove objects, generated files
+# leave only final binary??
+spotless: distclean
+	rm -f $(G1) $(G2) snobol4.c isnobol4.c snobol xsnobol4
 
 # file to hard-link into dist dir
 # generated files copied separately to ensure newer than source files!
