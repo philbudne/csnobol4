@@ -783,6 +783,11 @@ if [ -f $INCDIR/sys/socket.h ]; then
 	    echo 'ADD_LDFLAGS([-lnsl])'		>> $CONFIG_M4
 	fi
     fi
+    if grep getaddrinfo $INCDIR/netdb.h >/dev/null 2>&1; then
+	echo 'using getaddrinfo for IPv6 compatibility' 1>&2
+	echo 'INET_C=$(SRCDIR)lib/ipv6/inet.c'	>> $CONFIG_M4
+	# XXX check for rresvport_af() and supply dummy, if needed?
+    fi
 else
     echo 'no sockets; TCP not available' 1>&2
     echo 'INET_C=$(SRCDIR)lib/dummy/inet.c'	>> $CONFIG_M4
