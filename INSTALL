@@ -123,24 +123,24 @@ Several lines at the top of the file may need tweaking depending
 on your environment.
 
 The VMS port uses native calls to implement TTY I/O, and supports
-binary and noecho input.  TCP/IP I/O is implemented (using DEC TCP/IP
+binary and noecho input.  TCP/IP I/O is implemented using DEC TCP/IP
 Connection services for OpenVMS (formerly VAX/Ultrix connection
-product)) but not working.
+product) but not working.
 
 Jerry Lichter has run an older version of C-MAINBOL under VMS using
-the GNU C compiler and the GNU C library. No command files are
-available.
+the GNU C compiler and the GNU C library.
 
 Win32 using MicroSoft Visual C++ 5.0
 ------------------------------------
 
-The Win32 port is in it's infancy.  The system has been compiled, and
-passes regression testing on WinNT 4.0, but system dependant code
-needs work;
+The Win32 port is in it's infancy.  The snobol4.exe links and passes
+regression testing on WinNT 4.0, but system dependant code needs work;
 
 *	TCP/IP I/O (using winsock32) is present, but not working.
 *	Binary & noecho TTY I/O has been coded, but does not work.
-*	Process timing under Win95 does not work properly.
+*	Process timing under Win95 does not work properly (see win32/mstime.c)
+*	LOAD() of DLL's implemented, but not tested
+	(document how to make a .DLL)
 
 To compile;
 	nmake -f config\win32\ntmsvc.mak
