@@ -15,9 +15,6 @@
 
 #define D_RV(x) (D(x).a.f)
 
-/* fetch current value for printf */
-#define D_XXX(x) D_A(x)			/* XXX loses for reals!! */
-
 /* compare two descrs (returns boolean) */
 #ifdef DCMP_BYTES
 /* here if sizeof(float) > sizeof(long) */
