@@ -2,6 +2,22 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+9/3/97:
+	v311.sil: Implemented fatal "Output error"
+	genc.sno: pass iokey to io_output(), add labels to ENFILE
+	io.c: return status from io_output(), io_endfile()
+
+8/29/97:
+	lib/unix98.c: add TRY_UNDERSCORE ifdef, enable for FreeBSD
+		added mode var, default to zero if RTLD_LAZY not defined
+
+8/20/97:
+	lib/realst.c: include stdio.h for SGI -n32 ABI
+
+8/19/97:
+	lib/io.c: removed unused vars, fixed typos
+	autoconf: fixed irix64 comment
+
 8/13/97:
 	configure: check into RCS!  Use ./autoconf
 
