@@ -11,19 +11,14 @@
 ****************************************************************
 *	environment
 
+*	kill case folding, for speed
 -CASE 0
 
 *	identify if mainbol or spitbol
 	MAINBOL = IDENT(.NAME,"NAME") 1
 
-*	bag trailing whitespace
-	&TRIM = 1
-
 *	faster matching (match only at POS(0))
 	&ANCHOR = 1
-
-*	boost MAINBOL statement limit!!
-	&STLIMIT = 500000
 
 *	path for SIL input
 	SILPATH = "v311.sil"
@@ -1126,7 +1121,8 @@ XAEQL	DOCMP2( D_A(ARGV<1>), D_A(ARGV<2>), ARGV<3>, ARGV<4>) :(OPDONE)
 
 ****************
 *	SIL AEQLIC (EQLVIC) MACRO
-XAEQLIC	DOCMP2( INDD_A( D_A(ARGV<1>), ARGV<2>), ARGV<3>, ARGV<4>, ARGV<5>)
+XAEQLIC	DOCMP2( INDD_A( D_A(ARGV<1>),ARGV<2>), '(int_t)' ARGV<3>,
++		ARGV<4>, ARGV<5>)
 							:(OPDONE)
 
 ****************
