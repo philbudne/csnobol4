@@ -82,3 +82,15 @@ Command line args;
 		compilation.
 
 
+To build;
+
+	cd lib
+	make
+	cd ..
+	make
+
+The tar file contains a binary of snobol4 for Sun4 / OS 4.x.  IT
+SHOULD NOT BE NEEDED (unless you touch the source files) As all
+generated files are provided.  The generated files are NOT system
+dependant!!!
+
