@@ -7,9 +7,9 @@
 /* prototype for external (LOADed) functions */
 #ifdef __STDC__
 #define LOAD_PROTO struct descr *retval, int nargs, struct descr *args
-#else
+#else  /* __STDC__ not defined */
 #define LOAD_PROTO
-#endif
+#endif /* __STDC__ not defined */
 
 /* macros for loadable user functions;
  *
@@ -23,10 +23,10 @@
 #ifdef __STDC__
 #define LA_ALIST LOAD_PROTO
 #define LA_DCL
-#else
+#else  /* __STDC__ not defined */
 #define LA_ALIST retval, nargs, args
 #define LA_DCL struct descr *retval, *args; int nargs;
-#endif
+#endif /* __STDC__ not defined */
 
 /*
  * macros to fetch arguments
@@ -80,3 +80,25 @@
 
 /* access return value type */
 #define RETTYPE D_V(retval)
+
+/* extern/prototypes for functions; */
+#ifndef __P
+#ifdef __STDC__
+#define __P(X) X
+#else  /* __STDC__ not defined */
+#ifndef __P
+#define __P(X) ()
+#endif /* __P not defined */
+#endif /* __STDC__ not defined */
+
+/* lib/snolib/getstring.c; */
+void getstring __P((void *, char *, int));
+
+/* lib/snolib/retstring.c; */
+void retstring __P((struct descr *retval, char *cp, int len));
+
+/* lib/io.c; */
+int io_findunit __P((void));
+
+/* would like to add this, but requires stdio (due to use of typedef) */
+/* FILE *io_getfp __P((int)); */
