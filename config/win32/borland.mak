@@ -6,6 +6,9 @@
 # from ntmsvc.mak; nmake file for VC++ 5.0 on WinNT 4.0 by P. Budne 2/4/1998
 # from batch file by David Feustel
 
+# XXX use to define SNOLIB_DIR??
+DEST=\snobol4
+
 CC=bcc32.exe
 
 # -O2 Generate fastest possible code
@@ -244,3 +247,8 @@ sset.obj : $(SRCDIR)lib\snolib\sset.c
 
 tan.obj : $(SRCDIR)lib\snolib\tan.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\tan.c
+
+################################################################
+
+install:
+	config\install.bat win32 $(DEST)
