@@ -61,7 +61,7 @@
 /* must deal with A == C
  * 10/28/93
  */
-#define REMSP(A,B,C) \
+#define X_REMSP(A,B,C) \
     S_A(A) = S_A(B); \
     S_F(A) = S_F(B); \
     S_V(A) = S_V(B); \
@@ -69,7 +69,7 @@
     S_L(A) = S_L(B) - S_L(C); \
     CLR_S_UNUSED(A)
 
-#define LOCSP(A,B) \
+#define X_LOCSP(A,B) \
     if (D_A(B) == 0) S_L(A) = 0; \
     else { \
        S_A(A) = D_A(B); S_F(A) = D_F(B); S_V(A) = D_V(B); \
