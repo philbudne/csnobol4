@@ -87,6 +87,7 @@ osname(cp)
 {
     sys_init();
     strcpy(cp, _osname);
+    puts("osname() returning");		/* blows up on VAX if this not here? */
 }
 
 #ifdef TEST
