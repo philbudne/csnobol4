@@ -46,9 +46,9 @@ Pentium III	600x2 Linux 2.2.16  gcc		0.99.4 264351	pt 12/00
 Strawberry iMac 400   Linux 2.2.15  gcc -O2	0.99.4 240853	pb 10/00
 Pentium III	500x4 Linux 2.2.14  gcc		0.99.4 239082	pb 12/00
 Pentium III	500x2 Linux 2.2.14  gcc		0.99.4 235617	lt 10/00
-Pentium III	500   FreeBSD 4.5   gcc		0.99.4 216479	dm 4/02
 Strawberry iMac 400   Linux 2.2.15  gcc		0.99.4 233922	pb 5/00
 Celeron		450   FreeBSD 2.2.7 gcc		0.99.4 231095	pb 7/99
+Pentium III	500   FreeBSD 4.5   gcc		0.99.4 216479	dm 4/02
 PPC G4		500   Darwin 1.2    gcc		0.99.4 215052	rwu 11/00
 PPC G3		400   Linux 2.4.1   gcc		0.99.4 213915	prw 1/01
 Celeron		450   FreeBSD 3.4   gcc		0.99.4 204369	pb 10/00
