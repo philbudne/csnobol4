@@ -26,6 +26,7 @@ P6 (ASUS P6NP5)	200   FreeBSD 2.2   gcc -O2	0.99.1 103491	cl 11/96
 P6 (ASUS P6NP5)	200   FreeBSD 2.2   gcc		0.99.1  95608	cl 11/96
 P6 (DELL)	200   Linux 2.0.23  gcc		0.99.3	91072	rf 2/97
 SGI IP28 (R10K)	195   IRIX 6.2      cc		0.99    89823	rh 10/96
+HP 9000/778	160?  HP-UX 10.20   c89		0.99.3+	72868	pb 5/97
 HP 9000/780	160   HP-UX 10.20   c89		0.99.3	72698	rf 2/97
 Sun Ultra2 170E	167   SunOS 5.5.1   sproO5/cg92 0.99.3	70985	rf 2/97
 P6 (DEC 6150XL)	175   FreeBSD 2.2   gcc		0.99.1  70326	lm 10/96
@@ -72,10 +73,12 @@ i486SX		33    Linux 2.1.14  gcc		0.99.3	4865	ad 4/97
 Sun SS/IPC	25    SunOS 4.1.4   gcc		0.99.1  4565	pb 10/96
 HP 42T (68040)	25    HP-UX 8.00    c89		0.99    4485	pb 10/96
 HP 370 (68030)	33.3  Mt Xinu 4.3   gcc		0.99    3064	pb 10/96
+HP 370 (68030)	33.3  NetBSD 1.2E   gcc		0.99.3+ 3052*	pb 6/97
 pc532 (ns32532)	25    NetBSD 1.2    gcc		0.99    2823*	pb 10/96
 Sun-4/110	14.28 NetBSD 1.2    gcc		0.99.1  2751	pb 11/96
 A3000 (68030)	25    NetBSD 1.2    gcc		0.99    1872	pb 10/96
 IBM RT/6152	??    ACIS/AOS 4.3  gcc		0.99    1780*	pb 10/96
+Sun-3/80(68030)	20    SunOS 4.1.1   gcc		0.99.3+	1521	pb 6/97
 
 old timings;
 
