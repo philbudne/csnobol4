@@ -1,10 +1,15 @@
 $Id$
 
-IPv6 support in inet.c
-	supply getaddrinfo compat routines?
+create linux bindresvport_sa using bindresvport(6)??
+	prototype for bindresvport6, but no function in glibc 2.3.2!!
 
-define NEED_RRESVPORT_DECL for anyone using dummy/rresvport.c?
-	supply better rresvport??
+test/use bindresvport() for vms & win32 inet.c
+
+document inet6.c in porting.ms
+	vms/load.c
+	bindresvport
+	NEED_BINDRESVPORT
+	NEED_BINDRESVPORT_SA
 
 flush CONFIG_GUESS
 	generic/sys.c
@@ -16,7 +21,7 @@ complaints when compiling isnobol4.c on some systems??
 	SunPRO (config.h included multiple times w/ inlining
 		add protection?  move config.h to under ifndef XXX_STATIC?)
 
-too aggressive in using OWN_B(COPY|ZERO)!!
+too aggressive in using OWN_B(COPY|ZERO)?
 
 run comdef on lib/*/*.c
 	macros.h, snotypes.h

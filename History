@@ -2,11 +2,57 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+5/23/2003
+	flushed dummy/rresvport.c
+	config/vms/descrip.mms: UCXLIB, UCXOBJ, flush rresvport
+	config/win32/{borland,mingw,ntmsvc}.mak: flush rresvport
+	lib/vms/inet.c: punt on bindresvport()
+	lib/win32/inet.c: punt on bindresvport()
+	configure: define NEED_SOCKLEN_T
+
+5/22/2003
+	configure, Makefile2.m4:
+		use bindresvport[_sa]() instead of rresvport[_af]()
+	new: lib/auxil/bindresvport.c
+	lib/bsd/inet(6).c: switch from rresvport(_af) to bindresvport(_sa)
+
+5/20/2003
+	new: lib/vms/load.c: first cut at VMS LOAD() support!!
+	new: lib/bsd/inet6.c: use getaddrinfo()
+	new: lib/auxil/rresvport_af.c
+	configure: detect getaddrinfo(); use inet6.o
+		test for ipv6 first, add string(s).h comments
+	config/vms/descrip.mms: more cleanup, add load.c
+		use native popen(), bzero(), bcopy(), unlink()
+		use bsd/inet.c, posix/mstime.c
+		compiles without implicit warnings w C 6.5 on VMS 7.3!!
+	config/vms/config.h: add NEED_RRESVPORT_DECL, PML comment
+	pml.h: use PMLFUNC2 for renamed functions
+	include/lib.h: add getredirection(), popen(), pclose(), rresvport()
+	lib/init.c: cleanup, remove dynamic() extern
+	lib/io.c: remove externs for term_input(), {udp,tcp}_open(), popen()
+	lib/vms/getredirect.c: cleanup: use stdlib.h, lib.h
+	lib/vms/sys.c: use starlet.h for system prototypes
+	lib/{dummy,vms}/tty.c: add tty_suspend()
+	config/win32/config.h: add NEED_RRESVPORT_DECL
+	config/djgpp/config.h: add HAVE_STRINGS_H
+	Makefile2.m4: add rresvport_af.o, remove finite.o
+		add INET_O, INET6_C, inet6.o rule
+
+5/17/2003
+	configure: more HP-UX/ia64 tuning
+	INSTALL, config/vms/{config.h,descrip.mms}
+		update for Compaq C V6.5-001 on OpenVMS Alpha V7.3-1
+	config/vms/descrip.mms, lib/io.c, doc/porting.ms:
+		s/NO_OFF_T/NEED_OFF_T/
+
 5/16/2003
 	timing: add eval for debian 3.0
 	configure: more HP-UX/ia64 tuning
 	INSTALL: update --longlong, explain ILP32
 		include --lp64 caveat for HP-UX
+	config/{vms,win32}/config.h: HAVE_STRING_H
+	lib/win32/sys.c: detect WinServer2003, Win95OSR2, Win98SE
 
 5/15/2003
 	configure, include/str.h:
