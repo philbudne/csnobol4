@@ -107,7 +107,7 @@ OBJS=	main.o $(SNOBOL4).o data.o data_init.o syn.o bal.o convert.o \
 	realst.o replace.o str.o stream.o top.o tree.o version.o \
 	_OBJS $(PML_OBJS)
 
-SRCS=	main.c $(SNOBOL4).c data.c data_init.c $(BAL_C) $(CONVERT_C) \
+SRCS=	main.c $(SNOBOL4).c data.c data_init.c syn.c $(BAL_C) $(CONVERT_C) \
 	$(DATE_C) $(DUMP_C) $(DYNAMIC_C) $(ENDEX_C) $(EXP_C) $(HASH_C) \
 	$(INIT_C) $(INTSPC_C) $(IO_C) $(LEXCMP_C) $(LOAD_C) \
 	$(MSTIME_C) $(ORDVST_C) $(PAIR_C) $(PAT_C) $(PML_C) \
@@ -133,19 +133,19 @@ $(SNOBOL4).o: $(SNOBOL4).c
 
 # regular version
 snobol4.c: procs genc.sno globals v311.sil 
-	rm -f snobol4.c.TMP
-	$(SNO) genc.sno > snobol4.c.TMP
-	mv snobol4.c.TMP snobol4.c
+	rm -f snobol4.c2 proc.h2
+	$(SNO) genc.sno > snobol4.c2
+	mv snobol4.c2 snobol4.c
 
 # inline version (functions reordered)
 isnobol4.c: procs genc.sno globals v311.sil inline.sno
-	rm -rf isnobol4.c.TMP prolog subr
+	rm -rf isnobol4.c2 proc.h2 prolog subr
 	mkdir subr
 	$(SNO) inline.sno > prolog
 	cd subr; cat ../prolog \
 		`awk '{print $$2, $$1}' ../callgraph | tsort 2>/dev/null` \
-			> ../isnobol4.c.TMP
-	mv isnobol4.c.TMP isnobol4.c
+			> ../isnobol4.c2
+	mv isnobol4.c2 isnobol4.c
 	rm -rf prolog subr
 
 proc.h2: $(SNOBOL4).c
@@ -158,7 +158,9 @@ proc.h:	proc.h2
 # only change syn.h if it has changed from last run!
 
 syn.c syn.h2: syntax.tbl gensyn.sno
+	rm -f syn.c2 syn.h2
 	$(SNO) gensyn.sno
+	mv syn.c2 syn.c
 
 syn.h:	syn.h2
 	cmp syn.h syn.h2 || cp syn.h2 syn.h
@@ -166,6 +168,7 @@ syn.h:	syn.h2
 ################
 
 data.h2 data.c2 equ.h2 data_init.h2: v311.sil gendata.sno
+	rm -rf data.h2 data.c2 equ.h2 data_init.h2
 	$(SNO) gendata.sno
 
 data.h:	data.h2
