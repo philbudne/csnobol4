@@ -9,14 +9,13 @@ well as the return type.
 
 The named function will first be searched for in a table built in at
 compile time (see section 3).  Dynamic loading of functions is
-supported three different ways;
+supported a number of different ways;
 
 	A. Using Unix 98 dlopen() and dlsym() dynamic library functions
 		Currently available under;
 		AIX (4.2 or later), BSD/OS, FreeBSD, NetBSD, OpenBSD,
 		Cygwin, Darwin (MacOS	X), HP-UX (64-bit), IRIX,
-		Linux, SunOS4 (Solaris 1), SunOS5 (Solaris 2.x, 7, 8),
-		Tru64 (the operating system formerly known as OSF/1),
+		Linux, SunOS4, SunOS5, OSF1/DU/Tru64.
 		(see section 4. for more information)
 
 	B. Using HP-UX shared-library functions (32-bit HP-UX)
@@ -46,6 +45,9 @@ The following snolib functions are available by default
 	RENAME, SQRT, DELETE, FILE, LOG, EXP, CHOP, SIN, COS, TAN,
 	IO_FINDUNIT, SSET, SERV_LISTEN, ORD
 
+	The LOGIC function is linked into the snobol4 executable,
+	but must be accessed using LOAD() before it is available.
+
 2. Creating a C function to be loaded.
 
 An external C function should be declared as follows (see lib/snolib
@@ -56,6 +58,7 @@ for many examples);
     #include "snotypes.h"
     #include "macros.h"
     #include "load.h"
+    #include "equ.h"
 
     int
     NAME( LA_ALIST ) LA_DCL
@@ -91,20 +94,36 @@ type STRING, and to use RETNULL on success and RETFAIL on failure.
 
 2.2 Parameters
 
-Parameters can be accessed via the following macros;
+Parameters are accessed positionally via the following macros.  When a
+data type is specified in the LOAD() prototype, values passed to the
+function will automatically be CONVERT()ed to the specified data type.
+The following macros do NOT perform data type conversion, and using the
+wrong macro to access a parameter will return garbage, or worse.
+
+For a function loaded with LOAD("MUMBLE(INTEGER,REAL,STRING)")
 
 for INTEGER parameters;
-	LA_INT(0)	access the 1st parameter as an integer (int_t)
+	LA_INT(0)	gets value of 1st parameter; returns int_t.
 
 for REAL parameters;
-	LA_REAL(1)	access the 2nd parameter as a real (real_t)
-			(where n is zero based)
+	LA_REAL(1)	gets value of 2nd parameter; returns real_t
 
 for STRING parameters;
-	LA_PTR(2)	access the 3rd parameter as a pointer (void *) to
-			pass to the getstr() function from snolib/getstr.c
-			to retrieve a string, ie;
-				getstr(LA_PTR(2), buffer, sizeof(buffer));
+	getstr(LA_PTR(2), buffer, sizeof(buffer));
+			fetches 3rd parameter into used supplied buffer
+			as NUL terminated C string.
+		
+	LA_STR_PTR(2)	return a (const char *) pointer (or NULL) to
+			string data.
+
+				*** NOTE***
+
+			The parameter MUST be a	string!!
+			The referenced data MUST NOT be modified
+			The data is not NUL terminated; see LA_STR_LEN()
+
+	LA_STR_LEN(2)	returns string length.
+			The referenced parameter MUST be a string!!
 
 Complex datatypes are described in the "dt.h" include file, and can be
 referenced using the LA_PTR() macro.
