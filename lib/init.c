@@ -74,7 +74,7 @@ usage( jname )
 /* XXX stuff about parameters */
     p( "-b\ttoggle display of startup banner\n");
     fprintf(stderr,
-	    "-d BYTES[k]\n\tsize of dynamic region in bytes (default: %d)\n",
+	    "-d BYTES[km]\n\tsize of dynamic region in bytes (default: %d)\n",
 	    NDYNAMIC*DESCR);
     p( "-f\ttoggle folding of identifiers to upper case (-CASE)\n");
     p( "-h\tthis message\n");
@@ -86,11 +86,11 @@ usage( jname )
     p( "-s\ttoggle display of statistics\n");
     p( "-u PARMS\n\tparameter data available via HOST(0)\n");
     p( "-M\tprocess multiple input files\n");
-    p( "-P BYTES[k]\n");
+    p( "-P BYTES[km]\n");
     fprintf(stderr, "\tsize of pattern match stack in bytes (default: %d)\n",
 	    PSSIZE);
     p( "\n");
-    fprintf(stderr, "in memory region sizes a suffix of 'k' (1024) and 'm' (1024*1024)\n");
+    fprintf(stderr, "For memory region sizes a suffix of 'k' (1024) and 'm' (1024*1024)\n");
     fprintf(stderr, "can be used. Descriptor size is %d bytes\n", DESCR );
     exit(1);
 }
