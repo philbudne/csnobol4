@@ -15,9 +15,9 @@ Makefile2: config.m4 Makefile2.m4
 	make -f $(M2TMP) depend MAKEFILE2=$(M2TMP)
 	mv $(M2TMP) Makefile2
 
-config.h:
-	@echo 'copy (or link) a suitable file from config/ to config.h'
-	@exit 1
+config.m4:
+	./configure > config.m4.tmp
+	mv config.m4.tmp config.m4
 
 clean:	Makefile2
 	$(MAKE) -f Makefile2 clean

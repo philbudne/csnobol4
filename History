@@ -3,6 +3,11 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
+8/25/96
+	Makefile: use new configure script
+	configure: create config.m4 from thin air, using config.guess
+	config.guess: GNU script
+
 8/19/96
 	Makefile2.m4: renamed lib/aux/ to lib/auxil/
 		AUX is a reserved filename in DOS(?!) thanks to Mark Emmer
