@@ -89,14 +89,15 @@ include(config.m4)
 # NOTE: NOT named CPPFLAGS; some versions of make include CPPFLAGS in cc cmd
 MYCPPFLAGS=-I./[include] -I. _CPPFLAGS
 
-CFLAGS=[]_OPT $(MYCPPFLAGS)
+COPT=[]_OPT
+CFLAGS=$(COPT) $(MYCPPFLAGS)
 
 LDFLAGS=[]_LDFLAGS
 
 # bootstrapped using Catspaw SPARC SPITBOL
 #SNO=spitbol -i512k -b
 #SMALL_SNO=spitbol -b
-SNO=snobol4 -d50000 -b
+SNO=snobol4 -d50k -b
 SMALL_SNO=snobol4 -b
 
 ################
