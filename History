@@ -2,6 +2,12 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+7/4/97:
+	Makefile: made Makefile2 precious
+	INSTALL: add --no-dlopen --no-dynlib
+	doc/snobol4.1: add IO_FINDUNIT(), unit range, /dev/fd/n, dlopen(3)
+	doc/porting.ms: add NO_FDOPEN
+
 7/3/97:
 	lib/io.c: add /dev/fd/ magic path, NO_FDOPEN ifdef
 		add FL_NOCLOSE flag bit (but do fflush)
