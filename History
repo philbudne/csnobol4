@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+11/23/98
+	lib/io.c: pass mode to osdep_open()
+	doc/porting.ms: update
+
 11/09/98
 	config.guess: updated to new version
 		added romp-ibm-aos
