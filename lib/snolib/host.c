@@ -94,6 +94,9 @@ HOST( LA_ALIST ) LA_DCL
 	    break;			/* fail if no such variable */
 	RETSTR(env);
 
+    case 2000:				/* extension */
+	RETSTR(CONFIG_GUESS);
+
     default:
 	break;
     }
