@@ -2,6 +2,9 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
+6/10/94
+	Added RETxxx macros to load.h
+
 6/9/94
 	Gave WIPS talk at Boston Usenix
 	Created configs for aix, linux, irix, sunos5
