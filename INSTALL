@@ -428,7 +428,7 @@ on GCC.  Burkhard Meissner has ported CSNOBOL4 to DJGPP.
 To compile using GNU make (not tested);
 	make -f config/djgpp/Makefile
 
-To enable optional support for WATTCP and DXE based loading, see
+To enable optional support for WATTCP and DXE2 based loading, see
 the commented out lines in the Makefile.
 
 Anything else
