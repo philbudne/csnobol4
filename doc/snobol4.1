@@ -102,19 +102,19 @@ usage;
 
 .ta 2i
 .nf
-exponentiation	^\0**
-alternation	|\0!
-unary negation	~\0\\
-assignment	=\0_
-comment line	*\0#\0|\0;\0!
-continuation	+\0.
+Exponentiation:	^\0**
+Alternation:	|\0!
+Unary negation:	~\0\\
+Assignment:	=\0_
+Comment line:	*\0#\0|\0;\0!
+Continuation line:	+\0.
 .fi
 .PP
-Both brackets ([]) and widgits/angle-brackets (<>) may be used to
-subscript arrays and tables.  The
+Both square-brackets ([]) and widgits/angle-brackets (<>) may be used
+to subscript arrays and tables.  The
 .B TAB
-(ASCII 9) character is accepted as a space, but since the compiler
-does not expand them, it's use may cause confusion in listings and
+(ASCII 9) character is accepted as whitespace, but since the compiler
+does not expand them, it's use may cause misalignment in listings and
 error messages.  Note that the use of the pound sign for comments
 allows use of the shell interpreter sequence at the top of a file (ie;
 "#!/usr/local/bin/snobol4 -b").  Underscore (_) and period (.) are
@@ -316,11 +316,12 @@ once a table has been initialized to avoid the creation of empty
 entries that normally occurs on table entry lookup failure.
 
 .TP
-.Exponents
+Scientific notation
 .br
 .B REAL
 number syntax has been expanded to allow exponents
-of the form
+of the form:
+.br
 .IR "ANY('DeEe') ('+' | '-' | '') SPAN('0123456789')" .
 
 .SS "I/O Associations"
