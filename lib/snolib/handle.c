@@ -47,7 +47,7 @@ new_handle(hlp, vp)
     /* XXX save initial "next" value, avoid infinite loop! */
     do {
 	h = hlp->next++;
-    } while (hp->handle == BAD_HANDLE || lookup_handle(hlp, h));
+    } while (h == BAD_HANDLE || lookup_handle(hlp, h));
 
     /* allocate block */
     hp = malloc(sizeof(struct handle_entry));
