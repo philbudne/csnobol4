@@ -79,14 +79,14 @@ bindresvport_sa(sd, sa)
 	int i;
 
 	if (sa == NULL) {
-		bzero((void *)&myaddr, sizeof(myaddr));
+		bzero(&myaddr, sizeof(myaddr));
 		sa = (struct sockaddr *)&myaddr;
 
 		if (getsockname(sd, sa, &salen) == -1)
 			return -1;	/* errno is correctly set */
 
 		af = sa->sa_family;
-		memset(&myaddr, 0, salen);
+		bzero(&myaddr, salen);
 	} else
 		af = sa->sa_family;
 
