@@ -1,3 +1,5 @@
+/* XXX use FINDUNIT() thruout */
+
 /* $Id$ */
 
 #ifdef USE_STDARG_H			/* only if varargs not available */
@@ -50,9 +52,6 @@ typedef long off_t;
 #endif /* SEEK_END not defined */
 
 #define NUNITS 256			/* XXX set at runtime? */
-
-/* check an internal (zero based) unit number; */
-#define BADUNIT(U) ((U) < 0 || (U) >= NUNITS)
 
 /* names associated with UNITI, UNITO, UNITP(!), UNITT */
 #define STDIN_NAME  "stdin"		/* XXX "-" ? */
@@ -107,17 +106,37 @@ struct file {
 #define MAXFNAME	1024		/* XXX use MAXPATHLEN? POSIX?? */
 #define MAXOPTS		1024
 
-/* XXX malloc at runtime? */
-static struct unit io_units[NUNITS];
+struct iovars {
+    /* XXX malloc at runtime? */
+    struct unit units[NUNITS];
+    struct file *includes;		/* list of included files */
+    int compiling;			/* TRUE iff compiler still running */
+    int finger;				/* for io_findunit */
+};
 
-static struct file *includes;		/* list of included files */
-static int compiling;			/* TRUE iff compiler still running */
-static FILE *termin;			/* TERMINAL input */
+#ifdef NO_STATIC_VARS
+#define iov (*(vars.iovars))
+#else  /* NO_STATIC_VARS not defined */
+static struct iovars iov;
+#endif /* NO_STATIC_VARS not defined */
+
+/* convert to internal (zero based) unit number; */
+#define INTERN(U) ((U)-1)
+
+/* check an internal (zero based) unit number; */
+#define BADUNIT(U) ((U) < 0 || (U) >= NUNITS)
+
+/*
+ * take internal (zero-based) unit number; return "struct unit *"
+ * hide all access to units array, so it can be made sparse
+ */
+#define FINDUNIT(N) (iov.units + (N))
 
 extern int rflag;			/* from init.c */
 extern FILE *term_input();		/* from <system>/term.c */
 extern void *malloc();
 
+extern FILE *tcp_open(), *udp_open();
 #ifdef NEED_POPEN_DECL
 extern FILE *popen();
 #endif /* NEED_POPEN_DECL defined */
@@ -154,7 +173,7 @@ io_addfile( unit, path, append )
     if (fp == NULL)
 	return FALSE;
 
-    up = io_units + unit;
+    up = FINDUNIT(unit);
     if (append) {			/* add to end of list */
 	struct file *tp;
 
@@ -187,7 +206,7 @@ io_close(unit)				/* internal (zero-based unit) */
     struct unit *up;
     int ret;
 
-    up = io_units + unit;
+    up = FINDUNIT(unit);
     fp = up->curr;
     if (fp == NULL)
 	return TRUE;
@@ -224,22 +243,24 @@ io_closeall(unit)			/* internal (zero-based unit) */
     int unit;
 {
     struct file *fp, *next;
+    struct unit *up;
     int ret;
 
     /* close any/all open files on chain */
     ret = TRUE;
-    while (io_units[unit].curr != NULL)
+    up = FINDUNIT(unit);
+    while (up->curr != NULL)
 	if (!io_close(unit))
 	    ret = FALSE;
 
     /* free up all file structs */
-    fp = io_units[unit].head;
+    fp = up->head;
     while (fp != NULL) {
 	next = fp->next;
 	free(fp);
 	fp = next;
     }
-    io_units[unit].curr = io_units[unit].head = NULL;
+    up->curr = up->head = NULL;
 
     return ret;
 }
@@ -305,7 +326,6 @@ io_fopen2( fp, mode )
 	char fn2[MAXFNAME];		/* XXX */
 	char *host, *service, *cp;
 	int priv;
-	extern FILE *tcp_open(), *udp_open();
 
 	priv = 0;
 	strcpy( fn2, fp->fname + 5 );	/* XXX strdup()? */
@@ -356,7 +376,7 @@ io_fopen2( fp, mode )
      */
     if (osdep_open(fp->fname, &fp->f))
 	return;				/* intercepted */
-#endif
+#endif /* OSDEP_FOPEN defined */
 
     /* **** add new special filename hacks here *** */
 
@@ -406,8 +426,10 @@ io_next( unit )				/* internal (zero-based unit) */
     int unit;
 {
     struct file *fp;
+    struct unit *up;
 
-    fp = io_units[unit].curr;
+    up = FINDUNIT(unit);
+    fp = up->curr;
     if (fp == NULL)
 	return FALSE;
 
@@ -416,7 +438,7 @@ io_next( unit )				/* internal (zero-based unit) */
 	io_close(unit);			/* close, and advance */
 
     /* get new current file (io_close advances to next file in list) */
-    fp = io_units[unit].curr;
+    fp = up->curr;
     if (fp == NULL)
 	return FALSE;
 
@@ -436,7 +458,7 @@ void
 io_input( path )
     char *path;
 {
-    io_addfile( UNITI-1, path, TRUE );	/* append to list! */
+    io_addfile( INTERN(UNITI), path, TRUE );	/* append to list! */
 }
 
 /* setup a unit given an open fp and a "filename" */
@@ -460,10 +482,10 @@ io_mkfile2( unit, f, fname, flags )
 	fp->flags |= FL_TTY;
     }
 
-    unit--;				/* make zero-based */
+    unit = INTERN(unit);
     io_closeall(unit);			/* close unit */
 
-    up = io_units + unit;
+    up = FINDUNIT(unit);
     up->head = up->curr = fp;
     up->offset = 0;
 
@@ -486,15 +508,30 @@ io_mkfile( unit, f, fname )
 void
 io_init()				/* here from INIT */
 {
-    if (io_units[UNITI-1].curr == NULL) { /* no input file(s)? */
+    struct unit *up;
+    FILE *termin;
+
+#ifdef NO_STATIC_VARS
+    vars.iovars = (struct iovars *)malloc(sizeof(struct iovars));
+    if (!vars.iovars) {
+	perror("iovars malloc failed");
+	exit(1);
+    }
+    bzero(vars.iovars, sizeof(struct iovars));
+#endif /* NO_STATIC_VARS defined */
+
+    /* XXX allocate units array here? */
+
+    up = FINDUNIT(INTERN(UNITI));
+    if (up->curr == NULL) {		/* no input file(s)? */
 	if (!io_mkfile2(UNITI, stdin, STDIN_NAME, FL_NOCLOSE)) {
 	    perror("io_mkfile(stdin)");
 	    exit(1);
 	}
     }
     else {
-	if (!io_next(UNITI-1)) {
-	    perror(io_units[UNITI-1].curr->fname);
+	if (!io_next(INTERN(UNITI))) {
+	    perror(up->curr->fname);
 	    exit(1);
 	}
     }
@@ -520,12 +557,12 @@ io_init()				/* here from INIT */
     termin = term_input();		/* call system dependant function */
     if (termin) {
 	if (!io_mkfile2(UNITT, termin, TERMIN_NAME, FL_NOCLOSE)) {
-	    perror("io_mkfile(termin)");
+	    perror("could not open TERMINAL for input");
 	    exit(1);
 	}
     }
 
-    compiling = 1;
+    iov.compiling = 1;
 } /* io_init */
 
 /* limited printf */
@@ -543,20 +580,22 @@ io_printf
     FILE *f;
     char line[1024];			/* XXX */
     char *lp;
+    struct unit *up;
 #ifdef USE_STDARG_H
     va_start(vp,unit);
 #else  /* USE_STDARG_H not defined */
     int unit;
-
     va_start(vp);
 
     unit = va_arg(vp, int);
 #endif /* USE_STDARG_H not defined */
 
-    unit--;				/* make zero-based */
-    if (BADUNIT(unit) ||
-	io_units[unit].curr == NULL ||
-	(f = io_units[unit].curr->f) == NULL)
+    unit = INTERN(unit);
+    if (BADUNIT(unit))
+	return;
+
+    up = FINDUNIT(unit);
+    if (up->curr == NULL || (f = up->curr->f) == NULL)
 	return;
 
     /* keep output in line buffer, in case output unbuffered (ie; stderr) */
@@ -630,6 +669,7 @@ io_print( iokey, iob, sp )		/* STPRNT */
 {
     int unit;
     struct file *fp;
+    struct unit *up;
     FILE *f;
     int ret;
 
@@ -641,13 +681,12 @@ io_print( iokey, iob, sp )		/* STPRNT */
 
     D_A(iokey) = FALSE;			/* default to error */
 
-    unit = D_A(*iob + 1);
-    unit--;				/* make zero-based */
-
+    unit = INTERN(D_A(*iob + 1));
     if (BADUNIT(unit))
 	return;
 
-    fp = io_units[unit].curr;
+    up = FINDUNIT(unit);
+    fp = up->curr;
     if (fp == NULL)
 	return;
 
@@ -673,7 +712,7 @@ io_print( iokey, iob, sp )		/* STPRNT */
 
 	len = S_L(sp);
 	cp = S_SP(sp);
-	if (compiling) {
+	if (iov.compiling) {
 	    char *ep;
 	    int l2;
 
@@ -691,7 +730,7 @@ io_print( iokey, iob, sp )		/* STPRNT */
 		cp++;
 	    }
 	    cp = S_SP(sp);
-	} /* compiling */
+	} /* iov.compiling */
 
 #ifndef NO_UNBUF_RW
 	if (fp->flags & FL_UNBUF) {
@@ -699,7 +738,7 @@ io_print( iokey, iob, sp )		/* STPRNT */
 		ret = FALSE;
 	}
 	else
-#endif /* NO_UNBUF_RW */
+#endif /* NO_UNBUF_RW not defined */
 	if (fwrite( cp, 1, len, f ) != len)
 	    ret = FALSE;
     } /* have string */
@@ -711,7 +750,7 @@ io_print( iokey, iob, sp )		/* STPRNT */
 		ret = FALSE;
 	}
 	else
-#endif /* NO_UNBUF_RW */
+#endif /* NO_UNBUF_RW not defined */
 	if (putc( '\n', f ) == EOF)
 	    ret = FALSE;
     }
@@ -722,7 +761,7 @@ io_print( iokey, iob, sp )		/* STPRNT */
 	if (fflush(f) == EOF)
 	    ret = FALSE;
     }
-#endif /* NO_UNBUF_RW */
+#endif /* NO_UNBUF_RW defined */
 
     D_A(iokey) = ret;
 } /* io_print */
@@ -731,16 +770,21 @@ int
 io_endfile(unit)			/* ENFILE */
     int unit;
 {
-    unit--;				/* make zero-based */
-    if (BADUNIT(unit) ||
-	io_units[unit].curr == NULL && io_units[unit].head == NULL) {
-	/* fatal error in SPITBOL, but not in SNOBOL4+ */
+    struct unit *up;
+
+    unit = INTERN(unit);
+
+    /* bad unit a fatal error in SPITBOL, but not in SNOBOL4+; */
+    if (BADUNIT(unit))
 	return TRUE;
-    }
+    up = FINDUNIT(unit);
+    if (up->curr == NULL && up->head == NULL)
+	return TRUE;
+
     return io_closeall(unit);
 }
 
-#define COMPILING(UNIT) ((UNIT) == UNITI-1 && compiling)
+#define COMPILING(UNIT) ((UNIT) == INTERN(UNITI) && iov.compiling)
 
 enum io_read_ret
 io_read( dp, sp )			/* STREAD */
@@ -753,10 +797,10 @@ io_read( dp, sp )			/* STREAD */
     char *cp;
     FILE *f;
     struct file *fp;
+    struct unit *up;
 
-    unit = D_A(dp);
-    unit--;				/* make zero-based */
-    if (BADUNIT(unit) || io_units[unit].curr == NULL) {
+    unit = INTERN(D_A(dp));
+    if (BADUNIT(unit) || (up = FINDUNIT(unit)) == NULL || up->curr == NULL) {
 	if (COMPILING(unit)) {
 	    return IO_ERR;		/* compiler never quits!! */
 	}
@@ -766,7 +810,7 @@ io_read( dp, sp )			/* STREAD */
     recl = S_L(sp);			/* YUK! */
     cp = S_SP(sp);
     for (;;) {
-	fp = io_units[unit].curr;
+	fp = up->curr;
 	f = fp->f;
 	if (f == NULL) {
 	    f = io_fopen( fp, "r" );
@@ -907,13 +951,13 @@ io_rewind(unit)				/* REWIND */
     struct file *fp;
     struct unit *up;
 
-    unit--;				/* make zero-based */
+    unit = INTERN(unit);
     if (BADUNIT(unit))
 	return;
 
-    up = io_units + unit;
+    up = FINDUNIT(unit);
     if (up->curr != up->head) {
-	if (up->curr != NULL)		/* file is open but not first in list */
+	if (up->curr != NULL)		/* open file not first in list */
 	    io_close(unit);		/* close it */
 	up->curr = up->head;		/* reset to head of list */
 	if (up->curr->f == NULL)
@@ -939,7 +983,7 @@ io_ecomp()				/* XECOMP */
     struct unit *up;
     struct file *fp;
 
-    compiling = 0;			/* turn off crocks for compiler */
+    iov.compiling = 0;			/* turn off crocks for compiler */
 
     if (rflag == 0) {
 	/* if -r was not given, switch INPUT to stdin!! */
@@ -956,7 +1000,7 @@ io_ecomp()				/* XECOMP */
      * but SPARC SPITBOL doesn't!
      */
 
-    up = io_units + UNITI - 1;
+    up = FINDUNIT(UNITI - 1);
 
     /* free source files... */
     fp = up->head;
@@ -972,12 +1016,12 @@ io_ecomp()				/* XECOMP */
     up->offset = ftell(up->curr->f);	/* save offset for rewind */
 
     /* free list of included filenames */
-    while (includes) {
+    while (iov.includes) {
 	struct file *tp;
 
-	tp = includes->next;
-	free(includes);
-	includes = tp;
+	tp = iov.includes->next;
+	free(iov.includes);
+	iov.includes = tp;
     }
 }
 
@@ -1099,14 +1143,15 @@ io_openi(dunit, sfile, sopts, drecl)	/* called from SNOBOL INPUT() */
     char fname[MAXFNAME];		/* XXX malloc(S_L(sfile)+1)? */
     char opts[MAXOPTS];			/* XXX malloc(S_L(sopts)+1)? */
     struct file *fp;
+    struct unit *up;
     FILE *f;
     int unit;
     int recl;
 
-    unit = D_A(dunit);
-    unit--;				/* make zero-based */
+    unit = INTERN(D_A(dunit));
     if (BADUNIT(unit))
 	return FALSE;			/* fail */
+    up = FINDUNIT(unit);
 
     spec2str( sfile, fname, sizeof(fname) );
     spec2str( sopts, opts, sizeof(opts) );
@@ -1120,7 +1165,7 @@ io_openi(dunit, sfile, sopts, drecl)	/* called from SNOBOL INPUT() */
 	fp = io_newfile(fname);
     }
     else {
-	fp = io_units[unit].curr;
+	fp = up->curr;
     }
     if (fp == NULL)
 	return FALSE;
@@ -1137,7 +1182,7 @@ io_openi(dunit, sfile, sopts, drecl)	/* called from SNOBOL INPUT() */
 	    return FALSE;		/* fail; no harm done! */
 	}
 	io_closeall(unit);
-	io_units[unit].curr = io_units[unit].head = fp;
+	up->curr = up->head = fp;
     }
 
     fp->flags |= FL_INPUT;
@@ -1159,13 +1204,14 @@ io_openo(dunit, sfile, sopts)		/* called from SNOBOL OUTPUT() */
     char fname[MAXFNAME];		/* XXX malloc(S_L(sfile)+1)? */
     char opts[MAXOPTS];			/* XXX malloc(S_L(sopts)+1)? */
     struct file *fp;
-    FILE *f;
+    struct unit *up;
     int unit;
+    FILE *f;
 
-    unit = D_A(dunit);
-    unit--;				/* make zero-based */
+    unit = INTERN(D_A(dunit));
     if (BADUNIT(unit))
 	return FALSE;			/* fail */
+    up = FINDUNIT(unit);
 
     spec2str( sfile, fname, sizeof(fname) );
     spec2str( sopts, opts, sizeof(opts) );
@@ -1179,7 +1225,7 @@ io_openo(dunit, sfile, sopts)		/* called from SNOBOL OUTPUT() */
 	fp = io_newfile(fname);
     }
     else {
-	fp = io_units[unit].curr;
+	fp = up->curr;
     }
 
     if (fp == NULL)
@@ -1196,7 +1242,7 @@ io_openo(dunit, sfile, sopts)		/* called from SNOBOL OUTPUT() */
 	    return FALSE;		/* fail; no harm done! */
 
 	io_closeall(unit);
-	io_units[unit].curr = io_units[unit].head = fp;
+	up->curr = up->head = fp;
     }
     fp->flags |= FL_OUTPUT;
 
@@ -1211,12 +1257,13 @@ io_include( dp, sp )
     int l;
     char fname[MAXFNAME];		/* XXX */
     struct file *fp;
+    struct unit *up;
     int unit;
 
     spec2str( sp, fname, sizeof(fname) );
 
-    /* seach includes list to see if file already included!! */
-    for (fp = includes; fp; fp = fp->next)
+    /* search includes list to see if file already included!! */
+    for (fp = iov.includes; fp; fp = fp->next)
 	if (strcmp(fname, fp->fname) == 0) /* found it!!! */
 	    return TRUE;
 
@@ -1256,18 +1303,17 @@ io_include( dp, sp )
 	}
     }
 
-    unit = D_A(dp);
-    unit--;				/* make zero-based */
+    up = FINDUNIT(INTERN(D_A(dp)));
 
     /* push new file onto top of input list */
-    fp->next = io_units[unit].curr;
-    io_units[unit].curr = fp;
+    fp->next = up->curr;
+    up->curr = fp;
 
     /* add base filename to list of files already included */
     fp = io_newfile(fname);		/* reuse struct file!! */
     if (fp) {
-	fp->next = includes;
-	includes = fp;			/* XXX keep per unit? nah. */
+	fp->next = iov.includes;
+	iov.includes = fp;		/* XXX keep per unit? nah. */
     }
     return TRUE;
 }
@@ -1283,10 +1329,15 @@ io_file( dp, sp )
 {
     int unit;
     struct file *fp;
+    struct unit *up;
 
-    unit = D_A(dp);
-    unit--;				/* make zero-based */
-    if (BADUNIT(unit) || (fp = io_units[unit].curr) == NULL)
+    unit = INTERN(D_A(dp));
+    if (BADUNIT(unit))
+	return FALSE;
+
+    up = FINDUNIT(unit);
+    fp = up->curr;
+    if (fp == NULL)
 	return FALSE;
 
     S_A(sp) = (int_t) fp->fname;	/* OY! */
@@ -1312,11 +1363,15 @@ io_seek(dunit, doff, dwhence)
     int unit, whence;
     off_t off;
     struct file *fp;
+    struct unit *up;
     FILE *f;
 
-    unit = D_A(dunit);
-    unit--;				/* make zero-based */
-    if (BADUNIT(unit) || (fp = io_units[unit].curr) == NULL)
+    unit = INTERN(D_A(dunit));
+    if (BADUNIT(unit))
+	return FALSE;
+    up = FINDUNIT(unit);
+    fp = up->curr;
+    if (fp == NULL)
 	return FALSE;
 
     off = D_A(doff);
@@ -1343,7 +1398,7 @@ io_seek(dunit, doff, dwhence)
 	D_A(doff) = pos;		/* XXX truncation possible! */
     }
     else
-#endif /* NO_UNBUF_RW */
+#endif /* NO_UNBUF_RW not defined */
     if (fseek(f, off, whence) == 0)
 	D_A(doff) = ftell(f);		/* XXX truncation possible! */
     else
@@ -1361,18 +1416,20 @@ io_flushall(dummy)
 {
     int i;
 
-    for (i = 0; i < NUNITS; i++) {
+    for (i = 1; i <= NUNITS; i++) {
 	struct file *fp;
+	struct unit *up;
 
-	fp = io_units[i].curr;
+	up = FINDUNIT(INTERN(i));
+	fp = up->curr;
 	if (fp) {
 	    FILE *f;
 
-	    f = io_units[i].curr->f;
+	    f = up->curr->f;
 	    if (f) {
 		if (fp->flags & FL_TTY)
 		    tty_mode(f, 0, 0, 0); /* restore tty settings */
-		fflush(io_units[i].curr->f); /* keep err count?? */
+		fflush(up->curr->f);	/* keep err count?? */
 	    } /* have f */
 	} /* have fp */
     } /* foreach unit */
@@ -1390,19 +1447,22 @@ io_flushall(dummy)
 int
 io_findunit()
 {
-    static int finger;
     int start;
 
     for (;;) {
-	if (finger < MINFIND)
-	    finger = MAXFIND;
+	if (iov.finger < MINFIND)
+	    iov.finger = MAXFIND;
 
-	start = finger;
-	while (finger >= MINFIND) {
-	    if (io_units[finger-1].curr == NULL &&
-		io_units[finger-1].head == NULL)
-		return finger--;	/* found a free unit */
-	    finger--;
+	start = iov.finger;
+	while (iov.finger >= MINFIND) {
+	    int u;
+	    struct unit *up;
+
+	    u = INTERN(iov.finger);
+	    up = FINDUNIT(u);
+	    if (up->curr == NULL && up->head == NULL)
+		return u;		/* found a free unit */
+	    iov.finger--;
 	}
 
 	/*
@@ -1423,10 +1483,17 @@ FILE *
 io_getfp(unit)
     int unit;				/* "external" unit */
 {
-    unit--;				/* make zero-based */
-    if (BADUNIT(unit) || io_units[unit].curr == NULL)
+    struct unit *up;
+
+    unit = INTERN(unit);
+    if (BADUNIT(unit))
 	return NULL;
-    return io_units[unit].curr->f;
+
+    up = FINDUNIT(unit);
+    if (up->curr == NULL)
+	return NULL;
+
+    return up->curr->f;
 } /* io_getfp */
 
 /*
@@ -1461,6 +1528,11 @@ io_finish() {
     /* should visit from most recently opened to least recent? */
     for (i = 0; i < NUNITS; i++)
 	io_closeall(i);
+
+#ifdef NO_STATIC_VARS
+    free(vars.iovars);
+    vars.iovars = NULL;
+#endif /* NO_STATIC_VARS defined */
 
     return TRUE;
 }
