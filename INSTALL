@@ -133,10 +133,7 @@ following options (multiple instances of options that begin with
 		degrade performance.
 
 		If the underlying C compiler does not implement the
-		LP64 model, this option may have disastrous results;
-		the current implementation DEPENDS on the fact that
-		the C data type used to represent integers is the same width
-		as the C data types used to represent REALs and pointers.
+		LP64 model, this option may have disastrous results.
 
 		It does NOT select use of "long long" to represent
 		SNOBOL4 integers, so --lp64 is useless on 32-bit systems
@@ -177,7 +174,8 @@ following options (multiple instances of options that begin with
 		Disable use of all dynamic LOAD() support mechanisms
 
 	--no-gcc
-		Eliminate GNU C Compiler (GCC) from consideration.
+		Don't look for GNU C Compiler (gcc).  However, if the
+		cc command is GCC based, it will be used.
 
 	--no-inline
 		Disable any compiler options for code inlining, select
