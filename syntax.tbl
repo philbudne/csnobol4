@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.2  93/11/02  18:05:14  phil
+* Added RCS Id and Log keywords
+* 
 *
 BEGIN BIOPTB
 FOR(PLUS) PUT(ADDFN) GOTO(TBLKTB)
@@ -128,6 +131,8 @@ ELSE ERROR
 END NUMCTB
 
 BEGIN SNABTB
+* [PLB1] added COMMA 10/28/93 -- need one of each PLUGTB/CLERTB action
+FOR(COMMA) CONTIN
 FOR(FGOSYM) STOP
 FOR(SGOSYM) STOPSH
 ELSE ERROR
