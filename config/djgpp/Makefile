@@ -9,8 +9,13 @@
 CC=gcc
 OPT=-O2 -finline-functions
 
+INET_C=lib\dummy\inet.c
+
+# uncomment next 3 lines to build with WATTCP
 #WATTCP_DEFS=-I/djgpp/v2/contrib/wattcp/inc -DWATTCP_DOS
 #WATTCP_LIBS=-L/djgpp/v2/lib -lwatt
+#INET_C=lib\bsd\inet.c
+
 
 CFLAGS=	-c $(OPT) -Iconfig/djgpp -Iinclude -I. \
 	-DHAVE_CONFIG_H $(WATTCP_DEFS)
@@ -157,8 +162,8 @@ tty.o : lib\posix\tty.c
 
 ################ misc
 
-inet.o : lib\bsd\inet.c
-	$(CC) $(CFLAGS) lib\bsd\inet.c
+inet.o : $(INET_C)
+	$(CC) $(CFLAGS) $(INET_C)
 
 load.o : lib\unix98\load.c
 	$(CC) $(CFLAGS) lib\unix98\load.c
