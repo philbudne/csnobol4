@@ -20,8 +20,21 @@ echo 'who am i:'
 who am i
 echo ''
 echo 'uname -a:'
-uname -a
+uname -a 2>/dev/null
 echo ''
+#
+case `uname 2>/dev/null || echo unknown` in
+IRIX*)
+	echo 'hinv:'
+	hinv
+	echo ''
+	;;
+SunOS)
+	echo 'sunmodel:'
+	./sunmodel
+	echo ''
+	;;
+esac
 echo 'config.guess:'
 ./config.guess
 echo ''
