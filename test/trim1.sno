@@ -3,6 +3,8 @@
 	&trim = 1
 top	line = input		:f(end)
 loop	line ' ' = '@'		:s(loop)
+	tab = '	'
+loop2	line tab = '!'		:s(loop2)
 	output = line		:(top)
 end
 this line has three trailing spaces   
@@ -11,3 +13,7 @@ this line has three trailing spaces
                                                                              
                                                                               
                                                                                
+	this line has a leading tab
+this line has a trailing tab	
+	
+			
