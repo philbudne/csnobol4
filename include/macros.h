@@ -92,21 +92,26 @@
 struct descr *cstack;
 
 
-/* for RCALL */
-/* GC expects RCALL to push SOMETHING on each RCALL!
- * keep OSTACK/CSTACK by the book??
+/* for RCALL
+ *
+ * GC expects RCALL to push SOMETHING on each RCALL!
+ * keep OSTACK/CSTACK by the book?
+ *	ie; make cstack a descr
+ *	SAVSTK() -> PUSH(&cstack)
+ *	RSTSTK() -> POP(&cstack)
  */
 #define SAVSTK() struct descr *ostack = cstack; PUSH(ZEROCL);
 #define RSTSTK() cstack = ostack
 
+/* overflow check */
 #define OFCHK()	{ if ((int)cstack > (int)STACK+STSIZE*DESCR) OVER(NULL); }
 
-#ifdef NO_UFCHK
+#ifdef DO_UFCHK
 #define UFCHK()
-#else  /* NO_UFCHK not defined */
-/* XXX for debug only (internal error); */
+#else  /* DO_UFCHK not defined */
+/* for debug only (internal error); */
 #define UFCHK()	{ if ((int)cstack < (int)STACK) INTR10(NULL); }
-#endif /* NO_UFCHK not defined */
+#endif /* DO_UFCHK not defined */
 
 #define PUSH(x)	D(cstack+1) = D(x); cstack++; OFCHK()
 #define POP(x)	cstack--; UFCHK(); D(x) = D(cstack+1)
