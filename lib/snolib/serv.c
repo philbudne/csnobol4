@@ -20,7 +20,7 @@
 
 #ifdef HAVE_STDLIB_H			/* before stdio */
 #include <stdlib.h>			/* atoi() */
-#endif /* HAVE_STDLIB_H not defined */
+#endif /* HAVE_STDLIB_H defined */
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>			/* close() */
@@ -67,7 +67,7 @@ fireman(sig)
  *
  * args;
  * FAMILY
- *	"inet" or "unix"
+ *	"inet", "inet6" or "unix"
  * TYPE
  *	"stream"
  * SERV
@@ -93,17 +93,25 @@ SERV_LISTEN( LA_ALIST ) LA_DCL
 #if 0
     else if (strcmp(stype, "dgram") == 0) /* not so easy */
 	type = SOCK_DGRAM;
-#endif
+#endif /* 0 */
     else
 	RETFAIL;
 
-    if (strcmp(sfam, "inet") == 0) {
+    if (strcmp(sfam, "inet") == 0
+#ifdef HAVE_SOCKADDR_IN6
+	|| strcmp(sfam, "inet6") == 0
+#endif /* HAVE_SOCKADDR_IN6 defined */
+	) {
 	struct servent *sp;
+	struct sockaddr *sap;
 	struct sockaddr_in sin;
+#ifdef HAVE_SOCKADDR_IN6
+	struct sockaddr_in6 sin6;
+#endif /* HAVE_SOCKADDR_IN6 defined */
+	SOCKLEN_T slen;
 	char *proto;
+	unsigned short nport;		/* port in network order */
 	int on;
-
-	bzero((char *)&sin, sizeof(sin));
 
 	switch (type) {
 	case SOCK_STREAM:
@@ -118,25 +126,43 @@ SERV_LISTEN( LA_ALIST ) LA_DCL
 
 	sp = getservbyname(sserv, proto);
 	if (sp)
-	    sin.sin_port = sp->s_port;
+	    nport = sp->s_port;
 	else if (isdigit(sserv[0])) {
 	    int port;
 	    port = atoi(sserv);
 	    if (port < 1 || port > 0xffff)
 		RETFAIL;
-	    sin.sin_port = htons(port);
+	    nport = htons(port);
 	}
 	else
 	    RETFAIL;
 
-	s = socket(PF_INET, type, 0);
+	if (strcmp(sfam, "inet") == 0) {
+	    s = socket(PF_INET, type, 0);
+	    slen = sizeof(sin);
+	    bzero((char *)&sin, slen);
+	    sin.sin_port = nport;
+	    sap = (struct sockaddr *)&sin;
+	}
+#ifdef HAVE_SOCKADDR_IN6
+	else if (strcmp(sfam, "inet6") == 0) {
+	    s = socket(PF_INET6, type, 0);
+	    slen = sizeof(sin6);
+	    bzero((char *)&sin6, slen);
+	    sin6.sin6_port = nport;
+	    sap = (struct sockaddr *)&sin6;
+	}
+#endif /* HAVE_SOCKADDR_IN6 defined */
+	else
+	    RETFAIL;
+	    
 	if (s < 0)
 	    RETFAIL;
 
 	on = 1;
 	setsockopt(s, SOL_SOCKET, SO_REUSEADDR, (char *)&on, sizeof(on));
 
-	if (bind(s, (struct sockaddr *)&sin, sizeof(sin)) < 0) {
+	if (bind(s, sap, slen) < 0) {
 	    close(s);
 	    RETFAIL;
 	}
