@@ -3,7 +3,7 @@
 /* prototypes for "lib" functions */
 
 /* from bal.c */
-void bal __P((struct spec *,struct descr *));
+void getbal __P((struct spec *,struct descr *));
 
 /* from date.c */
 void date __P((struct spec *,struct descr *));
