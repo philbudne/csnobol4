@@ -26,7 +26,7 @@ INET_DEFS=-DINET_IO
 # wsock32 present on both Win95 and WinNT
 INET_LIBS=-lwsock32
 
-CFLAGS=	-c $(OPT) -I$(SRCDIR)config/win32 -I$(SRCDIR)include -I(SRCDIR). \
+CFLAGS=	-c $(OPT) -I$(SRCDIR)config/win32 -I$(SRCDIR)include -I$(SRCDIR). \
 	-DHAVE_CONFIG_H $(TTY_DEFS) $(INET_DEFS)
 
 OBJ=	isnobol4.o data.o data_init.o main.o syn.o \
