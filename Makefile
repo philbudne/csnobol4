@@ -14,3 +14,10 @@ Makefile2: config.h Makefile2.cpp
 config.h:
 	@echo 'copy (or link) a suitable file from config/ to config.h'
 	@exit 1
+
+clean:	Makefile2
+	$(MAKE) -f Makefile2 clean
+
+tar:	Makefile2
+	$(MAKE) -f Makefile2 tar
+
