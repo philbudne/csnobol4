@@ -512,6 +512,10 @@ ED_F
 	DEFINE("D_V(V)")				:(ED_V)
 D_V	D_V = 'D_V(' V ')'				:(RETURN)
 ED_V
+****************
+	DEFINE("D_PTR(V)")				:(ED_PTR)
+D_PTR	D_PTR = 'D_PTR(' V ')'				:(RETURN)
+ED_PTR
 *
 ****************
 * descriptor at indirect address
@@ -1222,6 +1226,17 @@ XCHKVAL	DOCMP3( PLUS(S_L(ARGV<3>),D_A(ARGV<2>)), D_A(ARGV<1>),
 *	SIL LCOMP (CMPLL) MACRO 10/27/93
 XLCOMP	DOCMP3( S_L(ARGV<1>), S_L(ARGV<2>),
 +		ARGV<3>, ARGV<4>, ARGV<5>)		:(OPDONE)
+
+****************
+*	SIL PCOMP MACRO -- from SNOBOL4+ UACOMP 8/12/2004
+XPCOMP	DOCMP3( D_PTR(ARGV<1>), D_PTR(ARGV<2>), ARGV<3>,  ARGV<4>, ARGV<5>)
+							:(OPDONE)
+
+****************
+*	SIL PCOMPC MACRO  -- from SNOBOL4+ UACOMPC 8/12/2004
+XPCOMPC	DOCMP3( D_PTR(ARGV<1>), ARGV<2>, ARGV<3>,  ARGV<4>, ARGV<5>)
+							:(OPDONE)
+
 *
 ****************************************************************
 *	system

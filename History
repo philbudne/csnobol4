@@ -2,6 +2,14 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+8/12/2004
+	v311.sil, genc.sno, include/macros.h:
+		Create new PCOMP[C] SIL operators for pointer comparison.
+		On some versions of RedHat ES and Fedora Core, dynamic
+		pointers can be negative!  Thankfully Mark Emmer had
+		found all the necessary places to change for SNOBOL4+
+		Sizes are still constrained to be positive signed ints.
+
 7/19/2004
 	configure: update for CygWin 1.5.9(0.112/4/2)
 	lib/win32/com.cpp: use USE_WCHAR_H, NEED_COGETOBJECT
