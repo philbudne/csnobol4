@@ -46,21 +46,6 @@ SNOLIB_A=snolib.a
 # default file to load
 SNOLIB_FILE=snolib.a
 
-# directory prefix
-PREFIX=/usr/local
-
-# directory for installed binary
-BINDIR=${PREFIX}/bin
-
-# base directory for man pages
-MANDIR=${PREFIX}/man
-
-# directory for snobol4.1 man page
-MAN1DIR=${MANDIR}/man1
-
-# directory name for default SNOLIB (used by -INCLUDE and LOAD())
-SNOLIB_DIR=${PREFIX}/lib/snobol4
-
 # either snobol4 or isnobol4;
 # isnobol4 has had functions reordered for better inlining.
 # if compiler does not perform inlining, snobol4 can be used
@@ -176,9 +161,6 @@ MYCPPFLAGS=-I./[include] -I. _CPPFLAGS
 COPT=[]_OPT
 
 LDFLAGS=[]_LDFLAGS
-
-SNOLIB_DEFINES=-DSNOLIB_DIR='"'$(SNOLIB_DIR)'"' \
-	-DSNOLIB_FILE='"'$(SNOLIB_FILE)'"'
 
 ################
 # compiler flags
@@ -312,13 +294,13 @@ intspc.o: $(INTSPC_C)
 	$(CC) $(CFLAGS) -c $(INTSPC_C)
 
 io.o:	$(IO_C) $(MAKEFILE2)
-	$(CC) $(CFLAGS) $(SNOLIB_DEFINES) -c $(IO_C)
+	$(CC) $(CFLAGS) -c $(IO_C)
 
 lexcmp.o: $(LEXCMP_C)
 	$(CC) $(CFLAGS) -c $(LEXCMP_C)
 
 load.o:	$(LOAD_C) $(MAKEFILE2)
-	$(CC) $(CFLAGS) $(SNOLIB_DEFINES) $(LD_PATH) -c $(LOAD_C)
+	$(CC) $(CFLAGS) -c $(LOAD_C)
 
 mstime.o: $(MSTIME_C)
 	$(CC) $(CFLAGS) -c $(MSTIME_C)
@@ -458,7 +440,7 @@ getstring.o: $(GETSTRING_C)
 	$(CC) $(CFLAGS) -c $(GETSTRING_C)
 
 host.o: $(HOST_C)
-	$(CC) $(CFLAGS) $(SNOLIB_DEFINES) -c $(HOST_C)
+	$(CC) $(CFLAGS) -c $(HOST_C)
 
 log.o: $(LOG_C)
 	$(CC) $(CFLAGS) -c $(LOG_C)
