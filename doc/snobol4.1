@@ -145,7 +145,7 @@ to upper case, so programs can be entered in either case.  To disable
 case folding use the directive
 .B "\-CASE 0" or
 .BR "\-CASE" .
-To reenable case folding use directive
+To re-enable case folding use directive
 .BI "\-CASE " n
 where
 .I n
@@ -218,21 +218,21 @@ function restores normal entry creation behavior.
 .TP
 .B HOST()
 .br
-A limited similation of the SPITBOL
+A limited simulation of the SPITBOL
 .B HOST()
 function is included.  It does not perform argument type conversions,
 so all arguments must be supplied as either
 .B INTEGER
 or
 .B STRING
-datatypes.
+data types.
 
 .br
 .B HOST()
-with no paramaters returns a string describing the system the program
-is running on.  The string contains three parts, seperated by colens.
+with no parameters returns a string describing the system the program
+is running on.  The string contains three parts, separated by colons.
 The first part describes the physical architecture, the second
-describes the operating system, and the third descibes the language
+describes the operating system, and the third describes the language
 implementation name. Example:
 .I "sun4c:SunOS 4.1.4:C-MAINBOL 0.98.3"
 
@@ -244,7 +244,7 @@ option, if any.  If no
 .B -u
 option was given,
 .B HOST(0)
-returns the concatenation of all user paramaters following the input
+returns the concatenation of all user parameters following the input
 filename(s).
 
 .br
@@ -258,7 +258,7 @@ c library function, and returns the subprocess exit status.
 returns the
 .IR n "'th"
 command line argument (regardless of whether the argument
-was the command name, an option, a filename or a user paramater)
+was the command name, an option, a filename or a user parameter)
 as a string, or failure
 .I n
 is out of range.
@@ -286,7 +286,7 @@ space to the filename.  Trailing spaces are removed from the filename
 before use.  If the file is not found in the current working directory
 an attempt will be made to find it in the directory specified by the
 .B SNOLIB
-environment variable, or if that is not set, a predetermined libary
+environment variable, or if that is not set, a predetermined library
 directory.
 
 .br
@@ -404,32 +404,32 @@ and
 .B RSORT()
 functions take a array (or table, which is first converted to an
 array). The array may be singly-dimensioned if which case , if non-
-null, will idicate the field of a programmer-defined datatype on which
-the sort is based.  A may also be a table or a doubly-dimensionted
+null, will indicate the field of a programmer-defined data type on which
+the sort is based.  A may also be a table or a doubly-dimensioned
 array.  In these cases F may be an integer indicating the column on
 which to sort.  If F is null, it is taken to be 1.  The array A is not
 modified; a new array is allocated and returned.
 .B SORT()
 sorts elements in ascending order, while
 .B RSORT()
-sorts in decending order.
+sorts in descending order.
 
 .TP
 SPITBOL operators
 .br
 The SPITBOL scan (?) and assignment (=) operators have been added.  A
-patern match can appear within an expression, and returns the matched
+pattern match can appear within an expression, and returns the matched
 string as it's value.  Similarly assignment can appear in an
 expression, and returns the assigned value. An assignment after a scan
 (ie;
 .IR "STRING ? PATTERN = VALUE" )
 performs a scan and replace.  Assignment is right associative, and has
-the lowest precidence, while scan is left associative and has a
-precidence just higher than assignment.
+the lowest precedence, while scan is left associative and has a
+precedence just higher than assignment.
 
 .br
 The SPITBOL selection/alternative construction can be used in any
-expression.  It consists of a comma seperated list of expressions
+expression.  It consists of a comma separated list of expressions
 inside parentheses.  The expressions are evaluated until one succeeds,
 and it's value is returned.  Abuse of this construction may result in
 incomprehensible code.
@@ -440,7 +440,7 @@ The type
 with
 .B CONVERT()
 and the removal of leading spaces from strings converted to numbers
-(implcitly or explicitly) are also legal when SPITBOL extensions are
+(implicitly or explicitly) are also legal when SPITBOL extensions are
 enabled.  SPITBOL extensions can be enabled and disabled using the
 .B "\-PLUSOPS"
 directive.
@@ -496,7 +496,7 @@ I/O is performed by associating a variable name with a numbered I/O
 unit using the
 .B INPUT()
 and
-.B OUTPUI()
+.B OUTPUT()
 functions.  The following associations are available by default;
 
 .br
@@ -514,7 +514,7 @@ Variable	Unit	Association
 .B \-b
 Toggle startup banner output (by default on).
 .TP
-.BI " -d" NNN
+.BI "-d " NNN
 Allocate
 .I NNN
 bytes of \*(lqdynamic storage\*(rq for program code and data. A suffix
@@ -546,7 +546,7 @@ extensions).  By default programs with compilation errors will not be
 run.
 .TP
 .B -l
-Reenable listing to stdout.  (default is
+Re-enable listing to stdout.  (default is
 .BR \-UNLIST ).
 Default listing side is
 .BR LEFT .
