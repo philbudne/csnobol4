@@ -2,10 +2,13 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+6/13/2002
+	genc.sno: pass CPP directives! (3/3/2002)
+
 6/6/2002
 	v311.sil include/macros.h lib/init.c doc/snobol4.1:
 		Add '-S' option for enlarging interpreter stack.
-		1% speed penalty for genc.sno
+		** 1% speed penalty for genc.sno **
 	timing.sno lib/snolib/host.[ch]:
 		add HOST_ISTACK_SIZE
 
