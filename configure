@@ -1306,13 +1306,12 @@ if [ "$WITH_TCL" ]; then
     fi
 fi
 
-# XXX avoid adding -I/usr/local/include and -L/usr/local/lib again?
 if [ ! "$WITHOUT_NDBM" ]; then
     if [ -f $INCDIR/ndbm.h ]; then
 	echo "using $INCDIR/ndbm.h" 2>&1
 	echo '#define HAVE_NDBM_H'		>> $CONFIG_H
 	# RH5.2 has Berkeley DB ndbm.h, but seperate libdb.a
-	# (BSD systems have BDB in libc)
+	# (BSD systems have DB in libc)
 	if grep 'Margo Seltzer' $INCDIR/ndbm.h > /dev/null &&
 	    [ -f /usr/lib/libdb.a -o /usr/lib/libdb.so ]; then
 	    echo 'ADD_LDFLAGS([-ldb])'		>> $CONFIG_M4
@@ -1330,6 +1329,7 @@ if [ ! "$WITHOUT_NDBM" ]; then
 	# XXX check for library?
 	echo 'ADD_LDFLAGS([-lgdbm])'		>> $CONFIG_M4
     else
+	# XXX check /usr/local/include??
 	echo 'no ndbm support found' 1>&2
 	NO_NDBM=1
     fi
