@@ -74,7 +74,6 @@ load(addr, sp1, sp2)
 	    char temp[PATHLEN];
 
 	    spec2str( sp2, temp, sizeof(temp) );
-printf("temp: %s\n", temp);
 	    if (temp[0] != '/' && stat(temp, &st) < 0) {
 		/* not absolute and file does not exist; prepend libdir */
 		/* XXX limit length of snolib??? */
