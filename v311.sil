@@ -1,6 +1,14 @@
 * $Id$
 *
 * $Log$
+* Revision 1.31  94/06/21  02:43:12  budd
+* [PLB23] fixed problem reported by Phillip Thomas
+* moved XLATNX label so that "card" processing restarts after
+* and EOS (semi).  This allows ';*' to be used as an EOL comment
+* Also allows control cards after EOS!
+* Negative side effect is that listings show the STNO of the *LAST*
+* statement on the line, rather than the first, as before!!
+* 
 * Revision 1.30  94/06/17  16:06:19  budd
 * [PLB22] drop CARDSZ down to 132 to make listings managable!
 * 
@@ -5237,6 +5245,7 @@ RETNUL RRTURN  NULVCL,3 	   Return null string by exit 3
 *_
 RTN2   RRTURN  ,2		   Return by exit 2
 *_
+RTNL3G LHERE   ,		   [PLB24]
 RTN3   LHERE   ,
 RTNUL3 RRTURN  ,3		   Return by exit 3
 *_
@@ -6385,9 +6394,9 @@ SCONFN DESCR   SCON,0,2
 SPNCFN DESCR   SPNC,0,3 	   Matching for SPAN(S)
 STARFN DESCR   STAR,0,3 	   Matching for *X
 TBFN   DESCR   TB,0,3		   Matching for TAB(N)
-ABORFN DESCR   RTNUL3,0,3	   Matching for ABORT
+ABORFN DESCR   RTNL3G,0,3	   Matching for ABORT		[PLB24]
 FNCEFN DESCR   FNCE,0,2 	   Matching for FENCE
-FNCFFN DESCR   RTNUL3,0,2	   Failure for FENCE
+FNCFFN DESCR   RTNL3G,0,2	   Failure for FENCE		[PLB24]
 SUCFFN DESCR   SUCF,0,2 	   Matching for SUCCEED
 *
 *      Initialization Data for Functions
