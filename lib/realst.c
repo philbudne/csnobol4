@@ -2,7 +2,7 @@
 
 /*
  * convert from real to string
- * generic version using "%f"
+ * generic version using "%g"
  */
 
 #include "h.h"
