@@ -10,9 +10,6 @@
 #define TTY_READ_COOKED
 #define TTY_READ_RAW
 
-/* using own (dummy) rrevport() */
-#define NEED_RRESVPORT_DECL
-
 /* 
  * define preprocessor aliases for SIL and snolib subroutine names
  * which conflict with C runtime names (all names in the C runtime
