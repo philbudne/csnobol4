@@ -106,13 +106,16 @@ for STRING parameters;
 			to retrieve a string, ie;
 				getstr(LA_PTR(2), buffer, sizeof(buffer));
 
+Complex datatypes are described in the "dt.h" include file, and can be
+referenced using the LA_PTR() macro.
+
 2.3 Polymorphic parameters
 
 External functions can be written to take polymorphic parameters by
 leaving the type name blank in the prototype. For example
 "FOO(,STRING)INTEGER" is a function with two parameters, the first is
-polymorphic.  The LA_TYPE() macro must be used to determine the data
-actual type;
+polymorphic.  The LA_TYPE() macro must be used to determine the actual
+data type;
 
 	LA_TYPE(n)	returns the data type of the n'th parameter
 			(values declared in equ.h)
@@ -123,10 +126,11 @@ actual type;
 		S	arg references a string.
 			(fetch with getstring() & LA_PTR(n))
 
-		user data types begin at 100 and appear as an array of
-		descriptors located by D_A(dp).  The first descriptor
-		is a "title" descriptor whose D_V() field indicates
-		how many descriptors follow.
+		See include file "dt.h" for the representation of
+		non-scalar data types.
+
+		User DATA() types begin at 100 and appear as an array of
+		descriptors located by D_A(dp).
 
 2.4 Polymorphic return values
 
@@ -134,14 +138,6 @@ A function returning different types of values can be constructed by
 omitting the return type from the prototype, and assigning the return
 value type to "RETYPE" before using the associated RETxxx macro. See
 lib/snolib/host.c for an example.
-
-2.5 Globals
-
-Dynamicly loaded functions have no access to any global data or
-functions in the SNOBOL4 system.  Any libraries required to load the
-function must be mentioned explicitly in the second parameter to LOAD(),
-by appending the path name of the library or "-l" flags as passed to
-"ld" or "cc" commands.
 
 3. ``Static'' (or ``Poor Man's'') Loading
 
@@ -162,18 +158,20 @@ Step 1.
 	pml.h of the form; PMPROTO("PROTOTYPE(TYPES...)TYPE")
 
 	NOTE: none of PMLFUNC(), PMLFUNC2() or PMPROTO() lines should
-	end with a semicolon.
+	end with a semicolon!!!
 
 Step 2.
 
 	Add the paths of the object file(s) in which the functions
-	reside to the PML_OBJS variable in your config.m4 (or
-	local-config) file. ie;
+	reside to the PML_OBJS variable in your local-config file;
 
-	PML_OBJS=system.o
+		PML_OBJS=system.o
+
+	Or by using the --add-objs= option to the configure script.
 
 	If any special libraries are required, you can specify them
-	at the end of PML_OBJS, or use ADD_LDFLAGS([-llibrary]).
+	using "ADD_LDFLAGS([-llibrary])" in local-config, or using
+	the --add-ldflags= option to the configure script.
 
 Step 3.
 
