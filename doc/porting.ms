@@ -1,23 +1,23 @@
 .\" -*-nroff-*-
 .\" $Id$
 .TL
-Porting The Macro Implementation of SNOBOL4 for Un*x
+Porting The Macro Implementation of SNOBOL4 in C
 .AU
 Philip L. Budne
 .PP
 .NH 1
 Requirements
 .PP
-As the title suggests, the target machine is anything that runs Un*x,
-or provides a Un*x-like (ie; POSIX) environment.  The target machine
-should have;
+As the title suggests, the target machine is anything that has a C
+compiler and provides provides a Un*x-like (ie; POSIX) environment.
+The target machine should have;
 
 .IP *
 A large address space (allowing for approx 300K code and 300K data).
 Virtual memory is desirable.
 .IP *
 An industrial strength optimizing C compiler;
-GNU CC (gcc) is preferred, but no ANSI features are required.
+GNU C (gcc) is preferred, but no ANSI features are required.
 .IP *
 A reasonably complete C library, including stdio.
 .PP
@@ -29,41 +29,39 @@ snobol4 should not be needed to bootstrap the system.
 .NH 1
 Config files
 .PP
-A configuration file from the config directory must be linked (or
-copied) to config.m4 in the top level directory.  The config.m4 file is
-included into Makefile2.m4 using the m4 macro processor, and contains
-make variable assignments (ie; VAR=VALUE).
+The "autoconf" script determines which file from the config directory
+to use, and includes it in config.m4. The config.m4 file is included
+into Makefile2.m4 using the m4 macro processor, and contains make
+variable assignments (ie; VAR=VALUE) and m4 macro invocations.
 .PP
 The following are variables which may need to be set in some
 environments;
 
 .NH 2
+make variables
+
+.NH 3
 CC
 .PP
-The path for the C compiler to use.  The default is gcc (GNU CC).
-
-.NH 2
+The path for the C compiler to use.
+.NH 3
 CCM
 .PP
 The command to use to create "make depend" output.  The default value
-is "$(CC) -M".  If your C compiler (see CC, above) does not support
-the -M flag, a script cc-M is supplied, and CCM=./cc-M. should be
-added to your config.m4 file.
-
-.NH 2
+is "./cc-M" If your C compiler (see CC, above) supports this function
+directly, CCM can be reset in system.m4.
+.NH 3
 MATHLIB
 .PP
 The flags/path to use to link a C program with math routines (may be
 needed for the pow() function, or other implementation of exp.c.  The
 default value is '-lm'.
-
-.NH 2
+.NH 3
 OPT
 .PP
 Optimization, debug, and profiling flags to pass to the C compiler.
-The default is "-O -finline-functions".
-
-.NH 2
+The default is "-O".
+.NH 3
 SNOBOL4
 .PP
 Name of the main source file to make and use.  Should be either
@@ -71,53 +69,12 @@ isnobol4 (the default), which has functions reordered so that gcc can
 inline functions more effectively. If you are not using gcc, or not
 using the inline-functions option, you can use the value "snobol4" and
 avoid the function reordering steps in the Makefile.
-
-.NH 2
-CONFIG_CFLAGS
+.NH 3
+PML_OBJS
 .PP
-Additional flags passed to the C compiler for C source files.  May
-include symbol defines (see the section on Macro Names).  The variable
-SNOBOL4_C_CFLAGS can be set to additional C compiler flags to be used
-on only snobol4.c (may be required due to the size of the file).
-
-.NH 2
-CONFIG_LDFLAGS
-.PP
-Additional flags passed to the C compiler to perform the final load
-command.  May include system libraries (ie; -lBSD) or linker switches
-(ie; -Bstatic).
-
-.NH 2
-CONFIG_OBJ
-.PP
-Additional object files to link into the final image.  Typically one
-or more of the support library routines (ie; vfprintf.o).
-
-.NH 2
-CONFIG_SRC
-.PP
-Additional source files to include in dependency calculation
-(see CONFIG_OBJ, and section on source file path variables).
-
-.NH 2
-AUX_SRC
-.PP
-Auxiliary source files to include in dependency calculation
-(see AUX_OBJ, and section on source file path variables).
-
-.NH 2
-AUX_OBJ
-.PP
-Auxiliary object files to include in snolib.a.  Typically one or more
-of the support library routines (bcopy.o, bcmp.o, getopt.o).
-
-.NH 2
-PML_OBJ
-.PP
-Object files not in AUX_OBJ (snolib.a) for functions referenced from
-pml.h.
-
-.NH 2
+Object files not in snolib.a for functions referenced from pml.h
+(see load.doc).
+.NH 3
 Source file path variables.
 .PP
 All library source file paths are defined in variables, so that
@@ -126,11 +83,40 @@ are CONVERT_C, LOAD_C, EXP_C, MSTIME_C.  See the section on library
 functions for descriptions of the files, and the alternate versions
 included in the distribution.
 
+.NH 2
+m4 macros
+.PP
+Each of the following macros can be used to add files or flags
+to a make variable (in place of the += syntax available in some
+make programs).
+.NH 3
+ADD_CPPFLAGS
+.PP
+Add argument to CPPFLAGS (used in make depend, .c file compilation).
+.NH 3
+ADD_OPT
+.PP
+Add argument to flags used to compile .c files.
+.NH 3
+ADD_SRCS
+.PP
+Add argument to list of source files processed in "make depend".
+.NH 3
+ADD_OBJS
+.PP
+Add argument to list of object files used to construct snolib.a
+.NH 3
+ADD_LDFLAGS
+.PP
+Add argument to flags passed to "cc" command used to link snobol4
+executable.
+
 .NH 1
 Macro names
 .PP
-The following are cpp macro names which can be defined via -D<symbol>
-or -D<symbol>=<value> flags in the CONFIG_CFLAGS Makefile2 variable.
+The following are cpp macro names which can be by adding
+ADD_CPPFLAGS([-D<symbol>]) or ADD_CPPFLAGS([-D<symbol>=<value>]) to
+system.m4.
 
 .NH 2
 #ifdef's in include files
@@ -141,55 +127,52 @@ DCMP_BYTES should be defined if sizeof(int_t) != sizeof(real_t).  If
 DCMP_BYTES is defined, descriptor equality will be determined using
 bcmp().
 .PP
-Example: -DDMP_BYTES.
+Example: ADD_CPPFLAGS([-DDMP_BYTES]).
 See also INT_T and REAL_T.
 .NH 3
 INT_T
 .PP
 If INT_T is defined, it should be the C type to use for integer values
-and addresses.  The default type used for int_t is "long".
+and addresses.  The default type used for int_t is "long".  INT_T must
+be large enough to hold a pointer.
 .PP
-Example: "-DINT_T=long long".  See also REAL_T.
-.NH 3
-NO_UFCHK
-.PP
-** TO BE SUPPLIED **
+Example: ADD_CPPFLAGS([-DINT_T="long long"]).  See also REAL_T.
 .NH 3
 NO_BITFIELDS
 .PP
-** TO BE SUPPLIED **
+Disable use of bitfields to store descriptor "v" (size) field.  Some
+compilers have problems with bitfields, yields no storage benefits, or
+causes performance penalties.  Bitfields are used to try and fit the
+8-bit flags and 24-bit size fields into one 32-bit word.  On Alpha
+OSF/1 systems the "a" field is 64-bits long (to hold pointers),
+resulting combined "f" and "v" fields will be padded to 64-bits for
+alignment.  There is no benefit to using bitfields in this situation.
+See also VFLD_T.
 .NH 3
 REAL_T
 .PP
-If REAL_T is defined, it should be the C type to use for real
-values.  The default type used for real_t is "float".
+If REAL_T is defined, it should be the C type to use for real values.
+The default type used for real_t is "float". On Alpha OSF/1 systems
+the "a" field will be 64-bits (to hold pointers), so REAL_T is
+declared as double to take advantage of the available space.
 .PP
-Example: "-DREAL_T=double".  See also INT_T.
+Example: ADD_CPPFLAGS([-DREAL_T=double]).  See also INT_T.
 .NH 3
 VFLD_T
 .PP
-** TO BE SUPPLIED **
+The descriptor "v" field is used to hold the size of objects in bytes.
+When NO_BITFIELDS is not defined, the "v" field is a 24-bit unsigned
+bitfield.  When NO_BITFIELDS is defined VFLD_T is used (and defaults
+to "int"). VFLD_T should be able to hold 31-bit unsigned quantities.
 
-.NH 2
-other #define's
-.NH 3
-SNOLIB_DIR
-.PP
-Directory for SNOBOL4 library files (default
-"/usr/local/lib/snobol4").
 .NH 3
 TMP_DIR
 .PP
 Directory to use for temporary files (default "/tmp").
 .NH 3
-SNOLIB_A
-.PP
-Filename (in SNOLIB_DIR) for file to use if none supplied to LOAD()
-function.
-.NH 3
 HZ
 .PP
-Used with ../generic/mstime.c; Number of ticks per second, as returned
+Used with lib/generic/mstime.c; Number of ticks per second, as returned
 by times() system call (default: 60).
 .NH 3
 SIGFUNC_T
@@ -206,13 +189,10 @@ they require.
 .NH 2
 DCMP macro
 .PP
-** TO BE SUPPLIED **
-
-.NH 2
-LEXCMP macro
-.PP
-The default implementation uses bcmp(), but memcmp() may be
-substituted (see config/generic.m4)
+DCMP compares two descriptors.  By default it compares the members one
+at a time.  On systems where int_t (see INT_T) does not access the
+entire "a" field, DCMP_BYTES may need to be defined, in which case
+DCMP calls the "bcmp()" library function.
 
 .NH 2
 MOVBLK macro
@@ -223,8 +203,8 @@ with correctly!!
 .PP
 ANSI C memmove() handles overlap, but may be inefficient.
 .PP
-An efficient C bcopy routine is provided (see config/skel.inc)
-in lib/bcopy.c
+An efficient C bcopy routine is provided in lib/auxil/bcopy.c
+(see config/skel.inc).
 
 .NH 2
 APDSP macro
@@ -237,14 +217,14 @@ ZERBLK macro
 Uses bzero() to clear blocks of descriptors.
 .PP
 A generic C bzero routine is provided (see config/skel.inc)
-in lib/bzero.c
+in lib/auxil/bzero.c
 
 .NH 2
 convert.c
 .PP
-Convert from strings to numbers.  Two versions of convert.c
-are provided: ansi/convert.c which uses strtol() and strtod(),
-and generic/convert.c which uses sscanf().
+Convert from strings to numbers.  Two versions of convert.c are
+provided: lib/ansi/convert.c which uses strtol() and strtod(), and
+lib/generic/convert.c which uses sscanf().
 
 .NH 2
 date.c
@@ -306,8 +286,8 @@ Convert integers from binary to strings.
 io.c
 .PP
 Provide I/O support (io_xxx) using the C standard I/O package.  Calls:
-fopen, fclose, fgets, rewind, vfprintf, bzero (see above), malloc,
-free, exit, strcpy, strncopy, strlen.
+fopen, fclose, fgets, fprintf, rewind, bzero (see above), malloc,
+free, exit, strcpy, strncpy, strlen.
 
 .NH 2
 load.c
