@@ -127,6 +127,7 @@ SIN_C=$(SRCDIR)lib/snolib/sin.c
 SPRINTF_C=$(SRCDIR)lib/snolib/sprintf.c
 SQRT_C=$(SRCDIR)lib/snolib/sqrt.c
 SSET_C=$(SRCDIR)lib/snolib/sset.c
+STCL_C=$(SRCDIR)lib/snolib/stcl.c
 SYS_C=$(SRCDIR)lib/posix/sys.c
 TAN_C=$(SRCDIR)lib/snolib/tan.c
 # for cygwin!
@@ -475,6 +476,9 @@ sqrt.o: $(SQRT_C)
 
 sset.o: $(SSET_C)
 	$(CC) $(CFLAGS) -c $(SSET_C)
+
+stcl.o: $(STCL_C)
+	$(CC) $(CFLAGS) -c $(STCL_C)
 
 sys.o:	$(SYS_C)
 	$(CC) $(CFLAGS) -c $(SYS_C)
