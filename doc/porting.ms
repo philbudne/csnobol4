@@ -29,17 +29,101 @@ snobol4 should not be needed to bootstrap the system.
 .NH 1
 Config files
 .PP
-**** TALK ABOUT config/xxxx.h ****
+A configuration file from the config directory must be linked (or
+copied) to config.h in the top level directory.  The config.h file is
+included into Makefile.cpp using the C preprocessor, and contains
+make variable assignments (ie; VAR=VALUE).
+.PP
+The following are variables which may need to be set in some
+enviroments;
+
+.NH 2
+CC
+.PP
+The path for the C compiler to use.  The default is gcc (GNU CC).
+
+.NH 2
+CCM
+.PP
+The command to use to create "make depend" output.  The default value
+is "$(CC) -M".  If your C compiler (see CC, above) does not support
+the -M flag, a script cc-M is supplied, and CCM=./cc-M. should be
+added to your config.h file.
+
+.NH 2
+MATHLIB
+.PP
+The flags/path to use to link a C program with math routines (may be
+needed for the pow() function, or other implementation of exp.c.  The
+default value is '-lm'.
+
+.NH 2
+OPT
+.PP
+Optimization, debug, and profiling flags to pass to the C compiler.
+The default is "-O -g".
+
+.NH 2
+CONFIG_CFLAGS
+.PP
+Additional flags passed to the C compiler for C source files.  May
+include symbol defines (see the section on Macro Names).  The variable
+SNOBOL4_C_CFLAGS can be se to additional C compiler flags to be used
+on only snobol4.c (may be required due to thee size of the file).
+
+.NH 2
+CONFIG_LDFLAGS
+.PP
+Additional flags passed to the C compiler to perform the final load
+command.  May include system libraries (ie; -lBSD) or linker switches
+(ie; -Bstatic).
+
+.NH 2
+CONFIG_OBJ
+.PP
+Additional object files to link into the final image.  Typically one
+or more of the support library routines (bcopy.o, bcmp.o, getopt.o,
+vfprintf.o). 
+
+.NH 2
+CONFIG_SRC
+.PP
+Additional source files to include in dependancy calculation
+(see CONFIG_OBJ, and section on source file path variables).
+
+.NH 2
+Source file path variables.
+.PP
+All library source file paths are defined in variables, so that
+alternate versions may be substituted.  Typical variables of this type
+are CONVERT_C, LOAD_C, EXP_C, MSTIME_C.  See the section on library
+functions for descriptions of the files, and the alternate versions
+included in the distribution.
+
+.NH 1
+Macro names
+.PP
+The following are cpp macro names which can be defined via -D<symbol>
+or -D<symbol>=<value> flags in the CONFIG_CFLAGS Makefile2 variable.
+
 .NH 2
 #ifdef's in include files
 .NH 3
 DCMP_BYTES
 .PP
-** TO BE SUPPLIED **
+DCMP_BYTES should be defined if sizeof(int_t) != sizeof(real_t).  If
+DCMP_BYTES is defined, decriptor equality will be detwemined using
+bcmp().
+.PP
+Example: -DDMP_BYTES.
+See also INT_T and REAL_T.
 .NH 3
 INT_T
 .PP
-** TO BE SUPPLIED **
+If INT_T is defined, it should be the C type to use for integer values
+and addresses.  The default type used for int_t is "long".
+.PP
+Example: "-DINT_T=long long".  See also REAL_T.
 .NH 3
 NO_UFCHK
 .PP
@@ -51,7 +135,10 @@ NO_BITFIELDS
 .NH 3
 REAL_T
 .PP
-** TO BE SUPPLIED **
+If REAL_T is defined, it should be the C type to use for real
+values.  The default type used for real_t is "float".
+.PP
+Example: "-DREAL_T=double".  See also INT_T.
 .NH 3
 VFLD_T
 .PP
