@@ -3,6 +3,23 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
+9/3/96
+	v311.sil: Add SPITBOL operators (under -PLUSOPS) from SNOBOL4+;
+		embeded scan, assign, scan/replace, selection (comma),
+		NUMERIC conversion.  value tracing for pattern match
+		assignment.  allow multiple array/table accesses.
+	syntax.tbl: added SPITBOL binop table, exponents on REALs
+	gensyn.sno: upped STLIMIT, added EXP char class
+	gendep.sno: fixed SPREAL, added SPCINT
+	procs: updated
+	timing: run config.guess
+	gendata.sno: output data.h2 data.c2 equ.h2 data_init.h2
+	Makefile2.m4: cmp || cp for .h2/c2 files
+	globals: added CMA
+	configure: include config.guess output
+	lib/init.c: added -p option
+	test/run.sh: pass additional ARGS
+
 8/31/96
 	v311.sil Add SPITBOL features with code from SNOBOL4+ and
 		Minnesota SNOBOL4; CHAR(), RPAD()/LPAD(), BREAKX(),
