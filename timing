@@ -35,9 +35,16 @@ if [ "$UNAME" ]; then
 	# show hardware, if we know how;
 	case `$UNAME` in
 	AIX*)
-		echo ''
-		echo /usr/sbin/lsattr -EHl proc0
-		/usr/sbin/lsattr -EHl proc0 2>&1
+		if [ -x /usr/sbin/lsattr ]; then
+			echo ''
+			echo /usr/sbin/lsattr -EHl proc0
+			/usr/sbin/lsattr -EHl proc0 2>&1
+		fi
+		if [ -x /usr/bin/oslevel ]; then
+			echo ''
+			echo /usr/bin/oslevel
+			/usr/bin/oslevel
+		fi
 		;;
 	*BSD*|Darwin)
 		if [ -x /usr/sbin/sysctl ]; then
