@@ -1,6 +1,11 @@
 * $Id$
 *
 * $Log$
+* Revision 1.87  2002/01/06 16:57:27  phil
+* [PLB74] rename "CON" to "CONCAT"
+* subr/CON was being interpreted as CONSOLE
+* in Cygwin isnobol4.c build
+*
 * Revision 1.86  2001/12/27 17:42:30  phil
 * [PLB73] rearrange some code to avoid functionization
 * eliminate procs (and loops): TRAC{1,4,6}, STOPT1, RECOM{N,F,Q,T}
@@ -576,7 +581,8 @@ DATSIZ EQU     1000		   Limit on number of defined data type
 EXTSIZ EQU     10		   Default allocation for tables
 NAMLSZ EQU     20		   Growth quantum for name list
 NODESZ EQU     3*DESCR		   Size of pattern node
-OBSIZ  EQU     256		   Number of bin headers
+OBSFT  EQU     13		   Power of two for bin headers		[PLB75]
+OBSIZ  EQU     1<<OBSFT		   Number of bin headers 		[PLB75]
 OBARY  EQU     OBSIZ+3		   Total number for bins
 OCASIZ EQU     1500		   Descriptors of initial object code
 SPDLSZ EQU     5000		   Descriptors of pattern stack	[PLB7][PLB41]
