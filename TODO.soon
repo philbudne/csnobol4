@@ -1,26 +1,27 @@
 $Id$
 
 improve load.doc
-	document use of pml!
+	document use of pml!!!
+		add line to pml.h
+		add objs to PML_OBJ in config.m4
+		add libraries (if any) to CONFIG_LDFLAGS
 	document RETxxx macros
-	document search path (internal, current, SNOLIB)
-	document snolib
-		getstring
+	document use of getstring
+	document search path for real load (internal, current, SNOLIB)
 
 snolib;
 	move .c files to lib/??? ?
 	move compilation to Makefile2
-		add AUX_OBJ to Makefile2?
-		allow pml use of AUX_OBJS (move to snolib.a, use in xsnobol?)
-	add PML_OBJ to Makefile2?
+		use AUX_OBJS to make snolib.a
+		use in xsnobol4 link
+
+================
 
 -INCLUDE/-COPY
 	describe "program error" vs. "reading error" in man page?
 	improve error handling???
 
 Add DIAGNOSTICS section to man page???
-
-================
 
 have all genc, gendata, gensyn output .[ch]2 files
 	use cmp || cp??
