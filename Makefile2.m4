@@ -479,6 +479,9 @@ tan.o: $(TAN_C)
 INSTALL_H=[include]/h.h [include]/snotypes.h [include]/macros.h \
 	[include]/load.h [include]/dt.h config.h
 
+# generated SNOLIB files (at top level)
+GENSNOLIB=host.sno
+
 install: snobol4 doc/snobol4.1 pv
 	-rm -f $(BINDEST)
 	cp snobol4 $(BINDEST); strip $(BINDEST); chmod 755 $(BINDEST)
@@ -487,7 +490,7 @@ install: snobol4 doc/snobol4.1 pv
 	rm -f $(MANDEST)
 	cp doc/snobol4.1 $(MANDEST)
 	test -d $(SNOLIB_DIR) || mkdir $(SNOLIB_DIR)
-	for F in snolib/*.sno $(INSTALL_H) doc/load.doc; do \
+	for F in snolib/*.sno $(INSTALL_H) doc/load.doc $(GENSNOLIB); do \
 		rm -f $(SNOLIB_DIR)/`basename $$F`; cp $$F $(SNOLIB_DIR); \
 	done
 	@echo 'Have you mailed a copy of timing.out to' \
