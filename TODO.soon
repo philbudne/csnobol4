@@ -1,8 +1,14 @@
 $Id$
 
-update CHANGES file
+Implement select()/poll()???
 
-fflush(stdout) before trace output?
+man page BUGS:
+	integer overflow checking
+
+FAIL on !finite() returns in snolib functions??
+	tan(), exp()
+
+document new INET_xxx flags in man page???
 
 add popen tests:
 	input, output, both (optional)
@@ -110,10 +116,6 @@ control lines (and keyword variables?) for BANNER and STATS???
 
 Add -Wimplicit (if not on SunOS4?)?
 	check system includes for prototypes??
-
-move hpux/finite.c to c99/
-	change configure message??
-	[NOT YET; noone else needs it]
 
 protoize all sources?
 	provide "unproto"?
@@ -300,6 +302,7 @@ GC
 simulate dlopen() on HP-UX and NextStep, then use unix98 load.c?
 
 better man page installation
+	install formatted / compressed versions like the natives do
 
 per-machine (arch?) build dirs
 	do machine-independant parts in base dir (genc, gendata, gensyn)
@@ -441,8 +444,6 @@ I/O system document;
 Add "N" I/O flag??
 	set IO_NONBLOCK (POSIX), IO_NDELAY (sysV)
 	or IO_NDELAY (BSD -- effects ALL fd's)
-
-Implement select()???
 
 Test:
 	I/O options (include bad strings!)
