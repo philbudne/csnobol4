@@ -18,18 +18,40 @@ int
 expint(res,x,y)
     struct descr *res, *x, *y;
 {
-    int_t i;
+    int_t ix, iy;
+    int_t p;
 
-    if (D_A(x) == 0 && D_A(y) < 0)	/* by definition of EXPINT macro */
+    ix = D_A(x);
+    iy = D_A(y);
+
+    if (ix == 0 && iy < 0)		/* by definition of EXPINT macro */
 	return 0;			/* fail */
 
-    /* XXX use repeated mutiplies? */
+#if 1
+    if (iy < 0) {
+	p = 0;
+    }
+    else {
+	p = 1;
+	for (;;) {
+	    if (iy & 1)
+		p *= ix;		/* XXX check overflow */
+	    iy >>= 1;
+	    if (iy == 0)
+		break;
+	    ix *= ix;			/* XXX check overflow */
+	}
+    }
+    D(res) = D(x);			/* XXX copy F&V */
+    D_A(res) = (int_t) p;
+#else
     CLR_MATH_ERROR();
-    i = pow( (double)D_A(x), (double)D_A(y) );
+    p = pow( (double)ix, (double)iy );
+    D(res) = D(x);			/* XXX copy F&V */
+    D_A(res) = (int_t) p;
     if (MATH_ERROR())
 	return 0;			/* fail */
-    D(res) = D(x);			/* XXX copy F&V */
-    D_A(res) = i;
+#endif
     return 1;				/* succeed */
 }
 
