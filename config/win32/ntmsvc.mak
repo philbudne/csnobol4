@@ -23,9 +23,14 @@ INET_DEFS=-DINET_IO
 # wsock32 present on both Win95 and WinNT
 INET_LIBS=wsock32.lib
 
+# to disable COM comment out next 3 lines:
+COM_LIBS=ole32.lib uuid.lib oleaut32.lib
+COM_DEFS=-DPML_COM
+COM_OBJ=com.obj
+
 CFLAGS=	-c $(OPT) \
 	-I$(SRCDIR)config\win32 -I$(SRCDIR)include -I$(SRCDIR). \
-	-DHAVE_CONFIG_H $(INET_DEFS) -DBITFIELDS_SAME_TYPE
+	-DHAVE_CONFIG_H $(INET_DEFS) -DBITFIELDS_SAME_TYPE $(COM_DEFS)
 
 OBJ=	isnobol4.obj data.obj data_init.obj main.obj syn.obj \
 	version.obj bal.obj date.obj dump.obj endex.obj hash.obj \
@@ -37,10 +42,11 @@ OBJ=	isnobol4.obj data.obj data_init.obj main.obj syn.obj \
 	host.obj log.obj logic.obj ord.obj rename.obj retstring.obj \
 	sin.obj spcint.obj spreal.obj sqrt.obj sset.obj tan.obj \
 	osopen.obj sys.obj tty.obj inet.obj bindresvport.obj \
-	execute.obj exists.obj term.obj findunit.obj exp.obj
+	execute.obj exists.obj term.obj findunit.obj exp.obj \
+	$(COM_OBJ)
 
 snobol4.exe : $(OBJ)
-	link /out:snobol4.exe $(OBJ) $(INET_LIBS)
+	link /out:snobol4.exe $(OBJ) $(INET_LIBS) $(COM_LIBS)
 
 data.obj : $(SRCDIR)data.c
 	$(CC) $(CFLAGS) $(SRCDIR)data.c
@@ -238,6 +244,9 @@ sset.obj : $(SRCDIR)lib\snolib\sset.c
 
 tan.obj : $(SRCDIR)lib\snolib\tan.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\tan.c
+
+com.obj : $(SRCDIR)lib\win32\com.cpp
+	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\com.cpp
 
 ################################################################
 
