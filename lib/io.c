@@ -12,6 +12,7 @@ typedef long off_t;
 #include "units.h"
 #include "snotypes.h"
 #include "macros.h"
+#include "path.h"
 #include "libret.h"			/* IO_XXX */
 
 /* generated */
@@ -705,8 +706,33 @@ io_include( dp, sp )
 	return FALSE;
 
     if (io_fopen( fp, "r") == NULL) {
+	char *snolib;
+	char fn2[512];			/* XXX */
+	extern char *getenv();
+
 	free(fp);
-	return FALSE;
+
+	/* try again, in SNOLIB dir */
+	snolib = getenv("SNOLIB");
+	if (!snolib) {
+#ifdef SNOLIB_DIR
+	    snolib = SNOLIB_DIR;
+#else
+	    return FALSE;
+#endif
+	}
+	strcpy(fn2, snolib);
+	strcat(fn2, "/");
+	strcat(fn2, fname);
+
+	fp = io_newfile(fn2);
+	if (fp == NULL)
+	    return FALSE;
+
+	if (io_fopen( fp, "r") == NULL) {
+	    free(fp);
+	    return FALSE;
+	}
     }
 
     unit = D_A(dp);
@@ -716,7 +742,7 @@ io_include( dp, sp )
     fp->next = io_units[unit].curr;
     io_units[unit].curr = fp;
 
-    /* add file to list of files already included */
+    /* add base filename to list of files already included */
     fp = io_newfile(fname);		/* reuse struct file!! */
     if (fp) {
 	fp->next = includes;
