@@ -16,6 +16,7 @@
 #endif
 
 extern char *dynamic();
+extern char *malloc();
 
 #define NDYNAMIC 25000			/* default dynamic region size */
 
@@ -46,19 +47,19 @@ usage( jname )
     p( "Usage: %s [options...] [files...] [parameters...]\n", jname );
     p( "-b\ttoggle display of startup banner\n");
     fprintf(stderr,
-	    "-d bytes\tSize of dynamic region in bytes (def: %d)\n",
+	    "-d BYTES[k]\n\tsize of dynamic region in bytes (default: %d)\n",
 	    NDYNAMIC*DESCR);
     p( "-f\ttoggle folding of identifiers to upper case (-CASE)\n");
     p( "-k\ttoggle running programs with compilation errors (-[NO]ERRORS)\n");
-    p( "-l\treenable listings (-LIST)\n");
+    p( "-l\tenable listings (-LIST)\n");
     p( "-n\ttoggle running program after compilation (-[NO]EXECUTE)\n");
     p( "-p\ttoggle SPITBOL operators (-PLUSOPS)\n");
     p( "-r\ttoggle reading INPUT from after END statement\n");
     p( "-s\ttoggle display of statistics\n");
-    p( "-u PARMS\tparameter data for program\n");
+    p( "-u PARMS\n\tparameter data available via HOST(0)\n");
     p( "-M\tprocess multiple input files\n");
     fprintf(stderr,
-	    "-P bytes\tSize of pattern match stack in bytes (def: %d)\n",
+	    "-P BYTES[k]\n\tsize of pattern match stack in bytes (default: %d)\n",
 	    SPDLDR);
     exit(1);
 }
@@ -70,9 +71,9 @@ getk( str, out )
 {
     char k;
     switch (sscanf(str, "%d%c", out, &k)) {
-    case 2:
+    case 2:				/* number & suffix */
 	if (k == 'k' || k == 'K')
-	    ndynamic *= 1024;
+	    *out *= 1024;
 	else
 	    return 0;			/* not "K"; fail */
 	/* FALL */
@@ -238,45 +239,43 @@ init()
      * allocate dynamic data region
      */
 
-    len = DESCR * ndynamic;
-    ptr = dynamic(len);
+    ptr = dynamic(ndynamic);
 
     if (ptr == NULL) {
 	fprintf( stderr, "%s: could not allocate dynamic region of %d bytes\n",
-		argv[0], len);
+		argv[0], ndynamic);
 	exit(1);
     }
 
-    bzero( ptr, len );			/* XXX needed? */
+    bzero( ptr, ndynamic );		/* XXX needed? */
 
     D_A(FRSGPT) = D_A(HDSGPT) = (int_t) ptr; /* first dynamic descr */
 
     /* first descr past end of dynamic storage */
-    D_A(TLSGP1) = (int_t) ptr + len;
+    D_A(TLSGP1) = (int_t) ptr + ndynamic;
 
 
     /****************
      * allocate pattern match stack
      */
 
-    len = DESCR * pmstack;
-    dyn = malloc(len);			/* NOTE: malloc(), not dynamic() */
-    if (dyn == NULL) {
+    ptr = malloc(pmstack);		/* NOTE: malloc(), not dynamic() */
+    if (ptr == NULL) {
 	fprintf( stderr, "%s: could not allocate pattern stack of %d bytes\n",
-		argv[0], len);
+		argv[0], pmstack);
 	exit(1);
     }
 
     /* set up stack title */
-    D_A(dyn) = (int_t) dyn;
-    D_F(dyn) = TTL + MARK;
-    D_V(dyn) = len;
+    D_A(ptr) = (int_t) ptr;
+    D_F(ptr) = TTL + MARK;
+    D_V(ptr) = pmstack;			/* length */
 
-    /* point to top of stack */
-    D_A(PDLPTR) = D_A(PDLHED) = (int_t) dyn;
+    /* pointers to top of stack */
+    D_A(PDLPTR) = D_A(PDLHED) = (int_t) ptr;
 
-    /* point to end of stack for overflow checks */
-    D_A(PDLEND) = (int_t) dyn + len - NODESZ;
+    /* pointer to end of stack for overflow checks */
+    D_A(PDLEND) = (int_t) ptr + pmstack - NODESZ;
 
     /****************
      * setup signal handlers
@@ -290,6 +289,7 @@ init()
     signal( SIGBUS, err_catch );
 #endif /* SIGBUS defined */
 
+    /* catch math errors */
 #ifdef SIGFPE
     signal(SIGFPE, math_catch);
 #endif /* SIGFPE defined */
