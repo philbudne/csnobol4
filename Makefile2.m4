@@ -315,7 +315,7 @@ lexcmp.o: $(LEXCMP_C)
 	$(CC) $(CFLAGS) -c $(LEXCMP_C)
 
 load.o:	$(LOAD_C) $(MAKEFILE2)
-	$(CC) $(CFLAGS) $(SNOLIB_DEFINES) -c $(LOAD_C)
+	$(CC) $(CFLAGS) $(SNOLIB_DEFINES) $(LD_PATH) -c $(LOAD_C)
 
 mstime.o: $(MSTIME_C)
 	$(CC) $(CFLAGS) -c $(MSTIME_C)
