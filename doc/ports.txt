@@ -22,6 +22,7 @@ made when all systems were timed with the same release of SNOBOL!
 
 System		Speed OS	    C	opt	REL    st/sec	who/when
 ===============================================================================
+AMD Athlon XP24	2000  Linux 2.4.19  gcc		0.99.4 1161257	rms 2/03
 AMD Athlon	1470  FreeBSD 3.4   gcc -O2	0.99.4 1066072!	pb 1/02
 AMD Athlon	1470  FreeBSD 3.4   gcc		0.99.4 937037	pb 1/02
 AMD Athlon	1136  Linux 2.4.10  gcc	-O2	0.99.4 722560	pb 2/02
