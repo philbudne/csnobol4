@@ -79,8 +79,9 @@ FTP.COMMAND.END
 *	I/O var for control connection (from FTP.OPEN)
 *	command
 *	I/O var for data connection
+*	I/O mode for data connection
 
-	DEFINE("FTP.DATA.COMMAND(FTP.NAME,FTP.CMD,FTP.DATA)"
+	DEFINE("FTP.DATA.COMMAND(FTP.NAME,FTP.CMD,FTP.DATA,FTP.DATA.MODE)"
 +		"FTP.RES,FTP.HOST,FTP.PORT.HI,FTP.PORT.LO")
 							:(FTP.DATA.COMMAND.END)
 FTP.DATA.COMMAND
@@ -98,7 +99,8 @@ FTP.DATA.COMMAND
 
 	TCP.OPEN(FTP.DATA,
 +		REPLACE(FTP.HOST, ',', '.'),
-+		FTP.PORT.HI * 256 + FTP.PORT.LO)	:F(FRETURN)
++		FTP.PORT.HI * 256 + FTP.PORT.LO,
++		FTP.DATA.MODE)				:F(FRETURN)
 
 	$FTP.NAME = FTP.CMD FTP.EOL			:F(FRETURN)
 	FTP.GETRES(FTP.NAME)				:F(FRETURN)
@@ -107,6 +109,18 @@ FTP.DATA.COMMAND
 							:(RETURN)
 
 FTP.DATA.COMMAND.END
+
+****************
+*	FTP.DATA.CLOSE()
+*		close an FTP data connection
+*
+*	args;
+*	I/O var for data connection
+
+	DEFINE("FTP.DATA.CLOSE(FTP.DATA)")		:(FTP.DATA.CLOSE.END)
+FTP.DATA.CLOSE
+	TCP.CLOSE(FTP.DATA)				:F(FRETURN)S(RETURN)
+FTP.DATA.CLOSE.END
 
 ****************
 *	FTP.CLOSE
