@@ -4,8 +4,13 @@
 #include <time.h>
 
 /*
- * times() is venerable (it was in v6)!!  (But it seems to have changed over
- * the years).
+ * mstime for vms
+ * J. Leighter
+ */
+
+/*
+ * times() is venerable (it was in v6)!!
+ * (But it seems to have changed over the years).
  */
 
 int_t
