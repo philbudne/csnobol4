@@ -2,6 +2,16 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+3/13/2002
+	configure: add --mandir=
+	Makefile2.m4: add MAN1DIR
+
+3/12/2002
+	lib/init.c: fix VMS getredirection() call
+
+3/9/2002
+	Makefile: sh clean.sh
+
 3/8/2002
 	timing: show AIX memory/cache conf (thanks to info from
 		http://www.fortran-2000.com/ArnaudRecipes/hardwareinfo.html)
