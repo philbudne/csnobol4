@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+4/14/97:
+	config/irix64.m4: ditch long long
+
 4/13/97:
 	new lib/unix98/load.c: load support using dlopen()
 	autoconf: check for dlfcn.h, added --no-dlopen
