@@ -2,6 +2,87 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+1/26/2002
+	v311.sil: set MAXLNGTH to SIZLIM; increase FNLIST space to 40 slots
+	CHANGES: mention MAXLNGTH
+	lib/hash.c: defend against Sun compiler bug?
+	Makefile: fix spotless, comment cleanup options, add newtar
+
+1/25/2002
+	doc/porting.ms: update vfld/NO_BITFIELDS; add SIZLIM data models
+	include/snotypes.h: drop default SIZLIM back to 0x7fffffff
+	configure: redefine SIZLIM to 0xffffffff if using 64-bit INT_T
+		add --no-bitfields
+	INSTALL: document --no-bitfields
+	timing: move psrinfo to generic location (SunOS5 and Tru64 v5)
+	new: test/test.dump.sh: massage MAXLNGTH output
+	test/tests.in: use "dump" script for a.sno, dump.sno
+	test/{a,dump}.sno: massage for "dump" test script
+
+1/24/2002
+	genc.sno: rename ENTER to ENTRY, flush ';' and label
+		avoid cast and parens for integers in SETAC
+		avoid parens for simple constants for SETAC
+		saves 4094 bytes in snobol4.c
+		(7928 with yesterday's changes)
+	include/macros.h: rename ENTER to ENTRY, output label
+	Makefile: don't have Makefile2 depend on GENERATED files
+		move GENERATED to before Makefile2
+		add "make tidy"
+
+1/23/2002
+	timing: add psrinfo, sysDescr for OSF/1
+		use ARGS when running timing.sno
+	doc/ports.doc: last of old reports! add new ones
+	genc.sno: clean up output (snobol4.c is 3838 bytes smaller)
+
+1/22/2002
+	lib/snolib/logic.c: cleanup
+	v311.sil: make LABEL() honor case folding
+		add experimental FUNCTION() predicate
+	new: test/function.{sno,ref}
+	test/tests.in: add function.sno
+	test/label.{sno,ref}: update for case folding
+	globals: add FUNCTN
+	gensyn.sno: use ALPHA and ALPHANUM variables; fix ALPHANUM!
+	doc/ports.doc: update!
+	CHANGES: updated
+
+1/21/2002
+	v311.sil: add LABEL() and VDIFFER() functions
+		updated Table of Contents
+	globals: add LABEL and VDIFFR
+	doc/snobol4.1: document LABEL() and VDIFFER()
+		do some bolding
+	new: test/{label,viffer}.{sno,ref}
+	test/tests.in: add label.sno, vdiffer.sno
+	timing: if 00README.CVS exists, display CVS/Entries
+	new snolib/logic.sno, lib/snolib/logic.c
+	pml.h: add LOGIC (but not prototype)
+	Makefile2.m4: fix install (VERS/pv)
+	include/load.h: add LA_STR_{PTR,LEN}
+
+1/20/2002
+	started logic.c
+
+1/19/2002
+	Makefile2.m4: add star bars
+
+1/18/2002
+	configure, INSTALL: add --no-opt
+	gensyn.sno: shake off dust; use TERMINAL, SUBSTR()
+		use CHARSET, own ORD() function to allow bootstrapping
+		take input file from command line
+	Makefile: pass right input file to gensyn.sno!
+	doc/Makefile: rename porting.doc to porting.txt
+		add ALL, PORTING variables
+		make snobol4.pdf (by default)
+		add "make porting"
+		add "make clean"
+	doc/snobol4.1: update LOAD(), charset discussions
+	v311.sil: fix compiler syntax error pointer display
+		fix internal error trying to compile " ()("
+
 1/17/2002
 	INSTALL: add more --add-opt= discussion
 	CHANGES: updated
@@ -16,7 +97,7 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 	Makefile: use $(CC) to build bsdtsort
 	INSTALL: note OPT defaults to -O2 with gcc
 		enhance --add-opt= and --opt= discussions
-		ask for gifts!
+		ask for gifts
 
 1/15/2002
 	configure:

@@ -1,14 +1,26 @@
 $Id$
 
-man page;
-	document LABEL(), VDIFFER()
+mention web page/ftp locations in README!!!
 
-Add LOGIC() to snolib? PML??
-	move uint_t to snotypes.h??
+INSTALL
+    talk about utilities needed;
+	make (basic)
+	m4
+	sed
+	shell (bourne or korn)
 
-Update "table of contents"?
+    to build from CVS;
+	awk
+	snobol4
+
+merge "realclean" and "clean"?
+
+doc/load.doc: add LA_STR_{PTR,LEN}
+	MUST NOT MODIFY!!
+	NOT NUL TERMINATED!!!
 
 Include advertizements about users (announcements?) mailing list???
+(and snobol4 list);
 	INSTALL
 	README
 	End of Makefile
@@ -19,21 +31,10 @@ change name from C-MAINBOL to CSNOBOL4
 	doc/ports.doc, doc/snobol4.1
 	snolib/*.sno
 
-if 00README.CVS exists, show CVS/Entries file
-
 host.[ch]:
-	use SPITBOL names for HOST_XXX function names?
+	use SPITBOL names for HOST_XXX function names????
+		esp HOST_SYSTEM
 
-porting.ms;
-	talk about ILP32, LP64
-	(mention LP32, ILP64 also)
-
-ports.doc
-	empty?
-	update (with beta test information)
-	remove???
-	update w/ 0.99.4 info, move to bottom
-	
 put sources under CVS
 	name module snobol4!  csnobol4??
 	improve rcs2cvs;
@@ -113,7 +114,14 @@ rcs tag all files
 
 ================
 
+if using bitfields, try reordering v/f fields depending	on endian-ness?
+
+add logic.c u_int_t to snotypes.h?
+
+replace pv with VERSION file (or script)?
+
 split procs into static & procified?
+	only procified need top label!!
 
 tsort:	use a snocone version?
 
@@ -160,6 +168,8 @@ lib/snolib/serv.c:
 
 sysinfo(SI_PLATFORM, .... ) for HOST()?		Sun
 SI_ARCHITECTURE??				Sun, IRIX6.2!
+
+figure out what's a legal alphabetic in current locale; allow in identifiers
 
 ================
 
@@ -553,8 +563,8 @@ Add DIAGNOSTICS section to man page???
 
 have all genc, gendata, gensyn output .[ch]3 files; mv to .[ch]2 on exit??
 
-Have gensyn read character classes from input
-	(seperate with %%?)
+Have gensyn read character classes from file?
+	(CLASSNAME TAB STRING)
 
 Improve porting.doc / INSTALL
 	talk about C compilers
@@ -662,59 +672,8 @@ Implement SPITBOL EXIT [+-][34] freeze functionality
 
 perform live/dead analysis of variables for each function?!
 
-================
-
-I've included an external function to do this with Macro SPITBOL for many
-years.  -include "logic.inc" provides:
-
-SPITBOL logicals;
-
-  NOT(X1)        Return Logical NOT of X1
-  AND(X1,X2)     Return X1 AND  X2
-  OR(X1,X2)      Return X1 OR   X2
-  XOR(X1,X2)     Return X1 XOR  X2
-  NAND(X1,X2)    Return X1 NAND X2
-  NOR(X1,X2)     Return X1 NOR  X2
-  UPLUS(X1,X2)   Return X1 + X2 (overflow ignored)
-  UMINUS(X1,X2)  Return X1 - X2 (overflow ignored)
-  UMUL(X1,X2)    Return X1 * X2 (unsigned)
-  UDIV(X1,X2)    Return X1 / X2 (unsigned)
-  SHL(X1,X2)     Return X1 shifted left X2 bits
-  SHR(X1,X2)     Return X1 shifted right X2 bits (unsigned)
-  SAR(X1,X2)     Return X1 shifted right X2 bits (sign extension)
-  ROL(X1,X2)     Return X1 rotated left X2 bits
-  ROR(X1,X2)     Return X1 rotated right X2 bits
-  DIB(X1,X2)     Return integer from digit string in X1, base X2
-  IDB(X1,X2)     Return digit string from integer in X1, base X2
-  
-X1 and X2 may be two strings, two integers, or an integer and a string.
-
-;       LOAD('LOGIC(INTEGER,ARG2,ARG3)')
-;
-;       Input:  First Argument = Operation Specifier:
-;                       1 = Return Logical NOT of ARG2
-;                       2 = Return ARG2 AND  Arg3
-;                       3 = Return ARG2 OR   Arg3
-;                       4 = Return ARG2 XOR  Arg3
-;                       5 = Return ARG2 NAND Arg3
-;                       6 = Return ARG2 NOR  Arg3
-;                       7 = Return ARG2 + ARG3
-;                       8 = Return ARG2 - ARG3
-;                       9 = Return ARG2 * ARG3 (unsigned)
-;                      10 = Return ARG2 / ARG3 (unsigned)
-;                      11 = Return ARG2 shifted left ARG3 bits
-;                      12 = Return ARG2 shifted right ARG3 bits (unsigned)
-;                      13 = Return ARG2 shifted right ARG3 bits (sign extension)
-;		       14 = Return ARG2 rotated left ARG3 bits
-;                      15 = Return ARG2 rotated right ARG3 bits
-;                      16 = Return integer from digit string in ARG2, base ARG3
-;                      17 = Return digit string from integer in ARG2, base ARG3
-;                             (conversion base defaults to 16 if null string)
-;
-;       ARG2 and ARG3 may be two strings, two integers, or an integer
-;                       and a string.
-;
-
+determine if any temporaries are always used only within a function
+	(never live inputs?)
 
 ================
 
@@ -733,3 +692,10 @@ find places where common tails exist, and move to ends of routines
 	examples (done) STOPTP, RECOMZ
 
 document --add-define= PSSIZE, NDYNAMIC (both take ndescr)
+
+file stat releated functions;
+	NEWER(FILE1,FILE2)??
+	FILESIZE()??
+	STAT()??
+
+see the old TODO file!!!
