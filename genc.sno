@@ -232,12 +232,9 @@ BPROC2	STAT = "static "
 	UNINDENT()
 	OUTPUT = '{'
 	INDENT()
-* for call depth tracing;
-	OUTPUT = IND 'ENTER(' NAME ');'
-*	sigh; for branch to top of proc (only a few actually do)!!
-* XXX only needed for "created" procedures !!!!
-	OUTPUT = L_ NAME ':'
-	OLABEL = 1
+* for call depth tracing, top of function label
+	OUTPUT = IND 'ENTRY(' NAME ')'
+*	OLABEL = 1
 	LIVE = 1					:(RETURN)
 EBPROC
 
@@ -735,13 +732,16 @@ NOTPROC	IDENT(INPROC)					:S(DISPATCH)
 *	in a procedure; end block comment,  output label
 	CFLUSH()
 	OUTPUT = L_ LBL ':'
-	OLABEL = 1
+*	OLABEL = 1
 	LIVE = 1
 	LLBL = LBL
 
 ****************
 *	dispatch on op field after outputting comments, #line etc.
 DISPATCH
+
+* test for all options at once!!
+	IDENT(COMM POUND_LINE)				:S(DISPATCH2)
 
 *	have end of line comment?
 	IDENT(COMM)					:S(NOCOMM)
@@ -750,15 +750,16 @@ DISPATCH
 	CFLUSH()
 	OUTPUT = IND BC SP COMM EC
 
-NOCOMM
-	IDENT(POUND_LINE)				:S(NOHASH)
+NOCOMM	IDENT(POUND_LINE)				:S(NOHASH)
+
 *	output un*x line indicator (see comments at top)
 	OUTPUT = DIFFER(INPROC) '# line ' LN ' "' SILPATH '"'
 NOHASH
 
+DISPATCH2
 *	TERMINAL = OP
-	OLABEL =
-GOTO_X_OP						:($('X' OP))
+*	OLABEL =
+							:($('X' OP))
  
 ****************
 *	null op?!
