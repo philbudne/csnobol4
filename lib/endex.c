@@ -19,6 +19,8 @@ endex( x )
 {
     int i;
 
+    tty_restore();
+
     /* if &ABEND set, dump core?! */
     if (x) {
 	/* XXX perform I/O cleanup?! */
