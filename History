@@ -6,6 +6,8 @@ MAINBOL for Un*x history (and personal SNOBOL history);
 11/3/94
 	lib/ansi/mstime.c: ansi only version
 	doc/porting.ms: update for above
+	config/ansi.m4: config to use ansi mstime function
+	config/generic.m4: added a comment
 
 9/14/94
 	timing.sno: cleanup/improvements
