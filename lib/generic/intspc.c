@@ -2,7 +2,7 @@
 
 /*
  * convert from integer to string
- * generic version (using ato[ld] rather than superior strto[ld])
+ * generic version sprintf()
  */
 
 #ifdef HAVE_CONFIG_H
@@ -26,7 +26,7 @@ intspc(sp, dp)
     struct spec *sp;
     struct descr *dp;
 {
-    sprintf( strbuf, "%ld", D_A(dp) );	/* %ld? */
+    sprintf( strbuf, "%ld", (long)D_A(dp) );
     S_A(sp) = (int_t) strbuf;		/* OY! */
     S_F(sp) = 0;
     S_V(sp) = 0;
