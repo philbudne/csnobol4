@@ -126,7 +126,8 @@ S4_EXTERN struct descr ostack[1];	/* old stack pointer */
 #define RSTSTK() cstack = (struct descr *)D_A(ostack); POP(ostack)
 
 /* overflow check */
-#define OFCHK()	{ if ((int_t)cstack > (int_t)STACK+STSIZE*DESCR) OVER(NORET); }
+#define OFCHK()	\
+	{ if ((int_t)cstack > (int_t)(STACK+STSIZE*DESCR)) OVER(NORET); }
 
 #ifdef DO_UFCHK
 /* for debug only (internal error); */
