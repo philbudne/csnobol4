@@ -67,7 +67,7 @@ README
 CHANGES
 	Important changes since last release
 
-doc/load.doc
+doc/load.txt
 	Information on dynamicly loading code into SNOBOL4
 	(also installed in /usr/local/lib/snobol4/)
 
@@ -84,10 +84,19 @@ doc/snobol4.html
 doc/snobol4.ps
 	PostScript formatted output of snobol4.1
 
-doc/ports.doc
-	status of ports to various systems.
+doc/snolib.3
+	man page for SNOBOL4 library routines
 
-doc/porting.doc
+doc/snolib.0
+	text formatted output of snolib.3 man page
+
+doc/snolib.html
+	WWW HyperText formatted output of snolib.3
+
+doc/snolib.ps
+	PostScript formatted output of snolib.3
+
+doc/porting.txt
 	information on porting to a new system,
 	particularly the usage of Makefile variables and m4 macros.
 
@@ -102,59 +111,6 @@ TODO.soon
 
 TODO
 	older identified tasks / wish list.
-
-Library;
-
-The following SNOBOL4 library routines are installed in /usr/local/lib/snobol4
-(the default path for -INCLUDE);
-
-bq.sno
-	run a program in a subprocess and capture all output
-
-chars.sno
-	defines a variable for each non-printing character
-	in the local character set
-
-fence.sno
-not.sno
-unique.sno
-	emulation of SPITBOL FENCE() and NOT() functions, and unique
-	variable creation support routine, thanks to Peter-Arno Coppen
-
-host.sno
-	Function codes for HOST() function
-
-logic.sno
-	Prototypes for Catspaw Macro SPITBOL compatible LOGIC() function
-
-serv.sno
-	Example TCP server program
-
-smtp.sno
-	Example code to send mail via TCP/SMTP
-
-snobol4+.sno
-	SNOBOL4+ emulation functions:
-		ENVIRONMENT(), EXECUTE(), TELL(), SEEK()
-
-spitbol.sno
-	SPITBOL emulation functions:
-		INPUT(), OUTPUT(), ENDFILE(), REWIND()
-
-tcp.sno
-	TCP connection routines
-
-url.sno
-file.sno
-ftp.sno
-http.sno
-	Internet URL file reading support (for file, ftp and http URL's)
-
-utf.sno
-	Experimental routines for handling UTF encoded (Unicode) data
-
-wrapper.sno
-	Routines for creating C code wrappers for dynamicly loading code.
 
 Mark Emmer has made his old 16-bit DOS Macro SNOBOL4 based product
 "SNOBOL4+" available for free.  See http://www.snobol4.com and
