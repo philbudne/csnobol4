@@ -11,7 +11,10 @@
 
 #include <stdio.h>
 #include <conio.h>
-#include "h.h"				/* for FALSE */
+
+#include "h.h"
+#include "snotypes.h"
+#include "lib.h"
 
 int
 fisatty(f, fname)

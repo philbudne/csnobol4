@@ -13,6 +13,10 @@
 #include <stdio.h>
 #include <windows.h>
 
+#include "h.h"
+#include "snotypes.h"
+#include "lib.h"
+
 /* keep settings for each fd in a list; */
 struct save {
     struct save *next;

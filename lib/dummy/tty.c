@@ -5,7 +5,10 @@
 #endif /* HAVE_CONFIG_H defined */
 
 #include <stdio.h>
-#include "h.h"				/* for FALSE */
+
+#include "h.h"
+#include "snotypes.h"
+#include "lib.h"
 
 /*
  * tty mode, echo

@@ -16,6 +16,10 @@
 #include <iodef.h>
 #include <stsdef.h>
 
+#include "h.h"
+#include "snotypes.h"
+#include "lib.h"
+
 #define SUCCESS(_STAT) ((_STAT) & STS$M_SUCCESS)
 #define SETERR(_STAT) do { vaxc$errno = (_STAT); errno = EVMSERR; } while(0)
 
