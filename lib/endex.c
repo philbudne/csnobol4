@@ -33,8 +33,6 @@ void
 endex( x )
     int x;
 {
-    int i;
-
     io_finish();
     inet_cleanup();
 
