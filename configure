@@ -121,6 +121,9 @@ while [ $# -gt 0 ]; do
     --lp64)
 	LP64=true
 	;;
+    --no-bitfields)
+	echo '#define NO_BITFIELDS'			>> $CONFIG_H
+	;;
     --no-dlopen)
 	NO_DLOPEN=true
 	;;
