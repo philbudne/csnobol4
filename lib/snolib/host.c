@@ -128,6 +128,12 @@ HOST( LA_ALIST ) LA_DCL
 	RETSTR(build_files);
 #endif /* HAVE_BUILD_VARS defined */
 
+    /*
+     * NOTE!! All of the above 2xxx values have been build related.
+     * Perhaps it should be kept that way, and other values added
+     * in a different range?
+     */
+
     default:
 	break;
     }
