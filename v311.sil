@@ -1,6 +1,11 @@
 * $Id$
 *
 * $Log$
+* Revision 1.96  2002/02/18 18:53:17  phil
+* [PLB82] compile cleanly with gcc -Wunused
+* removed unused code; add new top-of-procedure labels where needed
+* add XECODE operator to tag end of source code
+*
 * Revision 1.95  2002/01/26 15:44:43  phil
 * [PLB81] set &MAXLNGTH to SIZLIM
 * increase FNLIST free space to 40 functions
@@ -2110,7 +2115,7 @@ CASE1  SETAC   CASECL,0		   Clear case folding		[PLB15][PLB38]
 *_
 INCLUD RCALL   ,CTLADV,,(COMP10,COMP10)				[PLB38]
 *				   Advance to filename		[PLB38]
-       XINCLD  UNIT,XSP,COMP11					[PLB20][PLB38]
+       XINCLD  UNIT,XSP,COMP11,CMTCLR				[PLB20][PLB83]
 *				   Process include		[PLB20]
        TRIMSP  XSP,XSP		   Remove trailing spaces	[PLB38]
        RCALL   XCL,BLOCK,INCLSZ	   Allocate include save block	[PLB38]
