@@ -3,16 +3,20 @@ $Id$
 MAINBOL for Un*x history (and personal SNOBOL history);
 
 5/29/94
+	Only convert NUL to space on output when compiler running
+	Finished &LCASE &UCASE
+	Fixed -CASE n
+
+5/28/94
 	Updated ports.doc for HP, SGI, IBM
 	Implemented -f option
 	Added ; and ! as comment chars (per SITBOL)
-
-5/28/94
-	Invalidate self pointer in lib/bsd/load.c unload()
-	Changed types.h to snotypes.h to avoid include confusion on VMS?!
+	Added &LCASE, &UCASE
 
 5/27/94
 	Allow external redefinition of HZ in generic/mstime.c
+	Invalidate self pointer in lib/bsd/load.c unload()
+	Changed types.h to snotypes.h to avoid include confusion on VMS?!
 
 5/26/94
 	Supress padding once compliation is over
