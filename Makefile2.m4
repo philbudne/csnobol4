@@ -265,7 +265,7 @@ realclean: clean
 `TAR=	README doc History TODO TODO.soon \
 	Makefile Makefile2.m4 \
 	v311.sil syntax.tbl procs global.procs \
-	genc.sno gensyn.sno gendata.sno \
+	genc.sno gensyn.sno gendata.sno inline.sno \
 	main.c charset.c data_init.c version.c \
 	parms.h mlink.h mdata.h pml.h \
 	lib include config test bugs snolib \
