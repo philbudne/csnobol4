@@ -504,7 +504,7 @@ install: snobol4 pv
 	@echo '*** Have you mailed a copy of timing.out to' \
 		'snobol4-timing@ultimate.com ?' 1>&2
 
-pv:	vers.c
+pv:	version.c
 	make -f Makefile pv
 
 ################
