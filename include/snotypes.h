@@ -43,10 +43,10 @@ union addr {
 #endif
 #ifndef SIZLIM
 /*
- * NOTE!! SIZLIM must not appear negative when stored in an int_t when
- * int_t is 64-bits, the configure script redefines SIZLIM to 0xffffffff
+ * NOTE!! SIZLIM must not appear negative when stored in an int_t.
+ * When int_t is 64-bits, the configure script redefines SIZLIM.
  */
-#define SIZLIM 0x7fffffff		/* maximum object size */
+#define SIZLIM 0x7fffffff		/* maximum object size (31 bits) */
 #endif
 #define VFLD(name) VFLD_T name
 #else  /* NO_BITFIELDS not defined */
