@@ -353,15 +353,19 @@ if [ "$GCCPATH" -a "$WANTGCC" ]; then
     echo using gcc 1>&2
     CCPATH="$GCCPATH"
     CCVERS=-v
+    echo 'CCM=$(CC) -M'				>> $CONFIG_M4
+
+    # -O3 just adds -finline-functions (set below)
+    OPT=-O2
+
     if [ "$INLINE_OK" ]; then
 	echo 'ADD_OPT([-finline-functions])'	>> $CONFIG_M4
     fi
-    echo 'CCM=$(CC) -M'				>> $CONFIG_M4
-
-    # -O3 just adds -finline-functions (set above)
-    # -Wuninitialized meaningless without -O, so don't ADD_OPT() it!
-    OPT='-O2 -Wuninitialized'
-
+    if [ ! "$NO_OPT" ]; then
+	# only works when optimizing
+	# (will give warnings for --opt=-g)
+	echo 'ADD_OPT([-Wuninitialized])'	>> $CONFIG_M4
+    fi
     echo 'ADD_OPT([-Wunused])'			>> $CONFIG_M4
 
     case "$OS" in
@@ -379,6 +383,11 @@ if [ "$GCCPATH" -a "$WANTGCC" ]; then
 else
     # required options for native compilers
     case "$MORV" in
+    9000/[34]*:HP-UX:*:*)
+	# HP-UX 68K
+	# bundled C compiler lacks -O flag??
+	NO_OPT=true
+	;;
     9000/[678]*:HP-UX:*:*)
 	# HP-UX PA-RISC
 	KERNEL_BITS=`(/usr/bin/getconf SC_KERNEL_BITS || echo 32) >/dev/null`
@@ -387,10 +396,6 @@ else
 	    # dlopen available in 64-bit world!
 	    NO_DLOPEN=
 	fi
-	;;
-    9000/[34]*:HP-UX:*:*)
-	# bundled C compiler lacks -O flag??
-	NO_OPT=true
 	;;
     *:IRIX*:*:*)
 	echo 'CCM=$(CC) -M'			>> $CONFIG_M4
