@@ -62,6 +62,8 @@ static char *rcsid = "$OpenBSD: bindresvport.c,v 1.13 2000/01/26 03:43:21 deraad
 
 #include <errno.h>
 
+#include "str.h"			/* bzero() */
+
 #define STARTPORT 600
 #define ENDPORT (IPPORT_RESERVED - 1)
 #define NPORTS	(ENDPORT - STARTPORT + 1)
