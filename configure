@@ -860,17 +860,19 @@ if [ -f $INCDIR/sys/socket.h ]; then
 	if grep '[^_]_vfork' $INCDIR/unistd.h >/dev/null 2>&1; then
 	    # SGI
 	    NO_VFORK=1
-	elif grep 'vfork' $INCDIR/unistd.h $INCDIR/sys/unistd.h >/dev/null 2>&1; then
-	    echo 'using vfork from unistd.h' 1>&2
-	    echo '/* vfork in unistd.h */'	>> $CONFIG_H
+	elif grep 'vfork' $INCDIR/unistd.h >/dev/null 2>&1 || \
+		grep 'vfork' $INCDIR/sys/unistd.h >/dev/null 2>&1; then \
+	    # HP-UX has goods in sys/unistd.h, Tru64 grep hates missing files
+	    echo 'using vfork() from unistd.h' 1>&2
+	    echo '/* vfork() in unistd.h */'	>> $CONFIG_H
 	elif [ -f $INCDIR/vfork.h ]; then
-	    echo 'using vfork.h' 1>&2
+	    echo 'using vfork() from vfork.h' 1>&2
 	    echo '#define HAVE_VFORK_H'		>> $CONFIG_H
 	else
 	    NO_VFORK=1
 	fi
 	if [ "$NO_VFORK" ]; then
-	    echo 'using fork for vfork' 1>&2
+	    echo 'using fork() for vfork()' 1>&2
 	    echo '#define vfork fork'		>> $CONFIG_H
 	fi
     fi
