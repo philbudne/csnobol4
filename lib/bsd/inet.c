@@ -24,8 +24,8 @@
 #include <arpa/inet.h>			/* inet_addr() */
 
 #include "h.h"				/* TRUE/FALSE */
-#include "macros.h"			/* bcopy */
 #include "snotypes.h"
+#include "macros.h"			/* bcopy */
 #include "lib.h"			/* own prototypes */
 #include "str.h"
 
