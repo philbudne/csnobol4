@@ -54,7 +54,10 @@ struct file {
 
 #define FL_PIPE	01			/* file was popen'ed */
 #define FL_EOL	02			/* strip EOL on input, add on output */
-/* XXX raw (binary?) + recl? */
+#define FL_BIN  04			/* binary: no EOL use recl */
+/* XXX keep recl (shift flags up)? */
+/* XXX READ/WRITE flags? */
+/* XXX opened by INPUT/OUTPUT flag? */
 
 /* XXX malloc at runtime? */
 static struct unit io_units[NUNITS];
@@ -169,16 +172,9 @@ io_fopen( fp, mode )
     struct file *fp;
     char *mode;
 {
-    /*
-     * Catspaw style extensions??
-     *		parse flags inside []
-     *		if fname[0] == '!' use popen!!
-     * SITBOL style;
-     *		take seperate format string
-     *		INPUT() takes comma seperated list
-     */
 #ifndef NO_POPEN
     /* filename with leading '|' opens a pipe! */
+    /* SPITBOL: leading '!' means pipe! */
     if (fp->fname[0] == '|') {
 	fp->flags |= FL_PIPE;
 	return (fp->f = popen(fp->fname+1, mode));
@@ -225,6 +221,7 @@ io_next( unit )				/* internal (zero-based unit) */
 	return TRUE;
 
     /* XXX let io_read() do the work??? */
+    /* XXX copy flags from previous file? */
     io_fopen( fp, "r");
 
     return fp->f != NULL;
@@ -487,9 +484,17 @@ io_read( dp, sp )			/* STREAD */
 		return IO_ERR;
 	}
 
-	/* XXX check if binary mode, use fread & set len */
-	if (fgets(cp, recl, f) != NULL)
-	    break;
+	if (fp->flags & FL_BIN) {
+	    len = fread(cp, 1, recl, f);
+	    if (len == recl)
+		break;
+	}
+	else {
+	    if (fgets(cp, recl, f) != NULL) {
+		len = strlen(cp);
+		break;
+	    }
+	}
 
 	/* here when read failed */
 	if (feof(f)) {
@@ -498,29 +503,24 @@ io_read( dp, sp )			/* STREAD */
 		return IO_EOF;
 	    }
 	    if (COMPILING(unit)) {
-#if 0
-		/* let compiler know we've changed files */
-		D_A(FILENM) = 0;	/* zap filename! */
-		D_A(LNNOCL) = -1;	/* and source line number */
-#endif
 		/* force call to INCCK to pop old FILENM and LNNOCL */
 		return IO_EOF;
 	    }
 	    continue;			/* try again! */
-	}
+	} /* feof */
+
 	/* wasn't eof?! */
 	return IO_ERR;
-    }
+    } /* forever */
 
     if (fp->flags & FL_EOL) {
 	/* strip off EOL */
-	len = strlen(cp);
 	if (cp[len-1] == '\n') {
 	    len--;
 	    cp[len] = '\0';
 	}
 	/* XXX increment line number (fp->line) ? */
-    }
+    } /* FL_EOL */
 
     if (compiling) {
 	/* UGH: compiler ignores output length
@@ -559,7 +559,7 @@ io_rewind(unit)				/* REWIND */
 
     up = io_units + unit;
     if (up->curr != up->head) {
-	if (up->curr != NULL)		/* file is openbut not first in list */
+	if (up->curr != NULL)		/* file is open but not first in list */
 	    io_close(unit);		/* close it */
 	up->curr = up->head;		/* reset to head of list */
 	io_fopen(up->curr, "r");	/* XXX use original mode? */
@@ -603,35 +603,123 @@ io_ecomp()				/* XECOMP */
     up->head = up->curr;		/* save file for rewind */
 }
 
+static int
+io_options( fp, op, rp )
+    struct file *fp;			/* IN: file pointer */
+    char *op;				/* IN: options */
+    int *rp;				/* OUT: recl */
+{
+    int flags;
+    int recl;
+
+    flags = FL_EOL;
+    recl = 0;
+
+    /* XXX check here for leading hyphen; process SPITBOL style options? */
+
+    while (*op) {
+	switch (*op) {
+	case '-':			/* reserved for SPITBOL ops */
+	    /* XXX skip ahead 'till space or EOS? */
+	    return FALSE;
+
+	case ',':			/* optional SNOBOL4+ seperator */
+	    op++;			/* skip it */
+	    break;
+
+	case '0':
+	case '1':
+	case '2':
+	case '3':
+	case '4':
+	case '5':
+	case '6':
+	case '7':
+	case '8':
+	case '9':
+	    if (recl)			/* already got one? */
+		return FALSE;
+	    recl = 0;
+	    while (isdigit(*op)) {
+		recl = recl * 10 + *op - '0'; /* XXX works for ASCII */
+		op++;
+	    }
+	    break;
+
+	case 'B':			/* SNOBOL4+: binary */
+	case 'b':
+	    flags |= FL_BIN;
+	    flags &= ~FL_EOL;
+	    op++;
+	    break;
+
+	case 'C':			/* SITBOL: character */
+	case 'c':
+	    flags |= FL_BIN;
+	    flags &= ~FL_EOL;
+	    if (recl)
+		return FALSE;
+	    recl = 1;
+	    op++;
+	    break;
+
+	case 'N':			/* C-MAINBOL: no-eol (SITBOL "T") */
+	case 'n':
+	    flags &= ~FL_EOL;
+	    op++;
+	    break;
+	}
+    } /* while *op */
+    /* XXX if binary; set tty raw mode? */
+    fp->flags = flags;
+    if (rp)
+	*rp = recl;
+    return TRUE;
+}
+
 int
-io_openi(dp, sp)			/* XOPENI */
-    struct descr *dp;
-    struct spec *sp;
+io_openi(dunit, sfile, sopts, drecl)	/* called from SNOBOL INPUT() */
+    struct descr *dunit;		/* IN: unit */
+    struct spec *sfile;			/* IN: filename */
+    struct spec *sopts;			/* IN: options */
+    struct descr *drecl;		/* OUT: rec len */
 {
     char fname[1024];			/* XXX */
+    char opts[1024];			/* XXX */
     struct file *fp;
     FILE *f;
     int unit;
+    int recl;
 
-    if (S_L(sp) == 0) {			/* no file? */
-	/* XXX use file (if any) from -UNIT=file from command line? */
-	return 1;			/* true (success) */
+    if (S_L(sfile) == 0) {		/* no file? */
+	/* XXX keep going (process options)??? */
+	return TRUE;			/* true (success) */
     }
 
-    unit = D_A(dp);
+    unit = D_A(dunit);
     unit--;				/* make zero based */
     if (BADUNIT(unit))
 	return FALSE;			/* fail */
 
-    strncpy( fname, S_SP(sp), S_L(sp) );
-    fname[S_L(sp)] = '\0';
+    strncpy( fname, S_SP(sfile), S_L(sfile) );
+    fname[S_L(sfile)] = '\0';
 
+    strncpy( opts, S_SP(sopts), S_L(sopts) );
+    opts[S_L(sopts)] = '\0';
+
+    /* XXX if no sopts;extract [options] suffix (if any) from filename here? */
+
+    /* SITBOL takes comma seperated file list */
     fp = io_newfile(fname);
     if (fp == NULL)
 	return FALSE;
 
-    /* XXX let io_read do the work??? */
-    f = io_fopen( fp, "r");
+    /* process options */
+    if (!io_options(fp, opts, &recl))
+	return FALSE;
+
+    /* open it now, so we can return status! */
+    f = io_fopen( fp, "r");		/* XXX mode from option flags */
     if (f == NULL) {
 	free(fp);
 	return FALSE;			/* fail; no harm done! */
@@ -639,38 +727,55 @@ io_openi(dp, sp)			/* XOPENI */
 
     io_closeall(unit);
     io_units[unit].curr = fp;
-
+    if (recl) {
+	D_A(drecl) = recl;
+	D_V(drecl) = I;
+    }
     return TRUE;
 }
 
 int
-io_openo(dp, sp)			/* XOPENO */
-    struct descr *dp;
-    struct spec *sp;
+io_openo(dunit, sfile, sopts)		/* called from SNOBOL OUTPUT() */
+    struct descr *dunit;		/* IN: dunit */
+    struct spec *sfile;			/* IN: filename */
+    struct spec *sopts;			/* IN: options */
 {
     char fname[1024];			/* XXX */
+    char opts[1024];			/* XXX */
     struct file *fp;
     FILE *f;
     int unit;
 
-    if (S_L(sp) == 0) {			/* no file name? */
-	/* XXX use file (if any) from -UNIT=file from command line? */
+    if (S_L(sfile) == 0) {		/* no file name? */
+	/* XXX keep going (process options)??? */
 	return TRUE;
     }
 
-    unit = D_A(dp);
+    unit = D_A(dunit);
     unit--;
     if (BADUNIT(unit))
 	return FALSE;			/* fail */
 
-    strncpy( fname, S_SP(sp), S_L(sp) );
-    fname[S_L(sp)] = '\0';
+    strncpy( fname, S_SP(sfile), S_L(sfile) );
+    fname[S_L(sfile)] = '\0';
 
+    strncpy( opts, S_SP(sopts), S_L(sopts) );
+    opts[S_L(sopts)] = '\0';
+
+    /* XXX if no sopts;extract [options] suffix (if any) from filename here? */
+
+    /* SITBOL takes comma seperated file list */
     fp = io_newfile(fname);
     if (fp == NULL)
 	return FALSE;			/* fail; no harm done! */
 
-    f = io_fopen( fp, "w");
+    /* process options */
+    if (!io_options(fp, opts, NULL))
+	return FALSE;
+    /* XXX error if recl set? */
+
+    /* open it now, so we can return status! */
+    f = io_fopen( fp, "w");		/* XXX mode from option flags */
     if (f == NULL)
 	return FALSE;			/* fail; no harm done! */
 
