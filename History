@@ -2,6 +2,20 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+7/26/97:
+	gensyn.sno: include h.h before syntab.h for non-ANSI compilers (sos4)
+	sunmodel: use hostid on systems without openprom
+	timing.sno: use REM to capture version number
+	timing: removed "who am i"
+	doc/ports.doc: updated
+
+7/25/97:
+	v311.sil: cleaned up clearing of compiler variables
+	lib/auxil/bzero.c: zero blocks of "words"
+
+7/18/97:
+	autoconf: revamped gcc testing for Solaris/x86
+
 7/16/97:
 	doc/ports.doc: updated
 
