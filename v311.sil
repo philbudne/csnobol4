@@ -1,8 +1,12 @@
 * $Id$
 *
 * $Log$
+* Revision 1.83  2001/12/18 21:27:42  phil
+* [PLB71] Keep runtimes in REALs, effects TIME(), trace messages,
+* statistics.  Report average in microseconds/statement.
+*
 * Revision 1.82  2001/12/18 02:05:51  phil
-* [PLB70] use CASECL to determine if compiler done at FTLEN2
+* [PLB70] use COMPCL to determine if compiler done at FTLEN2
 * ETMCL can be zero, on a fast machine (1MHz Athlon) and an O/S
 * with poor runtime resolution (Linux).  Result was all execution
 * time was charged to compiler, and execution time reported as zero!
@@ -6723,8 +6727,8 @@ DMPCL  DESCR   0,0,I		   &DUMP
        DESCR   DUMPSP,0,0
 RETCOD DESCR   0,0,I		   &CODE
        DESCR   CODESP,0,0
-CASECL DESCR   1,0,I		   &CASE (folding)		[PLB15][PLB71]
-       DESCR   CASESP,0,0					[PLB15][PLB71]
+CASECL DESCR   1,0,I		   &CASE (folding)		[PLB15][PLB69]
+       DESCR   CASESP,0,0					[PLB15][PLB69]
 ANCCL  DESCR   0,0,I		   &ANCHOR
        DESCR   ANCHSP,0,0
 ABNDCL DESCR   0,0,I		   &ABEND
