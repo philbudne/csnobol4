@@ -2,6 +2,22 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+10/29/97:
+	v311.sil: merge scanner functions into SCIN1
+	globals, procs: removed scanner functions
+		avoids nasty mutual recursions, stack overflows
+		atn.sno runtime reduced by 63%!! (2.7x faster)
+		worst case (4096 char string) reduced 69% (4.8x faster)
+		genc runtime reduced 15%
+		snocone self-compile runtime reduced 5%
+
+10/27/97:
+	lib/io.c: perform lseek() directly on unbuffered units
+	config/hpux.m4: removed -Dconst (now done in h.h)
+	snolib/ftp.sno: add mode arg to FTP.DATA.COMMAND
+			add TCP.DATA.CLOSE function
+			fix anon open error return
+
 10/24/97:
 	v311.sil: allow REALs in INTVAL for Stephen Del Rea (from SNOBOL4+)
 	snolib/snobol4+.sno: removed CONVERT() calls
@@ -101,7 +117,6 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 9/17/97:
 	Makefile2.m4: made snobol4 precious
 	lib/init.c: catch resource limit signals
-		problem reported by Phillip Thomas in June 1994!
 	lib/io.c: use fgets() again in io_read(). Only getc()
 		for last character, if needed.
 	New: lib/vms/popen.c
@@ -149,6 +164,7 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
 9/2/97:
 	v311.sil: Implemented fatal "Output error"
+		problem reported by Phillip Thomas in June 1994!
 	genc.sno: pass iokey to io_output(), add labels to ENFILE
 	io.c: return status from io_output(), io_endfile()
 	procs: add COMP6

@@ -1,5 +1,7 @@
 $Id$
 
+Test UNSC & SCERSX hackery
+
 Talk about snolib files in INSTALL & README!!
 
 Have single NO_UNBUF_IO? (NO_DIRECT_UNBUF?)
@@ -15,10 +17,6 @@ Document INTVAL extension in man page;
 
 Install include files for loadables in SNOLIB?
 
-Add binary mode option to ftp.sno?
-
-document stack limits in BUGS section??
-
 document math error catching problems in BUGS section;
 	"hampered by";
 
@@ -33,17 +31,7 @@ document math error catching problems in BUGS section;
 	+ POSIX (& ANSI?) definition of SIGFPE
 		(normal return behvior is undefined)
 
-raise stacklimit with setrlimit()? (set to RLIM_INFINITY?)
-	check for sys/resource.h in autoconf
-	use dummy or bsd version of "unlimit.c"
-
-	Document stack limits in man page?
-
-	Use seperate signal stack for stack overflow??
-
 load.doc: mention dt.h
-
-remove -Dconst from hpux-pa.m4??
 
 look at tty_close() thrashing;
 	never discard info?
