@@ -8,6 +8,7 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 		add fp check in io_seek()
 	lib/snolib/host.c, lib/snolib/exit.c: call io_flushall
 	autoconf: tweak *bsd*
+	Makefile2.m4: add sunmodel to tar
 
 10/24/96:
 	INSTALL: updated
