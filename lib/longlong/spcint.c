@@ -3,6 +3,7 @@
 /*
  * convert from strings to long long using ad hoc code
  * for environments without long long library support
+ * slower than system provided functions
  */
 
 #ifdef HAVE_CONFIG_H
@@ -28,10 +29,10 @@ spcint(dp, sp)
     struct descr *dp;
     struct spec *sp;
 {
-    char buffer[64];			/* ??? */
     int_t len;
     char *cp;
     int_t temp;
+    int signum;
 
     len = S_L(sp);
     cp = S_SP(sp);
@@ -44,14 +45,25 @@ spcint(dp, sp)
 	}
     }
 
-    if (len > sizeof(buffer)-1)
-	len = sizeof(buffer)-1;
-    bcopy( cp, buffer, len );
-    buffer[len] = '\0';
+    temp = 0;
+    signum = 1;
+    if (*cp == '-') {
+	signum = -1;
+	cp++;
+    }
 
-    temp = strtol( buffer, &cp, 10);	/* always decimal */
-    if (*cp)
-	return FALSE;			/* failure */
+    while (len > 0) {
+	if (!isdigit(*cp))
+	    return FALSE;
+	temp *= 10;
+	/* could just multiply... nah! */
+	if (signum > 0)
+	    temp += *cp - '0';
+	else
+	    temp -= *cp - '0';
+	cp++;
+	len--;
+    }
 
     D_A(dp) = temp;
     D_F(dp) = 0;			/* clear flags */
