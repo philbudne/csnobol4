@@ -180,7 +180,7 @@ LOGIC( LA_ALIST ) LA_DCL
 	    rp = retbuf;
 	    while (len-- > 0)
 		*rp++ = ~*cp++;
-	    RETSTR(retbuf, retlen);
+	    RETSTR2(retbuf, retlen);
 	}
 	else
 	    RETFAIL;
@@ -273,4 +273,5 @@ LOGIC( LA_ALIST ) LA_DCL
 	while (len-- > 0) 
 	    *rp++ = logic_byte(op, arg2, *cp++);
     }
+    RETSTR2(retbuf, retlen);
 } /* LOGIC */
