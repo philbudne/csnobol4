@@ -2,10 +2,15 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
+6/3/94
+	Turned off NUL translation after compiler runs
+
 6/2/94
 	Created load.h LOAD_PROTO, LA_xxx macros
 	Updated load.doc, sqrt.c
 	Implemented "Poor Man's LOAD" for linked in functions!!
+	Made REPLACE() 8-bit clean
+	Fixed padding on input problem
 
 6/1/94
 	Started man page
