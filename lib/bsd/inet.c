@@ -31,6 +31,8 @@
 #include <arpa/inet.h>			/* inet_addr() */
 #endif /* HAVE_INCLUDES not defined */
 
+#include <netdb.h>
+
 #include "h.h"				/* TRUE/FALSE */
 #include "snotypes.h"
 #include "lib.h"			/* own prototypes */
