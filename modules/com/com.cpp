@@ -5,27 +5,18 @@
  * -plb 6/19/2004
  */
 
+// #define HAVE_I8			// Not w/ MINGW 2.95.3-6
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
 #include <windows.h>
-#include <ole2.h>			// works on MINGW
+#include <ole2.h>			// sufficient w/ MINGW 2.95.3-6
 /*
 #include <objbase.h>
 #include <olestd.h>
 */
-
-extern "C"
-{
-#include "h.h"
-#include "snotypes.h"
-#include "macros.h"
-
-#include "load.h"			/* LA_xxx macros */
-#include "equ.h"			/* datatypes I/S */
-
-// #define HAVE_I8
 
 #ifndef V_I1
 #define V_I1(X) V_UNION(X,cVal)
@@ -44,6 +35,14 @@ extern "C"
 #define V_UI4(X) V_UNION(X,ulVal)
 #endif
 
+extern "C"
+{
+#include "h.h"
+#include "snotypes.h"
+#include "macros.h"
+
+#include "load.h"			/* LA_xxx macros */
+#include "equ.h"			/* datatypes I/S */
 
 // return a wide (OLE) string for an external function argument
 // must call freeolestring to release after use
@@ -206,6 +205,12 @@ retvariant(struct descr *retval, VARIANTARG *vp)
     case VT_UI1:
 	RETTYPE = I;
 	RETINT(V_UI1(vp));
+    case VT_UI2:
+	RETTYPE = I;
+	RETINT(V_UI2(vp));
+    case VT_UI4:
+	RETTYPE = I;
+	RETINT(V_UI4(vp));
     case VT_R4:
 	RETTYPE = R;
 	RETREAL(V_R4(vp));
@@ -281,14 +286,14 @@ COM_INVOKE( LA_ALIST ) LA_DCL
 }
 
 int
-COM_GET( LA_ALIST ) LA_DCL
+COM_GETPROP( LA_ALIST ) LA_DCL
 {
     LPDISPATCH pdisp = (LPDISPATCH)LA_INT(0); // XXX decode string?
     RETFAIL;
 }
 
 int
-COM_PUT( LA_ALIST ) LA_DCL
+COM_PUTPROP( LA_ALIST ) LA_DCL
 {
     LPDISPATCH pdisp = (LPDISPATCH)LA_INT(0); // XXX decode string?
     RETFAIL;
