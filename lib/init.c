@@ -45,11 +45,13 @@ usage( jname )
     char *jname;
 {
     p( "Usage: %s [options...] [files...] [parameters...]\n", jname );
+/* XXX stuff about parameters */
     p( "-b\ttoggle display of startup banner\n");
     fprintf(stderr,
 	    "-d BYTES[k]\n\tsize of dynamic region in bytes (default: %d)\n",
 	    NDYNAMIC*DESCR);
     p( "-f\ttoggle folding of identifiers to upper case (-CASE)\n");
+    p( "-h\tthis message\n");
     p( "-k\ttoggle running programs with compilation errors (-[NO]ERRORS)\n");
     p( "-l\tenable listings (-LIST)\n");
     p( "-n\ttoggle running program after compilation (-[NO]EXECUTE)\n");
@@ -113,7 +115,7 @@ init_args( ac, av )
      * * When adding options, update usage() function (above) and man page!!!
      */
 
-    while ((c = getopt(argc, argv, "bd:fklnprsu:MP:")) != -1) {
+    while ((c = getopt(argc, argv, "bd:fhklnprsu:MP:")) != -1) {
 	switch (c) {
 	case 'b':
 	    D_A(BANRCL) = !D_A(BANRCL);	/* toggle banner output */
@@ -127,6 +129,10 @@ init_args( ac, av )
 
 	case 'f':			/* toggle case folding */
 	    D_A(CASECL) = !D_A(CASECL);
+	    break;
+
+	case 'h':			/* help */
+	    errs++;
 	    break;
 
 	case 'k':
