@@ -1,23 +1,12 @@
 $Id$
 
-man page;
-	/dev/fd/N
-	IO_FINDUNIT()
+load.doc:
+	document dynamic library based LOAD()
+		c/ld commands for various O/S'build
+			no need to link with snolib.a for getstring() &c
+		talk about LD_LIBRARY_PATH, "./" prefix
 
-porting.ms:
-	Document NO_FDOPEN ifdef
-
-INSTALL:
-	document --no-dlopen / --no-dynlib
-
-add longline, longrec tests
-
-Makefile;
-	make Makefile2 precious?
-
-get rid of fixed length command line buffers;
-	parambuf in init.c
-	parm[] in getparm()
+================
 
 use HOST(0) in genc.sno, gendata.sno for input file?
 
@@ -25,17 +14,6 @@ switch to unroff for html file prep??
 	RosettaMan???
 
 fix for "	()()"??
-
-unix98/load.c
-	do something to fix empty filename;
-		access symbols from main application??
-	document in man page
-	document in load.doc
-		c/ld commands for various O/S'build
-			no need to link with snolib.a for getstring() &c
-		talk about LD_LIBRARY_PATH, "./" prefix
-	make shared snolib $(SNOLIB_FILE)
-	use RTLD_GLOBAL flag, if available??
 
 autoconf:
 	"configure" script wrapper;
@@ -51,6 +29,12 @@ autoconf:
 		--mandest=
 
 	save additions in (local-config?) file??
+
+unix98/load.c
+	do something to fix empty filename;
+		access symbols from main application??
+	make shared snolib $(SNOLIB_FILE)
+	use RTLD_GLOBAL flag, if available??
 
 INSTALL:
 	talk about optimization options
@@ -69,12 +53,9 @@ man page:
 		note, update on INPUT() will not create file???
 	mention load.doc located in SNOLIB dir
 
-add IO_FREEUNIT() pml function???
-
 load.doc:
 	mention SNOLIB dir
 	describe
-
 		io_getfp(), io_mkfile(), io_closeall(),
 		io_endfile(), io_findunit()
 
@@ -97,7 +78,7 @@ SPITBOL compatibility document?
 
 ==== before beta releases
 
-update man page date, CHANGES, README
+update man page date, CHANGES, README, version.c
 
 check in all files (incl History, TODO.soon)
 
