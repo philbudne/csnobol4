@@ -12,9 +12,10 @@ Compilation
 In most cases all you need to type is "make".
 
 The top level makefile will run the "configure" script to create
-"config.m4", which is in turn used to create Makefile2, which is then
-run, creating a test version of snobol4 (named "xsnobol4") which is
-then regression tested and timed, and finally named "snobol4".
+config.m4 and config.h. config.m4 is used to create Makefile2, which
+is then run, creating a test version of snobol4 (named "xsnobol4")
+which is then regression tested and timed, and finally named
+"snobol4".
 
 The "configure" tries to use the available C compiler which works
 best.  If you wish to alter configure's decision process, you can run
@@ -28,7 +29,7 @@ following options (multiple instances of options that begin with
 
 	--add-define=NAME=VALUE
 		Add additional C preprocessor '#define NAME VALUE' to
-		config.h (available to seperately compiled loadable modules)
+		config.h (available to separately compiled loadable modules)
 
 	--add-ldflags=STRING
 		Add additional flags to final load command (ie; -lxxx)
@@ -43,7 +44,7 @@ following options (multiple instances of options that begin with
 		When using GCC, "--add-opt=-g" can be used to compile
 		for debugging without disabling optimization.
 
-		GCC configuration dependant options (-mXXX) are
+		GCC configuration dependent options (-mXXX) are
 		candidates for use with --add-opt=
 
 		It's best to investigate whether additional options
@@ -58,12 +59,12 @@ following options (multiple instances of options that begin with
 		fail if GCC not available.
 
 	--force-memmove
-		Force use of system memmove() function (if preseent)
+		Force use of system memmove() function (if present)
 		if no bcopy() function is available.  Otherwise the
 		bcopy.c source file will be used.
 
 	--longlong
-		Attempt to use C "long long" datatype to represent SNOBOL4
+		Attempt to use C "long long" data type to represent SNOBOL4
 		INTEGERs, and "double" for REAL on systems where pointers
 		are only 32-bits (ILP32 data model).
 
@@ -108,10 +109,10 @@ following options (multiple instances of options that begin with
 		sizes also degrade performance.
 
 		If the underlying C compiler does not implement the
-		LP64 model, this option may have disasterous results
+		LP64 model, this option may have disastrous results
 		-- the current implementation DEPENDS on the fact that
-		the C datatype used to represent integers is the same width
-		as the C datatypes used to represent REALs and pointers.
+		the C data type used to represent integers is the same width
+		as the C data types used to represent REALs and pointers.
 
 		It does NOT select use of "long long" to represent
 		SNOBOL4 integers, so --lp64 is useless on 32-bit systems
@@ -139,7 +140,7 @@ following options (multiple instances of options that begin with
 		performance. Despite not having to deal with packing
 		and unpacking a 24-bit field, the larger descriptor
 		means increased memory bandwidth use, and less
-		efficent use of the CPU data cache.
+		efficient use of the CPU data cache.
 
 	--no-dynlib
 		Disable use of all dynamic LOAD() support mechanisms
@@ -166,7 +167,7 @@ following options (multiple instances of options that begin with
 	--opt=STRING
 		Supply C optimization flags.  The default value when using
 		GCC is "-O2" (the -finline-functions flag is supplied
-		seperately except when --no-inline has been given).
+		separately except when --no-inline has been given).
 
 		If the C compiler being used is not GCC based, the
 		default "-O", which is widely accepted.  Other values
@@ -179,7 +180,7 @@ following options (multiple instances of options that begin with
 		the compiler to use them on, please let me know!
 
 		Optimized compilation mail fail, to compile the large
-		machine generated files (due to swap space exaustion,
+		machine generated files (due to swap space exhaustion,
 		or internal compiler limits), or may appear to take
 		forever to compile.
 
@@ -197,7 +198,7 @@ following options (multiple instances of options that begin with
 
 The configure script tries to select from among different versions
 of system support functions, including "dummy" versions which allow
-the software to be built, with reduced functionalty.
+the software to be built, with reduced functionality.
 
 If this occurs, or if the build does not succeed, you can consult
 doc/porting.doc (also available as html) for information on the
@@ -372,7 +373,7 @@ Win32 using MicroSoft Visual C++ 5.0
 ------------------------------------
 
 The Win32 port is in it's infancy.  The snobol4.exe links and passes
-regression testing on WinNT 4.0, but system dependant code needs work;
+regression testing on WinNT 4.0, but system dependent code needs work;
 
 *	TCP/IP I/O (using winsock32) is present, but not working.
 *	Binary & noecho TTY I/O has been coded, but does not work.
@@ -412,5 +413,5 @@ Please let me know of your success and failures to bring up C-SNOBOL4!
 Please mail timing.out files to snobol4-timing@ultimate.com along with
 information on your system make, model and CPU clock speed, if known.
 
-If you want to recieve a note when new releases are made, send mail
+If you want to receive a note when new releases are made, send mail
 to snobol4-users-request@ultimate.com
