@@ -3,6 +3,9 @@ $Id$
 
 C-SNOBOL (MAINBOL for Un*x) history (and personal SNOBOL history);
 
+9/11/96
+	v311.sil: fix sort; edit [PLB31] added one MULTC too many
+
 9/8/96
 	v311.sil: only case fold strings in FIELD (fix from SNOBOL4+)
 		upped SPLDSZ to 10k for snocone.sno

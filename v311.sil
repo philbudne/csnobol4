@@ -1,6 +1,10 @@
 * $Id$
 *
 * $Log$
+* Revision 1.43  1996/09/09  02:47:33  phil
+* [PLB35] only case fold strings in FIELD (fix from SNOBOL4+)
+* upped SPLDSZ to 10k for snocone.sno
+*
 * Revision 1.42  1996/09/07  05:25:55  phil
 * [PLB34] FREEZE()/THAW(), new table access code from SNOBOL4+
 * added -EXECUTE/-NOEXECUTE control cards
@@ -4319,7 +4323,6 @@ SORT5  SETAC   XCL,0		   Prepare to build index
 * Source was a table.
 *
        GETSIZ  TCL,XPTR		   Size of new array
-       MULTC   TCL,TCL,DESCR	   Convert to address units	[PLB31]
        SUM     TPTR,XPTR,TCL	   Last element of new array
        SUBTRT  TPTR,TPTR,ZCL	   - no. rows = start of index table-1
 *				   Assume SORT(Table,1)
