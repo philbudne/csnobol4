@@ -46,37 +46,56 @@ SNOLIB_A=snolib/snolib.a
 ########
 # default lib source files
 
-BAL_C=lib/bal.c
-CONVERT_C=lib/ansi/convert.c
-DATE_C=lib/date.c
-DUMP_C=lib/dump.c
-DYNAMIC_C=lib/bsd/dynamic.c
-ENDEX_C=lib/endex.c
-EXP_C=lib/generic/exp.c
-HASH_C=lib/hash.c
-INIT_C=lib/init.c
-INTSPC_C=lib/intspc.c
-IO_C=lib/io.c
-LEXCMP_C=lib/lexcmp.c
-LOAD_C=lib/bsd/load.c
-MSTIME_C=lib/bsd/mstime.c
-ORDVST_C=lib/ordvst.c
-PAIR_C=lib/pair.c
-PAT_C=lib/pat.c
-PML_C=lib/pml.c
-REALST_C=lib/realst.c
-REPLACE_C=lib/replace.c
-STREAM_C=lib/stream.c
-STR_C=lib/str.c
-TERM_C=lib/posix/term.c
-TOP_C=lib/top.c
-TREE_C=lib/tree.c
+BAL_C=$(SRCDIR)lib/bal.c
+CONVERT_C=$(SRCDIR)lib/ansi/convert.c
+DATE_C=$(SRCDIR)lib/date.c
+DUMP_C=$(SRCDIR)lib/dump.c
+DYNAMIC_C=$(SRCDIR)lib/bsd/dynamic.c
+ENDEX_C=$(SRCDIR)lib/endex.c
+EXPOPS_C=$(SRCDIR)lib/generic/expops.c
+HASH_C=$(SRCDIR)lib/hash.c
+INIT_C=$(SRCDIR)lib/init.c
+INTSPC_C=$(SRCDIR)lib/intspc.c
+IO_C=$(SRCDIR)lib/io.c
+LEXCMP_C=$(SRCDIR)lib/lexcmp.c
+LOAD_C=$(SRCDIR)lib/bsd/load.c
+MSTIME_C=$(SRCDIR)lib/bsd/mstime.c
+ORDVST_C=$(SRCDIR)lib/ordvst.c
+PAIR_C=$(SRCDIR)lib/pair.c
+PAT_C=$(SRCDIR)lib/pat.c
+PML_C=$(SRCDIR)lib/pml.c
+REALST_C=$(SRCDIR)lib/realst.c
+REPLACE_C=$(SRCDIR)lib/replace.c
+STREAM_C=$(SRCDIR)lib/stream.c
+STR_C=$(SRCDIR)lib/str.c
+TERM_C=$(SRCDIR)lib/posix/term.c
+TOP_C=$(SRCDIR)lib/top.c
+TREE_C=$(SRCDIR)lib/tree.c
 
 # aux sources
-BZERO_C=lib/auxil/bzero.c
-BCOPY_C=lib/auxil/bcopy.c
-GETOPT_C=lib/auxil/getopt.c
-ISNAN_C=lib/dummy/isnan.c
+BZERO_C=$(SRCDIR)lib/auxil/bzero.c
+BCOPY_C=$(SRCDIR)lib/auxil/bcopy.c
+GETOPT_C=$(SRCDIR)lib/auxil/getopt.c
+ISNAN_C=$(SRCDIR)lib/dummy/isnan.c
+
+# snolib sources
+CHOP_C=lib/snolib/chop.c
+COS_C=lib/snolib/cos.c
+DELETE_C=lib/snolib/delete.c
+ENVIRON_C=lib/snolib/environ.c
+EXIT_C=lib/snolib/exit.c
+EXP_C=lib/snolib/exp.c
+FILE_C=lib/snolib/file.c
+FORK_C=lib/snolib/fork.c
+GETSTRING_C=lib/snolib/getstring.c
+HOST_C=lib/snolib/host.c
+LOG_C=lib/snolib/log.c
+RENAME_C=lib/snolib/rename.c
+RETSTRING_C=lib/snolib/retstring.c
+SIN_C=lib/snolib/sin.c
+SPRINTF_C=lib/snolib/sprintf.c
+SQRT_C=lib/snolib/sqrt.c
+TAN_C=lib/snolib/tan.c
 
 # private copy of CFLAGS for data_init.o; here so it can be overridden
 # (ie; to just $(MYCPPFLAGS)) by config.m4 during debug (optimizing it
@@ -124,14 +143,14 @@ SMALL_SNO=snobol4 -b
 
 AUX_OBJS= _OBJS
 OBJS=	main.o $(SNOBOL4).o data.o data_init.o syn.o bal.o convert.o \
-	date.o dump.o dynamic.o endex.o exp.o hash.o init.o intspc.o \
+	date.o dump.o dynamic.o endex.o expops.o hash.o init.o intspc.o \
 	io.o lexcmp.o load.o mstime.o ordvst.o pair.o pat.o pml.o \
 	realst.o replace.o str.o stream.o term.o top.o tree.o version.o \
-	$(AUX_OBJS) $(PML_OBJS) $(SNOLIB_A)
+	$(PML_OBJS) $(SNOLIB_A)
 
 AUX_SRCS= _SRCS
 SRCS=	main.c $(SNOBOL4).c data.c data_init.c syn.c $(BAL_C) $(CONVERT_C) \
-	$(DATE_C) $(DUMP_C) $(DYNAMIC_C) $(ENDEX_C) $(EXP_C) $(HASH_C) \
+	$(DATE_C) $(DUMP_C) $(DYNAMIC_C) $(ENDEX_C) $(EXPOPS_C) $(HASH_C) \
 	$(INIT_C) $(INTSPC_C) $(IO_C) $(LEXCMP_C) $(LOAD_C) \
 	$(MSTIME_C) $(ORDVST_C) $(PAIR_C) $(PAT_C) $(PML_C) \
 	$(REALST_C) $(REPLACE_C) $(STREAM_C) $(STR_C) $(TOP_C) $(TERM_C) \
@@ -139,6 +158,9 @@ SRCS=	main.c $(SNOBOL4).c data.c data_init.c syn.c $(BAL_C) $(CONVERT_C) \
 
 # SIL source file
 SIL=	v311.sil
+
+################
+# link, regression test & timing
 
 TESTED:	xsnobol4 snobol4.c
 	@echo Running regression tests...
@@ -245,8 +267,8 @@ dynamic.o: $(DYNAMIC_C)
 endex.o: $(ENDEX_C)
 	$(CC) $(CFLAGS) -c $(ENDEX_C)
 
-exp.o:	$(EXP_C)
-	$(CC) $(CFLAGS) -c $(EXP_C)
+expops.o: $(EXPOPS_C)
+	$(CC) $(CFLAGS) -c $(EXPOPS_C)
 
 hash.o:	$(HASH_C)
 	$(CC) $(CFLAGS) -c $(HASH_C)
@@ -303,7 +325,7 @@ tree.o:	$(TREE_C)
 	$(CC) $(CFLAGS) -c $(TREE_C)
 
 #################
-# porting aids not used in all builds;
+# aux files -- porting aids not used in all builds;
 
 bzero.o: $(BZERO_C)
 	$(CC) $(CFLAGS) -c $(BZERO_C)
@@ -317,10 +339,71 @@ getopt.o: $(GETOPT_C)
 isnan.o: $(ISNAN_C)
 	$(CC) $(CFLAGS) -c $(ISNAN_C)
 
-################
-# snolib
+################################################################
+# snolib -- library of external functions
 
-# XXX fixme; move in-line, include AUX_OBJS
+SNOLIB_OBJS= chop.o cos.o delete.o environ.o exit.o exp.o file.o \
+	fork.o getstring.o host.o log.o rename.o retstring.o sin.o \
+	sprintf.o sqrt.o tan.o $(AUX_OBJS)
+
+$(SNOLIB_A): $(SNOLIB_OBJS)
+	rm -f $(SNOLIB_A)
+	ar rv $(SNOLIB_A) $(SNOLIB_OBJS)
+	$(RANLIB) $(SNOLIB_A)
+
+################
+# snolib files
+
+chop.o: $(CHOP_C)
+	$(CC) $(CFLAGS) -c $(CHOP_C)
+
+cos.o: $(COS_C)
+	$(CC) $(CFLAGS) -c $(COS_C)
+
+delete.o: $(DELETE_C)
+	$(CC) $(CFLAGS) -c $(DELETE_C)
+
+environ.o: $(ENVIRON_C)
+	$(CC) $(CFLAGS) -c $(ENVIRON_C)
+
+exit.o: $(EXIT_C)
+	$(CC) $(CFLAGS) -c $(EXIT_C)
+
+exp.o: $(EXP_C)
+	$(CC) $(CFLAGS) -c $(EXP_C)
+
+file.o: $(FILE_C)
+	$(CC) $(CFLAGS) -c $(FILE_C)
+
+fork.o: $(FORK_C)
+	$(CC) $(CFLAGS) -c $(FORK_C)
+
+getstring.o: $(GETSTRING_C)
+	$(CC) $(CFLAGS) -c $(GETSTRING_C)
+
+host.o: $(HOST_C)
+	$(CC) $(CFLAGS) -c $(HOST_C)
+
+log.o: $(LOG_C)
+	$(CC) $(CFLAGS) -c $(LOG_C)
+
+rename.o: $(RENAME_C)
+	$(CC) $(CFLAGS) -c $(RENAME_C)
+
+retstring.o: $(RETSTRING_C)
+	$(CC) $(CFLAGS) -c $(RETSTRING_C)
+
+sin.o: $(SIN_C)
+	$(CC) $(CFLAGS) -c $(SIN_C)
+
+sprintf.o: $(SPRINTF_C)
+	$(CC) $(CFLAGS) -c $(SPRINTF_C)
+
+sqrt.o: $(SQRT_C)
+	$(CC) $(CFLAGS) -c $(SQRT_C)
+
+tan.o: $(TAN_C)
+	$(CC) $(CFLAGS) -c $(TAN_C)
 
 $(SNOLIB_A):
 	cd snolib; make
