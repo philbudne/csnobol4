@@ -2,6 +2,10 @@
 
 /* snobol4 main program (make this mlink.c??) */
 
+# ifdef HAVE_STDLIB_H
+# include <stdlib.h>			/* for malloc */
+# endif /* HAVE_STDLIB_H */
+
 # if defined(ENDEX_LONGJMP) || defined(NO_STATIC_VARS)
 # include "h.h"
 # include "snotypes.h"
