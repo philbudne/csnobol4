@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.9  93/11/10  20:52:49  phil
+* [PLB5] send all termination msgs, stats to stderr (PUNCH)
+* 
 * Revision 1.8  93/11/10  20:11:08  phil
 * [PLB4] added (optional) 4th filename arg to
 * INPUT() and OUTPUT() using XOPENI and XOPENO ops.
@@ -5347,7 +5350,7 @@ DTLIST DESCR   DTLIST,TTL+MARK,DTLEND-DTLIST-DESCR
 DTLEND LHERE   ,
 *
 KNLIST DESCR   KNLIST,TTL+MARK,KNEND-KNLIST-DESCR
-TRIMCL DESCR   0,0,I		   &TRIM
+TRIMCL DESCR   1,0,I		   &TRIM			[PLB6]
        DESCR   TRMSP,0,0
 TRAPCL DESCR   0,0,I		   &TRACE
        DESCR   TRCESP,0,0
