@@ -12,19 +12,33 @@ Compilation
 In most cases all you need to type is "make".
 
 The top level makefile will run "autoconf" to create "config.m4",
-which is in turn used to create Makefile2, which is then run.
+which is in turn used to create Makefile2, which is then run, creating
+a test version of snobol4 (named "xsnobol4") which is then regression
+tested and timed.
+
+The "autoconf" tries to use the available C compiler which works best.
+If you wish to alter autoconf's decision process, you can run it
+manually by typing "autoconf OPTION >config.m4" with one of the
+following options;
+
+	--force-gcc
+		Force use of gcc, the GNU C compiler,
+		fail if gcc not available.
+
+	--no-gcc
+		Eliminate gcc from consideration.
 
 Even if your system has not previously been tested (see doc/ports.doc)
-autoconf may succeed. If it does not, you may want to consult
-doc/porting.doc (also available as html) for information on the
-available options.
+autoconf will make a sucessful guess. If it does not, you may want to
+consult doc/porting.doc (also available as html) for information on
+the available options for use in creating a system-specific config
+file.
 
 For information on including "external" C functions in the linked
 binary see doc/load.doc.
 
 Installation
 ------------
-
 
 Typing "make install" will install the snobol4 binary and man page.
 The snobol4 binary and man page destnations are controlled BINDEST
