@@ -30,9 +30,18 @@ static struct pmlfunc pmltab[] = {
     { NULL, NULL }			/* MUST BE LAST!! */
 };
 
+#ifdef __STD__
+/* necessary on nextstep? */
+#define NAME1 char *name
+#define NAME2
+#else
+#define NAME1 name
+#define NAME2 char *name;
+#endif
+
 /* function of char *name which returns pointer to "loaded" function */
-int (*pml_find(name))(LOAD_PROTO)
-    char *name;
+int (*pml_find(NAME1))(LOAD_PROTO)
+    NAME2
 {
     struct pmlfunc *fp;
 
