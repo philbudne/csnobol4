@@ -12,7 +12,7 @@ garbage collection, user data types, on the fly compilation.  It's
 primary weakness is it's simple syntax, and lack of "structured
 programming" constructs.  However some consider the spareness of
 SNOBOL4 syntax a strength when compared to some "modern"
-agglomerations such as perl.
+agglomerations such as Perl.
 
 ****************************************************************
 
@@ -29,8 +29,13 @@ we make any claim as to the suitability of SNOBOL4 for any application.
 
 Documentation;
 
-For a good SNOBOL4 tutorial look in the Catspaw "vanilla snobol"
-distribution.
+For a good SNOBOL4 tutorial look at the Catspaw SNOBOL4 tutorial;
+    http://burks.bton.ac.uk/burks/language/snobol/catspaw/tutorial/contents.htm
+
+Also useful are the Catspaw Vanilla SNOBOL4 manual;
+    http://burks.bton.ac.uk/burks/language/snobol/catspaw/manual/contents.htm
+and the Catspaw SPITBOL manual
+    ftp://ftp.snobol4.com/spitman.pdf
 
 INSTALL
 	Information on building and installing C-MAINBOL
@@ -40,6 +45,10 @@ README
 
 CHANGES
 	Important changes since last release
+
+doc/load.doc
+	Information on dynamicly loading code into SNOBOL4
+	(also installed in /usr/local/lib/snobol4/)
 
 doc/snobol4.1
 	man page for snobol4.
@@ -72,13 +81,57 @@ TODO.soon
 
 TODO
 	older identified tasks / wish list.
+
+Library;
 
-See the Catspaw Vanilla SNOBOL4 vanilla.arc or vanilla.tar for a
-	DOS/PC port of SNOBOL4, many demo programs, SNOBOL4 language
-	documentation, and ordering information for books & products
-	from Catspaw!
+The following SNOBOL4 library routines are installed in /usr/local/lib/snobol4
+(the default path for -INCLUDE);
 
-Mark Emmer runs a SNOBOL4 mailing list;
+bq.sno
+	run a program in a subprocess and capture all output
+
+fence.sno
+not.sno
+unique.sno
+	emulation of SPITBOL FENCE() and NOT() functions, and unique
+	variable creation support routine, thanks to Peter-Arno Coppen
+
+serv.sno
+	Example TCP server program
+
+smtp.sno
+	Example code to send mail via TCP/SMTP
+
+snobol4+.sno
+	SNOBOL4+ emulation functions:
+		ENVIRONMENT(), EXECUTE(), TELL(), SEEK()
+
+spitbol.sno
+	SPITBOL emulation functions:
+		INPUT(), OUTPUT(), ENDFILE(), REWIND()
+
+tcp.sno
+	TCP connection routines
+
+url.sno
+file.sno
+ftp.sno
+http.sno
+	Internet URL file reading support (for file, ftp and http URL's)
+
+utf.sno
+	Experimental routines for handling UTF encoded (Unicode) data
+
+wrapper.sno
+	Routines for creating C code wrappers for dynamicly loading code.
+
+Mark Emmer has made his old 16-bit DOS Macro SNOBOL4 based product
+"SNOBOL4+" available for free.  See http://www.snobol4.com and
+ftp://ftp.snobol4.com for it, many demo programs, SNOBOL4 language
+documentation, and ordering information for books & products from
+Catspaw!
+
+Mark Emmer also runs a SNOBOL4 mailing list;
 	To join the list, send a mail message to "listserv@mercury.dsu.edu"
 	with the line "subscribe SNOBOL4 Your Name" as the message body.
 	"Your Name" should be your real name (your e-mail address will be
@@ -135,6 +188,7 @@ historical background, testing, fixes, etc (in chronological order);
 	John Refling
 	Greg White
 	Russ Urquhart
+	Greg White
 
 If you make any changes/fixes/improvements, or port it to a new
 system, please send them to me (please include "timing.out" and tell
