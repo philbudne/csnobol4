@@ -452,7 +452,7 @@ realclean: clean
 
 # "print version" -- for dir/tar names
 pv:	version.c
-	$(CC) -I./include -DMAIN -o pv version.c
+	$(CC) -I[./include] -DMAIN -o pv version.c
 
 # compression program, suffix
 COMP=gzip
