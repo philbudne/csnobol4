@@ -11,6 +11,8 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 	syntax.tbl: allow exponent's without fractions (ie; 1e5), like SPITBOL
 	timing: cat /proc/cpuinfo (if present) on Linux
 		dump hw sysctl info on BSD systems
+	updated test output for realst change for;
+		conv2.ref float.ref pow.ref space.ref spit.ref
 
 5/27/97:
 	lib/str.c: add spec2str() utility
