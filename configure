@@ -1310,12 +1310,17 @@ if [ ! "$WITHOUT_NDBM" ]; then
     if [ -f $INCDIR/ndbm.h ]; then
 	echo "using $INCDIR/ndbm.h" 2>&1
 	echo '#define HAVE_NDBM_H'		>> $CONFIG_H
-	# RH5.2 has Berkeley DB ndbm.h, but seperate libdb.a
-	# (BSD systems have DB in libc)
 	if grep 'Margo Seltzer' $INCDIR/ndbm.h > /dev/null &&
 	    [ -f /usr/lib/libdb.a -o /usr/lib/libdb.so ]; then
+	    # RH5.2 has Berkeley DB ndbm.h, but seperate libdb.a
+	    # (BSD systems have DB in libc)
 	    echo 'ADD_LDFLAGS([-ldb])'		>> $CONFIG_M4
-	fi	    
+	elif grep 'GDBM' $INCDIR/ndbm.h > /dev/null &&
+	    [ -f /usr/lib/libgdbm.a -o /usr/lib/libgdbm.so -o \
+		/usr/lib/libgdbm.dll.a ]; then
+	    # Cygwin has gdbm <ndbm.h> and seperate libgdbm
+	    echo 'ADD_LDFLAGS([-lgdbm])'	>> $CONFIG_M4
+	fi
     elif [ -f $INCDIR/gdbm/ndbm.h ]; then
 	echo "using $INCDIR/gdbm/ndbm.h" 2>&1
 	echo '#define HAVE_GDBM_SLASH_NDBM_H'	>> $CONFIG_H
