@@ -1,7 +1,12 @@
 $Id$
 
-autoconf;
-	write config.m4 directly (rename to configure?)
+--opt='' gives default result... is this a bug or a feature?
+	--opt=' ' works to cancel optimization (document this?)
+
+Include advertizements about users (announcements?) mailing list???
+	INSTALL
+	README
+	End of Makefile
 
 change name from C-MAINBOL to CSNOBOL4
 	History, INSTALL, README
@@ -11,13 +16,6 @@ change name from C-MAINBOL to CSNOBOL4
 
 host.[ch]:
 	use SPITBOL names for HOST_XXX function names?
-
-rename /ansi/ to /c89/ ??
-	change autoconf messages too?
-
-rename /borland/ to /msdos/ ??
-
-rename config/ to "build/"?
 
 ports.doc
 	empty?
@@ -33,17 +31,12 @@ put sources under CVS
 		ftp://ftp.gnu.org/pub/gnu/config/config.guess
 
 rework kit;
+	don't depend on snobol4? change to generated??
 	remove host.sno from G2?
-	always build kit's from scratch, via anonymous checkout???
-		do checkout on a branch??
 	prune CVS directories when making kit?? NO!
-	don't bother with version-based directory name???
+		always build kit's from scratch, via anonymous checkout???
+		do checkout on a branch??
 	have tar file named snobol4-VERS.tar csnobol4-VERS.tar??
-
-doc/load.doc
-	document:
-		config.h
-		dt.h
 
 man page
 	sed SNOLIB_PATH into man page?
@@ -77,7 +70,7 @@ packaging;
 	    ftp://ftp.debian.org/debian/doc/package-developer/programmer.ps.gz
 	create solaris package???
 
-	create BSD port/pkg and RPM conf file for snocone!!!
+	create BSD port/pkg for snocone!!!
 
 script to grep for all "ifdefs" and output strings to build.c?
 	just stringify options in config.h?

@@ -2,16 +2,40 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+1/17/2002
+	INSTALL: add more --add-opt= discussion
+	CHANGES: updated
+	timing: show History RCSID
+	v311.sil: up hash table size to 8192, define shift factor (OBSFT)
+		fix lexical comparison function optimizations; add to index
+	test/lexcmp.{sno,ref}: new version -- test null strings
+	lib/hash.c: Use Bob Jenkins' hash function; real assention value
+		5% decreases in genc.sno compile & run times
+
+1/16/2002
+	Makefile: use $(CC) to build bsdtsort
+	INSTALL: note OPT defaults to -O2 with gcc
+		enhance --add-opt= and --opt= discussions
+		ask for gifts!
+
 1/15/2002
 	configure:
 		renamed autoconf to configure
 		retabbed
 		output to config.m4 explicitly
 		added --debug option
+		rework option processing; always m4 quote values
+		add --add-define to usage
+		add OPT variable; use -O2 for gcc
 	Makefile: remove autoconf from kit
 		rework tsort comments
 		move tools to top
 		added pkg to kit
+	timing: check if FREQ is non-empty; check for 00README.CVS
+	renamed lib/borland to lib/msdos
+	config/borland/borlandsnob.mak: renamed lib/borland to lib/msdos
+	config/win32/ntmsvc.mak: renamed lib/borland to lib/msdos
+	doc/load.doc: update, mention dt.h
 
 1/14/2002
 	Makefile: use find | xargs for "make clean"; catch CVS .# files
