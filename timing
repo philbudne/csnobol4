@@ -124,6 +124,10 @@ echo ''
 echo 'config.m4:'
 cat config.m4
 
+echo ''
+echo 'config.h:'
+cat config.h
+
 if [ "$CCVERS" ]; then
 	echo ''
 	echo "$CC $CCVERS"
