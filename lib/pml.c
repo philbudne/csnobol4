@@ -30,7 +30,7 @@ static struct pmlfunc pmltab[] = {
     { NULL, NULL }			/* MUST BE LAST!! */
 };
 
-#ifdef __STD__
+#ifdef __STDC__
 /* necessary on nextstep? */
 #define NAME1 char *name
 #define NAME2
