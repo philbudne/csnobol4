@@ -20,7 +20,11 @@
 #endif /* __STDC__ not defined */
 
 /* HP unbundled cc defines __STDC__ as zero; does not implement const! */
-#if !defined(__STDC__) || __STDC__ == 0
+#if __STDC__ == 0 && defined(__hpux)
+#define NEED_CONST
+#endif /* __STDC__ == 0 && defined(__hpux) */
+
+#if !defined(__STDC__) || defined(NEED_CONST)
 #define const
 #define volatile
 #endif /* not ANSI C */
