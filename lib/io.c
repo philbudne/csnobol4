@@ -880,6 +880,7 @@ io_options( fp, op, rp )
 	case 'T':			/* SITBOL: "terminal" (no EOL) */
 	case 't':
 	    flags &= ~FL_EOL;
+	    flags |= FL_UNBUF;		/* force prompt output */
 	    op++;
 	    break;
 
