@@ -31,7 +31,7 @@
 #include <dos.h>
 #include <conio.h>
 
-#ifdef WATTCP_DOS
+#ifdef HAVE_WATTCP
 #include <sys/socket.h>
 int rresvport(int portno);		/* lib/dummy/rresvport.c  */
 #endif
@@ -39,7 +39,10 @@ int rresvport(int portno);		/* lib/dummy/rresvport.c  */
 #include <string.h>
 #include <stdlib.h>			/* malloc(), getenv() */
 
-#include "lib.h"
+#include "h.h"				/* __P */
+#include "snotypes.h"			/* struct descr */
+#include "lib.h"			/* io_flushall */
+#include "load.h"			/* getstring, retstring, etc */
 
 /*
  * list of symbols exportable to external modules
@@ -56,7 +59,7 @@ int rresvport(int portno);		/* lib/dummy/rresvport.c  */
  * last one(exit) are essential!
  */
 
-DXE_EXPORT_TABLE_AUTO(xst)
+DXE_EXPORT_TABLE_AUTO(exports)
 	DXE_EXPORT(malloc)
 	DXE_EXPORT(free)
 	DXE_EXPORT(bcopy)
@@ -64,10 +67,9 @@ DXE_EXPORT_TABLE_AUTO(xst)
 	DXE_EXPORT(printf)
 	DXE_EXPORT(sprintf)
 
-#if 0					/* does not work - why ? */
+	/* load.h */
 	DXE_EXPORT(getstring)
 	DXE_EXPORT(retstring)
-#endif
 
 	/* stdio.h */
 	DXE_EXPORT(fopen)
@@ -269,7 +271,7 @@ DXE_EXPORT_TABLE_AUTO(xst)
 	DXE_EXPORT(execlpe)
 	DXE_EXPORT(execvpe)
 
-#ifdef WATTCP_DOS
+#ifdef HAVE_WATTCP
 	/* socket.h */
 	DXE_EXPORT(accept)
 	DXE_EXPORT(bind)
@@ -292,7 +294,7 @@ DXE_EXPORT_TABLE_AUTO(xst)
 	DXE_EXPORT(rresvport)
 #endif
 
-	/* SNOBOL stuff */
+	/* SNOBOL lib.h */
 	DXE_EXPORT(io_flushall)
 	DXE_EXPORT(*dynamic)
 
@@ -317,12 +319,12 @@ DXE_EXPORT_TABLE_AUTO(xst)
 	DXE_EXPORT(read)
 	DXE_EXPORT(write)
 
-	DXE_EXPORT(exit)
+	DXE_EXPORT(exit)		/* WHY???? -phil */
 DXE_EXPORT_END
 
 void
 os_init()
 {
     /* this should be redundant with DXE_EXPORT_TABLE_AUTO!! */
-    dlregsym(xst);
+    dlregsym(exports);
 }
