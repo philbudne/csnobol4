@@ -95,6 +95,7 @@ int (*pml_find(PML_FIND_ARG))(LOAD_PROTO);
 /* extern/prototypes for functions; */
 /* lib/snolib/getstring.c; */
 SNOEXP(void) getstring __P((const void *, char *, int));
+SNOEXP(char *) mgetstring __P((const void *));
 
 /* lib/snolib/retstring.c; */
 SNOEXP(void) retstring __P((struct descr *retval, const char *cp, int len));

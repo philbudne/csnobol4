@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/14/2004
+	lib/snolib/getstring.c, include/load.h:
+		add mgetstring()
+
 9/30/2004
 	test/clean.sh: remove *.dat.  Thanks to Rafal Sulejman!
 

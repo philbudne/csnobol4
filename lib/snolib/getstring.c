@@ -4,6 +4,12 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
+#ifdef HAVE_STDLIB_H			/* before stdio, h.h */
+#include <stdlib.h>			/* for malloc */
+#else  /* HAVE_STDLIB_H not defined */
+extern void *malloc();
+#endif /* HAVE_STDLIB_H not defined */
+
 #include "str.h"			/* before h.h to get system __P */
 #include "h.h"
 #include "equ.h"			/* BCDFLD, etc */
@@ -34,3 +40,25 @@ getstring( vp, dp, len )
     dp[dlen] = '\0';
 }
 
+/* perform malloc, getstring */
+EXPORT(char *)
+mgetstring( vp )
+    const void *vp;			/* pointer to "natural variable" */
+{
+    char *cp;
+    int len;
+
+    if (vp)
+	len = D_V(vp);
+    else
+	len = 0;
+
+    len++;
+    cp = malloc(len);
+    if (!cp)
+	return NULL;
+
+    getstring(vp, cp, len);
+
+    return cp;
+}
