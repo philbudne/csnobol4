@@ -8,8 +8,10 @@ it:	Makefile2
 
 
 Makefile2: config.h Makefile2.cpp
-	$(CPP) Makefile2.cpp | grep -v '^#' | cat -s > Makefile2
-#	make -f Makefile2 depend
+	echo '# DO NOT EDIT. machine generated from Makefile.cpp' > Makefile2
+	$(CPP) Makefile2.cpp | grep -v '^#' | cat -s >> Makefile2
+	echo '# DO NOT DELETE THIS LINE. make depend uses it.' >> Makefile2
+	make -f Makefile2 depend
 
 config.h:
 	@echo 'copy (or link) a suitable file from config/ to config.h'
