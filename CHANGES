@@ -94,6 +94,8 @@ Changes since 0.99.4 release;
 
 	Extended HOST() functions (see host.sno) for system diagnosis
 
+	HOST() function will accept REAL or integer encoded STRING args
+
 	TIME() function now returns REAL datatype allows both better
 		resolution (for small values) and larger range.  Using
 		32-bit floats, runtimes larger than four and a half
