@@ -8,6 +8,10 @@
  * * avoids initializers on unions (illegal in K&R style compilers)
  */
 
+# ifdef HAVE_CONFIG_H
+# include "config.h"
+# endif /* HAVE_CONFIG_H defined */
+
 # include "snotypes.h"
 # include "h.h"
 # include "macros.h"
