@@ -60,7 +60,7 @@
  */
 #define RETSTR(CP) \
     do { \
-	char *cp = (CP); \
+	const char *cp = (CP); \
         if (cp == NULL) RETNULL; \
 	RETSTR2(cp, strlen(cp)); \
     } while (0)
