@@ -159,7 +159,7 @@ SRCS=	main.c $(SNOBOL4).c data.c data_init.c syn.c $(BAL_C) $(CONVERT_C) \
 	$(INIT_C) $(INTSPC_C) $(IO_C) $(LEXCMP_C) $(LOAD_C) \
 	$(MSTIME_C) $(ORDVST_C) $(PAIR_C) $(PAT_C) $(PML_C) \
 	$(REALST_C) $(REPLACE_C) $(STREAM_C) $(STR_C) $(TOP_C) $(TERM_C) \
-	$(TREE_C) version.c $(AUX_SRCS)
+	$(TREE_C) version.c $(AUX_SRCS) $(SNOLIB_SRCS)
 
 # SIL source file
 SIL=	v311.sil
@@ -359,6 +359,11 @@ $(SNOLIB_A): $(SNOLIB_OBJS)
 ################
 # snolib files
 
+SNOLIB_SRCS= $(CHOP_C) $(COS_C) $(DELETE_C) $(ENVIRON_C) $(EXIT_C) \
+	$(EXP_C) $(FILE_C) $(FORK_C) $(GETSTRING_C) $(HOST_C) $(LOG_C) \
+	$(RENAME_C) $(RETSTRING_C) $(SIN_C) $(SPRINTF_C) $(SQRT_C) \
+	$(TAN_C)
+
 chop.o: $(CHOP_C)
 	$(CC) $(CFLAGS) -c $(CHOP_C)
 
@@ -409,9 +414,6 @@ sqrt.o: $(SQRT_C)
 
 tan.o: $(TAN_C)
 	$(CC) $(CFLAGS) -c $(TAN_C)
-
-$(SNOLIB_A):
-	cd snolib; make
 
 ##################################################################
 # housekeeping
