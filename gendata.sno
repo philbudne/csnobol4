@@ -216,9 +216,8 @@ STRARG
 
 	DIFFER(DATA)						:S(IN_DATA)
 
-*	SIGH!
 * skip non-data; avoid clogging label table!!
-	IDENT(LBL,'DTLIST')					:F(TOP)
+	IDENT(OP,'XECODE')					:F(TOP)
 
 	DATA = 1
 IN_DATA	IDENT(OP,'ARRAY')					:S(XARRAY)
