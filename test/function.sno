@@ -1,0 +1,35 @@
+	DEFINE("TEST(NAME)")				:(ETEST)
+TEST	OUTPUT = FUNCTION(NAME) NAME			:(RETURN)
+ETEST
+
+* turn off case folding
+-CASE 0
+	DEFINE("foo()")					:(EFOO)
+foo	OUTPUT = 'got here'				:(RETURN)
+EFOO
+	DEFINE("BAR()")					:(EBAR)
+BAR	OUTPUT = 'got here2'				:(RETURN)
+EBAR
+
+	TEST("FOO")
+	TEST("foo")
+	TEST("BAR")
+	TEST("bar")
+	TEST("TEST")
+	TEST("test")
+	TEST("DEFINE")
+	TEST("define")
+
+* turn case folding on
+	&CASE = 1
+
+	TEST("FOO")
+	TEST("foo")
+	TEST("BAR")
+	TEST("bar")
+	TEST("TEST")
+	TEST("test")
+	TEST("DEFINE")
+	TEST("define")
+END
+
