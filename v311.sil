@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.97  2002/02/22 19:29:46  phil
+* [PLB83] 3-way return for XINCLD
+*
 * Revision 1.96  2002/02/18 18:53:17  phil
 * [PLB82] compile cleanly with gcc -Wunused
 * removed unused code; add new top-of-procedure labels where needed
@@ -5337,7 +5340,7 @@ TRPHND PROC    ,		   Trace handling procedure
        GETD    XPTR,OCBSCL,OCICL   Get function descriptor
        SETAC   TRAPCL,0		   Set &TRACE to 0
        SETAC   TRACL,0		   Set &FTRACE to 0
-       RCALL   ,INVOKE,XPTR,(,)					E3.3.1
+       RCALL   ,INVOKE,XPTR					E3.3.1[PLB84]
 *				   Evaluate function
        POP     (TRACL,TRAPCL,OCICL,OCBSCL,FRTNCL,STNOCL,LSTNCL,LNNOCL,FILENM)
 *				   Restore system descriptors	[PLB38]
