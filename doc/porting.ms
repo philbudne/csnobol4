@@ -85,6 +85,12 @@ Additional object files to link into the final image.  Typically one
 or more of the support library routines (ie; vfprintf.o).
 
 .NH 2
+CONFIG_SRC
+.PP
+Additional source files to include in dependancy calculation
+(see CONFIG_OBJ, and section on source file path variables).
+
+.NH 2
 AUX_SRC
 .PP
 Auxillary source files to include in dependancy calculation
@@ -97,10 +103,10 @@ Auxillary object files to include in snolib.a.  Typically one or more
 of the support library routines (bcopy.o, bcmp.o, getopt.o).
 
 .NH 2
-CONFIG_SRC
+PML_OBJ
 .PP
-Additional source files to include in dependancy calculation
-(see CONFIG_OBJ, and section on source file path variables).
+Object files not in AUX_OBJ (snoblib.a) for functions referenced from
+pml.h.
 
 .NH 2
 Source file path variables.

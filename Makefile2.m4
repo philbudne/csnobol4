@@ -81,7 +81,7 @@ OBJS=	main.o snobol4.o data.o data_init.o syn.o bal.o convert.o \
 	date.o dump.o dynamic.o endex.o exp.o hash.o init.o intspc.o \
 	io.o lexcmp.o load.o mstime.o ordvst.o pair.o pat.o pml.o \
 	realst.o replace.o str.o stream.o top.o tree.o version.o \
-	$(CONFIG_OBJ) $(AUX_OBJ)
+	$(CONFIG_OBJ) $(AUX_OBJ) $(PML_OBJ)
 
 SRCS=	main.c snobol4.c data.c data_init.c $(BAL_C) $(CONVERT_C) \
 	$(DATE_C) $(DUMP_C) $(DYNAMIC_C) $(ENDEX_C) $(EXP_C) $(HASH_C) \
