@@ -16,18 +16,18 @@
 #define HWNAME "VAX"
 #else  /* vax not defined */
 #ifdef __ALPHA
-#define HWNAME "alpha"			/* lower case, like OSF/1 uname */
+#define HWNAME "Alpha"
 #else  /* __ALPHA not defined */
 #define HWNAME "???"
 #endif /* __ALPHA not defined */
 #endif /* vax not defined */
 
+/* shouldn't this come from some include file?? */
 struct item {
     short buflen;			/* result buffer length */
     short code;				/* item code */
     char *buf;				/* result buffer */
-    long *len;				/* result length */
-    long zero;
+    long *len;				/* result length (short *?) */
 };
 
 #define MAXSTR 32
@@ -37,7 +37,7 @@ static char _osname[MAXSTR+1+MAXSTR];
 static void
 sys_init() {
     static int inited;
-    struct item item;
+    struct item items[2];
     char temp[MAXSTR];
     long len;
     char *os, *hw;
@@ -45,14 +45,15 @@ sys_init() {
     if (inited)
 	return;
 
-    item.code = SYI$_ARCH_NAME;		/* "hw_arch" */
-    item.buflen = sizeof(temp) - 1;
-    item.buf = temp;
-    item.len = &len;
-    item.zero = 0;
+    items[0].code = SYI$_ARCH_NAME;		/* "hw_arch" */
+    items[0].buflen = sizeof(temp) - 1;
+    items[0].buf = temp;
+    items[0].len = &len;
+    items[1].code = items[1].buflen = 0;
 
     hw = HWNAME;
-    if ((SYS$GETSYIW(0, 0, 0, &item, 0, 0, 0) & 1) == 1) {
+    len = 0;				/* paranoia */
+    if ((SYS$GETSYIW(0, 0, 0, items, 0, 0, 0) & 1) == 1) {
 	os = "OpenVMS";
 	temp[len] = '\0';
 	hw = temp;
@@ -61,16 +62,19 @@ sys_init() {
 	os = "VMS";
     strcpy(_hwname, hw);
 
-    item.code = SYI$_VERSION;
-    item.buflen = sizeof(temp) - 1;
-    item.buf = temp;
-    item.len = &len;
-    item.zero = 0;
-    if ((SYS$GETSYIW(0, 0, 0, &item, 0, 0, 0) & 1) == 1) {
+    items[0].code = SYI$_VERSION;
+    items[0].buflen = sizeof(temp) - 1;
+    items[0].buf = temp;
+    items[0].len = &len;
+    items[1].code = items[1].buflen = 0;
+
+    len = 0;				/* paranoia */
+    if ((SYS$GETSYIW(0, 0, 0, items, 0, 0, 0) & 1) == 1) {
 	/* trim trailing spaces? */
 	while (len > 0 && temp[len-1] == ' ')
 	    len--;
 	temp[len] = '\0';
+	/* remove leading "V"?? */
 	sprintf(_osname, "%s %s", os, temp);
     }
     else
@@ -91,7 +95,6 @@ osname(cp)
 {
     sys_init();
     strcpy(cp, _osname);
-    puts("osname() returning");		/* blows up on VAX if this not here? */
 }
 
 #ifdef TEST
