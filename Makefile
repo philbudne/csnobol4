@@ -5,6 +5,8 @@ M4=m4
 it:	Makefile2
 	$(MAKE) -f Makefile2 $(TARGET)
 
+.PRECIOUS: Makefile2
+
 xsnobol4: Makefile2
 	$(MAKE) -f Makefile2 xsnobol4
 
@@ -16,6 +18,7 @@ Makefile2 .depend: config.m4 Makefile2.m4
 	echo '# DO NOT DELETE THIS LINE. make depend uses it.' >> $(M2TMP)
 	make -f $(M2TMP) depend MAKEFILE2=$(M2TMP)
 	mv -f $(M2TMP) Makefile2
+	rm -f .depend
 	touch .depend
 
 config.m4:
