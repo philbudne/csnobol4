@@ -1,0 +1,20 @@
+* $Id$
+*
+* Emulate SNOBOL4+ functions
+* Phil Budne <phil@ultimate.com>
+* September 15, 1997
+*
+
+* could create INPUT()/OUTPUT() wrappers (like in spitbol.sno)
+* if format processing is desired
+
+	DEFINE("ENVIRONMENT(S)")
+	DEFINE("EXECUTE(S1,S2)")
+	DEFINE("TELL(UNIT)")
+							:(E4PLUS)
+
+ENVIRONMENT ENVIRONMENT = HOST(4,S)			:S(RETURN)F(FRETURN)
+EXECUTE	EXECUTE = HOST(1,S1,S2)				:S(RETURN)F(FRETURN)
+TELL	TELL = SET(UNIT,0,1)				:S(RETURN)F(FRETURN)
+
+E4PLUS

@@ -1,0 +1,46 @@
+* $Id$
+*
+* Emulate SPITBOL functions
+* Phil Budne <phil@ultimate.com>
+* September 13, 1997
+
+	OPSYN("MB_INPUT", "INPUT")
+	OPSYN("MB_OUTPUT", "OUTPUT")
+	OPSYN("MB_ENDFILE", "ENDFILE")
+	OPSYN("MB_REWIND", "REWIND")
+	OPSYN("MB_SET", "SET")
+
+	DEFINE("INPUT(n,u,fn)")
+	DEFINE("OUTPUT(n,u,fn)")
+	DEFINE("ENDFILE(u)")
+	DEFINE("REWIND(u)")
+	DEFINE("SET(u,o,w)")
+	DEFINE("MB_UNIT(u)i")
+* map spitbol unit to snobol unit number
+	MAP_UNITS = TABLE()
+							:(EDEFNS)
+
+* map SPITBOL unit (can be any type?) to a unique integer;
+MB_UNIT	MB_UNIT = DIFFER(MAP_UNITS<u>) MAP_UNITS<u>	:S(RETURN)
+* don't map integers from 1 .. 20 (never returned by IO_FINDUNIT)
+	i = CONVERT(u,"INTEGER")			:F(MB_UNI1)
+	LT(i,1)						:S(MB_UNI1)
+	GT(i,20)					:S(MB_UNI1)
+	MB_UNIT = i					:(RETURN)
+MB_UNI1	MB_UNIT = MAP_UNITS<u> = IO_FINDUNIT()		:F(FRETURN)S(RETURN)
+
+* XXX error if unit in use!
+* XXX process filename for []'ed I/O options? !-style piping?
+INPUT	MB_INPUT(n,MB_UNIT(u),,fn)			:S(RETURN)F(FRETURN)
+OUTPUT	MB_OUTPUT(n,MB_UNIT(u),,fn)			:S(RETURN)F(FRETURN)
+
+SET	SET = MB_SET(MB_UNIT(u),o,w)			:S(RETURN)F(FRETURN)
+REWIND	MB_REWIND(MB_UNIT(u))				:S(RETURN)F(FRETURN)
+
+* XXX clear out array/table entries??
+ENDFILE	MB_ENDFILE(MB_UNIT(u))				:S(RETURN)F(FRETURN)
+
+EDEFNS
+
+*	DEFINE("SETEXIT()")
+*SETEXIT						:(RETURN)
