@@ -42,6 +42,10 @@ union addr {
 #define VFLD_T unsigned int		/* at least 32 bits */
 #endif
 #ifndef SIZLIM
+/*
+ * NOTE!! SIZLIM must not appear negative when stored in an int_t when
+ * int_t is 64-bits, the configure script redefines SIZLIM to 0xffffffff
+ */
 #define SIZLIM 0x7fffffff		/* maximum object size */
 #endif
 #define VFLD(name) VFLD_T name
@@ -53,16 +57,20 @@ union addr {
 /*
  * maximum object sizes for selected v-field and a-field sizes;
  *
- * field sizes		max object size
- * v	a	DESCR	bytes	DESCRs
- *			SIZLIM	SIZLIM/DESCR
- * 16b	32b	8B	64K	8K
- * 24b	32b	8B	16M	2M	(default)
- * 32b	32b	12B**	4G	512M	(** subject to alignment restrictions)
- * 32b 	64b	16B	4G	128M	(LP64 model)
+ * field sizes		
+ * v	a	DESCR	SIZLIM	MAXOBJ
+ * 16b	32b	8B	64KB	8KD
+ * 24b	32b	8B	16MB	2MD	(default)
+ * 32b	32b	12B**	2GB*	171MD
+ * 32b 	64b	16B	4GB	256MD	(--lp64, --longlong)
  *
- * max object size in bytes determines maximum string length
- * max object size in DESCRs determines maximum size for;
+ * (*) SIZLIM must not appear negative when stored in an int_t
+ * (**) Alignment allowing
+ *
+ * SIZLIM max object size in bytes determines maximum string length
+ *
+ * MAXOBJ (SIZLIM/DESCR) max object size in DESCRs
+ *   determines maximum size for;
  *	arrays (one descr per entry)
  *	initial table size (two descrs / entry)
  *	number of identifiers (two descrs / id)
