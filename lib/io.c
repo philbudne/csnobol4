@@ -528,7 +528,7 @@ io_print( iob, sp )			/* STPRNT */
      */
 
     if ((fp->flags & FL_UPDATE) && fp->last == LAST_INPUT) {
-	fseek(f, SEEK_CUR, 1);		/* seek relative by zero */
+	fseek(f, 0, SEEK_CUR);		/* seek relative by zero */
     }
     fp->last = LAST_OUTPUT;
 
@@ -629,7 +629,7 @@ io_read( dp, sp )			/* STREAD */
 	 */
 
 	if ((fp->flags & FL_UPDATE) && fp->last == LAST_OUTPUT) {
-	    fseek(f, SEEK_CUR, 1);	/* seek relative by zero */
+	    fseek(f, 0, SEEK_CUR);	/* seek relative by zero */
 	}
 	fp->last = LAST_INPUT;
 
