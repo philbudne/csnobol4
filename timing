@@ -138,10 +138,25 @@ if [ "$UNAME" ]; then
 	esac
 fi
 
+# Solaris, Tru64
 if [ -f /usr/sbin/psrinfo ]; then
 	echo ''
 	echo 'psrinfo -v:'
 	/usr/sbin/psrinfo -v
+fi
+
+# NextStep, Darwin
+if [ -f /usr/bin/hostinfo ]; then
+	echo ''
+	echo 'hostinfo:'
+	/usr/bin/hostinfo
+fi
+
+# NextStep?, Darwin
+if [ -f /usr/bin/sw_vers ]; then
+	echo ''
+	echo 'sw_vers:'
+	/usr/bin/sw_vers
 fi
 
 if [ -f 00README.CVS ]; then
