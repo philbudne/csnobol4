@@ -2,6 +2,26 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+8/24/2004
+	pml.h: add STCL under PML_STCL
+	lib/snolib/stcl.c: cleanup
+	lib/snolib/handle.c: fix handle search
+
+8/23/2004
+	pml.h: rename COM_UNLOAD to COM_RELEASE
+	configure: keep quiet in installer grep
+	lib/win32/com.cpp: ifdef NEED_COGETOBJECT, rename COM_RELEASE
+	lib/snolib/handle.c: made it work
+
+8/21/2004
+	snolib/http.sno: add HTTP.RECL variable
+
+8/20/2004
+	new: include/handle.h lib/snolib/handle.c
+		manage handles
+	lib/snolib/stcl.c, lib/win32/com.cpp:
+		convert to use handles
+
 8/19/2004
 	snolib/ftp.sno: fix a comment
 	snolib/http.sno: add HTTP.POST() function
