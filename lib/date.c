@@ -16,6 +16,8 @@
  * (ie; could use ctime()) this returns what SPITBOL does,
  * which is what '360 MAINBOL plus the time!
  *
+ * updated 9/21/96; now returns full julian year.
+ *
  * localtime() exists in v6, but "struct tm" doesn't!
  */
 
@@ -29,10 +31,10 @@ date( sp )
 
     time( &t );
     tm = localtime( &t );
-    sprintf( str, "%02d/%02d/%02d %02d:%02d:%02d",
+    sprintf( str, "%02d/%02d/%d %02d:%02d:%02d",
 	    tm->tm_mon + 1,
 	    tm->tm_mday,
-	    tm->tm_year % 100,		/* ?! */
+	    tm->tm_year + 1900,
 	    tm->tm_hour,
 	    tm->tm_min,
 	    tm->tm_sec );
