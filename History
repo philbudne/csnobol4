@@ -2,6 +2,19 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
+5/31/94
+	Fixed/improved make tar; include "bugs" dir
+	Updated porting.ms
+	Added vms/getredirect.c
+	Handle errors in genc.sno
+	Avoid .h.new (for VMS)
+	Updated ports.doc for LINUX
+	Started on autoconfig script
+
+5/30/94
+	Fixed hp*.m4 include path
+	Updated ports.doc for hp710
+
 5/29/94
 	Finished &LCASE &UCASE
 	Fixed -CASE n
