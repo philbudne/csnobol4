@@ -42,11 +42,11 @@ All aspects of the language are implemented except;
 Trapping of arithmetic exceptions.
 .IP \(bu
 .B LOAD()
-can be used to access external functions on many platforms, but not all.
+can be used to access external functions on most platforms, but not all.
 External functions can be staticly linked (poor man's loading) into the
 snobol4 executable
 .B ALL
-platforms.  See /usr/local/lib/snobol4/load.doc for more information.
+platforms.  See /usr/local/lib/snobol4/load.txt for more information.
 
 .SS "Changes"
 .PP
@@ -140,7 +140,7 @@ order.
 .PP
 On ASCII based systems, any character with the 8th bit set is treated
 as "alphabetic", and can start, or be used in identifiers and labels.
-This means characters from the "upper half" of national character sets
+This includes characters from the "upper half" of national character sets
 and all bytes resulting from the UTF-8 encoding of Unicode characters.
 
 .PP
@@ -1074,3 +1074,5 @@ I/O is still tied to unit numbers.
 \*(lqDynamic\*(rq storage cannot be expanded after startup.
 .PP
 Integer math can never "fail", even on overflow.
+.PP
+Oversize integer constants may not be detected.
