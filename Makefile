@@ -17,10 +17,6 @@
 # (largely to avoid depending on make '+=' operator)
 M4=m4
 
-# compression program, suffix
-COMP=gzip
-Z=gz
-
 ################
 # snobol commands
 
@@ -211,41 +207,3 @@ spotless: clean
 # "print version" -- for dir/tar names
 pv:	version.c
 	$(CC) -I./include -DMAIN -o pv version.c
-
-# tempting to use VERS:sh = ./pv
-# but need to make pv first!!
-VERS=`./pv`
-
-DIR=snobol4-$(VERS)
-KIT=snobol4-$(VERS).tar.$(Z)
-
-ANONCVSROOT=':pserver:anonymous@cvs.snobol4.org:/home/cvs'
-#CVSBRANCH=-rBR_Vx_y
-
-# NOTE! tmp directory subterfuge only necessary
-# because CVS module has same name as executable!!
-MODULE=snobol4
-
-tar:	snobol4 pv
-	rm -rf tmp
-	mkdir tmp
-	cvs -d $(ANONCVSROOT) login
-	cd tmp; cvs -d $(ANONCVSROOT) co $(MODULE) $(CVSBRANCH)
-	mv tmp/$(MODULE) tmp/$(DIR)
-	cd tmp/$(DIR); make
-	cd tmp/$(DIR); make clean
-	rm tmp/$(DIR)/00README.CVS
-	cd tmp/$(DIR)/doc; make
-	rm -f $(KIT)
-	cd tmp; ln ../pv .; tar cf - $(DIR) | $(COMP) > ../$(KIT)
-	rm -rf tmp
-
-# make a mailable kit by splitting up binary, and uuencoding pieces
-# (no editing necessary for reassembly)
-# requires "./pv" for $(VERS) in $(KIT)
-uu:	bsplitu tar pv
-	rm -rf uu; mkdir uu
-	cd uu; ln ../pv .; ../bsplitu $(KIT) < ../$(KIT); rm pv
-
-bsplitu: bsplitu.c
-	$(CC) -o bsplitu bsplitu.c
