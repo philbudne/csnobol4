@@ -1,5 +1,9 @@
 $Id$
 
+cygwin:
+	cleanup confNNN.exe
+	"make clean" rm *.exe?
+
 win32;
 	link against msvcXX.dll?
 		Win98:	MSVCRT{20,40}.DLL
