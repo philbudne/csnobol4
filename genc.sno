@@ -78,7 +78,7 @@ EIO
 	BLOCK_COMMENTS =
 
 *	inlining (OFF)
-	INLINE =
+*	INLINE =
 	INLINE_DIR = "subr/"
 
 *	un*x '# line' lines (OFF)
