@@ -7,7 +7,7 @@
 
 #ifdef NO_STATIC_VARS
 #include "vars.h"
-#endif
+#endif /* NO_STATIC_VARS defined */
 
 /*
  * The FILETIME data structure contains two 32-bit values that combine to
@@ -23,13 +23,13 @@
 int_t
 mstime()
 {
-    FILETIME start, exit, kernel, user;
+    FILETIME start, texit, kernel, user;
 
     /*
      * only implemented on NT?
      * XXX cache system type? process handle??
      */
-    if (GetProcessTimes(GetCurrentProcess(), &start, &exit, &kernel, &user)) {
+    if (GetProcessTimes(GetCurrentProcess(), &start, &texit, &kernel, &user)) {
 	return (user.dwHighDateTime * HIGHMS +
 		user.dwLowDateTime / TICKSPERMS);
     }
@@ -37,10 +37,10 @@ mstime()
 	/* XXX just use clock()? */
 	int new;
 	int_t x;
-#ifdef NO_STATIC_VARS
+#ifndef NO_STATIC_VARS
 	static int haveold, old;
 	static FILETIME f[2];
-#else
+#else  /* NO_STATIC_VARS defined */
 	int haveold;
 	struct timevars {
 	    int tv_old;
@@ -69,14 +69,14 @@ mstime()
 	new = !old;
 #if 1
 	GetSystemTimeAsFileTime(&f[new]);
-#else
+#else  /* not 1 */
 	{
 	    SYSTEMTIME t;
 
 	    GetSystemTime(&t);
 	    SystemTimeToFileTime(&t, &f[new]);
 	}
-#endif
+#endif /* not 1 */
 
 	if (haveold)
 	    x = (f[new].dwHighDateTime - f[old].dwHighDateTime) * HIGHMS +
