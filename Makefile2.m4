@@ -149,6 +149,11 @@ TAN_C=$(SRCDIR)lib/snolib/tan.c
 
 DATA_INIT_CFLAGS=$(CFLAGS)
 
+################ objects
+
+# or inet6.o
+INET_O=	inet.o
+
 # end of defaults
 ################################################################
 CMT()
@@ -183,9 +188,6 @@ CFLAGS=$(COPT) $(MYCPPFLAGS)
 
 # XXX replace SNOLIB_A with SNOLIB_FILE??
 #	need to add rules to make shared libraries (to config/xxx.m4 files)
-
-# or inet6.o
-INET_O=	inet.o
 
 OBJS=	main.o $(SNOBOL4).o data.o data_init.o syn.o bal.o date.o \
 	dump.o dynamic.o endex.o expops.o hash.o $(INET_O) init.o \
