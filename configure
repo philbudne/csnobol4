@@ -695,7 +695,7 @@ else
 	echo 'using private bcopy() function' 1>&2
 	echo 'ADD_OBJS([bcopy.o])'		>> $CONFIG_M4
 	echo 'ADD_SRCS([$(BCOPY_C)])'		>> $CONFIG_M4
-	# XXX set define for prototype needed?
+	echo '#define USE_OWN_BCOPY'		>> $CONFIG_H
     fi
 
     # memset may be optimized for zeroing, or may not!
@@ -705,6 +705,7 @@ else
 	echo 'using private bzero() function' 1>&2
 	echo 'ADD_OBJS([bzero.o])'		>> $CONFIG_M4
 	echo 'ADD_SRCS([$(BZERO_C)])'		>> $CONFIG_M4
+	echo '#define USE_OWN_BZERO'		>> $CONFIG_H
     fi
 fi
 
