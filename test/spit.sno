@@ -59,8 +59,8 @@ ez
 *	tracing of match assign, replace
 	a b . c
 	a b $ c
-*	a ? b . c
-*	a ? b $ c
+	a ? b . c
+	a ? b $ c
 
 ****************************************************************
 * not yet working;
