@@ -9,6 +9,8 @@
 #include "types.h"
 #include "macros.h"
 
+#include <ctype.h>
+
 void
 trimsp( sp1, sp2 )
     struct spec *sp1, *sp2;
@@ -22,7 +24,25 @@ trimsp( sp1, sp2 )
     while (len > 0 && cp[len-1] == ' ')
 	len--;
 
-    _S(sp1) = _S(sp2);
+    _SPEC(sp1) = _SPEC(sp2);
     S_L(sp1) = len;
 }
+
+void
+raise( sp )
+    struct spec *sp;
+{
+    register char *cp;
+    register int len;
+
+    len = S_L(sp);
+    cp = S_SP(sp);
+
+    while (len-- > 0) {
+	if (islower(*cp))
+	    *cp = toupper(*cp);
+	cp++;
+    }
+}
+
 
