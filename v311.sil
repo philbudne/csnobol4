@@ -1,6 +1,15 @@
 * $Id$
 *
 * $Log$
+* Revision 1.41  1996/09/05  04:32:22  phil
+* [PLB33] control card/switch/system variable changes;
+*  &STLIMIT < 0 means no limit, default to -1
+*  always case fold control card keywords
+*  disable stats by default
+*  default listing off (was being hit by init.c)
+*  removed EXPCL; default SPITCL to on
+* fixed SPITBOL ? operator at top level
+*
 * Revision 1.40  1996/09/04  03:00:06  phil
 * [PLB32] Add SPITBOL operators (under -PLUSOPS) from SNOBOL4+
 *
@@ -377,12 +386,12 @@ LSON   EQU     2*DESCR		   Offset of left son in code node
 RSIB   EQU     3*DESCR		   Offset of right sibling in code node
 CODE   EQU     4*DESCR		   Offset of code in code node
 ESASIZ EQU     50		   Limit on number of syntactic errors
-FBLKSZ EQU     10*DESCR 	   Size of function descriptor block
+FBLKSZ EQU     10*DESCR		   Size of function descriptor block
 ARRLEN EQU     20		   Limit on length of array print image
 CARDSZ EQU     132		   Width of compiler input [PLB21][PLB22]
 SEQSIZ EQU     0		   Width of sequence field [PLB1]
 STNOSZ EQU     8		   Length of statement number field
-DSTSZ  EQU     2*STNOSZ 	   Space for left and right numbering
+DSTSZ  EQU     2*STNOSZ		   Space for left and right numbering
 CNODSZ EQU     4*DESCR		   Size of code node
 DATSIZ EQU     1000		   Limit on number of defined data type
 EXTSIZ EQU     10		   Default allocation for tables
@@ -445,20 +454,20 @@ DATSTA EQU     100		   First user datatpe		[PLB31]
        TITLE   'Program Initialization'
 BEGIN  INIT    ,		   Initialize system
        ISTACK  ,		   Initialize stack
-       AEQLC   BANRCL,0,,NOBANR	   [PLB12] Check if banner suppressed
-       OUTPUT  PUNCH,TITLEF	   [PLB3] Title listing
-       OUTPUT  PUNCH,SOURCF	   [PLB3] Print attribution
-NOBANR LHERE			   [PLB12] here after banner
+       AEQLC   BANRCL,0,,NOBANR	   Check if banner suppressed	[PLB12]
+       OUTPUT  PUNCH,TITLEF	   Title listing		[PLB3]
+       OUTPUT  PUNCH,SOURCF	   Print attribution		[PLB3]
+NOBANR LHERE			   here after banner		[PLB12]
        MSTIME  TIMECL		   Time in compiler
        RCALL   SCBSCL,BLOCK,OCALIM Allocate block for object code
        MOVD    OCSVCL,SCBSCL	   Save object code pointer
        RESETF  SCBSCL,PTR	   Clear pointer flag
        GETSIZ  YCL,INITLS	   Get size of initialization list
 SPCNVT GETD    XPTR,INITLS,YCL	   Get pointer to list
-       GETSIZ  XCL,XPTR 	   Get size of list
+       GETSIZ  XCL,XPTR		   Get size of list
 SPCNV1 GETD    ZPTR,XPTR,XCL	   Get pointer to specifier
        AEQLC   ZPTR,0,,SPCNV2	   Skip dummy zero entries
-       RCALL   ZPTR,GENVAR,ZPTR    Convert specifier to structure
+       RCALL   ZPTR,GENVAR,ZPTR	   Convert specifier to structure
        PUTD    XPTR,XCL,ZPTR	   Replace pointer to specifier
 SPCNV2 DECRA   XCL,2*DESCR	   Decrement to next pair
        ACOMPC  XCL,0,SPCNV1	   Continue if one remains
@@ -466,7 +475,7 @@ SPCNV2 DECRA   XCL,2*DESCR	   Decrement to next pair
        ACOMPC  YCL,0,SPCNVT	   Continue if one remains
 INITD1 GETDC   XPTR,INITB,0	   Get specifier to convert
        RCALL   YPTR,GENVAR,(XPTR)  Convert it to string structure
-       GETDC   ZPTR,INITB,DESCR    Get location to put it
+       GETDC   ZPTR,INITB,DESCR	   Get location to put it
        PUTDC   ZPTR,0,YPTR	   Place pointer to string structure
        INCRA   INITB,2*DESCR	   Decrement to next pair
        ACOMP   INITB,INITE,,,INITD1
@@ -480,27 +489,27 @@ INITD1 GETDC   XPTR,INITB,0	   Get specifier to convert
        PUTDC   REMKY,DESCR,REMPAT  Initial value of REM
        PUTDC   SUCCKY,DESCR,SUCPAT Initial value of SUCCEED
 *
-       SETAC   VARSYM,0 	   Set count of variables to zero
+       SETAC   VARSYM,0		   Set count of variables to zero
        RCALL   NBSPTR,BLOCK,NMOVER Allocate block for value assignment
        MOVD    CMBSCL,SCBSCL	   Set up pointer for compiler
        MOVD    UNIT,INPUT	   Set up input unit
        MOVD    OCBSCL,CMBSCL	   Project base for interpreter
        SUM     OCLIM,CMBSCL,OCALIM Compute end of code block
        DECRA   OCLIM,5*DESCR	   Leave room for overflow
-       SETAC   INICOM,1 	   SIGNAL COMPLETION		E3.10.6
+       SETAC   INICOM,1		   SIGNAL COMPLETION		E3.10.6
        BRANCH  XLATRN
 *_
 *---------------------------------------------------------------------*
        TITLE   'Compilation and Interpreter Invocation'
-XLATRD AEQLC   LISTCL,0,,XLATRN    Skip print if list is off
+XLATRD AEQLC   LISTCL,0,,XLATRN	   Skip print if list is off
        STPRNT  IOKEY,OUTBLK,LNBFSP Print line image
 XLATRN STREAD  INBFSP,UNIT,XLATRN,COMP5
        SETSP   TEXTSP,NEXTSP	   Read card and set up line
 XLATNX STREAM  XSP,TEXTSP,CARDTB,COMP3,COMP3
-*				   [PLB23] Determine type of card
+*				   Determine type of card	[PLB23]
        RCALL   ,NEWCRD,,(XLATRD,,) Process card type
        RCALL   ,CMPILE,,(COMP3,,XLATNX)
-*				   [PLB23] Compile statement
+*				   Compile statement		[PLB23]
        INCRA   CMOFCL,DESCR	   Increment offset
        PUTD    CMBSCL,CMOFCL,ENDCL Insert END function
        AEQLC   LISTCL,0,,XLATP	   Skip print if list is off
@@ -515,32 +524,33 @@ XLATP  AEQLC   STYPE,EOSTYP,,XLAEND
        STREAM  XSP,TEXTSP,LBLTB,COMP7,COMP7
 *				   Analyze END label
        RCALL   XPTR,GENVUP,(XSPPTR)
-*				   [PLB15,27] Generate variable for label
+*				   Generate variable for label	[PLB15,27]
        GETDC   OCBSCL,XPTR,ATTRIB  Get start for interpreter
        AEQLC   OCBSCL,0,,COMP7	   Error if not attribute
        AEQLC   STYPE,EOSTYP,,XLAEND
 *				   Finish on end of statement
        STREAM  XSP,TEXTSP,IBLKTB,COMP7,,COMP7
 *				   Analyze remainder of card
-XLAEND AEQLC   ESAICL,0,,XLATSC    Were there any compilation errors?
-       OUTPUT  PUNCH,ERRCF	   [PLB3] Print message of errors
-       AEQLC   NERRCL,0,,XLATND	   [PLB9,13] execute if -NOERROR clear
-       SETAC   RETCOD,1		   [PLB13] set exit code (use EQU???)
-       BRANCH  FTLEN2		   [PLB13] join endgame
+XLAEND AEQLC   ESAICL,0,,XLATSC	   Were there any compilation errors?
+       OUTPUT  PUNCH,ERRCF	   Print message of errors	[PLB3]
+       AEQLC   NERRCL,0,,XLATND	   execute if -NOERROR clear	[PLB9,13]
+       SETAC   RETCOD,1		   set exit code (use EQU???)	[PLB13]
+       BRANCH  FTLEN2		   join endgame			[PLB13]
 *_
-XLATSC AEQLC   BANRCL,0,,XLATND	   [PLB12] Suppress message if no banner
-       OUTPUT  PUNCH,SUCCF	   [PLB3] Print message of no errors
-XLATND XECOMP  ,		   [PLB4] Tell I/O system compile done
+XLATSC AEQLC   BANRCL,0,,XLATND	   Suppress message if no banner [PLB12]
+       OUTPUT  PUNCH,SUCCF	   Print message if no errors	[PLB3]
+XLATND AEQLC   EXECCL,0,,END	   Just compile? Quiting time!	[PLB34]
+       XECOMP  ,		   Tell I/O system compile done	[PLB4]
        SETAC   UNIT,0		   Reset input unit
        SETAC   LPTR,0		   Reset last label pointer
        SETAC   OCLIM,0		   Reset limit on object code
        ZERBLK  COMREG,COMDCT	   Clear compiler descriptors
        SUM     XCL,CMBSCL,CMOFCL   Compute end of object code
        RCALL   ,SPLIT,(XCL)	   Split of unused part of block
-       SETAC   LISTCL,0 	   Turn off listing switch
+       SETAC   LISTCL,0		   Turn off listing switch
        MSTIME  ETMCL		   Time out compiler
        SUBTRT  TIMECL,ETMCL,TIMECL Compute elapsed time
-       SETAC   CNSLCL,1 	   Permit label redefinition
+       SETAC   CNSLCL,1		   Permit label redefinition
        RCALL   ,INTERP,,(MAIN1,MAIN1,MAIN1)
 *				   Call interpreter
 *_
@@ -576,7 +586,7 @@ AUGMOV DECRA   A4PTR,DESCR	   Adjust size
 CODSKP PROC    ,		   Procedure to skip object code
        POP     YCL		   Restore number of items to skip
 CODCNT INCRA   OCICL,DESCR	   Increment offset
-       GETD    XCL,OCBSCL,OCICL    Get object code descriptor
+       GETD    XCL,OCBSCL,OCICL	   Get object code descriptor
        TESTF   XCL,FNC,,CODFNC	   Check for function
 CODECR DECRA   YCL,1		   Count down
        ACOMPC  YCL,0,CODCNT,RTN1,INTR10
@@ -604,7 +614,7 @@ DTARRY GETDC   A3PTR,A2PTR,DESCR   Get prototype
        LOCSP   ZSP,A3PTR	   Get specifier
        GETLG   A3PTR,ZSP	   Get length
        ACOMPC  A3PTR,ARRLEN,DTREP1 Check for excessive length
-       SETLC   DTARSP,0 	   Clear specifier
+       SETLC   DTARSP,0		   Clear specifier
        APDSP   DTARSP,ARRSP	   Append ARRAY
        APDSP   DTARSP,LPRNSP	   Append '('
        APDSP   DTARSP,QTSP	   Append quote
@@ -628,7 +638,7 @@ DTABL2 DECRA   A3PTR,DESCR					E3.2.3
        DECRA   A2PTR,2*DESCR					E3.2.3
        DIVIDE  A3PTR,A3PTR,DSCRTW  Divide to get item count
        INTSPC  ZSP,A3PTR	   Convert to string
-       SETLC   DTARSP,0 	   Clear specifier
+       SETLC   DTARSP,0		   Clear specifier
        APDSP   DTARSP,ASSCSP	   Append TABLE
        APDSP   DTARSP,LPRNSP	   Append '('
        APDSP   DTARSP,ZSP	   Append size
@@ -643,7 +653,7 @@ DTREP1 MOVV    DT1CL,A2PTR	   Insert data type
 *				   Look for data type name
        GETDC   A3PTR,A3PTR,2*DESCR Get data type name
        LOCSP   DPSP,A3PTR	   Get specifier
-DTREPR RRTURN  DPSPTR,1 	   Return pointer to specifier
+DTREPR RRTURN  DPSPTR,1		   Return pointer to specifier
 *_
 DTREPE SETSP   DPSP,EXDTSP	   Set up EXTERNAL specifier
        BRANCH  DTREPR		   Return
@@ -671,7 +681,7 @@ FATNXT SUM     F2PTR,FBLOCK,NEXFCL Compute position
 *_
 FATBLK RCALL   FBLOCK,BLOCK,FBLKRQ Allocate new function block
        SETF    FBLOCK,FNC	   Insert function flag
-       SETVC   FBLOCK,0 	   Clear data type
+       SETVC   FBLOCK,0		   Clear data type
        SETAC   NEXFCL,DESCR	   Initialize offset
        BRANCH  FATNXT		   Join processing
 *_
@@ -706,10 +716,10 @@ BLOGC  MOVA    FRSGPT,BLOCL	   Restore position pointer
 *      Generation of Natural Variables
 *
 GENVAR PROC    ,		   Procedure to generate variable
-       SETAC   CONVSW,0 	   Note GENVAR entry
+       SETAC   CONVSW,0		   Note GENVAR entry
        POP     AXPTR		   Resotre pointer to specifier
        GETSPC  SPECR1,AXPTR,0	   Get specifier
-       LEQLC   SPECR1,0,,RT1NUL    Avoid null string
+       LEQLC   SPECR1,0,,RT1NUL	   Avoid null string
 LOCA1  VARID   EQUVCL,SPECR1	   Compute bin and ascension numbers
        SUM     BUKPTR,OBPTR,EQUVCL Find bin
 LOCA2  MOVD    LSTPTR,BUKPTR	   Save working copy
@@ -743,12 +753,12 @@ LOCA7  MOVD    LCPTR,FRSGPT	   Point to position in storage
        PUTDC   LCPTR,DESCR,NULVCL  Set value to null string
        PUTDC   LCPTR,ATTRIB,ZEROCL Set label attribute to zero
        LOCSP   SPECR2,LCPTR	   Get specifier to string structure
-       SETLC   SPECR2,0 	   Clear length
+       SETLC   SPECR2,0		   Clear length
        APDSP   SPECR2,SPECR1	   Move new string in
 LOCA6  PUTVC   LCPTR,LNKFLD,EQUVCL Insert ascension number
        PUTAC   LCPTR,LNKFLD,BUKPTR Insert link pointer
        PUTAC   LSTPTR,LNKFLD,LCPTR Link to last structure
-       INCRA   VARSYM,1 	   Increment count of new variables
+       INCRA   VARSYM,1		   Increment count of new variables
 LOCRET RRTURN  LCPTR,1		   Return pointer to structure
 *_
 LOCA4  MOVA    FRSGPT,LCPTR	   Restore position pointer
@@ -760,7 +770,7 @@ LOCA4  MOVA    FRSGPT,LCPTR	   Restore position pointer
 *      Generation of Variable from Integer
 *
 GNVARI PROC    GENVAR		   Procedure to generate string
-       SETAC   CONVSW,0 	   Note GENVAR entry
+       SETAC   CONVSW,0		   Note GENVAR entry
        POP     AXPTR		   Restore integer
        INTSPC  SPECR1,AXPTR	   Convert to string
        BRANCH  LOCA1		   Join processing
@@ -786,7 +796,7 @@ GENVUP PROC    GENVAR		   Procedure to generate string
 CONVAR PROC    GENVAR		   Procedure to get space for variable
        POP     AXPTR		   Restore length
        AEQLC   AXPTR,0,,RT1NUL	   Avoid null string
-       SETAC   CONVSW,1 	   Note CONVAR entry
+       SETAC   CONVSW,1		   Note CONVAR entry
        GETLTH  BKLTCL,AXPTR	   Get space required
        ACOMP   BKLTCL,SIZLMT,SIZERR
 *				   Check against size limit
@@ -803,7 +813,7 @@ CONVR5 PUTDC   FRSGPT,0,ZEROCL	   Clear title
        PUTDC   FRSGPT,ATTRIB,ZEROCL
 *				   Set label to zero
        MOVA    BKLTCL,FRSGPT					E3.3.2
-       RRTURN  BKLTCL,1 					E3.3.2
+       RRTURN  BKLTCL,1						E3.3.2
 *_
 CONVR4 RCALL   ,GC,BKLTCL,(ALOC2,CONVR5)
 *				   Regenerate storage
@@ -831,7 +841,7 @@ GC     PROC    ,		   Storage regeneration procedure
        SETSIZ  STKPTR,BLOCL	   Set stack size
        MOVD    BKDXU,PRMDX	   Number of resident blocks
 GCT    GETD    GCMPTR,PRMPTR,BKDXU Get next resident block
-       AEQLC   GCMPTR,0,,GCTDWN    Skip nonpointers
+       AEQLC   GCMPTR,0,,GCTDWN	   Skip nonpointers
        RCALL   ,GCM,(GCMPTR)	   Scan resident block
 GCTDWN DECRA   BKDXU,DESCR	   Decrement block count
        AEQLC   BKDXU,0,GCT	   Test for end of loop
@@ -854,22 +864,22 @@ GCLAD  MOVD    CPYCL,HDSGPT	   Initialize target pointer
        MOVD    TTLCL,HDSGPT	   Initialize block pointer
 GCLAD0 BKSIZE  BKDX,TTLCL	   Get size of block
        TESTFI  TTLCL,MARK,GCLAD7   Is the block marked?
-       SUM     CPYCL,CPYCL,BKDX    Is block marked?
-       SUM     TTLCL,TTLCL,BKDX    Update block pointer
+       SUM     CPYCL,CPYCL,BKDX	   Is block marked?
+       SUM     TTLCL,TTLCL,BKDX	   Update block pointer
        AEQL    TTLCL,FRSGPT,GCLAD0,GCBB1
 *				   Check for end of region
 *_
 GCLAD7 MOVD    MVSGPT,TTLCL	   Update compression barrier
-GCLAD4 SUM     TTLCL,TTLCL,BKDX    Update block pointer
+GCLAD4 SUM     TTLCL,TTLCL,BKDX	   Update block pointer
        AEQL    TTLCL,FRSGPT,,GCBB1 Check for end of region
        BKSIZE  BKDX,TTLCL	   Get size of block
        TESTFI  TTLCL,MARK,GCLAD4   Is block marked?
        PUTAC   TTLCL,0,CPYCL	   Point title to target
-       SUM     CPYCL,CPYCL,BKDX    Update target pointer
+       SUM     CPYCL,CPYCL,BKDX	   Update target pointer
        BRANCH  GCLAD4		   Continue
 *_
 GCBB1  SETAC   BKPTR,OBLIST-DESCR  Set up pointer to bins
-       SETAC   NODPCL,1 	   No dump while reorganizing
+       SETAC   NODPCL,1		   No dump while reorganizing
 GCBB2  ACOMP   BKPTR,OBEND,GCLAP   Check for end of bins
        INCRA   BKPTR,DESCR	   Increment bin pointer
        MOVD    ST1PTR,BKPTR	   Get work copy
@@ -895,13 +905,13 @@ GCLAP0 BKSIZE  BKDXU,TTLCL	   Get size of block
 GCLAP1 SETAC   BKDX,3*DESCR	   Three descriptors for string
 GCLAP2 TESTFI  TTLCL,MARK,GCLAP5   Is block marked?
        DECRA   BKDX,DESCR	   Decrement offset
-GCLAP3 GETD    DESCL,TTLCL,BKDX    Get next descriptor in block
-       TESTF   DESCL,PTR,GCLAP4    Is it a pointer?
+GCLAP3 GETD    DESCL,TTLCL,BKDX	   Get next descriptor in block
+       TESTF   DESCL,PTR,GCLAP4	   Is it a pointer?
        ACOMP   DESCL,MVSGPT,,,GCLAP4
 *				   Is it above compression barrier?
        TOP     TOPCL,OFSET,DESCL   Compute offset to target
        ADJUST  DESCL,TOPCL,OFSET   Adjust pointer to target
-       PUTD    TTLCL,BKDX,DESCL    Put descriptor back in block
+       PUTD    TTLCL,BKDX,DESCL	   Put descriptor back in block
 GCLAP4 DECRA   BKDX,DESCR	   Decrement offset
        AEQLC   BKDX,0,GCLAP3	   Check for end of block
 GCLAP5 SUM     TTLCL,TTLCL,BKDXU   Move to next block
@@ -910,13 +920,13 @@ GCLAP5 SUM     TTLCL,TTLCL,BKDXU   Move to next block
 GCLAT1 GETD    TTLCL,PRMPTR,BKDXU  Get next resident block
        AEQLC   TTLCL,0,,GCLAT4	   Skip nonpointer
        GETSIZ  BKDX,TTLCL	   Get size of block
-GCLAT2 GETD    DESCL,TTLCL,BKDX    Get descriptor from block
-       TESTF   DESCL,PTR,GCLAT3    Is it a pointer?
+GCLAT2 GETD    DESCL,TTLCL,BKDX	   Get descriptor from block
+       TESTF   DESCL,PTR,GCLAT3	   Is it a pointer?
        ACOMP   DESCL,MVSGPT,,,GCLAT3
 *				   Is it above compression barrier?
        TOP     TOPCL,OFSET,DESCL   Compute offset to target
        ADJUST  DESCL,TOPCL,OFSET   Adjust pointer to target
-       PUTD    TTLCL,BKDX,DESCL    Put descriptor back in block
+       PUTD    TTLCL,BKDX,DESCL	   Put descriptor back in block
 GCLAT3 DECRA   BKDX,DESCR	   Decrement offset
        AEQLC   BKDX,0,GCLAT2	   Check for end of block
 GCLAT4 DECRA   BKDXU,DESCR	   Decrement count of resident blocks
@@ -936,18 +946,18 @@ GCLAM5 MOVA    BKDX,BKDXU	   Working copy of block size
        GETAC   TOPCL,TTLCL,0	   Get target position
        MOVDIC  TOPCL,0,TTLCL,0	   Move title
        RSETFI  TOPCL,MARK	   Clear mark flag
-       MOVBLK  TOPCL,TTLCL,BKDX    Move block itself
+       MOVBLK  TOPCL,TTLCL,BKDX	   Move block itself
 GCLAM4 SUM     TTLCL,TTLCL,BKDXU   Get to next block
        AEQL    TTLCL,FRSGPT,GCLAM0 Check for end of region
        INCRA   GCNO,1		   Increment count of regenerations
-       SETAC   NODPCL,0 	   Permit dump
+       SETAC   NODPCL,0		   Permit dump
        BKSIZE  BKDX,TOPCL	   Get size of last block
        SUM     FRSGPT,TOPCL,BKDX   Compute new allocation pointer
        RESETF  FRSGPT,FNC	   Clear possible function flag
        SUBTRT  GCGOT,TLSGP1,FRSGPT Compute amount reclaimed
        DECRA   GCGOT,DESCR
        RESETF  GCGOT,PTR	   Clear pointer flag
-       ACOMP   GCREQ,GCGOT,FAIL    Compare with amount required
+       ACOMP   GCREQ,GCGOT,FAIL	   Compare with amount required
        RRTURN  GCGOT,2
 *_
 *---------------------------------------------------------------------*
@@ -958,11 +968,11 @@ GCM    PROC    ,		   Procedure to mark blocks
        POP     BK1CL		   Restore block to mark from
        PUSH    ZEROCL		   Save end marker
 GCMA1  GETSIZ  BKDX,BK1CL	   Get size of block
-GCMA2  GETD    DESCL,BK1CL,BKDX    Get descriptor
+GCMA2  GETD    DESCL,BK1CL,BKDX	   Get descriptor
        TESTF   DESCL,PTR,GCMA3	   Is it a pointer?
        AEQLC   DESCL,0,,GCMA3	   Is address zero?
        TOP     TOPCL,OFSET,DESCL   Get to title of block pointed to
-       TESTFI  TOPCL,MARK,GCMA4    Is block marked?
+       TESTFI  TOPCL,MARK,GCMA4	   Is block marked?
 GCMA3  DECRA   BKDX,DESCR	   Decrement offset
        AEQLC   BKDX,0,GCMA2	   Check for end of block
        POP     BK1CL		   Restore block pushed
@@ -976,7 +986,7 @@ GCMA4  DECRA   BKDX,DESCR	   Decrement offset
        PUSH    BK1CL		   Save current block
 GCMA9  MOVD    BK1CL,TOPCL	   Set poiner to new block
        SETFI   BK1CL,MARK	   Mark block
-       TESTFI  BK1CL,STTL,GCMA1    Is it a string?
+       TESTFI  BK1CL,STTL,GCMA1	   Is it a string?
        MOVD    BKDX,TWOCL	   Set size of string to 2
        BRANCH  GCMA2		   Join processing
 *_
@@ -1038,9 +1048,9 @@ BINOP5 STREAM  XSP,TEXTSP,SBIPTB,BINCON				[PLB32]
 *      Statement Compilation
 *
 CMPILE PROC    ,		   Procedure to compile statement
-       SETAC   BRTYPE,0 	   Clear break indicator
+       SETAC   BRTYPE,0		   Clear break indicator
        MOVD    BOSCL,CMOFCL	   Set statement beginning offset
-       INCRA   CSTNCL,1 	   Increment statement number
+       INCRA   CSTNCL,1		   Increment statement number
        STREAM  XSP,TEXTSP,LBLTB,CERR1
 *				   Break out label
        LEQLC   XSP,0,,CMPILA	   Check for no label
@@ -1051,7 +1061,7 @@ CMPILE PROC    ,		   Procedure to compile statement
 *				   Add offset to base
        ACOMP   CMBSCL,OCLIM,,,CMPILO
 *				   Check for end of object code
-       RCALL   XCL,BLOCK,CODELT    Get block for more
+       RCALL   XCL,BLOCK,CODELT	   Get block for more
        PUTDC   CMBSCL,0,GOTGCL	   Replace BASE with direct goto
        PUTDC   CMBSCL,DESCR,LIT1CL				E3.7.1
        PUTDC   CMBSCL,2*DESCR,XCL  Aim at new block
@@ -1060,7 +1070,7 @@ CMPILE PROC    ,		   Procedure to compile statement
        DECRA   OCLIM,5*DESCR	   Leave safety factor
        PUTDC   CMBSCL,DESCR,BASECL Set BASE function in new region
        INCRA   CMBSCL,DESCR	   Increment base
-CMPILO SETAC   CMOFCL,0 	   Zero offset
+CMPILO SETAC   CMOFCL,0		   Zero offset
        SETAC   BOSCL,0		   Zero base offset
        RCALL   LPTR,GENVUP,XSPPTR  [PLB15,27] Get variable for label
        AEQLIC  LPTR,ATTRIB,0,,CMPILC
@@ -1090,17 +1100,17 @@ CMPSUB RCALL   SUBJND,ELEMNT,,(CDIAG,COMP3)
 	register char *cp;		/*			[PLB33] */
 	cp = S_SP(TEXTSP);		/*			[PLB33] */
 	if (*cp == '?' &&		/* is break char '?'	[PLB32] */
-            (S_L(TEXTSP) == 1 ||	/* yes; is last char?	[PLB32] */
-             cp[1] == ' ' || cp[1] == '\t')) { /* or next is white? [PLB33] */
-	    S_O(TEXTSP)++;		/* binary ? found. 	[PLB32] */
+	    (S_L(TEXTSP) == 1 ||	/* yes; is last char?	[PLB32] */
+	     cp[1] == ' ' || cp[1] == '\t')) { /* or next is white? [PLB33] */
+	    S_O(TEXTSP)++;		/* binary ? found.	[PLB32] */
 	    S_L(TEXTSP)--;		/* remove from TEXTSP	[PLB32] */
 	}				/*			[PLB32] */
 %}
-       BRANCH  CMPATN		   				[PLB32]
+       BRANCH  CMPATN						[PLB32]
 *_
 CMPSB1 AEQLC   BRTYPE,EQTYP,,CMPFRM				[PLB32]
 *				   Check for assignment
-       RCALL   ,TREPUB,(SUBJND)    Copy subject into object code
+       RCALL   ,TREPUB,(SUBJND)	   Copy subject into object code
        AEQLC   BRTYPE,CLNTYP,,CMPGO
 *				   Check for goto
        AEQLC   BRTYPE,EOSTYP,CERR5,CMPNGO
@@ -1120,7 +1130,7 @@ CMPAT2 RCALL   PATND,EXPR,,CDIAG   Compile pattern
        INCRA   CMOFCL,DESCR	   Increment offset
        PUTD    CMBSCL,CMOFCL,SCANCL
 *				   Insert SCAN function
-       RCALL   ,TREPUB,(SUBJND)    Copy subject into object code
+       RCALL   ,TREPUB,(SUBJND)	   Copy subject into object code
 CMPAT1 RCALL   ,TREPUB,(PATND)	   Copy pattern into object code [PLB32]
 CMPTGO AEQLC   BRTYPE,EOSTYP,,CMPNGO
 *				   Check for end of statement
@@ -1131,14 +1141,14 @@ CMPFRM RCALL   FORMND,EXPR,,CDIAG  Compile object
        INCRA   CMOFCL,DESCR	   Increment offset
        PUTD    CMBSCL,CMOFCL,ASGNCL
 *				   Insert ASGN function
-       RCALL   ,TREPUB,(SUBJND)    Copy subject into object code
+       RCALL   ,TREPUB,(SUBJND)	   Copy subject into object code
        BRANCH  CMPFT		   Join object publication
 *_
 CMPASP RCALL   FORMND,EXPR,,CDIAG  Compile object
        INCRA   CMOFCL,DESCR	   Increment offset
        PUTD    CMBSCL,CMOFCL,SJSRCL
 *				   Insert SJSR function
-       RCALL   ,TREPUB,(SUBJND)    Copy subject into object code
+       RCALL   ,TREPUB,(SUBJND)	   Copy subject into object code
        RCALL   ,TREPUB,(PATND)	   Copy pattern into object code
 CMPFT  RCALL   ,TREPUB,FORMND,CMPTGO
 *				   Copy object into object code
@@ -1169,7 +1179,7 @@ CMPUGO SETVA   CSTNCL,CMOFCL	   Set up offset for failure
        INCRA   CMOFCL,DESCR	   Increment offset
        PUTD    CMBSCL,CMOFCL,GOGOCL
 *				   Insert goto function
-       RCALL   ,TREPUB,(GOTOND)    Copy goto into object code
+       RCALL   ,TREPUB,(GOTOND)	   Copy goto into object code
        RCALL   ,FORWRD,,COMP3	   Get to next character
        AEQLC   BRTYPE,EOSTYP,CERR11,RTN3
 *				   Check for end of statement
@@ -1283,18 +1293,18 @@ CDIAG3 PUTLG   ERRSP,YCL	   Insert length
        AEQLC   BRTYPE,EOSTYP,,CDIAG2
 *				   Check for end of statement
        STPRNT  IOKEY,ERRBLK,LNBFSP Print statement to stderr	[PLB8]
-       AEQLC   LISTCL,0,,CDIAG2    Check for listing mode	[PLB8]
+       AEQLC   LISTCL,0,,CDIAG2	   Check for listing mode	[PLB8]
        STPRNT  IOKEY,OUTBLK,LNBFSP Print statement
 CDIAG2 STPRNT  IOKEY,ERRBLK,ERRSP  Print error marker to stderr	[PLB8]
-       AEQLC   LISTCL,0,,CDIAG4    Check for listing mode	[PLB8]
+       AEQLC   LISTCL,0,,CDIAG4	   Check for listing mode	[PLB8]
        STPRNT  IOKEY,OUTBLK,ERRSP  Print error marker
 CDIAG4 PUTLG   ERRSP,YCL	   Insert length in marker	[PLB8]
        APDSP   ERRSP,BLSP	   Blank out marker
        GETSPC  TSP,EMSGCL,0	   Get error message
-       SETLC   CERRSP,0 	   Clear specifier
+       SETLC   CERRSP,0		   Clear specifier
        APDSP   CERRSP,STARSP	   Append attention getter
        APDSP   CERRSP,TSP	   Append error message
-       AEQLC   LISTCL,0,,CDIAG1    Check for listing mode	[PLB8]
+       AEQLC   LISTCL,0,,CDIAG1	   Check for listing mode	[PLB8]
        STPRNT  IOKEY,OUTBLK,CERRSP Print error message
        STPRNT  IOKEY,OUTBLK,BLSP   Print blank line
 CDIAG1 STPRNT  IOKEY,ERRBLK,CERRSP Print error message to stderr [PLB8]
@@ -1330,7 +1340,7 @@ ELEMN9 SELBRA  STYPE,(,ELEILT,ELEVBL,ELENST,ELEFNC,ELEFLT,ELEARY)
 ELEMN5 RCALL   ELEXND,BLOCK,CNDSIZ Allocate block for tree node
        PUTDC   ELEXND,CODE,LITCL   Insert literal function
        RCALL   ELEYND,BLOCK,CNDSIZ Allocate block for tree node
-       PUTDC   ELEYND,CODE,XPTR    Insert literal value
+       PUTDC   ELEYND,CODE,XPTR	   Insert literal value
        ADDSON  ELEXND,ELEYND	   Add node as son
 ELEMN1 AEQLC   ELEMND,0,ELEMN6	   Check for empty tree
        MOVD    ZPTR,ELEXND	   Set up return
@@ -1340,7 +1350,7 @@ ELEMN6 ADDSON  ELEMND,ELEXND	   Add as son of present tree
 ELEMNR MOVD    ZPTR,ELEMND	   Move tree to return
 ELEMRR AEQLIC  ZPTR,FATHER,0,,ELEM10				[PLB32]
 *				   Is pointer at top of tree?
-       GETDC   ZPTR,ZPTR,FATHER    Move back to father
+       GETDC   ZPTR,ZPTR,FATHER	   Move back to father
        BRANCH  ELEMRR		   Continue up tree
 *_
 * [PLB32]
@@ -1352,11 +1362,11 @@ ELEMRR AEQLIC  ZPTR,FATHER,0,,ELEM10				[PLB32]
 * disqualifies the ELEMENT<> construction.
 *
 ELEM10 STREAM  XSP,TEXTSP,GOTSTB,RTZPTR,RTZPTR,			[PLB32]
-*                                  Examine next character	[PLB32]
+*				   Examine next character	[PLB32]
        AEQLC   STYPE,SGOTYP,,RTN1  Error if ELEMENT-PAREN	[PLB32]
-       MOVD    ELEMND,ZEROCL       Clear top of tree pointer	[PLB32]
-       MOVD    ELEXND,ZPTR         Existing tree becomes ITEM's 1st arg [PLB32]
-       BRANCH  ELEAR2              Build ITEM function		[PLB32]
+       MOVD    ELEMND,ZEROCL	   Clear top of tree pointer	[PLB32]
+       MOVD    ELEXND,ZPTR	   Existing tree becomes ITEM's 1st arg [PLB32]
+       BRANCH  ELEAR2		   Build ITEM function		[PLB32]
 *_
 ELEILT SPCINT  XPTR,XSP,ELEINT,ELEMN5
 *				   Convert string to integer
@@ -1365,9 +1375,9 @@ ELEFLT SPREAL  XPTR,XSP,ELEDEC,ELEMN5
 *				   Convert string to real
 *_
 ELEVBL RCALL   XPTR,GENVUP,(XSPPTR)
-*				   [PLB15,27] Generate variable
+*				   Generate variable		[PLB15,27]
        RCALL   ELEXND,BLOCK,CNDSIZ Allocate block for tree node
-       PUTDC   ELEXND,CODE,XPTR    Insert name
+       PUTDC   ELEXND,CODE,XPTR	   Insert name
        BRANCH  ELEMN1		   Join exit processing
 *_
 ELENST PUSH    ELEMND		   Save current tree
@@ -1384,12 +1394,12 @@ ELENST PUSH    ELEMND		   Save current tree
 *_
 ELEFNC SHORTN  XSP,1		   Delete open parenthesis
        RCALL   XPTR,GENVUP,(XSPPTR)
-*				   [PLB17,27]
 *				   Generate variable for function name
+*								[PLB17,27]
        RCALL   XCL,FINDEX,(XPTR)   Find function descriptor
        RCALL   ELEXND,BLOCK,CNDSIZ Allocate block for tree node
        PUTDC   ELEXND,CODE,XCL	   Insert function descriptor in node
-       AEQLC   ELEMND,0,,ELEMN7    Is tree empty?
+       AEQLC   ELEMND,0,,ELEMN7	   Is tree empty?
        ADDSON  ELEMND,ELEXND	   Add node as son to tree
 ELEMN7 PUSH    ELEXND		   Save current node
        RCALL   ELEXND,EXPR,,RTN1   Evaluate argument of function
@@ -1428,10 +1438,10 @@ ELEMN4 ACOMP   XCL,YCL,ELEMNR,ELEMNR
 *_
 ELEARY SHORTN  XSP,1		   Remove left bracket
        RCALL   XPTR,GENVUP,(XSPPTR)
-*				   [PLB17,27]
 *				   Generate variable for array or table
+*				   				[PLB17,27]
        RCALL   ELEXND,BLOCK,CNDSIZ Allocate block for tree node
-       PUTDC   ELEXND,CODE,XPTR    Insert ITEM function (?)
+       PUTDC   ELEXND,CODE,XPTR	   Insert ITEM function (?)
 ELEAR2 RCALL   ,ELEARG,ITEMCL,RTN1 Process list for ITEM function [PLB32]
        AEQLC   BRTYPE,RBTYP,ELECMA,ELEMNR			[PLB32]
 *				   list must end with right bracket [PLB32]
@@ -1449,20 +1459,20 @@ ELEAR2 RCALL   ,ELEARG,ITEMCL,RTN1 Process list for ITEM function [PLB32]
 * ELEMND = current node
 *
 ELEARG PROC    ,
-       POP     XCL                 Get function
+       POP     XCL		   Get function
        RCALL   XPTR,BLOCK,CNDSIZ,  Get function node
-       PUTDC   XPTR,CODE,XCL       Set function in it
-       AEQLC   ELEMND,0,,ELEMN8    Anything above
-       ADDSON  ELEMND,XPTR         Yes, make function node its son
-ELEMN8 ADDSON  XPTR,ELEXND         Make first arg function node's son
-       MOVD    ELEMND,ELEXND       Make first arg current node
-ELEAR1 PUSH    ELEMND              Save current
+       PUTDC   XPTR,CODE,XCL	   Set function in it
+       AEQLC   ELEMND,0,,ELEMN8	   Anything above
+       ADDSON  ELEMND,XPTR	   Yes, make function node its son
+ELEMN8 ADDSON  XPTR,ELEXND	   Make first arg function node's son
+       MOVD    ELEMND,ELEXND	   Make first arg current node
+ELEAR1 PUSH    ELEMND		   Save current
        RCALL   ELEXND,EXPR,,RTN1   Get next arg
-       POP     ELEMND              Restore current
-       ADDSIB  ELEMND,ELEXND       Make next arg current's sibling
-       MOVD    ELEMND,ELEXND       Next arg becomes current
+       POP     ELEMND		   Restore current
+       ADDSIB  ELEMND,ELEXND	   Make next arg current's sibling
+       MOVD    ELEMND,ELEXND	   Next arg becomes current
        AEQLC   BRTYPE,CMATYP,RTN2,ELEAR1
-*                                  Verify comma
+*				   Verify comma
 *_
 ELEICH SETAC   EMSGCL,ILCHAR	   'ILLEGAL CHARACTER IN ELEMENT'
        BRANCH  RTN1		   Error return
@@ -1488,7 +1498,7 @@ ELECMA SETAC   EMSGCL,ILLBRK	   'ILLEGAL BREAK CHARACTER'
 EXPR   PROC    ,		   Procedure to compile expression
        RCALL   EXELND,ELEMNT,,(RTN1,EXPNUL)
 *				   Compile element
-       SETAC   EXPRND,0 	   Zero expression tree
+       SETAC   EXPRND,0		   Zero expression tree
        BRANCH  EXPR2		   Join main processing
 *_
 EXPNUL RCALL   XPTR,NULNOD,,RTXNAM Return null string		[PLB32]
@@ -1503,13 +1513,13 @@ EXPR1  PROC    ,						[PLB32]
 * Here when right operand of binary operator was missing	[PLB32]
 EXPR12 AEQLC   SPITCL,0,,EXPERR	   Error if no SPITBOL ops	[PLB32]
        AEQLIC  EXOPND,CODE,BISRFN,,EXPR17			[PLB32]
-*      	       			   Was op Scan and Replace?	[PLB32]
+*				   Was op Scan and Replace?	[PLB32]
        AEQLIC  EXOPND,CODE,BIEQFN,EXPERR			[PLB32]
-*      	       			   No, Was op assignment?	[PLB32]
+*				   No, Was op assignment?	[PLB32]
 EXPR17 RCALL   EXELND,NULNOD,,EXPR13				[PLB32]
-*      	       			   Yes, default null string operand [PLB32]
+*				   Yes, default null string operand [PLB32]
 *_
-EXPR13 POP     EXPRND		   				[PLB32]
+EXPR13 POP     EXPRND						[PLB32]
        BRANCH  EXPR7						[PLB32]
 *_
 EXPERR SETAC   EMSGCL,ILLEOS	   'ILLEGAL END OF STATEMENT'
@@ -1521,24 +1531,24 @@ EXPR2  RCALL   EXOPCL,BINOP,,(RTN1,EXPR7)
        AEQL    EXOPCL,ASGNCL,EXPR14				[PLB32]
 * [PLB32] SPITBOL Assignment must be checked for previous SCAN operator;
 * If SCAN found, convert to SJSR
-       AEQLC   EXPRND,0,,EXPR14	   				[PLB32]
+       AEQLC   EXPRND,0,,EXPR14					[PLB32]
        MOVD    EXOPND,EXPRND					[PLB32]
 EXPR15 MOVD    EXEXND,EXOPND					[PLB32]
        AEQLIC  EXEXND,FATHER,0,,EXPR14				[PLB32]
-*                                  Does this node have a father? [PLB32]
+*				   Does this node have a father? [PLB32]
        GETDC   EXOPND,EXEXND,FATHER				[PLB32]
-*                                  Yes, get to it		[PLB32]
+*				   Yes, get to it		[PLB32]
        AEQLIC  EXOPND,CODE,BISNFN,EXPR15			[PLB32]
-*                                  Father SCAN?			[PLB32]
+*				   Father SCAN?			[PLB32]
        PUTAC   EXOPND,CODE,SJSRCL  Convert SCAN to SJSR		[PLB32]
-       ADDSIB  EXPRND,EXELND       Unload current node		[PLB32]
-       MOVD    EXPRND,EXELND       Move to middle sub-tree	[PLB32]
+       ADDSIB  EXPRND,EXELND	   Unload current node		[PLB32]
+       MOVD    EXPRND,EXELND	   Move to middle sub-tree	[PLB32]
 EXPR16 GETDC   EXOPND,EXPRND,FATHER				[PLB32]
-*                                  Ascend to top of tree	[PLB32]
+*				   Ascend to top of tree	[PLB32]
        AEQLIC  EXOPND,FATHER,0,,EXPR1				[PLB32]
-*                                  Process statement object	[PLB32]
-       MOVD    EXPRND,EXOPND       Keep going up		[PLB32]
-       BRANCH  EXPR16		   				[PLB32]
+*				   Process statement object	[PLB32]
+       MOVD    EXPRND,EXOPND	   Keep going up		[PLB32]
+       BRANCH  EXPR16						[PLB32]
 *_
 EXPR14 RCALL   EXOPND,BLOCK,CNDSIZ Allocate block for tree node	[PLB32]
        PUTDC   EXOPND,CODE,EXOPCL  Insert binary operator
@@ -1552,7 +1562,7 @@ EXPR3  GETDC   EXOPCL,EXOPCL,2*DESCR
        SETAV   EXOPCL,EXOPCL	   Get left precedence
        GETDC   EXEXND,EXPRND,FATHER
 *				   Get father of node
-       GETDC   XPTR,EXEXND,CODE    Get function descriptor
+       GETDC   XPTR,EXEXND,CODE	   Get function descriptor
        GETDC   XPTR,XPTR,2*DESCR   Get precedence descriptor
        ACOMP   XPTR,EXOPCL,EXPR4   Compare precedences
        ADDSIB  EXPRND,EXOPND	   Add node as sibling
@@ -1570,7 +1580,7 @@ EXPR5  AEQLIC  EXPRND,FATHER,0,,EXPR11
 *				   Check for root node
        GETDC   EXEXND,EXPRND,FATHER
 *				   Get father node
-       GETDC   XPTR,EXEXND,CODE    Get function descriptor
+       GETDC   XPTR,EXEXND,CODE	   Get function descriptor
        GETDC   XPTR,XPTR,2*DESCR   Get precedence descriptor
        ACOMP   XPTR,EXOPCL,EXPR5   Compare precedences
        INSERT  EXPRND,EXOPND	   Insert node above
@@ -1587,7 +1597,7 @@ EXPR10 ADDSIB  EXPRND,EXELND	   Add node as sibling
        MOVD    XPTR,EXPRND	   Set up for return
 EXPR9  AEQLIC  XPTR,FATHER,0,,RTXNAM
 *				   Check for root node
-       GETDC   XPTR,XPTR,FATHER    Go back to father
+       GETDC   XPTR,XPTR,FATHER	   Go back to father
        BRANCH  EXPR9		   Continue up tree
 *_
 * New [PLB32] from EXPNUL
@@ -1611,7 +1621,7 @@ FORJRN MOVD    BRTYPE,STYPE	   Set up break type
        BRANCH  RTN2		   Return
 *_
 FORRUN AEQLC   UNIT,0,,FOREOS	   Check for input stream
-       AEQLC   LISTCL,0,,FORRUR    Check listing switch
+       AEQLC   LISTCL,0,,FORRUR	   Check listing switch
        STPRNT  IOKEY,OUTBLK,LNBFSP Print card image
 FORRUR STREAD  INBFSP,UNIT,FORRUR,COMP5
 *				   Read new card iamge
@@ -1654,7 +1664,7 @@ CMTCLR SETLC   LNOSP,0		   Clear left specifier
        APDSP   RNOSP,BLNSP	   Blank right specifier
        BRANCH  RTN1
 *_
-CNTCRD FSHRTN  TEXTSP,1 	   Remove continue character
+CNTCRD FSHRTN  TEXTSP,1		   Remove continue character
        AEQLC   LISTCL,0,,RTN2	   Return if listing is off
        INTSPC  TSP,CSTNCL	   Get specifier for number
        AEQLC   LLIST,0,CARDLL	   Check for left listing
@@ -1666,7 +1676,7 @@ CARDLL SETLC   LNOSP,0		   Clear left specifier
        APDSP   LNOSP,TSP	   Set to statement number
        BRANCH  RTN2
 *_
-CTLCRD FSHRTN  TEXTSP,1 	   Delete control character
+CTLCRD FSHRTN  TEXTSP,1		   Delete control character
        STREAM  XSP,TEXTSP,FRWDTB,COMP3,CMTCRD
 *				   Get to next nonblank character
        AEQLC   STYPE,NBTYP,CMTCRD  Verify nonbreak
@@ -1675,12 +1685,12 @@ CTLCRD FSHRTN  TEXTSP,1 	   Delete control character
        XRAISP  XSP		   Raise before compare		[PLB15][PLB33]
        LEXCMP  XSP,UNLSP,CTLCR1,,CTLCR1				[PLB15][PLB33]
 *				   Is it UNLIST?
-       SETAC   LISTCL,0 	   Zero listing switch
+       SETAC   LISTCL,0		   Zero listing switch
        BRANCH  RTN1		   Return
 *_
 CTLCR1 LEXCMP  XSP,LISTSP,CTLCR3,,CTLCR3
 *				   Is it LIST?
-       SETAC   LISTCL,1 	   Turn on listing
+       SETAC   LISTCL,1		   Turn on listing
        STREAM  XSP,TEXTSP,FRWDTB,COMP3,CMTCLR
 *				   Get to next nonblank character
        AEQLC   STYPE,NBTYP,CMTCLR  Verify nonbreak
@@ -1697,7 +1707,7 @@ CTLCR2 SETAC   LLIST,0		   Zero left listing as default
 *_
 CTLCR3 LEXCMP  XSP,EJCTSP,CTLCR4,,CTLCR4			[PLB9]
 *				   Is it EJECT?
-       AEQLC   LISTCL,0,,CMTCLR    Skip eject if not listing
+       AEQLC   LISTCL,0,,CMTCLR	   Skip eject if not listing
        OUTPUT  OUTPUT,EJECTF	   Eject page
        BRANCH  CMTCLR		   Join terminal processing
 *_
@@ -1745,12 +1755,22 @@ CTLC10 LEXCMP  XSP,SPITSP,CTLC14,,CTLC14			[PLB32]
        STREAM  XSP,TEXTSP,INTGTB,CMTCLR,CTLC12			[PLB32]
        AEQLC   STYPE,ILITYP,CMTCLR				[PLB32]
 CTLC12 SPCINT  SPITCL,XSP					[PLB32]
-       BRANCH  CTLC13		   				[PLB32]
+       BRANCH  CTLC13						[PLB32]
 *_
-CTLC11 SETAC   SPITCL,0		   				[PLB32]
+CTLC11 SETAC   SPITCL,0						[PLB32]
 CTLC13 BRANCH  CMTCLR		   Processing for EXPCL here?	[PLB33]
 *_
-CTLC14 BRANCH  CMTCLR		   Add new ctl card check here	[PLB32]
+CTLC14 LEXCMP  XSP,EXECSP,CTLC15,,CTLC15			[PLB34]
+*				   Is it EXECUTE?		[PLB34]
+       SETAC   EXECCL,1		   Yes; enable program execution [PLB34]
+       BRANCH  CMTCLR		   Join terminal processing	[PLB9]
+*_
+CTLC15 LEXCMP  XSP,NEXESP,CTLC16,,CTLC16			[PLB34]
+*				   Is it NOEXECUTE?		[PLB34]
+       SETAC   EXECCL,0		   Yes; disable program execution [PLB34]
+       BRANCH  CMTCLR		   Join terminal processing	[PLB9]
+*_
+CTLC16 BRANCH  CMTCLR		   Add new ctl card check here	[PLB34]
 *_
 *---------------------------------------------------------------------*
 *
@@ -1772,7 +1792,7 @@ TREPU2 AEQLIC  YPTR,RSIB,0,,TREPU3 Is there a right sibling?
        BRANCH  TREPU1		   Continue
 *_
 TREPU3 AEQLIC  YPTR,FATHER,0,,RTN1 Is there a father?
-       GETDC   YPTR,YPTR,FATHER    Get father
+       GETDC   YPTR,YPTR,FATHER	   Get father
        BRANCH  TREPU2		   Continue
 *_
 TREPU5 SUM     ZPTR,CMOFCL,CODELT  Compute additional to get
@@ -1846,7 +1866,7 @@ GOTLV  ACOMPC  TRAPCL,0,,GOTLV1,GOTLV1
        RCALL   ,TRPHND,ATPTR					E3.3.1
 *				   Perform trace
        POP     XPTR		   Restore variable
-GOTLV1 DEQL    XPTR,RETCL,GOTL1    Compare with RETURN
+GOTLV1 DEQL    XPTR,RETCL,GOTL1	   Compare with RETURN
        RRTURN  ,6		   Return by value
 *_
 GOTL1  DEQL    XPTR,FRETCL,GOTL2   Compare with FRETURN
@@ -1880,13 +1900,13 @@ GOTO   PROC    ,		   Interpreter goto procedure
 INIT   PROC    ,		   Statement initialization procedure
        MOVD    LSTNCL,STNOCL	   Update &LASTNO
        INCRA   OCICL,DESCR	   Increment offset
-       GETD    XCL,OCBSCL,OCICL    Get statement data
+       GETD    XCL,OCBSCL,OCICL	   Get statement data
        MOVA    STNOCL,XCL	   Update &STNO
        SETAV   FRTNCL,XCL	   Set up failure offset
        ACOMPC  EXLMCL,0,,,INIT1	   Check for &STLIMIT < 0	[PLB33]
        ACOMP   EXNOCL,EXLMCL,EXEX,EXEX
 *				   Check &STLIMIT
-INIT1  INCRA   EXNOCL,1 	   Increment &STCOUNT		[PLB33]
+INIT1  INCRA   EXNOCL,1		   Increment &STCOUNT		[PLB33]
        ACOMPC  TRAPCL,0,,RTNUL3,RTNUL3
 *				   Check &TRACE
        LOCAPT  ATPTR,TKEYL,STCTKY,RTNUL3
@@ -2007,10 +2027,10 @@ EVAL   PROC    EXPVAL		   EVAL(X)
        VEQLC   XPTR,I,,RTXPTR	   INTEGER is idempotent
        VEQLC   XPTR,R,,RTXPTR	   REAL is idempotent
        VEQLC   XPTR,S,INTR1	   Is it STRING?
-       LOCSP   XSP,XPTR 	   Get specifier
+       LOCSP   XSP,XPTR		   Get specifier
        LEQLC   XSP,0,,RTXPTR					E3.1.4
-       SPCINT  XPTR,XSP,,RTXPTR    Convert to INTEGER
-       SPREAL  XPTR,XSP,,RTXPTR    Convert to REAL
+       SPCINT  XPTR,XSP,,RTXPTR	   Convert to INTEGER
+       SPREAL  XPTR,XSP,,RTXPTR	   Convert to REAL
        MOVD    ZPTR,XPTR	   Set up to convert to EXPRESSION
        RCALL   XPTR,CONVE,,(FAIL,INTR10)
 *				   Convert to EXPRESSION
@@ -2031,7 +2051,7 @@ INTV1  AEQLC   INSW,0,,INTV3	   Check &INPUT
        GETDC   ZPTR,ZPTR,DESCR	   Get association
        RCALL   XPTR,PUTIN,(ZPTR,XPTR),FAIL
 *				   Perform input
-INTV   LOCSP   XSP,XPTR 	   Get specifier for string
+INTV   LOCSP   XSP,XPTR		   Get specifier for string
        SPCINT  XPTR,XSP,INTR1,RTXNAM
 *				   Convert to integer
 *_
@@ -2071,7 +2091,7 @@ PATV3  VEQLC   XPTR,P,,RTXNAM	   Is it PATTERN?
        MOVD    XPTR,TPTR	   Set up value
        BRANCH  RTXNAM		   Return
 *_
-PATVR  REALST  XSP,XPTR 	   Convert REAL to STRING
+PATVR  REALST  XSP,XPTR		   Convert REAL to STRING
        RCALL   XPTR,GENVAR,XSPPTR,RTXNAM
 *				   Generate variable
 *_
@@ -2112,7 +2132,7 @@ VARVC  RCALL   XPTR,INVOKE,(XPTR),(FAIL,VARV1,VARV2)
 VARVUP PROC    VARVAL
        RCALL   ,VARVAL,,FAIL	   Get string ptr to XPTR
        AEQLC   CASECL,0,VPXPTR,RTXNAM
-*				   [PLB30] Return name
+*				   Return name			[PLB30]
 *_
 *
 * New [PLB29]
@@ -2234,18 +2254,18 @@ ARITH  PUSH    SCL		   Save procedure switch
 *_
 ARTHII SELBRA  SCL,(AD,DV,EX,MP,SB,CEQ,CGE,CGT,CLE,CLT,CNE,RM)
 *_
-ARTHVI LOCSP   XSP,XPTR 	   Get specifier
-       SPCINT  XPTR,XSP,,ARTHII    Convert string to integer
+ARTHVI LOCSP   XSP,XPTR		   Get specifier
+       SPCINT  XPTR,XSP,,ARTHII	   Convert string to integer
        SPREAL  XPTR,XSP,INTR1,ARTHRI
 *				   Convert to real if possible
 *_
-ARTHIV LOCSP   YSP,YPTR 	   Get specifier
-       SPCINT  YPTR,YSP,,ARTHII    Convert string to integer
+ARTHIV LOCSP   YSP,YPTR		   Get specifier
+       SPCINT  YPTR,YSP,,ARTHII	   Convert string to integer
        SPREAL  YPTR,YSP,INTR1,ARTHIR
 *				   Convert to real if possible
 *_
-ARTHVV LOCSP   XSP,XPTR 	   Get specifier
-       SPCINT  XPTR,XSP,,ARTHIV    Convert string to integer
+ARTHVV LOCSP   XSP,XPTR		   Get specifier
+       SPCINT  XPTR,XSP,,ARTHIV	   Convert string to integer
        SPREAL  XPTR,XSP,INTR1,ARTHRV
 *				   Convert to real if possible
 *_
@@ -2257,13 +2277,13 @@ ARTHIR INTRL   XPTR,XPTR	   Convert integer to real
 ARTHRI INTRL   YPTR,YPTR	   Convert integer to real
        BRANCH  ARTHRR
 *_
-ARTHVR LOCSP   XSP,XPTR 	   Get spedifier
-       SPCINT  XPTR,XSP,,ARTHIR    Convert string to integer
+ARTHVR LOCSP   XSP,XPTR		   Get spedifier
+       SPCINT  XPTR,XSP,,ARTHIR	   Convert string to integer
        SPREAL  XPTR,XSP,INTR1,ARTHRR
 *				   Convert to real if possible
 *_
 ARTHRV LOCSP   YSP,YPTR
-       SPCINT  YPTR,YSP,,ARTHRI    Convert string to integer
+       SPCINT  YPTR,YSP,,ARTHRI	   Convert string to integer
        SPREAL  YPTR,YSP,INTR1,ARTHRR
 *				   Convert to real if possible
 *_
@@ -2325,7 +2345,7 @@ INTGER PROC    ,		   INTEGER(X)
        RCALL   XPTR,ARGVAL,,FAIL   Get argument
        VEQLC   XPTR,I,,RETNUL	   INTEGER succeeds
        VEQLC   XPTR,S,FAIL	   STRING must be checked
-       LOCSP   XSP,XPTR 	   Get specifier
+       LOCSP   XSP,XPTR		   Get specifier
        SPCINT  XPTR,XSP,FAIL,RETNUL
 *				   Try conversion to INTEGER
 *_
@@ -2342,7 +2362,7 @@ MNS    PROC    ,		   -X
 MNSM   MNSINT  ZPTR,XPTR,AERROR,ARTN
 *				   Form negative of integer
 *_
-MNSV   LOCSP   XSP,XPTR 	   Get specifier for string
+MNSV   LOCSP   XSP,XPTR		   Get specifier for string
        SPCINT  XPTR,XSP,,MNSM	   Convert to INTEGER
        SPREAL  XPTR,XSP,INTR1	   Convert to REAL
 MNSR   MNREAL  ZPTR,XPTR	   Form negative of real
@@ -2358,7 +2378,7 @@ PLS    PROC    ,		   +X
        VEQLC   ZPTR,S,,PLSV	   Is it STRING?
        VEQLC   ZPTR,R,INTR1,ARTN   Is it REAL?
 *_
-PLSV   LOCSP   XSP,ZPTR 	   Get specifier
+PLSV   LOCSP   XSP,ZPTR		   Get specifier
        SPCINT  ZPTR,XSP,,ARTN	   Convert STRING to INTEGER
        SPREAL  ZPTR,XSP,INTR1,ARTN Convert STRING to REAL
 *_
@@ -2421,11 +2441,11 @@ LPRTND RCALL   XPTR,ARGVAL,,FAIL   Evaluate argument
        VEQLC   XPTR,I,,LPRTNI	   If INTEGER check for LEN
        VEQLC   XPTR,E,,PATNOD	   EXPRESSION is acceptable
        VEQLC   XPTR,S,INTR1	   STRING must be converted to INTEGER
-       LOCSP   ZSP,XPTR 	   Get specifier
+       LOCSP   ZSP,XPTR		   Get specifier
        SPCINT  XPTR,ZSP,INTR1	   Convert to INTEGER
 LPRTNI ACOMPC  XPTR,0,,,LENERR					E3.6.1
        DEQL    YCL,LNTHCL,PATNOD				E3.6.1
-       MOVA    ZCL,XPTR 	   If so, use value of integer
+       MOVA    ZCL,XPTR		   If so, use value of integer
        BRANCH  PATNOD		   Go form pattern
 *_
 *---------------------------------------------------------------------*
@@ -2436,12 +2456,12 @@ ARBNO  PROC    ,		   ARBNO(P)
        RCALL   XPTR,PATVAL,,FAIL   Evaluate argument as pattern
        VEQLC   XPTR,P,,ARBP	   PATTERN is desired form
        VEQLC   XPTR,S,INTR1	   STRING must be made into PATTERN
-       LOCSP   TSP,XPTR 	   Get specifier
+       LOCSP   TSP,XPTR		   Get specifier
        GETLG   TMVAL,TSP	   Get length of string
        RCALL   TPTR,BLOCK,LNODSZ   Allocate block for argument
        MAKNOD  XPTR,TPTR,TMVAL,ZEROCL,CHRCL,XPTR
 ARBP   GETSIZ  XSIZ,XPTR	   Get size of pattern
-       SUM     TSIZ,XSIZ,ARBSIZ    Add additional space for ARBNO node
+       SUM     TSIZ,XSIZ,ARBSIZ	   Add additional space for ARBNO node
        SETVC   TSIZ,P		   Insert PATTERN data type
        RCALL   TPTR,BLOCK,TSIZ	   Allocate block for pattern
        MOVD    ZPTR,TPTR	   Save pointer to return
@@ -2493,7 +2513,7 @@ NAMC2  PUSH    XPTR		   Save first argument
 NAM4   POP     XPTR		   Restore first argument
        BRANCH  NAM3		   Join processing
 *_
-NAMV   LOCSP   TSP,XPTR 	   Get specifier
+NAMV   LOCSP   TSP,XPTR		   Get specifier
        GETLG   TMVAL,TSP	   Get length
        RCALL   TPTR,BLOCK,LNODSZ   Allocate block for pattern
        MAKNOD  XPTR,TPTR,TMVAL,ZEROCL,CHRCL,XPTR
@@ -2506,7 +2526,7 @@ NAMP   RCALL   TPTR,BLOCK,SNODSZ   Allocate block for pattern
        MAKNOD  YPTR,TPTR,ZEROCL,ZEROCL,TVAL,YPTR
 *				   Make pattern for backup
        GETSIZ  XSIZ,XPTR	   Get size of first pattern
-       SUM     YSIZ,XSIZ,NODSIZ    Compute total size
+       SUM     YSIZ,XSIZ,NODSIZ	   Compute total size
        GETSIZ  TSIZ,YPTR	   Get size of naming node
        SUM     ZSIZ,YSIZ,TSIZ	   Compute total
        SETVC   ZSIZ,P		   Insert PATTERN data type
@@ -2530,18 +2550,18 @@ OR     PROC    ,		   X | Y
        POP     XPTR		   Restore first argument
        SETAV   DTCL,XPTR	   Get first data type
        MOVV    DTCL,YPTR	   Insert second data type
-       DEQL    DTCL,VVDTP,,ORVV    Is it STRING-STRING?
-       DEQL    DTCL,VPDTP,,ORVP    Is it STRING-PATTERN?
-       DEQL    DTCL,PVDTP,,ORPV    Is it PATTERN-STRING?
+       DEQL    DTCL,VVDTP,,ORVV	   Is it STRING-STRING?
+       DEQL    DTCL,VPDTP,,ORVP	   Is it STRING-PATTERN?
+       DEQL    DTCL,PVDTP,,ORPV	   Is it PATTERN-STRING?
        DEQL    DTCL,PPDTP,INTR1,ORPP
 *				   Is it PATTERN_PATTERN?
 *_
-ORVV   LOCSP   XSP,XPTR 	   Get specifier
+ORVV   LOCSP   XSP,XPTR		   Get specifier
        GETLG   TMVAL,XSP	   Get length
        RCALL   TPTR,BLOCK,LNODSZ   Get block for pattern
        MAKNOD  XPTR,TPTR,TMVAL,ZEROCL,CHRCL,XPTR
 *				   Construct pattern
-ORPV   LOCSP   YSP,YPTR 	   Get specifier
+ORPV   LOCSP   YSP,YPTR		   Get specifier
        GETLG   TMVAL,YSP	   Get length
        RCALL   TPTR,BLOCK,LNODSZ   Get block for pattern
        MAKNOD  YPTR,TPTR,TMVAL,ZEROCL,CHRCL,YPTR
@@ -2559,7 +2579,7 @@ ORPP   GETSIZ  XSIZ,XPTR	   Get size of first pattern
        LINKOR  ZPTR,XSIZ	   Link alternatives
        BRANCH  RTZPTR		   Return pattern as value
 *_
-ORVP   LOCSP   XSP,XPTR 	   Get specifier
+ORVP   LOCSP   XSP,XPTR		   Get specifier
        GETLG   TMVAL,XSP	   Get length
        RCALL   TPTR,BLOCK,LNODSZ   Get block for pattern
        MAKNOD  XPTR,TPTR,TMVAL,ZEROCL,CHRCL,XPTR
@@ -2587,35 +2607,35 @@ SCAN   PROC    ,		   Pattern Matching
        DEQL    DTCL,IPDTP,INTR1,SCANIP
 *				   Is it INTEGER-PATTERN?
 *_
-SCANVV LOCSP   XSP,XPTR 	   Get specifier for subject
-       LOCSP   YSP,YPTR 	   Get specifier for pattern
-SCANVB SUBSP   TSP,YSP,XSP,FAIL    Get part to compare
+SCANVV LOCSP   XSP,XPTR		   Get specifier for subject
+       LOCSP   YSP,YPTR		   Get specifier for pattern
+SCANVB SUBSP   TSP,YSP,XSP,FAIL	   Get part to compare
        LEXCMP  TSP,YSP,,RTYPTR	   Compare strings		[PLB32]
        AEQLC   ANCCL,0,FAIL	   Check &ANCHOR
        FSHRTN  XSP,1		   Delete lead character
        BRANCH  SCANVB		   Try again
 *_
-SCANIV RCALL   XPTR,GNVARI,XPTR    Generate variable for integer
+SCANIV RCALL   XPTR,GNVARI,XPTR	   Generate variable for integer
        BRANCH  SCANVV		   Join processing
 *_
-SCANVP LOCSP   XSP,XPTR 	   Get specifier for subject
+SCANVP LOCSP   XSP,XPTR		   Get specifier for subject
        RCALL   ,SCNR,,(FAIL,,FAIL) Call scanner
        RCALL   ,NMD,,(FAIL)	   Perform naming		[PLB32]
        LCOMP   TXSP,HEADSP,SCANV1,SCANV1			[PLB32]
-*      	       			   Allow for negatives		[PLB32]
+*				   Allow for negatives		[PLB32]
        REMSP   XSP,HEADSP,TXSP	   Head is larger than match	[PLB32]
-       BRANCH  SCANV2		   				[PLB32]
+       BRANCH  SCANV2						[PLB32]
 *_
 SCANV1 REMSP   XSP,TXSP,HEADSP	   Get matching substring	[PLB32]
 SCANV2 RCALL   YPTR,GENVAR,XSPPTR,RTYPTR			[PLB32]
 *_
-SCANIP RCALL   XPTR,GNVARI,XPTR    Generate variable for integer
+SCANIP RCALL   XPTR,GNVARI,XPTR	   Generate variable for integer
        BRANCH  SCANVP		   Join processing
 *_
-SCANRV REALST  XSP,XPTR 	   Convert REAL to STRING
+SCANRV REALST  XSP,XPTR		   Convert REAL to STRING
        RCALL   XPTR,GENVAR,XSPPTR,SCANVV
 *_
-SCANRP REALST  XSP,XPTR 	   Convert REAL to STRING
+SCANRP REALST  XSP,XPTR		   Convert REAL to STRING
        RCALL   XPTR,GENVAR,XSPPTR,SCANVP
 *				   Generate variable
 *_
@@ -2627,7 +2647,7 @@ SCANRP REALST  XSP,XPTR 	   Convert REAL to STRING
 SJSR   PROC    ,		   Pattern matching with replacement
        INCRA   OCICL,DESCR	   Increment offset
        GETD    WPTR,OCBSCL,OCICL   Get object code descriptor
-       TESTF   WPTR,FNC,,SJSRC1    Check for function
+       TESTF   WPTR,FNC,,SJSRC1	   Check for function
 SJSR1  AEQLC   INSW,0,,SJSR1A	   Check &INPUT
        LOCAPV  ZPTR,INATL,WPTR,SJSR1A
 *				   Look of input association
@@ -2652,23 +2672,23 @@ SJSR1B PUSH    (WPTR,XPTR)	   Save name and value
 SJSRC1 RCALL   WPTR,INVOKE,(WPTR),(FAIL,SJSR1,NEMO)
 *				   Evaluate subject
 *_
-SJSSVP LOCSP   XSP,XPTR 	   Get specifier
+SJSSVP LOCSP   XSP,XPTR		   Get specifier
        RCALL   ,SCNR,,(FAIL,,FAIL) Call scanner
-       SETAC   NAMGCL,1 	   Set naming switch
+       SETAC   NAMGCL,1		   Set naming switch
        REMSP   TAILSP,XSP,TXSP	   Get tail of subject
        BRANCH  SJSS1		   Join common processing
 *_
-SJSSIP RCALL   XPTR,GNVARI,XPTR    Generate STRING from INTEGER
+SJSSIP RCALL   XPTR,GNVARI,XPTR	   Generate STRING from INTEGER
        BRANCH  SJSSVP		   Join common processing
 *_
-SJSSIV RCALL   XPTR,GNVARI,XPTR    Generate STRING from INTEGER
+SJSSIV RCALL   XPTR,GNVARI,XPTR	   Generate STRING from INTEGER
        BRANCH  SJSSVV		   Join common processing
 *_
-SJSSRV REALST  XSP,XPTR 	   Convert REAL to STRING
+SJSSRV REALST  XSP,XPTR		   Convert REAL to STRING
        RCALL   XPTR,GENVAR,XSPPTR,SJSSVV
 *				   Generate variable
 *_
-SJSSRP REALST  XSP,XPTR 	   Convert REAL to STRING
+SJSSRP REALST  XSP,XPTR		   Convert REAL to STRING
        RCALL   XPTR,GENVAR,XSPPTR,SJSSVP
 *				   Generate variable
 *_
@@ -2677,23 +2697,23 @@ SJVVON AEQLC   ANCCL,0,FAIL	   Check &ANCHOR
        FSHRTN  XSP,1		   Delete head character
        BRANCH  SJSSV2		   Join common processing
 *_
-SJSSVV LOCSP   XSP,XPTR 	   Get specifier for subject
-       LOCSP   YSP,YPTR 	   Get specifier for pattern
+SJSSVV LOCSP   XSP,XPTR		   Get specifier for subject
+       LOCSP   YSP,YPTR		   Get specifier for pattern
        SETSP   HEADSP,XSP	   Set up head specifier
-       SETLC   HEADSP,0 	   Initialize zero length
-SJSSV2 SUBSP   TSP,YSP,XSP,FAIL    Get common length
+       SETLC   HEADSP,0		   Initialize zero length
+SJSSV2 SUBSP   TSP,YSP,XSP,FAIL	   Get common length
        LEXCMP  TSP,YSP,SJVVON,,SJVVON
 *				   Compare strings
-       SETAC   NAMGCL,0 	   Clear naming switch
+       SETAC   NAMGCL,0		   Clear naming switch
        REMSP   TAILSP,XSP,TSP	   Get tail of subject
 SJSS1  SPUSH   (TAILSP,HEADSP)	   Save head and tail
-       AEQLC   NAMGCL,0,,SJSS1A    Check naming switch
+       AEQLC   NAMGCL,0,,SJSS1A	   Check naming switch
        RCALL   ,NMD,,FAIL	   Perform naming
 SJSS1A RCALL   ZPTR,ARGVAL,,FAIL   Get object
        SPOP    (HEADSP,TAILSP)	   Restore head and tail
        POP     WPTR		   Restore name of subject
        LEQLC   HEADSP,0,SJSSDT	   Check for null head
-       LEQLC   TAILSP,0,,SJSRV1    Check for null tail
+       LEQLC   TAILSP,0,,SJSRV1	   Check for null tail
 SJSSDT VEQLC   ZPTR,S,,SJSRV	   Is object STRING?
        VEQLC   ZPTR,P,,SJSRP	   Is object PATTERN?
        VEQLC   ZPTR,I,,SJSRI	   Is object INTEGER?
@@ -2740,17 +2760,17 @@ SJSRP  SETSP   XSP,HEADSP	   Copy specifier
 SJSRV  LOCSP   ZSP,ZPTR
 SJSRS  GETLG   XPTR,TAILSP	   Get length of tail
        GETLG   YPTR,HEADSP	   Get length of tail
-       GETLG   ZPTR,ZSP 	   Get length of object
+       GETLG   ZPTR,ZSP		   Get length of object
        SUM     XPTR,XPTR,YPTR	   Compute total length
        SUM     XPTR,XPTR,ZPTR
        ACOMP   XPTR,MLENCL,INTR8   Check &MAXLNGTH
        RCALL   ZPTR,CONVAR,(XPTR)  Allocate storage for string
-       LOCSP   TSP,ZPTR 	   Get specifier
+       LOCSP   TSP,ZPTR		   Get specifier
        SETLC   TSP,0		   Clear length
        APDSP   TSP,HEADSP	   Append head
        APDSP   TSP,ZSP		   Append object
        APDSP   TSP,TAILSP	   Append tail
-       RCALL   ZPTR,GNVARS,XPTR    Enter string into storage
+       RCALL   ZPTR,GNVARS,XPTR	   Enter string into storage
 SJSRV1 PUTDC   WPTR,DESCR,ZPTR	   Assign value to subject name
        AEQLC   OUTSW,0,,SJSRV2	   Check &OUTPUT
        LOCAPV  YPTR,OUTATL,WPTR,SJSRV2
@@ -2758,16 +2778,16 @@ SJSRV1 PUTDC   WPTR,DESCR,ZPTR	   Assign value to subject name
        GETDC   YPTR,YPTR,DESCR	   Get output association
        RCALL   ,PUTOUT,(YPTR,ZPTR) Perform output
 SJSRV2 ACOMPC  TRAPCL,0,,RTZPTR,RTZPTR				[PLB32]
-*      	       			   Check &TRACE
+*				   Check &TRACE
        LOCAPT  ATPTR,TVALL,WPTR,RTZPTR				[PLB32]
 *				   Look for VALUE trace
        RCALL   ,TRPHND,ATPTR,RTZPTR				E3.3.1 [PLB32]
 *				   Perform trace
 *_
-SJSRI  INTSPC  ZSP,ZPTR 	   Convert INTEGER
+SJSRI  INTSPC  ZSP,ZPTR		   Convert INTEGER
        BRANCH  SJSRS
 *_
-SJSRR  REALST  ZSP,ZPTR 	   Convert REAL
+SJSRR  REALST  ZSP,ZPTR		   Convert REAL
        BRANCH  SJSRS
 *_
 *---------------------------------------------------------------------*
@@ -2778,8 +2798,8 @@ SCNR   PROC    ,		   Scanning procedure
        GETLG   MAXLEN,XSP	   Get maximum length
        LVALUE  YSIZ,YPTR	   Get least value
        AEQLC   FULLCL,0,SCNR1	   Check &FULLSCAN
-       ACOMP   YSIZ,MAXLEN,FAIL    CHeck maximum against minimum
-SCNR1  SETSP   TXSP,XSP 	   Set up working specifier for head
+       ACOMP   YSIZ,MAXLEN,FAIL	   CHeck maximum against minimum
+SCNR1  SETSP   TXSP,XSP		   Set up working specifier for head
        SETLC   TXSP,0		   Zero length
        MOVD    PDLPTR,PDLHED	   Initialize history list
        MOVD    NAMICL,NHEDCL	   Initialize name list
@@ -2788,14 +2808,14 @@ SCNR1  SETSP   TXSP,XSP 	   Set up working specifier for head
        MOVD    YSIZ,MAXLEN	   Set up length
        BRANCH  SCNR5		   Join processing
 *_
-SCNR4  SUBTRT  YSIZ,MAXLEN,YSIZ    Get difference of lengths
-SCNR5  SUM     YSIZ,YSIZ,CHARCL    Add one
+SCNR4  SUBTRT  YSIZ,MAXLEN,YSIZ	   Get difference of lengths
+SCNR5  SUM     YSIZ,YSIZ,CHARCL	   Add one
 SCNR2  PUSH    (YPTR,YSIZ)	   Save pattern and length
        SETSP   HEADSP,TXSP	   Set up head specifier
        INCRA   PDLPTR,3*DESCR	   Make room for history entry
        ACOMP   PDLPTR,PDLEND,INTR31
 *				   Check for overflow
-       SETAC   LENFCL,1 	   Set length failure
+       SETAC   LENFCL,1		   Set length failure
        PUTDC   PDLPTR,DESCR,SCONCL Insert scan function
        GETLG   TMVAL,TXSP	   Get cursor position
        PUTDC   PDLPTR,2*DESCR,TMVAL
@@ -2807,7 +2827,7 @@ SCNR2  PUSH    (YPTR,YSIZ)	   Save pattern and length
 SCNR3  INCRA   PDLPTR,3*DESCR	   Make room for history entry
        ACOMP   PDLPTR,PDLEND,INTR31
 *				   Check for overflow
-       SETLC   HEADSP,0 	   Zero length of head
+       SETLC   HEADSP,0		   Zero length of head
        PUTDC   PDLPTR,DESCR,SCFLCL Insert scan failure function
        GETLG   TMVAL,TXSP	   Get cursor position
        PUTDC   PDLPTR,2*DESCR,TMVAL
@@ -2818,8 +2838,8 @@ SCNR3  INCRA   PDLPTR,3*DESCR	   Make room for history entry
 *_
 SCIN   PROC    SCNR
 SCIN1  MOVD    PATBCL,YPTR	   Set up pattern base pointer
-       SETAC   PATICL,0 	   Zero offset
-SCIN2  SETAC   LENFCL,1 	   Set length failure
+       SETAC   PATICL,0		   Zero offset
+SCIN2  SETAC   LENFCL,1		   Set length failure
 SCIN3  INCRA   PATICL,DESCR	   Increment offset
        GETD    ZCL,PATBCL,PATICL   Get function descriptor
        INCRA   PATICL,DESCR	   Increment offset
@@ -2829,7 +2849,7 @@ SCIN3  INCRA   PATICL,DESCR	   Increment offset
        INCRA   PDLPTR,3*DESCR	   Make room for history entry
        ACOMP   PDLPTR,PDLEND,INTR31
 *				   Check for overflow
-       PUTDC   PDLPTR,DESCR,XCL    Insert then-or descriptor
+       PUTDC   PDLPTR,DESCR,XCL	   Insert then-or descriptor
        GETLG   TMVAL,TXSP	   Get cursor position
        MOVV    TMVAL,YCL	   Insert residual
        PUTDC   PDLPTR,2*DESCR,TMVAL
@@ -2842,20 +2862,20 @@ SCIN3  INCRA   PATICL,DESCR	   Increment offset
 SCIN4  BRANIC  ZCL,0		   Branch to procedure
 *_
 SALF   PROC    SCNR		   Nonlength failure procedure
-SALF1  SETAC   LENFCL,0 	   Clear length failure
+SALF1  SETAC   LENFCL,0		   Clear length failure
        BRANCH  SALT2		   Join common processing
 *_
 SALT   PROC    SCNR		   Length failure procedure
 SALT1  GETDC   LENFCL,PDLPTR,3*DESCR
 *				   Get length failure from history
-SALT2  GETDC   XCL,PDLPTR,DESCR    Get then-or descriptor
+SALT2  GETDC   XCL,PDLPTR,DESCR	   Get then-or descriptor
        GETDC   YCL,PDLPTR,2*DESCR  Get value-residual
        DECRA   PDLPTR,3*DESCR	   Back over history entry
        MOVD    PATICL,XCL	   Set offset to OR link
        AEQLC   PATICL,0,,SALT3	   Check for none
-       PUTLG   TXSP,YCL 	   Insert old length of head
-       TESTF   PATICL,FNC,SCIN3    Check for function
-       BRANIC  PATICL,0 	   Branch to procedure
+       PUTLG   TXSP,YCL		   Insert old length of head
+       TESTF   PATICL,FNC,SCIN3	   Check for function
+       BRANIC  PATICL,0		   Branch to procedure
 *_
 SALT3  AEQLC   LENFCL,0,SALT1	   Check length failure
        BRANCH  SALF1		   Go to nonlength failure
@@ -2902,7 +2922,7 @@ ABNSV  POP     SCL		   Restore procedure switch
        AEQLC   XPTR,0,,SCNAME					E3.5.5
        SELBRA  SCL,(,BRKV,NNYV,SPNV,BRKV)			[PLB31]
 *				   Select processor
-ANYV   DEQL    XPTR,TBLCS,ANYC2    Was last argument the same?
+ANYV   DEQL    XPTR,TBLCS,ANYC2	   Was last argument the same?
        AEQL    TBLFNC,ANYCCL,,ANYC3
 *				   If so, was last procedure for ANY(S)
 ANYC2  CLERTB  SNABTB,ERROR	   If not, clear stream table
@@ -2913,62 +2933,62 @@ ANYC2  CLERTB  SNABTB,ERROR	   If not, clear stream table
 ANYC3  SETSP   VSP,XSP		   Set up working specifier
        AEQLC   FULLCL,0,ANYC4	   Leave length alone in FULLSCAN mode
        PUTLG   VSP,MAXLEN	   Else insert maximum length
-       LCOMP   VSP,TXSP,,,TSALT    Length failure if too short
+       LCOMP   VSP,TXSP,,,TSALT	   Length failure if too short
        CHKVAL  MAXLEN,ZEROCL,XSP,,ANYC4,ANYC4			E3.5.7
        ADDLG   VSP,ONECL					E3.5.7
 ANYC4  REMSP   YSP,VSP,TXSP	   Get specifier to unscanned portion
        STREAM  ZSP,YSP,SNABTB,TSALF,TSALT
-       GETLG   XPTR,ZSP 	   Get length accepted
+       GETLG   XPTR,ZSP		   Get length accepted
        ADDLG   TXSP,XPTR	   Add to length matched
        AEQLC   SCL,5,SCOK,	   Done if BRKC call			[PLB31]
-*                                  Success on BREAKX			[PLB31]
+*				   Success on BREAKX			[PLB31]
        INCRA   PDLPTR,3*DESCR	   Make room for history entry		[PLB31]
        ACOMP   PDLPTR,PDLEND,INTR31					[PLB31]
 *				   Check for overflow			[PLB31]
        PUTDC   PDLPTR,DESCR,ZEROCL Should never take alternative	[PLB31]
        PUTDC   PDLPTR,2*DESCR,PATICL					[PLB31]
-*                                  Save pattern position of BREAKX 	[PLB31]
+*				   Save pattern position of BREAKX	[PLB31]
        PUTDC   PDLPTR,3*DESCR,LENFCL					[PLB31]
-       GETLG   TVAL,TXSP           Get cursor position			[PLB31]
-       MOVA    TMVAL,TVAL          for history list to lock		[PLB31]
+       GETLG   TVAL,TXSP	   Get cursor position			[PLB31]
+       MOVA    TMVAL,TVAL	   for history list to lock		[PLB31]
        INCRA   PDLPTR,3*DESCR	   Make room for history entry		[PLB31]
        ACOMP   PDLPTR,PDLEND,INTR31					[PLB31]
 *				   Check for overflow			[PLB31]
        PUTDC   PDLPTR,DESCR,BRXFCL Routine for BREAKX rematch		[PLB31]
        PUTDC   PDLPTR,2*DESCR,TMVAL					[PLB31]
-*                                  Save cursor (will set up		[PLB31]
+*				   Save cursor (will set up		[PLB31]
        PUTDC   PDLPTR,3*DESCR,LENFCL					[PLB31]
-*                                  TXSP if backup later)		[PLB31]
+*				   TXSP if backup later)		[PLB31]
        BRANCH  SCOK,SCNR	   Return to success point		[PLB31]
 *_
 *
-BRKXF  PROC    ANYC                BREAKX rematch			[PLB31]
+BRKXF  PROC    ANYC		   BREAKX rematch			[PLB31]
        GETDC   PATICL,PDLPTR,2*DESCR
-*                                  Restore position in pattern
-       DECRA   PATICL,DESCR        Point to BREAKX argument
-       DECRA   PDLPTR,3*DESCR      Discard frame holding PATICL
-       AEQLC   FULLCL,0,,BRXF1     J. if FULLSCAN off
-       SETAC   NVAL,0              Set residual length to 0
-       BRANCH  BRXF3               Join processing
+*				   Restore position in pattern
+       DECRA   PATICL,DESCR	   Point to BREAKX argument
+       DECRA   PDLPTR,3*DESCR	   Discard frame holding PATICL
+       AEQLC   FULLCL,0,,BRXF1	   J. if FULLSCAN off
+       SETAC   NVAL,0		   Set residual length to 0
+       BRANCH  BRXF3		   Join processing
 *_
-BRXF1  AEQLC   LENFCL,0,SALT,      Check for length failure
-       SETAV   NVAL,YCL            Get residual length
+BRXF1  AEQLC   LENFCL,0,SALT,	   Check for length failure
+       SETAV   NVAL,YCL		   Get residual length
 BRXF3  CHKVAL  MAXLEN,NVAL,TXSP,SALT,SALT,
-*                                  Check against maximum
-       GETDC   XCL,PDLPTR,DESCR    Restore from BREAKX stack entry
-       ADDLG   TXSP,ONECL          Add one to length matched
-       BRANCH  BRKX                Try BREAK again with locked in advance
-*                                  ANY, NOTANY
+*				   Check against maximum
+       GETDC   XCL,PDLPTR,DESCR	   Restore from BREAKX stack entry
+       ADDLG   TXSP,ONECL	   Add one to length matched
+       BRANCH  BRKX		   Try BREAK again with locked in advance
+*				   ANY, NOTANY
 *_
 BRKC   PROC    ANYC		   Matching procedure for BREAK(S)
        SETAC   SCL,2		   Post entry
        BRANCH  ABNS
 *_
-BRKX   PROC    ANYC                BREAKX			[PLB31]
+BRKX   PROC    ANYC		   BREAKX			[PLB31]
        SETAC   SCL,5						[PLB31]
        BRANCH  ABNS						[PLB31]
 *_
-BRKV   DEQL    XPTR,TBLCS,BRKC2    Was last argument the same?
+BRKV   DEQL    XPTR,TBLCS,BRKC2	   Was last argument the same?
        AEQL    TBLFNC,BRKCCL,,ANYC3
 *				   Was the last procedure for BREAK
        AEQL    TBLFNC,BRXCCL,,ANYC3					[PLB31]
@@ -2984,12 +3004,12 @@ NNYC   PROC    ANYC		   Matching procedure for NOTANY(S)
        SETAC   SCL,3		   Post entry
        BRANCH  ABNS
 *_
-NNYV   DEQL    XPTR,TBLCS,NNYC2    Was last argument the same?
+NNYV   DEQL    XPTR,TBLCS,NNYC2	   Was last argument the same?
        AEQL    TBLFNC,NNYCCL,,ANYC3
 *				   Was the last procedure for NOTANY?
 NNYC2  CLERTB  SNABTB,STOP	   If not, clear stream table
        LOCSP   YSP,XPTR
-       PLUGTB  SNABTB,ERROR,YSP    Plug entries for characters
+       PLUGTB  SNABTB,ERROR,YSP	   Plug entries for characters
        MOVD    TBLCS,XPTR	   Save argument to check next time
        MOVD    TBLFNC,NNYCCL	   Save procedure to check next time
        BRANCH  ANYC3		   Proceed
@@ -2998,7 +3018,7 @@ SPNC   PROC    ANYC		   Matching procedure for SPAN(S)
        SETAC   SCL,4		   Post entry
        BRANCH  ABNS
 *_
-SPNV   DEQL    XPTR,TBLCS,SPNC2    Was last argument the same?
+SPNV   DEQL    XPTR,TBLCS,SPNC2	   Was last argument the same?
        AEQL    TBLFNC,SPNCCL,,SPNC3
 *				   Was the last procedure for SPAN?
 SPNC2  CLERTB  SNABTB,STOPSH	   If not, clear stream table
@@ -3011,7 +3031,7 @@ SPNC3  LCOMP   XSP,TXSP,,TSALT,TSALT
        REMSP   YSP,XSP,TXSP	   Get specifier to unscanned portion
        STREAM  ZSP,YSP,SNABTB,TSALF
        LEQLC   ZSP,0,,TSALF	   Failure if length accepted is zero
-       GETLG   XPTR,ZSP 	   Get length of accepted portion
+       GETLG   XPTR,ZSP		   Get length of accepted portion
        AEQLC   FULLCL,0,SPNC5	   Skip length check in FULLSCAN mode
        CHKVAL  MAXLEN,XPTR,TXSP,TSALT
 SPNC5  ADDLG   TXSP,XPTR	   Add length accepted
@@ -3038,7 +3058,7 @@ LPRRTE RCALL   XPTR,EXPVAL,XPTR,(,LPRRT1)			E3.2.1
        BRANCH  TSALF						E3.2.1
 *_								E3.2.1
 *				   Evaluate EXPRESSION
-LPRRTV LOCSP   ZSP,XPTR 	   Get specifier
+LPRRTV LOCSP   ZSP,XPTR		   Get specifier
        SPCINT  XPTR,ZSP,SCDTER	   Convert to INTEGER
 LPRRTI POP     SCL		   Restore entry indicator
        SELBRA  SCL,(,POSII,RPSII,RTBI,TBI)
@@ -3057,20 +3077,20 @@ POSII  ACOMPC  XPTR,0,,,SCLENR	   Check for negative position
        BRANCH  SALT,SCNR
 *_
 RPSII  ACOMPC  XPTR,0,,,SCLENR	   Check for negative position
-       GETLG   NVAL,XSP 	   Get total length
+       GETLG   NVAL,XSP		   Get total length
        SUBTRT  TVAL,NVAL,XPTR	   Find desired position
        GETLG   NVAL,TXSP	   Get cursor position
        ACOMP   NVAL,TVAL,TSALT,TSCOK,TSALF
 *				   Compare two positions
 *_
 RTBI   ACOMPC  XPTR,0,,,SCLENR	   Check for negative length
-       GETLG   NVAL,XSP 	   Get total length
+       GETLG   NVAL,XSP		   Get total length
        SUBTRT  TVAL,NVAL,XPTR	   Find desired position
        GETLG   NVAL,TXSP	   Get current position
        ACOMP   NVAL,TVAL,TSALT	   Compare two positions
        AEQLC   FULLCL,0,RTBII	   Check &FULLSCAN
-       SETAV   NVAL,YCL 	   Get residual
-       SUBTRT  NVAL,MAXLEN,NVAL    Find maximum allowed position
+       SETAV   NVAL,YCL		   Get residual
+       SUBTRT  NVAL,MAXLEN,NVAL	   Find maximum allowed position
        ACOMP   NVAL,TVAL,,,TSALT   Compare with desired position
 RTBII  PUTLG   TXSP,TVAL	   Update length of string matched
        BRANCH  SCOK,SCNR
@@ -3144,7 +3164,7 @@ FARB   PROC    ,
        BRANCH  FARB3		   Join processing
 *_
 FARB2  AEQLC   LENFCL,0,FARB1	   Check for length failure
-       SETAV   NVAL,YCL 	   Get residual length
+       SETAV   NVAL,YCL		   Get residual length
 FARB3  GETLG   TVAL,TXSP	   Get cursor position
        SUM     TVAL,TVAL,NVAL	   Add them
        ACOMP   TVAL,MAXLEN,FARB1,FARB1
@@ -3204,7 +3224,7 @@ BALF2  GETLG   TVAL,TXSP	   Get length of text matched so far
        SUM     TVAL,TVAL,NVAL	   Add remainder possible
        ACOMP   TVAL,MAXLEN,BAL1,BAL1
 *				   Compare to maximum
-       SUBTRT  TVAL,MAXLEN,TVAL    Get maximum length for BAL
+       SUBTRT  TVAL,MAXLEN,TVAL	   Get maximum length for BAL
        GETBAL  TXSP,TVAL,BAL1	   Get balanced string
        GETLG   TVAL,TXSP	   Get length matched
        PUTAC   PDLPTR,2*DESCR,TVAL Insert history entry
@@ -3227,12 +3247,12 @@ BALF3  AEQLC   LENFCL,0,BAL1,BALF1 If on, test for length failure
 CHR    PROC    ,		   Matching character string
        INCRA   PATICL,DESCR	   Increment offset
        GETD    YPTR,PATBCL,PATICL  Get argument
-CHR1   LOCSP   TSP,YPTR 	   Get specifier
+CHR1   LOCSP   TSP,YPTR		   Get specifier
 CHR2   REMSP   VSP,XSP,TXSP	   Remove part matched
        SUBSP   VSP,TSP,VSP,TSALT   Get part to match
        LEXCMP  VSP,TSP,TSALF,,TSALF
 *				   Compare strings
-       GETLG   YPTR,TSP 	   Get length
+       GETLG   YPTR,TSP		   Get length
        ADDLG   TXSP,YPTR	   Update string matched
        BRANCH  SCOK,SCNR	   Return successful match
 *_
@@ -3251,15 +3271,15 @@ STAR2  RCALL   YPTR,EXPVAL,YPTR,TSALF
        VEQLC   YPTR,S,,CHR1	   Is it STRING?
        VEQLC   YPTR,P,,STARP	   Is it  PATTERN?
        VEQLC   YPTR,I,SCDTER	   Is it INTEGER?
-       INTSPC  TSP,YPTR 	   Get specifier for integer
+       INTSPC  TSP,YPTR		   Get specifier for integer
        BRANCH  CHR2		   Join processing
 *_
-STARP  AEQLC   FULLCL,0,,STARP1    Check &FULLSCAN
+STARP  AEQLC   FULLCL,0,,STARP1	   Check &FULLSCAN
        SETAC   NVAL,0		   Zero length
        BRANCH  STARP4		   Join processing
 *_
-STARP1 SETAV   NVAL,YCL 	   Get length
-STARP4 SUBTRT  NVAL,MAXLEN,NVAL    Compute residual
+STARP1 SETAV   NVAL,YCL		   Get length
+STARP4 SUBTRT  NVAL,MAXLEN,NVAL	   Compute residual
        ACOMPC  NVAL,0,,,TSALT
        LVALUE  TSIZ,YPTR	   Check &FULLSCAN
        AEQLC   FULLCL,0,STARP6
@@ -3295,12 +3315,12 @@ DSAR   PROC    CHR		   Backup matching for expression
        VEQLC   YPTR,I,SCDTER,STARP3
 *				   Is it INTEGER?
 *_
-DSARP  AEQLC   FULLCL,0,,DSARP1    Check &FULLSCAN
+DSARP  AEQLC   FULLCL,0,,DSARP1	   Check &FULLSCAN
        SETAC   NVAL,0		   Zero length
        BRANCH  DSARP2		   Join processing
 *_
-DSARP1 SETAV   NVAL,YCL 	   Get length
-DSARP2 SUBTRT  NVAL,MAXLEN,NVAL    Compute residual
+DSARP1 SETAV   NVAL,YCL		   Get length
+DSARP2 SUBTRT  NVAL,MAXLEN,NVAL	   Compute residual
        PUSH    (MAXLEN,PATBCL,PATICL,XCL,YCL)
 *				   Save scanner state
        MOVD    MAXLEN,NVAL	   Set up new maximum
@@ -3321,8 +3341,8 @@ FNCE   PROC    ,		   Procedure for matching FENCE
 *				   Save length
        PUTDC   PDLPTR,3*DESCR,LENFCL
 *				   Save length failure switch
-       SETAC   LENFCL,1 	   Set length failure switch
-       BRANIC  SCOKCL,0 	   Return matching
+       SETAC   LENFCL,1		   Set length failure switch
+       BRANIC  SCOKCL,0		   Return matching
 *_
 *---------------------------------------------------------------------*
 *
@@ -3339,7 +3359,7 @@ NME    PROC    ,		   Matching procedure for naming
        PUTDC   PDLPTR,3*DESCR,LENFCL
 *				   Put length failure indicator
        PUSH    (TMVAL)		   Save cursor
-       SETAC   LENFCL,1 	   Set length failure indicator
+       SETAC   LENFCL,1		   Set length failure indicator
        BRANCH  SCOK,SCNR	   Return matching successfully
 *_
 FNME   PROC    NME		   Backup procedure for naming
@@ -3351,9 +3371,9 @@ ENME   PROC    NME		   Naming process for X . Y
        INCRA   PATICL,DESCR	   Increment offset
        GETD    YPTR,PATBCL,PATICL  Get argument
        POP     (NVAL)		   Restore previous cursor position
-       SETVA   YCL,NVAL 	   Set up length
-       SETSP   TSP,TXSP 	   Copy specifier
-       PUTLG   TSP,NVAL 	   Insert length
+       SETVA   YCL,NVAL		   Set up length
+       SETSP   TSP,TXSP		   Copy specifier
+       PUTLG   TSP,NVAL		   Insert length
        REMSP   TSP,TXSP,TSP	   Compute ramainder
        SUM     TPTR,NBSPTR,NAMICL  Compute position on name list
        PUTSPC  TPTR,DESCR,TSP	   Insert specifier
@@ -3372,7 +3392,7 @@ ENME3  GETLG   TMVAL,TXSP	   Get cursor position
 *				   Insert on list
        PUTDC   PDLPTR,3*DESCR,LENFCL
 *				   Insert length failure
-       SETAC   LENFCL,1 	   Set length failure
+       SETAC   LENFCL,1		   Set length failure
        BRANCH  SCOK,SCNR	   Return matching successfully
 *_
 ENME1  MOVD    WCL,NMOVER	   Save copy of cuurent name list end
@@ -3394,9 +3414,9 @@ ENMI   PROC    NME		   Matching for X $ Y
        INCRA   PATICL,DESCR	   Increment offset
        GETD    YPTR,PATBCL,PATICL  Get argument
        POP     (NVAL)		   Restore initial length
-       SETVA   YCL,NVAL 	   Move initial length into value field
-       SETSP   TSP,TXSP 	   Get working specifier
-       PUTLG   TSP,NVAL 	   Insert length
+       SETVA   YCL,NVAL		   Move initial length into value field
+       SETSP   TSP,TXSP		   Get working specifier
+       PUTLG   TSP,NVAL		   Insert length
        REMSP   TSP,TXSP,TSP	   Get specifier for part matched
        GETLG   ZCL,TSP		   Get length of part
        ACOMP   ZCL,MLENCL,SCLNOR   Check &MAXLNGTH
@@ -3438,7 +3458,7 @@ ENMIC  SPCINT  VVAL,TSP,SCDTER,ENMI3
 *				   Convert STRING to INTEGER
 *_
 ENMEXN PUSH    ZEROCL				       E3.4.4 & E3.5.8
-       RCALL   YPTR,EXPEVL,YPTR,(TSALF,,SCNEMO)        E3.4.4 & E3.5.8
+       RCALL   YPTR,EXPEVL,YPTR,(TSALF,,SCNEMO)	       E3.4.4 & E3.5.8
        POP     ZEROCL				       E3.4.4 & E3.5.8
        BRANCH  ENMI5				       E3.4.4 & E3.5.8
 *_
@@ -3456,11 +3476,11 @@ SUCE1  INCRA   PDLPTR,3*DESCR	   Make room for history entry
 *				   Save on history list
        PUTDC   PDLPTR,3*DESCR,LENFCL
 *				   Save current length failure
-       SETAC   LENFCL,1 	   Set length failure
-       BRANIC  SCOKCL,0 	   Return successful match
+       SETAC   LENFCL,1		   Set length failure
+       BRANIC  SCOKCL,0		   Return successful match
 *_
 SUCF   PROC    SUCE		   SUCCEED failure
-       GETDC   XCL,PDLPTR,DESCR    Get history entries
+       GETDC   XCL,PDLPTR,DESCR	   Get history entries
        GETDC   YCL,PDLPTR,2*DESCR
        BRANCH  SUCE1		   Go in front door
 *_
@@ -3474,12 +3494,12 @@ DEFINE PROC    ,		   DEFINE(P,E)
        PUSH    XPTR		   Save prototype
        RCALL   YPTR,VARVAL,,FAIL   Get entry point
        POP     XPTR		   Restore prototype
-       LOCSP   XSP,XPTR 	   Specifier for prototype
+       LOCSP   XSP,XPTR		   Specifier for prototype
        STREAM  YSP,XSP,VARATB,PROTER,PROTER
 *				   Break out function name
        AEQLC   STYPE,LPTYP,PROTER  Verify open parenthesis
        RCALL   XPTR,GENVUP,(YSPPTR)
-*				   [PLB17,27] Get variable for function name
+*				   Get variable for function name [PLB17,27]
        RCALL   ZCL,FINDEX,(XPTR)   Get function descriptor for function
        DEQL    YPTR,NULVCL,DEFIN3  Check for omitted entry point
        MOVD    YPTR,XPTR	   If omitted use function name
@@ -3493,7 +3513,7 @@ DEFIN4 FSHRTN  XSP,1		   Remove break character
 *				   Check for end
        LEQLC   YSP,0,,DEFIN4	   Check for null argument
        RCALL   XPTR,GENVUP,(YSPPTR)
-*				   [PLB17,27] Generate variable for argument
+*				   Generate variable for argument [PLB17,27]
        PUSH    XPTR		   Save argument
        INCRA   YCL,1		   Increment argument count
        BRANCH  DEFIN4		   Continue
@@ -3501,7 +3521,7 @@ DEFIN4 FSHRTN  XSP,1		   Remove break character
 DEFIN6 LEQLC   YSP,0,,DEFIN9
        INCRA   YCL,1		   Increment argument count
        RCALL   XPTR,GENVUP,(YSPPTR)
-*				   [PLB17,27] Generate variable for argument
+*				   Generate variable for argument [PLB17,27]
        PUSH    XPTR		   Save argument
 DEFIN9 SETVA   DEFCL,YCL
 DEFIN8 FSHRTN  XSP,1
@@ -3510,7 +3530,7 @@ DEFIN8 FSHRTN  XSP,1
        AEQLC   STYPE,CMATYP,PROTER Verify comma
        LEQLC   YSP,0,,DEFIN8	   Check for null argument
        RCALL   XPTR,GENVUP,(YSPPTR)
-*				   [PLB17,27] Generate variable
+*				   Generate variable		[PLB17,27]
        PUSH    XPTR		   Save local argument
        INCRA   YCL,1		   Increment total count
        BRANCH  DEFIN8		   Continue
@@ -3537,9 +3557,9 @@ DEF12  DECRA   XPTR,DESCR	   Decrement pointer
 *      Invocation of Defined Function
 *
 DEFFNC PROC    ,		   Procedure to invoke defined function
-       SETAV   XCL,INCL 	   Get number of arguments in call
+       SETAV   XCL,INCL		   Get number of arguments in call
        MOVD    WCL,XCL		   Save copy
-       MOVD    YCL,INCL 	   Save function descriptor
+       MOVD    YCL,INCL		   Save function descriptor
        PSTACK  YPTR		   Post stack position
        PUSH    NULVCL		   Save null value for function name
 DEFF1  INCRA   OCICL,DESCR	   Increment offset
@@ -3571,7 +3591,7 @@ DEFF9  POP     ZCL		   Throw away extra argument
        BRANCH  DEFF4		   Continue
 *_
 DEFF5  GETDC   ZCL,YCL,DESCR	   Get definition block
-       MOVD    XPTR,ZCL 	   Save copy
+       MOVD    XPTR,ZCL		   Save copy
        GETSIZ  WCL,ZCL		   Get size of block
        SUM     WPTR,ZCL,WCL	   Compute pointer to end
        INCRA   XCL,1		   Increment for function name
@@ -3579,8 +3599,8 @@ DEFF8  INCRA   XPTR,DESCR	   Increment pointer to block
        INCRA   YPTR,DESCR	   Adjust stack pointer
        GETDC   ZPTR,XPTR,DESCR	   Get argument name
        GETDC   TPTR,ZPTR,DESCR	   Get current argument value
-       GETDC   ATPTR,YPTR,DESCR    Get value from stack
-       PUTDC   ZPTR,DESCR,ATPTR    Assign to argument name
+       GETDC   ATPTR,YPTR,DESCR	   Get value from stack
+       PUTDC   ZPTR,DESCR,ATPTR	   Assign to argument name
        PUTDC   YPTR,DESCR,TPTR	   Put current argument on stack
        DECRA   XCL,1		   Decrement count
        ACOMPC  XCL,0,DEFF8,,INTR10 Check for end
@@ -3659,7 +3679,7 @@ DEFF17 POP     (ZCL,OCBSCL,OCICL,STNOCL,FRTNCL)
        ACOMPC  WCL,0,,INTR10,INTR10
 *				   Check for end
        SUM     WPTR,ZCL,WCL	   Compute pointer to last descriptor
-       MOVD    YPTR,ZCL 	   Save pointer to block
+       MOVD    YPTR,ZCL		   Save pointer to block
        INCRA   YPTR,DESCR	   Increment pointer
        GETDC   ZPTR,YPTR,DESCR	   Get function name
        GETDC   ZPTR,ZPTR,DESCR	   Get value to be returned
@@ -3704,9 +3724,9 @@ LOAD   PROC    ,		   LOAD(P)
        RCALL   XPTR,VARVAL,,FAIL   Get prototype
        PUSH    XPTR		   Save prototype
        RCALL   WPTR,VARVAL,,FAIL   Get library name
-       LOCSP   VSP,WPTR 	   Get specifier for library
-       POP     XPTR		   Restore prototypr
-       LOCSP   XSP,XPTR 	   Get specifier for prototype
+       LOCSP   VSP,WPTR		   Get specifier for library
+       POP     XPTR		   Restore prototype
+       LOCSP   XSP,XPTR		   Get specifier for prototype
        STREAM  YSP,XSP,VARATB,PROTER,PROTER
 *				   Get function name from prototype
        AEQLC   STYPE,LPTYP,PROTER  Verify left parenthesis
@@ -3776,10 +3796,10 @@ LOAD11 PUSH    ZEROCL		   Save 0 for unspecified type
 *      UNLOAD(F)
 *
 UNLOAD PROC    ,		   UNLOAD(F)
-       RCALL   XPTR,VARVUP,,FAIL   [PLB28] Get function name
+       RCALL   XPTR,VARVUP,,FAIL   Get function name	[PLB28]
        RCALL   ZCL,FINDEX,XPTR	   Locate function descriptor
        PUTDC   ZCL,0,UNDFCL	   Undefine function
-       LOCSP   XSP,XPTR 	   Get specifier
+       LOCSP   XSP,XPTR		   Get specifier
        UNLOAD  XSP		   Unload external definition
        BRANCH  RETNUL		   Return
 *_
@@ -3788,8 +3808,8 @@ UNLOAD PROC    ,		   UNLOAD(F)
 *      Linkage to External Functions
 *
 LNKFNC PROC    ,		   Procedure to link to externals
-       SETAV   XCL,INCL 	   Get actual number of arguments
-       MOVD    YCL,INCL 	   Save function descriptor
+       SETAV   XCL,INCL		   Get actual number of arguments
+       MOVD    YCL,INCL		   Save function descriptor
        SETAV   WCL,YCL						E3.9.1
        GETDC   ZCL,YCL,DESCR	   Get definition block
        PSTACK  YPTR		   Post stack position
@@ -3803,7 +3823,7 @@ LNKF1  PUSH    (XCL,ZCL,TCL,YPTR,WCL,YCL)
        ACOMPC  WCL,0,,,LNKF8					E3.9.1
 LNKF7  GETD    ZPTR,ZCL,TCL	   Get data type required
        VEQLC   ZPTR,0,,LNKF6	   Check for possible conversion
-       VEQL    ZPTR,XPTR,,LNKF6    Skip if data types the same
+       VEQL    ZPTR,XPTR,,LNKF6	   Skip if data types the same
        SETAV   DTCL,XPTR	   Data type of argument
        MOVV    DTCL,ZPTR	   Data type required
        DEQL    DTCL,VIDTP,,LNKVI   STRING-INTEGER
@@ -3822,7 +3842,7 @@ LNKRI  RLINT   XPTR,XPTR,INTR1,LNKF6
 LNKIR  INTRL   XPTR,XPTR	   Convert INTEGER to REAL
        BRANCH  LNKF6
 *_
-LNKVR  LOCSP   XSP,XPTR 	   Get specifier
+LNKVR  LOCSP   XSP,XPTR		   Get specifier
        SPCINT  XPTR,XSP,,LNKIR	   Convert STRING to INTEGER
        SPREAL  XPTR,XSP,INTR1,LNKF6
 *				   Convert STRING to REAL
@@ -3830,7 +3850,7 @@ LNKVR  LOCSP   XSP,XPTR 	   Get specifier
 LNKRV  REALST  XSP,XPTR
        RCALL   XPTR,GENVAR,XSPPTR,LNKF6
 *_
-LNKVI  LOCSP   XSP,XPTR 	   Get specifier
+LNKVI  LOCSP   XSP,XPTR		   Get specifier
        SPCINT  XPTR,XSP,,LNKF6	   Convert to INTEGER
        SPREAL  XPTR,XSP,INTR1,LNKRI
 *				   Convert STRING to REAL
@@ -3866,10 +3886,10 @@ ARRAY  PROC    ,		   ARRAY(P,V)
        PUSH    XPTR		   Save prototype
        RCALL   TPTR,ARGVAL,,FAIL   Get initial value for array elements
        POP     XPTR		   Restore prototype
-       SETAC   ARRMRK,0 	   Clear prototype analysis switch
+       SETAC   ARRMRK,0		   Clear prototype analysis switch
        MOVD    WCL,ZEROCL	   Initialize dimensionality to zero
        MOVD    XCL,ONECL	   Initialize size to one
-       LOCSP   XSP,XPTR 	   Get specifier to prototype
+       LOCSP   XSP,XPTR		   Get specifier to prototype
        PUSH    XPTR		   Save prototype for later insertion
 ARRAY1 STREAM  YSP,XSP,NUMBTB,PROTER,ARROT1			E3.5.1
        SPCINT  YCL,YSP,PROTER	   Convert string to integer
@@ -3897,11 +3917,11 @@ ARRAY6 SETVA   YCL,ZCL		   Insert width of dimension
        FSHRTN  XSP,1		   Remove break character
        BRANCH  ARRAY1
 *_
-ARROT1 SETAC   ARRMRK,1 	   On run out, mark end of prototype
+ARROT1 SETAC   ARRMRK,1		   On run out, mark end of prototype
        SPCINT  YCL,YSP,PROTER,ARRAY3
 *				   Convert string to integer
 *_
-ARROT2 SETAC   ARRMRK,1 	   On run out, mark end of prototype
+ARROT2 SETAC   ARRMRK,1		   On run out, mark end of prototype
        SPCINT  ZCL,ZSP,PROTER,ARRAY5
 *				   Convert string to integer
 *_
@@ -3912,7 +3932,7 @@ ARRAY7 SUM     ZCL,XCL,WCL	   Add dimensionality to array size
        RCALL   ZPTR,BLOCK,ZCL	   Allocate block for array structure
        MOVD    XPTR,ZPTR	   Save copy
        SUM     WPTR,XPTR,ZCL	   Get pointer to last descriptor
-       PUTDC   ZPTR,2*DESCR,WCL    Insert dimensionality
+       PUTDC   ZPTR,2*DESCR,WCL	   Insert dimensionality
        INCRA   XPTR,DESCR	   Update working pointer
 ARRAY8 INCRA   XPTR,DESCR	   Update working pointer for another
        POP     YPTR		   Restore index pair
@@ -3954,8 +3974,8 @@ ASSOCE PROC    ASSOC						E3.2.3
        DECRA   XPTR,DESCR					E3.2.3
        PUTD    ZPTR,XPTR,WPTR					E3.2.3
 ASSOC2 DECRA   XPTR,2*DESCR					E3.2.3
-       PUTD    ZPTR,XPTR,NULVCL 				E3.2.3
-       AEQLC   XPTR,DESCR,ASSOC2,RTZPTR 			E3.2.3
+       PUTD    ZPTR,XPTR,NULVCL					E3.2.3
+       AEQLC   XPTR,DESCR,ASSOC2,RTZPTR				E3.2.3
 *_
 *---------------------------------------------------------------------*
 *
@@ -3963,15 +3983,15 @@ ASSOC2 DECRA   XPTR,2*DESCR					E3.2.3
 *
 DATDEF PROC    ,		   DATA(P)
        RCALL   XPTR,VARVAL,,FAIL   Get prototype
-       SETAC   DATACL,0 	   Initialize prototype switch
-       LOCSP   XSP,XPTR 	   Get specifier
+       SETAC   DATACL,0		   Initialize prototype switch
+       LOCSP   XSP,XPTR		   Get specifier
        STREAM  YSP,XSP,VARATB,PROTER,PROTER
 *				   Break out data type name
        AEQLC   STYPE,LPTYP,PROTER  Verify left parenthesis
        RCALL   XPTR,GENVUP,(YSPPTR)
-*				   [PLB17,27] Generate variable for name
+*				   Generate variable for name	[PLB17,27]
        RCALL   ZCL,FINDEX,(XPTR)   Find function descriptor
-       INCRV   DATSEG,1 	   Increment data type code
+       INCRV   DATSEG,1		   Increment data type code
        VEQLC   DATSEG,DATSIZ,,INTR27
 *				   Check against limit
        MOVD    YCL,ZEROCL	   Initialize count of fields
@@ -3985,7 +4005,7 @@ DATA3  FSHRTN  XSP,1		   Delete break character
 *				   Break out field
        SELBRA  STYPE,(PROTER,,DATA6)
 DATA4  LEQLC   YSP,0,,DATA3	   Check for zero length
-       RCALL   XPTR,GENVUP,YSPPTR  [PLB17,27] Generate variable
+       RCALL   XPTR,GENVUP,YSPPTR  Generate variable		[PLB17,27]
        PUSH    XPTR		   Save field name
        RCALL   XCL,FINDEX,(XPTR)   Find function descriptor for field
        GETDC   WCL,XCL,0	   Get procedure descriptor
@@ -3997,7 +4017,7 @@ DAT7   PUTDC   XCL,DESCR,ZPTR	   Insert new definition block
        INCRA   YCL,1
        BRANCH  DATA3		   Continue
 *_
-DATA6  SETAC   DATACL,1 	   Note end of prototype analysis
+DATA6  SETAC   DATACL,1		   Note end of prototype analysis
        BRANCH  DATA4		   Join field processing
 *_
 DAT5   LEQLC   XSP,0,PROTER	   Verify prototype consumption
@@ -4014,7 +4034,7 @@ DAT5   LEQLC   XSP,0,PROTER	   Verify prototype consumption
        BRANCH  RETNUL		   Return null value
 *_
 DAT6   PUTDC   XCL,0,FLDCL	   Insert FIELD procedure descriptor
-       RCALL   ZPTR,BLOCK,TWOCL    Allocate definition block
+       RCALL   ZPTR,BLOCK,TWOCL	   Allocate definition block
        PUTDC   ZPTR,DESCR,DATSEG   Insert data type code
        MULTC   TCL,YCL,DESCR
        PUTDC   ZPTR,2*DESCR,TCL
@@ -4032,13 +4052,35 @@ PROTO  PROC    ,		   PROTOTYPE(A)
 *_
 *---------------------------------------------------------------------*
 *
+* New [PLB34] from SNOBOL4+
+*	FREEZE(T)
+*
+FREEZE PROC    ,		   FREEZE(T)
+       RCALL   XPTR,ARGVAL,,FAIL   Get argument
+       VEQLC   XPTR,T,NONARY	   Verify TABLE
+       SETFI   XPTR,FRZN	   Freeze it
+       BRANCH  RETNUL		   Return
+*_
+*---------------------------------------------------------------------*
+*
+* New [PLB34] from SNOBOL4+
+*	THAW(T)
+*
+THAW   PROC    ,		   THAW(T)
+       RCALL   XPTR,ARGVAL,,FAIL   Get argument
+       VEQLC   XPTR,T,NONARY	   Verify TABLE
+       RSETFI  XPTR,FRZN	   Thaw it
+       BRANCH  RETNUL		   Return
+*_
+*---------------------------------------------------------------------*
+*
 *      Array and Table References
 *
 ITEM   PROC    ,		   Array or table reference
-       SETAV   XCL,INCL 	   Get argument count
+       SETAV   XCL,INCL		   Get argument count
        DECRA   XCL,1		   Skip referenced object
        PUSH    XCL		   Save count
-       RCALL   YCL,ARGVAL,,FAIL    Get referenced object
+       RCALL   YCL,ARGVAL,,FAIL	   Get referenced object
        POP     XCL		   Restore count
        VEQLC   YCL,A,,ARYAD3	   ARRAY is acceptable
        VEQLC   YCL,T,NONARY,ASSCR  TABLE is acceptable
@@ -4084,43 +4126,47 @@ ARYA12 MULTC   XPTR,XPTR,DESCR	   Expand offset into addressing units
 ARYA10 SETVC   XPTR,N		   Insert NAME data type
        BRANCH  RTXNAM		   Return interior pointer
 *_
-ASSCR  AEQLC   XCL,1,ARGNER	   Only one argument for tables
+* New [PLB34] from SNOBOL4+
+* Table Reference
+ASSCR  AEQLC   XCL,1,ARGNER,	   Only one argument for tables
        PUSH    YCL		   Save pointer to object
        RCALL   YPTR,ARGVAL,,FAIL   Evaluate argument
-       POP     XPTR						E3.2.3
-ASSCR5 LOCAPV  WPTR,XPTR,YPTR,,ASSCR4				E3.2.3
-       LOCAPV  WPTR,XPTR,ZEROCL,ASSCR2
-*				   Look for item with null value
-ASSCR4 MOVA    XPTR,WPTR
-       PUTDC   XPTR,2*DESCR,YPTR				E3.2.3
+       POP     XPTR
+       MOVD    YCL,XPTR		   Save ptr to start of table
+* Rewritten to only search for zero entry in last extent
+ASSCR5 LOCAPV  XPTR,XPTR,YPTR,,ARYA10
+*				   Look up in this table extent
+       GETSIZ  TCL,XPTR		   Not found. Get size of table
+ASSCR7 GETD    ZPTR,XPTR,TCL	   Get last value entry
+       AEQLC   ZPTR,1,,ASSCR6	   Jump if this was last extent
+       MOVD    XPTR,ZPTR	   No. Move to next extent
+       BRANCH  ASSCR5		   and search there
+*_
+* Here if not found
+ASSCR6 TESTFI  YCL,FRZN,,RETNUL	   Return null by value if frozen
+       LOCAPV  XPTR,XPTR,ZEROCL,ASSCR3,
+*				   Not found. Find empty slot
+ASSCR8 PUTDC   XPTR,2*DESCR,YPTR   Make value entry (subscript)
        BRANCH  ARYA10		   Join array reference exit
 *_
-ASSCR2 GETSIZ  TCL,XPTR 					E3.2.3
-       GETD    ZPTR,XPTR,TCL					E3.2.3
-       AEQLC   ZPTR,1,,ASSCR3					E3.2.3
-       MOVD    XPTR,ZPTR					E3.2.3
-       BRANCH  ASSCR5						E3.2.3
-*_								E3.2.3
-ASSCR3 DECRA   TCL,DESCR					E3.2.3
-       GETD    WPTR,XPTR,TCL					E3.2.3
-       PUSH    (XPTR,TCL,YPTR)					E3.2.3
-       MOVD    XPTR,WPTR					E3.2.3
-       RCALL   ZPTR,ASSOCE,,(INTR10,INTR10)			E3.2.3
-       POP     (YPTR,TCL,XPTR)					E3.2.3
-       SETVC   ZPTR,B						E3.2.3
-       INCRA   TCL,DESCR					E3.2.3
-       PUTD    XPTR,TCL,ZPTR					E3.2.3
-       PUTDC   ZPTR,2*DESCR,YPTR				E3.2.3
-       MOVD    XPTR,ZPTR					E3.2.3
-       BRANCH  ARYA10						E3.2.3
+ASSCR3 DECRA   TCL,DESCR	   No zero entry
+       GETD    WPTR,XPTR,TCL	   Get expansion size
+       MOVD    ZCL,XPTR		   Save current extent
+       RCALL   ZPTR,BLOCK,WPTR,	   Get new next one
+       MOVD    XPTR,WPTR	   New extent's size
+       RCALL   XPTR,ASSOCE,,(INTR10,INTR10)
+*				   Initialize new extent
+       INCRA   TCL,DESCR
+       PUTD    ZCL,TCL,XPTR	   Point old extent to new one
+       BRANCH  ASSCR8
 *_
 *---------------------------------------------------------------------*
 *      Defined Object Creation
 *
 DEFDAT PROC    ,		   Procedure to create defined objects
-       SETAV   XCL,INCL 	   Get given number of arguments
+       SETAV   XCL,INCL		   Get given number of arguments
        MOVD    WCL,XCL		   Save a copy
-       MOVD    YCL,INCL 	   Save function descriptor
+       MOVD    YCL,INCL		   Save function descriptor
        PSTACK  YPTR		   Post stack position
 DEFD1  INCRA   OCICL,DESCR	   Increment offset
        GETD    XPTR,OCBSCL,OCICL   Get object code descriptor
@@ -4171,7 +4217,7 @@ FIELD  PROC    ,		   Field function procedure
        DEQL    XPTR,NULVCL,,NONAME Check for null value
        POP     YCL		   Restore function descriptor
        VEQLC   XPTR,I,FIELD1	   Check for INTEGER
-       RCALL   XPTR,GNVARI,XPTR    Convert INTEGER to STRING
+       RCALL   XPTR,GNVARI,XPTR	   Convert INTEGER to STRING
 FIELD1 MOVV    DT1CL,XPTR	   Set up data type
        GETDC   YPTR,YCL,DESCR	   Get definition block
        LOCAPT  ZCL,YPTR,DT1CL,INTR1
@@ -4180,27 +4226,296 @@ FIELD1 MOVV    DT1CL,XPTR	   Set up data type
        SUM     XPTR,XPTR,ZCL	   Compute field position
        SETVC   XPTR,N		   Insert NAME data type
        AEQLC   CASECL,0,VPXPTR,RTXNAM
-*				   [PLB30] Return name
+*				   Return name	[PLB30]
+*_
+*---------------------------------------------------------------------*
+*
+* New [PLB31] from SNOBOL4+
+*	RSORT(T,C), SORT(T,C)
+*
+RSORT  PROC    ,		   RSORT function
+       SETAC   SCL,1
+       BRANCH  SORT1
+*_
+SORT   PROC    RSORT		   SORT function
+       SETAC   SCL,0
+*
+SORT1  SETAV   WCL,INCL		   Get arg count
+       PUSH    (WCL,SCL)	   V1.7A Protect SCL
+       RCALL   XPTR,ARGVAL,,FAIL   Get first argument
+       MOVD    WPTR,XPTR	   Save copy
+       VEQLC   XPTR,A,,SORT2	   J. if array
+       VEQLC   XPTR,T,NONARY	   Error if not table or array
+       RCALL   XPTR,ICNVTA,XPTR,(FAIL)
+*				   Cvt table to array
+*
+SORT2  POP     (SCL,WCL)	   R/SORT flag, arg count
+       GETDC   XCL,XPTR,2*DESCR	   No. of dimensions in array
+       MULTC   YPTR,XCL,DESCR	   Convert to address units
+       SUM     YPTR,XPTR,YPTR	   Add base and offset
+       INCRA   YPTR,2*DESCR	   Add 2 for heading
+       MOVD    YCL,ONECL	   Assume vector - 1 column
+       ACOMPC  XCL,2,INTR30,,SORT3 No. dimensions. J. if vector
+       GETDC   YCL,XPTR,3*DESCR
+       SETAV   YCL,YCL		   2-d array; Get no. of columns
+*
+SORT3  GETDC   ZCL,YPTR,0
+       SETAV   ZCL,ZCL		   Column length
+       MULTC   ZCL,ZCL,DESCR	   Convert to address units	[PLB31]
+       MOVD    ZPTR,YPTR	   Assume one arg to function
+       ACOMPC  WCL,2,ARGNER,,SORT5 J. if 1 arg
+       PUSH    (WPTR,XPTR,YPTR,ZPTR,XCL,YCL,ZCL,SCL)
+*				   2 args. save everything
+       RCALL   WCL,ARGVAL,,FAIL	   2.13 Get column no. or field name
+       POP     (SCL,ZCL,YCL,XCL,ZPTR,YPTR,XPTR,WPTR)
+*				   Restore
+       MOVD    A3PTR,ZEROCL	   Assume no Field arg
+* was:								[PLB31]
+*      VEQBRA  WCL,(I,,SORT3C,S,,SORT3B,R,INTR30,SORT3A)	[PLB31]
+       VEQLC   WCL,I,,SORT3C					[PLB31]
+       VEQLC   WCL,S,,SORT3B					[PLB31]
+       VEQLC   WCL,R,INTR30,SORT3A				[PLB31]
+*_
+SORT3A RLINT   WCL,WCL,INTR30,SORT3C
+*				   Real, convert to Int
+SORT3B LOCSP   XSP,WCL		   String
+       SPCINT  WCL,XSP,,SORT3C	   Convert to int?
+       SPREAL  WCL,XSP,,SORT3A	   Convert to real?
+       AEQLC   XCL,1,INTR30	   Possible field function, must be 1-d
+       LOCAPV  WCL,FNCPL,WCL,INTR30
+*				   Field function?
+       GETDC   WCL,WCL,DESCR	   Possibly, get function descriptor
+       GETDC   TCL,WCL,0	   Get procedure definition
+       AEQL    TCL,FLDCL,INTR30	   Not field function
+       GETDC   A3PTR,WCL,DESCR	   Field Block
+       MOVD    WCL,ONECL	   Sort on column 1
+*
+SORT3C AEQLC   XCL,1,SORT4,	   Jump if 2-d array
+       AEQLC   WCL,1,INTR30,SORT5  1-D, 2nd arg must=1 if present
+*_
+SORT4  GETDC   TCL,XPTR,3*DESCR	   Array. Get column bounds
+       SUBTRT  WCL,WCL,TCL,INTR30,SORT4A
+*				   Subtract 2nd dim. lower bound
+SORT4A ACOMPC  WCL,0,,,INTR30	   Column offset must be >=0
+       ACOMP   WCL,YCL,INTR30,INTR30
+*				   Col. offset must be < no. cols.
+       MULT    WCL,WCL,ZCL,INTR30  Offset * column length
+       SUM     ZPTR,YPTR,WCL	   Ptr to col. block being sorted
+*
+SORT5  SETAC   XCL,0		   Prepare to build index
+       VEQLC   WPTR,A,,SORTA	   J. if source was array
+*
+* Source was a table.
+*
+       GETSIZ  TCL,XPTR		   Size of new array
+       MULTC   TCL,TCL,DESCR	   Convert to address units	[PLB31]
+       SUM     TPTR,XPTR,TCL	   Last element of new array
+       SUBTRT  TPTR,TPTR,ZCL	   - no. rows = start of index table-1
+*				   Assume SORT(Table,1)
+       SETAC   A4PTR,-DESCR	   Table advance to get to 2nd col. elt [PLB31]
+       SETAC   A5PTR,0		   Offset to element in 1st column
+       AEQL    ZPTR,YPTR,,SORTT1   J. if sorting on Table(1)	[PLB31]
+       SETAC   A5PTR,-DESCR	   SORT(Table,2). Get to 1st element [PLB31]
+*
+SORTT1 GETSIZ  WCL,WPTR		   Get size of next table extent
+       DECRA   WCL,2*DESCR	   Less special words at end
+SORTT4 SUM     WCL,WPTR,WCL	   End of extent pointer
+SORTT2 GETDC   TCL,WPTR,DESCR	   Get value entry
+       DEQL    TCL,NULVCL,,SORTT3  Ignore null entries		[PLB31]
+       INCRA   XCL,DESCR	   Next index entry		[PLB31]
+       SUM     A6PTR,WPTR,A5PTR	   Pointer to sort element is
+       INCRA   A6PTR,2*DESCR	   WPTR + 2 + A5PTR   (0 or -1)
+       PUTD    TPTR,XCL,A6PTR	   Add index entry
+       AEQL    XCL,ZCL,,SORTGO	   J. if index fully loaded.	[PLB31]
+SORTT3 INCRA   WPTR,2*DESCR	   Next table entry
+       AEQL    WCL,WPTR,SORTT2	   If more in this extent
+       GETDC   WPTR,WCL,2*DESCR	   Link to next extent
+       BRANCH  SORTT1		   Process it
+*_
+* Source was an array.	Get new array to sort into.
+*
+SORTA  GETSIZ  WCL,WPTR		   Get size of old array
+       SETVC   WCL,A		   Allocating array
+       RCALL   XPTR,BLOCK,WCL	   Get new array
+       SETAC   A4PTR,4*DESCR	   Size of header and dimensions
+       MOVBLK  XPTR,WPTR,A4PTR	   Copy header descriptors
+       SUM     TPTR,XPTR,WCL	   Last element of new array
+       SUBTRT  TPTR,TPTR,ZCL	   - no. rows = start of index table-1
+*
+       SUBTRT  A5PTR,ZPTR,YPTR	   Offset to first element in row
+       RESETF  A5PTR,PTR	   V2.03 Clear pointer flag
+       MOVA    A4PTR,ZCL	   Offset to advance a column
+SORTA1 INCRA   XCL,DESCR	   Next index entry			[PLB31]
+       INCRA   ZPTR,DESCR	   Next sort element
+       PUTD    TPTR,XCL,ZPTR	   Add to index
+       AEQL    XCL,ZCL,SORTA1	   Loop on no. of rows.			[PLB31]
+*
+*
+* XPTR = New Array, YPTR = 1st element-1 in old array
+* TPTR = Index table - 1 in new array
+* SCL = 1/0 = RSORT/SORT, YCL = NC = no. columns, ZCL = N = no. rows
+* A3PTR = Field Block if second argument was a field name.
+*
+* Setup: A6PTR = G, XCL = M, TCL = K, A7PTR = I, LPTR = J
+* Scratch: A1PTR, A2PTR, F1PTR, F2PTR
+*
+SORTGO MOVA    A6PTR,ZCL	   G = N
+*
+SORT6  ACOMPC  A6PTR,DESCR,,SORT12,SORT12
+*				   Done if G <= DESCR		[PLB31]
+       DIVIDE  A6PTR,A6PTR,TWOCL   G = G/2
+       MULTC   A6PTR,A6PTR,DESCR   Convert back to address units [PLB31]
+       SUBTRT  XCL,ZCL,A6PTR	   M = N - G
+*
+SORT7  MOVD    TCL,ZEROCL	   K = 0
+       SETAC   A7PTR,DESCR	   I = DESCR			[PLB31]
+*
+SORT8  SUM     LPTR,A7PTR,A6PTR	   J = I + G
+       GETD    F1PTR,TPTR,A7PTR	   .A<I,C>
+       GETD    F2PTR,TPTR,LPTR	   .A<J,C>
+       GETDC   A1PTR,F1PTR,0	   A<I,C>
+       GETDC   A2PTR,F2PTR,0	   A<J,C>
+*
+* COMPARE ELEMENTS IN A1PTR AND A2PTR
+*
+* was:								[PLB31]
+*      DEQBRA  A1PTR,A2PTR,(VVQ,IRQ,RIQ,IIQ,RRQ),(CVV,CIR,CRI,CII,CRR),COTH
+SORT9  SETAV   DTCL,A1PTR	   Set up data type pair	[PLB31]
+       MOVV    DTCL,A2PTR					[PLB31]
+       DEQL    DTCL,VVDTP,,CVV	   STRING-STRING		[PLB31]
+       DEQL    DTCL,IIDTP,,CII	   INTEGER-INTEGER		[PLB31]
+       DEQL    DTCL,RIDTP,,CRI	   REAL-INTEGER			[PLB31]
+       DEQL    DTCL,IRDTP,,CIR	   INTEGER-REAL			[PLB31]
+       DEQL    DTCL,RRDTP,,CRR	   REAL-REAL			[PLB31]
+       BRANCH  COTH		   None of the above		[PLB31]
+*_
+CVV    LOCSP   XSP,A1PTR	   String/String
+       LOCSP   YSP,A2PTR
+CVV1   LEXCMP  XSP,YSP,CMPGT,CMPEQ,CMPLT
+*
+CIR    INTRL   A1PTR,A1PTR	   Integer/Real
+       BRANCH  CRR		   Compare as reals
+*_
+CRI    INTRL   A2PTR,A2PTR	   Real/Integer
+       BRANCH  CRR
+*_
+CII    ACOMP   A1PTR,A2PTR,CMPGT,CMPEQ,CMPLT			[PLB31]
+*				   Compare integers
+*_
+CRR    NANCHK  A1PTR,,CRR1	   J. if R1 is NAN
+       NANCHK  A2PTR,,CMPLT	   J. if R1 OK, R2 NAN
+       RCOMP   A1PTR,A2PTR,CMPGT,CMPEQ,CMPLT
+*				   R1 and R2 OK, straight compare
+*_
+CRR1   NANCHK  A2PTR,CMPGT,CMPEQ   R1 NAN, check R2
+*_
+* V2.18a On equal case, use ascending compare in all cases
+CMPEQ  ACOMP   F1PTR,F2PTR,SWAP,CMPNXT,CMPNXT
+*				   Elements =, compare array pos.
+CMPGT  AEQLC   SCL,0,CMPNXT,SWAP   RSORT/SORT
+CMPLT  AEQLC   SCL,0,,CMPNXT
+*
+SWAP   PUTD    TPTR,A7PTR,F2PTR	   Swap pointers
+       PUTD    TPTR,LPTR,F1PTR
+*
+       INCRA   TCL,1		   K = K + 1
+*
+CMPNXT ACOMP   A7PTR,XCL,SORT11,SORT11,
+*				   J. if I >= M
+       INCRA   A7PTR,DESCR	   I = I + DESCR		[PLB31]
+       BRANCH  SORT8
+*_
+SORT11 AEQLC   TCL,0,SORT7,SORT6   K = 0?
+*_
+COTH   AEQLC   A3PTR,0,,COTH2	   If 2nd arg not field name
+       VCOMPC  A1PTR,DATSTA,,,COTH0
+*				   If not user data type
+       MOVV    DT1CL,A1PTR	   Datatype of element
+       LOCAPT  ZPTR,A3PTR,DT1CL,INTR1,
+*				   Find it in field block
+       GETDC   ZPTR,ZPTR,2*DESCR   Get offset in datastructure
+       SUM     A1PTR,A1PTR,ZPTR	   Point to real data
+       GETDC   A1PTR,A1PTR,DESCR   Get value
+       BRANCH  SORT9		   Try again
+*_
+COTH0  VCOMPC  A2PTR,DATSTA,,,COTH2
+*				   If not user data type
+       MOVV    DT1CL,A2PTR	   Datatype of element
+       LOCAPT  ZPTR,A3PTR,DT1CL,INTR1,
+*				   Find it in field block
+       GETDC   ZPTR,ZPTR,2*DESCR   Get offset in datastructure
+       SUM     A2PTR,A2PTR,ZPTR	   Point to real data
+       GETDC   A2PTR,A2PTR,DESCR   Get value
+       BRANCH  SORT9		   Try again
+*
+COTH2  VEQL    A1PTR,A2PTR,,COTH1  Other datatypes, J. if same
+       SETAV   A1PTR,A1PTR	   Types not equal, compare them
+       SETAV   A2PTR,A2PTR
+COTH1  ACOMP   A1PTR,A2PTR,CMPGT,CMPEQ,CMPLT
+*				   Compare addresses
+*_
+* Sorting complete.  Now unravel index table as copy elements from old
+* array to new.
+*
+* LPTR = Row counter
+* TPTR = Index table - 1 in new array
+* WPTR = 1st element of row being transferred in new array
+* XPTR = New array
+* YPTR = Row ptr of row being transferred in new array
+* ZPTR = Row ptr of row being transferred in old array
+* YCL  = No. columns
+* ZCL  = No. rows
+* A4PTR = offset to get from one column to another in same row
+*	(= no. rows for arrays)
+* A5PTR = offset to get from sort element to first element in row
+*
+SORT12 GETDC   XCL,XPTR,2*DESCR	   Get no. dimensions
+       MULTC   WPTR,XCL,DESCR	   Convert to address units
+       SUM     WPTR,XPTR,WPTR	   Add base and offset
+       INCRA   WPTR,3*DESCR	   Add 2 for heading + 1 for 1st row
+       MOVD    LPTR,ONECL	   Set up row counter
+       MULTC   LPTR,LPTR,DESCR	   Convert to address units	[PLB31]
+*				   Move a row:
+SORT13 GETD    ZPTR,TPTR,LPTR	   Ptr to source sort element
+       SUBTRT  ZPTR,ZPTR,A5PTR	   Ptr to first element in row
+       MOVD    YPTR,WPTR	   Index to target
+       MOVA    A6PTR,YCL	   Number of columns
+       MULTC   A6PTR,A6PTR,DESCR   Convert to address units	[PLB31]
+*				   Move all elements in this row:
+SORT14 MOVDIC  YPTR,0,ZPTR,0	   Move an element in row
+       SUM     ZPTR,ZPTR,A4PTR	   Offset to advance a column
+       SUM     YPTR,YPTR,ZCL	   Advance by length of column
+       DECRA   A6PTR,DESCR	   Count column done		[PLB31]
+       AEQLC   A6PTR,0,SORT14,	   Move another element in row
+*
+       INCRA   WPTR,DESCR	   Do next row
+       INCRA   LPTR,DESCR	   More rows left?
+       ACOMP   LPTR,ZCL,,SORT13,SORT13
+*
+       PUSH    (ZEROCL,ZEROCL,ZEROCL,ZEROCL)
+*				   Kill some pointers
+       POP     (YPTR,ZPTR,F1PTR,F2PTR)
+       BRANCH  RTXPTR
 *_
 *---------------------------------------------------------------------*
        TITLE   'Input and Output'
 *
-*      INPUT(V,U,L,N)		   [PLB4]
+*      INPUT(V,U,L,N)						[PLB4]
 *
-READ   PROC    ,		   [PLB4] INPUT(V,U,L,N)
+READ   PROC    ,		   INPUT(V,U,L,N)		[PLB4]
        RCALL   XPTR,IND,,FAIL	   Get variable
        PUSH    XPTR		   Save variable
        RCALL   YPTR,INTVAL,,FAIL   Get unit
        PUSH    YPTR		   Save unit
        RCALL   ZPTR,INTVAL,,FAIL   Get length
-       POP     (YPTR)		   [PLB4] Restore unit
+       POP     (YPTR)		   Restore unit			[PLB4]
        ACOMPC  YPTR,0,,READ5,UNTERR
 *				   Check for defaulted unit
-READ6  PUSH    (YPTR,ZPTR)	   [PLB4] Save unit, length
-       RCALL   TPTR,VARVAL,,FAIL   [PLB4] Get optional file spec!
-       LOCSP   XSP,TPTR		   [PLB4] Get specifier
-       POP     (ZPTR,YPTR,XPTR)	   [PLB4] Restore lenth, unit and variable
-       XOPENI  YPTR,XSP,FAIL	   [PLB4] Tell I/O routines about it filename
+READ6  PUSH    (YPTR,ZPTR)	   Save unit, length		[PLB4]
+       RCALL   TPTR,VARVAL,,FAIL   Get optional file spec!	[PLB4]
+       LOCSP   XSP,TPTR		   Get specifier		[PLB4]
+       POP     (ZPTR,YPTR,XPTR)	   Restore lenth, unit and variable [PLB4]
+       XOPENI  YPTR,XSP,FAIL	   Tell I/O routines about it filename [PLB4]
        ACOMPC  ZPTR,0,READ2,,LENERR
 *				   Check for defaulted length
        LOCAPT  TPTR,INSATL,YPTR,READ4
@@ -4223,19 +4538,19 @@ READ5  SETAC   YPTR,UNITI	   Set up default unit
 *_
 *---------------------------------------------------------------------*
 *
-*      OUTPUT(V,U,F,N)		   [PLB4]
+*      OUTPUT(V,U,F,N)						[PLB4]
 *
-PRINT  PROC    ,		   [PLB4] OUTPUT(V,U,F,N)
+PRINT  PROC    ,		   OUTPUT(V,U,F,N)		[PLB4]
        RCALL   XPTR,IND,,FAIL	   Get variable
        PUSH    XPTR		   Save variable
        RCALL   YPTR,INTVAL,,FAIL   Get unit
        PUSH    YPTR		   Save unit
        RCALL   ZPTR,VARVAL,,FAIL   Get format
-       PUSH    ZPTR		   [PLB4] Save format
-       RCALL   TPTR,VARVAL,,FAIL   [PLB4] Get optional filename
-       POP     (ZPTR,YPTR,XPTR)	   [PLB4] Restore format, unit and variable
-       LOCSP   XSP,TPTR		   [PLB4] Get specifier for filename
-       XOPENO  YPTR,XSP,FAIL	   [PLB4] Tell I/O routines about filename!
+       PUSH    ZPTR		   Save format			[PLB4]
+       RCALL   TPTR,VARVAL,,FAIL   Get optional filename	[PLB4]
+       POP     (ZPTR,YPTR,XPTR)	   Restore format, unit and variable [PLB4]
+       LOCSP   XSP,TPTR		   Get specifier for filename	[PLB4]
+       XOPENO  YPTR,XSP,FAIL	   Tell I/O routines about filename! [PLB4]
        ACOMPC  YPTR,0,,PRINT5,UNTERR
 PRINT6 AEQLC   ZPTR,0,PRINT2	   Check for defaulted format
        LOCAPT  TPTR,OTSATL,YPTR,PRINT4
@@ -4272,7 +4587,7 @@ ENFILE PROC    BKSPCE		   ENDFILE(N)
 REWIND PROC    BKSPCE		   REWIND(N)
        SETAC   SCL,3		   Indicate rewind
 IOOP   PUSH    SCL		   Push indicator
-       RCALL   XCL,INTVAL,,FAIL    Evaluate integer argument
+       RCALL   XCL,INTVAL,,FAIL	   Evaluate integer argument
        ACOMPC  XCL,0,,UNTERR,UNTERR
 *				   Reject negative or zero
        POP     SCL		   Restore indicator
@@ -4317,15 +4632,15 @@ PUTIN  PROC    ,		   Input procedure
        INCRA   RSTAT,1		   Increment count of reads
        STREAD  IOSP,IO3PTR,FAIL,COMP5
 *				   Perform read
-       AEQLC   TRIMCL,0,,PUTIN1    Check &INPUT
+       AEQLC   TRIMCL,0,,PUTIN1	   Check &INPUT
        TRIMSP  IOSP,IOSP	   Trim string
 PUTIN1 GETLG   IO1PTR,IOSP	   Get length			[PLB19]
        ACOMP   IO1PTR,MLENCL,INTR8				E3.9.2 [PLB19]
-       VEQLC   IO2PTR,K,,PUTIN3    CHECK FOR KEYWORD		E3.10.2
+       VEQLC   IO2PTR,K,,PUTIN3	   CHECK FOR KEYWORD		E3.10.2
        RCALL   IO1PTR,GNVARS,IO1PTR				E3.9.2
 *				   Form variable for string
 PUTIN2 PUTDC   IO2PTR,DESCR,IO1PTR				E3.10.2
-       RRTURN  IO1PTR,2 	   Return value
+       RRTURN  IO1PTR,2		   Return value
 PUTIN3 LOCSP   XSP,IO1PTR					E3.10.2
        SPCINT  IO1PTR,XSP,INTR1,PUTIN2				E3.10.2
 *_
@@ -4357,12 +4672,12 @@ PUTI   INTSPC  IOSP,IO2PTR	   Convert INTEGER to STRING
 TRACE  PROC    ,		   TRACE(V,R,T,F)
        RCALL   XPTR,IND,,FAIL	   Get name of variable
        PUSH    XPTR		   Save name
-       RCALL   YPTR,VARVUP,,FAIL   [PLB28] Get trace type
+       RCALL   YPTR,VARVUP,,FAIL   Get trace type		[PLB28]
        PUSH    YPTR		   Save type
        RCALL   WPTR,ARGVAL,,FAIL   Get tag
        PUSH    WPTR		   Save tag
-       RCALL   ZPTR,VARVUP,,FAIL   [PLB28] Get trace function
-       POP     (WPTR,YPTR,XPTR)    Restore saved arguments
+       RCALL   ZPTR,VARVUP,,FAIL   Get trace function		[PLB28]
+       POP     (WPTR,YPTR,XPTR)	   Restore saved arguments
        DEQL    YPTR,NULVCL,TRAC5   Is type defaulted??
        MOVD    YPTR,VALTRS	   Set up VALUE default
 TRAC5  LOCAPV  YPTR,TRATL,YPTR,TRAC1
@@ -4377,14 +4692,14 @@ TRAC2  SETAC   XSIZ,5*DESCR					V3.7
        RCALL   XCL,BLOCK,XSIZ	   Allocate block for code
        MOVBLK  XCL,TRCBLK,XSIZ					V3.7
        SETVC   TPTR,2		   Set up 2 arguments
-       PUTDC   XCL,1*DESCR,TPTR    Insert function descriptor
-       PUTDC   XCL,3*DESCR,XPTR    Insert name to be traced
-       PUTDC   XCL,5*DESCR,WPTR    Insert tag
+       PUTDC   XCL,1*DESCR,TPTR	   Insert function descriptor
+       PUTDC   XCL,3*DESCR,XPTR	   Insert name to be traced
+       PUTDC   XCL,5*DESCR,WPTR	   Insert tag
        GETDC   TPTR,YPTR,0	   Make entry for proper attribute
        AEQLC   TPTR,0,,TRAC4
        LOCAPT  TPTR,TPTR,XPTR,TRAC3
 *				   Locate trace
-       PUTDC   TPTR,2*DESCR,XCL    Insert new code block
+       PUTDC   TPTR,2*DESCR,XCL	   Insert new code block
        BRANCH  RETNUL		   Return
 *_
 TRAC3  RCALL   TPTR,AUGATL,(TPTR,XPTR,XCL)
@@ -4399,9 +4714,9 @@ TRAC1  DEQL    YPTR,FUNTCL,INTR30  Is type FUNCTION?
        MOVD    YPTR,TFNRLP	   Set up RETURN trace
        BRANCH  TRACEP		   Branch to subentry to do it
 *_
-TRAC4  RCALL   TPTR,BLOCK,TWOCL    Allocate new pair list
+TRAC4  RCALL   TPTR,BLOCK,TWOCL	   Allocate new pair list
        PUTDC   TPTR,DESCR,XPTR	   Insert name to be traced
-       PUTDC   TPTR,2*DESCR,XCL    Insert pointer to pseudo-code
+       PUTDC   TPTR,2*DESCR,XCL	   Insert pointer to pseudo-code
        BRANCH  TRAC6
 *_
 *---------------------------------------------------------------------*
@@ -4411,7 +4726,7 @@ TRAC4  RCALL   TPTR,BLOCK,TWOCL    Allocate new pair list
 STOPTR PROC    ,		   STOPTR(T,R)
        RCALL   XPTR,IND,,FAIL	   Get name of variable
        PUSH    XPTR		   Save name
-       RCALL   YPTR,VARVUP,,FAIL   [PLB28] Get trace respect
+       RCALL   YPTR,VARVUP,,FAIL   Get trace respect		[PLB28]
        POP     XPTR
        DEQL    YPTR,NULVCL,STOPT2  Check for defaulted respect
        MOVD    YPTR,VALTRS	   Set up VALUE as default
@@ -4438,7 +4753,7 @@ STOPT1 DEQL    YPTR,FUNTCL,INTR30  Check for FUNCTION
 *
 FENTR  PROC    ,		   Procedure to trace on CALL
        RCALL   WPTR,VARVAL,,FAIL   Get argument
-FENTR3 SETLC   PROTSP,0 	   Clear specifier
+FENTR3 SETLC   PROTSP,0		   Clear specifier
        APDSP   PROTSP,TRSTSP	   Append trace message
        INTSPC  XSP,STNOCL	   Convert &STNO to string
        APDSP   PROTSP,XSP	   Append &STNO
@@ -4447,7 +4762,7 @@ FENTR3 SETLC   PROTSP,0 	   Clear specifier
        INTSPC  XSP,LVLCL	   Convert &FNCLEVEL to string
        APDSP   PROTSP,XSP	   Append &FNCLEVEL
        APDSP   PROTSP,TRCLSP	   Append call message
-       LOCSP   XSP,WPTR 	   Get specifier for argument
+       LOCSP   XSP,WPTR		   Get specifier for argument
        GETLG   TCL,XSP		   Get length
        ACOMPC  TCL,BUFLEN,FXOVR,FXOVR
 *				   Check for excessively long string
@@ -4460,7 +4775,7 @@ FNTRLP INCRA   WCL,1		   Increment argument count
        GETDC   ZPTR,ZPTR,DESCR	   Get value
        VEQLC   ZPTR,S,,DEFTV	   Is it STRING?
        VEQLC   ZPTR,I,,DEFTI	   Is it INTEGER?
-       RCALL   A2PTR,DTREP,ZPTR    Get data type representation
+       RCALL   A2PTR,DTREP,ZPTR	   Get data type representation
        GETSPC  XSP,A2PTR,0	   Get specifier
        GETLG   SCL,XSP		   Get length
        SUM     TCL,TCL,SCL	   Total length
@@ -4469,10 +4784,10 @@ FNTRLP INCRA   WCL,1		   Increment argument count
 DEFTIA APDSP   PROTSP,XSP	   Append value
        BRANCH  DEFDTT		   Continue with next argument
 *_
-DEFTI  INTSPC  XSP,ZPTR 	   Convert INTEGER to STRING
+DEFTI  INTSPC  XSP,ZPTR		   Convert INTEGER to STRING
        BRANCH  DEFTIA		   Rejoin processing
 *_
-DEFTV  LOCSP   XSP,ZPTR 	   Get specifier
+DEFTV  LOCSP   XSP,ZPTR		   Get specifier
        GETLG   SCL,XSP		   Get length
        SUM     TCL,TCL,SCL	   Get total length
        ACOMPC  TCL,BUFLEN,FXOVR,FXOVR
@@ -4484,11 +4799,11 @@ DEFDTT APDSP   PROTSP,CMASP	   Append comma
        BRANCH  FNTRLP		   Continue processing
 *_
 FENTR4 AEQLC   WCL,1,,FENTR5	   Leave paren if no arguments
-       SHORTN  PROTSP,1 	   Delete last comma
+       SHORTN  PROTSP,1		   Delete last comma
 FENTR5 APDSP   PROTSP,RPRNSP	   Append right parenthesis
        MSTIME  ZPTR		   Get time
        SUBTRT  ZPTR,ZPTR,ETMCL	   Compute elapsed time
-       INTSPC  XSP,ZPTR 	   Convert to STRING
+       INTSPC  XSP,ZPTR		   Convert to STRING
        APDSP   PROTSP,ETIMSP	   Append time message
        APDSP   PROTSP,XSP	   Append time
        STPRNT  IOKEY,OUTBLK,PROTSP Print trace message
@@ -4506,36 +4821,36 @@ FXOVR  OUTPUT  OUTPUT,PRTOVF	   Print error message
 *      Keyword and Label Tracing
 *
 KEYTR  PROC    ,		   Procedure to trace keywords
-       SETAC   FNVLCL,1 	   Set entry indicator
+       SETAC   FNVLCL,1		   Set entry indicator
        RCALL   WPTR,VARVAL,,FAIL   Get keyword
-       LOCSP   XSP,WPTR 	   Get specifier
+       LOCSP   XSP,WPTR		   Get specifier
        RCALL   YCL,KEYT,(WPTR),(INTR10,)
 *				   Get value of keyword
-KEYTR3 SETLC   PROTSP,0 	   Clear specifier
+KEYTR3 SETLC   PROTSP,0		   Clear specifier
        APDSP   PROTSP,TRSTSP	   Append trace message
        INTSPC  TSP,STNOCL	   Convert &STNO to string
        APDSP   PROTSP,TSP	   Append &STNO
        APDSP   PROTSP,COLSP	   Append colon
-       AEQLC   FNVLCL,0,,KEYTR4    Check entry indicator
+       AEQLC   FNVLCL,0,,KEYTR4	   Check entry indicator
        APDSP   PROTSP,AMPSP	   Append ampersand
 KEYTR4 APDSP   PROTSP,XSP	   Append name of keyword
        APDSP   PROTSP,BLSP	   Append blank
-       AEQLC   FNVLCL,0,,KEYTR5    Check entry indicator
+       AEQLC   FNVLCL,0,,KEYTR5	   Check entry indicator
        INTSPC  YSP,YCL		   Convert keyword value to string
        APDSP   PROTSP,EQLSP	   Append equal sign
 KEYTR5 APDSP   PROTSP,YSP	   Append value
        MSTIME  YPTR		   Get time
        SUBTRT  YPTR,YPTR,ETMCL	   Compute elapsed time
-       INTSPC  XSP,YPTR 	   Convert time to string
+       INTSPC  XSP,YPTR		   Convert time to string
        APDSP   PROTSP,ETIMSP	   Append time message
        APDSP   PROTSP,XSP	   Append time
        STPRNT  IOKEY,OUTBLK,PROTSP Print trace message
        BRANCH  RTN2		   Return
 *_
 LABTR  PROC    KEYTR		   Procedure to trace labels
-       SETAC   FNVLCL,0 	   Set entry indicator
+       SETAC   FNVLCL,0		   Set entry indicator
        RCALL   YPTR,VARVAL,,FAIL   Get label name
-       LOCSP   YSP,YPTR 	   Get specifier
+       LOCSP   YSP,YPTR		   Get specifier
        SETSP   XSP,XFERSP	   Set up message specifier
        BRANCH  KEYTR3		   Join common processing
 *_
@@ -4545,16 +4860,16 @@ LABTR  PROC    KEYTR		   Procedure to trace labels
 *
 TRPHND PROC    ,		   Trace handling procedure
        POP     ATPTR		   Restore trace
-       DECRA   TRAPCL,1 	   Decrement &TRACE
+       DECRA   TRAPCL,1		   Decrement &TRACE
        PUSH    (LSTNCL,STNOCL,FRTNCL,OCBSCL,OCICL,TRAPCL,TRACL)
 *				   Save system descriptors
        GETDC   OCBSCL,ATPTR,2*DESCR    NEW CODE BASE
 *				   Get new code base
        SETAC   OCICL,DESCR	   Set up offset
        GETD    XPTR,OCBSCL,OCICL   Get function descriptor
-       SETAC   TRAPCL,0 	   Set &TRACE to 0
+       SETAC   TRAPCL,0		   Set &TRACE to 0
        SETAC   TRACL,0		   Set &FTRACE to 0
-       RCALL   ,INVOKE,XPTR,(,) 				E3.3.1
+       RCALL   ,INVOKE,XPTR,(,)					E3.3.1
 *				   Evaluate function
        POP     (TRACL,TRAPCL,OCICL,OCBSCL,FRTNCL,STNOCL,LSTNCL)
 *				   Restore system descriptors
@@ -4565,19 +4880,19 @@ TRPHND PROC    ,		   Trace handling procedure
 *      Value Tracing
 *
 VALTR  PROC    ,		   Tracing procedures
-       SETAC   FNVLCL,1 	   Note entry
+       SETAC   FNVLCL,1		   Note entry
 VALTR2 RCALL   XPTR,IND,,FAIL	   Get variable to be traced
        PUSH    XPTR		   Save name
        RCALL   ZPTR,VARVAL,,FAIL   Get tag
        POP     XPTR		   Restore variable
-VALTR4 SETLC   TRACSP,0 	   Clear specifier
+VALTR4 SETLC   TRACSP,0		   Clear specifier
        APDSP   TRACSP,TRSTSP	   Append trace message
        INTSPC  XSP,STNOCL	   Convert &STNO to string
        APDSP   TRACSP,XSP	   Append &STNO
        APDSP   TRACSP,COLSP	   Append colon
-       AEQLC   FNVLCL,0,,FNEXT1    Check entry indicator
+       AEQLC   FNVLCL,0,,FNEXT1	   Check entry indicator
        VEQLC   XPTR,S,DEFDT	   Is variable a string?
-VALTR3 LOCSP   XSP,XPTR 	   Get specifier
+VALTR3 LOCSP   XSP,XPTR		   Get specifier
        GETLG   TCL,XSP		   Get length
        ACOMPC  TCL,BUFLEN,VXOVR,VXOVR
 *				   Check for excessively long name
@@ -4591,7 +4906,7 @@ VALTR1 APDSP   TRACSP,XSP	   Append name of variable
 TRI2   APDSP   TRACSP,XSP	   Append value
        BRANCH  TRPRT		   Join common processing
 *_
-TRV    LOCSP   XSP,YPTR 	   Get specifier
+TRV    LOCSP   XSP,YPTR		   Get specifier
        GETLG   SCL,XSP		   Get length
        SUM     TCL,TCL,SCL	   Compute total length
        ACOMPC  TCL,BUFLEN,VXOVR,VXOVR
@@ -4601,20 +4916,20 @@ TRV    LOCSP   XSP,YPTR 	   Get specifier
        APDSP   TRACSP,QTSP	   Append quote
 TRPRT  MSTIME  YPTR		   Get time
        SUBTRT  YPTR,YPTR,ETMCL	   Compute time in interpreter
-       INTSPC  XSP,YPTR 	   Convert to STRING
+       INTSPC  XSP,YPTR		   Convert to STRING
        APDSP   TRACSP,ETIMSP	   Append time message
        APDSP   TRACSP,XSP	   Append time
        STPRNT  IOKEY,OUTBLK,TRACSP Print trace message
        BRANCH  RTNUL3		   Return
 *_
-TRI    INTSPC  XSP,YPTR 	   Convert INTEGER to STRING
+TRI    INTSPC  XSP,YPTR		   Convert INTEGER to STRING
        BRANCH  TRI2		   Join processing
 *_
-DEFDT  LOCSP   XSP,ZPTR 	   Get specifier for tag
+DEFDT  LOCSP   XSP,ZPTR		   Get specifier for tag
        BRANCH  VALTR1		   Join processing
 *_
 FNEXTR PROC    VALTR		   Return tracing procedure
-       SETAC   FNVLCL,0 	   Note entry
+       SETAC   FNVLCL,0		   Note entry
        BRANCH  VALTR2		   Join processing
 *_
 FNEXT1 APDSP   TRACSP,TRLVSP	   Append level message
@@ -4628,7 +4943,7 @@ FNEXT1 APDSP   TRACSP,TRLVSP	   Append level message
        APDSP   TRACSP,OFSP	   Append ' OF '
        DEQL    RETPCL,FRETCL,VALTR3
 *				   Check for FRETURN
-       LOCSP   XSP,XPTR 	   Get specifier for function name
+       LOCSP   XSP,XPTR		   Get specifier for function name
        GETLG   TCL,XSP		   Get length
        ACOMPC  TCL,BUFLEN,VXOVR,VXOVR
 *				   Check for excessively long string
@@ -4636,283 +4951,12 @@ FNEXT1 APDSP   TRACSP,TRLVSP	   Append level message
        BRANCH  TRPRT		   Join common processing
 *_				   FTRACE call trace
 FNEXT2 PROC    VALTR		   Note entry
-       SETAC   FNVLCL,0 	   Restore function name
+       SETAC   FNVLCL,0		   Restore function name
        POP     XPTR		   Join common processing
        BRANCH  VALTR4
 *_
 VXOVR  OUTPUT  OUTPUT,PRTOVF	   Print error message
        BRANCH  RTNUL3		   Return
-*_
-*---------------------------------------------------------------------*
-       TITLE   'SORT Function'
-*
-* New [PLB31] from SNOBOL4+
-*	RSORT(T,C), SORT(T,C)
-*
-*
-RSORT  PROC    ,                   RSORT function
-       SETAC   SCL,1
-       BRANCH  SORT1
-*_
-SORT   PROC    RSORT               SORT function
-       SETAC   SCL,0
-*
-SORT1  SETAV   WCL,INCL            Get arg count
-       PUSH    (WCL,SCL)           V1.7A Protect SCL
-       RCALL   XPTR,ARGVAL,,FAIL   Get first argument
-       MOVD    WPTR,XPTR           Save copy
-       VEQLC   XPTR,A,,SORT2       J. if array
-       VEQLC   XPTR,T,NONARY       Error if not table or array
-       RCALL   XPTR,ICNVTA,XPTR,(FAIL)
-*                                  Cvt table to array
-*
-SORT2  POP     (SCL,WCL)           R/SORT flag, arg count
-       GETDC   XCL,XPTR,2*DESCR    No. of dimensions in array
-       MULTC   YPTR,XCL,DESCR      Convert to address units
-       SUM     YPTR,XPTR,YPTR      Add base and offset
-       INCRA   YPTR,2*DESCR        Add 2 for heading
-       MOVD    YCL,ONECL           Assume vector - 1 column
-       ACOMPC  XCL,2,INTR30,,SORT3 No. dimensions. J. if vector
-       GETDC   YCL,XPTR,3*DESCR
-       SETAV   YCL,YCL             2-d array; Get no. of columns
-*
-SORT3  GETDC   ZCL,YPTR,0
-       SETAV   ZCL,ZCL             Column length
-       MULTC   ZCL,ZCL,DESCR       Convert to address units	[PLB31]
-       MOVD    ZPTR,YPTR           Assume one arg to function
-       ACOMPC  WCL,2,ARGNER,,SORT5 J. if 1 arg
-       PUSH    (WPTR,XPTR,YPTR,ZPTR,XCL,YCL,ZCL,SCL)
-*                                  2 args. save everything
-       RCALL   WCL,ARGVAL,,FAIL    2.13 Get column no. or field name
-       POP     (SCL,ZCL,YCL,XCL,ZPTR,YPTR,XPTR,WPTR)
-*                                  Restore
-       MOVD    A3PTR,ZEROCL        Assume no Field arg
-* was:								[PLB31]
-*      VEQBRA  WCL,(I,,SORT3C,S,,SORT3B,R,INTR30,SORT3A)	[PLB31]
-       VEQLC   WCL,I,,SORT3C					[PLB31]
-       VEQLC   WCL,S,,SORT3B					[PLB31]
-       VEQLC   WCL,R,INTR30,SORT3A				[PLB31]
-*_
-SORT3A RLINT   WCL,WCL,INTR30,SORT3C
-*                                  Real, convert to Int
-SORT3B LOCSP   XSP,WCL             String
-       SPCINT  WCL,XSP,,SORT3C     Convert to int?
-       SPREAL  WCL,XSP,,SORT3A     Convert to real?
-       AEQLC   XCL,1,INTR30        Possible field function, must be 1-d
-       LOCAPV  WCL,FNCPL,WCL,INTR30
-*                                  Field function?
-       GETDC   WCL,WCL,DESCR       Possibly, get function descriptor
-       GETDC   TCL,WCL,0           Get procedure definition
-       AEQL    TCL,FLDCL,INTR30    Not field function
-       GETDC   A3PTR,WCL,DESCR     Field Block
-       MOVD    WCL,ONECL           Sort on column 1
-*
-SORT3C AEQLC   XCL,1,SORT4,        Jump if 2-d array
-       AEQLC   WCL,1,INTR30,SORT5  1-D, 2nd arg must=1 if present
-*_
-SORT4  GETDC   TCL,XPTR,3*DESCR    Array. Get column bounds
-       SUBTRT  WCL,WCL,TCL,INTR30,SORT4A
-*                                  Subtract 2nd dim. lower bound
-SORT4A ACOMPC  WCL,0,,,INTR30      Column offset must be >=0
-       ACOMP   WCL,YCL,INTR30,INTR30
-*                                  Col. offset must be < no. cols.
-       MULT    WCL,WCL,ZCL,INTR30  Offset * column length
-       SUM     ZPTR,YPTR,WCL       Ptr to col. block being sorted
-*
-SORT5  SETAC   XCL,0               Prepare to build index
-       VEQLC   WPTR,A,,SORTA       J. if source was array
-*
-* Source was a table.
-*
-       GETSIZ  TCL,XPTR            Size of new array
-       MULTC   TCL,TCL,DESCR       Convert to address units	[PLB31]
-       SUM     TPTR,XPTR,TCL       Last element of new array
-       SUBTRT  TPTR,TPTR,ZCL       - no. rows = start of index table-1
-*                                  Assume SORT(Table,1)
-       SETAC   A4PTR,-DESCR        Table advance to get to 2nd col. elt [PLB31]
-       SETAC   A5PTR,0             Offset to element in 1st column
-       AEQL    ZPTR,YPTR,,SORTT1   J. if sorting on Table(1)	[PLB31]
-       SETAC   A5PTR,-DESCR        SORT(Table,2). Get to 1st element [PLB31]
-*
-SORTT1 GETSIZ  WCL,WPTR            Get size of next table extent
-       DECRA   WCL,2*DESCR         Less special words at end
-SORTT4 SUM     WCL,WPTR,WCL        End of extent pointer
-SORTT2 GETDC   TCL,WPTR,DESCR      Get value entry
-       DEQL    TCL,NULVCL,,SORTT3  Ignore null entries		[PLB31]
-       INCRA   XCL,DESCR           Next index entry		[PLB31]
-       SUM     A6PTR,WPTR,A5PTR    Pointer to sort element is
-       INCRA   A6PTR,2*DESCR       WPTR + 2 + A5PTR   (0 or -1)
-       PUTD    TPTR,XCL,A6PTR      Add index entry
-       AEQL    XCL,ZCL,,SORTGO     J. if index fully loaded.	[PLB31]
-SORTT3 INCRA   WPTR,2*DESCR        Next table entry
-       AEQL    WCL,WPTR,SORTT2     If more in this extent
-       GETDC   WPTR,WCL,2*DESCR    Link to next extent
-       BRANCH  SORTT1              Process it
-*_
-* Source was an array.  Get new array to sort into.
-*
-SORTA  GETSIZ  WCL,WPTR            Get size of old array
-       SETVC   WCL,A               Allocating array
-       RCALL   XPTR,BLOCK,WCL      Get new array
-       SETAC   A4PTR,4*DESCR       Size of header and dimensions
-       MOVBLK  XPTR,WPTR,A4PTR     Copy header descriptors
-       SUM     TPTR,XPTR,WCL       Last element of new array
-       SUBTRT  TPTR,TPTR,ZCL       - no. rows = start of index table-1
-*
-       SUBTRT  A5PTR,ZPTR,YPTR     Offset to first element in row
-       RESETF  A5PTR,PTR           V2.03 Clear pointer flag
-       MOVA    A4PTR,ZCL           Offset to advance a column
-SORTA1 INCRA   XCL,DESCR           Next index entry			[PLB31]
-       INCRA   ZPTR,DESCR          Next sort element
-       PUTD    TPTR,XCL,ZPTR       Add to index
-       AEQL    XCL,ZCL,SORTA1      Loop on no. of rows.			[PLB31]
-*
-*
-* XPTR = New Array, YPTR = 1st element-1 in old array
-* TPTR = Index table - 1 in new array
-* SCL = 1/0 = RSORT/SORT, YCL = NC = no. columns, ZCL = N = no. rows
-* A3PTR = Field Block if second argument was a field name.
-*
-* Setup: A6PTR = G, XCL = M, TCL = K, A7PTR = I, LPTR = J
-* Scratch: A1PTR, A2PTR, F1PTR, F2PTR
-*
-SORTGO MOVA    A6PTR,ZCL           G = N
-*
-SORT6  ACOMPC  A6PTR,DESCR,,SORT12,SORT12
-*                                  Done if G <= DESCR		[PLB31]
-       DIVIDE  A6PTR,A6PTR,TWOCL   G = G/2
-       MULTC   A6PTR,A6PTR,DESCR   Convert back to address units [PLB31]
-       SUBTRT  XCL,ZCL,A6PTR       M = N - G
-*
-SORT7  MOVD    TCL,ZEROCL          K = 0
-       SETAC   A7PTR,DESCR         I = DESCR			[PLB31]
-*
-SORT8  SUM     LPTR,A7PTR,A6PTR    J = I + G
-       GETD    F1PTR,TPTR,A7PTR    .A<I,C>
-       GETD    F2PTR,TPTR,LPTR     .A<J,C>
-       GETDC   A1PTR,F1PTR,0       A<I,C>
-       GETDC   A2PTR,F2PTR,0       A<J,C>
-*
-* COMPARE ELEMENTS IN A1PTR AND A2PTR
-*
-* was:								[PLB31]
-*      DEQBRA  A1PTR,A2PTR,(VVQ,IRQ,RIQ,IIQ,RRQ),(CVV,CIR,CRI,CII,CRR),COTH
-SORT9  SETAV   DTCL,A1PTR	   Set up data type pair	[PLB31]
-       MOVV    DTCL,A2PTR					[PLB31]
-       DEQL    DTCL,VVDTP,,CVV     STRING-STRING		[PLB31]
-       DEQL    DTCL,IIDTP,,CII     INTEGER-INTEGER		[PLB31]
-       DEQL    DTCL,RIDTP,,CRI     REAL-INTEGER			[PLB31]
-       DEQL    DTCL,IRDTP,,CIR     INTEGER-REAL			[PLB31]
-       DEQL    DTCL,RRDTP,,CRR     REAL-REAL			[PLB31]
-       BRANCH  COTH		   None of the above		[PLB31]
-*_
-CVV    LOCSP   XSP,A1PTR           String/String
-       LOCSP   YSP,A2PTR
-CVV1   LEXCMP  XSP,YSP,CMPGT,CMPEQ,CMPLT
-*
-CIR    INTRL   A1PTR,A1PTR         Integer/Real
-       BRANCH  CRR                 Compare as reals
-*_
-CRI    INTRL   A2PTR,A2PTR         Real/Integer
-       BRANCH  CRR
-*_
-CII    ACOMP   A1PTR,A2PTR,CMPGT,CMPEQ,CMPLT			[PLB31]
-*                                  Compare integers
-*_
-CRR    NANCHK  A1PTR,,CRR1         J. if R1 is NAN
-       NANCHK  A2PTR,,CMPLT        J. if R1 OK, R2 NAN
-       RCOMP   A1PTR,A2PTR,CMPGT,CMPEQ,CMPLT
-*                                  R1 and R2 OK, straight compare
-*_
-CRR1   NANCHK  A2PTR,CMPGT,CMPEQ   R1 NAN, check R2
-*_
-* V2.18a On equal case, use ascending compare in all cases
-CMPEQ  ACOMP   F1PTR,F2PTR,SWAP,CMPNXT,CMPNXT
-*                                  Elements =, compare array pos.
-CMPGT  AEQLC   SCL,0,CMPNXT,SWAP   RSORT/SORT
-CMPLT  AEQLC   SCL,0,,CMPNXT
-*
-SWAP   PUTD    TPTR,A7PTR,F2PTR    Swap pointers
-       PUTD    TPTR,LPTR,F1PTR
-*
-       INCRA   TCL,1               K = K + 1
-*
-CMPNXT ACOMP   A7PTR,XCL,SORT11,SORT11,
-*                                  J. if I >= M
-       INCRA   A7PTR,DESCR         I = I + DESCR		[PLB31]
-       BRANCH  SORT8
-*_
-SORT11 AEQLC   TCL,0,SORT7,SORT6   K = 0?
-*_
-COTH   AEQLC   A3PTR,0,,COTH2      If 2nd arg not field name
-       VCOMPC  A1PTR,DATSTA,,,COTH0
-*                                  If not user data type
-       MOVV    DT1CL,A1PTR         Datatype of element
-       LOCAPT  ZPTR,A3PTR,DT1CL,INTR1,
-*                                  Find it in field block
-       GETDC   ZPTR,ZPTR,2*DESCR   Get offset in datastructure
-       SUM     A1PTR,A1PTR,ZPTR    Point to real data
-       GETDC   A1PTR,A1PTR,DESCR   Get value
-       BRANCH  SORT9               Try again
-*_
-COTH0  VCOMPC  A2PTR,DATSTA,,,COTH2
-*                                  If not user data type
-       MOVV    DT1CL,A2PTR         Datatype of element
-       LOCAPT  ZPTR,A3PTR,DT1CL,INTR1,
-*                                  Find it in field block
-       GETDC   ZPTR,ZPTR,2*DESCR   Get offset in datastructure
-       SUM     A2PTR,A2PTR,ZPTR    Point to real data
-       GETDC   A2PTR,A2PTR,DESCR   Get value
-       BRANCH  SORT9               Try again
-*
-COTH2  VEQL    A1PTR,A2PTR,,COTH1  Other datatypes, J. if same
-       SETAV   A1PTR,A1PTR         Types not equal, compare them
-       SETAV   A2PTR,A2PTR
-COTH1  ACOMP   A1PTR,A2PTR,CMPGT,CMPEQ,CMPLT
-*                                  Compare addresses
-*_
-* Sorting complete.  Now unravel index table as copy elements from old
-* array to new.
-*
-* LPTR = Row counter
-* TPTR = Index table - 1 in new array
-* WPTR = 1st element of row being transferred in new array
-* XPTR = New array
-* YPTR = Row ptr of row being transferred in new array
-* ZPTR = Row ptr of row being transferred in old array
-* YCL  = No. columns
-* ZCL  = No. rows
-* A4PTR = offset to get from one column to another in same row
-*	(= no. rows for arrays)
-* A5PTR = offset to get from sort element to first element in row
-*
-SORT12 GETDC   XCL,XPTR,2*DESCR    Get no. dimensions
-       MULTC   WPTR,XCL,DESCR      Convert to address units
-       SUM     WPTR,XPTR,WPTR      Add base and offset
-       INCRA   WPTR,3*DESCR        Add 2 for heading + 1 for 1st row
-       MOVD    LPTR,ONECL          Set up row counter
-       MULTC   LPTR,LPTR,DESCR     Convert to address units	[PLB31]
-*                                  Move a row:
-SORT13 GETD    ZPTR,TPTR,LPTR      Ptr to source sort element
-       SUBTRT  ZPTR,ZPTR,A5PTR     Ptr to first element in row
-       MOVD    YPTR,WPTR           Index to target
-       MOVA    A6PTR,YCL           Number of columns
-       MULTC   A6PTR,A6PTR,DESCR   Convert to address units	[PLB31]
-*                                  Move all elements in this row:
-SORT14 MOVDIC  YPTR,0,ZPTR,0       Move an element in row
-       SUM     ZPTR,ZPTR,A4PTR     Offset to advance a column
-       SUM     YPTR,YPTR,ZCL       Advance by length of column
-       DECRA   A6PTR,DESCR         Count column done		[PLB31]
-       AEQLC   A6PTR,0,SORT14,     Move another element in row
-*
-       INCRA   WPTR,DESCR          Do next row
-       INCRA   LPTR,DESCR          More rows left?
-       ACOMP   LPTR,ZCL,,SORT13,SORT13
-*
-       PUSH    (ZEROCL,ZEROCL,ZEROCL,ZEROCL)
-*                                  Kill some pointers
-       POP     (YPTR,ZPTR,F1PTR,F2PTR)
-       BRANCH  RTXPTR
 *_
 *---------------------------------------------------------------------*
        TITLE   'Other Operations'
@@ -4926,7 +4970,7 @@ ASGN   PROC    ,		   X = Y
 ASGNV  VEQLC   XPTR,K,,ASGNIC	   Check for keyword subject
        INCRA   OCICL,DESCR	   Increment offset in object code
        GETD    YPTR,OCBSCL,OCICL   Get object code descriptor
-       TESTF   YPTR,FNC,,ASGNCV    Test for function descriptor
+       TESTF   YPTR,FNC,,ASGNCV	   Test for function descriptor
 ASGNVN AEQLC   INSW,0,,ASGNV1	   Check &INPUT
        LOCAPV  ZPTR,INATL,YPTR,ASGNV1
 *				   Look for input association
@@ -4944,10 +4988,10 @@ ASGN1  ACOMPC  TRAPCL,0,,RTYPTR,RTYPTR				[PLB32]
 *				   Return value, imbedded asgn	[PLB32]
        LOCAPT  ATPTR,TVALL,XPTR,RTYPTR				[PLB32]
 *				   Look for VALUE trace
-       PUSH    YPTR		   				[PLB32]
-       RCALL   ,TRPHND,ATPTR,	   				E3.3.1 [PLB32]
-       POP     YPTR		   				[PLB32]
-       BRANCH  RTYPTR		   				[PLB32]
+       PUSH    YPTR						[PLB32]
+       RCALL   ,TRPHND,ATPTR,					E3.3.1 [PLB32]
+       POP     YPTR						[PLB32]
+       BRANCH  RTYPTR						[PLB32]
 *_
 ASGNC  RCALL   XPTR,INVOKE,(XPTR),(FAIL,ASGNV,NEMO)
 *_
@@ -4987,7 +5031,7 @@ CON4R  REALST  REALSP,XPTR	   Convert REAL to STRING
        RCALL   XPTR,GENVAR,XSPPTR,CON5
 *				   Generate variable
 *_
-CON4I  INTSPC  ZSP,XPTR 	   Convert INTEGER to STRING
+CON4I  INTSPC  ZSP,XPTR		   Convert INTEGER to STRING
        RCALL   XPTR,GENVAR,(ZSPPTR)
 *				   Generate variable
 CON5   VEQLC   YPTR,S,,CON7	   Is second STRING?
@@ -5006,7 +5050,7 @@ CON5R  REALST  REALSP,YPTR	   Convert REAL to STRING
        RCALL   YPTR,GENVAR,YSPPTR,CON7
 *				   Generate variable
 *_
-CON5I  INTSPC  ZSP,YPTR 	   Convert INTEGER to STRING
+CON5I  INTSPC  ZSP,YPTR		   Convert INTEGER to STRING
        RCALL   YPTR,GENVAR,(ZSPPTR)
 *				   Generate variable
 CON7   SETAV   DTCL,XPTR	   Get data type of first
@@ -5017,20 +5061,20 @@ CON7   SETAV   DTCL,XPTR	   Get data type of first
        DEQL    DTCL,PPDTP,INTR1,CONPP
 *				   Check for PATTERN-PATTERN
 *_
-CONVV  LOCSP   XSP,XPTR 	   Specifier for first string
-       LOCSP   YSP,YPTR 	   Specifier for second string
+CONVV  LOCSP   XSP,XPTR		   Specifier for first string
+       LOCSP   YSP,YPTR		   Specifier for second string
        GETLG   XCL,XSP		   Length of first string
        GETLG   YCL,YSP		   Length of second string
        SUM     XCL,XCL,YCL	   Total length
-       ACOMP   XCL,MLENCL,INTR8    Check against &MAXLNGTH
+       ACOMP   XCL,MLENCL,INTR8	   Check against &MAXLNGTH
        RCALL   ZPTR,CONVAR,(XCL)   Allocate space for string
-       LOCSP   TSP,ZPTR 	   Get specifier to allocated space
+       LOCSP   TSP,ZPTR		   Get specifier to allocated space
        SETLC   TSP,0		   Clear length
        APDSP   TSP,XSP		   Move in first string
        APDSP   TSP,YSP		   Append second string
        BRANCH  GENVSZ		   Generate variable
 *_
-CONVP  LOCSP   TSP,XPTR 	   Specifier to string
+CONVP  LOCSP   TSP,XPTR		   Specifier to string
        GETLG   TMVAL,TSP	   Get length of string
        RCALL   TPTR,BLOCK,LNODSZ   Allocate block for pattern
        MAKNOD  XPTR,TPTR,TMVAL,ZEROCL,CHRCL,XPTR
@@ -5048,7 +5092,7 @@ CONPP  GETSIZ  XSIZ,XPTR	   Get size of first pattern
 *				   Copy in second pattern
        BRANCH  RTZPTR		   Return pattern as value
 *_
-CONPV  LOCSP   TSP,YPTR 	   Get specifier to string
+CONPV  LOCSP   TSP,YPTR		   Get specifier to string
        GETLG   TMVAL,TSP	   Get length of string
        RCALL   TPTR,BLOCK,LNODSZ   Allocate block for pattern
        MAKNOD  YPTR,TPTR,TMVAL,ZEROCL,CHRCL,YPTR
@@ -5067,9 +5111,9 @@ IND    PROC    ,		   $X
        VEQLC   XPTR,K,INTR1,RTXNAM KEYWORD is like NAME
 *_
 INDV   AEQLC   XPTR,0,,NONAME
-*				   [PLB29] Be sure string is not null
+*				   Be sure string is not null	[PLB29]
        AEQLC   CASECL,0,VPXPTR,RTXNAM
-*				   [PLB30] Return name
+*				   Return name			[PLB30]
 *_
 *---------------------------------------------------------------------*
 *
@@ -5086,7 +5130,7 @@ KEYN   LOCAPV  XPTR,KNATL,XPTR,KEYV
 *_
 KEYV   LOCAPV  ATPTR,KVATL,XPTR,UNKNKW
 *				   Look up X on protected list
-       GETDC   ZPTR,ATPTR,DESCR    Get value
+       GETDC   ZPTR,ATPTR,DESCR	   Get value
        BRANCH  RTZPTR		   Return by value
 *_
 KEYC   RCALL   XPTR,INVOKE,(XPTR),(FAIL,KEYN,NEMO)
@@ -5130,7 +5174,7 @@ NMD1   ACOMP   TCL,NAMICL,INTR13,RTN2
        GETDC   TVAL,TPTR,DESCR+SPEC
 *				   get variable
        GETLG   XCL,TSP		   Get length
-       ACOMP   XCL,MLENCL,INTR8    Check &MAXLNGTH
+       ACOMP   XCL,MLENCL,INTR8	   Check &MAXLNGTH
        VEQLC   TVAL,E,,NAMEXN	   Is Variable EXPRESSION?
 NMD5   VEQLC   TVAL,K,,NMDIC	   Is variable KEYWORD?
        RCALL   VVAL,GENVAR,(TSPPTR)
@@ -5197,8 +5241,8 @@ LGT    PROC    ,		   LGT(X,Y)
        POP     XPTR		   Restore first argument
        AEQLC   XPTR,0,,FAIL	   Null is not greater than anything
        AEQLC   YPTR,0,,RETNUL	   Similarly for second argument
-       LOCSP   XSP,XPTR 	   Get specifier to first argument
-       LOCSP   YSP,YPTR 	   Get specifier to second argument
+       LOCSP   XSP,XPTR		   Get specifier to first argument
+       LOCSP   YSP,YPTR		   Get specifier to second argument
        LEXCMP  XSP,YSP,RETNUL,FAIL,FAIL
 *				   Compare lexically
 *_
@@ -5208,7 +5252,7 @@ LGT    PROC    ,		   LGT(X,Y)
 *
 NEG    PROC    ,		   \X
        PUSH    (OCBSCL,OCICL)	   Save object code position
-       RCALL   ,ARGVAL,,(,FAIL)    Fail on success
+       RCALL   ,ARGVAL,,(,FAIL)	   Fail on success
        POP     (OCICL,OCBSCL)	   Restore object code position
        RCALL   ,CODSKP,(ONECL),RETNUL
 *				   Skip argument and return
@@ -5227,8 +5271,8 @@ QUES   PROC    ,		   ?X
 *      CHAR(N)
 *
 CHAR   PROC    ,		   CHAR(N)
-       RCALL   XCL,INTVAL,,FAIL    Get argument
-       ACOMPC  XCL,0,,,LENERR      Must be > 0
+       RCALL   XCL,INTVAL,,FAIL	   Get argument
+       ACOMPC  XCL,0,,,LENERR	   Must be > 0
        ACOMPC  XCL,256,INTR30,INTR30,
 *				   Must be <256 (ALPHSZ)
        RCALL   XPTR,CONVAR,ONECL,  Allocate space for result
@@ -5252,24 +5296,24 @@ RPAD   PROC    ,		   RPAD(S,N,C)
        SETAC   SCL,1
 RPAD0  PUSH    SCL		   Protect SCL
        RCALL   XPTR,VARVAL,,FAIL   Get 1st arg=string
-       PUSH    XPTR                Save string
+       PUSH    XPTR		   Save string
        RCALL   ZPTR,INTVAL,,FAIL   Get 2rd arg=integer length
        PUSH    ZPTR
        RCALL   WPTR,VARVAL,,FAIL   Get pad character if any
        POP     (ZPTR,XPTR,SCL)	   Restore length, string, direction
-       LOCSP   VSP,WPTR            Pad character
-       LOCSP   XSP,XPTR            Subject string
+       LOCSP   VSP,WPTR		   Pad character
+       LOCSP   XSP,XPTR		   Subject string
        ACOMP   ZPTR,MLENCL,INTR8   Check against &MAXLNGTH
        ACOMP   ZEROCL,ZPTR,LENERR  Make sure length not minus
-       GETLG   YPTR,XSP            Subject string length
+       GETLG   YPTR,XSP		   Subject string length
        ACOMP   YPTR,ZPTR,RTXPTR,RTXPTR
 *				   Return subject if already long enough
-RPADOK MOVA    XCL,ZPTR            Copy length (for GENVSZ)
-       RCALL   ZPTR,CONVAR,XCL     Allocate space for string
-       LOCSP   TSP,ZPTR            Get specifier
+RPADOK MOVA    XCL,ZPTR		   Copy length (for GENVSZ)
+       RCALL   ZPTR,CONVAR,XCL	   Allocate space for string
+       LOCSP   TSP,ZPTR		   Get specifier
        XCALLC  pad,(SCL,TSP,XSP,VSP)
 *				   Do function (dir,out,subj,pad)
-       BRANCH  GENVSZ              Return the string
+       BRANCH  GENVSZ		   Return the string
 *_
 *---------------------------------------------------------------------*
        TITLE   'Other Functions'
@@ -5277,16 +5321,16 @@ RPADOK MOVA    XCL,ZPTR            Copy length (for GENVSZ)
 *      APPLY(F,A1,...AN)
 *
 APPLY  PROC    ,		   APPLY(F,A1,...,AN)
-       SETAV   XCL,INCL 	   Get count of arguments
+       SETAV   XCL,INCL		   Get count of arguments
        DECRA   XCL,1		   Decrement to skip function name
        ACOMPC  XCL,1,,,ARGNER					E3.3.3
        PUSH    XCL		   Save argument count
-       RCALL   XPTR,VARVUP,,FAIL   [PLB28] Get function name
+       RCALL   XPTR,VARVUP,,FAIL   Get function name		[PLB28]
        POP     XCL		   Restore argument count
        LOCAPV  XPTR,FNCPL,XPTR,UNDF
 *				   Locate function
        GETDC   INCL,XPTR,DESCR	   Get function descriptor
-       SETVA   INCL,XCL 	   Insert actual number of arguments
+       SETVA   INCL,XCL		   Insert actual number of arguments
        RCALL   ZPTR,INVOKE,(INCL),(FAIL,,RTZPTR)
        MOVD    XPTR,ZPTR	   Return by name
        BRANCH  RTXNAM
@@ -5312,9 +5356,9 @@ LOCAL  PROC    ARG		   LOCAL(F,N)
 FIELDS PROC    ARG		   FIELD(F,N)
        PUSH    (ZEROCL,ZEROCL,DATCL)
 *				   Save FIELD indicators
-ARG1   RCALL   XPTR,VARVUP,,FAIL   [PLB28] Get function name
+ARG1   RCALL   XPTR,VARVUP,,FAIL   Get function name		[PLB28]
        PUSH    XPTR		   Save function name
-       RCALL   XCL,INTVAL,,FAIL    Get number
+       RCALL   XCL,INTVAL,,FAIL	   Get number
        ACOMP   ZEROCL,XCL,FAIL,FAIL
 *				   Verify positive number
        POP     XPTR		   Restore function name
@@ -5334,7 +5378,7 @@ ARG2   LOCAPV  XPTR,FNCPL,XPTR,INTR30
        MOVD    ZCL,YCL		   Get working copy
        BRANCH  ARG5		   Branch to continue processing
 *_
-ARG4   GETSIZ  ZCL,XPTR 	   Get size of block
+ARG4   GETSIZ  ZCL,XPTR		   Get size of block
        POP     ALCL		   Restore entry indicator
        AEQLC   ALCL,0,,ARG5	   Check entry type
        SUM     XCL,XCL,YCL	   Skip formal arguments
@@ -5352,7 +5396,7 @@ CLEAR  PROC    ,		   CLEAR()
 CLEAR1 ACOMP   DMPPTR,OBEND,RETNUL Check for end
        INCRA   DMPPTR,DESCR	   Update for next bin
        MOVD    YPTR,DMPPTR	   Get working copy
-CLEAR2 GETAC   YPTR,YPTR,LNKFLD    Get next variable
+CLEAR2 GETAC   YPTR,YPTR,LNKFLD	   Get next variable
        AEQLC   YPTR,0,,CLEAR1	   Check for end of chain
        PUTDC   YPTR,DESCR,NULVCL   Assign null value
        BRANCH  CLEAR2		   Continue
@@ -5363,14 +5407,14 @@ CLEAR2 GETAC   YPTR,YPTR,LNKFLD    Get next variable
 *	(e1, e2, ... , en)	(Selection - from SPITBOL) ; 
 *
 CMA    PROC    ,
-       SETAV   ZCL,INCL            Get number of arguments
-CMA1   AEQLC   ZCL,0,,FAIL         Fail if all arguments failed
+       SETAV   ZCL,INCL		   Get number of arguments
+CMA1   AEQLC   ZCL,0,,FAIL	   Fail if all arguments failed
        PUSH    (ZCL,OCBSCL,OCICL)  Save count, code position
        RCALL   XPTR,ARGVAL,,CMA2   Evaluate next argument
        POP     (OCICL,OCBSCL,ZCL)  Success!    Restore count and position
        RCALL   ,CODSKP,ZCL,RTXPTR  Skip this and remaining args
 CMA2   POP     (OCICL,OCBSCL,ZCL)  Arg evaluation failed
-       DECRA   ZCL,1               One less arg left
+       DECRA   ZCL,1		   One less arg left
        RCALL   ,CODSKP,ONECL,CMA1  Skip this arg, try next one
 *_
 *---------------------------------------------------------------------*
@@ -5397,8 +5441,8 @@ COPY   PROC    ,		   COPY(X)
        VEQLC   XPTR,K,,INTR1	   KEYWORD (NAME) cannot be copied
        VEQLC   XPTR,E,,INTR1	   EXPRESSION cannot be copied
        VEQLC   XPTR,T,,INTR1	   TABLE cannot be copied
-       GETSIZ  XCL,XPTR 	   Get size of object to copy
-       MOVV    XCL,XPTR 	   Insert data type
+       GETSIZ  XCL,XPTR		   Get size of object to copy
+       MOVV    XCL,XPTR		   Insert data type
        RCALL   ZPTR,BLOCK,XCL	   Allocate block for copy
        MOVBLK  ZPTR,XPTR,XCL	   Copy contents
        BRANCH  RTZPTR		   Return the copy
@@ -5410,7 +5454,7 @@ COPY   PROC    ,		   COPY(X)
 CNVRT  PROC    ,		   CONVERT(X,T)
        RCALL   ZPTR,ARGVAL,,FAIL   Get object to be converted
        PUSH    ZPTR		   Save object
-       RCALL   YPTR,VARVUP,,FAIL   [PLB28] Get data type target
+       RCALL   YPTR,VARVUP,,FAIL   Get data type target		[PLB28]
        POP     ZPTR		   Restore object
        LOCAPV  XPTR,DTATL,YPTR,CNV1				[PLB32]
 *				   Look for data type code
@@ -5430,32 +5474,32 @@ CNVRT  PROC    ,		   CONVERT(X,T)
        VEQLC   XPTR,S,FAIL,CNVRTS				E3.0.4
 *				   Check for idem-conversion
 *_
-CNV1   LOCSP   YSP,YPTR		   				[PLB32]
+CNV1   LOCSP   YSP,YPTR						[PLB32]
        LEXCMP  YSP,NUMSP,INTR1,,INTR1				[PLB32]
-*      	       			   NUMERIC?			[PLB32]
+*				   NUMERIC?			[PLB32]
        VEQLC   ZPTR,I,,RTZPTR	   Yes; If integer, no change	[PLB32]
        VEQLC   ZPTR,R,,RTZPTR	   If real, no change		[PLB32]
        VEQLC   ZPTR,S,FAIL	   If not string, can't convert	[PLB32]
        LOCSP   ZSP,ZPTR		   Get specifier		[PLB32]
        SPCINT  ZPTR,ZSP,,RTZPTR	   Try conversion to INTEGER	[PLB32]
        SPREAL  ZPTR,ZSP,FAIL,RTZPTR				[PLB32]
-*      	       			   Try conversion to REAL	[PLB32]
+*				   Try conversion to REAL	[PLB32]
 *_
 RECOMP SETAC   SCL,1		   Note STRING-CODE conversion
 RECOMJ LOCSP   TEXTSP,ZPTR	   Set up global specifier
 RECOMT GETLG   OCALIM,TEXTSP					E3.1.5
-       AEQLC   OCALIM,0,,RECOMN 				E3.1.5
+       AEQLC   OCALIM,0,,RECOMN					E3.1.5
        MULTC   OCALIM,OCALIM,DESCR Convert to address units
        INCRA   OCALIM,6*DESCR	   Leave room for safety
-       SETVC   OCALIM,C 	   Insert CODE data type
+       SETVC   OCALIM,C		   Insert CODE data type
        RCALL   CMBSCL,BLOCK,OCALIM Allocate block for object code
        SUM     OCLIM,CMBSCL,OCALIM Compute end
        DECRA   OCLIM,6*DESCR
-       SETAC   CMOFCL,0 	   Zero offset
-       SETAC   ESAICL,0 	   Zero error count
+       SETAC   CMOFCL,0		   Zero offset
+       SETAC   ESAICL,0		   Zero error count
        PUSH    CMBSCL		   Save block pointer
        SELBRA  SCL,(,CONVEX)	   Select correct procedure
-RECOM1 LEQLC   TEXTSP,0,,RECOM2    Is string exhausted?
+RECOM1 LEQLC   TEXTSP,0,,RECOM2	   Is string exhausted?
        RCALL   ,CMPILE,,(RECOMF,,RECOM1)
 *				   Compile statement
 RECOM2 SETAC   SCL,3		   Set return switch
@@ -5493,7 +5537,7 @@ CONVEX RCALL   FORMND,EXPR,,FAIL   Compile expression
        SETAC   SCL,3		   Set return branch
        BRANCH  RECOMZ		   Join common program
 *_
-CONVR  LOCSP   ZSP,ZPTR 	   Get specifier
+CONVR  LOCSP   ZSP,ZPTR		   Get specifier
        SPCINT  ZPTR,ZSP,,CONIR	   Try conversion to INTEGER first
        SPREAL  ZPTR,ZSP,FAIL,RTZPTR
 *				   Convert to REAL
@@ -5507,8 +5551,8 @@ CONRI  RLINT   ZPTR,ZPTR,FAIL,RTZPTR
 CNVIV  RCALL   ZPTR,GNVARI,ZPTR,RTZPTR
 *				   Convert INTEGER to STRING
 *_
-CNVVI  LOCSP   ZSP,ZPTR 	   Get specifier
-       SPCINT  ZPTR,ZSP,,RTZPTR    Convert STRING to INTEGER
+CNVVI  LOCSP   ZSP,ZPTR		   Get specifier
+       SPCINT  ZPTR,ZSP,,RTZPTR	   Convert STRING to INTEGER
        SPREAL  ZPTR,ZSP,FAIL,CONRI Try conversion to REAL
 *_
 CNVRTS RCALL   XPTR,DTREP,ZPTR	   Get data type representation
@@ -5522,7 +5566,7 @@ CNVTA  MOVD    WPTR,ZPTR	   Make copy of input pointer	[PLB31]
        MULTC   YCL,YCL,DESCR	   Convert item count to address units
        INCRA   YPTR,5*DESCR	   Skip heading
        SUM     TPTR,YPTR,YCL	   Compute second half position
-CNVTA8 GETSIZ  WCL,WPTR 					E3.2.3
+CNVTA8 GETSIZ  WCL,WPTR						E3.2.3
        DECRA   WCL,2*DESCR					E3.2.3
        SUM     WCL,WPTR,WCL					E3.2.3
 CNVTA3 GETDC   TCL,WPTR,DESCR					E3.2.3
@@ -5533,7 +5577,7 @@ CNVTA3 GETDC   TCL,WPTR,DESCR					E3.2.3
        INCRA   TPTR,DESCR	   Increment lower pointer
 CNVTA5 INCRA   WPTR,2*DESCR
        AEQL    WCL,WPTR,CNVTA3					E3.2.3
-       GETDC   WPTR,WCL,2*DESCR 				E3.2.3
+       GETDC   WPTR,WCL,2*DESCR					E3.2.3
        AEQLC   WPTR,1,CNVTA8					E3.8.1
        SETAC   TPTR,0						E3.8.1
        BRANCH  RTZPTR						E3.8.1
@@ -5557,44 +5601,44 @@ ICNVTA PROC    CNVRT
 CNVTA7 GETSIZ  XCL,YPTR						E3.2.3
        MOVD    ZCL,XCL						E3.2.3
        DECRA   XCL,3*DESCR					E3.2.3
-CNVTA1 GETD    WCL,YPTR,XCL        Get item value
+CNVTA1 GETD    WCL,YPTR,XCL	   Get item value
        DEQL    WCL,NULVCL,,CNVTA2  Check for null value
-       INCRA   YCL,1               Otherwise count item
+       INCRA   YCL,1		   Otherwise count item
 CNVTA2 AEQLC   XCL,DESCR,,CNVTA6
-       DECRA   XCL,2*DESCR         Count down
-       BRANCH  CNVTA1              Process next item
+       DECRA   XCL,2*DESCR	   Count down
+       BRANCH  CNVTA1		   Process next item
 *_
 CNVTA6 GETD    YPTR,YPTR,ZCL
        AEQLC   YPTR,1,CNVTA7,
-CNVTA4 AEQLC   YCL,0,,FAIL         Fail on empty table
-       MULTC   XCL,YCL,2*DESCR     Convert count to address units
-       INTSPC  YSP,YCL             Get prototype for size
-       SETLC   PROTSP,0            Clear specifier		[PLB31]
-       APDSP   PROTSP,YSP          Append length		[PLB31]
-       APDSP   PROTSP,CMASP        Append comma			[PLB31]
+CNVTA4 AEQLC   YCL,0,,FAIL	   Fail on empty table
+       MULTC   XCL,YCL,2*DESCR	   Convert count to address units
+       INTSPC  YSP,YCL		   Get prototype for size
+       SETLC   PROTSP,0		   Clear specifier		[PLB31]
+       APDSP   PROTSP,YSP	   Append length		[PLB31]
+       APDSP   PROTSP,CMASP	   Append comma			[PLB31]
        MOVD    WCL,ZEROCL
-       SETAC   WCL,2               Set up 2 for second dimension
-       INTSPC  XSP,WCL             Convert to string
-       APDSP   PROTSP,XSP          Append 2			[PLB31]
-       SETSP   XSP,PROTSP          Move specifier		[PLB31]
+       SETAC   WCL,2		   Set up 2 for second dimension
+       INTSPC  XSP,WCL		   Convert to string
+       APDSP   PROTSP,XSP	   Append 2			[PLB31]
+       SETSP   XSP,PROTSP	   Move specifier		[PLB31]
        RCALL   TPTR,GENVAR,XSPPTR, Generate variable for prototype
-       MOVD    ZCL,XCL             Save size
-       INCRA   XCL,4*DESCR         Increment for heading
-       RCALL   ZPTR,BLOCK,XCL,     Get block for array
-       SETVC   ZPTR,A              Insert ARRAY data type
+       MOVD    ZCL,XCL		   Save size
+       INCRA   XCL,4*DESCR	   Increment for heading
+       RCALL   ZPTR,BLOCK,XCL,	   Get block for array
+       SETVC   ZPTR,A		   Insert ARRAY data type
        MOVD    ATPRCL,TPTR
-       SETVA   ATEXCL,YCL          Insert First dimension in head
+       SETVA   ATEXCL,YCL	   Insert First dimension in head
        MOVBLK  ZPTR,ATRHD,FRDSCL   Copy heading information
        RRTURN  ZPTR,2
 *_
-CNVAT  GETDC   XCL,ZPTR,2*DESCR    Get array dimensionality
-       MOVD    YPTR,ZPTR           Save copy of array pointer
-       AEQLC   XCL,2,FAIL,         Verify rectangular array
-       GETDC   XCL,ZPTR,3*DESCR    Get second dimension
-       VEQLC   XCL,2,FAIL,         Verify extent of 2
-       GETSIZ  XCL,ZPTR            Get size of array block
+CNVAT  GETDC   XCL,ZPTR,2*DESCR	   Get array dimensionality
+       MOVD    YPTR,ZPTR	   Save copy of array pointer
+       AEQLC   XCL,2,FAIL,	   Verify rectangular array
+       GETDC   XCL,ZPTR,3*DESCR	   Get second dimension
+       VEQLC   XCL,2,FAIL,	   Verify extent of 2
+       GETSIZ  XCL,ZPTR		   Get size of array block
        DECRA   XCL,2*DESCR				E3.2.3
-       RCALL   XPTR,BLOCK,XCL,     Allocate block for pair list
+       RCALL   XPTR,BLOCK,XCL,	   Allocate block for pair list
        SETVC   XPTR,T				E3.2.3
        GETDC   YCL,ZPTR,4*DESCR				E3.2.3
        MOVD    ZPTR,XPTR				E3.2.3
@@ -5611,10 +5655,10 @@ CNVAT2 MOVDIC  XPTR,DESCR,WPTR,0
        MOVDIC  XPTR,2*DESCR,YPTR,0
        DECRA   YCL,DESCR
        AEQLC   YCL,0,,RTZPTR
-       INCRA   XPTR,2*DESCR        Increment pair list pointer
-       INCRA   WPTR,DESCR          Increment lower array pointer
-       INCRA   YPTR,DESCR          Increment upper array pointer
-       BRANCH  CNVAT2              Continue
+       INCRA   XPTR,2*DESCR	   Increment pair list pointer
+       INCRA   WPTR,DESCR	   Increment lower array pointer
+       INCRA   YPTR,DESCR	   Increment upper array pointer
+       BRANCH  CNVAT2		   Continue
 *_
 *---------------------------------------------------------------------*
 *
@@ -5652,12 +5696,12 @@ DUMP   PROC    DMP		   End game dump procedure
 DMPB   ACOMP   WPTR,OBEND,RETNUL   Check for end
        INCRA   WPTR,DESCR	   Increment pointer
        MOVD    YPTR,WPTR	   Save working copy
-DMPA   GETAC   YPTR,YPTR,LNKFLD    Get string structure
+DMPA   GETAC   YPTR,YPTR,LNKFLD	   Get string structure
        AEQLC   YPTR,0,,DMPB	   Check for end of chain
        GETDC   XPTR,YPTR,DESCR	   Get value
        DEQL    XPTR,NULVCL,,DMPA   Skip null string values
        SETLC   DMPSP,0		   Clear specifier
-       LOCSP   YSP,YPTR 	   Get specifier for variable
+       LOCSP   YSP,YPTR		   Get specifier for variable
        GETLG   YCL,YSP		   Get length
        ACOMPC  YCL,BUFLEN,DMPOVR,DMPOVR
 *				   Check for excessive length
@@ -5665,15 +5709,18 @@ DMPA   GETAC   YPTR,YPTR,LNKFLD    Get string structure
        APDSP   DMPSP,BLEQSP	   Append ' = '
        VEQLC   XPTR,S,,DMPV	   STRING is alright
        VEQLC   XPTR,I,,DMPI	   Convert INTEGER
-       RCALL   A1PTR,DTREP,XPTR    Else get representation
+       RCALL   A1PTR,DTREP,XPTR	   Else get representation
        GETSPC  YSP,A1PTR,0	   Get specifier
 DMPX   GETLG   XCL,YSP		   Get length
        SUM     YCL,YCL,XCL	   Get total
        ACOMPC  YCL,BUFLEN,DMPOVR   Check for excessive length
        APDSP   DMPSP,YSP	   Append value
+       VEQLC   XPTR,T,DMPRT	   Table? if not, just print it	[PLB34]
+DMPT   TESTFI  XPTR,FRZN,DMPRT	   No action if not frozen	[PLB34]
+       APDSP   DMPSP,FRZNSP	   Append " - FROZEN"		[PLB34]
        BRANCH  DMPRT		   Go print it
 *_
-DMPV   LOCSP   YSP,XPTR 	   Get specifier
+DMPV   LOCSP   YSP,XPTR		   Get specifier
        GETLG   XCL,YSP		   Get length
        SUM     YCL,YCL,XCL	   Total length
        ACOMPC  YCL,BUFLEN,DMPOVR   Check for excessive length
@@ -5683,7 +5730,7 @@ DMPV   LOCSP   YSP,XPTR 	   Get specifier
 DMPRT  STPRNT  IOKEY,OUTBLK,DMPSP  Print line
        BRANCH  DMPA		   Continue
 *_
-DMPI   INTSPC  YSP,XPTR 	   Convert integer
+DMPI   INTSPC  YSP,XPTR		   Convert integer
        BRANCH  DMPX		   Rejoin processing
 *_
 DMPOVR OUTPUT  OUTPUT,PRTOVF	   Print error message
@@ -5695,8 +5742,8 @@ DMK    PROC    ,		   Procedure to dump keywords
 DMPK1  GETD    XPTR,KNLIST,XCL	   Get name of keyword
        DECRA   XCL,DESCR	   Adjust offset
        GETD    YPTR,KNLIST,XCL	   Get value of keyword
-       INTSPC  YSP,YPTR 	   Convert integer to string
-       LOCSP   XSP,XPTR 	   Get specifier
+       INTSPC  YSP,YPTR		   Convert integer to string
+       LOCSP   XSP,XPTR		   Get specifier
        SETLC   DMPSP,0		   Clear specifier
        APDSP   DMPSP,AMPSP	   Append ampersand
        APDSP   DMPSP,XSP	   Append name
@@ -5704,7 +5751,7 @@ DMPK1  GETD    XPTR,KNLIST,XCL	   Get name of keyword
        APDSP   DMPSP,YSP	   Append value
        STPRNT  IOKEY,OUTBLK,DMPSP  Print line
        DECRA   XCL,DESCR	   Adjust offset
-       AEQLC   XCL,0,DMPK1,RTN1    Check for end
+       AEQLC   XCL,0,DMPK1,RTN1	   Check for end
 *_
 *---------------------------------------------------------------------*
 *
@@ -5716,12 +5763,12 @@ DUPL   PROC    ,		   DUPL(S,N)
        RCALL   YPTR,INTVAL,,FAIL   Get duplication factor
        POP     XPTR		   Restore string
        ACOMPC  YPTR,0,,RETNUL,FAIL Return null for 0 duplications
-       LOCSP   XSP,XPTR 	   Get specifier
+       LOCSP   XSP,XPTR		   Get specifier
        GETLG   XCL,XSP		   Get length
        MULT    XCL,XCL,YPTR,AERROR				E3.9.3
-       ACOMP   XCL,MLENCL,INTR8    Check &MAXLNGTH
+       ACOMP   XCL,MLENCL,INTR8	   Check &MAXLNGTH
        RCALL   ZPTR,CONVAR,XCL	   Allocate space for string
-       LOCSP   TSP,ZPTR 	   Get specifier
+       LOCSP   TSP,ZPTR		   Get specifier
        SETLC   TSP,0		   Zero length
 DUPL1  APDSP   TSP,XSP		   Append a copy
        DECRA   YPTR,1		   Count down
@@ -5732,9 +5779,9 @@ DUPL1  APDSP   TSP,XSP		   Append a copy
 *      OPSYN(F1,F2,N)
 *
 OPSYN  PROC    ,		   OPSYN(F,G,N)
-       RCALL   XPTR,VARVUP,,FAIL   [PLB28] Get object function
+       RCALL   XPTR,VARVUP,,FAIL   Get object function		[PLB28]
        PUSH    XPTR		   Save object function
-       RCALL   YPTR,VARVUP,,FAIL   [PLB28] Get image function
+       RCALL   YPTR,VARVUP,,FAIL   Get image function		[PLB28]
        PUSH    YPTR		   Save image function
        RCALL   ZPTR,INTVAL,,FAIL   Get type indicator
        POP     (YPTR,XPTR)	   Restore image and object functions
@@ -5742,63 +5789,63 @@ OPSYN  PROC    ,		   OPSYN(F,G,N)
        AEQLC   ZPTR,1,,UNYOP	   Check for unary definition
        AEQLC   ZPTR,2,,BNYOP	   Check for binary definition
        AEQLC   ZPTR,0,INTR30	   Check for function definition
-       RCALL   XPTR,FINDEX,XPTR    Get function descriptor for object
-UNBF   RCALL   YPTR,FINDEX,YPTR 				E3.6.2
+       RCALL   XPTR,FINDEX,XPTR	   Get function descriptor for object
+UNBF   RCALL   YPTR,FINDEX,YPTR					E3.6.2
 OPPD   MOVDIC  XPTR,0,YPTR,0	   Move procedure descriptor pair
        MOVDIC  XPTR,DESCR,YPTR,DESCR
        BRANCH  RETNUL
 *_
-UNYOP  LOCSP   XSP,XPTR 	   Get specifier for image
+UNYOP  LOCSP   XSP,XPTR		   Get specifier for image
        LEQLC   XSP,1,UNAF	   Length must be 1 for operator
        SETSP   ZSP,PROTSP					E3.5.3
        SETLC   ZSP,0						E3.5.3
        APDSP   ZSP,XSP						E3.5.3
        APDSP   ZSP,LPRNSP					E3.5.3
-       STREAM  TSP,ZSP,UNOPTB,UNAF,UNAF 			E3.5.3
+       STREAM  TSP,ZSP,UNOPTB,UNAF,UNAF				E3.5.3
        MOVD    XPTR,STYPE	   STYPE has function descriptor
-UNCF   LOCSP   YSP,YPTR 	   Get specifier for image
+UNCF   LOCSP   YSP,YPTR		   Get specifier for image
        LEQLC   YSP,1,UNBF	   Length must be 1 for operator
        SETSP   ZSP,PROTSP					E3.5.3
        SETLC   ZSP,0						E3.5.3
        APDSP   ZSP,YSP						E3.5.3
        APDSP   ZSP,LPRNSP					E3.5.3
-       STREAM  TSP,ZSP,UNOPTB,UNBF,UNBF 			E3.5.3
+       STREAM  TSP,ZSP,UNOPTB,UNBF,UNBF				E3.5.3
        MOVD    YPTR,STYPE	   STYPE has function descriptor
        BRANCH  OPPD		   Join to copy descriptors
 *_
-UNAF   RCALL   XPTR,FINDEX,XPTR    Find definition of image
+UNAF   RCALL   XPTR,FINDEX,XPTR	   Find definition of image
        BRANCH  UNCF		   Join search for object
 *_
-BNYOP  LOCSP   XSP,XPTR 	   Get specifier for image
+BNYOP  LOCSP   XSP,XPTR		   Get specifier for image
        LCOMP   XSP,EQLSP,BNAF	   Length must be 2 or less
        SETSP   ZSP,PROTSP					E3.5.3
        SETLC   ZSP,0						E3.5.3
        APDSP   ZSP,XSP						E3.5.3
-       APDSP   ZSP,BLSP 					E3.5.3
+       APDSP   ZSP,BLSP						E3.5.3
        AEQLC   SPITCL,0,BNYOP2	   SPITBOL ops enabled?		[PLB32]
-       STREAM  TSP,ZSP,BIOPTB,BNAF,BNAF 			E3.5.3
+       STREAM  TSP,ZSP,BIOPTB,BNAF,BNAF				E3.5.3
        BRANCH  BNYOP3						[PLB32]
 *_
 BNYOP2 STREAM  TSP,ZSP,SBIPTB,BNAF,BNAF				[PLB32]
 BNYOP3 LEQLC   ZSP,0,BNAF					E3.5.3 [PLB32]
        MOVD    XPTR,STYPE	   STYPE has function descriptor
-BNCF   LOCSP   YSP,YPTR 	   Get specifier for object
+BNCF   LOCSP   YSP,YPTR		   Get specifier for object
        LCOMP   YSP,EQLSP,BNBF	   Length must be 2 or less
        SETSP   ZSP,PROTSP					E3.5.3
        SETLC   ZSP,0						E3.5.3
        APDSP   ZSP,YSP						E3.5.3
-       APDSP   ZSP,BLSP 					E3.5.3
+       APDSP   ZSP,BLSP						E3.5.3
        AEQLC   SPITCL,0,BNCF2	   SPITBOL ops enabled?		[PLB32]
-       STREAM  TSP,ZSP,BIOPTB,BNBF,BNBF 			E3.5.3
+       STREAM  TSP,ZSP,BIOPTB,BNBF,BNBF				E3.5.3
        BRANCH  BNCF3						[PLB32]
 *_
-BNCF2  STREAM  TSP,ZSP,SBIPTB,BNBF,BNBF 			E3.5.3
+BNCF2  STREAM  TSP,ZSP,SBIPTB,BNBF,BNBF				E3.5.3
 BNCF3  LEQLC   ZSP,0,BNBF					E3.5.3 [PLB32]
        MOVD    YPTR,STYPE	   STYPE has function descriptor
        BRANCH  OPPD		   Join to copy descriptors
 *_
 BNAF   LEXCMP  XSP,BLSP,,BNCN	   Check for concatenation
-       RCALL   XPTR,FINDEX,XPTR    Find definition of image
+       RCALL   XPTR,FINDEX,XPTR	   Find definition of image
        BRANCH  BNCF		   Join search for object
 *_
 BNCN   MOVD    XPTR,CONCL	   CONCL represents concatenation
@@ -5820,14 +5867,14 @@ RPLACE PROC    ,		   REPLACE(S1,S2,S3)
        RCALL   ZPTR,VARVAL,,FAIL   Get third argument
        POP     (YPTR,XPTR)	   Restore first and second
        AEQLC   XPTR,0,,RTXPTR	   Ignore replacement on null
-       LOCSP   YSP,YPTR 	   Get specifier for second
-       LOCSP   ZSP,ZPTR 	   Get specifier for third
+       LOCSP   YSP,YPTR		   Get specifier for second
+       LOCSP   ZSP,ZPTR		   Get specifier for third
        LCOMP   ZSP,YSP,FAIL,,FAIL  Verify same lengths
        AEQLC   YPTR,0,,FAIL	   Ignore null replacement
-       LOCSP   XSP,XPTR 	   Get specifier for first
+       LOCSP   XSP,XPTR		   Get specifier for first
        GETLG   XCL,XSP		   Get length
        RCALL   ZPTR,CONVAR,XCL	   Allocate space for result
-       LOCSP   TSP,ZPTR 	   Get specifier
+       LOCSP   TSP,ZPTR		   Get specifier
        SETLC   TSP,0		   Clear specifier
        APDSP   TSP,XSP		   Append first argument
        RPLACE  TSP,YSP,ZSP	   Perform replacement
@@ -5839,8 +5886,8 @@ RPLACE PROC    ,		   REPLACE(S1,S2,S3)
 *
 SIZE   PROC    ,		   SIZE(S)
        RCALL   XPTR,VARVAL,,FAIL   Get argument
-       LOCSP   XSP,XPTR 	   Get specifier
-       GETLG   ZPTR,XSP 	   Get length
+       LOCSP   XSP,XPTR		   Get specifier
+       GETLG   ZPTR,XSP		   Get length
        SETVC   ZPTR,I		   Insert INTEGER data type
        BRANCH  RTZPTR		   Return length
 *_
@@ -5861,24 +5908,24 @@ TIME   PROC    ,		   TIME()
 *
 TRIM   PROC    ,		   TRIM(S)
        RCALL   XPTR,VARVAL,,FAIL   Get string
-       LOCSP   ZSP,XPTR 	   Get specifier
+       LOCSP   ZSP,XPTR		   Get specifier
        TRIMSP  ZSP,ZSP		   Trim string
        BRANCH  GENVRZ		   Generate new variable
 *_
 *---------------------------------------------------------------------*
        TITLE   'Common Code'
 DATA   LHERE   ,
-RT1NUL RRTURN  NULVCL,1 	   Return null string by exit 1
+RT1NUL RRTURN  NULVCL,1		   Return null string by exit 1
 *_
-FAILG  LHERE   ,		   [PLB25]
+FAILG  LHERE   ,						[PLB25]
 RTN1   LHERE   ,
 FAIL   RRTURN  ,1		   Return by exit 1
 *_
-RETNUL RRTURN  NULVCL,3 	   Return null string by exit 3
+RETNUL RRTURN  NULVCL,3		   Return null string by exit 3
 *_
 RTN2   RRTURN  ,2		   Return by exit 2
 *_
-RTNL3G LHERE   ,		   [PLB24]
+RTNL3G LHERE   ,						[PLB24]
 RTN3   LHERE   ,
 RTNUL3 RRTURN  ,3		   Return by exit 3
 *_
@@ -5888,7 +5935,7 @@ RTXPTR RRTURN  XPTR,3		   Return XPTR by exit 3
 *_
 RTYPTR RRTURN  YPTR,3		   Return YPTR by exit 3
 *_
-ARTN   INCRA   ARTHCL,1 	   Increment count of arithmetic
+ARTN   INCRA   ARTHCL,1		   Increment count of arithmetic
 RTZPTR RRTURN  ZPTR,3		   Return ZPTR by exit 3
 *_
 A5RTN  RRTURN  A5PTR,1		   Return A5PTR by exit 1
@@ -5917,15 +5964,15 @@ END    AEQLC   BANRCL,0,,FTLEN2	   Skip message if banner (stats?) off [PLB12]
        BRANCH  FTLEN2		   Join termination procedure
 *_
 FTLEND OUTPUT  PUNCH,FTLCF,(ERRTYP,STNOCL,LVLCL)		[PLB5] V3.7
-       SETAC   RETCOD,1		   [PLB13] set exit code (use an EQU? ERRTYP?)
+       SETAC   RETCOD,1		   set exit code (use an EQU? ERRTYP?) [PLB13]
        AEQLC   INICOM,0,FTLEN3	   BE SURE OF INITIALIZATION	E3.10.6
        OUTPUT  PUNCH,ALOCFL	   WARN USER			[PLB5] E3.10.6
        BRANCH  ENDALL		   GET OUT			E3.10.6
 *_								E3.10.6
-FTLEN3 MULTC   YCL,ERRTYP,DESCR 				E3.10.6
+FTLEN3 MULTC   YCL,ERRTYP,DESCR					E3.10.6
        GETD    YCL,MSGNO,YCL	   Get message pointer
        GETSPC  TSP,YCL,0	   Get message specifier
-       STPRNT  IOKEY,ERRBLK,TSP    Print error message		[PLB12]
+       STPRNT  IOKEY,ERRBLK,TSP	   Print error message		[PLB12]
 FTLEN2 ISTACK  ,		   Reset system stack
        AEQLC   ETMCL,0,FTLEN4	   Was compiler done?
        MSTIME  ETMCL		   Time out compiler
@@ -5980,12 +6027,12 @@ SYSCUT OUTPUT  PUNCH,SYSCMT,(STNOCL,LVLCL)			[PLB5]
 *				   System cut exit
        AEQLC   CUTNO,0,ENDALL					E3.2.2
        SETAC   CUTNO,1						E3.2.2
-       SETAC   RETCOD,1		   [PLB13] set exit code (use an EQU???)
+       SETAC   RETCOD,1		   set exit code (use an EQU???) [PLB13]
        BRANCH  FTLEN2		   Join end game
 *_
 *---------------------------------------------------------------------*
        TITLE   'Error Handling'
-AERROR SETAC   ERRTYP,2 	   Arithmetic error
+AERROR SETAC   ERRTYP,2		   Arithmetic error
        BRANCH  FTLTST
 *_
 ALOC2  SETAC   ERRTYP,20	   Storage exhausted
@@ -6017,7 +6064,7 @@ EROR   SETAC   ERRTYP,28	   Erroneous statement
 EXEX   SETAC   ERRTYP,22	   Exceeded &STLIMIT
        BRANCH  FTLEND
 *_
-INTR1  SETAC   ERRTYP,1 	   Illegal data type
+INTR1  SETAC   ERRTYP,1		   Illegal data type
        BRANCH  FTLTST
 *_
 INTR4  SETAC   ERRTYP,24	   Erroneous goto
@@ -6045,22 +6092,22 @@ LENERR SETAC   ERRTYP,14	   Negative number
 MAIN1  SETAC   ERRTYP,18	   Return from level zero
        BRANCH  FTLEND
 *_
-NEMO   SETAC   ERRTYP,8 	   Variable not present
+NEMO   SETAC   ERRTYP,8		   Variable not present
        BRANCH  FTLTST
 *_
-NONAME SETAC   ERRTYP,4 	   Null string
+NONAME SETAC   ERRTYP,4		   Null string
        BRANCH  FTLTST
 *_
-NONARY SETAC   ERRTYP,3 	   Erroneous array or table reference
+NONARY SETAC   ERRTYP,3		   Erroneous array or table reference
        BRANCH  FTLTST
 *_
 OVER   SETAC   ERRTYP,21	   Stack overflow
        BRANCH  FTLEND
 *_
-PROTER SETAC   ERRTYP,6 	   Erroneous prototype
+PROTER SETAC   ERRTYP,6		   Erroneous prototype
        BRANCH  FTLTST
 *_
-SCDTER SETAC   ERRTYP,1 	   Illegal data type
+SCDTER SETAC   ERRTYP,1		   Illegal data type
        BRANCH  SCERST
 *_
 SCLENR SETAC   ERRTYP,14	   Negative number
@@ -6069,34 +6116,34 @@ SCLENR SETAC   ERRTYP,14	   Negative number
 SCLNOR SETAC   ERRTYP,15	   String overflow
        BRANCH  SCERST
 *_
-SCNAME SETAC   ERRTYP,4 	   Null string
+SCNAME SETAC   ERRTYP,4		   Null string
        BRANCH  SCERST
 *_
-SCNEMO SETAC   ERRTYP,8 					E3.4.4
+SCNEMO SETAC   ERRTYP,8						E3.4.4
        BRANCH  SCERST						E3.4.4
 *_								E3.4.4
 SIZERR SETAC   ERRTYP,23	   Object too large
        BRANCH  FTLEND
 *_
-UNDF   SETAC   ERRTYP,5 	   Undefined function
+UNDF   SETAC   ERRTYP,5		   Undefined function
        BRANCH  FTLTST
 *_
-UNDFFE SETAC   ERRTYP,9 	   Function entry point not label
+UNDFFE SETAC   ERRTYP,9		   Function entry point not label
        BRANCH  FTLTST
 *_
-UNKNKW SETAC   ERRTYP,7 	   Unknown keyword
+UNKNKW SETAC   ERRTYP,7		   Unknown keyword
        BRANCH  FTLTST
 *_
 UNTERR SETAC   ERRTYP,12	   Illegal I/O unit
        BRANCH  FTLTST
 *_
-SCERST SETAC   SCERCL,1 	   Note failure during pattern matching
+SCERST SETAC   SCERCL,1		   Note failure during pattern matching
        BRANCH  FTERST
 *_
-FTLTST SETAC   SCERCL,2 	   Note failure out of pattern matching
+FTLTST SETAC   SCERCL,2		   Note failure out of pattern matching
 FTERST ACOMPC  ERRLCL,0,,FTLEND,FTLEND
 *				   Check &ERRLIMIT
-       DECRA   ERRLCL,1 	   Decrement &ERRLIMIT
+       DECRA   ERRLCL,1		   Decrement &ERRLIMIT
        ACOMPC  TRAPCL,0,,FTERBR,FTERBR
 *				   Check &TRACE
        LOCAPT  ATPTR,TKEYL,ERRTKY,FTERBR
@@ -6119,7 +6166,7 @@ DTLIST DESCR   DTLIST,TTL+MARK,DTLEND-DTLIST-DESCR
        DESCR   0,0,A
        DESCR   ARRSP,0,0	   ARRAY
        DESCR   0,0,R
-       DESCR   RLSP,0,0 	   REAL
+       DESCR   RLSP,0,0		   REAL
        DESCR   0,0,C
        DESCR   CODESP,0,0	   CODE
        DESCR   0,0,N
@@ -6141,7 +6188,7 @@ EXLMCL DESCR   -1,0,I		   &STLIMIT			[PLB33]
        DESCR   STLMSP,0,0
 OUTSW  DESCR   1,0,I		   &OUTPUT
        DESCR   OUTSP,0,0
-MLENCL DESCR   5000,0,I 	   &MAXLNGTH
+MLENCL DESCR   5000,0,I		   &MAXLNGTH
        DESCR   MAXLSP,0,0
 INSW   DESCR   1,0,I		   &INPUT
        DESCR   INSP,0,0
@@ -6204,7 +6251,7 @@ INLIST DESCR   INLIST,TTL+MARK,2*DESCR
        DESCR   INPUT-DESCR,0,0	   INPUT block
        DESCR   INSP,0,0
 OTLIST DESCR   OTLIST,TTL+MARK,4*DESCR
-       DESCR   OUTPUT-DESCR,0,0    OUTPUT block
+       DESCR   OUTPUT-DESCR,0,0	   OUTPUT block
        DESCR   OUTSP,0,0
        DESCR   PUNCH-DESCR,0,0	   PUNCH block
        DESCR   PNCHSP,0,0
@@ -6236,7 +6283,7 @@ LIT1CL DESCR   LITFN,FNC,1	   LITERAL FUNCTION DESCRIPTOR	E3.7.1
        DESCR   LITFN,FNC,1	   LITERAL FUNCTION DESCRIPTOR	E3.7.1
        DESCR   0,0,0		   TAG SUPPLIED FOR TRACE	V3.7
 *
-ATRHD  DESCR   ATPRCL-DESCR,0,0    Array header converting from TABLE
+ATRHD  DESCR   ATPRCL-DESCR,0,0	   Array header converting from TABLE
 ATPRCL DESCR   0,0,0		   Prototype
        DESCR   2,0,0		   Dimensionality
        DESCR   1,0,2		   1:2 second dimension
@@ -6279,6 +6326,7 @@ BANRCL DESCR   1,0,0		   Display startup banner	[PLB12]
 CUTNO  DESCR   0,0,0						E3.2.2
 CNSLCL DESCR   0,0,0		   Label redefinition switch
 DATACL DESCR   0,0,0		   Prototype end switch for DATA(P)
+EXECCL DESCR   1,0,0		   EXECUTE switch		[PLB34]
 FNVLCL DESCR   0,0,0		   FUNCTION-VALUE switch for trace
 INICOM DESCR   0,0,0		   INITIALIZATION SWITCH	E3.10.6
 LENFCL DESCR   0,0,0		   Length failure switch
@@ -6297,20 +6345,20 @@ CNDSIZ DESCR   CNODSZ,0,B	   Compiler node size
 CODELT DESCR   200*DESCR,0,C	   Object code excess
 DSCRTW DESCR   2*DESCR,0,0	   Constant 2*DESCR
 EOSCL  DESCR   EOSTYP,0,0	   End of statement switch
-ESALIM DESCR   ESASIZ*DESCR,0,0    Bound on compilation errors
+ESALIM DESCR   ESASIZ*DESCR,0,0	   Bound on compilation errors
 EXTVAL DESCR   EXTSIZ*2*DESCR,0,0				V3.11
 FBLKRQ DESCR   FBLKSZ,0,B	   Quantum on allocated function blocks
 GOBRCL DESCR   0,0,0		   Goto break character switch
 GTOCL  DESCR   FGOTYP,0,0	   Goto decision switch
 IOBLSZ DESCR   2*DESCR,0,B	   Size of I/O blocks
-LNODSZ DESCR   NODESZ+DESCR,0,P    Size of long pattern node
+LNODSZ DESCR   NODESZ+DESCR,0,P	   Size of long pattern node
 NODSIZ DESCR   NODESZ,0,P	   Size of short pattern node
 OBEND  DESCR   OBLIST+DESCR*OBOFF,0,0
 *				   End on bin list
-OCALIM DESCR   OCASIZ*DESCR,0,C    Size of object code block
+OCALIM DESCR   OCASIZ*DESCR,0,C	   Size of object code block
 ONECL  DESCR   1,0,0		   Constant 1
-OUTBLK DESCR   OUTPUT-DESCR,0,0    Pointer to OUTPUT block
-ERRBLK DESCR   PUNCH-DESCR,0,0     Pointer to PUNCH (stderr) block [PLB8]
+OUTBLK DESCR   OUTPUT-DESCR,0,0	   Pointer to OUTPUT block
+ERRBLK DESCR   PUNCH-DESCR,0,0	   Pointer to PUNCH (stderr) block [PLB8]
 SIZLMT DESCR   SIZLIM,0,0	   Limit on size of data object
 SNODSZ DESCR   NODESZ,0,P	   Small pattern node size
 STARSZ DESCR   11*DESCR,0,P	   Size of EXPRESSION pattern
@@ -6338,7 +6386,7 @@ BRKCCL DESCR   BRKCFN,FNC,3
 BRXCCL DESCR   BRXCFN,FNC,3					[PLB31]
 BRXFCL DESCR   BRFCFN,FNC,2					[PLB31]
 CHRCL  DESCR   CHRFN,FNC,3
-CMACL  DESCR   CMAFN,FNC,0	   				[PLB32]
+CMACL  DESCR   CMAFN,FNC,0					[PLB32]
 CONCL  DESCR   CONFN,FNC,0	   Argument count is incremented
 DNMECL DESCR   DNMEFN,FNC,2
 DNMICL DESCR   DNMIFN,FNC,2
@@ -6470,12 +6518,15 @@ EJCTSP STRING  'EJECT'
 EQLSP  STRING  '= '
 ERORSP STRING  'ERRORS'						[PLB9]
 ETIMSP STRING  ', time = '					[PLB11]
+EXECSP STRING  'EXECUTE'					[PLB34]
 EXDTSP STRING  'EXTERNAL'
+FRZNSP STRING  ' - FROZEN'					[PLB34]
 INCLSP STRING  'INCLUDE'					[PLB20]
 LEFTSP STRING  'LEFT'
 LISTSP STRING  'LIST'
 LPRNSP STRING  '('
 NERRSP STRING  'NOERRORS'					[PLB9]
+NEXESP STRING  'NOEXECUTE'					[PLB34]
 OFSP   STRING  ' of '						[PLB11]
 RPRNSP STRING  ')'
 STARSP STRING  '*** '
@@ -6489,7 +6540,7 @@ XFERSP STRING  'transfer to'					[PLB11]
 *      Character Buffers
 *
 BLNBUF BUFFER  STNOSZ		   Blanks for statment number field
-DTARBF BUFFER  ARRLEN+7 	   Array representation buffer
+DTARBF BUFFER  ARRLEN+7		   Array representation buffer
 ERRBUF BUFFER  CARDSZ+STNOSZ-SEQSIZ+1
 INBUF  BUFFER  CARDSZ+DSTSZ+1	   Card input buffer
 REALBF BUFFER  36		   Buffer for real number conversion
@@ -6677,10 +6728,10 @@ BACKFN DESCR   BKSPCE,0,1
        DESCR   0,0,0
 BREAFN DESCR   BREAK,0,1
        DESCR   0,0,0
-BREXFN DESCR   BREAKX,0,1	   [PLB31]
-       DESCR   0,0,0		   [PLB31]
-CHARFN DESCR   CHAR,0,1		   [PLB31]
-       DESCR   0,0,0		   [PLB31]
+BREXFN DESCR   BREAKX,0,1					[PLB31]
+       DESCR   0,0,0						[PLB31]
+CHARFN DESCR   CHAR,0,1						[PLB31]
+       DESCR   0,0,0						[PLB31]
 CLEAFN DESCR   CLEAR,0,1
        DESCR   0,0,0
 CODEFN DESCR   CODER,0,1
@@ -6715,6 +6766,8 @@ EVALFN DESCR   EVAL,0,1
        DESCR   0,0,0
 FLDSFN DESCR   FIELDS,0,2
        DESCR   0,0,0
+FREZFN DESCR   FREEZE,0,1					[PLB34]
+       DESCR   0,0,0
 GEFN   DESCR   GE,0,2
        DESCR   0,0,0
 GTFN   DESCR   GT,0,2
@@ -6735,8 +6788,8 @@ LOADFN DESCR   LOAD,0,2
        DESCR   0,0,0
 LOCFN  DESCR   LOCAL,0,2
        DESCR   0,0,0
-LPADFN DESCR   LPAD,0,3		   [PLB31]
-       DESCR   0,0,0		   [PLB31]
+LPADFN DESCR   LPAD,0,3						[PLB31]
+       DESCR   0,0,0						[PLB31]
 LTFN   DESCR   LT,0,2
        DESCR   0,0,0
 NEFN   DESCR   NE,0,2
@@ -6747,7 +6800,7 @@ OPSYFN DESCR   OPSYN,0,3
        DESCR   0,0,0
 POSFN  DESCR   POS,0,1
        DESCR   0,0,0
-PRINFN DESCR   PRINT,0,4	   [PLB4]
+PRINFN DESCR   PRINT,0,4					[PLB4]
        DESCR   0,0,0
 PROTFN DESCR   PROTO,0,1
        DESCR   0,0,0
@@ -6755,27 +6808,29 @@ REMDFN DESCR   REMDR,0,2
        DESCR   0,0,0
 RPLAFN DESCR   RPLACE,0,3
        DESCR   0,0,0
-READFN DESCR   READ,0,4		   [PLB4]
+READFN DESCR   READ,0,4						[PLB4]
        DESCR   0,0,0
 REWNFN DESCR   REWIND,0,1
        DESCR   0,0,0
 RPOSFN DESCR   RPOS,0,1
        DESCR   0,0,0
-RPADFN DESCR   RPAD,0,3		   [PLB31]
-       DESCR   0,0,0		   [PLB31]
-RSRTFN DESCR   RSORT,FNC,1	   [PLB31]
-       DESCR   0,0,0		   [PLB31]
+RPADFN DESCR   RPAD,0,3						[PLB31]
+       DESCR   0,0,0						[PLB31]
+RSRTFN DESCR   RSORT,FNC,1					[PLB31]
+       DESCR   0,0,0						[PLB31]
 RTABFN DESCR   RTAB,0,1
        DESCR   0,0,0
 SIZEFN DESCR   SIZE,0,1
        DESCR   0,0,0
-SORTFN DESCR   SORT,FNC,1	   [PLB31]
-       DESCR   0,0,0		   [PLB31]
+SORTFN DESCR   SORT,FNC,1					[PLB31]
+       DESCR   0,0,0						[PLB31]
 SPANFN DESCR   SPAN,0,1
        DESCR   0,0,0
 STPTFN DESCR   STOPTR,0,2
        DESCR   0,0,0
 TABFN  DESCR   TAB,0,1
+       DESCR   0,0,0
+THAWFN DESCR   THAW,0,1						[PLB34]
        DESCR   0,0,0
 TIMFN  DESCR   TIME,0,1
        DESCR   0,0,0
@@ -6854,6 +6909,8 @@ FNLIST DESCR   FNLIST,TTL+MARK,FNCPLE-FNLIST-DESCR
        DESCR   EVALSP,0,0
        DESCR   FLDSFN,FNC,0	   FIELD(V,N)
        DESCR   FLDSSP,0,0
+       DESCR   FREZFN,FNC,0	   FREEZE(T)			[PLB34]
+       DESCR   FREZSP,0,0
        DESCR   GEFN,FNC,0	   GE(I1,I2)
        DESCR   GESP,0,0
        DESCR   GTFN,FNC,0	   GT(I1,I2)
@@ -6918,6 +6975,8 @@ FNLIST DESCR   FNLIST,TTL+MARK,FNCPLE-FNLIST-DESCR
        DESCR   TABSP,0,0
        DESCR   ASSCFN,FNC,0	   TABLE(N,M)
        DESCR   ASSCSP,0,0
+       DESCR   THAWFN,FNC,0	   THAW(T)			[PLB34]
+       DESCR   THAWSP,0,0
        DESCR   TIMFN,FNC,0	   TIME()
        DESCR   TIMSP,0,0
        DESCR   TRCEFN,FNC,0	   TRACE(V,R,T,F)
@@ -6961,7 +7020,7 @@ SJSRFN DESCR   SJSR,0,3		   X ? Y =  SPITBOL scan & repl [PLB32]
        DESCR   0,0,0						[PLB32]
        DESCR   3,0,2						[PLB32]
 BIEQFN LHERE   ,						[PLB32]
-ASGNFN DESCR   ASGN,0,2 	   X = Y    SPITBOL assignment	[PLB32]
+ASGNFN DESCR   ASGN,0,2		   X = Y    SPITBOL assignment	[PLB32]
        DESCR   0,0,0						[PLB32]
        DESCR   1,0,1						[PLB32]
 CONFN  DESCR   CON,0,2		   X   Y    concatenation
@@ -6990,11 +7049,11 @@ SUBFN  DESCR   SUB,0,2		   X - Y    subtraction
        DESCR   30,0,29
 AROWFN DESCR   UNDF,FNC,0	   !X	    definable
        DESCR   0,0,0
-ATFN   DESCR   ATOP,0,1 	   @X	    scanner position
+ATFN   DESCR   ATOP,0,1		   @X	    scanner position
        DESCR   0,0,0
 BARFN  DESCR   UNDF,FNC,0	   |X	    definable
        DESCR   0,0,0
-DOTFN  DESCR   NAME,0,1 	   .X	    name
+DOTFN  DESCR   NAME,0,1		   .X	    name
        DESCR   0,0,0
 INDFN  DESCR   IND,0,1		   $X	    indirect reference
        DESCR   0,0,0
@@ -7010,7 +7069,7 @@ PLSFN  DESCR   PLS,0,1		   +X	    plus
        DESCR   0,0,0
 PRFN   DESCR   UNDF,FNC,0	   %X	    definable
        DESCR   0,0,0
-QUESFN DESCR   QUES,0,1 	   ?X	    interrogation
+QUESFN DESCR   QUES,0,1		   ?X	    interrogation
        DESCR   0,0,0
 SLHFN  DESCR   UNDF,FNC,0	   /X	    definable
        DESCR   0,0,0
@@ -7020,31 +7079,31 @@ OPTBND LHERE   ,		   End of operator table
 *
 *
 AREFN  DESCR   ITEM,FNC,1	   Array or table reference
-BASEFN DESCR   BASE,0,0 	   Base object code
-CMAFN  DESCR   CMA,FNC,1	   				[PLB32]
+BASEFN DESCR   BASE,0,0		   Base object code
+CMAFN  DESCR   CMA,FNC,1					[PLB32]
 ENDAFN DESCR   ARGNER,0,0	   Safety exit on trace psuedo-code
 ENDFN  DESCR   END,0,0		   End of program
-ERORFN DESCR   EROR,0,1 	   Erroneous statement
+ERORFN DESCR   EROR,0,1		   Erroneous statement
 FNTRFN DESCR   FENTR,0,2	   Call tracing
 FXTRFN DESCR   FNEXTR,0,2	   Return tracing
-GOTGFN DESCR   GOTG,0,1 	   :<X>
-GOTLFN DESCR   GOTL,0,1 	   :(L)
-GOTOFN DESCR   GOTO,0,1 	   Internal goto
-INITFN DESCR   INIT,0,1 	   Statement initialization
+GOTGFN DESCR   GOTG,0,1		   :<X>
+GOTLFN DESCR   GOTL,0,1		   :(L)
+GOTOFN DESCR   GOTO,0,1		   Internal goto
+INITFN DESCR   INIT,0,1		   Statement initialization
 KEYTFN DESCR   KEYTR,0,2	   Keyword tracing
 LABTFN DESCR   LABTR,0,2	   Label tracing
 LITFN  DESCR   LIT,0,1		   Literal evaluation
 VLTRFN DESCR   VALTR,0,2	   Value tracing
-ANYCFN DESCR   ANYC,0,3 	   Matching for ANY(S)
-ARBFFN DESCR   ARBF,0,2 	   Failure for ARB
-ARBNFN DESCR   ARBN,0,2 	   Matching for ARBNO(P)
+ANYCFN DESCR   ANYC,0,3		   Matching for ANY(S)
+ARBFFN DESCR   ARBF,0,2		   Failure for ARB
+ARBNFN DESCR   ARBN,0,2		   Matching for ARBNO(P)
 ATOPFN DESCR   ATP,0,3		   Matching for @X
 CHRFN  DESCR   CHR,0,3		   Matching for string
 BALFN  DESCR   BAL,0,2		   Matching for BAL
-BALFFN DESCR   BALF,0,2 	   Failure for BAL
-BRKCFN DESCR   BRKC,0,3 	   Matching for BREAK(S)
-BRXCFN DESCR   BRKX,0,3 	   Matching for BREAKX(S)	[PLB31]
-BRFCFN DESCR   BRKXF,0,2 	   Rematching for BREAKX(S)	[PLB31]
+BALFFN DESCR   BALF,0,2		   Failure for BAL
+BRKCFN DESCR   BRKC,0,3		   Matching for BREAK(S)
+BRXCFN DESCR   BRKX,0,3		   Matching for BREAKX(S)	[PLB31]
+BRFCFN DESCR   BRKXF,0,2	   Rematching for BREAKX(S)	[PLB31]
 DNMEFN DESCR   DNME,0,2
 DNMIFN DESCR   DNME1,0,2
 EARBFN DESCR   EARB,0,2
@@ -7053,25 +7112,25 @@ ENMEFN DESCR   ENME,0,3
 ENMIFN DESCR   ENMI,0,3
 FARBFN DESCR   FARB,0,2
 FNMEFN DESCR   FNME,0,2
-LNTHFN DESCR   LNTH,0,3 	   Matching for LEN(N)
+LNTHFN DESCR   LNTH,0,3		   Matching for LEN(N)
 NMEFN  DESCR   NME,0,2
-NNYCFN DESCR   NNYC,0,3 	   Matching for NOTANY(S)
+NNYCFN DESCR   NNYC,0,3		   Matching for NOTANY(S)
 ONARFN DESCR   ONAR,0,2
 ONRFFN DESCR   ONRF,0,2
-POSIFN DESCR   POSI,0,3 	   Matching for POS(N)
-RPSIFN DESCR   RPSI,0,3 	   Matching for RPOS(N)
+POSIFN DESCR   POSI,0,3		   Matching for POS(N)
+RPSIFN DESCR   RPSI,0,3		   Matching for RPOS(N)
 RTBFN  DESCR   RTB,0,3		   Matching for RTAB(N)
 SALFFN DESCR   SALF,0,2
 SCFLFN DESCR   FAILG,0,2					[PLB25]
-SCOKFN DESCR   SCOK,0,2 	   Successful match procedure
+SCOKFN DESCR   SCOK,0,2		   Successful match procedure
 SCONFN DESCR   SCON,0,2
-SPNCFN DESCR   SPNC,0,3 	   Matching for SPAN(S)
-STARFN DESCR   STAR,0,3 	   Matching for *X
+SPNCFN DESCR   SPNC,0,3		   Matching for SPAN(S)
+STARFN DESCR   STAR,0,3		   Matching for *X
 TBFN   DESCR   TB,0,3		   Matching for TAB(N)
 ABORFN DESCR   RTNL3G,0,3	   Matching for ABORT		[PLB24]
-FNCEFN DESCR   FNCE,0,2 	   Matching for FENCE
+FNCEFN DESCR   FNCE,0,2		   Matching for FENCE
 FNCFFN DESCR   RTNL3G,0,2	   Failure for FENCE		[PLB24]
-SUCFFN DESCR   SUCF,0,2 	   Matching for SUCCEED
+SUCFFN DESCR   SUCF,0,2		   Matching for SUCCEED
 *
 *      Initialization Data for Functions
 *
@@ -7087,10 +7146,10 @@ ARGSP  STRING  'ARG'
 BACKSP STRING  'BACKSPACE'
 BALSP  STRING  'BAL'
 BRKSP  STRING  'BREAK'
-BRKXSP STRING  'BREAKX'			[PLB31]
+BRKXSP STRING  'BREAKX'						[PLB31]
 TRFRSP STRING  'CALL'
-CASESP STRING  'CASE'			[PLB15]
-CHARSP STRING  'CHAR'			[PLB31]
+CASESP STRING  'CASE'						[PLB15]
+CHARSP STRING  'CHAR'						[PLB31]
 CLERSP STRING  'CLEAR'
 CODESP STRING  'CODE'
 CLSP   STRING  'COLLECT'
@@ -7115,6 +7174,7 @@ FAILSP STRING  'FAIL'
 FNCESP STRING  'FENCE'
 FLDSSP STRING  'FIELD'
 FNCLSP STRING  'FNCLEVEL'
+FREZSP STRING  'FREEZE'						[PLB34]
 FRETSP STRING  'FRETURN'
 FTRCSP STRING  'FTRACE'
 FULLSP STRING  'FULLSCAN'
@@ -7128,20 +7188,20 @@ ITEMSP STRING  'ITEM'
 TRKYSP STRING  'KEYWORD'
 TRLASP STRING  'LABEL'
 LSTNSP STRING  'LASTNO'
-LCNMSP STRING  'LCASE'				[PLB18]
+LCNMSP STRING  'LCASE'						[PLB18]
 LENSP  STRING  'LEN'
 LESP   STRING  'LE'
 LGTSP  STRING  'LGT'
 LOADSP STRING  'LOAD'
 LOCSP  STRING  'LOCAL'
-LPADSP STRING  'LPAD'				[PLB31]
+LPADSP STRING  'LPAD'						[PLB31]
 LTSP   STRING  'LT'
 MAXLSP STRING  'MAXLNGTH'
 NAMESP STRING  'NAME'
 NESP   STRING  'NE'
 NNYSP  STRING  'NOTANY'
 NRETSP STRING  'NRETURN'
-NUMSP  STRING  'NUMERIC'			[PLB32]
+NUMSP  STRING  'NUMERIC'					[PLB32]
 OPSNSP STRING  'OPSYN'
 OUTSP  STRING  'OUTPUT'
 PATSP  STRING  'PATTERN'
@@ -7155,12 +7215,12 @@ RETSP  STRING  'RETURN'
 REWNSP STRING  'REWIND'
 RPLCSP STRING  'REPLACE'
 RPOSSP STRING  'RPOS'
-RPADSP STRING  'RPAD'				[PLB31]
-RSRTSP STRING  'RSORT'				[PLB31]
+RPADSP STRING  'RPAD'						[PLB31]
+RSRTSP STRING  'RSORT'						[PLB31]
 RTABSP STRING  'RTAB'
 RTYPSP STRING  'RTNTYPE'
 SIZESP STRING  'SIZE'
-SORTSP STRING  'SORT'				[PLB31]
+SORTSP STRING  'SORT'						[PLB31]
 SPANSP STRING  'SPAN'
 STCTSP STRING  'STCOUNT'
 STFCSP STRING  'STFCOUNT'
@@ -7170,14 +7230,15 @@ STNOSP STRING  'STNO'
 VARSP  STRING  'STRING'
 SUCCSP STRING  'SUCCEED'
 TABSP  STRING  'TAB'
+THAWSP STRING  'THAW'						[PLB34]
 TIMSP  STRING  'TIME'
 TRCESP STRING  'TRACE'
 TRMSP  STRING  'TRIM'
-UCNMSP STRING  'UCASE'				[PLB18]
+UCNMSP STRING  'UCASE'						[PLB18]
 UNLDSP STRING  'UNLOAD'
 VALSP  STRING  'VALUE'
 *
-CRDFSP STRING  '(80A1)' 	   Default output format
+CRDFSP STRING  '(80A1)'		   Default output format
 OUTPSP STRING  '(1X,132A1)'	   Standard print format
 *
 *      Pointers to Other Initialization
@@ -7203,7 +7264,7 @@ ABNDB  LHERE   ,
        DESCR   RETCL,0,0					[PLB18]
        DESCR   UCASSP,0,0	   &UCASE			[PLB18]
 DTEND  DESCR   UCASVL,0,0					[PLB18]
-
+*
 BUFEXT EQU     DTEND-ANYSP
 BUFLEN EQU     BUFEXT*CPA
 *
