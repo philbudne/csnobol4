@@ -3,6 +3,60 @@ $Id$
 
 For detailed revision history see History file
 
+Changes since 0.99.4 release;
+============================
+
+	Optimize handling stream CONTIN actions (most common type
+		when compiling). reduced compilation time of genc.sno by 8%
+
+	Merged all scanner (pattern matching) functions into SCAN
+		function body (eliminates mutual recursion, stack overflows)
+
+		genc runtime reduced 15%
+		atn.sno runtime reduced by 63%!! (2.7x faster)
+		worst case (4096 char string) reduced 69% (4.8x faster)
+		snocone self-compile runtime reduced 5%
+
+	Made pattern building functions (lib/pat.c) inlinable
+
+	Implement fatal "Output error" for output, ENDFILE() errors
+
+	Autoconfiguration cleanup;
+		Eliminate static config files; autoconf generates config.m4
+		and config.h (with all defines) for loadable functions
+
+	load.h updates;
+		all RETxxx macros safe in any context
+		RETSTR() takes single argument, allows NULL pointer
+		RETSTR2() has old RETSTR() functionality
+
+	configuration option --longlong -- use "long long" (64-bit integer)
+		for INTEGER datatype when int/pointers are only 32-bits.
+
+	Eliminate space padding on lines read by compiler (speeds up compiler)
+
+	Added compatibility libraries to SNOLIB;
+		fence.sno, not.sno, spitbol.sno, snobol4+.sno
+
+	Added URL functions to SNOLIB (HTTP, FTP, local file support)
+
+	Support for large files (64-bit offsets) where available
+
+	New functions;
+		SSET() -- scaled SET() allow large files when INTEGER is 32bits
+		ORD() -- inverse of CHAR()
+		SERV_LISTEN() -- act as TCP server
+
+	Allow a REAL any place an INTEGER is required (from SNOBOL4+)
+
+	Increase default dynamic space to 64K descriptors
+
+	Attempt at native Win32 port (works better under CygWin)
+
+	Updated Borland C port
+
+	Updated VMS port; pipe open support, attempt at tty support
+
 Changes since 0.99.3 release;
 ============================
 
