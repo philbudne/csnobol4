@@ -41,6 +41,7 @@
 #elif defined(__BORLANDC__)
 #define IMPORT(TYPE) TYPE _import	/* ??? */
 #endif
+#endif
 
 /* non-standard functions; */
 #define finite		_finite
