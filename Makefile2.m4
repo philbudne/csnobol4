@@ -286,6 +286,20 @@ data_init.h: data_init.h2
 data_init.o: data_init.c data_init.h equ.h data.h proc.h res.h
 	$(CC) $(DATA_INIT_CFLAGS) -c data_init.c
 
+################
+
+version.o: $(SRCDIR)version.c
+	$(CC) $(CFLAGS) -c $(SRCDIR)version.c
+
+main.o: $(SRCDIR)main.c
+	$(CC) $(CFLAGS) -c $(SRCDIR)main.c
+
+data.o: $(SRCDIR)data.c
+	$(CC) $(CFLAGS) -c $(SRCDIR)data.c
+
+syn.o: $(SRCDIR)syn.c
+	$(CC) $(CFLAGS) -c $(SRCDIR)syn.c
+
 #################
 # dependency generation is slow and ugly (and wrong?)
 # doesn't change much!!
@@ -334,7 +348,7 @@ intspc.o: $(INTSPC_C)
 	$(CC) $(CFLAGS) -c $(INTSPC_C)
 
 io.o:	$(IO_C) $(MAKEFILE2)
-	$(CC) $(CFLAGS) $(SNOLIB_DEFINES) $(HAVE_UNISTD_H) -c $(IO_C)
+	$(CC) $(CFLAGS) $(SNOLIB_DEFINES) -c $(IO_C)
 
 lexcmp.o: $(LEXCMP_C)
 	$(CC) $(CFLAGS) -c $(LEXCMP_C)
