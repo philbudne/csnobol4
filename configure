@@ -842,6 +842,14 @@ if [ -f $INCDIR/sys/socket.h ]; then
 	    echo 'ADD_LDFLAGS([-lnsl])'		>> $CONFIG_M4
 	fi
     fi
+
+    # BSD bidirectional popen (not needed on *BSD!)
+    # no prototype on SunOS4, so check syscalls
+    if grep socketpair $INCDIR/sys/socket.h $INCDIR/sys/syscall.h >/dev/null 2>&1; then
+	echo 'using private popen() function' 1>&2
+	echo 'ADD_OBJS([popen.o])'		>> $CONFIG_M4
+	echo 'ADD_SRCS([$(POPEN_C)])'		>> $CONFIG_M4
+    fi
 else
     echo 'no sockets; TCP not available' 1>&2
     echo 'INET_C=$(SRCDIR)lib/dummy/inet.c'	>> $CONFIG_M4
