@@ -26,7 +26,7 @@
 /* phil 1/4/94; use STDIO */
 #include <stdio.h>
 
-/* phil 1/13/94 use h.h (for index)
+/* phil 1/13/94 use h.h (for index) */
 #include "h.h"
 
 #ifdef ANSI_STRINGS
