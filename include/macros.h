@@ -43,19 +43,19 @@
  */
 
 /* specifier at address x */
-#define _S(x)	(*(struct spec *)(x))
+#define _SPEC(x) (*(struct spec *)(x))
 
 /* access spec fields */
-#define S_A(x) (_S(x).a.i)
-#define S_F(x) (_S(x).f)
-#define S_V(x) (_S(x).v)
-#define S_L(x) (_S(x).l.i)
-#define S_O(x) (_S(x).o)
+#define S_A(x) (_SPEC(x).a.i)
+#define S_F(x) (_SPEC(x).f)
+#define S_V(x) (_SPEC(x).v)
+#define S_L(x) (_SPEC(x).l.i)
+#define S_O(x) (_SPEC(x).o)
 
 #define S_SP(x) ((char *)S_A(x) + S_O(x))
 
 #if 0
-#define CLR_S_UNUSED(x) (_S(x).unused = 0)
+#define CLR_S_UNUSED(x) (_SPEC(x).unused = 0)
 #else  /* not 0 */
 #define CLR_S_UNUSED(x)
 #endif /* not 0 */
@@ -111,8 +111,8 @@ struct descr *cstack;
 #define PUSH(x)	D(cstack+1) = D(x); cstack++; OFCHK()
 #define POP(x)	cstack--; UFCHK(); D(x) = D(cstack+1)
 
-#define SPUSH(x) _S(cstack+1) = _S(x); cstack += SPEC/DESCR; OFCHK()
-#define SPOP(x)	 cstack -= SPEC/DESCR; UFCHK(); _S(x) = _S(cstack+1)
+#define SPUSH(x) _SPEC(cstack+1) = _SPEC(x); cstack += SPEC/DESCR; OFCHK()
+#define SPOP(x)	 cstack -= SPEC/DESCR; UFCHK(); _SPEC(x) = _SPEC(cstack+1)
 
 #define ISTACK() cstack = (struct descr *)STACK
 #define PSTACK(x) D_A(x) = (int)(cstack-1); D_F(x) = D_V(x) = 0
