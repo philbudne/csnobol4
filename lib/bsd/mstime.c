@@ -1,6 +1,6 @@
 /* $Id$ */
 
-#include "snotypes.h"
+#include "snotypes.h"			/* for int_t */
 
 #include <sys/types.h>
 #include <sys/time.h>
@@ -12,26 +12,33 @@
  *	(and you don't need to know HZ)
  */
 
+#ifdef GETRUSAGE_BUG
+static unsigned long last_mstime = 0;	/* XXX belongs in vars.h? */
+#endif /* GETRUSAGE_BUG defined */
+
 int_t
 mstime() {
     struct rusage ru;
-#ifndef NO_GETRUSAGE_BUG
-    unsigned long x;
-    static unsigned long last = 0;	/* XXX belongs in vars.h? */
-#endif /* NO_GETRUSAGE_BUG not defined */
+    register unsigned long x;
 
     getrusage( RUSAGE_SELF, &ru );	/* XXX check return? */
     x = ru.ru_utime.tv_sec * 1000 + ru.ru_utime.tv_usec / 1000;
 
-#ifndef NO_GETRUSAGE_BUG
+#ifdef GETRUSAGE_BUG
     /*
-     * Ensure we'll never give negative deltas;
-     * BSD/OS 3.1 on 486's can, due to "statistical sampling"
-     * Older versions of NetBSD could as well.
+     * Ensure we'll never give negative deltas due to "statistical sampling"
+     * in BSD44 systems (problem seen with NetBSD, OpenBSD and BSD/OS.
+     *
+     * Early in a process lifetime the method used to calculate how
+     * much of the current tick should be attributed to user or system
+     * usage can cause user time to step backwards!!  user+system will
+     * never have this property, but we only want user time!!
      */
-    if (x < last)
-	x = last;
-#endif /* NO_GETRUSAGE_BUG not defined */
+    if (x < last_mstime)
+	x = last_mstime;
+    else
+	last_mstime = x;
+#endif /* GETRUSAGE_BUG defined */
 
     return x;
 }
