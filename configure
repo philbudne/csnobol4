@@ -789,8 +789,9 @@ if [ -f $INCDIR/sys/socket.h ]; then
 	    echo 'using system bindresvport_sa() function' 1>&2
 	else
 	    echo 'using private bindresvport_sa() function' 1>&2
-	    echo 'ADD_OBJS([bindresvport.o])' >> $CONFIG_M4
-	    echo 'ADD_SRCS([$(BINDRESVPORT)])' >> $CONFIG_M4
+	    echo '#define NEED_INET6'		>> $CONFIG_H
+	    echo 'ADD_OBJS([bindresvport.o])'	>> $CONFIG_M4
+	    echo 'ADD_SRCS([$(BINDRESVPORT)])'	>> $CONFIG_M4
 	fi
     else
 	echo 'using sockets for TCP/IP support' 1>&2
