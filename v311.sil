@@ -1,6 +1,10 @@
 * $Id$
 *
 * $Log$
+* Revision 1.100  2003/04/24 04:07:41  phil
+* [PLB86] upcase library function names (use casting macros)
+* rename ENFILE to ENDFIL to avoid Unix errno.h collision
+*
 * Revision 1.99  2002/06/05 16:10:50  phil
 * [PLB85] Allocate interpreter stack at startup (-S option)
 *
@@ -4261,7 +4265,8 @@ UNLOAD PROC    ,		   UNLOAD(F)
 LNKFNC PROC    ,		   Procedure to link to externals
        SETAV   XCL,INCL		   Get actual number of arguments
        MOVD    YCL,INCL		   Save function descriptor
-       SETAV   WCL,YCL						E3.9.1
+       GETDC   WPTR,YCL,0	   Get procedure descriptor	[PLB87]
+       SETAV   WCL,WPTR		   Get formal argument count	[PLB87]
        GETDC   ZCL,YCL,DESCR	   Get definition block
        PSTACK  YPTR		   Post stack position
        SETAC   TCL,2*DESCR	   Set offset for first argument
@@ -4271,7 +4276,7 @@ LNKF1  PUSH    (XCL,ZCL,TCL,YPTR,WCL,YCL)
        POP     (YCL,WCL,YPTR,TCL,ZCL,XCL)
 *				   Restore working descriptors
        DECRA   WCL,1						E3.9.1
-       ACOMPC  WCL,0,,,LNKF8					E3.9.1
+       ACOMPC  WCL,0,,,LNKF6	   Pass extras w/o conversion	[PLB87]
        GETD    ZPTR,ZCL,TCL	   Get data type required	[PLB82]
        VEQLC   ZPTR,0,,LNKF6	   Check for possible conversion
        VEQL    ZPTR,XPTR,,LNKF6	   Skip if data types the same
@@ -4309,8 +4314,6 @@ LNKF6  INCRA   TCL,DESCR	   Increment offset
        PUSH    XPTR		   Save argument
 LNKF8  DECRA   XCL,1						E3.9.1
        ACOMPC  XCL,0,LNKF1					E3.9.1
-       GETDC   WPTR,YCL,0	   Get procedure descriptor
-       SETAV   WPTR,WPTR	   Get argument count required
 LNKF4  ACOMPC  WCL,0,,LNKF5,LNKF5				E3.9.1
        PUSH    NULVCL						E3.9.1
        DECRA   WCL,1		   Decrement argument count
@@ -4321,6 +4324,7 @@ LNKF5  GETSIZ  WCL,ZCL		   Get size of definition block
        GETDC   ZPTR,XPTR,0	   Get data target descriptor
        GETDC   ZCL,ZCL,DESCR	   Get function address
        INCRA   YPTR,2*DESCR	   Get pointer to argument list
+       SETAV   WPTR,YCL		   Get actual number of arguments [PLB87]
        LINK    ZPTR,YPTR,WPTR,ZCL,FAIL
 *				   Link to external function
        VEQLC   ZPTR,L,RTZPTR	   Check for linked string
