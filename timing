@@ -54,6 +54,11 @@ echo ''
 echo 'config.m4:'
 cat config.m4
 echo ''
+if [ "$CCVERS" ]; then
+	echo "$CC $CCVERS"
+	$CC $CCVERS
+	echo ''
+fi
 echo "size ${SNOBOL}:"
 size $SNOBOL
 
