@@ -2,6 +2,9 @@
 
 /*
  * $Log$
+ * Revision 1.3  94/05/27  23:51:18  budd
+ * use snotypes.h
+ * 
  * Revision 1.2  94/05/25  02:29:50  budd
  * moved date to second line
  * 
@@ -15,8 +18,8 @@
 #include "snotypes.h"
 #include "data.h"
 
-static const char vers[] = "0.90.1";
-static const char date[] = "May 24, 1994";
+const char vers[] = "0.91";
+const char date[] = "June 24, 1994";
 
 void
 version()
