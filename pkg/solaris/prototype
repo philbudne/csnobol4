@@ -13,7 +13,7 @@ f	none	lib/snobol4/ftp.sno		0644	root	sys
 f	none	lib/snobol4/h.h			0644	root	sys
 f	none	lib/snobol4/host.sno		0644	root	sys
 f	none	lib/snobol4/http.sno		0644	root	sys
-f	none	lib/snobol4/load.doc		0644	root	sys
+f	none	lib/snobol4/load.txt		0644	root	sys
 f	none	lib/snobol4/load.h		0644	root	sys
 f	none	lib/snobol4/logic.sno		0644	root	sys
 f	none	lib/snobol4/macros.h		0644	root	sys

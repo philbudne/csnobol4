@@ -7,7 +7,7 @@ pkg:
 	mkdir -p CSNOBOL4/lib/snobol4 CSNOBOL4/bin CSNOBOL4/man/man1
 	cp $(BASE)/snobol4 CSNOBOL4/bin
 	cp $(BASE)/snolib/*.sno CSNOBOL4/lib/snobol4
-	cp $(BASE)/doc/load.doc $(BASE)/host.sno CSNOBOL4/lib/snobol4
+	cp $(BASE)/doc/load.txt $(BASE)/host.sno CSNOBOL4/lib/snobol4
 	cp $(BASE)/include/*.h CSNOBOL4/lib/snobol4
 	cp $(BASE)/config.h $(BASE)/equ.h CSNOBOL4/lib/snobol4
 	cp $(BASE)/doc/snobol4.1 CSNOBOL4/man/man1
