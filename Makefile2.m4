@@ -122,6 +122,7 @@ isnobol4.c: procs genc.sno global.procs v311.sil inline.sno reverse
 	cd subr; cat ../prolog `tsort ../callgraph 2>/dev/null | reverse` \
 				> ../isnobol4.c.TMP
 	mv isnobol4.c.TMP isnobol4.c
+	rm -rf prolog subr
 changequote()
 
 reverse: reverse.c
@@ -246,15 +247,16 @@ vfprintf.o: $(VFPRINTF_C)
 # housekeeping
 
 # generated files to include in kit
+# XXX include both snobol4.c, isnobol4.c??
 GENERATED=syn.c syn.h syn.h2 data.c data.h proc.h equ.h \
-	snobol4.c data_init.h
+	$(SNOBOL4).c data_init.h 
 
 # disposables
-G2=*.o callgraph reverse
+G2=*.o callgraph reverse prolog subr
 
 # remove objects, leave generated sources, final binary, Makefile2
 clean:
-	rm -f $(G2) *~
+	rm -rf $(G2) *~
 
 # remove objects, generated sources, leave final binary, Makefile2
 realclean: clean
