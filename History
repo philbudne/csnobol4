@@ -2,6 +2,11 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
+6/1/94
+	Started man page
+	Made 8-bit clean
+	Implemented simple pipe open
+
 5/31/94
 	Fixed/improved make tar; include "bugs" dir
 	Updated porting.ms
