@@ -55,12 +55,14 @@ Changes since 0.99.4 release;
 		RETSTR() takes single argument, allows NULL pointer
 		RETSTR2() has old RETSTR() functionality
 
-	configuration options (see "INSTALL" for more information);
+	configuration options (see "INSTALL" file for more information);
 	--add-define=
 		Add a #define to config.h (visible to external functions)
+	--double
+		EXPERIMENTAL option to use C "double" for SNOBOL4 REAL data type
 	--longlong
 		EXPERIMENTAL!!
-		try to use "long long" (64-bit integer) for INTEGER datatype
+		try to use C "long long" (64-bit integer) for INTEGER datatype
 		when longs/pointers are only 32-bits (ILP32 data model).
 	--lp64
 		Request use of 64-bit long/pointer data model
@@ -70,10 +72,11 @@ Changes since 0.99.4 release;
 
 	New SNOBOL library files (see README);
 		compatibility libraries:
-			fence.sno, not.sno, spitbol.sno, snobol4+.sno
+			fence.sno, logic.sno, not.sno
+			spitbol.sno, snobol4+.sno
 		HOST() function codes:
 			host.sno
-		URL (http://, ftp://, file:) access functions
+		URL (http:, ftp:, file:) access functions
 
 	Use large files (64-bit offsets) where available.  Allows access
 		and creation of files larger than 2GB
