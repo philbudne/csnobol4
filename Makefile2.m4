@@ -58,6 +58,14 @@ MANDEST=${PREFIX}/man/man1/snobol4.1
 # directory prefix
 PREFIX=/usr/local
 
+# either snobol4 or isnobol4;
+# isnobol4 has had functions reordered for better inlining.
+# if compiler does not perform inlining, snobol4 can be used
+# with no penalty (and slightly simpler build process).
+
+SNOBOL4=isnobol4
+#SNOBOL4=snobol4
+
 ########
 # default lib source files
 
