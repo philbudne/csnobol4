@@ -1,7 +1,5 @@
 $Id$
 
-keep usecount in next/load.c?  Apple dlopen() simulation does!
-
 PACKAGING!!
 
 verify correctness of line.ref, include.ref
@@ -39,8 +37,7 @@ change name from C-MAINBOL to CSNOBOL4
 put sources under CVS
 	improve rcs2cvs;
 		move old files to Attic directories!!!
-	put config.guess, tsort on vendor branch;
-		ftp://ftp.gnu.org/pub/gnu/config/config.guess
+	put tsort on vendor branch;
 
 man page
 	mention files/functions available in snolib/ (mention README)
@@ -100,6 +97,12 @@ tag all files
 make branch for major releases
 
 ================
+
+HOST() to return CSNOBOL4 version level??
+	release date???
+
+keep usecount in next/load.c?  Apple dlopen() simulation does!
+	create generic load framework???
 
 Add FORK() to pml.h (under PML_FORK?)
 
