@@ -2,6 +2,9 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
+9/2/94
+	README: fixed spellings!
+
 8/8/94
 	lib/ordvst: got rid of a warning
 	config/posix-cc.m4: new. used/tested on SunOS 5.3
