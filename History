@@ -3,6 +3,23 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
+9/6/96
+	v311.sil: FREEZE()/THAW(), new table access code from SNOBOL4+
+		added -EXECUTE/-NOEXECUTE control cards
+		ran untabify (skipped RCS History)
+		moved all [edit] ids to column 64+
+		moved SORT to Arrays, Tables etc section
+	include/snotyoes.h: add FRZN bit
+	lib/ansi/convert.c, lib/generic/convert.c: strip leading
+		spaces in spcint()/spreal() under SPITCL. Append
+		terminator if using scanf() to detect if whole string
+		was accepted (necessary for NUMERIC conversion)
+	lib/init.c: updated usage(), added -n, parse up 'k' suffix on -d
+	genc.sno: use FREEZE()/THAW(); 15% reduction in execute time!
+	Makefile2.m4: added COPT, use -d<n>k
+	snobol4.1: updated
+	globals: updated
+
 9/4/96
 	v311.sil: &STLIMIT < 0 means no limit, default to -1
 		always case fold control card keywords
