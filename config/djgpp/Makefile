@@ -264,4 +264,4 @@ sys.o:	$(SRCDIR)lib/djgpp/sys.c
 ################################################################
 
 install:
-	config/djgpp/install.bat
+	config/install.bat djgpp \snobol4
