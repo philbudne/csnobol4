@@ -61,8 +61,8 @@ Please send me any fixes you discover!  See doc/porting.doc for
 details on porting C-MAINBOL.
 
 The routines in tty.c (tty_save, tty_restore, tty_mode, tty_close) and
-tcp.c (tcp_open) need to be supplied.  Dummy versions exist in
-lib/dummy/tty.c and lib/dummy/tcp.c.
+inet.c (tcp_open, udp_open) need to be supplied.  Dummy versions exist
+in lib/dummy/tty.c and lib/dummy/inet.c.
 
 The functions referenced from pml.h will not be loaded by the existing
 command files, and will cause the link to fail.  There are three
