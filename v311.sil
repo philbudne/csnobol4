@@ -1,6 +1,10 @@
 * $Id$
 *
 * $Log$
+* Revision 1.88  2002/01/17 18:57:40  phil
+* [PLB75] Increase hash table size to 8K
+* define OBSFT (shift factor) for table size
+*
 * Revision 1.87  2002/01/06 16:57:27  phil
 * [PLB74] rename "CON" to "CONCAT"
 * subr/CON was being interpreted as CONSOLE
@@ -492,7 +496,12 @@
 *      18.  Other Predicates 
 *	       DIFFER
 *	       IDENT 
+*	       LEQ 
+*	       LGE 
 *	       LGT 
+*	       LLE 
+*	       LLT 
+*	       LNE 
 *	       NEG 
 *	       QUES (?)
 *      19.  Other Functions
@@ -5658,12 +5667,8 @@ LEQ    PROC    ,		   LEQ(X,Y)
        PUSH    XPTR		   Save first argument
        RCALL   YPTR,VARVAL,,FAIL   Evaluate second argument
        POP     XPTR		   Restore first argument
-       AEQLC   XPTR,0,,FAIL	   Null is not greater than anything
-       AEQLC   YPTR,0,,RETNUL	   Similarly for second argument
-       LOCSP   XSP,XPTR		   Get specifier to first argument
-       LOCSP   YSP,YPTR		   Get specifier to second argument
-       LEXCMP  XSP,YSP,FAIL,RETNUL,FAIL
-*				   Compare lexically
+       DEQL    XPTR,YPTR,FAIL,RETNUL
+*				   See if IDENT()	[PLB76]
 *_
 *---------------------------------------------------------------------*
 *
@@ -5675,6 +5680,7 @@ LGE    PROC    ,		   LGE(X,Y)
        PUSH    XPTR		   Save first argument
        RCALL   YPTR,VARVAL,,FAIL   Evaluate second argument
        POP     XPTR		   Restore first argument
+       DEQL    XPTR,YPTR,,RETNUL   If IDENT() no need to compare [PLB76]
        AEQLC   XPTR,0,,FAIL	   Null is not greater than anything
        AEQLC   YPTR,0,,RETNUL	   Similarly for second argument
        LOCSP   XSP,XPTR		   Get specifier to first argument
@@ -5691,6 +5697,7 @@ LGT    PROC    ,		   LGT(X,Y)
        PUSH    XPTR		   Save first argument
        RCALL   YPTR,VARVAL,,FAIL   Evaluate second argument
        POP     XPTR		   Restore first argument
+       DEQL    XPTR,YPTR,,FAIL	   If IDENT() no need to compare [PLB76]
        AEQLC   XPTR,0,,FAIL	   Null is not greater than anything
        AEQLC   YPTR,0,,RETNUL	   Similarly for second argument
        LOCSP   XSP,XPTR		   Get specifier to first argument
@@ -5708,8 +5715,9 @@ LLE    PROC    ,		   LLE(X,Y)
        PUSH    XPTR		   Save first argument
        RCALL   YPTR,VARVAL,,FAIL   Evaluate second argument
        POP     XPTR		   Restore first argument
-       AEQLC   XPTR,0,,FAIL	   Null is not greater than anything
-       AEQLC   YPTR,0,,RETNUL	   Similarly for second argument
+       DEQL    XPTR,YPTR,,RETNUL   If IDENT() no need to compare [PLB76]
+       AEQLC   XPTR,0,,RETNUL	   Null is less than everything	 [PLB76]
+       AEQLC   YPTR,0,,FAIL	   Similarly for second argument [PLB76]
        LOCSP   XSP,XPTR		   Get specifier to first argument
        LOCSP   YSP,YPTR		   Get specifier to second argument
        LEXCMP  XSP,YSP,FAIL,RETNUL,RETNUL
@@ -5725,8 +5733,9 @@ LLT    PROC    ,		   LLT(X,Y)
        PUSH    XPTR		   Save first argument
        RCALL   YPTR,VARVAL,,FAIL   Evaluate second argument
        POP     XPTR		   Restore first argument
-       AEQLC   XPTR,0,,FAIL	   Null is not greater than anything
-       AEQLC   YPTR,0,,RETNUL	   Similarly for second argument
+       DEQL    XPTR,YPTR,,FAIL     If IDENT() no need to compare [PLB76]
+       AEQLC   XPTR,0,,RETNUL	   Null is less than everything	 [PLB76]
+       AEQLC   YPTR,0,,FAIL	   Similarly for second argument [PLB76]
        LOCSP   XSP,XPTR		   Get specifier to first argument
        LOCSP   YSP,YPTR		   Get specifier to second argument
        LEXCMP  XSP,YSP,FAIL,FAIL,RETNUL
@@ -5742,12 +5751,8 @@ LNE    PROC    ,		   LNE(X,Y)
        PUSH    XPTR		   Save first argument
        RCALL   YPTR,VARVAL,,FAIL   Evaluate second argument
        POP     XPTR		   Restore first argument
-       AEQLC   XPTR,0,,FAIL	   Null is not greater than anything
-       AEQLC   YPTR,0,,RETNUL	   Similarly for second argument
-       LOCSP   XSP,XPTR		   Get specifier to first argument
-       LOCSP   YSP,YPTR		   Get specifier to second argument
-       LEXCMP  XSP,YSP,RETNUL,FAIL,RETNUL
-*				   Compare lexically
+       DEQL    XPTR,YPTR,RETNUL,FAIL
+*				   Must DIFFER()	[PLB76]
 *_
 *---------------------------------------------------------------------*
 *
