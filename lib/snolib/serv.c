@@ -44,6 +44,7 @@ fireman() {				/* catch falling babies */
     int w;
     while( wait(&w) > 0 )
 	;
+    signal(SIGCHLD, fireman);
 }
 
 /*
