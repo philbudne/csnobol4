@@ -44,47 +44,45 @@ static struct func *funcs;
  * remove double /'s
  */
 
-/* XXX return error if out of space? */
-static void
+static int
 pathcpy(dp, cc, sp1, sp2)
     char *dp, *sp1, *sp2;
     int cc;
 {
-    char sep1, sep2;
     char c, last;
 
-    last = '\0';
-    sep1 = sep2 = BS;
-
     cc--;				/* leave room for NUL */
+    last = '\0';
     while (cc > 0 && (c = *sp1++)) {
 	if (c == '/') {
-	    /* remove repeated /'s */
-	    if (last == '/')
-		continue;
 	    c = BS;
+	    /* remove repeated /'s */
+	    if (last == BS)
+		continue;
 	}
-	*dp++ = c;
-	last = c;
+	*dp++ = last = c;
 	cc--;
     }
     if (sp2 && cc > 0) {
 	/* add seperator, if needed */
 	if (last != BS) {
-	    *dp++ = BS;
+	    *dp++ = last = BS;
 	    cc--;
 	}
 	while (cc > 0 && (c = *sp2++)) {
 	    /* remove repeated /'s */
-	    if (last == '/')
-		continue;
-	    c = BS;
+	    if (c == '/') {
+		if (last == BS)
+		    continue;
+		c = BS;
+	    }
+
+	    *dp++ = last = c;
+	    cc--;
 	}
-	*dp++ = c;
-	last = c;
-	cc--;
     } /* sp2 && space */
     *dp = '\0';
+    return cc > 0 || last == '\0';
 }
 
 int
@@ -107,34 +105,35 @@ load(addr, sp1, sp2)
     /* try "poor mans load" first!!! */
     fp->entry = pml_find(fp->name);
     if (fp->entry == NULL) {		/* not found by pml */
-	char path[PATHLEN*2];		/* room for directory name */
+	char path[PATHLEN];
+	char path2[PATHLEN*2];		/* room for directory name */
 	char *snolib;
 
 	snolib = getenv("SNOLIB");
 	if (snolib == NULL)
 	    snolib = SNOLIB_DIR;
 
-	if (sp2 && S_A(sp2) && S_L(sp2)) { /* have filename */
-	    char temp[PATHLEN];
+	if (sp2 && S_A(sp2) && S_L(sp2)) /* have filename */
+	    spec2str(sp2, path, sizeof(path));
+	else
+	    pathcpy(path, sizeof(path), SNOLIB_FILE, NULL );
 
-	    spec2str(sp2, temp, sizeof(temp));
-	    if (!ABSPATH(temp) && !exists(temp)) {
-		/* not absolute and file does not exist; prepend libdir */
-		pathcpy( path, sizeof(path), snolib, temp );
-	    }
-	    else {
-		/* absolute or exists */
-		pathcpy( path, sizeof(path), temp, NULL );
-	    }
-	}
-	else {				/* no path */
-	    pathcpy( path, sizeof(path), SNOLIB_FILE, NULL );
-	}
-
-	fp->handle = LoadLibrary(path);	/* do the deed */
+	/*
+	 * try loading given path;
+	 * system will scan various directories
+	 * (including appl dir, cwd, SYSTEM(32),
+	 * windows dir, and dirs in PATH var)
+	 */
+	fp->handle = LoadLibrary(path);
 	if (fp->handle == NULL) {
-	    free(fp);
-	    return FALSE;		/* fail */
+
+	    /* try prepending SNOLIB directory */
+	    pathcpy(path2, sizeof(path2), snolib, path );
+	    fp->handle = LoadLibrary(path2);
+	    if (fp->handle == NULL) {
+		free(fp);
+		return FALSE;		/* fail */
+	    }
 	}
 
 	fp->entry = (int (*)(LOAD_PROTO)) GetProcAddress(fp->handle, fp->name);
@@ -144,7 +143,6 @@ load(addr, sp1, sp2)
 	    return FALSE;
 	} /* dlsym failed */
     } /* not found by pml */
- found:
     fp->self = fp;			/* make valid */
 
     fp->next = funcs;			/* link into list (for unload) */
