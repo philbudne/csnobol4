@@ -1,17 +1,10 @@
 *	$Id$
-*	Simple TCP server demo for SNOBOL4
+*	Ssmple TCP server demo for SNOBOL4
 *	Phil Budne
 *	November/December 1997
 
 *	TCP port number for server
 	SERVER_PORT = 54321
-
-****************
-*	load "server" functions (see serv.c)
-
-*	./ needed on some systems to force local directory
-#	SERV_LIB = "./serv.so"
-#	LOAD("SERV_LISTEN(STRING,STRING,STRING)INTEGER", SERV_LIB)
 
 ****************
 *	perform any initialization here
