@@ -1,6 +1,12 @@
 * $Id$
 *
 * $Log$
+* Revision 1.73  1997/09/08  05:22:19  phil
+* [PLB62] set LNBFSP length from TEXTSP after input
+* so listings don't end up showing old, long lines
+* this kills "LIST RIGHT", but it was of pretty dubious
+* value with a compiler "card size" of 1024
+*
 * Revision 1.72  1997/09/08  03:40:11  phil
 * [PLB61] flushed INBFSP, SEQSIZ
 * init TEXTSP before STREAD in compiler
@@ -1873,6 +1879,8 @@ NEWCRD PROC    ,		   Process new card image
        INCRA   XCL,1		   Increment number
        INTSPC  TSP,XCL		   Convert it to STRING
        AEQLC   LLIST,0,CARDL	   Check for left listing
+       XCALLC  io_pad,(LNBFSP,CARDSZ+DSTSZ)				[PLB63]
+*				   Pad line with spaces			[PLB63]
        SETLC   RNOSP,0		   Clear right specifier
        APDSP   RNOSP,TSP	   Set to statement number
        BRANCH  RTN3
@@ -1892,6 +1900,8 @@ CNTCRD FSHRTN  TEXTSP,1		   Remove continue character
        AEQLC   LISTCL,0,,RTN2	   Return if listing is off
        INTSPC  TSP,CSTNCL	   Get specifier for number
        AEQLC   LLIST,0,CARDLL	   Check for left listing
+       XCALLC  io_pad,(LNBFSP,CARDSZ+DSTSZ)				[PLB63]
+*				   Pad line with spaces			[PLB63]
        SETLC   RNOSP,0		   Clear right specifier
        APDSP   RNOSP,TSP	   Set to statement number
        BRANCH  RTN2
@@ -6772,7 +6782,7 @@ FNVLCL DESCR   0,0,0		   FUNCTION-VALUE switch for trace
 INICOM DESCR   0,0,0		   INITIALIZATION SWITCH	E3.10.6
 LENFCL DESCR   0,0,0		   Length failure switch
 LISTCL DESCR   0,0,0		   Compiler listing switch	[PLB33]
-LLIST  DESCR   1,0,0		   Left listing switch
+LLIST  DESCR   1,0,0		   Left listing switch		[PLB12]
 NAMGCL DESCR   0,0,0		   Naming switch for SJSR
 NERRCL DESCR   1,0,0		   NOERROR switch		[PLB9]
 SCERCL DESCR   0,0,0		   Error branch switch
