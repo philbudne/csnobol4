@@ -1,31 +1,51 @@
 $Id$
 
+simple output tests;
+	output = 1
+	output = "hello"
+	a = 1
+	output = a
+	a = "hello"
+	output = a
+
+rename /ansi/ to /c89/ ??
+rename /borland/ to /msdos/ ??
+
+--longlong loses on sparc?
+
+	include file for bcopy() prototype??
+		always cast to size_t??  int??
+		do includes in h.h?? macros.h??
+		bcmp defines in macros.h and h.h??
+			USE_MEMCMP never set
+
+spec2str should use bcopy???
+
+all S_L fetches should use int_t variables!
+
+INSTALL
+	remove documentation for --(no-)largefile!!!
+	warn --longlong may not work!!!
+
+CHANGES
+	discuss largefile support (and why it may or may not work)!
+
 create README.CVS??
 	(make sure it DOESN'T exist in regular kit!!!)
 
-GNU tsort can't handle cycles!!
-	save tsort output as procs.sort?
-	use snobol program???
+use SNOCONE tsort program???
+	include tsort.sno in repository?
 
 Add --no-inline??
-
-chars.sno:
-	supply character constants by name?
-		SPACE, HT, FF, NL, CR
 
 man page:
 	document HOST(200x)
 	document SERV_LISTEN()
+	discuss largefile support (may not work on all (file)systems)
+	discuss terminal binary mode
 
 add build_hostname?? build_user???
 	move to mkbuild script?
-
-INSTALL;
-	talk about use of local-config (and local-defines);
-		ADD_OPT()
-		OPT=
-		SNOBOL4_C_CFLAGS=
-		DATA_INIT_CFLAGS=
 
 ports.doc
 	update (with beta test information)
@@ -103,7 +123,6 @@ always send timing.out via e-mail?
 	only if part of a real kit???
 
 test
-	SSET()!!
 	VMS port (RDIXON@seattleschools.org)
 	MacOS X (panos@surgery.wisc.edu)
 	DJGPP (meissner@altertum.uni-halle.de)
@@ -133,6 +152,7 @@ have tests cleanup after themselves?  Add Makefile for "make clean"?
 	just add files to "make spotless"
 
 cygwin isnobol4.c build problems with filename "subr/CON" !!
+	change label to CONC?
 
 HOST() functions for;
 	INTEGER and REAL sizes?
@@ -724,3 +744,15 @@ X1 and X2 may be two strings, two integers, or an integer and a string.
 ================
 
 dump MAXLNGTH? sparc SPITBOL uses 2^22!
+
+have genc read entire program;
+	output internal branches first (avoid manual cleanup)
+		output common tails as routines
+	"inline" extra-subroutine branches?
+		(if common tail "simple")
+
+manually copy common code?
+	example: RECOMZ
+
+find places where common tails exist, and move to ends of routines
+	examples (done) STOPTP, RECOMZ

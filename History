@@ -2,6 +2,35 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+1/1/2002
+	autoconf: disable largefile/getconf cleverness -- Linux getconf sux
+
+12/31/2001
+	lib/dummy/mstime.c: add comment to use time()
+	lib/io.c, lib/str.c: tweaks (casts) to work on sparc w/ --longlong
+	Thank God It's Over
+
+12/29/2001
+	lib/io.c: fix sset cast; tested SSET; use HAVE_FSEEKO (or lack thereof)
+	autoconf: detect largefile support, always use it, define HAVE_FSEEKO
+		detect SIGTSTP on Solaris 8
+
+12/28/2001
+	wrote count-procs script
+
+12/27/2001
+	genc.sno: make callgraph file tsort friendly
+	Makefile: move tsort out to seperate command
+		so we can detect errors from bogus tsort programs
+		use new callgraph format
+	v311.sil, procs:
+		rearrange some code to avoid functionization
+		eliminate procs (and loops): TRAC{1,4,6},STOPT1,RECOM{N,F,Q,T}
+	INSTALL: add "Advanced configuration" section
+		(information on local-config, local-defines)
+	README: add chars.sno
+	new: snolib/chars.sno: character sets
+
 12/26/2001
 	CHANGES: update configure options
 	lib/io.c: add %G
