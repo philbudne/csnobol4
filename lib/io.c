@@ -53,6 +53,10 @@ typedef long off_t;
 #include <unistd.h>			/* SEEK_xxx */
 #endif /* HAVE_UNISTD_H defined */
 
+#ifdef HAVE_UNIXIO_H			/* DECC v4 */
+#include <unixio.h>			/* read(), lseek(), etc */
+#endif /* HAVE_UNIXIO_H defined */
+
 #include "h.h"
 #include "units.h"
 #include "snotypes.h"
