@@ -4,9 +4,12 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
 7/11/97:
 	autoconf: use CCVERS to output comments
-		check for memmove in string.h if no bcopy(); define USE_MEMMOVE
+		add --force-memmove; check for memmove in string.h if
+			no bcopy(); define USE_MEMMOVE
 	include/macros.h: added USE_MEMMOVE USE_MEMCMP ifdefs
 		USE_MEMCMP not set; only necessary if DCMP_BYTES in use (rare)
+	lib/bsd/inet.c: include macros.h for bcopy redefn
+	INSTALL: document --force-memmove
 
 7/7/97:
 	README CHANGES: updated for 0.99.4
