@@ -38,8 +38,9 @@ OBJ=	isnobol4.obj data.obj data_init.obj main.obj syn.obj \
 	init.obj load.obj mstime.obj chop.obj cos.obj delete.obj \
 	environ.obj exit.obj file.obj getstring.obj host.obj log.obj \
 	logic.obj ord.obj rename.obj retstring.obj sin.obj spcint.obj \
-	spreal.obj sqrt.obj sset.obj tan.obj sys.obj tty.obj inet.obj \
-	bindresvport.obj execute.obj exists.obj term.obj findunit.obj exp.obj
+	spreal.obj sqrt.obj sset.obj tan.obj osopen.obj sys.obj \
+	tty.obj inet.obj bindresvport.obj execute.obj exists.obj \
+	term.obj findunit.obj exp.obj
 
 # Ensure Psdk directory (containing wsock32.lib) is included in the library
 # search path in both BCC32.CFG and ILINK.CFG , both found in BCC55\BIN\
@@ -160,6 +161,11 @@ expops.obj : $(SRCDIR)lib\generic\expops.c
 
 intspc.obj : $(SRCDIR)lib\generic\intspc.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\generic\intspc.c
+
+################ msdos!
+
+osopen.obj : $(SRCDIR)lib\msdos\osopen.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\msdos\osopen.c
 
 ################ win32!
 

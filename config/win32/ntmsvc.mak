@@ -30,14 +30,15 @@ CFLAGS=	-c $(OPT) \
 
 OBJ=	isnobol4.obj data.obj data_init.obj main.obj syn.obj \
 	version.obj bal.obj date.obj dump.obj endex.obj hash.obj \
-	intspc.obj io.obj lexcmp.obj ordvst.obj pair.obj pat.obj \
-	pml.obj realst.obj replace.obj str.obj stream.obj top.obj \
-	tree.obj bcopy.obj bzero.obj dynamic.obj expops.obj getopt.obj \
-	init.obj load.obj mstime.obj chop.obj cos.obj delete.obj \
-	environ.obj exit.obj file.obj getstring.obj host.obj log.obj \
-	logic.obj ord.obj rename.obj retstring.obj sin.obj spcint.obj \
-	spreal.obj sqrt.obj sset.obj tan.obj sys.obj tty.obj inet.obj \
-	bindresvport.obj execute.obj exists.obj term.obj findunit.obj exp.obj
+	intspc.obj io.obj lexcmp.obj ordvst.obj pair.obj \
+	pat.obj pml.obj realst.obj replace.obj str.obj stream.obj \
+	top.obj tree.obj bcopy.obj bzero.obj dynamic.obj expops.obj \
+	getopt.obj init.obj load.obj mstime.obj chop.obj cos.obj \
+	delete.obj environ.obj exit.obj file.obj getstring.obj \
+	host.obj log.obj logic.obj ord.obj rename.obj retstring.obj \
+	sin.obj spcint.obj spreal.obj sqrt.obj sset.obj tan.obj \
+	osopen.obj sys.obj tty.obj inet.obj bindresvport.obj \
+	execute.obj exists.obj term.obj findunit.obj exp.obj
 
 snobol4.exe : $(OBJ)
 	link /out:snobol4.exe $(OBJ) $(INET_LIBS)
@@ -153,6 +154,11 @@ expops.obj : $(SRCDIR)lib\generic\expops.c
 
 intspc.obj : $(SRCDIR)lib\generic\intspc.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\generic\intspc.c
+
+################ msdos!
+
+osopen.obj : $(SRCDIR)lib\msdos\osopen.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\msdos\osopen.c
 
 ################ win32!
 

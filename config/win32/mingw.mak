@@ -22,17 +22,15 @@ INET_LIBS=-lwsock32
 CFLAGS=	-c $(OPT) -I$(SRCDIR)config/win32 -I$(SRCDIR)include -I$(SRCDIR). \
 	-DHAVE_CONFIG_H $(INET_DEFS)
 
-OBJ=	isnobol4.o data.o data_init.o main.o syn.o \
-	version.o bal.o date.o dump.o endex.o hash.o \
-	intspc.o io.o lexcmp.o ordvst.o pair.o pat.o \
-	pml.o realst.o replace.o str.o stream.o top.o \
-	tree.o bcopy.o bzero.o dynamic.o expops.o getopt.o \
-	init.o load.o mstime.o chop.o cos.o delete.o \
-	environ.o exit.o exp.o file.o getstring.o \
-	host.o log.o logic.o ord.o rename.o retstring.o sin.o \
-	spcint.o spreal.o sprintf.o sqrt.o sset.o \
-	tan.o sys.o tty.o inet.o bindresvport.o execute.o exists.o \
-	term.o findunit.o
+OBJ=	isnobol4.o data.o data_init.o main.o syn.o version.o bal.o \
+	date.o dump.o endex.o hash.o intspc.o io.o lexcmp.o ordvst.o \
+	pair.o pat.o pml.o realst.o replace.o str.o stream.o top.o \
+	tree.o bcopy.o bzero.o dynamic.o expops.o getopt.o init.o \
+	load.o mstime.o chop.o cos.o delete.o environ.o exit.o exp.o \
+	file.o getstring.o host.o log.o logic.o ord.o rename.o \
+	retstring.o sin.o spcint.o spreal.o sprintf.o sqrt.o sset.o \
+	tan.o osopen.o sys.o tty.o inet.o bindresvport.o execute.o \
+	exists.o term.o findunit.o
 
 snobol4.exe: $(OBJ)
 	$(CC) -o snobol4 $(OBJ) $(INET_LIBS)
@@ -148,6 +146,11 @@ expops.o: $(SRCDIR)lib/generic/expops.c
 
 intspc.o: $(SRCDIR)lib/generic/intspc.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/generic/intspc.c
+
+################ msdos!
+
+osopen.o: $(SRCDIR)lib/msdos/osopen.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/msdos/osopen.c
 
 ################ win32!
 
