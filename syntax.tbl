@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.5  1996/09/04  03:02:00  phil
+* [PLB32] added SPITBOL binop table, exponents on REALs
+*
 * Revision 1.4  1993/12/09  14:36:58  budd
 * ALPHA1 release
 *
@@ -140,6 +143,7 @@ BEGIN INTGTB
 FOR(NUMBER) CONTIN
 FOR(TERMINATOR) PUT(ILITYP) STOPSH
 FOR(DOT) PUT(FLITYP) GOTO(FLITB)
+FOR(EXP) PUT(FLITYP) GOTO(EXPTB)
 ELSE ERROR
 END INTGTB
 
