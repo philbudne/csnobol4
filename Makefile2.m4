@@ -97,7 +97,7 @@ LDFLAGS=[]_LDFLAGS
 # bootstrapped using Catspaw SPARC SPITBOL
 #SNO=spitbol -i512k -b
 #SMALL_SNO=spitbol -b
-SNO=snobol4 -d50k -b
+SNO=snobol4 -d512k -b
 SMALL_SNO=snobol4 -b
 
 ################
