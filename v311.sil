@@ -1,6 +1,17 @@
 * $Id$
 *
 * $Log$
+* Revision 1.47  1996/09/21  07:05:58  phil
+* [PLB38] more comment cleanup, fixed comment typos
+* don't increment &STCOUNT if &STLIMIT < 0
+* 	keep seperate stmt count for stats output
+* add errors for bad INCLUDE, INCLUDE open error, missing END
+* add &LINE &FILE and -LINE for real source line in errors
+* add S4+ CTLADV proc, use for INCLUDE and LINE processing
+* put all control card tests in a row
+* add &LASTLINE &LASTFILE &ERRTEXT keywords
+* changed formats; added file/line to errors
+*
 * Revision 1.46  1996/09/19  01:02:25  phil
 * [PLB37] add REVERSE(), SUBSTR(), LEQ(), LGE(), LLE(), LLT(), LNE()
 * from SNOBOL4+ & Minnesota SNOBOL4
@@ -501,6 +512,9 @@ INITD1 GETDC   XPTR,INITB,0	   Get specifier to convert
        INCRA   INITB,2*DESCR	   Decrement to next pair
        ACOMP   INITB,INITE,,,INITD1
 *				   Compare with end
+       XCALLC  getparm,(XSP)	   Get user parameters		[PLB39]
+       RCALL   PARMVL,GENVAR,XSPPTR				[PLB39]
+*				   Convert to string for &PARM	[PLB39]
 *
        PUTDC   ABRTKY,DESCR,ABOPAT Initial value of ABORT
        PUTDC   ARBKY,DESCR,ARBPAT  Initial value of ARB
@@ -1383,7 +1397,7 @@ DIAGRN STREAD  INBFSP,UNIT,DIAGIN,COMP1				[PLB38]
        STPRNT  IOKEY,OUTBLK,LNBFSP Print out bypassed card
        BRANCH  DIAGRN
 *_
-DIAGIN RCALL   ,FILCfHK		   Pick up file change		[PLB38]
+DIAGIN RCALL   ,FILCHK		   Pick up file change		[PLB38]
        BRANCH  DIAGRN		   Try reading again		[PLB38]
 *_
 *---------------------------------------------------------------------*
@@ -4381,7 +4395,7 @@ SORT3  GETDC   ZCL,YPTR,0
        ACOMPC  WCL,2,ARGNER,,SORT5 J. if 1 arg
        PUSH    (WPTR,XPTR,YPTR,ZPTR,XCL,YCL,ZCL,SCL)
 *				   2 args. save everything
-       RCALL   WCL,ARGVAL,,FAIL	   2.13 Get column no. or field name
+       RCALL   WCL,ARGVAL,,FAIL	   Get column no. or field name
        POP     (SCL,ZCL,YCL,XCL,ZPTR,YPTR,XPTR,WPTR)
 *				   Restore
        MOVD    A3PTR,ZEROCL	   Assume no Field arg
@@ -4457,7 +4471,7 @@ SORTA  GETSIZ  WCL,WPTR		   Get size of old array
        SUBTRT  TPTR,TPTR,ZCL	   - no. rows = start of index table-1
 *
        SUBTRT  A5PTR,ZPTR,YPTR	   Offset to first element in row
-       RESETF  A5PTR,PTR	   V2.03 Clear pointer flag
+       RESETF  A5PTR,PTR	   Clear pointer flag
        MOVA    A4PTR,ZCL	   Offset to advance a column
 SORTA1 INCRA   XCL,DESCR	   Next index entry			[PLB31]
        INCRA   ZPTR,DESCR	   Next sort element
@@ -6514,6 +6528,8 @@ LCASVL DESCR   0,0,0		   &LCASE			[PLB18]
        DESCR   LCNMSP,0,0					[PLB18]
 UCASVL DESCR   0,0,0		   &UCASE			[PLB18]
        DESCR   UCNMSP,0,0					[PLB18]
+PARMVL DESCR   0,0,S		   &PARM			[PLB39]
+       DESCR   PARMSP,0,0					[PLB39]
 KVEND  LHERE   ,
 *
 INLIST DESCR   INLIST,TTL+MARK,4*DESCR				[PLB36]
@@ -7518,6 +7534,7 @@ NRETSP STRING  'NRETURN'
 NUMSP  STRING  'NUMERIC'					[PLB32]
 OPSNSP STRING  'OPSYN'
 OUTSP  STRING  'OUTPUT'
+PARMSP STRING  'PARM'						[PLB39]
 PATSP  STRING  'PATTERN'
 POSSP  STRING  'POS'
 PRTSP  STRING  'PROTOTYPE'
@@ -7776,6 +7793,7 @@ MSGLST DESCR   0,0,0
        DESCR   MSG29,0,0					[PLB38]
        DESCR   MSG30,0,0					[PLB38]
        DESCR   MSG31,0,0					[PLB38]
+       DESCR   MSG32,0,0					[PLB38]
 *
 *      Fatal Error Messages
 *
@@ -7808,9 +7826,10 @@ MSG25  STRING  'Incorrect number of arguments'
 MSG26  STRING  'Limit on compilation errors exceeded'
 MSG27  STRING  'Erroneous END statement'
 MSG28  STRING  'Execution of statement with compilation error'
-MSG29  STRING  'Cannot open INCLUDE file'			[PLB38]
-MSG30  STRING  'Erroneous LINE statement'			[PLB38]
-MSG31  STRING  'Missing END statement'				[PLB38]
+MSG29  STRING  'Erroneous INCLUDE statement'			[PLB38]
+MSG30  STRING  'Cannot open INCLUDE file'			[PLB38]
+MSG31  STRING  'Erroneous LINE statement'			[PLB38]
+MSG32  STRING  'Missing END statement'				[PLB38]
 *
 *      Compiler Error Messages
 *
