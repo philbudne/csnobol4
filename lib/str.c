@@ -162,3 +162,42 @@ spec2str(sp, dest, size)
     dest[l] = '\0';
 }
 
+/*  6/12/98 */
+
+/*#define APDSP_NLENS 4096*/
+#ifdef APDSP_NLENS
+int apdsp_lens[APDSP_NLENS];
+#endif
+
+void
+apdsp(base, str)
+    struct spec *base, *str;
+{
+    register int len;
+    register char *src, *dst;
+
+    len = S_L(str);
+    src = S_SP(str);
+    dst = S_SP(base)+S_L(base);
+
+#ifdef APDSP_NLENS
+    if (len > APDSP_NLENS)
+	apdsp_lens[APDSP_NLENS-1]++;
+    else
+	apdsp_lens[len]++;
+#endif
+
+    S_L(base) += len;
+
+#define THRESH 4
+    if (len >= THRESH) {		/* XXX also check alignment? */
+	/* XXX non-overlap version here? */
+	bcopy(src, dst, len);
+    }
+    else {
+	while (len > 0) {
+	    *dst++ = *src++;
+	    len--;
+	}
+    }
+}

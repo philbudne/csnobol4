@@ -64,7 +64,13 @@
 #define CLR_S_UNUSED(x)
 #endif /* not 0 */
 
-#define APDSP(A,B) bcopy(S_SP(B), S_SP(A)+S_L(A), S_L(B)); S_L(A) += S_L(B)
+/*
+ * zero is most common case?!
+ * one is next most common!?
+ * bcopy handles anything else as well as simple loop!!
+ *	should NEVER need to check for overlap!
+ */
+#define APDSP(BASE,STR) if (S_L(STR) > 0) { apdsp(BASE, STR); }
 
 /* must deal with A == C
  * 10/28/93
