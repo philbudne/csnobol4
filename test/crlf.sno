@@ -1,0 +1,5 @@
+loop	output = input		:s(loop)
+end
+this line has no CR
+this line ends in a CR
+this line has no CR
