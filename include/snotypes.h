@@ -42,7 +42,7 @@ union addr {
 #define VFLD_T unsigned int		/* at least 32 bits */
 #endif
 #ifndef SIZLIM
-#define SIZLIM 0xffffffff		/* maximum object size */
+#define SIZLIM 0x7fffffff		/* maximum object size */
 #endif
 #define VFLD(name) VFLD_T name
 #else  /* NO_BITFIELDS not defined */
