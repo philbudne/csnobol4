@@ -2,6 +2,12 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+12/10/96:
+	README: mention SNOBOL4 list, new contributors
+	lib/ansi/convert.c, lib/generic/convert.c:
+		apply length limit.  EVAL() can pass big strings!
+		bug reported by p.a.coppen
+
 12/07/96:
 	second last TMRC open house in Bldg 20
 	init.c: mention "k" suffix in usage message, per skibler
