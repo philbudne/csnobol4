@@ -189,9 +189,20 @@ SRCS=	main.c $(SNOBOL4).c data.c data_init.c syn.c $(BAL_C) \
 
 .PRECIOUS: $(SNOBOL4).o data_init.o snobol4
 
+changequote(@,@)dnl
+
 xsnobol4: $(OBJS)
+	rm -f build.c
+	echo '/* MACHINE GENERATED.  EDITING IS FUTILE */'	> build.c
+	echo 'const char build_files[] = "'$(SRCS)'";'		>> build.c
+	echo 'const char build_lib[] = "'"$(SNOLIB_DIR)"'";'	>> build.c
+	echo 'const char build_date[] = "'`date`'";'		>> build.c
+	echo 'const char build_dir[] = "'`pwd`'";'		>> build.c
+	$(CC) $(CFLAGS) -c build.c
 	rm -f xsnobol4$(EXT)
-	$(CC) $(CFLAGS) -o xsnobol4 $(OBJS) $(LDFLAGS)
+	$(CC) $(CFLAGS) -o xsnobol4 $(OBJS) build.o $(LDFLAGS)
+
+changequote([,])dnl
 
 ################
 # run regression tests.
