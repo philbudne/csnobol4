@@ -22,8 +22,6 @@ load(addr, sp1, sp2)
     /* NOTREACHED */
 #else  /* NO_PML not defined */
     char name[256];			/* XXX */
-    struct pmlfunc *fp;
-    int l;
 
     spec2str( sp1, name, sizeof(name) );
     D_A(addr) = (int_t) pml_find(name);
