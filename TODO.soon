@@ -1,34 +1,30 @@
 $Id$
 
-have autoconfig pick up local additions to config.m4?
-
-how big is descr on Alpha?
-	if padded to 16 bytes, don't use bitfields for F & V?
-
 document:
-	-d now takes bytes
-	k = 1024
-	-P changes pmstack size
-		mention overflow error message
+	SQRT(), EXP(), LOG(), CHOP()
+	SIN(), COS(), TAN()
 
-BUG: end.sno -- no file/line to report (INIT never called)
-	test in S4+?
+snolib.a;
+	set RANLIB=true in ????.m4 (skel?)
+	DOS & VMS; need to make library!!
+		(or add -DNO_PML_HOST / NO_PML_EXIT?)
+		add /DEFINE=(EXIT=XEXIT) to VMS confs!
+	fix host.c;
+		hwame() and osname() functions?? lib/*/sys.c
+		dummy getenv() returns NULL
+		dummy system() returns -1
+	checkin pml.h
+	move default values for SNOLIB_DIR, SNOLIB_A to Makefile2.m4?
+		pass via -D to lib/io.o lib/bsd/load.o rules
 
-fix timing.sno "time" parsing under AIX 4.1.1?
-
-implement auto-load of pml functions
-	(execute LOAD w/ given prototype)
-	SPITBOL HOST() EXIT()
-	fixup host.c -- sys() and os() functions??
-		C-SNOBOL -> C-MAINBOL
-	fix exit.c; use SPIT_EXIT for entry point name (conflict on VMS)
-		or add -DEXIT=XEXIT to VMS conf!
-
-Document:
-	HOST(), EXIT()
-
-Add snolib.a to regular build?
-	move snolib files to lib/ ???
+load.doc;
+	s/PML_OBJ/PML_OBJS/
+	warn about case folding
+	warn about global name collisions
+	deal with polymorphism?
+	add PMPROTO
+	add getstring()
+	add all snolib functions??
 
 update README
 	credit SNOBOL4+, Minnesota SNOBOL4
@@ -36,6 +32,7 @@ update README
 	flush MFU
 
 Create INSTALL top level doc file
+	mention local-config
 	mention VMS, Borland command files
 
 Create CHANGES top level doc file;
@@ -44,27 +41,26 @@ Create CHANGES top level doc file;
 	PLUSOPS intereferes with programs that OPSYN binary "?"
 	-d takes bytes, not descriptors.  multiply by 8 on most systems.
 
-enable stats in Makefile "SNO" commands?
-remove date from genc prolog
-	change diff to cmp && echo "DIFF OK" || echo "DIFF FAILURE"
+rcs tag for release
 
-use "SNOLIB" path for -INCLUDE & LOAD()
-
-add rcs tag for release
-
-patches for snocone;
+create patches for snocone;
 	autodetect MAINBOL, set -+ switch?
 	handle either SNOBOL4 or SPITBOL I/O
-	unix include path
-	makefile (use -P)
-		prepend #! line (must include -P)
+	unix include path (check for DOS via HOST()?)
+	unix makefile (use -P)
+		prepend #! line (must include -P)!?
+			have snocone prepend it to output??
 
 update porting.doc;
+	add VFLD_T (talk about size tradeoffs)
+	describe when to use NO_BITFIELDS
 	flush vfprintf
-	mention pml in load.c
+	real load uses pml too!!
 	discuss term.c
-		sys.c
+		sys.c??
 	flush MFU
+
+flush D_XXX in macros.h?
 
 ==== before 1.0 release;
 
@@ -84,7 +80,13 @@ make install?
 
 ==
 
-compile hash() inline
+BUG: end.sno -- no file/line to report (INIT never called)
+	S4+ gets it right
+
+BUG: gendata punts on ARRAY of constant expression!?
+	used for extra space at end of function table!
+
+compile hash() inline?
 
 move SPDLDZ/DPSLDR from SIL to init.c??
 
@@ -116,14 +118,6 @@ have dummy version of pow use repeated multiply for int, exp/log for real?
 run-time allocation of system & pattern stacks
 	allow expansion of dynamic storage?
 
-snolib;
-	move .c files to lib/??? ?
-	move compilation to Makefile2
-		use AUX_OBJS to make snolib.a
-		use in xsnobol4 link
-	make install?! (after fixing -INCLUDE to do searching)
-	run "cd snolib; make clean" from Makefile2 "clean"
-
 SITBOL features;
 	allow null string in alternation;
 		A = 'foo' |
@@ -132,6 +126,10 @@ SITBOL features;
 				:<-1>
 
 improve lib/auxil/bzero.c?
+	it's already as good as mset()!
+
+move data_init into (i)snobol4.c,
+	get rid of (most) global entries
 
 ====
 
@@ -144,10 +142,11 @@ open flags???
 
 load changes;
 
-	load "object" once, read symtab for multiple entries
+	load "object" once, read symtab for multiple entry points
 		use -A on original / current symtab
 
 	use local dl_xxx if available (HP, SVR4, SOS4??)?
+		may require special compiler flags, ld flags to make library
 
 	allow use of GNU dynamic load library?
 
@@ -187,9 +186,12 @@ add code to ato[id]() version of spcint()/spreal()
 ================================================================
 
 from s4+
-	&NAN / &INFINITY
-	CHOP()
-	SQRT()/EXP()/LOG() [use LOAD()] ???
+	&INFINITY
+		HUGE_VAL (ANSI/POSIX/SVID?)
+		HUGE	bsd?
+		infinity() ???
+	&NAN
+		???
 
 ================
 
@@ -200,10 +202,12 @@ SPITBOL features;
 
 	single letter abbrevs in TRACE()
 
+	curses support for SPITBOL-386 screen HOST() functions
+
 ================================================================
 
-make resident storage a struct with named members (for easier debugging)
-	struct descr foo[1]; ??
+make resident storage a struct with named members 
+	struct descr foo[1]; ?? (for easier debugging)
 
 in make depend;
 	sed "s/$(SNOBOL4)\./"'$(SNOBOL4)./'

@@ -3,16 +3,23 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
 9/29/96
+	v311.sil, procs, globals: renamed EXP to EXPOP
+	renamed lib/{dummy,generic}/exp.c to lib/{dummy,generic}/expops.c
 	autoconfig: include contents of local-config file, if any
 	genc.sno: output '#define INLINING'
 	param.h: add ifdef INLINING; inline hash.c
-	pml.h: add NO_PML_{EXIT,HOST,REAL}, ran comdef
+	pml.h: add HOST, EXIT, LOG, EXP, CHOP, SQRT, SIN, COS, TAN
+		add NO_PML_{EXIT,HOST,REAL,TRIG}, ran comdef
 	lib/hash.c: allow inlining
 	lib/io.c: use HAVE_UNISTD_H, check for L_SET
+	moved snolib/*.c to lib/snolib/
 	Makefile2.m4: add AUX_OBJS, AUX_SRCS, SNOLIB_A
 		add SNOLIB_A to regular link
 		add -r flag (back?) to make clean
 		add warning for make realclean
+		renamed exp.c to expops.c
+		add rules to build snolib.a
+		moved AUX_OBJS to snolib.a
 
 9/28/96
 	doc/snobol4.1: ran ispell
