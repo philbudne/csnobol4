@@ -734,6 +734,12 @@ else
 fi
 
 # prefer v7/berkeley string functions
+# These days strings.h may be just the "bstring" functions (bzero, bcopy)
+# and the index/rindex functions, and not include the basic str* functions.
+# Or, it may be indentical to string.h (one just includes the other), or
+# it might be a superset of string.h.  I haven't (yet) seen a situation
+# where it's fatal to include both.
+
 if [ -f $INCDIR/strings.h ]; then
     echo '#define HAVE_STRINGS_H'		>> $CONFIG_H
     echo 'using BSD strings.h' 1>&2
@@ -772,7 +778,21 @@ if [ -f $INCDIR/string.h ]; then
 fi
 
 if [ -f $INCDIR/sys/socket.h ]; then
-    echo 'using sockets for TCP' 1>&2
+    if grep getaddrinfo $INCDIR/netdb.h >/dev/null 2>&1; then
+	echo 'using getaddrinfo for TCP/IPv6 compatibility' 1>&2
+	echo 'INET_O=inet6.o'			>> $CONFIG_M4
+	if grep rresvport_af $INCDIR/unistd.h >/dev/null 2>&1; then
+	    true
+	else
+	    # AIX 4.3, RH5.1, RH6.0
+	    echo 'using private rresvport_af function' 1>&2
+	    echo 'ADD_OBJS([rresvport_af.o])'	>> $CONFIG_M4
+	    echo 'ADD_SRCS([$(RRESVPORT_AF_C)])' >> $CONFIG_M4
+	fi
+    else
+	echo 'using sockets for TCP' 1>&2
+    fi
+
     # add network libraries if needed
     if [ -f /usr/lib/libsocket.a -o -f /usr/lib/libsocket.so ]; then
 	# SCO, SunOS5
@@ -781,17 +801,6 @@ if [ -f $INCDIR/sys/socket.h ]; then
 	if [ `uname` = SunOS ]; then
 	    echo 'using libnsl' 1>&2
 	    echo 'ADD_LDFLAGS([-lnsl])'		>> $CONFIG_M4
-	fi
-    fi
-    if grep getaddrinfo $INCDIR/netdb.h >/dev/null 2>&1; then
-	echo 'using getaddrinfo for IPv6 compatibility' 1>&2
-	echo 'INET_C=$(SRCDIR)lib/bsd/inet6.c'	>> $CONFIG_M4
-	if grep rresvport_af $INCDIR/unistd.h >/dev/null 2>&1; then
-	    echo 'using native rresvport_af function' 1>&2
-	else
-	    echo 'using private rresvport_af function' 1>&2
-	    echo 'ADD_OBJS([rresvport_af.o])'	>> $CONFIG_M4
-	    echo 'ADD_SRCS([$(RRESVPORT_AF_C)])' >> $CONFIG_M4
 	fi
     fi
 else
