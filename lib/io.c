@@ -1303,3 +1303,26 @@ io_getfp(unit)
     return io_units[unit].curr->f;
 } /* io_getfp */
 
+/*
+ * new 9/9/97
+ * Pad listing line out to input record length for "-LIST RIGHT"
+ * Not strictly an "I/O" function, but here because the work used
+ * to be done in io_read() for all compiler input, regardless of
+ * listing on/off and left/right.
+ */
+
+int
+io_pad(sp, len)
+    struct spec *sp;
+    int len;
+{
+    register char *cp;
+    register int i;
+
+    cp = S_SP(sp) + S_L(sp);
+    for (i = len - S_L(sp); i > 0; i--)
+	*cp++ = ' ';
+    S_L(sp) = len;
+
+    return 1;				/* for XCALLC */
+}
