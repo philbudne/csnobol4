@@ -6,13 +6,12 @@
 /*#include <tt2def.h>*/
 #include <iodef.h>
 #include <ssdef.h>
-/*#include <starlet.h>*/
 
 /*
  * tty mode, echo
  * VMS version
  * started 9/17/97 -pb
- * NOT TESTED!!
+ * compiles, does not work?
  */
 
 struct ttysense {
@@ -69,7 +68,7 @@ tty_mode( fp, cbreak, noecho, recl )
     /* save "original" settings (used for "cooked" I/O) */
     sp->fd = fd;
     SYS$QIOW (0, fd, IO$_SENSEMODE, &iosb, 0, 0,
-	      &sp->t, sizeof(sp-t), 0, 0, 0, 0 );
+	      &sp->t, sizeof(sp->t), 0, 0, 0, 0 );
     sp->noecho = sp->cbreak = 0;	/* ??? */
 
     /* link into list */
@@ -94,7 +93,7 @@ tty_mode( fp, cbreak, noecho, recl )
     if (noecho)
 	new.stat |= TT$M_NOECHO;	/* kill echo */
 
-    SYS$QIOW(0, fd, IO$_SETMODE, &iosb, 0, 0, &new, sizeof(new), 0, 0, 0, 0)
+    SYS$QIOW(0, fd, IO$_SETMODE, &iosb, 0, 0, &new, sizeof(new), 0, 0, 0, 0);
 
     /* save current state */
     sp->cbreak = cbreak;
@@ -146,4 +145,17 @@ tty_close(f)
 {
     tty_close_fd(fileno(f));
 }
+
+#ifdef TEST
+main() {
+  char c;
+  int cc;
+
+  tty_save();
+  tty_mode(stdin, 1, 1, 1);
+  cc = read(fileno(stdin), &c, 1);
+  if (cc) printf("%d\n", c);
+  tty_restore();
+}
+#endif
 
