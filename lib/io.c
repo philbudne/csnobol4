@@ -803,7 +803,7 @@ io_openi(dunit, sfile, sopts, drecl)	/* called from SNOBOL INPUT() */
 	    return FALSE;		/* fail; no harm done! */
 	}
 	io_closeall(unit);
-	io_units[unit].curr = fp;
+	io_units[unit].curr = io_units[unit].head = fp;
     }
 
     /* pass recl back up */
@@ -862,7 +862,7 @@ io_openo(dunit, sfile, sopts)		/* called from SNOBOL OUTPUT() */
 	    return FALSE;		/* fail; no harm done! */
 
 	io_closeall(unit);
-	io_units[unit].curr = fp;
+	io_units[unit].curr = io_units[unit].head = fp;
     }
 
     return TRUE;
@@ -962,4 +962,37 @@ io_file( dp, sp )
     CLR_S_UNUSED(sp);
     
     return 1;
+}
+
+/*
+ * support for SPITBOL SET() function
+ *
+ * problems on systems (like bsd44) where sizeof(off_t) > sizeof(int_t)
+ * on most hardware...
+ */
+int
+io_seek(dunit, doff, dwhence)
+    struct descr *dunit, *doff, *dwhence;
+{
+    int unit, whence;
+    off_t off;
+    struct file *fp;
+
+    unit = D_A(dunit);
+    unit--;
+    if (BADUNIT(unit) || (fp = io_units[unit].curr) == NULL)
+	return FALSE;
+
+    off = D_A(doff);
+    whence = D_A(dwhence);
+    if (whence < 0 || whence > 2)
+	return FALSE;
+    /* translate n -> SEEK_xxx (if available)? */
+
+    /* XXX need to check fp->f?? */
+    if (fseek(fp->f, off, whence) < 0)
+	return FALSE;
+
+    D_A(doff) = ftell(fp->f);		/* XXX truncation possible! */
+    return TRUE;
 }
