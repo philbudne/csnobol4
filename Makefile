@@ -7,10 +7,30 @@
 # uu		make uuencoded distribution
 # clean		leave binary, config files; removes objects
 # realclean	make ready for compilation on another platform
+# distclean	clean as when unpacked
 # spotless	removes snobol4 generated files
 
-snobol4 xsnobol4 clean tar uu install realclean spotless: Makefile2 ALWAYS
+# AIX4 makes all targets, so added this;
+default: snobol4
+
+snobol4 xsnobol4 clean tar uu install: Makefile2 ALWAYS
 	$(MAKE) -f Makefile2 $@
+
+# disposables
+DISP=*.o *.a callgraph prolog bsplitu pv vers
+
+# remove objects; leave generated sources, final binary, Makefile2
+clean:
+	rm -f $(DISP) *~ */*~ */*/*~ *.tmp \#*
+	rm -rf subr
+
+# make ready for compilation on another platform (leave binaries)
+realclean: clean
+	rm -f config.m4 Makefile2
+
+# clean as when it was unpacked; remove binaries too
+distclean: realclean
+	rm -f snobol4 xsnobol4
 
 .PRECIOUS: snobol4 xsnobol4
 
