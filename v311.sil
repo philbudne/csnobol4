@@ -1,6 +1,11 @@
 * $Id$
 *
 * $Log$
+* Revision 1.80  1997/11/08  03:03:12  phil
+* [PLB68] remove keyword tracing for ERRTEXT
+* doesn't work (output as integer)
+* neither SNOBOL4+ nor SPITBOL do it
+*
 * Revision 1.79  1997/11/06  05:59:02  phil
 * [PLB67] replace PROC with XPROC on merged scanner functions
 *
@@ -6705,12 +6710,12 @@ DMPCL  DESCR   0,0,I		   &DUMP
        DESCR   DUMPSP,0,0
 RETCOD DESCR   0,0,I		   &CODE
        DESCR   CODESP,0,0
+CASECL DESCR   1,0,I		   &CASE (folding)		[PLB15][PLBXX]
+       DESCR   CASESP,0,0					[PLB15][PLBXX]
 ANCCL  DESCR   0,0,I		   &ANCHOR
        DESCR   ANCHSP,0,0
 ABNDCL DESCR   0,0,I		   &ABEND
        DESCR   ABNDSP,0,0
-CASECL DESCR   1,0,I		   &CASE (folding)		[PLB15]
-       DESCR   CASESP,0,0
 KNEND  LHERE   ,
 *
 KVLIST DESCR   KVLIST,TTL+MARK,KVEND-KVLIST-DESCR
