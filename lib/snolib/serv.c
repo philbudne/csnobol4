@@ -43,8 +43,14 @@
 #include "macros.h"
 #include "load.h"
 
-static void
-fireman() {				/* catch falling babies */
+#ifndef SIGFUNC_T
+#define SIGFUNC_T void
+#endif /* SIGFUNC_T not defined */
+
+static SIGFUNC_T
+fireman(sig)
+    int sig;
+{				/* catch falling babies */
     int w;
     while( wait(&w) > 0 )
 	;
@@ -96,7 +102,7 @@ SERV_LISTEN( LA_ALIST ) LA_DCL
 	char *proto;
 	int on;
 
-	bzero(&sin, sizeof(sin));
+	bzero((char *)&sin, sizeof(sin));
 
 	switch (type) {
 	case SOCK_STREAM:
@@ -141,7 +147,7 @@ SERV_LISTEN( LA_ALIST ) LA_DCL
 	if (s < 0)
 	    RETFAIL;
 
-	bzero(&s_un, sizeof(s_un));
+	bzero((char *)&s_un, sizeof(s_un));
 	strncpy(s_un.sun_path, sserv, sizeof(s_un.sun_path));
 	if (bind(s, (struct sockaddr *)&s_un, sizeof(s_un)) < 0) {
 	    close(s);
@@ -168,7 +174,7 @@ SERV_LISTEN( LA_ALIST ) LA_DCL
 	int len;
 
 	len = sizeof(sa);
-	bzero(&sa, len);
+	bzero((char *)&sa, len);
 
 	slave = accept(s, &sa, &len);
 	if (slave < 0) {
