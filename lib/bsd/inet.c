@@ -33,6 +33,9 @@ inet_socket( host, service, port, priv, type )
 
     bzero(&sin, sizeof(sin));
     sin.sin_family = AF_INET;
+#ifdef HAVE_SOCKADDR_LEN
+    sin.sin_len = sizeof(sin);
+#endif
 
     if (service) {
 	sp = getservbyname(service, (type == SOCK_STREAM ? "tcp" : "udp"));
