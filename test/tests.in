@@ -1,8 +1,8 @@
 # ordered list of tests
 reg end.sno
-reg a.sno
+dump a.sno
 reg str.sno
-reg dump.sno
+dump dump.sno
 reg hello.sno
 # reg punch.sno
 reg len.sno
