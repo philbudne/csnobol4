@@ -90,8 +90,8 @@ usage( jname )
     fprintf(stderr, "\tsize of pattern match stack in bytes (default: %d)\n",
 	    PSSIZE);
     p( "\n");
-    fprintf(stderr, "in memory region sizes a suffix of 'k' (1024) can be used\n");
-    fprintf(stderr, "descriptor size is %d bytes\n", DESCR );
+    fprintf(stderr, "in memory region sizes a suffix of 'k' (1024) and 'm' (1024*1024)\n");
+    fprintf(stderr, "can be used. Descriptor size is %d bytes\n", DESCR );
     exit(1);
 }
 
@@ -100,13 +100,15 @@ getk( str, out )
     char *str;
     int *out;
 {
-    char k;
-    switch (sscanf(str, "%d%c", out, &k)) {
+    char suff;
+    switch (sscanf(str, "%d%c", out, &suff)) {
     case 2:				/* number & suffix */
-	if (k == 'k' || k == 'K')
+	if (suff == 'k' || suff == 'K')
 	    *out *= 1024;
+	else if (suff == 'm' || suff == 'M')
+	    *out *= 1024*1024;
 	else
-	    return 0;			/* not "K"; fail */
+	    return 0;			/* bad suffix; fail */
 	/* FALL */
     case 1:				/* just number */
 	return 1;			/* return OK */
