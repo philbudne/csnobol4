@@ -1,0 +1,17 @@
+	define("f(a,b)x")				:(f_end)
+f	output = "f: " x
+	x = a
+	g(b)
+	output = "f: " x				:(return)
+f_end
+
+	define("g(a)x")					:(g_end)
+g	output = "g: " x
+	x = a
+	output = "g: " x				:(return)
+g_end
+
+	x = 0
+	f('a','b')
+	output = "main: " x
+end
