@@ -57,6 +57,9 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif /* HAVE_UNISTD_H defined */
+#ifdef HAVE_VFORK_H
+#include <vfork.h>
+#endif /* HAVE_VFORK_H defined */
 #include <stdio.h>
 
 #include "str.h"
