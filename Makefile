@@ -158,7 +158,7 @@ G1=data.c2 data.h2 data_init.h2 proc.h2 equ.h2 syn.h2 syn_init.h2 \
 G2=data.c data.h data_init.h proc.h equ.h res.h syn.c syn.h syn_init.h
 
 # disposables
-DISP=*.o *.a callgraph prolog bsplitu pv vers
+DISP=*.o *.a callgraph prolog bsplitu pv vers build.c
 
 # remove objects; leave generated sources, final binary, Makefile2
 clean:
