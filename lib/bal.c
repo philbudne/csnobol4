@@ -4,9 +4,12 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
+#include <stdio.h>			/* for lib.h */
+
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
+#include "lib.h"			/* getbal() prototype */
 
 int
 getbal(sp, dp)
