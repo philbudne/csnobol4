@@ -172,6 +172,7 @@ plugtb(tp, act, sp)
     }
 }
 
+/* 8/5/97 [PLB59] */
 int
 any(sp, dp)
     struct spec *sp;			/* subject */
@@ -182,9 +183,9 @@ any(sp, dp)
     register int i;
 
     c = *(unsigned char *)S_SP(sp);	/* get next subject char */
-    vp = (struct descr *)D_A(dp);
+    vp = (struct descr *)D_A(dp);	/* ptr to char set var */
     cp = ((unsigned char *)vp) + BCDFLD; /* ptr to char set */
-    i = D_V(vp);
+    i = D_V(vp);			/* length of char set */
 
     while (i > 0) {
 	if (*cp == c)
