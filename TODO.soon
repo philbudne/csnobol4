@@ -1,16 +1,32 @@
 $Id$
 
-Create test for plusops off
-	opsyn ?, look at precedence, associativity
-	try numeric conversion
-	try conversion on numbers with leading spaces
+flush vfprintf
 
-Document latest changes (-p, PLUSOPS, exp on REAL, args on run.sh)
-	stats off
-	&STLIMIT
+add tests;
+	line.sno
+	err.sno
 
-NUMERIC conversion requires strtol()/strtod()???
-	append garbage, use sscanf????
+handle tabs in listings/messages
+	
+fix timing.sno "time" parsing under AIX 4.1.1?
+include xsnobol4 version (put in timing.sno)
+
+Add SNOBOL4+ &PARAM??
+	setup at INITD1?
+
+Document:
+	REVERSE, SUBSTR
+	LEQ,LGE,LLE,LLT,LNE	
+	HOST() -u -M --
+	sort of 1-D arrays (use comment from tsort.sno)
+	PUNCH now TERMINAL
+	TERMINAL input (on unit 8)
+	leading spaces in numeric conversions (under PLUSOPS)
+	-LINE &{LAST,}{LINE,FILE}
+	&ERRTEXT
+
+Add snolib.a to regular build?
+	move snolib files to lib/ ???
 
 update README
 	credit SNOBOL4+, Minnesota SNOBOL4
@@ -18,69 +34,54 @@ update README
 	Create INSTALL top level doc file
 		mention VMS, Borland command files
 
-strip leading spaces in spcint()/spreal() [under SPITCL?]
-	have common wrapper routine? common subroutine?
-
-include xsnobol4 version (put in timing.sno)
 enable stats in Makefile "SNO" commands?
 remove date from genc prolog
 	change diff to cmp && echo "DIFF OK" || echo "DIFF FAILURE"
 
-test overflow?
-	remove from man page limitations??
-
-have "configure" script output directly to config.m4!
-	mv configure autoconfig?
-
-include version number in tar file directory (and .tar filename!)
-	(snobol/ -> snobol-xx.yy/)
-	(compile version.c with -DMAIN)
-	make hard links for all .c2/.h2 files?
-		(add rm's before running gendata/gensyn)
-		do cmp || mv immediately AFTER running progs?
-
-GCCBUILD.COM for VMS?
-
-update v311.sil table of contents?
-
 use "SNOLIB" path for -INCLUDE & LOAD()
-
-Add TERMINAL variable (replace PUNCH?)?
-
-document magic /dev/std{in,out,err} filenames
 
 implement auto-load of pml functions
 	(execute LOAD w/ given prototype)
+	SPITBOL HOST() EXIT()
 
-Implement HOST(), HOST(1), HOST(2), HOST(3)
-	used by SNOCONE
-	implelment as auto-loaded function?
-
-full SPITBOL lexical compare functions
-	LEQ,LGE,LLE,LLT,LNE
+update v311.sil table of contents?
 
 auto-mail timing.out??
 	echo "please consider...."
 
-return year + 1900 in date()? (for years >= 2000?)
-
-have dummy version of pow use repeated multiply for int, exp/log for real?
-	under ifdef??
-
 make install?
 	echo "have you mailed timing.out...."???
 
-add -LINE dirctive?
+make sure EOF always passed up when changing compiler input files,
+	move FILNM check, io_file to CKINC?
+==
 
-add "trace1/2" tests?
+have gen*.sno output to xxx.[ch]3, perform mv to .[ch]2 after completion?
+	avoids problems when ^C'ed and partial .h2 files written!
+
+GCCBUILD.COM for VMS?
 
 rewind tests;
 	split program across files
 	split data across files??
 
+Create test for plusops off?
+	opsyn ?, look at precedence, associativity
+	try numeric conversion
+	try conversion on numbers with leading spaces (DONE: space2)
+
+test overflow?
+	remove from man page limitations??
+
 ====
 
+have dummy version of pow use repeated multiply for int, exp/log for real?
+	under ifdef??
+
+return year + 1900 in date()? (for years >= 2000?)
+
 run-time allocation of system & pattern stacks
+	allow expansion of dynamic storage?
 
 snolib;
 	move .c files to lib/??? ?
@@ -90,6 +91,12 @@ snolib;
 	make install?! (after fixing -INCLUDE to do searching)
 	run "cd snolib; make clean" from Makefile2 "clean"
 
+SITBOL features;
+	allow null string in alternation;
+		A = 'foo' |
+	numeric goto
+		foo pat =	:<>
+
 ====
 
 run-time allocation of system & pattern stacks
@@ -98,12 +105,6 @@ open flags???
 	TTY mode (no newlines added or removed)
 	TCP?
 	bidirectional I/O
-
-================
-
--INCLUDE/-COPY
-	describe "program error" vs. "reading error" in man page?
-	improve error handling???
 
 ================
 
@@ -121,11 +122,12 @@ load changes;
 Add DIAGNOSTICS section to man page???
 	document all error numbers/strings and reasons!!
 
+	-INCLUDE/-COPY
+		describe "program error" vs. "reading error" in man page?
+		improve error handling???
+
 have all genc, gendata, gensyn output .[ch]2 files
 	use cmp || cp??
-
-Move ports.doc information to config files?
-	use script to generate ports.doc!!!?
 
 Improve porting.doc
 	talk about C compilers
@@ -141,30 +143,46 @@ MOVBLK_MEMCPY???
 APDSP_MEMCPY?
 
 have seperate BRKTB/SPNTB, like SNOBOL4+?
-	generate, keep bit-tables?
+	generate, keep tables??
 
 try adding SOME explicit "inline" decls?
+
+add code to ato[id]() version of spcint()/spreal()
+	to check syntax?? (so CONVERT NUMERIC works)
 
 ================================================================
 
 from s4+
-	EXPCL features???
-	&NAN
-	&INFINITY
+	&NAN / &INFINITY
+	&ERRTEXT &ERRTYPE??
+	&LASTFILE &LASTLINE
 	CHOP()
-	FREEZE()/THAW()
-	REVERSE()
-	SUBSTR()
-	SEEK()/TRUNCATE()/TELL()??
-	SQRT()/EXP()/LOG()
+	SEEK()/TELL()? (or SPITBOL SET()?)
+	TRUNCATE() ??
+	SQRT()/EXP()/LOG() [use LOAD()] ???
 
 ================
 
-allow single letter abbrevs in TRACE()?
+SPITBOL features;
+	SETEXIT()
+		&ERRTEXT &ERRTYPE
+		CONTINUE, SCONTINUE, ABORT system labels
+
+	single letter abbrevs in TRACE()
 
 ================================================================
-make resident storage a struct (for easier debugging)
 
+make resident storage a struct with named members (for easier debugging)
+	struct descr foo[1]; ??
 
 in make depend;
 	sed "s/$(SNOBOL4)\./"'$(SNOBOL4)./'
+
+document (library) ifdefs in porting.doc?
+	ie; NO_SCANF
+
+================
+
+talk about use of gcc &&label in doc/design.doc
+
+better hash?  do better job on ascention?
