@@ -377,7 +377,7 @@ err_catch(sig)
     int sig;
 {
     D_A(SIGNCL) = sig;			/* save signal number for output */
-    SYSCUT();
+    SYSCUT(0);
 }
 
 #ifdef SIGTSTP
