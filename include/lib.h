@@ -19,9 +19,6 @@ int getparm __P((struct spec *));
 void init_args __P((int, char *[]));
 void init __P((void));
 
-/* from intspc.c */
-int intspc __P((struct spec *,struct descr *));
-
 /* from io.c */
 void io_backspace __P((int));
 void io_ecomp __P((void));
@@ -90,7 +87,7 @@ void insert __P((struct descr *,struct descr *));
 int spcint __P((struct descr *,struct spec *));
 
 /* from intspc.c */
-void intspc __P((struct spec *sp, struct descr *dp));
+void intspc __P((struct spec *, struct descr *));
 
 /* from spreal.c */
 int spreal __P((struct descr *,struct spec *));
@@ -115,12 +112,12 @@ real_t mstime __P((void));
 FILE * term_input __P((void));
 
 /* from tty.c */
-int fisatty __P((FILE *f, char *fname));
-void tty_mode __P((FILE *fp, int cbreak, int noecho, int recl));
-void tty_close __P((FILE *f));		/* advisory! */
+int fisatty __P((FILE *, char *));
+void tty_mode __P((FILE *, int, int, int));
+void tty_close __P((FILE *));		/* advisory! */
 void tty_suspend __P((void));		/* SIG_TSTP */
 /* if TTY_READ_RAW or TTY_READ_COOKED defined; */
-int tty_read __P((FILE *f, char *buf, int len, int raw, int noecho, int keepeol, char *fname));
+int tty_read __P((FILE *,char *,int,int,int,int,char *));
 
 /* from sys.c */
 void hwname __P((char *));
