@@ -13,6 +13,7 @@
 #endif /* HAVE_CONFIG_H defined */
 
 # include <math.h>
+# include <stdio.h>
 
 # include "h.h"
 # include "snotypes.h"
