@@ -3,6 +3,10 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
+1/13/94
+	config/borland/build.bat: added -DANSI_STRINGS
+	lib/aux/getopt.c: include h.h (for index)
+
 1/10/95
 	config/vms/build.com: use CFLAGS variable
 	lib/io.c: hacks for "-", "/dev/stdin" and "/dev/stdout", cleanup
