@@ -58,9 +58,10 @@ include(config.m4)
 # end of local config
 ################################################################
 
-CPPFLAGS=`-I./include -I. $(CONFIG_CPPFLAGS)'
+# NOTE: NOT named CPPFLAGS; some versions of make include CPPFLAGS in cc cmd
+MYCPPFLAGS=`-I./include -I. $(CONFIG_CPPFLAGS)'
 
-CFLAGS=$(OPT) $(CPPFLAGS) $(CONFIG_CFLAGS)
+CFLAGS=$(OPT) $(MYCPPFLAGS) $(CONFIG_CFLAGS)
 
 LIBS=$(MATHLIB)
 
@@ -247,7 +248,7 @@ realclean: clean
 	genc.sno gensyn.sno gendata.sno \
 	main.c charset.c data_init.c version.c \
 	parms.h mlink.h mdata.h pml.h \
-	lib include config test bugs \
+	lib include config test bugs snolib \
 	$(GENERATED) \
 	cc-M'
 
@@ -274,5 +275,6 @@ uu:	$(KIT)
 MAKEFILE2=Makefile2
 depend:
 	sed '/^# DO NOT DELETE THIS LINE/q' $(MAKEFILE2) > $(MAKEFILE2).tmp
-	$(CCM) $(CPPFLAGS) $(SRCS) >> $(MAKEFILE2).tmp
+	$(CCM) $(MYCPPFLAGS) $(SRCS) >> $(MAKEFILE2).tmp
 	mv $(MAKEFILE2).tmp $(MAKEFILE2)
+
