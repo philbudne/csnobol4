@@ -6,11 +6,13 @@ Beta release of ``The Macro Implementation of SNOBOL4''
 This is a port of the original SIL (SNOBOL4 Implementation Language)
 "macro" version of SNOBOL4 with the `C' language as a target.
 
-If you make any changes/fixes/improvements, or port it to a new
-system, please notify me!  If you are interested in getting mailings
-about new releases, send me mail.
-
-Phil Budne <budd@gnu.ai.mit.edu>
+SNOBOL4, while known promarily as a string language excells at any
+task involving symbolic manipulations.  It provides run time typing,
+garbage collection, user data types, on the fly compilation.  It's
+primary weakness is it's simple syntax, and lack of "structured
+programming" constructs.  However I consider the spareness of SNOBOL4
+syntax a strength when compared to some "modern" agglomerations such
+as perl.
 
 ****************************************************************
 
@@ -104,6 +106,27 @@ Command line args;
 	-s
 		Toggle termination statistics (by default on).
 
+Acknowldgements;
+
+	First and foremost, I would like to thank Ralph Griswold, for
+	all his invaluable help and time digging up old documentation!
+	(as well as his work of 30 years ago, designing and implenting
+	the language)!
+
+	I would also never have suceeded without Mark Emmer of
+	Catspaw's help as well as his excellent SPARC SPITBOL
+	product!!
+
+The following have also provided help, encouragement, support, input,
+historical background, etc (in chronological order);
+
+	Bill Henneman
+	Andrew Koenig
+	Doug McIlroy
+	Robert Dewar
+	Alan Martin
+	Jerry Leighter
+
 To build;
 
 select a suitable config file (see doc/ports.doc) from the config
@@ -136,3 +159,9 @@ Changes from "alpha" distribution;
 		string length "limited" to 2^24 bytes,
 		all other objects limited to 2^21 descriptors
 			see types.h for discussion of sizes.
+
+If you make any changes/fixes/improvements, or port it to a new
+system, please notify me!  If you are interested in getting mailings
+about new releases, send me mail.
+
+Phil Budne <budd@gnu.ai.mit.edu>
