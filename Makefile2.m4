@@ -224,11 +224,13 @@ snobol4: xsnobol4 snobol4.c
 	-rm -f snobol4$(EXT)
 	ln xsnobol4$(EXT) snobol4$(EXT)
 	@touch snobol4$(EXT)
+	@echo '***************************************************************'
 	@echo Please consider mailing timing.out to \
 		snobol4-timing@ultimate.com 1>&2
 	@echo along with information on your \
 		system model and CPU clock rate 1>&2
 	@echo see doc/ports.doc for the current list 1>&2
+	@echo '***************************************************************'
 
 ################
 
