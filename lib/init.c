@@ -26,6 +26,11 @@ extern int optind;
 extern char *optarg;
 extern int getopt();
 
+char parambuf[512];
+char *params;
+char **argv;
+int firstarg, argc;
+
 void
 p( str )
     char *str;
@@ -37,7 +42,7 @@ void
 usage( jname )
     char *jname;
 {
-    p( "Usage: %s [options...] [files...]\n", jname );
+    p( "Usage: %s [options...] [files...] [-- parameters]\n", jname );
     p( "-b\ttoggle display of startup banner\n");
     fprintf(stderr,
 	    "-d ND\tSize of dynamic region in descriptors (def: %d)\n",
@@ -49,17 +54,21 @@ usage( jname )
     p( "-p\ttoggle SPITBOL operators (-PLUSOPS)\n");
     p( "-r\ttoggle reading INPUT from after END statement\n");
     p( "-s\ttoggle display of statistics\n");
+    p( "-u PARMS\tparameter data for program\n");
     exit(1);
 }
 
 void
-init_args( argc, argv )
-    int argc;
-    char *argv[];
+init_args( ac, av )
+    int ac;
+    char *av[];
 {
     int errs;
     int c;
     char k;
+
+    argc = ac;
+    argv = av;
 
     errs = 0;
     ndescr = NDESCR;
@@ -76,7 +85,7 @@ init_args( argc, argv )
      * * When adding options, update usage() function (above) and man page!!!
      */
 
-    while ((c = getopt(argc, argv, "bd:fklnprs")) != -1) {
+    while ((c = getopt(argc, argv, "bd:fklnprsu:")) != -1) {
 	switch (c) {
 	case 'b':
 	    D_A(BANRCL) = !D_A(BANRCL);	/* toggle banner output */
@@ -128,16 +137,35 @@ init_args( argc, argv )
 	    D_A(STATCL) = !D_A(STATCL);
 	    break;
 
+	case 'u':			/* parameter data */
+	    params = optarg;
+	    break;
+
 	default:
 	    errs++;
 	}
     }
 
+    /* append additional args to input stream until "--" seen */
     while (optind < argc) {
+	if (strcmp(argv[optind], "--") == 0) { /* terminator? */
+	    optind++;			/* skip it */
+	    break;			/* leave loop */
+	}
 	io_input( argv[optind] );
 	optind++;
     }
 
+    /* process any remaining data as arguments (if no -u option) */
+    firstarg = optind;
+    if (params == NULL && optind < argc) {
+	while (optind < argc) {
+	    if (parambuf[0])
+		strcat(parambuf, " ");
+	    strcat(parambuf, argv[optind++] );
+	}
+	params = parambuf;
+    }
 
     io_init();				/* AFTER io_input calls! */
 
