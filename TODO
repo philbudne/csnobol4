@@ -87,5 +87,7 @@ $Id$
 	stream -- eliminate ops table (indirection)
 	performs "pairs" ops in line?
 	perform "hash" in line?
+	improve hash?
 
 28. write man page
+	document all error messages (in man page or seperate doc)?
