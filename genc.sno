@@ -40,7 +40,11 @@
 
 *	call graph (for ordering files for inlining)
 *	XXX only output if INLINING set?
-	OUTPUT(.CALLGRAPH,5,'callgraph')		:(EIO)
+	OUTPUT(.CALLGRAPH,10,'callgraph')
+
+*	output list of global procs (for data segment)
+	OUTPUT(.PROC.H,11,'proc.h')
+							:(EIO)
 
 **************** MAINBOL I/O
 
@@ -54,6 +58,9 @@ MB1	INPUT(.INPUT,1,,SILPATH)
 *	call graph (for ordering files for inlining)
 *	XXX only output if INLINING set?
 	OUTPUT(.CALLGRAPH,10,,'callgraph')
+
+*	output list of global procs (for data segment)
+	OUTPUT(.PROC.H,11,,'proc.h')
 
 EIO
 
@@ -498,6 +505,7 @@ GLOBLOP	PROC = GLOB					:F(GLOBEND)
 *	skip comments!
 	PROC '*'					:S(GLOBLOP)
 	GLOBAL<PROC> = 1
+	PROC.H = 'extern ' PROC_T ' ' PROC '();'
 *	make sure it's a proc!
 	MKPROC(PROC)					:(GLOBLOP)
 GLOBEND
@@ -780,7 +788,7 @@ XSHORTN	OUTPUT = IND 'SHORTN(' ARGV<1> ',' ARGV<2> ');'		:(OPDONE)
 
 ****************
 *	SIL LOCSP (COMQNV) MACRO 10/18/93
-XLOCSP	OUTPUT = IND 'LOCSP(' ARGV<1> ',' ARGV<2> ');'	:(OPDONE)
+XLOCSP	OUTPUT = IND 'X_LOCSP(' ARGV<1> ',' ARGV<2> ');'	:(OPDONE)
 
 ****************
 *	SIL TRIMSP (???) MACRO 10/27/93
@@ -803,7 +811,7 @@ XSUBSP2
 
 ****************
 *	SIL REMSP (???) MACRO 10/28/93
-XREMSP	OUTPUT = IND 'REMSP(' ARGV<1> ',' ARGV<2> ',' ARGV<3> ');'
+XREMSP	OUTPUT = IND 'X_REMSP(' ARGV<1> ',' ARGV<2> ',' ARGV<3> ');'
 							:(OPDONE)
 *
 ****************************************************************
