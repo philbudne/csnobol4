@@ -2,11 +2,17 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+11/05/96:
+	doc/ports.doc: timing for netbsd/sparc on 4/110
+		clock speeds for A3000, 4/100
+	put allrcs, diffall, tagall under RCS
+
 11/04/96:
 	lib/io.c: fix "update I/O"; add "last" member to struct file and
 		fseek() before direction changes
 	test/tests.in: add update
 	INSTALL: add c-mainbol-users-request addr
+	fixed diffall to handle new files
 
 10/30/96:
 	autoconf: add option processing; --force-gcc, --no-gcc options
