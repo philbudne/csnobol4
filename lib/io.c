@@ -314,13 +314,17 @@ io_fopen2( fp, mode )
 
     /* handle magic filenames (have a table (prefix or full str)??) */
 
-    if (fp->fname[0] == '|') {
-	/* filename with leading '|' opens a pipe! */
-	/* SPITBOL: leading '!' means pipe, (with escaping?) */
-	fp->flags |= FL_PIPE;		/* XXX set close hook? */
-	fp->f = popen(fp->fname+1, mode);
-	return;
-    }
+#ifdef OSDEP_OPEN
+    /*
+     * Allow interception of /dev/tty, /dev/null, etc on non-unix
+     * systems.  Function should return TRUE if filename is being
+     * intercepted, REGARDLESS of whether the actual open succeeds
+     * (on successs, the function should set the FILE ** to point
+     * to the open stream).
+     */
+    if (osdep_open(fp->fname, mode, &fp->f))
+	return;				/* intercepted */
+#endif /* OSDEP_OPEN defined */
 
     /* filename "-" goes to stdin/out */
     if (strcmp(fp->fname,"-") == 0) {
@@ -403,18 +407,6 @@ io_fopen2( fp, mode )
 	return;
     }
 
-#ifdef OSDEP_OPEN
-    /*
-     * Allow interception of /dev/tty, /dev/null, etc on non-unix
-     * systems.  Function should return TRUE if filename is being
-     * intercepted, REGARDLESS of whether the actual open succeeds
-     * (on successs, the function should set the FILE ** to point
-     * to the open stream).
-     */
-    if (osdep_open(fp->fname, mode, &fp->f))
-	return;				/* intercepted */
-#endif /* OSDEP_OPEN defined */
-
     /* **** add new special filename hacks here *** */
 
     /* create full mode string for fopen() */
@@ -430,6 +422,18 @@ io_fopen2( fp, mode )
 	*mp++ = 'b';
 #endif /* NO_FOPEN_B not defined */
     *mp++ = '\0';
+
+    /*
+     * moved from top of function to here, to take advantage
+     * of 44BSD popen() which allows bi-directional I/O with "r+"
+     */
+    if (fp->fname[0] == '|') {
+	/* filename with leading '|' opens a pipe! */
+	/* SPITBOL: leading '!' means pipe, (with escaping?) */
+	fp->flags |= FL_PIPE;		/* XXX set close hook? */
+	fp->f = popen(fp->fname+1, buf);
+	return;
+    }
 
     fp->f = fopen(fp->fname, buf);
 } /* io_fopen2 */
