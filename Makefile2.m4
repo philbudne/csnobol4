@@ -72,7 +72,6 @@ BZERO_C=lib/auxil/bzero.c
 BCOPY_C=lib/auxil/bcopy.c
 GETOPT_C=lib/auxil/getopt.c
 ISNAN_C=lib/dummy/isnan.c
-VFPRINTF_C=lib/auxil/vfprintf.c
 
 # end of defaults
 ################################################################
@@ -294,9 +293,6 @@ getopt.o: $(GETOPT_C)
 
 isnan.o: $(ISNAN_C)
 	$(CC) $(CFLAGS) -c $(ISNAN_C)
-
-vfprintf.o: $(VFPRINTF_C)
-	$(CC) $(CFLAGS) -c $(VFPRINTF_C)
 
 ##################################################################
 # housekeeping
