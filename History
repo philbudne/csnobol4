@@ -2,13 +2,25 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+5/27/97:
+	lib/str.c: add spec2str() utility
+	lib/bsd/load.c lib/unix98/load.c lib/dummy/load.c lib/hpux/load.c:
+		make consistant; use spec2str, check for abs path
+			clear V/F fields in function pointer
+	autoconf: use hpux/load.c on HP's with dl.h
+
+5/22/97:
+	lib/bsd/load.c lib/unix98/load.c:
+		fix "next" pointer setup
+	new lib/hpux/load.c
+
 5/21/97:
 	gendata.sno gensyn.sno parms.h data_init.c v311.sil version.c
 	Makefile2.m4 lib/ansi/convert.c lib/generic/convert.c
 	lib/dump.c lib/endex.c lib/str.c lib/ordvst.c lib/init.c:
 		Created "struct res" for resident data.  All data now
 		in named members, for easier debug.  Expressions now
-		legal in SIL ARRAY macro!  flushed duplicate COPYSP.
+		legal in SIL ARRAY macro!  flushed duplicate COPYSP decl.
 		New machine generated res.h file.
 	lib/stream.c:
 		use isspace() in trimsp().
