@@ -29,15 +29,15 @@
 #include <rpc/rpc.h>
 #endif /* BINDRESVPORT_SA_IN_RPC_H */
 
-/* should be in lib.h, but would require socket.h! */
-#ifdef NEED_BINDRESVPORT_SA
-extern int bindresvport_sa __P((int, struct sockaddr));
-#endif /* NEED_BINDRESVPORT */
-
 #include "h.h"				/* TRUE/FALSE */
 #include "snotypes.h"
 #include "lib.h"			/* own prototypes */
 #include "str.h"			/* bcopy() */
+
+/* should be in lib.h, but would require socket.h! */
+#ifdef NEED_BINDRESVPORT_SA
+extern int bindresvport_sa __P((int, struct sockaddr));
+#endif /* NEED_BINDRESVPORT */
 
 #ifndef INADDR_NONE
 #define INADDR_NONE ((unsigned long)0xffffffff)	/* want u_int32_t! */
