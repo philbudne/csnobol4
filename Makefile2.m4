@@ -64,6 +64,7 @@ DYNAMIC_C=$(SRCDIR)lib/bsd/dynamic.c
 ENDEX_C=$(SRCDIR)lib/endex.c
 EXPOPS_C=$(SRCDIR)lib/generic/expops.c
 HASH_C=$(SRCDIR)lib/hash.c
+INET_C=$(SRCDIR)lib/bsd/inet.c
 INIT_C=$(SRCDIR)lib/init.c
 INTSPC_C=$(SRCDIR)lib/intspc.c
 IO_C=$(SRCDIR)lib/io.c
@@ -161,15 +162,15 @@ SMALL_SNO=snobol4 -b
 ################
 
 OBJS=	main.o $(SNOBOL4).o data.o data_init.o syn.o bal.o convert.o \
-	date.o dump.o dynamic.o endex.o expops.o hash.o init.o intspc.o \
-	io.o lexcmp.o load.o mstime.o ordvst.o pair.o pat.o pml.o \
+	date.o dump.o dynamic.o endex.o expops.o hash.o inet.o init.o \
+	intspc.o io.o lexcmp.o load.o mstime.o ordvst.o pair.o pat.o pml.o \
 	realst.o replace.o str.o stream.o term.o top.o tree.o tty.o \
 	version.o $(PML_OBJS) $(SNOLIB_A)
 
 AUX_SRCS= _SRCS
 SRCS=	main.c $(SNOBOL4).c data.c data_init.c syn.c $(BAL_C) $(CONVERT_C) \
 	$(DATE_C) $(DUMP_C) $(DYNAMIC_C) $(ENDEX_C) $(EXPOPS_C) $(HASH_C) \
-	$(INIT_C) $(INTSPC_C) $(IO_C) $(LEXCMP_C) $(LOAD_C) \
+	$(INET_C) $(INIT_C) $(INTSPC_C) $(IO_C) $(LEXCMP_C) $(LOAD_C) \
 	$(MSTIME_C) $(ORDVST_C) $(PAIR_C) $(PAT_C) $(PML_C) \
 	$(REALST_C) $(REPLACE_C) $(STREAM_C) $(STR_C) $(TOP_C) $(TERM_C) \
 	$(TREE_C) $(TTY_C) version.c $(AUX_SRCS) $(SNOLIB_SRCS)
@@ -294,6 +295,9 @@ expops.o: $(EXPOPS_C)
 
 hash.o:	$(HASH_C)
 	$(CC) $(CFLAGS) -c $(HASH_C)
+
+inet.o:	$(INET_C)
+	$(CC) $(CFLAGS) -c $(INET_C)
 
 init.o:	$(INIT_C)
 	$(CC) $(CFLAGS) -c $(INIT_C)
