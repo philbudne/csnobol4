@@ -40,6 +40,9 @@ extern char *malloc();
 #define SYM_PREFIX "_"			/* XXX most (all?) a.out systems? */
 #endif /* SYM_PREFIX not defined */
 
+/* external function returning pointer to loaded function */
+extern int (*pml_find())(LOAD_PROTO);
+
 /* keep list of loaded functions (for UNLOAD) */
 struct func {
     struct func *next;
@@ -70,8 +73,10 @@ ld( output, addr, func, input )
 
     /* XXX -A <path of mainbol executable??? */
     /* XXX -lm -lc ?? */
-    sprintf( command, "%s -N -o %s -T %x -e %s%s %s",
-	    LD_PATH, output, addr, SYM_PREFIX, func, input );
+
+#define REDIRECT "2>/dev/null"		/* send stderr to /dev/null */
+    sprintf( command, "%s -N -o %s -T %x -e %s%s %s %s",
+	    LD_PATH, output, addr, SYM_PREFIX, func, input, REDIRECT );
 
     /* XXX use direct execvp of ld? pass argv? */
     return system(command) == 0;
@@ -86,9 +91,10 @@ load(addr, sp1, sp2)
     char path[128];			/* XXX max path */
     struct exec a;
     char temp[128];			/* XXX max path? */
-    int f;
-    long len;				/* size of code+data */
     int l1, l2;
+    long len;				/* size of code+data */
+    int trypml;
+    int f;
 
     fp = (struct func *) malloc( sizeof (struct func) + S_L(sp1) );
     if (fp == NULL)
@@ -98,6 +104,7 @@ load(addr, sp1, sp2)
     strncpy( fp->name, S_SP(sp1), l1);
     fp->name[l1] = '\0';
 
+    /* XXX try pml here? */
     l2 = S_L(sp2);			/* XXX check if .le. sizeof(path)? */
     if (sp2 && S_A(sp2) && l2) {
 	/* NOTE! no check if file exists!
@@ -105,9 +112,11 @@ load(addr, sp1, sp2)
 	 */
 	strncpy(path, S_SP(sp2), l2 );
 	path[l2] = '\0';
+	trypml = FALSE;
     }
     else {
 	sprintf( path, "%s/%s", SNOLIB_DIR, SNOLIB_A );
+	trypml = TRUE;
     }
 
     sprintf( temp, "%s/snoXXXXXX", TMP_DIR);
@@ -116,6 +125,16 @@ load(addr, sp1, sp2)
 
     /* link once to get total size! */
     if (!ld( temp, 0, fp->name, path )) {
+	/* default to pml! */
+	/* XXX check for magic path? do pml regardless?? do pml first??? */
+	if (trypml) {
+	    fp->entry = pml_find(fp->name);
+	    if (fp->entry) {
+		fp->data = NULL;	/* internal! */
+		unlink(temp);		/* clean up any ld mess */
+		goto success;		/* link into list */
+	    }
+	}
 	/* XXX error message? */
 	goto ld_error;
     }
@@ -155,41 +174,40 @@ load(addr, sp1, sp2)
     /* XXX need only zero bss! */
     bzero( fp->data, len );
 
+    /*
+     * could chain all of the following together in one big if stmt,
+     * but it would be a pain to debug!
+     */
+
     /* re-link at new addr */
     if (!ld( temp, fp->data, fp->name, path ) || (f = open(temp, 0)) < 0) {
-	unlink(temp);			/* paranoia */
-	free(fp->data);
-	free(fp);
-	return FALSE;
+	goto file_open_error;
     }
-
-    unlink(temp);			/* file now floating!! */
 
     if (read( f, &a, sizeof(a)) != sizeof(a)) {
     data_read_error:
 	close(f);
+    file_open_error:
+	unlink(temp);
 	free(fp->data);
 	free(fp);
 	return FALSE;
     }
 
     if (N_GETMAGIC(a) != OMAGIC || a.a_entry == 0 || N_SIZE(a) > len) {
-	/* XXX could tag onto above if, but would be harder to debug */
 	goto data_read_error;
     }
 
     if (read(f, fp->data, len) != len) {
-	/* XXX could tag onto above if, but would be harder to debug */
 	goto data_read_error;
     }
 
     fp->entry = (int (*)(LOAD_PROTO)) a.a_entry;
-    fp->self = fp;
-
     close(f);
 
-    /* link into list (for unload) */
-    fp->next = fp;
+ success:
+    fp->self = fp;			/* make valid */
+    fp->next = fp;			/* link into list (for unload) */
     funcs = fp;
 
     D_A(addr) = (int_t) fp;
@@ -237,7 +255,8 @@ unload(sp)
 	pp->next = fp->next;
     }
 
-    fp->self = 0;		/* invalidate self pointer!! */
-    free(fp->data);
+    fp->self = 0;			/* invalidate self pointer!! */
+    if (fp->data)			/* may be internal (PML) */
+	free(fp->data);
     free(fp);
 }
