@@ -6,6 +6,8 @@
 #undef __HIDE_FORBIDDEN_NAMES		/* for _NFILE */
 #include <stdio.h>
 #include <types.h>
+#include <errno.h>
+
 #include <dvidef>
 #include <iodef>
 #include <stsdef.h>
