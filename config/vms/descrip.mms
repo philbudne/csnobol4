@@ -72,17 +72,17 @@ TAN_C=[.lib.snolib]tan.c
 PML_OBJ=host.obj, sys.obj, exit.obj, execute.obj, sqrt.obj, \
 	exp.obj, log.obj, chop.obj, sin.obj, cos.obj, tan.obj, \
 	file.obj, delete.obj, rename.obj, findunit.obj, \
-	getstring.obj, retstring.obj,
+	getstring.obj, retstring.obj
 
 CFLAGS=\
 	/DECC/PREFIX_LIB=ALL/OPTIMIZE\
-	/DEFINE=(ANSI_STRINGS,NO_OFF_T,\
+	/DEFINE=(ANSI_STRINGS,NO_OFF_T,TTY_READ,\
 		DATE=XDATE,INIT=XINIT,LOAD=XLOAD,UNLOAD=XUNLOAD,\
 		RPLACE=XRPLACE,TIME=XTIME,RAISE=XRAISE,DIV=XDIV,\
 		SUBSTR=XSUBSTR,EXIT=XEXIT,SQRT=XSQRT,EXP=XEXP,LOG=XLOG,\
 		SIN=XSIN,COS=XCOS,TAN=XTAN,RENAME=XRENAME)\
 	/WARN=(DISABLE=IMPLICITFUNC) \
-	/INCLUDE=(SYS$DISK:[],SYS$DISK:[.INCLUDE]) \
+	/INCLUDE=(SYS$DISK:[],SYS$DISK:[.INCLUDE])
 
 ################
 
@@ -95,7 +95,7 @@ OBJS=	main.obj, $(SNOBOL4).obj, data.obj, data_init.obj, syn.obj, \
 	$(AUX_OBJ) $(PML_OBJ)
 
 xsnobol4.exe : $(OBJS)
-	link /exec=xsnobol4.exe $(OBJS) +sys$library:deccrtl/library
+	link /exec=xsnobol4.exe $(OBJS)
 
 #################################################################
 # lib files
