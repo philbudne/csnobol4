@@ -127,7 +127,7 @@ if [ "$UNAME" ]; then
 		if [ -f /usr/bin/emerge ]; then
 			echo ''
 			echo emerge info:
-			/usr/bin/emerge info | head -4
+			/usr/bin/emerge info | head -n4
 		fi
 		;;
 	OSF1)
