@@ -1,6 +1,11 @@
 * $Id$
 *
 * $Log$
+* Revision 1.72  1997/09/08  03:40:11  phil
+* [PLB61] flushed INBFSP, SEQSIZ
+* init TEXTSP before STREAD in compiler
+* perform STREAD using TEXTSP to get returned line length
+*
 * Revision 1.71  1997/09/03  04:44:07  phil
 * [PLB60] Add "Output error"
 * Check IOKEY after user OUTPUT
@@ -642,6 +647,9 @@ XLATRD AEQLC   LISTCL,0,,XLATRN	   Skip print if list is off
        STPRNT  IOKEY,OUTBLK,LNBFSP Print line image
 XLATRN SETSP   TEXTSP,NEXTSP	   Read card and set up line	[PLB61]
        STREAD  TEXTSP,UNIT,XLATIN,COMP1				[PLB38][PLB61]
+       GETLG   TMVAL,TEXTSP	   Get line length		[PLB62]
+       INCRA   TMVAL,STNOSZ	   Add sequence number length	[PLB62]
+       PUTLG   LNBFSP,TMVAL	   Save for listings		[PLB62]
        INCRA   LNNOCL,1		   Increment source line number	[PLB38]
 XLATNX STREAM  XSP,TEXTSP,CARDTB,COMP3,XLATRD			[PLB50]
 *				   Determine type of card	[PLB23]
@@ -1492,6 +1500,9 @@ CDIAG4 RCALL   ERRTXT,GENVAR,EMSGCL				[PLB49]
 DIAGRN SETSP   TEXTSP,NEXTSP	   Set up new line		[PLB61]
        STREAD  TEXTSP,UNIT,DIAGIN,COMP1				[PLB38][PLB61]
 *				   Read card image
+       GETLG   TMVAL,TEXTSP	   Get line length		[PLB62]
+       INCRA   TMVAL,STNOSZ	   Add sequence number length	[PLB62]
+       PUTLG   LNBFSP,TMVAL	   Save for listings		[PLB62]
        INCRA   LNNOCL,1		   Count line numbers		[PLB38]
        STREAM  XSP,TEXTSP,CARDTB,COMP3,CDIAG7			[PLB50]
 *				   Analyze card type
@@ -1809,6 +1820,9 @@ FORRUN AEQLC   UNIT,0,,FOREOS	   Check for input stream
 FORRUR SETSP   TEXTSP,NEXTSP	   Set up new line		[PLB61]
        STREAD  TEXTSP,UNIT,FORINC,COMP1				[PLB38][PLB61]
 *				   Read new card iamge
+       GETLG   TMVAL,TEXTSP	   Get line length		[PLB62]
+       INCRA   TMVAL,STNOSZ	   Add sequence number length	[PLB62]
+       PUTLG   LNBFSP,TMVAL	   Save for listings		[PLB62]
        INCRA   LNNOCL,1		   Count line numbers		[PLB38]
        STREAM  XSP,TEXTSP,CARDTB,COMP3,FORRUN			[PLB50]
 *				   Determine card type
