@@ -1,4 +1,4 @@
-.\" -*-nroff-*-
+\" -*-nroff-*-
 .\" $Id$
 .TH SNOBOL4 1 "1 June 1994" "Local"
 .SH NAME
@@ -70,6 +70,16 @@ Control lines and comment characters are valid after the end of string
 .IP *
 Listing statement numbers show the statement number of the LAST
 statement on the line (rather than the first).
+.IP *
+Setting the
+.B &ABEND
+keyword causes a core dump upon termination!
+.IP *
+The value of the
+.B &CODE
+keyword determines the exit status of the
+.B snobol4
+application.
 
 .SS "Character set"
 
