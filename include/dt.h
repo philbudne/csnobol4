@@ -124,12 +124,20 @@ struct func_ld_block {
      * v: function argument count
      * f: FNC flag???
      * a: pointer to function
+     *	 DEFFNC for DEFINEd function
+     *   DEFDAT for a DATA structure constructor function
+     *   FIELD for a DATA structure field access function
+     *   LNCFNC for LOADed function
      */
     struct descr link;
 
     /*
      * definition descriptor.
-     * used by user defined functions and user datatypes (see below)
+     * points to:
+     *   defineblock for a DEFINEd function
+     *   datablock for a DATA structure contructor function
+     *   fieldblock for a DATA structure field access function
+     *   loadblock for a LOADed function
      */
     struct descr defn;
 };
@@ -139,14 +147,15 @@ struct func_ld_block {
  * function "define block" (pg. 100);
  */
 
-/* definition descriptor of a user defined function points to
- * a "define block".  The number of vars which are args vs. locals
- * can be determined from the "link" descriptor of the function
- * link definition block.
+/*
+ * The arg count can be found in the v field of the "link" descriptor
+ * of the function link definition block (which points to this block).
+ * The remaining "var" entries are names of locals.
  */
 
 struct defineblock {
     struct descr title;
+    struct descr entry;			/* entry point label name */
     struct descr name;			/* name of function */
     struct descr vars[1];		/* names of args & locals */
 };
@@ -195,6 +204,24 @@ struct fieldblock {			/* see p. 108 */
 	struct descr type;		/* v: type number f: 0 a: 0 */
 	struct descr offset;		/* v: 0 f: 0 a: (i-1)*DESCR */
     } typeoffset[1];
+};
+
+/****************************************************************
+ * LOADed functions
+ */
+
+/*
+ * The definition descriptor for a field function points to a
+ * loadblock.
+ */
+
+struct loadblock {
+    struct descr title;
+
+    struct descr link_handle;		/* handle for LINK opr */
+
+    /* n arg types, followed by return type */
+    struct descr types[1];
 };
 
 /****************************************************************
