@@ -511,7 +511,7 @@ GLOBLOP	PROC = GLOB					:F(GLOBEND)
 *	skip comments!
 	PROC '*'					:S(GLOBLOP)
 	GLOBAL<PROC> = 1
-	PROC.H = 'extern ' PROC_T ' ' PROC '();'
+	PROC.H = 'extern ' PROCTYPE ' ' PROC '();'
 *	make sure it's a proc!
 	MKPROC(PROC)					:(GLOBLOP)
 GLOBEND
