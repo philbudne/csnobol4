@@ -38,7 +38,7 @@ usage( jname )
     fprintf( stderr, "-f\ttoggle folding of identifiers to upper case\n");
     fprintf( stderr, "-k\trun programs with compilation errors\n");
     fprintf( stderr, "-l\treenable listings.\n");
-    fprintf( stderr, "-p\tenable SPITBOL operators (-PLUSOPS)\n");
+    fprintf( stderr, "-p\ttoggle SPITBOL operators (-PLUSOPS)\n");
     fprintf( stderr, "-r\ttoggle reading INPUT from after END statement\n");
     fprintf( stderr, "-s\ttoggle display of statistics\n");
     exit(1);
@@ -54,8 +54,6 @@ init_args( argc, argv )
 
     errs = 0;
     ndescr = NDESCR;
-
-    D_A(LISTCL) = 0;		/* XXX TEMP!! kill listings!! */
 
     /*
      * NOTE:
@@ -90,8 +88,7 @@ init_args( argc, argv )
 	    break;
 
 	case 'p':			/* -PLUSOPS */
-	    D_A(SPITCL) = 1;
-	    D_A(EXPCL) = 1;
+	    D_A(SPITCL) = !D_A(SPITCL);
 	    break;
 
 	case 'l':			/* -LIST */
