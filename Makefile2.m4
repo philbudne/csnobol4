@@ -85,6 +85,7 @@ REPLACE_C=$(SRCDIR)lib/replace.c
 SPCINT_C=$(SRCDIR)lib/ansi/spcint.c
 SPREAL_C=$(SRCDIR)lib/ansi/spreal.c
 STREAM_C=$(SRCDIR)lib/stream.c
+SUSPEND_C=$(SRCDIR)lib/posix/suspend.c
 STR_C=$(SRCDIR)lib/str.c
 TERM_C=$(SRCDIR)lib/posix/term.c
 TOP_C=$(SRCDIR)lib/top.c
@@ -173,7 +174,8 @@ OBJS=	main.o $(SNOBOL4).o data.o data_init.o syn.o bal.o date.o \
 	dump.o dynamic.o endex.o expops.o hash.o inet.o init.o \
 	intspc.o io.o lexcmp.o load.o mstime.o ordvst.o pair.o pat.o \
 	pml.o realst.o replace.o spcint.o spreal.o str.o stream.o \
-	term.o top.o tree.o tty.o version.o $(PML_OBJS) $(SNOLIB_A)
+	suspend.o term.o top.o tree.o tty.o version.o \
+	$(PML_OBJS) $(SNOLIB_A)
 
 AUX_SRCS= _SRCS
 SRCS=	main.c $(SNOBOL4).c data.c data_init.c syn.c $(BAL_C) \
@@ -181,8 +183,8 @@ SRCS=	main.c $(SNOBOL4).c data.c data_init.c syn.c $(BAL_C) \
 	$(HASH_C) $(INET_C) $(INIT_C) $(INTSPC_C) $(IO_C) $(LEXCMP_C) \
 	$(LOAD_C) $(MSTIME_C) $(ORDVST_C) $(PAIR_C) $(PAT_C) $(PML_C) \
 	$(REALST_C) $(REPLACE_C) $(SPCINT_C) $(SPREAL_C) $(STREAM_C) \
-	$(STR_C) $(TOP_C) $(TERM_C) $(TREE_C) $(TTY_C) version.c \
-	$(AUX_SRCS) $(SNOLIB_SRCS)
+	$(STR_C) $(SUSPEND_C) $(TOP_C) $(TERM_C) $(TREE_C) $(TTY_C) \
+	version.c $(AUX_SRCS) $(SNOLIB_SRCS)
 
 ################
 # link, regression test & timing
@@ -325,6 +327,9 @@ str.o:	$(STR_C)
 
 stream.o: $(STREAM_C)
 	$(CC) $(CFLAGS) -c $(STREAM_C)
+
+suspend.o: $(SUSPEND_C)
+	$(CC) $(CFLAGS) -c $(SUSPEND_C)
 
 term.o:	$(TERM_C)
 	$(CC) $(CFLAGS) -c $(TERM_C)
