@@ -17,11 +17,11 @@ is then run, creating a test version of snobol4 (named "xsnobol4")
 which is then regression tested and timed, and finally named
 "snobol4".
 
-The "configure" tries to use the available C compiler which works
-best.  If you wish to alter configure's decision process, you can run
-it manually by typing "./configure OPTIONS" with zero or more of the
-following options (multiple instances of options that begin with
-"--add-" can appear);
+The "configure" script tries to use the available C compiler which
+works best.  If you wish to alter configure's decision process, you
+can run it manually by typing "./configure OPTIONS" with zero or more
+of the following options (multiple instances of options that begin
+with "--add-" can appear);
 
 	--add-cppflags=STRING
 		Add additional C preprocessor flags to compile command
@@ -238,7 +238,7 @@ If you need assistance please contact me (phil@ultimate.com).
 I'm also available for contract development.
 
 I've spent untold hours working on this release, if you find
-it useful, consider sending me a gift (money always welcome)!
+it useful, consider sending me a gift!
 
 For information on including "external" C functions in the linked
 binary see doc/load.doc.

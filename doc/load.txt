@@ -23,7 +23,9 @@ supported a number of different ways;
 
 	C. Systems with BSD/V7 style a.out object format
 
-	E. Using NSLinkModule on NextStep
+	E. Using NSLinkModule on NextStep, MacOS X/Darwin/Rhapsody
+		On MacOS X, if the cctools libdyld package
+		has been installed, dlopen() emulation will be used.
 
 The second parameter to LOAD is used as the name of an object file (or
 (shared) library) to load the function from. If no second parameter is
@@ -41,7 +43,7 @@ The following snolib functions are available by default
 (via pml.h);
 
 	RENAME, SQRT, DELETE, FILE, LOG, EXP, CHOP, SIN, COS, TAN,
-	IO_FINDUNIT, SSET, SERV_LISTEN, ORD
+	IO_FINDUNIT, SSET, SERV_LISTEN, ORD, LOGIC
 
 	The LOGIC function is linked into the snobol4 executable,
 	but must be accessed using LOAD() before it is available.
@@ -230,13 +232,13 @@ to create a shared library file.
 
 System & compiler	compiler flags		link flags
 ================================================================
+Most gcc based systems	-fpic or -fPIC		-shared or -Bshareable
 SunOS4 cc		-pic or -PIC		-assert pure-text (optional)
 SunOS5 sunpro		-Kpic or -KPIC		-G
 IRIX cc			-KPIC (default?)	-shared (ignore warnings)
 Tru64/DU cc		none			-shared (ignore warnings)
 HP-UX c89		+z or +Z		-b
 DJGPP			none			dxe2gen -U (see below)
-most gcc		-fpic or -fPIC		-shared or -Bshareable
 AIX			none			-bM:SRE
 
 NOTES:
@@ -268,33 +270,33 @@ when the library is first loaded, before the first call, and call the
 void function _fini(void) before the library is unloaded.
 
 Examples;
-    on sunos4;
-	cc -c -pic -DHAVE_CONFIG_H -I/usr/local/lib/snobol4 source.c
-	ld -o module.so source.o
-
-    on sunos5 (Solaris2+);
-	cc -c -Kpic -DHAVE_CONFIG_H -I/usr/local/lib/snobol4 source.c
-	ld -G -o modile.so source.o
-
     using gcc;
 	gcc -c -fPIC -DHAVE_CONFIG_H -I/usr/local/lib/snobol4 source.c
 	gcc -shared -o module.so source.o
 
+    on SunOS 4;
+	cc -c -pic -DHAVE_CONFIG_H -I/usr/local/lib/snobol4 source.c
+	ld -o module.so source.o
+
+    on SunOS 5 (Solaris2+);
+	cc -c -Kpic -DHAVE_CONFIG_H -I/usr/local/lib/snobol4 source.c
+	ld -G -o modile.so source.o
+
     On Darwin (MacOS X);
-	dlopen() routine loads modules (bundles), not shared libraries;
+	A module (bundle), not a shared library must be built;
 	(see http://fink.sourceforge.net/doc/porting/shared.php
 	 and http://fink.sourceforge.net/doc/porting/porting.html)
 
 	cc -c -fno-common -DHAVE_CONFIG_H -I/usr/local/lib/snobol4 source.c
 	cc -bundle -flat_namespace -undefined suppress -o module.so source.o
 
-    On DOS, using DJGPP;
-	gcc -c -DHAVE_CONFIG_H -I/snobol4 source.c
-	dxe2gen -o module.dxe source.o -U
-
     On Win32, using Cygwin and MINGW;
 	gcc -c -DHAVE_CONFIG_H -I/usr/local/lib/snobol4 source.c
 	dllwrap -v --export-all-symbols --dllname MODULE -o module.dll source.o
+
+    On DOS, using DJGPP and DXE2;
+	gcc -c -DHAVE_CONFIG_H -I/snobol4 source.c
+	dxe2gen -o module.dxe source.o -U
 
 For more information on dllwrap (under cygwin and mingw), see
 http://www.xraylith.wisc.edu/~khan/software/gnu-win32/dllhelpers.html
