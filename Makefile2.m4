@@ -200,6 +200,7 @@ snobol4: xsnobol4 snobol4.c
 	./timing > timing.out
 	-rm -f snobol4
 	ln xsnobol4 snobol4
+	@touch snobol4
 	@echo Please consider mailing timing.out to \
 		snobol4-timing@ultimate.com 1>&2
 	@echo along with information on your \
