@@ -22,7 +22,7 @@ made when all systems were timed with the same release of SNOBOL!
 
 System		Speed OS	    C	opt	REL    st/sec	who/when
 ===============================================================================
-AMD Athlon	1470  FreeBSD 3.4   gcc -O2	0.99.4 1066072	pb 1/02
+AMD Athlon	1470  FreeBSD 3.4   gcc -O2	0.99.4 1066072!	pb 1/02
 AMD Athlon	1470  FreeBSD 3.4   gcc		0.99.4 937037	pb 1/02
 AMD Athlon	1000  Linux 2.4.9   gcc	-O2	0.99.4 625292	pb 1/02
 AMD Athlon	900   NetBSD 1.5.1  gcc		0.99.4 555815	pb 1/01
@@ -138,6 +138,7 @@ IBM RS/6K 570	50    AIX 4.1.4.0   cc		0.99.4  23768	bm 8/97
 P5		90    Linux 2.0.23  gcc		0.99.2  23535 	dj 12/96
 Sun SS20/52	50    SunOS 5.5.1   gcc		0.99.4	22930	res 7/98
 DEC 3000/M300X	175   NetBSD 1.4.2  gcc		0.99.4	22702	gz 5/00
+Sun SS10/RT625	72    SunOS 5.7	    spro	0.99.4	22164	pb 1/02
 IBM RS/6K 970	50    AIX 3.2.5	    gcc		0.99    22064	bm 10/96
 P5		75    NetBSD 1.1    gcc		0.99    20923 	to 10/96
 Sun SS10/51	50    SunOS 4.1.3C  gcc		0.98.4	20710	pb 8/97
@@ -149,6 +150,7 @@ P5		60    Linux 2.1.50  gcc		0.99.4	19730	svm 8/97
 DEC 3000/300	150   NetBSD 1.2E   gcc		0.99.4	19361	pb 8/97
 HP 9000/720	50    HP-UX 9.05    c89		0.99.3+	19120	pb 7/97
 SGI IP20 (R4K)	100   IRIX 6.2      cc		0.99.4	19070	pb 8/97
+SS10/41		40    SunOS 5.7	    spro	0.99.4	18633	pb 1/02
 SGI IP20 (R4K)	100   IRIX 5.2      cc		0.99.4	17453	pb 8/97
 Sun SS5/110	110   SunOS 5.5.1   spro	0.99.1  17072	db 11/96
 Sun SS5/110	110   SunOS 5.5.1   spro	0.99.3  15075	db 11/96
@@ -159,20 +161,26 @@ Sun SS5/85	85    SunOS 4.1.4   gcc		0.99.4	12756	pb 8/97
 Sun SS10/40	40    SunOS 5.5.1   gcc		0.99.1  12237	jm 11/96
 P5		100   Linux 2.2.16  gcc		0.99.4	11388	rms 12/00
 i486DX2		66    OpenBSD 2.0   gcc		0.99.2	 9376	to 12/96
-i486DX2		66    Linux 2.0.33  gcc	-O6 ...	0.99.4	 8922	bernardp 7/98
+i486DX2		66    Linux 2.0.33  gcc	-O6 ...	0.99.4	 8922	pb2 7/98
 i486DX2		66    Linux 2.0.36  gcc		0.99.4	 8485	sa 8/99
+Sun SS/IPX+Pup	80    SunOS 4.1.4   gcc	-O2	0.99.4	 8244	pb 1/02
 Solbourne/5E	40    OS/MP 4.1B    gcc		0.99.4	 8004	pb 8/97
-i486DX2		66    Linux 2.0.33  gcc		0.99.4	 7568	bernardp 7/98
+Sun SS/IPX+Pup	80    SunOS 4.1.4   gcc		0.99.4	 7827	pb 1/02
+i486DX2		66    Linux 2.0.33  gcc		0.99.4	 7568	pb2 7/98
 IBM RS/6K 320	25    AIX 3.2.5     cc		0.99.4	 7433	pb 8/97
+Sun SS/LX	50    SunOS 5.8	    spro	0.99.4	 7341	pb 1/02
 Sun SS2		40    SunOS 5.6	    spro	0.99.4	 7287	pb 9/97
 i486DX		33    Linux 2.0.30  gcc -O3	0.99.4	 7128	mo 3/98
 Sun SS2		40    SunOS 4.1.3   gcc		0.99.4	 7116	pb 8/97
 HP 380 (68040)	25    NetBSD 1.2E   gcc		0.99.4	 7069	pb 8/97
 Sun SS/LX	50    SunOS 5.4     spro	0.99.1	 7016	hb 11/96
+Sun SS/IPX+Pup	80    SunOS 4.1.4   cc -O4	0.99.4	 6669	pb 1/02
+Sun SS/IPX+Pup	80    SunOS 4.1.4   cc -O3	0.99.4	 6618	pb 1/02
 Sun SS2		40    NetBSD 1.2E   gcc		0.99.4	 6578*	pb 8/97
 Sun SS/ELC	33    SunOS 5.5     spro	0.99	 6387	pb 10/96
 HP 425T (68040)	26    HP-UX 8.00    gcc		0.99.2	 6182	pb 12/96
-i486		66    BSD/OS 3.1    gcc		0.99.4	 5826	digbyt 10/98
+Sun SS/IPX+Pup	80    SunOS 4.1.4   cc		0.99.4	 5996	pb 1/02
+i486		66    BSD/OS 3.1    gcc		0.99.4	 5826	dt 10/98
 SGI IP6 (R3000)	20    IRIX 5.3	    cc		0.99.4	 5089	pb 8/97
 HP 9000/834	15    HP-UX 7	    gcc		0.99.2+	 4898	pb 12/96
 i486SX		33    Linux 2.1.14  gcc		0.99.3	 4865	ad 4/97
@@ -180,8 +188,8 @@ Sun SS/IPC	25    SunOS 4.1.4   gcc		0.99.4	 4581	pb 8/97
 HP 425T (68040)	26    HP-UX 8.00    c89		0.99	 4485	pb 10/96
 HP 375 (68030)	50    NetBSD 1.2E   gcc		0.99.4	 4156*	pb 8/97
 PMAX 5000/120	25    NetBSD 1.4.1  gcc		0.99.4	 3416	gz 5/00
-HP 370 (68030)	33.3  NetBSD 1.2E   gcc		0.99.4	 3167*	pb 8/97
 i486		??    FreeBSD 2.2.1 gcc		0.99.4+	 3367	pb 8/97
+HP 370 (68030)	33.3  NetBSD 1.2E   gcc		0.99.4	 3167*	pb 8/97
 HP 370 (68030)	33.3  Mt Xinu 4.3   gcc		0.99	 3064	pb 10/96
 pc532 (ns32532)	25    NetBSD 1.2D   gcc		0.99.4	 2858*	pb 8/97
 pc532 (ns32532)	25    NetBSD 1.3I   gcc		0.99.4	 2855	pb 1/99
