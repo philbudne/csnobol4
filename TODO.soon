@@ -1,50 +1,27 @@
 $Id$
 
-put -d/-P (back) to DESCR counts???
-
-HOST() functions;
-	dynamic region size
-	pattern stack size
-
-README
-	add host.sno
-
-script to grep for all "ifdefs" and output strings to build.c?
-	just stringify options in config.h?
-
 rename /ansi/ to /c89/ ??
 	change autoconf messages too?
 rename /borland/ to /msdos/ ??
 
-INSTALL
-	document --add-define= PSSIZE, NDYNAMIC (both take ndescr)
-	remove documentation for --largefile
-	mention --no-largefile for "update.sno" regression test failures
-	warn --longlong may not work!!!
-	mention --no-inline
-
-CHANGES
-	speak in english
-	discuss largefile support (and why it may or may not work)!
-
 create README.CVS??
 	(make sure it DOESN'T exist in regular kit!!!)
 
-use SNOCONE tsort program???
-	include tsort.sno in repository?
-	(leave generation rule for tsort.sno commented out)
+tsort program
+	always use BSD version?
+	use SNOCONE tsort program???
+		include tsort.sno in repository?
+		(leave generation rule for tsort.sno commented out)
 
 man page:
 	document -v
 	document 'm' suffixes
+	-P/-d take DESCRs
 	document host.sno
 	document SERV_LISTEN()
 	discuss largefile support (may not work on all (file)systems)
 		under SSET()
 	discuss terminal binary mode
-
-add build_user???
-	move to mkbuild script?
 
 ports.doc
 	update (with beta test information)
@@ -54,7 +31,7 @@ put sources under CVS
 	name module snobol4!
 	improve rcs2cvs;
 		move old files to Attic directories!!!
-	prune CVS directories when making kit??
+	prune CVS directories when making kit?? NO!
 		always build kit's from scratch, via anonymous checkout???
 		don't bother with version-based directory name???
 		have tar file named snobol4-VERS.tar
@@ -111,15 +88,9 @@ man page
 	LOAD() limitations out of date
 	mention files/functions available in snolib/
 	reference documents available on web (see next item)
+		http://burks.bton.ac.uk/burks/language/snobol/....
+		ftp://ftp.snobol4.com/spitman.pdf
 
-refer to online manuals (in man page, README)
-	get permission to include??
-
-    http://burks.bton.ac.uk/burks/language/snobol/catspaw/tutorial/contents.htm
-		+ ch1-9
-    http://burks.bton.ac.uk/burks/language/snobol/catspaw/manual/contents.htm
-		+ ch1-9
-    ftp://ftp.snobol4.com/spitman.pdf
 
 always send timing.out via e-mail?
 	(unless (.)timing.out.hostname exists?)
@@ -130,13 +101,6 @@ test
 	MacOS X (panos@surgery.wisc.edu)
 	DJGPP (meissner@altertum.uni-halle.de)
 	QNX (Fred?)
-
-timing script;
-	translate bogomips + cpu into clock speed?
-	provide bogomips.c??
-	output machine readable format?
-
-make timing.out more machine friendly!
 
 packaging;
 	put pkg/ .... files under RCS (CVS)??
@@ -151,10 +115,25 @@ packaging;
 	    ftp://ftp.debian.org/debian/doc/package-developer/programmer.ps.gz
 	create solaris package???
 
+	create BSD port/pkg and RPM conf file for snocone!!!
+
+script to grep for all "ifdefs" and output strings to build.c?
+	just stringify options in config.h?
+
+timing script;
+	translate bogomips + cpu into clock speed?
+	provide bogomips.c??
+	output machine readable format?
+
+make timing.out more machine friendly!
+
 have tests cleanup after themselves?  Add Makefile for "make clean"?
 	just add files to "make spotless"
 
 ================
+
+add build_user???
+	move to mkbuild script?
 
 "pmake" on csa loses (in depend?)
 
@@ -770,3 +749,5 @@ manually copy common code?
 
 find places where common tails exist, and move to ends of routines
 	examples (done) STOPTP, RECOMZ
+
+document --add-define= PSSIZE, NDYNAMIC (both take ndescr)

@@ -2,10 +2,21 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+1/12/2002
+	lib/init.c: take -d and -P in descriptors (again)
+		add showk(), rework p() function
+		make -v display just version
+	README: add host.sno
+	INSTALL: update
+
+1/10/2002
+	autoconf: split generated/on lines
+
 1/9/2002
 	new: lib/snolib/host.h -- HOST() function codes
 	lib/snolib/host.c: use host.h, handle arbitrary string "codes"
 		add pmstack, dynamic region size functions
+		add char bits
 	new: host.awk -- create host.sno from host.h
 	timing, timing.sno: use host.sno, report GC's
 	Makefile2.sno: add GENSNOLIB for host.sno installation
