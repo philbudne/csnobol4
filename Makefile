@@ -23,7 +23,9 @@ SMALL_SNO=snobol4 -b
 # topological sort
 # BSD44 and AT&T tsort's handle cycles; GNU tsort (found on Linux) does not
 TSORT=	tsort
-#TSORT=	snobol4 -b tsort.sno
+
+# NOTE: run from "subr" directory
+#TSORT=	snobol4 -b ../tsort.sno
 
 ################
 # machine generated files;
