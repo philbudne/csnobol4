@@ -44,31 +44,11 @@ TODO
 TODO.soon
 	my top priority tasks.
 
-doc/catspaw/
-	Information on Catspaw's commercial
-	SNOBOL systems, and ordering information on SNOBOL books!!!
+See the Catspaw vanilla.arc or vanilla.tar for a DOS/PC
+	port of SNOBOL4, many demo programs, SNOBOL4
+	language documentation, and ordering information
+	for books & products from Catspaw!
 
-Changes from "alpha" distribution;
-	Now portable!!
-		Has run on 6 different Un*x systems (see doc/ports.doc).
-
-		gendata.sno now creates init_data.h
-			which initializes resident data at runtime.
-
-		The only architectural assumption is that
-			sizeof(long) == sizeof(float)
-			(see include/types.h)
-
-	DCMP() now done inline (did profiling).
-
-	genc.sno runs 30% faster!
-
-	descriptors are now "packed" using bit fields
-		(now 8 bytes rather than 12)
-		string length "limited" to 2^24 bytes,
-		all other objects limited to 2^21 descriptors
-			see types.h for discussion of sizes.
-
 Status;
 	All features on SNOBOL4 are implemented,
 		including LOAD() (see doc/load.doc),
@@ -135,3 +115,24 @@ directory, and link to config.h;
 The tar does not contain any binaries; THEY SHOULD NOT BE NEEDED
 (unless you touch the source files) As all generated files are
 provided.  The generated files are NOT system dependant!!!
+
+Changes from "alpha" distribution;
+	Now portable!!
+		Has run on 7 different Un*x systems (see doc/ports.doc).
+
+		gendata.sno now creates init_data.h
+			which initializes resident data at runtime.
+
+		The only architectural assumption is that
+			sizeof(long) == sizeof(float)
+			(see include/types.h)
+
+	DCMP() now done inline (did profiling).
+
+	genc.sno runs 30% faster!
+
+	descriptors are now "packed" using bit fields
+		(now 8 bytes rather than 12)
+		string length "limited" to 2^24 bytes,
+		all other objects limited to 2^21 descriptors
+			see types.h for discussion of sizes.
