@@ -32,6 +32,7 @@ extern char *malloc();
 extern char *getenv();
 
 /* is this right? -- ok for OMAGIC */
+#undef N_SIZE				/* defined in NetBSD nlist.h */
 #define N_SIZE(A) ((A).a_text + (A).a_data + (A).a_bss)
 
 /* NetBSD compatibility */
