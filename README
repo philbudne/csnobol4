@@ -1,6 +1,6 @@
 $Id$
 
-0.99.2 release of ``The Macro Implementation of SNOBOL4 in C'' (C-MAINBOL)
+0.99.3 release of ``The Macro Implementation of SNOBOL4 in C'' (C-MAINBOL)
 
 This is a free port of the original SIL (SNOBOL4 Implementation
 Language) "macro" version of SNOBOL4 (developed at Bell Labs) with the
