@@ -93,6 +93,9 @@ struct file {
 
 /* XXX opened by INPUT/OUTPUT flag? */
 
+#define MAXFNAME	1024		/* XXX use MAXPATHLEN? POSIX?? */
+#define MAXOPTS		1024
+
 /* XXX malloc at runtime? */
 static struct unit io_units[NUNITS];
 
@@ -275,7 +278,7 @@ io_fopen2( fp, mode )
 #endif /* NO_FDOPEN not defined */
     if (strncmp(fp->fname, "/tcp/", 5) == 0 ||
 	strncmp(fp->fname, "/udp/", 5) == 0) {
-	char fn2[1024];			/* XXX */
+	char fn2[MAXFNAME];		/* XXX */
 	char *host, *service, *cp;
 	int priv;
 	extern FILE *tcp_open(), *udp_open();
@@ -320,7 +323,7 @@ io_fopen2( fp, mode )
     if (mode[0] == 'w' && (fp->flags & FL_APPEND))
 	*mp++ = 'a';
     else
-	*mp++ = mode[0];
+	*mp++ = mode[0];		/* XXX append whole string? */
     if (fp->flags & FL_UPDATE)
 	*mp++ = '+';
 #ifndef NO_FOPEN_B
@@ -330,7 +333,7 @@ io_fopen2( fp, mode )
     *mp++ = '\0';
 
     fp->f = fopen(fp->fname, buf);
-}
+} /* io_fopen2 */
 
 static FILE *
 io_fopen( fp, mode )
@@ -353,7 +356,7 @@ io_fopen( fp, mode )
      * isn't what we're after!
      */
     return fp->f;
-}
+} /* io_fopen */
 
 /* skip to next input file */
 static int
@@ -507,7 +510,7 @@ io_printf
     unit = va_arg(vp, int);
 #endif /* USE_STDARG_H not defined */
 
-    unit--;
+    unit--;				/* make zero-based */
     if (BADUNIT(unit) ||
 	io_units[unit].curr == NULL ||
 	(f = io_units[unit].curr->f) == NULL)
@@ -596,7 +599,7 @@ io_print( iokey, iob, sp )		/* STPRNT */
     D_A(iokey) = FALSE;			/* default to error */
 
     unit = D_A(*iob + 1);
-    unit--;
+    unit--;				/* make zero-based */
 
     if (BADUNIT(unit))
 	return;
@@ -668,7 +671,7 @@ int
 io_endfile(unit)			/* ENFILE */
     int unit;
 {
-    unit--;
+    unit--;				/* make zero-based */
     if (BADUNIT(unit) || io_units[unit].curr == NULL) {
 	/* fatal error in SPITBOL, but not in SNOBOL4+ */
 	return TRUE;
@@ -691,7 +694,7 @@ io_read( dp, sp )			/* STREAD */
     struct file *fp;
 
     unit = D_A(dp);
-    unit--;
+    unit--;				/* make zero-based */
     if (BADUNIT(unit) || io_units[unit].curr == NULL) {
 	if (COMPILING(unit)) {
 	    return IO_ERR;		/* compiler never quits!! */
@@ -984,23 +987,20 @@ io_openi(dunit, sfile, sopts, drecl)	/* called from SNOBOL INPUT() */
     struct spec *sopts;			/* IN: options */
     struct descr *drecl;		/* OUT: rec len */
 {
-    char fname[1024];			/* XXX malloc(S_L(sfile)+1)? */
-    char opts[1024];			/* XXX malloc(S_L(sopts)+1)? */
+    char fname[MAXFNAME];		/* XXX malloc(S_L(sfile)+1)? */
+    char opts[MAXOPTS];			/* XXX malloc(S_L(sopts)+1)? */
     struct file *fp;
     FILE *f;
     int unit;
     int recl;
 
     unit = D_A(dunit);
-    unit--;				/* make zero based */
+    unit--;				/* make zero-based */
     if (BADUNIT(unit))
 	return FALSE;			/* fail */
 
-    strncpy( fname, S_SP(sfile), S_L(sfile) );
-    fname[S_L(sfile)] = '\0';
-
-    strncpy( opts, S_SP(sopts), S_L(sopts) );
-    opts[S_L(sopts)] = '\0';
+    spec2str( sfile, fname, sizeof(fname) );
+    spec2str( sopts, opts, sizeof(opts) );
 
     /* XXX if no sopts;
      * extract options suffix (if any) from filename here?
@@ -1045,22 +1045,19 @@ io_openo(dunit, sfile, sopts)		/* called from SNOBOL OUTPUT() */
     struct spec *sfile;			/* IN: filename */
     struct spec *sopts;			/* IN: options */
 {
-    char fname[1024];			/* XXX malloc(S_L(sfile)+1)? */
-    char opts[1024];			/* XXX malloc(S_L(sopts)+1)? */
+    char fname[MAXFNAME];		/* XXX malloc(S_L(sfile)+1)? */
+    char opts[MAXOPTS];			/* XXX malloc(S_L(sopts)+1)? */
     struct file *fp;
     FILE *f;
     int unit;
 
     unit = D_A(dunit);
-    unit--;
+    unit--;				/* make zero-based */
     if (BADUNIT(unit))
 	return FALSE;			/* fail */
 
-    strncpy( fname, S_SP(sfile), S_L(sfile) );
-    fname[S_L(sfile)] = '\0';
-
-    strncpy( opts, S_SP(sopts), S_L(sopts) );
-    opts[S_L(sopts)] = '\0';
+    spec2str( sfile, fname, sizeof(fname) );
+    spec2str( sopts, opts, sizeof(opts) );
 
     /* XXX if no sopts;
      * extract options suffix (if any) from filename here?
@@ -1099,15 +1096,11 @@ io_include( dp, sp )
     struct spec *sp;			/* file name (with quotes) */
 {
     int l;
-    char fname[1024];			/* XXX */
+    char fname[MAXFNAME];		/* XXX */
     struct file *fp;
     int unit;
 
-    l = S_L(sp);
-    if (l > sizeof(fname)-1)
-	l = sizeof(fname)-1;		/* ?! */
-    strncpy( fname, S_SP(sp), l );
-    fname[l] = '\0';
+    spec2str( sp, fname, sizeof(fname) );
 
     /* seach includes list to see if file already included!! */
     for (fp = includes; fp; fp = fp->next)
@@ -1115,6 +1108,7 @@ io_include( dp, sp )
 	    return TRUE;
 
     /* strip off trailing spaces after uniqueness test */
+    l = S_L(sp);
     while (l > 0 && fname[l-1] == ' ') {
 	l--;
     }
@@ -1126,7 +1120,7 @@ io_include( dp, sp )
 
     if (io_fopen( fp, "r") == NULL) {
 	char *snolib;
-	char fn2[1024];			/* XXX */
+	char fn2[MAXFNAME];		/* XXX */
 	extern char *getenv();
 
 	free(fp);
@@ -1150,7 +1144,7 @@ io_include( dp, sp )
     }
 
     unit = D_A(dp);
-    unit--;
+    unit--;				/* make zero-based */
 
     /* push new file onto top of input list */
     fp->next = io_units[unit].curr;
@@ -1165,7 +1159,10 @@ io_include( dp, sp )
     return TRUE;
 }
 
-/* retrieve file currently associated with a unit */
+/*
+ * retrieve file currently associated with a unit
+ * used by compiler to pick up filenames from command line
+ */
 int
 io_file( dp, sp )
     struct descr *dp;			/* IN: unit number */
@@ -1175,9 +1172,9 @@ io_file( dp, sp )
     struct file *fp;
 
     unit = D_A(dp);
-    unit--;
+    unit--;				/* make zero-based */
     if (BADUNIT(unit) || (fp = io_units[unit].curr) == NULL)
-	return 0;
+	return FALSE;
 
     S_A(sp) = (int_t) fp->fname;	/* OY! */
     S_F(sp) = 0;			/* NOTE: *not* a PTR! */
@@ -1186,7 +1183,7 @@ io_file( dp, sp )
     S_L(sp) = strlen(fp->fname);
     CLR_S_UNUSED(sp);
     
-    return 1;
+    return TRUE;
 }
 
 /*
@@ -1205,7 +1202,7 @@ io_seek(dunit, doff, dwhence)
     FILE *f;
 
     unit = D_A(dunit);
-    unit--;
+    unit--;				/* make zero-based */
     if (BADUNIT(unit) || (fp = io_units[unit].curr) == NULL)
 	return FALSE;
 
