@@ -89,6 +89,13 @@
 		    (S_L(A) == 0 || \
 		     *S_SP(A) == *S_SP(B) && \
 		     (S_L(A) == 1 || bcmp(S_SP(A)+1,S_SP(B)+1,S_L(A)-1) == 0)))
+
+/* 11/4/97 - get length for string structure */
+#define X_GETLTH(A) (DESCR * (3 + ((S_L(A) - 1) / CPD + 1)))
+
+/* 11/4/97 - get block size for GC */
+#define X_BKSIZE(A) \
+    ((D_F(A) & STTL) ? (DESCR*(4+((D_V(A)-1)/CPD+1))) : D_V(A) + DESCR)
 
 /****************
  * system stack
