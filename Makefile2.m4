@@ -122,6 +122,7 @@ HOST_C=$(SRCDIR)lib/snolib/host.c
 LOG_C=$(SRCDIR)lib/snolib/log.c
 RENAME_C=$(SRCDIR)lib/snolib/rename.c
 RETSTRING_C=$(SRCDIR)lib/snolib/retstring.c
+SERV_C=$(SRCDIR)lib/snolib/serv.c
 SIN_C=$(SRCDIR)lib/snolib/sin.c
 SPRINTF_C=$(SRCDIR)lib/snolib/sprintf.c
 SQRT_C=$(SRCDIR)lib/snolib/sqrt.c
@@ -436,7 +437,8 @@ AUX_OBJS= _OBJS
 
 SNOLIB_OBJS= chop.o cos.o delete.o environ.o execute.o exists.o exit.o \
 	exp.o file.o findunit.o fork.o getstring.o host.o log.o rename.o \
-	retstring.o sin.o sprintf.o sqrt.o sset.o sys.o tan.o $(AUX_OBJS)
+	retstring.o serv.o sin.o sprintf.o sqrt.o sset.o sys.o tan.o \
+	$(AUX_OBJS)
 
 $(SNOLIB_A): $(SNOLIB_OBJS)
 	rm -f $(SNOLIB_A)
@@ -448,7 +450,7 @@ $(SNOLIB_A): $(SNOLIB_OBJS)
 
 SNOLIB_SRCS= $(CHOP_C) $(COS_C) $(DELETE_C) $(ENVIRON_C) $(EXISTS_C) \
 	$(EXIT_C) $(EXECUTE_C) $(EXP_C) $(FILE_C) $(FORK_C) $(GETSTRING_C) \
-	$(HOST_C) $(LOG_C) $(RENAME_C) $(RETSTRING_C) $(SIN_C) \
+	$(HOST_C) $(LOG_C) $(RENAME_C) $(RETSTRING_C) $(SERV_C) $(SIN_C) \
 	$(SPRINTF_C) $(SQRT_C) $(SYS_C) $(TAN_C)
 
 chop.o: $(CHOP_C)
@@ -495,6 +497,9 @@ rename.o: $(RENAME_C)
 
 retstring.o: $(RETSTRING_C)
 	$(CC) $(CFLAGS) -c $(RETSTRING_C)
+
+serv.o: $(SERV_C)
+	$(CC) $(CFLAGS) -c $(SERV_C)
 
 sin.o: $(SIN_C)
 	$(CC) $(CFLAGS) -c $(SIN_C)
