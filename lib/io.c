@@ -395,7 +395,7 @@ io_fopen2( fp, mode )
      * (on successs, the function should set the FILE ** to point
      * to the open stream).
      */
-    if (osdep_open(fp->fname, &fp->f))
+    if (osdep_open(fp->fname, mode, &fp->f))
 	return;				/* intercepted */
 #endif /* OSDEP_OPEN defined */
 
