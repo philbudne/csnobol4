@@ -5,7 +5,7 @@
 #endif /* LD_PATH not defined */
 
 #ifndef SNOLIB_DIR
-#define SNOLIB_DIR "/usr/local/lib/snolib"
+#define SNOLIB_DIR "/usr/local/lib/snobol4"
 #endif /* SNOLIB_DIR not defined */
 
 #ifndef SNOLIB_A
