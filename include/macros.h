@@ -104,34 +104,27 @@
  * system stack
  */
 
+#ifndef NO_STATIC_VARS
 #ifndef S4_EXTERN
 #define S4_EXTERN extern
 #endif
 
 S4_EXTERN struct descr *cstack;
+S4_EXTERN struct descr ostack[1];	/* old stack pointer */
+#endif
 
 /* RCALL support */
-#if 1
 /* by the book, no C local ostack */
-S4_EXTERN struct descr ostack[1];	/* old stack pointer */
 
 #define SAVSTK() START_CALL(); PUSH(ostack); D_A(ostack) = (int_t)cstack
 #define RSTSTK() cstack = (struct descr *)D_A(ostack); POP(ostack)
 
-#else
-
-/* GC expects RCALL to push SOMETHING on each call! */
-#define SAVSTK() struct descr *ostack = cstack; PUSH(ZEROCL);
-#define RSTSTK() cstack = ostack
-
-#endif
-
 /* overflow check */
-#define OFCHK()	{ if ((int_t)cstack > (int_t)STACK+STSIZE*DESCR) OVER(NULL); }
+#define OFCHK()	{ if ((int_t)cstack > (int_t)STACK+STSIZE*DESCR) OVER(NORET); }
 
 #ifdef DO_UFCHK
 /* for debug only (internal error); */
-#define UFCHK()	{ if ((int_t)cstack < (int_t)STACK) INTR10(NULL); }
+#define UFCHK()	{ if ((int_t)cstack < (int_t)STACK) INTR10(NORET); }
 #else  /* DO_UFCHK not defined */
 #define UFCHK()
 #endif /* DO_UFCHK not defined */
@@ -155,7 +148,9 @@ S4_EXTERN struct descr ostack[1];	/* old stack pointer */
 
 /****************/
 
+#ifndef NO_STATIC_VARS
 extern volatile int math_error;
+#endif
 
 #define CLR_MATH_ERROR() math_error = FALSE
 #define MATH_ERROR() math_error
