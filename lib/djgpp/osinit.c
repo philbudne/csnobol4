@@ -64,6 +64,10 @@ DXE_EXPORT_TABLE(exports)
 	/* load.h */
 	DXE_EXPORT(getstring)
 	DXE_EXPORT(retstring)
+	DXE_EXPORT(io_findunit)
+	DXE_EXPORT(io_closeall)
+	DXE_EXPORT(io_getfp)
+	DXE_EXPORT(io_mkfile)
 
 	/* stdio.h */
 	DXE_EXPORT(__dj_stderr)
