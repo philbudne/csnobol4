@@ -34,8 +34,40 @@ static int wsock_init;
 #define INADDR_NONE ((unsigned long)0xffffffff)	/* want u_int32_t! */
 #endif /* INADDR_NONE not defined */
 
+/*
+ * Request API version 1.1 (first official release); shipped with Win95
+ */
 #define VMAJOR 1
 #define VMINOR 1
+
+#ifdef INET_IO
+/*
+ * About the INET_IO crock:
+ *
+ * On Windows 3.1 and Win9x, file handles and winsock handles are
+ * incompatible; winsock handles cannot be read or written with
+ * ordinary file I/O calls (e.g. ReadFile, WriteFile), so attempting
+ * to wrap a socket in a stdio stream won't work.
+ *
+ * To work around this "feature", if INET_IO is defined, tcp_open()
+ * and udp_open() return a "struct inet_file" pointer.  The code in
+ * io.c has been crocked not to try normal I/O on things which have
+ * the "NOTAFILE" flag set, instead calls inet_read_{raw,cooked},
+ * inet_write and inet_close in inet.c, which merrily cast the "FILE *"
+ * back to an "inet_file"
+ */
+
+struct inet_file {
+    SOCKET s;
+
+    /* buffer for "cooked" I/O */
+    int buflen;				/* size of buffer */
+    char *buffer;			/* start of buffer */
+
+    int count;				/* valid characters in buffer */
+    char *bp;				/* next valid character */
+};
+#endif /* INET_IO defined */
 
 static int
 inet_socket( host, service, port, priv, type )
@@ -104,9 +136,7 @@ inet_socket( host, service, port, priv, type )
 	return -1;
 
     s = socket( AF_INET, type, 0 );
-
-    /* XXX hopefully never zero (when INET_IO in use)!!! */
-    if (s < 0)
+    if (s == INVALID_SOCKET)
 	return -1;
 
     if (priv && bindresvport(s) < 0) {
@@ -138,27 +168,40 @@ inet_socket( host, service, port, priv, type )
     } /* saw digit */
     closesocket(s);
     return -1;
-}
+} /* inet_socket */
 
 static FILE *
 inet_open( host, service, port, priv, type )
     char *host, *service;
     int port, priv, type;
 {
-    int fd;
-    FILE *f;
     SOCKET s;
+#ifdef INET_IO
+    struct inet_file *fp;
+#else
+    FILE *f;
+    int fd;
+#endif
 
     s = inet_socket(host, service, port, priv, type );
     if (s < 0)
 	return NULL;
 
 #ifdef INET_IO
-    return (FILE *)s;
+    fp = (struct inet_file *)malloc(sizeof(struct inet_file));
+    if (!fp) {
+	closesocket(s);
+	return NULL;
+    }
+
+    fp->s = s;
+    fp->buflen = fp->count = 0;
+    fp->buffer = NULL;
+    return (FILE *)fp;			/* danger will robinson! */
 #else  /* INET_IO not defined */
     /*
      * get fd (C runtime file handle) for Read/Write from socket (OS handle)
-     * Broken under Win95?
+     * Only works for NT based systems.
      */
     fd = _open_osfhandle(s, O_RDWR|O_BINARY);
     if (fd < 0) {
@@ -168,12 +211,13 @@ inet_open( host, service, port, priv, type )
 
     f = fdopen(fd, "r+");
     if (f == NULL) {
-	/* XXX close fd? */
+	/* is one of these redundant? */
+	close(fd);
 	closesocket(s);
     }
     return f;
 #endif /* INET_IO not defined */
-}
+} /* inet_open */
 
 FILE *
 tcp_open( host, service, port, priv )
@@ -192,12 +236,6 @@ udp_open( host, service, port, priv )
     return inet_open( host, service, port, priv, SOCK_DGRAM );
 }
 
-void
-inet_cleanup() {
-    if (wsock_init)
-	WSACleanup();
-}
-
 #ifdef INET_IO
 int
 inet_write(f, cp, len)
@@ -205,7 +243,8 @@ inet_write(f, cp, len)
     char *cp;
     int len;
 {
-    return send((SOCKET)f, cp, len, 0);
+    struct inet_file *fp = (struct inet_file *)f;
+    return send(fp->s, cp, len, 0);
 }
 
 int
@@ -214,12 +253,37 @@ inet_read_raw(f, cp, recl)
     char *cp;
     int recl;
 {
-    return recv((SOCKET)f, cp, recl, 0);
+    struct inet_file *fp = (struct inet_file *)f;
+    /* reset fp->count to zero?? */
+    return recv(fp->s, cp, recl, 0);
 }
 
+/* helper for "cooked" read */
+static int
+inet_getc(fp, recl)
+    struct inet_file *fp;
+    int recl;
+{
+    if (fp->buflen == 0) {
+	fp->buffer = malloc(recl);
+	if (!fp->buffer)
+	    return -1;
+	fp->buflen = recl;
+    }
+    if (fp->count <= 0) {
+
+	/* XXX if recl > buflen, alloc new buffer? */
+	fp->count = recv(fp->s, fp->buffer, fp->buflen, 0);
+	if (fp->count <= 0) {
+	    return -1;			/* EOF, or something like it */
+	    fp->bp = fp->buffer;	/* reset buffer pointer */
+	}
+    }
+    fp->count--;
+    return *fp->bp++ & 0xff;		/* sign extension paranoia */
+}
 
 /*
- * awful, but typical of winsock code I've seen.
  * On NT consider trying compilation without INET_IO defined,
  * or use cygwin!!
  */
@@ -230,43 +294,74 @@ inet_read_cooked(f, cp, recl, keepeol)
     int recl;
     int keepeol;
 {
-    int n = 0;				/* characters read */
-    int eol = 0;			/* eol seen */
+    int c;
+    int n = 0;				/* characters kept */
+    int nread = 0;			/* characters read */
+    int eol = FALSE;			/* eol seen */
+    struct inet_file *fp = (struct inet_file *)f;
 
-    while (n < recl && !eol) {
-	int cc;
-	char c;
+    while (n < recl && !eol && (c = inet_getc(fp, recl)) != -1) {
+	/* guard against empty lines looking like read failures! */
+	nread++;
 
-	cc = recv((SOCKET)f, &c, 1, 0);
-	if (cc != 1) {
-	    if (cc < 0 && n == 0)
-		return -1;
-	    break;
-	}
+	if (c == '\r')
+	    continue;			/* always discard CR */
 
 	if (c == '\n') {
+	    eol = TRUE;
 	    if (!keepeol)
 		break;
 	}
-	else if (c == '\r' && !keepeol)
-	    continue;
+
 	*cp++ = c;
 	n++;
-    }
-    if (!eol) {
-	char c;
+    } /* while */
 
-	while (recv((SOCKET)f, &c, 1, 0) == 1 && c != '\n')
+    if (nread == 0)			/* did not see ANYTHING? */
+	return -1;			/* return error */
+
+    /*
+     * maintain record flavoredness; if EOL not seen, the line
+     * was longer than our record length.  Discard rest of "record"
+     */
+    if (!eol) {				/* didn't see EOL */
+	while ((c = inet_getc(fp, recl)) != EOF && c != '\n')
 	    ;
     }
     return n;
+}
+#endif /* INET_IO defined */
+
+void
+inet_cleanup() {
+    if (wsock_init)
+	WSACleanup();
 }
 
 int
 inet_close(f)
     FILE *f;
 {
-    /* shutdown & drain?? */
-    return closesocket((SOCKET)f) == 0;
+    SOCKET s;
+
+#ifdef INET_IO
+    s = _get_osfhandle(fileno(f)); /* recover socket handle? */
+#else  /* INET_IO not defined */
+    struct inet_file *fp = (struct inet_file *)f;
+
+    s = fp->s;				/* before free()!! */
+    if (fp->buffer)
+	free(fp->buffer);
+    free(fp);
+#endif /* INET_IO not defined */
+
+    /*
+     * ensure all data has been sent? does not block??
+     */
+    shutdown(s, SD_BOTH);
+    /*
+     * need to wait for an FD_CLOSE event??
+     * then recv() until socket drained?
+     */
+    return closesocket(s) == 0;
 }
-#endif /* INET_IO defined */
