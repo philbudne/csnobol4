@@ -2,12 +2,19 @@
 
 #include <varargs.h>
 #include <stdio.h>
+#include <sys/types.h>			/* off_t */
 
 #include "h.h"
 #include "units.h"
 #include "snotypes.h"
 #include "macros.h"
 #include "libret.h"			/* IO_XXX */
+
+
+/* ugly, but avoids knowing about unistd.h (or lack thereof) */
+#ifndef SEEK_SET
+/* in sysV stdio.h */
+#define SEEK_SET	0
 #endif
 
 #define NUNITS 100			/* XXX set at runtime? */
