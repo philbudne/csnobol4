@@ -2,7 +2,23 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+9/7/97:
+	Ran profiling
+	lib/io.c: only tack on one space to compiler input
+	v311.sil: have compiler use length returned by STREAD
+		reduces genc.sno compile time by 65%
+			an average of 1000 padding spaces were being
+			added to each line using 1024 recl.
+		reduced 10% below compile time for 80 char recl.
+		Use input length for listings; -LIST RIGHT is dead.
+	lib/top.c: allow inlining
+	parms.h: inline top.c
+
 9/3/97:
+	config/vms/build.com, config/vms/descrip.mms: updated
+	new file lib/vms/sys.c
+
+9/2/97:
 	v311.sil: Implemented fatal "Output error"
 	genc.sno: pass iokey to io_output(), add labels to ENFILE
 	io.c: return status from io_output(), io_endfile()
