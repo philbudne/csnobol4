@@ -2,13 +2,22 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+7/19/2004
+	configure: update for CygWin 1.5.9(0.112/4/2)
+	lib/win32/com.cpp: use USE_WCHAR_H, NEED_COGETOBJECT
+	config/win32/mingw.mak: define NEED_COGETOBJECT
+
 7/10/2004
-	configure, Makefile2.m4, lib/win32/com.cpp: Support COM under CygWIN!
+	configure, Makefile2.m4, lib/win32/com.cpp: Support COM under CygWin!
 
 7/1/2004
 	config/win32/ntmsvc.mak: add COM
 	lib/win32/com.cpp: fix for Visual Studio .NET 2003 (VC71)
 	lib/win32/inet.c: tweak setsockopt() args
+
+6/23/2004
+	new lib/snolib/stcl.c:
+		start of attempt at Tcl/Tk interface
 
 6/20/2004
 	pml.h: add COM_GETPROP, COM_PUTPROP, COM_UNLOAD
