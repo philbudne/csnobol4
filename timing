@@ -130,6 +130,12 @@ if [ "$CCVERS" ]; then
 	$CC $CCVERS
 fi
 
+# for cygwin
+if [ -f ${SNOBOL}.exe ]; then
+	EXT=.exe
+fi
+SNOBOL=${SNOBOL}$EXT
+
 echo ''
 echo "size ${SNOBOL}:"
 size $SNOBOL
@@ -174,7 +180,10 @@ mkdir $TDIR
 OUT=stdout
 TAIL1='sed -n 2,$p'
 (
-	ln $SNOBOL $TDIR/snobol4 || ln -s $SNOBOL $TDIR/snobol4
+	DEST=$TDIR/snobol4$EXT
+
+	# AFS (Andrew File System) won't hard link across directories!
+	ln $SNOBOL $DEST || ln -s $SNOBOL $DEST
 
 	cd $TDIR
 
