@@ -29,9 +29,6 @@
 *	different I/O routines for now under MAINBOL!
 	DIFFER(MAINBOL)					:S(MB1)
 
-*	error output to fd2
-	OUTPUT(.STDERR,2,"[-f2]")
-
 *	SIL file on INPUT
 	INPUT(.INPUT,1,SILPATH)				:F(OSIL)
 
@@ -50,12 +47,7 @@
 **************** MAINBOL I/O
 
 *	SIL file on INPUT
-MB1
-*	error output to fd2
-*	OUTPUT(.STDERR,2,"[-f2]")
-	OUTPUT(.STDERR,7)
-
-	INPUT(.INPUT,1,,SILPATH)			:F(OSIL)
+MB1	INPUT(.INPUT,1,,SILPATH)			:F(OSIL)
 
 *	call graph (for ordering files for inlining)
 *	XXX only output if INLINING set?
@@ -65,7 +57,7 @@ MB1
 	OUTPUT(.PROC.H,11,,'proc.h2')			:(EIO)
 
 **** error opening SILPATH
-OSIL	STDERR = "FATAL: could not open " SILPATH	:(FATAL)
+OSIL	TERMINAL = "FATAL: could not open " SILPATH	:(FATAL)
 
 EIO
 
@@ -255,7 +247,7 @@ EEPROC
 	DEFINE("BRANCH(BLBL)")				:(EBRANCH)
 BRANCH	LIVE =
 	DIFFER(BLBL,INPROC)				:S(NOT_SAME)
-*	STDERR = '%branch to top in procedure ' INPROC
+*	TERMINAL = '%branch to top in procedure ' INPROC
 							:(DO_GOTO)
 NOT_SAME
 	IDENT( ISPROC< BLBL >)				:S(DO_GOTO)
@@ -273,7 +265,7 @@ EBRANCH
 XAPPLY	N XAPPP1					:F(XAPPLY1)
 	L = L COMMA
 XAPPLYL
-*	STDERR = 'XAPPLYL ' L
+*	TERMINAL = 'XAPPLYL ' L
 	L XAPPP2 =					:F(RETURN)
 	OUTPUT = IND FN LP I RP ';'			:(XAPPLYL)
 XAPPLY1	OUTPUT = IND FN LP N RP ';'			:(RETURN)
@@ -295,7 +287,7 @@ EXRAPPLY
 ********
 	DEFINE("XRAPPLY2(FN,L)I")			:(EXRAPPLY2)
 XRAPPLY2
-*	STDERR = "XRAPPLY2 " L
+*	TERMINAL = "XRAPPLY2 " L
 	L XRAPPP2 =					:F(RETURN)
 	XRAPPLY2(FN,L)
 	OUTPUT = IND FN LP I RP ';'			:(RETURN)
@@ -574,7 +566,7 @@ EMKPROC
 *	XXX check for success!
 	INPUT(.GLOB,3,"globals")			:S(GLOBLOP)F(GLOBERR)
 MB3	INPUT(.GLOB,3,,"globals")			:S(GLOBLOP)
-GLOBERR	STDERR = "FATAL: could not open global.procs"	:(FATAL)
+GLOBERR	TERMINAL = "FATAL: could not open global.procs"	:(FATAL)
 
 GLOBLOP	PROC = GLOB					:F(GLOBEND)
 *	skip comments!
@@ -592,7 +584,7 @@ GLOBEND	FREEZE(GLOBAL)
 *	XXX check for success!
 	INPUT(.PPP,4,"procs")				:S(PPPLOP)F(PROCERR)
 MB4	INPUT(.PPP,4,,"procs")				:S(PPPLOP)
-PROCERR	STDERR = "FATAL: could not open procs file"	:(FATAL)
+PROCERR	TERMINAL = "FATAL: could not open procs file"	:(FATAL)
 
 PPPLOP	PROC = PPP					:F(PPPEND)
 *	skip comments!
@@ -639,7 +631,7 @@ DOCOPY	LN = LN + 1
 	LINE = INPUT					:F(EOF)
 *	check for end
 	LINE "%}"					:S(ECOPY)
-*	STDERR = "COPY: " LINE
+*	TERMINAL = "COPY: " LINE
 	OUTPUT = IND LINE				:(DOCOPY)
 
 *	here at end of c-copy
@@ -728,14 +720,14 @@ NOCOMM
 	OUTPUT = DIFFER(INPROC) '# line ' LN ' "' SILPATH '"'
 NOHASH
 
-*	STDERR = OP
+*	TERMINAL = OP
 GOTO_X_OP						:($('X' OP))
  
 ****************
 *	null op?!
 X
 *	other ops with null actions (see also  NOCODE table)
-XPROC	STDERR = TAB LBL
+XPROC	TERMINAL = TAB LBL
 XLHERE							:(OPDONE)
 *
 ****************************************************************
@@ -1138,7 +1130,7 @@ XAEQLIC	DOCMP2( INDD_A( D_A(ARGV<1>),ARGV<2>), '(int_t)' ARGV<3>,
 ****************
 *	SIL DEQL (EQLDD) MACRO
 XDEQL	T = 'DCMP(' ARGV<1> ', ' ARGV<2> ')'
-*	STDERR = 'DEQL ' ARGV<1> '/' ARGV<2> '/' ARGV<3> '/' ARGV<4>
+*	TERMINAL = 'DEQL ' ARGV<1> '/' ARGV<2> '/' ARGV<3> '/' ARGV<4>
 	DOBOOL(T, ARGV<3>, ARGV<4>)			:(OPDONE)
 
 ****************
@@ -1214,7 +1206,7 @@ XOUTPUT	OL = IND "io_printf(" D_A(ARGV<1>) "," ARGV<2>
 	IDENT(ARGV<3>)					:S(XOUTEND)
 	N = ARGV<3>
 	N OUTPUT_PAT1					:F(XOUTEND)
-*	STDERR = '>' N
+*	TERMINAL = '>' N
 XOUTLP	L OUTPUT_PAT2 =					:F(XOUTEND)
 	FUN = 'D_A'
 * XXX crock!!!
@@ -1444,7 +1436,7 @@ XEND2	UNINDENT()
 * a section falls into code at top of next section)!!!
 *
 * just collect block comment, dump after EPROC()?
-XTITLE	STDERR = +SECTION '. ' ARGS
+XTITLE	TERMINAL = +SECTION '. ' ARGS
 *	table of contents is section zero!
 	SECTION = SECTION + 1				:(OPDONE)
 
@@ -1632,6 +1624,6 @@ OPDONE							:(TOP)
 ****************************************************************
 *	the very very very very end - Lucy Van Pelt
 
-EOF	STDERR = "FATAL: EOF on " SILPATH " before END op"
+EOF	TERMINAL = "FATAL: EOF on " SILPATH " before END op"
 FATAL	&CODE = 1
 END

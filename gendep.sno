@@ -29,7 +29,6 @@
 
 **************** SPITBOL I/O
 *	error output to fd2
-	OUTPUT(.STDERR,0,"[-f2]")
 	INPUT(.INPUT,1,"v311.sil")
 
 *	dummy out freeze/thaw
@@ -38,8 +37,7 @@
 							:(EIO)
 
 **************** MAINBOL I/O
-MB1	OUTPUT(.STDERR,7)
-	INPUT(.INPUT,1,,"v311.sil")
+MB1	INPUT(.INPUT,1,,"v311.sil")
 EIO
 
 ****************************************************************
@@ -144,8 +142,8 @@ BRANCH	IDENT(LBL)						:S(RETURN)
 *	branch target's procedure
 	PP = INPROC< LBL >
 
-	STDERR " BRANCH " LBL ' (' PP ') CURRPROC: ' CURRPROC
-*	STDERR = CURRPROC '/' LBL '/' PP '/' PROCS<LBL>
+*	TERMINAL = " BRANCH " LBL ' (' PP ') CURRPROC: ' CURRPROC
+*	TERMINAL = CURRPROC '/' LBL '/' PP '/' PROCS<LBL>
 
 *	the same?
 	IDENT(CURRPROC,PP)					:S(RETURN)
@@ -154,7 +152,7 @@ BRANCH	IDENT(LBL)						:S(RETURN)
 	DIFFER(PROCS<LBL>)					:S(RETURN)
 
 *	make it into one!
-	STDERR = "MKPROC " LBL " (in " PP " called from " CURRPROC ")"
+	TERMINAL = "MKPROC " LBL " (in " PP " called from " CURRPROC ")"
 	OUTPUT = LBL
 
 	CLEAN = 0
@@ -202,7 +200,7 @@ NOTC	LINE (TNUL . LBL) WS (TNUL . OP) WS =
 
 *	parse args, if any
 PARGS
-*	STDERR = '>>>' LBL ': ' OP
+*	TERMINAL = '>>>' LBL ': ' OP
 	ARGC = 0
 	ARGV = ARRAY(6)
 
@@ -214,7 +212,7 @@ PARGS
 *	here with args NOT a quoted string
 NQARGS	LINE (TOK . ARGS) =
 
-*	STDERR = '>' OP
+*	TERMINAL = '>' OP
 
 *	loop, splitting args!
 	TMP = ARGS
@@ -230,14 +228,14 @@ NOTLP		TMP ARGP . ARG =
 GOTARG		ARGC = ARGC + 1
 		ARGV<ARGC> = ARG
 
-*		STDERR = ARGC '>' ARG
+*		TERMINAL = ARGC '>' ARG
 
 *		strip trailing comma (if any)
 		TMP COMMA =				:S(DISARGS)
 
 *	here with parsed arg list.
 SAVE
-*	STDERR = '>>>' LBL ': ' OP
+*	TERMINAL = '>>>' LBL ': ' OP
 	LINES< LN > = LINE( LBL, OP, ARGC, ARGV )
 	LN = LN + 1					:(TOP)
 
@@ -245,7 +243,7 @@ SAVE
 ****************************************************************
 
 EOF	ENDLN = LN
-	STDERR = 'EOF: ' LN ' LINES SAVED'
+	TERMINAL = 'EOF: ' LN ' LINES SAVED'
 	CLEAN = 0
 	PASS = 1					:(STPASS)
 
@@ -256,7 +254,7 @@ AGAIN	PASS = PASS + 1
 STPASS	DIRTY =
 	LN = 1
 	CURRPROC = STARTPROC
-	STDERR = "PASS " PASS " (" CLEAN " CLEAN)"
+	TERMINAL = "PASS " PASS " (" CLEAN " CLEAN)"
 	EQ(CLEAN,2)					:S(END)
 	CLEAN = CLEAN + 1
 
@@ -276,7 +274,7 @@ NEXT	EQ(LN,ENDLN)					:S(LOOP2)
 
 *	is op "PROC" ?
 	IDENT(OP,'PROC')				:F(NPROC)
-*	STDERR = 'PROC ' LBL
+*	TERMINAL = 'PROC ' LBL
 	OUTPUT = IDENT(PROCS< LBL >) LBL
 	PROCS< LBL > = 1
 	INPROC< LBL > = LBL
@@ -291,11 +289,11 @@ NPROC	IDENT(LBL)					:S(NEXT)
 
 *	it was!! change the currproc!
 	CURRPROC = LBL
-*	STDERR = 'PROC2 ' LBL
+*	TERMINAL = 'PROC2 ' LBL
 
 *	here with non-proc, with label
 NOTP	INPROC<LBL> = CURRPROC
-*	STDERR = LBL ' is in ' CURRPROC
+*	TERMINAL = LBL ' is in ' CURRPROC
 							:(NEXT)
 
 ****************************************************************
@@ -319,7 +317,7 @@ NEXT2	DIFFER(DIRTY)					:S(AGAIN)
 	ARGC = LARGC( LINE )
 	ARGV = LARGV( LINE )
 
-*	STDERR = LBL ' / ' OP ' / ' ARGC
+*	TERMINAL = LBL ' / ' OP ' / ' ARGC
 
 	IDENT(OP,'PROC')				:F(NPROC2)
 	OUTPUT = IDENT(PROCS< LBL >) LBL
@@ -340,7 +338,7 @@ NPROC2	IDENT(LBL)					:S(NOLBL2)
 NOTP2	INPROC<LBL> = CURRPROC
 
 NOLBL2
-*	STDERR  = LBL '/' OP '/' OPTYPE<OP>
+*	TERMINAL  = LBL '/' OP '/' OPTYPE<OP>
 	DIFFER(OPTYPE<OP>)				:S($(OPTYPE<OP>))
 							:S(NEXT2)
 
@@ -375,11 +373,11 @@ XRCALL
 
 ****************
 XSELBRA	LABS = ARGV<2>					:F(NEXT2)
-*	STDERR = "SELBRA: " LABS
+*	TERMINAL = "SELBRA: " LABS
 MLAB	LABS LP =					:S(MLAB2)
 	BRANCH(LABS)					:(NEXT2)
 MLAB2	LABS BREAK(COMMA RP) . L (COMMA | RP) =		:F(NEXT2)
-*	STDERR = '>>' L
+*	TERMINAL = '>>' L
 	BRANCH(L)					:(MLAB2)
 ****************
 
