@@ -1,12 +1,5 @@
 $Id$
 
-2a. make banner optional (suppress via -b on command line)
-2b. add "The Macro Implemantation of SNOBOL4 for Un*x"
-2c. add RCS Id ???
-
-3a. make stats optional (request via -s on command line)
-3e. fix EJECTF (to output ^L)
-
 6. do something better with signals?!
 6b. just report which one in exit code?
 6c. report in "signal" message?!
@@ -14,7 +7,6 @@ $Id$
 7. send listings to seperate file!
 7b. select file on command line!
 7e. output un*x style line numbers (file name & zero based line) for all errs?
-7f. caseify error messages
 7g. fix error marker (deal with tabs)
 
 9b. rename PUNCH to STDERR (ERROR?)?
@@ -57,7 +49,7 @@ $Id$
 	SUBSTR()
 	LEQ() LGE() LST() LLE() LLT() LNE()
 
-15. add Catspaw(?) keywords &LCASE &UCASE
+15. add Icon/Catspaw(?) keywords &LCASE &UCASE
 
 16. implement -INCLUDE (-COPY) control line!!
 
@@ -95,3 +87,5 @@ $Id$
 	stream -- eliminate ops table (indirection)
 	performs "pairs" ops in line?
 	perform "hash" in line?
+
+28. write man page
