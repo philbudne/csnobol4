@@ -2,19 +2,30 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+4/9/98
+	doc/ports.doc: updated
+
+3/7/98
+	lib/bsd/inet.c: comments, ran comdef
+	lib/win32/mstime.c: swap old & new in subtraction!
+
 3/3/98
 	lib/win32/load.c: rework load path handling;
 		try bare filename first, then prepend snolib dir
+	lib/bsd/inet.c: define "unix" (for HP-UX, AIX)
 
 3/2/98
 	doc/load.doc: talk about HP-UX and getstring()
+	README: fix Steve Kibler's name!
 
 3/1/98
 	config/vms/descrip.mms: add .ifdefs (for DEC_C, NO_TCP)
 	INSTALL: document VMS MMS/MACRO= options
 
 2/26/98
-	lib/hpux/load.c: keep refcounts
+	lib/hpux/load.c: keep seperate "lib" struct with refcounts
+
+Gave to Steve Kibler (Win32 DLL port) 2/24/98
 
 2/15/98
 	INSTALL: updated
@@ -53,6 +64,7 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 2/8/98
 	config/win32/ntmsvc.mak: add TTY_C TTY_DEFS NO_BITFIELDS vars
 	lib/io.c: add /dev/tmpfile, OSDEP_FOPEN
+	README: add L. Gene Battin
 
 2/6/98
 	lib/bsd/inet.c: use winsock.h under USE_WINSOCK_H
