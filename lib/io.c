@@ -228,6 +228,11 @@ io_print( iob, sp )			/* STPRNT */
     struct spec *sp;
 {
     FILE *fp;
+    FILE *f;
+    /*
+     * (*iob)[0]	title descr
+     * (*iob)[1]	integer unit number
+     * (*iob)[2]	pointer to natural var for format
      */
 
     unit = D_A(*iob + 1);
@@ -239,11 +244,6 @@ io_print( iob, sp )			/* STPRNT */
     fp = io_units[unit].curr;
     if (fp == NULL)
 	return;
-#ifdef OLD
-    /* XXX do FORTRASH style form control! EAT ME!!! */
-    putc( '\n', fp );			/* XXX check a flag? */
-#endif /* OLD defined */
-
 
     if (S_A(sp) && S_L(sp)) {
 	int len;
@@ -251,16 +251,14 @@ io_print( iob, sp )			/* STPRNT */
 
 	len = S_L(sp);
 	while (len-- > 0) {
-	    if (*cp)
+	    if (*cp)			/* XXX sigh; deal with NULs */
 		putc( *cp, fp );
 	    else
 		putc( ' ', fp );
 	    cp++;
 	    }
 	    fwrite( cp, 1, len, f );
-#ifndef OLD
     putc( '\n', fp );			/* XXX check a flag? */
-#endif /* OLD not defined */
 	putc( '\n', f );
 }
 
@@ -320,6 +318,7 @@ io_read( dp, sp )			/* STREAD */
 		/* force call to INCCK to pop old FILENM and LNNOCL */
 		return IO_EOF;
 	    }
+    /* strip off EOL; XXX check a flag??? */
     len = strlen(cp);
     if (cp[len-1] == '\n') {
 	len--;
