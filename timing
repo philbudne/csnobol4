@@ -37,10 +37,24 @@ if [ "$UNAME" ]; then
 		hinv
 		echo ''
 		;;
+	Linux)
+		if [ -f /proc/cpuinfo ]; then
+			echo /proc/cpuinfo:
+			cat /proc/cpuinfo
+			echo ''
+		fi
+		;;
 	SunOS)
 		echo 'sunmodel:'
 		./sunmodel
 		echo ''
+		;;
+	*BSD*)
+		if [ -x /usr/sbin/sysctl ]; then
+			echo sysctl hw:
+			/usr/sbin/sysctl hw
+			echo ''
+		fi
 		;;
 	esac
 fi
