@@ -812,17 +812,30 @@ if [ -f $INCDIR/sys/socket.h ]; then
 	fi
     fi
     if [ "$AUX_BINDRESVPORT" ]; then
-	if grep socklen_t $INCDIR/sys/socket.h >/dev/null 2>&1; then
-	    case "$OS" in
-	    OSF1) echo '#define _POSIX_PII_SOCKET' >> $CONFIG_H
-	    esac
-	else
-	    echo 'using private socklen_t type' 1>&2
-	    echo '#define SOCKLEN_T int'	>> $CONFIG_H
-	fi
 	echo 'ADD_OBJS([bindresvport.o])'	>> $CONFIG_M4
 	echo 'ADD_SRCS([$(BINDRESVPORT_C)])'	>> $CONFIG_M4
     fi
+
+    if grep socklen_t $INCDIR/sys/socket.h >/dev/null 2>&1; then
+	SOCKLEN_T=socklen_t
+	# What a PITA: HP and DEC/Q/HP are schizzoid.
+	# They have socklen_t as an option.
+	case "$OS" in
+	OSF1)
+	    # or _XOPEN_SOURCE >= 500
+	    echo '#define _POSIX_PII_SOCKET'	>> $CONFIG_H
+	    # no ill effects, so far!!
+	    ;;
+	HP-UX)
+	    # can define _XOPEN_SOURCE_EXTENDED, but htonx
+	    # macros move into arpa/inet.h.
+	    SOCKLEN_T=int
+	    ;;
+	esac
+    else
+	SOCKLEN_T=int
+    fi
+    echo '#define SOCKLEN_T '$SOCKLEN_T		>> $CONFIG_H
 
     # add network libraries if needed
     if [ -f /usr/lib/libsocket.a -o -f /usr/lib/libsocket.so ]; then
