@@ -29,6 +29,12 @@
 /* phil 1/13/94 use h.h (for index)
 #include "h.h"
 
+#ifdef ANSI_STRINGS
+#include <string.h>
+#else
+#include <strings.h>			/* berkeley strings */
+#endif
+
 /*LINTLIBRARY*/
 #define ERR(s, c) if(opterr){fprintf(stderr, "%s%s%c\n", argv[0], s, c);}
 
