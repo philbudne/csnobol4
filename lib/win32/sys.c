@@ -17,8 +17,7 @@ hwname(cp)
     case PROCESSOR_ARCHITECTURE_INTEL:
 	/*
 	 * wProcessorLevel, not used on Windows 95.
-	 * dwProcessorType contains mnemonic values,
-	 * but is obsolete on WinNT.
+	 * dwProcessorType contains mnemonic values, but is obsolete on WinNT!
 	 */
 	hw = "x86";
 	break;
@@ -89,6 +88,8 @@ osname(cp)
 	break;
     }
 
+    sprintf(cp, "%s %d.%d", os, osv.dwMajorVersion, osv.dwMinorVersion);
+
     /*
      * szCSDVersion
      *
@@ -100,6 +101,8 @@ osname(cp)
      * Windows 95: Contains a null-terminated string that provides
      * arbitrary additional information about the operating system.
      */
-    sprintf(cp, "%s %d.%d %s",
-	    os, osv.dwMajorVersion, osv.dwMinorVersion, osv. szCSDVersion );
+    if (osv.szCSDVersion[0]) {
+	strcat(cp, " ");
+	strcat(cp, osv.szCSDVersion);
+    }
 }
