@@ -2,7 +2,8 @@
 
 /*
  * support for exponentiation, using pow() function.
- * pow exists in v6, buth math.h didn't?!
+ *
+ * pow exists in v6 (buth math.h didn't), SVID2, XPG2, XPG3, POSIX.1, ANSI C
  *
  * see dummy/exp.c for dummy version of this file
  */
