@@ -1,6 +1,13 @@
 * $Id$
 *
 * $Log$
+* Revision 1.42  1996/09/07  05:25:55  phil
+* [PLB34] FREEZE()/THAW(), new table access code from SNOBOL4+
+* added -EXECUTE/-NOEXECUTE control cards
+* ran untabify (skipped RCS History)
+* moved all [edit] ids to column 64+
+* moved SORT to Arrays, Tables etc section
+*
 * Revision 1.41  1996/09/05  04:32:22  phil
 * [PLB33] control card/switch/system variable changes;
 *  &STLIMIT < 0 means no limit, default to -1
@@ -400,7 +407,7 @@ NODESZ EQU     3*DESCR		   Size of pattern node
 OBSIZ  EQU     256		   Number of bin headers
 OBARY  EQU     OBSIZ+3		   Total number for bins
 OCASIZ EQU     1500		   Descriptors of initial object code
-SPDLSZ EQU     5000		   Descriptors of pattern stack [PLB7]
+SPDLSZ EQU     10000		   Descriptors of pattern stack [PLB7][PLB35]
 STSIZE EQU     1000		   Descriptors of interpreter stack
 SPDR   EQU     SPEC+DESCR	   Descriptor plus specifier
 OBOFF  EQU     OBSIZ-2		   Offset length in bins
@@ -2119,7 +2126,7 @@ VARVC  RCALL   XPTR,INVOKE,(XPTR),(FAIL,VARV1,VARV2)
 *_
 *---------------------------------------------------------------------*
 *
-* New [PLB28,29]
+* New [PLB28,29] from SNOBOL4+
 *
 *      Evaluation of argument as upper case string if case folding.
 *      Just like VARVAL, returns by exit 2.  Source string is not
@@ -4216,8 +4223,10 @@ FIELD  PROC    ,		   Field function procedure
        RCALL   XPTR,ARGVAL,,FAIL   Get value
        DEQL    XPTR,NULVCL,,NONAME Check for null value
        POP     YCL		   Restore function descriptor
-       VEQLC   XPTR,I,FIELD1	   Check for INTEGER
-       RCALL   XPTR,GNVARI,XPTR	   Convert INTEGER to STRING
+       VEQLC   XPTR,I,,FIELD2	   Check for INTEGER		[PLB35]
+       VEQLC   XPTR,S,FIELD1	   Check if not STRING		[PLB35]
+       AEQLC   CASECL,0,,FIELD1	   Case folding enabled?	[PLB35]
+       RCALL   ,VPXPTR,,FAIL	   Yes, take care of it		[PLB35]
 FIELD1 MOVV    DT1CL,XPTR	   Set up data type
        GETDC   YPTR,YCL,DESCR	   Get definition block
        LOCAPT  ZCL,YPTR,DT1CL,INTR1
@@ -4225,8 +4234,10 @@ FIELD1 MOVV    DT1CL,XPTR	   Set up data type
        GETDC   ZCL,ZCL,2*DESCR	   Get offset
        SUM     XPTR,XPTR,ZCL	   Compute field position
        SETVC   XPTR,N		   Insert NAME data type
-       AEQLC   CASECL,0,VPXPTR,RTXNAM
-*				   Return name	[PLB30]
+       BRANCH  RTXNAM		   Return name
+*_
+FIELD2 RCALL   XPTR,GNVARI,XPTR,FIELD1
+*				   Create var from integer	[PLB35]
 *_
 *---------------------------------------------------------------------*
 *
