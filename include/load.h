@@ -40,7 +40,9 @@
 
 /* avoid copying raw with getstring() */
 #define LA_STR_LEN(N) (D_V(LA_PTR(N)))
-#define LA_STR_PTR(N) ((char *)LA_PTR(N) + BCDFLD) /* NOT NUL TERMINATED!!! */
+
+/* NOT NUL TERMINATED!!! MUST NOT BE MODIFIED!!! */
+#define LA_STR_PTR(N) ((const char *)LA_PTR(N) + BCDFLD)
 
 /*
  * macros to return values;
