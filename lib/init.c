@@ -316,6 +316,22 @@ err_catch(sig)
     SYSCUT();
 }
 
+#ifdef SIGTSTP
+static SIGFUNC_T
+suspend(sig)
+    int sig;
+{
+    tty_suspend();			/* restore tty mode(s) */
+
+    /* reestablish handler (does any system with job control,
+     * in case signal() has System V semantics
+     */
+    signal(SIGTSTP, suspend);
+
+    /* no need to restore tty modes; next I/O will reset as needed */
+}
+#endif /* SIGTSTP defined */
+
 /* called by SIL INIT macro (first SIL op executed) */
 void
 init()
@@ -404,7 +420,10 @@ init()
     signal(SIGPIPE, err_catch);
 #endif /* SIGPIPE defined */
 
-    tty_save();
+    /* catch suspend */
+#ifdef SIGTSTP
+    signal(SIGTSTP, suspend);
+#endif /* SIGTSTP defined */
 }
 
 /* 9/21/96 - set specifier to point to entire command line for &PARM */
