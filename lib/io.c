@@ -511,7 +511,7 @@ io_openo(dp, sp)			/* XOPENO */
 
     char fname[128];			/* XXX */
 io_include( dp, sp )
-    int unit;				/* XXX pass as arg! */
+    struct descr *dp;			/* input unit */
     struct spec *sp;			/* file name (with quotes) */
     l = S_L(sp) - 2;
     strncpy( fname, S_SP(sp)+1, l );
@@ -522,7 +522,7 @@ io_include( dp, sp )
 	l = sizeof(fname)-1;		/* ?! */
     strncpy( fname, S_SP(sp), l );
     fname[l] = '\0';
-    /* strip off trailing spaces after uniqness test */
+
     /* seach includes list to see if file already included!! */
     for (fp = includes; fp; fp = fp->next)
 	if (strcmp(fname, fp->fname) == 0) /* found it!!! */
