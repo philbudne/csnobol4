@@ -1,6 +1,15 @@
 $Id$
 
+
 MAINBOL for Un*x history (and personal SNOBOL history);
+
+9/13/94
+	timing: AFS doesn't allow hard links across directories!!
+		fix problems with timdir cleanup?
+
+9/3/94
+	porting.ms, snobol4.1, load.doc, goals.doc, design.doc: ran ispell
+	doc/Makefile: update for Solaris 2
 
 9/2/94
 	README: fixed spellings!
