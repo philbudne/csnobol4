@@ -12,11 +12,11 @@ Consultant
 Requirements
 
 .PP
-The Macro Implementation of SNOBOL4 is the original implementatiton of
-the language, with many SPITBOL and SNOBOL4+ extensions.  As the title
-suggests, the target machine is anything that has a C compiler and
-provides provides a Un*x-like (ie; POSIX) environment.  The target
-machine should have;
+The Macro Implementation of SNOBOL4 is the original Bell Labs
+implementatiton of the SNOBOL4 language, with many SPITBOL and
+SNOBOL4+ extensions.  As the title suggests, the target machine is
+anything that has a C compiler and provides provides a Un*x-like (ie;
+POSIX) environment.  The target machine should have;
 
 .IP \(bu
 A large address space (allowing for approx 300K code and 300K data).
@@ -39,14 +39,17 @@ snobol4 should not be needed to bootstrap the system.
 Config files
 
 .PP
-The "autoconf" script determines which file from the config directory
-to use, and includes it in config.m4. The config.m4 file is included
-into Makefile2.m4 using the m4 macro processor, and contains make
-variable assignments (ie; VAR=VALUE) and m4 macro invocations.
+The "autoconf" script (run by "configure") determines which include
+and library routines are available, and which suppplied library
+routines to use.  The outputs of autoconf are config.m4, which is
+included into Makefile2.m4 using the m4 macro processor, and contains
+make variable assignments (ie; VAR=VALUE) and m4 macro invocations,
+and config.h which is included by all C sources.
 
 .PP
-Autoconf checks for the file "local-config" and if it exists includes
-it at the end of config.m4.
+If the file "local-config" exists, it will be interpolated at the end
+of config.m4.  If the file "local-defines" exists, it will be
+interpolated at the end of config.h
 
 .NH 2
 make variables
@@ -66,7 +69,7 @@ CCM
 .PP
 The command to use to create "make depend" output.  The default value
 is "./cc-M" If your C compiler (see CC, above) supports this function
-directly, CCM can be reset in system.m4.
+directly, CCM can be reset in local-config.
 .NH 3
 MATHLIB
 
@@ -101,7 +104,7 @@ Source file path variables.
 .PP
 All library source file paths are defined in variables, so that
 alternate versions may be substituted.  Typical variables of this type
-are CONVERT_C, LOAD_C, EXP_C, MSTIME_C.  See the section on library
+are LOAD_C, EXP_C, MSTIME_C.  See the section on library
 functions for descriptions of the files, and the alternate versions
 included in the distribution.
 
@@ -146,8 +149,7 @@ m4 Macro names
 
 .PP
 The following are cpp macro names which can be by adding
-ADD_CPPFLAGS([-D<symbol>]) or ADD_CPPFLAGS([-D<symbol>=<value>]) to
-system.m4 or local-config.
+#define lines to local-defines.
 
 .NH 2
 #ifdef's
@@ -267,6 +269,15 @@ FILE *.  In either case the osdep_open() call should return TRUE
 is not attempted, the function should return FALSE.
 
 .NH 3
+PML_SERV
+
+.PP
+Enable "poor-mans loading" of SERV_LISTEN() function, which can used
+to create Internet servers.  SERV_LISTEN() requires a working fork()
+call, which completely replicates the state of the system in a new
+process.
+
+.NH 3
 REAL_T
 
 .PP
@@ -363,14 +374,6 @@ library files, the functions they provide, and the C library functions
 they require.
 
 .NH 2
-convert.c
-
-.PP
-Convert from strings to numbers.  Two versions of convert.c are
-provided: lib/ansi/convert.c which uses strtol() and strtod(), and
-lib/generic/convert.c which uses sscanf().
-
-.NH 2
 date.c
 
 .PP
@@ -383,9 +386,16 @@ dynamic.c
 .PP
 Allocate dynamic storage region, and forewarn the operating system
 that access behavior may be non-sequential (particularly during
-storage regeneration).  Two versions are provided: generic/dynamic.c,
-which uses malloc(), and bsd/dynamic.c which calls malloc() and then
-vadvise().
+storage regeneration).  Three versions are provided:
+
+.IP lib/posix/dynamic.c
+Uses malloc and madvise()
+
+.IP lib/bsd/dynamic.c
+Uses malloc and vadvise()
+
+.IP lib/generic/dynamic.c
+Uses malloc()
 
 .NH 2
 endex.c
@@ -479,7 +489,17 @@ and signal().
 intspc.c
 
 .PP
-Convert integers from binary to strings using sprintf.
+Convert integers from binary to strings.
+Three versions are provided;
+
+.IP lib/generic/intspc.c
+Uses sprintf() "%ld" format
+
+.IP lib/c99/intspc.c
+Uses sprintf() "%lld" format.
+
+.IP lib/longlong/intspc.c
+Ad-hoc formatting.
 
 .NH 2
 io.c
@@ -582,6 +602,52 @@ fcvt() and gcvt()) when available, along with a modicum of
 intelligence and/or post-processing.
 
 .NH 2
+spcint.c
+
+.PP
+Convert from strings to binary integers.  Four versions are provided;
+
+.IP lib/ansi/spcint.c
+Uses strtol()
+
+.IP lib/generic/spcint.c
+Uses sscanf()
+
+.IP lib/c99/spcint.c
+Uses strtoll() for support of long long on ILP32 systems.
+
+.IP lib/longlong/spcint.c
+Ad hoc support of long long on ILP32 systems.
+
+.NH 2
+spreal.c
+
+.PP
+Convert from strings to floating point.  Two versions are provided;
+
+.IP lib/ansi/spreal.c
+Uses strtod()
+
+.IP lib/generic/spreal.c
+Uses sscanf()
+
+.NH 2
+suspend.c
+
+.PP
+Cause the current process to suspend itself after reciept of a
+SIGTSTP signal.
+
+.IP lib/posix/suspend.c
+Use sigprocmask() to unblock SIGTSTP.
+
+.IP lib/bsd/dynamic.c
+Use sigsetmask() to unblock SIGTSTP.
+
+.IP lib/generic/suspend.c
+Use SIGSTOP.
+
+.NH 2
 term.c
 
 .PP
@@ -602,10 +668,10 @@ performs fopen() on SYS$COMMAND:.
 tty.c
 
 .PP
-Provides fisatty(), tty_save(), tty_restore(), tty_close(), and
-tty_mode() functions for saving and manipulating terminal mode and
-echo.  May optionally declare a tty_read() function (see TTY_READ_RAW
-and TTY_READ_COOKED ifdefs) to perform reads on terminal devices.
+Provides fisatty(), tty_mode() and tty_suspend() functions for saving
+and manipulating terminal mode and echo.  May optionally declare a
+tty_read() function (see TTY_READ_RAW and TTY_READ_COOKED ifdefs) to
+perform reads on terminal devices.
 
 .IP lib/posix/tty.c
 Uses termios.h (or SVID termio.h if USE_TERMIO defined).
