@@ -1,8 +1,9 @@
 $Id$
 
-fix Win32 UDP read?
+fflush(stdout) before trace output?
 
-add tag for 0.99.44
+add popen tests:
+	input, output, both (optional)
 
 put sources under CVS
 	name repository csnobol4?
@@ -238,10 +239,6 @@ all S_L fetches should use int_t variables!
 
 change tty_mode to take single "mode" argument (flags + recl)?
 	add "superbinary mode"?
-
-autoconf:
-	object format detection on OpenBSD, BSDI?
-	put SNOLIB_DIR define into config.h (would disallow local-xxx override)
 
 add "EXPORT" defns to lib functions (for windoze)???
 
