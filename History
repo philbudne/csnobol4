@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+9/17/2004
+	configure: check for libgdbm_compat
+
 9/14/2004
 	configure: cleanup ndbm; use USE_GDBM
 	Makefile: config.{h,m4} depend on configure
