@@ -73,7 +73,6 @@ load(addr, sp1, sp2)
 	char path[PATHLEN*2];		/* room for directory name */
 	char *pp;			/* path pointer */
 	char *snolib;
-	int mode;
 
 	snolib = getenv("SNOLIB");
 	if (snolib == NULL)
@@ -137,7 +136,6 @@ load(addr, sp1, sp2)
 	    return FALSE;
 	} /* dlsym failed */
     } /* not found by pml */
- found:
     fp->self = fp;			/* make valid */
 
     fp->next = funcs;			/* link into list (for unload) */
