@@ -1240,7 +1240,7 @@ io_read( dp, sp )			/* STREAD */
 	} /* not binary */
 
 	/* here when read failed */
-	if (ISAFILE(fp) && feof(f)) {
+	if (!ISAFILE(fp) || feof(f)) {
 	    if (!io_next(unit)) {	/* skip to next file, if any */
 		/* XXX perror? */
 		return IO_EOF;		/* no more files */
