@@ -2,6 +2,45 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+10/4/96
+	new lib/generic/sys.c, lib/posix/sys.c
+	lib/snolib/host.c: use osname(), hwname()
+	autoconf: check for ranlib, set RANLIB
+		check for sys/utsname.h; set SYS_C
+		add CONFIG_GUESS, HAVE_UNISTD_H, ANSI_STRINGS
+	Makefile2.m4: add SYS_C, sys.o
+		use CONFIG_GUESS, HAVE_UNISTD_H, ANSI_STRINGS
+	config/skel.inc: removed -DANSI_STRINGS
+	Makefile: add local-config comment to Makefile2
+	doc/porting.ms: updated
+
+10/2/96
+	doc/load.sno: add polymorphic args/returns
+	include/load.h: add RETTYPE macro
+	autoconf: add comments about local-config to generated config.m4
+	Makefile2.m4: add SNOLIB_SRCS for make depend; quote include for pv
+	lib/init.c: round ndynamic, pmstack down to even number of descrs
+	lib/pml.c: fix const pointer, rename PMLOAD to PMPROTO
+	lib/snolib/host.c: use RETTYPE
+	lib/snolib/exit.c: improve comments
+	test/tests.in: add ntrace
+	pml.h: add FILE() RENAME() DELETE(); changed PMLOAD to PMPROTO
+	include/macros.h: removed D_XXX; declare ostack as global descr
+	v311.sil: fixed space at end of FNLIST; upped STSIZE from 1000 to 1500
+		dynamic allocation slows OFCHK!
+
+9/30/96
+	v311.sil: don't zap FILENM at XLATND in case only stmt is END!
+		use getpmproto function
+	lib/pml.c:
+		made arrays const
+		add getpmproto function
+	include/path.h
+		removed SNOLIB_A, SNOLIB_DIR defaults
+	Makefile2.m4: fixed SNOLIB_A path
+		add SNOLIB_DEFS (supply SNOLIB_DIR and SNOLIB_A values)
+		add *.a to disposables
+
 9/29/96
 	v311.sil, procs, globals: renamed EXP to EXPOP
 	renamed lib/{dummy,generic}/exp.c to lib/{dummy,generic}/expops.c
