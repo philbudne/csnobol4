@@ -78,12 +78,11 @@ WCHAR *wcschr(WCHAR *str, WCHAR ch)
 static LPOLESTR
 getolestring(void *vp)
 {
-    char narrow[1024];			// UGH!!!
-    getstring(vp, narrow, sizeof(narrow)); 
-
+    char *narrow = mgetstring(vp);
     int len = MultiByteToWideChar(CP_ACP, 0, narrow, -1, NULL, 0);
     LPWSTR p = new WCHAR[len];
     MultiByteToWideChar(CP_ACP, 0, narrow, -1, p, len);
+    free(narrow);
     return p;
 }
 
