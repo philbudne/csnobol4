@@ -224,21 +224,6 @@ and
 contain upper and lower case characters respectively.
 
 .TP
-.B \-ERROR/\-NOERRORS
-.br
-Directives
-.B \-ERROR
-and
-.B \-NOERRORS
-control execution of program with compiler errors.  If the
-.B \-ERROR
-directive is given, the program will be executed (but any attempt to
-execute a statement with a compiler error will cause a fatal execution
-error.  By default programs with compiler errors will not be started,
-this can be restored using
-.BR \-NOERRORS .
-
-.TP
 .B \-INCLUDE
 .br
 The
@@ -324,6 +309,35 @@ of the form:
 .br
 .IR "ANY('DeEe') ('+' | '-' | '') SPAN('0123456789')" .
 
+.TP
+.B \-ERROR/\-NOERRORS
+.br
+Directives
+.B \-ERROR
+and
+.B \-NOERRORS
+control execution of program with compiler errors.  If the
+.B \-ERROR
+directive is given, the program will be executed (but any attempt to
+execute a statement with a compiler error will cause a fatal execution
+error).  By default programs with compiler errors will not be started,
+this can be restored using
+.BR \-NOERRORS .
+
+.TP
+.B \-EXECUTE/\-NOEXECUTE
+.br
+Directives
+.B \-EXECUTE
+and
+.B \-NOEXECUTE
+control execution of programs.  If the
+.B \-NOEXECUTE
+directive is given, the program will be not executed after compilation.
+.B \-EXECUTE 
+Cancels any previous
+.BR \-NOEXECUTE .
+
 .SS "I/O Associations"
 
 .br
@@ -375,6 +389,12 @@ Reenable listing to stdout.  (default is
 .BR \-UNLIST ).
 Default listing side is
 .BR LEFT .
+.B -k
+Toggle running programs after compilation. (see
+.B \-EXECUTE
+and
+.B \-NOEXECUTE
+extensions).  By default programs are run after compilation is complete.
 .TP
 .B -p
 Toggle
