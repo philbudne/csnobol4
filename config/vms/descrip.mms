@@ -49,7 +49,7 @@ UCXLIB=+SYS$LIBRARY:UCX$IPC/LIB
 .else
 
 # ** DEFAULT**
-# Tested under Compaq C V6.5-001 on OpenVMS Alpha V7.3-1 (May 2003)
+# Tested under Compaq C V6.5-001 on OpenVMS Alpha V7.3-1 (November 2003)
 # downright civilized!!
 
 CCFLAGS=/OPTIMIZE
@@ -59,7 +59,7 @@ CCDEFS=,HAVE_STRINGS_H,HAVE_STDLIB_H,HAVE_UNISTD_H
 # alternate (normal!) library routines
 MSTIME_C=[.lib.posix]mstime.c
 
-UCXOBJ=inet6.obj
+UCXOBJ=inet6.obj, bindresvport.obj
 UCXDEFS=,NEED_BINDRESVPORT_SA
 .endif
 .endif
