@@ -1,12 +1,10 @@
 $Id$
 
-Duff SPITBOL features;
-	VDIFFER -- returns first arg
-	LABEL()
-	ITC()/CTI()
+man page;
+	document LABEL(), VDIFFER()
 
 Add LOGIC() to snolib? PML??
-	need uint_t???
+	move uint_t to snotypes.h??
 
 Update "table of contents"?
 
@@ -196,6 +194,8 @@ Tests;
 SPITBOL features;
 	FENCE()
 	NOT()
+
+	ITC()/CTI() ???
 
 	SETEXIT()
 		CONTINUE, SCONTINUE, ABORT system labels
