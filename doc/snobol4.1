@@ -54,11 +54,17 @@ option is
 .BR LEFT .
 Listings are directed to standard output.
 .IP \(bu
+Error messages, the startup banner and statistics are directed to
+standard error.  Compilation error messages (including erroneous
+lines) appear on standard error as well as in the listings.
+.IP \(bu
 Character set (see below).
 .IP \(bu
 The
 .B PUNCH
-output variable no longer exists.
+output variable no longer exists (see
+.B TERMINAL
+variable below).
 .IP \(bu
 I/O is not performed using
 .B FORTRAN
@@ -94,6 +100,10 @@ When
 is less than zero
 .B &STCOUNT
 is not incremented.
+.IP \(bu
+.B VALUE
+tracing applies to variables modified by immediate value assignment ($
+operator) and value assignment (. operator) during pattern matching.
 
 .SS "Character set"
 .PP
@@ -133,6 +143,14 @@ sequence at the top of a file (ie; "#!/usr/local/bin/snobol4 -b").
 Underscore (_) and period (.) are legal within identifiers and labels.
 
 .SS "Extensions"
+.TP
+ARRAY/TABLE access
+.br
+Multiple ARRAY and/or TABLE index operations may appear in a row,
+without having to resort to use of the
+.B ELEMENT
+function,
+so long as no intervening spaces (or line continuations) appear.
 .TP
 .B BREAKX()
 .br
