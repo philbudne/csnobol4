@@ -1,36 +1,49 @@
 $Id$
 
+autoconf;
+	write config.m4 directly (rename to configure?)
+
+change name from C-MAINBOL to CSNOBOL4
+	History, INSTALL, README
+	version.c
+	doc/ports.doc, doc/snobol4.1
+	snolib/*.sno
+
+host.[ch]:
+	use SPITBOL names for HOST_XXX function names?
+
 rename /ansi/ to /c89/ ??
 	change autoconf messages too?
+
 rename /borland/ to /msdos/ ??
 
+rename config/ to "build/"?
+
 ports.doc
+	empty?
 	update (with beta test information)
 	remove???
+	update w/ 0.99.4 info, move to bottom
 	
 put sources under CVS
-	name module snobol4!
+	name module snobol4!  csnobol4??
 	improve rcs2cvs;
 		move old files to Attic directories!!!
-	prune CVS directories when making kit?? NO!
-		always build kit's from scratch, via anonymous checkout???
-			do checkout on a branch??
-		don't bother with version-based directory name???
-		have tar file named snobol4-VERS.tar
-	put config.guess on vendor branch;
+	put config.guess, tsort on vendor branch;
 		ftp://ftp.gnu.org/pub/gnu/config/config.guess
+
+rework kit;
+	remove host.sno from G2?
+	always build kit's from scratch, via anonymous checkout???
+		do checkout on a branch??
+	prune CVS directories when making kit?? NO!
+	don't bother with version-based directory name???
+	have tar file named snobol4-VERS.tar csnobol4-VERS.tar??
 
 doc/load.doc
 	document:
 		config.h
 		dt.h
-
-doc/porting.doc
-	no more system.m4 files
-	convert.c, longlong, dynamic, others??
-	PML_SERV
-	update tty.c interface
-	add suspend.c
 
 man page
 	sed SNOLIB_PATH into man page?
@@ -52,18 +65,13 @@ test
 	DJGPP (meissner@altertum.uni-halle.de)
 	QNX (Fred?)
 
-update version
-	version.c
-	doc/snobol4.1 (HOST() example)
-
 packaging;
 	put pkg/ .... files under RCS (CVS)??
 	make snobol*4*-VERSION directory/tarfile???
 		csnobol-VERSION?? csnobol4?
-		Change package name to C-SNOBOL4???
-			INSTALL, README, version.c
 	update RPM, *bsd for 1.0
 	create freebsd binary "package"???
+
 	create debian package?
 	    http://www.debian.org/doc/FAQ/debian-faq-7.html
 	    ftp://ftp.debian.org/debian/doc/package-developer/programmer.ps.gz
@@ -87,6 +95,17 @@ have tests cleanup after themselves?  Add Makefile for "make clean"?
 man page:
 	document SERV_LISTEN()??
 
+==== stuff to do for releases;
+
+update man page date, CHANGES, README, version.c
+	on branch??
+
+update HOST() example in man page
+
+check in all files (incl History, TODO.soon)
+
+rcs tag all files
+
 ================
 
 tsort:
@@ -106,23 +125,6 @@ use getconf(CHAR_BIT) if available in host.c for BPC??
 new versions of RETxxx macros cause "code not reached" warnings
 	change to obscene use of  "," construct???
 
-include file for bcopy() prototype??
-	do includes in h.h?? macros.h??
-	bcmp defines in macros.h and h.h?? USE_MEMCMP never set?
-
-define SIZE_T macro? (grep for SIZE_T comments)
-
-all S_L fetches should use int_t variables!
-
-change tty_mode to take single "mode" argument (flags + recl)?
-	add "superbinary mode"?
-
-autoconf:
-	object format detection on OpenBSD, BSDI?
-	put SNOLIB_DIR define into config.h (would disallow local-xxx override)
-
-add "EXPORT" defns to lib functions (for windoze)???
-
 add config options;
 	if using gcc, enable -fomit-frame-pointer by default (unless --debug)?
 	--optimize
@@ -141,17 +143,6 @@ keep FL_INET bit? call inet_close(fp)???
 		fclose(fp);
 		closesocket(osf);
 
-Make ANSI_STRINGS the default? (USE_STRINGS_H??)
-		use strchr, memcmp, memmove?, memset??
-	add USE_BSD_STRINGS? USE_STRING_H?
-
-avoid using unit 8 for terminal?
-	do all systems open stderr (and/or fd 2) r/w???
-
-Tests;
-	add "scan.sno" test
-	add outerr.sno test?
-
 use "pax -pe -rw src-dir dst-dir" for sourcekit?
 
 try under MINGW (minimal GNU for Windoze -- mingw.org)
@@ -166,6 +157,34 @@ SI_ARCHITECTURE??				Sun, IRIX6.2!
 
 ================
 
+include file for bcopy() prototype??
+	do includes in h.h?? macros.h??
+	bcmp defines in macros.h and h.h?? USE_MEMCMP never set?
+
+define SIZE_T macro? (grep for SIZE_T comments)
+
+all S_L fetches should use int_t variables!
+
+change tty_mode to take single "mode" argument (flags + recl)?
+	add "superbinary mode"?
+
+autoconf:
+	object format detection on OpenBSD, BSDI?
+	put SNOLIB_DIR define into config.h (would disallow local-xxx override)
+
+add "EXPORT" defns to lib functions (for windoze)???
+
+Make ANSI_STRINGS the default? (USE_STRINGS_H??)
+		use strchr, memcmp, memmove?, memset??
+	add USE_BSD_STRINGS? USE_STRING_H?
+
+avoid using unit 8 for terminal?
+	do all systems open stderr (and/or fd 2) r/w???
+
+Tests;
+	add "scan.sno" test
+	add outerr.sno test?
+
 SPITBOL features;
 	FENCE()
 	NOT()
@@ -173,15 +192,17 @@ SPITBOL features;
 	SETEXIT()
 		CONTINUE, SCONTINUE, ABORT system labels
 		see SNOBOL4+ SETBREAK()???
+			SETBRK() in s9.a86
+			BRKHND called from INIT5 in s4
 
 	single letter abbrevs in TRACE()
-
-	curses support for SPITBOL-386 screen HOST() functions???
 
 	-FAIL/-NOFAIL?
 
 	allow STRING for units???
 
+	SPITBOL-386 HOST() functions??
+ 
 ================
 
 Conversions for hex/octal;
@@ -350,14 +371,6 @@ I/O system document;
 
 	magic filenames
 		noclose behavior!
-
-==== stuff to do for releases;
-
-update man page date, CHANGES, README, version.c
-
-check in all files (incl History, TODO.soon)
-
-rcs tag all files
 
 ====
 
