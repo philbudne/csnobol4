@@ -16,20 +16,14 @@
 #include "macros.h"
 #include "load.h"
 
-#include <sys/types.h>
-#include <sys/stat.h>
-
 int
 FILE( LA_ALIST ) LA_DCL
 {
-    char path[256];			/* XXX */
-    struct stat st;
+    char path[1024];			/* XXX */
 
     getstring( LA_PTR(0), path, sizeof(path) );
-
-    /* XXX move stat out to "exists()" function?? */
-    if (stat(path, &st) < 0) {
-	RETFAIL;
+    if (exists(path)) {
+	RETNULL;
     }
-    RETNULL;
+    RETFAIL;
 }
