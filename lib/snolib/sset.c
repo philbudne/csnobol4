@@ -16,7 +16,7 @@
 int
 SSET( LA_ALIST ) LA_DCL
 {
-    int_t unit, offset, whence, scale;
+    int_t unit, offset, whence, scale, oof;
 
     unit = LA_INT(0);
     offset = LA_INT(1);
@@ -25,5 +25,8 @@ SSET( LA_ALIST ) LA_DCL
     if (scale == 0)
 	scale = 1;
 
-    RETINT( io_sseek( unit, offset, whence, scale ) );
+    if (io_sseek( unit, offset, whence, scale, &oof )) {
+	RETINT( oof );
+    }
+    RETFAIL;
 }
