@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.92  2002/01/22 01:48:06  phil
+* updated Table of Contents
+*
 * Revision 1.91  2002/01/21 17:19:14  phil
 * [PLB78] add new functions (ideas from Steve Duff's Macro SPITBOL)
 * LABEL(V) - predicate returns true if V is a defined label
@@ -5685,7 +5688,7 @@ IDENT  PROC    ,		   IDENT(X,Y)
 *      LABEL(X)
 *
 LABEL  PROC    ,		   LABEL(X)
-       RCALL   ,VARVAL,,FAIL	   Evaluate argument
+       RCALL   ,VARVUP,,FAIL	   Evaluate argument		[PLB79]
        GETDC   XPTR,XPTR,ATTRIB    Get object code base
        AEQLC   XPTR,0,RETNUL,FAIL  Fail if zero
 *_
@@ -5700,7 +5703,7 @@ LEQ    PROC    ,		   LEQ(X,Y)
        RCALL   YPTR,VARVAL,,FAIL   Evaluate second argument
        POP     XPTR		   Restore first argument
        DEQL    XPTR,YPTR,FAIL,RETNUL
-*				   See if IDENT()	[PLB76]
+*				   See if IDENT()		[PLB76]
 *_
 *---------------------------------------------------------------------*
 *
