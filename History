@@ -2,9 +2,13 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+2/16/2004
+	CHANGES: update
+
 2/5/2004
 	COPYRIGHT, README: update copyright years
 	include/dt.h: improve info for functions
+	lib/io.c: implement MEM_IO; compiles, but not tested
 
 2/3/2004
 	lib/{ansi,c99}/spcint.c: check for overflow
