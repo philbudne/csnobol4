@@ -8,6 +8,8 @@ MAINBOL for Un*x history (and personal SNOBOL history);
 	did compiler timings (tried gcc -O2)
 	did profiling. do DCMP() inline!!
 		do LOCAPV inline? (called 6.7 million times by genc.sno)!!
+	Created Makefile2, lib subdirs (generic, bsd, dummy)
+		Flushed lib/Makefile
 
 12/29/93
 	cleaned up gendata.sno output, output formats
