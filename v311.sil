@@ -1,6 +1,10 @@
 * $Id$
 *
 * $Log$
+* Revision 1.56  1996/10/04  04:17:13  phil
+* [PLB45] increased STSIZE from 1000 to 1500
+* use plain constant for space at end of FNLIST
+*
 * Revision 1.55  1996/09/30  23:41:41  phil
 * [PLB44] use getpmproto() to get autoload prototypes
 *
@@ -448,8 +452,8 @@ CODE   EQU     4*DESCR		   Offset of code in code node
 ESASIZ EQU     50		   Limit on number of syntactic errors
 FBLKSZ EQU     10*DESCR		   Size of function descriptor block
 ARRLEN EQU     20		   Limit on length of array print image
-CARDSZ EQU     132		   Width of compiler input [PLB21][PLB22]
-SEQSIZ EQU     0		   Width of sequence field [PLB1]
+CARDSZ EQU     132		   Width of compiler input	[PLB21][PLB22]
+SEQSIZ EQU     0		   Width of sequence field	[PLB1]
 STNOSZ EQU     8		   Length of statement number field
 DSTSZ  EQU     2*STNOSZ		   Space for left and right numbering
 CNODSZ EQU     4*DESCR		   Size of code node
@@ -460,7 +464,7 @@ NODESZ EQU     3*DESCR		   Size of pattern node
 OBSIZ  EQU     256		   Number of bin headers
 OBARY  EQU     OBSIZ+3		   Total number for bins
 OCASIZ EQU     1500		   Descriptors of initial object code
-SPDLSZ EQU     5000		   Descriptors of pattern stack [PLB7][PLB41]
+SPDLSZ EQU     5000		   Descriptors of pattern stack	[PLB7][PLB41]
 STSIZE EQU     1500		   Descriptors of interpreter stack [PLB45]
 SPDR   EQU     SPEC+DESCR	   Descriptor plus specifier
 OBOFF  EQU     OBSIZ-2		   Offset length in bins
@@ -3130,29 +3134,29 @@ ANYC4  REMSP   YSP,VSP,TXSP	   Get specifier to unscanned portion
        STREAM  ZSP,YSP,SNABTB,TSALF,TSALT
        GETLG   XPTR,ZSP		   Get length accepted
        ADDLG   TXSP,XPTR	   Add to length matched
-       AEQLC   SCL,5,SCOK,	   Done if BRKC call			[PLB31]
-*				   Success on BREAKX			[PLB31]
-       INCRA   PDLPTR,3*DESCR	   Make room for history entry		[PLB31]
-       ACOMP   PDLPTR,PDLEND,INTR31					[PLB31]
-*				   Check for overflow			[PLB31]
-       PUTDC   PDLPTR,DESCR,ZEROCL Should never take alternative	[PLB31]
-       PUTDC   PDLPTR,2*DESCR,PATICL					[PLB31]
-*				   Save pattern position of BREAKX	[PLB31]
-       PUTDC   PDLPTR,3*DESCR,LENFCL					[PLB31]
-       GETLG   TVAL,TXSP	   Get cursor position			[PLB31]
-       MOVA    TMVAL,TVAL	   for history list to lock		[PLB31]
-       INCRA   PDLPTR,3*DESCR	   Make room for history entry		[PLB31]
-       ACOMP   PDLPTR,PDLEND,INTR31					[PLB31]
-*				   Check for overflow			[PLB31]
-       PUTDC   PDLPTR,DESCR,BRXFCL Routine for BREAKX rematch		[PLB31]
-       PUTDC   PDLPTR,2*DESCR,TMVAL					[PLB31]
-*				   Save cursor (will set up		[PLB31]
-       PUTDC   PDLPTR,3*DESCR,LENFCL					[PLB31]
-*				   TXSP if backup later)		[PLB31]
-       BRANCH  SCOK,SCNR	   Return to success point		[PLB31]
+       AEQLC   SCL,5,SCOK,	   Done if BRKC call		[PLB31]
+*				   Success on BREAKX		[PLB31]
+       INCRA   PDLPTR,3*DESCR	   Make room for history entry	[PLB31]
+       ACOMP   PDLPTR,PDLEND,INTR31				[PLB31]
+*				   Check for overflow		[PLB31]
+       PUTDC   PDLPTR,DESCR,ZEROCL Should never take alternative [PLB31]
+       PUTDC   PDLPTR,2*DESCR,PATICL				[PLB31]
+*				   Save pattern position of BREAKX [PLB31]
+       PUTDC   PDLPTR,3*DESCR,LENFCL				[PLB31]
+       GETLG   TVAL,TXSP	   Get cursor position		[PLB31]
+       MOVA    TMVAL,TVAL	   for history list to lock	[PLB31]
+       INCRA   PDLPTR,3*DESCR	   Make room for history entry	[PLB31]
+       ACOMP   PDLPTR,PDLEND,INTR31				[PLB31]
+*				   Check for overflow		[PLB31]
+       PUTDC   PDLPTR,DESCR,BRXFCL Routine for BREAKX rematch	[PLB31]
+       PUTDC   PDLPTR,2*DESCR,TMVAL				[PLB31]
+*				   Save cursor (will set up	[PLB31]
+       PUTDC   PDLPTR,3*DESCR,LENFCL				[PLB31]
+*				   TXSP if backup later)	[PLB31]
+       BRANCH  SCOK,SCNR	   Return to success point	[PLB31]
 *_
 *
-BRKXF  PROC    ANYC		   BREAKX rematch			[PLB31]
+BRKXF  PROC    ANYC		   BREAKX rematch		[PLB31]
        GETDC   PATICL,PDLPTR,2*DESCR
 *				   Restore position in pattern
        DECRA   PATICL,DESCR	   Point to BREAKX argument
@@ -3181,8 +3185,8 @@ BRKX   PROC    ANYC		   BREAKX			[PLB31]
 BRKV   DEQL    XPTR,TBLCS,BRKC2	   Was last argument the same?
        AEQL    TBLFNC,BRKCCL,,ANYC3
 *				   Was the last procedure for BREAK
-       AEQL    TBLFNC,BRXCCL,,ANYC3					[PLB31]
-*				   Was last callfor BREAKX?		[PLB31]
+       AEQL    TBLFNC,BRXCCL,,ANYC3				[PLB31]
+*				   Was last call for BREAKX?	[PLB31]
 BRKC2  CLERTB  SNABTB,CONTIN	   If not, clear stream table
        LOCSP   YSP,XPTR
        PLUGTB  SNABTB,STOPSH,YSP   Plug entries for characters
@@ -3986,7 +3990,7 @@ LOAD11 PUSH    ZEROCL		   Save 0 for unspecified type
 *      UNLOAD(F)
 *
 UNLOAD PROC    ,		   UNLOAD(F)
-       RCALL   XPTR,VARVUP,,FAIL   Get function name	[PLB28]
+       RCALL   XPTR,VARVUP,,FAIL   Get function name		[PLB28]
        RCALL   ZCL,FINDEX,XPTR	   Locate function descriptor
        PUTDC   ZCL,0,UNDFCL	   Undefine function
        LOCSP   XSP,XPTR		   Get specifier
@@ -6799,7 +6803,6 @@ NEXFCL DESCR   FBLKSZ,0,0	   Offset in function block
 FRTNCL DESCR   0,0,0		   Failure return
 GOGOCL DESCR   0,0,0		   goto descriptor
 INCL   DESCR   0,0,0		   Global function descriptor
-INCSTK DESCR   0,0,0		   Include stack		[PLB38]
 IOKEY  DESCR   0,0,0		   I/O indicator
 MAXLEN DESCR   0,0,0		   Maximum length for matching
 MSGNO  DESCR   MSGLST,0,0	   Pointer to error message list
@@ -6987,6 +6990,7 @@ FGOND  DESCR   0,0,0		   Failure goto node
 FORMND DESCR   0,0,0		   Object node
 FRNCL  DESCR   0,0,0		   Failure return descriptor
 GOTOND DESCR   0,0,0		   Goto node
+INCSTK DESCR   0,0,0		   Include stack		[PLB38][PLB46]
 PATND  DESCR   0,0,0		   Pattern node
 SGOND  DESCR   0,0,0		   Success goto node
 SUBJND DESCR   0,0,0		   Subject node
@@ -7264,7 +7268,7 @@ FNLIST DESCR   FNLIST,TTL+MARK,FNCPLE-FNLIST-DESCR
        DESCR   COPYSP,0,0
        DESCR   DATDFN,FNC,0	   DATA(P)
        DESCR   DATASP,0,0
-       DESCR   DATFN,FNC,0					E3.0.5
+       DESCR   DATFN,FNC,0	   DATE()			E3.0.5
        DESCR   DATSP,0,0
        DESCR   DEFIFN,FNC,0	   DEFINE(P,L)
        DESCR   DEFISP,0,0
@@ -7287,7 +7291,7 @@ FNLIST DESCR   FNLIST,TTL+MARK,FNCPLE-FNLIST-DESCR
        DESCR   FLDSFN,FNC,0	   FIELD(V,N)
        DESCR   FLDSSP,0,0
        DESCR   FREZFN,FNC,0	   FREEZE(T)			[PLB34]
-       DESCR   FREZSP,0,0
+       DESCR   FREZSP,0,0					[PLB34]
        DESCR   GEFN,FNC,0	   GE(I1,I2)
        DESCR   GESP,0,0
        DESCR   GTFN,FNC,0	   GT(I1,I2)
@@ -7367,7 +7371,7 @@ FNLIST DESCR   FNLIST,TTL+MARK,FNCPLE-FNLIST-DESCR
        DESCR   ASSCFN,FNC,0	   TABLE(N,M)
        DESCR   ASSCSP,0,0
        DESCR   THAWFN,FNC,0	   THAW(T)			[PLB34]
-       DESCR   THAWSP,0,0
+       DESCR   THAWSP,0,0					[PLB34]
        DESCR   TIMFN,FNC,0	   TIME()
        DESCR   TIMSP,0,0
        DESCR   TRCEFN,FNC,0	   TRACE(V,R,T,F)
@@ -7378,7 +7382,7 @@ FNLIST DESCR   FNLIST,TTL+MARK,FNCPLE-FNLIST-DESCR
        DESCR   UNLDSP,0,0
        DESCR   VALFN,FNC,0	   VALUE(S)
        DESCR   VALSP,0,0
-       ARRAY   20		   Space for 10 more functions	[PLB45]
+       ARRAY   40		   Space for 20 more functions	[PLB45][PLB46]
 FNCPLE LHERE   ,		   End of function pair list
 OPTBL  DESCR   OPTBL,TTL+MARK,OPTBND-OPTBL-DESCR
 ADDFN  DESCR   ADD,0,2		   X + Y    addition
