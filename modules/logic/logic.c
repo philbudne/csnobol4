@@ -21,6 +21,7 @@
 #else  /* HAVE_STDLIB_H not defined */
 extern void *malloc();
 #endif /* HAVE_STDLIB_H not defined */
+#include <ctype.h>
 
 #include "h.h"
 #include "snotypes.h"
@@ -98,7 +99,10 @@ logic_byte( op, arg2, arg3 )
     case OP_ROR:
 	return((arg2 >> arg3) | (arg2 << (BPC-arg3)));
     }
+    return 0;
 }
+
+static const char alphabet[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 int
 LOGIC( LA_ALIST ) LA_DCL
@@ -119,23 +123,17 @@ LOGIC( LA_ALIST ) LA_DCL
 
     if (op == OP_DIB || op == OP_IDB) {	/* conversion */
 	int base;
-	char buf[32];
-	char *cp;
 
 	if (a3type == I)
 	    base = LA_INT(2);
-	else if (a3type == S && LA_PTR(2) == NULL) {
-	    getstring(LA_PTR(2), buf, sizeof(buf));
-	    if (strlen(buf) > 0)
-		RETFAIL;
-	    base = 0;			/* null str */
-	}
+	else if (a3type == S && (!LA_PTR(2) || LA_STR_LEN(2) != 0))
+	    base = 0;			/* null str; use default base */
 	else
 	    RETFAIL;
 
 	if (base == 0)
 	    base = 16;
-	else if (base < 2 || base > 16)
+	else if (base < 2 || base > 36)
 	    RETFAIL;
 
 	if (op == OP_DIB) {
@@ -144,28 +142,46 @@ LOGIC( LA_ALIST ) LA_DCL
 	    if (a2type != S)
 		RETFAIL;
 
-	    getstring(LA_PTR(1), buf, sizeof(buf));
-
-	    /* XXX sigh; this loses if int_t is "long long" */
-	    /* XXX DANGER!! Some systems may not have strtol()!! */
-	    result = strtol(buf, &cp, base);
-	    if (*cp)
-		RETFAIL;		/* incomplete conversion */
-
 	    RETTYPE = I;
+	    len = LA_STR_LEN(1);
+	    if (len == 0)
+		RETINT(0);
+
+	    cp = LA_STR_PTR(1);
+	    result = 0;
+
+	    while (len-- > 0) {
+		int i;
+		char c;
+
+		c = *cp++;
+		if (islower((unsigned char)c))
+		    c = toupper((unsigned char)c);
+
+		/* painful, but works for EBCDIC (noncontiguous letters) */
+		for (i = 0; i < base; i++)
+		    if (c == alphabet[i])
+			goto found;
+		RETFAIL;
+	    found:
+		result = result*base + i;
+	    }
 	    RETINT(result);
 	}
 	else {
+	    char buf[sizeof(int_t)*BPC]; /* bits in an int_t in base2! */
+	    char *bp;
+
 	    if (a2type != I)
 		RETFAIL;
-
-	    cp = buf + sizeof(buf);
 	    arg2 = LA_INT(1);
+
+	    bp = buf + sizeof(buf);	/* point past last character */
 	    do {
-		*--cp = "0123456789ABCDEF"[arg2 % base];
+		*--bp = alphabet[arg2 % base];
 		arg2 /= base;
 	    } while (arg2);
-	    RETSTR2(cp, buf + sizeof(buf) - cp);
+	    RETSTR2(bp, buf + sizeof(buf) - bp); /* start - finish */
 	}
     } /* conversions */
     else if (op == OP_NOT) {		/* NOT (takes single arg) */
@@ -188,8 +204,8 @@ LOGIC( LA_ALIST ) LA_DCL
     } /* NOT */
 
     /* both args must be either INTEGER or STRING */
-    if (LA_TYPE(1) != I && LA_TYPE(1) != S ||
-	LA_TYPE(2) != I && LA_TYPE(2) != S)
+    if ((LA_TYPE(1) != I && LA_TYPE(1) != S) ||
+	(LA_TYPE(2) != I && LA_TYPE(2) != S))
 	RETFAIL;
 
     if (LA_TYPE(1) == I && LA_TYPE(2) == I) { /* both INTEGER */
