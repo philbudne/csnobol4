@@ -273,9 +273,6 @@ fi
 # nearly generic gcc3 option for LP64
 GCC64=-m64
 
-# detect architectures where LP64 is the default.
-# XXX compile a test program (check for alignment as well)??
-#	only we don't know which compiler we're using yet!!
 case "${MACHINE}:${OS}" in
 ia64:HP-UX)
     # default on HP-UX/ia64 is ILP32!
@@ -283,27 +280,7 @@ ia64:HP-UX)
     # different option to get LP64!
     GCC64=-mlp64
     ;;
-alpha:*|sparc64:*|x86_64:*|ia64:*)
-    # default is LP64
-    LP64=true
-
-    # only need this if gcc might be version 2
-    LP64_NATIVE=true
-    ;;
 esac
-
-if [ "$LP64" ]; then
-    # In 64-bit environments, alignment restrictions on int_t/pointer
-    # data is likely to pad descriptors out to 16 bytes, so don't pack
-    # DESCR "v" field into 24 bits.
-    NO_BITFIELDS=true
-
-    # make real_t same size as int_t
-    DOUBLE=true
-
-    # make --longlong a noop
-    LONGLONG=
-fi
 
 # machine, os, release, version
 MORV="${MACHINE}:${OS}:${OSREL}:${OSVERS}"
@@ -440,11 +417,7 @@ if [ "$GCCPATH" -a "$WANTGCC" ]; then
     #	(on systems where it's harmless, it's turned on by -O)
     FASTFLAGS=-fomit-frame-pointer
 
-    # avoid trying where LP64 is the default, and the compiler could
-    # be gcc2, which doesn't know about any options.
-    if [ "$LP64" -a ! "$LP64_NATIVE" ]; then
-	ARCH_OPT="$GCC64"
-    fi
+    USING_GCC=true
 else
     # required options for native compilers
     case "$MORV" in
@@ -575,10 +548,6 @@ if [ "$CCPATH" ]; then
     echo "CC=$CCPATH"				>> $CONFIG_M4
 fi
 
-if [ "$ARCH_OPT" ]; then
-    echo 'ADD_OPT(['$ARCH_OPT'])'		>> $CONFIG_M4
-fi
-
 # include C compiler version output in comments
 if [ "x$CCVERS" != x ]; then
     echo '################'			>> $CONFIG_M4
@@ -586,6 +555,71 @@ if [ "x$CCVERS" != x ]; then
     echo '#' ${CCPATH-cc} $CCVERS		>> $CONFIG_M4
     ${CCPATH-cc} $CCVERS 2>&1 | sed 's/^/# /'	>> $CONFIG_M4
     echo '################'			>> $CONFIG_M4
+fi
+
+echo checking sizes of C types 1>&2
+# detect compilers/architectures where LP64 is the default
+# MUST be after compiler choice
+# check for alignment as well (for NO_BITFIELDS)?
+# use SDOUB for "DOUBLE" (check vs. int_t)??
+# see if "long long" available (need to compile seperately)???
+TMP=conf$$
+cat << EOF > $TMP.c
+#include <stdio.h>
+
+main() {
+    printf("%d %d %d %d\n", sizeof(void *), sizeof(long),
+	sizeof(double), sizeof(int));
+    exit(0);
+}
+EOF
+if ${CCPATH-cc} -o $TMP $TMP.c && ./$TMP > $TMP.out &&
+  read SPTR SLONG SDOUB SINT < $TMP.out; then
+    echo 'sizeof(int) = '$SINT
+    echo '# sizeof(int) = '$SINT	>> $CONFIG_M4
+
+    echo 'sizeof(void *) = '$SPTR
+    echo '# sizeof(void *) = '$SPTR	>> $CONFIG_M4
+
+    echo 'sizeof(long) = '$SLONG
+    echo '# sizeof(long) = '$SLONG	>> $CONFIG_M4
+
+    echo 'sizeof(double) = '$SDOUB
+    echo '# sizeof(double) = '$SDOUB	>> $CONFIG_M4
+
+    # XXX ASSume sizeof(char) == 8
+    if [ "$SPTR" = 8 -a "$SLONG" = 8 ]; then
+	LP64=true
+	LP64_native=true
+    fi
+fi
+rm -f $TMP $TMP.c $TMP.out
+
+# after size checks;
+if [ "$USING_GCC" ]; then
+    # avoid trying option where LP64 is the default, and the compiler could
+    # be gcc2 -- there was no generic option back then!
+    if [ "$LP64" -a ! "$LP64_NATIVE" ]; then
+	ARCH_OPT="$GCC64"
+    fi
+fi
+
+# after size checks;
+if [ "$LP64" ]; then
+    # In 64-bit environments, alignment restrictions on int_t/pointer
+    # data is likely to pad descriptors out to 16 bytes, so don't pack
+    # DESCR "v" field into 24 bits.
+    NO_BITFIELDS=true
+
+    # make real_t same size as int_t
+    DOUBLE=true
+
+    # make --longlong a noop
+    LONGLONG=
+fi
+
+if [ "$ARCH_OPT" ]; then
+    echo 'ADD_OPT(['$ARCH_OPT'])'		>> $CONFIG_M4
 fi
 
 if [ "$NO_OPT" ]; then
@@ -641,7 +675,6 @@ if [ "$NO_BITFIELDS" ]; then
 fi
 
 if [ "$DOUBLE" ]; then
-
     # same size as int_t
     echo using double for SNOBOL4 REAL type 1>&2
     echo '#define REAL_T double'		>> $CONFIG_H
@@ -665,16 +698,18 @@ fi
 
 # grep needed for Solaris 2.4 which has resource.h but not defines
 # (it's in /usr/ucbinclude/rusage.h!), but it's just simulated via times()
-# anyhow).  Later versions of Solaris (8) implement getrusage by
+# anyhow).  Later versions of Solaris (8 and up) implement getrusage by
 # opening /proc/pid/usage, which contains a timestruc_t, with possible
 # nanosecond resolution.
 
-# Linux appears to have getrusage() system call, "getrusage()" in
-# resource.h, but struct "rusage" is in "bits" include file.  May not
-# matter, since most implementations keep runtimes in HZ ticks, and
-# default HZ value is 100, so times() is just as good.
+# Linux has getrusage() system call, "getrusage()" in resource.h.
+# struct "rusage" is in a "bits" include file.  Most implementations
+# keep runtimes in HZ ticks, and default HZ value is 100, so times()
+# is just as good.
 
-# SunOS4 resource.h has "struct rusage", but no prototype.
+# SunOS4 resource.h has "struct rusage", but no prototype,
+# so we grep for just "rusage", which catches either struct
+# or "getrusage()" prototype
 
 # Cygwin has getrusage(), but it only works under NT, so use the
 # Win32 native mstime.c, which will fall back to Win9x compatibility.
