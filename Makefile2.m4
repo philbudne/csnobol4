@@ -72,16 +72,18 @@ SNO=snobol4 -d50000
 SMALL_SNO=snobol4
 
 ################
+# either snobol4 or isnobol4
+SNOBOL4=snobol4
 
-.PRECIOUS: snobol4.c snobol4.o data_init.o
+.PRECIOUS: $(SNOBOL4).c $(SNOBOL4).o data_init.o
 
-OBJS=	main.o snobol4.o data.o data_init.o syn.o bal.o convert.o \
+OBJS=	main.o $(SNOBOL4).o data.o data_init.o syn.o bal.o convert.o \
 	date.o dump.o dynamic.o endex.o exp.o hash.o init.o intspc.o \
 	io.o lexcmp.o load.o mstime.o ordvst.o pair.o pat.o pml.o \
 	realst.o replace.o str.o stream.o top.o tree.o version.o \
 	$(CONFIG_OBJ) $(AUX_OBJ) $(PML_OBJ)
 
-SRCS=	main.c snobol4.c data.c data_init.c $(BAL_C) $(CONVERT_C) \
+SRCS=	main.c $(SNOBOL4).c data.c data_init.c $(BAL_C) $(CONVERT_C) \
 	$(DATE_C) $(DUMP_C) $(DYNAMIC_C) $(ENDEX_C) $(EXP_C) $(HASH_C) \
 	$(INIT_C) $(INTSPC_C) $(IO_C) $(LEXCMP_C) $(LOAD_C) \
 	$(MSTIME_C) $(ORDVST_C) $(PAIR_C) $(PAT_C) $(PML_C) \
@@ -100,13 +102,27 @@ xsnobol4: $(OBJS)
 ################
 
 # may need special options due to size!!
-snobol4.o: snobol4.c 
-	$(CC) $(CFLAGS) $(SNOBOL4_C_CFLAGS) -c snobol4.c
+$(SNOBOL4).o: $(SNOBOL4).c 
+	$(CC) $(CFLAGS) $(SNOBOL4_C_CFLAGS) -c $(SNOBOL4).c
 
-snobol4.c proc.h: procs genc.sno global.procs v311.sil 
+proc.h:	$(SNOBOL4).c
+
+# regular version
+snobol4.c: procs genc.sno global.procs v311.sil 
 	rm -f snobol4.c.TMP
 	$(SNO) genc.sno > snobol4.c.TMP
 	mv snobol4.c.TMP snobol4.c
+
+changequote(%,@)
+# inline version (functions reordered)
+isnobol4.c: procs genc.sno global.procs v311.sil inline.sno
+	rm -rf isnobol4.c.TMP prolog subr
+	mkdir subr
+	$(SNO) inline.sno > prolog
+	cd subr; cat ../prolog `tsort ../callgraph 2>/dev/null` \
+				> ../isnobol4.c.TMP
+	mv isnobol4.c.TMP isnobol4.c
+changequote()
 
 ################
 
