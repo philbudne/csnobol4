@@ -9,6 +9,9 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
+#ifdef HAVE_STDLIB_H			/* before stdio */
+#include <stdlib.h>
+#endif /* HAVE_STDLIB_H not defined */
 #include <stdio.h>
 
 #include "h.h"
