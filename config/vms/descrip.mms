@@ -93,10 +93,11 @@ RETSTRING_C=[.lib.snolib]retstring.c
 SIN_C=[.lib.snolib]sin.c
 SPRINTF_C=[.lib.snolib]sprintf.c
 SQRT_C=[.lib.snolib]sqrt.c
+SSET_C=[.lib.snolib]sset.c
 SYS_C=[.lib.vms]sys.c
 TAN_C=[.lib.snolib]tan.c
 
-PML_OBJ=host.obj, sys.obj, exit.obj, execute.obj, sqrt.obj, \
+PML_OBJ=host.obj, sys.obj, exit.obj, execute.obj, sqrt.obj, sset.obj, \
 	exp.obj, log.obj, chop.obj, sin.obj, cos.obj, tan.obj, \
 	file.obj, delete.obj, rename.obj, findunit.obj, \
 	getstring.obj, retstring.obj
@@ -294,6 +295,9 @@ sprintf.obj : $(SPRINTF_C)
 
 sqrt.obj : $(SQRT_C)
 	$(CC) $(CFLAGS) $(SQRT_C)
+
+sset.obj : $(SSET_C)
+	$(CC) $(CFLAGS) $(SSET_C)
 
 sys.obj : $(SYS_C)
 	$(CC) $(CFLAGS) $(SYS_C)
