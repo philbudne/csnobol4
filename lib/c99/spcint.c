@@ -43,7 +43,7 @@ spcint(dp, sp)
 
     if (len > sizeof(buffer)-1)
 	len = sizeof(buffer)-1;
-    bcopy( cp, buffer, len );
+    bcopy( cp, buffer, (int)len );
     buffer[len] = '\0';
 
     temp = strtoll( buffer, &cp, 10);	/* always decimal */
