@@ -20,6 +20,7 @@
 #include "snotypes.h"
 #include "macros.h"
 #include "load.h"
+#include "lib.h"			/* exists() */
 
 int
 FILE( LA_ALIST ) LA_DCL

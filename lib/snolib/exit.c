@@ -20,6 +20,7 @@
 
 #include "load.h"			/* LA_xxx macros */
 #include "equ.h"			/* datatypes I/S */
+#include "lib.h"			/* io_flushall(),execute() */
 
 int
 EXIT( LA_ALIST ) LA_DCL
