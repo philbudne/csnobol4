@@ -1,5 +1,7 @@
 $Id$
 
+update CHANGES file
+
 fflush(stdout) before trace output?
 
 add popen tests:
@@ -14,7 +16,7 @@ put sources under CVS
 			do a test build of checked out files???
 manual page:
 	mention files/functions available in snolib/ (mention README)
-
+		create "snolib" man page?
 
 porting.ms:
 	mention s4d58
@@ -281,9 +283,6 @@ Conversions for hex/octal;
 
 devise a new syntax to use for PTY based subprocesses!?
 	use forkpty()
-
-allow ¬ (\254) as NOT character?
-	would make SNOBOL source UTF-unsafe!
 
 Flush ADD_xxx macros?
 	do all accumulation in autoconf script CONFIG_XXX variables
