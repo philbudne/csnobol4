@@ -6,6 +6,10 @@ have all genc, gendata, gensyn output .[ch]2 files
 Move ports.doc information to config files?
 	use script to generate ports.doc!!!?
 
+document use of pml!
+
+call pml from bsd/load.c?
+
 ================
 
 Run genc.sno for regression test?
