@@ -21,8 +21,8 @@
 *	faster matching
 	&ANCHOR = 1
 
-*	input file
-	SILPATH = 'v311.sil'
+*	get input filename
+	SILPATH = HOST(2,HOST(3))			:F(NOFILE)
 
 ****************************************************************
 *	I/O
@@ -32,6 +32,7 @@
 
 **************** SPITBOL I/O
 
+	INPUT(.INPUT,5,SILPATH)				:F(BADFILE)
 	OUTPUT(.DATA.H,10,"data.h2")
 	OUTPUT(.DATA.C,11,"data.c2")
 	OUTPUT(.DATA_INIT.H,12,"data_init.h2")
@@ -41,11 +42,18 @@
 **************** MAINBOL I/O
 
 MB1
+	INPUT(.INPUT,5,,SILPATH)			:F(BADFILE)
 	OUTPUT(.DATA.H,10,,"data.h2")
 	OUTPUT(.DATA.C,11,,"data.c2")
 	OUTPUT(.DATA_INIT.H,12,,"data_init.h2")
 	OUTPUT(.EQU.H,13,,"equ.h2")
-	OUTPUT(.RES.H,14,,"res.h2")
+	OUTPUT(.RES.H,14,,"res.h2")			:(EIO)
+
+**************** I/O ERRORS
+
+NOFILE	TERMINAL = "NO FILENAME ON COMMAND LINE"	:(FATAL)
+BADFILE	TERMINAL = "CANNOT OPEN FILE " SILPATH
+FATAL	&CODE = 1					:(END)
 
 EIO
 

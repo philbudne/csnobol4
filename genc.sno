@@ -23,14 +23,16 @@
 *	faster matching (match only at POS(0))
 	&ANCHOR = 1
 
-*	still used in #line, error messages
-	SILPATH = 'v311.sil'
+*	get input filename
+	SILPATH = HOST(2,HOST(3))			:F(NOFILE)
 
 ****************************************************************
 *	initialization
 
 *	different I/O routines for now under MAINBOL!
 	DIFFER(MAINBOL)					:S(MB1)
+
+	INPUT(.INPUT,5,SILPATH)				:F(BADFILE)
 
 *	call graph (for ordering files for inlining)
 *	XXX only output if INLINING set?
@@ -47,6 +49,8 @@
 **************** MAINBOL I/O
 
 MB1
+	INPUT(.INPUT,5,,SILPATH)			:F(BADFILE)
+
 *	call graph (for ordering files for inlining)
 *	XXX only output if INLINING set?
 	OUTPUT(.CALLGRAPH,10,,'callgraph')
@@ -1600,6 +1604,8 @@ OPDONE							:(TOP)
 ****************************************************************
 *	the very very very very end - Lucy Van Pelt
 
+NOFILE	TERMINAL = "NO FILENAME ON COMMAND LINE"	:(FATAL)
+BADFILE TERMINAL = "CANNOT OPEN FILE " SILPATH		:(FATAL)
 EOF	TERMINAL = "FATAL: EOF on " SILPATH " before END op"
 FATAL	&CODE = 1
 END
