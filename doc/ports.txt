@@ -57,9 +57,9 @@ Sun SS10/40	40	SunOS 5.5.1   gcc    0.99.1 posix	 12237	jm 11/96
 Sun SS5/85	85	SunOS 4.1.4   gcc    0.99   sunos4	 11858	pb 10/96
 Solbourne/5E	40	OS/MP 4.1B    gcc    0.99.2 sunos4	 8997	pb 12/96
 i486DX2		33/66	OpenBSD 2.0   gcc    0.99.2 posix	 9376	to 12/96
+Sun SS2		40	SunOS 4.1.4   gcc    0.99.3 sunos4	 7058	pb  2/97
 Sun SS/LX	50	SunOS 5.4     SUNpro 0.99.1 posix	 7016	hb 11/96
 IBM RS/6K 320	25	AIX 3.2.5     gcc    0.99   aix-rs6000	 6970	pb 10/96
-Sun SS2		40	SunOS 4.1.3   gcc    0.99.2 sunos4	 6865	pb 12/96
 Sun SS/ELC	33	SunOS 5.5     SUNpro 0.99   posix	 6387	pb 10/96
 HP 42T (68040)	25	HP-UX 8.00    gcc    0.99.2 hpux	 6182	pb 12/96
 Sun SS/ELC	33	SunOS 5.5     gcc    0.99.1 posix	 5311	pb 10/96
