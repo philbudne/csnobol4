@@ -1,0 +1,62 @@
+	output(.bout, 10, "B,U", "test.bin")
+*	recl will be stringified
+	input(.bin, 10, 5)
+
+	bout = "hello"
+	bout = "world"
+	bout = "test1"
+	bout = "test2"
+
+*	dump initial
+	rewind(10)
+	output = bin
+	output = bin
+	output = bin
+	output = bin
+	output = '-----'
+
+** useful constants;
+	SEEK_SET = 0
+	SEEK_CUR = 1
+	SEEK_END = 2
+
+*	skip first
+	set(10, 5, SEEK_SET)
+	output = bin
+
+*	last
+	set(10, -5, SEEK_END)
+	output = bin
+
+*	last again
+	set(10, -5, SEEK_CUR)
+	output = bin
+
+* modify 2nd to last, look at last
+	set(10, 10, SEEK_SET)
+	bout = "XXXXX"
+	output = bin
+
+* change first, output second
+	rewind(10)
+	bout = "Hello"
+	output = bin
+
+* change last
+	set(10, -5, SEEK_END)
+	bout = "YYYYY"
+
+* change second, output third
+	set(10, 5, SEEK_SET)
+	bout = "World"
+	output = bin
+
+* dump them all
+	output = "-----"
+	rewind(10)
+	output = bin
+	output = bin
+	output = bin
+	output = bin
+
+end
