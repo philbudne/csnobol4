@@ -21,9 +21,9 @@
 static int wsock_init;
 #endif /* NO_STATIC_VARS not defined */
 
-/* fcntl.h and io.h included for borland BCC32 v5.5
+/*
+ * fcntl.h and io.h included for borland BCC32 v5.5
  * Greg White <glwhite@netconnect.com.au> 8/30/2000
- *
  * needed for MINGW too! -phil 2/14/2002
  */
 #include <fcntl.h>
@@ -55,12 +55,14 @@ inet_socket( host, service, port, priv, type )
 	WSADATA wsaData;
 	WORD wVersionRequested;
 	int opt;
+	long ret;
 
 	wVersionRequested = MAKEWORD(VMAJOR,VMINOR);
-	if (WSAStartup( wVersionRequested, &wsaData ) != 0)
+	ret = WSAStartup(wVersionRequested, &wsaData);
+	if (ret != 0)
 	    return -1;			/* init failed */
-
-	/* XXX examine wsaData.wVersion and wsaData.wHighVersion?
+	/*
+	 * XXX examine wsaData.wVersion and wsaData.wHighVersion?
 	 * LOBYTE(ver) is major version, HIBYTE(ver) is minor version
 	 */
  	wsock_init = TRUE;
