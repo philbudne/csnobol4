@@ -172,3 +172,7 @@ int getredirection __P((int, char **));
 extern FILE *popen __P((char *, char *)); /* from {generic,vms}/popen.c */
 extern int pclose __P((FILE *));
 #endif /* NEED_POPEN defined */
+
+#ifdef OSDEP_OPEN
+extern int osdep_open __P((const char *, const char *, FILE **));
+#endif /* OSDEP_OPEN defined */
