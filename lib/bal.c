@@ -17,7 +17,7 @@ getbal(sp, dp)
     struct descr *dp;
 {
 #if 0
-    UNDF();
+    UNDF(NORET);
 #else  /* not 0 */
     int len;
     char *cp;

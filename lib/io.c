@@ -1102,11 +1102,12 @@ io_read( dp, sp )			/* STREAD */
     return IO_OK;
 } /* io_read */
 
+/* will never be implemented; I/O is not record oriented; use "SET" to seek */
 void
 io_backspace(unit)			/* BKSPCE */
     int_t unit;
 {
-    UNDF(0);
+    UNDF(NORET);
 }
 
 void
