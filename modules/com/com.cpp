@@ -107,7 +107,7 @@ COM_LOAD( LA_ALIST ) LA_DCL
 	RETFAIL;
 
     RETINT((int_t)pdisp);	// XXX UGH! encode as string? return small int?
-}
+} // COM_LOAD
 
 static bool
 descr_to_variant(struct descr *dp, VARIANTARG *vp)
@@ -149,7 +149,7 @@ descr_to_variant(struct descr *dp, VARIANTARG *vp)
     }
     V_VT(vp) = VT_EMPTY;
     return false;
-}
+} // descr_to_variant
 
 static void
 freevariant(VARIANTARG *vp)
@@ -162,7 +162,7 @@ freevariant(VARIANTARG *vp)
 	freeolestring(V_BSTR(vp));
 	break;
     }
-}
+} // freevariant
 
 static int
 retbstring(struct descr *retval, LPOLESTR olestr)
@@ -177,7 +177,7 @@ retbstring(struct descr *retval, LPOLESTR olestr)
     delete [] narrow;
 
     return TRUE;
-}
+} // retbstring
 
 static int
 retvariant(struct descr *retval, VARIANTARG *vp)
@@ -219,7 +219,7 @@ retvariant(struct descr *retval, VARIANTARG *vp)
 	return retbstring(retval, V_BSTR(vp));
     }
     RETNULL;				/* ?? */
-}
+} // retvariant
 
 // XXX decode string?? lookup small integer? pointer to self-ref block???
 #define LA_DISP(X) ((LPDISPATCH)LA_INT(X))
@@ -371,7 +371,7 @@ COM_PUTPROP( LA_ALIST ) LA_DCL
 	RETFAIL;
 
     RETNULL;
-}
+} // COM_PUTPROP
 
 
 int
@@ -383,6 +383,6 @@ COM_UNLOAD( LA_ALIST ) LA_DCL
 
     pdisp->Release();
     RETNULL;
-}
+} // COM_UNLOAD
 
 } // extern "C"
