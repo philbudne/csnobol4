@@ -941,7 +941,7 @@ io_options( fp, op, rp )
 	    op++;
 	    break;
 
-	case 'Q':			/* SNOBOL4+/SPITBOL: update */
+	case 'Q':			/* SNOBOL4+/SPITBOL: quiet */
 	case 'q':
 	    flags |= FL_NOECHO;
 	    op++;
