@@ -4,7 +4,7 @@
 # Build SNOBOL4 using DECC and MMS
 #
 # Tested on VAX OpenVMS 6.1 using VAXC 3.x (February 1998)
-# see INSTALL file for usage
+# **** see INSTALL file for usage ****
 
 .ifdef DEC_C
 CCFLAGS=/DECC/PREFIX_LIB=ALL/WARN=(DISABLE=IMPLICITFUNC)/OPTIMIZE
@@ -14,8 +14,9 @@ CLIB=+SYS$LIBRARY:DECCRTL/LIB
 # VAXC
 CCFLAGS=/OPTIMIZE
 AUX_OBJ=isnan.obj, finite.obj,
-#CLIB=+SYS$LIBRARY:DECCRTL/LIBR
-CLIB=+SYS$SHARE:VAXCRTL/SHARE
+#??
+#CLIB=+SYS$SHARE:VAXCRTL/SHARE
+CLIB=+SYS$LIBRARY:DECCRTL/LIB
 .endif
 
 .ifdef NO_TCP
@@ -101,6 +102,8 @@ PML_OBJ=host.obj, sys.obj, exit.obj, execute.obj, sqrt.obj, \
 	file.obj, delete.obj, rename.obj, findunit.obj, \
 	getstring.obj, retstring.obj
 
+# define preprocessor aliases for SIL subroutine names which conflict
+# with runtime names (both are upper-case names)
 CFLAGS=	$(CCFLAGS) $(TCPFLAGS)\
 	/DEFINE=(ANSI_STRINGS,NO_OFF_T,TTY_READ_RAW,TTY_READ_COOKED,\
 		ANY=XANY,COS=XCOS,DATE=XDATE,DIV=XDIV,\
@@ -121,7 +124,7 @@ OBJS=	main.obj, $(SNOBOL4).obj, data.obj, data_init.obj, syn.obj, \
 	pml.obj, realst.obj, replace.obj, str.obj, stream.obj, term.obj, \
 	top.obj, tty.obj, tree.obj, version.obj, \
 	bcopy.obj, bzero.obj, getopt.obj, getredirect.obj, \
-	popen.obj, rresvport.obj, unlink.obj,
+	popen.obj, rresvport.obj, unlink.obj, \
 	$(AUX_OBJ) $(PML_OBJ)
 
 snobol4.exe : $(OBJS)
