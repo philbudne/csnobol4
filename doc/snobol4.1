@@ -385,6 +385,14 @@ is meant for use in subroutines which can be reused.
 .B IO_FINDUNIT()
 will never return a unit number below 20.
 .TP
+.B LABEL()
+.br
+The
+.B LABEL()
+predicate evaluates it's argument as a string, and returns
+the null string if a label with that name has been defined,
+and fails if it does not.
+.TP
 .B &LINE/&FILE
 .br
 The
@@ -492,7 +500,7 @@ SPITBOL compatible
 .B HOST()
 function is probably preferable.
 .TP
-REAL numbers in INTEGER contexts
+.BR "REAL " "numbers in " "INTEGER " contexts
 .br
 .B REAL
 numbers (or strings convertable to
@@ -552,7 +560,7 @@ pointers and 32-bit integers (ie; 4.4BSD on i386) the return value
 will be truncated to 32-bits, and only the first and last 4 gigabytes
 of a file can be accessed directly.
 .TP
-SITBOL file functions
+.BR "SITBOL " "file functions"
 .br
 \fBFILE(\fIstring\fB)\fR is a predicate which returns the null string
 if it's argument is the name of a file that exists, and fails if it
@@ -563,10 +571,12 @@ is a predicate which attempts to rename the file named by
 .I string2
 to the file named by
 .IR string1 .
-Unlike the SITBOL version, if the target file exists, it will be
+Unlike the
+.B SITBOL
+version, if the target file exists, it will be
 removed.
 .TP
-SNOBOL4+ real functions
+.BR "SNOBOL4+ " "real functions"
 .br
 .BR EXP() ,
 .B LOG()
@@ -621,7 +631,7 @@ contains the lexicographically first word and
 .I WORDS<1,2>
 contains the number of occurrences of that word.
 .TP
-SPITBOL operators
+.BR "SPITBOL " operators
 .br
 The SPITBOL scan (?) and assignment (=) operators have been added.  A
 pattern match can appear within an expression, and returns the matched
@@ -714,7 +724,17 @@ Protected keywords
 and
 .B &LCASE
 contain upper and lower case characters respectively.
-
+.TP
+.B VDIFFER()
+.br
+The
+.B VDIFFER()
+function takes two arguments, if they
+.BR DIFFER() ,
+the first argument's value is returned.  This is intended to be used
+in contexts where
+.B "DIFFER(X) X"
+would otherwise be used.
 .SS "I/O Associations"
 .PP
 I/O is performed by associating a variable name with a numbered I/O
