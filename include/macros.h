@@ -107,10 +107,10 @@ struct descr *cstack;
 #define OFCHK()	{ if ((int)cstack > (int)STACK+STSIZE*DESCR) OVER(NULL); }
 
 #ifdef DO_UFCHK
-#define UFCHK()
-#else  /* DO_UFCHK not defined */
 /* for debug only (internal error); */
 #define UFCHK()	{ if ((int)cstack < (int)STACK) INTR10(NULL); }
+#else  /* DO_UFCHK not defined */
+#define UFCHK()
 #endif /* DO_UFCHK not defined */
 
 #define PUSH(x)	D(cstack+1) = D(x); cstack++; OFCHK()
