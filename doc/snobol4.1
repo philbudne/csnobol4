@@ -1,6 +1,6 @@
 .\" -*-nroff-*-
 .\" $Id$
-.TH SNOBOL4 1 "22 September 1996" "Local"
+.TH SNOBOL4 1 "27 September 1996" "Local"
 .SH NAME
 snobol4 \- SNOBOL4 interpreter
 .SH SYNOPSIS
@@ -14,7 +14,7 @@ snobol4 \- SNOBOL4 interpreter
 \&.\|.\|.
 ]
 [
-.I parameters
+.I params
 \&.\|.\|.
 ]
 
@@ -23,26 +23,28 @@ snobol4 \- SNOBOL4 interpreter
 This manual page describes a port of the original Bell Telephone Labs
 (BTL) Macro Implementation of SNOBOL4 (MAINBOL) to machines with
 32-bit C compilers by Philip L. Budne.  The language and it's
-implementation are described in [1] and [2].  Many extensions from one
-or more of Catspaw Vanilla SNOBOL4, Catspaw SNOBOL4+, SPITBOL and
-SITBOL have been added.
+implementation are described in [1] and [2].  Extensions from Catspaw
+SNOBOL4+, SPITBOL and SITBOL have been added.
 
 .SS Limitations
 .PP
 All aspects of the language are implemented except;
-.IP *
+.IP \(bu
 Trapping of arithmetic exceptions.
-.IP *
+.IP \(bu
 Dynamic use of the
 .B LOAD()
-function on non-BSD platforms.  User functions can be staticly linked
-(poor man's loading) on ALL platforms.  Read load.doc for more
-information.
+platforms not using
+.BR a.out (5)
+executable format is not supported. User functions can be staticly
+linked (poor man's loading) on
+.B ALL
+platforms.  Read load.doc for more information.
 
 .SS "Changes"
 .PP
 The following behaviors have been changed;
-.IP *
+.IP \(bu
 Listings are disabled by default.
 Default listing side (when enabled by
 .BR -LIST
@@ -51,40 +53,45 @@ or the
 option is
 .BR LEFT .
 Listings are directed to standard output.
-.IP *
+.IP \(bu
 Character set (see below).
-.IP *
+.IP \(bu
 The
 .B PUNCH
 output variable no longer exists.
-.IP *
+.IP \(bu
 I/O is not performed using
 .B FORTRAN
 I/O.  The format argument to the
 .B OUTPUT()
 function is ignored.
-.IP *
+.IP \(bu
 Control lines and comment characters are valid after the end of string
 (;) statement separator.  Listing statement numbers show the statement
 number of the LAST statement on the line (rather than the first).
-.IP *
+.IP \(bu
 Setting the
 .B &ABEND
 keyword causes a core dump upon termination!
-.IP *
+.IP \(bu
 The value of the
 .B &CODE
 keyword determines the exit status of the
 .B snobol4
 application.
-.IP *
+.IP \(bu
 The
 .B DATE()
 function returns strings of the form:
 .I MM/DD/YYYY HH:MM:SS"
+.IP \(bu
+Keyword
+.B &STLIMIT
+now defaults to -1, which is interpreted as no limit to the number of
+statements executed.
 
 .SS "Character set"
-
+.PP
 The internal character set and collating sequence are USASCII-8.  Any
 8-bit byte pattern is accepted as a SNOBOL datum or in a string
 constant of a SNOBOL source program.  The value of the SNOBOL
@@ -99,8 +106,8 @@ and
 extensions).
 .PP
 The following operator character sequences are permitted and represent
-a cross between PDP-10 MAINBOL (DECBOL), SITBOL and Catspaw SPITBOL
-usage;
+a cross between PDP-10 MAINBOL (a.k.a. DECBOL), SITBOL and Catspaw
+SPITBOL usage;
 
 .ta 2i
 .nf
@@ -121,14 +128,291 @@ sequence at the top of a file (ie; "#!/usr/local/bin/snobol4 -b").
 Underscore (_) and period (.) are legal within identifiers and labels.
 
 .SS "Extensions"
+.TP
+.B BREAKX()
+.br
+The
+.B BREAKX()
+function is a pattern function used for fast scanning.
+\fBBREAKX(\fIstr\fB)\fR is equivalent to \fBBREAK(\fIstr\fB)
+ARBNO(LEN(1) BREAK(\fIstr\fB))\fR
 
 .TP
-.BR "TERMINAL " "I/O variable"
+Case folding
 .br
-The variable
-.B TERMINAL
-is associated with the standard error file descriptor for both input
-and output.
+By default the compiler folds identifiers and directives
+to upper case, so programs can be entered in either case.  To disable
+case folding use the directive
+.B "\-CASE 0" or
+.BR "\-CASE" .
+To reenable case folding use directive
+.BI "\-CASE " n
+where
+.I n
+is a non-zero integer.  The status of case folding may be examined and
+controlled from a running program by the unprotected system keyword
+.BR &CASE .
+
+.TP
+.B CHAR()
+.br
+The
+.B CHAR()
+function takes an integer from 0 to 255 and returns the n'th character
+in
+.B &ALPHABET .
+
+.TP
+.B \-ERROR/\-NOERRORS
+.br
+Directives
+.B \-ERROR
+and
+.B \-NOERRORS
+control execution of program with compiler errors.  If the
+.B \-ERROR
+directive is given, the program will be executed (but any attempt to
+execute a statement with a compiler error will cause a fatal execution
+error).  By default programs with compiler errors will not be started,
+this can be restored using
+.BR \-NOERRORS .
+
+.TP
+.B &ERRTEXT
+.br
+After an otherwise fatal error is curtailed due to a non-zero value in
+.BR &ERRLIMIT ,
+the protected keyword
+.B &ERRTEXT
+will contain the error message.
+
+.TP
+.B \-EXECUTE/\-NOEXECUTE
+.br
+Directives
+.B \-EXECUTE
+and
+.B \-NOEXECUTE
+control execution of programs.  If the
+.B \-NOEXECUTE
+directive is given, the program will be not executed after compilation.
+.B \-EXECUTE 
+Cancels any previous
+.BR \-NOEXECUTE .
+
+.TP
+.B FREEZE()/THAW()
+.br
+The
+.B FREEZE()
+function prohibits new entry creation in the referenced table.  This
+is useful once a table has been initialized to avoid the creation of
+empty entries that normally occurs on table entry lookup failure. This
+can greatly improve program speed, since frozen tables will not become
+clogged with random entries. Lookups for uninitialized entries will
+return the null string, however attempts to create a new entry will
+cause a \*(lqVariable not present where required\*(rq error. The
+.B THAW()
+function restores normal entry creation behavior.
+
+.TP
+.B HOST()
+.br
+A limited similation of the SPITBOL
+.B HOST()
+function is included.  It does not perform argument type conversions,
+so all arguments must be supplied as either
+.B INTEGER
+or
+.B STRING
+datatypes.
+
+.br
+.B HOST()
+with no paramaters returns a string describing the system the program
+is running on.  The string contains three parts, seperated by colens.
+The first part describes the physical architecture, the second
+describes the operating system, and the third descibes the language
+implementation name. Example:
+.I "sun4c:SunOS 4.1.4:C-MAINBOL 0.98.3"
+
+.br
+.B HOST(0)
+returns a string containing the command line parameter supplied to the
+.B -u
+option, if any.  If no
+.B -u
+option was given,
+.B HOST(0)
+returns the concatenation of all user paramaters following the input
+filename(s).
+
+.br
+\fBHOST(1,\fIstring\fB)\fR passes the string to the
+.BR system (3)
+c library function, and returns the subprocess exit status.
+
+.br
+\fBHOST(2,\fIn\fB)\fR for integer
+.I n
+returns the
+.IR n "'th"
+command line argument (regardless of whether the argument
+was the command name, an option, a filename or a user paramater)
+as a string, or failure
+.I n
+is out of range.
+
+.br
+.B HOST(3)
+returns an integer for use with
+.B HOST(2)
+indicating the first command line argument available as a user parameter.
+
+.br
+\fBHOST(4,\fIstring\fB)\fR returns the value of the
+environment variable named 
+.IR string .
+
+.TP
+.B \-INCLUDE
+.br
+The
+.B \-INCLUDE 
+directive causes the compiler to interpolate the contents of the named
+file enclosed in single or double quotes.  Any filename will be
+included only once, this can be overridden by appending a trailing
+space to the filename.  Trailing spaces are removed from the filename
+before use.  If the file is not found in the current working directory
+an attempt will be made to find it in the directory specified by the
+.B SNOLIB
+environment variable, or if that is not set, a predetermined libary
+directory.
+
+.br
+.B \-COPY is a synonym for
+.B \-INCLUDE
+for compatibility with SPITBOL/370.
+
+.TP
+.B &LINE/&FILE
+.br
+The
+.B &LINE
+and
+.B &FILE
+keywords can be used to determine the source file and file line
+associated with the current statement.  The
+.B &LASTLINE
+and
+.B &LASTFILE
+return the source file and file line
+associated with the previous statement.
+
+.TP
+.B \-LINE
+.br
+The
+.B \-LINE
+directive can be used to alter SNOBOL's idea of the current source
+file and line for use by preprocessors.
+.B \-LINE
+takes a line number and an optional quoted string filename.
+
+.TP
+Lexical comparison
+.br
+A full set of lexical (string) comparison predicates
+have been added to complement the standard
+.B LGT()
+function;
+.BR LEQ() ,
+.BR LGE() ,
+.BR LLE() ,
+.BR LLT() ,
+.BR LNE() .
+
+.TP
+.B LPAD()/RPAD()
+.br
+The
+.B LPAD()
+and
+.B
+.B RPAD()
+functions take the first argument (subject) string, and pad it out to
+the length specified in the second argument, using the first character
+of the optional third argument.  If the third argument is missing, or
+is the null string. spaces will be used for padding.  The subject will
+be returned unmodified if already long enough.
+
+.TP
+Named files
+.br
+Filenames
+can be supplied to the
+.B INPUT()
+and
+.B OUTPUT()
+functions via an optional fourth argument.  If the filename begins
+with a vertical bar (|), the remainder is used as a shell command
+whose stdin (in the case of
+.BR OUTPUT() )
+or stdout (in the case of
+.BR INPUT() )
+will be connected to the file variable.  The magic filenames
+.BR /dev/stdin ,
+.BR /dev/stdout ,
+and
+.B /dev/stderr
+refer to the current process standard input, standard output and
+standard error respectively regardless of whether those special
+filenames exist on your system.
+
+.TP
+.B &PARM
+.br
+The entire command line is available via the
+.BR &PARM
+protected keyword for compatibility with Catspaw SNOBOL4+. Use of the
+SPITBOL compatible
+.B HOST()
+function is probably preferable.
+
+.TP
+.B REVERSE()
+.br
+.B REVERSE()
+returns it's subject string in reverse order.
+
+.TP
+Scientific notation
+.br
+.B REAL
+number syntax has been expanded to allow exponents
+of the form:
+.br
+.IR "ANY('DeEe') ('+' | '-' | '') SPAN('0123456789')" .
+
+.TP
+.B SORT()/RSORT()
+.br
+The
+.B SORT()
+and
+.B
+.B RSORT()
+functions take a array (or table, which is first converted to an
+array). The array may be singly-dimensioned if which case , if non-
+null, will idicate the field of a programmer-defined datatype on which
+the sort is based.  A may also be a table or a doubly-dimensionted
+array.  In these cases F may be an integer indicating the column on
+which to sort.  If F is null, it is taken to be 1.  The array A is not
+modified; a new array is allocated and returned.
+.B SORT()
+sorts elements in ascending order, while
+.B RSORT()
+sorts in decending order.
 
 .TP
 SPITBOL operators
@@ -171,127 +455,13 @@ is a non-zero integer enables them.  SPITBOL extensions are enabled by
 default.
 
 .TP
-Case folding
+Statement limit
 .br
-By default the compiler folds identifiers and directives
-to upper case, so programs can be entered in either case.  To disable
-case folding use the directive
-.B "\-CASE 0" or
-.BR "\-CASE" .
-To reenable case folding use directive
-.BI "\-CASE " n
-where
-.I n
-is a non-zero integer.  The status of case folding may be examined and
-controlled from a running program by the unprotected system keyword
-.BR &CASE .
-
-.TP
-Named files
-.br
-Filenames
-can be supplied to the
-.B INPUT()
-and
-.B OUTPUT()
-functions via an optional fourth argument.  If the filename begins
-with a vertical bar (|), the remainder is used as a shell command
-whose stdin (in the case of
-.BR OUTPUT() )
-or stdout (in the case of
-.BR INPUT() )
-will be connected to the file variable.  The magic filenames
-.BR /dev/stdin ,
-.BR /dev/stdout ,
-and
-.B /dev/stderr
-refer to the current process standard input, standard output and
-standard error respectively regardless of whether those special
-filenames exist on your system.
-
-.TP
-No statement limit
-.br
-Keyword
-.B &STLIMIT
-now defaults to -1, which is interpreted as no limit to the number of
-statements executed.  When
+When
 .B &STLIMIT
 is less than zero
 .B &STCOUNT
 is not incremented.
-
-.TP
-.B \-INCLUDE
-.br
-The
-.B \-INCLUDE 
-directive causes the compiler to interpolate the contents of the named
-file enclosed in single or double quotes.  Trailing spaces are removed
-from the filename before use. Any filename will be included only once,
-this can be overridden by appending a trailing space to the filename.
-.B \-COPY is a synonym for
-.B \-INCLUDE
-for compatibility with SPITBOL/370.
-
-.TP
-.B BREAKX()
-.br
-The
-.B BREAKX()
-function is a pattern function used for fast scanning.
-.B BREAKX(str)
-is equivalent to
-.B "BREAK(str) ARBNO(LEN(1) BREAK(str))"
-
-.TP
-.B CHAR()
-.br
-The
-.B CHAR()
-function takes an integer from 0 to 255 and returns the n'th character
-in
-.B &ALPHABET .
-
-.TP
-.B LPAD()/RPAD()
-.br
-The
-.B LPAD()
-and
-.B
-.B RPAD()
-functions take the first argument (subject) string, and pad it out to
-the length specified in the second argument, using the first character
-of the optional third argument.  If the third argument is missing, or
-is the null string. spaces will be used for padding.  The subject will
-be returned unmodified if already long enough.
-
-.TP
-.B SORT()/RSORT()
-.br
-The
-.B SORT()
-and
-.B
-.B RSORT()
-functions take a array (or table, which is first converted to an
-array). The array may be singly-dimensioned if which case , if non-
-null, will idicate the field of a programmer-defined datatype on which
-the sort is based.  A may also be a table or a doubly-dimensionted
-array.  In these cases F may be an integer indicating the column on
-which to sort.  If F is null, it is taken to be 1.  The array A is not
-modified; a new array is allocated and returned.
-.B SORT()
-sorts elements in ascending order, while
-.B RSORT()
-sorts in decending order.
-
-.TP
-.B REVERSE()
-.br
-.B REVERSE()
-returns it's subject string in reverse order.
 
 .TP
 .B SUBSTR()
@@ -303,32 +473,12 @@ a length specified by the third argument.  If the third argument is missing
 or zero, the remainder of the string is returned.
 
 .TP
-Lexical comparison
+.BR "TERMINAL " "I/O variable"
 .br
-A full set of lexical (string) comparison predicates
-have been added to complement the standard
-.B LGT()
-function;
-.BR LEQ() ,
-.BR LGE() ,
-.BR LLE() ,
-.BR LLT() ,
-.BR LNE() .
-
-.TP
-.B FREEZE()/THAW()
-.br
-The
-.B FREEZE()
-function prohibits new entry creation in the referenced table.  This
-is useful once a table has been initialized to avoid the creation of
-empty entries that normally occurs on table entry lookup failure. This
-can greatly improve program speed, since frozen tables will not become
-clogged with random entries. Lookups for uninitialized entries will
-return the null string, however attempts to create a new entry will
-cause a \*(lqVariable not present where required\*(rq error. The
-.B THAW()
-function restores normal entry creation behavior.
+The variable
+.B TERMINAL
+is associated with the standard error file descriptor for both input
+and output.
 
 .TP
 .B &UCASE/&LCASE
@@ -339,91 +489,9 @@ and
 .B &LCASE
 contain upper and lower case characters respectively.
 
-.TP
-Scientific notation
-.br
-.B REAL
-number syntax has been expanded to allow exponents
-of the form:
-.br
-.IR "ANY('DeEe') ('+' | '-' | '') SPAN('0123456789')" .
-
-.TP
-.B \-ERROR/\-NOERRORS
-.br
-Directives
-.B \-ERROR
-and
-.B \-NOERRORS
-control execution of program with compiler errors.  If the
-.B \-ERROR
-directive is given, the program will be executed (but any attempt to
-execute a statement with a compiler error will cause a fatal execution
-error).  By default programs with compiler errors will not be started,
-this can be restored using
-.BR \-NOERRORS .
-
-.TP
-.B \-EXECUTE/\-NOEXECUTE
-.br
-Directives
-.B \-EXECUTE
-and
-.B \-NOEXECUTE
-control execution of programs.  If the
-.B \-NOEXECUTE
-directive is given, the program will be not executed after compilation.
-.B \-EXECUTE 
-Cancels any previous
-.BR \-NOEXECUTE .
-
-.TP
-.B &LINE/&FILE
-.br
-The
-.B &LINE
-and
-.B &FILE
-keywords can be used to determine the source file and file line
-associated with the current statement.  The
-.B &LASTLINE
-and
-.B &LASTFILE
-return the source file and file line
-associated with the previous statement.
-
-.TP
-.B \-LINE
-.br
-The
-.B \-LINE
-directive can be used to alter SNOBOL's idea of the current source
-file and line for use by preprocessors.
-.B \-LINE
-takes a line number and an optional quoted string filename.
-
-.TP
-.B &ERRTEXT
-.br
-After an otherwise fatal error is curtailed due to a non-zero value in
-.BR &ERRLIMIT ,
-the protected keyword
-.B &ERRTEXT
-will contain the error message.
-
-.TP
-.B &PARM
-.br
-The entire command line is available via the
-.BR &PARM
-protected keyword for compatibility with Catspaw SNOBOL4+. Use of the
-SPITBOL compatible
-.B HOST()
-function is probably preferable.
 
 .SS "I/O Associations"
-
-.br
+.PP
 I/O is performed by associating a variable name with a numbered I/O
 unit using the
 .B INPUT()
@@ -549,8 +617,9 @@ W. H. Freeman and Co., 1972.
 Philip L. Budne
 
 .SH BUGS
+.PP
 I/O retains some record oriented flavor.
-.br
+.PP
 I/O is still tied to unit numbers.
-.br
+.PP
 \*(lqDynamic\*(rq storage cannot be expanded after startup.
