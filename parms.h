@@ -17,6 +17,10 @@
 #include "data.h"
 #include "syn.h"
 
+#ifdef NO_STATIC_VARS
+#include "vars.h"
+#endif /* NO_STATIC_VARS defined */
+
 struct descr NORET[1];
 
 #ifdef TRACE_DEPTH
