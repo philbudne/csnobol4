@@ -1475,7 +1475,7 @@ io_sseek(unit, soff, whence, scale, oof )
     if (fp == NULL)
 	return FALSE;
 
-    off = (off_t) (soff * scale);
+    off = soff * (off_t)scale;
     if (whence < 0 || whence > 2)
 	return FALSE;
 
