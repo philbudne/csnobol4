@@ -1441,6 +1441,62 @@ io_seek(dunit, doff, dwhence)
     return TRUE;
 }
 
+/*
+ * new 3/12/99
+ * Experimental "scaled SET" function
+ * called as external function from snolib/sset.c
+ */
+int
+io_sseek(unit, off, whence, scale, oof )
+    int_t unit, off, whence, scale, *oof;
+{
+    off_t off;
+    struct file *fp;
+    struct unit *up;
+    FILE *f;
+
+    unit = INTERN(unit);
+    if (BADUNIT(unit))
+	return FALSE;
+    up = FINDUNIT(unit);
+    fp = up->curr;
+    if (fp == NULL)
+	return FALSE;
+
+    off = (off_t) (off * scale);
+    if (whence < 0 || whence > 2)
+	return FALSE;
+
+    /* translate n -> SEEK_xxx using switch stmt (if SEEK_xxx available)? */
+
+    f = fp->f;
+    if (f == NULL)
+	return FALSE;
+
+#ifndef NO_UNBUF_RW
+    if (fp->flags & FL_UNBUF) {
+	off_t pos;
+
+	/* optimized stdio libraries might try to optimize away
+	 * the lseek if they've seen no read/write ops!
+	 */
+	pos = lseek(fileno(f), off, whence);
+	if (pos != (off_t)-1)
+	    return FALSE;
+	*oof = pos / scale;
+    }
+    else
+#endif /* NO_UNBUF_RW not defined */
+    if (fseeko(f, off, whence) == 0)
+	*oof = ftello(f)/scale;
+    else
+	return FALSE;
+
+    fp->last = LAST_NONE;		/* reset last I/O type */
+
+    return TRUE;
+}
+
 /* flush all pending output before system(), exec(), or death */
 int
 io_flushall(dummy)
