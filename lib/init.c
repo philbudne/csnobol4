@@ -27,20 +27,28 @@ extern char *optarg;
 extern int getopt();
 
 void
+p( str )
+    char *str;
+{
+    fputs( str, stderr );
+}
+
+void
 usage( jname )
     char *jname;
 {
-    fprintf( stderr, "Usage: %s [options...] [files...]\n", jname );
-    fprintf( stderr, "-b\ttoggle display of startup banner\n");
-    fprintf( stderr,
+    p( "Usage: %s [options...] [files...]\n", jname );
+    p( "-b\ttoggle display of startup banner\n");
+    fprintf(stderr,
 	    "-d ND\tSize of dynamic region in descriptors (def: %d)\n",
 	    NDESCR);
-    fprintf( stderr, "-f\ttoggle folding of identifiers to upper case\n");
-    fprintf( stderr, "-k\trun programs with compilation errors\n");
-    fprintf( stderr, "-l\treenable listings.\n");
-    fprintf( stderr, "-p\ttoggle SPITBOL operators (-PLUSOPS)\n");
-    fprintf( stderr, "-r\ttoggle reading INPUT from after END statement\n");
-    fprintf( stderr, "-s\ttoggle display of statistics\n");
+    p( "-f\ttoggle folding of identifiers to upper case (-CASE)\n");
+    p( "-k\ttoggle running programs with compilation errors (-[NO]ERRORS)\n");
+    p( "-l\treenable listings (-LIST)\n");
+    p( "-n\ttoggle running program after compilation (-[NO]EXECUTE)\n");
+    p( "-p\ttoggle SPITBOL operators (-PLUSOPS)\n");
+    p( "-r\ttoggle reading INPUT from after END statement\n");
+    p( "-s\ttoggle display of statistics\n");
     exit(1);
 }
 
@@ -51,9 +59,14 @@ init_args( argc, argv )
 {
     int errs;
     int c;
+    char k;
 
     errs = 0;
     ndescr = NDESCR;
+
+#ifdef vms
+    argc = getredirection(argc, argv);
+#endif /* vms defined */
 
     /*
      * NOTE:
@@ -62,24 +75,31 @@ init_args( argc, argv )
      *
      * * When adding options, update usage() function (above) and man page!!!
      */
-#ifdef vms
-    argc = getredirection(argc, argv);
-#endif /* vms defined */
-    while ((c = getopt(argc, argv, "bd:fklprs")) != -1) {
+
+    while ((c = getopt(argc, argv, "bd:fklnprs")) != -1) {
 	switch (c) {
 	case 'b':
 	    D_A(BANRCL) = !D_A(BANRCL);	/* toggle banner output */
 	    break;
 
 	case 'd':			/* number of dynamic descrs */
-	    /* XXX allow 'k' suffix? */
-	    if (sscanf(optarg, "%d", &ndescr) != 1)
+	    switch (sscanf(optarg, "%d%c", &ndescr, &k)) {
+	    case 2:
+		if (k == 'k' || k == 'K')
+		    ndescr *= 1000;
+		else
+		    errs++;
+		break;
+	    case 1:
+		break;
+	    default:
 		errs++;
+	    }
 	    /* XXX enforce a minimum?? */
 	    break;
 
-	case 'f':
-	    D_A(CASECL) = !D_A(CASECL);	/* toggle case folding */
+	case 'f':			/* toggle case folding */
+	    D_A(CASECL) = !D_A(CASECL);
 	    break;
 
 	case 'k':
@@ -87,21 +107,25 @@ init_args( argc, argv )
 	    D_A(NERRCL) = !D_A(NERRCL);
 	    break;
 
-	case 'p':			/* -PLUSOPS */
-	    D_A(SPITCL) = !D_A(SPITCL);
-	    break;
-
 	case 'l':			/* -LIST */
 	    /* XXX should take an argument!!! */
 	    D_A(LISTCL) = 1;
+	    break;
+
+	case 'n':			/* toggle -[NO]EXECUTE */
+	    D_A(EXECCL) = !D_A(EXECCL);
+	    break;
+
+	case 'p':			/* toggle -PLUSOPS */
+	    D_A(SPITCL) = !D_A(SPITCL);
 	    break;
 
 	case 'r':			/* read INPUT from source after END */
 	    rflag = !rflag;
 	    break;
 
-	case 's':
-	    D_A(STATCL) = !D_A(STATCL);	/* toggle statistics */
+	case 's':			/* toggle statistics */
+	    D_A(STATCL) = !D_A(STATCL);
 	    break;
 
 	default:
@@ -148,8 +172,8 @@ init()
     dyn = dynamic(len);
 
     if (dyn == NULL) {
-	fprintf( stderr, "could not allocate dynamic region of %d bytes\n",
-		len);
+	fprintf( stderr,
+		"could not allocate dynamic region of %d bytes\n", len);
 	exit(1);
     }
 
