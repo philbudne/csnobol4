@@ -26,8 +26,18 @@
 #define HAVE_STDARG_H
 #define HAVE_STDLIB_H
 
+/* DLL import/export macros */
+#if defined(_MSC_VER) || defined(__MINGW32__)
+#define EXPORT(TYPE) __declspec(dllexport) TYPE
+#define IMPORT(TYPE) __declspec(dllimport) TYPE
+#elif defined(__BORLANDC__)
+#define EXPORT(TYPE) TYPE _export
+#define IMPORT(TYPE) TYPE _import	/* ??? */
+#endif
+
 /* non-standard functions; */
 #define finite		_finite
 #define isnan		_isnan
 #define popen		_popen
 #define pclose		_pclose
+
