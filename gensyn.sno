@@ -29,6 +29,11 @@
 	LC = "abcdefghijklmnopqrstuvwxyz"
 	DIGITS = "0123456789"
 	ALPHA = UC LC
+
+* "non-ascii" -- used by UTF-8 for encoding Unicode on ASCII systems
+* treat them all as alpha!!
+	ALPHA = IDENT(substr(&alphabet,66,26),UC) ALPHA SUBSTR(&ALPHABET,129)
+
 	ALPHANUM = DIGITS ALPHA
 
 	SP = ' '
