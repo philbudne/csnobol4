@@ -15,7 +15,7 @@ realst(sp, dp)
     struct spec *sp;
     struct descr *dp;
 {
-    static char buf[32];		/* ??? */
+    static char buf[128];		/* ??? */
 
     /* XXX sigh; prints trailing zeroes (but never uses exponent)
      * %g suppresses trailing zeroes (but suppresses DOT and uses exponent)
