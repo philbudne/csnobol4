@@ -21,10 +21,11 @@ CLIB=+SYS$LIBRARY:DECCRTL/LIB
 
 # TCP library, if present
 UCXLIB=+SYS$LIBRARY:UCX$IPC/LIB
+# use vms inet.c
+INET_OBJ=inet.obj
 
 # alternate library routines
 MSTIME_C=[.lib.vms]mstime.c
-INET_C=[.lib.vms]inet.c
 
 .else
 .ifdef DECC4
@@ -36,10 +37,11 @@ CCDEFS=,NEED_POPEN_DECL,NEED_OFF_T
 
 # TCP library, if present
 UCXLIB=+SYS$LIBRARY:UCX$IPC/LIB
+# use vms inet.c
+INET_OBJ=inet.obj
 
 # alternate library routines
 MSTIME_C=[.lib.vms]mstime.c
-INET_C=[.lib.vms]inet.c
 
 .else
 
@@ -54,7 +56,7 @@ CCDEFS=,HAVE_STRINGS_H,HAVE_STDLIB_H,HAVE_UNISTD_H
 
 # alternate (normal!) library routines
 MSTIME_C=[.lib.posix]mstime.c
-INET_C=[.lib.bsd]inet.c
+INET_OBJ=inet6.obj
 .endif
 .endif
 
@@ -86,6 +88,8 @@ ENDEX_C=[.lib]endex.c
 EXISTS_C=[.lib.vms]exists.c
 EXPOPS_C=[.lib.generic]expops.c
 HASH_C=[.lib]hash.c
+INET_C=[.lib.vms]inet.c
+INET6_C=[.lib.bsd]inet6.c
 INIT_C=[.lib]init.c
 INTSPC_C=[.lib.generic]intspc.c
 IO_C=[.lib]io.c
@@ -149,7 +153,7 @@ CFLAGS=	$(CCFLAGS) /DEFINE=(HAVE_CONFIG_H$(CCDEFS)$(TCPDEFS)) \
 
 OBJS=	main.obj, $(SNOBOL4).obj, data.obj, data_init.obj, syn.obj, \
 	bal.obj, date.obj, dynamic.obj, endex.obj, exists.obj, \
-	expops.obj, hash.obj, init.obj, inet.obj, intspc.obj, io.obj, \
+	expops.obj, hash.obj, init.obj, $(INET_OBJ), intspc.obj, io.obj, \
 	lexcmp.obj, load.obj, mstime.obj, ordvst.obj, pair.obj, \
 	pat.obj, pml.obj, realst.obj, replace.obj, spcint.obj, \
 	spreal.obj, str.obj, stream.obj, term.obj, top.obj, tty.obj, \
@@ -188,6 +192,9 @@ hash.obj : $(HASH_C)
 
 inet.obj : $(INET_C)
 	$(CC) $(CFLAGS) $(INET_C)
+
+inet6.obj : $(INET6_C)
+	$(CC) $(CFLAGS) $(INET6_C)
 
 init.obj : $(INIT_C)
 	$(CC) $(CFLAGS) $(INIT_C)
@@ -344,11 +351,17 @@ tan.obj : $(TAN_C)
 unlink.obj : [.lib.vms]unlink.c
 	$(CC) $(CFLAGS) [.lib.vms]unlink.c
 
+# vax:
 isnan.obj : [.lib.dummy]isnan.c
 	$(CC) $(CFLAGS) [.lib.dummy]isnan.c
+
+# vax:
+finite.obj : [.lib.dummy]finite.c
+	$(CC) $(CFLAGS) [.lib.dummy]finite.c
 
 rresvport.obj : [.lib.dummy]rresvport.c
 	$(CC) $(CFLAGS) [.lib.dummy]rresvport.c
 
-finite.obj : [.lib.dummy]finite.c
-	$(CC) $(CFLAGS) [.lib.dummy]finite.c
+rresvport_af.obj : [.lib.auxil]rresvport_af.c
+	$(CC) $(CFLAGS) [.lib.auxil]rresvport_af.c
+
