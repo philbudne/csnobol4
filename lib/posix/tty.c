@@ -101,6 +101,10 @@ tty_mode( fp, cbreak, noecho, recl )
 	/* XXX set CS8, PASS8, IGNPAR, clear ISTRIP? */
 	/* XXX clear IUCLC, XCASE (if they exist)? */
 #endif /* TTY_RAW defined */
+
+	if (recl > 0xff)		/* VMIN is a char! */
+	    recl = 0xff;
+
 	new.c_cc[VMIN] = recl;		/* number of chars wanted */
 	new.c_cc[VTIME] = 0;		/* wait as long as we have to */
     }
