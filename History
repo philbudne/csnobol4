@@ -2,6 +2,30 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+10/3/97:
+	lib/vms/sys.c: use SYS$GETSYIW to get architecture and VMS version
+	lib/{bsd,dummy,posix,vms}/tty.c: add fname arg to fisatty
+	lib/io.c: add FL_INPUT and FL_OUTPUT flags
+		add fname arg to fisatty
+
+10/1/97:
+	New lib/borland/tty.c
+	config/borland/build.bat: define TTY_READ_RAW, use borland\tty.c
+
+9/30/97:
+	Fixed math error handling;
+	lib/init.c: declare math_error volatile
+	include/macros.h: declare math_error extern volatile
+	include/h.h: dummy out volatile on non-ansi compilers
+
+9/29/97:
+	doc/ports.doc: updated
+
+9/27/97:
+	gensyn.sno: set exit code if input file not found
+	lib/realst.c: fixed comment
+	doc/porting.ms: updated, merged, sorted ifdefs
+
 9/26/97:
 	lib/io.c: pass raw, keepeol flags to tty_read()
 		add seperate TTY_READ_{RAW,COOKED} ifdefs
@@ -48,7 +72,7 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 		make "|xxx" open fail if NO_POPEN defined
 	lib/endex.c: call io_finish()
 	lib/vms/popen.c: replaced with version from Icon
-	config/hpux-pa.m4: removed -mlong-calls
+	config/hpux-pa.m4: removed -mlong-calls per Yuli Barcohen
 	timing: check for /bin/model
 
 9/17/97:
