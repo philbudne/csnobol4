@@ -32,6 +32,13 @@ extern char *params;
 
 extern char *getenv();			/* use <stdlib.h> if avail? */
 
+#ifdef HAVE_BUILD_VARS
+extern const char build_files[];
+extern const char build_lib[];
+extern const char build_date[];
+extern const char build_dir[];
+#endif /* HAVE_BUILD_VARS */
+
 int
 HOST( LA_ALIST ) LA_DCL
 {
@@ -72,30 +79,54 @@ HOST( LA_ALIST ) LA_DCL
 	RETINT(system(buf));		/* run in sub-shell */
 
     case 2:				/* HOST(2,n); argument n */
-	if (nargs < 2 || LA_TYPE(1) != I)
-	    break;			/* missing, non-int */
-
-	n = LA_INT(1);
-	if (n < 0 || n >= argc)
-	    break;			/* out of range; fail */
-	RETSTR(argv[n]);		/* return n'th command line arg */
+	if (nargs >= 2 && LA_TYPE(1) == I) {
+	    n = LA_INT(1);
+	    if (n >= 0 && n < argc)
+		RETSTR(argv[n]);	/* return n'th command line arg */
+	}
+	/* bad argument type, or out of range */
+	break;
 
     case 3:				/* HOST(3); first unused argument */
 	RETTYPE = I;			/* oof! blast return type! */
 	RETINT(firstarg);
 
     case 4:				/* HOST(4,s); environment var s */
-	if (nargs < 2 || LA_TYPE(1) != S) {
-	    RETFAIL;
+	if (nargs >= 2 && LA_TYPE(1) == S) {
+	    getstring(LA_PTR(1), buf, sizeof(buf));
+	    env = getenv(buf);
+	    if (env)
+		RETSTR(env);
 	}
-	getstring(LA_PTR(1), buf, sizeof(buf));
-	env = getenv(buf);
-	if (!env)
-	    break;			/* fail if no such variable */
-	RETSTR(env);
+	/* fail if bad argument type, or no such variable */
+	break;
 
-    case 2000:				/* extension */
-	RETSTR(CONFIG_GUESS);
+
+#ifdef CONFIG_GUESS
+    case 2000:				/* CSNOBOL4 extension */
+	RETSTR(CONFIG_GUESS);		/* build architecture */
+#endif /* CONFIG_GUESS defined */
+
+#ifdef SNOLIB_DIR
+    case 2001:				/* CSNOBOL4 extension */
+	RETSTR(SNOLIB_DIR);
+#endif /* SNOLIB_DIR defined */
+
+#ifdef SNOLIB_FILE
+    case 2002:				/* CSNOBOL4 extension */
+	RETSTR(SNOLIB_FILE);
+#endif /* SNOLIB_FILE defined */
+
+#ifdef HAVE_BUILD_VARS
+    case 2003:				/* CSNOBOL4 extension */
+	RETSTR(build_date);
+
+    case 2004:				/* CSNOBOL4 extension */
+	RETSTR(build_dir);
+
+    case 2005:				/* CSNOBOL4 extension */
+	RETSTR(build_files);
+#endif /* HAVE_BUILD_VARS defined */
 
     default:
 	break;
