@@ -142,11 +142,6 @@ res.h:	res.h2
 data_init.h: data_init.h2
 	@cmp data_init.h data_init.h2 || cp data_init.h2 data_init.h
 
-# note: private CFLAGS
-data_init.o: data_init.c data_init.h equ.h data.h proc.h res.h
-	$(CC) $(DATA_INIT_CFLAGS) -c data_init.c
-
-
 #################
 # dependency generation is slow and ugly (and wrong?)
 # doesn't change much!!
@@ -190,7 +185,7 @@ spotless: distclean
 # generated files copied separately to ensure newer than source files!
 TAR=	README CHANGES History INSTALL TODO TODO.soon doc Makefile \
 	Makefile2.m4 autoconf configure config.guess $(SIL) syntax.tbl \
-	procs globals genc.sno gensyn.sno gendata.sno main.c charset.c \
+	procs globals genc.sno gensyn.sno gendata.sno main.c \
 	data_init.c version.c parms.h mlink.h mdata.h pml.h $(G1) lib \
 	include config test snolib/*.sno sunmodel timing timing.sno \
 	cc-M bsplitu.c
