@@ -35,7 +35,7 @@ CCM=./cc-M
 MATHLIB=-lm
 
 SH=sh
-SHELL=sh
+SHELL=/bin/sh
 
 # either snobol4 or isnobol4
 SNOBOL4=isnobol4
@@ -125,6 +125,7 @@ RETSTRING_C=$(SRCDIR)lib/snolib/retstring.c
 SIN_C=$(SRCDIR)lib/snolib/sin.c
 SPRINTF_C=$(SRCDIR)lib/snolib/sprintf.c
 SQRT_C=$(SRCDIR)lib/snolib/sqrt.c
+SSET_C=$(SRCDIR)lib/snolib/sset.c
 SYS_C=$(SRCDIR)lib/posix/sys.c
 TAN_C=$(SRCDIR)lib/snolib/tan.c
 
@@ -411,6 +412,9 @@ bcopy.o: $(BCOPY_C)
 getopt.o: $(GETOPT_C)
 	$(CC) $(CFLAGS) -c $(GETOPT_C)
 
+finite.o: $(FINITE_C)
+	$(CC) $(CFLAGS) -c $(FINITE_C)
+
 ################
 # dummy files
 
@@ -432,7 +436,7 @@ AUX_OBJS= _OBJS
 
 SNOLIB_OBJS= chop.o cos.o delete.o environ.o execute.o exists.o exit.o \
 	exp.o file.o findunit.o fork.o getstring.o host.o log.o rename.o \
-	retstring.o sin.o sprintf.o sqrt.o sys.o tan.o $(AUX_OBJS)
+	retstring.o sin.o sprintf.o sqrt.o sset.o sys.o tan.o $(AUX_OBJS)
 
 $(SNOLIB_A): $(SNOLIB_OBJS)
 	rm -f $(SNOLIB_A)
@@ -500,6 +504,9 @@ sprintf.o: $(SPRINTF_C)
 
 sqrt.o: $(SQRT_C)
 	$(CC) $(CFLAGS) -c $(SQRT_C)
+
+sset.o: $(SSET_C)
+	$(CC) $(CFLAGS) -c $(SSET_C)
 
 sys.o: $(SYS_C)
 	$(CC) $(CFLAGS) $(CONFIG_GUESS) $(SYSDEFS) -c $(SYS_C)
