@@ -4,8 +4,25 @@ $Id$
 MAINBOL for Un*x history (and personal SNOBOL history);
 
 1/6/95
-	checked in 11/3 v311.sno, tests
+	checked in 11/3/94 v311.sno, tests
 	README, History: updated/fixed
+
+	** Tested on AXP OpenVMS and DECC (1/4/94);
+	lib/init.c: fix VMS typo
+	lib/aux/getopt.c: use stdio.h
+	lib/vms/getredirect.c: use unixio.h with DECC
+	include/h.h: add index/bcmp defines under ANSI_STRINGS
+	new files: config/vms/descrip.mms config/vms/build.com
+
+	** Ported to AXP OSF/1 (1/5/94) -- has 64-bit integers!!
+	Makefile2.m4; moved .PRECIOUS after first real target
+		make TESTED depend snobol4.c
+	Fix pointer/int sloppiness (sizeof(int) < sizeof(void*))!!
+		gensyn.sno; cast pointers to int_t, move syntab.h include
+		include/syntab.h; make put an int_t to hold pointers!
+		include/macros.h; fix various stack macros casting to (int)!!!
+		lib/stream.c; declare "tok" as "int_t"
+	new files: config/osf1-alpha.h config/osf1-alpha-cc.h
 
 11/3/94
 	lib/ansi/mstime.c: ansi only version
