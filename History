@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+10/13/96:
+	v311.sil: fixes from SNOBOL4+ to avoid "Internal Errors"
+
 10/12/96:
 	v311.sil: fix error pointer again
 		add COMPCL; don't show syntax errors after compilation done
