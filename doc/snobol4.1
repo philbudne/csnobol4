@@ -42,7 +42,9 @@ Trapping of arithmetic exceptions.
 .IP \(bu
 Dynamic use of the
 .B LOAD()
-platforms not using
+on platforms not using the standard
+.BR dlopen (3)
+interface for shared libraries or
 .BR a.out (5)
 executable format is not supported. User functions can be staticly
 linked (poor man's loading) on
