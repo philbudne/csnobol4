@@ -15,10 +15,6 @@ extern void *malloc();
 #include "snotypes.h"			/* DESCR, etc */
 #include "macros.h"			/* D_A() etc */
 
-#ifndef EXPORT
-#define EXPORT
-#endif /* EXPORT not defined */
-
 #ifdef NO_STATIC_VARS
 #include "vars.h"
 #else
@@ -27,7 +23,7 @@ static char *retbuf;
 static int retbuflen;
 #endif
 
-EXPORT void
+EXPORT(void)
 retstring( retval, cp, len )
     struct descr *retval;
     char *cp;

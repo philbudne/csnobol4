@@ -82,22 +82,18 @@
 #define RETTYPE D_V(retval)
 
 /* extern/prototypes for functions; */
-#ifndef IMPORT
-#define IMPORT
-#endif /* IMPORT not defined */
-
 /* lib/snolib/getstring.c; */
-IMPORT void getstring __P((const void *, char *, int));
+IMPORT(void) getstring __P((const void *, char *, int));
 
 /* lib/snolib/retstring.c; */
-IMPORT void retstring __P((struct descr *retval, const char *cp, int len));
+IMPORT(void) retstring __P((struct descr *retval, const char *cp, int len));
 
 /* lib/io.c; */
-IMPORT int io_findunit __P((void));	/* find a free (external) unit */
-IMPORT int io_closeall __P((int));	/* internal (zero-based unit) */
+IMPORT(int) io_findunit __P((void));	/* find a free (external) unit */
+IMPORT(int) io_closeall __P((int));	/* internal (zero-based unit) */
 
 #ifdef EOF				/* stdio included */
-IMPORT FILE *io_getfp __P((int));	/* external (1-based unit) */
-IMPORT int io_mkfile __P((int, FILE *, char*)); /* external (1-based unit) */
+IMPORT(FILE *) io_getfp __P((int));	/* external (1-based unit) */
+IMPORT(int) io_mkfile __P((int, FILE *, char*)); /* external (1-based unit) */
 #endif /* EOF defined */
 

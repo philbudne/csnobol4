@@ -39,3 +39,18 @@
 /* for bzero() use lib/aux/bzero.c (faster than memset) */
 /* for bcopy() use lib/aux/bcopy.c (fast, handles overlap correctly) */
 #endif /* ANSI_STRINGS */
+
+/*
+ * For Windoze DLL's
+ * MSC and Borland want the decl on different sides of the type!!
+ */
+
+#ifndef EXPORT
+#define EXPORT(TYPE) TYPE
+#endif /* EXPORT not defined */
+
+#ifndef IMPORT
+#define IMPORT(TYPE) TYPE
+#endif /* IMPORT not defined */
+
+

@@ -83,10 +83,6 @@ typedef long off_t;
 #define SEEK_END 2
 #endif /* SEEK_END not defined */
 
-#ifndef EXPORT
-#define EXPORT
-#endif /* EXPORT not defined */
-
 #define NUNITS 256			/* XXX set at runtime? */
 
 /* names associated with UNITI, UNITO, UNITP(!), UNITT */
@@ -326,7 +322,7 @@ io_close(unit)				/* internal (zero-based unit) */
 }
 
 /* close a unit, flush current file list */
-EXPORT int
+EXPORT(int)
 io_closeall(unit)			/* internal (zero-based unit) */
     int unit;
 {
@@ -587,7 +583,7 @@ io_mkfile2( unit, f, fname, flags )
     return TRUE;
 }
 
-EXPORT int
+EXPORT(int)
 io_mkfile( unit, f, fname )
     int unit;				/* external (1-based) unit */
     FILE *f;
@@ -1659,7 +1655,7 @@ io_flushall(dummy)
 #define MINFIND 20			/* minimum unit to return */
 #define MAXFIND NUNITS			/* maximum unit to return */
 
-EXPORT int
+EXPORT(int)
 io_findunit()
 {
     int start;
@@ -1695,7 +1691,7 @@ io_findunit()
 } /* io_findunit */
 
 /* for PML functions; get current fp on a unit */
-EXPORT FILE *
+EXPORT(FILE *)
 io_getfp(unit)
     int unit;				/* "external" unit */
 {
