@@ -1,0 +1,112 @@
+*	$Id$
+*	process "xsnobol genc.sno" and "diff" output!
+
+	&ANCHOR = 1
+
+* constants
+	DIGIT = '0123456789'
+	TAB = '	'
+	SP = ' '
+* patterns
+	INT = SPAN(DIGIT)
+	FLOAT = INT '.' INT
+	WS = SPAN(SP TAB)
+	NUM = FLOAT | INT
+
+* COMPILING
+CLOP	LINE = INPUT					:F(NOCOMP)
+	LINE 'No errors detected in source program'	:S(ELOP)
+	LINE 'ERRORS DETECTED IN SOURCE PROGRAM'	:S(BADCOMP)F(CLOP)
+
+NOCOMP	OUTPUT = "compilation interrupted"		:(FATAL)
+BADCOMP	OUTPUT = "compilation failed"			:(FATAL)
+
+* EXECUTING
+ELOP	LINE = INPUT					:F(NOEXEC)
+	LINE 'Normal termination at level 0'		:S(GETSTAT)
+	LINE 'Error ' INT				:S(BADEXEC)
+	LINE 'Caught'					:S(BADEXEC)F(ELOP)
+
+NOEXEC	OUTPUT = "execution error"			:(FATAL)
+BADEXEC	OUTPUT = "execution failed"			:(FATAL)
+
+GETSTAT	LINE = INPUT					:F(NOSTAT)
+	LINE 'SNOBOL4 statistics'			:F(GETSTAT)
+	LINE = INPUT					:F(NOSTAT)
+	LINE WS INT . COMP WS 'ms. Compilation time'	:F(NOSTAT)
+	LINE = INPUT					:F(NOSTAT)
+	LINE WS INT . EXEC WS 'ms. Execution time'	:F(NOSTAT)
+	LINE = INPUT					:F(NOSTAT)
+	LINE WS INT . STMTS WS 'Statements executed'	:F(NOSTAT)
+
+	A2 = (EXEC * 1000 + STMTS / 2) / STMTS
+
+	OUTPUT = 'Statistics for run of genc.sno'
+	OUTPUT = 'SNOBOL4 Compile time:' TAB COMP ' milliseconds'
+	OUTPUT = 'SNBOL4 Execution time:' TAB EXEC ' milliseconds'
+	OUTPUT = 'Statements executed:' TAB STMTS
+
+* calculate usec/stmt
+	A1 = EXEC * 1000 / STMTS
+
+	OUTPUT = 'microseconds per statement: ' A1
+	TTL = (COMP + EXEC + 50) / 100
+
+**************** get snobols's average ms/stmt
+
+ALOP	LINE = INPUT					:F(NOSTAT)
+	LINE WS FLOAT . AVG WS 'ms. Average'		:F(ALOP)
+
+* get usec/stmt (as calculated by snobol)
+	A2 = CONVERT(AVG * 1000, 'INTEGER')
+
+* compare A1 vs A2 (calculation fails on HP-PA using gcc?)
+	EQ(A1,A2)					:S(GETTIME)
+* get ratio, keep our version on the bottom (less likely to be zero)
+	X = 100 * A2 / A1
+* ignore errors of less than 1%
+	GE(X,99) LT(X,101)				:S(GETTIME)
+	OUTPUT = "SNOBOL's calculated ms/stmt is suspect: " AVG
+
+****************
+* deal with shell "time" output
+GETTIME	LINE = INPUT					:F(NOTIME)
+	MIN = 0
+* sunos "sh" time
+	LINE ARB WS NUM . USER WS 'user'		:S(GOTTIME)
+* csh style time
+	LINE ARB NUM . USER 'u'				:S(GOTTIME)
+* hpux
+	LINE 'user' ws INT . MIN 'm' NUM . USER		:S(GOTTIME)
+							:(GETTIME)
+
+* here with shell runtime
+GOTTIME	USER = CONVERT((USER + MIN * 60) * 10, 'INTEGER')
+* see  if shell time matches snobols
+	EQ(TTL,USER)					:S(TIMEOK)
+
+	FACTOR = TTL / (USER * 1.0)
+	EPSILON = 0.01
+	GE(FACTOR, 1.0 - EPSILON) LT(FACTOR, 1.0 + EPSILON) :S(TIMEOK)
+
+	OUTPUT = "SNOBOL's timings off by a factor of: " FACTOR
+	OUTPUT = "see if posix sysconf() available (use posix/mstime.c)"
+	OUTPUT = "USER:" TAB USER
+	OUTPUT = "TTL:" TAB TTL				:(DODIFF)
+* HZ was 60, should be 100?
+	OUTPUT = GE(FACTOR,165.0) LE(FACTOR,167.0) "define HZ as 100?"
+
+TIMEOK	OUTPUT = "time measurement ok"
+
+* XXX use context diff, look for pos(0) "diff" ???
+DODIFF	LINE = INPUT					:F(NODIFF)
+	LINE '1c1'					:F(BADIFF)
+	OUTPUT = "diff succeeded"			:(END)
+
+BADIFF	OUTPUT = 'genc diff failed'			:(FATAL)
+NODIFF	OUTPUT = 'no diff found'			:(FATAL)
+NOSTAT	OUTPUT = "could not get stats"			:F(FATAL)
+NOTIME	OUTPUT = "could not get times"
+
+FATAL	&CODE = 1
+END

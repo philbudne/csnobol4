@@ -1,0 +1,29 @@
+#!/bin/sh
+# $Id$
+
+# perform basic timing tests
+# results suitable for inclusion in ports.doc
+# pb 6/4/94
+
+echo 'Date:'
+date
+echo ''
+echo 'who am i:'
+who am i
+echo ''
+echo 'uname -a:'
+uname -a
+echo ''
+echo 'ls -l config.m4 xsnobol4'
+ls -l config.m4 xsnobol4
+echo ''
+echo 'size xsnobol4'
+size xsnobol4
+
+# XXX save proc.h, callgraph & restore afterwards?
+(
+	# NOTE! 2>&1 *BEFORE* >x
+	time ./xsnobol4 genc.sno 2>&1 >x
+	diff snobol4.c x
+	rm -f x
+) | ./xsnobol4 -bs timing.sno
