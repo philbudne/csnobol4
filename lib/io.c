@@ -57,6 +57,7 @@ struct file {
     FILE *f;				/* may be NULL if not (yet) open */
     /* XXX current line number? */
     int flags;				/* FL_xxx */
+    enum { LAST_NONE, LAST_OUTPUT, LAST_INPUT } last;
     /* MUST BE LAST!! */
     char fname[1];
 };
@@ -96,6 +97,7 @@ io_newfile( path )
     bzero( (char *)fp, sizeof (struct file) );
     strcpy(fp->fname,path);
     fp->flags = FL_EOL;			/* normal */
+    fp->last = LAST_NONE;		/* nothing yet */
     return fp;
 }
 
@@ -536,6 +538,17 @@ io_print( iob, sp )			/* STPRNT */
 	    cp = S_SP(sp);
 	} /* compiling */
 
+	/*
+	 * stdio requires rewind between direction changes!
+	 * not needed if UPDATE I/O performed using read()/write()
+	 * (see comment on UNBUF below)
+	 */
+
+	if ((fp->flags & FL_UPDATE) && fp->last == LAST_INPUT) {
+	    rewind(f);
+	}
+	fp->last = LAST_OUTPUT;
+
 	/* XXX check FL_UNBUF; write(fileno(f), cp, recl)? */
 	fwrite( cp, 1, len, f );
     }
@@ -599,6 +612,17 @@ io_read( dp, sp )			/* STREAD */
 		     );
 	    /* XXX pass recl? */
 	}
+
+	/*
+	 * stdio requires rewind between direction changes!
+	 * not needed if UPDATE I/O performed using read()/write()
+	 * (see comment on UNBUF below)
+	 */
+
+	if ((fp->flags & FL_UPDATE) && fp->last == LAST_OUTPUT) {
+	    rewind(f);
+	}
+	fp->last = LAST_INPUT;
 
 	/* XXX check FL_UNBUF; read(fileno(f), cp, recl)? */
 	if (fp->flags & FL_BINARY) {
