@@ -38,7 +38,7 @@ OBJ=	isnobol4.o data.o data_init.o main.o syn.o \
 	environ.o exit.o exp.o file.o getstring.o \
 	host.o log.o logic.o ord.o rename.o retstring.o sin.o \
 	spcint.o spreal.o sprintf.o sqrt.o sset.o \
-	tan.o sys.o tty.o inet.o execute.o exists.o \
+	tan.o sys.o tty.o inet.o bindresvport.o execute.o exists.o \
 	term.o findunit.o
 
 snobol4.exe: $(OBJ)
