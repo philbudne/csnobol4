@@ -25,11 +25,12 @@
 
 #ifdef NO_STATIC_VARS
 #include "vars.h"
-#else
+#else  /* NO_STATIC_VARS not defined */
 extern int argc, firstarg;
+extern int pmstack, ndynamic;
 extern char **argv;
 extern char *params;
-#endif
+#endif /* NO_STATIC_VARS not defined */
 
 extern char *getenv();			/* use <stdlib.h> if avail? */
 
@@ -38,7 +39,7 @@ extern const char build_files[];
 extern const char build_lib[];
 extern const char build_date[];
 extern const char build_dir[];
-#endif /* HAVE_BUILD_VARS */
+#endif /* HAVE_BUILD_VARS defined */
 
 #ifndef BPC
 #define BPC 8				/* 8 bits/char */
@@ -186,6 +187,14 @@ HOST( LA_ALIST ) LA_DCL
     case HOST_SPEC_BITS:
 	RETTYPE = I;			/* oof! blast return type! */
 	RETINT(SPEC*BPC);		/* specifier size */
+
+/* integer variables; */
+    case HOST_DYNAMIC_SIZE:
+	RETTYPE = I;			/* oof! blast return type! */
+	RETINT(ndynamic/DESCR);		/* dynamic region in DESCRs */
+    case HOST_PMSTACK_SIZE:
+	RETTYPE = I;			/* oof! blast return type! */
+	RETINT(pmstack/DESCR);		/* pattern match stack length */
 
 /*
  * NOTE!! All of the above 2xxx values are related to internals, and
