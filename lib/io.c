@@ -745,20 +745,18 @@ io_read( dp, sp )			/* STREAD */
 		     (fp->flags & FL_BINARY) != 0,
 		     (fp->flags & FL_NOECHO) != 0,
 		     recl );
-	    /* XXX move TTY_READ to here, add else??? */
 	} /* FL_TTY set */
 
 	if (fp->flags & FL_BINARY) {
-#ifdef TTY_READ
-	    /* XXX only for binary???? */
+#ifdef TTY_READ_BINARY
 	    if (fp->flags & FL_TTY)
 		len = tty_read(f, cp, recl,
-			       (fp->flags & FL_BINARY) != 0, /* "raw" */
+			       TRUE,	/* "raw" */
 			       (fp->flags & FL_NOECHO) != 0, /* "noecho" */
-			       (fp->flags & FL_EOL) != 0, /* "keepeol" */
+			       FALSE,	/* "keepeol" */
 			       fp->fname);
 	    else
-#endif /* TTY_READ defined */
+#endif /* TTY_READ_BINARY defined */
 #ifndef NO_UNBUF_READ
 	    if (fp->flags & FL_UNBUF)
 		len = read(fileno(f), cp, recl);
@@ -768,7 +766,18 @@ io_read( dp, sp )			/* STREAD */
 
 	    if (len > 0)
 		break;
+	} /* binary */
+#ifdef TTY_READ_COOKED
+	else if (fp->flags & FL_TTY) {
+	    len = tty_read(f, cp, recl,
+			   FALSE,	/* "raw" */
+			   (fp->flags & FL_NOECHO) != 0, /* "noecho" */
+			   (fp->flags & FL_EOL) != 0, /* "keepeol" */
+			   fp->fname);
+	    if (len > 0)
+		break;
 	}
+#endif /* TTY_READ_COOKED defined */
 	else {				/* not binary */
 	    /* fgets() returns at most recl-1 characters + NUL */
 	    if (fgets(cp, recl, f) != NULL) {
