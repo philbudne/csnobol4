@@ -359,7 +359,10 @@ if [ "$GCCPATH" -a "$WANTGCC" ]; then
     echo 'CCM=$(CC) -M'				>> $CONFIG_M4
 
     # -O3 just adds -finline-functions (set above)
-    OPT=-O2
+    # -Wuninitialized meaningless without -O, so don't ADD_OPT() it!
+    OPT='-O2 -Wuninitialized'
+
+    ADD_OPT('-Wunused')
 
     case "$OS" in
     Darwin)
