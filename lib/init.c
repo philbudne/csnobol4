@@ -28,7 +28,13 @@ extern void *malloc();
 
 extern char *dynamic();
 
+#ifndef NDYNAMIC
 #define NDYNAMIC (64*1024)		/* default dynamic region size */
+#endif /* NDYNAMIC not defined */
+
+#ifndef PSSIZE
+#define PSSIZE SPDLDR			/* default pattern stack size */
+#endif /* PSSIZE not defined */
 
 #ifdef NO_STATIC_VARS
 #include "vars.h"
@@ -82,7 +88,7 @@ usage( jname )
     p( "-M\tprocess multiple input files\n");
     p( "-P BYTES[k]\n");
     fprintf(stderr, "\tsize of pattern match stack in bytes (default: %d)\n",
-	    SPDLDR);
+	    PSSIZE);
     p( "\n");
     fprintf(stderr, "in memory region sizes a suffix of 'k' (1024) can be used\n");
     fprintf(stderr, "descriptor size is %d bytes\n", DESCR );
@@ -168,7 +174,7 @@ init_args( ac, av )
     int multifile;
 
     ndynamic = NDYNAMIC * DESCR;
-    pmstack = SPDLDR;
+    pmstack = PSSIZE;
 
     /* save in globals for HOST(), getparm(), init() */
     argc = ac;
@@ -342,7 +348,7 @@ init()
      * allocate dynamic data region
      */
 
-    /* round down to even number of descr's */
+    /* round down to even number of descr's; get bytes */
     ndynamic = (ndynamic / DESCR) * DESCR;
 
     ptr = dynamic(ndynamic);
@@ -378,7 +384,7 @@ init()
     /* set up stack title */
     D_A(ptr) = (int_t) ptr;
     D_F(ptr) = TTL + MARK;
-    D_V(ptr) = pmstack;			/* length */
+    D_V(ptr) = pmstack;			/* length in bytes */
 
     /* pointers to top of stack */
     D_A(PDLPTR) = D_A(PDLHED) = (int_t) ptr;
