@@ -23,19 +23,19 @@
 #define bcmp memcmp
 #endif /* bcmp not defined */
 
-#ifdef NEED__BCOPY
+#ifdef NEED_BCOPY
 /* use lib/aux/bcopy.c (fast, handles overlap correctly) */
 void bcopy __P((const void *, void *, int));
-#endif /* NEED__BCOPY defined */
+#endif /* NEED_BCOPY defined */
 
 #ifdef USE_MEMMOVE
 #define bcopy(SRC,DEST,LEN) memmove(DEST,SRC,LEN)
 #endif /* USE_MEMMOVE defined */
 
-#ifdef NEED__BZERO
+#ifdef NEED_BZERO
 /* use lib/aux/bzero.c (faster than memset) */
 void bzero __P((char *, unsigned int));
-#endif /* NEED__BZERO defined */
+#endif /* NEED_BZERO defined */
 #endif /* HAVE_STRINGS_H not defined */
 
 #endif /* HAVE_STRING defined */
