@@ -195,11 +195,62 @@ The following are cpp macro names which can be by adding
 The following cpp macro names are #ifdef'ed in source and header files;
 
 .NH 3
+HAVE_BUILD_VARS
+
+.PP
+Variables from the Makefile generated build.c, including
+build_file, build_date, build_dir are available
+.NH 3
+HAVE_DXE2
+
+.PP
+The MS-DOS/DJGPP DXE2 dynamic loading facility is available.
+.NH 3
+HAVE_FSEEKO
+
+.PP
+The system provides the "large file extensions" fseeko()
+function which takes an off_t instead of a long.
+.NH 3
 HAVE_OS_INIT
 
 .PP
 Define if you need to supply an Operating System specific
 initialization routine named os_init to be called on startup.
+.NH 3
+HAVE_SOCKADDR_IN6
+
+.PP
+The system provides struct sockaddr_in6 for IPv6 internet
+addresses.  Some systems define AF_INET6 without providing
+this structure!
+.NH 3
+HAVE_STDLIB_H
+
+.PP
+The system provides the ANSI stdlib.h header file
+.NH 3
+HAVE_STRINGS_H
+
+.PP
+The system provides the V7/BSD strings.h header file.
+This file is expected to provide definitions
+for the bcopy(), bzero(), index() and rindex() functions.
+.NH 3
+HAVE_STRING_H
+
+.PP
+The system provides the ANSI/SVID string.h header file.
+.NH 3
+HAVE_WINSOCK_H
+
+.PP
+The system provides the Win32 winsock.h header file.
+.NH 3
+HAVE_WATTCP
+
+.PP
+The MS-DOS WATTCP TCP/IP library is available.
 .NH 3
 HZ
 
@@ -214,6 +265,26 @@ If INT_T is defined, it should be the C type to use for integer values
 and addresses.  INT_T must be large enough to hold a pointer. The
 default type used for int_t is "long", except when the configure --longlong
 option is given, and then int_t is "long long".  See also REAL_T.
+.NH 3
+NEED_BCOPY
+
+.PP
+Prototype for bcopy() routine needed.
+.NH 3
+NEED_BZERO
+
+.PP
+Prototype for bzero() routine needed.
+.NH 3
+NEED_BINDRESVPORT
+
+.PP
+bindresvport() function and prototype needed.
+.NH 3
+NEED_BINDRESVPORT_SA
+
+.PP
+bindresvport_sa() function and prototype needed.
 .NH 3
 NO_BITFIELDS
 
