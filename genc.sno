@@ -1263,12 +1263,12 @@ XENFILE	OUTPUT = IND 'io_endfile(' D_A(ARGV<1>) ');'	:(OPDONE)
 XBKSPCE	OUTPUT = IND 'io_backspace(' D_A(ARGV<1>) ');'	:(OPDONE)
 
 ****************
-*	SIL XOPENI extension 11/10/93
-XXOPENI	F = 'io_openi'					:(FSFUN2)
+*	SIL XOPENI extension 11/10/93; RIP 10/16/96
+*XXOPENI F = 'io_openi'					:(FSFUN2)
 
 ****************
-*	SIL XOPENO extension 11/10/93
-XXOPENO	F = 'io_openo'					:(FSFUN2)
+*	SIL XOPENO extension 11/10/93; RIP 10/16/96
+*XXOPENO F = 'io_openo'					:(FSFUN2)
 
 ****************
 *	SIL XECOMP extension 11/10/93
