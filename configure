@@ -1187,7 +1187,7 @@ if grep SIGTSTP /usr/include/signal.h >/dev/null 2>&1 || \
     if grep sigset_t /usr/include/signal.h >/dev/null 2>&1 || \
        grep sigset_t /usr/include/sys/signal.h >/dev/null 2>&1; then
 	echo 'using POSIX suspend.c' 1>&2
-    elif grep sigset_t /usr/include/sys/signal.h >/dev/null 2>&1; then
+    elif grep 'sigmask(' /usr/include/sys/signal.h >/dev/null 2>&1; then
 	echo 'using BSD suspend.c' 1>&2
 	echo 'SUSPEND_C=$(SRCDIR)lib/bsd/suspend.c'	>> $CONFIG_M4
     else
