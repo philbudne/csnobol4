@@ -10,9 +10,13 @@
 # include <stdlib.h>			/* for malloc */
 # endif /* HAVE_STDLIB_H */
 
-# if defined(ENDEX_LONGJMP) || defined(NO_STATIC_VARS)
+# include <stdio.h>			/* for lib.h */
 # include "h.h"
 # include "snotypes.h"
+# include "lib.h"			/* version() */
+# include "gen.h"
+
+# if defined(ENDEX_LONGJMP) || defined(NO_STATIC_VARS)
 # include "macros.h"
 
 # include "equ.h"
