@@ -2,8 +2,57 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+3/3/98
+	lib/win32/load.c: rework load path handling;
+		try bare filename first, then prepend snolib dir
+
+3/2/98
+	doc/load.doc: talk about HP-UX and getstring()
+
+3/1/98
+	config/vms/descrip.mms: add .ifdefs (for DEC_C, NO_TCP)
+	INSTALL: document VMS MMS/MACRO= options
+
+2/26/98
+	lib/hpux/load.c: keep refcounts
+
+2/15/98
+	INSTALL: updated
+
+2/14/98
+	config/borland/build.bat: add exists.c
+	genc.sno: check for zero integer divisor, use RMATH_ERROR() macro
+	include/macros.h: add RMATH_ERROR(); calls finite()
+	config/win32/ntmsvc.mak: add -Dfinite=_finite
+	new lib/dummy/finite.c
+	Makefile2.m4: add FINITE_C
+	autoconf: add finite.o
+
+2/13/98
+	config/win32/ntmsvc.mak: add exists.c
+
+2/12/98
+	new lib/vms/unlink.c: use delete function!
+	lib/io.c: fixed TTY_READ_COOKED (noeol arg, accept empty lines)
+	lib/vms/popen.c: fixed typo
+	lib/vms/sys.c: blows on VAX up unless debug puts() present?
+	lib/vms/tty.c: fixed term/termlen swap
+	config/vms/descrip.mms: updated (works on uVAX 3100 under VMS 6.1)!
+	removed build.com
+
+2/10/98
+	config/vms/{build.com,descrip.mms}: updated
+	lib/stream.c: renamed index variable for VAX/VMS cpp
+	lib/io.c: include res.h for VAX/VMS CC
+	lib/bsd/inet.c: ifdef includes for VMS
+	lib/vms/tty.c: fix typo
+	lib/vms/popen.c: add <errno.h>
+	new lib/vms/exists.c: check for file existance
+	INSTALL: cleaned up VMS instructions
+
 2/8/98
 	config/win32/ntmsvc.mak: add TTY_C TTY_DEFS NO_BITFIELDS vars
+	lib/io.c: add /dev/tmpfile, OSDEP_FOPEN
 
 2/6/98
 	lib/bsd/inet.c: use winsock.h under USE_WINSOCK_H
@@ -544,7 +593,7 @@ Gave to Phillip Thomas 11/23? for tcp/findunit fixes
 	lib/io.c: default SNOLIB_DIR to "./" (for DOS)
 	v311.sil: add calls to vm_gc_advise()
 	version.c: upped version to 0.99.3
-	config/borland/build.bat: new version from Steve Kibbler
+	config/borland/build.bat: new version from Steve Kibler
 	config/borland/README: updated
 	doc/ports.doc: new ss2 timing
 	diffall: take TAG arg
