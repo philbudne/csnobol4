@@ -1549,9 +1549,20 @@ XUNLOAD	OUTPUT = IND 'unload(' ARGV<1> ');'		:(OPDONE)
 * use different (faster) function if testing for (in)equality!!
 
 XLEXCMP	IDENT(ARGV<3>,ARGV<5>)				:S(LEXEQ)
-* NOTE: lexcmp() never called more than once (no three-way compares)!!
-	DOCMP3( 'lexcmp(' ARGV<1> ',' ARGV<2> ')',
-+		'0', ARGV<3>, ARGV<4>, ARGV<5>)		:(OPDONE)
+	X = 'lexcmp(' ARGV<1> ',' ARGV<2> ')'
+	IDENT(ARGV<3>,ARGV<4>)				:S(LEXCMP1)
+	IDENT(ARGV<4>,ARGV<5>)				:S(LEXCMP1)
+
+* here with three-way (one call)
+	OUTPUT = IND '{'
+	INDENT()
+	OUTPUT = IND 'int x = ' X ';'
+	DOCMP3('x', '0', ARGV<3>, ARGV<4>, ARGV<5>)
+	UNINDENT()
+	OUTPUT = IND '}'				:(OPDONE)
+
+* here with two-way
+LEXCMP1	DOCMP3(X, '0', ARGV<3>, ARGV<4>, ARGV<5>)	:(OPDONE)
 
 LEXEQ	F = 'LEXEQ'					:(FSFUN2)
 
