@@ -7,6 +7,7 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 	lib/io.c: add io_flushall, ran comdef, add comments
 		add fp check in io_seek()
 	lib/snolib/host.c, lib/snolib/exit.c: call io_flushall
+	autoconf: tweak *bsd*
 
 10/24/96:
 	INSTALL: updated
