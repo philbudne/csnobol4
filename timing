@@ -128,11 +128,9 @@ echo ''
 echo 'config.h:'
 cat config.h
 
-if [ "$CCVERS" ]; then
-	echo ''
-	echo "$CC $CCVERS"
-	$CC $CCVERS
-fi
+echo ''
+echo 'build.c:'
+cat build.c
 
 # for cygwin
 if [ -f ${SNOBOL}.exe ]; then
@@ -162,7 +160,7 @@ fi
 
 echo ''
 echo 'Ids:'
-grep 'Id:' v311.sil genc.sno
+grep 'Id:' v311.sil genc.sno timing timing.sno
 
 echo ''
 echo 'timing run of genc.sno:'
