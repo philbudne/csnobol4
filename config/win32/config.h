@@ -28,6 +28,7 @@
 #define HAVE_WINSOCK_H
 
 #define NEED_BINDRESVPORT
+#define NEED_SOCKLEN_T
 
 /* DLL import/export macros */
 
