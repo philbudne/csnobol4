@@ -1,5 +1,7 @@
 $Id$
 
+add regression tests for -CASE/&CASE
+
 ================
 
 update ports.doc for
