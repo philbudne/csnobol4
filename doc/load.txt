@@ -1,6 +1,6 @@
 $Id$
 
-1. Intruduction
+1. Introduction
 
 External functions are loaded via the LOAD() function.  LOAD() is
 passed a prototype which names the function and describes the number
@@ -26,7 +26,7 @@ examples:
 
 2. Creating a C function to be loaded.
 
-An external C function should be declared as follws;
+An external C function should be declared as follows;
 
     #include "h.h"
     #include "snotypes.h"
@@ -66,7 +66,7 @@ Arguments can be accessed via the following macros;
 		I	arg is an integer of type int_t
 		R	arg is a real of type real_t
 		S	arg references a string or "natural variable"
-			constructed of 4 decsriptors, plus the string.
+			constructed of 4 descriptors, plus the string.
 			(see the getstring() function)
 
 			The D_V() field of the first descriptor
@@ -74,14 +74,14 @@ Arguments can be accessed via the following macros;
 			after the 4th descriptor (at D_A(dp) + BCDFLD)
 
 		user datatypes begin at 100 and appear as an array of
-		descriptors located by D_A(dp).  The first descripor
+		descriptors located by D_A(dp).  The first descriptor
 		is a "title" descriptor whose D_V() field indicates
 		how many descriptors follow.
 
 
 Dynamicly loaded functions have no access to any global data or
 functions in the SNOBOL4 system.  Any libraries required to load the
-function must be mentioned explcitly in the second argument to LOAD().
+function must be mentioned explicitly in the second argument to LOAD().
 
 3. ``Static'' (or ``Poor Man's'') Loading
 
@@ -95,7 +95,7 @@ Step 1.
 	Add a line to the top level file "pml.h" which describes the
 	function name and it's entry point.  If the names are the same, use
 	PMLFUNC(NAME), else use PMLFUNC2("NAME", entry).  pml.h
-	econtains xamples for many of the functions in snolib/*.c
+	contains examples for many of the functions in snolib/*.c
 
 Step 2.
 
