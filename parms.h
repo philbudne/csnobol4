@@ -25,6 +25,7 @@
 #include "res.h"
 #include "data.h"
 #include "syn.h"
+#include "proc.h"
 
 #ifdef NO_STATIC_VARS
 #include "vars.h"
