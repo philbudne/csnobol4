@@ -93,6 +93,7 @@ SRCS=	main.c snobol4.c data.c data_init.c $(BAL_C) $(CONVERT_C) \
 TESTED:	xsnobol4
 	@echo Running regression tests...
 	cd test; ./run.sh ../xsnobol4 > test.out
+	./timing > timing.out
 	date > TESTED
 
 xsnobol4: $(OBJS)
@@ -249,6 +250,7 @@ realclean: clean
 	main.c charset.c data_init.c version.c \
 	parms.h mlink.h mdata.h pml.h \
 	lib include config test bugs snolib \
+	timing timing.sno \
 	$(GENERATED) \
 	cc-M'
 
