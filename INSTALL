@@ -123,6 +123,24 @@ following options (multiple instances of options that begin with
 	--no-dlopen
 		Disable use of Unix98 dlopen() API for dynamic LOAD() support
 
+	--no-bitfields
+		Disable use of C bitfields for SNOBOL Implementation
+		Language (SIL) descriptors (basic unit of storage).
+		This defaults to "on" when --lp64 is enabled (or the
+		default), or when --longlong is specified.
+
+		The usable descriptor size field will increase from 24
+		bits to 31 bits, increasing the maximum string size
+		from 16MB to 2GB, the largest array from 2M entries to
+		over 170M entries, and the largest table from 1M
+		entries to over 85M entries.
+
+		In most cases the larger descriptor size will decrease
+		performance. Despite not having to deal with packing
+		and unpacking a 24-bit field, the larger descriptor
+		means increased memory bandwidth use, and less
+		efficent use of the CPU data cache.
+
 	--no-dynlib
 		Disable use of all dynamic LOAD() support mechanisms
 
