@@ -3,9 +3,6 @@
 
 	&ANCHOR = 1
 
-	OUTPUT =
-	OUTPUT = "timing.sno $Revision$"
-
 * constants
 	DIGIT = '0123456789'
 	TAB = '	'
@@ -50,15 +47,15 @@ VLOP	LINE = INPUT					:F(NOVERS)
 
 	OUTPUT = 'Version:' TAB TAB VERS		:(CLOP)
 
-NOVERS	OUTPUT = "could not find SNOBOL4 SIGNON/VERSION" :(FATAL)
+NOVERS	OUTPUT = "ERROR: could not find SNOBOL4 SIGNON/VERSION" :(FATAL)
 
 * COMPILING
 CLOP	LINE = INPUT					:F(NOCOMP)
 	LINE 'No errors detected in source program'	:S(ELOP)
 	LINE 'ERRORS DETECTED IN SOURCE PROGRAM'	:S(BADCOMP)F(CLOP)
 
-NOCOMP	OUTPUT = "compilation interrupted?"		:(FATAL)
-BADCOMP	OUTPUT = "compilation failed"			:(FATAL)
+NOCOMP	OUTPUT = "ERROR: compilation interrupted?"	:(FATAL)
+BADCOMP	OUTPUT = "ERROR: compilation failed"		:(FATAL)
 
 * EXECUTING
 ELOP	LINE = INPUT					:F(NOEXEC)
@@ -66,8 +63,9 @@ ELOP	LINE = INPUT					:F(NOEXEC)
 	LINE 'Error ' INT				:S(BADEXEC)
 	LINE 'Caught'					:S(BADEXEC)F(ELOP)
 
-NOEXEC	OUTPUT = "execution error"			:(FATAL)
-BADEXEC	OUTPUT = "execution failed"			:(FATAL)
+NOEXEC	OUTPUT = "ERROR: genc.sno execution error"	:(FATAL)
+BADEXEC	OUTPUT = "ERROR: execution failed"
+	OUTPUT = LINE					:(FATAL)
 
 **************** here at end of normal execution
 
@@ -123,7 +121,7 @@ ALOP	LINE = INPUT					:F(NOSTAT)
 	GE(X,98) LT(X,102)				:S(GETTIME)
 
 	OUTPUT =
-	OUTPUT = "SNOBOL's calculated ms/stmt is suspect: " AVG
+	OUTPUT = "WARNING: SNOBOL's calculated ms/stmt is suspect: " AVG
 
 ****************************************************************
 * deal with shell "time" output
@@ -184,7 +182,7 @@ GOTTIME	SHELL = (USER + MIN * 60.0) * SHMULT
 
 * here with bad time measurements
 BADTIME	OUTPUT =
-	OUTPUT = "SNOBOL's timings off by factor of " FACTOR
+	OUTPUT = "WARNING: SNOBOL's timings off by factor of " FACTOR
 	OUTPUT = "	see doc/porting.doc section on mstime.c"
 	OUTPUT =
 	OUTPUT = "shell time:" TAB SHELL
@@ -206,11 +204,11 @@ TIMEOK	OUTPUT =
 
 * could not parse "snobol4" stats output; fatal
 NOSTAT	OUTPUT =
-	OUTPUT = "could not get stats"			:F(FATAL)
+	OUTPUT = "ERROR: could not get stats"		:F(FATAL)
 
 * could not get shell "time" output; nonfatal
 NOTIME	OUTPUT =
-	OUTPUT = "could not get times"			:(DONE)
+	OUTPUT = "ERROR: could not get times"		:(DONE)
 
 FATAL	&CODE = 1
 DONE	OUTPUT =
