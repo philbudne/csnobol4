@@ -99,7 +99,7 @@ void retstring __P((struct descr *retval, char *cp, int len));
 /* lib/io.c; */
 int io_findunit __P((void));
 
-#ifdef NULL				/* stdio included */
+#ifdef EOF				/* stdio included */
 FILE *io_getfp __P((int));
 #endif /* NULL defined */
 
