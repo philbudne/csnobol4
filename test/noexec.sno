@@ -1,0 +1,3 @@
+-NOEXECUTE
+	output = 'error'
+end
