@@ -1,6 +1,10 @@
 * $Id$
 *
 * $Log$
+* Revision 1.86  2001/12/27 17:42:30  phil
+* [PLB73] rearrange some code to avoid functionization
+* eliminate procs (and loops): TRAC{1,4,6}, STOPT1, RECOM{N,F,Q,T}
+*
 * Revision 1.85  2001/12/26 23:15:51  phil
 * [PLB72] Use %G for us/stmt
 *
@@ -5419,7 +5423,7 @@ ASGNIC PUSH    XPTR		   Save subject of assignment
 *
 *      X Y (concatenation)
 *
-CON    PROC    ,		   X Y (concatenation)
+CONCAT PROC    ,		   X Y (concatenation)		[PLB74]
        RCALL   ,XYARGS,,FAIL	   Get two arguments
        DEQL    XPTR,NULVCL,,RTYPTR If first is null, return second
        DEQL    YPTR,NULVCL,,RTXPTR If second is null, return first
@@ -7623,7 +7627,7 @@ BIEQFN LHERE   ,						[PLB32]
 ASGNFN DESCR   ASGN,0,2		   X = Y    SPITBOL assignment	[PLB32]
        DESCR   0,0,0						[PLB32]
        DESCR   1,0,1						[PLB32]
-CONFN  DESCR   CON,0,2		   X   Y    concatenation
+CONFN  DESCR   CONCAT,0,2	   X   Y    concatenation	[PLB74]
        DESCR   0,0,0
        DESCR   20,0,19
 DIVFN  DESCR   DIV,0,2		   X / Y    division
