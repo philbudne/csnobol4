@@ -104,7 +104,7 @@ int load __P((struct descr *,struct spec *,struct spec *));
 void unload __P((struct spec *));
 
 /* from mstime.c */
-int_t mstime __P((void));
+float_t mstime __P((void));
 
 /* XXX missing; sys.c term.c tty.c */
 
