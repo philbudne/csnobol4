@@ -506,10 +506,6 @@ ED_F
 	DEFINE("D_V(V)")				:(ED_V)
 D_V	D_V = 'D_V(' V ')'				:(RETURN)
 ED_V
-****************
-	DEFINE("D_RV(V)")				:(ED_RV)
-D_RV	D_RV = 'D_RV(' V ')'				:(RETURN)
-ED_RV
 *
 ****************
 * descriptor at indirect address
@@ -1083,9 +1079,9 @@ XSBREAL	ROP = '-'					:(REALOP)
 ****************
 *	handle real ops!
 REALOP	OUTPUT = DIFFER(ARGV<4>) IND 'CLR_MATH_ERROR();'
-	X = D_RV(ARGV<1>)
-	Y = D_RV(ARGV<2>)
-	Z = D_RV(ARGV<3>)
+	X = RV(ARGV<1>)
+	Y = RV(ARGV<2>)
+	Z = RV(ARGV<3>)
 	IDENT(X,Y)					:S(REALOP2)
 	IDENT(X,Z)					:S(REALOP3)
 *	3-way; copy data-type, flags to output
@@ -1240,7 +1236,7 @@ XINIT	OUTPUT = IND 'init();'				:(OPDONE)
 
 ****************
 *	SIL MSTIME (TIME) macro
-XMSTIME	OUTPUT = IND D_RV(ARGV<1>) ' = mstime();'
+XMSTIME	OUTPUT = IND RV(ARGV<1>) ' = mstime();'
 	CLEAR_D_VF(ARGV<1>)				:(OPDONE)
 
 ****************
