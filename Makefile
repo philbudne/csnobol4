@@ -16,7 +16,7 @@ Makefile2: config.m4 Makefile2.m4
 	mv $(M2TMP) Makefile2
 
 config.m4:
-	./configure > config.m4.tmp
+	./autoconf > config.m4.tmp
 	mv config.m4.tmp config.m4
 
 clean:	Makefile2

@@ -14,6 +14,7 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 	globals: add REVERSE, SUBSTR, LEQ, LGE, LLE, LLT, LNE
 	lib/str.c: support for REVERSE(), SUBSTR()
 	test/tests.in: removed punch, added substr, lexcmp, space, space2
+	Makefile: renamed configure to autoconf
 
 9/17/96
 	lib/tree.c: fixed INSERT (from SNOBOL4+)
