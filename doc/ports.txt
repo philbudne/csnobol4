@@ -55,16 +55,16 @@ P5		100   SCO 3.2v5.0.2 cc		0.98.1  26322	pb 9/96
 DEC 3000/500	150   OSF/1 3.2     cc		0.99.3+ 25594	pb 6/97
 HP 9000/712	80?   HP-UX 9.03    c89		0.99.1  25848	hb 11/96
 Sun SS10/612	60    SunOS 5.5     spro	0.99    25733	ro 10/96
+Sun SS1000	50    SunOS 5.4     spro	0.99.4	23890	pb 8/97
 P5		90    Linux 2.0.23  gcc		0.99.2  23535 	dj 12/96
 IBM RS/6K 970	50    AIX 3.2	    gcc		0.99    22064	bm 10/96
-Sun SS1000	50    SunOS 5.4     spro	0.99.4	22225	pb 8/97
 P5		75    NetBSD 1.1    gcc		0.99    20923 	to 10/96
 Sun SS10/51	50    SunOS 4.1.3C  gcc		0.98.4	20710	pb 8/97
 Sun SS20/51	50    SunOS 4.1.3U1 gcc		0.99.4	20644	pb 8/97
 IBM RS/6K 40P	66    AIX 4.1.2	    cc		0.99.4	20108	pb 8/97
 HP 9000/720	50    HP-UX 10.10   c89		0.99.4	20183	pb 8/97
-DEC 3000/300	150   NetBSD 1.2E   gcc		0.99.4	19361	pb 6/97
-HP 9000/720	50    HP-UX 9.05    c89		0.99.4	19120	pb 7/97
+DEC 3000/300	150   NetBSD 1.2E   gcc		0.99.4	19361	pb 8/97
+HP 9000/720	50    HP-UX 9.05    c89		0.99.3+	19120	pb 7/97
 SGI IP20 (R4K)	100   IRIX 5.2      cc		0.99.4	17453	pb 8/97
 Sun SS5/110	110   SunOS 5.5.1   spro	0.99.1  17072	db 11/96
 Sun SS5/110	110   SunOS 5.5.1   spro	0.99.3  15075	db 11/96
@@ -85,14 +85,14 @@ i486SX		33    Linux 2.1.14  gcc		0.99.3	 4865	ad 4/97
 Sun SS/IPC	25    SunOS 4.1.4   gcc		0.99.4	 4581	pb 8/97
 HP 425T (68040)	26    HP-UX 8.00    c89		0.99	 4485	pb 10/96
 HP 375 (68030)	50    NetBSD 1.2E   gcc		0.99.4	 4156*	pb 8/97
-HP 370 (68030)	33.3  NetBSD 1.2E   gcc		0.99.4	 3167*	pb 6/97
+HP 370 (68030)	33.3  NetBSD 1.2E   gcc		0.99.4	 3167*	pb 8/97
 HP 370 (68030)	33.3  Mt Xinu 4.3   gcc		0.99	 3064	pb 10/96
 pc532 (ns32532)	25    NetBSD 1.2D   gcc		0.99.4	 2858*	pb 8/97
 Sun-4/110	14.28 NetBSD 1.2    gcc		0.99.1	 2751	pb 11/96
 A3000 (68030)	25    NetBSD 1.2E   gcc		0.99.4	 1979*	pb 8/97
 IBM RT/6152	??    ACIS/AOS 4.3  gcc		0.99	 1780*	pb 10/96
-Sun-3/80(68030)	20    SunOS 4.1.1   gcc		0.99.4	 1634	pb 7/97
-Sun-3/80(68030)	20    SunOS 4.1.1   cc		0.99.4	 1502	pb 7/97
+Sun-3/80(68030)	20    SunOS 4.1.1   gcc		0.99.4	 1634	pb 8/97
+Sun-3/80(68030)	20    SunOS 4.1.1   cc		0.99.4	 1502	pb 8/97
 ---
 
 old timings;
