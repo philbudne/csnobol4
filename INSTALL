@@ -19,7 +19,8 @@ then regression tested and timed, and finally named "snobol4".
 The "configure" tries to use the available C compiler which works
 best.  If you wish to alter configure's decision process, you can run
 it manually by typing "./configure OPTIONS" with zero or more of the
-following options;
+following options (multiple instances of options that begin with
+"--add-" can appear);
 
 	--add-cppflags=STRING
 		Add additional C preprocessor flags to compile command
@@ -41,6 +42,13 @@ following options;
 
 		When using GCC, "--add-opt=-g" can be used to compile
 		for debugging without disabling optimization.
+
+		GCC configuration dependant options (-mXXX) are
+		candidates for use with --add-opt=
+
+		It's best to investigate whether additional options
+		actually improve performance (by examining before and
+		after versions of timing.out)!!
 
 	--add-srcs=STRING
 		Add additional source files for "make depend"
@@ -144,7 +152,7 @@ following options;
 		to try depend on the C compiler in use.  Different
 		values to try;
 
-		SunPro/Sun Workhop: -fast
+			SunPro/Sun Workshop: -fast
 
 		If you can tell me good values to use, and how to detect
 		the compiler to use them on, please let me know!
