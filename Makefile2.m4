@@ -547,7 +547,8 @@ tar vers: snobol4 pv
 
 # make a mailable kit by splitting up binary, and uuencoding pieces
 # (no editing necessary for reassembly)
-uu:	vers bsplitu
+# requires "./pv" for $(VERS) in $(KIT)
+uu:	bsplitu tar pv
 	rm -rf uu; mkdir uu
 	cd uu; ln ../pv .; ../bsplitu $(KIT) < ../$(KIT); rm pv
 
@@ -557,21 +558,19 @@ bsplitu: bsplitu.c
 #################
 # installation
 
-# XXX make hard link from $(BINDEST) to $(BINDEST)-`./pv`??
+# install .h files for dynamicly loaded functions
+INSTALL_H=include/h.h include/snotypes.h include/macros.h \
+	include/load.h include/dt.h
 
-install: snobol4 doc/snobol4.1
-	-rm -f $(BINDEST).old
-	-mv -f $(BINDEST) $(BINDEST).old
+install: snobol4 doc/snobol4.1 pv
+	-rm -f $(BINDEST)
 	cp snobol4 $(BINDEST); strip $(BINDEST); chmod 755 $(BINDEST)
+	ln $(BINDEST) $(BINDEST)-$(VERS)
 	cp doc/snobol4.1 $(MANDEST)
 	test -d $(SNOLIB_DIR) || mkdir $(SNOLIB_DIR)
-	-rm -f $(SNOLIB_DIR)/$(SNOLIB_A)
-	cp $(SNOLIB_A) $(SNOLIB_DIR)/$(SNOLIB_A)
-	$(RANLIB) -t $(SNOLIB_DIR)/$(SNOLIB_A)
-	(cd snolib; for F in *.sno; do \
-		rm -f $(SNOLIB_DIR)/$$F; cp $$F $(SNOLIB_DIR); done)
-	-rm -f $(SNOLIB_DIR)/load.doc
-	cp doc/load.doc $(SNOLIB_DIR)
+	for F in snolib/*.sno $(INSTALL_H) doc/load.doc; do \
+		rm -f $(SNOLIB_DIR)/`basename $$F`; cp $$F $(SNOLIB_DIR); \
+	done
 	@echo 'Have you mailed a copy of timing.out to' \
 		'snobol4-timing@ultimate.com ?' 1>&2
 	
