@@ -38,12 +38,24 @@ stream( sp1, sp2, tp )
     DEBUGF(1,(" table %s\n", tp->name ));
 
     while (len > 0) {
-	const struct acts *ap;
+	register const struct acts *ap;
+	register index;
 	int_t tok;
 
-	ap = tp->actions + tp->chrs[*cp];
+	index = tp->chrs[*cp];
 
 	DEBUGF(2,(" '%c' (%d)", *cp, *cp ));
+
+	/* handle CONTIN quickly.
+	 * always has magic value zero 9/9/97
+	 */
+	if (index == 0) {
+	    DEBUGF(2,(" CONTIN\n"));
+	    cp++; len--;			/* accept */
+	    continue;
+	}
+
+	ap = tp->actions + index - 1;
 
 	/* token can never occur with CONTIN or ERROR? */
 	tok = ap->put;
@@ -55,7 +67,7 @@ stream( sp1, sp2, tp )
 #ifdef DEBUG
 	switch (ap->act) {
 	case AC_CONTIN:
-	    DEBUGF(2,(" CONTIN\n"));
+	    DEBUGF(2,(" CONTIN\n"));	/* shoudl not happen */
 	    break;
 	case AC_STOP:
 	    DEBUGF(2,(" STOP\n"));
@@ -107,11 +119,32 @@ stream( sp1, sp2, tp )
     return ret;
 }
 
+/* new 9/9/97; hide CONTIN crock */
+static int
+findact(act, tp)
+    enum action act;    
+    struct syntab *tp;
+{
+    const struct acts *ap;
+    register int j;
+
+    /* CONTIN is always zero, others one-based */
+    if (act == AC_CONTIN)
+	return 0;
+
+    /* find action index in list (SNABTB has one of each action type) */
+    for (j = 1, ap = tp->actions; ; j++, ap++)
+	if (ap->act == act)
+	    break;
+
+    return j;
+}
+
 /* 10/28/93 */
 void
 clertb(tp, act, sp)
     struct syntab *tp;
-    enum action act;
+
 {
     int i, j;
     char *cp;
@@ -121,11 +154,7 @@ clertb(tp, act, sp)
     } u;
     register long *lp, l;
 
-    /* find action index in list (SNABTB has one of each action type) */
-    for (j = 0; ; j++)
-	if (tp->actions[j].act == act)
-	    break;
-
+    j = findact(act, tp);
     /* setup long's worth of chars */
     for (i = 0; i < sizeof(u.c); i++)
 	u.c[i] = j;
@@ -155,20 +184,17 @@ plugtb(tp, act, sp)
     enum action act;
     struct spec *sp;
 {
-    unsigned char *cp;
-    int len;
-    int j;
+    register unsigned char *cp;
+    register int len;
+    register int j;
 
     len = S_L(sp);
     cp = (unsigned char *)S_SP(sp);
 
-    /* find action index in list (SNABTB has one of each action type) */
-    for (j = 0; ; j++)
-	if (tp->actions[j].act == act)
-	    break;
-
-    while (len-- > 0) {
+    j = findact(act, tp);
+    while (len > 0) {
 	tp->chrs[*cp++] = j;
+	len--;
     }
 }
 

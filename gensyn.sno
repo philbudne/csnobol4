@@ -28,12 +28,16 @@
 	ALPHANUM = ALPHA DIGIT
 
 	SP = ' '
-	HT = SP SP SP SP
 	TAB = '	'
 	NIL =
 
+*	half-tab
+	HT = SP SP SP SP
+
 *	space star space
 	SSS = ' * '
+
+	CONTIN = '0' SEP 'CONTIN' SEP
 
 *	patterns
 	ID = ANY(ALPHA) (SPAN(ALPHANUM) | NIL)
@@ -105,15 +109,20 @@ ACTION	P =
 
 AC1	G = DIFFER(G) '&' G
 	P = IDENT(P) '0'
+*	PUT/ACT/GO
 	PAG = P SEP A SEP G
+
 	DIFFER( ACTIONS< PAG > )			:S(AC2)
+	IDENT(PAG,CONTIN)				:F(NEWACT)
+	ACTION = 0					:(RETURN)
+
 *	here with new put/action/go combination
-	ACTIONS< PAG > = NACTIONS
+NEWACT	ACTIONS< PAG > = NACTIONS
 	PUT< NACTIONS > = P
 	ACT< NACTIONS > = A
 	GO< NACTIONS > = G
 	NACTIONS = NACTIONS + 1
-AC2	ACTION = ACTIONS< PAG >				:(RETURN)
+AC2	ACTION = ACTIONS< PAG > + 1			:(RETURN)
 EACTION
 
 **********************************
