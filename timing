@@ -16,9 +16,6 @@ fi
 echo 'Date:'
 date
 echo ''
-echo 'who am i:'
-who am i
-echo ''
 for p in `echo $PATH | tr : ' '`; do
 	if [ -f $p/uname ]; then
 		UNAME=$p/uname
