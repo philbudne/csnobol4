@@ -1445,9 +1445,7 @@ XMOVBLK	OUTPUT = IND 'MOVBLK(' D_A(ARGV<1>) ',' D_A(ARGV<2>) ','
 ****************
 *	SIL VARID (HASH) macro
 * XXX only called once!! do it inline??
-XVARID	OUTPUT = IND D_A(ARGV<1>) ' = (hash(' ARGV<2> ') % OBSIZ) * DESCR;'
-*	XXX use length for "assention" value for now!!
-	OUTPUT = IND D_V(ARGV<1>) ' = ' S_L(ARGV<2>) ';' :(OPDONE)
+XVARID	OUTPUT = 'hash(' ARGV<1> ',' ARGV<2> ');'	:(OPDONE)
 
 ****************
 *	SIL GETBAL (???) MACRO
