@@ -88,3 +88,7 @@ $Id$
 
 28. write man page
 	document all error messages (in man page or seperate doc)?
+
+29. add -LINE (ala snobol4+)
+
+30. package rebus
