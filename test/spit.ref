@@ -3,11 +3,11 @@
     statement 10: A = 'yes!!', time = xxx
 yes!!
 yes!!
-42.000000
-0.050000
+42.
+0.05
 cyan
 INTEGER: 17
-REAL: 3.141593
+REAL: 3.14159
 TOO BIG
 too small
 Just Right
