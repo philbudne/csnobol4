@@ -2,6 +2,9 @@
 
 /*
  * $Log$
+ * Revision 1.27  2002/03/13 17:47:31  phil
+ * update version to 0.99.44+
+ *
  * Revision 1.26  2002/03/03 05:02:52  phil
  * update version to 0.99.44
  *
@@ -80,6 +83,7 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
+#include <stdio.h>
 #include "h.h"				/* const */
 
 const char vers[] = "0.99.44+";
@@ -96,6 +100,7 @@ main() {
 #include "units.h"
 #include "snotypes.h"
 #include "macros.h"
+#include "lib.h"
 
 #include "equ.h"
 #include "res.h"
