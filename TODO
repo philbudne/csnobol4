@@ -34,8 +34,9 @@ $Id$
     intput(.tapein, 'mtin', 'dev/rmt0[-r16000 -w]')
 
 10b. extensions to allow opening sockets?!
-
-11. get rid of space padding on I/O!!
+10c. allow string for unit??
+	do away with units (ala SITBOL)?!!
+10d. get rid of record lengthd
 
 12. catch math errors (have MATH_ERROR() do something)!
 
@@ -57,8 +58,6 @@ $Id$
 17. implement ordvst() for sorting &DUMP output
 
 19. Implement caselessness
-19a. -CASE [N]
-19b. &CASE variable
 19c. command line -f
 
 20. create library of LOAD()able functions;
@@ -93,7 +92,8 @@ $Id$
 
 30. package rebus
 
-31. move UNIXF messages to main()
-
 32. generate code to set a register pointer for data init (USE/SET_A)?
 32b. merge gendata into genc???
+
+33. get rid of space padding in compiler (honor STREAD return len)
+

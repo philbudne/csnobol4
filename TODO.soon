@@ -49,9 +49,9 @@ Document;
 		formats ignored
 		recl NOT ignored!?!
 	-ERROR/-NOERRORS
+	-CASE/&CASE
 
     changes;
-	&TRIM default
 	-LIST defaults
 
     character set usage (move defns to synchars?)
