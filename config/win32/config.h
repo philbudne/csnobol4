@@ -27,11 +27,18 @@
 #define HAVE_STDLIB_H
 
 /* DLL import/export macros */
+
 #if defined(_MSC_VER) || defined(__MINGW32__)
 #define EXPORT(TYPE) __declspec(dllexport) TYPE
-#define IMPORT(TYPE) __declspec(dllimport) TYPE
 #elif defined(__BORLANDC__)
 #define EXPORT(TYPE) TYPE _export
+#endif
+
+/* only define IMPORT when building a loadable DLL?? */
+#ifdef DLL
+#if defined(_MSC_VER) || defined(__MINGW32__)
+#define IMPORT(TYPE) __declspec(dllimport) TYPE
+#elif defined(__BORLANDC__)
 #define IMPORT(TYPE) TYPE _import	/* ??? */
 #endif
 
