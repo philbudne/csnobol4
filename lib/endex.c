@@ -22,6 +22,7 @@ endex( x )
 {
     int i;
 
+    io_finish();
     tty_restore();
 
     /* if &ABEND set, dump core?! */
