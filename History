@@ -3,6 +3,12 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
+5/15/95
+	hp4xx port (3/95 -pb):
+	config/hpux-68k.m4
+	gendata.sno: cast values for D_V()
+	updated ports.doc
+	
 3/15/85
 	config/nextstep3.m4		(Thanks to Leigh Smith)
 	updated ports.doc
