@@ -1,0 +1,2 @@
+put contents of this directory in /usr/ports/lang/snobol4/
+rename Makefile.freebsd to Makefile

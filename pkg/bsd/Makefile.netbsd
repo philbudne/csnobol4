@@ -1,0 +1,14 @@
+# $NetBSD$
+
+DISTNAME=	snobol4-1.0
+CATEGORIES=	lang
+MASTER_SITES=	ftp://ftp.ultimate.com/snobol/
+
+MAINTAINER=	phil@ultimate.com
+
+HAS_CONFIGURE=	yes
+CONFIGURE_SCRIPT=configure
+CONFIGURE_ENV+=	PREFIX=${PREFIX}
+CONFIGURE_ARGS+=--prefix=${PREFIX}
+
+.include "../../mk/bsd.pkg.mk"

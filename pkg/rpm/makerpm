@@ -1,0 +1,30 @@
+#!/bin/sh
+
+# build source and binary RPM's from tar file in local directory
+# moves rpm files back to local directory, and cleans up.
+
+if [ `whoami` != 'root' ]; then
+	echo must be run as root 1>&2
+	exit 1
+fi
+
+VERS=snobol4-1.0
+SVERS=1
+SPEC=${VERS}-${SVERS}
+
+if [ ! -f ${VERS}.tar.gz ]; then
+	echo missing ${VERS}.tar.gz 1>&2
+	exit 1
+fi
+
+cp ${VERS}.tar.gz /usr/src/redhat/SOURCES/
+if rpm -ba ${SPEC}.spec; then
+	mv /usr/src/redhat/SRPMS/${SPEC}.src.rpm .
+	mv /usr/src/redhat/RPMS/i386/${SPEC}.i386.rpm .
+	rm /usr/src/redhat/SOURCES/${VERS}.tar.gz
+	rm -rf /usr/src/redhat/BUILD/${VERS}
+	exit 0
+else
+	echo rpm command failed 1>&2
+	exit 1
+fi

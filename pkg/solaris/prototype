@@ -1,0 +1,32 @@
+#ftype	class	path				access	owner	group
+i	pkginfo
+i	copyright
+d	none	lib/snobol4			0755	root	sys
+f	none	lib/snobol4/bq.sno		0644	root	sys
+f	none	lib/snobol4/chars.sno		0644	root	sys
+f	none	lib/snobol4/config.h		0644	root	sys
+f	none	lib/snobol4/dt.h		0644	root	sys
+f	none	lib/snobol4/equ.h		0644	root	sys
+f	none	lib/snobol4/fence.sno		0644	root	sys
+f	none	lib/snobol4/file.sno		0644	root	sys
+f	none	lib/snobol4/ftp.sno		0644	root	sys
+f	none	lib/snobol4/h.h			0644	root	sys
+f	none	lib/snobol4/host.sno		0644	root	sys
+f	none	lib/snobol4/http.sno		0644	root	sys
+f	none	lib/snobol4/load.doc		0644	root	sys
+f	none	lib/snobol4/load.h		0644	root	sys
+f	none	lib/snobol4/logic.sno		0644	root	sys
+f	none	lib/snobol4/macros.h		0644	root	sys
+f	none	lib/snobol4/not.sno		0644	root	sys
+f	none	lib/snobol4/serv.sno		0644	root	sys
+f	none	lib/snobol4/smtp.sno		0644	root	sys
+f	none	lib/snobol4/snobol4+.sno	0644	root	sys
+f	none	lib/snobol4/snotypes.h		0644	root	sys
+f	none	lib/snobol4/spitbol.sno		0644	root	sys
+f	none	lib/snobol4/tcp.sno		0644	root	sys
+f	none	lib/snobol4/unique.sno		0644	root	sys
+f	none	lib/snobol4/url.sno		0644	root	sys
+f	none	lib/snobol4/utf.sno		0644	root	sys
+f	none	lib/snobol4/wrapper.sno		0644	root	sys
+f	none	bin/snobol4			0755	root	sys
+f	none	man/man1/snobol4.1		0644	root	sys

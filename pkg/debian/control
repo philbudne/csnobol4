@@ -1,0 +1,12 @@
+Source: csnobol4
+Section: devel
+Priority: optional
+Maintainer: <snobol4@ultimate.com>
+Standards-Version: 3.0.1
+
+Package: csnobol4
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: Macro SNOBOL4 in C
+A port of the original Macro implementation of SNOBOL4
+with SPITBOL and SNOBOL4+ enhancements
