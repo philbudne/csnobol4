@@ -150,18 +150,22 @@ static struct iovars iov;
 #define FINDUNIT(N) (iov.units + (N))
 
 extern FILE *term_input();		/* from <system>/term.c */
+extern FILE *tcp_open(), *udp_open();	/* from <system>/inet.c */
 
-extern FILE *tcp_open(), *udp_open();
 #ifdef NEED_POPEN_DECL
-extern FILE *popen();
+extern FILE *popen();			/* from {generic,vms}/popen.c */
 #endif /* NEED_POPEN_DECL defined */
 
 /*
- * crock;
- *	do any extant systems have 64-bit off_t, working fsetpos
- *	and NO fseeko/ftello?
+ * Systems could implement 64-bit offsets using ANSI f[sg]etpos(),
+ * and not have fseeko/ftello.
+ *
  * create generic/fpos.c (use fseek/ftell to implement fseeko/ftello)
  * 	ansi/fpos.c	(use fsetpos/fgetpos)
+ * ??
+ *
+ * nasty bit about fgetpos() is that the return value is opaque
+ * (may return a cookie, without meaning, except to fsetpos)
  */
 #ifndef HAVE_FSEEKO
 #define ftello(FP) ftell(FP)
@@ -263,7 +267,7 @@ io_close(unit)				/* internal (zero-based unit) */
 	/* XXX call close hook? */
 #ifdef INET_IO
 	if (ISINET(fp)) {
-	    inet_close(fp->f);
+	    ret = inet_close(fp->f);
 	    fp->f = NULL;
 	}
 	else
