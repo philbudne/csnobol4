@@ -405,7 +405,7 @@ free MINGW C compiler.
 To compile using MINGW (http://www.mingw.org);
 	make -f config/win32/mingw.mak
 
-To compile using Microsoft Visual C++ (not tested);
+To compile using Microsoft Visual C++ (tested with Visual Studio .NET 2003);
 	nmake -f config\win32\ntmsvc.mak
 
 To compile using Borland C (not tested);
