@@ -16,7 +16,7 @@
 #ifdef HAVE_WATTCP
 #define FOLD_HOSTNAMES
 #define NEED_BINDRESVPORT
-#define NEED_SOCKLEN_T
+#define SOCKLEN_T int
 #define udp_open myudp_open
 #define tcp_open mytcp_open
 #endif /* HAVE_WATTCP defined */
