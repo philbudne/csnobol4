@@ -213,6 +213,7 @@ Install location;
 
 Optional items;
 	--with-tcl		--without-tk
+				--without-ndbm
 EOF
 
 	rm -f $CONFIG_M4 $CONFIG_H
@@ -1313,27 +1314,30 @@ if [ ! "$WITHOUT_NDBM" ]; then
 	# I guess we'll find out, won't we!!
     elif [ -f $INCDIR/gdbm.h ]; then
 	echo "using $INCDIR/gdbm.h" 2>&1
-	# XXX output HAVE_GDBM? NDBM_USE_GDBM??
+	# XXX check for library??
 	echo 'ADD_LDFLAGS([-lgdbm])'		>> $CONFIG_M4
 	USE_GDBM=1
     elif [ -f /usr/local/include/gdbm.h ]; then
 	# XXX for loop?
+	# XXX check for library??
 	USE_GDBM=1
 	GDBM_DIR=/usr/local
 	echo "using $GDBM_DIR/include/gdbm.h" 2>&1
 	echo 'ADD_CPPFLAGS([-I'$GDBM_DIR/include'])' >> $CONFIG_M4
 	echo 'ADD_LDFLAGS([-L'$GDBM_DIR/lib' -lgdbm])' >> $CONFIG_M4
     else
-        # XXX complain?? don't add ndbm.c,o
+	echo 'no ndbm support found' 1>&2
+	NO_NDBM=1
     fi
 
-    if [ "$USE_GDBM" ]; then
-	# XXX output HAVE_GDBM? NDBM_USE_GDBM??
+    if [ ! "$NO_NDBM" ]; then
+#	if [ "$USE_GDBM" ]; then
+#	    # XXX output HAVE_GDBM? NDBM_USE_GDBM??
+#	fi
+	echo '#define PML_NDBM'			>> $CONFIG_H
+	echo 'ADD_OBJS([ndbm.o])'		>> $CONFIG_M4
+	echo 'ADD_SRCS([$(NDBM_C)])'		>> $CONFIG_M4
     fi
-
-    echo '#define PML_NDBM'			>> $CONFIG_H
-    echo 'ADD_OBJS([ndbm.o])'			>> $CONFIG_M4
-    echo 'ADD_SRCS([$(NDBM_C)])'		>> $CONFIG_M4
 fi
 
 # Include COM support under Cygwin!
