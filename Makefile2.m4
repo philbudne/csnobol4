@@ -77,18 +77,18 @@ SMALL_SNO=snobol4
 
 .PRECIOUS: snobol4.c snobol4.o data_init.o
 
-OBJS=	main.o snobol4.o data.o data_init.o syn.o bal.o \
-	convert.o date.o dump.o dynamic.o endex.o exp.o hash.o init.o \
-	intspc.o io.o lexcmp.o load.o mstime.o ordvst.o pair.o pat.o \
-	pml.o realst.o replace.o str.o stream.o top.o tree.o \
-	version.o $(CONFIG_OBJ)
+OBJS=	main.o snobol4.o data.o data_init.o syn.o bal.o convert.o \
+	date.o dump.o dynamic.o endex.o exp.o hash.o init.o intspc.o \
+	io.o lexcmp.o load.o mstime.o ordvst.o pair.o pat.o pml.o \
+	realst.o replace.o str.o stream.o top.o tree.o version.o \
+	$(CONFIG_OBJ) $(AUX_OBJ)
 
 SRCS=	main.c snobol4.c data.c data_init.c $(BAL_C) $(CONVERT_C) \
 	$(DATE_C) $(DUMP_C) $(DYNAMIC_C) $(ENDEX_C) $(EXP_C) $(HASH_C) \
-	$(INIT_C) $(INTSPC_C) $(IO_C) $(LEXCMP_C) $(LOAD_C) $(MSTIME_C) \
-	$(ORDVST_C) $(PAIR_C) $(PAT_C) $(PML_C) $(REALST_C) \
-	$(REPLACE_C) $(STREAM_C) $(STR_C) $(TOP_C) $(TREE_C) version.c \
-	$(CONFIG_SRC)
+	$(INIT_C) $(INTSPC_C) $(IO_C) $(LEXCMP_C) $(LOAD_C) \
+	$(MSTIME_C) $(ORDVST_C) $(PAIR_C) $(PAT_C) $(PML_C) \
+	$(REALST_C) $(REPLACE_C) $(STREAM_C) $(STR_C) $(TOP_C) \
+	$(TREE_C) version.c $(CONFIG_SRC) $(AUX_SRC)
 
 TESTED:	xsnobol4
 	@echo Running regression tests...
