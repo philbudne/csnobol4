@@ -128,6 +128,10 @@ struct file {
 #endif /* MEM_IO defined */
 	TYPE_INET } type;
 #ifdef MEM_IO
+    /*
+     * for input: pointer to (NULL terminated) list of NUL terminated strings
+     * for output: pointer to pointer to buffer
+     */
     char **memref;
     int memlen;
     int mempos;
@@ -175,7 +179,9 @@ struct file {
  *
  * The MEM_IO crock is to allow SNOBOL4 to be built as a Win32 DLL
  * which takes handles for buffers for input and output.  BSD stdio
- * funopen() would make this easy....
+ * funopen() would make this easy.
+ *
+ * All of this could go away if the I/O system were more object oriented.
  */
 #define FL_NOTAFILE	0200		/* "f" is not a file (XXX TEMP) */
 #define ISAFILE(FP) !((FP)->flags & FL_NOTAFILE)
@@ -183,15 +189,16 @@ struct file {
 #define ISAFILE(FP) 1
 #endif /* not defined(INET_IO) || defined(MEM_IO) */
 
-#define ISPIPE(FP) ((FP)->type == TYPE_PIPE)
-#define ISTTY(FP)  ((FP)->type == TYPE_TTY)
-#define ISINET(FP) ((FP)->type == TYPE_INET)
-
 #ifdef MEM_IO
+#define FL_MEMINPUT	0400
 #define ISMEM(FP) ((FP)->type == TYPE_MEM)
 #else  /* MEM_IO not defined */
 #define ISMEM(FP) 0
 #endif /* MEM_IO not defined */
+
+#define ISPIPE(FP) ((FP)->type == TYPE_PIPE)
+#define ISTTY(FP)  ((FP)->type == TYPE_TTY)
+#define ISINET(FP) ((FP)->type == TYPE_INET)
 
 #define MAXFNAME	1024		/* XXX use MAXPATHLEN? POSIX?? */
 #define MAXOPTS		1024
@@ -357,6 +364,16 @@ io_close(unit)				/* internal (zero-based unit) */
     else
 	ret = TRUE;			/* keep gcc quiet! */
 
+#ifdef IO_MEM
+    if (ISMEM(fp)) {
+	if (fp->flags & FL_MEMINPUT) {
+	    fp->memref++;		/* advance to next string */
+	    fp->memlen = strlen(*fp->memref);
+	    fp->mempos = 0;
+	}
+    }
+    else
+#endif
     up->curr = fp->next;
     return ret;
 }
@@ -714,7 +731,7 @@ mem_write(fp, cp, len)
 {
     int ret = TRUE;
 
-    if (len + fp->mempos > fp->memlen) {
+    if (len + fp->mempos + 1 > fp->memlen) {
 	int newlen = fp->memlen * 2;
 	char *temp = realloc(fp->memref, newlen);
 	if (temp) {
@@ -727,6 +744,7 @@ mem_write(fp, cp, len)
     if (ret) {
 	memcpy(*fp->memref + fp->mempos, fp, len);
 	fp->mempos += len;
+	(*fp->memref)[fp->mempos] = '\0';
     }
     return ret;
 }
