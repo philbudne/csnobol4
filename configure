@@ -283,7 +283,7 @@ ia64:HP-UX)
     # different option to get LP64!
     GCC64=-mlp64
     ;;
-alpha:*|x86_64:*|ia64:*)
+alpha:*|sparc64:*|x86_64:*|ia64:*)
     # default is LP64
     LP64=true
 
