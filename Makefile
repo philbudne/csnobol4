@@ -167,10 +167,13 @@ G2=data.c data.h data_init.h proc.h equ.h res.h syn.c syn.h syn_init.h \
 # disposables
 DISP=*.o *.a callgraph prolog bsplitu pv vers build.c bsdtsort
 
-# remove objects; leave generated sources, final binary, Makefile2
+# remove objects, turds; leave generated sources, final binary, Makefile2
 clean:
-	rm -f $(DISP) *~ */*~ */*/*~ *.tmp \#*
+	rm -f $(DISP)
 	rm -rf subr
+	find . -type f -a \( \
+		-name '*~' -o -name '#*' -o -name '*.tmp' -o -name '.#*' \) \
+		-print | xargs -t rm -f
 
 # make ready for compilation on another platform (leave binaries)
 realclean: clean
