@@ -122,6 +122,7 @@ ALOP	LINE = INPUT					:F(NOSTAT)
 
 	OUTPUT =
 	OUTPUT = "WARNING: SNOBOL's calculated ms/stmt is suspect: " AVG
+	WARNINGS = 1
 
 ****************************************************************
 * deal with shell "time" output
@@ -153,7 +154,8 @@ GETTIME	LINE = INPUT					:F(NOTIME)
 	OUTPUT =
 	OUTPUT = "WARNING: could not verify snobol4's cpu time measurements"
 	OUTPUT = '	(look in timing.sno at GETTIME patterns)'
-	OUTPUT =					:(DIFFCK)
+	OUTPUT =
+	WARNINGS = 1					:(DIFFCK)
 
 * here with shell runtime; merge minutes and seconds, convert to 100ths
 GOTTIME	SHELL = (USER + MIN * 60.0) * SHMULT
@@ -187,6 +189,7 @@ BADTIME	OUTPUT =
 	OUTPUT =
 	OUTPUT = "shell time:" TAB SHELL
 	OUTPUT = "snobol4 time:" TAB SNOBOL
+	WARNINGS = 1
 
 	CHECKHZ(FACTOR, 50, 60)				:S(DONE)
 	CHECKHZ(FACTOR, 50, 100)			:S(DONE)
@@ -204,12 +207,15 @@ TIMEOK	OUTPUT =
 
 * could not parse "snobol4" stats output; fatal
 NOSTAT	OUTPUT =
-	OUTPUT = "ERROR: could not get stats"		:F(FATAL)
+	OUTPUT = "ERROR: could not get stats"		:(FATAL)
 
 * could not get shell "time" output; nonfatal
 NOTIME	OUTPUT =
-	OUTPUT = "ERROR: could not get times"		:(DONE)
+	OUTPUT = "WARNING: could not get times"
+	WARNINGS = 1
+DONE	TERMINAL = DIFFER(WARNINGS) "NOTE! WARNINGs in timing.out"
+	OUTPUT =					:(END)
 
 FATAL	&CODE = 1
-DONE	OUTPUT =
+	TERMINAL = "NOTE!! ERRORs in timing.out"
 END
