@@ -20,7 +20,7 @@ realst(sp, dp)
     /* XXX sigh; prints trailing zeroes (but never uses exponent)
      * %g suppresses trailing zeroes (but suppresses DOT and uses exponent)
      */
-    sprintf( buf, "%f", D_RV(dp) );
+    sprintf( buf, "%lf", D_RV(dp) );
     S_A(sp) = (int_t) buf;		/* OY! */
     S_F(sp) = 0;
     S_V(sp) = 0;
