@@ -3,16 +3,30 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
-1/24/94
+2/3/95
+	genc.sno: port improvements from experimental version:
+		SELBRA() omits redundant labels
+		new PLUS() functions omits "+ 0"
+		include "else" in DOCMP2 and DOBOOL
+		generate SHORTN/FSHRTN in-line
+		Net change in snobol4.c size: +35 chars
+	include/macros.h: remoted SHORTN/FSHRTN
+	Makefile2.m4: Add -b flag to SNO
+
+1/25/95
+	Makefile2.m4 config/{gcc,aix-rs6000,hpux,hpux-pa,skel.inc}.m4
+		new ADD_XXX m4 macros
+
+1/24/95
 	lib/aux/getopt.c: fix endless comment
 	Makefile2.m4: include CONFIG_CFLAGS in "make depend"
 
 ** BETA2 patch2 version 0.91.2 (tag BETA2_patch2)
 
-1/20/94
+1/20/95
 	lib/io.c: check for std{in,out,err} before fclose()
 
-1/13/94
+1/13/95
 	config/borland/build.bat: added -DANSI_STRINGS
 	lib/aux/getopt.c: include h.h (for index)
 
