@@ -77,8 +77,20 @@ GETSTAT	LINE = INPUT					:F(NOSTAT)
 	OUTPUT = 'Compile time:' TAB TAB COMP ' milliseconds'
 	OUTPUT = 'Execution time:' TAB TAB EXEC ' milliseconds'
 	OUTPUT = 'Statements executed:' TAB STMTS
-* sigh; cygwin on win9x;
-	OUTPUT = NE(EXEC,0) 'Statements per second:' TAB STMTS * 1000 / EXEC
+
+* beware dummy versions!
+
+* on fast systems with bad resolution, exec time shows in compiler time,
+* and exec time is zero?!
+	GT(EXEC,0)					:S(EXECOK)
+	GT(EXEC,COMP)					:S(EXECOK)
+	EQ(COMP,0)					:S(NOEXEC)
+
+	OUTPUT = 'Execution time zero, but non-zero compiler time!!'
+	EXEC = COMP
+	COMP = 0
+
+EXECOK	OUTPUT = 'Statements per second:' TAB STMTS * 1000 / EXEC
 
 * calculate usec/stmt
 	A1 = EXEC * 1000 / STMTS
@@ -86,7 +98,7 @@ GETSTAT	LINE = INPUT					:F(NOSTAT)
 	OUTPUT = 'microseconds per statement: ' A1
 
 * get SNOBOL time in 10ths
-	SNOBOL = (COMP + EXEC + 50) / SNODIV
+NOEXEC	SNOBOL = (COMP + EXEC + 50) / SNODIV
 
 **************** get snobols's average ms/stmt
 
