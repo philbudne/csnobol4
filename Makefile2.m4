@@ -4,19 +4,19 @@ define([CMT],[dnl])dnl
 CMT([################################################################])
 CMT([establish m4 macros to collect various options])
 CMT()
-CMT([extra C compiler cpp flags for all c files])
+CMT([extra C compiler cpp flags for all .c files & make depend])
 define([ADD_CPPFLAGS],[define([_CPPFLAGS],_CPPFLAGS $1)dnl])dnl
 define([_CPPFLAGS],)dnl
 CMT()
-CMT([extra C compiler optimize/debug flags for all c files])
+CMT([extra C compiler optimize/debug flags for all .c files])
 define([ADD_OPT],[define([_OPT],_OPT $1)dnl])dnl
 define([_OPT],)dnl
 CMT()
-CMT([extra source files for make depend])
+CMT([extra source files to make depend])
 define([ADD_SRCS],[define([_SRCS],_SRCS $1)dnl])dnl
 define([_SRCS],)dnl
 CMT()
-CMT([extra object files for final link])
+CMT([extra object files to snolib])
 define([ADD_OBJS],[define([_OBJS],_OBJS $1)dnl])dnl
 define([_OBJS],)dnl
 CMT()
@@ -98,6 +98,7 @@ RETSTRING_C=$(SRCDIR)lib/snolib/retstring.c
 SIN_C=$(SRCDIR)lib/snolib/sin.c
 SPRINTF_C=$(SRCDIR)lib/snolib/sprintf.c
 SQRT_C=$(SRCDIR)lib/snolib/sqrt.c
+SYS_C=$(SRCDIR)lib/posix/sys.c
 TAN_C=$(SRCDIR)lib/snolib/tan.c
 
 # private copy of CFLAGS for data_init.o; here so it can be overridden
@@ -285,7 +286,7 @@ intspc.o: $(INTSPC_C)
 	$(CC) $(CFLAGS) -c $(INTSPC_C)
 
 io.o:	$(IO_C)
-	$(CC) $(CFLAGS) $(SNOLIB_DEFINES) -c $(IO_C)
+	$(CC) $(CFLAGS) $(SNOLIB_DEFINES) $(HAVE_UNISTD_H) -c $(IO_C)
 
 lexcmp.o: $(LEXCMP_C)
 	$(CC) $(CFLAGS) -c $(LEXCMP_C)
@@ -339,7 +340,7 @@ bcopy.o: $(BCOPY_C)
 	$(CC) $(CFLAGS) -c $(BCOPY_C)
 
 getopt.o: $(GETOPT_C)
-	$(CC) $(CFLAGS) -c $(GETOPT_C)
+	$(CC) $(CFLAGS) $(ANSI_STRINGS) -c $(GETOPT_C)
 
 isnan.o: $(ISNAN_C)
 	$(CC) $(CFLAGS) -c $(ISNAN_C)
@@ -349,7 +350,7 @@ isnan.o: $(ISNAN_C)
 
 SNOLIB_OBJS= chop.o cos.o delete.o environ.o exit.o exp.o file.o \
 	fork.o getstring.o host.o log.o rename.o retstring.o sin.o \
-	sprintf.o sqrt.o tan.o $(AUX_OBJS)
+	sprintf.o sqrt.o sys.o tan.o $(AUX_OBJS)
 
 $(SNOLIB_A): $(SNOLIB_OBJS)
 	rm -f $(SNOLIB_A)
@@ -362,7 +363,7 @@ $(SNOLIB_A): $(SNOLIB_OBJS)
 SNOLIB_SRCS= $(CHOP_C) $(COS_C) $(DELETE_C) $(ENVIRON_C) $(EXIT_C) \
 	$(EXP_C) $(FILE_C) $(FORK_C) $(GETSTRING_C) $(HOST_C) $(LOG_C) \
 	$(RENAME_C) $(RETSTRING_C) $(SIN_C) $(SPRINTF_C) $(SQRT_C) \
-	$(TAN_C)
+	$(SYS_C) $(TAN_C)
 
 chop.o: $(CHOP_C)
 	$(CC) $(CFLAGS) -c $(CHOP_C)
@@ -411,6 +412,9 @@ sprintf.o: $(SPRINTF_C)
 
 sqrt.o: $(SQRT_C)
 	$(CC) $(CFLAGS) -c $(SQRT_C)
+
+sys.o: $(SYS_C)
+	$(CC) $(CFLAGS) $(CONFIG_GUESS) $(ANSI_STRINGS) -c $(SYS_C)
 
 tan.o: $(TAN_C)
 	$(CC) $(CFLAGS) -c $(TAN_C)
@@ -485,8 +489,10 @@ uu:	vers
 #################
 
 MAKEFILE2=Makefile2
+DEPENDFLAGS=$(MYCPPFLAGS) $(ANSI_STRINGS)
+
 depend:
 	sed '/^# DO NOT DELETE THIS LINE/q' $(MAKEFILE2) > $(MAKEFILE2).tmp
-	$(CCM) $(MYCPPFLAGS) $(SRCS) >> $(MAKEFILE2).tmp
+	$(CCM) $(DEPENDFLAGS) $(SRCS) >> $(MAKEFILE2).tmp
 	mv $(MAKEFILE2).tmp $(MAKEFILE2)
 
