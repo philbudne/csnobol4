@@ -1,6 +1,6 @@
 /* $Id$ */
 
-/* snobol4 main program */
+/* snobol4 main program (make this mlink.c??) */
 
 int
 main(argc, argv)
