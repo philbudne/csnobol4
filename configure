@@ -839,11 +839,12 @@ if [ ! "$NO_DYNLIB" ]; then
     elif [ -f /NextDeveloper/Headers/mach-o/dyld.h -o \
            -f /usr/include/mach-o/dyld.h -o ]; then
 	LOAD=next
-	echo 'using NextStep LOAD() support' 1>&2
+	echo 'using NextStep/Darwin LOAD() support' 1>&2
 	echo 'LOAD_C=$(SRCDIR)lib/next/load.c'	>> $CONFIG_M4
-	echo 'SNOLIB_FILE=snolib.dyld'		>> $CONFIG_M4
 	if [ "$OS" = Darwin ]; then
 	    echo '#define TRY_UNDERSCORE'	>> $CONFIG_H
+	else
+	    echo 'SNOLIB_FILE=snolib.dyld'	>> $CONFIG_M4
 	fi
     elif [ -f $INCDIR/a.out.h ]; then
 	LOAD=aout
