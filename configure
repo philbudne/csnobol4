@@ -850,6 +850,7 @@ if [ -f $INCDIR/sys/socket.h ]; then
 	echo 'ADD_OBJS([popen.o])'		>> $CONFIG_M4
 	echo 'ADD_SRCS([$(POPEN_C)])'		>> $CONFIG_M4
 	if [ -f $INCDIR/paths.h ]; then
+	    echo 'using paths.h for popen() shell path' 1>&2
 	    echo '#define HAVE_PATHS_H'		>> $CONFIG_H
 	else
 	    # XXX outer loop for sh, ksh, bash, csh, tcsh?
