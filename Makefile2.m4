@@ -36,6 +36,7 @@ MATHLIB=-lm
 
 # either snobol4 or isnobol4
 SNOBOL4=isnobol4
+#SNOBOL4=snobol4
 
 ########
 # default lib source files
@@ -69,6 +70,7 @@ TREE_C=lib/tree.c
 BZERO_C=lib/auxil/bzero.c
 BCOPY_C=lib/auxil/bcopy.c
 GETOPT_C=lib/auxil/getopt.c
+ISNAN_C=lib/dummy/isnan.c
 VFPRINTF_C=lib/auxil/vfprintf.c
 
 # end of defaults
@@ -130,13 +132,13 @@ $(SNOBOL4).o: $(SNOBOL4).c
 	$(CC) $(SNOBOL4_C_CFLAGS) $(CFLAGS) -c $(SNOBOL4).c
 
 # regular version
-snobol4.c: procs genc.sno global.procs v311.sil 
+snobol4.c: procs genc.sno globals v311.sil 
 	rm -f snobol4.c.TMP
 	$(SNO) genc.sno > snobol4.c.TMP
 	mv snobol4.c.TMP snobol4.c
 
 # inline version (functions reordered)
-isnobol4.c: procs genc.sno global.procs v311.sil inline.sno
+isnobol4.c: procs genc.sno globals v311.sil inline.sno
 	rm -rf isnobol4.c.TMP prolog subr
 	mkdir subr
 	$(SNO) inline.sno > prolog
@@ -265,6 +267,9 @@ bcopy.o: $(BCOPY_C)
 getopt.o: $(GETOPT_C)
 	$(CC) $(CFLAGS) -c $(GETOPT_C)
 
+isnan.o: $(ISNAN_C)
+	$(CC) $(CFLAGS) -c $(ISNAN_C)
+
 vfprintf.o: $(VFPRINTF_C)
 	$(CC) $(CFLAGS) -c $(VFPRINTF_C)
 
@@ -278,17 +283,17 @@ GENERATED=syn.c syn.h syn.h2 data.c data.h proc.h proc.h2 equ.h \
 # disposables
 G2=*.o callgraph prolog subr
 
-# remove objects, leave generated sources, final binary, Makefile2
+# remove objects; leave generated sources, final binary, Makefile2
 clean:
 	rm -rf $(G2) *~
 
-# remove objects, generated sources, leave final binary, Makefile2
+# remove objects, generated sources; leave final binary, Makefile2
 realclean: clean
 	rm -f $(GENERATED)
 
 [TAR=	README doc History TODO TODO.soon \
-	Makefile Makefile2.m4 \
-	v311.sil syntax.tbl procs global.procs \
+	Makefile Makefile2.m4 configure config.guess \
+	v311.sil syntax.tbl procs globals \
 	genc.sno gensyn.sno gendata.sno inline.sno \
 	main.c charset.c data_init.c version.c \
 	parms.h mlink.h mdata.h pml.h \

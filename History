@@ -3,10 +3,25 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
+8/31/96
+	v311.sil Add SPITBOL features with code from SNOBOL4+ and
+		Minnesota SNOBOL4; CHAR(), RPAD()/LPAD(), BREAKX(),
+		SORT()/RSORT().
+	lib/str.c: added pad()
+	genc.sno: added VCOMPC and NANCHK macros,
+		optimize three-way with three different labels
+		handle boolean with no labels (for XCALLC)
+		output braces around escaped code
+	renamed global.procs to globals
+	gendep.sno: handle %{ %}, XCALLC, RCOMP, NANCHK, upped &STLIMIT
+	Makefile2.m4: added isnan, configure, config.guess, globals
+	added lib/dummy/isnan.c
+	updated procs, doc/snobol4.1
+
 8/29/96
 	Tested on DS3100 (MIPS Ultrix -- 4.3 with a COFF)
 	added config/ultrix-mips.m4
-	updated ports.doc
+	updated ports.doc, configure
 
 8/25/96
 	Makefile: use new configure script

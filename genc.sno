@@ -387,18 +387,23 @@ DOCMPGE	OUTPUT = IND 'if( ' X ' >= ' Y ' )'
 	UNINDENT()					:(DOCMPD)
 
 DOCMPG	IDENT(G)					:S(DOCMPD)
+	(DIFFER(E) DIFFER(L))				:S(DOCMPG2)
+* here with one (or more of L/E labels missing)
 	OUTPUT = IND 'if( ' X ' > ' Y ' )'
 	INDENT()
 	BRANCH(G)
-	UNINDENT()
+	UNINDENT()					:(DOCMPR)
 
-*	done, check if all 3 labels present;
+* here with all labels present; no GT test needed; return dead code path
+DOCMPG2	BRANCH(G)					:(RETURN)
+
+*	done, check if all 3 labels present (dead code path)
 DOCMPD	IDENT(G)					:S(DOCMPR)
 	IDENT(E)					:S(DOCMPR)
 	IDENT(L)					:S(DOCMPR)
 *	all 3 labels present (and different)!, dead code path 
-*	STDERR =  'GOT HERE FN ' INPROC ' AFTER ' LLBL
 	LIVE =						:(RETURN)
+
 *	one or more labels missing; live code path
 DOCMPR	LIVE = 1					:(RETURN)
 EDOCMP3
@@ -445,7 +450,7 @@ DOBOOL	IDENT(T)					:S(DOBOOL2)
 	UNINDENT()					:(RETURN)
 
 * here with no label for true
-DOBOOL2	IDENT(F)					:S(DOBOOLL)
+DOBOOL2	IDENT(F)					:S(DOBOOL3)
 	OUTPUT = IND 'if( !' B ' )'
 	INDENT()
 	BRANCH(F)
@@ -455,6 +460,7 @@ DOBOOLL	LIVE = 1					:(RETURN)
 
 * both have same label.  eval B for side effects!
 DOBOOL3	OUTPUT = IND B ';'
+	IDENT(T)					:S(RETURN)
 	BRANCH(T)					:(RETURN)
 EDOBOOL
 
@@ -564,8 +570,8 @@ EMKPROC
 *	read  list of procs referenced from data (DESCRs)
 	DIFFER(MAINBOL)					:S(MB3)
 *	XXX check for success!
-	INPUT(.GLOB,3,"global.procs")			:S(GLOBLOP)F(GLOBERR)
-MB3	INPUT(.GLOB,3,,"global.procs")			:S(GLOBLOP)
+	INPUT(.GLOB,3,"globals")			:S(GLOBLOP)F(GLOBERR)
+MB3	INPUT(.GLOB,3,,"globals")			:S(GLOBLOP)
 GLOBERR	STDERR = "FATAL: could not open global.procs"	:(FATAL)
 
 GLOBLOP	PROC = GLOB					:F(GLOBEND)
@@ -622,14 +628,20 @@ TOP	LINE = INPUT					:F(EOF)
 
 *	check for start of c-code copy
 	ORIG "%{"					:F(NOTCOPY)
+	OUTPUT = IND '{'
+	INDENT()
 
 *	here if copying C code
 DOCOPY	LN = LN + 1
 	LINE = INPUT					:F(EOF)
 *	check for end
-	LINE "%}"					:S(TOP)
-	STDERR = "COPY: " LINE
+	LINE "%}"					:S(ECOPY)
+*	STDERR = "COPY: " LINE
 	OUTPUT = IND LINE				:(DOCOPY)
+
+*	here at end of c-copy
+ECOPY	UNINDENT()
+	OUTPUT = IND '}'				:(TOP)
 
 *	a comment?
 NOTCOPY	LINE '*'					:F(NOTCOMM)
@@ -654,7 +666,6 @@ BLOCK	DIFFER(BLOCK_COMMENTS)				:F(TOP)
 NOTCOMM	LINE LINE_PAT =
 
 	ARGC = 0
-	IDENT
 	ARGV = ARRAY(10)
 
 *	check for quoted string arg
@@ -1286,6 +1297,16 @@ XXINCLD	F = 'io_include'				:(FSFUN2)
 * args: function, C arg list (in parens), FALSE label, TRUE label
 XXCALLC	X = ARGV<1> ARGV<2>
 	DOBOOL(X,ARGV<3>,ARGV<4>)			:(OPDONE)
+****************
+*	SIL VCOMPC (snobol4+ extension) 8/26/96
+* args: descr, constant, labels
+XVCOMPC	DOCMP3( D_V(ARGV<1>), ARGV<2>, ARGV<3>,  ARGV<4>, ARGV<5>)
+							:(OPDONE)
+****************
+*	SIL NANCHK (snobol4+ extension) 8/26/96
+XNANCHK	X = 'isnan(' D_RV(ARGV<1>) ')'
+	DOBOOL(X,ARGV<2>,ARGV<3>)			:(OPDONE)
+
 *
 ****************************************************************
 *	stack operations
