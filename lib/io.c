@@ -119,7 +119,19 @@ struct file {
     struct file *next;			/* next input file */
     FILE *f;				/* may be NULL if not (yet) open */
     int flags;				/* FL_xxx */
-    enum { TYPE_NORM, TYPE_PIPE, TYPE_TTY, TYPE_INET } type;
+    enum {
+	TYPE_NORM,
+	TYPE_PIPE,
+	TYPE_TTY,
+#ifdef MEM_IO
+	TYPE_MEM,
+#endif /* MEM_IO defined */
+	TYPE_INET } type;
+#ifdef MEM_IO
+    char **memref;
+    int memlen;
+    int mempos;
+#endif /* MEM_IO defined */
     /* XXX add methods for read/write/eof/mode/seek/close */
     /* XXX keep recl (shift flags up?)? */
     enum { LAST_NONE, LAST_OUTPUT, LAST_INPUT } last;
@@ -145,7 +157,7 @@ struct file {
 #define FL_NOECHO	040		/* tty: no echo */
 #define FL_NOCLOSE	0100		/* don't fclose() */
 
-#ifdef INET_IO
+#if defined(INET_IO) || defined (MEM_IO)
 /*
  * About the INET_IO crock:
  *
@@ -160,16 +172,26 @@ struct file {
  * the "NOTAFILE" flag set, instead calls inet_read_{raw,cooked},
  * inet_write and inet_close in inet.c, which merrily cast the "FILE *"
  * back to an "inet_file"
+ *
+ * The MEM_IO crock is to allow SNOBOL4 to be built as a Win32 DLL
+ * which takes handles for buffers for input and output.  BSD stdio
+ * funopen() would make this easy....
  */
 #define FL_NOTAFILE	0200		/* "f" is not a file (XXX TEMP) */
 #define ISAFILE(FP) !((FP)->flags & FL_NOTAFILE)
-#else  /* INET_IO not defined */
+#else  /* not defined(INET_IO) || defined(MEM_IO) */
 #define ISAFILE(FP) 1
-#endif /* INET_IO not defined */
+#endif /* not defined(INET_IO) || defined(MEM_IO) */
 
 #define ISPIPE(FP) ((FP)->type == TYPE_PIPE)
 #define ISTTY(FP)  ((FP)->type == TYPE_TTY)
 #define ISINET(FP) ((FP)->type == TYPE_INET)
+
+#ifdef MEM_IO
+#define ISMEM(FP) ((FP)->type == TYPE_MEM)
+#else  /* MEM_IO not defined */
+#define ISMEM(FP) 0
+#endif /* MEM_IO not defined */
 
 #define MAXFNAME	1024		/* XXX use MAXPATHLEN? POSIX?? */
 #define MAXOPTS		1024
@@ -683,6 +705,77 @@ io_init()				/* here from INIT */
     }
 } /* io_init */
 
+#ifdef MEM_IO
+static int
+mem_write(fp, cp, len)
+    struct file *fp;
+    char *cp;
+    int len;
+{
+    int ret = TRUE;
+
+    if (len + fp->mempos > fp->memlen) {
+	int newlen = fp->memlen * 2;
+	char *temp = realloc(fp->memref, newlen);
+	if (temp) {
+	    *fp->memref = temp;
+	    fp->memlen = newlen;
+	}
+	else
+	    ret = FALSE;
+    }
+    if (ret) {
+	memcpy(*fp->memref + fp->mempos, fp, len);
+	fp->mempos += len;
+    }
+    return ret;
+}
+
+static int
+mem_read_raw(fp, cp, recl)
+    struct file *fp;
+    char *cp;
+    int recl;
+{
+    int rem = fp->memlen - fp->mempos;
+    if (rem == 0)
+	return -1;			/* 0? */
+    if (recl > rem)
+	recl = rem;
+    memcpy(cp, *fp->memref + fp->mempos, recl);
+    fp->mempos += recl;
+    return recl;
+}
+
+static int
+mem_read_cooked(fp, cp, recl, keepeol)
+    struct file *fp;
+    char *cp;
+    int recl;
+    int keepeol;
+{
+    int cc = 0;
+    int nread = 0;
+    int eol = FALSE;
+    while (cc < recl && !eol && fp->mempos < fp->memlen) {
+	char c = (*fp->memref)[fp->mempos++];
+	nread++;
+	if (c == '\r')
+	    continue;
+	if (cc == '\n') {
+	    eol = TRUE;
+	    if (!keepeol)
+		break;
+	}
+	*cp++ = c;
+        cc++;
+    }
+    if (nread == 0)
+	return -1;
+    return cc;
+}
+#endif /* MEM_IO defined */
+
 /* limited printf */
 void
 io_printf
@@ -695,7 +788,6 @@ io_printf
     va_list vp;
     char *format;
     register char c;
-    FILE *f;
     char line[1024];			/* XXX */
     char *lp;
     struct unit *up;
@@ -713,7 +805,7 @@ io_printf
 	return;
 
     up = FINDUNIT(unit);
-    if (up->curr == NULL || (f = up->curr->f) == NULL)
+    if (up->curr == NULL)
 	return;
 
     /* keep output in line buffer, in case output unbuffered (ie; stderr) */
@@ -781,7 +873,14 @@ io_printf
     } /* while */
     va_end(vp);
     *lp = '\0';
-    fputs(line, f);
+
+#ifdef MEM_IO
+    if (ISMEM(up->curr))
+	mem_write(up->curr, line, strlen(line));
+    else
+#endif
+    if (up->curr->f)
+	fputs(line, up->curr->f);
 } /* io_printf */
 
 void
@@ -866,6 +965,12 @@ io_print( iokey, iob, sp )		/* STPRNT */
 	}
 	else
 #endif /* INET_IO defined */
+#ifdef MEM_IO
+	if (ISMEM(fp)) {
+	    ret = mem_write(fp, cp, len);
+	}
+	else
+#endif /* MEM_IO defined */
 #ifndef NO_UNBUF_RW
 	if (fp->flags & FL_UNBUF) {
 	    if (write(fileno(f), cp, len) != len)
@@ -877,6 +982,8 @@ io_print( iokey, iob, sp )		/* STPRNT */
 	    ret = FALSE;
     } /* have string */
 
+    /* XXX check ret first? */
+
     if (fp->flags & FL_EOL) {
 #ifdef INET_IO
 	if (ISINET(fp)) {
@@ -885,6 +992,12 @@ io_print( iokey, iob, sp )		/* STPRNT */
 	}
 	else
 #endif /* INET_IO defined */
+#ifdef MEM_IO
+	if (ISMEM(fp)) {
+	    ret = mem_write(fp, "\n", 1);
+	}
+	else
+#endif /* MEM_IO defined */
 #ifndef NO_UNBUF_RW
 	if (fp->flags & FL_UNBUF) {
 	    if (write(fileno(f), "\n", 1) != 1)
@@ -989,6 +1102,12 @@ io_read( dp, sp )			/* STREAD */
 		len = inet_read_raw(f, cp, recl);
 	    else
 #endif /* INET_IO defined */
+#ifdef MEM_IO
+	    if (ISMEM(fp)) {
+		len = mem_read_raw(fp, cp, recl);
+	    }
+	    else
+#endif /* MEM_IO defined */
 #ifdef TTY_READ_RAW
 	    if (ISTTY(fp))
 		len = tty_read(f, cp, recl,
@@ -1015,6 +1134,13 @@ io_read( dp, sp )			/* STREAD */
 		break;
 	}
 #endif /* INET_IO defined */
+#ifdef MEM_IO
+	else if (ISMEM(fp)) {
+	    len = mem_read_cooked(f, cp, recl, (fp->flags & FL_EOL) == 0);
+	    if (len > 0)
+		break;
+	}
+#endif /* MEM_IO defined */
 #ifdef TTY_READ_COOKED
 	else if (ISTTY(fp)) {
 	    len = tty_read(f, cp, recl,
@@ -1155,6 +1281,13 @@ io_rewind(unit)				/* REWIND */
     fp = up->curr;
     if (fp == NULL)
 	return;
+
+#ifdef MEM_IO
+    if (ISMEM(fp)) {
+	fp->mempos = 0;
+	return;
+    }
+#endif /* MEM_IO defined */
 
     f = fp->f;
     if (f != NULL && !ISPIPE(fp) && ISAFILE(fp)) {
@@ -1558,15 +1691,22 @@ io_seek(dunit, doff, dwhence)
     if (fp == NULL)
 	return FALSE;
 
-    if (!ISAFILE(fp))
-	return FALSE;
-
     off = (off_t) D_A(doff);
     whence = D_A(dwhence);
     if (whence < 0 || whence > 2)
 	return FALSE;
 
     /* translate n -> SEEK_xxx using switch stmt (if SEEK_xxx available)? */
+
+#ifdef MEM_IO
+    if (ISMEM(fp)) {
+	/* XXX fun here */
+	return FALSE;
+    }
+#endif /* MEM_IO defined */
+
+    if (!ISAFILE(fp))
+	return FALSE;
 
     f = fp->f;
     if (f == NULL)
@@ -1618,14 +1758,21 @@ io_sseek(unit, soff, whence, scale, oof )
     if (fp == NULL)
 	return FALSE;
 
-    if (!ISAFILE(fp))
-	return FALSE;
-
     off = soff * (off_t)scale;
     if (whence < 0 || whence > 2)
 	return FALSE;
 
     /* translate n -> SEEK_xxx using switch stmt (if SEEK_xxx available)? */
+
+#ifdef MEM_IO
+    if (ISMEM(fp)) {
+	/* XXX fun here */
+	return FALSE;
+    }
+#endif /* MEM_IO defined */
+
+    if (!ISAFILE(fp))
+	return FALSE;
 
     f = fp->f;
     if (f == NULL)
