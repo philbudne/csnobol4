@@ -50,30 +50,38 @@ following options;
 		Force use of system memmove() function (if preseent)
 		if no bcopy() function is available.  Otherwise the
 		bcopy.c source file will be used.
-
-	--largefile
-		Force the use of defines for "large file" (64 bit offsets).
-		Requires existance of fseeko() and ftello() stdio functions.
 
 	--longlong
 		Attempt to use C "long long" datatype to represent SNOBOL4
 		INTEGERs, and "double" for REAL on systems where pointers
-		are only 32-bits.  Requires "long long" support in the
-		chosen C compiler, but will attempt to supply numeric
-		conversion routines if the C runtime lacks them.
+		are only 32-bits (ILP32 data model).
+
+		Requires "long long" support in the chosen C compiler,
+		and will use C89 numeric conversion routines if
+		available, but will supply missing functions if the C
+		runtime lacks them.
+
+				*** NOTE ***
 
 		Use of this option will not increase the address space
 		available to SNOBOL4, but will incur increased storage
 		and processing overhead (see --lp64 for more information).
+
 		On systems which support the LP64 (64-bit long/pointer)
 		data model, using --lp64 is a better idea.
 
+
+				*** WARNING ***
+
 		Expect to see large numbers of C compiler warnings when
-		using this option.
+		using this option with gcc.
+
+		This option is experimental, and has not been extensively
+		tested, particularly with vendor supplied C compilers.
 
 	--lp64
-		Force the use of defines for LP64 (64-bit longs and
-		pointers) datatype model where available, but not the
+		Force the use of defines for LP64 (64-bit long and
+		pointer) data model where available, but not the
 		default.
 
 		This option attempts to set native compiler options
@@ -99,7 +107,7 @@ following options;
 		(see --longlong).
 
 		--lp64 is not necessary on systems where LP64 is the
-		default data model (e.g. Alpha).
+		default, or only data model (e.g. Alpha).
 
 	--no-dlopen
 		Disable use of Unix98 dlopen() API for dynamic LOAD() support
@@ -110,10 +118,19 @@ following options;
 	--no-gcc
 		Eliminate GNU C Compiler (GCC) from consideration.
 
-	--no-largefile
-		Disable automatic selection of large file support
-		(see --largefile)
+	--no-inline
+		Disable any compiler options for code inlining, select
+		snobol4.c (which has not been reordered to facilitate
+		inlining) instead of isnobol4.c
 
+	--no-largefile
+		Disable automatic selection of large file (>2GB) support.
+		If autoconf manages to turn on 64-bit file set type (off_t)
+		but fseeko function prototype is missing, the "update.sno"
+		regression test will fail.  Using this option will allow
+		you to build snobol4 without attempting to use large file
+		support.
+
 	--opt=STRING
 		Supply C optimization flags.  The default value is
 		"-O", which is widely accepted.  Higher optimization
