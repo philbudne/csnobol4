@@ -14,14 +14,6 @@
 
 #define D_RV(x) (D(x).a.f)
 
-#ifdef USE_MEMCMP
-#define bcmp memcmp
-#endif /* USE_MEMCMP defined */
-
-#ifdef USE_MEMMOVE
-#define bcopy(SRC,DEST,LEN) memmove(DEST,SRC,LEN)
-#endif /* USE_MEMMOVE defined */
-
 /* compare two descrs (returns boolean) */
 #ifdef DCMP_BYTES
 /* this has never been tested! */
