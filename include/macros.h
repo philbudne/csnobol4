@@ -90,17 +90,21 @@
 
 S4_EXTERN struct descr *cstack;
 
+/* RCALL support */
+#if 1
+/* by the book, no C local ostack */
+S4_EXTERN struct descr ostack[1];	/* old stack pointer */
 
-/* for RCALL
- *
- * GC expects RCALL to push SOMETHING on each RCALL!
- * keep OSTACK/CSTACK by the book?
- *	ie; make cstack a descr
- *	SAVSTK() -> PUSH(&cstack)
- *	RSTSTK() -> POP(&cstack)
- */
+#define SAVSTK() PUSH(ostack); D_A(ostack) = (int_t)cstack
+#define RSTSTK() cstack = (struct descr *)D_A(ostack); POP(ostack)
+
+#else
+
+/* GC expects RCALL to push SOMETHING on each call! */
 #define SAVSTK() struct descr *ostack = cstack; PUSH(ZEROCL);
 #define RSTSTK() cstack = ostack
+
+#endif
 
 /* overflow check */
 #define OFCHK()	{ if ((int_t)cstack > (int_t)STACK+STSIZE*DESCR) OVER(NULL); }
