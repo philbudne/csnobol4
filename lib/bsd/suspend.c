@@ -10,8 +10,6 @@
 void
 proc_suspend()
 {
-    sigset_t set;
-    
     /* let default action occur */
     signal(SIGTSTP, SIG_DFL);
 
