@@ -8,24 +8,19 @@
 #include "macros.h"
 
 #include "data.h"			/* SIL data */
+#include "equ.h"			/* SIL equ's */
 
 /* return type of signal handler functions */
 #ifndef SIGFUNC_T
 #define SIGFUNC_T void
 #endif
 
-#ifdef __STDC__
-#ifndef SIGARG_T
-#define SIGARG_T int
-#endif
-#endif
-
 extern char *dynamic();
-extern SIGFUNC_T SYSCUT(SIGARG_T);	/* never returns */
 
-#define NDESCR 25000			/* default */
+#define NDYNAMIC 25000			/* default dynamic region size */
 
-int ndescr;
+int ndynamic = NDYNAMIC * DESCR;
+int pmstack = SPDLDR;
 int rflag;
 
 extern int optind;
@@ -48,11 +43,11 @@ void
 usage( jname )
     char *jname;
 {
-    p( "Usage: %s [options...] [files...] [-- parameters]\n", jname );
+    p( "Usage: %s [options...] [files...] [parameters...]\n", jname );
     p( "-b\ttoggle display of startup banner\n");
     fprintf(stderr,
-	    "-d ND\tSize of dynamic region in descriptors (def: %d)\n",
-	    NDESCR);
+	    "-d bytes\tSize of dynamic region in bytes (def: %d)\n",
+	    NDYNAMIC*DESCR);
     p( "-f\ttoggle folding of identifiers to upper case (-CASE)\n");
     p( "-k\ttoggle running programs with compilation errors (-[NO]ERRORS)\n");
     p( "-l\treenable listings (-LIST)\n");
@@ -61,7 +56,32 @@ usage( jname )
     p( "-r\ttoggle reading INPUT from after END statement\n");
     p( "-s\ttoggle display of statistics\n");
     p( "-u PARMS\tparameter data for program\n");
+    p( "-M\tprocess multiple input files\n");
+    fprintf(stderr,
+	    "-P bytes\tSize of pattern match stack in bytes (def: %d)\n",
+	    SPDLDR);
     exit(1);
+}
+
+int
+getk( str, out )
+    char *str;
+    int *out;
+{
+    char k;
+    switch (sscanf(str, "%d%c", out, &k)) {
+    case 2:
+	if (k == 'k' || k == 'K')
+	    ndynamic *= 1024;
+	else
+	    return 0;			/* not "K"; fail */
+	/* FALL */
+    case 1:				/* just number */
+	return 1;			/* return OK */
+
+    default:				/* no number */
+	return 0;			/* fail */
+    }
 }
 
 void
@@ -71,15 +91,13 @@ init_args( ac, av )
 {
     int errs;
     int c;
-    char k;
     int multifile;
 
-    /* save in globals for HOST() */
+    /* save in globals for HOST(), getparm(), init() */
     argc = ac;
     argv = av;
 
     errs = 0;
-    ndescr = NDESCR;
     multifile = 0;			/* SITBOL behavior */
 
 #ifdef vms
@@ -94,25 +112,15 @@ init_args( ac, av )
      * * When adding options, update usage() function (above) and man page!!!
      */
 
-    while ((c = getopt(argc, argv, "bd:fklnprsu:M")) != -1) {
+    while ((c = getopt(argc, argv, "bd:fklnprsu:MP:")) != -1) {
 	switch (c) {
 	case 'b':
 	    D_A(BANRCL) = !D_A(BANRCL);	/* toggle banner output */
 	    break;
 
 	case 'd':			/* number of dynamic descrs */
-	    switch (sscanf(optarg, "%d%c", &ndescr, &k)) {
-	    case 2:
-		if (k == 'k' || k == 'K')
-		    ndescr *= 1000;
-		else
-		    errs++;
-		break;
-	    case 1:
-		break;
-	    default:
+	    if (!getk(optarg, &ndynamic))
 		errs++;
-	    }
 	    /* XXX enforce a minimum?? */
 	    break;
 
@@ -150,8 +158,13 @@ init_args( ac, av )
 	    params = optarg;
 	    break;
 
-	case 'M':			/* SITBOL multi-file input */
+	case 'M':			/* multi-file input */
 	    multifile = !multifile;
+	    break;
+
+	case 'P':			/* pattern match stack size */
+	    if (!getk(optarg, &pmstack))
+		errs++;
 	    break;
 
 	default:
@@ -159,7 +172,11 @@ init_args( ac, av )
 	}
     }
 
-    /* append additional args to input stream until "--" seen */
+    /*
+     * append first file (or all additional args until "--" seen
+     * in "multi-file" mode) to INPUT stream
+     */
+
     while (optind < argc) {
 	if (strcmp(argv[optind], "--") == 0) { /* terminator? */
 	    optind++;			/* skip it */
@@ -182,13 +199,11 @@ init_args( ac, av )
 	params = parambuf;
     }
 
-    /* XXX setup specifier pointing to params for &PARM? */
-
-    io_init();				/* AFTER io_input calls! */
-
     if (errs) {
 	usage(argv[0]);
     }
+
+    io_init();				/* AFTER io_input calls! */
 }
 
 int math_error;				/* see macros.h */
@@ -205,37 +220,74 @@ math_catch()
     math_error = TRUE;
 }
 
+static SIGFUNC_T
+err_catch()
+{
+    /* save argument for error message? */
+    SYSCUT();
+}
+
+/* called by SIL INIT macro (first SIL op executed) */
 void
 init()
 {
-    char *dyn;
+    char *ptr;
     int len;
 
-    /* allocate dynamic data region */
+    /****************
+     * allocate dynamic data region
+     */
 
-    len = DESCR * ndescr;
-    dyn = dynamic(len);
+    len = DESCR * ndynamic;
+    ptr = dynamic(len);
 
-    if (dyn == NULL) {
-	fprintf( stderr,
-		"could not allocate dynamic region of %d bytes\n", len);
+    if (ptr == NULL) {
+	fprintf( stderr, "%s: could not allocate dynamic region of %d bytes\n",
+		argv[0], len);
 	exit(1);
     }
 
-    bzero( dyn, len );			/* XXX needed? */
+    bzero( ptr, len );			/* XXX needed? */
 
-    D_A(FRSGPT) = D_A(HDSGPT) = (int_t) dyn; /* first dynamic descr */
+    D_A(FRSGPT) = D_A(HDSGPT) = (int_t) ptr; /* first dynamic descr */
 
-    /* first descr past end of dyn */
-    D_A(TLSGP1) = (int_t) dyn + len;
+    /* first descr past end of dynamic storage */
+    D_A(TLSGP1) = (int_t) ptr + len;
 
-    /* XXX call wrapper functions which save reason for signal? */
-    signal( SIGINT, SYSCUT );
+
+    /****************
+     * allocate pattern match stack
+     */
+
+    len = DESCR * pmstack;
+    dyn = malloc(len);			/* NOTE: malloc(), not dynamic() */
+    if (dyn == NULL) {
+	fprintf( stderr, "%s: could not allocate pattern stack of %d bytes\n",
+		argv[0], len);
+	exit(1);
+    }
+
+    /* set up stack title */
+    D_A(dyn) = (int_t) dyn;
+    D_F(dyn) = TTL + MARK;
+    D_V(dyn) = len;
+
+    /* point to top of stack */
+    D_A(PDLPTR) = D_A(PDLHED) = (int_t) dyn;
+
+    /* point to end of stack for overflow checks */
+    D_A(PDLEND) = (int_t) dyn + len - NODESZ;
+
+    /****************
+     * setup signal handlers
+     */
+
+    signal( SIGINT, err_catch );
 
     /* catch bad memory references */
-    signal( SIGSEGV, SYSCUT );
+    signal( SIGSEGV, err_catch );
 #ifdef SIGBUS
-    signal( SIGBUS, SYSCUT );
+    signal( SIGBUS, err_catch );
 #endif /* SIGBUS defined */
 
 #ifdef SIGFPE
