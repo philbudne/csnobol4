@@ -236,7 +236,7 @@ main() {
 }
 EOF
     if ${CC-cc} -o $TMP $TMP.c && ./$TMP; then
-	echo ' cc is gcc' 1>&2
+	echo 'yes it is' 1>&2
 	echo "# cc is gcc"			>> $CONFIG_M4
 	GCCPATH="${CC-cc}"
     fi
@@ -264,7 +264,7 @@ ia64|IA64)
 esac
 
 if [ "$LP64" ]; then
-    # In 64-bit environments, aligmnent restrictions on int_t/pointer
+    # In 64-bit environments, alignment restrictions on int_t/pointer
     # data is likely to pad descriptors out to 16 bytes, so don't pack
     # DESCR "v" field into 24 bits.
     NO_BITFIELDS=true
@@ -363,11 +363,16 @@ if [ "$GCCPATH" -a "$WANTGCC" ]; then
 
     case "$OS" in
     Darwin)
-	# Apple gcc-934.3, based on gcc version 2.95.2 19991024
+	# "Apple gcc-934.3, based on gcc version 2.95.2 19991024"
 	# screws up data_init.c when compiled with -O2
 	echo 'DATA_INIT_CFLAGS=$(MYCPPFLAGS) -O'	>> $CONFIG_M4
 	;;
     esac
+
+    # -fstrength-reduce is no gain?
+    # -fomit-frame-pointer can make debugging harder, so put it here
+    #	(on systems where it's harmless, it's turned on by -O)
+    FASTFLAGS=-fomit-frame-pointer
 else
     # required options for native compilers
     case "$MORV" in
@@ -844,12 +849,17 @@ fi
 # moment, I only care about detecting version 2.1;
 GLIBC=`(getconf --version)2>&1 | awk '/GNU libc/ { print $NF }'`
 
-# glibc 2.1 is broken; fseeko() cannot be used
-case "$GLIBC" in
-2.1*)
-    LARGEFILE_OK=
-    ;;
-esac
+if [ "x$GLIBC" != x ]; then
+    echo "# GLIBC version $GLIBC"		>> $CONFIG_M4
+    echo "detected GNU libc version $GLIBC" 1>&2
+
+    # glibc 2.1 is broken; fseeko() cannot be used
+    case "$GLIBC" in
+    2.1*)
+	LARGEFILE_OK=
+	;;
+    esac
+fi
 
 # if using a native 64bit data model no options should be needed
 # for large file support
