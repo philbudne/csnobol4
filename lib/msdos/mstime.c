@@ -14,14 +14,14 @@ static long start_time;
  * sigh; use ansi-ish clock() -- returns Time Of Day!
  */
 
-int_t
+real_t
 mstime() {
     clock_t t;
 
     if (first_time == -1) {
 	start_time = (clock_t) clock();
 	first_time = -first_time;
-	return 0L;
+	return 0.0;
     }
 
     t = (clock_t) clock();
@@ -35,5 +35,5 @@ mstime() {
      *  elapsed clocks * (1000 / CLOCKS_PER_SEC) msec/clocks
      *  elapsed * (1000 / CLOCKS_PER_SEC) msec
      */
-    return (t - start_time) * (1000 / CLOCKS_PER_SEC);
+    return (t - start_time) * (1000.0 / CLOCKS_PER_SEC);
 }

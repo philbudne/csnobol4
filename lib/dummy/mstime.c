@@ -6,7 +6,7 @@
 
 #include "snotypes.h"
 
-int_t
+real_t
 mstime() {
-    return 0;
+    return 0.0;
 }

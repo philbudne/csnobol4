@@ -19,12 +19,12 @@
  */
 
 /* divisor for low 32 */
-#define TICKSPERMS 10000
+#define TICKSPERMS 10000.0
 
 /* multiplier for high 32; */
-#define HIGHMS 429496			/* (2**32)/TICKSPERMS */
+#define HIGHMS 429496.0			/* (2**32)/TICKSPERMS */
 
-int_t
+real_t
 mstime()
 {
     FILETIME start, texit, kernel, user;

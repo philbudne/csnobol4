@@ -19,10 +19,10 @@
 #define HZ 60				/* sigh */
 #endif /* HZ not defined */
 
-int_t
+real_t
 mstime() {
     struct tms tms;
 
     times(&tms);
-    return(tms.tms_utime*1000/HZ);	/* just user time? */
+    return(tms.tms_utime*1000.0/HZ);	/* just user time? */
 }

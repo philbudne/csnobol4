@@ -19,23 +19,23 @@
 #endif
 #endif
 
-int_t
+real_t
 mstime() {
     clock_t t;
     int ticks;
 
     t = clock();			/* sigh; includes system time */
     if (t == (clock_t)-1)
-	return 0;
+	return 0.0;
 
     ticks = CLK_TCK;
     if (ticks == 1000)
-	return t;
+	return (real_t)t;
 
     if (ticks < 1000)			/* ie; BSD4.4 */
-	return(t*1000/ticks);
+	return(t*1000.0/ticks);
 
     /* XXX check for ticks == 0? */
 
-    return(t/(ticks/1000));
+    return(t/(ticks/1000.0));
 }

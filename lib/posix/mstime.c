@@ -13,15 +13,15 @@
  * use POSIX sysconf() to get hz!
  */
 
-int_t
+real_t
 mstime() {
     struct tms tms;
     int hz;
 
     hz = sysconf(_SC_CLK_TCK);
     if (hz == -1)
-	return 0;			/* just use 60?? */
+	return 0.0;			/* just use 60?? */
 
     times(&tms);
-    return(tms.tms_utime*1000/hz);	/* just user time? */
+    return(tms.tms_utime*1000.0/hz);	/* just user time? */
 }

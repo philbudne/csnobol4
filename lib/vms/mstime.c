@@ -24,10 +24,10 @@
 #define CLK_TCK 100
 #endif /* CLK_TCK not defined */
 
-int_t
+real_t
 mstime() {
     struct tbuffer tbuff;
 
     times(&tbuff);
-    return(tbuff.proc_user_time * 1000 / CLK_TCK);
+    return(tbuff.proc_user_time * 1000.0 / CLK_TCK);
 }

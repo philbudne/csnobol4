@@ -17,16 +17,16 @@
  */
 
 #ifdef GETRUSAGE_BUG
-static unsigned long last_mstime = 0;	/* XXX belongs in vars.h? */
+static real_t last_mstime = 0.0;	/* XXX belongs in vars.h? */
 #endif /* GETRUSAGE_BUG defined */
 
-int_t
+real_t
 mstime() {
     struct rusage ru;
-    register unsigned long x;
+    register real_t x;
 
     getrusage( RUSAGE_SELF, &ru );	/* XXX check return? */
-    x = ru.ru_utime.tv_sec * 1000 + ru.ru_utime.tv_usec / 1000;
+    x = ru.ru_utime.tv_sec * 1000.0 + ru.ru_utime.tv_usec / 1000.0;
 
 #ifdef GETRUSAGE_BUG
     /*
