@@ -6,9 +6,6 @@
 -include "http.sno"
 -include "ftp.sno"
 
-* TODO:
-*	implement file:/pathname (no double slash?)
-
 ****************
 *	URL.OPEN()
 *
