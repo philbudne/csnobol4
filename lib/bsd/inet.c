@@ -111,6 +111,11 @@ inet_open( host, service, port, priv, type )
 {
     int s;
     FILE *f;
+#ifdef WATTCP_DOS
+    /* WATTCP on DOS requires hostname in upper case?! */
+    char *cp = host;
+    while ((*cp++ = toupper(*cp))) ;
+#endif /* WATTCP_DOS defined */
 
     s = inet_socket(host, service, port, priv, type );
     if (s < 0)
