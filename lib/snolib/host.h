@@ -15,16 +15,16 @@
 /* Macro SPITBOL: returns argument from -u or entire command line */
 #define HOST_PARAMS		0
 
-/* Macro SPITBOL: execute second argument as a shell command, return status */
+/* Catspaw SPITBOL: execute argument as a shell command, return status */
 #define HOST_SYSTEM		1
 
-/* Macro SPITBOL: returns n'th token on command line (must be INTEGER) */
+/* Catspaw SPITBOL: returns n'th token on command line (must be INTEGER) */
 #define HOST_ARGN		2
 
-/* Macro SPITBOL: returns index of first user command line argument token */
+/* Catspaw SPITBOL: returns index of first user command line argument token */
 #define HOST_FIRSTARG		3
 
-/* Macro SPITBOL: returns environment variable, or fails */
+/* Catspaw SPITBOL: returns environment variable, or fails */
 #define HOST_GETENV		4
 
 /*****************
