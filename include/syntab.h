@@ -15,3 +15,11 @@ struct syntab {
     /* XXX include count of entries in actions array? */
     const struct acts *actions;		/* pointer to action table */
 };
+
+#if 0 /* snobol4.c calls need casts!! */
+/* from lib/stream.c */
+enum stream_ret stream __P((struct spec *,struct spec *,struct syntab *));
+void clertb __P((struct syntab *,enum action,struct spec *));
+void plugtb __P((struct syntab *,enum action,struct spec *));
+int any __P((struct spec *,struct descr *));
+#endif
