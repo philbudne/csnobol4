@@ -35,7 +35,7 @@ SGI IP20 (R4K)	100	IRIX 5.2      cc     0.99   posix	 17939	pb 10/96
 HP 9000/720	50	HP-UX 10.10   c89    0.99   hp-pa	 17813	pb 10/96
 DEC Alpha ???	??	NetBSD 1.2    gcc    0.99   bsd44	 16340	pb 10/96
 486?		??	Linux 2.0.14  gcc    0.99   posix	 13423	pb 10/96
-Sun SS5		85	SunOS 4.1.5   gcc    0.99   sunos4	 11858	pb 10/96
+Sun SS5		85	SunOS 4.1.4   gcc    0.99   sunos4	 11858	pb 10/96
 IBM RS/6K 320	25	AIX 3.2.5     gcc    0.99   aix-rs6000	 6970	pb 10/96
 Sun SS/ELC	33	SunOS 5.5     SUNpro 0.99   posix	 6387	pb 10/96
 HP 42T (68040)	25	HP-UX 8.00    gcc    0.99   hpux	 5721	pb 10/96
