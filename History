@@ -2,6 +2,22 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+******** RCS tag BETA6
+
+2/12/97:
+	autoconf: added sun4u and define __SPARCV9__
+	lib/bsd/dynamic.c: add vm_gc_advise()
+	lib/generic/dynamic.c: add vm_gc_advise
+	lib/io.c: default SNOLIB_DIR to "./" (for DOS)
+	v311.sil: add calls to vm_gc_advise()
+	version.c: upped version to 0.99.3
+	config/borland/build.bat: new version from Steve Kibbler
+	config/borland/README: updated
+	doc/ports.doc: new ss2 timing
+	diffall: take TAG arg
+	README: upped version to 0.99.3
+	CHANGES: updated
+
 12/25/96:
 	autoconf: added openbsd
 	config.guess: updated to latest (knows openbsd)
