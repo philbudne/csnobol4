@@ -25,6 +25,8 @@
 
 #include "h.h"				/* TRUE/FALSE */
 #include "macros.h"			/* bcopy */
+#include "snotypes.h"
+#include "lib.h"			/* own prototypes */
 
 #ifndef INADDR_NONE
 #define INADDR_NONE ((unsigned long)0xffffffff)	/* want u_int32_t! */
