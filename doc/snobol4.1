@@ -122,7 +122,13 @@ can be supplied to the
 .B INPUT()
 and
 .B OUTPUT()
-functions via an optional fourth argument.
+functions via an optional fourth argument.  If the filename begins
+with a vertical bar (|), the remainder is used as a shell command
+whose stdin (in the case of
+.BR OUTPUT ())
+or stdout (in the case of
+.BR INPUT ())
+will be connected to the file variable.
 
 .TP
 .B &UCASE/&LCASE
