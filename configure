@@ -723,8 +723,15 @@ fi
 # prefer uname(2)
 if [ -f $INCDIR/sys/utsname.h ]; then
     echo 'using uname(2) for system name information' 1>&2
+    # NeXT/Open Step have /usr/include/bsd/sys/utsname.h??
 else
-    echo 'using "'$SYS'" for system name information' 1>&2
+    OSNAME="$OS $OSREL"
+    if [ "$OSNAME" = 'unknown unknown' ]; then
+	OSNAME='unknown'
+    fi
+    echo 'using "'$HWNAME:$OSNAME'" for system name information' 1>&2
+    echo '#define HWNAME "'$MACHINE'"'		>> $CONFIG_H
+    echo '#define OSNAME "'$OSNAME'"'		>> $CONFIG_H
     echo 'SYS_C=$(SRCDIR)lib/generic/sys.c'	>> $CONFIG_M4
 fi
 
