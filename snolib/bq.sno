@@ -1,6 +1,7 @@
 * $Id$
 *	execute a shell command line and capture stdout
-*	line shell backquotes (hence the name)
+*
+*	like shell backquotes (hence the name)
 *	p budne, june 20, 1994
 
 *	optional second arg is string to use to seperate lines
