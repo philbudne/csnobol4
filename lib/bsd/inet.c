@@ -5,34 +5,12 @@
 #include <stdio.h>
 #include <ctype.h>
 
-#if !defined(USE_WINSOCK_H) && !defined(VMS) && !defined(unix)
-#define unix				/* HP-UX, AIX!! */
-#endif /* !defined(USE_WINSOCK_H) && !defined(VMS) && !defined(unix) */
-
-/* Ugly, but better than duplicating the whole file! */
-#ifdef unix
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
 #include <netinet/in.h>
-#else  /* unix not defined */
-#ifdef USE_WINSOCK_H
-#include <winsock.h>
-#endif /* USE_WINSOCK_H defined */
-#ifdef VMS
-/*
- * DEC TCP/IP Connection services for OpenVMS
- * (formerly VAX/Ultrix connection product)
- */
-#include <types.h>
-#include <socket.h>
-#include <netdb.h>
-#include <in.h>
-#endif /* VMS defined */
-#endif /* unix not defined */
 
 #include "h.h"				/* TRUE/FALSE */
-#include "snotypes.h"			/* needed on VAX/VMS for macros.h */
 #include "macros.h"			/* bcopy */
 
 #ifndef INADDR_NONE
@@ -158,4 +136,8 @@ udp_open( host, service, port, priv )
     int port, priv;
 {
     return inet_open( host, service, port, priv, SOCK_DGRAM );
+}
+
+void
+inet_cleanup() {
 }
