@@ -1311,8 +1311,12 @@ if [ ! "$WITHOUT_NDBM" ]; then
     if [ -f $INCDIR/ndbm.h ]; then
 	echo "using $INCDIR/ndbm.h" 2>&1
 	echo '#define HAVE_NDBM_H'		>> $CONFIG_H
-	# always included in libc?
-	# I guess we'll find out, won't we!!
+	# RH5.2 has Berkeley DB ndbm.h, but seperate libdb.a
+	# (BSD systems have BDB in libc)
+	if grep 'Margo Seltzer' $INCDIR/ndbm.h > /dev/null &&
+	    [ -f /usr/lib/libdb.a -o /usr/lib/libdb.so ]; then
+	    echo 'ADD_LDFLAGS([-ldb])'		>> $CONFIG_M4
+	fi	    
     elif [ -f $INCDIR/gdbm/ndbm.h ]; then
 	echo "using $INCDIR/gdbm/ndbm.h" 2>&1
 	echo '#define HAVE_GDBM_SLASH_NDBM_H'	>> $CONFIG_H
