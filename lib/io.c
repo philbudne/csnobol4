@@ -339,7 +339,25 @@ io_fopen2( fp, mode )
 	return;
     }
 
-    /* XXX more hacks here? /dev/fd/n? ??? */
+    /* ANSI tmpfile() function returns anonymous file open for R/W */
+    if (strcmp(fp->fname, "/dev/tmpfile") == 0) {
+	fp->f = tmpfile();
+	return;
+    }
+
+#ifdef OSDEP_FOPEN
+    /*
+     * Allow interception of /dev/tty, /dev/null, etc on non-unix
+     * systems.  Function should return TRUE if filename is being
+     * intercepted, REGARDLESS of whether the actual open succeeds
+     * (on successs, the function should set the FILE ** to point
+     * to the open stream).
+     */
+    if (osdep_open(fp->fname, &fp->f))
+	return;				/* intercepted */
+#endif
+
+    /* **** add new special filename hacks here *** */
 
     /* create full mode string for fopen() */
     mp = buf;
