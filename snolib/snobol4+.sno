@@ -20,8 +20,8 @@ EXECUTE	EXECUTE = HOST(1,S1,S2)				:S(RETURN)F(FRETURN)
 * seek zero bytes, relative from current position
 TELL	TELL = SET(UNIT,0,1)				:S(RETURN)F(FRETURN)
 
-* SNOBOL4+ SEEK() accepts REAL offset!
-SEEK	OFFSET = CONVERT(OFFSET,"INTEGER")		:F(FRETURN)
-	EQ(SET(UNIT,OFFSET,WHENCE),OFFSET)		:S(RETURN)F(FRETURN)
+* may return spurrious failure for relative seek beyond 4G
+* with 32-bit INTEGERs
+SEEK	EQ(SET(UNIT,OFFSET,WHENCE),OFFSET)		:S(RETURN)F(FRETURN)
 
 E4PLUS
