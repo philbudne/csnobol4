@@ -108,7 +108,7 @@ TTY_C=$(SRCDIR)lib/posix/tty.c
 BZERO_C=$(SRCDIR)lib/auxil/bzero.c
 BCOPY_C=$(SRCDIR)lib/auxil/bcopy.c
 GETOPT_C=$(SRCDIR)lib/auxil/getopt.c
-RRESVPORT_AF_C=$(SRCDIR)lib/auxil/rresvport_af.c
+BINDRESVPORT_C=$(SRCDIR)lib/auxil/bindresvport.c
 
 # dummy sources
 EXECL_C=$(SRCDIR)lib/dummy/execl.c
@@ -378,8 +378,8 @@ bcopy.o: $(BCOPY_C)
 getopt.o: $(GETOPT_C)
 	$(CC) $(CFLAGS) -c $(GETOPT_C)
 
-rresvport_af.o: $(RRESVPORT_AF_C)
-	$(CC) $(CFLAGS) -c $(RRESVPORT_AF_C)
+bindresvport.o: $(BINDRESVPORT_C)
+	$(CC) $(CFLAGS) -c $(BINDRESVPORT_C)
 
 ################
 # dummy files

@@ -781,16 +781,31 @@ if [ -f $INCDIR/sys/socket.h ]; then
     if grep getaddrinfo $INCDIR/netdb.h >/dev/null 2>&1; then
 	echo 'using getaddrinfo for TCP/IPv6 compatibility' 1>&2
 	echo 'INET_O=inet6.o'			>> $CONFIG_M4
-	if grep rresvport_af $INCDIR/unistd.h >/dev/null 2>&1; then
-	    true
+	if grep bindresvport_sa $INCDIR/rpc/rpc.h >/dev/null 2>&1; then
+	    # FreeBSD 4, NetBSD
+	    echo 'using system bindresvport_sa() function' 1>&2
+	    echo '#define BINDRESVPORT_SA_IN_RPC_H' >> $CONFIG_H
+	elif grep bindresvport_sa $INCDIR/netinet/in.h $INCDIR/unistd.h>/dev/null 2>&1; then
+	    echo 'using system bindresvport_sa() function' 1>&2
 	else
-	    # AIX 4.3, RH5.1, RH6.0
-	    echo 'using private rresvport_af function' 1>&2
-	    echo 'ADD_OBJS([rresvport_af.o])'	>> $CONFIG_M4
-	    echo 'ADD_SRCS([$(RRESVPORT_AF_C)])' >> $CONFIG_M4
+	    echo 'using private bindresvport_sa() function' 1>&2
+	    echo 'ADD_OBJS([bindresvport.o])' >> $CONFIG_M4
+	    echo 'ADD_SRCS([$(BINDRESVPORT)])' >> $CONFIG_M4
 	fi
     else
-	echo 'using sockets for TCP' 1>&2
+	echo 'using sockets for TCP/IP support' 1>&2
+	if grep bindresvport $INCDIR/rpc/rpc.h >/dev/null 2>&1; then
+	    # FreeBSD 3.x
+	    echo 'using system bindresvport() function' 1>&2
+	    echo '#define BINDRESVPORT_IN_RPC_H' >> $CONFIG_H
+	elif grep bindresvport $INCDIR/netinet/in.h $INCDIR/unistd.h >/dev/null 2>&1; then
+	    echo 'using system bindresvport() function' 1>&2
+	else
+	    echo 'using private bindresvport() function' 1>&2
+	    echo '#define NEED_BINDRESVPORT' >> $CONFIG_H
+	    echo 'ADD_OBJS([bindresvport.o])' >> $CONFIG_M4
+	    echo 'ADD_SRCS([$(BINDRESVPORT)])' >> $CONFIG_M4
+	fi
     fi
 
     # add network libraries if needed
