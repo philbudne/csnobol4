@@ -4,6 +4,7 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
 8/12/97:
 	INSTALL: replaced autoconf references with configure
+	timing: redirect sunmodel standard error output
 
 ******** RCS tag BETA7
 
