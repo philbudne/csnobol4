@@ -5,17 +5,17 @@
 #
 # **** see INSTALL file for usage ****
 
-.ifdef DEC_C
-# Tested under AXP OpenVMS 6.2 using DECC 4.0 (August 1999)
-CCFLAGS=/DECC/PREFIX_LIB=ALL/WARN=(DISABLE=IMPLICITFUNC)/OPTIMIZE
-# no AUX_OBJS
-# no explicit CRT needed
-.else
+.ifdef VAX_C
 # Tested on VAX OpenVMS 6.1 using VAXC 3.1 (August 1999)
 CCFLAGS=/OPTIMIZE
 AUX_OBJ=isnan.obj, finite.obj, getopt.obj,
 #CLIB=+SYS$SHARE:VAXCRTL/SHARE
 CLIB=+SYS$LIBRARY:DECCRTL/LIB
+.else
+# Tested under AXP OpenVMS 6.2 using DECC 4.0 (November 2000)
+CCFLAGS=/DECC/PREFIX_LIB=ALL/WARN=(DISABLE=IMPLICITFUNC)/OPTIMIZE
+# no AUX_OBJS
+# no explicit CRT needed
 .endif
 
 .ifdef NO_TCP
