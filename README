@@ -163,15 +163,18 @@ documentation, and ordering information for books & products from
 Catspaw!
 
 Mark Emmer also runs a SNOBOL4 mailing list;
-	To join the list, send a mail message to "listserv@mercury.dsu.edu"
-	with the line "subscribe SNOBOL4 Your Name" as the message body.
-	"Your Name" should be your real name (your e-mail address will be
-	used automatically for the subscription).
 
-	Submissions to the list may be sent to "SNOBOL4@mercury.dsu.edu".
+To join the list, send a mail message to "listserv@mercury.dsu.edu"
+with the line "subscribe SNOBOL4 Your Name" as the message body.
+"Your Name" should be your real name (your e-mail address will be used
+automatically for the subscription).
 
-	To be removed from the list, send the message "unsubscribe SNOBOL4"
-	to "listserv@mercury.dsu.edu".
+Submissions to the list may be sent to "SNOBOL4@mercury.dsu.edu".
+
+To be removed from the list, send the message "unsubscribe SNOBOL4" to
+"listserv@mercury.dsu.edu".
+
+For more information see http://www.snobol4.com/listserv.htm
 
 Acknowledgments;
 
