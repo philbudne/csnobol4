@@ -199,7 +199,7 @@ xsnobol4: $(OBJS)
 snobol4: xsnobol4 snobol4.c
 	@echo Running regression tests...
 	cd test; ./run.sh ../xsnobol4
-	@echo Passed.
+	@echo Passed regression tests.
 	./timing > timing.out
 	-rm -f snobol4
 	ln xsnobol4 snobol4
