@@ -27,7 +27,7 @@
 #include <wchar.h>
 #endif
 
-#if NEED_COGETOBJECT
+#ifdef NEED_COGETOBJECT
 WINOLEAPI CoGetObject(const LPWSTR name, BIND_OPTS *pbo, REFIID riid, void **ppv);
 #endif
 
