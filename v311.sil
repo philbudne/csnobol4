@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.20  94/01/25  12:29:29  budd
+* BETA1 release
+* 
 * Revision 1.19  94/01/17  01:54:42  budd
 * [PLB13] set RETCOD (exit code) for compilation/runtime errors
 * including when execution aborted by -NOERRORS
@@ -6688,8 +6691,8 @@ TIMEPS FORMAT  '%15.2f ms. Average per statement executed\n'
 TITLEF FORMAT  'SNOBOL4 (Version 3.11, May 19, 1975)\n'
 *								V3.11
 * [PLB12]:
-UNIXF  FORMAT  'The Macro Implementation of SNOBOL4 for Un*x 0.90 (beta)\n'
-UNIXF2 FORMAT  '    January 1994, by Philip L. Budne\n'
+UNIXF  FORMAT  'The Macro Implementation of SNOBOL4 for Un*x, by Phil Budne\n'
+UNIXF2 FORMAT  '    Version 0.90 (beta1) February 18, 1994\n'
 *
 WRITNO FORMAT  '%15i Writes performed\n'
        END
