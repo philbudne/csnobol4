@@ -1,0 +1,6 @@
+$Id$
+
+Files which exist in only one flavor are here in lib/
+
+Anything which exists in more than one flavor is in a subdir
+	(ie; bsd, generic, dummy)
