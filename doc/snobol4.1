@@ -1,6 +1,6 @@
 .\" -*-nroff-*-
 .\" $Id$
-.TH SNOBOL4 1 "1 June 1994" "Local"
+.TH SNOBOL4 1 "6 September 1996" "Local"
 .SH NAME
 snobol4 \- SNOBOL4 interpreter
 .SH SYNOPSIS
@@ -16,14 +16,13 @@ snobol4 \- SNOBOL4 interpreter
 
 .SH DESCRIPTION
 .PP
-This manual page describes the port of the original Bell Telephone
-Labs (BTL) Macro Implementation of SNOBOL4 (MAINBOL) for Un*x (MFU) by
-Philip L. Budne.  The language and it's implementation are described
-in [1] and [2].
-.PP
-Extensions where present have been chosen to be compatible with one or
-more of; Catspaw Vanilla SNOBOL4, Catspaw SNOBOL4+, Catspaw Macro
-SPITBOL and/or SITBOL.
+This manual page describes a port of the original Bell Telephone Labs
+(BTL) Macro Implementation of SNOBOL4 (MAINBOL) to machines with
+32-bit C compilers by Philip L. Budne.  The language and it's
+implementation are described in [1] and [2].  Many extensions from one
+or more of Catspaw Vanilla SNOBOL4, Catspaw SNOBOL4+, SPITBOL and
+SITBOL have been added.
+
 .SS Command line
 The files on the command line are read in turn until an
 .B END
@@ -54,6 +53,7 @@ or the
 .B -l
 option is
 .BR LEFT .
+Listings are directed to standard output.
 .IP *
 Character set (see below).
 .IP *
@@ -68,10 +68,8 @@ I/O.  The format argument to the
 function is ignored.
 .IP *
 Control lines and comment characters are valid after the end of string
-(;) statement separator.
-.IP *
-Listing statement numbers show the statement number of the LAST
-statement on the line (rather than the first).
+(;) statement separator.  Listing statement numbers show the statement
+number of the LAST statement on the line (rather than the first).
 .IP *
 Setting the
 .B &ABEND
@@ -115,14 +113,59 @@ continuation	+\0.
 Both brackets ([]) and widgits/angle-brackets (<>) may be used to
 subscript arrays and tables.  The
 .B TAB
-(ASCII 8) character is accepted as a space, but since the compiler
-does not expand them, it's use may cause confusion in listings.  Note
-that the use of the pound sign for comments allows use of the shell
-interpreter sequence at the top of a file (ie;
+(ASCII 9) character is accepted as a space, but since the compiler
+does not expand them, it's use may cause confusion in listings and
+error messages.  Note that the use of the pound sign for comments
+allows use of the shell interpreter sequence at the top of a file (ie;
 "#!/usr/local/bin/snobol4 -b").  Underscore (_) and period (.) are
 legal within identifiers and labels.
 
 .SS "Extensions"
+
+.TP
+.BR "SPITBOL " extensions
+The
+.B SPITBOL
+scan (?) and assignment (=) operators have been added.  A patern match
+can appear within an expression, and returns the matched string as
+it's value.  Similarly assignment can appear in an expression, and
+returns the assigned value. An assignment after a scan (ie; STRING ?
+PATTERN = VALUE) performs a scan and replace.  Assignment is right
+associative, and has the lowest precidence, while scan is left
+associative and has a precidence just higher than assignment.
+
+.br
+The
+.B SPITBOL
+selection/alternative construction can be used in any expression.  It
+consists of a comma seperated list of expressions inside parentheses.
+The expressions are evaluated until one succeeds, and it's value is
+returned.  Abuse of this construction may result in incomprehensible
+code.
+
+.br
+The
+.B NUMERIC
+argument
+to
+.B CONVERT()
+and the removal of leading spaces from strings converted (implcitly or
+explicitly) to numbers are also legal when
+.B SPITBOL
+extensions are enabled.
+.B SPITBOL
+extensions can be enabled and disabled using the
+.B "\-PLUSOPS"
+directive.
+.B "\-PLUSOPS 0"
+disables SPITBOL operators, while
+.B "\-PLUSOPS" 
+or
+.BI "\-PLUSOPS " n
+where
+.I n
+is a non-zero integer enables them.  SPITBOL extensions are enabled by
+default.
 
 .TP
 Case folding
@@ -154,7 +197,22 @@ whose stdin (in the case of
 .BR OUTPUT() )
 or stdout (in the case of
 .BR INPUT() )
-will be connected to the file variable.
+will be connected to the file variable.  The magic filenames
+.BR /dev/stdin ,
+.BR /dev/stdout ,
+and
+.B /dev/stderr
+refer to the current process standard input, standard output and
+standard error respectively regardless of whether those special
+filenames exist on your system.
+
+.TP
+No statement limit
+.br
+Keyword
+.B &STLIMIT
+now defaults to -1, which is interpreted as no limit to the number of
+statements executed.
 
 .TP
 .B &UCASE/&LCASE
@@ -209,7 +267,8 @@ is equivalent to
 .br
 The
 .B CHAR()
-function takes an integer and returns the n'th character in
+function takes an integer from 0 to 255 and returns the n'th character
+in
 .B &ALPHABET .
 
 .TP
@@ -240,20 +299,40 @@ given in the second argument (for a table, a second argument of 1
 sorts by table indecies, an argument of 2 sorts by table element
 values). 
 .B SORT()
-sorts elements in ascending order,
+sorts elements in ascending order, while
 .B RSORT()
 sorts in decending order.
 
+.TP
+.B FREEZE()/THAW()
+.br
+The
+.B FREEZE()
+and
+.B
+.B THAW()
+functions prohibit new entry creation in named table.  This is useful
+once a table has been initialized to avoid the creation of empty
+entries that normally occurs on table entry lookup failure.
+
+.TP
+.Exponents
+.br
+.B REAL
+number syntax has been expanded to allow exponents
+of the form
+.IR "ANY('DeEe') ('+' | '-' | '') SPAN('0123456789')" .
 
 .SS "I/O Associations"
 
 .br
-I/O is performed by associating a variable name with
-a numbered I/O unit using the
+I/O is performed by associating a variable name with a numbered I/O
+unit using the
 .B INPUT()
 and
 .B OUTPUI()
 functions.  The following associations are available by default;
+
 .br
 .ta 1i 2i
 .nf
@@ -291,12 +370,17 @@ extensions).  By default programs with compilation errors will not be
 run.
 .TP
 .B -l
-Reenable listing to
-.B OUTPUT
-(default is
+Reenable listing to stdout.  (default is
 .BR \-UNLIST ).
 Default listing side is
 .BR LEFT .
+.TP
+.B -p
+Toggle
+.B SPITBOL 
+extensions (also controlled by
+.BR \-PLUSOPS ).
+
 .TP
 .B -r
 Toggle reading
@@ -308,7 +392,7 @@ label.  Otherwise
 defaults (back) to standard input after program compilation is complete.
 .TP
 -s
-Toggle termination statistics (by default on).
+Toggle termination statistics (off by default).
 
 .SH SEE ALSO
 .IP [1]
