@@ -101,7 +101,7 @@ snobol4.c proc.h2: procs genc.sno globals $(SIL)
 
 isnobol4.c: procs genc.sno globals $(SIL)
 	rm -rf isnobol4.c2 proc.h2 prolog subr
-	test -f bsdtsort || cc -o bsdtsort bsdtsort.c
+	test -f bsdtsort || $(CC) -o bsdtsort bsdtsort.c
 	mkdir subr
 	$(SNO) -- genc.sno --inline $(SIL) > prolog
 	cd subr && ../bsdtsort < ../callgraph > order && \
