@@ -4,7 +4,7 @@
 #include <signal.h>
 
 #include "h.h"
-#include "types.h"
+#include "snotypes.h"
 #include "macros.h"
 
 #include "data.h"			/* SIL data */

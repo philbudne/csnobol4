@@ -5,7 +5,7 @@
 
 #include "h.h"
 #include "units.h"
-#include "types.h"
+#include "snotypes.h"
 #include "macros.h"
 #include "libret.h"			/* IO_XXX */
 #endif

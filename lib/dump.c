@@ -3,7 +3,7 @@
 /* debug functions to call from gdb! */
 
 #ifdef DUMP
-#include "types.h"
+#include "snotypes.h"
 
 #include "equ.h"
 

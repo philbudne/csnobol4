@@ -6,7 +6,7 @@
  */
 
 #include "h.h"
-#include "types.h"
+#include "snotypes.h"
 #include "macros.h"
 
 #include "equ.h"

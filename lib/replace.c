@@ -1,7 +1,7 @@
 /* $Id$ */
 
 #include "h.h"
-#include "types.h"
+#include "snotypes.h"
 #include "macros.h"
 
 #define ALPHSZ 128			/* XXX macros.h */

@@ -1,6 +1,6 @@
 /* $Id$ */
 
-#include "types.h"
+#include "snotypes.h"
 
 int_t
 mstime() {

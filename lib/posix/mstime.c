@@ -1,6 +1,6 @@
 /* $Id$ */
 
-#include "types.h"
+#include "snotypes.h"
 #include <sys/types.h>
 #include <sys/times.h>			/* appeared post-v7?! */
 #include <unistd.h>			/* for _SC_CLK_TCK */

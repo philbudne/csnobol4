@@ -2,7 +2,7 @@
 
 /* header files for snobol4.c; included by SIL "COPY PARAMS" macro */
 
-# include "types.h"
+# include "snotypes.h"
 # include "h.h"
 # include "libret.h"
 # include "syntab.h"

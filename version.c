@@ -2,6 +2,9 @@
 
 /*
  * $Log$
+ * Revision 1.2  94/05/25  02:29:50  budd
+ * moved date to second line
+ * 
  * Revision 1.1  94/05/25  02:14:28  budd
  * Initial revision
  * 
@@ -9,7 +12,7 @@
 
 #include "units.h"
 #include "macros.h"
-#include "types.h"
+#include "snotypes.h"
 #include "data.h"
 
 static const char vers[] = "0.90.1";

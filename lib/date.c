@@ -1,7 +1,7 @@
 /* $Id$ */
 
 #include "h.h"
-#include "types.h"
+#include "snotypes.h"
 #include "macros.h"
 
 #include <sys/types.h>			/* time_t */
