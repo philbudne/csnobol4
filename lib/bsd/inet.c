@@ -6,8 +6,8 @@
 #include <ctype.h>
 
 #if !defined(USE_WINSOCK_H) && !defined(VMS) && !defined(unix)
-#define unix				/* HP-UX!! */
-#endif
+#define unix				/* HP-UX, AIX!! */
+#endif /* !defined(USE_WINSOCK_H) && !defined(VMS) && !defined(unix) */
 
 /* Ugly, but better than duplicating the whole file! */
 #ifdef unix
@@ -15,25 +15,29 @@
 #include <sys/socket.h>
 #include <netdb.h>
 #include <netinet/in.h>
-#else /* not unix */
+#else  /* unix not defined */
 #ifdef USE_WINSOCK_H
 #include <winsock.h>
-#endif /* USE_WINSOCK_H */
+#endif /* USE_WINSOCK_H defined */
 #ifdef VMS
+/*
+ * DEC TCP/IP Connection services for OpenVMS
+ * (formerly VAX/Ultrix connection product)
+ */
 #include <types.h>
 #include <socket.h>
 #include <netdb.h>
 #include <in.h>
-#endif /* VMS */
-#endif /* not unix */
+#endif /* VMS defined */
+#endif /* unix not defined */
 
 #include "h.h"				/* TRUE/FALSE */
 #include "snotypes.h"			/* needed on VAX/VMS for macros.h */
 #include "macros.h"			/* bcopy */
 
 #ifndef INADDR_NONE
-#define INADDR_NONE ((unsigned long)0xffffffff)	/* use -1? */
-#endif
+#define INADDR_NONE ((unsigned long)0xffffffff)	/* want u_int32_t! */
+#endif /* INADDR_NONE not defined */
 
 static int
 inet_socket( host, service, port, priv, type )
@@ -54,7 +58,7 @@ inet_socket( host, service, port, priv, type )
     sin.sin_family = AF_INET;
 #ifdef HAVE_SOCKADDR_LEN
     sin.sin_len = sizeof(sin);
-#endif
+#endif /* HAVE_SOCKADDR_LEN defined */
 
     if (service) {
 	sp = getservbyname(service, (type == SOCK_STREAM ? "tcp" : "udp"));
