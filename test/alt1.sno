@@ -1,0 +1,33 @@
+*	bug found by shafto's atn.sno
+
+	S = 'NETWORK PARSE_CLAUSE END PARSE_CLAUSE'
+
+* Keyword settings
+
+	&ANCHOR = 0
+	&TRIM	= 1
+
+* Utility patterns
+
+	BLANK	= ' '
+
+	LEFT_END  = POS(0)
+	RIGHT_END = RPOS(0)
+
+	BLANKS	= SPAN(BLANK)
+	OPT_BLANKS = BLANKS | null
+	BB	= BREAK(BLANK)
+
+****************************************************************
+
+	COMPLETE_PAT =
++		(LEFT_END 'EXEC' BLANKS) |
++		(LEFT_END BB BLANKS (BB $ TNAME) BLANKS FAIL) |
++		('END' OPT_BLANKS *TNAME RIGHT_END)
+
+****************************************************************
+
+	S COMPLETE_PAT					:F(DONE)
+	OUTPUT = 'yes'
+DONE	OUTPUT = 'NAME: ' TNAME
+END

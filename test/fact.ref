@@ -1,0 +1,7 @@
+FACT(0) = 1
+FACT(1) = 1
+FACT(2) = 2
+FACT(3) = 6
+FACT(4) = 24
+FACT(5) = 120
+FACT(6) = 720

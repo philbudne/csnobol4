@@ -1,0 +1,5 @@
+	OUTPUT(.FOO,10,,"openo.tst")
+
+	FOO = "hello"
+	FOO = "world"
+END

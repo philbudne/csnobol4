@@ -1,0 +1,17 @@
+	&FTRACE = 10000
+
+	DEFINE("A()")
+	DEFINE("B()")
+	DEFINE("C()")
+	DEFINE("D()")
+
+	:(BEGIN)
+
+A	B(1)						:(RETURN)
+B	C(1)						:(RETURN)
+C	D(0)
+	D(1)						:(RETURN)
+D							:(RETURN)
+
+BEGIN	A("hello")
+END

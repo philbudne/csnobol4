@@ -1,0 +1,50 @@
+# ordered list of tests
+reg end.sno
+reg a.sno
+reg str.sno
+reg dump.sno
+reg hello.sno
+reg punch.sno
+reg len.sno
+reg cat.sno
+reg float.sno
+reg loop.sno
+reg fun1.sno
+reg fun2.sno
+reg fact.sno
+reg words.sno
+reg words1.sno
+reg match.sno
+reg match2.sno
+reg match3.sno
+reg match4.sno
+reg repl.sno
+reg roman.sno
+reg openi.sno
+reg openo.sno
+reg openo2.sno
+# additional tests; not ordered
+reg 100func.sno
+reg alt1.sno
+reg alt2.sno
+# reg atn.sno
+reg bal.sno
+reg collect.sno
+reg comment.sno
+reg convert.sno
+# XXX needs postprocessing;
+# reg ftrace.sno
+reg matchloop.sno
+reg pow.sno
+# reg sqrt.sno
+reg uneval.sno
+reg uneval2.sno
+# 5/25/94
+reg trim0.sno
+reg trim1.sno
+reg case1.sno
+reg case2.sno
+# 5/29/94
+reg alph.sno
+# 6/1/94
+reg 8bit.sno

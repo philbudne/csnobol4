@@ -1,0 +1,15 @@
+**** test functions, labels, special labels
+* 5/25/94 -plb
+
+	define('same(x,y)')				:(esame)
+same	ident(x,y)					:s(return)f(freturn)
+esame
+
+	same('a','b')					:s(end)
+	same('a','a')					:f(end)
+
+* XXX test data(), load(), arrays, tables
+	output = 'yes!'
+
+* test END label!!
+end

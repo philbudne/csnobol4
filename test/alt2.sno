@@ -1,0 +1,6 @@
+*	bug found by shafto's atn.sno
+
+	'AAA' ('FOO' | (SPAN('A') $ TNAME) | 'BAR')	:F(DONE)
+	OUTPUT = 'yes'
+DONE	OUTPUT = 'NAME: ' TNAME
+END

@@ -1,0 +1,4 @@
+	INPUT(.FOO,10,,"openo.tst")
+
+LOOP	OUTPUT = FOO			:S(LOOP)
+END

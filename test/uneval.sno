@@ -1,0 +1,5 @@
+	&ANCHOR = 1
+	H = 'H'
+	'HELLO' *H 'ELLO'				:F(END)
+	OUTPUT = 'YES!!'
+END

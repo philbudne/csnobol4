@@ -1,0 +1,55 @@
+	DEFINE("POW(X,Y)")				:S(EPOW)
+POW	OUTPUT = X "^" Y " = " X ^ Y			:S(RETURN)
+	OUTPUT = X "^" Y " FAILED"			:(RETURN)
+EPOW
+
+*	POW(0,-1)
+
+* mainbol allows this one, but spitbol doesn't?
+*	POW(0,0)
+
+	POW(0,1)
+
+	POW(1,0)
+	POW(2,0)
+	POW(3,0)
+
+	POW(1,1)
+	POW(2,1)
+	POW(3,1)
+
+	POW(1,2)
+	POW(2,2)
+	POW(3,2)
+
+* spitbol returns real?!
+	POW(9,-1)
+
+****************************************************************
+
+*	POW(0.,-1)
+
+* mainbol allows this one., but spitbol doesn't?
+*	POW(0.,0)
+
+	POW(0.,1)
+
+	POW(1.,0)
+	POW(2.,0)
+	POW(3.,0)
+
+	POW(1.,1)
+	POW(2.,1)
+	POW(3.,1)
+
+	POW(1.,2)
+	POW(2.,2)
+	POW(3.,2)
+
+	POW(9.,-1)
+	POW(9,0.5)
+
+	POW(2,0.5)
+	POW(2,-0.5)
+
+END

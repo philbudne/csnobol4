@@ -1,0 +1,10 @@
+*       LENGTH.SNO
+*
+*       Sample program from Chapter 5 of the Tutorial
+*
+LOOP    S = TRIM(INPUT)                 :F(END)
+        OUTPUT = SIZE(S) ' ' S          :(LOOP)
+END
+hello
+world
+this is a longer line

@@ -1,0 +1,13 @@
+* test lines with trailing spaces w/ trim off
+* 5/25/94 -plb
+	&trim = 0
+top	line = input		:f(end)
+loop	line ' ' = '@'		:s(loop)
+	output = line		:(top)
+end
+this line has three trailing spaces   
+    
+        
+                                                                             
+                                                                              
+                                                                               

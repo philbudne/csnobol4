@@ -1,0 +1,14 @@
+*	test functions (arg & return values)
+
+	DEFINE("DOIT(X)")		:(END_DOIT)
+DOIT	DOIT = X			:(RETURN)
+END_DOIT
+
+	OUTPUT = DOIT(0)
+	OUTPUT = DOIT(1)
+	OUTPUT = DOIT(2)
+	OUTPUT = DOIT(3)
+	OUTPUT = DOIT(4)
+	OUTPUT = DOIT(5)
+	OUTPUT = DOIT(6)
+END

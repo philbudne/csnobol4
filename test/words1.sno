@@ -1,0 +1,32 @@
+*   WORDS.SNO -- word counting program
+*
+*	Sample program from Chapter 6 of the Tutorial
+*
+*   A word is defined to be a contiguous run of letters,
+*   digits, apostrophe and hyphen.  This definition of
+*   legal letters in a word can be altered for specialized
+*   text.
+*
+*   If the file to be counted is TEXT.IN, run this program
+*   by typing:
+*	B>SNOBOL4 WORDS /I=TEXT
+*
+	&TRIM	=  1
+	UCASE	= "ABCDEFGHIJLKMNOPQRSTUVWXYZ"
+	LCASE	= "abcdefghijlkmnopqrstuvwxyz"
+	WORD	=  "'-"  '0123456789' UCASE LCASE
+	WPAT	=  BREAK(WORD) SPAN(WORD)
+
+NEXTL	LINE	=  INPUT			:F(DONE)
+*	OUTPUT	= '>' LINE
+NEXTW	LINE WPAT =				:F(NEXTL)
+*	OUTPUT	= '>>' LINE
+	N	=  N + 1			:(NEXTW)
+
+DONE	OUTPUT =  +N ' words'
+END
+Four-score and seven years ago
+this
+is
+a
+test

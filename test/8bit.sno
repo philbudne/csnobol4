@@ -1,0 +1,12 @@
+* 6/1/94 -plb
+	define("ascii(n)")				:(eascii)
+ascii	&alphabet (pos(0) tab(n)) len(1) . ascii	:s(return)f(freturn)
+eascii
+
+	output = ascii(65) ascii(66) ascii(67)
+	output = ascii(1) ascii(127) ascii(128) ascii(255)
+
+	delim = ascii(255)
+	test = delim 'hello world' delim
+	test delim break(delim) . output delim
+end

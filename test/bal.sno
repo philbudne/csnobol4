@@ -1,0 +1,25 @@
+	DEFINE("X(S)")					:(EX)
+X	S BAL . B					:F(F)
+	OUTPUT = '  ' S ' => ' B			:(RETURN)
+F	OUTPUT = '  ' S ' => *FAIL*'			:(RETURN)
+EX
+
+	DEFINE("Y()")					:(EY)
+Y	X('A')
+	X('A(X)')
+	X('AA(X)')
+	X('()')
+	X('((()))')
+	X('((())')
+	X(')(')
+							:(RETURN)
+EY
+
+	OUTPUT = '&ANCHOR = 0'
+	&ANCHOR = 0
+	Y()
+
+	OUTPUT = '&ANCHOR = 1'
+	&ANCHOR = 1
+	Y()
+END

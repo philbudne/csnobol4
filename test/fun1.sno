@@ -1,0 +1,14 @@
+*	test functions (arg values)
+
+	DEFINE("DOIT(X)")			:(END_DOIT)
+DOIT	OUTPUT = DATATYPE(X) " {" X "}"		:(RETURN)
+END_DOIT
+
+	DOIT(0)
+	DOIT(1)
+	DOIT(2)
+	DOIT(3)
+	DOIT(4)
+	DOIT(5)
+	DOIT(6)
+END

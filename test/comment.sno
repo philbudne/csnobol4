@@ -1,0 +1,33 @@
+	Q1 = (POS(0) ('X' | '') '*')
+	Q2 = (POS(0) (' ' | '') '*')
+
+	P1 = (POS(0) (SPAN(' ') | '') '*')
+	P2 = (POS(0) RPOS(0))
+
+	P3 = P1 | P2
+
+	DEFINE("TEST(PAT,STR)")				:(ETEST)
+TEST	STR $PAT					:F(RETURN)
+	OUTPUT = PAT " '" STR "' ok"			:(RETURN)
+ETEST
+
+	TEST(.Q1,' *')
+	TEST(.Q1,'*')
+	TEST(.Q1,'')
+
+	TEST(.Q2,' *')
+	TEST(.Q2,'*')
+	TEST(.Q2,'')
+
+	TEST(.P1,' *')
+	TEST(.P1,'*')
+	TEST(.P1,'')
+
+	TEST(.P2,' *')
+	TEST(.P2,'*')
+	TEST(.P2,'')
+
+	TEST(.P3,' *')
+	TEST(.P3,'*')
+	TEST(.P3,'')
+END

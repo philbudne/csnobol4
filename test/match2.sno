@@ -1,0 +1,3 @@
+	'AAA' LEN(1) $ X
+	OUTPUT = X
+END

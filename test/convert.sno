@@ -1,0 +1,16 @@
+*-LIST LEFT
+	A = TABLE()
+
+	A<'A'> = 1
+	A<'B'> = 2
+	A<'C'> = 3
+	A<'D'> = 4
+
+	B = CONVERT(A,'ARRAY')
+
+	I = 1
+L
+*	OUTPUT = DATATYPE(B<I,1>) ': ' DATATYPE(B<I,2>) :F(END)
+	OUTPUT = B<I,1> ': ' B<I,2>		:F(END)
+	I = I + 1				:(L)
+END

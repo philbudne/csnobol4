@@ -1,0 +1,11 @@
+	A = "'"
+	Q = '"'
+
+TOP	LINE = INPUT					:F(END)
+	LINE (A | Q) $ QUOTE *BREAK(QUOTE) . STR *QUOTE	:F(TOP)
+	OUTPUT = STR					:(TOP)
+END
+'HELLO HELLO'
+"mr ed"
+'hi hi
+"It's a small world"

@@ -1,0 +1,38 @@
+* test case (in)sensitivity
+* 5/25/94 -plb
+
+* should start case insensitive (-case 1)
+	output = .hi
+	OUTPUT = .hi
+* switch to case sensitive
+-case
+	OUTPUT = .hi
+* this should fail!
+-case 1
+	OUTPUT = .hi
+* switch back
+-CASE 1
+	output = .hi
+	OUTPUT = .hi
+* do it differently this time
+-case 0
+	OUTPUT = .hi
+* noop
+	output = 'here1'
+
+**** test functions, labels, special lables
+	&CASE = 0
+* XXX test locals too?
+* XXX test sensitivity better
+	DEFINE('same(x,y)')				:(esame)
+same	IDENT(x,y)					:s(RETURN)f(FRETURN)
+esame
+
+	output = 'here2'
+	same('a','b')					:s(end)
+	output = 'here3'
+	same('a','a')					:f(end)
+	OUTPUT = 'yes!'
+
+* test END label!!
+END

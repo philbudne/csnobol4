@@ -1,0 +1,6 @@
+	&STLIMIT = 200000
+	A = 0
+LOOP	A = A + 1
+	'FOO' 'BAR'
+	LT(A,50000)		:S(LOOP)
+END
