@@ -20,12 +20,12 @@ void init_args __P((int, char *[]));
 void init __P((void));
 
 /* from io.c */
+/* io_include(), io_read() in libret.h */
 void io_backspace __P((int));
 void io_ecomp __P((void));
 void io_endfile __P((int));
 int io_file __P((struct descr *,struct spec *));
 int io_flushall __P((int));
-int io_include __P((struct descr *,struct spec *));
 void io_init __P((void));
 int io_openi __P((struct descr *,struct spec *,struct spec *,struct descr *));
 int io_openo __P((struct descr *,struct spec *,struct spec *));
