@@ -144,9 +144,11 @@ if [ -f 00README.CVS ]; then
 fi
 
 # kinda redundant, but timing script could be run on a different host!
-echo ''
-echo 'config.guess:'
-./config.guess
+if [ -x config.guess ]; then
+	echo ''
+	echo 'config.guess:'
+	./config.guess
+fi
 
 echo ''
 echo "ls -l config.m4 config.h build.c ${SNOBOL}:"
