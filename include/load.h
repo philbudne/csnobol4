@@ -44,4 +44,8 @@
 #define RETSTR(CP,LEN) { retstring(retval, (CP), (LEN)); return TRUE; }
 #define RETNULL { D_A(retval) = 0; return TRUE; }
 
+/* return failure */
 #define RETFAIL return FALSE
+
+/* access return value type */
+#define RETTYPE D_V(retval)
