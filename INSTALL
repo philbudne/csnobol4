@@ -235,18 +235,18 @@ of system support functions, including "dummy" versions which allow
 the software to be built, with reduced functionality.
 
 If this occurs, or if the build does not succeed, you can consult
-doc/porting.doc (also available as html) for information on the
+doc/porting.txt (also available as html) for information on the
 available options for use in creating a system-specific config file.
 
 If you need assistance please contact me (phil@ultimate.com).
 
+I've spent untold hours working on this release, if you find it
+useful, please consider sending me a gift (phil@ultimate.com via paypal).
+
 I'm also available for contract development.
 
-I've spent untold hours working on this release, if you find
-it useful, consider sending me a gift!
-
 For information on including "external" C functions in the linked
-binary see doc/load.doc.
+binary see doc/load.txt.
 
 Installation
 ------------
@@ -262,7 +262,7 @@ For more information on configuration, see the next section:
 "Advanced configuration".
 
 For information on porting this software to a new system see
-doc/porting.doc.
+doc/porting.txt.
 
 Advanced configuration on Unix
 ==============================
@@ -275,7 +275,7 @@ to alter your configuration would be because the automatically
 generated configuration would not build (please let me know if this
 happens)!  Another would be to customize your system (for example,
 adding new built-in functions, especially via the "Poor Mans LOAD()"
-facility (see doc/load.doc)).
+facility (see doc/load.txt)).
 
 local-config
 ------------
@@ -342,7 +342,7 @@ Non-unix systems;
 ================
 
 The non-unix ports are not well tested.  Please send me any fixes you
-discover!  See doc/porting.doc for details on porting CSNOBOL4.
+discover!  See doc/porting.txt for details on porting CSNOBOL4.
 
 The routines in tty.c (tty_save, tty_restore, tty_mode, tty_close) and
 inet.c (tcp_open, udp_open) need to be supplied.  Dummy versions exist
@@ -433,7 +433,7 @@ Anything else
 -------------
 
 CSNOBOL4 has been designed to be modular, and makes only modest
-demands on the C library.  See doc/porting.doc for information.
+demands on the C library.  See doc/porting.txt for information.
 
 Let me know!
 ============
@@ -441,7 +441,7 @@ Let me know!
 Please let me know of your success and failures to bring up CSNOBOL4!
 
 Please mail timing.out files to timing@snobol4.org along with
-information on your system make, model and CPU clock speed, if known.
+information on your system make, model and CPU clock, if known.
 
 Announcements of new releases are made on the SNOBOL4 mailing list.
 See http://www.snobol4.com/listserv.htm for information on how to join.
