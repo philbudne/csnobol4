@@ -139,7 +139,8 @@ MB1	INPUT(.INPUT,1,,"syntax.tbl")			:F(IOERR)
 	OUTPUT(.SYN.C,10,,"syn.c2")
 	OUTPUT(.SYN.H,11,,"syn.h2")			:(EIO)
 ****************
-IOERR	OUTPUT = "COULD NOT OPEN INPUT FILE"		:(END)
+IOERR	&CODE = 1
+	OUTPUT = "COULD NOT OPEN INPUT FILE"		:(END)
 
 EIO
 ****************
