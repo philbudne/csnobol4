@@ -1,6 +1,11 @@
 * $Id$
 *
 * $Log$
+* Revision 1.57  1996/10/05  06:28:51  phil
+* [PLB46] moved INCSTK to ICLBLK (sir.sno GC crashed compiler)
+* increased FNLIST free space to 20 functions
+* more comment tweaking
+*
 * Revision 1.56  1996/10/04  04:17:13  phil
 * [PLB45] increased STSIZE from 1000 to 1500
 * use plain constant for space at end of FNLIST
@@ -6350,7 +6355,8 @@ END2   INTRL   EXN2CL,EXN2CL	   Convert execution total to REAL
 AVTIME OUTPUT  PUNCH,TIMEPS,(FCL)  Print average time		[PLB5]
 ENDALL ENDEX   ABNDCL						E3.2.2
 *_
-SYSCUT OUTPUT  PUNCH,SYSCMT,(FILENM,LNNOCL,STNOCL,LVLCL)	[PLB5][PLB38]
+SYSCUT OUTPUT  PUNCH,SYSCMT,(FILENM,LNNOCL,SIGNCL,STNOCL,LVLCL)	[PLB5][PLB38]
+*								[PLB47]
 *				   System cut exit
        AEQLC   CUTNO,0,ENDALL					E3.2.2
        SETAC   CUTNO,1						E3.2.2
@@ -6815,6 +6821,7 @@ PATICL DESCR   0,0,0		   Pattern code offset
 PDLEND DESCR   0,0,0		   Pattern history list end	[PLB41]
 PDLPTR DESCR   0,0,0		   Pattern history list beginning [PLB41]
 SCL    DESCR   0,0,0		   Switch descriptor
+SIGNCL DESCR   0,0,0		   Terminating signal() for SYSCUT [PLB47]
 STKPTR DESCR   STACK,0,0	   Pointer to stack
 STYPE  DESCR   0,FNC,0		   Descriptor return by STREAM
 TBLFNC DESCR   0,0,0		   Pointer to last pattern table
@@ -7918,6 +7925,7 @@ OPNLIT STRING  'Unclosed literal'
 *      Formats
 *
 * [PLB10] converted to printf() style formats
+* [PLB38] use %D/%F for stats, added file:line
 ALOCFL FORMAT  'Insufficient storage for initialization\n'	E3.10.6
 ARTHNO FORMAT  '%D Arithmetic operations performed\n'
 CMTIME FORMAT  '%D ms. Compilation time\n'
@@ -7941,8 +7949,8 @@ STATHD FORMAT  'SNOBOL4 statistics summary-\n'
 STDMP  FORMAT  '\fDump of variables at termination\n\n'
 STGENO FORMAT  '%D Regenerations of dynamic storage\n'
 SUCCF  FORMAT  'No errors detected in source program\n\n'
-SYSCMT FORMAT  '%v:%d: Caught signal in statement %d at level %d\n'
-*								E3.4.1
+SYSCMT FORMAT  '%v:%d: Caught signal %d in statement %d at level %d\n'
+*								E3.4.1[PLB47]
 TIMEPS FORMAT  '%F ms. Average per statement executed\n'	[PLB18]
 TITLEF FORMAT  'SNOBOL4 (Version 3.11, May 19, 1975)\n'
 *								V3.11
