@@ -6,7 +6,7 @@
 
 *	optional second arg is string to use to seperate lines
 
-	DEFINE("BQ(COMMAND,OFS,UNIT)")			:(END_BQ)
+	DEFINE("BQ(COMMAND,OFS)UNIT")			:(END_BQ)
 BQ	UNIT = IO_FINDUNIT()				:F(FRETURN)
 	INPUT(.X,UNIT,,'|' COMMAND)			:F(FRETURN)
 	OFS = IDENT(OFS) ' '
