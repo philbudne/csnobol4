@@ -23,9 +23,9 @@ void init __P((void));
 
 /* from io.c */
 /* io_include(), io_read() in libret.h */
-void io_backspace __P((int));
+void io_backspace __P((int_t));
 void io_ecomp __P((void));
-int io_endfile __P((int));
+int io_endfile __P((int_t));
 int io_file __P((struct descr *,struct spec *));
 int io_finish __P((void));
 int io_flushall __P((int));
@@ -35,8 +35,8 @@ int io_openi __P((struct descr *,struct spec *,struct spec *,struct descr *));
 int io_openo __P((struct descr *,struct spec *,struct spec *));
 int io_pad __P((struct spec *,int));
 void io_print __P((struct descr *,struct descr *,struct spec *));
-void io_printf __P((int,...));
-void io_rewind __P((int));
+void io_printf __P((int_t,...));
+void io_rewind __P((int_t));
 int io_seek __P((struct descr *,struct descr *,struct descr *));
 int io_sseek __P((int_t,int_t,int_t,int_t,int_t *));
 
