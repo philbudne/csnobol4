@@ -2,7 +2,8 @@
 
 /* VMS config.h 1/26/2002 */
 
-#define ANSI_STRINGS
+#define HAVE_STRING_H
+
 /* other include files defines?? HAVE_xxx_H */
 
 #define NO_OFF_T

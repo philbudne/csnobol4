@@ -22,7 +22,7 @@
 #define SNOLIB_DIR	"/snobol4"
 
 /* includes; */
-#define ANSI_STRINGS
+#define HAVE_STRING_H
 #define HAVE_STDARG_H
 #define HAVE_STDLIB_H
 
