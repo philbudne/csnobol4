@@ -1,5 +1,17 @@
 $Id$
 
+rewind tests;
+		split program across files
+		split data across files??
+
+update man page;
+	&DUMP now sorts vars
+	mention &CODE &ABEND
+	case folding bugs (and ID context; not just $(str))
+
+include version number in tar file directory
+	(snobol/ -> snobol-xx.yy/)
+
 make "install"
 
 work on "configure" script
