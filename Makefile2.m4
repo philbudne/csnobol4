@@ -119,7 +119,7 @@ isnobol4.c: procs genc.sno global.procs v311.sil inline.sno
 	mkdir subr
 	$(SNO) inline.sno > prolog
 	cd subr; cat ../prolog \
-		`awk '{print $2, $1}' ../callgraph | tsort 2>/dev/null` \
+		`awk '{print $$2, $$1}' ../callgraph | tsort 2>/dev/null` \
 			> ../isnobol4.c.TMP
 	mv isnobol4.c.TMP isnobol4.c
 	rm -rf prolog subr
