@@ -399,7 +399,6 @@ else
 	;;
     *:IRIX*:*:*)
 	echo 'CCM=$(CC) -M'			>> $CONFIG_M4
-	OPT=-O3
 	FASTFLAGS=-Ofast=`uname -m`
 	CCVERS=-version
 
@@ -411,10 +410,19 @@ else
 	# (only allow if "$OS" = IRIX64 ??
 	if [ "$LP64" ]; then
 	    ARCH_OPT=`getconf XBS5_LP64_OFF64_CFLAGS`
+	    # XXX check if non-null?
+
 	    ARCH_LDFLAGS=`getconf XBS5_LP64_OFF64_LDFLAGS`
 	    if [ "x$ARCH_LDFLAGS" != x ]; then
 		echo 'ADD_LDFLAGS(['$ARCH_LDFLAGS'])'>> $CONFIG_M4
 	    fi
+	    OPT=-O3
+	else
+	    # o32 compiler's -O3 wants all files on one line
+	    # (to do interprocedural optimization).
+	    # n32 compiler's -O3 beats o32 -O2
+	    # To override this, use "configure --opt=whatever"
+	    OPT=-n32 -O3
 	fi
 	;;
     *:AIX:2:3)
