@@ -256,7 +256,7 @@ The snobol4 (PREFIX/bin/snobol4), library directory
 (PREFIX/lib/snobol4) and man page (PREFIX/man/man1/snobol4.1).  The
 default PREFIX is /usr/local, see --prefix= configure option above).
 
-Please mail timing.out files to snobol4-timing@ultimate.com!!!
+Please mail timing.out files to timing@snobol4.org!!!
 
 For more information on configuration, see the next section:
 "Advanced configuration".
@@ -438,10 +438,10 @@ demands on the C library.  See doc/porting.doc for information.
 Let me know!
 ============
 
-Please let me know of your success and failures to bring up C-SNOBOL4!
+Please let me know of your success and failures to bring up CSNOBOL4!
 
-Please mail timing.out files to snobol4-timing@ultimate.com along with
+Please mail timing.out files to timing@snobol4.org along with
 information on your system make, model and CPU clock speed, if known.
 
-If you want to receive a note when new releases are made, send mail
-to snobol4-users-request@ultimate.com
+Announcements of new releases are made on the SNOBOL4 mailing list.
+See http://www.snobol4.com/listserv.htm for information on how to join.
