@@ -59,6 +59,7 @@ HOST( LA_ALIST ) LA_DCL
 	    RETINT(0);
 	}
 	getstring( LA_PTR(1), buf, sizeof(buf)); /* get arg as c-string */
+	io_flushall(0);			/* flush output buffers */
 	RETINT(system(buf));		/* run in sub-shell */
 
     case 2:				/* HOST(2,n); argument n */

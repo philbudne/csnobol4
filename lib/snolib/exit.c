@@ -24,6 +24,7 @@ EXIT( LA_ALIST ) LA_DCL
 
     if (LA_TYPE(0) == S) {		/* EXIT("command") */
 	getstring( LA_PTR(0), buf, sizeof(buf));
+	io_flushall(0);			/* flush output buffers */
 	execute(buf);			/* should not return */
 	/* ~sigh~ */
 	RETFAIL;
