@@ -30,8 +30,8 @@ snobol4 should not be needed to bootstrap the system.
 Config files
 .PP
 A configuration file from the config directory must be linked (or
-copied) to config.h in the top level directory.  The config.h file is
-included into Makefile.cpp using the C preprocessor, and contains
+copied) to config.m4 in the top level directory.  The config.m4 file is
+included into Makefile2.m4 using the m4 macro processor, and contains
 make variable assignments (ie; VAR=VALUE).
 .PP
 The following are variables which may need to be set in some
@@ -48,7 +48,7 @@ CCM
 The command to use to create "make depend" output.  The default value
 is "$(CC) -M".  If your C compiler (see CC, above) does not support
 the -M flag, a script cc-M is supplied, and CCM=./cc-M. should be
-added to your config.h file.
+added to your config.m4 file.
 
 .NH 2
 MATHLIB
@@ -149,11 +149,26 @@ other #define's
 .NH 3
 SNOLIB_DIR
 .PP
-** TO BE SUPPLIED **
+Directory for SNOBOL4 library files (default
+"/usr/local/lib/snobol4").
+.NH 3
+TMP_DIR
+.PP
+Directory to use for temporary files (default "/tmp").
 .NH 3
 SNOLIB_A
 .PP
-** TO BE SUPPLIED **
+Filename (in SNOLIB_DIR) for file to use if none supplied to LOAD()
+function.
+.NH 3
+HZ
+.PP
+Used with ../generic/mstime.c; Number of ticks per second, as returned
+by times() system call (default: 60).
+.NH 3
+SIGFUNC_T
+.PP
+Return type for signal handler functions (default: void).
 
 .NH 1
 Library functions
@@ -171,7 +186,7 @@ DCMP macro
 LEXCMP macro
 .PP
 The default implementation uses bcmp(), but memcmp() may be
-substituted (see config/generic.h)
+substituted (see config/generic.m4)
 
 .NH 2
 MOVBLK macro
@@ -182,7 +197,7 @@ with correctly!!
 .PP
 ANSI C memmove() handles overlap, but may be inefficient.
 .PP
-An efficient C bcopy routine is provided (see config/generic.h)
+An efficient C bcopy routine is provided (see config/skel.inc)
 in lib/bcopy.c
 
 .NH 2
@@ -195,7 +210,7 @@ ZERBLK macro
 .PP
 Uses bzero() to clear blocks of deccriptors.
 .PP
-A generic C bzero routine is provided (see config/generic.h)
+A generic C bzero routine is provided (see config/skel.inc)
 in lib/bzero.c
 
 .NH 2
@@ -250,7 +265,7 @@ init.c
 Initialization functions init_args() and init().  init_args() is
 called from main() to parse command line arguments, using getopt() and
 sscanf().  A version of getopt is available in lib/getopt.c (see
-config/generic.h).
+config/skel.inc).
 .PP
 init() is called from by the SIL INIT macro (first line of v311.sil)
 to initialize storage and signal handling.  init() calls bzero()
@@ -291,7 +306,8 @@ than 1000!
 .IP posix/mstime.c
 uses times() and sysconf().  Use this version when sysconf() is available.
 .IP generic/mstime.c
-uses times() and #define'ed HZ (assumes 60 ticks/sec).
+uses times() and #define'ed HZ (defaults to 60 ticks/sec, but may be
+overridden).
 .IP dummy/mstime.c
 if neither getrusage() nor times() is available.
 
