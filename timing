@@ -237,8 +237,9 @@ LNFILES='../procs ../globals ../v311.sil ../host.sno'
 # AFS doesn't allow hard links across directories!
 	ln $LNFILES . || ln -s $LNFILES .
 
+	# need eval on Debian 3.0 (no "time" binary)
 	# stderr to file "stderr", all but first line of stdout to "$OUT"
-	$TIME ./snobol4 $ARGS -s ../genc.sno v311.sil 2>stderr | $TAIL1 >$OUT
+	eval "$TIME ./snobol4 $ARGS -s ../genc.sno v311.sil" 2>stderr | $TAIL1 >$OUT
 )
 # use snobol program to process output!!
 $SNOBOL $ARGS -b timing.sno < $TDIR/stderr
