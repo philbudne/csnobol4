@@ -33,7 +33,7 @@ extern char *dynamic();
 #endif /* NDYNAMIC not defined */
 
 #ifndef PSSIZE
-#define PSSIZE SPDLDR			/* default pattern stack size */
+#define PSSIZE (SPDLDR/DESCR)		/* default pattern stack size */
 #endif /* PSSIZE not defined */
 
 #ifdef NO_STATIC_VARS
@@ -75,7 +75,7 @@ usage( jname )
     p( "-b\ttoggle display of startup banner\n");
     fprintf(stderr,
 	    "-d BYTES[km]\n\tsize of dynamic region in bytes (default: %d)\n",
-	    NDYNAMIC*DESCR);
+	    (NDYNAMIC)*DESCR);
     p( "-f\ttoggle folding of identifiers to upper case (-CASE)\n");
     p( "-h\tthis message\n");
     p( "-k\ttoggle running programs with compilation errors (-[NO]ERRORS)\n");
@@ -88,7 +88,7 @@ usage( jname )
     p( "-M\tprocess multiple input files\n");
     p( "-P BYTES[km]\n");
     fprintf(stderr, "\tsize of pattern match stack in bytes (default: %d)\n",
-	    PSSIZE);
+	   (PSSIZE)*DESCR);
     p( "\n");
     fprintf(stderr, "For memory region sizes a suffix of 'k' (1024) and 'm' (1024*1024)\n");
     fprintf(stderr, "can be used. Descriptor size is %d bytes\n", DESCR );
@@ -175,8 +175,8 @@ init_args( ac, av )
     int c;
     int multifile;
 
-    ndynamic = NDYNAMIC * DESCR;
-    pmstack = PSSIZE;
+    ndynamic = (NDYNAMIC) * DESCR;
+    pmstack = (PSSIZE) * DESCR;
 
     /* save in globals for HOST(), getparm(), init() */
     argc = ac;
