@@ -41,6 +41,10 @@
 
 *	output list of global procs (for data segment)
 	OUTPUT(.PROC.H,11,'proc.h2')
+
+*	dummy out freeze/thaw
+	DEFINE("FREEZE(T)","RETURN")
+	DEFINE("THAW(T)","RETURN")
 							:(EIO)
 
 **************** MAINBOL I/O
@@ -107,6 +111,7 @@ EIO
 	NOCODE<'DESCR'> = 1
 	NOCODE<'SPEC'> = 1
 	NOCODE<'FORMAT'> = 1
+	FREEZE(NOCODE)
 *
 ****************************************************************
 *	constants
@@ -539,7 +544,9 @@ MKPROC	DIFFER(ISPROC<PROC>)				:S(RETURN)
 	STAT = 'static '
 	STAT = DIFFER(GLOBAL<PROC>)
 	OUTPUT = STAT PROCTYPE ' ' PROC '();'
-	ISPROC<PROC> = 1				:(RETURN)
+	THAW(ISPROC)
+	ISPROC<PROC> = 1
+	FREEZE(ISPROC)					:(RETURN)
 EMKPROC
 
 ****************************************************************
@@ -576,7 +583,8 @@ GLOBLOP	PROC = GLOB					:F(GLOBEND)
 	PROC.H = 'extern ' PROCTYPE ' ' PROC '();'
 *	make sure it's a proc!
 	MKPROC(PROC)					:(GLOBLOP)
-GLOBEND
+GLOBEND	FREEZE(GLOBAL)
+	FREEZE(ISPROC)
 
 ****************
 *	read gendep output!
@@ -650,7 +658,8 @@ NOTCOPY	LINE '*'					:F(NOTCOMM)
 	OUTPUT = IND BC '_' EC				:(TOP)
 
 *	here to start a block comment
-BLOCK	DIFFER(BLOCK_COMMENTS)				:F(TOP)
+BLOCK
+	DIFFER(BLOCK_COMMENTS)				:F(TOP)
 	OUTPUT = IDENT(BLOCK) BBC
 	OUTPUT = SP LINE
 	BLOCK = 1					:S(TOP)
@@ -713,7 +722,8 @@ DISPATCH
 	CFLUSH()
 	OUTPUT = IND BC SP COMM EC
 
-NOCOMM	IDENT(POUND_LINE)				:S(NOHASH)
+NOCOMM
+	IDENT(POUND_LINE)				:S(NOHASH)
 *	output un*x line indicator (see comments at top)
 	OUTPUT = DIFFER(INPROC) '# line ' LN ' "' SILPATH '"'
 NOHASH
