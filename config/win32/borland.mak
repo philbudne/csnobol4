@@ -124,9 +124,6 @@ tree.obj : lib\tree.c
 
 ################ ansi
 
-intspc.obj : lib\ansi\intspc.c
-	$(CC) $(CFLAGS) lib\ansi\intspc.c
-
 spcint.obj : lib\ansi\spcint.c
 	$(CC) $(CFLAGS) lib\ansi\spcint.c
 
@@ -159,6 +156,9 @@ dynamic.obj : lib\generic\dynamic.c
 
 expops.obj : lib\generic\expops.c
 	$(CC) $(CFLAGS) lib\generic\expops.c
+
+intspc.obj : lib\generic\intspc.c
+	$(CC) $(CFLAGS) lib\generic\intspc.c
 
 term.obj : lib\generic\term.c
 	$(CC) $(CFLAGS) lib\generic\term.c
