@@ -12,7 +12,9 @@
  * -INCLUDE 'logic.sno'
  */
 
+#ifdef HAVE_CONFIG_H
 #include "config.h"			/* before ANYTHING */
+#endif /* HAVE_CONFIG_H defined */
 
 #ifdef HAVE_STDLIB_H			/* before stdio, h.h */
 #include <stdlib.h>			/* for malloc(), strtol() */
