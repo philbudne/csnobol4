@@ -23,13 +23,18 @@
  * localtime() exists in v6, but "struct tm" doesn't!
  */
 
+#ifdef NO_STATIC_VARS
+#include "vars.h"
+#else
+static char strbuf[21];
+#endif
+
 void
 date( sp, dp )
     struct spec *sp;
     struct descr *dp;
 {
     time_t t;
-    static char str[ 21 ];
     struct tm *tm;
     enum { OLD=0, NEW=1, ISO=2 } format;
 
@@ -45,7 +50,7 @@ date( sp, dp )
     default:				/* out-of-range */
     case NEW:				/* SPITBOL new format */
 	/* MM/DD/YYYY HH:MM:SS */
-	sprintf( str, "%02d/%02d/%d %02d:%02d:%02d",
+	sprintf( strbuf, "%02d/%02d/%d %02d:%02d:%02d",
 		tm->tm_mon + 1,
 		tm->tm_mday,
 		tm->tm_year + 1900,
@@ -55,7 +60,7 @@ date( sp, dp )
 	break;
     case OLD:				/* SPITBOL default */
 	/* MM/DD/YY HH:MM:SS */
-	sprintf( str, "%02d/%02d/%02d %02d:%02d:%02d",
+	sprintf( strbuf, "%02d/%02d/%02d %02d:%02d:%02d",
 		tm->tm_mon + 1,
 		tm->tm_mday,
 		tm->tm_year,
@@ -65,7 +70,7 @@ date( sp, dp )
 	break;
     case ISO:				/* ISO style with 4-digit year */
 	/* YYYY-MM-DD HH:MM:SS */
-	sprintf( str, "%d-%02d-%02d %02d:%02d:%02d",
+	sprintf( strbuf, "%d-%02d-%02d %02d:%02d:%02d",
 		tm->tm_year + 1900,
 		tm->tm_mon + 1,
 		tm->tm_mday,
@@ -75,8 +80,8 @@ date( sp, dp )
 	break;
     }
 
-    S_A(sp) = (int_t) str;
-    S_L(sp) = strlen(str);
+    S_A(sp) = (int_t) strbuf;
+    S_L(sp) = strlen(strbuf);
     S_V(sp) = 0;
     S_F(sp) = 0;
     S_O(sp) = 0;

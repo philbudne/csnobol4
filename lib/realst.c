@@ -14,20 +14,25 @@
 #include <ctype.h>
 #include <stdio.h>
 
+#ifdef NO_STATIC_VARS
+#include "vars.h"
+#else
+static char strbuf[64];
+#endif
+
 void
 realst(sp, dp)
     struct spec *sp;
     struct descr *dp;
 {
-    static char buf[64];		/* ??? */
     char *bp;
 
-    sprintf( buf, "%lg", D_RV(dp) );
+    sprintf( strbuf, "%lg", D_RV(dp) );
     /*
      * "g" format can print an integer for exact values.
      * make sure we have an exponent or a dot.
      */
-    bp = buf;
+    bp = strbuf;
     while (*bp && isdigit(*bp))
 	bp++;
 
@@ -37,10 +42,10 @@ realst(sp, dp)
 	*bp = '\0';
     }
 
-    S_A(sp) = (int_t) buf;		/* OY! */
+    S_A(sp) = (int_t) strbuf;		/* OY! */
     S_F(sp) = 0;
     S_V(sp) = 0;
     S_O(sp) = 0;
-    S_L(sp) = strlen(buf);
+    S_L(sp) = strlen(strbuf);
     CLR_S_UNUSED(sp);
 }

@@ -21,7 +21,11 @@
 #include "res.h"
 #include "data.h"
 
-char *malloc();
+#ifdef NO_STATIC_VARS
+#include "vars.h"
+#endif /* NO_STATIC_VARS defined */
+
+char *malloc();				/* use <stdlib.h> if avail? */
 
 #ifdef ORDVST_DEBUG
 /* PLB: dump a descriptor */
