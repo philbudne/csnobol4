@@ -77,7 +77,7 @@ usage( jname )
 	    "-d BYTES[km]\n\tsize of dynamic region in bytes (default: %d)\n",
 	    (NDYNAMIC)*DESCR);
     p( "-f\ttoggle folding of identifiers to upper case (-CASE)\n");
-    p( "-h\tthis message\n");
+    p( "-h\thelp (this message)\n");
     p( "-k\ttoggle running programs with compilation errors (-[NO]ERRORS)\n");
     p( "-l\tenable listings (-LIST)\n");
     p( "-n\ttoggle running program after compilation (-[NO]EXECUTE)\n");
@@ -85,6 +85,7 @@ usage( jname )
     p( "-r\ttoggle reading INPUT from after END statement\n");
     p( "-s\ttoggle display of statistics\n");
     p( "-u PARMS\n\tparameter data available via HOST(0)\n");
+    p( "-v\tversion (this message)\n");
     p( "-M\tprocess multiple input files\n");
     p( "-P BYTES[km]\n");
     fprintf(stderr, "\tsize of pattern match stack in bytes (default: %d)\n",
@@ -203,7 +204,7 @@ init_args( ac, av )
      *		to be added).
      */
 
-    while ((c = getopt(argc, argv, "+bd:fhklnprsu:MP:")) != -1) {
+    while ((c = getopt(argc, argv, "+bd:fhklnprsu:vMP")) != -1) {
 	switch (c) {
 	case 'b':
 	    D_A(BANRCL) = !D_A(BANRCL);	/* toggle banner output */
@@ -220,6 +221,7 @@ init_args( ac, av )
 	    break;
 
 	case 'h':			/* help */
+	case 'v':			/* version */
 	    errs++;
 	    break;
 
