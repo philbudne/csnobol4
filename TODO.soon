@@ -3,12 +3,8 @@ $Id$
 see why peecee gs can't display pdf (see if Sun generated pdf
 will display)
 
-DJGPP/DXE2;
+Update INSTALL, load.doc for DJGPP/DXE2
 	in v2tk/dxe2_NNN.zip
-
-Note in djgpp/osinit;
-	could use ....TABLE_AUTO()
-	no need for os_init() call!!
 
 pass CPP directives thru genc.sno/gendata.sno
 
