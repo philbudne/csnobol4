@@ -50,9 +50,14 @@ union addr {
 #define FFLD(name) FFLD_T name
 
 #else  /* NO_BITFIELDS not defined */
-/* MicroSoft C won't pack fields unless  they're of the same base type!! */
 #define VFLD(name) unsigned name : 24
+#ifdef BITFIELDS_SAME_TYPE
+/* MicroSoft C won't pack fields unless  they're of the same base type!! */
+/* gcc 3.3.1 (SuSE Linux) produces broken executable with this!! */
 #define FFLD(name) unsigned name : 8
+#else  /* BITFIELDS_SAME_TYPE not defined */
+#define FFLD(name) char name
+#endif /* BITFIELDS_SAME_TYPE not defined */
 #define SIZLIM 0xffffff
 #endif /* NO_BITFIELDS not defined */
 
