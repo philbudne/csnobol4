@@ -864,7 +864,16 @@ if [ -f $INCDIR/sys/socket.h ]; then
 	SOCKLEN_T=socklen_t
 	# What a PITA: HP and DEC/Q/HP are schizzoid.
 	# They have socklen_t as an option.
+	# Darwin < 7.0 is broken?
 	case "$OS" in
+	Darwin)
+	    case `uname -r` in
+	    [1-6].*)
+		# pre Panther (MacOS 10.3.x, Darwin 7.x) bug:
+		echo '#define _BSD_SOCKLEN_T int32_t' >> $CONFIG_H
+		;;
+	    esac
+	    ;;
 	OSF1)
 	    # or _XOPEN_SOURCE >= 500
 	    echo '#define _POSIX_PII_SOCKET'	>> $CONFIG_H
