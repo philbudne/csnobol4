@@ -3,8 +3,6 @@
 ID='$Id$'
 
 # Create config.m4 and config.h for SNOBOL4 compilation
-# Not related to GNU "autoconf"!!
-# this script needs to be run as ./autoconf to avoid confusion!
 #
 # Phil Budne
 # August 24, 1996
@@ -79,27 +77,32 @@ ADD_DEFINE_USED=
 while [ $# -gt 0 ]; do
     case "$1" in
     --add-cppflags=*)
-	echo 'ADD_CPPFLAGS('`echo "$1" | sed 's/.*=//'`')'>> $CONFIG_M4
+	STUFF=`echo "$1" | sed 's/--add-cppflags=//'`
+	echo 'ADD_CPPFLAGS(['"$STUFF"'])'	>> $CONFIG_M4
 	;;
     --add-define=*)
 	if [ ! "$ADD_DEFINE_USED" ]; then
 	    echo '/* from command line: */'	>> $CONFIG_H
 	    ADD_DEFINE_USED=true
 	fi
-	echo '#define '`echo "$1" | \
-		sed -e 's/[^=]*=//' -e 's/=/ /'` >> $CONFIG_H
+	STUFF=`echo "$1" | sed -e 's/--add-define=//' -e 's/=/ /'`
+	echo '#define '"$STUFF"			>> $CONFIG_H
 	;;
     --add-ldflags=*)
-	echo 'ADD_LDFLAGS('`echo "$1" | sed 's/.*=//'`')' >> $CONFIG_M4
+	STUFF=`echo "$1" | sed 's/--add-ldflags=//'`
+	echo 'ADD_LDFLAGS(['"$STUFF"'])'	>> $CONFIG_M4
 	;;
     --add-objs=*)
-	echo 'ADD_OBJS('`echo "$1" | sed 's/.*=//'`')'	>> $CONFIG_M4
+	STUFF=`echo "$1" | sed 's/--add-objs=//'`
+	echo 'ADD_OBJS(['"$STUFF"'])'		>> $CONFIG_M4
 	;;
     --add-opt=*)
-	echo 'ADD_OPT('`echo "$1" | sed 's/.*=//'`')'	>> $CONFIG_M4
+	STUFF=`echo "$1" | sed 's/--add-opt=//'`
+	echo 'ADD_OPT(['"$STUFF"'])'		>> $CONFIG_M4
 	;;
     --add-srcs=*)
-	echo 'ADD_SRCS('`echo "$1" | sed 's/.*=//'`')'	>> $CONFIG_M4
+	STUFF=`echo "$1" | sed 's/--add-srcs=//'`
+	echo 'ADD_SRCS(['"$STUFF"'])'		>> $CONFIG_M4
     	;;
     --debug)
 	DEBUG=true
@@ -135,21 +138,23 @@ while [ $# -gt 0 ]; do
 	LARGEFILE_OK=
 	;;
     --opt=*)
-	echo 'OPT='`echo "$1" | sed 's/.*=//'`	>> $CONFIG_M4
+	# NOTE!! just sets shell variable
+	OPT=`echo "$1" | sed 's/--opt=//'`
 	;;
     --prefix=*)
-	PREFIX=`echo "$1" | sed 's/.*=//'`
+	PREFIX=`echo "$1" | sed 's/--prefix=//'`
 	echo 'PREFIX='"$PREFIX"			>> $CONFIG_M4
 	;;
     '')
 	;;
     *)
-	echo "options:" 1>&2
-	echo "	--add-cppflags=STR --add-ldflags=STR --add-objs=STR" 1>&2
-	echo "	--add-opt=STR --add-srcs=STR --force-gcc" 1>&2
-	echo "	--force-memmove --longlong --lp64 --no-dlopen" 1>&2
-	echo "	--no-dynlib --no-gcc --nolargefile --opt=STR" 1>&2
-	echo "	--prefix=PATH" 1>&2
+	echo 'options:' 1>&2
+	echo '	--add-cppflags=STR --add-define=NAME[=VALUE]' 1>&2
+	echo '  --add-ldflags=STR --add-objs=STR' 1>&2
+	echo '	--add-opt=STR --add-srcs=STR --force-gcc' 1>&2
+	echo '	--force-memmove --longlong --lp64 --no-dlopen' 1>&2
+	echo '	--no-dynlib --no-gcc --nolargefile --opt=STR' 1>&2
+	echo '	--prefix=PATH' 1>&2
 	exit 1
 	;;
     esac
@@ -289,6 +294,7 @@ rs6000-ibm-aix*|powerpc-ibm-aix*)
     ;;
 esac
 
+# compiler options
 if [ "$GCCPATH" -a "$WANTGCC" ]; then
     echo using gcc 1>&2
     CCPATH="$GCCPATH"
@@ -297,6 +303,10 @@ if [ "$GCCPATH" -a "$WANTGCC" ]; then
 	echo 'ADD_OPT([-finline-functions])'	>> $CONFIG_M4
     fi
     echo 'CCM=$(CC) -M'				>> $CONFIG_M4
+    if [ ! "$OPT" ]; then
+	# -O3 just adds -finline-functions (set above)
+	OPT=-O2
+    fi
 else
     # required options for native compilers
     case "$SYS" in
@@ -362,6 +372,10 @@ fi
 # include C compiler version output in comments
 if [ "x$CCVERS" != x ]; then
     ${CCPATH-cc} $CCVERS 2>&1 | sed 's/^/# /'	>> $CONFIG_M4
+fi
+
+if [ "x$OPT" != x ]; then
+    echo "OPT=$OPT"				>> $CONFIG_M4
 fi
 
 if [ ! "$INLINE_OK" ]; then
