@@ -745,13 +745,18 @@ io_read( dp, sp )			/* STREAD */
 		     (fp->flags & FL_BINARY) != 0,
 		     (fp->flags & FL_NOECHO) != 0,
 		     recl );
+	    /* XXX move TTY_READ to here, add else??? */
 	} /* FL_TTY set */
 
-	if (fp->flags & FL_BINARY)
+	if (fp->flags & FL_BINARY) {
 #ifdef TTY_READ
+	    /* XXX only for binary???? */
 	    if (fp->flags & FL_TTY)
 		len = tty_read(f, cp, recl,
-			       (fp->flags & FL_NOECHO) != 0, fp->fname);
+			       (fp->flags & FL_BINARY) != 0, /* "raw" */
+			       (fp->flags & FL_NOECHO) != 0, /* "noecho" */
+			       (fp->flags & FL_EOL) != 0, /* "keepeol" */
+			       fp->fname);
 	    else
 #endif /* TTY_READ defined */
 #ifndef NO_UNBUF_READ
