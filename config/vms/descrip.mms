@@ -3,18 +3,17 @@
 # DESCRIP.MMS, hacked from Makefile2 for VMS "MMS"
 # Build SNOBOL4 using DECC and MMS
 #
-# Tested on VAX OpenVMS 6.1 using VAXC 3.x (February 1998)
 # **** see INSTALL file for usage ****
 
 .ifdef DEC_C
+# Tested under AXP OpenVMS 6.2 using DECC 4.0 (April 1999)
 CCFLAGS=/DECC/PREFIX_LIB=ALL/WARN=(DISABLE=IMPLICITFUNC)/OPTIMIZE
 # no AUX_OBJS
-CLIB=+SYS$LIBRARY:DECC$SHR/LIB
+# no explicit CRT needed
 .else
-# VAXC
+# Tested on VAX OpenVMS 6.1 using VAXC 3.x (February 1998)
 CCFLAGS=/OPTIMIZE
-AUX_OBJ=isnan.obj, finite.obj,
-#??
+AUX_OBJ=isnan.obj, finite.obj, getopt.obj,
 #CLIB=+SYS$SHARE:VAXCRTL/SHARE
 CLIB=+SYS$LIBRARY:DECCRTL/LIB
 .endif
@@ -125,7 +124,7 @@ OBJS=	main.obj, $(SNOBOL4).obj, data.obj, data_init.obj, syn.obj, \
 	lexcmp.obj, load.obj, mstime.obj, ordvst.obj, pair.obj, pat.obj, \
 	pml.obj, realst.obj, replace.obj, str.obj, stream.obj, term.obj, \
 	top.obj, tty.obj, tree.obj, version.obj, \
-	bcopy.obj, bzero.obj, getopt.obj, getredirect.obj, \
+	bcopy.obj, bzero.obj, getredirect.obj, \
 	popen.obj, rresvport.obj, unlink.obj, \
 	$(AUX_OBJ) $(PML_OBJ)
 
