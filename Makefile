@@ -20,14 +20,6 @@ SNO=snobol4 -b
 SMALL_SNO=snobol4 -b
 
 ################
-# topological sort
-# BSD44 and AT&T tsort's handle cycles; GNU tsort (found on Linux) does not
-TSORT=	tsort
-
-# NOTE: run from "subr" directory
-#TSORT=	snobol4 -b ../tsort.sno
-
-################
 # machine generated files;
 
 GENERATED=data.c data_init.h proc.h syn.h data.h \
@@ -88,17 +80,23 @@ snobol4.c proc.h2: procs genc.sno globals $(SIL)
 	mv -f snobol4.c2 snobol4.c
 
 # inline version (functions reordered)
-isnobol4.c: procs genc.sno globals $(SIL)
+isnobol4.c: procs genc.sno globals $(SIL) bsdtsort
 	rm -rf isnobol4.c2 proc.h2 prolog subr
 	mkdir subr
 	$(SNO) -- genc.sno --inline $(SIL) > prolog
-	cd subr && $(TSORT) < ../callgraph > order && \
+	cd subr && ../bsdtsort < ../callgraph > order && \
 		cat ../prolog `cat order` > ../isnobol4.c2
 	mv -f isnobol4.c2 isnobol4.c
 	rm -rf prolog subr
 
 proc.h:	proc.h2
 	@cmp proc.h proc.h2 || cp proc.h2 proc.h
+
+# GNU tsort (used on Linux) can't handle cycles.
+# Use private copy of BSD version;
+
+bsdtsort: bsdtsort.c
+	$(CC) -o bsdtsort bsdtsort.c
 
 ################
 # syntax tables
@@ -164,7 +162,7 @@ G2=data.c data.h data_init.h proc.h equ.h res.h syn.c syn.h syn_init.h \
 	host.sno
 
 # disposables
-DISP=*.o *.a callgraph prolog bsplitu pv vers build.c
+DISP=*.o *.a callgraph prolog bsplitu pv vers build.c bsdtsort
 
 # remove objects; leave generated sources, final binary, Makefile2
 clean:
