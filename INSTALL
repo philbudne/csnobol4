@@ -35,8 +35,7 @@ config.m4 to trigger autoconf).
 
 "make install" also installs the snolib.a object library, and
 snolib/*.sno files to the directory named in the SNOLIB_DIR make
-variable.  SNOLIB_DIR is compiled into io.o and load.o, which must be
-removed if SNOLIB_DIR is changed after an xsnobol4 has been linked.
+variable.
 
 Non-unix systems;
 ================
