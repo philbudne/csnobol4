@@ -179,8 +179,6 @@ I/O;
 malloc system stack (STACK)? [see new/sysstk.diffs]
 	slows down OFCHK(); 2+% overall penalty
 
-BUG: gendata punts on ARRAY w/ constant expression!
-
 BUG: &stlimit = -1; output = &stcount; end
 	SPITBOL outputs 1? C-MAINBOL outputs zero!
 
@@ -314,9 +312,6 @@ SPITBOL features;
 	-FAIL/-NOFAIL?
 
 ================================================================
-
-make resident storage a struct with named members 
-	struct descr foo[1]; ?? (for easier debugging)
 
 in make depend;
 	sed "s/$(SNOBOL4)\./"'$(SNOBOL4)./'
