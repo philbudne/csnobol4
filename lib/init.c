@@ -123,6 +123,7 @@ getargs(start, sp)
     int i;
     char *parms;
     register char *pp;
+    int len;
 
     len = 0;
     for (i = start; i < argc; i++)
@@ -336,7 +337,6 @@ void
 init()
 {
     char *ptr;
-    int len;
 
     /****************
      * allocate dynamic data region
