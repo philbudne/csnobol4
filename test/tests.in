@@ -69,3 +69,5 @@ trace trace1.sno
 trace trace2.sno
 # 9/6/96
 reg noexec.sno
+# 9/17/96
+reg ops.sno
