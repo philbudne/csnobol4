@@ -51,6 +51,8 @@ config.m4 to trigger autoconf).
 snolib/*.sno files to the directory named in the SNOLIB_DIR make
 variable.
 
+Please mail timing.out files to snobol4-timing@ultimate.com!
+
 Non-unix systems;
 ================
 
@@ -114,7 +116,5 @@ Please let me know of your success and failures to bring up C-SNOBOL4!
 Please mail timing.out files to snobol4-timing@ultimate.com along with
 information on your system make, model and CPU clock speed, if known.
 
-Thanks!
--Phil
-
-
+If you want to recieve a note when new releases are made, send mail
+to c-mainbol-users-request@ultimate.com
