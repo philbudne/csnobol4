@@ -102,7 +102,12 @@ popen(cmd, mode)
 
     /* Save file information now */
     fd = fileno(pfile);
-    pd = &pipes[fileno(pfile)];		/* get pipe pointer */
+    if (fd < 0 || fd >= _NFILE) {
+	LIB$FREE_EF(&efn);
+	SYS$DASSGN(chan);
+	return (0);
+    }
+    pd = pipes + fd;
     pd->mode = m;
     pd->pid = pd->status = pd->running = 0;
     pd->channel = chan;
@@ -112,14 +117,14 @@ popen(cmd, mode)
     command.length = strlen(cmd);
     command.ptr = cmd;
     if (m == 'r') {
-	input = NULL;
+	input = NULL;			/* leave as is */
 	output = &mbxname;
     }
     else {
 	input = &mbxname;
-	output = NULL;
+	output = NULL;			/* leave as is */
     }
-    flags = CLI$M_NOWAIT|CLI$M_NOKEYPAD|CLI$M_NOCONTROL;
+    flags = CLI$M_NOWAIT | CLI$M_NOKEYPAD | CLI$M_NOCONTROL;
 
     status = LIB$SPAWN(&command, input, output, &flags, 0, &pd->pid,
 		       &pd->status, &pd->efn, 0, 0, 0, 0);
