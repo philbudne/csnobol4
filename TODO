@@ -57,9 +57,6 @@ $Id$
 
 17. implement ordvst() for sorting &DUMP output
 
-19. Implement caselessness
-19c. command line -f
-
 20. create library of LOAD()able functions;
 	UNLINK()
 	RENAME()
@@ -98,3 +95,4 @@ $Id$
 
 33. get rid of space padding in compiler (honor STREAD return len)
 
+34. BUG: indirection operator does not fold case!!!
