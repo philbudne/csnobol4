@@ -16,7 +16,7 @@
 #define HOST_PARAMS		0
 
 /* Catspaw SPITBOL: execute argument as a shell command, return status */
-#define HOST_SYSTEM		1
+#define HOST_SYSCMD		1
 
 /* Catspaw SPITBOL: returns n'th token on command line (must be INTEGER) */
 #define HOST_ARGN		2
