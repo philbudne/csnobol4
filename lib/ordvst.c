@@ -1,0 +1,7 @@
+/* $Id$ */
+
+void
+ordvst()
+{
+    /* NOTHING!! */
+}
