@@ -598,7 +598,7 @@ GLOBLOP	PROC = GLOB					:F(GLOBEND)
 *	skip comments!
 	PROC '*'					:S(GLOBLOP)
 	GLOBAL<PROC> = 1
-	PROC.H = 'extern ' PROCTYPE ' ' PROC '__P((struct descr *));'
+	PROC.H = 'extern ' PROCTYPE ' ' PROC ' __P((struct descr *));'
 *	make sure it's a proc!
 	MKPROC(PROC)					:(GLOBLOP)
 GLOBEND	FREEZE(GLOBAL)
