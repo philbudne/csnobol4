@@ -10,15 +10,27 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
+#ifdef HAVE_STDLIB_H			/* before stdio */
+#include <stdlib.h>			/* for malloc */
+#else  /* HAVE_STDLIB_H not defined */
+extern void *malloc();
+#endif /* HAVE_STDLIB_H not defined */
+
+#ifdef HAVE_UNISTD_H			/* !! */
+#include <unistd.h>			/* isatty() */
+#endif /* HAVE_UNISTD_H defined */
+
 #include <stdio.h>
 #include <errno.h>
 
 #include <iodef.h>
 #include <stsdef.h>
+#include <starlet.h>			/* syscall prototypes */
 
 #include "h.h"
 #include "snotypes.h"
 #include "lib.h"
+#include "str.h"
 
 #define SUCCESS(_STAT) ((_STAT) & STS$M_SUCCESS)
 #define SETERR(_STAT) do { vaxc$errno = (_STAT); errno = EVMSERR; } while(0)
@@ -185,6 +197,11 @@ tty_read(f, buf, len, raw, noecho, keepeol, fname)
     }
     return iosb.size;
 } /* tty_read */
+
+void
+tty_suspend()
+{
+} /* tty_suspend */
 
 #ifdef TEST
 #define TRUE 1
