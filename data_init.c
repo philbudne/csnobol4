@@ -28,5 +28,5 @@ const char COLSTR[] = ": ";
 
 void
 init_data() {
-# include "init.h"
+# include "data_init.h"
 } /* init_data */
