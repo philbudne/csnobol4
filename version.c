@@ -2,6 +2,9 @@
 
 /*
  * $Log$
+ * Revision 1.28  2003/04/21 22:25:25  phil
+ * include lib.h
+ *
  * Revision 1.27  2002/03/13 17:47:31  phil
  * update version to 0.99.44+
  *
@@ -86,8 +89,8 @@
 #include <stdio.h>
 #include "h.h"				/* const */
 
-const char vers[] = "0.99.44+";
-const char vdate[] = "March 13, 2002";
+const char vers[] = "1.0";
+const char vdate[] = "February 18, 2004";
 const char snoname[] = "CSNOBOL4";
 
 #ifdef MAIN
