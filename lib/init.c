@@ -181,15 +181,21 @@ init_args( ac, av )
     argc = getredirection(argc, argv);
 #endif /* vms defined */
 
+
     /*
-     * NOTE:
+     * ***** NOTE ******
      *
      * * Options are compatible (where possible) with Catspaw Macro SPITBOL
      *
      * * When adding options, update usage() function (above) and man page!!!
+     *
+     * * '+' at start is required on RH7 Linux to avoid broken default behavior
+     *		and is HOPEFULLY harmless (-+ if given should fall into default
+     *		case.  If we ever want a real -+ option, ANOTHER + will need
+     *		to be added).
      */
 
-    while ((c = getopt(argc, argv, "bd:fhklnprsu:MP:")) != -1) {
+    while ((c = getopt(argc, argv, "+bd:fhklnprsu:MP:")) != -1) {
 	switch (c) {
 	case 'b':
 	    D_A(BANRCL) = !D_A(BANRCL);	/* toggle banner output */
