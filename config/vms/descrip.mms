@@ -34,21 +34,19 @@ TOP_C=[.lib]top.c
 TREE_C=[.lib]tree.c
 
 # aux sources
-BZERO_C=[.lib.aux]bzero.c
-BCOPY_C=[.lib.aux]bcopy.c
-GETOPT_C=[.lib.aux]getopt.c
-VFPRINTF_C=[.lib.aux]vfprintf.c
+BZERO_C=[.lib.auxil]bzero.c
+BCOPY_C=[.lib.auxil]bcopy.c
+GETOPT_C=[.lib.auxil]getopt.c
 GETREDIRECT_C=[.lib.vms]getredirect.c
 
-# objects to include in snolib.a
 AUX_OBJ=bcopy.obj, bzero.obj, getopt.obj, getredirect.obj
-AUX_SRC=$(BCOPY_C) $(BZERO_C) $(GETOPT_C) $(GETREDIRECT_C)
 
 CFLAGS=\
 	/DECC/PREFIX_LIB=ALL/OPTIMIZE\
-	/DEFINE=(ANSI_STRINGS,NO_POPEN,\
+	/DEFINE=(ANSI_STRINGS,NO_POPEN,NO_OFF_T,\
 		DATE=XDATE,INIT=XINIT,LOAD=XLOAD,UNLOAD=XUNLOAD,\
-		RPLACE=XRPLACE,TIME=XTIME,RAISE=XRAISE,DIV=XDIV)\
+		RPLACE=XRPLACE,TIME=XTIME,RAISE=XRAISE,DIV=XDIV,\
+		SUBSTR=XSUBSTR) \
 	/WARN=(DISABLE=IMPLICITFUNC) \
 	/INCLUDE=(SYS$DISK:[],SYS$DISK:[.INCLUDE]) \
 
@@ -63,12 +61,6 @@ OBJS=	main.obj, $(SNOBOL4).obj, data.obj, data_init.obj, syn.obj, \
 
 xsnobol4.exe : $(OBJS)
 	link /exec=xsnobol4.exe $(OBJS)
-
-################
-
-# may need special options due to size!!
-$(SNOBOL4).obj : $(SNOBOL4).c 
-	$(CC) $(CFLAGS) $(SNOBOL4_C_CFLAGS) $(SNOBOL4).c
 
 #################################################################
 # lib files
@@ -149,7 +141,7 @@ tree.obj : $(TREE_C)
 	$(CC) $(CFLAGS) $(TREE_C)
 
 #################
-# porting aids not used in all builds;
+# porting aids
 
 bzero.obj : $(BZERO_C)
 	$(CC) $(CFLAGS) $(BZERO_C)
@@ -159,9 +151,6 @@ bcopy.obj : $(BCOPY_C)
 
 getopt.obj : $(GETOPT_C)
 	$(CC) $(CFLAGS) $(GETOPT_C)
-
-vfprintf.obj : $(VFPRINTF_C)
-	$(CC) $(CFLAGS) $(VFPRINTF_C)
 
 getredirect.obj : $(GETREDIRECT_C)
 	$(CC) $(CFLAGS) $(GETREDIRECT_C)
