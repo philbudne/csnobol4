@@ -6,6 +6,8 @@
 #include "syntab.h"
 
 #include "macros.h"
+#include "equ.h"
+#include "res.h"
 #include "data.h"			/* for STYPE */
 
 #ifdef DEBUG
