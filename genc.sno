@@ -77,6 +77,9 @@ OPTEND	SILPATH = ARG
 *	output list of global procs (for data segment)
 	OUTPUT(.PROC.H,11,'proc.h2')
 
+*	output list of static procs (included later)
+	OUTPUT(.STATIC.H,12,'static.h2')
+
 *	dummy out freeze/thaw
 	DEFINE("FREEZE(T)","RETURN")
 	DEFINE("THAW(T)","RETURN")
@@ -92,7 +95,10 @@ MB1
 	OUTPUT(.CALLGRAPH,10,,'callgraph')
 
 *	output list of global procs (for data segment)
-	OUTPUT(.PROC.H,11,,'proc.h2')			:(EIO)
+	OUTPUT(.PROC.H,11,,'proc.h2')
+
+*	output list of static procs (included later)
+	OUTPUT(.STATIC.H,12,,'static.h2')
 
 EIO
 
@@ -223,12 +229,12 @@ BPROC	EPROC(NAME)
 	DIFFER(MAINBOL)					:S(MB99)
 	OUTPUT(.OUTPUT,99,INLINE_DIR NAME)		:(BPROC2)
 MB99	OUTPUT(.OUTPUT,99,,INLINE_DIR NAME)
-BPROC2	STAT = "static "
-	STAT = DIFFER(GLOBAL<NAME>)
-	OUTPUT = STAT PROCTYPE
+BPROC2	STATIC = "static "
+	STATIC = DIFFER(GLOBAL<NAME>)
+	OUTPUT = STATIC PROCTYPE
 	OUTPUT = F_ NAME '(retval)'
 	INDENT()
-	OUTPUT = IND 'struct descr *retval;'
+	OUTPUT = IND 'ret_t retval;'
 	UNINDENT()
 	OUTPUT = '{'
 	INDENT()
@@ -549,9 +555,7 @@ ESPEC
 
 	DEFINE("MKPROC(PROC)STAT")			:(EMKPROC)
 MKPROC	DIFFER(ISPROC<PROC>)				:S(RETURN)
-	STAT = 'static '
-	STAT = DIFFER(GLOBAL<PROC>)
-	OUTPUT = STAT PROCTYPE ' ' PROC '();'
+	STATIC.H = IDENT(GLOBAL<PROC>) 'static ' PROCTYPE ' ' PROC ' __P((ret_t));'
 	THAW(ISPROC)
 	ISPROC<PROC> = 1
 	FREEZE(ISPROC)					:(RETURN)
@@ -598,7 +602,7 @@ GLOBLOP	PROC = GLOB					:F(GLOBEND)
 *	skip comments!
 	PROC '*'					:S(GLOBLOP)
 	GLOBAL<PROC> = 1
-	PROC.H = 'extern ' PROCTYPE ' ' PROC ' __P((struct descr *));'
+	PROC.H = 'extern ' PROCTYPE ' ' PROC ' __P((ret_t));'
 *	make sure it's a proc!
 	MKPROC(PROC)					:(GLOBLOP)
 GLOBEND	FREEZE(GLOBAL)
@@ -921,7 +925,7 @@ XLOCSP	OUTPUT = IND 'X_LOCSP(' ARGV<1> ',' ARGV<2> ');'	:(OPDONE)
 
 ****************
 *	SIL TRIMSP (TRIMQQ) MACRO 10/27/93
-XTRIMSP	OUTPUT = IND 'trimsp(' ARGV<1> ',' ARGV<2> ');'	:(OPDONE)
+XTRIMSP	OUTPUT = IND 'TRIMSP(' ARGV<1> ',' ARGV<2> ');'	:(OPDONE)
 
 ****************
 *	SIL SUBSP (SUBQQ) MACRO 10/27/93
@@ -949,15 +953,15 @@ XREMSP	OUTPUT = IND 'X_REMSP(' ARGV<1> ',' ARGV<2> ',' ARGV<3> ');'
 
 ****************
 *	SIL INSERT (INSNOD) MACRO 10/27/93
-XINSERT	OUTPUT = IND 'insert(' ARGV<1> ',' ARGV<2> ');' :(OPDONE)
+XINSERT	OUTPUT = IND 'INSERT(' ARGV<1> ',' ARGV<2> ');' :(OPDONE)
 
 ****************
 *	SIL ADDSIB (APDSIB) MACRO 10/27/93
-XADDSIB	OUTPUT = IND 'addsib(' ARGV<1> ',' ARGV<2> ');' :(OPDONE)
+XADDSIB	OUTPUT = IND 'ADDSIB(' ARGV<1> ',' ARGV<2> ');' :(OPDONE)
 
 ****************
 *	SIL ADDSON (APDSON) MACRO 10/27/93
-XADDSON	OUTPUT = IND 'addson(' ARGV<1> ',' ARGV<2> ');' :(OPDONE)
+XADDSON	OUTPUT = IND 'ADDSON(' ARGV<1> ',' ARGV<2> ');' :(OPDONE)
 
 ****************************************************************
 *	integer math
@@ -1246,7 +1250,7 @@ XMSTIME	OUTPUT = IND RV(ARGV<1>) ' = mstime();'
 ****************
 *	SIL DATE (=) macro 10/28/93
 *	added second arg 4/2/97
-XDATE	OUTPUT = IND 'date(' ARGV<1> ',' ARGV<2> ');'	:(OPDONE)
+XDATE	OUTPUT = IND '_DATE(' ARGV<1> ',' ARGV<2> ');'	:(OPDONE)
 
 ****************
 *	SIL ENDEX (TERMEX) MACRO
@@ -1268,12 +1272,12 @@ XOUTEND	OUTPUT = OL ");"				:(OPDONE)
 
 ****************
 *	SIL STPRNT (PRINTQ) MACRO 10/19/93
-XSTPRNT	OUTPUT = IND 'io_print(' ARGV<1> ', ' ARGV<2> ', ' ARGV<3> ');'
+XSTPRNT	OUTPUT = IND 'IO_PRINT(' ARGV<1> ', ' ARGV<2> ', ' ARGV<3> ');'
 							:(OPDONE)
 
 ****************
 *	SIL STREAD (READQ) MACRO 10/19/93
-XSTREAD	OUTPUT = IND 'switch (io_read(' ARGV<2> ', ' ARGV<1> ')) {'
+XSTREAD	OUTPUT = IND 'switch (IO_READ(' ARGV<2> ', ' ARGV<1> ')) {'
 	INDENT()
 	I = 0
 
@@ -1319,11 +1323,11 @@ XBKSPCE	OUTPUT = IND 'io_backspace(' D_A(ARGV<1>) ');'	:(OPDONE)
 
 ****************
 *	SIL XOPENI extension 11/10/93; RIP 10/16/96
-*XXOPENI F = 'io_openi'					:(FSFUN2)
+*XXOPENI F = 'IO_OPENI'					:(FSFUN2)
 
 ****************
 *	SIL XOPENO extension 11/10/93; RIP 10/16/96
-*XXOPENO F = 'io_openo'					:(FSFUN2)
+*XXOPENO F = 'IO_OPENO'					:(FSFUN2)
 
 ****************
 *	SIL XECOMP extension 11/10/93
@@ -1332,13 +1336,13 @@ XXECOMP	OUTPUT = IND 'io_ecomp();'			:(OPDONE)
 ****************
 *	SIL XRAISP extension 5/24/94
 * args: SPEC
-XXRAISP	OUTPUT = IND 'raise1(' ARGV<1> ');'		:(OPDONE)
+XXRAISP	OUTPUT = IND 'RAISE1(' ARGV<1> ');'		:(OPDONE)
 
 ****************
 *	SIL XINCLD extension 6/12/94
 *		expanded to 3-way return 2/22/2002!
 * args: UNIT, SPEC
-XXINCLD	OUTPUT = IND 'switch (io_include(' ARGV<1> ', ' ARGV<2> ')) {'
+XXINCLD	OUTPUT = IND 'switch (IO_INCLUDE(' ARGV<1> ', ' ARGV<2> ')) {'
 	INDENT()
 	I = 0
 
@@ -1453,20 +1457,20 @@ RRTURN1	ALT = '0'
 
 ****************
 *	SIL INTSPC (CVTSI) MACRO 10/24/93
-XINTSPC	OUTPUT = IND 'intspc(' ARGV<1> ',' ARGV<2> ');'	:(OPDONE)
+XINTSPC	OUTPUT = IND 'INTSPC(' ARGV<1> ',' ARGV<2> ');'	:(OPDONE)
 
 ****************
 *	SIL REALST (CVTSR) MACRO 10/24/93
-XREALST	OUTPUT = IND 'realst(' ARGV<1> ',' ARGV<2> ');'	:(OPDONE)
+XREALST	OUTPUT = IND 'REALST(' ARGV<1> ',' ARGV<2> ');'	:(OPDONE)
 
 ****************
 *	SIL SPCINT (CVTIS) MACRO 10/24/93
-XSPCINT	T = 'spcint(' ARGV<1> ',' ARGV<2> ')'
+XSPCINT	T = 'SPCINT(' ARGV<1> ',' ARGV<2> ')'
 	DOBOOL(T, ARGV<3>, ARGV<4>)			:(OPDONE)
 
 ****************
 *	SIL SPREAL (CVTRS) MACRO 10/24/93
-XSPREAL	T = 'spreal(' ARGV<1> ',' ARGV<2> ')'
+XSPREAL	T = 'SPREAL(' ARGV<1> ',' ARGV<2> ')'
 	DOBOOL(T, ARGV<3>, ARGV<4>)			:(OPDONE)
 
 ****************************************************************
@@ -1530,11 +1534,11 @@ XMOVBLK	OUTPUT = IND 'MOVBLK(' D_A(ARGV<1>) ',' D_A(ARGV<2>) ','
 ****************
 *	SIL VARID (HASH) macro
 * XXX only called once!! do it inline??
-XVARID	OUTPUT = IND 'hash(' ARGV<1> ',' ARGV<2> ');'	:(OPDONE)
+XVARID	OUTPUT = IND 'HASH(' ARGV<1> ',' ARGV<2> ');'	:(OPDONE)
 
 ****************
 *	SIL GETBAL (COMBAL) MACRO
-XGETBAL	F = 'getbal'					:(FSFUN2)
+XGETBAL	F = 'GETBAL'					:(FSFUN2)
 
 ****************
 *	two-arg function with F/S returns
@@ -1543,23 +1547,23 @@ FSFUN2	X = F '(' ARGV<1> ',' ARGV<2> ')'
 
 ****************
 *	SIL LOCAPT (LOCAD) MACRO 10/27/93
-XLOCAPT	F = 'locapt'					:(FSFUN3)
+XLOCAPT	F = 'LOCAPT'					:(FSFUN3)
 
 ****************
 *	SIL LOCAPV (LOCBD) MACRO 10/27/93
-XLOCAPV	F = 'locapv'					:(FSFUN3)
+XLOCAPV	F = 'LOCAPV'					:(FSFUN3)
 *
 ****************
 *	SIL EXPINT (EXPVV) MACRO 10/27/93
-XEXPINT	F = 'expint'					:(FSFUN3)
+XEXPINT	F = 'EXPINT'					:(FSFUN3)
 
 ****************
 *	SIL EXREAL (EXPRVV) MACRO 10/27/93
-XEXREAL	F = 'exreal'					:(FSFUN3)
+XEXREAL	F = 'EXREAL'					:(FSFUN3)
 
 ****************
 *	SIL LOAD (=) MACRO
-XLOAD	F = 'load'					:(FSFUN3)
+XLOAD	F = '_LOAD'					:(FSFUN3)
 
 ****************
 *	3-arg function with F/S returns
@@ -1568,7 +1572,7 @@ FSFUN3	X = F '(' ARGV<1> ',' ARGV<2> ',' ARGV<3> ')'
 
 ****************
 *	SIL LINK (=) MACRO 10/28/93
-XLINK	F = 'callx'					:(FSFUN4)
+XLINK	F = 'CALLX'					:(FSFUN4)
 
 ****************
 *	4-arg function with F/S returns
@@ -1577,14 +1581,14 @@ FSFUN4	X = F '(' ARGV<1> ',' ARGV<2> ',' ARGV<3> ',' ARGV<4> ')'
 
 ****************
 *	SIL UNLOAD (=) MACRO 10/28/93
-XUNLOAD	OUTPUT = IND 'unload(' ARGV<1> ');'		:(OPDONE)
+XUNLOAD	OUTPUT = IND '_UNLOAD(' ARGV<1> ');'		:(OPDONE)
 
 ****************
 *	SIL LEXCMP (CMPSS) MACRO
 * use different (faster) function if testing for (in)equality!!
 
 XLEXCMP	IDENT(ARGV<3>,ARGV<5>)				:S(LEXEQ)
-	X = 'lexcmp(' ARGV<1> ',' ARGV<2> ')'
+	X = 'LEXCMP(' ARGV<1> ',' ARGV<2> ')'
 	IDENT(ARGV<3>,ARGV<4>)				:S(LEXCMP1)
 	IDENT(ARGV<4>,ARGV<5>)				:S(LEXCMP1)
 
@@ -1603,7 +1607,7 @@ LEXEQ	F = 'LEXEQ'					:(FSFUN2)
 
 ****************
 *	SIL TOP (LOCTTL) MACRO 10/27/93
-XTOP	OUTPUT = IND 'top(' ARGV<1> ',' ARGV<2> ',' ARGV<3> ');'
+XTOP	OUTPUT = IND 'TOP(' ARGV<1> ',' ARGV<2> ',' ARGV<3> ');'
 							:(OPDONE)
 
 ****************
@@ -1612,7 +1616,7 @@ XORDVST	OUTPUT = IND 'ordvst();'			:(OPDONE)
 
 ****************
 *	SIL RPLACE (=) MACRO 11/1/93
-XRPLACE	OUTPUT = IND 'rplace(' ARGV<1> ',' ARGV<2> ',' ARGV<3> ');' :(OPDONE)
+XRPLACE	OUTPUT = IND '_RPLACE(' ARGV<1> ',' ARGV<2> ',' ARGV<3> ');' :(OPDONE)
 
 *
 ****************************************************************
@@ -1621,7 +1625,7 @@ XRPLACE	OUTPUT = IND 'rplace(' ARGV<1> ',' ARGV<2> ',' ARGV<3> ');' :(OPDONE)
 ****************
 *	SIL STREAM (=) MACRO 10/19/93
 XSTREAM	OUTPUT = IND
-+		'switch (stream(' ARGV<1> ', ' ARGV<2> ', &' ARGV<3> ')) {'
++		'switch (STREAM(' ARGV<1> ', ' ARGV<2> ', &' ARGV<3> ')) {'
 	INDENT()
 	I = 0
 
@@ -1661,7 +1665,7 @@ XSTM3	UNINDENT()
 
 ****************
 *	SIL PLUGTB (SETUPT) MACRO 10/28/93
-XPLUGTB	OUTPUT = IND 'plugtb(&' ARGV<1> ',AC_' ARGV<2> ',' ARGV<3> ');'
+XPLUGTB	OUTPUT = IND 'PLUGTB(&' ARGV<1> ',AC_' ARGV<2> ',' ARGV<3> ');'
 							:(OPDONE)
 
 ****************
@@ -1674,24 +1678,24 @@ XCLERTB	OUTPUT = IND 'clertb(&' ARGV<1> ',AC_' ARGV<2> ');'
 
 ****************
 *	SIL LINKOR (CONALT) MACRO 10/27/93
-XLINKOR	OUTPUT = IND 'linkor(' ARGV<1> ',' ARGV<2> ');'	:(OPDONE)
+XLINKOR	OUTPUT = IND 'LINKOR(' ARGV<1> ',' ARGV<2> ');'	:(OPDONE)
 
 ****************
 *	SIL MAKNOD (MAKPAT) MACRO 10/27/93
 XMAKNOD	IDENT(ARGV<6>)					:S(MAKNOD5)
-	OUTPUT = IND 'maknod(' ARGV<1> ',' ARGV<2> ',' ARGV<3> ','
+	OUTPUT = IND 'MAKNOD(' ARGV<1> ',' ARGV<2> ',' ARGV<3> ','
 +		ARGV<4> ',' ARGV<5> ',' ARGV<6> ');'	:(OPDONE)
 
-MAKNOD5	OUTPUT = IND 'maknod(' ARGV<1> ',' ARGV<2> ',' ARGV<3> ','
+MAKNOD5	OUTPUT = IND 'MAKNOD(' ARGV<1> ',' ARGV<2> ',' ARGV<3> ','
 +		ARGV<4> ',' ARGV<5> ',NULL);'		:(OPDONE)
 
 ****************
 *	SIL LVALUE (COMMML) MACRO 10/27/93
-XLVALUE	OUTPUT = IND 'lvalue(' ARGV<1> ',' ARGV<2> ');' :(OPDONE)
+XLVALUE	OUTPUT = IND 'LVALUE(' ARGV<1> ',' ARGV<2> ');' :(OPDONE)
 
 ****************
 *	SIL CPYPAT (=) MACRO
-XCPYPAT OUTPUT = IND 'cpypat(' ARGV<1> ',' ARGV<2> ',' ARGV<3> ','
+XCPYPAT OUTPUT = IND 'CPYPAT(' ARGV<1> ',' ARGV<2> ',' ARGV<3> ','
 +		ARGV<4> ',' ARGV<5> ',' ARGV<6> ');'	:(OPDONE)
 
 ****************************************************************
