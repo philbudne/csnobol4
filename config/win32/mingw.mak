@@ -4,6 +4,8 @@
 # from nmake file for VC++ 5.0 on WinNT 4.0 P. Budne 2/4/1998
 # from batch file by David Feustel
 
+DEST=\snobol4
+
 CC=gcc
 # includes -finline-functions (and others in gcc v3)
 OPT=-O3
@@ -11,17 +13,19 @@ OPT=-O3
 # "msdos" version of tty routines uses kbhit() spin loop for raw tty
 # i/o.  This is unfriendly in a multitasking environment, and should
 # be replaced by the win32 version (see below).
-TTY_C=lib\msdos\tty.c
+TTY_C=$(SRCDIR)lib/msdos/tty.c
 TTY_DEFS=-DTTY_READ_RAW
 
 # win32 tty.c does not yet work.
-#TTY_C=lib\win32\tty.c
+#TTY_C=$(SRCDIR)lib/win32/tty.c
 #TTY_DEFS=
 
 # crocks for winsock I/O on Win9x
 INET_DEFS=-DINET_IO
+# wsock32 present on both Win95 and WinNT
+INET_LIBS=-lwsock32
 
-CFLAGS=	-c $(OPT) -Iconfig\win32 -Iinclude -I. \
+CFLAGS=	-c $(OPT) -I$(SRCDIR)config/win32 -I$(SRCDIR)include -I(SRCDIR). \
 	-DHAVE_CONFIG_H $(TTY_DEFS) $(INET_DEFS)
 
 OBJ=	isnobol4.o data.o data_init.o main.o syn.o \
@@ -36,205 +40,207 @@ OBJ=	isnobol4.o data.o data_init.o main.o syn.o \
 	tan.o sys.o tty.o inet.o execute.o exists.o \
 	rresvport.o term.o findunit.o
 
-# wsock32 present on both Win95 and WinNT
-LIBS=-lwsock32
+snobol4.exe: $(OBJ)
+	$(CC) -o snobol4 $(OBJ) $(INET_LIBS)
 
-snobol4.exe : $(OBJ)
-	$(CC) -o snobol4 $(OBJ) $(LIBS)
+data.o:	$(SRCDIR)data.c
+	$(CC) $(CFLAGS) $(SRCDIR)data.c
 
-data.o : data.c
-	$(CC) $(CFLAGS) data.c
+data_init.o: $(SRCDIR)data_init.c
+	$(CC) $(CFLAGS) $(SRCDIR)data_init.c
 
-data_init.o : data_init.c
-	$(CC) $(CFLAGS) data_init.c
+isnobol4.o: $(SRCDIR)isnobol4.c
+	$(CC) $(CFLAGS) $(SRCDIR)isnobol4.c
 
-isnobol4.o : isnobol4.c
-	$(CC) $(CFLAGS) isnobol4.c
+main.o:	$(SRCDIR)main.c
+	$(CC) $(CFLAGS) $(SRCDIR)main.c
 
-main.o : main.c
-	$(CC) $(CFLAGS) main.c
+syn.o:	$(SRCDIR)syn.c
+	$(CC) $(CFLAGS) $(SRCDIR)syn.c
 
-syn.o : syn.c
-	$(CC) $(CFLAGS) syn.c
-
-version.o : version.c
-	$(CC) $(CFLAGS) version.c
+version.o: $(SRCDIR)version.c
+	$(CC) $(CFLAGS) $(SRCDIR)version.c
 
 ################ common
 
-bal.o : lib\bal.c
-	$(CC) $(CFLAGS) lib\bal.c
+bal.o:	$(SRCDIR)lib/bal.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/bal.c
 
-date.o : lib\date.c
-	$(CC) $(CFLAGS) lib\date.c
+date.o:	$(SRCDIR)lib/date.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/date.c
 
-dump.o : lib\dump.c
-	$(CC) $(CFLAGS) lib\dump.c
+dump.o:	$(SRCDIR)lib/dump.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/dump.c
 
-endex.o : lib\endex.c
-	$(CC) $(CFLAGS) lib\endex.c
+endex.o: $(SRCDIR)lib/endex.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/endex.c
 
-hash.o : lib\hash.c
-	$(CC) $(CFLAGS) lib\hash.c
+hash.o:	$(SRCDIR)lib/hash.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/hash.c
 
-init.o : lib\init.c
-	$(CC) $(CFLAGS) lib\init.c
+init.o:	$(SRCDIR)lib/init.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/init.c
 
-io.o : lib\io.c
-	$(CC) $(CFLAGS) lib\io.c
+io.o:	$(SRCDIR)lib/io.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/io.c
 
-lexcmp.o : lib\lexcmp.c
-	$(CC) $(CFLAGS) lib\lexcmp.c
+lexcmp.o: $(SRCDIR)lib/lexcmp.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/lexcmp.c
 
-ordvst.o : lib\ordvst.c
-	$(CC) $(CFLAGS) lib\ordvst.c
+ordvst.o: $(SRCDIR)lib/ordvst.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/ordvst.c
 
-pair.o : lib\pair.c
-	$(CC) $(CFLAGS) lib\pair.c
+pair.o:	$(SRCDIR)lib/pair.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/pair.c
 
-pat.o : lib\pat.c
-	$(CC) $(CFLAGS) lib\pat.c
+pat.o:	$(SRCDIR)lib/pat.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/pat.c
 
-pml.o : lib\pml.c
-	$(CC) $(CFLAGS) lib\pml.c
+pml.o:	$(SRCDIR)lib/pml.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/pml.c
 
-realst.o : lib\realst.c
-	$(CC) $(CFLAGS) lib\realst.c
+realst.o: $(SRCDIR)lib/realst.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/realst.c
 
-replace.o : lib\replace.c
-	$(CC) $(CFLAGS) lib\replace.c
+replace.o: $(SRCDIR)lib/replace.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/replace.c
 
-str.o : lib\str.c
-	$(CC) $(CFLAGS) lib\str.c
+str.o:	$(SRCDIR)lib/str.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/str.c
 
-stream.o : lib\stream.c
-	$(CC) $(CFLAGS) lib\stream.c
+stream.o: $(SRCDIR)lib/stream.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/stream.c
 
-top.o : lib\top.c
-	$(CC) $(CFLAGS) lib\top.c
+top.o:	$(SRCDIR)lib/top.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/top.c
 
-tree.o : lib\tree.c
-	$(CC) $(CFLAGS) lib\tree.c
+tree.o:	$(SRCDIR)lib/tree.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/tree.c
 
 ################ ansi
 
-spcint.o : lib\ansi\spcint.c
-	$(CC) $(CFLAGS) lib\ansi\spcint.c
+spcint.o: $(SRCDIR)lib/ansi/spcint.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/ansi/spcint.c
 
-spreal.o : lib\ansi\spreal.c
-	$(CC) $(CFLAGS) lib\ansi\spreal.c
+spreal.o: $(SRCDIR)lib/ansi/spreal.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/ansi/spreal.c
 
 ################ auxil
 
-bcopy.o : lib\auxil\bcopy.c
-	$(CC) $(CFLAGS) lib\auxil\bcopy.c
+bcopy.o: $(SRCDIR)lib/auxil/bcopy.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/auxil/bcopy.c
 
-bzero.o : lib\auxil\bzero.c
-	$(CC) $(CFLAGS) lib\auxil\bzero.c
+bzero.o: $(SRCDIR)lib/auxil/bzero.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/auxil/bzero.c
 
-getopt.o : lib\auxil\getopt.c
-	$(CC) $(CFLAGS) lib\auxil\getopt.c
+getopt.o: $(SRCDIR)lib/auxil/getopt.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/auxil/getopt.c
 
 ################ dummy
 
-execute.o : lib\dummy\execute.c
-	$(CC) $(CFLAGS) lib\dummy\execute.c
+execute.o: $(SRCDIR)lib/dummy/execute.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/dummy/execute.c
 
-rresvport.o : lib\dummy\rresvport.c
-	$(CC) $(CFLAGS) lib\dummy\rresvport.c
+rresvport.o: $(SRCDIR)lib/dummy/rresvport.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/dummy/rresvport.c
 
 ################ generic
 
-dynamic.o : lib\generic\dynamic.c
-	$(CC) $(CFLAGS) lib\generic\dynamic.c
+dynamic.o: $(SRCDIR)lib/generic/dynamic.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/generic/dynamic.c
 
-expops.o : lib\generic\expops.c
-	$(CC) $(CFLAGS) lib\generic\expops.c
+expops.o: $(SRCDIR)lib/generic/expops.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/generic/expops.c
 
-intspc.o : lib\generic\intspc.c
-	$(CC) $(CFLAGS) lib\generic\intspc.c
+intspc.o: $(SRCDIR)lib/generic/intspc.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/generic/intspc.c
 
-term.o : lib\generic\term.c
-	$(CC) $(CFLAGS) lib\generic\term.c
+term.o:	$(SRCDIR)lib/generic/term.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/generic/term.c
 
 ################ win32!
 
-inet.o : lib\win32\inet.c
-	$(CC) $(CFLAGS) lib\win32\inet.c
+inet.o:	$(SRCDIR)lib/win32/inet.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/win32/inet.c
 
-load.o : lib\win32\load.c
-	$(CC) $(CFLAGS) lib\win32\load.c
+load.o:	$(SRCDIR)lib/win32/load.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/win32/load.c
 
-mstime.o : lib\win32\mstime.c
-	$(CC) $(CFLAGS) lib\win32\mstime.c
+mstime.o: $(SRCDIR)lib/win32/mstime.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/win32/mstime.c
 
-sys.o : lib\win32\sys.c
-	$(CC) $(CFLAGS) lib\win32\sys.c
+sys.o:	$(SRCDIR)lib/win32/sys.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/win32/sys.c
 
-tty.o : $(TTY_C)
+tty.o:	$(TTY_C)
 	$(CC) $(CFLAGS) $(TTY_C)
 
-exists.o : lib\win32\exists.c
-	$(CC) $(CFLAGS) lib\win32\exists.c
+exists.o: $(SRCDIR)lib/win32/exists.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/win32/exists.c
 
 ################ snolib
 
-chop.o : lib\snolib\chop.c
-	$(CC) $(CFLAGS) lib\snolib\chop.c
+chop.o:	$(SRCDIR)lib/snolib/chop.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/chop.c
 
-cos.o : lib\snolib\cos.c
-	$(CC) $(CFLAGS) lib\snolib\cos.c
+cos.o:	$(SRCDIR)lib/snolib/cos.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/cos.c
 
-delete.o : lib\snolib\delete.c
-	$(CC) $(CFLAGS) lib\snolib\delete.c
+delete.o: $(SRCDIR)lib/snolib/delete.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/delete.c
 
-environ.o : lib\snolib\environ.c
-	$(CC) $(CFLAGS) lib\snolib\environ.c
+environ.o: $(SRCDIR)lib/snolib/environ.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/environ.c
 
-exit.o : lib\snolib\exit.c
-	$(CC) $(CFLAGS) lib\snolib\exit.c
+exit.o:	$(SRCDIR)lib/snolib/exit.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/exit.c
 
-exp.o : lib\snolib\exp.c
-	$(CC) $(CFLAGS) lib\snolib\exp.c
+exp.o:	$(SRCDIR)lib/snolib/exp.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/exp.c
 
-file.o : lib\snolib\file.c
-	$(CC) $(CFLAGS) lib\snolib\file.c
+file.o:	$(SRCDIR)lib/snolib/file.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/file.c
 
-findunit.o : lib\snolib\findunit.c
-	$(CC) $(CFLAGS) lib\snolib\findunit.c
+findunit.o: $(SRCDIR)lib/snolib/findunit.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/findunit.c
 
-getstring.o : lib\snolib\getstring.c
-	$(CC) $(CFLAGS) lib\snolib\getstring.c
+getstring.o: $(SRCDIR)lib/snolib/getstring.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/getstring.c
 
-host.o : lib\snolib\host.c
-	$(CC) $(CFLAGS) lib\snolib\host.c
+host.o:	$(SRCDIR)lib/snolib/host.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/host.c
 
-log.o : lib\snolib\log.c
-	$(CC) $(CFLAGS) lib\snolib\log.c
+log.o:	$(SRCDIR)lib/snolib/log.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/log.c
 
-logic.o : lib\snolib\logic.c
-	$(CC) $(CFLAGS) lib\snolib\logic.c
+logic.o: $(SRCDIR)lib/snolib/logic.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/logic.c
 
-ord.o : lib\snolib\ord.c
-	$(CC) $(CFLAGS) lib\snolib\ord.c
+ord.o:	$(SRCDIR)lib/snolib/ord.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/ord.c
 
-rename.o : lib\snolib\rename.c
-	$(CC) $(CFLAGS) lib\snolib\rename.c
+rename.o: $(SRCDIR)lib/snolib/rename.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/rename.c
 
-retstring.o : lib\snolib\retstring.c
-	$(CC) $(CFLAGS) lib\snolib\retstring.c
+retstring.o: $(SRCDIR)lib/snolib/retstring.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/retstring.c
 
-sin.o : lib\snolib\sin.c
-	$(CC) $(CFLAGS) lib\snolib\sin.c
+sin.o:	$(SRCDIR)lib/snolib/sin.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/sin.c
 
-sprintf.o : lib\snolib\sprintf.c
-	$(CC) $(CFLAGS) lib\snolib\sprintf.c
+sprintf.o: $(SRCDIR)lib/snolib/sprintf.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/sprintf.c
 
-sqrt.o : lib\snolib\sqrt.c
-	$(CC) $(CFLAGS) lib\snolib\sqrt.c
+sqrt.o:	$(SRCDIR)lib/snolib/sqrt.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/sqrt.c
 
-sset.o : lib\snolib\sset.c
-	$(CC) $(CFLAGS) lib\snolib\sset.c
+sset.o:	$(SRCDIR)lib/snolib/sset.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/sset.c
 
-tan.o : lib\snolib\tan.c
-	$(CC) $(CFLAGS) lib\snolib\tan.c
+tan.o:	$(SRCDIR)lib/snolib/tan.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/tan.c
+
+################################################################
+
+install: snobol4.exe
+	config\install.bat win32 $(DEST)
