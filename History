@@ -36,6 +36,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	lib/bal.c: include lib.h for getbal() prototype
 	parms.h: add includes
 	isnobol4.c compiles clean w/ -Wimplicit on RH7.3, FreeBSD4.7
+
 	lib/bsd/inet.c: add includes
 	lib/init.c, main.c: include proc.h
 	lib/io.c: include lib.h, proc.h; ignore HAVE_STDARG_H; use __STDC__
@@ -50,11 +51,26 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	lib/{ansi,bsd,dummy,generic,msdos,posix,vms,win32}/mstime.c
 		lib/{djgpp,generic,posix,vms,win32}/sys.c:  lib.h &c
 	lib/{hash,lexcmp,ordvst,pat,pair,pml,realst,replace,top,tree}.c
-		{ansi,c99,generic,longlong}/spcint.c
-		{generic,ansi}/spreal.c {bsd,generic,posix}/suspend.c
+		{bsd,generic,posix}/suspend.c
 		{posix,vms}/term.c generic/ex{ists,execute}.c: lib.h
 	lib/snolib/getstring.c: load.h
 	lib/snolib/retstring.c: load.h, stdio.h
+	new include/str.h: string includes/prototypes
+	include/h.h: remove index, bcmp defines
+	include/macros.h: move bcmp, bcopy defines to str.h
+	parms.h: use str.h
+	lib/auxil/getopt.c,lib/djgpp/osinit.c,lib/bsd/inet.c,
+		lib/{date,init,ordvst,pml,realst,str}.c,
+		lib/snolib/{host,[gr]etstring,serv,sprintf}.c
+		lib/{generic,posix,vms,win32}/sys.c,
+		lib/{bsd,hpux,next,unix98,win32}/load.c: use str.h
+	lib/{ansi,c99,generic,longlong}/{spcint,intspc}.c,
+		lib/{generic,ansi}/spreal.c: lib.h str.h
+	lib/generic/execute.c: unistd.h
+	configure: only use strings.h if it contains both index and strcmp
+		(GNU/Linux version is minimal)
+	compiles cleanly (except isnobol4.c loops & snolib functions)
+		w/ gcc -Wmissing-prototypes!!
 
 1/13/2003
 	doc/load.doc: cleanup

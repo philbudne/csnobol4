@@ -1,5 +1,18 @@
 $Id$
 
+run comdef on lib/*/*.c
+	macros.h, snotypes.h
+
+clean compile with -Wimplcit???
+	and w/ -Wmissing-prototypes!!!
+		need static SIL function protos?
+
+create "str.h"
+	use correct string(s).h include
+	declare bcopy, bzero if needed?
+
+control lines (and keyword variables?) for BANNER and STATS???
+
 PACKAGING!!
 
 verify correctness of line.ref, include.ref
@@ -101,8 +114,10 @@ make branch for major releases
 HOST() to return CSNOBOL4 version level??
 	release date???
 
+create generic load framework???
+
 keep usecount in next/load.c?  Apple dlopen() simulation does!
-	create generic load framework???
+	TESTED 4/15/2003 -- not needed??
 
 Add FORK() to pml.h (under PML_FORK?)
 
