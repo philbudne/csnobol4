@@ -6,8 +6,9 @@ Beta release of ``The Macro Implementation of SNOBOL4''
 This is a port of the original SIL (SNOBOL4 Implementation Language)
 "macro" version of SNOBOL4 with the `C' language as a target.
 
-If you make any changes/fixes/improvements, or port it to a new system,
-	please notify me!
+If you make any changes/fixes/improvements, or port it to a new
+system, please notify me!  If you are interested in getting mailings
+about new releases, send me mail.
 
 Phil Budne <budd@gnu.ai.mit.edu>
 
@@ -25,12 +26,27 @@ application.
 
 ****************************************************************
 
-See the file doc/goals.doc for a description of the overall goals,
+Documentation directory;
+
+doc/goals.doc
+	a description of the overall goals,
 	and the goals for this release.
 
-See the file doc/ports.doc for the status of ports to various systems.
+doc/ports.doc
+	status of ports to various systems.
 
-See the file TODO for identified tasks / wish list.
+doc/porting.doc
+	information on porting to a new system.
+
+TODO
+	my identified tasks / wish list.
+
+TODO.soon
+	my top priority tasks.
+
+doc/catspaw/
+	Information on Catspaw's commercial
+	SNOBOL systems, and ordering information on SNOBOL books!!!
 
 Changes from "alpha" distribution;
 	Now portable!!
