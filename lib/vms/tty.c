@@ -52,6 +52,7 @@ tty_close(f)
 }
 
 /* must define TTY_READ for this to be called; */
+
 int
 tty_read(f, buf, len, raw, noecho)
     FILE *f;
@@ -60,6 +61,7 @@ tty_read(f, buf, len, raw, noecho)
     int raw;
     int noecho;
 {
+#if 0
     if (raw) {
 	int chan;
 	int op;
@@ -90,7 +92,9 @@ tty_read(f, buf, len, raw, noecho)
 	}
 	return iosb.size;
     }
-    else {
+    else
+#endif
+    {
 	if (noecho)
 	    return -1;			/* don't echo passwords!! */
 	return fread(buf, 1, len, f);
