@@ -138,10 +138,11 @@ Changes from "beta1" distribution;
 	Tested on more systems (IBM, SGI, LINUX, VMS).
 	Now using m4 to create Makefile2 -- cpp was problematic.
 	Implemented case folding (&CASE and -CASE).
-	Impplemented pipe opens (if filename starts with '|').
+	Implemented pipe opens (if filename starts with '|').
 	Input no longer space padded, &TRIM no longer on by default.
 	NUL's not translated to space on output.
 	8-bit clean; &ALPHABET is 256 bytes long.
+	Turned off stack underflow checking (should improve performance).
 	"Poor-Man's LOAD" -- support for linked in external functions.
 	Small "snolib.a" library of loadable functions.
 	Upper and lower case letters available as keywords &LCASE/&UCASE.

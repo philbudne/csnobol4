@@ -2,6 +2,10 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
+6/6/94
+	Run timing script in regression test (runs genc)!!
+	UFCHK no longer on by default
+
 6/4/94
 	Created snolib (DELETE, FILE and RENAME functions)
 	Call getredirect() under vms
