@@ -641,11 +641,6 @@ if [ -f $INCDIR/stdlib.h ]; then
     HAVE_STDLIB_H=1
 fi
 
-if [ -f $INCDIR/stdarg.h ]; then
-    echo 'using ANSI stdarg.h' 1>&2
-    echo '#define HAVE_STDARG_H'		>> $CONFIG_H
-fi
-
 if [ -f $INCDIR/unistd.h ]; then
     echo 'using POSIX unistd.h' 1>&2
     echo '#define HAVE_UNISTD_H'		>> $CONFIG_H
