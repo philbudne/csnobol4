@@ -34,6 +34,8 @@ union addr {
 #define STTL	04
 #define MARK	010
 #define PTR	020
+#define FRZN	040			/* [PLB34] table frozen */
+/* only one bit left! */
 
 #ifdef NO_BITFIELDS
 #define VFLD(name) long name		/* at least 31 bits */
