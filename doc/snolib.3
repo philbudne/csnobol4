@@ -8,7 +8,7 @@
 .       ds rq ''
 .       ds lq ``
 .\}
-.TH SNOLIB 3 "23 Jul 2003" "Local"
+.TH SNOLIB 3 "29 Jul 2003" "Local"
 .SH NAME
 snolib \- SNOBOL4 library routines
 .SH SYNOPSIS
@@ -17,7 +17,8 @@ snolib \- SNOBOL4 library routines
 .PP
 
 The following
-.BR snobol4 (1) library routines are installed in
+.BR snobol4 (1)
+library routines are installed in
 /usr/local/lib/snobol4 (the default path for -INCLUDE);
 
 .TP
@@ -30,11 +31,7 @@ defines a variable for each non-printing character
 in the local character set
 
 .TP
-fence.sno
-.TP
-not.sno
-.TP
-unique.sno
+fence.sno, not.sno, unique.sno
 Emulation of SPITBOL FENCE() and NOT() functions, and unique
 variable creation support routine, thanks to Peter-Arno Coppen
 
@@ -69,13 +66,7 @@ tcp.sno
 TCP connection routines, used by the URL library (below)
 
 .TP
-url.sno
-.TP
-file.sno
-.TP
-ftp.sno
-.TP
-http.sno
+url.sno, file.sno, ftp.sno, http.sno
 Internet URL file reading support (for file, ftp and http URL's)
 
 .TP
@@ -85,3 +76,16 @@ Experimental routines for handling UTF encoded (Unicode) data
 .TP
 wrapper.sno
 Routines for creating C code wrappers for dynamicly loading code.
+
+.SH SEE ALSO
+.BR snobol4 (1)
+
+.SH AUTHOR
+Philip Budne
+.br
+Peter-Arno Coppen
+
+.SH BUGS
+This man page should describe how to use the routines,
+but for now just tells you the files exist (which is better
+than nothing).
