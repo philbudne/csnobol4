@@ -25,53 +25,6 @@ Improve porting.doc
 	optimization (none/-O/-O2 etc)
 	mention "timing" script!!
 
-================
-
-Write man page
-
-Document;
-    SITBOL / Catspaw SPITBOL precidents
-
-    command line options
-	    example of #! usage!!!
-
-    language extensions
-	INPUT()
-	OUTPUT()
-		extra arg
-		formats ignored
-		recl NOT ignored!?!
-	-ERROR/-NOERRORS
-	-CASE/&CASE
-	&LCASE/&UCASE
-
-    changes;
-	-LIST defaults
-
-    character set usage (move defns to synchars?)
-	NOTSYM ~\
-	ORSYM |!
-	RAISE ^
-	EOS ;
-	EQUALS =_
-	LEFTBR [<
-	RIGHTBR ]>
-	BREAK ._
-	CMT *|#
-
-    default I/O behavior
-	listing
-	OUTPUT
-	PUNCH
-
-    Mention I18N
-	Only 7-bit for now
-	Vertical bar used as an operator
-	What would 8-bit mean for &ALPHABET? LGT()???
-	What would 16-bit (or unicode?!) do for stream tables???
-
-    Known bugs
-
 Implement "poor man's LOAD"
 
 Implement -INCLUDE
