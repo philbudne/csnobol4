@@ -1,17 +1,28 @@
 $Id$
 
-Several design decisions which are worth revisiting are;
+Several design decisions which are worth discussing;
 
 addressing is in bytes
 ======================
 
-That is CPA is 1, and DESCR is sizeof(struct DESCR)!
+CPA (characters per address) is 1, and DESCR is sizeof(struct DESCR)!
 
-Once the data segment is compiled in C it may be possible to reverse
-the above two values, and have addressing be in "descr" sized units!
+Since the data segment is compiled in C it may be possible to reverse
+the above two values, and have addressing be in "descr" sized units.
 
-All static data declared as external arrays
-===========================================
+Either;
+	all pointer aritemetic would have to be performed on
+		struct descr *'s (so that INCRA X,DESCR does
+		the right thing).
+OR
+	All pointer derefernces would have to do math?!
+
+I also seem to recall there would be problems with EQU values (some
+equates include pointer math).  Equates which yield pointers would
+have to have the type "struct descr *".
+
+All static data referenced as char * pointers
+=============================================
 
 This is so that the translator doesn't have to worry about
 putting &'s on data (while omitting them on functions and EQU's).
@@ -27,8 +38,8 @@ The old system stack pointer "OSTACK" is saved as a C local variable,
 however RCALL has to PUSH() at least one DESCR() since the GC code
 expects this!!
 
-Return values are implemented by passing a pointer to a variable (or
-NULL) to the C function.
+Return values are implemented by passing a pointer to a variable to
+the C function.
 
 Alternate returns are implemented by using the C return value and a
 switch statement.
@@ -60,3 +71,8 @@ could then be dispatched by a switch statement!
 I felt the former strategy was more likely to port well, and less
 likely to uncover compiler problems due to longjmp, optimization, and
 very large functions!
+
+Another possibility I didn't know about at the time would be to use
+the GNU C construct (&&label) to get the address of a C label. This
+would mean loss of portability, as well as the problems outlined
+in the previous paragraph.
