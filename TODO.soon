@@ -1,12 +1,23 @@
 $Id$
 
-create host.sno w/ constants for HOST() functions
-	HOST_SYSENV
+"pmake" on csa loses?
 
-LARGEFILE support busted under glibc 2.1
-awk '$1 ~ /^#define/ && $2 ~ /_GLIBC_/ { print $3 }' /usr/include/features.h
-if X=`getconf --version 2>&1 | awk '/GNU libc/ { print $NF }'`; then
-rpm -q -f /usr/lib/libc.a
+create CRLF test (both program and data)
+
+use new "groff -Thtml" to format man page, porting.ms?
+
+script to grep for all "ifdefs" and output strings to build.c?
+	just stringify options in config.h?
+
+cygwin isnobol4.c build problems with filename "subr/CON" !!
+	change label to CONCAT
+		v311.sil (two places), globals, procs
+
+create host.sno w/ constants for HOST() functions
+	e.g. HOST_SYSENV
+	use in timing.sno?
+
+timing.sno: display sizeof: int_t, real_t, ptr
 
 Add --no-inline??
 
@@ -14,17 +25,14 @@ rename /ansi/ to /c89/ ??
 	change autoconf messages too?
 rename /borland/ to /msdos/ ??
 
-include file for bcopy() prototype??
-	do includes in h.h?? macros.h??
-	bcmp defines in macros.h and h.h?? USE_MEMCMP never set?
-
-all S_L fetches should use int_t variables!
-
 INSTALL
-	remove documentation for --(no-)largefile!!!
+	remove documentation for --largefile
+	mention --no-largefile for "update.sno" regression test failures
+	mention pathconf FILESIZEBITS?
 	warn --longlong may not work!!!
 
 CHANGES
+	speak in english
 	discuss largefile support (and why it may or may not work)!
 
 create README.CVS??
@@ -39,6 +47,8 @@ man page:
 	document SERV_LISTEN()
 	discuss largefile support (may not work on all (file)systems)
 		under SSET()
+		mention pathconf FILESIZEBITS?
+
 	discuss terminal binary mode
 
 add build_user???
@@ -48,9 +58,6 @@ ports.doc
 	update (with beta test information)
 	remove???
 	
-new versions of RETxxx macros cause "code not reached" warnings
-	change to obscene use of  "," construct???
-
 put sources under CVS
 	name module snobol4!
 	improve rcs2cvs;
@@ -84,7 +91,14 @@ doc/load.doc
 	Darwin:
 		http://fink.sourceforge.net/doc/porting/shared.php
 
+		dlopen() loads modules (bundles);
+			cc -fno-common -c source.c
+			cc -fno-common -c code.c
+			cc -bundle -flat_namespace -undefined suppress \
+				 -o mymodule.so source.o code.o
+
 	Cygwin DLL procedures???
+		dlltool????
 
 	DLL's on Win32
 	document:
@@ -148,12 +162,23 @@ packaging;
 have tests cleanup after themselves?  Add Makefile for "make clean"?
 	just add files to "make spotless"
 
-cygwin isnobol4.c build problems with filename "subr/CON" !!
-	change label to CONC?
-
 ================
 
-inline apdsp()?
+change NO_UNDERSCORE to NEED_UNDERSCORE?
+
+use getconf(CHAR_BIT) if available in host.c for BPC??
+	AIX has it
+
+new versions of RETxxx macros cause "code not reached" warnings
+	change to obscene use of  "," construct???
+
+include file for bcopy() prototype??
+	do includes in h.h?? macros.h??
+	bcmp defines in macros.h and h.h?? USE_MEMCMP never set?
+
+define SIZE_T macro? (grep for SIZE_T comments)
+
+all S_L fetches should use int_t variables!
 
 change tty_mode to take single "mode" argument (flags + recl)?
 	add "superbinary mode"?

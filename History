@@ -2,8 +2,58 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+1/6/2002
+	lib/io.c: toss CR's for DOS files transferred in BINARY mode
+		or on Cygwin for files transferred in ASCII mode!
+	Makefile: get tsort.sno from parent directory
+	v311.sil, globals, procs: rename CON to CONCAT for Cygwin build
+	timing: move cygwin EXT check to top
+
+Clean builds on: SunOS 4.1.4; Solaris 2.4, 2.5.1, 2.6, 7, 8
+	FreeBSD 3.4, 4.4; OSF1/DU/Tru64 3.2, 4.0; IRIX 6.2, 6.5
+	Darwin 5.1 (MacOS X); NetBSD/i386 1.5ZA; Cygwin 1.3.3
+	HP-UX 10.20, 11.0; AIX 4.3; RH Linux 5.2, 6.0, 6.2, 7.0, 7.1, 7.2
+
+1/5/2002
+	timing: on HP-UX, try getconf MACHINE_MODEL if "model" cmd not found
+	autoconf: use XBS5_LP64_OFF64_{C,LD}FLAGS on IRIX for --lp64
+		set XBS5_MODEL on AIX if using native compiler; LFS_CFLAGS
+			is not supported.  Don't try to turn on large
+			file support under lp64 compilations.  Save
+			extra large file getconf values using
+			ADD_OPT()
+		allow --lp64 builds under AIX (not tested); set ARFLAGS
+		Darwin: alias "GT" (conflicts with curses global?)
+	Makefile2.m4: use ARFLAGS for AIX lp64
+	lib/ordvst.c: remove an old comment
+
+1/4/2002
+	autoconf: canonicalize "using" messages to lowercase
+		make LARGEFILE checks glibc aware, add --no-largefile back!
+		update for Darwin (cc define __GNUC__ but not __gcc__)
+			get right path for mach-o/dyld.h (dlopen available)
+			add LDFLAGS for libdl
+		add HAVE_STDARGS_H check -- Darwin varargs is broken?
+	timing: remove CCVERS, show build.c contents
+		grep for Id in timing, timing.sno
+		clean up BSD sysctl, CPU display
+		prefix Linux releasefile
+		treat Darwin like BSD (use sysctl hw)
+	timing.sno: removed Revision, add ERROR/WARNING prefixes
+		display TERMINAL messages at end for WARNINGS/FATAL
+	io.c: check HAVE_STDARGS_H (was USE_STDARGS_H)
+	lib/ordvst.c: include stdlib.h before h.h for FreeBSD 3.4
+	lib/snolib/retstring.c: include stdlib.h before h.h for FreeBSD 3.4
+
+1/3/2002
+	autoconf: define CONFIG_HOST, CONFIG_OPTIONS (only if non-null)
+	lib/snolib/host.c: add CONFIG_HOST, CONFIG_OPTIONS, reorder 2xxx
+		add integer constants (23xx range)
+	Makefile: push SNOBOL4 variable down to Makefile2, add TSORT variable
+	Makefile2.m4: add SNOBOL4 variable
+
 1/1/2002
-	autoconf: disable largefile/getconf cleverness -- Linux getconf sux
+	autoconf: disable largefile/getconf cleverness -- glibc getconf botch
 
 12/31/2001
 	lib/dummy/mstime.c: add comment to use time()
