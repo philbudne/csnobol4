@@ -36,7 +36,7 @@ int
 STCL_CREATE( LA_ALIST ) LA_DCL
 {
     Tcl_Interp *interp;
-    handle_t h;
+    snohandle_t h;
 
     interp = Tcl_CreateInterp();
     if (!interp)
@@ -89,7 +89,6 @@ STCL_EVALFILE( LA_ALIST ) LA_DCL
 /*
  * LOAD("STCL_GETVAR(INTEGER,STRING)STRING")
  * return value of a Tcl variable (all Tcl variables are strings)
- * XXX take handle as arg?
  */
 int
 STCL_GETVAR( LA_ALIST ) LA_DCL
@@ -112,7 +111,6 @@ STCL_GETVAR( LA_ALIST ) LA_DCL
  * Set value of a Tcl variable
  *
  * returns null string or failure 
- * XXX take handle as arg?
 */
 int
 STCL_SETVAR( LA_ALIST ) LA_DCL
@@ -137,7 +135,6 @@ STCL_SETVAR( LA_ALIST ) LA_DCL
  * Eval a tcl command
  *
  * returns null string or failure
- * XXX take handle as arg?
  */
 int
 STCL_EVAL( LA_ALIST ) LA_DCL
