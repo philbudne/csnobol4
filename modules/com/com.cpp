@@ -17,6 +17,8 @@
 #include <objbase.h>
 #include <olestd.h>
 */
+// MINGW:
+WINOLEAPI CoGetObject(LPWSTR name, BIND_OPTS *pbo, REFIID riid, void **ppv);
 
 #ifndef V_I1
 #define V_I1(X) V_UNION(X,cVal)
@@ -82,7 +84,7 @@ COM_LOAD( LA_ALIST ) LA_DCL
 
     progid = getolestring(LA_PTR(0));
     if (wcschr(progid, ':')) {			// moniker?
-	hr = CoGetObject(name, NULL, IID_IUnknown, (void **)&punk)
+	hr = CoGetObject(progid, NULL, IID_IUnknown, (void **)&punk);
 	if (FAILED(hr))
 	    RETFAIL;
 
