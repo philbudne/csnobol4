@@ -2,6 +2,9 @@
 
 /*
  * $Log$
+ * Revision 1.5  94/06/25  00:44:43  budd
+ * *** empty log message ***
+ * 
  * Revision 1.4  94/06/25  00:30:05  budd
  * update for beta2
  * 
@@ -16,6 +19,7 @@
  * 
  */
 
+#include "h.h"
 #include "units.h"
 #include "macros.h"
 #include "snotypes.h"
@@ -30,7 +34,7 @@ version()
     if( D_A(BANRCL) == 0 )
 	return;
 
-    io_printf(D_A(PUNCH), "
-The Macro Implementation of SNOBOL4 for Un*x, (Version %s)\n", vers);
+    io_printf(D_A(PUNCH),
+"The Macro Implementation of SNOBOL4 for Un*x, (Version %s)\n", vers);
     io_printf(D_A(PUNCH), "    Philip L. Budne, %s\n", vdate);
 }
