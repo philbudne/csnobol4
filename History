@@ -1,9 +1,28 @@
 $Id$
 
+MAINBOL for Un*x history (and personal SNOBOL history);
+ 
+12/29/93
+	cleaned up gendata.sno output, output formats
+	cleaned up include file Id lines
+
+12/28/93
+	created (empty) mlink.h, mdata.h
+	renamed headers.h to parms.h
+	created dynamic.c
+	include charset.c into init.c
+	types.h cleanup;
+		flushed flags.h
+		created VFLD/FFLD macros
+		made f field char, v field a 24 bit bitfield!
+		(no time penalty on sparc!?)
+
 12/27/93
 	Announced alpha dist (finally got a place to put it)!
 	Have gendata.sno (was data.sno) generate data.h, data.c, init.h
 	Created init.c
+
+	Compiled and ran on HP 9000/8xx (PA RISC) machine!
 
 12/9/93
 	*** First Alpha release (tag ALPHA1)
@@ -58,7 +77,7 @@ $Id$
 	genstg.sno now creates equ.h, stgtyp.c, stg.h
 		(flushed equ.awk, stgtyp.h stgh.awk)
 
-11/18/93;
+11/18/93
 	isolated match problem with atn.sno
 
 11/17/93
@@ -230,18 +249,21 @@ late 1988?
 	Found Vanilla SNOBOL4 (including Catspaw book order form)
 	and SIL sources on cs.arizona.edu
 
+Fall 1987
+	Tried using OS/360 MAINBOL to run questionnare analyzer
+
 Fall 1986
-	BUCS20 unplugged.
+	BUCS20 unplugged, lost access to SITBOL for first time in 7 yrs
 
 Fall 1985
 	Started work at BU full time.
 
 Spring 1985
 	Used SITBOL to analyze questionnaires from
-	Psychology directed study on computer mediated communication.
+		Psychology directed study on computer mediated communication.
 
 Fall 1983
-	Returned to school full time at BU, helped manage BU CS 2060.
+	Returned to school full time at BU, helped manage BUCS20 (2060)
 
 Fall 1981
 	Started at DEC/LCG FORTRAN-10/20 group (which used SITBOL
@@ -249,3 +271,4 @@ Fall 1981
 
 Fall 1979
 	Learned SNOBOL4 using SITBOL freshman year at Stevens Tech
+	Used to find errors (typos, mismatched commons) in FORTRAN programs
