@@ -10,10 +10,10 @@ STATUS=1
 if $SNOBOL $ARGS -r $PROG > ${BASE}.tmp 2>/dev/null; then
 	if cmp ${BASE}.ref ${BASE}.tmp; then
 		STATUS=0
+		rm -f ${BASE}.tmp
 	fi
 fi
 #
-rm -f ${BASE}.tmp
 #
 exit $STATUS
 
