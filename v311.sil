@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.66  1997/04/03  02:55:36  phil
+* [PLB55] Add Catspaw SPITBOL style optional arg to DATE()
+*
 * Revision 1.65  1997/02/13  06:53:54  phil
 * [PLB54] add vm_gc_advise calls
 *
@@ -6940,7 +6943,6 @@ BLSP   STRING  ' '
 BLEQSP STRING  ' = '
 CMASP  STRING  ','
 COL1SP STRING  ':'						[PLB40]
-COPYSP STRING  'COPY'						[PLB20]
 EJCTSP STRING  'EJECT'
 EQLSP  STRING  '= '
 ERORSP STRING  'ERRORS'						[PLB9]
@@ -7450,7 +7452,7 @@ FNLIST DESCR   FNLIST,TTL+MARK,FNCPLE-FNLIST-DESCR
        DESCR   UNLDSP,0,0
        DESCR   VALFN,FNC,0	   VALUE(S)
        DESCR   VALSP,0,0
-       ARRAY   40		   Space for 20 more functions	[PLB45][PLB46]
+       ARRAY   20*2		   Space for 20 more functions	[PLB46][PLB56]
 FNCPLE LHERE   ,		   End of function pair list
 OPTBL  DESCR   OPTBL,TTL+MARK,OPTBND-OPTBL-DESCR
 ADDFN  DESCR   ADD,0,2		   X + Y    addition
