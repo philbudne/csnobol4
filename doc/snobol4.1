@@ -446,21 +446,28 @@ Variable	Unit	Association
 .B \-b
 Toggle startup banner output (by default on).
 .TP
-.BI -d NNN
-Allocate dynamic region of
+.BI " -d" NNN
+Allocate
 .I NNN
-descriptors (default is 25000). A suffix of
+bytes of \*(lqdynamic storage\*(rq for program code and data. A suffix
+of
 .B k
-multiplies the number by 1000. A larger dynamic region may result in
+multiplies the number by 1024. A larger dynamic region may result in
 fewer garbage collections (storage regenerations), however large
 values may cause collections (when they occur) to run more slowly.
-Most programs do not need an increased dynamic region to run.
+Most programs do not need an increased dynamic region to run.  If your
+program terminates with a \*(lqInsufficient storage to continue\*(rq
+message you need to increase the dynamic storage region size.
 .TP
 .B -f
 Toggle folding of identifiers to upper case (see
 .B \-CASE
 and
 .BR &CASE ).
+.TP
+.B -h
+Give help. Shows usage message, includes default sizes for
+\*(lqdynamic region\*(rq and pattern match stack.
 .TP
 .B -k
 Toggle running programs with compilation errors (see
@@ -475,17 +482,10 @@ Reenable listing to stdout.  (default is
 .BR \-UNLIST ).
 Default listing side is
 .BR LEFT .
-.B -k
-Toggle running programs after compilation. (see
-.B \-EXECUTE
-and
-.B \-NOEXECUTE
-extensions).  By default programs are run after compilation is complete.
 .TP
 .B -p
 Toggle SPITBOL extensions (also controlled by
 .BR \-PLUSOPS ).
-
 .TP
 .B -r
 Toggle reading
@@ -524,6 +524,16 @@ terminates processing of arguments as files, and makes the remaining
 arguments available as user parameters (see the
 .B HOST()
 function).
+.TP
+.BI "-P " NNN
+Allocate
+.I NNN
+bytes of memory for the pattern match stack.  A suffix of
+.B k
+multiplies the number by 1024. The pattern match stack is used to save
+backtracking and conditional assignment information.  If your program
+terminates with an \*(lqOverflow during pattern matching\*(rq message
+you need to increase the pattern match stack size.
 
 .SH SEE ALSO
 .IP [1]
@@ -543,4 +553,4 @@ I/O retains some record oriented flavor.
 .br
 I/O is still tied to unit numbers.
 .br
-Dynamic storage cannot be expanded after startup.
+\*(lqDynamic\*(rq storage cannot be expanded after startup.
