@@ -25,8 +25,9 @@ LOAD_C=lib\dummy\load.c
 # TCP/IP support, using WATTCP (see www.wattcp.com)
 #
 # edit as needed for your installation;
-WATTCP_INCDIR=/djgpp/v2/contrib/wattcp/inc
-WATTCP_LIBDIR=/djgpp/v2/lib
+WATTCP_DIR=/djgpp/wattcp
+WATTCP_INCDIR=${WATTCP_DIR}\inc
+WATTCP_LIBDIR=${WATTCP_DIR}\lib
 
 # uncomment next 4 lines to enable;
 #WATTCP_DEFS=-I${WATTCP_INCDIR} -DHAVE_WATTCP
