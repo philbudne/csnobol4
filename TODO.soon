@@ -1,9 +1,66 @@
 $Id$
 
->>>> dt.h: checkin (& add to tar file) or merge with snotypes.h
+Talk about snolib files in INSTALL & README!!
 
-SPITBOL fatal;
-	filename given to INPUT or OUTPUT when already open?
+Have single NO_UNBUF_IO? (NO_DIRECT_UNBUF?)
+	document NO_UNBUF_LSEEK??
+
+Implement REALCVT??
+	autoload??
+
+Document INTVAL extension in man page;
+	TABLE, ITEM, array indices, INPUT, OUTPUT, SET,
+	keyword values, CHAR, RPAD, LPAD, FIELD, COLLECT,
+	DUMP, DUPL, OPSYN, SUBSTR
+
+Install include files for loadables in SNOLIB?
+
+Add binary mode option to ftp.sno?
+
+document stack limits in BUGS section??
+
+document math error catching problems in BUGS section;
+	"hampered by";
+
+	+ C's lax attitude towards integer errors
+		perhaps due to PDP11?
+
+	+ Lack of IEEE standard functions for;
+		enabling exceptions
+		checking for accrued errors
+		isinf() or finite()
+
+	+ POSIX (& ANSI?) definition of SIGFPE
+		(normal return behvior is undefined)
+
+raise stacklimit with setrlimit()? (set to RLIM_INFINITY?)
+	check for sys/resource.h in autoconf
+	use dummy or bsd version of "unlimit.c"
+
+	Document stack limits in man page?
+
+	Use seperate signal stack for stack overflow??
+
+load.doc: mention dt.h
+
+remove -Dconst from hpux-pa.m4??
+
+look at tty_close() thrashing;
+	never discard info?
+	keep use count???
+	flush tty_save & tty_restore (rely on io_finish)??
+
+document "Output error" in extensions section of man page?
+	document all non-standard ERRTYPEs?
+	document all errtypes!!!
+
+add outerr.sno to tests?
+
+make NO_BITFIELDS VFLD_T "long"??
+	need to use vfld_t in place of "int" in library routines???
+	what is borland "int" size with build.com?
+	force to "int" on alpha, irix64?
+	remove default (must supply VFLD_T if defining NO_BITFIELDS)??
 
 ================
 
@@ -12,13 +69,10 @@ use HOST(0) in genc.sno, gendata.sno for input file?
 switch to unroff for html file prep??
 	RosettaMan???
 
-fix for "	()()"??
+fix for " ()()"??
 
 autoconf:
-	check for index() in <string.h>
-	"configure"
-		run m4?
-		flush Makefile??
+	check for index() in <string.h> (BSD44)
 
 	--max-opt
 
@@ -31,7 +85,6 @@ autoconf:
 unix98/load.c
 	allow access to symbols from main application??
 	make shared snolib $(SNOLIB_FILE)
-	use RTLD_GLOBAL flag, if available??
 
 INSTALL:
 	talk about optimization options
@@ -50,12 +103,6 @@ man page:
 		note, update on INPUT() will not create file???
 	mention load.doc located in SNOLIB dir
 
-autoconf:
-	disable -O with HP bundled "cc"?  nah.
-
-Installation;
-	make/install formatted snobol4.cat1/snobol4.0 on bsd44?
-
 SPITBOL compatibility document?
 	'd' exponents
 	data type conversions??
@@ -66,9 +113,6 @@ SPITBOL compatibility document?
 	no ATAN() function
 	BACKSPACE() not supported
 	CLEAR() does not take args, clears pre-initialized vars (ie; ARB, FENCE)
-
-handle output errors
-	return value from io_print()
 
 ==== before beta releases
 
@@ -85,9 +129,6 @@ sed SNOLIB_PATH into man page?
 
 seperate regression test suite for distribution
 	(only tests likely to uncover port problems)?
-
-Document LD_PATH, HAVE_UNISTD_H???
-	TTY_RAW?
 
 Add "N" I/O flag??
 	set IO_NONBLOCK (POSIX), IO_NDELAY (sysV)
@@ -107,25 +148,16 @@ Add to INSTALL;
 
 release updated rebus
 
-VMS;
-	deal with PML files;
-		need /DEFINE=(EXIT=XEXIT) on VMS (with CC)
-		define NO_PML_xxx
-		or add objects
-		or build snolib library!!
-
 update man page date
 
 update v311.sil table of contents?
 
 add utf.sno to snolib??
 
-create snobol4+.inc?
-	INPUT(), OUTPUT(), ENVIRONMENT(), EXECUTE(), SEEK(), TELL()
-	PATHNAME(), ASC(), SETBREAK()
+add to snobol4+.inc?
+	SEEK(), TELL(), PATHNAME(), ASC(), SETBREAK()
 
-create spitbol.inc;?
-	INPUT(), OUTPUT()
+add to spitbol.inc;?
 	SETEXIT()
 
 add UNAME_DOT_VERSION ifdef in posix/sys.c for AIX?
@@ -199,13 +231,7 @@ Create test for plusops off?
 	try numeric conversion
 	try conversion on numbers with leading spaces (DONE: space2)
 
-test overflow?
-	remove from man page limitations??
-
 ====
-
-have dummy version of pow use repeated multiply for int, exp/log for real?
-	under ifdef??
 
 allow expansion of dynamic storage?
 	(re-write GC in C)
@@ -217,9 +243,6 @@ SITBOL features;
 		foo pat =	:<>
 				:<-1>
 
-improve lib/auxil/bzero.c?
-	it's already as good as mset()!
-
 move data_init into (i)snobol4.c,
 	get rid of (most) entries in "globals"
 		[except for SYSCUT, UNDF, INTR10, more? ]
@@ -230,8 +253,6 @@ load changes;
 
 	BSD; load "object" once, read symtab for multiple entry points
 		use -A on original / current symtab
-
-	use shl_load() on HP-UX?
 
 	use load() on AIX???
 
@@ -251,6 +272,9 @@ Add DIAGNOSTICS section to man page???
 
 have all genc, gendata, gensyn output .[ch]2 files
 	use cmp || cp??
+
+Have gensyn read character classes from input
+	(seperate with %%?)
 
 Improve porting.doc
 	talk about C compilers
@@ -278,17 +302,35 @@ from s4+
 		HUGE_VAL	(ANSI/POSIX/SVID?)
 		HUGE		bsd?
 		infinity() 	???
+		infnan(errno)	GNU/Linux
+
 	&NAN
 		quiet_nan()?	sunos4, sunos5
 		signaling_nan()?? sunos4, sunos5
+		infnan(errno)	GNU/Linux
 
 ================
 
 better math exception catching;
-	ieee_handler:	sunos4, sunos5
 
-catching library errs;
-	matherr:	sunos4, sunos5, SVID3, (deprecated in XPG3)
+	Ensure operands "finite()" before floating point ops???
+
+	enable exceptions;
+		ieee_handler:	sunos4, sunos5 (replaces "signal" call)
+		fpsetmask:	NetBSD/FreeBSD <ieeefp.h>
+				HP-UX <math.h>
+		handle_sigfpes:	irix
+		ieee_set_fp_control: OSF/1
+		fp_enable, fp_enable_all: AIX <fptrap.h>
+
+	Use sticky (ieee accrued exception bits);
+		HP/NetBSD:	fp{get,set}sticky
+		FreeBSD:	fp{get,reset}sticky
+		Sun:		ieee_flags("get", "exception", ...)
+				(man floatingpoint)
+
+	catching library errs;
+		matherr:	sunos4, sunos5, SVID3, (deprecated in XPG3)
 
 ================
 
@@ -328,3 +370,18 @@ add DUMP(n) function???
 	2	include values of non-null array/table elements
 		non-null members of user datatypes
 	3	include null-valued variables, stmt labels
+
+================
+
+per-machine build dirs
+	do machine-independant parts in base dir (genc, gendata, gensyn)
+	make symlinks?
+		*.c *.h *.c2 *.h2 gen*.sno globals procs
+		inline.sno v311.sil syntax.tbl
+
+================
+
+disallow 0 ^ 0?
+SPITBOL x ^ y (y < 0) always yields REAL?
+
+================
