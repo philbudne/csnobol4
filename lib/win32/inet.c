@@ -13,8 +13,8 @@
 
 #include "h.h"				/* TRUE/FALSE */
 #include "snotypes.h"			/* needed on VAX/VMS for macros.h */
-#include "macros.h"			/* bcopy */
 #include "lib.h"
+#include "str.h"			/* bcopy */
 
 #ifdef NO_STATIC_VARS
 #include "vars.h"
