@@ -1,6 +1,6 @@
 .\" -*-nroff-*-
 .\" $Id$
-.TH SNOBOL4 1 "6 September 1996" "Local"
+.TH SNOBOL4 1 "22 September 1996" "Local"
 .SH NAME
 snobol4 \- SNOBOL4 interpreter
 .SH SYNOPSIS
@@ -123,7 +123,7 @@ Underscore (_) and period (.) are legal within identifiers and labels.
 .SS "Extensions"
 
 .TP
-.BR "TERMINAL " I/O variable
+.BR "TERMINAL " "I/O variable"
 .br
 The variable
 .B TERMINAL
@@ -305,7 +305,6 @@ or zero, the remainder of the string is returned.
 .TP
 Lexical comparison
 .br
-
 A full set of lexical (string) comparison predicates
 have been added to complement the standard
 .B LGT()
@@ -321,14 +320,15 @@ function;
 .br
 The
 .B FREEZE()
-and
-.B
+function prohibits new entry creation in the referenced table.  This
+is useful once a table has been initialized to avoid the creation of
+empty entries that normally occurs on table entry lookup failure. This
+can greatly improve program speed, since frozen tables will not become
+clogged with random entries. Lookups for uninitialized entries will
+return the null string, however attempts to create a new entry will
+cause a \*(lqVariable not present where required\*(rq error. The
 .B THAW()
-functions prohibit new entry creation in named table.  This is useful
-once a table has been initialized to avoid the creation of empty
-entries that normally occurs on table entry lookup failure. This can
-greatly improve program speed, since frozen tables will not become
-clogged with random entries.
+function restores normal entry creation behavior.
 
 .TP
 .B &UCASE/&LCASE
