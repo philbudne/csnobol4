@@ -1,5 +1,17 @@
 /* $Id$ */
 
+/*
+ * tty mode, echo
+ * POSIX.1 version
+ */
+
+/*
+ * BUGS: while attempting to minimize thrashing tty modes
+ *	doesn't catch multple fd's on same device.
+ * 	could do fstat() and compare "rdev", but
+ *	/dev/tty still slips by!
+ */
+
 #include <stdio.h>
 
 #ifdef USE_TERMIO
@@ -15,25 +27,14 @@
 #include <unistd.h>
 #endif /* USE_TERMIO not defined */
 
-/*
- * tty mode, echo
- * POSIX.1 version
- */
-
-/* XXX restore all settings on exit?? */
-
 /* keep settings for each fd in a list; */
 static struct save {
     struct save *next;
     int fd;
     struct termios t;
     int cbreak, noecho;
-#ifdef TTY_SAVE_RECL
     int recl;
-#endif /* TTY_SAVE_RECL defined */
 } *list;
-
-static struct termios old;		/* stdin on entry */
 
 int
 fisatty(f)
@@ -66,20 +67,14 @@ tty_mode( fp, cbreak, noecho, recl )
     sp->fd = fd;
     tcgetattr(fd, &sp->t);		/* save settings */
     sp->noecho = sp->cbreak = 0;	/* ??? */
-#ifdef TTY_SAVE_RECL
     sp->recl = -1;
-#endif /* TTY_SAVE_RECL defined */
 
     /* link into list */
     sp->next = list;
     list = sp;
  found:
-    /* XXX ensure cbreak & noecho are canonical? x = !!x?? */
-    if (cbreak == sp->cbreak && noecho == sp->noecho
-#ifdef TTY_SAVE_RECL
-	&& recl == sp->recl
-#endif /* TTY_SAVE_RECL defined */
-	)
+    if (cbreak == sp->cbreak && noecho == sp->noecho &&
+	(!cbreak || recl == sp->recl))
 	return;				/* nothing to do! */
 
     fflush(fp);				/* flush pending output */
@@ -95,11 +90,7 @@ tty_mode( fp, cbreak, noecho, recl )
 	/* XXX set CS8, PASS8, IGNPAR, clear ISTRIP? */
 	/* XXX clear IUCLC, XCASE (if they exist)? */
 #endif /* TTY_RAW defined */
-#ifdef TTY_SAVE_RECL
 	new.c_cc[VMIN] = recl;		/* number of chars wanted */
-#else  /* TTY_SAVE_RECL not defined */
-	new.c_cc[VMIN] = 1;		/* one character */
-#endif /* TTY_SAVE_RECL not defined */
 	new.c_cc[VTIME] = 0;		/* wait as long as we have to */
     }
 
@@ -111,9 +102,7 @@ tty_mode( fp, cbreak, noecho, recl )
     /* save current state */
     sp->cbreak = cbreak;
     sp->noecho = noecho;
-#ifdef TTY_SAVE_RECL
     sp->recl = recl;
-#endif /* TTY_SAVE_RECL defined */
 }
 
 /* advisory notice; discard saved info.
