@@ -14,5 +14,11 @@
 
 SQRT( LA_ALIST ) LA_DCL
 {
-    RETREAL( sqrt( LA_REAL(0) ) );
+    real_t x;
+
+    x = LA_REAL(0);
+    if (x < 0) {
+	RETFAIL;
+    }
+    RETREAL( sqrt( x ) );
 }
