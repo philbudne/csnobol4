@@ -1,23 +1,30 @@
 $Id$
 
-
 For detailed revision history see History file
 
 Changes since 0.99.4 release;
 ============================
 
-	Optimize handling stream CONTIN actions (most common type
-		when compiling). reduced compilation time of genc.sno by 8%
+	Command line options for dynamic and pattern stack memory region sizes
+		now take values in descriptors
 
-	Merged all scanner (pattern matching) functions into SCAN
-		function body (eliminates mutual recursion, stack overflows)
+	Increase default dynamic space to 64K descriptors
 
-		genc runtime reduced 15%
-		atn.sno runtime reduced by 63%!! (2.7x faster)
-		worst case (4096 char string) reduced 69% (4.8x faster)
-		snocone self-compile runtime reduced 5%
+	Performance improvments;
+		Optimized most common case (CONTIN actions) in
+		"stream" operation used for lexical analysis.
+		(reduced compilation time of genc.sno by 8%)
 
-	Made pattern building functions (lib/pat.c) inlinable
+		Merged all scanner (pattern matching) functions into
+		single C function (eliminates mutual recursion, stack
+		overflows)
+			genc runtime reduced 15%
+			atn.sno runtime reduced by 63%!! (2.7x faster)
+			worst case (4096 char string) reduced 69% (4.8x faster)
+			snocone self-compile runtime reduced 5%
+
+		Made pattern building functions (lib/pat.c) inlinable
+			(8% reduction in genc.sno compile time)
 
 	Implement fatal "Output error" for output, ENDFILE() errors
 
@@ -31,29 +38,34 @@ Changes since 0.99.4 release;
 		RETSTR2() has old RETSTR() functionality
 
 	configuration options (see "INSTALL" for more information);
-	--largefile
-		request use of large (.GT. 4GB) file API when using 32-bit
-		data model.
 	--longlong
-		use "long long" (64-bit integer) for INTEGER datatype
-		when longs/pointers are only 32-bits (LP32 data model).
+		EXPERIMENTAL!!
+		try to use "long long" (64-bit integer) for INTEGER datatype
+		when longs/pointers are only 32-bits (ILP32 data model).
 	--lp64
 		Request use of 64-bit long/pointer data model
 		if available on this architecture, and not the default.
 
 	Eliminate space padding on lines read by compiler (speeds up compiler)
+		(reduced genc.sno compile time by 65%)
 
-	Added compatibility libraries to SNOLIB;
-		fence.sno, not.sno, spitbol.sno, snobol4+.sno
+	New SNOBOL library files (see README);
+		compatibility libraries:
+			fence.sno, not.sno, spitbol.sno, snobol4+.sno
+		HOST() function codes:
+			host.sno
+		URL (http://, ftp://, file:) access functions
 
-	Added URL functions to SNOLIB (HTTP, FTP, local file support)
 
-	Support for large files (64-bit offsets) where available
+	Use large files (64-bit offsets) where available.  Allows access
+		and creation of files larger than 2GB
 
 	New functions;
 		SSET() -- scaled SET() allow large files when INTEGER is 32bits
 		ORD() -- inverse of CHAR()
 		SERV_LISTEN() -- act as TCP server
+
+	Extended HOST() functions (see host.sno) for system diagnosis
 
 	Allow a REAL any place an INTEGER is required (from SNOBOL4+)
 		Contexts include TABLE(),  ITEM(),  array  indices,
@@ -61,9 +73,12 @@ Changes since 0.99.4 release;
 		RPAD(), LPAD(), FIELD(), COLLECT(), DUMP(), DUPL(),
 		OPSYN(), and SUBSTR()
 
-	Increase default dynamic space to 64K descriptors
+	Ported to Darwin (MacOS X)
 
-	Attempt at native Win32 port (works better under CygWin)
+	Ported to Cygwin (http://cygwin.com), a free Unix emulation
+		environment for Windows.
+
+	Attempt at native Win32 port
 
 	Updated Borland C port
 
