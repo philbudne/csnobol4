@@ -10,14 +10,14 @@
 extern void *malloc();
 #endif /* HAVE_STDLIB_H not defined */
 
-#include <stdio.h>			/* for usage! */
+#include <stdio.h>
 #include <signal.h>
 
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
 #include "lib.h"			/* io_init(), io_input() protos */
-#include "str.h"
+#include "str.h"			/* strlen() */
 
 #include "equ.h"			/* SIL equ's */
 #include "res.h"			/* for data.h */
@@ -28,8 +28,6 @@ extern void *malloc();
 #ifndef SIGFUNC_T
 #define SIGFUNC_T void
 #endif /* SIGFUNC_T not defined */
-
-extern char *dynamic();
 
 #ifndef NDYNAMIC
 #define NDYNAMIC (64*1024)		/* default dynamic region size */
