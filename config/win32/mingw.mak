@@ -17,7 +17,11 @@ TTY_DEFS=-DTTY_READ_RAW
 #TTY_C=lib\win32\tty.c
 #TTY_DEFS=
 
-CFLAGS=	-c $(OPT) -Iconfig\win32 -Iinclude -I. -DHAVE_CONFIG_H $(TTY_DEFS)
+# crocks for winsock I/O on Win9x
+INET_DEFS=-DINET_IO
+
+CFLAGS=	-c $(OPT) -Iconfig\win32 -Iinclude -I. \
+	-DHAVE_CONFIG_H $(TTY_DEFS) $(INET_DEFS)
 
 OBJ=	isnobol4.o data.o data_init.o main.o syn.o \
 	version.o bal.o date.o dump.o endex.o hash.o \
@@ -116,9 +120,6 @@ tree.o : lib\tree.c
 spcint.o : lib\ansi\spcint.c
 	$(CC) $(CFLAGS) lib\ansi\spcint.c
 
-intspc.o : lib\ansi\intspc.c
-	$(CC) $(CFLAGS) lib\ansi\intspc.c
-
 spreal.o : lib\ansi\spreal.c
 	$(CC) $(CFLAGS) lib\ansi\spreal.c
 
@@ -148,6 +149,9 @@ dynamic.o : lib\generic\dynamic.c
 
 expops.o : lib\generic\expops.c
 	$(CC) $(CFLAGS) lib\generic\expops.c
+
+intspc.o : lib\generic\intspc.c
+	$(CC) $(CFLAGS) lib\generic\intspc.c
 
 term.o : lib\generic\term.c
 	$(CC) $(CFLAGS) lib\generic\term.c
