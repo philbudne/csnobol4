@@ -245,7 +245,7 @@ syn.h:	syn.h2
 # resident data
 
 data.h2 data.c2 equ.h2 data_init.h2: $(SIL) gendata.sno
-	rm -rf data.h2 data.c2 equ.h2 data_init.h2
+	rm -f data.h2 data.c2 equ.h2 data_init.h2
 	$(SNO) gendata.sno < $(SIL)
 
 data.h:	data.h2
