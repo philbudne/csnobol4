@@ -52,3 +52,5 @@ reg 8bit.sno
 reg contin.sno
 # 11/3/94
 reg local.sno
+# 3/15/95
+reg rewind1.sno
