@@ -124,10 +124,24 @@ struct descr *cstack;
 
 /****************/
 
+#ifdef PANIC_PUTS
+#define PANIC(S) puts(S)
+#else  /* PANIC_PUTS not defined */
 #define PANIC(S)
+#endif /* PANIC_PUTS not defined */
 
 /****************/
 
 /* XXX implement these!! */
 #define CLR_MATH_ERROR()
 #define MATH_ERROR() 0
+
+/****************/
+
+#ifdef TRACE_DEPTH
+#define ENTER(NAME) calls[++depth]++
+#define RETURN(VALUE) { int v = (VALUE); depth--; return v; }
+#else  /* TRACE_DEPTH not defined */
+#define ENTER(NAME)
+#define RETURN(VALUE) return (VALUE);
+#endif /* TRACE_DEPTH not defined */
