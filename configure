@@ -787,7 +787,7 @@ if [ -f $INCDIR/sys/socket.h ]; then
 	else
 	    echo 'using private bindresvport_sa() function' 1>&2
 	    echo '#define NEED_BINDRESVPORT_SA'	>> $CONFIG_H
-	    if grep sockaddr_in6 $INCDIR/netinet/in.h >/dev/null 2>&1; then
+	    if grep sockaddr_in6 $INCDIR/netinet/in.h $INCDIR/netinet6/in6.h >/dev/null 2>&1; then
 		echo '#define HAVE_SOCKADDR_IN6' >> $CONFIG_H
 	    fi
 	    AUX_BINDRESVPORT=true
