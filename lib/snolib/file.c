@@ -7,6 +7,7 @@
  * Usage;	FILE("filename")
  * Returns;	null string or failure
  *
+ * Predicate; Checks if the named file exists
  * SITBOL version takes "stream" (a comma seperated list of files)
  */
 
@@ -26,6 +27,7 @@ FILE( LA_ALIST ) LA_DCL
 
     getstring( LA_PTR(0), path, sizeof(path) );
 
+    /* XXX move stat out to "exists()" function?? */
     if (stat(path, &st) < 0) {
 	RETFAIL;
     }
