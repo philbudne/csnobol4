@@ -121,6 +121,8 @@ GETTIME	LINE = INPUT					:F(NOTIME)
 	LINE NUM . USER 'user'				:S(GOTTIME)
 * csh style time '0.00u ....'
 	LINE NUM . USER 'u'				:S(GOTTIME)
+* hpux 'user 0:0.00s'
+	LINE 'user' WS INT . MIN ':' NUM . USER		:S(GOTTIME)
 * hpux, aix 'user 0m0.00s'
 	LINE 'user' WS INT . MIN 'm' NUM . USER		:S(GOTTIME)
 * hpux, aix, sunos5 'user 0.0'
@@ -138,9 +140,6 @@ GETTIME	LINE = INPUT					:F(NOTIME)
 
 * here with shell runtime
 GOTTIME	SHELL = CONVERT((USER + MIN * 60) * SHMULT, 'INTEGER')
-
-	OUTPUT = "SHELL:" TAB SHELL
-	OUTPUT = "SNOBOL:" TAB SNOBOL
 
 * see  if shell time matches snobols exactly
  	EQ(SNOBOL,SHELL)				:S(TIMEOK)
@@ -197,13 +196,14 @@ DIFFCK	IDENT(LINE,'==== diff')				:F(DIFFLP)
 	DIFF[4] '>'					:F(BADIFF)
 	L = L + 1
 * should now get EOF
-	DIFF[5] = INPUT					:S(BADIFF)
-	L = L + 1
+	DIFF[5] = INPUT					:F(DIFFOK)
+	IDENT(DIFF[5])					:S(DIFFOK)
+	L = L + 1					:(BADIFF)
 
-	OUTPUT = "genc.sno output checks out"		:(END)
+DIFFOK	OUTPUT = "genc.sno output checks out"		:(END)
 
 * here if first line of diff does not check out
-BADIFF	OUTPUT = 'genc diff failed:'
+BADIFF	OUTPUT = 'genc diff failed @' L
 	I = 1
 DUMP	GT(I,L)						:S(BADLOP)
 	OUTPUT = DIFF[I]
