@@ -319,6 +319,14 @@ if [ "$GCCPATH" -a "$WANTGCC" ]; then
     if [ "x$OPT" = x -a ! "$NO_OPT" ]; then
 	# -O3 just adds -finline-functions (set above)
 	OPT=-O2
+
+	case "$SYS" in
+	*-apple-darwin*)
+	    # Apple gcc-934.3, based on gcc version 2.95.2 19991024
+	    # screws up data_init.c when compiled with -O2
+	    echo 'DATA_INIT_CFLAGS=$(MYCPPFLAGS) -O'	>> $CONFIG_M4
+	    ;;
+	esac
     fi
 else
     # required options for native compilers
