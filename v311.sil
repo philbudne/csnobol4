@@ -1,6 +1,10 @@
 * $Id$
 *
 * $Log$
+* Revision 1.84  2001/12/18 22:15:00  phil
+* fix edit tags on CASECL
+* tweaked comment on previous edit
+*
 * Revision 1.83  2001/12/18 21:27:42  phil
 * [PLB71] Keep runtimes in REALs, effects TIME(), trace messages,
 * statistics.  Report average in microseconds/statement.
@@ -8138,7 +8142,7 @@ STGENO FORMAT  '%D Regenerations of dynamic storage\n'
 SUCCF  FORMAT  'No errors detected in source program\n\n'
 SYSCMT FORMAT  '%v:%d: Caught signal %d in statement %d at level %d\n'
 *								E3.4.1[PLB47]
-TIMEPS FORMAT  '%F us. Average per statement executed\n'	[PLB18][PLB71]
+TIMEPS FORMAT  '%G us. Average per statement executed\n'	[PLB71][PLB72]
 TITLEF FORMAT  'SNOBOL4 (Version 3.11, May 19, 1975)\n'
 *								V3.11
 WRITNO FORMAT  '%D Writes performed\n'
