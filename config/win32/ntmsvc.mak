@@ -10,18 +10,33 @@ CC=cl
 # -Ox max opt (for space)
 OPT=-O2
 
-# XXX try enabling bitfields? (remove -DFFLD_T and -DNO_BITFIELDS)
+# XXX try enabling bitfields? (comment out next line)
+NO_BITFIELDS=-DNO_BITFIELDS -DFFLD_T=char
+
+# "borland" version of tty routines uses kbhit() spin loop for raw tty
+# i/o.  This is unfriendly in a multitasking environment, and should
+# be replaced by the win32 version (see below0.
+TTY_C=lib\borland\tty.c
+TTY_DEFS=-DTTY_READ_RAW
+
+# win32 tty.c does not yet work.
+#TTY_C=lib\win32\tty.c
+#TTY_DEFS=
+
+# by default __STDC__ is undefined!?
+#	-Za defines __STDC__, but causes includes to turn
+#	off useful "extensions"
 
 CFLAGS=	-c $(OPT) \
 	-Iinclude -I. \
 	-D__STDC__=0 \
 	-DANSI_STRINGS \
-	-DFFLD_T=char \
 	-DNEED_POPEN_DECL \
-	-DNO_BITFIELDS \
+	$(NO_BITFIELDS) \
 	-DSIGFUNC_T="void __cdecl" \
 	-DSNOLIB_FILE="\"snolib.dll\"" \
 	-DSNOLIB_DIR="\"/snobol\"" \
+	$(TTY_DEFS) \
 	-DUSE_WINSOCK_H \
 	-DUSE_STDARG_H \
 	-Disnan=_isnan
@@ -38,6 +53,7 @@ OBJ=	snobol4.obj data.obj data_init.obj main.obj syn.obj \
 	popen.obj tty.obj inet.obj execute.obj rresvport.obj term.obj \
 	findunit.obj exp.obj
 
+# wsock32 present on both Win95 and WinNT
 LIBS=wsock32.lib
 
 snobol4.exe : $(OBJ)
@@ -174,8 +190,8 @@ popen.obj : lib\win32\popen.c
 sys.obj : lib\win32\sys.c
 	$(CC) $(CFLAGS) lib\win32\sys.c
 
-tty.obj : lib\win32\tty.c
-	$(CC) $(CFLAGS) lib\win32\tty.c
+tty.obj : $(TTY_C)
+	$(CC) $(CFLAGS) $(TTY_C)
 
 ################ snolib
 
