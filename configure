@@ -24,6 +24,9 @@ INLINE_OK=true
 # debug this script
 DEBUG=
 
+# default installation path prefix
+PREFIX=/usr/local
+
 OS=`(uname -s || echo unknown) 2>/dev/null`
 OSREL=`(uname -r || echo unknown) 2>/dev/null`
 OSVERS=`(uname -v || echo unknown) 2>/dev/null`
@@ -163,7 +166,6 @@ while [ $# -gt 0 ]; do
 	;;
     --prefix=*)
 	PREFIX=`echo "$1" | sed 's/--prefix=//'`
-	echo 'PREFIX='"$PREFIX"			>> $CONFIG_M4
 	;;
     '')
 	;;
@@ -203,6 +205,18 @@ EOF
     esac
     shift
 done
+
+BINDIR="$PREFIX/bin"
+MANDIR="$PREFIX/man"
+MAN1DIR="$MANDIR/man1"
+SNOLIB_DIR="$PREFIX/lib/snobol4"
+
+echo "PREFIX=$PREFIX"				>> $CONFIG_M4
+echo "BINDIR=$BINDIR"				>> $CONFIG_M4
+echo "MANDIR=$MANDIR"				>> $CONFIG_M4
+echo "MAN1DIR=$MAN1DIR"				>> $CONFIG_M4
+echo "SNOLIB_DIR=$SNOLIB_DIR"			>> $CONFIG_M4
+
 if [ "$ADD_DEFINE_USED" ]; then
     echo '/* end defines from command line */'	>> $CONFIG_H
 fi
@@ -946,7 +960,7 @@ if [ ! "$NO_DYNLIB" ]; then
 	echo 'using dlopen() for LOAD() support' 1>&2
 	echo 'LOAD_C=$(SRCDIR)lib/unix98/load.c' >> $CONFIG_M4
 	# XXX use .dll under Cygwin??
-	echo 'SNOLIB_FILE=snolib.so'		>> $CONFIG_M4
+	SNOLIB_FILE=snolib.so
 
 	case "${OS}${OSREL}" in
 	Darwin*)
@@ -1003,7 +1017,7 @@ if [ ! "$NO_DYNLIB" ]; then
 	echo 'using HP-UX shl_load() for LOAD() support' 1>&2
 	echo 'undefine([hpux])'			>> $CONFIG_M4
 	echo 'LOAD_C=$(SRCDIR)lib/hpux/load.c'	>> $CONFIG_M4
-	echo 'SNOLIB_FILE=snolib.sl'		>> $CONFIG_M4
+	SNOLIB_FILE=snolib.sl
 	echo 'ADD_LDFLAGS([-ldld])'		>> $CONFIG_M4
     elif [ -f /NextDeveloper/Headers/mach-o/dyld.h -o \
            -f /usr/include/mach-o/dyld.h -o ]; then
@@ -1013,7 +1027,7 @@ if [ ! "$NO_DYNLIB" ]; then
 	if [ "$OS" = Darwin ]; then
 	    echo '#define TRY_UNDERSCORE'	>> $CONFIG_H
 	else
-	    echo 'SNOLIB_FILE=snolib.dyld'	>> $CONFIG_M4
+	    SNOLIB_FILE=snolib.dyld
 	fi
     elif [ -f $INCDIR/a.out.h ]; then
 	LOAD=aout
@@ -1025,8 +1039,18 @@ if [ ! "$NO_DYNLIB" ]; then
 	    echo 'found /bin/ld' 1>&2
 	    echo '#define LD_PATH "/bin/ld"'	>> $CONFIG_H
 	fi
-	echo 'SNOLIB_FILE=snolib.a'		>> $CONFIG_M4
+	SNOLIB_FILE=snolib.a
     fi
+fi
+
+# used for includes, and by load functions
+echo '#define SNOLIB_DIR "'"$SNOLIB_DIR"'"'	>> $CONFIG_H
+
+if [ "$SNOLIB_FILE" ]; then
+    echo '# NOTE: SNOLIB_FILE in config.h too!'	>> $CONFIG_M4
+    echo 'SNOLIB_FILE='$SNOLIB_FILE		>> $CONFIG_M4
+    echo '/* NOTE: SNOLIB_FILE in config.m4 too! */' >> $CONFIG_H
+    echo '#define SNOLIB_FILE "'$SNOLIB_FILE'"' >> $CONFIG_H
 fi
 
 if [ ! "$LOAD" ]; then
