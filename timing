@@ -54,8 +54,10 @@ if [ "$UNAME" ]; then
 
 			# freebsd x86;
 			if FREQ=`$SYSCTL machdep.tsc_freq 2>/dev/null`; then
-				echo ''
-				echo "$FREQ"
+				if [ "$FREQ" ]; then
+					echo ''
+					echo "$FREQ"
+				fi
 			fi
 		fi
 		if [ -f /var/run/dmesg.boot ]; then
