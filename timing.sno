@@ -154,6 +154,9 @@ GOTTIME	SHELL = CONVERT((USER + MIN * 60) * SHMULT, 'INTEGER')
  	EQ(SNOBOL,SHELL + 1)				:S(TIMEOK)
  	EQ(SNOBOL,SHELL - 1)				:S(TIMEOK)
 
+* avoid attempts to divide by zero!
+	EQ(SHELL,0)					:S(NOTIME)
+
 * allow +/-2.5% error; treating shell time as correct
 	EPS = 0.025
 	FACTOR = SNOBOL / (SHELL * 1.0)
