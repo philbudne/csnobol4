@@ -2,6 +2,22 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+1/15/2002
+	configure:
+		renamed autoconf to configure
+		retabbed
+		output to config.m4 explicitly
+		added --debug option
+	Makefile: remove autoconf from kit
+		rework tsort comments
+		move tools to top
+		added pkg to kit
+
+1/14/2002
+	Makefile: use find | xargs for "make clean"; catch CVS .# files
+	lib/snolib/host.h: update comments for Catspaw functions
+	snolib/spitbol.sno: add aliases for HOST() functions
+
 1/13/2002
 	new: 00README.CVS
 	new: bsdtsort.c
