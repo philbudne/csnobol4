@@ -4,11 +4,11 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#ifdef USE_STDARG_H			/* only if varargs not available */
+#ifdef HAVE_STDARG_H
 #include <stdarg.h>
-#else  /* USE_STDARG_H not defined */
+#else  /* HAVE_STDARG_H not defined */
 #include <varargs.h>
-#endif /* USE_STDARG_H not defined */
+#endif /* HAVE_STDARG_H not defined */
 
 #ifdef HAVE_STDLIB_H			/* before stdio */
 #include <stdlib.h>			/* for malloc */
@@ -603,11 +603,11 @@ io_init()				/* here from INIT */
 /* limited printf */
 void
 io_printf
-#ifdef USE_STDARG_H			/* for systems without varargs.h */
+#ifdef HAVE_STDARG_H
     (int_t unit, ...)
-#else  /* USE_STDARG_H not defined */
+#else  /* HAVE_STDARG_H not defined */
     (va_alist) va_dcl
-#endif /* USE_STDARG_H not defined */
+#endif /* HAVE_STDARG_H not defined */
 {
     va_list vp;
     char *format;
@@ -616,14 +616,14 @@ io_printf
     char line[1024];			/* XXX */
     char *lp;
     struct unit *up;
-#ifdef USE_STDARG_H
+#ifdef HAVE_STDARG_H
     va_start(vp,unit);
-#else  /* USE_STDARG_H not defined */
+#else  /* HAVE_STDARG_H not defined */
     int_t unit;
     va_start(vp);
 
     unit = va_arg(vp, int_t);
-#endif /* USE_STDARG_H not defined */
+#endif /* HAVE_STDARG_H not defined */
 
     unit = INTERN(unit);
     if (BADUNIT(unit))
