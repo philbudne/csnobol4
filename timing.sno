@@ -39,8 +39,6 @@ GETSTAT	LINE = INPUT					:F(NOSTAT)
 	LINE = INPUT					:F(NOSTAT)
 	LINE WS INT . STMTS WS 'Statements executed'	:F(NOSTAT)
 
-	A2 = (EXEC * 1000 + STMTS / 2) / STMTS
-
 	OUTPUT = 'Statistics for run of genc.sno'
 	OUTPUT = 'SNOBOL4 Compile time:' TAB COMP ' milliseconds'
 	OUTPUT = 'SNOBOL4 Execution time:' TAB EXEC ' milliseconds'
@@ -62,6 +60,12 @@ ALOP	LINE = INPUT					:F(NOSTAT)
 
 * compare A1 vs A2 (calculation fails on HP-PA using gcc?)
 	EQ(A1,A2)					:S(GETTIME)
+
+* check for delta of +/-1
+	X = A1 - A2
+	EQ(X,1)						:S(GETTIME)
+	EQ(X,-1)					:S(GETTIME)
+
 * get ratio, keep our version on the bottom (less likely to be zero)
 	X = 100 * A2 / A1
 * ignore errors of less than 4% (difference between 49 and 50us)
