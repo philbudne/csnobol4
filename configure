@@ -793,8 +793,7 @@ if [ -f $INCDIR/sys/socket.h ]; then
 	    if grep sockaddr_in6 $INCDIR/netinet/in.h >/dev/null 2>&1; then
 		echo '#define HAVE_SOCKADDR_IN6' >> $CONFIG_H
 	    fi
-	    echo 'ADD_OBJS([bindresvport.o])'	>> $CONFIG_M4
-	    echo 'ADD_SRCS([$(BINDRESVPORT)])'	>> $CONFIG_M4
+	    AUX_BINDRESVPORT=true
 	fi
     else
 	echo 'using sockets for TCP/IP support' 1>&2
@@ -807,9 +806,20 @@ if [ -f $INCDIR/sys/socket.h ]; then
 	else
 	    echo 'using private bindresvport() function' 1>&2
 	    echo '#define NEED_BINDRESVPORT' >> $CONFIG_H
-	    echo 'ADD_OBJS([bindresvport.o])' >> $CONFIG_M4
-	    echo 'ADD_SRCS([$(BINDRESVPORT)])' >> $CONFIG_M4
+	    AUX_BINDRESVPORT=true
 	fi
+    fi
+    if [ "$AUX_BINDRESVPORT" ]; then
+	if grep socklen_t $INCDIR/sys/socket.h >/dev/null 2>&1; then
+	    case "$OS" in
+	    OSF1) echo '#define _POSIX_PII_SOCKET' >> $CONFIG_H
+	    esac
+	else
+	    echo 'using private socklen_t type' 1>&2
+	    echo '#define NEED_SOCKLEN_T'	>> $CONFIG_H
+	fi
+	echo 'ADD_OBJS([bindresvport.o])'	>> $CONFIG_M4
+	echo 'ADD_SRCS([$(BINDRESVPORT)])'	>> $CONFIG_M4
     fi
 
     # add network libraries if needed
