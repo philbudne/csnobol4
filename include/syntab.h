@@ -13,5 +13,5 @@ struct syntab {
     char *name;				/* table name */
     char chrs[CHARSET];			/* index into actions */
     /* XXX include count of entries in actions array? */
-    struct acts *actions;		/* pointer to action table */
+    const struct acts *actions;		/* pointer to action table */
 };

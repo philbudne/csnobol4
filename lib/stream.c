@@ -36,7 +36,7 @@ stream( sp1, sp2, tp )
     DEBUGF(1,(" table %s\n", tp->name ));
 
     while (len > 0) {
-	struct acts *ap;
+	const struct acts *ap;
 	int_t tok;
 
 	ap = tp->actions + tp->chrs[*cp];
