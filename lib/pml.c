@@ -20,6 +20,7 @@ struct pmlfunc {
 /* shorthand for function with same name for LOAD() and entry point */
 #define PMLFUNC(NAME) PMLFUNC2(STRING(NAME),NAME)
 
+#define PMLOAD(PROTO)
 #define PMLFUNC2(NAME,ADDR) extern int ADDR(LOAD_PROTO);
 #include "pml.h"
 #undef PMLFUNC2
@@ -28,6 +29,15 @@ static struct pmlfunc pmltab[] = {
 #define PMLFUNC2(NAME,ADDR) { NAME, ADDR },
 #include "pml.h"
     { NULL, NULL }			/* MUST BE LAST!! */
+#undef PMLFUNC2
+#undef PMLOAD
+};
+
+char *pm_prototypes[] = {
+#define PMLFUNC2(NAME,ADDR)
+#define PMLOAD(PROTO) PROTO,
+#include "pml.h"
+    ""
 };
 
 #ifdef __STDC__
