@@ -1,17 +1,24 @@
-
-FOO
+-CASE 0
+foo
 BAR
-
 	DEFINE("TEST(L)")	:(ETEST)
 TEST	OUTPUT = LABEL(L) L	:(RETURN)
 ETEST
 
+	TEST('foo')
 	TEST('FOO')
 	TEST('TEST')
+	TEST('test')
 	TEST('END')
+	TEST('end')
 	X = 'B'
 	Y = 'AR'
 	TEST(X Y)
 	Y = 'AZ'
 	TEST(X Z)
+
+* turn case folding on
+	&CASE = 1
+	TEST('bar')
+
 END
