@@ -46,7 +46,7 @@ inet_socket( host, service, port, priv, type )
     struct hostent *hp;
     struct sockaddr_in sin;
     struct servent *sp;
-    int s;
+    SOCKET s;
 
     if (!host || !service)
 	return -1;
@@ -149,13 +149,17 @@ inet_open( host, service, port, priv, type )
     char *host, *service;
     int port, priv, type;
 {
-    int s, fd;
+    int fd;
     FILE *f;
+    SOCKET s;
 
     s = inet_socket(host, service, port, priv, type );
     if (s < 0)
 	return NULL;
 
+#ifdef INET_IO
+    return (FILE *)s;
+#else  /* INET_IO not defined */
     /*
      * get fd (C runtime file handle) for Read/Write from socket (OS handle)
      * Broken under Win95?
@@ -172,6 +176,7 @@ inet_open( host, service, port, priv, type )
 	closesocket(s);
     }
     return f;
+#endif /* INET_IO not defined */
 }
 
 FILE *
@@ -196,3 +201,60 @@ inet_cleanup() {
     if (wsock_init)
 	WSACleanup();
 }
+
+#ifdef INET_IO
+int
+inet_write(f, cp, len)
+    FILE *f;
+    char *cp;
+    int len;
+{
+    return send((SOCKET)f, cp, len, 0);
+}
+
+int
+inet_read_raw(f, cp, recl)
+    FILE *f;
+    char *cp;
+    int recl;
+{
+    return recv((SOCKET)f, cp, recl, 0);
+}
+
+
+/*
+ * awful, but typical of winsock code I've seen if you're on NT,
+ * consider trying compilation without INET_IO, or use cygwin
+ */
+int
+inet_read_cooked(f, cp, recl, keepeol)
+    FILE *f;
+    char *cp;
+    int recl;
+    int keepeol;
+{
+    int n = 0;
+    while (n < recl) {
+	char c;
+	if (recv((SOCKET)f, &c, 1, 0) != 1)
+	    break;
+	if (c == '\n') {
+	    if (keepeol)
+		*cp++ = c;
+	    break;
+	}
+	/* XXX if CR && !keepeol, continue?? */
+	*cp++ = c;
+    }
+    /* XXX flush extra stuff past EOL */
+    return n;
+}
+
+int
+inet_close(f)
+    FILE *f;
+{
+    /* shutdown & drain?? */
+    closesocket((SOCKET)f);
+}
+#endif /* INET_IO defined */
