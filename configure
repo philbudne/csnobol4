@@ -785,7 +785,7 @@ if [ -f $INCDIR/sys/socket.h ]; then
     fi
     if grep getaddrinfo $INCDIR/netdb.h >/dev/null 2>&1; then
 	echo 'using getaddrinfo for IPv6 compatibility' 1>&2
-	echo 'INET_C=$(SRCDIR)lib/inet6.c'	>> $CONFIG_M4
+	echo 'INET_C=$(SRCDIR)lib/bsd/inet6.c'	>> $CONFIG_M4
 	if grep rresvport_af $INCDIR/unistd.h >/dev/null 2>&1; then
 	    echo 'using native rresvport_af function' 1>&2
 	else
