@@ -7,10 +7,16 @@
  */
 
 #include <stdio.h>
+#include <errno.h>
+
 #include <iodef.h>
 #include <ssdef.h>
 
 #define SETERR(_STAT) do { vaxc$errno = (_STAT); errno = EVMSERR; } while(0)
+
+extern char *stdin_file, *stdout_file;	/* from getredirect.c */
+extern char *term_file;			/* from term.c */
+extern FILE *term_fd;			/* from term.c */
 
 static struct {
     short status;
@@ -18,6 +24,12 @@ static struct {
     short termlen;
     short term;
 } iosb;
+
+static struct ttychan {
+    struct ttychan *next;
+    FILE *f;
+    int chan;
+} *chans;
 
 int
 fisatty(f)
@@ -49,56 +61,94 @@ void
 tty_close(f)
     FILE *f;
 {
+    register struct ttychan *tp, *pp;
+
+    /* see if we have an open channel */
+    for (tp = chans, pp = NULL; tp; tp = tp->next, pp = tp) {
+	if (tp->f == f)
+	    break;
+    }
+    if (!tp)
+	return;				/* nope */
+
+    /* unlink */
+    if (pp)
+	pp->next = tp->next;
+    else
+	chans = tp->next;
+
+    SYS$DASSGN(tp->chan);
+    free(tp);
 }
 
-/* must define TTY_READ for this to be called; */
 
+/* binary read; must define TTY_READ for this to be called; */
 int
-tty_read(f, buf, len, raw, noecho)
+tty_read(f, buf, len, noecho, fname)
     FILE *f;
     char *buf;
     int len;
-    int raw;
     int noecho;
+    char *fname;
 {
-#if 0
-    if (raw) {
-	int chan;
-	int op;
-	int status;
-
-/* XXX UGH; TEMP for testing */
+    int chan;
+    int op;
+    int status;
+    struct ttychan *tp;
+    
+    /* see if we have an open channel */
+    for (tp = chans; tp; tp = tp->next) {
+	if (tp->f == f)
+	    break;
+    }
+    
+    if (tp == NULL) {
 	struct descr {
-	  int len;
-	  char *ptr;
+	    int len;
+	    char *ptr;
 	} d;
-
-	d.len = sizeof("SYS$COMMAND")-1;
-	d.ptr = "SYS$COMMAND";
-	SYS$ASSIGN(&d, &chan, 0, 0);
-/* XXX END OF TEMP CODE */
-
-	op = IO$_READVBLK;
-	if (noecho)
-	    op |= IO$M_NOECHO;
-	status = SYS$QIOW(0, chan, op, &iosb, 0, 0, buf, len, 0, 0, 0, 0);
-	if (status != SS$_NORMAL) {
+	int sts;
+	
+	tp = (struct ttychan *)malloc(sizeof(struct ttychan));
+	if (!tp)
+	    return -1;
+	
+	if (f == stdin)
+	    d.ptr = stdin_file;
+	else if (f == stdout)
+	    d.ptr = stdout_file;
+	else if (f == term_fd)
+	    d.ptr = term_file;
+	else
+	    d.ptr = fname;
+	
+	d.len = strlem(d.ptr);
+	status = SYS$ASSIGN(&d, &chan, 0, 0);
+	if (!(status & STS$M_SUCCESS)) {
 	    SETERR(status);
+	    free(tp);
 	    return -1;
 	}
-	if (iosb.status != SS$_NORMAL) {
-	    SETERR(iosb.status);
-	    return -1;
-	}
-	return iosb.size;
+	
+	tp->chan = chan;
+	tp->f = f;
+	tp->next = chans;
+	chans = tp;
     }
-    else
-#endif
-    {
-	if (noecho)
-	    return -1;			/* don't echo passwords!! */
-	return fread(buf, 1, len, f);
+    chan = tp->chan;
+    op = IO$_READVBLK;
+    if (noecho)
+	op |= IO$M_NOECHO;
+    status = SYS$QIOW(0, chan, op, &iosb, 0, 0, buf, len, 0, 0, 0, 0);
+    if (status != SS$_NORMAL) {
+	SETERR(status);
+	return -1;
     }
+    if (iosb.status != SS$_NORMAL) {
+	SETERR(iosb.status);
+	return -1;
+    }
+    return iosb.size;
 }
 
 #ifdef TEST
