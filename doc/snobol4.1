@@ -67,9 +67,7 @@ output variable no longer exists (see
 .B TERMINAL
 variable below).
 .IP \(bu
-I/O is not performed using
-.B FORTRAN
-I/O.  The format argument to the
+I/O is not performed using FORTRAN I/O.  The 3rd argument to the
 .B OUTPUT()
 function is ignored.
 .IP \(bu
@@ -94,11 +92,11 @@ function returns strings of the form:
 .IP \(bu
 Keyword
 .B &STLIMIT
-now defaults to -1, which is interpreted as no limit to the number of
-statements executed.
+now defaults to -1.
 When
 .B &STLIMIT
 is less than zero
+there is no limit to the number of statements execute, and
 .B &STCOUNT
 is not incremented.
 .IP \(bu
@@ -145,13 +143,16 @@ Underscore (_) and period (.) are legal within identifiers and labels.
 
 .SS "Extensions"
 .TP
-ARRAY/TABLE access
+.BR "ARRAY/TABLE " access
 .br
-Multiple ARRAY and/or TABLE index operations may appear in a row,
+Multiple
+.B ARRAY
+and/or
+.B TABLE
+index operations may appear in a row,
 without having to resort to use of the
 .B ELEMENT
-function,
-so long as no intervening spaces (or line continuations) appear.
+function, so long as no intervening spaces (or line continuations) appear.
 .TP
 .B BREAKX()
 .br
@@ -438,7 +439,7 @@ and
 .B CHOP() 
 functions are available for compatibility with SNOBOL4+.
 .B EXP()
-takes returns the value
+returns the value
 .IR "e ** x" ,
 .B LOG()
 returns the natural logarithm of it's argument, and
