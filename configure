@@ -1284,13 +1284,13 @@ if [ "$WITH_TCL" ]; then
 	fi
     done
     if [ "$TCLLIB" ]; then
-	echo using tcl$MAJ$MIN from $TCLLIBDIR 1>&2
+	echo using $TCLLIBDIR/tcl$MAJ$MIN 1>&2
 	if [ "$TCLLIBDIR" != /usr/lib ]; then
 	    echo 'ADD_LDFLAGS([-L'$TCLLIBDIR'])' >> $CONFIG_M4
 	fi
 	# load libtk before libtcl?
 	if [ "$TKLIB" ]; then
-	    echo using $TKLIB 1>&2
+	    echo using $TCLLIBDIR/$TKLIB 1>&2
 	    echo '#define STCL_USE_TK'		>> $CONFIG_H
 	    echo 'ADD_LDFLAGS([-l'$TKLIB'])'	>> $CONFIG_M4
 	    # XXX check for existance, location?!! needed on cygwin???
