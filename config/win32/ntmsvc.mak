@@ -1,7 +1,7 @@
 # $Id$
 
-# nmake file for VC++ 5.0 on WinNT 4.0
-# P. Budne 2/4/1998 (from batch file by David Feustel)
+# nmake file for VC++ 5.0 on WinNT 4.0 by P. Budne 2/4/1998
+# from batch file by David Feustel
 
 CC=cl
 
@@ -13,7 +13,7 @@ OPT=-O2
 # XXX try enabling bitfields? (comment out next line)
 NO_BITFIELDS=-DNO_BITFIELDS -DFFLD_T=char
 
-# "dos" version of tty routines uses kbhit() spin loop for raw tty
+# "msdos" version of tty routines uses kbhit() spin loop for raw tty
 # i/o.  This is unfriendly in a multitasking environment, and should
 # be replaced by the win32 version (see below).
 TTY_C=lib\msdos\tty.c
@@ -23,8 +23,8 @@ TTY_DEFS=-DTTY_READ_RAW
 #TTY_C=lib\win32\tty.c
 #TTY_DEFS=
 
-CFLAGS=	-c $(OPT) -Iconfig\win32 -Iinclude -I. -DHAVE_CONFIG_H \
-	$(NO_BITFIELDS) $(TTY_DEFS)
+CFLAGS=	-c $(OPT) -Iconfig\win32 -Iinclude -I. \
+	-DHAVE_CONFIG_H $(NO_BITFIELDS) $(TTY_DEFS)
 
 OBJ=	snobol4.obj data.obj data_init.obj main.obj syn.obj \
 	version.obj bal.obj date.obj dump.obj endex.obj hash.obj \
@@ -34,7 +34,7 @@ OBJ=	snobol4.obj data.obj data_init.obj main.obj syn.obj \
 	init.obj load.obj mstime.obj chop.obj cos.obj delete.obj \
 	environ.obj exit.obj file.obj getenv.obj getstring.obj \
 	host.obj log.obj logic.obj ord.obj rename.obj retstring.obj sin.obj \
-	spcint.obj spreal.obj sprintf.obj sqrt.obj sset.obj system.obj \
+	spcint.obj spreal.obj sprintf.obj sqrt.obj sset.obj \
 	tan.obj sys.obj popen.obj tty.obj inet.obj execute.obj exists.obj \
 	rresvport.obj term.obj findunit.obj exp.obj
 
@@ -243,9 +243,6 @@ sqrt.obj : lib\snolib\sqrt.c
 
 sset.obj : lib\snolib\sset.c
 	$(CC) $(CFLAGS) lib\snolib\sset.c
-
-system.obj : lib\snolib\system.c
-	$(CC) $(CFLAGS) lib\snolib\system.c
 
 tan.obj : lib\snolib\tan.c
 	$(CC) $(CFLAGS) lib\snolib\tan.c
