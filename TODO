@@ -94,3 +94,6 @@ $Id$
 30. package rebus
 
 31. move UNIXF messages to main()
+
+32. generate code to set a register pointer for data init (USE/SET_A)?
+32b. merge gendata into genc???
