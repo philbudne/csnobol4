@@ -2,10 +2,22 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+9/12/2004
+	lib/snolib.c: include stdio.h first
+
+9/8/2004
+	configure: fixes for cygwin, ndbm works
+
+9/7/2004
+	configure, lib/snolib/ndbm.c:
+		add HAVE_{,GDBM_{D,SL}ASH_}NDBM_H
+		works on wide variety of platforms
+
 9/6/2004
 	configure: add --without-ndbm
 	new lib/snolib/ndbm.c: ndbm interface
 	pml.h: add DBM_xxx functions
+	Makefile2.m4: ndbm.o
 
 9/2/2004
 	include/handle.h, lib/snolib/handle.c:
