@@ -1239,15 +1239,16 @@ if [ "$WITH_TCL" ]; then
 		 "$MIN" -gt "$TCL_MINOR_VERSION" ]; then
 		# search for matching library
 		# XXX based on include path??
-		# XXX allow just .so??
 		FOUNDLIB=
 		for LIBDIR in /usr/lib /usr/local/lib; do
-		    if [ -f $LIBDIR/libtcl$MAJ$MIN.a ]; then
+		    if [ -f $LIBDIR/libtcl$MAJ$MIN.a -o \
+			 -f $LIBDIR/libtcl$MAJ$MIN.so ]; then
 			TCLLIBDIR=$LIBDIR
 			TCLLIB=tcl$MAJ$MIN
 			FOUNDLIB=1
 			break
-		    elif [ -f $LIBDIR/libtcl$MAJ.$MIN.a ]; then
+		    elif [ -f $LIBDIR/libtcl$MAJ.$MIN.a -o \
+			   -f $LIBDIR/libtcl$MAJ.$MIN.so ]; then
 			TCLLIBDIR=$LIBDIR
 			TCLLIB=tcl$MAJ.$MIN
 			FOUNDLIB=1
@@ -1266,10 +1267,11 @@ if [ "$WITH_TCL" ]; then
 		TKLIB=
 		if [ ! "$WITHOUT_TK" ]; then
 		    if [ "$MAJ" -lt 8 -o "$MAJ" -eq 8 -a "$MIN" -lt 4 ]; then
-			# XXX allow just .so??
-			if [ -f $TCLLIBDIR/libtk$MAJ$MIN.a ]; then
+			if [ -f $TCLLIBDIR/libtk$MAJ$MIN.a -o \
+			     -f $TCLLIBDIR/libtk$MAJ$MIN.so ]; then
 			    TKLIB=tk$MAJ$MIN
-			elif [ -f $TCLLIBDIR/libtk$MAJ.$MIN.a ]; then
+			elif [ -f $TCLLIBDIR/libtk$MAJ.$MIN.a -o \
+			       -f $TCLLIBDIR/libtk$MAJ.$MIN.so ]; then
 			    TKLIB=tk$MAJ.$MIN
 			fi
 		    fi
