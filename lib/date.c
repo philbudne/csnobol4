@@ -16,6 +16,7 @@
 #include "snotypes.h"
 #include "macros.h"
 #include "equ.h"			/* for "I" */
+#include "lib.h"			/* for own prototype */
 
 /*
  * The format of DATE() is (in principle) system dependant,
