@@ -505,11 +505,11 @@ spotless: realclean
 # file to hard-link into dist dir
 # generated files copied separately to ensure newer than source files!
 [TAR=	README CHANGES History INSTALL TODO TODO.soon doc Makefile \
-	Makefile2.m4 autoconf config.guess $(SIL) syntax.tbl procs \
-	globals genc.sno gensyn.sno gendata.sno inline.sno main.c \
-	charset.c data_init.c version.c parms.h mlink.h mdata.h pml.h \
-	$(GENERATED) lib include config test bugs snolib/*.sno sunmodel \
-	timing timing.sno cc-M bsplitu.c]
+	Makefile2.m4 autoconf configure config.guess $(SIL) syntax.tbl \
+	procs globals genc.sno gensyn.sno gendata.sno inline.sno \
+	main.c charset.c data_init.c version.c parms.h mlink.h mdata.h \
+	pml.h $(GENERATED) lib include config test bugs snolib/*.sno \
+	sunmodel timing timing.sno cc-M bsplitu.c]
 
 # "print version" -- for dir/tar names
 pv:	version.c
