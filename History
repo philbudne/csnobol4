@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+9/26/97:
+	lib/io.c: pass raw, keepeol flags to tty_read()
+	lib/vms/tty.c: add back "raw" arg; support cooked reads (not used)
+		add keepeol arg; use fgetname() to get fname for ASSIGN
+
 9/25/97:
 	lib/vms/tty.c: added SUCCESS() macro, NOFILTR flag, term[] mask
 	lib/vms/popen.c: added SUCCESS() macro
