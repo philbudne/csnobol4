@@ -3,19 +3,39 @@
 # DESCRIP.MMS, hacked from Makefile2 for VMS "MMS"
 # Build SNOBOL4 using DECC and MMS
 #
-# Tested on VAX OpenVMS 6.1 using VAX 3.x (February 1998)
+# Tested on VAX OpenVMS 6.1 using VAXC 3.x (February 1998)
+# see INSTALL file for usage
 
-# comment out the next line for VAXC 3.x
-DECC=/DECC/PREFIX_LIB=ALL/WARN=(DISABLE=IMPLICITFUNC)
+.ifdef DEC_C
+CCFLAGS=/DECC/PREFIX_LIB=ALL/WARN=(DISABLE=IMPLICITFUNC)/OPTIMIZE
+# no AUX_OBJS
+CLIB=+SYS$LIBRARY:DECCRTL/LIB
+.else
+# VAXC
+CCFLAGS=/OPTIMIZE
+AUX_OBJ=isnan.obj, finite.obj,
+#CLIB=+SYS$LIBRARY:DECCRTL/LIBR
+CLIB=+SYS$SHARE:VAXCRTL/SHARE
+.endif
 
-# uncomment next line for VAXC 3.x
-#VAX_OBJ=isnan.obj, finite.obj,
+.ifdef NO_TCP
+INET_C=[.lib.dummy]inet.c
+# C compiler flags, if any
+TCPFLAGS=
+.else
 
-# socket library DEC TCP/IP Connection services for OpenVMS
+# XXX ifdefs here for different TCP/IP packages?
+
+################
+# use DEC TCP/IP Connection services for OpenVMS
 #	(formerly VAX/Ultrix connection product)
 INETLIB=+SYS$LIBRARY:UCX$IPC/LIB
+# C compiler flags, if any
+TCPFLAGS=
 
-LIBS=$(INETLIB) +SYS$LIBRARY:DECCRTL/LIBR
+.endif
+
+LIBS=$(INETLIB) $(CLIB)
 
 SNOBOL4=isnobol4
 
@@ -28,9 +48,6 @@ ENDEX_C=[.lib]endex.c
 EXISTS_C=[.lib.vms]exists.c
 EXPOPS_C=[.lib.generic]expops.c
 HASH_C=[.lib]hash.c
-# requires DEC TCP/IP Connection services for OpenVMS
-# 	(formerly VAX/Ultrix connection product)
-#	use [.lib.dummy]inet.c if not avail
 INET_C=[.lib.bsd]inet.c
 INIT_C=[.lib]init.c
 INTSPC_C=[.lib]intspc.c
@@ -58,9 +75,6 @@ BCOPY_C=[.lib.auxil]bcopy.c
 GETOPT_C=[.lib.auxil]getopt.c
 GETREDIRECT_C=[.lib.vms]getredirect.c
 
-AUX_OBJ=bcopy.obj, bzero.obj, getopt.obj, getredirect.obj, \
-	popen.obj, rresvport.obj, unlink.obj, $(VAX_OBJ)
-
 # snolib sources
 CHOP_C=[.lib.snolib]chop.c
 COS_C=[.lib.snolib]cos.c
@@ -87,9 +101,7 @@ PML_OBJ=host.obj, sys.obj, exit.obj, execute.obj, sqrt.obj, \
 	file.obj, delete.obj, rename.obj, findunit.obj, \
 	getstring.obj, retstring.obj
 
-CFLAGS=\
-	$(DECC) \
-	/OPTIMIZE\
+CFLAGS=	$(CCFLAGS) $(TCPFLAGS)\
 	/DEFINE=(ANSI_STRINGS,NO_OFF_T,TTY_READ_RAW,TTY_READ_COOKED,\
 		ANY=XANY,COS=XCOS,DATE=XDATE,DIV=XDIV,\
 		DELETE=XDELETE,EXIT=XEXIT,EXP=XEXP,\
@@ -97,7 +109,7 @@ CFLAGS=\
 		LOAD=XLOAD,LOG=XLOG,RAISE=XRAISE,READ=XREAD,\
 		RENAME=XRENAME,REWIND=XREWIND,RPLACE=XRPLACE,\
 		SIN=XSIN,SQRT=XSQRT,SUBSTR=XSUBSTR,\
-		TAN=XTAN,TIME=XTIME,UNLOAD=XUNLOAD)\
+		TAN=XTAN,TIME=XTIME,UNLOAD=XUNLOAD) \
 	/INCLUDE=(SYS$DISK:[],SYS$DISK:[.INCLUDE])
 
 ################
@@ -108,6 +120,8 @@ OBJS=	main.obj, $(SNOBOL4).obj, data.obj, data_init.obj, syn.obj, \
 	lexcmp.obj, load.obj, mstime.obj, ordvst.obj, pair.obj, pat.obj, \
 	pml.obj, realst.obj, replace.obj, str.obj, stream.obj, term.obj, \
 	top.obj, tty.obj, tree.obj, version.obj, \
+	bcopy.obj, bzero.obj, getopt.obj, getredirect.obj, \
+	popen.obj, rresvport.obj, unlink.obj,
 	$(AUX_OBJ) $(PML_OBJ)
 
 snobol4.exe : $(OBJS)
