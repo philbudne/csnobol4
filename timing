@@ -114,12 +114,12 @@ TAIL1='sed -n 2,$p'
 (
 	cd $TDIR
 
-LNFILES='../procs ../globals ../xsnobol4'
+LNFILES='../procs ../globals ../v311.sil ../xsnobol4'
 # AFS doesn't allow hard links across directories!
 	ln $LNFILES . || ln -s $LNFILES .
 
 	# stderr to file "stderr", all but first line of stdout to "$OUT"
-	time $SNOBOL $ARGS -s ../genc.sno < ../v311.sil 2>stderr | $TAIL1 >$OUT
+	time $SNOBOL $ARGS -s ../genc.sno v311.sil 2>stderr | $TAIL1 >$OUT
 )
 # use snobol program to process output!!
 $SNOBOL -b timing.sno < $TDIR/stderr
