@@ -2,11 +2,21 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
+** BETA2 patch1 version 0.91.1 (tag BETA2_patch1)
+
+7/5/94
+	h.h: only define NULL if not already defined
+	version.c: update for patch1
+
+6/30/94
+	more cleanup of timing.sno, added start of diff tag line
+	fixed bsd/load.c when space in pathname
+
 6/29/94
 	version.c: clean up for non-ansi compilation
 	timing.sno: Output bad diff results, loosten ms/stmt check
 
-*** Second Beta release (tag BETA2)
+*** Second Beta release (tag BETA2) version 0.91
 
 6/24/94
 	Made isnobol4 the default
@@ -32,7 +42,6 @@ MAINBOL for Un*x history (and personal SNOBOL history);
 	Added SNOBOL4 variable
 
 6/20/94
-
 	Fixed problem found by Phillip Thomas; Restart "card"
 		processing after a semi.  Allows comment and control
 		lines after a semi.
