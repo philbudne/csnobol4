@@ -10,6 +10,7 @@
 # include <sys/types.h>			/* time_t */
 # endif /* VAXC not defined */
 # include <time.h>			/* struct tm */
+# include <stdio.h>			/* for sprintf() */
 
 # include "h.h"
 # include "snotypes.h"
@@ -19,7 +20,7 @@
 /*
  * The format of DATE() is (in principle) system dependant,
  * (ie; could use ctime()) this returns what SPITBOL does,
- * which is what '360 MAINBOL plus the time!
+ * which is what '360 MAINBOL returns, plus the time!
  *
  * updated 9/21/96; now returns full julian year.
  * updated 4/2/97; takes optional arg per Catspaw SPITBOL
@@ -67,7 +68,7 @@ date( sp, dp )
 	sprintf( strbuf, "%02d/%02d/%02d %02d:%02d:%02d",
 		tm->tm_mon + 1,
 		tm->tm_mday,
-		tm->tm_year,
+		tm->tm_year % 100,
 		tm->tm_hour,
 		tm->tm_min,
 		tm->tm_sec );
