@@ -18,17 +18,18 @@ NO_BITFIELDS=-DNO_BITFIELDS
 # "msdos" version of tty routines uses kbhit() spin loop for raw tty
 # i/o.  This is unfriendly in a multitasking environment, and should
 # be replaced by the win32 version (see below).
-TTY_C=lib\msdos\tty.c
+TTY_C=$(SRCDIR)lib\msdos\tty.c
 TTY_DEFS=-DTTY_READ_RAW
 
 # win32 tty.c does not yet work
-#TTY_C=lib\win32\tty.c
+#TTY_C=$(SRCDIR)lib\win32\tty.c
 #TTY_DEFS=
 
 # crocks for winsock I/O on Win9x
 INET_DEFS=-DINET_IO
 
-CFLAGS= -c $(OPT) -WC -O -Tml -w- -Iconfig\borland -Iinclude -I. \
+CFLAGS= -c $(OPT) -WC -O -Tml -w- \
+	-I$(SRCDIR)config\borland -I$(SRCDIR)include -I$(SRCDIR). \
 	-DHAVE_CONFIG_H $(NO_BITFIELDS) $(TTY_DEFS) $(INET_DEFS)
 
 OBJ=	snobol4.obj data.obj data_init.obj main.obj syn.obj \
@@ -37,11 +38,10 @@ OBJ=	snobol4.obj data.obj data_init.obj main.obj syn.obj \
 	pml.obj realst.obj replace.obj str.obj stream.obj top.obj \
 	tree.obj bcopy.obj bzero.obj dynamic.obj expops.obj getopt.obj \
 	init.obj load.obj mstime.obj chop.obj cos.obj delete.obj \
-	environ.obj exit.obj file.obj getstring.obj \
-	host.obj log.obj logic.obj ord.obj rename.obj retstring.obj sin.obj \
-	spcint.obj spreal.obj sprintf.obj sqrt.obj sset.obj \
-	tan.obj sys.obj popen.obj tty.obj inet.obj execute.obj exists.obj \
-	rresvport.obj term.obj findunit.obj exp.obj
+	environ.obj exit.obj file.obj getstring.obj host.obj log.obj \
+	logic.obj ord.obj rename.obj retstring.obj sin.obj spcint.obj \
+	spreal.obj sqrt.obj sset.obj tan.obj sys.obj tty.obj inet.obj \
+	execute.obj exists.obj rresvport.obj term.obj findunit.obj exp.obj
 
 # Ensure Psdk directory (containing wsock32.lib) is included in the library
 # search path in both BCC32.CFGg and ILINK.CFG , both found in BCC55\BIN\
@@ -51,202 +51,196 @@ AllFiles: $(OBJ) snobol4.exe
 snobol4.exe : $(OBJ)
        $(CC) -WC -esnobol4.exe $(OBJ) 
 
-data.obj : data.c
-	$(CC) $(CFLAGS) data.c
+data.obj : $(SRCDIR)data.c
+	$(CC) $(CFLAGS) $(SRCDIR)data.c
 
-data_init.obj : data_init.c
-	$(CC) $(CFLAGS) data_init.c
+data_init.obj : $(SRCDIR)data_init.c
+	$(CC) $(CFLAGS) $(SRCDIR)data_init.c
 
-snobol4.obj : snobol4.c
-	$(CC) $(CFLAGS) snobol4.c
+snobol4.obj : $(SRCDIR)snobol4.c
+	$(CC) $(CFLAGS) $(SRCDIR)snobol4.c
 
-main.obj : main.c
-	$(CC) $(CFLAGS) main.c
+main.obj : $(SRCDIR)main.c
+	$(CC) $(CFLAGS) $(SRCDIR)main.c
 
-syn.obj : syn.c
-	$(CC) $(CFLAGS) syn.c
+syn.obj : $(SRCDIR)syn.c
+	$(CC) $(CFLAGS) $(SRCDIR)syn.c
 
-version.obj : version.c
-	$(CC) $(CFLAGS) version.c
+version.obj : $(SRCDIR)version.c
+	$(CC) $(CFLAGS) $(SRCDIR)version.c
 
 ################ common
 
-bal.obj : lib\bal.c
-	$(CC) $(CFLAGS) lib\bal.c
+bal.obj : $(SRCDIR)lib\bal.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\bal.c
 
-date.obj : lib\date.c
-	$(CC) $(CFLAGS) lib\date.c
+date.obj : $(SRCDIR)lib\date.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\date.c
 
-dump.obj : lib\dump.c
-	$(CC) $(CFLAGS) lib\dump.c
+dump.obj : $(SRCDIR)lib\dump.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\dump.c
 
-endex.obj : lib\endex.c
-	$(CC) $(CFLAGS) lib\endex.c
+endex.obj : $(SRCDIR)lib\endex.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\endex.c
 
-hash.obj : lib\hash.c
-	$(CC) $(CFLAGS) lib\hash.c
+hash.obj : $(SRCDIR)lib\hash.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\hash.c
 
-init.obj : lib\init.c
-	$(CC) $(CFLAGS) lib\init.c
+init.obj : $(SRCDIR)lib\init.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\init.c
 
-io.obj : lib\io.c
-	$(CC) $(CFLAGS) lib\io.c
+io.obj : $(SRCDIR)lib\io.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\io.c
 
-lexcmp.obj : lib\lexcmp.c
-	$(CC) $(CFLAGS) lib\lexcmp.c
+lexcmp.obj : $(SRCDIR)lib\lexcmp.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\lexcmp.c
 
-ordvst.obj : lib\ordvst.c
-	$(CC) $(CFLAGS) lib\ordvst.c
+ordvst.obj : $(SRCDIR)lib\ordvst.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\ordvst.c
 
-pair.obj : lib\pair.c
-	$(CC) $(CFLAGS) lib\pair.c
+pair.obj : $(SRCDIR)lib\pair.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\pair.c
 
-pat.obj : lib\pat.c
-	$(CC) $(CFLAGS) lib\pat.c
+pat.obj : $(SRCDIR)lib\pat.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\pat.c
 
-pml.obj : lib\pml.c
-	$(CC) $(CFLAGS) lib\pml.c
+pml.obj : $(SRCDIR)lib\pml.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\pml.c
 
-realst.obj : lib\realst.c
-	$(CC) $(CFLAGS) lib\realst.c
+realst.obj : $(SRCDIR)lib\realst.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\realst.c
 
-replace.obj : lib\replace.c
-	$(CC) $(CFLAGS) lib\replace.c
+replace.obj : $(SRCDIR)lib\replace.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\replace.c
 
-str.obj : lib\str.c
-	$(CC) $(CFLAGS) lib\str.c
+str.obj : $(SRCDIR)lib\str.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\str.c
 
-stream.obj : lib\stream.c
-	$(CC) $(CFLAGS) lib\stream.c
+stream.obj : $(SRCDIR)lib\stream.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\stream.c
 
-top.obj : lib\top.c
-	$(CC) $(CFLAGS) lib\top.c
+top.obj : $(SRCDIR)lib\top.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\top.c
 
-tree.obj : lib\tree.c
-	$(CC) $(CFLAGS) lib\tree.c
+tree.obj : $(SRCDIR)lib\tree.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\tree.c
 
 ################ ansi
 
-spcint.obj : lib\ansi\spcint.c
-	$(CC) $(CFLAGS) lib\ansi\spcint.c
+spcint.obj : $(SRCDIR)lib\ansi\spcint.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\ansi\spcint.c
 
-spreal.obj : lib\ansi\spreal.c
-	$(CC) $(CFLAGS) lib\ansi\spreal.c
+spreal.obj : $(SRCDIR)lib\ansi\spreal.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\ansi\spreal.c
 
 ################ auxil
 
-bcopy.obj : lib\auxil\bcopy.c
-	$(CC) $(CFLAGS) lib\auxil\bcopy.c
+bcopy.obj : $(SRCDIR)lib\auxil\bcopy.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\auxil\bcopy.c
 
-bzero.obj : lib\auxil\bzero.c
-	$(CC) $(CFLAGS) lib\auxil\bzero.c
+bzero.obj : $(SRCDIR)lib\auxil\bzero.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\auxil\bzero.c
 
-getopt.obj : lib\auxil\getopt.c
-	$(CC) $(CFLAGS) lib\auxil\getopt.c
+getopt.obj : $(SRCDIR)lib\auxil\getopt.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\auxil\getopt.c
 
 ################ dummy
 
-execute.obj : lib\dummy\execute.c
-	$(CC) $(CFLAGS) lib\dummy\execute.c
+execute.obj : $(SRCDIR)lib\dummy\execute.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\dummy\execute.c
 
-rresvport.obj : lib\dummy\rresvport.c
-	$(CC) $(CFLAGS) lib\dummy\rresvport.c
+rresvport.obj : $(SRCDIR)lib\dummy\rresvport.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\dummy\rresvport.c
 
 ################ generic
 
-dynamic.obj : lib\generic\dynamic.c
-	$(CC) $(CFLAGS) lib\generic\dynamic.c
+dynamic.obj : $(SRCDIR)lib\generic\dynamic.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\generic\dynamic.c
 
-expops.obj : lib\generic\expops.c
-	$(CC) $(CFLAGS) lib\generic\expops.c
+expops.obj : $(SRCDIR)lib\generic\expops.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\generic\expops.c
 
-intspc.obj : lib\generic\intspc.c
-	$(CC) $(CFLAGS) lib\generic\intspc.c
+intspc.obj : $(SRCDIR)lib\generic\intspc.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\generic\intspc.c
 
-term.obj : lib\generic\term.c
-	$(CC) $(CFLAGS) lib\generic\term.c
+term.obj : $(SRCDIR)lib\generic\term.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\generic\term.c
 
 ################ win32!
 
-inet.obj : lib\win32\inet.c
-	$(CC) $(CFLAGS) lib\win32\inet.c
+inet.obj : $(SRCDIR)lib\win32\inet.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\inet.c
 
-load.obj : lib\win32\load.c
-	$(CC) $(CFLAGS) lib\win32\load.c
+load.obj : $(SRCDIR)lib\win32\load.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\load.c
 
-mstime.obj : lib\win32\mstime.c
-	$(CC) $(CFLAGS) lib\win32\mstime.c
+mstime.obj : $(SRCDIR)lib\win32\mstime.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\mstime.c
 
-popen.obj : lib\win32\popen.c
-	$(CC) $(CFLAGS) lib\win32\popen.c
-
-sys.obj : lib\win32\sys.c
-	$(CC) $(CFLAGS) lib\win32\sys.c
+sys.obj : $(SRCDIR)lib\win32\sys.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\sys.c
 
 tty.obj : $(TTY_C)
 	$(CC) $(CFLAGS) $(TTY_C)
 
-exists.obj : lib\win32\exists.c
-	$(CC) $(CFLAGS) lib\win32\exists.c
+exists.obj : $(SRCDIR)lib\win32\exists.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\exists.c
 
 ################ snolib
 
-chop.obj : lib\snolib\chop.c
-	$(CC) $(CFLAGS) lib\snolib\chop.c
+chop.obj : $(SRCDIR)lib\snolib\chop.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\chop.c
 
-cos.obj : lib\snolib\cos.c
-	$(CC) $(CFLAGS) lib\snolib\cos.c
+cos.obj : $(SRCDIR)lib\snolib\cos.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\cos.c
 
-delete.obj : lib\snolib\delete.c
-	$(CC) $(CFLAGS) lib\snolib\delete.c
+delete.obj : $(SRCDIR)lib\snolib\delete.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\delete.c
 
-environ.obj : lib\snolib\environ.c
-	$(CC) $(CFLAGS) lib\snolib\environ.c
+environ.obj : $(SRCDIR)lib\snolib\environ.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\environ.c
 
-exit.obj : lib\snolib\exit.c
-	$(CC) $(CFLAGS) lib\snolib\exit.c
+exit.obj : $(SRCDIR)lib\snolib\exit.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\exit.c
 
-exp.obj : lib\snolib\exp.c
-	$(CC) $(CFLAGS) lib\snolib\exp.c
+exp.obj : $(SRCDIR)lib\snolib\exp.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\exp.c
 
-file.obj : lib\snolib\file.c
-	$(CC) $(CFLAGS) lib\snolib\file.c
+file.obj : $(SRCDIR)lib\snolib\file.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\file.c
 
-findunit.obj : lib\snolib\findunit.c
-	$(CC) $(CFLAGS) lib\snolib\findunit.c
+findunit.obj : $(SRCDIR)lib\snolib\findunit.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\findunit.c
 
-getstring.obj : lib\snolib\getstring.c
-	$(CC) $(CFLAGS) lib\snolib\getstring.c
+getstring.obj : $(SRCDIR)lib\snolib\getstring.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\getstring.c
 
-host.obj : lib\snolib\host.c
-	$(CC) $(CFLAGS) lib\snolib\host.c
+host.obj : $(SRCDIR)lib\snolib\host.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\host.c
 
-log.obj : lib\snolib\log.c
-	$(CC) $(CFLAGS) lib\snolib\log.c
+log.obj : $(SRCDIR)lib\snolib\log.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\log.c
 
-logic.obj : lib\snolib\logic.c
-	$(CC) $(CFLAGS) lib\snolib\logic.c
+logic.obj : $(SRCDIR)lib\snolib\logic.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\logic.c
 
-ord.obj : lib\snolib\ord.c
-	$(CC) $(CFLAGS) lib\snolib\ord.c
+ord.obj : $(SRCDIR)lib\snolib\ord.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\ord.c
 
-rename.obj : lib\snolib\rename.c
-	$(CC) $(CFLAGS) lib\snolib\rename.c
+rename.obj : $(SRCDIR)lib\snolib\rename.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\rename.c
 
-retstring.obj : lib\snolib\retstring.c
-	$(CC) $(CFLAGS) lib\snolib\retstring.c
+retstring.obj : $(SRCDIR)lib\snolib\retstring.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\retstring.c
 
-sin.obj : lib\snolib\sin.c
-	$(CC) $(CFLAGS) lib\snolib\sin.c
+sin.obj : $(SRCDIR)lib\snolib\sin.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\sin.c
 
-sprintf.obj : lib\snolib\sprintf.c
-	$(CC) $(CFLAGS) lib\snolib\sprintf.c
+sqrt.obj : $(SRCDIR)lib\snolib\sqrt.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\sqrt.c
 
-sqrt.obj : lib\snolib\sqrt.c
-	$(CC) $(CFLAGS) lib\snolib\sqrt.c
+sset.obj : $(SRCDIR)lib\snolib\sset.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\sset.c
 
-sset.obj : lib\snolib\sset.c
-	$(CC) $(CFLAGS) lib\snolib\sset.c
-
-tan.obj : lib\snolib\tan.c
-	$(CC) $(CFLAGS) lib\snolib\tan.c
+tan.obj : $(SRCDIR)lib\snolib\tan.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\tan.c
