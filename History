@@ -18,6 +18,10 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 	lib/str.c: TRIM tabs as well as spaces, like SPITBOL
 	test/trim{0,1}.{sno.ref}: added tab tests
 
+5/3/97:
+	lib/unix98/load.c: check for name with _ prepended
+		if not found (for NetBSD/pc532)
+
 4/24/97:
 	autoconf: added comments, $(SRCDIR) on XXX_C= lines
 

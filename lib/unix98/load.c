@@ -107,10 +107,23 @@ load(addr, sp1, sp2)
 
 	fp->entry = (int (*)(LOAD_PROTO)) dlsym(fp->handle, fp->name);
 	if (fp->entry == NULL) {
-	    dlclose(fp->handle);
-	    free(fp);
-	    return FALSE;
-	}
+	    char name2[128];		/* XXX */
+
+	    /*
+	     * Ouch; NetBSD (on pc532 at least) wants C functions with
+	     * a leading underscore.  Rather than trying to figure out
+	     * when and if this is needed at config time, just try it
+	     * both ways
+	     */
+
+	    sprintf(name2, "_%s", fp->name);
+	    fp->entry = (int (*)(LOAD_PROTO)) dlsym(fp->handle, name2);
+	    if (fp->entry == NULL) {
+		dlclose(fp->handle);
+		free(fp);
+		return FALSE;
+	    } /* dlsym failed again */
+	} /* dlsym failed */
     } /* not found by pml */
     fp->self = fp;			/* make valid */
     fp->next = fp;			/* link into list (for unload) */
