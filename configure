@@ -1209,7 +1209,7 @@ else
     echo 'DYNAMIC_C=$(SRCDIR)lib/generic/dynamic.c' >> $CONFIG_M4
 fi
 
-# just give in a compile a little program that uses SIGTSTP??
+# just give in & compile a little program that uses SIGTSTP??
 if grep SIGTSTP $INCDIR/signal.h >/dev/null 2>&1 || \
    grep SIGTSTP $INCDIR/sys/signal.h >/dev/null 2>&1 || \
    grep SIGTSTP $INCDIR/bits/signum.h >/dev/null 2>&1 ||
@@ -1372,44 +1372,44 @@ if [ "$CYGWIN" -a -f $INCDIR/w32api/objbase.h ]; then
 fi
 
 if [ "$CFLAGS" ]; then
-	# stolen from getconf handling... make into function?
-	echo 'using CFLAGS environment variable' 1>&2
-	echo '/* from CFLAGS: */' >> $CONFIG_H
-	for X in $CFLAGS; do
-	    case "$X" in
-	    -D*)
-		echo "X$X" | \
-		    sed -e 's/^X-D/#define /' -e 's/=/ /' >> $CONFIG_H
-		;;
-	    -U*)
-		echo "X$X" | \
-		    sed -e 's/^X-U/#undef /' -e 's/=/ /' >> $CONFIG_H
-		;;
-	    *)
-		echo 'ADD_OPT(['$X'])'		>> $CONFIG_M4
-		;;
-	    esac
-	done
+     # stolen from getconf handling... make into function?
+     echo 'using CFLAGS environment variable' 1>&2
+     echo '/* from CFLAGS: */' >> $CONFIG_H
+     for X in $CFLAGS; do
+	 case "$X" in
+	 -D*)
+	     echo "X$X" | \
+		 sed -e 's/^X-D/#define /' -e 's/=/ /' >> $CONFIG_H
+	     ;;
+	 -U*)
+	     echo "X$X" | \
+		 sed -e 's/^X-U/#undef /' -e 's/=/ /' >> $CONFIG_H
+	     ;;
+	 *)
+	     echo 'ADD_OPT(['$X'])'		>> $CONFIG_M4
+	     ;;
+	 esac
+     done
 fi
 if [ "$CPPFLAGS" ]; then
-	# stolen from getconf handling... make into function?
-	echo 'using CPPFLAGS environment variable' 1>&2
-	echo '/* from CPPFLAGS: */' >> $CONFIG_H
-	for X in $CPPFLAGS; do
-	    case "$X" in
-	    -D*)
-		echo "X$X" | \
-		    sed -e 's/^X-D/#define /' -e 's/=/ /' >> $CONFIG_H
-		;;
-	    -U*)
-		echo "X$X" | \
-		    sed -e 's/^X-U/#undef /' -e 's/=/ /' >> $CONFIG_H
-		;;
-	    *)
-		echo 'ADD_CPPFLAGS(['$X'])'		>> $CONFIG_M4
-		;;
-	    esac
-	done
+    # stolen from getconf handling... make into function?
+    echo 'using CPPFLAGS environment variable' 1>&2
+    echo '/* from CPPFLAGS: */' >> $CONFIG_H
+    for X in $CPPFLAGS; do
+	case "$X" in
+	-D*)
+	    echo "X$X" | \
+		sed -e 's/^X-D/#define /' -e 's/=/ /' >> $CONFIG_H
+	    ;;
+	-U*)
+	    echo "X$X" | \
+		sed -e 's/^X-U/#undef /' -e 's/=/ /' >> $CONFIG_H
+	    ;;
+	*)
+	    echo 'ADD_CPPFLAGS(['$X'])'		>> $CONFIG_M4
+	    ;;
+	esac
+    done
 fi
 if [ "$LDFLAGS" ]; then
 	echo 'using LDFLAGS environment variable' 1>&2
