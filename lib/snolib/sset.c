@@ -9,10 +9,11 @@
 #include "macros.h"
 #include "load.h"
 #include "equ.h"
+#include "lib.h"
 
 /*
  * Experimental:
- * SSET("SET(INTEGER,INTEGER,INTEGER[,INTEGER])INTEGER")
+ * LOAD("SSET(INTEGER,INTEGER,INTEGER[,INTEGER])INTEGER")
  *
  * Usage;	SSET(unit, offset, whence, scale)
  * Returns;	scaled file position
