@@ -1,6 +1,6 @@
 $Id$
 
-       ``The Macro Implementation of SNOBOL4 in C'' (C-MAINBOL)
+       ``The Macro Implementation of SNOBOL4 in C'' (CSNOBOL4)
 		      Installation instructions
 
 Unix systems (or systems with POSIX shell, make and m4);
@@ -308,7 +308,7 @@ Non-unix systems;
 ================
 
 The non-unix ports are not well tested.  Please send me any fixes you
-discover!  See doc/porting.doc for details on porting C-MAINBOL.
+discover!  See doc/porting.doc for details on porting CSNOBOL4.
 
 The routines in tty.c (tty_save, tty_restore, tty_mode, tty_close) and
 inet.c (tcp_open, udp_open) need to be supplied.  Dummy versions exist
@@ -341,7 +341,7 @@ They have not (yet) been tested with the latest sources.
 VMS using DEC C
 ---------------
 
-C-MAINBOL has been run on VMS (on VAXen using VAXC, and on Alphas
+CSNOBOL4 has been run on VMS (on VAXen using VAXC, and on Alphas
 using DECC), and the DEC C RTL.  config/vms/descrip.mms is an MMS
 description file, which can be used by typing:
 
@@ -402,7 +402,7 @@ can be found in the config/djgpp subdirectory.
 Anything else
 -------------
 
-C-MAINBOL has been designed to be modular, and makes only modest
+CSNOBOL4 has been designed to be modular, and makes only modest
 demands on the C library.  See doc/porting.doc for information.
 
 Let me know!

@@ -1,6 +1,6 @@
 $Id$
 
-0.99.4 release of ``The Macro Implementation of SNOBOL4 in C'' (C-MAINBOL)
+0.99.4 release of ``The Macro Implementation of SNOBOL4 in C'' (CSNOBOL4)
 
 This is a free port of the original SIL (SNOBOL4 Implementation
 Language) "macro" version of SNOBOL4 (developed at Bell Labs) with the
@@ -38,7 +38,7 @@ and the Catspaw SPITBOL manual
     ftp://ftp.snobol4.com/spitman.pdf
 
 INSTALL
-	Information on building and installing C-MAINBOL
+	Information on building and installing CSNOBOL4
 
 README
 	This file
@@ -161,7 +161,7 @@ Acknowledgments;
 
 	The contributions of source code by Mark Emmer (SNOBOL4+) and
 	Viktors Berstis (Minnestoa SNOBOL4) have allowed me to advance
-	the state of C-MAINBOL in ways that would have been otherwise
+	the state of CSNOBOL4 in ways that would have been otherwise
 	impossible.
 
 The following have also provided help, encouragement, support, input,
