@@ -14,7 +14,7 @@ In most cases all you need to type is "make".
 The top level makefile will run the "configure" script to create
 "config.m4", which is in turn used to create Makefile2, which is then
 run, creating a test version of snobol4 (named "xsnobol4") which is
-then regression tested and timed.
+then regression tested and timed, and finally named "snobol4".
 
 The "configure" tries to use the available C compiler which works
 best.  If you wish to alter configure's decision process, you can run
@@ -47,7 +47,7 @@ following options;
 		Eliminate gcc from consideration.
 	--opt=STRING
 		Supply C optimization flags (replacing default "-O"),
-		for example; -O2
+		for example; --opt=-O2
 
 Even if your system has not previously been tested (see doc/ports.doc)
 configure will make a guess. If the build does not succeed, you may
@@ -69,18 +69,17 @@ variables BINDEST (default: /usr/local/bin/snobol4) and MANDEST
 editing config.m4, or creating "local-config" (and then removing
 config.m4 to trigger autoconf).
 
-"make install" also installs the snolib.a object library, doc/load.doc
-and snolib/*.sno files to the directory named in the SNOLIB_DIR make
-variable.
+"make install" also installs the snolib.a object library,
+doc/load.doc, load-related .h files and snolib/*.sno files to the
+directory named in the SNOLIB_DIR make variable.
 
 Please mail timing.out files to snobol4-timing@ultimate.com!
 
 Non-unix systems;
 ================
 
-None of the ports below have been tested with the latest sources.
-Please send me any fixes you discover!  See doc/porting.doc for
-details on porting C-MAINBOL.
+The non-unix ports are not well tested.  Please send me any fixes you
+discover!  See doc/porting.doc for details on porting C-MAINBOL.
 
 The routines in tty.c (tty_save, tty_restore, tty_mode, tty_close) and
 inet.c (tcp_open, udp_open) need to be supplied.  Dummy versions exist
@@ -108,22 +107,43 @@ MS-DOS using Borland C++
 ------------------------
 
 Mark Emmer of Catspaw has compiled an older version of C-MAINBOL using
-Borland C++.  Look in config/borland (or CONFIG\BORLAND).
+Borland C++.  Look in config/borland (or CONFIG\BORLAND). This port
+has not been tested in some time.
 
 VMS using DEC C
 ---------------
 
-Older versions of C-MAINBOL have been run under VAX and ALPHA VMS
-using DEC C, and the DEC C RTL.  config/vms/build.com is a command
-file to build XSNOBOL4.EXE; config/vms/descrip.mms is an MMS description
-file, which can be used by typing MMS/DESCRIP=[.CONFIG.VMS]DESCRIP.MMS.
+C-MAINBOL has been run under VAX and ALPHA VMS using DEC C, and the
+DEC C RTL.  config/vms/descrip.mms is an MMS description file, which
+can be used by typing:
 
-VMS using GNU C
----------------
+	MMS/DESCRIP=[.CONFIG.VMS]DESCRIP.MMS
+
+Several lines at the top of the file may need tweaking depending
+on your environment.
+
+The VMS port uses native calls to implement TTY I/O, and supports
+binary and noecho input.  TCP/IP I/O is implemented (using DEC TCP/IP
+Connection services for OpenVMS (formerly VAX/Ultrix connection
+product)) but not working.
 
 Jerry Lichter has run an older version of C-MAINBOL under VMS using
 the GNU C compiler and the GNU C library. No command files are
 available.
+
+Win32 using MicroSoft Visual C++ 5.0
+------------------------------------
+
+The Win32 port is in it's infancy.  The system has been compiled, and
+passes regression testing on WinNT 4.0, but system dependant code
+needs work;
+
+*	TCP/IP I/O (using winsock32) is present, but not working.
+*	Binary & noecho TTY I/O has been coded, but does not work.
+*	Process timing under Win95 does not work properly.
+
+To compile;
+	nmake -f config\win32\ntmsvc.mak
 
 Anything else
 -------------
