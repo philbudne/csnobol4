@@ -82,3 +82,5 @@ reg lgt.sno
 reg err.sno
 reg line.sno
 reg reverse.sno
+# 11/04/96
+reg update.sno
