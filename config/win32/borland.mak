@@ -32,7 +32,7 @@ TTY_DEFS=-DTTY_READ_RAW
 INET_DEFS=-DINET_IO
 
 CFLAGS= -c $(OPT) -WC -O -Tml -w- \
-	-I$(SRCDIR)config\borland -I$(SRCDIR)include -I$(SRCDIR). \
+	-I$(SRCDIR)config\win32 -I$(SRCDIR)include -I$(SRCDIR). \
 	-DHAVE_CONFIG_H $(NO_BITFIELDS) $(TTY_DEFS) $(INET_DEFS)
 
 OBJ=	snobol4.obj data.obj data_init.obj main.obj syn.obj \
