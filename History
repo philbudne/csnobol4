@@ -2,8 +2,32 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+04/26/2001
+	autoconf: fix long long, always set PML_SERV
+	pml.h: add SERV_LISTEN (under ifdef PML_SERV)
+	Makefile2.m4: add SERV_C, add serv.o to SNOLIB_OBJS
+
+03/28/2001
+	timing: add SuSE-release
+
+01/18/2001
+	autoconf: use win32/mstime.c under Cygwin
+
+01/13/2001
+	autoconf: add --longlong
+	include/macros.h: cast pointer args for bzero/bcopy to void *
+		so that we can use 64-bit ints when pointers are only 32-bits
+
+01/04/2001
+	timing: add .exe EXTension if needed, for cygwin
+	timing.sno: handle zero execution time (cygwin on win9x)
+	autoconf: only add -ldl on SunOS (all flavors)
+
+12/08/2000
+	timing: improved for OpenBSD
+
 11/14/2000
-	autoconf: add --no-largefile, ARCH_OPT
+	autoconf: add --no-largefile, ARCH_OPT, add Id, options output
 	config/vms/descrip.mms: make DEC C the default
 	INSTALL: document VMS change, -lp64, --largefile, --no-largefile
 
@@ -31,7 +55,7 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 10/28/2000
 	config.guess: add darwin (MacOS X),
 		from www.darwinfo.org/pub/darwin/devel/config.guess
-	autoconf: add darwin, help from Russ.Urquhart
+	autoconf: add darwin, help from Russ Urquhart
 
 10/12/2000
 	timing: display CPU: line from /var/run/dmesg.boot on BSD systems
