@@ -100,3 +100,5 @@ reg label.sno
 reg vdiffer.sno
 # 1/22/2002
 reg function.sno
+# 2/5/2002
+reg ord.sno
