@@ -23,9 +23,6 @@
  * However, I am not about to post a copy of anything licensed by AT&T.
  */
 
-/* phil 1/4/94; use STDIO */
-#include <stdio.h>
-
 /* phil 1/13/94 use h.h (for index) */
 #include "h.h"
 
@@ -34,6 +31,10 @@
 #else
 #include <strings.h>			/* berkeley strings */
 #endif
+
+/* phil 1/4/94; use STDIO */
+/* phil 12/7/96; after string.h for borland, per skibler */
+#include <stdio.h>
 
 /*LINTLIBRARY*/
 #define ERR(S, C) if(opterr){fprintf(stderr, "%s%s%c\n", argv[0], S, C);}
