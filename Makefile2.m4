@@ -482,7 +482,7 @@ INSTALL_H=[include]/h.h [include]/snotypes.h [include]/macros.h \
 # generated SNOLIB files (at top level)
 GENSNOLIB=host.sno
 
-install: snobol4 doc/snobol4.1 pv
+install: snobol4 doc/snobol4.1
 	-rm -f $(BINDEST)
 	cp snobol4 $(BINDEST); strip $(BINDEST); chmod 755 $(BINDEST)
 	-rm -f $(BINDEST)-$(VERS)
