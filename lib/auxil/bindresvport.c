@@ -1,4 +1,4 @@
-/* modified from openssh distribution -pb 5/22/2003 */
+/* modified from OpenSSH distribution -pb 5/22/2003 */
 
 /* This file has be modified from the original OpenBSD source */
 
@@ -79,7 +79,7 @@ bindresvport_sa(sd, sa)
 	int i;
 
 	if (sa == NULL) {
-		bzero(&myaddr, sizeof(myaddr));
+		bzero((void *)&myaddr, sizeof(myaddr));
 		sa = (struct sockaddr *)&myaddr;
 
 		if (getsockname(sd, sa, &salen) == -1)
