@@ -1,16 +1,12 @@
 $Id$
 
-flush vfprintf
-
-add tests;
-	line.sno
-	err.sno
-	reverse.sno
-
-handle tabs in listings/messages
-	
 fix timing.sno "time" parsing under AIX 4.1.1?
 include xsnobol4 version (put in timing.sno)
+
+implement auto-load of pml functions
+	(execute LOAD w/ given prototype)
+	SPITBOL HOST() EXIT()
+	fixup HOST() -- sys() and os() functions??
 
 Document:
 	HOST(), EXIT()
@@ -28,11 +24,9 @@ enable stats in Makefile "SNO" commands?
 remove date from genc prolog
 	change diff to cmp && echo "DIFF OK" || echo "DIFF FAILURE"
 
-implement auto-load of pml functions
-	(execute LOAD w/ given prototype)
-	SPITBOL HOST() EXIT()
-
 use "SNOLIB" path for -INCLUDE & LOAD()
+
+==== before 1.0 release;
 
 update v311.sil table of contents?
 
@@ -59,6 +53,9 @@ Create test for plusops off?
 	opsyn ?, look at precedence, associativity
 	try numeric conversion
 	try conversion on numbers with leading spaces (DONE: space2)
+
+SPITBOL changes
+	value tracing of $ . and = ops
 
 test overflow?
 	remove from man page limitations??
