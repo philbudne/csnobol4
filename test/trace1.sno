@@ -1,0 +1,7 @@
+        &TRACE = 10
+        TRACE('foo')
+        foo = 1
+        FOO = 2
+        foo = 3
+        FOO = 4
+END
