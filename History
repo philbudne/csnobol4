@@ -2,10 +2,26 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+4/12/2002
+	lib/next/load.c: remove unused variable & label
+
+4/2/2002
+	lib/snolib/host.h: fix comment typo
+
+3/23/2002
+	include/h.h: add default {IM,EX}PORT macros
+	include/load.h: add io_closeall, io_mkfile; use IMPORT macro
+	lib/djgpp/osinit.c: add io_{findunit,closeall,getfp,mkfile}
+	lib/io.c: use EXPORT macro for io_{findunit,closeall,getfp,mkfile}
+	lib/snolib/[gr]etstring.c: use EXPORT macro
+	config/win32/config.h: add IMPORT & EXPORT macro declarations
+
 3/21/2002
 	Fixes for mingw build.
 	lib/win32/inet.c: remove dangling saweol
 	config/win32/mingw.mak: add a missing $
+	doc/porting.ms: add HAVE_OS_INIT
+	README: add text from COPYRIGHT
 
 3/20/2002
 	clean DJGPP build w/ DXE2, WATTCP.  Tested DXE2.
@@ -58,6 +74,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 3/6/2002
 	Makefile2.m4: add "lint"
 	Makefile: remove *.ln
+
+**************** released 0.99.44
 
 3/2/2002
 	version.c: update to 0.99.44
