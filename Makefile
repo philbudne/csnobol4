@@ -89,7 +89,7 @@ snobol4.c: procs genc.sno globals $(SIL)
 isnobol4.c: procs genc.sno globals $(SIL)
 	rm -rf isnobol4.c2 proc.h2 prolog subr
 	mkdir subr
-	$(SNO) genc.sno --inline $(SIL) > prolog
+	$(SNO) -- genc.sno --inline $(SIL) > prolog
 	cd subr; cat ../prolog \
 		`awk '{print $$2, $$1}' ../callgraph | tsort 2>/dev/null` \
 			> ../isnobol4.c2
