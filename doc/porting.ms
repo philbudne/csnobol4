@@ -334,8 +334,11 @@ uses times() and sysconf().  Use this version when sysconf() is available.
 .IP generic/mstime.c
 uses times() and #define'ed HZ (defaults to 60 ticks/sec, but may be
 overridden).
+.IP ansi/mstime.c
+uses clock(), and CLK_TCK, if present.  Uses CLOCKS_PER_SEC, if present,
+else defaults to 1000000 (may be overridden by defining CLK_TCK).
 .IP dummy/mstime.c
-if neither getrusage() nor times() is available.
+if none of getrusage(), times() or clock() is available.
 
 .NH 2
 realst.c
