@@ -11,7 +11,8 @@
 # spotless	removes snobol4 generated files
 
 # AIX4 makes all targets, so added this;
-default: snobol4
+# must be named "all" for FreeBSD "ports"?
+all: snobol4
 
 snobol4 xsnobol4 tar uu install: Makefile2 ALWAYS .depend
 	$(MAKE) -f Makefile2 $@
