@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.53  1996/09/30  05:53:19  phil
+* renamed EXP to EXPOP
+*
 * Revision 1.52  1996/09/28  05:20:56  phil
 * fix typos from last checkin
 *
@@ -626,7 +629,6 @@ XLATND AEQLC   EXECCL,0,,END	   Just compile? Quiting time!	[PLB34]
        SETAC   LPTR,0		   Reset last label pointer
        SETAC   OCLIM,0		   Reset limit on object code
        SETAC   LNNOCL,0		   Reset source line number	[PLB38]
-       SETAC   FILENM,0		   Reset source file name	[PLB38]
        SETAC   INCSTK,0		   Release include file stack	[PLB38]
        ZERBLK  COMREG,COMDCT	   Clear compiler descriptors
        SUM     XCL,CMBSCL,CMOFCL   Compute end of object code
