@@ -78,3 +78,7 @@ reg space.sno
 reg space2.sno
 # 9/20/96
 reg lgt.sno
+# 9/22/96
+reg err.sno
+reg line.sno
+reg reverse.sno
