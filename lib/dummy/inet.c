@@ -20,3 +20,7 @@ udp_open( host, service, port, priv )
 {
     return NULL;
 }
+
+void
+inet_cleanup() {
+}
