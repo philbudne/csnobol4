@@ -1230,7 +1230,7 @@ fi
 if [ "$WITH_TCL" ]; then
     TCL_MAJOR_VERSION=0
     TCL_MINOR_VERSION=0
-    for TINCDIR in $INCDIR /usr/local/include $INCDIR/tcl*; do
+    for TINCDIR in $INCDIR /usr/local/include /usr/local/include/tcl*.*; do
 	if [ -d "$TINCDIR" -a -f "$TINCDIR/tcl.h" ]; then
 	    MAJ=`grep 'TCL_MAJOR_VERSION' $TINCDIR/tcl.h | awk '{ print $3 }'`
 	    MIN=`grep 'TCL_MINOR_VERSION' $TINCDIR/tcl.h | awk '{ print $3 }'`
