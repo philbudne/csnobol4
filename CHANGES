@@ -4,26 +4,27 @@ Changes since last release (0.91.2);
 
 IMPORTANT for users of previous versions;
 ========================================
+	Configuration is now automatic.  DO NOT create config.m4 by
+	hand!  some systems no longer have system specific config files.
+
 	SPITBOL operators are enabled by default, this causes problems
-	for the (very) rare program that OPSYN's the ?  binaryoperator!
+	for the (very) rare program that OPSYN's the ?  binary operator!
 
 	The PUNCH variable is no longer available; use TERMINAL.
 
-	-d option takes size in bytes, not descriptors
-
-	Configuration is now automatic.  DO NOT create config.m4 by
-	hand!  some systems no longer have system specific config files.
+	-d option takes size in bytes, not descriptors.
 
 Language changes (see man page for full descriptions);
 =====================================================
 
 Command line additions;
 	command line arguments available to user (via HOST(2,n) and &PARM)
-	-P controls size of pattern match stack
-	-p controls SPITBOL operators (enabled by default)
-	-u passes argument string (for HOST(0))
-	-M option required to compile multiple source files
 	-h gives help/usage
+	-n toggles EXECUTE/NOEXECUTE setting
+	-p toggles SPITBOL operators (enabled by default)
+	-u passes argument string (for HOST(0))
+	-P controls size of pattern match stack
+	-M option required to compile multiple source files
 
 Bugs fixed;
 	lexical comparison of a string with a shorter prefix
@@ -36,6 +37,7 @@ Other Changes;
 	case folding always enabled in control card processing
 	source file and line included in error messages
 	new error messages for bad -INCLUDE lines
+	PUNCH I/O variable removed
 
 SPITBOL compatible features added;
 	&ERRTEXT system variable
@@ -43,9 +45,9 @@ SPITBOL compatible features added;
 	&STLIMIT defaults to -1 (no limit)
 	-EXECUTE/-NOEXECUTE control cards
 	-LINE control card
-	, construct (exp1, exp2, ....)
-	= operator
-	? operator
+	, alternation construct; (exp1, exp2, ....)
+	= (assignment) operator
+	? (scan) operator
 	BREAKX() function
 	CHAR() function
 	EXIT() function (partial support)
@@ -71,5 +73,5 @@ SITBOL compatible features added;
 	FILE() DELETE() and RENAME() functions
 
 Other features added;
-	Automatic LOAD'ing of linked-in external C functions (PMPROTO macro)
+	Automatic LOAD()'ing of linked-in external C functions available
 	REALs are double precision on Alpha under Digital Unix
