@@ -5,12 +5,14 @@ For detailed revision history see History file
 Changes since 0.99.4 release;
 ============================
 
-	Command line options for dynamic and pattern stack memory region sizes
-		now take values in descriptors
+	Command line:
+		-d (dynamic region size) and -M (pattern match stack size)
+			now take values in descriptors
+		-v shows CSNOBOL4 version
 
-	Increase default dynamic space to 64K descriptors
+	Increased default dynamic space to 64K descriptors
 
-	Fix faulty lexical comparison optimzations for null string
+	Fix faulty lexical comparison function optimzations for null string
 		
 	Performance improvments;
 		New string hash function
@@ -50,14 +52,14 @@ Changes since 0.99.4 release;
 		configure generates config.m4 and config.h
 		(with all defines) for use by loadable functions
 
-	New configuration options (see "INSTALL" file for more information);
+	New configuration options;
+	**** see "INSTALL" file for more information ****
 	--add-define=
 		Add a #define to config.h (visible to external functions)
 	--double
 		EXPERIMENTAL option to use C "double" for SNOBOL4 REAL data type
 	--fast
 		Architecture specific optimizations on native compilers
-
 	--longlong
 		EXPERIMENTAL!!
 		try to use C "long long" (64-bit integer) for INTEGER datatype
@@ -92,14 +94,15 @@ Changes since 0.99.4 release;
 
 	Extended HOST() functions (see host.sno) for system diagnosis
 
-	TIME() function now returns REAL datatype
-		allows both better resolution (for small values)
-		and larger range
+	TIME() function now returns REAL datatype allows both better
+		resolution (for small values) and larger range.  Using
+		32-bit floats, runtimes larger than four and a half
+		hours will lose resolution.
 
 	Statistics reports compiler and execution times as REAL numbers
 		Average statement runtime reported in microseconds (us).
 
-	Allow REALs any place an INTEGER is required (from SNOBOL4+)
+	Allow a REAL any place an INTEGER is required (from SNOBOL4+)
 		Contexts include TABLE(),  ITEM(),  array  indices,
 		INPUT(),  OUTPUT(),  SET(), keyword values, CHAR(),
 		RPAD(), LPAD(), FIELD(), COLLECT(), DUMP(), DUPL(),
@@ -109,6 +112,7 @@ Changes since 0.99.4 release;
 		all RETxxx macros safe in any context
 		RETSTR() takes single argument, allows NULL pointer
 		RETSTR2() has old RETSTR() functionality
+		RETINT() and RETREAL() always set return data type.
 
 	All include files needed to build loadable functions
 		installed in SNOLIB directory
