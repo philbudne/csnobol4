@@ -16,6 +16,7 @@ DATE_C=[.lib]date.c
 DUMP_C=[.lib]dump.c
 DYNAMIC_C=[.lib.generic]dynamic.c
 ENDEX_C=[.lib]endex.c
+EXISTS_C=[.lib.generic]exists.c
 EXPOPS_C=[.lib.generic]expops.c
 HASH_C=[.lib]hash.c
 INIT_C=[.lib]init.c
@@ -87,15 +88,15 @@ CFLAGS=\
 ################
 
 OBJS=	main.obj, $(SNOBOL4).obj, data.obj, data_init.obj, syn.obj, \
-	bal.obj, convert.obj, date.obj, dynamic.obj, endex.obj, \
+	bal.obj, convert.obj, date.obj, dynamic.obj, endex.obj, exists.obj, \
 	expops.obj, hash.obj, init.obj, inet.obj, intspc.obj, io.obj, \
 	lexcmp.obj, load.obj, mstime.obj, ordvst.obj, pair.obj, pat.obj, \
 	pml.obj, realst.obj, replace.obj, str.obj, stream.obj, term.obj, \
 	top.obj, tty.obj, tree.obj, version.obj, \
 	$(AUX_OBJ) $(PML_OBJ)
 
-xsnobol4.exe : $(OBJS)
-	link /exec=xsnobol4.exe $(OBJS)
+snobol4.exe : $(OBJS)
+	link /exec=snobol4.exe $(OBJS)
 
 #################################################################
 # lib files
@@ -117,6 +118,9 @@ dynamic.obj : $(DYNAMIC_C)
 
 endex.obj : $(ENDEX_C)
 	$(CC) $(CFLAGS) $(ENDEX_C)
+
+exists.obj : $(EXISTS_C)
+	$(CC) $(CFLAGS) $(EXISTS_C)
 
 expops.obj : $(EXPOPS_C)
 	$(CC) $(CFLAGS) $(EXPOPS_C)
