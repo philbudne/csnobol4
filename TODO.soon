@@ -1,19 +1,27 @@
 $Id$
 
-create linux bindresvport_sa using bindresvport(6)??
-	prototype for bindresvport6, but no function in glibc 2.3.2!!
+use const for ordvst qsort function?  use bcmp? memcmp??
 
-test/use bindresvport() for vms & win32 inet.c
+private include for bindresvport(_sa) prototypes?
+
+flush CONFIG_GUESS
+	generic/sys.c
+	snolib/host.[ch]!!
+
+flush $SYS from configure
+
+use Darwin/NS /usr/bin/hostinfo prog
+	use sw_info (Darwin only?)
+
+Flush SIL_FUNC_PROTO??
+
+test/use bindresvport() on vms
 
 document inet6.c in porting.ms
 	vms/load.c
 	bindresvport
 	NEED_BINDRESVPORT
 	NEED_BINDRESVPORT_SA
-
-flush CONFIG_GUESS
-	generic/sys.c
-	snolib/host.[ch]!!
 
 complaints when compiling isnobol4.c on some systems??
 	HP-UX 10?
@@ -796,3 +804,5 @@ Add -XXX directive cards for:
 
 see the old TODO file!!!
 
+VMS timing script?
+	SHOW SYSTEM/NOPROCESS/CLUSTER/FULL
