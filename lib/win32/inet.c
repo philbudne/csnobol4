@@ -80,6 +80,7 @@ inet_socket( host, service, port, flags, type )
     struct sockaddr_in sin;
     struct servent *sp;
     SOCKET s;
+    int true = 1;
 
     if (!host || !service)
 	return -1;
