@@ -14,6 +14,9 @@ echo ''
 echo 'uname -a:'
 uname -a
 echo ''
+echo 'config.guess:'
+./config.guess
+echo ''
 echo 'ls -l config.m4 xsnobol4:'
 ls -l config.m4 xsnobol4
 echo ''
