@@ -11,6 +11,8 @@
 ****************************************************************
 *	environment
 
+-CASE 0
+
 *	identify if mainbol or spitbol
 	MAINBOL = IDENT(.NAME,"NAME") 1
 
@@ -149,7 +151,7 @@ EIO
 	WS = SPAN(WHITE)
 
 	ID = ANY(UC) SPAN(UC DIGS)
-	ARGP = SPAN(UC DIGS OPERS) | NUL
+	ARGP = SPAN(UC LC DIGS OPERS) | NUL
 
 ****************************************************************
 *	functions
@@ -618,8 +620,19 @@ TOP	LINE = INPUT					:F(EOF)
 	ARGS =
 	COMM =
 
+*	check for start of c-code copy
+	ORIG "%{"					:F(NOTCOPY)
+
+*	here if copying C code
+DOCOPY	LN = LN + 1
+	LINE = INPUT					:F(EOF)
+*	check for end
+	LINE "%}"					:S(TOP)
+	STDERR = "COPY: " LINE
+	OUTPUT = IND LINE				:(DOCOPY)
+
 *	a comment?
-	LINE '*'					:F(NOTCOMM)
+NOTCOPY	LINE '*'					:F(NOTCOMM)
 
 *	here with comment. see if magic dead end indicator!
 	LINE '*_'					:F(BLOCK)
@@ -645,7 +658,7 @@ NOTCOMM	LINE LINE_PAT =
 	ARGV = ARRAY(10)
 
 *	check for quoted string arg
-	LINE QS_ARG_PAT =		:F(NQARGS)
+	LINE QS_ARG_PAT =				:F(NQARGS)
 	ARGV<0> = ARGS
 	ARGC = 1					:S(PARSED)
 
@@ -1268,6 +1281,11 @@ XXRAISP	OUTPUT = IND 'raise(' ARGV<1> ');'		:(OPDONE)
 * args: UNIT, SPEC
 XXINCLD	F = 'io_include'				:(FSFUN2)
 
+****************
+*	SIL XCALLC extension 7/19/96
+* args: function, C arg list (in parens), FALSE label, TRUE label
+XXCALLC	X = ARGV<1> ARGV<2>
+	DOBOOL(X,ARGV<3>,ARGV<4>)			:(OPDONE)
 *
 ****************************************************************
 *	stack operations
