@@ -4,7 +4,8 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
 11/04/96:
 	lib/io.c: fix "update I/O"; add "last" member to struct file and
-		rewind() before direction changes
+		fseek() before direction changes
+	test/tests.in: add update
 
 10/30/96:
 	autoconf: add option processing; --force-gcc, --no-gcc options
