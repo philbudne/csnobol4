@@ -1332,8 +1332,37 @@ XXRAISP	OUTPUT = IND 'raise1(' ARGV<1> ');'		:(OPDONE)
 
 ****************
 *	SIL XINCLD extension 6/12/94
+*		expanded to 3-way return 2/22/2002!
 * args: UNIT, SPEC
-XXINCLD	F = 'io_include'				:(FSFUN2)
+XXINCLD	OUTPUT = IND 'switch (io_include(' ARGV<1> ', ' ARGV<2> ')) {'
+	INDENT()
+	I = 0
+
+	IDENT(ARGV<3>)					:S(XXINC1)
+	I = I + 1
+
+	UNINDENT()
+	OUTPUT = IND 'case INC_FAIL:'
+	INDENT()
+	BRANCH(ARGV<3>)
+
+XXINC1	IDENT(ARGV<4>)					:S(XXINC2)
+	I = I + 1
+	UNINDENT()
+	OUTPUT = IND 'case INC_SKIP:'
+	INDENT()
+	BRANCH(ARGV<4>)
+
+XXINC2	IDENT(ARGV<5>)					:S(XXINC3)
+	I = I + 1
+	UNINDENT()
+	OUTPUT = IND 'case INC_OK:'
+	INDENT()
+	BRANCH(ARGV<5>)
+
+XXINC3	UNINDENT()
+	OUTPUT = IND '}'
+	EQ(I,3)						:S(OPDONE)F(OPDONEL)
 
 ****************
 *	SIL XCALLC extension 7/19/96
