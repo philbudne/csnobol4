@@ -1,6 +1,10 @@
 * $Id$
 *
 * $Log$
+* Revision 1.90  2002/01/18 23:49:16  phil
+* [PLB77] fix compiler syntax error pointer display
+* fix internal error trying to compile " ()("
+*
 * Revision 1.89  2002/01/18 05:06:27  phil
 * [PLB76] Fix lexical comparison optimizations
 * add new lexical functions to index
@@ -500,6 +504,7 @@
 *      18.  Other Predicates 
 *	       DIFFER
 *	       IDENT 
+*	       LABEL 
 *	       LEQ 
 *	       LGE 
 *	       LGT 
@@ -527,6 +532,7 @@
 *	       SIZE
 *	       TIME
 *	       TRIM
+*	       VDIFFR
 *      20.  Common Code
 *      21.  Termination
 *	       END 
@@ -5654,6 +5660,16 @@ IDENT  PROC    ,		   IDENT(X,Y)
 *_
 *---------------------------------------------------------------------*
 *
+* New [PLB78] idea from Steve Duff's Macro SPITBOL
+*      LABEL(X)
+*
+LABEL  PROC    ,		   LABEL(X)
+       RCALL   ,VARVAL,,FAIL	   Evaluate argument
+       GETDC   XPTR,XPTR,ATTRIB    Get object code base
+       AEQLC   XPTR,0,RETNUL,FAIL  Fail if zero
+*_
+*---------------------------------------------------------------------*
+*
 * New [PLB37] copied from LGT
 *      LEQ(X,Y)
 *
@@ -6462,6 +6478,16 @@ TRIM   PROC    ,		   TRIM(S)
        LOCSP   ZSP,XPTR		   Get specifier
        TRIMSP  ZSP,ZSP		   Trim string
        BRANCH  GENVRZ		   Generate new variable
+*_
+*---------------------------------------------------------------------*
+*
+* New [PLB78] idea from Steve Duff's Macro SPITBOL
+*      VDIFFER(X,Y)
+*
+VDIFFR PROC    ,		   VDIFFER(X,Y)
+       RCALL   ,XYARGS,,FAIL	   Evaluate arguments
+       DEQL    XPTR,YPTR,RTXPTR,FAIL
+*				   Compare them, return X if they DIFFER()
 *_
 *---------------------------------------------------------------------*
        TITLE   'Common Code'
@@ -7356,6 +7382,8 @@ INTGFN DESCR   INTGER,0,1
        DESCR   0,0,0
 ITEMFN DESCR   ITEM,FNC,1
        DESCR   0,0,0
+LABLFN DESCR   LABEL,0,1					[PLB78]
+       DESCR   0,0,0						[PLB78]
 LEFN   DESCR   LE,0,2
        DESCR   0,0,0
 LENFN  DESCR   LEN,0,1
@@ -7436,6 +7464,8 @@ UNLDFN DESCR   UNLOAD,0,1
        DESCR   0,0,0
 VALFN  DESCR   FIELD,0,1
        DESCR   VALBLK,0,0
+VDIFFN DESCR   VDIFFR,0,2
+       DESCR   0,0,0
 FTBLND LHERE   ,
 *
 INITLS DESCR   INITLS,TTL+MARK,8*DESCR
@@ -7517,6 +7547,8 @@ FNLIST DESCR   FNLIST,TTL+MARK,FNCPLE-FNLIST-DESCR
        DESCR   INTGSP,0,0
        DESCR   ITEMFN,FNC,0	   ITEM(A,I1,...,IN)
        DESCR   ITEMSP,0,0
+       DESCR   LABLFN,FNC,0	   LABEL(V)			[PLB78]
+       DESCR   TRLASP,0,0					[PLB78]
        DESCR   LENFN,FNC,0	   LEN(N)
        DESCR   LENSP,0,0
        DESCR   LEFN,FNC,0	   LE(I1,I2)
@@ -7597,6 +7629,8 @@ FNLIST DESCR   FNLIST,TTL+MARK,FNCPLE-FNLIST-DESCR
        DESCR   UNLDSP,0,0
        DESCR   VALFN,FNC,0	   VALUE(S)
        DESCR   VALSP,0,0
+       DESCR   VDIFFN,FNC,0	   VDIFFER(V1,V2)		[PLB78]
+       DESCR   VDIFSP,0,0					[PLB78]
        ARRAY   20*2		   Space for 20 more functions	[PLB46][PLB56]
 FNCPLE LHERE   ,		   End of function pair list
 OPTBL  DESCR   OPTBL,TTL+MARK,OPTBND-OPTBL-DESCR
@@ -7859,6 +7893,7 @@ TRMSP  STRING  'TRIM'
 UCNMSP STRING  'UCASE'						[PLB18]
 UNLDSP STRING  'UNLOAD'
 VALSP  STRING  'VALUE'
+VDIFSP STRING  'VDIFFER'					[PLB78]
 *
 CRDFSP STRING  '(80A1)'		   Default output format
 OUTPSP STRING  '(1X,132A1)'	   Standard print format
