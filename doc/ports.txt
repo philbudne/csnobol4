@@ -68,6 +68,7 @@ Sun SS/ELC	33    SunOS 5.5     spro	0.99    6387	pb 10/96
 HP 42T (68040)	25    HP-UX 8.00    gcc		0.99.2  6182	pb 12/96
 Sun SS/ELC	33    SunOS 5.5     gcc		0.99.1  5311	pb 10/96
 HP 9000/834	15    HP-UX 7	    gcc		0.99.2+ 4898	pb 12/96
+i486SX		33    Linux 2.1.14  gcc		0.99.3	4865	ad 4/97
 Sun SS/IPC	25    SunOS 4.1.4   gcc		0.99.1  4565	pb 10/96
 HP 42T (68040)	25    HP-UX 8.00    c89		0.99    4485	pb 10/96
 HP 370 (68030)	33.3  Mt Xinu 4.3   gcc		0.99    3064	pb 10/96
@@ -135,6 +136,9 @@ DEC uVAX 3100	??	VMS 5.5-2     VAXC   0.91   -		 944	mw 7/94
 Who's Who key
 =============
 
+ad	Alan Eugene Davis	Marianas High School, Mariana Islands!
+	<adavis@saipan.com>
+
 al	Arne Larsson
 	<arne@tlingva.pp.fi>
 
@@ -142,7 +146,7 @@ db 	David J Birnbaum	University of Pittsburgh, Slavic Languages
 	<djb@kathleen.slavic.pitt.edu>
 
 db2	Dan Budne
-	<dan@bud1.genesis.com>
+	<dbudne@genesis.com>
 
 bm	Burkhard Meissner
 	<meissner@altertum.uni-halle.d400.de>
