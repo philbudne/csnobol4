@@ -21,6 +21,7 @@
 
 #include "load.h"			/* LA_xxx macros */
 #include "equ.h"			/* datatypes I/S */
+#include "host.h"			/* HOST() function codes */
 
 #ifdef NO_STATIC_VARS
 #include "vars.h"
@@ -51,7 +52,7 @@ HOST( LA_ALIST ) LA_DCL
     int n;
 
     /* if first arg is null string, do HOST() */
-    if (LA_TYPE(0) == S && LA_INT(0) == 0) {
+    if (LA_TYPE(0) == S && LA_INT(0) == 0) { /* HOST_SYSINFO */
 	char os[256], hw[256];
 	extern const char snoname[], vers[];
 
@@ -69,10 +70,10 @@ HOST( LA_ALIST ) LA_DCL
     }
 
     switch (LA_INT(0)) {
-    case 0:				/* HOST(0); all parameters (or -u) */
+    case HOST_PARAMS:			/* HOST(0); all parameters (or -u) */
 	RETSTR(params);
 
-    case 1:				/* HOST(1,s); run subprocess */
+    case HOST_SYSTEM:			/* HOST(1,s); run subprocess */
 	RETTYPE = I;			/* oof! blast return type! */
 	if (nargs < 2 || LA_TYPE(1) != S) {
 	    /* GNAT programs expect HOST(1) to return zero; */
@@ -82,7 +83,7 @@ HOST( LA_ALIST ) LA_DCL
 	io_flushall(0);			/* flush output buffers */
 	RETINT(system(buf));		/* run in sub-shell */
 
-    case 2:				/* HOST(2,n); argument n */
+    case HOST_ARGN:			/* HOST(2,n); argument n */
 	if (nargs >= 2 && LA_TYPE(1) == I) {
 	    n = LA_INT(1);
 	    if (n >= 0 && n < argc)
@@ -91,11 +92,11 @@ HOST( LA_ALIST ) LA_DCL
 	/* bad argument type, or out of range */
 	break;
 
-    case 3:				/* HOST(3); first unused argument */
+    case HOST_FIRSTARG:			/* HOST(3); first unused argument */
 	RETTYPE = I;			/* oof! blast return type! */
 	RETINT(firstarg);
 
-    case 4:				/* HOST(4,s); environment var s */
+    case HOST_GETENV:			/* HOST(4,s); environment var s */
 	if (nargs >= 2 && LA_TYPE(1) == S) {
 	    getstring(LA_PTR(1), buf, sizeof(buf));
 	    env = getenv(buf);
@@ -105,7 +106,6 @@ HOST( LA_ALIST ) LA_DCL
 	/* fail if bad argument type, or no such variable */
 	break;
 
-
 /****************
  * CSNOBOL4 extensions
  * mostly useful for diagnosing build problems
@@ -113,65 +113,65 @@ HOST( LA_ALIST ) LA_DCL
 
 /* configuration variables, from config.h (written by autoconf script) */
 #ifdef CONFIG_GUESS
-    case 2000:
+    case HOST_CONFIG_GUESS:
 	RETSTR(CONFIG_GUESS);		/* build architecture */
 #endif /* CONFIG_GUESS defined */
 
 #ifdef CONFIG_HOST
-    case 2001:
+    case HOST_CONFIG_HOST:
 	RETSTR(CONFIG_HOST);		/* host where autoconf was run */
 #endif /* CONFIG_HOST defined */
 
 #ifdef CONFIG_DATE
-    case 2002:
+    case HOST_CONFIG_DATE:
 	RETSTR(CONFIG_DATE);		/* date autoconf was run */
 #endif /* CONFIG_DATE defined */
 
 #ifdef CONFIG_OPTIONS
-    case 2003:
+    case HOST_CONFIG_OPTIONS:
 	RETSTR(CONFIG_OPTIONS);		/* autoconf options */
 #endif /* CONFIG_OPTIONS defined */
 
 /* variables from build.c, created before linking snobol4 executable */
 #ifdef HAVE_BUILD_VARS
-    case 2100:
+    case HOST_BUILD_DATE:
 	RETSTR(build_date);
 
-    case 2101:
+    case HOST_BUILD_DIR:
 	RETSTR(build_dir);
 
-    case 2102:
+    case HOST_BUILD_FILES:
 	RETSTR(build_files);
 #endif /* HAVE_BUILD_VARS defined */
 
 /* defines, from Makefile */
 #ifdef SNOLIB_DIR
-    case 2200:
+    case HOST_SNOLIB_DIR:
 	RETSTR(SNOLIB_DIR);
 #endif /* SNOLIB_DIR defined */
 
 #ifdef SNOLIB_FILE
-    case 2202:
+    case HOST_SNOLIB_FILE:
 	RETSTR(SNOLIB_FILE);
 #endif /* SNOLIB_FILE defined */
 
 /* integer constants; */
-    case 2300:
+    case HOST_INTEGER_BITS:
 	RETTYPE = I;			/* oof! blast return type! */
 	RETINT(sizeof(INT_T)*BPC);	/* INTEGER size */
-    case 2301:
+    case HOST_REAL_BITS:
 	RETTYPE = I;			/* oof! blast return type! */
 	RETINT(sizeof(REAL_T)*BPC);	/* REAL size */
-    case 2302:
+    case HOST_POINTER_BITS:
 	RETTYPE = I;			/* oof! blast return type! */
 	RETINT(sizeof(void *)*BPC);	/* pointer size */
-    case 2303:
+    case HOST_LONG_BITS:
 	RETTYPE = I;			/* oof! blast return type! */
 	RETINT(sizeof(long)*BPC);	/* long size */
-    case 2304:
+    case HOST_DESCR_BITS:
 	RETTYPE = I;			/* oof! blast return type! */
 	RETINT(DESCR*BPC);		/* descriptor size */
-    case 2305:
+    case HOST_SPEC_BITS:
 	RETTYPE = I;			/* oof! blast return type! */
 	RETINT(SPEC*BPC);		/* specifier size */
 
