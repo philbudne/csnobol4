@@ -21,6 +21,7 @@
 ****************************************************************
 *	initialization
 
+	CHARSET = 256
 	SEP = '/'
 	UC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	LC = "abcdefghijklmnopqrstuvwxyz"
@@ -168,7 +169,7 @@ TOP	LINE = INPUT					:F(END)
 	GO = ARRAY('0:19')
 
 *	array per char; contains index into above PU/ACT/GO arrays
-	CHARS = ARRAY('0:255',-1)
+	CHARS = ARRAY('0:' CHARSET - 1,-1)
 
 **************** for each line of table
 LOOP	LINE = INPUT
@@ -196,7 +197,7 @@ TOKLOP	T LEN(1) . C =					:F(LOOP)
 ********
 ELSE	N = 0
 	A = ACTION(LINE)				:F(ERR)
-ELSLOP	LT(N,256)					:F(LOOP)
+ELSLOP	LT(N,CHARSET)					:F(LOOP)
 	CHARS<N> = EQ(CHARS<N>,-1) A
 	N = N + 1					:(ELSLOP)
 ****************
@@ -226,12 +227,15 @@ DUMPAEN	SYN.C = '};'
 	SYN.C = HT '"' TABNAM '",'
 	SYN.C = HT '{'
 
+*	dump lines of 16 chars
 DUMPCHR	CH = CHARS<N>					:F(DUMPEND)
 	CH = LT(SIZE(CH),2) SP CH
-	OL = OL CH ',' SP
+	OL = OL CH
 	N = N + 1
 	C = C + 1
-	EQ(C,16)					:F(DUMPCHR)
+	OL = LT(N,CHARSET) OL ',' SP
+	LT(C,16)					:S(DUMPCHR)
+
 *	start new line of output
 	SYN.C = TAB OL
 	C = 0
