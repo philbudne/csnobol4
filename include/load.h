@@ -38,13 +38,17 @@
 #define LA_PTR(N) ((void *)LA_INT(N))	/* n'th arg as pointer */
 
 /* macros to return values; */
-#define RETINT(x) { D_A(retval) = (x); return TRUE; }
-#define RETREAL(x) { D_RV(retval) = (x); return TRUE; }
+#define RETINT(x) do { D_A(retval) = (x); return TRUE; } while (0)
+#define RETREAL(x) do { D_RV(retval) = (x); return TRUE; } while (0)
+
 /* strings */
-#define RETSTR(CP,LEN) { retstring(retval, (CP), (LEN)); return TRUE; }
+#define RETSTR(CP,LEN) \
+    do { retstring(retval, (CP), (LEN)); return TRUE; } while(0)
 #define RETCSTR(CP) \
-	{ char *cp = (CP); retstring(retval, cp, strlen(cp)); return TRUE; }
-#define RETNULL { D_A(retval) = 0; return TRUE; }
+    do { \
+	char *cp = (CP); retstring(retval, cp, strlen(cp)); return TRUE; \
+    } while (0)
+#define RETNULL do { D_A(retval) = 0; return TRUE; } while (0)
 
 /* return failure */
 #define RETFAIL return FALSE
