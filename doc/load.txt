@@ -8,10 +8,24 @@ the number and types of the parameters the function will be passed, as
 well as the return type.
 
 The named function will first be searched for in a table built in at
-compile time (see section 3). If it is not found and dynamic loading
-is supported (currenlt only on BSD platforms using a.out object
-format), the second parameter to LOAD is used as the name of an object
-file (or library) to load the function from. If no second parameter is
+compile time (see section 3).  Dynamic loading of functions is
+supported three different ways;
+
+	A. Using dlopen() and dlsym() dynamic library functions
+		(per Unix98 standard) currently available on SunOS4
+		(Solaris 1), SunOS5 (Solaris2) Digital Unix (the
+		operating system formerly known as OSF/1), IRIX,
+		NetBSD, FreeBSD, Linux.
+		(see section 4. for more information)
+
+	B. Using HP-UX shared-library functions.  This support
+		is still experimental.
+		(see section 4. for more information)
+
+	C. Systems with BSD/V7 style a.out object format
+
+The second parameter to LOAD is used as the name of an object file (or
+(shared) library) to load the function from. If no second parameter is
 given, the value of the SNOLIB environment variable (or a built in
 default, if SNOLIB is not set) will be used to locate a directory to
 find an object library named snolib.a.
@@ -25,10 +39,8 @@ examples (see lib/snolib/*.c for code);
 The following snolib functions are available by default
 (via pml.h);
 
-	LOAD("RENAME(STRING,STRING)STRING")
-	LOAD("SQRT(REAL)REAL")
-	LOAD("DELETE(STRING)STRING")
-	LOAD("FILE(STRING)STRING")
+	RENAME, SQRT, DELETE, FILE, LOG, EXP, CHOP, SIN, COS, TAN,
+	IO_FINDUNIT
 
 2. Creating a C function to be loaded.
 
@@ -43,6 +55,7 @@ for many examples);
     int
     NAME( LA_ALIST ) LA_DCL
     {
+	/* function body */
     }
 
 The name given in the LOAD() prototype must be the name of the function.
@@ -176,3 +189,85 @@ function name, and either loading normally and the using OPSYN() to
 rename the function, or using PMLFUNC2() to specify the name of
 the C function entry point.
 
+4. Creating ``shared libraries'' for dynamic loading by SNOBOL4
+
+The procedure for creating ``shared libraries'' for dynamic loading
+varies depending on the operating system and compiler used.  This is
+an overview.  Consult your local man pages for more information.
+
+On many systems code for shared libraries must be specially compiled
+to be "position independent" so the shared library can be mapped at
+an arbitrary address in SNOBOL4's address space.  The resulting "PIC"
+object files may also need to processed with "ld" with special options
+to create a shared library file.
+
+System & compiler	compiler flags		ld flags
+================================================================
+SunOS4 "cc"		-pic or -PIC		-assert pure-text (optional)
+SunOS5 "sunpro"		-Kpic or -KPIC		-G
+IRIX 5.3 "cc"		-KPIC (default?)	-shared (ignore warnings)
+DEC UNIX "cc"		none			-shared (ignore warnings)
+HP-UX "c89"		+z or +Z		-b
+most "gcc"		-fpic or -fPIC		-shared
+
+NOTES:
+
+On most systems, the shared library will be able to access global
+symbols from the main snobol4 executable, and will not need to be
+linked with support functions like "getstring()" and "retstring()".
+However on HP-UX and Linux it appears to be necessary to link these
+functions into each shared library that uses these functions.
+
+On SGI and DEC UNIX (OSF/1) systems you will see warnings for
+undefined global symbols. These can be ignored if the symbols are
+defined in the main snobol4 executable.
+
+On many systems using dlopen() the shared library must either be
+located in a directory in the LD_LIBRARY_PATH environment variable, OR
+the pathname passed to the SNOBOL4 LOAD() if the pathname does not
+contain any directory information (any "/" characters).  If you wish
+to load a function from the current directory, prefix the filename
+with "./"
+
+Some systems with dlopen() will call the void function _init(void)
+when the library is first loaded, before the first call, and call the
+void function _fini(void) before the library is unloaded.
+
+Examples;
+	on sunos4;
+		cc -c -pic -I. -I./include lib/snolib/system.c
+		ld -o system.so system.o
+
+	using gcc;
+		gcc -o system.so -shared -I. -I./include lib/snolib/system.c
+
+5. Callable functions in main snobol4 executable
+
+The following functions are available to facilitate writing loadable
+code which interacts with the snobol4 I/O system.
+
+
+FILE *io_getfp(int unit);
+
+	Returns the stdio stream associated with the passed 1-based unit.
+
+int io_mkfile( int unit, FILE *f, char *name);
+
+	Associates stream "f" with the I/O unit.
+	The "name" is used for error messages.
+	Returns TRUE or FALSE.
+
+int io_closeall(int unit);
+
+	Close all file activity on the I/O unit.
+	Releases all file information (unit cannot be rewound).
+	Returns TRUE or FALSE.
+
+void io_endfile(int unit);
+
+	Performs ENDFILE(unit) functionality.
+	Closes currently open file.
+
+int io_fundunit(void);
+
+	Returns an unassigned I/O unit or -1 on failure.
