@@ -54,7 +54,7 @@ following options;
 	--largefile
 		Force the use of defines for "large file" (64 bit offsets).
 		Requires existance of fseeko() and ftello() stdio functions.
-
+
 	--longlong
 		Attempt to use C "long long" datatype to represent SNOBOL4
 		INTEGERs, and "double" for REAL on systems where pointers
@@ -113,7 +113,7 @@ following options;
 	--no-largefile
 		Disable automatic selection of large file support
 		(see --largefile)
-
+
 	--opt=STRING
 		Supply C optimization flags.  The default value is
 		"-O", which is widely accepted.  Higher optimization
@@ -156,9 +156,88 @@ The snobol4 (PREFIX/bin/snobol4), library directory
 (PREFIX/lib/snobol4) and man page (PREFIX/man/man1/snobol4.1).  The
 default PREFIX is /usr/local, see --prefix= configure option above).
 
-Please mail timing.out files to snobol4-timing@ultimate.com!
+Please mail timing.out files to snobol4-timing@ultimate.com!!!
 
+For more information on configuration, see the next section:
+"Advanced configuration".
 
+For information on porting this software to a new system see
+doc/porting.doc.
+
+Advanced configuration on Unix
+==============================
+
+Most Unix users won't need to read any further than this!
+
+There are several ways to alter the configuration without resorting to
+editing Makefile2 (which can be overwritten at any time).  One reason
+to alter your configuration would be because the automatically
+generated configuration would not build (please let me know if this
+happens)!  Another would be to customize your system (for example,
+adding new built-in functions, especially via the "Poor Mans LOAD()"
+facility (see doc/load.doc)).
+
+local-config
+------------
+
+If the file "local-config" exists, the autoconf script will append
+it's contents to config.m4 (used to generate Makefile2).
+
+Makefile variables that can be overridden;
+
+OPT
+	Optimization flags (set by --opt=); "OPT=-g" will turn
+	optimization off and enable debug symbols.
+
+SNOBOL4_C_CFLAGS
+	C compiler flags that will be used for (i)snobol4.c in
+	ADDITION to the usual CFLAGS.  (i)snobol4.c is the translated
+	SIL code, and is large and complicated.  In the past some C
+	compilers have needed additional options set (e.g. to raise
+	internal limits) in order to compile (i)snobol4.c
+
+DATA_INIT_CFLAGS
+	DATA_INIT_CFLAGS controls the C compiler flags used to compile
+	data_init.c data_init.c contains (via data_init.h) the data
+	initializers from the SIL code.  The code is run once, and
+	while optimization can save space (by detecting use of the
+	same constant in different places), it can take a while to
+	compile.  When doing development on a slower machine this is
+	no fun, and I use "DATA_INIT_CFLAGS=" to turn off optimization.
+	If additional compiler flags are needed in order to compile
+	data_init.c, you could use "DATA_INIT_CFLAGS=$(CFLAGS) stuff"
+
+The following are m4 macros defined in Makefile2.m4 before the
+inclusion of config.m4.  The m4 begin and end quote characters are set
+to '[' and ']', and it's advisable to quote all arguments passed to
+the macros (lest you type a word that's the name on an m4 macro);
+
+ADD_OPT()
+	Add C compiler optimization options
+
+ADD_CPPFLAGS()
+	Add C preprocessor options (e.g. -D -U -I) to CFLAGS.
+	NOTE!  For most things, it's probably better to use local-defines
+	(see below).
+
+ADD_SRCS()
+	Add source files to be included in the "make depend" process
+
+ADD_OBJS()
+	Add object files to be linked into the snobol4 executable.
+
+ADD_LDFLAGS()
+	Add loader (ld) options.  Can be used to control libraries (e.g. -l -L)
+
+local-config
+------------
+
+If the file "local-config" exists, the autoconf script will append
+it's contents to config.h.  config.h will be installed in a public
+location for inclusion into user loadable modules, so #defines that
+are necessary, or useful for their compilation should be placed
+in the local-config file.
+
 Non-unix systems;
 ================
 
@@ -210,7 +289,7 @@ TCP/IP Connection services for OpenVMS (formerly VAX/Ultrix connection
 product) but not working.  It should be simple to use other TCP
 packages, but if not, or none is available, add /MACRO=(NO_TCP=1) to
 the MMS command line.
-
+
 Win32 using CygWin
 ------------------
 
