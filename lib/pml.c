@@ -28,6 +28,22 @@ static struct pmlfunc pmltab[] = {
     { NULL, NULL }			/* MUST BE LAST!! */
 };
 
+typedef int (*load_func_t)(LOAD_PROTO);
+
+load_func_t
+pml_find(name)
+    char *name;
+{
+    struct pmlfunc *fp;
+
+    for (fp = pmltab; fp->name; fp++) {
+	/* XXX examine CASECL, use strcasecmp? */
+	if (strcmp(name, fp->name) == 0)
+	    break;
+    }
+    return fp->addr;
+} /* pml_find */
+
 int
 pml_load(addr, sp1, sp2)
     struct descr *addr;			/* OUT */
@@ -44,18 +60,10 @@ pml_load(addr, sp1, sp2)
     strncpy( name, S_SP(sp1), l);
     name[l] = '\0';
 
-    for (fp = pmltab; fp->name; fp++) {
-	/* XXX example CASECL, use strcasecmp? */
-	if (strcmp(name, fp->name) == 0)
-	    break;
-    }
+    D_A(addr) = (int_t) pml_find(name);
 
-    if (fp->addr) {
-	D_A(addr) = (int_t) fp->addr;
-	return TRUE;			/* success */
-    }
-    return FALSE;
-}
+    return D_A(addr) != NULL;
+} /* pml_load */
 
 int
 pml_link(retval, args, nargs, addr)
