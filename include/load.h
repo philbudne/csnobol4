@@ -89,9 +89,11 @@ void getstring __P((const void *, char *, int));
 void retstring __P((struct descr *retval, const char *cp, int len));
 
 /* lib/io.c; */
-int io_findunit __P((void));
+int io_findunit __P((void));		/* find a free (external) unit */
+int io_closeall __P((int));		/* internal (zero-based unit) */
 
 #ifdef EOF				/* stdio included */
-FILE *io_getfp __P((int));
-#endif /* NULL defined */
+FILE *io_getfp __P((int));		/* external (1-based unit) */
+int io_mkfile __P((int, FILE *, char*)); /* external (1-based unit) */
+#endif /* EOF defined */
 
