@@ -1,7 +1,16 @@
 $Id$
 
 
-MAINBOL for Un*x history (and personal SNOBOL history);
+C-SNOBOL (MAINBOL for Un*x) history (and personal SNOBOL history);
+
+9/8/96
+	v311.sil: only case fold strings in FIELD (fix from SNOBOL4+)
+		upped SPLDSZ to 10k for snocone.sno
+	lib/init.c: parameters support (-u and --) used by "external" host.c
+	lib/stream.c: use unsigned char in stream/plugtb;
+		ANY/NOTANY/BREAK/BREAKX/SPAN with 8-bit bytes
+		were causing PREVIOUS table to get trashed!
+	Makefile2.m4: make both isnobol4.c and snobol4.c PRECIOUS
 
 9/6/96
 	v311.sil: FREEZE()/THAW(), new table access code from SNOBOL4+
