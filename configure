@@ -218,28 +218,32 @@ if [ "$WANTGCC" ]; then
 	    break
 	fi
     done
+fi
 
-    # didn't find gcc in PATH; check if CC is gcc
-    if [ ! "$GCCPATH" ]; then
-	echo 'checking if cc is gcc' 1>&2
-	TMP=conf$$
-	# vanilla bsd43 systems can't use <<- AND EOF must be in col 0!
-	sed 's/^	//' << EOF > $TMP.c
-	main() {
-	#if defined(__gcc__) || defined(__GNUC__)
-	    exit(0);
-	#else
-	    exit(1);
-	#endif
-	}
+
+# didn't find gcc in PATH; check if CC is gcc
+if [ ! "$GCCPATH" ]; then
+    echo 'checking if cc is gcc' 1>&2
+    TMP=conf$$
+    # vanilla bsd43 systems can't use <<- AND EOF must be in col 0!
+    cat << EOF > $TMP.c
+main() {
+#if defined(__gcc__) || defined(__GNUC__)
+    exit(0);
+#else
+    exit(1);
+#endif
+}
 EOF
-	if ${CC-cc} -o $TMP $TMP.c && ./$TMP; then
-	    echo ' cc is gcc' 1>&2
-	    echo "# cc is gcc"			>> $CONFIG_M4
-	    GCCPATH="${CC-cc}"			>> $CONFIG_M4
-	fi
-	rm -f $TMP $TMP.c
+    if ${CC-cc} -o $TMP $TMP.c && ./$TMP; then
+	echo ' cc is gcc' 1>&2
+	echo "# cc is gcc"			>> $CONFIG_M4
+	GCCPATH="${CC-cc}"
     fi
+    rm -f $TMP $TMP.c
+
+    # if cc is gcc, disregard --no-gcc
+    WANTGCC=true
 fi
 
 if [ "$FORCEGCC" -a ! "$GCCPATH" ]; then
