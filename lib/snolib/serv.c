@@ -21,11 +21,6 @@
  * ../../include for /usr/local/lib/snobol4
  */
 
-#include "h.h"
-#include "snotypes.h"
-#include "macros.h"
-#include "load.h"
-
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <signal.h>
@@ -38,6 +33,11 @@
 
 /* unix domain */
 #include <sys/un.h>
+
+#include "h.h"
+#include "snotypes.h"
+#include "macros.h"
+#include "load.h"
 
 static void
 fireman() {				/* catch falling babies */
