@@ -3,6 +3,13 @@
 /*
  * O/S initialization for DXE on DJGPP/DOS
  * Burkhard Meissner 2/21/2001
+ *
+ * seperated into osinit.c 2/17/2002 -phil
+ */
+
+/* all this stuff may increase base executable size
+ * for stuff that won't be used; put includes/EXPORT groups
+ * under "#ifdef EXPORT_FOO"??
  */
 
 #include <sys/types.h>
@@ -26,12 +33,13 @@
 
 #ifdef WATTCP_DOS
 #include <sys/socket.h>
+int rresvport(int portno);		/* lib/dummy/rresvport.c  */
 #endif
 
 #include <string.h>
 #include <stdlib.h>			/* malloc(), getenv() */
 
-int rresvport(int portno);		/* lib/dummy/rresvport.c  */
+#include "lib.h"
 
 /*
  * list of symbols exportable to external modules
@@ -315,5 +323,6 @@ DXE_EXPORT_END
 void
 os_init()
 {
+    /* this should be redundant with DXE_EXPORT_TABLE_AUTO!! */
     dlregsym(xst);
 }
