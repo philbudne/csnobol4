@@ -2,7 +2,6 @@
  * $Id$
  *
  * macros for data access and implementation of SIL ops
- * contains some system dependancies (bcmp, bcopy, bzero)
  */
 
 /* descriptor at address x */
@@ -14,6 +13,14 @@
 #define D_V(x)	(D(x).v)
 
 #define D_RV(x) (D(x).a.f)
+
+#ifdef USE_MEMCMP
+#define bcmp memcmp
+#endif /* USE_MEMCMP defined */
+
+#ifdef USE_MEMMOVE
+#define bcopy(SRC,DEST,LEN) memmove(DEST,SRC,LEN)
+#endif /* USE_MEMMOVE defined */
 
 /* compare two descrs (returns boolean) */
 #ifdef DCMP_BYTES
