@@ -6,10 +6,19 @@
 
 #include "snotypes.h"
 #include "h.h"
-#include "libret.h"
 #include "syntab.h"
+#include "libret.h"
 #include "macros.h"
 #include "units.h"
+
+#include <stdio.h>			/* for lib.h */
+#include <math.h>			/* finite(), isnan() */
+
+#ifdef ANSI_STRINGS
+#include <string.h>
+#else  /* ANSI_STRINGS not defined */
+#include <strings.h>			/* berkeley strings */
+#endif /* ANSI_STRINGS not defined */
 
 /* machine generated */
 #include "equ.h"
@@ -50,5 +59,7 @@ extern int returns[];
 #define STATIC_PAT static
 #include "lib/pat.c"
 #endif /* NO_INLINE_PAT not defined */
+
+#include "lib.h"			/* after all STATIC_xxx defines */
 
 #endif /* INLINING defined */
