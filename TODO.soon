@@ -1,40 +1,10 @@
 $Id$
 
-Create INSTALL top level doc file
-	mention local-config
-	mention VMS, Borland command files
+==== before beta release
 
-Create CHANGES top level doc file;
-	autoconf -- no longer necessary to manually link config.m4
-	some systems no longer have a system-specific config file
-	PLUSOPS intereferes with programs that OPSYN binary "?"
-	-d takes bytes, not descriptors.  multiply by 8 on most systems.
-	PUNCH is gone
+update man page date
 
-rcs tag for release
-
-update porting.doc;
-	discuss term.c
-		sys.c
-			mention SYSDEFS 
-	add:
-		NO_PML_HOST
-			mention dummy system.o, getenv.o
-		NO_PML_EXIT
-			mention dummy execl.o
-		NO_PML_REAL
-			NO_PML_SQRT
-			NO_PML_EXP
-			NO_PML_LOG
-			NO_PML_CHOP
-			NO_PML_TRIG
-		NO_PML_FILE
-		NO_PML_DELETE
-		NO_PML_RENAME
-	lib ifdefs;
-		NO_PML	(flush?)
-		NO_OFF_T
-		ANSI_STRINGS
+rcs tag
 
 ==== before 1.0 release;
 
@@ -47,17 +17,13 @@ DOS & VMS;
 
 update man page date
 
-rcs tag
-
 update v311.sil table of contents?
-
-auto-mail timing.out??
-	echo "please consider...."
 
 add utf.sno to snolib??
 
-make install?
-	echo "have you mailed timing.out...."???
+add UNAME_DOT_VERSION ifdef in posix/sys.c for AIX?
+
+rcs tag
 
 ================
 
@@ -71,13 +37,18 @@ create patches for snocone;
 
 ================ later;
 
+prototype warnings compiling getopt.c on some platforms
+	check for getopt() in unistd.h, stdio.h, stdlib.h??
+	search libc.a??
+	try compiling a program that asks for getopt()??
+		only include getopt.o if not found??
+
 add explicit rules for version.o, syn.o
 
 malloc system stack (STACK)?
 	slows down OFCHK() 2+% overall penalty
 
 BUG: gendata punts on ARRAY of constant expression!?
-	used for extra space at end of function table!
 
 move -DHAVE_xxx defines to autoconfig generated config.h?
 
@@ -126,6 +97,7 @@ improve lib/auxil/bzero.c?
 move data_init into (i)snobol4.c,
 	get rid of (most) global entries
 
+move more tests into autoconf, (less stuff in config/*.m4)
 ====
 
 open flags???
@@ -208,6 +180,8 @@ SPITBOL features;
 
 	curses support for SPITBOL-386 screen HOST() functions
 
+	-FAIL/-NOFAIL?
+
 ================================================================
 
 make resident storage a struct with named members 
@@ -217,3 +191,5 @@ in make depend;
 	sed "s/$(SNOBOL4)\./"'$(SNOBOL4)./'
 
 timing: cleanup on interrupt
+
+try to implement load.c using GNU ld  & libbfd?
