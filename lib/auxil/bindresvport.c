@@ -45,12 +45,20 @@ static char *rcsid = "$OpenBSD: bindresvport.c,v 1.13 2000/01/26 03:43:21 deraad
  * Portions Copyright(C) 1996, Jason Downs.  All rights reserved.
  */
 
-#include <sys/types.h>
+#ifdef HAVE_WINSOCK_H
+#include <winsock.h>
+#define EADDRINUSE WSAEADDRINUSE
+#define EPFNOSUPPORT WSAEPFNOSUPPORT
+#else  /* HAVE_WINSOCK_H not defined */
+/* XXX old VMS/UCX includes? */
 #include <sys/socket.h>
 #include <netinet/in.h>
+#endif /* HAVE_WINSOCK_H not defined */
+
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif /* HAVE_UNISTD_H defined */
+
 #include <errno.h>
 
 #define STARTPORT 600
@@ -90,12 +98,12 @@ bindresvport_sa(sd, sa)
 		portp = &((struct sockaddr_in *)sa)->sin_port;
 		break;
 /* Tru64 4.0 defines AF_INET6, but has nothing else! */
-#if defined(AF_INET6) && defined(NEED_INET6)
+#ifdef HAVE_SOCKADDR_IN6
 	case AF_INET6:
 		salen = sizeof(struct sockaddr_in6);
 		portp = &((struct sockaddr_in6 *)sa)->sin6_port;
 		break;
-#endif /* defined(AF_INET6) && defined(NEED_INET6) */
+#endif /* HAVE_SOCKADDR_IN6 defined */
 	default:
 		errno = EPFNOSUPPORT;
 		return (-1);
