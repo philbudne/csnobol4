@@ -1,13 +1,8 @@
 $Id$
 
-test next/darwin load.c
+note darwin dlopen() support in cctools/libdyld??
 
 PACKAGING!!
-
-DJGPP:
-	Use Burkhard's osinit.c???
-	osinit;	add io_findunit(), io_getfp()
-		io_mkfile(), io_closeall()
 
 verify correctness of line.ref, include.ref
 
@@ -30,8 +25,6 @@ Install README in snolib
 do CVS check out on branch??
 	move make release out to seperate script?
 		do a test build of checked out files???
-
-mention web page (and ftp) locations in README, man page!!
 
 change timing e-mail address to timing@snobol4.org??
 change mailing list name to users@snobol4.org, announce@snobol4.org??
@@ -108,7 +101,14 @@ make branch for major releases
 
 ================
 
-pass CPP directives thru genc.sno/gendata.sno
+Add FORK() to pml.h (under PML_FORK?)
+
+More PML functions:
+	create PIPE() and CLOSEFD()?? CLOSEONEXEC()??
+
+pass CPP directives thru gendata.sno??
+	copy to all output files?
+	warn about unknown ops?
 
 add const's to getstring, retstring defns?
 
