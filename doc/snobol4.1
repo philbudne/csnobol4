@@ -1,6 +1,6 @@
 .\" -*-nroff-*-
 .\" $Id$
-.TH SNOBOL4 1 "7 October 1996" "Local"
+.TH SNOBOL4 1 "22 October 1996" "Local"
 .SH NAME
 snobol4 \- SNOBOL4 interpreter
 .SH SYNOPSIS
@@ -39,7 +39,7 @@ platforms not using
 executable format is not supported. User functions can be staticly
 linked (poor man's loading) on
 .B ALL
-platforms.  Read load.doc for more information.
+platforms.  See load.doc for more information.
 
 .SS "Changes"
 .PP
@@ -69,7 +69,9 @@ variable below).
 .IP \(bu
 I/O is not performed using FORTRAN I/O.  The 3rd argument to the
 .B OUTPUT()
-function is ignored.
+and
+.B INPUT()
+functions are interpreted as a string of I/O options (see below).
 .IP \(bu
 Control lines and comment characters are valid after the end of string
 (;) statement separator.  Listing statement numbers show the statement
@@ -103,6 +105,12 @@ is not incremented.
 .B VALUE
 tracing applies to variables modified by immediate value assignment ($
 operator) and value assignment (. operator) during pattern matching.
+.IP \(bu
+The
+.B BACKSPACE()
+function is not implemented. See
+.B SET()
+below.
 
 .SS "Character set"
 .PP
@@ -386,14 +394,25 @@ whose stdin (in the case of
 .BR OUTPUT() )
 or stdout (in the case of
 .BR INPUT() )
-will be connected to the file variable.  The magic filenames
+will be connected to the file variable.  The filename - (hypen) is
+interpreted as stdin on
+.B INPUT()
+and stdout
+on
+.BR OUTPUT() .
+The magic filenames
 .BR /dev/stdin ,
 .BR /dev/stdout ,
 and
 .B /dev/stderr
 refer to the current process standard input, standard output and
 standard error respectively regardless of whether those special
-filenames exist on your system.
+filenames exist on your system.  The magic pathname
+\fB/tcp/\fIhostname\fB/\Iservice\fR can be used to open connection
+to a TCP server. If the path ends in
+.B /priv
+the connection will be originated from a privileged local port using
+.BR rresvport (3).
 .TP
 .B &PARM
 .br
@@ -416,6 +435,21 @@ number syntax has been expanded to allow exponents
 of the form:
 .br
 .IR "ANY('DeEe') ('+' | '-' | '') SPAN('0123456789')" .
+.TP
+.B SET()
+.br
+The
+.B SET()
+function can be used to seek the file pointer of an open file.  The
+first argument is an I/O unit number, the second is an integer offset.
+The third argument, an integers determins from
+.B whence
+the file pointer will be adjusted.  If whence is zero the starting
+point is the begining of the file, if whence is one, the starting
+point is the current file pointer, and if whence is two, the starting
+point is the end of the file.
+.B SET()
+returns the new file pointer value.
 .TP
 SITBOL file functions
 .br
@@ -563,6 +597,63 @@ Variable	Unit	Association
 \fBTERMINAL\fR	7	standard error (output)
 \fBTERMINAL\fR	8	standard error (input)
 .fi
+
+.SS "I/O Options"
+.PP
+The third argument of the
+.B INPUT()
+and
+.B OUTPUT()
+functions is interpreted as a string of single letter options, commas
+are ignored.  Some options effect only the I/O variable named in the
+first argument, others effect any variable associated with the unit
+number in the second argument.
+.TP
+.I digits
+A span of digits will set the input record length for the named I/O
+variable.  This controls the maximum string that will be returned for
+regular text I/O, and the number of bytes returned for binary I/O.
+Record length is per-variable; multiple variables may be associated
+with the same unit, but with different record lengths.
+.TP
+.B A
+The unit will be opened for append access in
+for
+.BR OUTPUT()
+(noop for
+.BR INPUT() ).
+.TP
+.B B
+The unit will be opened for binary access.  On input newline
+characters have no special meaning; the number of bytes transferred
+deppends on record length (see above). On output no newline is
+appended.  For terminal devices, all I/O to this unit will be
+performed in
+.I cbreak
+mode, however I/O on other units continues to perform I/O in
+.I cooked
+mode.
+.TP
+.B C
+Character at a time I/O.  A synonym for
+.BR "B,1" .
+.TP
+.B T
+Terminal mode.  No newline characters are added on output, and any
+newline characters are returned on input.  Terminal mode effects only
+the referenced unit.  Terminal mode is useful for outputting prompts
+in interactive programs.
+.TP
+.B Q
+Quiet mode.  Turns off input echo on terminals.  Effects only input
+from this unit.
+.TP
+.B U
+Update mode.  The unit is opened for both input and output.
+.TP
+.B W
+Unbuffered writes.  Each output variable assignment causes
+an I/O transfer to occur.
 
 .SH OPTIONS
 .TP 1i
