@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.65  1997/02/13  06:53:54  phil
+* [PLB54] add vm_gc_advise calls
+*
 * Revision 1.64  1996/10/25  21:34:22  phil
 * [PLB53] Add io_flushall calls
 *
@@ -6004,8 +6007,8 @@ CNVAT2 MOVDIC  XPTR,DESCR,WPTR,0
 *      DATE()
 *
 DATE   PROC    ,		   DATE()
-       RCALL   ,ARGVAL,,FAIL	   Get rid of argument
-       DATE    ZSP		   Get the date
+       RCALL   XPTR,ARGVAL,,FAIL   Get argument			[PLB55]
+       DATE    ZSP,XPTR		   Get the date			[PLB55]
        BRANCH  GENVRZ		   Go generate the variable
 *_
 *---------------------------------------------------------------------*

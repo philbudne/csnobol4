@@ -3,6 +3,7 @@
 # include "h.h"
 # include "snotypes.h"
 # include "macros.h"
+# include "equ.h"			/* for "I" */
 
 # ifdef VAXC
 # include <types.h>			/* time_t */
@@ -17,27 +18,63 @@
  * which is what '360 MAINBOL plus the time!
  *
  * updated 9/21/96; now returns full julian year.
+ * updated 4/2/97; takes optional arg per Catspaw SPITBOL
  *
  * localtime() exists in v6, but "struct tm" doesn't!
  */
 
 void
-date( sp )
+date( sp, dp )
     struct spec *sp;
+    struct descr *dp;
 {
     time_t t;
-    static char str[ 6*3 ];
+    static char str[ 21 ];
     struct tm *tm;
+    enum { OLD=0, NEW=1, ISO=2 } format;
+
+    if (D_V(dp) == I)
+	format = D_A(dp);
+    else
+	format = NEW;			/* default */
 
     time( &t );
     tm = localtime( &t );
-    sprintf( str, "%02d/%02d/%d %02d:%02d:%02d",
-	    tm->tm_mon + 1,
-	    tm->tm_mday,
-	    tm->tm_year + 1900,
-	    tm->tm_hour,
-	    tm->tm_min,
-	    tm->tm_sec );
+
+    switch (format) {
+    default:				/* out-of-range */
+    case NEW:				/* SPITBOL new format */
+	/* MM/DD/YYYY HH:MM:SS */
+	sprintf( str, "%02d/%02d/%d %02d:%02d:%02d",
+		tm->tm_mon + 1,
+		tm->tm_mday,
+		tm->tm_year + 1900,
+		tm->tm_hour,
+		tm->tm_min,
+		tm->tm_sec );
+	break;
+    case OLD:				/* SPITBOL default */
+	/* MM/DD/YY HH:MM:SS */
+	sprintf( str, "%02d/%02d/%02d %02d:%02d:%02d",
+		tm->tm_mon + 1,
+		tm->tm_mday,
+		tm->tm_year,
+		tm->tm_hour,
+		tm->tm_min,
+		tm->tm_sec );
+	break;
+    case ISO:				/* ISO style with 4-digit year */
+	/* YYYY-MM-DD HH:MM:SS */
+	sprintf( str, "%d-%02d-%02d %02d:%02d:%02d",
+		tm->tm_year + 1900,
+		tm->tm_mon + 1,
+		tm->tm_mday,
+		tm->tm_hour,
+		tm->tm_min,
+		tm->tm_sec );
+	break;
+    }
+
     S_A(sp) = (int_t) str;
     S_L(sp) = strlen(str);
     S_V(sp) = 0;

@@ -1194,7 +1194,8 @@ XMSTIME	OUTPUT = IND D_A(ARGV<1>) ' = mstime();'
 
 ****************
 *	SIL DATE (???) macro 10/28/93
-XDATE	OUTPUT = IND 'date(' ARGV<1> ');'		:(OPDONE)
+*	added second arg 4/2/97
+XDATE	OUTPUT = IND 'date(' ARGV<1> ',' ARGV<2> ');'	:(OPDONE)
 
 ****************
 *	SIL ENDEX (???) MACRO
