@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+9/30/2004
+	test/clean.sh: remove *.dat.  Thanks to Rafal Sulejman!
+
 9/28/2004
 	configure, Makefile2.m4:
 		install snolib.3 in MAN3DIR
