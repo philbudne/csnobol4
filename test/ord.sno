@@ -1,0 +1,17 @@
+	DEFINE("TEST(C)O,SC,CC")			:(ETEST)
+TEST	C = 'A'
+	O = ORD(C)
+	SC = SUBSTR(C,1,1)
+	CC = CHAR(O)
+	OUTPUT = IDENT(CC,SC) 'OK'
+							:(RETURN)
+ETEST
+
+* test for all characters in &ALPHABET??
+	TEST('A')
+	TEST('XYZ')
+	TEST(CHAR(0))
+	TEST(CHAR(255))
+	TEST('')
+	OUTPUT = ORD() 'SHOULD NOT HAPPEN'
+END
