@@ -226,7 +226,8 @@ tar:	snobol4 pv
 	cvs -d $(ANONCVSROOT) login
 	cd tmp; cvs -d $(ANONCVSROOT) co $(MODULE) $(CVSBRANCH)
 	mv tmp/$(MODULE) tmp/$(DIR)
-	cd tmp/$(DIR); make generated
+	cd tmp/$(DIR); make
+	cd tmp/$(DIR); make clean
 	rm tmp/$(DIR)/00README.CVS
 	cd tmp/$(DIR)/doc; make
 	rm -f $(KIT)
