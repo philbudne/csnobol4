@@ -1,8 +1,9 @@
 /* $Id$ */
 
+/* debug functions to call from gdb! */
+
 #ifdef DUMP
 #include "types.h"
-#include "flags.h"
 
 #include "equ.h"
 
