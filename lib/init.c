@@ -59,7 +59,7 @@ init_args( argc, argv )
     while ((c = getopt(argc, argv, "bd:klrs")) != -1) {
 	switch (c) {
 	case 'b':
-	    D_A(BANRCL) = !D_A(BANRCL);
+	    D_A(BANRCL) = !D_A(BANRCL);	/* toggle banner output */
 	    break;
 
 	case 'd':			/* number of dynamic descrs */
@@ -69,12 +69,18 @@ init_args( argc, argv )
 	    /* XXX enforce a minimum?? */
 	    break;
 
+	case 'f':
+	    D_A(CASECL) = !D_A(CASECL);	/* toggle case folding */
+	    break;
+
 	case 'k':
-	    D_A(NERRCL) = 0;		/* run programs with errors */
+	    /* toggle running programs with compile errors */
+	    D_A(NERRCL) = !D_A(NERRCL);
 	    break;
 
 	case 'l':
 	    D_A(LISTCL) = 1;		/* XXX TEMP!! re-enable listings! */
+	    /* XXX should take listing file!!! */
 	    break;
 
 	case 'r':			/* read INPUT from source after END */
