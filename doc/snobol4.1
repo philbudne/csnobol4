@@ -572,19 +572,39 @@ zero), and returns a REAL.
 The
 .B SORT()
 and
-.B
 .B RSORT()
-functions take a array (or table, which is first converted to an
-array). The array may be singly-dimensioned if which case , if non-
-null, will indicate the field of a programmer-defined data type on which
-the sort is based.  A may also be a table or a doubly-dimensioned
-array.  In these cases F may be an integer indicating the column on
-which to sort.  If F is null, it is taken to be 1.  The array A is not
-modified; a new array is allocated and returned.
+functions take two arguments.  The first can be either an array or a
+table.  If the first argument is an array, it may be
+singly-dimensioned in which case the second argument, if non-null
+should indicate the name of a field of a programmer defined data type
+to use to access the sort key.  Otherwise the first argument should be
+a table or a doubly-dimensioned array, in which case the second
+argument may an integer indicating the array column on which to sort.
+If the second argument is null, it is taken to be 1.  The array (or
+table) is not modified; a new array is allocated and returned.
 .B SORT()
 sorts elements in ascending order, while
 .B RSORT()
 sorts in descending order.
+
+.br
+Example: for a table 
+.I TAB
+of integers, indexed by strings
+being used to tabulate word counts
+.I "FREQ = RSORT(TAB,2)"
+returns an array such that
+.I FREQ<1,1>
+contains the most frequent word while
+.I FREQ<1,2>
+contains the number of occurrences of that word.
+While
+.I "WORDS = SORT(TAB,1)"
+returns an array with the rows by the lexicographical ordering of the words;
+.I WORDS<1,1>
+contains the lexicographically first word and
+.I WORDS<1,2>
+contains the number of occurrences of that word.
 .TP
 SPITBOL operators
 .br
@@ -597,7 +617,6 @@ expression, and returns the assigned value. An assignment after a scan
 performs a scan and replace.  Assignment is right associative, and has
 the lowest precedence, while scan is left associative and has a
 precedence just higher than assignment.
-
 .br
 The SPITBOL selection/alternative construction can be used in any
 expression.  It consists of a comma separated list of expressions
