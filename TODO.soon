@@ -207,23 +207,12 @@ create snolib_pic.a???
 
 use "pax -pe -rw src-dir dst-dir" for sourcekit?
 
-try under MINGW (minimal GNU for Windoze -- mingw.org)
-
 timing;	genc.sno runtimes too small; need better code for timing test?
-
-lib/snolib/serv.c:
-	use SIGFUNC_T? (move to snotypes.h??)
 
 sysinfo(SI_PLATFORM, .... ) for HOST()?		Sun
 SI_ARCHITECTURE??				Sun, IRIX6.2!
 
-figure out what's a legal alphabetic in current locale; allow in identifiers
-
 ================
-
-include file for bcopy() prototype??
-	do includes in h.h?? macros.h??
-	bcmp defines in macros.h and h.h?? USE_MEMCMP never set?
 
 define SIZE_T macro? (grep for SIZE_T comments)
 
@@ -234,12 +223,9 @@ change tty_mode to take single "mode" argument (flags + recl)?
 
 add "EXPORT" defns to lib functions (for windoze)???
 
-Make ANSI_STRINGS the default? (USE_STRINGS_H??)
-		use strchr, memcmp, memmove?, memset??
-	add USE_BSD_STRINGS? USE_STRING_H?
-
 avoid using unit 8 for terminal?
 	do all systems open stderr (and/or fd 2) r/w???
+	NO! Win32 does not! input & output consoles are different beasts?
 
 Tests;
 	add "scan.sno" test
@@ -249,13 +235,14 @@ SPITBOL features;
 	FENCE()
 	NOT()
 
-	ITC()/CTI() ???
+	ITC()/CTI() ???		[== CHAR/ORD?]
 
 	SETEXIT()
 		CONTINUE, SCONTINUE, ABORT system labels
 		see SNOBOL4+ SETBREAK()???
 			SETBRK() in s9.a86
 			BRKHND called from INIT5 in s4
+		Handle signals????
 
 	single letter abbrevs in TRACE()
 
@@ -263,7 +250,7 @@ SPITBOL features;
 
 	allow STRING for units???
 
-	SPITBOL-386 HOST() functions??
+	SPITBOL-386 HOST() functions?????
  
 ================
 
