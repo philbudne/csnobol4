@@ -76,3 +76,5 @@ reg lexcmp.sno
 reg substr.sno
 reg space.sno
 reg space2.sno
+# 9/20/96
+reg lgt.sno
