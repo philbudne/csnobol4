@@ -1,6 +1,11 @@
 * $Id$
 *
 * $Log$
+* Revision 1.71  1997/09/03  04:44:07  phil
+* [PLB60] Add "Output error"
+* Check IOKEY after user OUTPUT
+* Check return from ENDFILE
+*
 * Revision 1.70  1997/08/06  05:51:27  phil
 * [PLB59] from SNOBOL4+
 * seperate syntax tables for BREAK(X) and SPAN
@@ -505,7 +510,6 @@ ESASIZ EQU     50		   Limit on number of syntactic errors
 FBLKSZ EQU     10*DESCR		   Size of function descriptor block
 ARRLEN EQU     20		   Limit on length of array print image
 CARDSZ EQU     1024		   Width of compiler input	[PLB21][PLB57]
-SEQSIZ EQU     0		   Width of sequence field	[PLB1]
 STNOSZ EQU     8		   Length of statement number field
 DSTSZ  EQU     2*STNOSZ		   Space for left and right numbering
 CNODSZ EQU     4*DESCR		   Size of code node
@@ -636,9 +640,9 @@ AUTLOP XCALLC  getpmproto,(XSP,TMVAL),XLATRN			[PLB44]
        TITLE   'Compilation and Interpreter Invocation'
 XLATRD AEQLC   LISTCL,0,,XLATRN	   Skip print if list is off
        STPRNT  IOKEY,OUTBLK,LNBFSP Print line image
-XLATRN STREAD  INBFSP,UNIT,XLATIN,COMP1				[PLB38]
+XLATRN SETSP   TEXTSP,NEXTSP	   Read card and set up line	[PLB61]
+       STREAD  TEXTSP,UNIT,XLATIN,COMP1				[PLB38][PLB61]
        INCRA   LNNOCL,1		   Increment source line number	[PLB38]
-       SETSP   TEXTSP,NEXTSP	   Read card and set up line
 XLATNX STREAM  XSP,TEXTSP,CARDTB,COMP3,XLATRD			[PLB50]
 *				   Determine type of card	[PLB23]
        RCALL   ,NEWCRD,,(XLATRD,,) Process card type
@@ -1485,10 +1489,10 @@ CDIAG4 RCALL   ERRTXT,GENVAR,EMSGCL				[PLB49]
        AEQLC   BRTYPE,EOSTYP,,RTN3				E3.0.1
        STREAM  XSP,TEXTSP,EOSTB,COMP3,,RTN3
 *				   Get to end of statement
-DIAGRN STREAD  INBFSP,UNIT,DIAGIN,COMP1				[PLB38]
+DIAGRN SETSP   TEXTSP,NEXTSP	   Set up new line		[PLB61]
+       STREAD  TEXTSP,UNIT,DIAGIN,COMP1				[PLB38][PLB61]
 *				   Read card image
        INCRA   LNNOCL,1		   Count line numbers		[PLB38]
-       SETSP   TEXTSP,NEXTSP	   Set up new line
        STREAM  XSP,TEXTSP,CARDTB,COMP3,CDIAG7			[PLB50]
 *				   Analyze card type
        RCALL   ,NEWCRD,,(,,RTN3)   Process card image
@@ -1802,10 +1806,10 @@ FORJRN MOVD    BRTYPE,STYPE	   Set up break type
 FORRUN AEQLC   UNIT,0,,FOREOS	   Check for input stream
        AEQLC   LISTCL,0,,FORRUR	   Check listing switch
        STPRNT  IOKEY,OUTBLK,LNBFSP Print card image
-FORRUR STREAD  INBFSP,UNIT,FORINC,COMP1				[PLB38]
+FORRUR SETSP   TEXTSP,NEXTSP	   Set up new line		[PLB61]
+       STREAD  TEXTSP,UNIT,FORINC,COMP1				[PLB38][PLB61]
 *				   Read new card iamge
        INCRA   LNNOCL,1		   Count line numbers		[PLB38]
-       SETSP   TEXTSP,NEXTSP	   Set up new line
        STREAM  XSP,TEXTSP,CARDTB,COMP3,FORRUN			[PLB50]
 *				   Determine card type
        RCALL   ,NEWCRD,,(FORRUN,FORWRD)
@@ -6857,7 +6861,7 @@ DMPPTR DESCR   0,0,0		   Bin pointer for DUMP
 DTCL   DESCR   0,0,0		   Data type descriptor
 DT1CL  DESCR   0,0,0		   Data type descriptor
 EMSGCL DESCR   0,0,0		   Present error message address
-ERRBAS DESCR   CARDSZ+STNOSZ-SEQSIZ,0,0
+ERRBAS DESCR   CARDSZ+STNOSZ,0,0				[PLB61]
 ESAICL DESCR   0,0,0		   Count of compiler errors
 ETMCL  DESCR   0,0,0		   Time descriptor
 EXN2CL DESCR   0,0,I		   Statement count for stats	[PLB38]
@@ -6911,10 +6915,9 @@ TRATL  DESCR   TRLIST,0,0	   Trace list
 *      Specifiers for Compilation Listing
 *
 BLNSP  SPEC    BLNBUF,0,0,0,STNOSZ
-ERRSP  SPEC    ERRBUF,0,0,0,CARDSZ+STNOSZ-SEQSIZ+1
-INBFSP SPEC    INBUF,0,0,STNOSZ,CARDSZ
+ERRSP  SPEC    ERRBUF,0,0,0,CARDSZ+STNOSZ+1			[PLB61]
 LNBFSP SPEC    INBUF,0,0,0,CARDSZ+DSTSZ+1
-NEXTSP SPEC    INBUF,0,0,STNOSZ,CARDSZ-SEQSIZ
+NEXTSP SPEC    INBUF,0,0,STNOSZ,CARDSZ				[PLB61]
 LNOSP  SPEC    INBUF,0,0,0,STNOSZ
 RNOSP  SPEC    INBUF,0,0,CARDSZ+STNOSZ+1,STNOSZ
 *
@@ -6971,7 +6974,7 @@ XFERSP STRING  'transfer to'					[PLB11]
 *
 BLNBUF BUFFER  STNOSZ		   Blanks for statment number field
 DTARBF BUFFER  ARRLEN+7		   Array representation buffer
-ERRBUF BUFFER  CARDSZ+STNOSZ-SEQSIZ+1
+ERRBUF BUFFER  CARDSZ+STNOSZ+1					[PLB61]
 INBUF  BUFFER  CARDSZ+DSTSZ+1	   Card input buffer
 REALBF BUFFER  36		   Buffer for real number conversion
 ICLBLK DESCR   ICLBLK,TTL+MARK,ICLEND-ICLBLK-DESCR
