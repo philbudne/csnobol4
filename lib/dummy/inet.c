@@ -7,6 +7,7 @@
 #endif /* HAVE_CONFIG_H defined */
 
 #include <stdio.h>
+#include "h.h"				/* TRUE */
 
 FILE *
 tcp_open( host, service, port, priv )
