@@ -84,11 +84,7 @@ tty_mode( fp, cbreak, noecho, recl )
     list = sp;
  found:
     /* XXX ensure cbreak & noecho are canonical? x = !!x?? */
-    if (cbreak == sp->cbreak && noecho == sp->noecho
-#ifdef TTY_SAVE_RECL
-	&& recl == sp->recl
-#endif
-	)
+    if (cbreak == sp->cbreak && noecho == sp->noecho)
 	return;				/* nothing to do! */
 
     fflush(fp);				/* flush pending output */
