@@ -6,6 +6,7 @@
 #include <string.h>
 
 #define index strchr
+#define rindex strrchr
 
 #ifdef USE_MEMCMP
 #define bcmp memcmp
