@@ -463,6 +463,10 @@ to a TCP server. If the path ends in the optional suffix
 .B /priv
 the connection will be originated from a privileged local port using
 .BR rresvport (3).
+The magic pathname
+.B /dev/tmpfile
+opens an anonymous temporary file for reading and writing, see
+.BR tmpfile (3).
 .TP
 .B &PARM
 .br
