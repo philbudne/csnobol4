@@ -3,16 +3,24 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
+1/6/95
+	checked in 11/3 v311.sno, tests
+	README, History: updated/fixed
+
 11/3/94
 	lib/ansi/mstime.c: ansi only version
 	doc/porting.ms: update for above
 	config/ansi.m4: config to use ansi mstime function
 	config/generic.m4: added a comment
+	v311.sil: quick fix for local variable case folding
+	test/tests.in test/local.{sno,ref} tests for local var case folding
 
 9/14/94
-	timing.sno: cleanup/improvements
+	timing, timing.sno: cleanup/improvements
 	config/hpux-pa-cc.m4: new config for HPUX with native C compiler
-	date.c: tweak for VMS compilation (Martin Waller)
+	lib/date.c: tweak for VMS compilation (Martin Waller)
+	charset.c: fix for SunOS5 SC3.0 compiler
+	README: updated
 
 9/13/94
 	timing: AFS doesn't allow hard links across directories (Rik Faith)
