@@ -21,7 +21,8 @@ Move ports.doc information to config files?
 
 update porting.ms;
 	add SIGFUNC_T
-	s/cpp/m4/
+	add HZ
+	update for m4 vs. cpp
 
 ================
 
@@ -39,6 +40,8 @@ Improve porting.doc
 		hp cc vs. gcc
 	optimization (none/-O/-O2 etc)
 	mention "timing" script!!
+
+================
 
 Write man page
 
