@@ -8,7 +8,7 @@ struct acts {
     struct syntab *go;
 };
 
-#define CHARSET 255			/* XXX */
+#define CHARSET 256			/* XXX */
 struct syntab {
     char *name;				/* table name */
     char chrs[CHARSET];			/* index into actions */
