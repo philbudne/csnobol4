@@ -80,6 +80,7 @@ union addr {
 
 /* addressing unit is "char" */
 #define CPA	1			/* chars per addr (for BUFLEN) */
+typedef void *ptr_t;			/* void to avoid gcc3 warnings */
 
 /* chars per descr (for BKSIZE,GETLTH) */
 #define CPD	DESCR

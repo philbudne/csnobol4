@@ -117,8 +117,8 @@ MK_LBL	IDENT(NAME)					:S(MK_LBL2)
 * if we have a previous label, output it now that we have it's full size
 MK_LBL0	IDENT(PREV)					:S(MK_LBL1)
 	RES.H = IND 'struct ' PREVTYPE ' ' LCPREV '[' SIZE '];'
-*	output char address of res element (since CPA is 1)!
-	RES.H = '# define ' PREV TAB '((char *)' RESV LCPREV ')'
+*	force pointers to CPA unit size
+	RES.H = '# define ' PREV TAB '((ptr_t)' RESV LCPREV ')'
 	PREV =
 
 MK_LBL1	RES.H = DIFFER(HERE) '# define ' HERE TAB NAME
