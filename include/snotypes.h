@@ -4,15 +4,15 @@
 
 #ifdef INT_T
 typedef INT_T int_t; 			/* used to hold integers, addrs */
-#else
+#else  /* INT_T not defined */
 typedef long int_t; 			/* used to hold integers, addrs */
-#endif
+#endif /* INT_T not defined */
 
 #ifdef REAL_T
 typedef REAL_T real_t;
-#else
+#else  /* REAL_T not defined */
 typedef float real_t;
-#endif
+#endif /* REAL_T not defined */
 
 union addr {
     int_t i;	
