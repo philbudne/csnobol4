@@ -56,6 +56,7 @@ P6 ?		400   CYGWIN_NT	    gcc		0.99.4 184117	rs 11/98
 Pentium III	650   Linux 2.4.2   gcc		0.99.4 184117	maa 7/01
 Pentium II	?     SunOS 2.6	    spro	0.99.4 167341	pb 6/99
 AlphaPC 164LX	600   Linux 2.2.18j gcc		0.99.4 162332	jwk 9/01
+Strawberry iMac 400   Darwin 5.2    cc		0.99.4 155575	pb 1/02
 Sun Blade 100	502   SunOS 5.8	    spro	0.99.4 144512	pb 1/02
 AlphaServer1000A 400  OSF1 V4.0	    cc		0.99.4 135536	pb 5/00
 Sun Ultra 450	296   SunOS 5.6	  sproO5/native	0.99.4 129028	pb 9/98
