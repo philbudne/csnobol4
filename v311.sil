@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.55  1996/09/30  23:41:41  phil
+* [PLB44] use getpmproto() to get autoload prototypes
+*
 * Revision 1.54  1996/09/30  17:07:21  phil
 * don't zap FILENM at XLATND, so if there are no executable statements
 * (just an END), we have a file name to display for "Last statement"!
@@ -458,7 +461,7 @@ OBSIZ  EQU     256		   Number of bin headers
 OBARY  EQU     OBSIZ+3		   Total number for bins
 OCASIZ EQU     1500		   Descriptors of initial object code
 SPDLSZ EQU     5000		   Descriptors of pattern stack [PLB7][PLB41]
-STSIZE EQU     1000		   Descriptors of interpreter stack
+STSIZE EQU     1500		   Descriptors of interpreter stack [PLB45]
 SPDR   EQU     SPEC+DESCR	   Descriptor plus specifier
 OBOFF  EQU     OBSIZ-2		   Offset length in bins
 SPDLDR EQU     SPDLSZ*DESCR	   Size of pattern stack
@@ -7375,7 +7378,7 @@ FNLIST DESCR   FNLIST,TTL+MARK,FNCPLE-FNLIST-DESCR
        DESCR   UNLDSP,0,0
        DESCR   VALFN,FNC,0	   VALUE(S)
        DESCR   VALSP,0,0
-       ARRAY   10*2		   Space for 10 more functions
+       ARRAY   20		   Space for 10 more functions	[PLB45]
 FNCPLE LHERE   ,		   End of function pair list
 OPTBL  DESCR   OPTBL,TTL+MARK,OPTBND-OPTBL-DESCR
 ADDFN  DESCR   ADD,0,2		   X + Y    addition
