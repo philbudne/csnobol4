@@ -22,7 +22,7 @@ CFLAGS=	-c $(OPT) \
 	-DSIGFUNC_T="void __cdecl" \
 	-DSNOLIB_FILE="\"snolib.dll\"" \
 	-DSNOLIB_DIR="\"/snobol\"" \
-	-DUSE_WINSOCK2_H \
+	-DUSE_WINSOCK_H \
 	-DUSE_STDARG_H \
 	-Disnan=_isnan
 
@@ -38,7 +38,7 @@ OBJ=	snobol4.obj data.obj data_init.obj main.obj syn.obj \
 	popen.obj tty.obj inet.obj execute.obj rresvport.obj term.obj \
 	findunit.obj exp.obj
 
-LIBS=ws2_32.lib
+LIBS=wsock32.lib
 
 snobol4.exe : $(OBJ)
 	link /out:snobol4.exe $(OBJ) $(LIBS)
