@@ -95,3 +95,6 @@ reg intval.sno
 reg scanerr.sno
 # 1/7/2002
 reg crlf.sno
+# 1/21/2002
+reg label.sno
+reg vdiffer.sno
