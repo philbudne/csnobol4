@@ -53,10 +53,6 @@ static char *rcsid = "$OpenBSD: bindresvport.c,v 1.13 2000/01/26 03:43:21 deraad
 #endif /* HAVE_UNISTD_H defined */
 #include <errno.h>
 
-#ifdef NEED_SOCKLEN_T
-typedef unsigned int socklen_t;		/* unsigned for VMS */
-#endif /* NEED_SOCKLEN_T */
-
 #define STARTPORT 600
 #define ENDPORT (IPPORT_RESERVED - 1)
 #define NPORTS	(ENDPORT - STARTPORT + 1)
@@ -73,18 +69,18 @@ bindresvport_sa(sd, sa)
 	struct sockaddr myaddr;
 	unsigned short *portp;
 	unsigned short port;
-	socklen_t salen;
+	unsigned int salen;
 	int i;
 
 	if (sa == NULL) {
 		sa = &myaddr;
-		bzero(sa, sizeof(myaddr));
+		bzero((char *)sa, sizeof(myaddr));
 
 		if (getsockname(sd, sa, &salen) == -1)
 			return -1;	/* errno is correctly set */
 
 		af = sa->sa_family;
-		bzero(sa, salen);
+		bzero((char *)sa, salen);
 	} else
 		af = sa->sa_family;
 
