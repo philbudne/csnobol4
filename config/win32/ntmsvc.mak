@@ -16,7 +16,7 @@ NO_BITFIELDS=-DNO_BITFIELDS -DFFLD_T=char
 # "borland" version of tty routines uses kbhit() spin loop for raw tty
 # i/o.  This is unfriendly in a multitasking environment, and should
 # be replaced by the win32 version (see below0.
-TTY_C=lib\borland\tty.c
+TTY_C=lib\msdos\tty.c
 TTY_DEFS=-DTTY_READ_RAW
 
 # win32 tty.c does not yet work.
