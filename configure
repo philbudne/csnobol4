@@ -422,7 +422,8 @@ else
 	esac
 
 	case "$OSREL" in
-	V[5-9]*) CCVERS=-V ;;
+	V[1-4].*) ;;
+	*) CCVERS=-V ;;
 	esac
 	;;
     *:SunOS:4*:*)
