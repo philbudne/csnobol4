@@ -113,9 +113,10 @@ if [ "$UNAME" ]; then
 		#
 		# mandrake before redhat
 		for RELEASE in /etc/mandrake-release \
-		    /etc/redhat-release /etc/SuSe-release /etc/SuSE-release \
+		    /etc/SuSe-release /etc/SuSE-release \
 		    /etc/slackware-version /etc/turbolinux-release \
-		    /etc/debian_version /usr/lib/setup/slack-version-?.??; do
+		    /etc/debian_version /usr/lib/setup/slack-version-?.?? \
+		    /etc/gentoo-release /etc/redhat-release /etc/*-release; do
 			if [ -f ${RELEASE} ]; then
 				echo ''
 				echo releasefile ${RELEASE}:
