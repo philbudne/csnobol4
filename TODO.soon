@@ -1,5 +1,15 @@
 $Id$
 
+IPv6 support in inet.c
+	supply getaddrinfo compat routines?
+
+define NEED_RRESVPORT_DECL for anyone using dummy/rresvport.c?
+	supply better rresvport??
+
+flush CONFIG_GUESS
+	generic/sys.c
+	snolib/host.[ch]!!
+
 complaints when compiling isnobol4.c on some systems??
 	HP-UX 10?
 	AIX maxmem tweak?
