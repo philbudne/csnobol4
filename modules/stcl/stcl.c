@@ -13,6 +13,9 @@
 #endif /* HAVE_CONFIG_H defined */
 
 #include <tcl.h>
+#ifdef STCL_USE_TK
+#include <tk.h>
+#endif
 
 #include "h.h"
 #include "equ.h"
@@ -41,6 +44,11 @@ STCL_CREATE( LA_ALIST ) LA_DCL
 	Tcl_DeleteInterp(interp);
 	RETFAIL;
     }
+
+#ifdef STCL_USE_TK
+    /* init can fail if $DISPLAY not set -- ignore */
+    Tk_Init(interp);
+#endif
 
     h = new_handle(&tcl_handles, interp);
     if (h == BAD_HANDLE) {
