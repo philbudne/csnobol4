@@ -156,6 +156,9 @@ io_close(unit)				/* internal (zero-based unit) */
 	    fp->f != stdout &&
 	    fp->f != stderr &&
 	    fp->f != termin) {		/* XXX check a flag? */
+	    if (fp->flags & FL_TTY)
+		tty_close(fp->f);	/* advisory */
+
 	    fclose(fp->f);		/* XXX save return? */
 	    fp->f = NULL;
 	}
@@ -268,7 +271,7 @@ io_fopen( fp, mode )
     if (fp->f == NULL)
 	return NULL;
 
-    if (isatty(fileno(fp->f)))		/* XXX add lib fisatty()? */
+    if (fisatty(fp->f))
 	fp->flags |= FL_TTY;
     else
 	fp->flags &= ~FL_TTY;
@@ -331,7 +334,7 @@ io_mkfile( unit, f, fname )
     }
 
     fp->f = f;
-    if (isatty(fileno(f)))		/* XXX fisatty? */
+    if (fisatty(f))
 	fp->flags |= FL_TTY;
 
     up = io_units + unit - 1;
@@ -573,7 +576,8 @@ io_read( dp, sp )			/* STREAD */
 	if (fp->flags & FL_TTY) {
 	    tty_mode( fp->f,
 		     (fp->flags & FL_BINARY) != 0, /* raw (have FL_CHAR?) */
-		     (fp->flags & FL_NOECHO) != 0 /* noecho */
+		     (fp->flags & FL_NOECHO) != 0, /* noecho */
+		     recl
 		     );
 	    /* XXX pass recl? */
 	}
