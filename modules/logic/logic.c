@@ -109,18 +109,18 @@ LOGIC( LA_ALIST ) LA_DCL
     int len, retlen;
     unsigned char *cp, *rp;
     unsigned char retbuf[MAXLEN];
-    
+
     if (op < OP_MINOP || op > OP_MAXOP)
 	RETFAIL;
-    
+
     a2type = LA_TYPE(1);
     a3type = LA_TYPE(2);
-    
+
     if (op == OP_DIB || op == OP_IDB) {	/* conversion */
 	int base;
 	char buf[32];
 	char *cp;
-	
+
 	if (a3type == I)
 	    base = LA_INT(2);
 	else if (a3type == S && LA_PTR(2) == NULL) {
@@ -131,12 +131,12 @@ LOGIC( LA_ALIST ) LA_DCL
 	}
 	else
 	    RETFAIL;
-	
+
 	if (base == 0)
 	    base = 16;
 	else if (base < 2 || base > 16)
 	    RETFAIL;
-	
+
 	if (op == OP_DIB) {
 	    int_t result;
 
@@ -150,14 +150,14 @@ LOGIC( LA_ALIST ) LA_DCL
 	    result = strtol(buf, &cp, base);
 	    if (*cp)
 		RETFAIL;		/* incomplete conversion */
-	    
+
 	    RETTYPE = I;
 	    RETINT(result);
 	}
 	else {
 	    if (a2type != I)
 		RETFAIL;
-	    
+
 	    cp = buf + sizeof(buf);
 	    arg2 = LA_INT(1);
 	    do {
@@ -190,7 +190,7 @@ LOGIC( LA_ALIST ) LA_DCL
     if (LA_TYPE(1) != I && LA_TYPE(1) != S ||
 	LA_TYPE(2) != I && LA_TYPE(2) != S)
 	RETFAIL;
-    
+
     if (LA_TYPE(1) == I && LA_TYPE(2) == I) { /* both INTEGER */
 	arg2 = LA_INT(1);
 	arg3 = LA_INT(2);
@@ -246,30 +246,23 @@ LOGIC( LA_ALIST ) LA_DCL
 
     retlen = len;
     rp = (unsigned char *)retbuf;
-    if (a2type == S) {			/* ARG2 STRING */
+    if (a2type == S && a3type == S) {	/* ARG2, ARG3 STRING */
+	unsigned char *cp2;
+
 	cp = (unsigned char *)LA_STR_PTR(1);
-
-	if (a3type == S) {
-	    unsigned char *cp2;
-
-	    /* ARG2, ARG3 STRING */
-	    cp2 = (unsigned char *)LA_STR_PTR(2);
-
-	    while (len-- > 0) 
-		*rp++ = logic_byte(op, *cp++, *cp2++);
-	} /* both strings */
-	else {
-	    /* ARG2 STRING, ARG3 INTEGER */
-
-	    arg3 = LA_INT(2);
-	    while (len-- > 0) 
-		*rp++ = logic_byte(op, *cp++, arg3);
-	}
-    } /* ARG2 STRING */
-    else {
-	/* ARG2 INTEGER, ARG3 STRING */
-
+	cp2 = (unsigned char *)LA_STR_PTR(2);
+	while (len-- > 0) 
+	    *rp++ = logic_byte(op, *cp++, *cp2++);
+    }
+    else if (a2type == S) {		/* ARG2 STRING, ARG3 INTEGER */
+	cp = (unsigned char *)LA_STR_PTR(1);
+	arg3 = LA_INT(2);
+	while (len-- > 0) 
+	    *rp++ = logic_byte(op, *cp++, arg3);
+    }
+    else {				/* ARG2 INTEGER, ARG3 STRING */
 	arg2 = LA_INT(1);
+	cp = (unsigned char *)LA_STR_PTR(2);
 	while (len-- > 0) 
 	    *rp++ = logic_byte(op, arg2, *cp++);
     }
