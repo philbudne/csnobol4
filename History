@@ -1,7 +1,14 @@
 $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
- 
+
+12/30/93
+	cleaned up gensyn.sno output
+	made format.c strings const
+	did compiler timings (tried gcc -O2)
+	did profiling. do DCMP() inline!!
+		do LOCAPV inline? (called 6.7 million times by genc.sno)!!
+
 12/29/93
 	cleaned up gendata.sno output, output formats
 	cleaned up include file Id lines
