@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.2  93/11/02  13:25:46  phil
+* Added RCS Id and Log keywords
+* 
 *
        TITLE   'Table of Contents'
 *
@@ -5151,8 +5154,8 @@ END1   OUTPUT  OUTPUT,STATHD	   Print statistics title
        INTRL   FCL,ZEROCL
        BRANCH  AVTIME		   Join end game
 *_
-END2   INTL   EXNOCL,EXNOCL	   Convert execution total tn RAL
-       INTRL   XCL,ETMCL	  Convert execution time to REAL
+END2   INTRL   EXNOCL,EXNOCL	   Convert execution total to REAL
+       INTRL   XCL,ETMCL	   Convert execution time to REAL
        DVREAL  FCL,XCL,EXNOCL	   Compute average time
 AVTIME OUTPUT  OUTPUT,TIMEPS,(FCL) Print average time
 ENDALL ENDEX   ABNDCL						E3.2.2
@@ -5163,8 +5166,8 @@ SYSCUT OUTPUT  OUTPUT,SYSCMT,(STNOCL,LVLCL)
        SETAC   CUTNO,1						E3.2.2
        BRANCH  FTLEN2		   Join end game
 *_
-*---------------------------------------------------)-----------------*
-       TITLE   'Error Handling' 	  "%
+*---------------------------------------------------------------------*
+       TITLE   'Error Handling'
 AERROR SETAC   ERRTYP,2 	   Arithmetic error
        BRANCH  FTLTST
 *_
