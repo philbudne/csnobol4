@@ -60,6 +60,12 @@ I/O is not performed using
 I/O.  The format argument to the
 .B OUTPUT()
 function is ignored.
+.IP *
+Control lines and comment characters are valid after the end of string
+(;) statement seperator. 
+.IP *
+Listing statement numbers show the statement number of the LAST
+statement on the line (rather than the first).
 
 .SS "Character set"
 
@@ -85,6 +91,7 @@ alternation	| !
 unary negation	~ \\
 assignment	= _
 comment line	* # | ; !
+continuation	+ .
 .fi
 .PP
 Furthermore both brackets ([]) and widgits (<>) may be used to
@@ -250,4 +257,5 @@ characters.
 Indirection ('$' operator) fails to honor case folding.
 .br
 Dynamic storage cannot be expanded after startup.
-
+.br
+Listing lines are space padded to 132 characters per line.
