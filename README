@@ -73,10 +73,10 @@ Status;
 		routines!! gcc inlining may resolve this.
 
 I/O;
-
 	named files can be opened by supplying an optional fourth
-	argument to INPUT() and OUTPUT(), like in Catspaw SNOBOL4.
-	If first character is 
+		argument to INPUT() and OUTPUT(), like in Catspaw SNOBOL4.
+	If the first character is '|' the remainder of the string
+		will be treated as a shell command.
 	by default INPUT is attached to unit 5, and standard input.
 	by default OUTPUT is attached to unit 6, and standard output.
 	by default PUNCH is attached to unit 7, and standard error!!!
@@ -137,10 +137,11 @@ Changes from "beta1" distribution;
 	Now have man page (describes all extensions)!!!
 	Tested on more systems (IBM, SGI, LINUX, VMS).
 	Now using m4 to create Makefile2 -- cpp was problematic.
+	Implemented include files (-INCLUDE or -COPY)
 	Implemented case folding (&CASE and -CASE).
 	Implemented pipe opens (if filename starts with '|').
 	Input no longer space padded, &TRIM no longer on by default.
-	NUL's not translated to space on output.
+	NUL's no longer translated to space on output.
 	8-bit clean; &ALPHABET is 256 bytes long.
 	Turned off stack underflow checking (should improve performance).
 	"Poor-Man's LOAD" -- support for linked in external functions.
