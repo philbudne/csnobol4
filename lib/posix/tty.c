@@ -167,7 +167,7 @@ void
 tty_close(f)
     FILE *f;
 {
-    struct save *sp, *pp;
+    struct save *sp;
     int fd;
 
     fd = fileno(f);
@@ -192,7 +192,7 @@ tty_close(f)
 void
 tty_suspend()
 {
-    struct save *sp, *pp;
+    struct save *sp;
     int fd;
 
     fd = fileno(stdin);
