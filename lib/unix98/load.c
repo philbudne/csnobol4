@@ -25,15 +25,21 @@
 #include "path.h"
 #include "load.h"
 
+#ifndef NO_UNDERSCORE
+/*
+ * On a.out based BSD platforms dlopen the underscore prefix must be
+ * supplied (this is NOT true on SunOS4, which is an a.out platform,
+ * and the origintor of the dlopen/dylsym interface!!
+ */
+
 #if __NetBSD__
-/* Necessary on NetBSD 1.2 on a.out platforms */
 #define TRY_UNDERSCORE
 #endif /* __NetBSD__ defined */
 
 #if __FreeBSD__
-/* Necessary on FreeBSD 2.2.1-RELEASE */
 #define TRY_UNDERSCORE
 #endif /* __FreeBSD__ defined */
+#endif /* NO_UNDERSCORE not defined */
 
 /* external function returning pointer to loaded function */
 extern int (*pml_find())(LOAD_PROTO);
@@ -128,14 +134,6 @@ load(addr, sp1, sp2)
 	if (fp->entry == NULL) {
 #ifdef TRY_UNDERSCORE
 	    char name2[1024];		/* XXX */
-	    /*
-	     * Ouch; NetBSD 1.2 (on pc532 at least, and probably all
-	     * a.out based platforms) wants C functions with a leading
-	     * underscore.  Rather than trying to figure out when and
-	     * if this is needed at config time, just try it both ways.
-	     *
-	     * FreeBSD 2.2.1 has the same problem.
-	     */
 
 	    name2[0] = '_';
 	    strncpy(name2+1, fp->name, sizeof(name2)-2);
