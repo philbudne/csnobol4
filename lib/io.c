@@ -1,5 +1,3 @@
-/* XXX use FINDUNIT() thruout */
-
 /* $Id$ */
 
 #ifdef USE_STDARG_H			/* only if varargs not available */
@@ -134,12 +132,24 @@ static struct iovars iov;
 #define FINDUNIT(N) (iov.units + (N))
 
 extern FILE *term_input();		/* from <system>/term.c */
-extern void *malloc();
+extern void *malloc();			/* XXX use stdlib? */
 
 extern FILE *tcp_open(), *udp_open();
 #ifdef NEED_POPEN_DECL
 extern FILE *popen();
 #endif /* NEED_POPEN_DECL defined */
+
+/*
+ * crock;
+ *	do any extant systems have 64-bit off_t, working fsetpos
+ *	and NO fseeko/ftello?
+ * create generic/fpos.c (use fseek/ftell to implement fseeko/ftello)
+ * 	ansi/fpos.c	(use fsetpos/fgetpos)
+ */
+#ifndef _LARGEFILE_SOURCE
+#define ftello(FP) ftell(FP)
+#define fseeko(FP,OFF,WHENCE) fseek(FP,(long)(OFF),WHENCE)
+#endif /* _LARGEFILE_SOURCE not defined */
 
 static struct file *
 io_newfile( path )
@@ -715,7 +725,11 @@ io_print( iokey, iob, sp )		/* STPRNT */
      */
 
     if ((fp->flags & FL_UPDATE) && fp->last == LAST_INPUT) {
-	fseek(f, 0, SEEK_CUR);		/* seek relative by zero */
+	fseeko(f, (off_t)0, SEEK_CUR);	/* seek relative by zero */
+	/*
+	 * XXX set fp->last to LAST_NONE; don't set to LAST_OUTPUT
+	 * until an actual stdio operation is done?
+	 */
     }
     fp->last = LAST_OUTPUT;
 
@@ -841,7 +855,11 @@ io_read( dp, sp )			/* STREAD */
 	 */
 
 	if ((fp->flags & FL_UPDATE) && fp->last == LAST_OUTPUT) {
-	    fseek(f, 0, SEEK_CUR);	/* seek relative by zero */
+	    fseeko(f, (off_t)0, SEEK_CUR); /* seek relative by zero */
+	    /*
+	     * XXX set fp->last to LAST_NONE; don't set to LAST_OUTPUT
+	     * until an actual stdio operation is done?
+	     */
 	}
 	fp->last = LAST_INPUT;
 
@@ -983,10 +1001,10 @@ io_rewind(unit)				/* REWIND */
 
     f = fp->f;
     if (f != NULL && (fp->flags & FL_PIPE) == 0) {
-	fseek(f, up->offset, SEEK_SET);
+	fseeko(f, up->offset, SEEK_SET);
 	fp->last = LAST_NONE;		/* reset last I/O type */
    }
-}
+} /* io_rewind */
 
 /* extensions; */
 
@@ -1027,7 +1045,7 @@ io_ecomp()				/* XECOMP */
     }
 
     up->head = up->curr;		/* save file for rewind */
-    up->offset = ftell(up->curr->f);	/* save offset for rewind */
+    up->offset = ftello(up->curr->f);	/* save offset for rewind */
 
     /* free list of included filenames */
     while (iov.includes) {
@@ -1388,7 +1406,7 @@ io_seek(dunit, doff, dwhence)
     if (fp == NULL)
 	return FALSE;
 
-    off = D_A(doff);
+    off = (off_t) D_A(doff);
     whence = D_A(dwhence);
     if (whence < 0 || whence > 2)
 	return FALSE;
@@ -1409,12 +1427,12 @@ io_seek(dunit, doff, dwhence)
 	pos = lseek(fileno(f), off, whence);
 	if (pos != (off_t)-1)
 	    return FALSE;
-	D_A(doff) = pos;		/* XXX truncation possible! */
+	D_A(doff) = (int_t)pos;		/* XXX truncation possible! */
     }
     else
 #endif /* NO_UNBUF_RW not defined */
-    if (fseek(f, off, whence) == 0)
-	D_A(doff) = ftell(f);		/* XXX truncation possible! */
+    if (fseeko(f, off, whence) == 0)
+	D_A(doff) = (int_t)ftello(f);	/* XXX truncation possible! */
     else
 	return FALSE;
 
