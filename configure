@@ -1308,31 +1308,28 @@ fi
 
 if [ ! "$WITHOUT_NDBM" ]; then
     if [ -f $INCDIR/ndbm.h ]; then
-	echo "using $INCDIR/ndbm.h" 2>&1
+	echo "using $INCDIR/ndbm.h for DBM support" 2>&1
 	echo '#define HAVE_NDBM_H'		>> $CONFIG_H
 	if grep 'Margo Seltzer' $INCDIR/ndbm.h > /dev/null &&
 	    [ -f /usr/lib/libdb.a -o -f /usr/lib/libdb.so ]; then
 	    # RH5.2 has Berkeley DB ndbm.h, but seperate libdb.a
 	    # (BSD systems have BDB in libc)
+	    echo "using libdb for DBM support" 2>&1
 	    echo 'ADD_LDFLAGS([-ldb])'		>> $CONFIG_M4
 	elif grep 'GDBM' $INCDIR/ndbm.h > /dev/null &&
 	    [ -f /usr/lib/libgdbm.a -o /usr/lib/libgdbm.so -o \
 		/usr/lib/libgdbm.dll.a ]; then
 	    # Cygwin has gdbm <ndbm.h> and seperate libgdbm
-	    echo 'ADD_LDFLAGS([-lgdbm])'	>> $CONFIG_M4
+	    USE_GDBM=1
 	fi
     elif [ -f $INCDIR/gdbm/ndbm.h ]; then
-	echo "using $INCDIR/gdbm/ndbm.h" 2>&1
+	echo "using $INCDIR/gdbm/ndbm.h for DBM support" 2>&1
 	echo '#define HAVE_GDBM_SLASH_NDBM_H'	>> $CONFIG_H
-	# XXX check for library??
-	echo 'ADD_LDFLAGS([-lgdbm])'		>> $CONFIG_M4
 	USE_GDBM=1
     elif [ -f $INCDIR/gdbm-ndbm.h ]; then
-	echo "using $INCDIR/gdbm-ndbm.h" 2>&1
+	echo "using $INCDIR/gdbm-ndbm.h for DBM support" 2>&1
 	echo '#define HAVE_GDBM_DASH_NDBM_H'	>> $CONFIG_H
 	USE_GDBM=1
-	# XXX check for library?
-	echo 'ADD_LDFLAGS([-lgdbm])'		>> $CONFIG_M4
     else
 	# XXX check /usr/local/include??
 	echo 'no ndbm support found' 1>&2
@@ -1340,9 +1337,10 @@ if [ ! "$WITHOUT_NDBM" ]; then
     fi
 
     if [ ! "$NO_NDBM" ]; then
-#	if [ "$USE_GDBM" ]; then
-#	    # XXX check for library?
-#	fi
+	if [ "$USE_GDBM" ]; then
+	    echo "using libgdbm for DBM support" 2>&1
+	    echo 'ADD_LDFLAGS([-lgdbm])'	>> $CONFIG_M4
+	fi
 	echo '#define PML_NDBM'			>> $CONFIG_H
 	echo 'ADD_OBJS([ndbm.o])'		>> $CONFIG_M4
 	echo 'ADD_SRCS([$(NDBM_C)])'		>> $CONFIG_M4
@@ -1361,7 +1359,7 @@ if [ "$CYGWIN" -a -f $INCDIR/w32api/objbase.h ]; then
 	echo '#define NEED_WCSCHR'		>> $CONFIG_H
     fi
     if grep CoGetObject $INCDIR/w32api/objbase.h >/dev/null; then
-	true
+	echo '/* found CoGetObject in w32api/objbase.h */' >> $CONFIG_H
     else
 	echo '#define NEED_COGETOBJECT'		>> $CONFIG_H
     fi
