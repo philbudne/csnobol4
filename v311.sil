@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.85  2001/12/26 23:15:51  phil
+* [PLB72] Use %G for us/stmt
+*
 * Revision 1.84  2001/12/18 22:15:00  phil
 * fix edit tags on CASECL
 * tweaked comment on previous edit
@@ -5082,6 +5085,16 @@ TRACE  PROC    ,		   TRACE(V,R,T,F)
 TRAC5  LOCAPV  YPTR,TRATL,YPTR,TRAC1
 *				   Look for trace type
        GETDC   YPTR,YPTR,DESCR	   Get sub pair list
+       BRANCH  TRACEP		   Branch to subentry		[PLB73]
+*_
+* moved [PLB73]
+TRAC1  DEQL    YPTR,FUNTCL,INTR30  Is type FUNCTION?
+       MOVD    YPTR,TFNCLP	   Set up CALL trace
+       RCALL   ,TRACEP,,(INTR10,INTR10)
+*				   Call subentry to do it
+       MOVD    YPTR,TFNRLP	   Set up RETURN trace
+       BRANCH  TRACEP		   Branch to subentry to do it
+*_
 TRACEP PROC    TRACE		   Subentry for TRACE
        GETDC   TPTR,YPTR,DESCR	   Get default function
        DEQL    ZPTR,NULVCL,,TRAC2  Check for null
@@ -5106,13 +5119,6 @@ TRAC3  RCALL   TPTR,AUGATL,(TPTR,XPTR,XCL)
 TRAC6  PUTDC   YPTR,0,TPTR	   Link in new pair list
        BRANCH  RETNUL		   Return
 *_
-TRAC1  DEQL    YPTR,FUNTCL,INTR30  Is type FUNCTION?
-       MOVD    YPTR,TFNCLP	   Set up CALL trace
-       RCALL   ,TRACEP,,(INTR10,INTR10)
-*				   Call subentry to do it
-       MOVD    YPTR,TFNRLP	   Set up RETURN trace
-       BRANCH  TRACEP		   Branch to subentry to do it
-*_
 TRAC4  RCALL   TPTR,BLOCK,TWOCL	   Allocate new pair list
        PUTDC   TPTR,DESCR,XPTR	   Insert name to be traced
        PUTDC   TPTR,2*DESCR,XCL	   Insert pointer to pseudo-code
@@ -5132,19 +5138,22 @@ STOPTR PROC    ,		   STOPTR(T,R)
 STOPT2 LOCAPV  YPTR,TRATL,YPTR,STOPT1
 *				   Look for trace respect
        GETDC   YPTR,YPTR,DESCR	   Get pointer to trace list
-STOPTP PROC    STOPTR		   Subentry for FUNCTION
-       GETDC   YPTR,YPTR,0	   Get trace list
-       LOCAPT  YPTR,YPTR,XPTR,FAIL Look for traced variable
-       PUTDC   YPTR,DESCR,ZEROCL   Zero the entry
-       PUTDC   YPTR,2*DESCR,ZEROCL Overwrite trace
-       BRANCH  RETNUL		   Return
+       BRANCH  STOPTP		   Branch to FUNCTION subentry	[PLB73]
 *_
+* moved [PLB73]
 STOPT1 DEQL    YPTR,FUNTCL,INTR30  Check for FUNCTION
        MOVD    YPTR,TFNCLP	   Set up CALL
        RCALL   ,STOPTP,,(FAIL,INTR10)
 *				   Call subprocedure
        MOVD    YPTR,TFNRLP	   Set up RETURN
        BRANCH  STOPTP		   Branch to subentry
+*_
+STOPTP PROC    STOPTR		   Subentry for FUNCTION
+       GETDC   YPTR,YPTR,0	   Get trace list
+       LOCAPT  YPTR,YPTR,XPTR,FAIL Look for traced variable
+       PUTDC   YPTR,DESCR,ZEROCL   Zero the entry
+       PUTDC   YPTR,2*DESCR,ZEROCL Overwrite trace
+       BRANCH  RETNUL		   Return
 *_
 *---------------------------------------------------------------------*
 *
@@ -5990,6 +5999,15 @@ RECOM2 SETAC   SCL,3		   Set return switch
 RECOMQ INCRA   CMOFCL,DESCR	   Increment offset
        PUTD    CMBSCL,CMOFCL,ENDCL Insert END function
        POP     ZPTR		   Restore pointer to code block
+       BRANCH  RECOMZ						[PLB73]
+*_
+RECOMF SETAC   SCL,1		   Set failure return
+       BRANCH  RECOMQ		   Rejoin processing
+*_
+RECOMN SETSP   TEXTSP,BLSP					E3.1.5
+       BRANCH  RECOMT						E3.1.5
+*_								E3.1.5
+* moved to end (used by CONVEX) [PLB73]
 RECOMZ SUM     CMBSCL,CMBSCL,CMOFCL
 *				   Compute used portion of block
        RCALL   ,SPLIT,(CMBSCL)	   Split off remainder
@@ -5999,12 +6017,6 @@ RECOMZ SUM     CMBSCL,CMBSCL,CMOFCL
        SELBRA  SCL,(FAIL,INTR10,RTZPTR)
 *				   Select return
 *_
-RECOMF SETAC   SCL,1		   Set failure return
-       BRANCH  RECOMQ		   Rejoin processing
-*_
-RECOMN SETSP   TEXTSP,BLSP					E3.1.5
-       BRANCH  RECOMT						E3.1.5
-*_								E3.1.5
 CODER  PROC    CNVRT		   CODE(S)
        RCALL   ZPTR,VARVAL,,(FAIL,RECOMP)
 *				   Get argument
