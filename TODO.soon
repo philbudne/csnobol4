@@ -29,8 +29,6 @@ Improve porting.doc
 	optimization (none/-O/-O2 etc)
 	mention "timing" script!!
 
-Implement "poor man's LOAD"
-
 Implement -INCLUDE
 
 Improve I/O;
