@@ -68,6 +68,8 @@ TDIR=timdir.$$
 	rm -rf $TDIR
 	mkdir $TDIR
 	cd $TDIR
+	trap "cd ..; rm -rf $TDIR; exit 1" 1 2 15
+
 LNFILES='../xsnobol4 ../procs ../globals ../v311.sil ../genc.sno ../snobol4.c'
 # AFS doesn't allow hard links across directories!
 	ln $LNFILES . || ln -s $LNFILES .
