@@ -10,6 +10,7 @@
 #include <stdlib.h>			/* for malloc */
 #else  /* HAVE_STDLIB_H not defined */
 extern void *malloc();
+extern char *getenv();
 #endif /* HAVE_STDLIB_H not defined */
 
 #include <stdio.h>
@@ -1318,7 +1319,6 @@ io_include( dp, sp )
     if (io_fopen( fp, "r") == NULL) {
 	char *snolib;
 	char fn2[MAXFNAME];		/* XXX */
-	extern char *getenv();
 
 	free(fp);
 
