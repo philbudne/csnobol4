@@ -33,6 +33,7 @@ struct vars *varp;
 # undef argv
 # endif /* NO_STATIC_VARS defined */
 
+# include "proc.h"			/* BEGIN() */
 
 int
 main(argc, argv)
