@@ -1,14 +1,17 @@
 /* $Id$ */
 
+# ifndef STATIC_TOP
 # include "h.h"
 # include "snotypes.h"
 # include "macros.h"
+# define STATIC_TOP
+# endif
 
 /*# define DEBUG_TOP*/
 
-void
+STATIC_TOP void
 top( d1, d2, d3 )
-    struct descr *d1, *d2, *d3;
+   register struct descr *d1, *d2, *d3;
 {
    int_t a;
 
