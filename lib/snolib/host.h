@@ -103,8 +103,11 @@
 /* CSNOBOL4: size of "dynamic" storage in descriptors */
 #define HOST_DYNAMIC_SIZE	2400
 
-/* CSNOBOL4: size of pattern match storage in descriptors */
+/* CSNOBOL4: size of pattern match stack in descriptors */
 #define HOST_PMSTACK_SIZE	2401
+
+/* CSNOBOL4: size of interpreter stack in descriptors */
+#define HOST_ISTACK_SIZE	2402
 
 /*
  * NOTE!! All of the above 2xxx values are related to internals, and

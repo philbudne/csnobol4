@@ -130,11 +130,11 @@ S4_EXTERN struct descr ostack[1];	/* old stack pointer */
 
 /* overflow check */
 #define OFCHK()	\
-	{ if ((int_t)cstack > (int_t)(STACK+STSIZE*DESCR)) OVER(NORET); }
+	{ if ((int_t)cstack > (int_t)D_A(STKEND)) OVER(NORET); }
 
 #ifdef DO_UFCHK
 /* for debug only (internal error); */
-#define UFCHK()	{ if ((int_t)cstack < (int_t)STACK) INTR10(NORET); }
+#define UFCHK()	{ if ((int_t)cstack < D_A(STKHED)) INTR10(NORET); }
 #else  /* DO_UFCHK not defined */
 #define UFCHK()
 #endif /* DO_UFCHK not defined */
@@ -145,7 +145,7 @@ S4_EXTERN struct descr ostack[1];	/* old stack pointer */
 #define SPUSH(x) _SPEC(cstack+1) = _SPEC(x); cstack += SPEC/DESCR; OFCHK()
 #define SPOP(x)	 cstack -= SPEC/DESCR; UFCHK(); _SPEC(x) = _SPEC(cstack+1)
 
-#define ISTACK() cstack = (struct descr *)STACK
+#define ISTACK() cstack = (struct descr *)D_A(STKHED);
 #define PSTACK(x) D_A(x) = (int_t)(cstack-1); D_F(x) = D_V(x) = 0
 
 /****************/

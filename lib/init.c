@@ -36,6 +36,10 @@ extern char *dynamic();
 #define PSSIZE (SPDLDR/DESCR)		/* default pattern stack size */
 #endif /* PSSIZE not defined */
 
+#ifndef ISSIZE
+#define ISSIZE STSIZE
+#endif /* ISSIZE not defined */
+
 #ifdef NO_STATIC_VARS
 #include "vars.h"
 #else  /* NO_STATIC_VARS not defined */
@@ -50,6 +54,7 @@ int rflag;
 /* global for access by host.c; */
 int ndynamic;
 int pmstack;
+int istack;
 char *params;
 char **argv;
 int firstarg;
@@ -120,6 +125,8 @@ usage( jname, justversion )
     p('M',"process multiple files for program code");
     fprintf(stderr, "-P DESCRS[km]\n");
     fprintf(stderr, "\tsize of pattern match stack in descriptors (default: %s)\n", showk(PSSIZE));
+    fprintf(stderr, "-S DESCRS[km]\n");
+    fprintf(stderr, "\tsize of interpreter stack in descriptors (default: %s)\n", showk(ISSIZE));
 
     fprintf(stderr, "\n");
     fprintf(stderr, "For memory region sizes a suffix of 'k' (1024) and 'm' (1024*1024)\n");
@@ -210,6 +217,7 @@ init_args( ac, av )
 
     ndynamic = NDYNAMIC;
     pmstack = PSSIZE;
+    istack = ISSIZE;
 
     /* save in globals for HOST(), getparm(), init() */
     argc = ac;
@@ -236,7 +244,7 @@ init_args( ac, av )
      *		a real -+ option, ANOTHER + will need to be added).
      */
 
-    while ((c = getopt(argc, argv, "+bd:fhklnprsu:vMP:")) != -1) {
+    while ((c = getopt(argc, argv, "+bd:fhklnprsu:vMP:S:")) != -1) {
 	switch (c) {
 	case 'b':
 	    D_A(BANRCL) = !D_A(BANRCL);	/* toggle banner output */
@@ -297,6 +305,11 @@ init_args( ac, av )
 
 	case 'P':			/* pattern match stack size */
 	    if (!getk(optarg, &pmstack))
+		errs++;
+	    break;
+
+	case 'S':			/* interpreter stack size */
+	    if (!getk(optarg, &istack))
 		errs++;
 	    break;
 
@@ -432,6 +445,30 @@ init()
 
     /* pointer to end of stack for overflow checks */
     D_A(PDLEND) = (int_t) ptr + pmstack - NODESZ;
+
+    /****************
+     * allocate interpreter stack
+     */
+
+    istack *= DESCR;			/* get bytes */
+
+    ptr = malloc(istack);		/* NOTE: malloc(), not dynamic() */
+    if (ptr == NULL) {
+	fprintf( stderr, "%s: could not allocate interpreter stack of %d bytes\n",
+		argv[0], istack);
+	exit(1);
+    }
+
+    /* set up stack title */
+    D_A(ptr) = (int_t) ptr;
+    D_F(ptr) = TTL + MARK;
+    D_V(ptr) = istack;			/* length in bytes */
+
+    /* pointers to top of stack */
+    D_A(STKPTR) = D_A(STKHED) = (int_t) ptr;
+
+    /* pointer to end of stack, for overflow checks */
+    D_A(STKEND) = (int_t) ptr + istack;
 
     /****************
      * setup signal handlers

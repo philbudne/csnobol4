@@ -27,7 +27,7 @@
 #include "vars.h"
 #else  /* NO_STATIC_VARS not defined */
 extern int argc, firstarg;
-extern int pmstack, ndynamic;
+extern int pmstack, ndynamic, istack;
 extern char **argv;
 extern char *params;
 #endif /* NO_STATIC_VARS not defined */
@@ -200,6 +200,8 @@ HOST( LA_ALIST ) LA_DCL
 	RETINT(ndynamic/DESCR);		/* dynamic region in DESCRs */
     case HOST_PMSTACK_SIZE:
 	RETINT(pmstack/DESCR);		/* pattern match stack length */
+    case HOST_ISTACK_SIZE:
+	RETINT(istack/DESCR);		/* interpreter stack length */
 
 /*
  * NOTE!! All of the above 2xxx values are related to internals, and

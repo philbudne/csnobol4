@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.98  2002/03/01 19:03:59  phil
+* [PLB84] remove an empty RCALL label list
+*
 * Revision 1.97  2002/02/22 19:29:46  phil
 * [PLB83] 3-way return for XINCLD
 *
@@ -7103,7 +7106,8 @@ PDLEND DESCR   0,0,0		   Pattern history list end	[PLB41]
 PDLPTR DESCR   0,0,0		   Pattern history list beginning [PLB41]
 SCL    DESCR   0,0,0		   Switch descriptor
 SIGNCL DESCR   0,0,0		   Terminating signal() for SYSCUT [PLB47]
-STKPTR DESCR   STACK,0,0	   Pointer to stack
+STKPTR DESCR   0,0,0		   Pointer to stack		[PLB85]
+STKEND DESCR   0,0,0		   Pointer to stack end		[PLB85]
 STYPE  DESCR   0,FNC,0		   Descriptor return by STREAM
 TBLFNC DESCR   0,0,0		   Pointer to last pattern table
 UNIT   DESCR   0,0,0		   Input unit switch
@@ -7992,7 +7996,7 @@ PRMTBL DESCR   PRMTBL,TTL+MARK,PRMSIZ
        DESCR   KNLIST,0,0	   Unprotected keyword pair list
        DESCR   KVLIST,0,0	   Protected keyword pair list
        DESCR   OPTBL,0,0	   Operator procedure descriptors
-       DESCR   STACK,0,0	   Interpreter stack
+STKHED DESCR   0,0,0		   Interpreter stack		[PLB85]
        DESCR   INLIST,0,0	   Input association pair list
        DESCR   OTLIST,0,0	   Output association pair list
        DESCR   INSATL,0,0	   Input block list
@@ -8017,9 +8021,7 @@ OBLIST EQU     OBSTRT-LNKFLD	   Pseudo link pointer
 * now allocated in init.c					[PLB41]
 *
 *      SYSTEM  STACK
-*
-STACK  DESCR   STACK,TTL+MARK,STSIZE*DESCR
-       ARRAY   STSIZE		   Interpreter stack
+* interpreter now allocated in init.c				[PLB85]
 *
 *      Primitive Patterns
 *
