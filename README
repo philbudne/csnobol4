@@ -28,11 +28,13 @@ application.
 
 ****************************************************************
 
-Documentation directory;
+Documentation;
 
 doc/snobol4.1
-	man page for snobol4 (uses -man macros)
-	snobol4.0 is nroff output
+	man page for snobol4 (uses (ANY('nt') 'roff') -man macros)
+	only describes changes from the "green book".  For a good
+	SNOBOL4 tutorial look in the Catspaw "vanilla snobol"
+	distribution.  snobol4.0 is nroff output.
 
 doc/goals.doc
 	a description of the overall goals,
@@ -48,25 +50,23 @@ TODO
 	my identified tasks / wish list.
 
 TODO.soon
-	my top priority tasks.
+	my top priority tasks (hopefully small in any release)
 
-See the Catspaw vanilla.arc or vanilla.tar for a DOS/PC
-	port of SNOBOL4, many demo programs, SNOBOL4
-	language documentation, and ordering information
-	for books & products from Catspaw!
+See the Catspaw vanilla.arc or vanilla.tar for a DOS/PC port of
+	SNOBOL4, many demo programs, SNOBOL4 language documentation,
+	and ordering information for books & products from Catspaw!
 
 Status;
 	All features on SNOBOL4 are implemented,
-		including LOAD() (see doc/load.doc),
-		EXCEPT for processing of arithmetic exceptions.
+		arithmetic exceptions are not caught.
 
 	May run slowly;
-		genc.sno itself runs "only" 7x slower than under
+		genc.sno itself runs "only" 6x slower than under
 		Catspaw SPARC (Macro) SPITBOL.  This is a respectable
 		ratio for the two implementations!
 
 		However programs which make extensive use of matching
-		may run much slower.
+		may run much slower (up to 20x slower than SPITBOL).
 
 		The pattern scanner and some pattern matching routines
 		get split up into many small, mutually recusrsive
@@ -153,13 +153,14 @@ Changes from "beta1" distribution;
 	Generated code for boolean is cleaner.
 	Should build cleanly on AIX, Irix.
 	Resolved problems for build on VMS (using gcc only)
-		see lib/vms for library routines.  no BUILD.COM supplied.
+		see lib/vms for library routines.  no BUILD.COM supplied yet.
+	Cleaned up rebus (still supplied seperately).
 
 If you make any changes/fixes/improvements, or port it to a new
-system, please notify me!
+system, please send them to me (please include "timing.out" and tell
+me the system type, CPU clock speed, C compiler & version)!!
 
 If you are interested in getting mailings about new releases, send me
-mail.
+mail.  I'm interested in knowing what people are using SNOBOL4 for!
 
 Phil Budne <phil@cs.bu.edu>
-
