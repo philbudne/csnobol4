@@ -17,5 +17,3 @@
 #define STRING(s) "s"
 #define CONC(a,b) a/**/b
 #endif /* __STDC__ not defined */
-/* $Id$ */
-
