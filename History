@@ -2,8 +2,61 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+9/29/96
+	autoconfig: include contents of local-config file, if any
+	genc.sno: output '#define INLINING'
+	param.h: add ifdef INLINING; inline hash.c
+	pml.h: add NO_PML_{EXIT,HOST,REAL}, ran comdef
+	lib/hash.c: allow inlining
+	lib/io.c: use HAVE_UNISTD_H, check for L_SET
+	Makefile2.m4: add AUX_OBJS, AUX_SRCS, SNOLIB_A
+		add SNOLIB_A to regular link
+		add -r flag (back?) to make clean
+		add warning for make realclean
+
+9/28/96
+	doc/snobol4.1: ran ispell
+
+9/27/96
+	doc/snobol4.1: updated
+	doc/Makefile: use groff; add snobol4.html, snobol4.ps, porting.html
+	doc/design.doc: updated
+
+9/25/96
+	doc/snobol4.1: updated
+	added sin.c, cos.c, tan.c, exp.c, log.c, sqrt.c, chop.c to snolib
+	v311.sil: fixed autoload temp usage
+	version.c: add snoname, made version strings "const" again
+	Makefile2.m4: add RANLIB, compile pv with -I./include
+	lib/init.c: added -h
+	lib/io.c: check SNOLIB for INCLUDE files
+		remove trailing NUL's in STPRNT when compiling
+		plug NUL's with spaces in place
+		Listings finally tamed?
+
+9/24/96
+	lib/init.c: cleaned up usage message; fixed getk(), -p/-D alloc
+		have math_catch & err_catch take int arg
+	genc.sno: pass hash() two args
+	lib/hash.c: take two args; added lots of comments
+		tried different ascention calculations, no big wins
+	Makefile2.m4: added DATA_INIT_CFLAGS
+	removed unused symlinks config/posix.m4, config/irix.m4
+	timing: take snobol path and args
+	timing.sno: get version, added CHECKHZ(), DIFF array
+		add yet another time format for m68k-hpux8.0
+		indicate line number of diff failure
+		handle blank line at end of diff
+	include/snotypes.h: added VFLD_T
+	lib/io.c: use strncpy, S_L for %v/%S in io_printf
+	doc/ports.doc: updated
+	config/osf1.m4: set NO_BITFIELDS, use double for FLOAT_T
+	v311.sil: add autoload!!
+	procs: add LOAD2
+	pml.c: add PMPROTO macro for autoload
+
 9/23/96
-	genc.sno: set &INPUT to zero (reduces some overhead) between I/O's
+	genc.sno: twiddle &INPUT (reduces some overhead)
 	ports.doc: updated
 	autoconf: (re)set CC when cc is gcc!
 		show gcc version
@@ -12,6 +65,8 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 		added getk(), -d takes bytes, k = 1024
 	v311.sil: removed PDLBLK (now malloced in init)
 		dropped SPDLDZ back to 5000
+		tried doubling string hash table size (to 512)
+			no big win (<2%); left it alone
 	Makefile2.m4: updated -d arg
 
 9/22/96
@@ -20,7 +75,7 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 		include file & line in compiler error messages
 	test/tests.in: add line.sno err.sno reverse.sno
 	lib/io.c: trim STPRNT output while compiling
-	snobol4.1: updated
+	doc/snobol4.1: updated
 	Makefile2.m4: fixed make tar
 	version.c: upped version to 0.98.3
 
@@ -31,7 +86,7 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 	Makefile2.m4: removed vfprintf
 	config/bsd43.m4 removed vfprintf
 	deleted lib/auxil/vfprintf
-	snobol4.1: updated
+	doc/snobol4.1: updated
 
 9/19/96 & 9/20/96
 	v311.sil:
@@ -127,7 +182,7 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 	lib/init.c: updated usage(), added -n, parse up 'k' suffix on -d
 	genc.sno: use FREEZE()/THAW(); 15% reduction in execute time!
 	Makefile2.m4: added COPT, use -d<n>k
-	snobol4.1: updated
+	doc/snobol4.1: updated
 	globals: updated
 
 9/4/96
@@ -202,7 +257,7 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
 7/28/95
 	timing: include config.m4 contents
-	snobol4.1: update &DUMP &ABEND and &CODE behaviors
+	doc/snobol4.1: update &DUMP &ABEND and &CODE behaviors
 	v311.sil: add VARVUP (copy of VARVAL for now)
 
 5/15/95
