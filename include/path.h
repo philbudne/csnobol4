@@ -4,13 +4,9 @@
 #define LD_PATH "/usr/bin/ld"		/* new (SunOS4, bsd4.4) fs org */
 #endif /* LD_PATH not defined */
 
-#ifndef SNOLIB_DIR
-#define SNOLIB_DIR "/usr/local/lib/snobol4"
-#endif /* SNOLIB_DIR not defined */
+/* SNOLIB_DIR default now in Makefile2.m4 */
 
-#ifndef SNOLIB_A
-#define SNOLIB_A "snolib.a"
-#endif /* SNOLIB_A not defined */
+/* SNOLIB_A default now in Makefile2.m4 */
 
 #ifndef TMP_DIR
 #define TMP_DIR "/tmp"			/* exists on all systems?! */
