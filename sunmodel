@@ -2,6 +2,7 @@
 #
 # sunmodel
 # from ftp://ftp.fwi.uva.nl/pub/comp/solaris/sunmodel
+# modified by Phil Budne <phil@ultimate.com> for C-MAINBOL distribution
 #
 # Parse output from devinfo/prtconf
 #  and display the kind of Sun and its clock 
@@ -22,8 +23,104 @@
 # version 2.0001  17 januari 1996 added support for ultra.
 # version 2.0002  01 march 1996 added support for Ross,RT625 without cpuF
 # version 2.0003  01 may 1996 added support for Ross,CY605 without cpuF
-version=`uname -r`
-hostje=`uname -n`
+#
+# $Log$
+
+if [ -f /usr/bin/uname ]; then
+	version=`uname -r`
+	hostje=`uname -n`
+else
+	hostje=`hostname`
+	if [ -d /var ]; then
+		version=4.0
+	else
+		version=3.x
+	fi
+fi
+
+case $version in
+# DEBUG MODE
+#*)
+#	pr_conf="cat sunmodel.input"
+#	;;
+6.*|5.*)
+	# solaris machine
+	case `uname -m` in
+	sun4)
+		# old sun4: no openprom.
+		# sysinfo(SI_HW_SERIAL, ...) provides data
+		# but must have bsd compatability software to
+		# get it from command line?!
+		karch=sun4
+		mach=sparc
+		if [ -f /usr/ucb/hostid ]; then
+			hostid=`/usr/ucb/hostid`
+		else
+			hostid=xxx
+			# compile small program?
+		fi
+		;;
+	i86pc)
+		# no openprom on x86
+		memsize=`/usr/sbin/prtconf -v | grep 'Memory size:' | sed 's/Memory.size:[ 	]*//'`
+		echo Machine $hostje x86 $memsize
+		exit 0
+		;;
+	*)
+		# sun4c, sun4m, sun4d, sun4u, ppc?!
+		pr_conf="/usr/sbin/prtconf -vp"
+		;;
+	esac
+	;;
+3.*|4.*)
+	# pre 4.1 systems don't have uname;
+	karch=`/usr/bin/arch -k`
+	case "$karch" in
+	sun2|sun3*|sun386|sun4|Series*|S4*)
+		# non-openprom machine. use hostid
+		mach=`/usr/bin/mach`
+		hostid=`hostid`;;
+	*)
+		# sun4c or sun4m sunos 4 machine
+		pr_conf="/usr/etc/devinfo -vp";;
+	esac
+	;;
+*)
+	echo cant determine sunmodel
+	exit 1
+;;
+esac
+
+if [ "$hostid" ]; then
+	# here with systems with no openprom
+	# hostid mappings from hosttype v2.0
+	# by John DiMarco <jdd@cdf.toronto.edu>
+	case "$hostid" in
+	01*)	sys='2/100';	cpu='mc68010 @ 10';;
+	02*)	sys='2/50';	cpu='mc68010 @ 10';;
+	04*)	sys="Solbourne $karch"; cpu="$mach";;
+	11*)	sys='3/100';	cpu='mc68020 @ 16.7';;
+	12*)	sys='3/50';	cpu='mc68020 @ 12.5';;
+	13*)	sys='3/200';	cpu='mc68020 @ 25';;
+	14*)	sys='3/110';	cpu='mc68020 @ 16.7';;
+	17*)	sys='3/60';	cpu='mc68020 @ 16.7';;
+	18*)	sys='3/E';	cpu='mc68020';;
+	21*)	sys='4/200';	cpu='sparc @ 16.7';;
+	22*)	sys='4/100';	cpu='sparc @ 14.2';;
+	23*)	sys='4/300';	cpu='sparc @ 25';;
+	24*)	sys='4/400';	cpu='sparc @ 33';;
+	31*)	sys='386i';	cpu='i80386DX @ 15 or 25';;
+	32*)	sys='486i';	cpu='i80486DX';;
+	41*)	sys='3/400';	cpu='mc68030 @ 33';;
+	42*)	sys='3/80';	cpu='mc68030 @ 20';;
+	*)	sys="unknown $karch"; cpu="$mach";;
+	esac
+	echo Machine $hostje $sys $cpu
+	exit 0
+fi
+
+# declare functions here; pre-SunOS4.1 shell did not have functions!
+
 name=
 bname=
 freq=0
@@ -124,27 +221,7 @@ vfreq=0
 montype=
 }
 	
-
 export name bname freq
-case $version in
-# DEBUG MODE
-#*)
-#	pr_conf="cat sunmodel.input"
-#	;;
-6.*|5.*)
-	# solaris machine
-	pr_conf="/usr/sbin/prtconf -vp"
-	;;
-4.*)
-	# sunos 4 machine
-	pr_conf="/usr/etc/devinfo -vp"
-	;;
-*)
-	echo cant determine sunmodel
-	exit 1
-;;
-esac
-
 $pr_conf | ( egrep -v "$not" ; echo end ) | while read pr_line
 do
 	case $pr_line in
