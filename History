@@ -2,15 +2,29 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
+6/24/94
+	Made isnobol4 the default
+	Added label RTNL3G so RTNUL3 can be inlined
+	Use register pointer to "res" in data_init.c
+
+6/23/94
+	Include both snobol4.c and isnobol4.c in kit
+	Use register in data_init.c
+	Implemented TRACE_DEPTH
+	Inline pair.c!!
+
 6/21/94
 	Cleaned up config/ dir.
-	Removed all "cc" configs.
-	Turn on -finline-functions
-	Added rules for isnobol4.c
+		Removed all "cc" configs.
+	Turned on -finline-functions by default
+	Added Makefile2 rules for isnobol4.c
+	Added SNOBOL4 variable
 
 6/20/94
-	Fixed bug found by Phillip Thomas;
-		Restart "card" processing after a semi.
+
+	Fixed problem found by Phillip Thomas; Restart "card"
+		processing after a semi.  Allows comment and control
+		lines after a semi.
 	Created scripts for analysis of inlining results.
 
 6/19/94

@@ -44,7 +44,9 @@ doc/ports.doc
 	status of ports to various systems.
 
 doc/porting.doc
-	information on porting to a new system.
+	information on porting to a new system,
+	in particular the usage of Makefile variable
+	which can be set in a config.m4 file.
 
 doc/goals.doc
 	a description of the overall goals,
@@ -139,6 +141,11 @@ The tar does not contain any binaries; THEY SHOULD NOT BE NEEDED
 provided.  The generated files are NOT system dependant!!!
 
 Changes from "beta1" distribution;
+	GCC inlining features used to advantage.
+		SNOBOL4 compile phase may run 3x faster than beta1.
+		Some programs may execute 1.5x faster.
+	Source code ordered for better inlining;
+		gcc automatic function inlining enabled by default.
 	Now have man page (describes all extensions)!!!
 	Tested on more systems (IBM, SGI, LINUX, VMS).
 	Now using m4 to create Makefile2. Too many problems with cpp.
