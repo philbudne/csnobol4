@@ -186,7 +186,7 @@ tty_read(f, buf, len, raw, noecho, keepeol, fname)
 	if (keepeol)
 	    return iosb.size + iosb.termlen;
     }
-    returb iosb.size;
+    return iosb.size;
 } /* tty_read */
 
 #ifdef TEST
