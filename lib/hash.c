@@ -22,9 +22,12 @@
  * This is more expensive than the the simple sum of the first and
  * last four characters I had been using.  LOCA1 (variable lookup) is
  * a hot-spot, and expanding hash table size with the old sum was
- * pointless, since the range of hash values was small, with enough
- * bits left over to use for "assention" (I had been using length,
- * which penalized long strings).
+ * pointless, since the range of hash values was small.
+ *
+ * The new function purports to deliver enough good bits to expand the
+ * hash table size, it should also have enough bits left over to use
+ * for "assention" (I had been using length, which penalized long
+ * strings).
  *
  * Only look at the first 12 (if len >= 12), and last 11.  MAINBOL
  * hashes ALL strings, so the inputs can be long, and you can waste a
