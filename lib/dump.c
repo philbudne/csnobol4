@@ -179,4 +179,51 @@ parray(dp)
     }
     fflush(stdout);
 }
+
+void
+indent( level )
+    int level;
+{
+    level *= 4;
+
+    while (level > 8) {
+	putchar('\t');
+	level -= 8;
+    }
+
+    while (level-- > 0) {
+	putchar(' ');
+    }
+}
+
+/* dump code trees (as passed to TREPUB) */
+
+enum { O_FATHER=1, O_LSON=2, O_RSIB=3, O_CODE=4 };
+
+void
+pcode2( dp, level )
+    struct descr *dp;
+    int level;
+{
+    while (dp && dp != (struct descr *)1) {
+	int n;
+
+	indent(level);
+	printf("%x: code: %x", dp, dp[O_CODE].a.ptr );
+	n = ((struct descr *)dp[O_CODE].a.ptr) - res;
+	if (n >= 0 && n <= /*sizeof(res)/sizeof(res[0])*/ 12649)
+	    printf(" res[%d]", n);
+	putchar('\n');
+
+	pcode2( dp[O_LSON].a.ptr, level+1 );
+	dp = dp[O_RSIB].a.ptr;
+    }
+}
+
+void
+pcode( dp )
+    struct descr *dp;
+{
+    pcode2( dp, 0 );
+}
 #endif /* DUMP defined */
