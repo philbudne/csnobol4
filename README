@@ -136,14 +136,17 @@ provided.  The generated files are NOT system dependant!!!
 Changes from "beta1" distribution;
 	Now have man page (describes all extensions)!!!
 	Tested on more systems (IBM, SGI, LINUX, VMS).
-	Now using m4 to create Makefile2 -- cpp was problematic.
-	Implemented include files (-INCLUDE or -COPY)
-	Implemented case folding (&CASE and -CASE).
+	Now using m4 to create Makefile2. Too many problems with cpp.
+	Many more example configs.  Use "include" to eliminate commonality.
+	Implemented include files (-INCLUDE or -COPY) per SPITBOL.
+	Implemented case folding (&CASE and -CASE) per SPITBOL.
 	Implemented pipe opens (if filename starts with '|').
 	Input no longer space padded, &TRIM no longer on by default.
+	Default input line size now 1024 (was 80).
+	Compiler input line size now 124 (was 72).
 	NUL's no longer translated to space on output.
 	8-bit clean; &ALPHABET is 256 bytes long.
-	Default line size now 1024 (was 80).
+	Comments and control lines now legal after ';'
 	Turned off stack underflow checking (should improve performance).
 	"Poor-Man's LOAD" -- support for linked in external functions.
 	Small "snolib.a" library of loadable functions.
