@@ -1,9 +1,6 @@
 /* $Id$ */
 
 #include <stdio.h>
-#include <descrip.h>
-#include <ttdef.h>
-/*#include <tt2def.h>*/
 #include <iodef.h>
 #include <ssdef.h>
 
@@ -14,29 +11,12 @@
  * compiles, does not work?
  */
 
-struct ttysense {
-    char class;
-    char type;
-    short width;
-    unsigned stat : 24;
-    unsigned char len;
-    unsigned int stat2;
-};
-
 static struct {
     short status;
-    short offset;
+    short size;
     short termlen;
     short term;
 } iosb;
-
-/* keep settings for each fd in a list; */
-static struct save {
-    struct save *next;
-    int fd;
-    struct ttysense t;
-    int cbreak, noecho;
-} *list;
 
 int
 fisatty(f)
@@ -50,92 +30,16 @@ tty_mode( fp, cbreak, noecho, recl )
     FILE *fp;
     int cbreak, noecho, recl;
 {
-    struct ttysense new;
-    struct save *sp;
-    int fd;
-
-    fd = fileno(fp);			/* XXX this right?? */
-
-    /* XXX move to tty_save_fd()?? */
-    for (sp = list; sp; sp = sp->next) {
-	if (sp->fd == fd)
-	    goto found;
-    }
-    sp = (struct save *)malloc(sizeof(struct save));
-    if (sp == NULL)
-	return;				/* ??? */
-
-    /* save "original" settings (used for "cooked" I/O) */
-    sp->fd = fd;
-    SYS$QIOW (0, fd, IO$_SENSEMODE, &iosb, 0, 0,
-	      &sp->t, sizeof(sp->t), 0, 0, 0, 0 );
-    sp->noecho = sp->cbreak = 0;	/* ??? */
-
-    /* link into list */
-    sp->next = list;
-    list = sp;
- found:
-    cbreak = !!cbreak;
-    noecho = !!noecho;
-    if (cbreak == sp->cbreak && noecho == sp->noecho)
-	return;				/* nothing to do! */
-
-    fflush(fp);				/* flush pending output */
-
-    new = sp->t;			/* start with original */
-    if (cbreak) {
-	/* XXX
-	 * setup new for "cbreak"
-	 * no CR/LF processing
-	 */
-    }
-
-    if (noecho)
-	new.stat |= TT$M_NOECHO;	/* kill echo */
-
-    SYS$QIOW(0, fd, IO$_SETMODE, &iosb, 0, 0, &new, sizeof(new), 0, 0, 0, 0);
-
-    /* save current state */
-    sp->cbreak = cbreak;
-    sp->noecho = noecho;
 } /* tty_mode */
-
-/* advisory notice; discard saved info.
- * NOTE: this loses if device remains open
- *	(ie; in use by a child proc, or has been dup'ed)
- */
-static void
-tty_close_fd(fd)
-    int fd;
-{
-    struct save *sp, *pp;
-
-    for (pp = NULL, sp = list; sp; pp = sp, sp = sp->next) {
-	if (sp->fd == fd) {
-	    if (pp) {
-		pp->next = sp->next;
-	    }
-	    else {
-		list = sp->next;
-	    }
-	    free(sp);
-	    break;
-	}
-    }
-}
 
 void
 tty_save()
 {
-    /* XXX call tty_save_fd(STDIN_FILENO)?? */
-    tty_mode(stdin, 0, 0, 0);		/* force initial save */
 }
 
 void
 tty_restore()
 {
-    /* XXX call tty_close_fd(STDIN_FILENO)?? */
-    tty_mode(stdin, 0, 0, 0);		/* restore initial settings */
 }
 
 /* advisory notice */
@@ -143,18 +47,47 @@ void
 tty_close(f)
     FILE *f;
 {
-    tty_close_fd(fileno(f));
+}
+
+/* must define TTY_READ for this to be called; */
+int
+tty_read(f, buf, len, raw, noecho)
+    FILE *f;
+    char *buf;
+    int len;
+    int raw;
+    int noecho;
+{
+    if (raw) {
+	int chan;
+	int op;
+	int ret;
+
+	chan = fileno(f);		/* XXX this right? */
+	op = IO$_TTYREADALL;
+	if (noecho)
+	    op |= IO$M_NOECHO;
+#define EFN 0
+	ret = SYS$QIOW(EFN, chan, op, &iosb, 0, 0, buf, len, 0, 0, 0, 0);
+	if (ret != SS$_NORMAL || iosb.status != SS$_NORMAL)
+	    return -1;
+	return iosb.size;
+    }
+    else {
+	if (noecho)
+	    return -1;			/* don't echo passwords!! */
+	return fread(buf, 1, len, f);
+    }
 }
 
 #ifdef TEST
+#define TRUE 1
 main() {
-  char c;
+  char buf[2];
   int cc;
 
-  tty_save();
-  tty_mode(stdin, 1, 1, 1);
-  cc = read(fileno(stdin), &c, 1);
-  if (cc) printf("%d\n", c);
+  cc = tty_read(stdin, buf, 1, TRUE, TRUE);
+  if (cc) printf("%d\n", buf[0]);
   tty_restore();
 }
 #endif
