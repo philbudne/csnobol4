@@ -12,5 +12,5 @@
 
 /* machine generated */
 #include "equ.h"
-#include "stg.h"
+#include "data.h"
 #include "syn.h"

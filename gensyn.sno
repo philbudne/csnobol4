@@ -136,7 +136,7 @@ EIO
 	SYN.C =
 	SYN.C = '# include "syntab.h"'
 	SYN.C = '# include "types.h"'
-	SYN.C = '# include "stg.h"'
+	SYN.C = '# include "data.h"'
 	SYN.C = '# include "syn.h"'
 	SYN.C = '# include "equ.h"'
 	SYN.C =
