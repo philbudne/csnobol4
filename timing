@@ -82,11 +82,17 @@ if [ "$UNAME" ]; then
 			cat /proc/meminfo
 			echo ''
 		fi
-		for RELEASE in /etc/redhat-release /etc/SuSe-release; do
+		#
+		# mandrake before redhat
+		for RELEASE in /etc/mandrake-release \
+		    /etc/redhat-release /etc/SuSe-release \
+		    /etc/slackware-version /etc/turbolinux-release \
+		    /etc/debian_version /usr/lib/setup/slack-version-?.??; do
 			if [ -f ${RELEASE} ]; then
 				echo ${RELEASE}:
 				cat ${RELEASE}
 				echo ''
+				break
 			fi
 		done
 		;;
