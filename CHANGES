@@ -48,6 +48,10 @@ Changes since 0.99.4 release;
 		SERV_LISTEN() -- act as TCP server
 
 	Allow a REAL any place an INTEGER is required (from SNOBOL4+)
+		Contexts include TABLE(),  ITEM(),  array  indices,
+		INPUT(),  OUTPUT(),  SET(), keyword values, CHAR(),
+		RPAD(), LPAD(), FIELD(), COLLECT(), DUMP(), DUPL(),
+		OPSYN(), and SUBSTR()
 
 	Increase default dynamic space to 64K descriptors
 
