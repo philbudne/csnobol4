@@ -1312,19 +1312,16 @@ if [ ! "$WITHOUT_NDBM" ]; then
 	echo "using $INCDIR/ndbm.h" 2>&1
 	# always included in libc?
 	# I guess we'll find out, won't we!!
-    elif [ -f $INCDIR/gdbm.h ]; then
-	echo "using $INCDIR/gdbm.h" 2>&1
+    elif [ -f $INCDIR/gdbm/ndbm.h ]; then
+	echo "using $INCDIR/gdbm/ndbm.h" 2>&1
 	# XXX check for library??
-	echo 'ADD_LDFLAGS([-lgdbm])'		>> $CONFIG_M4
+	echo '#define HAVE_GDBM_SLASH_NDBM_H'	>> $CONFIG_H
 	USE_GDBM=1
-    elif [ -f /usr/local/include/gdbm.h ]; then
-	# XXX for loop?
-	# XXX check for library??
-	USE_GDBM=1
+    elif [ -f /usr/local/include/gdbm-ndbm.h ]; then
+	echo "using $GDBM_DIR/include/gdbm-ndbm.h" 2>&1
 	GDBM_DIR=/usr/local
-	echo "using $GDBM_DIR/include/gdbm.h" 2>&1
-	echo 'ADD_CPPFLAGS([-I'$GDBM_DIR/include'])' >> $CONFIG_M4
-	echo 'ADD_LDFLAGS([-L'$GDBM_DIR/lib' -lgdbm])' >> $CONFIG_M4
+	echo '#define HAVE_GDBM_DASH_NDBM_H'	>> $CONFIG_H
+	USE_GDBM=1
     else
 	echo 'no ndbm support found' 1>&2
 	NO_NDBM=1
