@@ -18,8 +18,8 @@
 struct read_iosb {
     short status;
     short size;				/* offset to terminator */
-    short termlen;			/* terminator size */
     short term;				/* first char of terminator */
+    short termlen;			/* terminator size */
 };
 
 /* list of channels to use, by fileno */
@@ -97,7 +97,7 @@ tty_close(f)
 /*
  * perform tty reads;
  * must define TTY_READ_RAW for this to be called from io.c
- * not called for cooked (non-raw) reads
+ * also called for cooked reads if TTY_READ_COOKED defined
  */
 
 int
@@ -180,9 +180,10 @@ tty_read(f, buf, len, raw, noecho, keepeol, fname)
     }
 
     if (!raw) {
-	if (iosb.termlen == 0) {
-	    /* XXX need to flush rest of line! */
-	}
+	/*
+	 * XXX if termlen == 0, overran buffer
+	 * need to flush rest of record!
+	 */
 	if (keepeol)
 	    return iosb.size + iosb.termlen;
     }
