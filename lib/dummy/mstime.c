@@ -8,5 +8,6 @@
 
 real_t
 mstime() {
+    /* use time() to get elapsed time? need to keep base (see borland vers) */
     return 0.0;
 }
