@@ -4,10 +4,18 @@
 
 #include <stdio.h>
 #include <ctype.h>
+
+#ifdef USE_WINSOCK_H
+#ifndef _INC_WINDOWS
+#include <windows.h>
+#endif /* _INC_WINDOWS */
+#include <winsock.h>
+#else  /* USE_WINSOCK_H not defined */
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
 #include <netinet/in.h>
+#endif /* USE_WINSOCK_H not defined */
 
 #include "h.h"				/* TRUE/FALSE */
 #include "macros.h"			/* bcopy */
