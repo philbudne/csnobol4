@@ -1,5 +1,28 @@
 /* $Id$ */
 
+/*
+ * I/O support for CSNOBOL4
+ *
+ * This is the largest and nastiest file in the support library, and
+ * the only one where I've tolerated extensive use of "ifdef".  The
+ * complexity (and fragility) of the I/O support is due to a number of
+ * factors;
+ *
+ * Assumptions built into the SIL source (both compiler and runtime).
+ * Multiple layers of I/O (assocation, unit, stdio, fd)
+ * Interactions of I/O options (buffered vs binary
+ * Handling file lists.
+ * O/S differnces (esp tty handling and winsock)
+ *
+
+ * A rewrite is badly needed, but would likely delay version 1.0, and
+ * chances are good the result would not (initially) have fewer
+ * problems.  An original goal was to depend entirely on stdio, but it
+ * turns out almost every platform also provides open/close/read/write
+ * support as well, so it's tempting to do away with stdio, and or at
+ * add an abstraction layer over it.
+ */
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
@@ -11,7 +34,7 @@
 #endif /* HAVE_STDARG_H not defined */
 
 #ifdef HAVE_STDLIB_H			/* before stdio */
-#include <stdlib.h>			/* for malloc */
+#include <stdlib.h>
 #else  /* HAVE_STDLIB_H not defined */
 extern void *malloc();
 extern char *getenv();
@@ -27,7 +50,7 @@ typedef long off_t;
 #endif /* NO_OFF_T not defined */
 
 #ifdef HAVE_UNISTD_H
-#include <unistd.h>
+#include <unistd.h>			/* SEEK_xxx */
 #endif /* HAVE_UNISTD_H defined */
 
 #ifdef ANSI_STRINGS
@@ -41,7 +64,7 @@ typedef long off_t;
 #include "snotypes.h"
 #include "macros.h"
 #include "path.h"
-#include "libret.h"			/* IO_xxx */
+#include "libret.h"			/* IO_xxx, INC_xxx */
 
 /* generated */
 #include "equ.h"			/* for BCDFLD (for X_LOCSP), res.h */
@@ -83,7 +106,8 @@ struct file {
     struct file *next;			/* next input file */
     FILE *f;				/* may be NULL if not (yet) open */
     int flags;				/* FL_xxx */
-    /* XXX add close hook (pointer to function)?? */
+    enum { TYPE_PIPE, TYPE_TTY, TYPE_INET } type;
+    /* XXX add methods for read/write/eof/mode/seek/close */
     /* XXX keep recl (shift flags up?)? */
     enum { LAST_NONE, LAST_OUTPUT, LAST_INPUT } last;
     /* MUST BE LAST!! */
@@ -100,25 +124,24 @@ struct file {
  * /dev/fd/N magic pathname) and have different behaviors.
  */
 
-#define FL_TYPE		07
-#define FLT_PIPE	01		/* file was popen'ed; use pclose() */
-#define FLT_TTY		02		/* is a tty */
-#define FLT_INET	03		/* is an inet socket */
-#define FL_EOL		010		/* strip EOL on input, add on output */
-#define FL_BINARY	020		/* binary: no EOL; use recl */
-#define FL_UPDATE	040		/* update: read+write */
-#define FL_UNBUF	0100		/* unbuffered write */
-#define FL_APPEND	0200		/* append */
-#define FL_NOECHO	0400		/* tty: no echo */
-#define FL_NOCLOSE	01000		/* don't fclose() */
-#define FL_INPUT	02000		/* attached for INPUT() */
-#define FL_OUTPUT	04000		/* attached for OUTPUT() */
-#define FL_NOTAFILE	010000		/* "f" is not a file (XXX TEMP) */
+#define FL_EOL		01		/* strip EOL on input, add on output */
+#define FL_BINARY	02		/* binary: no EOL; use recl */
+#define FL_UPDATE	04		/* update: read+write */
+#define FL_UNBUF	010		/* unbuffered write */
+#define FL_APPEND	020		/* append */
+#define FL_NOECHO	040		/* tty: no echo */
+#define FL_NOCLOSE	0100		/* don't fclose() */
 
-#define ISPIPE(FP) (((FP)->flags & FL_TYPE) == FLT_PIPE)
-#define ISTTY(FP)  (((FP)->flags & FL_TYPE) == FLT_TTY)
-#define ISINET(FP) (((FP)->flags & FL_TYPE) == FLT_INET)
+#ifdef INET_IO
+#define FL_NOTAFILE	0200		/* "f" is not a file (XXX TEMP) */
 #define ISAFILE(FP) !((FP)->flags & FL_NOTAFILE)
+#else
+#define ISAFILE(FP) 1
+#endif
+
+#define ISPIPE(FP) ((FP)->type == TYPE_PIPE)
+#define ISTTY(FP)  ((FP)->type == TYPE_TTY)
+#define ISINET(FP) ((FP)->type == TYPE_INET)
 
 #define MAXFNAME	1024		/* XXX use MAXPATHLEN? POSIX?? */
 #define MAXOPTS		1024
@@ -424,7 +447,7 @@ io_fopen2( fp, mode )
 #ifdef INET_IO
 	/* awful crock; fp->f is a SOCKET; do away with this!!!! */
 	fp->flags |= FL_NOTAFILE;
-	fp->flags |= FLT_INET;		/* always set? */
+	fp->type = TYPE_INET;		/* always set? */
 #endif /* INET_IO */
 	return;
     }
@@ -458,7 +481,7 @@ io_fopen2( fp, mode )
     if (fp->fname[0] == '|') {
 	/* filename with leading '|' opens a pipe! */
 	/* SPITBOL: leading '!' means pipe, (with escaping?) */
-	fp->flags |= FLT_PIPE;		/* XXX set close hook? */
+	fp->type = TYPE_PIPE;
 	fp->f = popen(fp->fname+1, buf);
 	return;
     }
@@ -477,7 +500,7 @@ io_fopen( fp, mode )
 
     if (ISAFILE(fp) && fisatty(fp->f, fp->fname))
 	/* XXX set close hook? */
-	fp->flags |= FLT_TTY;
+	fp->type = TYPE_TTY;
 
 
     /* XXX if FL_UNBUF call setbuf(fp->f, NULL)??
@@ -546,7 +569,7 @@ io_mkfile2( unit, f, fname, flags )
     fp->flags |= flags;
     if (ISAFILE(fp) && fisatty(f, fname)) {
 	/* XXX set close hook? */
-	fp->flags |= FLT_TTY;
+	fp->type = TYPE_TTY;
     }
 
     unit = INTERN(unit);
@@ -1311,8 +1334,6 @@ io_openi(dunit, sfile, sopts, drecl)	/* called from SNOBOL INPUT() */
 	up->curr = up->head = fp;
     }
 
-    fp->flags |= FL_INPUT;
-
     /* pass recl back up */
     D_A(drecl) = recl;
     D_F(drecl) = 0;
@@ -1370,8 +1391,6 @@ io_openo(dunit, sfile, sopts)		/* called from SNOBOL OUTPUT() */
 	io_closeall(unit);
 	up->curr = up->head = fp;
     }
-    fp->flags |= FL_OUTPUT;
-
     return TRUE;
 } /* io_openo */
 
