@@ -46,10 +46,12 @@ all:	snobol4
 snobol4 xsnobol4 install: Makefile2 ALWAYS .depend  $(GENERATED)
 	$(MAKE) -f Makefile2 $@ SIL=$(SIL) SNOBOL4=$(SNOBOL4)
 
-
 .PRECIOUS: snobol4 xsnobol4
 
 ALWAYS:
+
+# for hand generation of sources
+generated: $(GENERATED)
 
 ################
 # run configuration script
@@ -186,16 +188,16 @@ spotless: distclean
 
 # file to hard-link into dist dir
 # generated files copied separately to ensure newer than source files!
-[TAR=	README CHANGES History INSTALL TODO TODO.soon doc Makefile \
+TAR=	README CHANGES History INSTALL TODO TODO.soon doc Makefile \
 	Makefile2.m4 autoconf configure config.guess $(SIL) syntax.tbl \
 	procs globals genc.sno gensyn.sno gendata.sno \
 	main.c charset.c data_init.c version.c parms.h mlink.h mdata.h \
 	pml.h $(G1) lib include config test bugs snolib/*.sno \
-	sunmodel timing timing.sno cc-M bsplitu.c]
+	sunmodel timing timing.sno cc-M bsplitu.c
 
 # "print version" -- for dir/tar names
 pv:	version.c
-	$(CC) -I[./include] -DMAIN -o pv version.c
+	$(CC) -I./include -DMAIN -o pv version.c
 
 # compression program, suffix
 COMP=gzip
@@ -213,7 +215,7 @@ KIT=snobol-$(VERS).tar.$(Z)
 tar vers: snobol4 pv
 	cd doc; make
 	cd test; ./clean.sh
-	rm -rf [snobol-[0-9]*]
+	rm -rf snobol-[0-9]*
 	rm -f *~ */*~ */*/*~ *.tmp
 	mkdir $(DIR)
 	find $(TAR) -name RCS -prune -o -print | cpio -pldm $(DIR)
