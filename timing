@@ -29,6 +29,11 @@ if [ "$UNAME" ]; then
 
 	# show hardware, if we know how;
 	case `$UNAME` in
+	AIX*)
+		echo /usr/sbin/lsattr -EHl proc0
+		/usr/sbin/lsattr -EHl proc0
+		echo ''
+		;;
 	*BSD*)
 		if [ -x /usr/sbin/sysctl ]; then
 			echo /usr/sbin/sysctl hw:
