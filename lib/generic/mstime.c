@@ -8,7 +8,12 @@
  * times() is venerable (it was in v6)!!
  */
 
+#ifndef HZ
+/* HZ define is likely to be in some sys include file,
+ * but this is supposed to be the ultra-generic version!!!
+ */
 #define HZ 60				/* sigh */
+#endif /* HZ not defined */
 
 int_t
 mstime() {
