@@ -14,6 +14,10 @@ getstring( vp, dp, len )
     int dlen;
     char *sp;
 
+    if (!vp) {				/* null string? */
+	*dp = '\0';
+	return;
+    }
     dlen = D_V(vp);			/* get length from title */
     sp = (char *) vp + BCDFLD;		/* get pointer to string */
 
