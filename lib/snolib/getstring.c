@@ -9,7 +9,11 @@
 #include "snotypes.h"			/* DESCR, etc */
 #include "macros.h"			/* D_A() etc */
 
-void
+#ifndef EXPORT
+#define EXPORT
+#endif /* EXPORT not defined */
+
+EXPORT void
 getstring( vp, dp, len )
     void *vp;				/* pointer to "natural variable" */
     char *dp;
