@@ -10,3 +10,9 @@ dynamic( size )
 {
     return malloc(size);
 }
+
+void
+vm_gc_advise(gc)
+    int gc;
+{
+}

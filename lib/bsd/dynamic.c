@@ -12,6 +12,15 @@ char *
 dynamic( size )
     int size;
 {
-    vadvise(VA_ANOM);			/* warn VM we're random during GC */
     return malloc(size);
+}
+
+void
+vm_gc_advise(gc)
+    int gc;
+{
+    if (gc)
+	vadvise(VA_ANOM);		/* warn VM we're random during GC */
+    else
+	vadvise(VA_NORM);		/* normal */
 }
