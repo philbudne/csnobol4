@@ -1,16 +1,5 @@
 $Id$
 
-update vversion.c
-
-improve load.doc
-	document use of pml!!!
-		add line to pml.h
-		add objs to PML_OBJ in config.m4
-		add libraries (if any) to CONFIG_LDFLAGS
-	document RETxxx macros
-	document use of getstring
-	document search path for real load (internal, current, SNOLIB)
-
 snolib;
 	move .c files to lib/??? ?
 	move compilation to Makefile2
