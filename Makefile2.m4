@@ -121,6 +121,7 @@ FORK_C=$(SRCDIR)lib/snolib/fork.c
 GETSTRING_C=$(SRCDIR)lib/snolib/getstring.c
 HOST_C=$(SRCDIR)lib/snolib/host.c
 LOG_C=$(SRCDIR)lib/snolib/log.c
+ORD_C=$(SRCDIR)lib/snolib/ord.c
 RENAME_C=$(SRCDIR)lib/snolib/rename.c
 RETSTRING_C=$(SRCDIR)lib/snolib/retstring.c
 SERV_C=$(SRCDIR)lib/snolib/serv.c
@@ -440,9 +441,9 @@ system.o: $(SYSTEM_C)
 AUX_OBJS= _OBJS
 
 SNOLIB_OBJS= chop.o cos.o delete.o environ.o execute.o exists.o exit.o \
-	exp.o file.o findunit.o fork.o getstring.o host.o log.o rename.o \
-	retstring.o serv.o sin.o sprintf.o sqrt.o sset.o sys.o tan.o \
-	$(AUX_OBJS)
+	exp.o file.o findunit.o fork.o getstring.o host.o ord.o log.o \
+	rename.o retstring.o serv.o sin.o sprintf.o sqrt.o sset.o sys.o \
+	tan.o $(AUX_OBJS)
 
 $(SNOLIB_A): $(SNOLIB_OBJS)
 	rm -f $(SNOLIB_A)
@@ -495,6 +496,9 @@ host.o: $(HOST_C)
 
 log.o: $(LOG_C)
 	$(CC) $(CFLAGS) -c $(LOG_C)
+
+ord.o: $(ORD_C)
+	$(CC) $(CFLAGS) -c $(ORD_C)
 
 rename.o: $(RENAME_C)
 	$(CC) $(CFLAGS) -c $(RENAME_C)
