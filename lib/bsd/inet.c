@@ -11,6 +11,10 @@
 
 #include "h.h"				/* TRUE/FALSE */
 
+#ifndef INADDR_NONE
+#define INADDR_NONE ((unsigned long)0xffffffff)	/* use -1? */
+#endif
+
 static int
 inet_socket( host, service, port, priv, type )
     char *host, *service;
@@ -54,14 +58,19 @@ inet_socket( host, service, port, priv, type )
     else
 	return -1;
 
-    if (type == SOCK_STREAM && priv) {
-	int lport;
+    if (priv) {
+	if (type == SOCK_STREAM) {
+	    int lport;
 
-	lport = IPPORT_RESERVED - 1;
-	s = rresvport(&lport);
+	    lport = IPPORT_RESERVED - 1;
+	    s = rresvport(&lport);
+	}
+	else
+	    return -1;			/* UDP and "priv" set */
     }
     else
 	s = socket( AF_INET, type, 0 );
+
     if (s < 0)
 	return -1;
 
@@ -69,18 +78,20 @@ inet_socket( host, service, port, priv, type )
     if (hp != NULL) {
 	char **ap;
 
+	/* try each addr in turn */
 	for (ap = hp->h_addr_list; *ap; ap++) {
 	    bcopy( *ap, &sin.sin_addr.s_addr, sizeof(sin.sin_addr.s_addr));
 	    if (connect(s, (struct sockaddr *)&sin, sizeof(sin)) == 0)
 		return s;
 	}
     } /* have hostname */
-    else if (isdigit(*host)) {
+    else if (isdigit(*host)) {		/* possible host addr? */
 	u_long addr;
 
+	/* XXX use inet_aton() if available?? */
 	addr = inet_addr(host);
-	if (addr != 0 && addr != (u_long)-1) { /* XXX use 0xffffffff ?? */
-	    sin.sin_addr.s_addr = addr;	/* htonl? */
+	if (addr != 0 && addr != INADDR_NONE) {
+	    sin.sin_addr.s_addr = addr;
 	    if (connect(s, (struct sockaddr *)&sin, sizeof(sin)) == 0)
 		return s;
 	} /* good inet_addr */
