@@ -3,8 +3,9 @@
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
+#include "syntab.h"			/* XXX for CHARSET */
 
-#define ALPHSZ 128			/* XXX macros.h */
+#define ALPHSZ CHARSET			/* XXX ? */
 #define MASK (ALPHSZ-1)
 
 #if ALPHSZ & MASK
