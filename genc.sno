@@ -1336,11 +1336,7 @@ XRCALL	VAL = 'NORET'
 	IDENT(ARGV<1>)					:S(NOVAL)
 	VAL = ARGV<1>
 
-NOVAL	OUTPUT = IND '{'
-	INDENT()
-
-	ALTS = ARGV<4>
-	OUTPUT = DIFFER(ALTS) IND 'int alt;'
+NOVAL	ALTS = ARGV<4>
 	OUTPUT = IND 'SAVSTK();'
 	IDENT(ARGV<3>)					:S(NOARGS)
 	XRAPPLY('PUSH',ARGV<3>)
@@ -1348,18 +1344,14 @@ NOVAL	OUTPUT = IND '{'
 NOARGS	DIFFER(ALTS)					:F(NOALT2)
 
 *	here with list of alternate rets
-	OUTPUT = IND 'alt = ' ARGV<2> '(' VAL ');'
-	OUTPUT = IND 'RSTSTK();'
 	ALTS LP						:S(NOALT3)
-*	deal with singleton
+*	deal with singleton (no parens)
 	ALTS = LP ALTS RP
-NOALT3	SELBRA( 'alt', ALTS )				:(ERCALL)
+NOALT3	SELBRA( ARGV<2> '(' VAL ')', ALTS )		:(ERCALL)
 
 *	no alternate return points
 NOALT2	OUTPUT = IND ARGV<2> '(' VAL ');'
-	OUTPUT = IND 'RSTSTK();'
-ERCALL	UNINDENT()
-	OUTPUT = IND '}'				:(OPDONEL)
+ERCALL							:(OPDONEL)
 *
 ****************
 *	SIL RRTURN (=) macro

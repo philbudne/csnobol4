@@ -146,13 +146,16 @@ extern int math_error;
 /****************/
 
 #ifdef TRACE_DEPTH
+/* on real call; increment call depth; clear tail call depth for this level */
 #define START_CALL() cdepth++; tdepth[cdepth]=0;
+/* on tail call; inrement tail calls for this level */
 #define BRANCH(NAME) {tdepth[cdepth]++; return (NAME (retval));}
 #define ENTER(NAME)
-#define RETURN(VALUE) {returns[tdepth[cdepth--]]++; return (VALUE);}
+/* on real return; record returns from this tail call depth; decrement level */
+#define RETURN(VALUE) {returns[tdepth[cdepth--]]++; RSTSTK(); return (VALUE);}
 #else  /* TRACE_DEPTH not defined */
 #define START_CALL()
 #define ENTER(NAME)
 #define BRANCH(NAME) return (NAME (retval));
-#define RETURN(VALUE) return (VALUE);
+#define RETURN(VALUE) {RSTSTK(); return (VALUE);}
 #endif /* TRACE_DEPTH not defined */

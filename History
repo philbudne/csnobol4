@@ -5,7 +5,14 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 5/20/97:
 	genc.sno lib/endex.c include/macros.h parms.h:
 		applied 10/10/96 tailcall depth stats changes
-		all tailcalls use "BRANCH" macro
+		all tailcalls use "BRANCH()" macro
+		don't output PANIC() if LIVE not set
+		9% reduction in isnobol4.c size
+	genc.sno include/macros.h:
+		moved RSTSTK() to RETURN() macro
+		"alt" variable never needed,
+		no need to bracket/indent calls
+		5% reduction in isnobol4.c size
 
 5/17/97:
 	lib/str.c: TRIM tabs as well as spaces, like SPITBOL
