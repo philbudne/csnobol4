@@ -4,9 +4,9 @@
 *	$Id$
 
 -include "http.sno"
+-include "ftp.sno"
 
 * TODO:
-*	implement ftp
 *	implement file:/pathname (no double slash?)
 
 ****************
@@ -15,34 +15,43 @@
 *	args;
 *	Variable name to associate for I/O
 *	URL
-*	"GET" or "PUT"
 
+*	XXX one table, with data struct?
 	URL.TABLE = TABLE()
+	URL.FTP.TABLE = TABLE()
+	URL.UNIT = TABLE()
 
-	DEFINE("URL.OPEN(URL.NAME,URL,URL.DIR)"
+	DEFINE("URL.OPEN(URL.NAME,URL)"
 +		"URL.HOST,URL.PORT,URL.PROTO,URL.FILE")
 +							:(URL.OPEN.END)
-
 URL.OPEN
 	URL POS(0)
-+		('http' | 'ftp') . URL.PROTO
-+		'://'
-+		BREAK(':/') . URL.HOST
-+		((':' SPAN('0123456789') . URL.PORT) | '')
++		(('http' | 'ftp') . URL.PROTO
++			'://'
++			BREAK(':/') . URL.HOST
++			((':' SPAN('0123456789') . URL.PORT) | '') |
++		  'file' . URL.PROTO ':')
 +		(('/' REM) | '') . URL.FILE		:F(FRETURN)
 
 	URL.TABLE[URL.NAME] = URL.PROTO
 	IDENT(URL.PROTO,'http')				:S(URL.OPEN.HTTP)
 	IDENT(URL.PROTO,'ftp')				:S(URL.OPEN.FTP)
+	IDENT(URL.PROTO,'file')				:S(URL.OPEN.FILE)
 							:F(FRETURN)
 
 URL.OPEN.HTTP
 	HTTP.OPEN(URL.NAME,URL.HOST,URL.FILE,URL.PORT)	:S(RETURN)F(FRETURN)
 
 URL.OPEN.FTP
-* FTP NOT YET IMPLEMENTED
-							:(FRETURN)
+	FTP.OPEN.ANON(.URL.FTP.TABLE[URL.NAME],URL.HOST,URL.PORT)
++							:F(FRETURN)
+	FTP.DATA.COMMAND(.URL.FTP.TABLE[URL.NAME],"RETR " URL.FILE,URL.NAME)
++							:S(RETURN)
+	FTP.CLOSE(.URL.FTP.TABLE[URL.NAME])		:(FRETURN)
 
+URL.OPEN.FILE
+	URL.UNIT[URL.NAME] = IO_FINDUNIT()
+	INPUT(URL.NAME, URL.UNIT[URL.NAME], , URL.FILE)	:F(FRETURN)S(RETURN)
 URL.OPEN.END
 
 ****************
@@ -51,17 +60,39 @@ URL.OPEN.END
 *	args;
 *	I/O var
 
-	DEFINE("URL.CLOSE(URL.NAME)")			:(URL.CLOSE.END)
+	DEFINE("URL.CLOSE(URL.NAME)URL.PROTO")		:(URL.CLOSE.END)
 URL.CLOSE
-	URL.TABLE[URL.NAME] = URL.PROTO
-	IDENT(URL.TABLE[URL.NAME],'http')		:S(URL.CLOSE.HTTP)
+	URL.PROTO = URL.TABLE[URL.NAME]
+	IDENT(URL.PROTO,'http')				:S(URL.CLOSE.HTTP)
 	IDENT(URL.PROTO,'ftp')				:S(URL.CLOSE.FTP)
+	IDENT(URL.PROTO,'file')				:S(URL.CLOSE.FILE)
 							:F(FRETURN)
 
 URL.CLOSE.HTTP
 	HTTP.CLOSE(URL.NAME)				:(RETURN)
 
 URL.CLOSE.FTP
-	FTP.CLOSE(URL.NAME)				:(RETURN)
+	TCP.CLOSE(URL.NAME)
+	FTP.CLOSE(.URL.FTP.TABLE[URL.NAME])		:(RETURN)
+
+URL.CLOSE.FILE
+	DETACH(URL.NAME)
+	ENDFILE(URL.UNIT[URL.NAME])			:(RETURN)
 
 URL.CLOSE.END
+
+****************
+*
+*	URL.OPEN(.X,'file:/dkinfo.out')			:F(END)
+*LOOP	OUTPUT = X					:S(LOOP)
+*	URL.CLOSE(.X)
+*
+*	URL.OPEN(.X,'http://www.tiac.net/users/philb/') :F(END)
+*LOOP2	OUTPUT = X					:S(LOOP2)
+*	URL.CLOSE(.X)
+*
+*	URL.OPEN(.X,'ftp://alpha.gnu.ai.mit.edu/README') :F(END)
+*LOOP3	OUTPUT = X					:S(LOOP3)
+*	URL.CLOSE(.X)
+*
+*END
