@@ -108,6 +108,9 @@ while [ $# -gt 0 ]; do
 	DEBUG=true
 	set -x
 	;;
+    --double)
+	DOUBLE=true
+	;;
     --force-gcc)
 	FORCEGCC=true
 	#WANTGCC=true
@@ -122,7 +125,7 @@ while [ $# -gt 0 ]; do
 	LP64=true
 	;;
     --no-bitfields)
-	echo '#define NO_BITFIELDS'			>> $CONFIG_H
+	NO_BITFIELDS=true
 	;;
     --no-dlopen)
 	NO_DLOPEN=true
@@ -163,7 +166,7 @@ while [ $# -gt 0 ]; do
 	echo 'options:' 1>&2
 	echo '	--add-cppflags=STR --add-define=NAME[=VALUE]' 1>&2
 	echo '	--add-ldflags=STR --add-objs=STR' 1>&2
-	echo '	--add-opt=STR --add-srcs=STR --force-gcc' 1>&2
+	echo '	--add-opt=STR --add-srcs=STR --double --force-gcc' 1>&2
 	echo '	--force-memmove --longlong --lp64 --no-dlopen' 1>&2
 	echo '	--no-dynlib --no-gcc --nolargefile --opt=STR' 1>&2
 	echo '	--prefix=PATH' 1>&2
@@ -223,7 +226,7 @@ if [ "$FORCEGCC" -a ! "$GCCPATH" ]; then
 fi
 
 # detect architectures where LP64 is the default.
-# compile program that compares sizeof(long),sizeof(char*),sizeof(double)??
+# XXX compile a test program (check for alignment as well)??
 case "$SYS" in
 alpha*)
     LP64=true
@@ -233,6 +236,19 @@ ia64*)
     LP64=true
     ;;
 esac
+
+if [ "$LP64" ]; then
+    # In 64-bit environments, aligmnent restrictions on int_t/pointer
+    # data is likely to pad descriptors out to 16 bytes, so don't pack
+    # DESCR "v" field into 24 bits.
+    NO_BITFIELDS=true
+
+    # make real_t same size as int_t
+    DOUBLE=true
+
+    # --longlong a noop
+    LONGLONG=
+fi
 
 # library support, C compiler choice
 case "$SYS" in
@@ -406,13 +422,13 @@ if [ ! "$INLINE_OK" ]; then
     echo 'SNOBOL4=snobol4'			>> $CONFIG_M4
 fi
 
-# check if LP64 set first, and ignore if so?
 if [ "$LONGLONG" ]; then
-    # force use of 64-bit int and real types
-    # even if native pointers are smaller.
-    # gcc generates TONS of compiler warnings!!
+    # Force use of 64-bit int and real types even if native pointers
+    # are smaller.  gcc generates TONS of compiler warnings!!
+
     # Not tested in all environments (some compilers
     # may require options to enable "long long" data type)
+
     echo using long long for SNOBOL4 INTEGER type 1>&2
     echo '#define INT_T long long'		>> $CONFIG_H
 
@@ -430,15 +446,17 @@ if [ "$LONGLONG" ]; then
     fi
 fi
 
-if [ "$LP64" -o "$LONGLONG" ]; then
-    # with 64-bit int_t or pointer, descriptors are padded out
-    # to 16 bytes, so no point scrunching DESCR "v" field into 24 bits.
+if [ "$NO_BITFIELDS" ]; then
     echo '#define NO_BITFIELDS'			>> $CONFIG_H
 
-    # int_t is wide, so should be safe to use all 32-bits of "v" field
-    # (can't be confused for a negative int_t)
-    echo '#define SIZLIM (~(VFLD_T)0)'		>> $CONFIG_H
+    if [ "$LONGLONG" -o "$LP64" ]; then
+	# int_t is wide, so should be safe to use all 32-bits of "v" field
+	# (can't be confused for a negative int_t)
+	echo '#define SIZLIM (~(VFLD_T)0)'	>> $CONFIG_H
+    fi
+fi
 
+if [ "$DOUBLE" ]; then
     # same size as int_t
     echo using double for SNOBOL4 REAL type 1>&2
     echo '#define REAL_T double'		>> $CONFIG_H
