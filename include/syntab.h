@@ -16,10 +16,14 @@ struct syntab {
     const struct acts *actions;		/* pointer to action table */
 };
 
-#if 0 /* snobol4.c calls need casts!! */
+enum stream_ret {
+    ST_STOP,
+    ST_EOS,
+    ST_ERROR
+};
+
 /* from lib/stream.c */
 enum stream_ret stream __P((struct spec *,struct spec *,struct syntab *));
 void clertb __P((struct syntab *,enum action,struct spec *));
 void plugtb __P((struct syntab *,enum action,struct spec *));
 int any __P((struct spec *,struct descr *));
-#endif
