@@ -38,6 +38,9 @@ MATHLIB=-lm
 SNOBOL4=isnobol4
 #SNOBOL4=snobol4
 
+# library random accessifier
+RANLIB=ranlib
+
 ########
 # default lib source files
 
@@ -310,6 +313,11 @@ getopt.o: $(GETOPT_C)
 isnan.o: $(ISNAN_C)
 	$(CC) $(CFLAGS) -c $(ISNAN_C)
 
+################
+# snolib
+
+SNOLIB= 
+
 ##################################################################
 # housekeeping
 
@@ -344,19 +352,19 @@ realclean: clean
 	timing timing.sno \
 	cc-M]
 
-# XXX perform general cleanup (remove ~ and # files) first?
+# "print version" -- for dir/tar names
 pv:	version.c
-	$(CC) -DMAIN -o pv version.c
+	$(CC) -I./include -DMAIN -o pv version.c
 
-
-# compression program and suffix (users didn't like gzip)
-COMP=compress
-Z=Z
+# compression program, suffix
+COMP=gzip
+Z=gz
 
 VERS=`./pv`
 DIR=snobol-$(VERS)
 KIT=snobol-$(VERS).tar.$(Z)
 
+# XXX perform general cleanup (remove ~ and # files) first?
 # XXX add predicates to suppress ~ # and .o files?
 tar vers: TESTED pv
 	cd doc; make
