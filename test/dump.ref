@@ -23,7 +23,7 @@ Unprotected keywords
 &FTRACE = 0
 &FULLSCAN = 0
 &INPUT = 1
-&MAXLNGTH = 5000
+&MAXLNGTH = xxx
 &OUTPUT = 1
 &STLIMIT = -1
 &TRACE = 0
