@@ -107,7 +107,8 @@ LOGIC( LA_ALIST ) LA_DCL
     int a2type, a3type;
     u_int_t arg2, arg3;
     int len, retlen;
-    unsigned char *cp, *rp;
+    const unsigned char *cp;
+    unsigned char *rp;
     unsigned char retbuf[MAXLEN];
 
     if (op < OP_MINOP || op > OP_MAXOP)
@@ -245,24 +246,24 @@ LOGIC( LA_ALIST ) LA_DCL
 	RETFAIL;
 
     retlen = len;
-    rp = (unsigned char *)retbuf;
+    rp = retbuf;
     if (a2type == S && a3type == S) {	/* ARG2, ARG3 STRING */
-	unsigned char *cp2;
+	const unsigned char *cp2;
 
-	cp = (unsigned char *)LA_STR_PTR(1);
-	cp2 = (unsigned char *)LA_STR_PTR(2);
+	cp = (const unsigned char *)LA_STR_PTR(1);
+	cp2 = (const unsigned char *)LA_STR_PTR(2);
 	while (len-- > 0) 
 	    *rp++ = logic_byte(op, *cp++, *cp2++);
     }
     else if (a2type == S) {		/* ARG2 STRING, ARG3 INTEGER */
-	cp = (unsigned char *)LA_STR_PTR(1);
+	cp = (const unsigned char *)LA_STR_PTR(1);
 	arg3 = LA_INT(2);
 	while (len-- > 0) 
 	    *rp++ = logic_byte(op, *cp++, arg3);
     }
     else {				/* ARG2 INTEGER, ARG3 STRING */
 	arg2 = LA_INT(1);
-	cp = (unsigned char *)LA_STR_PTR(2);
+	cp = (const unsigned char *)LA_STR_PTR(2);
 	while (len-- > 0) 
 	    *rp++ = logic_byte(op, arg2, *cp++);
     }
