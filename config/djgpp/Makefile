@@ -263,14 +263,5 @@ sys.o:	$(SRCDIR)lib/djgpp/sys.c
 
 ################################################################
 
-DEST=\snobol4
-install: snobol4.exe
-	mkdir $(DEST)
-	copy equ.h host.sno snobol4.exe $(DEST)
-	copy include\dt.h $(DEST)
-	copy include\equ.h $(DEST)
-	copy include\h.h $(DEST)
-	copy include\load.h $(DEST)
-	copy include\macros.h $(DEST)
-	copy include\snotypes.h $(DEST)
-	copy snolib\*.sno $(DEST)
+install:
+	config/install.bat
