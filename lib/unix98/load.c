@@ -32,7 +32,6 @@
 #define TRY_UNDERSCORE
 #endif /* __FreeBSD__ defined */
 
-
 /* external function returning pointer to loaded function */
 extern int (*pml_find())(LOAD_PROTO);
 
@@ -72,6 +71,7 @@ load(addr, sp1, sp2)
 	char path[PATHLEN*2];		/* room for directory name */
 	char *pp;			/* path pointer */
 	char *snolib;
+	int mode;
 
 	snolib = getenv("SNOLIB");
 	if (snolib == NULL)
@@ -104,7 +104,14 @@ load(addr, sp1, sp2)
 	 * SunOS4 (and others) only support LAZY mode.
 	 * set RTLD_GLOBAL (if available)?? nah; avoid module collisions
 	 */
-	fp->handle = dlopen(pp, RTLD_LAZY);
+#ifdef RTLD_LAZY
+	mode = RTLD_LAZY;
+#else  /* RTLD_LAZY not defined */
+	/* Needed on FreeBSD 2.2.1-RELEASE */
+	mode = 0;
+#endif /* RTLD_LAZY not defined */
+
+	fp->handle = dlopen(pp, mode);
 	if (fp->handle == NULL) {
 #ifdef DEBUG
 	    /* XXX always? to stderr?? */
