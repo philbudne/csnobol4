@@ -35,6 +35,7 @@ CCM=./cc-M
 MATHLIB=-lm
 
 SH=sh
+SHELL=sh
 
 # either snobol4 or isnobol4
 SNOBOL4=isnobol4
