@@ -190,10 +190,10 @@ spotless: distclean
 # generated files copied separately to ensure newer than source files!
 TAR=	README CHANGES History INSTALL TODO TODO.soon doc Makefile \
 	Makefile2.m4 autoconf configure config.guess $(SIL) syntax.tbl \
-	procs globals genc.sno gensyn.sno gendata.sno \
-	main.c charset.c data_init.c version.c parms.h mlink.h mdata.h \
-	pml.h $(G1) lib include config test bugs snolib/*.sno \
-	sunmodel timing timing.sno cc-M bsplitu.c
+	procs globals genc.sno gensyn.sno gendata.sno main.c charset.c \
+	data_init.c version.c parms.h mlink.h mdata.h pml.h $(G1) lib \
+	include config test snolib/*.sno sunmodel timing timing.sno \
+	cc-M bsplitu.c
 
 # "print version" -- for dir/tar names
 pv:	version.c
