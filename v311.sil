@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.78  1997/10/31  05:13:16  phil
+* [PLB66] catch bad data at PATBRA
+*
 * Revision 1.77  1997/10/29  06:36:09  phil
 * XRTNL3 typo
 *
@@ -2974,7 +2977,6 @@ SCANRP REALST  XSP,XPTR		   Convert REAL to STRING
        RCALL   XPTR,GENVAR,XSPPTR,SCANVP
 *				   Generate variable
 *_
-*_
 *---------------------------------------------------------------------*
 *
 *      Pattern Matching with Replacement
@@ -3199,12 +3201,12 @@ SCIN3  INCRA   PATICL,DESCR	   Increment offset
 SCIN4  GETDC   PTBRCL,ZCL,0	   Get index			[PLB65]
        BRANCH  PATBRA
 *_
-SALF   PROC    SCNR		   Nonlength failure procedure
+SALF   XPROC   SCNR		   Nonlength failure procedure	[PLB67]
 TSALF  LHERE							[PLB65]
 SALF1  SETAC   LENFCL,0		   Clear length failure
        BRANCH  SALT2		   Join common processing
 *_
-SALT   PROC    SCNR		   Length failure procedure
+SALT   XPROC   SCNR		   Length failure procedure	[PLB67]
 TSALT  LHERE							[PLB65]
 SALT1  GETDC   LENFCL,PDLPTR,3*DESCR
 *				   Get length failure from history
@@ -3224,12 +3226,12 @@ PATBRA SELBRA  PTBRCL,(ANYC,ARBF,ARBN,ATP,CHR,BAL,BALF,BRKC,BRKX,BRKXF,DNME,DNME
 SALT3  AEQLC   LENFCL,0,SALT1	   Check length failure
        BRANCH  SALF1		   Go to nonlength failure
 *_
-SCOK   PROC    SCNR		   Successful scanning procedure
+SCOK   XPROC   SCNR		   Successful scanning procedure [PLB67]
 TSCOK  LHERE							[PLB65]
        SETAV   PATICL,XCL	   Set offset from THEN link
        AEQLC   PATICL,0,SCIN2,RTN2 Check for none
 *_
-SCON   PROC    SCNR
+SCON   XPROC   SCNR						[PLB67]
        AEQLC   FULLCL,0,SCON1	   Check &FULLSCAN
        AEQLC   LENFCL,0,FAIL	   Check length failure
 SCON1  POP     (YSIZ,YPTR)	   Restore save descriptors
@@ -3260,23 +3262,23 @@ SCON1  POP     (YSIZ,YPTR)	   Restore save descriptors
 *      take the next subject character and perform "index()" BREAK and
 *      SPAN each have their own stream table.
 *
-BRKC   PROC    ,		   BREAK
+BRKC   XPROC   ,		   BREAK			[PLB67]
        SETAC   SCL,2
        BRANCH  ABNS
 *_
-BRKX   PROC    BRKC		   BREAKX
+BRKX   XPROC   BRKC		   BREAKX			[PLB67]
        SETAC   SCL,5
        BRANCH  ABNS
 *_
-NNYC   PROC    BRKC		   NOTANY
+NNYC   XPROC   BRKC		   NOTANY			[PLB67]
        SETAC   SCL,3
        BRANCH  ABNS
 *_
-SPNC   PROC    BRKC		   SPAN
+SPNC   XPROC   BRKC		   SPAN				[PLB67]
        SETAC   SCL,4
        BRANCH  ABNS
 *_
-ANYC   PROC    BRKC		   Matching procedure for ANY(S)
+ANYC   XPROC   BRKC		   Matching procedure for ANY(S) [PLB67]
        SETAC   SCL,1		   Post entry
 *
 ABNS   INCRA   PATICL,DESCR	   Increment offset
@@ -3339,7 +3341,7 @@ ANYC6  ADDLG   TXSP,ONECL	   Accept next subject char
        BRANCH  SCOK
 ANYC5  AEQLC   SCL,3,ANYC6,SALF	   Found, fail if NOTANY
 *_
-BRKXF  PROC    ,		   BREAKX rematch
+BRKXF  XPROC   ,		   BREAKX rematch		[PLB67]
        GETDC   PATICL,PDLPTR,2*DESCR Restore position in pattern
        DECRA   PATICL,DESCR	   Point to BREAKX argument
        DECRA   PDLPTR,3*DESCR	   Discard frame holding PATICL
@@ -3374,7 +3376,7 @@ SPNC5  ADDLG   TXSP,XPTR	   Add length accepted
 *
 *      LEN, POS, RPOS, RTAB, TAB
 *
-LNTH   PROC    ,		   Matching procedure for LEN(N)
+LNTH   XPROC   ,		   Matching procedure for LEN(N) [PLB67]
        SETAC   SCL,1		   Note entry
 LPRRT  INCRA   PATICL,DESCR	   Increment offset
        GETD    XPTR,PATBCL,PATICL  Get argument
@@ -3435,19 +3437,19 @@ TBI    ACOMPC  XPTR,0,,,SCLENR	   Check for negative length
        PUTLG   TXSP,XPTR	   Update length of string matched
        BRANCH  SCOK,SCNR
 *_
-POSI   PROC    LNTH		   Matching procedure for POS(N)
+POSI   XPROC   LNTH		   Matching procedure for POS(N) [PLB67]
        SETAC   SCL,2		   Note entry
        BRANCH  LPRRT		   Join common processing
 *_
-RPSI   PROC    LNTH		   Matching procedure for RPOS(N)
+RPSI   XPROC   LNTH		   Matching procedure for RPOS(N) [PLB67]
        SETAC   SCL,3		   Note entry
        BRANCH  LPRRT		   Join common processing
 *_
-RTB    PROC    LNTH		   Matching procedure for RTAB(N)
+RTB    XPROC   LNTH		   Matching procedure for RTAB(N) [PLB67]
        SETAC   SCL,4		   Note entry
        BRANCH  LPRRT		   Join common processing
 *_
-TB     PROC    LNTH		   Matching procedure for TAB(N)
+TB     XPROC   LNTH		   Matching procedure for TAB(N) [PLB67]
        SETAC   SCL,5		   Note entry
        BRANCH  LPRRT		   Join common processing
 *_
@@ -3455,16 +3457,16 @@ TB     PROC    LNTH		   Matching procedure for TAB(N)
 *
 *      ARBNO
 *
-ARBN   PROC    ,		   Matching for ARBNO(P)
+ARBN   XPROC   ,		   Matching for ARBNO(P)	[PLB67]
        GETLG   TMVAL,TXSP	   Get cursor position
        PUSH    TMVAL		   Save cursor position
        BRANCH  SCOK,SCNR	   Return matching successfully
 *_
-ARBF   PROC    ARBN		   Backup matching for ARBNO(P)
+ARBF   XPROC   ARBN		   Backup matching for ARBNO(P)	[PLB67]
        POP     (TMVAL)		   Restore cursor position
        BRANCH  ONAR2		   Join common processing
 *_
-EARB   PROC    ARBN
+EARB   XPROC   ARBN						[PLB67]
        POP     (TMVAL)		   Restore cursor position
        PUTDC   PDLPTR,DESCR,TMVAL  Insert on history list
        GETLG   TMVAL,TXSP	   Get cursor position
@@ -3472,7 +3474,7 @@ EARB   PROC    ARBN
        PUTDC   PDLPTR,3*DESCR,ZEROCL
        BRANCH  SCOK,SCNR	   Return matching successfully
 *_
-ONAR   PROC    ARBN
+ONAR   XPROC   ARBN						[PLB67]
        AEQLC   FULLCL,0,TSCOK	   Check &FULLSCAN
        MOVD    TVAL,ZEROCL
        GETAC   TVAL,PDLPTR,-2*DESCR
@@ -3485,13 +3487,13 @@ ONAR1  PUSH    TVAL		   Save cursor position
 ONAR2  AEQLC   LENFCL,0,TSALT	   Check length failure
        BRANCH  SALF,SCNR	   Return matching failure
 *_
-ONRF   PROC    ARBN
+ONRF   XPROC   ARBN						[PLB67]
        MOVD    TVAL,ZEROCL
        GETAC   TVAL,PDLPTR,-2*DESCR
 *				   Get old cursor position
        BRANCH  ONAR1		   Join processing
 *_
-FARB   PROC    ,
+FARB   XPROC   ,						[PLB67]
        AEQLC   FULLCL,0,,FARB2	   Check &FULLSCAN
        SETAC   NVAL,0		   Set residual length to 0
        BRANCH  FARB3		   Join processing
@@ -3514,7 +3516,7 @@ FARB1  DECRA   PDLPTR,3*DESCR	   Back over history entry
 *
 *      @X
 *
-ATP    PROC    ,		   Matching procedure for @X
+ATP    XPROC   ,		   Matching procedure for @X	[PLB67]
        INCRA   PATICL,DESCR	   Increment pattern offset
        GETD    XPTR,PATBCL,PATICL  Get argument
 ATP1   VEQLC   XPTR,E,,ATPEXN	   EXPRESSION must be evaluated
@@ -3547,7 +3549,7 @@ ATPEXN RCALL   XPTR,EXPEVL,XPTR,(TSALF,ATP1,SCNEMO)		E3.4.4
 *
 *      BAL
 *
-BAL    PROC    ,		   Matching procedure for BAL
+BAL    XPROC   ,		   Matching procedure for BAL	[PLB67]
 BALF1  AEQLC   FULLCL,0,,BALF4	   Check &FULLSCAN
        SETAC   NVAL,0		   Set length to zero
        BRANCH  BALF2
@@ -3566,7 +3568,7 @@ BALF2  GETLG   TVAL,TXSP	   Get length of text matched so far
 BAL1   DECRA   PDLPTR,3*DESCR	   Back over history entry
        ACOMP   PDLPTR,PDLHED,TSALF,TSALF,INTR13
 *_
-BALF   PROC    BAL		   Matching procedure for BAL retry
+BALF   XPROC   BAL		   Matching procedure for BAL retry [PLB67]
        AEQLC   FULLCL,0,,BALF3	   Check &FULLSCAN
        SETAC   NVAL,0		   If off, set length to zero
        BRANCH  BALF2		   Reenter balanced matching
@@ -3577,7 +3579,7 @@ BALF3  AEQLC   LENFCL,0,BAL1,BALF1 If on, test for length failure
 *
 *      Matching for String
 *
-CHR    PROC    ,		   Matching character string
+CHR    XPROC   ,		   Matching character string	[PLB67]
        INCRA   PATICL,DESCR	   Increment offset
        GETD    YPTR,PATBCL,PATICL  Get argument
 CHR1   LOCSP   TSP,YPTR		   Get specifier
@@ -3593,7 +3595,7 @@ CHR2   REMSP   VSP,XSP,TXSP	   Remove part matched
 *
 *      *X
 *
-STAR   PROC    CHR		   Matching procedure for expressions
+STAR   XPROC   CHR		   Matching procedure for expressions [PLB67]
        INCRA   PATICL,DESCR	   Increment offset
        GETD    YPTR,PATBCL,PATICL  Get argument expression
 STAR2  RCALL   YPTR,EXPVAL,YPTR,TSALF
@@ -3640,7 +3642,7 @@ STARP5 POP     (YCL,XCL,PATICL,PATBCL,MAXLEN)
 STARP3 AEQLC   LENFCL,0,TSALT	   Check length failure
        BRANCH  SALF,SCNR	   Return matching failure
 *_
-DSAR   PROC    CHR		   Backup matching for expression
+DSAR   XPROC   CHR		   Backup matching for expression [PLB67]
        INCRA   PATICL,DESCR	   Increment offset
        GETD    YPTR,PATBCL,PATICL  Get argument
        VEQLC   YPTR,S,,STARP3	   Is it STRING?
@@ -3665,7 +3667,7 @@ DSARP2 SUBTRT  NVAL,MAXLEN,NVAL	   Compute residual
 *
 *      FENCE
 *
-FNCE   PROC    ,		   Procedure for matching FENCE
+FNCE   XPROC   ,		   Procedure for matching FENCE	[PLB67]
        INCRA   PDLPTR,3*DESCR	   Create new history entry
        ACOMP   PDLPTR,PDLEND,INTR31
 *				   Check for overflow
@@ -3682,7 +3684,7 @@ FNCE   PROC    ,		   Procedure for matching FENCE
 *
 *      X . Y and X $ Y
 *
-NME    PROC    ,		   Matching procedure for naming
+NME    XPROC   ,		   Matching procedure for naming [PLB67]
        INCRA   PDLPTR,3*DESCR	   Make room for history entry
        ACOMP   PDLPTR,PDLEND,INTR31
 *				   Check for end of list
@@ -3696,12 +3698,12 @@ NME    PROC    ,		   Matching procedure for naming
        SETAC   LENFCL,1		   Set length failure indicator
        BRANCH  SCOK,SCNR	   Return matching successfully
 *_
-FNME   PROC    NME		   Backup procedure for naming
+FNME   XPROC   NME		   Backup procedure for naming	[PLB67]
        POP     (TVAL)		   Restore cursor
 FNME1  AEQLC   LENFCL,0,TSALT,TSALF
 *				   Check length failure indicator
 *_
-ENME   PROC    NME		   Naming process for X . Y
+ENME   XPROC   NME		   Naming process for X . Y	[PLB67]
        INCRA   PATICL,DESCR	   Increment offset
        GETD    YPTR,PATBCL,PATICL  Get argument
        POP     (NVAL)		   Restore previous cursor position
@@ -3736,15 +3738,15 @@ ENME1  MOVD    WCL,NMOVER	   Save copy of cuurent name list end
        MOVD    NBSPTR,TPTR	   Set up new base pointer
        BRANCH  ENME2		   Rejoin processing
 *_
-DNME   PROC    NME		   Unravelling procedure for naming
+DNME   XPROC   NME		   Unravelling procedure for naming [PLB67]
        DECRA   NAMICL,DESCR+SPEC   Back off named string
        SUM     TPTR,NBSPTR,NAMICL  Compute current position
-DNME1  PROC    NME
+DNME1  XPROC   NME						[PLB67]
        SETAV   VVAL,YCL
        PUSH    (VVAL)		   Preserve length
        BRANCH  FNME1
 *_
-ENMI   PROC    NME		   Matching for X $ Y
+ENMI   XPROC   NME		   Matching for X $ Y		[PLB67]
        INCRA   PATICL,DESCR	   Increment offset
        GETD    YPTR,PATBCL,PATICL  Get argument
        POP     (NVAL)		   Restore initial length
@@ -3800,7 +3802,7 @@ ENMEXN PUSH    ZEROCL				       E3.4.4 & E3.5.8
 *
 *      SUCCEED
 *
-SUCE   PROC    ,		   Matching procedure for SUCCEED
+SUCE   XPROC   ,		   Matching procedure for SUCCEED [PLB67]
 SUCE1  INCRA   PDLPTR,3*DESCR	   Make room for history entry
        ACOMP   PDLPTR,PDLEND,INTR31
 *				   Check for overflow
@@ -3813,7 +3815,7 @@ SUCE1  INCRA   PDLPTR,3*DESCR	   Make room for history entry
        SETAC   LENFCL,1		   Set length failure
        BRANCH  SCOK		   Return successful match	[PLB65]
 *_
-SUCF   PROC    SUCE		   SUCCEED failure
+SUCF   XPROC   SUCE		   SUCCEED failure		[PLB67]
        GETDC   XCL,PDLPTR,DESCR	   Get history entries
        GETDC   YCL,PDLPTR,2*DESCR
        BRANCH  SUCE1		   Go in front door
