@@ -126,6 +126,9 @@ function is not implemented. See
 below.
 .IP \(bu
 I/O unit numbers up to 256 can be used.
+.IP \(bu
+Attempts to output on a closed unit generates a fatal
+\*(lqOutput error\*(rq
 
 .SS "Character set"
 .PP
@@ -469,6 +472,35 @@ protected keyword for compatibility with Catspaw SNOBOL4+. Use of the
 SPITBOL compatible
 .B HOST()
 function is probably preferable.
+.TP
+REAL numbers in INTEGER contexts
+.br
+.B REAL
+numbers (or strings convertable to
+.BR REAL )
+are accepted in all contexts which previously required an
+.B INTEGER
+(or string convertable
+to
+.BR INTEGER ).
+Contexts include
+.BR TABLE() ,
+.BR ITEM() ,
+array indices,
+.BR INPUT() ,
+.BR OUTPUT(),
+.BR SET() ,
+keyword values,
+.BR CHAR() ,
+.BR RPAD() ,
+.BR LPAD() ,
+.BR FIELD() ,
+.BR COLLECT() ,
+.BR DUMP() ,
+.BR DUPL() ,
+.BR OPSYN() ,
+.BR SUBSTR() .
+
 .TP
 .B REVERSE()
 .br
