@@ -2,10 +2,21 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
-1/14/98
+2/26/99
+	Tested on FreeBSD 3.1
+	autoconf: look for getopt in unistd.h
+	timing: look for sysctl in /sbin
+
+2/2/99
+	Makefile2.m4: add SHELL=sh for IRIX
+
+1/22/99
+	lib/win32/mstime.c: fix if(n)def NO_STATIC_VARS
+
+1/14/99
 	lib/{win32,vms}/inet.c: removed HAVE_SOCKADDR_LEN
 
-1/8/98
+1/8/99
 	INSTALL: updates from John Refling <johnr@spimageworks.com>
 	Makefile2.m4: remove $(MANPATH) first (from John Refling)
 	README: add John Refling!
