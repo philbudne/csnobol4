@@ -2,20 +2,13 @@ $Id$
 
 6. do something better with signals?!
 6b. just report which one in exit code?
-6c. report in "signal" message?!
 
 7. listings;
 7a. send listings to seperate file!
 7b. select file on command line!
-7e. output un*x style line numbers (file name & zero based line) for all errs?
-7f. add -LINE (ala snobol4+)
-7g. fix error marker (deal with tabs)
-7h. send errs to stderr?
 7i. show include level in listing!
 
-9b. rename PUNCH to STDERR (ERROR?)?
 9c. add TTY variable for both input/output to /dev/tty (like SITBOL)?
-9d. add TERM variable (like Catspaw SPITBOL)
 
 10. Improve I/O
 10a. Honor I/O flags in filenames (like Catspaw SPITBOL)??
@@ -27,20 +20,8 @@ $Id$
 10f. get rid of record lengths
 10g. get rid of space padding in compiler (honor STREAD return len)
 
-12. catch math errors (have MATH_ERROR() do something)!
-
 13. better floating point conversion:
 13a. supress trailing zeroes (ie; 1.0000)
-13b. allow exponents on input/output?
-
-14. add SPITBOL extensions;
-14a. functions;
-	LPAD() RPAD()
-	REVERSE()
-	BREAKX()
-	SUBSTR()
-	LEQ() LGE() LST() LLE() LLT() LNE()
-14b. match and assignment operators
 
 20. add to snolib;
 	LINK()
@@ -50,42 +31,29 @@ $Id$
 	GETPWUID()
 	GETPWENT()
 	SETPWENT()
-	UNAME()		see #25
+	UNAME()		(in addition to HOST()?)
 
 22. Implement -NOEXEC (-n flag)
 
 23. Handle input file "-" (stdin)
 	require it? (now defaults to stdin)
 
-25. Have way to find out what host system type is!
-	ie; "uname(2)", Catspaw HOST() function
-
 27. speed up various ops;
 	stream -- eliminate ops table (indirection)
-	performs "pairs" ops in line?
-	perform "hash" in line?
 	improve hash?
 
-28. write man page
-	document all error messages (in man page or seperate doc)?
+28. man page; document error messages/numbers
 
+30. re-package/test rebus
 
-30. package rebus
-30a. Implement &ERRTEXT
-
-32. generate code to set a register pointer for data init (USE/SET_A)?
 32b. merge gendata into genc???
 32c. add XDATA op, so no need to know magic labels???
-
-33. BUG: indirection operator does not fold case!!!
+32d. invetigate dopt.sno strangeness!
 
 36. Have gensyn read file of character sets?
+	include at top of syntax.tbl?
 
 37. Implement lseek functionality (SPITBOL "SET")?
-
-38. Allow access to command line;
-	ARGV() function?
-	SPITBOL HOST(0) (-u command line arg)??
 
 39. Investigate better ordering for inlining (replace tsort + reverse)
     Write in SNOBOL!!
@@ -96,10 +64,14 @@ $Id$
 	Position in file
 	Number of calls made by function?
 	Number of dependancies
+39b. add explicit "__inline" decls?
 
 40. Document "developer" defines;
 	DO_UFCHK
 	TRACE_DEPTH
 
-41. Add SNOBOL4+ extensions;
-41a.	&STLIMIT = -1
+42. finish gendep2
+
+43. invetigate inlining genc (read whole source as digraph, walk
+	to generate C code)
+
