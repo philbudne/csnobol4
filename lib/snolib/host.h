@@ -87,10 +87,10 @@
 /* CSNOBOL4: number of bits used to represent C long type */
 #define HOST_LONG_BITS		2303
 
-/* CSNOBOL4: number of bits used to represent SIL descriptor type */
+/* CSNOBOL4: number of bits used to represent SIL "descriptor" type */
 #define HOST_DESCR_BITS		2304
 
-/* CSNOBOL4: number of bits used to represent SIL specified type */
+/* CSNOBOL4: number of bits used to represent SIL "specifier" type */
 #define HOST_SPEC_BITS		2305
 
 /* CSNOBOL4: number of bits used to represent C char type */
