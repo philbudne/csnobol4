@@ -265,7 +265,7 @@ init_args( ac, av )
     io_init();				/* AFTER io_input calls! */
 }
 
-int math_error;				/* see macros.h */
+volatile int math_error;		/* see macros.h */
 
 static SIGFUNC_T
 math_catch(sig)

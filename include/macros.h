@@ -145,7 +145,7 @@ S4_EXTERN struct descr ostack[1];	/* old stack pointer */
 
 /****************/
 
-extern int math_error;
+extern volatile int math_error;
 
 #define CLR_MATH_ERROR() math_error = FALSE
 #define MATH_ERROR() math_error
