@@ -2,10 +2,10 @@
 # $Id$
 
 # perform basic timing tests
-# results suitable for inclusion in ports.doc
 # pb 6/4/94
 
 if [ "$*" ]; then
+# XXX check for abs path, or prepend "../"??
 	SNOBOL=$1
 	shift
 	ARGS="$*"
@@ -74,26 +74,33 @@ if [ "$ARGS" ]; then
 fi
 
 TDIR=timdir.$$
+rm -rf $TDIR
+trap "rm -rf $TDIR; exit 1" 1 2 15
+mkdir $TDIR
+OUT=stdout
+TAIL1='sed -n 2,$p'
 (
-	rm -rf $TDIR
-	mkdir $TDIR
 	cd $TDIR
-	trap "cd ..; rm -rf $TDIR; exit 1" 1 2 15
 
-LNFILES='../xsnobol4 ../procs ../globals ../v311.sil ../genc.sno ../snobol4.c'
+LNFILES='../procs ../globals ../xsnobol4'
 # AFS doesn't allow hard links across directories!
 	ln $LNFILES . || ln -s $LNFILES .
 
-# make sure "." first in path, .. second
-	PATH=".:..:$PATH"
-	export PATH
+	# stderr to file "stderr", all but first line of stdout to "$OUT"
+	time $SNOBOL $ARGS -s ../genc.sno < ../v311.sil 2>stderr | $TAIL1 >$OUT
+)
+# use snobol program to process output!!
+$SNOBOL -b timing.sno < $TDIR/stderr
+# save exit status
+STAT=$?
 
-# NOTE! 2>&1 *BEFORE* >x
-	time $SNOBOL $ARGS -s genc.sno < v311.sil 2>&1 >x
-	echo ==== diff
-	diff snobol4.c x
-
-	cd ..
+# check output regardless of timing.sno status
+if $TAIL1 < snobol4.c | cmp -s - $TDIR/$OUT; then
+	echo "genc.sno output checks out"
 	rm -rf $TDIR
-) | $SNOBOL -b timing.sno
-# NOTE: do not add commands here; ./xsnobol4 exit status is shell exit status!!
+else
+	echo "ERROR: genc.sno output is bad; compare $TDIR/$OUT with snobol4.c"
+	STAT=2
+fi
+
+exit $STAT
