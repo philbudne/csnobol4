@@ -189,7 +189,7 @@ HOST( LA_ALIST ) LA_DCL
 	RETINT(SPEC*BPC);		/* specifier size */
     case HOST_CHAR_BITS:
 	RETTYPE = I;			/* oof! blast return type! */
-	RETINT(sizof(char)*BPC);	/* char size */
+	RETINT(sizeof(char)*BPC);	/* char size */
 
 /* integer variables; */
     case HOST_DYNAMIC_SIZE:
