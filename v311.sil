@@ -1,6 +1,10 @@
 * $Id$
 *
 * $Log$
+* Revision 1.75  1997/10/24  20:21:04  phil
+* [PLB64] from SNOBOL4+
+* Allow reals in INTVAL
+*
 * Revision 1.74  1997/09/09  20:14:14  phil
 * [PLB63] call io_pad() to fix up for -LIST RIGHT
 *
@@ -584,6 +588,44 @@ R      EQU     7		   REAL
 S      EQU     1		   STRING
 T      EQU     5		   TABLE
 DATSTA EQU     100		   First user datatpe		[PLB31]
+*
+* [PLB65] pattern matching function indexes (see PATBRA);
+XANYC   EQU    1
+XARBF   EQU    2
+XARBN   EQU    3
+XATP    EQU    4
+XCHR    EQU    5
+XBAL    EQU    6
+XBALF   EQU    7
+XBRKC   EQU    8
+XBRKX   EQU    9
+XBRKXF  EQU    10
+XDNME   EQU    11
+XDNME1  EQU    12
+XEARB   EQU    13
+XDSAR   EQU    14
+XENME   EQU    15
+XENMI   EQU    16
+XFARB   EQU    17
+XFNME   EQU    18
+XLNTH   EQU    19
+XNME    EQU    20
+XNNYC   EQU    21
+XONAR   EQU    22
+XONRF   EQU    23
+XPOSI   EQU    24
+XRPSI   EQU    25
+XRTB    EQU    26
+XFAIL   EQU    27
+XSALF   EQU    28
+XSCOK   EQU    29
+XSCON   EQU    30
+XSPNC   EQU    31
+XSTAR   EQU    32
+XTB     EQU    33
+XRTN3   EQU    34
+XFNCE   EQU    35
+XSUCF   EQU    36
 *---------------------------------------------------------------------*
        TITLE   'Program Initialization'
 BEGIN  INIT    ,		   Initialize system
@@ -3109,7 +3151,7 @@ SCNR2  PUSH    (YPTR,YSIZ)	   Save pattern and length
 *				   Insert on history list
        PUTDC   PDLPTR,3*DESCR,LENFCL
 *				   Insert length failure
-       BRANCH  SCIN1		   Join common scanning
+       BRANCH  SCIN		   Join common scanning		[PLB65]
 *_
 SCNR3  INCRA   PDLPTR,3*DESCR	   Make room for history entry
        ACOMP   PDLPTR,PDLEND,INTR31
@@ -3121,10 +3163,12 @@ SCNR3  INCRA   PDLPTR,3*DESCR	   Make room for history entry
 *				   Insert on history list
        PUTDC   PDLPTR,3*DESCR,LENFCL
 *				   Insert length failure
-       BRANCH  SCIN1		   Join common scanning
+       BRANCH  SCIN		   Join common scanning		[PLB65]
 *_
 SCIN   PROC    SCNR
+       SETAC   UNSCCL,0		   Clear UNSC flag		[PLB65]
 SCIN1  MOVD    PATBCL,YPTR	   Set up pattern base pointer
+       AEQLC   UNSCCL,0,SALT3	   Test UNSC flag		[PLB65]
        SETAC   PATICL,0		   Zero offset
 SCIN2  SETAC   LENFCL,1		   Set length failure
 SCIN3  INCRA   PATICL,DESCR	   Increment offset
@@ -3146,13 +3190,16 @@ SCIN3  INCRA   PATICL,DESCR	   Increment offset
        AEQLC   FULLCL,0,SCIN4	   Check &FULLSCAN
        CHKVAL  MAXLEN,YCL,TXSP,SALT1
 *				   Check values
-SCIN4  BRANIC  ZCL,0		   Branch to procedure
+SCIN4  GETDC   PTBRCL,ZCL,0	   Get index			[PLB65]
+       BRANCH  PATBRA
 *_
 SALF   PROC    SCNR		   Nonlength failure procedure
+TSALF  LHERE							[PLB65]
 SALF1  SETAC   LENFCL,0		   Clear length failure
        BRANCH  SALT2		   Join common processing
 *_
 SALT   PROC    SCNR		   Length failure procedure
+TSALT  LHERE							[PLB65]
 SALT1  GETDC   LENFCL,PDLPTR,3*DESCR
 *				   Get length failure from history
 SALT2  GETDC   XCL,PDLPTR,DESCR	   Get then-or descriptor
@@ -3162,12 +3209,16 @@ SALT2  GETDC   XCL,PDLPTR,DESCR	   Get then-or descriptor
        AEQLC   PATICL,0,,SALT3	   Check for none
        PUTLG   TXSP,YCL		   Insert old length of head
        TESTF   PATICL,FNC,SCIN3	   Check for function
-       BRANIC  PATICL,0		   Branch to procedure
+* [PLB65] replaces BRANIC:
+       GETDC   PTBRCL,PATICL,0	   Get index			[PLB65]
+PATBRA SELBRA  PTBRCL,(ANYC,ARBF,ARBN,ATP,CHR,BAL,BALF,BRKC,BRKX,BRKXF,DNME,DNME1,EARB,DSAR,ENME,ENMI,FARB,FNME,LNTH,NME,NNYC,ONAR,ONRF,POSI,RPSI,RTB,FAIL,SALF,SCOK,SCON,SPNC,STAR,TB,RTNUL3,FNCE,SUCF)
+*				   Dispatch on index		[PLB65]
 *_
 SALT3  AEQLC   LENFCL,0,SALT1	   Check length failure
        BRANCH  SALF1		   Go to nonlength failure
 *_
 SCOK   PROC    SCNR		   Successful scanning procedure
+TSCOK  LHERE							[PLB65]
        SETAV   PATICL,XCL	   Set offset from THEN link
        AEQLC   PATICL,0,SCIN2,RTN2 Check for none
 *_
@@ -3178,11 +3229,20 @@ SCON1  POP     (YSIZ,YPTR)	   Restore save descriptors
        DECRA   YSIZ,1		   Decrement possible count
        ACOMPC  YSIZ,0,,FAIL,INTR13 CHeck for end
        ADDLG   TXSP,ONECL	   Increment length of head
-       BRANCH  SCNR2		   Continue
-*_
-UNSC   PROC    SCNR		   Backout procedure
-       MOVD    PATBCL,YPTR	   Reset pattern base
-       BRANCH  SALT3		   Join processing
+* [PLB65] copied from SCNR2;
+       PUSH    (YPTR,YSIZ)	   Save pattern and length
+       SETSP   HEADSP,TXSP	   Set up head specifier
+       INCRA   PDLPTR,3*DESCR	   Make room for history entry
+       ACOMP   PDLPTR,PDLEND,INTR31
+*				   Check for overflow
+       SETAC   LENFCL,1		   Set length failure
+       PUTDC   PDLPTR,DESCR,SCONCL Insert scan function
+       GETLG   TMVAL,TXSP	   Get cursor position
+       PUTDC   PDLPTR,2*DESCR,TMVAL
+*				   Insert on history list
+       PUTDC   PDLPTR,3*DESCR,LENFCL
+*				   Insert length failure
+       BRANCH  SCIN1		   Join common scanning
 *_
 *---------------------------------------------------------------------*
 *
@@ -3590,7 +3650,8 @@ DSARP2 SUBTRT  NVAL,MAXLEN,NVAL	   Compute residual
        PUSH    (MAXLEN,PATBCL,PATICL,XCL,YCL)
 *				   Save scanner state
        MOVD    MAXLEN,NVAL	   Set up new maximum
-       RCALL   ,UNSC,,(STARP5,STARP2,RTNUL3)
+       SETAC   UNSCCL,1		   Set UNSC hack flag		[PLB65]
+       RCALL   ,SCIN1,,(STARP5,STARP2,RTNUL3)			[PLB65]
 *				   Call unscanning procedure
 *_
 *---------------------------------------------------------------------*
@@ -3608,7 +3669,7 @@ FNCE   PROC    ,		   Procedure for matching FENCE
        PUTDC   PDLPTR,3*DESCR,LENFCL
 *				   Save length failure switch
        SETAC   LENFCL,1		   Set length failure switch
-       BRANIC  SCOKCL,0		   Return matching
+       BRANCH  SCOK		   Return matching		[PLB65]
 *_
 *---------------------------------------------------------------------*
 *
@@ -3743,12 +3804,29 @@ SUCE1  INCRA   PDLPTR,3*DESCR	   Make room for history entry
        PUTDC   PDLPTR,3*DESCR,LENFCL
 *				   Save current length failure
        SETAC   LENFCL,1		   Set length failure
-       BRANIC  SCOKCL,0		   Return successful match
+       BRANCH  SCOK		   Return successful match	[PLB65]
 *_
 SUCF   PROC    SUCE		   SUCCEED failure
        GETDC   XCL,PDLPTR,DESCR	   Get history entries
        GETDC   YCL,PDLPTR,2*DESCR
        BRANCH  SUCE1		   Go in front door
+*_
+* [PLB65] here from end of file;
+SCDTER SETAC   ERRTYP,1		   Illegal data type
+       BRANCH  SCERSX						[PLB65]
+*_
+SCLENR SETAC   ERRTYP,14	   Negative number
+       BRANCH  SCERSX						[PLB65]
+*_
+SCLNOR SETAC   ERRTYP,15	   String overflow
+       BRANCH  SCERSX						[PLB65]
+*_
+SCNAME SETAC   ERRTYP,4		   Null string
+       BRANCH  SCERSX						[PLB65]
+*_
+SCNEMO SETAC   ERRTYP,8						E3.4.4
+SCERSX RCALL   ,SCERST						[PLB65]
+       BRANCH  TSALF						[PLB65]
 *_
 *---------------------------------------------------------------------*
        TITLE   'Defined Functions'
@@ -6334,7 +6412,6 @@ TRIM   PROC    ,		   TRIM(S)
 DATA   LHERE   ,
 RT1NUL RRTURN  NULVCL,1		   Return null string by exit 1
 *_
-FAILG  LHERE   ,						[PLB25]
 RTN1   LHERE   ,
 FAIL   RRTURN  ,1		   Return by exit 1
 *_
@@ -6342,7 +6419,6 @@ RETNUL RRTURN  NULVCL,3		   Return null string by exit 3
 *_
 RTN2   RRTURN  ,2		   Return by exit 2
 *_
-RTNL3G LHERE   ,						[PLB24]
 RTN3   LHERE   ,
 RTNUL3 RRTURN  ,3		   Return by exit 3
 *_
@@ -6356,12 +6432,6 @@ ARTN   INCRA   ARTHCL,1		   Increment count of arithmetic
 RTZPTR RRTURN  ZPTR,3		   Return ZPTR by exit 3
 *_
 A5RTN  RRTURN  A5PTR,1		   Return A5PTR by exit 1
-*_
-TSALF  BRANCH  SALF,SCNR	   Branch to SALF in scanner
-*_
-TSALT  BRANCH  SALT,SCNR	   Branch to SALT in scanner
-*_
-TSCOK  BRANCH  SCOK,SCNR	   Branch to SCOK in scanner
 *_
 GENVSZ RCALL   ZPTR,GNVARS,XCL,RTZPTR
 *				   Generate variable from storage
@@ -6538,21 +6608,6 @@ OVER   SETAC   ERRTYP,21	   Stack overflow
 PROTER SETAC   ERRTYP,6		   Erroneous prototype
        BRANCH  FTLTST
 *_
-SCDTER SETAC   ERRTYP,1		   Illegal data type
-       BRANCH  SCERST
-*_
-SCLENR SETAC   ERRTYP,14	   Negative number
-       BRANCH  SCERST
-*_
-SCLNOR SETAC   ERRTYP,15	   String overflow
-       BRANCH  SCERST
-*_
-SCNAME SETAC   ERRTYP,4		   Null string
-       BRANCH  SCERST
-*_
-SCNEMO SETAC   ERRTYP,8						E3.4.4
-       BRANCH  SCERST						E3.4.4
-*_								E3.4.4
 SIZERR SETAC   ERRTYP,23	   Object too large
        BRANCH  FTLEND
 *_
@@ -6569,7 +6624,7 @@ UNTERR SETAC   ERRTYP,12	   Illegal I/O unit
        BRANCH  FTLTST
 *_
 SCERST SETAC   SCERCL,1		   Note failure during pattern matching
-       BRANCH  FTERST
+       BRANCH  FTLTST
 *_
 FTLTST SETAC   SCERCL,2		   Note failure out of pattern matching
 FTERST ACOMPC  ERRLCL,0,,FTLEND,FTLEND
@@ -6593,7 +6648,7 @@ FTERS2 LOCAPT  ATPTR,TKEYL,ETXTKY,FTERS2			[PLB38]
        PUSH    SCERCL						[PLB38]
        RCALL   ,TRPHND,ATPTR	   Perform trace		[PLB38]
        POP     SCERCL						[PLB38]
-FTERBR SELBRA  SCERCL,(TSALF,FAIL,RTNUL3)
+FTERBR SELBRA  SCERCL,(FAIL,FAIL,RTNUL3)			[PLB65]
 *_
 *---------------------------------------------------------------------*
        TITLE   'Data'
@@ -7060,6 +7115,8 @@ YSIZ   DESCR   0,0,0
 ZCL    DESCR   0,0,0
 ZPTR   DESCR   0,0,0
 ZSIZ   DESCR   0,0,0
+UNSCCL DESCR   0,0,0		   SCIN entry point hack for UNSC [PLB65]
+PTBRCL DESCR   0,0,0		   Index for BATPRA dispatch	[PLB65]
 *
 *      System Descriptors
 *
@@ -7592,43 +7649,45 @@ KEYTFN DESCR   KEYTR,0,2	   Keyword tracing
 LABTFN DESCR   LABTR,0,2	   Label tracing
 LITFN  DESCR   LIT,0,1		   Literal evaluation
 VLTRFN DESCR   VALTR,0,2	   Value tracing
-ANYCFN DESCR   ANYC,0,3		   Matching for ANY(S)
-ARBFFN DESCR   ARBF,0,2		   Failure for ARB
-ARBNFN DESCR   ARBN,0,2		   Matching for ARBNO(P)
-ATOPFN DESCR   ATP,0,3		   Matching for @X
-CHRFN  DESCR   CHR,0,3		   Matching for string
-BALFN  DESCR   BAL,0,2		   Matching for BAL
-BALFFN DESCR   BALF,0,2		   Failure for BAL
-BRKCFN DESCR   BRKC,0,3		   Matching for BREAK(S)
-BRXCFN DESCR   BRKX,0,3		   Matching for BREAKX(S)	[PLB31]
-BRFCFN DESCR   BRKXF,0,2	   Rematching for BREAKX(S)	[PLB31]
-DNMEFN DESCR   DNME,0,2
-DNMIFN DESCR   DNME1,0,2
-EARBFN DESCR   EARB,0,2
-DSARFN DESCR   DSAR,0,3
-ENMEFN DESCR   ENME,0,3
-ENMIFN DESCR   ENMI,0,3
-FARBFN DESCR   FARB,0,2
-FNMEFN DESCR   FNME,0,2
-LNTHFN DESCR   LNTH,0,3		   Matching for LEN(N)
-NMEFN  DESCR   NME,0,2
-NNYCFN DESCR   NNYC,0,3		   Matching for NOTANY(S)
-ONARFN DESCR   ONAR,0,2
-ONRFFN DESCR   ONRF,0,2
-POSIFN DESCR   POSI,0,3		   Matching for POS(N)
-RPSIFN DESCR   RPSI,0,3		   Matching for RPOS(N)
-RTBFN  DESCR   RTB,0,3		   Matching for RTAB(N)
-SALFFN DESCR   SALF,0,2
-SCFLFN DESCR   FAILG,0,2					[PLB25]
-SCOKFN DESCR   SCOK,0,2		   Successful match procedure
-SCONFN DESCR   SCON,0,2
-SPNCFN DESCR   SPNC,0,3		   Matching for SPAN(S)
-STARFN DESCR   STAR,0,3		   Matching for *X
-TBFN   DESCR   TB,0,3		   Matching for TAB(N)
-ABORFN DESCR   RTNL3G,0,3	   Matching for ABORT		[PLB24]
-FNCEFN DESCR   FNCE,0,2		   Matching for FENCE
-FNCFFN DESCR   RTNL3G,0,2	   Failure for FENCE		[PLB24]
-SUCFFN DESCR   SUCF,0,2		   Matching for SUCCEED
+*
+* [PLB65] use PATBRA index defines;
+ANYCFN DESCR   XANYC,0,3	   Matching for ANY(S)
+ARBFFN DESCR   XARBF,0,2	   Failure for ARB
+ARBNFN DESCR   XARBN,0,2	   Matching for ARBNO(P)
+ATOPFN DESCR   XATP,0,3		   Matching for @X
+CHRFN  DESCR   XCHR,0,3		   Matching for string
+BALFN  DESCR   XBAL,0,2		   Matching for BAL
+BALFFN DESCR   XBALF,0,2	   Failure for BAL
+BRKCFN DESCR   XBRKC,0,3	   Matching for BREAK(S)
+BRXCFN DESCR   XBRKX,0,3	   Matching for BREAKX(S)	[PLB31]
+BRFCFN DESCR   XBRKXF,0,2	   Rematching for BREAKX(S)	[PLB31]
+DNMEFN DESCR   XDNME,0,2
+DNMIFN DESCR   XDNME1,0,2
+EARBFN DESCR   XEARB,0,2
+DSARFN DESCR   XDSAR,0,3
+ENMEFN DESCR   XENME,0,3
+ENMIFN DESCR   XENMI,0,3
+FARBFN DESCR   XFARB,0,2
+FNMEFN DESCR   XFNME,0,2
+LNTHFN DESCR   XLNTH,0,3	   Matching for LEN(N)
+NMEFN  DESCR   XNME,0,2
+NNYCFN DESCR   XNNYC,0,3	   Matching for NOTANY(S)
+ONARFN DESCR   XONAR,0,2
+ONRFFN DESCR   XONRF,0,2
+POSIFN DESCR   XPOSI,0,3	   Matching for POS(N)
+RPSIFN DESCR   XRPSI,0,3	   Matching for RPOS(N)
+RTBFN  DESCR   XRTB,0,3		   Matching for RTAB(N)
+SALFFN DESCR   XSALF,0,2
+SCFLFN DESCR   XFAIL,0,2
+SCOKFN DESCR   XSCOK,0,2	   Successful match procedure
+SCONFN DESCR   XSCON,0,2
+SPNCFN DESCR   XSPNC,0,3	   Matching for SPAN(S)
+STARFN DESCR   XSTAR,0,3	   Matching for *X
+TBFN   DESCR   XTB,0,3		   Matching for TAB(N)
+ABORFN DESCR   XRTNL3,0,3	   Matching for ABORT
+FNCEFN DESCR   XFNCE,0,2	   Matching for FENCE
+FNCFFN DESCR   XRTNL3,0,2	   Failure for FENCE
+SUCFFN DESCR   XSUCF,0,2	   Matching for SUCCEED
 *
 *      Initialization Data for Functions
 *
