@@ -1,5 +1,13 @@
 .\" -*-nroff-*-
 .\" $Id$
+.ie n \{\
+.       ds lq \&"\"
+.       ds rq \&"\"
+.\}
+.el \{\
+.       ds rq ''
+.       ds lq ``
+.\}
 .TH SNOBOL4 1 "22 October 1996" "Local"
 .SH NAME
 snobol4 \- SNOBOL4 interpreter
@@ -178,7 +186,7 @@ always runs faster than
 .B "ARB 'STRING'"
 since it only attempts matching
 .B "'STRING'"
-when an
+at locations where an
 .B "'S'"
 has been detected.
 
@@ -408,8 +416,8 @@ and
 refer to the current process standard input, standard output and
 standard error respectively regardless of whether those special
 filenames exist on your system.  The magic pathname
-\fB/tcp/\fIhostname\fB/\Iservice\fR can be used to open connection
-to a TCP server. If the path ends in
+\fB/tcp/\fIhostname\fB/\fIservice\fR can be used to open connection
+to a TCP server. If the path ends in the optional suffix
 .B /priv
 the connection will be originated from a privileged local port using
 .BR rresvport (3).
@@ -617,10 +625,9 @@ Record length is per-variable; multiple variables may be associated
 with the same unit, but with different record lengths.
 .TP
 .B A
-The unit will be opened for append access in
-for
+For
 .BR OUTPUT()
-(noop for
+the unit will be opened for append access  (noop for
 .BR INPUT() ).
 .TP
 .B B
@@ -629,9 +636,9 @@ characters have no special meaning; the number of bytes transferred
 deppends on record length (see above). On output no newline is
 appended.  For terminal devices, all I/O to this unit will be
 performed in
-.I cbreak
+.I \*(lqraw\*(rq
 mode, however I/O on other units continues to perform I/O in
-.I cooked
+.I \*(lqcooked\*(rq
 mode.
 .TP
 .B C
@@ -660,18 +667,19 @@ an I/O transfer to occur.
 .B \-b
 Toggle startup banner output (by default on).
 .TP
-.BI "-d " NNN
+.BI "-d " BBB
 Allocate
-.I NNN
+.I BBB
 bytes of \*(lqdynamic storage\*(rq for program code and data. A suffix
 of
 .B k
 multiplies the number by 1024. A larger dynamic region may result in
 fewer garbage collections (storage regenerations), however large
-values may cause collections (when they occur) to run more slowly.
-Most programs do not need an increased dynamic region to run.  If your
-program terminates with a \*(lqInsufficient storage to continue\*(rq
-message you need to increase the dynamic storage region size.
+values may cause execution to slow down when large amounts of garbage
+collect.  Most programs do not need an increased dynamic region to
+run.  If your program terminates with a \*(lqInsufficient storage to
+continue\*(rq message you need to increase the dynamic storage region
+size.
 .TP
 .B -f
 Toggle folding of identifiers to upper case (see
@@ -746,9 +754,9 @@ arguments available as user parameters (see the
 .B HOST()
 function).
 .TP
-.BI "-P " NNN
+.BI "-P " BBB
 Allocate
-.I NNN
+.I BBB
 bytes of memory for the pattern match stack.  A suffix of
 .B k
 multiplies the number by 1024. The pattern match stack is used to save
