@@ -748,7 +748,7 @@ io_read( dp, sp )			/* STREAD */
 	} /* FL_TTY set */
 
 	if (fp->flags & FL_BINARY) {
-#ifdef TTY_READ_BINARY
+#ifdef TTY_READ_RAW
 	    if (fp->flags & FL_TTY)
 		len = tty_read(f, cp, recl,
 			       TRUE,	/* "raw" */
@@ -756,7 +756,7 @@ io_read( dp, sp )			/* STREAD */
 			       FALSE,	/* "keepeol" */
 			       fp->fname);
 	    else
-#endif /* TTY_READ_BINARY defined */
+#endif /* TTY_READ_RAW defined */
 #ifndef NO_UNBUF_READ
 	    if (fp->flags & FL_UNBUF)
 		len = read(fileno(f), cp, recl);
