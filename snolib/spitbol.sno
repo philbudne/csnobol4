@@ -4,6 +4,10 @@
 * Phil Budne <phil@ultimate.com>
 * September 13, 1997
 
+* SPITBOL lacks QUICKSCAN mode;
+	&FULLSCAN = 1
+
+* rename I/O function
 	OPSYN("MB_INPUT", "INPUT")
 	OPSYN("MB_OUTPUT", "OUTPUT")
 	OPSYN("MB_ENDFILE", "ENDFILE")
