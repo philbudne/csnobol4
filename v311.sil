@@ -1,6 +1,11 @@
 * $Id$
 *
 * $Log$
+* Revision 1.49  1996/09/23  04:59:32  phil
+* [PLB40] handle tabs in error pointer code
+* include file & line in compiler error messages
+* use MOVA for &LAST(FILE|LINE), moved FILCHK
+*
 * Revision 1.48  1996/09/22  05:52:28  phil
 * [PLB39] add &PARM, fixed yesterdays pre-checkin typos
 *
@@ -435,7 +440,7 @@ NODESZ EQU     3*DESCR		   Size of pattern node
 OBSIZ  EQU     256		   Number of bin headers
 OBARY  EQU     OBSIZ+3		   Total number for bins
 OCASIZ EQU     1500		   Descriptors of initial object code
-SPDLSZ EQU     10000		   Descriptors of pattern stack [PLB7][PLB35]
+SPDLSZ EQU     5000		   Descriptors of pattern stack [PLB7][PLB41]
 STSIZE EQU     1000		   Descriptors of interpreter stack
 SPDR   EQU     SPEC+DESCR	   Descriptor plus specifier
 OBOFF  EQU     OBSIZ-2		   Offset length in bins
@@ -6773,9 +6778,8 @@ NMOVER DESCR   NAMLSZ*SPDR,0,B	   Name list end offset
 NULVCL DESCR   0,0,S		   Null string value
 OCICL  DESCR   0,0,0		   Object code offset
 PATICL DESCR   0,0,0		   Pattern code offset
-PDLEND DESCR   PDLBLK+SPDLDR-NODESZ,0,0
-*				   Pattern history list end
-PDLPTR DESCR   PDLBLK,0,0	   Pattern history list beginning
+PDLEND DESCR   0,0,0		   Pattern history list end	[PLB41]
+PDLPTR DESCR   0,0,0		   Pattern history list beginning [PLB41]
 SCL    DESCR   0,0,0		   Switch descriptor
 STKPTR DESCR   STACK,0,0	   Pointer to stack
 STYPE  DESCR   0,FNC,0		   Descriptor return by STREAM
@@ -6789,7 +6793,7 @@ DATCL  DESCR   DEFDAT,FNC,0	   Defined data objects
 DEFCL  DESCR   DEFFNC,FNC,0	   Defined functions
 FLDCL  DESCR   FIELD,0,1	   Field of defined data objects
 LODCL  DESCR   LNKFNC,FNC,0	   External functions
-PDLHED DESCR   PDLBLK,0,0	   History list head
+PDLHED DESCR   0,0,0		   History list head		[PLB41]
 UNDFCL DESCR   UNDF,FNC,0	   Undefined functions
 *
 *      Pointers to Specifiers
@@ -7665,9 +7669,7 @@ OBSTRT ARRAY   OBSIZ		   Bin list
 OBLIST EQU     OBSTRT-LNKFLD	   Pseudo link pointer
 *
 *      Pattern Matching History List
-*
-PDLBLK DESCR   PDLBLK,TTL+MARK,SPDLSZ*DESCR
-       ARRAY   SPDLSZ		   Pattern history list
+* now allocated in init.c					[PLB41]
 *
 *      SYSTEM  STACK
 *
