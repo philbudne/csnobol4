@@ -49,12 +49,21 @@ static char *rcsid = "$OpenBSD: bindresvport.c,v 1.13 2000/01/26 03:43:21 deraad
 #include <winsock.h>
 #define EADDRINUSE WSAEADDRINUSE
 #define EPFNOSUPPORT WSAEPFNOSUPPORT
-#else  /* HAVE_WINSOCK_H not defined */
-/* XXX old VMS/UCX includes? */
+#define HAVE_INCLUDES
+#endif /* HAVE_WINSOCK_H defined */
+
+#ifdef OLD_UCX_INCLUDES
+#include <types.h>
+#include <socket.h>
+#include <in.h>
+#define HAVE_INCLUDES
+#endif /* OLD_UCX_INCLUDES defined */
+
+#ifndef HAVE_INCLUDES
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#endif /* HAVE_WINSOCK_H not defined */
+#endif /* HAVE_INCLUDES not defined */
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
