@@ -196,7 +196,7 @@ load(addr, sp1, sp2)
     fp->next = fp;
     funcs = fp;
 
-    D_A(addr) = (int) fp;
+    D_A(addr) = (int_t) fp;
     return TRUE;			/* success */
 }
 
