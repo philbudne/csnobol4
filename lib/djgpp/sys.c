@@ -20,4 +20,10 @@ osname(cp)
     char *cp;
 {
     sprintf(cp, "%s %d.%d", _os_flavor, _osmajor, _osminor);
+#ifdef HAVE_DXE2
+    strcat(cp, "+DXE2");
+#endif /* HAVE_DXE2 defined */
+#ifdef HAVE_WATTCP
+    strcat(cp, "+WATTCP");
+#endif /* HAVE_WATTCP defined */
 }
