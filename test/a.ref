@@ -13,9 +13,9 @@ SUCCEED = PATTERN
 
 Unprotected keywords
 
-&CASE = 1
 &ABEND = 0
 &ANCHOR = 0
+&CASE = 1
 &CODE = 0
 &DUMP = 1
 &ERRLIMIT = 0
