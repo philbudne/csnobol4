@@ -73,6 +73,12 @@ BCOPY_C=lib/auxil/bcopy.c
 GETOPT_C=lib/auxil/getopt.c
 ISNAN_C=lib/dummy/isnan.c
 
+# private copy of CFLAGS for data_init.o; here so it can be overridden
+# (ie; to just $(MYCPPFLAGS)) by config.m4 during debug (optimizing it
+# is painful but worthwhile for production).
+
+DATA_INIT_CFLAGS=$(CFLAGS)
+
 # end of defaults
 ################################################################
 CMT()
@@ -86,13 +92,22 @@ include(config.m4)
 # end of local config
 ################################################################
 
+# after local config
+
 # NOTE: NOT named CPPFLAGS; some versions of make include CPPFLAGS in cc cmd
 MYCPPFLAGS=-I./[include] -I. _CPPFLAGS
 
 COPT=[]_OPT
-CFLAGS=$(COPT) $(MYCPPFLAGS)
 
 LDFLAGS=[]_LDFLAGS
+
+################
+# compiler flags
+
+CFLAGS=$(COPT) $(MYCPPFLAGS)
+
+################
+# snobol commands
 
 # bootstrapped using Catspaw SPARC SPITBOL
 #SNO=spitbol -i512k -b
@@ -190,8 +205,9 @@ equ.h:	equ.h2
 data_init.h: data_init.h2
 	cmp data_init.h data_init.h2 || cp data_init.h2 data_init.h
 
+# note: private CFLAGS
 data_init.o: data_init.c data_init.h equ.h data.h proc.h
-	$(CC) $(CFLAGS) -c data_init.c
+	$(CC) $(DATA_INIT_CFLAGS) -c data_init.c
 
 #################
 # dependency generation is slow and ugly.
