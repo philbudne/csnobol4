@@ -1460,6 +1460,8 @@ XSELBRA	SELBRA( D_A(ARGV<1>), ARGV<2>)			:(OPDONE)
 
 ****************
 *	SIL END (=) macro
+*	SIL XECODE extension (end of code) 2/18/2002
+XXECODE
 XEND	IDENT(INPROC)					:S(OPDONE)
 	IDENT(LIVE)					:S(XEND2)
 * XXX just call EPROC(NULL)?
