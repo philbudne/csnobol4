@@ -2,16 +2,45 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+7/15/2003
+	new: test/popen(2).{ref,sno}: popen tests
+	Makefile2.m4: make snobol4 depend on tests.in
+
+7/14/2003
+	lib/snolib/{exp,tan}.c: RETFAIL if result is !finite
+
+7/11/2003
+	doc/snobol4.1: talk about CASE & UTF-8
+
+7/9/2003
+	include/lib.h lib/bsd/inet(6).c lib/io.c lib/win32/inet.c: add
+		INETxxx flags/magic paths: broadcast reuseaddr
+			dontroute oobinline keepalive nodelay
+			
+7/8/2003
+	CHANGES: update
+	doc/snobol4.1: document 8th bit handling
+
+7/7/2003
+	gensyn.sno: treat all bytes with 8th bit set as ALPHA on ASCII systems
+		allows UTF-8 encoded characters, and national character sets
+		to used in labels and identifiers!
+	new: test/8bit2.{sno,ref}: 8bit id/label test
+
+7/6/2003
+	INSTALL: update Win32 UDP info
+	configure, Makefile2.m4:
+		move SNOLIB_DEFINES, PREFIX, BINDIR, MANDIR, MAN1DIR,
+		SNOLIB_DIR to configure
+		seperate greps for socketpair
+
 7/5/2003
 	README: update copyright dates, add logic.sno
 	INSTALL: update timing e-mail address, add SNOBOL4 listserv info URL
 	Makefile2.m4: add SNOLIB_FILES variable, add README to SNOLIB_FILES
 		update timing e-mail address
-	include/lib.h: add inet_close()
-	lib/io.c: always set TYPE_INET, always call inet_close()
-	lib/{bsd,vms,dummy}/inet.c, lib/bsd/inet6.c: add inet_close()
-	lib/win32/inet.c: create inet_file struct, inet_getc()
-		to try to handle UDP I/O.  inet_close() always called
+	lib/djgpp/osinit.c: fix WATTCP compilation
+	doc/snobol4.1: updated SEE ALSO
 
 7/4/2003
 	COPYRIGHT: update year
@@ -181,7 +210,6 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	config/win32/config.h: add NEED_RRESVPORT_DECL
 	config/djgpp/config.h: add HAVE_STRINGS_H
 	Makefile2.m4: add rresvport_af.o, remove finite.o
-		add INET_O, INET6_C, inet6.o rule
 
 5/17/2003
 	configure: more HP-UX/ia64 tuning
@@ -449,7 +477,6 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	lib/io.c: io_include() 3-way return
 		defend against path overflow
 		cleanup, add comments, type member
-		put NOTAFILE flag under ifdef INET_IO
 	include/libret.h: io_include_ret
 	test/line.{ref,sno}: test multiple include handling
 	new: test/include.{ref,sno}: test includes w/o -line
@@ -472,8 +499,6 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 		report glibc version to stderr, config.m4
 		default compilation includes -Wuninitialized
 		always compile with -Wunused
-	lib/win32/inet.c: inet_close() return value
-	lib/io.c: use inet_close() return value
 	v311.sil: compile cleanly with gcc -Wunused;
 		add entry labels where needed; add XECODE op
 		removed unused labels and unused code!!
@@ -491,8 +516,6 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	removed config/djgpp/ misc...
 
 2/15/2002
-	lib/win32/inet.c: add INET_IO calls for Winsock I/O
-	lib/io.c: add crocks for INET_IO
 	config/win32/{borland,ntmsvc}.mak: clean up, bring in to sync
 	config/win32/config.h: update
 	lib/snolib/getenv.c: needs equ.h
@@ -1205,9 +1228,6 @@ Clean builds on: SunOS 4.1.4; Solaris 2.4, 2.5.1, 2.6, 7, 8
 	timing: make seperate symlink for snobol4 binary; remove .. prefix
 
 12/14/98
-	lib/bsd/inet.c: now unix only! add inet_cleanup function
-	lib/dummy/inet.c: add inet_cleanup function
-	lib/endex.c: call inet_cleanup() call
 	config/vms/descrip.mms: use vms inet.c!
 	config/win32/ntmsvc.mak: use win32 inet.c!
 	new lib/vms/inet.c: VMS only version
@@ -2103,7 +2123,6 @@ Gave to Phillip Thomas 11/23? for tcp/findunit fixes
 		add io_seek for SET()
 		add /tcp magic path
 	new lib/bsd/inet.c lib/dummy/inet.c
-	Makefile2.m4: add inet.o INET_C
 
 10/18/96 (my 35th birthday);
 	lib/io.c: implement update, unbuffered, append, raw tty, noecho
@@ -2798,11 +2817,11 @@ Gave to Phillip Thomas 11/23? for tcp/findunit fixes
 	run regression test from Makefile2
 	added "make uu"
 
-1/18/93
+1/18/94
 	wrote porting.doc, put all doc files under RCS
 	added getopt to Makefile2.cpp, generic.h
 
-1/16/93
+1/16/94
 	set exit code on fatal errors (including when
 	execution aborted due to -NOERRORS)
 

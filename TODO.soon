@@ -1,17 +1,11 @@
 $Id$
 
-Implement select()/poll()???
+add optional bi-directional popen test???
 
 man page BUGS:
 	integer overflow checking
 
-FAIL on !finite() returns in snolib functions??
-	tan(), exp()
-
 document new INET_xxx flags in man page???
-
-add popen tests:
-	input, output, both (optional)
 
 put sources under CVS
 	name repository csnobol4?
@@ -444,6 +438,8 @@ I/O system document;
 Add "N" I/O flag??
 	set IO_NONBLOCK (POSIX), IO_NDELAY (sysV)
 	or IO_NDELAY (BSD -- effects ALL fd's)
+
+Implement select()/poll()???
 
 Test:
 	I/O options (include bad strings!)
