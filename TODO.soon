@@ -1,5 +1,11 @@
 $Id$
 
+INSTALL:
+	talk about optimization options???
+		ADD_OPT()
+		OPT=
+		SNOBOL4_C_CFLAGS=
+
 fix timing script;
 	direct output into temp file
 	remove dir
