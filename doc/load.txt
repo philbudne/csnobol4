@@ -48,14 +48,17 @@ for many examples);
 The name given in the LOAD() prototype must be the name of the function.
 If case folding is in effect, the entry point name must be upper case.
 
+The typedefs int_t and real_t should be used for all SNOBOL integer
+and real values.
+
 2.1 Return value
 
 The function should use one of the following macros to return a value
 (the type of which should be compatible with the type in the prototype
 passed to the LOAD() function;
 
-	RETINT(i)			/* return integer */
-	RETREAL(a)			/* return real */
+	RETINT(i)			/* return INTEGER (int_t) value */
+	RETREAL(a)			/* return REAL (real_t) value */
 	RETNULL				/* return null string, success */
 	RETSTR(buf,len)			/* return string */
 	RETFAIL				/* return failure */
