@@ -2,7 +2,11 @@
 
 #include <varargs.h>
 #include <stdio.h>
+#ifdef NO_OFF_T
+typedef long off_t;
+#else
 #include <sys/types.h>			/* off_t */
+#endif
 
 #include "h.h"
 #include "units.h"
@@ -10,6 +14,9 @@
 #include "macros.h"
 #include "libret.h"			/* IO_XXX */
 
+/* generated */
+#include "data.h"			/* for FILENM */
+#include "equ.h"			/* for BCDFLD (for X_LOCSP) */
 
 /* ugly, but avoids knowing about unistd.h (or lack thereof) */
 #ifndef SEEK_SET
@@ -281,6 +288,7 @@ io_init()				/* here from INIT */
 
     compiling = 1;
 }
+
 /* limited printf */
 void
 io_printf(va_alist)			/* OUTPUT */
@@ -288,6 +296,10 @@ io_printf(va_alist)			/* OUTPUT */
 {
     va_list vp;
     int unit;
+    char *format;
+    register char c;
+    FILE *f;
+    char line[1024];
     char *lp;
 
     va_start(vp);
@@ -296,13 +308,70 @@ io_printf(va_alist)			/* OUTPUT */
     unit--;
 
     if (BADUNIT(unit) ||
-	io_units[unit].curr->f == NULL)
+	io_units[unit].curr == NULL ||
 	(f = io_units[unit].curr->f) == NULL)
 	return;
+
+    /* keep output in line buffer, in case output unbuffered (ie; stderr) */
     lp = line;
-    vfprintf( io_units[unit].curr->f, format, vp );
+    format = va_arg(vp, char *);
+    while ((c = *format++) != '\0') {
+	struct descr *dp;
+	char *cp;
 	int wid;
+
+	/* scan forward until first %, and print all at once? */
+	if (c != '%') {
+	    *lp++ = c;
+	    continue;
+	}
+	c = *format++;
+	if (c == '\0')
+	    break;
+	switch (c) {
+	case 'd':			/* plain decimal */
+	    dp = va_arg(vp, struct descr *);
+	    sprintf(lp, "%d", D_A(dp));
+	    lp += strlen(lp);
+	    break;
+	case 'D':			/* padded decimal */
+	    dp = va_arg(vp, struct descr *);
+	    sprintf(lp, "%15d", D_A(dp));
+	    lp += strlen(lp);
+	    break;
+	case 'F':			/* padded float */
+	    dp = va_arg(vp, struct descr *);
+	    sprintf(lp, "%15.3f", D_RV(dp));
+	    lp += strlen(lp);
+	    break;
+	case 's':			/* c-string (from version.c) */
+	    cp = va_arg(vp, char *);
+	    strcpy(lp, cp);
+	    lp += strlen(lp);
+	    break;
+	case 'S':			/* spec */
+	    dp = va_arg(vp, struct descr *);
+	    sprintf(lp, "%*s", S_L(dp), S_SP(dp));
+	    lp += strlen(lp);
+	    break;
+	case 'v':			/* variable */
+	    dp = va_arg(vp, struct descr *);
+	    dp = (struct descr *) D_A(dp); /* get var pointer */
+	    if (dp) {
+		struct spec s[1];
+
+		X_LOCSP(s, dp);
+		sprintf(lp, "%*s", S_L(s), S_SP(s));
+		lp += strlen(lp);
+	    }
+	    break;
+	default:
+	    *lp++ = c;
+	    break;
+	}
     } /* while */
+    va_end(vp);
+    *lp = '\0';
     fputs(line, f);
 }
 
@@ -367,6 +436,8 @@ io_endfile(unit)			/* ENFILE */
     io_close(unit);
 }
 
+#define COMPILING(UNIT) ((UNIT) == UNITI-1 && compiling)
+
 enum io_read_ret
 io_read( dp, sp )			/* STREAD */
     struct descr *dp;
@@ -381,8 +452,9 @@ io_read( dp, sp )			/* STREAD */
 
     unit = D_A(dp);
     unit--;
-	if (unit == UNITI-1 && compiling)
+    if (BADUNIT(unit) || io_units[unit].curr == NULL) {
 	if (COMPILING(unit)) {
+	    return IO_ERR;		/* compiler never quits!! */
 	}
 	return IO_EOF;
     }
@@ -401,11 +473,16 @@ io_read( dp, sp )			/* STREAD */
 	/* XXX check if binary mode, use fread & set len */
 	if (fgets(cp, recl, f) != NULL)
 	    break;
+
 	/* here when read failed */
 	if (feof(f)) {
 	    if (!io_next(unit)) {
 		/* XXX perror? */
 		return IO_EOF;
+	    }
+	    if (COMPILING(unit)) {
+#if 0
+		/* let compiler know we've changed files */
 		D_A(FILENM) = 0;	/* zap filename! */
 		D_A(LNNOCL) = -1;	/* and source line number */
 #endif
@@ -586,12 +663,14 @@ io_openo(dp, sp)			/* XOPENO */
     return TRUE;
 }
 
-    char fname[128];			/* XXX */
+int
 io_include( dp, sp )
     struct descr *dp;			/* input unit */
     struct spec *sp;			/* file name (with quotes) */
-    l = S_L(sp) - 2;
-    strncpy( fname, S_SP(sp)+1, l );
+{
+    int l;
+    char fname[256];			/* XXX */
+    struct file *fp;
     int unit;
 
     l = S_L(sp);
@@ -628,6 +707,30 @@ io_include( dp, sp )
     io_units[unit].curr = fp;
 
     /* add file to list of files already included */
+    fp = io_newfile(fname);		/* reuse struct file!! */
+    if (fp) {
+	fp->next = includes;
+	includes = fp;			/* XXX keep per unit? nah. */
+    }
+    return TRUE;
+}
+
+/* retrieve file currently associated with a unit */
+int
+io_file( dp, sp )
+    struct descr *dp;			/* IN: unit number */
+    struct spec *sp;			/* OUT: filename */
+{
+    int unit;
+    struct file *fp;
+
+    unit = D_A(dp);
+    unit--;
+    if (BADUNIT(unit) || (fp = io_units[unit].curr) == NULL)
+	return 0;
+
+    S_A(sp) = (int_t) fp->fname;	/* OY! */
+    S_F(sp) = 0;			/* NOTE: *not* a PTR! */
     S_V(sp) = 0;
     S_O(sp) = 0;
     S_L(sp) = strlen(fp->fname);
