@@ -15,15 +15,13 @@ supported a number of different ways;
 		Currently available under;
 		AIX (4.2 or later), BSD/OS, FreeBSD, NetBSD, OpenBSD,
 		Cygwin, Darwin (MacOS	X), HP-UX (64-bit), IRIX,
-		Linux, SunOS4, SunOS5, OSF1/DU/Tru64.
+		Linux, SunOS4, SunOS5, OSF1/DU/Tru64, DOS/DJGPP (DXE2).
 		(see section 4. for more information)
 
 	B. Using HP-UX shared-library functions (32-bit HP-UX)
 		(see section 4. for more information)
 
 	C. Systems with BSD/V7 style a.out object format
-
-	D. Using DXE on DJGPP/DOS
 
 	E. Using NSLinkModule on NextStep
 
@@ -237,6 +235,7 @@ SunOS5 sunpro		-Kpic or -KPIC		-G
 IRIX cc			-KPIC (default?)	-shared (ignore warnings)
 Tru64/DU cc		none			-shared (ignore warnings)
 HP-UX c89		+z or +Z		-b
+DJGPP			none			dxe2gen -U (see below)
 most gcc		-fpic or -fPIC		-shared or -Bshareable
 AIX			none			-bM:SRE
 
@@ -269,21 +268,37 @@ when the library is first loaded, before the first call, and call the
 void function _fini(void) before the library is unloaded.
 
 Examples;
-
     on sunos4;
-	cc -c -pic -I. -I/usr/local/lib/snobol4 source.c
+	cc -c -pic -DHAVE_CONFIG_H -I/usr/local/lib/snobol4 source.c
 	ld -o module.so source.o
 
+    on sunos5 (Solaris2+);
+	cc -c -Kpic -DHAVE_CONFIG_H -I/usr/local/lib/snobol4 source.c
+	ld -G -o modile.so source.o
+
     using gcc;
-	gcc -shared -o module.so -fPIC -I/usr/local/lib/snobol4 source.c
+	gcc -c -fPIC -DHAVE_CONFIG_H -I/usr/local/lib/snobol4 source.c
+	gcc -shared -o module.so source.o
 
     On Darwin (MacOS X);
 	dlopen() routine loads modules (bundles), not shared libraries;
 	(see http://fink.sourceforge.net/doc/porting/shared.php
 	 and http://fink.sourceforge.net/doc/porting/porting.html)
 
-	cc -fno-common -c -I/usr/local/lib/snobol4 source.c
+	cc -c -fno-common -DHAVE_CONFIG_H -I/usr/local/lib/snobol4 source.c
 	cc -bundle -flat_namespace -undefined suppress -o module.so source.o
+
+    On DOS, using DJGPP;
+	gcc -c -DHAVE_CONFIG_H -I/snobol4 source.c
+	dxe2gen -o module.dxe source.o -U
+
+    On Win32, using Cygwin and MINGW;
+	gcc -c -DHAVE_CONFIG_H -I/usr/local/lib/snobol4 source.c
+	dllwrap -v --export-all-symbols --dllname MODULE -o module.dll source.o
+
+For more information on dllwrap (under cygwin and mingw), see
+http://www.xraylith.wisc.edu/~khan/software/gnu-win32/dllhelpers.html
+http://www.neuro.gatech.edu/users/cwilson/cygutils/V1.1/dll-stuff/
 
 5. Callable functions in main snobol4 executable
 
