@@ -1,5 +1,6 @@
 /* $Id$ */
 
+#include "h.h"				/* for data.h */
 #include "types.h"
 #include "macros.h"
 #include "data.h"			/* for RETCOD */
