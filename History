@@ -3,6 +3,23 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
+9/4/96
+	v311.sil: &STLIMIT < 0 means no limit, default to -1
+		always case fold control card keywords
+		disable stats by default
+		default listing off (was being hit by init.c)
+		removed EXPCL; default SPITCL to on
+	lib/init.c: make -p toggle SPITCL, removed LISTCL hack
+	gen{c,data,dep,syn}.sno: remove refs to &STLIMIT (and &TRIM)
+	inline.sno: fix comment typo
+	gensyn.sno, include/syntab.h: made structs const, output syn.c2
+	fixed SPITBOL ? operator at top level
+	genc.sno: quiet warnings from PLUSOPS AEQLIC usage
+	lib/pml.c: fix ifdef STDC typo
+	timing: add/subtract -s switches
+	version.c: upped to vers to 0.98, added "ifdef MAIN"
+	Makefile2.m4: remove .c2/h2 files, added syn.c to SRCS (for depend)
+		changed .c.TMP to .c2
 9/3/96
 	v311.sil: Add SPITBOL operators (under -PLUSOPS) from SNOBOL4+;
 		embeded scan, assign, scan/replace, selection (comma),
