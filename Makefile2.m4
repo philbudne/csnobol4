@@ -149,18 +149,19 @@ INET_O=	inet.o
 CMT()
 CMT([establish base values:])
 ADD_OPT([$(OPT)])
-ADD_LDFLAGS([$(MATHLIB)])
 CMT()
 # config.m4:
 include(config.m4)
-
 # end of local config
 ################################################################
+
+CMT([tk wants math routines, so add them last])
+ADD_LDFLAGS([$(MATHLIB)])
 
 # after local config
 
 # NOTE: NOT named CPPFLAGS; some versions of make include CPPFLAGS in cc cmd
-MYCPPFLAGS=-I./[include] -I. _CPPFLAGS
+MYCPPFLAGS=-Iinclude -I. _CPPFLAGS
 
 COPT=[]_OPT
 

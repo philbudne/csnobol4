@@ -1,5 +1,7 @@
 $Id$
 
+use snohandle_t's in */load.c!!!
+
 cygwin:
 	cleanup confNNN.exe
 	"make clean" rm *.exe?

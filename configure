@@ -50,6 +50,7 @@ echo "# by $ID"					>> $CONFIG_M4
 if [ "x$OPTIONS" != x ]; then
    echo "# options: $OPTIONS"			>> $CONFIG_M4
 fi
+echo 'undefine([include])'			>> $CONFIG_M4
 
 ################
 # most defines now in config.h so seperately compiled
@@ -170,6 +171,12 @@ while [ $# -gt 0 ]; do
     --prefix=*)
 	PREFIX=`echo "$1" | sed 's/--prefix=//'`
 	;;
+    --with-tcl)
+	WITH_TCL=1
+	;;
+    --without-tk)
+	WITHOUT_TK=1
+	;;
     '')
 	;;
     *)
@@ -200,6 +207,9 @@ Install location;
 	--prefix=PATH		[default: /usr/local]
 	--bindir=PATH		[default: PREFIX/bin]
 	--mandir=PATH		[default: PREFIX/man]
+
+Optional items;
+	--with-tcl		--without-tk
 EOF
 
 	rm -f $CONFIG_M4 $CONFIG_H
@@ -320,7 +330,7 @@ case "$MORV" in
     fi
 
     # hpux9 and hpux10 have finite(). hpux11 has isfinite().
-    if grep '[^s]finite' /usr/include/math.h >/dev/null; then
+    if grep '[^s]finite' $INCDIR/math.h >/dev/null; then
 	echo 'using system finite() function' 1>&2
     else
 	echo 'using system isfinite() macro' 1>&2
@@ -354,7 +364,7 @@ ia64:HP-UX:*:*)
     fi
 
     # hpux11 has isfinite() macro
-    if grep '[^s]finite' /usr/include/math.h >/dev/null; then
+    if grep '[^s]finite' $INCDIR/math.h >/dev/null; then
 	echo 'using system finite() function' 1>&2
     else
 	echo 'using system isfinite() macro' 1>&2
@@ -771,7 +781,7 @@ else
 fi
 
 # prefer uname(2)
-# NeXT/Open Step have /usr/include/bsd/sys/utsname.h?? transparent??
+# NeXT/Open Step have $INCDIR/bsd/sys/utsname.h?? transparent??
 if [ -f $INCDIR/sys/utsname.h -o -f $INCDIR/bsd/sys/utsname.h ]; then
     echo 'using uname(2) for system name information' 1>&2
 else
@@ -1071,7 +1081,7 @@ if [ ! "$NO_DYNLIB" ]; then
 	SNOLIB_FILE=snolib.sl
 	echo 'ADD_LDFLAGS([-ldld])'		>> $CONFIG_M4
     elif [ -f /NextDeveloper/Headers/mach-o/dyld.h -o \
-           -f /usr/include/mach-o/dyld.h ]; then
+           -f $INCDIR/mach-o/dyld.h ]; then
 	LOAD=next
 	echo 'using NextStep/Darwin LOAD() support' 1>&2
 	echo 'LOAD_C=$(SRCDIR)lib/next/load.c'	>> $CONFIG_M4
@@ -1114,7 +1124,7 @@ fi
 
 # fseeko isn't needed if "long" (the offset type used by fseek)
 # is 64 bits, but should be safe in any case (famous last words).
-if grep fseeko /usr/include/stdio.h >/dev/null 2>&1; then
+if grep fseeko $INCDIR/stdio.h >/dev/null 2>&1; then
     echo 'using fseeko for file positioning' 1>&2
     echo '#define HAVE_FSEEKO'			>> $CONFIG_H
 fi
@@ -1196,14 +1206,14 @@ else
 fi
 
 # just give in a compile a little program that uses SIGTSTP??
-if grep SIGTSTP /usr/include/signal.h >/dev/null 2>&1 || \
-   grep SIGTSTP /usr/include/sys/signal.h >/dev/null 2>&1 || \
-   grep SIGTSTP /usr/include/bits/signum.h >/dev/null 2>&1 ||
-   grep SIGTSTP /usr/include/sys/iso/signal_iso.h >/dev/null 2>&1; then
-    if grep sigset_t /usr/include/signal.h >/dev/null 2>&1 || \
-       grep sigset_t /usr/include/sys/signal.h >/dev/null 2>&1; then
+if grep SIGTSTP $INCDIR/signal.h >/dev/null 2>&1 || \
+   grep SIGTSTP $INCDIR/sys/signal.h >/dev/null 2>&1 || \
+   grep SIGTSTP $INCDIR/bits/signum.h >/dev/null 2>&1 ||
+   grep SIGTSTP $INCDIR/sys/iso/signal_iso.h >/dev/null 2>&1; then
+    if grep sigset_t $INCDIR/signal.h >/dev/null 2>&1 || \
+       grep sigset_t $INCDIR/sys/signal.h >/dev/null 2>&1; then
 	echo 'using POSIX suspend.c' 1>&2
-    elif grep 'sigmask(' /usr/include/sys/signal.h >/dev/null 2>&1; then
+    elif grep 'sigmask(' $INCDIR/sys/signal.h >/dev/null 2>&1; then
 	echo 'using BSD suspend.c' 1>&2
 	echo 'SUSPEND_C=$(SRCDIR)lib/bsd/suspend.c'	>> $CONFIG_M4
     else
@@ -1216,23 +1226,97 @@ else
     echo 'SUSPEND_C=$(SRCDIR)lib/dummy/suspend.c' >> $CONFIG_M4
 fi
 
-if [ "$CYGWIN" -a -f /usr/include/w32api/objbase.h ]; then
+# Include STCL (tcl/tk) support, if requested
+if [ "$WITH_TCL" ]; then
+    TCL_MAJOR_VERSION=0
+    TCL_MINOR_VERSION=0
+    for TINCDIR in $INCDIR /usr/local/include $INCDIR/tcl*; do
+	if [ -d "$TINCDIR" -a -f "$TINCDIR/tcl.h" ]; then
+	    MAJ=`grep 'TCL_MAJOR_VERSION' $TINCDIR/tcl.h | awk '{ print $3 }'`
+	    MIN=`grep 'TCL_MINOR_VERSION' $TINCDIR/tcl.h | awk '{ print $3 }'`
+	    if [ "$MAJ" -gt "$TCL_MAJOR_VERSION" -o \
+		 "$MAJ" -eq "$TCL_MAJOR_VERSION" -a \
+		 "$MIN" -gt "$TCL_MINOR_VERSION" ]; then
+		# search for matching library
+		# XXX based on include path??
+		# XXX allow just .so??
+		FOUNDLIB=
+		for LIBDIR in /usr/lib /usr/local/lib; do
+		    if [ -f $LIBDIR/libtcl$MAJ$MIN.a ]; then
+			TCLLIBDIR=$LIBDIR
+			TCLLIB=tcl$MAJ$MIN
+			FOUNDLIB=1
+			break
+		    elif [ -f $LIBDIR/libtcl$MAJ.$MIN.a ]; then
+			TCLLIBDIR=$LIBDIR
+			TCLLIB=tcl$MAJ.$MIN
+			FOUNDLIB=1
+			break
+		    fi
+		done
+		if [ ! "$FOUNDLIB" ]; then
+		    continue
+		fi
+
+		TCL_MAJOR_VERSION=$MAJ
+		TCL_MINOR_VERSION=$MIN
+		TCLINCDIR="$TINCDIR"
+
+		# Pick up Tk too, if needed (loads as package in 8.4+)
+		TKLIB=
+		if [ ! "$WITHOUT_TK" ]; then
+		    if [ "$MAJ" -lt 8 -o "$MAJ" -eq 8 -a "$MIN" -lt 4 ]; then
+			# XXX allow just .so??
+			if [ -f $TCLLIBDIR/libtk$MAJ$MIN.a ]; then
+			    TKLIB=tk$MAJ$MIN
+			elif [ -f $TCLLIBDIR/libtk$MAJ.$MIN.a ]; then
+			    TKLIB=tk$MAJ.$MIN
+			fi
+		    fi
+		fi
+	    fi
+	fi
+    done
+    if [ "$TCLLIB" ]; then
+	echo using tcl$MAJ$MIN from $TCLLIBDIR 1>&2
+	if [ "$TCLLIBDIR" != /usr/lib ]; then
+	    echo 'ADD_LDFLAGS([-L'$TCLLIBDIR'])' >> $CONFIG_M4
+	fi
+	# load libtk before libtcl?
+	if [ "$TKLIB" ]; then
+	    echo using $TKLIB 1>&2
+	    echo '#define STCL_USE_TK'		>> $CONFIG_H
+	    echo 'ADD_LDFLAGS([-l'$TKLIB'])'	>> $CONFIG_M4
+	    # XXX check for existance, location?!! needed on cygwin???
+	    echo 'ADD_LDFLAGS([-lX11])'		>> $CONFIG_M4
+	fi
+	echo '#define PML_STCL'			>> $CONFIG_H
+	echo 'ADD_OBJS([stcl.o])'		>> $CONFIG_M4
+	echo 'ADD_SRCS([$(STCL_C)])'		>> $CONFIG_M4
+	if [ "$TCLINCDIR" != $INCDIR ]; then
+	    echo 'ADD_CPPFLAGS([-I'$TCLINCDIR'])' >> $CONFIG_M4
+	fi
+	echo 'ADD_LDFLAGS([-l'$TCLLIB'])'	>> $CONFIG_M4
+    fi
+fi
+
+# Include COM support under Cygwin!
+if [ "$CYGWIN" -a -f $INCDIR/w32api/objbase.h ]; then
     echo 'using Win32 COM support' 1>&2
     echo 'ADD_OBJS([com.o])'			>> $CONFIG_M4
     echo 'ADD_SRCS([$(COM_CPP)])'		>> $CONFIG_M4
-    if grep wcschr /usr/include/wchar.h >/dev/null 2>&1; then
+    if grep wcschr $INCDIR/wchar.h >/dev/null 2>&1; then
 	echo '#define USE_WCHAR_H'		>> $CONFIG_H
     else
-	# XXX look in /usr/include/w32api??
+	# XXX look in $INCDIR/w32api??
 	echo '#define NEED_WCSCHR'		>> $CONFIG_H
     fi
-    if grep CoGetObject /usr/include/w32api/objbase.h >/dev/null; then
+    if grep CoGetObject $INCDIR/w32api/objbase.h >/dev/null; then
 	true
     else
 	echo '#define NEED_COGETOBJECT'		>> $CONFIG_H
     fi
     echo '#define PML_COM'			>> $CONFIG_H
-    # XXX no LDFLAGS needed?!
     echo 'ADD_LDFLAGS([-lole32 -luuid -loleaut32])' >> $CONFIG_M4
     # needed w/ gcc 3.3.1 cygwin 1.5.9 (0.122/4/2)
     echo 'ADD_LDFLAGS([-lstdc++])'		>> $CONFIG_M4

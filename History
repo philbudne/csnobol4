@@ -2,6 +2,12 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+8/26/2004
+	lib/snolib/stcl.c: add back Tk under STCL_USE_TK
+	configure: add --with-tcl and --without-tk
+		use $INCDIR more
+	Makefile2.m4: tweaks for stcl
+
 8/24/2004
 	pml.h: add STCL under PML_STCL
 	lib/snolib/stcl.c: cleanup
