@@ -100,8 +100,8 @@ struct file {
 #define FL_TTY		0100		/* is a tty */
 #define FL_NOECHO	0200		/* tty: no echo */
 #define FL_NOCLOSE	0400		/* don't fclose() */
-
-/* XXX opened by INPUT/OUTPUT flag? */
+#define FL_INPUT	01000		/* attached for INPUT() */
+#define FL_OUTPUT	02000		/* attached for OUTPUT() */
 
 #define MAXFNAME	1024		/* XXX use MAXPATHLEN? POSIX?? */
 #define MAXOPTS		1024
@@ -1078,6 +1078,8 @@ io_openi(dunit, sfile, sopts, drecl)	/* called from SNOBOL INPUT() */
     if (fp == NULL)
 	return FALSE;
 
+    fp->flags |= FL_INPUT;
+
     /* process options */
     if (!io_options(fp, opts, &recl))
 	return FALSE;
@@ -1132,6 +1134,9 @@ io_openo(dunit, sfile, sopts)		/* called from SNOBOL OUTPUT() */
     else {
 	fp = io_units[unit].curr;
     }
+
+    fp->flags |= FL_OUTPUT;
+
     if (fp == NULL)
 	return FALSE;			/* fail; no harm done! */
 
