@@ -1080,8 +1080,19 @@ io_flushall(dummy)
     int i;
 
     for (i = 0; i < NUNITS; i++) {
-	if (io_units[i].curr && io_units[i].curr->f)
-	    fflush(io_units[i].curr->f); /* keep err count?? */
-    }
+	struct file *fp;
+
+	fp = io_units[i].curr;
+	if (fp) {
+	    FILE *f;
+
+	    f = io_units[i].curr->f;
+	    if (f) {
+		if (fp->flags & FL_TTY)
+		    tty_mode(f, 0, 0, 0); /* restore tty settings */
+		fflush(io_units[i].curr->f); /* keep err count?? */
+	    } /* have f */
+	} /* have fp */
+    } /* foreach unit */
     return TRUE;
 }
