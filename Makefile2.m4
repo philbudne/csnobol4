@@ -494,8 +494,8 @@ spotless: realclean
 	Makefile2.m4 autoconf config.guess $(SIL) syntax.tbl procs \
 	globals genc.sno gensyn.sno gendata.sno inline.sno main.c \
 	charset.c data_init.c version.c parms.h mlink.h mdata.h pml.h \
-	$(GENERATED) lib include config test bugs snolib/*.sno timing \
-	timing.sno cc-M bsplitu.c]
+	$(GENERATED) lib include config test bugs snolib/*.sno sunmodel \
+	timing timing.sno cc-M bsplitu.c]
 
 # "print version" -- for dir/tar names
 pv:	version.c
