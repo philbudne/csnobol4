@@ -90,7 +90,7 @@ with "--add-" can appear);
 		32-bit integers, longs and pointers (ILP32).
 
 		Requires "long long" support in the chosen C compiler,
-		and will use C89 numeric conversion routines if they
+		and will use C99 numeric conversion routines if they
 		are available, missing functions are supplied if the C
 		runtime lacks them.
 
@@ -200,7 +200,7 @@ with "--add-" can appear);
 
 	--opt=STRING
 		Supply C optimization flags.  The default value when using
-		GCC is "-O2" (the -finline-functions flag is supplied
+		GCC is "-O3" (the -finline-functions flag is supplied
 		separately except when --no-inline has been given).
 
 		If the C compiler being used is not GCC based, the
