@@ -216,7 +216,7 @@ changequote([,])dnl
 ################
 # run regression tests.
 
-snobol4: xsnobol4 snobol4.c
+snobol4: xsnobol4 snobol4.c snolib/host.sno
 	@echo Running regression tests...
 	cd test; ./run.sh ../xsnobol4
 	@echo Passed regression tests.
@@ -471,6 +471,12 @@ sys.o: $(SYS_C)
 
 tan.o: $(TAN_C)
 	$(CC) $(CFLAGS) -c $(TAN_C)
+
+#################
+# generated snolib files
+
+host.sno: lib/snolib/host.h host.awk
+	awk -f host.awk lib/snolib/host.h > snolib/host.sno
 
 #################
 # installation
