@@ -64,8 +64,9 @@ with "--add-" can appear);
 		around will negatively impact performance, even when
 		floating point is not being used.
 
-		Does not effect size of INTEGER data type, or the
-		maximum object size (see --no-bitfields).
+		Does not effect size of INTEGER data type (see
+		--longlong), or the maximum object size (see
+		--no-bitfields).
 
 	--fast
 		Enable use of vendor C compiler options which may make
@@ -84,14 +85,19 @@ with "--add-" can appear);
 		bcopy.c source file will be used.
 
 	--longlong
-		Attempt to use C "long long" data type to represent SNOBOL4
-		INTEGERs, and "double" for REAL on systems where pointers
-		are only 32-bits (ILP32 data model).
+
+		Attempt to use C "long long" data type to represent
+		SNOBOL4 INTEGERs, and "double" for REAL on systems
+		where pointers are only 32-bits (ILP32 data model).
 
 		Requires "long long" support in the chosen C compiler,
-		and will use C89 numeric conversion routines if
-		available, but will supply missing functions if the C
+		and will use C89 numeric conversion routines if they
+		are available, missing functions are supplied if the C
 		runtime lacks them.
+
+		This option does not alter the C type used to
+		represent REAL data (see --double), or the maximum
+		object size (see --no-bitfields).
 
 				*** NOTE ***
 
