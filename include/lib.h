@@ -34,6 +34,7 @@ void io_print __P((struct descr *,struct descr *,struct spec *));
 void io_printf __P((int,...));
 void io_rewind __P((int));
 int io_seek __P((struct descr *,struct descr *,struct descr *));
+int io_sseek __P((int_t,int_t,int_t,int_t,int_t *));
 
 /* from lexcmp.c */
 int lexcmp __P((struct spec *,struct spec *));
@@ -122,6 +123,12 @@ int tty_read __P((FILE *,char *,int,int,int,int,char *));
 /* from sys.c */
 void hwname __P((char *));
 void osname __P((char *));
+
+/* from exists.c */
+int exists __P((char *));
+
+/* from execute.c */
+void execute __P((char *));
 
 /*
  * functions we provide on some systems:
