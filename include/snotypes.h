@@ -39,23 +39,27 @@ union addr {
 
 #ifdef NO_BITFIELDS
 #ifndef VFLD_T
-#define VFLD_T int			/* at least 31 bits */
+#define VFLD_T unsigned int		/* at least 32 bits */
+#endif
+#ifndef SIZLIM
+#define SIZLIM 0xffffffff		/* maximum object size */
 #endif
 #define VFLD(name) VFLD_T name
-#define SIZLIM 0x7fffffff		/* maximum object size (in addrs) */
 #else  /* NO_BITFIELDS not defined */
 #define VFLD(name) unsigned name : 24
 #define SIZLIM 0xffffff
 #endif /* NO_BITFIELDS not defined */
 
 /*
- * maximum object sizes for various v-field sizes;
+ * maximum object sizes for selected v-field and a-field sizes;
  *
- *			max object size
- * v field	DESCR	bytes	DESCRs
- * 16b		8B	64K	8K
- * 24b		8B	16M	2M
- * 31b		12B	2G	170M
+ * field sizes		max object size
+ * v	a	DESCR	bytes	DESCRs
+ *			SIZLIM	SIZLIM/DESCR
+ * 16b	32b	8B	64K	8K
+ * 24b	32b	8B	16M	2M	(default)
+ * 32b	32b	12B**	4G	512M	(** subject to alignment restrictions)
+ * 32b 	64b	16B	4G	128M	(LP64 model)
  *
  * max object size in bytes determines maximum string length
  * max object size in DESCRs determines maximum size for;
