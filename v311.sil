@@ -1,6 +1,10 @@
 * $Id$
 *
 * $Log$
+* Revision 1.89  2002/01/18 05:06:27  phil
+* [PLB76] Fix lexical comparison optimizations
+* add new lexical functions to index
+*
 * Revision 1.88  2002/01/17 18:57:40  phil
 * [PLB75] Increase hash table size to 8K
 * define OBSFT (shift factor) for table size
@@ -1554,30 +1558,21 @@ CDIAG  INCRA   BOSCL,DESCR	   Increment offset of beginning
        INCRA   ESAICL,DESCR	   Increment count of errors
        ACOMP   ESAICL,ESALIM,COMP9 Test for excessive errors
        ACOMPC  COMPCL,0,,CDIAG4	   Done compiling? Skip this	[PLB49]
-       MOVD    YCL,ERRBAS	   Set up length of error vector
-       AEQLC   BRTYPE,EOSTYP,,CDIAG3
-*				   Check for end of statement
-       GETLG   XCL,TEXTSP	   Get length remaining
-       SUBTRT  YCL,YCL,XCL	   Compute position for marker
-CDIAG3 PUTLG   ERRSP,YCL	   Insert length
-       AEQLC   BRTYPE,EOSTYP,,CDIAG2
 %{
 	char *sp, *dp;		/* src ptr, desr ptr		[PLB40] */
 	int len;		/* src char count		[PLB40] */
 	sp = INBUF + STNOSZ;	/* get start of statement buffer [PLB40] */
-	len = D_A(YCL) - STNOSZ; /* number of spaces/tabs to skip [PLB49] */
+	len = S_O(TEXTSP);	/* number of spaces/tabs to skip [PLB77] */
+	S_L(ERRSP) = len + 1;	/* set pointer line length	[PLB77] */
 	dp = ERRBUF + STNOSZ;	/* get start of marker buffer	[PLB40] */
-	while (len-- > 0) {	/* for all chars in statement	[PLB40] */
-	    if (*sp == '\t')	/* if tab			[PLB40] */
+	while (len-- > STNOSZ) { /* for all chars in statement	[PLB77] */
+	    if (*sp++ == '\t')	/* if tab			[PLB77] */
 		*dp++ = '\t';	/*	put tab in errbuf	[PLB40] */
 	    else		/* else				[PLB40] */
 		*dp++ = ' ';	/*	put space		[PLB40] */
-	    sp++;		/* advance src			[PLB40] */
 	}			/*				[PLB40] */
 	*dp++ = '^';		/* store pointer		[PLB40] */
-	S_L(ERRSP)++;		/* account for pointer		[PLB40] */
 %}
-*				   Check for end of statement
        STPRNT  IOKEY,ERRBLK,LNBFSP Print statement to stderr	[PLB8]
        STPRNT  IOKEY,ERRBLK,ERRSP  Print error marker to stderr	[PLB8]
        AEQLC   LISTCL,0,,CDIAG2	   Check for listing mode	[PLB8]
@@ -1661,7 +1656,7 @@ ELEMRR AEQLIC  ZPTR,FATHER,0,,ELEM10				[PLB32]
 *
 ELEM10 STREAM  XSP,TEXTSP,GOTSTB,RTZPTR,RTZPTR,			[PLB32]
 *				   Examine next character	[PLB32]
-       AEQLC   STYPE,SGOTYP,,RTN1  Error if ELEMENT-PAREN	[PLB32]
+       AEQLC   STYPE,SGOTYP,,ELECMA  Error if ELEMENT-PAREN	[PLB77]
        MOVD    ELEMND,ZEROCL	   Clear top of tree pointer	[PLB32]
        MOVD    ELEXND,ZPTR	   Existing tree becomes ITEM's 1st arg [PLB32]
        BRANCH  ELEAR2		   Build ITEM function		[PLB32]
