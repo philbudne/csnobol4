@@ -2,31 +2,35 @@ $Id$
 
 1. Introduction
 
-External functions are loaded via the LOAD() function.  LOAD() is
-passed a prototype which names the function and describes the number
-of, and types of the arguments the function will be passed, as well as
-the return type.  The named function will first be searched for in a
-table built in at compile time (see "Poor Man's LOAD"), if it is not
-found, the second argument to LOAD is used as the object file (or
-library) to load the function from. If no second argument is given,
-the value of the SNOLIB environment variable will be used.  If the
-SNOLIB environment variable is not set, a compiled in default path
-will be used (by default /usr/local/lib/snobol4/snolib.a) -- see
-SNOLIB_DIR AND SNOLIB_A in include/path.h.
+External C functions are loaded into SNOBOL4 via the LOAD() function.
+LOAD() is passed a prototype which names the function and describes
+the number of, and types of the arguments the function will be passed,
+as well as the return type.  The named function will first be searched
+for in a table built in at compile time (see "Poor Man's LOAD"). If it
+is not found, the second argument to LOAD is used as the name of an
+object file (or library) to load the function from. If no second
+argument is given, the value of the SNOLIB environment variable (or a
+built in default, if SNOLIB is not set) will be used to locate a
+directory to find an object library named snolib.a.
 
-examples:
-	LOAD("SQRT(REAL)REAL")
-	LOAD("DELETE(STRING)STRING")
-	LOAD("FILE(STRING)STRING")
+examples (see lib/snolib/*.c for code);
 	LOAD("FORK()INTEGER")
 	LOAD("GETENV(STRING)STRING")
-	LOAD("RENAME(STRING,STRING)STRING")
 	LOAD("SPRINTF(STRING,INTEGER)STRING")
 	LOAD("SYSTEM(STRING)INTEGER")
 
+The following snolib functions are available by default
+(via pml.h);
+
+	LOAD("RENAME(STRING,STRING)STRING")
+	LOAD("SQRT(REAL)REAL")
+	LOAD("DELETE(STRING)STRING")
+	LOAD("FILE(STRING)STRING")
+
 2. Creating a C function to be loaded.
 
-An external C function should be declared as follows;
+An external C function should be declared as follows (see lib/snolib
+for examples);
 
     #include "h.h"
     #include "snotypes.h"
@@ -38,74 +42,106 @@ An external C function should be declared as follows;
     {
     }
 
+The name given in the LOAD() prototype must be the name of the function.
+If case folding is in effect, the entry point name must be upper case.
+
+2.1 Return value
 
 The function should use one of the following macros to return a value
 (the type of which should be compatible with the type in the prototype
 passed to the LOAD() function;
 
-	RETINT(i);			/* return integer */
-	RETREAL(a);			/* return real */
-	RETNULL;			/* return null string, success */
-	RETSTR(buf,len);		/* return non-null string */
-					/* depends on snolib/retstr.c */
-	RETFAIL;			/* return failure */
+	RETINT(i)			/* return integer */
+	RETREAL(a)			/* return real */
+	RETNULL				/* return null string, success */
+	RETSTR(buf,len)			/* return string */
+	RETFAIL				/* return failure */
+
+
+The correct behavior for a new predicate is to declare it as returning
+type STRING, and to use RETNULL on success and RETFAIL on failure.
+
+2.2 Arguments
 
 Arguments can be accessed via the following macros;
 
+for INTEGER arguments;
 	LA_INT(N)	access the n'th argument as an integer (int_t)
+for REAL arguments;
 	LA_REAL(N)	access the n'th argument as a real (real_t)
-	LA_PTR(N)	access the n'th argument as a pointer (void *)
+for STRING arguments;
+	LA_PTR(N)	access the n'th argument as a pointer (void *) to
 			pass to the getstr() function from snolib/getstr.c
 			to retrieve a string, ie;
 				getstr(LA_PTR(n), buffer, sizeof(buffer));
 
-	LA_TYPE(N)	returns the datatype of the n'th argument
-			NOTE: this should always be the type as declared
-			in the function prototype given to LOAD()!!!
+2.3 Polymorphic parameters
 
-		I	arg is an integer of type int_t
-		R	arg is a real of type real_t
-		S	arg references a string or "natural variable"
-			constructed of 4 descriptors, plus the string.
-			(see the getstring() function)
+External functions can be written to take polymorphic parameters by
+leaving the type name blank in the prototype. For example
+"FOO(,STRING)INTEGER" is a function with two parameters, the first is
+polymorphic.  The LA_TYPE() macro must be used to determine the data
+actual type;
 
-			The D_V() field of the first descriptor
-			contains the string length.  The string begins
-			after the 4th descriptor (at D_A(dp) + BCDFLD)
+	LA_TYPE(n)	returns the data type of the n'th argument
+			(values declared in equ.h)
 
-		user datatypes begin at 100 and appear as an array of
+		I	arg is an integer of type int_t (fetch with LA_INT(n))
+		R	arg is a real of type real_t (fetch with LA_REAL(n))
+
+		S	arg references a string.
+			(fetch with getstring() & LA_PTR(n))
+
+		user data types begin at 100 and appear as an array of
 		descriptors located by D_A(dp).  The first descriptor
 		is a "title" descriptor whose D_V() field indicates
 		how many descriptors follow.
 
+2.4 Polymorphic return values.
+
+A function returning different types of values can be constructed by
+omitting the return type from the prototype, and assigning the return
+value type to "RETYPE" before using the associated RETxxx macro.
+
+2,5 Globals
 
 Dynamicly loaded functions have no access to any global data or
 functions in the SNOBOL4 system.  Any libraries required to load the
-function must be mentioned explicitly in the second argument to LOAD().
+function must be mentioned explicitly in the second argument to LOAD(),
+by appending the path name of the library or "-l" flags as passed to
+"ld" or "cc" commands.
 
 3. ``Static'' (or ``Poor Man's'') Loading
 
-On systems (at this time anything other than BSD flavored Un*x) which
-don't implement the load() library function (and even on systems which
-do), external functions may be linked into the snobol4 system image at
-build time.
+On systems which don't implement the load() library function (and even
+on systems which do), external functions may be linked into the
+snobol4 system image at build time.
 
 Step 1.
 
 	Add a line to the top level file "pml.h" which describes the
-	function name and it's entry point.  If the names are the same, use
-	PMLFUNC(NAME), else use PMLFUNC2("NAME", entry).  pml.h
-	contains examples for many of the functions in snolib/*.c
+	function name and it's entry point.  If the names are the
+	same, use PMLFUNC(NAME), else use PMLFUNC2("NAME", entry).
+	pml.h contains examples for many of the functions in
+	lib/snolib/
+
+	If you wish the functions to be available automatically
+	(without first calling the LOAD() function) add a line to
+	pml.h of the form; PMPROTO("PROTOTYPE(TYPES...)TYPE")
+
+	NOTE: none of PMLFUNC(), PMLFUNC2() or PMPROTO() lines should
+	end with a semicolon.
 
 Step 2.
 
 	Add the paths of the object file(s) in which the functions
-	reside to the PML_OBJ variable in your config.h file. ie;
+	reside to the PML_OBJS variable in your config.m4 (or
+	local-config) file. ie;
 
-	PML_OBJ=system.o
+	PML_OBJS=system.o
 
 	If any special libraries are required, you can specify them
-	at the end of PML_OBJ, or add them to CONFIG_LDFLAGS.
+	at the end of PML_OBJS, or use ADD_LDFLAGS([-llibrary]).
 
 Step 3.
 
@@ -114,3 +150,22 @@ Step 3.
 Step 4.
 
 	Run "make"
+
+Step 5.
+
+	Functions with PMPROTO() lines in pml.h will be available
+	immediately.  Other functions will be available after you
+	access them using the SNOBOL4 LOAD() function.
+
+	If a prototype in a PMPROTO() line is malformed, the error
+	will be silently ignored, and attempts to invoke the function
+	will fail until a good LOAD() function call is made.
+
+WARNING: because PML functions are loaded with the SNOBOL4 code,
+global symbol collisions can occur.  The file "globals" in the snobol
+source directory contains a list of all global function names.
+Collisions, when they occur can be circumvented by changing the C
+function name, and either loading normally and the using OPSYN() to
+rename the function, or using PMLFUNC2() to specify the name of
+the C function entry point.
+
