@@ -819,9 +819,9 @@ io_read( dp, sp )			/* STREAD */
 	    len = tty_read(f, cp, recl,
 			   FALSE,	/* "raw" */
 			   (fp->flags & FL_NOECHO) != 0, /* "noecho" */
-			   (fp->flags & FL_EOL) != 0, /* "keepeol" */
+			   (fp->flags & FL_EOL) == 0, /* "keepeol" */
 			   fp->fname);
-	    if (len > 0)
+	    if (len >= 0)		/* allow empty lines! */
 		break;
 	}
 #endif /* TTY_READ_COOKED defined */
