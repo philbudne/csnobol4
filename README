@@ -141,13 +141,12 @@ The tar does not contain any binaries; THEY SHOULD NOT BE NEEDED
 provided.  The generated files are NOT system dependant!!!
 
 Changes from "beta1" distribution;
-	GCC inlining features used to advantage.
-		SNOBOL4 compile phase may run 3x faster than beta1.
-		Some programs may execute 1.5x faster.
-	Source code ordered for better inlining;
-		gcc automatic function inlining enabled by default.
 	Now have man page (describes all extensions)!!!
-	Tested on more systems (IBM, SGI, LINUX, VMS).
+	Tested on more systems (FreeBSD, IBM, LINUX, SGI, VMS).
+	GCC inlining features used to advantage.
+		Source code ordered for better inlining.
+		SNOBOL4 compile phase may run 4x faster than beta1.
+		Some programs may execute 1.5x faster.
 	Now using m4 to create Makefile2. Too many problems with cpp.
 	Many more example configs.  Use "include" to eliminate commonality.
 	Implemented include files (-INCLUDE or -COPY) per SPITBOL.

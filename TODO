@@ -52,6 +52,7 @@ $Id$
 	GETPWUID()
 	GETPWENT()
 	SETPWENT()
+	UNAME()		see #25
 
 22. Implement -NOEXEC (-n flag)
 
@@ -88,7 +89,8 @@ $Id$
 	ARGV() function?
 	SPITBOL HOST(0) (-u command line arg)??
 
-39. Investigate better ordering for inlining.
+39. Investigate better ordering for inlining (replace tsort + reverse)
+    Write in SNOBOL!!
     Possible weghting factors;
 	Number of calls to function
 	Number of lines in function
