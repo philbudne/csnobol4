@@ -1,6 +1,10 @@
 * $Id$
 *
 * $Log$
+* Revision 1.50  1996/09/24  06:45:22  phil
+* [PLB41] removed PDLBLK (pm stack); now allocated in init.c
+* dropped SPDLDZ back to 5000
+*
 * Revision 1.49  1996/09/23  04:59:32  phil
 * [PLB40] handle tabs in error pointer code
 * include file & line in compiler error messages
@@ -542,7 +546,29 @@ INITD1 GETDC   XPTR,INITB,0	   Get specifier to convert
        SETAC   INICOM,1		   SIGNAL COMPLETION		E3.10.6
        XCALLC  io_file,(UNIT,XSP)  Get initial filename		[PLB38]
        RCALL   FILENM,GENVAR,(XSPPTR)				[PLB38]
-       BRANCH  XLATRN
+*
+* spin through list of functions to auto-load
+       SETAC   XCL,0		   Loop index			[PLB42]
+AUTLOP LHERE			   Top of autoload loop		[PLB42]
+%{					/*			[PLB42] */
+	extern char *pm_prototypes[];	/*			[PLB42] */
+					/*			[PLB42] */
+	S_A(XSP) = (int_t) pm_prototypes[D_A(XCL)]; /*		[PLB42] */
+	S_F(XSP) = 0;			/* NOTE: *not* a PTR! 	[PLB42] */
+	S_V(XSP) = 0;			/*			[PLB42] */
+	S_O(XSP) = 0;			/*			[PLB42] */
+	S_L(XSP) = strlen(pm_prototypes[D_A(XCL)]); /*		[PLB42] */
+	CLR_S_UNUSED(XSP);		/*			[PLB42] */
+%}
+       LEQLC   XSP,0,,XLATRN	   Empty string? end of loop	[PLB42]
+       RCALL   XPTR,GENVAR,(XSPPTR)				[PLB42]
+*				   Get prototype string in XPTR	[PLB42]
+       MOVD    WPTR,NULVCL	   Get null string (library)	[PLB42]
+       INCRA   ERRLCL,1		   Make sure &ERRLIMIT nonzero	[PLB42]
+       RCALL   ,LOAD2		   Call into LOAD		[PLB42]
+       SETAC   ERRLCL,0		   Clear &ERRLIMIT		[PLB42]
+       INCRA   XCL,1		   Next!			[PLB42]
+       BRANCH  AUTLOP		   Go back, jack		[PLB42]
 *_
 *---------------------------------------------------------------------*
        TITLE   'Compilation and Interpreter Invocation'
@@ -3883,8 +3909,8 @@ LOAD   PROC    ,		   LOAD(P)
        RCALL   XPTR,VARVAL,,FAIL   Get prototype
        PUSH    XPTR		   Save prototype
        RCALL   WPTR,VARVAL,,FAIL   Get library name
-       LOCSP   VSP,WPTR		   Get specifier for library
-       POP     XPTR		   Restore prototype
+       POP     XPTR		   Restore prototype		[PLB42]
+LOAD2  LOCSP   VSP,WPTR		   Get specifier for library	[PLB42]
        LOCSP   XSP,XPTR		   Get specifier for prototype
        STREAM  YSP,XSP,VARATB,PROTER,PROTER
 *				   Get function name from prototype
