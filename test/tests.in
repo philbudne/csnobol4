@@ -54,3 +54,6 @@ reg contin.sno
 reg local.sno
 # 3/15/95
 reg rewind1.sno
+# 8/19/96
+reg conv2.sno
+reg ind.sno
