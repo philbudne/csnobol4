@@ -2,6 +2,10 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
+6/29/94
+	version.c: clean up for non-ansi compilation
+	timing.sno: Output bad diff results, loosten ms/stmt check
+
 *** Second Beta release (tag BETA2)
 
 6/24/94
