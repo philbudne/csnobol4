@@ -10,7 +10,7 @@
 #include <errno.h>
 
 #include <iodef.h>
-#include <ssdef.h>
+#include <stsdef.h>
 
 #define SUCCESS(_STAT) ((_STAT) & STS$M_SUCCESS)
 #define SETERR(_STAT) do { vaxc$errno = (_STAT); errno = EVMSERR; } while(0)
@@ -19,19 +19,20 @@ extern char *stdin_file, *stdout_file;	/* from getredirect.c */
 extern char *term_file;			/* from term.c */
 extern FILE *term_fd;			/* from term.c */
 
-static struct {
+struct read_iosb {
     short status;
-    short size;
-    short termlen;
-    short term;
-} iosb;
+    short size;				/* offset to terminator */
+    short termlen;			/* terminator size */
+    short term;				/* first char of terminator */
+};
 
-static struct ttychan {
+/* list of channels to use, by fileno */
+struct ttychan {
     struct ttychan *next;
-    FILE *f;
+    int fd;
     int chan;
-} *chans;
-
+};
+static struct ttychan *chans;
 
 int
 fisatty(f)
@@ -73,10 +74,12 @@ tty_close(f)
     FILE *f;
 {
     register struct ttychan *tp, *pp;
+    int fd;
 
     /* see if we have an open channel */
+    fd = fileno(f);
     for (tp = chans, pp = NULL; tp; tp = tp->next, pp = tp) {
-	if (tp->f == f)
+	if (tp->fd == fd)
 	    break;
     }
     if (!tp)
@@ -88,33 +91,45 @@ tty_close(f)
     else
 	chans = tp->next;
 
+    /* release channel */
     SYS$DASSGN(tp->chan);
     free(tp);
 }
 
 
-/* binary read; must define TTY_READ for this to be called; */
+/*
+ * perform tty reads;
+ * must define TTY_READ for this to be called from io.c
+ * not called for cooked (non-raw) reads
+ */
+
 int
-tty_read(f, buf, len, noecho, fname)
+tty_read(f, buf, len, raw, noecho, keepeol, fname)
     FILE *f;
     char *buf;
     int len;
+    int raw;
     int noecho;
+    int keepeol;
     char *fname;
 {
     int chan;
-    int op;
-    int status;
-    int term[2];
+    int fd;
+    int op;				/* QIO op & flags */
+    int status;				/* QIO status */
+    int term[2], *termp;
     struct ttychan *tp;
-    
+    struct read_iosb iosb;		/* QIO io status block */
+
     /* see if we have an open channel */
+    fd = fileno(f);
     for (tp = chans; tp; tp = tp->next) {
-	if (tp->f == f)
+	if (tp->fd == fd)
 	    break;
     }
     
-    if (tp == NULL) {
+    if (tp == NULL) {			/* no channel; open one */
+	char namebuf[1024];
 	struct descr {
 	    int len;
 	    char *ptr;
@@ -124,17 +139,23 @@ tty_read(f, buf, len, noecho, fname)
 	tp = (struct ttychan *)malloc(sizeof(struct ttychan));
 	if (!tp)
 	    return -1;
-	
-	if (f == stdin)
+
+#if 1
+	d.ptr = fgetname(f, namebuf, 1); /* 1 forces VMS filename */
+#else
+	/* handle some special cases */
+	if (fd == fileno(stdin))
 	    d.ptr = stdin_file;
-	else if (f == stdout)
+	else if (fd == fileno(stdout))
 	    d.ptr = stdout_file;
-	else if (f == term_fd)
+	else if (fd == fileno(stderr))
+	    d.ptr = "SYS$ERROR:";
+	else if (fd == fileno(term_fd))
 	    d.ptr = term_file;
 	else
 	    d.ptr = fname;
-	
-	d.len = strlem(d.ptr);
+#endif
+	d.len = strlen(d.ptr);
 	status = SYS$ASSIGN(&d, &chan, 0, 0);
 	if (!SUCCESS(status)) {
 	    SETERR(status);
@@ -142,17 +163,28 @@ tty_read(f, buf, len, noecho, fname)
 	    return -1;
 	}
 	
+	tp->fd = fd;
 	tp->chan = chan;
-	tp->f = f;
+
+	/* link into list */
 	tp->next = chans;
 	chans = tp;
     }
+
     chan = tp->chan;
-    op = IO$_READVBLK | IO$_NOFILTR;	/* read; no edit chars */
+    op = IO$_READVBLK;
     if (noecho)
 	op |= IO$M_NOECHO;
-    term[0] = term[1] = 0;		/* no break chars */
-    status = SYS$QIOW(0, chan, op, &iosb, 0, 0, buf, len, 0, term, 0, 0);
+
+    if (raw) {
+	op |= IO$M_NOFILTR;		/* no edit processing */
+	term[0] = term[1] = 0;		/* no break chars */
+	termp = term;
+    }
+    else
+	termp = NULL;
+
+    status = SYS$QIOW(0, chan, op, &iosb, 0, 0, buf, len, 0, termp, 0, 0);
     if (!SUCCESS(status)) {
 	SETERR(status);
 	return -1;
@@ -161,20 +193,42 @@ tty_read(f, buf, len, noecho, fname)
 	SETERR(iosb.status);
 	return -1;
     }
-    return iosb.size;
-}
+
+    if (!raw) {
+	if (iosb.termlen == 0) {
+	    /* XXX need to flush rest of line! */
+	}
+	if (keepeol)
+	    return iosb.size + iosb.termlen;
+    }
+    returb iosb.size;
+} /* tty_read */
 
 #ifdef TEST
+char *stdin_file = "SYS$INPUT:";
+
 #define TRUE 1
 main() {
-  char buf[2];
+  char buf[3];
   int cc;
 
-  cc = tty_read(stdin, buf, 1, TRUE, TRUE);
+  printf("raw, noecho:\n");
+  cc = tty_read(stdin, buf, sizeof(buf), TRUE, TRUE, FALSE, "-");
   if (cc) printf("%d\n", buf[0]);
-  cc = tty_read(stdin, buf, 1, TRUE, FALSE);
+
+  printf("raw, echo:\n");
+  cc = tty_read(stdin, buf, sizeof(buf), TRUE, FALSE, FALSE, "-");
   if (cc) printf("%d\n", buf[0]);
-  tty_restore();
+
+  printf("cooked, echo:\n");
+  cc = tty_read(stdin, buf, sizeof(buf), FALSE, FALSE, TRUE, "-");
+  if (cc) printf("%d\n", buf[0]);
+
+  printf("cooked, noecho:\n");
+  cc = tty_read(stdin, buf, sizeof(buf), FALSE, TRUE, TRUE, "-");
+  if (cc) printf("%d\n", buf[0]);
+
+  tty_close(stdin);
 }
-#endif
+#endif /* TEST */
 
