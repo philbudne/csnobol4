@@ -783,20 +783,13 @@ io_read( dp, sp )			/* STREAD */
     } /* forever */
 
     if (compiling) {
-	/*
-	 * UGH: compiler ignores output length (it depends on us not
-	 * touching it), so pad out to recl with spaces!
-	 */
-	cp += len;			/* skip over data */
-	while (len++ < recl)
-	    *cp++ = ' ';
+	/* tack on a space; INBUF has extra room */
+	cp[len++] = ' ';
     }
-    else {
-	S_L(sp) = len;
-    }
+    S_L(sp) = len;
 
     return IO_OK;
-}
+} /* io_read */
 
 void
 io_backspace(unit)			/* BKSPCE */
