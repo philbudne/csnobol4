@@ -31,7 +31,7 @@ if [ "$UNAME" ]; then
 	case `$UNAME` in
 	AIX*)
 		echo /usr/sbin/lsattr -EHl proc0
-		/usr/sbin/lsattr -EHl proc0
+		/usr/sbin/lsattr -EHl proc0 2>&1
 		echo ''
 		;;
 	*BSD*)
