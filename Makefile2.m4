@@ -560,8 +560,8 @@ bsplitu: bsplitu.c
 # installation
 
 # install .h files for dynamicly loaded functions
-INSTALL_H=include/h.h include/snotypes.h include/macros.h \
-	include/load.h include/dt.h
+INSTALL_H=[include]/h.h [include]/snotypes.h [include]/macros.h \
+	[include]/load.h [include]/dt.h
 
 install: snobol4 doc/snobol4.1 pv
 	-rm -f $(BINDEST)
