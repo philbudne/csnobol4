@@ -26,8 +26,6 @@ extern int optind;
 extern char *optarg;
 extern int getopt();
 
-
-
 void
 usage( jname )
     char *jname;
@@ -37,8 +35,10 @@ usage( jname )
     fprintf( stderr,
 	    "-d ND\tSize of dynamic region in descriptors (def: %d)\n",
 	    NDESCR);
+    fprintf( stderr, "-f\ttoggle folding of identifiers to upper case\n");
     fprintf( stderr, "-k\trun programs with compilation errors\n");
-    fprintf( stderr, "-r\tread INPUT from after END statement\n");
+    fprintf( stderr, "-l\treenable listings.\n");
+    fprintf( stderr, "-r\ttoggle reading INPUT from after END statement\n");
     fprintf( stderr, "-s\ttoggle display of statistics\n");
     exit(1);
 }
@@ -56,7 +56,14 @@ init_args( argc, argv )
 
     D_A(LISTCL) = 0;		/* XXX TEMP!! kill listings!! */
 
-    while ((c = getopt(argc, argv, "bd:klrs")) != -1) {
+    /*
+     * NOTE:
+     *
+     * * Options are compatible (where possible) with Catspaw Macro SPITBOL
+     *
+     * * When adding options, update usage() function (above) and man page!!!
+     */
+    while ((c = getopt(argc, argv, "bd:fklrs")) != -1) {
 	switch (c) {
 	case 'b':
 	    D_A(BANRCL) = !D_A(BANRCL);	/* toggle banner output */
@@ -79,12 +86,12 @@ init_args( argc, argv )
 	    break;
 
 	case 'l':
-	    D_A(LISTCL) = 1;		/* XXX TEMP!! re-enable listings! */
-	    /* XXX should take listing file!!! */
+	    /* XXX should take an argument!!! */
+	    D_A(LISTCL) = 1;
 	    break;
 
 	case 'r':			/* read INPUT from source after END */
-	    rflag++;
+	    rflag = !rflag;
 	    break;
 
 	case 's':
