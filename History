@@ -2,6 +2,11 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
+1/24/94
+	improved porting.doc
+	run regression test from Makefile2
+	added "make uu"
+
 1/18/93
 	wrote porting.doc, put all doc files under RCS
 	added getopt to Makefile2.cpp, generic.h
