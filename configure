@@ -457,11 +457,8 @@ else
 	;;
     ia64:HP-UX:*:*)
 	if [ "$LP64" ]; then
-	    ARCH_OPT=`getconf XBS5_LP64_OFF64_CFLAGS`
-	    # seen under B.11.22!!
-	    if [ "x$ARCH_OPT" = 'x+DA2.0W' ]; then
-	        ARCH_OPT='+DD64'
-	    fi
+	    # +DA2.0W seen under B.11.22!!
+	    ARCH_OPT=`getconf XBS5_LP64_OFF64_CFLAGS | sed 's/+DA2.0W/+DD64/'`
 	fi
 	# works for unbundled compiler
 	CCVERS=-V
