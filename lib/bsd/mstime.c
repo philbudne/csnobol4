@@ -33,6 +33,9 @@ mstime() {
      * much of the current tick should be attributed to user or system
      * usage can cause user time to step backwards!!  user+system will
      * never have this property, but we only want user time!!
+     *
+     * utime[now]/total[now] * (total[now]-total[last])
+     * might yield better results.
      */
     if (x < last_mstime)
 	x = last_mstime;
