@@ -308,13 +308,13 @@ init.o:	$(INIT_C)
 intspc.o: $(INTSPC_C)
 	$(CC) $(CFLAGS) -c $(INTSPC_C)
 
-io.o:	$(IO_C)
+io.o:	$(IO_C) $(MAKEFILE2)
 	$(CC) $(CFLAGS) $(SNOLIB_DEFINES) $(HAVE_UNISTD_H) -c $(IO_C)
 
 lexcmp.o: $(LEXCMP_C)
 	$(CC) $(CFLAGS) -c $(LEXCMP_C)
 
-load.o:	$(LOAD_C)
+load.o:	$(LOAD_C) $(MAKEFILE2)
 	$(CC) $(CFLAGS) $(SNOLIB_DEFINES) -c $(LOAD_C)
 
 mstime.o: $(MSTIME_C)
