@@ -15,6 +15,13 @@
 #include <string.h>
 #include <stdlib.h>			/* malloc(), getenv() */
 
+#ifndef SNOLIB_FILE
+#define SNOLIB_FILE "snolib.dll"
+#endif
+
+#ifndef SNOLIB_DIR
+#define SNOLIB_DIR "."			/* XXX get from command line */
+#endif
 
 /* external function returning pointer to loaded function */
 extern int (*pml_find())(LOAD_PROTO);
@@ -131,12 +138,10 @@ load(addr, sp1, sp2)
 	    }
 	}
 	else {				/* no path */
-	    /* XXX limit length of snolib?? */
-	    pathcpy( path, sizeof(path), temp, SNOLIB_FILE );
+	    pathcpy( path, sizeof(path), SNOLIB_FILE, NULL );
 	}
-#endif
 
-	fp->handle = LoadLibrary(path);
+	fp->handle = LoadLibrary(path);	/* do the deed */
 	if (fp->handle == NULL) {
 	    free(fp);
 	    return FALSE;		/* fail */
