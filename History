@@ -2,6 +2,22 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+10/5/96
+	add bsplitu.c
+	autoconf: ADD_OBJS/SRCS for bcopy, bzero
+		flushed ANSI_STRINGS var; moved back to ADD_CPPFLAGS
+		added SYSDEFS to sys.o (for -DOSNAME or -DHWNAME)
+	Makefile2.m4: flushed ANSI_STRINGS var
+		added SYSDEFS
+		added rules for dummy files: execl.o getenv.o system.o
+		worked on "make tar"
+		use bsplitu in "make uu"
+	config/skel.inc: removed ADD_OBJS/SRCS for bcopy, bzero
+	lib/init.c: fix usage; show name, version, date, descr size
+	new lib/dummy/{execl,getenv,system}.c
+	doc/snobol4.1: updated
+	README: updated
+
 10/4/96
 	new lib/generic/sys.c, lib/posix/sys.c
 	lib/snolib/host.c: use osname(), hwname()

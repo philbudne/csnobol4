@@ -1,63 +1,27 @@
 $Id$
 
-sir.sno crashes compiler?
-
-load.doc:
-	always use int_t and real_t!!!
-
-Add
-	HAVE_UNISTD_H make var, use for io.o
-	ANSI_STRINGS make var, use for getopt.o, sys.o
-	need to use all vars in "make depend"!!
-
-document additions;
-	talk about BREAKX vs ARB
-
-	SPARC SPITBOL: SQRT() SIN(), COS(), TAN()
-
-	SNOBOL4+: EXP(), LOG(), CHOP()
-
-	SITBOL: FILE() DELETE() RENAME()
-
-document changes;
-	value tracing of $ .
-	banner, stats to standard error
-	compiler errors to lising AND stderr
-
-snolib.a;
-	DOS & VMS;
-		deal with PML files;
-			define NO_PML_xxx
-			or add objects
-			or build library!!
-		need /DEFINE=(EXIT=XEXIT) on VMS!
-	help for host.c in hostile environments?
-		lib/dummy/getenv.c; returns NULL
-		lib/dummy/system.c; returns -1
-
-update README
-	credit SNOBOL4+, Minnesota SNOBOL4
-	reference INSTALL and CHANGES files
-	flush MFU
-
 Create INSTALL top level doc file
 	mention local-config
 	mention VMS, Borland command files
 
 Create CHANGES top level doc file;
-	autoconfig -- no longer necessary to manually link config.m4
-	some systems have no system-specific config file
+	autoconf -- no longer necessary to manually link config.m4
+	some systems no longer have a system-specific config file
 	PLUSOPS intereferes with programs that OPSYN binary "?"
 	-d takes bytes, not descriptors.  multiply by 8 on most systems.
+	PUNCH is gone
 
 rcs tag for release
 
 update porting.doc;
 	discuss term.c
 		sys.c
+			mention SYSDEFS 
 	add:
 		NO_PML_HOST
+			mention dummy system.o, getenv.o
 		NO_PML_EXIT
+			mention dummy execl.o
 		NO_PML_REAL
 			NO_PML_SQRT
 			NO_PML_EXP
@@ -73,6 +37,13 @@ update porting.doc;
 		ANSI_STRINGS
 
 ==== before 1.0 release;
+
+DOS & VMS;
+	deal with PML files;
+		need /DEFINE=(EXIT=XEXIT) on VMS (with CC)
+		define NO_PML_xxx
+		or add objects
+		or build snolib library!!
 
 update man page date
 
