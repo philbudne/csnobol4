@@ -8,7 +8,7 @@
 
 #include <stdio.h>
 #include <ctype.h>
-
+#include <stdlib.h>			/* malloc */
 #include <winsock.h>
 
 #include "h.h"				/* TRUE/FALSE */
@@ -274,10 +274,9 @@ inet_getc(fp, recl)
 
 	/* XXX if recl > buflen, alloc new buffer? */
 	fp->count = recv(fp->s, fp->buffer, fp->buflen, 0);
-	if (fp->count <= 0) {
+	if (fp->count <= 0)
 	    return -1;			/* EOF, or something like it */
 	    fp->bp = fp->buffer;	/* reset buffer pointer */
-	}
     }
     fp->count--;
     return *fp->bp++ & 0xff;		/* sign extension paranoia */
