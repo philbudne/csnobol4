@@ -115,6 +115,7 @@ FILE_C=$(SRCDIR)lib/snolib/file.c
 FINDUNIT_C=$(SRCDIR)lib/snolib/findunit.c
 FORK_C=$(SRCDIR)lib/snolib/fork.c
 GETSTRING_C=$(SRCDIR)lib/snolib/getstring.c
+HANDLE_C=$(SRCDIR)lib/snolib/handle.c
 HOST_C=$(SRCDIR)lib/snolib/host.c
 LOG_C=$(SRCDIR)lib/snolib/log.c
 LOGIC_C=$(SRCDIR)lib/snolib/logic.c
@@ -387,10 +388,10 @@ system.o: $(SYSTEM_C)
 
 AUX_OBJS= _OBJS
 
-SNOLIB_OBJS= chop.o cos.o delete.o environ.o execute.o exists.o exit.o \
-	exp.o file.o findunit.o fork.o getstring.o host.o ord.o log.o \
-	logic.o rename.o retstring.o serv.o sin.o sprintf.o sqrt.o sset.o \
-	sys.o tan.o $(AUX_OBJS)
+SNOLIB_OBJS=chop.o cos.o delete.o environ.o execute.o exists.o exit.o \
+	exp.o file.o findunit.o fork.o getstring.o handle.o host.o \
+	ord.o log.o logic.o rename.o retstring.o serv.o sin.o \
+	sprintf.o sqrt.o sset.o sys.o tan.o $(AUX_OBJS)
 
 $(SNOLIB_A): $(SNOLIB_OBJS)
 	rm -f $(SNOLIB_A)
@@ -438,6 +439,9 @@ fork.o: $(FORK_C)
 
 getstring.o: $(GETSTRING_C)
 	$(CC) $(CFLAGS) -c $(GETSTRING_C)
+
+handle.o: $(HANDLE_C)
+	$(CC) $(CFLAGS) -c $(HANDLE_C)
 
 host.o: $(HOST_C)
 	$(CC) $(CFLAGS) -c $(HOST_C)
