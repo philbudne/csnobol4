@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.58  1996/10/08  06:21:28  phil
+* [PLB47] display signal number (SIGNCL) in SYSCUT
+*
 * Revision 1.57  1996/10/05  06:28:51  phil
 * [PLB46] moved INCSTK to ICLBLK (sir.sno GC crashed compiler)
 * increased FNLIST free space to 20 functions
@@ -1396,7 +1399,7 @@ CDIAG3 PUTLG   ERRSP,YCL	   Insert length
 	char *sp, *dp;		/* src ptr, desr ptr		[PLB40] */
 	int len;		/* src char count		[PLB40] */
 	sp = INBUF + STNOSZ;	/* get start of statement buffer [PLB40] */
-	len = S_SP(TEXTSP) - sp; /* get index into statement	[PLB40] */
+	len = S_L(INBFSP) - S_L(TEXTSP); /* get index into statement [PLB48] */
 	dp = ERRBUF + STNOSZ;	/* get start of marker buffer	[PLB40] */
 	while (len-- > 0) {	/* for all chars in statement	[PLB40] */
 	    if (*sp == '\t')	/* if tab			[PLB40] */
