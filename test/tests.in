@@ -106,3 +106,6 @@ reg ord.sno
 reg include.sno
 # 7/7/2003
 reg 8bit2.sno
+# 7/15/2003
+reg popen.sno
+reg popen2.sno
