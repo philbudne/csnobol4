@@ -66,10 +66,10 @@ TOP_C=lib/top.c
 TREE_C=lib/tree.c
 
 # aux sources
-BZERO_C=lib/aux/bzero.c
-BCOPY_C=lib/aux/bcopy.c
-GETOPT_C=lib/aux/getopt.c
-VFPRINTF_C=lib/aux/vfprintf.c
+BZERO_C=lib/auxil/bzero.c
+BCOPY_C=lib/auxil/bcopy.c
+GETOPT_C=lib/auxil/getopt.c
+VFPRINTF_C=lib/auxil/vfprintf.c
 
 # end of defaults
 ################################################################
