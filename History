@@ -2,6 +2,17 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+6/23/97:
+	timing: cat /proc/meminfo on linux
+
+6/22/97:
+	lib/io.c: have T mode I/O imply unbuffered (for tty prompts)
+	lib/snolib/getstring.c: handle null string
+	tested resp.sno (see spring 1985)
+	Makefile2.m4: add SNOLIB_FILE variable
+	autoconf: check for bcopy() and bzero() in string.h
+		alter SNOLIB_FILE when using dynamic linking
+
 6/21/97:
 	timing: use HP-UX "model" command, if present
 	doc/snobol4.1: updated exponent info
