@@ -2,9 +2,27 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+1/5/2002
+	configure: get along without config.guess
+		add more non-gcc compiler opt(timizat)ions
+		add --fast
+	timing: check if config.guess exists
+
+2/4/2002
+	cc-M: perform basename on object files
+
+1/30/2002
+	configure: don't compile data_init.c w/ -O2 on Darwin
+		add --double; add NO_BITFIELDS variable
+		rework LP/LONGLONG/NO_BITFIELDS
+		use ~(VFLD_T)0 for SIZLIM
+	CHANGES, INSTALL: add --double
+	genc.sno: flush D_RV() function, use pre-existing RV()!
+
 1/28/2002
-	INSTALL: ran ispell
-	INSTALL, README, History: C-MAINBOL -> CSNOBOL4
+	INSTALL: ran ispell, C-MAINBOL -> CSNOBOL4
+	README, History: C-MAINBOL -> CSNOBOL4
+	configure: output explicit OPT= if NO_OPT
 
 1/27/2002
 	Makefile2.m4: install equ.h

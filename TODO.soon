@@ -1,5 +1,25 @@
 $Id$
 
+optimization w/ native compilers;
+Add --fast??
+SunPRO;	honor !INLINE_OK (drop to -xO3?)
+
+OSF1; -O2
+	-no_inline
+	fast: -arch host -fast
+	CCVERS? -V?
+
+fix depend;
+	lib/posix/dynamic.o -> dynamic.o
+
+use install.sh from thttpd (X11)
+
+have DOUBLE force NO_BITFIELDS??
+	check alignment?? sparc double is 64 bit aligned
+			x86 is 32-bit aligned
+
+scanerr.sno fails on Darwin!!!
+
 config.guess
 	replace?
 	note modification?
@@ -106,6 +126,9 @@ check in all files (incl History, TODO.soon)
 rcs tag all files
 
 ================
+
+keep track of time spent in GC?
+	TRACE() GC?
 
 script to grep for all "ifdefs" and output strings to build.c?
 	just stringify options in config.h?
