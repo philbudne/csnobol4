@@ -10,6 +10,12 @@ MAINBOL for Un*x history (and personal SNOBOL history);
 	new files: lib/borland/mstime.c
 		config/borland/build.bat config/borland/snobol4.lnk
 
+	Alpha fixes;
+	don't need "long long"
+	lib/intspc.c: use %ld
+	lib/realst.c: use %lf
+	lib/ordvst.c: declare malloc() as returning pointer
+
 1/6/95
 	checked in 11/3/94 v311.sno, tests
 	README, History: updated/fixed
