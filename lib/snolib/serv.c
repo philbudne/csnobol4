@@ -34,6 +34,8 @@
 /* unix domain */
 #include <sys/un.h>
 
+#include <stdio.h>			/* for lib.h */
+
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
