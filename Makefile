@@ -32,7 +32,7 @@ SNO=snobol4 -b
 # machine generated files (final products);
 
 GENERATED=data.c data_init.h proc.h static.h syn.h data.h \
-	equ.h res.h syn_init.h isnobol4.c snobol4.c host.sno
+	equ.h res.h syn.c syn_init.h isnobol4.c snobol4.c host.sno
 
 ################
 # SIL source file
