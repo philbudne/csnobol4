@@ -10,6 +10,7 @@
 #include <netinet/in.h>
 
 #include "h.h"				/* TRUE/FALSE */
+#include "macros.h"			/* bcopy */
 
 #ifndef INADDR_NONE
 #define INADDR_NONE ((unsigned long)0xffffffff)	/* use -1? */
