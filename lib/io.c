@@ -15,6 +15,13 @@
 
 #define STDIN_NAME "stdin"		/* XXX "-" ? */
 
+struct unit {
+    struct file *curr;			/* ptr to current file */
+    /* for rewind; */
+    struct file *head;			/* first file in list */
+    off_t offset;			/* offset in first file to rewind to */
+};
+
 struct file {
     struct file *next;			/* next input file */
     FILE *f;				/* may be NULL if not (yet) open */
@@ -28,7 +35,7 @@ struct file {
 #define FL_EOL	02			/* strip EOL on input, add on output */
 /* XXX raw (binary?) + recl? */
 
-static struct file *io_units[NUNITS];
+/* XXX malloc at runtime? */
 static struct unit io_units[NUNITS];
 static struct file *includes;		/* list of included files */
 static FILE *termin;			/* TERMINAL input */
@@ -60,17 +67,21 @@ io_addfile( unit, path, append )
     int append;
 {
     /* XXX check for commas in path? */
+    struct file *fp;
     struct unit *up;
 
     fp = io_newfile(path);
     if (fp == NULL)
 	return FALSE;
+
     up = io_units + unit;
     if (append) {			/* add to end of list */
 	struct file *tp;
-	tp = io_units[unit];
+
 	tp = up->curr;
-	    io_units[unit] = fp;
+
+	if (tp == NULL) {
+	    up->head = up->curr = fp;
 	    up->offset = 0;
 	}
 	else {
@@ -79,8 +90,9 @@ io_addfile( unit, path, append )
 	    tp->next = fp;
 	}
     }
-	fp->next = io_units[unit];
-	io_units[unit] = fp;
+    else {				/* prepend (ie; for "include") */
+	fp->next = up->curr;
+	up->head = up->curr = fp;
 	up->offset = 0;
     }
 
@@ -91,8 +103,10 @@ static int
 io_close(unit)				/* internal (zero-based unit) */
     int unit;
 {
+    struct file *fp;
     struct unit *up;
-    fp = io_units[unit];
+
+    up = io_units + unit;
     fp = up->curr;
     if (fp == NULL)
 	return TRUE;
@@ -108,8 +122,6 @@ io_close(unit)				/* internal (zero-based unit) */
 	    fp->f != termin)		/* XXX check a flag? */
 	    fclose(fp->f);		/* XXX save return? */
     }
-    io_units[unit] = fp->next;
-    free(fp);
 
     up->curr = fp->next;
     return TRUE;			/* XXX */
@@ -121,7 +133,7 @@ io_closeall(unit)			/* internal (zero-based unit) */
     int unit;
 {
     struct file *fp;
-    while (io_units[unit] != NULL)
+
     while (io_units[unit].curr != NULL)
 	io_close(unit);
 
@@ -157,7 +169,11 @@ io_fopen( fp, mode )
     if (strcmp(fp->fname,"/dev/stdin") == 0)
 	return (fp->f = stdin);
     if (strcmp(fp->fname,"/dev/stdout") == 0)
+	return (fp->f = stdout);
+    if (strcmp(fp->fname,"/dev/stderr") == 0)
+	return (fp->f = stderr);
 
+    /* XXX more hacks here? /dev/fd/n? /tcp ??? */
 
     return (fp->f = fopen(fp->fname, mode));
 }
@@ -168,7 +184,7 @@ io_next( unit )				/* internal (zero-based unit) */
     int unit;
 {
     struct file *fp;
-    fp = io_units[unit];
+
     fp = io_units[unit].curr;
     if (fp == NULL)
 	return FALSE;
@@ -176,7 +192,7 @@ io_next( unit )				/* internal (zero-based unit) */
     /* in case called preemptively! */
     if (fp->f != NULL)
 	io_close(unit);
-    fp = io_units[unit];
+
     fp = io_units[unit].curr;
     if (fp == NULL)
 	return FALSE;
@@ -206,6 +222,7 @@ io_mkfile( unit, f, fname )
     FILE *f;
     char *fname;
 {
+    struct file *fp;
     struct unit *up;
 
     fp = io_newfile(fname);
@@ -214,7 +231,9 @@ io_mkfile( unit, f, fname )
 	exit(1);
     }
 
-    io_units[unit-1] = fp;
+    fp->f = f;
+    up = io_units + unit - 1;
+    up->head = up->curr = fp;
     up->offset = 0;
 }
 
@@ -224,12 +243,12 @@ io_mkfile( unit, f, fname )
 
 void
 io_init()				/* here from INIT */
-    if (io_units[UNITI-1] == NULL) {	/* no input file(s)? */
+{
     if (io_units[UNITI-1].curr == NULL) { /* no input file(s)? */
 	io_mkfile(UNITI, stdin, STDIN_NAME );
     }
     else {
-	    perror(io_units[UNITI-1]->fname);
+	if (!io_next(UNITI-1)) {
 	    perror(io_units[UNITI-1].curr->fname);
 	    exit(1);
 	}
@@ -255,11 +274,13 @@ io_printf(va_alist)			/* OUTPUT */
 
     unit = va_arg(vp, int);
     unit--;
-    if (BADUNIT(unit) || io_units[unit] == NULL || io_units[unit]->f == NULL)
+
+    if (BADUNIT(unit) ||
+	io_units[unit].curr->f == NULL)
 	(f = io_units[unit].curr->f) == NULL)
 	return;
     lp = line;
-    vfprintf( io_units[unit]->f, format, vp );
+    vfprintf( io_units[unit].curr->f, format, vp );
 	int wid;
     } /* while */
     fputs(line, f);
@@ -284,7 +305,7 @@ io_print( iob, sp )			/* STPRNT */
 
     if (BADUNIT(unit))
 	return;
-    fp = io_units[unit];
+
     fp = io_units[unit].curr;
     if (fp == NULL)
 	return;
@@ -319,7 +340,7 @@ void
 io_endfile(unit)			/* ENFILE */
     int unit;
 {
-    if (BADUNIT(unit) || io_units[unit] == NULL)
+    unit--;
     if (BADUNIT(unit) || io_units[unit].curr == NULL)
 	return;
 
@@ -339,7 +360,7 @@ io_read( dp, sp )			/* STREAD */
     struct file *fp;
 
     unit = D_A(dp);
-    if (BADUNIT(unit) || io_units[unit] == NULL) {
+    unit--;
 	if (unit == UNITI-1 && compiling)
 	if (COMPILING(unit)) {
 	}
@@ -348,7 +369,7 @@ io_read( dp, sp )			/* STREAD */
 
     recl = S_L(sp);			/* YUK! */
     cp = S_SP(sp);
-	fp = io_units[unit];
+    for (;;) {
 	fp = io_units[unit].curr;
 	f = fp->f;
 	if (f == NULL) {
@@ -409,16 +430,28 @@ io_backspace(unit)			/* BKSPCE */
 {
     UNDF();
 }
+
+void
 io_rewind(unit)				/* REWIND */
-    unit--;
-    if (BADUNIT(unit) || io_units[unit] == NULL);
+    int unit;
+{
+    FILE *f;
     struct file *fp;
-    f = io_units[unit]->f;
-    if (f == NULL)
+    struct unit *up;
+
+    unit--;				/* make zero-based */
+    if (BADUNIT(unit))
+	return;
+
+    up = io_units + unit;
+    if (up->curr != up->head) {
+	if (up->curr != NULL)		/* file is openbut not first in list */
 	    io_close(unit);		/* close it */
 	up->curr = up->head;		/* reset to head of list */
-    /* XXX avoid this if popen()'ed? */
-    rewind(f);
+	io_fopen(up->curr, "r");	/* XXX use original mode? */
+    }
+    fp = up->curr;
+    if (fp == NULL)
 	return;
 
     f = fp->f;
@@ -435,11 +468,14 @@ io_ecomp()				/* XECOMP */
     compiling = 0;
     if (rflag == 0) {
 	/* if -r was not given, switch INPUT to stdin!! */
-     * else do nothing (start INPUT after END stmt)
+
+	io_closeall(UNITI-1);
 	io_mkfile( UNITI, stdin, STDIN_NAME );
 	return;
     }
     /*
+    /* XXX (re)set head??? */
+    io_units[UNITI-1].offset = ftell(io_units[UNITI-1].curr->f);
      * but SPARC SPITBOL doesn't!
      */
 
@@ -458,7 +494,7 @@ io_openi(dp, sp)			/* XOPENI */
     FILE *f;
     int unit;
 
-    unit--;
+    if (S_L(sp) == 0) {			/* no file? */
 	/* XXX use file (if any) from -UNIT=file from command line? */
 	return 1;			/* true (success) */
     }
@@ -477,7 +513,7 @@ io_openi(dp, sp)			/* XOPENI */
 
     /* XXX let io_read do the work??? */
     f = io_fopen( fp, "r");
-    io_units[unit] = fp;
+    if (f == NULL) {
 	free(fp);
 	return FALSE;			/* fail; no harm done! */
     }
@@ -514,7 +550,7 @@ io_openo(dp, sp)			/* XOPENO */
     fp = io_newfile(fname);
     if (fp == NULL)
 	return FALSE;			/* fail; no harm done! */
-    io_units[unit] = fp;
+
     f = io_fopen( fp, "w");
     if (f == NULL)
 	return FALSE;			/* fail; no harm done! */
@@ -557,8 +593,8 @@ io_include( dp, sp )
     if (io_fopen( fp, "r") == NULL) {
 	free(fp);
 	return FALSE;
-    fp->next = io_units[unit];
-    io_units[unit] = fp;
+    }
+
     unit = D_A(dp);
     unit--;
 
