@@ -36,15 +36,35 @@ The supplied code should be machine independent, and a binary of
 snobol4 should not be needed to bootstrap the system.
 
 .NH 1
+Data models
+
+.PP
+CSNOBOL4 has been run under both the ILP32 data model (32-bit int/long
+and pointer data types) common on Unix systems, as well as the LP64
+data model (32-bit int, 64-bit long and pointer data types) available
+as an option on recent versions of commercial Unix systems, and the
+default on Alpha (and the largely mythical) IA64 architectures.
+
+.PP
+It may be possible to compile CSNOBOL4 on an LP32 system (16-bit int,
+32-bit long and pointer types), but such environments are uncommon
+(Win3.1 and old Macintosh C compilers may use the LP32 data model).
+
+.PP
+An experimental feature of the 1.0 release of CSNOBOL4 is to use the
+"long long" datatype (available as an extension or with C99 support)
+to represent SNOBOL4 INTEGERs, by using the configure --longlong option.
+
+.NH 1
 Config files
 
 .PP
-The "autoconf" script (run by "configure") determines which include
-and library routines are available, and which suppplied library
-routines to use.  The outputs of autoconf are config.m4, which is
-included into Makefile2.m4 using the m4 macro processor, and contains
-make variable assignments (ie; VAR=VALUE) and m4 macro invocations,
-and config.h which is included by all C sources.
+The configure script determines which include and library routines are
+available, and which suppplied library routines to use.  The outputs
+of configure are config.m4, which is included into Makefile2.m4 using
+the m4 macro processor, and contains make variable assignments (ie;
+VAR=VALUE) and m4 macro invocations, and config.h which is included by
+all C sources.
 
 .PP
 If the file "local-config" exists, it will be interpolated at the end
@@ -88,10 +108,12 @@ SNOBOL4
 
 .PP
 Name of the main source file to make and use.  Should be either
-isnobol4 (the default), which has functions reordered so that gcc can
-inline functions more effectively. If you are not using gcc, or not
-using the inline-functions option, you can use the value "snobol4" and
-avoid the function reordering steps in the Makefile.
+isnobol4 (the default), which has functions reordered so that your C
+compilers can inline functions more effectively. If your C compiler
+does not perform inlining, and gcc is not available you can use the
+value "snobol4".  This may be useful if you are doing development and,
+for some reason you cannot build isnobol4.c
+
 .NH 3
 PML_OBJS
 
@@ -179,19 +201,21 @@ INT_T
 .PP
 If INT_T is defined, it should be the C type to use for integer values
 and addresses.  INT_T must be large enough to hold a pointer. The
-default type used for int_t is "long".  See also REAL_T.
+default type used for int_t is "long", except when the configure --longlong
+is used, and then int_t is "long long".  See also REAL_T.
 .NH 3
 NO_BITFIELDS
 
 .PP
-Disable use of bitfields to store descriptor "v" (size) field.  Some
-compilers have problems with bitfields, and use of bitfields yields no
-storage benefits or causes performance penalties.  Bitfields are used
-to try and fit the 8-bit flags and 24-bit size fields into one 32-bit
-word.  On Alpha systems the "a" field is 64-bits long (due to pointer
-size); Since the combined "f" and "v" fields will be padded to 64-bits
-for alignment there is no benefit to using bitfields in this
-situation.  See also VFLD_T.
+If NO_BITFIELDS is defined, disable use of a C bitfield to store the
+descriptor "v" (size) field.  Some compilers have problems with
+bitfields, or cause server performance penalties for their use.
+Bitfields are used to try and fit the 8-bit flags and 24-bit size
+fields into one 32-bit word.  In LP64 environments (or when configure
+--longlong is used) the "a" field is 64-bits long; Since the combined
+"f" and "v" fields will be padded to 64-bits for alignment there is no
+benefit to using bitfields in this situation.  See also VFLD_T.
+
 .NH 3
 NO_FDOPEN
 
@@ -281,10 +305,11 @@ process.
 REAL_T
 
 .PP
-If REAL_T is defined, it should be the C type to use for real values.
-The default type used for real_t is "float". On Alpha OSF/1 systems
-the "a" field will be 64-bits (to hold pointers), so REAL_T is
-declared as double to take advantage of the available space.
+If REAL_T is defined, it should be the C type to use for SNOBOL4 REAL
+values.  The default type used for real_t is "float". In LP64
+environments, or when configure --longlong is used the "a" field will
+be 64-bits (to hold pointers), so REAL_T is declared as a C "double"
+to take advantage of the available space.
 
 .PP
 Example: ADD_CPPFLAGS([-DREAL_T=double]).  See also INT_T.
@@ -293,6 +318,17 @@ SIGFUNC_T
 
 .PP
 Return type for signal handler functions (default: void).
+.NH 3
+SIZLIM
+
+.PP
+May be redefined when when NO_BITFIELDS is defined.  The maximum
+object size that can be represented in the VFLD_T data type.  When
+NO_BITFIELDS is defined, SIZLIM defaults to 0x7fffffff (maximum
+positive 32-bit int).  SIZLIM must NOT appear to be negative when
+stored in an "int_t".  When int_t is known to be 64-bits, configure
+defines SIZLIM as 0xffffffff. See also INT_T, NO_BITFIELDS, VFLD_T.
+
 .NH 3
 TMP_DIR
 
@@ -318,9 +354,10 @@ VFLD_T
 
 .PP
 The descriptor "v" field is used to hold the size of objects in bytes.
-When NO_BITFIELDS is not defined, the "v" field is a 24-bit unsigned
-bitfield.  When NO_BITFIELDS is defined VFLD_T is used (and defaults
-to "int"). VFLD_T should be able to hold 31-bit unsigned quantities.
+When NO_BITFIELDS is not defined, the "v" field is always a 24-bit
+unsigned bitfield.  When NO_BITFIELDS is defined VFLD_T is used (and
+defaults to "unsigned int"). See also SIZLIM.
+
 .NH 1
 Macros
 
