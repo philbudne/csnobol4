@@ -41,7 +41,7 @@ SNOBOL4=isnobol4
 # library random accessifier
 RANLIB=ranlib
 
-SNOLIB_A=snolib/snolib.a
+SNOLIB_A=snolib.a
 
 ########
 # default lib source files
@@ -79,23 +79,23 @@ GETOPT_C=$(SRCDIR)lib/auxil/getopt.c
 ISNAN_C=$(SRCDIR)lib/dummy/isnan.c
 
 # snolib sources
-CHOP_C=lib/snolib/chop.c
-COS_C=lib/snolib/cos.c
-DELETE_C=lib/snolib/delete.c
-ENVIRON_C=lib/snolib/environ.c
-EXIT_C=lib/snolib/exit.c
-EXP_C=lib/snolib/exp.c
-FILE_C=lib/snolib/file.c
-FORK_C=lib/snolib/fork.c
-GETSTRING_C=lib/snolib/getstring.c
-HOST_C=lib/snolib/host.c
-LOG_C=lib/snolib/log.c
-RENAME_C=lib/snolib/rename.c
-RETSTRING_C=lib/snolib/retstring.c
-SIN_C=lib/snolib/sin.c
-SPRINTF_C=lib/snolib/sprintf.c
-SQRT_C=lib/snolib/sqrt.c
-TAN_C=lib/snolib/tan.c
+CHOP_C=$(SRCDIR)lib/snolib/chop.c
+COS_C=$(SRCDIR)lib/snolib/cos.c
+DELETE_C=$(SRCDIR)lib/snolib/delete.c
+ENVIRON_C=$(SRCDIR)lib/snolib/environ.c
+EXIT_C=$(SRCDIR)lib/snolib/exit.c
+EXP_C=$(SRCDIR)lib/snolib/exp.c
+FILE_C=$(SRCDIR)lib/snolib/file.c
+FORK_C=$(SRCDIR)lib/snolib/fork.c
+GETSTRING_C=$(SRCDIR)lib/snolib/getstring.c
+HOST_C=$(SRCDIR)lib/snolib/host.c
+LOG_C=$(SRCDIR)lib/snolib/log.c
+RENAME_C=$(SRCDIR)lib/snolib/rename.c
+RETSTRING_C=$(SRCDIR)lib/snolib/retstring.c
+SIN_C=$(SRCDIR)lib/snolib/sin.c
+SPRINTF_C=$(SRCDIR)lib/snolib/sprintf.c
+SQRT_C=$(SRCDIR)lib/snolib/sqrt.c
+TAN_C=$(SRCDIR)lib/snolib/tan.c
 
 # private copy of CFLAGS for data_init.o; here so it can be overridden
 # (ie; to just $(MYCPPFLAGS)) by config.m4 during debug (optimizing it
