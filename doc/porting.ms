@@ -246,18 +246,12 @@ NO_PML_RENAME
 Prevents "poor-mans loading" of the SITBOL compatible RENAME() function.
 
 .NH 3
-NO_UNBUF_READ
+NO_UNBUF_RW
 
 .PP
-Disable direct use of read() for unbuffered binary I/O.  The stdio
-fread() will be used for all binary reads.
-.NH 3
-NO_UNBUF_WRITE
-
-.PP
-Disable direct use of write() for unbuffered binary I/O.  The stdio
-fwrite() will be used for all binary writes.  fflush() will be called
-after every fwrite() to simulate unbuffered I/O.
+Disable direct use of read(), write() and lseek() for unbuffered
+binary I/O.  The stdio fread(), fwrite() plus fflush(), and fseek()
+functions will be used for all binary I/O.
 .NH 3
 REAL_T
 
