@@ -9,8 +9,12 @@
 # realclean	make ready for compilation on another platform
 # spotless	removes snobol4 generated files
 
-snobol4 xsnobol4 clean tar uu install realclean spotless: Makefile2
+snobol4 xsnobol4 clean tar uu install realclean spotless: Makefile2 ALWAYS
 	$(MAKE) -f Makefile2 $@
+
+.PRECIOUS: snobol4 xsnobol4
+
+ALWAYS:
 
 ################
 # run configuration script
