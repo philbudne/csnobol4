@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+9/28/2004
+	configure, Makefile2.m4:
+		install snolib.3 in MAN3DIR
+		Noticed by Phillip Thomas
+
 9/17/2004
 	configure: check for libgdbm_compat
 

@@ -3,6 +3,13 @@ $Id$
 move pmprotos to loadable files
 	auto-find them????
 
+test for, and pre-include:
+	prolog.sno
+	local.sno
+	current dir??
+
+undefined function (label?) hooks?
+
 Test COM
 	InternetExploder??
 
@@ -10,6 +17,9 @@ Test w/ non-libc gdbm??
 	debian include?
 
 Test STCL, NDBM on Cygwin!
+
+Rename STCL_ to TCL_?
+	use bumpy case?
 
 Release 1.1;
 	update History, version.c, README, tag it
@@ -25,9 +35,14 @@ win32;
 		Win98:	MSVCRT{20,40}.DLL
 		XP:	+ mscvr{70,71}
 
+man page installation:
+	install preformatted, compressed where it's the norm?!
+
 Oversize integer constants not detected on all systems!
 	use own strtol(l)?
 	document as BUG??
+
+output missing function/label name in bad call/goto?
 
 Green Book URL(!!) in snobol4.1
 
