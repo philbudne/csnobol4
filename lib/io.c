@@ -1078,8 +1078,6 @@ io_openi(dunit, sfile, sopts, drecl)	/* called from SNOBOL INPUT() */
     if (fp == NULL)
 	return FALSE;
 
-    fp->flags |= FL_INPUT;
-
     /* process options */
     if (!io_options(fp, opts, &recl))
 	return FALSE;
@@ -1094,6 +1092,8 @@ io_openi(dunit, sfile, sopts, drecl)	/* called from SNOBOL INPUT() */
 	io_closeall(unit);
 	io_units[unit].curr = io_units[unit].head = fp;
     }
+
+    fp->flags |= FL_INPUT;
 
     /* pass recl back up */
     D_A(drecl) = recl;
@@ -1135,8 +1135,6 @@ io_openo(dunit, sfile, sopts)		/* called from SNOBOL OUTPUT() */
 	fp = io_units[unit].curr;
     }
 
-    fp->flags |= FL_OUTPUT;
-
     if (fp == NULL)
 	return FALSE;			/* fail; no harm done! */
 
@@ -1153,6 +1151,7 @@ io_openo(dunit, sfile, sopts)		/* called from SNOBOL OUTPUT() */
 	io_closeall(unit);
 	io_units[unit].curr = io_units[unit].head = fp;
     }
+    fp->flags |= FL_OUTPUT;
 
     return TRUE;
 } /* io_openo */
