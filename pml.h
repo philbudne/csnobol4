@@ -89,4 +89,4 @@ PMPROTO("ORD(STRING)INTEGER")
 
 /* 1/21/2002; */
 PMLFUNC(LOGIC)
-/* LOAD() in load.sno */
+/* LOAD() in logic.sno */
