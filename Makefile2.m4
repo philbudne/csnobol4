@@ -443,12 +443,11 @@ tan.o: $(TAN_C)
 ##################################################################
 # housekeeping
 
-# generated files to include in kit
-GENERATED=syn.c syn.h data.c data.h data_init.h proc.h equ.h \
-	data.c2 data.h2 data_init.h2 proc.h2 equ.h2 syn.h2 \
+# generated files to include in kit (hard link to target dir)
+GENERATED=data.c2 data.h2 data_init.h2 proc.h2 equ.h2 syn.h2 \
 	snobol4.c isnobol4.c 
 
-# files to touch
+# generated files to include in kit (copy, so newer than .x2 versions)
 G2=data.c data.h data_init.h proc.h equ.h syn.h
 
 # disposables
@@ -501,7 +500,7 @@ tar vers: TESTED pv
 	rm -f *~ */*~ */*/*~ *.tmp
 	mkdir $(DIR)
 	find $(TAR) -name RCS -prune -o -print | cpio -pldm $(DIR)
-	touch $(G2)
+	cp $(G2) $(DIR)
 	tar cf - $(DIR) | $(COMP) > $(KIT)
 	rm -rf $(DIR)
 	./pv > vers
