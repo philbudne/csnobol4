@@ -36,14 +36,6 @@ extern char *malloc();
 #define SYM_PREFIX "_"			/* XXX most (all?) a.out systems? */
 #endif /* SYM_PREFIX not defined */
 
-#ifndef TMP_DIR
-/* /tmp exists on all systems?
- * older systems have /usr/tmp, newer (ie; 4.4) have /var/tmp
- * suns have both (/usr/tmp is a symlink to /var/tmp)!!
- */
-#define TMP_DIR "/tmp"
-#endif /* TMP_DIR */
-
 /* keep list of loaded functions (for UNLOAD) */
 struct func {
     struct func *next;
