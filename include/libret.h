@@ -20,6 +20,6 @@ enum io_include_ret {
     INC_OK
 };
 
-enum stream_ret stream();
-enum io_read_ret io_read();
-enum io_include_ret io_include();
+enum stream_ret stream __P((struct spec *,struct spec *,struct syntab *));
+enum io_read_ret io_read __P((struct descr *,struct spec *sp));
+enum io_include_ret io_include __P((struct descr *,struct spec *));
