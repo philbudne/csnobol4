@@ -509,6 +509,10 @@ ED_F
 	DEFINE("D_V(V)")				:(ED_V)
 D_V	D_V = 'D_V(' V ')'				:(RETURN)
 ED_V
+****************
+	DEFINE("D_RV(V)")				:(ED_RV)
+D_RV	D_RV = 'D_RV(' V ')'				:(RETURN)
+ED_RV
 *
 ****************
 * descriptor at indirect address
@@ -1066,18 +1070,29 @@ XSBREAL	ROP = '-'					:(REALOP)
 
 ****************
 *	handle real ops!
-* XXX loses if $1 == $3!!!
 REALOP	OUTPUT = DIFFER(ARGV<4>) IND 'CLR_MATH_ERROR();'
-	IDENT(ARGV<1>,ARGV<2>)				:S(REALOP2)
-*	copy flags, type!!
+	X = D_RV(ARGV<1>)
+	Y = D_RV(ARGV<2>)
+	Z = D_RV(ARGV<3>)
+	IDENT(X,Y)					:S(REALOP2)
+	IDENT(X,Z)					:S(REALOP3)
+*	3-way; copy data-type, flags to output
 	OUTPUT = IND D(ARGV<1>) ' = ' D(ARGV<2>) ';'
-REALOP2	OUTPUT = IND RV(ARGV<1>) ' ' ROP '= ' RV(ARGV<3>) ';'
-	IDENT(ARGV<4>)					:S(REALOP3)
+REALOP2	OUTPUT = IND X ' ' ROP '= ' Z ';'		:(REALOP4)
+
+*	here when 'x' and 'z' are identical (2 occurances)
+*	copy type/flags "manually"
+REALOP3	OUTPUT = IND X ' = ' Y ' ' ROP ' ' Z ';'
+	OUTPUT = IND D_F(ARGV<1>) ' = ' D_F(ARGV<2>) ';'
+	OUTPUT = IND D_V(ARGV<1>) ' = ' D_V(ARGV<2>) ';'
+
+* common tail; check if any branch labels
+REALOP4	IDENT(ARGV<4>)					:S(REALOP5)
 	OUTPUT = IND 'if( RMATH_ERROR(' RV(ARGV<1>) ') )'
 	INDENT()
 	BRANCH(ARGV<4>)
 	UNINDENT()
-REALOP3	IDENT(ARGV<5>)					:S(OPDONE)
+REALOP5	IDENT(ARGV<5>)					:S(OPDONE)
 	BRANCH(ARGV<5>)					:(OPDONE)
 
 ****************
@@ -1213,7 +1228,7 @@ XINIT	OUTPUT = IND 'init();'				:(OPDONE)
 
 ****************
 *	SIL MSTIME (TIME) macro
-XMSTIME	OUTPUT = IND D_A(ARGV<1>) ' = mstime();'
+XMSTIME	OUTPUT = IND D_RV(ARGV<1>) ' = mstime();'
 	CLEAR_D_VF(ARGV<1>)				:(OPDONE)
 
 ****************
