@@ -38,8 +38,12 @@ if [ "$UNAME" ]; then
 		;;
 	HP-UX)
 		if [ -f /usr/bin/model ]; then
-			echo model:
+			echo /usr/bin/model:
 			/usr/bin/model
+			echo ''
+		elif [ -f /bin/model ]; then
+			echo /bin/model:
+			/bin/model
 			echo ''
 		fi
 		;;
