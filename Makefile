@@ -22,8 +22,7 @@ Makefile2 .depend: config.m4 Makefile2.m4
 	touch .depend
 
 config.m4:
-	./autoconf > config.m4.tmp
-	mv -f config.m4.tmp config.m4
+	./configure
 
 # XXX set to .depend?
 M2DEP=Makefile2
