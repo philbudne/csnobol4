@@ -54,6 +54,11 @@ if [ "$UNAME" ]; then
 				echo ''
 			fi
 		fi
+		if [ -f /var/run/dmesg.boot ]; then
+			echo /var/run/dmesg.boot
+			echo ''
+			grep '^CPU:' /var/run/dmesg.boot
+		fi
 		;;
 	HP-UX)
 		if [ -f /usr/bin/model ]; then
