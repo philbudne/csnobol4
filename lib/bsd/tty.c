@@ -30,18 +30,28 @@ extern void *malloc();
 #include <sgtty.h>
 #endif
 
+#include <signal.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+
+#if defined(TTY_RAW) && defined(LPASS8)
+#define TTY_RAW_PASS8			/* shorthand */
+#endif
+
 /* keep settings for each fd in a list; */
 static struct save {
     struct save *next;
-    int fd;
-    struct sgttyb t;
-#if defined(TTY_RAW) && defined(LPASS8)
-    int local;
+    dev_t dev;
+    struct state {
+	struct sgttyb t;
+#ifdef TTY_RAW_PASS8
+	int local;
 #endif
+    } save, curr;
     int cbreak, noecho;
 } *list;
 
-#if defined(TTY_RAW) && defined(LPASS8)
+#ifdef TTY_RAW_PASS8
 static int lflags;
 #endif
 
@@ -52,9 +62,12 @@ static int lflags;
 /* in case; */
 #undef stty
 #undef gtty
+/* use TIOCSETN? */
 #define stty(F,P) ioctl(F, TIOCSETP, P)
 #define gtty(F,P) ioctl(F, TIOCGETP, P)
 #endif
+
+enum action { FIND, CREATE, REMOVE };
 
 int
 fisatty(f, fname)
@@ -64,120 +77,152 @@ fisatty(f, fname)
     return isatty(fileno(f));
 }
 
+static struct save *
+find_by_fd(fd, action)
+    int fd;
+    enum action action;
+{
+    struct stat st;
+    struct save *sp, *pp;
+
+    if (fstat(fd, &st) < 0 || !S_ISCHR(st.st_mode))
+	return;
+    
+    for (pp = NULL, sp = list; sp; pp = sp, sp = sp->next) {
+	if (sp->dev == st.st_rdev) {
+	    if (action == REMOVE)
+		if (pp)			/* not first? */
+		    pp->next = sp->next; /* alter prev's next */
+		else
+		    list = sp->next;	/* alter list head */
+	    return sp;
+	}
+    }
+
+    if (action != CREATE)
+	return NULL;
+
+    sp = (struct save *)malloc(sizeof(struct save));
+    if (sp == NULL)
+	return NULL;
+    
+    /* save "original" settings (used for "cooked" I/O) */
+    sp->dev = st.st_rdev;
+
+    gtty(fd, &sp->save.t);		/* save settings */
+#ifdef TTY_RAW_PASS8
+    ioctl(fd, TIOCLGET, &sp->save.local);
+#endif
+    sp->noecho = sp->cbreak = -1;
+    
+    /* link into list */
+    sp->next = list;
+    list = sp;
+
+    return sp;
+}
+
+static void
+tty_set(fd, stp)
+    int fd;
+    struct state *stp;
+{
+    stty(fd, &stp->t);
+#ifdef TTY_RAW_PASS8
+    ioctl(fd, TIOCLSET, &stp->local);
+#endif
+}
+
 void
 tty_mode( fp, cbreak, noecho, recl )
     FILE *fp;
     int cbreak, noecho, recl;
 {
-    struct sgttyb new;
-#if defined(TTY_RAW) && defined(LPASS8)
-    int l;
-#endif
     struct save *sp;
     int fd;
 
     fd = fileno(fp);
+    sp = find_by_fd(fd, CREATE);
+    if (!sp)
+	return;				/* malloc failed, bad fd, bad dev */
 
-    /* XXX move to tty_save_fd()?? */
-    for (sp = list; sp; sp = sp->next) {
-	if (sp->fd == fd)
-	    goto found;
-    }
-    sp = (struct save *)malloc(sizeof(struct save));
-    if (sp == NULL)
-	return;				/* ??? */
-
-    /* save "original" settings (used for "cooked" I/O) */
-    sp->fd = fd;
-    gtty(fd, &sp->t);			/* save settings */
-#if defined(TTY_RAW) && defined(LPASS8)
-    ioctl(fd, TIOCLGET, &sp->local);
-#endif
-
-    sp->noecho = sp->cbreak = 0;	/* ??? */
-
-    /* link into list */
-    sp->next = list;
-    list = sp;
- found:
-    /* XXX ensure cbreak & noecho are canonical? x = !!x?? */
+    /* NOTE! This optimization can be fooled
+     * when doing simultaneous I/O on /dev/tty and the
+     * real tty (i.e. stdin)
+     */
     if (cbreak == sp->cbreak && noecho == sp->noecho)
 	return;				/* nothing to do! */
-
+    
     fflush(fp);				/* flush pending output */
 
-    new = sp->t;			/* start with original */
-#if defined(TTY_RAW) && defined(LPASS8)
-    l = sp->local;
-#endif
+    sp->curr = sp->save;		/* start with original */
     if (cbreak) {
 #ifdef TTY_RAW
-	new.sg_flags |= RAW;
+	sp->curr.t.sg_flags |= RAW;
 #ifdef LPASS8
-	l |= LPASS8|LLITOUT;
+	sp->curr.local |= LPASS8|LLITOUT;
 #endif
 #else
-	new.sg_flags |= CBREAK;
+	sp->curr.t.sg_flags |= CBREAK;
 #endif
-	new.sg_flags &= ~CRMOD;		/* leave LF alone */
+	sp->curr.t.sg_flags &= ~CRMOD;	/* leave LF alone */
     }
 
     if (noecho)
-	new.sg_flags &= ~ECHO;		/* kill echo */
+	sp->curr.t.sg_flags &= ~ECHO;	/* kill echo */
 
-    stty(fd, &new);			/* use TIOCSETN? */
-#if defined(TTY_RAW) && defined(LPASS8)
-    ioctl(fd, TIOCLSET, &l);
-#endif
+    tty_set(fd, &sp->curr);
 
     /* save current state */
     sp->cbreak = cbreak;
     sp->noecho = noecho;
 }
 
-/*
- * advisory notice; discard saved info.
- *
- * NOTE: this loses if device remains open
- *	(ie; in use by a child proc, or has been dup'ed)
- */
+/* advisory notice (does not perform close) */
 static void
-tty_close_fd(fd)
-    int fd;
-{
-    struct save *sp, *pp;
-
-    for (pp = NULL, sp = list; sp; pp = sp, sp = sp->next) {
-	if (sp->fd == fd) {
-	    if (pp) {
-		pp->next = sp->next;
-	    }
-	    else {
-		list = sp->next;
-	    }
-	    free(sp);
-	    break;
-	}
-    }
-}
-
-void
-tty_save()
-{
-    tty_mode(stdin, 0, 0, 0);		/* force initial save */
-}
-
-void
-tty_restore()
-{
-    /* XXX call tty_close_fd(STDIN_FILENO)?? */
-    tty_mode(stdin, 0, 0, 0);		/* restore initial settings */
-}
-
-/* advisory notice */
-void
 tty_close(f)
     FILE *f;
 {
-    tty_close_fd(fileno(f));
+    struct save *sp;
+    int fd;
+
+    fd = fileno(f);
+
+    /* try keeping information! */
+#ifdef TTY_CLOSE_FREE
+    sp = find_by_fd(fd, REMOVE);
+#else
+    sp = find_by_fd(fd, FIND);
+#endif
+    if (!sp)
+	return;				/* not found, bad fd, bad device */
+    
+    stty(fd, &sp->save.t);
+#ifdef TTY_RAW_PASS8
+    ioctl(fd, TIOCLSET, &sp->save.local);
+#endif
+    
+#ifdef TTY_CLOSE_FREE
+    free(sp);
+#endif
 }
+
+#ifdef SIGTSTP
+void
+tty_suspend()
+{
+    struct save *sp, *pp;
+    int fd;
+
+    fd = fileno(stdin);
+    sp = find_by_fd(fd, FIND);
+    if (sp)
+	tty_set(fd, &sp->save);
+    
+    proc_suspend();
+
+    /* here on process resume; */
+    if (sp)
+	tty_set(fd, &sp->curr);
+}
+#endif /* SIGTSTP defined */
