@@ -1375,7 +1375,7 @@ io_openo(dunit, sfile, sopts)		/* called from SNOBOL OUTPUT() */
     return TRUE;
 } /* io_openo */
 
-int
+enum io_include_ret
 io_include( dp, sp )
     struct descr *dp;			/* input unit */
     struct spec *sp;			/* file name (with quotes) */
@@ -1390,7 +1390,7 @@ io_include( dp, sp )
     /* search includes list to see if file already included!! */
     for (fp = iov.includes; fp; fp = fp->next)
 	if (strcmp(fname, fp->fname) == 0) /* found it!!! */
-	    return TRUE;
+	    return INC_SKIP;		/* as you were! */
 
     /* strip off trailing spaces after uniqueness test */
     l = S_L(sp);
@@ -1401,11 +1401,11 @@ io_include( dp, sp )
 
     fp = io_newfile(fname);
     if (fp == NULL)
-	return FALSE;
+	return INC_FAIL;
 
     if (io_fopen( fp, "r") == NULL) {
 	char *snolib;
-	char fn2[MAXFNAME];		/* XXX */
+	char *fn2;
 
 	free(fp);
 
@@ -1413,17 +1413,20 @@ io_include( dp, sp )
 	snolib = getenv("SNOLIB");
 	if (!snolib)
 	    snolib = SNOLIB_DIR;
+
+	fn2 = malloc(strlen(snolib)+1+strlen(fname)+1);
 	strcpy(fn2, snolib);
 	strcat(fn2, "/");
 	strcat(fn2, fname);
 
 	fp = io_newfile(fn2);
+	free(fn2);
 	if (fp == NULL)
-	    return FALSE;
+	    return INC_FAIL;
 
 	if (io_fopen( fp, "r") == NULL) {
 	    free(fp);
-	    return FALSE;
+	    return INC_FAIL;
 	}
     }
 
@@ -1439,7 +1442,7 @@ io_include( dp, sp )
 	fp->next = iov.includes;
 	iov.includes = fp;		/* XXX keep per unit? nah. */
     }
-    return TRUE;
+    return INC_OK;
 }
 
 /*
