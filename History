@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+8/1/97:
+	autoconf: general cleanup
+		commented out irix64 detection (does not yet work)
+
 7/26/97:
 	gensyn.sno: include h.h before syntab.h for non-ANSI compilers (sos4)
 	sunmodel: use hostid on systems without openprom
