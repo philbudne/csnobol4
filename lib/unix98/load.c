@@ -14,11 +14,6 @@
 
 #include <stdio.h>			/* sprintf() */
 #include <dlfcn.h>
-#ifdef ANSI_STRINGS
-#include <string.h>
-#else  /* ANSI_STRINGS not defined */
-#include <strings.h>                    /* berkeley strings */
-#endif /* ANSI_STRINGS not defined */
 
 #ifdef HAVE_STDLIB_H			/* before stdio */
 #include <stdlib.h>			/* malloc(), getenv() */
@@ -30,6 +25,7 @@
 #include "path.h"
 #include "load.h"
 #include "lib.h"			/* spec2str() */
+#include "str.h"
 
 #ifndef RTLD_LAZY
 #define RTLD_LAZY 0			/* Needed on FreeBSD 2.2.1-RELEASE */

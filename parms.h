@@ -10,15 +10,10 @@
 #include "libret.h"
 #include "macros.h"
 #include "units.h"
+#include "str.h"
 
 #include <stdio.h>			/* for lib.h */
 #include <math.h>			/* finite(), isnan() */
-
-#ifdef ANSI_STRINGS
-#include <string.h>
-#else  /* ANSI_STRINGS not defined */
-#include <strings.h>			/* berkeley strings */
-#endif /* ANSI_STRINGS not defined */
 
 /* machine generated */
 #include "equ.h"

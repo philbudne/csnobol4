@@ -28,11 +28,7 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#ifdef ANSI_STRINGS
-#include <string.h>
-#else
-#include <strings.h>			/* berkeley strings */
-#endif
+#include "str.h"
 
 /* phil 1/4/94; use STDIO */
 /* phil 12/7/96; after string.h for borland, per skibler */

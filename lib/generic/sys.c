@@ -10,18 +10,13 @@
 #define CONFIG_GUESS ""
 #endif /* CONFIG_GUESS not defined */
 
-#ifdef ANSI_STRINGS
-#include <string.h>
-#define rindex(S,C) strrchr(S,C)	/* XXX move to h.h? */
-#else  /* ANSI_STRINGS not defined */
-#include <strings.h>
-#endif /* ANSI_STRINGS not defined */
-
 #include <stdio.h>
 
 #include "h.h"
 #include "snotypes.h"
 #include "lib.h"
+#include "str.h"
+
 void
 hwname(cp)
     char *cp;

@@ -25,12 +25,12 @@
 #include "macros.h"
 #include "path.h"
 #include "load.h"
+#include "str.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <a.out.h>
-#include <strings.h>
 
 #ifdef HAVE_STDLIB_H			/* before stdio */
 #include <stdlib.h>			/* for malloc, getenv */

@@ -16,12 +16,6 @@
 /* NS: /NextDeveloper/Headers/mach-o/dyld.h */
 #include <mach-o/dyld.h>
 
-#ifdef ANSI_STRINGS
-#include <string.h>
-#else  /* ANSI_STRINGS not defined */
-#include <strings.h>                    /* berkeley strings */
-#endif /* ANSI_STRINGS not defined */
-
 #ifdef HAVE_STDLIB_H			/* before stdio */
 #include <stdlib.h>			/* malloc(), getenv() */
 #endif /* HAVE_STDLIB_H */
@@ -31,6 +25,7 @@
 #include "macros.h"
 #include "path.h"
 #include "load.h"
+#include "str.h"
 
 /* external function returning pointer to loaded function */
 extern int (*pml_find())(LOAD_PROTO);

@@ -14,16 +14,11 @@
 #include "macros.h"
 #include "path.h"
 #include "load.h"
+#include "str.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
-
 #include <dl.h>
-#ifdef ANSI_STRINGS
-#include <string.h>
-#else  /* ANSI_STRINGS not defined */
-#include <strings.h>                    /* berkeley strings */
-#endif /* ANSI_STRINGS not defined */
 
 #ifdef HAVE_STDLIB_H			/* before stdio */
 #include <stdlib.h>			/* for malloc, getenv */

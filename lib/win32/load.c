@@ -14,9 +14,9 @@
 #include "macros.h"
 #include "path.h"
 #include "load.h"
+#include "str.h"
 
 #include <windows.h>
-#include <string.h>
 #include <stdlib.h>			/* malloc(), getenv() */
 
 /* external function returning pointer to loaded function */
