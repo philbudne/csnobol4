@@ -2,6 +2,20 @@ $Id$
 
 For detailed revision history see History file
 
+Changes since 1.0 release;
+=========================
+
+	Added new builtin function groups:
+		"DBM" -- "ndbm" keyed database access
+		"COM" -- COM/OLE Automation on Win32
+		"STCL" -- SNOBOL/Tcl interface (optional)
+	Add HTTP.POST function to http.sno
+	Handle environments where pointers can have high order bit set
+	Avoid broken "install" utilities
+	autoconf compatibility: Honor CC, CFLAGS, CPPFLAGS,
+		LDFLAGS, DESTDIR environment variables.
+	Fix compilation on pre-panther OSX
+
 Changes since 0.99.44 release;
 =============================
 	Added snolib(3) man page for SNOBOL4 library routines
