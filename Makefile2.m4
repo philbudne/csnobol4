@@ -371,8 +371,8 @@ bcopy.o: $(BCOPY_C)
 getopt.o: $(GETOPT_C)
 	$(CC) $(CFLAGS) -c $(GETOPT_C)
 
-finite.o: $(FINITE_C)
-	$(CC) $(CFLAGS) -c $(FINITE_C)
+rresvport_af.o: $(RRESVPORT_AF_C)
+	$(CC) $(CFLAGS) -c $(RRESVPORT_AF_C)
 
 ################
 # dummy files
