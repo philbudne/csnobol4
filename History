@@ -2,8 +2,50 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+12/26/2001
+	CHANGES: update configure options
+	lib/io.c: add %G
+	v311.sil: use %G for us/stmt
+	autoconf: LP64 comments, GETRUSAGE_BUG for openbsd, select suspend.c
+	lib/{bsd,posix}/tty.c: fix bad return in find...
+		add tty_invalidate, ran comdef
+		keep "last" dev_t used
+	lib/{endex,init,io,stream,posix/tty}.c: kill unused variables
+	include/macros.h: fix cast in OFCHK() to kill warnings
+	timing.sno: allow integer compile/execute time/avg
+
+12/25/2001
+	config.guess: updated to latest
+	Makefile2.m4: add suspend.o, SUSPEND_C
+	Makefile: add .NOTPARALLEL
+	lib/init.c: add suspend handler, remove tty_save() call
+	lib/endex.c: remove tty_restore() call
+	lib/posix/tty.c, lib/bsd/tty.c:
+		keep state by device dev_t
+		flush tty_save(), tty_restore()
+		add tty_suspend()
+	lib/snolib/serv.c: add SIGFUNC_T for fireman, casts for bzero() args
+	lib/bsd/inet.c: cast bzero() args
+	new: lib/posix/suspend.c: POSIX process suspension
+	new: lib/bsd/suspend.c: BSD42 process suspension
+	new: lib/generic/suspend.c: generic process suspension
+	new: lib/dummy/suspend.c: dummy process suspension
+ 
+12/21/2000
+	Makefile: don't need to pass SIL to Makefile2
+	lib/posix/tty.c: restrict recl to 0xff
+
+12/20/2001
+	Makefile: consolidate .PRECIOUS lines, add data_init.h
+	Makefile2.m4: create and compile build.c before linking
+	host.c: add HOST(2001) ... HOST(2005) -- build variables
+	include/load.h: handle const strings in RETSTR()
+
 12/19/2001
 	INSTALL: updated
+	autoconf: always define CONFIG_GUESS for HOST(2000)
+	lib/snolib/host.c: add HOST(2000); display CONFIG_GUESS
+	timing.sno: display HOST() and HOST(2000)
 
 12/18/2001
 	timing: show Ids from genc.sno, v311.sil

@@ -1,5 +1,9 @@
 $Id$
 
+have bsd/posix tty_mode() calls cache last FILE/fd/dev_t used?
+
+create README.CVS??
+
 GNU tsort can't handle cycles!!
 	save tsort output as procs.sort?
 	use snobol program???
@@ -14,20 +18,11 @@ man page:
 	document HOST(200x)
 	document SERV_LISTEN()
 
-add build_hostname?? user???
+add build_hostname?? build_user???
 	move to mkbuild script?
 
-use latest config.guess?
-	put on "vendor branch" in cvs!!
-	from ftp://ftp.gnu.org/pub/gnu/config/config.guess
-	check for netbsdelf -- no need to check __ELF__?
-
-autoconf:
-	object format detection on OpenBSD, BSDI?
-	put SNOLIB_DIR define into config.h (would disallow local-xxx override)
-
 INSTALL;
-	talk about use of local-config;
+	talk about use of local-config (and local-defines);
 		ADD_OPT()
 		OPT=
 		SNOBOL4_C_CFLAGS=
@@ -48,6 +43,8 @@ put sources under CVS
 		always build kit's from scratch, via anonymous checkout???
 		don't bother with version-based directory name???
 		have tar file named snobol4-VERS.tar
+	put config.guess on vendor branch;
+		ftp://ftp.gnu.org/pub/gnu/config/config.guess
 
 doc/load.doc
 	mention libtool;
@@ -71,6 +68,8 @@ doc/load.doc
 	Darwin:
 		http://fink.sourceforge.net/doc/porting/shared.php
 
+	Cygwin DLL procedures???
+
 	DLL's on Win32
 	document:
 		config.h
@@ -81,6 +80,8 @@ doc/porting.doc
 	no more system.m4 files
 	convert.c, longlong, dynamic, others??
 	PML_SERV
+	update tty.c interface
+	add suspend.c
 
 man page
 	sed SNOLIB_PATH into man page?
@@ -137,11 +138,12 @@ cygwin isnobol4.c build problems with filename "subr/CON" !!
 
 ================
 
-change tty_mode to take single "mode" argument?
-	flags + RECL
+change tty_mode to take single "mode" argument (flags + recl)?
 	add "superbinary mode"?
 
-detect, use alternate versions of suspend.c?
+autoconf:
+	object format detection on OpenBSD, BSDI?
+	put SNOLIB_DIR define into config.h (would disallow local-xxx override)
 
 add "EXPORT" defns to lib functions (for windoze)???
 
