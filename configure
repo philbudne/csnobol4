@@ -264,12 +264,9 @@ fi
 # detect architectures where LP64 is the default.
 # XXX compile a test program (check for alignment as well)??
 case "$MACHINE" in
-alpha|Alpha)
+alpha|Alpha|ia64|IA64|x86_64)
     LP64=true
-    ;;
-
-ia64|IA64)
-    LP64=true
+    LP64_NATIVE=true
     ;;
 esac
 
@@ -391,6 +388,13 @@ if [ "$GCCPATH" -a "$WANTGCC" ]; then
     # -fomit-frame-pointer can make debugging harder, so put it here
     #	(on systems where it's harmless, it's turned on by -O)
     FASTFLAGS=-fomit-frame-pointer
+
+    # gcc3 has generic -m64 option?
+    # but avoid trying it on systems where LP64 is the default,
+    # and the compiler could be gcc2, which doesn't know about the option.
+    if [ "$LP64" -a ! "$LP64_NATIVE" ]; then
+	ARCH_OPT=-m64
+    fi
 else
     # required options for native compilers
     case "$MORV" in
