@@ -116,6 +116,10 @@ static FILE *termin;			/* TERMINAL input */
 extern int rflag;			/* from init.c */
 extern FILE *term_input();		/* from <system>/term.c */
 extern void *malloc();
+
+#ifdef NEED_POPEN_DECL
+extern FILE *popen();
+#endif /* NEED_POPEN_DECL defined */
 
 static struct file *
 io_newfile( path )
