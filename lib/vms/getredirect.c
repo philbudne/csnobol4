@@ -20,9 +20,16 @@
  *	for its buffer!
  */
 
-#ifdef	vms
+
 #include	<stdio.h>
 #include	<errno.h>
+#ifdef __DECC
+#include	<unixio.h>	/* -phil */
+#endif
+
+#ifndef W_OK
+#define W_OK 2
+#endif
 
 int
 getredirection(argc, argv)
@@ -72,7 +79,7 @@ char		**argv;
 		     * access(name, 2) is TRUE if we can write on
 		     * the specified file.
 		     */
-		    if (access(++ap, 2) == 0) {
+		    if (access(++ap, W_OK) == 0) {
 			if (freopen(ap, "a", stdout) != NULL)
 			    break;	/* Exit case statement	*/
 			perror(ap);	/* Error, can't append	*/
@@ -102,15 +109,3 @@ char		**argv;
 	argv[j] = NULL;			/* Terminate argv[]	*/
 	return (j);			/* Return new argc	*/
 }
-#else
-getredirection(argc, argv)
-int		argc;
-char		*argv[];
-/*
- * Dummy routine.
- */
-{
-	return (argv[0], argc);
-}
-#endif
-
