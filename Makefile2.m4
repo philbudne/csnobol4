@@ -24,12 +24,6 @@ CMT([extra C compiler flags for final link])
 define([ADD_LDFLAGS],[define([_LDFLAGS],_LDFLAGS $1)dnl])dnl
 define([_LDFLAGS],)dnl
 
-################
-# version
-
-VERS=0.98.1
-VDATE="Sept 19, 1996"
-
 ################################################################
 # defaults (may be overridden in config.h)
 
@@ -135,6 +129,7 @@ xsnobol4: $(OBJS)
 	$(CC) $(CFLAGS) -o xsnobol4 $(OBJS) $(LDFLAGS)
 
 ################
+# code
 
 .PRECIOUS: snobol4.c isnobol4.c $(SNOBOL4).o data_init.o
 
@@ -165,6 +160,7 @@ proc.h:	proc.h2
 	cmp proc.h proc.h2 || cp proc.h2 proc.h
 
 ################
+# syntax tables
 
 # only change syn.h if it has changed from last run!
 
@@ -177,6 +173,7 @@ syn.h:	syn.h2
 	cmp syn.h syn.h2 || cp syn.h2 syn.h
 
 ################
+# resident data
 
 data.h2 data.c2 equ.h2 data_init.h2: $(SIL) gendata.sno
 	rm -rf data.h2 data.c2 equ.h2 data_init.h2
@@ -196,10 +193,6 @@ data_init.h: data_init.h2
 
 data_init.o: data_init.c data_init.h equ.h data.h proc.h
 	$(CC) $(CFLAGS) -c data_init.c
-
-version.o: Makefile2
-	$(CC) $(CFLAGS) -c \
-		-DVERS='"'$(VERS)'"' -DVDATE='"'$(VDATE)'"' version.c
 
 #################
 # dependency generation is slow and ugly.
@@ -309,8 +302,8 @@ vfprintf.o: $(VFPRINTF_C)
 # housekeeping
 
 # generated files to include in kit
-GENERATED=syn.c syn.h syn.h2 data.c data.h proc.h proc.h2 equ.h \
-	snobol4.c isnobol4.c data_init.h 
+GENERATED=syn.c syn.h data.c data.h data_init.h proc.h equ.h \
+	snobol4.c isnobol4.c 
 
 # files with secondary copies
 G2=data.c data.h data_init.h proc.h equ.h syn.h
@@ -320,7 +313,7 @@ DISP=*.o callgraph prolog subr
 
 # remove objects; leave generated sources, final binary, Makefile2
 clean:
-	rm -f $(DISP) *~ */*~ */*/*~
+	rm -f $(DISP) *~ */*~ */*/*~ *.tmp
 
 # remove objects, generated sources; leave final binary, Makefile2
 realclean: clean
@@ -334,30 +327,37 @@ realclean: clean
 	genc.sno gensyn.sno gendata.sno inline.sno \
 	main.c charset.c data_init.c version.c \
 	parms.h mlink.h mdata.h pml.h \
-	lib include config test bugs snolib \
+	lib include config test bugs \
+	snolib/Makefile snolib/*.[ch] snolib/*.sno \
 	timing timing.sno \
 	cc-M]
 
 # XXX perform general cleanup (remove ~ and # files) first?
-KIT=snobol-$(VERS).tar.Z
-tar:	$(KIT)
+pv:	version.c
+	$(CC) -DMAIN -o pv version.c
 
-$(KIT):	$(TAR) TESTED
+VERS=`./pv`
+DIR=snobol-$(VERS)
+TAR=snobol-$(VERS).tar.Z
+
+# XXX add predicates to suppress ~ # and .o files?
+tar vers: $(TAR) TESTED pv
 	cd doc; make
 	cd test; ./clean.sh
-	rm -rf snobol-[0-9]*
-	rm -f *~ */*~ */*/*~
-	mkdir snobol-$(VERS)
-	find $(TAR) -name RCS -prune -o -print | cpio -pldm snobol-$(VERS)
-	cp $(GENERATED) snobol-$(VERS)
-	cd snobol-$(VERS); for f in $(G2); do ln $$f $${f}2; done
-	tar cf - snobol-$(VERS) | compress > $(KIT)
-	rm -rf snobol-$(VERS)
+	rm -rf [snobol-[0-9]*]
+	rm -f *~ */*~ */*/*~ *.tmp
+	mkdir $(DIR)
+	find $(TAR) -name RCS -prune -o -print | cpio -pldm $(DIR)
+	for f in $(G2); do cp $$f $(DIR)/$${f}2; done
+	cp $(GENERATED) $(DIR)
+	tar cf - $(DIR) | compress > $(TAR)
+	rm -rf $(DIR)
+	./pv > vers
 
 # make a mailable kit by taring, compressing, uuencoding and splitting!
-uu:	$(KIT)
+uu:	vers
 	rm -rf uu; mkdir uu
-	cd uu; uuencode ../$(KIT) $(KIT) | split -800 -; makekit x??; rm x??
+	cd uu; uuencode ../$(TAR) $(TAR) | split -800 -; makekit x??; rm x??
 
 #################
 
