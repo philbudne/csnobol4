@@ -77,8 +77,11 @@
        S_O(A) = BCDFLD; S_L(A) = D_V(D_A(B)); CLR_S_UNUSED(A); \
     }
 
-/* fast compare for equality.  check first char before calling bcmp?? */
-#define LEXEQ(A,B) (S_L(A) == S_L(B) && bcmp(S_SP(A),S_SP(B),S_L(A)) == 0)
+/* fast compare for equality */
+#define LEXEQ(A,B) (S_L(A) == S_L(B) && \
+		    (S_L(A) == 0 || \
+		     *S_SP(A) == *S_SP(B) && \
+		     (S_L(A) == 1 || bcmp(S_SP(A)+1,S_SP(B)+1,S_L(A)-1) == 0)))
 
 /****************
  * system stack
