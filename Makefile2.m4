@@ -232,15 +232,15 @@ G2=*.o callgraph
 clean:
 	rm -f $(GENERATED) $(G2) *~
 
-TAR=	README doc History TODO TODO.soon \
-	Makefile Makefile2.cpp \
+`TAR=	README doc History TODO TODO.soon \
+	Makefile Makefile2.m4 \
 	v311.sil syntax.tbl procs global.procs \
 	genc.sno gensyn.sno gendata.sno \
-	main.c charset.c data_init.c \
+	main.c charset.c data_init.c version.c \
 	parms.h mlink.h mdata.h \
 	lib include config test \
 	$(GENERATED) \
-	cc-M
+	cc-M'
 
 # XXX perform general cleanup (remove ~ and # files) first?
 KIT=snobol.tar.Z
@@ -252,7 +252,9 @@ $(KIT):	$(TAR)
 	rm -rf snobol
 	mkdir snobol
 	tar cf - $(TAR) | (cd snobol; tar xfpB -)
-	find snobol -name RCS -exec rm -rf {} \;
+	find snobol -name RCS -exec rm -rf {} \; -prune
+	find snobol -name '*~' -exec rm {} \;
+	find snobol -name '#*' -exec rm {} \;
 	tar cf - snobol | compress > $(KIT)
 	rm -rf snobol
 
