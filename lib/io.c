@@ -662,7 +662,7 @@ io_printf
 	    break;
 	case 'F':			/* padded float */
 	    dp = va_arg(vp, struct descr *);
-	    sprintf(lp, "%15.3f", D_RV(dp));
+	    sprintf(lp, "%15.3g", D_RV(dp));
 	    lp += strlen(lp);
 	    break;
 	case 's':			/* c-string (from version.c) */
