@@ -14,7 +14,7 @@
 
 #ifndef NO_PML_HOST
 PMLFUNC(HOST)				/* SPITBOL compat */
-PMPROTO("HOST(,)")			/* two polymorphic params */
+PMPROTO("HOST()")			/* two polymorphic params */
 #endif /* NO_PML_HOST not defined */
 
 #ifndef NO_PML_EXIT
