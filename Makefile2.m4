@@ -229,10 +229,10 @@ snobol4.c: procs genc.sno globals $(SIL)
 	mv -f snobol4.c2 snobol4.c
 
 # inline version (functions reordered)
-isnobol4.c: procs genc.sno globals $(SIL) inline.sno
+isnobol4.c: procs genc.sno globals $(SIL)
 	rm -rf isnobol4.c2 proc.h2 prolog subr
 	mkdir subr
-	$(SNO) inline.sno $(SIL) > prolog
+	$(SNO) genc.sno --inline $(SIL) > prolog
 	cd subr; cat ../prolog \
 		`awk '{print $$2, $$1}' ../callgraph | tsort 2>/dev/null` \
 			> ../isnobol4.c2
@@ -520,7 +520,7 @@ spotless: realclean
 # generated files copied separately to ensure newer than source files!
 [TAR=	README CHANGES History INSTALL TODO TODO.soon doc Makefile \
 	Makefile2.m4 autoconf configure config.guess $(SIL) syntax.tbl \
-	procs globals genc.sno gensyn.sno gendata.sno inline.sno \
+	procs globals genc.sno gensyn.sno gendata.sno \
 	main.c charset.c data_init.c version.c parms.h mlink.h mdata.h \
 	pml.h $(GENERATED) lib include config test bugs snolib/*.sno \
 	sunmodel timing timing.sno cc-M bsplitu.c]
