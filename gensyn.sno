@@ -167,7 +167,7 @@ TOP	LINE = INPUT					:F(END)
 	GO = ARRAY('0:19')
 
 *	array per char; contains index into above PU/ACT/GO arrays
-	CHARS = ARRAY('0:127',-1)
+	CHARS = ARRAY('0:255',-1)
 
 **************** for each line of table
 LOOP	LINE = INPUT
