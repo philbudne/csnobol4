@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.16  94/01/07  17:54:04  budd
+* [PLB11] caseifed STRINGS, fixed TIMEPS format
+* 
 * Revision 1.15  94/01/07  16:23:28  budd
 * [PLB10] converted FORMAT strings to printf-style, mixed-case
 * 
@@ -351,8 +354,12 @@ T      EQU     5		   TABLE
        TITLE   'Program Initialization'
 BEGIN  INIT    ,		   Initialize system
        ISTACK  ,		   Initialize stack
+       AEQLC   BANRCL,0,,NOBANR	   [PLB12] Check if banner suppressed
+       OUTPUT  PUNCH,UNIXF	   [PLB12] Un*x title
+       OUTPUT  PUNCH,UNIXF2	   [PLB12] Un*x date
        OUTPUT  PUNCH,TITLEF	   [PLB3] Title listing
        OUTPUT  PUNCH,SOURCF	   [PLB3] Print attribution
+NOBANR LHERE			   [PLB12] here after banner
        MSTIME  TIMECL		   Time in compiler
        RCALL   SCBSCL,BLOCK,OCALIM Allocate block for object code
        MOVD    OCSVCL,SCBSCL	   Save object code pointer
@@ -431,7 +438,8 @@ XLAEND AEQLC   ESAICL,0,,XLATSC    Were there any compilation errors?
        AEQLC   NERRCL,0,END	   [PLB9] Abort execution if -NOERROR set
        BRANCH  XLATND
 *_
-XLATSC OUTPUT  PUNCH,SUCCF	   [PLB3] Print message of no errors
+XLATSC AEQLC   BANRCL,0,,XLATND	   [PLB12] Suppress message if no banner
+       OUTPUT  PUNCH,SUCCF	   [PLB3] Print message of no errors
 XLATND XECOMP  ,		   [PLB4] Tell I/O system compile done
        SETAC   UNIT,0		   Reset input unit
        SETAC   LPTR,0		   Reset last label pointer
@@ -5165,7 +5173,8 @@ GENVIX RCALL   XPTR,GNVARI,XPTR,RTXNAM
 *				   Generate variable from integer
 *_
        TITLE   'Termination'
-END    OUTPUT  PUNCH,NRMEND,(LVLCL)				[PLB5]
+END    AEQLC   BANRCL,0,,FTLEN2	   Skip message if banner (stats?) off [PLB12]
+       OUTPUT  PUNCH,NRMEND,(LVLCL)				[PLB5]
 *				   End procedure
        OUTPUT  PUNCH,LASTSF,(STNOCL)				[PLB5]
 *				   Print status
@@ -5179,7 +5188,7 @@ FTLEND OUTPUT  PUNCH,FTLCF,(ERRTYP,STNOCL,LVLCL)		[PLB5] V3.7
 FTLEN3 MULTC   YCL,ERRTYP,DESCR 				E3.10.6
        GETD    YCL,MSGNO,YCL	   Get message pointer
        GETSPC  TSP,YCL,0	   Get message specifier
-       STPRNT  IOKEY,OUTBLK,TSP    Print error message
+       STPRNT  IOKEY,ERRBLK,TSP    Print error message		[PLB12]
 FTLEN2 ISTACK  ,		   Reset system stack
        AEQLC   ETMCL,0,FTLEN4	   Was compiler done?
        MSTIME  ETMCL		   Time out compiler
@@ -5202,7 +5211,8 @@ DMPNO  OUTPUT  OUTPUT,INCGCF	   Print disclaimer
        BRANCH  END1		   Join end game
 *_
 DMPK   RCALL   ,DMK		   Dump keywords
-END1   OUTPUT  PUNCH,STATHD	   Print statistics title	[PLB5]
+END1   AEQLC   STATCL,0,,ENDALL	   Skip stats if suppressed	[PLB12]
+       OUTPUT  PUNCH,STATHD	   Print statistics title	[PLB5]
        OUTPUT  PUNCH,CMTIME,(TIMECL)				[PLB5]
 *				   Print compilation time
        OUTPUT  PUNCH,INTIME,(ETMCL)				[PLB5]
@@ -5521,6 +5531,7 @@ TIMECL DESCR   0,0,0		   Millisecond time
 *
 ALCL   DESCR   0,0,0		   Entry point switch for ARG(F,N)
 ARRMRK DESCR   0,0,0		   Prototype end switch for ARRAY(P,V)
+BANRCL DESCR   1,0,0		   Display startup banner	[PLB12]
 CUTNO  DESCR   0,0,0						E3.2.2
 CNSLCL DESCR   0,0,0		   Label redefinition switch
 DATACL DESCR   0,0,0		   Prototype end switch for DATA(P)
@@ -5528,10 +5539,11 @@ FNVLCL DESCR   0,0,0		   FUNCTION-VALUE switch for trace
 INICOM DESCR   0,0,0		   INITIALIZATION SWITCH	E3.10.6
 LENFCL DESCR   0,0,0		   Length failure switch
 LISTCL DESCR   1,0,0		   Compiler listing switch
-LLIST  DESCR   0,0,0		   Left listing switch
+LLIST  DESCR   1,0,0		   Left listing switch
 NAMGCL DESCR   0,0,0		   Naming switch for SJSR
-SCERCL DESCR   0,0,0		   Error branch switch
 NERRCL DESCR   1,0,0		   NOERROR switch		[PLB9]
+SCERCL DESCR   0,0,0		   Error branch switch
+STATCL DESCR   1,0,0		   Display statistics		[PLB12]
 *
 *      Constants
 *
@@ -6659,5 +6671,9 @@ SYSCMT FORMAT  'Caught signal in statement %d at level %d\n'
 TIMEPS FORMAT  '%15.2f ms. Average per statement executed\n'
 TITLEF FORMAT  'SNOBOL4 (Version 3.11, May 19, 1975)\n'
 *								V3.11
+* [PLB12]:
+UNIXF  FORMAT  'The Macro Implementation of SNOBOL4 for Un*x 0.90 (beta)\n'
+UNIXF2 FORMAT  'January 1994, by Philip L. Budne\n'
+*
 WRITNO FORMAT  '%15i Writes performed\n'
        END
