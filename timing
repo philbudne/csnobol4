@@ -76,6 +76,10 @@ if [ "$UNAME" ]; then
 		echo 'sunmodel:'
 		./sunmodel 2>&1
 		echo ''
+		if [ -f /usr/sbin/psrinfo ]; then
+			echo 'psrinfo -v:'
+			/usr/sbin/psrinfo -v
+		fi
 		;;
 	esac
 fi
