@@ -104,22 +104,8 @@ PML_OBJ=chop.obj, cos.obj, delete.obj, execute.obj, exit.obj, \
 	log.obj, logic.obj, rename.obj, retstring.obj sin.obj, \
 	sqrt.obj, sset.obj, sys.obj, tan.obj
 
-# define preprocessor aliases for SIL and snolib subroutine names
-# which conflict with C runtime names (all are upper-case names)
-
-# stuff all the defines in config/vms/config.h and just define HAVE_CONFIG_H
-#	and add SYS$DISK:[.CONFIG.VMS] to include path below??
-CFLAGS=	$(CCFLAGS) $(TCPFLAGS)\
-	/DEFINE=(ANSI_STRINGS,NEED_POPEN_DECL,\
-		NO_OFF_T,TTY_READ_RAW,TTY_READ_COOKED,\
-		ANY=XANY,COS=XCOS,DATE=XDATE,DIV=XDIV,\
-		DELETE=XDELETE,EXIT=XEXIT,EXP=XEXP,\
-		INIT=XINIT,IO_FINDUNIT=XIO_FINDUNIT,\
-		LOAD=XLOAD,LOG=XLOG,RAISE=XRAISE,READ=XREAD,\
-		RENAME=XRENAME,REWIND=XREWIND,RPLACE=XRPLACE,\
-		SIN=XSIN,SQRT=XSQRT,SUBSTR=XSUBSTR,\
-		TAN=XTAN,TIME=XTIME,UNLOAD=XUNLOAD) \
-	/INCLUDE=(SYS$DISK:[],SYS$DISK:[.INCLUDE])
+CFLAGS=	$(CCFLAGS) $(TCPFLAGS) /DEFINE=HAVE_CONFIG_H \
+	/INCLUDE=(SYS$DISK:[],SYS$DISK:[.INCLUDE],SYS$DISK:[.CONFIG.VMS])
 
 ################
 
