@@ -7,14 +7,42 @@
 	DIGIT = '0123456789'
 	TAB = '	'
 	SP = ' '
+
+* parameters
+	SHMULT = 10
+	SNODIV = 100
+
 * patterns
 	INT = SPAN(DIGIT)
 	FLOAT = INT '.' INT
 	WS = SPAN(SP TAB)
+	DARK = BREAKX(SP TAB)
 	NUM = FLOAT | INT
 
 ****************************************************************
+* functions
+
+	DEFINE("CHECKHZ(FACT,REAL,USED)X,Y")		:(ECHECKHZ)
+CHECKHZ	X = (REAL * 1000.0 / SNODIV) / (USED * SHMULT)
+*	GET 10%
+	Y = X / 10
+*	BELOW BY MORE THAN 10%
+	LT(FACT,X - Y)					:S(FRETURN)
+*	ABOVE BY MORE THAN 10%
+	GT(FACT,X + Y)					:S(FRETURN)
+	OUTPUT = "HZ used " USED ", should be " REAL '?' :(RETURN)
+ECHECKHZ
+****************************************************************
 * parse snobol's messages
+
+VLOP	LINE = INPUT					:F(NOVERS)
+	LINE "The Macro Implementation of SNOBOL4" BREAKX("V") "Version "
++		SPAN('0123456789.') . VERS		:F(VLOP)
+
+	OUTPUT =
+	OUTPUT = 'Version:' TAB TAB VERS		:(CLOP)
+
+NOVERS	OUTPUT = "could not find SNOBOL4 SIGNON/VERSION" :(FATAL)
 
 * COMPILING
 CLOP	LINE = INPUT					:F(NOCOMP)
@@ -44,9 +72,8 @@ GETSTAT	LINE = INPUT					:F(NOSTAT)
 	LINE = INPUT					:F(NOSTAT)
 	LINE WS INT . STMTS WS 'Statements executed'	:F(NOSTAT)
 
-	OUTPUT =
-	OUTPUT = 'SNOBOL4 Compile time:' TAB COMP ' milliseconds'
-	OUTPUT = 'SNOBOL4 Execution time:' TAB EXEC ' milliseconds'
+	OUTPUT = 'Compile time:' TAB TAB COMP ' milliseconds'
+	OUTPUT = 'Execution time:' TAB TAB EXEC ' milliseconds'
 	OUTPUT = 'Statements executed:' TAB STMTS
 	OUTPUT = 'Statements per second:' TAB STMTS * 1000 / EXEC
 
@@ -54,7 +81,9 @@ GETSTAT	LINE = INPUT					:F(NOSTAT)
 	A1 = EXEC * 1000 / STMTS
 
 	OUTPUT = 'microseconds per statement: ' A1
-	TTL = (COMP + EXEC + 50) / 100
+
+* get SNOBOL time in 10ths
+	SNOBOL = (COMP + EXEC + 50) / SNODIV
 
 **************** get snobols's average ms/stmt
 
@@ -67,7 +96,7 @@ ALOP	LINE = INPUT					:F(NOSTAT)
 * compare A1 vs A2 (calculation fails on HP-PA using gcc?)
 	EQ(A1,A2)					:S(GETTIME)
 
-* check for delta of +/-1
+* check for delta of +/-1us
 	X = A1 - A2
 	EQ(X,1)						:S(GETTIME)
 	EQ(X,-1)					:S(GETTIME)
@@ -93,39 +122,58 @@ GETTIME	LINE = INPUT					:F(NOTIME)
 * csh style time '0.00u ....'
 	LINE NUM . USER 'u'				:S(GOTTIME)
 * hpux, aix 'user 0m0.00s'
-	LINE 'user' ws INT . MIN 'm' NUM . USER		:S(GOTTIME)
+	LINE 'user' WS INT . MIN 'm' NUM . USER		:S(GOTTIME)
 * hpux, aix, sunos5 'user 0.0'
-	LINE 'user' ws NUM . USER			:S(GOTTIME)
+	LINE 'user' WS NUM . USER			:S(GOTTIME)
 * sunos4 "sh" time '.... 0.0 user ...'
-	LINE ARB WS NUM . USER WS 'user'		:S(GOTTIME)
+	LINE DARK WS NUM . USER WS 'user'		:S(GOTTIME)
 * more here?
 
 * detect flag line for next section;
 	LINE '==== '					:F(GETTIME)
 	OUTPUT =
-	OUTPUT = "WARNING: could not verify xsnobol4's cpu time measurements"
+	OUTPUT = "WARNING: could not verify snobol4's cpu time measurements"
 	OUTPUT = '	(look in timing.sno at GETTIME patterns)'
 	OUTPUT =					:(DIFFCK)
 
 * here with shell runtime
-GOTTIME	USER = CONVERT((USER + MIN * 60) * 10, 'INTEGER')
-* see  if shell time matches snobols
-	EQ(TTL,USER)					:S(TIMEOK)
+GOTTIME	SHELL = CONVERT((USER + MIN * 60) * SHMULT, 'INTEGER')
 
-	FACTOR = TTL / (USER * 1.0)
-	EPSILON = 0.01
-	GE(FACTOR, 1.0 - EPSILON) LT(FACTOR, 1.0 + EPSILON) :S(TIMEOK)
+	OUTPUT = "SHELL:" TAB SHELL
+	OUTPUT = "SNOBOL:" TAB SNOBOL
 
+* see  if shell time matches snobols exactly
+ 	EQ(SNOBOL,SHELL)				:S(TIMEOK)
+
+* no, get error factor
+	FACTOR = SNOBOL / (SHELL * 1.0)
+* get "normal"
+	NORMAL = 1000.0 / (SNODIV * SHMULT)
+
+*	allow +/-2% error
+	EPS = NORMAL / 50
+	LT(FACTOR, NORMAL - EPS)			:S(BAD)
+	GT(FACTOR, NORMAL + EPS)			:F(TIMEOK)
+
+BAD	OUTPUT =
+	OUTPUT = "SNOBOL's timings off by factor of " FACTOR
+	OUTPUT = "	see doc/porting.doc section on mstime.c"
 	OUTPUT =
-	OUTPUT = "SNOBOL's timings off by a factor of: " FACTOR
-	OUTPUT = "    see if posix sysconf() available (use posix/mstime.c)"
-	OUTPUT = "USER:" TAB USER
-	OUTPUT = "TTL:" TAB TTL				:(DODIFF)
-* HZ was 60, should be 100?
-	OUTPUT = GE(FACTOR,165.0) LE(FACTOR,167.0) "compiler with -DHZ=100?"
+	OUTPUT = "SHELL:" TAB SHELL
+	OUTPUT = "SNOBOL:" TAB SNOBOL			:(DODIFF)
+
+	CHECKHZ(FACTOR, 50, 60)				:S(DODIFF)
+	CHECKHZ(FACTOR, 50, 100)			:S(DODIFF)
+	CHECKHZ(FACTOR, 60, 50)				:S(DODIFF)
+	CHECKHZ(FACTOR, 60, 100)			:S(DODIFF)
+	CHECKHZ(FACTOR, 100, 50)			:S(DODIFF)
+	CHECKHZ(FACTOR, 100, 60)			:S(DODIFF)
+
+* nothing obvious -- say something?
+							:(DODIFF)
 
 TIMEOK	OUTPUT =
-	OUTPUT = "xsnobol4 time measurement checks out"
+	OUTPUT = "snobol4 time measurement checks out"
 
 ****************************************************************
 * look for start of diff "signal" line
@@ -135,13 +183,32 @@ DIFFLP	LINE = INPUT					:F(NODIFF)
 DIFFCK	IDENT(LINE,'==== diff')				:F(DIFFLP)
 
 * here with first line of diff output
-	LINE = INPUT					:F(NODIFF)
-	IDENT(LINE,'1c1')				:F(BADIFF)
+	DIFF = ARRAY('1:5')
+	DIFF[1] = INPUT					:F(NODIFF)
+	IDENT(DIFF[1],'1c1')				:F(BADIFF)
+	L = L + 1
+	DIFF[2] = INPUT					:F(BADIFF)
+	DIFF[2] '<'					:F(BADIFF)
+	L = L + 1
+	DIFF[3] = INPUT					:F(BADIFF)
+	DIFF[3] '-'					:F(BADIFF)
+	L = L + 1
+	DIFF[4] = INPUT					:F(BADIFF)
+	DIFF[4] '>'					:F(BADIFF)
+	L = L + 1
+* should now get EOF
+	DIFF[5] = INPUT					:S(BADIFF)
+	L = L + 1
+
 	OUTPUT = "genc.sno output checks out"		:(END)
 
 * here if first line of diff does not check out
 BADIFF	OUTPUT = 'genc diff failed:'
-	OUTPUT = LINE
+	I = 1
+DUMP	GT(I,L)						:S(BADLOP)
+	OUTPUT = DIFF[I]
+	I = I + 1					:(DUMP)
+
 BADLOP	OUTPUT = INPUT					:S(BADLOP)F(FATAL)
 
 NODIFF	OUTPUT = 'no diff found'			:(FATAL)
