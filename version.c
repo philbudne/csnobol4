@@ -2,6 +2,9 @@
 
 /*
  * $Log$
+ * Revision 1.12  1996/09/23  05:20:44  phil
+ * 0.98.3
+ *
  * Revision 1.11  1996/09/21  07:20:12  phil
  * moved versions back here, added back ifdef MAIN, upped to 0.98.2
  *
@@ -38,16 +41,18 @@
  * 
  */
 
+#include "h.h"				/* const */
+
 #ifndef MAIN
-#include "h.h"
 #include "units.h"
 #include "macros.h"
 #include "snotypes.h"
 #include "data.h"
 #endif
 
-char vers[] = "0.98.3";
-char vdate[] = "Sept 22, 1996";
+const char vers[] = "0.98.3";
+const char vdate[] = "Sept 22, 1996";
+const char snoname[] = "C-MAINBOL";
 
 #ifdef MAIN
 main() {
@@ -55,6 +60,7 @@ main() {
     exit(0);
 }
 #else
+
 void
 version()
 {
@@ -62,7 +68,7 @@ version()
 	return;
 
     io_printf(D_A(PUNCH),
-"The Macro Implementation of SNOBOL4 in C (C-MAINBOL) Version %s\n", vers);
-    io_printf(D_A(PUNCH), "    Philip L. Budne, %s\n", vdate);
+"The Macro Implementation of SNOBOL4 in C (%s) Version %s\n", snoname, vers);
+    io_printf(D_A(PUNCH), "    by Philip L. Budne, %s\n", vdate);
 }
 #endif
