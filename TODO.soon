@@ -1,28 +1,18 @@
 $Id$
 
-have all genc, gendata, gensyn output .[ch]2 files
-	use cmp || cp??
-
-Move ports.doc information to config files?
-	use script to generate ports.doc!!!?
-
 improve load.doc
 	document use of pml!
 	document snolib
 		getstring
 	document return data type 'L'
-
+		create "retstring"?
 ================
 
-Run genc.sno for regression test?
-	create "timing" script
-		date
-		who am i
-		uname -a
-		size xsnobol4
-		gcc -v
-		time ./xsnobol4 genc.sno > x
-		diff snobol4.c x
+have all genc, gendata, gensyn output .[ch]2 files
+	use cmp || cp??
+
+Move ports.doc information to config files?
+	use script to generate ports.doc!!!?
 
 Improve porting.doc
 	talk about C compilers
