@@ -1,21 +1,13 @@
 $Id$
 
-add regression tests for -CASE/&CASE
-
-================
-
-update ports.doc for
-		sgi, hp720, rs6000, ss10
-		Solaris 2, 4.4 BSD, VMS
-
-change types.h to snotypes.h
-
 fix syn.h.new (for VMS)
-
-new config file for sgi?
+	have all genc, gendata, gensyn output .n[ch] files
+	use cmp || cp??
 
 Move ports.doc information to config files?
 	use script to generate ports.doc!!!?
+
+Include "bugs" directory in kit?
 
 ================
 
@@ -30,7 +22,11 @@ Look at run of genc.sno w/o v311.sno (loops??)
 
 Run genc.sno for regression test?
 	create "timing" script
+		date
+		who am i
+		uname -a
 		size xsnobol4
+		gcc -v
 		time ./xsnobol4 genc.sno > x
 		diff snobol4.c x
 
@@ -59,6 +55,7 @@ Document;
 		recl NOT ignored!?!
 	-ERROR/-NOERRORS
 	-CASE/&CASE
+	&LCASE/&UCASE
 
     changes;
 	-LIST defaults
@@ -84,6 +81,8 @@ Document;
 	Vertical bar used as an operator
 	What would 8-bit mean for &ALPHABET? LGT()???
 	What would 16-bit (or unicode?!) do for stream tables???
+
+    Known bugs
 
 Implement "poor man's LOAD"
 
