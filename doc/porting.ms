@@ -16,15 +16,15 @@ As the title suggests, the target machine is anything that has a C
 compiler and provides provides a Un*x-like (ie; POSIX) environment.
 The target machine should have;
 
-.IP *
+.IP \(bu
 A large address space (allowing for approx 300K code and 300K data).
 Virtual memory is desirable.
 
-.IP *
+.IP \(bu
 An industrial strength optimizing C compiler;
 GNU C (gcc) is preferred, but no ANSI features are required.
 
-.IP *
+.IP \(bu
 A reasonably complete C library, including stdio.
 
 .PP
@@ -223,7 +223,7 @@ NO_PML_EXIT
 .PP
 Prevents "poor-mans loading" of SPITBOL EXIT() function emulation.
 There is a dummy function available for addition to snolib for the
-execl() functions (ie; ADD_OBJS([execl.o])) in case execl() is not
+execute() function (ie; ADD_OBJS([execute.o])) in case execl() is not
 available.  This may be preferable to eliminating EXIT() altogether
 for compatibility reasons.
 .NH 3
@@ -351,6 +351,19 @@ endex.c
 .PP
 Contains endex() which is called to end execution.  Calls exit() for
 normal termination and abort() for abnormal termination!
+
+.NH 2
+execute.c
+
+.PP
+Provides execute() function for SPITBOL HOST() simulation.
+
+.IP lib/generic/execute.c
+Uses execl() and /bin/sh or /usr/bin/sh to pass execute to
+a shell command.
+
+.IP lib/dummy/execute.c
+Provides dummy execute() function.
 
 .NH 2
 exp.c
