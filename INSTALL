@@ -37,14 +37,17 @@ following options;
 		(ie; for "poor mans load" functions)
 
 	--add-opt=STRING
-		Add additional optimization flags to compile commands
+		Add additional optimization flags to compile commands.
+
+		When using GCC, "--add-opt=-g" can be used to compile
+		for debugging without disabling optimization.
 
 	--add-srcs=STRING
 		Add additional source files for "make depend"
 
 	--force-gcc
 		Force use of GCC, the GNU C Compiler;
-		fail if gcc not available.
+		fail if GCC not available.
 
 	--force-memmove
 		Force use of system memmove() function (if preseent)
@@ -74,7 +77,7 @@ following options;
 				*** WARNING ***
 
 		Expect to see large numbers of C compiler warnings when
-		using this option with gcc.
+		using this option with GCC.
 
 		This option is experimental, and has not been extensively
 		tested, particularly with vendor supplied C compilers.
@@ -132,21 +135,27 @@ following options;
 		support.
 
 	--opt=STRING
-		Supply C optimization flags.  The default value is
-		"-O", which is widely accepted.  Higher optimization
-		levels can be tried, but may fail (e.g. due to swap
-		space exaustion, or internal compiler limits), to
-		compile the large machine generated files, or appear
-		to take forever to compile.
+		Supply C optimization flags.  The default value when using
+		GCC is "-O2" (the -finline-functions flag is supplied
+		seperately except when --no-inline has been given).
 
-		Values to try;
-			gcc; -O2 (-finline-functions always on, so same as -O3)
-			     -O -g (optimize, and supply debugger symbols)
-			SunPro:
-			     -fast
-			     -xO2 ... -xO5
+		If the C compiler being used is not GCC based, the
+		default "-O", which is widely accepted.  Other values
+		to try depend on the C compiler in use.  Different
+		values to try;
 
-		--opt=-g can be used for debugging.
+		SunPro/Sun Workhop: -fast
+
+		Optimized compilation mail fail, to compile the large
+		machine generated files (due to swap space exaustion,
+		or internal compiler limits), or may appear to take
+		forever to compile.
+
+		--opt=-g can be used to compile for debugging, with no
+		optimization.
+
+		When using GCC --add-opt=-g can be used to compile for
+		debugging without disabling optimization.
 
 	--prefix=DIR
 		Supply a directory prefix for bin/ and lib/ directories.
@@ -159,8 +168,13 @@ the software to be built, with reduced functionalty.
 If this occurs, or if the build does not succeed, you can consult
 doc/porting.doc (also available as html) for information on the
 available options for use in creating a system-specific config file.
+
 If you need assistance please contact me (phil@ultimate.com).
+
 I'm also available for contract development.
+
+I've spent untold hours working on this release, if you find
+it useful, consider sending me a gift (money always welcome)!
 
 For information on including "external" C functions in the linked
 binary see doc/load.doc.
