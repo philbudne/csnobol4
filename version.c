@@ -2,6 +2,9 @@
 
 /*
  * $Log$
+ * Revision 1.21  1997/05/22  05:05:01  phil
+ * new struct res (and res.h)
+ *
  * Revision 1.20  1997/02/13  05:12:54  phil
  * 0.99.3
  *
@@ -79,8 +82,8 @@
 #include "data.h"
 #endif
 
-const char vers[] = "0.99.3";
-const char vdate[] = "Feb 12, 1997";
+const char vers[] = "0.99.3++";
+const char vdate[] = "July 11, 1997";
 const char snoname[] = "C-MAINBOL";
 
 #ifdef MAIN
