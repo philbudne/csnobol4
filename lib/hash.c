@@ -9,7 +9,7 @@ hash(sp)
     struct spec *sp;
 {
     char *cp;
-    int len;
+    int len, l2;
     unsigned long sum;
 
     sum = 0;
@@ -22,8 +22,24 @@ hash(sp)
     }
 #endif /* 0 */
 
-    while (len-- > 0) {
-	sum = (sum << 2) ^ *cp++;
+    sum = len;
+
+    /* sum first four */
+    l2 = 4;
+    if (len < 4)
+	l2 = len;
+    len -= l2;
+    while (l2-- > 0) {
+	sum += (unsigned char)*cp++;
     }
-    return sum % 0xffff;
+
+    /* and last four */
+    if (len > 4) {
+	cp += (len - 4);
+	len = 4;
+    }
+    while (len-- > 0) {
+	sum += (unsigned char)*cp++;
+    }
+    return sum & 0xffff;
 }
