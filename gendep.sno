@@ -25,20 +25,12 @@
 *	faster matching
 	&ANCHOR = 1
 
-	DIFFER(MAINBOL)					:S(MB1)
+	DIFFER(MAINBOL)					:S(MB)
 
-**************** SPITBOL I/O
-*	error output to fd2
-	INPUT(.INPUT,1,"v311.sil")
-
-*	dummy out freeze/thaw
+*	dummy out freeze/thaw for SPITBOL
 	DEFINE("FREEZE(T)","RETURN")
 	DEFINE("THAW(T)","RETURN")
-							:(EIO)
-
-**************** MAINBOL I/O
-MB1	INPUT(.INPUT,1,,"v311.sil")
-EIO
+MB
 
 ****************************************************************
 *	constants

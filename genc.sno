@@ -20,17 +20,14 @@
 *	faster matching (match only at POS(0))
 	&ANCHOR = 1
 
-*	path for SIL input
-	SILPATH = "v311.sil"
+*	~sigh~
+	SILPATH = 'sil'
 
 ****************************************************************
 *	initialization
 
 *	different I/O routines for now under MAINBOL!
 	DIFFER(MAINBOL)					:S(MB1)
-
-*	SIL file on INPUT
-	INPUT(.INPUT,1,SILPATH)				:F(OSIL)
 
 *	call graph (for ordering files for inlining)
 *	XXX only output if INLINING set?
@@ -46,18 +43,13 @@
 
 **************** MAINBOL I/O
 
-*	SIL file on INPUT
-MB1	INPUT(.INPUT,1,,SILPATH)			:F(OSIL)
-
+MB1
 *	call graph (for ordering files for inlining)
 *	XXX only output if INLINING set?
 	OUTPUT(.CALLGRAPH,10,,'callgraph')
 
 *	output list of global procs (for data segment)
 	OUTPUT(.PROC.H,11,,'proc.h2')			:(EIO)
-
-**** error opening SILPATH
-OSIL	TERMINAL = "FATAL: could not open " SILPATH	:(FATAL)
 
 EIO
 
