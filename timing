@@ -42,21 +42,19 @@ if [ "$UNAME" ]; then
 			SYSCTL=
 		fi
 		if [ "$SYSCTL" ]; then
-			echo $SYSCTL hw
+			echo ${SYSCTL}:
 			$SYSCTL hw 2>/dev/null
 			echo ''
 
 			# freebsd x86;
-			FREQ=`$SYSCTL machdep.tsc_freq 2>/dev/null`
-			if [ $? -eq 0 -a "$FREQ" ]; then
-				echo $SYSCTL machdep.tsc_freq:
-				echo $FREQ
+			if FREQ=`$SYSCTL machdep.tsc_freq 2>/dev/null`; then
+				echo "machdep.tsc_freq: $FREQ"
 				echo ''
 			fi
 		fi
 		if [ -f /var/run/dmesg.boot ]; then
 			echo /var/run/dmesg.boot
-			egrep '^(CPU|cpu0):' /var/run/dmesg.boot
+			grep -i '^cpu[0-9]*:' /var/run/dmesg.boot
 			echo ''
 		fi
 		;;
@@ -94,7 +92,7 @@ if [ "$UNAME" ]; then
 		    /etc/slackware-version /etc/turbolinux-release \
 		    /etc/debian_version /usr/lib/setup/slack-version-?.??; do
 			if [ -f ${RELEASE} ]; then
-				echo ${RELEASE}:
+				echo releasefile ${RELEASE}:
 				cat ${RELEASE}
 				echo ''
 				break
@@ -160,7 +158,7 @@ fi
 
 echo ''
 echo 'Ids:'
-grep 'Id:' v311.sil genc.sno timing timing.sno
+grep '^[*#][	 ]*$Id:' v311.sil genc.sno timing timing.sno
 
 echo ''
 echo 'timing run of genc.sno:'
