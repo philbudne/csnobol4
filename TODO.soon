@@ -279,3 +279,7 @@ move RSTSTK() to RRTURN?
 	would remove need for "alt" var
 	would NEVER need brackets around call
 
+
+================
+
+try appending .sno to command line filenames, if not found?

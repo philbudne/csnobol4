@@ -2,6 +2,13 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+12/07/96:
+	second last TMRC open house in Bldg 20
+	init.c: mention "k" suffix in usage message, per skibler
+	lib/auxil/getopt.c: reorder includes for borland 4.51, per skibler
+	lib/dummy/tty.c: add h.h for FALSE, per skibler
+	lib/generic/sys.c: fixed ANSI_STRINGS ifdef sense. ran comdef
+
 12/04/96:
 	autoconf: grep strings.h for "index" before using BSD functions
 
