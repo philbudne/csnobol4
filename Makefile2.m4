@@ -107,6 +107,7 @@ TTY_C=$(SRCDIR)lib/posix/tty.c
 BZERO_C=$(SRCDIR)lib/auxil/bzero.c
 BCOPY_C=$(SRCDIR)lib/auxil/bcopy.c
 GETOPT_C=$(SRCDIR)lib/auxil/getopt.c
+RRESVPORT_AF_C=$(SRCDIR)lib/auxil/rresvport_af.c
 
 # dummy sources
 EXECL_C=$(SRCDIR)lib/dummy/execl.c
