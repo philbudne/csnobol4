@@ -146,6 +146,21 @@ struct file {
 #define FL_NOCLOSE	0100		/* don't fclose() */
 
 #ifdef INET_IO
+/*
+ * About the INET_IO crock:
+ *
+ * On Windows 3.1 and Win9x, file handles and winsock handles are
+ * incompatible; winsock handles cannot be read or written with
+ * ordinary file I/O calls (e.g. ReadFile, WriteFile), so attempting
+ * to wrap a socket in a stdio stream won't work.
+ *
+ * To work around this "feature", if INET_IO is defined, tcp_open()
+ * and udp_open() return a "struct inet_file" pointer.  The code in
+ * io.c has been crocked not to try normal I/O on things which have
+ * the "NOTAFILE" flag set, instead calls inet_read_{raw,cooked},
+ * inet_write and inet_close in inet.c, which merrily cast the "FILE *"
+ * back to an "inet_file"
+ */
 #define FL_NOTAFILE	0200		/* "f" is not a file (XXX TEMP) */
 #define ISAFILE(FP) !((FP)->flags & FL_NOTAFILE)
 #else  /* INET_IO not defined */
@@ -295,14 +310,11 @@ io_close(unit)				/* internal (zero-based unit) */
 
     if (fp->f) {
 	/* XXX call close hook? */
-#ifdef INET_IO
 	if (ISINET(fp)) {
 	    ret = inet_close(fp->f);
 	    fp->f = NULL;
 	}
-	else
-#endif /* INET_IO defined */
-	if (ISPIPE(fp)) {
+	else if (ISPIPE(fp)) {
 	    ret = (pclose(fp->f) == 0);	/* XXX is process status!! */
 	    fp->f = NULL;
 	}
@@ -459,8 +471,8 @@ io_fopen2( fp, mode )
 #ifdef INET_IO
 	/* awful crock; fp->f is a SOCKET; do away with this!!!! */
 	fp->flags |= FL_NOTAFILE;
-	fp->type = TYPE_INET;		/* always set? */
 #endif /* INET_IO defined */
+	fp->type = TYPE_INET;
 	return;
     }
 
