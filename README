@@ -6,20 +6,35 @@ Alpha release of ``The Macro Implementation of SNOBOL4''
 This is a port of the original SIL (SNOBOL4 Implementation Language)
 "macro" version of SNOBOL4 with the `C' language as a target.
 
+****************************************************************
+
+WARNING!!!  This is an VERY early release, for only the most die-hard!!
+
+It is able to run it's own translation programs, but it has not been
+thoughtly tested.  There is very little documentation!
+
+If you make any changes/fixes/improvements, or port it to a new
+system, please send me the diffs!
+
+Phil Budne <budd@gnu.ai.mit.edu>
+
+****************************************************************
+
 See the file doc/GOALS for a description of the overall goals, and the
 goals for this release.
 
 See the file TODO for identified tasks / wish list.
 
-This material is in the public domain.  You may use and copy this material
-freely. This privilege extends to modifications, although any modified version
-of this system given to a third party should clearly identify your
-modifications as well as the original source.
+This material is in the public domain.  You may use and copy this
+material freely. This privilege extends to modifications, although any
+modified version of this system given to a third party should clearly
+identify your modifications as well as the original source.
 
-The responsibility for the use of this material resides entirely
-with you.  We make no warranty of any kind concerning this material,
-nor do we make any claim as to the suitability of SNOBOL4 for any application.
-
+The responsibility for the use of this material resides entirely with
+you.  We make no warranty of any kind concerning this material, nor do
+we make any claim as to the suitability of SNOBOL4 for any
+application.
+
 Status;
 	runs on Sun4 under SunOS 4.x (Solaris 1.x)
 
@@ -80,8 +95,7 @@ Command line args;
 		Continue reading INPUT from input file(s) after END
 		label.  otherwise INPUT defaults (back) to stdin after
 		compilation.
-
-
+
 To build;
 
 	cd lib
