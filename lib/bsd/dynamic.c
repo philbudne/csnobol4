@@ -14,6 +14,12 @@
 extern void *malloc();
 #endif /* HAVE_STDLIB_H not defined */
 
+/* for lib.h: */
+#include <stdio.h>
+#include "h.h"
+#include "snotypes.h"
+#include "lib.h"			/* own prototypes */
+
 /* on SunOS use valloc(3) + madvise(2)?? */
 
 char *

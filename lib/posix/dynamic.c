@@ -15,6 +15,12 @@
 extern void *malloc();
 #endif /* HAVE_STDLIB_H not defined */
 
+/* for lib.h: */
+#include <stdio.h>
+#include "h.h"
+#include "snotypes.h"
+#include "lib.h"			/* own prototypes */
+
 static char *dbase;
 static int dsize;
 
