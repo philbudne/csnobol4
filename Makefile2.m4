@@ -126,7 +126,7 @@ xsnobol4: $(OBJS)
 
 ################
 
-.PRECIOUS: $(SNOBOL4).c $(SNOBOL4).o data_init.o
+.PRECIOUS: snobol4.c isnobol4.c $(SNOBOL4).o data_init.o
 
 # may need special options due to size!!
 $(SNOBOL4).o: $(SNOBOL4).c 
