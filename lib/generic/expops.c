@@ -12,11 +12,16 @@
 # include "snotypes.h"
 # include "macros.h"
 
+# ifdef NO_STATIC_VARS
+# include "equ.h"
+# include "vars.h"
+# endif /* NO_STATIC_VARS defined */
+
 # include <math.h>
 
 int
-expint(res,x,y)
-    struct descr *res, *x, *y;
+expint(result,x,y)
+    struct descr *result, *x, *y;
 {
     int_t ix, iy;
     int_t p;
@@ -50,13 +55,13 @@ expint(res,x,y)
 	    MULT(ix,ix);
 	}
     }
-    D(res) = D(x);			/* XXX copy F&V */
-    D_A(res) = (int_t) p;
+    D(result) = D(x);			/* XXX copy F&V */
+    D_A(result) = (int_t) p;
 #else
     CLR_MATH_ERROR();
     p = pow( (double)ix, (double)iy );
-    D(res) = D(x);			/* XXX copy F&V */
-    D_A(res) = (int_t) p;
+    D(result) = D(x);			/* XXX copy F&V */
+    D_A(result) = (int_t) p;
     if (MATH_ERROR())
 	return 0;			/* fail */
 #endif
@@ -64,8 +69,8 @@ expint(res,x,y)
 }
 
 int
-exreal(res,x,y)
-    struct descr *res, *x, *y;
+exreal(result,x,y)
+    struct descr *result, *x, *y;
 {
     real_t r;
 
@@ -74,7 +79,7 @@ exreal(res,x,y)
     r = pow( D_RV(x), D_RV(y) );
     if (MATH_ERROR())
 	return 0;			/* fail */
-    D(res) = D(x);			/* XXX copy F&V */
-    D_RV(res) = r;
+    D(result) = D(x);			/* XXX copy F&V */
+    D_RV(result) = r;
     return 1;				/* succeed */
 }
