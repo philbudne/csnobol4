@@ -1,18 +1,18 @@
 $Id$
 
-Second Beta release of ``The Macro Implementation of SNOBOL4''
-	(aka "BTL SNOBOL4", MAINBOL) for Un*x.
+0.98.x release of ``The Macro Implementation of SNOBOL4 in C'' (C-MAINBOL)
 
-This is a port of the original SIL (SNOBOL4 Implementation Language)
-"macro" version of SNOBOL4 with the `C' language as a target.
+This is a free port of the original SIL (SNOBOL4 Implementation
+Language) "macro" version of SNOBOL4 (developed at Bell Labs) with the
+`C' language as a target.
 
-SNOBOL4, while known primarily as a string language excels at any
-task involving symbolic manipulations.  It provides run time typing,
+SNOBOL4, while known primarily as a string language excels at any task
+involving symbolic manipulations.  It provides run time typing,
 garbage collection, user data types, on the fly compilation.  It's
 primary weakness is it's simple syntax, and lack of "structured
-programming" constructs.  However I consider the spareness of SNOBOL4
-syntax a strength when compared to some "modern" agglomerations such
-as perl.
+programming" constructs.  However some consider the spareness of
+SNOBOL4 syntax a strength when compared to some "modern"
+agglomerations such as perl.
 
 ****************************************************************
 
@@ -38,59 +38,33 @@ doc/snobol4.1
 	only describes changes from the "green book".
 
 doc/snobol4.0
-	nroff (text) output of snobol4.1
+	text formatted output of snobol4 man page
+
+doc/snobol4.html
+	WWW HyperText formatted output of snobol4.1
+
+doc/snobol4.ps
+	PostScript formatted output of snobol4.1
 
 doc/ports.doc
 	status of ports to various systems.
 
 doc/porting.doc
 	information on porting to a new system,
-	in particular the usage of Makefile variable
-	which can be set in a config.m4 file.
+	particularly the usage of Makefile variables and m4 macros.
 
-doc/goals.doc
-	a description of the overall goals,
-	and the goals for this release.
-
-TODO
-	my identified tasks / wish list.
+doc/porting.ps
+	porting information in PostScript.
 
 TODO.soon
-	my top priority tasks (hopefully small in any release)
+	current top priority tasks (hopefully small in any release)
+
+TODO
+	older identified tasks / wish list.
 
 See the Catspaw vanilla.arc or vanilla.tar for a DOS/PC port of
 	SNOBOL4, many demo programs, SNOBOL4 language documentation,
 	and ordering information for books & products from Catspaw!
-
-Status;
-	All features on SNOBOL4 are implemented,
-		arithmetic exceptions are not caught.
-
-	May run slowly;
-		genc.sno itself runs "only" 6x slower than under
-		Catspaw SPARC (Macro) SPITBOL.  This is a respectable
-		ratio for the two implementations!
-
-		However programs which make extensive use of matching
-		may run much slower (up to 20x slower than SPITBOL).
-
-		The pattern scanner and some pattern matching routines
-		get split up into many small, mutually recursive
-		routines!! gcc inlining may resolve this.
-
-I/O;
-	named files can be opened by supplying an optional fourth
-		argument to INPUT() and OUTPUT(), like in Catspaw SNOBOL4.
-	If the first character is '|' the remainder of the string
-		will be treated as a shell command.
-	by default;
-		INPUT is attached to unit 5, and standard input.
-		OUTPUT is attached to unit 6, and standard output.
-		PUNCH is attached to unit 7, and standard error!!!
-
-Command line args;
-
-	see man page
 
 Acknowledgments;
 
@@ -99,9 +73,11 @@ Acknowledgments;
 	(as well as his work of 30 years ago, designing and
 	implementing the language)!
 
-	I would also never have succeeded without Mark Emmer of
-	Catspaw's help as well as his excellent SPARC SPITBOL
-	product!!
+	I would also never have succeeded without the help of Mark
+	Emmer of Catspaw and his excellent SPARC SPITBOL product!!
+	Mark's donation of SNOBOL4+ source code has allowed me to
+	advance the state of C-MAINBOL in ways that would have taken
+	years otherwise!
 
 The following have also provided help, encouragement, support, input,
 historical background, testing, fixes, etc (in chronological order);
@@ -124,55 +100,7 @@ historical background, testing, fixes, etc (in chronological order);
 	Arne Larsson
 	Rik Faith
 	Keith Waclena
-
-To build;
 
-Select a config file (see doc/ports.doc) from the config directory,
-and link to config.m4.
-
-		If you cannot find a config file for your system, try
-		"posix.m4", and if that fails (ie; sysconfig() is not
-		available), try "generic.m4" (but beware -- timings may
-		not be correct)!!
-
-	ln -s config/sunos4.m4 config.m4
-	make
-
-The tar does not contain any binaries; THEY SHOULD NOT BE NEEDED
-(unless you touch the source files) As all generated files are
-provided.  The generated files are NOT system dependent!!!
-
-Changes from "beta1" distribution;
-	Now have man page (describes all extensions)!!!
-	Tested on more systems (FreeBSD, IBM, LINUX, SGI, VMS).
-	GCC inlining features used to advantage.
-		Source code ordered for better inlining.
-		SNOBOL4 compile phase may run 4x faster than beta1.
-		Some programs may execute 1.5x faster.
-	Now using m4 to create Makefile2. Too many problems with cpp.
-	Many more example configs.  Use "include" to eliminate commonality.
-	Implemented include files (-INCLUDE or -COPY) per SPITBOL.
-	Implemented case folding (&CASE and -CASE) per SPITBOL.
-	Implemented pipe opens (if filename starts with '|').
-	Input no longer space padded, &TRIM no longer on by default.
-	Default input line size now 1024 (was 80).
-	Compiler input line size now 124 (was 72).
-	NUL's no longer translated to space on output.
-	Kit includes "isnobol4.c" re-ordered for better inlining results.
-	8-bit clean; &ALPHABET is 256 bytes long.
-	Comments and control lines now legal after ';'
-	Turned off stack underflow checking (should improve performance).
-	"Poor-Man's LOAD" -- support for linked in external functions.
-	Small "snolib.a" library of loadable functions.
-	Small library of S(P)ITBOL compatibility functions in snolib/*.sno
-	Upper and lower case letters available as keywords &LCASE/&UCASE.
-	Even more characters accepted as start-of-line comment chars.
-	Generated code for boolean is cleaner.
-	Should build cleanly on AIX, Irix.
-	Resolved problems for build on VMS (using gcc only)
-		see lib/vms for library routines.  no BUILD.COM supplied yet.
-	Cleaned up rebus (still supplied separately).
-
 If you make any changes/fixes/improvements, or port it to a new
 system, please send them to me (please include "timing.out" and tell
 me the system type, CPU clock speed, C compiler & version)!!
@@ -180,4 +108,5 @@ me the system type, CPU clock speed, C compiler & version)!!
 If you are interested in getting mailings about new releases, send me
 mail.  I'm interested in knowing what people are using SNOBOL4 for!
 
-Phil Budne <phil@cs.bu.edu>
+Phil Budne <phil@ultimate.com>
+
