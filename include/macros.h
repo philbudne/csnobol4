@@ -130,9 +130,10 @@ struct descr *cstack;
 
 /****************/
 
-/* XXX implement these!! */
-#define CLR_MATH_ERROR()
-#define MATH_ERROR() 0
+extern int math_error;
+
+#define CLR_MATH_ERROR() math_error = FALSE
+#define MATH_ERROR() math_error
 
 /****************/
 

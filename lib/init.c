@@ -119,6 +119,20 @@ init_args( argc, argv )
     }
 }
 
+int math_error;				/* see macros.h */
+
+static SIGFUNC_T
+math_catch()
+{
+#ifdef SIGFPE
+    signal(SIGFPE, math_catch);
+#endif /* SIGFPE defined */
+#ifdef SIGOVER
+    signal(SIGOVER, math_catch);
+#endif /* SIGOVER defined */
+    math_error = TRUE;
+}
+
 void
 init()
 {
@@ -143,8 +157,6 @@ init()
     /* first descr past end of dyn */
     D_A(TLSGP1) = (int_t) dyn + len;
 
-    /* XXX set up for SIGFPE?  call matherr()?? */
-
     /* XXX call wrapper functions which save reason for signal? */
     signal( SIGINT, SYSCUT );
 
@@ -153,4 +165,11 @@ init()
 #ifdef SIGBUS
     signal( SIGBUS, SYSCUT );
 #endif /* SIGBUS defined */
+
+#ifdef SIGFPE
+    signal(SIGFPE, math_catch);
+#endif /* SIGFPE defined */
+#ifdef SIGOVER
+    signal(SIGOVER, math_catch);
+#endif /* SIGOVER defined */
 }
