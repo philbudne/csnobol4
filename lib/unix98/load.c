@@ -15,8 +15,9 @@
 #include <strings.h>                    /* berkeley strings */
 #endif /* ANSI_STRINGS not defined */
 
-/* XXX ifdef HAVE_STDLIB_H? Hasn't been needed, yet. */
+#ifdef HAVE_STDLIB_H			/* before stdio */
 #include <stdlib.h>			/* malloc(), getenv() */
+#endif /* HAVE_STDLIB_H */
 
 #include "h.h"
 #include "snotypes.h"

@@ -5,7 +5,11 @@
 #include "snotypes.h"			/* DESCR, etc */
 #include "macros.h"			/* D_A() etc */
 
-extern char *malloc();			/* use <stdlib.h> if available? */
+#ifdef HAVE_STDLIB_H			/* before stdio */
+#include <stdlib.h>			/* for malloc */
+#else  /* HAVE_STDLIB_H not defined */
+extern void *malloc();
+#endif /* HAVE_STDLIB_H not defined */
 
 #ifdef NO_STATIC_VARS
 #include "vars.h"

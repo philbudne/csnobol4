@@ -2,7 +2,11 @@
 
 /* allocate dynamic region */
 
-char *malloc();
+#ifdef HAVE_STDLIB_H			/* before stdio */
+#include <stdlib.h>			/* for malloc */
+#else  /* HAVE_STDLIB_H not defined */
+extern void *malloc();
+#endif /* HAVE_STDLIB_H not defined */
 
 char *
 dynamic( size )
