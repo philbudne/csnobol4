@@ -387,11 +387,6 @@ Windows.  Normal distributions build and run correctly, with the full
 Unix feature set including TCP client and server functionality;
 just type "make"!
 
-Attempts to build isnobol4.c from scratch (i.e. from a CVS checkout)
-fail; one of the procedures gets written to the console window
-regardless of redirection (it must have a filename that's magic to
-Windows), and tsort crashes.
-
 Win32
 -----
 
@@ -411,12 +406,9 @@ To compile using Microsoft Visual C++ (not tested);
 To compile using Borland C (not tested);
 	nmake -f config\win32\borland.mak
 
-The system compiles and runs well under Cygwin, so I've lost interest
-in the native port (some native routines are used where cygwin support
-is lacking).  I have no patience for an environment where you can't
-use the debugger if you compile from the command line! I might try
-MINGW (http://www.mingw.org), the "Minimalist GNU For Windows"
-development environment.
+Since the system compiles and runs well under Cygwin, so I've lost
+interest in the native port (some native routines are used where
+cygwin support is lacking).
 
 DJGPP under DOS
 ---------------
@@ -425,7 +417,8 @@ DJGPP (http://www.delorie.com/djgpp/) is a free 32-bit C/C++ MS-DOS
 development system, for Intel 80386 (and higher) PCs running DOS based
 on GCC.  Burkhard Meissner has ported CSNOBOL4 to DJGPP.
 
-To compile using GNU make (not tested);
+To compile using GNU make;
+
 	make -f config/djgpp/Makefile
 
 To enable optional support for WATTCP and DXE2 based loading, see
