@@ -118,23 +118,19 @@ if [ "$UNAME" ]; then
 			/usr/sbin/snmp_request localhost public get \
 							1.3.6.1.2.1.1.1.0
 		fi
-		if [ -f /usr/sbin/psrinfo ]; then
-			echo ''
-			echo 'psrinfo -v:'
-			/usr/sbin/psrinfo -v
-		fi
 		;;
 	SunOS)
 		echo ''
 		echo 'sunmodel:'
 		./sunmodel 2>&1
-		if [ -f /usr/sbin/psrinfo ]; then
-			echo ''
-			echo 'psrinfo -v:'
-			/usr/sbin/psrinfo -v
-		fi
 		;;
 	esac
+fi
+
+if [ -f /usr/sbin/psrinfo ]; then
+	echo ''
+	echo 'psrinfo -v:'
+	/usr/sbin/psrinfo -v
 fi
 
 if [ -f 00README.CVS ]; then
