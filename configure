@@ -150,11 +150,12 @@ while [ $# -gt 0 ]; do
     *)
 	echo 'options:' 1>&2
 	echo '	--add-cppflags=STR --add-define=NAME[=VALUE]' 1>&2
-	echo '  --add-ldflags=STR --add-objs=STR' 1>&2
+	echo '	--add-ldflags=STR --add-objs=STR' 1>&2
 	echo '	--add-opt=STR --add-srcs=STR --force-gcc' 1>&2
 	echo '	--force-memmove --longlong --lp64 --no-dlopen' 1>&2
 	echo '	--no-dynlib --no-gcc --nolargefile --opt=STR' 1>&2
 	echo '	--prefix=PATH' 1>&2
+	rm -f $CONFIG_M4 $CONFIG_H
 	exit 1
 	;;
     esac
