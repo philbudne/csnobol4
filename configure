@@ -1150,14 +1150,14 @@ if grep SIGTSTP /usr/include/signal.h >/dev/null 2>&1 || \
    grep SIGTSTP /usr/include/sys/iso/signal_iso.h >/dev/null 2>&1; then
     if grep sigset_t /usr/include/signal.h >/dev/null 2>&1 || \
        grep sigset_t /usr/include/sys/signal.h >/dev/null 2>&1; then
-    echo 'using POSIX suspend.c' 1>&2
-        elif grep sigset_t /usr/include/sys/signal.h >/dev/null 2>&1; then
-    echo 'using BSD suspend.c' 1>&2
-    echo 'SUSPEND_C=$(SRCDIR)lib/bsd/suspend.c'	>> $CONFIG_M4
+	echo 'using POSIX suspend.c' 1>&2
+    elif grep sigset_t /usr/include/sys/signal.h >/dev/null 2>&1; then
+	echo 'using BSD suspend.c' 1>&2
+	echo 'SUSPEND_C=$(SRCDIR)lib/bsd/suspend.c'	>> $CONFIG_M4
     else
-    # can't figure out how to unblock SIGTSTP in handler; use SIGSTOP
-    echo 'using generic suspend.c' 1>&2
-    echo 'SUSPEND_C=$(SRCDIR)lib/generic/suspend.c' >> $CONFIG_M4
+	# can't figure out how to unblock SIGTSTP in handler; use SIGSTOP
+	echo 'using generic suspend.c' 1>&2
+	echo 'SUSPEND_C=$(SRCDIR)lib/generic/suspend.c' >> $CONFIG_M4
     fi
 else
     echo 'using dummy suspend.c' 1>&2
