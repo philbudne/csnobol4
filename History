@@ -2,8 +2,18 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+7/3/97:
+	lib/io.c: add /dev/fd/ magic path, NO_FDOPEN ifdef
+		add FL_NOCLOSE flag bit (but do fflush)
+		have I/O close return status from (p|f)close
+		have io_findunit() keep static finger
+		Upped MAXUNIT to 256
+	lib/snolib/findunit.c: PML access to io_findunit()
+	pml.h: add IO_FINDUNIT
+	Makefile2.m4: add findunit.c
+
 7/2/97:
-	v311.sil: upped CARDSZ to 1024 again
+	v311.sil: upped CARDSZ to 1024 again for David J Birnbaum
 
 7/1/97:
 	lib/io.c: soak up excess "record" data after newline in ASCII input
