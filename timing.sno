@@ -39,7 +39,7 @@ ECHECKHZ
 ****************************************************************
 * parse snobol's messages
 
-	OUTPUT = 'HOST(HOST_SYSINFO):' TAB TAB TAB HOST(HOST_SYSINFO)
+	OUTPUT = 'HOST(HOST_SYSINFO):' TAB HOST(HOST_SYSINFO)
 * config.guess value;
 	OUTPUT = 'HOST(HOST_CONFIG_GUESS):' SP HOST(HOST_CONFIG_GUESS)
 * configure options (will fail if null);
