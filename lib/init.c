@@ -57,42 +57,66 @@ extern char *optarg;
 extern int getopt();
 
 static void
-p( str )
+p( flag, str )
+    char flag;
     char *str;
 {
-    fputs( str, stderr );
+    fprintf(stderr, "-%c\t%s\n", flag, str);
+}
+
+static char *
+showk( n )
+    int n;
+{
+    static char buf[32];
+    int k, m;
+
+    k = n / 1024;
+    m = k / 1024;
+
+    if (m*1024*1024 == n)
+	sprintf(buf, "%dm", m);
+    else if (k*1024 == n)
+	sprintf(buf, "%dk", k);
+    else
+	sprintf(buf, "%d", n);
+
+    return buf;
 }
 
 static void
-usage( jname )
+usage( jname, justversion )
     char *jname;
+    int justversion;
 {
     extern const char snoname[], vers[], vdate[];
     fprintf( stderr, "%s version %s (%s)\n", snoname, vers, vdate );
+    if (justversion)
+	exit(1);
+
     fprintf( stderr,
 	    "Usage: %s [options...] [files...] [parameters...]\n", jname );
 /* XXX stuff about parameters */
-    p( "-b\ttoggle display of startup banner\n");
+    p('b',"toggle display of startup banner");
     fprintf(stderr,
-	    "-d BYTES[km]\n\tsize of dynamic region in bytes (default: %d)\n",
-	    (NDYNAMIC)*DESCR);
-    p( "-f\ttoggle folding of identifiers to upper case (-CASE)\n");
-    p( "-h\thelp (this message)\n");
-    p( "-k\ttoggle running programs with compilation errors (-[NO]ERRORS)\n");
-    p( "-l\tenable listings (-LIST)\n");
-    p( "-n\ttoggle running program after compilation (-[NO]EXECUTE)\n");
-    p( "-p\ttoggle SPITBOL operators (-PLUSOPS)\n");
-    p( "-r\ttoggle reading INPUT from after END statement\n");
-    p( "-s\ttoggle display of statistics\n");
-    p( "-u PARMS\n\tparameter data available via HOST(0)\n");
-    p( "-v\tversion (this message)\n");
-    p( "-M\tprocess multiple input files\n");
-    p( "-P BYTES[km]\n");
-    fprintf(stderr, "\tsize of pattern match stack in bytes (default: %d)\n",
-	   (PSSIZE)*DESCR);
-    p( "\n");
+	    "-d DESCRS[km]\n\tsize of dynamic region in descriptors (default: %s)\n", showk(NDYNAMIC));
+    p('f',"toggle folding of identifiers to upper case (-CASE)");
+    p('h',"help (this message)");
+    p('k',"toggle running programs with compilation errors (-[NO]ERRORS)");
+    p('l',"enable listings (-LIST)");
+    p('n',"toggle running program after compilation (-[NO]EXECUTE)");
+    p('p',"toggle SPITBOL operators (-PLUSOPS)");
+    p('r',"toggle reading INPUT from after END statement");
+    p('s',"toggle display of statistics");
+    fprintf(stderr, "-u PARMS\n\tparameter data available via HOST(0)\n");
+    p('v',"display version and exit");
+    p('M',"process multiple files for program code");
+    fprintf(stderr, "-P DESCRS[km]\n");
+    fprintf(stderr, "\tsize of pattern match stack in descriptors (default: %s)\n", showk(PSSIZE));
+
+    fprintf(stderr, "\n");
     fprintf(stderr, "For memory region sizes a suffix of 'k' (1024) and 'm' (1024*1024)\n");
-    fprintf(stderr, "can be used. Descriptor size is %d bytes\n", DESCR );
+    fprintf(stderr, "can be used. A descriptor takes up %d bytes.\n", DESCR );
     exit(1);
 }
 
@@ -175,9 +199,14 @@ init_args( ac, av )
     int errs;
     int c;
     int multifile;
+    int justversion;
 
-    ndynamic = (NDYNAMIC) * DESCR;
-    pmstack = (PSSIZE) * DESCR;
+    ndynamic = NDYNAMIC;
+    pmstack = PSSIZE;
+
+#ifdef vms
+    argc = getredirection(argc, argv);
+#endif /* vms defined */
 
     /* save in globals for HOST(), getparm(), init() */
     argc = ac;
@@ -185,11 +214,7 @@ init_args( ac, av )
 
     errs = 0;
     multifile = 0;			/* SITBOL behavior */
-
-#ifdef vms
-    argc = getredirection(argc, argv);
-#endif /* vms defined */
-
+    justversion = 0;
 
     /*
      * ***** NOTE ******
@@ -220,8 +245,12 @@ init_args( ac, av )
 	    D_A(CASECL) = !D_A(CASECL);
 	    break;
 
-	case 'h':			/* help */
 	case 'v':			/* version */
+	    justversion = 1;
+	    errs++;
+	    break;
+	case 'h':			/* help */
+	    justversion = 0;
 	    errs++;
 	    break;
 
@@ -293,7 +322,7 @@ init_args( ac, av )
     firstarg = optind;			/* save for HOST(3) */
 
     if (errs) {
-	usage(argv[0]);
+	usage(argv[0], justversion);
     }
 
     io_init();				/* AFTER io_input calls! */
@@ -352,8 +381,7 @@ init()
      * allocate dynamic data region
      */
 
-    /* round down to even number of descr's; get bytes */
-    ndynamic = (ndynamic / DESCR) * DESCR;
+    ndynamic *= DESCR;			/* get bytes */
 
     ptr = dynamic(ndynamic);
 
@@ -375,8 +403,7 @@ init()
      * allocate pattern match stack
      */
 
-    /* round down to even number of descr's */
-    pmstack = (pmstack / DESCR) * DESCR;
+    pmstack *= DESCR;			/* get bytes */
 
     ptr = malloc(pmstack);		/* NOTE: malloc(), not dynamic() */
     if (ptr == NULL) {
