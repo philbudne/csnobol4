@@ -1,6 +1,11 @@
 * $Id$
 *
 * $Log$
+* Revision 1.26  94/05/29  15:00:35  budd
+* [PLB18] Added &LCASE &UCASE
+* Fixed a bug in -CASE processing
+* Changed ms/stmt output format
+* 
 * Revision 1.25  94/05/26  01:14:52  budd
 * [PLB17] More CASE dependancies
 * 
@@ -30,7 +35,7 @@
 * tweaked SOURCF, UNIXF2
 * 
 * Revision 1.17  94/01/08  23:37:41  budd
-* output UNIXF UNIXF2 at startup
+* [PLB12] output UNIXF UNIXF2 at startup
 * output error name string to stderr
 * implemented -b (BANRCL), -s (STATCL)
 * 
@@ -4024,8 +4029,8 @@ PUTIN  PROC    ,		   Input procedure
 *				   Perform read
        AEQLC   TRIMCL,0,,PUTIN1    Check &INPUT
        TRIMSP  IOSP,IOSP	   Trim string
-       GETLG   IO1PTR,IOSP	   Get length
-PUTIN1 ACOMP   IO1PTR,MLENCL,INTR8				E3.9.2
+PUTIN1 GETLG   IO1PTR,IOSP	   Get length			[PLB19]
+       ACOMP   IO1PTR,MLENCL,INTR8				E3.9.2 [PLB19]
        VEQLC   IO2PTR,K,,PUTIN3    CHECK FOR KEYWORD		E3.10.2
        RCALL   IO1PTR,GNVARS,IO1PTR				E3.9.2
 *				   Form variable for string
