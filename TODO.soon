@@ -1,24 +1,12 @@
 $Id$
 
-fix syn.h.new (for VMS)
-	have all genc, gendata, gensyn output .n[ch] files
+have all genc, gendata, gensyn output .[ch]2 files
 	use cmp || cp??
 
 Move ports.doc information to config files?
 	use script to generate ports.doc!!!?
 
-Include "bugs" directory in kit?
-
 ================
-
-update porting.ms;
-	add SIGFUNC_T
-	add HZ
-	update for m4 vs. cpp
-
-================
-
-Look at run of genc.sno w/o v311.sno (loops??)
 
 Run genc.sno for regression test?
 	create "timing" script
