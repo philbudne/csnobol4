@@ -2,6 +2,35 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+TODO: fix INPUT(V,U,L,N) and OUTPUT(V,U,F,N) 
+
+10/19/96:
+	v311.sil: add SPITBOL SET() function
+	procs, globals: add SET
+	lib/io.c: fix io_open[io] to allow rewind
+		add io_seek
+		add /tcp magic path
+	new lib/bsd/inet.c lib/dummy/inet.c
+	Makefile2.m4: add inet.o INET_C
+
+10/18/96 (my 35th birthday);
+	lib/io.c: implement update, unbuffered, append, raw tty, noecho
+		tty modes are per-unit!
+	lib/posix/tty.c: POSIX.1 tty support
+	lib/endex.c: call tty_restore()
+	lib/init.c: call tty_save()
+	Makefile2.m4: add tty.o TTY_C
+
+10/15/96:
+	v311.sil: use XCALLC for io_open[io]
+		replace INPUT() 3'rd arg with options string
+		pass options/format to io_open[io]
+		get recl back from io_openi
+	genc.sno:
+		deprecated XOPEN[IO]
+	lib/io.c:
+		implement io_options, io_open[io] take new args
+
 10/13/96:
 	v311.sil: fixes from SNOBOL4+ to avoid "Internal Errors"
 
