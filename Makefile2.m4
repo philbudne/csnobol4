@@ -222,14 +222,14 @@ $(SNOBOL4).o: $(SNOBOL4).c
 # regular version
 snobol4.c: procs genc.sno globals $(SIL) 
 	rm -f snobol4.c2 proc.h2
-	$(SNO) genc.sno < $(SIL) > snobol4.c2
+	$(SNO) genc.sno $(SIL) > snobol4.c2
 	mv -f snobol4.c2 snobol4.c
 
 # inline version (functions reordered)
 isnobol4.c: procs genc.sno globals $(SIL) inline.sno
 	rm -rf isnobol4.c2 proc.h2 prolog subr
 	mkdir subr
-	$(SNO) inline.sno < $(SIL) > prolog
+	$(SNO) inline.sno $(SIL) > prolog
 	cd subr; cat ../prolog \
 		`awk '{print $$2, $$1}' ../callgraph | tsort 2>/dev/null` \
 			> ../isnobol4.c2
@@ -259,7 +259,7 @@ syn.h:	syn.h2
 
 data.h2 data.c2 equ.h2 data_init.h2 res.h2: $(SIL) gendata.sno
 	rm -f data.h2 data.c2 equ.h2 data_init.h2 res.h2
-	$(SNO) gendata.sno < $(SIL)
+	$(SNO) gendata.sno $(SIL)
 
 data.h:	data.h2
 	@cmp data.h data.h2 || cp data.h2 data.h
@@ -281,7 +281,7 @@ data_init.o: data_init.c data_init.h equ.h data.h proc.h res.h
 	$(CC) $(DATA_INIT_CFLAGS) -c data_init.c
 
 #################
-# dependency generation is slow and ugly.
+# dependency generation is slow and ugly (and wrong?)
 # doesn't change much!!
 
 #procs:	gendep.sno
