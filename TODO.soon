@@ -1,12 +1,28 @@
 $Id$
 
+have autoconfig pick up local additions to config.m4?
+
+how big is descr on Alpha?
+	if padded to 16 bytes, don't use bitfields for F & V?
+
+document:
+	-d now takes bytes
+	k = 1024
+	-P changes pmstack size
+		mention overflow error message
+
+BUG: end.sno -- no file/line to report (INIT never called)
+	test in S4+?
+
 fix timing.sno "time" parsing under AIX 4.1.1?
-include xsnobol4 version (put in timing.sno)
 
 implement auto-load of pml functions
 	(execute LOAD w/ given prototype)
 	SPITBOL HOST() EXIT()
-	fixup HOST() -- sys() and os() functions??
+	fixup host.c -- sys() and os() functions??
+		C-SNOBOL -> C-MAINBOL
+	fix exit.c; use SPIT_EXIT for entry point name (conflict on VMS)
+		or add -DEXIT=XEXIT to VMS conf!
 
 Document:
 	HOST(), EXIT()
@@ -16,9 +32,17 @@ Add snolib.a to regular build?
 
 update README
 	credit SNOBOL4+, Minnesota SNOBOL4
+	reference INSTALL and CHANGES files
+	flush MFU
 
-	Create INSTALL top level doc file
-		mention VMS, Borland command files
+Create INSTALL top level doc file
+	mention VMS, Borland command files
+
+Create CHANGES top level doc file;
+	autoconfig -- no longer necessary to manually link config.m4
+	some systems have no system-specific config file
+	PLUSOPS intereferes with programs that OPSYN binary "?"
+	-d takes bytes, not descriptors.  multiply by 8 on most systems.
 
 enable stats in Makefile "SNO" commands?
 remove date from genc prolog
@@ -26,7 +50,27 @@ remove date from genc prolog
 
 use "SNOLIB" path for -INCLUDE & LOAD()
 
+add rcs tag for release
+
+patches for snocone;
+	autodetect MAINBOL, set -+ switch?
+	handle either SNOBOL4 or SPITBOL I/O
+	unix include path
+	makefile (use -P)
+		prepend #! line (must include -P)
+
+update porting.doc;
+	flush vfprintf
+	mention pml in load.c
+	discuss term.c
+		sys.c
+	flush MFU
+
 ==== before 1.0 release;
+
+update man page date
+
+rcs tag
 
 update v311.sil table of contents?
 
@@ -39,6 +83,10 @@ make install?
 	echo "have you mailed timing.out...."???
 
 ==
+
+compile hash() inline
+
+move SPDLDZ/DPSLDR from SIL to init.c??
 
 have gen*.sno output to xxx.[ch]3, perform mv to .[ch]2 after completion?
 	avoids problems when ^C'ed and partial .h2 files written!
@@ -79,16 +127,17 @@ snolib;
 SITBOL features;
 	allow null string in alternation;
 		A = 'foo' |
-	numeric goto
+	relative/numeric goto
 		foo pat =	:<>
+				:<-1>
+
+improve lib/auxil/bzero.c?
 
 ====
 
-run-time allocation of system & pattern stacks
-
 open flags???
 	TTY mode (no newlines added or removed)
-	TCP?
+	TCP (look like bsd4.4 portal: /tcp/host/port)?
 	bidirectional I/O
 
 ================
