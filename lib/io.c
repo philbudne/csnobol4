@@ -40,6 +40,14 @@ typedef long off_t;
 #define SEEK_SET 0
 #endif /* SEEK_SET not defined */
 
+#ifndef SEEK_CUR
+#define SEEK_CUR 1
+#endif /* SEEK_CUR not defined */
+
+#ifndef SEEK_END
+#define SEEK_END 2
+#endif /* SEEK_END not defined */
+
 #define NUNITS 100			/* XXX set at runtime? */
 #define BADUNIT(U) ((U) < 0 || (U) >= NUNITS)
 
@@ -377,11 +385,12 @@ io_init()				/* here from INIT */
     io_mkfile(UNITP, stderr, "stderr");
 
     /*
-     * tempting to overload UNITP for input/output
-     * this might work on Unix (need to fdopen(2,"r+")?
-     * but is bound to cause trouble on SOME other system.
+     * tempting to overload UNITP for input/output. This works on Unix
+     * (need to fdopen(2,"r+")), but it's bound to cause trouble on
+     * SOME other system which doesn't have stderr on fd 2, or didn't
+     * open fd 2 for both read and write!
      */
-    termin = term_input();
+    termin = term_input();		/* call system dependant function */
     if (termin) {
 	io_mkfile(UNITT, termin, "termin");
     }
@@ -392,11 +401,11 @@ io_init()				/* here from INIT */
 /* limited printf */
 void
 io_printf
-#ifdef USE_STDARG_H
+#ifdef USE_STDARG_H			/* for systems without varargs.h */
     (int unit, ...)
-#else
+#else  /* USE_STDARG_H not defined */
     (va_alist) va_dcl
-#endif
+#endif /* USE_STDARG_H not defined */
 {
     va_list vp;
     char *format;
@@ -406,13 +415,13 @@ io_printf
     char *lp;
 #ifdef USE_STDARG_H
     va_start(vp,unit);
-#else
+#else  /* USE_STDARG_H not defined */
     int unit;
 
     va_start(vp);
 
     unit = va_arg(vp, int);
-#endif
+#endif /* USE_STDARG_H not defined */
 
     unit--;
     if (BADUNIT(unit) ||
@@ -512,6 +521,17 @@ io_print( iob, sp )			/* STPRNT */
     if (f == NULL)
 	return;
 
+    /*
+     * ANSI C requires that a file positioning function intervene
+     * between output and input. Would not be needed if UPDATE I/O
+     * performed using read()/write() (see comment on UNBUF below)
+     */
+
+    if ((fp->flags & FL_UPDATE) && fp->last == LAST_INPUT) {
+	fseek(f, SEEK_CUR, 1);		/* seek relative by zero */
+    }
+    fp->last = LAST_OUTPUT;
+
     if (S_A(sp) && S_L(sp)) {
 	int len;
 	char *cp;
@@ -538,20 +558,9 @@ io_print( iob, sp )			/* STPRNT */
 	    cp = S_SP(sp);
 	} /* compiling */
 
-	/*
-	 * stdio requires rewind between direction changes!
-	 * not needed if UPDATE I/O performed using read()/write()
-	 * (see comment on UNBUF below)
-	 */
-
-	if ((fp->flags & FL_UPDATE) && fp->last == LAST_INPUT) {
-	    rewind(f);
-	}
-	fp->last = LAST_OUTPUT;
-
 	/* XXX check FL_UNBUF; write(fileno(f), cp, recl)? */
 	fwrite( cp, 1, len, f );
-    }
+    } /* have string */
     if (fp->flags & FL_EOL)
 	putc( '\n', f );
 
@@ -614,13 +623,13 @@ io_read( dp, sp )			/* STREAD */
 	}
 
 	/*
-	 * stdio requires rewind between direction changes!
-	 * not needed if UPDATE I/O performed using read()/write()
-	 * (see comment on UNBUF below)
+	 * ANSI C requires that a file positioning function intervene
+	 * between output and input. Would not be needed if UPDATE I/O
+	 * performed using read()/write() (see comment on UNBUF below)
 	 */
 
 	if ((fp->flags & FL_UPDATE) && fp->last == LAST_OUTPUT) {
-	    rewind(f);
+	    fseek(f, SEEK_CUR, 1);	/* seek relative by zero */
 	}
 	fp->last = LAST_INPUT;
 
@@ -713,7 +722,8 @@ io_rewind(unit)				/* REWIND */
     f = fp->f;
     if (f != NULL && (fp->flags & FL_PIPE) == 0) {
 	fseek(f, up->offset, SEEK_SET);
-    }
+	fp->last = LAST_NONE;		/* reset last I/O type */
+   }
 }
 
 /* extensions; */
@@ -1097,7 +1107,7 @@ io_seek(dunit, doff, dwhence)
     if (whence < 0 || whence > 2)
 	return FALSE;
 
-    /* translate n -> SEEK_xxx (if available)? */
+    /* translate n -> SEEK_xxx using switch stmt (if SEEK_xxx available)? */
 
     f = fp->f;
     if (f == NULL)
@@ -1105,6 +1115,7 @@ io_seek(dunit, doff, dwhence)
 
     if (fseek(f, off, whence) < 0)
 	return FALSE;
+    fp->last = LAST_NONE;		/* reset last I/O type */
 
     D_A(doff) = ftell(f);		/* XXX truncation possible! */
     return TRUE;
