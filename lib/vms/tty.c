@@ -32,6 +32,7 @@ static struct ttychan {
     int chan;
 } *chans;
 
+
 int
 fisatty(f)
     FILE *f;
@@ -39,6 +40,13 @@ fisatty(f)
     /* should only return true for files that tty_read() works with! */
     return isatty(fileno(f));
 }
+
+/*
+ * Currently tty_mode is a noop, as it doesn't SEEM necessary to set
+ * any mode bits (ie; PASSTHRU).  If it turns out otherwise, tty_mode
+ * should open a channel, and do a mode SENSE and save the existing
+ * settings in the ttychan struct.
+ */
 
 void
 tty_mode( fp, cbreak, noecho, recl )
@@ -50,11 +58,13 @@ tty_mode( fp, cbreak, noecho, recl )
 void
 tty_save()
 {
+    tty_mode(stdin, 0, 0, 0);
 }
 
 void
 tty_restore()
 {
+    tty_mode(stdin, 0, 0, 0);
 }
 
 /* advisory notice */
@@ -126,7 +136,7 @@ tty_read(f, buf, len, noecho, fname)
 	
 	d.len = strlem(d.ptr);
 	status = SYS$ASSIGN(&d, &chan, 0, 0);
-	if (!(status & STS$M_SUCCESS)) {
+	if (!SUCCESS(status)) {
 	    SETERR(status);
 	    free(tp);
 	    return -1;
