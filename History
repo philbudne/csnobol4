@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+11/28/96:
+	timing.sno: made NOTIME error non-fatal
+	doc/ports.doc: added bsdi
+	checked out on AIX 4.1.2
+
 11/27/96:
 	README: updated version
 	INSTALL: ./autoconf
@@ -9,6 +14,7 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 	lib/str.c: raise() -> raise1()
 	doc/ports.doc: added HP 720/HP-UX 9.05
 	version.c: upped version to 0.99.2
+	checked out on HP-UX 9.05, SunOS 5.4, SunOS 4.1.4
 
 11/24/96:
 	doc/ports.doc: new timings
