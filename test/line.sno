@@ -1,0 +1,10 @@
+	output = &file ':' &line
+-include "line2.sno"
+	output = &file ':' &line
+-line 1234 "foo"
+	output = &file ':' &line
+-line 2000 "foo"
+	output = &file ':' &line
+-include "line2.sno "
+	output = &file ':' &line
+end
