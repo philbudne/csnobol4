@@ -10,6 +10,9 @@
 #define TTY_READ_COOKED
 #define TTY_READ_RAW
 
+/* cannot pass on command line? */
+#define SOCKLEN_T unsigned
+
 /* 
  * define preprocessor aliases for SIL and snolib subroutine names
  * which conflict with C runtime names (all names in the C runtime
