@@ -1,20 +1,25 @@
 $Id$
 
+fix timing script;
+	direct output into temp file
+	remove dir
+	run timing.sno, save status
+	remove temp file
+	pass status
+
 man page:
 	more on I/O options (esp update)
+		examples???
 		if neither Append nor Update, file is truncated
 		must specify record len for INPUT() on update!
 			recl is per-VARIABLE
 		note, update on INPUT() will not create file???
 	mention load.doc located in SNOLIB dir
-	check -INCLUDE mentions SNOLIB dir
 
 load.doc:
 	mention SNOLIB dir
-	describe io_mkfile(), io_freeunit(), io_closeall()
-
-read from unit opened for OUTPUT() only can succeed???!!!
-	need to keep direction flag???
+	describe io_mkfile(), io_freeunit(), io_closeall(), io_getfp()
+		io_endfile()
 
 ==== before beta releases
 
@@ -91,10 +96,14 @@ notify free compilers/interpreters list maintainer
 
 ================ later;
 
+&DUMP protected keywords?
+
+need to keep direction flag(s)???
+	write to unit opened for INPUT() only can succeed!
+		SIL "OUTPUT" op has no error return
+
 add io_flushall() to snolib/system.c
 	add dummy io_flushall to snolib.a?
-
-prefer TIOC[GS]ETP to [sg]tty()?
 
 posix/tty.c; enable 8-bit datapath on "raw"?
 		/netbsd/sys/kern/tty_compat.c "RAW" simulation
@@ -104,13 +113,12 @@ I/O;
 	implement BACKSPACE() if binary???
 		NAH; need to keep recl per unit
 	pass back flags with recl (so "T" is per-var?)
-		need to mask off flags t get recl
-	add /udp magic path??
+		need to mask off flags to get recl
 	use COMPCL instead of "compiling"???
 
 add explicit rules for version.o, syn.o
 
-malloc system stack (STACK)?
+malloc system stack (STACK)? [see new/sysstk.diffs]
 	slows down OFCHK(); 2+% overall penalty
 
 BUG: gendata punts on ARRAY w/ constant expression!

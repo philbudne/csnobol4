@@ -2,6 +2,12 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+11/13/96:
+	timing, timing.sno:
+		output on genc.sno to stdout, stderr
+		move stdout compare check out of timing.sno
+		allow times +/-1, +/-5%
+
 11/12/96:
 	autoconf: check for sys/ttyio.h, define USE_TTYIO
 	lib/bsd/tty.c: add USE_TTYIO ifdef for Version 10
