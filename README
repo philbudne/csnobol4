@@ -100,6 +100,9 @@ unique.sno
 	emulation of SPITBOL FENCE() and NOT() functions, and unique
 	variable creation support routine, thanks to Peter-Arno Coppen
 
+host.sno
+	Function codes for HOST() function
+
 serv.sno
 	Example TCP server program
 
