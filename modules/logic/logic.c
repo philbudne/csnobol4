@@ -147,7 +147,7 @@ LOGIC( LA_ALIST ) LA_DCL
 	    if (len == 0)
 		RETINT(0);
 
-	    cp = LA_STR_PTR(1);
+	    cp = (const unsigned char *)LA_STR_PTR(1);
 	    result = 0;
 
 	    while (len-- > 0) {
@@ -197,7 +197,7 @@ LOGIC( LA_ALIST ) LA_DCL
 	    rp = retbuf;
 	    while (len-- > 0)
 		*rp++ = ~*cp++;
-	    RETSTR2(retbuf, retlen);
+	    RETSTR2((const char *)retbuf, retlen);
 	}
 	else
 	    RETFAIL;
@@ -283,5 +283,5 @@ LOGIC( LA_ALIST ) LA_DCL
 	while (len-- > 0) 
 	    *rp++ = logic_byte(op, arg2, *cp++);
     }
-    RETSTR2(retbuf, retlen);
+    RETSTR2((const char *)retbuf, retlen);
 } /* LOGIC */
