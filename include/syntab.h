@@ -8,9 +8,10 @@ struct acts {
     struct syntab *go;
 };
 
+#define CHARSET 255			/* XXX */
 struct syntab {
     char *name;				/* table name */
-    char chrs[128];			/* index into actions */
+    char chrs[CHARSET];			/* index into actions */
     /* XXX include count of entries in actions array? */
     struct acts *actions;		/* pointer to action table */
 };
