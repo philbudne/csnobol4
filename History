@@ -2,6 +2,30 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+6/19/2003
+	doc/porting.ms: update
+	new: lib/{msdos,vms}/osopen.c
+	config/vms/{config.h,descrip.mms}: add OSDEP_OPEN, osopen.obj
+	config/win32/{borland,mingw,ntmsvc}.mak: add osopen
+	config/win32/config.h: OPDEP_OPEN
+	include/lib.h: add osdep_open
+
+6/18/2003
+	config/djgpp/config.h: SOCKLEN_T
+	configure: flushed HAVE_STDARG_H
+	doc/porting.ms: update
+
+6/16/2003
+	lib/posix/tty.c: add VALID test
+	new: lib/win32/term.c
+	config/win32/{borland,mingw,ntmsvc}.mak: use win32/term.c
+
+6/15/2003:
+	timing: add hwinfo, sw_vers for Darwin/NS
+	lib/win32/tty.c: works!
+	config/win32/config.h: WIN32_LEAN_AND_MEAN, TTY_READ_RAW
+	config/win32/{borland,mingw,ntmsvc}.mak: use win32/tty.c
+
 6/8/2003:
 	configure: always set SOCKLEN_T
 	config/win32/borland.mak: cleanup; use config\win32

@@ -1,22 +1,17 @@
 $Id$
 
+test osdep_open: VMS, DJGPP, MINGW
+
+make timing output machine friendly??
+	output something like timing.44 entries!
+
+create Makefiles from file list?
+	snobol4 config program?
+	create dummy os_init()?
+
 always send timing.out via e-mail?
 	(unless (.)timing.out.hostname exists?)
 	only if part of a real kit???
-
-use Darwin/NS /usr/bin/hostinfo prog
-	use sw_info (Darwin only?)
-
-configure:
-	deal with missing "uname"??
-		NeXT?
-
-document inet6.c in porting.ms
-	vms/load.c
-	bindresvport
-	SOCKLEN_T
-	NEED_BINDRESVPORT
-	NEED_BINDRESVPORT_SA
 
 complaints when compiling isnobol4.c on some systems??
 	HP-UX 10?
@@ -244,13 +239,6 @@ add config options;
 
 create snolib_pic.a???
 
-keep FL_INET bit? call inet_close(fp)???
-	add close hook??
-	win32;
-		osf = _get_osfhandle(fileno(fp));
-		fclose(fp);
-		closesocket(osf);
-
 use "pax -pe -rw src-dir dst-dir" for sourcekit?
 
 try under MINGW (minimal GNU for Windoze -- mingw.org)
@@ -375,10 +363,7 @@ URL package;
 
 Win32;
 	try turning on bitfields?
-	get inet working
-	fix win32/tty.c (read modes not working?)
 	replace dummy execute function?
-	implement osdep_open hacks for /dev/tty, /dev/null?
 	document DLL creation in load.doc
 	    mention http://www.geocities.com/SiliconValley/5806/implib32.htm
 
@@ -803,4 +788,9 @@ VMS timing script?
 	SHOW SYSTEM/NOPROCESS/CLUSTER/FULL
 
 Add __P((ret_t)) to func_t?
+
+Create fconvert/gconvert or fcvt/gcvt for realst?
+
+configure:
+	deal with missing "uname"??
 
