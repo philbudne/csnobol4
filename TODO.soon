@@ -5,12 +5,15 @@ snolib;
 	move compilation to Makefile2
 		use AUX_OBJS to make snolib.a
 		use in xsnobol4 link
+	make install?! (after fixing -INCLUDE to do searching)
+	run "cd snolib; make clean" from Makefile2 "clean"
 
 ================
 
 -INCLUDE/-COPY
 	describe "program error" vs. "reading error" in man page?
 	improve error handling???
+	search getenv("SNOLIB")
 
 Add DIAGNOSTICS section to man page???
 
