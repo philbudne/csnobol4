@@ -14,6 +14,7 @@
 #include <ctype.h>
 #include <stdio.h>
 
+void
 realst(sp, dp)
     struct spec *sp;
     struct descr *dp;
