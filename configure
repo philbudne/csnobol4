@@ -9,8 +9,10 @@ ID='$Id$'
 
 OPTIONS="$*"
 
-# on most system gcc is preferred if it can be found
-WANTGCC=true
+if [ ! "$CC" ]; then
+    # on most system gcc is preferred if it can be found
+    WANTGCC=true
+fi
 
 # includes directory
 INCDIR=/usr/include
@@ -25,7 +27,9 @@ INLINE_OK=true
 DEBUG=
 
 # default installation path prefix
-PREFIX=/usr/local
+if [ ! "$DESTDIR" ]; then
+	DESTDIR=/usr/local
+fi
 
 OS=`(uname -s || echo unknown) 2>/dev/null`
 OSREL=`(uname -r || echo unknown) 2>/dev/null`
@@ -119,6 +123,7 @@ while [ $# -gt 0 ]; do
     --force-gcc)
 	FORCEGCC=true
 	#WANTGCC=true
+	CC=
 	;;
     --force-memmove)
 	FORCE_MEMMOVE=true
@@ -145,6 +150,7 @@ while [ $# -gt 0 ]; do
     --no-gcc)
 	WANTGCC=
 	#FORCEGCC=
+	CC=
 	;;
     --no-inline)
 	INLINE_OK=
@@ -164,8 +170,8 @@ while [ $# -gt 0 ]; do
 		NO_OPT=
 	fi
 	;;
-    --prefix=*)
-	PREFIX=`echo "$1" | sed 's/--prefix=//'`
+    --prefix=*|--destdir=*)
+	DESTDIR=`echo "$1" | sed 's/--[a-z]*=//'`
 	;;
     '')
 	;;
@@ -195,8 +201,8 @@ C Library support selection;
 
 Install location;
 	--prefix=PATH		[default: /usr/local]
-	--bindir=PATH		[default: PREFIX/bin]
-	--mandir=PATH		[default: PREFIX/man]
+	--bindir=PATH		[default: DESTDIR/bin]
+	--mandir=PATH		[default: DESTDIR/man]
 EOF
 
 	rm -f $CONFIG_M4 $CONFIG_H
@@ -206,12 +212,12 @@ EOF
     shift
 done
 
-BINDIR="$PREFIX/bin"
-MANDIR="$PREFIX/man"
+BINDIR="$DESTDIR/bin"
+MANDIR="$DESTDIR/man"
 MAN1DIR="$MANDIR/man1"
-SNOLIB_DIR="$PREFIX/lib/snobol4"
+SNOLIB_DIR="$DESTDIR/lib/snobol4"
 
-echo "PREFIX=$PREFIX"				>> $CONFIG_M4
+echo "DESTDIR=$DESTDIR"				>> $CONFIG_M4
 echo "BINDIR=$BINDIR"				>> $CONFIG_M4
 echo "MANDIR=$MANDIR"				>> $CONFIG_M4
 echo "MAN1DIR=$MAN1DIR"				>> $CONFIG_M4
@@ -226,6 +232,11 @@ echo '#define PML_SERV'				>> $CONFIG_H
 
 # Unix Makefile2 created build.c
 echo '#define HAVE_BUILD_VARS'			>> $CONFIG_H
+
+if [ "$CC" ]; then
+    echo 'using CC environment variable' 1>&2
+    CCPATH="$CC"
+fi
 
 if [ "$WANTGCC" ]; then
     # look for gcc up front (for Solaris/x86)
@@ -1064,7 +1075,7 @@ if [ ! "$NO_DYNLIB" ]; then
 	SNOLIB_FILE=snolib.sl
 	echo 'ADD_LDFLAGS([-ldld])'		>> $CONFIG_M4
     elif [ -f /NextDeveloper/Headers/mach-o/dyld.h -o \
-           -f /usr/include/mach-o/dyld.h -o ]; then
+           -f /usr/include/mach-o/dyld.h ]; then
 	LOAD=next
 	echo 'using NextStep/Darwin LOAD() support' 1>&2
 	echo 'LOAD_C=$(SRCDIR)lib/next/load.c'	>> $CONFIG_M4
@@ -1209,11 +1220,57 @@ else
     echo 'SUSPEND_C=$(SRCDIR)lib/dummy/suspend.c' >> $CONFIG_M4
 fi
 
+if [ "$CFLAGS" ]; then
+	# stolen from getconf handling... make into function?
+	echo 'using CFLAGS environment variable' 1>&2
+	echo '/* from CFLAGS: */' >> $CONFIG_H
+	for X in $CFLAGS; do
+	    case "$X" in
+	    -D*)
+		echo "X$X" | \
+		    sed -e 's/^X-D/#define /' -e 's/=/ /' >> $CONFIG_H
+		;;
+	    -U*)
+		echo "X$X" | \
+		    sed -e 's/^X-U/#undef /' -e 's/=/ /' >> $CONFIG_H
+		;;
+	    *)
+		echo 'ADD_OPT(['$X'])'		>> $CONFIG_M4
+		;;
+	    esac
+	done
+fi
+if [ "$CPPFLAGS" ]; then
+	# stolen from getconf handling... make into function?
+	echo 'using CPPFLAGS environment variable' 1>&2
+	echo '/* from CPPFLAGS: */' >> $CONFIG_H
+	for X in $CPPFLAGS; do
+	    case "$X" in
+	    -D*)
+		echo "X$X" | \
+		    sed -e 's/^X-D/#define /' -e 's/=/ /' >> $CONFIG_H
+		;;
+	    -U*)
+		echo "X$X" | \
+		    sed -e 's/^X-U/#undef /' -e 's/=/ /' >> $CONFIG_H
+		;;
+	    *)
+		echo 'ADD_CPPFLAGS(['$X'])'		>> $CONFIG_M4
+		;;
+	    esac
+	done
+fi
+if [ "$LDFLAGS" ]; then
+	echo 'using LDFLAGS environment variable' 1>&2
+	echo 'ADD_LDFLAGS(['$LDFLAGS'])'	>> $CONFIG_M4
+fi
+
 ## check if pow() available? use dummy/expops.c if not?
 
 # should always find last item!
 # Solaris 8 has both /usr/sbin and /usr/ucb versions?
-for INSTALL in /usr/bin/install /usr/sbin/install /usr/ucb/install \
+# (/usr/sbin version takes TOTALLY different args)
+for INSTALL in /usr/bin/install /usr/ucb/install \
 	/sbin/install /etc/install ./install-sh; do
    if [ -x $INSTALL ]; then
 	echo "using $INSTALL for make install" 1>&2

@@ -2,8 +2,19 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+6/4/2004
+	configure: Improvements suggested by Robin Kay
+		<komadori@gekkou.co.uk>.
+
+		autoconf compatibility: Honor CC, CFLAGS, CPPFLAGS,
+		LDFLAGS, DESTDIR environment variables.
+
+		Don't use (Solaris/SysV) /usr/sbin/install -- it's
+		(way) different.
+
 5/31/2004
 	lib/bsd/inet6.c: NOTE: functions ignore "port" arg (OK, not used)
+	INSTALL: fix 1.0 typos
 
 3/3/2004
 	configure: attempt to fix pre-panther socklen_t lossage
