@@ -1,35 +1,27 @@
 $Id$
 
-"pmake" on csa loses?
+put -d/-P (back) to DESCR counts???
 
-create CRLF test (both program and data)
+HOST() functions;
+	dynamic region size
+	pattern stack size
 
-use new "groff -Thtml" to format man page, porting.ms?
+README
+	add host.sno
 
 script to grep for all "ifdefs" and output strings to build.c?
 	just stringify options in config.h?
-
-cygwin isnobol4.c build problems with filename "subr/CON" !!
-	change label to CONCAT
-		v311.sil (two places), globals, procs
-
-create host.sno w/ constants for HOST() functions
-	e.g. HOST_SYSENV
-	use in timing.sno?
-
-timing.sno: display sizeof: int_t, real_t, ptr
-
-Add --no-inline??
 
 rename /ansi/ to /c89/ ??
 	change autoconf messages too?
 rename /borland/ to /msdos/ ??
 
 INSTALL
+	document --add-define= PSSIZE, NDYNAMIC (both take ndescr)
 	remove documentation for --largefile
 	mention --no-largefile for "update.sno" regression test failures
-	mention pathconf FILESIZEBITS?
 	warn --longlong may not work!!!
+	mention --no-inline
 
 CHANGES
 	speak in english
@@ -43,12 +35,12 @@ use SNOCONE tsort program???
 	(leave generation rule for tsort.sno commented out)
 
 man page:
-	document HOST(2xxx) -- pointer to host.sno?
+	document -v
+	document 'm' suffixes
+	document host.sno
 	document SERV_LISTEN()
 	discuss largefile support (may not work on all (file)systems)
 		under SSET()
-		mention pathconf FILESIZEBITS?
-
 	discuss terminal binary mode
 
 add build_user???
@@ -163,6 +155,8 @@ have tests cleanup after themselves?  Add Makefile for "make clean"?
 	just add files to "make spotless"
 
 ================
+
+"pmake" on csa loses (in depend?)
 
 change NO_UNDERSCORE to NEED_UNDERSCORE?
 

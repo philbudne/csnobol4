@@ -2,17 +2,37 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+1/9/2002
+	new: lib/snolib/host.h -- HOST() function codes
+	lib/snolib/host.c: use host.h, handle arbitrary string "codes"
+		add pmstack, dynamic region size functions
+	new: host.awk -- create host.sno from host.h
+	timing, timing.sno: use host.sno, report GC's
+	Makefile2.sno: add GENSNOLIB for host.sno installation
+	lib/init.c: allow NDYNAMIC override, add PSSIZE, allow override
+		accept 'm' suffix on region sizes
+		accept -v for version
+		globals for pmstack, dynamic region size functions
+
+1/8/2002
+	doc/Makefile: use groff -Thtml
+
+1/7/2002
+	test/tests.in: add crlf.sno
+	test/crlf.{sno,ref}: program and data with CR/LF at end of line
+
 1/6/2002
 	lib/io.c: toss CR's for DOS files transferred in BINARY mode
 		or on Cygwin for files transferred in ASCII mode!
 	Makefile: get tsort.sno from parent directory
 	v311.sil, globals, procs: rename CON to CONCAT for Cygwin build
-	timing: move cygwin EXT check to top
+	timing: move cygwin EXT check to top; fix blank lines
+	autoconf: add --no-inline; rework largefile code again: add USE_FLAGS
 
 Clean builds on: SunOS 4.1.4; Solaris 2.4, 2.5.1, 2.6, 7, 8
 	FreeBSD 3.4, 4.4; OSF1/DU/Tru64 3.2, 4.0; IRIX 6.2, 6.5
 	Darwin 5.1 (MacOS X); NetBSD/i386 1.5ZA; Cygwin 1.3.3
-	HP-UX 10.20, 11.0; AIX 4.3; RH Linux 5.2, 6.0, 6.2, 7.0, 7.1, 7.2
+	HP-UX 10.20, 11.0; AIX 4.3; RH Linux 5.1, 6.0, 7.0, 7.2
 
 1/5/2002
 	timing: on HP-UX, try getconf MACHINE_MODEL if "model" cmd not found
