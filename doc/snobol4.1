@@ -36,18 +36,22 @@ All aspects of the language are implemented except;
 .IP *
 Trapping of arithmetic exceptions.
 .IP *
-Sorting of variables in
-.B &DUMP
-output.
-.IP *
+Dynamic use of the
 .B LOAD()
-function on non-BSD platforms.
+function on non-BSD platforms.  Read load.doc for how to write a
+loadable function.
 
 .SS "Changes"
 .PP
 The following behaviors have been changed;
 .IP *
 Listings are disabled by default.
+Default listing side (when enabled by
+.BR -LIST
+or the
+.B -l
+option is
+.BR LEFT .
 .IP *
 Character set (see below).
 .IP *
@@ -62,7 +66,7 @@ I/O.  The format argument to the
 function is ignored.
 .IP *
 Control lines and comment characters are valid after the end of string
-(;) statement separator. 
+(;) statement separator.
 .IP *
 Listing statement numbers show the statement number of the LAST
 statement on the line (rather than the first).
@@ -74,16 +78,17 @@ The internal character set and collating sequence are USASCII-8.  Any
 constant of a SNOBOL source program.  The value of the SNOBOL
 protected keyword
 .B &ALPHABET
-is a 256-character string of all Bytes from 0 to 255, in order of
-collating sequence.  Programs may be entered in mixed case.  By
-default lower case identifiers are folded to upper case (see
+is a 256-character string of all Bytes from 0 to 255, in ascending
+order.  Programs may be entered in mixed case.  By default lower case
+identifiers are folded to upper case (see
 .B &CASE
 and
 .B -CASE
 extensions).
 .PP
-The following characters are permitted and represent a cross between
-PDP-10 MAINBOL (DECBOL), SITBOL and Catspaw SPITBOL usage;
+The following operator character sequences are permitted and represent
+a cross between PDP-10 MAINBOL (DECBOL), SITBOL and Catspaw SPITBOL
+usage;
 .ta 2i
 .nf
 exponentiation	^ **
@@ -94,8 +99,8 @@ comment line	* # | ; !
 continuation	+ .
 .fi
 .PP
-Both brackets ([]) and widgits (<>) may be used to subscript arrays
-and tables.  The
+Both brackets ([]) and widgits/angle-brackets (<>) may be used to
+subscript arrays and tables.  The
 .B TAB
 (ASCII 8) character is accepted as a space, but since the compiler
 does not expand them, it's use may cause confusion in listings.  Note
@@ -248,6 +253,9 @@ Philip L. Budne
 
 .SH BUGS
 I/O retains some record oriented flavor.
+.br
+I/O is still tied to unit numbers.
+.B 
 .br
 Compiler error messages refer to listing line number (not source file line).
 .br
