@@ -111,6 +111,19 @@ if [ "$UNAME" ]; then
 			fi
 		done
 		;;
+	OSF1)
+		if [ -f /usr/sbin/snmp_request ]; then
+			echo ''
+			echo 'snmp sysDescr:'
+			/usr/sbin/snmp_request localhost public get \
+							1.3.6.1.2.1.1.1.0
+		fi
+		if [ -f /usr/sbin/psrinfo ]; then
+			echo ''
+			echo 'psrinfo -v:'
+			/usr/sbin/psrinfo -v
+		fi
+		;;
 	SunOS)
 		echo ''
 		echo 'sunmodel:'
