@@ -13,7 +13,7 @@ CC=bcc32.exe
 OPT=-O2
 
 # XXX try enabling bitfields? (comment out next line)
-NO_BITFIELDS=-DNO_BITFIELDS -DFFLD_T=char
+NO_BITFIELDS=-DNO_BITFIELDS
 
 # "msdos" version of tty routines uses kbhit() spin loop for raw tty
 # i/o.  This is unfriendly in a multitasking environment, and should
@@ -25,28 +25,13 @@ TTY_DEFS=-DTTY_READ_RAW
 #TTY_C=lib\win32\tty.c
 #TTY_DEFS=
 
-# by default __STDC__ is undefined!?
-#	-Za defines __STDC__ to 1, but that causes includes to turn
-#	off useful non-ANSI extensions
-
 CFLAGS= -c $(OPT) \
         -WC \
         -O \
         -Tml \
         -w- \
-         -Iinclude \
-	-D__STDC__=0 \
-	-DANSI_STRINGS \
-	-DNEED_POPEN_DECL \
-	$(NO_BITFIELDS) \
-	-DSIGFUNC_T="void __cdecl" \
-	-DSNOLIB_FILE="\"snolib.dll\"" \
-	-DSNOLIB_DIR="\"/snobol\"" \
-	$(TTY_DEFS) \
-	-DUSE_WINSOCK_H \
-	-DUSE_STDARG_H \
-	-Dfinite=_finite \
-	-Disnan=_isnan
+        -Iinclude -Iconfig\borland \
+	-DHAVE_CONFIG_H $(NO_BITFIELDS) $(TTY_DEFS)
 
 OBJ=	snobol4.obj data.obj data_init.obj main.obj syn.obj \
 	version.obj bal.obj date.obj dump.obj endex.obj hash.obj \
@@ -55,9 +40,9 @@ OBJ=	snobol4.obj data.obj data_init.obj main.obj syn.obj \
 	tree.obj bcopy.obj bzero.obj dynamic.obj expops.obj getopt.obj \
 	init.obj load.obj mstime.obj chop.obj cos.obj delete.obj \
 	environ.obj exit.obj file.obj getenv.obj getstring.obj \
-	host.obj log.obj rename.obj retstring.obj sin.obj spcint.obj \
-	spreal.obj sprintf.obj sqrt.obj sset.obj system.obj tan.obj \
-	sys.obj popen.obj tty.obj inet.obj execute.obj exists.obj \
+	host.obj log.obj logic.obj rename.obj retstring.obj sin.obj \
+	spcint.obj spreal.obj sprintf.obj sqrt.obj sset.obj system.obj \
+	tan.obj sys.obj popen.obj tty.obj inet.obj execute.obj exists.obj \
 	rresvport.obj term.obj findunit.obj exp.obj
 
 # Ensure Psdk directory (containing wsock32.lib) is included in the library
@@ -244,6 +229,9 @@ host.obj : lib\snolib\host.c
 log.obj : lib\snolib\log.c
 	$(CC) $(CFLAGS) lib\snolib\log.c
 
+logic.obj : lib\snolib\logic.c
+	$(CC) $(CFLAGS) lib\snolib\logic.c
+
 rename.obj : lib\snolib\rename.c
 	$(CC) $(CFLAGS) lib\snolib\rename.c
 
@@ -267,5 +255,3 @@ system.obj : lib\snolib\system.c
 
 tan.obj : lib\snolib\tan.c
 	$(CC) $(CFLAGS) lib\snolib\tan.c
-
-
