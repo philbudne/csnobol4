@@ -1,6 +1,6 @@
 /* $Id$ */
 
-#define HAVE_STRING_H 
+#define HAVE_STRINGS_H 
 #define HAVE_STDLIB_H 
 #define HAVE_UNISTD_H 
 
