@@ -3,19 +3,13 @@ $Id$
 2a. make banner optional (suppress via -b on command line)
 2b. add "The Macro Implemantation of SNOBOL4 for Un*x"
 2c. add RCS Id ???
-2d. caseify banner message
 
 3a. make stats optional (request via -s on command line)
-3b. fix problem with printf of floating point
-	just print integer usecs/stmt??
-3c. make FORMAT mean printf style (not FORTRASH) format?
-3d. caseify stats messages
 3e. fix EJECTF (to output ^L)
 
 6. do something better with signals?!
 6b. just report which one in exit code?
-6c. report in "CUT" message?!
-6d. change "CUT BY SYSTEM" to "caught signal"?
+6c. report in "signal" message?!
 
 7. send listings to seperate file!
 7b. select file on command line!
