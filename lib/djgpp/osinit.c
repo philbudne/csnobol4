@@ -11,6 +11,10 @@
  * -phil 8/20/2002
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H */
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <dlfcn.h>
@@ -33,14 +37,16 @@
 #include <string.h>
 #include <stdlib.h>			/* malloc(), getenv() */
 
-#include "h.h"                          /* __P */
-#include "snotypes.h"                   /* struct descr */
-#include "lib.h"                        /* io_flushall */
-#include "load.h"                       /* getstring, retstring, etc */
-
 #ifdef HAVE_WATTCP
 #include <sys/socket.h>
 #endif /* HAVE_WATTCP defined */
+
+#include "h.h"                          /* __P */
+#include "snotypes.h"                   /* struct descr */
+#include "lib.h"                        /* io_flushall */
+#include "bindresvport.h"
+#include "load.h"                       /* getstring, retstring, etc */
+
 
 /*
  * list of symbols exportable to external modules
