@@ -26,11 +26,13 @@ usage( jname )
     char *jname;
 {
     fprintf( stderr, "Usage: %s [options...] [files...]\n", jname );
+    fprintf( stderr, "-b\ttoggle display of startup banner\n");
     fprintf( stderr,
 	    "-d ND\tSize of dynamic region in descriptors (def: %d)\n",
 	    NDESCR);
     fprintf( stderr, "-k\trun programs with compilation errors\n");
     fprintf( stderr, "-r\tread INPUT from after END statement\n");
+    fprintf( stderr, "-s\ttoggle display of statistics\n");
     exit(1);
 }
 
@@ -47,8 +49,12 @@ init_args( argc, argv )
 
     D_A(LISTCL) = 0;		/* XXX TEMP!! kill listings!! */
 
-    while ((c = getopt(argc, argv, "d:klr")) != -1) {
+    while ((c = getopt(argc, argv, "bd:klrs")) != -1) {
 	switch (c) {
+	case 'b':
+	    D_A(BANRCL) = !D_A(BANRCL);
+	    break;
+
 	case 'd':			/* number of dynamic descrs */
 	    /* XXX allow 'k' suffix? */
 	    if (sscanf(optarg, "%d", &ndescr) != 1)
@@ -66,6 +72,10 @@ init_args( argc, argv )
 
 	case 'r':			/* read INPUT from source after END */
 	    rflag++;
+	    break;
+
+	case 's':
+	    D_A(STATCL) = !D_A(STATCL);
 	    break;
 
 	default:
