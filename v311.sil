@@ -1,6 +1,10 @@
 * $Id$
 *
 * $Log$
+* Revision 1.19  94/01/17  01:54:42  budd
+* [PLB13] set RETCOD (exit code) for compilation/runtime errors
+* including when execution aborted by -NOERRORS
+* 
 * Revision 1.18  94/01/09  00:16:03  budd
 * default listing side now LEFT
 * tweaked SOURCF, UNIXF2
