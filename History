@@ -2,7 +2,7 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
-10/29/97:
+10/28/97:
 	v311.sil: merge scanner functions into SCIN1
 	globals, procs: removed scanner functions
 		avoids nasty mutual recursions, stack overflows
