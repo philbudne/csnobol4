@@ -1,29 +1,62 @@
 $Id$
 
+URL package;
+	Fix "file.sno" (file URL's) to handle null host, "localhost"??
+		use ftp if not local?
+	Allow user:password@host in ftp url
+
+Add USE_FINITE??
+	check validity of results after F.P. ops?
+	have MATH_ERROR() take a result as arg??? (need [CLR_]{REAL,INT}_ERROR)
+	check divisor in DIVV beforehand
+
+Win32;
+	document build procedure in INSTALL
+	try turning on bitfields?
+	get inet working
+	fix win32/tty.c
+	replace dummy execute function
+	implement osdep_fopen hacks for /dev/tty, /dev/null?
+
+from Gene Battin;
+	fix SORT() description in man page (see my reply email 12/30/97)
+	send &DUMP output to stderr?
+
+include serv.c/serv.sno?
+
+Install load-related .h files in seperate SNOLIB/include/ directory?
+	fix serv.c comment?!
+
 Tests;
 	add "scan.sno" test
 	add outerr.sno test?
 
-Talk about snolib files in INSTALL & README!!
+Talk about available snolib files in INSTALL & README!!
 
 man page;
 	document math error catching problems in BUGS section;
 	    "hampered by";
 
 	    + C's lax attitude towards integer errors
-		    perhaps due to PDP11?
+		perhaps due to PDP11's lack of integer overflow trap
 
-	    + Lack of IEEE standard functions for;
-		    enabling exceptions
-		    checking for accrued errors
-		    isinf() or finite()
+	    + Lack of IEEE standard interface functions for;
+		enabling exceptions
+		    (standard specifies disabled by default?)
+		checking for accrued errors
+		class(), isinf(), or finite()
 
 	    + POSIX (& ANSI?) definition of SIGFPE
-		    (normal return behvior is undefined)
-
-		    restart/looping
+		(normal return behavior is undefined)
+		restart/looping
 
 load.doc: mention dt.h
+
+update porting.ms;
+	exists.c
+	win32 files
+	OS_FOPEN ifdef
+	others?
 
 look at tty_close() thrashing;
 	never discard info?
@@ -35,6 +68,8 @@ make NO_BITFIELDS VFLD_T "long"??
 	what is borland "int" size with build.com?
 	force to "int" on alpha, irix64?
 	remove default (must supply VFLD_T if defining NO_BITFIELDS)??
+
+keep module ref counts in hpux/load.c?
 
 ================
 
@@ -277,19 +312,30 @@ from s4+
 	&INFINITY
 		HUGE_VAL	(ANSI/POSIX/SVID?)
 		HUGE		bsd?
-		infinity() 	???
-		infnan(errno)	GNU/Linux
 
 	&NAN
 		quiet_nan()?	sunos4, sunos5
 		signaling_nan()?? sunos4, sunos5
-		infnan(errno)	GNU/Linux
+		infnan(errno)	GNU/Linux, 44lite2, 43reno
+			ERANGE:	+inf
+			-ERANGE: -inf
+			else:	NaN
 
 ================
 
 better math exception catching;
 
-	Ensure operands "finite()" before floating point ops???
+	Ensure operands "finite" before/after floating point ops???
+		fp_class_d():	irix5.3 <fp_class.h>
+		fp_class():	sunos4 <math.h>
+		fpclassify():	hpux9 ("ANSI future directions")
+		fpclassify[fdl](): linux
+		class():	aix4
+		finite():	irix5,sunos4/5,netbsd,aix4,hpux9,linux <math.h>
+		finitef():	hpux9 <math.h>
+		fpclass():	irix5.3, sunos5 <ieeefp.h>
+
+		isnan()		XPG4
 
 	enable exceptions;
 		ieee_handler:	sunos4, sunos5 (replaces "signal" call)
@@ -304,6 +350,7 @@ better math exception catching;
 		FreeBSD:	fp{get,reset}sticky
 		Sun:		ieee_flags("get", "exception", ...)
 				(man floatingpoint)
+		
 
 	catching library errs;
 		matherr:	sunos4, sunos5, SVID3, (deprecated in XPG3)
@@ -367,3 +414,19 @@ Implement SPITBOL EXIT [+-][34] freeze functionality
 ================
 
 perform live/dead analysis of variables for each function?!
+
+================
+
+I/O system document;
+
+	levels;
+		I/O variable
+		Unit number
+		stdio stream
+		system fd
+		file object (fd may have been dup'ed)
+
+
+================
+
+tmpnam() call in snolib?
