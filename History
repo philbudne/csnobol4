@@ -4,6 +4,7 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
 8/6/97:
 	Makefile: use ./configure
+	Makefile2.m4: added configure to tar
 
 8/5/97:
 	v311.sil procs syntax.tbl: Code from SNOBOL4+
