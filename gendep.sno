@@ -23,7 +23,7 @@
 	&ANCHOR = 1
 
 *	boost MAINBOL stmt limit!!
-	&STLIMIT = 9000000
+	&STLIMIT = 20000000
 
 	DIFFER(MAINBOL)					:S(MB1)
 
@@ -91,6 +91,7 @@ EIO
 	OPTYPE<'ACOMPC'> = .L345
 	OPTYPE<'LEXCMP'> = .L345
 	OPTYPE<'LCOMP'> = .L345
+	OPTYPE<'RCOMP'> = .L345
 
 	OPTYPE<'VCMPIC'> = .L45
 	OPTYPE<'AEQLIC'> = .L45
@@ -116,11 +117,14 @@ EIO
 	OPTYPE<'TESTF'> = .L34
 	OPTYPE<'TESTFI'> = .L34
 	OPTYPE<'STREAD'> = .L34
+	OPTYPE<'XCALLC'> = .L34
 
 	OPTYPE<'LOCAPT'> = .L4
 	OPTYPE<'LOCAPV'> = .L4
 
 	OPTYPE<'STREAM'> = .L456
+
+	OPTYPE<'NANCHK'> = .L23
 	
 ****************************************************************
 *	functions
@@ -172,8 +176,13 @@ TOP	LINE = INPUT					:F(EOF)
 *	a comment?
 	LINE '*'					:S(TOP)
 
-*	here if not a comment
-NOTCOMM	LINE (TNUL . LBL) WS (TNUL . OP) WS =
+*	here if not a comment; check for c-escape
+	LINE '%{'					:F(NOTC)
+CESC	LINE = INPUT					:F(EOF)
+	LINE '%}'					:S(TOP)F(CESC)
+
+*	here if not comment, C escape
+NOTC	LINE (TNUL . LBL) WS (TNUL . OP) WS =
 
 *	an op worth keeping? (discard data declaration ops)
 	DIFFER(DISCARD<OP>)				:S(TOP)
@@ -332,6 +341,7 @@ NOLBL2
 ****************
 L12	BRANCH( ARGV<1> )
 L2	BRANCH( ARGV<2> )				:(NEXT2)
+L23	BRANCH( ARGV<3> )				:(L2)
 
 ****************
 L34	BRANCH( ARGV<3> )
