@@ -4,6 +4,11 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
+#include <stdio.h>
+#include "h.h"
+#include "snotypes.h"
+#include "lib.h"
+
 #ifndef SH_PATH
 #define SH_PATH "/bin/sh"
 #endif
