@@ -243,7 +243,7 @@ realclean: clean
 	genc.sno gensyn.sno gendata.sno \
 	main.c charset.c data_init.c version.c \
 	parms.h mlink.h mdata.h \
-	lib include config test \
+	lib include config test bugs \
 	$(GENERATED) \
 	cc-M'
 
