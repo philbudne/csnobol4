@@ -1,7 +1,7 @@
 /* $Id$ */
 
 #ifndef LD_PATH
-#define LD_PATH "/usr/bin/ld"		/* new (SunOS4) fs org */
+#define LD_PATH "/usr/bin/ld"		/* new (SunOS4, bsd4.4) fs org */
 #endif /* LD_PATH not defined */
 
 #ifndef SNOLIB_DIR
@@ -11,3 +11,7 @@
 #ifndef SNOLIB_A
 #define SNOLIB_A "snolib.a"
 #endif /* SNOLIB_A not defined */
+
+#ifndef TMP_DIR
+#define TMP_DIR "/tmp"			/* exists on all systems?! */
+#endif /* TMP_DIR not defined */
