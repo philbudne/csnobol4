@@ -16,6 +16,43 @@ IMPORTANT for users of versions prior to 0.99;
 
 For detailed revision history see History file
 
+Changes since 0.99.3 release;
+============================
+
+	DATE() function takes an argument (per Catspaw SPITBOL)
+
+	autoconf script takes --add-{cppflags,ldflags,objs,opt,srcs} options
+
+	Support for LOAD() using dynamic libraries
+		(works on SunOS4, SunOS5, IRIX, Digital Unix, Linux, NetBSD)
+		Tentative support for HP-UX
+
+	Cleaned up generated C code for function calls
+
+	Trim tabs as well as spaces
+
+	timing script reports h/w info on BSD, HP, Linux systems
+
+	Floating point I/O;
+		exponents allowed without decimals (ie; 1e10)
+		'd' exponents removed; did not work
+		will now output exponents
+
+	Fixed getstring() with null string
+
+	I/O changes;
+		'T' mode implies unbuffered output for terminal prompts
+		new magic path /dev/fd/N
+		characters in excess of record length discarded on read
+		New IO_FINDUNIT() function
+		Unit numbers up to 256 now allowed
+
+	Compiler line length uppped from 132 to 1024
+
+	Allow long command lines to be passed via HOST(0) and &PARM
+
+	Allow long strings returned from LOAD()'ed functions
+
 Changes since 0.99.2 release;
 ============================
 

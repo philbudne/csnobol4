@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+7/7/97:
+	README CHANGES: updated for 0.99.4
+
 7/6/97:
 	init.c: deal with long arg vectors; created getargs() -- no static bufs
 	lib/snolib/retstring.c: return long strings -- no static buf
