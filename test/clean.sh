@@ -1,1 +1,2 @@
-rm -f *.tmp test.out *~ *.tst *.bin
+rm -f *.tmp test.out *~ *.tst *.bin *.dat
+
