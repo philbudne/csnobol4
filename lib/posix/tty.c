@@ -1,15 +1,26 @@
 /* $Id$ */
 
 #include <stdio.h>
+
+#ifdef USE_TERMIO
+/* awful; but better than duplicating the whole file! */
+#include <termio.h>
+#define tcgetattr(FD,T) ioctl(FD, TCGETA, T)
+#define tcsetattr(FD,HOW,T) ioctl(FD, HOW, T)
+#define TCSADRAIN TCSETAW
+#define termios termio
+#define STDIN_FILENO 0
+#else  /* USE_TERMIO not defined */
 #include <termios.h>
 #include <unistd.h>
+#endif /* USE_TERMIO not defined */
 
 /*
  * tty mode, echo
  * POSIX.1 version
  */
 
-/* XXX remove saved settings on close? restore all settings on exit?? */
+/* XXX restore all settings on exit?? */
 
 /* keep settings for each fd in a list; */
 static struct save {
@@ -19,7 +30,7 @@ static struct save {
     int cbreak, noecho;
 #ifdef TTY_SAVE_RECL
     int recl;
-#endif
+#endif /* TTY_SAVE_RECL defined */
 } *list;
 
 static struct termios old;		/* stdin on entry */
@@ -71,7 +82,7 @@ tty_mode( fp, cbreak, noecho, recl )
     sp->noecho = sp->cbreak = 0;	/* ??? */
 #ifdef TTY_SAVE_RECL
     sp->recl = -1;
-#endif
+#endif /* TTY_SAVE_RECL defined */
 
     /* link into list */
     sp->next = list;
@@ -81,7 +92,7 @@ tty_mode( fp, cbreak, noecho, recl )
     if (cbreak == sp->cbreak && noecho == sp->noecho
 #ifdef TTY_SAVE_RECL
 	&& recl == sp->recl
-#endif
+#endif /* TTY_SAVE_RECL defined */
 	)
 	return;				/* nothing to do! */
 
@@ -95,12 +106,12 @@ tty_mode( fp, cbreak, noecho, recl )
 	new.c_oflag &= ~OPOST;		/* kill output post-processing */
 	/* XXX set CS8, PASS8, IGNPAR, clear ISTRIP? */
 	/* XXX clear IUCLC, XCASE (if they exist)? */
-#endif
+#endif /* TTY_RAW defined */
 #ifdef TTY_SAVE_RECL
 	new.c_cc[VMIN] = recl;		/* number of chars wanted */
-#else
+#else  /* TTY_SAVE_RECL not defined */
 	new.c_cc[VMIN] = 1;		/* one character */
-#endif
+#endif /* TTY_SAVE_RECL not defined */
 	new.c_cc[VTIME] = 0;		/* wait as long as we have to */
     }
 
@@ -114,7 +125,7 @@ tty_mode( fp, cbreak, noecho, recl )
     sp->noecho = noecho;
 #ifdef TTY_SAVE_RECL
     sp->recl = recl;
-#endif
+#endif /* TTY_SAVE_RECL defined */
 }
 
 /* advisory notice; discard saved info.
