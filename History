@@ -2,6 +2,21 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+1/12/2003
+	config/win32/config.h: add missing endif
+	INSTALL: update cygwin info
+
+10/29/2002
+	lib/snolib/logic.c: fix for AXP/VMS compilation
+	lib/vms/sys.c: fix
+
+8/20/2002
+	lib/djgpp/osinit.c: replace with Burkhard's version!
+		(He says mine doesn't work)
+	lib/io.c: only flag STD{IN,OUT,ERR}_FILENO's w/ NOCLOSE
+	README: updated, added URL
+	doc/snobol4.1: added http:// to URL
+	
 6/13/2002
 	genc.sno: pass CPP directives! (3/3/2002)
 
