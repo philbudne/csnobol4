@@ -78,11 +78,15 @@ Changes since 0.99.4 release;
 		and creation of files larger than 2GB
 
 	New functions;
+		FUNCTION() -- predicate to test if a function is defined
+			** EXPERIMENTAL **
 		LABEL() -- predicate to test if a label is defined
+			idea from Steve Duff's version of Macro SPITBOL
 		ORD() -- inverse of CHAR()
 		SERV_LISTEN() -- act as TCP server
 		SSET() -- scaled SET() allow large files when INTEGER is 32bits
 		VDIFFER() -- returns first arg if two arguments DIFFER()
+			idea from Steve Duff's version of Macro SPITBOL
 
 	Extended HOST() functions (see host.sno) for system diagnosis
 
