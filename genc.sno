@@ -1120,7 +1120,10 @@ XOUTPUT	OL = IND "io_printf(" D_A(ARGV<1>) "," ARGV<2>
 	N OUTPUT_PAT1					:F(XOUTEND)
 *	STDERR = '>' N
 XOUTLP	L OUTPUT_PAT2 =					:F(XOUTEND)
-	OL = OL ',D_XXX(' I ')'
+	FUN = 'D_A'
+* XXX crock!!!
+	FUN = IDENT(I,'FCL') 'D_RV'
+	OL = OL ',' FUN '(' I ')'
 	L ',' =
 	DIFFER(L)					:S(XOUTLP)
 
