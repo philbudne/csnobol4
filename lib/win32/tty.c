@@ -10,12 +10,19 @@
 #include <windows.h>
 
 /* keep settings for each fd in a list; */
-static struct save {
+struct save {
     struct save *next;
     int fd;				/* XXX use HANDLE instead? */
     DWORD flags;			/* saved flags */
     int cbreak, noecho;			/* current state */
-} *list;
+};
+
+#ifdef NO_STATIC_VARS
+#include "vars.h"
+#define list ttylist
+#else
+static struct save *list;
+#endif
 
 int
 fisatty(f, fname)

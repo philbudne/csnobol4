@@ -26,10 +26,15 @@ struct func {
     char name[1];			/* for unload (MUST BE LAST)! */
 };
 
+#ifdef NO_STATIC_VARS
+#include "vars.h"
+#define funcs loadptr
+#else
 /* keep list of loaded functions (for UNLOAD) */
 static struct func *funcs;
+#endif
 
-#define PATHLEN 256			/* XXX */
+#define PATHLEN 512			/* XXX */
 #define BS '\\'				/* exactly */
 
 #define ABSPATH(CP) \

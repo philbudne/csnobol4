@@ -5,6 +5,10 @@
 #include <windows.h>
 #include "snotypes.h"
 
+#ifdef NO_STATIC_VARS
+#include "vars.h"
+#endif
+
 /*
  * The FILETIME data structure contains two 32-bit values that combine to
  * form a 64-bit count of 100-nanosecond time units.
@@ -31,11 +35,36 @@ mstime()
     }
     else {
 	/* XXX just use clock()? */
-	static int haveold, old;
-	static FILETIME f[2];
 	int new;
 	int_t x;
+#ifdef NO_STATIC_VARS
+	static int haveold, old;
+	static FILETIME f[2];
+#else
+	int haveold;
+	struct timevars {
+	    int tv_old;
+	    FILETIME tv_f[2];
+	} *tv;
 
+	if (timeptr == NULL) {
+	    haveold = FALSE;
+	    tv = (struct timevars *) malloc(sizeof(struct timevars));
+	    if (!tv) {
+		perror("could not malloc timevars");
+		exit(1);
+	    }
+	    timeptr = tv;
+#define old tv->tv_old
+#define f tv->tv_f
+	    old = 0;
+	    haveold = 0;
+	}
+	else {
+	    haveold = 1;
+	    tv = timeptr;
+	}
+#endif /* NO_STATIC_VARS defined */
 
 	new = !old;
 #if 1
