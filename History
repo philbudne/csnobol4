@@ -6,9 +6,15 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 	v311.sil: call io_flushall
 	lib/io.c: add io_flushall, ran comdef, add comments
 		add fp check in io_seek()
+		include ctype.h
+	lib/lexcmp.c: subtract lengths
+	lib/bsd/inet.h: include ctype.h
 	lib/snolib/host.c, lib/snolib/exit.c: call io_flushall
 	autoconf: tweak *bsd*
-	Makefile2.m4: add sunmodel to tar
+	Makefile2.m4: add sunmodel to tar; add leading -'s in install
+	config/bsd43.m4: add getopt, isnan
+	doc/ports.doc: hp370/bsd43, pc532/netbsd
+	include/macros.h: compare first char in LEXEQ macro
 
 10/24/96:
 	INSTALL: updated
