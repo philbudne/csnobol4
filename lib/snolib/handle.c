@@ -43,16 +43,21 @@ new_handle(hlp, vp)
     snohandle_t h;
     struct handle_entry *hp;
 
+    /* find a free handle */
+    /* XXX save initial "next" value, avoid infinite loop! */
+    do {
+	h = hlp->next++;
+    } while (hp->handle == BAD_HANDLE || lookup_handle(hlp, h));
+
+    /* allocate block */
     hp = malloc(sizeof(struct handle_entry));
     if (!hp)
 	return -1;
 
-    do {
-	hp->handle = hlp->next++;
-    } while (hp->handle == BAD_HANDLE || lookup_handle(hlp, hp->handle));
-
     hp->value = vp;
     hp->next = hlp->hash[HANDLE_HASH(hp->handle)];
+    hp->handle = h;
+
     hlp->hash[HANDLE_HASH(hp->handle)] = hp;
     hlp->entries++;
 
