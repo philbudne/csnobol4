@@ -2,6 +2,9 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
+5/28/94
+	Invalidate self pointer in lib/bsd/load.c unload()
+
 5/27/94
 	Allow external redefinition of HZ in generic/mstime.c
 
