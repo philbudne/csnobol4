@@ -423,11 +423,13 @@ DJGPP under DOS
 
 DJGPP (http://www.delorie.com/djgpp/) is a free 32-bit C/C++ MS-DOS
 development system, for Intel 80386 (and higher) PCs running DOS based
-on GCC.  Burkhard Meissner has ported CSNOBOL4 to DJGPP, with TCP/IP
-support using WATTCP;
+on GCC.  Burkhard Meissner has ported CSNOBOL4 to DJGPP.
 
 To compile using GNU make (not tested);
 	make -f config/djgpp/Makefile
+
+To enable optional support for WATTCP and DXE based loading, see
+the commented out lines in the Makefile.
 
 Anything else
 -------------
