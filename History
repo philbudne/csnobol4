@@ -7,6 +7,7 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 	lib/io.c: add %G
 	v311.sil: use %G for us/stmt
 	autoconf: LP64 comments, GETRUSAGE_BUG for openbsd, select suspend.c
+		changed cygwin32 to cygwin, check sys/signal.h for sigset_t
 	lib/{bsd,posix}/tty.c: fix bad return in find...
 		add tty_invalidate, ran comdef
 		keep "last" dev_t used

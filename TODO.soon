@@ -1,7 +1,5 @@
 $Id$
 
-have bsd/posix tty_mode() calls cache last FILE/fd/dev_t used?
-
 create README.CVS??
 	(make sure it DOESN'T exist in regular kit!!!)
 
@@ -106,7 +104,6 @@ always send timing.out via e-mail?
 
 test
 	SSET()!!
-	longlong versions of intspc and spcint; use BSD strtoll if not.
 	VMS port (RDIXON@seattleschools.org)
 	MacOS X (panos@surgery.wisc.edu)
 	DJGPP (meissner@altertum.uni-halle.de)
