@@ -34,6 +34,10 @@ static int wsock_init;
 #define INADDR_NONE ((unsigned long)0xffffffff)	/* want u_int32_t! */
 #endif /* INADDR_NONE not defined */
 
+#ifndef SD_BOTH
+#define SD_BOTH 2
+#endif
+
 /*
  * Request API version 1.1 (first official release); shipped with Win95
  */
