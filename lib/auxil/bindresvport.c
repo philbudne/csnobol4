@@ -65,7 +65,8 @@ static char *rcsid = "$OpenBSD: bindresvport.c,v 1.13 2000/01/26 03:43:21 deraad
 #include "str.h"			/* bzero() */
 
 #ifdef NEED_SOCKLEN_T
-typedef int socklen_t;
+/* VMS 7.3 wants unsigned */
+typedef unsigned int socklen_t;
 #endif /* NEED_SOCKLEN_T defined */
 
 #define STARTPORT 600
