@@ -208,7 +208,7 @@ SunOS5 "sunpro"		-Kpic or -KPIC		-G
 IRIX 5.3 "cc"		-KPIC (default?)	-shared (ignore warnings)
 DEC UNIX "cc"		none			-shared (ignore warnings)
 HP-UX "c89"		+z or +Z		-b
-most "gcc"		-fpic or -fPIC		-shared
+most "gcc"		-fpic or -fPIC		-shared or -Bshareable
 
 NOTES:
 
