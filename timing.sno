@@ -163,7 +163,7 @@ GETTIME	LINE = INPUT					:F(NOTIME)
 * hpux 'user 0:0.00s'
 	LINE 'user' WS INT . MIN ':' NUM . USER		:S(GOTTIME)
 * hpux, aix 'user 0m0.00s'
-# linux 'real    0m0.000s'
+* linux 'real    0m0.000s'
 	LINE 'user' WS INT . MIN 'm' NUM . USER		:S(GOTTIME)
 * hpux, aix, sunos5 'user 0.0'
 	LINE 'user' WS NUM . USER			:S(GOTTIME)
