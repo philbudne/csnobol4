@@ -546,9 +546,12 @@ install: TESTED doc/snobol4.1
 	cp xsnobol4 $(BINDEST); strip $(BINDEST); chmod 755 $(BINDEST)
 	cp doc/snobol4.1 $(MANDEST)
 	test -d $(SNOLIB_DIR) || mkdir $(SNOLIB_DIR)
+	-rm -f $(SNOLIB_DIR)/$(SNOLIB_A)
 	cp $(SNOLIB_A) $(SNOLIB_DIR)/$(SNOLIB_A)
 	$(RANLIB) -t $(SNOLIB_DIR)/$(SNOLIB_A)
-	cp snolib/*.sno $(SNOLIB_DIR)
+	(cd snolib; for F in *.sno; do \
+		rm -f $(SNOLIB_DIR)/$$F; cp $$F $(SNOLIB_DIR); done)
+	-rm -f $(SNOLIB_DIR)/load.doc
 	cp doc/load.doc $(SNOLIB_DIR)
 	@echo 'Have you mailed a copy of timing.out to' \
 		'snobol4-timing@ultimate.com ?' 1>&2
