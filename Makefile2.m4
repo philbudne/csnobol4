@@ -37,10 +37,6 @@ MATHLIB=-lm
 SH=sh
 SHELL=/bin/sh
 
-# either snobol4 or isnobol4
-SNOBOL4=isnobol4
-#SNOBOL4=snobol4
-
 # library random accessifier
 RANLIB=ranlib
 
@@ -169,15 +165,6 @@ SNOLIB_DEFINES=-DSNOLIB_DIR='"'$(SNOLIB_DIR)'"' \
 CFLAGS=$(COPT) $(MYCPPFLAGS)
 
 ################
-# snobol commands
-
-# bootstrapped using Catspaw SPARC SPITBOL
-#SNO=spitbol -i512k -b
-#SMALL_SNO=spitbol -b
-SNO=snobol4 -b
-SMALL_SNO=snobol4 -b
-
-################
 
 # XXX replace SNOLIB_A with SNOLIB_FILE??
 #	need to add rules to make shared libraries (to config/xxx.m4 files)
@@ -197,11 +184,17 @@ SRCS=	main.c $(SNOBOL4).c data.c data_init.c syn.c $(BAL_C) \
 	$(STR_C) $(TOP_C) $(TERM_C) $(TREE_C) $(TTY_C) version.c \
 	$(AUX_SRCS) $(SNOLIB_SRCS)
 
-# SIL source file
-SIL=	v311.sil
-
 ################
 # link, regression test & timing
+
+.PRECIOUS: $(SNOBOL4).o data_init.o snobol4
+
+xsnobol4: $(OBJS)
+	rm -f xsnobol4
+	$(CC) $(CFLAGS) -o xsnobol4 $(OBJS) $(LDFLAGS)
+
+################
+# run regression tests.
 
 snobol4: xsnobol4 snobol4.c
 	@echo Running regression tests...
@@ -217,84 +210,11 @@ snobol4: xsnobol4 snobol4.c
 		system model and CPU clock rate 1>&2
 	@echo see doc/ports.doc for the current list 1>&2
 
-xsnobol4: $(OBJS)
-	rm -f xsnobol4
-	$(CC) $(CFLAGS) -o xsnobol4 $(OBJS) $(LDFLAGS)
-
 ################
-# code
-
-.PRECIOUS: snobol4.c isnobol4.c $(SNOBOL4).o data_init.o snobol4
 
 # may need special options due to size!!
 $(SNOBOL4).o: $(SNOBOL4).c 
 	$(CC) $(SNOBOL4_C_CFLAGS) $(CFLAGS) -c $(SNOBOL4).c
-
-# regular version
-snobol4.c: procs genc.sno globals $(SIL) 
-	rm -f snobol4.c2 proc.h2
-	$(SNO) genc.sno $(SIL) > snobol4.c2
-	mv -f snobol4.c2 snobol4.c
-
-# inline version (functions reordered)
-isnobol4.c: procs genc.sno globals $(SIL)
-	rm -rf isnobol4.c2 proc.h2 prolog subr
-	mkdir subr
-	$(SNO) genc.sno --inline $(SIL) > prolog
-	cd subr; cat ../prolog \
-		`awk '{print $$2, $$1}' ../callgraph | tsort 2>/dev/null` \
-			> ../isnobol4.c2
-	mv -f isnobol4.c2 isnobol4.c
-	rm -rf prolog subr
-
-proc.h2: $(SNOBOL4).c
-
-proc.h:	proc.h2
-	@cmp proc.h proc.h2 || cp proc.h2 proc.h
-
-################
-# syntax tables
-
-# only change syn.h if it has changed from last run!
-
-syn.c syn.h2 syn_init.h2: syntax.tbl gensyn.sno
-	rm -f syn.c2 syn.h2
-	$(SNO) gensyn.sno $(SIL)
-	mv -f syn.c2 syn.c
-
-syn.h:	syn.h2
-	@cmp syn.h syn.h2 || cp syn.h2 syn.h
-
-syn_init.h: syn_init.h2
-	@cmp syn_init.h syn_init.h2 || cp syn_init.h2 syn_init.h
-
-################
-# resident data
-
-data.h2 data.c2 equ.h2 data_init.h2 res.h2: $(SIL) gendata.sno
-	rm -f data.h2 data.c2 equ.h2 data_init.h2 res.h2
-	$(SNO) gendata.sno $(SIL)
-
-data.h:	data.h2
-	@cmp data.h data.h2 || cp data.h2 data.h
-
-data.c:	data.c2
-	@cmp data.c data.c2 || cp data.c2 data.c
-
-equ.h:	equ.h2
-	@cmp equ.h equ.h2 || cp equ.h2 equ.h
-
-res.h:	res.h2
-	@cmp res.h res.h2 || cp res.h2 res.h
-
-data_init.h: data_init.h2
-	@cmp data_init.h data_init.h2 || cp data_init.h2 data_init.h
-
-# note: private CFLAGS
-data_init.o: data_init.c data_init.h equ.h data.h proc.h res.h
-	$(CC) $(DATA_INIT_CFLAGS) -c data_init.c
-
-################
 
 version.o: $(SRCDIR)version.c
 	$(CC) $(CFLAGS) -c $(SRCDIR)version.c
@@ -307,14 +227,6 @@ data.o: $(SRCDIR)data.c
 
 syn.o: $(SRCDIR)syn.c
 	$(CC) $(CFLAGS) -c $(SRCDIR)syn.c
-
-#################
-# dependency generation is slow and ugly (and wrong?)
-# doesn't change much!!
-
-#procs:	gendep.sno
-#	$(SNO) gendep.sno < $(SIL) > procs2
-#	mv -f procs2 procs
 
 #################################################################
 # lib files
@@ -526,69 +438,6 @@ sys.o: $(SYS_C)
 
 tan.o: $(TAN_C)
 	$(CC) $(CFLAGS) -c $(TAN_C)
-
-##################################################################
-# housekeeping
-
-# generated files to include in kit (hard link to target dir)
-GENERATED=data.c2 data.h2 data_init.h2 proc.h2 equ.h2 syn.h2 syn_init.h2 \
-	res.h2 snobol4.c isnobol4.c 
-
-# generated files to include in kit (copy, so newer than .x2 versions)
-G2=data.c data.h data_init.h proc.h equ.h res.h syn.c syn.h syn_init.h
-
-# remove objects, generated sources; leave final binary, Makefile2
-# DON'T DO THIS UNLESS YOU HAVE AN EXECUTABLE!!
-spotless:
-	rm -f $(GENERATED)
-
-# file to hard-link into dist dir
-# generated files copied separately to ensure newer than source files!
-[TAR=	README CHANGES History INSTALL TODO TODO.soon doc Makefile \
-	Makefile2.m4 autoconf configure config.guess $(SIL) syntax.tbl \
-	procs globals genc.sno gensyn.sno gendata.sno \
-	main.c charset.c data_init.c version.c parms.h mlink.h mdata.h \
-	pml.h $(GENERATED) lib include config test bugs snolib/*.sno \
-	sunmodel timing timing.sno cc-M bsplitu.c]
-
-# "print version" -- for dir/tar names
-pv:	version.c
-	$(CC) -I[./include] -DMAIN -o pv version.c
-
-# compression program, suffix
-COMP=gzip
-Z=gz
-
-# tempting to use VERS:sh = ./pv
-# but need to make pv first!!
-VERS=`./pv`
-
-DIR=snobol-$(VERS)
-KIT=snobol-$(VERS).tar.$(Z)
-
-# XXX perform general cleanup (remove ~ and # files) first?
-# XXX add predicates to suppress ~ # and .o files?
-tar vers: snobol4 pv
-	cd doc; make
-	cd test; ./clean.sh
-	rm -rf [snobol-[0-9]*]
-	rm -f *~ */*~ */*/*~ *.tmp
-	mkdir $(DIR)
-	find $(TAR) -name RCS -prune -o -print | cpio -pldm $(DIR)
-	cp $(G2) $(DIR)
-	tar cf - $(DIR) | $(COMP) > $(KIT)
-	rm -rf $(DIR)
-	./pv > vers
-
-# make a mailable kit by splitting up binary, and uuencoding pieces
-# (no editing necessary for reassembly)
-# requires "./pv" for $(VERS) in $(KIT)
-uu:	bsplitu tar pv
-	rm -rf uu; mkdir uu
-	cd uu; ln ../pv .; ../bsplitu $(KIT) < ../$(KIT); rm pv
-
-bsplitu: bsplitu.c
-	$(CC) -o bsplitu bsplitu.c
 
 #################
 # installation
