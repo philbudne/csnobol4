@@ -21,8 +21,17 @@
 #include <strings.h>                    /* berkeley strings */
 #endif /* ANSI_STRINGS not defined */
 
-/* XXX ifdef HAVE_STDLIB_H? */
+/* XXX ifdef HAVE_STDLIB_H? Hasn't been needed, yet. */
 #include <stdlib.h>			/* malloc(), getenv() */
+
+#if __NetBSD__
+#define TRY_UNDERSCORE
+#endif /* __NetBSD__ defined */
+
+#if __FreeBSD__
+#define TRY_UNDERSCORE
+#endif /* __FreeBSD__ defined */
+
 
 /* external function returning pointer to loaded function */
 extern int (*pml_find())(LOAD_PROTO);
@@ -87,7 +96,7 @@ load(addr, sp1, sp2)
 	else {				/* no path */
 	    /* XXX limit length of snolib?? */
 	    sprintf( path, "%s/%s", snolib, SNOLIB_FILE );
-	    /* XXX pass NULL pathname (search main program)??? */
+	    /* XXX just pass NULL pathname to dlopen (search main program)? */
 	    pp = path;
 	}
 
@@ -98,6 +107,7 @@ load(addr, sp1, sp2)
 	fp->handle = dlopen(pp, RTLD_LAZY);
 	if (fp->handle == NULL) {
 #ifdef DEBUG
+	    /* XXX always? to stderr?? */
 	    printf("dlopen: %s\n", dlerror());
 #endif
 	    free(fp);
@@ -106,33 +116,32 @@ load(addr, sp1, sp2)
 
 	fp->entry = (int (*)(LOAD_PROTO)) dlsym(fp->handle, fp->name);
 	if (fp->entry == NULL) {
-#if !defined(__NetBSD__)
-	    dlclose(fp->handle);
-	    free(fp);
-	    return FALSE;
-#else
+#ifdef TRY_UNDERSCORE
+	    char name2[1024];		/* XXX */
 	    /*
 	     * Ouch; NetBSD 1.2 (on pc532 at least, and probably all
 	     * a.out based platforms) wants C functions with a leading
 	     * underscore.  Rather than trying to figure out when and
 	     * if this is needed at config time, just try it both ways.
+	     *
+	     * FreeBSD has the same problem?
 	     */
-
-	    char name2[1024];		/* XXX */
 
 	    name2[0] = '_';
 	    strncpy(name2+1, fp->name, sizeof(name2)-2);
 	    name2[sizeof(name2)-1] = '\0';
 
 	    fp->entry = (int (*)(LOAD_PROTO)) dlsym(fp->handle, name2);
-	    if (fp->entry == NULL) {
-		dlclose(fp->handle);
-		free(fp);
-		return FALSE;
-	    } /* dlsym failed again */
-#endif
+	    if (fp->entry != NULL)
+		goto found;
+#endif /* TRY_UNDERSCORE defined */
+
+	    dlclose(fp->handle);
+	    free(fp);
+	    return FALSE;
 	} /* dlsym failed */
     } /* not found by pml */
+ found:
     fp->self = fp;			/* make valid */
 
     fp->next = funcs;			/* link into list (for unload) */
