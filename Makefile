@@ -54,7 +54,8 @@ all:	snobol4
 snobol4 xsnobol4 install lint: $(GENERATED) Makefile2 ALWAYS .depend
 	$(MAKE) -f Makefile2 $@
 
-# a depending on this target will always be run!
+# a rule depending on this target will always be run
+# since ALWAYS is never created!
 ALWAYS:
 
 # for hand generation of sources
@@ -173,7 +174,8 @@ host.sno: host.awk lib/snolib/host.h
 # housekeeping
 
 # directly generated files (to avoid recompilation when no change in outputs)
-G2=data.c2 data.h2 data_init.h2 proc.h2 static.h2 equ.h2 syn.h2 syn_init.h2 res.h2
+G2=data.c2 data.h2 data_init.h2 proc.h2 static.h2 equ.h2 \
+	syn.h2 syn_init.h2 res.h2
 
 # remove turds
 tidy:
