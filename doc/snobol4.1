@@ -221,7 +221,7 @@ The
 .B CHAR()
 function takes an integer from 0 to 255 and returns the n'th character
 in
-.B &ALPHABET .
+.BR &ALPHABET .
 .TP
 .B DATE()
 For compatilbility with new versions of Catspaw SPITBOL
@@ -468,10 +468,19 @@ The magic pathname
 opens an anonymous temporary file for reading and writing, see
 .BR tmpfile (3).
 .TP
+.B ORD()
+.br
+The
+.B "ORD()"
+function returns the ordinal value (zero to 255) of the first character in
+it's string argument (the inverse of the
+.B "CHAR()"
+function).
+.TP
 .B &PARM
 .br
 The entire command line is available via the
-.BR &PARM
+.B &PARM
 protected keyword for compatibility with Catspaw SNOBOL4+. Use of the
 SPITBOL compatible
 .B HOST()
