@@ -3,6 +3,9 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
+2/10/95
+	lib/init.c, include/macros.h: implement [CLR_]MATH_ERROR()
+
 2/3/95
 	genc.sno: port improvements from experimental version:
 		SELBRA() omits redundant labels
@@ -10,7 +13,7 @@ MAINBOL for Un*x history (and personal SNOBOL history);
 		include "else" in DOCMP2 and DOBOOL
 		generate SHORTN/FSHRTN in-line
 		Net change in snobol4.c size: +35 chars
-	include/macros.h: remoted SHORTN/FSHRTN
+	include/macros.h: removed SHORTN/FSHRTN
 	Makefile2.m4: Add -b flag to SNO
 
 1/25/95
