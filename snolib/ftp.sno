@@ -154,7 +154,7 @@ FTP.CLOSE.END
 							:(FTP.OPEN.ANON.END)
 FTP.OPEN.ANON
 	FTP.OPEN(FTP.NAME, FTP.HOST, 'anonymous', FTP.ANON.USER, FTP.PORT)
-							:F(FRETURN)S(RETURN)
++							:F(FRETURN)S(RETURN)
 FTP.OPEN.ANON.END
 
 ****************
@@ -164,7 +164,7 @@ FTP.OPEN.ANON.END
 *	FTP.OPEN.ANON(.X, 'hostname')			:F(END)
 *	FTP.DATA.COMMAND(.X, "RETR README", .Y)		:F(END)
 *LOOP	OUTPUT = Y					:S(LOOP)
-*	TCP.CLOSE(.Y)
+*	FTP.DATA.CLOSE(.Y)
 *	FTP.CLOSE(.X)
 
 *	example 2; store a file
@@ -173,5 +173,5 @@ FTP.OPEN.ANON.END
 *	FTP.DATA.COMMAND(.X, "STOR FOO", .Y)		:F(END)
 *	.Y = "STUFF"
 *	....
-*	TCP.CLOSE(.Y)
+*	FTP.DATA.CLOSE(.Y)
 *	FTP.CLOSE(.X)
