@@ -19,7 +19,7 @@
 
 /* paths; */
 #define SNOLIB_FILE	"snolib.dll"
-#define SNOLIB_DIR	"/snobol"
+#define SNOLIB_DIR	"/snobol4"
 
 /* includes; */
 #define ANSI_STRINGS
