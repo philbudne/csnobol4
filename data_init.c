@@ -8,7 +8,7 @@
  * * avoids initializers on unions (illegal in K&R style compilers)
  */
 
-# include "types.h"
+# include "snotypes.h"
 # include "h.h"
 # include "macros.h"
 # include "units.h"
