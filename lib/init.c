@@ -29,19 +29,20 @@ extern int optind;
 extern char *optarg;
 extern int getopt();
 
-char parambuf[512];
+/* global for access by host.c; */
 char *params;
 char **argv;
-int firstarg, argc;
+int firstarg;
+int argc;
 
-void
+static void
 p( str )
     char *str;
 {
     fputs( str, stderr );
 }
 
-void
+static void
 usage( jname )
     char *jname;
 {
@@ -73,7 +74,7 @@ usage( jname )
     exit(1);
 }
 
-int
+static int
 getk( str, out )
     char *str;
     int *out;
@@ -94,6 +95,54 @@ getk( str, out )
     }
 }
 
+/*
+ * create c-string of args from start .. argc in a malloc'ed buffer.
+ * fills in an optional SPEC
+ */
+
+static char *
+getargs(start, sp)
+    int start;				/* which argument to start on */
+    struct spec *sp;			/* dest spec, or NULL */
+{
+    int i;
+    int len;
+    char *parms;
+    register char *pp;
+
+    len = 0;
+    for (i = start; i < argc; i++)
+	len += strlen(argv[i]) + 1;	/* add one for space or NUL */
+
+    parms = malloc(len);
+    if (!parms)
+	return NULL;			/* XXX perror & exit? */
+
+    pp = parms;
+    for (i = start; i < argc; i++) {
+	register char *ap;
+
+	if (pp != parms)
+	    *pp++ = ' ';
+
+	ap = argv[i];
+	while ((*pp = *ap++))
+	    pp++;
+    }
+
+    if (sp) {
+	S_A(sp) = (int_t) parms;	/* OY! */
+	S_F(sp) = 0;			/* NOTE: *not* a PTR! */
+	S_V(sp) = 0;
+	S_O(sp) = 0;
+	S_L(sp) = len - 1;		/* omit trailing NUL */
+	CLR_S_UNUSED(sp);
+    }
+
+    return parms;
+}
+
+/* called from main.c after init_data, before xfer to SIL BEGIN label */
 void
 init_args( ac, av )
     int ac;
@@ -202,16 +251,12 @@ init_args( ac, av )
 	    break;			/* break out */
     }
 
-    /* process any remaining items as arguments (if no -u option) */
-    firstarg = optind;
+    /* if no -u option, process any remaining items as arguments for HOST(0) */
     if (params == NULL && optind < argc) {
-	while (optind < argc) {
-	    if (parambuf[0])
-		strcat(parambuf, " ");
-	    strcat(parambuf, argv[optind++] );
-	}
-	params = parambuf;
+	params = getargs(optind, NULL);
     }
+
+    firstarg = optind;			/* save for HOST(3) */
 
     if (errs) {
 	usage(argv[0]);
@@ -328,21 +373,5 @@ int
 getparm( sp )
     struct spec *sp;
 {
-    static char parm[2048];		/* XXX */
-    int i;
-
-    parm[0] = '\0';
-    for (i = 0; i < argc; i++) {
-	if (parm[0])
-	    strcat(parm, " ");
-	strcat(parm, argv[i] );
-    }
-    S_A(sp) = (int_t) parm;		/* OY! */
-    S_F(sp) = 0;			/* NOTE: *not* a PTR! */
-    S_V(sp) = 0;
-    S_O(sp) = 0;
-    S_L(sp) = strlen(parm);
-    CLR_S_UNUSED(sp);
-
-    return 1;
+    return getargs(0, sp) != NULL;
 }
