@@ -1,7 +1,14 @@
 $Id$
 
---opt='' gives default result... is this a bug or a feature?
-	--opt=' ' works to cancel optimization (document this?)
+Duff SPITBOL features;
+	VDIFFER -- returns first arg
+	LABEL()
+	ITC()/CTI()
+
+Add LOGIC() to snolib? PML??
+	need uint_t???
+
+Update "table of contents"?
 
 Include advertizements about users (announcements?) mailing list???
 	INSTALL
@@ -14,8 +21,14 @@ change name from C-MAINBOL to CSNOBOL4
 	doc/ports.doc, doc/snobol4.1
 	snolib/*.sno
 
+if 00README.CVS exists, show CVS/Entries file
+
 host.[ch]:
 	use SPITBOL names for HOST_XXX function names?
+
+porting.ms;
+	talk about ILP32, LP64
+	(mention LP32, ILP64 also)
 
 ports.doc
 	empty?
@@ -30,7 +43,7 @@ put sources under CVS
 	put config.guess, tsort on vendor branch;
 		ftp://ftp.gnu.org/pub/gnu/config/config.guess
 
-rework kit;
+make tar:
 	don't depend on snobol4? change to generated??
 	remove host.sno from G2?
 	prune CVS directories when making kit?? NO!
@@ -39,10 +52,11 @@ rework kit;
 	have tar file named snobol4-VERS.tar csnobol4-VERS.tar??
 
 man page
+	sed current version into man page??
+
 	sed SNOLIB_PATH into man page?
 		give load.doc full path!!
-	LOAD() limitations out of date
-	mention files/functions available in snolib/
+	mention files/functions available in snolib/ (mention README)
 	reference documents available on web (see next item)
 		http://burks.bton.ac.uk/burks/language/snobol/....
 		ftp://ftp.snobol4.com/spitman.pdf
@@ -101,8 +115,9 @@ rcs tag all files
 
 ================
 
-tsort:
-	use a snocone version?
+split procs into static & procified?
+
+tsort:	use a snocone version?
 
 HOST()
 	add build_user???
@@ -376,7 +391,7 @@ Implement select()???
 Test:
 	I/O options (include bad strings!)
 
-Add to porting.doc;
+Add to porting.ms;
 	common problems;
 		cannot optimize isnobol4.c or data_init.c
 		try other C compilers
