@@ -23,7 +23,7 @@ void init __P((void));
 /* io_include(), io_read() in libret.h */
 void io_backspace __P((int));
 void io_ecomp __P((void));
-void io_endfile __P((int));
+int io_endfile __P((int));
 int io_file __P((struct descr *,struct spec *));
 int io_flushall __P((int));
 void io_init __P((void));
@@ -53,7 +53,7 @@ void lvalue __P((struct descr *,struct descr *));
 void maknod __P((struct descr *,struct descr *,struct descr *,struct descr *,struct descr *,struct descr *));
 
 /* from pml.c */
-void getpmproto __P((struct spec *,struct descr *));
+int getpmproto __P((struct spec *,struct descr *));
 
 /* from realst.c */
 void realst __P((struct spec *,struct descr *));
@@ -64,7 +64,7 @@ void rplace __P((struct spec *,struct spec *,struct spec *));
 /* from str.c */
 void pad __P((struct descr *,struct spec *,struct spec *,struct spec *));
 void raise1 __P((struct spec *));
-void raise2 __P((struct spec *,struct spec *));
+int raise2 __P((struct spec *,struct spec *));
 void reverse __P((struct spec *,struct spec *));
 void substr __P((struct spec *,struct spec *,struct descr *));
 void trimsp __P((struct spec *,struct spec *));
