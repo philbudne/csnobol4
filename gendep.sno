@@ -30,7 +30,12 @@
 **************** SPITBOL I/O
 *	error output to fd2
 	OUTPUT(.STDERR,0,"[-f2]")
-	INPUT(.INPUT,1,"v311.sil")			:(EIO)
+	INPUT(.INPUT,1,"v311.sil")
+
+*	dummy out freeze/thaw
+	DEFINE("FREEZE(T)","RETURN")
+	DEFINE("THAW(T)","RETURN")
+							:(EIO)
 
 **************** MAINBOL I/O
 MB1	OUTPUT(.STDERR,7)
@@ -82,6 +87,7 @@ EIO
 	DISCARD<'DESCR'> = 1
 	DISCARD<'SPEC'> = 1
 	DISCARD<'STRING'> = 1
+	FREEZE(DISCARD)
 
 	OPTYPE<'RCALL'> = .XRCALL
 	OPTYPE<'SELBRA'> = .XSELBRA
@@ -126,6 +132,8 @@ EIO
 	OPTYPE<'STREAM'> = .L456
 
 	OPTYPE<'NANCHK'> = .L23
+
+	FREEZE(OPTYPE)
 	
 ****************************************************************
 *	functions
