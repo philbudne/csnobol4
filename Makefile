@@ -25,7 +25,7 @@ SMALL_SNO=snobol4 -b
 TSORT=	tsort
 
 # NOTE: run from "subr" directory
-#TSORT=	snobol4 -b ../tsort.sno <
+#TSORT=	snobol4 -b ../tsort.sno
 
 ################
 # machine generated files;
@@ -92,7 +92,7 @@ isnobol4.c: procs genc.sno globals $(SIL)
 	rm -rf isnobol4.c2 proc.h2 prolog subr
 	mkdir subr
 	$(SNO) -- genc.sno --inline $(SIL) > prolog
-	cd subr && $(TSORT) ../callgraph > order && \
+	cd subr && $(TSORT) < ../callgraph > order && \
 		cat ../prolog `cat order` > ../isnobol4.c2
 	mv -f isnobol4.c2 isnobol4.c
 	rm -rf prolog subr
