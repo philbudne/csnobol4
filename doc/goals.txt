@@ -7,7 +7,7 @@ Produce a free implementation of SNOBOL4 which is easily portable to
 any Un*x machine using the original "Macro Implementation" (MAINBOL).
 
 The target is any 32-bit machine with a good K&R C-compiler, stdio
-library and large address space (virtual memory HIGHLY desireable).
+library and large address space (virtual memory HIGHLY desirable).
 
 Self-compiling.
 

@@ -18,7 +18,7 @@ snobol4 \- SNOBOL4 interpreter
 .PP
 This manual page describes the port of the original BTL Macro
 Implementation of SNOBOL4 (MAINBOL) for Un*x (MFU) by Philip
-L. Budne.  The languange and it's implementation are described in [1]
+L. Budne.  The language and it's implementation are described in [1]
 and [2].
 .PP
 Extensions where present have been chosen to be compatible with one or
@@ -62,7 +62,7 @@ I/O.  The format argument to the
 function is ignored.
 .IP *
 Control lines and comment characters are valid after the end of string
-(;) statement seperator. 
+(;) statement separator. 
 .IP *
 Listing statement numbers show the statement number of the LAST
 statement on the line (rather than the first).
@@ -109,7 +109,7 @@ Underscore (_) and period (.) are legal within identifiers and labels.
 .TP
 Case folding
 .br
-By default the compiler folds identifers and directives
+By default the compiler folds identifiers and directives
 to upper case, so programs can be entered in either case.  To disable
 case folding use the directive
 .B "\-CASE 0" or
@@ -141,7 +141,7 @@ will be connected to the file variable.
 .TP
 .B &UCASE/&LCASE
 .br
-Protected keyworks
+Protected keywords
 .B &UCASE
 and
 .B &LCASE
@@ -156,7 +156,7 @@ and
 .B \-NOERRORS
 control execution of program with compiler errors.  If the
 .B \-ERROR
-direective is given, the program will be executed (but any attempt to
+directive is given, the program will be executed (but any attempt to
 execute a statement with a compiler error will cause a fatal execution
 error.  By default programs with compiler errors will not be started,
 this can be restored using

@@ -14,16 +14,16 @@ should have;
 
 .IP *
 A large address space (allowing for approx 300K code and 300K data).
-Virtual memory is desireable.
+Virtual memory is desirable.
 .IP *
 An industrial strength optimizing C compiler;
-GNU CC (gcc) is prefered, but no ANSI features are required.
+GNU CC (gcc) is preferred, but no ANSI features are required.
 .IP *
 A reasonably complete C library, including stdio.
 .PP
-System dependancies are all isolated in library routines and a few C
+System dependencies are all isolated in library routines and a few C
 preprocessor macros (for inline implementation of SIL operations).
-The supplied code should be machine independant, and a binary of
+The supplied code should be machine independent, and a binary of
 snobol4 should not be needed to bootstrap the system.
 
 .NH 1
@@ -35,7 +35,7 @@ included into Makefile2.m4 using the m4 macro processor, and contains
 make variable assignments (ie; VAR=VALUE).
 .PP
 The following are variables which may need to be set in some
-enviroments;
+environments;
 
 .NH 2
 CC
@@ -77,8 +77,8 @@ CONFIG_CFLAGS
 .PP
 Additional flags passed to the C compiler for C source files.  May
 include symbol defines (see the section on Macro Names).  The variable
-SNOBOL4_C_CFLAGS can be se to additional C compiler flags to be used
-on only snobol4.c (may be required due to thee size of the file).
+SNOBOL4_C_CFLAGS can be set to additional C compiler flags to be used
+on only snobol4.c (may be required due to the size of the file).
 
 .NH 2
 CONFIG_LDFLAGS
@@ -96,25 +96,25 @@ or more of the support library routines (ie; vfprintf.o).
 .NH 2
 CONFIG_SRC
 .PP
-Additional source files to include in dependancy calculation
+Additional source files to include in dependency calculation
 (see CONFIG_OBJ, and section on source file path variables).
 
 .NH 2
 AUX_SRC
 .PP
-Auxillary source files to include in dependancy calculation
+Auxiliary source files to include in dependency calculation
 (see AUX_OBJ, and section on source file path variables).
 
 .NH 2
 AUX_OBJ
 .PP
-Auxillary object files to include in snolib.a.  Typically one or more
+Auxiliary object files to include in snolib.a.  Typically one or more
 of the support library routines (bcopy.o, bcmp.o, getopt.o).
 
 .NH 2
 PML_OBJ
 .PP
-Object files not in AUX_OBJ (snoblib.a) for functions referenced from
+Object files not in AUX_OBJ (snolib.a) for functions referenced from
 pml.h.
 
 .NH 2
@@ -138,7 +138,7 @@ or -D<symbol>=<value> flags in the CONFIG_CFLAGS Makefile2 variable.
 DCMP_BYTES
 .PP
 DCMP_BYTES should be defined if sizeof(int_t) != sizeof(real_t).  If
-DCMP_BYTES is defined, decriptor equality will be detwemined using
+DCMP_BYTES is defined, descriptor equality will be determined using
 bcmp().
 .PP
 Example: -DDMP_BYTES.
@@ -199,7 +199,7 @@ Return type for signal handler functions (default: void).
 .NH 1
 Library functions
 .PP
-The remainder of this file describes the various system-dependant
+The remainder of this file describes the various system-dependent
 library files, the functions they provide, and the C library functions
 they require.
 
@@ -234,7 +234,7 @@ Uses bcopy() to append strings.  See MOVBLK macro.
 .NH 2
 ZERBLK macro
 .PP
-Uses bzero() to clear blocks of deccriptors.
+Uses bzero() to clear blocks of descriptors.
 .PP
 A generic C bzero routine is provided (see config/skel.inc)
 in lib/bzero.c
@@ -257,7 +257,7 @@ dynamic.c
 .PP
 Allocate dynamic storage region, and forewarn the operating system
 that access behavior may be non-sequential (particularly during
-strorage regeneration).  Two versions are provided: generic/dynamic.c,
+storage regeneration).  Two versions are provided: generic/dynamic.c,
 which uses malloc(), and bsd/dynamic.c which calls malloc() and then
 vadvise().
 
@@ -281,7 +281,7 @@ pow(x,y) is a venerable function and should be widely available.  If
 it is not, it could be simulated (ie; in pow.c) using exp() and log(),
 or similar functions (such as expm1() and log1p()).
 .PP
-pow() is used for integer exponentation.  It might be more efficient
+pow() is used for integer exponentiation.  It might be more efficient
 to decompose y (bitwise) into powers of two and use repeated
 multiplies from the series x, x^2, x^4 ...
 
@@ -344,7 +344,7 @@ Convert from binary floating point to string.  Should NOT resort to
 use of scientific notation.  Uses sprintf() %f format which is usually
 suboptimal (may have trailing zeroes).  Does not use %g format, since
 it is less widely available, may resort to scientific notation, and
-may omit period and ALL traling zeroes on whole numbers.
+may omit period and ALL trailing zeroes on whole numbers.
 .PP
 Better results may be possible by using fconvert(), and gconvert() (or
 fcvt() and gcvt()) when available, along with a modicum of

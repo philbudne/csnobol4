@@ -4,7 +4,7 @@
 all:	porting.doc snobol4.0
 
 ## try also -Tcrt -Tman
-NROFF=nroff -Tlpr
+NROFF=nroff -Tlp
 MS=-ms
 MAN=-man
 

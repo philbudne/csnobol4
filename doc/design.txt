@@ -34,7 +34,7 @@ Alternate returns are implemented by using the C return value and a
 switch statement.
 
 Any BRANCH (or other goto) which refers to a label outside the current
-proc is converted into;
+procedure is converted into;
 
 		return label(retval)
 
