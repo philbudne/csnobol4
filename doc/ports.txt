@@ -26,9 +26,10 @@ Sun Ultra 30	296   SunOS 5.5.1   sproO5/cg92	0.99.4 123163	pb 8/97
 P6 (ASUS P6NP5)	200   FreeBSD 2.2   gcc -O2	0.99.1 103491	cl 11/96
 P6 (GW2K)	200   SunOS 5.5.1   gcc -O2	0.99.4 100978	pb 8/97
 P6 (ASUS P6NP5)	200   FreeBSD 2.2   gcc		0.99.1  95608	cl 11/96
-Sun Ultra 30	296   SunOS 5.5.1   sunpro	0.99.4	98530	pb 8/97
+Sun Ultra 30	296   SunOS 5.5.1   spro	0.99.4	98530	pb 8/97
+Sun Ultra 30	248   SunOS 5.6     spro	0.99.4	93974	pb 9/97
 SGI IP25 (R10K)	194   IRIX64 6.2    cc		0.99.4  93434	rh 8/97
-P6 (GW2K)	200   SunOS 5.5.1   sunpro	0.99.4	93116	pb 8/97
+P6 (GW2K)	200   SunOS 5.5.1   spro	0.99.4	93116	pb 8/97
 P6 (GW2K)	200   SunOS 5.5.1   gcc		0.99.4	93116	pb 8/97
 P6 (DELL)	200   Linux 2.0.23  gcc		0.99.3	91072	rf 2/97
 HP 9000/778	160   HP-UX 10.20   c89		0.99.4	80483	pb 8/97
@@ -40,12 +41,14 @@ Sun Ultra2 170E	167   SunOS 5.5.1   gcc		0.99.1  62524	cl 11/96
 Sun Ultra1	143   SunOS 5.5.1   spro -xO5	0.99.3	57955	pb 3/97
 Sun Ultra2	167   SunOS 5.5.1   spro	0.99.4	57144	pb 8/97
 HP 9000/735	125   HP-UX 9.03    c89		0.99.3	48894	rf 2/97
+Sun SS20/RT626	50    Sunos 5.3	    spro	0.99.4	48020	gs 9/97
 P5 (ASUS TP4N)	120   Linux 2.0.27  gcc		0.99.4	46784	pb 8/97
 SGI IP22 (R5K)	180   IRIX 6.2      cc		0.99.4  45034	rh 8/97
 P5 (Endeavor)	120   FreeBSD 2.2.1 gcc		0.99.3	44858	db3 6/97
 AMD ??		??    Linux 2.0.30  gcc		0.99.4	41901	ad 8/97
 Sun SS1000	85    SunOS 5.5     spro	0.99.1  41682	pb 10/96
 HP 9000/778	160   HP-UX 10.20   cc		0.99.3+	40417	pb 6/97
+IBM RS/6K J40 	112   AIX 4.1.5     cc?		0.99.4	39749	sr 9/97
 HP 9000/887-G70 96    HP-UX 9.04    c89		0.99.1  37613	hb 11/96
 P5		100   BSDI 2.1      gcc		0.99.1  35972	db2 11/96
 HP 9000/839-K210 ?    HP-UX 10.20   cc?		0.99.4	35928	bm 8/97
@@ -65,6 +68,7 @@ IBM RS/6K 970	50    AIX 3.2.5	    gcc		0.99    22064	bm 10/96
 P5		75    NetBSD 1.1    gcc		0.99    20923 	to 10/96
 Sun SS10/51	50    SunOS 4.1.3C  gcc		0.98.4	20710	pb 8/97
 Sun SS20/51	50    SunOS 4.1.3U1 gcc		0.99.4	20644	pb 8/97
+P5		120   Linux 2.0.29  gcc		0.99.4	20579	bm 8/97
 IBM RS/6K 40P	66    AIX 4.1.2	    cc		0.99.4	20108	pb 8/97
 HP 9000/720	50    HP-UX 10.10   c89		0.99.4	20183	pb 8/97
 P5		60    Linux 2.1.50  gcc		0.99.4	19730	svm 8/97
@@ -75,11 +79,13 @@ SGI IP20 (R4K)	100   IRIX 5.2      cc		0.99.4	17453	pb 8/97
 Sun SS5/110	110   SunOS 5.5.1   spro	0.99.1  17072	db 11/96
 Sun SS5/110	110   SunOS 5.5.1   spro	0.99.3  15075	db 11/96
 i486		??    Linux 2.0.30  gcc		0.99.4	15039	pb 8/97
+HP 9000/712	60    HP-UX 9.03    gcc		0.99.4	13063	yb 9/97
 Sun SS5/85	85    SunOS 4.1.4   gcc		0.99.4	12756	pb 8/97
 Sun SS10/40	40    SunOS 5.5.1   gcc		0.99.1  12237	jm 11/96
 i486DX2		66    OpenBSD 2.0   gcc		0.99.2	 9376	to 12/96
 Solbourne/5E	40    OS/MP 4.1B    gcc		0.99.4	 8004	pb 8/97
 IBM RS/6K 320	25    AIX 3.2.5     cc		0.99.4	 7433	pb 8/97
+Sun SS2		40    SunOS 5.6	    Spro	0.99.4	 7287	pb 9/97
 Sun SS2		40    SunOS 4.1.3   gcc		0.99.4	 7116	pb 8/97
 HP 380 (68040)	25    NetBSD 1.2E   gcc		0.99.4	 7069	pb 8/97
 Sun SS/LX	50    SunOS 5.4     spro	0.99.1	 7016	hb 11/96
@@ -93,6 +99,7 @@ Sun SS/IPC	25    SunOS 4.1.4   gcc		0.99.4	 4581	pb 8/97
 HP 425T (68040)	26    HP-UX 8.00    c89		0.99	 4485	pb 10/96
 HP 375 (68030)	50    NetBSD 1.2E   gcc		0.99.4	 4156*	pb 8/97
 HP 370 (68030)	33.3  NetBSD 1.2E   gcc		0.99.4	 3167*	pb 8/97
+i486		??    FreeBSD 2.2.1 gcc		0.99.4+	 3367	pb 8/97
 HP 370 (68030)	33.3  Mt Xinu 4.3   gcc		0.99	 3064	pb 10/96
 pc532 (ns32532)	25    NetBSD 1.2D   gcc		0.99.4	 2858*	pb 8/97
 Sun-4/110	14.28 NetBSD 1.2    gcc		0.99.1	 2751	pb 11/96
@@ -188,6 +195,9 @@ cl	Craig Leres		Lawrence Berkeley Labs
 dj	Derek M Jones
 	<derek@knosof.co.uk>
 
+gs	G. L. Sicherman		Lucent
+	gls@atpsol.cvu.lucent.com
+
 hb	Howard Bussey		Bellcore
 	<howard@bellcore.com>
 
@@ -210,7 +220,7 @@ pb	Phil Budne		Himself
 	<phil@ultimate.com>
 
 pt	Phillip Thomas		Library Of Congress
-	<ptho@seq1.loc.gov>
+	<ptho@loc.gov>
 
 rf	Rik Faith		University of North Carolina
 	<faith@cs.unc.edu>
@@ -221,8 +231,15 @@ rh	Randolph Herber		Fermi National Accel. Lab
 ro	Richard A. O'Keefe
 	<ok@cs.rmit.edu.au>
 
+sr	Stephen Rea		University of Arkansas
+	<srea@uaex.edu>
+	
+
 svm	Sander van Malssen
 	<svm@kozmix.ow.nl>
 
 to	Takeshi Okazaki
 	<GBA03552@niftyserve.or.jp>
+
+yb	Yuli Barcohen
+	<yuli.barcohen@telrad.co.il>
