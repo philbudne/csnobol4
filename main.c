@@ -15,10 +15,9 @@
 # include "snotypes.h"
 # include "lib.h"			/* version() */
 # include "gen.h"
-
-# if defined(ENDEX_LONGJMP) || defined(NO_STATIC_VARS)
 # include "macros.h"
 
+# if defined(ENDEX_LONGJMP) || defined(NO_STATIC_VARS)
 # include "equ.h"
 # include "res.h"
 # endif /* defined(ENDEX_LONGJMP) || defined(NO_STATIC_VARS) */
@@ -48,6 +47,7 @@ main(argc, argv)
 # ifdef ENDEX_LONGJMP
     jmp_buf _endex_jmpbuf;
 # endif /* ENDEX_LONGJMP defined */
+
     varp = (struct vars *)malloc(sizeof(struct vars));
     if (!varp) {
 	perror("could not allocate vars");
@@ -65,6 +65,6 @@ main(argc, argv)
     if (setjmp(endex_jmpbuf))
 	return(D_A(RETCOD));
 # endif /* ENDEX_LONGJMP defined */
-    BEGIN( 0 );
+    BEGIN(NORET);
     return( 0 );
 }
