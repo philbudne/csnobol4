@@ -1,7 +1,11 @@
 /* $Id$ */
 
 #include <stdio.h>
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#else  /* HAVE_UNISTD_H not defined */
+#define STDERR_FILENO 2
+#endif /* HAVE_UNISTD_H not defined */
 
 /*
  * return a stdio stream for TERMINAL input variable
