@@ -9,6 +9,7 @@ main(argc, argv)
 {
     init_data();
     init_args( argc, argv );
+    version();
     BEGIN( 0 );
     return( 0 );
 }
