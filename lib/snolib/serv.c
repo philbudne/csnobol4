@@ -13,9 +13,18 @@
 #endif /* HAVE_CONFIG_H defined */
 
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <sys/socket.h>
 #include <signal.h>
 #include <errno.h>
+
+#ifdef HAVE_STDLIB_H			/* before stdio */
+#include <stdlib.h>			/* atoi() */
+#endif /* HAVE_STDLIB_H not defined */
+
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>			/* close() */
+#endif /* HAVE_UNISTD_H defined */
 
 /* inet */
 #include <netdb.h>
@@ -30,6 +39,7 @@
 #include "macros.h"
 #include "load.h"
 #include "equ.h"
+#include "lib.h"			/* io_flushall() */
 
 #ifndef SIGFUNC_T
 #define SIGFUNC_T void

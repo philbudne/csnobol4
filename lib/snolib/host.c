@@ -22,6 +22,7 @@
 #include "load.h"			/* LA_xxx macros */
 #include "equ.h"			/* datatypes I/S */
 #include "host.h"			/* HOST() function codes */
+#include "lib.h"			/* osname(),hwname(),io_flushall() */
 
 #ifdef NO_STATIC_VARS
 #include "vars.h"
@@ -32,7 +33,13 @@ extern char **argv;
 extern char *params;
 #endif /* NO_STATIC_VARS not defined */
 
-extern char *getenv();			/* use <stdlib.h> if avail? */
+#ifdef HAVE_STDLIB_H			/* before stdio */
+#include <stdlib.h>			/* getenv(),system() */
+#else  /* HAVE_STDLIB_H not defined */
+extern char *getenv();
+#endif /* HAVE_STDLIB_H not defined */
+#include <stdio.h>			/* sprintf() */
+#include <ctype.h>			/* isdigit() */
 
 #ifdef HAVE_BUILD_VARS
 extern const char build_files[];
