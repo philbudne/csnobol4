@@ -137,7 +137,9 @@ load(addr, sp1, sp2)
 	    return FALSE;
 	} /* dlsym failed */
     } /* not found by pml */
+#ifdef TRY_UNDERSCORE
  found:
+#endif /* TRY_UNDERSCORE defined */
     fp->self = fp;			/* make valid */
 
     fp->next = funcs;			/* link into list (for unload) */
