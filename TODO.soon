@@ -1,10 +1,25 @@
 $Id$
 
+autoconf:
+	"configure" script wrapper;
+		output to config.m4
+		run m4?
+		flush Makefile??
+	--max-opt
+
+	options for dest dir(s)?
+		--bindest=
+		--mandest=
+
+	save additions in (local-config?) file??
+
 INSTALL:
-	talk about optimization options???
-		ADD_OPT()
-		OPT=
-		SNOBOL4_C_CFLAGS=
+	talk about optimization options
+		ie; gcc -O2
+		use of --opt=
+			ADD_OPT()
+			OPT=
+			SNOBOL4_C_CFLAGS=
 
 man page:
 	more on I/O options (esp update)
@@ -26,6 +41,9 @@ load.doc:
 
 autoconf:
 	disable -O with HP bundled "cc"?  nah.
+
+Installation;
+	make/install formatted snobol4.cat1/snobol4.0 on bsd44?
 
 ==== before beta releases
 
@@ -285,3 +303,7 @@ move RSTSTK() to RRTURN?
 ================
 
 try appending .sno to command line filenames, if not found?
+
+================
+
+CHAR/LPAD/RPAD in wrong section of v311.sil?!

@@ -4,6 +4,9 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
 4/5/97:
 	doc/snobol4.1: document DATE() args
+	config/gcc.m4, autoconf, timing: added CCVERS for C Compiler version
+	autoconf: new options --add-{cppflags,ldflags,objs,opt,srcs}= --opt=
+	INSTALL: document new autoconf options
 
 4/2/97:
 	genc.sno, v311.sil, lib/date.c: support SPITBOL DATE() args
