@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+1/13/2003
+	doc/load.doc: cleanup
+	lib/next/load.c: use snolib.so on Darwin
+	INSTALL: cleanup
+
 1/12/2003
 	config/win32/config.h: add missing endif
 	INSTALL: update cygwin info

@@ -1,6 +1,6 @@
 $Id$
 
-note darwin dlopen() support in cctools/libdyld??
+keep usecount in next/load.c?  Apple dlopen() simulation does!
 
 PACKAGING!!
 
@@ -736,4 +736,11 @@ file stat releated functions;
 	FILESIZE()??
 	STAT()??
 
+Add -XXX directive cards for:
+	PSTACK
+	DYNAMIC
+	ISTACK
+	(too late to alter sizes)
+
 see the old TODO file!!!
+
