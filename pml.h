@@ -7,9 +7,10 @@
  * See lib/snolib/*.c for example functions
  */
 
-#if 0 /* examples: */
-PMLFUNC2("FOO", bar)			/* function FOO entry point at "bar" */
-#endif /* 0 */
+/*
+ * NOTE!! PMLFUNC2 used for exntry points renamed due to 
+ * name collisions (many due to VMS config.h define games)
+ */
 
 #ifndef NO_PML_HOST
 PMLFUNC(HOST)				/* SPITBOL compat */
@@ -17,23 +18,23 @@ PMPROTO("HOST(,)")			/* two polymorphic params */
 #endif /* NO_PML_HOST not defined */
 
 #ifndef NO_PML_EXIT
-PMLFUNC(EXIT)				/* SPITBOL compat */
+PMLFUNC2("EXIT",EXIT)			/* SPITBOL compat */
 PMPROTO("EXIT()")			/* one polymorphic param */
 #endif /* NO_PML_EXIT not defined */
 
 #ifndef NO_PML_REAL
 #ifndef NO_PML_SQRT
-PMLFUNC(SQRT)
+PMLFUNC2("SQRT",SQRT)
 PMPROTO("SQRT(REAL)REAL")
 #endif /* NO_PML_SQRT not defined */
 
 #ifndef NO_PML_EXP
-PMLFUNC(EXP)
+PMLFUNC2("EXP",EXP)
 PMPROTO("EXP(REAL)REAL")
 #endif /* NO_PML_EXP not defined */
 
 #ifndef NO_PML_LOG
-PMLFUNC(LOG)
+PMLFUNC2("LOG",LOG)
 PMPROTO("LOG(REAL)REAL")
 #endif /* NO_PML_LOG not defined */
 
@@ -43,13 +44,13 @@ PMPROTO("CHOP(REAL)REAL")
 #endif /* NO_PML_CHOP not defined */
 
 #ifndef NO_PML_TRIG
-PMLFUNC(SIN)
+PMLFUNC2("SIN",SIN)
 PMPROTO("SIN(REAL)REAL")
 
-PMLFUNC(COS)
+PMLFUNC2("COS",COS)
 PMPROTO("COS(REAL)REAL")
 
-PMLFUNC(TAN)
+PMLFUNC2("TAN",TAN)
 PMPROTO("TAN(REAL)REAL")
 #endif /* NO_PML_TRIG not defined */
 #endif /* NO_PML_REAL not defined */
@@ -60,17 +61,17 @@ PMPROTO("FILE(STRING)STRING")
 #endif /* NO_PML_FILE not defined */
 
 #ifndef NO_PML_DELETE
-PMLFUNC(DELETE)				/* SITBOL compat */
+PMLFUNC2("DELETE",DELETE)		/* SITBOL compat */
 PMPROTO("DELETE(STRING)STRING")
 #endif /* NO_PML_DELETE not defined */
 
 #ifndef NO_PML_RENAME
-PMLFUNC(RENAME)				/* SITBOL compat */
+PMLFUNC2("RENAME",RENAME)		/* SITBOL compat */
 PMPROTO("RENAME(STRING)STRING")
 #endif /* NO_PML_RENAME not defined */
 
 /* 4/7/97; */
-PMLFUNC(IO_FINDUNIT)
+PMLFUNC2("IO_FINDUNIT",IO_FINDUNIT)
 PMPROTO("IO_FINDUNIT()INTEGER")
 
 /* experimental 3/12/99; */
