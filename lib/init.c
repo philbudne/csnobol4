@@ -40,6 +40,10 @@ extern char *dynamic();
 #include "vars.h"
 #else  /* NO_STATIC_VARS not defined */
 
+#ifdef HAVE_BUILD_VARS
+extern const char build_date[];		/* from build.c */
+#endif /* HAVE_BUILD_VARS */
+
 /* global for access by io.c; */
 int rflag;
 
@@ -91,6 +95,9 @@ usage( jname, justversion )
 {
     extern const char snoname[], vers[], vdate[];
     fprintf( stderr, "%s version %s (%s)\n", snoname, vers, vdate );
+#ifdef HAVE_BUILD_VARS
+    fprintf( stderr, "built %s\n", build_date);
+#endif /* HAVE_BUILD_VARS */
     if (justversion)
 	exit(1);
 
