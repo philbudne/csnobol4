@@ -140,7 +140,19 @@ The
 .B BREAKX()
 function is a pattern function used for fast scanning.
 \fBBREAKX(\fIstr\fB)\fR is equivalent to \fBBREAK(\fIstr\fB)
-ARBNO(LEN(1) BREAK(\fIstr\fB))\fR
+ARBNO(LEN(1) BREAK(\fIstr\fB))\fR.  In other words BREAKX matches a
+sequence of ever larger strings terminated by a break set.  BREAKX can
+be used as a faster matching replacement for
+.B ARB
+since
+.B "BREAKX('S') 'STRING'"
+always runs faster than
+.B "ARB 'STRING'"
+since it only attempts matching
+.B "'STRING'"
+when an
+.B "'S'"
+has been detected.
 
 .TP
 Case folding
@@ -385,6 +397,36 @@ of the form:
 .br
 .IR "ANY('DeEe') ('+' | '-' | '') SPAN('0123456789')" .
 .TP
+SITBOL file functions
+.br
+\fBFILE(\fIstring\fB)\fR is a predicate which returns the null string
+if it's argument is the name of a file that exists, and fails if it
+does not.  \fBDELETE(\fIstring\fB)\fR is a predicate which tries to
+remove the file named by it's argument, and fails if it cannot.
+\fBRENAME(\fIstring1\fB,\fIstring2\fB)\fR 
+is a predicate which attempts to rename the file named by
+.I string2
+to the file named by
+.IR string1 .
+Unlike the SITBOL version, if the target file exists, it will be
+removed.
+.TP
+SNOBOL4+ real functions
+.br
+.BR EXP() ,
+.B LOG()
+and
+.B CHOP() 
+functions are available for compatibility with SNOBOL4+.
+.B EXP()
+takes returns the value
+.IR "e ** x" ,
+.B LOG()
+returns the natural logarithm of it's argument, and
+.B CHOP()
+truncates the fractional part of it's (rounding towards zero), and
+returns a real.
+.TP
 .B SORT()/RSORT()
 .br
 The
@@ -443,6 +485,14 @@ where
 is a non-zero integer enables them.  SPITBOL extensions are enabled by
 default.
 .TP
+.BR SQRT()
+.br
+The
+.BR SQRT()
+function is available for compatibility with SPARC SPITBOL.  
+.BR SQRT()
+fails if the argument is negative, but does not cause a fatal error.
+.TP
 .B SUBSTR()
 .br
 .B SUBSTR()
@@ -457,6 +507,15 @@ The variable
 .B TERMINAL
 is associated with the standard error file descriptor for both input
 and output.
+.TP
+Trig functions
+.br
+.BR SIN() ,
+.B COS()
+and
+.B TAN()
+functions are available for compatibility with SPARC SPITBOL
+and take arguments in radians.
 .TP
 .B &UCASE/&LCASE
 .br
