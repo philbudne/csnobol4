@@ -132,7 +132,13 @@ hash(dp, sp)
 
 #ifdef OBSFT
     /* OBSIZ a power of two; use mask & shift */
-    D_A(dp) = c & (OBSIZ-1);
+
+    /*
+     * Sun "WorkShop 6 2000/04/07 C 5.1" in LP64 mode (-xarch=v9) w/ -O
+     * blows this as a single statement
+     */
+    D_A(dp) = c;
+    D_A(dp) &= (OBSIZ-1);
     D_V(dp) = c >> OBSFT;		/* assention */
 #else
     /* OBSIZ not a power of two; use mod and div */
