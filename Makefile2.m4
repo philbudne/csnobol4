@@ -81,6 +81,7 @@ EXISTS_C=$(SRCDIR)lib/generic/exists.c
 EXPOPS_C=$(SRCDIR)lib/generic/expops.c
 HASH_C=$(SRCDIR)lib/hash.c
 INET_C=$(SRCDIR)lib/bsd/inet.c
+INET6_C=$(SRCDIR)lib/bsd/inet6.c
 INIT_C=$(SRCDIR)lib/init.c
 INTSPC_C=$(SRCDIR)lib/generic/intspc.c
 IO_C=$(SRCDIR)lib/io.c
@@ -183,8 +184,11 @@ CFLAGS=$(COPT) $(MYCPPFLAGS)
 # XXX replace SNOLIB_A with SNOLIB_FILE??
 #	need to add rules to make shared libraries (to config/xxx.m4 files)
 
+# or inet6.o
+INET_O=	inet.o
+
 OBJS=	main.o $(SNOBOL4).o data.o data_init.o syn.o bal.o date.o \
-	dump.o dynamic.o endex.o expops.o hash.o inet.o init.o \
+	dump.o dynamic.o endex.o expops.o hash.o $(INET_O) init.o \
 	intspc.o io.o lexcmp.o load.o mstime.o ordvst.o pair.o pat.o \
 	pml.o realst.o replace.o spcint.o spreal.o str.o stream.o \
 	suspend.o term.o top.o tree.o tty.o version.o \
@@ -295,6 +299,9 @@ hash.o:	$(HASH_C)
 
 inet.o:	$(INET_C)
 	$(CC) $(CFLAGS) -c $(INET_C)
+
+inet6.o: $(INET6_C)
+	$(CC) $(CFLAGS) -c $(INET6_C)
 
 init.o:	$(INIT_C)
 	$(CC) $(CFLAGS) -c $(INIT_C)
