@@ -2,6 +2,26 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+12/21/97
+	New config/w32/tlist.bat
+	New config/w32/nttest.bat
+		David Feustel's WinNT reression test batch files
+
+12/17/97
+	New config/w32/ntmsvc.bat:
+		David Feustel's WinNT batch file using MS VC++ 5.0
+
+12/10/97
+	Fixes from David Feustel's WinNT port;
+	config/borland/build.bat: add missing files
+	lib/io.c: added NEED_POPEN_DECL
+
+12/5/97
+	doc/snobol4.1: fix typo (thanks to Phillip Thomas)
+
+Gave to David Feustel 12/3/97 for WinNT port
+Gave to Phillip Thomas 11/23? for tcp/findunit fixes
+
 11/23/97:
 	lib/init.c: catch SIGPIPE!
 	lib/io.c: write newline directly if unbuffered
