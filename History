@@ -2,6 +2,38 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+11/21/97:
+	Fix io_endfile() exhaustion reported by Phillip Thomas
+	lib/io.c: io_closeall(); return status, free file blocks
+		io_endfile(); call io_closeall(), even if no curr!
+
+11/16/97:
+	lib/generic/expops.c: use int_t in SIGN cast
+
+11/8/97:
+	doc/porting.doc: NO_UNBUF_RW
+	Makefile2.m4: install .h files in snolib dir
+		make hard link for snobol4-VERS
+		touch snobol4 after hard link
+			to ensure newer than snobol4.c
+
+11/7/97:
+	v311.sil: removed keyword tracing for &ERRTEXT
+		didn't work (output as integer)
+		neither SNOBOL4+ nor SPITBOL allow it
+
+11/5/97:
+	v311.sil: replace PROC with XPROC on merged scanner procs
+	snolib/spitbol.sno: set &FULLSCAN = 1
+	gendata.sno: get input filename using HOST() functions
+	genc.sno: get input filename using HOST() functions
+		add missing "new" SIL op names to comments
+		add new XPROC op
+	Makefile2.m4: pass SIL file to genc, gendata on command line
+	lib/dump.c: use X_BKSIZE() in dump_dyn()
+	timing: link v311.sil into timdir, and pass on command line to genc.sno
+	include/macros.h: check second character in LEXEQ()
+
 11/4/97:
 	lib/init.c: increase default dynamic space to 64K descrs
 	Makefile2.m4: removed -d512k arg from SNOBOL4 command
@@ -13,7 +45,7 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 	lib/pat.c: make inlinable
 	parms.h: inline pat.c
 		8% reduction in genc.sno compile time
-	v311.sil: catch bad data ar PATBRA
+	v311.sil: catch bad data at PATBRA
 
 10/29/97:
 	lib/vms/{tty,getredirect,term}.c: flushed xxx_file hacks

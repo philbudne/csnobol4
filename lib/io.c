@@ -218,12 +218,24 @@ int
 io_closeall(unit)			/* internal (zero-based unit) */
     int unit;
 {
-    while (io_units[unit].curr != NULL)
-	io_close(unit);			/* XXX check for error? */
+    struct file *fp, *next;
+    int ret;
 
+    ret = TRUE;
+    while (io_units[unit].curr != NULL)
+	if (!io_close(unit))
+	    ret = FALSE;
+
+    /* free up all files */
+    fp = io_units[unit].head;
+    while (fp != NULL) {
+	next = fp->next;
+	free(fp);
+	fp = next;
+    }
     io_units[unit].curr = io_units[unit].head = NULL;
 
-    return TRUE;
+    return ret;
 }
 
 static void
@@ -687,11 +699,12 @@ io_endfile(unit)			/* ENFILE */
     int unit;
 {
     unit--;				/* make zero-based */
-    if (BADUNIT(unit) || io_units[unit].curr == NULL) {
+    if (BADUNIT(unit) ||
+	io_units[unit].curr == NULL && io_units[unit].head == NULL) {
 	/* fatal error in SPITBOL, but not in SNOBOL4+ */
 	return TRUE;
     }
-    return io_close(unit);
+    return io_closeall(unit);
 }
 
 #define COMPILING(UNIT) ((UNIT) == UNITI-1 && compiling)
