@@ -9,18 +9,26 @@
 CC=gcc
 OPT=-O2 -finline-functions
 
+# defaults
 INET_C=lib\dummy\inet.c
+LOAD_C=lib\dummy\load.c
 
 # uncomment next 3 lines to build with WATTCP
 #WATTCP_DEFS=-I/djgpp/v2/contrib/wattcp/inc -DWATTCP_DOS
 #WATTCP_LIBS=-L/djgpp/v2/lib -lwatt
 #INET_C=lib\bsd\inet.c
+#INET_OBJS=rresvport.o
 
+# DXE loading
+#LOAD_C=lib\unix98\load.c
+#DXE_OBJS=osinit.o
+#DXE_DEFS=-DHAVE_OSINIT
+#DXE_LIBS=-ldl
 
 CFLAGS=	-c $(OPT) -Iconfig/djgpp -Iinclude -I. \
-	-DHAVE_CONFIG_H $(WATTCP_DEFS)
+	-DHAVE_CONFIG_H $(WATTCP_DEFS) $(DXE_DEFS)
 
-LIBS=-lm -lc -lpc -ldl $(WATTCP_LIBS)
+LIBS=-lm -lc -lpc $(DXE_LIBS) $(WATTCP_LIBS)
 
 OBJ=	isnobol4.o data.o data_init.o main.o syn.o \
 	version.o bal.o date.o dump.o endex.o hash.o \
@@ -32,7 +40,7 @@ OBJ=	isnobol4.o data.o data_init.o main.o syn.o \
 	host.o log.o logic.o ord.o rename.o retstring.o sin.o \
 	spcint.o spreal.o sprintf.o sqrt.o sset.o \
 	tan.o sys.o tty.o inet.o execute.o exists.o \
-	rresvport.o term.o findunit.o osinit.o
+	term.o findunit.o $(DXE_OBJS) $(INET_OBJS)
 
 snobol4.exe : $(OBJ)
 	$(CC) -o snobol4 $(OBJ) $(LIBS)
@@ -165,8 +173,8 @@ tty.o : lib\posix\tty.c
 inet.o : $(INET_C)
 	$(CC) $(CFLAGS) $(INET_C)
 
-load.o : lib\unix98\load.c
-	$(CC) $(CFLAGS) lib\unix98\load.c
+load.o : $(LOAD_C)
+	$(CC) $(CFLAGS) $(LOAD_C)
 
 ################ generic
 
