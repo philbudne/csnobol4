@@ -47,10 +47,12 @@ tty_mode( fp, cbreak, noecho )
 #endif
 
     if (cbreak) {
-	new.c_lflag &= ~ICANON;		/* kill canon; leave signals */
 #if 0
-	new.c_iflag &= ~(ICRNL|INLCR);	/* hey, system! leave CR/LF alone! */
+	new.c_lflag &= ~ICANON;		/* kill canon proc, leave signals */
+#else
+	new.c_lflag &= ~(ICANON|ISIG);	/* kill canon, signal processing */
 #endif
+	new.c_iflag &= ~(ICRNL|INLCR);	/* hey, system! leave CR/LF alone! */
 	new.c_cc[VMIN] = 1;		/* want at least one */
 	new.c_cc[VTIME] = 0;		/* no minimum */
     }
