@@ -2,9 +2,23 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
-9/18/97:
-	New: lib/vms/mbx_util.c by Alex Measday
-	config/vms/{descrip.mms,build.com}: add mbx_util.obj, deccrtl!
+9/22/97:
+	config/vms/{descrip.mms,build.com}: add READ_TTY define
+	lib/generic/expops.c: use repeated multiply for expint()
+	lib/vms/tty.c: implement tty_read(), tested
+	lib/vms/popen.c: tested.  Now available in DEC C RTL??
+
+9/21/97:
+	lib/io.c: add io_finish(); 
+		much tweaking;
+		added TTY_READ ifdef
+		call tty_close() even if FL_NOCLOSE set
+		free source files when compiler finishes
+		make "|xxx" open fail if NO_POPEN defined
+	lib/endex.c: call io_finish()
+	lib/vms/popen.c: replaced with version from Icon
+	config/hpux-pa.m4: removed -mlong-calls
+	timing: check for /bin/model
 
 9/17/97:
 	Makefile2.m4: made snobol4 precious
@@ -12,7 +26,7 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 		problem reported by Phillip Thomas in June 1994!
 	lib/io.c: use fgets() again in io_read(). Only getc()
 		for last character, if needed.
-	New: lib/vms/popen.c by Alex Measday
+	New: lib/vms/popen.c
 	New: lib/vms/tty.c my crude attempt at noecho support
 	config/vms/{descrip.mms,build.com}: add popen.c, use vms/tty.c
 
@@ -25,9 +39,8 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 	snolib/bq.sno: use IO_FINDUNIT()
 
 9/10/97:
-	Improvements from reading BIND v8 Makefiles;
 	Makefile: replaced seperate 2nd level rules with one using $@
-	Makefile2.m4: added SH=sh
+	Makefile2.m4: added SH=sh for IRIX
 		replaced TESTED with "snobol4"
 		do all cmp's silently
 	lib/stream.c: stream tweaking; do put outside loop, use for()
