@@ -402,10 +402,11 @@ $(SNOLIB_A): $(SNOLIB_OBJS)
 ################
 # snolib files
 
-SNOLIB_SRCS= $(CHOP_C) $(COS_C) $(DELETE_C) $(ENVIRON_C) $(EXISTS_C) \
-	$(EXIT_C) $(EXECUTE_C) $(EXP_C) $(FILE_C) $(FORK_C) $(GETSTRING_C) \
-	$(HOST_C) $(LOG_C) $(LOGIC_C) $(RENAME_C) $(RETSTRING_C) $(SERV_C) \
-	$(SIN_C) $(SPRINTF_C) $(SQRT_C) $(SYS_C) $(TAN_C)
+SNOLIB_SRCS=$(CHOP_C) $(COS_C) $(DELETE_C) $(ENVIRON_C) $(EXISTS_C) \
+	$(EXIT_C) $(EXECUTE_C) $(EXP_C) $(FILE_C) $(FINDUNIT_C) \
+	$(FORK_C) $(GETSTRING_C) $(HOST_C) $(LOG_C) $(LOGIC_C) \
+	$(ORD_C) $(RENAME_C) $(RETSTRING_C) $(SERV_C) $(SIN_C) \
+	$(SPRINTF_C) $(SQRT_C) $(SSET_C) $(SYS_C) $(TAN_C)
 
 chop.o: $(CHOP_C)
 	$(CC) $(CFLAGS) -c $(CHOP_C)
