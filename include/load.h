@@ -39,10 +39,10 @@
 #define LA_PTR(N) ((void *)LA_INT(N))	/* n'th arg as pointer */
 
 /* avoid copying raw with getstring() */
-#define LA_STR_LEN(N) (D_V(LA_PTR(N)))
+#define LA_STR_LEN(N) (LA_PTR(N) ? D_V(LA_PTR(N)) : 0)
 
 /* NOT NUL TERMINATED!!! MUST NOT BE MODIFIED!!! */
-#define LA_STR_PTR(N) ((const char *)LA_PTR(N) + BCDFLD)
+#define LA_STR_PTR(N) (LA_PTR(N) ? ((const char *)LA_PTR(N) + BCDFLD) : NULL)
 
 /*
  * macros to return values;
@@ -50,12 +50,16 @@
  * place macro invocations anywhere, and to use a ';' after
  */
 
-#define RETINT(x) do { D_A(retval) = (x); return TRUE; } while (0)
-#define RETREAL(x) do { D_RV(retval) = (x); return TRUE; } while (0)
+#define RETINT(x) \
+    do { D_A(retval) = (x); RETTYPE = I; return TRUE; } while (0)
+
+#define RETREAL(x) \
+    do { D_RV(retval) = (x); RETTYPE = R; return TRUE; } while (0)
 
 /* strings */
 #define RETSTR2(CP,LEN) \
     do { retstring(retval, (CP), (LEN)); return TRUE; } while(0)
+
 #define RETNULL do { D_A(retval) = 0; return TRUE; } while (0)
 
 /*
