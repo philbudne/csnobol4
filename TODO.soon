@@ -1,5 +1,14 @@
 $Id$
 
+win32;
+	link against msvcXX.dll?
+		Win98:	MSVCRT{20,40}.DLL
+		XP:	+ mscvr{70,71}
+
+Oversize integer constants not detected on all systems!
+	use own strtol(l)?
+	document as BUG??
+
 Green Book URL(!!) in snobol4.1
 
 put sources under CVS

@@ -9,7 +9,7 @@ Changes since 0.99.44 release;
 		allows UTF-8 encoded characters, and national
 		character sets to used in labels and identifiers!
 	command line:
-		-S option to elarge interpreter stack
+		-S option to enlarge interpreter stack
 	configure:
 		added --mandir & --bindir
 	IPv6 Support (both client and server)
@@ -30,6 +30,10 @@ Changes since 0.99.44 release;
 	Win32:	native (low overhead) support for character console I/O
 		support magic pathnames "/dev/null" and "/dev/tty"
 		fixed UDP I/O
+	Fix for parallel make (GNU make, BSD make)
+	Compilation under MS Visual Studio .NET 2003
+		Make struct descr packable (BITFIELDS_SAME_TYPE)
+	Check for oversize integer constants (ERANGE from strtol())
 
 Changes since 0.99.4 release;
 ============================
