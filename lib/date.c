@@ -8,8 +8,11 @@
 #include <time.h>			/* struct tm */
 
 /*
- * The format of DATE() is (in principal) system dependant,
- * (ie; could use ctime()) this returns what SPITBOL does
+ * The format of DATE() is (in principle) system dependant,
+ * (ie; could use ctime()) this returns what SPITBOL does,
+ * which is what '360 MAINBOL plus the time!
+ *
+ * localtime() exists in v6, but "struct tm" doesn't!
  */
 
 void
@@ -25,7 +28,7 @@ date( sp )
     sprintf( str, "%02d/%02d/%02d %02d:%02d:%02d",
 	    tm->tm_mon + 1,
 	    tm->tm_mday,
-	    tm->tm_year,
+	    tm->tm_year % 100,		/* ?! */
 	    tm->tm_hour,
 	    tm->tm_min,
 	    tm->tm_sec );
