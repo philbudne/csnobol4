@@ -50,8 +50,8 @@ OBJ=	snobol4.obj data.obj data_init.obj main.obj syn.obj \
 	cos.obj delete.obj environ.obj exit.obj file.obj getenv.obj \
 	getstring.obj host.obj log.obj rename.obj retstring.obj \
 	sin.obj sprintf.obj sqrt.obj system.obj tan.obj sys.obj \
-	popen.obj tty.obj inet.obj execute.obj rresvport.obj term.obj \
-	findunit.obj exp.obj
+	popen.obj tty.obj inet.obj execute.obj exists.obj \
+	rresvport.obj term.obj findunit.obj exp.obj
 
 # wsock32 present on both Win95 and WinNT
 LIBS=wsock32.lib
@@ -192,6 +192,9 @@ sys.obj : lib\win32\sys.c
 
 tty.obj : $(TTY_C)
 	$(CC) $(CFLAGS) $(TTY_C)
+
+exists.obj : lib\win32\exists.c
+	$(CC) $(CFLAGS) lib\win32\exists.c
 
 ################ snolib
 
