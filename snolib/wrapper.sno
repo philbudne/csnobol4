@@ -4,10 +4,9 @@
 *	Phil Budne, December, 2001
 *
 * TODO:
-*	add 'PREDICATE' return type??
-*	startfile
 *	malloc string buffers to right size???
 *	*OR* make arg buffers static, so they can be returned???
+*	add 'PREDICATE' return type??
 *
 *	function to invoke C compiler, loader (libtool?) to create so/dl/shl/..
 *	overall wrapper; take prototype, create file, executable, and load it!!
@@ -144,10 +143,10 @@ wpdone	$fn = '}'					:(return)
 e.wrapper.proto
 
 **************** test;
-	wrapper.startfile(.OUTPUT)
-	wrapper.proto('FOO(INTEGER,STRING,REAL)STRING', .OUTPUT)
-	wrapper.proto('BAR(INTEGER,REAL)INTEGER', .OUTPUT)
-	wrapper.proto('BAZ(INTEGER,INTEGER,REAL,STRING)', .OUTPUT)
-	wrapper.proto('MUMBLE(STRING,STRING,STRING)REAL', .OUTPUT)
-
-end
+*	wrapper.startfile(.OUTPUT)
+*	wrapper.proto('FOO(INTEGER,STRING,REAL)STRING', .OUTPUT)
+*	wrapper.proto('BAR(INTEGER,REAL)INTEGER', .OUTPUT)
+*	wrapper.proto('BAZ(INTEGER,INTEGER,REAL,STRING)', .OUTPUT)
+*	wrapper.proto('MUMBLE(STRING,STRING,STRING)REAL', .OUTPUT)
+*
+*end
