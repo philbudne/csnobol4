@@ -2,6 +2,10 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
+1/17/93
+	set exit code on fatal errors (including when
+	execution aborted due to -NOERRORS)
+
 1/8/94
 	output UNIXF UNIXF2 at startup
 	make 'LEFT' default listing side
