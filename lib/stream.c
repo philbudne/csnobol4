@@ -6,6 +6,7 @@
 #include "syntab.h"
 
 #include "macros.h"
+#include "data.h"			/* for STYPE */
 
 #ifdef DEBUG
 #define DEBUGF(lev, x) if (lev <= DEBUG) printf x
@@ -13,7 +14,6 @@
 #define DEBUGF(lev, x)
 #endif /* DEBUG not defined */
 
-extern struct descr STYPE[];
 
 #define ACCEPT() { cp++; len--; }
 

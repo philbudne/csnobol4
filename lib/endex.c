@@ -1,8 +1,9 @@
 /* $Id$ */
 
 #include "types.h"
+#include "macros.h"
+#include "data.h"			/* for RETCOD */
 
-extern struct descr RETCOD;
 void
 endex( x )
     int x;
@@ -14,6 +15,6 @@ endex( x )
     }
 
     /* else exit w/ &CODE */
-    exit(RETCOD.a.i);
+    exit(D_A(RETCOD));
 }
 

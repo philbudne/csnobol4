@@ -8,15 +8,10 @@
 #include "types.h"
 #include "macros.h"
 
+#include "data.h"			/* SIL data */
 char *malloc();
 
 extern int SYSCUT();
-extern struct descr FRSGPT[1];
-extern struct descr HDSGPT[1];
-extern struct descr TLSGP1[1];
-
-extern struct descr LISTCL[1];		/* XXX TEMP! */
-extern struct descr NERRCL[1];		/* -NOERROR switch */
 
 #define NDESCR 25000			/* default */
 int ndescr;
