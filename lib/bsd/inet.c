@@ -4,8 +4,9 @@
 
 #include <stdio.h>
 #include <ctype.h>
-#ifdef USE_WINSOCK2_H
-#include <winsock2.h>
+#ifdef USE_WINSOCK_H
+/* Ugly, but better than duplicating the whole file! */
+#include <winsock.h>
 #else
 #include <sys/types.h>
 #include <sys/socket.h>
