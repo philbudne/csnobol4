@@ -1,13 +1,15 @@
 $Id$
 
-
-C-SNOBOL (MAINBOL for Un*x) history (and personal SNOBOL history);
+The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
 9/17/96
 	lib/tree.c: fixed INSERT (from SNOBOL4+)
 	lib/dump.c: added dumpcode()
 	added test/ops.sno
 	now runs all GNAT SPITBOL programs
+	version.c: use VERS/DATE, changed name to C-MAINBOL
+	Makefile2.m4: Added VERS/VDATE (for version.c)
+		upped version to 0.98.1
 
 9/12/96
 	v311.sil: add TERMINAL variable associations for input & output
