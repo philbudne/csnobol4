@@ -2,6 +2,18 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+10/10/97:
+	snolib/snobol4+.sno: accept REAL offset argument to SEEK()!
+	lib/vms/sys.c: removed OSNAME, trim trailing spaces from version
+
+10/10/97:
+	snolib/snobol4+.sno: add SEEK()
+		
+10/5/97:
+	New h/dt.h; struct definitions for SNOBOL4 datatypes
+	include/h.h: define dummy const & volatile if __STDC__ == 0
+	lib/dump.c: use dt.h
+	
 10/3/97:
 	lib/vms/sys.c: use SYS$GETSYIW to get architecture and VMS version
 	lib/{bsd,dummy,posix,vms}/tty.c: add fname arg to fisatty
@@ -13,7 +25,7 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 	config/borland/build.bat: define TTY_READ_RAW, use borland\tty.c
 
 9/30/97:
-	Fixed math error handling;
+	Fixed (integer) math error handling;
 	lib/init.c: declare math_error volatile
 	include/macros.h: declare math_error extern volatile
 	include/h.h: dummy out volatile on non-ansi compilers
