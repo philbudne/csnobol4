@@ -67,8 +67,11 @@ EIO
 ****************************************************************
 *	compile time switches
 
-*	output comments (OFF -- problems at end of functions)
-	COMMENTS =
+*	output SIL end of line comments (OFF -- to make snobol4.c smaller)
+	EOL_COMMENTS =
+
+*	output block comments (OFF -- problems at end of functions)
+	BLOCK_COMMENTS =
 
 *	inlining (OFF)
 	INLINE =
@@ -569,7 +572,7 @@ TOP	LINE = INPUT					:F(END)
 	OUTPUT = IND BC '_' EC				:(TOP)
 
 *	here to start a block comment
-BLOCK	DIFFER(COMMENTS)				:F(TOP)
+BLOCK	DIFFER(BLOCK_COMMENTS)				:F(TOP)
 	OUTPUT = IDENT(BLOCK) BBC
 	OUTPUT = SP LINE
 	BLOCK = 1					:S(TOP)
@@ -628,6 +631,8 @@ DISPATCH
 
 *	have end of line comment?
 	IDENT(COMM)					:S(NOCOMM)
+*	end of line comments enabled?
+	IDENT(EOL_COMMENTS)				:S(NOCOMM)
 	CFLUSH()
 	OUTPUT = IND BC SP COMM EC
 
