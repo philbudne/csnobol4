@@ -1,6 +1,10 @@
 * $Id$
 *
 * $Log$
+* Revision 1.18  94/01/09  00:16:03  budd
+* default listing side now LEFT
+* tweaked SOURCF, UNIXF2
+* 
 * Revision 1.17  94/01/08  23:37:41  budd
 * output UNIXF UNIXF2 at startup
 * output error name string to stderr
@@ -440,8 +444,9 @@ XLATP  AEQLC   STYPE,EOSTYP,,XLAEND
 *				   Analyze remainder of card
 XLAEND AEQLC   ESAICL,0,,XLATSC    Were there any compilation errors?
        OUTPUT  PUNCH,ERRCF	   [PLB3] Print message of errors
-       AEQLC   NERRCL,0,END	   [PLB9] Abort execution if -NOERROR set
-       BRANCH  XLATND
+       AEQLC   NERRCL,0,,XLATND	   [PLB9,13] execute if -NOERROR clear
+       SETAC   RETCOD,1		   [PLB13] set exit code (use EQU???)
+       BRANCH  FTLEN2		   [PLB13] join endgame
 *_
 XLATSC AEQLC   BANRCL,0,,XLATND	   [PLB12] Suppress message if no banner
        OUTPUT  PUNCH,SUCCF	   [PLB3] Print message of no errors
@@ -5186,6 +5191,7 @@ END    AEQLC   BANRCL,0,,FTLEN2	   Skip message if banner (stats?) off [PLB12]
        BRANCH  FTLEN2		   Join termination procedure
 *_
 FTLEND OUTPUT  PUNCH,FTLCF,(ERRTYP,STNOCL,LVLCL)		[PLB5] V3.7
+       SETAC   RETCOD,1		   [PLB13] set exit code (use an EQU? ERRTYP?)
        AEQLC   INICOM,0,FTLEN3	   BE SURE OF INITIALIZATION	E3.10.6
        OUTPUT  PUNCH,ALOCFL	   WARN USER			[PLB5] E3.10.6
        BRANCH  ENDALL		   GET OUT			E3.10.6
@@ -5248,6 +5254,7 @@ SYSCUT OUTPUT  PUNCH,SYSCMT,(STNOCL,LVLCL)			[PLB5]
 *				   System cut exit
        AEQLC   CUTNO,0,ENDALL					E3.2.2
        SETAC   CUTNO,1						E3.2.2
+       SETAC   RETCOD,1		   [PLB13] set exit code (use an EQU???)
        BRANCH  FTLEN2		   Join end game
 *_
 *---------------------------------------------------------------------*
