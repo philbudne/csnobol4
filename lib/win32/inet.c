@@ -115,6 +115,8 @@ inet_socket( host, service, port, priv, type )
     else
 	s = socket( AF_INET, type, 0 );
 
+    /* XXX hopefully never zero (when INET_IO in use)!!! */
+
     if (s < 0)
 	return -1;
 
@@ -235,16 +237,26 @@ inet_read_cooked(f, cp, recl, keepeol)
 {
     int n = 0;
     while (n < recl) {
+	int cc;
 	char c;
-	if (recv((SOCKET)f, &c, 1, 0) != 1)
+
+	cc = recv((SOCKET)f, &c, 1, 0);
+	if (cc != 1) {
+	    if (cc < 0 && n == 0)
+		return -1;
 	    break;
+	}
+
 	if (c == '\n') {
-	    if (keepeol)
+	    if (keepeol) {
 		*cp++ = c;
+		n++;
+	    }
 	    break;
 	}
 	/* XXX if CR && !keepeol, continue?? */
 	*cp++ = c;
+	n++;
     }
     /* XXX flush extra stuff past EOL */
     return n;
