@@ -1,6 +1,6 @@
 $Id$
 
-0.99.4 release of ``The Macro Implementation of SNOBOL4 in C'' (CSNOBOL4)
+0.99.44 release of ``The Macro Implementation of SNOBOL4 in C'' (CSNOBOL4)
 
 This is a free port of the original SIL (SNOBOL4 Implementation
 Language) "macro" version of SNOBOL4 (developed at Bell Labs) with the
@@ -10,9 +10,12 @@ SNOBOL4, while known primarily as a string language excels at any task
 involving symbolic manipulations.  It provides run time typing,
 garbage collection, user data types, on the fly compilation.  It's
 primary weakness is it's simple syntax, and lack of "structured
-programming" constructs.  However some consider the spareness of
-SNOBOL4 syntax a strength when compared to some "modern"
-agglomerations such as Perl.
+programming" and "object oriented" constructs.
+
+However some consider the spareness of SNOBOL4 syntax a strength when
+compared to some "modern" agglomerations such as Perl.
+
+The latest release can be found at http://www.snobol4.org
 
 ****************************************************************
 
@@ -212,6 +215,7 @@ historical background, testing, fixes, etc (in chronological order);
 	John Refling
 	Greg White
 	Russ Urquhart
+	Jan Bernard
 
 If you make any changes/fixes/improvements, or port it to a new
 system, please send them to me (please include "timing.out" and tell
