@@ -854,7 +854,7 @@ if [ -f $INCDIR/sys/socket.h ]; then
 	    echo '#define HAVE_PATHS_H'		>> $CONFIG_H
 	else
 	    # XXX outer loop for sh, ksh, bash, csh, tcsh?
-	    for DIR in `echo $PATH | tr ':' ' '`; do
+	    for DIR in /usr/bin /bin `echo $PATH | tr ':' ' '`; do
 		if [ -x $DIR/sh ]; then
 		    BSHELL=$DIR/sh
 		    break
