@@ -339,7 +339,7 @@ Z=Z
 
 VERS=`./pv`
 DIR=snobol-$(VERS)
-TAR=snobol-$(VERS).tar.$(Z)
+KIT=snobol-$(VERS).tar.$(Z)
 
 # XXX add predicates to suppress ~ # and .o files?
 tar vers: TESTED pv
@@ -351,7 +351,7 @@ tar vers: TESTED pv
 	find $(TAR) -name RCS -prune -o -print | cpio -pldm $(DIR)
 	for f in $(G2); do cp $$f $(DIR)/$${f}2; done
 	cp $(GENERATED) $(DIR)
-	tar cf - $(DIR) | $(COMP) > $(TAR)
+	tar cf - $(DIR) | $(COMP) > $(KIT)
 	rm -rf $(DIR)
 	./pv > vers
 
