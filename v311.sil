@@ -1,6 +1,10 @@
 * $Id$
 *
 * $Log$
+* Revision 1.104  2004/08/12 16:07:53  phil
+* [PLB88] Use PCOMP[C] SIL operators for pointer comparison
+* Locations thanks to Mark Emmer (from SNOBOL4+)
+*
 * Revision 1.103  2004/01/12 07:05:08  phil
 * track passed arg count using WPTR
 *
@@ -777,9 +781,9 @@ SPCNV1 GETD    ZPTR,XPTR,XCL	   Get pointer to specifier
        RCALL   ZPTR,GENVAR,ZPTR	   Convert specifier to structure
        PUTD    XPTR,XCL,ZPTR	   Replace pointer to specifier
 SPCNV2 DECRA   XCL,2*DESCR	   Decrement to next pair
-       PCOMPC  XCL,0,SPCNV1	   Continue if one remains	[PLB88]
+       ACOMPC  XCL,0,SPCNV1	   Continue if one remains
        DECRA   YCL,DESCR	   Decrement to next list
-       PCOMPC  YCL,0,SPCNVT	   Continue if one remains	[PLB88]
+       ACOMPC  YCL,0,SPCNVT	   Continue if one remains
 INITD1 GETDC   XPTR,INITB,0	   Get specifier to convert
        RCALL   YPTR,GENVAR,(XPTR)  Convert it to string structure
        GETDC   ZPTR,INITB,DESCR	   Get location to put it
