@@ -6,10 +6,13 @@
  */
 
 /*
- * BUGS: while attempting to minimize thrashing tty modes
- *	doesn't catch multple fd's on same device.
- * 	could do fstat() and compare "rdev", but
- *	/dev/tty still slips by!
+ * Tries to detect multiple fd's on same device (e.g. stdin, stderr)
+ * using fstat() and comparing rdev, but /dev/tty (which could
+ * indirectly refer to the same device open on stdin) slips by, and
+ * gets entered separately.
+ *
+ * Could poke distinctive values into c_cc array on known fd's
+ * and see if they show up on /dev/tty fd to detect collision.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -31,20 +34,31 @@ extern void *malloc();
 #define tcsetattr(FD,HOW,T) ioctl(FD, HOW, T)
 #define TCSADRAIN TCSETAW
 #define termios termio
-#define STDIN_FILENO 0
 #else  /* USE_TERMIO not defined */
 #include <termios.h>
-#include <unistd.h>
 #endif /* USE_TERMIO not defined */
 
-/* keep settings for each fd in a list; */
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#else  /* HAVE_UNISTD_H not defined */
+#define STDIN_FILENO 0
+#endif /* HAVE_UNISTD_H not defined */
+
+#include <signal.h>
+
+#include <sys/types.h>			/* for sys/stat.h */
+#include <sys/stat.h>
+
+/* keep settings for each device in a list; */
 static struct save {
     struct save *next;
-    int fd;
-    struct termios t;
+    dev_t dev;
+    struct termios save, curr;
     int cbreak, noecho;
     int recl;
 } *list;
+
+enum action { FIND, CREATE, REMOVE };
 
 int
 fisatty(f, fname)
@@ -52,6 +66,47 @@ fisatty(f, fname)
     char *fname;
 {
     return isatty(fileno(f));
+}
+
+static struct save *
+find_by_fd(fd, action)
+    int fd;
+    enum action action;
+{
+    struct stat st;
+    struct save *sp, *pp;
+
+    if (fstat(fd, &st) < 0 || !S_ISCHR(st.st_mode))
+	return;
+    
+    for (pp = NULL, sp = list; sp; pp = sp, sp = sp->next) {
+	if (sp->dev == st.st_rdev) {
+	    if (action == REMOVE)
+		if (pp)			/* not first? */
+		    pp->next = sp->next; /* alter prev's next */
+		else
+		    list = sp->next;	/* alter list head */
+	    return sp;
+	}
+    }
+
+    if (action != CREATE)
+	return NULL;
+
+    sp = (struct save *)malloc(sizeof(struct save));
+    if (sp == NULL)
+	return NULL;
+    
+    /* save "original" settings (used for "cooked" I/O) */
+    sp->dev = st.st_rdev;
+    tcgetattr(fd, &sp->save);		/* save settings */
+    sp->noecho = sp->cbreak = sp->recl = -1;
+    
+    /* link into list */
+    sp->next = list;
+    list = sp;
+
+    return sp;
 }
 
 void
@@ -62,106 +117,93 @@ tty_mode( fp, cbreak, noecho, recl )
     struct termios new;
     struct save *sp;
     int fd;
-
+    
     fd = fileno(fp);
+    sp = find_by_fd(fd, CREATE);
+    if (!sp)
+	return;				/* malloc must have failed */
 
-    /* XXX move to tty_save_fd()?? */
-    for (sp = list; sp; sp = sp->next) {
-	if (sp->fd == fd)
-	    goto found;
-    }
-    sp = (struct save *)malloc(sizeof(struct save));
-    if (sp == NULL)
-	return;				/* ??? */
-
-    /* save "original" settings (used for "cooked" I/O) */
-    sp->fd = fd;
-    tcgetattr(fd, &sp->t);		/* save settings */
-    sp->noecho = sp->cbreak = 0;	/* ??? */
-    sp->recl = -1;
-
-    /* link into list */
-    sp->next = list;
-    list = sp;
- found:
+    /* NOTE! This optimization can be fooled
+     * when doing simultaneous I/O on /dev/tty and the
+     * real tty (i.e. stdin)
+     */
     if (cbreak == sp->cbreak && noecho == sp->noecho &&
 	(!cbreak || recl == sp->recl))
 	return;				/* nothing to do! */
-
+    
     fflush(fp);				/* flush pending output */
-
-    new = sp->t;			/* start with original */
+    
+    sp->curr = sp->save;		/* start with original */
     if (cbreak) {
-	new.c_lflag &= ~ICANON;		/* kill canonical processing */
-	new.c_iflag &= ~(ICRNL|INLCR);	/* hey, system! leave CR/LF alone! */
+	sp->curr.c_lflag &= ~ICANON;	/* kill canonical processing */
+	sp->curr.c_iflag &= ~(ICRNL|INLCR); /* hey, system! leave CR/LF alone! */
 #ifdef TTY_RAW
-	new.c_lflag &= ~ISIG;		/* kill signal processing */
-	new.c_iflag &= ~(IXON|IXOFF);	/* pass CTRLS/CTRLQ */
-	new.c_oflag &= ~OPOST;		/* kill output post-processing */
+	sp->curr.c_lflag &= ~ISIG;	/* kill signal processing */
+	sp->curr.c_iflag &= ~(IXON|IXOFF); /* pass CTRLS/CTRLQ */
+	sp->curr.c_oflag &= ~OPOST;	/* kill output post-processing */
 	/* XXX set CS8, PASS8, IGNPAR, clear ISTRIP? */
 	/* XXX clear IUCLC, XCASE (if they exist)? */
 #endif /* TTY_RAW defined */
-
+	
 	if (recl > 0xff)		/* VMIN is a char! */
 	    recl = 0xff;
-
-	new.c_cc[VMIN] = recl;		/* number of chars wanted */
-	new.c_cc[VTIME] = 0;		/* wait as long as we have to */
+	
+	sp->curr.c_cc[VMIN] = recl;	/* number of chars wanted */
+	sp->curr.c_cc[VTIME] = 0;	/* wait as long as we have to */
     }
-
+    
     if (noecho)
-	new.c_lflag &= ~ECHO;		/* kill echo */
-
-    tcsetattr(fd, TCSADRAIN, &new);
-
+	sp->curr.c_lflag &= ~ECHO;		/* kill echo */
+    
+    tcsetattr(fd, TCSADRAIN, &sp->curr);
+    
     /* save current state */
     sp->cbreak = cbreak;
     sp->noecho = noecho;
     sp->recl = recl;
 }
 
-/* advisory notice; discard saved info.
- * NOTE: this loses if device remains open
- *	(ie; in use by a child proc, or has been dup'ed)
- */
-static void
-tty_close_fd(fd)
-    int fd;
-{
-    struct save *sp, *pp;
-
-    for (pp = NULL, sp = list; sp; pp = sp, sp = sp->next) {
-	if (sp->fd == fd) {
-	    if (pp) {
-		pp->next = sp->next;
-	    }
-	    else {
-		list = sp->next;
-	    }
-	    free(sp);
-	    break;
-	}
-    }
-}
-
-void
-tty_save()
-{
-    /* XXX call tty_save_fd(STDIN_FILENO)?? */
-    tty_mode(stdin, 0, 0, 0);		/* force initial save */
-}
-
-void
-tty_restore()
-{
-    /* XXX call tty_close_fd(STDIN_FILENO)?? */
-    tty_mode(stdin, 0, 0, 0);		/* restore initial settings */
-}
-
-/* advisory notice */
+/* advisory notice (does not perform close) */
 void
 tty_close(f)
     FILE *f;
 {
-    tty_close_fd(fileno(f));
+    struct save *sp, *pp;
+    int fd;
+
+    fd = fileno(f);
+
+    /* try keeping information! */
+#if 0
+    sp = find_by_fd(fd, REMOVE);
+#else
+    sp = find_by_fd(fd, FIND);
+#endif
+    if (!sp)
+	return;				/* not found, bad device */
+    
+    tcsetattr(fd, TCSADRAIN, &sp->save);
+    
+    free(sp);
 }
+
+#ifdef SIGTSTP
+void
+tty_suspend()
+{
+    struct save *sp, *pp;
+    int fd;
+
+    fd = fileno(stdin);
+    sp = find_by_fd(fd, FIND);
+    if (sp)
+	tcsetattr(fd, TCSADRAIN, &sp->save);
+    
+    /* XXX MOVE to seperate file suspend.c?  name function proc_suspend()? */
+    proc_suspend();
+
+    /* here on process resume; */
+    if (sp)
+	tcsetattr(fd, TCSADRAIN, &sp->curr);
+}
+#endif /* SIGTSTP defined */
