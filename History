@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+4/25/2002
+	configure, lib/next/load.c:
+		add TRY_UNDERSCORE to next/load.c for Darwin
+
 4/19/2002
 	lib/next/load.c: check NSLinkModule() return
 		add comments
