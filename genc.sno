@@ -272,7 +272,7 @@ BRANCH	LIVE =
 NOT_SAME
 	IDENT( ISPROC< BLBL >)				:S(DO_GOTO)
 *	output info for inlining
-	CALLGRAPH = INPROC TAB BLBL
+	CALLGRAPH = BLBL TAB INPROC
 	OUTPUT = IND 'BRANCH(' F_ BLBL ')'		:(RETURN)
 DO_GOTO	OUTPUT = IND 'goto ' L_ BLBL ';'		:(RETURN)
 EBRANCH
@@ -317,10 +317,7 @@ EXRAPPLY2
 ****************
 * used by SELBRA and RCALL
 
-* XXX keep "PREV" label, only output BRANCH() when differs
-*	from the last!! (identical labels happen ~10 times)
-
-* XXX if only one label use if()?! (happens LOTS of times)
+* XXX if only one label use if()?! (happens twice)
 
 	DEFINE("SELBRA(V,LL)N,L,I,PREVL")
 	SELBRA_P1 = LP BREAK(RP) . L RP
