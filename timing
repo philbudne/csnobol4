@@ -38,6 +38,10 @@ if [ "$UNAME" ]; then
 			echo /usr/sbin/sysctl hw:
 			/usr/sbin/sysctl hw
 			echo ''
+		elif [ -x /sbin/sysctl ]; then
+			echo /sbin/sysctl hw:
+			/sbin/sysctl hw
+			echo ''
 		fi
 		;;
 	HP-UX)
