@@ -23,12 +23,12 @@ stream( sp1, sp2, tp )
     struct spec *sp2;			/* IN: string OUT: remainder */
     struct syntab *tp;
 {
-    char *cp;
+    unsigned char *cp;
     int len;
     enum stream_ret ret;
 
     len = S_L(sp2);
-    cp = S_SP(sp2);
+    cp = (unsigned char *)S_SP(sp2);
     D_A(STYPE) = 0;			/* XXX in case no puts?? */
 
     DEBUGF(1,("stream"));
@@ -129,12 +129,12 @@ plugtb(tp, act, sp)
     enum action act;
     struct spec *sp;
 {
-    char *cp;
+    unsigned char *cp;
     int len;
     int j;
 
     len = S_L(sp);
-    cp = S_SP(sp);
+    cp = (unsigned char *)S_SP(sp);
 
     /* find action index in list (SNABTB has one of each action type) */
     for (j = 0; ; j++)
