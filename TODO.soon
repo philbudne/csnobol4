@@ -1,19 +1,18 @@
 $Id$
 
+complaints when compiling isnobol4.c on some systems??
+	HP-UX 10?
+	AIX maxmem tweak?
+	SunPRO (config.h included multiple times w/ inlining
+		add protection?  move config.h to under ifndef XXX_STATIC?)
+
+too aggressive in using OWN_B(COPY|ZERO)!!
+
 run comdef on lib/*/*.c
 	macros.h, snotypes.h
 
-clean compile with -Wimplcit???
-	and w/ -Wmissing-prototypes!!!
-		need static SIL function protos?
-
-create "str.h"
-	use correct string(s).h include
-	declare bcopy, bzero if needed?
-
-control lines (and keyword variables?) for BANNER and STATS???
-
 PACKAGING!!
+	check into CVS?
 
 verify correctness of line.ref, include.ref
 
@@ -34,7 +33,7 @@ create csnobol4 home page (seperate sections for 0.99.4, new);
 Install README in snolib
 
 do CVS check out on branch??
-	move make release out to seperate script?
+	move "make release" out to seperate script?
 		do a test build of checked out files???
 
 change timing e-mail address to timing@snobol4.org??
@@ -44,23 +43,26 @@ include advertizements about users (announcements?) mailing list???
 	README
 	End of Makefile(2.m4)
 
-change name from C-MAINBOL to CSNOBOL4
-	doc/snobol4.1
-
 put sources under CVS
 	improve rcs2cvs;
 		move old files to Attic directories!!!
 	put tsort on vendor branch;
 
 man page
+	Credit Mark Emmer, Viktors(?) Berstis in man page "AUTHORS" section
+	say "square brackets"??
+	Change name from C-MAINBOL to CSNOBOL4 (update HOST() example)
 	mention files/functions available in snolib/ (mention README)
 	reference documents available on web (see next item)
 		http://burks.bton.ac.uk/burks/language/snobol/....
 		ftp://ftp.snobol4.com/spitman.pdf
+		http://www.snobol4.org
 
 test
-	VMS port (RDIXON@seattleschools.org)
+	VMS (RDIXON@seattleschools.org)
 	DJGPP (meissner@altertum.uni-halle.de)
+	Cygwin
+	MINGW
 	QNX (Fred?)
 
 packaging;
@@ -111,8 +113,25 @@ make branch for major releases
 
 ================
 
+control lines (and keyword variables?) for BANNER and STATS???
+
+Add -Wimplicit (if not on SunOS4?)?
+	check system includes for prototypes??
+
+move hpux/finite.c to c99/
+	change configure message??
+	[NOT YET; noone else needs it]
+
+protoize all sources?
+	provide "unproto"?
+
+detect gcc v3?
+	look at __GNUC__ and __GNUC_MINOR__
+
 HOST() to return CSNOBOL4 version level??
 	release date???
+
+use ptime on Solaris for runtime checks?
 
 create generic load framework???
 
