@@ -102,6 +102,9 @@ io_close(unit)				/* internal (zero-based unit) */
 	if (fp->flags & FL_PIPE)
 	    pclose(fp->f);		/* XXX save return? */
 	else
+#endif
+	if (fp->f != stdin &&
+	    fp->f != stderr)		/* XXX check a flag? */
 	    fp->f != termin)		/* XXX check a flag? */
 	    fclose(fp->f);		/* XXX save return? */
     }
