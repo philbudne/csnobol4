@@ -38,6 +38,9 @@ ECHECKHZ
 ****************************************************************
 * parse snobol's messages
 
+	OUTPUT = 'HOST():' TAB TAB TAB HOST()
+	OUTPUT = 'HOST(2000):' TAB TAB HOST(2000)
+
 VLOP	LINE = INPUT					:F(NOVERS)
 	LINE "The Macro Implementation of SNOBOL4" BREAKX("V") "Version "
 +		REM . VERS				:F(VLOP)
@@ -80,12 +83,12 @@ GETSTAT	LINE = INPUT					:F(NOSTAT)
 
 * beware dummy/mstime.c
 	EQ(EXEC,0)					:S(NOET)
-	OUTPUT = 'Statements per second:' TAB STMTS * 1000 / EXEC
+	OUTPUT = 'Statements per second:' TAB STMTS * 1000.0 / EXEC
 
 * calculate usec/stmt
 	A1 = EXEC * 1000.0 / STMTS
 
-	OUTPUT = 'microseconds per statement: ' A1
+	OUTPUT = 'Microseconds per statement: ' A1
 
 * get SNOBOL time in 10ths
 NOET	SNOBOL = (COMP + EXEC) / SNODIV
