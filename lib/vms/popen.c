@@ -86,7 +86,7 @@ popen(cmd, mode)
     /* get mailbox name for fopen */
     itmlst.last = mbxname.length = 0;
     itmlst.address = mbxname.ptr = mname;
-    itmlst.retlen = &mbxname.length;
+    itmlst.retlen = (char *)&mbxname.length;
     itmlst.code = DVI$_DEVNAM;
     itmlst.len = 64;
     status = SYS$GETDVIW(0, chan, 0, &itmlst, 0, 0, 0, 0);
