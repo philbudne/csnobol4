@@ -28,7 +28,7 @@ define([_LDFLAGS],)dnl
 # defaults (may be overridden in config.h)
 
 VERS=0.98.1
-VDATE=Sept 19, 1996
+VDATE="Sept 19, 1996"
 
 OPT=-O
 
@@ -192,7 +192,8 @@ data_init.o: data_init.c data_init.h equ.h data.h proc.h
 	$(CC) $(CFLAGS) -c data_init.c
 
 version.o: Makefile2
-	$(CC) $(CFLAGS) -DVERS='"'$(VERS)'"' -DVDATE='"'$(VDATE)'"' version.c
+	$(CC) $(CFLAGS) -c \
+		-DVERS='"'$(VERS)'"' -DVDATE='"'$(VDATE)'"' version.c
 
 #################
 # dependency generation is slow and ugly.
@@ -305,17 +306,22 @@ vfprintf.o: $(VFPRINTF_C)
 GENERATED=syn.c syn.h syn.h2 data.c data.h proc.h proc.h2 equ.h \
 	snobol4.c isnobol4.c data_init.h 
 
+# files with secondary copies
+G2=data.c data.h data_init.h proc.h equ.h syn.h
+
 # disposables
-G2=*.o callgraph prolog subr
+DISP=*.o callgraph prolog subr
 
 # remove objects; leave generated sources, final binary, Makefile2
 clean:
-	rm -rf $(G2) *~
+	rm -f $(DISP) *~ */*~ */*/*~
 
 # remove objects, generated sources; leave final binary, Makefile2
 realclean: clean
 	rm -f $(GENERATED)
 
+# file to hard-link into dist dir
+# generated files copied to ensure newer than source files!
 [TAR=	README doc History TODO TODO.soon \
 	Makefile Makefile2.m4 configure config.guess \
 	v311.sil syntax.tbl procs globals \
@@ -324,20 +330,22 @@ realclean: clean
 	parms.h mlink.h mdata.h pml.h \
 	lib include config test bugs snolib \
 	timing timing.sno \
-	$(GENERATED) \
 	cc-M]
 
 # XXX perform general cleanup (remove ~ and # files) first?
 KIT=snobol-$(VERS).tar.Z
 tar:	$(KIT)
 
-$(KIT):	$(TAR)
+$(KIT):	$(TAR) TESTED
 	cd doc; make
 	cd test; ./clean.sh
 	rm -rf snobol-[0-9]*
+	rm -f *~ */*~ */*/*~
 	mkdir snobol-$(VERS)
-	find $(TAR) -name RCS -prune -o -print | cpio -pldm snobol
-	tar cf - snobol | compress > $(KIT)
+	find $(TAR) -name RCS -prune -o -print | cpio -pldm snobol-$(VERS)
+	cp $(GENERATED) snobol-$(VERS)
+	cd snobol-$(VERS); for f in $(G2); do ln $$f $${f}2; done
+	tar cf - snobol-$(VERS) | compress > $(KIT)
 	rm -rf snobol-$(VERS)
 
 # make a mailable kit by taring, compressing, uuencoding and splitting!
