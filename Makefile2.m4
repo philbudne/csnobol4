@@ -488,7 +488,8 @@ INSTALL_H=[include]/h.h [include]/snotypes.h [include]/macros.h \
 # generated SNOLIB files (at top level)
 GENSNOLIB=host.sno
 
-install: snobol4 doc/snobol4.1
+VERS=`./pv`
+install: snobol4 pv
 	-rm -f $(BINDEST)
 	cp snobol4 $(BINDEST); strip $(BINDEST); chmod 755 $(BINDEST)
 	-rm -f $(BINDEST)-$(VERS)
@@ -502,7 +503,10 @@ install: snobol4 doc/snobol4.1
 	@echo '************************************************'
 	@echo '*** Have you mailed a copy of timing.out to' \
 		'snobol4-timing@ultimate.com ?' 1>&2
-	
+
+pv:	vers.c
+	make -f Makefile pv
+
 ################
 MAKEFILE2=Makefile2
 DEPENDFLAGS=$(MYCPPFLAGS)
