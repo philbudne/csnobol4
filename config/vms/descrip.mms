@@ -5,11 +5,15 @@
 #
 # **** see INSTALL file for usage ****
 
+# *** NOTE *** This file does NOT contain full dependancy information!!!
+# It's always best to remove all .OBJ files and rebuild from scratch!!!
+
 .ifdef VAX_C
 # Tested on VAX OpenVMS 6.1 using VAXC 3.1 (August 1999)
 CCFLAGS=/OPTIMIZE
-AUX_OBJ=isnan.obj, finite.obj, getopt.obj, popen.obj,
-CCDEFS=/DEFINE=(NEED_POPEN_DECL,NEED_OFF_T)
+AUX_OBJ=isnan.obj, finite.obj, \
+	bcopy.obj, bzero.obj, getopt.obj, popen.obj, unlink.obj, 
+CCDEFS=,NEED_POPEN_DECL,NEED_OFF_T
 
 # need explicit C runtime library
 #CLIB=+SYS$SHARE:VAXCRTL/SHARE
@@ -17,34 +21,49 @@ CLIB=+SYS$LIBRARY:DECCRTL/LIB
 
 # TCP library, if present
 UCXLIB=+SYS$LIBRARY:UCX$IPC/LIB
-.endif
 
+# alternate library routines
+MSTIME_C=[.lib.vms]mstime.c
+INET_C=[.lib.vms]inet.c
+
+.else
 .ifdef DECC4
 # Tested under AXP OpenVMS 6.2 using DECC 4.0 (November 2000)
 CCFLAGS=/DECC/PREFIX_LIB=ALL/WARN=(DISABLE=IMPLICITFUNC)/OPTIMIZE
-AUX_OBJ=popen.obj,
-CCDEFS=/DEFINE=(NEED_POPEN_DECL,NEED_OFF_T)
+AUX_OBJ=bcopy.obj, bzero.obj, popen.obj, unlink.obj, 
+CCDEFS=,NEED_POPEN_DECL,NEED_OFF_T
 # no explicit CRT library needed
 
 # TCP library, if present
 UCXLIB=+SYS$LIBRARY:UCX$IPC/LIB
+
+# alternate library routines
+MSTIME_C=[.lib.vms]mstime.c
+INET_C=[.lib.vms]inet.c
+
 .else
 
 # ** DEFAULT**
 # Tested under Compaq C V6.5-001 on OpenVMS Alpha V7.3-1 (May 2003)
+# practically civilized!!
 
-CCFLAGS=/PREFIX_LIB=ALL/WARN=(DISABLE=IMPLICITFUNC)/OPTIMIZE
-CCDEFS=/DEFINE=HAVE_STRINGS_H
+CCFLAGS=/OPTIMIZE
+CCDEFS=,HAVE_STRINGS_H,HAVE_STDLIB_H,HAVE_UNISTD_H,NEED_RRESVPORT_DECL
 # no explicit CRT library needed
 # no explicit UCX library needed
+
+# alternate (normal!) library routines
+MSTIME_C=[.lib.posix]mstime.c
+INET_C=[.lib.bsd]inet.c
+.endif
 .endif
 
 .ifdef NO_TCP
+# need to undefine??
 INET_C=[.lib.dummy]inet.c
 # C compiler flags, if any
-TCPFLAGS=
+TCPDEFS=
 .else
-
 # XXX ifdefs here for different TCP/IP packages?
 
 ################
@@ -52,7 +71,7 @@ TCPFLAGS=
 #	(formerly VAX/Ultrix connection product)
 INETLIB=$(UCXLIB)
 # C compiler flags, if any
-TCPFLAGS=
+TCPDEFS=
 .endif
 
 LIBS=$(INETLIB) $(CLIB)
@@ -67,13 +86,11 @@ ENDEX_C=[.lib]endex.c
 EXISTS_C=[.lib.vms]exists.c
 EXPOPS_C=[.lib.generic]expops.c
 HASH_C=[.lib]hash.c
-INET_C=[.lib.vms]inet.c
 INIT_C=[.lib]init.c
 INTSPC_C=[.lib.generic]intspc.c
 IO_C=[.lib]io.c
 LEXCMP_C=[.lib]lexcmp.c
-LOAD_C=[.lib.dummy]load.c
-MSTIME_C=[.lib.vms]mstime.c
+LOAD_C=[.lib.vms]load.c
 ORDVST_C=[.lib]ordvst.c
 PAIR_C=[.lib]pair.c
 PAT_C=[.lib]pat.c
@@ -125,7 +142,7 @@ PML_OBJ=chop.obj, cos.obj, delete.obj, execute.obj, exit.obj, \
 	log.obj, logic.obj, ord.obj, rename.obj, retstring.obj, sin.obj, \
 	sqrt.obj, sset.obj, sys.obj, tan.obj
 
-CFLAGS=	$(CCFLAGS) $(CCDEFS) $(TCPFLAGS) /DEFINE=HAVE_CONFIG_H \
+CFLAGS=	$(CCFLAGS) /DEFINE=(HAVE_CONFIG_H$(CCDEFS)$(TCPDEFS)) \
 	/INCLUDE=(SYS$DISK:[.CONFIG.VMS],SYS$DISK:[],SYS$DISK:[.INCLUDE])
 
 ################
@@ -136,8 +153,8 @@ OBJS=	main.obj, $(SNOBOL4).obj, data.obj, data_init.obj, syn.obj, \
 	lexcmp.obj, load.obj, mstime.obj, ordvst.obj, pair.obj, \
 	pat.obj, pml.obj, realst.obj, replace.obj, spcint.obj, \
 	spreal.obj, str.obj, stream.obj, term.obj, top.obj, tty.obj, \
-	tree.obj, version.obj, bcopy.obj, bzero.obj, getredirect.obj, \
-	popen.obj, rresvport.obj, unlink.obj, $(AUX_OBJ) $(PML_OBJ)
+	tree.obj, version.obj, getredirect.obj, \
+	rresvport.obj, $(AUX_OBJ) $(PML_OBJ)
 
 snobol4.exe : $(OBJS)
 	link /exec=snobol4.exe $(OBJS) $(LIBS)
