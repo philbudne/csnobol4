@@ -10,23 +10,16 @@ change types.h to snotypes.h
 
 fix syn.h.new (for VMS)
 
-use m4 for Makefile2/config files?
-	new config file for sgi?
-	have common and posix configs include common source?
+new config file for sgi?
 
 Move ports.doc information to config files?
 	use script to generate ports.doc!!!?
 
 ================
 
-Move UNIXF messages to init.c?  main.c??  version.c???
-
 Look at run of genc.sno w/o v311.sno (loops??)
-	need error return from INPUT()???
 
-Implement -CASE
-
-Run genc.sno in test/run.sh??
+Run genc.sno for regression test?
 	create "timing" script
 		size xsnobol4
 		time ./xsnobol4 genc.sno > x
@@ -50,6 +43,9 @@ Document;
     language extensions
 	INPUT()
 	OUTPUT()
+		extra arg
+		formats ignored
+		recl NOT ignored!?!
 	-ERROR/-NOERRORS
 
     changes;
@@ -71,6 +67,14 @@ Document;
 	listing
 	OUTPUT
 	PUNCH
+
+    Mention I18N
+	Only 7-bit for now
+	Vertical bar used as an operator
+	What would 8-bit mean for &ALPHABET? LGT()???
+	What would 16-bit (or unicode?!) do for stream tables???
+
+Implement "poor man's LOAD"
 
 Implement -INCLUDE
 
