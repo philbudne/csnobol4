@@ -1,7 +1,7 @@
 /* $Id$ */
 
 /*
- * Berkeley sockets inet interface using RFC2553 & RFC2292
+ * Berkeley sockets inet interface using RFC2553 & POSIX 1003.1g
  * extensions for IPv6 compatibility
  */
 
