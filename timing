@@ -161,6 +161,10 @@ elif [ -x /usr/ucb/uptime ]; then
 fi
 
 echo ''
+echo 'Ids:'
+grep 'Id:' v311.sil genc.sno
+
+echo ''
 echo 'timing run of genc.sno:'
 if [ "$ARGS" ]; then
 	echo "	args: $ARGS"
