@@ -1,6 +1,6 @@
 /*
  * $Id$
- * started from Chris Janton's (chj) VMS Icon port. -pb 9/97
+ * from Chris Janton's (chj) VMS Icon port. -pb 9/97
  */
 
 #undef __HIDE_FORBIDDEN_NAMES		/* for _NFILE */
@@ -12,6 +12,7 @@
 #include <ssdef.h>
 #include <clidef.h>
 
+#define SUCCESS(_STAT) ((_STAT) & STS$M_SUCCESS)
 #define SETERR(_STAT) do { vaxc$errno = (_STAT); errno = EVMSERR; } while(0)
 
 struct descr {
@@ -74,7 +75,7 @@ popen(cmd, mode)
 
     /* create and open the mailbox */
     status = SYS$CREMBX(0, &chan, 0, 0, 0, 0, 0);
-    if (status != SS$_NORMAL) {
+    if (!SUCCESS(status)) {
 	SERERR(status);
 	LIB$FREE_EF(&efn);
 	return (0);
@@ -87,7 +88,7 @@ popen(cmd, mode)
     itmlst.code = DVI$_DEVNAM;
     itmlst.len = 64;
     status = SYS$GETDVIW(0, chan, 0, &itmlst, 0, 0, 0, 0);
-    if (status != SS$_NORMAL) {
+    if (!SUCCESS(status)) {
 	SETERR(status);
 	LIB$FREE_EF(&efn);
 	return (0);
@@ -129,7 +130,7 @@ popen(cmd, mode)
     status = LIB$SPAWN(&command, input, output, &flags, 0, &pd->pid,
 		       &pd->status, &pd->efn, 0, 0, 0, 0);
 
-    if (status != SS$_NORMAL) {
+    if (!SUCCESS(status)) {
 	SETERR(status);
 	fclose(pfile);
 	LIB$FREE_EF(&efn);
