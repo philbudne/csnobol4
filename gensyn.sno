@@ -16,6 +16,7 @@
 
 	&ANCHOR = 1
 	&TRIM = 1
+	&STLIMIT = 75000
 
 ****************************************************************
 *	initialization
@@ -195,7 +196,7 @@ TOKLOP	T LEN(1) . C =					:F(LOOP)
 ********
 ELSE	N = 0
 	A = ACTION(LINE)				:F(ERR)
-ELSLOP	LT(N,128)					:F(LOOP)
+ELSLOP	LT(N,256)					:F(LOOP)
 	CHARS<N> = EQ(CHARS<N>,-1) A
 	N = N + 1					:(ELSLOP)
 ****************
