@@ -9,7 +9,7 @@ DEST=\snobol4
 
 CC=gcc
 # includes -finline-functions (and others in gcc v3)
-OPT=-O3
+OPT=-O3 -g
 
 # can also use msdos version (less friendly in multitasking env)
 TTY_C=$(SRCDIR)lib/win32/tty.c
@@ -19,8 +19,16 @@ INET_DEFS=-DINET_IO
 # wsock32 present on both Win95 and WinNT
 INET_LIBS=-lwsock32
 
+# to disable COM comment out next 3 lines:
+COM_LIBS=-lole32 -luuid -loleaut32
+COM_DEFS=-DPML_COM
+COM_OBJ=com.o
+
 CFLAGS=	-c $(OPT) -I$(SRCDIR)config/win32 -I$(SRCDIR)include -I$(SRCDIR). \
-	-DHAVE_CONFIG_H $(INET_DEFS)
+	-DHAVE_CONFIG_H $(INET_DEFS) $(COM_DEFS)
+
+# for com.cpp
+CXXFLAGS=$(CFLAGS) -fvtable-thunks
 
 OBJ=	isnobol4.o data.o data_init.o main.o syn.o version.o bal.o \
 	date.o dump.o endex.o hash.o intspc.o io.o lexcmp.o ordvst.o \
@@ -30,10 +38,10 @@ OBJ=	isnobol4.o data.o data_init.o main.o syn.o version.o bal.o \
 	file.o getstring.o host.o log.o logic.o ord.o rename.o \
 	retstring.o sin.o spcint.o spreal.o sprintf.o sqrt.o sset.o \
 	tan.o osopen.o sys.o tty.o inet.o bindresvport.o execute.o \
-	exists.o term.o findunit.o
+	exists.o term.o findunit.o $(COM_OBJ)
 
 snobol4.exe: $(OBJ)
-	$(CC) -o snobol4 $(OBJ) $(INET_LIBS)
+	$(CC) -o snobol4 $(OBJ) $(INET_LIBS) $(COM_LIBS)
 
 data.o:	$(SRCDIR)data.c
 	$(CC) $(CFLAGS) $(SRCDIR)data.c
@@ -234,6 +242,9 @@ sset.o:	$(SRCDIR)lib/snolib/sset.c
 
 tan.o:	$(SRCDIR)lib/snolib/tan.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/tan.c
+
+com.o:	$(SRCDIR)lib/win32/com.cpp
+	$(CXX) $(CXXFLAGS) $(SRCDIR)lib/win32/com.cpp
 
 ################################################################
 
