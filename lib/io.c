@@ -118,7 +118,7 @@ struct file {
 #define ISPIPE(FP) (((FP)->flags & FL_TYPE) == FLT_PIPE)
 #define ISTTY(FP)  (((FP)->flags & FL_TYPE) == FLT_TTY)
 #define ISINET(FP) (((FP)->flags & FL_TYPE) == FLT_INET)
-#define ISAFILE(FP) (((FP)->flags & FL_NOTAFILE) == 0) /* XXX TEMP */
+#define ISAFILE(FP) !((FP)->flags & FL_NOTAFILE)
 
 #define MAXFNAME	1024		/* XXX use MAXPATHLEN? POSIX?? */
 #define MAXOPTS		1024
@@ -421,11 +421,10 @@ io_fopen2( fp, mode )
 	    fp->f = udp_open( host, service, -1, priv );
 	else
 	    fp->f = tcp_open( host, service, -1, priv );
-	fp->flags &= (FL_TYPE|FL_UNBUF);
-	fp->flags |= FLT_INET;
 #ifdef INET_IO
 	/* awful crock; fp->f is a SOCKET; do away with this!!!! */
 	fp->flags |= FL_NOTAFILE;
+	fp->flags |= FLT_INET;		/* always set? */
 #endif /* INET_IO */
 	return;
     }
@@ -838,7 +837,7 @@ io_print( iokey, iob, sp )		/* STPRNT */
     }
 
 #ifdef NO_UNBUF_RW
-    if (fp->flags & FL_UNBUF && ISAFILE(fp)) {
+    if ((fp->flags & FL_UNBUF) && ISAFILE(fp)) {
 	/* simulate unbuffered I/O */
 	if (fflush(f) == EOF)
 	    ret = FALSE;
