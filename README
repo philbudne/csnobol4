@@ -6,7 +6,7 @@ Second Beta release of ``The Macro Implementation of SNOBOL4''
 This is a port of the original SIL (SNOBOL4 Implementation Language)
 "macro" version of SNOBOL4 with the `C' language as a target.
 
-SNOBOL4, while known promarily as a string language excells at any
+SNOBOL4, while known primarily as a string language excels at any
 task involving symbolic manipulations.  It provides run time typing,
 garbage collection, user data types, on the fly compilation.  It's
 primary weakness is it's simple syntax, and lack of "structured
@@ -75,7 +75,7 @@ Status;
 		may run much slower (up to 20x slower than SPITBOL).
 
 		The pattern scanner and some pattern matching routines
-		get split up into many small, mutually recusrsive
+		get split up into many small, mutually recursive
 		routines!! gcc inlining may resolve this.
 
 I/O;
@@ -99,7 +99,7 @@ Acknowledgments;
 	(as well as his work of 30 years ago, designing and
 	implementing the language)!
 
-	I would also never have suceeded without Mark Emmer of
+	I would also never have succeeded without Mark Emmer of
 	Catspaw's help as well as his excellent SPARC SPITBOL
 	product!!
 
@@ -139,7 +139,7 @@ and link to config.m4.
 
 The tar does not contain any binaries; THEY SHOULD NOT BE NEEDED
 (unless you touch the source files) As all generated files are
-provided.  The generated files are NOT system dependant!!!
+provided.  The generated files are NOT system dependent!!!
 
 Changes from "beta1" distribution;
 	Now have man page (describes all extensions)!!!
@@ -170,7 +170,7 @@ Changes from "beta1" distribution;
 	Should build cleanly on AIX, Irix.
 	Resolved problems for build on VMS (using gcc only)
 		see lib/vms for library routines.  no BUILD.COM supplied yet.
-	Cleaned up rebus (still supplied seperately).
+	Cleaned up rebus (still supplied separately).
 
 If you make any changes/fixes/improvements, or port it to a new
 system, please send them to me (please include "timing.out" and tell
