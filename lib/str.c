@@ -29,7 +29,7 @@ trimsp( sp1, sp2 )
 }
 
 void
-raise( sp )
+raise1( sp )
     struct spec *sp;
 {
     register char *cp;

@@ -1277,7 +1277,7 @@ XXECOMP	OUTPUT = IND 'io_ecomp();'			:(OPDONE)
 ****************
 *	SIL XRAISP extension 5/24/94
 * args: SPEC
-XXRAISP	OUTPUT = IND 'raise(' ARGV<1> ');'		:(OPDONE)
+XXRAISP	OUTPUT = IND 'raise1(' ARGV<1> ');'		:(OPDONE)
 
 ****************
 *	SIL XINCLD extension 6/12/94
