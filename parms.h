@@ -20,13 +20,12 @@
 #include "res.h"
 #include "data.h"
 #include "syn.h"
-#include "proc.h"
+#include "proc.h"			/* global procs */
+#include "static.h"			/* static procs */
 
 #ifdef NO_STATIC_VARS
 #include "vars.h"
 #endif /* NO_STATIC_VARS defined */
-
-struct descr NORET[1];
 
 #ifdef TRACE_DEPTH
 extern int cdepth;
