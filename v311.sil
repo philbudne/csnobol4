@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.103  2004/01/12 07:05:08  phil
+* track passed arg count using WPTR
+*
 * Revision 1.102  2004/01/12 06:42:36  phil
 * remove unused label LNKF8
 *
@@ -774,16 +777,16 @@ SPCNV1 GETD    ZPTR,XPTR,XCL	   Get pointer to specifier
        RCALL   ZPTR,GENVAR,ZPTR	   Convert specifier to structure
        PUTD    XPTR,XCL,ZPTR	   Replace pointer to specifier
 SPCNV2 DECRA   XCL,2*DESCR	   Decrement to next pair
-       ACOMPC  XCL,0,SPCNV1	   Continue if one remains
+       PCOMPC  XCL,0,SPCNV1	   Continue if one remains	[PLB88]
        DECRA   YCL,DESCR	   Decrement to next list
-       ACOMPC  YCL,0,SPCNVT	   Continue if one remains
+       PCOMPC  YCL,0,SPCNVT	   Continue if one remains	[PLB88]
 INITD1 GETDC   XPTR,INITB,0	   Get specifier to convert
        RCALL   YPTR,GENVAR,(XPTR)  Convert it to string structure
        GETDC   ZPTR,INITB,DESCR	   Get location to put it
        PUTDC   ZPTR,0,YPTR	   Place pointer to string structure
        INCRA   INITB,2*DESCR	   Decrement to next pair
-       ACOMP   INITB,INITE,,,INITD1
-*				   Compare with end
+       PCOMP   INITB,INITE,,,INITD1
+*				   Compare with end		[PLB88]
        XCALLC  GETPARM,(XSP)	   Get user parameters		[PLB39][PLB86]
        RCALL   PARMVL,GENVAR,XSPPTR				[PLB39]
 *				   Convert to string for &PARM	[PLB39]
@@ -1177,7 +1180,7 @@ GCT    GETD    GCMPTR,PRMPTR,BKDXU Get next resident block
 GCTDWN DECRA   BKDXU,DESCR	   Decrement block count
        AEQLC   BKDXU,0,GCT	   Test for end of loop
        SETAC   BKPTR,OBLIST-DESCR  Set up pointer to bins
-GCBA1  ACOMP   BKPTR,OBEND,GCLAD   Check for end of bins
+GCBA1  PCOMP   BKPTR,OBEND,GCLAD   Check for end of bins	[PLB88]
        INCRA   BKPTR,DESCR	   Increment bin pointer
        MOVD    ST1PTR,BKPTR	   Get working copy
 GCBA2  GETAC   ST1PTR,ST1PTR,LNKFLD
@@ -1211,7 +1214,7 @@ GCLAD4 SUM     TTLCL,TTLCL,BKDX	   Update block pointer
 *_
 GCBB1  SETAC   BKPTR,OBLIST-DESCR  Set up pointer to bins
        SETAC   NODPCL,1		   No dump while reorganizing
-GCBB2  ACOMP   BKPTR,OBEND,GCLAP   Check for end of bins
+GCBB2  PCOMP   BKPTR,OBEND,GCLAP   Check for end of bins	[PLB88]
        INCRA   BKPTR,DESCR	   Increment bin pointer
        MOVD    ST1PTR,BKPTR	   Get work copy
 GCBB3  MOVD    ST2PTR,ST1PTR	   Save pointer to be linked
@@ -1238,7 +1241,7 @@ GCLAP2 TESTFI  TTLCL,MARK,GCLAP5   Is block marked?
        DECRA   BKDX,DESCR	   Decrement offset
 GCLAP3 GETD    DESCL,TTLCL,BKDX	   Get next descriptor in block
        TESTF   DESCL,PTR,GCLAP4	   Is it a pointer?
-       ACOMP   DESCL,MVSGPT,,,GCLAP4
+       PCOMP   DESCL,MVSGPT,,,GCLAP4				[PLB88]
 *				   Is it above compression barrier?
        TOP     TOPCL,OFSET,DESCL   Compute offset to target
        ADJUST  DESCL,TOPCL,OFSET   Adjust pointer to target
@@ -1253,7 +1256,7 @@ GCLAT1 GETD    TTLCL,PRMPTR,BKDXU  Get next resident block
        GETSIZ  BKDX,TTLCL	   Get size of block
 GCLAT2 GETD    DESCL,TTLCL,BKDX	   Get descriptor from block
        TESTF   DESCL,PTR,GCLAT3	   Is it a pointer?
-       ACOMP   DESCL,MVSGPT,,,GCLAT3
+       PCOMP   DESCL,MVSGPT,,,GCLAT3				[PLB88]
 *				   Is it above compression barrier?
        TOP     TOPCL,OFSET,DESCL   Compute offset to target
        ADJUST  DESCL,TOPCL,OFSET   Adjust pointer to target
@@ -1264,7 +1267,7 @@ GCLAT4 DECRA   BKDXU,DESCR	   Decrement count of resident blocks
        AEQLC   BKDXU,0,GCLAT1	   Check for end of resident blocks
        MOVD    TTLCL,HDSGPT	   Set up target pointer
 GCLAM0 BKSIZE  BKDXU,TTLCL	   Get size of block
-       ACOMP   TTLCL,MVSGPT,GCLAM5,GCLAM5
+       PCOMP   TTLCL,MVSGPT,GCLAM5,GCLAM5			[PLB88]
 *				   Has compression barrier been reached
        GETAC   TOPCL,TTLCL,0	   Get target position
        MOVDIC  TOPCL,0,TTLCL,0	   Move title to target position
@@ -1388,8 +1391,8 @@ CMPILE PROC    ,		   Procedure to compile statement
 *				   Insert BASE function
        SUM     CMBSCL,CMBSCL,CMOFCL
 *				   Add offset to base
-       ACOMP   CMBSCL,OCLIM,,,CMPILO
-*				   Check for end of object code
+       PCOMP   CMBSCL,OCLIM,,,CMPILO
+*				   Check for end of object code	[PLB88]
        RCALL   XCL,BLOCK,CODELT	   Get block for more
        PUTDC   CMBSCL,0,GOTGCL	   Replace BASE with direct goto
        PUTDC   CMBSCL,DESCR,LIT1CL				E3.7.1
@@ -2218,7 +2221,7 @@ TREPU1 GETDC   XPTR,YPTR,CODE	   Get code descriptor
        INCRA   CMOFCL,DESCR	   Increment offset
        PUTD    CMBSCL,CMOFCL,XPTR  Insert code descriptor
        SUM     ZPTR,CMBSCL,CMOFCL  Compute total position
-       ACOMP   ZPTR,OCLIM,TREPU5   Check against limit
+       PCOMP   ZPTR,OCLIM,TREPU5   Check against limit		[PLB88]
 TREPU4 AEQLIC  YPTR,LSON,0,,TREPU2 Is there a left son?
        GETDC   YPTR,YPTR,LSON	   Get left son
        BRANCH  TREPU1		   Continue
@@ -3676,7 +3679,7 @@ BALF2  GETLG   TVAL,TXSP	   Get length of text matched so far
        BRANCH  SCOK,SCNR	   Successful match
 *_
 BAL1   DECRA   PDLPTR,3*DESCR	   Back over history entry
-       ACOMP   PDLPTR,PDLHED,TSALF,TSALF,INTR13
+       PCOMP   PDLPTR,PDLHED,TSALF,TSALF,INTR13			[PLB88]
 *_
 BALF   XPROC   BAL		   Matching procedure for BAL retry [PLB67]
        AEQLC   FULLCL,0,,BALF3	   Check &FULLSCAN
@@ -4406,8 +4409,8 @@ ARRAY8 INCRA   XPTR,DESCR	   Update working pointer for another
        ACOMPC  WCL,0,ARRAY8,ARRFIL Check for last one
 ARRAY9 PUTDC   XPTR,DESCR,TPTR	   Insert initial value
 ARRFIL INCRA   XPTR,DESCR	   Update working pointer
-       ACOMP   XPTR,WPTR,INTR10,,ARRAY9
-*				   Check for end
+       PCOMP   XPTR,WPTR,INTR10,,ARRAY9
+*				   Check for end		[PLB88]
        POP     WPTR		   RESTORE PROTOTYPE		E3.10.1
        PUTDC   ZPTR,DESCR,WPTR	   RETURN POINTER TO ARRAY	E3.10.1
        BRANCH  RTZPTR		   Return pointer to array structure
@@ -4878,8 +4881,8 @@ CRR    NANCHK  A1PTR,,CRR1	   J. if R1 is NAN
 CRR1   NANCHK  A2PTR,CMPGT,CMPEQ   R1 NAN, check R2
 *_
 * V2.18a On equal case, use ascending compare in all cases
-CMPEQ  ACOMP   F1PTR,F2PTR,SWAP,CMPNXT,CMPNXT
-*				   Elements =, compare array pos.
+CMPEQ  PCOMP   F1PTR,F2PTR,SWAP,CMPNXT,CMPNXT
+*				   Elements =, compare array pos. [PLB88]
 CMPGT  AEQLC   SCL,0,CMPNXT,SWAP   RSORT/SORT
 CMPLT  AEQLC   SCL,0,,CMPNXT
 *
@@ -4919,8 +4922,8 @@ COTH0  VCOMPC  A2PTR,DATSTA,,,COTH2
 COTH2  VEQL    A1PTR,A2PTR,,COTH1  Other datatypes, J. if same
        SETAV   A1PTR,A1PTR	   Types not equal, compare them
        SETAV   A2PTR,A2PTR
-COTH1  ACOMP   A1PTR,A2PTR,CMPGT,CMPEQ,CMPLT
-*				   Compare addresses
+COTH1  PCOMP   A1PTR,A2PTR,CMPGT,CMPEQ,CMPLT
+*				   Compare addresses		[PLB88]
 *_
 * Sorting complete.  Now unravel index table as copy elements from old
 * array to new.
@@ -4958,7 +4961,7 @@ SORT14 MOVDIC  YPTR,0,ZPTR,0	   Move an element in row
 *
        INCRA   WPTR,DESCR	   Do next row
        INCRA   LPTR,DESCR	   More rows left?
-       ACOMP   LPTR,ZCL,,SORT13,SORT13
+       PCOMP   LPTR,ZCL,,SORT13,SORT13				[PLB88]
 *
        PUSH    (ZEROCL,ZEROCL,ZEROCL,ZEROCL)
 *				   Kill some pointers
@@ -5986,7 +5989,7 @@ ARG5   ACOMP   XCL,ZCL,FAIL	   Check number in bounds
 CLEAR  PROC    ,		   CLEAR()
        RCALL   ,ARGVAL,,FAIL	   Get rid of argument
        SETAC   DMPPTR,OBLIST-DESCR Initialize bin pointer
-CLEAR1 ACOMP   DMPPTR,OBEND,RETNUL Check for end
+CLEAR1 PCOMP   DMPPTR,OBEND,RETNUL Check for end		[PLB88]
        INCRA   DMPPTR,DESCR	   Update for next bin
        MOVD    YPTR,DMPPTR	   Get working copy
 CLEAR2 GETAC   YPTR,YPTR,LNKFLD	   Get next variable
@@ -6291,7 +6294,7 @@ DMP    PROC    ,		   DUMP(N)
        AEQLC   XPTR,0,,RETNUL	   No dump if zero
 DUMP   PROC    DMP		   End game dump procedure
        SETAC   WPTR,OBLIST-DESCR   Initialize bin list pointer
-DMPB   ACOMP   WPTR,OBEND,RETNUL   Check for end
+DMPB   PCOMP   WPTR,OBEND,RETNUL   Check for end		[PLB88]
        INCRA   WPTR,DESCR	   Increment pointer
        MOVD    YPTR,WPTR	   Save working copy
 DMPA   GETAC   YPTR,YPTR,LNKFLD	   Get string structure
