@@ -1,0 +1,270 @@
+*	$Id$
+*
+*	Translator for the "Macro Implementation of SNOBOL" (aka MAINBOL)
+*	written in SIL (SNOBOL IMPLEMENTATION LANGUAGE) to `C'
+*
+*	Phil Budne	November 1993
+
+*	gendata.sno -- create data segment files
+
+*	XXX should be integrated into genc.sno!
+
+****************************************************************
+*	environment
+
+	MAINBOL = IDENT(.NAME,"NAME") 1
+
+*	bag trailing whitespace
+	&TRIM = 1
+
+*	faster matching
+	&ANCHOR = 1
+
+*	boost stmt limit for MAINBOL
+	&STLIMIT = 200000
+
+*	input file
+	SILPATH = 'v311.sil'
+
+****************************************************************
+*	I/O
+
+*	different I/O routines for now under MAINBOL!
+	DIFFER(MAINBOL)					:S(MB1)
+
+**************** SPITBOL I/O
+
+*	SIL file on INPUT
+	INPUT(.INPUT,1,SILPATH)
+
+*	error output to fd2
+	OUTPUT(.STDERR,2,"[-f2]")
+
+	OUTPUT(.DATA.H,10,"data.h")
+	OUTPUT(.DATA.C,11,"data.c")
+	OUTPUT(.INIT.H,12,"init.h")
+	OUTPUT(.EQU.H,13,"equ.h")
+							:(EIO)
+
+**************** MAINBOL I/O
+
+*	SIL file on INPUT
+MB1	INPUT(.INPUT,1,,SILPATH)
+
+*	error output to fd2
+	OUTPUT(.STDERR,7)
+
+	OUTPUT(.DATA.H,10,,"data.h")
+	OUTPUT(.DATA.C,11,,"data.c")
+	OUTPUT(.INIT.H,12,,"init.h")
+	OUTPUT(.EQU.H,13,,"equ.h")
+
+EIO
+
+****************************************************************
+*	constants
+
+	SP = ' '
+	TAB = '	'
+	WHITE = SP TAB
+	NUL = ''
+	COMMA = ','
+
+	LP = '('
+	RP = ')'
+
+	BC = '/*'
+	EC = '*/'
+	BBC = '/********************************'
+
+	UC = "ABCDEFGHIJLKMNOPQRSTUVWXYZ"
+	DIGS = "0123456789"
+	OPERS = "*+-/"
+	Q = "'"
+
+*	keep relocatables in units of "1d"
+	DESCR = 1
+	SPEC = 2 * DESCR
+
+*	name of resident data array
+	RES = 'res'
+
+*	int data type cast
+	INT_T = '(int_t) ' 
+
+*	for initializer code
+	IND = '    '
+	EQ = ' = '
+
+*	patterns
+	TOK = BREAK(WHITE)
+	TNUL = TOK | NUL
+	WS = SPAN(WHITE)
+	STR = Q BREAK(Q) Q
+
+	ARGP = (ANY(UC) SPAN(UC DIGS OPERS)) | ANY(UC) | SPAN(DIGS) | NUL
+
+	BCOMMA = BREAK(COMMA)
+	DESCRARGS = BCOMMA . A COMMA BCOMMA . F COMMA (BREAK(WHITE) | REM) . V
+	SPECARGS = BCOMMA . A COMMA BCOMMA . F COMMA BCOMMA . V COMMA 
++		BCOMMA . O COMMA (BREAK(WHITE) | REM) . L
+
+****************************************************************
+*	functions
+
+	DEFINE("MK_LBL(NAME)")					:(E_MK_LBL)
+MK_LBL	IDENT(NAME)						:S(RETURN)
+	RELOC<NAME> = DOT					:(RETURN)
+E_MK_LBL
+
+
+****************************************************************
+*	main program
+
+	RELOC = TABLE(800)
+	ABS = TABLE(100)
+
+BEGIN
+	DATA.C = '# include "types.h"'
+	DATA.C = '# include "equ.h"'
+	DATA.C =
+
+	DATA.H = 'extern struct descr ' RES '[];'
+
+	LN = 1
+	DOT = 0
+	DATA =
+
+****************************************************************
+TOP	LINE = INPUT						:F(EOF)
+	LINE = LINE SP
+	LBL =
+	OP =
+	ARGS =
+	COMM =
+
+*	a comment?
+	LINE '*'						:S(TOP)
+
+*	here if not a comment
+	LINE (TNUL . LBL) WS (TNUL . OP) WS =
+
+	LINE STR . ARGS						:S(STRARG)
+	LINE TOK . ARGS
+STRARG
+	IDENT(OP,'EQU')						:S(XEQU)
+
+	DIFFER(DATA)						:S(IN_DATA)
+
+*	SIGH!
+* skip non-data; avoid clogging label table!!
+	IDENT(LBL,'DTLIST')					:F(TOP)
+
+	DATA = 1
+IN_DATA
+
+
+	IDENT(OP,'ARRAY')					:S(XARRAY)
+	IDENT(OP,'DESCR')					:S(XDESCR)
+	IDENT(OP,'LHERE')					:S(XLHERE)
+	IDENT(OP,'SPEC')					:S(XSPEC)
+	IDENT(OP,'STRING')					:S(XSTRING)
+	IDENT(OP,'BUFFER')					:S(XBUFFER)
+	IDENT(OP,'FORMAT')					:S(XFORMAT)
+								:(TOP)
+****************
+
+XARRAY	MK_LBL(LBL)
+	VAL = ARGS
+	OPR = '+-*/'
+	ARGS BREAK(OPR) SPAN(OPR)				:S(ARREXP)
+	ARGS ANY(UC)						:S(ARRVAR)
+
+* here with number
+	VAL = +ARGS						:(ARRVAL)
+
+* here with symbol (no expressions)
+ARRVAR	VAL = ABS<ARGS>						:(ARRVAL)
+
+* here with constant expression 
+ARREXP	VAL = 0							:(ARRVAL)
+
+ARRVAL	DOT = DOT + (DESCR * VAL)				:(NEXT)
+
+****************
+XBUFFER
+	DATA.C = 'char ' LBL '[' ARGS '];'
+	DATA.H = 'extern char ' LBL '[];'
+							:(NEXT)
+
+****************
+XDESCR	MK_LBL(LBL)
+
+	ARGS DESCRARGS					:F(ERROR)
+
+	INIT.H = DIFFER(LBL) IND '/* ' LBL ' */'
+	CURR = '(' RES '+' DOT ') = '
+	INIT.H = DIFFER(A,'0') IND 'D_A' CURR INT_T A ';'
+	INIT.H = DIFFER(F,'0') IND 'D_F' CURR F ';'
+	INIT.H = DIFFER(V,'0') IND 'D_V' CURR V ';'
+
+	DOT = DOT + DESCR				:(NEXT)
+
+****************
+* XXX need to deal with expressions? (or let end-user cope?)
+XEQU	EQU.H = '# define ' LBL ' (' ARGS ')'
+	ABS<LBL> = ARGS						:(NEXT)
+
+****************
+XFORMAT
+* XXX output LINE to 'formats'? convert and output to DATA.C???
+	DATA.H = 'extern char ' LBL '[];'
+							:(NEXT)
+****************
+XLHERE	MK_LBL(LBL)					:(NEXT)
+
+****************
+XSPEC	MK_LBL(LBL)
+
+	ARGS SPECARGS					:F(ERROR)
+
+	INIT.H = DIFFER(LBL) IND '/* ' LBL ' */'
+	CURR = '(' RES '+' DOT ') = '
+	INIT.H = DIFFER(A,'0') IND 'S_A' CURR INT_T A ';'
+	INIT.H = DIFFER(F,'0') IND 'S_F' CURR F ';'
+	INIT.H = DIFFER(V,'0') IND 'S_V' CURR V ';'
+	INIT.H = DIFFER(O,'0') IND 'S_O' CURR O ';'
+	INIT.H = DIFFER(L,'0') IND 'S_L' CURR L ';'
+
+	DOT = DOT + SPEC					:(NEXT)
+
+****************
+XSTRING	MK_LBL(LBL)
+	ARGS = REPLACE(ARGS, "'", '"')
+	CURR = '(' RES '+' DOT ') = '
+	INIT.H = IND 'S_A' CURR INT_T ARGS ';'
+	INIT.H = IND 'S_L' CURR 'STRLEN(' ARGS ');'
+
+	DOT = DOT + SPEC					:(NEXT)
+
+****************
+NEXT	LN = LN + 1						:(TOP)
+
+****************************************************************
+
+**************** dump values for fun!
+
+EOF	DATA.C = 'struct descr ' RES '[' DOT '];'
+
+	SARRAY = CONVERT(RELOC, 'ARRAY')		:F(END)
+
+	I = 1
+
+*	output char address of res array element (since CPA is 1)!
+ALOP	DATA.H = '# define ' SARRAY<I,1> 
++		' ((char *) (' RES ' + ' SARRAY<I,2> '))'
++							:F(EALOP)
+	I = I + 1					:(ALOP)
+
+EALOP
+END
