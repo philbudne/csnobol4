@@ -1,0 +1,14 @@
+$Id$
+
+If you're reading this file, the files in this directory have been
+retrieved or updated using "CVS", the Concurrent Version System.
+(see http://www.cvshome.org/ for more information on CVS).
+
+The CVS repository "main branch" reflects the current development
+sources for SNOBOL4, and at any moment may, or may not work on your
+platform (or may not work at all)!
+
+When the sources have been retrieved using the CVS checkout command,
+or when the SIL source file (v311.sil) has been updated, the C source
+sources will need to be regenerated.  This requires an existing
+snobol4 binary (built from a full distribution kit).
