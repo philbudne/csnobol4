@@ -1,40 +1,50 @@
 $Id$
 
-create;
-	linux/RPM
-	freebsd "port"
-	netbsd package?
-	linux/debian? (http://www.debian.org/doc/FAQ/debian-faq-7.html)
-		ftp://ftp.debian.org/debian/doc/package-developer/programmer.ps.gz
+refer to online manuals (in man page, elsewhere?)
+    http://burks.bton.ac.uk/burks/language/snobol/catspaw/tutorial/contents.htm
+    http://burks.bton.ac.uk/burks/language/snobol/catspaw/manual/contents.htm
 
-output message if ignoring gcc?
+add sset.c to borland and windows build files
 
+keep FL_INET bit? call inet_close(fp)???
+	win32;
+		osf = _get_osfhandle(fileno(fp));
+		fclose(fp);
+		closesocket(osf);
 
+use "pax -pe -rw src-dir dst-dir" for sourcekit?
 
-use strchr, memcmp, memmove etc by default (add USE_BSD_STRINGS)?
+test SSET() [scaled filepos SET]
+	document
+
+add pointers to HTML SNOBOL4+ manual on the web.
+
+include serv.c/serv.sno in kit.
+	put serv.c in snolib (need NO_PML_SERV)?
+
+make timing.out more machine friendly!
+
+packaging;
+	make snobol*4*-VERSION directory/tarfile???
+		csnobol-VERSION?? csnobol4?
+		Change package name to C-SNOBOL4???
+	release 0.99.4 RPM(S), freebsd "port", netbsd "package"???
+	update RPM, *bsd for 1.0
+	create freebsd binary "package"???
+	create debian package?
+	    http://www.debian.org/doc/FAQ/debian-faq-7.html
+	    ftp://ftp.debian.org/debian/doc/package-developer/programmer.ps.gz
 
 timing script;
 	translate bogomips + cpu into clock speed?
+	provide bogomips.c??
 	output machine readable format?
-
-include serv.c/serv.sno in kit.
-	put serv.c in snolib (need NO_PML_SERV)
 
 load.doc: mention dt.h
 
-look at tty_close() thrashing;
-	never discard info?
-	keep use count???
-	flush tty_save & tty_restore (rely on io_finish)??
-	always close in reverse of open order
-		so if two fd's refer to same device the original
-		params are restored!!
-
-Tests;
-	add "scan.sno" test
-	add outerr.sno test?
-
 INSTALL:
+	update
+	document --largefile
 	talk about available snolib files
 	talk about optimization options
 		ie;
@@ -48,10 +58,29 @@ INSTALL:
 		SNOBOL4_C_CFLAGS=
 		DATA_INIT_CFLAGS=
 
+update README
+
 sed SNOLIB_PATH into man page?
 	give load.doc full path!!
 
+look at tty_close() thrashing;
+	never discard info?
+	keep use count???
+	flush tty_save & tty_restore (rely on io_finish)??
+	always close in reverse of open order
+		so if two fd's refer to same device the original
+		params are restored!!
+
+Tests;
+	add "scan.sno" test
+	add outerr.sno test?
+	add scanerr.sno test?
+
 ================
+
+better man page installation
+
+use strchr, memcmp, memmove etc by default (add USE_BSD_STRINGS)?
 
 per-machine (arch?) build dirs
 	do machine-independant parts in base dir (genc, gendata, gensyn)
@@ -61,6 +90,9 @@ per-machine (arch?) build dirs
 tmpnam() call in snolib?
 
 io.c cleanup;
+	fseeko by zero not needed if !defined(NO_UNBUF_RW) and !FL_UNBUF
+		set LAST_NONE after fseeko, don't set LAST_{IN,OUT}PUT
+		until actual I/O done
 	io_flushall
 		external MINUNIT, MAXUNIT
 		fflush before mode restore?
@@ -84,6 +116,7 @@ Win32;
 	replace dummy execute function?
 	implement osdep_open hacks for /dev/tty, /dev/null?
 	document DLL creation in load.doc
+	    mention http://www.geocities.com/SiliconValley/5806/implib32.htm
 
 man page;
 	document math error catching problems in BUGS section;
@@ -124,13 +157,7 @@ switch to unroff for html file prep??
 
 autoconf:
 	check for index() in <string.h> (BSD44)
-
 	--max-opt
-
-	options for dest dir(s)?
-		--bindest=
-		--mandest=
-
 	save additions in (local-config?) file??
 
 unix98/load.c
@@ -146,7 +173,7 @@ man page:
 		note, update on INPUT() will not create file???
 	mention load.doc located in SNOLIB dir
 
-SPITBOL compatibility document?
+SPITBOL/SNOBOL4+ compatibility document?
 	'd' exponents
 	data type conversions??
 	no NAME datatype
@@ -155,7 +182,10 @@ SPITBOL compatibility document?
 	APPLY() requires arguments
 	no ATAN() function
 	BACKSPACE() not supported
-	CLEAR() does not take args, clears pre-initialized vars (ie; ARB, FENCE)
+	CLEAR() does not take args
+		clears pre-initialized vars (ie; ARB, FENCE)
+	DUMP()
+	no default table values
 
 ================
 
@@ -256,8 +286,15 @@ announce/notify;
 	lingiust list
 		http://www.linguistlist.org/
 
-	litterature researchers??
+	litterature researchers
 		ask Eric Johnson!!
+
+	classicists
+		ask burkhard meisner
+
+	retrocomputing museum;
+		http://www.tuxedo.org/~esr/retro/
+		point them to my resources page?
 
 ================ later;
 
@@ -281,7 +318,9 @@ I/O;
 	pass back flags with recl (so "T" is per-var?)??
 		need to mask off flags to get recl
 	use COMPCL instead of "compiling"???
-
+	implement I/O objects (input, output, close methods)
+	add option char to ignore "magic" pathnames?
+		(or char to enter magic namespace)
 malloc system stack (STACK)? [see new/sysstk.diffs]
 	slows down OFCHK(); 2+% overall penalty
 
@@ -477,3 +516,60 @@ Implement SPITBOL EXIT [+-][34] freeze functionality
 
 perform live/dead analysis of variables for each function?!
 
+================
+
+I've included an external function to do this with Macro SPITBOL for many
+years.  -include "logic.inc" provides:
+
+SPITBOL logicals;
+
+  NOT(X1)        Return Logical NOT of X1
+  AND(X1,X2)     Return X1 AND  X2
+  OR(X1,X2)      Return X1 OR   X2
+  XOR(X1,X2)     Return X1 XOR  X2
+  NAND(X1,X2)    Return X1 NAND X2
+  NOR(X1,X2)     Return X1 NOR  X2
+  UPLUS(X1,X2)   Return X1 + X2 (overflow ignored)
+  UMINUS(X1,X2)  Return X1 - X2 (overflow ignored)
+  UMUL(X1,X2)    Return X1 * X2 (unsigned)
+  UDIV(X1,X2)    Return X1 / X2 (unsigned)
+  SHL(X1,X2)     Return X1 shifted left X2 bits
+  SHR(X1,X2)     Return X1 shifted right X2 bits (unsigned)
+  SAR(X1,X2)     Return X1 shifted right X2 bits (sign extension)
+  ROL(X1,X2)     Return X1 rotated left X2 bits
+  ROR(X1,X2)     Return X1 rotated right X2 bits
+  DIB(X1,X2)     Return integer from digit string in X1, base X2
+  IDB(X1,X2)     Return digit string from integer in X1, base X2
+  
+X1 and X2 may be two strings, two integers, or an integer and a string.
+
+;       LOAD('LOGIC(INTEGER,ARG2,ARG3)')
+;
+;       Input:  First Argument = Operation Specifier:
+;                       1 = Return Logical NOT of ARG2
+;                       2 = Return ARG2 AND  Arg3
+;                       3 = Return ARG2 OR   Arg3
+;                       4 = Return ARG2 XOR  Arg3
+;                       5 = Return ARG2 NAND Arg3
+;                       6 = Return ARG2 NOR  Arg3
+;                       7 = Return ARG2 + ARG3
+;                       8 = Return ARG2 - ARG3
+;                       9 = Return ARG2 * ARG3 (unsigned)
+;                      10 = Return ARG2 / ARG3 (unsigned)
+;                      11 = Return ARG2 shifted left ARG3 bits
+;                      12 = Return ARG2 shifted right ARG3 bits (unsigned)
+;                      13 = Return ARG2 shifted right ARG3 bits (sign extension)
+;		       14 = Return ARG2 rotated left ARG3 bits
+;                      15 = Return ARG2 rotated right ARG3 bits
+;                      16 = Return integer from digit string in ARG2, base ARG3
+;                      17 = Return digit string from integer in ARG2, base ARG3
+;                             (conversion base defaults to 16 if null string)
+;
+;       ARG2 and ARG3 may be two strings, two integers, or an integer
+;                       and a string.
+;
+
+
+================
+
+dump MAXLNGTH? sparc SPITBOL uses 2^22!
