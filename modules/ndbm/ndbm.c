@@ -13,7 +13,17 @@
 #endif /* HAVE_CONFIG_H defined */
 
 #include <fcntl.h>
+
+/* only one will be set: */
+#ifdef HAVE_NDBM_H
 #include <ndbm.h>
+#endif
+#ifdef HAVE_GDBM_SLASH_NDBM_H
+#include <gdbm/ndbm.h>
+#endif
+#ifdef HAVE_GDBM_DASH_NDBM_H
+#include <gdbm-ndbm.h>
+#endif
 
 #include "h.h"
 #include "equ.h"
