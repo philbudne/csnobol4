@@ -99,7 +99,7 @@ int expint __P((struct descr *,struct descr *,struct descr *));
 int exreal __P((struct descr *,struct descr *,struct descr *));
 
 /* from load.c */
-int link __P((struct descr *,struct descr *,struct descr *,struct descr *));
+int callx __P((struct descr *,struct descr *,struct descr *,struct descr *));
 int load __P((struct descr *,struct spec *,struct spec *));
 void unload __P((struct spec *));
 
