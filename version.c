@@ -2,6 +2,9 @@
 
 /*
  * $Log$
+ * Revision 1.10  1996/09/18  04:36:10  phil
+ * use VERS/VDATE, removed MAIN
+ *
  * Revision 1.9  1996/09/05  04:24:57  phil
  * updated to 0.98
  * added ifdef MAIN
@@ -32,15 +35,23 @@
  * 
  */
 
+#ifndef MAIN
 #include "h.h"
 #include "units.h"
 #include "macros.h"
 #include "snotypes.h"
 #include "data.h"
+#endif
 
-const char vers[] = VERS;
-const char vdate[] = VDATE;
+char vers[] = "0.98.2";
+char vdate[] = "Sept 20, 1996";
 
+#ifdef MAIN
+main() {
+    puts(vers);
+    exit(0);
+}
+#else
 void
 version()
 {
@@ -51,3 +62,4 @@ version()
 "The Macro Implementation of SNOBOL4 in C (C-MAINBOL) Version %s\n", vers);
     io_printf(D_A(PUNCH), "    Philip L. Budne, %s\n", vdate);
 }
+#endif
