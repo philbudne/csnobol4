@@ -5,28 +5,34 @@
  * -plb 6/19/2004
  */
 
-// #define HAVE_I8			// Not w/ MINGW 2.95.3-6
-
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
 #include <windows.h>
-#include <ole2.h>			// sufficient w/ MINGW 2.95.3-6
-/*
-#include <objbase.h>
-#include <olestd.h>
-*/
-// MINGW:
-WINOLEAPI CoGetObject(LPWSTR name, BIND_OPTS *pbo, REFIID riid, void **ppv);
 
+#ifdef __MINGW32__
+// just set defines here? set them in makefile??
+#include <ole2.h>			// sufficient w/ MINGW 2.95.3-6
+WINOLEAPI CoGetObject(LPWSTR name, BIND_OPTS *pbo, REFIID riid, void **ppv);
+#else
+// not tested
+
+// just windowsx.h??
+#include <objbase.h>
+#include <oleauto.h>
+#include <olestd.h>
+
+#define HAVE_I8			// Not w/ MINGW 2.95.3-6
+#endif
+
+// needed w/ MINGW 2.95.3-6
 #ifndef V_I1
 #define V_I1(X) V_UNION(X,cVal)
 #endif
 #ifndef V_I8
 #define V_I8(X) V_UNION(X,llVal)
 #endif
-
 #ifndef V_UI1
 #define V_UI1(X) V_UNION(X,bVal)
 #endif
@@ -74,7 +80,7 @@ COM_LOAD( LA_ALIST ) LA_DCL
     LPDISPATCH pdisp = NULL;
     LPOLESTR progid;
     HRESULT hr;
-    static bool first = true;
+    static bool first = true;			// XXX bad for making DLL!!
 
     if (first) {
 	if (FAILED(CoInitialize(NULL)))
@@ -83,8 +89,10 @@ COM_LOAD( LA_ALIST ) LA_DCL
     }
 
     progid = getolestring(LA_PTR(0));
-    if (wcschr(progid, ':')) {			// moniker?
-	hr = CoGetObject(progid, NULL, IID_IUnknown, (void **)&punk);
+    if (wcschr(progid, ':')) {		// moniker?
+	hr = CoGetObject(progid,	// display name
+			NULL,		// BIND_OPTS*
+			IID_IUnknown, (void **)&punk);
 	if (FAILED(hr))
 	    RETFAIL;
 
@@ -95,10 +103,12 @@ COM_LOAD( LA_ALIST ) LA_DCL
 	    punk->Release();
 
 	    // try to create an instance using class factory
-	    hr = pfact->CreateInstance(NULL, IID_IUnknown, (void **)&punk);
+	    hr = pfact->CreateInstance(NULL,	// agregate object
+					IID_IUnknown,
+					(void **)&punk);
 	    if (FAILED(hr))
 		RETFAIL;
-	    pfact->Release();
+	    pfact->Release();		// XXX release regardless??
 	} // have class factory
     } // moniker
     else {
@@ -109,17 +119,17 @@ COM_LOAD( LA_ALIST ) LA_DCL
 	    RETFAIL;
 
 	// create an instance of the IUnknown object
+	// CoCreateInstanceEx takes COSERVERINFO (remote host)
 	hr = CoCreateInstance(clsid,	// object class id
-			      NULL,		// agregate object
+			      NULL,	// agregate object
 			      CLSCTX_SERVER, // context
-			      IID_IUnknown,	// interface identifier
+			      IID_IUnknown, // interface identifier
 			      (void **)&punk); // out: interface pointer
 	if (FAILED(hr))
 	    RETFAIL;
     }
 
-    // get IDispatch (automation) interface pointer
-    // (a noop? just request IDispatch above?)
+    // get IDispatch (automation) interface pointer from IUnknown object
     hr = punk->QueryInterface(IID_IDispatch, (void **)&pdisp);
 
     // undo AddRef performed by CoCreateInstance
@@ -131,23 +141,26 @@ COM_LOAD( LA_ALIST ) LA_DCL
     RETINT((int_t)pdisp);	// XXX UGH! encode as string? return small int?
 } // COM_LOAD
 
+
+// convert a SNOBOL4 value descriptor to a Windows VARIANTARG
 static bool
 descr_to_variant(struct descr *dp, VARIANTARG *vp)
 {
     switch (D_V(dp)) {
     case I:
-	if (sizeof(int_t) == 4) {
-	    V_VT(vp) = VT_I4;
-	    V_I4(vp) = D_A(dp);
-	    return true;
-	}
 #ifdef HAVE_I8
-	else if (sizeof(int_t) == 8) {
+	if (sizeof(int_t) == 8) {
 	    V_VT(vp) = VT_I8;
 	    V_I8(vp) = D_A(dp);
 	    return true;
 	}
+	else
 #endif
+	{
+	    V_VT(vp) = VT_I4;
+	    V_I4(vp) = D_A(dp);
+	    return true;
+	}
 	break;
     case R:
 	if (sizeof(real_t) == 4) {
@@ -179,13 +192,14 @@ freevariant(VARIANTARG *vp)
     if (!vp)
 	return;
 
-    switch (V_VT(vp) & VT_TYPEMASK) {
+    switch (V_VT(vp)) {
     case VT_BSTR:
 	freeolestring(V_BSTR(vp));
 	break;
     }
 } // freevariant
 
+// convert a Windows wide string (freed) to a SNOBOL4 return value
 static int
 retbstring(struct descr *retval, LPOLESTR olestr)
 {
@@ -195,12 +209,16 @@ retbstring(struct descr *retval, LPOLESTR olestr)
     WideCharToMultiByte(CP_ACP, 0, olestr, -1, narrow, len, NULL, NULL);
     SysFreeString(olestr);
 
+    // retstring usually hidden by a macro, but want to release
+    // storage before return, since retstring copies the data
+    // (otherwise would need to replicate retstring innards)
     retstring(retval, narrow, len);
     delete [] narrow;
 
     return TRUE;
 } // retbstring
 
+// convert Windows VARIANTARG to a SNOBOL4 external function return value
 static int
 retvariant(struct descr *retval, VARIANTARG *vp)
 {
@@ -238,11 +256,14 @@ retvariant(struct descr *retval, VARIANTARG *vp)
 	RETTYPE = R;
 	RETREAL(V_R8(vp));
     case VT_BSTR:
+	// convert (and free) string
 	return retbstring(retval, V_BSTR(vp));
     }
+    // XXX COMPLAIN so new entries can be added?
     RETNULL;				/* ?? */
 } // retvariant
 
+// fetch (and decode, someday) argument referring to an IDispatch object
 // XXX decode string?? lookup small integer? pointer to self-ref block???
 #define LA_DISP(X) ((LPDISPATCH)LA_INT(X))
 
@@ -257,7 +278,7 @@ COM_INVOKE( LA_ALIST ) LA_DCL
 	RETFAIL;
 
     if (!LA_PTR(1))
-	RETFAIL;
+	RETFAIL;		// must have name string
     LPOLESTR name = getolestring(LA_PTR(1));
     HRESULT hr;
     DISPID dispid;
@@ -272,13 +293,10 @@ COM_INVOKE( LA_ALIST ) LA_DCL
 	RETFAIL;
 
     DISPPARAMS dispparams;
-    int dargs = nargs-2;
+    int dargs = nargs - 2;	// get method arg count
     VARIANTARG* vp = NULL;
-    if (dargs) {
-	vp = (VARIANTARG*) CoTaskMemAlloc(dargs*sizeof(VARIANTARG));
-	if (!vp)
-	    RETFAIL;
-    }
+    if (dargs)
+	vp = new VARIANTARG[dargs];
 
     dispparams.cArgs = dargs;
     dispparams.rgvarg = vp;
@@ -311,7 +329,8 @@ COM_INVOKE( LA_ALIST ) LA_DCL
 	    freevariant(vp);
 	    vp++;
         }
-	CoTaskMemFree(dispparams.rgvarg);
+	// free argument array
+	delete [] dispparams.rgvarg;
     }
 
     return retvariant(retval, &result);
