@@ -35,7 +35,7 @@ OBJ=	isnobol4.o data.o data_init.o main.o syn.o version.o bal.o \
 	pair.o pat.o pml.o realst.o replace.o str.o stream.o top.o \
 	tree.o bcopy.o bzero.o dynamic.o expops.o getopt.o init.o \
 	load.o mstime.o chop.o cos.o delete.o environ.o exit.o exp.o \
-	file.o getstring.o host.o log.o logic.o ord.o rename.o \
+	file.o getstring.o handle.o host.o log.o logic.o ord.o rename.o \
 	retstring.o sin.o spcint.o spreal.o sprintf.o sqrt.o sset.o \
 	tan.o osopen.o sys.o tty.o inet.o bindresvport.o execute.o \
 	exists.o term.o findunit.o $(COM_OBJ)
@@ -209,6 +209,9 @@ findunit.o: $(SRCDIR)lib/snolib/findunit.c
 
 getstring.o: $(SRCDIR)lib/snolib/getstring.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/getstring.c
+
+handle.o: $(SRCDIR)lib/snolib/handle.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/handle.c
 
 host.o:	$(SRCDIR)lib/snolib/host.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/host.c
