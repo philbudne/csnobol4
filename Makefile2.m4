@@ -76,8 +76,6 @@ SMALL_SNO=snobol4
 
 ################
 
-.PRECIOUS: $(SNOBOL4).c $(SNOBOL4).o data_init.o
-
 OBJS=	main.o $(SNOBOL4).o data.o data_init.o syn.o bal.o convert.o \
 	date.o dump.o dynamic.o endex.o exp.o hash.o init.o intspc.o \
 	io.o lexcmp.o load.o mstime.o ordvst.o pair.o pat.o pml.o \
@@ -91,7 +89,7 @@ SRCS=	main.c $(SNOBOL4).c data.c data_init.c $(BAL_C) $(CONVERT_C) \
 	$(REALST_C) $(REPLACE_C) $(STREAM_C) $(STR_C) $(TOP_C) \
 	$(TREE_C) version.c $(CONFIG_SRC) $(AUX_SRC)
 
-TESTED:	xsnobol4
+TESTED:	xsnobol4 snobol4.c
 	@echo Running regression tests...
 	cd test; ./run.sh ../xsnobol4 > test.out
 	./timing > timing.out
@@ -101,6 +99,8 @@ xsnobol4: $(OBJS)
 	$(CC) $(CFLAGS) -o xsnobol4 $(OBJS) $(LDFLAGS)
 
 ################
+
+.PRECIOUS: $(SNOBOL4).c $(SNOBOL4).o data_init.o
 
 # may need special options due to size!!
 $(SNOBOL4).o: $(SNOBOL4).c 
