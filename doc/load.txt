@@ -276,7 +276,8 @@ Examples;
 
     On Darwin (MacOS X);
 	dlopen() routine loads modules (bundles), not shared libraries;
-	(see http://fink.sourceforge.net/doc/porting/shared.php)
+	(see http://fink.sourceforge.net/doc/porting/shared.php
+	 and http://fink.sourceforge.net/doc/porting/porting.html)
 
 	cc -fno-common -c -I/usr/local/lib/snobol4 source.c
 	cc -bundle -flat_namespace -undefined suppress -o module.so source.o
