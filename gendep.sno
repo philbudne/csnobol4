@@ -1,0 +1,367 @@
+*	$Id$
+*
+*	Translator for the "Macro Implementation of SNOBOL" (aka MAINBOL)
+*	written in SIL (SNOBOL IMPLEMENTATION LANGUAGE) to `C'
+*
+*	Phil Budne	March 1991	
+*	bootstrapped using CATSPAW "SPARC SPITBOL"
+
+*	gendep -- generate prodcure list
+
+*	TODO:
+*	keep only source block / branch dest (no ops, other args)!!
+*		keep as a graph!!!
+*	split into seperate source mucher / flow grapher ??
+
+****************************************************************
+*	environment
+
+*	identify if mainbol or spitbol
+	MAINBOL = IDENT(.NAME,"NAME") 1
+
+*	faster matching
+	&ANCHOR = 1
+
+*	boost MAINBOL stmt limit!!
+	&STLIMIT = 9000000
+
+	DIFFER(MAINBOL)					:S(MB1)
+
+**************** SPITBOL I/O
+*	error output to fd2
+	OUTPUT(.STDERR,0,"[-f2]")
+	INPUT(.INPUT,1,"v311.sil")			:(EIO)
+
+**************** MAINBOL I/O
+MB1	OUTPUT(.STDERR,7)
+	INPUT(.INPUT,1,,"v311.sil")
+EIO
+
+****************************************************************
+*	constants
+
+	SP = ' '
+	TAB = '	'
+	WHITE = SP TAB
+	NUL = ''
+	COMMA = ','
+
+	LP = '('
+	RP = ')'
+
+	BC = '/*'
+	EC = '*/'
+	BBC = '/********************************'
+
+	UC = "ABCDEFGHIJLKMNOPQRSTUVWXYZ"
+	DIGS = "0123456789"
+	OPERS = "*+-/"
+
+*	patterns
+	TOK = BREAK(WHITE)
+	TNUL = TOK | NUL
+	WS = SPAN(WHITE)
+
+	ARGP = (ANY(UC) SPAN(UC DIGS OPERS)) | ANY(UC) | SPAN(DIGS) | NUL
+
+*	initialize variables
+
+	DATA("LINE(LLBL,LOP,LARGC,LARGV)")
+
+	LINES = ARRAY(5000)
+	PROCS = TABLE(100)
+	SUBPROC = TABLE(500)
+	INPROC = TABLE(500)
+	BRANPROC = TABLE(200)
+	OPTYPE = TABLE(40)
+	DISCARD = TABLE(20)
+
+****************************************************************
+	DISCARD<'EQU'> = 1
+	DISCARD<'FORMAT'> = 1
+	DISCARD<'DESCR'> = 1
+	DISCARD<'SPEC'> = 1
+	DISCARD<'STRING'> = 1
+
+	OPTYPE<'RCALL'> = .XRCALL
+	OPTYPE<'SELBRA'> = .XSELBRA
+	OPTYPE<'BRANCH'> = .L12
+
+	OPTYPE<'ACOMP'> = .L345
+	OPTYPE<'ACOMPC'> = .L345
+	OPTYPE<'LEXCMP'> = .L345
+	OPTYPE<'LCOMP'> = .L345
+
+	OPTYPE<'VCMPIC'> = .L45
+	OPTYPE<'AEQLIC'> = .L45
+
+	OPTYPE<'SUM'> = .L45
+	OPTYPE<'DIVIDE'> = .L45
+	OPTYPE<'MULT'> = .L45
+	OPTYPE<'SUBTRT'> = .L45
+	OPTYPE<'EXPINT'> = .L45
+
+	OPTYPE<'SPREAL'> = .L45
+	OPTYPE<'ADREAL'> = .L45
+	OPTYPE<'DVREAL'> = .L45
+	OPTYPE<'EXREAL'> = .L45
+	OPTYPE<'MPREAL'> = .L45
+	OPTYPE<'SBREAL'> = .L45
+
+	OPTYPE<'AEQL'> = .L34
+	OPTYPE<'DEQL'> = .L34
+	OPTYPE<'AEQLC'> = .L34
+	OPTYPE<'LEQLC'> = .L34
+	OPTYPE<'VEQLC'> = .L34
+	OPTYPE<'TESTF'> = .L34
+	OPTYPE<'TESTFI'> = .L34
+	OPTYPE<'STREAD'> = .L34
+
+	OPTYPE<'LOCAPT'> = .L4
+	OPTYPE<'LOCAPV'> = .L4
+
+	OPTYPE<'STREAM'> = .L456
+	
+****************************************************************
+*	functions
+
+	DEFINE("BRANCH(LBL)PP,PPP")				:(EBRANCH)
+BRANCH	IDENT(LBL)						:S(RETURN)
+
+*	branch target's procedure
+	PP = INPROC< LBL >
+
+	STDERR " BRANCH " LBL ' (' PP ') CURRPROC: ' CURRPROC
+*	STDERR = CURRPROC '/' LBL '/' PP '/' PROCS<LBL>
+
+*	the same?
+	IDENT(CURRPROC,PP)					:S(RETURN)
+
+*	is target a procedure?
+	DIFFER(PROCS<LBL>)					:S(RETURN)
+
+*	make it into one!
+	STDERR = "MKPROC " LBL " (in " PP " called from " CURRPROC ")"
+	OUTPUT = LBL
+
+	CLEAN = 0
+	DIRTY = 1
+	PROCS<LBL> = 1						:(RETURN)
+
+	
+EBRANCH
+
+****************************************************************
+*	main program
+
+BEGIN	LN = 1
+	STARTPROC = "BEGIN"
+	CURRPROC = STARTPROC
+
+****************************************************************
+*	parse input file
+
+TOP	LINE = INPUT					:F(EOF)
+	ORIG = LINE
+	LINE = LINE SP
+	LBL =
+	OP =
+	ARGS =
+	COMM =
+
+*	a comment?
+	LINE '*'					:S(TOP)
+
+*	here if not a comment
+NOTCOMM	LINE (TNUL . LBL) WS (TNUL . OP) WS =
+
+*	an op worth keeping? (discard data declaration ops)
+	DIFFER(DISCARD<OP>)				:S(TOP)
+
+*	only  save lines with label, or branch op
+	DIFFER(LBL)					:S(PARGS)
+	IDENT(OPTYPE<OP>)				:S(TOP)
+
+*	parse args, if any
+PARGS
+*	STDERR = '>>>' LBL ': ' OP
+	ARGC = 0
+	ARGV = ARRAY(6)
+
+*	check for quoted string arg
+	LINE "'" BREAK("'") . ARGS "'" =		:F(NQARGS)
+	ARGV<1> = ARGS
+	ARGC = 1					:S(SAVE)
+
+*	here with args NOT a quoted string
+NQARGS	LINE (TOK . ARGS) =
+
+*	STDERR = '>' OP
+
+*	loop, splitting args!
+	TMP = ARGS
+DISARGS		TMP LP					:F(NOTLP)
+
+*		left paren, grab balanced token
+		TMP BAL . ARG =				:(GOTARG)
+
+*		no left paren
+NOTLP		TMP ARGP . ARG =
+
+*		stuff this one into argv!
+GOTARG		ARGC = ARGC + 1
+		ARGV<ARGC> = ARG
+
+*		STDERR = ARGC '>' ARG
+
+*		strip trailing comma (if any)
+		TMP COMMA =				:S(DISARGS)
+
+*	here with parsed arg list.
+SAVE
+*	STDERR = '>>>' LBL ': ' OP
+	LINES< LN > = LINE( LBL, OP, ARGC, ARGV )
+	LN = LN + 1					:(TOP)
+
+****************************************************************
+****************************************************************
+
+EOF	ENDLN = LN
+	STDERR = 'EOF: ' LN ' LINES SAVED'
+	CLEAN = 0
+	PASS = 1					:(STPASS)
+
+****************
+* start next pass
+
+AGAIN	PASS = PASS + 1
+STPASS	DIRTY =
+	LN = 1
+	CURRPROC = STARTPROC
+	STDERR = "PASS " PASS " (" CLEAN " CLEAN)"
+	EQ(CLEAN,2)					:S(END)
+	CLEAN = CLEAN + 1
+
+****************
+* loop for all lines source, calculating INPROC
+
+NEXT	EQ(LN,ENDLN)					:S(LOOP2)
+	LINE = LINES< LN >
+	LN = LN + 1
+
+	LBL  = LLBL( LINE )
+	OP   = LOP( LINE )
+	ARGC = LARGC( LINE )
+	ARGV = LARGV( LINE )
+
+*	OUTPUT = LBL ' / ' OP ' / ' ARGC
+
+*	is op "PROC" ?
+	IDENT(OP,'PROC')				:F(NPROC)
+*	STDERR = 'PROC ' LBL
+	OUTPUT = IDENT(PROCS< LBL >) LBL
+	PROCS< LBL > = 1
+	INPROC< LBL > = LBL
+	CURRPROC = LBL					:(NEXT)
+*_
+
+*	not PROC, check for label
+NPROC	IDENT(LBL)					:S(NEXT)
+
+*	check if it was MADE into a PROC!
+	IDENT(PROCS<LBL>)				:S(NOTP)
+
+*	it was!! change the currproc!
+	CURRPROC = LBL
+*	STDERR = 'PROC2 ' LBL
+
+*	here with non-proc, with label
+NOTP	INPROC<LBL> = CURRPROC
+*	STDERR = LBL ' is in ' CURRPROC
+							:(NEXT)
+
+****************************************************************
+
+LOOP2	LN = 1
+	CURRPROC = STARTPROC
+
+*	if just MKPROC'ed need to regenerate INPROC
+*	XXXX (but only for rest of file?)!!
+NEXT2	DIFFER(DIRTY)					:S(AGAIN)
+
+*	reached end of file?
+	EQ(LN,ENDLN)					:S(AGAIN)
+
+*	extract line
+	LINE = LINES< LN >
+	LN = LN + 1
+
+	LBL  = LLBL( LINE )
+	OP   = LOP( LINE )
+	ARGC = LARGC( LINE )
+	ARGV = LARGV( LINE )
+
+*	STDERR = LBL ' / ' OP ' / ' ARGC
+
+	IDENT(OP,'PROC')				:F(NPROC2)
+	OUTPUT = IDENT(PROCS< LBL >) LBL
+	PROCS< LBL > = 1
+	INPROC< LBL > = LBL
+	CURRPROC = LBL					:(NEXT2)
+
+*	here if not a PROC, check for label
+NPROC2	IDENT(LBL)					:S(NOLBL2)
+
+*	check if it was MADE into a PROC!
+	IDENT(PROCS<LBL>)				:S(NOTP2)
+
+*	it was!! change the currproc!
+	CURRPROC = LBL
+
+*	here with non-proc, with label
+NOTP2	INPROC<LBL> = CURRPROC
+
+NOLBL2
+*	STDERR  = LBL '/' OP '/' OPTYPE<OP>
+	DIFFER(OPTYPE<OP>)				:S($(OPTYPE<OP>))
+							:S(NEXT2)
+
+****************************************************************
+*	opcode dependant actions
+
+****************
+L12	BRANCH( ARGV<1> )
+L2	BRANCH( ARGV<2> )				:(NEXT2)
+
+****************
+L34	BRANCH( ARGV<3> )
+L4	BRANCH( ARGV<4> )				:(NEXT2)
+
+****************
+L345	BRANCH( ARGV<3> )
+L45	BRANCH( ARGV<4> )
+	BRANCH( ARGV<5> )				:(NEXT2)
+
+L456	BRANCH( ARGV<6> )				:(L45)
+
+****************
+*	RCALL	retval,proc,args,alt-rets
+
+XRCALL
+	OUTPUT = IDENT( PROCS< ARGV<2> > ) ARGV<2> " NOT A PROC"
+
+*	examine return labels
+	DIFFER( ARGV<4> )				:F(NEXT2)
+	LABS = ARGV<4>					:(MLAB)
+
+****************
+XSELBRA	LABS = ARGV<2>					:F(NEXT2)
+*	STDERR = "SELBRA: " LABS
+MLAB	LABS LP =					:S(MLAB2)
+	BRANCH(LABS)					:(NEXT2)
+MLAB2	LABS BREAK(COMMA RP) . L (COMMA | RP) =		:F(NEXT2)
+*	STDERR = '>>' L
+	BRANCH(L)					:(MLAB2)
+****************
+
+END
