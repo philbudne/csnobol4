@@ -2,6 +2,9 @@
 
 /*
  * $Log$
+ * Revision 1.25  2001/12/03 01:15:35  phil
+ * add HAVE_CONFIG_H
+ *
  * Revision 1.24  1998/06/01  04:24:26  phil
  * include vars.h
  *
@@ -76,9 +79,9 @@
 
 #include "h.h"				/* const */
 
-const char vers[] = "0.99.4++";
-const char vdate[] = "June 1, 1998";
-const char snoname[] = "C-MAINBOL";
+const char vers[] = "0.99.44";
+const char vdate[] = "March 3, 2002";
+const char snoname[] = "CSNOBOL4";
 
 #ifdef MAIN
 main() {
