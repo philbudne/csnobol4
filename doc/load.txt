@@ -280,7 +280,7 @@ Examples;
 
     on SunOS 5 (Solaris2+);
 	cc -c -Kpic -DHAVE_CONFIG_H -I/usr/local/lib/snobol4 source.c
-	ld -G -o modile.so source.o
+	ld -G -o module.so source.o
 
     On Darwin (MacOS X);
 	A module (bundle), not a shared library must be built;
