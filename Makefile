@@ -31,7 +31,7 @@ TSORT=	tsort
 # machine generated files;
 
 GENERATED=data.c data_init.h proc.h syn.h data.h \
-	equ.h res.h syn_init.h isnobol4.c snobol4.c snolib/host.sno
+	equ.h res.h syn_init.h isnobol4.c snobol4.c host.sno
 
 ################
 # SIL source file
@@ -139,6 +139,12 @@ data_init.h: data_init.h2
 	@cmp data_init.h data_init.h2 || cp data_init.h2 data_init.h
 
 #################
+# generated snolib files
+
+host.sno: host.awk lib/snolib/host.h
+	awk -f host.awk lib/snolib/host.h > host.sno
+
+#################
 # dependency generation is slow and ugly (and wrong?)
 # doesn't change much!!
 
@@ -154,7 +160,8 @@ G1=data.c2 data.h2 data_init.h2 proc.h2 equ.h2 syn.h2 syn_init.h2 \
 	res.h2 snobol4.c isnobol4.c 
 
 # generated files to include in kit (copy, so newer than .x2 versions)
-G2=data.c data.h data_init.h proc.h equ.h res.h syn.c syn.h syn_init.h
+G2=data.c data.h data_init.h proc.h equ.h res.h syn.c syn.h syn_init.h \
+	host.sno
 
 # disposables
 DISP=*.o *.a callgraph prolog bsplitu pv vers build.c
@@ -211,7 +218,6 @@ tar vers: snobol4 pv
 	mkdir $(DIR)
 	find $(TAR) -name RCS -prune -o -print | cpio -pldm $(DIR)
 	cp $(G2) $(DIR)
-	cp snolib/host.sno $(DIR)/snolib
 	tar cf - $(DIR) | $(COMP) > $(KIT)
 	rm -rf $(DIR)
 	./pv > vers
