@@ -1,0 +1,35 @@
+#! /bin/sh
+# cc-M - replacement for cc -M
+# $Id$
+
+flags=
+for file in $*
+do
+    case $file in
+	-D*|-U*|-I*)
+	    flags="$flags $file"
+	    ;;
+	-*)
+	    ;;
+	*)
+	    echo "# # $file"
+# on some systems (AIX/RT) system defines are done by cc passing -D flags!!
+#	    /lib/cpp $flags < $file | grep '^# 1 "[^"]'
+	    cc -E $flags $file | grep '^# 1 "[^"]'
+	    
+	    ;;
+    esac
+done | awk '
+/# # /    {
+		file = $3
+		lf = length(file)
+		ext = substr(file,lf,1)
+		if (ext == "c" || ext == "y" || ext == "l")
+		    left = substr(file,1,lf-1) "o"
+		else
+		    left = file
+		print left ": " file
+		next
+	 }
+/^# 1 /  {	print left ":\t" substr($3,2,length($3) - 2) }
+
