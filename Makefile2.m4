@@ -190,7 +190,7 @@ SRCS=	main.c $(SNOBOL4).c data.c data_init.c syn.c $(BAL_C) \
 .PRECIOUS: $(SNOBOL4).o data_init.o snobol4
 
 xsnobol4: $(OBJS)
-	rm -f xsnobol4
+	rm -f xsnobol4$(EXT)
 	$(CC) $(CFLAGS) -o xsnobol4 $(OBJS) $(LDFLAGS)
 
 ################
@@ -201,9 +201,9 @@ snobol4: xsnobol4 snobol4.c
 	cd test; ./run.sh ../xsnobol4
 	@echo Passed regression tests.
 	./timing > timing.out
-	-rm -f snobol4
-	ln xsnobol4 snobol4
-	@touch snobol4
+	-rm -f snobol4$(EXT)
+	ln xsnobol4$(EXT) snobol4$(EXT)
+	@touch snobol4$(EXT)
 	@echo Please consider mailing timing.out to \
 		snobol4-timing@ultimate.com 1>&2
 	@echo along with information on your \
