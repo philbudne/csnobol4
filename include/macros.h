@@ -61,8 +61,6 @@
 #endif /* not 0 */
 
 #define APDSP(A,B) bcopy(S_SP(B), S_SP(A)+S_L(A), S_L(B)); S_L(A) += S_L(B)
-#define FSHRTN(A,B) S_L(A) -= B; S_O(A) += B
-#define SHORTN(A,B) S_L(A) -= B
 
 /* must deal with A == C
  * 10/28/93
