@@ -28,7 +28,7 @@ lookup_handle(hlp, h)
 {
     struct handle_entry *hp;
 
-    for (hp = hlp->hash[HANDLE_HASH(hp->handle)]; hp; hp = hp->next) {
+    for (hp = hlp->hash[HANDLE_HASH(h)]; hp; hp = hp->next) {
 	if (hp->handle == h)
 	    return hp->value;
     }
