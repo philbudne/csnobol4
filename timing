@@ -67,6 +67,10 @@ if [ "$UNAME" ]; then
 			echo /bin/model:
 			/bin/model
 			echo ''
+		elif [ -f /usr/bin/getconf ]; then
+			echo getconf MACHINE_MODEL:
+			/usr/bin/getconf MACHINE_MODEL
+			echo ''
 		fi
 		;;
 	IRIX*)
