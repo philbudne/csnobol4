@@ -1,7 +1,7 @@
 # Makefile for doc files
 # $Id$
 
-all:	porting.doc porting.html snobol4.0 snobol4.html snobol4.ps
+all:	porting.txt porting.html snobol4.0 snobol4.html snobol4.ps
 
 MS=-ms
 MAN=-man
@@ -14,8 +14,8 @@ TROFF_PS=groff -Tps
 
 TROFF_HTML=groff -Thtml
 
-porting.doc: porting.ms Makefile
-	$(NROFF) $(MS) porting.ms > porting.doc
+porting.txt: porting.ms Makefile
+	$(NROFF) $(MS) porting.ms > porting.txt
 
 porting.html: porting.ms Makefile
 	$(TROFF_HTML) $(MS) porting.ms > porting.html
