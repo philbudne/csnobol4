@@ -2,6 +2,8 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+******** RCS tag BETA5
+
 11/28/96:
 	timing.sno: made NOTIME error non-fatal
 	doc/ports.doc: added bsdi
