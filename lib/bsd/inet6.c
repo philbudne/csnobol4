@@ -36,7 +36,7 @@
 
 /* should be in lib.h, but would require socket.h! */
 #ifdef NEED_BINDRESVPORT_SA
-extern int bindresvport_sa __P((int, struct sockaddr));
+extern int bindresvport_sa __P((int, struct sockaddr *));
 #endif /* NEED_BINDRESVPORT */
 
 #ifndef INADDR_NONE
