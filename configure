@@ -104,6 +104,10 @@ while [ $# -gt 0 ]; do
 	STUFF=`echo "$1" | sed 's/--add-srcs=//'`
 	echo 'ADD_SRCS(['"$STUFF"'])'		>> $CONFIG_M4
     	;;
+    --bindir=*)
+	STUFF=`echo "$1" | sed 's/--bindir=//'`
+	echo "BINDIR=$STUFF"			>> $CONFIG_M4
+    	;;
     --debug)
 	DEBUG=true
 	set -x
@@ -193,7 +197,9 @@ C Library support selection;
 	--no-dynlib		--no-largefile
 
 Install location;
-	--prefix=PATH
+	--prefix=PATH		[default: /usr/local]
+	--bindir=PATH		[default: PREFIX/bin]
+	--mandir=PATH		[default: PREFIX/man]
 EOF
 
 	rm -f $CONFIG_M4 $CONFIG_H
