@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+5/31/2004
+	lib/bsd/inet6.c: NOTE: functions ignore "port" arg (OK, not used)
+
 3/3/2004
 	configure: attempt to fix pre-panther socklen_t lossage
 	version.c: update to 1.0+
