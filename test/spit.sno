@@ -1,0 +1,80 @@
+*	test SPITBOL (-PLUSOPS) operators added in [PLB32]
+
+	&trace = 100
+	trace(.a, .value)
+	trace(.b, .value)
+	trace(.c, .value)
+
+	c = 'yes'
+
+-PLUSOPS 1
+
+****************
+*	embeded assign, tracing thereof
+	a = (b = c '!!')
+	output = a
+	output = b
+
+****************
+*	exponents on reals (not an operator)
+	output = 4.2e1
+	output = 50.e-3
+
+****************
+*	nested table/array access
+	tt = table()
+	tt['blue'] = table()
+	tt<'blue'><'green'> = 'cyan'
+	output = tt<'blue'>['green']
+*
+****************
+*	'numeric' conversion
+	x = convert('17', .numeric)
+	output = datatype(x) ': ' x
+
+	x = convert('3.1415932384626433', .numeric)
+	output = datatype(x) ': ' x
+
+****************
+*	alternation
+
+	define("x()")
+	define("y()")
+	define("z()")					:(ez)
+x	output = 'TOO BIG'				:(freturn)
+y	output = 'too small'				:(freturn)
+z	output = 'Just Right'				:(return)
+ez
+
+	(x(), y(), z(), death())
+
+****************
+*	match operator
+	a = b = 'yes!!'
+
+	(a ? b . c)					:f(end)
+	(a ? b $ c)					:f(end)
+
+****************
+*	tracing of match assign, replace
+	a b . c
+	a b $ c
+*	a ? b . c
+*	a ? b $ c
+
+****************************************************************
+* not yet working;
+
+	p = 'yes'
+* either of next two cause "Variable not present where required" err
+	b p =
+*	b 'yes' =
+
+*	variable not present...
+	(a ? '!!' = '')
+
+****************
+*	the very end
+	output = 'all done'
+
+end

@@ -1,0 +1,22 @@
+    statement 7: C = 'yes', time = 0
+    statement 10: B = 'yes!!', time = 10
+    statement 10: A = 'yes!!', time = 10
+yes!!
+yes!!
+42.000000
+0.050000
+cyan
+INTEGER: 17
+REAL: 3.141593
+TOO BIG
+too small
+Just Right
+    statement 38: B = 'yes!!', time = 30
+    statement 38: A = 'yes!!', time = 30
+    statement 40: C = 'yes!!', time = 30
+    statement 41: C = 'yes!!', time = 30
+    statement 43: C = 'yes!!', time = 30
+    statement 44: C = 'yes!!', time = 30
+    statement 48: B = '!!', time = 30
+    statement 50: A = 'yes', time = 30
+all done
