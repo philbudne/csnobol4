@@ -15,79 +15,54 @@ put sources under CVS
 doc/load.doc
 	document config.h
 	document RETSTR()/RETSTR2()
+	mention dt.h  (move to include/?  install!!)
 
 document --add-define= in INSTALL
 
 man page
 	LOAD() limitations out of date
 	mention files/functions available in snolib/
-	reference documents available on web!
-
-merge in PC ports;
-	DJGPP stuff from Burkhard Meissner
-
-	borland stuff by Greg White
-		makefile/batchfile
-		win32/inet.c changes
-
-	try MINGW?
-
-always send timing.out via e-mail?
-	(unless timing.out.hostname exists?)
-
-add "EXPORT" defns to lib functions (for windoze)???
+	reference documents available on web (see next item)
 
 refer to online manuals (in man page, elsewhere?)
     http://burks.bton.ac.uk/burks/language/snobol/catspaw/tutorial/contents.htm
     http://burks.bton.ac.uk/burks/language/snobol/catspaw/manual/contents.htm
     ftp://ftp.snobol4.com/spitman.pdf
 
-Make ANSI_STRINGS the default? (USE_STRINGS_H??)
-		use strchr, memcmp, memmove?, memset??
-	add USE_BSD_STRINGS? USE_STRING_H?
+merge in PC ports;
+	DJGPP stuff from Burkhard Meissner
+		load.c (DXE)
 
-add config options;
-	if using gcc, enable -fomit-frame-pointer by default (unless --debug)?
-	--optimize
-		gcc: -O5
-		sunpro: -xO5
-	--debug??
-		disable -fomit-frame-pointer
-		add -g (leave opt on if gcc?)
+	borland stuff by Greg White
+		makefile/batchfile
+		win32/inet.c changes (fcntl.h, io.h)
 
-create snolib_pic.a???
+	try MINGW?
 
-keep FL_INET bit? call inet_close(fp)???
-	add close hook??
-	win32;
-		osf = _get_osfhandle(fileno(fp));
-		fclose(fp);
-		closesocket(osf);
+always send timing.out via e-mail?
+	(unless timing.out.hostname exists?)
 
 test
 	SSET()!!
 	longlong versions of intspc and spcint; use BSD strtoll if not.
-
-
-make timing.out more machine friendly!
+	VMS port (RDIXON@seattleschools.org), MacOS X (panos@surgery.wisc.edu)
 
 packaging;
+	put pkg/ .... files under RCS (CVS)??
 	make snobol*4*-VERSION directory/tarfile???
 		csnobol-VERSION?? csnobol4?
 		Change package name to C-SNOBOL4???
-	release 0.99.4 RPM(S), freebsd "port", netbsd "package"???
 	update RPM, *bsd for 1.0
 	create freebsd binary "package"???
 	create debian package?
 	    http://www.debian.org/doc/FAQ/debian-faq-7.html
 	    ftp://ftp.debian.org/debian/doc/package-developer/programmer.ps.gz
+	create solaris package???
 
 timing script;
 	translate bogomips + cpu into clock speed?
 	provide bogomips.c??
 	output machine readable format?
-
-load.doc: mention dt.h
 
 INSTALL:
 	update
@@ -110,6 +85,32 @@ update README
 sed SNOLIB_PATH into man page?
 	give load.doc full path!!
 
+add "EXPORT" defns to lib functions (for windoze)???
+
+add config options;
+	if using gcc, enable -fomit-frame-pointer by default (unless --debug)?
+	--optimize
+		gcc: -O5
+		sunpro: -xO5
+	--debug??
+		disable -fomit-frame-pointer
+		add -g (leave opt on if gcc?)
+
+create snolib_pic.a???
+
+keep FL_INET bit? call inet_close(fp)???
+	add close hook??
+	win32;
+		osf = _get_osfhandle(fileno(fp));
+		fclose(fp);
+		closesocket(osf);
+
+make timing.out more machine friendly!
+
+Make ANSI_STRINGS the default? (USE_STRINGS_H??)
+		use strchr, memcmp, memmove?, memset??
+	add USE_BSD_STRINGS? USE_STRING_H?
+
 avoid using unit 8 for terminal?
 	do fdopen(3,"r+")?  fopen("/dev/tty", "r+")??
 	do all systems open stderr r/w???
@@ -128,6 +129,23 @@ Tests;
 	add scanerr.sno test?
 
 use "pax -pe -rw src-dir dst-dir" for sourcekit?
+
+================
+
+SPITBOL features;
+	FENCE()
+	NOT()
+
+	SET()
+	SETEXIT()
+		CONTINUE, SCONTINUE, ABORT system labels
+		see SNOBOL4+ SETBREAK()???
+
+	single letter abbrevs in TRACE()
+
+	curses support for SPITBOL-386 screen HOST() functions???
+
+	-FAIL/-NOFAIL?
 
 ================
 
@@ -540,21 +558,6 @@ better math exception catching;
 
 	catching library errs;
 		matherr:	sunos4, sunos5, SVID3, (deprecated in XPG3)
-
-================
-
-SPITBOL features;
-	FENCE()
-
-	SET()
-	SETEXIT()
-		CONTINUE, SCONTINUE, ABORT system labels
-
-	single letter abbrevs in TRACE()
-
-	curses support for SPITBOL-386 screen HOST() functions
-
-	-FAIL/-NOFAIL?
 
 ================================================================
 

@@ -2,6 +2,28 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+12/13/2001
+	new: config/djgpp/lots: build scripts for DOS/DJGPP from B.Meissner
+	new: lib/djgpp/load.c: DXE based load from Burkhard Meissner
+	lib/bsd/inet.c: flatten hostnames to upper case for WATTCP/DOS
+	lib/win32/inet.c: borland ifdef/include's
+		from Greg White <glwhite@netconnect.com.au> 8/30/2000
+	new: Borland make/batch files from Greg White;
+		config/borland/{borlandmake.bat,borlandsnob.mak}
+		config/borland/{win95test,win95tlist}.bat
+	new: snolib/wrapper.sno -- create wrappers for LOAD()ables
+	lib/bsd/load.c lib/dummy/load.c lib/hpux/load.c	lib/next/load.c
+		lib/unix98/load.c lib/win32/load.c genc.sno:
+			renamed link() to callx() to avoid unistd.h conflict
+	Makefile: removed []'s carried over from Makefile2.m4
+		added "make generated"
+
+12/12/2001
+	CHANGES: updated
+	autoconf: fix Solaris, Linux
+		include date, host, sys info in config.h
+	timing: ls -l config.h
+
 12/08/2001
 	Makefile, Makefile2.m4: move source generation up to Makefile 
 		allows clean cvs checkout to build (with existing binary)
@@ -606,7 +628,7 @@ Gave to Phillip Thomas 11/23? for tcp/findunit fixes
 
 10/1/97:
 	New lib/borland/tty.c
-	config/borland/build.bat: define TTY_READ_RAW, use borland\tty.c
+	config/borland/build.bat: define TTY_READ_RAW, use borland/tty.c
 
 9/30/97:
 	Fixed (integer) math error handling;
