@@ -308,7 +308,7 @@ EXRAPPLY2
 
 * XXX if only one label use if()?! (happens LOTS of times)
 
-	DEFINE("SELBRA(V,LL)N,L,I,PREV")
+	DEFINE("SELBRA(V,LL)N,L,I,PREVL")
 	SELBRA_P1 = LP BREAK(RP) . L RP
 	SELBRA_P2 = (ARGP . N) COMMA			:(ESELBRA)
 SELBRA	LL SELBRA_P1					:F(FRETURN)
@@ -316,21 +316,33 @@ SELBRA	LL SELBRA_P1					:F(FRETURN)
 	I = 0
 	OUTPUT = IND 'switch( ' V  ' ) {'
 	INDENT()
+
+	PREVL = 
+*	top of loop
 SELBRAL	L SELBRA_P2 =					:F(SELBRAE)
 	I = I + 1
 	IDENT(N)					:S(SELBRAL)
-SELBRAD	UNINDENT()
+	IDENT(PREVL,N)					:S(SELBRAO)
+
+*	new label, output old one
+	DIFFER(PREVL) BRANCH(PREVL)
+	PREVL = N
+
+SELBRAO	UNINDENT()
 	OUTPUT = IND 'case ' I ':'
-	INDENT()
-	BRANCH(N)					:(SELBRAL)
+	INDENT()					:S(SELBRAL)
+
+*	no more tags; output last label (if non-null)
+SELBRAE	DIFFER(PREVL) BRANCH(PREVL)
+
 *	could fall thru
-SELBRAE	LIVE = 1
+	LIVE = 1
 	UNINDENT()
 	OUTPUT = IND '}'				:(RETURN)
 ESELBRA
 *
 ****************
-*	optimized 3-way compare -- (re)sets LIVE if not all labels set!
+*	optimized 3-way compare -- (re)sets LIVE if missing a label!
 *
 	DEFINE("DOCMP3(X,Y,G,E,L)ELSE")			:(EDOCMP3)
 DOCMP3	IDENT(L,G)					:S(DOCMPNE)
@@ -399,8 +411,10 @@ DOCMP2	IDENT(E)					:S(DOCMP22)
 	BRANCH(E)
 	UNINDENT()
 	IDENT(N)					:S(DOCMP2L)
-* XXX output "else"?
-	BRANCH(N)					:(RETURN)
+	OUTPUT = IND 'else'
+	INDENT()
+	BRANCH(N)
+	UNINDENT()					:(RETURN)
 
 DOCMP22	IDENT(N)					:S(DOCMP2L)
 	OUTPUT = IND 'if( ' X ' != ' Y ' )'
@@ -414,7 +428,6 @@ EDOCMP2
 ****************************************************************
 *	boolean two-way
 
-* XXX just uses DOCMP2 with reversed args for now!!
 	DEFINE("DOBOOL(B,F,T)")				:(EDOBOOL)
 DOBOOL	IDENT(T)					:S(DOBOOL2)
 * here with label for true
@@ -424,8 +437,10 @@ DOBOOL	IDENT(T)					:S(DOBOOL2)
 	BRANCH(T)
 	UNINDENT()
 	IDENT(F)					:S(DOBOOLL)
-* XXX output "else"?
-	BRANCH(F)					:(RETURN)
+	OUTPUT = IND 'else'
+	INDENT()
+	BRANCH(F)
+	UNINDENT()					:(RETURN)
 
 * here with no label for true
 DOBOOL2	IDENT(F)					:S(DOBOOLL)
@@ -443,6 +458,13 @@ EDOBOOL
 
 ****************************************************************
 *	descriptors
+
+**************** helper for descr/spec indirect access 
+
+	DEFINE("PLUS(X,Y)")				:(EPLUS)
+PLUS	PLUS = IDENT(Y,'0') X				:S(RETURN)
+	PLUS = X ' + ' Y				:(RETURN)
+EPLUS
 
 ****************
 	DEFINE("D(V)")					:(ED)
@@ -473,15 +495,14 @@ ED_V
 
 * XXX omit '+ 0'??
 	DEFINE("INDD(X,Y)")				:(EINDD)
-INDD	INDD = D( X ' + ' Y)				:(RETURN)
+INDD	INDD = D(PLUS(X,Y))				:(RETURN)
 EINDD
 
 ****************
 * fetch v field of descriptor at indirect address
 
-* XXX omit '+ 0'??
 	DEFINE("INDD_A(X,Y)")				:(EINDD_A)
-INDD_A	INDD_A = D_A(X ' + ' Y )			:(RETURN)
+INDD_A	INDD_A = D_A( PLUS(X,Y) )			:(RETURN)
 EINDD_A
 
 ****************
@@ -499,6 +520,10 @@ ECLEAR_D_VF
 	DEFINE("S_L(V)")				:(ES_L)
 S_L	S_L = 'S_L(' V ')'				:(RETURN)
 ES_L
+****************
+	DEFINE("S_O(V)")				:(ES_O)
+S_O	S_O = 'S_O(' V ')'				:(RETURN)
+ES_O
 ****************
 	DEFINE("SPEC(V)")				:(ESPEC)
 SPEC	SPEC = '_SPEC(' V ')'				:(RETURN)
@@ -762,7 +787,7 @@ XPUTAC	OUTPUT = IND INDD_A(D_A(ARGV<1>), ARGV<2>) ' = ' D_A(ARGV<3>) ';'
 ****************
 *	SIL PUTVC (PUTTC) MACRO 10/18/93
 * XXX INDD_V??
-XPUTVC	OUTPUT = IND D_V(D_A(ARGV<1>) ' + ' ARGV<2>) ' = ' D_V(ARGV<3>) ';'
+XPUTVC	OUTPUT = IND D_V(PLUS(D_A(ARGV<1>),ARGV<2>)) ' = ' D_V(ARGV<3>) ';'
 								:(OPDONE)
 
 ****************
@@ -807,13 +832,13 @@ XSETLC	OUTPUT = IND S_L(ARGV<1>) ' = (int_t) (' ARGV<2> ');'	:(OPDONE)
 ****************
 *	SIL GETSPC (GETQC) MACRO
 * XXX INDS??
-XGETSPC	OUTPUT = IND SPEC(ARGV<1>) ' = ' SPEC(D_A(ARGV<2>) ' + ' ARGV<3>) ';'
+XGETSPC	OUTPUT = IND SPEC(ARGV<1>) ' = ' SPEC(PLUS(D_A(ARGV<2>),ARGV<3>)) ';'
 							:(OPDONE)
 
 ****************
 *	SIL PUTSPC (???) MACRO 10/27/93
 * XXX INDS??
-XPUTSPC	OUTPUT = IND SPEC(D_A(ARGV<1>) ' + ' ARGV<2>) ' = ' SPEC(ARGV<3>) ';'
+XPUTSPC	OUTPUT = IND SPEC(PLUS(D_A(ARGV<1>),ARGV<2>)) ' = ' SPEC(ARGV<3>) ';'
 							:(OPDONE)
 ****************************************************************
 *	string ops
@@ -824,11 +849,12 @@ XAPDSP	OUTPUT = IND 'APDSP(' ARGV<1> ',' ARGV<2> ');'		:(OPDONE)
 
 ****************
 *	SIL FSHRTN (???) MACRO 10/20/93
-XFSHRTN	OUTPUT = IND 'FSHRTN(' ARGV<1> ',' ARGV<2> ');'		:(OPDONE)
+XFSHRTN	OUTPUT = IND S_L(ARGV<1>) ' -= ' ARGV<2> ';'
+	OUTPUT = IND S_O(ARGV<1>) ' += ' ARGV<2> ';'		:(OPDONE)
 
 ****************
 *	SIL SHORTN (???) MACRO 10/24/93
-XSHORTN	OUTPUT = IND 'SHORTN(' ARGV<1> ',' ARGV<2> ');'		:(OPDONE)
+XSHORTN	OUTPUT = IND S_L(ARGV<1>) ' -= ' ARGV<2> ';'		:(OPDONE)
 
 ****************
 *	SIL LOCSP (COMQNV) MACRO 10/18/93
@@ -1109,12 +1135,12 @@ XACOMPC	DOCMP3( D_A(ARGV<1>), ARGV<2>, ARGV<3>,  ARGV<4>, ARGV<5>)
 ****************
 *	SIL VCMPIC (???) MACRO -- compare "assention" value in T fields!!
 * XXX INDD_V???
-XVCMPIC	DOCMP3( D_V(D_A(ARGV<1>) ' + ' ARGV<2>), D_V(ARGV<3>),
+XVCMPIC	DOCMP3( D_V(PLUS(D_A(ARGV<1>),ARGV<2>)), D_V(ARGV<3>),
 +		ARGV<4>, ARGV<5>, ARGV<6>)		:(OPDONE)
 
 ****************
 *	SIL CHKVAL (???) MACRO 10/27/93
-XCHKVAL	DOCMP3( S_L(ARGV<3>) ' + ' D_A(ARGV<2>), D_A(ARGV<1>),
+XCHKVAL	DOCMP3( PLUS(S_L(ARGV<3>),D_A(ARGV<2>)), D_A(ARGV<1>),
 +		ARGV<4>, ARGV<5>, ARGV<6>)		:(OPDONE)
 
 ****************
