@@ -86,7 +86,7 @@
 	CLASS<"ALPHANUMERIC"> = DIGITS UC LC
 	CLASS<"TERMINATOR"> = CLASS<"COMMA"> CLASS<"BLANK"> CLASS<"EOS">
 +				CLASS<"RIGHTBR"> CLASS<"RIGHTPAREN">
-	CLASS<"EXP">	= "DdEe"
+	CLASS<"EXP">	= "Ee"
 
 **************** parse actions for FOR and ELSE lines
  	DEFINE("ACTION(STR)")				:(EACTION)
