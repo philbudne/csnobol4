@@ -5,6 +5,10 @@
 #include <stdio.h>
 #include <ctype.h>
 
+#if !defined(USE_WINSOCK_H) && !defined(VMS) && !defined(unix)
+#define unix				/* HP-UX!! */
+#endif
+
 /* Ugly, but better than duplicating the whole file! */
 #ifdef unix
 #include <sys/types.h>
