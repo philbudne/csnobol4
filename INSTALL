@@ -54,6 +54,19 @@ following options (multiple instances of options that begin with
 	--add-srcs=STRING
 		Add additional source files for "make depend"
 
+	--double
+		Use C "double" data type to represent SNOBOL4 REALs.
+		This is the default when the environment defaults
+		to 64-bit integers, or --lp64 or --longlong has
+		been specified.
+
+		The additional overhead of moving larger descriptors
+		around will negatively impact performance, even when
+		floating point is not being used.
+
+		Does not effect size of INTEGER data type, or the
+		maximum object size (see --no-bitfields).
+
 	--force-gcc
 		Force use of GCC, the GNU C Compiler;
 		fail if GCC not available.
@@ -80,8 +93,7 @@ following options (multiple instances of options that begin with
 		and processing overhead (see --lp64 for more information).
 
 		On systems which support the LP64 (64-bit long/pointer)
-		data model, using --lp64 is a better idea.
-
+		data model as an option, using --lp64 is a better idea.
 
 				*** WARNING ***
 
@@ -98,19 +110,24 @@ following options (multiple instances of options that begin with
 
 		This option attempts to set native compiler options
 		for LP64 environment where it's not the default.  This
-		may require --no-gcc to disable selection of GNU C Compiler.
+		may require --no-gcc to disable selection of GNU C
+		Compiler (the configure script does not know how to
+		tell GCC to generate 64-bit code, and there does not
+		appear to be a generic option to do so!!  If you know
+		the right option(s) for your platform you can use
+		--add-opt to turn them on).
 
 		Under the LP64 model, SNOBOL4 INTEGERs are represented
-		by C longs and REALs are represented as 64-bit C doubles.
-		The LP64 model doubles the size of each SIL
-		descriptor.  And while it allows larger strings (4GB
-		vs. 16MB) and compound objects (128M descriptors vs.
-		2M), the increased descriptor and arithmetic type
-		sizes also degrade performance.
+		by C longs and REALs are represented C doubles.  The
+		LP64 model doubles the size of each SIL descriptor,
+		and while it allows larger strings (4GB vs. 16MB) and
+		compound objects (128M descriptors vs.  2M), the
+		increased descriptor and arithmetic type sizes also
+		degrade performance.
 
 		If the underlying C compiler does not implement the
-		LP64 model, this option may have disastrous results
-		-- the current implementation DEPENDS on the fact that
+		LP64 model, this option may have disastrous results;
+		the current implementation DEPENDS on the fact that
 		the C data type used to represent integers is the same width
 		as the C data types used to represent REALs and pointers.
 
@@ -119,22 +136,29 @@ following options (multiple instances of options that begin with
 		(see --longlong).
 
 		--lp64 is not necessary on systems where LP64 is the
-		default, or only data model (e.g. Alpha).
+		default, or only data model (e.g. Alpha, IA64).
 
 	--no-dlopen
 		Disable use of Unix98 dlopen() API for dynamic LOAD() support
 
 	--no-bitfields
-		Disable use of C bitfields for SNOBOL Implementation
-		Language (SIL) descriptors (basic unit of storage).
-		This defaults to "on" when --lp64 is enabled (or the
-		default), or when --longlong is specified.
+		Disable use of C bitfields for SIL (SNOBOL
+		Implementation Language) descriptors (basic unit of
+		storage).  This defaults to "on" when --lp64 is
+		enabled (or the default).
 
-		The usable descriptor size field will increase from 24
-		bits to 31 bits, increasing the maximum string size
-		from 16MB to 2GB, the largest array from 2M entries to
-		over 170M entries, and the largest table from 1M
-		entries to over 85M entries.
+		With 32-bit INTEGERs, the usable descriptor size field
+		will increase from 24 bits to 31 bits, increasing the
+		maximum string size from 16MB to 2GB, the largest
+		array from 2M entries to over 171M entries, and the
+		largest table from 1M entries to over 85M entries.
+
+		With 64-bit INTEGERs (--longlong), the usable
+		descriptor size field will increase from 24 bits to 32
+		bits, increasing the maximum string size from 16MB to
+		4GB, the largest array from 2M entries to over 256M
+		entries, and the largest table from 1M entries to over
+		128M entries.
 
 		In most cases the larger descriptor size will decrease
 		performance. Despite not having to deal with packing
