@@ -49,6 +49,10 @@ extern void *malloc();
 #include <sys/types.h>			/* for sys/stat.h */
 #include <sys/stat.h>
 
+#include "h.h"				/* for lib.h */
+#include "snotypes.h"			/* for lib.h */
+#include "lib.h"			/* for proc_suspend() */
+
 /*
  * keep settings for each device in a list (by dev_t rather than fd
  * since multiple fd's can be open to same device (stdin/out/err))
