@@ -1,0 +1,8 @@
+* Date: Thu, 19 Sep 1996 17:52:56 -0500
+* From: Keith Waclena <keith@brick.lib.uchicago.edu>
+
+        longer  = "aa"
+        shorter = "a"
+        output  = lgt(shorter, longer) "wrong"
+        output  = lgt(longer, shorter) "right"
+end
