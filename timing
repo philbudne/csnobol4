@@ -5,12 +5,11 @@
 # pb 6/4/94
 
 if [ "$*" ]; then
-# XXX check for abs path, or prepend "../"??
 	SNOBOL=$1
 	shift
 	ARGS="$*"
 else
-	SNOBOL=./xsnobol4
+	SNOBOL=xsnobol4
 fi
 
 echo 'Date:'
@@ -110,7 +109,7 @@ if [ "$ARGS" ]; then
 	echo "	args: $ARGS"
 fi
 
-# stdout redirection fails with built in "time" (OpenBSD, AIX4) 
+# stdout redirection fails with built in "time" (OpenBSD, AIX4)
 if [ -x /usr/bin/time ]; then
 	TIME=/usr/bin/time
 elif [ -x /usr/5bin/time ]; then
@@ -119,6 +118,8 @@ else
 	TIME=time
 fi
 
+# run genc in a subdirectory to avoid trashing generated files!
+
 TDIR=timdir.$$
 rm -rf $TDIR
 trap "rm -rf $TDIR; exit 1" 1 2 15
@@ -126,14 +127,16 @@ mkdir $TDIR
 OUT=stdout
 TAIL1='sed -n 2,$p'
 (
+	ln $SNOBOL $TDIR/snobol4 || ln -s $SNOBOL $TDIR/snobol4
+
 	cd $TDIR
 
-LNFILES='../procs ../globals ../v311.sil ../xsnobol4'
+LNFILES='../procs ../globals ../v311.sil'
 # AFS doesn't allow hard links across directories!
 	ln $LNFILES . || ln -s $LNFILES .
 
 	# stderr to file "stderr", all but first line of stdout to "$OUT"
-	$TIME $SNOBOL $ARGS -s ../genc.sno v311.sil 2>stderr | $TAIL1 >$OUT
+	$TIME ./snobol4 $ARGS -s ../genc.sno v311.sil 2>stderr | $TAIL1 >$OUT
 )
 # use snobol program to process output!!
 $SNOBOL -b timing.sno < $TDIR/stderr
