@@ -365,11 +365,12 @@ if [ "$GCCPATH" -a "$WANTGCC" ]; then
     CCVERS=-v
     echo 'CCM=$(CC) -M'				>> $CONFIG_M4
 
-    # -O3 just adds -finline-functions (set below)
-    OPT=-O2
+    # w/ gcc v3 -O3 turns on things OTHER than -finline-functions,
+    # so make -O3 the default, and use -fno-inline-functions
+    OPT=-O3
 
-    if [ "$INLINE_OK" ]; then
-	echo 'ADD_OPT([-finline-functions])'	>> $CONFIG_M4
+    if [ ! "$INLINE_OK" ]; then
+	echo 'ADD_OPT([-fno-inline-functions])'	>> $CONFIG_M4
     fi
     if [ ! "$NO_OPT" ]; then
 	# only works when optimizing
