@@ -4,7 +4,7 @@ reg a.sno
 reg str.sno
 reg dump.sno
 reg hello.sno
-#reg punch.sno
+# reg punch.sno
 reg len.sno
 reg cat.sno
 reg float.sno
