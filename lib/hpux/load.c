@@ -138,7 +138,6 @@ load(addr, sp1, sp2)
     if (fp->entry == NULL) {		/* not found by pml */
 	char path[PATHLEN*2];		/* room for directory name */
 	char *snolib;
-	void *lib;
 
 	snolib = getenv("SNOLIB");
 	if (snolib == NULL)
@@ -228,7 +227,6 @@ unload(sp)
 {
     struct func *fp, *pp;
     char name[128];			/* XXX */
-    int l;
 
     spec2str(sp, name, sizeof(name));
 
