@@ -2,9 +2,14 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/27/2004
+	doc/snobol4.1: fix typo/pasteo
+
 12/14/2004
 	lib/snolib/getstring.c, include/load.h:
 		add mgetstring()
+	lib/win32/com.cpp:
+		use mgetstring()
 
 9/30/2004
 	test/clean.sh: remove *.dat.  Thanks to Rafal Sulejman!
