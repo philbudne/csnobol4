@@ -2,6 +2,21 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+9/6/2004
+	configure: add --without-ndbm
+	new lib/snolib/ndbm.c: ndbm interface
+	pml.h: add DBM_xxx functions
+
+9/2/2004
+	include/handle.h, lib/snolib/handle.c:
+		return pointer value as handle
+	lib/snolib/stcl.c:
+		rationalize function names w/ Tcl_ names:
+			TCL_{CREATE,DELETE}INTERP
+		Add suite of OBJ(ect) related functions
+			(not yet tested)
+	pml.h: add STCL object functions
+
 8/31/2004
 	configure: allow tcl .so's without .a's
 		seen by Rafal M. Sulejman (from CVS source!)

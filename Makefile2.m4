@@ -119,6 +119,7 @@ HANDLE_C=$(SRCDIR)lib/snolib/handle.c
 HOST_C=$(SRCDIR)lib/snolib/host.c
 LOG_C=$(SRCDIR)lib/snolib/log.c
 LOGIC_C=$(SRCDIR)lib/snolib/logic.c
+NDBM_C=$(SRCDIR)lib/snolib/ndbm.c
 ORD_C=$(SRCDIR)lib/snolib/ord.c
 RENAME_C=$(SRCDIR)lib/snolib/rename.c
 RETSTRING_C=$(SRCDIR)lib/snolib/retstring.c
@@ -453,6 +454,9 @@ log.o: $(LOG_C)
 
 logic.o: $(LOGIC_C)
 	$(CC) $(CFLAGS) -c $(LOGIC_C)
+
+ndbm.o: $(NDBM_C)
+	$(CC) $(CFLAGS) -c $(NDBM_C)
 
 ord.o: $(ORD_C)
 	$(CC) $(CFLAGS) -c $(ORD_C)
