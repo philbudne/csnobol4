@@ -30,11 +30,6 @@ extern void *malloc();
 /* move to snotypes.h? */
 typedef unsigned INT_T uint_t;
 
-/* move to load.h? use for getstring()? */
-/* avoid copying with getstring() */
-#define LA_STR_LEN(N) (D_V(LA_PTR(N)))
-#define LA_STR_PTR(N) (LA_PTR(N) + BCDFLD) /* NOT NUL TERMINATED!!! */
-
 #ifndef BPC
 #define BPC 8				/* bits/char */
 #endif
