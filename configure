@@ -784,7 +784,7 @@ if [ -f $INCDIR/sys/socket.h ]; then
 	if grep bindresvport_sa $INCDIR/rpc/rpc.h >/dev/null 2>&1; then
 	    # FreeBSD 4, NetBSD
 	    echo 'using system bindresvport_sa() function' 1>&2
-	    echo '#define BINDRESVPORT_SA_IN_RPC_H' >> $CONFIG_H
+	    echo '#define BINDRESVPORT_IN_RPC_H' >> $CONFIG_H
 	elif grep bindresvport_sa $INCDIR/netinet/in.h $INCDIR/unistd.h>/dev/null 2>&1; then
 	    echo 'using system bindresvport_sa() function' 1>&2
 	else
