@@ -5,11 +5,11 @@
  * 10/27/93
  */
 
+#include <ctype.h>
+
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
-
-#include <ctype.h>
 
 void
 trimsp( sp1, sp2 )

@@ -23,9 +23,7 @@
  * However, I am not about to post a copy of anything licensed by AT&T.
  */
 
-/* phil 1/13/94 use h.h (for index) */
-#include "h.h"
-
+/* phil 12/16/98; include system files first (for __P on NetBSD) */
 #ifdef ANSI_STRINGS
 #include <string.h>
 #else
@@ -35,6 +33,9 @@
 /* phil 1/4/94; use STDIO */
 /* phil 12/7/96; after string.h for borland, per skibler */
 #include <stdio.h>
+
+/* phil 1/13/94 use h.h (for index) */
+#include "h.h"
 
 /*LINTLIBRARY*/
 #define ERR(S, C) if(opterr){fprintf(stderr, "%s%s%c\n", argv[0], S, C);}

@@ -6,12 +6,12 @@
  * discard fractional part of real number (no rounding)
  */
 
+#include <math.h>
+
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
 #include "load.h"
-
-#include <math.h>
 
 /*
  * SunOS 4 has "aint" function, but it's not part of any stanard!

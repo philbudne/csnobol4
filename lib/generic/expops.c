@@ -8,6 +8,8 @@
  * see dummy/exp.c for dummy version of this file
  */
 
+# include <math.h>
+
 # include "h.h"
 # include "snotypes.h"
 # include "macros.h"
@@ -16,8 +18,6 @@
 # include "equ.h"
 # include "vars.h"
 # endif /* NO_STATIC_VARS defined */
-
-# include <math.h>
 
 int
 expint(result,x,y)

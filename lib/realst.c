@@ -5,14 +5,14 @@
  * generic version using "%g"
  */
 
+#include <ctype.h>
+#include <stdio.h>
+
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
 
 #include "equ.h"
-
-#include <ctype.h>
-#include <stdio.h>
 
 #ifdef NO_STATIC_VARS
 #include "vars.h"

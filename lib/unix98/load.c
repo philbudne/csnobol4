@@ -5,12 +5,6 @@
  * -plb 4/13/97
  */
 
-#include "h.h"
-#include "snotypes.h"
-#include "macros.h"
-#include "path.h"
-#include "load.h"
-
 #include <sys/types.h>
 #include <sys/stat.h>
 
@@ -23,6 +17,12 @@
 
 /* XXX ifdef HAVE_STDLIB_H? Hasn't been needed, yet. */
 #include <stdlib.h>			/* malloc(), getenv() */
+
+#include "h.h"
+#include "snotypes.h"
+#include "macros.h"
+#include "path.h"
+#include "load.h"
 
 #if __NetBSD__
 /* Necessary on NetBSD 1.2 on a.out platforms */
