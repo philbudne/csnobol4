@@ -1,17 +1,17 @@
 # $Id$
 
 # DESCRIP.MMS, hacked from Makefile2 for VMS "MMS"
-# Build SNOBOL4 using DECC and MMS
+# Build SNOBOL4 using DECC or VAXC and MMS
 #
 # **** see INSTALL file for usage ****
 
 .ifdef DEC_C
-# Tested under AXP OpenVMS 6.2 using DECC 4.0 (April 1999)
+# Tested under AXP OpenVMS 6.2 using DECC 4.0 (August 1999)
 CCFLAGS=/DECC/PREFIX_LIB=ALL/WARN=(DISABLE=IMPLICITFUNC)/OPTIMIZE
 # no AUX_OBJS
 # no explicit CRT needed
 .else
-# Tested on VAX OpenVMS 6.1 using VAXC 3.x (February 1998)
+# Tested on VAX OpenVMS 6.1 using VAXC 3.1 (August 1999)
 CCFLAGS=/OPTIMIZE
 AUX_OBJ=isnan.obj, finite.obj, getopt.obj,
 #CLIB=+SYS$SHARE:VAXCRTL/SHARE
