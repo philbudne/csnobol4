@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+11/12/96:
+	INSTALL: change tcp.c to inet.c
+
 11/08/96:
 	doc/ports.doc: Ultra 170E, 200MHz PPro
 
