@@ -20,6 +20,7 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 		renamed exp.c to expops.c
 		add rules to build snolib.a
 		moved AUX_OBJS to snolib.a
+	version.c: 0.98.4
 
 9/28/96
 	doc/snobol4.1: ran ispell

@@ -2,6 +2,11 @@
 
 /*
  * $Log$
+ * Revision 1.13  1996/09/26  03:47:42  phil
+ * added snoname
+ * include h.h regardless
+ * use const
+ *
  * Revision 1.12  1996/09/23  05:20:44  phil
  * 0.98.3
  *
@@ -50,8 +55,8 @@
 #include "data.h"
 #endif
 
-const char vers[] = "0.98.3";
-const char vdate[] = "Sept 22, 1996";
+const char vers[] = "0.98.4";
+const char vdate[] = "Sept 30, 1996";
 const char snoname[] = "C-MAINBOL";
 
 #ifdef MAIN
