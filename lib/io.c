@@ -185,8 +185,10 @@ io_close(unit)				/* internal (zero-based unit) */
 	{				/* not a pipe */
 	    /* XXX call close hook? */
 	    if (fp->flags & FL_NOCLOSE) {
-		fflush(fp->f);
-		ret = TRUE;
+		if (fflush(fp->f) == EOF)
+		    ret = FALSE;
+		else
+		    ret = TRUE;
 	    }
 	    else {
 		if (fp->flags & FL_TTY)
@@ -575,18 +577,23 @@ io_printf
 } /* io_printf */
 
 void
-io_print( iob, sp )			/* STPRNT */
+io_print( iokey, iob, sp )		/* STPRNT */
+    struct descr *iokey;
     struct descr **iob;
     struct spec *sp;
 {
     int unit;
     struct file *fp;
     FILE *f;
+    int ret;
+
     /*
      * (*iob)[0]	title descr
      * (*iob)[1]	integer unit number
      * (*iob)[2]	pointer to natural var for format
      */
+
+    D_A(iokey) = FALSE;			/* default to error */
 
     unit = D_A(*iob + 1);
     unit--;
@@ -613,6 +620,7 @@ io_print( iob, sp )			/* STPRNT */
     }
     fp->last = LAST_OUTPUT;
 
+    ret = TRUE;
     if (S_A(sp) && S_L(sp)) {
 	int len;
 	char *cp;
@@ -640,24 +648,32 @@ io_print( iob, sp )			/* STPRNT */
 	} /* compiling */
 
 	/* XXX check FL_UNBUF; write(fileno(f), cp, recl)? */
-	fwrite( cp, 1, len, f );
+	if (fwrite( cp, 1, len, f ) != len)
+	    ret = FALSE;
     } /* have string */
-    if (fp->flags & FL_EOL)
-	putc( '\n', f );
+    if (fp->flags & FL_EOL) {
+	if (putc( '\n', f ) == EOF)
+	    ret = FALSE;
+    }
 
-    if (fp->flags & FL_UNBUF)
-	fflush(f);
+    if (fp->flags & FL_UNBUF) {
+	if (fflush(f) == EOF)
+	    ret = FALSE;
+    }
+
+    D_A(iokey) = ret;
 } /* io_print */
 
-void
+int
 io_endfile(unit)			/* ENFILE */
     int unit;
 {
     unit--;
-    if (BADUNIT(unit) || io_units[unit].curr == NULL)
-	return;
-
-    io_close(unit);
+    if (BADUNIT(unit) || io_units[unit].curr == NULL) {
+	/* fatal error in SPITBOL, but not in SNOBOL4+ */
+	return TRUE;
+    }
+    return io_close(unit);
 }
 
 #define COMPILING(UNIT) ((UNIT) == UNITI-1 && compiling)
