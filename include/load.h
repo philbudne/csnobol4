@@ -86,10 +86,9 @@
 #ifdef __STDC__
 #define __P(X) X
 #else  /* __STDC__ not defined */
-#ifndef __P
 #define __P(X) ()
-#endif /* __P not defined */
 #endif /* __STDC__ not defined */
+#endif /* __P not defined */
 
 /* lib/snolib/getstring.c; */
 void getstring __P((void *, char *, int));
@@ -100,5 +99,7 @@ void retstring __P((struct descr *retval, char *cp, int len));
 /* lib/io.c; */
 int io_findunit __P((void));
 
-/* would like to add this, but requires stdio (due to use of typedef) */
-/* FILE *io_getfp __P((int)); */
+#ifdef NULL				/* stdio included */
+FILE *io_getfp __P((int));
+#endif /* NULL defined */
+
