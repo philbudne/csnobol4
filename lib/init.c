@@ -317,6 +317,8 @@ init()
 #ifdef SIGOVER
     signal(SIGOVER, math_catch);
 #endif /* SIGOVER defined */
+
+    tty_save();
 }
 
 /* 9/21/96 - set specifier to point to entire command line for &PARM */
