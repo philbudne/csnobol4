@@ -109,8 +109,7 @@ inet_socket( host, service, port, priv, type )
     if (s < 0)
 	return -1;
 
-    if (priv) {
-	/* XXX bindresvport() */
+    if (priv && bindresvport(s) < 0) {
 	closesocket(s);
 	return -1;
     }
