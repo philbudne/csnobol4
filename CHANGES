@@ -30,8 +30,16 @@ Changes since 0.99.4 release;
 		RETSTR() takes single argument, allows NULL pointer
 		RETSTR2() has old RETSTR() functionality
 
-	configuration option --longlong -- use "long long" (64-bit integer)
-		for INTEGER datatype when int/pointers are only 32-bits.
+	configuration options (see "INSTALL" for more information);
+	--largefile
+		request use of large (.GT. 4GB) file API when using 32-bit
+		data model.
+	--longlong
+		use "long long" (64-bit integer) for INTEGER datatype
+		when longs/pointers are only 32-bits (LP32 data model).
+	--lp64
+		Request use of 64-bit long/pointer data model
+		if available on this architecture, and not the default.
 
 	Eliminate space padding on lines read by compiler (speeds up compiler)
 
