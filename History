@@ -2,8 +2,12 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
-1/25/94
+2/18/94
 	*** First Beta release (tag BETA1) 
+	updated README, late entry in ports.doc
+	include tests in tar!
+	
+1/25/94
 	updated README, include TODO.soon in tar
 
 1/24/94
