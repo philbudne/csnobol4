@@ -245,9 +245,8 @@ DBM_NEXTKEY( LA_ALIST ) LA_DCL
 int
 DBM_DELETE( LA_ALIST ) LA_DCL
 {
-    datum key, data;
+    datum key;
     DBM *f = lookup_handle(&dbm_files, LA_INT(0));
-    int flags;
     int ret;
 
     if (!f)
