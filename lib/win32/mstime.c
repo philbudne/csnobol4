@@ -49,14 +49,15 @@ mstime()
 	}
 #endif
 
-	if (!haveold) {
-	    x = 0;
-	    haveold = 1;
-	}
+	if (haveold)
+	    x = (f[new].dwHighDateTime - f[old].dwHighDateTime) * HIGHMS +
+		(f[new].dwLowDateTime - f[old].dwLowDateTime) / TICKSPERMS;
 	else
-	    x = (f[old].dwHighDateTime - f[new].dwHighDateTime) * HIGHMS +
-		(f[old].dwLowDateTime - f[new].dwLowDateTime) / TICKSPERMS;
+	    x = 0;
+
 	old = new;
+	haveold = 1;
+
 	return x;
     }
 }
