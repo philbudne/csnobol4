@@ -493,6 +493,9 @@ The magic pathname
 .B /dev/tmpfile
 opens an anonymous temporary file for reading and writing, see
 .BR tmpfile (3).
+On VMS, Win32, and MS-DOS (when compiled with DJGPP), the pathnames
+/dev/null and /dev/tty are magical, and refer to the null device,
+and the user's terminal/console, respectively.
 .TP
 .B ORD()
 .br
