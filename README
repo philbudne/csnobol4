@@ -81,9 +81,10 @@ I/O;
 		argument to INPUT() and OUTPUT(), like in Catspaw SNOBOL4.
 	If the first character is '|' the remainder of the string
 		will be treated as a shell command.
-	by default INPUT is attached to unit 5, and standard input.
-	by default OUTPUT is attached to unit 6, and standard output.
-	by default PUNCH is attached to unit 7, and standard error!!!
+	by default;
+		INPUT is attached to unit 5, and standard input.
+		OUTPUT is attached to unit 6, and standard output.
+		PUNCH is attached to unit 7, and standard error!!!
 
 Command line args;
 
@@ -149,6 +150,7 @@ Changes from "beta1" distribution;
 	Default input line size now 1024 (was 80).
 	Compiler input line size now 124 (was 72).
 	NUL's no longer translated to space on output.
+	Kit includes "isnobol4.c" re-ordered for better inlining results.
 	8-bit clean; &ALPHABET is 256 bytes long.
 	Comments and control lines now legal after ';'
 	Turned off stack underflow checking (should improve performance).
