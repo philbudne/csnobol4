@@ -14,8 +14,7 @@ Changes since 0.99.4 release;
 		
 	Performance improvments;
 		New string hash function
-		(reduced genc.sno compilation time by 5%
-		reduced genc.sno run time by 5%)
+		(reduced both compilation and run time of genc.sno by 5%)
 
 		Optimized most common case (CONTIN actions) in
 		"stream" operation used for lexical analysis.
@@ -32,7 +31,16 @@ Changes since 0.99.4 release;
 		Made pattern building functions (lib/pat.c) inlinable
 			(8% reduction in genc.sno compile time)
 
+		Eliminate space padding on lines read by compiler
+			(reduced genc.sno compile time by 65%)
+
 		When using GCC, default to -O2
+
+	Documentation:
+		README file describes available includes
+
+		Include PDF of manual page
+
 
 	Implement fatal "Output error" for output, ENDFILE() errors
 
@@ -47,6 +55,8 @@ Changes since 0.99.4 release;
 		RETSTR2() has old RETSTR() functionality
 
 	configuration options (see "INSTALL" for more information);
+	--add-define=
+		Add a #define to config.h (visible to external functions)
 	--longlong
 		EXPERIMENTAL!!
 		try to use "long long" (64-bit integer) for INTEGER datatype
@@ -54,9 +64,8 @@ Changes since 0.99.4 release;
 	--lp64
 		Request use of 64-bit long/pointer data model
 		if available on this architecture, and not the default.
-
-	Eliminate space padding on lines read by compiler (speeds up compiler)
-		(reduced genc.sno compile time by 65%)
+	--no-opt
+		Compile without optimization
 
 	New SNOBOL library files (see README);
 		compatibility libraries:
@@ -69,9 +78,11 @@ Changes since 0.99.4 release;
 		and creation of files larger than 2GB
 
 	New functions;
-		SSET() -- scaled SET() allow large files when INTEGER is 32bits
+		LABEL() -- predicate to test if a label is defined
 		ORD() -- inverse of CHAR()
 		SERV_LISTEN() -- act as TCP server
+		SSET() -- scaled SET() allow large files when INTEGER is 32bits
+		VDIFFER() -- returns first arg if two arguments DIFFER()
 
 	Extended HOST() functions (see host.sno) for system diagnosis
 
@@ -87,6 +98,9 @@ Changes since 0.99.4 release;
 		INPUT(),  OUTPUT(),  SET(), keyword values, CHAR(),
 		RPAD(), LPAD(), FIELD(), COLLECT(), DUMP(), DUPL(),
 		OPSYN(), and SUBSTR()
+
+	Include BSD tsort program; allow builds from scratch
+		on platforms with GNU tsort (Linux, Cygwin)
 
 	Ported to Darwin (MacOS X)
 
