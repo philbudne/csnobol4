@@ -128,6 +128,8 @@ SQRT_C=$(SRCDIR)lib/snolib/sqrt.c
 SSET_C=$(SRCDIR)lib/snolib/sset.c
 SYS_C=$(SRCDIR)lib/posix/sys.c
 TAN_C=$(SRCDIR)lib/snolib/tan.c
+# for cygwin!
+COM_CPP=$(SRCDIR)lib/win32/com.cpp
 
 # private copy of CFLAGS for data_init.o; here so it can be overridden
 # (ie; to just $(MYCPPFLAGS)) by config.m4 during debug (optimizing it
@@ -470,11 +472,14 @@ sqrt.o: $(SQRT_C)
 sset.o: $(SSET_C)
 	$(CC) $(CFLAGS) -c $(SSET_C)
 
-sys.o: $(SYS_C)
+sys.o:	$(SYS_C)
 	$(CC) $(CFLAGS) -c $(SYS_C)
 
-tan.o: $(TAN_C)
+tan.o:	$(TAN_C)
 	$(CC) $(CFLAGS) -c $(TAN_C)
+
+com.o:	$(COM_CPP)
+	$(CC) $(CFLAGS) -c -fvtable-thunks $(COM_CPP)
 
 #################
 # lint picking

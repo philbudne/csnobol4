@@ -2,14 +2,21 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+7/10/2004
+	configure, Makefile2.m4, lib/win32/com.cpp: Support COM under CygWIN!
+
 7/1/2004
-	config/win32/ntmsvc.mak: add COMM
+	config/win32/ntmsvc.mak: add COM
 	lib/win32/com.cpp: fix for Visual Studio .NET 2003 (VC71)
 	lib/win32/inet.c: tweak setsockopt() args
+
+6/20/2004
+	pml.h: add COM_GETPROP, COM_PUTPROP, COM_UNLOAD
 
 6/19/2004
 	new lib/win32/com.cpp: COM (OLE) Automation
 	config/win32/mingw.mak: add COM
+	pml.h: PML_COM support
 
 6/4/2004
 	configure: Improvements suggested by Robin Kay

@@ -11,15 +11,18 @@
 
 #include <windows.h>
 
-#ifdef __MINGW32__
-// just set defines here? set them in makefile??
-#include <ole2.h>			// sufficient w/ MINGW 2.95.3-6
+#if defined(__MINGW32__) || defined(__CYGWIN__)
+// tested w/
+//	MINGW 2.95.3-6
+//	CygWIN CYGWIN_98-4.10 PC 1.3.3(0.46/3/2) 2001-09-12 23:54
+#include <ole2.h>
+// XXX NEED_COGETOBJECT_EXTERN?
 WINOLEAPI CoGetObject(LPWSTR name, BIND_OPTS *pbo, REFIID riid, void **ppv);
 #else
+// visual studio
+#define HAVE_I8
 #include <objbase.h>
 #include <oleauto.h>
-
-#define HAVE_I8			// Not w/ MINGW 2.95.3-6
 #endif
 
 // needed w/ MINGW 2.95.3-6
@@ -47,6 +50,17 @@ extern "C"
 
 #include "load.h"			/* LA_xxx macros */
 #include "equ.h"			/* datatypes I/S */
+
+#ifdef NEED_WCSCHR
+// for CYGWIN:
+WCHAR *wcschr(WCHAR *str, WCHAR ch)
+{
+    for (; *str; str++)
+	if (ch == *str)
+	    return str;
+    return 0;
+}
+#endif /* NEED_WCSCHR defined */
 
 // return a wide (OLE) string for an external function argument
 // must call freeolestring to release after use

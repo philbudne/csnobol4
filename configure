@@ -1220,6 +1220,17 @@ else
     echo 'SUSPEND_C=$(SRCDIR)lib/dummy/suspend.c' >> $CONFIG_M4
 fi
 
+if [ "$CYGWIN" -a -f /usr/include/w32api/objbase.h ]; then
+    echo 'using Win32 COM support' 1>&2
+    echo 'ADD_OBJS([com.o])'			>> $CONFIG_M4
+    echo 'ADD_SRCS([$(COM_CPP)])'		>> $CONFIG_M4
+    # XXX look in /usr/include/w32api??
+    echo '#define NEED_WCSCHR'			>> $CONFIG_H
+    echo '#define PML_COM'			>> $CONFIG_H
+    # XXX no LDFLAGS needed?!
+    echo 'ADD_LDFLAGS([-lole32 -luuid -loleaut32])' >> $CONFIG_M4
+fi
+
 if [ "$CFLAGS" ]; then
 	# stolen from getconf handling... make into function?
 	echo 'using CFLAGS environment variable' 1>&2
