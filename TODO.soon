@@ -1,67 +1,68 @@
 $Id$
 
+Create test for plusops off
+	opsyn ?, look at precedence, associativity
+	try numeric conversion
+	try conversion on numbers with leading spaces
+
+Document latest changes (-p, PLUSOPS, exp on REAL, args on run.sh)
+	stats off
+	&STLIMIT
+
+NUMERIC conversion requires strtol()/strtod()???
+	append garbage, use sscanf????
+
 update README
 	credit SNOBOL4+, Minnesota SNOBOL4
 
-debug SORT/RSORT (test: tab.sno)
+	Create INSTALL top level doc file
+		mention VMS, Borland command files
 
-document new additions;
-	(R)SORT
+strip leading spaces in spcint()/spreal() [under SPITCL?]
+	have common wrapper routine? common subroutine?
 
-default stats to off, like SPITBOL
-
-checkin;
-	lib/*/nanchk???
-		replace nanchk with dummy isnan()?
-	lib/str.c
-	doc/snobol.1
-
-Create INSTALL top level doc file
-	mention VMS, Borland command files
+include xsnobol4 version (put in timing.sno)
+enable stats in Makefile "SNO" commands?
+remove date from genc prolog
+	change diff to cmp && echo "DIFF OK" || echo "DIFF FAILURE"
 
 test overflow?
 	remove from man page limitations??
 
 have "configure" script output directly to config.m4!
+	mv configure autoconfig?
 
 include version number in tar file directory (and .tar filename!)
 	(snobol/ -> snobol-xx.yy/)
-		keep version number in file (sed into version.c?)
-			what about vdate???
-		ifdefs to compile stand-along version program!
+	(compile version.c with -DMAIN)
+	make hard links for all .c2/.h2 files?
+		(add rm's before running gendata/gensyn)
+		do cmp || mv immediately AFTER running progs?
 
 GCCBUILD.COM for VMS?
 
-Eliminate following line after CTLCRD:
-       AEQLC   CASECL,0,,CTLCRC	   Case sensitive?		[PLB15]
+update v311.sil table of contents?
 
 use "SNOLIB" path for -INCLUDE & LOAD()
 
-Add SNOBOL4 PLUSOPS
-
-Add TERMINAL variable?
-
-have gendat output .c2 and .h2 filesl use cmp || cp??
-
-allow STLIMIT < 0
-	test impact?
-
+Add TERMINAL variable (replace PUNCH?)?
 
 document magic /dev/std{in,out,err} filenames
 
 implement auto-load of pml functions
+	(execute LOAD w/ given prototype)
 
-full lexical compare functions
+Implement HOST(), HOST(1), HOST(2), HOST(3)
+	used by SNOCONE
+	implelment as auto-loaded function?
+
+full SPITBOL lexical compare functions
 	LEQ,LGE,LLE,LLT,LNE
 
 auto-mail timing.out??
 	echo "please consider...."
 
-return year + 1900 in date()?
-
-rewind tests;
-	split program across files
-	split data across files??
+return year + 1900 in date()? (for years >= 2000?)
 
 have dummy version of pow use repeated multiply for int, exp/log for real?
 	under ifdef??
@@ -69,9 +70,13 @@ have dummy version of pow use repeated multiply for int, exp/log for real?
 make install?
 	echo "have you mailed timing.out...."???
 
+add -LINE dirctive?
+
 add "trace1/2" tests?
 
-strip leading spaces in spcint()
+rewind tests;
+	split program across files
+	split data across files??
 
 ====
 
@@ -135,6 +140,31 @@ MOVBLK_MEMMOVE?
 MOVBLK_MEMCPY???
 APDSP_MEMCPY?
 
-have seperate BRKTB/SPNTB?
+have seperate BRKTB/SPNTB, like SNOBOL4+?
+	generate, keep bit-tables?
 
 try adding SOME explicit "inline" decls?
+
+================================================================
+
+from s4+
+	EXPCL features???
+	&NAN
+	&INFINITY
+	CHOP()
+	FREEZE()/THAW()
+	REVERSE()
+	SUBSTR()
+	SEEK()/TRUNCATE()/TELL()??
+	SQRT()/EXP()/LOG()
+
+================
+
+allow single letter abbrevs in TRACE()?
+
+================================================================
+make resident storage a struct (for easier debugging)
+
+
+in make depend;
+	sed "s/$(SNOBOL4)\./"'$(SNOBOL4)./'
