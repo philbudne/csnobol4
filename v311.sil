@@ -1,6 +1,10 @@
 * $Id$
 *
 * $Log$
+* Revision 1.6  93/11/10  01:38:50  phil
+* [PLB3] send title, attribution and compilation results
+* to stderr (PUNCH)
+* 
 * Revision 1.5  93/11/10  01:28:29  phil
 * [PLB2] made space for up to 50 user function at end of FNLIST
 * 
@@ -6075,7 +6079,7 @@ FNLIST DESCR   FNLIST,TTL+MARK,FNCPLE-FNLIST-DESCR
        DESCR   UNLDSP,0,0
        DESCR   VALFN,FNC,0	   VALUE(S)
        DESCR   VALSP,0,0
-       ARRAY   50*2		   [PLB2] Space for 50 more functions
+       ARRAY   10*2		   Space for 10 more functions
 FNCPLE LHERE   ,		   End of function pair list
 OPTBL  DESCR   OPTBL,TTL+MARK,OPTBND-OPTBL-DESCR
 ADDFN  DESCR   ADD,0,2		   X + Y    addition
