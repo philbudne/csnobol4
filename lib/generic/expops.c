@@ -1,6 +1,11 @@
 /* $Id$ */
 
-/* support for exponentiation, using pow() function */
+/*
+ * support for exponentiation, using pow() function.
+ * pow exists in v6, buth math.h didn't?!
+ *
+ * see dummy/exp.c for dummy version of this file
+ */
 
 # include "h.h"
 # include "types.h"
