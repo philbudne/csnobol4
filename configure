@@ -575,20 +575,21 @@ main() {
 EOF
 if ${CCPATH-cc} -o $TMP $TMP.c && ./$TMP > $TMP.out &&
   read SPTR SLONG SDOUB SINT < $TMP.out; then
-    echo 'sizeof(int) = '$SINT
+    echo 'sizeof(int) = '$SINT		1>&2
     echo '# sizeof(int) = '$SINT	>> $CONFIG_M4
 
-    echo 'sizeof(void *) = '$SPTR
+    echo 'sizeof(void *) = '$SPTR	1>&2
     echo '# sizeof(void *) = '$SPTR	>> $CONFIG_M4
 
-    echo 'sizeof(long) = '$SLONG
+    echo 'sizeof(long) = '$SLONG	1>&2
     echo '# sizeof(long) = '$SLONG	>> $CONFIG_M4
 
-    echo 'sizeof(double) = '$SDOUB
+    echo 'sizeof(double) = '$SDOUB	1>&2
     echo '# sizeof(double) = '$SDOUB	>> $CONFIG_M4
 
     # XXX ASSume sizeof(char) == 8
     if [ "$SPTR" = 8 -a "$SLONG" = 8 ]; then
+	echo 'LP64 is native programming model' 1>&2
 	LP64=true
 	LP64_native=true
     fi
