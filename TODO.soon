@@ -3,6 +3,7 @@ $Id$
 have bsd/posix tty_mode() calls cache last FILE/fd/dev_t used?
 
 create README.CVS??
+	(make sure it DOESN'T exist in regular kit!!!)
 
 GNU tsort can't handle cycles!!
 	save tsort output as procs.sort?
@@ -136,6 +137,10 @@ have tests cleanup after themselves?  Add Makefile for "make clean"?
 
 cygwin isnobol4.c build problems with filename "subr/CON" !!
 
+HOST() functions for;
+	INTEGER and REAL sizes?
+	DESCR?
+
 ================
 
 change tty_mode to take single "mode" argument (flags + recl)?
@@ -184,6 +189,9 @@ timing;	genc.sno runtimes too small; need better code for timing test?
 
 lib/snolib/serv.c:
 	use SIGFUNC_T? (move to snotypes.h??)
+
+sysinfo(SI_PLATFORM, .... ) for HOST()?		Sun
+SI_ARCHITECTURE??				Sun, IRIX6.2!
 
 ================
 
