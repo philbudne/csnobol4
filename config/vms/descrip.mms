@@ -31,7 +31,7 @@ UCXLIB=+SYS$LIBRARY:UCX$IPC/LIB
 
 .else
 .ifdef DECC4
-# Tested under AXP OpenVMS 6.2 using DECC 4.0 (November 2000)
+# Tested under AXP OpenVMS 6.2 using DECC 4.0 (July 2003)
 CCFLAGS=/PREFIX_LIB=ALL/WARN=(DISABLE=IMPLICITFUNC)/OPTIMIZE
 
 AUX_OBJ=bcopy.obj, bzero.obj, popen.obj, unlink.obj, 
