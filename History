@@ -2,6 +2,12 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+11/23/97:
+	lib/init.c: catch SIGPIPE!
+
+11/22/97:
+	lib/bsd/inet.c: removed extra "int port" decl
+
 11/21/97:
 	Fix io_endfile() exhaustion reported by Phillip Thomas
 	lib/io.c: io_closeall(); return status, free file blocks

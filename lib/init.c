@@ -373,6 +373,11 @@ init()
     signal(SIGXFSZ, err_catch);
 #endif /* SIGXFSZ */
 
+    /* catch network errors! */
+#ifdef SIGPIPE
+    signal(SIGPIPE, err_catch);
+#endif /* SIGPIPE */
+
     tty_save();
 }
 
