@@ -183,6 +183,12 @@ combined "f" and "v" fields will be padded to 64-bits for alignment
 there is no benefit to using bitfields in this situation.  See also
 VFLD_T.
 .NH 3
+NO_FDOPEN
+
+.PP
+Disable use of the fdopen() stdio function.  Magic pathname /dev/fd/n
+will not be available.
+.NH 3
 REAL_T
 
 .PP
