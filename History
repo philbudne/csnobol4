@@ -4,11 +4,12 @@ $Id$
 MAINBOL for Un*x history (and personal SNOBOL history);
 
 9/14/94
-	date.c: tweak for VMS compilation (thanks to Martin Waller)
+	timing.sno: cleanup/improvements
+	config/hpux-pa-cc.m4: new config for HPUX with native C compiler
+	date.c: tweak for VMS compilation (Martin Waller)
 
 9/13/94
-	timing: AFS doesn't allow hard links across directories!!
-		fix problems with timdir cleanup?
+	timing: AFS doesn't allow hard links across directories (Rik Faith)
 
 9/3/94
 	porting.ms, snobol4.1, load.doc, goals.doc, design.doc: ran ispell
