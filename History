@@ -2,6 +2,20 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+9/18/97:
+	New: lib/vms/mbx_util.c by Alex Measday
+	config/vms/{descrip.mms,build.com}: add mbx_util.obj, deccrtl!
+
+9/17/97:
+	Makefile2.m4: made snobol4 precious
+	lib/init.c: catch resource limit signals
+		problem reported by Phillip Thomas in June 1994!
+	lib/io.c: use fgets() again in io_read(). Only getc()
+		for last character, if needed.
+	New: lib/vms/popen.c by Alex Measday
+	New: lib/vms/tty.c my crude attempt at noecho support
+	config/vms/{descrip.mms,build.com}: add popen.c, use vms/tty.c
+
 9/15/97:
 	New: snolib/snobol4+.sno emulates SNOBOL4+ functions
 
