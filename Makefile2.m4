@@ -481,7 +481,7 @@ tan.o: $(TAN_C)
 	$(CC) $(CFLAGS) -c $(TAN_C)
 
 #################
-# lint
+# lint picking
 
 lint:   llib-lf.ln
 	lint -h llib-lf.ln $(MYCPPFLAGS) $(SRCS) > LINT 2>&1
