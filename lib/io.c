@@ -12,6 +12,12 @@ typedef long off_t;
 #include <unistd.h>
 #endif
 
+#ifdef ANSI_STRINGS
+#include <string.h>
+#else
+#include <strings.h>			/* berkeley strings */
+#endif
+
 #include "h.h"
 #include "units.h"
 #include "snotypes.h"
@@ -196,8 +202,42 @@ io_fopen2( fp, mode )
 	return (stdout);
     if (strcmp(fp->fname,"/dev/stderr") == 0)
 	return (stderr);
+    if (strncmp(fp->fname, "/tcp/", 5) == 0) {
+	char fn2[1024];			/* XXX */
+	char *host, *service, *cp;
+	int priv;
+	extern FILE *tcp_open();
 
-    /* XXX more hacks here? /dev/fd/n? /tcp ??? */
+	priv = 0;
+	strcpy( fn2, fp->fname + 5 );
+	host = fn2;
+	service = index(host, '/');
+	if (service == NULL)
+	    return NULL;
+	*service++ = '\0';
+
+	/* look for option suffixes, ignore if unknown */
+	cp = index(service, '/');
+	if (cp) {
+	    char *op;
+
+	    *cp++ = '\0';
+	    do {
+		op = cp;
+		cp = index(cp, '/');
+		if (cp)
+		    *cp++ = '\0';
+
+		if (strcmp(op, "priv") == 0)
+		    priv = 1;
+		/* XXX more? */
+	    } while (cp);
+	} /* have suffixes */
+
+	return tcp_open( host, service, -1, priv );
+    }
+
+    /* XXX more hacks here? /dev/fd/n? ??? */
 
     mp = buf;
     if (mode[0] == 'w' && (fp->flags & FL_APPEND))
