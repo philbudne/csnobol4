@@ -21,5 +21,8 @@
 int
 TAN( LA_ALIST ) LA_DCL
 {
-    RETREAL( tan( LA_REAL(0) ) );
+    real_t ret = tan(LA_REAL(0));
+    if (!finite(ret))
+	RETFAIL;
+    RETREAL(ret);
 }

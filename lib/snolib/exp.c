@@ -21,5 +21,8 @@
 int
 EXP( LA_ALIST ) LA_DCL
 {
-    RETREAL( exp( LA_REAL(0) ) );
+    real_t ret = exp(LA_REAL(0));
+    if (!finite(ret))
+	RETFAIL;
+    RETREAL(ret);
 }
