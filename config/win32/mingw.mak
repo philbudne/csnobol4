@@ -4,6 +4,7 @@
 # from nmake file for VC++ 5.0 on WinNT 4.0 P. Budne 2/4/1998
 # from batch file by David Feustel
 
+# XXX use to define SNOLIB_DIR??
 DEST=\snobol4
 
 CC=gcc
