@@ -566,6 +566,7 @@ INSTALL_H=[include]/h.h [include]/snotypes.h [include]/macros.h \
 install: snobol4 doc/snobol4.1 pv
 	-rm -f $(BINDEST)
 	cp snobol4 $(BINDEST); strip $(BINDEST); chmod 755 $(BINDEST)
+	-rm -f $(BINDEST)-$(VERS)
 	ln $(BINDEST) $(BINDEST)-$(VERS)
 	cp doc/snobol4.1 $(MANDEST)
 	test -d $(SNOLIB_DIR) || mkdir $(SNOLIB_DIR)
