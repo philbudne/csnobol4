@@ -721,9 +721,9 @@ else
 fi
 
 # prefer uname(2)
-if [ -f $INCDIR/sys/utsname.h ]; then
+# NeXT/Open Step have /usr/include/bsd/sys/utsname.h?? transparent??
+if [ -f $INCDIR/sys/utsname.h -o -f $INCDIR/bsd/sys/utsname.h ]; then
     echo 'using uname(2) for system name information' 1>&2
-    # NeXT/Open Step have /usr/include/bsd/sys/utsname.h??
 else
     OSNAME="$OS $OSREL"
     if [ "$OSNAME" = 'unknown unknown' ]; then
