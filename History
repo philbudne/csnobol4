@@ -2,6 +2,14 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+9/15/97:
+	New: snolib/snobol4+.sno emulates SNOBOL4+ functions
+
+9/13/97:
+	New: snolib/{unique,fence,not}.sno from Peter Arno-Coppen
+	New: snolib/spitbol.sno emulates SPITBOL I/O & functions
+	snolib/bq.sno: use IO_FINDUNIT()
+
 9/10/97:
 	Improvements from reading BIND v8 Makefiles;
 	Makefile: replaced seperate 2nd level rules with one using $@
