@@ -126,14 +126,15 @@ load(addr, sp1, sp2)
 	    struct stat st;
 
 	    strncpy(temp, S_SP(sp2), l2 );
-	    strcpy(temp2, temp);
 	    temp[l2] = '\0';
-	    tp = index(temp, ' ');
-	    if (tp)
-		*tp = '\0';
 
-	    if (stat(temp, &st) < 0)
-		sprintf( path, "%s/%s", snolib, temp2 );
+	    strcpy(temp2, temp);	/* save copy */
+	    tp = index(temp, ' ');	/* look for space */
+	    if (tp)
+		*tp = '\0';		/* blot out space */
+
+	    if (stat(temp, &st) < 0)	/* test if prefix exists */
+		sprintf( path, "%s/%s", snolib, temp2 ); /* no prepend path */
 	    else
 		strcpy( path, temp2 );
 	}
