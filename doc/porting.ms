@@ -4,6 +4,9 @@
 Porting The Macro Implementation of SNOBOL4 in C
 .AU
 Philip L. Budne
+.AI
+Consultant
+
 .PP
 .NH 1
 Requirements
@@ -16,9 +19,11 @@ The target machine should have;
 .IP *
 A large address space (allowing for approx 300K code and 300K data).
 Virtual memory is desirable.
+
 .IP *
 An industrial strength optimizing C compiler;
 GNU C (gcc) is preferred, but no ANSI features are required.
+
 .IP *
 A reasonably complete C library, including stdio.
 
