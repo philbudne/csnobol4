@@ -78,6 +78,17 @@ See the Catspaw Vanilla SNOBOL4 vanilla.arc or vanilla.tar for a
 	DOS/PC port of SNOBOL4, many demo programs, SNOBOL4 language
 	documentation, and ordering information for books & products
 	from Catspaw!
+
+Mark Emmer runs a SNOBOL4 mailing list;
+	To join the list, send a mail message to "listserv@mercury.dsu.edu"
+	with the line "subscribe SNOBOL4 Your Name" as the message body.
+	"Your Name" should be your real name (your e-mail address will be
+	used automatically for the subscription).
+
+	Submissions to the list may be sent to "SNOBOL4@mercury.dsu.edu".
+
+	To be removed from the list, send the message "unsubscribe SNOBOL4"
+	to "listserv@mercury.dsu.edu".
 
 Acknowledgments;
 
@@ -115,6 +126,8 @@ historical background, testing, fixes, etc (in chronological order);
 	Arne Larsson
 	Rik Faith
 	Keith Waclena
+	Steve Kibbler
+	Peter-Arno Coppen
 
 If you make any changes/fixes/improvements, or port it to a new
 system, please send them to me (please include "timing.out" and tell
