@@ -57,7 +57,7 @@ Default listing side (when enabled by
 .BR -LIST
 or the
 .B -l
-option is
+command option is
 .BR LEFT .
 Listings are directed to standard output.
 .IP \(bu
@@ -279,13 +279,13 @@ Cancels any previous
 .br
 The
 .B FREEZE()
-function prohibits new entry creation in the referenced table.  This
-is useful once a table has been initialized to avoid the creation of
-empty entries that normally occurs on table entry lookup failure. This
-can greatly improve program speed, since frozen tables will not become
-clogged with random entries. Lookups for uninitialized entries will
-return the null string, however attempts to create a new entry will
-cause a \*(lqVariable not present where required\*(rq error. The
+function prohibits creation of new entries in the referenced table.
+This is useful once a table has been initialized to avoid creating
+empty entries on lookups that fail.  This can greatly improve program
+speed, since frozen tables will not become clogged with empty entries.
+Lookups for uninitialized entries will return the null string.
+Attempts to assign to a non-existant entry will cause a \*(lqVariable
+not present where required\*(rq error. The
 .B THAW()
 function restores normal entry creation behavior.
 .TP
@@ -295,8 +295,10 @@ The
 .B FUNCTION()
 predicate evaluates it's argument as a string (with case folding), and
 returns the null string if a function with that name exists and fails
-if it does not.  This is an experimental feature which does not exist
-in any other implementations.
+if it does not.
+.B NOTE:
+This is an experimental feature which does not exist in any other
+implementations.
 .TP
 .B HOST()
 .br
@@ -961,5 +963,5 @@ I/O is still tied to unit numbers.
 \*(lqDynamic\*(rq storage cannot be expanded after startup.
 .PP
 Characters recognized by
-.B isalpha()
+.BR isalpha (3)
 in the current locale should be allowed in identifiers.
