@@ -119,7 +119,6 @@ struct iovars {
     /* XXX malloc at runtime? */
     struct unit units[NUNITS];
     struct file *includes;		/* list of included files */
-    int compiling;			/* TRUE iff compiler still running */
     int finger;				/* for io_findunit */
 };
 
@@ -599,8 +598,6 @@ io_init()				/* here from INIT */
 	    exit(1);
 	}
     }
-
-    iov.compiling = 1;
 } /* io_init */
 
 /* limited printf */
@@ -754,7 +751,7 @@ io_print( iokey, iob, sp )		/* STPRNT */
 
 	len = S_L(sp);
 	cp = S_SP(sp);
-	if (iov.compiling) {
+	if (D_A(COMPCL)) {
 	    char *ep;
 	    int l2;
 
@@ -772,7 +769,7 @@ io_print( iokey, iob, sp )		/* STPRNT */
 		cp++;
 	    }
 	    cp = S_SP(sp);
-	} /* iov.compiling */
+	} /* compiling */
 
 #ifndef NO_UNBUF_RW
 	if (fp->flags & FL_UNBUF) {
@@ -826,7 +823,7 @@ io_endfile(unit)			/* ENFILE */
     return io_closeall(unit);
 }
 
-#define COMPILING(UNIT) ((UNIT) == INTERN(UNITI) && iov.compiling)
+#define COMPILING(UNIT) ((UNIT) == INTERN(UNITI) && D_A(COMPCL))
 
 enum io_read_ret
 io_read( dp, sp )			/* STREAD */
@@ -1028,8 +1025,6 @@ io_ecomp()				/* XECOMP */
 {
     struct unit *up;
     struct file *fp;
-
-    iov.compiling = 0;			/* turn off crocks for compiler */
 
     if (rflag == 0) {
 	/* if -r was not given, switch INPUT to stdin!! */
