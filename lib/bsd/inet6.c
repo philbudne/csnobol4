@@ -36,6 +36,7 @@
 #define INADDR_NONE ((unsigned long)0xffffffff)	/* want u_int32_t! */
 #endif /* INADDR_NONE not defined */
 
+/* NOTE!! Ignores "port" arg!! */
 static int
 inet_socket( host, service, port, flags, type )
     char *host, *service;
@@ -86,6 +87,7 @@ inet_socket( host, service, port, flags, type )
     return s;
 }
 
+/* NOTE!! Ignores "port" arg!! */
 static FILE *
 inet_open( host, service, port, flags, type )
     char *host, *service;
@@ -110,6 +112,7 @@ inet_open( host, service, port, flags, type )
     return f;
 }
 
+/* NOTE!! Ignores "port" arg!! */
 FILE *
 tcp_open( host, service, port, flags )
     char *host, *service;
@@ -118,7 +121,7 @@ tcp_open( host, service, port, flags )
     return inet_open( host, service, port, flags, SOCK_STREAM );
 }
 
-
+/* NOTE!! Ignores "port" arg!! */
 FILE *
 udp_open( host, service, port, flags )
     char *host, *service;
