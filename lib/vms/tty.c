@@ -174,7 +174,7 @@ tty_read(f, buf, len, raw, noecho, keepeol, fname)
     chan = tp->chan;
     op = IO$_READVBLK;
     if (noecho)
-	op |= IO$M_NOECHO;
+	op |= IO$M_NOECHO | IO$M_TRMNOECHO;
 
     if (raw) {
 	op |= IO$M_NOFILTR;		/* no edit processing */
