@@ -581,6 +581,7 @@ install: snobol4 doc/snobol4.1 pv
 	cp snobol4 $(BINDEST); strip $(BINDEST); chmod 755 $(BINDEST)
 	-rm -f $(BINDEST)-$(VERS)
 	ln $(BINDEST) $(BINDEST)-$(VERS)
+	rm -f $(MANDEST)
 	cp doc/snobol4.1 $(MANDEST)
 	test -d $(SNOLIB_DIR) || mkdir $(SNOLIB_DIR)
 	for F in snolib/*.sno $(INSTALL_H) doc/load.doc; do \

@@ -48,6 +48,9 @@ following options;
 	--opt=STRING
 		Supply C optimization flags (replacing default "-O"),
 		for example; --opt=-O2
+	--prefix=DIR
+		Supply a directory prefix for bin/ and lib/ directories.
+		Default prefix is /usr/local
 
 Even if your system has not previously been tested (see doc/ports.doc)
 configure will make a guess. If the build does not succeed, you may
@@ -66,14 +69,15 @@ Typing "make install" will install the snobol4 binary and man page.
 The snobol4 binary and man page destnations are controlled by make
 variables BINDEST (default: /usr/local/bin/snobol4) and MANDEST
 (default: /usr/local/man/man1/snobol4.1) which can be overridden by
-editing config.m4, or creating "local-config" (and then removing
-config.m4 to trigger autoconf).
+editing config.m4, or creating "local-config" (which is included into
+config.m4 by "configure"), 
 
-"make install" also installs the snolib.a object library,
-doc/load.doc, load-related .h files and snolib/*.sno files to the
-directory named in the SNOLIB_DIR make variable.
+"make install" also installs doc/load.doc, load-related .h files and
+snolib/*.sno files to the PREFIX/lib/ directory (Default is
+/usr/local, see --prefix= configure aption above).
 
 Please mail timing.out files to snobol4-timing@ultimate.com!
+
 
 Non-unix systems;
 ================
