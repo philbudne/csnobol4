@@ -207,7 +207,7 @@ ARRVAL	DOT = DOT + (DESCR * VAL)				:(NEXT)
 ****************
 XBUFFER
 	DATA.C = 'char ' LBL '[' ARGS '];'
-	DATA.H = 'extern char ' LBL '[];'
+	DATA.H = 'extern char ' LBL '[];' TAB TAB '/* BUFFER */'
 							:(NEXT)
 
 ****************
@@ -231,7 +231,7 @@ XEQU	EQU.H = '# define ' LBL TAB '(' ARGS ')'
 ****************
 XFORMAT	FORMATS = OLINE
 * XXX (convert and) output to DATA.C???
-	DATA.H = 'extern char ' LBL '[];'
+	DATA.H = 'extern char ' LBL '[];' TAB TAB '/* FORMAT */'
 							:(NEXT)
 ****************
 XLHERE	MK_LBL(LBL)					:(NEXT)
