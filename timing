@@ -56,8 +56,8 @@ if [ "$UNAME" ]; then
 		fi
 		if [ -f /var/run/dmesg.boot ]; then
 			echo /var/run/dmesg.boot
-			echo ''
 			grep '^CPU:' /var/run/dmesg.boot
+			echo ''
 		fi
 		;;
 	HP-UX)
