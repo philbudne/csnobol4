@@ -148,7 +148,9 @@ init()
     /* XXX call wrapper functions which save reason for signal? */
     signal( SIGINT, SYSCUT );
 
-    /* ???!!! */
-    signal( SIGBUS, SYSCUT );
+    /* catch bad memory references */
     signal( SIGSEGV, SYSCUT );
+#ifdef SIGBUS
+    signal( SIGBUS, SYSCUT );
+#endif /* SIGBUS defined */
 }
