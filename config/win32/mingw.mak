@@ -5,7 +5,8 @@
 # from batch file by David Feustel
 
 CC=gcc
-OPT=-O2 -finline-functions
+# includes -finline-functions (and others in gcc v3)
+OPT=-O3
 
 # "msdos" version of tty routines uses kbhit() spin loop for raw tty
 # i/o.  This is unfriendly in a multitasking environment, and should
