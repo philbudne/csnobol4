@@ -580,11 +580,6 @@ EMKPROC
 	OUTPUT = '/* generated from ' SILPATH ' by genc.sno on ' DATE ' */'
 	OUTPUT =
 
-	OUTPUT = '# ifdef HAVE_CONFIG_H'
-	OUTPUT = '# include "config.h"'
-	OUTPUT = '# endif /* HAVE_CONFIG_H defined */'
-	OUTPUT =
-
 	IDENT(INLINE)					:S(NOINLINE)
 	OUTPUT = '#define INLINING'
 	OUTPUT =
