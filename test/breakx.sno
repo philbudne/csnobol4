@@ -1,0 +1,5 @@
+	&anchor = 1
+	subj = "this is a test ."
+	subj breakx(' ') $ output '.'
+	subj (break(' ') arbno(len(1) break(' '))) $ output '.'
+end

@@ -1,0 +1,4 @@
+	output = rpad("hello",10,"!")
+	output = lpad("world",10)
+	output = rpad("long",2)
+end
