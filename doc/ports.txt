@@ -94,6 +94,7 @@ A3000 (68030)	25    NetBSD 1.2    gcc		0.99	 1872	pb 10/96
 IBM RT/6152	??    ACIS/AOS 4.3  gcc		0.99	 1780*	pb 10/96
 Sun-3/80(68030)	20    SunOS 4.1.1   gcc		0.99.3++ 1530	pb 7/97
 Sun-3/80(68030)	20    SunOS 4.1.1   cc		0.99.3++ 1439	pb 7/97
+---
 
 old timings;
 
