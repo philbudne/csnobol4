@@ -46,11 +46,11 @@ OBJ=	snobol4.obj data.obj data_init.obj main.obj syn.obj \
 	version.obj bal.obj date.obj dump.obj endex.obj hash.obj \
 	intspc.obj io.obj lexcmp.obj ordvst.obj pair.obj pat.obj \
 	pml.obj realst.obj replace.obj str.obj stream.obj top.obj \
-	tree.obj bcopy.obj bzero.obj convert.obj dynamic.obj \
-	expops.obj getopt.obj init.obj load.obj mstime.obj chop.obj \
-	cos.obj delete.obj environ.obj exit.obj file.obj getenv.obj \
-	getstring.obj host.obj log.obj rename.obj retstring.obj \
-	sin.obj sprintf.obj sqrt.obj sset.obj system.obj tan.obj \
+	tree.obj bcopy.obj bzero.obj dynamic.obj expops.obj getopt.obj \
+	init.obj load.obj mstime.obj chop.obj cos.obj delete.obj \
+	environ.obj exit.obj file.obj getenv.obj getstring.obj \
+	host.obj log.obj rename.obj retstring.obj sin.obj spcint.obj \
+	spreal.obj sprintf.obj sqrt.obj sset.obj system.obj tan.obj \
 	sys.obj popen.obj tty.obj inet.obj execute.obj exists.obj \
 	rresvport.obj term.obj findunit.obj exp.obj
 
@@ -139,8 +139,11 @@ tree.obj : lib\tree.c
 
 ################ ansi
 
-convert.obj : lib\ansi\convert.c
-	$(CC) $(CFLAGS) lib\ansi\convert.c
+spcint.obj : lib\ansi\spcint.c
+	$(CC) $(CFLAGS) lib\ansi\spcint.c
+
+spreal.obj : lib\ansi\spreal.c
+	$(CC) $(CFLAGS) lib\ansi\spreal.c
 
 ################ auxil
 
