@@ -142,6 +142,9 @@ following options (multiple instances of options that begin with
 		you to build snobol4 without attempting to use large file
 		support.
 
+	--no-opt
+		Turn off C compiler optimization.
+
 	--opt=STRING
 		Supply C optimization flags.  The default value when using
 		GCC is "-O2" (the -finline-functions flag is supplied
@@ -167,6 +170,8 @@ following options (multiple instances of options that begin with
 
 		When using GCC --add-opt=-g can be used to compile for
 		debugging without disabling optimization.
+
+		To turn off optimization, see --no-opt
 
 	--prefix=DIR
 		Supply a directory prefix for bin/ and lib/ directories.
