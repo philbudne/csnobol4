@@ -28,8 +28,12 @@
 #include <a.out.h>
 #include <strings.h>
 
-extern char *malloc();
+#ifdef HAVE_STDLIB_H			/* before stdio */
+#include <stdlib.h>			/* for malloc, getenv */
+#else  /* HAVE_STDLIB_H not defined */
+extern void *malloc();
 extern char *getenv();
+#endif /* HAVE_STDLIB_H not defined */
 
 /* is this right? -- ok for OMAGIC */
 #undef N_SIZE				/* defined in NetBSD nlist.h */
