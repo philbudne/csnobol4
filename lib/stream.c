@@ -114,14 +114,37 @@ clertb(tp, act, sp)
     enum action act;
 {
     int i, j;
+    char *cp;
+    union {
+	long l;
+	char c[sizeof(long)];
+    } u;
+    register long *lp;
 
     /* find action index in list (SNABTB has one of each action type) */
     for (j = 0; ; j++)
 	if (tp->actions[j].act == act)
 	    break;
 
-    for (i = 0; i < CHARSET; i++)
-	tp->chrs[i] = j;
+    /* setup long's worth of chars */
+    for (i = 0; i < sizeof(u.c); i++)
+	u.c[i] = j;
+
+    /* stamp out long's with unrolled loop */
+    lp = (long *) tp->chrs;
+    i = CHARSET / sizeof(u.c) / 8;
+    do {
+	/* most ISA's have index+offset; RISC's tend not to have autoinc */
+	lp[0] = u.l;
+	lp[1] = u.l;
+	lp[2] = u.l;
+	lp[3] = u.l;
+	lp[4] = u.l;
+	lp[5] = u.l;
+	lp[6] = u.l;
+	lp[7] = u.l;
+	lp += 8;
+    } while (--i != 0);
 }
 
 /* 10/28/93 */
