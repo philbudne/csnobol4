@@ -15,7 +15,7 @@ do
 	    echo "# # $file"
 # on some systems (AIX/RT) system defines are done by cc passing -D flags!!
 #	    /lib/cpp $flags < $file | grep '^# 1 "[^"]'
-	    cc -E $flags $file | grep '^# 1 "[^"]'
+	    cc -E $flags $file | grep '^#'
 	    
 	    ;;
     esac
@@ -31,5 +31,6 @@ done | awk '
 		print left ": " file
 		next
 	 }
-/^# 1 /  {	print left ":\t" substr($3,2,length($3) - 2) }
+$0 ~ /^# 1 / && NF >= 3  {	print left ":\t" substr($3,2,length($3) - 2) }
+$1 == "#line" && NF >= 3 {	print left ":\t" substr($3,2,length($3) - 2) }'
 
