@@ -46,17 +46,17 @@ SNOLIB_A=snolib.a
 # default file to load
 SNOLIB_FILE=snolib.a
 
-# directory name for default SNOLIB (used by -INCLUDE and LOAD())
-SNOLIB_DIR=${PREFIX}/lib/snobol4
-
-# default name for installed binary
-BINDEST=${PREFIX}/bin/snobol4
-
-# default name for installed man page
-MANDEST=${PREFIX}/man/man1/snobol4.1
-
 # directory prefix
 PREFIX=/usr/local
+
+# directory for installed binary
+BINDIR=${PREFIX}/bin
+
+# directory for man page installation
+MANDIR=${PREFIX}/man/man1
+
+# directory name for default SNOLIB (used by -INCLUDE and LOAD())
+SNOLIB_DIR=${PREFIX}/lib/snobol4
 
 # either snobol4 or isnobol4;
 # isnobol4 has had functions reordered for better inlining.
@@ -492,15 +492,15 @@ GENSNOLIB=host.sno
 
 VERS=`./pv`
 install: snobol4 pv
-	-rm -f $(BINDEST)
-	cp snobol4 $(BINDEST); strip $(BINDEST); chmod 755 $(BINDEST)
-	-rm -f $(BINDEST)-$(VERS)
-	ln $(BINDEST) $(BINDEST)-$(VERS)
-	rm -f $(MANDEST)
-	cp doc/snobol4.1 $(MANDEST)
-	test -d $(SNOLIB_DIR) || mkdir $(SNOLIB_DIR)
+	$(INSTALL) -d $(BINDIR)
+	$(INSTALL) -s snobol4 $(BINDIR)
+	-rm -f $(BINDIR)/snobol4-$(VERS)
+	ln $(BINDIR)/snobol4 $(BINDIR)/snobol4-$(VERS)
+	$(INSTALL) -d $(MANDIR)
+	$(INSTALL) -m 644 doc/snobol4.1 $(MANDIR)
+	$(INSTALL) -d $(SNOLIB_DIR)
 	for F in snolib/*.sno $(INSTALL_H) doc/load.doc $(GENSNOLIB); do \
-		rm -f $(SNOLIB_DIR)/`basename $$F`; cp $$F $(SNOLIB_DIR); \
+		$(INSTALL) -m 644 $(SNOLIB_DIR); \
 	done
 	@echo '************************************************'
 	@echo '*** Have you mailed a copy of timing.out to' \
