@@ -44,6 +44,9 @@ RANLIB=ranlib
 # filename for external function library
 SNOLIB_A=snolib.a
 
+# default file to load
+SNOLIB_FILE=snolib.a
+
 # directory name for default SNOLIB (used by -INCLUDE and LOAD())
 SNOLIB_DIR=/usr/local/lib/snobol4
 
@@ -144,7 +147,8 @@ COPT=[]_OPT
 
 LDFLAGS=[]_LDFLAGS
 
-SNOLIB_DEFINES=-DSNOLIB_DIR='"'$(SNOLIB_DIR)'"' -DSNOLIB_A='"'$(SNOLIB_A)'"'
+SNOLIB_DEFINES=-DSNOLIB_DIR='"'$(SNOLIB_DIR)'"' \
+	-DSNOLIB_FILE='"'$(SNOLIB_FILE)'"'
 
 ################
 # compiler flags
@@ -161,6 +165,9 @@ SNO=snobol4 -d512k -b
 SMALL_SNO=snobol4 -b
 
 ################
+
+# XXX replace SNOLIB_A with SNOLIB_FILE??
+#	need to add rules to make shared libraries (to config/xxx.m4 files)
 
 OBJS=	main.o $(SNOBOL4).o data.o data_init.o syn.o bal.o convert.o \
 	date.o dump.o dynamic.o endex.o expops.o hash.o inet.o init.o \
