@@ -15,14 +15,6 @@
 #include <string.h>
 #include <stdlib.h>			/* malloc(), getenv() */
 
-#ifndef SNOLIB_FILE
-#define SNOLIB_FILE "snolib.dll"
-#endif
-
-#ifndef SNOLIB_DIR
-#define SNOLIB_DIR "."			/* XXX get from command line */
-#endif
-
 /* external function returning pointer to loaded function */
 extern int (*pml_find())(LOAD_PROTO);
 
@@ -44,8 +36,6 @@ static struct func *funcs;
     ((CP)[0] == '/' || \
      (CP)[0] == BS || \
      isalpha((CP)[0]) && (CP)[1] == ':' && (CP)[2] == BS)
-
-#define EXISTS(CP) (GetFileAttributesA(CP) != -1)
 
 /*
  * copy and concatenate path components,
@@ -128,7 +118,7 @@ load(addr, sp1, sp2)
 	    char temp[PATHLEN];
 
 	    spec2str(sp2, temp, sizeof(temp));
-	    if (!ABSPATH(temp) && !EXISTS(temp)) {
+	    if (!ABSPATH(temp) && !exists(temp)) {
 		/* not absolute and file does not exist; prepend libdir */
 		pathcpy( path, sizeof(path), snolib, temp );
 	    }
