@@ -1,23 +1,20 @@
 /* $Id$ */
 
-#include "h.h"
-#include "types.h"
+/* support for exponentiation, using pow() function */
 
-#include "macros.h"
-#include "flags.h"
+# include "h.h"
+# include "types.h"
+# include "macros.h"
 
-#include <math.h>
+# include <math.h>
 
 int
 expint(res,x,y)
     struct descr *res, *x, *y;
 {
-#if 0
-    UNDF();
-#else
     int_t i;
 
-    if (D_A(x) == 0 && D_A(y) < 0)
+    if (D_A(x) == 0 && D_A(y) < 0)	/* by definition of EXPINT macro */
 	return 0;			/* fail */
 
     /* XXX use repeated mutiplies? */
@@ -28,16 +25,12 @@ expint(res,x,y)
     D(res) = D(x);			/* XXX copy F&V */
     D_A(res) = i;
     return 1;				/* succeed */
-#endif
 }
 
 int
 exreal(res,x,y)
     struct descr *res, *x, *y;
 {
-#if 0
-    INTR10();
-#else
     real_t r;
 
     /* XXX use repeated mutiplies? */
@@ -48,5 +41,4 @@ exreal(res,x,y)
     D(res) = D(x);			/* XXX copy F&V */
     D_RV(res) = r;
     return 1;				/* succeed */
-#endif
 }
