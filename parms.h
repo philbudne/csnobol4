@@ -13,6 +13,7 @@
 
 /* machine generated */
 #include "equ.h"
+#include "res.h"
 #include "data.h"
 #include "syn.h"
 

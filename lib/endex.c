@@ -3,6 +3,8 @@
 #include "h.h"				/* for data.h */
 #include "snotypes.h"
 #include "macros.h"
+#include "equ.h"
+#include "res.h"
 #include "data.h"			/* for RETCOD */
 
 #ifdef TRACE_DEPTH

@@ -244,8 +244,8 @@ syn.h:	syn.h2
 ################
 # resident data
 
-data.h2 data.c2 equ.h2 data_init.h2: $(SIL) gendata.sno
-	rm -f data.h2 data.c2 equ.h2 data_init.h2
+data.h2 data.c2 equ.h2 data_init.h2 res.h2: $(SIL) gendata.sno
+	rm -f data.h2 data.c2 equ.h2 data_init.h2 res.h2
 	$(SNO) gendata.sno < $(SIL)
 
 data.h:	data.h2
@@ -257,11 +257,14 @@ data.c:	data.c2
 equ.h:	equ.h2
 	cmp equ.h equ.h2 || cp equ.h2 equ.h
 
+res.h:	res.h2
+	cmp res.h res.h2 || cp res.h2 res.h
+
 data_init.h: data_init.h2
 	cmp data_init.h data_init.h2 || cp data_init.h2 data_init.h
 
 # note: private CFLAGS
-data_init.o: data_init.c data_init.h equ.h data.h proc.h
+data_init.o: data_init.c data_init.h equ.h data.h proc.h res.h
 	$(CC) $(DATA_INIT_CFLAGS) -c data_init.c
 
 #################
@@ -465,11 +468,11 @@ tan.o: $(TAN_C)
 # housekeeping
 
 # generated files to include in kit (hard link to target dir)
-GENERATED=data.c2 data.h2 data_init.h2 proc.h2 equ.h2 syn.h2 \
+GENERATED=data.c2 data.h2 data_init.h2 proc.h2 equ.h2 syn.h2 res.h2 \
 	snobol4.c isnobol4.c 
 
 # generated files to include in kit (copy, so newer than .x2 versions)
-G2=data.c data.h data_init.h proc.h equ.h syn.c syn.h
+G2=data.c data.h data_init.h proc.h equ.h res.h syn.c syn.h
 
 # disposables
 DISP=*.o *.a callgraph prolog bsplitu pv vers

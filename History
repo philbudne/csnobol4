@@ -2,6 +2,17 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+5/21/97:
+	gendata.sno gensyn.sno parms.h data_init.c v311.sil version.c
+	Makefile2.m4 lib/ansi/convert.c lib/generic/convert.c
+	lib/dump.c lib/endex.c lib/str.c lib/ordvst.c lib/init.c:
+		Created "struct res" for resident data.  All data now
+		in named members, for easier debug.  Expressions now
+		legal in SIL ARRAY macro!  flushed duplicate COPYSP.
+		New machine generated res.h file.
+	lib/stream.c:
+		use isspace() in trimsp().
+
 5/20/97:
 	genc.sno lib/endex.c include/macros.h parms.h:
 		applied 10/10/96 tailcall depth stats changes

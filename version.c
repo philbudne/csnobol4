@@ -2,6 +2,9 @@
 
 /*
  * $Log$
+ * Revision 1.20  1997/02/13  05:12:54  phil
+ * 0.99.3
+ *
  * Revision 1.19  1996/11/27  18:40:36  phil
  * 0.99.2
  *
@@ -70,6 +73,9 @@
 #include "units.h"
 #include "snotypes.h"
 #include "macros.h"
+
+#include "equ.h"
+#include "res.h"
 #include "data.h"
 #endif
 

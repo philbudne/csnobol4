@@ -15,6 +15,7 @@
 
 /* machine generated */
 # include "equ.h"
+# include "res.h"
 # include "data.h"
 # include "proc.h"
 
@@ -28,10 +29,5 @@ const char COLSTR[] = ": ";
 
 void
 init_data() {
-    register struct descr *rp;
-
-    rp = res;
-
-# define res rp
 # include "data_init.h"
 } /* init_data */

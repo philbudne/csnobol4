@@ -14,6 +14,7 @@
 
 #include "snotypes.h"
 #include "equ.h"
+#include "res.h"
 #include "data.h"
 #include "macros.h"
 

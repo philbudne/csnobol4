@@ -19,15 +19,11 @@ trimsp( sp1, sp2 )
     register int len;
 
     len = S_L(sp2);
-    cp = S_SP(sp2);
+    cp = S_SP(sp2) + len - 1;
 
-    while (len > 0) {
-	register char c;
-
-	c = cp[len-1];			/* get last char */
-	if (c != ' ' && c != '\t')	/* not space or tab? */
-	    break;			/* done */
-	len--;				/* was space or tab; move back */
+    while (len > 0 && isspace(*cp)) {
+	len--;
+	cp--;
     }
 
     _SPEC(sp1) = _SPEC(sp2);

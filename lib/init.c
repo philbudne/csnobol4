@@ -7,8 +7,9 @@
 #include "snotypes.h"
 #include "macros.h"
 
-#include "data.h"			/* SIL data */
 #include "equ.h"			/* SIL equ's */
+#include "res.h"			/* for data.h */
+#include "data.h"			/* SIL data */
 
 /* return type of signal handler functions */
 #ifndef SIGFUNC_T
