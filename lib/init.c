@@ -14,26 +14,32 @@
 /* return type of signal handler functions */
 #ifndef SIGFUNC_T
 #define SIGFUNC_T void
-#endif
+#endif /* SIGFUNC_T not defined */
 
 extern char *dynamic();
-extern char *malloc();
+extern char *malloc();			/* use <stdlib.h> if available? */
 
 #define NDYNAMIC (64*1024)		/* default dynamic region size */
 
-int ndynamic = NDYNAMIC * DESCR;
-int pmstack = SPDLDR;
-int rflag;
+#ifdef NO_STATIC_VARS
+#include "vars.h"
+#else  /* NO_STATIC_VARS not defined */
+static int ndynamic;
+static int pmstack;
 
-extern int optind;
-extern char *optarg;
-extern int getopt();
+/* global for access by io.c; */
+int rflag;
 
 /* global for access by host.c; */
 char *params;
 char **argv;
 int firstarg;
 int argc;
+#endif /* NO_STATIC_VARS not defined */
+
+extern int optind;
+extern char *optarg;
+extern int getopt();
 
 static void
 p( str )
@@ -152,6 +158,9 @@ init_args( ac, av )
     int c;
     int multifile;
 
+    ndynamic = NDYNAMIC * DESCR;
+    pmstack = SPDLDR;
+
     /* save in globals for HOST(), getparm(), init() */
     argc = ac;
     argv = av;
@@ -265,7 +274,9 @@ init_args( ac, av )
     io_init();				/* AFTER io_input calls! */
 }
 
+#ifndef NO_STATIC_VARS
 volatile int math_error;		/* see macros.h */
+#endif /* NO_STATIC_VARS defined */
 
 static SIGFUNC_T
 math_catch(sig)
@@ -368,15 +379,15 @@ init()
     /* catch resource limit errors */
 #ifdef SIGXCPU
     signal(SIGXCPU, err_catch);
-#endif /* SIGXCPU */
+#endif /* SIGXCPU defined */
 #ifdef SIGXFSZ
     signal(SIGXFSZ, err_catch);
-#endif /* SIGXFSZ */
+#endif /* SIGXFSZ defined */
 
     /* catch network errors! */
 #ifdef SIGPIPE
     signal(SIGPIPE, err_catch);
-#endif /* SIGPIPE */
+#endif /* SIGPIPE defined */
 
     tty_save();
 }
