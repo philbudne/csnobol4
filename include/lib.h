@@ -86,8 +86,13 @@ void insert __P((struct descr *,struct descr *));
  * system dependant functions
  */
 
-/* from convert.c */
+/* from spcint.c */
 int spcint __P((struct descr *,struct spec *));
+
+/* from intspc.c */
+void intspc __P(struct spec *sp, struct descr *dp));
+
+/* from spreal.c */
 int spreal __P((struct descr *,struct spec *));
 
 /* from dynamic.c */
@@ -106,7 +111,20 @@ void unload __P((struct spec *));
 /* from mstime.c */
 real_t mstime __P((void));
 
-/* XXX missing; sys.c term.c tty.c */
+/* from term.c */
+FILE * term_input __P((void));
+
+/* from tty.c */
+int fisatty __P((FILE *f, char *fname));
+void tty_mode __P((FILE *fp, int cbreak, int noecho, int recl));
+void tty_close __P((FILE *f));		/* advisory! */
+void tty_suspend __P((void));		/* SIG_TSTP */
+/* if TTY_READ_RAW or TTY_READ_COOKED defined; */
+int tty_read __P((FILE *f, char *buf, int len, int raw, int noecho, int keepeol, char *fname));
+
+/* from sys.c */
+void hwname __P((char *));
+void osname __P((char *));
 
 /*
  * functions we provide on some systems:
