@@ -10,6 +10,14 @@
 # distclean	clean as when unpacked
 # spotless	removes snobol4 generated files
 
+# m4 macro processor; used to generate Makefile2
+# (largely to avoid depending on make '+=' operator)
+M4=m4
+
+# compression program, suffix
+COMP=gzip
+Z=gz
+
 ################
 # snobol commands
 
@@ -32,15 +40,17 @@ SIL=	v311.sil
 ################
 # AIX4 makes all targets, so added this;
 # must be named "all" for FreeBSD "ports"?
+
 all:	snobol4
 
 # force GNU make to run top Makefile serially
 .NOTPARALLEL: foo
 
+# files to avoid removing when interrupted
+#	add $(GENERATED)?
 .PRECIOUS: snobol4 xsnobol4 Makefile2 snobol4.c isnobol4.c snobol4 data_init.h 
-#	just add $(GENERATED)?
 
-snobol4 xsnobol4 install: Makefile2 ALWAYS .depend  $(GENERATED)
+snobol4 xsnobol4 install: Makefile2 ALWAYS .depend $(GENERATED)
 	$(MAKE) -f Makefile2 $@
 
 ALWAYS:
@@ -51,13 +61,11 @@ generated: $(GENERATED)
 ################
 # run configuration script
 
-config.m4:
+config.m4 config.h:
 	./configure
 
 ################
 # make second level makefile
-
-M4=m4
 
 M2TMP=Makefile2.tmp
 Makefile2 .depend: config.m4 Makefile2.m4 $(GENERATED)
@@ -79,14 +87,17 @@ snobol4.c proc.h2: procs genc.sno globals $(SIL)
 	$(SNO) genc.sno $(SIL) > snobol4.c2
 	mv -f snobol4.c2 snobol4.c
 
-# inline version (functions reordered)
+# generate inline version (functions reordered)
 
-# Uses private copy of BSD version (since GNU version used on Linux
-# can't handle cycles), but don't make it a dependency since that
-# would force isnobol4.c to be rebuilt (which requires a snobol4
-# binary) when starting with a distribution kit.  Using a SNOBOL4
-# tsort.sno program would solve the problem, but I've yet to write
-# one that works as well as the C version.
+# Uses tsort (topological sort), to order routines for best inlining.
+# private copy of FreeBSD version of tsort (topological sort) supplied
+# since GNU version used on Linux and Cygwin can't handle cycles
+
+# isnobol4.c can't depend on bsdtsort, since that would force
+# isnobol4.c to be rebuilt (which requires a snobol4 binary) when
+# starting with a distribution kit.  Using a SNOBOL4 tsort.sno program
+# would solve the problem, but I've yet to write one that works as
+# well as the C version.
 
 isnobol4.c: procs genc.sno globals $(SIL)
 	rm -rf isnobol4.c2 proc.h2 prolog subr
@@ -188,22 +199,17 @@ distclean: realclean
 spotless: distclean
 	rm -f $(G1) $(G2) snobol4.c isnobol4.c snobol xsnobol4
 
-# file to hard-link into dist dir
 # generated files copied separately to ensure newer than source files!
 TAR=	README CHANGES History INSTALL TODO TODO.soon doc Makefile \
-	Makefile2.m4 autoconf configure config.guess $(SIL) syntax.tbl \
+	Makefile2.m4 configure config.guess $(SIL) syntax.tbl \
 	procs globals genc.sno gensyn.sno gendata.sno main.c \
 	data_init.c version.c parms.h mlink.h mdata.h pml.h $(G1) lib \
 	include config test snolib/*.sno sunmodel timing timing.sno \
-	cc-M bsplitu.c host.awk
+	cc-M bsplitu.c host.awk pkg
 
 # "print version" -- for dir/tar names
 pv:	version.c
 	$(CC) -I./include -DMAIN -o pv version.c
-
-# compression program, suffix
-COMP=gzip
-Z=gz
 
 # tempting to use VERS:sh = ./pv
 # but need to make pv first!!
@@ -212,9 +218,7 @@ VERS=`./pv`
 DIR=snobol-$(VERS)
 KIT=snobol-$(VERS).tar.$(Z)
 
-# XXX perform general cleanup (remove ~ and # files) first?
-# XXX add predicates to suppress ~ # and .o files?
-tar vers: snobol4 pv
+tar vers: clean snobol4 pv
 	cd doc; make
 	cd test; ./clean.sh
 	rm -rf snobol-[0-9]*
