@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.93  2002/01/22 16:52:23  phil
+* [PLB79] make LABEL() honor case folding
+*
 * Revision 1.92  2002/01/22 01:48:06  phil
 * updated Table of Contents
 *
@@ -522,6 +525,7 @@
 *	       STR (Unevaluated Expression)
 *      18.  Other Predicates 
 *	       DIFFER
+*	       FUNCTN
 *	       IDENT 
 *	       LABEL 
 *	       LEQ 
@@ -5675,6 +5679,16 @@ DIFFER PROC    ,		   DIFFER(X,Y)
 *_
 *---------------------------------------------------------------------*
 *
+* New [PLB80]
+*      FUNCTION(X) test if named function defined
+*
+FUNCTN PROC    ,		   FUNCTION(X)
+       RCALL   ,VARVUP,,FAIL	   Evaluate argument
+       LOCAPV  XPTR,FNCPL,XPTR,FAIL,RETNUL
+*				   Locate function
+*_
+*---------------------------------------------------------------------*
+*
 *      IDENT(X,Y)
 *
 IDENT  PROC    ,		   IDENT(X,Y)
@@ -7396,6 +7410,8 @@ FLDSFN DESCR   FIELDS,0,2
        DESCR   0,0,0
 FREZFN DESCR   FREEZE,0,1					[PLB34]
        DESCR   0,0,0
+FUNTFN DESCR   FUNCTN,0,1					[PLB80]
+       DESCR   0,0,0						[PLB80]
 GEFN   DESCR   GE,0,2
        DESCR   0,0,0
 GTFN   DESCR   GT,0,2
@@ -7559,6 +7575,8 @@ FNLIST DESCR   FNLIST,TTL+MARK,FNCPLE-FNLIST-DESCR
        DESCR   FLDSSP,0,0
        DESCR   FREZFN,FNC,0	   FREEZE(T)			[PLB34]
        DESCR   FREZSP,0,0					[PLB34]
+       DESCR   FUNTFN,FNC,0	   FUNCTION(N)			[PLB80]
+       DESCR   FUNTSP,0,0					[PLB80]
        DESCR   GEFN,FNC,0	   GE(I1,I2)
        DESCR   GESP,0,0
        DESCR   GTFN,FNC,0	   GT(I1,I2)
