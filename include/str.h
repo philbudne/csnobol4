@@ -3,18 +3,21 @@
 /* (b)string support */
 
 #ifdef ANSI_STRINGS
+
 #include <string.h>
 
 #ifndef index
 #define index strchr
 #endif /* index not defined */
+
 #ifndef rindex
 #define rindex strrchr
 #endif /* rindex not defined */
 
-#ifdef USE_MEMCMP
+/* ifdef needed? better safe than sorry */
+#ifndef bcmp
 #define bcmp memcmp
-#endif /* USE_MEMCMP defined */
+#endif /* bcmp not defined */
 
 #ifdef USE_OWN_BCOPY
 /* use lib/aux/bcopy.c (fast, handles overlap correctly) */
