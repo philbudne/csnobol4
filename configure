@@ -789,7 +789,10 @@ if [ -f $INCDIR/sys/socket.h ]; then
 	    echo 'using system bindresvport_sa() function' 1>&2
 	else
 	    echo 'using private bindresvport_sa() function' 1>&2
-	    echo '#define NEED_INET6'		>> $CONFIG_H
+	    echo '#define NEED_BINDRESVPORT_SA'	>> $CONFIG_H
+	    if grep sockaddr_in6 $INCDIR/netinet/in.h >/dev/null 2>&1; then
+		echo '#define HAVE_SOCKADDR_IN6' >> $CONFIG_H
+	    fi
 	    echo 'ADD_OBJS([bindresvport.o])'	>> $CONFIG_M4
 	    echo 'ADD_SRCS([$(BINDRESVPORT)])'	>> $CONFIG_M4
 	fi
@@ -818,12 +821,6 @@ if [ -f $INCDIR/sys/socket.h ]; then
 	    echo 'using libnsl' 1>&2
 	    echo 'ADD_LDFLAGS([-lnsl])'		>> $CONFIG_M4
 	fi
-    fi
-
-    if grep socklen_t $INCDIR/sys/socket.h >/dev/null 2>&1; then
-	true
-    else
-	echo '#define NEED_SOCKLEN_T'		>> $CONFIG_H
     fi
 else
     echo 'no sockets; TCP not available' 1>&2
