@@ -211,13 +211,13 @@ init_args( ac, av )
     ndynamic = NDYNAMIC;
     pmstack = PSSIZE;
 
-#ifdef vms
-    argc = getredirection(argc, argv);
-#endif /* vms defined */
-
     /* save in globals for HOST(), getparm(), init() */
     argc = ac;
     argv = av;
+
+#ifdef vms
+    argc = getredirection(argc, argv);
+#endif /* vms defined */
 
     errs = 0;
     multifile = 0;			/* SITBOL behavior */
