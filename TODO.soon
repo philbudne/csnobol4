@@ -6,13 +6,6 @@ INSTALL:
 		OPT=
 		SNOBOL4_C_CFLAGS=
 
-fix timing script;
-	direct output into temp file
-	remove dir
-	run timing.sno, save status
-	remove temp file
-	pass status
-
 man page:
 	more on I/O options (esp update)
 		examples???
@@ -22,10 +15,14 @@ man page:
 		note, update on INPUT() will not create file???
 	mention load.doc located in SNOLIB dir
 
+add IO_FREEUNIT() pml function???
+
 load.doc:
 	mention SNOLIB dir
-	describe io_mkfile(), io_freeunit(), io_closeall(), io_getfp()
-		io_endfile()
+	describe
+
+		io_getfp(), io_mkfile(), io_closeall(),
+		io_endfile(), io_freeunit()
 
 ==== before beta releases
 
