@@ -34,7 +34,7 @@ Changes since 0.99.4 release;
 		Eliminate space padding on lines read by compiler
 			(reduced genc.sno compile time by 65%)
 
-		When using GCC, default to -O2
+		Raised default C compiler optimization levels
 
 	Default &MAXLNGTH to largest possible string
 
@@ -48,18 +48,16 @@ Changes since 0.99.4 release;
 	Configuration script re-write;
 		Eliminate static config files & autoconf script
 		configure generates config.m4 and config.h
-			(with all defines) for use by loadable functions
+		(with all defines) for use by loadable functions
 
-	load.h updates;
-		all RETxxx macros safe in any context
-		RETSTR() takes single argument, allows NULL pointer
-		RETSTR2() has old RETSTR() functionality
-
-	configuration options (see "INSTALL" file for more information);
+	New configuration options (see "INSTALL" file for more information);
 	--add-define=
 		Add a #define to config.h (visible to external functions)
 	--double
 		EXPERIMENTAL option to use C "double" for SNOBOL4 REAL data type
+	--fast
+		Architecture specific optimizations on native compilers
+
 	--longlong
 		EXPERIMENTAL!!
 		try to use C "long long" (64-bit integer) for INTEGER datatype
@@ -107,19 +105,28 @@ Changes since 0.99.4 release;
 		RPAD(), LPAD(), FIELD(), COLLECT(), DUMP(), DUPL(),
 		OPSYN(), and SUBSTR()
 
+	load.h updates;
+		all RETxxx macros safe in any context
+		RETSTR() takes single argument, allows NULL pointer
+		RETSTR2() has old RETSTR() functionality
+
+	All include files needed to build loadable functions
+		installed in SNOLIB directory
+
 	Include BSD tsort program; allow builds from scratch
 		on platforms with GNU tsort (Linux, Cygwin)
 
-	Ported to Darwin (MacOS X)
+	New ports;
+		Ported to Darwin (MacOS X)
 
-	Ported to Cygwin (http://cygwin.com), a free Unix emulation
-		environment for Windows.
+		Ported to Cygwin (http://cygwin.com), a free Unix emulation
+			environment for Windows.
 
-	Attempt at native Win32 port
+		Attempt at native Win32 port
 
-	Updated Borland C port
+		Updated Borland C port
 
-	Updated VMS port; pipe open support, attempt at tty support
+		Updated VMS port; pipe open support, attempt at tty support
 
 Changes since 0.99.3 release;
 ============================
