@@ -7,8 +7,10 @@
 /* prototype for external (LOADed) functions */
 #ifdef __STDC__
 #define LOAD_PROTO struct descr *retval, int nargs, struct descr *args
+#define PML_FIND_ARG char *
 #else  /* __STDC__ not defined */
 #define LOAD_PROTO
+#define PML_FIND_ARG
 #endif /* __STDC__ not defined */
 
 /* macros for loadable user functions;
@@ -81,6 +83,9 @@
 /* access return value type */
 #define RETTYPE D_V(retval)
 
+/* lib/pml.c; used by system load.c files */
+int (*pml_find(PML_FIND_ARG))(LOAD_PROTO);
+
 /* extern/prototypes for functions; */
 /* lib/snolib/getstring.c; */
 IMPORT(void) getstring __P((const void *, char *, int));
@@ -96,4 +101,3 @@ IMPORT(int) io_closeall __P((int));	/* internal (zero-based unit) */
 IMPORT(FILE *) io_getfp __P((int));	/* external (1-based unit) */
 IMPORT(int) io_mkfile __P((int, FILE *, char*)); /* external (1-based unit) */
 #endif /* EOF defined */
-
