@@ -38,7 +38,7 @@ load(addr, sp1, sp2)
 } /* pml_load */
 
 int
-link(retval, args, nargs, addr)
+callx(retval, args, nargs, addr)
     struct descr *retval, *args, *nargs, *addr;
 {
 #ifdef NO_PML

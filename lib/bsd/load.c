@@ -237,7 +237,7 @@ load(addr, sp1, sp2)
 
 /* support for SIL "LINK" opcode -- call external function */
 int
-link(retval, args, nargs, addr)
+callx(retval, args, nargs, addr)
     struct descr *retval, *args, *nargs, *addr;
 {
     struct func *fp;
