@@ -43,13 +43,9 @@ mstime()
 	 * XXX just use ANSI clock() function???
 	 */
 #ifndef NO_STATIC_VARS
-	static int have_t0;
 	static FILETIME t0;
-#else  /* NO_STATIC_VARS defined */
-	/* FIXME */
-#endif /* NO_STATIC_VARS defined */
 
-	if (have_t0) {
+	if (t0.dwHighDateTime || t0.dwLowDateTime) {
 	    FILETIME t;
 
 	    GetSystemTimeAsFileTime(&t);
@@ -58,8 +54,23 @@ mstime()
 	}
 	else {
 	    GetSystemTimeAsFileTime(&t0);
-	    have_t0 = 1;
 	    return 0;
 	}
+#else
+	FILETIME *t0p;
+	if (timevars) {
+	    FILETIME t;
+
+	    t0p = timevars;
+	    GetSystemTimeAsFileTime(&t);
+	    return ((t.dwHighDateTime - t0p->dwHighDateTime) * HIGHMS +
+		    (t.dwLowDateTime - t0p->dwLowDateTime) / TICKSPERMS);
+	}
+	else {
+	    timevars = t0p = malloc(sizeof(FILETIME));
+	    GetSystemTimeAsFileTime(t0p);
+	    return 0;
+	}
+#endif
     }
 }
