@@ -1,7 +1,7 @@
 /* $Id$ */
 
 /*
- * SPARC SITBOL compatibility;
+ * SPARC SPITBOL compatibility;
  * LOAD("SIN(REAL)REAL")
  * cosine of angle in radians
  */

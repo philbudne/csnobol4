@@ -1,7 +1,7 @@
 /* $Id$ */
 
 /*
- * SPARC SITBOL compatibility;
+ * SPARC SPITBOL compatibility;
  * LOAD("TAN(REAL)REAL")
  * tangent of angle in radians
  */
