@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+4/24/97:
+	autoconf: added comments, $(SRCDIR) on XXX_C= lines
+
 4/17/97:
 	Makefile, Makefile2.m4: use mv -f throughout
 	tested dlopen() on OSF/1, SGI
