@@ -299,6 +299,6 @@ uu:	$(KIT)
 MAKEFILE2=Makefile2
 depend:
 	sed '/^# DO NOT DELETE THIS LINE/q' $(MAKEFILE2) > $(MAKEFILE2).tmp
-	$(CCM) $(MYCPPFLAGS) $(SRCS) >> $(MAKEFILE2).tmp
+	$(CCM) $(MYCPPFLAGS) $(CONFIG_CFLAGS) $(SRCS) >> $(MAKEFILE2).tmp
 	mv $(MAKEFILE2).tmp $(MAKEFILE2)
 
