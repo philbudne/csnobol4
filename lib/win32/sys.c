@@ -103,6 +103,8 @@ osname(cp)
     else
 	strcpy(cp, os);
 
+    cp += strlen(cp);
+
     /*
      * szCSDVersion:
      *
