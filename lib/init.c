@@ -64,7 +64,7 @@ init_args( argc, argv )
      * * When adding options, update usage() function (above) and man page!!!
      */
 #ifdef vms
-    argc = getredirect(argc, argv);
+    argc = getredirection(argc, argv);
 #endif /* vms defined */
     while ((c = getopt(argc, argv, "bd:fklrs")) != -1) {
 	switch (c) {
