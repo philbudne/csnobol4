@@ -115,11 +115,12 @@ ordvst_strcmp(s1,l1, s2,l2)
  */
 static int
 ordvst_cmp(v1, v2)
-    void *v1, *v2;
+    const void *v1, *v2;
 {
     int l1,l2;				/* Length variables */
     char *n1, *n2;			/* Name pointers */
-    struct descr **d1 = v1, **d2 = v2;
+    const struct descr **d1 = (const struct descr **)v1;
+    const struct descr **d2 = (const struct descr **)v2;
 
     l1 = D_V(*d1);			/* Set the first length */
     l2 = D_V(*d2);			/* Set the second length */
