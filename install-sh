@@ -43,7 +43,8 @@ mkdirprog="${MKDIRPROG-mkdir}"
 
 transformbasename=""
 transform_arg=""
-instcmd="$mvprog"
+# changed to cpprog for CSNOBOL4 02/20/2002
+instcmd="$cpprog"
 chmodcmd="$chmodprog 0755"
 chowncmd=""
 chgrpcmd=""
