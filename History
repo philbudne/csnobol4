@@ -2,13 +2,77 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+2/8/98
+	config/win32/ntmsvc.mak: add TTY_C TTY_DEFS NO_BITFIELDS vars
+
+2/6/98
+	lib/bsd/inet.c: use winsock.h under USE_WINSOCK_H
+	config/win32/ntmsvc.mak: USE_WINSOCK_H, use wsock32.lib
+
+2/5/98
+	Makefile2.m4: move exists to snolib.a
+	config/vms/descrip.mms, build.com: add exists
+
+2/4/98
+	lib/dummy/rresvport.c: for NT
+	lib/bsd/inet.c: use winsock2.h on NT
+	lib/win32/tty.c: fix typos
+	new config/win32/ntmsvc.mak: NMAKE file
+		add -O2, remove -Za, define __STDC__ as zero to avoid
+		losing non-ANSI extensions! define isnan as _isnan
+
+2/2/98
+	lib/snolib/file.c: use exists() function
+	lib/win32/load.c: use exists() function
+	new lib/generic/exists.c, lib/win32/exists.c
+	ntmsvc.bat: add -DUSE_STDARG_H, -DUSE_WINSOCK_H
+		removed dump.{c,obj}
+	Makefile2.m4: add exists.c, EXISTS_C
+	lib/bsd/inet.c: add USE_WINSOCK_H ifdef (ugh)
+
+1/28/98
+	Fixed up ntmsvc.bat with help from Bert Vincent
+	add win32/rename.bat to fix truncated filenames
+	new lib/win32/tty.c
+
+1/27/98
+	lib/win32/sys.c: worked first try; made it better
+	lib/win32/load.c: now compiles
+	tested win32 popen-- works on NT 4.0
+	lib/bsd/inet.c: added NEED_SOCKADDR_LEN ifdef
+	autoconf: add INCDIR; define NEED_SOCKADDR_LEN if needed
+
+1/26/98
+	config/win32/ntmsvc.bat: removed some rem's, use new files!
+
+1/5/98
+	new lib/win32/popen.c: use MSVC _popen() UNTESTED!!
+	new lib/win32/load.c: use LoadLibrary() UNTESTED!!
+	lib/win32/sys.c: use GetSystemInfo() for hw type
+		use GetVersionEx for O/S
+	lib/win32/mstime.c: use GetSystemTime() and SystemTimeToFileTime()
+		if GetProcessTimes fails (only implemented on NT?)
+
+12/23/97
+	include/h.h: add __P macro
+	include/snotypes.h: add SIL_FUNC_PROTO macro
+	include/syntab.h: add prototypes for functions in stream.h (if'ed out)
+	lib/realst.c: declare void return
+	lib/stream.c: fix accidental parameter removal?
+	genc.sno: put silpath in top comment
+	New include/lib.h: lib file prototypes (not used)
+
+12/22/97
+	New lib/win32/sys.c, lib/win32/mstime.c: UNTESTED, UNUSED
+	README: add David Feustel
+
 12/21/97
-	New config/w32/tlist.bat
-	New config/w32/nttest.bat
+	New config/win32/tlist.bat
+	New config/win32/nttest.bat
 		David Feustel's WinNT reression test batch files
 
 12/17/97
-	New config/w32/ntmsvc.bat:
+	New config/win32/ntmsvc.bat:
 		David Feustel's WinNT batch file using MS VC++ 5.0
 
 12/10/97
