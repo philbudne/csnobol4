@@ -25,7 +25,11 @@
 #include "vars.h"
 #endif /* NO_STATIC_VARS defined */
 
-char *malloc();				/* use <stdlib.h> if avail? */
+#ifdef HAVE_STDLIB_H			/* before stdio */
+#include <stdlib.h>			/* for malloc */
+#else  /* HAVE_STDLIB_H not defined */
+extern void *malloc();
+#endif /* HAVE_STDLIB_H not defined */
 
 #ifdef ORDVST_DEBUG
 /* PLB: dump a descriptor */

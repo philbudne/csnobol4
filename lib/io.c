@@ -6,6 +6,12 @@
 #include <varargs.h>
 #endif /* USE_STDARG_H not defined */
 
+#ifdef HAVE_STDLIB_H			/* before stdio */
+#include <stdlib.h>			/* for malloc */
+#else  /* HAVE_STDLIB_H not defined */
+extern void *malloc();
+#endif /* HAVE_STDLIB_H not defined */
+
 #include <stdio.h>
 #include <ctype.h>
 
@@ -132,7 +138,6 @@ static struct iovars iov;
 #define FINDUNIT(N) (iov.units + (N))
 
 extern FILE *term_input();		/* from <system>/term.c */
-extern void *malloc();			/* XXX use stdlib? */
 
 extern FILE *tcp_open(), *udp_open();
 #ifdef NEED_POPEN_DECL

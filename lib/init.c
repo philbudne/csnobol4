@@ -1,5 +1,11 @@
 /* $Id$ */
 
+#ifdef HAVE_STDLIB_H			/* before stdio */
+#include <stdlib.h>			/* for malloc */
+#else  /* HAVE_STDLIB_H not defined */
+extern void *malloc();
+#endif /* HAVE_STDLIB_H not defined */
+
 #include <stdio.h>			/* for usage! */
 #include <signal.h>
 
@@ -17,7 +23,6 @@
 #endif /* SIGFUNC_T not defined */
 
 extern char *dynamic();
-extern char *malloc();			/* use <stdlib.h> if available? */
 
 #define NDYNAMIC (64*1024)		/* default dynamic region size */
 
