@@ -16,6 +16,17 @@ IMPORTANT for users of versions prior to 0.99;
 
 For detailed revision history see History file
 
+Changes since 0.99.2 release;
+============================
+
+	Added OpenBSD to "autoconf"
+
+	Ported back to HP-UX 7, DOS/Borland
+
+	Fixed bug with EVAL() of long strings
+
+	Fixed autoconf to handle bad strings.h (Solaris 2.4)
+
 Changes since 0.99.1 release;
 ============================
 
