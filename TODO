@@ -8,6 +8,7 @@ $Id$
 7a. send listings to seperate file!
 7b. select file on command line!
 7e. output un*x style line numbers (file name & zero based line) for all errs?
+7f. add -LINE (ala snobol4+)
 7g. fix error marker (deal with tabs)
 7h. send errs to stderr?
 
@@ -16,12 +17,14 @@ $Id$
 9d. add TERM variable (like Catspaw SPITBOL)
 
 10. Improve I/O
-10a. Honor I/O flags in filenames (like Catspaw SPITBOL);
-10b. Implement SITBOL style formats
+10a. Honor I/O flags in filenames (like Catspaw SPITBOL)??
+10b. Implement SITBOL style formats??
 10c. extensions to allow opening sockets?!
-10d. allow string for unit?? do away with units (ala SITBOL)?!!
-10e. get rid of record lengths
-10f. get rid of space padding in compiler (honor STREAD return len)
+10d. extensions to allow opening ptys?
+10e. allow string for unit (ala SPITBOL)?
+	do away with units (ala SITBOL)?!!
+10f. get rid of record lengths
+10g. get rid of space padding in compiler (honor STREAD return len)
 
 12. catch math errors (have MATH_ERROR() do something)!
 
@@ -37,7 +40,6 @@ $Id$
 	SUBSTR()
 	LEQ() LGE() LST() LLE() LLT() LNE()
 14b. match and assignment operators
-14c. -INCLUDE (-COPY) control line!!
 
 17. implement ordvst() for sorting &DUMP output
 
@@ -67,7 +69,6 @@ $Id$
 28. write man page
 	document all error messages (in man page or seperate doc)?
 
-29. add -LINE (ala snobol4+)
 
 30. package rebus
 30a. Implement &ERRTEXT

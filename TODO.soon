@@ -1,16 +1,21 @@
 $Id$
 
+document default I/O associations in man page?
+
+test RETSTR
+
 improve load.doc
 	document use of pml!
 	document RETxxx macros
 	document snolib
 		getstring
-	document return data type 'L'
-		create "retstring"?
 
-use RETxxx in sqrt.c, snolib
+-INCLUDE/-COPY
+	document (snobol4.1 & README)
+		describe "program error" vs. "reading error"
+	improve error handling
 
-create snolib/retstr
+Add DIAGNOSTICS section to man page???
 
 ================
 
@@ -27,10 +32,7 @@ Improve porting.doc
 	optimization (none/-O/-O2 etc)
 	mention "timing" script!!
 
-Implement -INCLUDE
-
-Improve I/O;
-	process "!" "[flags]"
+Improve I/O
 
 MOVBLK_MEMMOVE?
 MOVBLK_MEMCPY???
