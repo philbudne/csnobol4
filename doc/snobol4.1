@@ -484,10 +484,10 @@ functions are available for compatibility with SNOBOL4+.
 returns the value
 .IR "e ** x" ,
 .B LOG()
-returns the natural logarithm of it's argument, and
+returns the natural logarithm of it's REAL argument, and
 .B CHOP()
-truncates the fractional part of it's (rounding towards zero), and
-returns a real.
+truncates the fractional part of it's REAL argument (rounding towards
+zero), and returns a REAL.
 .TP
 .B SORT()/RSORT()
 .br
@@ -636,9 +636,9 @@ characters have no special meaning; the number of bytes transferred
 deppends on record length (see above). On output no newline is
 appended.  For terminal devices, all I/O to this unit will be
 performed in
-.I \*(lqraw\*(rq
+\*(lqraw\*(rq
 mode, however I/O on other units continues to perform I/O in
-.I \*(lqcooked\*(rq
+\*(lqcooked\*(rq
 mode.
 .TP
 .B C
