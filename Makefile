@@ -80,8 +80,17 @@ snobol4.c proc.h2: procs genc.sno globals $(SIL)
 	mv -f snobol4.c2 snobol4.c
 
 # inline version (functions reordered)
-isnobol4.c: procs genc.sno globals $(SIL) bsdtsort
+
+# Uses private copy of BSD version (since GNU version used on Linux
+# can't handle cycles), but don't make it a dependency since that
+# would force isnobol4.c to be rebuilt (which requires a snobol4
+# binary) when starting with a distribution kit.  Using a SNOBOL4
+# tsort.sno program would solve the problem, but I've yet to write
+# one that works as well as the C version.
+
+isnobol4.c: procs genc.sno globals $(SIL)
 	rm -rf isnobol4.c2 proc.h2 prolog subr
+	test -f bsdtsort || cc -o bsdtsort bsdtsort.c
 	mkdir subr
 	$(SNO) -- genc.sno --inline $(SIL) > prolog
 	cd subr && ../bsdtsort < ../callgraph > order && \
@@ -91,12 +100,6 @@ isnobol4.c: procs genc.sno globals $(SIL) bsdtsort
 
 proc.h:	proc.h2
 	@cmp proc.h proc.h2 || cp proc.h2 proc.h
-
-# GNU tsort (used on Linux) can't handle cycles.
-# Use private copy of BSD version;
-
-bsdtsort: bsdtsort.c
-	$(CC) -o bsdtsort bsdtsort.c
 
 ################
 # syntax tables
