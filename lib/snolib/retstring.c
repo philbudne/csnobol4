@@ -10,6 +10,8 @@
 extern void *malloc();
 #endif /* HAVE_STDLIB_H not defined */
 
+#include <stdio.h>			/* for perror() */
+
 #include "h.h"
 #include "equ.h"			/* BCDFLD, etc */
 #include "snotypes.h"			/* DESCR, etc */
@@ -27,7 +29,7 @@ static int retbuflen;
 EXPORT(void)
 retstring( retval, cp, len )
     struct descr *retval;
-    char *cp;
+    const char *cp;
     int len;
 {
 
