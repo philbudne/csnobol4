@@ -14,9 +14,6 @@
 *	kill case folding, for speed
 -CASE 0
 
-*	set STLIMIT so STCOUNT is kept!
-	&STLIMIT = 500000
-
 *	set TRIM, for SNOBOL4+
 	&TRIM = 1
 
