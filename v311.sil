@@ -1,6 +1,11 @@
 * $Id$
 *
 * $Log$
+* Revision 1.91  2002/01/21 17:19:14  phil
+* [PLB78] add new functions (ideas from Steve Duff's Macro SPITBOL)
+* LABEL(V) - predicate returns true if V is a defined label
+* VDIFFER(X,Y) - returns X if X and Y DIFFER(), else fails
+*
 * Revision 1.90  2002/01/18 23:49:16  phil
 * [PLB77] fix compiler syntax error pointer display
 * fix internal error trying to compile " ()("
@@ -402,11 +407,13 @@
 *	       INTVAL
 *	       PATVAL
 *	       VARVAL
+*	       VARVUP
+*	       VPXPTR
 *	       XYARGS
 *      9.   Arithmetic Operations, Predicates and Functions
 *	       ADD 
 *	       DIV 
-*	       EXP 
+*	       EXPOP
 *	       MPY 
 *	       SUB 
 *	       EQ
@@ -421,6 +428,7 @@
 *	       PLS 
 *      10.   Pattern-Valued Functions and Operations 
 *	       ANY 
+*	       BREAKX
 *	       BREAK 
 *	       NOTANY
 *	       SPAN
@@ -432,15 +440,18 @@
 *	       ARBNO 
 *	       ATOP (Cursor Position)
 *	       NAM (Value Assignment)
+*	       DOL
 *	       OR
 *      11.  Pattern Matching Procedures
 *	       SCAN
 *	       SJSR (Scan and Replace) 
 *	       SCNR (Basic Scanner)
-*	       ANYC
 *	       BRKC
+*	       BRKX
 *	       NNYC
 *	       SPNC
+*	       ANYC
+*	       BRKXF
 *	       LNTH
 *	       POSI
 *	       RPSI
@@ -450,7 +461,7 @@
 *	       FARB (ARB Backup) 
 *	       ATP (Cursor Position) 
 *	       BAL 
-*	       CHAR
+*	       CHR
 *	       STAR (Unevaluated Expression) 
 *	       DSAR
 *	       FNCE
@@ -471,15 +482,20 @@
 *	       ASSOC (TABLE) 
 *	       DATDEF (DATA) 
 *	       PROTO 
+*	       FREEZE
+*	       THAW
 *	       ITEM (Array and Table References) 
 *	       DEFDAT (Create Data Object) 
 *	       FIELD 
+*	       RSORT
+*	       SSORT
 *      15.  Input and Output 
 *	       READ (INPUT)
 *	       PRINT (OUTPUT)
 *	       BKSPCE
 *	       ENFILE
 *	       REWIND
+*	       SET
 *	       DETACH
 *	       PUTIN 
 *	       PUTOUT
@@ -494,7 +510,7 @@
 *	       FNEXT2
 *      17.  Other Operations 
 *	       ASGN (=)
-*	       CON (Concatenation) 
+*	       CONCAT (Concatenation) 
 *	       IND (Indirect Reference)
 *	       KEYWRD
 *	       LIT 
@@ -513,12 +529,16 @@
 *	       LNE 
 *	       NEG 
 *	       QUES (?)
+*	       CHAR
+*	       LPAD
+*	       RPAD
 *      19.  Other Functions
 *	       APPLY 
 *	       ARG 
 *	       LOCAL 
 *	       FIELDS
 *	       CLEAR 
+*	       CMA
 *	       COLECT
 *	       COPY
 *	       CNVRT 
@@ -529,6 +549,7 @@
 *	       DUPL
 *	       OPSYN 
 *	       RPLACE
+*	       REVERS
 *	       SIZE
 *	       TIME
 *	       TRIM
