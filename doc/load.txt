@@ -242,6 +242,9 @@ AIX			none			-bM:SRE
 
 NOTES:
 
+http://www.fortran-2000.com/ArnaudRecipes/sharedlib.html has a more
+exaustive table.
+
 The "libtool" (http://www.gnu.org/software/libtool/libtool.html)
 script may be helpful for linking shared libraries in a portable
 way.
