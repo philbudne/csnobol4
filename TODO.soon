@@ -17,7 +17,10 @@ rcs tag
 
 ==== before 1.0 release;
 
-Add "N" I/O flag; set IO_NONBLOCK (POSIX), IO_NDELAY (sysV)
+Document LD_PATH, HAVE_UNISTD_H?
+
+Add "N" I/O flag??
+	set IO_NONBLOCK (POSIX), IO_NDELAY (sysV)
 	or IO_NDELAY (BSD -- effects ALL fd's)
 
 Test:
