@@ -49,14 +49,14 @@ void
 osname(cp)
     char *cp;
 {
-    char *os;
+    char osname[32], *os;
     OSVERSIONINFO osv;
     int vnum;
 
     vnum = 1;
     osv.dwOSVersionInfoSize = sizeof(osv);
     if (!GetVersionEx(&osv)) {
-	strcpy(cp, "unknown");
+	strcpy(cp, "Win????");
 	return;
     }
 
@@ -83,8 +83,12 @@ osname(cp)
 		os = "Win95";
 		vnum = 0;		/* suppress version number */
 		break;
-	    case 1:
+	    case 10:
 		os = "Win98";
+		vnum = 0;		/* suppress version number */
+		break;
+	    case 90:
+		os = "WinME";
 		vnum = 0;		/* suppress version number */
 		break;
 	    default:
@@ -95,10 +99,23 @@ osname(cp)
 
     case VER_PLATFORM_WIN32_NT:
 	os = "WinNT";
+	if (osv.dwMajorVersion == 5) {
+	    switch (osv.dwMinorVersion) {
+	    case 0:
+		os = "Win2K";
+		vnum = 0;		/* suppress version number */
+		break;
+	    case 1:
+		os = "WinXP";
+		vnum = 0;		/* suppress version number */
+		break;
+	    }
+	}
 	break;
 
     default:
-	os = "Win???";			/* XXX win#id? */
+	sprintf(osname, "Win#%d", osv.dwPlatformId);
+	os = osname;
 	break;
     }
 
@@ -122,6 +139,12 @@ osname(cp)
      */
     if (osv.szCSDVersion[0]) {
 	char *tp;
+
+	/* strip trailing spaces, if any */
+	tp = osv.szCSDVersion + strlen(osv.szCSDVersion);
+	while (tp > osv.szCSDVersion && tp[-1] == ' ')
+	    tp--;
+	*tp = '\0';
 
 	/* strip leading spaces, if any */
 	tp = osv.szCSDVersion;
