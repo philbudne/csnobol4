@@ -19,7 +19,11 @@
 ****************************************************************
 *	initialization
 
-	CHARSET = 256
+*	variable to allow boostrap onto system with different collation
+	CHARSET = &ALPHABET
+
+	CHARSETSIZE = SIZE(CHARSET)
+
 	SEP = '/'
 	UC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	LC = "abcdefghijklmnopqrstuvwxyz"
@@ -67,8 +71,15 @@
 	CLASS<"QUESYM"> = "?"
 
 *	beginning of line;
+*	comments;
+* 	NOTE: SPITBOL treats # as a continuation (CNT) char, but we
+*	want to use it for "script interpreter magic number" (#!)
 	CLASS<"CMT">	= "*#|;!"
+
+*	control cards
 	CLASS<"CTL">	= "-"
+
+*	continuation
 	CLASS<"CNT">	= "+."
 
 	CLASS<"DQUOTE"> = '"'
@@ -91,30 +102,40 @@
 	CLASS<"TERMINATOR"> = CLASS<"COMMA"> CLASS<"BLANK"> CLASS<"EOS">
 +				CLASS<"RIGHTBR"> CLASS<"RIGHTPAREN">
 	CLASS<"EXP">	= "Ee"
+	FREEZE(CLASS)
+
+**************** translate character to ordinal value
+
+* builtin in CSNOBOL4 1.0
+	DEFINE("ORD(C)")				:(EORD)
+*	get position of char in collating sequence!
+ORD	CHARSET BREAK(C) @ORD C				:S(RETURN)F(FRETURN)
+
+EORD
 
 **************** parse actions for FOR and ELSE lines
- 	DEFINE("ACTION(STR)")				:(EACTION)
+ 	DEFINE("ACTION(STR)")
+	ERRPAT = 'ERROR' . A
+	PUTPAT = 'PUT(' ID . P ')' WS
+	GOTOPAT = 'GOTO' . A '(' ID . G ')'
+	STOPPAT = ('STOP' ('SH' | '')) . A		:(EACTION)
 ACTION	P =
 	A =
 	G =
 *	CONTIN and ERROR appear alone
-	STR 'CONTIN' . A				:S(AC1)
-	STR 'ERROR' . A					:S(AC1)
+	STR 'CONTIN' 					:S(ACCONT)
+	STR ERRPAT					:S(AC1)
 *	PUT can appear before GOTO or STOP(SH)
-	STR 'PUT(' ID . P ')' WS =
+	STR PUTPAT =
 *	things that can appear after PUT (or alone)
-	STR 'GOTO' . A '(' ID . G ')' =			:S(AC1)
-	STR 'STOPSH' . A				:S(AC1)
-	STR 'STOP' . A					:F(FRETURN)
+	STR GOTOPAT =					:S(AC1)
+	STR STOPPAT					:F(FRETURN)
 
+*	construct PUT/ACT/GO string, and see if it's been seen before
 AC1	G = DIFFER(G) '&' G
 	P = IDENT(P) '0'
-*	PUT/ACT/GO
 	PAG = P SEP A SEP G
-
 	DIFFER( ACTIONS< PAG > )			:S(AC2)
-	IDENT(PAG,CONTIN)				:F(NEWACT)
-	ACTION = 0					:(RETURN)
 
 *	here with new put/action/go combination
 NEWACT	ACTIONS< PAG > = NACTIONS
@@ -122,27 +143,39 @@ NEWACT	ACTIONS< PAG > = NACTIONS
 	ACT< NACTIONS > = A
 	GO< NACTIONS > = G
 	NACTIONS = NACTIONS + 1
+
+*	NOTE: one based (CONTIN is always zero)
 AC2	ACTION = ACTIONS< PAG > + 1			:(RETURN)
+
+*	CONTIN (most common action taken while compiling)
+*	is ALWAYS action zero, and requires no table lookup 9/9/97
+ACCONT	ACTION = 0					:(RETURN)
 EACTION
 
 **********************************
 *	MAIN PROGRAM		 *
 **********************************
 
+	IND = HOST(3)
+	INPUTFILE = HOST(2,IND)				:F(NOFILE)
+	IDENT(INPUTFILE)				:S(NOFILE)
+
 	DIFFER(MAINBOL)					:S(MB1)
 **************** spitbol I/O
-	INPUT(.INPUT,1,"syntax.tbl")			:F(IOERR)
+	INPUT(.INPUT,1,INPUTFILE)			:F(IOERR)
 	OUTPUT(.SYN.C,10,"syn.c2")
 	OUTPUT(.SYN.H,11,"syn.h2")
 	OUTPUT(.SYN_INIT.H,12,"syn_init.h2")		:(EIO)
 **************** mainbol I/O
-MB1	INPUT(.INPUT,1,,"syntax.tbl")			:F(IOERR)
+MB1	INPUT(.INPUT,1,,INPUTFILE)			:F(IOERR)
 	OUTPUT(.SYN.C,10,,"syn.c2")
 	OUTPUT(.SYN.H,11,,"syn.h2")
 	OUTPUT(.SYN_INIT.H,12,,"syn_init.h2")		:(EIO)
 ****************
-IOERR	&CODE = 1
-	OUTPUT = "COULD NOT OPEN INPUT FILE"		:(END)
+IOERR	TERMINAL = "COULD NOT OPEN " INPUTFILE		:(FATAL)
+NOFILE	TERMINAL = "MUST HAVE INPUT FILE ON COMMAND LINE"
+
+FATAL	&CODE = 1					:(END)
 
 EIO
 ****************
@@ -183,12 +216,13 @@ TOP	LINE = INPUT					:F(INIT)
 	SYN.C = SSS LINE
 	ACTIONS = TABLE()
 	NACTIONS = 0
-	PUT = ARRAY('0:19')
-	ACT = ARRAY('0:19')
-	GO = ARRAY('0:19')
+	ARRAYRANGE = '0:19'
+	PUT = ARRAY(ARRAYRANGE)
+	ACT = ARRAY(ARRAYRANGE)
+	GO = ARRAY(ARRAYRANGE)
 
 *	array per char; contains index into above PU/ACT/GO arrays
-	CHARS = ARRAY('0:' CHARSET - 1,-1)
+	CHARS = ARRAY('0:' CHARSETSIZE - 1,-1)
 
 **************** for each line of table
 LOOP	LINE = INPUT
@@ -200,23 +234,23 @@ LOOP	LINE = INPUT
 	LINE 'ELSE' WS =				:S(ELSE)
 	LINE 'FOR(' ID . T ')' WS =			:S(TOK1)
 	LINE 'FOR(' ID . T1 ',' ID . T2 ')' WS =	:F(ERR)
-	SYN.C = IDENT(CLASS<T1>) "BAD CLASS: " T1
-	SYN.C = IDENT(CLASS<T2>) "BAD CLASS: " T2
+	TERMINAL = IDENT(CLASS<T1>) "BAD CLASS: " T1	:S(FATAL)
+	TERMINAL = IDENT(CLASS<T2>) "BAD CLASS: " T2	:S(FATAL)
 	T = CLASS<T1> CLASS<T2>				:(DOTOK)
-TOK1	SYN.C = IDENT(CLASS<T>) "BAD CLASS: " T
+TOK1	TERMINAL = IDENT(CLASS<T>) "BAD CLASS: " T	:S(FATAL)
 	T = CLASS<T>
 
 ******** here with a token class string
 DOTOK	A = ACTION(LINE)				:F(ERR)
-TOKLOP	T LEN(1) . C =					:F(LOOP)
-*	get position of char in collating sequence!
-	&ALPHABET BREAK(C) @N C
-	CHARS<N> = A					:(TOKLOP)
+	I = 1
+
+TOKLOP	CHARS<ORD(SUBSTR(T,I,1))> = A			:F(LOOP)
+	I = I + 1					:(TOKLOP)
 
 ********
 ELSE	N = 0
 	A = ACTION(LINE)				:F(ERR)
-ELSLOP	LT(N,CHARSET)					:F(LOOP)
+ELSLOP	LT(N,CHARSETSIZE)				:F(LOOP)
 	CHARS<N> = EQ(CHARS<N>,-1) A
 	N = N + 1					:(ELSLOP)
 ****************
@@ -254,7 +288,7 @@ DUMPCHR	CH = CHARS<N>					:F(DUMPEND)
 	OL = OL CH
 	N = N + 1
 	C = C + 1
-	OL = LT(N,CHARSET) OL ',' SP
+	OL = LT(N,CHARSETSIZE) OL ',' SP
 	LT(C,16)					:S(DUMPCHR)
 
 *	start new line of output
