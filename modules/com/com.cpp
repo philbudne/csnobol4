@@ -222,7 +222,7 @@ retvariant(struct descr *retval, VARIANTARG *vp)
 }
 
 // XXX decode string?? lookup small integer? pointer to self-ref block???
-#define LS_DISP(X) ((LPDISPATCH)LA_INT(X))
+#define LA_DISP(X) ((LPDISPATCH)LA_INT(X))
 
 // does not handle in-out parameters
 // could have a version which takes an array?
@@ -313,12 +313,12 @@ COM_GETPROP( LA_ALIST ) LA_DCL
 
     DISPPARAMS dispparams;
 
-    dispparams.cArgs = 0
-    dispparams.cNamedArgs = 0
+    dispparams.cArgs = 0;
+    dispparams.cNamedArgs = 0;
 
     VARIANTARG result;
     hr = pdisp->Invoke(dispid,		// dispatch id member
-			&IID_NULL,	// ref iid
+			IID_NULL,	// ref iid
 			LOCALE_SYSTEM_DEFAULT, // locale id
 			DISPATCH_PROPERTYGET, // flags
 			&dispparams,
@@ -351,7 +351,7 @@ COM_PUTPROP( LA_ALIST ) LA_DCL
     DISPPARAMS dispparams;
 
     VARIANTARG value;
-    descr_to_variant(LA_PTR(2), &value);
+    descr_to_variant(LA_DESCR(2), &value);
     dispparams.cArgs = 1;
     dispparams.rgvarg = &value;
 
@@ -360,7 +360,7 @@ COM_PUTPROP( LA_ALIST ) LA_DCL
     dispparams.rgdispidNamedArgs = &mydispid;
 
     hr = pdisp->Invoke(dispid,		// dispatch id member
-			&IID_NULL,	// ref iid
+			IID_NULL,	// ref iid
 			LOCALE_SYSTEM_DEFAULT, // locale id
 			DISPATCH_PROPERTYPUT, // flags
 			&dispparams,
