@@ -6,6 +6,10 @@
 # $Id$
 #
 
+# new:
+PORTNAME=	snobol4
+PORTVERSION=	1.0
+# old:
 DISTNAME=	snobol4-1.0
 CATEGORIES=	lang
 MASTER_SITES=	ftp://ftp.snobol4.org/snobol/
