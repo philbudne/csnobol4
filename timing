@@ -75,6 +75,8 @@ if [ "$UNAME" ]; then
 			echo ''
 			echo /var/run/dmesg.boot
 			grep -i '^cpu[0-9]*:' /var/run/dmesg.boot
+			# Alpha:
+			grep 'MHz' /var/run/dmesg.boot
 		fi
 		;;
 	HP-UX)
