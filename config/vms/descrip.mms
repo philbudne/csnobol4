@@ -3,17 +3,19 @@
 # DESCRIP.MMS, hacked from Makefile2 for VMS "MMS"
 # Build SNOBOL4 using DECC and MMS
 #
-# Tested on AXP OpenVMS 6.1 using DECC 4.0 and MMS 2.7 (DECSET 11.2-1)
-#	(October 1996)
+# Tested on VAX OpenVMS 6.1 using VAX 3.x (February 1998)
 
-# Updated 2/10/98 (semi-tested)
+# comment out the next line for VAXC 3.x
+DECC=/DECC/PREFIX_LIB=ALL/WARN=(DISABLE=IMPLICITFUNC)
 
-# for VAXC 3.x comment out the next line
-DECC=/DECC/PREFIX_LIB=ALL/OPTIMIZE
+# uncomment next line for VAXC 3.x
+#VAX_OBJ=isnan.obj,
 
-# need socket library DEC TCP/IP Connection services for OpenVMS
-#	(formerly VAX/Ultrix connection product)???
-LIBS=+SYS$LIBRARY:DECCRTL/LIBR
+# socket library DEC TCP/IP Connection services for OpenVMS
+#	(formerly VAX/Ultrix connection product)
+INETLIB=+SYS$LIBRARY:UCX$IPC/LIB
+
+LIBS=$(INETLIB) +SYS$LIBRARY:DECCRTL/LIBR
 
 SNOBOL4=isnobol4
 
@@ -23,10 +25,12 @@ DATE_C=[.lib]date.c
 DUMP_C=[.lib]dump.c
 DYNAMIC_C=[.lib.generic]dynamic.c
 ENDEX_C=[.lib]endex.c
-EXISTS_C=[.lib.generic]exists.c
+EXISTS_C=[.lib.vms]exists.c
 EXPOPS_C=[.lib.generic]expops.c
 HASH_C=[.lib]hash.c
-# requires VAX/Ultrix connection product
+# requires DEC TCP/IP Connection services for OpenVMS
+# 	(formerly VAX/Ultrix connection product)
+#	use [.lib.dummy]inet.c if not avail
 INET_C=[.lib.bsd]inet.c
 INIT_C=[.lib]init.c
 INTSPC_C=[.lib]intspc.c
@@ -43,7 +47,7 @@ REALST_C=[.lib]realst.c
 REPLACE_C=[.lib]replace.c
 STREAM_C=[.lib]stream.c
 STR_C=[.lib]str.c
-TERM_C=[.lib.generic]term.c
+TERM_C=[.lib.vms]term.c
 TOP_C=[.lib]top.c
 TREE_C=[.lib]tree.c
 TTY_C=[.lib.vms]tty.c
@@ -54,7 +58,8 @@ BCOPY_C=[.lib.auxil]bcopy.c
 GETOPT_C=[.lib.auxil]getopt.c
 GETREDIRECT_C=[.lib.vms]getredirect.c
 
-AUX_OBJ=bcopy.obj, bzero.obj, getopt.obj, getredirect.obj, popen.obj,
+AUX_OBJ=bcopy.obj, bzero.obj, getopt.obj, getredirect.obj, \
+	popen.obj, rresvport.obj, unlink.obj, $(VAX_OBJ)
 
 # snolib sources
 CHOP_C=[.lib.snolib]chop.c
@@ -84,13 +89,15 @@ PML_OBJ=host.obj, sys.obj, exit.obj, execute.obj, sqrt.obj, \
 
 CFLAGS=\
 	$(DECC) \
+	/OPTIMIZE\
 	/DEFINE=(ANSI_STRINGS,NO_OFF_T,TTY_READ_RAW,TTY_READ_COOKED,\
-		ANY=XANY,DATE=XDATE,INIT=XINIT,LOAD=XLOAD,UNLOAD=XUNLOAD,\
-		RPLACE=XRPLACE,TIME=XTIME,RAISE=XRAISE,DIV=XDIV,\
-		SUBSTR=XSUBSTR,EXIT=XEXIT,SQRT=XSQRT,EXP=XEXP,LOG=XLOG,\
-		SIN=XSIN,COS=XCOS,TAN=XTAN,RENAME=XRENAME,\
-		IO_FINDUNIT=XIO_FINDUNIT)\
-	/WARN=(DISABLE=IMPLICITFUNC) \
+		ANY=XANY,COS=XCOS,DATE=XDATE,DIV=XDIV,\
+		DELETE=XDELETE,EXIT=XEXIT,EXP=XEXP,\
+		INIT=XINIT,IO_FINDUNIT=XIO_FINDUNIT,\
+		LOAD=XLOAD,LOG=XLOG,RAISE=XRAISE,READ=XREAD,\
+		RENAME=XRENAME,REWIND=XREWIND,RPLACE=XRPLACE,\
+		SIN=XSIN,SQRT=XSQRT,SUBSTR=XSUBSTR,\
+		TAN=XTAN,TIME=XTIME,UNLOAD=XUNLOAD)\
 	/INCLUDE=(SYS$DISK:[],SYS$DISK:[.INCLUDE])
 
 ################
@@ -276,3 +283,11 @@ sys.obj : $(SYS_C)
 tan.obj : $(TAN_C)
 	$(CC) $(CFLAGS) $(TAN_C)
 
+unlink.obj : [.lib.vms]unlink.c
+	$(CC) $(CFLAGS) [.lib.vms]unlink.c
+
+isnan.obj : [.lib.dummy]isnan.c
+	$(CC) $(CFLAGS) [.lib.dummy]isnan.c
+
+rresvport.obj : [.lib.dummy]rresvport.c
+	$(CC) $(CFLAGS) [.lib.dummy]rresvport.c
