@@ -7,6 +7,7 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 		output on genc.sno to stdout, stderr
 		move stdout compare check out of timing.sno
 		allow times +/-1, +/-5%
+	autoconf: avoid gcc on hppa-hpux
 
 11/12/96:
 	autoconf: check for sys/ttyio.h, define USE_TTYIO
