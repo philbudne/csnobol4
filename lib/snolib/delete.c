@@ -1,4 +1,4 @@
-/* $Id $
+/* $Id$ */
 
 /*
  * SITBOL compatibility;
@@ -19,6 +19,8 @@ DELETE( LA_ALIST ) LA_DCL
     char path[256];			/* XXX */
 
     getstring( LA_PTR(0), path, sizeof(path) );
-    D_A(retval) = 0;			/* null ptr means null string */
-    return unlink(path) == 0;
+    if (unlink(path) < 0) {
+	RETFAIL;
+    }
+    RETNULL;
 }

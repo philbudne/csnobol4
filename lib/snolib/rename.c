@@ -21,6 +21,10 @@ RENAME( LA_ALIST ) LA_DCL
 
     getstring( LA_PTR(0), path1, sizeof(path1) );
     getstring( LA_PTR(1), path2, sizeof(path2) );
-    D_A(retval) = 0;			/* null ptr means null string */
-    return rename(path2, path1) == 0;	/* BSD systems only */
+
+    /* ANSI C, POSIX.1 and XPG3 have rename() */
+    if (rename(path2, path1) < 0) {
+	RETFAIL;
+    }
+    RETNULL;
 }

@@ -1,4 +1,4 @@
-/* $Id $
+/* $Id$ */
 
 /*
  * SITBOL compatibility;
@@ -26,6 +26,8 @@ FILE( LA_ALIST ) LA_DCL
 
     getstring( LA_PTR(0), path, sizeof(path) );
 
-    D_A(retval) = 0;			/* null ptr means null string */
-    return stat(path, &st) == 0;
+    if (stat(path, &st) < 0) {
+	RETFAIL;
+    }
+    RETNULL;
 }
