@@ -45,4 +45,30 @@ raise( sp )
     }
 }
 
+/* 8/19/96 */
+int
+raise2( sp1, sp2 )
+    struct spec *sp1, *sp2;
+{
+    register char *sp, *dp;
+    register int len;
+    register int raised;
+
+    len = S_L(sp1);
+    sp = S_SP(sp1);
+    dp = S_SP(sp2);
+    raised = 0;
+
+    while (len-- > 0) {
+	if (islower(*sp)) {
+	    *dp++ = toupper(*sp);
+	    sp++;
+	    raised++;
+	}
+	else
+	    *dp++ = *sp++;
+    }
+    return raised > 0;
+}
+
 
