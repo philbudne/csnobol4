@@ -45,8 +45,10 @@ struct file {
 /* XXX malloc at runtime? */
 static struct unit io_units[NUNITS];
 static struct file *includes;		/* list of included files */
+static int compiling;			/* TRUE iff compiler still running */
 static FILE *termin;			/* TERMINAL input */
 
+extern int rflag;			/* from init.c */
 extern FILE *term_input();		/* from <system>/term.c */
 extern void *malloc();
 
@@ -125,7 +127,8 @@ io_close(unit)				/* internal (zero-based unit) */
 	else
 #endif
 	if (fp->f != stdin &&
-	    fp->f != stderr)		/* XXX check a flag? */
+	    fp->f != stdout &&
+	    fp->f != stderr &&
 	    fp->f != termin)		/* XXX check a flag? */
 	    fclose(fp->f);		/* XXX save return? */
     }
@@ -264,6 +267,16 @@ io_init()				/* here from INIT */
     /* XXX support -o outputfile? */
     io_mkfile(UNITO, stdout, "stdout");
 
+    io_mkfile(UNITP, stderr, "stderr");
+
+    /*
+     * tempting to overload UNITP for input/output
+     * this might work on Unix (need to freopen stderr for update?)
+     * but is bound to cause trouble on some other system.
+     */
+    termin = term_input();
+    if (termin) {
+	io_mkfile(UNITT, termin, "termin");
     }
 
     compiling = 1;
