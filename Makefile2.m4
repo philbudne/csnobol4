@@ -205,6 +205,7 @@ changequote(@,@)dnl
 xsnobol4: $(OBJS)
 	rm -f build.c
 	echo '/* MACHINE GENERATED.  EDITING IS FUTILE */'	> build.c
+	echo '#include "h.h"'					>> build.c
 	echo 'const char build_files[] = "'$(SRCS)'";'		>> build.c
 	echo 'const char build_date[] = "'`date`'";'		>> build.c
 	echo 'const char build_dir[] = "'`pwd`'";'		>> build.c

@@ -430,6 +430,8 @@ else
 	# SunOS 4 cc
 	echo 'CCM=$(CC) -M'			>> $CONFIG_M4
 	OPT=-O2
+	# cc can't optimize data_init.c at ALL
+	echo 'DATA_INIT_CFLAGS=$(MYCPPFLAGS)'	>> $CONFIG_M4
 	;;
     *:SunOS:5*:*)
 	# SunPRO;
