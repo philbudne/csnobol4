@@ -1,6 +1,5 @@
 BASE=../..
-pkg:
-	rm -rf CSNOBOL4 REL
+pkg:	clean
 	mkdir CSNOBOL4 REL
 	cp $(BASE)/COPYRIGHT CSNOBOL4/copyright
 	cp pkginfo prototype CSNOBOL4
@@ -14,3 +13,5 @@ pkg:
 	cd CSNOBOL4; pkgmk -o -r . -d ../REL
 	pkgtrans -s REL CSNOBOL4.stream CSNOBOL4
 
+clean:
+	rm -rf CSNOBOL4 REL
