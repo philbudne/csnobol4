@@ -21,11 +21,11 @@ extern void *malloc();
 
 #ifdef NO_STATIC_VARS
 #include "vars.h"
-#else
+#else  /* NO_STATIC_VARS not defined */
 static struct spec retspec[1];
 static char *retbuf;
 static int retbuflen;
-#endif
+#endif /* NO_STATIC_VARS not defined */
 
 EXPORT(void)
 retstring( retval, cp, len )

@@ -35,10 +35,10 @@ struct func {
 #ifdef NO_STATIC_VARS
 #include "vars.h"
 #define funcs loadptr
-#else
+#else  /* NO_STATIC_VARS not defined */
 /* keep list of loaded functions (for UNLOAD) */
 static struct func *funcs;
-#endif
+#endif /* NO_STATIC_VARS not defined */
 
 #define PATHLEN 512			/* XXX */
 #define BS '\\'				/* exactly */

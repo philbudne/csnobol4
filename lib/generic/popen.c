@@ -123,4 +123,4 @@ main() {
 	pclose(f);
     }
 }
-#endif
+#endif /* TEST defined */

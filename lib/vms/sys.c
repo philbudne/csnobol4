@@ -111,4 +111,4 @@ main() {
     printf("OS: %s\n", _osname);
     printf("HW: %s\n", _hwname);
 }
-#endif
+#endif /* TEST defined */

@@ -37,7 +37,7 @@ load(addr, sp1, sp2)
 
     D_F(addr) = D_V(addr) = 0;		/* clear flags, type */
     return TRUE;
-#endif
+#endif /* NO_PML not defined */
 } /* pml_load */
 
 int
@@ -56,7 +56,7 @@ callx(retval, args, nargs, addr)
 	return FALSE;
 
     return (func)( retval, D_A(nargs), (struct descr *)D_A(args) );
-#endif
+#endif /* NO_PML not defined */
 }
 
 void

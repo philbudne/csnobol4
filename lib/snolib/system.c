@@ -6,7 +6,7 @@
 
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>			/* system() */
-#endif /* HAVE_STDLIB_H */
+#endif /* HAVE_STDLIB_H defined */
 
 #include "h.h"
 #include "equ.h"

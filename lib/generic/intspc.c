@@ -20,9 +20,9 @@
 
 #ifdef NO_STATIC_VARS
 #include "vars.h"
-#else
+#else  /* NO_STATIC_VARS not defined */
 static char strbuf[32];			/* 2^64 is only 21 chars! */
-#endif
+#endif /* NO_STATIC_VARS not defined */
 
 void
 intspc(sp, dp)

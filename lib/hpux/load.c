@@ -196,7 +196,7 @@ callx(retval, args, nargs, addr)
 #ifdef DUMP
     int i;
     struct shl_descriptor *dp;
-#endif
+#endif /* DUMP defined */
 
     /* XXX check for zero V & F fields?? */
     fp = (struct func *) D_A(addr);
@@ -217,7 +217,7 @@ callx(retval, args, nargs, addr)
 	       dp->dstart, dp->dend,
 	       dp->handle);
     }
-#endif
+#endif /* DUMP defined */
     return (fp->entry)( retval, D_A(nargs), (struct descr *)D_A(args) );
 }
 

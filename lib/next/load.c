@@ -18,7 +18,7 @@
 
 #ifdef HAVE_STDLIB_H			/* before stdio */
 #include <stdlib.h>			/* malloc(), getenv() */
-#endif /* HAVE_STDLIB_H */
+#endif /* HAVE_STDLIB_H defined */
 #include <stdio.h>
 
 #include "h.h"
@@ -104,9 +104,9 @@ load(addr, sp1, sp2)
 #ifdef NSLINKMODULE_OPTION_PRIVATE
 	    /* MacOS X; avoid symbol clashes */
 	    opt = NSLINKMODULE_OPTION_PRIVATE | NSLINKMODULE_OPTION_BINDNOW;
-#else
+#else  /* NSLINKMODULE_OPTION_PRIVATE not defined */
 	    opt = TRUE;			/* old "bindnow" */
-#endif
+#endif /* NSLINKMODULE_OPTION_PRIVATE not defined */
 	    fp->handle = NSLinkModule(ofi, pp, opt);
 	    if (!fp->handle) {
 		/* XXX NSDestroyObjectFileImage(ofi); ? keep ref count?? */
@@ -121,9 +121,9 @@ load(addr, sp1, sp2)
 
 #ifdef NSLINKMODULE_OPTION_PRIVATE
 	sym = NSLookupSymbolInModule(fp->handle, fp->name);
-#else
+#else  /* NSLINKMODULE_OPTION_PRIVATE not defined */
 	sym = NSLookupAndBindSymbol(fp->name);
-#endif
+#endif /* NSLINKMODULE_OPTION_PRIVATE not defined */
 	/* XXX check return?? */
 
 	fp->entry = (int (*)(LOAD_PROTO)) NSAddressOfSymbol(sym);
@@ -138,9 +138,9 @@ load(addr, sp1, sp2)
 
 #ifdef NSLINKMODULE_OPTION_PRIVATE
 	    sym = NSLookupSymbolInModule(fp->handle, name2);
-#else
+#else  /* NSLINKMODULE_OPTION_PRIVATE not defined */
 	    sym = NSLookupAndBindSymbol(name2);
-#endif
+#endif /* NSLINKMODULE_OPTION_PRIVATE not defined */
 	/* XXX check return?? */
 
 	    fp->entry = (int (*)(LOAD_PROTO)) NSAddressOfSymbol(sym);
@@ -149,9 +149,9 @@ load(addr, sp1, sp2)
 #endif /* TRY_UNDERSCORE defined */
 #ifdef NSUNLINKMODULE_OPTION_NONE
 	    opt = NSUNLINKMODULE_OPTION_NONE;
-#else
+#else  /* NSUNLINKMODULE_OPTION_NONE not defined */
 	    opt = FALSE;
-#endif
+#endif /* NSUNLINKMODULE_OPTION_NONE not defined */
 	    NSUnLinkModule(fp->handle, opt);
 	    /* XXX NSDestroyObjectFileImage(ofi); ? keep ref count?? */
 	    free(fp);
@@ -160,7 +160,7 @@ load(addr, sp1, sp2)
     } /* not found by pml */
 #ifdef TRY_UNDERSCORE
  found:
-#endif
+#endif /* TRY_UNDERSCORE defined */
     fp->self = fp;			/* make valid */
 
     fp->next = funcs;			/* link into list (for unload) */
@@ -216,9 +216,9 @@ unload(sp)
 
 #ifdef NSUNLINKMODULE_OPTION_NONE
     opt = NSUNLINKMODULE_OPTION_NONE;
-#else
+#else  /* NSUNLINKMODULE_OPTION_NONE not defined */
     opt = FALSE;
-#endif
+#endif /* NSUNLINKMODULE_OPTION_NONE not defined */
     NSUnLinkModule(fp->handle, FALSE);
 
     fp->self = 0;			/* invalidate self pointer!! */

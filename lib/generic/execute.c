@@ -15,11 +15,11 @@
 
 #ifndef SH_PATH
 #define SH_PATH "/bin/sh"
-#endif
+#endif /* SH_PATH not defined */
 
 #ifndef SH_PATH2
 #define SH_PATH2 "/usr/bin/sh"
-#endif
+#endif /* SH_PATH2 not defined */
 
 void
 execute(buf)

@@ -20,14 +20,14 @@ hwname(cp)
 {
 #ifdef HWNAME
     strcpy(cp, HWNAME);
-#else
+#else  /* HWNAME not defined */
     struct utsname u;
 
     if (uname(&u) < 0)
 	strcpy(cp, "unknown");
     else
 	strcpy(cp, u.machine);
-#endif
+#endif /* HWNAME not defined */
 }
 
 void
@@ -36,12 +36,12 @@ osname(cp)
 {
 #ifdef OSNAME
     strcpy(cp, OSNAME);
-#else
+#else  /* OSNAME not defined */
     struct utsname u;
 
     if (uname(&u) < 0)
 	strcpy(cp, "unknown");
     else
 	sprintf(cp, "%s %s", u.sysname, u.release);
-#endif
+#endif /* OSNAME not defined */
 }

@@ -38,4 +38,4 @@ void bzero __P((char *, unsigned int));
 #endif /* NEED_BZERO defined */
 #endif /* HAVE_STRINGS_H not defined */
 
-#endif /* HAVE_STRING defined */
+#endif /* HAVE_STRING_H defined */

@@ -40,7 +40,7 @@
 #define EXPORT(TYPE) __declspec(dllexport) TYPE
 #elif defined(__BORLANDC__)
 #define EXPORT(TYPE) TYPE _export
-#endif
+#endif /* defined(__BORLANDC__) */
 
 /* only define IMPORT when building a loadable DLL?? */
 #ifdef DLL
@@ -48,8 +48,8 @@
 #define IMPORT(TYPE) __declspec(dllimport) TYPE
 #elif defined(__BORLANDC__)
 #define IMPORT(TYPE) TYPE _import	/* ??? */
-#endif
-#endif
+#endif /* defined(__BORLANDC__) */
+#endif /* DLL defined */
 
 /* non-standard functions; */
 #define finite		_finite

@@ -30,9 +30,9 @@ struct save {
 #ifdef NO_STATIC_VARS
 #include "vars.h"
 #define list ttylist
-#else
+#else  /* NO_STATIC_VARS not defined */
 static struct save *list;
-#endif
+#endif /* NO_STATIC_VARS not defined */
 
 int
 fisatty(f, fname)

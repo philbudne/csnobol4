@@ -40,14 +40,14 @@ union addr {
 #ifdef NO_BITFIELDS
 #ifndef VFLD_T
 #define VFLD_T unsigned int		/* at least 32 bits */
-#endif
+#endif /* VFLD_T not defined */
 #ifndef SIZLIM
 /*
  * NOTE!! SIZLIM must not appear negative when stored in an int_t.
  * When int_t is 64-bits, the configure script redefines SIZLIM.
  */
 #define SIZLIM 0x7fffffff		/* maximum object size (31 bits) */
-#endif
+#endif /* SIZLIM not defined */
 #define VFLD(name) VFLD_T name
 #else  /* NO_BITFIELDS not defined */
 #define VFLD(name) unsigned name : 24

@@ -49,7 +49,7 @@
 #include <errno.h>
 #ifdef HAVE_PATHS_H
 #include <paths.h>
-#endif /* HAVE_PATHS_H */
+#endif /* HAVE_PATHS_H defined */
 #include <signal.h>
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
@@ -97,7 +97,7 @@ popen(command, type)
 #ifdef __GNUC__
 	/* This outrageous construct just to shut up a GCC warning. */
 	(void) &cur; (void) &twoway; (void) &type;
-#endif
+#endif /* __GNUC__ defined */
 
 	if (index(type, '+')) {
 		twoway = 1;

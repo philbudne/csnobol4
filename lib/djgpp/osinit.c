@@ -40,7 +40,7 @@
 
 #ifdef HAVE_WATTCP
 #include <sys/socket.h>
-#endif
+#endif /* HAVE_WATTCP defined */
 
 /*
  * list of symbols exportable to external modules
@@ -295,7 +295,7 @@ DXE_EXPORT_TABLE_AUTO(exports)
 	DXE_EXPORT(shutdown)
 	DXE_EXPORT(socket)
 	DXE_EXPORT(bindresvport)
-#endif
+#endif /* HAVE_WATTCP defined */
 
 	/* SNOBOL stuff */
 /* I do not know, why,				  */

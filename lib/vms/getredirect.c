@@ -36,7 +36,7 @@
 #include <errno.h>
 #ifdef __DECC
 #include <unixio.h>			/* -phil */
-#endif
+#endif /* __DECC defined */
 
 #include "h.h"
 #include "snotypes.h"

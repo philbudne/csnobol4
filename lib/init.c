@@ -47,7 +47,7 @@ extern void *malloc();
 
 #ifdef HAVE_BUILD_VARS
 extern const char build_date[];		/* from build.c */
-#endif /* HAVE_BUILD_VARS */
+#endif /* HAVE_BUILD_VARS defined */
 
 /* global for access by io.c; */
 int rflag;
@@ -103,7 +103,7 @@ usage( jname, justversion )
     fprintf( stderr, "%s version %s (%s)\n", snoname, vers, vdate );
 #ifdef HAVE_BUILD_VARS
     fprintf( stderr, "built %s\n", build_date);
-#endif /* HAVE_BUILD_VARS */
+#endif /* HAVE_BUILD_VARS defined */
     if (justversion)
 	exit(1);
 
@@ -349,12 +349,12 @@ init_args( ac, av )
     io_init();				/* AFTER io_input calls! */
 #ifdef HAVE_OS_INIT
     os_init();
-#endif /* HAVE_OS_INIT */
+#endif /* HAVE_OS_INIT defined */
 }
 
 #ifndef NO_STATIC_VARS
 volatile int math_error;		/* see macros.h */
-#endif /* NO_STATIC_VARS defined */
+#endif /* NO_STATIC_VARS not defined */
 
 static SIGFUNC_T
 math_catch(sig)

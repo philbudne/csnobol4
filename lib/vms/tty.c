@@ -227,4 +227,4 @@ main() {
 
   tty_close(stdin);
 }
-#endif /* TEST */
+#endif /* TEST defined */

@@ -196,10 +196,10 @@ tty_close(f)
 
 #ifdef TTY_CLOSE_FREE
     sp = find_by_fd(fd, REMOVE);
-#else
+#else  /* TTY_CLOSE_FREE not defined */
     /* try keeping information! */
     sp = find_by_fd(fd, FIND);
-#endif
+#endif /* TTY_CLOSE_FREE not defined */
     if (!sp)
 	return;				/* not found, bad fd, bad device */
 
@@ -209,9 +209,9 @@ tty_close(f)
     
 #ifdef TTY_CLOSE_FREE
     free(sp);
-#else
+#else  /* TTY_CLOSE_FREE not defined */
     tty_invalidate(sp);
-#endif
+#endif /* TTY_CLOSE_FREE not defined */
 }
 
 #ifdef SIGTSTP

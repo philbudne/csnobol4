@@ -17,7 +17,7 @@
 
 #ifdef HAVE_STDLIB_H			/* before stdio */
 #include <stdlib.h>			/* malloc(), getenv() */
-#endif /* HAVE_STDLIB_H */
+#endif /* HAVE_STDLIB_H defined */
 
 #include "h.h"
 #include "snotypes.h"
@@ -109,7 +109,7 @@ load(addr, sp1, sp2)
 #ifdef DEBUG
 	    /* XXX always? to stderr?? */
 	    printf("dlopen: %s\n", dlerror());
-#endif
+#endif /* DEBUG defined */
 	    free(fp);
 	    return FALSE;		/* fail */
 	}

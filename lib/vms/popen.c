@@ -212,4 +212,4 @@ main() {
 	    printf("popen failed");
     }
 }
-#endif
+#endif /* TEST defined */
