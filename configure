@@ -127,6 +127,10 @@ while [ $# -gt 0 ]; do
     --lp64)
 	LP64=true
 	;;
+    --mandir=*)
+	STUFF=`echo "$1" | sed 's/--mandir=//'`
+	echo "MANDIR=$STUFF"			>> $CONFIG_M4
+    	;;
     --no-bitfields)
 	NO_BITFIELDS=true
 	;;
