@@ -5,11 +5,14 @@
  * 10/27/93
  */
 
+#ifndef STATIC_PAT
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
+#define STATIC_PAT
+#endif
 
-void
+STATIC_PAT void
 linkor( d1, d2 )
     struct descr *d1, *d2;
 {
@@ -27,7 +30,7 @@ linkor( d1, d2 )
 }
 
 /* S4D58 pp42-43 */
-void
+STATIC_PAT void
 maknod(d1, d2, d3, d4, d5, d6)
     struct descr *d1, *d2, *d3, *d4, *d5, *d6;
 {
@@ -45,7 +48,7 @@ maknod(d1, d2, d3, d4, d5, d6)
     D(d1) = D(d2);
 }
 
-void
+STATIC_PAT void
 lvalue(d1,d2)
     struct descr *d1, *d2;
 {
@@ -71,7 +74,7 @@ lvalue(d1,d2)
 }
 
 /* S4D58 pp19-20 */
-void
+STATIC_PAT void
 cpypat(d1, d2, d3, d4, d5, d6)
     struct descr *d1, *d2, *d3, *d4, *d5, *d6;
 {
