@@ -168,17 +168,17 @@ extern volatile int math_error;
 
 /****************/
 
+#define ENTRY(NAME) CONC(L_,NAME):
+
 #ifdef TRACE_DEPTH
 /* on real call; increment call depth; clear tail call depth for this level */
 #define START_CALL() cdepth++; tdepth[cdepth]=0;
 /* on tail call; inrement tail calls for this level */
 #define BRANCH(NAME) {tdepth[cdepth]++; return (NAME (retval));}
-#define ENTER(NAME)
 /* on real return; record returns from this tail call depth; decrement level */
 #define RETURN(VALUE) {returns[tdepth[cdepth--]]++; RSTSTK(); return (VALUE);}
 #else  /* TRACE_DEPTH not defined */
 #define START_CALL()
-#define ENTER(NAME)
 #define BRANCH(NAME) return (NAME (retval));
 #define RETURN(VALUE) {RSTSTK(); return (VALUE);}
 #endif /* TRACE_DEPTH not defined */
