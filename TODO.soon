@@ -76,8 +76,10 @@ have tests cleanup after themselves?  Add Makefile for "make clean"?
 
 ==== stuff to do for releases;
 
-update version in CHANGES, README, version.c
+update version in CHANGES, README, INSTALL version.c
 	on branch??
+
+update packaging
 
 run ispell on docs;
 	snobol4.1

@@ -2,8 +2,16 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+2/18/2004
+	doc/snobol4.1 doc/snolib.3: ran ispell, update date
+	README, INSTALL: ran ispell
+
+2/17/2004
+	lib/bsd/inet.c: add (const void *) cast for MSVC
+
 2/16/2004
 	CHANGES: update
+	configure: fix LP64_NATIVE
 
 2/5/2004
 	COPYRIGHT, README: update copyright years
