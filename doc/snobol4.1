@@ -10,7 +10,11 @@ snobol4 \- SNOBOL4 interpreter
 \&.\|.\|.
 ]
 [
-.I files
+.I file(s)
+\&.\|.\|.
+]
+[
+.I parameters
 \&.\|.\|.
 ]
 
@@ -22,13 +26,6 @@ This manual page describes a port of the original Bell Telephone Labs
 implementation are described in [1] and [2].  Many extensions from one
 or more of Catspaw Vanilla SNOBOL4, Catspaw SNOBOL4+, SPITBOL and
 SITBOL have been added.
-
-.SS Command line
-The files on the command line are read in turn until an
-.B END
-label is seen.  If no files are specified, a program (terminated by an
-.B END
-label) is read from standard input.
 
 .SS Limitations
 .PP
@@ -57,9 +54,9 @@ Listings are directed to standard output.
 .IP *
 Character set (see below).
 .IP *
-Output to the
+The
 .B PUNCH
-variable is directed to standard error.
+output variable no longer exists.
 .IP *
 I/O is not performed using
 .B FORTRAN
@@ -80,6 +77,11 @@ The value of the
 keyword determines the exit status of the
 .B snobol4
 application.
+.IP *
+The
+.B DATE()
+function returns strings of the form:
+.I MM/DD/YYYY HH:MM:SS"
 
 .SS "Character set"
 
@@ -93,7 +95,7 @@ order.  Programs may be entered in mixed case.  By default lower case
 identifiers are folded to upper case (see
 .B &CASE
 and
-.B -CASE
+.B \-CASE
 extensions).
 .PP
 The following operator character sequences are permitted and represent
@@ -110,51 +112,53 @@ Comment line:	*\0#\0|\0;\0!
 Continuation line:	+\0.
 .fi
 .PP
-Both square-brackets ([]) and widgits/angle-brackets (<>) may be used
-to subscript arrays and tables.  The
+Both brackets ([]) and angle-brackets (<>) may be used to subscript
+arrays and tables.  The
 .B TAB
-(ASCII 9) character is accepted as whitespace, but since the compiler
-does not expand them, it's use may cause misalignment in listings and
-error messages.  Note that the use of the pound sign for comments
-allows use of the shell interpreter sequence at the top of a file (ie;
-"#!/usr/local/bin/snobol4 -b").  Underscore (_) and period (.) are
-legal within identifiers and labels.
+(ASCII 9) character is accepted as whitespace, however the compiler
+does not expand in listings and error messages.  Note that the use of
+the pound sign for comments allows use of the shell interpreter
+sequence at the top of a file (ie; "#!/usr/local/bin/snobol4 -b").
+Underscore (_) and period (.) are legal within identifiers and labels.
 
 .SS "Extensions"
 
 .TP
-.BR "SPITBOL " extensions
-The
-.B SPITBOL
-scan (?) and assignment (=) operators have been added.  A patern match
-can appear within an expression, and returns the matched string as
-it's value.  Similarly assignment can appear in an expression, and
-returns the assigned value. An assignment after a scan (ie; STRING ?
-PATTERN = VALUE) performs a scan and replace.  Assignment is right
-associative, and has the lowest precidence, while scan is left
-associative and has a precidence just higher than assignment.
+.BR "TERMINAL " I/O variable
+.br
+The variable
+.B TERMINAL
+is associated with the standard error file descriptor for both input
+and output.
+
+.TP
+SPITBOL operators
+.br
+The SPITBOL scan (?) and assignment (=) operators have been added.  A
+patern match can appear within an expression, and returns the matched
+string as it's value.  Similarly assignment can appear in an
+expression, and returns the assigned value. An assignment after a scan
+(ie;
+.IR "STRING ? PATTERN = VALUE" )
+performs a scan and replace.  Assignment is right associative, and has
+the lowest precidence, while scan is left associative and has a
+precidence just higher than assignment.
 
 .br
-The
-.B SPITBOL
-selection/alternative construction can be used in any expression.  It
-consists of a comma seperated list of expressions inside parentheses.
-The expressions are evaluated until one succeeds, and it's value is
-returned.  Abuse of this construction may result in incomprehensible
-code.
+The SPITBOL selection/alternative construction can be used in any
+expression.  It consists of a comma seperated list of expressions
+inside parentheses.  The expressions are evaluated until one succeeds,
+and it's value is returned.  Abuse of this construction may result in
+incomprehensible code.
 
 .br
-The
+The type
 .B NUMERIC
-argument
-to
+with
 .B CONVERT()
-and the removal of leading spaces from strings converted (implcitly or
-explicitly) to numbers are also legal when
-.B SPITBOL
-extensions are enabled.
-.B SPITBOL
-extensions can be enabled and disabled using the
+and the removal of leading spaces from strings converted to numbers
+(implcitly or explicitly) are also legal when SPITBOL extensions are
+enabled.  SPITBOL extensions can be enabled and disabled using the
 .B "\-PLUSOPS"
 directive.
 .B "\-PLUSOPS 0"
@@ -212,16 +216,11 @@ No statement limit
 Keyword
 .B &STLIMIT
 now defaults to -1, which is interpreted as no limit to the number of
-statements executed.
-
-.TP
-.B &UCASE/&LCASE
-.br
-Protected keywords
-.B &UCASE
-and
-.B &LCASE
-contain upper and lower case characters respectively.
+statements executed.  When
+.B &STLIMIT
+is less than zero
+.B &STCOUNT
+is not incremented.
 
 .TP
 .B \-INCLUDE
@@ -234,8 +233,7 @@ from the filename before use. Any filename will be included only once,
 this can be overridden by appending a trailing space to the filename.
 .B \-COPY is a synonym for
 .B \-INCLUDE
-for compatibility with
-.BR SPITBOL/370 .
+for compatibility with SPITBOL/370.
 
 .TP
 .B BREAKX()
@@ -279,14 +277,45 @@ and
 .B
 .B RSORT()
 functions take a array (or table, which is first converted to an
-array), and sorts the rows according to the value of the array column
-given in the second argument (for a table, a second argument of 1
-sorts by table indecies, an argument of 2 sorts by table element
-values). 
+array). The array may be singly-dimensioned if which case , if non-
+null, will idicate the field of a programmer-defined datatype on which
+the sort is based.  A may also be a table or a doubly-dimensionted
+array.  In these cases F may be an integer indicating the column on
+which to sort.  If F is null, it is taken to be 1.  The array A is not
+modified; a new array is allocated and returned.
 .B SORT()
 sorts elements in ascending order, while
 .B RSORT()
 sorts in decending order.
+
+.TP
+.B REVERSE()
+.br
+.B REVERSE()
+returns it's subject string in reverse order.
+
+.TP
+.B SUBSTR()
+.br
+.B SUBSTR()
+takes a subject string as it's first argument, and returns the substring
+starting at the position specified by the second argument (one-based) with
+a length specified by the third argument.  If the third argument is missing
+or zero, the remainder of the string is returned.
+
+.TP
+Lexical comparison
+.br
+
+A full set of lexical (string) comparison predicates
+have been added to complement the standard
+.B LGT()
+function;
+.BR LEQ() ,
+.BR LGE() ,
+.BR LLE() ,
+.BR LLT() ,
+.BR LNE() .
 
 .TP
 .B FREEZE()/THAW()
@@ -298,7 +327,18 @@ and
 .B THAW()
 functions prohibit new entry creation in named table.  This is useful
 once a table has been initialized to avoid the creation of empty
-entries that normally occurs on table entry lookup failure.
+entries that normally occurs on table entry lookup failure. This can
+greatly improve program speed, since frozen tables will not become
+clogged with random entries.
+
+.TP
+.B &UCASE/&LCASE
+.br
+Protected keywords
+.B &UCASE
+and
+.B &LCASE
+contain upper and lower case characters respectively.
 
 .TP
 Scientific notation
@@ -338,6 +378,47 @@ directive is given, the program will be not executed after compilation.
 Cancels any previous
 .BR \-NOEXECUTE .
 
+.TP
+.B &LINE/&FILE
+.br
+The
+.B &LINE
+and
+.B &FILE
+keywords can be used to determine the source file and file line
+associated with the current statement.  The
+.B &LASTLINE
+and
+.B &LASTFILE
+return the source file and file line
+associated with the previous statement.
+
+.TP
+.B \-LINE
+.br
+The
+.B \-LINE
+directive can be used to alter SNOBOL's idea of the current source
+file and line for use by preprocessors.
+.B \-LINE
+takes a line number and an optional quoted string filename.
+
+.TP
+.B &ERRTEXT
+.br
+After an otherwise fatal error is curtailed due to a non-zero value in
+.BR &ERRLIMIT ,
+the protected keyword
+.B &ERRTEXT
+will contain the error message.
+
+.TP
+.B &PARM
+.br
+The entire command line is available via the
+.BR &PARM
+protected keyword for compatibility with Catspaw SNOBOL4+.
+
 .SS "I/O Associations"
 
 .br
@@ -354,7 +435,8 @@ functions.  The following associations are available by default;
 Variable	Unit	Association
 \fBINPUT\fR	5	standard input
 \fBOUTPUT\fR	6	standard output
-\fBPUNCH\fR	7	standard error
+\fBTERMINAL\fR	7	standard error (output)
+\fBTERMINAL\fR	8	standard error (input)
 .fi
 
 .SH OPTIONS
@@ -399,9 +481,7 @@ and
 extensions).  By default programs are run after compilation is complete.
 .TP
 .B -p
-Toggle
-.B SPITBOL 
-extensions (also controlled by
+Toggle SPITBOL extensions (also controlled by
 .BR \-PLUSOPS ).
 
 .TP
@@ -414,8 +494,34 @@ label.  Otherwise
 .B INPUT
 defaults (back) to standard input after program compilation is complete.
 .TP
--s
+.B -s
 Toggle termination statistics (off by default).
+.TP
+.BI "-u " params
+specifies a parameter string available via
+.BR "HOST(0)" .
+.TP
+.B --
+Terminates processing items as options. Any remaining strings are
+treated as files or user parameters.
+.TP
+.B -M
+Specifies that all items left on the command line after option
+processing is complete are to be treated as filenames.  The files
+are read in turn until an
+.B END
+statement is found (Any remaining data is available via the
+.B INPUT
+variable if
+the
+.B -r
+option is also given).
+A
+.B --
+terminates processing of arguments as files, and makes the remaining
+arguments available as user parameters (see the
+.B HOST()
+function).
 
 .SH SEE ALSO
 .IP [1]
