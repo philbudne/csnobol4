@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.30  94/06/17  16:06:19  budd
+* [PLB22] drop CARDSZ down to 132 to make listings managable!
+* 
 * Revision 1.29  94/06/15  23:33:12  budd
 * [PLB21] Upped compiler and default input record (line)
 * buffer length from 80 to 1024.
@@ -454,11 +457,11 @@ XLATRD AEQLC   LISTCL,0,,XLATRN    Skip print if list is off
        STPRNT  IOKEY,OUTBLK,LNBFSP Print line image
 XLATRN STREAD  INBFSP,UNIT,XLATRN,COMP5
        SETSP   TEXTSP,NEXTSP	   Read card and set up line
-       STREAM  XSP,TEXTSP,CARDTB,COMP3,COMP3
-*				   Determine type of card
+XLATNX STREAM  XSP,TEXTSP,CARDTB,COMP3,COMP3
+*				   [PLB23] Determine type of card
        RCALL   ,NEWCRD,,(XLATRD,,) Process card type
-XLATNX RCALL   ,CMPILE,,(COMP3,,XLATNX)
-*				   Compile statement
+       RCALL   ,CMPILE,,(COMP3,,XLATNX)
+*				   [PLB23] Compile statement
        INCRA   CMOFCL,DESCR	   Increment offset
        PUTD    CMBSCL,CMOFCL,ENDCL Insert END function
        AEQLC   LISTCL,0,,XLATP	   Skip print if list is off
