@@ -98,7 +98,7 @@ S4_EXTERN struct descr *cstack;
 /* by the book, no C local ostack */
 S4_EXTERN struct descr ostack[1];	/* old stack pointer */
 
-#define SAVSTK() PUSH(ostack); D_A(ostack) = (int_t)cstack
+#define SAVSTK() START_CALL(); PUSH(ostack); D_A(ostack) = (int_t)cstack
 #define RSTSTK() cstack = (struct descr *)D_A(ostack); POP(ostack)
 
 #else
@@ -146,9 +146,13 @@ extern int math_error;
 /****************/
 
 #ifdef TRACE_DEPTH
-#define ENTER(NAME) calls[++depth]++
-#define RETURN(VALUE) { int v = (VALUE); depth--; return v; }
-#else  /* TRACE_DEPTH not defined */
+#define START_CALL() cdepth++; tdepth[cdepth]=0;
+#define BRANCH(NAME) {tdepth[cdepth]++; return (NAME (retval));}
 #define ENTER(NAME)
+#define RETURN(VALUE) {returns[tdepth[cdepth--]]++; return (VALUE);}
+#else  /* TRACE_DEPTH not defined */
+#define START_CALL()
+#define ENTER(NAME)
+#define BRANCH(NAME) return (NAME (retval));
 #define RETURN(VALUE) return (VALUE);
 #endif /* TRACE_DEPTH not defined */

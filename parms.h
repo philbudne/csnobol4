@@ -19,8 +19,9 @@
 struct descr NORET[1];
 
 #ifdef TRACE_DEPTH
-extern int depth;
-extern int calls[];
+extern int cdepth;
+extern int tdepth[];
+extern int returns[];
 #endif /* TRACE_DEPTH defined */
 
 #ifdef INLINING

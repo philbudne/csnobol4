@@ -224,7 +224,7 @@ EPROC	CFLUSH()
 	IDENT(INPROC)					:S(RETURN)
 	IDENT(NAME)					:S(EPROC1)
 *	"fall into" next proc (if this is live code) !!
-	IDENT(LIVE)					:S(EPROC1)
+	IDENT(LIVE)					:S(EPROC2)
 	OUTPUT = IND "/* FALL */"
 	BRANCH(NAME)					:(EPROC2)
 
@@ -249,7 +249,7 @@ NOT_SAME
 	IDENT( ISPROC< BLBL >)				:S(DO_GOTO)
 *	output info for inlining
 	CALLGRAPH = INPROC TAB BLBL
-	OUTPUT = IND 'RETURN( ' F_ BLBL '(retval) )'	:(RETURN)
+	OUTPUT = IND 'BRANCH(' F_ BLBL ')'		:(RETURN)
 DO_GOTO	OUTPUT = IND 'goto ' L_ BLBL ';'		:(RETURN)
 EBRANCH
 *
@@ -1403,8 +1403,9 @@ XBRANCH	BRANCH(ARGV<1>)					:(OPDONE)
 
 ****************
 *	SIL BRANIC (BRANIN) macro
-XBRANIC OUTPUT = IND 'RETURN( ((func_t) ('
-+		INDD_A( D_A(ARGV<1>), ARGV<2>) '))( retval ) )'
+XBRANIC OUTPUT = IND 'BRANCH( ((func_t) ('
++		INDD_A( D_A(ARGV<1>), ARGV<2>) ')))'
+	LIVE =
 							:(OPDONE)
 
 ****************

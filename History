@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+5/20/97:
+	genc.sno lib/endex.c include/macros.h parms.h:
+		applied 10/10/96 tailcall depth stats changes
+		all tailcalls use "BRANCH" macro
+
 5/17/97:
 	lib/str.c: TRIM tabs as well as spaces, like SPITBOL
 	test/trim{0,1}.{sno.ref}: added tab tests

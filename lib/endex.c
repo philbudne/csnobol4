@@ -9,8 +9,9 @@
 #include <stdio.h>
 
 #define MAX_DEPTH 50000
-int depth;
-int calls[MAX_DEPTH];
+int cdepth;
+int tdepth[MAX_DEPTH];
+int returns[MAX_DEPTH];
 #endif /* TRACE_DEPTH defined */
 
 void
@@ -29,9 +30,9 @@ endex( x )
 
 #ifdef TRACE_DEPTH
     for (i = 0; i < MAX_DEPTH; i++)
-	if (calls[i])
-	    fprintf( stderr, "%8d %8d\n", i, calls[i]);
-#endif /* TRACE_DEPTH defined */
+	if (returns[i])
+	    fprintf( stderr, "%8d %8d\n", i, returns[i]);
+#endif /* TRACE_DEPTH defined */,
 
     /* else exit w/ &CODE */
     exit(D_A(RETCOD));
