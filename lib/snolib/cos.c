@@ -13,7 +13,7 @@
 
 #include <math.h>
 
-SIN( LA_ALIST ) LA_DCL
+COS( LA_ALIST ) LA_DCL
 {
-    RETREAL( sin( LA_REAL(0) ) );
+    RETREAL( cos( LA_REAL(0) ) );
 }
