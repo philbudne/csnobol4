@@ -1,25 +1,20 @@
 $Id$
 
-use const for ordvst qsort function?  use bcmp? memcmp??
-
-private include for bindresvport(_sa) prototypes?
-
-flush CONFIG_GUESS
-	generic/sys.c
-	snolib/host.[ch]!!
-
-flush $SYS from configure
+always send timing.out via e-mail?
+	(unless (.)timing.out.hostname exists?)
+	only if part of a real kit???
 
 use Darwin/NS /usr/bin/hostinfo prog
 	use sw_info (Darwin only?)
 
-Flush SIL_FUNC_PROTO??
-
-test/use bindresvport() on vms
+configure:
+	deal with missing "uname"??
+		NeXT?
 
 document inet6.c in porting.ms
 	vms/load.c
 	bindresvport
+	SOCKLEN_T
 	NEED_BINDRESVPORT
 	NEED_BINDRESVPORT_SA
 
@@ -28,8 +23,6 @@ complaints when compiling isnobol4.c on some systems??
 	AIX maxmem tweak?
 	SunPRO (config.h included multiple times w/ inlining
 		add protection?  move config.h to under ifndef XXX_STATIC?)
-
-too aggressive in using OWN_B(COPY|ZERO)?
 
 run comdef on lib/*/*.c
 	macros.h, snotypes.h
@@ -136,6 +129,12 @@ make branch for major releases
 
 ================
 
+flush CONFIG_GUESS
+	snolib/host.[ch]!!
+
+use const for ordvst qsort function?  use bcmp? memcmp??
+	(Solaris)
+
 control lines (and keyword variables?) for BANNER and STATS???
 
 Add -Wimplicit (if not on SunOS4?)?
@@ -191,10 +190,6 @@ eliminate patern match "function" pointer indirections??
 	ANYCCL -> ANYCFN (XANY)
 
 	Just push index value???
-
-always send timing.out via e-mail?
-	(unless (.)timing.out.hostname exists?)
-	only if part of a real kit???
 
 have DOUBLE force NO_BITFIELDS??
 	check alignment?? sparc double is 64 bit aligned
@@ -806,3 +801,6 @@ see the old TODO file!!!
 
 VMS timing script?
 	SHOW SYSTEM/NOPROCESS/CLUSTER/FULL
+
+Add __P((ret_t)) to func_t?
+

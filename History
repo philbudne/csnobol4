@@ -2,6 +2,65 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+6/8/2003:
+	configure: always set SOCKLEN_T
+	config/win32/borland.mak: cleanup; use config\win32
+	config/win32/ntmsvc.mak: cleanup
+	config/win32/config.h: SOCKLEN_T
+	genc.sno: remove config.h
+	parms.h: include config.h, move system includes first
+	lib/snolib/{delete,fork,host,sprintf}.c: move system includes first
+	lib/snolib/system.c: use stdlib.h
+	lib/auxil/bindresvport.c, lib/snolib/serv.c: use SOCKLEN_T
+
+6/6/2003:
+	configure: flushed $SYS, config.guess refs, pass HWNAME, OSNAME
+	lib/generic/sys.c: flushed CONFIG_GUESS
+	include/snotypes.h: flused SIL_FUNC_PROTO
+
+6/5/2003
+	new: bindresvport.h
+	configure: SOCKLEN_T
+	lib/bsd/inet.c: use bindresvport.h, OLD_UCX_INCLUDES, netdb.h!
+	lib/bsd/inet6.c: use bindresvport.h
+	lib/auxil/bindresvport.h: use bindresvport.h, SOCKLEN_T
+	config/vms/descrip.mms:
+		only use OLD_UCX_INCLUDES on VAXC?
+		move stuff to UCXDEFS   
+		use bsd/inet.c!!
+	config/vms/config.h: add SOCKLEN_T
+
+6/3/2003
+	config/{djgpp,win32}/config.h: NEED_SOCKLEN_T
+	config/vms/descrip.mms: OLD_UCX_INCLUDES
+	lib/auxil/bindresvport.c: OLD_UCX_INCLUDES
+
+6/2/2003
+	configure: NEED_SOCKLEN_T, AUX_BINDRESVPORT, Tru64 v5 crap
+	lib/auxil/bindresvport.c: use socklen_t again
+
+6/1/2003
+	include/lib.h: remove bindresvport proto
+	lib/bsd/inet.c: add bindresvport proto, NULL arg
+
+5/31/2003
+	include/h.h: protect TRUE/FALSE, ran comdef
+	lib/bsd/inet6.c: move bindresvport_sa decl
+
+5/29/2003
+	configure: HAVE_SOCKADDR_IN6, NEED_BINDRESVPORT_SA
+	include/snotypes.h: remove mstime()
+	include/str.h: s/__/_/
+	lib/bsd/inet.c: NEED_BINDRESVPORT_SA
+	lib/win32/inet.c: bindresvport()
+	lib/{hash,pair,pat,top}.c: move STATIC ifdefs up to top
+	lib/auxil/bindresvport.c: HAVE_SOCKADDR_IN6, HAVE_WINSOCK_H
+	lib/djgpp/osinit.c: bindresvport
+	config/vms/descrip.mms, include/lib.h: NEED_POPEN
+	config/win32/{borland,mingw,ntmsvc}.mak: bindresvport.o(bj)
+	config/djgpp/config.h: NEED_BINDRESVPORT
+	config/djgpp/Makefile: bindresvport.o
+
 5/23/2003
 	flushed dummy/rresvport.c
 	config/vms/descrip.mms: UCXLIB, UCXOBJ, flush rresvport
