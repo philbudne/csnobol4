@@ -14,4 +14,6 @@ copy config\%1\config.h %2
 copy snolib\*.sno %2
 copy host.sno %2
 
+copy doc\load.doc %2
+
 copy snobol4.exe %2
