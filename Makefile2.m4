@@ -493,14 +493,14 @@ GENSNOLIB=host.sno
 VERS=`./pv`
 install: snobol4 pv
 	$(INSTALL) -d $(BINDIR)
-	$(INSTALL) -c -s snobol4 $(BINDIR)
+	$(INSTALL) -s snobol4 $(BINDIR)
 	-rm -f $(BINDIR)/snobol4-$(VERS)
 	ln $(BINDIR)/snobol4 $(BINDIR)/snobol4-$(VERS)
 	$(INSTALL) -d $(MANDIR)
-	$(INSTALL) -c -m 644 doc/snobol4.1 $(MANDIR)
-	$(INSTALL) -c -d $(SNOLIB_DIR)
+	$(INSTALL) -m 644 doc/snobol4.1 $(MANDIR)
+	$(INSTALL) -d $(SNOLIB_DIR)
 	for F in snolib/*.sno $(INSTALL_H) doc/load.doc $(GENSNOLIB); do \
-		$(INSTALL) -c -m 644 $$F $(SNOLIB_DIR); \
+		$(INSTALL) -m 644 $$F $(SNOLIB_DIR); \
 	done
 	@echo '************************************************'
 	@echo '*** Have you mailed a copy of timing.out to' \
