@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.48  1996/09/22  05:52:28  phil
+* [PLB39] add &PARM, fixed yesterdays pre-checkin typos
+*
 * Revision 1.47  1996/09/21  07:05:58  phil
 * [PLB38] more comment cleanup, fixed comment typos
 * don't increment &STCOUNT if &STLIMIT < 0
@@ -597,25 +600,6 @@ XLATND AEQLC   EXECCL,0,,END	   Just compile? Quiting time!	[PLB34]
        SETAC   CNSLCL,1		   Permit label redefinition
        RCALL   ,INTERP,,(MAIN1,MAIN1,MAIN1)
 *				   Call interpreter
-*_
-* New [PLB38] from SNOBOL4+ INCCK
-* Check for EOF in INCLUDE file.
-* Takes return 1 if premature EOF, return 2 if popped out of an include file.
-*
-FILCHK PROC    ,
-       AEQLC   INCSTK,0,,FILCK2	   Premature EOF if not INCLUDE
-       GETDC   LNNOCL,INCSTK,2*DESCR
-*				   Restore old line number
-       GETDC   FILENM,INCSTK,3*DESCR
-*				   Restore old file name
-       GETDC   INCSTK,INCSTK,DESCR Pop stack
-       BRANCH  RTN2		   Return happy
-*_
-* here when EOF and not in include file; query I/O system
-FILCK2 XCALLC  io_file,(UNIT,XSP)  Get new file from i/o system
-       RCALL   FILENM,GENVAR,(XSPPTR)
-       SETAC   LNNOCL,0
-       BRANCH  RTN1
 *_
 *---------------------------------------------------------------------*
        TITLE   'Support Procedures'
@@ -1362,19 +1346,37 @@ CDIAG  INCRA   BOSCL,DESCR	   Increment offset of beginning
        GETLG   XCL,TEXTSP	   Get length remaining
        SUBTRT  YCL,YCL,XCL	   Compute position for marker
 CDIAG3 PUTLG   ERRSP,YCL	   Insert length
-       APDSP   ERRSP,QTSP	   Set in marker
        AEQLC   BRTYPE,EOSTYP,,CDIAG2
+%{
+	char *sp, *dp;		/* src ptr, desr ptr		[PLB40] */
+	int len;		/* src char count		[PLB40] */
+	sp = INBUF + STNOSZ;	/* get start of statement buffer [PLB40] */
+	len = S_SP(TEXTSP) - sp; /* get index into statement	[PLB40] */
+	dp = ERRBUF + STNOSZ;	/* get start of marker buffer	[PLB40] */
+	while (len-- > 0) {	/* for all chars in statement	[PLB40] */
+	    if (*sp == '\t')	/* if tab			[PLB40] */
+		*dp++ = '\t';	/*	put tab in errbuf	[PLB40] */
+	    else		/* else				[PLB40] */
+		*dp++ = ' ';	/*	put space		[PLB40] */
+	    sp++;		/* advance src			[PLB40] */
+	}			/*				[PLB40] */
+	*dp++ = '^';		/* store pointer		[PLB40] */
+	S_L(ERRSP)++;		/* account for pointer		[PLB40] */
+%}
 *				   Check for end of statement
        STPRNT  IOKEY,ERRBLK,LNBFSP Print statement to stderr	[PLB8]
+       STPRNT  IOKEY,ERRBLK,ERRSP  Print error marker to stderr	[PLB8]
        AEQLC   LISTCL,0,,CDIAG2	   Check for listing mode	[PLB8]
        STPRNT  IOKEY,OUTBLK,LNBFSP Print statement
-CDIAG2 STPRNT  IOKEY,ERRBLK,ERRSP  Print error marker to stderr	[PLB8]
-       AEQLC   LISTCL,0,,CDIAG4	   Check for listing mode	[PLB8]
        STPRNT  IOKEY,OUTBLK,ERRSP  Print error marker
-CDIAG4 PUTLG   ERRSP,YCL	   Insert length in marker	[PLB8]
-       APDSP   ERRSP,BLSP	   Blank out marker
-       GETSPC  TSP,EMSGCL,0	   Get error message
+CDIAG2 GETSPC  TSP,EMSGCL,0	   Get error message		[PLB40]
        SETLC   CERRSP,0		   Clear specifier
+       LOCSP   XSP,FILENM	   Get specifier for filename	[PLB40]
+       APDSP   CERRSP,XSP	   Append filename		[PLB40]
+       APDSP   CERRSP,COL1SP	   Append colen			[PLB40]
+       INTSPC  XSP,LNNOCL	   Get specifer for line number	[PLB40]
+       APDSP   CERRSP,XSP	   Append line number		[PLB40]
+       APDSP   CERRSP,COLSP	   Append colen space		[PLB40]
        APDSP   CERRSP,STARSP	   Append attention getter
        APDSP   CERRSP,TSP	   Append error message
        AEQLC   LISTCL,0,,CDIAG1	   Check for listing mode	[PLB8]
@@ -1522,8 +1524,9 @@ ELEAR2 RCALL   ,ELEARG,ITEMCL,RTN1 Process list for ITEM function [PLB32]
        AEQLC   BRTYPE,RBTYP,ELECMA,ELEMNR			[PLB32]
 *				   list must end with right bracket [PLB32]
 *_
+*---------------------------------------------------------------------*
 *
-* New [PLB32]
+* New [PLB32] from SNOBOL4+
 * Process list of args for selection (comma) function and array reference.
 *
 * Call;
@@ -1676,6 +1679,8 @@ EXPR9  AEQLIC  XPTR,FATHER,0,,RTXNAM
        GETDC   XPTR,XPTR,FATHER	   Go back to father
        BRANCH  EXPR9		   Continue up tree
 *_
+*---------------------------------------------------------------------*
+*
 * New [PLB32] from EXPNUL
 * Subroutine to build lit op with null string arg
 NULNOD PROC    ,
@@ -1716,6 +1721,29 @@ FORINC RCALL   ,FILCHK		   Pick up file change		[PLB38]
 FORBLK PROC    FORWRD		   Procedure to get to nonblank
        STREAM  XSP,TEXTSP,IBLKTB,RTN1,FORRUN,FORJRN
 *				   Break out nonblank from blank
+*_
+*---------------------------------------------------------------------*
+*
+* New [PLB38] from SNOBOL4+ INCCK
+* Here on STREAD EOF while compiling.
+*
+* Takes return 1 if premature EOF (changed files)
+* Takes return 2 if popped out of an include file.
+*
+FILCHK PROC    ,
+       AEQLC   INCSTK,0,,FILCK2	   Premature EOF if not INCLUDE
+       GETDC   LNNOCL,INCSTK,2*DESCR
+*				   Restore old line number
+       GETDC   FILENM,INCSTK,3*DESCR
+*				   Restore old file name
+       GETDC   INCSTK,INCSTK,DESCR Pop stack
+       BRANCH  RTN2		   Return happy
+*_
+* here when EOF and not in an include file; query I/O system
+FILCK2 XCALLC  io_file,(UNIT,XSP),RTN1
+       RCALL   FILENM,GENVAR,(XSPPTR)
+       SETAC   LNNOCL,0
+       BRANCH  RTN1
 *_
 *---------------------------------------------------------------------*
 *
@@ -1871,6 +1899,8 @@ LINE1  SPCINT  LNNOCL,XSP,COMP12   Get line number		[PLB38]
 COMP12 SETAC   ERRTYP,31	   Erroneous LINE statement	[PLB38]
        BRANCH  FTLEND						[PLB38]
 *_
+*---------------------------------------------------------------------*
+*
 * New [PLB38] from SNOBOL4+
 * Advance to arg on control card.
 * Input:
@@ -2021,14 +2051,14 @@ INIT   PROC    ,		   Statement initialization procedure
        GETD    XCL,OCBSCL,OCICL	   Get statement data
        MOVA    STNOCL,XCL	   Update &STNO
        SETAV   FRTNCL,XCL	   Set up failure offset
-       MOVD    LSLNCL,LNNOCL	   Update &LASTLINE		[PLB38]
+       MOVA    LSLNCL,LNNOCL	   Update &LASTLINE		[PLB38][PLB40]
        INCRA   OCICL,DESCR	   Increment offset		[PLB38]
        GETD    LNNOCL,OCBSCL,OCICL Update &LINE			[PLB38]
-       MOVD    LSFLNM,FILENM	   Update &LASTFILE		[PLB38]
+       MOVA    LSFLNM,FILENM	   Update &LASTFILE		[PLB38][PLB40]
        INCRA   OCICL,DESCR	   Increment offset		[PLB38]
        GETD    FILENM,OCBSCL,OCICL Update &FILE			[PLB38]
        INCRA   EXN2CL,1		   Increment stats stmt count	[PLB38]
-       ACOMPC  EXLMCL,0,,,RTNUL3   Check for &STLIMIT < 0	[PLB33][PLB38]
+       ACOMPC  EXLMCL,0,,,RTNUL3   Done if &STLIMIT < 0		[PLB33][PLB38]
        ACOMP   EXNOCL,EXLMCL,EXEX,EXEX
 *				   Check &STLIMIT
        INCRA   EXNOCL,1		   Increment &STCOUNT
@@ -2242,7 +2272,6 @@ VARV2  VEQLC   XPTR,S,,RTXNAM	   Is it STRING?
 VARVC  RCALL   XPTR,INVOKE,(XPTR),(FAIL,VARV1,VARV2)
 *				   Evaluate function
 *_
-*---------------------------------------------------------------------*
 *
 * New [PLB28][PLB29] from SNOBOL4+
 *
@@ -5795,6 +5824,8 @@ CNVTA5 INCRA   WPTR,2*DESCR
        SETAC   TPTR,0						E3.8.1
        BRANCH  RTZPTR						E3.8.1
 *_
+*---------------------------------------------------------------------*
+*
 * New [PLB31] from SNOBOL4+
 *      created from CNVTA -- common code for CONVERT/SORT
 *
@@ -6806,6 +6837,7 @@ ASSCSP STRING  'TABLE'
 BLSP   STRING  ' '
 BLEQSP STRING  ' = '
 CMASP  STRING  ','
+COL1SP STRING  ':'						[PLB40]
 COPYSP STRING  'COPY'						[PLB20]
 EJCTSP STRING  'EJECT'
 EQLSP  STRING  '= '
