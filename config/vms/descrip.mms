@@ -45,8 +45,10 @@ BCOPY_C=[.lib.auxil]bcopy.c
 GETOPT_C=[.lib.auxil]getopt.c
 GETREDIRECT_C=[.lib.vms]getredirect.c
 POPEN_C=[.lib.vms]popen.c
+MBX_UTIL_C=[.lib.vms]mbx_util.c
 
-AUX_OBJ=bcopy.obj, bzero.obj, getopt.obj, getredirect.obj, popen.obj
+AUX_OBJ=bcopy.obj, bzero.obj, getopt.obj, getredirect.obj, \
+	popen.obj, mbx_util.obj,
 
 # snolib sources
 CHOP_C=[.lib.snolib]chop.c
@@ -72,7 +74,7 @@ TAN_C=[.lib.snolib]tan.c
 PML_OBJ=host.obj, sys.obj, exit.obj, execute.obj, sqrt.obj, \
 	exp.obj, log.obj, chop.obj, sin.obj, cos.obj, tan.obj, \
 	file.obj, delete.obj, rename.obj, findunit.obj, \
-	getstring.obj, retstring.obj
+	getstring.obj, retstring.obj,
 
 CFLAGS=\
 	/DECC/PREFIX_LIB=ALL/OPTIMIZE\
@@ -92,10 +94,10 @@ OBJS=	main.obj, $(SNOBOL4).obj, data.obj, data_init.obj, syn.obj, \
 	lexcmp.obj, load.obj, mstime.obj, ordvst.obj, pair.obj, pat.obj, \
 	pml.obj, realst.obj, replace.obj, str.obj, stream.obj, term.obj, \
 	top.obj, tty.obj, tree.obj, version.obj, \
-	$(CONFIG_OBJ) $(AUX_OBJ) $(PML_OBJ)
+	$(AUX_OBJ) $(PML_OBJ)
 
 xsnobol4.exe : $(OBJS)
-	link /exec=xsnobol4.exe $(OBJS)
+	link /exec=xsnobol4.exe $(OBJS) +sys$library:deccrtl/library
 
 #################################################################
 # lib files
