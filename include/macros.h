@@ -168,7 +168,7 @@ extern volatile int math_error;
 
 /****************/
 
-#define ENTRY(NAME) CONC(L_,NAME):
+#define ENTRY(NAME) 
 
 #ifdef TRACE_DEPTH
 /* on real call; increment call depth; clear tail call depth for this level */
