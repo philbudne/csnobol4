@@ -13,6 +13,7 @@
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
+#include "lib.h"
 
 #define STATIC_PAIR
 #endif /* STATIC_PAIR not defined */

@@ -13,6 +13,8 @@
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
+#include "lib.h"
+
 #define STATIC_PAT
 #endif /* STATIC_PAT not defined */
 

@@ -13,6 +13,7 @@
 #include "snotypes.h"
 #include "macros.h"
 #include "equ.h"
+#include "lib.h"
 
 void
 addsib( d1, d2 )

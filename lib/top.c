@@ -8,6 +8,8 @@
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
+#include "lib.h"
+
 #define STATIC_TOP
 #endif /* STATIC_TOP not defined */
 

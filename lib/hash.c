@@ -8,6 +8,7 @@
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
+#include "lib.h"			/* own prototype */
 
 /* machine generated; */
 #include "equ.h"			/* for OBSIZ */
