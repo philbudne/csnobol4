@@ -849,6 +849,21 @@ if [ -f $INCDIR/sys/socket.h ]; then
 	echo 'using private popen() function' 1>&2
 	echo 'ADD_OBJS([popen.o])'		>> $CONFIG_M4
 	echo 'ADD_SRCS([$(POPEN_C)])'		>> $CONFIG_M4
+	if [ -f $INCDIR/paths.h ]; then
+	    echo '#define HAVE_PATHS_H'		>> $CONFIG_H
+	fi
+	# XXX else make sure /bin/sh exists, or define _PATH_BSHELL
+
+	if grep vfork $INCDIR/unistd.h >/dev/null 2>&1; then
+	    echo 'using vfork in unistd.h' 1>&2
+	    echo '/* vfork in unistd.h */'	>> $CONFIG_H
+	elif [ -f $INCDIR/vfork.h ]; then
+	    echo 'using vfork.h' 1>&2
+	    echo '#define HAVE_VFORK_H'		>> $CONFIG_H
+	else
+	    echo 'using fork for vfork' 1>&2
+	    echo '#define vfork fork'		>> $CONFIG_H
+	fi
     fi
 else
     echo 'no sockets; TCP not available' 1>&2
