@@ -38,59 +38,28 @@ mstime()
 		user.dwLowDateTime / TICKSPERMS);
     }
     else {
-	/* XXX just use clock()? */
-	int new;
-	int_t x;
+	/* Win95/98/ME isn't really an operating system,
+	 * so it doesn't track runtime!! Use time of day instead??
+	 * XXX just use ANSI clock() function???
+	 */
 #ifndef NO_STATIC_VARS
-	static int haveold, old;
-	static FILETIME f[2];
+	static int have_t0;
+	static FILETIME t0;
 #else  /* NO_STATIC_VARS defined */
-	int haveold;
-	struct timevars {
-	    int tv_old;
-	    FILETIME tv_f[2];
-	} *tv;
-
-	if (timeptr == NULL) {
-	    haveold = FALSE;
-	    tv = (struct timevars *) malloc(sizeof(struct timevars));
-	    if (!tv) {
-		perror("could not malloc timevars");
-		exit(1);
-	    }
-	    timeptr = tv;
-#define old tv->tv_old
-#define f tv->tv_f
-	    old = 0;
-	    haveold = 0;
-	}
-	else {
-	    haveold = 1;
-	    tv = timeptr;
-	}
+	/* FIXME */
 #endif /* NO_STATIC_VARS defined */
 
-	new = !old;
-#if 1
-	GetSystemTimeAsFileTime(&f[new]);
-#else  /* not 1 */
-	{
-	    SYSTEMTIME t;
+	if (have_t0) {
+	    FILETIME t;
 
-	    GetSystemTime(&t);
-	    SystemTimeToFileTime(&t, &f[new]);
+	    GetSystemTimeAsFileTime(&t);
+	    return ((t.dwHighDateTime - t0.dwHighDateTime) * HIGHMS +
+		    (t.dwLowDateTime - t0.dwLowDateTime) / TICKSPERMS);
 	}
-#endif /* not 1 */
-
-	if (haveold)
-	    x = (f[new].dwHighDateTime - f[old].dwHighDateTime) * HIGHMS +
-		(f[new].dwLowDateTime - f[old].dwLowDateTime) / TICKSPERMS;
-	else
-	    x = 0;
-
-	old = new;
-	haveold = 1;
-
-	return x;
+	else {
+	    GetSystemTimeAsFileTime(&t0);
+	    have_t0 = 1;
+	    return 0;
+	}
     }
 }
