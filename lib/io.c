@@ -79,7 +79,6 @@ io_addfile( unit, path, append )
 	struct file *tp;
 
 	tp = up->curr;
-
 	if (tp == NULL) {
 	    up->head = up->curr = fp;
 	    up->offset = 0;
@@ -98,6 +97,7 @@ io_addfile( unit, path, append )
 
 } /* io_addfile */
 
+/* close currently open file */
 /* XXX take flag: to free struct file, or not? */
 static int
 io_close(unit)				/* internal (zero-based unit) */
@@ -459,6 +459,8 @@ io_rewind(unit)				/* REWIND */
 	fseek(f, up->offset, SEEK_SET);
     }
 }
+
+/* extensions; */
 
 void
 io_ecomp()				/* XECOMP */
@@ -466,6 +468,7 @@ io_ecomp()				/* XECOMP */
     struct unit *up;
 
     compiling = 0;
+
     if (rflag == 0) {
 	/* if -r was not given, switch INPUT to stdin!! */
 
@@ -474,8 +477,10 @@ io_ecomp()				/* XECOMP */
 	return;
     }
     /*
-    /* XXX (re)set head??? */
-    io_units[UNITI-1].offset = ftell(io_units[UNITI-1].curr->f);
+     * else (start INPUT after END stmt)
+     * save the file position the data begins at for rewind.
+     *
+     * SITBOL would skip to next input file (ie; io_next())
      * but SPARC SPITBOL doesn't!
      */
 
