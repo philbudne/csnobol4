@@ -36,7 +36,7 @@ inet_socket( host, service, port, priv, type )
     if (!host || !service)
 	return -1;
 
-    bzero(&sin, sizeof(sin));
+    bzero((char *)&sin, sizeof(sin));
     sin.sin_family = AF_INET;
 
     if (service) {
