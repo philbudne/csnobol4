@@ -387,7 +387,9 @@ if [ "x$CCVERS" != x ]; then
     ${CCPATH-cc} $CCVERS 2>&1 | sed 's/^/# /'	>> $CONFIG_M4
 fi
 
-if [ "x$OPT" != x ]; then
+if [ "$NO_OPT" ]; then
+    echo OPT=					>> $CONFIG_M4
+elif [ "x$OPT" != x ]; then
     echo "OPT=$OPT"				>> $CONFIG_M4
 fi
 
