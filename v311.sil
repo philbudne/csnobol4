@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.99  2002/06/05 16:10:50  phil
+* [PLB85] Allocate interpreter stack at startup (-S option)
+*
 * Revision 1.98  2002/03/01 19:03:59  phil
 * [PLB84] remove an empty RCALL label list
 *
@@ -518,7 +521,7 @@
 *	       READ (INPUT)
 *	       PRINT (OUTPUT)
 *	       BKSPCE
-*	       ENFILE
+*	       ENDFIL
 *	       REWIND
 *	       SET
 *	       DETACH
@@ -769,7 +772,7 @@ INITD1 GETDC   XPTR,INITB,0	   Get specifier to convert
        INCRA   INITB,2*DESCR	   Decrement to next pair
        ACOMP   INITB,INITE,,,INITD1
 *				   Compare with end
-       XCALLC  getparm,(XSP)	   Get user parameters		[PLB39]
+       XCALLC  GETPARM,(XSP)	   Get user parameters		[PLB39][PLB86]
        RCALL   PARMVL,GENVAR,XSPPTR				[PLB39]
 *				   Convert to string for &PARM	[PLB39]
 *
@@ -789,12 +792,12 @@ INITD1 GETDC   XPTR,INITB,0	   Get specifier to convert
        SUM     OCLIM,CMBSCL,OCALIM Compute end of code block
        DECRA   OCLIM,7*DESCR	   Leave room for overflow	[PLB38]
        SETAC   INICOM,1		   SIGNAL COMPLETION		E3.10.6
-       XCALLC  io_file,(UNIT,XSP)  Get initial filename		[PLB38]
+       XCALLC  IO_FILE,(UNIT,XSP)  Get initial filename		[PLB38][PLB86]
        RCALL   FILENM,GENVAR,(XSPPTR)				[PLB38]
 *
 * spin through list of functions to auto-load
        SETAC   TMVAL,0		   Loop index			[PLB42]
-AUTLOP XCALLC  getpmproto,(XSP,TMVAL),XLATRN			[PLB44]
+AUTLOP XCALLC  GETPMPROTO,(XSP,TMVAL),XLATRN			[PLB44][PLB86]
 *				   Get next prototype specifier	[PLB44]
        RCALL   XPTR,GENVAR,(XSPPTR)				[PLB42]
 *				   Get prototype string in XPTR	[PLB42]
@@ -2009,7 +2012,7 @@ FILCHK PROC    ,
        BRANCH  RTN2		   Return happy
 *_
 * here when EOF and not in an include file; query I/O system
-FILCK2 XCALLC  io_file,(UNIT,XSP),RTN1
+FILCK2 XCALLC  IO_FILE,(UNIT,XSP),RTN1
        RCALL   FILENM,GENVAR,(XSPPTR)
        SETAC   LNNOCL,0
        BRANCH  RTN1
@@ -2026,7 +2029,7 @@ NEWCRD PROC    ,		   Process new card image
        INCRA   XCL,1		   Increment number
        INTSPC  TSP,XCL		   Convert it to STRING
        AEQLC   LLIST,0,CARDL	   Check for left listing
-       XCALLC  io_pad,(LNBFSP,CARDSZ+DSTSZ)				[PLB63]
+       XCALLC  IO_PAD,(LNBFSP,CARDSZ+DSTSZ)			[PLB63][PLB86]
 *				   Pad line with spaces			[PLB63]
        SETLC   RNOSP,0		   Clear right specifier
        APDSP   RNOSP,TSP	   Set to statement number
@@ -2047,7 +2050,7 @@ CNTCRD FSHRTN  TEXTSP,1		   Remove continue character
        AEQLC   LISTCL,0,,RTN2	   Return if listing is off
        INTSPC  TSP,CSTNCL	   Get specifier for number
        AEQLC   LLIST,0,CARDLL	   Check for left listing
-       XCALLC  io_pad,(LNBFSP,CARDSZ+DSTSZ)				[PLB63]
+       XCALLC  IO_PAD,(LNBFSP,CARDSZ+DSTSZ)			[PLB63][PLB86]
 *				   Pad line with spaces			[PLB63]
        SETLC   RNOSP,0		   Clear right specifier
        APDSP   RNOSP,TSP	   Set to statement number
@@ -2576,7 +2579,7 @@ VPXPTR PROC    VARVAL
        GETLG   AXPTR,SPECR1	   Get string length
        RCALL   ,CONVAR,AXPTR,	   Allocate scratch space at FRSGPT
        LOCSP   XSP,FRSGPT	   Get specifier for scratch string
-       XCALLC  raise2,(SPECR1,XSP),RTXNAM
+       XCALLC  RAISE2,(SPECR1,XSP),RTXNAM			[PLB86]
 *				   Copy & raise; fails if no LC chars
        MOVDIC  FRSGPT,DESCR,XPTR,DESCR
 *				   Give new string same value and
@@ -3429,7 +3432,8 @@ ANYC4  REMSP   YSP,VSP,TXSP	   Get specifier to unscanned portion
 *_
 * ANY, NOTANY
 ANYC7  LEQLC   YSP,0,,SALT	   Length failure if subject null
-       XCALLC  any,(YSP,XPTR),,ANYC5 Look for first char of subj in arg str
+       XCALLC  XANY,(YSP,XPTR),,ANYC5 				[PLB86]
+*				   Look for first char of subj in arg str
        AEQLC   SCL,1,,SALF	   Not found, fail if ANY
 ANYC6  ADDLG   TXSP,ONECL	   Accept next subject char
        BRANCH  SCOK
@@ -4967,7 +4971,7 @@ READ6  PUSH    (YPTR,ZPTR)	   Save unit, options		[PLB4][PLB51]
        POP     (ZPTR,YPTR,XPTR)	   Restore opts, unit and variable [PLB4][PLB51]
        LOCSP   ZSP,ZPTR		   Get specifier for options	[PLB51]
        MOVD    ZPTR,ZEROCL	   Clear length			[PLB51]
-       XCALLC  io_openi,(YPTR,XSP,ZSP,ZPTR),FAIL		[PLB51]
+       XCALLC  IO_OPENI,(YPTR,XSP,ZSP,ZPTR),FAIL		[PLB51][PLB86]
 *				   Tell I/O routines about filename [PLB4]
        ACOMPC  ZPTR,0,READ2,,LENERR
 *				   Check for defaulted length
@@ -5004,7 +5008,7 @@ PRINT  PROC    ,		   OUTPUT(V,U,O,N)		[PLB4]
        POP     (ZPTR,YPTR,XPTR)	   Restore format, unit and variable [PLB4]
        LOCSP   XSP,TPTR		   Get specifier for filename	[PLB4]
        LOCSP   ZSP,ZPTR		   Get specifier for format	[PLB51]
-       XCALLC  io_openo,(YPTR,XSP,ZSP),FAIL			[PLB51]
+       XCALLC  IO_OPENO,(YPTR,XSP,ZSP),FAIL			[PLB51][PLB86]
 *				   Tell I/O routines about filename! [PLB4]
        ACOMPC  YPTR,0,,PRINT5,UNTERR
 PRINT6 AEQLC   ZPTR,0,PRINT2	   Check for defaulted format
@@ -5035,7 +5039,7 @@ BKSPCE PROC    ,		   BACKSPACE(N)
        SETAC   SCL,1		   Indicate backspace
        BRANCH  IOOP
 *_
-ENFILE PROC    BKSPCE		   ENDFILE(N)
+ENDFIL PROC    BKSPCE		   ENDFILE(N)			[PLB86]
        SETAC   SCL,2		   Indicate end of file
        BRANCH  IOOP
 *_
@@ -5065,7 +5069,7 @@ SOP    PUSH    XCL		   Save unit			[PLB52]
        PUSH    XPTR		   Save offset			[PLB52]
        RCALL   YPTR,INTVAL,,FAIL   Get whence			[PLB52]
        POP     (XPTR,XCL)	   Restore offset, unit		[PLB52]
-       XCALLC  io_seek,(XCL,XPTR,YPTR),FAIL,RTXPTR		[PLB52]
+       XCALLC  IO_SEEK,(XCL,XPTR,YPTR),FAIL,RTXPTR		[PLB52][PLB86]
 *				   Set (seek) unit		[PLB52]
 *_
 *---------------------------------------------------------------------*
@@ -5886,7 +5890,7 @@ RPAD0  PUSH    SCL		   Protect SCL
        MOVA    XCL,ZPTR		   Copy length (for GENVSZ)	[PLB82]
        RCALL   ZPTR,CONVAR,XCL	   Allocate space for string
        LOCSP   TSP,ZPTR		   Get specifier
-       XCALLC  pad,(SCL,TSP,XSP,VSP)
+       XCALLC  PAD,(SCL,TSP,XSP,VSP)				[PLB86]
 *				   Do function (dir,out,subj,pad)
        BRANCH  GENVSZ		   Return the string
 *_
@@ -6473,7 +6477,7 @@ REVERS PROC    ,		   REVERSE(S)
        MOVA    XCL,ZPTR		   Copy length (for GENVSZ)
        RCALL   ZPTR,CONVAR,XCL	   Allocate space for string
        LOCSP   TSP,ZPTR		   Get specifier
-       XCALLC  reverse,(TSP,XSP)   Do function
+       XCALLC  REVERSE,(TSP,XSP)   Do function			[PLB86]
        BRANCH  GENVSZ		   Return the string
 *_
 *---------------------------------------------------------------------*
@@ -6511,7 +6515,7 @@ SSNOFX ACOMPC  ZPTR,0,,RETNUL,FAIL NULL string?
        MOVA    XCL,ZPTR		   Copy length (for GENVSZ)
        RCALL   ZPTR,CONVAR,XCL	   Allocate space for string
        LOCSP   TSP,ZPTR		   Get specifier
-       XCALLC  substr,(TSP,XSP,YPTR)
+       XCALLC  XSUBSTR,(TSP,XSP,YPTR)				[PLB86]
        BRANCH  GENVSZ		   Return the string
 *_
 *---------------------------------------------------------------------*
@@ -7419,7 +7423,7 @@ DUMPFN DESCR   DMP,0,1
        DESCR   0,0,0
 DUPLFN DESCR   DUPL,0,2
        DESCR   0,0,0
-ENDFFN DESCR   ENFILE,0,1
+ENDFFN DESCR   ENDFIL,0,1					[PLB86]
        DESCR   0,0,0
 EQFN   DESCR   EQ,0,2
        DESCR   0,0,0
