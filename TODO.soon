@@ -6,16 +6,6 @@ DJGPP:
 	osinit;	add io_findunit(), io_getfp()
 		io_mkfile(), io_closeall(), io_endfile()??
 
-see why peecee gs can't display pdf (see if Sun generated pdf will display)
-
-INSTALL;
-	DJGPP/DXE2 -- v2tk/dxe2_NNN.zip
-
-load.doc;
-	Add Burkhard's info (from asc.c) to load.doc (cygwin & DJGPP)
-
-pass CPP directives thru genc.sno/gendata.sno
-
 verify correctness of line.ref, include.ref
 
 create csnobol4 home page (seperate sections for 0.99.4, new);
@@ -116,6 +106,8 @@ tag all files
 make branch for major releases
 
 ================
+
+pass CPP directives thru genc.sno/gendata.sno
 
 add const's to getstring, retstring defns?
 

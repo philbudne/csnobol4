@@ -2,7 +2,13 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+3/21/2002
+	Fixes for mingw build.
+	lib/win32/inet.c: remove dangling saweol
+	config/win32/mingw.mak: add a missing $
+
 3/20/2002
+	clean DJGPP build w/ DXE2, WATTCP.  Tested DXE2.
 	lib/djgpp/osinit.c: cleanup
 	config/djgpp/Makefile: use install.bat
 	config/djgpp/config.h: fix HAVE_OS_INIT
