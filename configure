@@ -24,19 +24,17 @@ INLINE_OK=true
 # debug this script
 DEBUG=
 
-GUESS=./config.guess
-if [ ! -x $GUESS ]; then
-    echo missing config.guess script 1>&2
-    exit 1
-fi
+OS=`(uname -s || echo unknown) 2>/dev/null`
+OSREL=`(uname -r || echo unknown) 2>/dev/null`
+OSVERS=`(uname -v || echo unknown) 2>/dev/null`
+MACHINE=`(uname -m || echo unknown) 2>/dev/null`
 
-SYS=`$GUESS 2>/dev/null || echo unknown`
 DATE=`date`
 
 # run hostname from subshell to redirect shell "not found message"
 HOST=`(hostname) 2>/dev/null || uname -n`
 
-echo "config.guess says $SYS" 1>&2
+#echo "config.guess says $SYS" 1>&2
 
 CONFIG_H=config.h.tmp
 CONFIG_M4=config.m4.tmp
@@ -45,7 +43,7 @@ rm -f $CONFIG_H $CONFIG_M4
 trap "rm -f $CONFIG_H $CONFIG_M4; exit 1" 1 2 15
 
 echo "# config generated "$DATE			>> $CONFIG_M4
-echo "# on $HOST ($SYS)"			>> $CONFIG_M4
+echo "# on $HOST ($OS)"				>> $CONFIG_M4
 echo "# by $ID"					>> $CONFIG_M4
 if [ "x$OPTIONS" != x ]; then
    echo "# options: $OPTIONS"			>> $CONFIG_M4
@@ -60,7 +58,7 @@ echo '# see config.h for more defines'		>> $CONFIG_M4
 
 echo '/*'					>> $CONFIG_H
 echo ' * generated '$DATE			>> $CONFIG_H
-echo ' * on '"$HOST ($SYS)"			>> $CONFIG_H
+echo ' * on '"$HOST ($OS)"			>> $CONFIG_H
 echo ' * by '"$ID"				>> $CONFIG_H
 echo ' */'					>> $CONFIG_H
 echo ''						>> $CONFIG_H
@@ -70,7 +68,9 @@ fi
 if [ "x$HOST" != x ]; then
     echo '#define CONFIG_HOST "'"$HOST"'"'	>> $CONFIG_H
 fi
-echo '#define CONFIG_GUESS "'"$SYS"'"'		>> $CONFIG_H
+if [ "$SYS" ]; then
+    echo '#define CONFIG_GUESS "'"$SYS"'"'	>> $CONFIG_H
+fi
 echo '#define CONFIG_DATE "'$DATE'"'		>> $CONFIG_H
 
 ADD_DEFINE_USED=
@@ -111,6 +111,9 @@ while [ $# -gt 0 ]; do
     --double)
 	DOUBLE=true
 	;;
+    --fast)
+	FAST=true
+	;;
     --force-gcc)
 	FORCEGCC=true
 	#WANTGCC=true
@@ -148,8 +151,8 @@ while [ $# -gt 0 ]; do
 	;;
     --opt=*)
 	# NOTE!! just sets shell variable
-	OPT=`echo "$1" | sed 's/--opt=//'`
-	if [ "x$OPT" = x ]; then
+	UOPT=`echo "$1" | sed 's/--opt=//'`
+	if [ "x$UOPT" = x ]; then
 		NO_OPT=true
 	else
 		NO_OPT=
@@ -227,12 +230,12 @@ fi
 
 # detect architectures where LP64 is the default.
 # XXX compile a test program (check for alignment as well)??
-case "$SYS" in
-alpha*)
+case "$MACHINE" in
+alpha|Alpha)
     LP64=true
     ;;
 
-ia64*)
+ia64|IA64)
     LP64=true
     ;;
 esac
@@ -246,15 +249,19 @@ if [ "$LP64" ]; then
     # make real_t same size as int_t
     DOUBLE=true
 
-    # --longlong a noop
+    # make --longlong a noop
     LONGLONG=
 fi
 
+# machine, os, release, version
+MORV="${MACHINE}:${OS}:${OSREL}:${OSVERS}"
+
 # library support, C compiler choice
-case "$SYS" in
-hppa*-hpux*)
+case "$MORV" in
+9000/[678]??:HP-UX:*:*)
     # dlfcn.h present on hpux 11 systems,
     # but no library on 32-bit systems
+    # (this will be reset below for 64-bit compilation)
     NO_DLOPEN=true
 
     # look for unbundled C; prefer it to gcc
@@ -288,7 +295,7 @@ hppa*-hpux*)
     fi
     ;;
 
-m68k-hp-bsd)
+9000/[34]??:4.3bsd:*:*)
     # Mt Xinu 4.3 on hp300
     echo 'using dummy isnan() and finite() functions' 1>&2
     echo 'FINITE_C=$(SRCDIR)lib/dummy/isnan.c'	>> $CONFIG_M4
@@ -297,26 +304,21 @@ m68k-hp-bsd)
     echo 'ADD_SRCS([$(ISNAN_C) $(FINITE_C)])'	>> $CONFIG_M4
     ;;
 
-rs6000-ibm-aix*|powerpc-ibm-aix*)
+# POWER(RS6k)/PowerPC AIX
+*:AIX:2:3|*:AIX:*:[45])
     # prefer regular cc to gcc (only use gcc if forced)
     WANTGCC="$FORCEGCC"
     ;;
 
-*-next-nextstep*)
-    # tested on NextStep3
-    # ignore the raise in libsys_s.a
-    echo 'ADD_LDFLAGS([-m])'			>> $CONFIG_M4
-    ;;
-
-*-apple-darwin*)
+*:Darwin:*:*)
     # includes MacOS X
-    # libm integrated into libc?
+    # libm integrated into libc
     echo 'MATHLIB='				>> $CONFIG_M4
-    # symbol conflict with curses?
+    # symbol conflict with curses (also in libc)
     echo '#define GT GTX'			>> $CONFIG_H
     ;;
 
-*-*-cygwin*)
+*:CYGWIN*:*)
     # Cygnus Unix emulation under Win32
     echo 'EXT=.exe'				>> $CONFIG_M4
     CYGWIN=1
@@ -332,39 +334,44 @@ if [ "$GCCPATH" -a "$WANTGCC" ]; then
 	echo 'ADD_OPT([-finline-functions])'	>> $CONFIG_M4
     fi
     echo 'CCM=$(CC) -M'				>> $CONFIG_M4
-    if [ "x$OPT" = x -a ! "$NO_OPT" ]; then
-	# -O3 just adds -finline-functions (set above)
-	OPT=-O2
 
-	case "$SYS" in
-	*-apple-darwin*)
-	    # Apple gcc-934.3, based on gcc version 2.95.2 19991024
-	    # screws up data_init.c when compiled with -O2
-	    echo 'DATA_INIT_CFLAGS=$(MYCPPFLAGS) -O'	>> $CONFIG_M4
-	    ;;
-	esac
-    fi
+    # -O3 just adds -finline-functions (set above)
+    OPT=-O2
+
+    case "$OS" in
+    Darwin)
+	# Apple gcc-934.3, based on gcc version 2.95.2 19991024
+	# screws up data_init.c when compiled with -O2
+	echo 'DATA_INIT_CFLAGS=$(MYCPPFLAGS) -O'	>> $CONFIG_M4
+	;;
+    esac
 else
     # required options for native compilers
-    case "$SYS" in
-    hppa*w-*-hpux*)
-	# NOTE 'w' above in pattern insures LP64 is available!!
-	if [ "$LP64" ]; then
+    case "$MORV" in
+    9000/[678]??:HP-UX:*:*)
+	# HP-UX PA-RISC
+	KERNEL_BITS=`(/usr/bin/getconf SC_KERNEL_BITS || echo 32) >/dev/null`
+	if [ "$KERNEL_BITS" = 64 -a "$LP64" ]; then
 	    ARCH_OPT=`getconf XBS5_LP64_OFF64_CFLAGS`
 	    # dlopen available in 64-bit world!
 	    NO_DLOPEN=
 	fi
 	;;
-    m68*-hpux*)
+    9000/[34]??:HP-UX:*:*)
 	# bundled C compiler lacks -O flag??
-	echo 'OPT='				>> $CONFIG_M4
+	NO_OPT=true
 	;;
-    mips-*-irix*)
+    *:IRIX:*:*)
+	# Kill warnings: only needed with n32 and 64bit ABI
+	# compilers (but harmless with old compiler)?
+	echo 'ADD_OPT([-w])'			>> $CONFIG_M4
+	;;
+    *:IRIX64:*:*)
 	# Kill warnings: only needed with n32 and 64bit ABI
 	# compilers (but harmless with old compiler)?
 	echo 'ADD_OPT([-w])'			>> $CONFIG_M4
 
-	# optional 64-bit mode; works, but runs slower
+	# optional 64-bit mode
 	if [ "$LP64" ]; then
 	    ARCH_OPT=`getconf XBS5_LP64_OFF64_CFLAGS`
 	    ARCH_LDFLAGS=`getconf XBS5_LP64_OFF64_LDFLAGS`
@@ -373,25 +380,66 @@ else
 	    fi
 	fi
 	;;
-    rs6000-ibm-aix*|powerpc-ibm-aix*)
+    *:AIX:2:3)
+	# AIX3 (not tested)
 	echo 'ADD_OPT([-qmaxmem=16000])'	>> $CONFIG_M4
+	;;
+    *:AIX:*:[45])
+	# AIX4/xlc
+	# -M creates .u files
+	# -v outputs man page!!
+	# -qlonglong enables "long long"?
+	# -Q! turns off inlining (C++ only?)
+	if [ "$FAST" ]; then
+	    OPT=-O4
+	else
+	    OPT=-O3
+	fi
+	echo 'ADD_OPT([-qmaxmem=16000])'	>> $CONFIG_M4
+
 	# XXX check if available? (how?) check for getconf error??
 	if [ "$LP64" ]; then
 	    ARCH_OPT=`getconf XBS5_LP64_OFF64_CFLAGS`
 	    echo 'ARXFLAGS=-X64'		>> $CONFIG_M4
 	else
-	    # getconf LFS_CFLAGS not available (XXX check?)
+	    # XBS5 model to try if "getconf LFS_CFLAGS" fails
 	    XBS5_MODEL=XBS5_ILP32_OFFBIG_CFLAGS
-	    # this returns native compiler flags for
-	    # 32-bit data model and, on Sun, undefines
-	    # stuff, and fiddles with ANSI mode (sets
-	    # __STDC__ to zero), so we only use it when
-	    # the obvious fails!
+	    # on Sun this assumes native compiler, undefines stuff,
+	    # and fiddles with ANSI mode (sets __STDC__ to zero), so
+	    # we only use it when the obvious fails!
 	fi
 	;;
-    *-solaris*)
-	# XXX check 'isainfo' for sparcv9
-	if [ "$LP64" ]; then
+    *:OSF1:*:*)
+	OPT=-O4
+	if [ ! "$INLINE_OK" ]; then
+	    echo 'ADD_OPT([-no_inline])'	>> $CONFIG_M4
+	fi
+	echo 'CCM=$(CC) -M'			>> $CONFIG_M4
+
+	case "$OSREL" in
+	V[1-3].*) ;;
+	*) OPT="$OPT -fast" ;;
+	esac
+
+	case "$OSREL" in
+	V[5-9]*) CCVERS=-V ;;
+	esac
+	;;
+    *:SunOS:4*:*)
+	echo 'CCM=$(CC) -M'			>> $CONFIG_M4
+	;;
+    *:SunOS:5*:*)
+	# SunPRO;
+	if [ "$INLINE_OK" ]; then
+	    OPT=-xO4
+	else
+	    OPT=-xO3
+	fi
+	echo 'CCM=$(CC) -xM'			>> $CONFIG_M4
+	FASTFLAGS=-fast
+	CCVERS=-V
+	if [ "$LP64" -a -x /usr/bin/isainfo ] && \
+	   /usr/bin/isainfo -v | grep '^64' >/dev/null; then
 	    ARCH_OPT=`getconf XBS5_LP64_OFF64_CFLAGS`
 	fi
 	;;
@@ -408,13 +456,24 @@ fi
 
 # include C compiler version output in comments
 if [ "x$CCVERS" != x ]; then
+    echo '################'			>> $CONFIG_M4
+    echo '# C Compiler:'			>> $CONFIG_M4
+    echo '#' ${CCPATH-cc} $CCVERS		>> $CONFIG_M4
     ${CCPATH-cc} $CCVERS 2>&1 | sed 's/^/# /'	>> $CONFIG_M4
+    echo '################'			>> $CONFIG_M4
 fi
 
 if [ "$NO_OPT" ]; then
     echo OPT=					>> $CONFIG_M4
-elif [ "x$OPT" != x ]; then
-    echo "OPT=$OPT"				>> $CONFIG_M4
+else
+    if [ "x$UOPT" != x ]; then
+	echo "OPT=$UOPT"			>> $CONFIG_M4
+    elif [ "x$OPT" != x ]; then
+	echo "OPT=$OPT"				>> $CONFIG_M4
+    fi
+    if [ "$FAST" -a "x$FASTFLAGS" != x ]; then
+	echo 'ADD_OPT(['"$FASTFLAGS"'])'	>> $CONFIG_M4
+    fi
 fi
 
 if [ ! "$INLINE_OK" ]; then
@@ -457,6 +516,7 @@ if [ "$NO_BITFIELDS" ]; then
 fi
 
 if [ "$DOUBLE" ]; then
+
     # same size as int_t
     echo using double for SNOBOL4 REAL type 1>&2
     echo '#define REAL_T double'		>> $CONFIG_H
@@ -509,8 +569,8 @@ elif grep rusage $INCDIR/sys/resource.h >/dev/null 2>&1; then
     # user time can run backwards for processes with small
     # runtimes on BSD44 based systems; time deltas in &TRACE can
     # appear negative!!
-    case "$SYS" in
-    *freebsd* | *netbsd* | *bsdi* | *bsd4.4* | *apple-darwin* | *openbsd*)
+    case "$OS" in
+    FreeBSD|NetBSD|BSD/OS|BSD/386|Darwin|4.4BSD|OpenBSD)
 	echo '#define GETRUSAGE_BUG'		>> $CONFIG_H
 	;;
     esac
@@ -524,7 +584,7 @@ elif [ -f $INCDIR/sys/times.h ]; then
     # XXX message about presumed HZ value??
     echo 'MSTIME_C=$(SRCDIR)lib/generic/mstime.c' >> $CONFIG_M4
     case "$SYS" in
-    m68*-hpux*)
+    9000/[34]??:HP-UX:*:*)
 	# HPUX on 68040 (hp4xx) and HPUX 9
 	echo '#define HZ 50'			>> $CONFIG_H
 	;;
@@ -658,58 +718,51 @@ if [ ! "$NO_DYNLIB" ]; then
 	# XXX use .dll under Cygwin??
 	echo 'SNOLIB_FILE=snolib.so'		>> $CONFIG_M4
 
-	case "$SYS" in		
-	*-apple-darwin*)
+	case "${OS}${OSREL}" in
+	Darwin*)
 	    echo 'ADD_LDFLAGS([-L/sw/lib -ldl])' >> $CONFIG_M4
 	    TRY_UNDERSCORE=true
 	    ;;
-	*-freebsd*)
+	FreeBSD*)
 	    if [ -x /usr/bin/objformat ]; then
 		case `/usr/bin/objformat` in
 		elf)
-	    echo 'ADD_LDFLAGS([-export-dynamic])' >> $CONFIG_M4
-	    ;;
-	*)
-	    # ??
-	    TRY_UNDERSCORE=true
-	    ;;
+		    echo 'ADD_LDFLAGS([-export-dynamic])' >> $CONFIG_M4
+		    ;;
+		*)
+		    TRY_UNDERSCORE=true
+		    ;;
 		esac
 	    else
-		# ??
 		TRY_UNDERSCORE=true
 	    fi
 	    ;;
-	
-	*-linux-*aout)
-	    # a.out systems
-	    TRY_UNDERSCORE=true
-	    ;;
-
-	*-linux*)
+	Linux*)
+	    # XXX detect a.out systems?
 	    echo 'ADD_LDFLAGS([-ldl])'		>> $CONFIG_M4
 	    echo 'ADD_LDFLAGS([-export-dynamic])' >> $CONFIG_M4
 	    ;;
-
-	*-netbsdaout*)
-	    # a.out system; need underscore
+	NetBSD*)
+	    if echo __ELF__ | cc -E - | grep __ELF__ >/dev/null; then
+		echo 'ADD_LDFLAGS([-export-dynamic])' >> $CONFIG_M4
+	    else
+		# a.out system; need underscore
+		# COFF may not, but this should be mostly harmless
+		TRY_UNDERSCORE=true
+	    fi
+	    ;;
+	OpenBSD*)
+	    # XXX detect ELF??
 	    TRY_UNDERSCORE=true
 	    ;;
-
-	# XXX what about COFF systems?
-	*-netbsdelf*)
-	    echo 'ADD_LDFLAGS([-export-dynamic])' >> $CONFIG_M4
-	    ;;
-
-	*-*-sunos*)
+	SunOS4*)
 	    echo 'ADD_LDFLAGS([-ldl])'		>> $CONFIG_M4
 	    # a.out system; need underscore
 	    TRY_UNDERSCORE=true
 	    ;;
-
-	*-*-solaris*)
+	SunOS5*)
 	    echo 'ADD_LDFLAGS([-ldl])'		>> $CONFIG_M4
 	    ;;
-# XXX detect ELF on BSDi and OpenBSD???
 	esac
 	if [ "$TRY_UNDERSCORE" ]; then
 	    echo '#define TRY_UNDERSCORE'	>> $CONFIG_H
@@ -855,9 +908,11 @@ fi
 
 if [ -f local-config ]; then
     echo 'using local-config' 1>&2
+    echo '################'			>> $CONFIG_M4
     echo '# local-config:'			>> $CONFIG_M4
     cat local-config				>> $CONFIG_M4
     echo '# end local-config'			>> $CONFIG_M4
+    echo '################'			>> $CONFIG_M4
 else
     echo '# if the file local-config existed it would have been incorporated here' >> $CONFIG_M4
 fi
@@ -866,9 +921,13 @@ fi
 
 if [ -f local-defines ]; then
     echo 'using local-defines' 1>&2
-    echo '/* local-defines: */'			>> $CONFIG_H
+    echo '/********************'		>> $CONFIG_H
+    echo ' * local-defines:'			>> $CONFIG_H
+    echo ' */'					>> $CONFIG_H
     cat local-defines				>> $CONFIG_H
-    echo '/* end local-defines */'		>> $CONFIG_H
+    echo '/*'					>> $CONFIG_H
+    echo ' * end local-defines'			>> $CONFIG_H
+    echo ' ********************/'		>> $CONFIG_H
 else
 
     echo ''					>> $CONFIG_H
