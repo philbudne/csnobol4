@@ -16,7 +16,7 @@
 
 	&ANCHOR = 1
 	&TRIM = 1
-	&STLIMIT = 75000
+	&STLIMIT = 100000
 
 ****************************************************************
 *	initialization
@@ -88,6 +88,7 @@
 	CLASS<"ALPHANUMERIC"> = DIGITS UC LC
 	CLASS<"TERMINATOR"> = CLASS<"COMMA"> CLASS<"BLANK"> CLASS<"EOS">
 +				CLASS<"RIGHTBR"> CLASS<"RIGHTPAREN">
+	CLASS<"EXP">	= "DdEe"
 
 **************** parse actions for FOR and ELSE lines
  	DEFINE("ACTION(STR)")				:(EACTION)
