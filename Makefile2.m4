@@ -481,6 +481,15 @@ tan.o: $(TAN_C)
 	$(CC) $(CFLAGS) -c $(TAN_C)
 
 #################
+# lint
+
+lint:   llib-lf.ln
+	lint -h llib-lf.ln $(MYCPPFLAGS) $(SRCS) > LINT 2>&1
+
+llib-lf.ln:
+	lint -Cf $(MYCPPFLAGS) $(SRCS) > /dev/null 2>&1
+
+#################
 # installation
 
 # install .h files for dynamicly loaded functions
