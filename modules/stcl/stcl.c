@@ -5,12 +5,20 @@
  * Phil Budne <phil@ultimate.com> 6/23/2004
  *
  * Inspired by Arjen Markus' "ftcl" FORTRAN/Tcl interface
- * As mentioned in Usenix ";login:" newsletter June 2004
+ * As mentioned in Clif Flynt's Usenix ";login:" newsletter column June 2004
  */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
+
+#include <tcl.h>
+
+#include "h.h"
+#include "equ.h"
+#include "snotypes.h"
+#include "macros.h"
+#include "load.h"
 
 /* only allows a single instance!! */
 static Tcl_Interp *stcl_interp;		/* XXX static!! */
@@ -52,7 +60,7 @@ STCL_GETVAR( LA_ALIST ) LA_DCL
     char *val;
 
     getstring(LA_PTR(0), name, sizeof(name));
-    val = Tcl_GetVar(ftcl_interp, name, 0);
+    val = Tcl_GetVar(stcl_interp, name, 0);
     RETSTR(val);
 }
 
@@ -63,13 +71,13 @@ STCL_GETVAR( LA_ALIST ) LA_DCL
  * returns null string or failure
  */
 int
-STCL_GETVAR( LA_ALIST ) LA_DCL
+STCL_SETVAR( LA_ALIST ) LA_DCL
 {
     char name[1024];			/* XXX */
-    char val[1024];			/* XXX */
+    char value[1024];			/* XXX */
 
     getstring(LA_PTR(0), name, sizeof(name));
-    getstring(LA_PTR(1), val, sizeof(val));
+    getstring(LA_PTR(1), value, sizeof(value));
     if (!Tcl_SetVar(stcl_interp, name, value, 0))
 	RETFAIL;
     RETNULL;
