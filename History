@@ -3,6 +3,12 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
+1/10/95
+	config/vms/build.com: use CFLAGS variable
+	lib/io.c: hacks for "-", "/dev/stdin" and "/dev/stdout", cleanup
+	genc.sno: generate return after endex call!
+	timing.sno: added stmts/sec
+
 1/7/95
 	Merged in DOS Port (using 32-bit Borland C++ 4.0) by Mark Emmer!
 	lib/generic/convert.c: check for empty strings, changed ifdefs
