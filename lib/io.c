@@ -1284,11 +1284,24 @@ io_seek(dunit, doff, dwhence)
     if (f == NULL)
 	return FALSE;
 
-    if (fseek(f, off, whence) < 0)
+#ifndef NO_UNBUF_LSEEK
+    if (fp->flags & FL_UNBUF) {
+	off_t pos;
+
+	pos = lseek(fileno(f), off, whence);
+	if (pos != (off_t)-1)
+	    return FALSE;
+	D_A(doff) = pos;		/* XXX truncation possible! */
+    }
+    else
+#endif /* NO_UNBUF_LSEEK */
+    if (fseek(f, off, whence) == 0)
+	D_A(doff) = ftell(f);		/* XXX truncation possible! */
+    else
 	return FALSE;
+
     fp->last = LAST_NONE;		/* reset last I/O type */
 
-    D_A(doff) = ftell(f);		/* XXX truncation possible! */
     return TRUE;
 }
 
