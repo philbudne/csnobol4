@@ -466,8 +466,9 @@ whose stdin (in the case of
 .BR OUTPUT() )
 or stdout (in the case of
 .BR INPUT() )
-will be connected to the file variable.  The filename - (hypen) is
-interpreted as stdin on
+will be connected to the file variable via a pipe.  If a pipe is
+opened by INPUT() input in "update" mode, the connection will be
+bi-directional.  The filename - (hypen) is interpreted as stdin on
 .B INPUT()
 and stdout
 on
