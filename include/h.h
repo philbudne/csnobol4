@@ -16,6 +16,7 @@
 #define CONC(a,b) a##b
 #else  /* __STDC__ not defined */
 #define const
+#define volatile
 #define STRING(s) "s"
 #define CONC(a,b) a/**/b
 #endif /* __STDC__ not defined */
