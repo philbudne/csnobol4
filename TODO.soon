@@ -2,10 +2,16 @@ $Id$
 
 improve load.doc
 	document use of pml!
+	document RETxxx macros
 	document snolib
 		getstring
 	document return data type 'L'
 		create "retstring"?
+
+use RETxxx in sqrt.c, snolib
+
+create snolib/retstr
+
 ================
 
 have all genc, gendata, gensyn output .[ch]2 files
