@@ -6,6 +6,56 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	include/snotypes.h: create ptr_t; use void * to avoid gcc3 warnings
 	gendata.sno: use (ptr_t) instead of (char *)
 
+	Start(!!) cleanup for -Wimplicit warnings;
+	lib/unix98/load.c: include stdio.h, lib.h, RTLD_LAZY cleanup
+	lib/{dummy,vms,win32}/tty.c: flush tty_{sav,restor}e
+	include/lib.h: add {execute,exists,suspend,tcp,tty,term,sys,version}.c
+			entries
+		add io_sseek(), io_finish(), io_closeall(),
+			io_findunit(), io_getfp(), io_mkfile(), apdsp()
+		remove io functions declared by libret.h
+		fix getbal() prototype (was bal, returning void!)
+		fix pad(), reverse(), substr() return types
+		fix unit types for io_{printf,endfile,backspace,rewind}
+	lib/snolib/{chop,cos,delete,exp,log,ord,sin,sqrt,tan}.c: return type!
+	lib/snolib/{exit,,sset}.c: include lib.h, stdio.h
+	lib/snolib/file.c: include lib.h, stdio.h; rename entry point!
+	lib/snolib/fork.c: add system headers, return type
+	lib/snolib/host.c: add system headers, lib.h, stdio.h
+	lib/snolib/findunit.c: include stdio.h, lib.h, add return type
+	lib/snolib/serv.c: add system headers, lib.h, stdio.h, flushall arg
+	lib/snolib/{rename,sprintf}.c: add stdio.h
+	pml.h: rename FILE() entry point to FILE2()
+	lib/date.c: include stdio.h, lib.g; fix Y2K bug w/ old date!!
+	lib/posix/tty.c: include lib.h for proc_suspend()
+	lib/stream.c: remove libret.h
+		remove extra arg to clertb -- unused for almost 10 years!!
+	include/syntab.h: move stream() declaration here from libret.h
+		enable any(), clertb(), plugtb() prototypes
+		remove extra arg from clertb()!
+	lib/bal.c: include lib.h for getbal() prototype
+	parms.h: add includes
+	isnobol4.c compiles clean w/ -Wimplicit on RH7.3, FreeBSD4.7
+	lib/bsd/inet.c: add includes
+	lib/init.c, main.c: include proc.h
+	lib/io.c: include lib.h, proc.h; ignore HAVE_STDARG_H; use __STDC__
+	version.c: include lib.h
+	new include/gen.h: generated (init) functions
+	main.c: include lib.h, gen.h
+	data_init.c: include gen.h
+	genc.sno: output full prototypes to proc.h
+	gensyn.sno: output include gen.h
+	lib/{bsd,posix}/dynamic.c: include lib.h (et al)
+	lib/generic/{expops,intspc}.c: include lib.h
+	lib/{ansi,bsd,dummy,generic,msdos,posix,vms,win32}/mstime.c
+		lib/{djgpp,generic,posix,vms,win32}/sys.c:  lib.h &c
+	lib/{hash,lexcmp,ordvst,pat,pair,pml,realst,replace,top,tree}.c
+		{ansi,c99,generic,longlong}/spcint.c
+		{generic,ansi}/spreal.c {bsd,generic,posix}/suspend.c
+		{posix,vms}/term.c generic/ex{ists,execute}.c: lib.h
+	lib/snolib/getstring.c: load.h
+	lib/snolib/retstring.c: load.h, stdio.h
+
 1/13/2003
 	doc/load.doc: cleanup
 	lib/next/load.c: use snolib.so on Darwin
