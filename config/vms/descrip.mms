@@ -13,7 +13,7 @@
 CCFLAGS=/OPTIMIZE
 AUX_OBJ=isnan.obj, finite.obj, \
 	bcopy.obj, bzero.obj, getopt.obj, popen.obj, unlink.obj, 
-CCDEFS=,NEED_POPEN_DECL,NEED_OFF_T
+CCDEFS=,NEED_POPEN,NEED_OFF_T
 
 # need explicit C runtime library
 #CLIB=+SYS$SHARE:VAXCRTL/SHARE
@@ -30,7 +30,7 @@ UCXLIB=+SYS$LIBRARY:UCX$IPC/LIB
 # Tested under AXP OpenVMS 6.2 using DECC 4.0 (November 2000)
 CCFLAGS=/DECC/PREFIX_LIB=ALL/WARN=(DISABLE=IMPLICITFUNC)/OPTIMIZE
 AUX_OBJ=bcopy.obj, bzero.obj, popen.obj, unlink.obj, 
-CCDEFS=,NEED_POPEN_DECL,NEED_OFF_T
+CCDEFS=,NEED_POPEN,NEED_OFF_T
 # no explicit CRT library needed
 
 # alternate library routines

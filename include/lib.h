@@ -173,7 +173,7 @@ extern int bindresvport __P((int));
 #endif /* NEED_BINDRESVPORT */
 
 /* from popen.c */
-#ifdef NEED_POPEN_DECL
+#ifdef NEED_POPEN
 extern FILE *popen __P((char *, char *)); /* from {generic,vms}/popen.c */
 extern int pclose __P((FILE *));
-#endif /* NEED_POPEN_DECL defined */
+#endif /* NEED_POPEN defined */
