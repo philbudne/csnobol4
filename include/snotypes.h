@@ -22,12 +22,6 @@ union addr {
 
 /* FFLD/VFLD ensure consistant sizing between descr and spec; */
 
-#ifndef FFLD_T
-#define FFLD_T char
-#endif /* FFLD_T not defined */
-
-#define FFLD(name) FFLD_T name
-
 /*  flags  */
 #define FNC	01
 #define TTL	02
@@ -41,6 +35,9 @@ union addr {
 #ifndef VFLD_T
 #define VFLD_T unsigned int		/* at least 32 bits */
 #endif /* VFLD_T not defined */
+#ifndef FFLD_T
+#define FFLD_T char
+#endif /* FFLD_T not defined */
 #ifndef SIZLIM
 /*
  * NOTE!! SIZLIM must not appear negative when stored in an int_t.
@@ -48,9 +45,14 @@ union addr {
  */
 #define SIZLIM 0x7fffffff		/* maximum object size (31 bits) */
 #endif /* SIZLIM not defined */
+
 #define VFLD(name) VFLD_T name
+#define FFLD(name) FFLD_T name
+
 #else  /* NO_BITFIELDS not defined */
+/* MicroSoft C won't pack fields unless  they're of the same base type!! */
 #define VFLD(name) unsigned name : 24
+#define FFLD(name) unsigned name : 8
 #define SIZLIM 0xffffff
 #endif /* NO_BITFIELDS not defined */
 
