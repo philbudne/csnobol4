@@ -2,40 +2,61 @@
 
 /* get user runtime on Win32 pb 12/22/97 */
 
+#include <windows.h>
 #include "snotypes.h"
-#include <windows.h>			/* ??? */
 
-#define NSPERMS 10000L			/* nanoseconds per millisecond */
-#define HIGHMS 429496			/* (2^32)/NSPERMS */
+/*
+ * The FILETIME data structure contains two 32-bit values that combine to
+ * form a 64-bit count of 100-nanosecond time units.
+ */
+
+/* divisor for low 32 */
+#define TICKSPERMS 10000
+
+/* multiplier for high 32; */
+#define HIGHMS 429496			/* (2**32)/TICKSPERMS */
 
 int_t
 mstime()
 {
     FILETIME start, exit, kernel, user;
 
-    /* only implemented on NT? */
-    if !(GetProcessTimes(GetCurrentProcess(), &start, &exit, &kernel, &user)) {
-	SYSTEMTIME t;
+    /*
+     * only implemented on NT?
+     * XXX cache system type? process handle??
+     */
+    if (GetProcessTimes(GetCurrentProcess(), &start, &exit, &kernel, &user)) {
+	return (user.dwHighDateTime * HIGHMS +
+		user.dwLowDateTime / TICKSPERMS);
+    }
+    else {
+	/* XXX just use clock()? */
 	static int haveold, old;
 	static FILETIME f[2];
-	int old;
-	int_t t;
+	int new;
+	int_t x;
 
-	/* XXX just use clock()? */
 
 	new = !old;
-	GetSystemTime(&t);
-	SystemTimeToFileTime(&t, &f[new]);
+#if 1
+	GetSystemTimeAsFileTime(&f[new]);
+#else
+	{
+	    SYSTEMTIME t;
+
+	    GetSystemTime(&t);
+	    SystemTimeToFileTime(&t, &f[new]);
+	}
+#endif
 
 	if (!haveold) {
-	    t = 0;
+	    x = 0;
 	    haveold = 1;
 	}
 	else
-	    t = (f[old].dwHighDateTime - f[new].dwHighDateTime) * HIGHMS +
-		(f[old].dwLowDateTime - f[new].dwLowDateTime) / NSPERMS;
+	    x = (f[old].dwHighDateTime - f[new].dwHighDateTime) * HIGHMS +
+		(f[old].dwLowDateTime - f[new].dwLowDateTime) / TICKSPERMS;
 	old = new;
-	return t;
+	return x;
     }
-    return (user.dwHighDateTime * HIGHMS + user.dwLowDateTime / NSPERMS);
 }
