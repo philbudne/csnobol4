@@ -19,7 +19,6 @@ Win32;
 	implement osdep_fopen hacks for /dev/tty, /dev/null?
 
 from Gene Battin;
-	fix SORT() description in man page (see my reply email 12/30/97)
 	send &DUMP output to stderr?
 
 include serv.c/serv.sno?
