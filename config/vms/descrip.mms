@@ -89,6 +89,7 @@ FORK_C=[.lib.snolib]fork.c
 GETSTRING_C=[.lib.snolib]getstring.c
 HOST_C=[.lib.snolib]host.c
 LOG_C=[.lib.snolib]log.c
+LOGIC_C=[.lib.snolib]logic.c
 RENAME_C=[.lib.snolib]rename.c
 RETSTRING_C=[.lib.snolib]retstring.c
 SIN_C=[.lib.snolib]sin.c
@@ -98,14 +99,16 @@ SSET_C=[.lib.snolib]sset.c
 SYS_C=[.lib.vms]sys.c
 TAN_C=[.lib.snolib]tan.c
 
-PML_OBJ=host.obj, sys.obj, exit.obj, execute.obj, sqrt.obj, sset.obj, \
-	exp.obj, log.obj, chop.obj, sin.obj, cos.obj, tan.obj, \
-	file.obj, delete.obj, rename.obj, findunit.obj, \
-	getstring.obj, retstring.obj
+PML_OBJ=chop.obj, cos.obj, delete.obj, execute.obj, exit.obj, \
+	exp.obj, file.obj, findunit.obj, getstring.obj, host.obj, \
+	log.obj, logic.obj, rename.obj, retstring.obj sin.obj, \
+	sqrt.obj, sset.obj, sys.obj, tan.obj
 
 # define preprocessor aliases for SIL and snolib subroutine names
 # which conflict with C runtime names (all are upper-case names)
 
+# stuff all the defines in config/vms/config.h and just define HAVE_CONFIG_H
+#	and add SYS$DISK:[.CONFIG.VMS] to include path below??
 CFLAGS=	$(CCFLAGS) $(TCPFLAGS)\
 	/DEFINE=(ANSI_STRINGS,NEED_POPEN_DECL,\
 		NO_OFF_T,TTY_READ_RAW,TTY_READ_COOKED,\
@@ -283,6 +286,9 @@ host.obj : $(HOST_C)
 
 log.obj : $(LOG_C)
 	$(CC) $(CFLAGS) $(LOG_C)
+
+logic.obj : $(LOGIC_C)
+	$(CC) $(CFLAGS) $(LOGIC_C)
 
 rename.obj : $(RENAME_C)
 	$(CC) $(CFLAGS) $(RENAME_C)
