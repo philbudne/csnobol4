@@ -6,6 +6,7 @@
  * could be used as a fallback by real loaders!!
  */
 
+#ifndef NO_PML
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
@@ -16,6 +17,7 @@ struct pmlfunc {
     int (*addr)(LOAD_PROTO);
 };
 
+/* shorthand for function with same name for LOAD() and entry point */
 #define PMLFUNC(NAME) PMLFUNC2(STRING(NAME),NAME)
 
 #define PMLFUNC2(NAME,ADDR) extern int ADDR(LOAD_PROTO);
@@ -28,10 +30,8 @@ static struct pmlfunc pmltab[] = {
     { NULL, NULL }			/* MUST BE LAST!! */
 };
 
-typedef int (*load_func_t)(LOAD_PROTO);
-
-load_func_t
-pml_find(name)
+/* function of char *name which returns pointer to "loaded" function */
+int (*pml_find(name))(LOAD_PROTO)
     char *name;
 {
     struct pmlfunc *fp;
@@ -43,37 +43,4 @@ pml_find(name)
     }
     return fp->addr;
 } /* pml_find */
-
-int
-pml_load(addr, sp1, sp2)
-    struct descr *addr;			/* OUT */
-    struct spec *sp1, *sp2;		/* function, library */
-{
-    char name[256];			/* XXX */
-    struct pmlfunc *fp;
-    int l;
-
-    l = S_L(sp1);
-    if (l > sizeof(name)-1)
-	return FALSE;
-
-    strncpy( name, S_SP(sp1), l);
-    name[l] = '\0';
-
-    D_A(addr) = (int_t) pml_find(name);
-
-    return D_A(addr) != NULL;
-} /* pml_load */
-
-int
-pml_link(retval, args, nargs, addr)
-    struct descr *retval, *args, *nargs, *addr;
-{
-    int (*func)(LOAD_PROTO);
-
-    func = (int (*)(LOAD_PROTO)) D_A(addr);
-    if (func == NULL)
-	return FALSE;
-
-    return (func)( retval, D_A(nargs), (struct descr *)D_A(args) );
-}
+#endif /* NO_PML not defined */
