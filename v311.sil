@@ -1,6 +1,10 @@
 * $Id$
 *
 * $Log$
+* Revision 1.23  94/05/25  02:30:10  budd
+* [PLB15] Implemented SPITBOL &CASE/-CASE
+* Moved Un*x version messages to version.c
+* 
 * Revision 1.22  94/05/02  19:03:26  budd
 * [PLB14] use %15d formats (were %15i)
 * discovered by Jerry Leichter in port to VMS!
@@ -5449,7 +5453,7 @@ DTLIST DESCR   DTLIST,TTL+MARK,DTLEND-DTLIST-DESCR
 DTLEND LHERE   ,
 *
 KNLIST DESCR   KNLIST,TTL+MARK,KNEND-KNLIST-DESCR
-TRIMCL DESCR   1,0,I		   &TRIM			[PLB6]
+TRIMCL DESCR   0,0,I		   &TRIM
        DESCR   TRMSP,0,0
 TRAPCL DESCR   0,0,I		   &TRACE
        DESCR   TRCESP,0,0
