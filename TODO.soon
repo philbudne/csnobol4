@@ -2,8 +2,10 @@ $Id$
 
 fix Win32 UDP read?
 
+add tag for 0.99.44
+
 put sources under CVS
-	add tag for 0.99.44
+	name repository csnobol4?
 	improve rcs2cvs;
 		move old files to Attic directories!!!
 	do CVS check out on branch??
