@@ -1,5 +1,10 @@
 $Id$
 
+>>>> dt.h: checkin (& add to tar file) or merge with snotypes.h
+
+SPITBOL fatal;
+	filename given to INPUT or OUTPUT when already open?
+
 ================
 
 use HOST(0) in genc.sno, gendata.sno for input file?
