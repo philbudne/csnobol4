@@ -878,5 +878,5 @@ Understanding the SIL source
 .PP
 You should not need to look at or understand the SIL (SNOBOL
 Implementation Language) sources to port the package.
-Documentation for the original macros can be found in
-ftp://ftp.snobol4.org/snobol/doc/
+Documentation for the original macros can be found in memo s4d58 which
+can be found in ftp://ftp.snobol4.org/snobol/doc/
