@@ -349,7 +349,7 @@ io_fopen( fp, mode )
     if (fp->f == NULL)
 	return NULL;
 
-    if (fisatty(fp->f)) {
+    if (fisatty(fp->f, fp->fname)) {
 	/* XXX set close hook? */
 	fp->flags |= FL_TTY;
     }
@@ -418,7 +418,7 @@ io_mkfile2( unit, f, fname, flags )
 	return FALSE;
     fp->f = f;
     fp->flags |= flags;
-    if (fisatty(f)) {
+    if (fisatty(f, fname)) {
 	/* XXX set close hook? */
 	fp->flags |= FL_TTY;
     }

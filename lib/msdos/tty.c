@@ -10,8 +10,9 @@
 #include "h.h"				/* for FALSE */
 
 int
-fisatty(f)
+fisatty(f, fname)
     FILE *f;
+    char *fname;
 {
     /*
      * XXX we can only do tty_read() on keyboard so this better not

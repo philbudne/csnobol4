@@ -37,8 +37,9 @@ static struct save {
 } *list;
 
 int
-fisatty(f)
+fisatty(f, fname)
     FILE *f;
+    char *fname;
 {
     return isatty(fileno(f));
 }

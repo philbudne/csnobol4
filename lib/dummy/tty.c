@@ -9,8 +9,9 @@
  */
 
 int
-fisatty(f)
+fisatty(f, fname)
     FILE *f;
+    char *fname;
 {
     return FALSE;			/* why not? */
 }
