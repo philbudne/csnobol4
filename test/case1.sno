@@ -2,25 +2,25 @@
 * 5/25/94 -plb
 
 * should start case insensitive (-case 1)
-	output = .hi
-	OUTPUT = .hi
+	output = .one
+	OUTPUT = .two
 * switch to case sensitive
 -case
-	OUTPUT = .hi
-* this should fail!
+	OUTPUT = .three
+* no longer fails;
 -case 1
-	OUTPUT = .hi
+	OUTPUT = .four
 * switch back
 -CASE 1
-	output = .hi
-	OUTPUT = .hi
+	output = .five
+	OUTPUT = .six
 * do it differently this time
 -case 0
-	OUTPUT = .hi
+	OUTPUT = .seven
 * noop
 	output = 'here1'
 
-**** test functions, labels, special lables
+**** test functions, labels, special labels
 	&CASE = 0
 * XXX test locals too?
 * XXX test sensitivity better
