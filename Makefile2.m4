@@ -500,7 +500,7 @@ install: snobol4 pv
 	$(INSTALL) -m 644 doc/snobol4.1 $(MANDIR)
 	$(INSTALL) -d $(SNOLIB_DIR)
 	for F in snolib/*.sno $(INSTALL_H) doc/load.doc $(GENSNOLIB); do \
-		$(INSTALL) -m 644 $(SNOLIB_DIR); \
+		$(INSTALL) -m 644 $$F $(SNOLIB_DIR); \
 	done
 	@echo '************************************************'
 	@echo '*** Have you mailed a copy of timing.out to' \
