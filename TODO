@@ -11,6 +11,7 @@ $Id$
 
 9b. rename PUNCH to STDERR (ERROR?)?
 9c. add TTY variable for both input/output to /dev/tty (like SITBOL)?
+9d. add TERM variable (like Catspaw SPITBOL)
 
 10.  Honor I/O flags in filenames (like Catspaw SPITBOL);
 
@@ -69,14 +70,10 @@ $Id$
 	STAT() (returns DATA("STAT(ST_xxx,.....)" record)
 	SYSTEM()?
 
-21b. fix -ERRORS termination messages (make it ERROR #29)?
-
 22. Implement -NOEXEC (-n flag)
 
 23. Handle input file "-" (stdin)
 	require it? (now defaults to stdin)
-
-24. have exit status code reflect exit reason (compilation/execution errors)!
 
 25. Have way to find out what host system type is!
 	ie; "uname(2)", Catspaw HOST() function
