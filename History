@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/23/2003
+	configure: compile test program to get long/pointer sizes
+		for LP64 and LP64_native checks
+
 12/22/2003
 	timing: use gentoo "emerge" if present
 
