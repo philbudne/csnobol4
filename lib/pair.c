@@ -5,9 +5,13 @@
  * 10/27/93
  */
 
+#ifndef STATIC_PAIR			/* not included */
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
+
+#define STATIC_PAIR
+#endif /* STATIC_PAIR not defined */
 
 /*
  * odd members are "type"
@@ -15,11 +19,12 @@
  */
 
 /* locate attribute pair by type */
-int
+STATIC_PAIR int
 locapt( d1, d2, d3 )
     struct descr *d1, *d2, *d3;
 {
-    int_t a, end;
+    register int_t a;
+    int_t end;
 
     a = D_A(d2);
     end = a + D_V(a);
@@ -36,11 +41,12 @@ locapt( d1, d2, d3 )
     return 0;				/* false (failure) */
 }
 
-int
+STATIC_PAIR int
 locapv( d1, d2, d3 )
     struct descr *d1, *d2, *d3;
 {
-    int_t a, end;
+    register int_t a;
+    int_t end;
 
     a = D_A(d2);
     end = a + D_V(a);
