@@ -104,6 +104,9 @@ Step 2.
 
 	PML_OBJ=system.o
 
+	If any special libraries are required, you can specify them
+	at the end of PML_OBJ, or add them to CONFIG_LDFLAGS.
+
 Step 3.
 
 	Make sure the named object files exist.
