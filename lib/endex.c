@@ -4,12 +4,18 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
+#ifdef HAVE_STDLIB_H			/* before stdio */
+#include <stdlib.h>			/* for exit(), abort() */
+#endif /* HAVE_STDLIB_H defined */
+#include <stdio.h>			/* for lib.h */
+
 #include "h.h"				/* for data.h */
 #include "snotypes.h"
 #include "macros.h"
 #include "equ.h"
 #include "res.h"
 #include "data.h"			/* for RETCOD */
+#include "lib.h"			/* for io_finish(), inet_cleanup() */
 
 #ifdef NO_STATIC_VARS
 #include "vars.h"
@@ -21,8 +27,6 @@ extern jmp_buf endex_jmpbuf;
 #endif /* NO_STATIC_VARS not defined */
 
 #ifdef TRACE_DEPTH
-#include <stdio.h>
-
 #define MAX_DEPTH 50000
 int cdepth;
 int tdepth[MAX_DEPTH];
