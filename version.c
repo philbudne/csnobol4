@@ -2,6 +2,9 @@
 
 /*
  * $Log$
+ * Revision 1.16  1996/10/08  06:34:48  phil
+ * 0.99
+ *
  * Revision 1.15  1996/10/05  06:30:39  phil
  * 0.98.5
  *
@@ -61,8 +64,8 @@
 #include "data.h"
 #endif
 
-const char vers[] = "0.99";
-const char vdate[] = "Oct 7, 1996";
+const char vers[] = "0.99.1";
+const char vdate[] = "Oct 24, 1996";
 const char snoname[] = "C-MAINBOL";
 
 #ifdef MAIN
