@@ -411,10 +411,6 @@ To compile using Microsoft Visual C++ (not tested);
 To compile using Borland C (not tested);
 	nmake -f config\win32\borland.mak
 
-Since the system compiles and runs well under Cygwin, so I've lost
-interest in the native port (some native routines are used where
-cygwin support is lacking).
-
 DJGPP under DOS
 ---------------
 
