@@ -98,3 +98,5 @@ reg crlf.sno
 # 1/21/2002
 reg label.sno
 reg vdiffer.sno
+# 1/22/2002
+reg function.sno
