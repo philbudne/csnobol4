@@ -1,8 +1,14 @@
 $Id$
 
+load.doc;
+	http://www.fortran-2000.com/ArnaudRecipes/sharedlib.html
+
+pass CPP directives thru genc.sno/gendata.sno
+
 verify correctness of line.ref, include.ref
 
 create csnobol4 home page (seperate sections for 0.99.4, new);
+	page for CVS repository instructions
 	links to distribution
 	links to documentation
 		man page (html, pdf)
@@ -33,7 +39,6 @@ include advertizements about users (announcements?) mailing list???
 	End of Makefile(2.m4)
 
 change name from C-MAINBOL to CSNOBOL4
-	version.c
 	doc/snobol4.1
 
 put sources under CVS
