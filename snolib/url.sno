@@ -22,13 +22,15 @@
 	DEFINE("URL.OPEN(URL.NAME,URL)"
 +		"URL.HOST,URL.PORT,URL.PROTO,URL.FILE")
 +							:(URL.OPEN.END)
+
+* XXX allow /pathname and file://hostname/path?
 URL.OPEN
 	URL POS(0)
-+		(('http' | 'ftp') . URL.PROTO
++		((('http' | 'ftp') . URL.PROTO
 +			'://'
 +			BREAK(':/') . URL.HOST
 +			((':' SPAN('0123456789') . URL.PORT) | '') |
-+		  'file' . URL.PROTO ':')
++		  'file' . URL.PROTO ':') ('' | '//'))
 +			(('/' REM) | '') . URL.FILE	:F(FRETURN)
 
 *	save protocol for close
@@ -43,6 +45,7 @@ URL.OPEN.http
 
 ****
 URL.OPEN.ftp
+*	XXX check for user:password@host
 	FTP.OPEN.ANON(.URL.FTP.TABLE[URL.NAME],URL.HOST,URL.PORT)
 +							:F(FRETURN)
 	FTP.DATA.COMMAND(.URL.FTP.TABLE[URL.NAME],"RETR " URL.FILE,URL.NAME)
