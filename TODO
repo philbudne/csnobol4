@@ -51,8 +51,6 @@ $Id$
 	SUBSTR()
 	LEQ() LGE() LST() LLE() LLT() LNE()
 
-15. add Icon/Catspaw(?) keywords &LCASE &UCASE
-
 16. implement -INCLUDE (-COPY) control line!!
 
 17. implement ordvst() for sorting &DUMP output
