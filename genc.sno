@@ -733,6 +733,9 @@ GOTO_X_OP						:($('X' OP))
 *	null op?!
 X
 *	other ops with null actions (see also  NOCODE table)
+*
+* procedure-ness dtermined by ISPROC table
+XXPROC
 XPROC	TERMINAL = TAB LBL
 XLHERE							:(OPDONE)
 *
