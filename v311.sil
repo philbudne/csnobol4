@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.25  94/05/26  01:14:52  budd
+* [PLB17] More CASE dependancies
+* 
 * Revision 1.24  94/05/25  23:28:35  budd
 * [PLB16] changed &TRIM default back to 0
 * 
@@ -1546,7 +1549,7 @@ CRLCR6 LEXCMP  XSP,CASESP,CMTCLR,,CMTCLR			[PLB15]
 *				   Get value			[PLB15]
        AEQLC   STYPE,ILITYP,CMTCLR				[PLB15]
 *				   Verify integer		[PLB15]
-       SPCINT  CASECL,TEXTSP,CMTCLR,CMTCLR			[PLB15]
+       SPCINT  CASECL,XSP,CMTCLR,CMTCLR				[PLB15]
 *_
 CRLCR7 SETAC   CASECL,0		   Clear case folding		[PLB15]
        BRANCH  CMTCLR		   Join terminal processing	[PLB15]
@@ -5517,6 +5520,10 @@ EXNOCL DESCR   0,0,I		   &STCOUNT
 STCTKY DESCR   STCTSP,0,0
 LVLCL  DESCR   0,0,I		   &FNCLEVEL
 FNCLKY DESCR   FNCLSP,0,0
+LCASVL DESCR   0,0,0		   &LCASE	[PLB18]
+       DESCR   LCNMSP,0,0			[PLB18]
+UCASVL DESCR   0,0,0		   &UCASE	[PLB18]
+       DESCR   UCNMSP,0,0			[PLB18]
 KVEND  LHERE   ,
 *
 INLIST DESCR   INLIST,TTL+MARK,2*DESCR
@@ -5769,10 +5776,12 @@ COLSP  SPEC    COLSTR,0,0,0,2	   Colon for trace messages
 DMPSP  SPEC    ANYSP,0,0,0,0	   Buffer specifier
 DTARSP SPEC    DTARBF,0,0,0,ARRLEN+9
 *				   Array representation specifier
+LCASSP SPEC    LCASE,0,0,0,LCASSZ  Lower case letters		[PLB18]
 PROTSP SPEC    ANYSP,0,0,0,0	   Buffer specifier
 QTSP   SPEC    QTSTR,0,0,0,1	   Quote for messages
 REALSP SPEC    REALBF,0,0,0,10	   Specifier for real conversion
 TRACSP SPEC    ANYSP,0,0,0,0	   Buffer specifier
+UCASSP SPEC    UCASE,0,0,0,UCASSZ  Upper case letters		[PLB18]
 *
 ARRSP  STRING  'ARRAY'
 ASSCSP STRING  'TABLE'
@@ -6400,6 +6409,7 @@ ITEMSP STRING  'ITEM'
 TRKYSP STRING  'KEYWORD'
 TRLASP STRING  'LABEL'
 LSTNSP STRING  'LASTNO'
+LCNMSP STRING  'LCASE'				[PLB18]
 LENSP  STRING  'LEN'
 LESP   STRING  'LE'
 LGTSP  STRING  'LGT'
@@ -6439,6 +6449,7 @@ TABSP  STRING  'TAB'
 TIMSP  STRING  'TIME'
 TRCESP STRING  'TRACE'
 TRMSP  STRING  'TRIM'
+UCNMSP STRING  'UCASE'				[PLB18]
 UNLDSP STRING  'UNLOAD'
 VALSP  STRING  'VALUE'
 *
@@ -6460,10 +6471,15 @@ ABNDB  LHERE   ,
        DESCR   FRETCL,0,0
        DESCR   FUNTSP,0,0	   'FUNCTION'
        DESCR   FUNTCL,0,0
+       DESCR   LCASSP,0,0	   &LCASE			[PLB18]
+       DESCR   LCASVL,0,0					[PLB18]
        DESCR   NRETSP,0,0	   'NRETURN'
        DESCR   NRETCL,0,0
        DESCR   RETSP,0,0	   'RETURN'
-DTEND  DESCR   RETCL,0,0
+       DESCR   RETCL,0,0					[PLB18]
+       DESCR   UCASSP,0,0	   &UCASE			[PLB18]
+DTEND  DESCR   UCASVL,0,0					[PLB18]
+
 BUFEXT EQU     DTEND-ANYSP
 BUFLEN EQU     BUFEXT*CPA
 *
@@ -6732,7 +6748,7 @@ STGENO FORMAT  '%15d Regenerations of dynamic storage\n'
 SUCCF  FORMAT  'No errors detected in source program\n\n'
 SYSCMT FORMAT  'Caught signal in statement %d at level %d\n'
 *								E3.4.1
-TIMEPS FORMAT  '%15.2f ms. Average per statement executed\n'
+TIMEPS FORMAT  '%15.3f ms. Average per statement executed\n'	[PLB18]
 TITLEF FORMAT  'SNOBOL4 (Version 3.11, May 19, 1975)\n'
 *								V3.11
 WRITNO FORMAT  '%15d Writes performed\n'
