@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+4/13/97:
+	new lib/unix98/load.c: load support using dlopen()
+	autoconf: check for dlfcn.h, added --no-dlopen
+
 4/5/97:
 	doc/snobol4.1: document DATE() args
 	autoconf, timing: added CCVERS for C Compiler version
