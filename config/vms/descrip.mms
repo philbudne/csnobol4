@@ -19,13 +19,11 @@ CCDEFS=,NEED_POPEN_DECL,NEED_OFF_T
 #CLIB=+SYS$SHARE:VAXCRTL/SHARE
 CLIB=+SYS$LIBRARY:DECCRTL/LIB
 
-# TCP library, if present
-UCXLIB=+SYS$LIBRARY:UCX$IPC/LIB
-# use vms inet.c
-INET_OBJ=inet.obj
-
 # alternate library routines
 MSTIME_C=[.lib.vms]mstime.c
+
+UCXOBJ=inet.obj
+UCXLIB=+SYS$LIBRARY:UCX$IPC/LIB
 
 .else
 .ifdef DECC4
@@ -35,13 +33,11 @@ AUX_OBJ=bcopy.obj, bzero.obj, popen.obj, unlink.obj,
 CCDEFS=,NEED_POPEN_DECL,NEED_OFF_T
 # no explicit CRT library needed
 
-# TCP library, if present
-UCXLIB=+SYS$LIBRARY:UCX$IPC/LIB
-# use vms inet.c
-INET_OBJ=inet.obj
-
 # alternate library routines
 MSTIME_C=[.lib.vms]mstime.c
+
+UCXOBJ=inet.obj
+UCXLIB=+SYS$LIBRARY:UCX$IPC/LIB
 
 .else
 
@@ -52,28 +48,34 @@ MSTIME_C=[.lib.vms]mstime.c
 CCFLAGS=/OPTIMIZE
 CCDEFS=,HAVE_STRINGS_H,HAVE_STDLIB_H,HAVE_UNISTD_H
 # no explicit CRT library needed
-# no explicit UCX library needed
 
 # alternate (normal!) library routines
 MSTIME_C=[.lib.posix]mstime.c
-INET_OBJ=inet6.obj
+
+UCXOBJ=inet6.o
 .endif
 .endif
 
 .ifdef NO_TCP
-# need to undefine??
-INET_C=[.lib.dummy]inet.c
 # C compiler flags, if any
-TCPDEFS=
+INETDEFS=
+
+INETOBJ=inet.obj
+INET_C=[.lib.dummy]inet.c
+
 .else
+
 # XXX ifdefs here for different TCP/IP packages?
 
 ################
 # use DEC TCP/IP Connection services for OpenVMS
 #	(formerly VAX/Ultrix connection product)
-INETLIB=$(UCXLIB)
+
 # C compiler flags, if any
-TCPDEFS=
+INETDEFS=
+INETLIB=$(UCXLIB)
+INETOBJ=$(UCXOBJ)
+INET_C=[.lib.vms]inet.c
 .endif
 
 LIBS=$(INETLIB) $(CLIB)
@@ -88,7 +90,6 @@ ENDEX_C=[.lib]endex.c
 EXISTS_C=[.lib.vms]exists.c
 EXPOPS_C=[.lib.generic]expops.c
 HASH_C=[.lib]hash.c
-INET_C=[.lib.vms]inet.c
 INET6_C=[.lib.bsd]inet6.c
 INIT_C=[.lib]init.c
 INTSPC_C=[.lib.generic]intspc.c
@@ -146,7 +147,7 @@ PML_OBJ=chop.obj, cos.obj, delete.obj, execute.obj, exit.obj, \
 	log.obj, logic.obj, ord.obj, rename.obj, retstring.obj, sin.obj, \
 	sqrt.obj, sset.obj, sys.obj, tan.obj
 
-CFLAGS=	$(CCFLAGS) /DEFINE=(HAVE_CONFIG_H$(CCDEFS)$(TCPDEFS)) \
+CFLAGS=	$(CCFLAGS) /DEFINE=(HAVE_CONFIG_H$(CCDEFS)$(INETDEFS)) \
 	/INCLUDE=(SYS$DISK:[.CONFIG.VMS],SYS$DISK:[],SYS$DISK:[.INCLUDE])
 
 ################
@@ -157,8 +158,8 @@ OBJS=	main.obj, $(SNOBOL4).obj, data.obj, data_init.obj, syn.obj, \
 	lexcmp.obj, load.obj, mstime.obj, ordvst.obj, pair.obj, \
 	pat.obj, pml.obj, realst.obj, replace.obj, spcint.obj, \
 	spreal.obj, str.obj, stream.obj, term.obj, top.obj, tty.obj, \
-	tree.obj, version.obj, getredirect.obj, \
-	rresvport.obj, $(AUX_OBJ) $(PML_OBJ)
+	tree.obj, version.obj, getredirect.obj, bindresvport.obj \
+	$(AUX_OBJ) $(PML_OBJ)
 
 snobol4.exe : $(OBJS)
 	link /exec=snobol4.exe $(OBJS) $(LIBS)
@@ -359,9 +360,5 @@ isnan.obj : [.lib.dummy]isnan.c
 finite.obj : [.lib.dummy]finite.c
 	$(CC) $(CFLAGS) [.lib.dummy]finite.c
 
-rresvport.obj : [.lib.dummy]rresvport.c
-	$(CC) $(CFLAGS) [.lib.dummy]rresvport.c
-
-rresvport_af.obj : [.lib.auxil]rresvport_af.c
-	$(CC) $(CFLAGS) [.lib.auxil]rresvport_af.c
-
+bindresvport.obj : [.lib.auxil]bindresvport.c
+	$(CC) $(CFLAGS) [.lib.auxil]bindresvport.c
