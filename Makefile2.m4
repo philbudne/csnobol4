@@ -448,7 +448,7 @@ GENERATED=syn.c syn.h data.c data.h data_init.h proc.h equ.h \
 	data.c2 data.h2 data_init.h2 proc.h2 equ.h2 syn.h2 \
 	snobol4.c isnobol4.c 
 
-# files with secondary (.[ch]2) copies; should be older than primaries
+# files to touch
 G2=data.c data.h data_init.h proc.h equ.h syn.h
 
 # disposables
@@ -471,10 +471,11 @@ realclean: clean
 	genc.sno gensyn.sno gendata.sno inline.sno \
 	main.c charset.c data_init.c version.c \
 	parms.h mlink.h mdata.h pml.h \
+	$(GENERATED) \
 	lib include config test bugs \
-	snolib/Makefile snolib/*.[ch] snolib/*.sno \
+	snolib/*.sno \
 	timing timing.sno \
-	cc-M split.c]
+	cc-M bsplitu.c]
 
 # "print version" -- for dir/tar names
 pv:	version.c
@@ -484,7 +485,10 @@ pv:	version.c
 COMP=gzip
 Z=gz
 
+# tempting to use VERS:sh = ./pv
+# but need to make pv first!!
 VERS=`./pv`
+
 DIR=snobol-$(VERS)
 KIT=snobol-$(VERS).tar.$(Z)
 
@@ -497,8 +501,7 @@ tar vers: TESTED pv
 	rm -f *~ */*~ */*/*~ *.tmp
 	mkdir $(DIR)
 	find $(TAR) -name RCS -prune -o -print | cpio -pldm $(DIR)
-	for f in $(G2); do cp $$f $(DIR)/$${f}2; done
-	cp $(GENERATED) $(DIR)
+	touch $(G2)
 	tar cf - $(DIR) | $(COMP) > $(KIT)
 	rm -rf $(DIR)
 	./pv > vers
