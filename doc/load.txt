@@ -15,11 +15,10 @@ supported three different ways;
 		(per Unix98 standard) currently available on SunOS4
 		(Solaris 1), SunOS5 (Solaris2) Digital Unix (the
 		operating system formerly known as OSF/1), IRIX,
-		NetBSD, FreeBSD, Linux.
+		NetBSD, FreeBSD, and Linux.
 		(see section 4. for more information)
 
-	B. Using HP-UX shared-library functions.  This support
-		is still experimental.
+	B. Using HP-UX shared-library functions.
 		(see section 4. for more information)
 
 	C. Systems with BSD/V7 style a.out object format
@@ -215,8 +214,13 @@ NOTES:
 On most systems, the shared library will be able to access global
 symbols from the main snobol4 executable, and will not need to be
 linked with support functions like "getstring()" and "retstring()".
-However on HP-UX and Linux it appears to be necessary to link these
-functions into each shared library that uses these functions.
+
+However on Linux it appears to be necessary to link these functions
+into each shared library that uses these functions.
+
+On HP-UX there is a getstring() function in libc (and it found before
+the getstring function in the snobol4 executable), so getstring.c must
+be added to each shared library which calls it.
 
 On SGI and DEC UNIX (OSF/1) systems you will see warnings for
 undefined global symbols. These can be ignored if the symbols are
