@@ -7,6 +7,9 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 		if there are more actuals than formals, pass extras
 		without conversion (was looking past end of formal list)!
 	pml.h: no longer need (,) in HOST prototype (testing above fix)
+	include/snotypes.h: Add BITFIELDS_SAME_TYPE
+		gcc 3.3.1 (SuSE Linux) can't handle this!
+	config/win32/ntmsvc.mak: set BITFIELDS_SAME_TYPE
 
 1/6/2004
 	include/snotypes.h: make FFLD packable by MSVC

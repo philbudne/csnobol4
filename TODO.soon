@@ -2,8 +2,6 @@ $Id$
 
 Green Book URL(!!) in snobol4.1
 
-Pass extra args to external functions?!
-
 put sources under CVS
 	name repository csnobol4?
 	do CVS check out on branch??
