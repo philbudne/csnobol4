@@ -607,7 +607,9 @@ PPPEND
 	LN = 0
 *
 *	here for each line of input file
-TOP	LINE = INPUT					:F(EOF)
+TOP	&INPUT = 1
+	LINE = INPUT					:F(EOF)
+	&INPUT = 0
 	LN = LN + 1
 	ORIG = LINE
 	LINE = LINE SP
@@ -622,6 +624,7 @@ TOP	LINE = INPUT					:F(EOF)
 	INDENT()
 
 *	here if copying C code
+	&INPUT = 1
 DOCOPY	LN = LN + 1
 	LINE = INPUT					:F(EOF)
 *	check for end
