@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.4  93/11/02  13:35:01  phil
+* [PLB1] dropped sequence field size (SEQSIZ) to zero!
+* 
 * Revision 1.3  93/11/02  13:26:11  phil
 * Fixed garbled characters near END2 and AERROR
 * 
@@ -6069,7 +6072,7 @@ FNLIST DESCR   FNLIST,TTL+MARK,FNCPLE-FNLIST-DESCR
        DESCR   UNLDSP,0,0
        DESCR   VALFN,FNC,0	   VALUE(S)
        DESCR   VALSP,0,0
-       ARRAY   10*2		   Space for 10 more functions
+       ARRAY   50*2		   Space for 50 more functions
 FNCPLE LHERE   ,		   End of function pair list
 OPTBL  DESCR   OPTBL,TTL+MARK,OPTBND-OPTBL-DESCR
 ADDFN  DESCR   ADD,0,2		   X + Y    addition
