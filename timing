@@ -146,6 +146,7 @@ if [ -f 00README.CVS ]; then
 	if [ -f CVS/Entries ]; then
 		echo ''
 		echo 'CVS/Entries:'
+		ls -l CVS/Entries
 		cat CVS/Entries
 	fi
 fi
