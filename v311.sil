@@ -1,8 +1,12 @@
 * $Id$
 *
 * $Log$
+* Revision 1.54  1996/09/30  17:07:21  phil
+* don't zap FILENM at XLATND, so if there are no executable statements
+* (just an END), we have a file name to display for "Last statement"!
+*
 * Revision 1.53  1996/09/30  05:53:19  phil
-* renamed EXP to EXPOP
+* [PLB43] renamed EXP to EXPOP
 *
 * Revision 1.52  1996/09/28  05:20:56  phil
 * fix typos from last checkin
@@ -558,18 +562,8 @@ INITD1 GETDC   XPTR,INITB,0	   Get specifier to convert
 *
 * spin through list of functions to auto-load
        SETAC   TMVAL,0		   Loop index			[PLB42]
-AUTLOP LHERE			   Top of autoload loop		[PLB42]
-%{	/* escape to C to build specifier for prototype		[PLB42] */
-	extern char *pm_prototypes[];	/*			[PLB42] */
-					/*			[PLB42] */
-	S_A(XSP) = (int_t) pm_prototypes[D_A(TMVAL)]; /* OY!	[PLB42] */
-	S_F(XSP) = 0;			/* NOTE: *not* a PTR! 	[PLB42] */
-	S_V(XSP) = 0;			/*			[PLB42] */
-	S_O(XSP) = 0;			/*			[PLB42] */
-	S_L(XSP) = strlen(pm_prototypes[D_A(TMVAL)]); /*	[PLB42] */
-	CLR_S_UNUSED(XSP);		/*			[PLB42] */
-%}
-       LEQLC   XSP,0,,XLATRN	   Empty string? end of loop	[PLB42]
+AUTLOP XCALLC  getpmproto,(XSP,TMVAL),XLATRN			[PLB44]
+*				   Get next prototype specifier	[PLB44]
        RCALL   XPTR,GENVAR,(XSPPTR)				[PLB42]
 *				   Get prototype string in XPTR	[PLB42]
        MOVD    WPTR,NULVCL	   Get null string (library)	[PLB42]
