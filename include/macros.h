@@ -104,11 +104,11 @@ struct descr *cstack;
 #define RSTSTK() cstack = ostack
 
 /* overflow check */
-#define OFCHK()	{ if ((int)cstack > (int)STACK+STSIZE*DESCR) OVER(NULL); }
+#define OFCHK()	{ if ((int_t)cstack > (int_t)STACK+STSIZE*DESCR) OVER(NULL); }
 
 #ifdef DO_UFCHK
 /* for debug only (internal error); */
-#define UFCHK()	{ if ((int)cstack < (int)STACK) INTR10(NULL); }
+#define UFCHK()	{ if ((int_t)cstack < (int_t)STACK) INTR10(NULL); }
 #else  /* DO_UFCHK not defined */
 #define UFCHK()
 #endif /* DO_UFCHK not defined */
@@ -120,7 +120,7 @@ struct descr *cstack;
 #define SPOP(x)	 cstack -= SPEC/DESCR; UFCHK(); _SPEC(x) = _SPEC(cstack+1)
 
 #define ISTACK() cstack = (struct descr *)STACK
-#define PSTACK(x) D_A(x) = (int)(cstack-1); D_F(x) = D_V(x) = 0
+#define PSTACK(x) D_A(x) = (int_t)(cstack-1); D_F(x) = D_V(x) = 0
 
 /****************/
 
