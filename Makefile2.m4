@@ -444,11 +444,11 @@ tan.o: $(TAN_C)
 # housekeeping
 
 # generated files to include in kit (hard link to target dir)
-GENERATED=data.c2 data.h2 data_init.h2 proc.h2 equ.h2 syn.h2 \
+GENERATED=data.c2 data.h2 data_init.h2 proc.h2 equ.h2 syn.c2 syn.h2 \
 	snobol4.c isnobol4.c 
 
 # generated files to include in kit (copy, so newer than .x2 versions)
-G2=data.c data.h data_init.h proc.h equ.h syn.h
+G2=data.c data.h data_init.h proc.h equ.h syn.c syn.h
 
 # disposables
 DISP=*.o *.a callgraph prolog subr bsplitu pv
