@@ -179,13 +179,14 @@ BADTIME	OUTPUT =
 TIMEOK	OUTPUT =
 	OUTPUT = "snobol4 time measurement checks out"	:(DONE)
 
+* could not parse "snobol4" stats output; fatal
 NOSTAT	OUTPUT =
 	OUTPUT = "could not get stats"			:F(FATAL)
 
+* could not get shell "time" output; nonfatal
 NOTIME	OUTPUT =
-	OUTPUT = "could not get times"
-* fall
+	OUTPUT = "could not get times"			:(DONE)
 
 FATAL	&CODE = 1
-DONE
+DONE	OUTPUT =
 END
