@@ -2,6 +2,11 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
+1/8/94
+	output UNIXF UNIXF2 at startup
+	output error name string to stderr
+	implemented -b (BANRCL), -s (STATCL)
+
 1/7/94
 	cleaned up config/ files. added bsd43, sony_news, posix
 	checked in changes from 1/3
