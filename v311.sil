@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.52  1996/09/28  05:20:56  phil
+* fix typos from last checkin
+*
 * Revision 1.51  1996/09/25  07:46:20  phil
 * [PLB42] added auto-load; uses pm_prototypes from pml.c
 *
@@ -2384,7 +2387,7 @@ DIV    PROC    ADD		   X / Y
        SETAC   SCL,2
        BRANCH  ARITH
 *_
-EXP    PROC    ADD		   X ** Y and X ^ Y
+EXPOP  PROC    ADD		   X ** Y and X ^ Y		[PLB43]
        SETAC   SCL,3
        BRANCH  ARITH
 *_
@@ -7421,7 +7424,7 @@ DIVFN  DESCR   DIV,0,2		   X / Y    division
 DOLFN  DESCR   DOL,0,2		   X $ Y    immediate naming
        DESCR   0,0,0
        DESCR   60,0,59
-EXPFN  DESCR   EXP,0,2		   X ** Y   exponentiation
+EXPFN  DESCR   EXPOP,0,2	   X ** Y   exponentiation	[PLB43]
        DESCR   0,0,0
        DESCR   50,0,50
 MPYFN  DESCR   MPY,0,2		   X * Y    multiplication
