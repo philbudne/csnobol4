@@ -5,6 +5,14 @@
 # results suitable for inclusion in ports.doc
 # pb 6/4/94
 
+if [ "$*" ]; then
+	SNOBOL=$1
+	shift
+	ARGS="$*"
+else
+	SNOBOL=./xsnobol4
+fi
+
 echo 'Date:'
 date
 echo ''
@@ -17,14 +25,14 @@ echo ''
 echo 'config.guess:'
 ./config.guess
 echo ''
-echo 'ls -l config.m4 xsnobol4:'
-ls -l config.m4 xsnobol4
+echo "ls -l config.m4 ${SNOBOL}:"
+ls -l config.m4 $SNOBOL
 echo ''
 echo 'config.m4:'
 cat config.m4
 echo ''
-echo 'size xsnobol4:'
-size xsnobol4
+echo "size ${SNOBOL}:"
+size $SNOBOL
 
 if [ -x /usr/bin/uptime ]; then
 	echo ''
@@ -38,6 +46,9 @@ fi
 
 echo ''
 echo 'timing run of genc.sno:'
+if [ "$ARGS" ]; then
+	echo "	args: $ARGS"
+fi
 
 TDIR=timdir.$$
 (
@@ -47,13 +58,17 @@ TDIR=timdir.$$
 LNFILES='../xsnobol4 ../procs ../globals ../v311.sil ../genc.sno ../snobol4.c'
 # AFS doesn't allow hard links across directories!
 	ln $LNFILES . || ln -s $LNFILES .
-	
+
+# make sure "." first in path, .. second
+	PATH=".:..:$PATH"
+	export PATH
+
 # NOTE! 2>&1 *BEFORE* >x
-	time ./xsnobol4 -s genc.sno < v311.sil 2>&1 >x
+	time $SNOBOL $ARGS -s genc.sno < v311.sil 2>&1 >x
 	echo ==== diff
 	diff snobol4.c x
 
 	cd ..
 	rm -rf $TDIR
-) | ./xsnobol4 -b timing.sno
-# NOTE: do not add commands here; xsnobol4 exit status is shell exit status!!
+) | $SNOBOL -b timing.sno
+# NOTE: do not add commands here; ./xsnobol4 exit status is shell exit status!!
