@@ -4,7 +4,7 @@ reg a.sno
 reg str.sno
 reg dump.sno
 reg hello.sno
-reg punch.sno
+#reg punch.sno
 reg len.sno
 reg cat.sno
 reg float.sno
@@ -71,3 +71,8 @@ trace trace2.sno
 reg noexec.sno
 # 9/17/96
 reg ops.sno
+# 9/18/96
+reg lexcmp.sno
+reg substr.sno
+reg space.sno
+reg space2.sno
