@@ -4,10 +4,13 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
+#include <stdio.h>
+
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
 #include "syntab.h"			/* XXX for CHARSET */
+#include "lib.h"
 
 #define ALPHSZ CHARSET			/* XXX ? */
 #define MASK (ALPHSZ-1)
@@ -53,4 +56,3 @@ rplace(sp1, sp2, sp3)
     }	
 #endif /* not 0 */
 }
-
