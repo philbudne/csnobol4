@@ -8,7 +8,7 @@
 .       ds rq ''
 .       ds lq ``
 .\}
-.TH SNOBOL4 1 "24 Aug 2003" "Local"
+.TH SNOBOL4 1 "08 Jul 2003" "Local"
 .SH NAME
 snobol4 \- SNOBOL4 interpreter
 .SH SYNOPSIS
@@ -170,6 +170,10 @@ arrays and tables.  The
 the pound sign for comments allows use of the shell interpreter
 sequence at the top of a file (ie; "#!/usr/local/bin/snobol4 -b").
 Underscore (_) and period (.) are legal within identifiers and labels.
+On ASCII based systems, any character with the 8th bit set is treated
+as "alphabetic", and can start, or be used in identifiers and labels.
+This means characters from the "upper half" of national character sets
+and all bytes resulting from the UTF-8 encoding of Unicode characters.
 
 .SS "Extensions"
 .TP
@@ -1056,7 +1060,3 @@ I/O retains some record oriented flavor.
 I/O is still tied to unit numbers.
 .PP
 \*(lqDynamic\*(rq storage cannot be expanded after startup.
-.PP
-Characters recognized by
-.BR isalpha (3)
-in the current locale should be allowed in identifiers.
