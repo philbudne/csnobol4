@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+10/11/97:
+	snolib/http.sno: add "Host: " to request
+
 10/10/97:
 	snolib/snobol4+.sno: accept REAL offset argument to SEEK()!
 	lib/vms/sys.c: removed OSNAME, trim trailing spaces from version
