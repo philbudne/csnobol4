@@ -36,7 +36,8 @@ if [ "$UNAME" ]; then
 	case `$UNAME` in
 	AIX*)
 		if [ -x /usr/sbin/lsattr ]; then
-			for X in proc0 'sys0 -a realmem' \
+			for X in proc0 \
+			    'sys0 -a realmem -a modelname' \
 			    `(/usr/sbin/lsdev -C -c memory | cut -d' ' -f1) 2>/dev/null`; do
 				echo ''
 				echo /usr/sbin/lsattr -EHl $X
