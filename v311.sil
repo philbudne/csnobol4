@@ -1,6 +1,11 @@
 * $Id$
 *
 * $Log$
+* Revision 1.8  93/11/10  20:11:08  phil
+* [PLB4] added (optional) 4th filename arg to
+* INPUT() and OUTPUT() using XOPENI and XOPENO ops.
+* Added XECOMP op to tell I/O sys when compile done.
+* 
 * Revision 1.7  93/11/10  11:12:55  phil
 * dropped initial FNLIST user functions back to 10
 * 
@@ -5122,15 +5127,15 @@ GENVIX RCALL   XPTR,GNVARI,XPTR,RTXNAM
 *				   Generate variable from integer
 *_
        TITLE   'Termination'
-END    OUTPUT  OUTPUT,NRMEND,(LVLCL)
+END    OUTPUT  PUNCH,NRMEND,(LVLCL)				[PLB5]
 *				   End procedure
-       OUTPUT  OUTPUT,LASTSF,(STNOCL)
+       OUTPUT  PUNCH,LASTSF,(STNOCL)				[PLB5]
 *				   Print status
        BRANCH  FTLEN2		   Join termination procedure
 *_
-FTLEND OUTPUT  OUTPUT,FTLCF,(ERRTYP,STNOCL,LVLCL)		V3.7
+FTLEND OUTPUT  PUNCH,FTLCF,(ERRTYP,STNOCL,LVLCL)		[PLB5] V3.7
        AEQLC   INICOM,0,FTLEN3	   BE SURE OF INITIALIZATION	E3.10.6
-       OUTPUT  OUTPUT,ALOCFL	   WARN USER			E3.10.6
+       OUTPUT  PUNCH,ALOCFL	   WARN USER			[PLB5] E3.10.6
        BRANCH  ENDALL		   GET OUT			E3.10.6
 *_								E3.10.6
 FTLEN3 MULTC   YCL,ERRTYP,DESCR 				E3.10.6
@@ -5159,22 +5164,22 @@ DMPNO  OUTPUT  OUTPUT,INCGCF	   Print disclaimer
        BRANCH  END1		   Join end game
 *_
 DMPK   RCALL   ,DMK		   Dump keywords
-END1   OUTPUT  OUTPUT,STATHD	   Print statistics title
-       OUTPUT  OUTPUT,CMTIME,(TIMECL)
+END1   OUTPUT  PUNCH,STATHD	   Print statistics title	[PLB5]
+       OUTPUT  PUNCH,CMTIME,(TIMECL)				[PLB5]
 *				   Print compilation time
-       OUTPUT  OUTPUT,INTIME,(ETMCL)
+       OUTPUT  PUNCH,INTIME,(ETMCL)				[PLB5]
 *				   Print interpretation time
-       OUTPUT  OUTPUT,EXNO,(EXNOCL,FALCL)
+       OUTPUT  PUNCH,EXNO,(EXNOCL,FALCL)			[PLB5]
 *				   Print execution stats
-       OUTPUT  OUTPUT,ARTHNO,(ARTHCL)
+       OUTPUT  PUNCH,ARTHNO,(ARTHCL)				[PLB5]
 *				   Print arithmetic stats
-       OUTPUT  OUTPUT,SCANNO,(SCNCL)
+       OUTPUT  PUNCH,SCANNO,(SCNCL)				[PLB5]
 *				   Print scanner stats
-       OUTPUT  OUTPUT,STGENO,(GCNO)
+       OUTPUT  PUNCH,STGENO,(GCNO)				[PLB5]
 *				   Print regeneration stats
-       OUTPUT  OUTPUT,READNO,(RSTAT)
+       OUTPUT  PUNCH,READNO,(RSTAT)				[PLB5]
 *				   Print read stats
-       OUTPUT  OUTPUT,WRITNO,(WSTAT)
+       OUTPUT  PUNCH,WRITNO,(WSTAT)				[PLB5]
 *				   Print write stats
        AEQLC   EXNOCL,0,END2	   Check for no interpretation
        INTRL   FCL,ZEROCL
@@ -5183,10 +5188,10 @@ END1   OUTPUT  OUTPUT,STATHD	   Print statistics title
 END2   INTRL   EXNOCL,EXNOCL	   Convert execution total to REAL
        INTRL   XCL,ETMCL	   Convert execution time to REAL
        DVREAL  FCL,XCL,EXNOCL	   Compute average time
-AVTIME OUTPUT  OUTPUT,TIMEPS,(FCL) Print average time
+AVTIME OUTPUT  PUNCH,TIMEPS,(FCL)  Print average time		[PLB5]
 ENDALL ENDEX   ABNDCL						E3.2.2
 *_
-SYSCUT OUTPUT  OUTPUT,SYSCMT,(STNOCL,LVLCL)
+SYSCUT OUTPUT  PUNCH,SYSCMT,(STNOCL,LVLCL)			[PLB5]
 *				   System cut exit
        AEQLC   CUTNO,0,ENDALL					E3.2.2
        SETAC   CUTNO,1						E3.2.2
