@@ -165,7 +165,7 @@ SERV_LISTEN( LA_ALIST ) LA_DCL
     signal(SIGCHLD, fireman);
 
     /* flush I/O buffers, so we don't see anything twice! */
-    io_flushall();
+    io_flushall(0);
 
     for (;;) {
 	int pid;
