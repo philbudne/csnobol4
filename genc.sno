@@ -32,11 +32,11 @@
 *	different I/O routines for now under MAINBOL!
 	DIFFER(MAINBOL)					:S(MB1)
 
-*	SIL file on INPUT
-	INPUT(.INPUT,1,SILPATH)
-
 *	error output to fd2
 	OUTPUT(.STDERR,2,"[-f2]")
+
+*	SIL file on INPUT
+	INPUT(.INPUT,1,SILPATH)				:F(OSIL)
 
 *	call graph (for ordering files for inlining)
 *	XXX only output if INLINING set?
@@ -49,18 +49,22 @@
 **************** MAINBOL I/O
 
 *	SIL file on INPUT
-MB1	INPUT(.INPUT,1,,SILPATH)
-
+MB1
 *	error output to fd2
 *	OUTPUT(.STDERR,2,"[-f2]")
 	OUTPUT(.STDERR,7)
+
+	INPUT(.INPUT,1,,SILPATH)			:F(OSIL)
 
 *	call graph (for ordering files for inlining)
 *	XXX only output if INLINING set?
 	OUTPUT(.CALLGRAPH,10,,'callgraph')
 
 *	output list of global procs (for data segment)
-	OUTPUT(.PROC.H,11,,'proc.h')
+	OUTPUT(.PROC.H,11,,'proc.h')			:(EIO)
+
+**** error opening SILPATH
+OSIL	STDERR = "FATAL: could not open " SILPATH	:(FATAL)
 
 EIO
 
@@ -530,8 +534,10 @@ EMKPROC
 *	read  list of procs referenced from data (DESCRs)
 	DIFFER(MAINBOL)					:S(MB3)
 *	XXX check for success!
-	INPUT(.GLOB,3,"global.procs")			:(GLOBLOP)
-MB3	INPUT(.GLOB,3,,"global.procs")
+	INPUT(.GLOB,3,"global.procs")			:S(GLOBLOP)F(GLOBERR)
+MB3	INPUT(.GLOB,3,,"global.procs")			:S(GLOBLOP)
+GLOBERR	STDERR = "FATAL: could not open global.procs"	:(FATAL)
+
 GLOBLOP	PROC = GLOB					:F(GLOBEND)
 *	skip comments!
 	PROC '*'					:S(GLOBLOP)
@@ -545,8 +551,10 @@ GLOBEND
 *	read gendep output!
 	DIFFER(MAINBOL)					:S(MB4)
 *	XXX check for success!
-	INPUT(.PPP,4,"procs")				:(PPPLOP)
-MB4	INPUT(.PPP,4,,"procs")
+	INPUT(.PPP,4,"procs")				:S(PPPLOP)F(PROCERR)
+MB4	INPUT(.PPP,4,,"procs")				:S(PPPLOP)
+PROCERR	STDERR = "FATAL: could not open procs file"	:(FATAL)
+
 PPPLOP	PROC = PPP					:F(PPPEND)
 *	skip comments!
 	PROC '*'					:S(PPPLOP)
@@ -573,7 +581,7 @@ PPPEND
 	LN = 0
 *
 *	here for each line of input file
-TOP	LINE = INPUT					:F(END)
+TOP	LINE = INPUT					:F(EOF)
 	LN = LN + 1
 	ORIG = LINE
 	LINE = LINE SP
@@ -1346,7 +1354,7 @@ XEND	IDENT(INPROC)					:S(OPDONE)
 * XXX just call EPROC(NULL)?
 	OUTPUT = IND '/* PANIC? */'
 XEND2	UNINDENT()
-	OUTPUT = '}'					:(OPDONE)
+	OUTPUT = '}'					:(END)
 
 ****************
 *	SIL TITLE (=) macro
@@ -1543,4 +1551,6 @@ OPDONE							:(TOP)
 ****************************************************************
 *	the very very very very end - Lucy Van Pelt
 
+EOF	STDERR = "FATAL: EOF on " SILPATH " before END op"
+FATAL	&CODE = 1
 END
