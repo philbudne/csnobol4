@@ -30,12 +30,14 @@ TTY_DEFS=-DTTY_READ_RAW
 
 # crocks for winsock I/O on Win9x
 INET_DEFS=-DINET_IO
+# wsock32 present on both Win95 and WinNT
+INET_LIBS=wsock32.lib
 
-CFLAGS= -c $(OPT) -WC -O -Tml -w- \
+CFLAGS= -c $(OPT) -WC -Tml -w- \
 	-I$(SRCDIR)config\win32 -I$(SRCDIR)include -I$(SRCDIR). \
 	-DHAVE_CONFIG_H $(NO_BITFIELDS) $(TTY_DEFS) $(INET_DEFS)
 
-OBJ=	snobol4.obj data.obj data_init.obj main.obj syn.obj \
+OBJ=	isnobol4.obj data.obj data_init.obj main.obj syn.obj \
 	version.obj bal.obj date.obj dump.obj endex.obj hash.obj \
 	intspc.obj io.obj lexcmp.obj ordvst.obj pair.obj pat.obj \
 	pml.obj realst.obj replace.obj str.obj stream.obj top.obj \
@@ -47,12 +49,12 @@ OBJ=	snobol4.obj data.obj data_init.obj main.obj syn.obj \
 	bindresvport.obj execute.obj exists.obj term.obj findunit.obj exp.obj
 
 # Ensure Psdk directory (containing wsock32.lib) is included in the library
-# search path in both BCC32.CFGg and ILINK.CFG , both found in BCC55\BIN\
+# search path in both BCC32.CFG and ILINK.CFG , both found in BCC55\BIN\
 
 AllFiles: $(OBJ) snobol4.exe
 
 snobol4.exe : $(OBJ)
-       $(CC) -WC -esnobol4.exe $(OBJ) 
+       $(CC) -WC -esnobol4.exe $(OBJ) $(INET_LIBS)
 
 data.obj : $(SRCDIR)data.c
 	$(CC) $(CFLAGS) $(SRCDIR)data.c
@@ -60,8 +62,8 @@ data.obj : $(SRCDIR)data.c
 data_init.obj : $(SRCDIR)data_init.c
 	$(CC) $(CFLAGS) $(SRCDIR)data_init.c
 
-snobol4.obj : $(SRCDIR)snobol4.c
-	$(CC) $(CFLAGS) $(SRCDIR)snobol4.c
+isnobol4.obj : $(SRCDIR)isnobol4.c
+	$(CC) $(CFLAGS) $(SRCDIR)isnobol4.c
 
 main.obj : $(SRCDIR)main.c
 	$(CC) $(CFLAGS) $(SRCDIR)main.c
