@@ -1,6 +1,11 @@
 * $Id$
 *
 * $Log$
+* Revision 1.60  1996/10/13  05:53:04  phil
+* [PLB49] use YCL for error pointer
+* add COMPCL; don't show syntax errors after compilation done
+* set &ERRTEXT with compilation error messages!
+*
 * Revision 1.59  1996/10/12  04:09:35  phil
 * [PLB48] Don't crash trying to print CODE() syntax errors
 *
@@ -598,7 +603,7 @@ XLATRD AEQLC   LISTCL,0,,XLATRN	   Skip print if list is off
 XLATRN STREAD  INBFSP,UNIT,XLATIN,COMP1				[PLB38]
        INCRA   LNNOCL,1		   Increment source line number	[PLB38]
        SETSP   TEXTSP,NEXTSP	   Read card and set up line
-XLATNX STREAM  XSP,TEXTSP,CARDTB,COMP3,COMP3
+XLATNX STREAM  XSP,TEXTSP,CARDTB,COMP3,XLATRD			[PLB50]
 *				   Determine type of card	[PLB23]
        RCALL   ,NEWCRD,,(XLATRD,,) Process card type
        RCALL   ,CMPILE,,(COMP3,,XLATNX)
@@ -1447,10 +1452,10 @@ DIAGRN STREAD  INBFSP,UNIT,DIAGIN,COMP1				[PLB38]
 *				   Read card image
        INCRA   LNNOCL,1		   Count line numbers		[PLB38]
        SETSP   TEXTSP,NEXTSP	   Set up new line
-       STREAM  XSP,TEXTSP,CARDTB,COMP3,COMP3
+       STREAM  XSP,TEXTSP,CARDTB,COMP3,CDIAG7			[PLB50]
 *				   Analyze card type
        RCALL   ,NEWCRD,,(,,RTN3)   Process card image
-       AEQLC   LISTCL,0,,DIAGRN
+CDIAG7 AEQLC   LISTCL,0,,DIAGRN					[PLB50]
        STPRNT  IOKEY,OUTBLK,LNBFSP Print out bypassed card
        BRANCH  DIAGRN
 *_
@@ -1611,7 +1616,8 @@ ELEAR1 PUSH    ELEMND		   Save current
 ELEICH SETAC   EMSGCL,ILCHAR	   'ILLEGAL CHARACTER IN ELEMENT'
        BRANCH  RTN1		   Error return
 *_
-ELEILI AEQLC   STYPE,QLITYP,ELEMN9 Check cause of run out
+ELEILI AEQLC   STYPE,0,,ELEICH	   Protect against runout	[PLB50]
+       AEQLC   STYPE,QLITYP,ELEMN9 Check cause of run out
        SETAC   EMSGCL,OPNLIT	   'UNCLOSED LITERAL'
        BRANCH  RTN1		   Error return
 *_
@@ -1763,7 +1769,7 @@ FORRUR STREAD  INBFSP,UNIT,FORINC,COMP1				[PLB38]
 *				   Read new card iamge
        INCRA   LNNOCL,1		   Count line numbers		[PLB38]
        SETSP   TEXTSP,NEXTSP	   Set up new line
-       STREAM  XSP,TEXTSP,CARDTB,COMP3,COMP3
+       STREAM  XSP,TEXTSP,CARDTB,COMP3,FORRUN			[PLB50]
 *				   Determine card type
        RCALL   ,NEWCRD,,(FORRUN,FORWRD)
 *				   Process new card
@@ -2023,7 +2029,7 @@ UNOP   PROC    ,		   Unary operator analysis
        RCALL   ,FORWRD,,COMP3	   Get to next nonblank character
        SETAC   XPTR,0		   Zero code tree
        AEQLC   BRTYPE,NBTYP,RTN1   Verify nonbreak
-UNOPA  STREAM  XSP,TEXTSP,UNOPTB,RTXNAM,RTN1			E3.4.3
+UNOPA  STREAM  XSP,TEXTSP,UNOPTB,RTXNAM,RTXNAM			E3.4.3[PLB50]
 *				   Break out unary operator
        RCALL   YPTR,BLOCK,CNDSIZ   Allocate block for tree node
        PUTDC   YPTR,CODE,STYPE	   Insert function descriptor
