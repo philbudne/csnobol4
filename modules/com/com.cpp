@@ -16,12 +16,8 @@
 #include <ole2.h>			// sufficient w/ MINGW 2.95.3-6
 WINOLEAPI CoGetObject(LPWSTR name, BIND_OPTS *pbo, REFIID riid, void **ppv);
 #else
-// not tested
-
-// just windowsx.h??
 #include <objbase.h>
 #include <oleauto.h>
-#include <olestd.h>
 
 #define HAVE_I8			// Not w/ MINGW 2.95.3-6
 #endif
