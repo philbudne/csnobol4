@@ -58,6 +58,7 @@ Celeron		450   Linux 2.2.15  gcc		0.99.4 191265	rms 10/00
 Pentium II	350x2 Linux 2.2.16  gcc		0.99.4 187704	bm 12/00
 P6 ?		400   CYGWIN_NT	    gcc		0.99.4 184117	rs 11/98
 Pentium III	650   Linux 2.4.2   gcc		0.99.4 184117	maa 7/01
+Pentium II	400   Linux 2.2.13  gcc		0.99.4 172038	gb 3/02
 Pentium II	?     SunOS 2.6	    spro	0.99.4 167341	pb 6/99
 AlphaPC 164LX	600   Linux 2.2.18j gcc		0.99.4 162332	jwk 9/01
 Strawberry iMac 400   Darwin 5.2    cc		0.99.4 155575	pb 1/02
