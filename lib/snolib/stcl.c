@@ -19,66 +19,147 @@
 #include "snotypes.h"
 #include "macros.h"
 #include "load.h"
+#include "handle.h"
 
-/* only allows a single instance!! */
-static Tcl_Interp *stcl_interp;		/* XXX static!! */
+static struct handle_list tcl_handles;
 
 /*
- * LOAD("STCL_START(STRING)STRING")
- * Take arg as filename; initialize Tcl interpreter, read file.
- * Call only once!!
+ * LOAD("STCL_CREATE()INTEGER")
+ * Create and initialize TCL interpreter
  *
- * returns null string or failure
+ * return handle, or failure
  */
 int
-STCL_INIT( LA_ALIST ) LA_DCL
+STCL_CREATE( LA_ALIST ) LA_DCL
 {
-    char file[1024];			/* XXX */
+    Tcl_Interp *interp;
+    handle_t h;
 
-    stcl_interp = Tcl_CreateInterp();
-    if (!stcl_interp)
+    interp = Tcl_CreateInterp();
+    if (!interp)
 	RETFAIL;
 
-    if (Tcl_Init(stcl_interp) == TCL_ERROR)
+    if (Tcl_Init(interp) == TCL_ERROR) {
+	Tcl_DeleteInterp(interp);
+	RETFAIL;
+    }
+
+    h = new_handle(&tcl_handles, interp);
+    if (h == BAD_HANDLE) {
+	Tcl_DeleteInterp(interp);
+	RETFAIL;
+    }
+    RETINT(h);				/* XXX make string tcl%d? */
+}
+
+/*
+ * LOAD("STCL_EVALFILE(INTEGER,STRING)STRING")
+ * Create and initialize TCL interpreter
+ *
+ * return null string, or failure
+ */
+int
+STCL_EVALFILE( LA_ALIST ) LA_DCL
+{
+    char file[1024];			/* XXX */
+    Tcl_Interp *interp;
+
+    interp = lookup_handle(&tcl_handles, LA_INT(0));
+    if (!interp)
 	RETFAIL;
 
     getstring(LA_PTR(0), file, sizeof(file));
-    if (Tcl_EvalFile(stcl_interp, file) != TCL_OK)
+    if (Tcl_EvalFile(interp, file) != TCL_OK)
 	RETFAIL;
 
     RETNULL;
 }
 
 /*
- * LOAD("STCL_GETVAR(STRING)STRING")
+ * LOAD("STCL_GETVAR(INTEGER,STRING)STRING")
  * return value of a Tcl variable (all Tcl variables are strings)
+ * XXX take handle as arg?
  */
 int
 STCL_GETVAR( LA_ALIST ) LA_DCL
 {
     char name[1024];			/* XXX */
     char *val;
+    Tcl_Interp *interp;
 
-    getstring(LA_PTR(0), name, sizeof(name));
-    val = Tcl_GetVar(stcl_interp, name, 0);
+    interp = lookup_handle(&tcl_handles, LA_INT(0));
+    if (!interp)
+	RETFAIL;
+
+    getstring(LA_PTR(1), name, sizeof(name));
+    val = Tcl_GetVar(interp, name, 0);
     RETSTR(val);
 }
 
 /*
- * LOAD("STCL_SETVAR(STRING,STRING)STRING")
+ * LOAD("STCL_SETVAR(INTEGER,STRING,STRING)STRING")
  * Set value of a Tcl variable
  *
- * returns null string or failure
- */
+ * returns null string or failure 
+ * XXX take handle as arg?
+*/
 int
 STCL_SETVAR( LA_ALIST ) LA_DCL
 {
     char name[1024];			/* XXX */
     char value[1024];			/* XXX */
+    Tcl_Interp *interp;
 
-    getstring(LA_PTR(0), name, sizeof(name));
-    getstring(LA_PTR(1), value, sizeof(value));
-    if (!Tcl_SetVar(stcl_interp, name, value, 0))
+    interp = lookup_handle(&tcl_handles, LA_INT(0));
+    if (!interp)
 	RETFAIL;
+
+    getstring(LA_PTR(1), name, sizeof(name));
+    getstring(LA_PTR(2), value, sizeof(value));
+    if (!Tcl_SetVar(interp, name, value, 0))
+	RETFAIL;
+    RETNULL;
+}
+
+/*
+ * LOAD("STCL_EVAL(INTEGER,STRING)STRING")
+ * Eval a tcl command
+ *
+ * returns null string or failure
+ * XXX take handle as arg?
+ */
+int
+STCL_EVAL( LA_ALIST ) LA_DCL
+{
+    char cmd[1024];			/* XXX */
+    Tcl_Interp *interp;
+
+    interp = lookup_handle(&tcl_handles, LA_INT(0));
+    if (!interp)
+	RETFAIL;
+
+    getstring(LA_PTR(1), cmd, sizeof(cmd));
+    if (Tcl_Eval(interp, cmd) != TCL_OK)
+	RETFAIL;
+
+    RETNULL;
+}
+
+/*
+ * LOAD("STCL_DELETE(INTEGER)STRING")
+ * Create and initialize TCL interpreter
+ *
+ * return null string, or failure
+ */
+int
+STCL_DELETE( LA_ALIST ) LA_DCL
+{
+    Tcl_Interp *interp;
+
+    interp = lookup_handle(&tcl_handles, LA_INT(0));
+    if (!interp)
+	RETFAIL;
+
+    Tcl_DeleteInterp(interp);
     RETNULL;
 }
