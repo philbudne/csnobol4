@@ -8,7 +8,7 @@
 .       ds rq ''
 .       ds lq ``
 .\}
-.TH SNOBOL4 1 "29 October 1996" "Local"
+.TH SNOBOL4 1 "5 April 1997" "Local"
 .SH NAME
 snobol4 \- SNOBOL4 interpreter
 .SH SYNOPSIS
@@ -51,7 +51,7 @@ platforms.  See load.doc for more information.
 
 .SS "Changes"
 .PP
-The following behaviors have been changed;
+The following behaviors have been changed from the original Macro SNOBOL4;
 .IP \(bu
 Listings are disabled by default.
 Default listing side (when enabled by
@@ -98,7 +98,10 @@ application.
 The
 .B DATE()
 function returns strings of the form:
-.I "MM/DD/YYYY HH:MM:SS"
+.IR "MM/DD/YYYY HH:MM:SS" .
+See extensions section for arguments to the
+.B DATE()
+function.
 .IP \(bu
 Keyword
 .B &STLIMIT
@@ -212,6 +215,20 @@ The
 function takes an integer from 0 to 255 and returns the n'th character
 in
 .B &ALPHABET .
+.TP
+.B DATE()
+For compatilbility with new versions of Catspaw SPITBOL
+.B DATE(0)
+returns strings of the form
+.IR "MM/DD/YY HH:MM:SS" ,
+and
+.B DATE(2)
+returns strings of the form
+.IR "YYYY-MM-YY HH:MM:SS" .
+With any other arguments
+.B DATE()
+returns strings of the form
+.IR "MM/DD/YYYY HH:MM:SS" .
 .TP
 .B \-ERROR/\-NOERRORS
 .br
@@ -663,7 +680,7 @@ an I/O transfer to occur.
 
 .SH OPTIONS
 .TP 1i
-.B \-b
+.B -b
 Toggle startup banner output (by default on).
 .TP
 .BI "-d " BBB
@@ -676,7 +693,7 @@ multiplies the number by 1024. A larger dynamic region may result in
 fewer garbage collections (storage regenerations), however large
 values may cause execution to slow down when large amounts of garbage
 collect.  Most programs do not need an increased dynamic region to
-run.  If your program terminates with a \*(lqInsufficient storage to
+run.  If your program terminates with an \*(lqInsufficient storage to
 continue\*(rq message you need to increase the dynamic storage region
 size.
 .TP
