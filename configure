@@ -1307,7 +1307,10 @@ for DIR in /usr/bin /usr/ucb /usr/local/bin /etc .; do
 	    esac
 	    if [ -x $IPATH ]; then
 		# avoid broken AIX installer
-		if grep dspmsg $IPATH >/dev/null; then
+		# this test blows on cygwin, where -x /usr/bin/install
+		# succeeds for /usr/bin/install.exe, but grep on
+		# /usr/bin/install fails, so send stderr to /dev/null
+		if grep dspmsg $IPATH >/dev/null 2>&1; then
 		    continue
 	        fi
 		echo "using $IPATH for make install" 1>&2
