@@ -2,6 +2,12 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+7/1/97:
+	lib/io.c: soak up excess "record" data after newline in ASCII input
+		(problem reported by David J Birnbaum)
+		Return full recl's worth of data for EOL mode ASCII input
+			used to return recl-1; replaced fgets()
+
 6/23/97:
 	timing: cat /proc/meminfo on linux
 

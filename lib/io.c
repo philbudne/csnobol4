@@ -680,12 +680,35 @@ io_read( dp, sp )			/* STREAD */
 	    if (len > 0)
 		break;
 	}
-	else {
-	    if (fgets(cp, recl, f) != NULL) {
-		len = strlen(cp);
-		break;
+	else {				/* not binary */
+	    register char *tp;
+	    register int c;
+
+	    tp = cp;
+	    c = 0;
+	    len = 0;
+	    while (len < recl) {
+		c = getc(f);
+		if (c == '\n') {
+		    if (!(fp->flags & FL_EOL)) { /* keep EOL? */
+			*tp++ = c;
+			len++;
+		    }
+		    break;
+		}
+		if (c == EOF)
+		    break;
+		*tp++ = c;
+		len++;
 	    }
-	}
+
+	    if (c != EOF || len > 0) {
+		while (c != EOF && c != '\n')
+		    c = getc(f);
+		/* don't care if line terminated by EOL or EOF? */
+		break;
+	    } /* got something */
+	} /* not binary */
 
 	/* here when read failed */
 	if (feof(f)) {
@@ -703,15 +726,6 @@ io_read( dp, sp )			/* STREAD */
 	/* wasn't eof?! */
 	return IO_ERR;
     } /* forever */
-
-    if (fp->flags & FL_EOL) {
-	/* strip off EOL */
-	if (cp[len-1] == '\n') {
-	    len--;
-	    cp[len] = '\0';
-	}
-	/* XXX increment line number (fp->line) ? */
-    } /* FL_EOL */
 
     if (compiling) {
 	/*
