@@ -24,14 +24,5 @@ lexcmp(a,b)
 	x++;
 	y++;
     }
-
-    if (i == 0) {			/* end of a */
-	if (j == 0)			/* end of b too? */
-	    return 0;			/* yes; identical */
-	return -1;			/* no; a < b */
-    }
-    else if (j == 0)			/* not end of a; end of b? */
-	return 1;			/* yes; a > b */
-
-    return -1;
+    return i - j;
 }
