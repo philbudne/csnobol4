@@ -6,8 +6,11 @@
 # (but timing could be split off)
 
 BEGIN {
-	print "* THIS FILE IS MACHINE GENERATED DO NOT EDIT!!"
-	print "* created from", FILENAME, "by", "$Revision$"
+	print "** THIS FILE IS MACHINE GENERATED DO NOT EDIT!!"
+	print "** created from", FILENAME
+	print "** by $Id$"
+	print "**"
+	print "** perhaps values should be in a FROZEN() TABLE()?"
 	print ""
 }
 
@@ -15,9 +18,9 @@ BEGIN {
 /\/\*/ {
 	incomment = 1
 }
-# in comment; copy line
+# in comment; copy line, unless it has @@@ in it
 incomment != 0 {
-	print "* ", $0
+	if ($0 !~ /@@@/) print "*", $0
 }
 # note end of comment (after start and copy)
 /\*\// {
