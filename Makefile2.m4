@@ -46,6 +46,13 @@ SNOLIB_A=snolib.a
 
 # directory name for default SNOLIB (used by -INCLUDE and LOAD())
 SNOLIB_DIR=/usr/local/lib/snobol4
+
+# default name for installed binary
+BINDEST=/usr/local/bin/snobol4
+
+# default name for installed man page
+MANDEST=/usr/local/man/man1/snobol4.1
+
 ########
 # default lib source files
 
@@ -177,6 +184,9 @@ TESTED:	xsnobol4 snobol4.c
 	cd test; ./run.sh ../xsnobol4 > ../test.out
 	./timing > timing.out
 	date > TESTED
+	@echo 'Please consider mailing timing.out to' \
+		'snobol4-timing@ultimate.com'
+	@echo 'Along with information on your system model and CPU clock rate'
 
 xsnobol4: $(OBJS)
 	$(CC) $(CFLAGS) -o xsnobol4 $(OBJS) $(LDFLAGS)
@@ -451,19 +461,24 @@ GENERATED=data.c2 data.h2 data_init.h2 proc.h2 equ.h2 syn.c2 syn.h2 \
 G2=data.c data.h data_init.h proc.h equ.h syn.c syn.h
 
 # disposables
-DISP=*.o *.a callgraph prolog subr bsplitu pv
+DISP=*.o *.a callgraph prolog bsplitu pv vers
 
 # remove objects; leave generated sources, final binary, Makefile2
 clean:
-	rm -rf $(DISP) *~ */*~ */*/*~ *.tmp
+	rm -f $(DISP) *~ */*~ */*/*~ *.tmp \#*
+	rm -rf subr
+
+# make ready for compilation on another platform
+realclean: clean
+	rm -f config.m4
 
 # remove objects, generated sources; leave final binary, Makefile2
 # DON'T DO THIS UNLESS YOU HAVE AN EXECUTABLE!!
-realclean: clean
-	rm -f $(GENERATED) TESTED vers
+spotless: realclean
+	rm -f $(GENERATED)
 
 # file to hard-link into dist dir
-# generated files copied to ensure newer than source files!
+# generated files copied separately to ensure newer than source files!
 [TAR=	README CHANGES History INSTALL TODO TODO.soon doc \
 	Makefile Makefile2.m4 autoconf config.guess \
 	$(SIL) syntax.tbl procs globals \
@@ -515,7 +530,24 @@ bsplitu: bsplitu.c
 	$(CC) -o bsplitu bsplitu.c
 
 #################
+# installation
 
+# XXX make hard link from $(BINDEST) to $(BINDEST)-`./pv`??
+
+install: TESTED doc/snobol4.1
+	rm -f $(BINDEST).old
+	mv -f $(BINDEST) $(BINDEST).old
+	cp xsnobol4 $(BINDEST); strip $(BINDEST); chmod 755 $(BINDEST)
+	cp doc/snobol4.1 $(MANDEST)
+	test -d $(SNOLIB_DIR) || mkdir $(SNOLIB_DIR)
+	cp $(SNOLIB_A) $(SNOLIB_DIR)/$(SNOLIB_A)
+	$(RANLIB) -t $(SNOLIB_DIR)/$(SNOLIB_A)
+	cp snolib/*.sno $(SNOLIB_DIR)
+	cp doc/load.doc $(SNOLIB_DIR)
+	@echo 'Have you mailed a copy of timing.out to' \
+		'snobol4-timing@ultimate.com ?'
+	
+################
 MAKEFILE2=Makefile2
 DEPENDFLAGS=$(MYCPPFLAGS)
 
