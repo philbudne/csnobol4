@@ -2,6 +2,9 @@
 
 /*
  * $Log$
+ * Revision 1.7  1994/07/05  21:42:58  budd
+ * update for patch1
+ *
  * Revision 1.6  94/06/30  00:40:11  budd
  * clean up for non-ansi compile
  * 
@@ -28,8 +31,8 @@
 #include "snotypes.h"
 #include "data.h"
 
-const char vers[] = "0.91.1";
-const char vdate[] = "July 5, 1994";
+const char vers[] = "0.91.2";
+const char vdate[] = "Jan 20, 1994";
 
 void
 version()
