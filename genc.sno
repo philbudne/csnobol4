@@ -816,18 +816,7 @@ XPUTVC	OUTPUT = IND D_V(PLUS(D_A(ARGV<1>),ARGV<2>)) ' = ' D_V(ARGV<3>) ';'
 
 ****************
 *	SIL BKSIZE (???) MACRO 10/27/93
-* XXX macrofy??
-* XXX fetch A and V into C local (register) variables?
-XBKSIZE	A = D_A(ARGV<2>)
-	V = D_V(A)
-	OUTPUT = IND 'if( ' D_F(A) ' & STTL )'
-	INDENT()
-	OUTPUT = IND D_A(ARGV<1>) ' = DESCR*(4+((' V '-1)/CPD+1));'
-	UNINDENT()
-	OUTPUT = IND 'else'
-	INDENT()
-	OUTPUT = IND D_A(ARGV<1>) ' = ' V ' + DESCR;'
-	UNINDENT()
+XBKSIZE	OUTPUT = IND D_A(ARGV<1>) ' = X_BKSIZE(' D_A(ARGV<2>) ');'
 	CLEAR_D_VF(ARGV<1>)				:(OPDONE)
 
 ****************
@@ -836,9 +825,8 @@ XSETSP	OUTPUT = IND SPEC(ARGV<1>) ' = ' SPEC(ARGV<2>) ';'	:(OPDONE)
 
 ****************
 *	SIL GETLTH (COMNVZ) MACRO 10/??/93
-* XXX macrofy?
-XGETLTH	OUTPUT = IND D_A(ARGV<1>) ' = DESCR*(3+((' S_L(ARGV<2>) '-1)/CPD+1));'
-	CLEAR_D_VF(ARGV<1>)				:(OPDONE)
+XGETLTH	OUTPUT = IND 'D_A(' ARGV<1> ') = X_GETLTH(' ARGV<2> ');'
+	CLEAR_D_VF(ARGV<1>)					:(OPDONE)
 
 ****************
 *	SIL GETLG (MOVLV) MACRO
