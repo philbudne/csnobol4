@@ -113,11 +113,12 @@ struct file {
 #define FL_NOCLOSE	01000		/* don't fclose() */
 #define FL_INPUT	02000		/* attached for INPUT() */
 #define FL_OUTPUT	04000		/* attached for OUTPUT() */
-#define FL_NOTAFILE	010000		/* "f" is not a file */
+#define FL_NOTAFILE	010000		/* "f" is not a file (XXX TEMP) */
 
 #define ISPIPE(FP) (((FP)->flags & FL_TYPE) == FLT_PIPE)
 #define ISTTY(FP)  (((FP)->flags & FL_TYPE) == FLT_TTY)
 #define ISINET(FP) (((FP)->flags & FL_TYPE) == FLT_INET)
+#define ISAFILE(FP) (((FP)->flags & FL_NOTAFILE) == 0) /* XXX TEMP */
 
 #define MAXFNAME	1024		/* XXX use MAXPATHLEN? POSIX?? */
 #define MAXOPTS		1024
@@ -415,7 +416,11 @@ io_fopen2( fp, mode )
 	else
 	    fp->f = tcp_open( host, service, -1, priv );
 	fp->flags &= (FL_TYPE|FL_UNBUF);
-	fp->flags |= FLT_INET|FL_NOTAFILE;
+	fp->flags |= FLT_INET;
+#ifdef INET_IO
+	/* awful crock; fp->f is a SOCKET; do away with this!!!! */
+	fp->flags |= FL_NOTAFILE;
+#endif /* INET_IO */
 	return;
     }
 
@@ -465,7 +470,7 @@ io_fopen( fp, mode )
     if (fp->f == NULL)
 	return NULL;
 
-    if (fisatty(fp->f, fp->fname))
+    if (ISAFILE(fp) && fisatty(fp->f, fp->fname))
 	/* XXX set close hook? */
 	fp->flags |= FLT_TTY;
 
@@ -534,7 +539,7 @@ io_mkfile2( unit, f, fname, flags )
 	return FALSE;
     fp->f = f;
     fp->flags |= flags;
-    if (fisatty(f, fname)) {
+    if (ISAFILE(fp) && fisatty(f, fname)) {
 	/* XXX set close hook? */
 	fp->flags |= FLT_TTY;
     }
@@ -753,8 +758,7 @@ io_print( iokey, iob, sp )		/* STPRNT */
      * performed using read()/write() (ie; FL_UNBUF)
      */
 
-    if ((fp->flags & FL_UPDATE) && fp->last == LAST_INPUT &&
-	!(fp->flags & FL_NOTAFILE)) {
+    if ((fp->flags & FL_UPDATE) && fp->last == LAST_INPUT && ISAFILE(fp)) {
 	fseeko(f, (off_t)0, SEEK_CUR);	/* seek relative by zero */
 	/*
 	 * XXX set fp->last to LAST_NONE; don't set to LAST_OUTPUT
@@ -828,7 +832,7 @@ io_print( iokey, iob, sp )		/* STPRNT */
     }
 
 #ifdef NO_UNBUF_RW
-    if (fp->flags & FL_UNBUF && !(fp->flags & FL_NOTAFILE)) {
+    if (fp->flags & FL_UNBUF && ISAFILE(fp)) {
 	/* simulate unbuffered I/O */
 	if (fflush(f) == EOF)
 	    ret = FALSE;
@@ -898,8 +902,7 @@ io_read( dp, sp )			/* STREAD */
 	 * before FL_TTY check, in case tty_read() uses stdio functions.
 	 */
 
-	if ((fp->flags & FL_UPDATE) && fp->last == LAST_OUTPUT &&
-	    !(fp->flags & FL_NOTAFILE)) {
+	if ((fp->flags & FL_UPDATE) && fp->last == LAST_OUTPUT && ISAFILE(fp)) {
 	    fseeko(f, (off_t)0, SEEK_CUR); /* seek relative by zero */
 	    /*
 	     * XXX set fp->last to LAST_NONE; don't set to LAST_OUTPUT
@@ -941,8 +944,11 @@ io_read( dp, sp )			/* STREAD */
 		break;
 	} /* binary */
 #ifdef INET_IO
-	else if (ISINET(fp))
+	else if (ISINET(fp)) {
 	    len = inet_read_cooked(f, cp, recl, (fp->flags & FL_EOL) == 0);
+	    if (len > 0)
+		break;
+	}
 #endif /* INET_IO defined */
 #ifdef TTY_READ_COOKED
 	else if (ISTTY(fp)) {
@@ -1025,7 +1031,7 @@ io_read( dp, sp )			/* STREAD */
 	} /* not binary */
 
 	/* here when read failed */
-	if (feof(f)) {
+	if (ISAFILE(fp) && feof(f)) {
 	    if (!io_next(unit)) {	/* skip to next file, if any */
 		/* XXX perror? */
 		return IO_EOF;		/* no more files */
@@ -1085,7 +1091,7 @@ io_rewind(unit)				/* REWIND */
 	return;
 
     f = fp->f;
-    if (f != NULL && !ISPIPE(fp) && !(fp->flags & FL_NOTAFILE)) {
+    if (f != NULL && !ISPIPE(fp) && ISAFILE(fp)) {
 	fseeko(f, up->offset, SEEK_SET);
 	fp->last = LAST_NONE;		/* reset last I/O type */
    }
@@ -1487,7 +1493,7 @@ io_seek(dunit, doff, dwhence)
     if (fp == NULL)
 	return FALSE;
 
-    if (fp->flags & FL_NOTAFILE)
+    if (!ISAFILE(fp))
 	return FALSE;
 
     off = (off_t) D_A(doff);
@@ -1547,7 +1553,7 @@ io_sseek(unit, soff, whence, scale, oof )
     if (fp == NULL)
 	return FALSE;
 
-    if (fp->flags & FL_NOTAFILE)
+    if (!ISAFILE(fp))
 	return FALSE;
 
     off = soff * (off_t)scale;
@@ -1602,7 +1608,7 @@ io_flushall(dummy)
 
 	    f = fp->f;
 	    if (f) {
-		if (fp->last == LAST_OUTPUT && !(fp->flags & FL_NOTAFILE))
+		if (fp->last == LAST_OUTPUT && ISAFILE(fp))
 		    fflush(f);		/* keep err count?? */
 
 		if (ISTTY(fp))
