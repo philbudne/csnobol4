@@ -12,7 +12,7 @@
  *
  * Usage;	SPRINTF(format,int)
  *			ie; SPRINTF("%x",32)
- * Returns;	null string or failure
+ * Returns;	string
  */
 
 #include "h.h"
