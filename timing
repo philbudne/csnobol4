@@ -23,6 +23,7 @@ size xsnobol4
 echo ''
 echo 'timing run of genc.sno:'
 
+## NOTE: return value is returned by xsnobol4;
 TDIR=timdir.$$
 (
 	rm -rf $TDIR
