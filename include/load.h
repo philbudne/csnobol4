@@ -40,7 +40,7 @@
 
 /* avoid copying raw with getstring() */
 #define LA_STR_LEN(N) (D_V(LA_PTR(N)))
-#define LA_STR_PTR(N) (LA_PTR(N) + BCDFLD) /* NOT NUL TERMINATED!!! */
+#define LA_STR_PTR(N) ((char *)LA_PTR(N) + BCDFLD) /* NOT NUL TERMINATED!!! */
 
 /*
  * macros to return values;
