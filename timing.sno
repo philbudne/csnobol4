@@ -39,7 +39,10 @@ ECHECKHZ
 * parse snobol's messages
 
 	OUTPUT = 'HOST():' TAB TAB TAB HOST()
+* config.guess value;
 	OUTPUT = 'HOST(2000):' TAB TAB HOST(2000)
+* configure options (will fail if null);
+	OUTPUT = 'HOST(2003):' TAB TAB HOST(2003)
 
 VLOP	LINE = INPUT					:F(NOVERS)
 	LINE "The Macro Implementation of SNOBOL4" BREAKX("V") "Version "
