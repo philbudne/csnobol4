@@ -66,15 +66,9 @@ Installation
 ------------
 
 Typing "make install" will install the snobol4 binary and man page.
-The snobol4 binary and man page destnations are controlled by make
-variables BINDEST (default: /usr/local/bin/snobol4) and MANDEST
-(default: /usr/local/man/man1/snobol4.1) which can be overridden by
-editing config.m4, or creating "local-config" (which is included into
-config.m4 by "configure"), 
-
-"make install" also installs doc/load.doc, load-related .h files and
-snolib/*.sno files to the PREFIX/lib/ directory (Default is
-/usr/local, see --prefix= configure aption above).
+The snobol4 (PREFIX/bin/snobol4), library directory
+(PREFIX/lib/snobol4) and man page (PREFIX/man/man1/snobol4.1).  The
+default PREFIX is /usr/local, see --prefix= configure option above).
 
 Please mail timing.out files to snobol4-timing@ultimate.com!
 
