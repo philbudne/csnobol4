@@ -11,16 +11,30 @@
 
 #include "equ.h"
 
+#include <ctype.h>
+
 realst(sp, dp)
     struct spec *sp;
     struct descr *dp;
 {
-    static char buf[128];		/* ??? */
+    static char buf[64];		/* ??? */
+    char *bp;
 
-    /* XXX sigh; prints trailing zeroes (but never uses exponent)
-     * %g suppresses trailing zeroes (but suppresses DOT and uses exponent)
+    sprintf( buf, "%lg", D_RV(dp) );
+    /*
+     * "g" format can print an integer for exact values.
+     * make sure we have an exponent or a dot.
      */
-    sprintf( buf, "%lf", D_RV(dp) );
+    bp = buf;
+    while (*bp && isdigit(*bp))
+	bp++;
+
+    if (*bp == '\0') {
+	/* reached end of string. add trailing dot */
+	*bp++ = '.';
+	*bp = '\0';
+    }
+
     S_A(sp) = (int_t) buf;		/* OY! */
     S_F(sp) = 0;
     S_V(sp) = 0;
