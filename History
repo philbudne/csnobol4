@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+12/25/96:
+	autoconf: added openbsd
+	config.guess: updated to latest (knows openbsd)
+	doc/ports.doc: add openbsd/486, hpux7
+
 12/10/96:
 	README: mention SNOBOL4 list, new contributors
 	lib/ansi/convert.c, lib/generic/convert.c:
