@@ -19,9 +19,9 @@ ENDEX_C=[.lib]endex.c
 EXISTS_C=[.lib.generic]exists.c
 EXPOPS_C=[.lib.generic]expops.c
 HASH_C=[.lib]hash.c
-INIT_C=[.lib]init.c
 # requires VAX/Ultrix connection product
 INET_C=[.lib.bsd]inet.c
+INIT_C=[.lib]init.c
 INTSPC_C=[.lib]intspc.c
 IO_C=[.lib]io.c
 LEXCMP_C=[.lib]lexcmp.c
@@ -127,6 +127,9 @@ expops.obj : $(EXPOPS_C)
 
 hash.obj : $(HASH_C)
 	$(CC) $(CFLAGS) $(HASH_C)
+
+inet.obj : $(INET_C)
+	$(CC) $(CFLAGS) $(INET_C)
 
 init.obj : $(INIT_C)
 	$(CC) $(CFLAGS) $(INIT_C)
