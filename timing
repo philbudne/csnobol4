@@ -33,7 +33,7 @@ if [ "$UNAME" ]; then
 		/usr/sbin/lsattr -EHl proc0 2>&1
 		echo ''
 		;;
-	*BSD*)
+	*BSD*|Darwin)
 		if [ -x /usr/sbin/sysctl ]; then
 			SYSCTL=/usr/sbin/sysctl
 		elif [ -x /sbin/sysctl ]; then
@@ -48,7 +48,7 @@ if [ "$UNAME" ]; then
 
 			# freebsd x86;
 			if FREQ=`$SYSCTL machdep.tsc_freq 2>/dev/null`; then
-				echo "machdep.tsc_freq: $FREQ"
+				echo "$FREQ"
 				echo ''
 			fi
 		fi
