@@ -1,5 +1,6 @@
 /* $Id$ */
 
+#ifndef STATIC_HASH
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
@@ -7,7 +8,10 @@
 /* machine generated; */
 #include "equ.h"			/* for OBSIZ */
 
-void
+#define STATIC_HASH
+#endif /* STATIC_HASH not defined */
+
+STATIC_HASH void
 hash(dp, sp)
     struct descr *dp;
     struct spec *sp;
@@ -78,9 +82,10 @@ hash(dp, sp)
     D_A(dp) = (sum % OBSIZ) * DESCR;
 #endif
 
-    /* use length for "assention" value for now!
+    /*
+     * use length for "assention" value.
      * 9/24/96; tried using "sum" and "sum/OBSIZ"; neither
-     * perform consitantly better than length!
+     * perform consistently better than length!
      */
     D_V(dp) = S_L(sp);
 }
