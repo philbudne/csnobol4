@@ -18,21 +18,35 @@ tested and timed.
 
 The "autoconf" tries to use the available C compiler which works best.
 If you wish to alter autoconf's decision process, you can run it
-manually by typing "./autoconf OPTION >config.m4" with one of the
-following options;
+manually by typing "./autoconf OPTIONS >config.m4" with zero or more
+of the following options;
 
+	--add-cppflags=STRING
+		Add additional C preprocessor flags (ie; -DXXX) to
+		compile commands
+	--add-ldflags=STRING
+		Add additional flags to final load command (ie; -lxxx)
+	--add-objs=STRING
+		Add additional object file to final load command
+		(ie; for "poor mans load" functions)
+	--add-opt=STRING
+		Add additional optimization flags to compile commands
+	--add-srcs=STRING
+		Add additional source files for "make depend"
 	--force-gcc
 		Force use of gcc, the GNU C compiler;
 		fail if gcc not available.
-
 	--no-gcc
 		Eliminate gcc from consideration.
+	--opt=STRING
+		Supply C optimization flags (replaceing default "-O),
+		ie; -O2
 
 Even if your system has not previously been tested (see doc/ports.doc)
-autoconf will make a sucessful guess. If it does not, you may want to
-consult doc/porting.doc (also available as html) for information on
-the available options for use in creating a system-specific config
-file.
+autoconf will make a guess. If the build does not succeed, you may
+want to consult doc/porting.doc (also available as html) for
+information on the available options for use in creating a
+system-specific config file.
 
 For information on including "external" C functions in the linked
 binary see doc/load.doc.
