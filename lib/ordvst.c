@@ -215,7 +215,7 @@ ordvst()
 	lnkd = *vp++ + LNKFLD/DESCR;	/* point to var link field */
 
 	if (i > 0)
-	    (struct descr *) D_A(lnkd) = *vp; /* point to next var */
+	    D_A(lnkd) = (int_t) *vp;	/* point to next var */
 	else
 	    D_A(lnkd) = 0;		/* End of the list */
     } /* for all entries */
