@@ -70,6 +70,7 @@ void reverse __P((struct spec *,struct spec *));
 void substr __P((struct spec *,struct spec *,struct descr *));
 void trimsp __P((struct spec *,struct spec *));
 void spec2str __P((struct spec *,char *,int));
+void apdsp __P(struct spec *, struct spec *));
 
 /* stream.c declarations in include/syntab.h */
 
