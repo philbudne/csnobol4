@@ -39,13 +39,13 @@ extern char *dynamic();
 #ifdef NO_STATIC_VARS
 #include "vars.h"
 #else  /* NO_STATIC_VARS not defined */
-static int ndynamic;
-static int pmstack;
 
 /* global for access by io.c; */
 int rflag;
 
 /* global for access by host.c; */
+int ndynamic;
+int pmstack;
 char *params;
 char **argv;
 int firstarg;
