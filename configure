@@ -437,7 +437,7 @@ if [ "$LP64" -o "$LONGLONG" ]; then
 
     # int_t is wide, so should be safe to use all 32-bits of "v" field
     # (can't be confused for a negative int_t)
-    echo '#define SIZLIM 0xffffffff'		>> $CONFIG_H
+    echo '#define SIZLIM (~(VFLD_T)0)'		>> $CONFIG_H
 
     # same size as int_t
     echo using double for SNOBOL4 REAL type 1>&2
