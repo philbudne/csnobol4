@@ -13,6 +13,11 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 	config/skel.inc: removed -DANSI_STRINGS
 	Makefile: add local-config comment to Makefile2
 	doc/porting.ms: updated
+	v311.sil: more comment tweaking
+		moved INCSTK to ICLBLK (sir.sno GC crashed compiler)
+		increased FNLIST free space to 20 functions
+	version.c: always include macros.h
+		upped version to 0.98.5
 
 10/2/96
 	doc/load.sno: add polymorphic args/returns

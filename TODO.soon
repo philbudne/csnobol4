@@ -1,30 +1,39 @@
 $Id$
 
-document:
-	SQRT(), EXP(), LOG(), CHOP()
-	SIN(), COS(), TAN()
+sir.sno crashes compiler?
+
+load.doc:
+	always use int_t and real_t!!!
+
+Add
+	HAVE_UNISTD_H make var, use for io.o
+	ANSI_STRINGS make var, use for getopt.o, sys.o
+	need to use all vars in "make depend"!!
+
+document additions;
+	talk about BREAKX vs ARB
+
+	SPARC SPITBOL: SQRT() SIN(), COS(), TAN()
+
+	SNOBOL4+: EXP(), LOG(), CHOP()
+
+	SITBOL: FILE() DELETE() RENAME()
+
+document changes;
+	value tracing of $ .
+	banner, stats to standard error
+	compiler errors to lising AND stderr
 
 snolib.a;
-	set RANLIB=true in ????.m4 (skel?)
-	DOS & VMS; need to make library!!
-		(or add -DNO_PML_HOST / NO_PML_EXIT?)
-		add /DEFINE=(EXIT=XEXIT) to VMS confs!
-	fix host.c;
-		hwame() and osname() functions?? lib/*/sys.c
-		dummy getenv() returns NULL
-		dummy system() returns -1
-	checkin pml.h
-	move default values for SNOLIB_DIR, SNOLIB_A to Makefile2.m4?
-		pass via -D to lib/io.o lib/bsd/load.o rules
-
-load.doc;
-	s/PML_OBJ/PML_OBJS/
-	warn about case folding
-	warn about global name collisions
-	deal with polymorphism?
-	add PMPROTO
-	add getstring()
-	add all snolib functions??
+	DOS & VMS;
+		deal with PML files;
+			define NO_PML_xxx
+			or add objects
+			or build library!!
+		need /DEFINE=(EXIT=XEXIT) on VMS!
+	help for host.c in hostile environments?
+		lib/dummy/getenv.c; returns NULL
+		lib/dummy/system.c; returns -1
 
 update README
 	credit SNOBOL4+, Minnesota SNOBOL4
@@ -43,24 +52,25 @@ Create CHANGES top level doc file;
 
 rcs tag for release
 
-create patches for snocone;
-	autodetect MAINBOL, set -+ switch?
-	handle either SNOBOL4 or SPITBOL I/O
-	unix include path (check for DOS via HOST()?)
-	unix makefile (use -P)
-		prepend #! line (must include -P)!?
-			have snocone prepend it to output??
-
 update porting.doc;
-	add VFLD_T (talk about size tradeoffs)
-	describe when to use NO_BITFIELDS
-	flush vfprintf
-	real load uses pml too!!
 	discuss term.c
-		sys.c??
-	flush MFU
-
-flush D_XXX in macros.h?
+		sys.c
+	add:
+		NO_PML_HOST
+		NO_PML_EXIT
+		NO_PML_REAL
+			NO_PML_SQRT
+			NO_PML_EXP
+			NO_PML_LOG
+			NO_PML_CHOP
+			NO_PML_TRIG
+		NO_PML_FILE
+		NO_PML_DELETE
+		NO_PML_RENAME
+	lib ifdefs;
+		NO_PML	(flush?)
+		NO_OFF_T
+		ANSI_STRINGS
 
 ==== before 1.0 release;
 
@@ -78,15 +88,27 @@ add utf.sno to snolib??
 make install?
 	echo "have you mailed timing.out...."???
 
-==
+================
 
-BUG: end.sno -- no file/line to report (INIT never called)
-	S4+ gets it right
+create patches for snocone;
+	autodetect MAINBOL, set -+ switch?
+	handle either SNOBOL4 or SPITBOL I/O
+	unix include path (check for DOS via HOST()?)
+	unix makefile (use -P)
+		prepend #! line (must include -P)!?
+			have snocone prepend it to output??
+
+================ later;
+
+add explicit rules for version.o, syn.o
+
+malloc system stack (STACK)?
+	slows down OFCHK() 2+% overall penalty
 
 BUG: gendata punts on ARRAY of constant expression!?
 	used for extra space at end of function table!
 
-compile hash() inline?
+move -DHAVE_xxx defines to autoconfig generated config.h?
 
 move SPDLDZ/DPSLDR from SIL to init.c??
 
@@ -94,6 +116,11 @@ have gen*.sno output to xxx.[ch]3, perform mv to .[ch]2 after completion?
 	avoids problems when ^C'ed and partial .h2 files written!
 
 GCCBUILD.COM for VMS?
+
+include tests for auto-loads;
+	host.sno
+	float.sno
+	chop.sno
 
 rewind tests;
 	split program across files
@@ -103,9 +130,6 @@ Create test for plusops off?
 	opsyn ?, look at precedence, associativity
 	try numeric conversion
 	try conversion on numbers with leading spaces (DONE: space2)
-
-SPITBOL changes
-	value tracing of $ . and = ops
 
 test overflow?
 	remove from man page limitations??
@@ -187,11 +211,20 @@ add code to ato[id]() version of spcint()/spreal()
 
 from s4+
 	&INFINITY
-		HUGE_VAL (ANSI/POSIX/SVID?)
-		HUGE	bsd?
-		infinity() ???
+		HUGE_VAL	(ANSI/POSIX/SVID?)
+		HUGE		bsd?
+		infinity() 	???
 	&NAN
-		???
+		quiet_nan()?	sunos4, sunos5
+		signaling_nan()?? sunos4, sunos5
+
+================
+
+better math exception catching;
+	ieee_handler:	sunos4, sunos5
+
+catching library errs;
+	matherr:	sunos4, sunos5, SVID3, (deprecated in XPG3)
 
 ================
 
@@ -212,11 +245,4 @@ make resident storage a struct with named members
 in make depend;
 	sed "s/$(SNOBOL4)\./"'$(SNOBOL4)./'
 
-document (library) ifdefs in porting.doc?
-	ie; NO_SCANF
-
-================
-
-talk about use of gcc &&label in doc/design.doc
-
-better hash?  do better job on ascention?
+timing: cleanup on interrupt
