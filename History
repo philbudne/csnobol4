@@ -2,6 +2,69 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+11/09/98
+	config.guess: updated to new version
+		added romp-ibm-aos
+	autoconf: try use of dlopen() on 64-bit HP-UX
+	genc.sno: process options
+	Makefile2.m4: use genc.sno --inline option instead of inline.sno
+		removed inline.sno from TAR files
+
+11/02/98
+	lib/vms/mstime.c: use CLK_TCK if available
+
+10/31/98
+	lib/bsd/mstime.c: avoid negative runtime deltas
+
+10/22/98
+	README: updated
+
+8/18/98
+	lib/win32/sys.c:
+		add Win98
+		suppress version numbers on Win95/Win98
+		strip leading spaces from szCSDVersion
+
+7/23/98
+	autoconf: added cygwin32 test
+
+6/12/98
+	include/macros.h: change APDSP to call apdsp function
+		after checking for non-zero length!
+	lib/str.c: new apdsp function; call bcopy if above
+		threshold (else do simple copy)
+	12% reduction in genc.sno compile time
+	 7% reduction in genc.sno run time
+
+Made 060298.tar.gz; fetched by;
+	Charles Wardell <cwardell@skila.com>
+
+5/30/98
+	Changes to allow building a Win32 DLL out of SNOBOL4;
+		(under ifdef NO_STATIC_VARS)
+	Makefile2.m4: add syn_init.{h,h2}
+	data_init.c: include vars.h
+	gendata.sno: bracket equ.h & res.h against multiple includes
+		include BUFFERs in res struct; ifdef struct res decls
+	gensyn.sno: output syn_init.h (included by generated syn.c)
+	main.c: allocate vars struct; call init_syntab
+	parms.h: include vars.h
+	version.c: include vars.h; update to 0.99.4++
+	include/vars.h: new include file for static vars struct
+	include/macros.h: ifdef math_error decl
+	lib/{expops,endex,stream,date,ordvst,intspc,realst,init}.c: vars.h
+	lib/{ansi,generic}/convert.c: include vars.h
+	lib/win32/{load,mstime,tty}.c: keep static in vars.h storage
+	lib/snolib/{host,retstring}.c: use vars.h
+
+5/29/98
+	lib/io.c: moved all static vars to "struct iovars" for DLL'ification
+		units array and indexing now hidden by INTERN and FINDUNIT
+		ran comdef
+
+5/6/98
+	autoconf: seperate --no-dynlib and --no-dlopen options
+
 4/9/98
 	doc/ports.doc: updated
 
@@ -144,7 +207,7 @@ Gave to Steve Kibler (Win32 DLL port) 2/24/98
 12/5/97
 	doc/snobol4.1: fix typo (thanks to Phillip Thomas)
 
-Gave to David Feustel 12/3/97 for WinNT port
+Gave to David Feustel 12/3/97 for WinNT port (0-99-4xx.zip)
 Gave to Phillip Thomas 11/23? for tcp/findunit fixes
 
 11/23/97:
