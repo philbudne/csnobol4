@@ -2,7 +2,59 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+10/12/96:
+	v311.sil: fix error pointer again
+		add COMPCL; don't show syntax errors after compilation done
+		set &ERRTEXT with compilation error messages!
+
+10/11/96:
+	doc/ports.doc: updated
+	v311.sil: don't crash on CODE() syntax errors
+
+10/10/96:
+	doc/ports.doc: updated
+
+10/9/96
+	test/spit.sno: enabled ? at top level
+	test/tests.in: removed ntrace.sno -- covered in spit.sno
+	performed analysis of functions inlined
+	looked at longjmp'ing out of deep tail-calls
+		(analyzed tail-call depths)
+
+******** RCS tag BETA3
+
+10/7/96
+	TODO: updated
+	CHANGES: updated
+	INSTALL: wrote it
+	doc/snobol4.1: updated
+	doc/ports.doc: updated
+	autoconf: fix CONFIG_GUESS; add netbsd-alpha, osf1-alpha
+		add CCPATH (was GCCPATH)
+	config/alpha.m4: split out from osf1.m4
+	config/gcc.m4: let autoconf do CC=
+	new: config/netbsd-alpha.m4 config/osf1-alpha.m4
+	lib/bsd/load.c: undef N_SIZE for NetBSD
+	lib/init.c: save signal number in SIGNCL
+	v311.sil: display signam number (SIGNCL) from SYSCUT
+	config.guess: latest version; added romp-ibm-aos
+	Makefile: add spotless, install
+	Makefile2.m4: add spotless, install
+	tested on AOS/ACIS 4.3; NetBSD/Alpha 1.2
+	version.c: upped to 0.99
+
+10/6/96
+	CHANGES: new
+	INSTALL: empty place holder
+	doc/porting.ms: updated
+	Makefile2.m4: add CHANGES INSTALL to tar
+		add syn.c, syn.c2 back to tar
+	doc/ports.doc: updated
+	tested on SunOS 4.1.3U1, 4.1.4, 5.4, 5.5;
+		HP-UX 10.10; IRIX 5.2; AIX 4.1; OSF/1 3.2
+
 10/5/96
+	README: updated
 	add bsplitu.c
 	autoconf: ADD_OBJS/SRCS for bcopy, bzero
 		flushed ANSI_STRINGS var; moved back to ADD_CPPFLAGS
@@ -16,7 +68,6 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 	lib/init.c: fix usage; show name, version, date, descr size
 	new lib/dummy/{execl,getenv,system}.c
 	doc/snobol4.1: updated
-	README: updated
 
 10/4/96
 	new lib/generic/sys.c, lib/posix/sys.c
