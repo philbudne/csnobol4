@@ -37,7 +37,7 @@ stream( sp1, sp2, tp )
 
     while (len > 0) {
 	struct acts *ap;
-	int tok;
+	int_t tok;
 
 	ap = tp->actions + tp->chrs[*cp];
 
