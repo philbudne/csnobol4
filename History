@@ -2,6 +2,22 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+12/08/2001
+	Makefile, Makefile2.m4: move source generation up to Makefile 
+		allows clean cvs checkout to build (with existing binary)
+		added "make spotless"
+
+12/06/2001
+	include/load.h: RETSTR() takes single arg, handles NULL
+		all RETxxx macros wrapped in do { ... } while(0)
+	pml.h, Makefile2.m4: add ORD() to snolib.a, PML it
+	doc/snobol4.1: add ORD()
+	win32/mstime.c: fix Win9x NO_STATIC_VARS
+
+12/05/2001
+	win32/mstime.c: fix Win9x version
+	timing.sno: ignore zero shell time (cygwin)
+
 12/04/2001
 	autoconf: create config.h, add --add-define=
 		use longlong/c99 functions when --longlong given
@@ -12,14 +28,16 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 	lib/io.c: use int_t for io_print unit
 	lib/longlong/spcint.c: ad hoc implementation (untested)
 	new: c99/spcint.c c99/intspc.c
+	timing: display config.h contents
 
 12/02/2001
 	LOTS: add 'ifdef HAVE_CONFIG_H/include "config.h"'
+		(done using a SNOBOL4 program, of course!)
 
 11/15/2001
 	split {ansi,generic}/convert.c into {ansi,generic}/{spcint,spreal}.c
 	moved intspc.c to generic/
-	updated Makefile2.m4
+	updated Makefile2.m4, config/vms/descrip.mms, config/win32/ntmsvc.mak
 	add serv.sno to snolib/
 
 11/13/2001

@@ -1,25 +1,36 @@
 $Id$
 
-document config.h in doc/load.doc
+have tests cleanup after themselves?  Add Makefile for "make clean"?
+	just add files to "make spotless"
+
+put sources under CVS
+	improve rcs2cvs;
+		move old files to Attic directories!!!
+	move file generation up to Makefile (so clean checkout makes)
+		pull testing, cleanup, tar up into Makefile?
+	put bugs under CVS, or remove from "make tar"?
+	prune CVS directories when making kit??
+		always build kit's from scratch, via anonymous checkout???
+
+doc/load.doc
+	document config.h
+	document RETSTR()/RETSTR2()
 
 document --add-define= in INSTALL
 
-update man page re: LOAD() limitations
+man page
+	LOAD() limitations out of date
+	mention files/functions available in snolib/
+	reference documents available on web!
 
-long long support;
-	test via compilation of test programs????
-	use c99 strtoll(), printf %lld if available (check stdlib?)
-	use longlong versions of intspc and spcint "as needed"?
-		test!!! supply BSD strtoll()??
-
-ports;
-	fix VMS port! str/number files
-
+merge in PC ports;
 	DJGPP stuff from Burkhard Meissner
 
 	borland stuff by Greg White
 		makefile/batchfile
 		win32/inet.c changes
+
+	try MINGW?
 
 always send timing.out via e-mail?
 	(unless timing.out.hostname exists?)
@@ -42,6 +53,7 @@ add config options;
 		sunpro: -xO5
 	--debug??
 		disable -fomit-frame-pointer
+		add -g (leave opt on if gcc?)
 
 create snolib_pic.a???
 
@@ -52,15 +64,12 @@ keep FL_INET bit? call inet_close(fp)???
 		fclose(fp);
 		closesocket(osf);
 
-use "pax -pe -rw src-dir dst-dir" for sourcekit?
+test
+	SSET()!!
+	longlong versions of intspc and spcint; use BSD strtoll if not.
 
-test SSET()!!
 
 make timing.out more machine friendly!
-
-add SNOBOL4+ ASC(STR)
-	return ascii value of first character in STR
-	[glwhite@netconnect.com.au]
 
 packaging;
 	make snobol*4*-VERSION directory/tarfile???
@@ -101,6 +110,10 @@ update README
 sed SNOLIB_PATH into man page?
 	give load.doc full path!!
 
+avoid using unit 8 for terminal?
+	do fdopen(3,"r+")?  fopen("/dev/tty", "r+")??
+	do all systems open stderr r/w???
+
 look at tty_close() thrashing;
 	never discard info?
 	keep use count???
@@ -113,6 +126,8 @@ Tests;
 	add "scan.sno" test
 	add outerr.sno test?
 	add scanerr.sno test?
+
+use "pax -pe -rw src-dir dst-dir" for sourcekit?
 
 ================
 
