@@ -8,7 +8,7 @@
 .       ds rq ''
 .       ds lq ``
 .\}
-.TH SNOBOL4 1 "11 Aug 1997" "Local"
+.TH SNOBOL4 1 "24 Aug 2003" "Local"
 .SH NAME
 snobol4 \- SNOBOL4 interpreter
 .SH SYNOPSIS
@@ -163,7 +163,7 @@ Comment line:	*\0#\0|\0;\0!
 Continuation line:	+\0.
 .fi
 .PP
-Both brackets ([]) and angle-brackets (<>) may be used to subscript
+Both square brackets ([]) and angle brackets (<>) may be used to subscript
 arrays and tables.  The
 .B TAB
 (ASCII 9) character is accepted as whitespace.  Note that the use of
@@ -320,7 +320,7 @@ is running on.  The string contains three parts, separated by colons.
 The first part describes the physical architecture, the second
 describes the operating system, and the third describes the language
 implementation name. Example:
-.I "sun4c:SunOS 4.1.4:C-MAINBOL 0.98.3"
+.I "sun4c:SunOS 4.1.4:CSNOBOL4 0.99.44"
 
 .br
 .B HOST(0)
@@ -557,6 +557,24 @@ of the form:
 .br
 .IR "ANY('Ee') ('+' | '-' | '') SPAN('0123456789')" .
 Exponential format reals need not contain a decimal point.
+.TP
+.B SERV_LISTEN()
+.br
+The
+.B SERV_LISTEN()
+function makes SNOBOL4 into a network server process, and takes three
+STRING arguments: FAMILY, TYPE, SERVICE.  FAMILY must be either "inet"
+for an IP v4 socket, or "unix" for a local ("unix domain") socket.
+The second argument, TYPE must be "stream", and the third argument,
+SERVICE must be a port number or service name (for an "inet" socket),
+or a pathname (for a "unix" socket).  SERV_LISTEN() listens for
+incomming requests, accepts them, then "forks" a child process and
+returns an integer file descriptor which can be opened for
+bidirectional I/O using a "/dev/fd/n" magic pathname.  The original
+("parent") process never returns from the SERV_LISTEN() call.  This
+function is only available on systems with the "fork" system call,
+which makes a child process which is an identical copy of the parent
+process.
 .TP
 .B SET()
 .br
@@ -962,6 +980,8 @@ structures during garbage collection.
 .PP
 http://www.snobol4.org
 .PP
+http://www.snobol4.com
+.PP
 [1] R. E. Griswold, J. F. Poage, and I. P. Polonsky
 .IR "The SNOBOL4 Programming Language" ,
 2nd ed., Prentice-Hall Inc., 1971.
@@ -972,6 +992,29 @@ W. H. Freeman and Co., 1972.
 
 .SH AUTHOR
 Philip L. Budne
+.PP
+with a little help from:
+.PP
+R. E. Griswold, J. F. Poage, and I. P. Polonsky
+.PP
+Mark Emmer (code from SNOBOL4+)
+.PP
+Viktors Berstis (code from Minnesota SNOBOL4)
+
+.SH DIAGNOSTICS
+.TP
+\*(lqInsufficient storage to continue\*(rq (error 20)
+.br
+\*(lqDynamic\*(rq storage exausted. See the
+.B "-d"
+option.
+
+.TP
+\*(lqStack overflow\*(rq (error 21)
+.br
+Interpreter stack exausted. See the
+.B "-S"
+option.
 
 .SH BUGS
 .PP
