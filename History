@@ -12,6 +12,7 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 		added getk(), -d takes bytes, k = 1024
 	v311.sil: removed PDLBLK (now malloced in init)
 		dropped SPDLDZ back to 5000
+	Makefile2.m4: updated -d arg
 
 9/22/96
 	v311.sil: use MOVA for &LAST(FILE|LINE) for speed
