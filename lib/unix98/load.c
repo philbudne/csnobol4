@@ -86,7 +86,7 @@ load(addr, sp1, sp2)
 	}
 	else {				/* no path */
 	    /* XXX limit length of snolib?? */
-	    sprintf( path, "%s/%s", snolib, SNOLIB_A );
+	    sprintf( path, "%s/%s", snolib, SNOLIB_FILE );
 	    /* XXX pass NULL pathname (search main program)??? */
 	    pp = path;
 	}

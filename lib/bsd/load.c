@@ -139,7 +139,7 @@ load(addr, sp1, sp2)
 	}
 	else {				/* no path */
 	    /* XXX watch snolib length */
-	    sprintf( path, "%s/%s", snolib, SNOLIB_A );
+	    sprintf( path, "%s/%s", snolib, SNOLIB_FILE );
 	}
 
 	sprintf( temp, "%s/snoXXXXXX", TMP_DIR);

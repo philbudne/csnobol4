@@ -85,7 +85,7 @@ load(addr, sp1, sp2)
 	else {				/* no path */
 	    /* XXX use special "self" handle (search main program)?? */
 	    /* XXX limit length of snolib??? */
-	    sprintf( path, "%s/%s", snolib, SNOLIB_A );
+	    sprintf( path, "%s/%s", snolib, SNOLIB_FILE );
 	}
 
 	fp->handle = shl_load(path, BIND_DEFERRED|BIND_VERBOSE, 0L);
