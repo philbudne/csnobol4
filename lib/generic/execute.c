@@ -9,6 +9,10 @@
 #include "snotypes.h"
 #include "lib.h"
 
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>			/* execl() */
+#endif /* HAVE_UNISTD_H defined */
+
 #ifndef SH_PATH
 #define SH_PATH "/bin/sh"
 #endif
