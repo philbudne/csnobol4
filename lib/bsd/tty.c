@@ -1,18 +1,23 @@
 /* $Id$ */
 
+/*
+ * tty mode, echo
+ * BSD/V7 version
+ */
+
+/*
+ * BUGS: while attempting to minimize thrashing tty modes
+ *	doesn't catch multple fd's on same device.
+ * 	could do fstat() and compare "rdev", but
+ *	/dev/tty still slips by!
+ */
+
 #include <stdio.h>
 #ifdef USE_TTYIO
 #include <sys/ttyio.h>			/* Research Version 10 */
 #else
 #include <sgtty.h>
 #endif
-
-/*
- * tty mode, echo
- * BSD/V7 version
- */
-
-/* XXX restore ALL settings on exit?? */
 
 /* keep settings for each fd in a list; */
 static struct save {
