@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+6/21/97:
+	timing: use HP-UX model command
+
 6/20/97:
 	lib/aux/bcopy.c: use (long) for casts
 	ports.doc: updated
