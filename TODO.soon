@@ -19,6 +19,12 @@ Move ports.doc information to config files?
 
 ================
 
+update porting.ms;
+	add SIGFUNC_T
+	s/cpp/m4/
+
+================
+
 Look at run of genc.sno w/o v311.sno (loops??)
 
 Run genc.sno for regression test?
