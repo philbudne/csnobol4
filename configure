@@ -442,7 +442,8 @@ else
 	;;
     *:AIX:2:3)
 	# AIX3 (not tested)
-	echo 'ADD_OPT([-qmaxmem=16000])'	>> $CONFIG_M4
+	# for data_init.o
+	echo 'ADD_OPT([-qmaxmem=32000])'	>> $CONFIG_M4
 	;;
     *:AIX:*:[45])
 	# AIX4/xlc
@@ -455,7 +456,8 @@ else
 	else
 	    OPT=-O3
 	fi
-	echo 'ADD_OPT([-qmaxmem=16000])'	>> $CONFIG_M4
+	# for data_init.o
+	echo 'ADD_OPT([-qmaxmem=32000])'	>> $CONFIG_M4
 
 	# XXX check if available? (how?) check for getconf error??
 	if [ "$LP64" ]; then
