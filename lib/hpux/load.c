@@ -49,60 +49,52 @@ load(addr, sp1, sp2)
     shl_t handle;
     int l1;
 
-    fp = (struct func *) malloc( sizeof (struct func) + S_L(sp1) );
+    l1 = S_L(sp1);
+    fp = (struct func *) malloc( sizeof (struct func) + l1 );
     if (fp == NULL)
 	return FALSE;			/* fail */
 
-    l1 = S_L(sp1);			/* XXX check if <= sizeof(fp->name)? */
-    strncpy( fp->name, S_SP(sp1), l1);
+    strncpy( fp->name, S_SP(sp1), l1 );
     fp->name[l1] = '\0';
     fp->handle = NULL;			/* assume internal! */
 
     /* try "poor mans load" first!!! */
     fp->entry = pml_find(fp->name);
     if (fp->entry == NULL) {		/* not found by pml */
-	char path[PATHLEN];
-	char temp[PATHLEN];
+	char path[PATHLEN*2];		/* room for directory name */
 	char *snolib;
-	long len;			/* size of code+data */
 	void *lib;
-	int l2;
 
 	snolib = getenv("SNOLIB");
 	if (snolib == NULL)
 	    snolib = SNOLIB_DIR;
 
-	/* XXX try pml here? */
-	l2 = S_L(sp2);			/* XXX check if .le. sizeof(path)? */
-	if (sp2 && S_A(sp2) && l2) {
-	    char *tp;
-	    char temp2[PATHLEN];
+	if (sp2 && S_A(sp2) && S_L(sp2)) {
 	    struct stat st;
+	    char temp[PATHLEN];
 
-	    strncpy(temp, S_SP(sp2), l2 );
-	    temp[l2] = '\0';
-
-	    strcpy(temp2, temp);	/* save copy */
-	    tp = index(temp, ' ');	/* look for space */
-	    if (tp)
-		*tp = '\0';		/* blot out space */
-
-	    if (stat(temp, &st) < 0)	/* test if prefix exists */
-		sprintf( path, "%s/%s", snolib, temp2 ); /* no prepend path */
+	    spec2str( sp2, temp, sizeof(temp) );
+	    if (temp[0] != '/' && stat(temp, &st) < 0) {
+		/* not absolute and file does not exist; prepend libdir */
+		/* XXX limit length of snolib??? */
+		sprintf( path, "%s/%s", snolib, temp );
+	    }
 	    else
-		strcpy( path, temp2 );
+		strcpy( path, temp );
 	}
 	else {				/* no path */
+	    /* XXX use special "self" handle (search main program)?? */
+	    /* XXX limit length of snolib??? */
 	    sprintf( path, "%s/%s", snolib, SNOLIB_A );
 	}
 
-	fp->handle = shl_load(temp, BIND_IMMEDIATE|BIND_VERBOSE, 0L);
+	fp->handle = shl_load(temp, BIND_DEFFERED|BIND_VERBOSE, 0L);
 	if (fp->handle == NULL) {
 	    free(fp);
 	    return FALSE;		/* fail */
 	}
 
-	handle = fp->handle;
+	handle = fp->handle;		/* get writable copy */
 	if (shl_findsym(&handle, fp->name, 0, (void *)&fp->entry) < 0 ||
 	    fp->entry == NULL) {
 	    shl_unload(fp->handle);
@@ -116,6 +108,7 @@ load(addr, sp1, sp2)
     funcs = fp;
 
     D_A(addr) = (int_t) fp;
+    D_F(addr) = D_V(addr) = 0;		/* clear flags, type */
     return TRUE;			/* success */
 }
 
@@ -130,6 +123,7 @@ link(retval, args, nargs, addr)
     struct shl_descriptor *dp;
 #endif
 
+    /* XXX check for zero V & F fields?? */
     fp = (struct func *) D_A(addr);
     if (fp == NULL)
 	return FALSE;
@@ -157,9 +151,9 @@ unload(sp)
 {
     struct func *fp, *pp;
     char name[128];			/* XXX */
+    int l;
 
-    strncpy( name, S_SP(sp), S_L(sp) );	/* XXX watch length? */
-    name[S_L(sp)] = '\0';
+    spec2str(sp, name, sizeof(name));
 
     for (pp = NULL, fp = funcs; fp != NULL; pp = fp, fp = fp->next) {
 	if (strcmp(fp->name, name) == 0)

@@ -95,12 +95,12 @@ load(addr, sp1, sp2)
     struct func *fp; 
     int l1;
 
-    fp = (struct func *) malloc( sizeof (struct func) + S_L(sp1) );
+    l1 = S_L(sp1);
+    fp = (struct func *) malloc( sizeof (struct func) + l1 );
     if (fp == NULL)
 	return FALSE;			/* fail */
 
-    l1 = S_L(sp1);			/* XXX check if <= sizeof(fp->name)? */
-    strncpy( fp->name, S_SP(sp1), l1);
+    strncpy( fp->name, S_SP(sp1), l1)
     fp->name[l1] = '\0';
     fp->data = NULL;			/* assume internal! */
 
@@ -113,33 +113,32 @@ load(addr, sp1, sp2)
 	char *snolib;
 	long len;			/* size of code+data */
 	int f;
-	int l2;
 
 	snolib = getenv("SNOLIB");
 	if (snolib == NULL)
 	    snolib = SNOLIB_DIR;
 
-	/* XXX try pml here? */
-	l2 = S_L(sp2);			/* XXX check if .le. sizeof(path)? */
-	if (sp2 && S_A(sp2) && l2) {
+	if (sp2 && S_A(sp2) && S_L(sp2)) {
+	    char temp2[sizeof(temp)];
 	    char *tp;
-	    char temp2[PATHLEN];
 	    struct stat st;
 
-	    strncpy(temp, S_SP(sp2), l2 );
-	    temp[l2] = '\0';
-
-	    strcpy(temp2, temp);	/* save copy */
+	    spec2str( sp2, temp, sizeof(temp) ); /* get libname [+ options] */
+	    strcpy(temp2, temp);	/* save copy with options */
 	    tp = index(temp, ' ');	/* look for space */
 	    if (tp)
 		*tp = '\0';		/* blot out space */
 
-	    if (stat(temp, &st) < 0)	/* test if prefix exists */
-		sprintf( path, "%s/%s", snolib, temp2 ); /* no prepend path */
+	    if (temp[0] != '/' && stat(temp, &st) < 0) {
+		/* not absolute and no file; prepend libdir */
+		/* XXX watch snolib length?? */
+		sprintf( path, "%s/%s", snolib, temp2 );
+	    }
 	    else
 		strcpy( path, temp2 );
 	}
 	else {				/* no path */
+	    /* XXX watch snolib length */
 	    sprintf( path, "%s/%s", snolib, SNOLIB_A );
 	}
 
@@ -156,6 +155,7 @@ load(addr, sp1, sp2)
 	if (f < 0) {
 	    /* XXX error message? */
 	    goto ld_error;
+
 	}
 
 	if (read( f, &a, sizeof(a)) != sizeof(a)) {
@@ -249,10 +249,10 @@ unload(sp)
     struct spec *sp;
 {
     struct func *fp, *pp;
-    char name[128];			/* XXX */
+    char name[1024];			/* XXX */
+    int l;
 
-    strncpy( name, S_SP(sp), S_L(sp) );	/* XXX watch length? */
-    name[S_L(sp)] = '\0';
+    spec2str( sp, name, sizeof(name) );
 
     for (pp = NULL, fp = funcs; fp != NULL; pp = fp, fp = fp->next) {
 	if (strcmp(fp->name, name) == 0)

@@ -25,16 +25,13 @@ load(addr, sp1, sp2)
     struct pmlfunc *fp;
     int l;
 
-    l = S_L(sp1);
-    if (l > sizeof(name)-1)
+    spec2str( sp1, name, sizeof(name) );
+    D_A(addr) = (int_t) pml_find(name);
+    if (D_A(addr) == NULL)
 	return FALSE;
 
-    strncpy( name, S_SP(sp1), l);
-    name[l] = '\0';
-
-    D_A(addr) = (int_t) pml_find(name);
-
-    return D_A(addr) != NULL;
+    D_F(addr) = D_V(addr) = 0;		/* clear flags, type */
+    return TRUE;
 #endif
 } /* pml_load */
 
@@ -48,6 +45,7 @@ link(retval, args, nargs, addr)
 #else  /* NO_PML not defined */
     int (*func)(LOAD_PROTO);
 
+    /* XXX check for zero V & F fields?? */
     func = (int (*)(LOAD_PROTO)) D_A(addr);
     if (func == NULL)
 	return FALSE;

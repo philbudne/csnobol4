@@ -48,58 +48,58 @@ load(addr, sp1, sp2)
     struct func *fp; 
     int l1;
 
-    fp = (struct func *) malloc( sizeof (struct func) + S_L(sp1) );
+    l1 = S_L(sp1);
+    fp = (struct func *) malloc( sizeof (struct func) + l1 );
     if (fp == NULL)
 	return FALSE;			/* fail */
 
-    l1 = S_L(sp1);			/* XXX check if <= sizeof(fp->name)? */
-    strncpy( fp->name, S_SP(sp1), l1);
+    strncpy( fp->name, S_SP(sp1), l1 );
     fp->name[l1] = '\0';
     fp->handle = NULL;			/* assume internal! */
 
     /* try "poor mans load" first!!! */
     fp->entry = pml_find(fp->name);
     if (fp->entry == NULL) {		/* not found by pml */
-	char path[PATHLEN];
-	char temp[PATHLEN];
+	char path[PATHLEN*2];		/* room for directory name */
+	char *pp;			/* path pointer */
 	char *snolib;
-	long len;			/* size of code+data */
 	void *lib;
-	int l2;
 
 	snolib = getenv("SNOLIB");
 	if (snolib == NULL)
 	    snolib = SNOLIB_DIR;
 
-	/* XXX try pml here? */
-	l2 = S_L(sp2);			/* XXX check if .le. sizeof(path)? */
-	if (sp2 && S_A(sp2) && l2) {
-	    char *tp;
-	    char temp2[PATHLEN];
+	if (sp2 && S_A(sp2) && S_L(sp2)) {
 	    struct stat st;
+	    char temp[PATHLEN];
 
-	    strncpy(temp, S_SP(sp2), l2 );
-	    temp[l2] = '\0';
+	    spec2str(sp2, temp, sizeof(temp));
 
-	    strcpy(temp2, temp);	/* save copy */
-	    tp = index(temp, ' ');	/* look for space */
-	    if (tp)
-		*tp = '\0';		/* blot out space */
-
-	    if (stat(temp, &st) < 0)	/* test if prefix exists */
-		sprintf( path, "%s/%s", snolib, temp2 ); /* no prepend path */
+	    /* XXX just try dlopen() ?? */
+	    if (temp[0] != '/' && stat(temp, &st) < 0) {
+		/* not absolute and file does not exist; prepend libdir */
+		/* XXX limit length of snolib?? */
+		sprintf( path, "%s/%s", snolib, temp );
+	    }
 	    else
-		strcpy( path, temp2 );
+		strcpy( path, temp );
+	    pp = path;
 	}
 	else {				/* no path */
+	    /* XXX limit length of snolib?? */
 	    sprintf( path, "%s/%s", snolib, SNOLIB_A );
+	    /* XXX pass NULL pathname (search main program)??? */
+	    pp = path;
 	}
 
-	/* SunOS4 only supports LAZY mode */
-	fp->handle = dlopen(temp, RTLD_LAZY);
+	/*
+	 * SunOS4 (and others) only support LAZY mode.
+	 * set RTLD_GLOBAL (if available)?? nah; avoid module collisions
+	 */
+	fp->handle = dlopen(pp, RTLD_LAZY);
 	if (fp->handle == NULL) {
-#if 0
-	    printf("dlerror: %s\n", dlerror());	/* XXX TEMP */
+#ifdef DEBUG
+	    printf("dlopen: %s\n", dlerror());
 #endif
 	    free(fp);
 	    return FALSE;		/* fail */
@@ -107,22 +107,31 @@ load(addr, sp1, sp2)
 
 	fp->entry = (int (*)(LOAD_PROTO)) dlsym(fp->handle, fp->name);
 	if (fp->entry == NULL) {
-	    char name2[128];		/* XXX */
-
+#if !defined(__NetBSD__)
+	    dlclose(fp->handle);
+	    free(fp);
+	    return FALSE;
+#else
 	    /*
-	     * Ouch; NetBSD (on pc532 at least) wants C functions with
-	     * a leading underscore.  Rather than trying to figure out
-	     * when and if this is needed at config time, just try it
-	     * both ways
+	     * Ouch; NetBSD 1.2 (on pc532 at least, and probably all
+	     * a.out based platforms) wants C functions with a leading
+	     * underscore.  Rather than trying to figure out when and
+	     * if this is needed at config time, just try it both ways.
 	     */
 
-	    sprintf(name2, "_%s", fp->name);
+	    char name2[1024];		/* XXX */
+
+	    name2[0] = '_';
+	    strncpy(name2+1, fp->name, sizeof(name2)-2);
+	    name2[sizeof(name2)-1] = '\0';
+
 	    fp->entry = (int (*)(LOAD_PROTO)) dlsym(fp->handle, name2);
 	    if (fp->entry == NULL) {
 		dlclose(fp->handle);
 		free(fp);
 		return FALSE;
 	    } /* dlsym failed again */
+#endif
 	} /* dlsym failed */
     } /* not found by pml */
     fp->self = fp;			/* make valid */
@@ -131,6 +140,7 @@ load(addr, sp1, sp2)
     funcs = fp;
 
     D_A(addr) = (int_t) fp;
+    D_F(addr) = D_V(addr) = 0;		/* clear flags, type */
     return TRUE;			/* success */
 }
 
@@ -141,6 +151,7 @@ link(retval, args, nargs, addr)
 {
     struct func *fp;
 
+    /* XXX check for zero V & F fields?? */
     fp = (struct func *) D_A(addr);
     if (fp == NULL)
 	return FALSE;
@@ -156,11 +167,9 @@ unload(sp)
     struct spec *sp;
 {
     struct func *fp, *pp;
-    char name[128];			/* XXX */
+    char name[1024];			/* XXX */
 
-    strncpy( name, S_SP(sp), S_L(sp) );	/* XXX watch length? */
-    name[S_L(sp)] = '\0';
-
+    spec2str(sp, name, sizeof(name));
     for (pp = NULL, fp = funcs; fp != NULL; pp = fp, fp = fp->next) {
 	if (strcmp(fp->name, name) == 0)
 	    break;
