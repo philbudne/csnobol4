@@ -2,11 +2,23 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+
+1/6/00
+	config/ultrasparc64.m4: config for solaris7 64bit env (tested)
+	autoconf: emit HAVE_STDLIB_H
+	main.c lib/init.c lib/io.c lib/ordvst.c
+		lib/{bsd,generic}/dynamic.c lib/{bsd,posix}/tty.c
+		lib/generic/popen.c lib/{hpux,unix98,bsd}/load.c:
+			use HAVE_STDLIB_H for malloc/getenv
+
+12/17/99
+	timing: use psrinfo if available on suns
+
 8/8/99
 	config/borland/build.bat: add sset
 	config/vms/descrip.mms: add sset
 	config/win32/ntmsvc.mak: add sset
-	lib/vms/popen.c: add retlen cast
+	lib/vms/popen.c: add retlen cast (for Alpha)
 	lib/vms/tty.c: remove trailing NULs
 
 7/2/99
