@@ -18,6 +18,7 @@ rcs tag
 ==== before 1.0 release;
 
 Document LD_PATH, HAVE_UNISTD_H???
+	TTY_RAW?
 
 Add "N" I/O flag??
 	set IO_NONBLOCK (POSIX), IO_NDELAY (sysV)
