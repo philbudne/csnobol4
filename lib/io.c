@@ -1,8 +1,14 @@
 /* $Id$ */
 
+#ifdef USE_STDARG_H			/* only if varargs not available */
+#include <stdarg.h>
+#else  /* USE_STDARG_H not defined */
 #include <varargs.h>
+#endif /* USE_STDARG_H not defined */
+
 #include <stdio.h>
 #include <ctype.h>
+
 #ifdef NO_OFF_T
 typedef long off_t;
 #else  /* NO_OFF_T not defined */
@@ -383,22 +389,30 @@ io_init()				/* here from INIT */
 
 /* limited printf */
 void
-io_printf(va_alist)			/* OUTPUT */
-    va_dcl
+io_printf
+#ifdef USE_STDARG_H
+    (int unit, ...)
+#else
+    (va_alist) va_dcl
+#endif
 {
     va_list vp;
-    int unit;
     char *format;
     register char c;
     FILE *f;
     char line[1024];
     char *lp;
+#ifdef USE_STDARG_H
+    va_start(vp,unit);
+#else
+    int unit;
 
     va_start(vp);
 
     unit = va_arg(vp, int);
-    unit--;
+#endif
 
+    unit--;
     if (BADUNIT(unit) ||
 	io_units[unit].curr == NULL ||
 	(f = io_units[unit].curr->f) == NULL)
