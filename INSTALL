@@ -42,7 +42,12 @@ Non-unix systems;
 ================
 
 None of the ports below have been tested with the latest sources.
-Please send me any fixes you discover.
+Please send me any fixes you discover!  See doc/porting.doc for
+details on porting C-MAINBOL.
+
+The routines in tty.c (tty_save, tty_restore, tty_mode, tty_close) and
+tcp.c (tcp_open) need to be supplied.  Dummy versions exist in
+lib/dummy/tty.c and lib/dummy/tcp.c.
 
 The functions referenced from pml.h will not be loaded by the existing
 command files, and will cause the link to fail.  There are three
@@ -54,10 +59,12 @@ possible solutions;
 
 3. Define one or more of NO_PML_(HOST|EXIT|REAL|FILE|DELETE|RENAME).
 
-The SPITBOL HOST() and EXIT() function simulations may call functions
-not available on the target system.  Rather than adding a nest of
-ifdefs, dummy versions of getenv(), execl() and system() have been
-provided in the lib/dummy directory for this eventuality.
+The SPITBOL HOST() function simulation may call functions not
+available on the target system.  Rather than adding a nest of ifdefs,
+dummy versions of getenv() and system() have been provided in the
+lib/dummy directory for this eventuality.  The SPITBOL EXIT()
+simulation requires an execute() function to pass pass control to
+another program.  A dummy version is provided in lib/dummy/execute.c.
 
 MS-DOS using Borland C++
 ------------------------
