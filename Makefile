@@ -86,8 +86,8 @@ Makefile2 .depend: config.m4 Makefile2.m4
 # code
 
 # regular version
-snobol4.c proc.h2: procs genc.sno globals $(SIL) 
-	rm -f snobol4.c2 proc.h2
+snobol4.c proc.h2 static.h2: procs genc.sno globals $(SIL) 
+	rm -f snobol4.c2 proc.h2 static.h2
 	$(SNO) genc.sno $(SIL) > snobol4.c2
 	mv -f snobol4.c2 snobol4.c
 
@@ -104,7 +104,7 @@ snobol4.c proc.h2: procs genc.sno globals $(SIL)
 # well as the C version.
 
 isnobol4.c: procs genc.sno globals $(SIL)
-	rm -rf isnobol4.c2 proc.h2 prolog subr
+	rm -rf isnobol4.c2 proc.h2 static.h2 prolog subr
 	test -f bsdtsort || $(CC) -o bsdtsort bsdtsort.c
 	mkdir subr
 	$(SNO) -- genc.sno --inline $(SIL) > prolog
@@ -115,6 +115,9 @@ isnobol4.c: procs genc.sno globals $(SIL)
 
 proc.h:	proc.h2
 	@cmp proc.h proc.h2 || cp proc.h2 proc.h
+
+static.h: static.h2
+	@cmp static.h static.h2 || cp static.h2 static.h
 
 ################
 # syntax tables
@@ -172,7 +175,7 @@ host.sno: host.awk lib/snolib/host.h
 # housekeeping
 
 # directly generated files (to avoid recompilation when no change in outputs)
-G2=data.c2 data.h2 data_init.h2 proc.h2 equ.h2 syn.h2 syn_init.h2 res.h2
+G2=data.c2 data.h2 data_init.h2 proc.h2 static.h2 equ.h2 syn.h2 syn_init.h2 res.h2
 
 # remove turds
 tidy:
@@ -186,7 +189,7 @@ tidy:
 DISP=*.o *.a callgraph prolog bsplitu pv vers build.c bsdtsort \
 	config.m4 config.h Makefile2 .depend
 
-# Inspired by PowederMilk bisquits
+# Inspired by PowderMilk bisquits
 # (made by Norwegian Bachelor farmers, so you know they're pure, mostly);
 # remove objects, turds; leave generated sources, final binary.
 cleanmostly: tidy
