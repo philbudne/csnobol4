@@ -2,6 +2,50 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+12/16/98
+	Makefile: add .depend dependancy!
+	Makefile2.m4: removed HAVE_UNISTD_H variable
+		add explicit rules for version.o main.o data.o syn.o
+	autoconfig: check stdlib.h for getopt()
+		flushed HAVE_UNISTD_H variable
+	config/bsd44.m4 config/ansi.m4 config/bsd43.m4
+		config/generic.m4 config/hpux-68k.m4
+		config/netbsd-alpha.m4 config/nextstep3.m4
+		config/osf1.m4 config/posix.m4 config/skel.inc
+		config/ultrix-mips.m4: add $(SRCDIR)
+	lib/bsd/mstime.c: set last_mstime!
+		changed NO_GETRUSAGE_BUG to GETRUSAGE_BUG
+	lib/date.c lib/generic/expops.c lib/unix98/load.c
+		lib/realst.c lib/str.c lib/auxil/getopt.c
+		lib/snolib/chop.c lib/snolib/cos.c
+		lib/snolib/exp.c lib/snolib/log.c
+		lib/snolib/sin.c lib/snolib/sqrt.c
+		lib/snolib/tan.c: include system files first (to get __P)
+	timing: make seperate symlink for snobol4 binary; remove .. prefix
+
+12/14/98
+	lib/bsd/inet.c: now unix only! add inet_cleanup function
+	lib/dummy/inet.c: add inet_cleanup function
+	lib/endex.c: call inet_cleanup() call
+	config/vms/descrip.mms: use vms inet.c!
+	config/win32/ntmsvc.mak: use win32 inet.c!
+	new lib/vms/inet.c: VMS only version
+	new lib/win32/inet.c: winsock version; call WSAInit/Cleanup
+	include/vars.h: add wsock_init
+
+12/12/98
+	timing:
+		redir lsattr stderr to stdout (in case proc0 not found)
+		avoid builtin "time" command if possible (for AIX4, OpenBSD)
+	timing.sno: add "User" pattern for AIX4
+	Makefile:
+		add "default"; AIX4 make was making all the targets!
+		moved "clean", "realclean" from Makefile2
+		added "distclean"
+	Makefile2.m4: moved "clean", "realclean" to Makefile
+	autoconf: output libdl instead of -ldl
+	config/osf1.m4: added -D_SOCKADDR_LEN
+
 11/23/98
 	lib/io.c: pass mode to osdep_open()
 	doc/porting.ms: update

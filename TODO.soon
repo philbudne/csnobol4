@@ -1,6 +1,76 @@
 $Id$
 
-Steve Kibler's DYNAMIC changes?
+create;
+	linux/RPM
+	freebsd "port"
+	netbsd package?
+	linux/debian? (http://www.debian.org/doc/FAQ/debian-faq-7.html)
+		ftp://ftp.debian.org/debian/doc/package-developer/programmer.ps.gz
+
+output message if ignoring gcc?
+
+
+
+use strchr, memcmp, memmove etc by default (add USE_BSD_STRINGS)?
+
+timing script;
+	translate bogomips + cpu into clock speed?
+	output machine readable format?
+
+include serv.c/serv.sno in kit.
+	put serv.c in snolib (need NO_PML_SERV)
+
+load.doc: mention dt.h
+
+look at tty_close() thrashing;
+	never discard info?
+	keep use count???
+	flush tty_save & tty_restore (rely on io_finish)??
+	always close in reverse of open order
+		so if two fd's refer to same device the original
+		params are restored!!
+
+Tests;
+	add "scan.sno" test
+	add outerr.sno test?
+
+INSTALL:
+	talk about available snolib files
+	talk about optimization options
+		ie;
+			gcc -O2
+			sunpro -xO5 -native
+		use of --opt=
+
+	use of local-config;
+		ADD_OPT()
+		OPT=
+		SNOBOL4_C_CFLAGS=
+		DATA_INIT_CFLAGS=
+
+sed SNOLIB_PATH into man page?
+	give load.doc full path!!
+
+================
+
+per-machine (arch?) build dirs
+	do machine-independant parts in base dir (genc, gendata, gensyn)
+	leave flat, but split up Makefile work?
+**	Need to add $(SRCDIR) to all 'xxx_C=' lines in config/*.m4
+
+tmpnam() call in snolib?
+
+io.c cleanup;
+	io_flushall
+		external MINUNIT, MAXUNIT
+		fflush before mode restore?
+	use stdlib.h, if available (for getenv())
+	io_relfile (instead of free(fp)?)
+	io_ecomp()
+		if -r not given, include files not freed?
+
+Steve Kibler's DYNAMIC changes;
+	findvar/findstring?
 
 URL package;
 	Fix "file.sno" (file URL's) to handle null host, "localhost"??
@@ -10,24 +80,10 @@ URL package;
 Win32;
 	try turning on bitfields?
 	get inet working
-	fix win32/tty.c
-	replace dummy execute function
-	implement osdep_fopen hacks for /dev/tty, /dev/null?
-	test LOAD() with DLL's (how to make one?)
-
-from Gene Battin;
-	send &DUMP output to stderr?
-
-include serv.c/serv.sno?
-
-Install load-related .h files in seperate SNOLIB/include/ directory?
-	fix serv.c comment?!
-
-Tests;
-	add "scan.sno" test
-	add outerr.sno test?
-
-Talk about available snolib files in INSTALL & README!!
+	fix win32/tty.c (read modes not working?)
+	replace dummy execute function?
+	implement osdep_open hacks for /dev/tty, /dev/null?
+	document DLL creation in load.doc
 
 man page;
 	document math error catching problems in BUGS section;
@@ -46,20 +102,6 @@ man page;
 		(normal return behavior is undefined)
 		restart/looping
 
-load.doc: mention dt.h
-
-update porting.ms;
-	finite()
-	exists.c
-	win32 files
-	OS_FOPEN ifdef
-	others?
-
-look at tty_close() thrashing;
-	never discard info?
-	keep use count???
-	flush tty_save & tty_restore (rely on io_finish)??
-
 make NO_BITFIELDS VFLD_T "long"??
 	need to use vfld_t in place of "int" in library routines???
 	what is borland "int" size with build.com?
@@ -68,12 +110,9 @@ make NO_BITFIELDS VFLD_T "long"??
 
 ================
 
-add options to genc.sno
-	-i	inline (replace inline.sno)
-	-e	eol comments
-	-b	block comments
-	-l	#line
-
+LOAD-wrapper;
+	given pseudo-prototype, generate C code for wrapper function
+	compile, link and LOAD()?
 
 Implement REALCVT??
 	using sprintf?
@@ -98,14 +137,6 @@ unix98/load.c
 	allow access to symbols from main application??
 	make shared snolib $(SNOLIB_FILE)
 
-INSTALL:
-	talk about optimization options
-		ie; gcc -O2
-		use of --opt=
-			ADD_OPT()
-			OPT=
-			SNOBOL4_C_CFLAGS=
-
 man page:
 	more on I/O options (esp update)
 		examples???
@@ -126,21 +157,48 @@ SPITBOL compatibility document?
 	BACKSPACE() not supported
 	CLEAR() does not take args, clears pre-initialized vars (ie; ARB, FENCE)
 
-==== before beta releases
+================
+
+I/O system document;
+
+	layers;
+		I/O variable
+			INPUT, OUTPUT, or both!
+				both; may use same unit (update)
+				or different units (ie; TERMINAL)!!
+		Unit number
+			multiple INPUT/OUTPUT calls with same unit
+				most often with different recls.
+		stdio stream
+			"-", /dev/std*
+			same I/O buffer(s), file pointer
+		system fd
+			opens via /dev/fd/N
+			dup'ed fd's
+			same file pointer, different stdio buffers
+		file object
+			some fcntl() operations
+
+	properties;		layer;
+		recl		I/O variable
+		binary		stream(/fd) [per-unit for ttys]
+		noecho		unit
+		append		stream/fd
+		update		unit/stream/fd
+		unbuf		unit
+
+	magic filenames
+		noclose behavior!
+
+==== stuff to do for releases;
 
 update man page date, CHANGES, README, version.c
 
 check in all files (incl History, TODO.soon)
 
-rcs tag
+rcs tag all files
 
-==== before 1.0 release;
-
-sed SNOLIB_PATH into man page?
-	give load.doc full path!!
-
-seperate regression test suite for distribution
-	(only tests likely to uncover port problems)?
+====
 
 Add "N" I/O flag??
 	set IO_NONBLOCK (POSIX), IO_NDELAY (sysV)
@@ -151,16 +209,12 @@ Implement select()???
 Test:
 	I/O options (include bad strings!)
 
-Add to INSTALL;
-	warn about compile times!!
+Add to porting.doc;
 	common problems;
 		cannot optimize isnobol4.c or data_init.c
 		try other C compilers
-	gnu as (much) faster (on sparc/sunos4)
 
 release updated rebus
-
-update man page date
 
 update v311.sil table of contents?
 
@@ -174,16 +228,36 @@ add to spitbol.inc;?
 
 add UNAME_DOT_VERSION ifdef in posix/sys.c for AIX?
 
-rcs tag
-
 ================ after release;
 
-announce on SNOBOL4 list
+update ftp areas;
+	alpha.gnu.org
+	snobol4.com
+	home!!
 
-announce on comp.lang.icon,comp.lang.misc
 
-notify free compilers/interpreters list maintainer
-	free-compilers@idiom.com
+binary packages;
+	linux: RPM (debian??)
+	win32
+		http://pweb.netcom.com/~feustel/index.html
+	freebsd?
+
+announce/notify;
+	SNOBOL4 list
+
+	comp.lang.icon,comp.lang.misc,comp.compilers
+
+	free compilers/interpreters list maintainer
+		free-compilers@idiom.com
+
+	SAL@KachinaTech.COM 
+	http://SAL.KachinaTech.COM/F/1/SNOBOL4.html
+
+	lingiust list
+		http://www.linguistlist.org/
+
+	litterature researchers??
+		ask Eric Johnson!!
 
 ================ later;
 
@@ -193,8 +267,6 @@ table default values???
 
 add $(OBJDIR) prefix before all .o filenames in Makefile2?
 	add explicit rules for version.o, syn.o
-
-&DUMP protected keywords?
 
 add io_flushall() to snolib/system.c
 	add dummy io_flushall to snolib.a?
@@ -258,31 +330,33 @@ move data_init into (i)snobol4.c,
 ================
 
 load changes;
+	Use AIX dlopen() simulation by Jens-Uwe Mager <jum@anubis.han.de>
+		ftp://anubis.han.de/pub/aix/dlfcn.shar
+		document DLL creation in load.doc;
+		create snobol4.exp file;
+			{g,r}etstring
+			io_{findunit,getfp,mkfile,endfile,flushall}
 
-	BSD; load "object" once, read symtab for multiple entry points
-		use -A on original / current symtab
-
-	use load() on AIX???
-
-	allow use of GNU dynamic load library (dld)
+	load.c using GNU dynamic load library (dld);
 		version 4.0 is supposed to support COFF & ELF
 
-	try to implement load.c using GNU ld (has -Ttext flag) & libbfd?
+	bsd;
+		default LD_PATH to /bin/ld (only used now on bsd43,sony_news)?
+		load "object" once, read symtab for multiple entry points
+			use -A on original / current symtab
+		allow using GNU ld (has -Ttext flag) & libbfd?
 
 ================
 
 Add DIAGNOSTICS section to man page???
 	document all error numbers/strings and reasons!!
 
-	-INCLUDE/-COPY
-		improve error handling???
-
 have all genc, gendata, gensyn output .[ch]3 files; mv to .[ch]2 on exit??
 
 Have gensyn read character classes from input
 	(seperate with %%?)
 
-Improve porting.doc
+Improve porting.doc / INSTALL
 	talk about C compilers
 		sun cc vs. gcc
 		hp cc vs. gcc
@@ -292,9 +366,6 @@ Improve porting.doc
 MOVBLK_MEMMOVE?
 MOVBLK_MEMCPY???
 APDSP_MEMCPY?
-
-have seperate BRKTB/SPNTB, like SNOBOL4+?
-	generate, keep tables??
 
 try adding SOME explicit "inline" decls?
 
@@ -378,10 +449,11 @@ try appending .sno to command line filenames, if not found?
 
 CHAR/LPAD/RPAD in wrong section of v311.sil?!
 
-================
+================ DUMP;
 
 implement SPITBOL &DUMP values?
-add DUMP(n) function???
+&DUMP protected keywords?
+DUMP(n);
 
 	0	no dump
 	1	partial dump (no null variables, constant keywords)
@@ -389,13 +461,8 @@ add DUMP(n) function???
 		non-null members of user datatypes
 	3	include null-valued variables, stmt labels
 
-================
-
-per-machine build dirs
-	do machine-independant parts in base dir (genc, gendata, gensyn)
-	make symlinks?
-		*.c *.h *.c2 *.h2 gen*.sno globals procs
-		inline.sno v311.sil syntax.tbl
+from Gene Battin;
+	send &DUMP output to stderr? (SPARC SPITBOL uses stdout)
 
 ================
 
@@ -410,18 +477,3 @@ Implement SPITBOL EXIT [+-][34] freeze functionality
 
 perform live/dead analysis of variables for each function?!
 
-================
-
-I/O system document;
-
-	levels;
-		I/O variable
-		Unit number
-		stdio stream
-		system fd
-		file object (fd may have been dup'ed)
-
-
-================
-
-tmpnam() call in snolib?
