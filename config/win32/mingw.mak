@@ -149,9 +149,6 @@ expops.o: $(SRCDIR)lib/generic/expops.c
 intspc.o: $(SRCDIR)lib/generic/intspc.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/generic/intspc.c
 
-term.o:	$(SRCDIR)lib/generic/term.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib/generic/term.c
-
 ################ win32!
 
 inet.o:	$(SRCDIR)lib/win32/inet.c
@@ -165,6 +162,9 @@ mstime.o: $(SRCDIR)lib/win32/mstime.c
 
 sys.o:	$(SRCDIR)lib/win32/sys.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/win32/sys.c
+
+term.o:	$(SRCDIR)lib/win32/term.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/win32/term.c
 
 tty.o:	$(TTY_C)
 	$(CC) $(CFLAGS) $(TTY_C)

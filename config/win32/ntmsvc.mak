@@ -154,9 +154,6 @@ expops.obj : $(SRCDIR)lib\generic\expops.c
 intspc.obj : $(SRCDIR)lib\generic\intspc.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\generic\intspc.c
 
-term.obj : $(SRCDIR)lib\generic\term.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib\generic\term.c
-
 ################ win32!
 
 inet.obj : $(SRCDIR)lib\win32\inet.c
@@ -170,6 +167,9 @@ mstime.obj : $(SRCDIR)lib\win32\mstime.c
 
 sys.obj : $(SRCDIR)lib\win32\sys.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\sys.c
+
+term.obj : $(SRCDIR)lib\win32\term.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\term.c
 
 tty.obj : $(TTY_C)
 	$(CC) $(CFLAGS) $(TTY_C)
