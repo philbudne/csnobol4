@@ -4,7 +4,6 @@
 
 #include <windows.h>
 
-static v
 void
 hwname(cp)
     char *cp;
@@ -12,18 +11,17 @@ hwname(cp)
     char *hw;
     SYSTEM_INFO si;
 
-    GetSystemInfo(&si);			/* XXX check return? */
+    GetSystemInfo(&si);			/* no return value */
 
     switch (si.wProcessorArchitecture) {
     case PROCESSOR_ARCHITECTURE_INTEL:
-#if 0
-	/* sprintf(cp, "i%d", si.dwProcessorType ); */
-	sprintf(cp, "i%c86", si.wProcessorLevel + '0');
-	return;
-#else
-	cp = "x86";
+	/*
+	 * wProcessorLevel, not used on Windows 95.
+	 * dwProcessorType contains mnemonic values,
+	 * but is obsolete on WinNT.
+	 */
+	hw = "x86";
 	break;
-#endif
 
     case PROCESSOR_ARCHITECTURE_MIPS:
 	hw = "mips";
@@ -38,12 +36,7 @@ hwname(cp)
 	break;
 
     default:
-#if 0
-	sprintf(cp, "arch %d", si.wProcessorArchitecture);
-#else
-	/* values seem to be mnemonic */
-	sprintf(cp, "unk%d", si.dwProcessorType );
-#endif
+	sprintf(cp, "arch#%d", si.wProcessorArchitecture);
 	return;
     }
     strcpy(cp, hw);
@@ -57,7 +50,10 @@ osname(cp)
     OSVERSIONINFO osv;
 
     osv.dwOSVersionInfoSize = sizeof(osv);
-    GetVersionEx(&osv);
+    if (!GetVersionEx(&osv)) {
+	strcpy(cp, "unknown");
+	return;
+    }
 
     switch (osv.dwPlatformId) {
     case VER_PLATFORM_WIN32s:
@@ -66,8 +62,6 @@ osname(cp)
 
     case VER_PLATFORM_WIN32_WINDOWS:
 	/*
-	 * From MS Win95 OSR 2 docs;
-	 *
 	 * If the dwPlatformId member of that structure is
 	 * VER_PLATFORM_WIN32_WINDOWS, and the low word of the
 	 * dwBuildNumber member is "1111," the system is running
@@ -82,7 +76,7 @@ osname(cp)
 	    os = "Win95";
 	    break;
 	default:
-	    os = "Win??";
+	    os = "Win??";		/* XXX win9x? */
 	}
 	break;
 
@@ -91,10 +85,21 @@ osname(cp)
 	break;
 
     default:
-	os = "Win???";
+	os = "Win???";			/* XXX win#id? */
 	break;
     }
 
-    /* XXX include dwBuildNumber? */
-    sprintf(cp, "%s %d.%d", os, osv.dwMajorVersion, osv.dwMinorVersion );
+    /*
+     * szCSDVersion
+     *
+     * Windows NT: Contains a null-terminated string, such as "Service
+     * Pack 3", that indicates the latest Service Pack installed on
+     * the system. If no Service Pack has been installed, the string
+     * is empty.
+     *
+     * Windows 95: Contains a null-terminated string that provides
+     * arbitrary additional information about the operating system.
+     */
+    sprintf(cp, "%s %d.%d %s",
+	    os, osv.dwMajorVersion, osv.dwMinorVersion, osv. szCSDVersion );
 }
