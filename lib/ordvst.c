@@ -221,7 +221,6 @@ ordvst()
     }
 #endif /* ORDVST_DEBUG defined */
 
-/* XXX use bzero? */
     /* null out entire hash table */
     bzero( OBSTRT, OBSIZ * DESCR );
 
