@@ -106,7 +106,7 @@ struct file {
     struct file *next;			/* next input file */
     FILE *f;				/* may be NULL if not (yet) open */
     int flags;				/* FL_xxx */
-    enum { TYPE_PIPE, TYPE_TTY, TYPE_INET } type;
+    enum { TYPE_NORM, TYPE_PIPE, TYPE_TTY, TYPE_INET } type;
     /* XXX add methods for read/write/eof/mode/seek/close */
     /* XXX keep recl (shift flags up?)? */
     enum { LAST_NONE, LAST_OUTPUT, LAST_INPUT } last;
@@ -208,6 +208,7 @@ io_newfile( path )
     bzero( (char *)fp, sizeof (struct file) );
     strcpy(fp->fname,path);
     fp->flags = FL_EOL;			/* normal */
+    fp->type = TYPE_NORM;
     fp->last = LAST_NONE;		/* nothing yet */
     return fp;
 }
