@@ -47,6 +47,9 @@ all:	snobol4
 # force GNU make to run top Makefile serially
 .NOTPARALLEL: foo
 
+# tell BSD make to use a single shell
+.SINGLESHELL: foo
+
 # files to avoid removing when interrupted
 #	add $(GENERATED)?
 .PRECIOUS: snobol4 xsnobol4 Makefile2 snobol4.c isnobol4.c snobol4 data_init.h 
@@ -76,7 +79,7 @@ Makefile2 .depend: config.m4 Makefile2.m4
 	echo '# add local changes to local-config'		>> $(M2TMP)
 	$(M4) Makefile2.m4 >> $(M2TMP)
 	echo '# DO NOT DELETE THIS LINE. make depend uses it.' >> $(M2TMP)
-	make -f $(M2TMP) depend MAKEFILE2=$(M2TMP)
+	$(MAKE) -f $(M2TMP) depend MAKEFILE2=$(M2TMP)
 	mv -f $(M2TMP) Makefile2
 	rm -f .depend
 	touch .depend
