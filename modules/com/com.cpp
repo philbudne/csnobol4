@@ -80,21 +80,41 @@ COM_LOAD( LA_ALIST ) LA_DCL
 	first = false;
     }
 
-    // convert lookup classid from program ID string
     progid = getolestring(LA_PTR(0));
-    hr = CLSIDFromProgID(progid, &clsid);
-    freeolestring(progid);
-    if (FAILED(hr))
-	RETFAIL;
+    if (wcschr(progid, ':')) {			// moniker?
+	hr = CoGetObject(name, NULL, IID_IUnknown, (void **)&punk)
+	if (FAILED(hr))
+	    RETFAIL;
 
-    // create an instance of the IUnknown object
-    hr = CoCreateInstance(clsid,	// object class id
-			  NULL,		// agregate object
-			  CLSCTX_SERVER, // context
-			  IID_IUnknown,	// interface identifier
-			  (void **)&punk); // out: interface pointer
-    if (FAILED(hr))
-	RETFAIL;
+	// See if it has a class factory
+	IClassFactory *pfact;
+	hr = punk->QueryInterface(IID_IClassFactory, (void **)&pfact);
+	if (SUCCEEDED(hr)) {
+	    punk->Release();
+
+	    // try to create an instance using class factory
+	    hr = pfact->CreateInstance(NULL, IID_IUnknown, (void **)&punk);
+	    if (FAILED(hr))
+		RETFAIL;
+	    pfact->Release();
+	} // have class factory
+    } // moniker
+    else {
+	// lookup classid from program ID string
+	hr = CLSIDFromProgID(progid, &clsid);
+	freeolestring(progid);
+	if (FAILED(hr))
+	    RETFAIL;
+
+	// create an instance of the IUnknown object
+	hr = CoCreateInstance(clsid,	// object class id
+			      NULL,		// agregate object
+			      CLSCTX_SERVER, // context
+			      IID_IUnknown,	// interface identifier
+			      (void **)&punk); // out: interface pointer
+	if (FAILED(hr))
+	    RETFAIL;
+    }
 
     // get IDispatch (automation) interface pointer
     // (a noop? just request IDispatch above?)
