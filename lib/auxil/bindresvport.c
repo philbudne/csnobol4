@@ -72,11 +72,11 @@ static char *rcsid = "$OpenBSD: bindresvport.c,v 1.13 2000/01/26 03:43:21 deraad
 #include <errno.h>
 
 #include "str.h"			/* bzero() */
+#include "bindresvport.h"
 
-#ifdef NEED_SOCKLEN_T
-/* VMS 7.3 (X/OPEN 4.0?) uses size_t */
-typedef unsigned int socklen_t;
-#endif /* NEED_SOCKLEN_T defined */
+#ifdef SOCKLEN_T
+typedef SOCKLEN_T socklen_t;
+#endif /* SOCKLEN_T defined */
 
 #define STARTPORT 600
 #define ENDPORT (IPPORT_RESERVED - 1)
