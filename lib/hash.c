@@ -40,10 +40,9 @@ hash(dp, sp)
      *
      * It's tempting to extract the first 4 and last 4 as 32-bit int's
      * but the strings don't always come in aligned (sparc'ed again),
-     * partiularly when compiling and worse, the same string come in
-     * with different alignments at different times!
+     * partiularly when compiling and worse, the same string can come
+     * in with different alignments at different times!
      *
-
      * The small range of the sum is not a problem, since the default
      * hash table size is a power of 2 (256), only the low order bits
      * are used. Furthermore we use the power of two fact to our
