@@ -371,7 +371,7 @@ if [ "$GCCPATH" -a "$WANTGCC" ]; then
 else
     # required options for native compilers
     case "$MORV" in
-    9000/[678]??:HP-UX:*:*)
+    9000/[678]*:HP-UX:*:*)
 	# HP-UX PA-RISC
 	KERNEL_BITS=`(/usr/bin/getconf SC_KERNEL_BITS || echo 32) >/dev/null`
 	if [ "$KERNEL_BITS" = 64 -a "$LP64" ]; then
@@ -380,21 +380,22 @@ else
 	    NO_DLOPEN=
 	fi
 	;;
-    9000/[34]??:HP-UX:*:*)
+    9000/[34]*:HP-UX:*:*)
 	# bundled C compiler lacks -O flag??
 	NO_OPT=true
 	;;
-    *:IRIX:*:*)
-	# Kill warnings: only needed with n32 and 64bit ABI
-	# compilers (but harmless with old compiler)?
-	echo 'ADD_OPT([-w])'			>> $CONFIG_M4
-	;;
-    *:IRIX64:*:*)
+    *:IRIX*:*:*)
+	echo 'CCM=$(CC) -M'			>> $CONFIG_M4
+	OPT=-O3
+	FASTFLAGS=-Ofast=`uname -m`
+	CCVERS=-version
+
 	# Kill warnings: only needed with n32 and 64bit ABI
 	# compilers (but harmless with old compiler)?
 	echo 'ADD_OPT([-w])'			>> $CONFIG_M4
 
-	# optional 64-bit mode
+	# optional 64-bit world;
+	# (only allow if "$OS" = IRIX64 ??
 	if [ "$LP64" ]; then
 	    ARCH_OPT=`getconf XBS5_LP64_OFF64_CFLAGS`
 	    ARCH_LDFLAGS=`getconf XBS5_LP64_OFF64_LDFLAGS`
