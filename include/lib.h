@@ -143,10 +143,11 @@ void osname __P((char *));
 /* from term.c */
 FILE * term_input __P((void));
 
-/* from tcp.c */
+/* from inet(6).c */
 FILE *tcp_open __P((char *, char *, int, int));
 FILE *udp_open __P((char *, char *, int, int));
 void inet_cleanup __P((void));
+int inet_close __P((FILE *));
 
 /* from tty.c */
 int fisatty __P((FILE *, char *));

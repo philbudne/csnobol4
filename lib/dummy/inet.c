@@ -28,3 +28,10 @@ udp_open( host, service, port, priv )
 void
 inet_cleanup() {
 }
+
+int
+inet_close( f )
+    FILE *f;
+{
+    return TRUE;
+}
