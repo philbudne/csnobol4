@@ -1,0 +1,42 @@
+* INSERT bug uncovered by PLUSOPS and GNAT tools
+
+-PLUSOPS 1
+
+* worked;
+	a = 'hello world'
+	a ' ' = 'x' 'y'
+	output = a
+
+	a = 'hello world'
+	a ' ' = 1 + 2 / 3
+	output = a
+
+	a = 'hello world'
+	a ' ' = 1 2 / 3
+	output = a
+
+	a = 'hello world'
+	a ' ' = 1 + 2 * 3
+	output = a
+
+* failed;
+	a = 'hello world'
+	a ' ' = 'x' 'y' 'z'
+	output = a
+
+	a = 'hello world'
+	a ' ' = 1 + 2 / 3 4
+	output = a
+
+	a = 'hello world'
+	a ' ' = 1 + 2 3
+	output = a
+
+	a = 'hello world'
+	a ' ' = 1 + 2 + 3
+	output = a
+
+	a = 'hello world'
+	a ' ' = 1 * 2 * 3
+	output = a
+end
