@@ -19,22 +19,32 @@ echo ''
 echo 'who am i:'
 who am i
 echo ''
-echo 'uname -a:'
-uname -a 2>/dev/null
-echo ''
+for p in `echo $PATH | tr : ' '`; do
+	if [ -f $p/uname ]; then
+		UNAME=$p/uname
+		break
+	fi
+done
+if [ "$UNAME" ]; then
+	echo 'uname -a:'
+	$UNAME -a
+	echo ''
+
+	# show hardware, if we know how;
+	case `$UNAME` in
+	IRIX*)
+		echo 'hinv:'
+		hinv
+		echo ''
+		;;
+	SunOS)
+		echo 'sunmodel:'
+		./sunmodel
+		echo ''
+		;;
+	esac
+fi
 #
-case `uname 2>/dev/null || echo unknown` in
-IRIX*)
-	echo 'hinv:'
-	hinv
-	echo ''
-	;;
-SunOS)
-	echo 'sunmodel:'
-	./sunmodel
-	echo ''
-	;;
-esac
 echo 'config.guess:'
 ./config.guess
 echo ''
