@@ -1,6 +1,10 @@
 * $Id$
 *
 * $Log$
+* Revision 1.33  1994/07/07  15:15:57  budd
+* [PLB25] Added FAILG label so FAIL can be inlined
+* Another 9% improvement in compile and execution times!
+*
 * Revision 1.32  94/06/24  14:53:11  budd
 * [PLB24] Added RTNL3G label so RTNUL3 can be inlined
 * 
@@ -3265,7 +3269,7 @@ DEFIN8 FSHRTN  XSP,1
        BRANCH  DEFIN8		   Continue
 *_
 DEF10  LEQLC   YSP,0,,DEF11	   Check for null argument
-       RCALL   XPTR,GENVAR,YSPPTR  Generate variable
+       RCALL   XPTR,GNVARC,YSPPTR  [PLB26] Generate variable
        PUSH    XPTR		   Save argument
        INCRA   YCL,1		   Increment total count
 DEF11  INCRA   YCL,2		   Increment for name and label
