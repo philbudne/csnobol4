@@ -8,14 +8,35 @@
 .ifdef VAX_C
 # Tested on VAX OpenVMS 6.1 using VAXC 3.1 (August 1999)
 CCFLAGS=/OPTIMIZE
-AUX_OBJ=isnan.obj, finite.obj, getopt.obj,
+AUX_OBJ=isnan.obj, finite.obj, getopt.obj, popen.obj,
+CCDEFS=/DEFINE=(NEED_POPEN_DECL,NEED_OFF_T)
+
+# need explicit C runtime library
 #CLIB=+SYS$SHARE:VAXCRTL/SHARE
 CLIB=+SYS$LIBRARY:DECCRTL/LIB
-.else
+
+# TCP library, if present
+UCXLIB=+SYS$LIBRARY:UCX$IPC/LIB
+.endif
+
+.ifdef DECC4
 # Tested under AXP OpenVMS 6.2 using DECC 4.0 (November 2000)
 CCFLAGS=/DECC/PREFIX_LIB=ALL/WARN=(DISABLE=IMPLICITFUNC)/OPTIMIZE
-# no AUX_OBJS
-# no explicit CRT needed
+AUX_OBJ=popen.obj,
+CCDEFS=/DEFINE=(NEED_POPEN_DECL,NEED_OFF_T)
+# no explicit CRT library needed
+
+# TCP library, if present
+UCXLIB=+SYS$LIBRARY:UCX$IPC/LIB
+.else
+
+# ** DEFAULT**
+# Tested under Compaq C V6.5-001 on OpenVMS Alpha V7.3-1 (May 2003)
+
+CCFLAGS=/PREFIX_LIB=ALL/WARN=(DISABLE=IMPLICITFUNC)/OPTIMIZE
+CCDEFS=/DEFINE=HAVE_STRINGS_H
+# no explicit CRT library needed
+# no explicit UCX library needed
 .endif
 
 .ifdef NO_TCP
@@ -29,10 +50,9 @@ TCPFLAGS=
 ################
 # use DEC TCP/IP Connection services for OpenVMS
 #	(formerly VAX/Ultrix connection product)
-INETLIB=+SYS$LIBRARY:UCX$IPC/LIB
+INETLIB=$(UCXLIB)
 # C compiler flags, if any
 TCPFLAGS=
-
 .endif
 
 LIBS=$(INETLIB) $(CLIB)
@@ -105,7 +125,7 @@ PML_OBJ=chop.obj, cos.obj, delete.obj, execute.obj, exit.obj, \
 	log.obj, logic.obj, ord.obj, rename.obj, retstring.obj, sin.obj, \
 	sqrt.obj, sset.obj, sys.obj, tan.obj
 
-CFLAGS=	$(CCFLAGS) $(TCPFLAGS) /DEFINE=HAVE_CONFIG_H \
+CFLAGS=	$(CCFLAGS) $(CCDEFS) $(TCPFLAGS) /DEFINE=HAVE_CONFIG_H \
 	/INCLUDE=(SYS$DISK:[.CONFIG.VMS],SYS$DISK:[],SYS$DISK:[.INCLUDE])
 
 ################

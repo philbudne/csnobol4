@@ -6,11 +6,6 @@
 
 /* other include files defines?? HAVE_xxx_H */
 
-#define NO_OFF_T
-
-/* using private popen() simulation (DECC 4.0 lacks popen()) */
-#define NEED_POPEN_DECL
-
 /* use tty_read routines; tty_mode() is a noop */
 #define TTY_READ_COOKED
 #define TTY_READ_RAW
@@ -22,7 +17,7 @@
  * are lower-case, so this just renames our functions to avoid conflict)
  */
 
-#define ANY	XANY
+#define ANY	XXANY			/* need XX w/ COMPAQ C 6.5?! */
 #define COS	XCOS
 #define DATE	XDATE
 #define DELETE	XDELETE
@@ -40,7 +35,7 @@
 #define RPLACE	XRPLACE
 #define SIN	XSIN
 #define SQRT	XSQRT
-#define SUBSTR	XSUBSTR
+#define SUBSTR	XXSUBSTR		/* need XX w/ COMPAQ C 6.5?! */
 #define TAN	XTAN
 #define TIME	XTIME
 #define UNLOAD	XUNLOAD
