@@ -24,6 +24,7 @@
 
 /* compare two descrs (returns boolean) */
 #ifdef DCMP_BYTES
+/* this has never been tested! */
 /* here if sizeof(float) > sizeof(long) */
 #define DCMP(A,B) (bcmp(A, B, DESCR) == 0)
 #else  /* DCMP_BYTES not defined */
@@ -32,7 +33,7 @@
 #endif /* DCMP_BYTES not defined */
 
 /* clear B+1 descriptor block */
-#define ZERBLK(A,B) bzero((void *)(A), (B)+DESCR)
+#define ZERBLK(A,B) bzero((void *)(A), (long)((B)+DESCR)) /* XXX SIZE_T */
 
 /*
  * copy descriptor block
@@ -40,7 +41,8 @@
  * NOTE: may overlap!!
  * (bcopy deals with this but some memcpy's do not)!!!
  */
-#define MOVBLK(A,B,C) bcopy( (void *)((B)+DESCR), (void *)((A)+DESCR), (C) )
+/* XXX SIZE_T */
+#define MOVBLK(A,B,C) bcopy((void *)((B)+DESCR),(void *)((A)+DESCR),(long)(C) )
 
 /****************
  * string specifiers (qualifiers)
@@ -91,13 +93,14 @@
     }
 
 /* fast compare for equality */
+/* XXX SIZE_T */
 #define LEXEQ(A,B) (S_L(A) == S_L(B) && \
 		    (S_L(A) == 0 || \
 		     *S_SP(A) == *S_SP(B) && \
 		     (S_L(A) == 1 || \
 		      S_SP(A)[1] == S_SP(B)[1] && \
 		      (S_L(A) == 2 || \
-		      (bcmp(S_SP(A)+2,S_SP(B)+2,S_L(A)-2) == 0)))))
+		      (bcmp(S_SP(A)+2,S_SP(B)+2,(long)S_L(A)-2) == 0)))))
 
 /* 11/4/97 - get length for string structure */
 #define X_GETLTH(A) (DESCR * (3 + ((S_L(A) - 1) / CPD + 1)))
