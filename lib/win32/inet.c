@@ -267,6 +267,6 @@ inet_close(f)
     FILE *f;
 {
     /* shutdown & drain?? */
-    closesocket((SOCKET)f);
+    return closesocket((SOCKET)f) == 0;
 }
 #endif /* INET_IO defined */
