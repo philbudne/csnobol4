@@ -16,14 +16,14 @@
 ****************************************************************
 *	environment
 
+*	kill case folding, for speed
+-CASE 0
+
 *	identify if mainbol or spitbol
 	MAINBOL = IDENT(.NAME,"NAME") 1
 
 *	faster matching
 	&ANCHOR = 1
-
-*	boost MAINBOL stmt limit!!
-	&STLIMIT = 20000000
 
 	DIFFER(MAINBOL)					:S(MB1)
 
