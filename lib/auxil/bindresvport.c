@@ -1,4 +1,4 @@
-/* modified from OpenSSH distribution -pb 5/22/2003 */
+/* modified from OpenSSH distribution -plb 5/22/2003 */
 
 /* This file has be modified from the original OpenBSD source */
 
@@ -33,11 +33,11 @@
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
+#endif /* HAVE_CONFIG_H defined */
 
 #if defined(LIBC_SCCS) && !defined(lint)
 static char *rcsid = "$OpenBSD: bindresvport.c,v 1.13 2000/01/26 03:43:21 deraadt Exp $";
-#endif /* LIBC_SCCS and not lint */
+#endif /* defined(LIBC_SCCS) && !defined(lint) */
 
 /*
  * Copyright (c) 1987 by Sun Microsystems, Inc.
@@ -50,7 +50,7 @@ static char *rcsid = "$OpenBSD: bindresvport.c,v 1.13 2000/01/26 03:43:21 deraad
 #include <netinet/in.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
-#endif
+#endif /* HAVE_UNISTD_H defined */
 #include <errno.h>
 
 #include "str.h"
@@ -91,12 +91,13 @@ bindresvport_sa(sd, sa)
 		salen = sizeof(struct sockaddr_in);
 		portp = &((struct sockaddr_in *)sa)->sin_port;
 		break;
+/* Tru64 4.0 defines AF_INET6, but has nothing else! */
 #if defined(AF_INET6) && defined(NEED_INET6)
 	case AF_INET6:
 		salen = sizeof(struct sockaddr_in6);
 		portp = &((struct sockaddr_in6 *)sa)->sin6_port;
 		break;
-#endif
+#endif /* defined(AF_INET6) && defined(NEED_INET6) */
 	default:
 		errno = EPFNOSUPPORT;
 		return (-1);
@@ -139,4 +140,4 @@ bindresvport(sd, sin)
 {
 	return bindresvport_sa(sd, (struct sockaddr *)sin);
 }
-#endif
+#endif /* NEED_BINDRESVPORT defined */
