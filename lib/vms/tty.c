@@ -57,18 +57,6 @@ tty_mode( fp, cbreak, noecho, recl )
 {
 } /* tty_mode */
 
-void
-tty_save()
-{
-    tty_mode(stdin, 0, 0, 0);
-}
-
-void
-tty_restore()
-{
-    tty_mode(stdin, 0, 0, 0);
-}
-
 /* advisory notice */
 void
 tty_close(f)

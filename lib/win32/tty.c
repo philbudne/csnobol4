@@ -138,20 +138,6 @@ tty_close_fd(fd)
     }
 }
 
-void
-tty_save()
-{
-    /* XXX call tty_save_fd(STDIN_FILENO)?? */
-    tty_mode(stdin, 0, 0, 0);		/* force initial save */
-}
-
-void
-tty_restore()
-{
-    /* XXX call tty_close_fd(STDIN_FILENO)?? */
-    tty_mode(stdin, 0, 0, 0);		/* restore initial settings */
-}
-
 /* advisory notice */
 void
 tty_close(f)

@@ -21,16 +21,6 @@ fisatty(f, fname)
 }
 
 void
-tty_save()
-{
-}
-
-void
-tty_restore()
-{
-}
-
-void
 tty_mode( fp, cbreak, noecho, recl )
     FILE *fp;
     int cbreak, noecho, recl;
