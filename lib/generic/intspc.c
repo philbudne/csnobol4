@@ -18,7 +18,7 @@ intspc(sp, dp)
 {
     static char buf[32];		/* 2^64 is only 21 chars! */
 
-    sprintf( buf, "%d", D_A(dp) );	/* %ld? */
+    sprintf( buf, "%ld", D_A(dp) );	/* %ld? */
     S_A(sp) = (int_t) buf;		/* OY! */
     S_F(sp) = 0;
     S_V(sp) = 0;
