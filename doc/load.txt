@@ -4,14 +4,17 @@ $Id$
 
 External C functions are loaded into SNOBOL4 via the LOAD() function.
 LOAD() is passed a prototype which names the function and describes
-the number of, and types of the arguments the function will be passed,
-as well as the return type.  The named function will first be searched
-for in a table built in at compile time (see "Poor Man's LOAD"). If it
-is not found, the second argument to LOAD is used as the name of an
-object file (or library) to load the function from. If no second
-argument is given, the value of the SNOLIB environment variable (or a
-built in default, if SNOLIB is not set) will be used to locate a
-directory to find an object library named snolib.a.
+the number and types of the parameters the function will be passed, as
+well as the return type.
+
+The named function will first be searched for in a table built in at
+compile time (see section 3). If it is not found and dynamic loading
+is supported (currenlt only on BSD platforms using a.out object
+format), the second parameter to LOAD is used as the name of an object
+file (or library) to load the function from. If no second parameter is
+given, the value of the SNOLIB environment variable (or a built in
+default, if SNOLIB is not set) will be used to locate a directory to
+find an object library named snolib.a.
 
 examples (see lib/snolib/*.c for code);
 	LOAD("FORK()INTEGER")
@@ -30,7 +33,7 @@ The following snolib functions are available by default
 2. Creating a C function to be loaded.
 
 An external C function should be declared as follows (see lib/snolib
-for examples);
+for many examples);
 
     #include "h.h"
     #include "snotypes.h"
@@ -61,16 +64,16 @@ passed to the LOAD() function;
 The correct behavior for a new predicate is to declare it as returning
 type STRING, and to use RETNULL on success and RETFAIL on failure.
 
-2.2 Arguments
+2.2 Parameters
 
-Arguments can be accessed via the following macros;
+Parameters can be accessed via the following macros;
 
-for INTEGER arguments;
-	LA_INT(N)	access the n'th argument as an integer (int_t)
-for REAL arguments;
-	LA_REAL(N)	access the n'th argument as a real (real_t)
-for STRING arguments;
-	LA_PTR(N)	access the n'th argument as a pointer (void *) to
+for INTEGER parameters;
+	LA_INT(N)	access the n'th parameter as an integer (int_t)
+for REAL parameters;
+	LA_REAL(N)	access the n'th parameter as a real (real_t)
+for STRING parameters;
+	LA_PTR(N)	access the n'th parameter as a pointer (void *) to
 			pass to the getstr() function from snolib/getstr.c
 			to retrieve a string, ie;
 				getstr(LA_PTR(n), buffer, sizeof(buffer));
@@ -83,7 +86,7 @@ leaving the type name blank in the prototype. For example
 polymorphic.  The LA_TYPE() macro must be used to determine the data
 actual type;
 
-	LA_TYPE(n)	returns the data type of the n'th argument
+	LA_TYPE(n)	returns the data type of the n'th parameter
 			(values declared in equ.h)
 
 		I	arg is an integer of type int_t (fetch with LA_INT(n))
@@ -97,17 +100,18 @@ actual type;
 		is a "title" descriptor whose D_V() field indicates
 		how many descriptors follow.
 
-2.4 Polymorphic return values.
+2.4 Polymorphic return values
 
 A function returning different types of values can be constructed by
 omitting the return type from the prototype, and assigning the return
-value type to "RETYPE" before using the associated RETxxx macro.
+value type to "RETYPE" before using the associated RETxxx macro. See
+lib/snolib/host.c for an example.
 
-2,5 Globals
+2.5 Globals
 
 Dynamicly loaded functions have no access to any global data or
 functions in the SNOBOL4 system.  Any libraries required to load the
-function must be mentioned explicitly in the second argument to LOAD(),
+function must be mentioned explicitly in the second parameter to LOAD(),
 by appending the path name of the library or "-l" flags as passed to
 "ld" or "cc" commands.
 
