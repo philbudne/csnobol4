@@ -30,21 +30,25 @@ application.
 
 Documentation;
 
+For a good SNOBOL4 tutorial look in the Catspaw "vanilla snobol"
+distribution.
+
 doc/snobol4.1
 	man page for snobol4 (uses (ANY('nt') 'roff') -man macros)
-	only describes changes from the "green book".  For a good
-	SNOBOL4 tutorial look in the Catspaw "vanilla snobol"
-	distribution.  snobol4.0 is nroff output.
+	only describes changes from the "green book".
 
-doc/goals.doc
-	a description of the overall goals,
-	and the goals for this release.
+doc/snobol4.0
+	nroff (text) output of snobol4.1
 
 doc/ports.doc
 	status of ports to various systems.
 
 doc/porting.doc
 	information on porting to a new system.
+
+doc/goals.doc
+	a description of the overall goals,
+	and the goals for this release.
 
 TODO
 	my identified tasks / wish list.
