@@ -28,7 +28,7 @@ CFLAGS=	-c $(OPT) -I$(SRCDIR)config/win32 -I$(SRCDIR)include -I$(SRCDIR). \
 	-DHAVE_CONFIG_H $(INET_DEFS) $(COM_DEFS)
 
 # for com.cpp
-CXXFLAGS=$(CFLAGS) -fvtable-thunks
+CXXFLAGS=$(CFLAGS) -fvtable-thunks -DNEED_COGETOBJECT
 
 OBJ=	isnobol4.o data.o data_init.o main.o syn.o version.o bal.o \
 	date.o dump.o endex.o hash.o intspc.o io.o lexcmp.o ordvst.o \
