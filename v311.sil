@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.13  93/12/04  23:51:26  budd
+* [PLB9] Implemented -ERRORS/-NOERRORS control cards (default -NOERRORS)
+* 
 * Revision 1.12  93/12/04  00:13:25  budd
 * [PLB8] send errors to stderr (via ERRBLK) as well as listing
 * 

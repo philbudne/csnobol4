@@ -1,7 +1,8 @@
 $Id$
 
 12/9/93
-	Updated usage message, README.alpha
+	*** First Alpha release (tag ALPHA1)
+	Updated usage message, README.alpha, Make tar
 	put this (and other files) under RCS
 
 12/4/93
