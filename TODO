@@ -100,3 +100,6 @@ $Id$
 40. Document "developer" defines;
 	DO_UFCHK
 	TRACE_DEPTH
+
+41. Add SNOBOL4+ extensions;
+41a.	&STLIMIT = -1
