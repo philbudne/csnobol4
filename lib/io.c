@@ -190,7 +190,7 @@ io_close(unit)				/* internal (zero-based unit) */
     if (fp->f) {
 	/* XXX call close hook? */
 	if (fp->flags & FL_PIPE) {
-	    ret = (pclose(fp->f) == 0);
+	    ret = (pclose(fp->f) == 0);	/* XXX is process status!! */
 	    fp->f = NULL;
 	}
 	else {				/* not a pipe */
@@ -221,12 +221,13 @@ io_closeall(unit)			/* internal (zero-based unit) */
     struct file *fp, *next;
     int ret;
 
+    /* close any/all open files on chain */
     ret = TRUE;
     while (io_units[unit].curr != NULL)
 	if (!io_close(unit))
 	    ret = FALSE;
 
-    /* free up all files */
+    /* free up all file structs */
     fp = io_units[unit].head;
     while (fp != NULL) {
 	next = fp->next;
@@ -288,6 +289,7 @@ io_fopen2( fp, mode )
 
 	if (sscanf(fp->fname+8, "%d", &i) == 1) {
 	    fp->f = fdopen(i, mode);
+	    /* XXX only if fd is one of STD{IN,OUT,ERR}_FILENO?? */
 	    fp->flags |= FL_NOCLOSE;
 	}
 	return;
@@ -678,7 +680,15 @@ io_print( iokey, iob, sp )		/* STPRNT */
 	if (fwrite( cp, 1, len, f ) != len)
 	    ret = FALSE;
     } /* have string */
+
     if (fp->flags & FL_EOL) {
+#ifndef NO_UNBUF_RW
+	if (fp->flags & FL_UNBUF) {
+	    if (write(fileno(f), "\n", 1) != 1)
+		ret = FALSE;
+	}
+	else
+#endif /* NO_UNBUF_RW */
 	if (putc( '\n', f ) == EOF)
 	    ret = FALSE;
     }
