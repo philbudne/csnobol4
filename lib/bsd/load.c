@@ -100,7 +100,7 @@ load(addr, sp1, sp2)
     if (fp == NULL)
 	return FALSE;			/* fail */
 
-    strncpy( fp->name, S_SP(sp1), l1)
+    strncpy( fp->name, S_SP(sp1), l1 );
     fp->name[l1] = '\0';
     fp->data = NULL;			/* assume internal! */
 
@@ -250,7 +250,6 @@ unload(sp)
 {
     struct func *fp, *pp;
     char name[1024];			/* XXX */
-    int l;
 
     spec2str( sp, name, sizeof(name) );
 

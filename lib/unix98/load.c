@@ -63,7 +63,6 @@ load(addr, sp1, sp2)
 	char path[PATHLEN*2];		/* room for directory name */
 	char *pp;			/* path pointer */
 	char *snolib;
-	void *lib;
 
 	snolib = getenv("SNOLIB");
 	if (snolib == NULL)
