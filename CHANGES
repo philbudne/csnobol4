@@ -10,7 +10,13 @@ Changes since 0.99.4 release;
 
 	Increase default dynamic space to 64K descriptors
 
+	Fix faulty lexical comparison optimzations for null string
+		
 	Performance improvments;
+		New string hash function
+		(reduced genc.sno compilation time by 5%
+		reduced genc.sno run time by 5%)
+
 		Optimized most common case (CONTIN actions) in
 		"stream" operation used for lexical analysis.
 		(reduced compilation time of genc.sno by 8%)
@@ -26,11 +32,14 @@ Changes since 0.99.4 release;
 		Made pattern building functions (lib/pat.c) inlinable
 			(8% reduction in genc.sno compile time)
 
+		When using GCC, default to -O2
+
 	Implement fatal "Output error" for output, ENDFILE() errors
 
 	Autoconfiguration cleanup;
-		Eliminate static config files; autoconf generates config.m4
-		and config.h (with all defines) for loadable functions
+		Eliminate static config files; autoconf script
+		configure generates config.m4 and config.h
+		(with all defines) for use by loadable functions
 
 	load.h updates;
 		all RETxxx macros safe in any context
@@ -56,7 +65,6 @@ Changes since 0.99.4 release;
 			host.sno
 		URL (http://, ftp://, file:) access functions
 
-
 	Use large files (64-bit offsets) where available.  Allows access
 		and creation of files larger than 2GB
 
@@ -68,11 +76,13 @@ Changes since 0.99.4 release;
 	Extended HOST() functions (see host.sno) for system diagnosis
 
 	TIME() function now returns REAL datatype
+		allows both better resolution (for small values)
+		and larger range
 
 	Statistics reports compiler and execution times as REAL numbers
 		Average statement runtime reported in microseconds (us).
 
-	Allow a REAL any place an INTEGER is required (from SNOBOL4+)
+	Allow REALs any place an INTEGER is required (from SNOBOL4+)
 		Contexts include TABLE(),  ITEM(),  array  indices,
 		INPUT(),  OUTPUT(),  SET(), keyword values, CHAR(),
 		RPAD(), LPAD(), FIELD(), COLLECT(), DUMP(), DUPL(),
