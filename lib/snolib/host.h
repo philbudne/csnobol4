@@ -40,6 +40,7 @@
 #define HOST_LONG_BITS		2303
 #define HOST_DESCR_BITS		2304
 #define HOST_SPEC_BITS		2305
+#define HOST_CHAR_BITS		2306
 
 /* integer variables; */
 #define HOST_DYNAMIC_SIZE	2400
