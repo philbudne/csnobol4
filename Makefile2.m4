@@ -41,8 +41,11 @@ SNOBOL4=isnobol4
 # library random accessifier
 RANLIB=ranlib
 
+# filename for external function library
 SNOLIB_A=snolib.a
 
+# directory name for default SNOLIB (used by -INCLUDE and LOAD())
+SNOLIB_DIR=/usr/local/lib/snobol4
 ########
 # default lib source files
 
@@ -124,6 +127,8 @@ MYCPPFLAGS=-I./[include] -I. _CPPFLAGS
 COPT=[]_OPT
 
 LDFLAGS=[]_LDFLAGS
+
+SNOLIB_DEFINES=-DSNOLIB_DIR='"'$(SNOLIB_DIR)'"' -DSNOLIB_A='"'$(SNOLIB_A)'"'
 
 ################
 # compiler flags
@@ -280,13 +285,13 @@ intspc.o: $(INTSPC_C)
 	$(CC) $(CFLAGS) -c $(INTSPC_C)
 
 io.o:	$(IO_C)
-	$(CC) $(CFLAGS) -c $(IO_C)
+	$(CC) $(CFLAGS) $(SNOLIB_DEFINES) -c $(IO_C)
 
 lexcmp.o: $(LEXCMP_C)
 	$(CC) $(CFLAGS) -c $(LEXCMP_C)
 
 load.o:	$(LOAD_C)
-	$(CC) $(CFLAGS) -c $(LOAD_C)
+	$(CC) $(CFLAGS) $(SNOLIB_DEFINES) -c $(LOAD_C)
 
 mstime.o: $(MSTIME_C)
 	$(CC) $(CFLAGS) -c $(MSTIME_C)
