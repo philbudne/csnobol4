@@ -1,6 +1,7 @@
 *	open a TCP connection (text only) for C-MAINBOL
 *	Phil Budne <phil@ultimate.com>
 *	May 7, 1997
+*	$Id$
 
 ****************
 *	map I/O variable name to unit
