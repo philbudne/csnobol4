@@ -2,6 +2,25 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/14/2003
+	lib/win32/inet.c: add true (from 8/9/2003)
+
+11/12/2003
+	configure: add sparc64
+	Makefile: fix for BSD parallel make, gmake on BSD
+	Makefile2.m4: wrap regression in subshell for BSD parallel make
+
+11/6/2003
+	doc/snobol4.1: add a bit more info on bidirectional "pipe" I/O
+
+10/9/2003
+	removed doc/ports.txt
+
+8/6/2003
+	doc/porting.ms: add SIL, fix sys.c and inet.c
+	doc/snobol4.1: fix typo
+	lib/bsd/inet6.c: add IEEE 1003.1g credit
+
 7/29/2003
 	doc/snolib.3: improve a little
 	doc/*.doc -> doc/*.txt
