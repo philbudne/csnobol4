@@ -39,6 +39,10 @@ extern const char build_date[];
 extern const char build_dir[];
 #endif /* HAVE_BUILD_VARS */
 
+#ifndef BPC
+#define BPC 8				/* 8 bits/char */
+#endif /* BPC not defined */
+
 int
 HOST( LA_ALIST ) LA_DCL
 {
@@ -102,37 +106,80 @@ HOST( LA_ALIST ) LA_DCL
 	break;
 
 
+/****************
+ * CSNOBOL4 extensions
+ * mostly useful for diagnosing build problems
+ */
+
+/* configuration variables, from config.h (written by autoconf script) */
 #ifdef CONFIG_GUESS
-    case 2000:				/* CSNOBOL4 extension */
+    case 2000:
 	RETSTR(CONFIG_GUESS);		/* build architecture */
 #endif /* CONFIG_GUESS defined */
 
+#ifdef CONFIG_HOST
+    case 2001:
+	RETSTR(CONFIG_HOST);		/* host where autoconf was run */
+#endif /* CONFIG_HOST defined */
+
+#ifdef CONFIG_DATE
+    case 2002:
+	RETSTR(CONFIG_DATE);		/* date autoconf was run */
+#endif /* CONFIG_DATE defined */
+
+#ifdef CONFIG_OPTIONS
+    case 2003:
+	RETSTR(CONFIG_OPTIONS);		/* autoconf options */
+#endif /* CONFIG_OPTIONS defined */
+
+/* variables from build.c, created before linking snobol4 executable */
+#ifdef HAVE_BUILD_VARS
+    case 2100:
+	RETSTR(build_date);
+
+    case 2101:
+	RETSTR(build_dir);
+
+    case 2102:
+	RETSTR(build_files);
+#endif /* HAVE_BUILD_VARS defined */
+
+/* defines, from Makefile */
 #ifdef SNOLIB_DIR
-    case 2001:				/* CSNOBOL4 extension */
+    case 2200:
 	RETSTR(SNOLIB_DIR);
 #endif /* SNOLIB_DIR defined */
 
 #ifdef SNOLIB_FILE
-    case 2002:				/* CSNOBOL4 extension */
+    case 2202:
 	RETSTR(SNOLIB_FILE);
 #endif /* SNOLIB_FILE defined */
 
-#ifdef HAVE_BUILD_VARS
-    case 2003:				/* CSNOBOL4 extension */
-	RETSTR(build_date);
+/* integer constants; */
+    case 2300:
+	RETTYPE = I;			/* oof! blast return type! */
+	RETINT(sizeof(INT_T)*BPC);	/* INTEGER size */
+    case 2301:
+	RETTYPE = I;			/* oof! blast return type! */
+	RETINT(sizeof(REAL_T)*BPC);	/* REAL size */
+    case 2302:
+	RETTYPE = I;			/* oof! blast return type! */
+	RETINT(sizeof(void *)*BPC);	/* pointer size */
+    case 2303:
+	RETTYPE = I;			/* oof! blast return type! */
+	RETINT(sizeof(long)*BPC);	/* long size */
+    case 2304:
+	RETTYPE = I;			/* oof! blast return type! */
+	RETINT(DESCR*BPC);		/* descriptor size */
+    case 2305:
+	RETTYPE = I;			/* oof! blast return type! */
+	RETINT(SPEC*BPC);		/* specifier size */
 
-    case 2004:				/* CSNOBOL4 extension */
-	RETSTR(build_dir);
-
-    case 2005:				/* CSNOBOL4 extension */
-	RETSTR(build_files);
-#endif /* HAVE_BUILD_VARS defined */
-
-    /*
-     * NOTE!! All of the above 2xxx values have been build related.
-     * Perhaps it should be kept that way, and other values added
-     * in a different range?
-     */
+/*
+ * NOTE!! All of the above 2xxx values are related to internals, and
+ * the build environment.  Perhaps it should be kept that way, and
+ * other values added in a different range?
+ */
 
     default:
 	break;
