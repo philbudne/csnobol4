@@ -74,7 +74,7 @@ osname(cp)
 	 */
 	os = "Win??";
 	if (osv.dwMajorVersion == 4) {
-	    switch (osv.dwMajorVersion) {
+	    switch (osv.dwMinorVersion) {
 	    case 0:
 		os = "Win95";
 		vnum = 0;		/* suppress version number */
