@@ -8,6 +8,10 @@ typedef long off_t;
 #include <sys/types.h>			/* off_t */
 #endif
 
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
 #include "h.h"
 #include "units.h"
 #include "snotypes.h"
@@ -19,11 +23,13 @@ typedef long off_t;
 #include "data.h"			/* for FILENM */
 #include "equ.h"			/* for BCDFLD (for X_LOCSP) */
 
-/* ugly, but avoids knowing about unistd.h (or lack thereof) */
 #ifndef SEEK_SET
-/* in sysV stdio.h */
-#define SEEK_SET	0
-#endif
+#ifdef L_SET
+#define SEEK_SET L_SET
+#else  /* L_SET not defined */
+#define SEEK_SET 0
+#endif /* L_SET not defined */
+#endif /* SEEK_SET not defined */
 
 #define NUNITS 100			/* XXX set at runtime? */
 #define BADUNIT(U) ((U) < 0 || (U) >= NUNITS)
