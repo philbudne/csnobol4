@@ -12,15 +12,15 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>			/* unlink() */
+#endif /* HAVE_UNISTD_H defined */
+
 #include "h.h"
 #include "equ.h"
 #include "snotypes.h"
 #include "macros.h"
 #include "load.h"
-
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>			/* unlink() */
-#endif /* HAVE_UNISTD_H defined */
 
 int
 DELETE( LA_ALIST ) LA_DCL

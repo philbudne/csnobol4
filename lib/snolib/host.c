@@ -15,10 +15,6 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#include "h.h"
-#include "snotypes.h"
-#include "macros.h"
-
 #ifdef HAVE_STDLIB_H			/* before stdio */
 #include <stdlib.h>			/* getenv(),system() */
 #else  /* HAVE_STDLIB_H not defined */
@@ -27,6 +23,10 @@ extern char *getenv();
 
 #include <stdio.h>			/* for lib.h, sprintf() */
 #include <ctype.h>			/* isdigit() */
+
+#include "h.h"
+#include "snotypes.h"
+#include "macros.h"
 
 #include "load.h"			/* LA_xxx macros */
 #include "equ.h"			/* datatypes I/S */

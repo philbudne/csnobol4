@@ -4,16 +4,16 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
+#ifdef HAVE_UNISTD_H
+#include <sys/types.h>			/* pid_t */
+#include <unistd.h>			/* fork() */
+#endif /* HAVE_UNISTD_H defined */
+
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
 #include "load.h"
 #include "equ.h"
-
-#ifdef HAVE_UNISTD_H
-#include <sys/types.h>			/* pid_t */
-#include <unistd.h>			/* fork() */
-#endif /* HAVE_UNISTD_H defined */
 
 /*
  * LOAD("FORK()INTEGER")

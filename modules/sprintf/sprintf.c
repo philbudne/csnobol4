@@ -23,6 +23,8 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
+#include <stdio.h>
+
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
@@ -31,8 +33,6 @@
 
 /* machine generated: */
 #include "equ.h"			/* I & R */
-
-#include <stdio.h>
 
 int
 SPRINTF( LA_ALIST ) LA_DCL
