@@ -2,6 +2,16 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+6/19/97:
+	autoconf: look for /lib/libdl (for Linux)
+	gensyn.sno: removed letter D from EXP class
+	lib/ansi/convert.c: removed extra strtod() arg
+	lib/realst.c: expanded buffer
+		use "g" format (but make sure output doesn't look like an int)
+	syntax.tbl: allow exponent's without fractions (ie; 1e5), like SPITBOL
+	timing: cat /proc/cpuinfo (if present) on Linux
+		dump hw sysctl info on BSD systems
+
 5/27/97:
 	lib/str.c: add spec2str() utility
 	lib/bsd/load.c lib/unix98/load.c lib/dummy/load.c lib/hpux/load.c:

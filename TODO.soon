@@ -8,6 +8,9 @@ switch to unroff for html file prep??
 fix for "	()()"??
 
 unix98/load.c
+	do something to fix empty filename;
+		default to snolib.so/sl/shl?
+		access symbols from main application??
 	document in man page
 	document in load.doc
 		c/ld commands for various O/S'build
@@ -16,7 +19,6 @@ unix98/load.c
 	make snolib.shared??
 		alter SNOLIB_A default value?
 	use RTLD_GLOBAL flag, if available??
-	allow null string for object file (no default) to access snobol4 syms?
 
 autoconf:
 	"configure" script wrapper;
