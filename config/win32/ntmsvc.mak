@@ -38,7 +38,7 @@ OBJ=	isnobol4.obj data.obj data_init.obj main.obj syn.obj \
 	pat.obj pml.obj realst.obj replace.obj str.obj stream.obj \
 	top.obj tree.obj bcopy.obj bzero.obj dynamic.obj expops.obj \
 	getopt.obj init.obj load.obj mstime.obj chop.obj cos.obj \
-	delete.obj environ.obj exit.obj file.obj getstring.obj \
+	delete.obj environ.obj exit.obj file.obj getstring.obj handle.obj \
 	host.obj log.obj logic.obj ord.obj rename.obj retstring.obj \
 	sin.obj spcint.obj spreal.obj sqrt.obj sset.obj tan.obj \
 	osopen.obj sys.obj tty.obj inet.obj bindresvport.obj \
@@ -214,6 +214,9 @@ findunit.obj : $(SRCDIR)lib\snolib\findunit.c
 
 getstring.obj : $(SRCDIR)lib\snolib\getstring.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\getstring.c
+
+handle.obj : $(SRCDIR)lib\snolib\handle.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\handle.c
 
 host.obj : $(SRCDIR)lib\snolib\host.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\host.c
