@@ -12,6 +12,7 @@
 #include "equ.h"
 
 #include <ctype.h>
+#include <stdio.h>
 
 realst(sp, dp)
     struct spec *sp;
