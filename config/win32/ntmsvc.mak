@@ -13,9 +13,9 @@ OPT=-O2
 # XXX try enabling bitfields? (comment out next line)
 NO_BITFIELDS=-DNO_BITFIELDS -DFFLD_T=char
 
-# "borland" version of tty routines uses kbhit() spin loop for raw tty
+# "dos" version of tty routines uses kbhit() spin loop for raw tty
 # i/o.  This is unfriendly in a multitasking environment, and should
-# be replaced by the win32 version (see below0.
+# be replaced by the win32 version (see below).
 TTY_C=lib\msdos\tty.c
 TTY_DEFS=-DTTY_READ_RAW
 
@@ -23,7 +23,7 @@ TTY_DEFS=-DTTY_READ_RAW
 #TTY_C=lib\win32\tty.c
 #TTY_DEFS=
 
-CFLAGS=	-c $(OPT) -Iinclude -I. -Iconfig\win32 -DHAVE_CONFIG_H \
+CFLAGS=	-c $(OPT) -Iconfig\win32 -Iinclude -I. -DHAVE_CONFIG_H \
 	$(NO_BITFIELDS) $(TTY_DEFS)
 
 OBJ=	snobol4.obj data.obj data_init.obj main.obj syn.obj \
@@ -33,7 +33,7 @@ OBJ=	snobol4.obj data.obj data_init.obj main.obj syn.obj \
 	tree.obj bcopy.obj bzero.obj dynamic.obj expops.obj getopt.obj \
 	init.obj load.obj mstime.obj chop.obj cos.obj delete.obj \
 	environ.obj exit.obj file.obj getenv.obj getstring.obj \
-	host.obj log.obj logic.obj rename.obj retstring.obj sin.obj \
+	host.obj log.obj logic.obj ord.obj rename.obj retstring.obj sin.obj \
 	spcint.obj spreal.obj sprintf.obj sqrt.obj sset.obj system.obj \
 	tan.obj sys.obj popen.obj tty.obj inet.obj execute.obj exists.obj \
 	rresvport.obj term.obj findunit.obj exp.obj
@@ -82,9 +82,6 @@ hash.obj : lib\hash.c
 init.obj : lib\init.c
 	$(CC) $(CFLAGS) lib\init.c
 
-intspc.obj : lib\intspc.c
-	$(CC) $(CFLAGS) lib\intspc.c
-
 io.obj : lib\io.c
 	$(CC) $(CFLAGS) lib\io.c
 
@@ -122,6 +119,9 @@ tree.obj : lib\tree.c
 	$(CC) $(CFLAGS) lib\tree.c
 
 ################ ansi
+
+intspc.obj : lib\ansi\intspc.c
+	$(CC) $(CFLAGS) lib\ansi\intspc.c
 
 spcint.obj : lib\ansi\spcint.c
 	$(CC) $(CFLAGS) lib\ansi\spcint.c
@@ -222,6 +222,9 @@ log.obj : lib\snolib\log.c
 
 logic.obj : lib\snolib\logic.c
 	$(CC) $(CFLAGS) lib\snolib\logic.c
+
+ord.obj : lib\snolib\ord.c
+	$(CC) $(CFLAGS) lib\snolib\ord.c
 
 rename.obj : lib\snolib\rename.c
 	$(CC) $(CFLAGS) lib\snolib\rename.c
