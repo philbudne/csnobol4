@@ -1,0 +1,6 @@
+copy	output = input		:s(copy)
+	rewind(5)
+copy2	output = input		:s(copy2)
+end
+hello
+world
