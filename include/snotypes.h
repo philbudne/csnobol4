@@ -2,17 +2,17 @@
 
 /* NOTE! int_t and real_t should be the same size!!! */
 
-#ifdef INT_T
-typedef INT_T int_t; 			/* used to hold integers, addrs */
-#else  /* INT_T not defined */
-typedef long int_t; 			/* used to hold integers, addrs */
+#ifndef INT_T
+#define INT_T long
 #endif /* INT_T not defined */
 
-#ifdef REAL_T
-typedef REAL_T real_t;
-#else  /* REAL_T not defined */
-typedef float real_t;
+typedef INT_T int_t; 			/* used to hold integers, addrs */
+
+#ifndef REAL_T
+#define REAL_T float
 #endif /* REAL_T not defined */
+
+typedef REAL_T real_t;
 
 union addr {
     int_t i;	
