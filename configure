@@ -854,13 +854,19 @@ if [ -f $INCDIR/sys/socket.h ]; then
 	fi
 	# XXX else make sure /bin/sh exists, or define _PATH_BSHELL
 
-	if grep vfork $INCDIR/unistd.h >/dev/null 2>&1; then
-	    echo 'using vfork in unistd.h' 1>&2
+	if grep '_vfork' $INCDIR/unistd.h >/dev/null 2>&1; then
+	    # SGI
+	    NO_VFORK=1
+	elif grep '_vfork' $INCDIR/unistd.h >/dev/null 2>&1; then
+	    echo 'using vfork from unistd.h' 1>&2
 	    echo '/* vfork in unistd.h */'	>> $CONFIG_H
 	elif [ -f $INCDIR/vfork.h ]; then
 	    echo 'using vfork.h' 1>&2
 	    echo '#define HAVE_VFORK_H'		>> $CONFIG_H
 	else
+	    NO_VFORK=1
+	fi
+	if [ "$NO_VFORK" ]; then
 	    echo 'using fork for vfork' 1>&2
 	    echo '#define vfork fork'		>> $CONFIG_H
 	fi
