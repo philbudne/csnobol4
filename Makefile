@@ -64,7 +64,7 @@ distclean: realclean
 
 # remove everthing not in CVS; requires snobol4 binary in PATH to build;
 spotless: distclean
-	rm -f $(GENERATED) *.[ch]2 .depend snobol4.c isnobol4.c
+	rm -f $(GENERATED) *.[ch]2 .depend snobol4.c isnobol4.c snobol4 xsnobol4
 
 .PRECIOUS: snobol4 xsnobol4
 
