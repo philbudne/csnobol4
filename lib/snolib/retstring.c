@@ -14,6 +14,7 @@ extern void *malloc();
 #include "equ.h"			/* BCDFLD, etc */
 #include "snotypes.h"			/* DESCR, etc */
 #include "macros.h"			/* D_A() etc */
+#include "load.h"			/* prototypes */
 
 #ifdef NO_STATIC_VARS
 #include "vars.h"

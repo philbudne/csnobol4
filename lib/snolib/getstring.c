@@ -8,6 +8,7 @@
 #include "equ.h"			/* BCDFLD, etc */
 #include "snotypes.h"			/* DESCR, etc */
 #include "macros.h"			/* D_A() etc */
+#include "load.h"			/* prototypes */
 
 EXPORT(void)
 getstring( vp, dp, len )
