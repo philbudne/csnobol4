@@ -46,13 +46,13 @@ UCXLIB=+SYS$LIBRARY:UCX$IPC/LIB
 # practically civilized!!
 
 CCFLAGS=/OPTIMIZE
-CCDEFS=,HAVE_STRINGS_H,HAVE_STDLIB_H,HAVE_UNISTD_H
+CCDEFS=,HAVE_STRINGS_H,HAVE_STDLIB_H,HAVE_UNISTD_H,NEED_BINDRESVPORT_SA,NEED_SOCKLEN_T
 # no explicit CRT library needed
 
 # alternate (normal!) library routines
 MSTIME_C=[.lib.posix]mstime.c
 
-UCXOBJ=inet6.o
+UCXOBJ=inet6.obj
 .endif
 .endif
 
@@ -158,7 +158,7 @@ OBJS=	main.obj, $(SNOBOL4).obj, data.obj, data_init.obj, syn.obj, \
 	lexcmp.obj, load.obj, mstime.obj, ordvst.obj, pair.obj, \
 	pat.obj, pml.obj, realst.obj, replace.obj, spcint.obj, \
 	spreal.obj, str.obj, stream.obj, term.obj, top.obj, tty.obj, \
-	tree.obj, version.obj, getredirect.obj, bindresvport.obj \
+	tree.obj, version.obj, getredirect.obj, bindresvport.obj, \
 	$(AUX_OBJ) $(PML_OBJ)
 
 snobol4.exe : $(OBJS)
