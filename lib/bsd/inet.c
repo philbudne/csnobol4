@@ -6,6 +6,14 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
+#ifdef HAVE_STDLIB_H			/* before stdio */
+#include <stdlib.h>			/* atoi() */
+#endif /* HAVE_STDLIB_H */
+
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>			/* close() */
+#endif /* HAVE_UNISTD_H defined */
+
 #include <stdio.h>
 #include <ctype.h>
 
@@ -13,6 +21,7 @@
 #include <sys/socket.h>
 #include <netdb.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>			/* inet_addr() */
 
 #include "h.h"				/* TRUE/FALSE */
 #include "macros.h"			/* bcopy */
