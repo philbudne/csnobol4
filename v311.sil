@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.21  94/02/19  00:21:31  budd
+* updated date, for *REAL* BETA1!
+* 
 * Revision 1.20  94/01/25  12:29:29  budd
 * BETA1 release
 * 
@@ -6663,27 +6666,27 @@ OPNLIT STRING  'Unclosed literal'
 *
 * [PLB10] converted to printf() style formats
 ALOCFL FORMAT  'Insufficient storage for initialization\n'	E3.10.6
-ARTHNO FORMAT  '%15i Arithmetic operations performed\n'
-CMTIME FORMAT  '%15i ms. Compilation time\n'
+ARTHNO FORMAT  '%15d Arithmetic operations performed\n'
+CMTIME FORMAT  '%15d ms. Compilation time\n'
 EJECTF FORMAT  '\f'
 ERRCF  FORMAT  'ERRORS DETECTED IN SOURCE PROGRAM\n\n'
-EXNO   FORMAT  '%15i Statements executed, %d failed\n'
+EXNO   FORMAT  '%15d Statements executed, %d failed\n'
 FTLCF  FORMAT  'Error %d in statement %d at level %d\n'
 *								E3.4.1
 INCGCF FORMAT  'INCOMPLETE STORAGE REGENERATION.\n'
-INTIME FORMAT  '%15i ms. Execution time\n'
+INTIME FORMAT  '%15d ms. Execution time\n'
 LASTSF FORMAT  'Last statement executed was %d\n'
 NODMPF FORMAT  'TERMINAL DUMP NOT POSSIBLE.\n'
 NRMEND FORMAT  'Normal termination at level %d\n'
 NVARF  FORMAT  'Natural variables\n\n'
 PKEYF  FORMAT  '\nUnprotected keywords\n\n'
 PRTOVF FORMAT  '***PRINT REQUEST TOO LONG***\n'
-READNO FORMAT  '%15i Reads performed\n'
-SCANNO FORMAT  '%15i Pattern matches performed\n'
+READNO FORMAT  '%15d Reads performed\n'
+SCANNO FORMAT  '%15d Pattern matches performed\n'
 SOURCF FORMAT  '    Bell Telephone Laboratories, Incorporated\n\n'
 STATHD FORMAT  'SNOBOL4 statistics summary-\n'
 STDMP  FORMAT  '\fDump of variables at termination\n\n'
-STGENO FORMAT  '%15i Regenerations of dynamic storage\n'
+STGENO FORMAT  '%15d Regenerations of dynamic storage\n'
 SUCCF  FORMAT  'No errors detected in source program\n\n'
 SYSCMT FORMAT  'Caught signal in statement %d at level %d\n'
 *								E3.4.1
@@ -6694,5 +6697,5 @@ TITLEF FORMAT  'SNOBOL4 (Version 3.11, May 19, 1975)\n'
 UNIXF  FORMAT  'The Macro Implementation of SNOBOL4 for Un*x, by Phil Budne\n'
 UNIXF2 FORMAT  '    Version 0.90 (beta1) February 18, 1994\n'
 *
-WRITNO FORMAT  '%15i Writes performed\n'
+WRITNO FORMAT  '%15d Writes performed\n'
        END
