@@ -23,3 +23,5 @@ clean:	Makefile2
 tar:	Makefile2
 	$(MAKE) -f Makefile2 tar
 
+uu:	Makefile2
+	$(MAKE) -f Makefile2 uu
