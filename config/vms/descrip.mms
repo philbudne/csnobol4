@@ -29,6 +29,7 @@ REALST_C=[.lib]realst.c
 REPLACE_C=[.lib]replace.c
 STREAM_C=[.lib]stream.c
 STR_C=[.lib]str.c
+TERM_C=[.lib.vms]term.c
 TOP_C=[.lib]top.c
 TREE_C=[.lib]tree.c
 
@@ -51,31 +52,14 @@ CFLAGS=\
 	/WARN=(DISABLE=IMPLICITFUNC) \
 	/INCLUDE=(SYS$DISK:[],SYS$DISK:[.INCLUDE]) \
 
-LIBS=$(MATHLIB)
-
-LDFLAGS=$(LIBS) $(CONFIG_LDFLAGS)
-
-# bootstrapped using Catspaw SPARC SPITBOL
-#SNO=spitbol -i512k -b
-#SMALL_SNO=spitbol -b
-SNO=$snobol4.exe -d50000
-SMALL_SNO=$snobol4.exe
-
 ################
 
 OBJS=	main.obj, $(SNOBOL4).obj, data.obj, data_init.obj, syn.obj, \
 	bal.obj, convert.obj, date.obj, dynamic.obj, endex.obj, \
 	exp.obj, hash.obj, init.obj, intspc.obj, io.obj, lexcmp.obj, \
 	load.obj, mstime.obj, ordvst.obj, pair.obj, pat.obj, pml.obj, \
-	realst.obj, replace.obj, str.obj, stream.obj, top.obj, \
+	realst.obj, replace.obj, str.obj, stream.obj, term.obj, top.obj, \
 	tree.obj, version.obj, $(CONFIG_OBJ) $(AUX_OBJ) $(PML_OBJ)
-
-SRCS=	main.c $(SNOBOL4).c data.c data_init.c $(BAL_C) $(CONVERT_C) \
-	$(DATE_C) $(DUMP_C) $(DYNAMIC_C) $(ENDEX_C) $(EXP_C) $(HASH_C) \
-	$(INIT_C) $(INTSPC_C) $(IO_C) $(LEXCMP_C) $(LOAD_C) \
-	$(MSTIME_C) $(ORDVST_C) $(PAIR_C) $(PAT_C) $(PML_C) \
-	$(REALST_C) $(REPLACE_C) $(STREAM_C) $(STR_C) $(TOP_C) \
-	$(TREE_C) version.c $(CONFIG_SRC) $(AUX_SRC)
 
 xsnobol4.exe : $(OBJS)
 	link /exec=xsnobol4.exe $(OBJS)
@@ -154,6 +138,9 @@ str.obj : $(STR_C)
 
 stream.obj : $(STREAM_C)
 	$(CC) $(CFLAGS) $(STREAM_C)
+
+term.obj : $(TERM_C)
+	$(CC) $(CFLAGS) $(TERM_C)
 
 top.obj : $(TOP_C)
 	$(CC) $(CFLAGS) $(TOP_C)
