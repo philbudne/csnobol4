@@ -22,7 +22,7 @@ made when all systems were timed with the same release of SNOBOL!
 
 System		Speed OS	    C	opt	REL    st/sec	who/when
 ===============================================================================
-Sun Ultra 30	296   SunOS 5.5.1   sunpro -O5	0.99.3++123880	pb 7/97
+Sun Ultra 30	296   SunOS 5.5.1   spro -xO5	0.99.3++123880	pb 7/97
 P6 (ASUS P6NP5)	200   FreeBSD 2.2   gcc -O2	0.99.1 103491	cl 11/96
 P6 (GW2K)	200   SunOS 5.5.1   gcc -O2	0.99.3++100868	pb 7/97
 P6 (ASUS P6NP5)	200   FreeBSD 2.2   gcc		0.99.1  95608	cl 11/96
@@ -92,7 +92,8 @@ pc532 (ns32532)	25    NetBSD 1.2    gcc		0.99	 2823*	pb 10/96
 Sun-4/110	14.28 NetBSD 1.2    gcc		0.99.1	 2751	pb 11/96
 A3000 (68030)	25    NetBSD 1.2    gcc		0.99	 1872	pb 10/96
 IBM RT/6152	??    ACIS/AOS 4.3  gcc		0.99	 1780*	pb 10/96
-Sun-3/80(68030)	20    SunOS 4.1.1   gcc		0.99.3+	 1521	pb 6/97
+Sun-3/80(68030)	20    SunOS 4.1.1   gcc		0.99.3++ 1530	pb 7/97
+Sun-3/80(68030)	20    SunOS 4.1.1   cc		0.99.3++ 1439	pb 7/97
 
 old timings;
 
