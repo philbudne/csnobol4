@@ -4,7 +4,7 @@ Using the SNOBOL4 LOAD() function;
 
 The external C function is called with the following argument list;
 
-    name( retval, args, nargs )
+    name( retval, nargs, args )
 	struct descr *retval, *args;
 	int nargs;
     {
@@ -57,7 +57,7 @@ csa% cat sqrt.c
  *	LOAD("SQRT(REAL)REAL", "sqrt.o -lm -lc")
  */
 
-SQRT( retval, args, nargs )
+SQRT( retval, nargs, args )
     struct descr *retval, *args;
     int nargs;
 {
