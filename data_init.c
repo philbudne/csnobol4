@@ -16,6 +16,7 @@
 # include "h.h"
 # include "macros.h"
 # include "units.h"
+# include "gen.h"
 
 /* machine generated */
 # include "equ.h"
