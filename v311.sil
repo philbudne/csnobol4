@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.38  1996/08/25  01:55:14  phil
+* [PLB30] pull CASECL check up out of VPXPTR; saves call if not folding
+*
 * Revision 1.37  1996/08/20  04:12:59  phil
 * [PLB29] added real VARVUP, VPXPTR (Thanks to Mark Emmer)
 *
@@ -430,6 +433,7 @@ P      EQU     3		   PATTERN
 R      EQU     7		   REAL
 S      EQU     1		   STRING
 T      EQU     5		   TABLE
+DATSTA EQU     100		   First user datatpe		[PLB31]
 *---------------------------------------------------------------------*
        TITLE   'Program Initialization'
 BEGIN  INIT    ,		   Initialize system
@@ -2231,6 +2235,11 @@ ANY    PROC    ,		   ANY(S)
        PUSH    ANYCCL		   Save function descriptor
        BRANCH  CHARZ		   Join common processing
 *_
+BREAKX PROC    ANY		   BREAKX(S)			[PLB31]
+       PUSH    BRXCCL		   Save function descriptor	[PLB31]
+       PUSH    ZEROCL		   Save minimum length of zero	[PLB31]
+       BRANCH  ABNSND		   Join common processing	[PLB31]
+*_
 BREAK  PROC    ANY		   BREAK(S)
        PUSH    BRKCCL		   Save function descriptor
        PUSH    ZEROCL		   Save minimum length of zero
@@ -2750,7 +2759,7 @@ ABNSF  POP     SCL						E3.5.5
 ABNSI  RCALL   XPTR,GNVARI,XPTR
 ABNSV  POP     SCL		   Restore procedure switch
        AEQLC   XPTR,0,,SCNAME					E3.5.5
-       SELBRA  SCL,(,BRKV,NNYV,SPNV)
+       SELBRA  SCL,(,BRKV,NNYV,SPNV,BRKV)			[PLB31]
 *				   Select processor
 ANYV   DEQL    XPTR,TBLCS,ANYC2    Was last argument the same?
        AEQL    TBLFNC,ANYCCL,,ANYC3
@@ -2770,15 +2779,59 @@ ANYC4  REMSP   YSP,VSP,TXSP	   Get specifier to unscanned portion
        STREAM  ZSP,YSP,SNABTB,TSALF,TSALT
        GETLG   XPTR,ZSP 	   Get length accepted
        ADDLG   TXSP,XPTR	   Add to length matched
-       BRANCH  SCOK,SCNR	   Return to success point
+       AEQLC   SCL,5,SCOK,	   Done if BRKC call			[PLB31]
+*                                  Success on BREAKX			[PLB31]
+       INCRA   PDLPTR,3*DESCR	   Make room for history entry		[PLB31]
+       ACOMP   PDLPTR,PDLEND,INTR31					[PLB31]
+*				   Check for overflow			[PLB31]
+       PUTDC   PDLPTR,DESCR,ZEROCL Should never take alternative	[PLB31]
+       PUTDC   PDLPTR,2*DESCR,PATICL					[PLB31]
+*                                  Save pattern position of BREAKX 	[PLB31]
+       PUTDC   PDLPTR,3*DESCR,LENFCL					[PLB31]
+       GETLG   TVAL,TXSP           Get cursor position			[PLB31]
+       MOVA    TMVAL,TVAL          for history list to lock		[PLB31]
+       INCRA   PDLPTR,3*DESCR	   Make room for history entry		[PLB31]
+       ACOMP   PDLPTR,PDLEND,INTR31					[PLB31]
+*				   Check for overflow			[PLB31]
+       PUTDC   PDLPTR,DESCR,BRXFCL Routine for BREAKX rematch		[PLB31]
+       PUTDC   PDLPTR,2*DESCR,TMVAL					[PLB31]
+*                                  Save cursor (will set up		[PLB31]
+       PUTDC   PDLPTR,3*DESCR,LENFCL					[PLB31]
+*                                  TXSP if backup later)		[PLB31]
+       BRANCH  SCOK,SCNR	   Return to success point		[PLB31]
+*_
+*
+BRKXF  PROC    ANYC                BREAKX rematch			[PLB31]
+       GETDC   PATICL,PDLPTR,2*DESCR
+*                                  Restore position in pattern
+       DECRA   PATICL,DESCR        Point to BREAKX argument
+       DECRA   PDLPTR,3*DESCR      Discard frame holding PATICL
+       AEQLC   FULLCL,0,,BRXF1     J. if FULLSCAN off
+       SETAC   NVAL,0              Set residual length to 0
+       BRANCH  BRXF3               Join processing
+*_
+BRXF1  AEQLC   LENFCL,0,SALT,      Check for length failure
+       SETAV   NVAL,YCL            Get residual length
+BRXF3  CHKVAL  MAXLEN,NVAL,TXSP,SALT,SALT,
+*                                  Check against maximum
+       GETDC   XCL,PDLPTR,DESCR    Restore from BREAKX stack entry
+       ADDLG   TXSP,ONECL          Add one to length matched
+       BRANCH  BRKX                Try BREAK again with locked in advance
+*                                  ANY, NOTANY
 *_
 BRKC   PROC    ANYC		   Matching procedure for BREAK(S)
        SETAC   SCL,2		   Post entry
        BRANCH  ABNS
 *_
+BRKX   PROC    ANYC                BREAKX			[PLB31]
+       SETAC   SCL,5						[PLB31]
+       BRANCH  ABNS						[PLB31]
+*_
 BRKV   DEQL    XPTR,TBLCS,BRKC2    Was last argument the same?
        AEQL    TBLFNC,BRKCCL,,ANYC3
 *				   Was the last procedure for BREAK
+       AEQL    TBLFNC,BRXCCL,,ANYC3					[PLB31]
+*				   Was last callfor BREAKX?		[PLB31]
 BRKC2  CLERTB  SNABTB,CONTIN	   If not, clear stream table
        LOCSP   YSP,XPTR
        PLUGTB  SNABTB,STOPSH,YSP   Plug entries for characters
@@ -4450,6 +4503,278 @@ VXOVR  OUTPUT  OUTPUT,PRTOVF	   Print error message
        BRANCH  RTNUL3		   Return
 *_
 *---------------------------------------------------------------------*
+       TITLE   'SORT Function'
+*
+* New [PLB31] from SNOBOL4+
+*	RSORT(T,C), SORT(T,C)
+*
+*
+RSORT  PROC    ,                   RSORT function
+       SETAC   SCL,1
+       BRANCH  SORT1
+*_
+SORT   PROC    RSORT               SORT function
+       SETAC   SCL,0
+*
+SORT1  SETAV   WCL,INCL            Get arg count
+       PUSH    (WCL,SCL)           V1.7A Protect SCL
+       RCALL   XPTR,ARGVAL,,FAIL   Get first argument
+       MOVD    WPTR,XPTR           Save copy
+       VEQLC   XPTR,A,,SORT2       J. if array
+       VEQLC   XPTR,T,NONARY       Error if not table or array
+       RCALL   XPTR,ICNVTA,XPTR,(FAIL)
+*                                  Cvt table to array
+*
+SORT2  POP     (SCL,WCL)           R/SORT flag, arg count
+       GETDC   XCL,XPTR,2*DESCR    No. of dimensions in array
+       MULTC   YPTR,XCL,DESCR      Convert to address units
+       SUM     YPTR,XPTR,YPTR      Add base and offset
+       INCRA   YPTR,2*DESCR        Add 2 for heading
+       MOVD    YCL,ONECL           Assume vector - 1 column
+       ACOMPC  XCL,2,INTR30,,SORT3 No. dimensions. J. if vector
+       GETDC   YCL,XPTR,3*DESCR
+       SETAV   YCL,YCL             2-d array; Get no. of columns
+*
+SORT3  GETDC   ZCL,YPTR,0
+       SETAV   ZCL,ZCL             Column length
+       MULTC   ZCL,ZCL,DESCR       Convert to address units	[PLB31]
+       MOVD    ZPTR,YPTR           Assume one arg to function
+       ACOMPC  WCL,2,ARGNER,,SORT5 J. if 1 arg
+       PUSH    (WPTR,XPTR,YPTR,ZPTR,XCL,YCL,ZCL,SCL)
+*                                  2 args. save everything
+       RCALL   WCL,ARGVAL,,FAIL    2.13 Get column no. or field name
+       POP     (SCL,ZCL,YCL,XCL,ZPTR,YPTR,XPTR,WPTR)
+*                                  Restore
+       MOVD    A3PTR,ZEROCL        Assume no Field arg
+* was:								[PLB31]
+*      VEQBRA  WCL,(I,,SORT3C,S,,SORT3B,R,INTR30,SORT3A)	[PLB31]
+       VEQLC   WCL,I,,SORT3C					[PLB31]
+       VEQLC   WCL,S,,SORT3B					[PLB31]
+       VEQLC   WCL,R,INTR30,SORT3A				[PLB31]
+*_
+SORT3A RLINT   WCL,WCL,INTR30,SORT3C
+*                                  Real, convert to Int
+SORT3B LOCSP   XSP,WCL             String
+       SPCINT  WCL,XSP,,SORT3C     Convert to int?
+       SPREAL  WCL,XSP,,SORT3A     Convert to real?
+       AEQLC   XCL,1,INTR30        Possible field function, must be 1-d
+       LOCAPV  WCL,FNCPL,WCL,INTR30
+*                                  Field function?
+       GETDC   WCL,WCL,DESCR       Possibly, get function descriptor
+       GETDC   TCL,WCL,0           Get procedure definition
+       AEQL    TCL,FLDCL,INTR30    Not field function
+       GETDC   A3PTR,WCL,DESCR     Field Block
+       MOVD    WCL,ONECL           Sort on column 1
+*
+SORT3C AEQLC   XCL,1,SORT4,        Jump if 2-d array
+       AEQLC   WCL,1,INTR30,SORT5  1-D, 2nd arg must=1 if present
+*_
+SORT4  GETDC   TCL,XPTR,3*DESCR    Array. Get column bounds
+       SUBTRT  WCL,WCL,TCL,INTR30,SORT4A
+*                                  Subtract 2nd dim. lower bound
+SORT4A ACOMPC  WCL,0,,,INTR30      Column offset must be >=0
+       ACOMP   WCL,YCL,INTR30,INTR30
+*                                  Col. offset must be < no. cols.
+       MULT    WCL,WCL,ZCL,INTR30  Offset * column length
+       SUM     ZPTR,YPTR,WCL       Ptr to col. block being sorted
+*
+SORT5  SETAC   XCL,0               Prepare to build index
+       VEQLC   WPTR,A,,SORTA       J. if source was array
+*
+* Source was a table.
+*
+       GETSIZ  TCL,XPTR            Size of new array
+       MULTC   TCL,TCL,DESCR       Convert to address units	[PLB31]
+       SUM     TPTR,XPTR,TCL       Last element of new array
+       SUBTRT  TPTR,TPTR,ZCL       - no. rows = start of index table-1
+*                                  Assume SORT(Table,1)
+       SETAC   A4PTR,-DESCR        Table advance to get to 2nd col. elt [PLB31]
+       SETAC   A5PTR,0             Offset to element in 1st column
+       AEQL    ZPTR,YPTR,,SORTT1   J. if sorting on Table(1)	[PLB31]
+       SETAC   A5PTR,-DESCR        SORT(Table,2). Get to 1st element [PLB31]
+*
+SORTT1 GETSIZ  WCL,WPTR            Get size of next table extent
+       DECRA   WCL,2*DESCR         Less special words at end
+SORTT4 SUM     WCL,WPTR,WCL        End of extent pointer
+SORTT2 GETDC   TCL,WPTR,DESCR      Get value entry
+       DEQL    TCL,NULVCL,,SORTT3  Ignore null entries		[PLB31]
+       INCRA   XCL,DESCR           Next index entry		[PLB31]
+       SUM     A6PTR,WPTR,A5PTR    Pointer to sort element is
+       INCRA   A6PTR,2*DESCR       WPTR + 2 + A5PTR   (0 or -1)
+       PUTD    TPTR,XCL,A6PTR      Add index entry
+       AEQL    XCL,ZCL,,SORTGO     J. if index fully loaded.	[PLB31]
+SORTT3 INCRA   WPTR,2*DESCR        Next table entry
+       AEQL    WCL,WPTR,SORTT2     If more in this extent
+       GETDC   WPTR,WCL,2*DESCR    Link to next extent
+       BRANCH  SORTT1              Process it
+*_
+* Source was an array.  Get new array to sort into.
+*
+SORTA  GETSIZ  WCL,WPTR            Get size of old array
+       SETVC   WCL,A               Allocating array
+       RCALL   XPTR,BLOCK,WCL      Get new array
+       SETAC   A4PTR,4*DESCR       Size of header and dimensions
+       MOVBLK  XPTR,WPTR,A4PTR     Copy header descriptors
+       SUM     TPTR,XPTR,WCL       Last element of new array
+       SUBTRT  TPTR,TPTR,ZCL       - no. rows = start of index table-1
+*
+       SUBTRT  A5PTR,ZPTR,YPTR     Offset to first element in row
+       RESETF  A5PTR,PTR           V2.03 Clear pointer flag
+       MOVA    A4PTR,ZCL           Offset to advance a column
+SORTA1 INCRA   XCL,DESCR           Next index entry			[PLB31]
+       INCRA   ZPTR,DESCR          Next sort element
+       PUTD    TPTR,XCL,ZPTR       Add to index
+* xxx fixme;
+       AEQL    XCL,ZCL,SORTA1      Loop on no. of rows.			[PLB31]
+*
+*
+* XPTR = New Array, YPTR = 1st element-1 in old array
+* TPTR = Index table - 1 in new array
+* SCL = 1/0 = RSORT/SORT, YCL = NC = no. columns, ZCL = N = no. rows
+* A3PTR = Field Block if second argument was a field name.
+*
+* Setup: A6PTR = G, XCL = M, TCL = K, A7PTR = I, LPTR = J
+* Scratch: A1PTR, A2PTR, F1PTR, F2PTR
+*
+SORTGO MOVA    A6PTR,ZCL           G = N
+*
+SORT6  ACOMPC  A6PTR,DESCR,,SORT12,SORT12
+*                                  Done if G <= DESCR		[PLB31]
+       DIVIDE  A6PTR,A6PTR,TWOCL   G = G/2
+       MULTC   A6PTR,A6PTR,DESCR   Convert back to address units [PLB31]
+       SUBTRT  XCL,ZCL,A6PTR       M = N - G
+*
+SORT7  MOVD    TCL,ZEROCL          K = 0
+       SETAC   A7PTR,DESCR         I = DESCR			[PLB31]
+*
+SORT8  SUM     LPTR,A7PTR,A6PTR    J = I + G
+       GETD    F1PTR,TPTR,A7PTR    .A<I,C>
+       GETD    F2PTR,TPTR,LPTR     .A<J,C>
+       GETDC   A1PTR,F1PTR,0       A<I,C>
+       GETDC   A2PTR,F2PTR,0       A<J,C>
+*
+* COMPARE ELEMENTS IN A1PTR AND A2PTR
+*
+* was:								[PLB31]
+*      DEQBRA  A1PTR,A2PTR,(VVQ,IRQ,RIQ,IIQ,RRQ),(CVV,CIR,CRI,CII,CRR),COTH
+SORT9  SETAV   DTCL,A1PTR	   Set up data type pair	[PLB31]
+       MOVV    DTCL,A2PTR					[PLB31]
+       DEQL    DTCL,VVDTP,,CVV     STRING-STRING		[PLB31]
+       DEQL    DTCL,IIDTP,,CII     INTEGER-INTEGER		[PLB31]
+       DEQL    DTCL,RIDTP,,CRI     REAL-INTEGER			[PLB31]
+       DEQL    DTCL,IRDTP,,CIR     INTEGER-REAL			[PLB31]
+       DEQL    DTCL,RRDTP,,CRR     REAL-REAL			[PLB31]
+       BRANCH  COTH		   None of the above		[PLB31]
+*_
+CVV    LOCSP   XSP,A1PTR           String/String
+       LOCSP   YSP,A2PTR
+CVV1   LEXCMP  XSP,YSP,CMPGT,CMPEQ,CMPLT
+*
+CIR    INTRL   A1PTR,A1PTR         Integer/Real
+       BRANCH  CRR                 Compare as reals
+*_
+CRI    INTRL   A2PTR,A2PTR         Real/Integer
+       BRANCH  CRR
+*_
+CII    ACOMP   A1PTR,A2PTR,CMPGT,CMPEQ,CMPLT			[PLB31]
+*                                  Compare integers
+*_
+CRR    NANCHK  A1PTR,,CRR1         J. if R1 is NAN
+       NANCHK  A2PTR,,CMPLT        J. if R1 OK, R2 NAN
+       RCOMP   A1PTR,A2PTR,CMPGT,CMPEQ,CMPLT
+*                                  R1 and R2 OK, straight compare
+*_
+CRR1   NANCHK  A2PTR,CMPGT,CMPEQ   R1 NAN, check R2
+*_
+* V2.18a On equal case, use ascending compare in all cases
+CMPEQ  ACOMP   F1PTR,F2PTR,SWAP,CMPNXT,CMPNXT
+*                                  Elements =, compare array pos.
+CMPGT  AEQLC   SCL,0,CMPNXT,SWAP   RSORT/SORT
+CMPLT  AEQLC   SCL,0,,CMPNXT
+*
+SWAP   PUTD    TPTR,A7PTR,F2PTR    Swap pointers
+       PUTD    TPTR,LPTR,F1PTR
+*
+       INCRA   TCL,1               K = K + 1
+*
+CMPNXT ACOMP   A7PTR,XCL,SORT11,SORT11,
+*                                  J. if I >= M
+       INCRA   A7PTR,DESCR         I = I + DESCR		[PLB31]
+       BRANCH  SORT8
+*_
+SORT11 AEQLC   TCL,0,SORT7,SORT6   K = 0?
+*_
+COTH   AEQLC   A3PTR,0,,COTH2      If 2nd arg not field name
+       VCOMPC  A1PTR,DATSTA,,,COTH0
+*                                  If not user data type
+       MOVV    DT1CL,A1PTR         Datatype of element
+       LOCAPT  ZPTR,A3PTR,DT1CL,INTR1,
+*                                  Find it in field block
+       GETDC   ZPTR,ZPTR,2*DESCR   Get offset in datastructure
+       SUM     A1PTR,A1PTR,ZPTR    Point to real data
+       GETDC   A1PTR,A1PTR,DESCR   Get value
+       BRANCH  SORT9               Try again
+*_
+COTH0  VCOMPC  A2PTR,DATSTA,,,COTH2
+*                                  If not user data type
+       MOVV    DT1CL,A2PTR         Datatype of element
+       LOCAPT  ZPTR,A3PTR,DT1CL,INTR1,
+*                                  Find it in field block
+       GETDC   ZPTR,ZPTR,2*DESCR   Get offset in datastructure
+       SUM     A2PTR,A2PTR,ZPTR    Point to real data
+       GETDC   A2PTR,A2PTR,DESCR   Get value
+       BRANCH  SORT9               Try again
+*
+COTH2  VEQL    A1PTR,A2PTR,,COTH1  Other datatypes, J. if same
+       SETAV   A1PTR,A1PTR         Types not equal, compare them
+       SETAV   A2PTR,A2PTR
+COTH1  ACOMP   A1PTR,A2PTR,CMPGT,CMPEQ,CMPLT
+*                                  Compare addresses
+*_
+* Sorting complete.  Now unravel index table as copy elements from old
+* array to new.
+*
+* LPTR = Row counter
+* TPTR = Index table - 1 in new array
+* WPTR = 1st element of row being transferred in new array
+* XPTR = New array
+* YPTR = Row ptr of row being transferred in new array
+* ZPTR = Row ptr of row being transferred in old array
+* YCL  = No. columns
+* ZCL  = No. rows
+* A4PTR = offset to get from one column to another in same row
+*	(= no. rows for arrays)
+* A5PTR = offset to get from sort element to first element in row
+*
+SORT12 GETDC   XCL,XPTR,2*DESCR    Get no. dimensions
+       MULTC   WPTR,XCL,DESCR      Convert to address units
+       SUM     WPTR,XPTR,WPTR      Add base and offset
+       INCRA   WPTR,3*DESCR        Add 2 for heading + 1 for 1st row
+       MOVD    LPTR,ONECL          Set up row counter
+       MULTC   LPTR,LPTR,DESCR     Convert to address units	[PLB31]
+*                                  Move a row:
+SORT13 GETD    ZPTR,TPTR,LPTR      Ptr to source sort element
+       SUBTRT  ZPTR,ZPTR,A5PTR     Ptr to first element in row
+       MOVD    YPTR,WPTR           Index to target
+       MOVA    A6PTR,YCL           Number of columns
+       MULTC   A6PTR,A6PTR,DESCR   Convert to address units	[PLB31]
+*                                  Move all elements in this row:
+SORT14 MOVDIC  YPTR,0,ZPTR,0       Move an element in row
+       SUM     ZPTR,ZPTR,A4PTR     Offset to advance a column
+       SUM     YPTR,YPTR,ZCL       Advance by length of column
+       DECRA   A6PTR,DESCR         Count column done		[PLB31]
+       AEQLC   A6PTR,0,SORT14,     Move another element in row
+*
+       INCRA   WPTR,DESCR          Do next row
+       INCRA   LPTR,DESCR          More rows left?
+       ACOMP   LPTR,ZCL,,SORT13,SORT13
+*
+       PUSH    (ZEROCL,ZEROCL,ZEROCL,ZEROCL)
+*                                  Kill some pointers
+       POP     (YPTR,ZPTR,F1PTR,F2PTR)
+       BRANCH  RTXPTR
+*_
+*---------------------------------------------------------------------*
        TITLE   'Other Operations'
 *
 *      Assignment
@@ -4754,6 +5079,56 @@ QUES   PROC    ,		   ?X
 *				   Evaluate argument
 *_
 *---------------------------------------------------------------------*
+*
+* New [PLB31] from SNOBOL4+
+*      CHAR(N)
+*
+CHAR   PROC    ,		   CHAR(N)
+       RCALL   XCL,INTVAL,,FAIL    Get argument
+       ACOMPC  XCL,0,,,LENERR      Must be > 0
+       ACOMPC  XCL,256,INTR30,INTR30,
+*				   Must be <256 (ALPHSZ)
+       RCALL   XPTR,CONVAR,ONECL,  Allocate space for result
+       LOCSP   XSP,XPTR		   Get specifier
+%{
+	*S_SP(XSP) = D_A(XCL);	   /* Store argument as char */
+%}
+       RCALL   XPTR,GNVARS,ONECL,  Fix in memory
+       BRANCH  RTXPTR
+*_
+*---------------------------------------------------------------------*
+*
+* New [PLB31] from Minnesota SNOBOL4 and SNOBOL4+
+*      LPAD, RPAD(S,N,C)
+*
+LPAD   PROC    ,		   LPAD(S,N,C)
+       SETAC   SCL,0
+       BRANCH  RPAD0
+*_
+RPAD   PROC    ,		   RPAD(S,N,C)
+       SETAC   SCL,1
+RPAD0  PUSH    SCL		   Protect SCL
+       RCALL   XPTR,VARVAL,,FAIL   Get 1st arg=string
+       PUSH    XPTR                Save string
+       RCALL   ZPTR,INTVAL,,FAIL   Get 2rd arg=integer length
+       PUSH    ZPTR
+       RCALL   WPTR,VARVAL,,FAIL   Get pad character if any
+       POP     (ZPTR,XPTR,SCL)	   Restore length, string, direction
+       LOCSP   VSP,WPTR            Pad character
+       LOCSP   XSP,XPTR            Subject string
+       ACOMP   ZPTR,MLENCL,INTR8   Check against &MAXLNGTH
+       ACOMP   ZEROCL,ZPTR,LENERR  Make sure length not minus
+       GETLG   YPTR,XSP            Subject string length
+       ACOMP   YPTR,ZPTR,RTXPTR,RTXPTR
+*				   Return subject if already long enough
+RPADOK MOVA    XCL,ZPTR            Copy length (for GENVSZ)
+       RCALL   ZPTR,CONVAR,XCL     Allocate space for string
+       LOCSP   TSP,ZPTR            Get specifier
+       XCALLC  pad,(SCL,TSP,XSP,VSP)
+*				   Do function (dir,out,subj,pad)
+       BRANCH  GENVSZ              Return the string
+*_
+*---------------------------------------------------------------------*
        TITLE   'Other Functions'
 *
 *      APPLY(F,A1,...AN)
@@ -4970,42 +5345,9 @@ CNVRTS RCALL   XPTR,DTREP,ZPTR	   Get data type representation
        GETSPC  ZSP,XPTR,0	   Get specifier
        BRANCH  GENVRZ		   Go generate variable
 *_
-CNVTA  MOVD    YPTR,ZPTR					E3.2.3
-       MOVD    YCL,ZEROCL					E3.2.3
-CNVTA7 GETSIZ  XCL,YPTR 					E3.2.3
-       MOVD    WPTR,YPTR					E3.2.3
-       MOVD    ZCL,XCL						E3.2.3
-       DECRA   XCL,3*DESCR					E3.2.3
-CNVTA1 GETD    WCL,WPTR,XCL	   Get item value
-       DEQL    WCL,NULVCL,,CNVTA2  Check for null value
-       INCRA   YCL,1		   Otherwise count item
-CNVTA2 AEQLC   XCL,DESCR,,CNVTA6				E3.2.3
-       DECRA   XCL,2*DESCR	   Count down
-       BRANCH  CNVTA1		   Process next item
-*_
-CNVTA6 GETD    YPTR,YPTR,ZCL					E3.2.3
-       AEQLC   YPTR,1,CNVTA7					E3.2.3
-CNVTA4 AEQLC   YCL,0,,FAIL	   Fail on empty table
-       MOVD    WPTR,ZPTR					E3.2.3
-       MULTC   XCL,YCL,2*DESCR	   Convert count to address units
-       INTSPC  YSP,YCL		   Get prototype for size
-       SETLC   PROTSP,0 	   Clear specifier
-       APDSP   PROTSP,YSP	   Append length
-       APDSP   PROTSP,CMASP	   Append comma
-       MOVD    WCL,ZEROCL					E3.1.1
-       SETAC   WCL,2		   Set up 2 for second dimension
-       INTSPC  XSP,WCL		   Convert to string
-       APDSP   PROTSP,XSP	   Append 2
-       SETSP   XSP,PROTSP	   Move specifier
-       RCALL   TPTR,GENVAR,XSPPTR				E3.5.2
-*				   Generate variable for prototype
-       MOVD    ZCL,XCL		   Save size
-       INCRA   XCL,4*DESCR	   Increment for heading
-       RCALL   ZPTR,BLOCK,XCL	   Get block for array
-       SETVC   ZPTR,A		   Insert ARRAY data type
-       MOVD    ATPRCL,TPTR					E3.5.2
-       SETVA   ATEXCL,YCL	   Insert First dimension in head
-       MOVBLK  ZPTR,ATRHD,FRDSCL   Copy heading information
+CNVTA  MOVD    WPTR,ZPTR	   Make copy of input pointer	[PLB31]
+       RCALL   ZPTR,ICNVTA,ZPTR,(FAIL)				[PLB31]
+*				   Allocate array to hold table	[PLB31]
        MOVD    YPTR,ZPTR	   Save copy of block pointer
        MULTC   YCL,YCL,DESCR	   Convert item count to address units
        INCRA   YPTR,5*DESCR	   Skip heading
@@ -5026,34 +5368,84 @@ CNVTA5 INCRA   WPTR,2*DESCR
        SETAC   TPTR,0						E3.8.1
        BRANCH  RTZPTR						E3.8.1
 *_
+* New [PLB31] from SNOBOL4+
+*      created from CNVTA -- common code for CONVERT/SORT
+*
+*      Initial Conversion of Table to Array.
+*      Scans table counting elements, fails if all null.
+*      Allocates block for array, installs proper heading and dimemnsions in
+*      block, but does not copy table elements over.
+*
+*      RCALL   ZPTR,ICNVTA,TPTR,(FAIL)
+*
+* Side effects of call:
+*      YCL = Item count
+*
+ICNVTA PROC    CNVRT
+       POP     YPTR				
+       MOVD    YCL,ZEROCL					E3.2.3
+CNVTA7 GETSIZ  XCL,YPTR						E3.2.3
+       MOVD    ZCL,XCL						E3.2.3
+       DECRA   XCL,3*DESCR					E3.2.3
+CNVTA1 GETD    WCL,YPTR,XCL        Get item value
+       DEQL    WCL,NULVCL,,CNVTA2  Check for null value
+       INCRA   YCL,1               Otherwise count item
+CNVTA2 AEQLC   XCL,DESCR,,CNVTA6
+       DECRA   XCL,2*DESCR         Count down
+       BRANCH  CNVTA1              Process next item
+*_
+CNVTA6 GETD    YPTR,YPTR,ZCL
+       AEQLC   YPTR,1,CNVTA7,
+CNVTA4 AEQLC   YCL,0,,FAIL         Fail on empty table
+       MULTC   XCL,YCL,2*DESCR     Convert count to address units
+       INTSPC  YSP,YCL             Get prototype for size
+       SETLC   PROTSP,0            Clear specifier		[PLB31]
+       APDSP   PROTSP,YSP          Append length		[PLB31]
+       APDSP   PROTSP,CMASP        Append comma			[PLB31]
+       MOVD    WCL,ZEROCL
+       SETAC   WCL,2               Set up 2 for second dimension
+       INTSPC  XSP,WCL             Convert to string
+       APDSP   PROTSP,XSP          Append 2			[PLB31]
+       SETSP   XSP,PROTSP          Move specifier		[PLB31]
+       RCALL   TPTR,GENVAR,XSPPTR, Generate variable for prototype
+       MOVD    ZCL,XCL             Save size
+       INCRA   XCL,4*DESCR         Increment for heading
+       RCALL   ZPTR,BLOCK,XCL,     Get block for array
+       SETVC   ZPTR,A              Insert ARRAY data type
+       MOVD    ATPRCL,TPTR
+       SETVA   ATEXCL,YCL          Insert First dimension in head
+       MOVBLK  ZPTR,ATRHD,FRDSCL   Copy heading information
+       RRTURN  ZPTR,2
+*_
 CNVAT  GETDC   XCL,ZPTR,2*DESCR    Get array dimensionality
-       MOVD    YPTR,ZPTR	   Save copy of array pointer
-       AEQLC   XCL,2,FAIL	   Verify rectangular array
+       MOVD    YPTR,ZPTR           Save copy of array pointer
+       AEQLC   XCL,2,FAIL,         Verify rectangular array
        GETDC   XCL,ZPTR,3*DESCR    Get second dimension
-       VEQLC   XCL,2,FAIL	   Verify extent of 2
-       GETSIZ  XCL,ZPTR 	   Get size of array block
-       DECRA   XCL,2*DESCR					E3.2.3
-       RCALL   XPTR,BLOCK,XCL	   Allocate block for pair list
-       SETVC   XPTR,T						E3.2.3
-       GETDC   YCL,ZPTR,4*DESCR 				E3.2.3
-       MOVD    ZPTR,XPTR					E3.2.3
-       PUTD    XPTR,XCL,ONECL					E3.2.3
-       DECRA   XCL,DESCR					E3.2.3
-       MOVD    TCL,EXTVAL					E3.2.3
-       INCRA   TCL,2*DESCR					E3.2.3
-       PUTD    XPTR,XCL,TCL					E3.2.3
-       SETAV   YCL,YCL						E3.2.3
-       MULTC   YCL,YCL,DESCR					E3.2.3
-       INCRA   YPTR,5*DESCR					E3.2.3
-       SUM     WPTR,YPTR,YCL					E3.2.3
-CNVAT2 MOVDIC  XPTR,DESCR,WPTR,0				E3.2.3
-       MOVDIC  XPTR,2*DESCR,YPTR,0				E3.2.3
-       DECRA   YCL,DESCR					E3.2.3
-       AEQLC   YCL,0,,RTZPTR					E3.2.3
-       INCRA   XPTR,2*DESCR	   Increment pair list pointer
-       INCRA   WPTR,DESCR	   Increment lower array pointer
-       INCRA   YPTR,DESCR	   Increment upper array pointer
-       BRANCH  CNVAT2		   Continue
+       VEQLC   XCL,2,FAIL,         Verify extent of 2
+       GETSIZ  XCL,ZPTR            Get size of array block
+       DECRA   XCL,2*DESCR				E3.2.3
+       RCALL   XPTR,BLOCK,XCL,     Allocate block for pair list
+       SETVC   XPTR,T				E3.2.3
+       GETDC   YCL,ZPTR,4*DESCR				E3.2.3
+       MOVD    ZPTR,XPTR				E3.2.3
+       PUTD    XPTR,XCL,ONECL
+       DECRA   XCL,DESCR
+       MOVD    TCL,EXTVAL
+       INCRA   TCL,2*DESCR
+       PUTD    XPTR,XCL,TCL
+       SETAV   YCL,YCL
+       MULTC   YCL,YCL,DESCR
+       INCRA   YPTR,5*DESCR
+       SUM     WPTR,YPTR,YCL,,
+CNVAT2 MOVDIC  XPTR,DESCR,WPTR,0
+       MOVDIC  XPTR,2*DESCR,YPTR,0
+       DECRA   YCL,DESCR
+       AEQLC   YCL,0,,RTZPTR
+       INCRA   XPTR,2*DESCR        Increment pair list pointer
+       INCRA   WPTR,DESCR          Increment lower array pointer
+       INCRA   YPTR,DESCR          Increment upper array pointer
+       BRANCH  CNVAT2              Continue
+
 *_
 *---------------------------------------------------------------------*
 *
@@ -5766,6 +6158,8 @@ ASGNCL DESCR   ASGNFN,FNC,2
 ATOPCL DESCR   ATOPFN,FNC,3
 BASECL DESCR   BASEFN,FNC,0
 BRKCCL DESCR   BRKCFN,FNC,3
+BRXCCL DESCR   BRXCFN,FNC,3					[PLB31]
+BRXFCL DESCR   BRFCFN,FNC,2					[PLB31]
 CHRCL  DESCR   CHRFN,FNC,3
 CONCL  DESCR   CONFN,FNC,0	   Argument count is incremented
 DNMECL DESCR   DNMEFN,FNC,2
@@ -5807,7 +6201,7 @@ A6PTR  DESCR   0,0,0		   Scratch descriptor
 A7PTR  DESCR   0,0,0		   Scratch descriptor
 BRTYPE DESCR   0,0,0		   Break type returned by FORWRD
 CMOFCL DESCR   0,0,0		   Compiler offset
-DATSEG DESCR   0,0,100		   Beginning of defined data types
+DATSEG DESCR   0,0,DATSTA	   Beginning of defined data types  [PLB31]
 DMPPTR DESCR   0,0,0		   Bin pointer for DUMP
 DTCL   DESCR   0,0,0		   Data type descriptor
 DT1CL  DESCR   0,0,0		   Data type descriptor
@@ -6103,6 +6497,10 @@ BACKFN DESCR   BKSPCE,0,1
        DESCR   0,0,0
 BREAFN DESCR   BREAK,0,1
        DESCR   0,0,0
+BREXFN DESCR   BREAKX,0,1	   [PLB31]
+       DESCR   0,0,0		   [PLB31]
+CHARFN DESCR   CHAR,0,1		   [PLB31]
+       DESCR   0,0,0		   [PLB31]
 CLEAFN DESCR   CLEAR,0,1
        DESCR   0,0,0
 CODEFN DESCR   CODER,0,1
@@ -6157,6 +6555,8 @@ LOADFN DESCR   LOAD,0,2
        DESCR   0,0,0
 LOCFN  DESCR   LOCAL,0,2
        DESCR   0,0,0
+LPADFN DESCR   LPAD,0,3		   [PLB31]
+       DESCR   0,0,0		   [PLB31]
 LTFN   DESCR   LT,0,2
        DESCR   0,0,0
 NEFN   DESCR   NE,0,2
@@ -6181,10 +6581,16 @@ REWNFN DESCR   REWIND,0,1
        DESCR   0,0,0
 RPOSFN DESCR   RPOS,0,1
        DESCR   0,0,0
+RPADFN DESCR   RPAD,0,3		   [PLB31]
+       DESCR   0,0,0		   [PLB31]
+RSRTFN DESCR   RSORT,FNC,1	   [PLB31]
+       DESCR   0,0,0		   [PLB31]
 RTABFN DESCR   RTAB,0,1
        DESCR   0,0,0
 SIZEFN DESCR   SIZE,0,1
        DESCR   0,0,0
+SORTFN DESCR   SORT,FNC,1	   [PLB31]
+       DESCR   0,0,0		   [PLB31]
 SPANFN DESCR   SPAN,0,1
        DESCR   0,0,0
 STPTFN DESCR   STOPTR,0,2
@@ -6230,6 +6636,10 @@ FNLIST DESCR   FNLIST,TTL+MARK,FNCPLE-FNLIST-DESCR
        DESCR   BACKSP,0,0
        DESCR   BREAFN,FNC,0	   BREAK(CS)
        DESCR   BRKSP,0,0
+       DESCR   BREXFN,FNC,0	   BREAKX(CS)			[PLB31]
+       DESCR   BRKXSP,0,0					[PLB31]
+       DESCR   CHARFN,FNC,0	   CHAR(N)			[PLB31]
+       DESCR   CHARSP,0,0					[PLB31]
        DESCR   CLEAFN,FNC,0	   CLEAR()
        DESCR   CLERSP,0,0
        DESCR   CODEFN,FNC,0	   CODE(S)
@@ -6270,7 +6680,7 @@ FNLIST DESCR   FNLIST,TTL+MARK,FNCPLE-FNLIST-DESCR
        DESCR   GTSP,0,0
        DESCR   IDENFN,FNC,0	   IDENT(V1,V2)
        DESCR   IDENSP,0,0
-       DESCR   READFN,FNC,0	   [PLB4] INPUT(V,N,L,F)
+       DESCR   READFN,FNC,0	   INPUT(V,N,L,F)		[PLB4]
        DESCR   INSP,0,0
        DESCR   INTGFN,FNC,0	   INTEGER(V)
        DESCR   INTGSP,0,0
@@ -6286,6 +6696,8 @@ FNLIST DESCR   FNLIST,TTL+MARK,FNCPLE-FNLIST-DESCR
        DESCR   LOADSP,0,0
        DESCR   LOCFN,FNC,0	   LOCAL(F,N)
        DESCR   LOCSP,0,0
+       DESCR   LPADFN,FNC,0	   LPAD(S,N,C)			[PLB31]
+       DESCR   LPADSP,0,0					[PLB31]
        DESCR   LTFN,FNC,0	   LT(I1,I2)
        DESCR   LTSP,0,0
        DESCR   NEFN,FNC,0	   NE(I1,I2)
@@ -6294,7 +6706,7 @@ FNLIST DESCR   FNLIST,TTL+MARK,FNCPLE-FNLIST-DESCR
        DESCR   NNYSP,0,0
        DESCR   OPSYFN,FNC,0	   OPSYN(F1,F2,N)
        DESCR   OPSNSP,0,0
-       DESCR   PRINFN,FNC,0	   [PLB4] OUTPUT(V,N,F,FN)
+       DESCR   PRINFN,FNC,0	   OUTPUT(V,N,F,FN)		[PLB4]
        DESCR   OUTSP,0,0
        DESCR   POSFN,FNC,0	   POS(N)
        DESCR   POSSP,0,0
@@ -6308,10 +6720,16 @@ FNLIST DESCR   FNLIST,TTL+MARK,FNCPLE-FNLIST-DESCR
        DESCR   RPLCSP,0,0
        DESCR   RPOSFN,FNC,0	   RPOS(N)
        DESCR   RPOSSP,0,0
+       DESCR   RPADFN,FNC,0	   RPAD(S,N,C)			[PLB31]
+       DESCR   RPADSP,0,0					[PLB31]
+       DESCR   RSRTFN,FNC,0	   RSORT(T,C)			[PLB31]
+       DESCR   RSRTSP,0,0					[PLB31]
        DESCR   RTABFN,FNC,0	   RTAB(N)
        DESCR   RTABSP,0,0
        DESCR   SIZEFN,FNC,0	   SIZE(S)
        DESCR   SIZESP,0,0
+       DESCR   SORTFN,FNC,0	   SORT(T,C)			[PLB31]
+       DESCR   SORTSP,0,0					[PLB31]
        DESCR   SPANFN,FNC,0	   SPAN(CS)
        DESCR   SPANSP,0,0
        DESCR   STPTFN,FNC,0	   STOPTR(V,R)
@@ -6435,6 +6853,8 @@ CHRFN  DESCR   CHR,0,3		   Matching for string
 BALFN  DESCR   BAL,0,2		   Matching for BAL
 BALFFN DESCR   BALF,0,2 	   Failure for BAL
 BRKCFN DESCR   BRKC,0,3 	   Matching for BREAK(S)
+BRXCFN DESCR   BRKX,0,3 	   Matching for BREAKX(S)	[PLB31]
+BRFCFN DESCR   BRKXF,0,2 	   Rematching for BREAKX(S)	[PLB31]
 DNMEFN DESCR   DNME,0,2
 DNMIFN DESCR   DNME1,0,2
 EARBFN DESCR   EARB,0,2
@@ -6477,8 +6897,10 @@ ARGSP  STRING  'ARG'
 BACKSP STRING  'BACKSPACE'
 BALSP  STRING  'BAL'
 BRKSP  STRING  'BREAK'
+BRKXSP STRING  'BREAKX'			[PLB31]
 TRFRSP STRING  'CALL'
 CASESP STRING  'CASE'			[PLB15]
+CHARSP STRING  'CHAR'			[PLB31]
 CLERSP STRING  'CLEAR'
 CODESP STRING  'CODE'
 CLSP   STRING  'COLLECT'
@@ -6522,6 +6944,7 @@ LESP   STRING  'LE'
 LGTSP  STRING  'LGT'
 LOADSP STRING  'LOAD'
 LOCSP  STRING  'LOCAL'
+LPADSP STRING  'LPAD'				[PLB31]
 LTSP   STRING  'LT'
 MAXLSP STRING  'MAXLNGTH'
 NAMESP STRING  'NAME'
@@ -6541,9 +6964,12 @@ RETSP  STRING  'RETURN'
 REWNSP STRING  'REWIND'
 RPLCSP STRING  'REPLACE'
 RPOSSP STRING  'RPOS'
+RPADSP STRING  'RPAD'				[PLB31]
+RSRTSP STRING  'RSORT'				[PLB31]
 RTABSP STRING  'RTAB'
 RTYPSP STRING  'RTNTYPE'
 SIZESP STRING  'SIZE'
+SORTSP STRING  'SORT'				[PLB31]
 SPANSP STRING  'SPAN'
 STCTSP STRING  'STCOUNT'
 STFCSP STRING  'STFCOUNT'
