@@ -18,15 +18,8 @@ OPT=-O2
 # XXX try enabling bitfields? (comment out next line)
 NO_BITFIELDS=-DNO_BITFIELDS
 
-# "msdos" version of tty routines uses kbhit() spin loop for raw tty
-# i/o.  This is unfriendly in a multitasking environment, and should
-# be replaced by the win32 version (see below).
-TTY_C=$(SRCDIR)lib\msdos\tty.c
-TTY_DEFS=-DTTY_READ_RAW
-
-# win32 tty.c does not yet work
-#TTY_C=$(SRCDIR)lib\win32\tty.c
-#TTY_DEFS=
+# can also use msdos version (less friendly in multitasking env)
+TTY_C=$(SRCDIR)lib\win32\tty.c
 
 # crocks for winsock I/O on Win9x
 INET_DEFS=-DINET_IO
@@ -35,7 +28,7 @@ INET_LIBS=wsock32.lib
 
 CFLAGS= -c $(OPT) -WC -Tml -w- \
 	-I$(SRCDIR)config\win32 -I$(SRCDIR)include -I$(SRCDIR). \
-	-DHAVE_CONFIG_H $(NO_BITFIELDS) $(TTY_DEFS) $(INET_DEFS)
+	-DHAVE_CONFIG_H $(NO_BITFIELDS) $(INET_DEFS)
 
 OBJ=	isnobol4.obj data.obj data_init.obj main.obj syn.obj \
 	version.obj bal.obj date.obj dump.obj endex.obj hash.obj \
