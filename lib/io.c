@@ -720,13 +720,8 @@ io_include( dp, sp )
 
 	/* try again, in SNOLIB dir */
 	snolib = getenv("SNOLIB");
-	if (!snolib) {
-#ifdef SNOLIB_DIR
+	if (!snolib)
 	    snolib = SNOLIB_DIR;
-#else
-	    return FALSE;
-#endif
-	}
 	strcpy(fn2, snolib);
 	strcat(fn2, "/");
 	strcat(fn2, fname);
