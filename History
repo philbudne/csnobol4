@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+9/8/97:
+	v311.sil: Call io_pad() to fix -LIST RIGHT
+	lib/io.c: add io_pad() function
+
 9/7/97:
 	Ran profiling
 	lib/io.c: only tack on one space to compiler input
