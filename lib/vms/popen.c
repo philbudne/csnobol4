@@ -1,9 +1,9 @@
 /*
  * $Id$
- * from Chris Janton's (chj) VMS Icon port.
+ * started from Chris Janton's (chj) VMS Icon port. -pb 9/97
  */
 
-#undef __HIDE_FORBIDDEN_NAMES
+#undef __HIDE_FORBIDDEN_NAMES		/* for _NFILE */
 #include <stdio.h>
 #include <types.h>
 #include <dvidef>
@@ -19,7 +19,7 @@ struct descr {
     char *ptr;
 };
 
-/* XXX keep linked list with FILE */
+/* XXX keep linked list? */
 static struct pipe {
     long pid;				/* process id of child */
     long status;			/* exit status of child */
