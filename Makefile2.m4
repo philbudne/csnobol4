@@ -332,12 +332,17 @@ realclean: clean
 pv:	version.c
 	$(CC) -DMAIN -o pv version.c
 
+
+# compression program and suffix (users didn't like gzip)
+COMP=compress
+Z=Z
+
 VERS=`./pv`
 DIR=snobol-$(VERS)
-TAR=snobol-$(VERS).tar.Z
+TAR=snobol-$(VERS).tar.$(Z)
 
 # XXX add predicates to suppress ~ # and .o files?
-tar vers: $(TAR) TESTED pv
+tar vers: TESTED pv
 	cd doc; make
 	cd test; ./clean.sh
 	rm -rf [snobol-[0-9]*]
@@ -346,7 +351,7 @@ tar vers: $(TAR) TESTED pv
 	find $(TAR) -name RCS -prune -o -print | cpio -pldm $(DIR)
 	for f in $(G2); do cp $$f $(DIR)/$${f}2; done
 	cp $(GENERATED) $(DIR)
-	tar cf - $(DIR) | compress > $(TAR)
+	tar cf - $(DIR) | $(COMP) > $(TAR)
 	rm -rf $(DIR)
 	./pv > vers
 
