@@ -45,7 +45,7 @@ raise( sp )
     }
 }
 
-/* 8/19/96 */
+/* 8/19/96 -- for GENVUP/VPXPTR */
 int
 raise2( sp1, sp2 )
     struct spec *sp1, *sp2;
@@ -71,4 +71,37 @@ raise2( sp1, sp2 )
     return raised > 0;
 }
 
+/* support for LPAD/RPAD 8/26/96 */
+int
+pad(dir,out,subj,pad)
+    struct descr *dir;			/* LPAD=0,RPAD=1 */
+    struct spec *out, *subj, *pad;
+{
+    int npad, slen;
+    char *dp;
+    char pc;
 
+    slen = S_L(subj);
+    npad = S_L(out) - slen;
+    dp = S_SP(out);
+
+    if (S_L(pad) == 0)			/* null string */
+	pc = ' ';			/* default to space */
+    else
+	pc = *S_SP(pad);
+
+    if (D_A(dir) == 0) {		/* LPAD */
+	while (npad-- > 0)
+	    *dp++ = pc;
+    }
+
+    bcopy(S_SP(subj), dp, slen);
+    dp += slen;
+
+    if (D_A(dir) != 0) {		/* RPAD */
+	while (npad-- > 0)
+	    *dp++ = pc;
+    }
+
+    return 0;
+}
