@@ -36,6 +36,10 @@ of the following options;
 	--force-gcc
 		Force use of gcc, the GNU C compiler;
 		fail if gcc not available.
+	--force-memmove
+		Force use of system memmove() function (if preseent)
+		if no bcopy() function is available.  Otherwise the
+		bcopy.c source file will be used.
 	--no-dlopen
 	--no-dynlib
 		Disable use of dlopen (or shl_load on HP-UX) for dynamic LOAD()
