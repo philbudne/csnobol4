@@ -24,17 +24,18 @@ Requirements
 The Macro Implementation of SNOBOL4 is the original Bell Labs
 implementatiton of the SNOBOL4 language, with many SPITBOL and
 SNOBOL4+ extensions.  As the title suggests, the target machine is
-anything that has a C compiler and provides provides a Un*x-like (ie;
-POSIX) environment.  The target machine should have;
+anything that has a C compiler and a good C library.
+The target machine should have;
 
 .IP \(bu
 A large address space (allowing for approx 300K code and 300K data).
 Virtual memory is desirable.
 
 .IP \(bu
-An industrial strength optimizing C compiler;
-GNU C (gcc) is preferred, but no ANSI C features are required
-(a traditional "K&R" C compiler will do).
+An industrial strength optimizing C compiler; GNU C (gcc) is
+preferred, but no ANSI C features are required (a traditional "K&R" C
+compiler will do).  Some proprietary C compilers produce code which
+performs better than gcc.
 
 .IP \(bu
 A reasonably complete C library, including stdio.
@@ -68,11 +69,12 @@ to be 32 bits.
 .PP
 An experimental feature of the 1.0 release of CSNOBOL4 is to use the
 "long long" datatype (available as an extension or with C99 support)
-to represent SNOBOL4 INTEGERs, by using the configure --longlong option.
-If C99 library features are not available, ad-hoc support will be used.
+to represent 64-bit SNOBOL4 INTEGERs in ILP32 environments, by using
+the configure --longlong option.  If C99 library features are not
+available, ad-hoc support will be used.
 
 .NH 1
-Config files
+Configuration files
 
 .PP
 The configure script determines which include and library routines are
@@ -620,10 +622,11 @@ Provides tcp_open() and udp_open() functions for communications with
 to internet servers.
 
 .IP lib/bsd/inet.c
-Uses BSD style sockets.
+Uses traditional BSD style sockets for IPv4 only operation.
 
 .IP lib/bsd/inet6.c
-Uses BSD style sockets and getaddrinfo() for IPv4/IPv6 independence.
+Uses RFC2553 and IEEE 1003.1g extensions to BSD style sockets for
+IPv4/IPv6 independent operation.
 
 .IP lib/dummy/inet.c
 Provides dummy entry points for systems with no TCP/IP
@@ -844,10 +847,10 @@ Declares tty_read() function using VMS SYS$QIOW to perform raw tty
 reads.
 
 .IP lib/win32/term.c
-Implement tty_mode using SetConsoleMode().
+Implements tty_mode and tty_read using SetConsoleMode() and ReadFile().
 
 .IP lib/dummy/term.c
-dummy functions, if none of the above facilities available.
+Dummy functions, if none of the above facilities available.
 
 .NH 2
 sys.c
@@ -867,5 +870,13 @@ Use SYS$GETSYIW() calls.
 Use GetSystemInfo() and GetVersionEx() calls.
 
 .IP lib/generic/sys.c
-Uses output from config.guess script run by autoconf.
-Checks for HWNAME and OSNAME defines.
+Use HWNAME and OSNAME defines.
+
+.NH 1
+Understanding the SIL source
+
+.PP
+You should not need to look at or understand the SIL (SNOBOL
+Implementation Language) sources to port the package.
+Documentation for the original macros can be found in
+ftp://ftp.snobol4.org/snobol/doc/
