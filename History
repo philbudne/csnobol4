@@ -13,8 +13,8 @@ MAINBOL for Un*x history (and personal SNOBOL history);
 	lib/init.c: make -p toggle SPITCL, removed LISTCL hack
 	gen{c,data,dep,syn}.sno: remove refs to &STLIMIT (and &TRIM)
 	inline.sno: fix comment typo
-	gensyn.sno, include/syntab.h: made structs const, output syn.c2
-	stream.c: added const decls
+	gensyn.sno, output syn.c2;
+		tried making syntab's const; fails for SNABTB
 	genc.sno: quiet warnings from PLUSOPS AEQLIC usage
 	lib/pml.c: fix ifdef STDC typo
 	timing: add/subtract -s switches
