@@ -15,6 +15,7 @@
 #include <string.h>
 #include <stdlib.h>			/* malloc(), getenv() */
 
+
 /* external function returning pointer to loaded function */
 extern int (*pml_find())(LOAD_PROTO);
 
@@ -29,7 +30,65 @@ struct func {
 /* keep list of loaded functions (for UNLOAD) */
 static struct func *funcs;
 
-#define PATHLEN 256			/* XXX use MAXPATHLEN from param.h? */
+#define PATHLEN 256			/* XXX */
+#define BS '\\'				/* exactly */
+
+#define ABSPATH(CP) \
+    ((CP)[0] == '/' || \
+     (CP)[0] == BS || \
+     isalpha((CP)[0]) && (CP)[1] == ':' && (CP)[2] == BS)
+
+#define EXISTS(CP) (GetFileAttributesA(CP) != -1)
+
+/*
+ * copy and concatenate path components,
+ * second source path may be NULL
+ * converting slashes (required by LoadLibrary)
+ * remove double /'s
+ */
+
+/* XXX return error if out of space? */
+static void
+pathcpy(dp, cc, sp1, sp2)
+    char *dp, *sp1, *sp2;
+    int cc;
+{
+    char sep1, sep2;
+    char c, last;
+
+    last = '\0';
+    sep1 = sep2 = BS;
+
+    cc--;				/* leave room for NUL */
+    while (cc > 0 && (c = *sp1++)) {
+	if (c == '/') {
+	    /* remove repeated /'s */
+	    if (last == '/')
+		continue;
+	    c = BS;
+	}
+	*dp++ = c;
+	last = c;
+	cc--;
+    }
+    if (sp2 && cc > 0) {
+	/* add seperator, if needed */
+	if (last != BS) {
+	    *dp++ = BS;
+	    cc--;
+	}
+	while (cc > 0 && (c = *sp2++)) {
+	    /* remove repeated /'s */
+	    if (last == '/')
+		continue;
+	    c = BS;
+	}
+	*dp++ = c;
+	last = c;
+	cc--;
+    } /* sp2 && space */
+    *dp = '\0';
+}
 
 int
 load(addr, sp1, sp2)
@@ -52,50 +111,32 @@ load(addr, sp1, sp2)
     fp->entry = pml_find(fp->name);
     if (fp->entry == NULL) {		/* not found by pml */
 	char path[PATHLEN*2];		/* room for directory name */
-	char *pp;			/* path pointer */
-
-#if 1
-	/* punt for now */
-	spec2str(sp2, path, sizeof(path));
-	pp = path;
-#else
-	/* XXX need to check for both kinds of slash???? */
 	char *snolib;
-	char sep;
 
 	snolib = getenv("SNOLIB");
 	if (snolib == NULL)
 	    snolib = SNOLIB_DIR;
 
-/* XXX must match dir sep style used in snolib! */
-	sep = '/';
-
-	if (sp2 && S_A(sp2) && S_L(sp2)) {
+	if (sp2 && S_A(sp2) && S_L(sp2)) { /* have filename */
 	    char temp[PATHLEN];
 
 	    spec2str(sp2, temp, sizeof(temp));
-
-	    /* XXX just try LoadLibrary() ?? */
-	    if (temp[0] != '/' &&
-		!(isalpha(temp[0]) && temp[1] == ':') &&
-		GetFileAttributesA(temp) == -1) {
+	    if (!ABSPATH(temp) && !EXISTS(temp)) {
 		/* not absolute and file does not exist; prepend libdir */
-		/* XXX limit length of snolib?? */
-/* XXX snolib and temp could have differnt sep styles!!! */
-		sprintf( path, "%s%c%s", snolib, sep, temp );
+		pathcpy( path, sizeof(path), snolib, temp );
 	    }
-	    else
-		strcpy( path, temp );
-	    pp = path;
+	    else {
+		/* absolute or exists */
+		pathcpy( path, sizeof(path), temp, NULL );
+	    }
 	}
 	else {				/* no path */
 	    /* XXX limit length of snolib?? */
-	    sprintf( path, "%s%c%s", snolib, sep, SNOLIB_FILE );
-	    pp = path;
+	    pathcpy( path, sizeof(path), temp, SNOLIB_FILE );
 	}
 #endif
 
-	fp->handle = LoadLibrary(pp);
+	fp->handle = LoadLibrary(path);
 	if (fp->handle == NULL) {
 	    free(fp);
 	    return FALSE;		/* fail */
@@ -103,7 +144,6 @@ load(addr, sp1, sp2)
 
 	fp->entry = (int (*)(LOAD_PROTO)) GetProcAddress(fp->handle, fp->name);
 	if (fp->entry == NULL) {
-/* XXX does windows keep a usecount?? */
 	    FreeLibrary(fp->handle);
 	    free(fp);
 	    return FALSE;
