@@ -56,6 +56,9 @@ extern "C"
 
 #include "load.h"			/* LA_xxx macros */
 #include "equ.h"			/* datatypes I/S */
+#include "handle.h"
+
+static struct handle_list com_handles;
 
 #ifdef NEED_WCSCHR
 // for CYGWIN:
@@ -88,6 +91,10 @@ freeolestring(LPOLESTR ptr)
     delete [] ptr;
 }
 
+//
+// LOAD("COM_LOAD(STRING)INTEGER")
+//
+// returns integer handle to object, or fails
 int
 COM_LOAD( LA_ALIST ) LA_DCL
 {
@@ -97,6 +104,7 @@ COM_LOAD( LA_ALIST ) LA_DCL
     LPOLESTR progid;
     HRESULT hr;
     static bool first = true;			// XXX bad for making DLL!!
+    handle_t h;
 
     if (first) {
 	if (FAILED(CoInitialize(NULL)))
@@ -154,7 +162,12 @@ COM_LOAD( LA_ALIST ) LA_DCL
     if (FAILED(hr))
 	RETFAIL;
 
-    RETINT((int_t)pdisp);	// XXX UGH! encode as string? return small int?
+    h = new_handle(&com_handles, pdisp);
+    if (h == BAD_HANDLE) {
+	pdisp->Release();
+	RETFAIL;
+    }
+    RETINT(h);
 } // COM_LOAD
 
 
@@ -279,17 +292,17 @@ retvariant(struct descr *retval, VARIANTARG *vp)
     RETNULL;				/* ?? */
 } // retvariant
 
-// fetch (and decode, someday) argument referring to an IDispatch object
-// XXX decode string?? lookup small integer? pointer to self-ref block???
-#define LA_DISP(X) ((LPDISPATCH)LA_INT(X))
-
+//
+// Polymorphic!! Takes arbitrary list of args!
+// LOAD("COM_INVOKE(INTEGER,STRING)")
+//
 // does not handle in-out parameters
 // could have a version which takes an array?
 //	(but would need to be able to intern new strings)
 int
 COM_INVOKE( LA_ALIST ) LA_DCL
 {
-    LPDISPATCH pdisp = LA_DISP(0);
+    LPDISPATCH pdisp = lookup_handle(&com_handles, LA_INT(0));
     if (!pdisp)
 	RETFAIL;
 
@@ -352,10 +365,11 @@ COM_INVOKE( LA_ALIST ) LA_DCL
     return retvariant(retval, &result);
 } // COM_INVOKE
 
+// LOAD("COM_GETPROP(INTEGER,STRING)")
 int
 COM_GETPROP( LA_ALIST ) LA_DCL
 {
-    LPDISPATCH pdisp = LA_DISP(0);
+    LPDISPATCH pdisp = lookup_handle(&com_handles, LA_INT(0));
     if (!pdisp)
 	RETFAIL;
 
@@ -389,10 +403,11 @@ COM_GETPROP( LA_ALIST ) LA_DCL
     return retvariant(retval, &result);
 } // COM_GETPROP
 
+// LOAD("COM_PUTPROP(INTEGER,STRING,)STRING")
 int
 COM_PUTPROP( LA_ALIST ) LA_DCL
 {
-    LPDISPATCH pdisp = LA_DISP(0);
+    LPDISPATCH pdisp = lookup_handle(&com_handles, LA_INT(0));
     if (!pdisp)
 	RETFAIL;
 
@@ -430,14 +445,15 @@ COM_PUTPROP( LA_ALIST ) LA_DCL
     RETNULL;
 } // COM_PUTPROP
 
-
+// LOAD("COM_UNLOAD(INTEGER)STRING")
 int
 COM_UNLOAD( LA_ALIST ) LA_DCL
 {
-    LPDISPATCH pdisp = LA_DISP(0);
+    LPDISPATCH pdisp = lookup_handle(&com_handles, LA_INT(0));
     if (!pdisp)
 	RETFAIL;
 
+    remove_handle(&com_handles, LA_INT(0));
     pdisp->Release();
     RETNULL;
 } // COM_UNLOAD
