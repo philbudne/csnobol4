@@ -269,6 +269,7 @@ io_fopen( fp, mode )
     else
 	fp->flags &= ~FL_TTY;
 
+    /* XXX if FL_UNBUF call setbuf(fp->f, NULL)?? */
     return fp->f;
 }
 
@@ -358,8 +359,8 @@ io_init()				/* here from INIT */
 
     /*
      * tempting to overload UNITP for input/output
-     * this might work on Unix (need to freopen stderr for update?)
-     * but is bound to cause trouble on some other system.
+     * this might work on Unix (need to fdopen(2,"r+")?
+     * but is bound to cause trouble on SOME other system.
      */
     termin = term_input();
     if (termin) {
@@ -510,7 +511,7 @@ io_print( iob, sp )			/* STPRNT */
 	    cp = S_SP(sp);
 	} /* compiling */
 
-	/* XXX check FL_UNBUF; read(fwrite(f), cp, recl)? */
+	/* XXX check FL_UNBUF; read(fileno(f), cp, recl)? */
 	fwrite( cp, 1, len, f );
     }
     if (fp->flags & FL_EOL)
