@@ -20,6 +20,9 @@
 # include "proc.h"
 
 # include "charset.c"			/* character set-dependancies */
+# ifdef NO_STATIC_VARS
+# include "vars.h"
+# endif /* NO_STATIC_VARS defined */
 
 const char AMPST[] = "&";
 const char QTSTR[] = "'";

@@ -2,20 +2,14 @@
 
 /*
  * $Log$
- * Revision 1.22  1997/07/27  02:07:12  phil
- * use REM to capture version
- *
- * Revision 1.21  1997/05/22  05:05:01  phil
- * new struct res (and res.h)
+ * Revision 1.23  1997/08/12  03:52:46  phil
+ * 0.99.4
  *
  * Revision 1.20  1997/02/13  05:12:54  phil
  * 0.99.3
  *
  * Revision 1.19  1996/11/27  18:40:36  phil
  * 0.99.2
- *
- * Revision 1.18  1996/10/29  07:15:34  phil
- * update vdate
  *
  * Revision 1.17  1996/10/24  05:09:12  phil
  * 0.99.1
@@ -75,18 +69,8 @@
 
 #include "h.h"				/* const */
 
-#ifndef MAIN
-#include "units.h"
-#include "snotypes.h"
-#include "macros.h"
-
-#include "equ.h"
-#include "res.h"
-#include "data.h"
-#endif
-
-const char vers[] = "0.99.4";
-const char vdate[] = "August 11, 1997";
+const char vers[] = "0.99.4++";
+const char vdate[] = "June 1, 1998";
 const char snoname[] = "C-MAINBOL";
 
 #ifdef MAIN
@@ -94,7 +78,19 @@ main() {
     puts(vers);
     exit(0);
 }
-#else
+#else  /* MAIN not defined */
+
+#include "units.h"
+#include "snotypes.h"
+#include "macros.h"
+
+#include "equ.h"
+#include "res.h"
+#include "data.h"
+
+#ifdef NO_STATIC_VARS
+#include "vars.h"
+#endif /* NO_STATIC_VARS defined */
 
 void
 version()
@@ -106,4 +102,4 @@ version()
 "The Macro Implementation of SNOBOL4 in C (%s) Version %s\n", snoname, vers);
     io_printf(D_A(PUNCH), "    by Philip L. Budne, %s\n", vdate);
 }
-#endif
+#endif /* MAIN not defined */
