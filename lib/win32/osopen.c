@@ -1,7 +1,7 @@
 /* $Id$ */
 
 /*
- * MS-DOS open hook
+ * Win32 open hook
  */
 
 #ifdef HAVE_CONFIG_H
@@ -20,11 +20,11 @@ osdep_open(fname, mode, fpp)
     FILE **fpp;
 {
     if (strcmp(fname, "/dev/tty") == 0) {
-	*fpp = fopen("CON:", mode);
+	*fpp = fopen("CON", mode);
 	return TRUE;			/* matched */
     }
     if (strcmp(fname, "/dev/nul") == 0) {
-	*fpp = fopen("NUL:", mode);
+	*fpp = fopen("NUL", mode);
 	return TRUE;			/* matched */
     }
     return FALSE;			/* no match */
