@@ -2,6 +2,34 @@ $Id$
 
 For detailed revision history see History file
 
+Changes since 0.99.44 release;
+=============================
+	Treat all bytes with 8th bit set as ALPHA on ASCII systems
+		allows UTF-8 encoded characters, and national
+		character sets to used in labels and identifiers!
+	command line:
+		-S option to elarge interpreter stack
+	configure:
+		added --mandir & --bindir
+	IPv6 Support (both client and server)
+	bindirectional "pipe" I/O on systems with sockets
+	"privileged" port binding for UDP
+	Lots of cleanup!
+		Fix timing script on Debian
+		DJGPP fixes
+		default to -O3 with gcc
+		add C prototypes for all functions
+			(function declarations still "K&R" style)
+		MINGW fixes
+		Fix LOAD() on Darwin
+	Ported to HP-UX/IA64
+	VMS:	LOAD() support
+		Compilation on VMS7.3
+		support magic pathnames "/dev/null" and "/dev/tty"
+	Win32:	native (low overhead) support for character console I/O
+		support magic pathnames "/dev/null" and "/dev/tty"
+		fixed UDP I/O
+
 Changes since 0.99.4 release;
 ============================
 
