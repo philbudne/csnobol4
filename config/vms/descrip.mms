@@ -22,7 +22,8 @@ CLIB=+SYS$LIBRARY:DECCRTL/LIB
 # alternate library routines
 MSTIME_C=[.lib.vms]mstime.c
 
-UCXOBJ=inet.obj
+UCXDEFS=,OLD_UCX_INCLUDES
+UCXOBJ=inet.obj, bindresvport.obj
 UCXLIB=+SYS$LIBRARY:UCX$IPC/LIB
 
 .else
@@ -36,7 +37,8 @@ CCDEFS=,NEED_POPEN,NEED_OFF_T
 # alternate library routines
 MSTIME_C=[.lib.vms]mstime.c
 
-UCXOBJ=inet.obj
+UCXDEFS=,OLD_UCX_INCLUDES
+UCXOBJ=inet.obj, bindresvport.obj
 UCXLIB=+SYS$LIBRARY:UCX$IPC/LIB
 
 .else
@@ -72,7 +74,7 @@ INET_C=[.lib.dummy]inet.c
 #	(formerly VAX/Ultrix connection product)
 
 # C compiler flags, if any
-INETDEFS=
+INETDEFS=$(UCXDEFS)
 INETLIB=$(UCXLIB)
 INETOBJ=$(UCXOBJ)
 INET_C=[.lib.vms]inet.c
@@ -158,8 +160,7 @@ OBJS=	main.obj, $(SNOBOL4).obj, data.obj, data_init.obj, syn.obj, \
 	lexcmp.obj, load.obj, mstime.obj, ordvst.obj, pair.obj, \
 	pat.obj, pml.obj, realst.obj, replace.obj, spcint.obj, \
 	spreal.obj, str.obj, stream.obj, term.obj, top.obj, tty.obj, \
-	tree.obj, version.obj, getredirect.obj, bindresvport.obj, \
-	$(AUX_OBJ) $(PML_OBJ)
+	tree.obj, version.obj, getredirect.obj, $(AUX_OBJ) $(PML_OBJ)
 
 snobol4.exe : $(OBJS)
 	link /exec=snobol4.exe $(OBJS) $(LIBS)
