@@ -701,6 +701,15 @@ io_ecomp()				/* XECOMP */
     up = io_units + UNITI - 1;
     up->offset = ftell(up->curr->f);	/* save offset for rewind */
     up->head = up->curr;		/* save file for rewind */
+
+    /* free list of included filenames */
+    while (includes) {
+	struct file *tp;
+
+	tp = includes->next;
+	free(includes);
+	includes = tp;
+    }
 }
 
 static int
