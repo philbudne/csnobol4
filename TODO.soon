@@ -1,27 +1,29 @@
 $Id$
 
+use latest config.guess?
+	put on "vendor branch" in cvs!!
+	from ftp://ftp.gnu.org/pub/gnu/config/config.guess
+
+autoconf:
+	object format detection on OpenBSD, BSDI?
+
 INSTALL;
-	notes for cygwin
-		full kit build
-		isnobol4.c rebuild does not: tsort crashes, file output oddness
-	talk about optimization options
-		ie;
-			gcc -O2
-			sunpro -xO5 -native
-		use of --opt=
 	talk about use of local-config;
 		ADD_OPT()
 		OPT=
 		SNOBOL4_C_CFLAGS=
 		DATA_INIT_CFLAGS=
 
-update README
-	talk about available snolib files
-	mention documentation URLS
+Investigate cygwin build failure
+	filename problem? prepend "./" to each open?? change label???
+	replace tsort/awk with a snobol program?
+		use cks' relsrt!!!
+	update INSTALL
 
 ports.doc
-	update?? remove???
-
+	update (with beta test information)
+	remove???
+	
 new versions of RETxxx macros cause "code not reached" warnings
 	change to obscene use of  "," construct???
 
@@ -32,16 +34,35 @@ put sources under CVS
 	prune CVS directories when making kit??
 		always build kit's from scratch, via anonymous checkout???
 		don't bother with version-based directory name???
-		have tar file named (c)snobol4-VERS.tar
+		have tar file named snobol4-VERS.tar
 
 doc/load.doc
-	mention Tru64
-	AIX??????? (dlopen() in 4.3?)
+	mention libtool;
+		http://www.gnu.org/software/libtool/libtool.html
+
+	mention Tru64 (others??)
+
+	AIX
+		http://www.faqs.org/faqs/aix-faq/part4/section-21.html
+
+		From: Gary R. Hook <hook@austin.ibm.com>
+
+		Starting with AIX 4.2 a dlopen et. al. are included in
+		the base OS in the libdl.a library. Under AIX 4.1 this
+		is available as SLHS (Shared Library Hookable Symbols)
+		as APAR IX IX71849 for the runtime package and APAR IX
+		IX72973 for the development tools.
+
 	dlopen() under HP-UX11 64-bit world?? shl otherwise
+
+	Darwin:
+		http://fink.sourceforge.net/doc/porting/shared.php
+
 	DLL's on Win32
-	document config.h
-	document RETSTR()/RETSTR2()
-	mention dt.h  (move to include/?  install!!)
+	document:
+		config.h
+		RETSTR()/RETSTR2()
+		dt.h
 
 doc/porting.doc
 	no more system.m4 files

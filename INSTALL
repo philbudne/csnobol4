@@ -24,28 +24,37 @@ following options;
 	--add-cppflags=STRING
 		Add additional C preprocessor flags to compile command
 		lines (see also --add-define)
+
 	--add-define=NAME=VALUE
 		Add additional C preprocessor '#define NAME VALUE' to
 		config.h (available to seperately compiled loadable modules)
+
 	--add-ldflags=STRING
 		Add additional flags to final load command (ie; -lxxx)
+
 	--add-objs=STRING
 		Add additional object file to final load command
 		(ie; for "poor mans load" functions)
+
 	--add-opt=STRING
 		Add additional optimization flags to compile commands
+
 	--add-srcs=STRING
 		Add additional source files for "make depend"
+
 	--force-gcc
 		Force use of GCC, the GNU C Compiler;
 		fail if gcc not available.
+
 	--force-memmove
 		Force use of system memmove() function (if preseent)
 		if no bcopy() function is available.  Otherwise the
 		bcopy.c source file will be used.
+
 	--largefile
 		Force the use of defines for "large file" (64 bit offsets).
 		Requires existance of fseeko() and ftello() stdio functions.
+
 	--longlong
 		Attempt to use C "long long" datatype to represent SNOBOL4
 		INTEGERs, and "double" for REAL on systems where pointers
@@ -56,9 +65,12 @@ following options;
 		Use of this option will not increase the address space
 		available to SNOBOL4, but will incur increased storage
 		and processing overhead (see --lp64 for more information).
+		On systems which support the LP64 (64-bit long/pointer)
+		data model, using --lp64 is a better idea.
 
 		Expect to see large numbers of C compiler warnings when
 		using this option.
+
 	--lp64
 		Force the use of defines for LP64 (64-bit longs and
 		pointers) datatype model where available, but not the
@@ -86,28 +98,52 @@ following options;
 		SNOBOL4 integers, so --lp64 is useless on 32-bit systems
 		(see --longlong).
 
+		--lp64 is not necessary on systems where LP64 is the
+		default data model (e.g. Alpha).
+
 	--no-dlopen
 		Disable use of Unix98 dlopen() API for dynamic LOAD() support
+
 	--no-dynlib
 		Disable use of all dynamic LOAD() support mechanisms
+
 	--no-gcc
 		Eliminate GNU C Compiler (GCC) from consideration.
+
 	--no-largefile
 		Disable automatic selection of large file support
 		(see --largefile)
+
 	--opt=STRING
-		Supply C optimization flags (replacing default "-O"),
-		for example; --opt=-O2
+		Supply C optimization flags.  The default value is
+		"-O", which is widely accepted.  Higher optimization
+		levels can be tried, but may fail (e.g. due to swap
+		space exaustion, or internal compiler limits), to
+		compile the large machine generated files, or appear
+		to take forever to compile.
+
+		Values to try;
+			gcc; -O2 (-finline-functions always on, so same as -O3)
+			     -O -g (optimize, and supply debugger symbols)
+			SunPro:
+			     -fast
+			     -xO2 ... -xO5
+
+		--opt=-g can be used for debugging.
+
 	--prefix=DIR
 		Supply a directory prefix for bin/ and lib/ directories.
 		Default prefix is /usr/local
 
-Even if your system has not previously been tested (see doc/ports.doc)
-configure will make a guess. If the build does not succeed, you may
-want to consult doc/porting.doc (also available as html) for
-information on the available options for use in creating a
-system-specific config file.  If you need assistance please contact me
-(phil@ultimate.com).
+The configure script tries to select from among different versions
+of system support functions, including "dummy" versions which allow
+the software to be built, with reduced functionalty.
+
+If this occurs, or if the build does not succeed, you can consult
+doc/porting.doc (also available as html) for information on the
+available options for use in creating a system-specific config file.
+If you need assistance please contact me (phil@ultimate.com).
+I'm also available for contract development.
 
 For information on including "external" C functions in the linked
 binary see doc/load.doc.
@@ -154,32 +190,39 @@ another program.  A dummy version is provided in lib/dummy/execute.c.
 MS-DOS using Borland C++
 ------------------------
 
-Mark Emmer of Catspaw has compiled an older version of C-MAINBOL using
-Borland C++.  Look in config/borland (or CONFIG\BORLAND). This port
-has not been tested in some time.
+Greg White sent me updated scripts.
+They have not (yet) been tested with the latest sources.
 
 VMS using DEC C
 ---------------
 
 C-MAINBOL has been run on VMS (on VAXen using VAXC, and on Alphas
-using DECC), and the DEC C RTL.
-
-config/vms/descrip.mms is an MMS description file, which can be used
-by typing:
+using DECC), and the DEC C RTL.  config/vms/descrip.mms is an MMS
+description file, which can be used by typing:
 
 	MMS/DESCRIP=[.CONFIG.VMS]DESCRIP.MMS
 
 If using VAXC, /MACRO=(VAX_C=1) should be appended to the command line.
 
-The VMS port uses native calls to implement TTY I/O, and supports
-binary and noecho input.  TCP/IP I/O is implemented using DEC TCP/IP
-Connection services for OpenVMS (formerly VAX/Ultrix connection
+The VMS port tries to use native calls to implement TTY I/O, and
+supports binary and noecho input.  TCP/IP I/O is implemented using DEC
+TCP/IP Connection services for OpenVMS (formerly VAX/Ultrix connection
 product) but not working.  It should be simple to use other TCP
 packages, but if not, or none is available, add /MACRO=(NO_TCP=1) to
 the MMS command line.
 
-Jerry Lichter has run an older version of C-MAINBOL under VMS using
-the GNU C compiler and the GNU C library.
+Win32 using CygWin
+------------------
+
+Cygwin (http://cygwin.com), is a free Unix emulation environment for
+Windows.  Normal distributions build and run correctly, with the full
+Unix feature set including TCP client and server functionality;
+just type "make"!
+
+Attempts to build isnobol4.c from scratch (i.e. from a CVS checkout)
+fail; one of the procedures gets written to the console window
+regardless of redirection (it must have a filename that's magic to
+Windows), and tsort crashes.
 
 Win32 using MicroSoft Visual C++ 5.0
 ------------------------------------
@@ -196,6 +239,21 @@ regression testing on WinNT 4.0, but system dependant code needs work;
 To compile;
 	nmake -f config\win32\ntmsvc.mak
 
+The system compiles and runs well under Cygwin, so I've lost interest
+in the native port (some native routines are used where cygwin support
+is lacking).  I have no patience for an environment where you can't
+use the debugger if you compile from the command line! I might try
+MINGW (http://www.mingw.org), the "Minimalist GNU For Windows"
+development environment.
+
+DJGPP under DOS
+---------------
+
+Burkhard Meissner has contributed scripts for compilation under DJGPP
+(http://www.delorie.com/djgpp/), a free 32-bit C/C++ development
+system for Intel 80386 (and higher) PCs running DOS.  The scripts
+can be found in the config/djgpp subdirectory.
+
 Anything else
 -------------
 
@@ -211,4 +269,4 @@ Please mail timing.out files to snobol4-timing@ultimate.com along with
 information on your system make, model and CPU clock speed, if known.
 
 If you want to recieve a note when new releases are made, send mail
-to c-mainbol-users-request@ultimate.com
+to snobol4-users-request@ultimate.com

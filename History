@@ -2,6 +2,28 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+12/19/2001
+	INSTALL: updated
+
+12/18/2001
+	timing: show Ids from genc.sno, v311.sil
+	README: updated.  Include snolib file information, web docs.
+	lib/{ansi,borland,bsd,dummy,generic,posix,vms,win32}/mstime.c,
+	    v311.sil, timing, genc.sno, include/snotypes.h, test/test.trace.sh:
+		Keep runtime as a REAL (adds range at loss of
+		resolution) effects all contexts; TIME(), trace
+		messages, stats messages report microseconds/stmt.
+	Makefile, Makefile2.m4: moved data_init.o rule back to Makefile2!
+		add comment on DATA_INIT_CFLAGS and local-config
+		add $(SRCDIR) prefixes for $(SNOBOL4).c
+	Makefile: removed charset.c from TAR
+	data_init.c: merged in stuff from charset.c
+	lib/init.c: add '+' to start of getopt() optstring for RH7.
+		Linux Losers chose incompatible behavior as the DEFAULT!!!
+		For "snobol4.c -b genc.sno --inline" getopt was picking
+		up the '--' "option"!!!
+	removed: charset.c -- merged into data_init.c
+
 12/17/2001
 	Makefile2.m4, autoconf: add EXT variable for Cygwin
 	test/tests.in: fix scanerr entry
