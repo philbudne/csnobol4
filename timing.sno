@@ -88,10 +88,17 @@ GETSTAT	LINE = INPUT					:F(NOSTAT)
 	LINE WS NUM . EXEC WS 'ms. Execution time'	:F(NOSTAT)
 	LINE = INPUT					:F(NOSTAT)
 	LINE WS INT . STMTS WS 'Statements executed'	:F(NOSTAT)
+	LINE = INPUT					:F(NOSTAT)
+	LINE WS INT WS 'Arithmetic operations'		:F(NOSTAT)
+	LINE = INPUT					:F(NOSTAT)
+	LINE WS INT WS 'Pattern matches'		:F(NOSTAT)
+	LINE = INPUT					:F(NOSTAT)
+	LINE WS INT . GCS WS 'Regenerations'		:F(NOSTAT)
 
 	OUTPUT = 'Compile time:' TAB TAB COMP ' milliseconds'
 	OUTPUT = 'Execution time:' TAB TAB EXEC ' milliseconds'
 	OUTPUT = 'Statements executed:' TAB STMTS
+	OUTPUT = 'Garbage collections:' TAB GCS
 
 * beware dummy/mstime.c
 	EQ(EXEC,0)					:S(NOET)
