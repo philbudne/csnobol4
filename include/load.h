@@ -86,18 +86,24 @@
 /* lib/pml.c; used by system load.c files */
 int (*pml_find(PML_FIND_ARG))(LOAD_PROTO);
 
+#ifdef DLL
+#define SNOEXP(X) IMPORT(X)
+#else
+#define SNOEXP(X) EXPORT(X)
+#endif
+
 /* extern/prototypes for functions; */
 /* lib/snolib/getstring.c; */
-IMPORT(void) getstring __P((const void *, char *, int));
+SNOEXP(void) getstring __P((const void *, char *, int));
 
 /* lib/snolib/retstring.c; */
-IMPORT(void) retstring __P((struct descr *retval, const char *cp, int len));
+SNOEXP(void) retstring __P((struct descr *retval, const char *cp, int len));
 
 /* lib/io.c; */
-IMPORT(int) io_findunit __P((void));	/* find a free (external) unit */
-IMPORT(int) io_closeall __P((int));	/* internal (zero-based unit) */
+SNOEXP(int) io_findunit __P((void));	/* find a free (external) unit */
+SNOEXP(int) io_closeall __P((int));	/* internal (zero-based unit) */
 
 #ifdef EOF				/* stdio included */
-IMPORT(FILE *) io_getfp __P((int));	/* external (1-based unit) */
-IMPORT(int) io_mkfile __P((int, FILE *, char*)); /* external (1-based unit) */
+SNOEXP(FILE *) io_getfp __P((int));	/* external (1-based unit) */
+SNOEXP(int) io_mkfile __P((int, FILE *, char*)); /* external (1-based unit) */
 #endif /* EOF defined */
