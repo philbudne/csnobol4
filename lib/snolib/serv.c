@@ -141,6 +141,7 @@ SERV_LISTEN( LA_ALIST ) LA_DCL
 	    s = socket(PF_INET, type, 0);
 	    slen = sizeof(sin);
 	    bzero((char *)&sin, slen);
+	    sin.sin_family = AF_INET;
 	    sin.sin_port = nport;
 	    sap = (struct sockaddr *)&sin;
 	}
@@ -149,6 +150,7 @@ SERV_LISTEN( LA_ALIST ) LA_DCL
 	    s = socket(PF_INET6, type, 0);
 	    slen = sizeof(sin6);
 	    bzero((char *)&sin6, slen);
+	    sin6.sin6_family = AF_INET6;
 	    sin6.sin6_port = nport;
 	    sap = (struct sockaddr *)&sin6;
 	}
