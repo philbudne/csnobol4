@@ -154,6 +154,26 @@ error.  By default programs with compiler errors will not be started,
 this can be restored using
 .BR \-NOERRORS .
 
+.TP
+.B \-INCLUDE
+.br
+The
+.B \-INCLUDE 
+directive causes the compiler to interpolate the contents of the named
+file enclosed in single or double quotes.  Any filename will be
+included only once, this can be overridden by appending a trailing
+space to the filename for each additional inclusion.
+
+.SS "Default I/O Associations"
+.br
+.ta 1i 2i
+.nf
+Variable	unit	association
+\fBINPUT\fR	5	stdin
+\fBOUTPUT\fR	6	stdout
+\fBPUNCH\fR	7	stderr
+.fi
+
 .SH OPTIONS
 .TP 1i
 .B \-b
