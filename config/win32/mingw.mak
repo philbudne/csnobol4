@@ -147,11 +147,6 @@ expops.o: $(SRCDIR)lib/generic/expops.c
 intspc.o: $(SRCDIR)lib/generic/intspc.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/generic/intspc.c
 
-################ msdos!
-
-osopen.o: $(SRCDIR)lib/msdos/osopen.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib/msdos/osopen.c
-
 ################ win32!
 
 inet.o:	$(SRCDIR)lib/win32/inet.c
@@ -162,6 +157,9 @@ load.o:	$(SRCDIR)lib/win32/load.c
 
 mstime.o: $(SRCDIR)lib/win32/mstime.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/win32/mstime.c
+
+osopen.o: $(SRCDIR)lib/win32/osopen.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/win32/osopen.c
 
 sys.o:	$(SRCDIR)lib/win32/sys.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/win32/sys.c
