@@ -25,11 +25,16 @@
 # version 2.0003  01 may 1996 added support for Ross,CY605 without cpuF
 #
 # $Log$
+# Revision 1.2  1997/07/27  01:54:44  phil
+# use hostid on system without openprom
+# rearrange to (hopefully) work on sunos 4.0 (and 3.0) shell
+#
 
 if [ -f /usr/bin/uname ]; then
 	version=`uname -r`
 	hostje=`uname -n`
 else
+	# no uname command; pre-SunOS 4.1
 	hostje=`hostname`
 	if [ -d /var ]; then
 		version=4.0
@@ -48,20 +53,29 @@ case $version in
 	case `uname -m` in
 	sun4)
 		# old sun4: no openprom.
-		# sysinfo(SI_HW_SERIAL, ...) provides data
-		# but must have bsd compatability software to
-		# get it from command line?!
 		karch=sun4
 		mach=sparc
 		if [ -f /usr/ucb/hostid ]; then
 			hostid=`/usr/ucb/hostid`
 		else
+			# sysinfo(SI_HW_SERIAL, ...) provides data
+			# but must have bsd compatability software to
+			# get it from command line?!
+			# could compile a small program??
 			hostid=xxx
-			# compile small program?
 		fi
 		;;
 	i86pc)
 		# no openprom on x86
+
+		# very few properties of value;
+		# cpu-type is always "486", even on Pentium Pro!
+		# bus-type "isa" even when pci present
+		# machine-mfg "generic AT"
+		# boot-path tells if booted from IDE or SCSI, ie;
+		#	/isa/ata@1f0,0/cmdk@0,0:a
+
+		# just show memory size;
 		memsize=`/usr/sbin/prtconf -v | grep 'Memory size:' | sed 's/Memory.size:[ 	]*//'`
 		echo Machine $hostje x86 $memsize
 		exit 0
@@ -76,13 +90,13 @@ case $version in
 	# pre 4.1 systems don't have uname;
 	karch=`/usr/bin/arch -k`
 	case "$karch" in
+	sun4c|sun4m)
+		# sun4c or sun4m sunos 4 machine. use openprom devinfo
+		pr_conf="/usr/etc/devinfo -vp";;
 	sun2|sun3*|sun386|sun4|Series*|S4*)
 		# non-openprom machine. use hostid
 		mach=`/usr/bin/mach`
 		hostid=`hostid`;;
-	*)
-		# sun4c or sun4m sunos 4 machine
-		pr_conf="/usr/etc/devinfo -vp";;
 	esac
 	;;
 *)
@@ -115,6 +129,8 @@ if [ "$hostid" ]; then
 	42*)	sys='3/80';	cpu='mc68030 @ 20';;
 	*)	sys="unknown $karch"; cpu="$mach";;
 	esac
+
+	# run /usr/etc/mc68881version or /usr/etc/fpuversion4 if present?
 	echo Machine $hostje $sys $cpu
 	exit 0
 fi
