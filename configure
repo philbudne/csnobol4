@@ -427,7 +427,9 @@ else
 	esac
 	;;
     *:SunOS:4*:*)
+	# SunOS 4 cc
 	echo 'CCM=$(CC) -M'			>> $CONFIG_M4
+	OPT=-O2
 	;;
     *:SunOS:5*:*)
 	# SunPRO;
