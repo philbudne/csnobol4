@@ -1,20 +1,47 @@
-	define("t2(f,a,b)x")				:(end_t2)
-t2	x = f "('" a "','" b "')"
-	x = "output = " x ' "' x '"'
-*	output = x
-	eval(x)			:(return)
-end_t2
+* lexical compariston tests
 
-	define("test(f)")				:(end_test)
-test	t2(f,'a','b')
-	t2(f,'b','a')
-	t2(f,'a','a')					:(return)
-end_test
+*	return argument in quotes if it's a STRING
+	define("q(x)t")					:(eq)
+q	t = datatype(x)
+	q = leq(t,"STRING") "'" x "'"			:s(return)
+	q = x						:(return)
+eq
 
-	test('lne')
-	test('leq')
-	test('lgt')
-	test('lge')
-	test('lle')
-	test('llt')
+*	try given function, disply result
+	define("try(fn,a,b)")				:(etry)
+try	output = apply(fn,a,b) fn '(' q(a) ',' q(b) ')'	:(return)
+etry
+
+*	given args, try all the functions, plus ident/differ
+	define("check(a,b)")				:(echeck)
+check	try(.llt,a,b)
+	try(.lle,a,b)
+	try(.leq,a,b)	
+	try(.lne,a,b)
+	try(.lgt,a,b)
+	try(.lge,a,b)
+	try(.ident,a,b)
+	try(.differ,a,b)				:(return)
+echeck
+
+* check this case manually -- q() depends on it!!
+	leq(datatype('x'),"STRING")			:f(end)
+
+	check('','')
+	check('a','a')
+
+	check('a','')
+	check('','a')
+
+	check('a','z')
+	check('z','a')
+
+	check(1,'1')
+	check('1',1)
+
+	check(1,'2')
+	check('2',1)
+
+	check(2,'1')
+	check('1',2)
 end
