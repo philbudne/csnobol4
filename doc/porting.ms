@@ -9,6 +9,15 @@ Consultant
 
 .PP
 .NH 1
+Who needs to read this?
+
+.PP
+You should read this document if you are trying to port The Macro
+Implementation of SNOBOL4 in C (CSNOBOL4) to a new system, or you
+are interested in understanding how it works!
+
+.PP
+.NH 1
 Requirements
 
 .PP
@@ -24,10 +33,13 @@ Virtual memory is desirable.
 
 .IP \(bu
 An industrial strength optimizing C compiler;
-GNU C (gcc) is preferred, but no ANSI features are required.
+GNU C (gcc) is preferred, but no ANSI C features are required
+(a traditional "K&R" C compiler will do).
 
 .IP \(bu
 A reasonably complete C library, including stdio.
+POSIX and ANSI C89 features will be used when available,
+but are not required.
 
 .PP
 System dependencies are all isolated in library routines and a few C
@@ -43,17 +55,21 @@ CSNOBOL4 has been run under both the ILP32 data model (32-bit int/long
 and pointer data types) common on Unix systems, as well as the LP64
 data model (32-bit int, 64-bit long and pointer data types) available
 as an option on recent versions of commercial Unix systems, and the
-default on Alpha (and the largely mythical) IA64 architectures.
+default on Alpha (and the as-yet largely mythical) IA64 and x86-64
+architectures.
 
 .PP
 It may be possible to compile CSNOBOL4 on an LP32 system (16-bit int,
 32-bit long and pointer types), but such environments are uncommon
 (Win3.1 and old Macintosh C compilers may use the LP32 data model).
+Some work would be required to find places where "int" was assumed
+to be 32 bits.
 
 .PP
 An experimental feature of the 1.0 release of CSNOBOL4 is to use the
 "long long" datatype (available as an extension or with C99 support)
 to represent SNOBOL4 INTEGERs, by using the configure --longlong option.
+If C99 library features are not available, ad-hoc support will be used.
 
 .NH 1
 Config files
@@ -204,12 +220,12 @@ NO_BITFIELDS
 .PP
 If NO_BITFIELDS is defined, disable use of a C bitfield to store the
 descriptor "v" (size) field.  Some compilers have problems with
-bitfields, or cause server performance penalties for their use.
-Bitfields are used to try and fit the 8-bit flags and 24-bit size
-fields into one 32-bit word.  In LP64 environments (or when configure
---longlong is used) the "a" field is 64-bits long; Since the combined
-"f" and "v" fields will be padded to 64-bits for alignment there is no
-benefit to using bitfields in this situation.  See also VFLD_T.
+bitfields, or cause servere performance penalties for their use.
+Bitfields are used to fit the 8-bit flags and 24-bit size fields into
+one 32-bit word.  In LP64 environments (or when configure --longlong
+is used) the "a" field is 64-bits long; Since the combined "f" and "v"
+fields will be padded to 64-bits for alignment there is no benefit to
+using bitfields in this situation.  See also VFLD_T.
 
 .NH 3
 NO_FDOPEN
@@ -302,7 +318,7 @@ REAL_T
 .PP
 If REAL_T is defined, it should be the C type to use for SNOBOL4 REAL
 values. The default type used for real_t is "float". In LP64
-environments, or when configure --longlong is used the "a" field will
+environments (or when configure --longlong is used) the "a" field will
 be 64-bits (to hold pointers), so REAL_T is declared as a C "double"
 to take advantage of the available space.
 
@@ -324,6 +340,17 @@ positive 32-bit int).  SIZLIM must NOT appear to be negative when
 stored in an "int_t".  When int_t is known to be 64-bits, configure
 defines SIZLIM as 0xffffffff. See also INT_T, NO_BITFIELDS, VFLD_T.
 
+.NH 3
+SOCKLEN_T
+
+.PP
+Must be defined to be the datatype used by the operating system
+to return the length of socket address structures written by
+the accept(), getsockaddr(), and getpeeraddr() system calls.
+Typical values: socklen_t, int, unsigned int.
+
+.PP
+Return type for signal handler functions (default: void).
 .NH 3
 TMP_DIR
 
@@ -398,12 +425,35 @@ Uses bzero() to clear blocks of descriptors.
 A generic C bzero routine is provided lib/auxil/bzero.c
 
 .NH 1
-Library functions
+Library files
 
 .PP
 The remainder of this file describes the various system-dependent
 library files, the functions they provide, and the C library functions
 they require.
+
+.NH 2
+bcopy.c
+
+.PP
+auxil/bcopy.c contains a fast but generic version of the bcopy function,
+used to copy blocks of memory which may overlap.
+
+.NH 2
+bindresvport.c
+
+.PP
+auxil/bindresvport.c contains generic versions of the
+bindresvport() and bindresvport_sa() library functions
+(created by Sun and BSD Unix respectively) used to bind
+internet sockets local addresses to reserved ports.
+
+.NH 2
+bzero.c
+
+.PP
+auxil/bzero.c contains a fast but generic version of the bzero function,
+used to zero blocks of memory.
 
 .NH 2
 date.c
@@ -495,11 +545,14 @@ Returns false.
 inet.c
 
 .PP
-Provides tcp_open() function to establish a connection to a TCP
-server.
+Provides tcp_open() and udp_open() functions for communications with
+to internet servers.
 
 .IP lib/bsd/inet.c
 Uses BSD style sockets.
+
+.IP lib/bsd/inet6.c
+Uses BSD style sockets and getaddrinfo() for IPv4/IPv6 independence.
 
 .IP lib/dummy/inet.c
 Provides dummy entry points for systems with no TCP/IP
@@ -561,6 +614,9 @@ Uses sun/unix98 dlopen() call to attach shared libraries.
 .IP lib/hpux/load.c
 Use HP-UX shl_load() function to attach shared libraries.
 
+.IP lib/vms/load.c
+Use VMS LIB$FIND_IMAGE_SYMBOL() function to attach dynamic libraries.
+
 .IP lib/win32/load.c
 Use Win32 LoadLibrary() function to attach dynamic libraries.
 
@@ -605,7 +661,8 @@ popen.c
 
 .PP
 Provide popen() and pclose() functions on systems where these
-functions are not included in the C library.
+functions are not included in the C library.  NEED_POPEN should
+be defined, to declare prototypes for the functions.
 
 .IP lib/generic/popen.c
 Uses system() function and ">" and "<" style redirection to
@@ -613,20 +670,17 @@ simulate popen() functionality.
 
 .IP lib/vms/popen.c
 Uses VMS mailbox and LIB$SPAWN to provide functionality.
-Recent versions of the DECC RTL may provide popen().
-
-.IP lib/win32/popen.c
-Use MSVC _popen() function.
+Recent versions of the DECC RTL provide popen().
 
 .IP lib/dummy/popen.c
-Dummy functions, always fail.
+Dummy functions, always fails.
 
 .NH 2
 realst.c
 
 .PP
 Convert from binary floating point to string.
-Uses "%g" format, will append trailing dot if needed.
+Uses "%g" format, and will append trailing dot if needed.
 
 .PP
 Better results may be possible by using fconvert(), and gconvert() (or
