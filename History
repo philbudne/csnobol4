@@ -19,6 +19,7 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 	config/bsd43.m4: add getopt, isnan
 	doc/ports.doc: hp370/bsd43, pc532/netbsd
 	include/macros.h: compare first char in LEXEQ macro
+	tested on Mt. Xinu 4.3
 
 10/24/96:
 	INSTALL: updated
