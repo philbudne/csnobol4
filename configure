@@ -34,8 +34,6 @@ DATE=`date`
 # run hostname from subshell to redirect shell "not found message"
 HOST=`(hostname) 2>/dev/null || uname -n`
 
-#echo "config.guess says $SYS" 1>&2
-
 CONFIG_H=config.h.tmp
 CONFIG_M4=config.m4.tmp
 
@@ -67,9 +65,6 @@ if [ "x$OPTIONS" != x ]; then
 fi
 if [ "x$HOST" != x ]; then
     echo '#define CONFIG_HOST "'"$HOST"'"'	>> $CONFIG_H
-fi
-if [ "$SYS" ]; then
-    echo '#define CONFIG_GUESS "'"$SYS"'"'	>> $CONFIG_H
 fi
 echo '#define CONFIG_DATE "'$DATE'"'		>> $CONFIG_H
 
@@ -701,7 +696,7 @@ elif [ -f $INCDIR/sys/times.h ]; then
     # XXX warning????
     # XXX message about presumed HZ value??
     echo 'MSTIME_C=$(SRCDIR)lib/generic/mstime.c' >> $CONFIG_M4
-    case "$SYS" in
+    case "$MORV" in
     9000/[34]??:HP-UX:*:*)
 	# HPUX on 68040 (hp4xx) and HPUX 9
 	echo '#define HZ 50'			>> $CONFIG_H
