@@ -365,6 +365,14 @@ init()
     signal(SIGOVER, math_catch);
 #endif /* SIGOVER defined */
 
+    /* catch resource limit errors */
+#ifdef SIGXCPU
+    signal(SIGXCPU, err_catch);
+#endif /* SIGXCPU */
+#ifdef SIGXFSZ
+    signal(SIGXFSZ, err_catch);
+#endif /* SIGXFSZ */
+
     tty_save();
 }
 
