@@ -50,7 +50,7 @@ all:	snobol4
 #	add $(GENERATED)?
 .PRECIOUS: snobol4 xsnobol4 Makefile2 snobol4.c isnobol4.c snobol4 data_init.h 
 
-snobol4 xsnobol4 install: Makefile2 ALWAYS .depend $(GENERATED)
+snobol4 xsnobol4 install: $(GENERATED) Makefile2 ALWAYS .depend
 	$(MAKE) -f Makefile2 $@
 
 ALWAYS:
@@ -68,7 +68,7 @@ config.m4 config.h:
 # make second level makefile
 
 M2TMP=Makefile2.tmp
-Makefile2 .depend: config.m4 Makefile2.m4 $(GENERATED)
+Makefile2 .depend: config.m4 Makefile2.m4
 	echo '# DO NOT EDIT. machine generated from Makefile2.m4' > $(M2TMP)
 	echo '# add local changes to local-config'		>> $(M2TMP)
 	$(M4) Makefile2.m4 >> $(M2TMP)
