@@ -33,6 +33,7 @@ static struct unit io_units[NUNITS];
 static struct file *includes;		/* list of included files */
 static FILE *termin;			/* TERMINAL input */
 
+extern FILE *term_input();		/* from <system>/term.c */
 extern void *malloc();
 
 static struct file *
@@ -44,7 +45,7 @@ io_newfile( path )
     fp = (struct file *) malloc( sizeof( struct file ) + strlen(path) );
     if (fp == NULL)
 	return NULL;
-    bzero( fp, sizeof (struct file) );
+
     bzero( (char *)fp, sizeof (struct file) );
     strcpy(fp->fname,path);
     fp->flags = FL_EOL;			/* normal */
@@ -137,11 +138,23 @@ io_fopen( fp, mode )
      *		take seperate format string
      *		INPUT() takes comma seperated list
      */
+#ifndef NO_POPEN
     /* filename with leading '|' opens a pipe! */
     if (fp->fname[0] == '|') {
 	fp->flags |= FL_PIPE;
 	return (fp->f = popen(fp->fname+1, mode));
     }
+#endif
+    /* filename "-" goes to stdin/out */
+    if (strcmp(fp->fname,"-") == 0) {
+	if (mode[0] == 'r')
+	    return (fp->f = stdin);
+	return (fp->f = stdout);
+    }
+    if (strcmp(fp->fname,"/dev/stdin") == 0)
+	return (fp->f = stdin);
+    if (strcmp(fp->fname,"/dev/stdout") == 0)
+
 
     return (fp->f = fopen(fp->fname, mode));
 }
