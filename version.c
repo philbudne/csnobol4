@@ -2,6 +2,9 @@
 
 /*
  * $Log$
+ * Revision 1.11  1996/09/21  07:20:12  phil
+ * moved versions back here, added back ifdef MAIN, upped to 0.98.2
+ *
  * Revision 1.10  1996/09/18  04:36:10  phil
  * use VERS/VDATE, removed MAIN
  *
@@ -43,8 +46,8 @@
 #include "data.h"
 #endif
 
-char vers[] = "0.98.2";
-char vdate[] = "Sept 20, 1996";
+char vers[] = "0.98.3";
+char vdate[] = "Sept 22, 1996";
 
 #ifdef MAIN
 main() {

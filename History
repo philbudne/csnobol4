@@ -2,6 +2,16 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+9/22/96
+	v311.sil: use MOVA for &LAST(FILE|LINE), moved FILCHK
+		handle tabs in error pointer code
+		include file & line in compiler error messages
+	test/tests.in: add line.sno err.sno reverse.sno
+	lib/io.c: trim STPRNT output while compiling
+	snobol4.1: updated
+	Makefile2.m4: fixed make tar
+	version.c: upped version to 0.98.3
+
 9/21/96
 	v311.sil: added &PARM. fixed error number typos from yesterday.
 	lib/init.c: added getparm()
@@ -9,6 +19,7 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 	Makefile2.m4: removed vfprintf
 	config/bsd43.m4 removed vfprintf
 	deleted lib/auxil/vfprintf
+	snobol4.1: updated
 
 9/19/96 & 9/20/96
 	v311.sil:
@@ -28,8 +39,9 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 		implement conversions for io_printf for var/spec
 	lib/init.c: implemented -M option for multifile input
 		added SIGARG_T to SYSCUT prototype for picky compilers
-	lib/lexcmp.c: fix unequal string lengths by Keith Waclena
+	lib/lexcmp.c: fix for unequal string lengths by Keith Waclena
 	README: added Keith Waclena
+	test/tests.in: add lgt (by Keith Waclena)
 	procs: add CTLADV, FILCHK, COMP1
 	genc.sno: put &TRIM = 1 back for SNOBOL4+, allow _ in args
 		pass addrs to io_printf, no more hacks for floats
@@ -595,7 +607,7 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 	fixed locap{v,t} F/V output
 
 11/15/93
-	ran genstg under mainbol (w/ -D1M) after consolodating patterns
+	ran genstg under mainbol (w/ -D1M) after consolidating patterns
 
 11/13/93
 	ran genstg under mainbol (w/ -D2M)
