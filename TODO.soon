@@ -1,36 +1,27 @@
 $Id$
 
-porting.ms;
-	tty.c
-	inet.c
-	HAVE_UNISTD_H?
-	skel.inc refs?
-	search for alpha; garbled sentance?
-
-INSTALL;
-	mention tty.c, inet.c for VMS, DOS???
-
-Test:
-	I/O options
-
-get model info in "timing" script?
-	SGI: run hinv
-	Sun: run sunmodel??
-
 announce on SNOBOL4 list
+
+announce on comp.lang.icon,comp.lang.misc
 
 notify free compilers/interpreters list maintainer
 	free-compilers@idiom.com
 
 ==== before beta release
 
-update man page date
+update man page date, CHANGES, README
 
-check in all files (incl History)
+check in all files (incl History, TODO.soon)
 
 rcs tag
 
 ==== before 1.0 release;
+
+Add "N" I/O flag; set IO_NONBLOCK (POSIX), IO_NDELAY (sysV)
+	or IO_NDELAY (BSD -- effects ALL fd's)
+
+Test:
+	I/O options (include bad strings!)
 
 Add to INSTALL;
 	warn about compile times!!
@@ -69,6 +60,11 @@ add UNAME_DOT_VERSION ifdef in posix/sys.c for AIX?
 rcs tag
 
 ================ later;
+
+add io_flushall() to snolib/system.c
+	add dummy io_flushall to snolib.a?
+
+prefer TIOC[GS]ETP to [sg]tty()?
 
 posix/tty.c; enable 8-bit datapath on "raw"?
 		/netbsd/sys/kern/tty_compat.c "RAW" simulation
@@ -181,8 +177,6 @@ Improve porting.doc
 	optimization (none/-O/-O2 etc)
 	mention "timing" script!!
 
-Improve I/O
-
 MOVBLK_MEMMOVE?
 MOVBLK_MEMCPY???
 APDSP_MEMCPY?
@@ -234,8 +228,6 @@ make resident storage a struct with named members
 
 in make depend;
 	sed "s/$(SNOBOL4)\./"'$(SNOBOL4)./'
-
-timing: cleanup on interrupt
 
 ================ calls
 

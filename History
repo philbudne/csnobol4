@@ -2,6 +2,30 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+10/25/96:
+	v311.sil: call io_flushall
+	lib/io.c: add io_flushall, ran comdef, add comments
+		add fp check in io_seek()
+	lib/snolib/host.c, lib/snolib/exit.c: call io_flushall
+
+10/24/96:
+	INSTALL: updated
+	new: sunmodel script
+	timing: run sunmodel on SunOS, hinv on IRIX
+		add cleanup trap
+	Makefile2.m4: removed syn.c2 from GENERATED
+
+10/23/96:
+	new lib/generic/execute.c
+	new lib/dummy/execute.c
+	removed lib/dummy/execl.c
+	lib/snolib/exit.c: use execute function
+	Makefile2.m4: add execute.o EXECUTE_C, removed execl.o EXECL_C
+	version.c: upped to 0.99.1
+	CHANGES: updated
+	README: updated
+	tested on SunOS 5.4, IRIX 5.2
+
 10/22/96:
 	new lib/bsd/tty.c
 	new lib/bsd/tty.c
@@ -15,6 +39,8 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 		use dummy/inet.c if no socket.h
 		check for termios.h/termio.h/sgtty.h
 	Makefile2.m4: mention ports.doc
+	doc/porting.ms: updated
+	doc/snobol4.1: fixed lq,rq
 
 10/21/96:
 	lib/io.c: pass recl to tty_mode; use fisatty, tty_close
