@@ -2,9 +2,20 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+9/23/96
+	genc.sno: set &INPUT to zero (reduces some overhead) between I/O's
+	ports.doc: updated
+	autoconf: (re)set CC when cc is gcc!
+		show gcc version
+		added HAVE_UNISTD_H define
+	lib/init.c: cleanup, implemented -P (malloc pmstack)
+		added getk(), -d takes bytes, k = 1024
+	v311.sil: removed PDLBLK (now malloced in init)
+		dropped SPDLDZ back to 5000
+
 9/22/96
-	v311.sil: use MOVA for &LAST(FILE|LINE), moved FILCHK
-		handle tabs in error pointer code
+	v311.sil: use MOVA for &LAST(FILE|LINE) for speed
+		handle tabs in error pointer code, moved FILCHK
 		include file & line in compiler error messages
 	test/tests.in: add line.sno err.sno reverse.sno
 	lib/io.c: trim STPRNT output while compiling
