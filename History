@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+7/16/97:
+	doc/ports.doc: updated
+
 7/11/97:
 	autoconf: use CCVERS to output comments
 		add --force-memmove; check for memmove in string.h if
@@ -10,6 +13,7 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 		USE_MEMCMP not set; only necessary if DCMP_BYTES in use (rare)
 	lib/bsd/inet.c: include macros.h for bcopy redefn
 	INSTALL: document --force-memmove
+	doc/ports.doc: updated
 
 7/7/97:
 	README CHANGES: updated for 0.99.4
