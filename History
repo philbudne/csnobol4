@@ -2,13 +2,18 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
+8/1/94
+	lib/ordvst.c: real code, thanks to Martin D. Waller!!
+	README, TODO: updated
+	test/a.ref, test/dump.ref: updated
+
 7/24/94
-	lib/init.c: fix call to getredirect()
+	lib/init.c: fix call to getredirect() (Thanks to Martin Waller)
 
 7/7/95
 	v311.sil, global.procs: Added FAILG label so FAIL can be inlined.
 	timing.sno: more tweaks for AIX
-	config/aix-rs6000.m4: new file
+	config/aix-rs6000.m4: new file (thanks to Phillip Lee Thomas)
 	Makefile2.m4: fixed awk command
 
 ** BETA2 patch1 version 0.91.1 (tag BETA2_patch1)
