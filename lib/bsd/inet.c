@@ -17,29 +17,29 @@
 #include <stdio.h>
 #include <ctype.h>
 
+#ifdef OLD_UCX_INCLUDES
+#include <types.h>
+#include <socket.h>
+#include <in.h>
+#define HAVE_INCLUDES
+#endif /* OLD_UCX_INCLUDES defined */
+
+#ifndef HAVE_INCLUDES
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <netdb.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>			/* inet_addr() */
-
-#ifdef BINDRESVPORT_IN_RPC_H		/* FreeBSD, NetBSD, but NOT OpenBSD! */
-#include <rpc/rpc.h>
-#endif /* BINDRESVPORT_IN_RPC_H */
+#endif /* HAVE_INCLUDES not defined */
 
 #include "h.h"				/* TRUE/FALSE */
 #include "snotypes.h"
 #include "lib.h"			/* own prototypes */
 #include "str.h"			/* bcopy() */
+#include "bindresvport.h"
 
 #ifndef INADDR_NONE
 #define INADDR_NONE ((unsigned long)0xffffffff)	/* want u_int32_t! */
 #endif /* INADDR_NONE not defined */
-
-/* from bindresvport.c */
-#ifdef NEED_BINDRESVPORT
-extern int bindresvport __P((int, struct sockaddr_in *));
-#endif /* NEED_BINDRESVPORT */
 
 static int
 inet_socket( host, service, port, priv, type )
