@@ -7,6 +7,11 @@
 #endif /* HAVE_CONFIG_H defined */
 
 #include <dos.h>
+#include <stdio.h>
+
+#include "h.h"
+#include "snotypes.h"
+#include "lib.h"
 
 void
 hwname(cp)

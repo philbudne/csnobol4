@@ -17,6 +17,11 @@
 #include <strings.h>
 #endif /* ANSI_STRINGS not defined */
 
+#include <stdio.h>
+
+#include "h.h"
+#include "snotypes.h"
+#include "lib.h"
 void
 hwname(cp)
     char *cp;

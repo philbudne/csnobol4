@@ -7,6 +7,11 @@
 #endif /* HAVE_CONFIG_H defined */
 
 #include <syidef.h>
+#include <stdio.h>
+
+#include "h.h"
+#include "snotypes.h"
+#include "lib.h"
 
 #ifndef SYI$_ARCH_NAME
 #define SYI$_ARCH_NAME 4454
