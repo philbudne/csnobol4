@@ -149,6 +149,14 @@ FILE *udp_open __P((char *, char *, int, int));
 void inet_cleanup __P((void));
 int inet_close __P((FILE *));
 
+#define INET_PRIV	01
+#define INET_BROADCAST	02
+#define INET_REUSEADDR	04
+#define INET_DONTROUTE	010
+#define INET_OOBINLINE	020
+#define INET_KEEPALIVE	040
+#define INET_NODELAY	0100
+
 /* from tty.c */
 int fisatty __P((FILE *, char *));
 void tty_mode __P((FILE *, int, int, int));

@@ -70,10 +70,10 @@ struct inet_file {
 #endif /* INET_IO defined */
 
 static int
-inet_socket( host, service, port, priv, type )
+inet_socket( host, service, port, flags, type )
     char *host, *service;
     int type;
-    int priv;
+    int flags;
     int port;
 {
     struct hostent *hp;
@@ -139,7 +139,17 @@ inet_socket( host, service, port, priv, type )
     if (s == INVALID_SOCKET)
 	return -1;
 
-    if (priv && bindresvport(s) < 0) {
+/* set a boolean option: TRUE iff flag set and attempt fails */
+#define TRYOPT(FLAG,LAYER,OPT) \
+	((flags & FLAG) && setsockopt(s,LAYER,OPT,&true,sizeof(true)) < 0)
+
+    if ((flags & INET_PRIV) && bindresvport(s) < 0 ||
+	TRYOPT(INET_BROADCAST,SOL_SOCKET,SO_BROADCAST) ||
+	TRYOPT(INET_REUSEADDR,SOL_SOCKET,SO_REUSEADDR) ||
+	TRYOPT(INET_DONTROUTE,SOL_SOCKET,SO_DONTROUTE) ||
+	TRYOPT(INET_OOBINLINE,SOL_SOCKET,SO_OOBINLINE) ||
+	TRYOPT(INET_KEEPALIVE,SOL_SOCKET,SO_KEEPALIVE) ||
+	TRYOPT(INET_NODELAY,IPPROTO_TCP,TCP_NODELAY)) {
 	closesocket(s);
 	return -1;
     }
@@ -171,9 +181,9 @@ inet_socket( host, service, port, priv, type )
 } /* inet_socket */
 
 static FILE *
-inet_open( host, service, port, priv, type )
+inet_open( host, service, port, flags, type )
     char *host, *service;
-    int port, priv, type;
+    int port, flags, type;
 {
     SOCKET s;
 #ifdef INET_IO
@@ -183,7 +193,7 @@ inet_open( host, service, port, priv, type )
     int fd;
 #endif
 
-    s = inet_socket(host, service, port, priv, type );
+    s = inet_socket(host, service, port, flags, type );
     if (s < 0)
 	return NULL;
 
@@ -220,20 +230,20 @@ inet_open( host, service, port, priv, type )
 } /* inet_open */
 
 FILE *
-tcp_open( host, service, port, priv )
+tcp_open( host, service, port, flags )
     char *host, *service;
-    int port, priv;
+    int port, flags;
 {
-    return inet_open( host, service, port, priv, SOCK_STREAM );
+    return inet_open( host, service, port, flags, SOCK_STREAM );
 }
 
 
 FILE *
-udp_open( host, service, port, priv )
+udp_open( host, service, port, flags )
     char *host, *service;
-    int port, priv;
+    int port, flags;
 {
-    return inet_open( host, service, port, priv, SOCK_DGRAM );
+    return inet_open( host, service, port, flags, SOCK_DGRAM );
 }
 
 #ifdef INET_IO

@@ -436,9 +436,9 @@ io_fopen2( fp, mode )
 	strncmp(fp->fname, "/udp/", 5) == 0) {
 	char fn2[MAXFNAME];		/* XXX */
 	char *host, *service, *cp;
-	int priv;
+	int flags;
 
-	priv = 0;
+	flags = 0;
 	strcpy( fn2, fp->fname + 5 );	/* XXX strdup()? */
 	host = fn2;
 	service = index(host, '/');
@@ -459,15 +459,28 @@ io_fopen2( fp, mode )
 		    *cp++ = '\0';
 
 		if (strcmp(op, "priv") == 0)
-		    priv = 1;
-		/* XXX more magic? */
+		    flags |= INET_PRIV;
+		else if (strcmp(op, "broadcast") == 0)
+		    flags |= INET_BROADCAST;
+		else if (strcmp(op, "reuseaddr") == 0)
+		    flags |= INET_REUSEADDR;
+		else if (strcmp(op, "dontroute") == 0)
+		    flags |= INET_DONTROUTE;
+		else if (strcmp(op, "oobinline") == 0)
+		    flags |= INET_OOBINLINE;
+		else if (strcmp(op, "keepalive") == 0)
+		    flags |= INET_KEEPALIVE;
+		else if (strcmp(op, "nodelay") == 0)
+		    flags |= INET_NODELAY;
+
+		/* XXX more magic? non-booleans? linger?? */
 	    } while (cp);
 	} /* have suffixes */
 
 	if (fp->fname[1] == 'u')
-	    fp->f = udp_open( host, service, -1, priv );
+	    fp->f = udp_open( host, service, -1, flags );
 	else
-	    fp->f = tcp_open( host, service, -1, priv );
+	    fp->f = tcp_open( host, service, -1, flags );
 #ifdef INET_IO
 	/* awful crock; fp->f is a SOCKET; do away with this!!!! */
 	fp->flags |= FL_NOTAFILE;
