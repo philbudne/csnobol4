@@ -33,7 +33,7 @@ TDIR=timdir.$$
 	rm -rf $TDIR
 	mkdir $TDIR
 	cd $TDIR
-LNFILES='../xsnobol4 ../procs ../global.procs ../v311.sil ../genc.sno ../snobol4.c'
+LNFILES='../xsnobol4 ../procs ../globals ../v311.sil ../genc.sno ../snobol4.c'
 # AFS doesn't allow hard links across directories!
 	ln $LNFILES . || ln -s $LNFILES .
 	
