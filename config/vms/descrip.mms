@@ -9,7 +9,7 @@
 DECC=/DECC/PREFIX_LIB=ALL/WARN=(DISABLE=IMPLICITFUNC)
 
 # uncomment next line for VAXC 3.x
-#VAX_OBJ=isnan.obj,
+#VAX_OBJ=isnan.obj, finite.obj,
 
 # socket library DEC TCP/IP Connection services for OpenVMS
 #	(formerly VAX/Ultrix connection product)
@@ -291,3 +291,6 @@ isnan.obj : [.lib.dummy]isnan.c
 
 rresvport.obj : [.lib.dummy]rresvport.c
 	$(CC) $(CFLAGS) [.lib.dummy]rresvport.c
+
+finite.obj : [.lib.dummy]finite.c
+	$(CC) $(CFLAGS) [.lib.dummy]finite.c
