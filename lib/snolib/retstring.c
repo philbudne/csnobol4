@@ -4,16 +4,16 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#include "h.h"
-#include "equ.h"			/* BCDFLD, etc */
-#include "snotypes.h"			/* DESCR, etc */
-#include "macros.h"			/* D_A() etc */
-
-#ifdef HAVE_STDLIB_H			/* before stdio */
+#ifdef HAVE_STDLIB_H			/* before stdio, h.h */
 #include <stdlib.h>			/* for malloc */
 #else  /* HAVE_STDLIB_H not defined */
 extern void *malloc();
 #endif /* HAVE_STDLIB_H not defined */
+
+#include "h.h"
+#include "equ.h"			/* BCDFLD, etc */
+#include "snotypes.h"			/* DESCR, etc */
+#include "macros.h"			/* D_A() etc */
 
 #ifdef NO_STATIC_VARS
 #include "vars.h"

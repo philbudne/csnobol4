@@ -18,6 +18,12 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
+#ifdef HAVE_STDLIB_H			/* before stdio, h.h */
+#include <stdlib.h>			/* for malloc */
+#else  /* HAVE_STDLIB_H not defined */
+extern void *malloc();
+#endif /* HAVE_STDLIB_H not defined */
+
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
@@ -28,12 +34,6 @@
 #ifdef NO_STATIC_VARS
 #include "vars.h"
 #endif /* NO_STATIC_VARS defined */
-
-#ifdef HAVE_STDLIB_H			/* before stdio */
-#include <stdlib.h>			/* for malloc */
-#else  /* HAVE_STDLIB_H not defined */
-extern void *malloc();
-#endif /* HAVE_STDLIB_H not defined */
 
 #ifdef ORDVST_DEBUG
 /* PLB: dump a descriptor */
