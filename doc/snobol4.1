@@ -16,17 +16,17 @@ snobol4 \- SNOBOL4 interpreter
 
 .SH DESCRIPTION
 .PP
-This manual page describes the port of the original BTL Macro
-Implementation of SNOBOL4 (MAINBOL) for Un*x (MFU) by Philip
-L. Budne.  The language and it's implementation are described in [1]
-and [2].
+This manual page describes the port of the original Bell Telephone
+Labs (BTL) Macro Implementation of SNOBOL4 (MAINBOL) for Un*x (MFU) by
+Philip L. Budne.  The language and it's implementation are described
+in [1] and [2].
 .PP
 Extensions where present have been chosen to be compatible with one or
 more of; Catspaw Vanilla SNOBOL, Catspaw Macro SPITBOL and/or SITBOL.
 .SS Command line
 The files on the command line are read in turn until an
-.B END label is seen.
-If no files are specified, a program (terminated by an
+.B END
+label is seen.  If no files are specified, a program (terminated by an
 .B END
 label) is read from standard input.
 
@@ -100,14 +100,15 @@ extensions).
 The following operator character sequences are permitted and represent
 a cross between PDP-10 MAINBOL (DECBOL), SITBOL and Catspaw SPITBOL
 usage;
+
 .ta 2i
 .nf
-exponentiation	^ **
-alternation	| !
-unary negation	~ \\
-assignment	= _
-comment line	* # | ; !
-continuation	+ .
+exponentiation	^\0**
+alternation	|\0!
+unary negation	~\0\\
+assignment	=\0_
+comment line	*\0#\0|\0;\0!
+continuation	+\0.
 .fi
 .PP
 Both brackets ([]) and widgits/angle-brackets (<>) may be used to
@@ -117,8 +118,8 @@ subscript arrays and tables.  The
 does not expand them, it's use may cause confusion in listings.  Note
 that the use of the pound sign for comments allows use of the shell
 interpreter sequence at the top of a file (ie;
-"#!/usr/local/bin/snobol4 -b").
-Underscore (_) and period (.) are legal within identifiers and labels.
+"#!/usr/local/bin/snobol4 -b").  Underscore (_) and period (.) are
+legal within identifiers and labels.
 
 .SS "Extensions"
 
@@ -149,9 +150,9 @@ and
 functions via an optional fourth argument.  If the filename begins
 with a vertical bar (|), the remainder is used as a shell command
 whose stdin (in the case of
-.BR OUTPUT ())
+.BR OUTPUT() )
 or stdout (in the case of
-.BR INPUT ())
+.BR INPUT() )
 will be connected to the file variable.
 
 .TP
@@ -193,13 +194,14 @@ for compatibility with
 .BR SPITBOL/370 .
 
 .SS "Default I/O Associations"
+
 .br
 .ta 1i 2i
 .nf
-Variable	unit	association
-\fBINPUT\fR	5	stdin
-\fBOUTPUT\fR	6	stdout
-\fBPUNCH\fR	7	stderr
+Variable	Unit	Association
+\fBINPUT\fR	5	standard input
+\fBOUTPUT\fR	6	standard output
+\fBPUNCH\fR	7	standard error
 .fi
 
 .SH OPTIONS
