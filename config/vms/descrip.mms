@@ -4,6 +4,9 @@
 # Build SNOBOL4 using DECC and MMS
 #
 # Tested on AXP OpenVMS 6.1 using DECC 4.0 and MMS 2.7 (DECSET 11.2-1)
+#	(October 1996)
+
+# Updated 9/3/97 (not tested)
 
 SNOBOL4=isnobol4
 
@@ -13,9 +16,11 @@ DATE_C=[.lib]date.c
 DUMP_C=[.lib]dump.c
 DYNAMIC_C=[.lib.generic]dynamic.c
 ENDEX_C=[.lib]endex.c
-EXP_C=[.lib.generic]exp.c
+EXPOPS_C=[.lib.generic]expops.c
 HASH_C=[.lib]hash.c
 INIT_C=[.lib]init.c
+# requires VAX/Ultrix connection product
+INET_C=[.lib.bsd]inet.c
 INTSPC_C=[.lib]intspc.c
 IO_C=[.lib]io.c
 LEXCMP_C=[.lib]lexcmp.c
@@ -29,9 +34,10 @@ REALST_C=[.lib]realst.c
 REPLACE_C=[.lib]replace.c
 STREAM_C=[.lib]stream.c
 STR_C=[.lib]str.c
-TERM_C=[.lib.vms]term.c
+TERM_C=[.lib.generic]term.c
 TOP_C=[.lib]top.c
 TREE_C=[.lib]tree.c
+TTY_C=[.lib.dummy]tty.c
 
 # aux sources
 BZERO_C=[.lib.auxil]bzero.c
@@ -41,12 +47,39 @@ GETREDIRECT_C=[.lib.vms]getredirect.c
 
 AUX_OBJ=bcopy.obj, bzero.obj, getopt.obj, getredirect.obj
 
+# snolib sources
+CHOP_C=[.lib.snolib]chop.c
+COS_C=[.lib.snolib]cos.c
+DELETE_C=[.lib.snolib]delete.c
+EXECUTE_C=[.lib.generic]execute.c
+EXIT_C=[.lib.snolib]exit.c
+EXP_C=[.lib.snolib]exp.c
+FILE_C=[.lib.snolib]file.c
+FINDUNIT_C=[.lib.snolib]findunit.c
+FORK_C=[.lib.snolib]fork.c
+GETSTRING_C=[.lib.snolib]getstring.c
+HOST_C=[.lib.snolib]host.c
+LOG_C=[.lib.snolib]log.c
+RENAME_C=[.lib.snolib]rename.c
+RETSTRING_C=[.lib.snolib]retstring.c
+SIN_C=[.lib.snolib]sin.c
+SPRINTF_C=[.lib.snolib]sprintf.c
+SQRT_C=[.lib.snolib]sqrt.c
+SYS_C=[.lib.vms]sys.c
+TAN_C=[.lib.snolib]tan.c
+
+PML_OBJ=host.obj, sys.obj, exit.obj, execute.obj, sqrt.obj, \
+	exp.obj, log.obj, chop.obj, sin.obj, cos.obj, tan.obj, \
+	file.obj, delete.obj, rename.obj, findunit.obj, \
+	getstring.obj, retstring.obj
+
 CFLAGS=\
 	/DECC/PREFIX_LIB=ALL/OPTIMIZE\
 	/DEFINE=(ANSI_STRINGS,NO_POPEN,NO_OFF_T,\
 		DATE=XDATE,INIT=XINIT,LOAD=XLOAD,UNLOAD=XUNLOAD,\
 		RPLACE=XRPLACE,TIME=XTIME,RAISE=XRAISE,DIV=XDIV,\
-		SUBSTR=XSUBSTR,EXIT=XEXIT) \
+		SUBSTR=XSUBSTR,EXIT=XEXIT,SQRT=XSQRT,EXP=XEXP,LOG=XLOG,\
+		SIN=XSIN,COS=XCOS,TAN=XTAN,RENAME=XRENAME)\
 	/WARN=(DISABLE=IMPLICITFUNC) \
 	/INCLUDE=(SYS$DISK:[],SYS$DISK:[.INCLUDE]) \
 
@@ -54,10 +87,11 @@ CFLAGS=\
 
 OBJS=	main.obj, $(SNOBOL4).obj, data.obj, data_init.obj, syn.obj, \
 	bal.obj, convert.obj, date.obj, dynamic.obj, endex.obj, \
-	exp.obj, hash.obj, init.obj, intspc.obj, io.obj, lexcmp.obj, \
-	load.obj, mstime.obj, ordvst.obj, pair.obj, pat.obj, pml.obj, \
-	realst.obj, replace.obj, str.obj, stream.obj, term.obj, top.obj, \
-	tree.obj, version.obj, $(CONFIG_OBJ) $(AUX_OBJ) $(PML_OBJ)
+	expops.obj, hash.obj, init.obj, inet.obj, intspc.obj, io.obj, \
+	lexcmp.obj, load.obj, mstime.obj, ordvst.obj, pair.obj, pat.obj, \
+	pml.obj, realst.obj, replace.obj, str.obj, stream.obj, term.obj, \
+	top.obj, tty.obj, tree.obj, version.obj, \
+	$(CONFIG_OBJ) $(AUX_OBJ) $(PML_OBJ)
 
 xsnobol4.exe : $(OBJS)
 	link /exec=xsnobol4.exe $(OBJS)
@@ -83,8 +117,8 @@ dynamic.obj : $(DYNAMIC_C)
 endex.obj : $(ENDEX_C)
 	$(CC) $(CFLAGS) $(ENDEX_C)
 
-exp.obj : $(EXP_C)
-	$(CC) $(CFLAGS) $(EXP_C)
+expops.obj : $(EXPOPS_C)
+	$(CC) $(CFLAGS) $(EXPOPS_C)
 
 hash.obj : $(HASH_C)
 	$(CC) $(CFLAGS) $(HASH_C)
@@ -140,6 +174,9 @@ top.obj : $(TOP_C)
 tree.obj : $(TREE_C)
 	$(CC) $(CFLAGS) $(TREE_C)
 
+tty.obj : $(TTY_C)
+	$(CC) $(CFLAGS) $(TTY_C)
+
 #################
 # porting aids
 
@@ -154,3 +191,66 @@ getopt.obj : $(GETOPT_C)
 
 getredirect.obj : $(GETREDIRECT_C)
 	$(CC) $(CFLAGS) $(GETREDIRECT_C)
+
+################
+
+chop.obj : $(CHOP_C)
+	$(CC) $(CFLAGS) $(CHOP_C)
+
+cos.obj : $(COS_C)
+	$(CC) $(CFLAGS) $(COS_C)
+
+delete.obj : $(DELETE_C)
+	$(CC) $(CFLAGS) $(DELETE_C)
+
+environ.obj : $(ENVIRON_C)
+	$(CC) $(CFLAGS) $(ENVIRON_C)
+
+execute.obj : $(EXECUTE_C)
+	$(CC) $(CFLAGS) $(EXECUTE_C)
+
+exit.obj : $(EXIT_C)
+	$(CC) $(CFLAGS) $(EXIT_C)
+
+exp.obj : $(EXP_C)
+	$(CC) $(CFLAGS) $(EXP_C)
+
+file.obj : $(FILE_C)
+	$(CC) $(CFLAGS) $(FILE_C)
+
+findunit.obj : $(FINDUNIT_C)
+	$(CC) $(CFLAGS) $(FINDUNIT_C)
+
+fork.obj : $(FORK_C)
+	$(CC) $(CFLAGS) $(FORK_C)
+
+getstring.obj : $(GETSTRING_C)
+	$(CC) $(CFLAGS) $(GETSTRING_C)
+
+host.obj : $(HOST_C)
+	$(CC) $(CFLAGS) $(HOST_C)
+
+log.obj : $(LOG_C)
+	$(CC) $(CFLAGS) $(LOG_C)
+
+rename.obj : $(RENAME_C)
+	$(CC) $(CFLAGS) $(RENAME_C)
+
+retstring.obj : $(RETSTRING_C)
+	$(CC) $(CFLAGS) $(RETSTRING_C)
+
+sin.obj : $(SIN_C)
+	$(CC) $(CFLAGS) $(SIN_C)
+
+sprintf.obj : $(SPRINTF_C)
+	$(CC) $(CFLAGS) $(SPRINTF_C)
+
+sqrt.obj : $(SQRT_C)
+	$(CC) $(CFLAGS) $(SQRT_C)
+
+sys.obj : $(SYS_C)
+	$(CC) $(CFLAGS) $(SYS_C)
+
+tan.obj : $(TAN_C)
+	$(CC) $(CFLAGS) $(TAN_C)
+
