@@ -148,6 +148,7 @@ while [ $# -gt 0 ]; do
     '')
 	;;
     *)
+	echo 'See INSTALL for documentation on options' 1>&2
 	echo 'options:' 1>&2
 	echo '	--add-cppflags=STR --add-define=NAME[=VALUE]' 1>&2
 	echo '	--add-ldflags=STR --add-objs=STR' 1>&2
