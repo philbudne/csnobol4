@@ -1,0 +1,35 @@
+*	test out RCERSX error processing for merged scanner
+*	10/29/97
+
+	&TRACE = 100
+	TRACE('ERRTEXT', 'KEYWORD')
+
+	&ERRLIMIT = 100
+
+	X = -1
+	"FOO" *TAB(X)					:S(END)
+	OUTPUT = "> " &ERRTEXT
+
+	X =
+	"FOO" *ANY(X)					:S(END)
+	OUTPUT = "> " &ERRTEXT
+
+	X = 1.0
+	"FOO" *LEN(X)					:S(END)
+	OUTPUT = "> " &ERRTEXT
+
+	"FOO" @1					:S(END)
+	OUTPUT = "> " &ERRTEXT
+
+	&MAXLNGTH = 9
+	&ALPHABET REM . FOO				:S(END)
+	&MAXLNGTH = 1024
+	OUTPUT = "> " &ERRTEXT
+
+**	gives bus error w/ &ERRLIMIT set!
+*	&MAXLNGTH = 9
+*	&ALPHABET REM $ FOO				:S(END)
+*	&MAXLNGTH = 1024
+*	OUTPUT = "> " &ERRTEXT
+
+END
