@@ -113,19 +113,22 @@ has not been tested in some time.
 VMS using DEC C
 ---------------
 
-C-MAINBOL has been run under VAX and ALPHA VMS using DEC C, and the
-DEC C RTL.  config/vms/descrip.mms is an MMS description file, which
-can be used by typing:
+C-MAINBOL has been run on VMS (on VAXen using VAXC, and on Alphas
+using DECC), and the DEC C RTL.
+
+config/vms/descrip.mms is an MMS description file, which can be used
+by typing:
 
 	MMS/DESCRIP=[.CONFIG.VMS]DESCRIP.MMS
 
-Several lines at the top of the file may need tweaking depending
-on your environment.
+If using DECC, /MACRO=(DEC_C=1) should be appended to the command line.
 
 The VMS port uses native calls to implement TTY I/O, and supports
 binary and noecho input.  TCP/IP I/O is implemented using DEC TCP/IP
 Connection services for OpenVMS (formerly VAX/Ultrix connection
-product) but not working.
+product) but not working.  It should be simple to use other TCP
+packages, but if not, or none is available, add /MACRO=(NO_TCP=1) to
+the MMS command line.
 
 Jerry Lichter has run an older version of C-MAINBOL under VMS using
 the GNU C compiler and the GNU C library.
