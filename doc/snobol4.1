@@ -237,7 +237,7 @@ in
 .BR &ALPHABET .
 .TP
 .B DATE()
-For compatilbility with new versions of Catspaw SPITBOL
+For compatibility with new versions of Catspaw SPITBOL
 .B DATE(0)
 returns strings of the form
 .IR "MM/DD/YY HH:MM:SS" ,
@@ -294,7 +294,7 @@ This is useful once a table has been initialized to avoid creating
 empty entries on lookups that fail.  This can greatly improve program
 speed, since frozen tables will not become clogged with empty entries.
 Lookups for uninitialized entries will return the null string.
-Attempts to assign to a non-existant entry will cause a \*(lqVariable
+Attempts to assign to a non-existent entry will cause a \*(lqVariable
 not present where required\*(rq error. The
 .B THAW()
 function restores normal entry creation behavior.
@@ -479,7 +479,7 @@ or stdout (in the case of
 will be connected to the file variable via a pipe.  If a pipe is
 opened by INPUT() input in "update" mode, the connection will be
 bi-directional (on systems with socketpair and Unix-domain sockets).
-The filename - (hypen) is interpreted as stdin on
+The filename - (hyphen) is interpreted as stdin on
 .B INPUT()
 and stdout
 on
@@ -531,11 +531,11 @@ function is probably preferable.
 .BR "REAL " "numbers in " "INTEGER " contexts
 .br
 .B REAL
-numbers (or strings convertable to
+numbers (or strings convertible to
 .BR REAL )
 are accepted in all contexts which previously required an
 .B INTEGER
-(or string convertable
+(or string convertible
 to
 .BR INTEGER ).
 Contexts include
@@ -580,7 +580,7 @@ for an Internet Protocol v4 socket, "inet6" for an Internet Protocol
 v6 socket, or "unix" for a local ("unix domain") socket.  The second
 argument, TYPE must be "stream", and the third argument, SERVICE must
 be a port number or service name (for an internet socket), or a
-pathname (for a "unix" socket).  SERV_LISTEN() listens for incomming
+pathname (for a "unix" socket).  SERV_LISTEN() listens for incoming
 requests, accepts them, then "forks" a child process and returns an
 integer file descriptor which can be opened for bidirectional I/O
 using a "/dev/fd/n" magic pathname.  The original ("parent") process
@@ -597,7 +597,7 @@ first argument is an I/O unit number, the second is an integer offset.
 The third argument, an integer determines from
 .B whence
 the file pointer will be adjusted.  If whence is zero the starting
-point is the begining of the file, if whence is one, the starting
+point is the beginning of the file, if whence is one, the starting
 point is the current file pointer, and if whence is two, the starting
 point is the end of the file.
 .B SET()
@@ -826,13 +826,13 @@ with the same unit, but with different record lengths.
 .B A
 For
 .BR OUTPUT()
-the unit will be opened for append access  (noop for
+the unit will be opened for append access  (no-op for
 .BR INPUT() ).
 .TP
 .B B
 The unit will be opened for binary access.  On input newline
 characters have no special meaning; the number of bytes transferred
-deppends on record length (see above). On output no newline is
+depends on record length (see above). On output no newline is
 appended.  For terminal devices, all I/O to this unit will be done
 without special processing for line editing or EOF, while characters
 which deliver signals (interrupt, kill, suspend) are still processed.
@@ -867,7 +867,7 @@ in a buffer for efficiency.
 Toggle startup banner output (by default on).
 .TP
 .BI "-d " DDD
-Allocate \*(lqdynamic storage\*(rq regsion
+Allocate \*(lqdynamic storage\*(rq region
 of
 .I DDD
 descriptors for program code and data. A suffix
@@ -1054,14 +1054,14 @@ Viktors Berstis (code from Minnesota SNOBOL4)
 .TP
 \*(lqInsufficient storage to continue\*(rq (error 20)
 .br
-\*(lqDynamic\*(rq storage exausted. See the
+\*(lqDynamic\*(rq storage exhausted. See the
 .B "-d"
 option.
 
 .TP
 \*(lqStack overflow\*(rq (error 21)
 .br
-Interpreter stack exausted. See the
+Interpreter stack exhausted. See the
 .B "-S"
 option.
 
