@@ -78,8 +78,6 @@ $Id$
 
 33. BUG: indirection operator does not fold case!!!
 
-34. BUG: NUL translated to space on output
-
 36. Have gensyn read file of character sets?
 
 37. Implement lseek functionality (SPITBOL "SET")?
