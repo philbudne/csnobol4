@@ -63,7 +63,7 @@
 	CLASS<"QUESYM"> = "?"
 
 *	beginning of line;
-	CLASS<"CMT">	= "*#|"
+	CLASS<"CMT">	= "*#|;!"
 	CLASS<"CTL">	= "-"
 	CLASS<"CNT">	= "+"
 
