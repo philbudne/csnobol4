@@ -124,6 +124,11 @@ if [ "$UNAME" ]; then
 	esac
 fi
 
+if [ -f 00README.CVS ]; then
+	echo 'found 00README.CVS'
+	echo ''
+fi
+
 # kinda redundant, but timing script could be run on a different host!
 echo ''
 echo 'config.guess:'
