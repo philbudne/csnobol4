@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.64  1996/10/25  21:34:22  phil
+* [PLB53] Add io_flushall calls
+*
 * Revision 1.63  1996/10/20  04:06:15  phil
 * [PLB52] add SPITBOL SET() function (from SNOBOL4+ SEEK/TELL)
 *
@@ -951,6 +954,7 @@ GNVARS PROC    GENVAR		   Procedure to entry string
 *      Storage Regeneration
 *
 GC     PROC    ,		   Storage regeneration procedure
+       XCALLC  vm_gc_advise,(1)	   Advise GC memory behavior	[PLB54]
        POP     GCREQ		   Restore space required
        PSTACK  BLOCL		   Post stack position
        SUBTRT  BLOCL,BLOCL,STKPTR  Compute stack length used
@@ -1065,6 +1069,7 @@ GCLAM5 MOVA    BKDX,BKDXU	   Working copy of block size
        MOVBLK  TOPCL,TTLCL,BKDX	   Move block itself
 GCLAM4 SUM     TTLCL,TTLCL,BKDXU   Get to next block
        AEQL    TTLCL,FRSGPT,GCLAM0 Check for end of region
+       XCALLC  vm_gc_advise,(0)	   Advise normal memory behavior [PLB54]
        INCRA   GCNO,1		   Increment count of regenerations
        SETAC   NODPCL,0		   Permit dump
        BKSIZE  BKDX,TOPCL	   Get size of last block
