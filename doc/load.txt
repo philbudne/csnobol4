@@ -1,0 +1,100 @@
+$Id$
+
+Using the SNOBOL4 LOAD() function;
+
+The external C function is called with the following argument list;
+
+    name( retval, args, nargs )
+	struct descr *retval, *args;
+	int nargs;
+    {
+
+retval points to a descriptor which indicates the return type (as
+described in the prototype given to the LOAD function) which should be
+stored there by the function.
+
+args points to an array of nargs arguments, of the types indicated in
+the prototype given to the LOAD function.
+
+a non-zero return indicates succcess, a zero return indicates failure.
+
+descriptors (struct descr) can be accessed using the following macros;
+
+	D_V(dp) is the datatype (using values from equ.h);
+
+	I	D_A(dp) is an integer of type int_t
+	R	D_RV(dp) is a real of type real_t
+	S	D_A(dp) references a string or "natural variable"
+		constructed of 4 decsriptors, plus the string.
+
+		The D_V() field of the first descriptor contains the
+		string length.  The string begins after the 4th
+		descriptor (at D_A(dp) + BCDFLD)
+
+	user datatypes begin at 100 and appear as an array of
+		descriptors located by D_A(dp).  The first descripor
+		is a "title" descriptor whose D_V() field indicates
+		how many descriptors follow.
+
+The loaded function has no access to any global data or functions
+in the SNOBOL4 system.  Any libraries required to load the function
+must be mentioned explcitly in the second argument to LOAD().
+
+Example;
+
+csa% pwd
+/fs/home/it/budd/snobol/src/test
+csa% cat sqrt.c
+#include "h.h"
+#include "equ.h"			/* I, R, S etc */
+#include "types.h"
+#include "macros.h"
+
+#include <math.h>
+
+/*
+ * load using;
+ *	LOAD("SQRT(REAL)REAL", "sqrt.o -lm -lc")
+ */
+
+SQRT( retval, args, nargs )
+    struct descr *retval, *args;
+    int nargs;
+{
+    D_RV(retval) = sqrt( D_RV(args) );
+    return TRUE;			/* success */
+}
+csa% cc -c -I../include -I.. sqrt.c
+csa% cat sqrt.sno
+
+================ sqrt.sno
+	LOAD("SQRT(REAL)REAL", "sqrt.o -lm -lc")
+
+LOOP	OUTPUT = SQRT(INPUT)				:S(LOOP)
+END
+csa% ../mainbol sqrt.sno
+SNOBOL4 (VERSION 3.11, MAY 19, 1975)
+_______
+BELL TELEPHONE LABORATORIES, INCORPORATED
+
+NO ERRORS DETECTED IN SOURCE PROGRAM
+
+9
+3.000000
+4
+2.000000
+2
+1.414214
+^D
+NORMAL TERMINATION AT LEVEL  0
+LAST STATEMENT EXECUTED WAS    3
+SNOBOL4 STATISTICS SUMMARY-
+              0 MS. COMPILATION TIME
+              0 MS. EXECUTION TIME
+              5 STATEMENTS EXECUTED,       1 FAILED
+              0 ARITHMETIC OPERATIONS PERFORMED
+              0 PATTERN MATCHES PERFORMED
+              0 REGENERATIONS OF DYNAMIC STORAGE
+              4 READS PERFORMED
+              3 WRITES PERFORMED
+           0.00 MS. AVERAGE PER STATEMENT EXECUTED

@@ -1,0 +1,62 @@
+$Id$
+
+Several design decisions which are worth revisiting are;
+
+addressing is in bytes
+======================
+
+That is CPA is 1, and DESCR is sizeof(struct DESCR)!
+
+Once the data segment is compiled in C it may be possible to reverse
+the above two values, and have addressing be in "descr" sized units!
+
+All static data declared as external arrays
+===========================================
+
+This is so that the translator doesn't have to worry about
+putting &'s on data (while omitting them on functions and EQU's).
+
+Since the addressing unit is "char", the arrays are all of type char.
+
+SIL PROC's are C functions
+==========================
+
+This means the C compiler deals with pushing the return address.
+
+The old system stack pointer "OSTACK" is saved as a C local variable,
+however RCALL has to PUSH() at least one DESCR() since the GC code
+expects this!!
+
+Return values are implemented by passing a pointer to a variable (or
+NULL) to the C function.
+
+Alternate returns are implemented by using the C return value and a
+switch statement.
+
+Any BRANCH (or other goto) which refers to a label outside the current
+proc is converted into;
+
+		return label(retval)
+
+This has unfortunate ramifications for some procedures, particularly
+ones with "multiple entry points", creating clusters of mutually
+recursive C functions!!  Using gcc with -finline, and carefully
+ordering the functions may ameliorate this problem.  This is why
+functions not referenced from the data segment are declared "static".
+Another way to solve this problem would be to have the translator
+"inline" any code from outside the current function while generating C
+code!
+
+An alternative strategy would be have all of the program be one C
+function, and to implement RCALL as setjmp() + goto, and keeping a
+call stack in an array of jmp_bufs!  This seems likely to cause cause
+immense compile times if any optimization is attempted, or on
+architectures with procedure size limitations!  Furthermore longjmp
+might be slow on some RISC architectures (requires flushing all frames
+to memory).  Furthermore, all references to function names in data
+(and scan tables) would need to be replaced with small integers which
+could then be dispatched by a switch statement!
+
+I felt the former strategy was more likely to port well, and less
+likely to uncover compiler problems due to longjmp, optimization, and
+very large functions!

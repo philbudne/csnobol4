@@ -1,0 +1,63 @@
+$Id$
+
+Overall goals;
+================
+
+Produce a free implementation of SNOBOL4 which is easily portable to
+any Un*x machine using the original "Macro Implementation" (MAINBOL).
+
+The target is any 32-bit machine with a good K&R C-compiler, stdio
+library and large address space (virtual memory HIGHLY desireable).
+
+Self-compiling.
+
+High performance and a large number of extensions are NON-goal
+	you should buy Catspaw SPITBOL (available on a wide range
+	of platforms) if you want a professional tool!
+
+Any Extensions should be compatible with those in Catspaw implementations;
+
+	Vanilla SNOBOL4
+		PC (8086 and up) port of MAINBOL (free)
+
+	SNOBOL4+
+		extended PC SNOBOL4 product
+
+	Catspaw SPARC (et al.) SPITBOL
+
+Treat SIL as source (C output not modified)!!
+
+Goals for 0.5 (Alpha);
+======================
+
+Self-compiling (hopefully with working GC)!
+
+Suitable for people with SNOBOL4 experience only!!
+
+No tuning.
+
+SPARC only (assembly language for data segment).
+
+Goals for 0.9 (Beta);
+=====================
+
+more portable
+	(write data "assembler" to output code to initialize data)
+
+some tuning (do profiling)
+
+Goals for 1.0 (first full release);
+===================================
+
+get rid of all awk scripts
+
+working gendep??
+
+tuning & inlining
+
+Future;
+=======
+
+re-write gendep!
+
+inlining code generator?
