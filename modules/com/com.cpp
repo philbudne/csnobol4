@@ -49,21 +49,19 @@ extern "C"
 static LPOLESTR
 getolestring(void *vp)
 {
-    char narrow[1024]; // UGH!!!
+    char narrow[1024];			// UGH!!!
     getstring(vp, narrow, sizeof(narrow)); 
 
     int len = MultiByteToWideChar(CP_ACP, 0, narrow, -1, NULL, 0);
     LPWSTR p = new WCHAR[len];
     MultiByteToWideChar(CP_ACP, 0, narrow, -1, p, len);
-    LPOLESTR ret = SysAllocString(p);
-    delete [] p;
-    return ret;
+    return p;
 }
 
 static void
 freeolestring(LPOLESTR ptr)
 {
-    SysFreeString(ptr);
+    delete [] ptr;
 }
 
 int
@@ -90,7 +88,6 @@ COM_LOAD( LA_ALIST ) LA_DCL
 	RETFAIL;
 
     // create an instance of the IUnknown object
-    // (PHP COM.c gets IDispatch object directly?)
     hr = CoCreateInstance(clsid,	// object class id
 			  NULL,		// agregate object
 			  CLSCTX_SERVER, // context
@@ -100,15 +97,16 @@ COM_LOAD( LA_ALIST ) LA_DCL
 	RETFAIL;
 
     // get IDispatch (automation) interface pointer
+    // (a noop? just request IDispatch above?)
     hr = punk->QueryInterface(IID_IDispatch, (void **)&pdisp);
 
     // undo AddRef performed by CoCreateInstance
-    // punk->Release();
+    punk->Release();
 
     if (FAILED(hr))
 	RETFAIL;
 
-    RETINT((int_t)pdisp);		// XXX UGH! encode as string? return small int?
+    RETINT((int_t)pdisp);	// XXX UGH! encode as string? return small int?
 }
 
 static bool
@@ -223,18 +221,30 @@ retvariant(struct descr *retval, VARIANTARG *vp)
     RETNULL;				/* ?? */
 }
 
+// XXX decode string?? lookup small integer? pointer to self-ref block???
+#define LS_DISP(X) ((LPDISPATCH)LA_INT(X))
+
 // does not handle in-out parameters
 // could have a version which takes an array?
 //	(but would need to be able to intern new strings)
 int
 COM_INVOKE( LA_ALIST ) LA_DCL
 {
-    LPDISPATCH pdisp = (LPDISPATCH)LA_INT(0); // XXX decode string?
+    LPDISPATCH pdisp = LA_DISP(0);
+    if (!pdisp)
+	RETFAIL;
+
+    if (!LA_PTR(1))
+	RETFAIL;
     LPOLESTR name = getolestring(LA_PTR(1));
     HRESULT hr;
     DISPID dispid;
 
-    hr = pdisp->GetIDsOfNames(IID_NULL, &name, 1, LOCALE_SYSTEM_DEFAULT, &dispid);
+    hr = pdisp->GetIDsOfNames(IID_NULL,		// REFIID
+			      &name,		// OLECHAR**
+			      1,		// name count
+			      LOCALE_SYSTEM_DEFAULT, // locale id
+			      &dispid);		// DISPID*
     freeolestring(name);
     if (FAILED(hr))
 	RETFAIL;
@@ -283,20 +293,96 @@ COM_INVOKE( LA_ALIST ) LA_DCL
     }
 
     return retvariant(retval, &result);
-}
+} // COM_INVOKE
 
 int
 COM_GETPROP( LA_ALIST ) LA_DCL
 {
-    LPDISPATCH pdisp = (LPDISPATCH)LA_INT(0); // XXX decode string?
-    RETFAIL;
-}
+    LPDISPATCH pdisp = LA_DISP(0);
+    if (!pdisp)
+	RETFAIL;
+
+    LPOLESTR name = getolestring(LA_PTR(1));
+    HRESULT hr;
+    DISPID dispid;
+    hr = pdisp->GetIDsOfNames(IID_NULL, &name, 1,
+				LOCALE_SYSTEM_DEFAULT, &dispid);
+    freeolestring(name);
+    if (FAILED(hr))
+	RETFAIL;
+
+    DISPPARAMS dispparams;
+
+    dispparams.cArgs = 0
+    dispparams.cNamedArgs = 0
+
+    VARIANTARG result;
+    hr = pdisp->Invoke(dispid,		// dispatch id member
+			&IID_NULL,	// ref iid
+			LOCALE_SYSTEM_DEFAULT, // locale id
+			DISPATCH_PROPERTYGET, // flags
+			&dispparams,
+			&result,	// result
+			NULL,		// EXCEPINFO
+			0);		// arg error pointer
+
+    if (FAILED(hr))
+	RETFAIL;
+
+    return retvariant(retval, &result);
+} // COM_GETPROP
 
 int
 COM_PUTPROP( LA_ALIST ) LA_DCL
 {
-    LPDISPATCH pdisp = (LPDISPATCH)LA_INT(0); // XXX decode string?
-    RETFAIL;
+    LPDISPATCH pdisp = LA_DISP(0);
+    if (!pdisp)
+	RETFAIL;
+
+    LPOLESTR name = getolestring(LA_PTR(1));
+    HRESULT hr;
+    DISPID dispid;
+    hr = pdisp->GetIDsOfNames(IID_NULL, &name, 1,
+				LOCALE_SYSTEM_DEFAULT, &dispid);
+    freeolestring(name);
+    if (FAILED(hr))
+	RETFAIL;
+
+    DISPPARAMS dispparams;
+
+    VARIANTARG value;
+    descr_to_variant(LA_PTR(2), &value);
+    dispparams.cArgs = 1;
+    dispparams.rgvarg = &value;
+
+    DISPID mydispid = DISPID_PROPERTYPUT;
+    dispparams.cNamedArgs = 1;
+    dispparams.rgdispidNamedArgs = &mydispid;
+
+    hr = pdisp->Invoke(dispid,		// dispatch id member
+			&IID_NULL,	// ref iid
+			LOCALE_SYSTEM_DEFAULT, // locale id
+			DISPATCH_PROPERTYPUT, // flags
+			&dispparams,
+			NULL,		// result
+			NULL,		// EXCEPINFO
+			0);		// arg error pointer
+    if (FAILED(hr))
+	RETFAIL;
+
+    RETNULL;
+}
+
+
+int
+COM_UNLOAD( LA_ALIST ) LA_DCL
+{
+    LPDISPATCH pdisp = LA_DISP(0);
+    if (!pdisp)
+	RETFAIL;
+
+    pdisp->Release();
+    RETNULL;
 }
 
 } // extern "C"
