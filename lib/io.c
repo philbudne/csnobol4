@@ -57,6 +57,10 @@ typedef long off_t;
 #define STDERR_NAME "stderr"
 #define TERMIN_NAME "termin"		/* terminal input */
 
+#ifndef SNOLIB_DIR
+#define SNOLIB_DIR "./"
+#endif /* SNOLIB_DIR not defined */
+
 struct unit {
     struct file *curr;			/* ptr to current file */
     /* for rewind; */
