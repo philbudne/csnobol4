@@ -499,21 +499,9 @@ GENERATED=data.c2 data.h2 data_init.h2 proc.h2 equ.h2 syn.h2 syn_init.h2 \
 # generated files to include in kit (copy, so newer than .x2 versions)
 G2=data.c data.h data_init.h proc.h equ.h res.h syn.c syn.h syn_init.h
 
-# disposables
-DISP=*.o *.a callgraph prolog bsplitu pv vers
-
-# remove objects; leave generated sources, final binary, Makefile2
-clean:
-	rm -f $(DISP) *~ */*~ */*/*~ *.tmp \#*
-	rm -rf subr
-
-# make ready for compilation on another platform
-realclean: clean
-	rm -f config.m4
-
 # remove objects, generated sources; leave final binary, Makefile2
 # DON'T DO THIS UNLESS YOU HAVE AN EXECUTABLE!!
-spotless: realclean
+spotless:
 	rm -f $(GENERATED)
 
 # file to hard-link into dist dir
