@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+7/2/97:
+	v311.sil: upped CARDSZ to 1024 again
+
 7/1/97:
 	lib/io.c: soak up excess "record" data after newline in ASCII input
 		(problem reported by David J Birnbaum)
