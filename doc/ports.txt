@@ -35,8 +35,8 @@ Sun Ultra2 170E	167   SunOS 5.5.1   gcc		0.99.1  62524	cl 11/96
 Sun Ultra1	143   SunOS 5.5.1   spro -xO5	0.99.3	57955	pb 3/97
 Sun Ultra2 170E	167   SunOS 5.5.1   spro	0.99.3+ 51463	pb 6/97
 HP 9000/735	125   HP-UX 9.03    c89		0.99.3	48894	rf 2/97
-P5?		120?  FreeBSD 2.2.1 gcc		0.99.3	44858	ds 6/97
-P5		120   Linux 2.0.27  gcc		0.99.3+ 43493	pb 6/97
+P5 (Endeavor)	120   FreeBSD 2.2.1 gcc		0.99.3	44858	db3 6/97
+P5 (ASUS TP4N)	120   Linux 2.0.27  gcc		0.99.3+ 43493	pb 6/97
 Sun SS1000	85    SunOS 5.5     spro	0.99.1  41682	pb 10/96
 HP 9000/778	160?  HP-UX 10.20   cc		0.99.3+	40417	pb 6/97
 SGI IP22 (R5K)	180   IRIX 6.2      cc		0.99    39337	rh 10/96
@@ -158,7 +158,8 @@ db 	David J Birnbaum	University of Pittsburgh, Slavic Languages
 db2	Dan Budne
 	<dbudne@genesis.com>
 
-ds	<dawnstar@zeus.wildcard-cafe.com>
+db3	Debbie Bridygham
+	<dawnstar@wildcard-cafe.com>
 
 bm	Burkhard Meissner
 	<meissner@altertum.uni-halle.d400.de>
