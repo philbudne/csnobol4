@@ -119,7 +119,7 @@ clertb(tp, act, sp)
 	long l;
 	char c[sizeof(long)];
     } u;
-    register long *lp;
+    register long *lp, l;
 
     /* find action index in list (SNABTB has one of each action type) */
     for (j = 0; ; j++)
@@ -131,18 +131,19 @@ clertb(tp, act, sp)
 	u.c[i] = j;
 
     /* stamp out long's with unrolled loop */
+    l = u.l;
     lp = (long *) tp->chrs;
     i = CHARSET / sizeof(u.c) / 8;
     do {
 	/* most ISA's have index+offset; RISC's tend not to have autoinc */
-	lp[0] = u.l;
-	lp[1] = u.l;
-	lp[2] = u.l;
-	lp[3] = u.l;
-	lp[4] = u.l;
-	lp[5] = u.l;
-	lp[6] = u.l;
-	lp[7] = u.l;
+	lp[0] = l;
+	lp[1] = l;
+	lp[2] = l;
+	lp[3] = l;
+	lp[4] = l;
+	lp[5] = l;
+	lp[6] = l;
+	lp[7] = l;
 	lp += 8;
     } while (--i != 0);
 }
