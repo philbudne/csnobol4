@@ -1,48 +1,51 @@
 $Id$
 
-Test UNSC & SCERSX hackery
+replace PROC with XPROC for scanner functions which are no longer
+	seperate functions?
+	(add to XPROC to genc)
+
+Tests;
+	add "scan.sno" test
+	add outerr.sno test?
 
 Talk about snolib files in INSTALL & README!!
 
-Have single NO_UNBUF_IO? (NO_DIRECT_UNBUF?)
-	document NO_UNBUF_LSEEK??
+man page;
+	document "Output error" in extensions section of man page?
+	document all non-standard ERRTYPEs??
+	document all errtypes!!!
 
-Implement REALCVT??
-	autoload??
+	document INTVAL extension;
+		TABLE, ITEM, array indices, INPUT, OUTPUT, SET,
+		keyword values, CHAR, RPAD, LPAD, FIELD, COLLECT,
+		DUMP, DUPL, OPSYN, SUBSTR
 
-Document INTVAL extension in man page;
-	TABLE, ITEM, array indices, INPUT, OUTPUT, SET,
-	keyword values, CHAR, RPAD, LPAD, FIELD, COLLECT,
-	DUMP, DUPL, OPSYN, SUBSTR
+	document math error catching problems in BUGS section;
+	    "hampered by";
+
+	    + C's lax attitude towards integer errors
+		    perhaps due to PDP11?
+
+	    + Lack of IEEE standard functions for;
+		    enabling exceptions
+		    checking for accrued errors
+		    isinf() or finite()
+
+	    + POSIX (& ANSI?) definition of SIGFPE
+		    (normal return behvior is undefined)
 
 Install include files for loadables in SNOLIB?
-
-document math error catching problems in BUGS section;
-	"hampered by";
-
-	+ C's lax attitude towards integer errors
-		perhaps due to PDP11?
-
-	+ Lack of IEEE standard functions for;
-		enabling exceptions
-		checking for accrued errors
-		isinf() or finite()
-
-	+ POSIX (& ANSI?) definition of SIGFPE
-		(normal return behvior is undefined)
+	h.h snotypes.h macros.h load.h dt.h
 
 load.doc: mention dt.h
+
+porting.doc;
+	NO_UNBUF_RW (merged READ & WRITE)
 
 look at tty_close() thrashing;
 	never discard info?
 	keep use count???
 	flush tty_save & tty_restore (rely on io_finish)??
-
-document "Output error" in extensions section of man page?
-	document all non-standard ERRTYPEs?
-	document all errtypes!!!
-
-add outerr.sno to tests?
 
 make NO_BITFIELDS VFLD_T "long"??
 	need to use vfld_t in place of "int" in library routines???
@@ -52,12 +55,15 @@ make NO_BITFIELDS VFLD_T "long"??
 
 ================
 
-use HOST(0) in genc.sno, gendata.sno for input file?
+replace inline.sno with command line option to genc.sno?
+
+Implement REALCVT??
+	using sprintf?
+	using catspaw code??
+	autoload it???
 
 switch to unroff for html file prep??
 	RosettaMan???
-
-fix for " ()()"??
 
 autoconf:
 	check for index() in <string.h> (BSD44)
@@ -140,10 +146,10 @@ update man page date
 
 update v311.sil table of contents?
 
-add utf.sno to snolib??
+add new utf.sno to snolib??
 
 add to snobol4+.inc?
-	SEEK(), TELL(), PATHNAME(), ASC(), SETBREAK()
+	PATHNAME(), ASC(), SETBREAK()
 
 add to spitbol.inc;?
 	SETEXIT()
@@ -172,10 +178,6 @@ add $(OBJDIR) prefix before all .o filenames in Makefile2?
 
 &DUMP protected keywords?
 
-need to keep direction flag(s)???
-	write to unit opened for INPUT() only can succeed!
-		SIL "OUTPUT" op has no error return
-
 add io_flushall() to snolib/system.c
 	add dummy io_flushall to snolib.a?
 
@@ -186,7 +188,7 @@ posix/tty.c; enable 8-bit datapath on "raw"?
 I/O;
 	implement BACKSPACE() if binary???
 		NAH; need to keep recl per unit
-	pass back flags with recl (so "T" is per-var?)
+	pass back flags with recl (so "T" is per-var?)??
 		need to mask off flags to get recl
 	use COMPCL instead of "compiling"???
 
@@ -373,3 +375,5 @@ disallow 0 ^ 0?
 SPITBOL x ^ y (y < 0) always yields REAL?
 
 ================
+
+Implement SPITBOL EXIT [+-][34] freeze functionality
