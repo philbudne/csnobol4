@@ -18,10 +18,11 @@
 #include "snotypes.h"
 #include "lib.h"
 
-/* keep settings for each fd in a list; */
+/* keep settings for each handle in a list; */
 struct save {
     struct save *next;
-    HANDLE h;
+    HANDLE h;				/* input handle */
+    HANDLE oh;				/* output handle */
     DWORD flags;			/* saved flags */
     int cbreak, noecho;			/* current state */
 };
@@ -73,14 +74,16 @@ tty_mode( fp, cbreak, noecho, recl )
     if (sp == NULL)
 	return;				/* ??? */
 
-    /* save "original" settings (used for "cooked" I/O) */
+    /* save "original" settings */
     sp->h = h;
-    GetConsoleMode(h, &sp->flags);
+    GetConsoleMode(h, &sp->flags);	/* SHOULD NEVER FAIL! */
     sp->noecho = sp->cbreak = 0;	/* ??? */
+    sp->oh = INVALID_HANDLE_VALUE;
 
-    /* link into list */
+    /* link into list (can we have more than one console per process???) */
     sp->next = list;
     list = sp;
+
  found:
     if (cbreak == sp->cbreak && noecho == sp->noecho)
 	return;				/* nothing to do! */
@@ -99,8 +102,8 @@ tty_mode( fp, cbreak, noecho, recl )
     if (noecho)
 	new &= ~ENABLE_ECHO_INPUT;	/* only works in line mode? */
 
-    FlushConsoleInputBuffer(h);		/* else gets CR LF? */
     SetConsoleMode(h, new);
+    FlushConsoleInputBuffer(h);		/* avoid leftover CRLFs? */
 
     /* save current state */
     sp->cbreak = cbreak;
@@ -151,26 +154,40 @@ tty_read(f, buf, len, raw, noecho, keepeol, fname)
     int keepeol;
     char *fname;
 {
-    DWORD cc;
     HANDLE h;
 
-    if (!raw)				/* paranoia */
+    if (!raw)
 	return -1;
 
     h = (HANDLE)_get_osfhandle(fileno(f));
-    if (!ReadFile(h, buf, len, &cc, NULL))
+    if (noecho) {
+	DWORD cc;
+
+	if (ReadFile(h, buf, len, &cc, NULL))
+	    return cc;
 	return -1;
-
-    /*
-     * perform raw mode echo
-     * OUCH!! too many system calls
-     * save output handle in struct save??
-     */
-    if (cc > 0 && !noecho && h == GetStdHandle(STD_INPUT_HANDLE)) {
-      DWORD occ;
-      WriteFile(GetStdHandle(STD_OUTPUT_HANDLE), buf, cc, &occ, NULL);
     }
+    else {
+	struct save *sp;
+	int cc;
+	DWORD x;
 
-    /* cc == 0 means EOF */
-    return cc;
+	/* find output handle, if any */
+	for (sp = list; sp && sp->h != h; sp = sp->next)
+	    ;
+	if (sp && sp->oh == INVALID_HANDLE_VALUE)
+	    sp->oh = CreateFile("CONOUT$", GENERIC_READ | GENERIC_WRITE, 
+				FILE_SHARE_READ | FILE_SHARE_WRITE, 
+				FALSE, OPEN_EXISTING, 0, NULL);
+
+	/* read character at a time, echo to output console */
+	for (cc = 0; cc < len; cc++ ) {
+	    if (!ReadFile(h, buf, 1, &x, NULL) || x != 1)
+		break;
+	    if (sp && sp->oh != INVALID_HANDLE_VALUE)
+	        (void) WriteFile(sp->oh, buf, 1, &x, NULL);
+	    buf++;
+	}
+	return cc;
+    }
 } /* tty_read */
