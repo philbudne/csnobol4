@@ -96,12 +96,14 @@ GOTTIME	USER = CONVERT((USER + MIN * 60) * 10, 'INTEGER')
 * HZ was 60, should be 100?
 	OUTPUT = GE(FACTOR,165.0) LE(FACTOR,167.0) "define HZ as 100?"
 
-TIMEOK	OUTPUT = "time measurement ok"
+TIMEOK	OUTPUT =
+	OUTPUT = "SNOBOL4 time measurement checks out"
 
 * XXX use context diff, look for pos(0) "diff" ???
 DODIFF	LINE = INPUT					:F(NODIFF)
-	LINE '1c1'					:F(BADIFF)
-	OUTPUT = "diff succeeded"			:(END)
+	IDENT(LINE,'1c1')				:F(BADIFF)
+	OUTPUT =
+	OUTPUT = "genc.sno output checks out"		:(END)
 
 BADIFF	OUTPUT = 'genc diff failed'			:(FATAL)
 NODIFF	OUTPUT = 'no diff found'			:(FATAL)
