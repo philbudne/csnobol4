@@ -71,7 +71,6 @@ $Id$
 
 30. package rebus
 30a. Implement &ERRTEXT
-30b. Fix vwcount.reb
 
 32. generate code to set a register pointer for data init (USE/SET_A)?
 32b. merge gendata into genc???
@@ -81,11 +80,6 @@ $Id$
 
 34. BUG: NUL translated to space on output
 
-35. make 8-bit clean
-	expand stream tables?
-	expand &ALPHABET to 0..255??
-	effect on LGT()?	
-	Vertical bar used as an operator?!
-	What would 16-bit (ie; unicode?!) would require new stream tables!
-
 36. Have gensyn read file of character sets?
+
+37. Implement lseek functionality (SPITBOL "SET")?
