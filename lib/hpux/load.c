@@ -27,19 +27,92 @@
 /* external function returning pointer to loaded function */
 extern int (*pml_find())(LOAD_PROTO);
 
+struct lib {
+    struct lib *next;
+    shl_t handle;			/* from shl_load() */
+    int refcount;
+};
+
 struct func {
     struct func *next;			/* next in loaded function list */
     struct func *self;			/* for validity check */
     int (*entry)(LOAD_PROTO);		/* function entry point */
-    shl_t handle;			/* from shl_load() */
+    struct lib *lib;
     char name[1];			/* for unload (MUST BE LAST)! */
 };
 
 /* keep list of loaded functions (for UNLOAD) */
 static struct func *funcs;
 
-#define PATHLEN 256			/* XXX use MAXPATHLEN from param.h? */
+/* list of loaded libs */
+static struct lib *libs;
 
+#define PATHLEN 256			/* XXX use MAXPATHLEN from param.h? */
+
+/* create refcounted lib interface */
+
+static struct lib *
+libopen(path)
+    char *path;
+{
+    shl_t handle;
+    struct lib *lp;
+
+    /* XXX use PROG_HANDLE for null string? */
+    handle = shl_load(path, BIND_DEFERRED|BIND_VERBOSE, 0L);
+    if (handle == NULL)
+	return NULL;
+
+    /* see if it's one we've already mapped */
+    for (lp = libs; lp; lp = lp->next) {
+	if (lp->handle == handle) {
+	    lp->refcount++;
+	    return lp;
+	}
+    }
+
+    /* a new one; add to list */
+    lp = (struct lib *) malloc(sizeof(struct lib));
+    lp->next = libs;
+    lp->handle = handle;
+    lp->refcount = 1;
+
+    libs = lp;
+    return lp;
+}
+
+int
+libclose(lib)
+    struct lib *lib;
+{
+    struct lib *lp, *pp;
+    int ret;
+
+    /* find previous, if any */
+    for (lp = libs, pp = NULL; lp && lp != lib; pp = lp, lp = lp->next)
+	;
+
+    if (!lp)
+	return 0;			/* not found */
+
+    ret = 1;
+    if (--(lp->refcount) <= 0) {
+	/* detach library */
+	if (lp->handle != PROG_HANDLE && shl_unload(lp->handle) < 0)
+	    ret = 0;
+
+	/* unlink from list */
+	if (pp)
+	    pp->next = lp->next;
+	else
+	    libs = lp->next;
+	free(lp);
+    }
+    return ret;
+}
+
+/*****************/
+
 int
 load(addr, sp1, sp2)
     struct descr *addr;			/* OUT */
@@ -56,7 +129,7 @@ load(addr, sp1, sp2)
 
     strncpy( fp->name, S_SP(sp1), l1 );
     fp->name[l1] = '\0';
-    fp->handle = NULL;			/* assume internal! */
+    fp->lib = NULL;			/* assume internal! */
 
     /* try "poor mans load" first!!! */
     fp->entry = pml_find(fp->name);
@@ -88,16 +161,17 @@ load(addr, sp1, sp2)
 	    sprintf( path, "%s/%s", snolib, SNOLIB_FILE );
 	}
 
-	fp->handle = shl_load(path, BIND_DEFERRED|BIND_VERBOSE, 0L);
-	if (fp->handle == NULL) {
+	fp->lib = libopen(path);
+	if (fp->lib == NULL) {
 	    free(fp);
 	    return FALSE;		/* fail */
 	}
 
-	handle = fp->handle;		/* get writable copy */
-	if (shl_findsym(&handle, fp->name, 0, (void *)&fp->entry) < 0 ||
+	handle = fp->lib->handle;	/* get writable copy */
+	if (shl_findsym(&handle, fp->name,
+			TYPE_PROCEDURE, (void *)&fp->entry) < 0 ||
 	    fp->entry == NULL) {
-	    shl_unload(fp->handle);
+	    libclose(fp->lib);
 	    free(fp);
 	    return FALSE;
 	}
@@ -132,7 +206,8 @@ link(retval, args, nargs, addr)
 	return FALSE;			/* fail (fatal error??) */
 
 #ifdef DUMP
-    printf("calling %s entry %x handle %x\n", fp->name, fp->entry, fp->handle);
+    printf("calling %s entry %x lib %x handle %x\n",
+	   fp->name, fp->entry, fp->lib, (fp->lib ? fp->lib->handle : 0));
     i = 0;
     while (shl_get(i++, &dp) == 0 && dp) {
 	printf("%s text %x-%x data %x-%x handle %x\n",
@@ -171,8 +246,9 @@ unload(sp)
 	pp->next = fp->next;
     }
 
-    shl_unload(fp->handle);
+    libclose(fp->lib);
 
     fp->self = 0;			/* invalidate self pointer!! */
     free(fp);				/* free name block */
 }
+
