@@ -27,7 +27,7 @@ OBJ=	isnobol4.o data.o data_init.o main.o syn.o \
 	host.o log.o logic.o ord.o rename.o retstring.o sin.o \
 	spcint.o spreal.o sprintf.o sqrt.o sset.o \
 	tan.o sys.o tty.o inet.o execute.o exists.o \
-	rresvport.o term.o findunit.o
+	rresvport.o term.o findunit.o osinit.o
 
 snobol4.exe : $(OBJ)
 	$(CC) -o snobol4 $(OBJ) $(LIBS)
@@ -232,3 +232,8 @@ sset.o : lib\snolib\sset.c
 
 tan.o : lib\snolib\tan.c
 	$(CC) $(CFLAGS) lib\snolib\tan.c
+
+################ djgpp
+
+osinit.o : lib\djgpp\osinit.c
+	$(CC) $(CFLAGS) lib\djgpp\osinit.c
