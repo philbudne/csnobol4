@@ -17,6 +17,7 @@ extern void *malloc();
 #include "snotypes.h"			/* DESCR, etc */
 #include "macros.h"			/* D_A() etc */
 #include "load.h"			/* prototypes */
+#include "str.h"
 
 #ifdef NO_STATIC_VARS
 #include "vars.h"

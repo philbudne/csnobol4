@@ -42,6 +42,7 @@
 #include "load.h"
 #include "equ.h"
 #include "lib.h"			/* io_flushall() */
+#include "str.h"
 
 #ifndef SIGFUNC_T
 #define SIGFUNC_T void

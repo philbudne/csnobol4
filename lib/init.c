@@ -17,6 +17,7 @@ extern void *malloc();
 #include "snotypes.h"
 #include "macros.h"
 #include "lib.h"			/* io_init(), io_input() protos */
+#include "str.h"
 
 #include "equ.h"			/* SIL equ's */
 #include "res.h"			/* for data.h */

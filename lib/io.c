@@ -53,12 +53,6 @@ typedef long off_t;
 #include <unistd.h>			/* SEEK_xxx */
 #endif /* HAVE_UNISTD_H defined */
 
-#ifdef ANSI_STRINGS
-#include <string.h>
-#else  /* ANSI_STRINGS not defined */
-#include <strings.h>			/* berkeley strings */
-#endif /* ANSI_STRINGS not defined */
-
 #include "h.h"
 #include "units.h"
 #include "snotypes.h"
@@ -66,6 +60,7 @@ typedef long off_t;
 #include "path.h"
 #include "libret.h"			/* IO_xxx, INC_xxx */
 #include "lib.h"
+#include "str.h"
 
 /* generated */
 #include "equ.h"			/* for BCDFLD (for X_LOCSP), res.h */

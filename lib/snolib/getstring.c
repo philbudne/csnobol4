@@ -9,6 +9,7 @@
 #include "snotypes.h"			/* DESCR, etc */
 #include "macros.h"			/* D_A() etc */
 #include "load.h"			/* prototypes */
+#include "str.h"
 
 EXPORT(void)
 getstring( vp, dp, len )

@@ -16,6 +16,7 @@
 #include "snotypes.h"
 #include "macros.h"
 #include "lib.h"			/* for prototypes */
+#include "str.h"
 
 void
 trimsp( sp1, sp2 )
