@@ -101,7 +101,7 @@ pad(dir,out,subj,pad)
 	    *dp++ = pc;
     }
 
-    bcopy(S_SP(subj), dp, slen);
+    bcopy(S_SP(subj), dp, (long)slen);	/* XXX SIZE_T */
     dp += slen;
 
     if (D_A(dir) != 0) {		/* RPAD */
@@ -196,7 +196,7 @@ apdsp(base, str)
 #define THRESH 4
     if (len >= THRESH) {		/* XXX also check alignment? */
 	/* XXX non-overlap version here? */
-	bcopy(src, dst, len);
+	bcopy(src, dst, (long)len);	/* XXX SIZE_T */
     }
     else {
 	while (len > 0) {
