@@ -13,6 +13,7 @@ improve load.doc
 		getstring
 
 -INCLUDE/-COPY
+	prevent multiple inclusions of same file?!
 	document (snobol4.1 & README)
 		describe "program error" vs. "reading error"
 	improve error handling
