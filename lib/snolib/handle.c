@@ -44,7 +44,7 @@ new_handle(hlp, vp)
 {
     struct handle_entry *hp;
 
-    if (lookup_handle(hlp, vp))
+    if (lookup_handle(hlp, (snohandle_t)vp))
 	return BAD_HANDLE;
 
     /* allocate block */
@@ -64,7 +64,7 @@ new_handle(hlp, vp)
 void
 remove_handle(hlp, h)
     struct handle_list *hlp;
-    void *h;
+    snohandle_t h;
 {
     struct handle_entry *hp, *pp;
     int hash = HANDLE_HASH(h);
