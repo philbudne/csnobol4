@@ -37,3 +37,8 @@ tty_close(f)
 {
     /* should not be called (fisatty returns FALSE) */
 }
+
+void
+tty_suspend()
+{
+}
