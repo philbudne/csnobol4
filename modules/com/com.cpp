@@ -48,6 +48,8 @@ WINOLEAPI CoGetObject(const LPWSTR name, BIND_OPTS *pbo, REFIID riid, void **ppv
 #define V_UI4(X) V_UNION(X,ulVal)
 #endif
 
+#define LA_DISP(N) (LPDISPATCH)lookup_handle(&com_handles, LA_INT(N))
+
 extern "C"
 {
 #include "h.h"
@@ -302,7 +304,7 @@ retvariant(struct descr *retval, VARIANTARG *vp)
 int
 COM_INVOKE( LA_ALIST ) LA_DCL
 {
-    LPDISPATCH pdisp = lookup_handle(&com_handles, LA_INT(0));
+    LPDISPATCH pdisp = LA_DISP(0);
     if (!pdisp)
 	RETFAIL;
 
@@ -369,7 +371,7 @@ COM_INVOKE( LA_ALIST ) LA_DCL
 int
 COM_GETPROP( LA_ALIST ) LA_DCL
 {
-    LPDISPATCH pdisp = lookup_handle(&com_handles, LA_INT(0));
+    LPDISPATCH pdisp = LA_DISP(0);
     if (!pdisp)
 	RETFAIL;
 
@@ -407,7 +409,7 @@ COM_GETPROP( LA_ALIST ) LA_DCL
 int
 COM_PUTPROP( LA_ALIST ) LA_DCL
 {
-    LPDISPATCH pdisp = lookup_handle(&com_handles, LA_INT(0));
+    LPDISPATCH pdisp = LA_DISP(0);
     if (!pdisp)
 	RETFAIL;
 
@@ -449,7 +451,7 @@ COM_PUTPROP( LA_ALIST ) LA_DCL
 int
 COM_UNLOAD( LA_ALIST ) LA_DCL
 {
-    LPDISPATCH pdisp = lookup_handle(&com_handles, LA_INT(0));
+    LPDISPATCH pdisp = LA_DISP(0);
     if (!pdisp)
 	RETFAIL;
 
