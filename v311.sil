@@ -1,6 +1,11 @@
 * $Id$
 *
 * $Log$
+* Revision 1.95  2002/01/26 15:44:43  phil
+* [PLB81] set &MAXLNGTH to SIZLIM
+* increase FNLIST free space to 40 functions
+* (to allow for growing number of PML functions)
+*
 * Revision 1.94  2002/01/22 17:17:37  phil
 * [PLB80] Add experimental FUNCTION() predicate
 *
@@ -874,7 +879,7 @@ AUG1   GETSIZ  A4PTR,A1PTR	   Get size of present list
        PUTD    A5PTR,A4PTR,A3PTR   Insert value descriptor at end
        DECRA   A4PTR,DESCR	   Decrement
        PUTD    A5PTR,A4PTR,A2PTR   Insert type descriptor above
-AUGMOV DECRA   A4PTR,DESCR	   Adjust size
+       DECRA   A4PTR,DESCR	   Adjust size			[PLB82]
        MOVBLK  A5PTR,A1PTR,A4PTR   Copy old list at top
        BRANCH  A5RTN		   Return new list
 *_
@@ -1331,14 +1336,11 @@ BINOP2 AEQLC   SPITCL,0,,BINOP4	   Jump if no SPITBOL ops	[PLB32]
 *_
 BINOP1 RCALL   ,FORWRD,,COMP3	   If no blank, find character
        SELBRA  BRTYPE,(,RTN2,RTN2,,,RTN2,RTN2)
-BINERR SETAC   EMSGCL,ILLBIN	   Set up error message
+       SETAC   EMSGCL,ILLBIN	   Set up error message		[PLB82]
        BRANCH  RTN1		   Take error return
 *_
 BINCON MOVD    ZPTR,CONCL	   No operator, concatenation
        BRANCH  RTZPTR		   Return function descriptor
-*_
-BINEOS SETAC   EMSGCL,ILLEOS	   Set up error message
-       BRANCH  RTN1		   Error return
 *_
 BINOP5 STREAM  XSP,TEXTSP,SBIPTB,BINCON				[PLB32]
 *				   Use special SPITBOL table	[PLB32]
@@ -1953,7 +1955,8 @@ FORWRD PROC    ,		   Procedure to get to next character
 FORJRN MOVD    BRTYPE,STYPE	   Set up break type
        BRANCH  RTN2		   Return
 *_
-FORRUN AEQLC   UNIT,0,,FOREOS	   Check for input stream
+FORRUN PROC							[PLB82]
+FORRN0 AEQLC   UNIT,0,,FOREOS	   Check for input stream	[PLB82]
        AEQLC   LISTCL,0,,FORRUR	   Check listing switch
        STPRNT  IOKEY,OUTBLK,LNBFSP Print card image
 FORRUR SETSP   TEXTSP,NEXTSP	   Set up new line		[PLB61]
@@ -1963,9 +1966,9 @@ FORRUR SETSP   TEXTSP,NEXTSP	   Set up new line		[PLB61]
        INCRA   TMVAL,STNOSZ	   Add sequence number length	[PLB62]
        PUTLG   LNBFSP,TMVAL	   Save for listings		[PLB62]
        INCRA   LNNOCL,1		   Count line numbers		[PLB38]
-       STREAM  XSP,TEXTSP,CARDTB,COMP3,FORRUN			[PLB50]
+       STREAM  XSP,TEXTSP,CARDTB,COMP3,FORRN0			[PLB50][PLB82]
 *				   Determine card type
-       RCALL   ,NEWCRD,,(FORRUN,FORWRD)
+       RCALL   ,NEWCRD,,(FORRN0,FORWRD)				[PLB82]
 *				   Process new card
 FOREOS MOVD    BRTYPE,EOSCL	   Set up end-of-card
        BRANCH  RTN2		   Return
@@ -2333,18 +2336,18 @@ INIT   PROC    ,		   Statement initialization procedure
 *      Basic Interpreter Procedure
 *
 INTERP PROC    ,		   Interpreter core procedure
-       INCRA   OCICL,DESCR	   Increment offset
+INTRP0 INCRA   OCICL,DESCR	   Increment offset		[PLB82]
        GETD    XPTR,OCBSCL,OCICL   Get object code descriptor
-       TESTF   XPTR,FNC,INTERP	   Test for function
-       RCALL   XPTR,INVOKE,(XPTR),(,INTERP,INTERP,RTN1,RTN2,RTN3)
+       TESTF   XPTR,FNC,INTRP0	   Test for function		[PLB82]
+       RCALL   XPTR,INVOKE,(XPTR),(,INTRP0,INTRP0,RTN1,RTN2,RTN3) [PLB82]
        MOVD    OCICL,FRTNCL	   Set offset for failure
        INCRA   FALCL,1		   Increment &STFCOUNT
-       ACOMPC  TRAPCL,0,,INTERP,INTERP
+       ACOMPC  TRAPCL,0,,INTRP0,INTRP0				[PLB82]
 *				   Check &TRACE
-       LOCAPT  ATPTR,TKEYL,FALKY,INTERP
+       LOCAPT  ATPTR,TKEYL,FALKY,INTRP0				[PLB82]
        RCALL   ,TRPHND,ATPTR					E3.3.1
 *				   Perform trace
-       BRANCH  INTERP
+       BRANCH  INTRP0						[PLB82]
 *_
 *---------------------------------------------------------------------*
 *
@@ -3226,7 +3229,7 @@ SCNR1  SETSP   TXSP,XSP		   Set up working specifier for head
 *_
 SCNR4  SUBTRT  YSIZ,MAXLEN,YSIZ	   Get difference of lengths
 SCNR5  SUM     YSIZ,YSIZ,CHARCL	   Add one
-SCNR2  PUSH    (YPTR,YSIZ)	   Save pattern and length
+       PUSH    (YPTR,YSIZ)	   Save pattern and length	[PLB82]
        SETSP   HEADSP,TXSP	   Set up head specifier
        INCRA   PDLPTR,3*DESCR	   Make room for history entry
        ACOMP   PDLPTR,PDLEND,INTR31
@@ -3254,7 +3257,8 @@ SCNR3  INCRA   PDLPTR,3*DESCR	   Make room for history entry
 *_
 SCIN   PROC    SCNR
        SETAC   UNSCCL,0		   Clear UNSC flag		[PLB65]
-SCIN1  MOVD    PATBCL,YPTR	   Set up pattern base pointer
+SCIN1  PROC    SCNR						[PLB82]
+SCIN1A MOVD    PATBCL,YPTR	   Set up pattern base pointer	[PLB82]
        AEQLC   UNSCCL,0,SALT3	   Test UNSC flag		[PLB65]
        SETAC   PATICL,0		   Zero offset
 SCIN2  SETAC   LENFCL,1		   Set length failure
@@ -3330,7 +3334,7 @@ SCON1  POP     (YSIZ,YPTR)	   Restore save descriptors
 *				   Insert on history list
        PUTDC   PDLPTR,3*DESCR,LENFCL
 *				   Insert length failure
-       BRANCH  SCIN1		   Join common scanning
+       BRANCH  SCIN1A		   Join common scanning		[PLB82]
 *_
 *---------------------------------------------------------------------*
 *
@@ -3882,7 +3886,7 @@ ENMEXN PUSH    ZEROCL				       E3.4.4 & E3.5.8
 *      SUCCEED
 *
 SUCE   XPROC   ,		   Matching procedure for SUCCEED [PLB67]
-SUCE1  INCRA   PDLPTR,3*DESCR	   Make room for history entry
+       INCRA   PDLPTR,3*DESCR	   Make room for history entry	[PLB82]
        ACOMP   PDLPTR,PDLEND,INTR31
 *				   Check for overflow
        PUTDC   PDLPTR,DESCR,SUCFCL Insert SUCCESS backup function
@@ -3897,7 +3901,7 @@ SUCE1  INCRA   PDLPTR,3*DESCR	   Make room for history entry
 SUCF   XPROC   SUCE		   SUCCEED failure		[PLB67]
        GETDC   XCL,PDLPTR,DESCR	   Get history entries
        GETDC   YCL,PDLPTR,2*DESCR
-       BRANCH  SUCE1		   Go in front door
+       BRANCH  SUCE		   Go in front door		[PLB82]
 *_
 * [PLB65] here from end of file;
 SCDTER SETAC   ERRTYP,1		   Illegal data type
@@ -4253,7 +4257,7 @@ LNKF1  PUSH    (XCL,ZCL,TCL,YPTR,WCL,YCL)
 *				   Restore working descriptors
        DECRA   WCL,1						E3.9.1
        ACOMPC  WCL,0,,,LNKF8					E3.9.1
-LNKF7  GETD    ZPTR,ZCL,TCL	   Get data type required
+       GETD    ZPTR,ZCL,TCL	   Get data type required	[PLB82]
        VEQLC   ZPTR,0,,LNKF6	   Check for possible conversion
        VEQL    ZPTR,XPTR,,LNKF6	   Skip if data types the same
        SETAV   DTCL,XPTR	   Data type of argument
@@ -4569,7 +4573,7 @@ ASSCR  AEQLC   XCL,1,ARGNER,	   Only one argument for tables
 ASSCR5 LOCAPV  XPTR,XPTR,YPTR,,ARYA10
 *				   Look up in this table extent
        GETSIZ  TCL,XPTR		   Not found. Get size of table
-ASSCR7 GETD    ZPTR,XPTR,TCL	   Get last value entry
+       GETD    ZPTR,XPTR,TCL	   Get last value entry		[PLB82]
        AEQLC   ZPTR,1,,ASSCR6	   Jump if this was last extent
        MOVD    XPTR,ZPTR	   No. Move to next extent
        BRANCH  ASSCR5		   and search there
@@ -4754,7 +4758,7 @@ SORT5  SETAC   XCL,0		   Prepare to build index
 *
 SORTT1 GETSIZ  WCL,WPTR		   Get size of next table extent
        DECRA   WCL,2*DESCR	   Less special words at end
-SORTT4 SUM     WCL,WPTR,WCL	   End of extent pointer
+       SUM     WCL,WPTR,WCL	   End of extent pointer	[PLB82]
 SORTT2 GETDC   TCL,WPTR,DESCR	   Get value entry
        DEQL    TCL,NULVCL,,SORTT3  Ignore null entries		[PLB31]
        INCRA   XCL,DESCR	   Next index entry		[PLB31]
@@ -4826,7 +4830,7 @@ SORT9  SETAV   DTCL,A1PTR	   Set up data type pair	[PLB31]
 *_
 CVV    LOCSP   XSP,A1PTR	   String/String
        LOCSP   YSP,A2PTR
-CVV1   LEXCMP  XSP,YSP,CMPGT,CMPEQ,CMPLT
+       LEXCMP  XSP,YSP,CMPGT,CMPEQ,CMPLT			[PLB82]
 *
 CIR    INTRL   A1PTR,A1PTR	   Integer/Real
        BRANCH  CRR		   Compare as reals
@@ -5868,7 +5872,7 @@ RPAD0  PUSH    SCL		   Protect SCL
        GETLG   YPTR,XSP		   Subject string length
        ACOMP   YPTR,ZPTR,RTXPTR,RTXPTR
 *				   Return subject if already long enough
-RPADOK MOVA    XCL,ZPTR		   Copy length (for GENVSZ)
+       MOVA    XCL,ZPTR		   Copy length (for GENVSZ)	[PLB82]
        RCALL   ZPTR,CONVAR,XCL	   Allocate space for string
        LOCSP   TSP,ZPTR		   Get specifier
        XCALLC  pad,(SCL,TSP,XSP,VSP)
@@ -6175,7 +6179,7 @@ CNVTA2 AEQLC   XCL,DESCR,,CNVTA6
 *_
 CNVTA6 GETD    YPTR,YPTR,ZCL
        AEQLC   YPTR,1,CNVTA7,
-CNVTA4 AEQLC   YCL,0,,FAIL	   Fail on empty table
+       AEQLC   YCL,0,,FAIL	   Fail on empty table		[PLB82]
        MULTC   XCL,YCL,2*DESCR	   Convert count to address units
        INTSPC  YSP,YCL		   Get prototype for size
        SETLC   PROTSP,0		   Clear specifier		[PLB31]
@@ -6281,7 +6285,7 @@ DMPX   GETLG   XCL,YSP		   Get length
        ACOMPC  YCL,BUFLEN,DMPOVR   Check for excessive length
        APDSP   DMPSP,YSP	   Append value
        VEQLC   XPTR,T,DMPRT	   Table? if not, just print it	[PLB34]
-DMPT   TESTFI  XPTR,FRZN,DMPRT	   No action if not frozen	[PLB34]
+       TESTFI  XPTR,FRZN,DMPRT	   No action if not frozen	[PLB34][PLB82]
        APDSP   DMPSP,FRZNSP	   Append " - FROZEN"		[PLB34]
        BRANCH  DMPRT		   Go print it
 *_
@@ -6490,7 +6494,7 @@ SUBSTR PROC    ,		   SUBSTR(S,P,L)
        GETLG   WPTR,XSP		   Source string length
        SUBTRT  WPTR,WPTR,YPTR	   To see if substring too big
        ACOMP   ZPTR,WPTR,FAIL	   Fail if substr too long	[PLB37]
-SSLNOK ACOMPC  ZPTR,0,SSNOFX,,FAIL Check length			[PLB37]
+       ACOMPC  ZPTR,0,SSNOFX,,FAIL Check length			[PLB37][PLB82]
        MOVA    ZPTR,WPTR	   Remaining length if = zero
 SSNOFX ACOMPC  ZPTR,0,,RETNUL,FAIL NULL string?
        MOVA    XCL,ZPTR		   Copy length (for GENVSZ)
@@ -6532,7 +6536,6 @@ VDIFFR PROC    ,		   VDIFFER(X,Y)
 *_
 *---------------------------------------------------------------------*
        TITLE   'Common Code'
-DATA   LHERE   ,
 RT1NUL RRTURN  NULVCL,1		   Return null string by exit 1
 *_
 RTN1   LHERE   ,
@@ -6771,6 +6774,7 @@ FTERST ACOMPC  ERRLCL,0,,FTLEND,FTLEND
 *				   Perform trace
        POP     SCERCL						E3.1.3
 FTERBR SELBRA  SCERCL,(FAIL,FAIL,RTNUL3)			[PLB65]
+       XECODE							[PLB82]
 *_
 *---------------------------------------------------------------------*
        TITLE   'Data'
