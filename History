@@ -2,8 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+******** RCS tag BETA4
+
 10/27/96:
-	lib/io.c: add USE_STDARG_H ifdefs
+	lib/io.c: add USE_STDARG_H ifdefs (just in case)
 
 10/26/96:
 	Makefile2.m4: have io.o, load.o depend on $(MAKEFILE)
