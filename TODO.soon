@@ -24,6 +24,9 @@ load.doc:
 		io_getfp(), io_mkfile(), io_closeall(),
 		io_endfile(), io_freeunit()
 
+autoconf:
+	disable -O with HP bundled "cc"?  nah.
+
 ==== before beta releases
 
 update man page date, CHANGES, README

@@ -2,6 +2,13 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+11/17/96:
+	README: updated version
+	INSTALL: ./autoconf
+	genc.sno: renamed raise() to raise1() to avoid ANSI raise() function
+	lib/str.c: raise() -> raise1()
+	version.c: upped version to 0.99.2
+
 11/24/96:
 	doc/ports.doc: new timings
 
