@@ -115,8 +115,9 @@ struct iovars {
 };
 
 #ifdef NO_STATIC_VARS
-#define iov (*(vars.iovars))
+#include "vars.h"
 #else  /* NO_STATIC_VARS not defined */
+extern int rflag;			/* from init.c */
 static struct iovars iov;
 #endif /* NO_STATIC_VARS not defined */
 
@@ -128,11 +129,10 @@ static struct iovars iov;
 
 /*
  * take internal (zero-based) unit number; return "struct unit *"
- * hide all access to units array, so it can be made sparse
+ * all access to units array hidden, so it can be made sparse
  */
 #define FINDUNIT(N) (iov.units + (N))
 
-extern int rflag;			/* from init.c */
 extern FILE *term_input();		/* from <system>/term.c */
 extern void *malloc();
 
@@ -158,7 +158,22 @@ io_newfile( path )
     return fp;
 }
 
+#ifdef NO_STATIC_VARS
+static void
+io_initvars() {
+    if (!varp->v_iov) {
+	varp->v_iov = (struct iovars *)malloc(sizeof(struct iovars));
+	if (!varp->v_iov) {
+	    perror("iovars malloc failed");
+	    exit(1);
+	}
+	bzero(varp->v_iov, sizeof(struct iovars));
+    }
+}
+#endif
+
 /* add file to input list */
+/* calls made here BEFORE io_init() called! */
 static int
 io_addfile( unit, path, append )
     int unit;
@@ -168,6 +183,12 @@ io_addfile( unit, path, append )
     /* XXX check for commas in path? */
     struct file *fp;
     struct unit *up;
+
+#ifdef NO_STATIC_VARS
+    io_initvars();
+#endif /* NO_STATIC_VARS defined */
+
+    /* XXX allocate units array here? */
 
     fp = io_newfile(path);
     if (fp == NULL)
@@ -366,7 +387,7 @@ io_fopen2( fp, mode )
 	return;
     }
 
-#ifdef OSDEP_FOPEN
+#ifdef OSDEP_OPEN
     /*
      * Allow interception of /dev/tty, /dev/null, etc on non-unix
      * systems.  Function should return TRUE if filename is being
@@ -376,7 +397,7 @@ io_fopen2( fp, mode )
      */
     if (osdep_open(fp->fname, &fp->f))
 	return;				/* intercepted */
-#endif /* OSDEP_FOPEN defined */
+#endif /* OSDEP_OPEN defined */
 
     /* **** add new special filename hacks here *** */
 
@@ -512,15 +533,8 @@ io_init()				/* here from INIT */
     FILE *termin;
 
 #ifdef NO_STATIC_VARS
-    vars.iovars = (struct iovars *)malloc(sizeof(struct iovars));
-    if (!vars.iovars) {
-	perror("iovars malloc failed");
-	exit(1);
-    }
-    bzero(vars.iovars, sizeof(struct iovars));
-#endif /* NO_STATIC_VARS defined */
-
-    /* XXX allocate units array here? */
+    io_initvars();
+#endif
 
     up = FINDUNIT(INTERN(UNITI));
     if (up->curr == NULL) {		/* no input file(s)? */
@@ -1530,8 +1544,8 @@ io_finish() {
 	io_closeall(i);
 
 #ifdef NO_STATIC_VARS
-    free(vars.iovars);
-    vars.iovars = NULL;
+    free(varp->v_iov);
+    varp->v_iov = NULL;
 #endif /* NO_STATIC_VARS defined */
 
     return TRUE;
