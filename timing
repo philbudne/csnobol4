@@ -31,7 +31,7 @@ if [ "$UNAME" ]; then
 	case `$UNAME` in
 	*BSD*)
 		if [ -x /usr/sbin/sysctl ]; then
-			echo /usr/bin/sysctl hw:
+			echo /usr/sbin/sysctl hw:
 			/usr/sbin/sysctl hw
 			echo ''
 		fi
