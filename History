@@ -2,8 +2,13 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
+6/4/94
+	Created snolib (DELETE, FILE and RENAME functions)
+	Call getredirect() under vms
+
 6/3/94
-	Turned off NUL translation after compiler runs
+	Turned off output NUL translation after compiler runs
+	Try PML if ld() fails in bsd/load.c
 
 6/2/94
 	Created load.h LOAD_PROTO, LA_xxx macros
