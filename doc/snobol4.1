@@ -160,9 +160,9 @@ this can be restored using
 The
 .B \-INCLUDE 
 directive causes the compiler to interpolate the contents of the named
-file enclosed in single or double quotes.  Any filename will be
-included only once, this can be overridden by appending a trailing
-space to the filename for each additional inclusion.
+file enclosed in single or double quotes.  Trailing spaces are removed
+from the filename before use. Any filename will be included only once,
+this can be overridden by appending a trailing space to the filename.
 .B \-COPY is a synonym for
 .B \-INCLUDE
 for compatibility with
