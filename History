@@ -2,6 +2,21 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+3/20/2002
+	lib/djgpp/osinit.c: cleanup
+	config/djgpp/Makefile: use install.bat
+	config/djgpp/config.h: fix HAVE_OS_INIT
+	config/win32/{borland,mingw,ntmsvc}.mak: add make SRCDIR, make install
+	doc/load.doc: DJGPP/DXE2, dllwrap info
+	new: config/install.bat
+
+3/17/2002
+	load.h: add prototypes for getstring, retstring,
+		io_findunit, io_getfp
+
+3/16/2002
+	configure: make gcc -O3 the default, use -fno-inline-functions
+
 3/15/2002
 	config/djgpp/Makefile: fix for WATTCP build
 		add HAVE_{WATTCP,DXE2}

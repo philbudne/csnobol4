@@ -1,10 +1,18 @@
 $Id$
 
-see why peecee gs can't display pdf (see if Sun generated pdf
-will display)
+Add HAVE_OS_INIT to porting.doc?
 
-Update INSTALL, load.doc for DJGPP/DXE2
-	in v2tk/dxe2_NNN.zip
+DJGPP:
+	osinit;	add io_findunit(), io_getfp()
+		io_mkfile(), io_closeall(), io_endfile()??
+
+see why peecee gs can't display pdf (see if Sun generated pdf will display)
+
+INSTALL;
+	DJGPP/DXE2 -- v2tk/dxe2_NNN.zip
+
+load.doc;
+	Add Burkhard's info (from asc.c) to load.doc (cygwin & DJGPP)
 
 pass CPP directives thru genc.sno/gendata.sno
 
@@ -108,6 +116,8 @@ tag all files
 make branch for major releases
 
 ================
+
+add const's to getstring, retstring defns?
 
 put default prefix in configure script (so --prefix help can display it)?
 
