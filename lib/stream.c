@@ -172,3 +172,25 @@ plugtb(tp, act, sp)
     }
 }
 
+int
+any(sp, dp)
+    struct spec *sp;			/* subject */
+    struct descr *dp;			/* (not)any arg str */
+{
+    register unsigned char c, *cp;
+    struct descr *vp;
+    register int i;
+
+    c = *(unsigned char *)S_SP(sp);	/* get next subject char */
+    vp = (struct descr *)D_A(dp);
+    cp = ((unsigned char *)vp) + BCDFLD; /* ptr to char set */
+    i = D_V(vp);
+
+    while (i > 0) {
+	if (*cp == c)
+	    return 1;
+	cp++;
+	i--;
+    }
+    return 0;
+}

@@ -1,6 +1,10 @@
 * $Id$
 *
 * $Log$
+* Revision 1.69  1997/07/25  21:53:52  phil
+* [PLB58] Incremented COMDCT, added comment
+* no need to explicitly clear INCSTK!
+*
 * Revision 1.68  1997/07/03  02:08:29  phil
 * [PLB57] Upped CARDSZ back to 1024
 *
@@ -3144,70 +3148,92 @@ UNSC   PROC    SCNR		   Backout procedure
 *
 *      ANY, BREAK, NOTANY, SPAN
 *
-ANYC   PROC    ,		   Matching procedure for ANY(S)
+*      [PLB59] from SNOBOL4+;
+*      Recoded ANY, NOTANY, BREAK and SPAN for speedup: ANY and NOTANY
+*      take the next subject character and perform "index()" BREAK and
+*      SPAN each have their own stream table.
+*
+BRKC   PROC    ,		   BREAK
+       SETAC   SCL,2
+       BRANCH  ABNS
+*_
+BRKX   PROC    BRKC		   BREAKX
+       SETAC   SCL,5
+       BRANCH  ABNS
+*_
+NNYC   PROC    BRKC		   NOTANY
+       SETAC   SCL,3
+       BRANCH  ABNS
+*_
+SPNC   PROC    BRKC		   SPAN
+       SETAC   SCL,4
+       BRANCH  ABNS
+*_
+ANYC   PROC    BRKC		   Matching procedure for ANY(S)
        SETAC   SCL,1		   Post entry
+*
 ABNS   INCRA   PATICL,DESCR	   Increment offset
        GETD    XPTR,PATBCL,PATICL  Get argument
-       PUSH    SCL		   Save processor switch
-ABNS1  VEQLC   XPTR,S,,ABNSV					E3.5.5
-       VEQLC   XPTR,E,,ABNSE	   EXPRESSION must be evaluated
-       VEQLC   XPTR,I,,ABNSI					E3.5.6
-       POP     SCL						E3.5.6
-       BRANCH  SCDTER						E3.5.6
-*_								E3.5.6
-ABNSE  RCALL   XPTR,EXPVAL,XPTR,(ABNSF,ABNS1)			E3.5.5
-*_								E3.5.5
-ABNSF  POP     SCL						E3.5.5
-       BRANCH  TSALF						E3.5.5
-*_								E3.5.5
-ABNSI  RCALL   XPTR,GNVARI,XPTR
-ABNSV  POP     SCL		   Restore procedure switch
-       AEQLC   XPTR,0,,SCNAME					E3.5.5
-       SELBRA  SCL,(,BRKV,NNYV,SPNV,BRKV)			[PLB31]
-*				   Select processor
-ANYV   DEQL    XPTR,TBLCS,ANYC2	   Was last argument the same?
-       AEQL    TBLFNC,ANYCCL,,ANYC3
-*				   If so, was last procedure for ANY(S)
-ANYC2  CLERTB  SNABTB,ERROR	   If not, clear stream table
-       LOCSP   YSP,XPTR
-       PLUGTB  SNABTB,STOP,YSP	   Plug entries for characters
-       MOVD    TBLCS,XPTR	   Save argument to check next time
-       MOVD    TBLFNC,ANYCCL	   Save procedure to check next time
-ANYC3  SETSP   VSP,XSP		   Set up working specifier
-       AEQLC   FULLCL,0,ANYC4	   Leave length alone in FULLSCAN mode
-       PUTLG   VSP,MAXLEN	   Else insert maximum length
-       LCOMP   VSP,TXSP,,,TSALT	   Length failure if too short
-       CHKVAL  MAXLEN,ZEROCL,XSP,,ANYC4,ANYC4			E3.5.7
-       ADDLG   VSP,ONECL					E3.5.7
-ANYC4  REMSP   YSP,VSP,TXSP	   Get specifier to unscanned portion
-       STREAM  ZSP,YSP,SNABTB,TSALF,TSALT
-       GETLG   XPTR,ZSP		   Get length accepted
-       ADDLG   TXSP,XPTR	   Add to length matched
-       AEQLC   SCL,5,SCOK,	   Done if BRKC call		[PLB31]
-*				   Success on BREAKX		[PLB31]
-       INCRA   PDLPTR,3*DESCR	   Make room for history entry	[PLB31]
-       ACOMP   PDLPTR,PDLEND,INTR31				[PLB31]
-*				   Check for overflow		[PLB31]
-       PUTDC   PDLPTR,DESCR,ZEROCL Should never take alternative [PLB31]
-       PUTDC   PDLPTR,2*DESCR,PATICL				[PLB31]
-*				   Save pattern position of BREAKX [PLB31]
-       PUTDC   PDLPTR,3*DESCR,LENFCL				[PLB31]
-       GETLG   TVAL,TXSP	   Get cursor position		[PLB31]
-       MOVA    TMVAL,TVAL	   for history list to lock	[PLB31]
-       INCRA   PDLPTR,3*DESCR	   Make room for history entry	[PLB31]
-       ACOMP   PDLPTR,PDLEND,INTR31				[PLB31]
-*				   Check for overflow		[PLB31]
-       PUTDC   PDLPTR,DESCR,BRXFCL Routine for BREAKX rematch	[PLB31]
-       PUTDC   PDLPTR,2*DESCR,TMVAL				[PLB31]
-*				   Save cursor (will set up	[PLB31]
-       PUTDC   PDLPTR,3*DESCR,LENFCL				[PLB31]
-*				   TXSP if backup later)	[PLB31]
-       BRANCH  SCOK,SCNR	   Return to success point	[PLB31]
+ABNS1  VEQLC   XPTR,S,,ABNSV	   String
+       VEQLC   XPTR,E,,ABNSE	   Expr
+       VEQLC   XPTR,I,SCDTER,ABNSI Int
 *_
+ABNSE  PUSH    SCL
+       RCALL   XPTR,EXPVAL,XPTR,(ABNSF,ABNS2)
+ABNSF  POP     SCL
+       BRANCH  SALF		   Match failure
+*_
+ABNS2  POP     SCL		   Restore procedure switch
+       BRANCH  ABNS1
+*_
+ABNSI  RCALL   XPTR,GNVARI,XPTR,
+ABNSV  AEQLC   XPTR,0,,SCNAME	   Error if null string
+       SELBRA  SCL,(ANYC3,,ANYC3,SPNV,) SPAN departs here
 *
-BRKXF  PROC    ANYC		   BREAKX rematch		[PLB31]
-       GETDC   PATICL,PDLPTR,2*DESCR
-*				   Restore position in pattern
+       DEQL    XPTR,TBLBCS,,ANYC3  Same BREAK arg as last time?
+       CLERTB  BRKTB,CONTIN	   No, create STREAM table
+       LOCSP   YSP,XPTR
+       PLUGTB  BRKTB,STOPSH,YSP	   Plug entries for characters
+       MOVD    TBLBCS,XPTR	   Save argument to check next time
+*
+ANYC3  SETSP   VSP,XSP		   Get portion of subject to scan
+       AEQLC   FULLCL,0,ANYC4,	   Leave length alone in FULLSCAN mode
+       PUTLG   VSP,MAXLEN	   Else insert maximum length
+       LCOMP   VSP,TXSP,,,SALT	   Length failure if too short
+       CHKVAL  MAXLEN,ZEROCL,XSP,,ANYC4,ANYC4
+       ADDLG   VSP,ONECL
+*
+ANYC4  REMSP   YSP,VSP,TXSP	   Get specifier to unscanned portion
+       SELBRA  SCL,(ANYC7,,ANYC7,,) ANY and NOTANY depart here
+       STREAM  ZSP,YSP,BRKTB,SALF,SALT, Perform BREAK, BREAKX scanning
+       GETLG   XPTR,ZSP		   Get length accepted
+       ADDLG   TXSP,XPTR	   Add length accepted
+       AEQLC   SCL,5,SCOK,	   Done if BRKC call
+*				   Success on BREAKX
+       INCRA   PDLPTR,3*DESCR	   Make room for history entry
+       ACOMP   PDLPTR,PDLEND,INTR31
+       PUTDC   PDLPTR,DESCR,ZEROCL Should never take alternative
+       PUTDC   PDLPTR,2*DESCR,PATICL Save pattern position of BREAKX
+       PUTDC   PDLPTR,3*DESCR,LENFCL
+       GETLG   TVAL,TXSP	   Get cursor position
+       MOVA    TMVAL,TVAL	   for history list to lock
+       INCRA   PDLPTR,3*DESCR	   Make room for history entry
+       ACOMP   PDLPTR,PDLEND,INTR31
+       PUTDC   PDLPTR,DESCR,BRXFCL Routine for BREAKX rematch
+       PUTDC   PDLPTR,2*DESCR,TMVAL Save cursor (will set up
+       PUTDC   PDLPTR,3*DESCR,LENFCL TXSP if backup later)
+       BRANCH  SCOK
+*_
+* ANY, NOTANY
+ANYC7  LEQLC   YSP,0,,SALT	   Length failure if subject null
+       XCALLC  any,(YSP,XPTR),,ANYC5 Look for first char of subj in arg str
+       AEQLC   SCL,1,,SALF	   Not found, fail if ANY
+ANYC6  ADDLG   TXSP,ONECL	   Accept next subject char
+       BRANCH  SCOK
+ANYC5  AEQLC   SCL,3,ANYC6,SALF	   Found, fail if NOTANY
+*_
+BRKXF  PROC    ,		   BREAKX rematch
+       GETDC   PATICL,PDLPTR,2*DESCR Restore position in pattern
        DECRA   PATICL,DESCR	   Point to BREAKX argument
        DECRA   PDLPTR,3*DESCR	   Discard frame holding PATICL
        AEQLC   FULLCL,0,,BRXF1	   J. if FULLSCAN off
@@ -3216,69 +3242,26 @@ BRKXF  PROC    ANYC		   BREAKX rematch		[PLB31]
 *_
 BRXF1  AEQLC   LENFCL,0,SALT,	   Check for length failure
        SETAV   NVAL,YCL		   Get residual length
-BRXF3  CHKVAL  MAXLEN,NVAL,TXSP,SALT,SALT,
-*				   Check against maximum
+BRXF3  CHKVAL  MAXLEN,NVAL,TXSP,SALT,SALT, Check against maximum
        GETDC   XCL,PDLPTR,DESCR	   Restore from BREAKX stack entry
        ADDLG   TXSP,ONECL	   Add one to length matched
        BRANCH  BRKX		   Try BREAK again with locked in advance
-*				   ANY, NOTANY
 *_
-BRKC   PROC    ANYC		   Matching procedure for BREAK(S)
-       SETAC   SCL,2		   Post entry
-       BRANCH  ABNS
-*_
-BRKX   PROC    ANYC		   BREAKX			[PLB31]
-       SETAC   SCL,5						[PLB31]
-       BRANCH  ABNS						[PLB31]
-*_
-BRKV   DEQL    XPTR,TBLCS,BRKC2	   Was last argument the same?
-       AEQL    TBLFNC,BRKCCL,,ANYC3
-*				   Was the last procedure for BREAK
-       AEQL    TBLFNC,BRXCCL,,ANYC3				[PLB31]
-*				   Was last call for BREAKX?	[PLB31]
-BRKC2  CLERTB  SNABTB,CONTIN	   If not, clear stream table
+SPNV   DEQL    XPTR,TBLSCS,,SPNC3  Same SPAN arg as last time?
+       CLERTB  SPANTB,STOPSH	   No, create STREAM table
        LOCSP   YSP,XPTR
-       PLUGTB  SNABTB,STOPSH,YSP   Plug entries for characters
-       MOVD    TBLCS,XPTR	   Save argument to check next time
-       MOVD    TBLFNC,BRKCCL	   Save procedure to check next time
-       BRANCH  ANYC3		   Proceed
-*_
-NNYC   PROC    ANYC		   Matching procedure for NOTANY(S)
-       SETAC   SCL,3		   Post entry
-       BRANCH  ABNS
-*_
-NNYV   DEQL    XPTR,TBLCS,NNYC2	   Was last argument the same?
-       AEQL    TBLFNC,NNYCCL,,ANYC3
-*				   Was the last procedure for NOTANY?
-NNYC2  CLERTB  SNABTB,STOP	   If not, clear stream table
-       LOCSP   YSP,XPTR
-       PLUGTB  SNABTB,ERROR,YSP	   Plug entries for characters
-       MOVD    TBLCS,XPTR	   Save argument to check next time
-       MOVD    TBLFNC,NNYCCL	   Save procedure to check next time
-       BRANCH  ANYC3		   Proceed
-*_
-SPNC   PROC    ANYC		   Matching procedure for SPAN(S)
-       SETAC   SCL,4		   Post entry
-       BRANCH  ABNS
-*_
-SPNV   DEQL    XPTR,TBLCS,SPNC2	   Was last argument the same?
-       AEQL    TBLFNC,SPNCCL,,SPNC3
-*				   Was the last procedure for SPAN?
-SPNC2  CLERTB  SNABTB,STOPSH	   If not, clear stream table
-       LOCSP   YSP,XPTR
-       PLUGTB  SNABTB,CONTIN,YSP   Plug entries for characters
-       MOVD    TBLCS,XPTR	   Save argument to check next time
-       MOVD    TBLFNC,SPNCCL	   Save procedure to check next time
-SPNC3  LCOMP   XSP,TXSP,,TSALT,TSALT
-*				   Length failure if too short
+       PLUGTB  SPANTB,CONTIN,YSP   Plug entries for characters
+       MOVD    TBLSCS,XPTR	   Save argument to check next time
+*
+SPNC3  LCOMP   XSP,TXSP,,SALT,SALT Length failure if too short
        REMSP   YSP,XSP,TXSP	   Get specifier to unscanned portion
-       STREAM  ZSP,YSP,SNABTB,TSALF
-       LEQLC   ZSP,0,,TSALF	   Failure if length accepted is zero
+       STREAM  ZSP,YSP,SPANTB,SALF,,
+       LEQLC   ZSP,0,,SALF	   Failure if length accepted is zero
        GETLG   XPTR,ZSP		   Get length of accepted portion
-       AEQLC   FULLCL,0,SPNC5	   Skip length check in FULLSCAN mode
-       CHKVAL  MAXLEN,XPTR,TXSP,TSALT
+       AEQLC   FULLCL,0,SPNC5,	   Skip length check in FULLSCAN mode
+       CHKVAL  MAXLEN,XPTR,TXSP,SALT,,
 SPNC5  ADDLG   TXSP,XPTR	   Add length accepted
-       BRANCH  SCOK,SCNR
+       BRANCH  SCOK
 *_
 *---------------------------------------------------------------------*
 *
@@ -7015,7 +6998,8 @@ LPTR   DESCR   0,0,0		   Last label pointer
 NVAL   DESCR   0,0,0
 IO3PTR DESCR   0,0,0
 IO4PTR DESCR   0,0,0
-TBLCS  DESCR   0,0,0
+TBLBCS DESCR   0,0,0		   Last BREAK string		[PLB59]
+TBLSCS DESCR   0,0,0		   Last SPAN string		[PLB59]
 TMVAL  DESCR   0,0,0
 TPTR   DESCR   0,0,0
 TCL    DESCR   0,0,0
