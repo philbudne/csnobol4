@@ -64,8 +64,8 @@ ALOP	LINE = INPUT					:F(NOSTAT)
 	EQ(A1,A2)					:S(GETTIME)
 * get ratio, keep our version on the bottom (less likely to be zero)
 	X = 100 * A2 / A1
-* ignore errors of less than 1%
-	GE(X,99) LT(X,101)				:S(GETTIME)
+* ignore errors of less than 4% (difference between 49 and 50us)
+	GE(X,98) LT(X,102)				:S(GETTIME)
 	OUTPUT = "SNOBOL's calculated ms/stmt is suspect: " AVG
 
 ****************
@@ -100,12 +100,15 @@ TIMEOK	OUTPUT =
 	OUTPUT = "SNOBOL4 time measurement checks out"
 
 * XXX use context diff, look for pos(0) "diff" ???
-DODIFF	LINE = INPUT					:F(NODIFF)
+DODIFF	OUTPUT =
+	LINE = INPUT					:F(NODIFF)
 	IDENT(LINE,'1c1')				:F(BADIFF)
-	OUTPUT =
 	OUTPUT = "genc.sno output checks out"		:(END)
 
-BADIFF	OUTPUT = 'genc diff failed'			:(FATAL)
+BADIFF	OUTPUT = 'genc diff failed:'
+	OUTPUT = LINE
+BADLOP	OUTPUT = INPUT					:S(BADLOP)F(FATAL)
+
 NODIFF	OUTPUT = 'no diff found'			:(FATAL)
 NOSTAT	OUTPUT = "could not get stats"			:F(FATAL)
 NOTIME	OUTPUT = "could not get times"
