@@ -2,7 +2,7 @@
 
 /*
  * SNOBOL4+ compatibility;
- * LOAD("EXP2(REAL)REAL")
+ * LOAD("EXP(REAL)REAL")
  * exponential e ** x
  */
 
@@ -13,7 +13,7 @@
 
 #include <math.h>
 
-EXP2( LA_ALIST ) LA_DCL
+EXP( LA_ALIST ) LA_DCL
 {
     RETREAL( exp( LA_REAL(0) ) );
 }
