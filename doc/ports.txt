@@ -85,6 +85,7 @@ P6 (DELL)	200   Linux 2.0.23  gcc		0.99.3	91072	rf 2/97
 PPro?		200?  SunOS 5.6	    gcc		0.99.4	89082	mw 2/00
 AMD K6 MMX	200   FreeBSD 2.2.7 gcc		0.99.4	88188	pb 1/99
 AMD K6 MMX	233   Linux 2.0.36  gcc		0.99.4	87642	sa 1/99
+Sun Ultra 2	200   SunOS 5.7	    gcc 3.0.4	0.99.4  85341	jwm 2/02
 HP 9000/778	160   HP-UX 10.20   c89		0.99.4	80483	pb 8/97
 Sun E450	296   SunOS 5.6	    gcc		0.99.4  77601	jpd 9/98
 P5 MMX		200   Linux 2.2.12  gcc		0.99.4	75793	djd 8/00
