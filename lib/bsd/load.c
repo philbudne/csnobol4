@@ -1,25 +1,29 @@
 /* $Id$ */
 
 /*
- * load and run external functions for systems using a.out (v7/BSD) 11/9/93
+ * load and run external functions for systems using a.out (v7/BSD)
+ * -plb 11/9/93
  *
  * Unlikely to port easily to COFF systems where giving "ld" a load
  * address often involves creating a "command file"!
  */
 
 /*
- * uses /bin/ld to create an OMAGIC (impure) a.out file (which need
- * not load on a page boundary) runs /bin/ld twice; once to determine
- * overall size, and a second time after load address known.  avoids
- * needing to know about cpu-dependant relocation bits which tend to
- * be CPU dependant.
+ * How it works;
+ *
+ * uses ld to create an OMAGIC (impure) a.out file (which need
+ * not load on a page boundary)
+ *
+ * runs ld twice; once to determine overall size, and a second time
+ * after load address known.  This avoids needing to know about
+ * relocation bits which tend to be CPU/port dependant.
  */
  
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
-
 #include "path.h"
+#include "load.h"
 
 #include <sys/types.h>
 #include <a.out.h>
@@ -40,7 +44,7 @@ extern char *malloc();
 struct func {
     struct func *next;
     struct func *self;
-    func_t entry;
+    int (*entry)(LOAD_PROTO);
     char *data;
     char name[1];
 };
@@ -179,7 +183,7 @@ load(addr, sp1, sp2)
 	goto data_read_error;
     }
 
-    fp->entry = (func_t) a.a_entry;	/* XXX check if non-zero? */
+    fp->entry = (int (*)(LOAD_PROTO)) a.a_entry;
     fp->self = fp;
 
     close(f);
@@ -205,9 +209,7 @@ link(retval, args, nargs, addr)
     if (fp->self != fp)			/* validate! */
 	return FALSE;			/* fail */
 
-    return (fp->entry)( retval,
-		       (struct decsr *)D_A(args),
-		       D_A(nargs));
+    return (fp->entry)( retval, D_A(nargs), (struct descr *)D_A(args) );
 }
 
 void
@@ -220,19 +222,18 @@ unload(sp)
     strncpy( name, S_SP(sp), S_L(sp) );	/* XXX watch length? */
     name[S_L(sp)] = '\0';
 
-    /* XXX search list, unlink, free fp->addr & struct func */
     for (pp = NULL, fp = funcs; fp != NULL; pp = fp, fp = fp->next) {
 	if (strcmp(fp->name, name) == 0)
 	    break;
     }
 
-    if (fp == NULL)
+    if (fp == NULL)			/* not found */
 	return;
 
-    if (pp == NULL) {
+    if (pp == NULL) {			/* first */
 	funcs = fp->next;
     }
-    else {
+    else {				/* not first */
 	pp->next = fp->next;
     }
 
