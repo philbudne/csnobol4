@@ -1447,8 +1447,8 @@ io_seek(dunit, doff, dwhence)
  * called as external function from snolib/sset.c
  */
 int
-io_sseek(unit, off, whence, scale, oof )
-    int_t unit, off, whence, scale, *oof;
+io_sseek(unit, soff, whence, scale, oof )
+    int_t unit, soff, whence, scale, *oof;
 {
     off_t off;
     struct file *fp;
@@ -1463,7 +1463,7 @@ io_sseek(unit, off, whence, scale, oof )
     if (fp == NULL)
 	return FALSE;
 
-    off = (off_t) (off * scale);
+    off = (off_t) (soff * scale);
     if (whence < 0 || whence > 2)
 	return FALSE;
 
@@ -1475,7 +1475,7 @@ io_sseek(unit, off, whence, scale, oof )
 
 #ifndef NO_UNBUF_RW
     if (fp->flags & FL_UNBUF) {
-	off_t pos;
+	off_t pos;			/* XXX pos_t? */
 
 	/* optimized stdio libraries might try to optimize away
 	 * the lseek if they've seen no read/write ops!
@@ -1545,12 +1545,13 @@ io_findunit()
 	while (iov.finger >= MINFIND) {
 	    int u;
 	    struct unit *up;
+	    int ret;
 
 	    u = INTERN(iov.finger);
 	    up = FINDUNIT(u);
+	    ret = iov.finger--;
 	    if (up->curr == NULL && up->head == NULL)
-		return u;		/* found a free unit */
-	    iov.finger--;
+		return ret;		/* found a free unit */
 	}
 
 	/*
