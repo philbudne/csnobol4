@@ -1084,9 +1084,9 @@ XLCOMP	DOCMP3( S_L(ARGV<1>), S_L(ARGV<2>),
 ****************
 *	SIL COPY (???) macro
 XCOPY
-*	OUTPUT = '#include "' REPLACE(ARGV<1>,UC,LC) '.h"'
-	DIFFER(ARGV<1>,'MLINK')				:S(OPDONE)
-	OUTPUT = '#include "header.h"'
+*	DIFFER(ARGV<1>,'MLINK')				:S(OPDONE)
+*	OUTPUT = '# include "header.h"'
+	OUTPUT = '# include "' REPLACE(ARGV<1>,UC,LC) '.h"'
 							:(OPDONE)
 ****************
 *	SIL INIT (???) macro
