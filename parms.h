@@ -1,8 +1,14 @@
 /* $Id$ */
 
 /* header files for snobol4.c; included by SIL "COPY PARMS" macro */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H defined */
 
 #define S4_EXTERN			/* for cstack */
+
+#include <stdio.h>			/* for lib.h */
+#include <math.h>			/* finite(), isnan() */
 
 #include "snotypes.h"
 #include "h.h"
@@ -11,9 +17,6 @@
 #include "macros.h"
 #include "units.h"
 #include "str.h"
-
-#include <stdio.h>			/* for lib.h */
-#include <math.h>			/* finite(), isnan() */
 
 /* machine generated */
 #include "equ.h"
