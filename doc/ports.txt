@@ -84,6 +84,7 @@ Sun Ultra 30	248   SunOS 5.6     spro	0.99.4	93974	pb 9/97
 SGI IP25 (R10K)	194   IRIX64 6.2    cc		0.99.4  93434	rh 8/97
 P6 (GW2K)	200   SunOS 5.5.1   spro	0.99.4	93116	pb 8/97
 P6 (GW2K)	200   SunOS 5.5.1   gcc		0.99.4	93116	pb 8/97
+PPro		200   Linux 2.4.8   gcc		0.99.4	92372	pb 5/03
 AMD K6 MMX	200   FreeBSD 2.2.7 gcc -O2	0.99.4	91928	pb 1/99
 P6 (DELL)	200   Linux 2.0.23  gcc		0.99.3	91072	rf 2/97
 PPro?		200?  SunOS 5.6	    gcc		0.99.4	89082	mw 2/00
