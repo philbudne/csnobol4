@@ -27,6 +27,7 @@
 #define HAVE_STDLIB_H
 #define HAVE_WINSOCK_H
 
+#define WIN32_LEAN_AND_MEAN
 #define NEED_BINDRESVPORT
 #define SOCKLEN_T int
 
