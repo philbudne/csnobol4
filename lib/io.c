@@ -317,6 +317,7 @@ io_printf(va_alist)			/* OUTPUT */
     format = va_arg(vp, char *);
     while ((c = *format++) != '\0') {
 	struct descr *dp;
+	struct spec *sp;
 	char *cp;
 	int wid;
 
@@ -350,9 +351,9 @@ io_printf(va_alist)			/* OUTPUT */
 	    lp += strlen(lp);
 	    break;
 	case 'S':			/* spec */
-	    dp = va_arg(vp, struct descr *);
-	    strncpy(lp, S_SP(s), S_L(s));
-	    lp += S_L(s);
+	    sp = va_arg(vp, struct spec *);
+	    strncpy(lp, S_SP(sp), S_L(sp));
+	    lp += S_L(sp);
 	    break;
 	case 'v':			/* variable */
 	    dp = va_arg(vp, struct descr *);
