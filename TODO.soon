@@ -1,12 +1,45 @@
 $Id$
 
+include serv.sno in kit.  Install in snolib/?
+	build it in? (PML)
+
+split convert.c into spcint, spreal?
+	supply spcint/intspc for longlong!!
+
+DJGPP stuff from Burkhard Meissner
+
+borland stuff by Greg White
+	makefile/batchfile
+	win32/inet.c changes
+
+always send timing.out via e-mail?
+	(unless timing.out.hostname exists?)
+
+add "EXPORT" defns to lib functions (for windoze)???
+
 refer to online manuals (in man page, elsewhere?)
     http://burks.bton.ac.uk/burks/language/snobol/catspaw/tutorial/contents.htm
     http://burks.bton.ac.uk/burks/language/snobol/catspaw/manual/contents.htm
+    ftp://ftp.snobol4.com/spitman.pdf
 
-add sset.c to borland and windows build files
+Make ANSI_STRINGS the default? (USE_STRINGS_H??)
+		use strchr, memcmp, memmove
+	add USE_BSD_STRINGS? USE_STRING_H?
+
+add config options;
+	if using gcc, enable -fomit-frame-pointer by default (unless --debug)?
+	--OPTIMIZE
+		gcc: -O5
+		sunpro: -xO5
+	--debug??
+		disable -fomit-frame-pointer
+
+save defines in config.h??
+	copy config.h to SNOLIB
+		(make life easier for people building loadable objects)
 
 keep FL_INET bit? call inet_close(fp)???
+	add close hook??
 	win32;
 		osf = _get_osfhandle(fileno(fp));
 		fclose(fp);
@@ -14,15 +47,13 @@ keep FL_INET bit? call inet_close(fp)???
 
 use "pax -pe -rw src-dir dst-dir" for sourcekit?
 
-test SSET() [scaled filepos SET]
-	document
-
-add pointers to HTML SNOBOL4+ manual on the web.
-
-include serv.c/serv.sno in kit.
-	put serv.c in snolib (need NO_PML_SERV)?
+test SSET()!!
 
 make timing.out more machine friendly!
+
+add SNOBOL4+ ASC(STR)
+	return ascii value of first character in STR
+	[glwhite@netconnect.com.au]
 
 packaging;
 	make snobol*4*-VERSION directory/tarfile???
@@ -44,7 +75,7 @@ load.doc: mention dt.h
 
 INSTALL:
 	update
-	document --largefile
+	document --longlong
 	talk about available snolib files
 	talk about optimization options
 		ie;
@@ -78,9 +109,30 @@ Tests;
 
 ================
 
-better man page installation
+Include NetBSD popen() source on non-44BSD systems (if socketpair available?)
+	(use two pipes otherwise) for bi-directional I/O
 
-use strchr, memcmp, memmove etc by default (add USE_BSD_STRINGS)?
+	*OR* devise a new syntax to use for PTY based subprocesses!?
+
+allow ¬ (\254) as NOT character?
+	would make SNOBOL source UTF-unsafe!
+
+Flush ADD_xxx macros?
+	do all accumulation in autoconf script
+		(what about local-config?)
+
+GC
+	recode GC in C -- use pointer reversal?
+
+	use mmap() for dynamic region
+		grow/shrink it?
+		seperate dyanmic, vm_advise?
+
+	replace GC with Boehm package??
+
+simulate dlopen() on HP-UX and NextStep, then use unix98 load.c?
+
+better man page installation
 
 per-machine (arch?) build dirs
 	do machine-independant parts in base dir (genc, gendata, gensyn)
@@ -265,6 +317,9 @@ update ftp areas;
 	snobol4.com
 	home!!
 
+update web pages;
+	snobol4.html
+	snobol4.man.html
 
 binary packages;
 	linux: RPM (debian??)
@@ -274,6 +329,10 @@ binary packages;
 
 announce/notify;
 	SNOBOL4 list
+
+	:login;
+
+	SIGPLAN notices
 
 	comp.lang.icon,comp.lang.misc,comp.compilers
 
