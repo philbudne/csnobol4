@@ -84,12 +84,16 @@ ALOP	LINE = INPUT					:F(NOSTAT)
 
 GETTIME	LINE = INPUT					:F(NOTIME)
 	MIN = 0
-* sunos "sh" time 'NNN user'
-	LINE ARB WS NUM . USER WS 'user'		:S(GOTTIME)
-* csh style time 'NNNu'
-	LINE ARB NUM . USER 'u'				:S(GOTTIME)
-* hpux 'user NNNmNNN'
+* gnu time '0.00user ....'
+	LINE NUM . USER 'user'				:S(GOTTIME)
+* csh style time '0.00u ....'
+	LINE NUM . USER 'u'				:S(GOTTIME)
+* hpux, aix 'user 0m0.00s'
 	LINE 'user' ws INT . MIN 'm' NUM . USER		:S(GOTTIME)
+* aix 'user NN.N'
+	LINE 'user' ws NUM . USER			:S(GOTTIME)
+* sunos "sh" time '.... 0.0 user ...'
+	LINE ARB WS NUM . USER WS 'user'		:S(GOTTIME)
 * more here???
 							:(GETTIME)
 
