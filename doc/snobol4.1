@@ -144,10 +144,9 @@ case identifiers are folded to upper case (see
 and
 .B \-CASE
 extensions).  Case folding is performed by using the C library
-.B islower()
-test, and then
-using
-.B toupper()
+.BR islower (3)
+test, and then using
+.BR toupper (3)
 to convert the lower-case characters to upper case.
 .PP
 The following operator character sequences are permitted and represent
@@ -766,7 +765,7 @@ Variable	Unit	Association
 \fBINPUT\fR	5	standard input
 \fBOUTPUT\fR	6	standard output
 \fBTERMINAL\fR	7	standard error (output)
-\fBTERMINAL\fR	8	standard error (input)
+\fBTERMINAL\fR	8	/dev/tty (input)
 .fi
 
 .SS "I/O Options"
