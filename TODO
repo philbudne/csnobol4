@@ -11,6 +11,7 @@ $Id$
 7f. add -LINE (ala snobol4+)
 7g. fix error marker (deal with tabs)
 7h. send errs to stderr?
+7i. show include level in listing!
 
 9b. rename PUNCH to STDERR (ERROR?)?
 9c. add TTY variable for both input/output to /dev/tty (like SITBOL)?
@@ -43,14 +44,14 @@ $Id$
 
 17. implement ordvst() for sorting &DUMP output
 
-20. create library of LOAD()able functions;
-	UNLINK()
-	RENAME()
-	EXISTS()
+20. add to snolib;
 	LINK()
 	SYMLINK()
 	STAT() (returns DATA("STAT(ST_xxx,.....)" record)
-	SYSTEM()?
+	GETPWNAM()
+	GETPWUID()
+	GETPWENT()
+	SETPWENT()
 
 22. Implement -NOEXEC (-n flag)
 
@@ -82,3 +83,7 @@ $Id$
 36. Have gensyn read file of character sets?
 
 37. Implement lseek functionality (SPITBOL "SET")?
+
+38. Allow access to command line;
+	ARGV() function?
+	SPITBOL HOST(0) (-u command line arg)??
