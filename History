@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+6/19/2004
+	new lib/win32/com.cpp: COM (OLE) Automation
+	config/win32/mingw.mak: add COM
+
 6/4/2004
 	configure: Improvements suggested by Robin Kay
 		<komadori@gekkou.co.uk>.
