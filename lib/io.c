@@ -100,17 +100,24 @@ struct file {
  * /dev/fd/N magic pathname) and have different behaviors.
  */
 
-#define FL_PIPE		01		/* file was popen'ed; use pclose() */
-#define FL_EOL		02		/* strip EOL on input, add on output */
-#define FL_BINARY	04		/* binary: no EOL; use recl */
-#define FL_UPDATE	010		/* update: read+write */
-#define FL_UNBUF	020		/* unbuffered write */
-#define FL_APPEND	040		/* append */
-#define FL_TTY		0100		/* is a tty */
-#define FL_NOECHO	0200		/* tty: no echo */
-#define FL_NOCLOSE	0400		/* don't fclose() */
-#define FL_INPUT	01000		/* attached for INPUT() */
-#define FL_OUTPUT	02000		/* attached for OUTPUT() */
+#define FL_TYPE		07
+#define FLT_PIPE	01		/* file was popen'ed; use pclose() */
+#define FLT_TTY		02		/* is a tty */
+#define FLT_INET	03		/* is an inet socket */
+#define FL_EOL		010		/* strip EOL on input, add on output */
+#define FL_BINARY	020		/* binary: no EOL; use recl */
+#define FL_UPDATE	040		/* update: read+write */
+#define FL_UNBUF	0100		/* unbuffered write */
+#define FL_APPEND	0200		/* append */
+#define FL_NOECHO	0400		/* tty: no echo */
+#define FL_NOCLOSE	01000		/* don't fclose() */
+#define FL_INPUT	02000		/* attached for INPUT() */
+#define FL_OUTPUT	04000		/* attached for OUTPUT() */
+#define FL_NOTAFILE	010000		/* "f" is not a file */
+
+#define ISPIPE(FP) (((FP)->flags & FL_TYPE) == FLT_PIPE)
+#define ISTTY(FP)  (((FP)->flags & FL_TYPE) == FLT_TTY)
+#define ISINET(FP) (((FP)->flags & FL_TYPE) == FLT_INET)
 
 #define MAXFNAME	1024		/* XXX use MAXPATHLEN? POSIX?? */
 #define MAXOPTS		1024
@@ -189,7 +196,7 @@ io_initvars() {
 	bzero(varp->v_iov, sizeof(struct iovars));
     }
 }
-#endif
+#endif /* NO_STATIC_VARS defined */
 
 /* add file to input list */
 /* calls made here BEFORE io_init() called! */
@@ -253,15 +260,21 @@ io_close(unit)				/* internal (zero-based unit) */
 
     if (fp->f) {
 	/* XXX call close hook? */
-	if (fp->flags & FL_PIPE) {
+#ifdef INET_IO
+	if (ISINET(fp)) {
+	    inet_close(fp->f);
+	    fp->f = NULL;
+	}
+	else
+#endif /* INET_IO defined */
+	if (ISPIPE(fp)) {
 	    ret = (pclose(fp->f) == 0);	/* XXX is process status!! */
 	    fp->f = NULL;
 	}
 	else {				/* not a pipe */
-	    if (fp->flags & FL_TTY) {
+	    if (ISTTY(fp)) {
 		tty_close(fp->f);	/* advisory */
 	    }
-
 	    if (fp->flags & FL_NOCLOSE) {
 		/* never close stdin, stdout, stderr */
 		ret = (fflush(fp->f) != EOF);
@@ -401,6 +414,8 @@ io_fopen2( fp, mode )
 	    fp->f = udp_open( host, service, -1, priv );
 	else
 	    fp->f = tcp_open( host, service, -1, priv );
+	fp->flags &= (FL_TYPE|FL_UNBUF);
+	fp->flags |= FLT_INET|FL_NOTAFILE;
 	return;
     }
 
@@ -433,7 +448,7 @@ io_fopen2( fp, mode )
     if (fp->fname[0] == '|') {
 	/* filename with leading '|' opens a pipe! */
 	/* SPITBOL: leading '!' means pipe, (with escaping?) */
-	fp->flags |= FL_PIPE;		/* XXX set close hook? */
+	fp->flags |= FLT_PIPE;		/* XXX set close hook? */
 	fp->f = popen(fp->fname+1, buf);
 	return;
     }
@@ -450,12 +465,10 @@ io_fopen( fp, mode )
     if (fp->f == NULL)
 	return NULL;
 
-    if (fisatty(fp->f, fp->fname)) {
+    if (fisatty(fp->f, fp->fname))
 	/* XXX set close hook? */
-	fp->flags |= FL_TTY;
-    }
-    else
-	fp->flags &= ~FL_TTY;
+	fp->flags |= FLT_TTY;
+
 
     /* XXX if FL_UNBUF call setbuf(fp->f, NULL)??
      * this may force a read or write per-character, which
@@ -523,7 +536,7 @@ io_mkfile2( unit, f, fname, flags )
     fp->flags |= flags;
     if (fisatty(f, fname)) {
 	/* XXX set close hook? */
-	fp->flags |= FL_TTY;
+	fp->flags |= FLT_TTY;
     }
 
     unit = INTERN(unit);
@@ -557,7 +570,7 @@ io_init()				/* here from INIT */
 
 #ifdef NO_STATIC_VARS
     io_initvars();
-#endif
+#endif /* NO_STATIC_VARS defined */
 
     up = FINDUNIT(INTERN(UNITI));
     if (up->curr == NULL) {		/* no input file(s)? */
@@ -740,7 +753,8 @@ io_print( iokey, iob, sp )		/* STPRNT */
      * performed using read()/write() (ie; FL_UNBUF)
      */
 
-    if ((fp->flags & FL_UPDATE) && fp->last == LAST_INPUT) {
+    if ((fp->flags & FL_UPDATE) && fp->last == LAST_INPUT &&
+	!(fp->flags & FL_NOTAFILE)) {
 	fseeko(f, (off_t)0, SEEK_CUR);	/* seek relative by zero */
 	/*
 	 * XXX set fp->last to LAST_NONE; don't set to LAST_OUTPUT
@@ -776,6 +790,13 @@ io_print( iokey, iob, sp )		/* STPRNT */
 	    cp = S_SP(sp);
 	} /* compiling */
 
+#ifdef INET_IO
+	if (ISINET(fp)) {
+	    if (inet_write(f, cp, len) != len)
+		ret = FALSE;
+	}
+	else
+#endif /* INET_IO defined */
 #ifndef NO_UNBUF_RW
 	if (fp->flags & FL_UNBUF) {
 	    if (write(fileno(f), cp, len) != len)
@@ -788,6 +809,13 @@ io_print( iokey, iob, sp )		/* STPRNT */
     } /* have string */
 
     if (fp->flags & FL_EOL) {
+#ifdef INET_IO
+	if (ISINET(fp)) {
+	    if (inet_write(f, "\n", 1) != 1)
+		ret = FALSE;
+	}
+	else
+#endif /* INET_IO defined */
 #ifndef NO_UNBUF_RW
 	if (fp->flags & FL_UNBUF) {
 	    if (write(fileno(f), "\n", 1) != 1)
@@ -800,7 +828,7 @@ io_print( iokey, iob, sp )		/* STPRNT */
     }
 
 #ifdef NO_UNBUF_RW
-    if (fp->flags & FL_UNBUF) {
+    if (fp->flags & FL_UNBUF && !(fp->flags & FL_NOTAFILE)) {
 	/* simulate unbuffered I/O */
 	if (fflush(f) == EOF)
 	    ret = FALSE;
@@ -870,7 +898,8 @@ io_read( dp, sp )			/* STREAD */
 	 * before FL_TTY check, in case tty_read() uses stdio functions.
 	 */
 
-	if ((fp->flags & FL_UPDATE) && fp->last == LAST_OUTPUT) {
+	if ((fp->flags & FL_UPDATE) && fp->last == LAST_OUTPUT &&
+	    !(fp->flags & FL_NOTAFILE)) {
 	    fseeko(f, (off_t)0, SEEK_CUR); /* seek relative by zero */
 	    /*
 	     * XXX set fp->last to LAST_NONE; don't set to LAST_OUTPUT
@@ -879,7 +908,7 @@ io_read( dp, sp )			/* STREAD */
 	}
 	fp->last = LAST_INPUT;
 
-	if (fp->flags & FL_TTY) {
+	if (ISTTY(fp)) {
 	    tty_mode( fp->f,
 		     (fp->flags & FL_BINARY) != 0,
 		     (fp->flags & FL_NOECHO) != 0,
@@ -887,8 +916,13 @@ io_read( dp, sp )			/* STREAD */
 	} /* FL_TTY set */
 
 	if (fp->flags & FL_BINARY) {
+#ifdef INET_IO
+	    if (ISINET(fp))
+		len = inet_read_raw(f, cp, recl);
+	    else
+#endif /* INET_IO defined */
 #ifdef TTY_READ_RAW
-	    if (fp->flags & FL_TTY)
+	    if (ISTTY(fp))
 		len = tty_read(f, cp, recl,
 			       TRUE,	/* "raw" */
 			       (fp->flags & FL_NOECHO) != 0, /* "noecho" */
@@ -906,8 +940,12 @@ io_read( dp, sp )			/* STREAD */
 	    if (len > 0)
 		break;
 	} /* binary */
+#ifdef INET_IO
+	else if (ISINET(fp))
+	    len = inet_read_cooked(f, cp, recl, (fp->flags & FL_EOL) == 0);
+#endif /* INET_IO defined */
 #ifdef TTY_READ_COOKED
-	else if (fp->flags & FL_TTY) {
+	else if (ISTTY(fp)) {
 	    len = tty_read(f, cp, recl,
 			   FALSE,	/* "raw" */
 			   (fp->flags & FL_NOECHO) != 0, /* "noecho" */
@@ -1047,7 +1085,7 @@ io_rewind(unit)				/* REWIND */
 	return;
 
     f = fp->f;
-    if (f != NULL && (fp->flags & FL_PIPE) == 0) {
+    if (f != NULL && !ISPIPE(fp) && !(fp->flags & FL_NOTAFILE)) {
 	fseeko(f, up->offset, SEEK_SET);
 	fp->last = LAST_NONE;		/* reset last I/O type */
    }
@@ -1449,6 +1487,9 @@ io_seek(dunit, doff, dwhence)
     if (fp == NULL)
 	return FALSE;
 
+    if (fp->flags & FL_NOTAFILE)
+	return FALSE;
+
     off = (off_t) D_A(doff);
     whence = D_A(dwhence);
     if (whence < 0 || whence > 2)
@@ -1506,6 +1547,9 @@ io_sseek(unit, soff, whence, scale, oof )
     if (fp == NULL)
 	return FALSE;
 
+    if (fp->flags & FL_NOTAFILE)
+	return FALSE;
+
     off = soff * (off_t)scale;
     if (whence < 0 || whence > 2)
 	return FALSE;
@@ -1556,11 +1600,13 @@ io_flushall(dummy)
 	if (fp) {
 	    FILE *f;
 
-	    f = up->curr->f;
+	    f = fp->f;
 	    if (f) {
-		if (fp->flags & FL_TTY)
+		if (fp->last == LAST_OUTPUT && !(fp->flags & FL_NOTAFILE))
+		    fflush(f);		/* keep err count?? */
+
+		if (ISTTY(fp))
 		    tty_mode(f, 0, 0, 0); /* restore tty settings */
-		fflush(up->curr->f);	/* keep err count?? */
 	    } /* have f */
 	} /* have fp */
     } /* foreach unit */
