@@ -1,23 +1,49 @@
 $Id$
 
+missing explicit rule for data_init.o????
+
+ports.doc??? update?? remove???
+
+"make generated" doesn't work on Linux?
+	argument processing AFU?
+
+get rid of "compiling" io variable, and use COMPCL??
+
+timing;
+	remove time swap hack in timing.sno
+	include genc.sno Id? ("grep Id: genc.sno")
+	genc.sno runtimes too small; need better code for timing test?
+	milliseconds too small!!
+	  have mstime() fill in four longs hi/lo + usec resolutions for each?
+
+new versions of RETxxx macros cause "code not reached" warnings
+	change to obscene use of  "," construct???
+
 have tests cleanup after themselves?  Add Makefile for "make clean"?
 	just add files to "make spotless"
 
 put sources under CVS
+	name module snobol4!
 	improve rcs2cvs;
 		move old files to Attic directories!!!
-	move file generation up to Makefile (so clean checkout makes)
-		pull testing, cleanup, tar up into Makefile?
-	put bugs under CVS, or remove from "make tar"?
 	prune CVS directories when making kit??
 		always build kit's from scratch, via anonymous checkout???
+		don't bother with version-based directory name???
+		have tar file named (c)snobol4-VERS.tar
 
 doc/load.doc
+	mention Tru64
+	AIX??????? (dlopen() in 4.3?)
+	dlopen() under HP-UX11 64-bit world?? shl otherwise
+	DLL's on Win32
 	document config.h
 	document RETSTR()/RETSTR2()
 	mention dt.h  (move to include/?  install!!)
 
-document --add-define= in INSTALL
+doc/porting.doc
+	no more system.m4 files
+	convert.c, longlong, dynamic, others??
+	PML_SERV
 
 man page
 	LOAD() limitations out of date
@@ -25,19 +51,13 @@ man page
 	reference documents available on web (see next item)
 
 refer to online manuals (in man page, elsewhere?)
+	get permission to include??
+
     http://burks.bton.ac.uk/burks/language/snobol/catspaw/tutorial/contents.htm
+		+ ch1-9
     http://burks.bton.ac.uk/burks/language/snobol/catspaw/manual/contents.htm
+		+ ch1-9
     ftp://ftp.snobol4.com/spitman.pdf
-
-merge in PC ports;
-	DJGPP stuff from Burkhard Meissner
-		load.c (DXE)
-
-	borland stuff by Greg White
-		makefile/batchfile
-		win32/inet.c changes (fcntl.h, io.h)
-
-	try MINGW?
 
 always send timing.out via e-mail?
 	(unless timing.out.hostname exists?)
@@ -45,7 +65,10 @@ always send timing.out via e-mail?
 test
 	SSET()!!
 	longlong versions of intspc and spcint; use BSD strtoll if not.
-	VMS port (RDIXON@seattleschools.org), MacOS X (panos@surgery.wisc.edu)
+	VMS port (RDIXON@seattleschools.org)
+	MacOS X (panos@surgery.wisc.edu)
+	DJGPP (meissner@altertum.uni-halle.de)
+	QNX (Fred?)
 
 packaging;
 	put pkg/ .... files under RCS (CVS)??
@@ -112,8 +135,7 @@ Make ANSI_STRINGS the default? (USE_STRINGS_H??)
 	add USE_BSD_STRINGS? USE_STRING_H?
 
 avoid using unit 8 for terminal?
-	do fdopen(3,"r+")?  fopen("/dev/tty", "r+")??
-	do all systems open stderr r/w???
+	do all systems open stderr (and/or fd 2) r/w???
 
 look at tty_close() thrashing;
 	never discard info?
@@ -126,9 +148,10 @@ look at tty_close() thrashing;
 Tests;
 	add "scan.sno" test
 	add outerr.sno test?
-	add scanerr.sno test?
 
 use "pax -pe -rw src-dir dst-dir" for sourcekit?
+
+try under MINGW (minimal GNU for Windoze -- mingw.org)
 
 ================
 
@@ -136,7 +159,6 @@ SPITBOL features;
 	FENCE()
 	NOT()
 
-	SET()
 	SETEXIT()
 		CONTINUE, SCONTINUE, ABORT system labels
 		see SNOBOL4+ SETBREAK()???
@@ -147,7 +169,13 @@ SPITBOL features;
 
 	-FAIL/-NOFAIL?
 
+	allow STRING for units???
+
 ================
+
+Conversions for hex/octal;
+	output possible using SPRINTF();  create STRTOINT() (use strtol(l))?
+		look at SITBOL CONVERT()!!
 
 Include NetBSD popen() source on non-44BSD systems (if socketpair available?)
 	(use two pipes otherwise) for bi-directional I/O
@@ -434,6 +462,8 @@ have gen*.sno output to xxx.[ch]3, perform mv to .[ch]2 after completion?
 	avoids problems when ^C'ed and partial .h2 files written!
 
 GCCBUILD.COM for VMS?
+
+create config.h on misc ports (vms, djgpp, borland, win32)??
 
 include tests for auto-loads;
 	host.sno

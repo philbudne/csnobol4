@@ -2,7 +2,30 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+12/17/2001
+	Makefile2.m4, autoconf: add EXT variable for Cygwin
+	test/tests.in: fix scanerr entry
+	v311.sil: use CASECL to determine if compiler done at FTLEN2
+		ETMCL can be zero on fast systems with bad resolution!
+	timing.sno: remove crock for zero execution times
+
+12/16/2001
+	autoconf: check LONGLONG seperately for doubles, improve comments
+		improved(?) getrusage() detection and comments
+		only try LP64 on hppa*w architecture
+	charset.c: was ASCII dependant.  use just numeric constants
+	timing.sno: crock for zero execution times
+
+12/15/2001
+	snolib/wrapper.sno: update TODO, comment out tests
+	Makefile: removed bugs dir from TAR list
+
+12/14/2001
+	INSTALL: document --add-define= --longlong
+
 12/13/2001
+	new: test/scanerr.{sno,ref} scanner error case tests
+	test/tests.in: add scanerr
 	new: config/djgpp/lots: build scripts for DOS/DJGPP from B.Meissner
 	new: lib/djgpp/load.c: DXE based load from Burkhard Meissner
 	lib/bsd/inet.c: flatten hostnames to upper case for WATTCP/DOS
