@@ -152,8 +152,10 @@ Changes from "beta1" distribution;
 		see lib/vms for library routines.  no BUILD.COM supplied.
 
 If you make any changes/fixes/improvements, or port it to a new
-system, please notify me!  If you are interested in getting mailings
-about new releases, send me mail.
+system, please notify me!
 
-Phil Budne <phil@Ultimate.COM>
+If you are interested in getting mailings about new releases, send me
+mail.
+
+Phil Budne <phil@cs.bu.edu>
 
