@@ -155,14 +155,7 @@ dump_dyn() {
 	    break;
 	}
 
-	/* XXX this is BKSIZE */
-	if (D_F(dp) & STTL) {
-	    a += DESCR*(4+((D_V(dp)-1)/CPD+1));
-	}
-	else {
-	    /* XXX scan for pointers? */
-	    a += D_V(dp) + DESCR;
-	}
+	a += X_BKSIZE(dp);		/* XXX not tested */
     }
 }
 
