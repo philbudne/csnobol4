@@ -102,8 +102,9 @@ PML_OBJ=host.obj, sys.obj, exit.obj, execute.obj, sqrt.obj, \
 	file.obj, delete.obj, rename.obj, findunit.obj, \
 	getstring.obj, retstring.obj
 
-# define preprocessor aliases for SIL subroutine names which conflict
-# with runtime names (both are upper-case names)
+# define preprocessor aliases for SIL and snolib subroutine names
+# which conflict with C runtime names (all are upper-case names)
+
 CFLAGS=	$(CCFLAGS) $(TCPFLAGS)\
 	/DEFINE=(ANSI_STRINGS,NO_OFF_T,TTY_READ_RAW,TTY_READ_COOKED,\
 		ANY=XANY,COS=XCOS,DATE=XDATE,DIV=XDIV,\
