@@ -1,0 +1,3 @@
+	&alphabet any("xyzabc123")  $ output fail
+	"the quick brown fox jumped" notany("etian")  $ output fail
+end
