@@ -67,6 +67,7 @@ usage( jname )
     fprintf(stderr, "\tsize of pattern match stack in bytes (default: %d)\n",
 	    SPDLDR);
     p( "\n");
+    fprintf(stderr, "in memory region sizes a suffix of 'k' (1024) can be used\n");
     fprintf(stderr, "descriptor size is %d bytes\n", DESCR );
     exit(1);
 }
