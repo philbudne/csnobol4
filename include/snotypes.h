@@ -1,5 +1,7 @@
 /* $Id$ */
 
+/* NOTE! int_t and real_t should be the same size!!! */
+
 typedef long int_t; 			/* used to hold integers, addrs */
 typedef float real_t;
 
@@ -35,19 +37,11 @@ union addr {
 /*
  * maximum object sizes for various v-field sizes;
  *
- * with byte addressing (CPA == 1)
  *			max object size
  * v field	DESCR	bytes	DESCRs
  * 16b		8B	64K	8K
  * 24b		8B	16M	2M
  * 31b		12B	2G	170M
- *
- * with DESCR addressing (CPA == DESCR)
- *			max object size
- * v field	DESCR	bytes	DESCRs
- * 16b		8B	512K	64K
- * 24b		8B	16M	128KB
- * 31b		12B	24G	2G
  *
  * max object size in bytes determines maximum string length
  * max object size in DESCRs determines maximum size for;
@@ -59,8 +53,14 @@ union addr {
  */
 
 /* addressing unit is "char" */
-#define CPA	1			/* chars per addr */
-#define CPD	DESCR			/* chars per descr */
+#define CPA	1			/* chars per addr (for BUFLEN) */
+
+/* chars per descr (for BKSIZE,GETLTH) */
+#define CPD	DESCR
+
+/*
+ * descriptor; the basic SIL data type
+ */
 
 struct descr {
     union addr a;			/* address (new: v) */
