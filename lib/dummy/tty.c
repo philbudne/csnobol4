@@ -1,6 +1,7 @@
 /* $Id$ */
 
 #include <stdio.h>
+#include "h.h"				/* for FALSE */
 
 /*
  * tty mode, echo
