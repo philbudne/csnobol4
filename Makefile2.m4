@@ -387,9 +387,9 @@ system.o: $(SYSTEM_C)
 
 AUX_OBJS= _OBJS
 
-SNOLIB_OBJS= chop.o cos.o delete.o environ.o exit.o exp.o file.o \
-	fork.o getstring.o host.o log.o rename.o retstring.o sin.o \
-	sprintf.o sqrt.o sys.o tan.o $(AUX_OBJS)
+SNOLIB_OBJS= chop.o cos.o delete.o environ.o execute.o exit.o exp.o \
+	file.o fork.o getstring.o host.o log.o rename.o retstring.o \
+	sin.o sprintf.o sqrt.o sys.o tan.o $(AUX_OBJS)
 
 $(SNOLIB_A): $(SNOLIB_OBJS)
 	rm -f $(SNOLIB_A)
