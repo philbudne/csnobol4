@@ -51,9 +51,9 @@ struct vars {
     void *v_endex_jmpbuf;
 #endif /* ENDEX_LONGJMP defined */
 
-#ifdef USE_WINSOCK_H
+#ifdef HAVE_WINSOCK_H
     int v_wsock_init;
-#endif /* USE_WINSOCK_H */
+#endif /* HAVE_WINSOCK_H defined */
 };
 
 #define res	(varp->v_res)
