@@ -35,6 +35,7 @@ MSTIME_C=lib/bsd/mstime.c
 ORDVST_C=lib/ordvst.c
 PAIR_C=lib/pair.c
 PAT_C=lib/pat.c
+PML_C=lib/pml.c
 REALST_C=lib/realst.c
 REPLACE_C=lib/replace.c
 STREAM_C=lib/stream.c
@@ -78,13 +79,13 @@ SMALL_SNO=snobol4
 OBJS=	main.o snobol4.o data.o data_init.o syn.o bal.o \
 	convert.o date.o dump.o dynamic.o endex.o exp.o hash.o init.o \
 	intspc.o io.o lexcmp.o load.o mstime.o ordvst.o pair.o pat.o \
-	realst.o replace.o str.o stream.o top.o tree.o version.o \
-	$(CONFIG_OBJ)
+	pml.o realst.o replace.o str.o stream.o top.o tree.o \
+	version.o $(CONFIG_OBJ)
 
 SRCS=	main.c snobol4.c data.c data_init.c $(BAL_C) $(CONVERT_C) \
 	$(DATE_C) $(DUMP_C) $(DYNAMIC_C) $(ENDEX_C) $(EXP_C) $(HASH_C) \
-	$(INIT_C) $(INTSPC_C) $(IO_C) $(LEXCMP_C) $(LOAD_C) \
-	$(MSTIME_C) $(ORDVST_C) $(PAIR_C) $(PAT_C) $(REALST_C) \
+	$(INIT_C) $(INTSPC_C) $(IO_C) $(LEXCMP_C) $(LOAD_C) $(MSTIME_C) \
+	$(ORDVST_C) $(PAIR_C) $(PAT_C) $(PML_C) $(REALST_C) \
 	$(REPLACE_C) $(STREAM_C) $(STR_C) $(TOP_C) $(TREE_C) version.c \
 	$(CONFIG_SRC)
 
@@ -186,6 +187,9 @@ pair.o:	$(PAIR_C)
 pat.o:	$(PAT_C)
 	$(CC) $(CFLAGS) -c $(PAT_C)
 
+pml.o:	$(PML_C)
+	$(CC) $(CFLAGS) -c $(PML_C)
+
 realst.o: $(REALST_C)
 	$(CC) $(CFLAGS) -c $(REALST_C)
 
@@ -242,7 +246,7 @@ realclean: clean
 	v311.sil syntax.tbl procs global.procs \
 	genc.sno gensyn.sno gendata.sno \
 	main.c charset.c data_init.c version.c \
-	parms.h mlink.h mdata.h \
+	parms.h mlink.h mdata.h pml.h \
 	lib include config test bugs \
 	$(GENERATED) \
 	cc-M'
