@@ -35,11 +35,6 @@ GETENV( LA_ALIST ) LA_DCL
     char buf[256];			/* XXX */
     char *env;
 
-    getstring( LA_PTR(0), buf, sizeof(buf) );
-    env = getenv(buf);
-
-    if (env) {
-	RETSTR(env, strlen(env));
-    }
-    RETNULL;
+    getstring(LA_PTR(0), buf, sizeof(buf) );
+    RETSTR(getenv(buf));
 }

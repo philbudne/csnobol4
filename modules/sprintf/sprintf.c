@@ -3,7 +3,7 @@
 /*
  * Format single int or float
  *
- * this is primarily a test of RETSTR();  
+ * this is primarily a test of RETSTR()
  * CONVERT() should do radix conversions (like in SITBOL)!!
  *
  * original 6/94
@@ -34,19 +34,19 @@
 int
 SPRINTF( LA_ALIST ) LA_DCL
 {
-    char fmt[256];			/* XXX */
-    char buf[256];			/* XXX */
+    char fmt[1024];			/* XXX */
+    char buf[1024];			/* XXX */
 
-    getstring( LA_PTR(0), fmt, sizeof(fmt) );
+    getstring(LA_PTR(0), fmt, sizeof(fmt));
     switch (LA_TYPE(1)) {
     case I:
-	sprintf( buf, fmt, LA_INT(1) );
+	sprintf(buf, fmt, LA_INT(1));
 	break;
     case R:
-	sprintf( buf, fmt, LA_REAL(1) );
+	sprintf(buf, fmt, LA_REAL(1));
 	break;
     default:
 	RETFAIL;
     }
-    RETSTR(buf, strlen(buf));
+    RETSTR(buf);
 }

@@ -44,10 +44,12 @@ HOST( LA_ALIST ) LA_DCL
 	char os[256], hw[256];
 	extern const char snoname[], vers[];
 
+	/* use routines from SYSDEP/sys.c; */
 	osname(os);
 	hwname(hw);
+
 	sprintf(buf, "%s:%s:%s %s", hw, os, snoname, vers);
-	RETSTR(buf, strlen(buf));
+	RETSTR(buf);
     }
 
     /* first arg must be int (try to convert to int?) */
@@ -57,9 +59,7 @@ HOST( LA_ALIST ) LA_DCL
 
     switch (LA_INT(0)) {
     case 0:				/* HOST(0); all parameters (or -u) */
-	if (params)
-	    RETSTR(params, strlen(params));
-	RETSTR("",0);			/* else return null string */
+	RETSTR(params);
 
     case 1:				/* HOST(1,s); run subprocess */
 	RETTYPE = I;			/* oof! blast return type! */
@@ -77,9 +77,8 @@ HOST( LA_ALIST ) LA_DCL
 
 	n = LA_INT(1);
 	if (n < 0 || n >= argc)
-	    break;			/* out of range */
-
-	RETSTR(argv[n], strlen(argv[n])); /* return n'th arg */
+	    break;			/* out of range; fail */
+	RETSTR(argv[n]);		/* return n'th command line arg */
 
     case 3:				/* HOST(3); first unused argument */
 	RETTYPE = I;			/* oof! blast return type! */
@@ -89,11 +88,11 @@ HOST( LA_ALIST ) LA_DCL
 	if (nargs < 2 || LA_TYPE(1) != S) {
 	    RETFAIL;
 	}
-	getstring( LA_PTR(1), buf, sizeof(buf));
+	getstring(LA_PTR(1), buf, sizeof(buf));
 	env = getenv(buf);
 	if (!env)
-	    break;
-	RETSTR(env, strlen(env));
+	    break;			/* fail if no such variable */
+	RETSTR(env);
 
     default:
 	break;
