@@ -1,0 +1,15 @@
+* $Id$
+*	execute a shell command line and capture stdout
+*	line shell backquotes (hence the name)
+*	p budne, june 20, 1994
+
+*	optional second arg is string to use to seperate lines
+
+	DEFINE("BQ(COMMAND,OFS)")			:(END_BQ)
+BQ	INPUT(.X,99,,'|' COMMAND)			:F(FRETURN)
+	OFS = IDENT(OFS) ' '
+	BQ = X						:F(FRETURN)
+BQL	BQ = BQ OFS X					:S(BQL)
+	ENDFILE(99)
+	DETACH(.X)					:(RETURN)
+END_BQ
