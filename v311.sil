@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.5  93/11/10  01:28:29  phil
+* [PLB2] made space for up to 50 user function at end of FNLIST
+* 
 * Revision 1.4  93/11/02  13:35:01  phil
 * [PLB1] dropped sequence field size (SEQSIZ) to zero!
 * 
@@ -315,8 +318,8 @@ T      EQU     5		   TABLE
        TITLE   'Program Initialization'
 BEGIN  INIT    ,		   Initialize system
        ISTACK  ,		   Initialize stack
-       OUTPUT  OUTPUT,TITLEF	   Title listing
-       OUTPUT  OUTPUT,SOURCF	   Print attribution
+       OUTPUT  PUNCH,TITLEF	   [PLB3] Title listing
+       OUTPUT  PUNCH,SOURCF	   [PLB3] Print attribution
        MSTIME  TIMECL		   Time in compiler
        RCALL   SCBSCL,BLOCK,OCALIM Allocate block for object code
        MOVD    OCSVCL,SCBSCL	   Save object code pointer
@@ -391,10 +394,10 @@ XLATP  AEQLC   STYPE,EOSTYP,,XLAEND
        STREAM  XSP,TEXTSP,IBLKTB,COMP7,,COMP7
 *				   Analyze remainder of card
 XLAEND AEQLC   ESAICL,0,,XLATSC    Were there any compilation errors?
-       OUTPUT  OUTPUT,ERRCF	   Print message of errors
+       OUTPUT  PUNCH,ERRCF	   [PLB3] Print message of errors
        BRANCH  XLATND
 *_
-XLATSC OUTPUT  OUTPUT,SUCCF	   Print message of no errors
+XLATSC OUTPUT  PUNCH,SUCCF	   [PLB3] Print message of no errors
 XLATND SETAC   UNIT,0		   Reset input unit
        SETAC   LPTR,0		   Reset last label pointer
        SETAC   OCLIM,0		   Reset limit on object code
@@ -6072,7 +6075,7 @@ FNLIST DESCR   FNLIST,TTL+MARK,FNCPLE-FNLIST-DESCR
        DESCR   UNLDSP,0,0
        DESCR   VALFN,FNC,0	   VALUE(S)
        DESCR   VALSP,0,0
-       ARRAY   50*2		   Space for 50 more functions
+       ARRAY   50*2		   [PLB2] Space for 50 more functions
 FNCPLE LHERE   ,		   End of function pair list
 OPTBL  DESCR   OPTBL,TTL+MARK,OPTBND-OPTBL-DESCR
 ADDFN  DESCR   ADD,0,2		   X + Y    addition
