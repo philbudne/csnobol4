@@ -171,9 +171,6 @@ int getredirection __P((int, char **));
 #ifdef NEED_BINDRESVPORT
 extern int bindresvport __P((int));
 #endif /* NEED_BINDRESVPORT */
-#ifdef NEED_BINDRESVPORT_SA
-extern int bindresvport_sa __P((int, struct sockaddr *));
-#endif /* NEED_BINDRESVPORT_SA */
 
 /* from popen.c */
 #ifdef NEED_POPEN_DECL
