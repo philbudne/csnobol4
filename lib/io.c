@@ -741,19 +741,19 @@ io_read( dp, sp )			/* STREAD */
 	fp->last = LAST_INPUT;
 
 	if (fp->flags & FL_TTY) {
-	    int raw, noecho;
-
-	    raw = (fp->flags & FL_BINARY) != 0; /* raw (have FL_CHAR?) */
-	    noecho = (fp->flags & FL_NOECHO) != 0; /* noecho */
-	    tty_mode( fp->f, raw, noecho, recl );
-#ifdef TTY_READ
-	    len = tty_read(f, cp, recl, raw, noecho);
-	    if (len > 0)
-		break;
-#endif /* TTY_READ defined */
+	    tty_mode( fp->f,
+		     (fp->flags & FL_BINARY) != 0,
+		     (fp->flags & FL_NOECHO) != 0,
+		     recl );
 	} /* FL_TTY set */
 
-	if (fp->flags & FL_BINARY) {
+	if (fp->flags & FL_BINARY)
+#ifdef TTY_READ
+	    if (fp->flags & FL_TTY)
+		len = tty_read(f, cp, recl,
+			       (fp->flags & FL_NOECHO) != 0, fp->fname);
+	    else
+#endif /* TTY_READ defined */
 #ifndef NO_UNBUF_READ
 	    if (fp->flags & FL_UNBUF)
 		len = read(fileno(f), cp, recl);
