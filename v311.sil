@@ -1,6 +1,12 @@
 * $Id$
 *
 * $Log$
+* Revision 1.82  2001/12/18 02:05:51  phil
+* [PLB70] use CASECL to determine if compiler done at FTLEN2
+* ETMCL can be zero, on a fast machine (1MHz Athlon) and an O/S
+* with poor runtime resolution (Linux).  Result was all execution
+* time was charged to compiler, and execution time reported as zero!
+*
 * Revision 1.81  1998/12/29 06:14:48  phil
 * [PLB69] move CASECL to alphabeticly correct location
 *
@@ -771,7 +777,7 @@ XLATND AEQLC   EXECCL,0,,END	   Just compile? Quiting time!	[PLB34]
        SETAC   LISTCL,0		   Turn off listing switch
        SETAC   COMPCL,0		   Turn off error listings	[PLB49]
        MSTIME  ETMCL		   Time out compiler
-       SUBTRT  TIMECL,ETMCL,TIMECL Compute elapsed time
+       SBREAL  TIMECL,ETMCL,TIMECL Compute elapsed time		[PLB71]
        SETAC   CNSLCL,1		   Permit label redefinition
        RCALL   ,INTERP,,(MAIN1,MAIN1,MAIN1)
 *				   Call interpreter
@@ -5187,8 +5193,8 @@ FENTR4 AEQLC   WCL,1,,FENTR5	   Leave paren if no arguments
        SHORTN  PROTSP,1		   Delete last comma
 FENTR5 APDSP   PROTSP,RPRNSP	   Append right parenthesis
        MSTIME  ZPTR		   Get time
-       SUBTRT  ZPTR,ZPTR,ETMCL	   Compute elapsed time
-       INTSPC  XSP,ZPTR		   Convert to STRING
+       SBREAL  ZPTR,ZPTR,ETMCL	   Compute elapsed time		[PLB71]
+       REALST  XSP,ZPTR		   Convert to STRING		[PLB71]
        APDSP   PROTSP,ETIMSP	   Append time message
        APDSP   PROTSP,XSP	   Append time
        STPRNT  IOKEY,OUTBLK,PROTSP Print trace message
@@ -5225,8 +5231,8 @@ KEYTR4 APDSP   PROTSP,XSP	   Append name of keyword
        APDSP   PROTSP,EQLSP	   Append equal sign
 KEYTR5 APDSP   PROTSP,YSP	   Append value
        MSTIME  YPTR		   Get time
-       SUBTRT  YPTR,YPTR,ETMCL	   Compute elapsed time
-       INTSPC  XSP,YPTR		   Convert time to string
+       SBREAL  YPTR,YPTR,ETMCL	   Compute elapsed time		[PLB71]
+       REALST  XSP,YPTR		   Convert time to STRING	[PLB71]
        APDSP   PROTSP,ETIMSP	   Append time message
        APDSP   PROTSP,XSP	   Append time
        STPRNT  IOKEY,OUTBLK,PROTSP Print trace message
@@ -5300,8 +5306,8 @@ TRV    LOCSP   XSP,YPTR		   Get specifier
        APDSP   TRACSP,XSP	   Append string
        APDSP   TRACSP,QTSP	   Append quote
 TRPRT  MSTIME  YPTR		   Get time
-       SUBTRT  YPTR,YPTR,ETMCL	   Compute time in interpreter
-       INTSPC  XSP,YPTR		   Convert to STRING
+       SBREAL  YPTR,YPTR,ETMCL	   Compute time in interpreter	[PLB71]
+       REALST  XSP,YPTR		   Convert to STRING		[PLB71]
        APDSP   TRACSP,ETIMSP	   Append time message
        APDSP   TRACSP,XSP	   Append time
        STPRNT  IOKEY,OUTBLK,TRACSP Print trace message
@@ -6413,8 +6419,8 @@ SSNOFX ACOMPC  ZPTR,0,,RETNUL,FAIL NULL string?
 TIME   PROC    ,		   TIME()
        RCALL   ,ARGVAL,,FAIL	   Get rid of argument
        MSTIME  ZPTR		   Get elapsed time
-       SUBTRT  ZPTR,ZPTR,ETMCL	   Compute time in interpreter
-       SETVC   ZPTR,I		   Insert INTEGER data type
+       SBREAL  ZPTR,ZPTR,ETMCL	   Compute time in interpreter	[PLB71]
+       SETVC   ZPTR,R		   Insert REAL data type	[PLB71]
        BRANCH  RTZPTR		   Return time
 *_
 *---------------------------------------------------------------------*
@@ -6485,12 +6491,12 @@ FTLEN3 MULTC   YCL,ERRTYP,DESCR					E3.10.6
 FTLEN2 ISTACK  ,		   Reset system stack
        AEQLC   COMPCL,0,,FTLEN4	   Was compiler done?		[PLB70]
        MSTIME  ETMCL		   Time out compiler
-       SUBTRT  TIMECL,ETMCL,TIMECL Compute time in compiler
+       SBREAL  TIMECL,ETMCL,TIMECL Compute time in compiler	[PLB71]
        SETAC   ETMCL,0		   Set interpreter time to 0
        BRANCH  FTLEN1		   Join end game
 *_
 FTLEN4 MSTIME  XCL		   Time out interpreter
-       SUBTRT  ETMCL,XCL,ETMCL	   Compute time in interpreter
+       SBREAL  ETMCL,XCL,ETMCL	   Compute time in interpreter	[PLB71]
 FTLEN1 AEQLC   DMPCL,0,,END1	   Check &DUMP
        AEQLC   NODPCL,0,DMPNO	   Check storage condition
        ORDVST  ,		   Order string structures
@@ -6527,8 +6533,12 @@ END1   AEQLC   STATCL,0,,ENDALL	   Skip stats if suppressed	[PLB12]
        BRANCH  AVTIME		   Join end game
 *_
 END2   INTRL   EXN2CL,EXN2CL	   Convert execution total to REAL
-       INTRL   XCL,ETMCL	   Convert execution time to REAL
-       DVREAL  FCL,XCL,EXN2CL	   Compute average time
+       DVREAL  FCL,ETMCL,EXN2CL	   Compute average time		[PLB71]
+%{
+	/* convert to microseconds [PLB71] */
+	/* First (and only) use of REAL constant, so just escape to C */
+	D_RV(FCL) *= 1000.0;
+%}
 AVTIME OUTPUT  PUNCH,TIMEPS,(FCL)  Print average time		[PLB5]
 ENDALL ENDEX   ABNDCL						E3.2.2
 *_
@@ -6713,8 +6723,8 @@ DMPCL  DESCR   0,0,I		   &DUMP
        DESCR   DUMPSP,0,0
 RETCOD DESCR   0,0,I		   &CODE
        DESCR   CODESP,0,0
-CASECL DESCR   1,0,I		   &CASE (folding)		[PLB15][PLBXX]
-       DESCR   CASESP,0,0					[PLB15][PLBXX]
+CASECL DESCR   1,0,I		   &CASE (folding)		[PLB15][PLB71]
+       DESCR   CASESP,0,0					[PLB15][PLB71]
 ANCCL  DESCR   0,0,I		   &ANCHOR
        DESCR   ANCHSP,0,0
 ABNDCL DESCR   0,0,I		   &ABEND
@@ -8101,14 +8111,14 @@ OPNLIT STRING  'Unclosed literal'
 * [PLB38] use %D/%F for stats, added file:line
 ALOCFL FORMAT  'Insufficient storage for initialization\n'	E3.10.6
 ARTHNO FORMAT  '%D Arithmetic operations performed\n'
-CMTIME FORMAT  '%D ms. Compilation time\n'
+CMTIME FORMAT  '%F ms. Compilation time\n'			[PLB71]
 EJECTF FORMAT  '\f'
 ERRCF  FORMAT  'ERRORS DETECTED IN SOURCE PROGRAM\n\n'
 EXNO   FORMAT  '%D Statements executed, %d failed\n'
 FTLCF  FORMAT  '%v:%d: Error %d in statement %d at level %d\n'
 *								E3.4.1
 INCGCF FORMAT  'INCOMPLETE STORAGE REGENERATION.\n'
-INTIME FORMAT  '%D ms. Execution time\n'
+INTIME FORMAT  '%F ms. Execution time\n'			[PLB71]
 LASTSF FORMAT  '%v:%d: Last statement executed was %d\n'
 NODMPF FORMAT  'TERMINAL DUMP NOT POSSIBLE.\n'
 NRMEND FORMAT  'Normal termination at level %d\n'
@@ -8124,7 +8134,7 @@ STGENO FORMAT  '%D Regenerations of dynamic storage\n'
 SUCCF  FORMAT  'No errors detected in source program\n\n'
 SYSCMT FORMAT  '%v:%d: Caught signal %d in statement %d at level %d\n'
 *								E3.4.1[PLB47]
-TIMEPS FORMAT  '%F ms. Average per statement executed\n'	[PLB18]
+TIMEPS FORMAT  '%F us. Average per statement executed\n'	[PLB18][PLB71]
 TITLEF FORMAT  'SNOBOL4 (Version 3.11, May 19, 1975)\n'
 *								V3.11
 WRITNO FORMAT  '%D Writes performed\n'
