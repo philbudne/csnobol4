@@ -351,8 +351,8 @@ io_printf(va_alist)			/* OUTPUT */
 	    break;
 	case 'S':			/* spec */
 	    dp = va_arg(vp, struct descr *);
-	    sprintf(lp, "%*s", S_L(dp), S_SP(dp));
-	    lp += strlen(lp);
+	    strncpy(lp, S_SP(s), S_L(s));
+	    lp += S_L(s);
 	    break;
 	case 'v':			/* variable */
 	    dp = va_arg(vp, struct descr *);
@@ -361,8 +361,8 @@ io_printf(va_alist)			/* OUTPUT */
 		struct spec s[1];
 
 		X_LOCSP(s, dp);
-		sprintf(lp, "%*s", S_L(s), S_SP(s));
-		lp += strlen(lp);
+		strncpy(lp, S_SP(s), S_L(s));
+		lp += S_L(s);
 	    }
 	    break;
 	default:
