@@ -90,6 +90,7 @@ GETSTRING_C=[.lib.snolib]getstring.c
 HOST_C=[.lib.snolib]host.c
 LOG_C=[.lib.snolib]log.c
 LOGIC_C=[.lib.snolib]logic.c
+ORD_C=[.lib.snolib]ord.c
 RENAME_C=[.lib.snolib]rename.c
 RETSTRING_C=[.lib.snolib]retstring.c
 SIN_C=[.lib.snolib]sin.c
@@ -101,11 +102,11 @@ TAN_C=[.lib.snolib]tan.c
 
 PML_OBJ=chop.obj, cos.obj, delete.obj, execute.obj, exit.obj, \
 	exp.obj, file.obj, findunit.obj, getstring.obj, host.obj, \
-	log.obj, logic.obj, rename.obj, retstring.obj sin.obj, \
+	log.obj, logic.obj, ord.obj, rename.obj, retstring.obj, sin.obj, \
 	sqrt.obj, sset.obj, sys.obj, tan.obj
 
 CFLAGS=	$(CCFLAGS) $(TCPFLAGS) /DEFINE=HAVE_CONFIG_H \
-	/INCLUDE=(SYS$DISK:[],SYS$DISK:[.INCLUDE],SYS$DISK:[.CONFIG.VMS])
+	/INCLUDE=(SYS$DISK:[.CONFIG.VMS],SYS$DISK:[],SYS$DISK:[.INCLUDE])
 
 ################
 
@@ -275,6 +276,9 @@ log.obj : $(LOG_C)
 
 logic.obj : $(LOGIC_C)
 	$(CC) $(CFLAGS) $(LOGIC_C)
+
+ord.obj : $(ORD_C)
+	$(CC) $(CFLAGS) $(ORD_C)
 
 rename.obj : $(RENAME_C)
 	$(CC) $(CFLAGS) $(RENAME_C)
