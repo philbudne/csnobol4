@@ -31,6 +31,8 @@
 /* machine generated: */
 #include "equ.h"			/* I & R */
 
+#include <stdio.h>
+
 int
 SPRINTF( LA_ALIST ) LA_DCL
 {

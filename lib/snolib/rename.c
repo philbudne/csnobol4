@@ -18,6 +18,8 @@
 #include "macros.h"
 #include "load.h"
 
+#include <stdio.h>			/* rename */
+
 int
 RENAME( LA_ALIST ) LA_DCL
 {
