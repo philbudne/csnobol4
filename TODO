@@ -1,27 +1,20 @@
 $Id$
 
 6. do something better with signals?!
-6b. just report which one in exit code?
 
 7. listings;
 7a. send listings to seperate file!
 7b. select file on command line!
 7i. show include level in listing!
 
-9c. add TTY variable for both input/output to /dev/tty (like SITBOL)?
-
 10. Improve I/O
 10a. Honor I/O flags in filenames (like Catspaw SPITBOL)??
 10b. Implement SITBOL style formats??
-10c. extensions to allow opening sockets?!
 10d. extensions to allow opening ptys?
 10e. allow string for unit (ala SPITBOL)?
 	do away with units (ala SITBOL)?!!
 10f. get rid of record lengths
 10g. get rid of space padding in compiler (honor STREAD return len)
-
-13. better floating point conversion:
-13a. supress trailing zeroes (ie; 1.0000)
 
 20. add to snolib;
 	LINK()
@@ -53,8 +46,6 @@ $Id$
 36. Have gensyn read file of character sets?
 	include at top of syntax.tbl?
 
-37. Implement lseek functionality (SPITBOL "SET")?
-
 39. Investigate better ordering for inlining (replace tsort + reverse)
     Write in SNOBOL!!
     Possible weghting factors;
@@ -72,6 +63,6 @@ $Id$
 
 42. finish gendep2
 
-43. invetigate inlining genc (read whole source as digraph, walk
+43. investigate inlining genc (read whole source as digraph, walk
 	to generate C code)
 
