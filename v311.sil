@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.35  1995/07/28  18:40:34  phil
+* [PLB27] change GNVARC to GENVUP (what it's called in SNOBOL4+ sources)
+*
 * Revision 1.34  1995/01/06  18:25:37  phil
 * [PLB26] 11/3/94 fixed case sensitivity for local variables
 *
@@ -1311,7 +1314,7 @@ ELENST PUSH    ELEMND		   Save current tree
 ELEFNC SHORTN  XSP,1		   Delete open parenthesis
        RCALL   XPTR,GENVUP,(XSPPTR)
 *				   [PLB17,27]
-				   Generate variable for function name
+*				   Generate variable for function name
        RCALL   XCL,FINDEX,(XPTR)   Find function descriptor
        RCALL   ELEXND,BLOCK,CNDSIZ Allocate block for tree node
        PUTDC   ELEXND,CODE,XCL	   Insert function descriptor in node
@@ -1355,7 +1358,7 @@ ELEMN4 ACOMP   XCL,YCL,ELEMNR,ELEMNR
 ELEARY SHORTN  XSP,1		   Remove left bracket
        RCALL   XPTR,GENVUP,(XSPPTR)
 *				   [PLB17,27]
-				   Generate variable for array or table
+*				   Generate variable for array or table
        RCALL   ELEXND,BLOCK,CNDSIZ Allocate block for tree node
        PUTDC   ELEXND,CODE,ITEMCL  Insert ITEM function
        AEQLC   ELEMND,0,,ELEMN8    Is tree empty?
@@ -1949,6 +1952,41 @@ VARV2  VEQLC   XPTR,S,,RTXNAM	   Is it STRING?
 *_
 VARVC  RCALL   XPTR,INVOKE,(XPTR),(FAIL,VARV1,VARV2)
 *				   Evaluate function
+*_
+*---------------------------------------------------------------------*
+*
+* New [PLB28]
+*      Evaluation of argument as identifier, honoring &CASE.
+*
+*      Thanks to Mark Emmer for the name, behavior and use of this
+*      function.
+*
+*      This is (ugh) a copy of VARVAL.
+*      Just set a flag, and jump to VARVAL?
+
+VARVUP PROC    VARVAL		   Eval argument as identifier
+       AEQLC   CASECL,0,,VARVAL	   Skip out if case sensitve
+       INCRA   OCICL,DESCR	   Increment offset
+       GETD    XPTR,OCBSCL,OCICL   Get object code descriptor
+       TESTF   XPTR,FNC,,VARVUC	   Check for function
+VARVU1 AEQLC   INSW,0,,VARVU4	   Check &INPUT
+       LOCAPV  ZPTR,INATL,XPTR,VARVU4
+*				   Look for input association
+       GETDC   ZPTR,ZPTR,DESCR	   Get input association
+       RCALL   XPTR,PUTIN,(ZPTR,XPTR),(FAIL,RTXVUP)
+*				   Perform input
+*_
+VARVU4 GETDC   XPTR,XPTR,DESCR	   Get value
+VARVU2 VEQLC   XPTR,S,,RTXVUP	   Is it STRING?
+       VEQLC   XPTR,I,INTR1,GENVIX Convert INTEGER to STRING
+* NOTE: if REAL->STRING conversion implemented, must fold result!!
+*_
+VARVUC RCALL   XPTR,INVOKE,(XPTR),(FAIL,VARVU1,VARVU2)
+*				   Evaluate function
+*_
+* here with newly evaluated string.
+* XXX check if mixed case, fold if needed.
+RTXVUP BRANCH  RTXNAM		   Return by name
 *_
 *---------------------------------------------------------------------*
 *
@@ -3534,7 +3572,7 @@ LOAD11 PUSH    ZEROCL		   Save 0 for unspecified type
 *      UNLOAD(F)
 *
 UNLOAD PROC    ,		   UNLOAD(F)
-       RCALL   XPTR,VARVAL,,FAIL   Get function name
+       RCALL   XPTR,VARVUP,,FAIL   [PLB28] Get function name
        RCALL   ZCL,FINDEX,XPTR	   Locate function descriptor
        PUTDC   ZCL,0,UNDFCL	   Undefine function
        LOCSP   XSP,XPTR 	   Get specifier
@@ -4114,11 +4152,11 @@ PUTI   INTSPC  IOSP,IO2PTR	   Convert INTEGER to STRING
 TRACE  PROC    ,		   TRACE(V,R,T,F)
        RCALL   XPTR,IND,,FAIL	   Get name of variable
        PUSH    XPTR		   Save name
-       RCALL   YPTR,VARVAL,,FAIL   Get trace type
+       RCALL   YPTR,VARVUP,,FAIL   [PLB28] Get trace type
        PUSH    YPTR		   Save type
        RCALL   WPTR,ARGVAL,,FAIL   Get tag
        PUSH    WPTR		   Save tag
-       RCALL   ZPTR,VARVAL,,FAIL   Get trace function
+       RCALL   ZPTR,VARVUP,,FAIL   [PLB28] Get trace function
        POP     (WPTR,YPTR,XPTR)    Restore saved arguments
        DEQL    YPTR,NULVCL,TRAC5   Is type defaulted??
        MOVD    YPTR,VALTRS	   Set up VALUE default
@@ -4168,7 +4206,7 @@ TRAC4  RCALL   TPTR,BLOCK,TWOCL    Allocate new pair list
 STOPTR PROC    ,		   STOPTR(T,R)
        RCALL   XPTR,IND,,FAIL	   Get name of variable
        PUSH    XPTR		   Save name
-       RCALL   YPTR,VARVAL,,FAIL   Get trace respect
+       RCALL   YPTR,VARVUP,,FAIL   [PLB28] Get trace respect
        POP     XPTR
        DEQL    YPTR,NULVCL,STOPT2  Check for defaulted respect
        MOVD    YPTR,VALTRS	   Set up VALUE as default
@@ -4549,6 +4587,7 @@ IND    PROC    ,		   $X
        VEQLC   XPTR,I,,GENVIX	   Convert INTEGER
        VEQLC   XPTR,K,INTR1,RTXNAM KEYWORD is like NAME
 *_
+* XXX check here for folding???
 INDV   AEQLC   XPTR,0,RTXNAM,NONAME
 *				   Be sure string is not null
 *_
@@ -4712,7 +4751,7 @@ APPLY  PROC    ,		   APPLY(F,A1,...,AN)
        DECRA   XCL,1		   Decrement to skip function name
        ACOMPC  XCL,1,,,ARGNER					E3.3.3
        PUSH    XCL		   Save argument count
-       RCALL   XPTR,VARVAL,,FAIL   Get function name
+       RCALL   XPTR,VARVUP,,FAIL   [PLB28] Get function name
        POP     XCL		   Restore argument count
        LOCAPV  XPTR,FNCPL,XPTR,UNDF
 *				   Locate function
@@ -4743,7 +4782,7 @@ LOCAL  PROC    ARG		   LOCAL(F,N)
 FIELDS PROC    ARG		   FIELD(F,N)
        PUSH    (ZEROCL,ZEROCL,DATCL)
 *				   Save FIELD indicators
-ARG1   RCALL   XPTR,VARVAL,,FAIL   Get function name
+ARG1   RCALL   XPTR,VARVUP,,FAIL   [PLB28] Get function name
        PUSH    XPTR		   Save function name
        RCALL   XCL,INTVAL,,FAIL    Get number
        ACOMP   ZEROCL,XCL,FAIL,FAIL
@@ -4825,7 +4864,7 @@ COPY   PROC    ,		   COPY(X)
 CNVRT  PROC    ,		   CONVERT(X,T)
        RCALL   ZPTR,ARGVAL,,FAIL   Get object to be converted
        PUSH    ZPTR		   Save object
-       RCALL   YPTR,VARVAL,,FAIL   Get data type target
+       RCALL   YPTR,VARVUP,,FAIL   [PLB28] Get data type target
        POP     ZPTR		   Restore object
        LOCAPV  XPTR,DTATL,YPTR,INTR1
 *				   Look for data type code
@@ -5120,9 +5159,9 @@ DUPL1  APDSP   TSP,XSP		   Append a copy
 *      OPSYN(F1,F2,N)
 *
 OPSYN  PROC    ,		   OPSYN(F,G,N)
-       RCALL   XPTR,VARVAL,,FAIL   Get object function
+       RCALL   XPTR,VARVUP,,FAIL   [PLB28] Get object function
        PUSH    XPTR		   Save object function
-       RCALL   YPTR,VARVAL,,FAIL   Get image function
+       RCALL   YPTR,VARVUP,,FAIL   [PLB28] Get image function
        PUSH    YPTR		   Save image function
        RCALL   ZPTR,INTVAL,,FAIL   Get type indicator
        POP     (YPTR,XPTR)	   Restore image and object functions

@@ -3,6 +3,11 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
+7/28/95
+	timing: include config.m4 contents
+	snobol4.1: update &DUMP &ABEND and &CODE behaviors
+	v311.sil: add VARVUP (copy of VARVAL for now)
+
 5/15/95
 	hp4xx port (3/95 -pb):
 	config/hpux-68k.m4

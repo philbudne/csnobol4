@@ -5,8 +5,6 @@ rewind tests;
 		split data across files??
 
 update man page;
-	&DUMP now sorts vars
-	mention &CODE &ABEND
 	case folding bugs (and ID context; not just $(str))
 
 include version number in tar file directory
@@ -18,8 +16,11 @@ work on "configure" script
 
 GCCBUILD.COM
 
+Eliminate following line after CTLCRD:
+       AEQLC   CASECL,0,,CTLCRC	   Case sensitive?		[PLB15]
+
 fix name case folding (VARVUP)
-	GENVRC -> GENVUP
+	GNVARC -> GENVUP
 
 use "SNOLIB" path for -INCLUDE & LOAD()
 
@@ -66,6 +67,7 @@ load changes;
 ================
 
 Add DIAGNOSTICS section to man page???
+	document all error numbers/strings and reasons!!
 
 have all genc, gendata, gensyn output .[ch]2 files
 	use cmp || cp??

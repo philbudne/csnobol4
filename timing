@@ -17,6 +17,10 @@ echo ''
 echo 'ls -l config.m4 xsnobol4:'
 ls -l config.m4 xsnobol4
 echo ''
+echo 'config.m4:'
+cat config.m4
+echo '===== end config.m4 ====='
+echo ''
 echo 'size xsnobol4:'
 size xsnobol4
 
