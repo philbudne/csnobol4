@@ -43,7 +43,7 @@ GETSTAT	LINE = INPUT					:F(NOSTAT)
 
 	OUTPUT = 'Statistics for run of genc.sno'
 	OUTPUT = 'SNOBOL4 Compile time:' TAB COMP ' milliseconds'
-	OUTPUT = 'SNBOL4 Execution time:' TAB EXEC ' milliseconds'
+	OUTPUT = 'SNOBOL4 Execution time:' TAB EXEC ' milliseconds'
 	OUTPUT = 'Statements executed:' TAB STMTS
 
 * calculate usec/stmt
