@@ -1286,21 +1286,32 @@ fi
 ## check if pow() available? use dummy/expops.c if not?
 
 
-# Solaris 8 has both /usr/sbin and /usr/ucb versions?
-# (/usr/sbin version takes TOTALLY different args)
+# avoid:
+# Solaris 8 /usr/sbin/install
+# AIX /bin/install
+# SysV /etc/install, /usr/sbin/install
+# SunOS /usr/etc/install
+# IRIX /sbin/install
 
 # should always find ./install-sh
-for DIR in /usr/bin /usr/ucb /sbin /etc .; do
+for DIR in /usr/bin /usr/ucb /usr/local/bin /etc .; do
     for INSTALL in install ginstall scoinst install-sh; do
 	if [ "$INSTALL" = install ]; then
 	    IPATH=$DIR/$INSTALL
+	    if [ -d $IPATH ]; then
+		continue
+	    fi
+	    case $IPATH in
+	    /usr/sbin/install|/bin/install|/usr/etc/install|\
+		/sbin/install) continue;;
+	    esac
 	    if [ -x $IPATH ]; then
 		# avoid broken AIX installer
 		if grep dspmsg $IPATH >/dev/null; then
 		    continue
 	        fi
 		echo "using $IPATH for make install" 1>&2
-		echo "INSTALL=$IPATH"			>> $CONFIG_M4
+		echo "INSTALL=$IPATH"		>> $CONFIG_M4
 		break 2
 	    fi
 	fi
