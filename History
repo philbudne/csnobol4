@@ -2,6 +2,39 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+9/19/96 & 9/20/96
+	v311.sil:
+		canonicalized lines with two edit numbers
+			fixed some comment typos
+		don't increment &STCOUNT if &STLIMIT < 0
+			keep seperate stmt count for stats output
+		add errors for bad INCLUDE, INCLUDE open error, missing END
+		add &LINE &FILE and -LINE for real source line in errors
+			use io_file to get initial (and subsequent filenms)
+		add S4+ CTLADV proc, use for INCLUDE and LINE processing
+		put all control card tests in a row
+		add &LASTLINE &LASTFILE &ERRTEXT keywords
+		changed formats; added file/line to errors
+	lib/io.c: add NO_OFF_T, io_file
+		removed quote removal in io_include
+		implement conversions for io_printf for var/spec
+	lib/init.c: implemented -M option for multifile input
+		added SIGARG_T to SYSCUT prototype for picky compilers
+	lib/lexcmp.c: fix unequal string lengths by Keith Waclena
+	procs: add CTLADV, FILCHK, COMP1
+	genc.sno: put &TRIM = 1 back for SNOBOL4+, allow _ in args
+		pass addrs to io_printf, no more hacks for floats
+	config/hpux-pa.m4: add -D_INCLUDE_POSIX_SOURCE for non gcc builds
+	config/vms/build.com, config/vms/descrip.mms: add NO_OFF_T, SUBSTR defs
+	autoconf: added undefine hpux, interferes with include file names!
+	param.h include/macros.h: declare cstack only once (in snobol4.c)
+	cc-M: reworked for #line output (AIX)
+	Makefile2.m4: make GENERATED files newer than G2 versions
+		add comments, cleanup & quoting in kitting
+		compile, use pv
+	version.c: moved version, ifdef MAIN back (for VMS)
+		upped version to 0.98.2
+
 9/18/96
 	lib/auxil/getopt.c: fix ERR() for SUNpro (Sol2 fix)
 	configure: fixed echo to stderr (Sol2 fix)
