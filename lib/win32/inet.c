@@ -342,16 +342,20 @@ inet_close(f)
     FILE *f;
 {
     SOCKET s;
-
 #ifdef INET_IO
-    s = _get_osfhandle(fileno(f)); /* recover socket handle? */
-#else  /* INET_IO not defined */
     struct inet_file *fp = (struct inet_file *)f;
 
     s = fp->s;				/* before free()!! */
     if (fp->buffer)
 	free(fp->buffer);
     free(fp);
+#else  /* INET_IO not defined */
+    int fd;
+
+    fflush(f);
+    fd = fileno(f);
+    s = _get_osfhandle(f);		/* recover socket handle? */
+
 #endif /* INET_IO not defined */
 
     /*
@@ -362,5 +366,9 @@ inet_close(f)
      * need to wait for an FD_CLOSE event??
      * then recv() until socket drained?
      */
+#ifndef INET_IO
+    close(fd);				/* needed? */
+#endif /* INET_IO not defined */
     return closesocket(s) == 0;
-}
+} /* inet_close */
+
