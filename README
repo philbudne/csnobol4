@@ -73,9 +73,6 @@ I/O;
 	named files can be opened by supplying an optional fourth
 	argument to INPUT() and OUTPUT(), like in Catspaw SNOBOL4.
 
-	input is padded with spaces out to the default record length (80).
-	&TRIM defaults to 1, so any trailing spaces are lost on input.
-
 	by default INPUT is attached to unit 5, and standard input.
 	by default OUTPUT is attached to unit 6, and standard output.
 	by default PUNCH is attached to unit 7, and standard error!!!
@@ -90,6 +87,9 @@ Command line args;
 	-d NNN
 		Have dynamic region contain space for NNN descriptors
 		default is 25000.
+
+	-f
+		disable folding of identifiers to upper case
 
 	-k
 		Run programs with compilation errors
@@ -110,29 +110,44 @@ Acknowldgements;
 
 	First and foremost, I would like to thank Ralph Griswold, for
 	all his invaluable help and time digging up old documentation!
-	(as well as his work of 30 years ago, designing and implenting
-	the language)!
+	(as well as his work of 30 years ago, designing and
+	implementing the language)!
 
 	I would also never have suceeded without Mark Emmer of
 	Catspaw's help as well as his excellent SPARC SPITBOL
 	product!!
 
 The following have also provided help, encouragement, support, input,
-historical background, etc (in chronological order);
+historical background, testing, etc (in chronological order);
 
 	Bill Henneman
 	Andrew Koenig
 	Doug McIlroy
 	Robert Dewar
 	Alan Martin
-	Jerry Leighter
+	Jerry Leichter
+	Scott Marovich
+	Jonathan Chandross
+	Randolph J. Herber
+	Jules Gilbert
+	Phillip Lee Thomas
+	Martin. D. Waller
+	Burkhard Meissner
+	John McHugh
+	Chrystopher Nehaniv
+	Arne Larsson
 
 To build;
 
-select a suitable config file (see doc/ports.doc) from the config
-directory, and link to config.h;
+Select a config file (see doc/ports.doc) from the config directory,
+and link to config.h.
 
-	ln -s config/sunos4.h config.h
+		If you cannot find a config file for your system, try
+		"posix.m4", and if that fails (ie; sysconfig() is not
+		available), try "generic.h" (but beware -- timings may
+		not be correct)!!
+
+	ln -s config/sunos4.m4 config.m4
 	make
 
 The tar does not contain any binaries; THEY SHOULD NOT BE NEEDED
