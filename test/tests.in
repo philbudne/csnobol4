@@ -63,3 +63,5 @@ reg pad.sno
 reg breakx.sno
 # 8/31/96
 reg tab.sno
+# 9/3/96
+reg spit.sno
