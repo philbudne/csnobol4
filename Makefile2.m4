@@ -52,8 +52,11 @@ PREFIX=/usr/local
 # directory for installed binary
 BINDIR=${PREFIX}/bin
 
-# directory for man page installation
-MANDIR=${PREFIX}/man/man1
+# base directory for man pages
+MANDIR=${PREFIX}/man
+
+# directory for snobol4.1 man page
+MAN1DIR=${MANDIR}/man1
 
 # directory name for default SNOLIB (used by -INCLUDE and LOAD())
 SNOLIB_DIR=${PREFIX}/lib/snobol4
@@ -505,8 +508,8 @@ install: snobol4 pv
 	$(INSTALL) -s snobol4 $(BINDIR)
 	-rm -f $(BINDIR)/snobol4-$(VERS)
 	ln $(BINDIR)/snobol4 $(BINDIR)/snobol4-$(VERS)
-	$(INSTALL) -d $(MANDIR)
-	$(INSTALL) -m 644 doc/snobol4.1 $(MANDIR)
+	$(INSTALL) -d $(MAN1DIR)
+	$(INSTALL) -m 644 doc/snobol4.1 $(MAN1DIR)
 	$(INSTALL) -d $(SNOLIB_DIR)
 	for F in snolib/*.sno $(INSTALL_H) doc/load.doc $(GENSNOLIB); do \
 		$(INSTALL) -m 644 $$F $(SNOLIB_DIR); \
