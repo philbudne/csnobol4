@@ -12,10 +12,11 @@
  * under "#ifdef EXPORT_FOO"??
  */
 
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <dlfcn.h>
 #include <dxe2.h>
+
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
@@ -37,7 +38,6 @@ int rresvport(int portno);		/* lib/dummy/rresvport.c  */
 #endif
 
 #include <string.h>
-#include <stdlib.h>			/* malloc(), getenv() */
 
 #include "h.h"				/* __P */
 #include "snotypes.h"			/* struct descr */
@@ -53,13 +53,7 @@ int rresvport(int portno);		/* lib/dummy/rresvport.c  */
  * functions and structures.
  */
 
-/*
- * Add more, if functions are to be
- * interfaced. The first 5 and the
- * last one(exit) are essential!
- */
-
-DXE_EXPORT_TABLE_AUTO(exports)
+DXE_EXPORT_TABLE(exports)
 	DXE_EXPORT(malloc)
 	DXE_EXPORT(free)
 	DXE_EXPORT(bcopy)
@@ -72,52 +66,55 @@ DXE_EXPORT_TABLE_AUTO(exports)
 	DXE_EXPORT(retstring)
 
 	/* stdio.h */
-	DXE_EXPORT(fopen)
-	DXE_EXPORT(freopen)
+	DXE_EXPORT(__dj_stderr)
+	DXE_EXPORT(__dj_stdin)
+	DXE_EXPORT(__dj_stdout)
+	DXE_EXPORT(clearerr)
 	DXE_EXPORT(fclose)
-	DXE_EXPORT(fputc)
-	DXE_EXPORT(putc)
-	DXE_EXPORT(putchar)
-	DXE_EXPORT(fgetc)
-	DXE_EXPORT(getc)
-	DXE_EXPORT(getchar)
-	DXE_EXPORT(ungetc)
-	DXE_EXPORT(fputs)
-	DXE_EXPORT(puts)
-	DXE_EXPORT(fgets)
-	DXE_EXPORT(gets)
-	DXE_EXPORT(fwrite)
-	DXE_EXPORT(fread)
+	DXE_EXPORT(feof)
 	DXE_EXPORT(ferror)
-	DXE_EXPORT(fileno)
-	DXE_EXPORT(fprintf)
-	DXE_EXPORT(sscanf)
-	DXE_EXPORT(vfprintf)
-	DXE_EXPORT(vsprintf)
-	DXE_EXPORT(vprintf)
-	DXE_EXPORT(fscanf)
-	DXE_EXPORT(scanf)
-	DXE_EXPORT(ftell)
+	DXE_EXPORT(fflush)
+	DXE_EXPORT(fgetc)
 	DXE_EXPORT(fgetpos)
+	DXE_EXPORT(fgets)
+	DXE_EXPORT(fileno)
+	DXE_EXPORT(fopen)
+	DXE_EXPORT(fprintf)
+	DXE_EXPORT(fputc)
+	DXE_EXPORT(fputs)
+	DXE_EXPORT(fread)
+	DXE_EXPORT(freopen)
+	DXE_EXPORT(fscanf)
 	DXE_EXPORT(fseek)
 	DXE_EXPORT(fsetpos)
+	DXE_EXPORT(ftell)
+	DXE_EXPORT(fwrite)
+	DXE_EXPORT(getc)
+	DXE_EXPORT(getchar)
+	DXE_EXPORT(gets)
+	DXE_EXPORT(putc)
+	DXE_EXPORT(putchar)
+	DXE_EXPORT(puts)
+	DXE_EXPORT(remove)
+	DXE_EXPORT(rename)
 	DXE_EXPORT(rewind)
-	DXE_EXPORT(feof)
-	DXE_EXPORT(fflush)
+	DXE_EXPORT(scanf)
 	DXE_EXPORT(setbuf)
-	DXE_EXPORT(setvbuf)
 	DXE_EXPORT(setlinebuf)
+	DXE_EXPORT(setvbuf)
+	DXE_EXPORT(sscanf)
+	DXE_EXPORT(tempnam)
 	DXE_EXPORT(tmpfile)
 	DXE_EXPORT(tmpnam)
-	DXE_EXPORT(tempnam)
-	DXE_EXPORT(rename)
-	DXE_EXPORT(remove)
-	DXE_EXPORT(chmod)
-	DXE_EXPORT(clearerr)
-	DXE_EXPORT(unlink)
+	DXE_EXPORT(ungetc)
+	DXE_EXPORT(vfprintf)
+	DXE_EXPORT(vprintf)
+	DXE_EXPORT(vsprintf)
 
 	/* unistd.h */
 	DXE_EXPORT(close)
+	DXE_EXPORT(unlink)
+	DXE_EXPORT(usleep)
 
 	/* fcntl.h  */
 	DXE_EXPORT(creat)
@@ -218,8 +215,6 @@ DXE_EXPORT_TABLE_AUTO(exports)
 	DXE_EXPORT(realloc)
 	DXE_EXPORT(getenv)
 	DXE_EXPORT(system)
-	DXE_EXPORT(atexit)
-	DXE_EXPORT(abort)
 
 	/*  time.h  */
 	DXE_EXPORT(time)
@@ -242,7 +237,7 @@ DXE_EXPORT_TABLE_AUTO(exports)
 
 	/* setjmp.h */
 	DXE_EXPORT(setjmp)
-	DXE_EXPORT(longjmp)	/* dangerous ... */
+	DXE_EXPORT(longjmp)		/* dangerous ... */
 
 	/* fcntl.h */
 	DXE_EXPORT(fcntl)
@@ -292,11 +287,10 @@ DXE_EXPORT_TABLE_AUTO(exports)
 	DXE_EXPORT(shutdown)
 	DXE_EXPORT(socket)
 	DXE_EXPORT(rresvport)
-#endif
+#endif /* HAVE_WATTCP */
 
 	/* SNOBOL lib.h */
 	DXE_EXPORT(io_flushall)
-	DXE_EXPORT(*dynamic)
 
 	/* dos.h */
 	DXE_EXPORT(int86)
@@ -315,16 +309,19 @@ DXE_EXPORT_TABLE_AUTO(exports)
 	DXE_EXPORT(ungetch)
 
 	/* io.h */
+	DXE_EXPORT(chmod)
 	DXE_EXPORT(lseek)
 	DXE_EXPORT(read)
 	DXE_EXPORT(write)
 
-	DXE_EXPORT(exit)		/* WHY???? -phil */
+	/* sys/movedata.h */
+	DXE_EXPORT(dosmemget)
+	DXE_EXPORT(dosmemput)
 DXE_EXPORT_END
 
 void
 os_init()
 {
-    /* this should be redundant with DXE_EXPORT_TABLE_AUTO!! */
+    /* not needed if DXE_EXPORT_TABLE_AUTO worked (which it didn't) */
     dlregsym(exports);
 }
