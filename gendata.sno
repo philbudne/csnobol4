@@ -44,6 +44,7 @@
 	OUTPUT(.DATA.C,11,"data.c")
 	OUTPUT(.INIT.H,12,"init.h")
 	OUTPUT(.EQU.H,13,"equ.h")
+	OUTPUT(.FORMATS,14,"formats")
 							:(EIO)
 
 **************** MAINBOL I/O
@@ -58,6 +59,7 @@ MB1	INPUT(.INPUT,1,,SILPATH)
 	OUTPUT(.DATA.C,11,,"data.c")
 	OUTPUT(.INIT.H,12,,"init.h")
 	OUTPUT(.EQU.H,13,,"equ.h")
+	OUTPUT(.FORMATS,14,,"formats")
 
 EIO
 
@@ -158,6 +160,7 @@ TOP	LINE = INPUT						:F(EOF)
 	LINE '*'						:S(TOP)
 
 *	here if not a comment
+	OLINE = LINE
 	LINE LINE_PAT =
 
 	LINE QS_ARG_PAT						:S(STRARG)
@@ -226,8 +229,8 @@ XEQU	EQU.H = '# define ' LBL TAB '(' ARGS ')'
 	ABS<LBL> = ARGS						:(NEXT)
 
 ****************
-XFORMAT
-* XXX output LINE to 'formats'? convert and output to DATA.C???
+XFORMAT	FORMATS = OLINE
+* XXX (convert and) output to DATA.C???
 	DATA.H = 'extern char ' LBL '[];'
 							:(NEXT)
 ****************
