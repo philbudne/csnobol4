@@ -231,7 +231,7 @@ LNFILES='../procs ../globals ../v311.sil ../host.sno'
 	$TIME ./snobol4 $ARGS -s ../genc.sno v311.sil 2>stderr | $TAIL1 >$OUT
 )
 # use snobol program to process output!!
-$SNOBOL -b timing.sno < $TDIR/stderr
+$SNOBOL $ARGS -b timing.sno < $TDIR/stderr
 # save exit status
 STAT=$?
 
