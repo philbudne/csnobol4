@@ -1,14 +1,29 @@
 # $Id$
 
-M4=m4
+# TARGETS:
+# snobol4	make binary & regression test
+# xsnobol4	make binary, no regression test
+# tar		make distribution
+# uu		make uuencoded distribution
+# clean		leave binary, config files; removes objects
+# realclean	make ready for compilation on another platform
+# spotless	removes snobol4 generated files
 
-it:	Makefile2
-	$(MAKE) -f Makefile2 $(TARGET)
+snobol4 xsnobol4 clean tar uu install realclean spotless: Makefile2
+	$(MAKE) -f Makefile2 $@
+
+################
+# run configuration script
+
+config.m4:
+	./configure
+
+################
+# make second level makefile
 
 .PRECIOUS: Makefile2
 
-xsnobol4: Makefile2
-	$(MAKE) -f Makefile2 xsnobol4
+M4=m4
 
 M2TMP=Makefile2.tmp
 Makefile2 .depend: config.m4 Makefile2.m4
@@ -20,30 +35,3 @@ Makefile2 .depend: config.m4 Makefile2.m4
 	mv -f $(M2TMP) Makefile2
 	rm -f .depend
 	touch .depend
-
-config.m4:
-	./configure
-
-# XXX set to .depend?
-M2DEP=Makefile2
-
-# leave binary
-clean:	$(M2DEP)
-	$(MAKE) -f Makefile2 clean
-
-# make ready for compilation on another platform
-realclean: $(M2DEP)
-	$(MAKE) -f Makefile2 realclean
-
-# removes generated files!!
-spotless: $(M2DEP)
-	$(MAKE) -f Makefile2 spotless
-
-tar:	$(M2DEP)
-	$(MAKE) -f Makefile2 tar
-
-uu:	$(M2DEP)
-	$(MAKE) -f Makefile2 uu
-
-install: $(M2DEP)
-	$(MAKE) -f Makefile2 install

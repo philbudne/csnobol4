@@ -193,18 +193,21 @@ SIL=	v311.sil
 ################
 # link, regression test & timing
 
-TESTED:	xsnobol4 snobol4.c
+snobol4: xsnobol4 snobol4.c
 	@echo Running regression tests...
 	cd test; ./run.sh ../xsnobol4 > ../test.out
+	@echo Passed.
 	./timing > timing.out
-	date > TESTED
+	-rm -f snobol4
+	ln xsnobol4 snobol4
 	@echo Please consider mailing timing.out to \
 		snobol4-timing@ultimate.com 1>&2
 	@echo along with information on your \
 		system model and CPU clock rate 1>&2
-	@echo see doc/ports.doc for the current list
+	@echo see doc/ports.doc for the current list 1>&2
 
 xsnobol4: $(OBJS)
+	rm -f xsnobol4
 	$(CC) $(CFLAGS) -o xsnobol4 $(OBJS) $(LDFLAGS)
 
 ################
@@ -236,7 +239,7 @@ isnobol4.c: procs genc.sno globals $(SIL) inline.sno
 proc.h2: $(SNOBOL4).c
 
 proc.h:	proc.h2
-	cmp proc.h proc.h2 || cp proc.h2 proc.h
+	@cmp proc.h proc.h2 || cp proc.h2 proc.h
 
 ################
 # syntax tables
@@ -249,7 +252,7 @@ syn.c syn.h2: syntax.tbl gensyn.sno
 	mv -f syn.c2 syn.c
 
 syn.h:	syn.h2
-	cmp syn.h syn.h2 || cp syn.h2 syn.h
+	@cmp syn.h syn.h2 || cp syn.h2 syn.h
 
 ################
 # resident data
@@ -259,19 +262,19 @@ data.h2 data.c2 equ.h2 data_init.h2 res.h2: $(SIL) gendata.sno
 	$(SNO) gendata.sno < $(SIL)
 
 data.h:	data.h2
-	cmp data.h data.h2 || cp data.h2 data.h
+	@cmp data.h data.h2 || cp data.h2 data.h
 
 data.c:	data.c2
-	cmp data.c data.c2 || cp data.c2 data.c
+	@cmp data.c data.c2 || cp data.c2 data.c
 
 equ.h:	equ.h2
-	cmp equ.h equ.h2 || cp equ.h2 equ.h
+	@cmp equ.h equ.h2 || cp equ.h2 equ.h
 
 res.h:	res.h2
-	cmp res.h res.h2 || cp res.h2 res.h
+	@cmp res.h res.h2 || cp res.h2 res.h
 
 data_init.h: data_init.h2
-	cmp data_init.h data_init.h2 || cp data_init.h2 data_init.h
+	@cmp data_init.h data_init.h2 || cp data_init.h2 data_init.h
 
 # note: private CFLAGS
 data_init.o: data_init.c data_init.h equ.h data.h proc.h res.h
@@ -530,7 +533,7 @@ KIT=snobol-$(VERS).tar.$(Z)
 
 # XXX perform general cleanup (remove ~ and # files) first?
 # XXX add predicates to suppress ~ # and .o files?
-tar vers: TESTED pv
+tar vers: snobol4 pv
 	cd doc; make
 	cd test; ./clean.sh
 	rm -rf [snobol-[0-9]*]
@@ -556,10 +559,10 @@ bsplitu: bsplitu.c
 
 # XXX make hard link from $(BINDEST) to $(BINDEST)-`./pv`??
 
-install: TESTED doc/snobol4.1
+install: snobol4 doc/snobol4.1
 	-rm -f $(BINDEST).old
 	-mv -f $(BINDEST) $(BINDEST).old
-	cp xsnobol4 $(BINDEST); strip $(BINDEST); chmod 755 $(BINDEST)
+	cp snobol4 $(BINDEST); strip $(BINDEST); chmod 755 $(BINDEST)
 	cp doc/snobol4.1 $(MANDEST)
 	test -d $(SNOLIB_DIR) || mkdir $(SNOLIB_DIR)
 	-rm -f $(SNOLIB_DIR)/$(SNOLIB_A)
@@ -580,4 +583,3 @@ depend:
 	sed '/^# DO NOT DELETE THIS LINE/q' $(MAKEFILE2) > $(MAKEFILE2).tmp
 	$(CCM) $(DEPENDFLAGS) $(SRCS) >> $(MAKEFILE2).tmp
 	mv -f $(MAKEFILE2).tmp $(MAKEFILE2)
-

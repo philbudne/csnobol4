@@ -3,7 +3,11 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
 9/10/97:
+	Improvements from reading BIND v8 Makefiles;
+	Makefile: replaced seperate 2nd level rules with one using $@
 	Makefile2.m4: added SH=sh
+		replaced TESTED with "snobol4"
+		do all cmp's silently
 
 9/9/97:
 	v311.sil: Call io_pad() to fix -LIST RIGHT
