@@ -7,7 +7,7 @@
 * SPITBOL lacks QUICKSCAN mode;
 	&FULLSCAN = 1
 
-* rename I/O function
+* rename I/O functions
 	OPSYN("MB_INPUT", "INPUT")
 	OPSYN("MB_OUTPUT", "OUTPUT")
 	OPSYN("MB_ENDFILE", "ENDFILE")
@@ -22,6 +22,14 @@
 	DEFINE("MB_UNIT(u)i")
 * map spitbol unit to snobol unit number
 	MAP_UNITS = TABLE()
+
+* host functions
+	DEFINE("SYSTEM()")
+	DEFINE("PARM()")
+	DEFINE("EXECUTE(STR)")
+	DEFINE("GETARG(N)")
+	DEFINE("FIRSTARG()")
+	DEFINE("SHELLVAR(STR)")
 							:(EDEFNS)
 
 * map SPITBOL unit (can be any type?) to a unique integer;
@@ -43,6 +51,16 @@ REWIND	MB_REWIND(MB_UNIT(u))				:S(RETURN)F(FRETURN)
 
 * XXX clear out array/table entries??
 ENDFILE	MB_ENDFILE(MB_UNIT(u))				:S(RETURN)F(FRETURN)
+
+****************
+* host functions
+
+SYSTEM	SYSTEM = HOST()					:S(RETURN)F(FRETURN)
+PARM	PARM = HOST(0)					:S(RETURN)F(FRETURN)
+EXECUTE	EXECUTE = HOST(1,STR)				:S(RETURN)F(FRETURN)
+GETARG	GETARG = HOST(2,N)				:S(RETURN)F(FRETURN)
+FIRSTARG FIRSTARG = HOST(3)				:S(RETURN)F(FRETURN)
+SHELLVAR SHELLVAR = HOST(4,STR)				:S(RETURN)F(FRETURN)
 
 EDEFNS
 
