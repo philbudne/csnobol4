@@ -33,7 +33,7 @@ CHECKHZ	X = (REAL * 1000.0 / SNODIV) / (USED * SHMULT)
 	LT(FACT,X - Y)					:S(FRETURN)
 *	ABOVE BY MORE THAN 10%
 	GT(FACT,X + Y)					:S(FRETURN)
-	OUTPUT = "HZ used " USED ", should be " REAL '?' :(RETURN)
+	OUTPUT = "used HZ=" USED ", should use " REAL '?' :(RETURN)
 ECHECKHZ
 ****************************************************************
 * parse snobol's messages
@@ -143,27 +143,26 @@ GETTIME	LINE = INPUT					:F(NOTIME)
 * here with shell runtime
 GOTTIME	SHELL = CONVERT((USER + MIN * 60) * SHMULT, 'INTEGER')
 
-* see  if shell time matches snobols exactly
+* see if shell time matches snobols exactly
  	EQ(SNOBOL,SHELL)				:S(TIMEOK)
 
-* allow +/-1
+* quick and easy: allow +/-1
  	EQ(SNOBOL,SHELL + 1)				:S(TIMEOK)
  	EQ(SNOBOL,SHELL - 1)				:S(TIMEOK)
 
-*	allow +/-5% error
-	EPS = 0.05
+* allow +/-2.5% error; treating shell time as correct
+	EPS = 0.025
+	FACTOR = SNOBOL / (SHELL * 1.0)
 	LT(FACTOR, 1 - EPS)				:S(BADTIME)
 	GT(FACTOR, 1 + EPS)				:F(TIMEOK)
 
 * here with bad time measurements
-	FACTOR = SNOBOL / (SHELL * 1.0)
-
 BADTIME	OUTPUT =
 	OUTPUT = "SNOBOL's timings off by factor of " FACTOR
 	OUTPUT = "	see doc/porting.doc section on mstime.c"
 	OUTPUT =
 	OUTPUT = "shell time:" TAB SHELL
-	OUTPUT = "snobol4 time:" TAB SNOBOL		:(DONE)
+	OUTPUT = "snobol4 time:" TAB SNOBOL
 
 	CHECKHZ(FACTOR, 50, 60)				:S(DONE)
 	CHECKHZ(FACTOR, 50, 100)			:S(DONE)
