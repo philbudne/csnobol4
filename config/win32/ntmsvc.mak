@@ -153,11 +153,6 @@ bzero.obj : lib\auxil\bzero.c
 getopt.obj : lib\auxil\getopt.c
 	$(CC) $(CFLAGS) lib\auxil\getopt.c
 
-################ bsd!
-
-inet.obj : lib\bsd\inet.c
-	$(CC) $(CFLAGS) lib\bsd\inet.c
-
 ################ dummy
 
 execute.obj : lib\dummy\execute.c
@@ -178,6 +173,9 @@ term.obj : lib\generic\term.c
 	$(CC) $(CFLAGS) lib\generic\term.c
 
 ################ win32!
+
+inet.obj : lib\win32\inet.c
+	$(CC) $(CFLAGS) lib\win32\inet.c
 
 load.obj : lib\win32\load.c
 	$(CC) $(CFLAGS) lib\win32\load.c
