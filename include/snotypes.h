@@ -123,5 +123,3 @@ typedef int (*func_t)();
 #else
 #define SIL_FUNC_PROTO
 #endif
-
-real_t mstime();			/* for MSTIME operation */
