@@ -21,8 +21,9 @@
 #include <strings.h>                    /* berkeley strings */
 #endif /* ANSI_STRINGS not defined */
 
-/* XXX ifdef HAVE_STDLIB_H? */
-#include <stdlib.h>			/* malloc(), getenv() */
+#ifdef HAVE_STDLIB_H			/* before stdio */
+#include <stdlib.h>			/* for malloc, getenv */
+#endif /* HAVE_STDLIB_H defined */
 
 /* external function returning pointer to loaded function */
 extern int (*pml_find())(LOAD_PROTO);
