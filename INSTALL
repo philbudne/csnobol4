@@ -18,11 +18,11 @@ tested and timed.
 
 The "autoconf" tries to use the available C compiler which works best.
 If you wish to alter autoconf's decision process, you can run it
-manually by typing "autoconf OPTION >config.m4" with one of the
+manually by typing "./autoconf OPTION >config.m4" with one of the
 following options;
 
 	--force-gcc
-		Force use of gcc, the GNU C compiler,
+		Force use of gcc, the GNU C compiler;
 		fail if gcc not available.
 
 	--no-gcc
@@ -41,14 +41,14 @@ Installation
 ------------
 
 Typing "make install" will install the snobol4 binary and man page.
-The snobol4 binary and man page destnations are controlled BINDEST
-(default: /usr/local/bin/snobol4) and MANDEST (default:
-/usr/local/man/man1/snobol4.1) make variables, which can be overridden
-by editing config.m4, or creating "local-config" (and then removing
+The snobol4 binary and man page destnations are controlled by make
+variables BINDEST (default: /usr/local/bin/snobol4) and MANDEST
+(default: /usr/local/man/man1/snobol4.1) which can be overridden by
+editing config.m4, or creating "local-config" (and then removing
 config.m4 to trigger autoconf).
 
-"make install" also installs the snolib.a object library, and
-snolib/*.sno files to the directory named in the SNOLIB_DIR make
+"make install" also installs the snolib.a object library, doc/load.doc
+and snolib/*.sno files to the directory named in the SNOLIB_DIR make
 variable.
 
 Please mail timing.out files to snobol4-timing@ultimate.com!
@@ -72,7 +72,8 @@ possible solutions;
 
 2. Compile the needed objects and add them directly to the link command.
 
-3. Define one or more of NO_PML_(HOST|EXIT|REAL|FILE|DELETE|RENAME).
+3. Define one or more of NO_PML_(HOST|EXIT|REAL|FILE|DELETE|RENAME)
+	when compiling pml.c.
 
 The SPITBOL HOST() function simulation may call functions not
 available on the target system.  Rather than adding a nest of ifdefs,
