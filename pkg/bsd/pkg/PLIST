@@ -1,5 +1,6 @@
-@comment $NetBSD$
+@comment $Id$
 bin/snobol4
+lib/snobol4/README
 lib/snobol4/bq.sno
 lib/snobol4/chars.sno
 lib/snobol4/config.h
@@ -13,6 +14,7 @@ lib/snobol4/host.sno
 lib/snobol4/http.sno
 lib/snobol4/load.doc
 lib/snobol4/load.h
+lib/snobol4/load.txt
 lib/snobol4/logic.sno
 lib/snobol4/macros.h
 lib/snobol4/not.sno
