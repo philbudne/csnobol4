@@ -18,6 +18,7 @@
 #include "load.h"
 #include "equ.h"
 
+int
 ORD( LA_ALIST ) LA_DCL
 {
     if (LA_PTR(0) == NULL || LA_STR_LEN(0) == 0)
