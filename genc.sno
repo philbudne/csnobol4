@@ -648,8 +648,12 @@ TOP	&INPUT = 1
 	ARGS =
 	COMM =
 
+*	check for CPP directive
+	ORIG "#"					:F(NOTCPP)
+	OUTPUT = ORIG					:(TOP)
+
 *	check for start of c-code copy
-	ORIG "%{"					:F(NOTCOPY)
+NOTCPP	ORIG "%{"					:F(NOTCOPY)
 	OUTPUT = IND '{'
 	INDENT()
 
