@@ -56,11 +56,15 @@ clean:
 
 # make ready for compilation on another platform (leave binaries)
 realclean: clean
-	rm -f config.m4 Makefile2
+	rm -f config.m4 config.h Makefile2 .depend
 
 # clean as when it was unpacked; remove binaries too
 distclean: realclean
 	rm -f snobol4 xsnobol4 timing.out
+
+# remove everthing not in CVS; requires snobol4 binary in PATH to build;
+spotless: distclean
+	rm -f $(GENERATED) *.[ch]2 .depend snobol4.c isnobol4.c
 
 .PRECIOUS: snobol4 xsnobol4
 
