@@ -65,6 +65,9 @@ char		**argv;
 	int			j;	/* Output index		*/
 	int			file;	/* File_descriptor 	*/
 
+	if (argc < 1)
+	    return argc;
+
 	for (j = i = 1; i < argc; i++) {   /* Do all arguments	*/
 	    switch (*(ap = argv[i])) {
 	    case '<':			/* <file		*/
