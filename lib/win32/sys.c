@@ -47,7 +47,9 @@ osname(cp)
 {
     char *os;
     OSVERSIONINFO osv;
+    int vnum;
 
+    vnum = 1;
     osv.dwOSVersionInfoSize = sizeof(osv);
     if (!GetVersionEx(&osv)) {
 	strcpy(cp, "unknown");
@@ -70,12 +72,20 @@ osname(cp)
 	 * have higher build numbers. They may also have higher
 	 * major/minor version numbers.
 	 */
-	switch (osv.dwMajorVersion) {
-	case 4:
-	    os = "Win95";
-	    break;
-	default:
-	    os = "Win??";		/* XXX win9x? */
+	os = "Win??";
+	if (osv.dwMajorVersion == 4) {
+	    switch (osv.dwMajorVersion) {
+	    case 0:
+		os = "Win95";
+		vnum = 0;		/* suppress version number */
+		break;
+	    case 1:
+		os = "Win98";
+		vnum = 0;		/* suppress version number */
+		break;
+	    default:
+		break;
+	    }
 	}
 	break;
 
@@ -88,10 +98,13 @@ osname(cp)
 	break;
     }
 
-    sprintf(cp, "%s %d.%d", os, osv.dwMajorVersion, osv.dwMinorVersion);
+    if (vnum)
+	sprintf(cp, "%s %d.%d", os, osv.dwMajorVersion, osv.dwMinorVersion);
+    else
+	strcpy(cp, os);
 
     /*
-     * szCSDVersion
+     * szCSDVersion:
      *
      * Windows NT: Contains a null-terminated string, such as "Service
      * Pack 3", that indicates the latest Service Pack installed on
@@ -102,7 +115,18 @@ osname(cp)
      * arbitrary additional information about the operating system.
      */
     if (osv.szCSDVersion[0]) {
-	strcat(cp, " ");
-	strcat(cp, osv.szCSDVersion);
+	char *tp;
+
+	/* strip leading spaces, if any */
+	tp = osv.szCSDVersion;
+	while (*tp && *tp == ' ')
+	    tp++;
+
+	/* ignore if empty */
+	if (*tp) {
+	    *cp++ = ' ';
+	    while ((*cp++ = *tp++))
+		;
+	}
     }
 }
