@@ -860,7 +860,8 @@ if [ -f $INCDIR/sys/socket.h ]; then
 
     # BSD bidirectional popen (not needed on *BSD!)
     # no prototype on SunOS4, so check syscalls
-    if grep socketpair $INCDIR/sys/socket.h $INCDIR/sys/syscall.h >/dev/null 2>&1; then
+    if grep socketpair $INCDIR/sys/socket.h >/dev/null 2>&1  ||
+       grep $INCDIR/sys/syscall.h >/dev/null 2>&1; then
 	echo 'using private popen() function' 1>&2
 	echo 'ADD_OBJS([popen.o])'		>> $CONFIG_M4
 	echo 'ADD_SRCS([$(POPEN_C)])'		>> $CONFIG_M4
