@@ -43,6 +43,9 @@ SNOBOL4=isnobol4
 # must be named "all" for FreeBSD "ports"?
 all:	snobol4
 
+# force GNU make to run top Makefile serially
+.NOTPARALLEL: foo
+
 .PRECIOUS: snobol4 xsnobol4 Makefile2 snobol4.c isnobol4.c snobol4 data_init.h 
 #	just add $(GENERATED)?
 
