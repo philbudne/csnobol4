@@ -1,3 +1,5 @@
+/* $Id$ */
+
 /* return values for library routines */
 
 enum stream_ret {
@@ -14,5 +16,3 @@ enum io_read_ret {
 
 enum stream_ret stream();
 enum io_read_ret io_read();
-/* $Id$ */
-

@@ -1,3 +1,5 @@
+/* $Id$ */
+
 enum action { AC_CONTIN, AC_STOP, AC_STOPSH, AC_ERROR, AC_GOTO };
 
 struct acts {
@@ -12,5 +14,3 @@ struct syntab {
     /* XXX include count of entries in actions array? */
     struct acts *actions;		/* pointer to action table */
 };
-/* $Id$ */
-
