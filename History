@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+10/27/96:
+	lib/io.c: add USE_STDARG_H ifdefs
+
 10/26/96:
 	Makefile2.m4: have io.o, load.o depend on $(MAKEFILE)
 		use $(LD_PATH) for load.o
