@@ -2,6 +2,8 @@
 # cc-M - replacement for cc -M
 # $Id$
 
+# NOTE! only handles .c files (no .l or .y)
+
 flags=
 for file in $*
 do
@@ -24,13 +26,14 @@ done | awk '
 		file = $3
 		lf = length(file)
 		ext = substr(file,lf,1)
-		if (ext == "c" || ext == "y" || ext == "l")
-		    left = substr(file,1,lf-1) "o"
-		else
-		    left = file
-		print left ": " file
+		left = file
+		print left "\t" file
 		next
 	 }
-$0 ~ /^# 1 / && NF >= 3  {	print left ":\t" substr($3,2,length($3) - 2) }
-$1 == "#line" && NF >= 3 {	print left ":\t" substr($3,2,length($3) - 2) }'
-
+$0 ~ /^# 1 / && NF >= 3  { print left "\t" substr($3,2,length($3) - 2) }
+$1 == "#line" && NF >= 3 { print left "\t" substr($3,2,length($3) - 2) }' | \
+(IFS="	";
+while read LEFT RIGHT; do
+	O=`basename $LEFT .c`.o
+	echo ${O}: $RIGHT
+done)
