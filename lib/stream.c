@@ -6,7 +6,6 @@
 
 #include "h.h"
 #include "snotypes.h"
-#include "libret.h"
 #include "syntab.h"
 
 #include "macros.h"
