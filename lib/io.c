@@ -410,6 +410,15 @@ io_print( iob, sp )			/* STPRNT */
 	len = S_L(sp);
 	cp = S_SP(sp);
 	if (compiling) {
+	    char *ep;
+
+	    /* trim spaces (without altering specifier) */
+	    ep = cp + len - 1;
+	    while (len > 0 && *ep == ' ') { /* XXX check for NUL too? */
+		len--;
+		ep--;
+	    }
+
 	    while (len-- > 0) {
 		if (*cp == '\0')	/* deal with NUL in listings */
 		    putc( ' ', f );
