@@ -9,8 +9,13 @@
 
 #include "data.h"			/* SIL data */
 
+/* return type of signal handler functions */
+#ifndef SIGFUNC_T
+#define SIGFUNC_T void
+#endif
+
 extern char *dynamic();
-extern int SYSCUT();			/* XXX want void on some systems? */
+extern SIGFUNC_T SYSCUT();		/* never returns */
 
 #define NDESCR 25000			/* default */
 
@@ -20,6 +25,8 @@ int rflag;
 extern int optind;
 extern char *optarg;
 extern int getopt();
+
+
 
 void
 usage( jname )
@@ -115,16 +122,17 @@ init()
 
     bzero( dyn, len );			/* XXX needed? */
 
-    D_A(FRSGPT) = D_A(HDSGPT) = (int) dyn; /* first dynamic descr */
+    D_A(FRSGPT) = D_A(HDSGPT) = (int_t) dyn; /* first dynamic descr */
 
     /* first descr past end of dyn */
-    D_A(TLSGP1) = (int) dyn + len;
+    D_A(TLSGP1) = (int_t) dyn + len;
 
     /* XXX set up for SIGFPE?  call matherr()?? */
 
-    signal( SIGINT, SYSCUT );		/* ?! */
-#if 1
-    signal( SIGBUS, SYSCUT );		/* ???!!! */
-    signal( SIGSEGV, SYSCUT );		/* ???!!! */
-#endif /* 1 */
+    /* XXX call wrapper functions which save reason for signal? */
+    signal( SIGINT, SYSCUT );
+
+    /* ???!!! */
+    signal( SIGBUS, SYSCUT );
+    signal( SIGSEGV, SYSCUT );
 }
