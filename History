@@ -2,6 +2,47 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+8/8/99
+	config/borland/build.bat: add sset
+	config/vms/descrip.mms: add sset
+	config/win32/ntmsvc.mak: add sset
+	lib/vms/popen.c: add retlen cast
+	lib/vms/tty.c: remove trailing NULs
+
+7/2/99
+	timing: use ./xsnobol4 (in case . not in user PATH)
+		redirect sysctl stderr (some garbage on BSDI 4.0)
+	autoconf: check for libdl in /shlib (for BSDI 4.0)
+
+5/2/99
+	autoconf: add mtxinu43, check for missing finite() on hpux
+	new: config/mtxinu43.m4, lib/hpux/finite.c
+
+5/1/99
+	lib/win32/inet.c: add setsockopt, get_osfhandle, (short) casts
+
+4/27/99
+	snolib/http.sno: request 8k record length
+	lib/snolib/sset.c: use oof parameter to io_sseek
+	lib/io.c: fixed io_findunit, io_sseek
+	Makefile2.m4: add sset.o
+
+4/16/99
+	config/vms/descrip.mms: fixes for AXP/DECC (not tested in 4 yrs?)
+
+4/12/99
+	lib/win32/sys.c: fix osname()
+	Makefile2.m4: set SHELL=/bin/sh
+
+3/12/99
+	Add Experimental scaled SET interface; 
+	lib/io.c: add io_sseek()
+	pml.h: add SSET
+	new lib/snolib/sset.c
+
+3/3/99
+	INSTALL: update for --prefix
+
 2/26/99
 	Tested on FreeBSD 3.1
 	autoconf: look for getopt in unistd.h
