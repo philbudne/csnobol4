@@ -8,6 +8,8 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
+#include <stdlib.h>			/* strtoll() */
+
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
@@ -43,7 +45,7 @@ spcint(dp, sp)
 
     if (len > sizeof(buffer)-1)
 	len = sizeof(buffer)-1;
-    bcopy( cp, buffer, (int)len );
+    bcopy( cp, buffer, (long)len );	/* XXX SIZE_T */
     buffer[len] = '\0';
 
     temp = strtoll( buffer, &cp, 10);	/* always decimal */
