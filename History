@@ -1,0 +1,245 @@
+$Id$
+
+12/9/93
+	Updated usage message, README.alpha
+	put this (and other files) under RCS
+
+12/4/93
+	Implemented -NOERRORS/-ERRORS control cards (default -NOERRORS)
+	to supress/allow exeution of programs with compile errors.
+	Implemented -k command line switch (like -ERRORS)
+
+12/3/93
+	output compilation error messages to stderr as well as listing
+	accept '#' and '|' as start of line comments
+	(can now use '#!' magic number for scripts!)
+
+11/27/93
+	revised README.alpha
+	wrote LOAD.doc sqrt.c sqrt.c
+
+11/26/93
+	re-implemented io.c (file lists, no more io_unit struct)
+	take file names on command line! implement -r flag
+	changed -D to -d; default now 25000 now that GC works!
+
+11/25/93
+	fixed RSETFI; genc runs with 25K descrs (with 69 GC's)!!
+
+11/24/93
+	wrote dump.c
+
+11/23/93
+	fixed lvalue: comment.sno works
+	atn.sno produces same SIZED (chars/lines) output as spitbol
+
+11/22/93
+	fixed linkor: alt1/2.sno work
+	found problem in atn.sno (comment.sno)
+	atn.sno gets pattern stack overflow (runs with SPDLSZ of 5000)
+	atn.sno dies after table to array conversion (convert.sno)
+	fixed MOVDIC: convert.sno works
+	atn.sno runs to completion (sans comment problem)
+		but output differs from spitbol?!
+	w/ 200K descrs genc dies in last few lines (after 2 GCs)
+		runs to completion with "only" 250K descrs (1 GC)
+
+11/19/93
+	implemented expint() exreal()
+	found smallest proram with atn.sno bug (alt2.sno)
+	create/use LEXEQ() macro!
+	worked on README.alpha, DESIGN
+	genstg.sno now creates equ.h, stgtyp.c, stg.h
+		(flushed equ.awk, stgtyp.h stgh.awk)
+
+11/18/93;
+	isolated match problem with atn.sno
+
+11/17/93
+	fixed MNREAL/MNSINT F/V output
+	created IND_ARR, INDENTX, UNINDENT in genc.sno
+
+11/16/93
+	fixed locap{v,t} F/V output
+
+11/15/93
+	ran genstg under mainbol (w/ -D1M) after consolodating patterns
+
+11/13/93
+	ran genstg under mainbol (w/ -D2M)
+
+11/10/93
+	implemented filename support ala Catspaw (Vanilla) SNOBOL4(+)!!
+		added XOPENI, XOPENO, XECOMP
+	send all completion messages to stderr (PUNCH)
+	ran gensyn under mainbol
+
+11/9/93
+	wrote, debugged load() and link()
+	added CLR_S_UNUSED() to no avail
+
+11/8/93
+	clear V&F in DATE, MSTIME, SETAV, INTSP, REALSP, MULTC
+	GC generally runs, but leaves bad pointers
+
+11/6/93
+	fixed lengths in MOVBLK and ZERBLK
+	genc ran for the first time (generated code until LOCA1) died in GCM
+	runs to completion with -D1000000
+
+11/5/93
+	implemented GETLTH by the book
+	collect.sno runs (nothing to collect)
+
+11/4/93
+	fixed order of spec members, GC marking pass now runs
+	upped number of user defined functions from 10 to 50
+	upped OCASIZ from 1500 to 15000!
+	implemented command line options
+
+11/3/93
+	diff.sno runs
+	added junk PUSH() to SAVSTK() -- GC expects RCALL to use stack!!
+
+11/2/93
+	immed value assignment working (fixed assignment order in MAKNOD)
+	cond value assignment working (output PUTSPC!!)
+	put v311.sil, syntax.tbl under RCS
+	got rid of IDENT columns!!!
+	cleaned up genc, now parsed by mainbol!!
+	worked on POUND_LINE
+	match replacement working (fixed SPUSH/SPOP again!!)
+	implemented rplace() library routine
+
+11/1/93
+	have gensyn process comments
+	last SIL ops (ADJUST, ORDVST, RPLACE) handled in genc
+	function args working (fixed PSTACK *PUSH, *POP)
+	implemented getbal library routine
+
+10/29/93
+	complex patterns working (fixed CPYPAT)
+
+10/28/93
+	simple patterns working (but not pattern concatenation)
+	implemented
+		CLERTB, PLUGTB, DATE, LINK, MOVBLK, REMSP, LOAD, UNLOAD
+
+10/27/93
+	implemented;
+		misc I/O (BKSPCE ENFILE REWIND)
+		code tree ops (ADDSIB ADDSON INSERT)
+		pattern ops (MAKNOD LINKOR
+		value pair ops (LOCAPT LOCAPV)
+		others;
+			ADDLG BKSIZE CHKVAL EXPINT EXREAL LCOMP LVALUE
+			MOVDIC PUTSPC SUBSP TOP TRIMSP
+	runs simple programs (loops.sno runs ~15 x slower than SPITBOL)!!
+
+10/25/93
+	recieved S4D58 report
+	implemented SETVA
+
+10/24/93
+	implemented INTSPC, REALST, SHORTN, SPCINT, SPREAL
+	END recognized!
+
+10/20/93
+	implemented FSHRTN
+	"END" not recognized
+
+10/19/93
+	implemented input and output ops (STPRNT, STREAD)
+	implemented STREAM!
+
+10/18/93
+	implemented APDSP, LOCSP, PUTVC
+	initialization code starts to run
+
+10/17/93
+	implemeted SETVC, VCMPIC
+
+10/15/93
+	implemented ENDEX, LEXCMP, VARID
+
+10/14/93
+	implemented GETSP, LEQLC
+
+10/13?/93
+	implemented ZERBLK
+
+10/8/93
+	implemented GETLG, SETSP
+
+10/5/93 - 10/7/93
+	implemented INIT, MSTIME, PUTLG, PUTSPC, GETSPC
+		MOVDIC, GETLTH, PSTACK
+
+8/92
+	46 ops remaining (on 522 lines of SIL)
+
+
+7/24/92
+	implemented:
+		PUTAC, GETAC, SETFI, RSETFI, DIVIDE, BRANIC, INCRV
+		MNSINT, RLINT, ADREAL, SBREAL, MPREAL, ADREAL, DVREAL
+
+7/22/92
+	implemented:
+		int math: SUM, SUBTRT, MULT, MULTC
+		SETAV, SETVC, SETLC, SPEC, TESTFI, MOVA, MNREAL
+
+to 7/21/92
+	71 ops remaining
+
+5/92
+	C pattern matching working (see 3/90)
+
+3/91
+	Started genc.sno using Catspaw SPARC SPITBOL
+
+11/90
+	Found out about Catspaw SPARC SPITBOL from a Catspaw mailing.
+
+7/90
+	Started work at Shiva Corp.
+
+3/90
+	Started on C implementation of SNOBOL patterns using
+	Gimpel's CACM article (and Orange book).
+
+12/89 thru 3/90
+	Worked on C versions of syn, genc using "traditional" tools
+	awk/lex/yacc
+
+11/89
+	Got report on old/new naming conventions from Dr. Griswold
+	began studying SIL source in earnest.
+
+10/89
+	Got (a rare) copy of "The Macro Implementation of SNOBOL4" book
+	from Catspaw.
+
+late 1988?
+	Found Vanilla SNOBOL4 (including Catspaw book order form)
+	and SIL sources on cs.arizona.edu
+
+Fall 1986
+	BUCS20 unplugged.
+
+Fall 1985
+	Started work at BU full time.
+
+Spring 1985
+	Used SITBOL to analyze questionnaires from
+	Psychology directed study on computer mediated communication.
+
+Fall 1983
+	Returned to school full time at BU, helped manage BU CS 2060.
+
+Fall 1981
+	Started at DEC/LCG FORTRAN-10/20 group (which used SITBOL
+	to perform FORTRAN regression tests)
+
+Fall 1979
+	Learned SNOBOL4 using SITBOL freshman year at Stevens Tech

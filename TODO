@@ -1,0 +1,92 @@
+$Id$
+
+2a. make banner optional (suppress via -b on command line)
+2b. add "The Macro Implemantation of SNOBOL4 for Un*x"
+2c. add RCS Id ???
+2d. caseify banner message
+
+3a. make stats optional (request via -s on command line)
+3b. fix problem with printf of floating point
+	just print integer usecs/stmt??
+3c. make FORMAT mean printf style (not FORTRASH) format?
+3d. caseify stats messages
+3e. fix EJECTF (to output ^L)
+
+6. do something better with signals?!
+6b. just report which one in exit code?
+6c. report in "CUT" message?!
+6d. change "CUT BY SYSTEM" to "caught signal"?
+
+7. send listings to seperate file!
+7b. select file on command line!
+7e. output un*x style line numbers (file name & zero based line) for all errs?
+7f. caseify error messages
+7g. fix error marker (deal with tabs)
+
+9b. rename PUNCH to STDERR (ERROR?)?
+9c. add TTY variable for both input/output to /dev/tty (like SITBOL)?
+
+10.  Honor I/O flags in filenames (like Catspaw SPITBOL);
+
+    -a		append
+    -bSIZE	buffer size
+    -c		one-char raw mode
+    -fN		use fd N
+    -lN		line mode maxrec
+    -mN		EOL char
+    -nN		EOL char 2
+    -qN		raw, noecho
+    -rN		raw
+    -u		update mode
+    -w		raw, no buffering
+
+    input(.getc, 0, "[-f2 -c]")
+    input(.getcls, 0, "!!ls! -c")
+    input(.getclslong, 0, "!!ls -l! -c")
+    output(.tape, 'mt', "/dev/rmt0 -b4000 -r1")
+    intput(.tapein, 'mtin', 'dev/rmt0[-r16000 -w]')
+
+10b. extensions to allow opening sockets?!
+
+11. get rid of space padding on I/O!!
+
+12. catch math errors (have MATH_ERROR() do something)!
+
+13. better floating point conversion:
+13a. supress trailing zeroes (ie; 1.0000)
+13b. allow exponents on input/output?
+
+14. add SPITBOL extensions;
+	LPAD() RPAD()
+	REVERSE()
+	BREAKX()
+	SUBSTR()
+	LEQ() LGE() LST() LLE() LLT() LNE()
+
+15. add Catspaw(?) keywords &LCASE &UCASE
+
+16. implement -INCLUDE (-COPY) control line!!
+
+17. implement ordvst() for sorting &DUMP output
+
+19. Implement caselessness
+19a. -CASE [N]
+19b. &CASE variable
+19c. command line -f
+
+20. create library of LOAD()able functions;
+	UNLINK()
+	RENAME()
+	EXISTS()
+	LINK()
+	SYMLINK()
+	STAT() (returns DATA("STAT(ST_xxx,.....)" record)
+	SYSTEM()?
+
+21b. fix -ERRORS termination messages (make it ERROR #29)?
+
+22. Implement -NOEXEC (-n flag)
+
+23. Handle input file "-" (stdin)
+
+24. have exit status code reflect exit reason (compilation/execution errors)!

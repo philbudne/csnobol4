@@ -1,0 +1,84 @@
+$Id$
+
+Alpha release of ``The Macro Implementation of SNOBOL4''
+	(aka BTL SNOBOL4, MAINBOL) for Un*x.
+
+This is a port of the original SIL (SNOBOL4 Implementation Language)
+"macro" version of SNOBOL4 with the `C' language as a target.
+
+See the file doc/GOALS for a description of the overall goals, and the
+goals for this release.
+
+See the file TODO for identified tasks / wish list.
+
+This material is in the public domain.  You may use and copy this material
+freely. This privilege extends to modifications, although any modified version
+of this system given to a third party should clearly identify your
+modifications as well as the original source.
+
+The responsibility for the use of this material resides entirely
+with you.  We make no warranty of any kind concerning this material,
+nor do we make any claim as to the suitability of Icon for any application.
+
+Status;
+	runs on Sun4 under SunOS 4.x (Solaris 1.x)
+
+		I used assembler to create the data segment.  It may
+		be as simple as supplying a new stgasm.h to bring it
+		up on another CPU, providing the local assembler allows
+		arithmetic on relocatable symbols.
+
+		libunix may use many Sun specific library routines,
+		I haven't paid much attention to portability. The library
+		should be split up into system-independant functions
+		and system-specific versions of system-dependant functions!
+
+	Runs VERY slowly;
+
+		genc.sno itself runs "only" 10x slower than under
+		Catspaw SPARC (Macro) SPITBOL.  This is quite respectable.
+
+		However programs which make extensive use of matching
+		may run much slower.
+
+		The pattern scanner and some pattern matching routines
+		get split up into many small, mutually recusrsive
+		routines!!
+
+		gcc inlining may resolve this
+
+	LOAD() is implemented on SunOS4!!
+		see DOC/LOAD.doc
+
+I/O;
+
+	named files can be opened by supplying an optional fourth
+	argument to INPUT() and OUTPUT(), like in Catspaw SNOBOL4.
+
+	input is padded with spaces out to the default record length (80).
+	&TRIM defaults to 1, so any trailing spaces are lost on input.
+
+	by default INPUT is attached to unit 5, and standard input.
+	by default OUTPUT is attached to unit 6, and standard output.
+	by default PUNCH is attached to unit 7, and standard error!!!
+
+Command line args;
+
+	snobol4 [ options ... ] [ files ... ]
+
+	-d NNN
+		Have dynamic region contain space for NNN descriptors
+		default is 25000.
+
+	-k
+		Run programs with compilation errors
+
+	-l
+		Reenable listing to OUTPUT. default is -UNLIST
+
+	-r
+		Continue reading INPUT from input file(s) after END
+		label.  otherwise INPUT defaults (back) to stdin after
+		compilation.
+
+
