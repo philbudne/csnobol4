@@ -36,8 +36,9 @@ CHECKHZ	X = (REAL * 1000.0 / SNODIV) / (USED * SHMULT)
 	GT(FACT,X + Y)					:S(FRETURN)
 	OUTPUT = "used HZ=" USED ", should use " REAL '?' :(RETURN)
 ECHECKHZ
+
 ****************************************************************
-* parse snobol's messages
+* print environmental stuff
 
 	OUTPUT = 'HOST(HOST_SYSINFO):' TAB HOST(HOST_SYSINFO)
 * config.guess value;
@@ -51,6 +52,11 @@ ECHECKHZ
 	OUTPUT = 'HOST(HOST_LONG_BITS):' TAB HOST(HOST_LONG_BITS)
 	OUTPUT = 'HOST(HOST_DESCR_BITS):' TAB HOST(HOST_DESCR_BITS)
 	OUTPUT = 'HOST(HOST_SPEC_BITS):' TAB HOST(HOST_SPEC_BITS)
+	OUTPUT = 'HOST(HOST_DYNAMIC_SIZE):' SP HOST(HOST_DYNAMIC_SIZE)
+	OUTPUT = 'HOST(HOST_PMSTACK_SIZE):' SP HOST(HOST_PMSTACK_SIZE)
+
+****************************************************************
+* parse snobol's messages
 
 VLOP	LINE = INPUT					:F(NOVERS)
 	LINE "The Macro Implementation of SNOBOL4" BREAKX("V") "Version "
