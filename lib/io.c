@@ -362,6 +362,7 @@ io_read( dp, sp )			/* STREAD */
     }
 
     if (fp->flags & FL_EOL) {
+	/* strip off EOL */
 	len = strlen(cp);
 	if (cp[len-1] == '\n') {
 	    len--;
@@ -497,6 +498,39 @@ io_openo(dp, sp)			/* XOPENO */
     fp = io_newfile(fname);
     if (fp == NULL)
 	return FALSE;			/* fail; no harm done! */
+    io_units[unit] = fp;
+    f = io_fopen( fp, "w");
+    if (f == NULL)
+	return FALSE;			/* fail; no harm done! */
+
+    io_closeall(unit);
+    io_units[unit].curr = fp;
+
+    return TRUE;
+}
+
+    char fname[128];			/* XXX */
+io_include( dp, sp )
+    int unit;				/* XXX pass as arg! */
+    struct spec *sp;			/* file name (with quotes) */
+    l = S_L(sp) - 2;
+    strncpy( fname, S_SP(sp)+1, l );
+    int unit;
+
+    /* strip off trailing spaces after uniqueness test */
+    while (l > 0 && fname[l-1] == ' ') {
+	l--;
+    }
+    fname[l] = '\0';
+
+    fp = io_newfile(fname);
+    if (fp == NULL)
+	return FALSE;
+
+    if (io_fopen( fp, "r") == NULL) {
+	free(fp);
+	return FALSE;
+    fp->next = io_units[unit];
     io_units[unit] = fp;
     unit = D_A(dp);
     /* add file to list of files already included */
