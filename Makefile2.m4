@@ -210,7 +210,7 @@ $(SNOBOL4).o: $(SNOBOL4).c
 snobol4.c: procs genc.sno globals $(SIL) 
 	rm -f snobol4.c2 proc.h2
 	$(SNO) genc.sno < $(SIL) > snobol4.c2
-	mv snobol4.c2 snobol4.c
+	mv -f snobol4.c2 snobol4.c
 
 # inline version (functions reordered)
 isnobol4.c: procs genc.sno globals $(SIL) inline.sno
@@ -220,7 +220,7 @@ isnobol4.c: procs genc.sno globals $(SIL) inline.sno
 	cd subr; cat ../prolog \
 		`awk '{print $$2, $$1}' ../callgraph | tsort 2>/dev/null` \
 			> ../isnobol4.c2
-	mv isnobol4.c2 isnobol4.c
+	mv -f isnobol4.c2 isnobol4.c
 	rm -rf prolog subr
 
 proc.h2: $(SNOBOL4).c
@@ -236,7 +236,7 @@ proc.h:	proc.h2
 syn.c syn.h2: syntax.tbl gensyn.sno
 	rm -f syn.c2 syn.h2
 	$(SNO) gensyn.sno
-	mv syn.c2 syn.c
+	mv -f syn.c2 syn.c
 
 syn.h:	syn.h2
 	cmp syn.h syn.h2 || cp syn.h2 syn.h
@@ -270,7 +270,7 @@ data_init.o: data_init.c data_init.h equ.h data.h proc.h
 
 #procs:	gendep.sno
 #	$(SNO) gendep.sno < $(SIL) > procs2
-#	mv procs2 procs
+#	mv -f procs2 procs
 
 #################################################################
 # lib files
@@ -563,5 +563,5 @@ DEPENDFLAGS=$(MYCPPFLAGS)
 depend:
 	sed '/^# DO NOT DELETE THIS LINE/q' $(MAKEFILE2) > $(MAKEFILE2).tmp
 	$(CCM) $(DEPENDFLAGS) $(SRCS) >> $(MAKEFILE2).tmp
-	mv $(MAKEFILE2).tmp $(MAKEFILE2)
+	mv -f $(MAKEFILE2).tmp $(MAKEFILE2)
 

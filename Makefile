@@ -15,12 +15,12 @@ Makefile2 .depend: config.m4 Makefile2.m4
 	$(M4) Makefile2.m4 >> $(M2TMP)
 	echo '# DO NOT DELETE THIS LINE. make depend uses it.' >> $(M2TMP)
 	make -f $(M2TMP) depend MAKEFILE2=$(M2TMP)
-	mv $(M2TMP) Makefile2
+	mv -f $(M2TMP) Makefile2
 	touch .depend
 
 config.m4:
 	./autoconf > config.m4.tmp
-	mv config.m4.tmp config.m4
+	mv -f config.m4.tmp config.m4
 
 # XXX set to .depend?
 M2DEP=Makefile2

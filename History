@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+4/17/97:
+	Makefile, Makefile2.m4: use mv -f throughout
+	tested dlopen() on OSF/1, SGI
+
 4/14/97:
 	config/irix64.m4: ditch long long
 	autoconf: check for libdl
