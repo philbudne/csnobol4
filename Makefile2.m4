@@ -518,7 +518,7 @@ sset.o: $(SSET_C)
 	$(CC) $(CFLAGS) -c $(SSET_C)
 
 sys.o: $(SYS_C)
-	$(CC) $(CFLAGS) $(CONFIG_GUESS) $(SYSDEFS) -c $(SYS_C)
+	$(CC) $(CFLAGS) -c $(SYS_C)
 
 tan.o: $(TAN_C)
 	$(CC) $(CFLAGS) -c $(TAN_C)
@@ -591,7 +591,7 @@ bsplitu: bsplitu.c
 
 # install .h files for dynamicly loaded functions
 INSTALL_H=[include]/h.h [include]/snotypes.h [include]/macros.h \
-	[include]/load.h [include]/dt.h
+	[include]/load.h [include]/dt.h config.h
 
 install: snobol4 doc/snobol4.1 pv
 	-rm -f $(BINDEST)
