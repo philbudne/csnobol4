@@ -34,6 +34,9 @@ to use, and includes it in config.m4. The config.m4 file is included
 into Makefile2.m4 using the m4 macro processor, and contains make
 variable assignments (ie; VAR=VALUE) and m4 macro invocations.
 .PP
+Autoconf checks for the file "local-config" and if it exists includes
+it at the end of config.m4.
+.PP
 The following are variables which may need to be set in some
 environments;
 
@@ -86,9 +89,11 @@ included in the distribution.
 .NH 2
 m4 macros
 .PP
-Each of the following macros can be used to add files or flags
-to a make variable (in place of the += syntax available in some
-make programs).
+Each of the following macros can be used to add files or flags to a
+make variable (in place of the += syntax available in some make
+programs).  The m4 quote start and end characters have been changed
+from accent grave and apostrophe to open and close brackets.  Values
+passed to the m4 macros should be quoted for safety.
 .NH 3
 ADD_CPPFLAGS
 .PP
@@ -116,7 +121,7 @@ Macro names
 .PP
 The following are cpp macro names which can be by adding
 ADD_CPPFLAGS([-D<symbol>]) or ADD_CPPFLAGS([-D<symbol>=<value>]) to
-system.m4.
+system.m4 or local-config.
 
 .NH 2
 #ifdef's in include files
@@ -164,7 +169,6 @@ The descriptor "v" field is used to hold the size of objects in bytes.
 When NO_BITFIELDS is not defined, the "v" field is a 24-bit unsigned
 bitfield.  When NO_BITFIELDS is defined VFLD_T is used (and defaults
 to "int"). VFLD_T should be able to hold 31-bit unsigned quantities.
-
 .NH 3
 TMP_DIR
 .PP
@@ -178,6 +182,49 @@ by times() system call (default: 60).
 SIGFUNC_T
 .PP
 Return type for signal handler functions (default: void).
+.NH 3
+NO_PML_EXIT
+.PP
+Prevents "poor-mans loading" of SPITBOL EXIT() function emulation.
+There is a dummy function available for addition to snolib for the
+execl() functions (ie; ADD_OBJS([execl.o])) in case execl() is not
+available.  This may be preferable to eliminating EXIT() altogether
+for compatibility reasons.
+.NH 3
+NO_PML_HOST
+.PP
+Prevents "poor-mans loading" of SPITBOL HOST() function emulation.
+There are dummy functions available for addition to snolib for the
+system() and getenv() functions (ie; ADD_OBJS([system.o])) in case
+either or both functions are not available.
+.NH 3
+NO_PML_REAL
+.PP
+Prevents "poor-mans loading" of the following functions; SQRT(),
+EXP(), LOG(), CHOP(), The functions can also be eliminated
+individually by setting one of NO_PML_SQRT, NO_PML_EXP, NO_PML_LOG, or
+NO_PML_CHOP.  Setting NO_PML_TRIG eliminates SIN(), COS() and TAN().
+.NH 3
+NO_PML_FILE
+.PP
+Prevents "poor-mans loading" of the SITBOL compatible FILE() predicate.
+.NH 3
+NO_PML_DELETE
+.PP
+Prevents "poor-mans loading" of the SITBOL compatible DELETE() function.
+.NH 3
+NO_PML_RENAME
+.PP
+Prevents "poor-mans loading" of the SITBOL compatible RENAME() function.
+
+.NH 2
+Other #ifdefs
+.NH 3
+NO_OFF_T
+.PP
+Should be set on systems where there is no system supplied "off_t"
+typedef available in either <sys/types.h> or <unistd.h>.  The "long"
+datatype will be used for file offsets in this case.
 
 .NH 1
 Library functions
@@ -334,12 +381,28 @@ fcvt() and gcvt()) when available, along with a modicum of
 intelligence and/or post-processing.
 
 .NH 2
-vprintf.c
+term.c
 .PP
-Provides a varargs version of fprintf() using the old "_doprnt()"
-entry point, for use on pre-SVID/XPG2/XPG3/ANSI-C systems (ie; BSD
-4.2, BSD 4.3).
+Provides term_input() function which returns a stdio stream (FILE *)
+connected to the terminal (typically via the stderr file descriptor)
+for read. Three versions are provided;
+.IP lib/posix/term.c
+uses STDERR_FILENO from <unistd.h> and fdopen().
+.IP lib/posix/term.c
+uses fdopen() on file descriptor 2.
+.IP lib/vms/term.c
+NOT TESTED: performs fopen() on SYS$INPUT.
 
-
-
-
+.NH 2
+sys.c
+.PP
+provides hwname() and osname() functions for use by SPITBOL HOST()
+function emulation. Two versions are provided. Both check for HWNAME
+and OSNAME defines, and use them if they exist.  HWNAME and/or OSNAME
+can be set using the SYSDEFS make variable, ie;
+.PP
+[SYSDEFS=-DHWNAME="yoyodyne-2000" -DOSNAME="yoyo-os 4.0"]
+.IP lib/posix/sys.c
+Uses <sys/utsname.h> and uname(2) function.
+.IP lib/generic/sys.c
+Uses output from config.guess script run by autoconf.
