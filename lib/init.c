@@ -239,7 +239,7 @@ static SIGFUNC_T
 err_catch(sig)
     int sig;
 {
-    /* save sig in resident storage for use in message? */
+    D_A(SIGNCL) = sig;			/* save signal number for output */
     SYSCUT();
 }
 
