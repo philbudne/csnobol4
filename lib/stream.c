@@ -153,7 +153,6 @@ clertb(tp, act, sp)
     struct spec *sp;
 {
     int i, j;
-    char *cp;
     union {
 	long l;
 	char c[sizeof(long)];

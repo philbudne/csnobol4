@@ -1299,7 +1299,6 @@ io_include( dp, sp )
     char fname[MAXFNAME];		/* XXX */
     struct file *fp;
     struct unit *up;
-    int unit;
 
     spec2str( sp, fname, sizeof(fname) );
 

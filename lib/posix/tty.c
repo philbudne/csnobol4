@@ -114,7 +114,6 @@ tty_mode( fp, cbreak, noecho, recl )
     FILE *fp;
     int cbreak, noecho, recl;
 {
-    struct termios new;
     struct save *sp;
     int fd;
     

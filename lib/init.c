@@ -121,7 +121,6 @@ getargs(start, sp)
     struct spec *sp;			/* dest spec, or NULL */
 {
     int i;
-    int len;
     char *parms;
     register char *pp;
 
