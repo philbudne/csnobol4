@@ -25,7 +25,7 @@ locapt( d1, d2, d3 )
     end = a + D_V(a);
 
     while (a < end) {			/* XXX .LE.? */
-	if (DCMP(a+DESCR, d3) == 0) {	/* compare types */
+	if (DCMP(a+DESCR, d3)) {	/* compare types */
 	    /* XXX 360 macros clear F&V! */
 	    D(d1) = D(d2);		/* copy F & V */
 	    D_A(d1) = a;
@@ -46,13 +46,16 @@ locapv( d1, d2, d3 )
     end = a + D_V(a);
 
     while (a < end) {			/* XXX .LE.? */
-	if (DCMP(a+2*DESCR, d3) == 0) {	/* compare values */
+	int_t a2;
+
+	a2 = a + 2*DESCR;
+	if (DCMP(a2, d3)) {		/* compare values */
 	    /* XXX 360 macros clear F&V! */
 	    D(d1) = D(d2);		/* copy F & V */
 	    D_A(d1) = a;
 	    return 1;			/* true (success) */
 	}
-	a += 2*DESCR;
+	a = a2;
     }
     return 0;				/* false (failure) */
 }
