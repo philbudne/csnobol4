@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.102  2004/01/12 06:42:36  phil
+* remove unused label LNKF8
+*
 * Revision 1.101  2004/01/12 06:32:39  phil
 * [PLB87] Fix argument processing for LOADed functions:
 * if there are more actuals than formals, pass extras
@@ -4270,15 +4273,16 @@ UNLOAD PROC    ,		   UNLOAD(F)
 LNKFNC PROC    ,		   Procedure to link to externals
        SETAV   XCL,INCL		   Get actual number of arguments
        MOVD    YCL,INCL		   Save function descriptor
-       GETDC   WPTR,YCL,0	   Get procedure descriptor	[PLB87]
-       SETAV   WCL,WPTR		   Get formal argument count	[PLB87]
+       GETDC   WCL,YCL,0	   Get procedure descriptor	[PLB87]
+       SETAV   WCL,WCL		   Get formal argument count	[PLB87]
+       SETAC   WPTR,0		   Clear count of passed args	[PLB87]
        GETDC   ZCL,YCL,DESCR	   Get definition block
        PSTACK  YPTR		   Post stack position
        SETAC   TCL,2*DESCR	   Set offset for first argument
-LNKF1  PUSH    (XCL,ZCL,TCL,YPTR,WCL,YCL)
+LNKF1  PUSH    (XCL,ZCL,TCL,YPTR,WCL,YCL,WPTR)			[PLB87]
 *				   Save working descriptors
        RCALL   XPTR,ARGVAL,,FAIL   Evaluate argument
-       POP     (YCL,WCL,YPTR,TCL,ZCL,XCL)
+       POP     (WPTR,YCL,WCL,YPTR,TCL,ZCL,XCL)			[PLB87]
 *				   Restore working descriptors
        DECRA   WCL,1						E3.9.1
        ACOMPC  WCL,0,,,LNKF6	   Pass extras w/o conversion	[PLB87]
@@ -4317,10 +4321,12 @@ LNKVI  LOCSP   XSP,XPTR		   Get specifier
 *				   Convert STRING to REAL
 LNKF6  INCRA   TCL,DESCR	   Increment offset
        PUSH    XPTR		   Save argument
+       INCRA   WPTR,1		   Keep count			[PLB87]
        DECRA   XCL,1						E3.9.1
        ACOMPC  XCL,0,LNKF1					E3.9.1
 LNKF4  ACOMPC  WCL,0,,LNKF5,LNKF5				E3.9.1
        PUSH    NULVCL						E3.9.1
+       INCRA   WPTR,1		   Keep count			[PLB87]
        DECRA   WCL,1		   Decrement argument count
        BRANCH  LNKF4		   Continue
 *_
@@ -4329,7 +4335,6 @@ LNKF5  GETSIZ  WCL,ZCL		   Get size of definition block
        GETDC   ZPTR,XPTR,0	   Get data target descriptor
        GETDC   ZCL,ZCL,DESCR	   Get function address
        INCRA   YPTR,2*DESCR	   Get pointer to argument list
-       SETAV   WPTR,YCL		   Get actual number of arguments [PLB87]
        LINK    ZPTR,YPTR,WPTR,ZCL,FAIL
 *				   Link to external function
        VEQLC   ZPTR,L,RTZPTR	   Check for linked string
