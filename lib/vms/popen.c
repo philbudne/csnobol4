@@ -1,6 +1,5 @@
 /*
  * $Id$
- * pipe.c
  * from Chris Janton's (chj) VMS Icon port.
  */
 
@@ -11,25 +10,20 @@
 #include <stsdef.h>
 #include <clidef.h>
 
-typedef struct _descr {
+struct descr {
     int length;
     char *ptr;
-} descriptor;
+};
 
-typedef struct _pipe {
+/* XXX keep linked list with FILE *
+static struct pipe {
     long pid;				/* process id of child */
     long status;			/* exit status of child */
-    long flags;				/* LIB$SPAWN flags */
     int channel;			/* MBX channel number */
     int efn;				/* Event flag to wait for */
     char mode;				/* the open mode */
-    FILE *fptr;				/* file pointer (for fun) */
-    unsigned running : 1;		/* 1 if child is running */
-} Pipe;
-
-static Pipe _pipes[_NFILE];		/* one for every open file */
-
-#define SFLAGS	(CLI$M_NOWAIT|CLI$M_NOKEYPAD|CLI$M_NOCONTROL)
+    char running;			/* 1 if child is running */
+} pipes[_NFILE];			/* one for every open file */
 
 /*
  * popen - open a pipe command
@@ -44,14 +38,16 @@ popen(cmd, mode)
     char *mode;
 {
     FILE *pfile;			/* the Pfile */
-    Pipe *pd;				/* _pipe database */
-    descriptor mbxname;			/* name of mailbox */
-    descriptor command;			/* command string descriptor */
-    descriptor nl;			/* null device descriptor */
+    int fd;				/* underlying fd */
+    struct pipe *pd;			/* pipe database pointer */
+    struct descr mbxname;		/* name of mailbox */
+    struct descr command;		/* command string struct descr */
+    struct descr *input, *output;
     char mname[65];			/* mailbox name string */
     int chan;				/* mailbox channel number */
     int status;				/* system service status */
     int efn;
+    long flags;				/* LIB$SPAWN flags */
     struct {
 	short len;
 	short code;
@@ -59,20 +55,27 @@ popen(cmd, mode)
 	char *retlen;
 	int last;
     } itmlst;
-    
+    char m;
+
     if (!cmd || !mode)
-	return (0);
+	return NULL;
+
     LIB$GET_EF(&efn);
     if (efn == -1)
-	return (0);
-    if (_tolower(mode[0]) != 'r' && _tolower(mode[0]) != 'w')
-	return (0);
+	return NULL;
+
+    m = _tolower(mode[0]);
+    if (m != 'r' && m != 'w')
+	return NULL;
+
     /* create and open the mailbox */
     status = SYS$CREMBX(0, &chan, 0, 0, 0, 0, 0);
     if (!(status & 1)) {
 	LIB$FREE_EF(&efn);
 	return (0);
     }
+
+    /* get mailbox name for fopen */
     itmlst.last = mbxname.length = 0;
     itmlst.address = mbxname.ptr = mname;
     itmlst.retlen = &mbxname.length;
@@ -90,59 +93,96 @@ popen(cmd, mode)
 	SYS$DASSGN(chan);
 	return (0);
     }
+
     /* Save file information now */
-    pd = &_pipes[fileno(pfile)];	/* get Pipe pointer */
-    pd->mode = _tolower(mode[0]);
-    pd->fptr = pfile;
+    fd = fileno(pfile);
+    pd = &pipes[fileno(pfile)];		/* get pipe pointer */
+    pd->mode = m;
     pd->pid = pd->status = pd->running = 0;
-    pd->flags = SFLAGS;
     pd->channel = chan;
     pd->efn = efn;
+
     /* fork the command */
-    nl.length = strlen("_NL:");
-    nl.ptr = "_NL:";
     command.length = strlen(cmd);
     command.ptr = cmd;
-    status = LIB$SPAWN(&command,
-		       (pd->mode == 'r') ? 0 : &mbxname, /* input file */
-		       (pd->mode == 'r') ? &mbxname : 0, /* output file */
-		       &pd->flags, 0, &pd->pid, &pd->status, &pd->efn,
-		       0, 0, 0, 0);
+    flags = CLI$M_NOWAIT|CLI$M_NOKEYPAD|CLI$M_NOCONTROL;
+    if (m == 'r') {
+	input = NULL;
+	output = mbxname;
+    }
+    else {
+	input = mbxname;
+	output = NULL;
+    }
+    status = LIB$SPAWN(&command, input, output, &flags, 0, &pd->pid,
+		       &pd->status, &pd->efn, 0, 0, 0, 0);
+
     if (!(status & 1)) {
+	fclose(pfile);
 	LIB$FREE_EF(&efn);
 	SYS$DASSGN(chan);
 	return (0);
-    } else {
-	pd->running = 1;
     }
+    pd->running = 1;
     return (pfile);
-}
+} /* popen */
 
 /*
  * pclose - close a pipe
  * Last modified 2-Apr-86/chj
  *
  */
+int
 pclose(pfile)
-FILE *pfile;
+    FILE *pfile;
 {
-    Pipe *pd;
-    int status;
-    int fstatus;
-    
-    pd = fileno(pfile) ? &_pipes[fileno(pfile)] : 0;
-    if (pd == NULL)
-	return (-1);
-    /* XXX check pd->running? */
-    fflush(pd->fptr);			/* flush buffers */
-    fstatus = fclose(pfile);
+    struct pipe *pd;
+    int fd;
+
+    fd = fileno(pfile);
+    if (fd == 0)			/* ?? */
+	return -1;
+    if (fd >= _NFILE)
+	return -1;
+
+    pd = pipes + fd;
+    if (!pd->running)
+	return -1;
+
     if (pd->mode == 'w') {
-	status = SYS$QIOW(0, pd->channel, IO$_WRITEOF,
-			  0, 0, 0, 0, 0, 0, 0, 0, 0);
-	SYS$WFLOR(pd->efn, 1 << (pd->efn % 32));
+	fflush(pfile);			/* flush buffers */
+	SYS$QIOW(0, pd->channel, IO$_WRITEOF, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
+    fclose(pfile);
+    SYS$WFLOR(pd->efn, 1 << (pd->efn % 32)); /* wait for termination */
     SYS$DASSGN(pd->channel);
     LIB$FREE_EF(&pd->efn);
     pd->running = 0;
-    return (fstatus);
+
+    if ((pd->status & STS$M_SUCCESS) != STS$M_SUCCESS)
+	return pd->status;
+    return 0;
 }
+
+#ifdef TEST
+main() {
+    for (;;) {
+	FILE *f;
+	int stat;
+	char line[1024];
+
+	printf("command: ");
+	if (!fgets(line, sizeof(line), stdin))
+	    break;
+	f = popen(line, "r");
+	if (f) {
+	    while (fgets(line, sizeof(line), f))
+		printf("> %s", line);
+	    stat = pclose(f);
+	    printf("status %d\n", stat);
+	}
+	else
+	    printf("popen failed");
+    }
+}
+#endif
