@@ -146,15 +146,19 @@ io_close(unit)				/* internal (zero-based unit) */
 
     if (fp->f) {
 #ifndef NO_POPEN
-	if (fp->flags & FL_PIPE)
+	if (fp->flags & FL_PIPE) {
 	    pclose(fp->f);		/* XXX save return? */
+	    fp->f = NULL;
+	}
 	else
 #endif
 	if (fp->f != stdin &&
 	    fp->f != stdout &&
 	    fp->f != stderr &&
-	    fp->f != termin)		/* XXX check a flag? */
+	    fp->f != termin) {		/* XXX check a flag? */
 	    fclose(fp->f);		/* XXX save return? */
+	    fp->f = NULL;
+	}
     }
 
     up->curr = fp->next;
@@ -653,14 +657,15 @@ io_rewind(unit)				/* REWIND */
 	if (up->curr != NULL)		/* file is open but not first in list */
 	    io_close(unit);		/* close it */
 	up->curr = up->head;		/* reset to head of list */
-	io_fopen(up->curr, "r");	/* XXX use original mode? */
+	if (up->curr->f == NULL)
+	    io_fopen(up->curr, "r");	/* XXX use original mode? */
     }
     fp = up->curr;
     if (fp == NULL)
 	return;
 
     f = fp->f;
-    if (f == NULL || (fp->flags & FL_PIPE) == 0) {
+    if (f != NULL && (fp->flags & FL_PIPE) == 0) {
 	fseek(f, up->offset, SEEK_SET);
     }
 }
@@ -838,7 +843,7 @@ io_openi(dunit, sfile, sopts, drecl)	/* called from SNOBOL INPUT() */
 
     /* open it now, so we can return status! */
     if (fname[0]) {
-	f = io_fopen( fp, "r");		/* XXX mode from option flags */
+	f = io_fopen( fp, "r");
 	if (f == NULL) {
 	    free(fp);
 	    return FALSE;		/* fail; no harm done! */
@@ -898,7 +903,7 @@ io_openo(dunit, sfile, sopts)		/* called from SNOBOL OUTPUT() */
 
     /* open it now, so we can return status! */
     if (fname[0]) {
-	f = io_fopen( fp, "w");		/* XXX mode from option flags */
+	f = io_fopen( fp, "w");
 	if (f == NULL)
 	    return FALSE;		/* fail; no harm done! */
 
