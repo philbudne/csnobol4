@@ -249,6 +249,9 @@ init()
      * allocate dynamic data region
      */
 
+    /* round down to even number of descr's */
+    ndynamic = (ndynamic / DESCR) * DESCR;
+
     ptr = dynamic(ndynamic);
 
     if (ptr == NULL) {
@@ -268,6 +271,9 @@ init()
     /****************
      * allocate pattern match stack
      */
+
+    /* round down to even number of descr's */
+    pmstack = (pmstack / DESCR) * DESCR;
 
     ptr = malloc(pmstack);		/* NOTE: malloc(), not dynamic() */
     if (ptr == NULL) {
