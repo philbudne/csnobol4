@@ -422,7 +422,7 @@ else
 	    # (to do interprocedural optimization).
 	    # n32 compiler's -O3 beats o32 -O2
 	    # To override this, use "configure --opt=whatever"
-	    OPT=-n32 -O3
+	    OPT='-n32 -O3'
 	fi
 	;;
     *:AIX:2:3)
