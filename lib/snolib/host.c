@@ -51,18 +51,29 @@ HOST( LA_ALIST ) LA_DCL
     char *env;
     int n;
 
-    /* if first arg is null string, do HOST() */
-    if (LA_TYPE(0) == S && LA_INT(0) == 0) { /* HOST_SYSINFO */
-	char os[256], hw[256];
-	extern const char snoname[], vers[];
+    if (LA_TYPE(0) == S) {
+	/*
+	 * handle arbitrary strings!!
+	 */
+	getstring(LA_PTR(0), buf, sizeof(buf));
 
-	/* use routines from SYSDEP/sys.c; */
-	osname(os);
-	hwname(hw);
+	/* XXX use strcasecmp (not universal)
+	 * HOST_SYSINFO is null string so it's moot at the moment
+	 */
+	if (strcmp(buf, HOST_SYSINFO) == 0) {
+	    char os[256], hw[256];
+	    extern const char snoname[], vers[];
 
-	sprintf(buf, "%s:%s:%s %s", hw, os, snoname, vers);
-	RETSTR(buf);
+	    /* use routines from SYSDEP/sys.c; */
+	    osname(os);
+	    hwname(hw);
+
+	    sprintf(buf, "%s:%s:%s %s", hw, os, snoname, vers);
+	    RETSTR(buf);
+	}
+	RETFAIL;
     }
+
 
     /* first arg must be int (try to convert to int?) */
     if (LA_TYPE(0) != I) {
@@ -100,6 +111,7 @@ HOST( LA_ALIST ) LA_DCL
 	if (nargs >= 2 && LA_TYPE(1) == S) {
 	    getstring(LA_PTR(1), buf, sizeof(buf));
 	    env = getenv(buf);
+	    /* retstr handles NULL as empty string, we want to RETFAIL */
 	    if (env)
 		RETSTR(env);
 	}
