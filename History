@@ -2,6 +2,14 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+10/24/97:
+	v311.sil: allow REALs in INTVAL for Stephen Del Rea (from SNOBOL4+)
+	snolib/snobol4+.sno: removed CONVERT() calls
+	snolib/url.sno: use file.sno for local files
+	test/tests.in: add intval
+	New snolib/file.sno: local file ops for URLs
+	New test/intval.sno test/intval.ref tests
+
 10/11/97:
 	snolib/http.sno: add "Host: " to request
 
