@@ -21,6 +21,14 @@
 static int wsock_init;
 #endif /* NO_STATIC_VARS not defined */
 
+#ifdef __BORLANDC__
+/* fcntl.h and io.h included for borland BCC32 v5.5
+ * Greg White <glwhite@netconnect.com.au> 8/30/2000
+ */
+#include <fcntl.h>
+#include <io.h>
+#endif /* __BORLANDC__ defined */
+
 #ifndef INADDR_NONE
 #define INADDR_NONE ((unsigned long)0xffffffff)	/* want u_int32_t! */
 #endif /* INADDR_NONE not defined */
