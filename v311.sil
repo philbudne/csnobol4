@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.28  94/06/13  02:25:18  budd
+* [PLB20] Implement -COPY/-INCLUDE
+* 
 * Revision 1.27  94/06/03  12:50:49  budd
 * [PLB19] always honor length from STREAD
 * otherwise input ends up padded
@@ -331,7 +334,7 @@ CODE   EQU     4*DESCR		   Offset of code in code node
 ESASIZ EQU     50		   Limit on number of syntactic errors
 FBLKSZ EQU     10*DESCR 	   Size of function descriptor block
 ARRLEN EQU     20		   Limit on length of array print image
-CARDSZ EQU     80		   Width of compiler input
+CARDSZ EQU     1024		   Width of compiler input [PLB21]
 SEQSIZ EQU     0		   Width of sequence field [PLB1]
 STNOSZ EQU     8		   Length of statement number field
 DSTSZ  EQU     2*STNOSZ 	   Space for left and right numbering
@@ -5563,7 +5566,7 @@ PUNCH  DESCR   UNITP,0,I	   PUNCH unit
 PCHFST DESCR   CRDFSP,0,0	   PUNCH format
 INSATL DESCR   INSATL,TTL+MARK,2*DESCR
 INPUT  DESCR   UNITI,0,I	   INPUT unit
-DFLSIZ DESCR   80,0,I		   INPUT length
+DFLSIZ DESCR   1024,0,I		   INPUT length			[PLB21]
 *
 TRLIST DESCR   TRLIST,TTL+MARK,10*DESCR
        DESCR   TVALL,0,0	   VALUE trace
