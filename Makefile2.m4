@@ -148,8 +148,6 @@ isnobol4.c: procs genc.sno globals v311.sil inline.sno
 	mv isnobol4.c.TMP isnobol4.c
 	rm -rf prolog subr
 
-########
-
 proc.h2: $(SNOBOL4).c
 
 proc.h:	proc.h2
@@ -167,10 +165,23 @@ syn.h:	syn.h2
 
 ################
 
-data.h data.c equ.h data_init.h: v311.sil gendata.sno
+data.h2 data.c2 equ.h2 data_init.h2: v311.sil gendata.sno
 	$(SNO) gendata.sno
 
-data_init.o:	data_init.c data_init.h equ.h data.h proc.h
+data.h:	data.h2
+	cmp data.h data.h2 || cp data.h2 data.h
+
+data.c:	data.c2
+	cmp data.c data.c2 || cp data.c2 data.c
+
+equ.h:	equ.h2
+	cmp equ.h equ.h2 || cp equ.h2 equ.h
+
+data_init.h: data_init.h2
+	cmp data_init.h data_init.h2 || cp data_init.h2 data_init.h
+
+data_init.o: data_init.c data_init.h equ.h data.h proc.h
+	$(CC) $(CFLAGS) -c data_init.c
 
 #################
 # dependency generation is slow and ugly.
