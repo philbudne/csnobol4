@@ -10,11 +10,16 @@
 #define TTY_READ_COOKED
 #define TTY_READ_RAW
 
+/* using own (dummy) rrevport() */
+#define NEED_RRESVPORT_DECL
+
 /* 
  * define preprocessor aliases for SIL and snolib subroutine names
  * which conflict with C runtime names (all names in the C runtime
  * are upper-case.  All our source references to C runtime functions
  * are lower-case, so this just renames our functions to avoid conflict)
+ *
+ * **NOTE** Any PML function renamed here needs special treatment in pml.h
  */
 
 #define ANY	XXANY			/* need XX w/ COMPAQ C 6.5?! */

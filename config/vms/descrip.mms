@@ -48,7 +48,7 @@ INET_C=[.lib.vms]inet.c
 # practically civilized!!
 
 CCFLAGS=/OPTIMIZE
-CCDEFS=,HAVE_STRINGS_H,HAVE_STDLIB_H,HAVE_UNISTD_H,NEED_RRESVPORT_DECL
+CCDEFS=,HAVE_STRINGS_H,HAVE_STDLIB_H,HAVE_UNISTD_H
 # no explicit CRT library needed
 # no explicit UCX library needed
 
