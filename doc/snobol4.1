@@ -498,8 +498,9 @@ The magic pathname
 \fB/tcp/\fIhostname\fB/\fIservice\fR can be used to open connection
 to a TCP server. If the path ends in the optional suffix
 .B /priv
-the connection will be originated from a privileged local port using
-.BR rresvport (3).
+the local address will be bound to a port number below 1024,
+if process privileges allow.
+\fB/udp/\fIhostname\fB/\fIservice\fR behaves similarly for UDP.
 The magic pathname
 .B /dev/tmpfile
 opens an anonymous temporary file for reading and writing, see
