@@ -16,52 +16,49 @@
 #define DEBUGF(lev, x)
 #endif /* DEBUG not defined */
 
-
-#define ACCEPT() { cp++; len--; }
-
 enum stream_ret
 stream( sp1, sp2, tp )
     struct spec *sp1;			/* OUT: prefix */
     struct spec *sp2;			/* IN: string OUT: remainder */
     struct syntab *tp;
 {
-    unsigned char *cp;
-    int len;
+    register unsigned char *cp;
     enum stream_ret ret;
+    register int len;
+    int_t put;
 
     len = S_L(sp2);
     cp = (unsigned char *)S_SP(sp2);
-    D_A(STYPE) = 0;			/* XXX in case no puts?? */
+    put = 0;				/* XXX in case no puts?? */
 
     DEBUGF(1,("stream"));
     DEBUGF(10,(" '%*s'", len, cp));
     DEBUGF(1,(" table %s\n", tp->name ));
 
-    while (len > 0) {
+    for (; len > 0; cp++, len--) {
 	register const struct acts *ap;
-	register index;
-	int_t tok;
+	unsigned index;
 
 	index = tp->chrs[*cp];
 
 	DEBUGF(2,(" '%c' (%d)", *cp, *cp ));
 
-	/* handle CONTIN quickly.
-	 * always has magic value zero 9/9/97
+	/*
+	 * handle CONTIN quickly (95% of time)
+	 * always has magic value zero.
+	 * 9/9/97
 	 */
 	if (index == 0) {
 	    DEBUGF(2,(" CONTIN\n"));
-	    cp++; len--;			/* accept */
 	    continue;
 	}
 
-	ap = tp->actions + index - 1;
+	ap = tp->actions + (index - 1);
 
 	/* token can never occur with CONTIN or ERROR? */
-	tok = ap->put;
-	if (tok) {
-	    DEBUGF(2,(" put %d", tok ));
-	    D_A(STYPE) = tok;
+	if (ap->put) {
+	    put = ap->put;
+	    DEBUGF(2,(" put %d", put ));
 	}
 
 #ifdef DEBUG
@@ -85,7 +82,7 @@ stream( sp1, sp2, tp )
 #endif /* DEBUG defined */
 
 	switch (ap->act) {
-	case AC_CONTIN:
+	case AC_CONTIN:			/* should not happen */
 	    break;
 	case AC_STOP:
 	    cp++; len--;		/* accept */
@@ -97,15 +94,15 @@ stream( sp1, sp2, tp )
 	    D_A(STYPE) = 0;
 	    return ST_ERROR;		/* immediate return! */
 	case AC_GOTO:
-	    tp = ap->go;
+	    tp = ap->go;		/* goto new table */
 	    break;
 	}
-	cp++; len--;			/* accept */
-    }
+    } /* for */
     /* here when out of subject */
     ret = ST_EOS;
 
  break_loop:
+    D_A(STYPE) = put;
     len = S_L(sp2) - len;		/* get match length */
 
     _SPEC(sp1) = _SPEC(sp2);		/* copy spec for prefix */
