@@ -110,6 +110,15 @@ if [ "$ARGS" ]; then
 	echo "	args: $ARGS"
 fi
 
+# stdout redirection fails with built in "time" (OpenBSD, AIX4) 
+if [ -x /usr/bin/time ]; then
+	TIME=/usr/bin/time
+elif [ -x /usr/5bin/time ]; then
+	TIME=/usr/5bin/time
+else
+	TIME=time
+fi
+
 TDIR=timdir.$$
 rm -rf $TDIR
 trap "rm -rf $TDIR; exit 1" 1 2 15
@@ -124,7 +133,7 @@ LNFILES='../procs ../globals ../v311.sil ../xsnobol4'
 	ln $LNFILES . || ln -s $LNFILES .
 
 	# stderr to file "stderr", all but first line of stdout to "$OUT"
-	time $SNOBOL $ARGS -s ../genc.sno v311.sil 2>stderr | $TAIL1 >$OUT
+	$TIME $SNOBOL $ARGS -s ../genc.sno v311.sil 2>stderr | $TAIL1 >$OUT
 )
 # use snobol program to process output!!
 $SNOBOL -b timing.sno < $TDIR/stderr
