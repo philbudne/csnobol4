@@ -31,7 +31,7 @@ TSORT=	tsort
 # machine generated files;
 
 GENERATED=data.c data_init.h proc.h syn.h data.h \
-	equ.h res.h syn_init.h isnobol4.c snobol4.c
+	equ.h res.h syn_init.h isnobol4.c snobol4.c snolib/host.sno
 
 ################
 # SIL source file
@@ -184,7 +184,7 @@ TAR=	README CHANGES History INSTALL TODO TODO.soon doc Makefile \
 	procs globals genc.sno gensyn.sno gendata.sno main.c \
 	data_init.c version.c parms.h mlink.h mdata.h pml.h $(G1) lib \
 	include config test snolib/*.sno sunmodel timing timing.sno \
-	cc-M bsplitu.c
+	cc-M bsplitu.c host.awk
 
 # "print version" -- for dir/tar names
 pv:	version.c
@@ -211,6 +211,7 @@ tar vers: snobol4 pv
 	mkdir $(DIR)
 	find $(TAR) -name RCS -prune -o -print | cpio -pldm $(DIR)
 	cp $(G2) $(DIR)
+	cp snolib/host.sno $(DIR)/snolib
 	tar cf - $(DIR) | $(COMP) > $(KIT)
 	rm -rf $(DIR)
 	./pv > vers
