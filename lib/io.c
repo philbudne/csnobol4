@@ -181,13 +181,6 @@ static struct iovars iov;
  */
 #define FINDUNIT(N) (iov.units + (N))
 
-extern FILE *term_input();		/* from <system>/term.c */
-extern FILE *tcp_open(), *udp_open();	/* from <system>/inet.c */
-
-#ifdef NEED_POPEN_DECL
-extern FILE *popen();			/* from {generic,vms}/popen.c */
-#endif /* NEED_POPEN_DECL defined */
-
 /*
  * Systems could implement 64-bit offsets using ANSI f[sg]etpos(),
  * and not have fseeko/ftello.
