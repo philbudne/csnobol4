@@ -2,6 +2,15 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+6/22/2003
+	new: lib/bsd/popen.c
+	configure: check for socketpair, use bsd popen.c
+	Makefile2.m4: add popen
+	doc/snobol4.1: document bidirectional pipes
+
+6/21/2003
+	doc/snobol4.1: document /dev/tty and /dev/null magic
+
 6/19/2003
 	doc/porting.ms: update
 	new: lib/{msdos,vms}/osopen.c

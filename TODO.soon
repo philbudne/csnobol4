@@ -1,35 +1,27 @@
 $Id$
 
-test osdep_open: VMS, DJGPP, MINGW
+test osdep_open: VMS
 
 make timing output machine friendly??
 	output something like timing.44 entries!
 
 create Makefiles from file list?
 	snobol4 config program?
-	create dummy os_init()?
+	create dummy os_init(), osdep_open()?
 
 always send timing.out via e-mail?
 	(unless (.)timing.out.hostname exists?)
 	only if part of a real kit???
 
-complaints when compiling isnobol4.c on some systems??
-	HP-UX 10?
-	AIX maxmem tweak?
-	SunPRO (config.h included multiple times w/ inlining
-		add protection?  move config.h to under ifndef XXX_STATIC?)
-
 run comdef on lib/*/*.c
 	macros.h, snotypes.h
 
-PACKAGING!!
-	check into CVS?
-
 verify correctness of line.ref, include.ref
 
-create csnobol4 home page (seperate sections for 0.99.4, new);
+create csnobol4 home page (seperate sections for 0.99.4, 0.99.44, new);
 	page for CVS repository instructions
-	links to distribution
+		CVS view??
+	links to distribution (w/ mirror locations)
 	links to documentation
 		man page (html, ps, pdf)
 		README
@@ -57,26 +49,19 @@ include advertizements about users (announcements?) mailing list???
 put sources under CVS
 	improve rcs2cvs;
 		move old files to Attic directories!!!
-	put tsort on vendor branch;
+	put tsort on vendor branch?
 
-man page
-	Credit Mark Emmer, Viktors(?) Berstis in man page "AUTHORS" section
-	say "square brackets"??
-	Change name from C-MAINBOL to CSNOBOL4 (update HOST() example)
 	mention files/functions available in snolib/ (mention README)
 	reference documents available on web (see next item)
 		http://burks.bton.ac.uk/burks/language/snobol/....
 		ftp://ftp.snobol4.com/spitman.pdf
-		http://www.snobol4.org
 
 test
-	VMS (RDIXON@seattleschools.org)
-	DJGPP (meissner@altertum.uni-halle.de)
-	Cygwin
-	MINGW
+	VMS, DJGPP, Cygwin, MINGW
 	QNX (Fred?)
 
 packaging;
+	LSM file? http://lsm.execpc.com/lsm
 	put pkg/ .... files under RCS (CVS)??
 	make snobol*4*-VERSION directory/tarfile???
 		csnobol-VERSION?? csnobol4?
@@ -95,10 +80,10 @@ packaging;
 have tests cleanup after themselves?  Add Makefile for "make clean"?
 	just add files to "make spotless"
 
-man page:
-	document SERV_LISTEN()??
-
 ==== stuff to do for releases;
+
+update version in CHANGES, README, version.c
+	on branch??
 
 run ispell on docs;
 	snobol4.1
@@ -107,12 +92,9 @@ run ispell on docs;
 	INSTALL
 	README
 
-update man page date
-
-update version in CHANGES, README, version.c
-	on branch??
-
-update HOST() example in man page
+update man page:
+	date
+	HOST output
 
 check in all files (incl History, TODO.soon)
 
@@ -309,10 +291,8 @@ Conversions for hex/octal;
 	output possible using SPRINTF();  create STRTOINT() (use strtol(l))?
 		look at SITBOL CONVERT()!!
 
-Include NetBSD popen() source on non-44BSD systems (if socketpair available?)
-	(use two pipes otherwise) for bi-directional I/O
-
-	*OR* devise a new syntax to use for PTY based subprocesses!?
+devise a new syntax to use for PTY based subprocesses!?
+	use forkpty()
 
 allow ¬ (\254) as NOT character?
 	would make SNOBOL source UTF-unsafe!
@@ -636,7 +616,7 @@ load changes;
 
 ================
 
-Add DIAGNOSTICS section to man page???
+Expand DIAGNOSTICS of man page
 	document all error numbers/strings and reasons!!
 
 have all genc, gendata, gensyn output .[ch]3 files; mv to .[ch]2 on exit??
@@ -650,10 +630,6 @@ Improve porting.doc / INSTALL
 		hp cc vs. gcc
 	optimization (none/-O/-O2 etc)
 	mention "timing" script!!
-
-MOVBLK_MEMMOVE?
-MOVBLK_MEMCPY???
-APDSP_MEMCPY?
 
 try adding SOME explicit "inline" decls?
 
@@ -794,3 +770,13 @@ Create fconvert/gconvert or fcvt/gcvt for realst?
 configure:
 	deal with missing "uname"??
 
+new I/O
+
+flag in descriptor for I/O association?
+	in variable?
+	in in hash table?
+
+tweak maxmem up for AIX?
+
+implement tty image mode?
+	pass flags to tty_mode? change "cbreak" to enum cooked/cbreak/raw
