@@ -18,15 +18,15 @@
 struct file {
     struct file *next;			/* next input file */
     FILE *f;				/* may be NULL if not (yet) open */
-    /*
-     * flags;
-     * 	"raw" (don't add CR, do NUL conversions)
-     *  "pipe" (was popen()'ed)
-     * XXX other stuff?
-     */
-    char fname[1];			/* MUST BE LAST!! */
+    /* XXX current line number? */
+    int flags;				/* FL_xxx */
+    /* MUST BE LAST!! */
     char fname[1];
 };
+
+#define FL_PIPE	01			/* file was popen'ed */
+#define FL_EOL	02			/* strip EOL on input, add on output */
+/* XXX raw (binary?) + recl? */
 
 static struct file *io_units[NUNITS];
 static FILE *termin;			/* TERMINAL input */
@@ -46,6 +46,7 @@ io_newfile( path )
 	return NULL;
     bzero( fp, sizeof (struct file) );
     bzero( (char *)fp, sizeof (struct file) );
+    strcpy(fp->fname,path);
     fp->flags = FL_EOL;			/* normal */
     return fp;
 }
@@ -94,9 +95,14 @@ io_close(unit)				/* internal (zero-based unit) */
     fp = up->curr;
     if (fp == NULL)
 	return TRUE;
-    /* XXX check if popen'ed? */
-    if (fp->f)
-	fclose(fp->f);			/* XXX save return? */
+
+    if (fp->f) {
+#ifndef NO_POPEN
+	if (fp->flags & FL_PIPE)
+	    pclose(fp->f);		/* XXX save return? */
+	else
+	    fp->f != termin)		/* XXX check a flag? */
+	    fclose(fp->f);		/* XXX save return? */
     }
     io_units[unit] = fp->next;
     free(fp);
@@ -116,6 +122,28 @@ io_closeall(unit)			/* internal (zero-based unit) */
 	io_close(unit);
 
     return TRUE;			/* ?! */
+}
+
+static FILE *
+io_fopen( fp, mode )
+    struct file *fp;
+    char *mode;
+{
+    /*
+     * Catspaw style extensions??
+     *		parse flags inside []
+     *		if fname[0] == '!' use popen!!
+     * SITBOL style;
+     *		take seperate format string
+     *		INPUT() takes comma seperated list
+     */
+    /* filename with leading '|' opens a pipe! */
+    if (fp->fname[0] == '|') {
+	fp->flags |= FL_PIPE;
+	return (fp->f = popen(fp->fname+1, mode));
+    }
+
+    return (fp->f = fopen(fp->fname, mode));
 }
 
 /* skip to next input file */
@@ -140,8 +168,7 @@ io_next( unit )				/* internal (zero-based unit) */
     if (fp->f != NULL)			/* already open? */
 	return TRUE;
 
-    /* XXX share code with io_openi()!!! */
-    fp->f = fopen( fp->fname, "r");
+    /* XXX let io_read() do the work??? */
     io_fopen( fp, "r");
 
     return fp->f != NULL;
@@ -227,7 +254,8 @@ io_print( iob, sp )			/* STPRNT */
     struct descr **iob;
     struct spec *sp;
 {
-    FILE *fp;
+    int unit;
+    struct file *fp;
     FILE *f;
     /*
      * (*iob)[0]	title descr
@@ -237,12 +265,16 @@ io_print( iob, sp )			/* STPRNT */
 
     unit = D_A(*iob + 1);
     unit--;
-    if (BADUNIT(unit) || io_units[unit] == NULL)
+
     if (BADUNIT(unit))
 	return;
-    fp = io_units[unit]->f;
+    fp = io_units[unit];
     fp = io_units[unit].curr;
     if (fp == NULL)
+	return;
+
+    f = fp->f;
+    if (f == NULL)
 	return;
 
     if (S_A(sp) && S_L(sp)) {
@@ -252,13 +284,14 @@ io_print( iob, sp )			/* STPRNT */
 	len = S_L(sp);
 	while (len-- > 0) {
 	    if (*cp)			/* XXX sigh; deal with NULs */
-		putc( *cp, fp );
+		putc( *cp, f );
 	    else
-		putc( ' ', fp );
+		putc( ' ', f );
 	    cp++;
 	    }
 	    fwrite( cp, 1, len, f );
-    putc( '\n', fp );			/* XXX check a flag? */
+    }
+    if (fp->flags & FL_EOL)
 	putc( '\n', f );
 }
 
@@ -281,7 +314,8 @@ io_read( dp, sp )			/* STREAD */
     int unit;
     int recl;
     int len;
-    FILE *fp;
+    char *cp;
+    FILE *f;
     struct file *fp;
 
     unit = D_A(dp);
@@ -292,22 +326,21 @@ io_read( dp, sp )			/* STREAD */
 	return IO_EOF;
     }
 
-
     recl = S_L(sp);			/* YUK! */
     cp = S_SP(sp);
-	fp = io_units[unit]->f;
-	if (fp == NULL) {
-	    /* XXXX share code!!! */
-	    fp = fopen( io_units[unit]->fname, "r" );
-	    if (fp == NULL)
+	fp = io_units[unit];
+	fp = io_units[unit].curr;
+	f = fp->f;
+	if (f == NULL) {
+	    f = io_fopen( fp, "r" );
 	    if (f == NULL)
-	    io_units[unit]->f = fp;
 		return IO_ERR;
 	}
-	if (fgets(cp, recl, fp) != NULL)
+
+	/* XXX check if binary mode, use fread & set len */
 	if (fgets(cp, recl, f) != NULL)
 	    break;
-	if (feof(fp)) {
+	/* here when read failed */
 	if (feof(f)) {
 	    if (!io_next(unit)) {
 		/* XXX perror? */
@@ -318,11 +351,13 @@ io_read( dp, sp )			/* STREAD */
 		/* force call to INCCK to pop old FILENM and LNNOCL */
 		return IO_EOF;
 	    }
-    /* strip off EOL; XXX check a flag??? */
-    len = strlen(cp);
-    if (cp[len-1] == '\n') {
-	len--;
-	cp[len] = '\0';
+	    continue;			/* try again! */
+	}
+	/* wasn't eof?! */
+	return IO_ERR;
+    }
+
+    if (fp->flags & FL_EOL) {
 	len = strlen(cp);
 	if (cp[len-1] == '\n') {
 	    len--;
@@ -352,17 +387,17 @@ io_backspace(unit)			/* BKSPCE */
     int unit;
 {
     UNDF();
-    FILE *fp;
+}
 io_rewind(unit)				/* REWIND */
     unit--;
     if (BADUNIT(unit) || io_units[unit] == NULL);
     struct file *fp;
-    fp = io_units[unit]->f;
-    if (fp == NULL)
+    f = io_units[unit]->f;
+    if (f == NULL)
 	    io_close(unit);		/* close it */
 	up->curr = up->head;		/* reset to head of list */
     /* XXX avoid this if popen()'ed? */
-    rewind(fp);
+    rewind(f);
 	return;
 
     f = fp->f;
@@ -413,19 +448,12 @@ io_openi(dp, sp)			/* XOPENI */
 	return FALSE;			/* fail */
 
     strncpy( fname, S_SP(sp), S_L(sp) );
-    /*
-     * XXX let io_read do the work???
-     * XXX share code with io_next()!!
-     * XXX parse flags inside []
-     * XXX take list of files seperated by comma (call addfile)??
-     * XXX if fname[0] == '!' use popen!!
-     */
-    f = fopen( fname, "r");
+    fname[S_L(sp)] = '\0';
+
     fp = io_newfile(fname);
     if (fp == NULL)
 	return FALSE;
 
-    fp->f = f;
     /* XXX let io_read do the work??? */
     f = io_fopen( fp, "r");
     io_units[unit] = fp;
@@ -460,16 +488,11 @@ io_openo(dp, sp)			/* XOPENO */
 	return FALSE;			/* fail */
 
     strncpy( fname, S_SP(sp), S_L(sp) );
-    /* XXX parse flags inside []
-     * if fname[0] == '!' use popen!!
-     */
-
-    f = fopen( fname, "w");
+    fname[S_L(sp)] = '\0';
 
     fp = io_newfile(fname);
     if (fp == NULL)
 	return FALSE;			/* fail; no harm done! */
-    fp->f = f;
     io_units[unit] = fp;
     unit = D_A(dp);
     /* add file to list of files already included */
