@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.40  1996/09/04  03:00:06  phil
+* [PLB32] Add SPITBOL operators (under -PLUSOPS) from SNOBOL4+
+*
 * Revision 1.39  1996/09/01  05:12:56  phil
 * [PLB31] Add SPITBOL features with code from SNOBOL4+ and Minnesota SNOBOL4;
 * CHAR(), RPAD()/LPAD(), BREAKX(), SORT()/RSORT()
@@ -1084,10 +1087,11 @@ CMPSUB RCALL   SUBJND,ELEMNT,,(CDIAG,COMP3)
        AEQLC   SPITCL,0,,CMPAT2	   Jump if no SPITBOL ops	[PLB32]
 %{
 	/* Sigh; this was in assembler in SNOBOL4+		[PLB32] */
-	if (*S_SP(TEXTSP) == '?' &&	/* is break char '?'	[PLB32] */
+	register char *cp;		/*			[PLB33] */
+	cp = S_SP(TEXTSP);		/*			[PLB33] */
+	if (*cp == '?' &&		/* is break char '?'	[PLB32] */
             (S_L(TEXTSP) == 1 ||	/* yes; is last char?	[PLB32] */
-	     *S_SP(TEXTSP) == ' ' ||	/* or is next space	[PLB32] */
-	     *S_SP(TEXTSP) == '\t')) {	/* or tab?		[PLB32] */
+             cp[1] == ' ' || cp[1] == '\t')) { /* or next is white? [PLB33] */
 	    S_O(TEXTSP)++;		/* binary ? found. 	[PLB32] */
 	    S_L(TEXTSP)--;		/* remove from TEXTSP	[PLB32] */
 	}				/*			[PLB32] */
@@ -1668,9 +1672,8 @@ CTLCRD FSHRTN  TEXTSP,1 	   Delete control character
        AEQLC   STYPE,NBTYP,CMTCRD  Verify nonbreak
        STREAM  XSP,TEXTSP,LBLXTB,CMTCLR,CMTCLR
 *				   Break out command
-       AEQLC   CASECL,0,,CTLCRC	   Case sensitive?		[PLB15]
-       XRAISP  XSP		   No, raise before compare	[PLB15]
-CTLCRC LEXCMP  XSP,UNLSP,CTLCR1,,CTLCR1				[PLB15]
+       XRAISP  XSP		   Raise before compare		[PLB15][PLB33]
+       LEXCMP  XSP,UNLSP,CTLCR1,,CTLCR1				[PLB15][PLB33]
 *				   Is it UNLIST?
        SETAC   LISTCL,0 	   Zero listing switch
        BRANCH  RTN1		   Return
@@ -1683,6 +1686,7 @@ CTLCR1 LEXCMP  XSP,LISTSP,CTLCR3,,CTLCR3
        AEQLC   STYPE,NBTYP,CMTCLR  Verify nonbreak
        STREAM  XSP,TEXTSP,LBLXTB,CMTCLR,CMTCLR
 *				   Get type of listing
+       XRAISP  XSP		   Raise before compare		[PLB33]
        LEXCMP  XSP,LEFTSP,CTLCR2,,CTLCR2
 *				   Is it LEFT?
        SETAC   LLIST,1		   Set left listing switch
@@ -1744,10 +1748,7 @@ CTLC12 SPCINT  SPITCL,XSP					[PLB32]
        BRANCH  CTLC13		   				[PLB32]
 *_
 CTLC11 SETAC   SPITCL,0		   				[PLB32]
-       SETAC   EXPCL,0						[PLB32]
-CTLC13 LHERE   ,		   				[PLB32]
-* stuff here to set EXPCL?					[PLB32]
-       BRANCH  CMTCLR						[PLB32]
+CTLC13 BRANCH  CMTCLR		   Processing for EXPCL here?	[PLB33]
 *_
 CTLC14 BRANCH  CMTCLR		   Add new ctl card check here	[PLB32]
 *_
@@ -1882,9 +1883,10 @@ INIT   PROC    ,		   Statement initialization procedure
        GETD    XCL,OCBSCL,OCICL    Get statement data
        MOVA    STNOCL,XCL	   Update &STNO
        SETAV   FRTNCL,XCL	   Set up failure offset
+       ACOMPC  EXLMCL,0,,,INIT1	   Check for &STLIMIT < 0	[PLB33]
        ACOMP   EXNOCL,EXLMCL,EXEX,EXEX
 *				   Check &STLIMIT
-       INCRA   EXNOCL,1 	   Increment &STCOUNT
+INIT1  INCRA   EXNOCL,1 	   Increment &STCOUNT		[PLB33]
        ACOMPC  TRAPCL,0,,RTNUL3,RTNUL3
 *				   Check &TRACE
        LOCAPT  ATPTR,TKEYL,STCTKY,RTNUL3
@@ -4763,7 +4765,6 @@ SORTA  GETSIZ  WCL,WPTR            Get size of old array
 SORTA1 INCRA   XCL,DESCR           Next index entry			[PLB31]
        INCRA   ZPTR,DESCR          Next sort element
        PUTD    TPTR,XCL,ZPTR       Add to index
-* xxx fixme;
        AEQL    XCL,ZCL,SORTA1      Loop on no. of rows.			[PLB31]
 *
 *
@@ -6136,7 +6137,7 @@ TRIMCL DESCR   0,0,I		   &TRIM
        DESCR   TRMSP,0,0
 TRAPCL DESCR   0,0,I		   &TRACE
        DESCR   TRCESP,0,0
-EXLMCL DESCR   50000,0,I	   &STLIMIT
+EXLMCL DESCR   -1,0,I		   &STLIMIT			[PLB33]
        DESCR   STLMSP,0,0
 OUTSW  DESCR   1,0,I		   &OUTPUT
        DESCR   OUTSP,0,0
@@ -6281,12 +6282,12 @@ DATACL DESCR   0,0,0		   Prototype end switch for DATA(P)
 FNVLCL DESCR   0,0,0		   FUNCTION-VALUE switch for trace
 INICOM DESCR   0,0,0		   INITIALIZATION SWITCH	E3.10.6
 LENFCL DESCR   0,0,0		   Length failure switch
-LISTCL DESCR   1,0,0		   Compiler listing switch
+LISTCL DESCR   0,0,0		   Compiler listing switch	[PLB33]
 LLIST  DESCR   1,0,0		   Left listing switch
 NAMGCL DESCR   0,0,0		   Naming switch for SJSR
 NERRCL DESCR   1,0,0		   NOERROR switch		[PLB9]
 SCERCL DESCR   0,0,0		   Error branch switch
-STATCL DESCR   1,0,0		   Display statistics		[PLB12]
+STATCL DESCR   0,0,0		   Display statistics		[PLB12][PLB33]
 *
 *      Constants
 *
@@ -6493,8 +6494,7 @@ ERRBUF BUFFER  CARDSZ+STNOSZ-SEQSIZ+1
 INBUF  BUFFER  CARDSZ+DSTSZ+1	   Card input buffer
 REALBF BUFFER  36		   Buffer for real number conversion
 ICLBLK DESCR   ICLBLK,TTL+MARK,ICLEND-ICLBLK-DESCR
-SPITCL DESCR   0,0,I		   SPITBOL features		[PLB32]
-EXPCL  DESCR   0,0,I		   Experimental features	[PLB32]
+SPITCL DESCR   1,0,I		   SPITBOL features (-PLUSIOS)	[PLB32][PLB33]
 *
 *      Pointers to Attribute Lists
 *
