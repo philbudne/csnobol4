@@ -1,5 +1,23 @@
 $Id$
 
+make "install"
+
+work on "configure" script
+
+GCCBUILD.COM
+
+fix name case folding (VARVUP)
+	GENVRC -> GENVUP
+
+use "SNOLIB" path for -INCLUDE & LOAD()
+
+try adding SOME explicit "inline" decls?
+
+implement auto-load of pml functions
+====
+
+run-time allocation of system & pattern stacks
+
 snolib;
 	move .c files to lib/??? ?
 	move compilation to Makefile2
@@ -8,12 +26,32 @@ snolib;
 	make install?! (after fixing -INCLUDE to do searching)
 	run "cd snolib; make clean" from Makefile2 "clean"
 
+====
+
+run-time allocation of system & pattern stacks
+
+open flags???
+
+	TCP?
+	bidirectional I/O
+
 ================
 
 -INCLUDE/-COPY
 	describe "program error" vs. "reading error" in man page?
 	improve error handling???
 	search getenv("SNOLIB")
+
+================
+
+load changes;
+
+	load "object" once, read symtab for multiple entries
+		use -A on original / current symtab
+
+	use local dl_xxx if available (HP, SVR4, SOS4??)?
+
+================
 
 Add DIAGNOSTICS section to man page???
 
