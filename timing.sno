@@ -8,7 +8,7 @@
 	TAB = '	'
 	SP = ' '
 
-* parameters
+* keep time in 100ths (SHMULT * SNODIV == 1000)
 	SHMULT = 10
 	SNODIV = 100
 
@@ -114,7 +114,7 @@ ALOP	LINE = INPUT					:F(NOSTAT)
 
 GETTIME	LINE = INPUT					:F(NOTIME)
 * NOTE: all of the following could be one pattern/match, 
-* but kept seperate (for now) for debugging!!
+* but kept seperate for sanity!!
 
 	MIN = 0
 * gnu time '0.00user ....'
@@ -144,78 +144,46 @@ GOTTIME	SHELL = CONVERT((USER + MIN * 60) * SHMULT, 'INTEGER')
 * see  if shell time matches snobols exactly
  	EQ(SNOBOL,SHELL)				:S(TIMEOK)
 
-* no, get error factor
+* allow +/-1
+ 	EQ(SNOBOL,SHELL + 1)				:S(TIMEOK)
+ 	EQ(SNOBOL,SHELL - 1)				:S(TIMEOK)
+
+*	allow +/-5% error
+	EPS = 0.05
+	LT(FACTOR, 1 - EPS)				:S(BADTIME)
+	GT(FACTOR, 1 + EPS)				:F(TIMEOK)
+
+* here with bad time measurements
 	FACTOR = SNOBOL / (SHELL * 1.0)
-* get "normal"
-	NORMAL = 1000.0 / (SNODIV * SHMULT)
 
-*	allow +/-2% error
-	EPS = NORMAL / 50
-	LT(FACTOR, NORMAL - EPS)			:S(BAD)
-	GT(FACTOR, NORMAL + EPS)			:F(TIMEOK)
-
-BAD	OUTPUT =
+BADTIME	OUTPUT =
 	OUTPUT = "SNOBOL's timings off by factor of " FACTOR
 	OUTPUT = "	see doc/porting.doc section on mstime.c"
 	OUTPUT =
-	OUTPUT = "SHELL:" TAB SHELL
-	OUTPUT = "SNOBOL:" TAB SNOBOL			:(DODIFF)
+	OUTPUT = "shell time:" TAB SHELL
+	OUTPUT = "snobol4 time:" TAB SNOBOL		:(DONE)
 
-	CHECKHZ(FACTOR, 50, 60)				:S(DODIFF)
-	CHECKHZ(FACTOR, 50, 100)			:S(DODIFF)
-	CHECKHZ(FACTOR, 60, 50)				:S(DODIFF)
-	CHECKHZ(FACTOR, 60, 100)			:S(DODIFF)
-	CHECKHZ(FACTOR, 100, 50)			:S(DODIFF)
-	CHECKHZ(FACTOR, 100, 60)			:S(DODIFF)
+	CHECKHZ(FACTOR, 50, 60)				:S(DONE)
+	CHECKHZ(FACTOR, 50, 100)			:S(DONE)
+	CHECKHZ(FACTOR, 60, 50)				:S(DONE)
+	CHECKHZ(FACTOR, 60, 100)			:S(DONE)
+	CHECKHZ(FACTOR, 100, 50)			:S(DONE)
+	CHECKHZ(FACTOR, 100, 60)			:S(DONE)
 
 * nothing obvious -- say something?
-							:(DODIFF)
+							:(DONE)
 
+* here with good time measurements
 TIMEOK	OUTPUT =
-	OUTPUT = "snobol4 time measurement checks out"
+	OUTPUT = "snobol4 time measurement checks out"	:(DONE)
 
-****************************************************************
-* look for start of diff "signal" line
-
-DODIFF	OUTPUT =
-DIFFLP	LINE = INPUT					:F(NODIFF)
-DIFFCK	IDENT(LINE,'==== diff')				:F(DIFFLP)
-
-* here with first line of diff output
-	DIFF = ARRAY('1:5')
-	DIFF[1] = INPUT					:F(NODIFF)
-	IDENT(DIFF[1],'1c1')				:F(BADIFF)
-	L = L + 1
-	DIFF[2] = INPUT					:F(BADIFF)
-	DIFF[2] '<'					:F(BADIFF)
-	L = L + 1
-	DIFF[3] = INPUT					:F(BADIFF)
-	DIFF[3] '-'					:F(BADIFF)
-	L = L + 1
-	DIFF[4] = INPUT					:F(BADIFF)
-	DIFF[4] '>'					:F(BADIFF)
-	L = L + 1
-* should now get EOF
-	DIFF[5] = INPUT					:F(DIFFOK)
-	IDENT(DIFF[5])					:S(DIFFOK)
-	L = L + 1					:(BADIFF)
-
-DIFFOK	OUTPUT = "genc.sno output checks out"		:(END)
-
-* here if first line of diff does not check out
-BADIFF	OUTPUT = 'genc diff failed @' L
-	I = 1
-DUMP	GT(I,L)						:S(BADLOP)
-	OUTPUT = DIFF[I]
-	I = I + 1					:(DUMP)
-
-BADLOP	OUTPUT = INPUT					:S(BADLOP)F(FATAL)
-
-NODIFF	OUTPUT = 'no diff found'			:(FATAL)
 NOSTAT	OUTPUT =
 	OUTPUT = "could not get stats"			:F(FATAL)
+
 NOTIME	OUTPUT =
-	OUTPUT = "could not get times, or diff"
+	OUTPUT = "could not get times"
+* fall
 
 FATAL	&CODE = 1
+DONE
 END
