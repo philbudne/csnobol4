@@ -123,13 +123,9 @@ with "--add-" can appear);
 		default.
 
 		This option attempts to set native compiler options
-		for LP64 environment where it's not the default.  This
-		may require --no-gcc to disable selection of GNU C
-		Compiler (the configure script does not know how to
-		tell GCC to generate 64-bit code, and there does not
-		appear to be a generic option to do so!!  If you know
-		the right option(s) for your platform you can use
-		--add-opt to turn them on).
+		for LP64 environment where it's not the default. If
+		you know the right option(s) for your platform you can
+		use --add-opt to turn them on.
 
 		Under the LP64 model, SNOBOL4 INTEGERs are represented
 		by C longs and REALs are represented C doubles.  The
@@ -147,8 +143,8 @@ with "--add-" can appear);
 		(see --longlong).
 
 		--lp64 is not necessary on systems where LP64 is the
-		default, or only data model (e.g. Alpha).  Note than
-		under HP-UX the default data model for IA-64 (Itanium)
+		default, or only data model (e.g. Alpha).  Note that
+		under HP-UX on IA-64 (Itanium) the default data model
 		is ILP32, while under Linux, the default is LP64.
 
 	--no-dlopen
