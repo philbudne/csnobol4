@@ -146,6 +146,9 @@ following options;
 
 		SunPro/Sun Workhop: -fast
 
+		If you can tell me good values to use, and how to detect
+		the compiler to use them on, please let me know!
+
 		Optimized compilation mail fail, to compile the large
 		machine generated files (due to swap space exaustion,
 		or internal compiler limits), or may appear to take
