@@ -141,7 +141,8 @@ findact(act, tp)
 void
 clertb(tp, act, sp)
     struct syntab *tp;
-
+    enum action act;
+    struct spec *sp;
 {
     int i, j;
     char *cp;
