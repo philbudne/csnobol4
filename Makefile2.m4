@@ -464,7 +464,7 @@ realclean: clean
 
 # file to hard-link into dist dir
 # generated files copied to ensure newer than source files!
-[TAR=	README doc History TODO TODO.soon \
+[TAR=	README CHANGES History INSTALL TODO TODO.soon doc \
 	Makefile Makefile2.m4 autoconf config.guess \
 	$(SIL) syntax.tbl procs globals \
 	genc.sno gensyn.sno gendata.sno inline.sno \
