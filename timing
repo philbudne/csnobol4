@@ -32,6 +32,20 @@ if [ "$UNAME" ]; then
 
 	# show hardware, if we know how;
 	case `$UNAME` in
+	*BSD*)
+		if [ -x /usr/sbin/sysctl ]; then
+			echo /usr/bin/sysctl hw:
+			/usr/sbin/sysctl hw
+			echo ''
+		fi
+		;;
+	HP-UX)
+		if [ -f /usr/bin/model ]; them
+			echo model:
+			/usr/bin/model
+			echo ''
+		fi
+		;;
 	IRIX*)
 		echo 'hinv:'
 		hinv
@@ -48,13 +62,6 @@ if [ "$UNAME" ]; then
 		echo 'sunmodel:'
 		./sunmodel
 		echo ''
-		;;
-	*BSD*)
-		if [ -x /usr/sbin/sysctl ]; then
-			echo sysctl hw:
-			/usr/sbin/sysctl hw
-			echo ''
-		fi
 		;;
 	esac
 fi
