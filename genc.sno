@@ -1148,7 +1148,9 @@ XDATE	OUTPUT = IND 'date(' ARGV<1> ');'		:(OPDONE)
 ****************
 *	SIL ENDEX (???) MACRO
 XENDEX	LIVE =
-	OUTPUT = IND 'endex(' D_A(ARGV<1>) ');'		:(OPDONE)
+	OUTPUT = IND 'endex(' D_A(ARGV<1>) ');'
+* Keep DECC quiet;
+	OUTPUT = IND 'return 0;'			:(OPDONE)
 
 ****************
 *	SIL OUTPUT (=) MACRO
