@@ -22,7 +22,8 @@ Philip L. Budne.  The language and it's implementation are described
 in [1] and [2].
 .PP
 Extensions where present have been chosen to be compatible with one or
-more of; Catspaw Vanilla SNOBOL, Catspaw Macro SPITBOL and/or SITBOL.
+more of; Catspaw Vanilla SNOBOL4, Catspaw SNOBOL4+, Catspaw Macro
+SPITBOL and/or SITBOL.
 .SS Command line
 The files on the command line are read in turn until an
 .B END
@@ -193,8 +194,66 @@ this can be overridden by appending a trailing space to the filename.
 for compatibility with
 .BR SPITBOL/370 .
 
-.SS "Default I/O Associations"
+.TP
+.B BREAKX()
+.br
+The
+.B BREAKX()
+function is a pattern function used for fast scanning.
+.B BREAKX(str)
+is equivalent to
+.B "BREAK(str) ARBNO(LEN(1) BREAK(str))"
 
+.TP
+.B CHAR()
+.br
+The
+.B CHAR()
+function takes an integer and returns the n'th character in
+.B &ALPHABET .
+
+.TP
+.B LPAD()/RPAD()
+.br
+The
+.B LPAD()
+and
+.B
+.B RPAD()
+functions take the first argument (subject) string, and pad it out to
+the length specified in the second argument, using the first character
+of the optional third argument.  If the third argument is missing, or
+is the null string. spaces will be used for padding.  The subject will
+be returned unmodified if already long enough.
+
+.TP
+.B SORT()/RSORT()
+.br
+The
+.B SORT()
+and
+.B
+.B RSORT()
+functions take a array (or table, which is first converted to an
+array), and sorts the rows according to the value of the array column
+given in the second argument (for a table, a second argument of 1
+sorts by table indecies, an argument of 2 sorts by table element
+values). 
+.B SORT()
+sorts elements in ascending order,
+.B RSORT()
+sorts in decending order.
+
+
+.SS "I/O Associations"
+
+.br
+I/O is performed by associating a variable name with
+a numbered I/O unit using the
+.B INPUT()
+and
+.B OUTPUI()
+functions.  The following associations are available by default;
 .br
 .ta 1i 2i
 .nf
@@ -268,15 +327,12 @@ Philip L. Budne
 I/O retains some record oriented flavor.
 .br
 I/O is still tied to unit numbers.
-.B 
 .br
 Compiler error messages refer to listing line number (not source file line).
 .br
 Listings don't deal well with
 .B TAB
 characters.
-.br
-Indirection ('$' operator) fails to honor case folding.
 .br
 Dynamic storage cannot be expanded after startup.
 .br
