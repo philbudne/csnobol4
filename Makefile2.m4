@@ -251,7 +251,7 @@ proc.h:	proc.h2
 
 syn.c syn.h2 syn_init.h2: syntax.tbl gensyn.sno
 	rm -f syn.c2 syn.h2
-	$(SNO) gensyn.sno
+	$(SNO) gensyn.sno $(SIL)
 	mv -f syn.c2 syn.c
 
 syn.h:	syn.h2
