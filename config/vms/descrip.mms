@@ -6,7 +6,14 @@
 # Tested on AXP OpenVMS 6.1 using DECC 4.0 and MMS 2.7 (DECSET 11.2-1)
 #	(October 1996)
 
-# Updated 9/3/97 (not tested)
+# Updated 2/10/98 (semi-tested)
+
+# for VAXC 3.x comment out the next line
+DECC=/DECC/PREFIX_LIB=ALL/OPTIMIZE
+
+# need socket library DEC TCP/IP Connection services for OpenVMS
+#	(formerly VAX/Ultrix connection product)???
+LIBS=+SYS$LIBRARY:DECCRTL/LIBR
 
 SNOBOL4=isnobol4
 
@@ -31,6 +38,7 @@ ORDVST_C=[.lib]ordvst.c
 PAIR_C=[.lib]pair.c
 PAT_C=[.lib]pat.c
 PML_C=[.lib]pml.c
+POPEN_C=[.lib.vms]popen.c
 REALST_C=[.lib]realst.c
 REPLACE_C=[.lib]replace.c
 STREAM_C=[.lib]stream.c
@@ -45,7 +53,6 @@ BZERO_C=[.lib.auxil]bzero.c
 BCOPY_C=[.lib.auxil]bcopy.c
 GETOPT_C=[.lib.auxil]getopt.c
 GETREDIRECT_C=[.lib.vms]getredirect.c
-POPEN_C=[.lib.vms]popen.c
 
 AUX_OBJ=bcopy.obj, bzero.obj, getopt.obj, getredirect.obj, popen.obj,
 
@@ -76,12 +83,13 @@ PML_OBJ=host.obj, sys.obj, exit.obj, execute.obj, sqrt.obj, \
 	getstring.obj, retstring.obj
 
 CFLAGS=\
-	/DECC/PREFIX_LIB=ALL/OPTIMIZE\
+	$(DECC) \
 	/DEFINE=(ANSI_STRINGS,NO_OFF_T,TTY_READ_RAW,TTY_READ_COOKED,\
 		ANY=XANY,DATE=XDATE,INIT=XINIT,LOAD=XLOAD,UNLOAD=XUNLOAD,\
 		RPLACE=XRPLACE,TIME=XTIME,RAISE=XRAISE,DIV=XDIV,\
 		SUBSTR=XSUBSTR,EXIT=XEXIT,SQRT=XSQRT,EXP=XEXP,LOG=XLOG,\
-		SIN=XSIN,COS=XCOS,TAN=XTAN,RENAME=XRENAME)\
+		SIN=XSIN,COS=XCOS,TAN=XTAN,RENAME=XRENAME,\
+		IO_FINDUNIT=XIO_FINDUNIT)\
 	/WARN=(DISABLE=IMPLICITFUNC) \
 	/INCLUDE=(SYS$DISK:[],SYS$DISK:[.INCLUDE])
 
@@ -96,7 +104,7 @@ OBJS=	main.obj, $(SNOBOL4).obj, data.obj, data_init.obj, syn.obj, \
 	$(AUX_OBJ) $(PML_OBJ)
 
 snobol4.exe : $(OBJS)
-	link /exec=snobol4.exe $(OBJS)
+	link /exec=snobol4.exe $(OBJS) $(LIBS)
 
 #################################################################
 # lib files
@@ -173,17 +181,23 @@ str.obj : $(STR_C)
 stream.obj : $(STREAM_C)
 	$(CC) $(CFLAGS) $(STREAM_C)
 
-term.obj : $(TERM_C)
-	$(CC) $(CFLAGS) $(TERM_C)
-
 top.obj : $(TOP_C)
 	$(CC) $(CFLAGS) $(TOP_C)
 
 tree.obj : $(TREE_C)
 	$(CC) $(CFLAGS) $(TREE_C)
 
+################
+# system dependant
+
+term.obj : $(TERM_C)
+	$(CC) $(CFLAGS) $(TERM_C)
+
 tty.obj : $(TTY_C)
 	$(CC) $(CFLAGS) $(TTY_C)
+
+popen.obj : $(POPEN_C)
+	$(CC) $(CFLAGS) $(POPEN_C)
 
 #################
 # porting aids
