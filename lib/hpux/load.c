@@ -62,7 +62,6 @@ load(addr, sp1, sp2)
     fp->entry = pml_find(fp->name);
     if (fp->entry == NULL) {		/* not found by pml */
 	char path[PATHLEN*2];		/* room for directory name */
-	char temp[PATHLEN];
 	char *snolib;
 	void *lib;
 
@@ -72,8 +71,10 @@ load(addr, sp1, sp2)
 
 	if (sp2 && S_A(sp2) && S_L(sp2)) {
 	    struct stat st;
+	    char temp[PATHLEN];
 
 	    spec2str( sp2, temp, sizeof(temp) );
+printf("temp: %s\n", temp);
 	    if (temp[0] != '/' && stat(temp, &st) < 0) {
 		/* not absolute and file does not exist; prepend libdir */
 		/* XXX limit length of snolib??? */
@@ -88,7 +89,7 @@ load(addr, sp1, sp2)
 	    sprintf( path, "%s/%s", snolib, SNOLIB_A );
 	}
 
-	fp->handle = shl_load(temp, BIND_DEFERRED|BIND_VERBOSE, 0L);
+	fp->handle = shl_load(path, BIND_DEFERRED|BIND_VERBOSE, 0L);
 	if (fp->handle == NULL) {
 	    free(fp);
 	    return FALSE;		/* fail */

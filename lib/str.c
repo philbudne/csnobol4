@@ -158,7 +158,7 @@ spec2str(sp, dest, size)
     if (l > size-1)
 	l = size-1;
 
-    strncpy(S_SP(sp), dest, l);
+    strncpy(dest, S_SP(sp), l);
     dest[l] = '\0';
 }
 
