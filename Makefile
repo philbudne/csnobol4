@@ -3,12 +3,13 @@
 # TARGETS:
 # snobol4	make binary & regression test
 # xsnobol4	make binary, no regression test
+# tidy		remove turds (backup, temp files)
+# clean		removes objects; leave binary, config files
+# realclean	make ready for compilation on another platform (leave binary)
+# distclean	clean as when unpacked (removes binary)
+# spotless	removes snobol4 generated files (requires binary to regenerate)
 # tar		make distribution
 # uu		make uuencoded distribution
-# clean		leave binary, config files; removes objects
-# realclean	make ready for compilation on another platform
-# distclean	clean as when unpacked
-# spotless	removes snobol4 generated files
 
 # m4 macro processor; used to generate Makefile2
 # (largely to avoid depending on make '+=' operator)
@@ -201,7 +202,7 @@ distclean: realclean
 # remove objects, generated files
 # DANGER: requires installed binary to rebuild!!
 spotless: distclean
-	rm -f $(G1) $(G2) snobol4.c isnobol4.c snobol xsnobol4
+	rm -f $(G1) $(G2) snobol4.c isnobol4.c snobol4 xsnobol4
 
 # generated files copied separately to ensure newer than source files!
 TAR=	README CHANGES History INSTALL TODO TODO.soon doc Makefile \
@@ -222,16 +223,16 @@ VERS=`./pv`
 DIR=snobol4-$(VERS)
 KIT=snobol4-$(VERS).tar.$(Z)
 
-# change to;
-#tar:	snobol4 pv
-#	mkdir dir
-#	cd tmp; cvs -d ...anonymous... co snobol4
-#	mv tmp/snobol4 tmp/$(DIR)
-#	cd tmp/$(DIR); make generated
-#	cd tmp/$(DIR)/doc; make
-#	rm -f $(KIT)
-#	cd tmp; ln ../pv .; tar cf - $(DIR) | $(COMP) > ../$(KIT)
-#	rm -rf tmp
+newtar:	snobol4 pv
+	rm -rf tmp
+	mkdir tmp
+	cd tmp; cvs -d $(ANONCVSROOT) co snobol4
+	mv tmp/snobol4 tmp/$(DIR)
+	cd tmp/$(DIR); make generated
+	cd tmp/doc; make
+	rm -f $(KIT)
+	cd tmp; ln ../pv .; tar cf - $(DIR) | $(COMP) > ../$(KIT)
+	rm -rf tmp
 
 tar:	clean snobol4 pv
 	cd doc; make
