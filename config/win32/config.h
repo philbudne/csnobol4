@@ -26,6 +26,9 @@
 #define HAVE_STDARG_H
 #define HAVE_STDLIB_H
 
+/* directives; */
+#define USE_MEMCMP
+
 /* DLL import/export macros */
 
 #if defined(_MSC_VER) || defined(__MINGW32__)
