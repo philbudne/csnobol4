@@ -1509,7 +1509,7 @@ FSFUN3	X = F '(' ARGV<1> ',' ARGV<2> ',' ARGV<3> ')'
 
 ****************
 *	SIL LINK (=) MACRO 10/28/93
-XLINK	F = 'link'					:(FSFUN4)
+XLINK	F = 'callx'					:(FSFUN4)
 
 ****************
 *	4-arg function with F/S returns
