@@ -22,6 +22,8 @@ made when all systems were timed with the same release of SNOBOL!
 
 System		Speed OS	    C	opt	REL    st/sec	who/when
 ===============================================================================
+AMD Athlon	1470  FreeBSD 3.4   gcc -O2	0.99.4 1066072	pb 1/02
+AMD Athlon	1470  FreeBSD 3.4   gcc		0.99.4 937037	pb 1/02
 AMD Athlon	1000  Linux 2.4.9   gcc	-O2	0.99.4 625292	pb 1/02
 AMD Athlon	900   NetBSD 1.5.1  gcc		0.99.4 555815	pb 1/01
 AMD Athlon	900   FreeBSD 4.4   gcc		0.99.4 548317	pb 1/02
@@ -33,6 +35,7 @@ Pentium III	800   FreeBSD 4.1   gcc		0.99.4 427831	pb 7/00
 Pentium III	800x2 CygWin_NT4.0  gcc		0.99.4 416327	gb 1/02
 Pentium III	800   Linux 2.2.18  gcc		0.99.4 411584	? 1/01
 AMD Athlon	900   CygWin_98	    gcc		0.99.4 401422	pb 1/01
+Celeron		875   FreeBSD 3.4   gcc		9.99.4 357702	pb 1/01
 Pentium III	600   Linux 2.4.9   gcc		0.99.4 303880	jm 1/02
 Pentium III	600   Linux 2.2.17  gcc		0.99.4 264351	pt 3/01
 Pentium III	600x2 Linux 2.2.16  gcc		0.99.4 264351	pt 12/00
