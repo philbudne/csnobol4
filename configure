@@ -288,7 +288,7 @@ MORV="${MACHINE}:${OS}:${OSREL}:${OSVERS}"
 
 # library support, C compiler choice
 case "$MORV" in
-9000/[678]??:HP-UX:*:*)
+9000/[678]??:HP-UX:*:*|ia64:HP-UX:*:*)
     # dlfcn.h present on hpux 11 systems,
     # but no library on 32-bit systems
     # (this will be reset below for 64-bit compilation)
@@ -317,11 +317,8 @@ case "$MORV" in
     if grep '[^s]finite' /usr/include/math.h >/dev/null; then
 	echo 'using system finite() function' 1>&2
     else
-	echo 'using private finite() function' 1>&2
-	echo 'undefine([hpux])'			>> $CONFIG_M4
-	echo 'FINITE_C=$(SRCDIR)lib/hpux/finite.c' >> $CONFIG_M4
-	echo 'ADD_OBJS([finite.o])'		>> $CONFIG_M4
-	echo 'ADD_SRCS([$(FINITE_C)])'		>> $CONFIG_M4
+	echo 'using system isfinite() macro' 1>&2
+        echo '#define finite isfinite'		>> $CONFIG_H
     fi
     ;;
 
@@ -403,7 +400,7 @@ else
 	# bundled C compiler lacks -O flag??
 	NO_OPT=true
 	;;
-    9000/[678]*:HP-UX:*:*)
+    9000/[678]*:HP-UX:*:*|ia64:HP-UX:*:*)
 	# HP-UX PA-RISC
 	KERNEL_BITS=`(/usr/bin/getconf SC_KERNEL_BITS || echo 32) 2>/dev/null`
 	if [ "$KERNEL_BITS" = 64 -a "$LP64" ]; then
@@ -683,14 +680,18 @@ else
 fi
 
 # prefer v7/berkeley string functions
-if [ -f $INCDIR/strings.h ] && \
-    grep index $INCDIR/strings.h >/dev/null && \
-    grep strcmp $INCDIR/strings.h >/dev/null ; then
-    echo 'using BSD string functions' 1>&2
-else
-    echo 'using ANSI string functions' 1>&2
-    echo '#define ANSI_STRINGS'			>> $CONFIG_H
-    if grep bcopy $INCDIR/string.h >/dev/null; then
+if [ -f $INCDIR/strings.h ]; then
+    echo '#define HAVE_STRINGS_H'		>> $CONFIG_H
+    echo 'using BSD strings.h' 1>&2
+    HAVE_STRINGS_H=1
+fi
+
+if [ -f $INCDIR/string.h ]; then
+    echo 'using ANSI string.h' 1>&2
+    echo '#define HAVE_STRING_H'		>> $CONFIG_H
+    if [ "$HAVE_STRINGS_H" ]; then
+	true
+    elif grep bcopy $INCDIR/string.h >/dev/null; then
 	echo 'using system provided bcopy() function' 1>&2
     elif test "$FORCE_MEMMOVE" && \
         grep memmove $INCDIR/string.h >/dev/null; then
@@ -702,17 +703,17 @@ else
 	echo 'using private bcopy() function' 1>&2
 	echo 'ADD_OBJS([bcopy.o])'		>> $CONFIG_M4
 	echo 'ADD_SRCS([$(BCOPY_C)])'		>> $CONFIG_M4
-	echo '#define USE_OWN_BCOPY'		>> $CONFIG_H
+	echo '#define NEED_BCOPY'		>> $CONFIG_H
     fi
 
     # memset may be optimized for zeroing, or may not!
-    if grep bzero $INCDIR/string.h >/dev/null; then
+    if [ "$HAVE_STRINGS_H" ] || grep bzero $INCDIR/string.h >/dev/null; then
 	echo 'using system provided bzero() function' 1>&2
     else
 	echo 'using private bzero() function' 1>&2
 	echo 'ADD_OBJS([bzero.o])'		>> $CONFIG_M4
 	echo 'ADD_SRCS([$(BZERO_C)])'		>> $CONFIG_M4
-	echo '#define USE_OWN_BZERO'		>> $CONFIG_H
+	echo '#define NEED_BZERO'		>> $CONFIG_H
     fi
 fi
 
