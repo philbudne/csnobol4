@@ -29,6 +29,9 @@
 /* directives; */
 #define USE_MEMCMP
 
+/* using own (dummy) rrevport() */
+#define NEED_RRESVPORT_DECL
+
 /* DLL import/export macros */
 
 #if defined(_MSC_VER) || defined(__MINGW32__)
