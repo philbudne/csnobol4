@@ -179,6 +179,12 @@ The following are cpp macro names which can be by adding
 The following cpp macro names are #ifdef'ed in source and header files;
 
 .NH 3
+HAVE_OS_INIT
+
+.PP
+Define if you need to supply an Operating System specific
+initialization routine named os_init to be called on startup.
+.NH 3
 HZ
 
 .PP
