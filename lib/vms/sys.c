@@ -10,14 +10,11 @@
 
 #ifdef vax
 #define HWNAME "VAX"
-#define OSNAME "VMS"			/* see osname() below */
 #else  /* vax not defined */
 #ifdef __ALPHA
 #define HWNAME "alpha"			/* lower case, like OSF/1 uname */
-#define OSNAME "OpenVMS"
 #else  /* __ALPHA not defined */
 #define HWNAME "???"
-#define OSNAME "VMS"
 #endif /* __ALPHA not defined */
 #endif /* vax not defined */
 
@@ -50,7 +47,6 @@ sys_init() {
     item.len = &len;
     item.zero = 0;
 
-    os = OSNAME;
     hw = HWNAME;
     if ((SYS$GETSYIW(0, 0, 0, &item, 0, 0, 0) & 1) == 1) {
 	os = "OpenVMS";
@@ -67,6 +63,9 @@ sys_init() {
     item.len = &len;
     item.zero = 0;
     if ((SYS$GETSYIW(0, 0, 0, &item, 0, 0, 0) & 1) == 1) {
+	/* trim trailing spaces? */
+	while (len > 0 && temp[len-1] == ' ')
+	    len--;
 	temp[len] = '\0';
 	sprintf(_osname, "%s %s", os, temp);
     }
