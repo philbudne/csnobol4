@@ -2,36 +2,48 @@ $Id$
 
 Using the SNOBOL4 LOAD() function;
 
-The external C function is called with the following argument list;
+An external C function should be declared as follws;
 
-    name( retval, nargs, args )
-	struct descr *retval, *args;
-	int nargs;
+    int
+    name( LA_ALIST ) LA_DCL
     {
+    }
+
+LA_ALIST declares three arguments: retval, nargs, and args.
 
 retval points to a descriptor which indicates the return type (as
 described in the prototype given to the LOAD function) which should be
-stored there by the function.
+stored there by the function using ie;
+
+	D_RV(retval) = real;
+	D_A(retval) = int;
 
 args points to an array of nargs arguments, of the types indicated in
 the prototype given to the LOAD function.
 
 a non-zero return indicates succcess, a zero return indicates failure.
 
-descriptors (struct descr) can be accessed using the following macros;
+arguments can be accessed via the following macros;
 
-	D_V(dp) is the datatype (using values from equ.h);
+	LA_INT(N)	access the n'th argument as an integer (int_t)
+	LA_REAL(N)	access the n'th argument as a real (real_t)
+	LA_PTR(N)	access the n'th argument as a pointer (void *)
 
-	I	D_A(dp) is an integer of type int_t
-	R	D_RV(dp) is a real of type real_t
-	S	D_A(dp) references a string or "natural variable"
-		constructed of 4 decsriptors, plus the string.
+	LA_TYPE(N)	returns the datatype of the n'th argument
+			NOTE: this should always be the type as declared
+			in the function prototype given to LOAD()!!!
 
-		The D_V() field of the first descriptor contains the
-		string length.  The string begins after the 4th
-		descriptor (at D_A(dp) + BCDFLD)
+		I	arg is an integer of type int_t
+		R	arg is a real of type real_t
+		S	arg references a string or "natural variable"
+			constructed of 4 decsriptors, plus the
+			string.
 
-	user datatypes begin at 100 and appear as an array of
+			The D_V() field of the first descriptor
+			contains the string length.  The string begins
+			after the 4th descriptor (at D_A(dp) + BCDFLD)
+
+		user datatypes begin at 100 and appear as an array of
 		descriptors located by D_A(dp).  The first descripor
 		is a "title" descriptor whose D_V() field indicates
 		how many descriptors follow.
@@ -57,17 +69,13 @@ csa% cat sqrt.c
  *	LOAD("SQRT(REAL)REAL", "sqrt.o -lm -lc")
  */
 
-SQRT( retval, nargs, args )
-    struct descr *retval, *args;
-    int nargs;
+SQRT( LA_ALIST ) LA_DCL
 {
-    D_RV(retval) = sqrt( D_RV(args) );
+    D_RV(retval) = sqrt( LA_REAL(0) );
     return TRUE;			/* success */
 }
 csa% cc -c -I../include -I.. sqrt.c
 csa% cat sqrt.sno
-
-================ sqrt.sno
 	LOAD("SQRT(REAL)REAL", "sqrt.o -lm -lc")
 
 LOOP	OUTPUT = SQRT(INPUT)				:S(LOOP)
