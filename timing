@@ -115,20 +115,30 @@ fi
 #
 echo 'config.guess:'
 ./config.guess
+
 echo ''
 echo "ls -l config.m4 ${SNOBOL}:"
 ls -l config.m4 $SNOBOL
+
 echo ''
 echo 'config.m4:'
 cat config.m4
-echo ''
+
 if [ "$CCVERS" ]; then
+	echo ''
 	echo "$CC $CCVERS"
 	$CC $CCVERS
-	echo ''
 fi
+
+echo ''
 echo "size ${SNOBOL}:"
 size $SNOBOL
+
+if [ -x /usr/bin/file ]; then
+	echo ''
+	echo "file ${SNOBOL}:"
+	/usr/bin/file ${SNOBOL}
+fi
 
 if [ -x /usr/bin/uptime ]; then
 	echo ''
