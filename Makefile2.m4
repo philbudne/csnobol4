@@ -41,6 +41,8 @@ SNOBOL4=isnobol4
 # library random accessifier
 RANLIB=ranlib
 
+SNOLIB_A=snolib/snolib.a
+
 ########
 # default lib source files
 
@@ -89,7 +91,7 @@ CMT([establish base values:])
 ADD_OPT([$(OPT)])
 ADD_LDFLAGS([$(MATHLIB)])
 CMT()
-# local config:
+# config.m4:
 include(config.m4)
 
 # end of local config
@@ -120,18 +122,20 @@ SMALL_SNO=snobol4 -b
 
 ################
 
+AUX_OBJS= _OBJS
 OBJS=	main.o $(SNOBOL4).o data.o data_init.o syn.o bal.o convert.o \
 	date.o dump.o dynamic.o endex.o exp.o hash.o init.o intspc.o \
 	io.o lexcmp.o load.o mstime.o ordvst.o pair.o pat.o pml.o \
 	realst.o replace.o str.o stream.o term.o top.o tree.o version.o \
-	_OBJS $(PML_OBJS)
+	$(AUX_OBJS) $(PML_OBJS) $(SNOLIB_A)
 
+AUX_SRCS= _SRCS
 SRCS=	main.c $(SNOBOL4).c data.c data_init.c syn.c $(BAL_C) $(CONVERT_C) \
 	$(DATE_C) $(DUMP_C) $(DYNAMIC_C) $(ENDEX_C) $(EXP_C) $(HASH_C) \
 	$(INIT_C) $(INTSPC_C) $(IO_C) $(LEXCMP_C) $(LOAD_C) \
 	$(MSTIME_C) $(ORDVST_C) $(PAIR_C) $(PAT_C) $(PML_C) \
 	$(REALST_C) $(REPLACE_C) $(STREAM_C) $(STR_C) $(TOP_C) $(TERM_C) \
-	$(TREE_C) version.c _SRCS
+	$(TREE_C) version.c $(AUX_SRCS)
 
 # SIL source file
 SIL=	v311.sil
@@ -316,7 +320,10 @@ isnan.o: $(ISNAN_C)
 ################
 # snolib
 
-SNOLIB= 
+# XXX fixme; move in-line, include AUX_OBJS
+
+$(SNOLIB_A):
+	cd snolib; make
 
 ##################################################################
 # housekeeping
@@ -333,9 +340,10 @@ DISP=*.o callgraph prolog subr
 
 # remove objects; leave generated sources, final binary, Makefile2
 clean:
-	rm -f $(DISP) *~ */*~ */*/*~ *.tmp
+	rm -rf $(DISP) *~ */*~ */*/*~ *.tmp
 
 # remove objects, generated sources; leave final binary, Makefile2
+# DON'T DO THIS UNLESS YOU HAVE AN EXECUTABLE!!
 realclean: clean
 	rm -f $(GENERATED)
 
