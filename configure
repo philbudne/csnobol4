@@ -1338,6 +1338,12 @@ if [ ! "$WITHOUT_NDBM" ]; then
 
     if [ ! "$NO_NDBM" ]; then
 	if [ "$USE_GDBM" ]; then
+	    # SuSE? assume if it exists, we need it?
+	    if [ -f /usr/lib/libgdbm_compat.a -o \
+		 -f /usr/lib/libgdbm_compat.a ]; then
+		echo "using libgdbm_compat" 2>&1
+		echo 'ADD_LDFLAGS([-lgdbm_compat])' >> $CONFIG_M4
+	    fi
 	    echo "using libgdbm for DBM support" 2>&1
 	    echo 'ADD_LDFLAGS([-lgdbm])'	>> $CONFIG_M4
 	fi
@@ -1415,7 +1421,6 @@ if [ "$LDFLAGS" ]; then
 fi
 
 ## check if pow() available? use dummy/expops.c if not?
-
 
 # avoid:
 # Solaris 8 /usr/sbin/install
