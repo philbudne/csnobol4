@@ -38,7 +38,10 @@ extern void *malloc();
 #define TTY_RAW_PASS8			/* shorthand */
 #endif /* defined(TTY_RAW) && defined(LPASS8) */
 
-/* keep settings for each fd in a list; */
+/*
+ * keep settings for each device in a list (by dev_t rather than fd
+ * since multiple fd's can be open to same device (stdin/out/err))
+ */
 static struct save {
     struct save *next;
     dev_t dev;
@@ -146,6 +149,7 @@ tty_mode( fp, cbreak, noecho, recl )
     int cbreak, noecho, recl;
 {
     struct save *sp;
+    static dev_t last;
     int fd;
 
     fd = fileno(fp);
@@ -153,11 +157,11 @@ tty_mode( fp, cbreak, noecho, recl )
     if (!sp)
 	return;				/* malloc failed, bad fd, bad dev */
 
-    /* NOTE! This optimization can be fooled
-     * when doing simultaneous I/O on /dev/tty and the
-     * real tty (i.e. stdin)
+    /*
+     * check if last time thru;
+     * was the same device & same mode combination
      */
-    if (cbreak == sp->cbreak && noecho == sp->noecho)
+    if (sp->dev == last && cbreak == sp->cbreak && noecho == sp->noecho)
 	return;				/* nothing to do! */
     
     fflush(fp);				/* flush pending output */
@@ -183,6 +187,7 @@ tty_mode( fp, cbreak, noecho, recl )
     /* save current state */
     sp->cbreak = cbreak;
     sp->noecho = noecho;
+    last = sp->dev;
 }
 
 /* advisory notice (does not perform close) */
