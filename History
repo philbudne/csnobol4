@@ -2,6 +2,14 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+9/21/96
+	v311.sil: added &PARM. fixed error number typos from yesterday.
+	lib/init.c: added getparm()
+	lib/date.c: use full julian year
+	Makefile2.m4: removed vfprintf
+	config/bsd43.m4 removed vfprintf
+	deleted lib/auxil/vfprintf
+
 9/19/96 & 9/20/96
 	v311.sil:
 		canonicalized lines with two edit numbers
@@ -21,6 +29,7 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 	lib/init.c: implemented -M option for multifile input
 		added SIGARG_T to SYSCUT prototype for picky compilers
 	lib/lexcmp.c: fix unequal string lengths by Keith Waclena
+	README: added Keith Waclena
 	procs: add CTLADV, FILCHK, COMP1
 	genc.sno: put &TRIM = 1 back for SNOBOL4+, allow _ in args
 		pass addrs to io_printf, no more hacks for floats

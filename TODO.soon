@@ -5,25 +5,15 @@ flush vfprintf
 add tests;
 	line.sno
 	err.sno
+	reverse.sno
 
 handle tabs in listings/messages
 	
 fix timing.sno "time" parsing under AIX 4.1.1?
 include xsnobol4 version (put in timing.sno)
 
-Add SNOBOL4+ &PARAM??
-	setup at INITD1?
-
 Document:
-	REVERSE, SUBSTR
-	LEQ,LGE,LLE,LLT,LNE	
-	HOST() -u -M --
-	sort of 1-D arrays (use comment from tsort.sno)
-	PUNCH now TERMINAL
-	TERMINAL input (on unit 8)
-	leading spaces in numeric conversions (under PLUSOPS)
-	-LINE &{LAST,}{LINE,FILE}
-	&ERRTEXT
+	HOST(), EXIT()
 
 Add snolib.a to regular build?
 	move snolib files to lib/ ???
@@ -38,22 +28,22 @@ enable stats in Makefile "SNO" commands?
 remove date from genc prolog
 	change diff to cmp && echo "DIFF OK" || echo "DIFF FAILURE"
 
-use "SNOLIB" path for -INCLUDE & LOAD()
-
 implement auto-load of pml functions
 	(execute LOAD w/ given prototype)
 	SPITBOL HOST() EXIT()
+
+use "SNOLIB" path for -INCLUDE & LOAD()
 
 update v311.sil table of contents?
 
 auto-mail timing.out??
 	echo "please consider...."
 
+add utf.sno to snolib??
+
 make install?
 	echo "have you mailed timing.out...."???
 
-make sure EOF always passed up when changing compiler input files,
-	move FILNM check, io_file to CKINC?
 ==
 
 have gen*.sno output to xxx.[ch]3, perform mv to .[ch]2 after completion?
@@ -77,8 +67,6 @@ test overflow?
 
 have dummy version of pow use repeated multiply for int, exp/log for real?
 	under ifdef??
-
-return year + 1900 in date()? (for years >= 2000?)
 
 run-time allocation of system & pattern stacks
 	allow expansion of dynamic storage?
@@ -154,18 +142,14 @@ add code to ato[id]() version of spcint()/spreal()
 
 from s4+
 	&NAN / &INFINITY
-	&ERRTEXT &ERRTYPE??
-	&LASTFILE &LASTLINE
 	CHOP()
-	SEEK()/TELL()? (or SPITBOL SET()?)
-	TRUNCATE() ??
 	SQRT()/EXP()/LOG() [use LOAD()] ???
 
 ================
 
 SPITBOL features;
+	SET()
 	SETEXIT()
-		&ERRTEXT &ERRTYPE
 		CONTINUE, SCONTINUE, ABORT system labels
 
 	single letter abbrevs in TRACE()
