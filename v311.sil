@@ -1,6 +1,10 @@
 * $Id$
 *
 * $Log$
+* Revision 1.39  1996/09/01  05:12:56  phil
+* [PLB31] Add SPITBOL features with code from SNOBOL4+ and Minnesota SNOBOL4;
+* CHAR(), RPAD()/LPAD(), BREAKX(), SORT()/RSORT()
+*
 * Revision 1.38  1996/08/25  01:55:14  phil
 * [PLB30] pull CASECL check up out of VPXPTR; saves call if not folding
 *
@@ -999,10 +1003,17 @@ SPLIT  PROC    ,		   Procedure to split blocks
 *
 BINOP  PROC    ,		   Compiler binary operator analysis
        RCALL   ,FORBLK,,BINOP1	   Test for initial blank
-       AEQLC   BRTYPE,NBTYP,RTN2   If so, fail on break
+       AEQLC   BRTYPE,EQTYP,,BINOP2				[PLB32]
+*				   Embedded ='s			[PLB32]
+BINOP4 AEQLC   BRTYPE,NBTYP,RTN2   If so, fail on break		[PLB32]
+       AEQLC   SPITCL,0,BINOP5	   Jump if SPITBOL ops enabled	[PLB32]
        STREAM  XSP,TEXTSP,BIOPTB,BINCON
-       MOVD    ZPTR,STYPE	   Move function descriptor
+BINOP3 MOVD    ZPTR,STYPE	   Move function descriptor	[PLB32]
        BRANCH  RTZPTR		   Return function descriptor
+*_
+BINOP2 AEQLC   SPITCL,0,,BINOP4	   Jump if no SPITBOL ops	[PLB32]
+       SETAC   STYPE,BIEQFN					[PLB32]
+       BRANCH  BINOP3						[PLB32]
 *_
 BINOP1 RCALL   ,FORWRD,,COMP3	   If no blank, find character
        SELBRA  BRTYPE,(,RTN2,RTN2,,,RTN2,RTN2)
@@ -1014,6 +1025,10 @@ BINCON MOVD    ZPTR,CONCL	   No operator, concatenation
 *_
 BINEOS SETAC   EMSGCL,ILLEOS	   Set up error message
        BRANCH  RTN1		   Error return
+*_
+BINOP5 STREAM  XSP,TEXTSP,SBIPTB,BINCON				[PLB32]
+*				   Use special SPITBOL table	[PLB32]
+       BRANCH  BINOP3		   Rejoin regular program	[PLB32]
 *_
 *---------------------------------------------------------------------*
 *
@@ -1065,9 +1080,21 @@ CMPILA RCALL   ,FORBLK,,CERR12	   Get to next character
 CMPSUB RCALL   SUBJND,ELEMNT,,(CDIAG,COMP3)
 *				   Compiler subject
        RCALL   ,FORBLK,,CERR5	   Get to next character
-       AEQLC   BRTYPE,NBTYP,,CMPATN
-*				   Check for nonbreak
-       AEQLC   BRTYPE,EQTYP,,CMPFRM
+       AEQLC   BRTYPE,NBTYP,CMPSB1 Check for nonbreak		[PLB32]
+       AEQLC   SPITCL,0,,CMPAT2	   Jump if no SPITBOL ops	[PLB32]
+%{
+	/* Sigh; this was in assembler in SNOBOL4+		[PLB32] */
+	if (*S_SP(TEXTSP) == '?' &&	/* is break char '?'	[PLB32] */
+            (S_L(TEXTSP) == 1 ||	/* yes; is last char?	[PLB32] */
+	     *S_SP(TEXTSP) == ' ' ||	/* or is next space	[PLB32] */
+	     *S_SP(TEXTSP) == '\t')) {	/* or tab?		[PLB32] */
+	    S_O(TEXTSP)++;		/* binary ? found. 	[PLB32] */
+	    S_L(TEXTSP)--;		/* remove from TEXTSP	[PLB32] */
+	}				/*			[PLB32] */
+%}
+       BRANCH  CMPATN		   				[PLB32]
+*_
+CMPSB1 AEQLC   BRTYPE,EQTYP,,CMPFRM				[PLB32]
 *				   Check for assignment
        RCALL   ,TREPUB,(SUBJND)    Copy subject into object code
        AEQLC   BRTYPE,CLNTYP,,CMPGO
@@ -1075,14 +1102,22 @@ CMPSUB RCALL   SUBJND,ELEMNT,,(CDIAG,COMP3)
        AEQLC   BRTYPE,EOSTYP,CERR5,CMPNGO
 *				   Check for end of statement
 *_
-CMPATN RCALL   PATND,EXPR,,CDIAG   Compile pattern
+CMPATN RCALL   EXOPND,BLOCK,CNDSIZ Build tree with SCAN op	[PLB32]
+       PUTDC   EXOPND,CODE,SCANCL				[PLB32]
+       PUTVC   EXOPND,CODE,ZEROCL  Let ADDSON count nodes	[PLB32]
+       ADDSON  EXOPND,SUBJND
+       MOVD    EXPRND,SUBJND
+       RCALL   PATND,EXPR1,,(CDIAG,CMPAT1)
+*				   Compile pattern as right node [PLB32]
+*_
+CMPAT2 RCALL   PATND,EXPR,,CDIAG   Compile pattern
        AEQLC   BRTYPE,EQTYP,,CMPASP
 *				   Check for replacement
        INCRA   CMOFCL,DESCR	   Increment offset
        PUTD    CMBSCL,CMOFCL,SCANCL
 *				   Insert SCAN function
        RCALL   ,TREPUB,(SUBJND)    Copy subject into object code
-       RCALL   ,TREPUB,(PATND)	   Copy pattern into object code
+CMPAT1 RCALL   ,TREPUB,(PATND)	   Copy pattern into object code [PLB32]
 CMPTGO AEQLC   BRTYPE,EOSTYP,,CMPNGO
 *				   Check for end of statement
        AEQLC   BRTYPE,CLNTYP,CERR5,CMPGO
@@ -1299,10 +1334,25 @@ ELEMN1 AEQLC   ELEMND,0,ELEMN6	   Check for empty tree
 *_
 ELEMN6 ADDSON  ELEMND,ELEXND	   Add as son of present tree
 ELEMNR MOVD    ZPTR,ELEMND	   Move tree to return
-ELEMRR AEQLIC  ZPTR,FATHER,0,,RTZPTR
+ELEMRR AEQLIC  ZPTR,FATHER,0,,ELEM10				[PLB32]
 *				   Is pointer at top of tree?
        GETDC   ZPTR,ZPTR,FATHER    Move back to father
        BRANCH  ELEMRR		   Continue up tree
+*_
+* [PLB32]
+* Here with ZPTR pointing to top of tree.  Peek ahead for a "<" or "["
+* immediately following this element.  If found, take the entire tree
+* so far, and make it the first argument of yet another item function.
+* Note that we needn't look ahead to a continuation line if out of
+* characters on this line -- the implicit blank with a continuation
+* disqualifies the ELEMENT<> construction.
+*
+ELEM10 STREAM  XSP,TEXTSP,GOTSTB,RTZPTR,RTZPTR,			[PLB32]
+*                                  Examine next character	[PLB32]
+       AEQLC   STYPE,SGOTYP,,RTN1  Error if ELEMENT-PAREN	[PLB32]
+       MOVD    ELEMND,ZEROCL       Clear top of tree pointer	[PLB32]
+       MOVD    ELEXND,ZPTR         Existing tree becomes ITEM's 1st arg [PLB32]
+       BRANCH  ELEAR2              Build ITEM function		[PLB32]
 *_
 ELEILT SPCINT  XPTR,XSP,ELEINT,ELEMN5
 *				   Convert string to integer
@@ -1319,8 +1369,14 @@ ELEVBL RCALL   XPTR,GENVUP,(XSPPTR)
 ELENST PUSH    ELEMND		   Save current tree
        RCALL   ELEXND,EXPR,,RTN1   Evaluate nested expression
        POP     ELEMND		   Restore tree
-       AEQLC   BRTYPE,RPTYP,ELECMA,ELEMN1
-*				   Verify right parenthesis
+       AEQLC   BRTYPE,RPTYP,,ELEMN1
+*				   Simple (exp) if right paren	[PLB32]
+       AEQLC   SPITCL,0,,ELECMA	   Jump if no SPITBOL ops	[PLB32]
+       AEQLC   BRTYPE,CMATYP,ELECMA				[PLB32]
+*				   Error if not e1,		[PLB32]
+       RCALL   ,ELEARG,CMACL,RTN1  Process list for CMA function [PLB32]
+       AEQLC   BRTYPE,RPTYP,ELECMA,ELEMNR			[PLB32]
+*				   List must end with RP	[PLB32]
 *_
 ELEFNC SHORTN  XSP,1		   Delete open parenthesis
        RCALL   XPTR,GENVUP,(XSPPTR)
@@ -1371,23 +1427,38 @@ ELEARY SHORTN  XSP,1		   Remove left bracket
 *				   [PLB17,27]
 *				   Generate variable for array or table
        RCALL   ELEXND,BLOCK,CNDSIZ Allocate block for tree node
-       PUTDC   ELEXND,CODE,ITEMCL  Insert ITEM function
-       AEQLC   ELEMND,0,,ELEMN8    Is tree empty?
-       ADDSON  ELEMND,ELEXND	   Add as son to tree
-ELEMN8 MOVD    ELEMND,ELEXND	   Move to new node
-       RCALL   ELEXND,BLOCK,CNDSIZ Allocate block for tree node
-       PUTDC   ELEXND,CODE,XPTR    Insert array or table name
-       ADDSON  ELEMND,ELEXND	   Add as son to tree
-       MOVD    ELEMND,ELEXND	   Move to new node
-ELEAR1 PUSH    ELEMND		   Save current node
-       RCALL   ELEXND,EXPR,,RTN1   Evaluate argument
-       POP     ELEMND		   Restore current node
-       ADDSIB  ELEMND,ELEXND	   Add as sibling to tree
-       MOVD    ELEMND,ELEXND	   Move to new node
-       AEQLC   BRTYPE,RBTYP,,ELEMNR
-*				   Check for right bracket
-       AEQLC   BRTYPE,CMATYP,ELECMA,ELEAR1
-*				   Verify comma
+       PUTDC   ELEXND,CODE,XPTR    Insert ITEM function (?)
+ELEAR2 RCALL   ,ELEARG,ITEMCL,RTN1 Process list for ITEM function [PLB32]
+       AEQLC   BRTYPE,RBTYP,ELECMA,ELEMNR			[PLB32]
+*				   list must end with right bracket [PLB32]
+*_
+*
+* New [PLB32]
+* Process list of args for selection (comma) function and array reference.
+*
+* Call;
+* ELEXND = First argument code node
+*      RCALL   ,ELEARG,function code word,(fail,OK))
+*
+* Returns;
+* BRTYPE = ending char type
+* ELEMND = current node
+*
+ELEARG PROC    ,
+       POP     XCL                 Get function
+       RCALL   XPTR,BLOCK,CNDSIZ,  Get function node
+       PUTDC   XPTR,CODE,XCL       Set function in it
+       AEQLC   ELEMND,0,,ELEMN8    Anything above
+       ADDSON  ELEMND,XPTR         Yes, make function node its son
+ELEMN8 ADDSON  XPTR,ELEXND         Make first arg function node's son
+       MOVD    ELEMND,ELEXND       Make first arg current node
+ELEAR1 PUSH    ELEMND              Save current
+       RCALL   ELEXND,EXPR,,RTN1   Get next arg
+       POP     ELEMND              Restore current
+       ADDSIB  ELEMND,ELEXND       Make next arg current's sibling
+       MOVD    ELEMND,ELEXND       Next arg becomes current
+       AEQLC   BRTYPE,CMATYP,RTN2,ELEAR1
+*                                  Verify comma
 *_
 ELEICH SETAC   EMSGCL,ILCHAR	   'ILLEGAL CHARACTER IN ELEMENT'
        BRANCH  RTN1		   Error return
@@ -1408,6 +1479,7 @@ ELECMA SETAC   EMSGCL,ILLBRK	   'ILLEGAL BREAK CHARACTER'
 *---------------------------------------------------------------------*
 *
 *      Expression Analysis
+* [PLB32] played with ordering to appease gendep
 *
 EXPR   PROC    ,		   Procedure to compile expression
        RCALL   EXELND,ELEMNT,,(RTN1,EXPNUL)
@@ -1415,13 +1487,56 @@ EXPR   PROC    ,		   Procedure to compile expression
        SETAC   EXPRND,0 	   Zero expression tree
        BRANCH  EXPR2		   Join main processing
 *_
-EXPR1  PUSH    EXPRND		   Save expression tree
-       RCALL   EXELND,ELEMNT,,(RTN1,EXPERR)
+EXPNUL RCALL   XPTR,NULNOD,,RTXNAM Return null string		[PLB32]
+*_
+EXPR1  PROC    ,						[PLB32]
+       PUSH    EXPRND		   Save expression tree
+       RCALL   EXELND,ELEMNT,,(RTN1,EXPR12)			[PLB32]
 *				   Compile element
        POP     EXPRND		   Restore expression tree
+       BRANCH  EXPR2		   Contortion to appease gendep	[PLB32]
+*_
+* Here when right operand of binary operator was missing	[PLB32]
+EXPR12 AEQLC   SPITCL,0,,EXPERR	   Error if no SPITBOL ops	[PLB32]
+       AEQLIC  EXOPND,CODE,BISRFN,,EXPR17			[PLB32]
+*      	       			   Was op Scan and Replace?	[PLB32]
+       AEQLIC  EXOPND,CODE,BIEQFN,EXPERR			[PLB32]
+*      	       			   No, Was op assignment?	[PLB32]
+EXPR17 RCALL   EXELND,NULNOD,,EXPR13				[PLB32]
+*      	       			   Yes, default null string operand [PLB32]
+*_
+EXPR13 POP     EXPRND		   				[PLB32]
+       BRANCH  EXPR7						[PLB32]
+*_
+EXPERR SETAC   EMSGCL,ILLEOS	   'ILLEGAL END OF STATEMENT'
+       BRANCH  RTN1		   Take error return
+*_
 EXPR2  RCALL   EXOPCL,BINOP,,(RTN1,EXPR7)
 *				   Get binary operator
-       RCALL   EXOPND,BLOCK,CNDSIZ Allocate block for tree node
+       AEQLC   SPITCL,0,,EXPR14	   SPITBOL ops?			[PLB32]
+       AEQL    EXOPCL,ASGNCL,EXPR14				[PLB32]
+* [PLB32] SPITBOL Assignment must be checked for previous SCAN operator;
+* If SCAN found, convert to SJSR
+       AEQLC   EXPRND,0,,EXPR14	   				[PLB32]
+       MOVD    EXOPND,EXPRND					[PLB32]
+EXPR15 MOVD    EXEXND,EXOPND					[PLB32]
+       AEQLIC  EXEXND,FATHER,0,,EXPR14				[PLB32]
+*                                  Does this node have a father? [PLB32]
+       GETDC   EXOPND,EXEXND,FATHER				[PLB32]
+*                                  Yes, get to it		[PLB32]
+       AEQLIC  EXOPND,CODE,BISNFN,EXPR15			[PLB32]
+*                                  Father SCAN?			[PLB32]
+       PUTAC   EXOPND,CODE,SJSRCL  Convert SCAN to SJSR		[PLB32]
+       ADDSIB  EXPRND,EXELND       Unload current node		[PLB32]
+       MOVD    EXPRND,EXELND       Move to middle sub-tree	[PLB32]
+EXPR16 GETDC   EXOPND,EXPRND,FATHER				[PLB32]
+*                                  Ascend to top of tree	[PLB32]
+       AEQLIC  EXOPND,FATHER,0,,EXPR1				[PLB32]
+*                                  Process statement object	[PLB32]
+       MOVD    EXPRND,EXOPND       Keep going up		[PLB32]
+       BRANCH  EXPR16		   				[PLB32]
+*_
+EXPR14 RCALL   EXOPND,BLOCK,CNDSIZ Allocate block for tree node	[PLB32]
        PUTDC   EXOPND,CODE,EXOPCL  Insert binary operator
        AEQLC   EXPRND,0,EXPR3	   Check for empty tree
        ADDSON  EXOPND,EXELND	   Add node as son
@@ -1457,6 +1572,9 @@ EXPR5  AEQLIC  EXPRND,FATHER,0,,EXPR11
        INSERT  EXPRND,EXOPND	   Insert node above
        BRANCH  EXPR1		   Continue processing
 *_
+EXPR11 ADDSON  EXOPND,EXPRND	   Add node as son
+       BRANCH  EXPR1		   Continue processing
+*_
 EXPR7  AEQLC   EXPRND,0,EXPR10	   Check for empty tree
        MOVD    XPTR,EXELND	   Set up for return
        BRANCH  EXPR9		   Join end processing
@@ -1468,19 +1586,15 @@ EXPR9  AEQLIC  XPTR,FATHER,0,,RTXNAM
        GETDC   XPTR,XPTR,FATHER    Go back to father
        BRANCH  EXPR9		   Continue up tree
 *_
-EXPR11 ADDSON  EXOPND,EXPRND	   Add node as son
-       BRANCH  EXPR1		   Continue processing
-*_
-EXPNUL RCALL   EXPRND,BLOCK,CNDSIZ Allocate block for tree node
+* New [PLB32] from EXPNUL
+* Subroutine to build lit op with null string arg
+NULNOD PROC    ,
+       RCALL   EXPRND,BLOCK,CNDSIZ Allocate block for tree node
        PUTDC   EXPRND,CODE,LITCL   Insert literal function
        RCALL   EXEXND,BLOCK,CNDSIZ Allocate block for tree node
        PUTDC   EXEXND,CODE,NULVCL  Insert null string as value
        ADDSON  EXPRND,EXEXND	   Add node as son
-       MOVD    XPTR,EXPRND	   Set up for return
-       BRANCH  RTXNAM
-*_
-EXPERR SETAC   EMSGCL,ILLEOS	   'ILLEGAL END OF STATEMENT'
-       BRANCH  RTN1		   Take error return
+       RRTURN  EXPRND,1		   Return			[PLB32]
 *_
 *---------------------------------------------------------------------*
 *
@@ -1577,25 +1691,25 @@ CTLCR1 LEXCMP  XSP,LISTSP,CTLCR3,,CTLCR3
 CTLCR2 SETAC   LLIST,0		   Zero left listing as default
        BRANCH  CMTCLR		   Join terminal processing
 *_
-CTLCR3 LEXCMP  XSP,EJCTSP,CRLCR4,,CRLCR4			[PLB9]
+CTLCR3 LEXCMP  XSP,EJCTSP,CTLCR4,,CTLCR4			[PLB9]
 *				   Is it EJECT?
        AEQLC   LISTCL,0,,CMTCLR    Skip eject if not listing
        OUTPUT  OUTPUT,EJECTF	   Eject page
        BRANCH  CMTCLR		   Join terminal processing
 *_
-CRLCR4 LEXCMP  XSP,ERORSP,CRLCR5,,CRLCR5			[PLB9]
+CTLCR4 LEXCMP  XSP,ERORSP,CTLCR5,,CTLCR5			[PLB9]
 *				   Is it ERRORS?		[PLB9]
        SETAC   NERRCL,0		   Clear NOERRORS switch	[PLB9]
        BRANCH  CMTCLR		   Join terminal processing	[PLB9]
 *_
-CRLCR5 LEXCMP  XSP,NERRSP,CRLCR6,,CRLCR6			[PLB9,15]
+CTLCR5 LEXCMP  XSP,NERRSP,CTLCR6,,CTLCR6			[PLB9,15]
 *				   Is it NOERRORS?		[PLB9]
        SETAC   NERRCL,1		   Set NOERRORS switch		[PLB9]
        BRANCH  CMTCLR		   Join terminal processing	[PLB9]
 *_
-CRLCR6 LEXCMP  XSP,CASESP,CRLCR8,,CRLCR8			[PLB15][PLB20]
+CTLCR6 LEXCMP  XSP,CASESP,CTLCR8,,CTLCR8			[PLB15][PLB20]
 *				   Is it CASE?			[PLB15]
-       STREAM  XSP,TEXTSP,FRWDTB,COMP3,CRLCR7			[PLB15]
+       STREAM  XSP,TEXTSP,FRWDTB,COMP3,CTLCR7			[PLB15]
 *				   Get to next nonblank char	[PLB15]
        AEQLC   STYPE,NBTYP,CMTCLR  Verify nonbreak		[PLB15]
        STREAM  XSP,TEXTSP,ELEMTB,CMTCLR,CMTCLR			[PLB15]
@@ -1604,14 +1718,14 @@ CRLCR6 LEXCMP  XSP,CASESP,CRLCR8,,CRLCR8			[PLB15][PLB20]
 *				   Verify integer		[PLB15]
        SPCINT  CASECL,XSP,CMTCLR,CMTCLR				[PLB15]
 *_
-CRLCR7 SETAC   CASECL,0		   Clear case folding		[PLB15]
+CTLCR7 SETAC   CASECL,0		   Clear case folding		[PLB15]
        BRANCH  CMTCLR		   Join terminal processing	[PLB15]
 *_
-CRLCR8 LEXCMP  XSP,INCLSP,,CRLCR9				[PLB20]
+CTLCR8 LEXCMP  XSP,INCLSP,,CTLCR9				[PLB20]
 *				   Is it INCLUDE?		[PLB20]
-       LEXCMP  XSP,COPYSP,CMTCLR,,CMTCLR			[PLB20]
+       LEXCMP  XSP,COPYSP,CTLC10,,CTLC10			[PLB20]
 *				   Is it COPY?			[PLB20]
-CRLCR9 STREAM  XSP,TEXTSP,FRWDTB,COMP3,COMP3			[PLB20]
+CTLCR9 STREAM  XSP,TEXTSP,FRWDTB,COMP3,COMP3			[PLB20]
 *				   Get to next nonblank char	[PLB20]
        AEQLC   STYPE,NBTYP,COMP3   Verify nonbreak		[PLB20]
        STREAM  XSP,TEXTSP,ELEMTB,CMTCLR,CMTCLR			[PLB20]
@@ -1619,6 +1733,23 @@ CRLCR9 STREAM  XSP,TEXTSP,FRWDTB,COMP3,COMP3			[PLB20]
        AEQLC   STYPE,QLITYP,CMTCLR Must be quoted litteral	[PLB20]
        XINCLD  UNIT,XSP,COMP5,CMTCLR				[PLB20]
 *				   Process include		[PLB20]
+*_
+CTLC10 LEXCMP  XSP,SPITSP,CTLC14,,CTLC14			[PLB32]
+*				   Is it PLUSOPS?		[PLB32]
+       STREAM  XSP,TEXTSP,FRWDTB,COMP3,CTLC11			[PLB32]
+       AEQLC   STYPE,NBTYP,CMTCLR				[PLB32]
+       STREAM  XSP,TEXTSP,INTGTB,CMTCLR,CTLC12			[PLB32]
+       AEQLC   STYPE,ILITYP,CMTCLR				[PLB32]
+CTLC12 SPCINT  SPITCL,XSP					[PLB32]
+       BRANCH  CTLC13		   				[PLB32]
+*_
+CTLC11 SETAC   SPITCL,0		   				[PLB32]
+       SETAC   EXPCL,0						[PLB32]
+CTLC13 LHERE   ,		   				[PLB32]
+* stuff here to set EXPCL?					[PLB32]
+       BRANCH  CMTCLR						[PLB32]
+*_
+CTLC14 BRANCH  CMTCLR		   Add new ctl card check here	[PLB32]
 *_
 *---------------------------------------------------------------------*
 *
@@ -2457,7 +2588,7 @@ SCAN   PROC    ,		   Pattern Matching
 SCANVV LOCSP   XSP,XPTR 	   Get specifier for subject
        LOCSP   YSP,YPTR 	   Get specifier for pattern
 SCANVB SUBSP   TSP,YSP,XSP,FAIL    Get part to compare
-       LEXCMP  TSP,YSP,,RETNUL	   Compare strings
+       LEXCMP  TSP,YSP,,RTYPTR	   Compare strings		[PLB32]
        AEQLC   ANCCL,0,FAIL	   Check &ANCHOR
        FSHRTN  XSP,1		   Delete lead character
        BRANCH  SCANVB		   Try again
@@ -2467,7 +2598,14 @@ SCANIV RCALL   XPTR,GNVARI,XPTR    Generate variable for integer
 *_
 SCANVP LOCSP   XSP,XPTR 	   Get specifier for subject
        RCALL   ,SCNR,,(FAIL,,FAIL) Call scanner
-       RCALL   ,NMD,,(FAIL,RTN2)   Perform naming
+       RCALL   ,NMD,,(FAIL)	   Perform naming		[PLB32]
+       LCOMP   TXSP,HEADSP,SCANV1,SCANV1			[PLB32]
+*      	       			   Allow for negatives		[PLB32]
+       REMSP   XSP,HEADSP,TXSP	   Head is larger than match	[PLB32]
+       BRANCH  SCANV2		   				[PLB32]
+*_
+SCANV1 REMSP   XSP,TXSP,HEADSP	   Get matching substring	[PLB32]
+SCANV2 RCALL   YPTR,GENVAR,XSPPTR,RTYPTR			[PLB32]
 *_
 SCANIP RCALL   XPTR,GNVARI,XPTR    Generate variable for integer
        BRANCH  SCANVP		   Join processing
@@ -2617,10 +2755,11 @@ SJSRV1 PUTDC   WPTR,DESCR,ZPTR	   Assign value to subject name
 *				   Look for output association
        GETDC   YPTR,YPTR,DESCR	   Get output association
        RCALL   ,PUTOUT,(YPTR,ZPTR) Perform output
-SJSRV2 ACOMPC  TRAPCL,0,,RTN3,RTN3 Check &TRACE
-       LOCAPT  ATPTR,TVALL,WPTR,RTN3
+SJSRV2 ACOMPC  TRAPCL,0,,RTZPTR,RTZPTR				[PLB32]
+*      	       			   Check &TRACE
+       LOCAPT  ATPTR,TVALL,WPTR,RTZPTR				[PLB32]
 *				   Look for VALUE trace
-       RCALL   ,TRPHND,ATPTR,RTN3				E3.3.1
+       RCALL   ,TRPHND,ATPTR,RTZPTR				E3.3.1 [PLB32]
 *				   Perform trace
 *_
 SJSRI  INTSPC  ZSP,ZPTR 	   Convert INTEGER
@@ -4800,11 +4939,14 @@ ASGNVV PUTDC   XPTR,DESCR,YPTR	   Perform assignment
 *				   Look for output association
        GETDC   ZPTR,ZPTR,DESCR	   Get output association descriptor
        RCALL   ,PUTOUT,(ZPTR,YPTR) Perform output
-ASGN1  ACOMPC  TRAPCL,0,,RTNUL3,RTNUL3
-*				   Check &TRACE
-       LOCAPT  ATPTR,TVALL,XPTR,RTNUL3
+ASGN1  ACOMPC  TRAPCL,0,,RTYPTR,RTYPTR				[PLB32]
+*				   Return value, imbedded asgn	[PLB32]
+       LOCAPT  ATPTR,TVALL,XPTR,RTYPTR				[PLB32]
 *				   Look for VALUE trace
-       RCALL   ,TRPHND,ATPTR,RTNUL3				E3.3.1
+       PUSH    YPTR		   				[PLB32]
+       RCALL   ,TRPHND,ATPTR,	   				E3.3.1 [PLB32]
+       POP     YPTR		   				[PLB32]
+       BRANCH  RTYPTR		   				[PLB32]
 *_
 ASGNC  RCALL   XPTR,INVOKE,(XPTR),(FAIL,ASGNV,NEMO)
 *_
@@ -5216,6 +5358,22 @@ CLEAR2 GETAC   YPTR,YPTR,LNKFLD    Get next variable
 *_
 *---------------------------------------------------------------------*
 *
+* New [PLB32]
+*	(e1, e2, ... , en)	(Selection - from SPITBOL) ; 
+*
+CMA    PROC    ,
+       SETAV   ZCL,INCL            Get number of arguments
+CMA1   AEQLC   ZCL,0,,FAIL         Fail if all arguments failed
+       PUSH    (ZCL,OCBSCL,OCICL)  Save count, code position
+       RCALL   XPTR,ARGVAL,,CMA2   Evaluate next argument
+       POP     (OCICL,OCBSCL,ZCL)  Success!    Restore count and position
+       RCALL   ,CODSKP,ZCL,RTXPTR  Skip this and remaining args
+CMA2   POP     (OCICL,OCBSCL,ZCL)  Arg evaluation failed
+       DECRA   ZCL,1               One less arg left
+       RCALL   ,CODSKP,ONECL,CMA1  Skip this arg, try next one
+*_
+*---------------------------------------------------------------------*
+*
 *      COLLECT(N)
 *
 COLECT PROC    ,		   COLLECT(N)
@@ -5253,7 +5411,7 @@ CNVRT  PROC    ,		   CONVERT(X,T)
        PUSH    ZPTR		   Save object
        RCALL   YPTR,VARVUP,,FAIL   [PLB28] Get data type target
        POP     ZPTR		   Restore object
-       LOCAPV  XPTR,DTATL,YPTR,INTR1
+       LOCAPV  XPTR,DTATL,YPTR,CNV1				[PLB32]
 *				   Look for data type code
        GETDC   XPTR,XPTR,DESCR	   Get code
        SETAV   DTCL,ZPTR	   Insert object data type
@@ -5270,6 +5428,17 @@ CNVRT  PROC    ,		   CONVERT(X,T)
        VEQL    ZPTR,XPTR,,RTZPTR				E3.0.4
        VEQLC   XPTR,S,FAIL,CNVRTS				E3.0.4
 *				   Check for idem-conversion
+*_
+CNV1   LOCSP   YSP,YPTR		   				[PLB32]
+       LEXCMP  YSP,NUMSP,INTR1,,INTR1				[PLB32]
+*      	       			   NUMERIC?			[PLB32]
+       VEQLC   ZPTR,I,,RTZPTR	   Yes; If integer, no change	[PLB32]
+       VEQLC   ZPTR,R,,RTZPTR	   If real, no change		[PLB32]
+       VEQLC   ZPTR,S,FAIL	   If not string, can't convert	[PLB32]
+       LOCSP   ZSP,ZPTR		   Get specifier		[PLB32]
+       SPCINT  ZPTR,ZSP,,RTZPTR	   Try conversion to INTEGER	[PLB32]
+       SPREAL  ZPTR,ZSP,FAIL,RTZPTR				[PLB32]
+*      	       			   Try conversion to REAL	[PLB32]
 *_
 RECOMP SETAC   SCL,1		   Note STRING-CODE conversion
 RECOMJ LOCSP   TEXTSP,ZPTR	   Set up global specifier
@@ -5445,7 +5614,6 @@ CNVAT2 MOVDIC  XPTR,DESCR,WPTR,0
        INCRA   WPTR,DESCR          Increment lower array pointer
        INCRA   YPTR,DESCR          Increment upper array pointer
        BRANCH  CNVAT2              Continue
-
 *_
 *---------------------------------------------------------------------*
 *
@@ -5606,8 +5774,12 @@ BNYOP  LOCSP   XSP,XPTR 	   Get specifier for image
        SETLC   ZSP,0						E3.5.3
        APDSP   ZSP,XSP						E3.5.3
        APDSP   ZSP,BLSP 					E3.5.3
+       AEQLC   SPITCL,0,BNYOP2	   SPITBOL ops enabled?		[PLB32]
        STREAM  TSP,ZSP,BIOPTB,BNAF,BNAF 			E3.5.3
-       LEQLC   ZSP,0,BNAF					E3.5.3
+       BRANCH  BNYOP3						[PLB32]
+*_
+BNYOP2 STREAM  TSP,ZSP,SBIPTB,BNAF,BNAF				[PLB32]
+BNYOP3 LEQLC   ZSP,0,BNAF					E3.5.3 [PLB32]
        MOVD    XPTR,STYPE	   STYPE has function descriptor
 BNCF   LOCSP   YSP,YPTR 	   Get specifier for object
        LCOMP   YSP,EQLSP,BNBF	   Length must be 2 or less
@@ -5615,8 +5787,12 @@ BNCF   LOCSP   YSP,YPTR 	   Get specifier for object
        SETLC   ZSP,0						E3.5.3
        APDSP   ZSP,YSP						E3.5.3
        APDSP   ZSP,BLSP 					E3.5.3
+       AEQLC   SPITCL,0,BNCF2	   SPITBOL ops enabled?		[PLB32]
        STREAM  TSP,ZSP,BIOPTB,BNBF,BNBF 			E3.5.3
-       LEQLC   ZSP,0,BNBF					E3.5.3
+       BRANCH  BNCF3						[PLB32]
+*_
+BNCF2  STREAM  TSP,ZSP,SBIPTB,BNBF,BNBF 			E3.5.3
+BNCF3  LEQLC   ZSP,0,BNBF					E3.5.3 [PLB32]
        MOVD    YPTR,STYPE	   STYPE has function descriptor
        BRANCH  OPPD		   Join to copy descriptors
 *_
@@ -6161,6 +6337,7 @@ BRKCCL DESCR   BRKCFN,FNC,3
 BRXCCL DESCR   BRXCFN,FNC,3					[PLB31]
 BRXFCL DESCR   BRFCFN,FNC,2					[PLB31]
 CHRCL  DESCR   CHRFN,FNC,3
+CMACL  DESCR   CMAFN,FNC,0	   				[PLB32]
 CONCL  DESCR   CONFN,FNC,0	   Argument count is incremented
 DNMECL DESCR   DNMEFN,FNC,2
 DNMICL DESCR   DNMIFN,FNC,2
@@ -6304,6 +6481,7 @@ STARSP STRING  '*** '
 TRCLSP STRING  ' call of '					[PLB11]
 TRLVSP STRING  'level '						[PLB11]
 TRSTSP STRING  '    statement '					[PLB11]
+SPITSP STRING  'PLUSOPS'					[PLB32]
 UNLSP  STRING  'UNLIST'
 XFERSP STRING  'transfer to'					[PLB11]
 *
@@ -6315,6 +6493,8 @@ ERRBUF BUFFER  CARDSZ+STNOSZ-SEQSIZ+1
 INBUF  BUFFER  CARDSZ+DSTSZ+1	   Card input buffer
 REALBF BUFFER  36		   Buffer for real number conversion
 ICLBLK DESCR   ICLBLK,TTL+MARK,ICLEND-ICLBLK-DESCR
+SPITCL DESCR   0,0,I		   SPITBOL features		[PLB32]
+EXPCL  DESCR   0,0,I		   Experimental features	[PLB32]
 *
 *      Pointers to Attribute Lists
 *
@@ -6769,9 +6949,21 @@ BIPDFN DESCR   UNDF,FNC,0	   X # Y    definable
 BIPRFN DESCR   UNDF,FNC,0	   X % Y    definable
        DESCR   0,0,0
        DESCR   45,0,44
+BISNFN LHERE   ,						[PLB32]
+SCANFN DESCR   SCAN,0,2		   X ? Y    SPITBOL scan	[PLB32]
+       DESCR   0,0,0						[PLB32]
+       DESCR   3,0,2						[PLB32]
 BIQSFN DESCR   UNDF,FNC,0	   X ? Y    definable
        DESCR   0,0,0
        DESCR   70,0,69
+BISRFN LHERE   ,						[PLB32]
+SJSRFN DESCR   SJSR,0,3		   X ? Y =  SPITBOL scan & repl [PLB32]
+       DESCR   0,0,0						[PLB32]
+       DESCR   3,0,2						[PLB32]
+BIEQFN LHERE   ,						[PLB32]
+ASGNFN DESCR   ASGN,0,2 	   X = Y    SPITBOL assignment	[PLB32]
+       DESCR   0,0,0						[PLB32]
+       DESCR   1,0,1						[PLB32]
 CONFN  DESCR   CON,0,2		   X   Y    concatenation
        DESCR   0,0,0
        DESCR   20,0,19
@@ -6828,8 +7020,8 @@ OPTBND LHERE   ,		   End of operator table
 *
 *
 AREFN  DESCR   ITEM,FNC,1	   Array or table reference
-ASGNFN DESCR   ASGN,0,2 	   X = Y
 BASEFN DESCR   BASE,0,0 	   Base object code
+CMAFN  DESCR   CMA,FNC,1	   				[PLB32]
 ENDAFN DESCR   ARGNER,0,0	   Safety exit on trace psuedo-code
 ENDFN  DESCR   END,0,0		   End of program
 ERORFN DESCR   EROR,0,1 	   Erroneous statement
@@ -6842,8 +7034,6 @@ INITFN DESCR   INIT,0,1 	   Statement initialization
 KEYTFN DESCR   KEYTR,0,2	   Keyword tracing
 LABTFN DESCR   LABTR,0,2	   Label tracing
 LITFN  DESCR   LIT,0,1		   Literal evaluation
-SCANFN DESCR   SCAN,0,2 	   Pattern matching
-SJSRFN DESCR   SJSR,0,3 	   Pattern matching with replacement
 VLTRFN DESCR   VALTR,0,2	   Value tracing
 ANYCFN DESCR   ANYC,0,3 	   Matching for ANY(S)
 ARBFFN DESCR   ARBF,0,2 	   Failure for ARB
@@ -6951,6 +7141,7 @@ NAMESP STRING  'NAME'
 NESP   STRING  'NE'
 NNYSP  STRING  'NOTANY'
 NRETSP STRING  'NRETURN'
+NUMSP  STRING  'NUMERIC'			[PLB32]
 OPSNSP STRING  'OPSYN'
 OUTSP  STRING  'OUTPUT'
 PATSP  STRING  'PATTERN'
