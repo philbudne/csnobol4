@@ -936,7 +936,12 @@ XMULT	OP = '*'					:(INT_OP)
 
 ****************
 *	SIL DIVIDE (DIVVV) MACRO
-XDIVIDE	OP = '/'					:(INT_OP)
+XDIVIDE	OP = '/'					
+	IDENT(ARGV<4>)					:S(INT_OP)
+	OUTPUT = IND 'if( ' D_A(ARGV<3>) ' == 0 )'
+	INDENT()
+	BRANCH(ARGV<4>)
+	UNINDENT()					:(INT_OP)
 *
 ****************
 *	handle integer ops
@@ -1043,7 +1048,7 @@ REALOP	OUTPUT = DIFFER(ARGV<4>) IND 'CLR_MATH_ERROR();'
 	OUTPUT = IND D(ARGV<1>) ' = ' D(ARGV<2>) ';'
 REALOP2	OUTPUT = IND RV(ARGV<1>) ' ' ROP '= ' RV(ARGV<3>) ';'
 	IDENT(ARGV<4>)					:S(REALOP3)
-	OUTPUT = IND 'if( MATH_ERROR() )'
+	OUTPUT = IND 'if( RMATH_ERROR(' RV(ARGV<1>) ') )'
 	INDENT()
 	BRANCH(ARGV<4>)
 	UNINDENT()
