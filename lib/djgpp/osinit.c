@@ -40,7 +40,6 @@
 
 #ifdef HAVE_WATTCP
 #include <sys/socket.h>
-int rresvport(int portno);		/* lib/dummy/rresvport.c  */
 #endif
 
 /*
@@ -295,7 +294,7 @@ DXE_EXPORT_TABLE_AUTO(exports)
 	DXE_EXPORT(setsockopt)
 	DXE_EXPORT(shutdown)
 	DXE_EXPORT(socket)
-	DXE_EXPORT(rresvport)
+	DXE_EXPORT(bindresvport)
 #endif
 
 	/* SNOBOL stuff */

@@ -32,7 +32,7 @@ WATTCP_LIBDIR=${WATTCP_DIR}/lib
 # uncomment next 4 lines to enable;
 #WATTCP_DEFS=-I${WATTCP_INCDIR} -DHAVE_WATTCP
 #INET_C=$(SRCDIR)lib/bsd/inet.c
-#INET_OBJS=rresvport.o
+#INET_OBJS=bindresvport.o
 #WATTCP_LIBS=-L${WATTCP_LIBDIR} -lwatt
 
 CFLAGS=	-c $(OPT) -I$(SRCDIR)config/djgpp -I$(SRCDIR)include -I$(SRCDIR). \
@@ -149,13 +149,13 @@ bzero.o: $(SRCDIR)lib/auxil/bzero.c
 getopt.o: $(SRCDIR)lib/auxil/getopt.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/auxil/getopt.c
 
+bindresvport.o: $(SRCDIR)lib/auxil/bindresvport.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/auxil/bindresvport.c
+
 ################ dummy
 
 execute.o: $(SRCDIR)lib/dummy/execute.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/dummy/execute.c
-
-rresvport.o: $(SRCDIR)lib/dummy/rresvport.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib/dummy/rresvport.c
 
 ################ generic
 
