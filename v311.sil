@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.11  93/11/23  11:05:43  budd
+* [PLB7] upped SPDLSZ to 5000 to run atn.sno
+* 
 * Revision 1.10  93/11/19  16:32:38  budd
 * [PLB6] default &TRIM to 1
 * 
@@ -1113,7 +1116,6 @@ CDIAG  INCRA   BOSCL,DESCR	   Increment offset of beginning
        MOVD    CMOFCL,BOSCL	   Reposition offset
        INCRA   ESAICL,DESCR	   Increment count of errors
        ACOMP   ESAICL,ESALIM,COMP9 Test for excessive errors
-       AEQLC   LISTCL,0,,CDIAG1    Check for listing mode
        MOVD    YCL,ERRBAS	   Set up length of error vector
        AEQLC   BRTYPE,EOSTYP,,CDIAG3
 *				   Check for end of statement
@@ -1123,17 +1125,24 @@ CDIAG3 PUTLG   ERRSP,YCL	   Insert length
        APDSP   ERRSP,QTSP	   Set in marker
        AEQLC   BRTYPE,EOSTYP,,CDIAG2
 *				   Check for end of statement
+       STPRNT  IOKEY,ERRBLK,LNBFSP Print statement to stderr	[PLB8]
+       AEQLC   LISTCL,0,,CDIAG2    Check for listing mode	[PLB8]
        STPRNT  IOKEY,OUTBLK,LNBFSP Print statement
-CDIAG2 STPRNT  IOKEY,OUTBLK,ERRSP  Print error marker
-       PUTLG   ERRSP,YCL	   Insert length in marker
+CDIAG2 STPRNT  IOKEY,ERRBLK,ERRSP  Print error marker to stderr	[PLB8]
+       AEQLC   LISTCL,0,,CDIAG4    Check for listing mode	[PLB8]
+       STPRNT  IOKEY,OUTBLK,ERRSP  Print error marker
+CDIAG4 PUTLG   ERRSP,YCL	   Insert length in marker	[PLB8]
        APDSP   ERRSP,BLSP	   Blank out marker
        GETSPC  TSP,EMSGCL,0	   Get error message
        SETLC   CERRSP,0 	   Clear specifier
        APDSP   CERRSP,STARSP	   Append attention getter
        APDSP   CERRSP,TSP	   Append error message
+       AEQLC   LISTCL,0,,CDIAG1    Check for listing mode	[PLB8]
        STPRNT  IOKEY,OUTBLK,CERRSP Print error message
        STPRNT  IOKEY,OUTBLK,BLSP   Print blank line
-CDIAG1 AEQLC   UNIT,0,,RTN1					E3.0.1
+CDIAG1 STPRNT  IOKEY,ERRBLK,CERRSP Print error message to stderr [PLB8]
+       STPRNT  IOKEY,ERRBLK,BLSP   Print blank line to stderr	[PLB8]
+       AEQLC   UNIT,0,,RTN1					E3.0.1
        AEQLC   BRTYPE,EOSTYP,,RTN3				E3.0.1
        STREAM  XSP,TEXTSP,EOSTB,COMP3,,RTN3
 *				   Get to end of statement
@@ -5521,6 +5530,7 @@ OBEND  DESCR   OBLIST+DESCR*OBOFF,0,0
 OCALIM DESCR   OCASIZ*DESCR,0,C    Size of object code block
 ONECL  DESCR   1,0,0		   Constant 1
 OUTBLK DESCR   OUTPUT-DESCR,0,0    Pointer to OUTPUT block
+ERRBLK DESCR   PUNCH-DESCR,0,0     Pointer to PUNCH (stderr) block [PLB8]
 SIZLMT DESCR   SIZLIM,0,0	   Limit on size of data object
 SNODSZ DESCR   NODESZ,0,P	   Small pattern node size
 STARSZ DESCR   11*DESCR,0,P	   Size of EXPRESSION pattern
