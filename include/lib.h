@@ -12,7 +12,9 @@ void date __P((struct spec *,struct descr *));
 void endex __P((int));
 
 /* from hash.c */
+#ifndef STATIC_HASH
 void hash __P((struct descr *,struct spec *));
+#endif
 
 /* from init.c */
 int getparm __P((struct spec *));
@@ -44,14 +46,18 @@ int lexcmp __P((struct spec *,struct spec *));
 void ordvst __P((void));
 
 /* from pair.c */
+#ifndef STATIC_PAIR
 int locapt __P((struct descr *,struct descr *,struct descr *));
 int locapv __P((struct descr *,struct descr *,struct descr *));
+#endif
 
 /* from pat.c */
+#ifndef STATIC_PAT
 void cpypat __P((struct descr *,struct descr *,struct descr *,struct descr *,struct descr *,struct descr *));
 void linkor __P((struct descr *,struct descr *));
 void lvalue __P((struct descr *,struct descr *));
 void maknod __P((struct descr *,struct descr *,struct descr *,struct descr *,struct descr *,struct descr *));
+#endif
 
 /* from pml.c */
 int getpmproto __P((struct spec *,struct descr *));
@@ -75,7 +81,9 @@ void apdsp __P((struct spec *, struct spec *));
 /* stream.c declarations in include/syntab.h */
 
 /* from top.c */
+#ifndef STATIC_TOP
 void top __P((struct descr *,struct descr *,struct descr *));
+#endif
 
 /* from tree.c */
 void addsib __P((struct descr *,struct descr *));
