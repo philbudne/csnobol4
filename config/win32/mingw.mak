@@ -29,7 +29,7 @@ OBJ=	isnobol4.o data.o data_init.o main.o syn.o \
 	pml.o realst.o replace.o str.o stream.o top.o \
 	tree.o bcopy.o bzero.o dynamic.o expops.o getopt.o \
 	init.o load.o mstime.o chop.o cos.o delete.o \
-	environ.o exit.o exp.o file.o getenv.o getstring.o \
+	environ.o exit.o exp.o file.o getstring.o \
 	host.o log.o logic.o ord.o rename.o retstring.o sin.o \
 	spcint.o spreal.o sprintf.o sqrt.o sset.o \
 	tan.o sys.o tty.o inet.o execute.o exists.o \
@@ -201,9 +201,6 @@ file.o : lib\snolib\file.c
 
 findunit.o : lib\snolib\findunit.c
 	$(CC) $(CFLAGS) lib\snolib\findunit.c
-
-getenv.o : lib\snolib\getenv.c
-	$(CC) $(CFLAGS) lib\snolib\getenv.c
 
 getstring.o : lib\snolib\getstring.c
 	$(CC) $(CFLAGS) lib\snolib\getstring.c

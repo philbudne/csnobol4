@@ -35,7 +35,7 @@ OBJ=	snobol4.obj data.obj data_init.obj main.obj syn.obj \
 	pml.obj realst.obj replace.obj str.obj stream.obj top.obj \
 	tree.obj bcopy.obj bzero.obj dynamic.obj expops.obj getopt.obj \
 	init.obj load.obj mstime.obj chop.obj cos.obj delete.obj \
-	environ.obj exit.obj file.obj getenv.obj getstring.obj \
+	environ.obj exit.obj file.obj getstring.obj \
 	host.obj log.obj logic.obj ord.obj rename.obj retstring.obj sin.obj \
 	spcint.obj spreal.obj sprintf.obj sqrt.obj sset.obj \
 	tan.obj sys.obj popen.obj tty.obj inet.obj execute.obj exists.obj \
@@ -210,9 +210,6 @@ file.obj : lib\snolib\file.c
 
 findunit.obj : lib\snolib\findunit.c
 	$(CC) $(CFLAGS) lib\snolib\findunit.c
-
-getenv.obj : lib\snolib\getenv.c
-	$(CC) $(CFLAGS) lib\snolib\getenv.c
 
 getstring.obj : lib\snolib\getstring.c
 	$(CC) $(CFLAGS) lib\snolib\getstring.c
