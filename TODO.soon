@@ -1,11 +1,9 @@
 $Id$
 
-add optional bi-directional popen test???
+Green Book URL in snobol4.1
 
-man page BUGS:
-	integer overflow checking
-
-document new INET_xxx flags in man page???
+flush ports.doc
+	remove from kit
 
 put sources under CVS
 	name repository csnobol4?
@@ -14,10 +12,6 @@ put sources under CVS
 	do CVS check out on branch??
 		move "make release" out to seperate script?
 			do a test build of checked out files???
-manual page:
-	mention files/functions available in snolib/ (mention README)
-		create "snolib" man page?
-
 porting.ms:
 	mention s4d58
 
@@ -37,7 +31,7 @@ create csnobol4 home page (seperate sections for 0.99.4, 0.99.44, new);
 		CVS view??
 	links to distribution (w/ mirror locations)
 	links to documentation
-		man page (html, ps, pdf)
+		man pages (html, ps, pdf)
 		README
 		INSTALL
 		COPYRIGHT
@@ -45,7 +39,7 @@ create csnobol4 home page (seperate sections for 0.99.4, 0.99.44, new);
 		History
 		porting.html
 		timings.html		generate from timings file(s)
-		load.txt		(note alternate extension)
+		load.txt
 
 test
 	VMS, DJGPP, Cygwin, MINGW
@@ -82,7 +76,7 @@ update version in CHANGES, README, version.c
 run ispell on docs;
 	snobol4.1
 	porting.ms
-	load.doc
+	load.txt
 	INSTALL
 	README
 
@@ -144,13 +138,13 @@ split LIBDIR into;
 	"PREFIX/libexec/snobol4"	binaries
 	"PREFIX/share/lib/snobol4"	.sno files
 	"PREFIX/include/snobol4"	.h files
-	what about .doc files???
+	what about .txt files???
 
 man page
 	sed current version into man page??
 
 	sed SNOLIB_PATH into man page?
-		give load.doc full path!!
+		give load.txt full path!!
 
 eliminate patern match "function" pointer indirections??
 
@@ -328,7 +322,7 @@ URL package;
 Win32;
 	try turning on bitfields?
 	replace dummy execute function?
-	document DLL creation in load.doc
+	document DLL creation in load.txt
 	    mention http://www.geocities.com/SiliconValley/5806/implib32.htm
 
 man page;
@@ -384,7 +378,7 @@ man page:
 		must specify record len for INPUT() on update!
 			recl is per-VARIABLE
 		note, update on INPUT() will not create file???
-	mention load.doc located in SNOLIB dir
+	mention load.txt located in SNOLIB dir
 
 SPITBOL/SNOBOL4+ compatibility document?
 	'd' exponents
@@ -584,7 +578,7 @@ move data_init into (i)snobol4.c,
 load changes;
 	Use AIX dlopen() simulation by Jens-Uwe Mager <jum@anubis.han.de>
 		ftp://anubis.han.de/pub/aix/dlfcn.shar
-		document DLL creation in load.doc;
+		document DLL creation in load.txt;
 		create snobol4.exp file;
 			{g,r}etstring
 			io_{findunit,getfp,mkfile,endfile,flushall}
@@ -608,7 +602,7 @@ have all genc, gendata, gensyn output .[ch]3 files; mv to .[ch]2 on exit??
 Have gensyn read character classes from file?
 	(CLASSNAME TAB STRING)
 
-Improve porting.doc / INSTALL
+Improve porting.txt / INSTALL
 	talk about C compilers
 		sun cc vs. gcc
 		hp cc vs. gcc
@@ -769,3 +763,14 @@ create Makefiles from file list?
 	snobol4 config program?
 	create dummy os_init(), osdep_open()?
 
+implement UDP server ICP in SERV_LISTEN?
+	use select to wait for packet?
+	need ungetc?
+
+NetBSD/VAX has no isnan()?
+
+add optional bi-directional popen test???
+
+document new INET_xxx flags in man page???
+
+document API's in snolib.3!

@@ -2,9 +2,32 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+7/29/2003
+	doc/snolib.3: improve a little
+	doc/*.doc -> doc/*.txt
+	README: add snolib.{3,0,ps,pdf}
+		remove ports.doc
+		s/.doc/.txt/
+	Makefile2.m4: remove mention of ports.doc
+		install load.txt
+		clean up timing.out requests -- send everything to stderr
+	Makefile: cleanup
+	INSTALL: load.txt, porting.txt. paypal
+
+7/23/2003
+	new: doc/snolib.3
+
+7/21/2003
+	doc/snobol4.1: add BUG: integer overflow not detected
+	configure: FINITE_C and ISNAN_C not needed (were wrong too)
+
+7/19/2003
+	doc/snobol4.1: document /udp!!
+
 7/15/2003
 	new: test/popen(2).{ref,sno}: popen tests
 	Makefile2.m4: make snobol4 depend on tests.in
+	timing: tweak for FreeBSD/Alpha
 
 7/14/2003
 	lib/snolib/{exp,tan}.c: RETFAIL if result is !finite
