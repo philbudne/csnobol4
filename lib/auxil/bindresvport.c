@@ -71,6 +71,7 @@ static char *rcsid = "$OpenBSD: bindresvport.c,v 1.13 2000/01/26 03:43:21 deraad
 
 #include <errno.h>
 
+#include "h.h"				/* __P() */
 #include "str.h"			/* bzero() */
 #include "bindresvport.h"
 
