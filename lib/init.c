@@ -38,6 +38,7 @@ usage( jname )
     fprintf( stderr, "-f\ttoggle folding of identifiers to upper case\n");
     fprintf( stderr, "-k\trun programs with compilation errors\n");
     fprintf( stderr, "-l\treenable listings.\n");
+    fprintf( stderr, "-p\tenable SPITBOL operators (-PLUSOPS)\n");
     fprintf( stderr, "-r\ttoggle reading INPUT from after END statement\n");
     fprintf( stderr, "-s\ttoggle display of statistics\n");
     exit(1);
@@ -66,7 +67,7 @@ init_args( argc, argv )
 #ifdef vms
     argc = getredirection(argc, argv);
 #endif /* vms defined */
-    while ((c = getopt(argc, argv, "bd:fklrs")) != -1) {
+    while ((c = getopt(argc, argv, "bd:fklprs")) != -1) {
 	switch (c) {
 	case 'b':
 	    D_A(BANRCL) = !D_A(BANRCL);	/* toggle banner output */
@@ -88,7 +89,12 @@ init_args( argc, argv )
 	    D_A(NERRCL) = !D_A(NERRCL);
 	    break;
 
-	case 'l':
+	case 'p':			/* -PLUSOPS */
+	    D_A(SPITCL) = 1;
+	    D_A(EXPCL) = 1;
+	    break;
+
+	case 'l':			/* -LIST */
 	    /* XXX should take an argument!!! */
 	    D_A(LISTCL) = 1;
 	    break;
@@ -98,7 +104,7 @@ init_args( argc, argv )
 	    break;
 
 	case 's':
-	    D_A(STATCL) = !D_A(STATCL);
+	    D_A(STATCL) = !D_A(STATCL);	/* toggle statistics */
 	    break;
 
 	default:
