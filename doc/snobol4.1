@@ -1,6 +1,6 @@
 .\" -*-nroff-*-
 .\" $Id$
-.TH SNOBOL4 1 "27 September 1996" "Local"
+.TH SNOBOL4 1 "30 September 1996" "Local"
 .SH NAME
 snobol4 \- SNOBOL4 interpreter
 .SH SYNOPSIS
@@ -83,12 +83,17 @@ application.
 The
 .B DATE()
 function returns strings of the form:
-.I MM/DD/YYYY HH:MM:SS"
+.I "MM/DD/YYYY HH:MM:SS"
 .IP \(bu
 Keyword
 .B &STLIMIT
 now defaults to -1, which is interpreted as no limit to the number of
 statements executed.
+When
+.B &STLIMIT
+is less than zero
+.B &STCOUNT
+is not incremented.
 
 .SS "Character set"
 .PP
@@ -152,7 +157,6 @@ where
 is a non-zero integer.  The status of case folding may be examined and
 controlled from a running program by the unprotected system keyword
 .BR &CASE .
-
 .TP
 .B CHAR()
 .br
@@ -161,7 +165,6 @@ The
 function takes an integer from 0 to 255 and returns the n'th character
 in
 .B &ALPHABET .
-
 .TP
 .B \-ERROR/\-NOERRORS
 .br
@@ -176,7 +179,6 @@ execute a statement with a compiler error will cause a fatal execution
 error).  By default programs with compiler errors will not be started,
 this can be restored using
 .BR \-NOERRORS .
-
 .TP
 .B &ERRTEXT
 .br
@@ -185,7 +187,6 @@ After an otherwise fatal error is curtailed due to a non-zero value in
 the protected keyword
 .B &ERRTEXT
 will contain the error message.
-
 .TP
 .B \-EXECUTE/\-NOEXECUTE
 .br
@@ -199,7 +200,6 @@ directive is given, the program will be not executed after compilation.
 .B \-EXECUTE 
 Cancels any previous
 .BR \-NOEXECUTE .
-
 .TP
 .B FREEZE()/THAW()
 .br
@@ -214,7 +214,6 @@ return the null string, however attempts to create a new entry will
 cause a \*(lqVariable not present where required\*(rq error. The
 .B THAW()
 function restores normal entry creation behavior.
-
 .TP
 .B HOST()
 .br
@@ -259,7 +258,7 @@ returns the
 .IR n "'th"
 command line argument (regardless of whether the argument
 was the command name, an option, a filename or a user parameter)
-as a string, or failure
+as a string, or failure if
 .I n
 is out of range.
 
@@ -273,7 +272,6 @@ indicating the first command line argument available as a user parameter.
 \fBHOST(4,\fIstring\fB)\fR returns the value of the
 environment variable named 
 .IR string .
-
 .TP
 .B \-INCLUDE
 .br
@@ -290,10 +288,10 @@ environment variable, or if that is not set, a predetermined library
 directory.
 
 .br
-.B \-COPY is a synonym for
+.B \-COPY
+is a synonym for
 .B \-INCLUDE
 for compatibility with SPITBOL/370.
-
 .TP
 .B &LINE/&FILE
 .br
@@ -308,17 +306,15 @@ and
 .B &LASTFILE
 return the source file and file line
 associated with the previous statement.
-
 .TP
 .B \-LINE
 .br
 The
 .B \-LINE
 directive can be used to alter SNOBOL's idea of the current source
-file and line for use by preprocessors.
+file and line (ie; for use by preprocessors).
 .B \-LINE
 takes a line number and an optional quoted string filename.
-
 .TP
 Lexical comparison
 .br
@@ -331,7 +327,6 @@ function;
 .BR LLE() ,
 .BR LLT() ,
 .BR LNE() .
-
 .TP
 .B LPAD()/RPAD()
 .br
@@ -345,7 +340,6 @@ the length specified in the second argument, using the first character
 of the optional third argument.  If the third argument is missing, or
 is the null string. spaces will be used for padding.  The subject will
 be returned unmodified if already long enough.
-
 .TP
 Named files
 .br
@@ -368,7 +362,6 @@ and
 refer to the current process standard input, standard output and
 standard error respectively regardless of whether those special
 filenames exist on your system.
-
 .TP
 .B &PARM
 .br
@@ -378,13 +371,11 @@ protected keyword for compatibility with Catspaw SNOBOL4+. Use of the
 SPITBOL compatible
 .B HOST()
 function is probably preferable.
-
 .TP
 .B REVERSE()
 .br
 .B REVERSE()
 returns it's subject string in reverse order.
-
 .TP
 Scientific notation
 .br
@@ -393,7 +384,6 @@ number syntax has been expanded to allow exponents
 of the form:
 .br
 .IR "ANY('DeEe') ('+' | '-' | '') SPAN('0123456789')" .
-
 .TP
 .B SORT()/RSORT()
 .br
@@ -413,7 +403,6 @@ modified; a new array is allocated and returned.
 sorts elements in ascending order, while
 .B RSORT()
 sorts in descending order.
-
 .TP
 SPITBOL operators
 .br
@@ -453,16 +442,6 @@ where
 .I n
 is a non-zero integer enables them.  SPITBOL extensions are enabled by
 default.
-
-.TP
-Statement limit
-.br
-When
-.B &STLIMIT
-is less than zero
-.B &STCOUNT
-is not incremented.
-
 .TP
 .B SUBSTR()
 .br
@@ -471,7 +450,6 @@ takes a subject string as it's first argument, and returns the substring
 starting at the position specified by the second argument (one-based) with
 a length specified by the third argument.  If the third argument is missing
 or zero, the remainder of the string is returned.
-
 .TP
 .BR "TERMINAL " "I/O variable"
 .br
@@ -479,7 +457,6 @@ The variable
 .B TERMINAL
 is associated with the standard error file descriptor for both input
 and output.
-
 .TP
 .B &UCASE/&LCASE
 .br
@@ -488,7 +465,6 @@ Protected keywords
 and
 .B &LCASE
 contain upper and lower case characters respectively.
-
 
 .SS "I/O Associations"
 .PP
