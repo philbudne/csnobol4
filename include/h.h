@@ -25,6 +25,14 @@
 #define volatile
 #endif /* not ANSI C */
 
+#ifndef __P
+#ifdef __STDC__
+#define __P(proto) proto
+#else  /* __STDC__ not defined */
+#define __P(proto) ()
+#endif /* __STDC__ not defined */
+#endif /* __P not defined */
+
 #ifdef ANSI_STRINGS
 #define index(a,b) strchr(a,b)
 #define bcmp(a,b,c) memcmp(a,b,c)
