@@ -121,7 +121,7 @@ tty_mode( fp, cbreak, noecho, recl )
     fd = fileno(fp);
     sp = find_by_fd(fd, CREATE);
     if (!sp)
-	return;				/* malloc must have failed */
+	return;				/* malloc failed, bad fd, bad dev */
 
     /* NOTE! This optimization can be fooled
      * when doing simultaneous I/O on /dev/tty and the
@@ -174,17 +174,19 @@ tty_close(f)
     fd = fileno(f);
 
     /* try keeping information! */
-#if 0
+#ifdef TTY_CLOSE_FREE
     sp = find_by_fd(fd, REMOVE);
 #else
     sp = find_by_fd(fd, FIND);
 #endif
     if (!sp)
-	return;				/* not found, bad device */
+	return;				/* not found, bad fd, bad device */
     
     tcsetattr(fd, TCSADRAIN, &sp->save);
     
+#ifdef TTY_CLOSE_FREE
     free(sp);
+#endif
 }
 
 #ifdef SIGTSTP
