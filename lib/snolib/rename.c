@@ -1,4 +1,4 @@
-/* $Id $
+/* $Id$ */
 
 /*
  * SITBOL compatibility;
