@@ -1,7 +1,14 @@
 $Id$
 
-load.doc;
-	http://www.fortran-2000.com/ArnaudRecipes/sharedlib.html
+see why peecee gs can't display pdf (see if Sun generated pdf
+will display)
+
+DJGPP/DXE2;
+	in v2tk/dxe2_NNN.zip
+
+Note in djgpp/osinit;
+	could use ....TABLE_AUTO()
+	no need for os_init() call!!
 
 pass CPP directives thru genc.sno/gendata.sno
 
@@ -11,7 +18,7 @@ create csnobol4 home page (seperate sections for 0.99.4, new);
 	page for CVS repository instructions
 	links to distribution
 	links to documentation
-		man page (html, pdf)
+		man page (html, ps, pdf)
 		README
 		INSTALL
 		COPYRIGHT
@@ -105,6 +112,14 @@ tag all files
 make branch for major releases
 
 ================
+
+put default prefix in configure script (so --prefix help can display it)?
+
+split LIBDIR into;
+	"PREFIX/libexec/snobol4"	binaries
+	"PREFIX/share/lib/snobol4"	.sno files
+	"PREFIX/include/snobol4"	.h files
+	what about .doc files???
 
 man page
 	sed current version into man page??
