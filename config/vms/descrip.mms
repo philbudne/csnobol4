@@ -22,14 +22,17 @@ CLIB=+SYS$LIBRARY:DECCRTL/LIB
 # alternate library routines
 MSTIME_C=[.lib.vms]mstime.c
 
-UCXDEFS=,OLD_UCX_INCLUDES
+# need funny includes, unsigned socklen_t
+UCXDEFS=,OLD_UCX_INCLUDES,SOCKLEN_T=unsigned
 UCXOBJ=inet.obj, bindresvport.obj
 UCXLIB=+SYS$LIBRARY:UCX$IPC/LIB
 
 .else
 .ifdef DECC4
 # Tested under AXP OpenVMS 6.2 using DECC 4.0 (November 2000)
-CCFLAGS=/DECC/PREFIX_LIB=ALL/WARN=(DISABLE=IMPLICITFUNC)/OPTIMIZE
+#CCFLAGS=/DECC/PREFIX_LIB=ALL/WARN=(DISABLE=IMPLICITFUNC)/OPTIMIZE
+CCFLAGS=/OPTIMIZE
+
 AUX_OBJ=bcopy.obj, bzero.obj, popen.obj, unlink.obj, 
 CCDEFS=,NEED_POPEN,NEED_OFF_T
 # no explicit CRT library needed
@@ -37,7 +40,8 @@ CCDEFS=,NEED_POPEN,NEED_OFF_T
 # alternate library routines
 MSTIME_C=[.lib.vms]mstime.c
 
-UCXDEFS=,OLD_UCX_INCLUDES
+# don't need odd includes
+UCXDEFS=,SOCKLEN_T=unsigned
 UCXOBJ=inet.obj, bindresvport.obj
 UCXLIB=+SYS$LIBRARY:UCX$IPC/LIB
 
@@ -48,13 +52,14 @@ UCXLIB=+SYS$LIBRARY:UCX$IPC/LIB
 # practically civilized!!
 
 CCFLAGS=/OPTIMIZE
-CCDEFS=,HAVE_STRINGS_H,HAVE_STDLIB_H,HAVE_UNISTD_H,NEED_BINDRESVPORT_SA,NEED_SOCKLEN_T
+CCDEFS=,HAVE_STRINGS_H,HAVE_STDLIB_H,HAVE_UNISTD_H
 # no explicit CRT library needed
 
 # alternate (normal!) library routines
 MSTIME_C=[.lib.posix]mstime.c
 
 UCXOBJ=inet6.obj
+UCXDEFS=,NEED_BINDRESVPORT_SA,SOCKLEN_T=unsigned
 .endif
 .endif
 
@@ -74,10 +79,10 @@ INET_C=[.lib.dummy]inet.c
 #	(formerly VAX/Ultrix connection product)
 
 # C compiler flags, if any
+INET_C=[.lib.bsd]inet.c
 INETDEFS=$(UCXDEFS)
 INETLIB=$(UCXLIB)
 INETOBJ=$(UCXOBJ)
-INET_C=[.lib.vms]inet.c
 .endif
 
 LIBS=$(INETLIB) $(CLIB)
