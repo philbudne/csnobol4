@@ -87,3 +87,16 @@ $Id$
 38. Allow access to command line;
 	ARGV() function?
 	SPITBOL HOST(0) (-u command line arg)??
+
+39. Investigate better ordering for inlining.
+    Possible weghting factors;
+	Number of calls to function
+	Number of lines in function
+	Number of dependant functions
+	Position in file
+	Number of calls made by function?
+	Number of dependancies
+
+40. Document "developer" defines;
+	DO_UFCHK
+	TRACE_DEPTH

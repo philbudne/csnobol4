@@ -1,5 +1,7 @@
 $Id$
 
+update vversion.c
+
 improve load.doc
 	document use of pml!!!
 		add line to pml.h
