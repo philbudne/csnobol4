@@ -190,6 +190,7 @@ TESTED:	xsnobol4 snobol4.c
 		snobol4-timing@ultimate.com 1>&2
 	@echo along with information on your \
 		system model and CPU clock rate 1>&2
+	@echo see doc/ports.doc for the current list
 
 xsnobol4: $(OBJS)
 	$(CC) $(CFLAGS) -o xsnobol4 $(OBJS) $(LDFLAGS)
