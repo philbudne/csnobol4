@@ -1,11 +1,30 @@
 $Id$
 
+GNU tsort can't handle cycles!!
+	save tsort output as procs.sort?
+	use snobol program???
+
+Add --no-inline??
+
+chars.sno:
+	supply character constants by name?
+		SPACE, HT, FF, NL, CR
+
+man page:
+	document HOST(200x)
+	document SERV_LISTEN()
+
+add build_hostname?? user???
+	move to mkbuild script?
+
 use latest config.guess?
 	put on "vendor branch" in cvs!!
 	from ftp://ftp.gnu.org/pub/gnu/config/config.guess
+	check for netbsdelf -- no need to check __ELF__?
 
 autoconf:
 	object format detection on OpenBSD, BSDI?
+	put SNOLIB_DIR define into config.h (would disallow local-xxx override)
 
 INSTALL;
 	talk about use of local-config;
@@ -13,12 +32,6 @@ INSTALL;
 		OPT=
 		SNOBOL4_C_CFLAGS=
 		DATA_INIT_CFLAGS=
-
-Investigate cygwin build failure
-	filename problem? prepend "./" to each open?? change label???
-	replace tsort/awk with a snobol program?
-		use cks' relsrt!!!
-	update INSTALL
 
 ports.doc
 	update (with beta test information)
@@ -102,6 +115,8 @@ timing script;
 	provide bogomips.c??
 	output machine readable format?
 
+make timing.out more machine friendly!
+
 packaging;
 	put pkg/ .... files under RCS (CVS)??
 	make snobol*4*-VERSION directory/tarfile???
@@ -117,6 +132,16 @@ packaging;
 
 have tests cleanup after themselves?  Add Makefile for "make clean"?
 	just add files to "make spotless"
+
+cygwin isnobol4.c build problems with filename "subr/CON" !!
+
+================
+
+change tty_mode to take single "mode" argument?
+	flags + RECL
+	add "superbinary mode"?
+
+detect, use alternate versions of suspend.c?
 
 add "EXPORT" defns to lib functions (for windoze)???
 
@@ -138,22 +163,12 @@ keep FL_INET bit? call inet_close(fp)???
 		fclose(fp);
 		closesocket(osf);
 
-make timing.out more machine friendly!
-
 Make ANSI_STRINGS the default? (USE_STRINGS_H??)
 		use strchr, memcmp, memmove?, memset??
 	add USE_BSD_STRINGS? USE_STRING_H?
 
 avoid using unit 8 for terminal?
 	do all systems open stderr (and/or fd 2) r/w???
-
-look at tty_close() thrashing;
-	never discard info?
-	keep use count???
-	flush tty_save & tty_restore (rely on io_finish)??
-	always close in reverse of open order
-		so if two fd's refer to same device the original
-		params are restored!!
 
 Tests;
 	add "scan.sno" test
@@ -432,7 +447,7 @@ announce/notify;
 		ask Eric Johnson!!
 
 	classicists
-		ask burkhard meisner
+		ask burkhard meisner (meissner@altertum.uni-halle.de)
 
 	retrocomputing museum;
 		http://www.tuxedo.org/~esr/retro/
