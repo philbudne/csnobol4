@@ -7,7 +7,7 @@ This is a port of the original SIL (SNOBOL4 Implementation Language)
 "macro" version of SNOBOL4 with the `C' language as a target.
 
 If you make any changes/fixes/improvements, or port it to a new system,
-	please send me the diffs!
+	please notify me!
 
 Phil Budne <budd@gnu.ai.mit.edu>
 
@@ -34,7 +34,7 @@ See the file TODO for identified tasks / wish list.
 
 Changes from "alpha" distribution;
 	Now portable!!
-		Has run on 5 different Un*x systems (see doc/ports.doc).
+		Has run on 6 different Un*x systems (see doc/ports.doc).
 
 		gendata.sno now creates init_data.h
 			which initializes resident data at runtime.
@@ -86,6 +86,9 @@ Command line args;
 
 	snobol4 [ options ... ] [ files ... ]
 
+	-b
+		Toggle startup banner output (by default on).
+
 	-d NNN
 		Have dynamic region contain space for NNN descriptors
 		default is 25000.
@@ -95,20 +98,24 @@ Command line args;
 
 	-l
 		Reenable listing to OUTPUT. default is -UNLIST
+		-l means '-LIST LEFT'
 
 	-r
 		Continue reading INPUT from input file(s) after END
 		label.  otherwise INPUT defaults (back) to stdin after
 		compilation.
+
+	-s
+		Toggle termination statistics (by default on).
 
 To build;
 
-select a suitable config file from the config directory, 
-and link to config.h;
+select a suitable config file (see doc/ports.doc) from the config
+directory, and link to config.h;
 
 	ln -s config/sunos4.h config.h
 	make
 
-The tar does not contain any binaries; THEY SHOULD NOT BE NEEDED!!
+The tar does not contain any binaries; THEY SHOULD NOT BE NEEDED
 (unless you touch the source files) As all generated files are
 provided.  The generated files are NOT system dependant!!!
