@@ -1,12 +1,5 @@
 $Id$
 
-announce on SNOBOL4 list
-
-announce on comp.lang.icon,comp.lang.misc
-
-notify free compilers/interpreters list maintainer
-	free-compilers@idiom.com
-
 ==== before beta release
 
 update man page date, CHANGES, README
@@ -17,12 +10,17 @@ rcs tag
 
 ==== before 1.0 release;
 
+seperate regression test suite for distribution
+	(only tests likely to uncover port problems)?
+
 Document LD_PATH, HAVE_UNISTD_H???
 	TTY_RAW?
 
 Add "N" I/O flag??
 	set IO_NONBLOCK (POSIX), IO_NDELAY (sysV)
 	or IO_NDELAY (BSD -- effects ALL fd's)
+
+Implement select()???
 
 Test:
 	I/O options (include bad strings!)
@@ -62,6 +60,15 @@ create spitbol.inc;?
 add UNAME_DOT_VERSION ifdef in posix/sys.c for AIX?
 
 rcs tag
+
+================ after release;
+
+announce on SNOBOL4 list
+
+announce on comp.lang.icon,comp.lang.misc
+
+notify free compilers/interpreters list maintainer
+	free-compilers@idiom.com
 
 ================ later;
 
