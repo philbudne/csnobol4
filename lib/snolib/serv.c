@@ -20,6 +20,7 @@
 
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <signal.h>
 #include <errno.h>
 
 /* inet */
@@ -115,7 +116,7 @@ SERV_LISTEN( LA_ALIST ) LA_DCL
 	on = 1;
 	setsockopt(s, SOL_SOCKET, SO_REUSEADDR, (char *)&on, sizeof(on));
 
-	if (bind(s, &sin, sizeof(sin)) < 0) {
+	if (bind(s, (struct sockaddr *)&sin, sizeof(sin)) < 0) {
 	    close(s);
 	    RETFAIL;
 	}
@@ -129,7 +130,7 @@ SERV_LISTEN( LA_ALIST ) LA_DCL
 
 	bzero(&s_un, sizeof(s_un));
 	strncpy(s_un.sun_path, sserv, sizeof(s_un.sun_path));
-	if (bind(s, &s_un, sizeof(s_un)) < 0) {
+	if (bind(s, (struct sockaddr *)&s_un, sizeof(s_un)) < 0) {
 	    close(s);
 	    RETFAIL;
 	}
