@@ -144,3 +144,21 @@ substr(dest, src, pos)
     }
     return 0;
 }
+
+/* copy from specifier to c-string */
+void
+spec2str(sp, dest, size)
+    struct spec *sp;
+    char *dest;
+    int size;
+{
+    int l;
+
+    l = S_L(sp);
+    if (l > size-1)
+	l = size-1;
+
+    strncpy(S_SP(sp), dest, l);
+    dest[l] = '\0';
+}
+
