@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+2/5/2004
+	COPYRIGHT, README: update copyright years
+	include/dt.h: improve info for functions
+
 2/3/2004
 	lib/{ansi,c99}/spcint.c: check for overflow
 	configure: fix test for bsd/suspend.c (look for sigmask macro)
