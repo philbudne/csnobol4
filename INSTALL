@@ -11,15 +11,15 @@ Compilation
 
 In most cases all you need to type is "make".
 
-The top level makefile will run "autoconf" to create "config.m4",
-which is in turn used to create Makefile2, which is then run, creating
-a test version of snobol4 (named "xsnobol4") which is then regression
-tested and timed.
+The top level makefile will run the "configure" script to create
+"config.m4", which is in turn used to create Makefile2, which is then
+run, creating a test version of snobol4 (named "xsnobol4") which is
+then regression tested and timed.
 
-The "autoconf" tries to use the available C compiler which works best.
-If you wish to alter autoconf's decision process, you can run it
-manually by typing "./autoconf OPTIONS >config.m4" with zero or more
-of the following options;
+The "configure" tries to use the available C compiler which works
+best.  If you wish to alter configure's decision process, you can run
+it manually by typing "./configure OPTIONS" with zero or more of the
+following options;
 
 	--add-cppflags=STRING
 		Add additional C preprocessor flags (ie; -DXXX) to
@@ -50,10 +50,11 @@ of the following options;
 		for example; -O2
 
 Even if your system has not previously been tested (see doc/ports.doc)
-autoconf will make a guess. If the build does not succeed, you may
+configure will make a guess. If the build does not succeed, you may
 want to consult doc/porting.doc (also available as html) for
 information on the available options for use in creating a
-system-specific config file.
+system-specific config file.  If you need assistance please contact
+me (phil@ultimate.com).
 
 For information on including "external" C functions in the linked
 binary see doc/load.doc.
