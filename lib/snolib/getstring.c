@@ -4,12 +4,12 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
+#include "str.h"			/* before h.h to get system __P */
 #include "h.h"
 #include "equ.h"			/* BCDFLD, etc */
 #include "snotypes.h"			/* DESCR, etc */
 #include "macros.h"			/* D_A() etc */
 #include "load.h"			/* prototypes */
-#include "str.h"
 
 EXPORT(void)
 getstring( vp, dp, len )
