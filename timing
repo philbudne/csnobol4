@@ -48,7 +48,7 @@ if [ "$UNAME" ]; then
 
 			# freebsd x86;
 			FREQ=`$SYSCTL machdep.tsc_freq 2>/dev/null`
-			if [ $? -eq 0 ]; then
+			if [ $? -eq 0 -a "$FREQ" ]; then
 				echo $SYSCTL machdep.tsc_freq:
 				echo $FREQ
 				echo ''
@@ -56,7 +56,7 @@ if [ "$UNAME" ]; then
 		fi
 		if [ -f /var/run/dmesg.boot ]; then
 			echo /var/run/dmesg.boot
-			grep '^CPU:' /var/run/dmesg.boot
+			egrep '^(CPU|cpu0):' /var/run/dmesg.boot
 			echo ''
 		fi
 		;;
