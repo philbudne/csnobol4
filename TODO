@@ -92,3 +92,5 @@ $Id$
 29. add -LINE (ala snobol4+)
 
 30. package rebus
+
+31. move UNIXF messages to main()
