@@ -180,7 +180,7 @@ dump_vars() {
 #if 0
 	    if (vp->value.v == 0 && vp->value.f == 0 && vp->value.a.i == 0)
 		continue;
-#endif
+#endif /* 0 */
 	    /* ignore null-valued variables */
 	    if (NULLVAL(&vp->value))
 		continue;

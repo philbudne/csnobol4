@@ -147,9 +147,9 @@ struct file {
 #ifdef INET_IO
 #define FL_NOTAFILE	0200		/* "f" is not a file (XXX TEMP) */
 #define ISAFILE(FP) !((FP)->flags & FL_NOTAFILE)
-#else
+#else  /* INET_IO not defined */
 #define ISAFILE(FP) 1
-#endif
+#endif /* INET_IO not defined */
 
 #define ISPIPE(FP) ((FP)->type == TYPE_PIPE)
 #define ISTTY(FP)  ((FP)->type == TYPE_TTY)
@@ -466,7 +466,7 @@ io_fopen2( fp, mode )
 	/* awful crock; fp->f is a SOCKET; do away with this!!!! */
 	fp->flags |= FL_NOTAFILE;
 	fp->type = TYPE_INET;		/* always set? */
-#endif /* INET_IO */
+#endif /* INET_IO defined */
 	return;
     }
 

@@ -49,10 +49,10 @@ static const char *pm_prototypes[] = {
 /* necessary on nextstep? */
 #define NAME1 char *name
 #define NAME2
-#else
+#else  /* __STDC__ not defined */
 #define NAME1 name
 #define NAME2 char *name;
-#endif
+#endif /* __STDC__ not defined */
 
 /* function of char *name which returns pointer to "loaded" function */
 int (*pml_find(NAME1))(LOAD_PROTO)

@@ -143,10 +143,10 @@ hash(dp, sp)
     D_A(dp) = c;
     D_A(dp) &= (OBSIZ-1);
     D_V(dp) = c >> OBSFT;		/* assention */
-#else
+#else  /* OBSFT not defined */
     /* OBSIZ not a power of two; use mod and div */
     D_A(dp) = c % OBSIZ;
     D_V(dp) = c / OBSIZ;		/* assention */
-#endif
+#endif /* OBSFT not defined */
     D_A(dp) *= DESCR;			/* make table offset */
 }

@@ -4,12 +4,12 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-# ifndef STATIC_TOP
-# include "h.h"
-# include "snotypes.h"
-# include "macros.h"
-# define STATIC_TOP
-# endif
+#ifndef STATIC_TOP
+#include "h.h"
+#include "snotypes.h"
+#include "macros.h"
+#define STATIC_TOP
+#endif /* STATIC_TOP not defined */
 
 /*# define DEBUG_TOP*/
 
@@ -24,7 +24,7 @@ top( d1, d2, d3 )
        a -= DESCR;
    }
 
-# ifdef DEBUG_TOP
+#ifdef DEBUG_TOP
    if (D_A(a) != a) {
        /* NOTE! this will trigger after GC has relocated titles
 	* but not data (relocation pass uses TOP to determine
@@ -32,7 +32,7 @@ top( d1, d2, d3 )
 	*/
        printf("*** descr at %# x has TTL flag, a=%# x\n", a, D_A(a));
    }
-# endif /* DEBUG_TOP defined */
+#endif /* DEBUG_TOP defined */
 
    D_A(d1) = a;
    D_F(d1) = D_F(d3);

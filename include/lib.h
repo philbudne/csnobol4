@@ -14,7 +14,7 @@ void endex __P((int));
 /* from hash.c */
 #ifndef STATIC_HASH
 void hash __P((struct descr *,struct spec *));
-#endif
+#endif /* STATIC_HASH not defined */
 
 /* from init.c */
 int getparm __P((struct spec *));
@@ -49,7 +49,7 @@ void ordvst __P((void));
 #ifndef STATIC_PAIR
 int locapt __P((struct descr *,struct descr *,struct descr *));
 int locapv __P((struct descr *,struct descr *,struct descr *));
-#endif
+#endif /* STATIC_PAIR not defined */
 
 /* from pat.c */
 #ifndef STATIC_PAT
@@ -57,7 +57,7 @@ void cpypat __P((struct descr *,struct descr *,struct descr *,struct descr *,str
 void linkor __P((struct descr *,struct descr *));
 void lvalue __P((struct descr *,struct descr *));
 void maknod __P((struct descr *,struct descr *,struct descr *,struct descr *,struct descr *,struct descr *));
-#endif
+#endif /* STATIC_PAT not defined */
 
 /* from pml.c */
 int getpmproto __P((struct spec *,struct descr *));
@@ -83,7 +83,7 @@ void apdsp __P((struct spec *, struct spec *));
 /* from top.c */
 #ifndef STATIC_TOP
 void top __P((struct descr *,struct descr *,struct descr *));
-#endif
+#endif /* STATIC_TOP not defined */
 
 /* from tree.c */
 void addsib __P((struct descr *,struct descr *));

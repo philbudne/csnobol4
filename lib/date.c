@@ -4,18 +4,18 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-# ifdef VAXC
-# include <types.h>			/* time_t */
-# else  /* VAXC not defined */
-# include <sys/types.h>			/* time_t */
-# endif /* VAXC not defined */
-# include <time.h>			/* struct tm */
-# include <stdio.h>			/* for sprintf() */
+#ifdef VAXC
+#include <types.h>			/* time_t */
+#else  /* VAXC not defined */
+#include <sys/types.h>			/* time_t */
+#endif /* VAXC not defined */
+#include <time.h>			/* struct tm */
+#include <stdio.h>			/* for sprintf() */
 
-# include "h.h"
-# include "snotypes.h"
-# include "macros.h"
-# include "equ.h"			/* for "I" */
+#include "h.h"
+#include "snotypes.h"
+#include "macros.h"
+#include "equ.h"			/* for "I" */
 
 /*
  * The format of DATE() is (in principle) system dependant,
@@ -30,9 +30,9 @@
 
 #ifdef NO_STATIC_VARS
 #include "vars.h"
-#else
+#else  /* NO_STATIC_VARS not defined */
 static char strbuf[21];
-#endif
+#endif /* NO_STATIC_VARS not defined */
 
 void
 date( sp, dp )

@@ -14,7 +14,7 @@
 #include "snotypes.h"
 #include "macros.h"
 #define STATIC_PAT
-#endif
+#endif /* STATIC_PAT not defined */
 
 STATIC_PAT void
 linkor( d1, d2 )

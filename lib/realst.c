@@ -20,9 +20,9 @@
 
 #ifdef NO_STATIC_VARS
 #include "vars.h"
-#else
+#else  /* NO_STATIC_VARS not defined */
 static char strbuf[64];
-#endif
+#endif /* NO_STATIC_VARS not defined */
 
 void
 realst(sp, dp)

@@ -10,10 +10,12 @@
 #endif /* HAVE_CONFIG_H defined */
 
 #include <ctype.h>
+#include <stdio.h>			/* for lib.h */
 
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
+#include "lib.h"			/* for prototypes */
 
 void
 trimsp( sp1, sp2 )
@@ -171,7 +173,7 @@ spec2str(sp, dest, size)
 /*#define APDSP_NLENS 4096*/
 #ifdef APDSP_NLENS
 int apdsp_lens[APDSP_NLENS];
-#endif
+#endif /* APDSP_NLENS defined */
 
 void
 apdsp(base, str)
@@ -189,7 +191,7 @@ apdsp(base, str)
 	apdsp_lens[APDSP_NLENS-1]++;
     else
 	apdsp_lens[len]++;
-#endif
+#endif /* APDSP_NLENS defined */
 
     S_L(base) += len;
 
