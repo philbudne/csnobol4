@@ -48,7 +48,8 @@ Sun SS/IPC	25	SunOS 4.1.4   gcc    0.99.1 sunos4	 4565	pb 10/96
 HP 42T (68040)	25	HP-UX 8.00    c89    0.99   hpux	 4485	pb 10/96
 HP 370 (68030)	33.3	Mt Xinu 4.3   gcc    0.99   bsd43	 3064	pb 10/96
 pc532 (ns32532)	25	NetBSD 1.2    gcc    0.99   bsd44	 2823*	pb 10/96
-Amiga3k (68030)	??	NetBSD 1.2    gcc    0.99   bsd44	 1872	pb 10/96
+Sun-4/110	14.28	NetBSD 1.2    gcc    0.99.1 bsd44	 2751	pb 11/96
+A3000 (68030)	25	NetBSD 1.2    gcc    0.99   bsd44	 1872	pb 10/96
 IBM RT/6152	??	ACIS/AOS 4.3  gcc    0.99   bsd43	 1780*	pb 10/96
 
 old timings;
@@ -101,7 +102,7 @@ Sun SS/IPC	25	SunOS 4.1.3   cc     0.91.2 sunos4	 3060	pb 2/95
 HP 370 (68030)	33.3	Mt Xinu 4.3   gcc    0.89   bsd43	 2658	pb 1/94
 pc532 (ns32532)	25	NetBSD 1.0B   gcc    0.91   bsd44	 2483	pb 10/94
 i486DX		33	NeXTstep 3.2  gcc    0.91   nextstep	 2234	ls 2/95
-Sun-4/110	??	SunOS 4.0.3   gcc    0.90+  sunos4	 2190	pb 6/94
+Sun-4/110	14.28	SunOS 4.0.3   gcc    0.90+  sunos4	 2190	pb 6/94
 Sun-3/280(68020)25	SunOS 4.1.1U1 gcc    0.91   sunos4	 1994	pb 6/94
 IBM RT/6152	??	ACIS/AOS 4.3  gcc    0.89   bsd43	 1460	pb 1/94
 Sony News800(68020) 	NewsOS 4.1C   gcc    0.89   sony_news	 1192	pb 1/94
