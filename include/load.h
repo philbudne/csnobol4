@@ -82,14 +82,6 @@
 #define RETTYPE D_V(retval)
 
 /* extern/prototypes for functions; */
-#ifndef __P
-#ifdef __STDC__
-#define __P(X) X
-#else  /* __STDC__ not defined */
-#define __P(X) ()
-#endif /* __STDC__ not defined */
-#endif /* __P not defined */
-
 /* lib/snolib/getstring.c; */
 void getstring __P((const void *, char *, int));
 
