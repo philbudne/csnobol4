@@ -1,0 +1,11 @@
+	S = "hello world"
+	M = SIZE(S)
+
+	O = -1
+LLOOP	L = -1
+LOOP	OUTPUT = O ',' L ': "' SUBSTR(S,O,L) '"'
+	L = L + 1
+	LE(L,M)						:S(LOOP)
+	O = O + 1
+	LE(O,M)						:S(LLOOP)
+END

@@ -1,0 +1,20 @@
+	define("t2(f,a,b)x")				:(end_t2)
+t2	x = f "('" a "','" b "')"
+	x = "output = " x ' "' x '"'
+*	output = x
+	eval(x)			:(return)
+end_t2
+
+	define("test(f)")				:(end_test)
+test	t2(f,'a','b')
+	t2(f,'b','a')
+	t2(f,'a','a')					:(return)
+end_test
+
+	test('lne')
+	test('leq')
+	test('lgt')
+	test('lge')
+	test('lle')
+	test('llt')
+end

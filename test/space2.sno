@@ -1,0 +1,4 @@
+-PLUSOPS 0
+	output = convert(" ", .integer)
+	output = convert(" ", .real)
+end
