@@ -4,8 +4,13 @@
  * language extensions
  */
 
+#ifndef TRUE
 #define TRUE	1
+#endif /* TRUE not defined */
+
+#ifndef FALSE
 #define FALSE	0
+#endif /* FALSE not defined */
 
 #ifndef NULL
 #define NULL	0
@@ -27,7 +32,7 @@
 #if !defined(__STDC__) || defined(NEED_CONST)
 #define const
 #define volatile
-#endif /* not ANSI C */
+#endif /* !defined(__STDC__) || defined(NEED_CONST) */
 
 #ifndef __P
 #ifdef __STDC__
