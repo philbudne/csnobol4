@@ -33,8 +33,9 @@ typedef long off_t;
 #include "libret.h"			/* IO_xxx */
 
 /* generated */
+#include "equ.h"			/* for BCDFLD (for X_LOCSP), res.h */
+#include "res.h"			/* needed on VAX/VMS for data.h */
 #include "data.h"			/* for FILENM */
-#include "equ.h"			/* for BCDFLD (for X_LOCSP) */
 
 #ifndef SEEK_SET
 #define SEEK_SET 0
