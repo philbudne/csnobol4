@@ -7,28 +7,38 @@
 # from batch file by David Feustel
 
 CC=gcc
-OPT=-O2 -finline-functions
+OPT=-O3
 
 # defaults
 INET_C=lib\dummy\inet.c
 LOAD_C=lib\dummy\load.c
 
-# uncomment next 3 lines to build with WATTCP
-#WATTCP_DEFS=-I/djgpp/v2/contrib/wattcp/inc -DWATTCP_DOS
-#WATTCP_LIBS=-L/djgpp/v2/lib -lwatt
-#INET_C=lib\bsd\inet.c
-#INET_OBJS=rresvport.o
-
-# DXE loading
+# DXE2 LOAD() support.  DXE2 available from "v2tk" directory
+# on DJGPP distribution mirror sites.  Unpack and run "make install"
+#
+# uncomment next 4 lines to enable;
+#DXE_DEFS=-DHAVE_DXE2
 #LOAD_C=lib\unix98\load.c
 #DXE_OBJS=osinit.o
-#DXE_DEFS=-DHAVE_OSINIT
 #DXE_LIBS=-ldl
+
+# TCP/IP support, using WATTCP (see www.wattcp.com)
+#
+# edit as needed for your installation;
+WATTCP_INCDIR=/djgpp/v2/contrib/wattcp/inc
+WATTCP_LIBDIR=/djgpp/v2/lib
+
+# uncomment next 4 lines to enable;
+#WATTCP_DEFS=-I${WATTCP_INCDIR} -DHAVE_WATTCP
+#INET_C=lib\bsd\inet.c
+#INET_OBJS=rresvport.o
+#WATTCP_LIBS=-L${WATTCP_LIBDIR} -lwatt
 
 CFLAGS=	-c $(OPT) -Iconfig/djgpp -Iinclude -I. \
 	-DHAVE_CONFIG_H $(WATTCP_DEFS) $(DXE_DEFS)
 
-LIBS=-lm -lc -lpc $(DXE_LIBS) $(WATTCP_LIBS)
+# WATTCP must be first!
+LIBS=$(WATTCP_LIBS) -lm -lc -lpc $(DXE_LIBS) 
 
 OBJ=	isnobol4.o data.o data_init.o main.o syn.o \
 	version.o bal.o date.o dump.o endex.o hash.o \
