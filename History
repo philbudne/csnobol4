@@ -5,6 +5,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 8/19/2004
 	snolib/ftp.sno: fix a comment
 	snolib/http.sno: add HTTP.POST() function
+	configure: fix broken 6/4/2004 changes
+		output $(DESTDIR) as prefix
 
 8/12/2004
 	v311.sil, genc.sno, include/macros.h:

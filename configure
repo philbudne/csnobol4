@@ -26,10 +26,7 @@ INLINE_OK=true
 # debug this script
 DEBUG=
 
-# default installation path prefix
-if [ ! "$DESTDIR" ]; then
-	DESTDIR=/usr/local
-fi
+PREFIX=/usr/local
 
 OS=`(uname -s || echo unknown) 2>/dev/null`
 OSREL=`(uname -r || echo unknown) 2>/dev/null`
@@ -170,8 +167,8 @@ while [ $# -gt 0 ]; do
 		NO_OPT=
 	fi
 	;;
-    --prefix=*|--destdir=*)
-	DESTDIR=`echo "$1" | sed 's/--[a-z]*=//'`
+    --prefix=*)
+	PREFIX=`echo "$1" | sed 's/--prefix=//'`
 	;;
     '')
 	;;
@@ -201,8 +198,8 @@ C Library support selection;
 
 Install location;
 	--prefix=PATH		[default: /usr/local]
-	--bindir=PATH		[default: DESTDIR/bin]
-	--mandir=PATH		[default: DESTDIR/man]
+	--bindir=PATH		[default: PREFIX/bin]
+	--mandir=PATH		[default: PREFIX/man]
 EOF
 
 	rm -f $CONFIG_M4 $CONFIG_H
@@ -212,16 +209,15 @@ EOF
     shift
 done
 
-BINDIR="$DESTDIR/bin"
-MANDIR="$DESTDIR/man"
+BINDIR="$PREFIX/bin"
+MANDIR="$PREFIX/man"
 MAN1DIR="$MANDIR/man1"
-SNOLIB_DIR="$DESTDIR/lib/snobol4"
+SNOLIB_DIR="$PREFIX/lib/snobol4"
 
-echo "DESTDIR=$DESTDIR"				>> $CONFIG_M4
-echo "BINDIR=$BINDIR"				>> $CONFIG_M4
-echo "MANDIR=$MANDIR"				>> $CONFIG_M4
-echo "MAN1DIR=$MAN1DIR"				>> $CONFIG_M4
-echo "SNOLIB_DIR=$SNOLIB_DIR"			>> $CONFIG_M4
+echo 'BINDIR=$(DESTDIR)'"$BINDIR"		>> $CONFIG_M4
+echo 'MANDIR=$(DESTDIR)'"$MANDIR"		>> $CONFIG_M4
+echo 'MAN1DIR=$(DESTDIR)'"$MAN1DIR"		>> $CONFIG_M4
+echo 'SNOLIB_DIR=$(DESTDIR)'"$SNOLIB_DIR"	>> $CONFIG_M4
 
 if [ "$ADD_DEFINE_USED" ]; then
     echo '/* end defines from command line */'	>> $CONFIG_H
