@@ -34,17 +34,48 @@ following options;
 	--add-srcs=STRING
 		Add additional source files for "make depend"
 	--force-gcc
-		Force use of gcc, the GNU C compiler;
+		Force use of GCC, the GNU C Compiler;
 		fail if gcc not available.
 	--force-memmove
 		Force use of system memmove() function (if preseent)
 		if no bcopy() function is available.  Otherwise the
 		bcopy.c source file will be used.
+	--largefile
+		Force the use of defines for "large file" (64 bit offsets).
+		Requires existance of fseeko() and ftello() stdio functions.
+	--lp64
+		Force the use of defines for LP64 (64-bit longs and
+		pointers) datatype model where available.
+
+		Under the LP64 model, SNOBOL4 INTEGERs are represented
+		by C longs and REALs are represented as 64-bit C doubles.
+		The LP64 model doubles the size of each SIL
+		descriptor.  And while it allows larger strings (4GB
+		vs. 16MB) and compound objects (128M descriptors vs.
+		2M), the increased descriptor and arithmetic type
+		sizes also degrade performance.
+
+		If the underlying C compiler does not implement the
+		LP64 model, this option may have disasterous results
+		-- the current implementation DEPENDS on the fact that
+		the C datatype used to represent integers is the same width
+		as the C datatypes used to represent REALs and pointers.
+
+		It does NOT select use of "long long" to represent
+		SNOBOL4 integers, so --lp64 is useless on 32-bit systems.
+
+		This option attempts to set native compiler options
+		for LP64 environment where it's not the default.  This
+		may require --no-gcc to disable selection of GNU C Compiler.
 	--no-dlopen
+		Disable use of Unix98 dlopen() API for dynamic LOAD() support
 	--no-dynlib
-		Disable use of dlopen (or shl_load on HP-UX) for dynamic LOAD()
+		Disable use of all dynamic LOAD() support mechanisms
 	--no-gcc
-		Eliminate gcc from consideration.
+		Eliminate GNU C Compiler (GCC) from consideration.
+	--no-largefile
+		Disable automatic selection of large file support
+		(see --largefile)
 	--opt=STRING
 		Supply C optimization flags (replacing default "-O"),
 		for example; --opt=-O2
@@ -56,8 +87,8 @@ Even if your system has not previously been tested (see doc/ports.doc)
 configure will make a guess. If the build does not succeed, you may
 want to consult doc/porting.doc (also available as html) for
 information on the available options for use in creating a
-system-specific config file.  If you need assistance please contact
-me (phil@ultimate.com).
+system-specific config file.  If you need assistance please contact me
+(phil@ultimate.com).
 
 For information on including "external" C functions in the linked
 binary see doc/load.doc.
@@ -119,7 +150,7 @@ by typing:
 
 	MMS/DESCRIP=[.CONFIG.VMS]DESCRIP.MMS
 
-If using DECC, /MACRO=(DEC_C=1) should be appended to the command line.
+If using VAXC, /MACRO=(VAX_C=1) should be appended to the command line.
 
 The VMS port uses native calls to implement TTY I/O, and supports
 binary and noecho input.  TCP/IP I/O is implemented using DEC TCP/IP
