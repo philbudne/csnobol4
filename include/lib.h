@@ -91,6 +91,9 @@ void addsib __P((struct descr *,struct descr *));
 void addson __P((struct descr *,struct descr *));
 void insert __P((struct descr *,struct descr *));
 
+/* from version.c */
+void version __P((void));
+
 /****************************************************************
  * system dependant functions
  */
