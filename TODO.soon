@@ -1,26 +1,29 @@
 $Id$
 
-missing explicit rule for data_init.o????
+INSTALL;
+	notes for cygwin
+		full kit build
+		isnobol4.c rebuild does not: tsort crashes, file output oddness
+	talk about optimization options
+		ie;
+			gcc -O2
+			sunpro -xO5 -native
+		use of --opt=
+	talk about use of local-config;
+		ADD_OPT()
+		OPT=
+		SNOBOL4_C_CFLAGS=
+		DATA_INIT_CFLAGS=
 
-ports.doc??? update?? remove???
+update README
+	talk about available snolib files
+	mention documentation URLS
 
-"make generated" doesn't work on Linux?
-	argument processing AFU?
-
-get rid of "compiling" io variable, and use COMPCL??
-
-timing;
-	remove time swap hack in timing.sno
-	include genc.sno Id? ("grep Id: genc.sno")
-	genc.sno runtimes too small; need better code for timing test?
-	milliseconds too small!!
-	  have mstime() fill in four longs hi/lo + usec resolutions for each?
+ports.doc
+	update?? remove???
 
 new versions of RETxxx macros cause "code not reached" warnings
 	change to obscene use of  "," construct???
-
-have tests cleanup after themselves?  Add Makefile for "make clean"?
-	just add files to "make spotless"
 
 put sources under CVS
 	name module snobol4!
@@ -46,11 +49,13 @@ doc/porting.doc
 	PML_SERV
 
 man page
+	sed SNOLIB_PATH into man page?
+		give load.doc full path!!
 	LOAD() limitations out of date
 	mention files/functions available in snolib/
 	reference documents available on web (see next item)
 
-refer to online manuals (in man page, elsewhere?)
+refer to online manuals (in man page, README)
 	get permission to include??
 
     http://burks.bton.ac.uk/burks/language/snobol/catspaw/tutorial/contents.htm
@@ -60,7 +65,8 @@ refer to online manuals (in man page, elsewhere?)
     ftp://ftp.snobol4.com/spitman.pdf
 
 always send timing.out via e-mail?
-	(unless timing.out.hostname exists?)
+	(unless (.)timing.out.hostname exists?)
+	only if part of a real kit???
 
 test
 	SSET()!!
@@ -70,11 +76,17 @@ test
 	DJGPP (meissner@altertum.uni-halle.de)
 	QNX (Fred?)
 
+timing script;
+	translate bogomips + cpu into clock speed?
+	provide bogomips.c??
+	output machine readable format?
+
 packaging;
 	put pkg/ .... files under RCS (CVS)??
 	make snobol*4*-VERSION directory/tarfile???
 		csnobol-VERSION?? csnobol4?
 		Change package name to C-SNOBOL4???
+			INSTALL, README, version.c
 	update RPM, *bsd for 1.0
 	create freebsd binary "package"???
 	create debian package?
@@ -82,31 +94,8 @@ packaging;
 	    ftp://ftp.debian.org/debian/doc/package-developer/programmer.ps.gz
 	create solaris package???
 
-timing script;
-	translate bogomips + cpu into clock speed?
-	provide bogomips.c??
-	output machine readable format?
-
-INSTALL:
-	update
-	document --longlong
-	talk about available snolib files
-	talk about optimization options
-		ie;
-			gcc -O2
-			sunpro -xO5 -native
-		use of --opt=
-
-	use of local-config;
-		ADD_OPT()
-		OPT=
-		SNOBOL4_C_CFLAGS=
-		DATA_INIT_CFLAGS=
-
-update README
-
-sed SNOLIB_PATH into man page?
-	give load.doc full path!!
+have tests cleanup after themselves?  Add Makefile for "make clean"?
+	just add files to "make spotless"
 
 add "EXPORT" defns to lib functions (for windoze)???
 
@@ -153,6 +142,11 @@ use "pax -pe -rw src-dir dst-dir" for sourcekit?
 
 try under MINGW (minimal GNU for Windoze -- mingw.org)
 
+timing;	genc.sno runtimes too small; need better code for timing test?
+
+lib/snolib/serv.c:
+	use SIGFUNC_T? (move to snotypes.h??)
+
 ================
 
 SPITBOL features;
@@ -186,8 +180,8 @@ allow ¬ (\254) as NOT character?
 	would make SNOBOL source UTF-unsafe!
 
 Flush ADD_xxx macros?
-	do all accumulation in autoconf script
-		(what about local-config?)
+	do all accumulation in autoconf script CONFIG_XXX variables
+		consult LOCAL_XXXX vars for local changes (local-config)
 
 GC
 	recode GC in C -- use pointer reversal?
