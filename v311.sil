@@ -1,6 +1,11 @@
 * $Id$
 *
 * $Log$
+* Revision 1.70  1997/08/06  05:51:27  phil
+* [PLB59] from SNOBOL4+
+* seperate syntax tables for BREAK(X) and SPAN
+* simple index lookup for ANY/NOTANY
+*
 * Revision 1.69  1997/07/25  21:53:52  phil
 * [PLB58] Incremented COMDCT, added comment
 * no need to explicitly clear INCSTK!
@@ -4833,7 +4838,7 @@ IOOP   PUSH    SCL		   Push indicator
        BKSPCE  XCL		   Backspace unit
        BRANCH  RETNUL
 *_
-EOP    ENFILE  XCL		   End file unit
+EOP    ENFILE  XCL,COMP6	   End file unit		[PLB60]
        BRANCH  RETNUL
 *_
 ROP    REWIND  XCL		   Rewind unit
@@ -4904,6 +4909,7 @@ PUTOUT PROC    ,		   Output procedure
 *_
 PUTV   LOCSP   IOSP,IO2PTR	   Get specifier
 PUTVU  STPRNT  IOKEY,IO1PTR,IOSP   Perform print
+       AEQLC   IOKEY,0,,COMP6	   Check status			[PLB60]
        INCRA   WSTAT,1		   Increment count of writes
        BRANCH  RTN1		   Return
 *_
@@ -6432,6 +6438,9 @@ COMP3  SETAC   ERRTYP,17	   Program error
 COMP5  SETAC   ERRTYP,11	   Reading error
        BRANCH  FTLTST
 *_
+COMP6  SETAC   ERRTYP,33	   Writing error
+       BRANCH  FTLTST
+*_
 COMP7  SETAC   ERRTYP,27	   Erroneous end statement
        BRANCH  FTLEND
 *_
@@ -7924,6 +7933,7 @@ MSGLST DESCR   0,0,0
        DESCR   MSG30,0,0					[PLB38]
        DESCR   MSG31,0,0					[PLB38]
        DESCR   MSG32,0,0					[PLB38]
+       DESCR   MSG33,0,0					[PLB60]
 *
 *      Fatal Error Messages
 *
@@ -7960,6 +7970,7 @@ MSG29  STRING  'Erroneous INCLUDE statement'			[PLB38]
 MSG30  STRING  'Cannot open INCLUDE file'			[PLB38]
 MSG31  STRING  'Erroneous LINE statement'			[PLB38]
 MSG32  STRING  'Missing END statement'				[PLB38]
+MSG33  STRING  'Output error'					[PLB60]
 *
 *      Compiler Error Messages
 *
