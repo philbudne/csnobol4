@@ -1,0 +1,227 @@
+.\" -*-nroff-*-
+.\" $Id$
+.TH SNOBOL4 1 "1 June 1994" "Local"
+.SH NAME
+snobol4 \- SNOBOL4 interpreter
+.SH SYNOPSIS
+.B snobol4
+[
+.I options
+\&.\|.\|.
+]
+[
+.I files
+\&.\|.\|.
+]
+
+.SH DESCRIPTION
+.PP
+This manual page describes the port of the original BTL Macro
+Implementation of SNOBOL4 (MAINBOL) for Un*x (MFU) by Philip
+L. Budne.  The languange and it's implementation are described in [1]
+and [2].
+.PP
+Extensions where present have been chosen to be compatible with one or
+more of; Catspaw Vanilla SNOBOL, Catspaw Macro SPITBOL and/or SITBOL.
+.SS Command line
+The files on the command line are read in turn until an
+.B END label is seen.
+If no files are specified, a program (terminated by an
+.B END
+label) is read from standard input.
+
+.SS Limitations
+.PP
+All aspects of the language are implemented except;
+.IP *
+Trapping of arithmetic exceptions.
+.IP *
+Sorting of variables in
+.B &DUMP
+output.
+.IP *
+.B LOAD()
+function on non-BSD platforms.
+
+.SS "Changes"
+.PP
+The following behaviors have been changed;
+.IP *
+Listings are disabled by default.
+.IP *
+Character set (see below).
+.IP *
+Output to the
+.B PUNCH
+variable is directed to standard error.
+.IP *
+I/O is not performed using
+.B FORTRAN
+I/O.  The format argument to the
+.B OUTPUT()
+function is ignored.
+
+.SS "Character set"
+
+The internal character set and collating sequence are USASCII-8.  Any
+8-bit byte pattern is accepted as a SNOBOL datum or in a string
+constant of a SNOBOL source program.  The value of the SNOBOL
+protected keyword
+.B &ALPHABET
+is a 256-character string of all Bytes from 0 to 255, in order of
+collating sequence.  Programs may be entered in mixed case.  By
+default lower case identifiers are folded to upper case (see
+.B &CASE
+and
+.B -CASE
+extensions).
+.PP
+The following characters are permitted and represent a cross between
+PDP-10 MAINBOL (DECBOL), SITBOL and Catspaw SPITBOL usage;
+.ta 2i
+.nf
+exponentiation	^ **
+alternation	| !
+unary negation	~ \\
+assignment	= _
+comment line	* # | ; !
+.fi
+.PP
+Furthermore both brackets ([]) and widgits (<>) may be used to
+subscript arrays and tables.  The
+.B TAB
+(ASCII 8) character is accepted as a space, but since the compiler
+does not expand them, it's use may cause confusion in listings.  Note
+that the use of the pound sign for comments allows use of the shell
+interpreter sequence at the top of a file (ie;
+"#!/usr/local/bin/snobol4 -b").
+
+.SS "Extensions"
+
+.TP
+Case folding
+.br
+By default the compiler folds identifers and directives
+to upper case, so programs can be entered in either case.  To disable
+case folding use the directive
+.B "\-CASE 0" or
+.BR "\-CASE" .
+To reenable case folding use directive
+.BI "\-CASE " n
+where
+.I n
+is a non-zero integer.  The status of case folding may be examined and
+controlled from a running program by the unprotected system keyword
+.BR &CASE .
+
+.TP
+Named files
+.br
+Filenames
+can be supplied to the
+.B INPUT()
+and
+.B OUTPUT()
+functions via an optional fourth argument.
+
+.TP
+.B &UCASE/&LCASE
+.br
+Protected keyworks
+.B &UCASE
+and
+.B &LCASE
+contain upper and lower case characters respectively.
+
+.TP
+.B \-ERROR/\-NOERRORS
+.br
+Directives
+.B \-ERROR
+and
+.B \-NOERRORS
+control execution of program with compiler errors.  If the
+.B \-ERROR
+direective is given, the program will be executed (but any attempt to
+execute a statement with a compiler error will cause a fatal execution
+error.  By default programs with compiler errors will not be started,
+this can be restored using
+.BR \-NOERRORS .
+
+.SH OPTIONS
+.TP 1i
+.B \-b
+Toggle startup banner output (by default on).
+.TP
+.BI -d NNN
+Allocate dynamic region of
+.I NNN
+descriptors (default is 25000).  A larger dynamic region may result in
+fewer garbage collections (storage regenerations), however large
+values may cause collections (when they occur) to run more slowly.
+Most programs do not need an increased dynamic region to run.
+.TP
+.B -f
+Toggle folding of identifiers to upper case (see
+.B \-CASE
+and
+.BR &CASE ).
+.TP
+.B -k
+Toggle running programs with compilation errors (see
+.B \-ERROR
+and
+.B \-NOERRORS
+extensions).  By default programs with compilation errors will not be
+run.
+.TP
+.B -l
+Reenable listing to
+.B OUTPUT
+(default is
+.BR \-UNLIST ).
+Default listing side is
+.BR LEFT .
+.TP
+.B -r
+Toggle reading
+.B INPUT
+from input file(s) after
+.B END
+label.  Otherwise
+.B INPUT
+defaults (back) to standard input after program compilation is complete.
+.TP
+-s
+Toggle termination statistics (by default on).
+
+.SH SEE ALSO
+.IP [1]
+R. E. Griswold, J. F. Poage, and I. P. Polonsky
+.IR "The SNOBOL4 Programming Language" ,
+2nd ed., Prentice-Hall Inc., 1971.
+.IP [2]
+R. E. Griswold,
+.IR "The Macro Implementation of SNOBOL4" ,
+W. H. Freeman and Co., 1972.
+
+.SH AUTHOR
+Philip L. Budne
+
+.SH BUGS
+Cannot output
+.B NUL
+(ASCII 0) character.
+.br
+I/O in general retains record oriented flavor.
+.br
+Compiler error messages refer to listing line number (not source file line).
+.br
+Listings don't deal well with
+.B TAB
+characters.
+.br
+Indirection ('$' operator) fails to honor case folding.
+.br
+Dynamic storage cannot be expanded after startup.
+
