@@ -25,12 +25,7 @@ TTY_DEFS=-DTTY_READ_RAW
 #TTY_C=lib\win32\tty.c
 #TTY_DEFS=
 
-CFLAGS= -c $(OPT) \
-        -WC \
-        -O \
-        -Tml \
-        -w- \
-        -Iinclude -Iconfig\borland \
+CFLAGS= -c $(OPT) -WC -O -Tml -w- -Iconfig\borland -Iinclude \
 	-DHAVE_CONFIG_H $(NO_BITFIELDS) $(TTY_DEFS)
 
 OBJ=	snobol4.obj data.obj data_init.obj main.obj syn.obj \
@@ -40,8 +35,8 @@ OBJ=	snobol4.obj data.obj data_init.obj main.obj syn.obj \
 	tree.obj bcopy.obj bzero.obj dynamic.obj expops.obj getopt.obj \
 	init.obj load.obj mstime.obj chop.obj cos.obj delete.obj \
 	environ.obj exit.obj file.obj getenv.obj getstring.obj \
-	host.obj log.obj logic.obj rename.obj retstring.obj sin.obj \
-	spcint.obj spreal.obj sprintf.obj sqrt.obj sset.obj system.obj \
+	host.obj log.obj logic.obj ord.obj rename.obj retstring.obj sin.obj \
+	spcint.obj spreal.obj sprintf.obj sqrt.obj sset.obj \
 	tan.obj sys.obj popen.obj tty.obj inet.obj execute.obj exists.obj \
 	rresvport.obj term.obj findunit.obj exp.obj
 
@@ -232,6 +227,9 @@ log.obj : lib\snolib\log.c
 logic.obj : lib\snolib\logic.c
 	$(CC) $(CFLAGS) lib\snolib\logic.c
 
+ord.obj : lib\snolib\ord.c
+	$(CC) $(CFLAGS) lib\snolib\ord.c
+
 rename.obj : lib\snolib\rename.c
 	$(CC) $(CFLAGS) lib\snolib\rename.c
 
@@ -249,9 +247,6 @@ sqrt.obj : lib\snolib\sqrt.c
 
 sset.obj : lib\snolib\sset.c
 	$(CC) $(CFLAGS) lib\snolib\sset.c
-
-system.obj : lib\snolib\system.c
-	$(CC) $(CFLAGS) lib\snolib\system.c
 
 tan.obj : lib\snolib\tan.c
 	$(CC) $(CFLAGS) lib\snolib\tan.c
