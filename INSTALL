@@ -361,12 +361,6 @@ lib/dummy directory for this eventuality.  The SPITBOL EXIT()
 simulation requires an execute() function to pass pass control to
 another program.  A dummy version is provided in lib/dummy/execute.c.
 
-MS-DOS using Borland C++
-------------------------
-
-Greg White sent me updated scripts.
-They have not (yet) been tested with the latest sources.
-
 VMS using DEC C
 ---------------
 
@@ -398,20 +392,24 @@ fail; one of the procedures gets written to the console window
 regardless of redirection (it must have a filename that's magic to
 Windows), and tsort crashes.
 
-Win32 using MicroSoft Visual C++ 5.0
-------------------------------------
+Win32
+-----
 
-The Win32 port is in it's infancy.  The snobol4.exe links and passes
-regression testing on WinNT 4.0, but system dependent code needs work;
+The Win32 port is in it's infancy.  The snobol4.exe links and seems
+to work, but system dependant code needs work;
 
-*	TCP/IP I/O (using winsock32) is present, but not working.
 *	Binary & noecho TTY I/O has been coded, but does not work.
-*	Process timing under Win95 does not work properly (see win32/mstime.c)
 *	LOAD() of DLL's implemented, but not tested
 	(document how to make a .DLL)
 
-To compile;
+To compile using MINGW (http://www.mingw.org);
+	make -f config/win32/mingw.mak
+
+To compile using Microsoft Visual C++ (not tested);
 	nmake -f config\win32\ntmsvc.mak
+
+To compile using Borland C (not tested);
+	nmake -f config\win32\borland.mak
 
 The system compiles and runs well under Cygwin, so I've lost interest
 in the native port (some native routines are used where cygwin support
@@ -423,10 +421,13 @@ development environment.
 DJGPP under DOS
 ---------------
 
-Burkhard Meissner has contributed scripts for compilation under DJGPP
-(http://www.delorie.com/djgpp/), a free 32-bit C/C++ development
-system for Intel 80386 (and higher) PCs running DOS.  The scripts
-can be found in the config/djgpp subdirectory.
+DJGPP (http://www.delorie.com/djgpp/) is a free 32-bit C/C++ MS-DOS
+development system, for Intel 80386 (and higher) PCs running DOS based
+on GCC.  Burkhard Meissner has ported CSNOBOL4 to DJGPP, with TCP/IP
+support using WATTCP;
+
+To compile using GNU make (not tested);
+	make -f config/djgpp/Makefile
 
 Anything else
 -------------
