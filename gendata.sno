@@ -32,12 +32,6 @@
 
 **************** SPITBOL I/O
 
-*	SIL file on INPUT
-	INPUT(.INPUT,1,SILPATH)
-
-*	error output to fd2
-	OUTPUT(.STDERR,2,"[-f2]")
-
 	OUTPUT(.DATA.H,10,"data.h2")
 	OUTPUT(.DATA.C,11,"data.c2")
 	OUTPUT(.DATA_INIT.H,12,"data_init.h2")
@@ -46,13 +40,7 @@
 
 **************** MAINBOL I/O
 
-*	SIL file on INPUT
-MB1	INPUT(.INPUT,1,,SILPATH)
-
-*	error output to fd2
-	OUTPUT(.STDERR,7)
-
-	OUTPUT(.DATA.H,10,,"data.h2")
+MB1	OUTPUT(.DATA.H,10,,"data.h2")
 	OUTPUT(.DATA.C,11,,"data.c2")
 	OUTPUT(.DATA_INIT.H,12,,"data_init.h2")
 	OUTPUT(.EQU.H,13,,"equ.h2")
