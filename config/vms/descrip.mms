@@ -9,8 +9,10 @@
 # It's always best to remove all .OBJ files and rebuild from scratch!!!
 
 .ifdef VAX_C
-# Tested on VAX OpenVMS 6.1 using VAXC 3.1 (August 1999)
-CCFLAGS=/OPTIMIZE
+# Tested on VAX OpenVMS 6.1 using VAXC 3.1 (June 2003)
+# need to suppress warnings (about LIB$ and SYS$ routines)
+# otherwise CC returns status that makes MMS unhappy
+CCFLAGS=/OPTIMIZE/WARNINGS=NOWARNINGS
 AUX_OBJ=isnan.obj, finite.obj, \
 	bcopy.obj, bzero.obj, getopt.obj, popen.obj, unlink.obj, 
 CCDEFS=,NEED_POPEN,NEED_OFF_T
@@ -22,8 +24,8 @@ CLIB=+SYS$LIBRARY:DECCRTL/LIB
 # alternate library routines
 MSTIME_C=[.lib.vms]mstime.c
 
-# need funny includes, unsigned socklen_t
-UCXDEFS=,OLD_UCX_INCLUDES,SOCKLEN_T=unsigned
+# need funny includes, bindresvport
+UCXDEFS=,OLD_UCX_INCLUDES,NEED_BINDRESVPORT
 UCXOBJ=inet.obj, bindresvport.obj
 UCXLIB=+SYS$LIBRARY:UCX$IPC/LIB
 
@@ -41,7 +43,7 @@ CCDEFS=,NEED_POPEN,NEED_OFF_T
 MSTIME_C=[.lib.vms]mstime.c
 
 # don't need odd includes
-UCXDEFS=,SOCKLEN_T=unsigned
+UCXDEFS=,NEED_BINDRESVPORT
 UCXOBJ=inet.obj, bindresvport.obj
 UCXLIB=+SYS$LIBRARY:UCX$IPC/LIB
 
@@ -59,7 +61,7 @@ CCDEFS=,HAVE_STRINGS_H,HAVE_STDLIB_H,HAVE_UNISTD_H
 MSTIME_C=[.lib.posix]mstime.c
 
 UCXOBJ=inet6.obj
-UCXDEFS=,NEED_BINDRESVPORT_SA,SOCKLEN_T=unsigned
+UCXDEFS=,NEED_BINDRESVPORT_SA
 .endif
 .endif
 
