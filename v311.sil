@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.68  1997/07/03  02:08:29  phil
+* [PLB57] Upped CARDSZ back to 1024
+*
 * Revision 1.67  1997/05/22  05:03:21  phil
 * [PLB56] Removed duplicate COPYSP; Expressions now legal in ARRAY macro
 *
@@ -670,7 +673,6 @@ XLATND AEQLC   EXECCL,0,,END	   Just compile? Quiting time!	[PLB34]
        SETAC   LPTR,0		   Reset last label pointer
        SETAC   OCLIM,0		   Reset limit on object code
        SETAC   LNNOCL,0		   Reset source line number	[PLB38]
-       SETAC   INCSTK,0		   Release include file stack	[PLB38]
        ZERBLK  COMREG,COMDCT	   Clear compiler descriptors
        SUM     XCL,CMBSCL,CMOFCL   Compute end of object code
        RCALL   ,SPLIT,(XCL)	   Split of unused part of block
@@ -6795,7 +6797,7 @@ SNODSZ DESCR   NODESZ,0,P	   Small pattern node size
 STARSZ DESCR   11*DESCR,0,P	   Size of EXPRESSION pattern
 ZEROCL DESCR   0,0,0		   Constant zero
 TRSKEL DESCR   TRCBLK,0,0
-COMDCT DESCR   14*DESCR,0,0
+COMDCT DESCR   15*DESCR,0,0					[PLB58]
 COMREG DESCR   ELEMND,0,0	   Pointer to compiler descriptors
 *
 *
@@ -7047,6 +7049,7 @@ SRNCL  DESCR   0,0,0		   Success return descriptor
 *
 *      Compiler Descriptors
 *
+* zeroed on compiler termination; increment COMDCT when adding entries [PLB58]
 ELEMND DESCR   0,0,0		   Element node
 ELEXND DESCR   0,0,0		   Temporary node
 ELEYND DESCR   0,0,0		   Temporary node
