@@ -2,7 +2,7 @@
 
 /*
  * convert from string to real using strtod
- * strtod are in SVID2, XPG2, XPG3, ANSI C
+ * strtod is in SVID2, XPG2, XPG3, ANSI C
  */
 
 #ifdef HAVE_CONFIG_H

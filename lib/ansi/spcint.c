@@ -2,7 +2,7 @@
 
 /*
  * convert from strings to integer using strtol
- * strtol are in SVID2, XPG2, XPG3, ANSI C
+ * strtol is in SVID2, XPG2, XPG3, ANSI C
  */
 
 #ifdef HAVE_CONFIG_H
