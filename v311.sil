@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.59  1996/10/12  04:09:35  phil
+* [PLB48] Don't crash trying to print CODE() syntax errors
+*
 * Revision 1.58  1996/10/08  06:21:28  phil
 * [PLB47] display signal number (SIGNCL) in SYSCUT
 *
@@ -643,6 +646,7 @@ XLATND AEQLC   EXECCL,0,,END	   Just compile? Quiting time!	[PLB34]
        SUM     XCL,CMBSCL,CMOFCL   Compute end of object code
        RCALL   ,SPLIT,(XCL)	   Split of unused part of block
        SETAC   LISTCL,0		   Turn off listing switch
+       SETAC   COMPCL,0		   Turn off error listings	[PLB49]
        MSTIME  ETMCL		   Time out compiler
        SUBTRT  TIMECL,ETMCL,TIMECL Compute elapsed time
        SETAC   CNSLCL,1		   Permit label redefinition
@@ -1388,6 +1392,7 @@ CDIAG  INCRA   BOSCL,DESCR	   Increment offset of beginning
        MOVD    CMOFCL,BOSCL	   Reposition offset
        INCRA   ESAICL,DESCR	   Increment count of errors
        ACOMP   ESAICL,ESALIM,COMP9 Test for excessive errors
+       ACOMPC  COMPCL,0,,CDIAG4	   Done compiling? Skip this	[PLB49]
        MOVD    YCL,ERRBAS	   Set up length of error vector
        AEQLC   BRTYPE,EOSTYP,,CDIAG3
 *				   Check for end of statement
@@ -1399,7 +1404,7 @@ CDIAG3 PUTLG   ERRSP,YCL	   Insert length
 	char *sp, *dp;		/* src ptr, desr ptr		[PLB40] */
 	int len;		/* src char count		[PLB40] */
 	sp = INBUF + STNOSZ;	/* get start of statement buffer [PLB40] */
-	len = S_L(INBFSP) - S_L(TEXTSP); /* get index into statement [PLB48] */
+	len = D_A(YCL) - STNOSZ; /* number of spaces/tabs to skip [PLB49] */
 	dp = ERRBUF + STNOSZ;	/* get start of marker buffer	[PLB40] */
 	while (len-- > 0) {	/* for all chars in statement	[PLB40] */
 	    if (*sp == '\t')	/* if tab			[PLB40] */
@@ -1432,6 +1437,8 @@ CDIAG2 GETSPC  TSP,EMSGCL,0	   Get error message		[PLB40]
        STPRNT  IOKEY,OUTBLK,BLSP   Print blank line
 CDIAG1 STPRNT  IOKEY,ERRBLK,CERRSP Print error message to stderr [PLB8]
        STPRNT  IOKEY,ERRBLK,BLSP   Print blank line to stderr	[PLB8]
+CDIAG4 RCALL   ERRTXT,GENVAR,EMSGCL				[PLB49]
+*				   Generate &ERRTEXT value	[PLB49]
        AEQLC   UNIT,0,,RTN1					E3.0.1
        AEQLC   BRTYPE,EOSTYP,,RTN3				E3.0.1
        STREAM  XSP,TEXTSP,EOSTB,COMP3,,RTN3
@@ -6692,6 +6699,7 @@ TIMECL DESCR   0,0,0		   Millisecond time
 ALCL   DESCR   0,0,0		   Entry point switch for ARG(F,N)
 ARRMRK DESCR   0,0,0		   Prototype end switch for ARRAY(P,V)
 BANRCL DESCR   1,0,0		   Display startup banner	[PLB12]
+COMPCL DESCR   1,0,0		   Compiling; list syntax errors [PLB49]
 CUTNO  DESCR   0,0,0						E3.2.2
 CNSLCL DESCR   0,0,0		   Label redefinition switch
 DATACL DESCR   0,0,0		   Prototype end switch for DATA(P)
