@@ -57,6 +57,11 @@ if [ "$UNAME" ]; then
 			cat /proc/cpuinfo
 			echo ''
 		fi
+		if [ -f /proc/meminfo ]; then
+			echo /proc/meminfo:
+			cat /proc/meminfo
+			echo ''
+		fi
 		;;
 	SunOS)
 		echo 'sunmodel:'
