@@ -79,7 +79,12 @@ TREE_C=$(SRCDIR)lib/tree.c
 BZERO_C=$(SRCDIR)lib/auxil/bzero.c
 BCOPY_C=$(SRCDIR)lib/auxil/bcopy.c
 GETOPT_C=$(SRCDIR)lib/auxil/getopt.c
+
+# dummy sources
 ISNAN_C=$(SRCDIR)lib/dummy/isnan.c
+SYSTEM_C=$(SRCDIR)lib/dummy/system.c
+GETENV_C=$(SRCDIR)lib/dummy/getenv.c
+EXECL_C=$(SRCDIR)lib/dummy/execl.c
 
 # snolib sources
 CHOP_C=$(SRCDIR)lib/snolib/chop.c
@@ -147,7 +152,6 @@ SMALL_SNO=snobol4 -b
 
 ################
 
-AUX_OBJS= _OBJS
 OBJS=	main.o $(SNOBOL4).o data.o data_init.o syn.o bal.o convert.o \
 	date.o dump.o dynamic.o endex.o expops.o hash.o init.o intspc.o \
 	io.o lexcmp.o load.o mstime.o ordvst.o pair.o pat.o pml.o \
@@ -340,13 +344,30 @@ bcopy.o: $(BCOPY_C)
 	$(CC) $(CFLAGS) -c $(BCOPY_C)
 
 getopt.o: $(GETOPT_C)
-	$(CC) $(CFLAGS) $(ANSI_STRINGS) -c $(GETOPT_C)
+	$(CC) $(CFLAGS) -c $(GETOPT_C)
+
+################
+# dummy files
 
 isnan.o: $(ISNAN_C)
 	$(CC) $(CFLAGS) -c $(ISNAN_C)
 
+# for snolib/host.c
+getenv.o: $(GETENV_C)
+	$(CC) $(CFLAGS) -c $(GETENV_C)
+
+# for snolib/host.c
+system.o: $(SYSTEM_C)
+	$(CC) $(CFLAGS) -c $(SYSTEM_C)
+
+# for snolib/exit.c
+execl.o: $(EXECL_C)
+	$(CC) $(CFLAGS) -c $(EXECL_C)
+
 ################################################################
 # snolib -- library of external functions
+
+AUX_OBJS= _OBJS
 
 SNOLIB_OBJS= chop.o cos.o delete.o environ.o exit.o exp.o file.o \
 	fork.o getstring.o host.o log.o rename.o retstring.o sin.o \
@@ -414,7 +435,7 @@ sqrt.o: $(SQRT_C)
 	$(CC) $(CFLAGS) -c $(SQRT_C)
 
 sys.o: $(SYS_C)
-	$(CC) $(CFLAGS) $(CONFIG_GUESS) $(ANSI_STRINGS) -c $(SYS_C)
+	$(CC) $(CFLAGS) $(CONFIG_GUESS) $(SYSDEFS) -c $(SYS_C)
 
 tan.o: $(TAN_C)
 	$(CC) $(CFLAGS) -c $(TAN_C)
@@ -424,13 +445,14 @@ tan.o: $(TAN_C)
 
 # generated files to include in kit
 GENERATED=syn.c syn.h data.c data.h data_init.h proc.h equ.h \
+	data.c2 data.h2 data_init.h2 proc.h2 equ.h2 syn.h2 \
 	snobol4.c isnobol4.c 
 
-# files with secondary copies
+# files with secondary (.[ch]2) copies; should be older than primaries
 G2=data.c data.h data_init.h proc.h equ.h syn.h
 
 # disposables
-DISP=*.o *.a callgraph prolog subr
+DISP=*.o *.a callgraph prolog subr bsplitu pv
 
 # remove objects; leave generated sources, final binary, Makefile2
 clean:
@@ -439,7 +461,7 @@ clean:
 # remove objects, generated sources; leave final binary, Makefile2
 # DON'T DO THIS UNLESS YOU HAVE AN EXECUTABLE!!
 realclean: clean
-	rm -f $(GENERATED)
+	rm -f $(GENERATED) TESTED vers
 
 # file to hard-link into dist dir
 # generated files copied to ensure newer than source files!
@@ -452,7 +474,7 @@ realclean: clean
 	lib include config test bugs \
 	snolib/Makefile snolib/*.[ch] snolib/*.sno \
 	timing timing.sno \
-	cc-M]
+	cc-M split.c]
 
 # "print version" -- for dir/tar names
 pv:	version.c
@@ -481,15 +503,19 @@ tar vers: TESTED pv
 	rm -rf $(DIR)
 	./pv > vers
 
-# make a mailable kit by taring, compressing, uuencoding and splitting!
-uu:	vers
+# make a mailable kit by splitting up binary, and uuencoding pieces
+# (no editing necessary for reassembly)
+uu:	vers bsplitu
 	rm -rf uu; mkdir uu
-	cd uu; uuencode ../$(TAR) $(TAR) | split -800 -; makekit x??; rm x??
+	cd uu; ln ../pv .; ../bsplitu $(KIT) < ../$(KIT); rm pv
+
+bsplitu: bsplitu.c
+	$(CC) -o bsplitu bsplitu.c
 
 #################
 
 MAKEFILE2=Makefile2
-DEPENDFLAGS=$(MYCPPFLAGS) $(ANSI_STRINGS)
+DEPENDFLAGS=$(MYCPPFLAGS)
 
 depend:
 	sed '/^# DO NOT DELETE THIS LINE/q' $(MAKEFILE2) > $(MAKEFILE2).tmp
