@@ -1,19 +1,6 @@
 $Id$
 
 
-IMPORTANT for users of versions prior to 0.99;
-=============================================
-	Configuration is now automatic.  DO NOT create config.m4 by
-	hand!  some systems no longer have system specific config files.
-
-	SPITBOL operators are enabled by default, this causes problems
-	for the (very) rare program that OPSYN's the "?" binary operator!
-
-	The PUNCH variable is no longer available; use TERMINAL.
-
-	-d option takes size in bytes, not descriptors.
-
-
 For detailed revision history see History file
 
 Changes since 0.99.3 release;
@@ -27,11 +14,13 @@ Changes since 0.99.3 release;
 		(works on SunOS4, SunOS5, IRIX, Digital Unix, Linux, NetBSD)
 		Tentative support for HP-UX
 
+	Speedups for BREAK(), BREAKX(), SPAN(), ANY(), and NOTANY()
+
 	Cleaned up generated C code for function calls
 
-	Trim tabs as well as spaces
+	Trim tabs as well as spaces (&TRIM and TRIM())
 
-	timing script reports h/w info on BSD, HP, Linux systems
+	timing script reports hardware info on BSD, HP, Linux systems
 
 	Floating point I/O;
 		exponents allowed without decimals (ie; 1e10)
@@ -153,3 +142,15 @@ SITBOL compatible features added;
 Other features added;
 	Automatic LOAD()'ing of linked-in external C functions available
 	REALs are double precision on Alpha under Digital Unix
+
+IMPORTANT for users of versions prior to 0.99;
+=============================================
+	Configuration is now automatic.  DO NOT create config.m4 by
+	hand!  some systems no longer have system specific config files.
+
+	SPITBOL operators are enabled by default, this causes problems
+	for the (very) rare program that OPSYN's the "?" binary operator!
+
+	The PUNCH variable is no longer available; use TERMINAL.
+
+	-d option takes size in bytes, not descriptors.
