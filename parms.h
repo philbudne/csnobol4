@@ -42,4 +42,9 @@ extern int returns[];
 #include "lib/top.c"
 #endif /* NO_INLINE_TOP not defined */
 
+#ifndef NO_INLINE_PAT
+#define STATIC_PAT static
+#include "lib/pat.c"
+#endif /* NO_INLINE_PAT not defined */
+
 #endif /* INLINING defined */
