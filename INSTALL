@@ -379,14 +379,14 @@ description file, which can be used by typing:
 
 	MMS/DESCRIP=[.CONFIG.VMS]DESCRIP.MMS
 
-If using VAXC, /MACRO=(VAX_C=1) should be appended to the command line.
+If using VAXC, /MACRO=(VAX_C=1) should be appended to the command line
+if using an older version of Alpha DECC, try adding /MACRO=(DECC4=1)
 
 The VMS port tries to use native calls to implement TTY I/O, and
 supports binary and noecho input.  TCP/IP I/O is implemented using DEC
 TCP/IP Connection services for OpenVMS (formerly VAX/Ultrix connection
-product) but not working.  It should be simple to use other TCP
-packages, but if not, or none is available, add /MACRO=(NO_TCP=1) to
-the MMS command line.
+product). It should be simple to use other TCP packages, but if not,
+or none is available, add /MACRO=(NO_TCP=1) to the MMS command line.
 
 Win32 using CygWin
 ------------------
