@@ -12,7 +12,7 @@ CC=gcc
 OPT=-O3
 
 # can also use msdos version (less friendly in multitasking env)
-TTY_C=$(SRCDIR)lib\win32\tty.c
+TTY_C=$(SRCDIR)lib/win32/tty.c
 
 # crocks for winsock I/O on Win9x
 INET_DEFS=-DINET_IO
