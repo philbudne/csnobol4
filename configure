@@ -405,7 +405,7 @@ else
 	;;
     9000/[678]*:HP-UX:*:*)
 	# HP-UX PA-RISC
-	KERNEL_BITS=`(/usr/bin/getconf SC_KERNEL_BITS || echo 32) >/dev/null`
+	KERNEL_BITS=`(/usr/bin/getconf SC_KERNEL_BITS || echo 32) 2>/dev/null`
 	if [ "$KERNEL_BITS" = 64 -a "$LP64" ]; then
 	    ARCH_OPT=`getconf XBS5_LP64_OFF64_CFLAGS`
 	    # dlopen available in 64-bit world!
