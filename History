@@ -3,6 +3,22 @@ $Id$
 
 C-SNOBOL (MAINBOL for Un*x) history (and personal SNOBOL history);
 
+9/17/96
+	lib/tree.c: fixed INSERT (from SNOBOL4+)
+	lib/dump.c: added dumpcode()
+	added test/ops.sno
+	now runs all GNAT SPITBOL programs
+
+9/12/96
+	v311.sil: add TERMINAL variable associations for input & output
+	include/units.h: UNITT for TERMINAL input
+	lib/posix/term.c, lib/generic/term.c, lib/vms/term.c: term_input()
+	lib/io.c: use term_input() to setup UNITT
+	lib/hash.c: only look at first and last four! Thanks Mark!!
+	Makefile2.m4: add TERM_C/term.c/term.o
+	config/bsd43.m4; use generic/term.c
+	config/vms/build.com, config/vms/descrip.mms; add term.c/term.o
+
 9/11/96
 	v311.sil: fix sort; edit [PLB31] added one MULTC too many
 
