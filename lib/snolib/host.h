@@ -41,6 +41,10 @@
 #define HOST_DESCR_BITS		2304
 #define HOST_SPEC_BITS		2305
 
+/* integer variables; */
+#define HOST_DYNAMIC_SIZE	2400
+#define HOST_PMSTACK_SIZE	2401
+
 /*
  * NOTE!! All of the above 2xxx values are related to internals, and
  * the build environment.  Perhaps it should be kept that way, and
