@@ -1,0 +1,5 @@
+* popen input test
+
+	input(.i, 99,, "|echo hello")
+	output = i
+end

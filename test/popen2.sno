@@ -1,0 +1,9 @@
+* popen output test
+	output(.o, 99,, "|cat >popen2.dat")
+	o = "Hello World"
+	endfile(99)
+
+	input(.i, 98,, "popen2.dat")
+	output = i
+	endfile(98)
+end
