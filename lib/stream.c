@@ -21,7 +21,7 @@ enum stream_ret
 stream( sp1, sp2, tp )
     struct spec *sp1;			/* OUT: prefix */
     struct spec *sp2;			/* IN: string OUT: remainder */
-    const struct syntab *tp;
+    struct syntab *tp;
 {
     char *cp;
     int len;
@@ -108,7 +108,7 @@ stream( sp1, sp2, tp )
 /* 10/28/93 */
 void
 clertb(tp, act, sp)
-    const struct syntab *tp;
+    struct syntab *tp;
     enum action act;
 {
     int i, j;

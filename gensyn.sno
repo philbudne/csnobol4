@@ -156,7 +156,10 @@ TOP	LINE = INPUT					:F(END)
 
 **************** start new table
 
-	SYN.H = 'extern const struct syntab ' TABNAM ';'
+*	loses; SNABTB gets patched!
+*	CONST =
+
+	SYN.H = 'extern ' CONST 'struct syntab ' TABNAM ';'
 
 	SYN.C =
 	SYN.C = '/*'
@@ -222,7 +225,7 @@ DUMPAEN	SYN.C = '};'
 	C = 0
 	OL =
 	SYN.C =
-	SYN.C = 'const struct syntab ' TABNAM ' = {'
+	SYN.C = CONST 'struct syntab ' TABNAM ' = {'
 	SYN.C = HT '"' TABNAM '",'
 	SYN.C = HT '{'
 
