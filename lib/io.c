@@ -29,9 +29,9 @@ struct file {
 /* XXX raw (binary?) + recl? */
 
 static struct file *io_units[NUNITS];
+static struct unit io_units[NUNITS];
+static struct file *includes;		/* list of included files */
 static FILE *termin;			/* TERMINAL input */
-static int compiling;
-
 
 extern void *malloc();
 
@@ -517,6 +517,17 @@ io_include( dp, sp )
     strncpy( fname, S_SP(sp)+1, l );
     int unit;
 
+    l = S_L(sp);
+    if (l > sizeof(fname)-1)
+	l = sizeof(fname)-1;		/* ?! */
+    strncpy( fname, S_SP(sp), l );
+    fname[l] = '\0';
+    /* strip off trailing spaces after uniqness test */
+    /* seach includes list to see if file already included!! */
+    for (fp = includes; fp; fp = fp->next)
+	if (strcmp(fname, fp->fname) == 0) /* found it!!! */
+	    return TRUE;
+
     /* strip off trailing spaces after uniqueness test */
     while (l > 0 && fname[l-1] == ' ') {
 	l--;
@@ -533,6 +544,12 @@ io_include( dp, sp )
     fp->next = io_units[unit];
     io_units[unit] = fp;
     unit = D_A(dp);
+    unit--;
+
+    /* push new file onto top of input list */
+    fp->next = io_units[unit].curr;
+    io_units[unit].curr = fp;
+
     /* add file to list of files already included */
     S_V(sp) = 0;
     S_O(sp) = 0;
