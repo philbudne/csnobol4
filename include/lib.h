@@ -25,6 +25,7 @@ void io_backspace __P((int));
 void io_ecomp __P((void));
 int io_endfile __P((int));
 int io_file __P((struct descr *,struct spec *));
+int io_finish __P((void));
 int io_flushall __P((int));
 void io_init __P((void));
 int io_openi __P((struct descr *,struct spec *,struct spec *,struct descr *));
@@ -97,6 +98,12 @@ int spreal __P((struct descr *,struct spec *));
 char *dynamic __P((int));
 void vm_gc_advise __P((int));
 
+/* from execute.c */
+void execute __P((char *));
+
+/* from exists.c */
+int exists __P((char *));
+
 /* from expops.c */
 int expint __P((struct descr *,struct descr *,struct descr *));
 int exreal __P((struct descr *,struct descr *,struct descr *));
@@ -109,8 +116,20 @@ void unload __P((struct spec *));
 /* from mstime.c */
 real_t mstime __P((void));
 
+/* from syspend.c */
+void proc_suspend __P((void));
+
+/* from sys.c */
+void hwname __P((char *));
+void osname __P((char *));
+
 /* from term.c */
 FILE * term_input __P((void));
+
+/* from tcp.c */
+FILE *tcp_open __P((char *, char *, int, int));
+FILE *ucp_open __P((char *, char *, int, int));
+void inet_cleanup __P((void));
 
 /* from tty.c */
 int fisatty __P((FILE *, char *));
@@ -119,16 +138,6 @@ void tty_close __P((FILE *));		/* advisory! */
 void tty_suspend __P((void));		/* SIG_TSTP */
 /* if TTY_READ_RAW or TTY_READ_COOKED defined; */
 int tty_read __P((FILE *,char *,int,int,int,int,char *));
-
-/* from sys.c */
-void hwname __P((char *));
-void osname __P((char *));
-
-/* from exists.c */
-int exists __P((char *));
-
-/* from execute.c */
-void execute __P((char *));
 
 /*
  * functions we provide on some systems:
