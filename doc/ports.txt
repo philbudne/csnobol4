@@ -4,7 +4,7 @@ System:	System mfgr, type, cpu type
 Speed:	System clock speeds external/internal
 OS:	O/S and version
 C:	C compiler
-REL:	MFU SNOBOL release
+REL:	C-MAINBOL SNOBOL release
 config: config file used
 st/sec:	statements/second for genc.sno reported by "timing" script
 	"*" if some regression tests failed
@@ -15,6 +15,19 @@ who:	person resposible for report, date of report
 Wish I had room for;
 	CPU chip on all systems
 	C compiler version number
+
+*NOTE* The timings here come from running the Macro SNOBOL source file
+(v311.sil) through the C code generator (genc.sno).  This means the
+program AND the input may change from release to release, and thus
+direct comparisons can only be made when all systems were timed with
+the same release of SNOBOL!
+
+System		Speed	OS	      C	     REL    config	 st/sec who
+===============================================================================
+Sun SS-1000	50	SunOS 5.3     SUNpro 0.98.1 posix	 21088	pb 9/96
+Sun SS/IPC	25	SunOS 4.1.4   gcc    0.98.1 sunos4	 4667	pb 9/96
+
+old timings;
 
 System		Speed	OS	      C	     REL    config	 st/sec who
 ===============================================================================
