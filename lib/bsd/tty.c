@@ -25,7 +25,6 @@ static struct save {
     int cbreak, noecho;
 } *list;
 
-static struct sgttyb old;		/* stdin on entry */
 #if defined(TTY_RAW) && defined(LPASS8)
 static int lflags;
 #endif
