@@ -781,6 +781,7 @@ if [ ! "$NO_DYNLIB" ]; then
 
 	case "${OS}${OSREL}" in
 	Darwin*)
+	    # darwin dlopen() support in cctools/libdyld??
 	    echo 'ADD_LDFLAGS([-L/sw/lib -ldl])' >> $CONFIG_M4
 	    TRY_UNDERSCORE=true
 	    ;;
