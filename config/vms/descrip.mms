@@ -69,7 +69,7 @@ UCXDEFS=,NEED_BINDRESVPORT_SA
 # C compiler flags, if any
 INETDEFS=
 
-INETOBJ=inet.obj
+INETOBJ=inet.obj, bindresvport.obj
 INET_C=[.lib.dummy]inet.c
 
 .else
@@ -106,7 +106,7 @@ IO_C=[.lib]io.c
 LEXCMP_C=[.lib]lexcmp.c
 LOAD_C=[.lib.vms]load.c
 ORDVST_C=[.lib]ordvst.c
-OSOPEN_C=[.lib.cms]osopen.c
+OSOPEN_C=[.lib.vms]osopen.c
 PAIR_C=[.lib]pair.c
 PAT_C=[.lib]pat.c
 PML_C=[.lib]pml.c
