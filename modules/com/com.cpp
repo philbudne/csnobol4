@@ -89,7 +89,7 @@ COM_LOAD( LA_ALIST ) LA_DCL
     }
 
     progid = getolestring(LA_PTR(0));
-    if (wcschr(progid, ':')) {		// moniker?
+    if (wcschr(progid, ':')) {		// moniker display name?
 	hr = CoGetObject(progid,	// display name
 			NULL,		// BIND_OPTS*
 			IID_IUnknown, (void **)&punk);
@@ -110,7 +110,7 @@ COM_LOAD( LA_ALIST ) LA_DCL
 		RETFAIL;
 	    pfact->Release();		// XXX release regardless??
 	} // have class factory
-    } // moniker
+    } // moniker display name
     else {
 	// lookup classid from program ID string
 	hr = CLSIDFromProgID(progid, &clsid);
@@ -306,7 +306,7 @@ COM_INVOKE( LA_ALIST ) LA_DCL
 
     // copy in reverse order
     if (dargs) {
-	for (int i = nargs-1; i > nargs-2; i--) {
+	for (int i = nargs-1; i >= nargs-2; i--) {
 	    descr_to_variant(LA_DESCR(i), vp); // XXX check return??
 	    vp++;
 	}
