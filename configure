@@ -362,7 +362,7 @@ if [ "$GCCPATH" -a "$WANTGCC" ]; then
     # -Wuninitialized meaningless without -O, so don't ADD_OPT() it!
     OPT='-O2 -Wuninitialized'
 
-    ADD_OPT('-Wunused')
+    echo 'ADD_OPT([-Wunused])'			>> $CONFIG_M4
 
     case "$OS" in
     Darwin)
