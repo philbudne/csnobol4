@@ -1,41 +1,48 @@
 $Id$
 
+verify correctness of line.ref, include.ref
+
+create csnobol4 home page (seperate sections for 0.99.4, new);
+	links to distribution
+	links to documentation
+		man page (html, pdf)
+		README
+		INSTALL
+		COPYRIGHT
+		Changes
+		History
+		porting.html
+		ports.doc.txt
+		load.doc.txt
+
+references to (copies of???) COPYRIGHT in;
+	README? INSTALL?
+	replace old conditions in README
+
+remove CVS directories, or check out on branch??
+	move make release out to seperate script?
+		do a test build of checked out files???
+
+mention web page (and ftp) locations in README, man page!!
+
 change timing e-mail address to timing@snobol4.org??
-
-use install.sh from thttpd (X11)
-
-mention web page/ftp locations in README!!!
-
+change mailing list name to users@snobol4.org, announce@snobol4.org??
 include advertizements about users (announcements?) mailing list???
-(and snobol4 list);
 	INSTALL
 	README
-	End of Makefile
-
-change mailing list name to users@snobol4.org, announce@snobol4.org??
+	End of Makefile(2.m4)
 
 change name from C-MAINBOL to CSNOBOL4
 	version.c
-	doc/ports.doc, doc/snobol4.1
-	snolib/*.sno
-
-host.[ch]:
-	use SPITBOL names for HOST_XXX function names????
-		esp HOST_SYSTEM
+	doc/snobol4.1
 
 put sources under CVS
-	name module snobol4!  csnobol4??
 	improve rcs2cvs;
 		move old files to Attic directories!!!
 	put config.guess, tsort on vendor branch;
 		ftp://ftp.gnu.org/pub/gnu/config/config.guess
 
 man page
-	sed current version into man page??
-
-	sed SNOLIB_PATH into man page?
-		give load.doc full path!!
-
 	mention files/functions available in snolib/ (mention README)
 	reference documents available on web (see next item)
 		http://burks.bton.ac.uk/burks/language/snobol/....
@@ -43,25 +50,24 @@ man page
 
 test
 	VMS port (RDIXON@seattleschools.org)
-	MacOS X (panos@surgery.wisc.edu)
 	DJGPP (meissner@altertum.uni-halle.de)
 	QNX (Fred?)
-		mailto:abel@fib.upc.es
-		http://www-est.fib.upc.es/~f2461330/bookmark.htm
 
 packaging;
 	put pkg/ .... files under RCS (CVS)??
 	make snobol*4*-VERSION directory/tarfile???
 		csnobol-VERSION?? csnobol4?
 	update RPM, *bsd for 1.0
+
+	create BSD port/pkg for snocone!!!
+
 	create freebsd binary "package"???
+	release binary RPMs?
 
 	create debian package?
 	    http://www.debian.org/doc/FAQ/debian-faq-7.html
 	    ftp://ftp.debian.org/debian/doc/package-developer/programmer.ps.gz
 	create solaris package???
-
-	create BSD port/pkg for snocone!!!
 
 have tests cleanup after themselves?  Add Makefile for "make clean"?
 	just add files to "make spotless"
@@ -78,19 +84,34 @@ run ispell on docs;
 	INSTALL
 	README
 
-update man page date, CHANGES, README, version.c
+update man page date
+
+update version in CHANGES, README, version.c
 	on branch??
 
 update HOST() example in man page
 
 check in all files (incl History, TODO.soon)
 
-rcs tag all files
+note release in TODO.soon
+
+tag all files
+
+make branch for major releases
 
 ================
 
-LEXCMP@CVV1 is 3-way (comment in genc.sno is obsolete),
-and results in multiple calls to lexcmp() -- "only" used for SORT().
+man page
+	sed current version into man page??
+
+	sed SNOLIB_PATH into man page?
+		give load.doc full path!!
+
+eliminate patern match "function" pointer indirections??
+
+	ANYCCL -> ANYCFN (XANY)
+
+	Just push index value???
 
 always send timing.out via e-mail?
 	(unless (.)timing.out.hostname exists?)

@@ -2,6 +2,105 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+3/1/2002
+	config/djgpp/Makefile: tested, make DXE loading optional
+	config/djgpp/config.h: remove unneeded stuff!
+	lib/djgpp/sys.c: HOST() support for DJGPP
+	lib/vms/getredirect.c: defend against argc==0
+	v311.sil: remove an empty RCALL label list
+
+2/28/2002
+	configure: force -n32 compiler IRIX 32-bit compilations
+
+2/22/2002
+	genc.sno, v311.sil: XINCLD 3-way return to handle multiple includes
+	lib/io.c: io_include() 3-way return
+		defend against path overflow
+		cleanup, add comments, type member
+		put NOTAFILE flag under ifdef INET_IO
+	include/libret.h: io_include_ret
+	test/line.{ref,sno}: test multiple include handling
+	new: test/include.{ref,sno}: test includes w/o -line
+
+2/21/2002
+	configure: seperate -Wuninitialized from OPT
+	lib/win32/inet.c: cleanup; read text past eol, handle CR
+	lib/io.c: fix unix inet I/O
+
+2/20/2002
+	install-sh: make cpprog the default
+	doc/snobol4.1: add www.snobol4.org
+	lib/init.c: fix -P
+
+2/19/2002
+	new: COPYRIGHT
+
+2/18/2002
+	configure: use -fomit-frame-pointer for --fast w/ gcc
+		report glibc version to stderr, config.m4
+		default compilation includes -Wuninitialized
+		always compile with -Wunused
+	lib/win32/inet.c: inet_close() return value
+	lib/io.c: use inet_close() return value
+	v311.sil: compile cleanly with gcc -Wunused;
+		add entry labels where needed; add XECODE op
+		removed unused labels and unused code!!
+	include/macros.h: ENTRY() no longer drops a label!
+	genc.sno, gendata.sno: use new XECODE op
+	lib/unix98/load.c: only declare found: label if needed
+
+2/16/2002
+	configure: add IRIX compiler flags; merge IRIX and IRIX64
+		check for /sbin/install
+	Makefile: remove timdir.* in cleanmostly
+	new lib/djgpp/osinit.c: djgpp os_init()
+	lib/init.c: add os_init() call
+	new config/djgpp/{config.h,Makefile}
+	removed config/djgpp/ misc...
+
+2/15/2002
+	lib/win32/inet.c: add INET_IO calls for Winsock I/O
+	lib/io.c: add crocks for INET_IO
+	config/win32/{borland,ntmsvc}.mak: clean up, bring in to sync
+	config/win32/config.h: update
+	lib/snolib/getenv.c: needs equ.h
+
+2/14/2002
+	Makefile: go back to "cvs login"
+	Compile under MINGW (Minimal GNU for Windoze) http://mingw.org
+	config/win32/config.h: only define __STD__ if not defined
+		add defines for popen, pclose
+		no longer NEED_POPEN_DECL?
+	lib/snolib/system.c: needs equ.h
+	lib/win32/inet.c: remove BORLAND ifdef
+	lib/win32/sys.c: add Win{98,ME,2K,XP}; display unknown platforms
+		strip trailing spaces from szCSDVersion
+	lib/win32/tty.c: add HANDLE casts
+	config/win32/ntmsvc.mak: put -Iconfig\win32 first
+		intspc moved to ansi/
+		add ord.obj
+	removed lib/win32/popen.c, config/borland directory
+	new config/win32/mingw.mak, config/win32/borland.mak
+
+2/13/2002
+	timing: use /usr/bin/oslevel on AIX
+
+2/12/2002
+	lib/snolib/host.[ch]: changed HOST_SYSTEM to HOST_SYSCMD
+	lib/snolib/host.c: no longer need to set RETTYPE before RETINT()
+		handle REAL and integers encoded as strings
+	include/load.h: set RETTYPE in RETNULL
+	lib/snolib/{delete,file,rename}.c: include equ.h for RETNULL
+	doc/snobol4.1: HOST() changes
+	CHANGES: HOST() changes
+
+2/7/2002
+	snolib/{file,ftp,http,smtp,tcp,url}.sno: s/C-MAINBOL/CSNOBOL4/
+	doc/porting.ms: undocument DCMP_BYTES (never needed?)
+	lib/init.c: display build date
+	CHANGES: add -v
+	INSTALL: update --no-gcc --lp64
+
 2/6/2002
 	new install-sh (X11 install script)
 	configure: find install program/script, set INSTALL
