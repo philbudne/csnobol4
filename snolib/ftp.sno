@@ -171,7 +171,7 @@ FTP.OPEN.ANON.END
 
 *	FTP.OPEN(.X, 'hostname', 'user', 'password')	:F(END)
 *	FTP.DATA.COMMAND(.X, "STOR FOO", .Y)		:F(END)
-*	.Y = "STUFF"
+*	Y = "STUFF"
 *	....
 *	FTP.DATA.CLOSE(.Y)
 *	FTP.CLOSE(.X)
