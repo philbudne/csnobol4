@@ -381,8 +381,6 @@ ia64:HP-UX:*:*)
 9000/[34]??:4.3bsd:*:*)
     # Mt Xinu 4.3 on hp300
     echo 'using dummy isnan() and finite() functions' 1>&2
-    echo 'FINITE_C=$(SRCDIR)lib/dummy/isnan.c'	>> $CONFIG_M4
-    echo 'FINITE_C=$(SRCDIR)lib/dummy/finite.c'	>> $CONFIG_M4
     echo 'ADD_OBJS([isnan.o finite.o])'		>> $CONFIG_M4
     echo 'ADD_SRCS([$(ISNAN_C) $(FINITE_C)])'	>> $CONFIG_M4
     ;;
