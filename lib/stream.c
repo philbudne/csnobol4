@@ -146,10 +146,9 @@ findact(act, tp)
 
 /* 10/28/93 */
 void
-clertb(tp, act, sp)
+clertb(tp, act)
     struct syntab *tp;
     enum action act;
-    struct spec *sp;
 {
     int i, j;
     union {
