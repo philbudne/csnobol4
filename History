@@ -5,7 +5,10 @@ The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 ******** RCS tag BETA4
 
 10/28/96:
-	autoconf: fix c89 test
+	autoconf: fix c89 test, add isnan.o for m68k-hp-bsd
+	config/bsd43.m4: remove isnan.o
+	version.c: updated vdate
+	doc/snobol4.1: updated date
 
 10/27/96:
 	lib/io.c: add USE_STDARG_H ifdefs (just in case)
