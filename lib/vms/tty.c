@@ -1,15 +1,16 @@
 /* $Id$ */
 
-#include <stdio.h>
-#include <iodef.h>
-#include <ssdef.h>
-
 /*
  * tty mode, echo
  * VMS version
  * started 9/17/97 -pb
- * compiles, does not work?
  */
+
+#include <stdio.h>
+#include <iodef.h>
+#include <ssdef.h>
+
+#define SETERR(_STAT) do { vaxc$errno = (_STAT); errno = EVMSERR; } while(0)
 
 static struct {
     short status;
@@ -22,6 +23,7 @@ int
 fisatty(f)
     FILE *f;
 {
+    /* should only return true for files that tty_read() works with! */
     return isatty(fileno(f));
 }
 
@@ -61,16 +63,31 @@ tty_read(f, buf, len, raw, noecho)
     if (raw) {
 	int chan;
 	int op;
-	int ret;
+	int status;
 
-	chan = fileno(f);		/* XXX this right? */
-	op = IO$_TTYREADALL;
+/* XXX UGH; TEMP for testing */
+	struct descr {
+	  int len;
+	  char *ptr;
+	} d;
+
+	d.len = sizeof("SYS$COMMAND")-1;
+	d.ptr = "SYS$COMMAND";
+	SYS$ASSIGN(&d, &chan, 0, 0);
+/* XXX END OF TEMP CODE */
+
+	op = IO$_READVBLK;
 	if (noecho)
 	    op |= IO$M_NOECHO;
-#define EFN 0
-	ret = SYS$QIOW(EFN, chan, op, &iosb, 0, 0, buf, len, 0, 0, 0, 0);
-	if (ret != SS$_NORMAL || iosb.status != SS$_NORMAL)
+	status = SYS$QIOW(0, chan, op, &iosb, 0, 0, buf, len, 0, 0, 0, 0);
+	if (status != SS$_NORMAL) {
+	    SETERR(status);
 	    return -1;
+	}
+	if (iosb.status != SS$_NORMAL) {
+	    SETERR(iosb.status);
+	    return -1;
+	}
 	return iosb.size;
     }
     else {
@@ -87,6 +104,8 @@ main() {
   int cc;
 
   cc = tty_read(stdin, buf, 1, TRUE, TRUE);
+  if (cc) printf("%d\n", buf[0]);
+  cc = tty_read(stdin, buf, 1, TRUE, FALSE);
   if (cc) printf("%d\n", buf[0]);
   tty_restore();
 }

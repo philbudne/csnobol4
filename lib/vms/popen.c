@@ -3,19 +3,23 @@
  * from Chris Janton's (chj) VMS Icon port.
  */
 
+#undef __HIDE_FORBIDDEN_NAMES
 #include <stdio.h>
 #include <types.h>
 #include <dvidef>
 #include <iodef>
 #include <stsdef.h>
+#include <ssdef.h>
 #include <clidef.h>
+
+#define SETERR(_STAT) do { vaxc$errno = (_STAT); errno = EVMSERR; } while(0)
 
 struct descr {
     int length;
     char *ptr;
 };
 
-/* XXX keep linked list with FILE *
+/* XXX keep linked list with FILE */
 static struct pipe {
     long pid;				/* process id of child */
     long status;			/* exit status of child */
@@ -64,13 +68,14 @@ popen(cmd, mode)
     if (efn == -1)
 	return NULL;
 
-    m = _tolower(mode[0]);
+    m = mode[0];
     if (m != 'r' && m != 'w')
 	return NULL;
 
     /* create and open the mailbox */
     status = SYS$CREMBX(0, &chan, 0, 0, 0, 0, 0);
-    if (!(status & 1)) {
+    if (status != SS$_NORMAL) {
+	SERERR(status);
 	LIB$FREE_EF(&efn);
 	return (0);
     }
@@ -82,7 +87,8 @@ popen(cmd, mode)
     itmlst.code = DVI$_DEVNAM;
     itmlst.len = 64;
     status = SYS$GETDVIW(0, chan, 0, &itmlst, 0, 0, 0, 0);
-    if (!(status & 1)) {
+    if (status != SS$_NORMAL) {
+	SETERR(status);
 	LIB$FREE_EF(&efn);
 	return (0);
     }
@@ -105,19 +111,21 @@ popen(cmd, mode)
     /* fork the command */
     command.length = strlen(cmd);
     command.ptr = cmd;
-    flags = CLI$M_NOWAIT|CLI$M_NOKEYPAD|CLI$M_NOCONTROL;
     if (m == 'r') {
 	input = NULL;
-	output = mbxname;
+	output = &mbxname;
     }
     else {
-	input = mbxname;
+	input = &mbxname;
 	output = NULL;
     }
+    flags = CLI$M_NOWAIT|CLI$M_NOKEYPAD|CLI$M_NOCONTROL;
+
     status = LIB$SPAWN(&command, input, output, &flags, 0, &pd->pid,
 		       &pd->status, &pd->efn, 0, 0, 0, 0);
 
-    if (!(status & 1)) {
+    if (status != SS$_NORMAL) {
+	SETERR(status);
 	fclose(pfile);
 	LIB$FREE_EF(&efn);
 	SYS$DASSGN(chan);
@@ -167,6 +175,7 @@ pclose(pfile)
 #ifdef TEST
 main() {
     for (;;) {
+	int l;
 	FILE *f;
 	int stat;
 	char line[1024];
@@ -174,6 +183,12 @@ main() {
 	printf("command: ");
 	if (!fgets(line, sizeof(line), stdin))
 	    break;
+	l = strlen(line);
+	if (line[l-1] == '\n') {
+	    if (l == 1)
+		break;
+	    line[l-1] = '\0';
+	}
 	f = popen(line, "r");
 	if (f) {
 	    while (fgets(line, sizeof(line), f))
