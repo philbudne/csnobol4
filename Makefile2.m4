@@ -184,9 +184,10 @@ TESTED:	xsnobol4 snobol4.c
 	cd test; ./run.sh ../xsnobol4 > ../test.out
 	./timing > timing.out
 	date > TESTED
-	@echo 'Please consider mailing timing.out to' \
-		'snobol4-timing@ultimate.com'
-	@echo 'Along with information on your system model and CPU clock rate'
+	@echo Please consider mailing timing.out to \
+		snobol4-timing@ultimate.com 1>&2
+	@echo along with information on your \
+		system model and CPU clock rate 1>&2
 
 xsnobol4: $(OBJS)
 	$(CC) $(CFLAGS) -o xsnobol4 $(OBJS) $(LDFLAGS)
@@ -545,7 +546,7 @@ install: TESTED doc/snobol4.1
 	cp snolib/*.sno $(SNOLIB_DIR)
 	cp doc/load.doc $(SNOLIB_DIR)
 	@echo 'Have you mailed a copy of timing.out to' \
-		'snobol4-timing@ultimate.com ?'
+		'snobol4-timing@ultimate.com ?' 1>&2
 	
 ################
 MAKEFILE2=Makefile2
