@@ -124,6 +124,7 @@ P5		133   Linux 2.2.5   gcc		0.99.4  42448	pb 11/99
 IBM RS/6K J40	225?  AIX 4.2       cc		0.99.4  41847	cs 2/98
 Sun SS1000	85    SunOS 5.5     spro	0.99.1  41682	pb 10/96
 HP 9000/778	160   HP-UX 10.20   cc		0.99.3+	40417	pb 6/97
+DEC Alpha 255	233   FreeBSD 4.1   gcc		0.99.4	39812	trf 9/02
 IBM RS/6K J40 	112   AIX 4.1.5     cc?		0.99.4	39749	sr 9/97
 HP 9000/887-G70 96    HP-UX 9.04    c89		0.99.1  37613	hb 11/96
 P5		100   BSDI 2.1      gcc		0.99.1  35972	db2 11/96
