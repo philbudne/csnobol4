@@ -2,55 +2,71 @@
 
 /*
  * ``Poor Man's LOAD''
- * list of functions loaded with snobol4 image  
+ * list of functions loaded with snobol4 image.
+ *
+ * See lib/snolib/*.c for example functions
  */
 
 #if 0 /* examples: */
-PMLFUNC(FILE)				/* see snolib/file.c */
-PMLFUNC(RENAME)				/* see snolib/rename.c */
-PMLFUNC(DELETE)				/* see snolib/delete.c */
-PMLFUNC2("FOO", bar)			/* entry point at "bar" */
+PMLFUNC2("FOO", bar)			/* function FOO entry point at "bar" */
 #endif /* 0 */
 
 #ifndef NO_PML_HOST
 PMLFUNC(HOST)				/* SPITBOL compat */
-PMLOAD("HOST(,)")			/* two polymorphic params */
+PMPROTO("HOST(,)")			/* two polymorphic params */
 #endif /* NO_PML_HOST not defined */
 
 #ifndef NO_PML_EXIT
 PMLFUNC(EXIT)				/* SPITBOL compat */
-PMLOAD("EXIT()")			/* one polymorphic param */
+PMPROTO("EXIT()")			/* one polymorphic param */
 #endif /* NO_PML_EXIT not defined */
 
 #ifndef NO_PML_REAL
 #ifndef NO_PML_SQRT
 PMLFUNC(SQRT)
-PMLOAD("SQRT(REAL)REAL")
+PMPROTO("SQRT(REAL)REAL")
 #endif /* NO_PML_SQRT not defined */
 
 #ifndef NO_PML_EXP
 PMLFUNC(EXP)
-PMLOAD("EXP(REAL)REAL")
+PMPROTO("EXP(REAL)REAL")
 #endif /* NO_PML_EXP not defined */
 
 #ifndef NO_PML_LOG
 PMLFUNC(LOG)
-PMLOAD("LOG(REAL)REAL")
+PMPROTO("LOG(REAL)REAL")
 #endif /* NO_PML_LOG not defined */
 
 #ifndef NO_PML_CHOP
 PMLFUNC(CHOP)
-PMLOAD("CHOP(REAL)REAL")
+PMPROTO("CHOP(REAL)REAL")
 #endif /* NO_PML_CHOP not defined */
 
 #ifndef NO_PML_TRIG
 PMLFUNC(SIN)
-PMLOAD("SIN(REAL)REAL")
+PMPROTO("SIN(REAL)REAL")
 
 PMLFUNC(COS)
-PMLOAD("COS(REAL)REAL")
+PMPROTO("COS(REAL)REAL")
 
 PMLFUNC(TAN)
-PMLOAD("TAN(REAL)REAL")
+PMPROTO("TAN(REAL)REAL")
 #endif /* NO_PML_TRIG not defined */
 #endif /* NO_PML_REAL not defined */
+
+#ifndef NO_PML_FILE
+PMLFUNC(FILE)				/* SITBOL compat */
+PMPROTO("FILE(STRING)STRING")
+#endif /* NO_PML_FILE not defined */
+
+#ifndef NO_PML_DELETE
+PMLFUNC(DELETE)				/* SITBOL compat */
+PMPROTO("DELETE(STRING)STRING")
+#endif /* NO_PML_DELETE not defined */
+
+#ifndef NO_PML_RENAME
+PMLFUNC(RENAME)				/* SITBOL compat */
+PMPROTO("RENAME(STRING)STRING")
+#endif /* NO_PML_RENAME not defined */
+
+
