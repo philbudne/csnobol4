@@ -1,24 +1,31 @@
 /* $Id$ */
 
 /*
- * Format integers
+ * Format single int or float
  *
  * this is primarily a test of RETSTR();  
  * CONVERT() should do radix conversions (like in SITBOL)!!
+ *
+ * original 6/94
+ * support real too 9/96
  */
 
 /*
- * LOAD("SPRINTF(STRING,INTEGER)STRING")
+ * LOAD("SPRINTF(STRING,)STRING")
  *
- * Usage;	SPRINTF(format,int)
+ * Usage;	SPRINTF(format,value)
  *			ie; SPRINTF("%x",32)
- * Returns;	string
+ *			    SPRINTF("%10.2f", 3.14)
+ * Returns;	string (fails if second argument not INTEGER or REAL)
  */
 
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
 #include "load.h"
+
+/* machine generated: */
+#include "equ.h"			/* I & R */
 
 int
 SPRINTF( LA_ALIST ) LA_DCL
@@ -27,7 +34,15 @@ SPRINTF( LA_ALIST ) LA_DCL
     char buf[256];			/* XXX */
 
     getstring( LA_PTR(0), fmt, sizeof(fmt) );
-    sprintf( buf, fmt, LA_INT(1) );
-
+    switch (LA_TYPE(1)) {
+    case I:
+	sprintf( buf, fmt, LA_INT(1) );
+	break;
+    case R:
+	sprintf( buf, fmt, LA_REAL(1) );
+	break;
+    default:
+	RETFAIL;
+    }
     RETSTR(buf, strlen(buf));
 }
