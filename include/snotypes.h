@@ -2,8 +2,17 @@
 
 /* NOTE! int_t and real_t should be the same size!!! */
 
+#ifdef INT_T
+typedef INT_T int_t; 			/* used to hold integers, addrs */
+#else
 typedef long int_t; 			/* used to hold integers, addrs */
+#endif
+
+#ifdef REAL_T
+typedef REAL_T real_t;
+#else
 typedef float real_t;
+#endif
 
 union addr {
     int_t i;	
