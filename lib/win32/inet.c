@@ -41,9 +41,11 @@ inet_socket( host, service, port, priv, type )
 
     if (!wsock_init) {
 	WSADATA wsaData;
+	WORD wVersionRequested;
 	int opt;
 
-	if (WSAStartup( MAKEWORD(VMAJOR,VMINOR), &wsaData ) != 0)
+	wVersionRequested = MAKEWORD(VMAJOR,VMINOR);
+	if (WSAStartup( wVersionRequested, &wsaData ) != 0)
 	    return -1;			/* init failed */
 
 	/* XXX examine wsaData.wVersion and wsaData.wHighVersion?
