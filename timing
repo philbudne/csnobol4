@@ -62,7 +62,7 @@ if [ "$UNAME" ]; then
 		;;
 	SunOS)
 		echo 'sunmodel:'
-		./sunmodel
+		./sunmodel 2>&1
 		echo ''
 		;;
 	esac
