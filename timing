@@ -20,7 +20,7 @@ SNOBOL=${SNOBOL}$EXT
 
 echo 'Date:'
 date
-echo ''
+
 for p in `echo $PATH | tr : ' '`; do
 	if [ -f $p/uname ]; then
 		UNAME=$p/uname
@@ -28,16 +28,16 @@ for p in `echo $PATH | tr : ' '`; do
 	fi
 done
 if [ "$UNAME" ]; then
+	echo ''
 	echo 'uname -a:'
 	$UNAME -a
-	echo ''
 
 	# show hardware, if we know how;
 	case `$UNAME` in
 	AIX*)
+		echo ''
 		echo /usr/sbin/lsattr -EHl proc0
 		/usr/sbin/lsattr -EHl proc0 2>&1
-		echo ''
 		;;
 	*BSD*|Darwin)
 		if [ -x /usr/sbin/sysctl ]; then
@@ -48,52 +48,52 @@ if [ "$UNAME" ]; then
 			SYSCTL=
 		fi
 		if [ "$SYSCTL" ]; then
+			echo ''
 			echo ${SYSCTL}:
 			$SYSCTL hw 2>/dev/null
-			echo ''
 
 			# freebsd x86;
 			if FREQ=`$SYSCTL machdep.tsc_freq 2>/dev/null`; then
-				echo "$FREQ"
 				echo ''
+				echo "$FREQ"
 			fi
 		fi
 		if [ -f /var/run/dmesg.boot ]; then
+			echo ''
 			echo /var/run/dmesg.boot
 			grep -i '^cpu[0-9]*:' /var/run/dmesg.boot
-			echo ''
 		fi
 		;;
 	HP-UX)
 		if [ -f /usr/bin/model ]; then
+			echo ''
 			echo /usr/bin/model:
 			/usr/bin/model
-			echo ''
 		elif [ -f /bin/model ]; then
+			echo ''
 			echo /bin/model:
 			/bin/model
-			echo ''
 		elif [ -f /usr/bin/getconf ]; then
+			echo ''
 			echo getconf MACHINE_MODEL:
 			/usr/bin/getconf MACHINE_MODEL
-			echo ''
 		fi
 		;;
 	IRIX*)
+		echo ''
 		echo 'hinv:'
 		hinv
-		echo ''
 		;;
 	Linux)
 		if [ -f /proc/cpuinfo ]; then
+			echo ''
 			echo /proc/cpuinfo:
 			cat /proc/cpuinfo
-			echo ''
 		fi
 		if [ -f /proc/meminfo ]; then
+			echo ''
 			echo /proc/meminfo:
 			cat /proc/meminfo
-			echo ''
 		fi
 		#
 		# mandrake before redhat
@@ -102,18 +102,19 @@ if [ "$UNAME" ]; then
 		    /etc/slackware-version /etc/turbolinux-release \
 		    /etc/debian_version /usr/lib/setup/slack-version-?.??; do
 			if [ -f ${RELEASE} ]; then
+				echo ''
 				echo releasefile ${RELEASE}:
 				cat ${RELEASE}
-				echo ''
 				break
 			fi
 		done
 		;;
 	SunOS)
+		echo ''
 		echo 'sunmodel:'
 		./sunmodel 2>&1
-		echo ''
 		if [ -f /usr/sbin/psrinfo ]; then
+			echo ''
 			echo 'psrinfo -v:'
 			/usr/sbin/psrinfo -v
 		fi
