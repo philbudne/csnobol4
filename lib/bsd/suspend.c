@@ -14,7 +14,7 @@ proc_suspend()
     signal(SIGTSTP, SIG_DFL);
 
     /* Unblock SIGTSTP */
-    setsetmask(0);			/* new in 4.2 (test for sigmask?) */
+    sigsetmask(0);			/* new in 4.2 (test for sigmask?) */
 
     /*
      * Redeliver SIGTSTP to process group.  It's simpler to just
