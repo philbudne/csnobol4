@@ -38,6 +38,10 @@
 #define LA_REAL(N) D_RV(LA_DESCR(N))	/* n'th arg as real */
 #define LA_PTR(N) ((void *)LA_INT(N))	/* n'th arg as pointer */
 
+/* avoid copying raw with getstring() */
+#define LA_STR_LEN(N) (D_V(LA_PTR(N)))
+#define LA_STR_PTR(N) (LA_PTR(N) + BCDFLD) /* NOT NUL TERMINATED!!! */
+
 /*
  * macros to return values;
  * NOTE: use of do { .... } while (0) allows user to 
