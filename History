@@ -1,12 +1,34 @@
 $Id$
 
-The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
+The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
+
+1/28/2002
+	INSTALL: ran ispell
+	INSTALL, README, History: C-MAINBOL -> CSNOBOL4
+
+1/27/2002
+	Makefile2.m4: install equ.h
+	include/load.h: always set RETTYPE in RET{INT,REAL} macros
+	lib/{chop,cos,exp,fork,findunit,log,serv,sin,sqrt,sset,tan,ord}.c:
+		include equ.h
+	doc/load.doc: describe LA_STR_{PTR,LEN}
 
 1/26/2002
 	v311.sil: set MAXLNGTH to SIZLIM; increase FNLIST space to 40 slots
 	CHANGES: mention MAXLNGTH
-	lib/hash.c: defend against Sun compiler bug?
-	Makefile: fix spotless, comment cleanup options, add newtar
+	lib/hash.c: defend against Sun compiler bug
+	Makefile: fix spotless, comment cleanup options
+		rename clean to cleanmostly
+		rename distclean to clean
+		replaced make tar; removed TAR, G1 (reuse G2)
+	lib/snolib/logic.c: use pointers to const for inputs
+		handle bases upto 36; no longer use strtol(), getstring()
+	include/load.h: make LA_STR_PTR() return ptr to const
+	config/vms/descrip.mms: add logic; move defines to config.h
+	config/win32/ntmsvc.mak: add logic; move defines to config.h
+	config/borland/borlandsnob.mak: add logic; mov defines to config.h
+	config/djgpp/{borlandsnob.mak,mak1i.bat}: add logic
+	new: config/{vms,borland,win32}/config.h
 
 1/25/2002
 	doc/porting.ms: update vfld/NO_BITFIELDS; add SIZLIM data models

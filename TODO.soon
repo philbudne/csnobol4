@@ -1,5 +1,10 @@
 $Id$
 
+config.guess
+	replace?
+	note modification?
+	use unmodified version???
+
 mention web page/ftp locations in README!!!
 
 INSTALL
@@ -11,13 +16,11 @@ INSTALL
 
     to build from CVS;
 	awk
-	snobol4
+	snobol4 binary (0.99.4 or later)
 
-merge "realclean" and "clean"?
-
-doc/load.doc: add LA_STR_{PTR,LEN}
-	MUST NOT MODIFY!!
-	NOT NUL TERMINATED!!!
+    to build documentation distributed with kit from CVS sources;
+	groff w/ html support (1.15 or later?)
+	ghostscript (ps2pdf)
 
 Include advertizements about users (announcements?) mailing list???
 (and snobol4 list);
@@ -26,7 +29,6 @@ Include advertizements about users (announcements?) mailing list???
 	End of Makefile
 
 change name from C-MAINBOL to CSNOBOL4
-	History, INSTALL, README
 	version.c
 	doc/ports.doc, doc/snobol4.1
 	snolib/*.sno
@@ -42,24 +44,16 @@ put sources under CVS
 	put config.guess, tsort on vendor branch;
 		ftp://ftp.gnu.org/pub/gnu/config/config.guess
 
-make tar:
-	don't depend on snobol4? change to generated??
-	remove host.sno from G2?
-	prune CVS directories when making kit?? NO!
-		always build kit's from scratch, via anonymous checkout???
-		do checkout on a branch??
-	have tar file named snobol4-VERS.tar csnobol4-VERS.tar??
-
 man page
 	sed current version into man page??
 
 	sed SNOLIB_PATH into man page?
 		give load.doc full path!!
+
 	mention files/functions available in snolib/ (mention README)
 	reference documents available on web (see next item)
 		http://burks.bton.ac.uk/burks/language/snobol/....
 		ftp://ftp.snobol4.com/spitman.pdf
-
 
 always send timing.out via e-mail?
 	(unless (.)timing.out.hostname exists?)
@@ -70,6 +64,8 @@ test
 	MacOS X (panos@surgery.wisc.edu)
 	DJGPP (meissner@altertum.uni-halle.de)
 	QNX (Fred?)
+		mailto:abel@fib.upc.es
+		http://www-est.fib.upc.es/~f2461330/bookmark.htm
 
 packaging;
 	put pkg/ .... files under RCS (CVS)??
@@ -85,16 +81,6 @@ packaging;
 
 	create BSD port/pkg for snocone!!!
 
-script to grep for all "ifdefs" and output strings to build.c?
-	just stringify options in config.h?
-
-timing script;
-	translate bogomips + cpu into clock speed?
-	provide bogomips.c??
-	output machine readable format?
-
-make timing.out more machine friendly!
-
 have tests cleanup after themselves?  Add Makefile for "make clean"?
 	just add files to "make spotless"
 
@@ -102,6 +88,13 @@ man page:
 	document SERV_LISTEN()??
 
 ==== stuff to do for releases;
+
+run ispell on docs;
+	snobol4.1
+	porting.ms
+	load.doc
+	INSTALL
+	README
 
 update man page date, CHANGES, README, version.c
 	on branch??
@@ -113,6 +106,16 @@ check in all files (incl History, TODO.soon)
 rcs tag all files
 
 ================
+
+script to grep for all "ifdefs" and output strings to build.c?
+	just stringify options in config.h?
+
+timing script;
+	translate bogomips + cpu into clock speed?
+	provide bogomips.c??
+	output machine readable format?
+
+add prototypes for getstring()/retstring() to load.h
 
 if using bitfields, try reordering v/f fields depending	on endian-ness?
 
@@ -423,9 +426,8 @@ add UNAME_DOT_VERSION ifdef in posix/sys.c for AIX?
 ================ after release;
 
 update ftp areas;
-	alpha.gnu.org
+	cs.arizona.edu
 	snobol4.com
-	home!!
 
 update web pages;
 	snobol4.html
