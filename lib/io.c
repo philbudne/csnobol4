@@ -1284,10 +1284,14 @@ io_seek(dunit, doff, dwhence)
     if (f == NULL)
 	return FALSE;
 
+#if !(defined(NO_UNBUF_READ) && defined(NO_UNBUF_WRITE))
 #ifndef NO_UNBUF_LSEEK
     if (fp->flags & FL_UNBUF) {
 	off_t pos;
 
+	/* optimized stdio libraries might try to optimize away
+	 * the lseek if they've seen no read/write ops!
+	 */
 	pos = lseek(fileno(f), off, whence);
 	if (pos != (off_t)-1)
 	    return FALSE;
@@ -1295,6 +1299,7 @@ io_seek(dunit, doff, dwhence)
     }
     else
 #endif /* NO_UNBUF_LSEEK */
+#endif /* some direct I/O allowed */
     if (fseek(f, off, whence) == 0)
 	D_A(doff) = ftell(f);		/* XXX truncation possible! */
     else
