@@ -145,7 +145,7 @@ FILE * term_input __P((void));
 
 /* from tcp.c */
 FILE *tcp_open __P((char *, char *, int, int));
-FILE *ucp_open __P((char *, char *, int, int));
+FILE *udp_open __P((char *, char *, int, int));
 void inet_cleanup __P((void));
 
 /* from tty.c */
