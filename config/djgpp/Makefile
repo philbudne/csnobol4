@@ -178,9 +178,6 @@ load.o : $(LOAD_C)
 
 ################ generic
 
-sys.o : lib\generic\sys.c
-	$(CC) $(CFLAGS) lib\generic\sys.c
-
 exists.o : lib\generic\exists.c
 	$(CC) $(CFLAGS) lib\generic\exists.c
 
@@ -250,3 +247,6 @@ tan.o : lib\snolib\tan.c
 
 osinit.o : lib\djgpp\osinit.c
 	$(CC) $(CFLAGS) lib\djgpp\osinit.c
+
+sys.o : lib\djgpp\sys.c
+	$(CC) $(CFLAGS) lib\djgpp\sys.c
