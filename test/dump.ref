@@ -25,6 +25,6 @@ Unprotected keywords
 &INPUT = 1
 &MAXLNGTH = 5000
 &OUTPUT = 1
-&STLIMIT = 50000
+&STLIMIT = -1
 &TRACE = 0
 &TRIM = 0
