@@ -2,6 +2,12 @@ $Id$
 
 MAINBOL for Un*x history (and personal SNOBOL history);
 
+5/26/94
+	Supress padding once compliation is over
+	Turned off &TRIM by default
+	Caught more CASE sensitivities
+	Accept either case for S/F gotos
+	
 5/25/94
 	moved Un*x version banner to version.c
 	implemented case insensitivity -CASE/&CASE
