@@ -223,6 +223,8 @@ VERS=`./pv`
 DIR=snobol4-$(VERS)
 KIT=snobol4-$(VERS).tar.$(Z)
 
+ANONCVSROOT=':pserver:anonymous@cvs.ultimate.com:/home/cvs'
+
 newtar:	snobol4 pv
 	rm -rf tmp
 	mkdir tmp
