@@ -16,13 +16,19 @@
 //	MINGW 2.95.3-6
 //	CygWIN CYGWIN_98-4.10 PC 1.3.3(0.46/3/2) 2001-09-12 23:54
 #include <ole2.h>
-// XXX NEED_COGETOBJECT_EXTERN?
-WINOLEAPI CoGetObject(LPWSTR name, BIND_OPTS *pbo, REFIID riid, void **ppv);
 #else
 // visual studio
 #define HAVE_I8
 #include <objbase.h>
 #include <oleauto.h>
+#endif
+
+#ifdef USE_WCHAR_H
+#include <wchar.h>
+#endif
+
+#if NEED_COGETOBJECT
+WINOLEAPI CoGetObject(const LPWSTR name, BIND_OPTS *pbo, REFIID riid, void **ppv);
 #endif
 
 // needed w/ MINGW 2.95.3-6
