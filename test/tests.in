@@ -48,3 +48,5 @@ reg case2.sno
 reg alph.sno
 # 6/1/94
 reg 8bit.sno
+# 6/21/94
+reg contin.sno
