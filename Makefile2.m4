@@ -107,6 +107,7 @@ EXECUTE_C=$(SRCDIR)lib/generic/execute.c
 EXIT_C=$(SRCDIR)lib/snolib/exit.c
 EXP_C=$(SRCDIR)lib/snolib/exp.c
 FILE_C=$(SRCDIR)lib/snolib/file.c
+FINDUNIT_C=$(SRCDIR)lib/snolib/findunit.c
 FORK_C=$(SRCDIR)lib/snolib/fork.c
 GETSTRING_C=$(SRCDIR)lib/snolib/getstring.c
 HOST_C=$(SRCDIR)lib/snolib/host.c
@@ -398,8 +399,8 @@ system.o: $(SYSTEM_C)
 AUX_OBJS= _OBJS
 
 SNOLIB_OBJS= chop.o cos.o delete.o environ.o execute.o exit.o exp.o \
-	file.o fork.o getstring.o host.o log.o rename.o retstring.o \
-	sin.o sprintf.o sqrt.o sys.o tan.o $(AUX_OBJS)
+	file.o findunit.o fork.o getstring.o host.o log.o rename.o \
+	retstring.o sin.o sprintf.o sqrt.o sys.o tan.o $(AUX_OBJS)
 
 $(SNOLIB_A): $(SNOLIB_OBJS)
 	rm -f $(SNOLIB_A)
@@ -437,6 +438,9 @@ exp.o: $(EXP_C)
 
 file.o: $(FILE_C)
 	$(CC) $(CFLAGS) -c $(FILE_C)
+
+findunit.o: $(FINDUNIT_C)
+	$(CC) $(CFLAGS) -c $(FINDUNIT_C)
 
 fork.o: $(FORK_C)
 	$(CC) $(CFLAGS) -c $(FORK_C)
