@@ -6,7 +6,8 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#include <syidef.h>
+#include <starlet.h>			/* system call prototypes */
+#include <syidef.h>			/* sys info defines */
 #include <stdio.h>
 
 #include "h.h"
