@@ -16,8 +16,10 @@ else
 	fi
     fi
 fi
-echo "testing $SNOBOL"
-export SNOBOL
+shift
+ARGS="$*"
+echo "testing $SNOBOL $ARGS"
+export SNOBOL ARGS
 
 # test list
 TESTS=tests.in
