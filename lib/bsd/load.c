@@ -244,6 +244,7 @@ unload(sp)
 	pp->next = fp->next;
     }
 
+    fp->self = 0;		/* invalidate self pointer!! */
     free(fp->data);
     free(fp);
 }
