@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.79  1997/11/06  05:59:02  phil
+* [PLB67] replace PROC with XPROC on merged scanner functions
+*
 * Revision 1.78  1997/10/31  05:13:16  phil
 * [PLB66] catch bad data at PATBRA
 *
@@ -6644,19 +6647,14 @@ FTERST ACOMPC  ERRLCL,0,,FTLEND,FTLEND
        GETSPC  TSP,YCL,0	   Get message specifier	[PLB38]
        RCALL   ERRTXT,GENVAR,TSPPTR				[PLB38]
 *				   Set &ERRTEXT to natural var	[PLB38]
-       ACOMPC  TRAPCL,0,,FTERBR,FTERBR
+       ACOMPC  TRAPCL,0,,FTERBR,FTERBR				[PLB68]
 *				   Check &TRACE
-       LOCAPT  ATPTR,TKEYL,ERRTKY,FTERS2			[PLB38]
+       LOCAPT  ATPTR,TKEYL,ERRTKY,FTERBR
 *				   Look for KEYWORD trace
        PUSH    SCERCL						E3.1.3
        RCALL   ,TRPHND,ATPTR					E3.3.1
 *				   Perform trace
        POP     SCERCL						E3.1.3
-FTERS2 LOCAPT  ATPTR,TKEYL,ETXTKY,FTERS2			[PLB38]
-*				   Look for KEYWORD trace	[PLB38]
-       PUSH    SCERCL						[PLB38]
-       RCALL   ,TRPHND,ATPTR	   Perform trace		[PLB38]
-       POP     SCERCL						[PLB38]
 FTERBR SELBRA  SCERCL,(FAIL,FAIL,RTNUL3)			[PLB65]
 *_
 *---------------------------------------------------------------------*
