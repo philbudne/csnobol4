@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.81  1998/12/29 06:14:48  phil
+* [PLB69] move CASECL to alphabeticly correct location
+*
 * Revision 1.80  1997/11/08  03:03:12  phil
 * [PLB68] remove keyword tracing for ERRTEXT
 * doesn't work (output as integer)
@@ -6480,7 +6483,7 @@ FTLEN3 MULTC   YCL,ERRTYP,DESCR					E3.10.6
        GETSPC  TSP,YCL,0	   Get message specifier
        STPRNT  IOKEY,ERRBLK,TSP	   Print error message		[PLB12]
 FTLEN2 ISTACK  ,		   Reset system stack
-       AEQLC   ETMCL,0,FTLEN4	   Was compiler done?
+       AEQLC   COMPCL,0,,FTLEN4	   Was compiler done?		[PLB70]
        MSTIME  ETMCL		   Time out compiler
        SUBTRT  TIMECL,ETMCL,TIMECL Compute time in compiler
        SETAC   ETMCL,0		   Set interpreter time to 0
