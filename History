@@ -2,6 +2,12 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
+9/18/96
+	test on SunOS 5.4
+	lib/auxil/getopt.o: fix ERR() for SUNpro
+	configure: fixed echo to stderr
+	doc/ports.doc: updated
+
 9/17/96
 	lib/tree.c: fixed INSERT (from SNOBOL4+)
 	lib/dump.c: added dumpcode()
