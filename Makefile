@@ -177,7 +177,7 @@ G2=data.c2 data.h2 data_init.h2 proc.h2 equ.h2 syn.h2 syn_init.h2 res.h2
 # remove turds
 tidy:
 	rm -rf subr
-	cd test; ./clean.sh
+	cd test; sh clean.sh
 	find . -type f -a \( \
 		-name '*~' -o -name '#*' -o -name '*.tmp' -o -name '.#*' \) \
 		-print | xargs -t rm -f
