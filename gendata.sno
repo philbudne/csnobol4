@@ -12,16 +12,14 @@
 ****************************************************************
 *	environment
 
-	MAINBOL = IDENT(.NAME,"NAME") 1
+*	kill case folding, for speed
+-CASE 0
 
-*	bag trailing whitespace
-	&TRIM = 1
+*	check if MAINBOL or SPITBOL
+	MAINBOL = IDENT(.NAME,"NAME") 1
 
 *	faster matching
 	&ANCHOR = 1
-
-*	boost stmt limit for MAINBOL
-	&STLIMIT = 200000
 
 *	input file
 	SILPATH = 'v311.sil'
