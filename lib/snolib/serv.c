@@ -172,12 +172,12 @@ SERV_LISTEN( LA_ALIST ) LA_DCL
 	int pid;
 	int slave;
 	struct sockaddr sa;
-	int len;
+	SOCKLEN_T salen;
 
-	len = sizeof(sa);
-	bzero((char *)&sa, len);
+	salen = sizeof(sa);
+	bzero((char *)&sa, salen);
 
-	slave = accept(s, &sa, &len);
+	slave = accept(s, &sa, &salen);
 	if (slave < 0) {
 	    if (errno == EINTR)
 		continue;
@@ -204,11 +204,13 @@ SERV_LISTEN( LA_ALIST ) LA_DCL
 	}
 
 	if (pid == 0) {
-	    close(s);
+	    /* here in child process
+	    close(s);			/* close master socket */
 	    signal(SIGCHLD, SIG_DFL);
 	    RETINT( slave );		/* return fd */
 	}
-	/* here in parent process; close our copy of data stream
+	/*
+	 * here in parent process; close our copy of data stream
 	 * and loop to pick up next request
 	 */
 	close(slave);
