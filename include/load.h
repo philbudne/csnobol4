@@ -42,6 +42,8 @@
 #define RETREAL(x) { D_RV(retval) = (x); return TRUE; }
 /* strings */
 #define RETSTR(CP,LEN) { retstring(retval, (CP), (LEN)); return TRUE; }
+#define RETCSTR(CP) \
+	{ char *cp = (CP); retstring(retval, cp, strlen(cp)); return TRUE; }
 #define RETNULL { D_A(retval) = 0; return TRUE; }
 
 /* return failure */
