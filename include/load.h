@@ -60,7 +60,7 @@
 #define RETSTR2(CP,LEN) \
     do { retstring(retval, (CP), (LEN)); return TRUE; } while(0)
 
-#define RETNULL do { D_A(retval) = 0; return TRUE; } while (0)
+#define RETNULL do { D_A(retval) = 0; RETTYPE = S; return TRUE; } while (0)
 
 /*
  * improved!! old version now called RETSTR2().
