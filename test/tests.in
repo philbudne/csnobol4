@@ -64,3 +64,6 @@ reg breakx.sno
 reg tab.sno
 # 9/3/96
 trace spit.sno
+# 9/4/96
+trace trace1.sno
+trace trace2.sno
