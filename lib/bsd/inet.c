@@ -40,8 +40,6 @@ inet_socket( host, service, port, priv, type )
 	    sin.sin_port = sp->s_port;
 	}
 	else if (isdigit(*service)) {
-	    int port;
-
 	    port = atoi(service);
 	    if (port < 0 || port > 0xffff)
 		return -1;
