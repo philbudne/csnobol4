@@ -252,6 +252,20 @@ NO_UNBUF_RW
 Disable direct use of read(), write() and lseek() for unbuffered
 binary I/O.  The stdio fread(), fwrite() plus fflush(), and fseek()
 functions will be used for all binary I/O.
+
+.NH 3
+OSDEP_OPEN
+
+.PP
+If defined, I/O code calls a function named osdep_open() with a
+filename string, a mode string (as used by fopen()) and a pointer to a
+FILE *.  If the local environment wishes to intercept the named file,
+it should attempt (if necessary) to open the necessary file(s), and
+fill in the FILE pointer pointer with either NULL (on failure), or a
+FILE *.  In either case the osdep_open() call should return TRUE
+(meaning the filename has been intercepted), if filename interception
+is not attempted, the function should return FALSE.
+
 .NH 3
 REAL_T
 
@@ -394,6 +408,21 @@ a shell command.
 Provides dummy execute() function.
 
 .NH 2
+exists.c
+
+.PP
+Test for file existance.
+
+.IP lib/generic/exists.c
+Uses POSIX stat() function.
+
+.IP lib/vms/exists.c
+Currently uses stat() function; use native call?
+
+.IP lib/win32/exists.c
+Uses WIN32 GetFileAttributesA() call.
+
+.NH 2
 exp.c
 
 .PP
@@ -409,6 +438,16 @@ objectionable).
 pow(x,y) is a venerable function and should be widely available.  If
 it is not, it could be simulated (ie; in pow.c) using exp() and log(),
 or similar functions (such as expm1() and log1p()).
+
+.NH 2
+finite.c
+
+.PP
+provide finite() function for systems which do not supply
+a function to detect abnormal floating point numbers.
+
+.IP lib/dummy/finite.c
+Returns false.
 
 .NH 2
 inet.c
@@ -455,11 +494,23 @@ load.c
 
 .PP
 Provides functions load(), link() and unload() (SIL macros LOAD, LINK,
-UNLOAD) for the SNOBOL4 LOAD() and UNLOAD() functions.  Two versions
-of load.c are provided: dummy/load.c which causes fatal errors as
-specified in the SIL language reference, and bsd/load.c which uses the
-loader (ld) to provide a portable implementation for systems using
+UNLOAD) for the SNOBOL4 LOAD() and UNLOAD() functions.
+
+.IP dummy/load.c
+causes fatal errors as specified in the SIL language reference.
+
+.IP bsd/load.c
+Uses ld to provide a portable implementation for systems using
 a.out object format.
+
+.IP unix98/load.c
+Uses sun/unix98 dlopen() call to attach shared libraries.
+
+.IP lib/hpux/load.c
+Use HP-UX shl_load() function to attach shared libraries.
+
+.IP lib/win32/load.c
+Use Win32 LoadLibrary() function to attach dynamic libraries.
 
 .NH 2
 mstime.c
@@ -491,6 +542,9 @@ Uses clock() returning a wall-clock time not zeroed at program start.
 .IP vms/mstime.c
 Uses VMS version of times().
 
+.IP win32/mstime.c
+Uses Win32 GetProcessTimes() or GetSystemTime() calls.
+
 .IP dummy/mstime.c
 if none of getrusage(), times() or clock() is available.
 
@@ -508,6 +562,9 @@ simulate popen() functionality.
 .IP lib/vms/popen.c
 Uses VMS mailbox and LIB$SPAWN to provide functionality.
 Recent versions of the DECC RTL may provide popen().
+
+.IP lib/win32/popen.c
+Use MSVC _popen() function.
 
 .IP lib/dummy/popen.c
 Dummy functions, always fail.
@@ -556,9 +613,15 @@ Uses termios.h (or SVID termio.h if USE_TERMIO defined).
 .IP lib/bsd/tty.c
 Uses sgtty.h
 
+.IP lib/borland/tty.c
+Provide tty_read() using getch() and getche().
+
 .IP lib/vms/term.c
 Declares tty_read() function using VMS SYS$QIOW to perform raw tty
 reads.
+
+.IP lib/win32/term.c
+Implement tty_mode using SetConsoleMode().
 
 .IP lib/dummy/term.c
 dummy functions, if none of the above facilities available.
@@ -568,13 +631,18 @@ sys.c
 
 .PP
 provides hwname() and osname() functions for use by SPITBOL HOST()
-function emulation. Two versions are provided. Both check for HWNAME
-and OSNAME defines, and use them if they exist.  HWNAME and/or OSNAME
-can be set using the SYSDEFS make variable, ie;
+function emulation.
 
-.PP
-[SYSDEFS=-DHWNAME="yoyodyne-2000" -DOSNAME="yoyo-os 4.0"]
 .IP lib/posix/sys.c
 Uses <sys/utsname.h> and uname(2) function.
+Checks for HWNAME and OSNAME defines.
+
+.IP lib/vms/sys.c
+Use SYS$GETSYIW() calls.
+
+.IP lib/win32/sys.c
+Use GetSystemInfo() and GetVersionEx() calls.
+
 .IP lib/generic/sys.c
 Uses output from config.guess script run by autoconf.
+Checks for HWNAME and OSNAME defines.
