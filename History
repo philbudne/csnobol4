@@ -2,9 +2,13 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (C-MAINBOL) history
 
-9/8/97:
+9/9/97:
 	v311.sil: Call io_pad() to fix -LIST RIGHT
 	lib/io.c: add io_pad() function
+	gensyn.sno: CONTIN is always implicit action zero
+	lib/stream.c: handle CONTIN quickly (no table lookup);
+		CONTIN actions are taken for 97% of characters scanned
+		while compiling genc.sno; Compile time reduced by 8%
 
 9/7/97:
 	Ran profiling
