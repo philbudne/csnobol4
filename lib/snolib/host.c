@@ -15,11 +15,18 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#include <stdio.h>			/* for lib.h */
-
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
+
+#ifdef HAVE_STDLIB_H			/* before stdio */
+#include <stdlib.h>			/* getenv(),system() */
+#else  /* HAVE_STDLIB_H not defined */
+extern char *getenv();
+#endif /* HAVE_STDLIB_H not defined */
+
+#include <stdio.h>			/* for lib.h, sprintf() */
+#include <ctype.h>			/* isdigit() */
 
 #include "load.h"			/* LA_xxx macros */
 #include "equ.h"			/* datatypes I/S */
@@ -35,14 +42,6 @@ extern int pmstack, ndynamic, istack;
 extern char **argv;
 extern char *params;
 #endif /* NO_STATIC_VARS not defined */
-
-#ifdef HAVE_STDLIB_H			/* before stdio */
-#include <stdlib.h>			/* getenv(),system() */
-#else  /* HAVE_STDLIB_H not defined */
-extern char *getenv();
-#endif /* HAVE_STDLIB_H not defined */
-#include <stdio.h>			/* sprintf() */
-#include <ctype.h>			/* isdigit() */
 
 #ifdef HAVE_BUILD_VARS
 extern const char build_files[];
