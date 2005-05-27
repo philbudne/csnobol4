@@ -246,7 +246,7 @@ io_init()				/* here from INIT */
     }
 
     termin = term_input();		/* call system dependant function */
-    if (!termin || !io_mkfile_noclose(UNITT, termin, TERMIN_NAME)) {
+    if (termin && !io_mkfile_noclose(UNITT, termin, TERMIN_NAME)) {
 	perror("could not open TERMINAL for input");
 	exit(1);
     }
