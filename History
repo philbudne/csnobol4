@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+5/28/2005
+	lib/init.c Make non-fatal for term_open() to fail!!
+		regression tests were failing!
+
 5/27/2005
 	Makefile: make all GENERATED files "precious"
 	lib/io.c, lib/init.c, include/units.h, README:
