@@ -47,8 +47,7 @@ all:	snobol4
 .SINGLESHELL: foo
 
 # files to avoid removing when interrupted
-#	add $(GENERATED)?
-.PRECIOUS: snobol4 xsnobol4 Makefile2 snobol4.c isnobol4.c snobol4 data_init.h 
+.PRECIOUS: snobol4 xsnobol4 Makefile2 $(GENERATED)
 
 snobol4 xsnobol4 install lint: $(GENERATED) Makefile2 ALWAYS .depend
 	$(MAKE) -f Makefile2 $@

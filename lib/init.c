@@ -18,6 +18,7 @@ extern void *malloc();
 #include "macros.h"
 #include "lib.h"			/* io_init(), io_input() protos */
 #include "str.h"			/* strlen() */
+#include "units.h"			/* UNIT[IOPT] */
 
 #include "equ.h"			/* SIL equ's */
 #include "res.h"			/* for data.h */
@@ -205,6 +206,52 @@ getargs(start, sp)
     return parms;
 }
 
+void
+io_init()				/* here from INIT */
+{
+    FILE *termin;
+
+    io_initvars();
+
+    if (!io_attached(UNITI)) {		/* no input file(s)? */
+#ifdef MEM_IO_TEST
+	char *str = "\tOUTPUT = 'Hello World'\n\tOUTPUT = INPUT\nEND\nFOO\n";
+	io_input_string( "input", str );
+#else
+	if (!io_mkfile_noclose(UNITI, stdin, STDIN_NAME)) {
+	    perror("could not attach stdin to INPUT");
+	    exit(1);
+	}
+#endif
+    }
+#if 0
+    else {
+	if (!io_skip(UNITI)) {		/* force file open */
+	    perror(up->curr->fname);
+	    exit(1);
+	}
+    }
+#endif
+
+    /* XXX support -o outputfile? */
+
+    if (!io_mkfile_noclose(UNITO, stdout, STDOUT_NAME)) {
+	perror("could not attach stdout to OUTPUT");
+	exit(1);
+    }
+
+    if (!io_mkfile_noclose(UNITP, stderr, STDERR_NAME)) {
+	perror("could not attach stderr to TERMINAL");
+	exit(1);
+    }
+
+    termin = term_input();		/* call system dependant function */
+    if (!termin || !io_mkfile_noclose(UNITT, termin, TERMIN_NAME)) {
+	perror("could not open TERMINAL for input");
+	exit(1);
+    }
+} /* io_init */
+
 /* called from main.c after init_data, before xfer to SIL BEGIN label */
 void
 init_args( ac, av )
@@ -329,7 +376,7 @@ init_args( ac, av )
 	    optind++;			/* skip it */
 	    break;			/* leave loop */
 	}
-	io_input( argv[optind] );
+	io_input_file( argv[optind] );
 	optind++;
 	if (!multifile)			/* not in multi-file mode? */
 	    break;			/* break out */

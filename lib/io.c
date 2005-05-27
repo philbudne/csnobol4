@@ -14,7 +14,6 @@
  * Handling file lists.
  * O/S differnces (esp tty handling and winsock)
  *
-
  * A rewrite is badly needed, but would likely delay version 1.0, and
  * chances are good the result would not (initially) have fewer
  * problems.  An original goal was to depend entirely on stdio, but it
@@ -98,12 +97,6 @@ typedef long off_t;
 
 #define NUNITS 256			/* XXX set at runtime? */
 
-/* names associated with UNITI, UNITO, UNITP(!), UNITT */
-#define STDIN_NAME  "stdin"		/* XXX "-" ? */
-#define STDOUT_NAME "stdout"		/* XXX "-" ? */
-#define STDERR_NAME "stderr"
-#define TERMIN_NAME "termin"		/* terminal input */
-
 #ifndef SNOLIB_DIR
 #define SNOLIB_DIR "./"
 #endif /* SNOLIB_DIR not defined */
@@ -128,13 +121,9 @@ struct file {
 #endif /* MEM_IO defined */
 	TYPE_INET } type;
 #ifdef MEM_IO
-    /*
-     * for input: pointer to (NULL terminated) list of NUL terminated strings
-     * for output: pointer to pointer to buffer
-     */
-    char **memref;
-    int memlen;
-    int mempos;
+    char *memptr;			/* pointer to buffer */
+    int memlen;				/* length of buffer */
+    off_t mempos;			/* current position in buffer */
 #endif /* MEM_IO defined */
     /* XXX add methods for read/write/eof/mode/seek/close */
     /* XXX keep recl (shift flags up?)? */
@@ -177,9 +166,9 @@ struct file {
  * inet_write and inet_close in inet.c, which merrily cast the "FILE *"
  * back to an "inet_file"
  *
- * The MEM_IO crock is to allow SNOBOL4 to be built as a Win32 DLL
- * which takes handles for buffers for input and output.  BSD stdio
- * funopen() would make this easy.
+ * The MEM_IO crock is to allow SNOBOL4 to be built as a shared
+ * library (or DLL) which takes handles for buffers for input and
+ * output.  BSD stdio funopen() would make this easy.
  *
  * All of this could go away if the I/O system were more object oriented.
  */
@@ -190,7 +179,6 @@ struct file {
 #endif /* not defined(INET_IO) || defined(MEM_IO) */
 
 #ifdef MEM_IO
-#define FL_MEMINPUT	0400
 #define ISMEM(FP) ((FP)->type == TYPE_MEM)
 #else  /* MEM_IO not defined */
 #define ISMEM(FP) 0
@@ -199,6 +187,8 @@ struct file {
 #define ISPIPE(FP) ((FP)->type == TYPE_PIPE)
 #define ISTTY(FP)  ((FP)->type == TYPE_TTY)
 #define ISINET(FP) ((FP)->type == TYPE_INET)
+
+#define ISOPEN(FP) ((FP)->f || IEMEM(FP))
 
 #define MAXFNAME	1024		/* XXX use MAXPATHLEN? POSIX?? */
 #define MAXOPTS		1024
@@ -263,9 +253,31 @@ io_newfile( path )
     return fp;
 }
 
-#ifdef NO_STATIC_VARS
-static void
+#ifdef MEM_IO
+static struct file *
+io_memfile(name, data, len)
+    char *name;
+    char *data;
+    int len;
+{
+    struct file *fp;
+
+    fp = io_newfile(name);
+    if (!fp)
+	return NULL;
+
+    fp->type = TYPE_MEM;
+    fp->flags |= FL_NOTAFILE;
+    fp->memptr = data;
+    fp->memlen = len;
+    fp->mempos = 0;
+    return fp;
+}
+#endif /* MEM_IO defined */
+
+void
 io_initvars() {
+#ifdef NO_STATIC_VARS
     if (!varp->v_iov) {
 	varp->v_iov = (struct iovars *)malloc(sizeof(struct iovars));
 	if (!varp->v_iov) {
@@ -274,30 +286,23 @@ io_initvars() {
 	}
 	bzero(varp->v_iov, sizeof(struct iovars));
     }
-}
 #endif /* NO_STATIC_VARS defined */
+}
 
 /* add file to input list */
 /* calls made here BEFORE io_init() called! */
 static int
-io_addfile( unit, path, append )
+io_addfile( unit, fp, append )
     int unit;
-    char *path;
+    struct file *fp;
     int append;
 {
     /* XXX check for commas in path? */
-    struct file *fp;
     struct unit *up;
 
-#ifdef NO_STATIC_VARS
     io_initvars();
-#endif /* NO_STATIC_VARS defined */
 
     /* XXX allocate units array here? */
-
-    fp = io_newfile(path);
-    if (fp == NULL)
-	return FALSE;
 
     up = FINDUNIT(unit);
     if (append) {			/* add to end of list */
@@ -339,6 +344,13 @@ io_close(unit)				/* internal (zero-based unit) */
 
     if (fp->f) {
 	/* XXX call close hook? */
+#ifdef MEM_IO
+	if (ISMEM(fp)) {
+	    ret = TRUE;
+	    fp->f = NULL;
+	}
+	else
+#endif
 	if (ISINET(fp)) {
 	    ret = inet_close(fp->f);
 	    fp->f = NULL;
@@ -364,19 +376,9 @@ io_close(unit)				/* internal (zero-based unit) */
     else
 	ret = TRUE;			/* keep gcc quiet! */
 
-#ifdef IO_MEM
-    if (ISMEM(fp)) {
-	if (fp->flags & FL_MEMINPUT) {
-	    fp->memref++;		/* advance to next string */
-	    fp->memlen = strlen(*fp->memref);
-	    fp->mempos = 0;
-	}
-    }
-    else
-#endif
     up->curr = fp->next;
     return ret;
-}
+} /* io_close */
 
 /* close a unit, flush current file list */
 EXPORT(int)
@@ -415,6 +417,14 @@ io_fopen2( fp, mode )
     char buf[4];			/* x+b<NUL> */
 
     fp->f = NULL;
+
+#ifdef MEM_IO
+    if (ISMEM(fp)) {
+	fp->mempos = 0;
+	fp->f = (FILE *)1;		/* non-NULL */
+	return;
+    }
+#endif
 
     /* handle magic filenames (have a table (prefix or full str)??) */
 
@@ -619,15 +629,61 @@ io_next( unit )				/* internal (zero-based unit) */
 } /* io_next */
 
 
-/* here with filename from command line */
-void
-io_input( path )
-    char *path;
+/* skip to next file, for external use, takes external unit */
+int
+io_skip( unit )
+    int unit;
 {
-    io_addfile( INTERN(UNITI), path, TRUE );	/* append to list! */
+    return io_next(INTERN(unit));
 }
 
-/* setup a unit given an open fp and a "filename" */
+/* here with filename from command line */
+void
+io_input_file( path )
+    char *path;
+{
+    struct file *fp;
+
+    fp = io_newfile(path);
+    if (fp == NULL)
+	return;
+
+    io_addfile( INTERN(UNITI), fp, TRUE );	/* append to list! */
+}
+
+#ifdef MEM_IO
+void
+io_input_string( name, str )
+    char *name;
+    char *str;
+{
+    struct file *fp;
+
+    fp = io_memfile(name, str, strlen(str));
+    if (fp == NULL)
+	return;
+
+    io_addfile( INTERN(UNITI), fp, TRUE );	/* append to list! */
+}
+#endif /* MEM_IO defined */
+
+/* attach a "struct file" to a unit (external) */
+static void
+io_setfile(unit, fp)
+    int unit;
+    struct file *fp;
+{
+    struct unit *up;
+
+    unit = INTERN(unit);
+    io_closeall(unit);			/* close unit */
+
+    up = FINDUNIT(unit);
+    up->head = up->curr = fp;
+    up->offset = 0;
+}
+
+/* setup a unit given an open stdio stream and a "filename" */
 static int
 io_mkfile2( unit, f, fname, flags )
     int unit;				/* external (1-based) unit */
@@ -636,7 +692,6 @@ io_mkfile2( unit, f, fname, flags )
     int flags;
 {
     struct file *fp;
-    struct unit *up;
 
     fp = io_newfile(fname);
     if (fp == NULL)
@@ -648,13 +703,7 @@ io_mkfile2( unit, f, fname, flags )
 	fp->type = TYPE_TTY;
     }
 
-    unit = INTERN(unit);
-    io_closeall(unit);			/* close unit */
-
-    up = FINDUNIT(unit);
-    up->head = up->curr = fp;
-    up->offset = 0;
-
+    io_setfile(unit, fp);
     return TRUE;
 }
 
@@ -666,62 +715,46 @@ io_mkfile( unit, f, fname )
 {
     return io_mkfile2( unit, f, fname, 0 );
 }
-
-/*
- * implement SIL operations;
- */
 
-void
-io_init()				/* here from INIT */
+EXPORT(int)
+io_mkfile_noclose( unit, f, fname )
+    int unit;				/* external (1-based) unit */
+    FILE *f;
+    char *fname;			/* "filename" for error reports */
 {
-    struct unit *up;
-    FILE *termin;
+    return io_mkfile2( unit, f, fname, FL_NOCLOSE );
+}
 
-#ifdef NO_STATIC_VARS
-    io_initvars();
-#endif /* NO_STATIC_VARS defined */
+/* return true if unit attached */
+EXPORT(int)
+io_attached( unit )
+    int unit;
+{
+    struct unit *up = FINDUNIT(INTERN(unit));
+    return up->curr != NULL;
+}
+#ifdef MEM_IO
+/*
+ * create a memory based output file and attach for output
+ * pass in a char ** to be filled with a malloced buffer?
+ */
+int
+io_output_string( unit, fname, buf, len )
+    int unit;				/* external (1-based) unit */
+    char *fname;			/* "filename" for error reports */
+    char *buf;
+    int len;
+{
+    struct file *fp;
 
-    up = FINDUNIT(INTERN(UNITI));
-    if (up->curr == NULL) {		/* no input file(s)? */
-	if (!io_mkfile2(UNITI, stdin, STDIN_NAME, FL_NOCLOSE)) {
-	    perror("io_mkfile(stdin)");
-	    exit(1);
-	}
-    }
-    else {
-	if (!io_next(INTERN(UNITI))) {
-	    perror(up->curr->fname);
-	    exit(1);
-	}
-    }
-
-    /* XXX support -o outputfile? */
-
-    if (!io_mkfile2(UNITO, stdout, STDOUT_NAME, FL_NOCLOSE)) {
-	perror("io_mkfile(stdout)");
-	exit(1);
-    }
-
-    if (!io_mkfile2(UNITP, stderr, STDERR_NAME, FL_NOCLOSE)) {
-	perror("io_mkfile(stderr)");
-	exit(1);
-    }
-
-    /*
-     * tempting to overload UNITP for input/output. This works on Unix
-     * (need to fdopen(2,"r+")), but it's bound to cause trouble on
-     * SOME other system which doesn't have stderr on fd 2, or didn't
-     * open fd 2 for both read and write!
-     */
-    termin = term_input();		/* call system dependant function */
-    if (termin) {
-	if (!io_mkfile2(UNITT, termin, TERMIN_NAME, FL_NOCLOSE)) {
-	    perror("could not open TERMINAL for input");
-	    exit(1);
-	}
-    }
-} /* io_init */
-
+    fp = io_memfile(fname, buf, len);
+    if (fp == NULL)
+	return FALSE;
+    io_setfile(unit, fp);
+    return TRUE;
+}
+#endif
+
 #ifdef MEM_IO
 static int
 mem_write(fp, cp, len)
@@ -729,24 +762,13 @@ mem_write(fp, cp, len)
     char *cp;
     int len;
 {
-    int ret = TRUE;
-
-    if (len + fp->mempos + 1 > fp->memlen) {
-	int newlen = fp->memlen * 2;
-	char *temp = realloc(fp->memref, newlen);
-	if (temp) {
-	    *fp->memref = temp;
-	    fp->memlen = newlen;
-	}
-	else
-	    ret = FALSE;
-    }
-    if (ret) {
-	memcpy(*fp->memref + fp->mempos, fp, len);
+    if (len + fp->mempos + 1 <= fp->memlen) {
+	memcpy(fp->memptr + fp->mempos, cp, len);
 	fp->mempos += len;
-	(*fp->memref)[fp->mempos] = '\0';
+	fp->memptr[fp->mempos] = '\0';
+	return TRUE;
     }
-    return ret;
+    return FALSE;
 }
 
 static int
@@ -760,7 +782,7 @@ mem_read_raw(fp, cp, recl)
 	return -1;			/* 0? */
     if (recl > rem)
 	recl = rem;
-    memcpy(cp, *fp->memref + fp->mempos, recl);
+    memcpy(cp, fp->memptr + fp->mempos, recl);
     fp->mempos += recl;
     return recl;
 }
@@ -776,11 +798,11 @@ mem_read_cooked(fp, cp, recl, keepeol)
     int nread = 0;
     int eol = FALSE;
     while (cc < recl && !eol && fp->mempos < fp->memlen) {
-	char c = (*fp->memref)[fp->mempos++];
+	char c = fp->memptr[fp->mempos++];
 	nread++;
 	if (c == '\r')
 	    continue;
-	if (cc == '\n') {
+	if (c == '\n') {
 	    eol = TRUE;
 	    if (!keepeol)
 		break;
@@ -793,6 +815,10 @@ mem_read_cooked(fp, cp, recl, keepeol)
     return cc;
 }
 #endif /* MEM_IO defined */
+
+/*
+ * implement SIL operations;
+ */
 
 /* limited printf */
 void
@@ -1154,7 +1180,7 @@ io_read( dp, sp )			/* STREAD */
 #endif /* INET_IO defined */
 #ifdef MEM_IO
 	else if (ISMEM(fp)) {
-	    len = mem_read_cooked(f, cp, recl, (fp->flags & FL_EOL) == 0);
+	    len = mem_read_cooked(fp, cp, recl, (fp->flags & FL_EOL) == 0);
 	    if (len > 0)
 		break;
 	}
@@ -1302,7 +1328,10 @@ io_rewind(unit)				/* REWIND */
 
 #ifdef MEM_IO
     if (ISMEM(fp)) {
-	fp->mempos = 0;
+	if (up->offset <= fp->memlen)
+	    fp->mempos = up->offset;
+	else
+	    fp->mempos = 0;		/* XXX fp->memlen? */
 	return;
     }
 #endif /* MEM_IO defined */
@@ -1351,7 +1380,12 @@ io_ecomp()				/* XECOMP */
     }
 
     up->head = up->curr;		/* save file for rewind */
-    up->offset = ftello(up->curr->f);	/* save offset for rewind */
+#ifdef MEM_IO
+    if (ISMEM(up->curr))
+	up->offset = up->curr->mempos;
+    else
+#endif
+	up->offset = ftello(up->curr->f); /* save offset for rewind */
 
     /* free list of included filenames */
     while (iov.includes) {
@@ -1651,7 +1685,7 @@ io_include( dp, sp )
 	iov.includes = fp;		/* XXX keep per unit? nah. */
     }
     return INC_OK;
-}
+} /* io_include */
 
 /*
  * retrieve file currently associated with a unit
@@ -1718,7 +1752,7 @@ io_seek(dunit, doff, dwhence)
 
 #ifdef MEM_IO
     if (ISMEM(fp)) {
-	/* XXX fun here */
+	/* XXX special fun here */
 	return FALSE;
     }
 #endif /* MEM_IO defined */
@@ -1784,7 +1818,7 @@ io_sseek(unit, soff, whence, scale, oof )
 
 #ifdef MEM_IO
     if (ISMEM(fp)) {
-	/* XXX fun here */
+	/* XXX special fun here */
 	return FALSE;
     }
 #endif /* MEM_IO defined */

@@ -2,6 +2,16 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+5/27/2005
+	Makefile: make all GENERATED files "precious"
+	lib/io.c, lib/init.c, include/units.h, README:
+		make MEM_IO work, based on work by Sudarshan Gaikaiwari
+		Pull io_init() out to init.c
+		renamed io_input() to io_input_file()
+		new: io_memfile(), io_skip(), io_input_string(),
+			io_setfile(), io_mkfile_noclose(),
+			io_output_string(), io_attached().
+
 5/20/2005
 	new: .cvsignore doc/.cvsignore
 
