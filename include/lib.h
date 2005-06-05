@@ -19,30 +19,42 @@ void hash __P((struct descr *,struct spec *));
 /* from init.c */
 int getparm __P((struct spec *));
 void init_args __P((int, char *[]));
+void io_init __P((void));		/* was in io.c move to own file? */
 void init __P((void));
 
 /* from io.c */
-/* io_include(), io_read() in libret.h */
+void io_initvars __P((void));
 void io_backspace __P((int_t));
 EXPORT(int) io_closeall __P((int));
-void io_ecomp __P((void));
-int io_endfile __P((int_t));
-int io_file __P((struct descr *,struct spec *));
-EXPORT(int) io_findunit __P((void));
-int io_finish __P((void));
-int io_flushall __P((int));
-EXPORT(FILE *) io_getfp __P((int));
-void io_init __P((void));
-void io_input __P((char *));
+EXPORT(int) io_skip __P((int));
+EXPORT(void) io_input_file __P((char *));
+#ifdef MEM_IO
+EXPORT(void) io_input_string __P((char *));
+#endif
 EXPORT(int) io_mkfile __P((int, FILE *, char *));
+EXPORT(int) io_mkfile_noclose __P((int, FILE *, char *));
+EXPORT(int) io_attached __P((int));
+#ifdef MEM_IO
+EXPORT(int) io_output_string __P((int, char *, char *, int));
+#endif
+void io_printf __P((int_t,...));
+void io_print __P((struct descr *,struct descr *,struct spec *));
+int io_endfile __P((int_t));
+/* io_read() in libret.h */
+void io_rewind __P((int_t));
+void io_ecomp __P((void));
 int io_openi __P((struct descr *,struct spec *,struct spec *,struct descr *));
 int io_openo __P((struct descr *,struct spec *,struct spec *));
-int io_pad __P((struct spec *,int));
-void io_print __P((struct descr *,struct descr *,struct spec *));
-void io_printf __P((int_t,...));
-void io_rewind __P((int_t));
+/* io_include() in libret.h */
+EXPORT(char *)io_fname __P((int));
+int io_file __P((struct descr *,struct spec *));
 int io_seek __P((struct descr *,struct descr *,struct descr *));
 int io_sseek __P((int_t,int_t,int_t,int_t,int_t *));
+int io_flushall __P((int));
+EXPORT(int) io_findunit __P((void));
+EXPORT(FILE *) io_getfp __P((int));
+int io_pad __P((struct spec *,int));
+int io_finish __P((void));
 
 /* from lexcmp.c */
 int lexcmp __P((struct spec *,struct spec *));

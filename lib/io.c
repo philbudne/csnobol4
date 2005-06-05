@@ -101,6 +101,7 @@ typedef long off_t;
 #define SNOLIB_DIR "./"
 #endif /* SNOLIB_DIR not defined */
 
+/* GOAL: "struct unit" does not leave io.c */
 struct unit {
     struct file *curr;			/* ptr to current file */
     /* for rewind; */
@@ -108,6 +109,7 @@ struct unit {
     off_t offset;			/* offset in first file to rewind to */
 };
 
+/* GOAL: "struct file" does not leave io.c */
 struct file {
     struct file *next;			/* next input file */
     FILE *f;				/* may be NULL if not (yet) open */
@@ -630,7 +632,7 @@ io_next( unit )				/* internal (zero-based unit) */
 
 
 /* skip to next file, for external use, takes external unit */
-int
+EXPORT(int)
 io_skip( unit )
     int unit;
 {
@@ -638,7 +640,7 @@ io_skip( unit )
 }
 
 /* here with filename from command line */
-void
+EXPORT(void)
 io_input_file( path )
     char *path;
 {
@@ -738,7 +740,7 @@ io_attached( unit )
  * create a memory based output file and attach for output
  * pass in a char ** to be filled with a malloced buffer?
  */
-int
+EXPORT(int)
 io_output_string( unit, fname, buf, len )
     int unit;				/* external (1-based) unit */
     char *fname;			/* "filename" for error reports */
@@ -1688,6 +1690,32 @@ io_include( dp, sp )
 } /* io_include */
 
 /*
+ * retrieve file name currently associated with a unit, or NULL.
+ * data only valid while current file open
+ */
+char *
+io_fname( unit )
+    int unit;
+{
+    struct unit *up;
+    struct file *fp;
+
+    unit = INTERN(unit);
+    if (BADUNIT(unit))
+	return NULL;
+
+    up = FINDUNIT(unit);
+    if (up == NULL)
+	return NULL;
+
+    fp = up->curr;
+    if (fp == NULL)
+	return NULL;
+
+    return fp->fname;
+}
+
+/*
  * retrieve file currently associated with a unit
  * used by compiler to pick up filenames from command line
  */
@@ -1696,24 +1724,17 @@ io_file( dp, sp )
     struct descr *dp;			/* IN: unit number */
     struct spec *sp;			/* OUT: filename */
 {
-    int unit;
-    struct file *fp;
-    struct unit *up;
+    char *fname;
 
-    unit = INTERN(D_A(dp));
-    if (BADUNIT(unit))
+    fname = io_fname(D_A(dp));
+    if (fname == NULL)
 	return FALSE;
 
-    up = FINDUNIT(unit);
-    fp = up->curr;
-    if (fp == NULL)
-	return FALSE;
-
-    S_A(sp) = (int_t) fp->fname;	/* OY! */
+    S_A(sp) = (int_t) fname;		/* OY! */
     S_F(sp) = 0;			/* NOTE: *not* a PTR! */
     S_V(sp) = 0;
     S_O(sp) = 0;
-    S_L(sp) = strlen(fp->fname);
+    S_L(sp) = strlen(fname);
     CLR_S_UNUSED(sp);
     
     return TRUE;

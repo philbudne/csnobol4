@@ -218,20 +218,23 @@ io_init()				/* here from INIT */
 	char *str = "\tOUTPUT = 'Hello World'\n\tOUTPUT = INPUT\nEND\nFOO\n";
 	io_input_string( "input", str );
 #else
+	/* read code from stdin.... Macro SPITBOL requires '-' for this */
 	if (!io_mkfile_noclose(UNITI, stdin, STDIN_NAME)) {
 	    perror("could not attach stdin to INPUT");
 	    exit(1);
 	}
 #endif
     }
-#if 0
     else {
 	if (!io_skip(UNITI)) {		/* force file open */
-	    perror(up->curr->fname);
+	    char *fname;
+	    fname = io_fname(UNITI);
+	    if (!fname)
+		fname = "unknown input file";
+	    perror(fname);
 	    exit(1);
 	}
     }
-#endif
 
     /* XXX support -o outputfile? */
 
