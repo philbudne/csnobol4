@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+6/14/2005
+	configure: set, export SO_ and DL_ defines
+
 6/5/2005
 	lib/init.c lib/io.c include/lib.h: add io_fname()
 		Make non-existant initial command line file fatal again
