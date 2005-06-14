@@ -495,6 +495,17 @@ com.o:	$(COM_CPP)
 	$(CC) $(CFLAGS) -c -fvtable-thunks $(COM_CPP)
 
 #################
+# dynamicly loaded extension compilation parameters
+
+dlparam.sno:
+	echo "# generated on `date`"	> dlparam.sno
+	echo "	CC = '"$(CC)"'"		>> dlparam.sno
+	echo "	DL_CFLAGS = '"$(DL_CFLAGS)"'" >> dlparam.sno
+	echo "	DL_EXT = '"$(DL_EXT)"'"	>> dlparam.sno
+	echo "	DL_LD = '"$(DL_LD)"'"	>> dlparam.sno
+	echo "	DL_LDFLAGS = '"$(DL_LDFLAGS)"'" >> dlparam.sno
+
+#################
 # lint picking
 
 lint:   llib-lf.ln
@@ -510,13 +521,13 @@ llib-lf.ln:
 INSTALL_H=[include]/h.h [include]/snotypes.h [include]/macros.h \
 	[include]/load.h [include]/dt.h config.h equ.h
 
-# generated SNOLIB files (at top level)
-GENSNOLIB=host.sno
+# generated SNOLIB files (host.sno generated at top level)
+GENSNOLIB=host.sno dlparam.sno
 
-SNOLIB_FILES=snolib/*.sno $(INSTALL_H) doc/load.txt README $(GENSNOLIB)
+SNOLIB_FILES=snolib/*.sno $(INSTALL_H) doc/load.txt README $(GENSNOLIB) 
 
 VERS=`./pv`
-install: snobol4 pv
+install: snobol4 pv dlparam.sno
 	$(INSTALL) -d $(BINDIR)
 	$(INSTALL) -s snobol4 $(BINDIR)
 	-rm -f $(BINDIR)/snobol4-$(VERS)
