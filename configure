@@ -432,6 +432,26 @@ if [ "$GCCPATH" -a "$WANTGCC" ]; then
 	# "Apple gcc-934.3, based on gcc version 2.95.2 19991024"
 	# screws up data_init.c when compiled with -O2
 	echo 'DATA_INIT_CFLAGS=$(MYCPPFLAGS) -O'	>> $CONFIG_M4
+
+	# MacOS has different file types for shared libraries (dylibs)
+	# and dynamicly loaded extensions (bundles)
+
+	# -fPIC is the default on OS X
+
+	SO_EXT=dylib
+	SO_LD=$CCPATH
+	SO_LDFLAGS=-dynamiclib
+
+	DL_EXT=bundle
+	DL_LD=$CCPATH
+	DL_LDFLAGS=-bundle
+	;;
+
+    *)
+	SO_EXT=so
+	SO_CFLAGS=-fpic
+	SO_LD=$CCPATH
+	SO_LDFLAGS=-shared
 	;;
     esac
 
@@ -457,11 +477,25 @@ else
 	    # dlopen available in 64-bit world!
 	    NO_DLOPEN=
 	fi
+	if [ -x /bin/c89 -o -x /usr/bin/c89 ]; then
+	    SO_EXT=sl
+	    # or +Z
+	    SO_CFLAGS=+z
+	    SO_LD=ld
+	    SO_LDFLAGS=-b
+	fi
 	;;
     ia64:HP-UX:*:*)
 	if [ "$LP64" ]; then
 	    # +DA2.0W seen under B.11.22!!
 	    ARCH_OPT=`getconf XBS5_LP64_OFF64_CFLAGS | sed 's/+DA2.0W/+DD64/'`
+	fi
+	if [ -x /bin/c89 -o -x /usr/bin/c89 ]; then
+	    SO_EXT=sl
+	    # or +Z
+	    SO_CFLAGS=+z
+	    SO_LD=ld
+	    SO_LDFLAGS=-b
 	fi
 	# works for unbundled compiler
 	CCVERS=-V
@@ -493,6 +527,13 @@ else
 	    # To override this, use "configure --opt=whatever"
 	    OPT='-n32 -O3'
 	fi
+
+	SO_EXT=so
+	# -KPIC is default
+	SO_CFLAGS=
+	# use LD?
+	SO_LD=$CCPATH
+	SO_LDFLAGS=-shared
 	;;
     *:AIX:2:3)
 	# AIX3 (not tested)
@@ -524,6 +565,10 @@ else
 	    # and fiddles with ANSI mode (sets __STDC__ to zero), so
 	    # we only use it when the obvious fails!
 	fi
+
+	# "AIX 4.3 and later"
+	SO_EXT=so
+	SO_LDFLAGS=-bM:SRE
 	;;
     *:OSF1:*:*)
 	OPT=-O4
@@ -541,13 +586,22 @@ else
 	V[1-4].*) ;;
 	*) CCVERS=-V ;;
 	esac
+
+	SO_EXT=so
+	SO_LDFLAGS=-shared
 	;;
+
     *:SunOS:4*:*)
 	# SunOS 4 cc
 	echo 'CCM=$(CC) -M'			>> $CONFIG_M4
 	OPT=-O2
 	# cc can't optimize data_init.c at ALL
 	echo 'DATA_INIT_CFLAGS=$(MYCPPFLAGS)'	>> $CONFIG_M4
+
+	SO_EXT=so
+	SO_CFLAGS=-pic
+	SO_LD=/bin/ld
+	SO_LDFLAGS=-assert nodefinitions
 	;;
     *:SunOS:5*:*)
 	# SunPRO;
@@ -563,6 +617,10 @@ else
 	   /usr/bin/isainfo -v | grep '^64' >/dev/null; then
 	    ARCH_OPT=`getconf XBS5_LP64_OFF64_CFLAGS`
 	fi
+
+	SO_EXT=so
+	SO_CFLAGS=-Kpic
+	SO_LDFLAGS=-G
 	;;
     esac
 fi
@@ -1032,8 +1090,14 @@ if [ ! "$NO_DYNLIB" ]; then
 	case "${OS}${OSREL}" in
 	Darwin*)
 	    # darwin dlopen() support in cctools/libdyld??
-	    echo 'ADD_LDFLAGS([-L/sw/lib -ldl])' >> $CONFIG_M4
+	    if [ -f /usr/lib/libdl.dylib ]; then
+		# Darwin 7.9 (OS X 10.3) and later??
+		echo 'ADD_LDFLAGS([-ldl])'	>> $CONFIG_M4
+	    elif [ -f /sw/lib/libdl.dylib ]; then
+		echo 'ADD_LDFLAGS([-L/sw/lib -ldl])' >> $CONFIG_M4
+	    fi
 	    TRY_UNDERSCORE=true
+	    # SNOLIB_FILE=snolib.bundle ??
 	    ;;
 	FreeBSD*)
 	    if [ -x /usr/bin/objformat ]; then
@@ -1230,6 +1294,40 @@ if grep SIGTSTP $INCDIR/signal.h >/dev/null 2>&1 || \
 else
     echo 'using dummy suspend.c' 1>&2
     echo 'SUSPEND_C=$(SRCDIR)lib/dummy/suspend.c' >> $CONFIG_M4
+fi
+
+# output SO/DL defines
+
+# on everything except Darwin, one format suffices
+if [ "x$SO_EXT" != x -a "x$DL_EXT" = x ]; then
+    DL_EXT="$SO_EXT"
+    DL_CFLAGS="$SO_CFLAGS"
+    DL_LD="$SO_LD"
+    DL_LDFLAGS="$SO_LDFLAGS"
+fi
+
+if [ "x$SO_EXT" != x ]; then
+    echo "SO_EXT=$SO_EXT"		>> $CONFIG_M4
+    echo "SO_CFLAGS=$SO_CFLAGS"		>> $CONFIG_M4
+    echo "SO_LD=$SO_LD"			>> $CONFIG_M4
+    echo "SO_LDFLAGS=$SO_LDFLAGS"	>> $CONFIG_M4
+
+    echo '#define SO_EXT "'$SO_EXT'"'		>> $CONFIG_H
+    echo '#define SO_CFLAGS "'$SO_CFLAGS'"'	>> $CONFIG_H
+    echo '#define SO_LD "'$SO_LD'"'		>> $CONFIG_H
+    echo '#define SO_LDFLAGS "'$SO_LDFLAGS'"'	>> $CONFIG_H
+fi
+
+if [ "x$DL_EXT" != x ]; then
+    echo "DL_EXT=$DL_EXT"		>> $CONFIG_M4
+    echo "DL_CFLAGS=$DL_CFLAGS"		>> $CONFIG_M4
+    echo "DL_LD=$DL_LD"			>> $CONFIG_M4
+    echo "DL_LDFLAGS=$DL_LDFLAGS"	>> $CONFIG_M4
+
+    echo '#define DL_EXT "'$DL_EXT'"'		>> $CONFIG_H
+    echo '#define DL_CFLAGS "'$DL_CFLAGS'"'	>> $CONFIG_H
+    echo '#define DL_LD "'$DL_LD'"'		>> $CONFIG_H
+    echo '#define DL_LDFLAGS "'$DL_LDFLAGS'"'	>> $CONFIG_H
 fi
 
 # Include STCL (tcl/tk) support, if requested
