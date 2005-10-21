@@ -1,5 +1,10 @@
 $Id$
 
+Rename STCL_ to TCL_?
+	use bumpy case????
+
+detect, use SDBM?
+
 OSX:
 	-framework for Tcl/Tk?
 
@@ -14,8 +19,13 @@ DYNAMIC LOADING!!
 
 RANDOM() function(s)
 
+use SO_ and DL_ params!
+
 move pmprotos to loadable files?
 	auto-find them????
+		well known array
+		well known function
+		search for any xxx_prototype
 	use on dynamic load also?
 	use "include" files to declare?
 		generate from .c sources?!
@@ -23,8 +33,20 @@ move pmprotos to loadable files?
 test for, and pre-include:
 	prolog.sno
 	local.sno
+	userinit.sno
 	current dir??
 	use to pre-load modules???
+
+Rafal:
+	Use readline (if available) for (cooked)
+		TERMINAL?
+		INPUT??
+		Compiler???
+	READLINE() function
+	SLEEP()
+	MKFIFO()
+	CRYPT()
+	SYSINFO()?
 
 undefined function (label?) hooks?
 
@@ -35,9 +57,6 @@ Test w/ non-libc gdbm??
 	debian include?
 
 Test STCL, NDBM on Cygwin!
-
-Rename STCL_ to TCL_?
-	use bumpy case?
 
 Release 1.1;
 	update History, version.c, README, tag it
