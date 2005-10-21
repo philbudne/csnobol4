@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.106  2005/10/21 18:09:03  phil
+* [PLB89] Perform case folding on alternate function entry label
+*
 * Revision 1.105  2004/09/08 05:27:17  phil
 * undo two PCOMPS at SPCNV2; detected by HP-UX compiler
 *
@@ -5256,6 +5259,11 @@ STOPTP PROC    STOPTR		   Subentry for FUNCTION
 FENTR  PROC    ,		   Procedure to trace on CALL
        RCALL   WPTR,VARVAL,,FAIL   Get argument
 FENTR3 SETLC   PROTSP,0		   Clear specifier
+       LOCSP   XSP,FILENM	   Get specifier for &FILE	[PLB90]
+       APDSP   PROTSP,XSP	   Append &FILE			[PLB90]
+       APDSP   PROTSP,COLSP	   Append colon			[PLB90]
+       INTSPC  XSP,LNNOCL	   Convert &LINE to string	[PLB90]
+       APDSP   PROTSP,XSP	   Append &LINE			[PLB90]
        APDSP   PROTSP,TRSTSP	   Append trace message
        INTSPC  XSP,STNOCL	   Convert &STNO to string
        APDSP   PROTSP,XSP	   Append &STNO
@@ -5329,6 +5337,11 @@ KEYTR  PROC    ,		   Procedure to trace keywords
        RCALL   YCL,KEYT,(WPTR),(INTR10,)
 *				   Get value of keyword
 KEYTR3 SETLC   PROTSP,0		   Clear specifier
+       LOCSP   XSP,FILENM	   Get specifier for &FILE	[PLB90]
+       APDSP   PROTSP,XSP	   Append &FILE			[PLB90]
+       APDSP   PROTSP,COLSP	   Append colon			[PLB90]
+       INTSPC  XSP,LNNOCL	   Convert &LINE to string	[PLB90]
+       APDSP   PROTSP,XSP	   Append &LINE			[PLB90]
        APDSP   PROTSP,TRSTSP	   Append trace message
        INTSPC  TSP,STNOCL	   Convert &STNO to string
        APDSP   PROTSP,TSP	   Append &STNO
@@ -5388,6 +5401,11 @@ VALTR2 RCALL   XPTR,IND,,FAIL	   Get variable to be traced
        RCALL   ZPTR,VARVAL,,FAIL   Get tag
        POP     XPTR		   Restore variable
 VALTR4 SETLC   TRACSP,0		   Clear specifier
+       LOCSP   XSP,FILENM	   Get specifier for &FILE	[PLB90]
+       APDSP   TRACSP,XSP	   Append &FILE			[PLB90]
+       APDSP   TRACSP,COLSP	   Append colon			[PLB90]
+       INTSPC  XSP,LNNOCL	   Convert &LINE to string	[PLB90]
+       APDSP   TRACSP,XSP	   Append &LINE			[PLB90]
        APDSP   TRACSP,TRSTSP	   Append trace message
        INTSPC  XSP,STNOCL	   Convert &STNO to string
        APDSP   TRACSP,XSP	   Append &STNO
@@ -7217,7 +7235,7 @@ RPRNSP STRING  ')'
 STARSP STRING  '*** '
 TRCLSP STRING  ' call of '					[PLB11]
 TRLVSP STRING  'level '						[PLB11]
-TRSTSP STRING  '    statement '					[PLB11]
+TRSTSP STRING  ' statement '					[PLB11]
 SPITSP STRING  'PLUSOPS'					[PLB32]
 UNLSP  STRING  'UNLIST'
 XFERSP STRING  'transfer to'					[PLB11]
