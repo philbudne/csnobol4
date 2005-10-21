@@ -1,5 +1,8 @@
 $Id$
 
+output source file & line (like compiler) for trace output!!!
+	look for uses of TRSTSP
+
 Rename STCL_ to TCL_?
 	use bumpy case????
 

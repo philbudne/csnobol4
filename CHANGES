@@ -15,6 +15,8 @@ Changes since 1.0 release;
 	autoconf compatibility: Honor CC, CFLAGS, CPPFLAGS,
 		LDFLAGS, DESTDIR environment variables.
 	Fix compilation on pre-panther OSX
+	Fix bug: second argument to DEFINE() was not case folded!
+	Prepend &FILE and &LINE to TRACE output
 
 Changes since 0.99.44 release;
 =============================
