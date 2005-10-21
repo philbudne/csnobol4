@@ -1,0 +1,8 @@
+* BUG: alt entry label was not folded!!!!
+
+	define("Foo(X)", "y")	:(efoo)
+y	foo = "Hello " x	:(return)
+efoo
+
+	OUTPUT = fOo("World")
+end

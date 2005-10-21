@@ -109,3 +109,5 @@ reg 8bit2.sno
 # 7/15/2003
 reg popen.sno
 reg popen2.sno
+# 10/21/2005
+reg func2.sno
