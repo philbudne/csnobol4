@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.105  2004/09/08 05:27:17  phil
+* undo two PCOMPS at SPCNV2; detected by HP-UX compiler
+*
 * Revision 1.104  2004/08/12 16:07:53  phil
 * [PLB88] Use PCOMP[C] SIL operators for pointer comparison
 * Locations thanks to Mark Emmer (from SNOBOL4+)
@@ -3962,7 +3965,7 @@ SCERSX RCALL   ,SCERST						[PLB65]
 DEFINE PROC    ,		   DEFINE(P,E)
        RCALL   XPTR,VARVAL,,FAIL   Get prototype
        PUSH    XPTR		   Save prototype
-       RCALL   YPTR,VARVAL,,FAIL   Get entry point
+       RCALL   YPTR,VARVUP,,FAIL   Get entry point		[PLB89]
        POP     XPTR		   Restore prototype
        LOCSP   XSP,XPTR		   Specifier for prototype
        STREAM  YSP,XSP,VARATB,PROTER,PROTER
