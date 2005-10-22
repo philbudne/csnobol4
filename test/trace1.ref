@@ -1,4 +1,4 @@
-trace1.sno: 3    statement 3: FOO = 1, time = 0.
-trace1.sno: 4    statement 4: FOO = 2, time = 0.
-trace1.sno: 5    statement 5: FOO = 3, time = 0.
-trace1.sno: 6    statement 6: FOO = 4, time = 0.
+trace1.sno: 3 statement 3: FOO = 1, time = xxx
+trace1.sno: 4 statement 4: FOO = 2, time = xxx
+trace1.sno: 5 statement 5: FOO = 3, time = xxx
+trace1.sno: 6 statement 6: FOO = 4, time = xxx

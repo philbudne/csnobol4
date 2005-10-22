@@ -1,10 +1,10 @@
-ftrace.sno: 16    statement 16: level 0 call of A(), time = 0.
-ftrace.sno: 10    statement 10: level 1 call of B(), time = 0.
-ftrace.sno: 11    statement 11: level 2 call of C(), time = 10.
-ftrace.sno: 12    statement 12: level 3 call of D(), time = 10.
-ftrace.sno: 14    statement 14: level 3 RETURN of D = '', time = 10.
-ftrace.sno: 13    statement 13: level 3 call of D(), time = 10.
-ftrace.sno: 14    statement 14: level 3 RETURN of D = '', time = 10.
-ftrace.sno: 13    statement 13: level 2 RETURN of C = '', time = 10.
-ftrace.sno: 11    statement 11: level 1 RETURN of B = '', time = 10.
-ftrace.sno: 10    statement 10: level 0 RETURN of A = '', time = 10.
+ftrace.sno: 16 statement 16: level 0 call of A(), time = xxx
+ftrace.sno: 10 statement 10: level 1 call of B(), time = xxx
+ftrace.sno: 11 statement 11: level 2 call of C(), time = xxx
+ftrace.sno: 12 statement 12: level 3 call of D(), time = xxx
+ftrace.sno: 14 statement 14: level 3 RETURN of D = '', time = xxx
+ftrace.sno: 13 statement 13: level 3 call of D(), time = xxx
+ftrace.sno: 14 statement 14: level 3 RETURN of D = '', time = xxx
+ftrace.sno: 13 statement 13: level 2 RETURN of C = '', time = xxx
+ftrace.sno: 11 statement 11: level 1 RETURN of B = '', time = xxx
+ftrace.sno: 10 statement 10: level 0 RETURN of A = '', time = xxx
