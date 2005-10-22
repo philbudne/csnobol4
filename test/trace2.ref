@@ -1,2 +1,2 @@
-    statement 3: foo = 1, time = xxx
-    statement 5: foo = 3, time = xxx
+trace2.sno: 4    statement 3: foo = 1, time = 10.
+trace2.sno: 6    statement 5: foo = 3, time = 20.
