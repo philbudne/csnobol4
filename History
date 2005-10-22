@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/22/2005
+	test/ftrace.ref test/spit.ref test/trace1.ref test/trace2.ref
+		update for new trace output
+
 10/21/2005
 	test/tests.in v311.sil
 	new: test/func2.sno test/func2.ref
