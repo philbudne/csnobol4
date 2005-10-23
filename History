@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/23/2005
+	new: test/diag1.ref test/diag1.sno test/diag2.ref test/diag2.sno
+		add diags from VAX/VMS Macro SNOBOL4 (from SPITBOL?)
+
 10/22/2005
 	test/ftrace.ref test/spit.ref test/trace1.ref test/trace2.ref
 		update for new trace output
