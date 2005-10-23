@@ -1,0 +1,356 @@
+*-title	snobol test program #1 -- diagnostics phase one
+*
+*	 this is a standard test program for spitbol which tests
+*	 out functions,	operators and datatype manipulations
+*
+	 &dump = 2
+	 trace(.test)
+	 &trace	= 1000000
+	 stars =		     '	error detected		***'
+	 &errlimit = 000
+	 output	= '************************************************'
+	 output	= '****	s n o b o l	 d i a g n o s t i c s ****'
+	 output	= '****		 p h a s e    o	n e	       ****'
+	 output	= '************************************************'
+	 output	= '****	 any trace output indicates an error   ****'
+	 output	= '************************************************'
+-eject
+*
+*	 test replace function
+*
+	 test =	differ(replace('axxbyyy','xy','01'),'a00b111') stars
+	 a = replace(&alphabet,'xy','ab')
+	 test =	differ(replace('axy',&alphabet,a),'aab') stars
+*
+*	 test convert function
+*
+	 test =	differ(convert('12','integer') , 12) stars
+	 test =	differ(convert(2.5,'integer'),2)       stars
+	 test =	differ(convert(2,'real'),2.0) stars
+	 test =	differ(convert('.2','real'),0.2) stars
+*
+*	 test datatype function
+*
+	 test =	differ(datatype('jkl'),'STRING') stars
+	 test =	differ(datatype(12),'INTEGER') stars
+	 test =	differ(datatype(1.33),'REAL') stars
+	 test =	differ(datatype(null),'STRING')	stars
+-eject
+*
+*	 test arithmetic operators
+*
+	 test =	differ(3 + 2,5)	stars
+	 test =	differ(3 - 2,1)	stars
+	 test =	differ(3 * 2,6)	stars
+	 test =	differ(5 / 2,2)	stars
+	 test =	differ(2 ** 3,8) stars
+	 test =	differ(3 + 1,4)	stars
+	 test =	differ(3 - 1,2)	stars
+	 test =	differ('3' + 2,5) stars
+	 test =	differ(3 + '-2',1) stars
+	 test =	differ('1' + '0',1) stars
+	 test =	differ(5 + null,5) stars
+	 test =	differ(-5,0 - 5) stars
+	 test =	differ(+'4',4) stars
+	 test =	differ(2.0 + 3.0,5.0) stars
+	 test =	differ(3.0 - 1.0,2.0) stars
+	 test =	differ(3.0 * 2.0,6.0) stars
+	 test =	differ(3.0 / 2.0,1.5) stars
+	 test =	differ(3.0 ** 3,27.0) stars
+	 test =	differ(-1.0,0.0	- 1.0) stars
+*
+*	 test mixed mode
+*
+	 test =	differ(1 + 2.0,3.0) stars
+	 test =	differ(3.0 / 2,1.5) stars
+-eject
+*
+*	 test functions
+*
+*	 first,	a simple test of a factorial function
+*
+	 define('fact(n)')		    :(factend)
+fact	 fact =	eq(n,1)	1	  :s(return)
+	 fact =	n * fact(n - 1)		    :(return)
+factend	 test =	ne(fact(5),120)	stars
+	 test =	differ(opsyn(.facto,'fact')) stars
+	 test =	differ(facto(4),24) stars
+*
+*	 see if	alternate entry	point works ok
+*
+	 define('fact2(n)',.fact2ent)	    :(fact2endf)
+fact2ent fact2 = eq(n,1) 1	  :s(return)
+	 fact2 = n * fact2(n - 1) :(return)
+fact2endf output = ne(fact(6),720) stars
+*
+*	 test function redefinition and	case of	argument = func	name
+*
+	 test =	differ(define('fact(fact)','fact3')) stars
+.					    :(fact2end)
+fact3	 fact =	ne(fact,1) fact	* fact(fact - 1)
+.					    :(return)
+fact2end
+	 test =	ne(fact(4),24) stars
+*
+*	 test out locals
+*
+	 define('lfunc(a,b,c)d,e,f')	    :(lfuncend)
+lfunc	 test =	~(ident(a,'a') ident(b,'b') ident(c,'c')) stars
+	 test =	~(ident(d) ident(e) ident(f)) stars
+	 a = 'aa' ; b =	'bb' ; c = 'cc'	; d = 'dd' ; e = 'ee' ;	f = 'ff'
+.				  :(return)
+lfuncend aa = 'a' ; bb = 'b' ; cc = 'c'
+	 d = 'd' ; e = 'e' ; f = 'f'
+	 a = 'x' ; b = 'y' ; c = 'z'
+	 test =	differ(lfunc(aa,bb,cc))	stars
+	 test =	~(ident(a,'x') ident(b,'y') ident(c,'z')) stars
+	 test =	~(ident(aa,'a')	ident(bb,'b') ident(cc,'c')) stars
+	 test =	~(ident(d,'d') ident(e,'e') ident(f,'f')) stars
+*
+*	 test nreturn
+*
+	 define('ntest()')		    :(endntest)
+ntest	 ntest = .a			    :(nreturn)
+endntest a = 27
+	 test =	differ(ntest(),27) stars
+.	       :f(st59)		   ;st59
+	 ntest() = 26
+.	       :f(st60)		   ;st60
+	 test =	differ(a,26) stars
+-eject
+*
+*	 continue test of functions
+*
+*
+*	 test failure return
+*
+	 define('failure()')		    :(failend)
+failure				  :(freturn)
+failend	 test =	failure() stars
+-eject
+*
+*	 test opsyn for	operators
+*
+	 opsyn('@',.dupl,2)
+	 opsyn('|',.size,1)
+	 test =	differ('a' @ 4,'aaaa') stars
+	 test =	differ(|'string',6) stars
+*
+*	 test out array	facility
+*
+	 a = array(3)
+	 test =	differ(a<1>) stars
+	 a<2> =	4.5
+	 test =	differ(a<2>,4.5) stars
+	 test =	?a<4> stars
+	 test =	?a<0> stars
+	 test =	differ(prototype(a),'3') stars
+	 b = array(3,10)
+	 test =	differ(b<2>,10)	stars
+	 b = array('3')
+	 b<2> =	'a'
+	 test =	differ(b<2>,'a') stars
+	 c = array('2,2')
+	 c<1,2>	= '*'
+	 test =	differ(c<1,2>,'*') stars
+	 test =	differ(prototype(c),'2,2') stars
+	 d = array('-1:1,2')
+	 d<-1,1> = 0
+	 test =	differ(d<-1,1>,0) stars
+	 test =	?d<-2,1> stars
+	 test =	?d<2,1>	stars
+-eject
+*
+*	 test program defined datatype functions
+*
+	 data('node(val,lson,rson)')
+	 a = node('x','y','z')
+	 test =	differ(datatype(a),'NODE') stars
+	 test =	differ(val(a),'x') stars
+	 b = node()
+	 test =	differ(rson(b))	stars
+	 lson(b) = a
+	 test =	differ(rson(lson(b)),'z') stars
+	 test =	differ(value('b'),b) stars
+*
+*	 test multiple use of field function name
+*
+	 data('clunk(value,lson)')
+	 test =	differ(rson(lson(b)),'z') stars
+	 test =	differ(value('b'),b) stars
+	 c = clunk('a','b')
+	 test =	differ(lson(c),'b') stars
+-eject
+*
+*	 test numerical	predicates
+*
+	 test =	lt(5,4)	stars
+	 test =	lt(4,4)	stars
+	 test =	~lt(4,5) stars
+	 test =	le(5,2)	stars
+	 test =	~le(4,4) stars
+	 test =	~le(4,10) stars
+	 test =	eq(4,5)	stars
+	 test =	eq(5,4)	stars
+	 test =	~eq(5,5) stars
+	 test =	ne(4,4)	stars
+	 test =	~ne(4,6) stars
+	 test =	~ne(6,4) stars
+	 test =	gt(4,6)	stars
+	 test =	gt(4,4)	stars
+	 test =	~gt(5,2) stars
+	 test =	ge(5,7)	stars
+	 test =	~ge(4,4) stars
+	 test =	~ge(7,5) stars
+	 test =	ne(4,5 - 1) stars
+	 test =	gt(4,3 + 1) stars
+	 test =	le(20,5	+ 6) stars
+	 test =	eq(1.0,2.0) stars
+	 test =	gt(-2.0,-1.0) stars
+	 test =	gt(-3.0,4.0) stars
+	 test =	ne('12',12) stars
+	 test =	ne('12',12.0) stars
+	 test =	~convert(bal,'pattern')	stars
+-eject
+*
+*	 test integer
+*
+	 test =	integer('abc') stars
+	 test =	~integer(12) stars
+	 test =	~integer('12') stars
+*
+*	 test size
+*
+	 test =	ne(size('abc'),3) stars
+	 test =	ne(size(12),2) stars
+	 test =	ne(size(null),0) stars
+*
+*	 test lgt
+*
+	 test =	lgt('abc','xyz') stars
+	 test =	lgt('abc','abc') stars
+	 test =	~lgt('xyz','abc') stars
+	 test =	lgt(null,'abc')	stars
+	 test =	~lgt('abc',null) stars
+*
+*	 test indirect addressing
+*
+	 test =	differ($'bal',bal) stars
+	 test =	differ($.bal,bal) stars
+	 $'qq' = 'x'
+	 test =	differ(qq,'x') stars
+	 test =	differ($'garbage') stars
+	 a = array(3)
+	 a<2> =	'x'
+	 test =	differ($.a<2>,'x') stars
+*
+*	 test concatenation
+*
+	 test =	differ('a' 'b','ab')	    stars
+	 test =	differ('a' 'b' 'c','abc') stars
+	 test =	differ(1 2,'12') stars
+	 test =	differ(2 2 2,'222') stars
+	 test =	differ(1 3.4,'13.4') stars
+	 test =	differ(bal null,bal)	    stars
+	 test =	differ(null bal,bal) stars
+-eject
+*
+*	 test remdr
+*
+	 test =	differ(remdr(10,3),1) stars
+	 test =	differ(remdr(11,10),1) stars
+*
+*	 test dupl
+*
+	 test =	differ(dupl('abc',2),'abcabc') stars
+	 test =	differ(dupl(null,10),null) stars
+	 test =	differ(dupl('abcdefg',0),null) stars
+	 test =	differ(dupl(1,10),'1111111111')	 stars
+*
+*	 test table facility
+*
+	 t = table(10)
+	 test =	differ(t<'cat'>) stars
+	 t<'cat'> = 'dog'
+	 test =	differ(t<'cat'>,'dog')	 stars
+	 t<7> =	45
+	 test =	differ(t<7>,45)	  stars
+	 test =	differ(t<'cat'>,'dog')	stars
+	 ta = convert(t,'array')
+	 test =	differ(prototype(ta),'2,2') stars
+	 ata = convert(ta,'table')
+	 test =	differ(ata<7>,45) stars
+	 test =	differ(ata<'cat'>,'dog') stars
+*
+*	 test item function
+*
+	 aaa = array(10)
+	 item(aaa,1) = 5
+	 test =	differ(item(aaa,1),5) stars
+	 test =	differ(aaa<1>,5) stars
+	 aaa<2>	= 22
+	 test =	differ(item(aaa,2),22) stars
+	 ama = array('2,2,2,2')
+	 item(ama,1,2,1,2) = 1212
+	 test =	differ(item(ama,1,2,1,2),1212) stars
+	 test =	differ(ama<1,2,1,2>,1212) stars
+	 ama<2,1,2,1> =	2121
+	 test =	differ(item(ama,2,1,2,1),2121) stars
+-eject
+*
+*	 test eval
+*
+	 expr =	*('abc'	'def')
+	 test =	differ(eval(expr),'abcdef') stars
+	 q = 'qqq'
+	 sexp =	*q
+	 test =	differ(eval(sexp),'qqq') stars
+	 fexp =	*ident(1,2)
+	 test =	eval(fexp) stars
+*
+*	 test arg
+*
+jlab	 define('jlab(a,b,c)d,e,f')
+	 test =	differ(arg(.jlab,1),'A') stars
+	 test =	differ(arg(.jlab,3),'C') stars
+	 test =	arg(.jlab,0) stars
+	 test =	arg(.jlab,4) stars
+*
+*	 test local
+*
+	 test =	differ(local(.jlab,1),'D') stars
+	 test =	differ(local(.jlab,3),'F') stars
+	 test =	local(.jlab,0) stars
+	 test =	local(.jlab,4) stars
+*
+*	 test apply
+*
+	 test =	apply(.eq,1,2) stars
+	 test =	~apply(.eq,1,1)	stars
+	 test =	~ident(apply(.trim,'abc	'),'abc') stars
+-eject
+*
+*	 final processing
+*
+	 output	= '************************************************'
+	 diagnostics = 1000000 - &trace
+	 eq(diagnostics,0)	  :s(terminate)
+	 &dump = 2
+	 output	= '****	   number of errors detected  '
+.				  diagnostics '	   ****'
+	 output	= '****	e n d	 o f	 d i a g n o s t i c s ****'
+	 output	= '************************************************'
+.					    :(end)
+terminate output = '**** n o	 e r r o r s	d e t e	c t e d	****'
+	 output	= '****	e n d	 o f	 d i a g n o s t i c s ****'
+	 output	= '************************************************'
+ :(end)
+*
+*	 error handling	routine
+*
+errors	 output	= '****	 error at '
+.	 lpad(&lastno,4)   '	  &errtype = ' lpad(&errtype,7,' ')
+.					    ' ****'
+	 &trace	= &trace - 1
+	 setexit(.errors)		    :(continue)
+end

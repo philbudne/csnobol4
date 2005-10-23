@@ -1,0 +1,254 @@
+* title snobol test program #2 -- diagnostics phase two
+*
+*
+*	 this is the standard test program for spitbol which
+*	 tests pattern matching	using both fullscan and	quickscan
+*
+	 &dump = 2
+	 define('error()')
+	 &trace	= 1000
+	 &errlimit = 00
+	 trace(.errtype,'keyword')
+	 &fullscan = 0
+	 output	= '**********************************************'
+	 output	= '****	snobol	diagnostics -- phase two     ****'
+	 output	= '**********************************************'
+floop	 errcount = 0
+	 output	= '****		  &fullscan = '	&fullscan
+.	 '		****'
+	 test =	'abcdefghijklmnopqrstuvwxyz'
+*
+*	 test pattern matching against simple string
+*
+	 test  'abc' :s(s01) ; error()
+s01	 test 'bcd' :s(s02) ; error()
+s02	 test 'xyz' :s(s03) ; error()
+s03	 test 'abd' :f(s04) ; error()
+s04	 &anchor = 1
+	 test 'abc' :s(s05) ; error()
+s05	 test 'bcd' :f(s06) ; error()
+s06	 test test :s(s06a) ; error()
+*
+*	 test simple cases of $
+*
+s06a	 test 'abc' $ var :s(s07) ; error()
+s07	 ident(var,'abc') :s(s08) ; error()
+s08	 test 'abc' . vard :s(s09) ; error()
+s09	 ident(vard,'abc') :s(s10) ; error()
+*
+*	 test len
+*
+s10	 &anchor = 0
+	 test len(3) $ varl :s(s11) ; error()
+s11	 ident(varl,'abc') :s(s12) ; error()
+s12	 test len(26) $	varl :s(s13) ; error()
+s13	 ident(varl,test) :s(s14) ; error()
+s14	 test len(27) :f(s15) ;	error()
+*
+*	 test tab
+*
+s15	 test tab(3) $ vart :s(s16) ; error()
+s16	 ident(vart,'abc') :s(s17) ; error()
+s17	 test tab(26) $	vart :s(s18) ; error()
+s18	 ident(test,vart) :s(s19) ; error()
+s19	 test tab(0) $ vart :s(s20) ; error()
+s20	 ident(vart) :s(s21) ; error()
+-eject
+*
+*	 test arb
+*
+s21	 test arb $ vara 'c' :s(s22) ; error()
+s22	 ident(vara,'ab') :s(s23) ; error()
+s23	 &anchor = 1
+	 test arb $ vara pos(60) :f(s24) ; error()
+s24	 ident(vara,test) :s(s25) ; error()
+*
+*	 test pos
+*
+s25	 test arb $ vara pos(2)	$ varp :s(s26) ; error()
+s26	 (ident(vara,'ab') ident(varp))	:s(s27)	; error()
+s27	 &anchor = 0
+	 test arb $ vara pos(26) $ varp	:s(s28)	; error()
+s28	 (ident(vara,test) ident(varp))	: s(s29) ; error()
+s29	 test arb $ vara pos(0)	$ varp :s(s30) ; error()
+s30	 ident(vara varp) :s(s31) ; error()
+s31	 test pos(0) arb $ vara	pos(26)	:s(s32)	; error()
+s32	 ident(test,vara) :s(s33) ; error()
+s33	 test pos(2) arb $ vara	pos(3) :s(s34) ; error()
+s34	 ident(vara,'c') :s(s35) ; error()
+s35	 test pos(27) :f(s36) ;	error()
+*
+*	 test rpos
+*
+s36	 test arb $ vara rpos(25) :s(s37) ; error()
+s37	 ident(vara,'a') :s(s38) ; error()
+s38	 test arb $ vara rpos(0) :s(s39) ; error()
+s39	 ident(test,vara) :s(s39a) ; error()
+s39a	 test arb $ vara rpos(26) :s(s40) ; error()
+s40	 ident(vara) :s(s41) ; error()
+s41	 test rpos(27) :f(s42) ; error()
+*
+*	 test rtab
+*
+s42	 test rtab(26) $ vara :s(s43) ;	error()
+s43	 ident(vara) :s(s44) ; error()
+s44	 test rtab(27) :f(s45) ; error()
+s45	 test rtab(0) $	vara :s(s46) ; error()
+s46	 ident(vara,test) :s(s47) ; error()
+s47	 test rtab(25) $ vara :s(s48) ;	error()
+s48	 ident(vara,'a') :s(s49) ; error()
+*
+*	 test @
+*
+s49	 test len(6) @vara :s(s50) ; error()
+s50	 ident(vara,6) :s(s51) ; error()
+s51	 test @vara :s(s52) ; error()
+s52	 ident(vara,0) :s(s53) ; error()
+s53	 test len(26) @vara :s(s54) ; error()
+s54	 ident(vara,26)	:s(s55)	; error()
+-eject
+*
+*	 test break
+*
+s55	 test break('c') $ vara	:s(s56)	; error()
+s56	 ident(vara,'ab') :s(s57) ; error()
+s57	 test break('z()') $ vara :s(s58)     ;	error()
+s58	 ident(vara,'abcdefghijklmnopqrstuvwxy') :s(s59) ; error()
+s59	 test break(',') :f(s60) ; error()
+s60
+*
+*	 test span
+*
+s63	 test span(test) $ vara	:s(s64)	; error()
+s64	 ident(test,vara) :s(s65) ;error()
+s65	 test span('cdq') $ vara :s(s66) ; error()
+s66	 ident(vara,'cd') :s(s67) ; error()
+s67	 test span(',')	:f(s68)	; error()
+s68
+*
+*
+*	 test any
+*
+s73	 test any('mxz') $ vara	:s(s74)	; error()
+s74	 ident(vara,'m') :s(s75) ; error()
+s75	 test any(',.')	:f(s76)	; error()
+-eject
+*
+*	 test notany
+*
+s76	 test notany('abcdefghjklmpqrstuwxyz') $ vara :s(s77) ;	error()
+s77	 ident(vara,'i') :s(s78) ; error()
+s78	 test notany(test) :f(s79) ; error()
+*
+*	 test rem
+*
+s79	 test rem $ vara :s(s80) ; error()
+s80	 ident(vara,test) :s(s81) ; error()
+s81	 test len(26) rem $ vara :s(s82) ; error()
+s82	 ident(vara) :s(s83) ; error()
+*
+*	 test alternation
+*
+s83	 test ('abd' | 'ab') $ vara :s(d84) ; error()
+d84	 ident(vara,'ab') :s(d85) ; error()
+d85	 test (test 'a'	| test)	$ varl :s(d86) ; error()
+d86	 ident(varl,test) :s(d00) ; error()
+*
+*	 test deferred strings
+*
+d00	 test *'abc' :s(d01) ; error()
+d01	 test *'abd' :f(d06) ; error()
+*
+*	 test $	. with deferred	name arguments
+*
+d06	 test 'abc' $ *var :s(d07) ; error()
+d07	 ident(var,'abc') :s(d08) ; error()
+d08	 test 'abc' . *$'vard' :s(d09) ; error()
+d09	 ident(vard,'abc') :s(d10) ; error()
+*
+*	 test len with deferred	argument
+*
+d10	 &anchor = 0
+	 test len(*3) $	varl :s(d11) ; error()
+d11	 ident(varl,'abc') :s(d15) ; error()
+*
+*	 test tab with deferred	argument
+*
+d15	 test tab(*3) $	vart :s(d16) ; error()
+d16	 ident(vart,'abc') :s(d21) ; error()
+-eject
+*
+*	 test pos with deferred	argument
+*
+d21	 &anchor = 1
+	 test arb $ vara pos(*2) $ varp	:s(d26)	; error()
+d26	 (ident(vara,'ab') ident(varp))	:s(d27)	; error()
+d27	 &anchor = 0
+	 test arb $ vara pos(*0) $ varp	:s(d35)	; error()
+d35	 ident(vara varp) :s(d36) ; error()
+*
+*	 test rpos with	deferred argument
+*
+d36	 test arb $ vara rpos(*25) :s(d37) ; error()
+d37	 ident(vara,'a') :s(d38) ; error()
+*
+*	 test rtab with	deferred argument
+*
+d38	 test rtab(*26)	$ vara :s(d43) ; error()
+d43	 ident(vara) :s(d49) ; error()
+*
+*	 test @	with deferred argument
+*
+d49	 test len(6) @*vara :s(d50) ; error()
+d50	 ident(vara,6) :s(d51) ; error()
+d51	 test @*$'vara'	:s(d52)	; error()
+d52	 ident(vara,0) :s(d55) ; error()
+*
+*	 test break with deferred argument
+*
+d55	 test break(*'c') $ vara :s(d56) ; error()
+d56	 ident(vara,'ab') :s(d57) ; error()
+*
+*	 test span with	deferred argument
+*
+d57	 test span(*test) $ vara :s(d64) ; error()
+d64	 ident(test,vara) :s(d70) ; error()
+*
+*	 test breakx with deferred argument
+*
+d70
+*      (test test) pos(*0) breakx(*'e')	$ vara '.' :f(d71) ; error()
+*d71	  ident(vara,test 'abcd') :s(d73) ; error()
+-eject
+*
+*	 test any with deferred	argument
+*
+d73	 test any(*'mxz') $ vara :s(d74) ; error()
+d74	 ident(vara,'m') :s(d75) ; error()
+*
+*	 test notany with deferred argument
+*
+d75	 test notany(*'abcdefghjklmpqrstuwxyz')	$ vara :s(d77) ;
+.							   error()
+d77	 ident(vara,'i') :s(d79) ; error()
+d79	 :(alldone)
+	 eject
+*
+*	 error handling	routine
+*
+error	 output	= '****** error	detected at ' &lastno '	********'
+	 errcount = errcount + 1
+	 output	= '***** resuming execution *******'	   :(return)
+*
+*	 termination routine
+*
+alldone
+	 errcount = errcount + &errlimit - 100
+	 &errlimit = 100
+	 output	= eq(errcount,0)
+.		  '****		  no errors detected	     ****'
+	 output	= '**********************************************'
+	 &fullscan = eq(&fullscan,0) 1		 :s(floop)
+	 output	= '****		  end of diagnostics	     ****'
+	 output	= '**********************************************'
+end

@@ -1,0 +1,48 @@
+**********************************************
+****	snobol	diagnostics -- phase two     ****
+**********************************************
+****		  &fullscan = 0		****
+****** error	detected at 67	********
+***** resuming execution *******
+**********************************************
+****		  &fullscan = 1		****
+****		  no errors detected	     ****
+**********************************************
+****		  end of diagnostics	     ****
+**********************************************
+Dump of variables at termination
+
+Natural variables
+
+ABORT = PATTERN
+ARB = PATTERN
+BAL = PATTERN
+ERRCOUNT = 0
+FAIL = PATTERN
+FENCE = PATTERN
+OUTPUT = '**********************************************'
+REM = PATTERN
+SUCCEED = PATTERN
+TEST = 'abcdefghijklmnopqrstuvwxyz'
+VAR = 'abc'
+VARA = 'i'
+VARD = 'abc'
+VARL = 'abc'
+VART = 'abc'
+
+Unprotected keywords
+
+&ABEND = 0
+&ANCHOR = 0
+&CASE = 1
+&CODE = 0
+&DUMP = 2
+&ERRLIMIT = 100
+&FTRACE = 0
+&FULLSCAN = 1
+&INPUT = 1
+&MAXLNGTH = 16777215
+&OUTPUT = 1
+&STLIMIT = -1
+&TRACE = 1000
+&TRIM = 0

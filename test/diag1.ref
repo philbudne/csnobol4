@@ -1,0 +1,60 @@
+************************************************
+****	s n o b o l	 d i a g n o s t i c s ****
+****		 p h a s e    o	n e	       ****
+************************************************
+****	 any trace output indicates an error   ****
+************************************************
+************************************************
+**** n o	 e r r o r s	d e t e	c t e d	****
+****	e n d	 o f	 d i a g n o s t i c s ****
+************************************************
+Dump of variables at termination
+
+Natural variables
+
+A = ARRAY('3')
+AA = 'a'
+AAA = ARRAY('10')
+ABORT = PATTERN
+AMA = ARRAY('2,2,2,2')
+ARB = PATTERN
+ATA = TABLE(2,10)
+B = NODE
+BAL = PATTERN
+BB = 'b'
+C = CLUNK
+CC = 'c'
+D = ARRAY('-1:1,2')
+DIAGNOSTICS = 0
+E = 'e'
+EXPR = EXPRESSION
+F = 'f'
+FAIL = PATTERN
+FENCE = PATTERN
+FEXP = EXPRESSION
+OUTPUT = '************************************************'
+Q = 'qqq'
+QQ = 'x'
+REM = PATTERN
+SEXP = EXPRESSION
+STARS = '	error detected		***'
+SUCCEED = PATTERN
+T = TABLE(10,10)
+TA = ARRAY('2,2')
+
+Unprotected keywords
+
+&ABEND = 0
+&ANCHOR = 0
+&CASE = 1
+&CODE = 0
+&DUMP = 2
+&ERRLIMIT = 0
+&FTRACE = 0
+&FULLSCAN = 0
+&INPUT = 1
+&MAXLNGTH = 16777215
+&OUTPUT = 1
+&STLIMIT = -1
+&TRACE = 1000000
+&TRIM = 0
