@@ -1,0 +1,5 @@
+        STR = '12 x 23434 x 123'
+        P = SPAN('0123456789')
+
+	STR (*P $ OUTPUT) FAIL
+END
