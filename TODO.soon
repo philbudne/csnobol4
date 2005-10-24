@@ -1,5 +1,10 @@
 $Id$
 
+pattern match tracing PTRACE? MTRACE? under ifdef?
+	multi-level: entry/exit (subject, matched string)
+		element tracing
+		"cursor" display
+
 detect, use SDBM?
 
 OSX:
