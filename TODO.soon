@@ -1,15 +1,9 @@
 $Id$
 
-output source file & line (like compiler) for trace output!!!
-	look for uses of TRSTSP
-
-Rename STCL_ to TCL_?
-	use bumpy case????
-
 detect, use SDBM?
 
 OSX:
-	-framework for Tcl/Tk?
+	use -framework for Tcl/Tk?
 
 Unix domain sockets
 	datagram vs stream
@@ -18,13 +12,13 @@ Unix domain sockets
 Allow single accept for TCP?
 	ACCEPT1?
 
-DYNAMIC LOADING!!
-
 RANDOM() function(s)
 
-use SO_ and DL_ params!
 
-move pmprotos to loadable files?
+DYNAMIC LOADING!!
+    use SO_ and DL_ params!
+
+    move pmprotos to loadable files?
 	auto-find them????
 		well known array
 		well known function
