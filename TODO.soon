@@ -1,12 +1,24 @@
 $Id$
 
+increase dynamic region size?
+	512K (4MB) is sufficient to run GENC w/o GC
+
 pattern match tracing PTRACE? MTRACE? under ifdef?
 	multi-level: entry/exit (subject, matched string)
 		element tracing
 		"cursor" display
 
-detect, use SDBM?
-
+DBM
+    add sync, locking functions (where available; else fail)
+    return value indicating whether active updating is safe?
+    detect, use:
+	QDBM? qdbm.sourceforge.net
+		binaries for win32 available!
+		relic.h provides NDBM compat interface
+		hove.h provides GDBM compat interface
+	APR_SDBM?
+	SDBM?
+		include sources?
 OSX:
 	use -framework for Tcl/Tk?
 
