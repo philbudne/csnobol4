@@ -5,6 +5,9 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 10/23/2005
 	new: test/diag1.ref test/diag1.sno test/diag2.ref test/diag2.sno
 		add diags from VAX/VMS Macro SNOBOL4 (from SPITBOL?)
+	v311.sil: fix backtracking w/ *opr [PLB91]
+	new: test/unsc.sno
+		test backtracking w/ *opr
 
 10/22/2005
 	test/ftrace.ref test/spit.ref test/trace1.ref test/trace2.ref
@@ -15,7 +18,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	new: test/func2.sno test/func2.ref
 		Fix case folding of alternate function rentry label [PLB89]
 		add test program
-	v311.sil: prepend &FILE and &LINE to trace output!
+	v311.sil: prepend &FILE and &LINE to trace output! [PLB90]
 
 6/14/2005
 	configure: set, export SO_ and DL_ defines

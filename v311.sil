@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.107  2005/10/21 22:08:21  phil
+* [PLB90] prepend &FILE and &LINE to trace output!
+*
 * Revision 1.106  2005/10/21 18:09:03  phil
 * [PLB89] Perform case folding on alternate function entry label
 *
@@ -3298,7 +3301,7 @@ SCIN   PROC    SCNR
        SETAC   UNSCCL,0		   Clear UNSC flag		[PLB65]
 SCIN1  PROC    SCNR						[PLB82]
 SCIN1A MOVD    PATBCL,YPTR	   Set up pattern base pointer	[PLB82]
-       AEQLC   UNSCCL,0,SALT3	   Test UNSC flag		[PLB65]
+       AEQLC   UNSCCL,0,UNSC	   Test UNSC flag		[PLB65][PLB91]
        SETAC   PATICL,0		   Zero offset
 SCIN2  SETAC   LENFCL,1		   Set length failure
 SCIN3  INCRA   PATICL,DESCR	   Increment offset
@@ -3345,6 +3348,8 @@ PATBRA SELBRA  PTBRCL,(ANYC,ARBF,ARBN,ATP,CHR,BAL,BALF,BRKC,BRKX,BRKXF,DNME,DNME
 *				   Dispatch on index		[PLB65]
        BRANCH  INTR13		   Catch bad data		[PLB66]
 *_
+UNSC   SETAC   UNSCCL,0		   Clear UNSC flag		[PLB91]
+       MOVD    PATBCL,YPTR	   Reset pattern base		[PLB91]
 SALT3  AEQLC   LENFCL,0,SALT1	   Check length failure
        BRANCH  SALF1		   Go to nonlength failure
 *_
