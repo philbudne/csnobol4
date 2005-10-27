@@ -1,7 +1,16 @@
 $Id$
 
+FUNCTION & LABEL in SITBOL!
+
+option (keyword?) to enable GC tracing??
+	show size before & after, runtime
+
+report sum of run time spent in GC & percentage of time in GC
+
+report max heap size used
+
 increase dynamic region size?
-	512K (4MB) is sufficient to run GENC w/o GC
+	512K descrs (4MB) is sufficient to run GENC w/o GC
 
 pattern match tracing PTRACE? MTRACE? under ifdef?
 	multi-level: entry/exit (subject, matched string)
@@ -30,7 +39,7 @@ Allow single accept for TCP?
 	ACCEPT1?
 
 RANDOM() function(s)
-
+	dynamic?
 
 DYNAMIC LOADING!!
     use SO_ and DL_ params!
@@ -785,6 +794,14 @@ Implement SPITBOL EXIT [+-][34] freeze functionality
 
 ================
 
+SITBOL &HISTOGRAM support?
+
+SITBOL	(DIS)ASSOCIATE()
+	INSERTBP() REMOVEBP()
+	CONNECT()
+
+================
+
 perform live/dead analysis of variables for each function?!
 
 determine if any temporaries are always used only within a function
@@ -857,3 +874,5 @@ add optional bi-directional popen test???
 document new INET_xxx flags in man page???
 
 document API's in snolib.3!
+
+check if REPLACE() args same as last time
