@@ -54,7 +54,7 @@ Unprotected keywords
 &FULLSCAN = 0
 &GTRACE = 0
 &INPUT = 1
-&MAXLNGTH = 16777215
+&MAXLNGTH = xxx
 &OUTPUT = 1
 &STLIMIT = -1
 &TRACE = 1000000

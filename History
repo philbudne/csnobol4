@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/28/2005
+	test/tests.in test/diag1.ref test/diag2.ref
+		diag1/2 tests need "dump" filtering
+
 10/27/2005
 	v311.sil timing.sno lib/init.c lib/io.c test/a.ref
 	test/diag1.ref test/diag2.ref test/dump.ref doc/snobol4.1
