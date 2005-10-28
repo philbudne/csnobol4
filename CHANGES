@@ -5,7 +5,7 @@ For detailed revision history see History file
 Changes since 1.0 release;
 =========================
 
-	Added new builtin function groups:
+	Added new (experimental) builtin function groups:
 		"DBM" -- "ndbm" keyed database access
 		"COM" -- COM/OLE Automation on Win32
 		"STCL" -- SNOBOL/Tcl interface (optional)
@@ -15,8 +15,10 @@ Changes since 1.0 release;
 	autoconf compatibility: Honor CC, CFLAGS, CPPFLAGS,
 		LDFLAGS, DESTDIR environment variables.
 	Fix compilation on pre-panther OSX
-	Fix bug: second argument to DEFINE() was not case folded!
+	Fix second argument to DEFINE(): was not case folded!
+	Fix backtracking over unevaluated expressions
 	Prepend &FILE and &LINE to TRACE output
+	GC stats & tracing (-g command line option, &GTRACE keyword)
 
 Changes since 0.99.44 release;
 =============================
