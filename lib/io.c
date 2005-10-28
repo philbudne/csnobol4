@@ -891,6 +891,11 @@ io_printf
 	    sprintf(lp, "%15.3g", D_RV(dp));
 	    lp += strlen(lp);
 	    break;
+	case 'g':			/* unpadded g/float */
+	    dp = va_arg(vp, struct descr *);
+	    sprintf(lp, "%g", D_RV(dp));
+	    lp += strlen(lp);
+	    break;
 	case 's':			/* c-string (from version.c) */
 	    cp = va_arg(vp, char *);
 	    strcpy(lp, cp);

@@ -40,6 +40,7 @@ Unprotected keywords
 &ERRLIMIT = 100
 &FTRACE = 0
 &FULLSCAN = 1
+&GTRACE = 0
 &INPUT = 1
 &MAXLNGTH = 16777215
 &OUTPUT = 1

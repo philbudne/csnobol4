@@ -22,6 +22,7 @@ Unprotected keywords
 &ERRLIMIT = 0
 &FTRACE = 0
 &FULLSCAN = 0
+&GTRACE = 0
 &INPUT = 1
 &MAXLNGTH = xxx
 &OUTPUT = 1

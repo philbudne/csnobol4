@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/27/2005
+	v311.sil timing.sno lib/init.c lib/io.c test/a.ref
+	test/diag1.ref test/diag2.ref test/dump.ref doc/snobol4.1
+		imlement GC trace (-g flag, &GTRACE) GC total time stats
+
 10/23/2005
 	new: test/diag1.ref test/diag1.sno test/diag2.ref test/diag2.sno
 		add diags from VAX/VMS Macro SNOBOL4 (from SPITBOL?)

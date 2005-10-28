@@ -290,12 +290,14 @@ init_args( ac, av )
      * * When adding options, update usage() function (above) and man page!!!
      *
      * * '+' at start is required w/ GNU libc (Linux) to avoid broken
-     *		default behavior and is HOPEFULLY harmless (-+ if
-     *		given should fall into default case.  If we ever want
-     *		a real -+ option, ANOTHER + will need to be added).
+     *		default (non POSIX) behavior (continues picking up
+     *		switches after first file) and is HOPEFULLY harmless
+     *		(-+ if given should fall into default case.  If we
+     *		ever want a real -+ option, ANOTHER + will need to be
+     *		added, but it better not want an argument!)
      */
 
-    while ((c = getopt(argc, argv, "+bd:fhklnprsu:vMP:S:")) != -1) {
+    while ((c = getopt(argc, argv, "+bd:fghklnprsu:vMP:S:")) != -1) {
 	switch (c) {
 	case 'b':
 	    D_A(BANRCL) = !D_A(BANRCL);	/* toggle banner output */
@@ -309,6 +311,10 @@ init_args( ac, av )
 
 	case 'f':			/* toggle case folding */
 	    D_A(CASECL) = !D_A(CASECL);
+	    break;
+
+	case 'g':
+	    D_A(GCTRCL) = !D_A(GCTRCL);	/* toggle GC trace */
 	    break;
 
 	case 'v':			/* version */

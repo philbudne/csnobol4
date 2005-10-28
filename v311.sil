@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.108  2005/10/24 06:51:19  phil
+* [PLB91] Fix backtracking for *opr
+*
 * Revision 1.107  2005/10/21 22:08:21  phil
 * [PLB90] prepend &FILE and &LINE to trace output!
 *
@@ -1181,6 +1184,7 @@ GNVARS PROC    GENVAR		   Procedure to entry string
 *      Storage Regeneration
 *
 GC     PROC    ,		   Storage regeneration procedure
+       MSTIME  GCTMCL		   Time of GC start		[PLB92]
        XCALLC  vm_gc_advise,(1)	   Advise GC memory behavior	[PLB54]
        POP     GCREQ		   Restore space required
        PSTACK  BLOCL		   Post stack position
@@ -1305,7 +1309,14 @@ GCLAM4 SUM     TTLCL,TTLCL,BKDXU   Get to next block
        SUBTRT  GCGOT,TLSGP1,FRSGPT Compute amount reclaimed
        DECRA   GCGOT,DESCR
        RESETF  GCGOT,PTR	   Clear pointer flag
-       ACOMP   GCREQ,GCGOT,FAIL	   Compare with amount required
+       MSTIME  XCL		   Time for end of GC		[PLB92]
+       SBREAL  XCL,XCL,GCTMCL	   Compute elapsed time in GC	[PLB92]
+       ADREAL  GCTTTL,GCTTTL,XCL   Compute total time in GC	[PLB92]
+       ACOMPC  GCTRCL,0,,NOGCTR
+*				   Check &GTRACE		[PLB92]
+       OUTPUT  PUNCH,GCFMT,(FILENM,LNNOCL,XCL,GCGOT)
+*				   GC trace			[PLB92]
+NOGCTR ACOMP   GCREQ,GCGOT,FAIL	   Compare with amount required
        RRTURN  GCGOT,2
 *_
 *---------------------------------------------------------------------*
@@ -6686,6 +6697,8 @@ END1   AEQLC   STATCL,0,,ENDALL	   Skip stats if suppressed	[PLB12]
 *				   Print scanner stats
        OUTPUT  PUNCH,STGENO,(GCNO)				[PLB5]
 *				   Print regeneration stats
+       OUTPUT  PUNCH,STGETM,(GCTTTL)				[PLB92]
+*				   Print regeneration time
        OUTPUT  PUNCH,READNO,(RSTAT)				[PLB5]
 *				   Print read stats
        OUTPUT  PUNCH,WRITNO,(WSTAT)				[PLB5]
@@ -6863,6 +6876,7 @@ DTLIST DESCR   DTLIST,TTL+MARK,DTLEND-DTLIST-DESCR
        DESCR   ASSCSP,0,0	   TABLE
 DTLEND LHERE   ,
 *
+* [PLB92] NOTE! In reverse alphabetical order!
 KNLIST DESCR   KNLIST,TTL+MARK,KNEND-KNLIST-DESCR
 TRIMCL DESCR   0,0,I		   &TRIM
        DESCR   TRMSP,0,0
@@ -6876,6 +6890,8 @@ MLENCL DESCR   SIZLIM,0,I	   &MAXLNGTH			[PLB81]
        DESCR   MAXLSP,0,0
 INSW   DESCR   1,0,I		   &INPUT
        DESCR   INSP,0,0
+GCTRCL DESCR   0,0,I		   &GTRACE			[PLB92]
+       DESCR   GTRCSP,0,0					[PLB92]
 FULLCL DESCR   0,0,I		   &FULLSCAN
        DESCR   FULLSP,0,0
 TRACL  DESCR   0,0,I		   &FTRACE
@@ -7142,6 +7158,8 @@ EXN2CL DESCR   0,0,I		   Statement count for stats	[PLB38]
 FCL    DESCR   0,0,0		   Real number descriptor
 NEXFCL DESCR   FBLKSZ,0,0	   Offset in function block
 FRTNCL DESCR   0,0,0		   Failure return
+GCTMCL DESCR   0,0,0		   GC Start time		[PLB92]
+GCTTTL DESCR   0,0,R		   GC total time (want FP zero!) [PLB92]
 GOGOCL DESCR   0,0,0		   goto descriptor
 INCL   DESCR   0,0,0		   Global function descriptor
 IOKEY  DESCR   0,0,0		   I/O indicator
@@ -7940,6 +7958,7 @@ FULLSP STRING  'FULLSCAN'
 FUNTSP STRING  'FUNCTION'
 GESP   STRING  'GE'
 GTSP   STRING  'GT'
+GTRCSP STRING  'GTRACE'						[PLB92]
 IDENSP STRING  'IDENT'
 INSP   STRING  'INPUT'
 INTGSP STRING  'INTEGER'
@@ -8292,6 +8311,7 @@ ERRCF  FORMAT  'ERRORS DETECTED IN SOURCE PROGRAM\n\n'
 EXNO   FORMAT  '%D Statements executed, %d failed\n'
 FTLCF  FORMAT  '%v:%d: Error %d in statement %d at level %d\n'
 *								E3.4.1
+GCFMT  FORMAT  '%v:%d: GC %g ms %d free\n'			[PLB92]
 INCGCF FORMAT  'INCOMPLETE STORAGE REGENERATION.\n'
 INTIME FORMAT  '%F ms. Execution time\n'			[PLB71]
 LASTSF FORMAT  '%v:%d: Last statement executed was %d\n'
@@ -8306,6 +8326,7 @@ SOURCF FORMAT  '    Bell Telephone Laboratories, Incorporated\n\n'
 STATHD FORMAT  'SNOBOL4 statistics summary-\n'
 STDMP  FORMAT  '\fDump of variables at termination\n\n'
 STGENO FORMAT  '%D Regenerations of dynamic storage\n'
+STGETM FORMAT  '%F ms. Execution time in GC\n'			[PLB92]
 SUCCF  FORMAT  'No errors detected in source program\n\n'
 SYSCMT FORMAT  '%v:%d: Caught signal %d in statement %d at level %d\n'
 *								E3.4.1[PLB47]

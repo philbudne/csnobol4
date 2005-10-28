@@ -310,6 +310,13 @@ The
 .B FUNCTION()
 predicate exists in SITBOL.
 .TP
+.B &GTRACE
+.br
+If set to a non-zero value, each time a garbage collection is run,
+a trace message is output indicating the source file and line number
+of the current statement, how long the GC took, and how many units
+of storage are now free.
+.TP
 .B HOST()
 .br
 A limited simulation of the SPITBOL
@@ -889,6 +896,10 @@ Toggle folding of identifiers to upper case (see
 .B \-CASE
 and
 .BR &CASE ).
+.TP
+.B -g
+Toggle garbage collection tracing (see
+.BR &GTRACE ).
 .TP
 .B -h
 Give help. Shows usage message, includes default sizes for
