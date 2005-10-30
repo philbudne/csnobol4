@@ -1326,7 +1326,7 @@ fi
 if [ "$WITH_TCL" ]; then
     TCL_MAJOR_VERSION=0
     TCL_MINOR_VERSION=0
-    for TINCDIR in $INCDIR /usr/local/include /usr/local/include/tcl*.*; do
+    for TINCDIR in $INCDIR /usr/include /usr/local/include /usr/local/include/tcl*.*; do
 	if [ -d "$TINCDIR" -a -f "$TINCDIR/tcl.h" ]; then
 	    MAJ=`grep 'TCL_MAJOR_VERSION' $TINCDIR/tcl.h | awk '{ print $3 }'`
 	    MIN=`grep 'TCL_MINOR_VERSION' $TINCDIR/tcl.h | awk '{ print $3 }'`
@@ -1337,16 +1337,18 @@ if [ "$WITH_TCL" ]; then
 		# XXX based on include path??
 		FOUNDLIB=
 		for LIBDIR in /usr/lib /usr/local/lib; do
-		    if [ -f $LIBDIR/libtcl$MAJ$MIN.a -o \
-			 -f $LIBDIR/libtcl$MAJ$MIN.so ]; then
-			TCLLIBDIR=$LIBDIR
-			TCLLIB=tcl$MAJ$MIN
-			FOUNDLIB=1
-			break
-		    elif [ -f $LIBDIR/libtcl$MAJ.$MIN.a -o \
-			   -f $LIBDIR/libtcl$MAJ.$MIN.so ]; then
+		    if [ -f $LIBDIR/libtcl$MAJ.$MIN.a -o \
+			 -f $LIBDIR/libtcl$MAJ.$MIN.so -o \
+			 -f $LIBDIR/libtcl$MAJ.$MIN.dylib ]; then
 			TCLLIBDIR=$LIBDIR
 			TCLLIB=tcl$MAJ.$MIN
+			FOUNDLIB=1
+			break
+		    elif [ -f $LIBDIR/libtcl$MAJ$MIN.a -o \
+			 -f $LIBDIR/libtcl$MAJ$MIN.so -o \
+			 -f $LIBDIR/libtcl$MAJ$MIN.dylib ]; then
+			TCLLIBDIR=$LIBDIR
+			TCLLIB=tcl$MAJ$MIN
 			FOUNDLIB=1
 			break
 		    fi
@@ -1360,6 +1362,7 @@ if [ "$WITH_TCL" ]; then
 		TCLINCDIR="$TINCDIR"
 
 		# Pick up Tk too, if needed (loads as package in 8.4+)
+		# makes a HUGE executable!!!
 		TKLIB=
 		if [ ! "$WITHOUT_TK" ]; then
 		    if [ "$MAJ" -lt 8 -o "$MAJ" -eq 8 -a "$MIN" -lt 4 ]; then
@@ -1402,11 +1405,12 @@ if [ ! "$WITHOUT_NDBM" ]; then
     if [ -f $INCDIR/ndbm.h ]; then
 	echo "using $INCDIR/ndbm.h for DBM support" 2>&1
 	echo '#define HAVE_NDBM_H'		>> $CONFIG_H
+	# see if ndbm.h is Berkeley DB wrapper
 	if grep 'Margo Seltzer' $INCDIR/ndbm.h > /dev/null &&
 	    [ -f /usr/lib/libdb.a -o -f /usr/lib/libdb.so ]; then
 	    # RH5.2 has Berkeley DB ndbm.h, but seperate libdb.a
 	    # (BSD systems have BDB in libc)
-	    echo "using libdb for DBM support" 2>&1
+	    echo "using libdb for DBM support" 1>&2
 	    echo 'ADD_LDFLAGS([-ldb])'		>> $CONFIG_M4
 	elif grep 'GDBM' $INCDIR/ndbm.h > /dev/null &&
 	    [ -f /usr/lib/libgdbm.a -o /usr/lib/libgdbm.so -o \
@@ -1415,11 +1419,11 @@ if [ ! "$WITHOUT_NDBM" ]; then
 	    USE_GDBM=1
 	fi
     elif [ -f $INCDIR/gdbm/ndbm.h ]; then
-	echo "using $INCDIR/gdbm/ndbm.h for DBM support" 2>&1
+	echo "using $INCDIR/gdbm/ndbm.h for DBM support" 1>&2
 	echo '#define HAVE_GDBM_SLASH_NDBM_H'	>> $CONFIG_H
 	USE_GDBM=1
     elif [ -f $INCDIR/gdbm-ndbm.h ]; then
-	echo "using $INCDIR/gdbm-ndbm.h for DBM support" 2>&1
+	echo "using $INCDIR/gdbm-ndbm.h for DBM support" 1>&2
 	echo '#define HAVE_GDBM_DASH_NDBM_H'	>> $CONFIG_H
 	USE_GDBM=1
     else
@@ -1432,11 +1436,11 @@ if [ ! "$WITHOUT_NDBM" ]; then
 	if [ "$USE_GDBM" ]; then
 	    # gdbm 1.8.1: assume if it exists, we need it?
 	    if [ -f /usr/lib/libgdbm_compat.a -o \
-		 -f /usr/lib/libgdbm_compat.a ]; then
-		echo "using libgdbm_compat" 2>&1
+		 -f /usr/lib/libgdbm_compat.so ]; then
+		echo "using libgdbm_compat" 1>&2
 		echo 'ADD_LDFLAGS([-lgdbm_compat])' >> $CONFIG_M4
 	    fi
-	    echo "using libgdbm for DBM support" 2>&1
+	    echo "using libgdbm for DBM support" 1>&2
 	    echo 'ADD_LDFLAGS([-lgdbm])'	>> $CONFIG_M4
 	fi
 	echo '#define PML_NDBM'			>> $CONFIG_H
