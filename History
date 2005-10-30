@@ -2,6 +2,14 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/29/2005
+	v311.sil: fix GC trace; was stomping on XCL. Use TEMPCL.
+	configure: tweak Tcl configuration testing
+	lib/snolib/stcl.c: add URLs
+	timing: if no uname, run hostname if found
+		run name w/ -n -rs and -m
+	timing.sno: add DATE() output
+
 10/28/2005
 	test/tests.in test/diag1.ref test/diag2.ref
 		diag1/2 tests need "dump" filtering
@@ -9,7 +17,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 10/27/2005
 	v311.sil timing.sno lib/init.c lib/io.c test/a.ref
 	test/diag1.ref test/diag2.ref test/dump.ref doc/snobol4.1
-		imlement GC trace (-g flag, &GTRACE) GC total time stats
+		implement GC trace (-g flag, &GTRACE) GC total time stats
 	README, COPYRIGHT:
 		update dates
 	CHANGES:
