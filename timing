@@ -32,6 +32,18 @@ if [ "$UNAME" ]; then
 	echo 'uname -a:'
 	$UNAME -a
 
+	echo ''
+	echo 'uname -n:'
+	$UNAME -n
+
+	echo ''
+	echo 'uname -rs:'
+	$UNAME -rs
+
+	echo ''
+	echo 'uname -m:'
+	$UNAME -m
+
 	# show hardware, if we know how;
 	case `$UNAME` in
 	AIX*)
@@ -144,6 +156,15 @@ if [ "$UNAME" ]; then
 		./sunmodel 2>&1
 		;;
 	esac
+else
+	for p in `echo $PATH | tr : ' '`; do
+		if [ -x $p/hostname ]; then
+			echo ''
+			echo 'hostname:'
+			$p/hostname
+			break
+		fi
+	done
 fi
 
 # Solaris, Tru64
