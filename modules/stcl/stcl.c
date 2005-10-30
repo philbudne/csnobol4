@@ -5,7 +5,9 @@
  * Phil Budne <phil@ultimate.com> 6/23/2004
  *
  * Inspired by Arjen Markus' "ftcl" FORTRAN/Tcl interface
+ *	http://www.digitalsmarties.com/tcl/ftcl.zip
  * As mentioned in Clif Flynt's Usenix ";login:" newsletter column June 2004
+ *	http://www.usenix.org/publications/login/2004-06/pdfs/flynt.pdf
  */
 
 #ifdef HAVE_CONFIG_H
