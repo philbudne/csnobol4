@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.109  2005/10/28 04:40:48  phil
+* [PLB92] Implement GC trace (&GTRACE) and GC stats
+*
 * Revision 1.108  2005/10/24 06:51:19  phil
 * [PLB91] Fix backtracking for *opr
 *
@@ -1309,13 +1312,13 @@ GCLAM4 SUM     TTLCL,TTLCL,BKDXU   Get to next block
        SUBTRT  GCGOT,TLSGP1,FRSGPT Compute amount reclaimed
        DECRA   GCGOT,DESCR
        RESETF  GCGOT,PTR	   Clear pointer flag
-       MSTIME  XCL		   Time for end of GC		[PLB92]
-       SBREAL  XCL,XCL,GCTMCL	   Compute elapsed time in GC	[PLB92]
-       ADREAL  GCTTTL,GCTTTL,XCL   Compute total time in GC	[PLB92]
+       MSTIME  TEMPCL		   Time for end of GC		[PLB92][PLB93]
+       SBREAL  TEMPCL,TEMPCL,GCTMCL Compute elapsed time in GC	[PLB92][PLB93]
+       ADREAL  GCTTTL,GCTTTL,TEMPCL Compute total time in GC	[PLB92][PLB93]
        ACOMPC  GCTRCL,0,,NOGCTR
 *				   Check &GTRACE		[PLB92]
-       OUTPUT  PUNCH,GCFMT,(FILENM,LNNOCL,XCL,GCGOT)
-*				   GC trace			[PLB92]
+       OUTPUT  PUNCH,GCFMT,(FILENM,LNNOCL,TEMPCL,GCGOT)
+*				   GC trace			[PLB92][PLB93]
 NOGCTR ACOMP   GCREQ,GCGOT,FAIL	   Compare with amount required
        RRTURN  GCGOT,2
 *_
