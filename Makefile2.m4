@@ -497,7 +497,7 @@ com.o:	$(COM_CPP)
 #################
 # dynamicly loaded extension compilation parameters
 
-dlparam.sno:
+dlparam.sno: Makefile2
 	echo "# generated on `date`"	> dlparam.sno
 	echo "	CC = '"$(CC)"'"		>> dlparam.sno
 	echo "	DL_CFLAGS = '"$(DL_CFLAGS)"'" >> dlparam.sno

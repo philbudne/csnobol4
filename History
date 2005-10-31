@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/30/2005
+	configure: fix SunOS4 dlparams
+	Makefile2.m4: dlparams.sno depends on Makefile2
+
 10/29/2005
 	v311.sil: fix GC trace; was stomping on XCL. Use TEMPCL.
 	configure: tweak Tcl configuration testing

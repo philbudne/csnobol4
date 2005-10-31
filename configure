@@ -427,8 +427,8 @@ if [ "$GCCPATH" -a "$WANTGCC" ]; then
     fi
     echo 'ADD_OPT([-Wunused])'			>> $CONFIG_M4
 
-    case "$OS" in
-    Darwin)
+    case "$MORV" in
+    *:Darwin:*:*)
 	# "Apple gcc-934.3, based on gcc version 2.95.2 19991024"
 	# screws up data_init.c when compiled with -O2
 	echo 'DATA_INIT_CFLAGS=$(MYCPPFLAGS) -O'	>> $CONFIG_M4
@@ -437,7 +437,6 @@ if [ "$GCCPATH" -a "$WANTGCC" ]; then
 	# and dynamicly loaded extensions (bundles)
 
 	# -fPIC is the default on OS X
-
 	SO_EXT=dylib
 	SO_LD=$CCPATH
 	SO_LDFLAGS=-dynamiclib
@@ -445,6 +444,13 @@ if [ "$GCCPATH" -a "$WANTGCC" ]; then
 	DL_EXT=bundle
 	DL_LD=$CCPATH
 	DL_LDFLAGS=-bundle
+	;;
+
+    *:SunOS:4*:*)
+	SO_EXT=so
+	SO_CFLAGS=-fpic
+	SO_LD=/usr/bin/ld
+	SO_LDFLAGS='-assert nodefinitions'
 	;;
 
     *)
