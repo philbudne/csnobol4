@@ -5,24 +5,24 @@ CMT([################################################################])
 CMT([establish m4 macros to collect various options])
 CMT()
 CMT([extra C compiler cpp flags for all .c files & make depend])
-define([ADD_CPPFLAGS],[define([_CPPFLAGS],_CPPFLAGS $1)dnl])dnl
-define([_CPPFLAGS],)dnl
+define([ADD_CPPFLAGS],[divert(1) $1[]divert(0)dnl])dnl
+define([_CPPFLAGS],[undivert(1)])dnl
 CMT()
 CMT([extra C compiler optimize/debug flags for all .c files])
-define([ADD_OPT],[define([_OPT],_OPT $1)dnl])dnl
-define([_OPT],)dnl
+define([ADD_OPT],[divert(2) $1[]divert(0)dnl])dnl
+define([_OPT],[undivert(2)])dnl
 CMT()
 CMT([extra source files to make depend])
-define([ADD_SRCS],[define([_SRCS],_SRCS $1)dnl])dnl
-define([_SRCS],)dnl
+define([ADD_SRCS],[divert(3) $1[]divert(0)dnl])dnl
+define([_SRCS],[undivert(3)])dnl
 CMT()
 CMT([extra object files to snolib])
-define([ADD_OBJS],[define([_OBJS],_OBJS $1)dnl])dnl
-define([_OBJS],)dnl
+define([ADD_OBJS],[divert(4) $1[]divert(0)dnl])dnl
+define([_OBJS],[undivert(4)])dnl
 CMT()
 CMT([extra C compiler flags for final link])
-define([ADD_LDFLAGS],[define([_LDFLAGS],_LDFLAGS $1)dnl])dnl
-define([_LDFLAGS],)dnl
+define([ADD_LDFLAGS],[divert(5) $1[]divert(0)dnl])dnl
+define([_LDFLAGS],[undivert(5)])dnl
 
 ################################################################
 # defaults (may be overridden in config.m4)
@@ -389,7 +389,7 @@ system.o: $(SYSTEM_C)
 ################################################################
 # snolib -- library of external functions
 
-AUX_OBJS= _OBJS
+AUX_OBJS=[]_OBJS
 
 SNOLIB_OBJS=chop.o cos.o delete.o environ.o execute.o exists.o exit.o \
 	exp.o file.o findunit.o fork.o getstring.o handle.o host.o \

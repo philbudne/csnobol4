@@ -5,6 +5,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 11/1/2005
 	new snolib/dynamic.sno: dynamic loadable module utilities
 	configure: Tcl tweaks
+	Makefile2.m4: use divert/undivert for ADD_xxx macros/values
+	configure: update for HP-UX export symbols when dld'ing; add -fast
 
 10/31/2005
 	snolib/wrapper.sno: fix, update

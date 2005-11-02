@@ -490,6 +490,7 @@ else
 	    SO_LD=ld
 	    SO_LDFLAGS=-b
 	fi
+	FASTFLAGS=-fast
 	;;
     ia64:HP-UX:*:*)
 	if [ "$LP64" ]; then
@@ -503,6 +504,7 @@ else
 	    SO_LD=ld
 	    SO_LDFLAGS=-b
 	fi
+	FASTFLAGS=-fast
 	# works for unbundled compiler
 	CCVERS=-V
 	;;
@@ -1155,6 +1157,8 @@ if [ ! "$NO_DYNLIB" ]; then
 	echo 'undefine([hpux])'			>> $CONFIG_M4
 	echo 'LOAD_C=$(SRCDIR)lib/hpux/load.c'	>> $CONFIG_M4
 	SNOLIB_FILE=snolib.sl
+	# export all symbols
+	echo 'ADD_LDFLAGS([-Wl,-E])'		>> $CONFIG_M4
 	echo 'ADD_LDFLAGS([-ldld])'		>> $CONFIG_M4
     elif [ -f /NextDeveloper/Headers/mach-o/dyld.h -o \
            -f $INCDIR/mach-o/dyld.h ]; then
