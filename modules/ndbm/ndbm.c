@@ -17,13 +17,16 @@
 /* only one will be set: */
 #ifdef HAVE_NDBM_H
 #include <ndbm.h>
-#endif
+#endif /* HAVE NDBM_H */
 #ifdef HAVE_GDBM_SLASH_NDBM_H
 #include <gdbm/ndbm.h>
-#endif
+#endif /* HAVE_GDBM_SLASH_NDBM_H defined */
 #ifdef HAVE_GDBM_DASH_NDBM_H
 #include <gdbm-ndbm.h>
-#endif
+#endif /* HAVE_GDBM_DASH_NDBM_H defined */
+#ifdef HAVE_SDBM_H
+#include <sdbm.h>
+#endif /* HAVE_SDBM_H defined */
 
 #include "h.h"
 #include "equ.h"
