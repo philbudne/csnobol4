@@ -4,6 +4,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 11/2/2005
 	Makefile2: TEMP: have xsnobol4 depend on dlparam.sno
+	configure: fix dynamic linking on OSF1/DU/Tru64, SunOS4/cc
+	Makefile2: output dlparam.sno.tmp, do mv -f at end
 
 11/1/2005
 	new snolib/dynamic.sno: dynamic loadable module utilities

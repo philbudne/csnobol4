@@ -498,12 +498,13 @@ com.o:	$(COM_CPP)
 # dynamicly loaded extension compilation parameters
 
 dlparam.sno: Makefile2
-	echo "# generated on `date`"	> dlparam.sno
-	echo "	CC = '"$(CC)"'"		>> dlparam.sno
-	echo "	DL_CFLAGS = '"$(DL_CFLAGS)"'" >> dlparam.sno
-	echo "	DL_EXT = '"$(DL_EXT)"'"	>> dlparam.sno
-	echo "	DL_LD = '"$(DL_LD)"'"	>> dlparam.sno
-	echo "	DL_LDFLAGS = '"$(DL_LDFLAGS)"'" >> dlparam.sno
+	echo "# generated on `date`"	> dlparam.sno.tmp
+	echo "	CC = '"$(CC)"'"		>> dlparam.sno.tmp
+	echo "	DL_CFLAGS = '"$(DL_CFLAGS)"'" >> dlparam.sno.tno
+	echo "	DL_EXT = '"$(DL_EXT)"'"	>> dlparam.sno.tmp
+	echo "	DL_LD = '"$(DL_LD)"'"	>> dlparam.sno.tmp
+	echo "	DL_LDFLAGS = '"$(DL_LDFLAGS)"'" >> dlparam.sno.tmp
+	mv -f dlparam.sno.tmp dlparam.sno
 
 #################
 # lint picking
