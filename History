@@ -4,6 +4,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 11/1/2005
 	new snolib/dynamic.sno: dynamic loadable module utilities
+	configure: Tcl tweaks
 
 10/31/2005
 	snolib/wrapper.sno: fix, update
