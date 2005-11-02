@@ -1,13 +1,43 @@
 $Id$
 
-FUNCTION & LABEL in SITBOL!
+makewrapper:
+	doesn't handle no arg functions
+	need equ.h
+	add "HANDLE" datatype?
 
-option (keyword?) to enable GC tracing??
-	show size before & after, runtime
+document DBM
+	note key+data limits, page size limits?
 
-report sum of run time spent in GC & percentage of time in GC
+try compiling SDBM under MinGW, VC?
 
-report max heap size used
+on 32-bit PA-RISC HP-UX, link xsnobol4 w/ -Wl,-E
+	to export all symbols!
+
+have way to find out which DB library in use???
+
+create version specific subdir in SNOLIB_DIR?
+
+move dlparam values to HOST()?
+	OR -- make dlparam.inc!!!
+
+report percentage of time in GC?
+
+report GC free space in DESCRs?
+	output message at start of GC?
+	don't output messages if GTRACE < 0?
+		always output if GTRACE < 0? decrement if > 0? (like &FTRACE)
+			have -g increment GTRACE? set very large???
+
+expand interpreter routines?
+
+STCL
+	rename to TCL_?
+	does not work on OSX
+	ignore Tcl if older than 8.4??
+	Replace without-tk w/ --with-tk?
+	add --with-x11???
+
+report max heap size used!
 
 increase dynamic region size?
 	512K descrs (4MB) is sufficient to run GENC w/o GC
@@ -373,9 +403,18 @@ GC
 		grow/shrink it?
 		seperate dyanmic, vm_advise?
 
+	use semi-spaces?
+
 	replace GC with Boehm package??
 
-simulate dlopen() on HP-UX and NextStep, then use unix98 load.c?
+LOAD():
+	add LOADMODULE() -- looks for prototypes?
+
+	simulate dlopen() on HP-UX and NextStep, then use unix98 load.c?
+
+	do PML search at higher level?
+
+	allow multiple loaders, implement PML as one of many
 
 better man page installation
 	install formatted / compressed versions like the natives do
