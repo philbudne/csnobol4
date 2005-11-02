@@ -7,6 +7,11 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	configure: fix dynamic linking on OSF1/DU/Tru64, SunOS4/cc
 	Makefile2: output dlparam.sno.tmp, do mv -f at end
 
+	config/win32/borland.mak: add comment (behind the times)
+	config/win32/mingw.mak config/win32/ntmsvc.mak: use SDBM
+	lib/snolib/ndbm.c: allow use of SDBM
+	new lib/sdbm/LOTS: Ozan Yigit's SDBM library
+
 11/1/2005
 	new snolib/dynamic.sno: dynamic loadable module utilities
 	configure: Tcl tweaks
