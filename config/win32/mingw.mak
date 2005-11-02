@@ -24,8 +24,12 @@ COM_LIBS=-lole32 -luuid -loleaut32
 COM_DEFS=-DPML_COM
 COM_OBJ=com.o
 
+# Ozan Yigit's SDBM routines for NDBM interface
+SDBM_DEFS=-DPML_NDBM -DHAVE_SDBM_H -Ilib/sdbm
+SDBM_OBJ=ndbm.o sdbm_pair.o sdbm_hash.o sdbm.o
+
 CFLAGS=	-c $(OPT) -I$(SRCDIR)config/win32 -I$(SRCDIR)include -I$(SRCDIR). \
-	-DHAVE_CONFIG_H $(INET_DEFS) $(COM_DEFS)
+	-DHAVE_CONFIG_H $(INET_DEFS) $(COM_DEFS) $(SDBM_DEFS)
 
 # for com.cpp
 CXXFLAGS=$(CFLAGS) -fvtable-thunks -DNEED_COGETOBJECT
@@ -222,6 +226,9 @@ log.o:	$(SRCDIR)lib/snolib/log.c
 logic.o: $(SRCDIR)lib/snolib/logic.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/logic.c
 
+ndbm.o: $(SRCDIR)lib/snolib/ndbm.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/ndbm.c
+
 ord.o:	$(SRCDIR)lib/snolib/ord.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/ord.c
 
@@ -248,6 +255,17 @@ tan.o:	$(SRCDIR)lib/snolib/tan.c
 
 com.o:	$(SRCDIR)lib/win32/com.cpp
 	$(CXX) $(CXXFLAGS) $(SRCDIR)lib/win32/com.cpp
+
+#### sdbm
+
+sdbm.o: $(SRCDIR)lib/sdbm/sdbm.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/sdbm/sdbm.c
+
+sdbm_pair.o: $(SRCDIR)lib/sdbm/sdbm_pair.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/sdbm/sdbm_pair.c
+
+sdbm_hash.o: $(SRCDIR)lib/sdbm/sdbm_hash.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/sdbm/sdbm_hash.c
 
 ################################################################
 

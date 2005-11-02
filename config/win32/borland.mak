@@ -1,5 +1,7 @@
 # $Id$
 
+# XXX NOTE! OUT OF DATE!  COM & SDBM have not been added!!
+
 # Win95 Borland BCC32.EXE V5.5 compatible make file by Greg White 9/2/2000
 # should also work for WinNT 
 #

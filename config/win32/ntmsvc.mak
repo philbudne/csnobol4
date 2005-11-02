@@ -28,9 +28,14 @@ COM_LIBS=ole32.lib uuid.lib oleaut32.lib
 COM_DEFS=-DPML_COM
 COM_OBJ=com.obj
 
+# Ozan Yigit's SDBM routines for NDBM interface
+SDBM_DEFS=-DPML_NDBM -DHAVE_SDBM_H -Ilib\sdbm
+SDBM_OBJ=ndbm.obj sdbm_pair.obj sdbm_hash.obj sdbm.obj
+
 CFLAGS=	-c $(OPT) \
 	-I$(SRCDIR)config\win32 -I$(SRCDIR)include -I$(SRCDIR). \
-	-DHAVE_CONFIG_H $(INET_DEFS) -DBITFIELDS_SAME_TYPE $(COM_DEFS)
+	-DHAVE_CONFIG_H $(INET_DEFS) -DBITFIELDS_SAME_TYPE \
+	$(COM_DEFS) $(SDBM_DEFS)
 
 OBJ=	isnobol4.obj data.obj data_init.obj main.obj syn.obj \
 	version.obj bal.obj date.obj dump.obj endex.obj hash.obj \
@@ -43,7 +48,7 @@ OBJ=	isnobol4.obj data.obj data_init.obj main.obj syn.obj \
 	sin.obj spcint.obj spreal.obj sqrt.obj sset.obj tan.obj \
 	osopen.obj sys.obj tty.obj inet.obj bindresvport.obj \
 	execute.obj exists.obj term.obj findunit.obj exp.obj \
-	$(COM_OBJ)
+	$(COM_OBJ) $(SDBM_OBJ)
 
 snobol4.exe : $(OBJ)
 	link /out:snobol4.exe $(OBJ) $(INET_LIBS) $(COM_LIBS)
@@ -224,8 +229,11 @@ host.obj : $(SRCDIR)lib\snolib\host.c
 log.obj : $(SRCDIR)lib\snolib\log.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\log.c
 
-logic.obj : $(SRCDIR)lib\snolib\logic.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\logic.c
+log.obj : $(SRCDIR)lib\snolib\log.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\log.c
+
+ndbm.obj : $(SRCDIR)lib\snolib\ndbm.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\ndbm.c
 
 ord.obj : $(SRCDIR)lib\snolib\ord.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\ord.c
@@ -250,6 +258,17 @@ tan.obj : $(SRCDIR)lib\snolib\tan.c
 
 com.obj : $(SRCDIR)lib\win32\com.cpp
 	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\com.cpp
+
+#### sdbm
+
+sdbm.obj : $(SRCDIR)lib\sdbm\sdbm.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\sdbm\sdbm.c
+
+sdbm_pair.obj : $(SRCDIR)lib\sdbm\sdbm_pair.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\sdbm\sdbm_pair.c
+
+sdbm_hash.obj : $(SRCDIR)lib\sdbm\sdbm_hash.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\sdbm\sdbm_hash.c
 
 ################################################################
 
