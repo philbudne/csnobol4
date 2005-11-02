@@ -540,7 +540,7 @@ else
 	# -KPIC is default
 	SO_CFLAGS=
 	# use LD?
-	SO_LD=$CCPATH
+	SO_LD=cc
 	SO_LDFLAGS=-shared
 	;;
     *:AIX:2:3)
@@ -590,13 +590,13 @@ else
 	*) OPT="$OPT -fast" ;;
 	esac
 
-	case "$OSREL" in
-	V[1-4].*) ;;
-	*) CCVERS=-V ;;
-	esac
+	CCVERS=-V
 
+	# no cc flags needed
 	SO_EXT=so
-	SO_LDFLAGS=-shared
+	SO_LD=cc
+	# NOTE! quoting make it useless in Makefile!
+	SO_LDFLAGS="-shared -expect_unresolved '\\*'"
 	;;
 
     *:SunOS:4*:*)
@@ -609,7 +609,7 @@ else
 	SO_EXT=so
 	SO_CFLAGS=-pic
 	SO_LD=/bin/ld
-	SO_LDFLAGS=-assert nodefinitions
+	SO_LDFLAGS='-assert nodefinitions'
 	;;
     *:SunOS:5*:*)
 	# SunPRO;
