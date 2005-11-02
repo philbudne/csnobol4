@@ -5,8 +5,8 @@
 *
 * TODO:
 *	malloc string buffers to right size???
-*	*OR* make arg buffers static, so they can be returned???
 *	add 'PREDICATE' return type??
+*	add 'HANDLE' type???
 *
 *	function to invoke C compiler, loader (libtool?) to create so/dl/shl/..
 *	overall wrapper; take prototype, create file, executable, and load it!!
@@ -18,10 +18,15 @@
 	wpstrtype = 'STRING'
 	wpinttype = 'INTEGER'
 	wprealtype = 'REAL'
+	wphdltype = 'HANDLE'
+	wppredtype = 'PREDICATE'
 	wptypes = wpinttype | wprealtype | wpstrtype
+*		 | wphdltype
+	wprtypes = wptypes | wpredtype
 	wpname = ANY(&UCASE &LCASE '_') SPAN(&UCASE &LCASE '0123456789_')
 	wpend = ANY(',)')
 	wp4sp = '    '
+	wp8sp = '	'
 
 ****************
 *	wrapper.startfile(output_name)
@@ -41,6 +46,9 @@ wrapper.startfile
 	$fn = '#include "snotypes.h"'
 	$fn = '#include "macros.h"'
 	$fn = '#include "load.h"'
+	$fn = '#include "equ.h"'
+* XXX include handle.h?
+* XXX output handle list?
 							:(return)
 e.wrapper.startfile
 
@@ -54,86 +62,111 @@ e.wrapper.startfile
 
 	define("wrapper.proto(proto,fn)types,i,n,c,call")	:(e.wrapper.proto)
 wrapper.proto
-*	sigh; max 30 arguments! keep as linked list?
 
 	$fn =
 	$fn = '/* ' proto ' */'
 
 *	get function name
-	proto wpname . name '(' =			:f(wperr)
+	proto POS(0) wpname . name '(' =		:f(wperr)
 
+****************
 *	loop for each argument, saving types in array
 	n = 0
-	wpstrs = 0
-	types = ARRAY('1:30')
-wploop	proto wptypes . type wpend . c =		:f(wperr)
-	n = n + 1
-	types[n] = type					:f(wperr)
+	wpcopy = 0
 
-*	count string typed variables to save time later
-	wpstrs = IDENT(type, wpstrtype) wpstrs + 1
+*	sigh; max 30 arguments! keep as linked list?
+	types = ARRAY('0:29')
+	proto POS(0) ')' =				:s(wpepars)
+wploop	proto wptypes . type wpend . c =		:f(wperr)
+	types[n] = type					:f(wperr)
+*	terminal = 'types[' n '] = ' type
+	n = n + 1
+
+*	count string/handle typed variables to save time later
+	wpcopy = IDENT(type, wpstrtype) wpcopy + 1
+	wpcopy = IDENT(type, wphdltype) wpcopy + 1
 
 *	was terminator a close paren? if so we're done with args, else loop
-	IDENT(c, ')')					:s(wpend1)f(wploop)
+	IDENT(c, ')')					:s(wpepars)f(wploop)
 
-wperr	terminal = 'error in prototype: ' proto		:(freturn)
+wperr	TERMINAL = 'error in prototype: >' proto '<'	:(FRETURN)
 
 *	proto should now have return type (or be empty)
-wpend1	proto (wptypes | '') RPOS(0)			:f(wperr)
+wpepars
+*	TERMINAL = 'return type: ' proto
+	proto POS(0) (wprtypes | '') RPOS(0)		:f(wperr)
 
 *	output C function declaration
-	i = 1
+	i = 0
 	$fn = name '( LA_ALIST ) LA_DCL'
 	$fn = '{'
 
-*	loop declaring string variables
-	eq(wpstrs,0)					:s(wpnostrs)
+****************
+*	loop declaring variables
+	eq(wpcopy,0)					:s(wpnostrs)
 wploop2
+* XXX branch based on type?
 	IDENT(types[i],wpstrtype)			:f(wpnext2)
 	$fn = wp4sp 'char arg' i '[' wpmaxstr '];'
-wpnext2
-	i = i + 1
-	le(i,n)						:s(wploop2)
+wpnext2	i = i + 1
+	LT(i,n)						:s(wploop2)
 
+****************
 *	loop copying string variables
-	i = 1
-wploop3
-	IDENT(types[i],wpstrtype)			:f(wpnext3)
-	wpstrs = wpstrs + 1
+	i = 0
+wpcopy
+*	dispatch based on type
+		:($('wpcpy_' types[i]))
+wpcpy_STRING
 	$fn = wp4sp 'getstring(LA_PTR(' i '), arg' i ', sizeof(arg' i '));'
-wpnext3
-	i = i + 1
-	le(i,n)						:s(wploop3)
+							:(wpncopy)
+wpcpy_HANDLE
+*	XXXX handle HANDLE here!!
+wpcpy_INTEGER
+wpcpy_REAL
+wpcpy_
+wpncopy	i = i + 1
+	LT(i,n)						:s(wpcopy)
 
+****************
 *	construct function call
 wpnostrs
 	call = REPLACE(name,&UCASE,&LCASE) '('
-	i = 1
-wploop4
-	gt(i,n)						:s(wpeloop4)
-	call = gt(i,1) call ','
-	call = IDENT(types[i],wpinttype) call '(int)LA_INT(' i ')'
-+							:s(wpnext4)
-	call = IDENT(types[i],wprealtype) call '(double)LA_REAL(' i ')'
-+							:s(wpnext4)
-	call = IDENT(types[i],wpstrtype) call 'arg' i	:s(wpnext4)
 
-*	here with unknown argument type!!! fail????
+	i = 0
+wpcall	GE(i,n)						:s(wpecall)
+	call = GT(i,0) call ','
 
-wpnext4
-	i = i + 1					:(wploop4)
+* dispatch based on type
+		:($('wparg_' types[i]))
 
-wpeloop4
-	call = call ')'
+wparg_INTEGER
+	call = call '(int)LA_INT(' i ')'		:s(wpncall)
+wparg_REAL
+	call = call '(double)LA_REAL(' i ')'		:s(wpncall)
+wparg_STRING
+wparg_HANDLE
+	call = call 'arg' i
+wpncall	i = i + 1					:(wpcall)
+
+wpecall	call = call ')'
 
 *	here with complete invocation in "call"; output w/ proper return
-	IDENT(proto)					:s(wpretnull)
-	$fn = IDENT(proto,wpstrtype) wp4sp 'RETSTR((char *)' call ');'
-+							:s(wpdone)
-	$fn = IDENT(proto,wpinttype) wp4sp 'RETINT(' call ');' :s(wpdone)
-	$fn = IDENT(proto,wprealtype) wp4sp 'RETREAL(' call ');' :s(wpdone)
 
-wpretnull
+*	dispatch based on type
+		:($('wpret_' proto))
+
+wpret_STRING
+	$fn = wp4sp 'RETSTR((char *)' call ');'		:s(wpdone)
+wpret_INTEGER
+	$fn = wp4sp 'RETINT(' call ');'			:s(wpdone)
+wpret_REAL
+	$fn = wp4sp 'RETREAL(' call ');'		:s(wpdone)
+wpret_PREDICATE
+	$fn = wp4sp 'if (' call ')'
+	$fn = wp8sp 'RETNULL;'
+	$fn = wp4sp 'RETFAIL;'				:s(wpdone)
+wpret_
 	$fn = wp4sp call ';'
 	$fn = wp4sp 'RETNULL;'
 

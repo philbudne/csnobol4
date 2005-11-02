@@ -5,6 +5,9 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 11/1/2005
 	new snolib/dynamic.sno: dynamic loadable module utilities
 
+10/31/2005
+	snolib/wrapper.sno: fix, update
+
 10/30/2005
 	configure: fix SunOS4 dlparams
 	Makefile2.m4: dlparams.sno depends on Makefile2
