@@ -201,7 +201,7 @@ SRCS=	main.c $(SNOBOL4).c data.c data_init.c syn.c $(BAL_C) \
 
 changequote(@,@)dnl
 
-xsnobol4: $(OBJS)
+xsnobol4: $(OBJS) dlparam.sno
 	rm -f build.c
 	echo '/* MACHINE GENERATED.  EDITING IS FUTILE */'	> build.c
 	echo '#include "h.h"'					>> build.c

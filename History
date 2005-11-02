@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/2/2005
+	Makefile2: TEMP: have xsnobol4 depend on dlparam.sno
+
 11/1/2005
 	new snolib/dynamic.sno: dynamic loadable module utilities
 	configure: Tcl tweaks
