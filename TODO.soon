@@ -1,8 +1,6 @@
 $Id$
 
 makewrapper:
-	doesn't handle no arg functions
-	need equ.h
 	add "HANDLE" datatype?
 
 document DBM
@@ -17,8 +15,11 @@ have way to find out which DB library in use???
 
 create version specific subdir in SNOLIB_DIR?
 
-move dlparam values to HOST()?
-	OR -- make dlparam.inc!!!
+move dlparam values to HOST()??
+	OR
+	make sure dlparam.sno cleaned up
+
+include dlparams in timing.out!
 
 report percentage of time in GC?
 
