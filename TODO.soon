@@ -6,7 +6,7 @@ makewrapper:
 document DBM
 	note key+data limits, page size limits?
 
-try compiling SDBM under MinGW, VC?
+try compiling SDBM under MinGW
 
 on 32-bit PA-RISC HP-UX, link xsnobol4 w/ -Wl,-E
 	to export all symbols!
@@ -51,14 +51,7 @@ pattern match tracing PTRACE? MTRACE? under ifdef?
 DBM
     add sync, locking functions (where available; else fail)
     return value indicating whether active updating is safe?
-    detect, use:
-	QDBM? qdbm.sourceforge.net
-		binaries for win32 available!
-		relic.h provides NDBM compat interface
-		hove.h provides GDBM compat interface
-	APR_SDBM?
-	SDBM?
-		include sources?
+
 OSX:
 	use -framework for Tcl/Tk?
 
