@@ -500,7 +500,7 @@ com.o:	$(COM_CPP)
 dlparam.sno: Makefile2
 	echo "# generated on `date`"	> dlparam.sno.tmp
 	echo "	CC = '"$(CC)"'"		>> dlparam.sno.tmp
-	echo "	DL_CFLAGS = '"$(DL_CFLAGS)"'" >> dlparam.sno.tnp
+	echo "	DL_CFLAGS = '"$(DL_CFLAGS)"'" >> dlparam.sno.tmp
 	echo "	DL_EXT = '"$(DL_EXT)"'"	>> dlparam.sno.tmp
 	echo "	DL_LD = '"$(DL_LD)"'"	>> dlparam.sno.tmp
 	echo "	DL_LDFLAGS = '"$(DL_LDFLAGS)"'" >> dlparam.sno.tmp
