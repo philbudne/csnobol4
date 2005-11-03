@@ -229,8 +229,8 @@ host.obj : $(SRCDIR)lib\snolib\host.c
 log.obj : $(SRCDIR)lib\snolib\log.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\log.c
 
-log.obj : $(SRCDIR)lib\snolib\log.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\log.c
+logic.obj : $(SRCDIR)lib\snolib\logic.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\logic.c
 
 ndbm.obj : $(SRCDIR)lib\snolib\ndbm.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\ndbm.c
