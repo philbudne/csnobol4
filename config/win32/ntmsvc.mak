@@ -3,7 +3,7 @@
 # nmake file for VC++ 5.0 on WinNT 4.0 by P. Budne 2/4/1998
 # from batch file by David Feustel
 
-# tested 12/2003 w/ Visual Studio .NET 2003 (VC71)
+# tested 11/2005 w/ Visual Studio .NET 2003 (VC71)
 
 # XXX use to define SNOLIB_DIR??
 DEST=\snobol4
