@@ -45,9 +45,11 @@
 extern int errno;
 #endif
 
+#if 0	/* phil: DJGPP complains; all unnecessary? */
 extern char *malloc proto((unsigned int));
 extern void free proto((void *));
 extern long lseek();
+#endif
 
 /*
  * forward
