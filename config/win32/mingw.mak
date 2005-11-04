@@ -25,7 +25,7 @@ COM_DEFS=-DPML_COM
 COM_OBJ=com.o
 
 # Ozan Yigit's SDBM routines for NDBM interface
-SDBM_DEFS=-DPML_NDBM -DHAVE_SDBM_H -Ilib/sdbm
+SDBM_DEFS=-DPML_NDBM -DHAVE_SDBM_H -DDUFF -Ilib/sdbm
 SDBM_OBJ=ndbm.o sdbm_pair.o sdbm_hash.o sdbm.o
 
 CFLAGS=	-c $(OPT) -I$(SRCDIR)config/win32 -I$(SRCDIR)include -I$(SRCDIR). \
