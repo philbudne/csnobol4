@@ -2,14 +2,17 @@ $Id$
 
 makewrapper:
 	add "HANDLE" datatype?
+		install handle.h
+		export handle routines
+		have handle 'anchor' be a void **?
 
 document DBM
 	note key+data limits, page size limits?
 
-try compiling SDBM under MinGW
+try compiling SDBM under MinGW, DJGPP??
+	test w/ -DDUFF under msvc
 
-on 32-bit PA-RISC HP-UX, link xsnobol4 w/ -Wl,-E
-	to export all symbols!
+deal with OSF1 export '*' quoting!!!
 
 have way to find out which DB library in use???
 
@@ -19,7 +22,18 @@ move dlparam values to HOST()??
 	OR
 	make sure dlparam.sno cleaned up
 
-include dlparams in timing.out!
+	include dlparams in timing.out!?
+
+	dlparams for:
+		Cygwin??
+		DJGPP?!
+			dxe{2,3}gen? to link
+			.dxe extension??
+		MINGW??
+		MSVC???
+			need to create DLL!
+
+SNOEXP handle functions!!
 
 report percentage of time in GC?
 
@@ -29,11 +43,9 @@ report GC free space in DESCRs?
 		always output if GTRACE < 0? decrement if > 0? (like &FTRACE)
 			have -g increment GTRACE? set very large???
 
-expand interpreter routines?
-
 STCL
 	rename to TCL_?
-	does not work on OSX
+	does not work on OSX? try -framework?
 	ignore Tcl if older than 8.4??
 	Replace without-tk w/ --with-tk?
 	add --with-x11???
@@ -51,9 +63,6 @@ pattern match tracing PTRACE? MTRACE? under ifdef?
 DBM
     add sync, locking functions (where available; else fail)
     return value indicating whether active updating is safe?
-
-OSX:
-	use -framework for Tcl/Tk?
 
 Unix domain sockets
 	datagram vs stream
@@ -83,6 +92,9 @@ test for, and pre-include:
 	userinit.sno
 	current dir??
 	use to pre-load modules???
+
+expand interpreter routines?
+	(instead of set constant, prelude, switch on constant)
 
 Rafal:
 	Use readline (if available) for (cooked)
@@ -359,8 +371,6 @@ Tests;
 SPITBOL features;
 	FENCE()
 	NOT()
-
-	ITC()/CTI() ???		[== CHAR/ORD?]
 
 	SETEXIT()
 		CONTINUE, SCONTINUE, ABORT system labels
