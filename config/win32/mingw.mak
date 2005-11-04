@@ -42,7 +42,7 @@ OBJ=	isnobol4.o data.o data_init.o main.o syn.o version.o bal.o \
 	file.o getstring.o handle.o host.o log.o logic.o ord.o rename.o \
 	retstring.o sin.o spcint.o spreal.o sprintf.o sqrt.o sset.o \
 	tan.o osopen.o sys.o tty.o inet.o bindresvport.o execute.o \
-	exists.o term.o findunit.o $(COM_OBJ)
+	exists.o term.o findunit.o $(COM_OBJ) $(SDBM_OBJ)
 
 snobol4.exe: $(OBJ)
 	$(CC) -o snobol4 $(OBJ) $(INET_LIBS) $(COM_LIBS)
