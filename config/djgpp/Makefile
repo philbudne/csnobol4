@@ -16,6 +16,8 @@ LOAD_C=$(SRCDIR)lib/dummy/load.c
 # DXE2 LOAD() support.  DXE2 available from "v2tk" directory
 # on DJGPP distribution mirror sites.  Unpack and run "make install"
 #
+# "DXE3" now part of DJGPP distribution (as of April 2003)??
+#
 # uncomment next 4 lines to enable;
 #DXE_DEFS=-DHAVE_DXE2
 #LOAD_C=$(SRCDIR)lib/unix98/load.c
@@ -35,8 +37,12 @@ WATTCP_LIBDIR=${WATTCP_DIR}/lib
 #INET_OBJS=bindresvport.o
 #WATTCP_LIBS=-L${WATTCP_LIBDIR} -lwatt
 
+# Ozan Yigit's SDBM routines for NDBM interface
+SDBM_DEFS=-DPML_NDBM -DHAVE_SDBM_H -DDUFF -Ilib/sdbm
+SDBM_OBJS=ndbm.o sdbm_pair.o sdbm_hash.o sdbm.o
+
 CFLAGS=	-c $(OPT) -I$(SRCDIR)config/djgpp -I$(SRCDIR)include -I$(SRCDIR). \
-	-DHAVE_CONFIG_H $(WATTCP_DEFS) $(DXE_DEFS)
+	-DHAVE_CONFIG_H $(WATTCP_DEFS) $(DXE_DEFS) $(SDBM_DEFS)
 
 # WATTCP must be first!
 LIBS=$(WATTCP_LIBS) -lm -lc -lpc $(DXE_LIBS) 
@@ -47,11 +53,11 @@ OBJ=	isnobol4.o data.o data_init.o main.o syn.o \
 	pml.o realst.o replace.o str.o stream.o top.o \
 	tree.o bcopy.o bzero.o dynamic.o expops.o getopt.o \
 	init.o load.o mstime.o chop.o cos.o delete.o \
-	exit.o exp.o file.o getstring.o \
+	exit.o exp.o file.o getstring.o handle.o \
 	host.o log.o logic.o ord.o rename.o retstring.o sin.o \
 	spcint.o spreal.o sprintf.o sqrt.o sset.o \
 	tan.o sys.o tty.o inet.o execute.o exists.o \
-	term.o findunit.o $(DXE_OBJS) $(INET_OBJS)
+	term.o findunit.o $(DXE_OBJS) $(INET_OBJS) $(SDBM_OBJS)
 
 snobol4.exe: $(OBJ)
 	$(CC) -o snobol4 $(OBJ) $(LIBS)
@@ -220,6 +226,9 @@ findunit.o: $(SRCDIR)lib/snolib/findunit.c
 getstring.o: $(SRCDIR)lib/snolib/getstring.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/getstring.c
 
+handle.o: $(SRCDIR)lib/snolib/handle.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/handle.c
+
 host.o:	$(SRCDIR)lib/snolib/host.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/host.c
 
@@ -228,6 +237,9 @@ log.o:	$(SRCDIR)lib/snolib/log.c
 
 logic.o: $(SRCDIR)lib/snolib/logic.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/logic.c
+
+ndbm.o: $(SRCDIR)lib/snolib/ndbm.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/ndbm.c
 
 ord.o:	$(SRCDIR)lib/snolib/ord.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/ord.c
@@ -252,6 +264,17 @@ sset.o:	$(SRCDIR)lib/snolib/sset.c
 
 tan.o:	$(SRCDIR)lib/snolib/tan.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/tan.c
+
+#### sdbm
+
+sdbm.o: $(SRCDIR)lib/sdbm/sdbm.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/sdbm/sdbm.c
+
+sdbm_pair.o: $(SRCDIR)lib/sdbm/sdbm_pair.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/sdbm/sdbm_pair.c
+
+sdbm_hash.o: $(SRCDIR)lib/sdbm/sdbm_hash.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/sdbm/sdbm_hash.c
 
 ################ djgpp
 
