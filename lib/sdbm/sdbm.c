@@ -32,6 +32,7 @@
 
 #ifdef __STDC__
 #include <stddef.h>
+#include <stdlib.h>	/* phil: for malloc */
 #endif
 
 #ifndef NULL
