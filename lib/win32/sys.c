@@ -44,6 +44,12 @@ hwname(cp)
 	hw = "ppc";
 	break;
 
+#ifdef PROCESSOR_ARCHITECTURE_IA64
+    case PROCESSOR_ARCHITECTURE_IA64:
+	hw = "ia64";
+	break;
+#endif
+
     default:
 	sprintf(cp, "arch#%d", si.wProcessorArchitecture);
 	return;
@@ -90,7 +96,7 @@ osname(cp)
 		os = "Win95";
 		if (osv.szCSDVersion[1] == 'A' ||
 		    osv.szCSDVersion[1] == 'B') {
-		    os = "Win95OSR2";
+		    os = "Win95 OSR2";
 		    osv.szCSDVersion[0] = '\0';
 		}
 		break;
@@ -114,7 +120,8 @@ osname(cp)
     case VER_PLATFORM_WIN32_NT:
 	/* also osv.wProductType, wSuiteMask */
 	os = "WinNT";
-	if (osv.dwMajorVersion == 5) {
+	switch (osv.dwMajorVersion) {
+	case 5:
 	    switch (osv.dwMinorVersion) {
 	    case 0:
 		os = "Win2K";
@@ -123,12 +130,31 @@ osname(cp)
 		os = "WinXP";
 		break;
 	    case 2:
+		/* Could also be IA64
+		 * "Microsoft Windows XP Professional x64 Edition"
+		 * if( si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_IA64 &&
+                 *     osv.wProductType == VER_NT_WORKSTATION )
+		 */
 		os = "WinServer2003";
 		break;
 	    default:
 		vnum = 1;
 		break;
 	    }
+	    break;
+
+	case 6:
+	    switch (osv.dwMinorVersion) {
+	    case 0:
+		if (osv.wProductType == VER_NT_WORKSTATION)
+		    os = "WinVista";
+		else
+		    os = "WinLonghorn";
+		break;
+	    default:
+		break;
+	    }
+	    break;
 	}
 	break;
 

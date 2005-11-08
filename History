@@ -4,6 +4,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 11/7/2005
 	config/win32/ntmsvc.mak: define DUFF for SDBM 
+	lib/win32/sys.c: Add IA64, Longhorn, Vista (from MSDN)
 
 11/4/2005
 	config/win32/mingw.mak: add SDBM_OBJ
