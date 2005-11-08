@@ -8,6 +8,10 @@
  *	http://www.digitalsmarties.com/tcl/ftcl.zip
  * As mentioned in Clif Flynt's Usenix ";login:" newsletter column June 2004
  *	http://www.usenix.org/publications/login/2004-06/pdfs/flynt.pdf
+ *
+ * ISSUES:
+ * handles never deleted!!!
+ * Remove IncrRefCounts?  Add explicit calls?
  */
 
 #ifdef HAVE_CONFIG_H
@@ -27,7 +31,7 @@
 #include "handle.h"
 
 static struct handle_list tcl_interps;
-static struct handle_list tcl_objs;
+static struct handle_list tcl_objs;	/* NOT per-interp!! */
 
 /*
  * LOAD("STCL_CREATEINTERP()INTEGER")
@@ -40,6 +44,7 @@ STCL_CREATEINTERP( LA_ALIST ) LA_DCL
 {
     snohandle_t h;
     Tcl_Interp *interp = Tcl_CreateInterp();
+
     if (!interp)
 	RETFAIL;
 
@@ -50,14 +55,17 @@ STCL_CREATEINTERP( LA_ALIST ) LA_DCL
 
 #ifdef STCL_USE_TK
     /* init can fail if $DISPLAY not set -- ignore */
-    Tk_Init(interp);
+    Tk_Init(interp);			/* XXX check return? */
 #endif
 
     h = new_handle(&tcl_interps, interp);
     if (h == BAD_HANDLE) {
 	Tcl_DeleteInterp(interp);
+	/* XXX Release? */
+	/* XXX remove_handle? */
 	RETFAIL;
     }
+    /* XXX Release? */
     RETINT(h);				/* XXX make string tcl%d? */
 }
 
@@ -93,7 +101,6 @@ STCL_GETVAR( LA_ALIST ) LA_DCL
     Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_INT(0));
     if (!interp)
 	RETFAIL;
-
     getstring(LA_PTR(1), name, sizeof(name));
     val = Tcl_GetVar(interp, name, 0);
     RETSTR(val);
@@ -113,9 +120,9 @@ STCL_SETVAR( LA_ALIST ) LA_DCL
     Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_INT(0));
     if (!interp)
 	RETFAIL;
-
     getstring(LA_PTR(1), name, sizeof(name));
     getstring(LA_PTR(2), value, sizeof(value));
+
     if (!Tcl_SetVar(interp, name, value, 0))
 	RETFAIL;
     RETNULL;
@@ -134,8 +141,8 @@ STCL_EVAL( LA_ALIST ) LA_DCL
     Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_INT(0));
     if (!interp)
 	RETFAIL;
-
     getstring(LA_PTR(1), cmd, sizeof(cmd));
+
     if (Tcl_Eval(interp, cmd) != TCL_OK)
 	RETFAIL;
 
@@ -154,12 +161,12 @@ STCL_DELETEINTERP( LA_ALIST ) LA_DCL
     Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_INT(0));
     if (!interp)
 	RETFAIL;
-
     Tcl_DeleteInterp(interp);
+    remove_handle(&tcl_interps, LA_INT(0)); /* gone to SNOBOL world... */
     RETNULL;
 }
 
-/*
+/*****************************************************************
  * new functions for Tcl Object interface
  * 9/1/2004
  */
@@ -183,7 +190,7 @@ STCL_NEWSTRINGOBJ( LA_ALIST ) LA_DCL
     if (h == BAD_HANDLE)
 	RETFAIL;
 
-    Tcl_IncrRefCount(obj);
+    Tcl_IncrRefCount(obj);		/* XXX? */
     RETINT(h);
 }
 
@@ -199,6 +206,9 @@ STCL_GETSTRINGFROMOBJ( LA_ALIST ) LA_DCL
     char *val;
 
     obj = lookup_handle(&tcl_objs, LA_INT(0));
+    if (!obj)
+	RETFAIL;
+
     val = Tcl_GetStringFromObj(obj, &length);
     if (!val)
 	RETFAIL;
@@ -233,6 +243,7 @@ STCL_EVALOBJEX( LA_ALIST ) LA_DCL
     Tcl_Interp *interp = lookup_handle(&tcl_objs, LA_INT(0));
     Tcl_Obj *obj = lookup_handle(&tcl_objs, LA_INT(1));
     int ret;
+
     if (!interp || !obj)
 	RETFAIL;
 
@@ -263,15 +274,15 @@ STCL_GETOBJRESULT(LA_ALIST ) LA_DCL
 }
 
 /*
- * LOAD("STCL_OBJSETVAR2(INTEGER,STRING,STRING,INTEGER,INTEGER)STRING")
+ * LOAD("STCL_OBJSETVAR2(INTEGER,INTEGER,INTEGER,INTEGER,INTEGER)STRING")
  */
 int
 STCL_OBJSETVAR2( LA_ALIST ) LA_DCL
 {
     Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_INT(0));
     Tcl_Obj *part1 = lookup_handle(&tcl_objs, LA_INT(1));
-    Tcl_Obj *part2 = lookup_handle(&tcl_objs, LA_INT(2));
-    Tcl_Obj *val = lookup_handle(&tcl_objs, LA_INT(3));
+    Tcl_Obj *part2 = lookup_handle(&tcl_objs, LA_INT(2)); /* index */
+    Tcl_Obj *val = lookup_handle(&tcl_objs, LA_INT(3));	/* new value */
     Tcl_Obj *res;
     int h;
 
@@ -328,5 +339,7 @@ STCL_RELEASEOBJ( LA_ALIST ) LA_DCL
     if (!obj)
 	RETFAIL;
     Tcl_DecrRefCount(obj);
+    /* XXX check IsShared? */
+    remove_handle(&tcl_objs, LA_INT(0)); /* gone to SNOBOL world... */
     RETNULL;
 }
