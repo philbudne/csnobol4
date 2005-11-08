@@ -2,6 +2,14 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/7/2005
+	config/win32/ntmsvc.mak: define DUFF for SDBM 
+
+11/4/2005
+	config/win32/mingw.mak: add SDBM_OBJ
+	config/djgpp/Makefile: add SDBM
+	lib/sdbm/sdbm.c: if out old imports
+
 11/2/2005
 	Makefile2: TEMP: have xsnobol4 depend on dlparam.sno
 	configure: fix dynamic linking on OSF1/DU/Tru64, SunOS4/cc

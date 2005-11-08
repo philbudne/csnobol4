@@ -29,7 +29,7 @@ COM_DEFS=-DPML_COM
 COM_OBJ=com.obj
 
 # Ozan Yigit's SDBM routines for NDBM interface
-SDBM_DEFS=-DPML_NDBM -DHAVE_SDBM_H -Ilib\sdbm
+SDBM_DEFS=-DPML_NDBM -DHAVE_SDBM_H -DDUFF -Ilib\sdbm
 SDBM_OBJ=ndbm.obj sdbm_pair.obj sdbm_hash.obj sdbm.obj
 
 CFLAGS=	-c $(OPT) \
