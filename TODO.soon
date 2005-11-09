@@ -30,8 +30,7 @@ makewrapper:
 		install handle.h
 		export handle routines
 		have handle 'anchor' be a void **?
-
-	SNOEXP for handle functions!!
+	SNOEXP for handle functions?
 
 DBM
 	document
@@ -41,7 +40,7 @@ DBM
 
 	add sync function???
 
-create version specific subdir in SNOLIB_DIR?
+	convert SDBM to use bzero/bcopy?
 
 move dlparam values to HOST()??
 	OR
@@ -140,10 +139,7 @@ use snohandle_t's in */load.c!!!
 	create libtool/load.c??
 		use -lltdl
 
-win32;
-	link against msvcXX.dll?
-		Win98:	MSVCRT{20,40}.DLL
-		XP:	+ mscvr{70,71}
+create version specific subdir in SNOLIB_DIR?
 
 man page installation:
 	install preformatted, compressed where it's the norm?!
@@ -936,3 +932,8 @@ document new INET_xxx flags in man page???
 document API's in snolib.3!
 
 check if REPLACE() args same as last time
+
+win32;
+	link against msvcXX.dll?
+		Win98:	MSVCRT{20,40}.DLL
+		XP:	+ mscvr{70,71}
