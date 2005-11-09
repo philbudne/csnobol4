@@ -103,6 +103,11 @@ GETENV_C=$(SRCDIR)lib/dummy/getenv.c
 ISNAN_C=$(SRCDIR)lib/dummy/isnan.c
 SYSTEM_C=$(SRCDIR)lib/dummy/system.c
 
+# SDBM sources
+SDBM_C=$(SRCDIR)lib/sdbm/sdbm.c
+SDBM_PAIR_C=$(SRCDIR)lib/sdbm/sdbm_pair.c
+SDBM_HASH_C=$(SRCDIR)lib/sdbm/sdbm_hash.c
+
 # snolib sources
 CHOP_C=$(SRCDIR)lib/snolib/chop.c
 COS_C=$(SRCDIR)lib/snolib/cos.c
@@ -185,7 +190,7 @@ OBJS=	main.o $(SNOBOL4).o data.o data_init.o syn.o bal.o date.o \
 	suspend.o term.o top.o tree.o tty.o version.o \
 	$(PML_OBJS) $(SNOLIB_A)
 
-AUX_SRCS= _SRCS
+AUX_SRCS=[]_SRCS
 SRCS=	main.c $(SNOBOL4).c data.c data_init.c syn.c $(BAL_C) \
 	$(DATE_C) $(DUMP_C) $(DYNAMIC_C) $(ENDEX_C) $(EXPOPS_C) \
 	$(HASH_C) $(INET_C) $(INIT_C) $(INTSPC_C) $(IO_C) $(LEXCMP_C) \
@@ -371,6 +376,18 @@ getopt.o: $(GETOPT_C)
 
 bindresvport.o: $(BINDRESVPORT_C)
 	$(CC) $(CFLAGS) -c $(BINDRESVPORT_C)
+
+################
+# SDBM files -- only when needed
+
+sdbm.o: $(SDBM_C)
+	$(CC) $(CFLAGS) -c $(SDBM_C)
+
+sdbm_hash.o: $(SDBM_HASH_C)
+	$(CC) $(CFLAGS) -c $(SDBM_HASH_C)
+
+sdbm_pair.o: $(SDBM_PAIR_C)
+	$(CC) $(CFLAGS) -c $(SDBM_PAIR_C)
 
 ################
 # dummy files

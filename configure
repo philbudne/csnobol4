@@ -1440,8 +1440,11 @@ if [ ! "$WITHOUT_NDBM" ]; then
 	USE_GDBM=1
     else
 	# XXX check /usr/local/include??
-	echo 'no ndbm support found' 1>&2
-	NO_NDBM=1
+#	echo 'no ndbm support found' 1>&2
+#	NO_NDBM=1
+
+	# use SDBM (have a command line option to disable?)!
+	USE_SDBM=1
     fi
 
     if [ ! "$NO_NDBM" ]; then
@@ -1458,6 +1461,17 @@ if [ ! "$WITHOUT_NDBM" ]; then
 	echo '#define PML_NDBM'			>> $CONFIG_H
 	echo 'ADD_OBJS([ndbm.o])'		>> $CONFIG_M4
 	echo 'ADD_SRCS([$(NDBM_C)])'		>> $CONFIG_M4
+
+	if [ "$USE_SDBM" ]; then
+	    echo 'ADD_OBJS([sdbm.o])'		>> $CONFIG_M4
+	    echo 'ADD_SRCS([$(SDBM_C)])'	>> $CONFIG_M4
+	    echo 'ADD_OBJS([sdbm_hash.o])'	>> $CONFIG_M4
+	    echo 'ADD_SRCS([$(SDBM_HASH_C)])'	>> $CONFIG_M4
+	    echo 'ADD_OBJS([sdbm_pair.o])'	>> $CONFIG_M4
+	    echo 'ADD_SRCS([$(SDBM_PAIR_C)])'	>> $CONFIG_M4
+	    echo '#define HAVE_SDBM_H'		>> $CONFIG_H
+	    echo '#define DUFF'			>> $CONFIG_H
+	fi
     fi
 fi
 

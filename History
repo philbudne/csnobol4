@@ -2,9 +2,14 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/9/2005
+	lib/sdbm/sdbm{,_hash,_pair}.c: use config.h
+	lib/sdbm/sdbm.c: use unistd.h if HAVE_UNISTD_H defined
+	configure Makefile2.m4: use SDBM if no other alternative found
+
 11/8/2005
 	snolib/wrapper.sno: add SYSPRED
-
+	
 11/7/2005
 	config/win32/ntmsvc.mak: define DUFF for SDBM 
 	lib/win32/sys.c: Add IA64, Longhorn (from MSDN)
