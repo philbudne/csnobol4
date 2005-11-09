@@ -1,6 +1,11 @@
 $Id$
 
+Burks URLs in README file!!!
+
+STCL:	put Object calls under ifdef?
+
 makewrapper:
+	have SYSPRED return int?
 	add "HANDLE" datatype?
 		install handle.h
 		export handle routines
