@@ -5,7 +5,6 @@
 *
 * TODO:
 *	malloc string buffers to right size???
-*	add 'PREDICATE' return type??
 *	add 'HANDLE' type???
 *
 *	function to invoke C compiler, loader (libtool?) to create so/dl/shl/..
@@ -20,9 +19,10 @@
 	wprealtype = 'REAL'
 	wphdltype = 'HANDLE'
 	wppredtype = 'PREDICATE'
+	wpspredtype = 'SYSPRED'
 	wptypes = wpinttype | wprealtype | wpstrtype
 *		 | wphdltype
-	wprtypes = wptypes | wpredtype
+	wprtypes = wptypes | wpredtype | wpspredtype | ''
 	wpname = ANY(&UCASE &LCASE '_') SPAN(&UCASE &LCASE '0123456789_')
 	wpend = ANY(',)')
 	wp4sp = '    '
@@ -94,7 +94,7 @@ wperr	TERMINAL = 'error in prototype: >' proto '<'	:(FRETURN)
 *	proto should now have return type (or be empty)
 wpepars
 *	TERMINAL = 'return type: ' proto
-	proto POS(0) (wprtypes | '') RPOS(0)		:f(wperr)
+	proto POS(0) wprtypes RPOS(0)			:f(wperr)
 
 *	output C function declaration
 	i = 0
@@ -164,6 +164,11 @@ wpret_REAL
 	$fn = wp4sp 'RETREAL(' call ');'		:s(wpdone)
 wpret_PREDICATE
 	$fn = wp4sp 'if (' call ')'
+	$fn = wp8sp 'RETNULL;'
+	$fn = wp4sp 'RETFAIL;'				:s(wpdone)
+* system call (< 0 for failure)
+wpret_SYSPRED
+	$fn = wp4sp 'if (' call ' >= 0)'
 	$fn = wp8sp 'RETNULL;'
 	$fn = wp4sp 'RETFAIL;'				:s(wpdone)
 wpret_
