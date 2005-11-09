@@ -12,6 +12,10 @@
  * $Id$
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "sdbm.h"
 #include "tune.h"
 #include "pair.h"

@@ -12,6 +12,10 @@
  * $Id$
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "sdbm.h"
 #include "tune.h"
 #include "pair.h"
@@ -27,12 +31,15 @@
 #include <errno.h>
 #include <string.h>
 
-/* phil: added for MSVC SEEK_SET. Should be harmless: */
-#include <stdio.h>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>			/* POSIX.1 SEEK_SET */
+#else
+#include <stdio.h>			/* MSVC SEEK_SET */
+#endif
 
 #ifdef __STDC__
 #include <stddef.h>
-#include <stdlib.h>	/* phil: for malloc */
+#include <stdlib.h>			/* phil: for malloc */
 #endif
 
 #ifndef NULL
