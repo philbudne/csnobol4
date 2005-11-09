@@ -5,7 +5,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 11/9/2005
 	lib/sdbm/sdbm{,_hash,_pair}.c: use config.h
 	lib/sdbm/sdbm.c: use unistd.h if HAVE_UNISTD_H defined
-	configure Makefile2.m4: use SDBM if no other alternative found
+	configure Makefile2.m4: use SDBM as last resort
+	README: add money
 
 11/8/2005
 	snolib/wrapper.sno: add SYSPRED
