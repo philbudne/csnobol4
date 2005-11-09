@@ -41,8 +41,6 @@ DBM
 
 	add sync function???
 
-	have configure use SDBM if no other alternative found??
-
 create version specific subdir in SNOLIB_DIR?
 
 move dlparam values to HOST()??
