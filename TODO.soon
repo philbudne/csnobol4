@@ -1,6 +1,26 @@
 $Id$
 
+CHANGES
+	XXX mention MEM_IO, wrapper
+
+test for, and pre-include:
+	prolog.sno
+	local.sno
+	userinit.sno
+	current dir??
+	use to pre-load modules???
+
+	*** if any exist, need '-' on command line!!
+		always require it??
+		OR change io_attached(UNITI) test....
+
+	*** implement -IFINCLUDE?
+		process $VAR (as prefix?)
+
+	Implement run-time include???
+
 Burks URLs in README file!!!
+	call Mark Emmer?
 
 STCL:	put Object calls under ifdef?
 
@@ -11,21 +31,25 @@ makewrapper:
 		export handle routines
 		have handle 'anchor' be a void **?
 
-document DBM
-	note key+data limits, page size limits?
+	SNOEXP for handle functions!!
 
-try compiling SDBM under MinGW, DJGPP??
-	test w/ -DDUFF under msvc
+DBM
+	document
+		note key+data limits, page size limits?
 
-deal with OSF1 export '*' quoting!!!
+	have way to find out which DB library in use??? if live update safe??
 
-have way to find out which DB library in use???
+	add sync function???
+
+	have configure use SDBM if no other alternative found??
 
 create version specific subdir in SNOLIB_DIR?
 
 move dlparam values to HOST()??
 	OR
 	make sure dlparam.sno cleaned up
+
+	deal with OSF1 export '*' quoting!!!
 
 	include dlparams in timing.out!?
 
@@ -38,8 +62,6 @@ move dlparam values to HOST()??
 		MSVC???
 			need to create DLL!
 
-SNOEXP handle functions!!
-
 report percentage of time in GC?
 
 report GC free space in DESCRs?
@@ -50,12 +72,12 @@ report GC free space in DESCRs?
 
 STCL
 	rename to TCL_?
-	does not work on OSX? try -framework?
+	use -framework on OS X???
 	ignore Tcl if older than 8.4??
-	Replace without-tk w/ --with-tk?
-	add --with-x11???
+		Replace without-tk w/ --with-tk?
+		add --with-x11???
 
-report max heap size used!
+report max heap size used in stats
 
 increase dynamic region size?
 	512K descrs (4MB) is sufficient to run GENC w/o GC
@@ -64,10 +86,6 @@ pattern match tracing PTRACE? MTRACE? under ifdef?
 	multi-level: entry/exit (subject, matched string)
 		element tracing
 		"cursor" display
-
-DBM
-    add sync, locking functions (where available; else fail)
-    return value indicating whether active updating is safe?
 
 Unix domain sockets
 	datagram vs stream
@@ -90,13 +108,6 @@ DYNAMIC LOADING!!
 	use on dynamic load also?
 	use "include" files to declare?
 		generate from .c sources?!
-
-test for, and pre-include:
-	prolog.sno
-	local.sno
-	userinit.sno
-	current dir??
-	use to pre-load modules???
 
 expand interpreter routines?
 	(instead of set constant, prelude, switch on constant)
@@ -422,6 +433,9 @@ LOAD():
 	simulate dlopen() on HP-UX and NextStep, then use unix98 load.c?
 
 	do PML search at higher level?
+
+	**** undefended getenv + sprintf() in various load functions!!
+		pull up?
 
 	allow multiple loaders, implement PML as one of many
 
