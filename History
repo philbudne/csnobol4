@@ -4,6 +4,11 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 11/10/2005
 	v311.sil: decrement &GTRACE if positive
+	init.c:
+		experimental "preload" files
+		keep count of files, append "-" if none
+		-g sets &GTRACE to -1 (permanently on)
+		-L to disable preloading
 
 11/9/2005
 	lib/sdbm/sdbm{,_hash,_pair}.c: use config.h

@@ -61,6 +61,7 @@ char *params;
 char **argv;
 int firstarg;
 int argc;
+int nfiles;
 #endif /* NO_STATIC_VARS not defined */
 
 extern int optind;
@@ -115,6 +116,7 @@ usage( jname, justversion )
     fprintf(stderr,
 	    "-d DESCRS[km]\n\tsize of dynamic region in descriptors (default: %s)\n", showk(NDYNAMIC));
     p('f',"toggle folding of identifiers to upper case (-CASE)");
+    p('g',"enable GC trace (&GTRACE)");
     p('h',"help (this message)");
     p('k',"toggle running programs with compilation errors (-[NO]ERRORS)");
     p('l',"enable listings (-LIST)");
@@ -124,6 +126,7 @@ usage( jname, justversion )
     p('s',"toggle display of statistics");
     fprintf(stderr, "-u PARMS\n\tparameter data available via HOST(0)\n");
     p('v',"display version and exit");
+    p('L',"toggle pre-loading");
     p('M',"process multiple files for program code");
     fprintf(stderr, "-P DESCRS[km]\n");
     fprintf(stderr, "\tsize of pattern match stack in descriptors (default: %s)\n", showk(PSSIZE));
@@ -213,16 +216,21 @@ io_init()				/* here from INIT */
 
     io_initvars();
 
-    if (!io_attached(UNITI)) {		/* no input file(s)? */
+    if (nfiles == 0) {			/* no input file(s)? */
 #ifdef MEM_IO_TEST
 	char *str = "\tOUTPUT = 'Hello World'\n\tOUTPUT = INPUT\nEND\nFOO\n";
 	io_input_string( "input", str );
 #else
 	/* read code from stdin.... Macro SPITBOL requires '-' for this */
+#if 0
+	/* blows away preload list */
 	if (!io_mkfile_noclose(UNITI, stdin, STDIN_NAME)) {
 	    perror("could not attach stdin to INPUT");
 	    exit(1);
 	}
+#else
+	io_input_file("-");		/* implicit "-"! */
+#endif
 #endif
     }
     else {
@@ -255,6 +263,40 @@ io_init()				/* here from INIT */
     }
 } /* io_init */
 
+static int
+trypreload( var, defdir, file )
+    char *var, *defdir, *file;
+{
+    char *path;
+
+    if (var || defdir) {
+	char *dir = NULL;
+	int ret = 0;
+
+	if (var)
+	    dir = getenv(var);
+
+	if (!dir)
+	    dir = defdir;
+
+	path = malloc(strlen(dir) + 1 + strlen(file) + 1);
+	if (!path)
+	    return;
+	sprintf(path, "%s/%s", dir, file);
+	if (exists(path)) {
+	    io_input_file(path);
+	    ret = 1;
+	}
+	free(path);
+	return ret;
+    }
+    else if (exists(file)) {
+	io_input_file(file);
+	return 1;
+    }
+    return 0;
+} /* trypreload */
+
 /* called from main.c after init_data, before xfer to SIL BEGIN label */
 void
 init_args( ac, av )
@@ -265,6 +307,7 @@ init_args( ac, av )
     int c;
     int multifile;
     int justversion;
+    int preload;
 
     ndynamic = NDYNAMIC;
     pmstack = PSSIZE;
@@ -281,6 +324,7 @@ init_args( ac, av )
     errs = 0;
     multifile = 0;			/* SITBOL behavior */
     justversion = 0;
+    preload = 1;
 
     /*
      * ***** NOTE ******
@@ -297,7 +341,7 @@ init_args( ac, av )
      *		added, but it better not want an argument!)
      */
 
-    while ((c = getopt(argc, argv, "+bd:fghklnprsu:vMP:S:")) != -1) {
+    while ((c = getopt(argc, argv, "+bd:fghklnprsu:vLMP:S:")) != -1) {
 	switch (c) {
 	case 'b':
 	    D_A(BANRCL) = !D_A(BANRCL);	/* toggle banner output */
@@ -314,13 +358,14 @@ init_args( ac, av )
 	    break;
 
 	case 'g':
-	    D_A(GCTRCL) = !D_A(GCTRCL);	/* toggle GC trace */
+	    D_A(GCTRCL) = -1;		/* enable &GCTRACE */
 	    break;
 
 	case 'v':			/* version */
 	    justversion = 1;
 	    errs++;
 	    break;
+
 	case 'h':			/* help */
 	    justversion = 0;
 	    errs++;
@@ -356,6 +401,10 @@ init_args( ac, av )
 	    params = optarg;
 	    break;
 
+	case 'L':			/* pre-load files */
+	    preload = !preload;
+	    break;
+
 	case 'M':			/* multi-file input */
 	    multifile = !multifile;
 	    break;
@@ -375,6 +424,15 @@ init_args( ac, av )
 	}
     }
 
+    if (preload) {
+	/* try version based filename(s) as well as unversioned? */
+	/* XXX defend against including same file twice?! use io_include()? */
+	trypreload("SNODIR", SNOLIB_DIR, "preload.sno");
+	trypreload("SNODIR", SNOLIB_DIR, "prelocal.sno");
+	trypreload("HOME",   NULL,	 "preload.sno");
+	trypreload(NULL,     NULL,	 "preload.sno");
+    }
+
     /*
      * append first file (or all additional args until "--" seen
      * in "multi-file" mode) to INPUT stream
@@ -387,6 +445,7 @@ init_args( ac, av )
 	}
 	io_input_file( argv[optind] );
 	optind++;
+	nfiles++;
 	if (!multifile)			/* not in multi-file mode? */
 	    break;			/* break out */
     }
