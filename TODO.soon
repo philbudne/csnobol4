@@ -1,7 +1,11 @@
 $Id$
 
 CHANGES
-	XXX mention MEM_IO, wrapper
+	XXX mention MEM_IO, wrapper, dynamic
+		add SDBM credits to README
+
+README
+	1.0 timings
 
 test for, and pre-include:
 	prolog.sno
@@ -29,8 +33,7 @@ makewrapper:
 	add "HANDLE" datatype?
 		install handle.h
 		export handle routines
-		have handle 'anchor' be a void **?
-	SNOEXP for handle functions?
+	use SNOEXP() for handle functions?
 
 DBM
 	document
