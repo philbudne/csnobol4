@@ -174,11 +174,11 @@ while [ $# -gt 0 ]; do
     --with-tcl)
 	WITH_TCL=1
 	;;
+    --with-tk)
+	WITH_TK=1
+	;;
     --without-ndbm)
 	WITHOUT_NDBM=1
-	;;
-    --without-tk)
-	WITHOUT_TK=1
 	;;
     '')
 	;;
@@ -212,8 +212,8 @@ Install location;
 	--mandir=PATH		[default: PREFIX/man]
 
 Optional items;
-	--with-tcl		--without-tk
-				--without-ndbm
+	--with-tcl		--with-tk
+	--without-ndbm
 EOF
 
 	rm -f $CONFIG_M4 $CONFIG_H
@@ -1372,12 +1372,12 @@ if [ "$WITH_TCL" ]; then
 		TCLINCDIR="$TINCDIR"
 
 		# Pick up Tk too, if needed (loads as package in 8.4+)
-		# requires linking against X11 on Unix systems....
 		# makes a HUGE executable!!!
-		# Just bail, unless --with-tk requested???
+		# also requires linking against X11 on Unix systems....
 		TKLIB=
-		if [ ! "$WITHOUT_TK" ]; then
-		    if [ "$MAJ" -lt 8 -o "$MAJ" -eq 8 -a "$MIN" -lt 4 ]; then
+		if [ "$MAJ" -lt 8 -o "$MAJ" -eq 8 -a "$MIN" -lt 4 ]; then
+		    if [ "$WITH_TK" ]; then
+			echo checking for Tk libraries 1>&2
 			if [ -f $TCLLIBDIR/libtk$MAJ$MIN.a -o \
 			     -f $TCLLIBDIR/libtk$MAJ$MIN.so ]; then
 			    TKLIB=tk$MAJ$MIN
@@ -1385,6 +1385,10 @@ if [ "$WITH_TCL" ]; then
 			       -f $TCLLIBDIR/libtk.$MAJ.$MIN.so ]; then
 			    TKLIB=tk.$MAJ.$MIN
 			fi
+			if [ ! "TKLIB" ]; then
+			    echo Tk$MAJ.$MIN not found 1>&2
+		    else
+			echo Tk$MAJ.$MIN requires configure --with-tk 1>&2
 		    fi
 		fi
 	    fi
