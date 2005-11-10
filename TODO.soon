@@ -7,6 +7,16 @@ CHANGES
 README
 	1.0 timings
 
+INSTALL
+	new options:
+		--with-tcl
+		--without-dbm
+		--without-tk	** change to with??
+
+snobol4.1
+	-g &GTRACE?
+	DBM
+
 test for, and pre-include:
 	prolog.sno
 	local.sno
@@ -29,7 +39,7 @@ Burks URLs in README file!!!
 STCL:	put Object calls under ifdef?
 
 makewrapper:
-	have SYSPRED return int?
+	have SYSPRED return int (not a predicate!)?
 	add "HANDLE" datatype?
 		install handle.h
 		export handle routines
@@ -98,16 +108,32 @@ RANDOM() function(s)
 	dynamic?
 
 DYNAMIC LOADING!!
-    use SO_ and DL_ params!
-
-    move pmprotos to loadable files?
-	auto-find them????
+	add LOADMODULE() -- looks for prototypes?
+	    move pmprotos to loadable files?
+	    auto-find them????
 		well known array
 		well known function
 		search for any xxx_prototype
 	use on dynamic load also?
 	use "include" files to declare?
 		generate from .c sources?!
+
+	do PML search at higher level?
+		allow multiple loaders, implement PML as one of many??
+
+	**** undefended getenv + sprintf() in various load functions!!
+		pull up?
+
+	use snohandle_t's in */load.c?
+		need by-name lookup for unload!!!
+
+	create libtool/load.c??
+		use -lltdl
+
+	simulate dlopen() on HP-UX and NextStep, then use unix98 load.c?
+	keep usecount in next/load.c?  Apple dlopen() simulation does!
+		TESTED 4/15/2003 -- not needed??
+		http://cvs.opendarwin.org//cgi-bin/cvsweb.cgi/proj/dlcompat/
 
 expand interpreter routines?
 	(instead of set constant, prelude, switch on constant)
@@ -135,12 +161,6 @@ Test STCL, NDBM on Cygwin!
 
 Release 1.1;
 	update History, version.c, README, tag it
-
-use snohandle_t's in */load.c!!!
-	move common code out???
-
-	create libtool/load.c??
-		use -lltdl
 
 create version specific subdir in SNOLIB_DIR?
 
@@ -267,9 +287,6 @@ HOST() to return CSNOBOL4 version level??
 use ptime on Solaris for runtime checks?
 
 create generic load framework???
-
-keep usecount in next/load.c?  Apple dlopen() simulation does!
-	TESTED 4/15/2003 -- not needed??
 
 Add FORK() to pml.h (under PML_FORK?)
 
@@ -423,18 +440,6 @@ GC
 	use semi-spaces?
 
 	replace GC with Boehm package??
-
-LOAD():
-	add LOADMODULE() -- looks for prototypes?
-
-	simulate dlopen() on HP-UX and NextStep, then use unix98 load.c?
-
-	do PML search at higher level?
-
-	**** undefended getenv + sprintf() in various load functions!!
-		pull up?
-
-	allow multiple loaders, implement PML as one of many
 
 better man page installation
 	install formatted / compressed versions like the natives do
