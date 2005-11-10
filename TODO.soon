@@ -1,40 +1,27 @@
 $Id$
 
+test/run.sh
+	use -L in regression tests?
+
 CHANGES
 	XXX mention MEM_IO, wrapper, dynamic
 		add SDBM credits to README
 
 README
 	1.0 timings
+	Burks URLs
+		call Mark Emmer?
 
 INSTALL
 	new options:
 		--with-tcl
+		--with-tk
 		--without-dbm
-		--without-tk	** change to with??
 
 snobol4.1
 	-g &GTRACE?
 	DBM
-
-test for, and pre-include:
-	prolog.sno
-	local.sno
-	userinit.sno
-	current dir??
-	use to pre-load modules???
-
-	*** if any exist, need '-' on command line!!
-		always require it??
-		OR change io_attached(UNITI) test....
-
-	*** implement -IFINCLUDE?
-		process $VAR (as prefix?)
-
-	Implement run-time include???
-
-Burks URLs in README file!!!
-	call Mark Emmer?
+	preload files, -L
 
 STCL:	put Object calls under ifdef?
 
@@ -945,3 +932,8 @@ win32;
 	link against msvcXX.dll?
 		Win98:	MSVCRT{20,40}.DLL
 		XP:	+ mscvr{70,71}
+
+implement -IFINCLUDE?
+	process $VAR (as prefix?)
+
+new SPITBOL -IF???
