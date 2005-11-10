@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/10/2005
+	v311.sil: decrement &GTRACE if positive
+
 11/9/2005
 	lib/sdbm/sdbm{,_hash,_pair}.c: use config.h
 	lib/sdbm/sdbm.c: use unistd.h if HAVE_UNISTD_H defined

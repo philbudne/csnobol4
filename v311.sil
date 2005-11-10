@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.110  2005/10/30 05:31:00  phil
+* [PLB93] Use TEMPCL for GC time tracking
+*
 * Revision 1.109  2005/10/28 04:40:48  phil
 * [PLB92] Implement GC trace (&GTRACE) and GC stats
 *
@@ -1315,9 +1318,10 @@ GCLAM4 SUM     TTLCL,TTLCL,BKDXU   Get to next block
        MSTIME  TEMPCL		   Time for end of GC		[PLB92][PLB93]
        SBREAL  TEMPCL,TEMPCL,GCTMCL Compute elapsed time in GC	[PLB92][PLB93]
        ADREAL  GCTTTL,GCTTTL,TEMPCL Compute total time in GC	[PLB92][PLB93]
-       ACOMPC  GCTRCL,0,,NOGCTR
-*				   Check &GTRACE		[PLB92]
-       OUTPUT  PUNCH,GCFMT,(FILENM,LNNOCL,TEMPCL,GCGOT)
+       ACOMPC  GCTRCL,0,,NOGCTR,GCTRC
+*				   Check &GTRACE		[PLB92][PLB94]
+       DECRA   GCTRCL,1		   Decrement &GTRACE		[PLB94]
+GCTRC  OUTPUT  PUNCH,GCFMT,(FILENM,LNNOCL,TEMPCL,GCGOT)
 *				   GC trace			[PLB92][PLB93]
 NOGCTR ACOMP   GCREQ,GCGOT,FAIL	   Compare with amount required
        RRTURN  GCGOT,2
