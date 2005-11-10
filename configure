@@ -1387,6 +1387,7 @@ if [ "$WITH_TCL" ]; then
 			fi
 			if [ ! "TKLIB" ]; then
 			    echo Tk$MAJ.$MIN not found 1>&2
+			fi
 		    else
 			echo Tk$MAJ.$MIN requires configure --with-tk 1>&2
 		    fi
