@@ -35,7 +35,7 @@
 #include "load.h"
 #include "handle.h"
 
-static struct handle_list dbm_files;
+static handle_handle_t dbm_files;
 
 /*
  * LOAD("DBM_OPEN(STRING,STRING,INTEGER)INTEGER")

@@ -10,7 +10,6 @@
  *	http://www.usenix.org/publications/login/2004-06/pdfs/flynt.pdf
  *
  * ISSUES:
- * handles never deleted!!!
  * Remove IncrRefCounts?  Add explicit calls?
  */
 
@@ -30,8 +29,8 @@
 #include "load.h"
 #include "handle.h"
 
-static struct handle_list tcl_interps;
-static struct handle_list tcl_objs;	/* NOT per-interp!! */
+static handle_handle_t tcl_interps;
+static handle_handle_t tcl_objs;	/* Objects NOT per-interp!! */
 
 /*
  * LOAD("STCL_CREATEINTERP()INTEGER")
