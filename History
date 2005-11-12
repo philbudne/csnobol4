@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/11/2005
+	Makefile2.m4: run regressions without preloads
+
 11/10/2005
 	v311.sil: decrement &GTRACE if positive
 	init.c:
