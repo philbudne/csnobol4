@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/12/2005
+	timing: use HP-UX IA64 machinfo
+
 11/11/2005
 	Makefile2.m4: run regressions without preloads
 

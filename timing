@@ -105,6 +105,17 @@ if [ "$UNAME" ]; then
 			echo getconf MACHINE_MODEL:
 			/usr/bin/getconf MACHINE_MODEL
 		fi
+
+		# PA-RISC: can lookup arch using model output
+		# in /usr/sam/lib/mo/sched.models
+
+		# ia64 only
+		if [ -f /usr/contrib/bin/machinfo ]; then
+			echo ''
+			echo /usr/contrib/bin/machinfo
+			/usr/contrib/bin/machinfo
+			echo ENDMACHINFO
+		fi
 		;;
 	IRIX*)
 		echo ''
