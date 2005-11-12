@@ -1,8 +1,5 @@
 $Id$
 
-test/run.sh
-	use -L in regression tests?
-
 CHANGES
 	XXX mention MEM_IO, wrapper, dynamic
 		add SDBM credits to README
@@ -15,13 +12,17 @@ README
 INSTALL
 	new options:
 		--with-tcl
-		--with-tk
+		--with-tk	(exe 4x larger! 333K to 1333K, footprint 3.5x)
 		--without-dbm
 
 snobol4.1
 	-g &GTRACE?
 	DBM
+		note key+data limits, page size limits?
 	preload files, -L
+
+snolib.3
+	dynamic.sno functions
 
 STCL:	put Object calls under ifdef?
 
@@ -33,12 +34,7 @@ makewrapper:
 	use SNOEXP() for handle functions?
 
 DBM
-	document
-		note key+data limits, page size limits?
-
 	have way to find out which DB library in use??? if live update safe??
-
-	add sync function???
 
 	convert SDBM to use bzero/bcopy?
 
@@ -53,6 +49,7 @@ move dlparam values to HOST()??
 	dlparams for:
 		Cygwin??
 		DJGPP?!
+			dxe now part of djgpp?
 			dxe{2,3}gen? to link
 			.dxe extension??
 		MINGW??
@@ -61,18 +58,10 @@ move dlparam values to HOST()??
 
 report percentage of time in GC?
 
-report GC free space in DESCRs?
-	output message at start of GC?
-	don't output messages if GTRACE < 0?
-		always output if GTRACE < 0? decrement if > 0? (like &FTRACE)
-			have -g increment GTRACE? set very large???
-
 STCL
 	rename to TCL_?
-	use -framework on OS X???
-	ignore Tcl if older than 8.4??
-		Replace without-tk w/ --with-tk?
-		add --with-x11???
+	use -framework on OS X??
+	add --with-x11
 
 report max heap size used in stats
 
@@ -937,3 +926,6 @@ implement -IFINCLUDE?
 	process $VAR (as prefix?)
 
 new SPITBOL -IF???
+
+database w/ simultaneous updates?
+	TDB  by Andrew Tridgell <tridge@linuxcare.com> et al
