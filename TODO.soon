@@ -21,9 +21,6 @@ snobol4.1
 		note key+data limits, page size limits?
 	preload files, -L
 
-snolib.3
-	dynamic.sno functions
-
 STCL:	put Object calls under ifdef?
 
 makewrapper:

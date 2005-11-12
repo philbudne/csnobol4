@@ -4,13 +4,13 @@ For detailed revision history see History file
 
 Changes since 1.0 release;
 =========================
-
 	Added new (experimental) builtin function groups:
 		"DBM" -- "ndbm" keyed database access
 		"COM" -- COM/OLE Automation on Win32
 		"STCL" -- SNOBOL/Tcl interface (optional)
-	Add HTTP.POST function to http.sno
+	Added HTTP.POST function to http.sno
 	Handle environments where pointers can have high order bit set
+		Linux 2.6 kernels in Fedora Core, SuSE 10 distributions
 	Avoid broken "install" utilities
 	autoconf compatibility: Honor CC, CFLAGS, CPPFLAGS,
 		LDFLAGS, DESTDIR environment variables.
@@ -18,7 +18,10 @@ Changes since 1.0 release;
 	Fix second argument to DEFINE(): was not case folded!
 	Fix backtracking over unevaluated expressions
 	Prepend &FILE and &LINE to TRACE output
-	GC stats & tracing (-g command line option, &GTRACE keyword)
+	Experimenatl:
+		GC stats & tracing (-g command line option, &GTRACE keyword)
+		Preloaded files: SNOLIB/preload.sno SNOLIB/prelocal.sno
+				HOME/preload.sno ./preload.sno
 
 Changes since 0.99.44 release;
 =============================
