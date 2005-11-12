@@ -127,6 +127,7 @@ if [ "$UNAME" ]; then
 			echo ''
 			echo /proc/cpuinfo:
 			cat /proc/cpuinfo
+			echo 'ENDCPUINFO'
 		fi
 		if [ -f /proc/meminfo ]; then
 			echo ''
