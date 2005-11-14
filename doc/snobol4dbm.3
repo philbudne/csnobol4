@@ -1,0 +1,73 @@
+.\" -*-nroff-*-
+.\" $Id$
+.ie n \{\
+.       ds lq \&"\"
+.       ds rq \&"\"
+.\}
+.el \{\
+.       ds rq ''
+.       ds lq ``
+.\}
+.TH SNOBOL4DBM 1 "14 Nov 2005" "Local"
+.SH NAME
+snobol4dbm \- SNOBOL4 ndbm interface
+
+.SH SYNOPSIS
+dbhandle = DBM_OPEN(file,flags,mode)
+.LP
+DBM_STORE(dbhandle,key,datum,flags)
+.LP
+datum = DBM_FETCH(dbhandle,key)
+.LP
+key = DBM_FIRSTKEY(dbhandle)
+.LP
+key = DBM_NEXTKEY(dbhandle)
+.LP
+DBM_CLOSE(dbhandle)
+
+.SH DESCRIPTION
+"ndbm" is an industry standard database API first created in 4.3BSD,
+and included in Version 2 of the "Single Unix Specification" (SUSv2).
+
+.PP
+Several different packages implement this API, including:
+
+.IP \(bu
+The original BSD 4.3 ndbm, based on AT&T dbm. Found in commercial Un*x
+offerings.
+
+.IP \(bu
+Berkeley DB v1 compatibility interface.
+Supplied with 4.4BSD based systems: (Free|Open|Net)BSD, MacOS X.
+
+.IP \(bu
+GNU DBM (GDBM) found in Linux distributions.
+
+.IP \(bu
+SDBM, Ozan Yigit's Public Domain implementation of NDBM.
+Supplied with this distribution
+
+.SH FILES
+NDBM, GDBM, SDBM create two files: filename.dir, filename.pag.
+Berkeley DB creates a a single filename.db file.
+
+.SH SEE ALSO
+.BR ndbm (3), dbopen (3), gdbm (3).
+
+.SH AUTHOR
+Philip L. Budne
+
+.SH BUGS
+.PP
+None of the implements allow concurrent read and write.
+
+.PP
+Only GDBM provides locking to eliminate the possibility of file corruption,
+or reading of incomplete data.
+
+.PP
+DBM databases were traditionally (re)created from text files and used
+for fast disk-based read-only table lookups.  Programs which need to
+update the file generated a new copy, and then renamed the new
+file(s), so that the next reader gets the new copies (existing readers
+continue to see old data).

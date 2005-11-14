@@ -2,8 +2,15 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/14/2005
+	new: doc/snobol4dbm.3: DBM info
+	doc/snobol4.1: reference snobol4dbm(3), new Burks URLs
+	README: new Burks URLs
+
 11/12/2005
-	timing: use HP-UX IA64 machinfo
+	timing: use HP-UX IA64 machinfo, add ENDCPUINFO
+	CHANGES: updated
+	doc/snolib.3: add dynamic.sno
 
 11/11/2005
 	Makefile2.m4: run regressions without preloads
