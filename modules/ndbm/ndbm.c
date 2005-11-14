@@ -6,6 +6,37 @@
  *
  * "ndbm" is a database API created in 4.3BSD
  * and included in Version 2 of the "Single Unix Specification" (SUSv2)
+ *
+ * Several different packages implement this API, including:
+ *
+ * * Original BSD 4.3 ndbm, based on AT&T dbm
+ *	found in commercial Un*x offerings
+ * * Berkeley DB v1 compatibility interface
+ *	supplied with many 4.4BSD based systems (Free|Open|Net)BSD, MacOS X
+ * * GNU DBM (GDBM)
+ *	found in Linux distributions
+ * * SDBM, Ozan Yigit's Public Domain implementation of NDBM
+ *	supplied in this distribution
+ *
+ * None of the above allow concurrent read & write, and only GDBM
+ * provides locking to eliminate the possibility of file corruption.
+ *
+ * DBM databases were traditionally (re)created from text files and
+ * used for fast disk-based read-only table lookups.  Programs which
+ * need to update the file generate a new copy, and rename the new
+ * file(s) in-place, so that the next reader gets the new copies
+ * (existing readers continue to see the old data).
+ *
+ * File names:
+ *
+ * NDBM, GDBM, SDBM:
+ *	filename.dir, filename.pag
+ *
+ * Berkeley DB:
+ *	filename.db
+ *
+ * NDBM and SDBM place restrictions on the total size of key & datum
+ * (often around 1K).
  */
 
 #ifdef HAVE_CONFIG_H
@@ -16,7 +47,13 @@
 
 /* only one will be set: */
 #ifdef HAVE_NDBM_H
-#include <ndbm.h>
+/*
+ * may be AT&T/BSD or Berkeley DB v1 compat (*BSD, Darwin)
+ * for NDBM compat w/ Berkeley DB v2+:
+ * #define DB_DBM_H
+ * #include <db.h>
+ */
+#include <ndbm.h>			
 #endif /* HAVE NDBM_H */
 #ifdef HAVE_GDBM_SLASH_NDBM_H
 #include <gdbm/ndbm.h>
@@ -28,6 +65,12 @@
 #include <sdbm.h>
 #endif /* HAVE_SDBM_H defined */
 
+/*
+ * On glibc-2.1 systems, including Redhat 6.1, to use Berkeley v1:
+ * #include <db1/ndbm.h>
+ * link w/ -ldb1
+ */
+
 #include "h.h"
 #include "equ.h"
 #include "snotypes.h"
@@ -37,9 +80,50 @@
 
 static handle_handle_t dbm_files;
 
+#if 0
+static
+parse_mode(cp, len)
+    const char *cp;
+    int len;
+{
+    int mode = 0;
+
+    /* handle octal (check for leading digit)? */
+
+    /* XXX use table lookup?
+     * /*     'r'      'w'	'x' */
+     * { 'u', S_IRUSR, S_IWUSR, S_IXUSR },
+     * { 'g', S_IRGRP, S_IWGRP, S_IXGRP },
+     * { 'o', S_IROTH, S_IWOTH, S_IXOTH }
+     */
+
+    while (len-- > 0) {
+	int shift;
+	switch (*cp++) {
+	case 'u': shift = 6; break;
+	case 'g': shift = 3; break;
+	case 'o': shift = 0; break;
+	default: return -1;
+	}
+	while (len > 0) {		/* "bits" loop */
+	    switch (*cp) {
+	    case 'r': mode |= 4<<shift; break;
+	    case 'w': mode |= 2<<shift; break;
+	    case 'x': mode |= 1<<shift; break;
+	    default: goto break_bits;
+	    }
+	    cp++;
+	    len--;
+	}
+    break_bits:;
+    }
+    return mode;
+}
+#endif
+
 /*
  * LOAD("DBM_OPEN(STRING,STRING,INTEGER)INTEGER")
- * Create and initialize a TCL interpreter
+ * Open or create an indexed data file
  *
  * first arg:
  *	filename
@@ -49,6 +133,7 @@ static handle_handle_t dbm_files;
  *	"C":	create
  * third arg:
  *	file "mode" (default 0660)
+ *	XXX take [ugo][rwx]*
  *
  * return handle, or failure
  */
@@ -75,6 +160,7 @@ DBM_OPEN( LA_ALIST ) LA_DCL
 	case 'r': case 'R': break;
 	case 'w': case 'W': wr = 1; break;
 	case 'c': case 'C': create = 1; break;
+/* XXX add flag for locking? */
 	default: RETFAIL;
 	}
     }
@@ -125,7 +211,7 @@ DBM_CLOSE( LA_ALIST ) LA_DCL
  *
  * arg 1:	file handle
  * arg 2:	key
- * arg 3:	data
+ * arg 3:	datum
  * arg 4:	non-zero to replace
  *
  * returns:
@@ -168,7 +254,7 @@ DBM_STORE( LA_ALIST ) LA_DCL
  * arg 2:	key
  *
  * returns:
- * data or failure
+ * datum or failure
  */
 int
 DBM_FETCH( LA_ALIST ) LA_DCL
@@ -193,7 +279,7 @@ DBM_FETCH( LA_ALIST ) LA_DCL
  * arg 1:	file handle
  *
  * returns:
- * data or failure
+ * datum or failure
  */
 int
 DBM_FIRSTKEY( LA_ALIST ) LA_DCL
