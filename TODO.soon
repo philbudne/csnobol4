@@ -1,13 +1,13 @@
 $Id$
 
+Add file locking????
+
 CHANGES
 	XXX mention MEM_IO, wrapper, dynamic
 		add SDBM credits to README
 
 README
-	1.0 timings
-	Burks URLs
-		call Mark Emmer?
+	1.0 timing contributors
 
 INSTALL
 	new options:
@@ -17,9 +17,11 @@ INSTALL
 
 snobol4.1
 	-g &GTRACE?
-	DBM
-		note key+data limits, page size limits?
 	preload files, -L
+
+snobol4dbm.3
+	DESCRIPTION section!!!
+	note key+data limits, page size limits?
 
 STCL:	put Object calls under ifdef?
 
@@ -31,7 +33,8 @@ makewrapper:
 	use SNOEXP() for handle functions?
 
 DBM
-	have way to find out which DB library in use??? if live update safe??
+	have way to find out which DB library in use??? if live update safe?
+		use flock/fcntl on dbm_dirfno??
 
 	convert SDBM to use bzero/bcopy?
 
@@ -117,10 +120,6 @@ Rafal:
 		INPUT??
 		Compiler???
 	READLINE() function
-	SLEEP()
-	MKFIFO()
-	CRYPT()
-	SYSINFO()?
 
 undefined function (label?) hooks?
 

@@ -115,3 +115,5 @@ reg func2.sno
 dump diag1.sno
 dump diag2.sno
 reg unsc.sno
+# 11/16/2005
+opt ndbm.sno

@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/16/2005
+	new: test/test.opt.sh: implement optional test
+	test/run.sh: handle exit status 2 from optional test failure
+	new: test/ndbm.{sno,ref} optional test for NDBM
+
 11/15/2005
 	Makefile2.m4: install snobol4dbm.3 (thanks Rafal!)
 
