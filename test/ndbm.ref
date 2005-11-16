@@ -1,8 +1,5 @@
 HERE
-DUMP1
-a longer key -> a longer datum
-this -> that
- -> 
-DUMP2
-a longer key -> a longer datum
- -> 
+WALK1
+3
+WALK2
+2
