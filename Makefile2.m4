@@ -554,6 +554,7 @@ install: snobol4 pv dlparam.sno
 	$(INSTALL) -m 644 doc/snobol4.1 $(MAN1DIR)
 	$(INSTALL) -d $(MAN3DIR)
 	$(INSTALL) -m 644 doc/snolib.3 $(MAN3DIR)
+	$(INSTALL) -m 644 doc/snobol4dbm.3 $(MAN3DIR)
 	$(INSTALL) -d $(SNOLIB_DIR)
 	for F in $(SNOLIB_FILES); do \
 		$(INSTALL) -m 644 $$F $(SNOLIB_DIR); \

@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/15/2005
+	Makefile2.m4: install snobol4dbm.3 (thanks Rafal!)
+
 11/14/2005
 	new: doc/snobol4dbm.3: DBM info
 	doc/snobol4.1: reference snobol4dbm(3), new Burks URLs
