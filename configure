@@ -1468,7 +1468,7 @@ if [ ! "$WITHOUT_NDBM" ]; then
 	echo 'ADD_SRCS([$(NDBM_C)])'		>> $CONFIG_M4
 
 	if [ "$USE_SDBM" ]; then
-	    echo 'ADD_CPPFLAGS(-Ilib/sdbm)'	>> $CONFIG_M4
+	    echo 'ADD_CPPFLAGS([-Ilib/sdbm])'	>> $CONFIG_M4
 	    echo 'ADD_OBJS([sdbm.o])'		>> $CONFIG_M4
 	    echo 'ADD_SRCS([$(SDBM_C)])'	>> $CONFIG_M4
 	    echo 'ADD_OBJS([sdbm_hash.o])'	>> $CONFIG_M4
