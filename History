@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/18/2005
+	configure: need -Ilib/sdbm to use SDBM (thanks Rafal!)
+
 11/16/2005
 	new: test/test.opt.sh: implement optional test
 	test/run.sh: handle exit status 2 from optional test failure
