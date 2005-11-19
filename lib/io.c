@@ -1900,9 +1900,6 @@ io_flushall(dummy)
 	    if (f) {
 		if (fp->last == LAST_OUTPUT && ISAFILE(fp))
 		    fflush(f);		/* keep err count?? */
-
-		if (ISTTY(fp))
-		    tty_mode(f, 0, 0, 0); /* restore tty settings */
 	    } /* have f */
 	} /* have fp */
     } /* foreach unit */

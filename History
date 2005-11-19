@@ -4,6 +4,9 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 11/18/2005
 	configure: need -Ilib/sdbm to use SDBM (thanks Rafal!)
+	lib/io.c: remove tty_setmode from io_flushall()
+		endex -> io_finish -> io_closeall should do restore?!
+		Was causing badness (restoring settings from bad data?)
 
 11/16/2005
 	new: test/test.opt.sh: implement optional test
