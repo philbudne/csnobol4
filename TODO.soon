@@ -40,7 +40,7 @@ DBM
 
 move dlparam values to HOST()??
 	OR
-	make sure dlparam.sno cleaned up
+	make sure dlparam.sno cleaned up (& in .cvsignore?)
 
 	deal with OSF1 export '*' quoting!!!
 
