@@ -80,47 +80,6 @@
 
 static handle_handle_t dbm_files;
 
-#if 0
-static
-parse_mode(cp, len)
-    const char *cp;
-    int len;
-{
-    int mode = 0;
-
-    /* handle octal (check for leading digit)? */
-
-    /* XXX use table lookup?
-     * /*     'r'      'w'	'x' */
-     * { 'u', S_IRUSR, S_IWUSR, S_IXUSR },
-     * { 'g', S_IRGRP, S_IWGRP, S_IXGRP },
-     * { 'o', S_IROTH, S_IWOTH, S_IXOTH }
-     */
-
-    while (len-- > 0) {
-	int shift;
-	switch (*cp++) {
-	case 'u': shift = 6; break;
-	case 'g': shift = 3; break;
-	case 'o': shift = 0; break;
-	default: return -1;
-	}
-	while (len > 0) {		/* "bits" loop */
-	    switch (*cp) {
-	    case 'r': mode |= 4<<shift; break;
-	    case 'w': mode |= 2<<shift; break;
-	    case 'x': mode |= 1<<shift; break;
-	    default: goto break_bits;
-	    }
-	    cp++;
-	    len--;
-	}
-    break_bits:;
-    }
-    return mode;
-}
-#endif
-
 /*
  * LOAD("DBM_OPEN(STRING,STRING,INTEGER)INTEGER")
  * Open or create an indexed data file
