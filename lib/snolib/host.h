@@ -71,6 +71,36 @@
 /* CSNOBOL4: return default file for LOAD() */
 #define HOST_SNOLIB_FILE	2201
 
+/* CSNOBOL4: C Compiler used to build CSNOBOL4 */
+#define HOST_CC			2202
+
+/* CSNOBOL4: C Compiler optimizer flags used to build CSNOBOL4 */
+#define HOST_COPT		2203
+
+/* CSNOBOL4: Shared Object Library extension */
+#define HOST_SO_EXT		2204
+
+/* CSNOBOL4: C Compiler flags for Shared Objects */
+#define HOST_SO_CFLAGS		2205
+
+/* CSNOBOL4: Shared Object file load command */
+#define HOST_SO_LD		2206
+
+/* CSNOBOL4: Shared Object file load switches */
+#define HOST_SO_LDFLAGS		2207
+
+/* CSNOBOL4: Dynamic Loadable Library extension */
+#define HOST_DL_EXT		2208
+
+/* CSNOBOL4: C Compiler flags for Dynamic Loadables */
+#define HOST_DL_CFLAGS		2209
+
+/* CSNOBOL4: Dynamic Loadable file load command */
+#define HOST_DL_LD		2210
+
+/* CSNOBOL4: Dynamic Loadable file load switches */
+#define HOST_DL_LDFLAGS		2211
+
 /*****
  * integer constants;
  */

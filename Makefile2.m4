@@ -206,7 +206,7 @@ SRCS=	main.c $(SNOBOL4).c data.c data_init.c syn.c $(BAL_C) \
 
 changequote(@,@)dnl
 
-xsnobol4: $(OBJS) dlparam.sno
+xsnobol4: $(OBJS)
 	rm -f build.c
 	echo '/* MACHINE GENERATED.  EDITING IS FUTILE */'	> build.c
 	echo '#include "h.h"'					>> build.c
@@ -463,8 +463,9 @@ getstring.o: $(GETSTRING_C)
 handle.o: $(HANDLE_C)
 	$(CC) $(CFLAGS) -c $(HANDLE_C)
 
+HOST_C_CFLAGS=-DCC=\""$(CC)"\" -DCOPT=\""$(COPT)"\"
 host.o: $(HOST_C)
-	$(CC) $(CFLAGS) -c $(HOST_C)
+	$(CC) $(CFLAGS) $(HOST_C_CFLAGS) -c $(HOST_C)
 
 log.o: $(LOG_C)
 	$(CC) $(CFLAGS) -c $(LOG_C)
@@ -512,18 +513,6 @@ com.o:	$(COM_CPP)
 	$(CC) $(CFLAGS) -c -fvtable-thunks $(COM_CPP)
 
 #################
-# dynamicly loaded extension compilation parameters
-
-dlparam.sno: Makefile2
-	echo "# generated on `date`"	> dlparam.sno.tmp
-	echo "	CC = '"$(CC)"'"		>> dlparam.sno.tmp
-	echo "	DL_CFLAGS = '"$(DL_CFLAGS)"'" >> dlparam.sno.tmp
-	echo "	DL_EXT = '"$(DL_EXT)"'"	>> dlparam.sno.tmp
-	echo "	DL_LD = '"$(DL_LD)"'"	>> dlparam.sno.tmp
-	echo "	DL_LDFLAGS = '"$(DL_LDFLAGS)"'" >> dlparam.sno.tmp
-	mv -f dlparam.sno.tmp dlparam.sno
-
-#################
 # lint picking
 
 lint:   llib-lf.ln
@@ -540,12 +529,12 @@ INSTALL_H=[include]/h.h [include]/snotypes.h [include]/macros.h \
 	[include]/load.h [include]/dt.h config.h equ.h
 
 # generated SNOLIB files (host.sno generated at top level)
-GENSNOLIB=host.sno dlparam.sno
+GENSNOLIB=host.sno
 
 SNOLIB_FILES=snolib/*.sno $(INSTALL_H) doc/load.txt README $(GENSNOLIB) 
 
 VERS=`./pv`
-install: snobol4 pv dlparam.sno
+install: snobol4 pv
 	$(INSTALL) -d $(BINDIR)
 	$(INSTALL) -s snobol4 $(BINDIR)
 	-rm -f $(BINDIR)/snobol4-$(VERS)

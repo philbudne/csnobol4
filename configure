@@ -1317,11 +1317,17 @@ if [ "x$SO_EXT" != x -a "x$DL_EXT" = x ]; then
 fi
 
 if [ "x$SO_EXT" != x ]; then
-    echo '# Share Object Libraries'	>> $CONFIG_M4
+    echo '# Shared Object Libraries'	>> $CONFIG_M4
     echo "SO_EXT=$SO_EXT"		>> $CONFIG_M4
     echo "SO_CFLAGS=$SO_CFLAGS"		>> $CONFIG_M4
     echo "SO_LD=$SO_LD"			>> $CONFIG_M4
     echo "SO_LDFLAGS=$SO_LDFLAGS"	>> $CONFIG_M4
+
+    echo '/* Shared Object Libraries (in config.m4 too) */' >> $CONFIG_H
+    echo "#define SO_EXT \"$SO_EXT\""	>> $CONFIG_H
+    echo "#define SO_CFLAGS \"$SO_CFLAGS\"" >> $CONFIG_H
+    echo "#define SO_LD \"$SO_LD\""	>> $CONFIG_H
+    echo "#define SO_LDFLAGS \"$SO_LDFLAGS\"" >> $CONFIG_H
 fi
 
 if [ "x$DL_EXT" != x ]; then
@@ -1330,6 +1336,12 @@ if [ "x$DL_EXT" != x ]; then
     echo "DL_CFLAGS=$DL_CFLAGS"		>> $CONFIG_M4
     echo "DL_LD=$DL_LD"			>> $CONFIG_M4
     echo "DL_LDFLAGS=$DL_LDFLAGS"	>> $CONFIG_M4
+
+    echo '/* Dynamicly Loaded Extensions (in config.m4 too) */' >> $CONFIG_H
+    echo "#define DL_EXT \"$DL_EXT\""	>> $CONFIG_H
+    echo "#define DL_CFLAGS \"$DL_CFLAGS\"" >> $CONFIG_H
+    echo "#define DL_LD \"$DL_LD\""	>> $CONFIG_H
+    echo "#define DL_LDFLAGS \"$DL_LDFLAGS\"" >> $CONFIG_H
 fi
 
 # Include STCL (tcl/tk) support, if requested

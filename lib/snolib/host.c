@@ -188,6 +188,56 @@ HOST( LA_ALIST ) LA_DCL
 	RETSTR(SNOLIB_FILE);
 #endif /* SNOLIB_FILE defined */
 
+#ifdef CC
+    case HOST_CC:
+	RETSTR(CC);
+#endif /* HOST_CC defined */
+
+#ifdef COPT
+    case HOST_COPT:
+	RETSTR(COPT);
+#endif /* HOST_COPT defined */
+
+#ifdef SO_EXT
+    case HOST_SO_EXT:
+	RETSTR(SO_EXT);
+#endif /* SO_EXT defined */
+
+#ifdef SO_CFLAGS
+    case HOST_SO_CFLAGS:
+	RETSTR(SO_CFLAGS);
+#endif /* SO_CFLAGS defined */
+
+#ifdef SO_LD
+    case HOST_SO_LD:
+	RETSTR(SO_LD);
+#endif /* SO_LD defined */
+
+#ifdef SO_LDFLAGS
+    case HOST_SO_LDFLAGS:
+	RETSTR(SO_LDFLAGS);
+#endif /* SO_LDFLAGS defined */
+
+#ifdef DL_EXT
+    case HOST_DL_EXT:
+	RETSTR(DL_EXT);
+#endif /* DL_EXT defined */
+
+#ifdef DL_CFLAGS
+    case HOST_DL_CFLAGS:
+	RETSTR(DL_CFLAGS);
+#endif /* DL_CFLAGS defined */
+
+#ifdef DL_LD
+    case HOST_DL_LD:
+	RETSTR(DL_LD);
+#endif /* DL_LD defined */
+
+#ifdef DL_LDFLAGS
+    case HOST_DL_LDFLAGS:
+	RETSTR(DL_LDFLAGS);
+#endif /* DL_LDFLAGS defined */
+
 /* integer constants; */
     case HOST_INTEGER_BITS:
 	RETINT(sizeof(INT_T)*BPC);	/* INTEGER size */

@@ -121,6 +121,11 @@ Rafal:
 		Compiler???
 	READLINE() function
 
+Create loadable modules:
+	STCL
+	POSIX
+		MKFIFO, etc?
+
 undefined function (label?) hooks?
 
 Test COM
@@ -184,7 +189,6 @@ create csnobol4 home page (seperate sections for 0.99.4, 0.99.44, new);
 test
 	VMS, DJGPP, Cygwin, MINGW
 	@HP testdrive & ICS
-	QNX (Fred?)
 
 packaging;
 	LSM file? http://lsm.execpc.com/lsm

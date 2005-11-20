@@ -2,6 +2,15 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/19/2005
+	timing.sno: use DATE(2)
+	lib/snolib/ndbm.c: removed parse_mode()
+	configure: send DL_ and SO_ params to config.h too for HOST()
+	Makefile2.m4: flush dlparam.sno; pass CC and COPT to host.c
+	lib/snolib/host.[ch]: add HOST_DL..., HOST_SO..., HOST_CC, HOST_COPT
+	snolib/dynamic.sno: use HOST() instead of dlparam.sno
+		now with optimization!
+
 11/18/2005
 	configure: need -Ilib/sdbm to use SDBM (thanks Rafal!)
 	lib/io.c: remove tty_setmode from io_flushall()
