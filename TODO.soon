@@ -1,6 +1,11 @@
 $Id$
 
-Add file locking????
+append /<version> to default SNOLIB?
+
+add ADD_WARN() --add-warn=
+
+create ndbm.sno w/ NDBM_INSERT/REPLACE values, LOAD() calls
+	remove PMLPROTOS?
 
 CHANGES
 	XXX mention MEM_IO, wrapper, dynamic
@@ -17,7 +22,7 @@ INSTALL
 
 snobol4.1
 	-g &GTRACE?
-	preload files, -L
+	preload files, -L	(FLUSH???)
 
 snobol4dbm.3
 	DESCRIPTION section!!!
@@ -38,25 +43,20 @@ DBM
 
 	convert SDBM to use bzero/bcopy?
 
-move dlparam values to HOST()??
-	OR
-	make sure dlparam.sno cleaned up (& in .cvsignore?)
-
-	deal with OSF1 export '*' quoting!!!
-
-	include dlparams in timing.out!?
-
-	dlparams for:
-		Cygwin??
-		DJGPP?!
-			dxe now part of djgpp?
-			dxe{2,3}gen? to link
-			.dxe extension??
-		MINGW??
-		MSVC???
-			need to create DLL!
+DL params for:
+	AIX????
+	Cygwin??
+	DJGPP?!
+		dxe now part of djgpp?
+		dxe{2,3}gen? to link
+		.dxe extension??
+	MINGW??
+	MSVC???
+		need to create DLL!
 
 report percentage of time in GC?
+
+Implement SNOLIB search path, -I option
 
 STCL
 	rename to TCL_?
