@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/21/2005
+	Makefile2.m4: add ADD_WARN() and WARN for C compiler
+		warning options not to be included in HOST_COPT
+	configure: add -add-warn=
+
 11/20/2005
 	configure: include leading dot on DL_EXT and SO_EXT
 	snolib/dynamic.sno: don't need to add dot before DL_EXT
