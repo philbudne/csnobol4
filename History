@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/20/2005
+	configure: include leading dot on DL_EXT and SO_EXT
+	snolib/dynamic.sno: don't need to add dot before DL_EXT
+
 11/19/2005
 	timing.sno: use DATE(2)
 	lib/snolib/ndbm.c: removed parse_mode()

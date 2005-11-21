@@ -32,7 +32,7 @@ LINK_DYNAMIC
 
 * add system local suffix (not always ".so"!)
 	DL_EXT = HOST(HOST_DL_EXT)
-	OUT = DIFFER(DL_EXT) OUT '.' DL_EXT
+	OUT = DIFFER(DL_EXT) OUT DL_EXT
 
 	DL_LDFLAGS = HOST(HOST_DL_LDFLAGS) ' '
 	CMD = DL_LD ' ' DL_LDFLAGS '-o ' OUT ' ' OBJ ' ' LIBS

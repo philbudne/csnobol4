@@ -437,24 +437,24 @@ if [ "$GCCPATH" -a "$WANTGCC" ]; then
 	# and dynamicly loaded extensions (bundles)
 
 	# -fPIC is the default on OS X
-	SO_EXT=dylib
+	SO_EXT=.dylib
 	SO_LD=$CCPATH
 	SO_LDFLAGS=-dynamiclib
 
-	DL_EXT=bundle
+	DL_EXT=.bundle
 	DL_LD=$CCPATH
 	DL_LDFLAGS=-bundle
 	;;
 
     *:SunOS:4*:*)
-	SO_EXT=so
+	SO_EXT=.so
 	SO_CFLAGS=-fpic
 	SO_LD=/usr/bin/ld
 	SO_LDFLAGS='-assert nodefinitions'
 	;;
 
     *)
-	SO_EXT=so
+	SO_EXT=.so
 	SO_CFLAGS=-fpic
 	SO_LD=$CCPATH
 	SO_LDFLAGS=-shared
@@ -484,7 +484,7 @@ else
 	    NO_DLOPEN=
 	fi
 	if [ -x /bin/c89 -o -x /usr/bin/c89 ]; then
-	    SO_EXT=sl
+	    SO_EXT=.sl
 	    # or +Z
 	    SO_CFLAGS=+z
 	    SO_LD=ld
@@ -498,7 +498,7 @@ else
 	    ARCH_OPT=`getconf XBS5_LP64_OFF64_CFLAGS | sed 's/+DA2.0W/+DD64/'`
 	fi
 	if [ -x /bin/c89 -o -x /usr/bin/c89 ]; then
-	    SO_EXT=sl
+	    SO_EXT=.sl
 	    # or +Z
 	    SO_CFLAGS=+z
 	    SO_LD=ld
@@ -536,7 +536,7 @@ else
 	    OPT='-n32 -O3'
 	fi
 
-	SO_EXT=so
+	SO_EXT=.so
 	# -KPIC is default
 	SO_CFLAGS=
 	# use LD?
@@ -575,7 +575,7 @@ else
 	fi
 
 	# "AIX 4.3 and later"
-	SO_EXT=so
+	SO_EXT=.so
 	SO_LDFLAGS=-bM:SRE
 	;;
     *:OSF1:*:*)
@@ -593,7 +593,7 @@ else
 	CCVERS=-V
 
 	# no cc flags needed
-	SO_EXT=so
+	SO_EXT=.so
 	SO_LD=cc
 	# NOTE! quoting make it useless in Makefile!
 	SO_LDFLAGS="-shared -expect_unresolved '\\*'"
@@ -606,7 +606,7 @@ else
 	# cc can't optimize data_init.c at ALL
 	echo 'DATA_INIT_CFLAGS=$(MYCPPFLAGS)'	>> $CONFIG_M4
 
-	SO_EXT=so
+	SO_EXT=.so
 	SO_CFLAGS=-pic
 	SO_LD=/bin/ld
 	SO_LDFLAGS='-assert nodefinitions'
@@ -626,7 +626,7 @@ else
 	    ARCH_OPT=`getconf XBS5_LP64_OFF64_CFLAGS`
 	fi
 
-	SO_EXT=so
+	SO_EXT=.so
 	SO_CFLAGS=-Kpic
 	SO_LDFLAGS=-G
 	;;
