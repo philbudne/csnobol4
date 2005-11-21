@@ -23,6 +23,10 @@ CMT()
 CMT([extra C compiler flags for final link])
 define([ADD_LDFLAGS],[divert(5) $1[]divert(0)dnl])dnl
 define([_LDFLAGS],[undivert(5)])dnl
+CMT()
+CMT([extra C compiler warning flags for all .c files])
+define([ADD_WARN],[divert(6) $1[]divert(0)dnl])dnl
+define([_WARN],[undivert(6)])dnl
 
 ################################################################
 # defaults (may be overridden in config.m4)
@@ -171,12 +175,14 @@ MYCPPFLAGS=-Iinclude -I. _CPPFLAGS
 
 COPT=[]_OPT
 
+WARN=[]_WARN
+
 LDFLAGS=[]_LDFLAGS
 
 ################
 # compiler flags
 
-CFLAGS=$(COPT) $(MYCPPFLAGS)
+CFLAGS=$(COPT) $(MYCPPFLAGS) $(WARN)
 
 ################
 

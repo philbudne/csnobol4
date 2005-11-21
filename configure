@@ -104,6 +104,10 @@ while [ $# -gt 0 ]; do
 	STUFF=`echo "$1" | sed 's/--add-srcs=//'`
 	echo 'ADD_SRCS(['"$STUFF"'])'		>> $CONFIG_M4
     	;;
+    --add-warn=*)
+	STUFF=`echo "$1" | sed 's/--add-warn=//'`
+	echo 'ADD_WARN(['"$STUFF"'])'		>> $CONFIG_M4
+	;;
     --bindir=*)
 	STUFF=`echo "$1" | sed 's/--bindir=//'`
 	echo "BINDIR=$STUFF"			>> $CONFIG_M4
@@ -196,7 +200,7 @@ C Compiler selection;
 
 C Compiler settings;
 	--add-opt=STR		--opt=STR
-	--no-inline
+	--add-warn=STR		--no-inline
 
 SNOBOL4 Datatype selection;
 	--double		--longlong
@@ -238,6 +242,10 @@ echo 'SNOLIB_DIR=$(DESTDIR)'"$SNOLIB_DIR"	>> $CONFIG_M4
 if [ "$ADD_DEFINE_USED" ]; then
     echo '/* end defines from command line */'	>> $CONFIG_H
 fi
+
+# Unix seperators
+echo '#define DIR_SEP "/"'			>> $CONFIG_H
+echo '#define PATH_SEP ":"'			>> $CONFIG_H
 
 # safe on all Unix systems (requires "fork")
 echo '#define PML_SERV'				>> $CONFIG_H
@@ -423,9 +431,9 @@ if [ "$GCCPATH" -a "$WANTGCC" ]; then
     if [ ! "$NO_OPT" ]; then
 	# only works when optimizing
 	# (will give warnings for --opt=-g)
-	echo 'ADD_OPT([-Wuninitialized])'	>> $CONFIG_M4
+	echo 'ADD_WARN([-Wuninitialized])'	>> $CONFIG_M4
     fi
-    echo 'ADD_OPT([-Wunused])'			>> $CONFIG_M4
+    echo 'ADD_WARN([-Wunused])'			>> $CONFIG_M4
 
     case "$MORV" in
     *:Darwin:*:*)

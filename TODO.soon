@@ -2,7 +2,7 @@ $Id$
 
 append /<version> to default SNOLIB?
 
-add ADD_WARN() --add-warn=
+	use SNOLIB/include and SNOLIB/ext ??
 
 create ndbm.sno w/ NDBM_INSERT/REPLACE values, LOAD() calls
 	remove PMLPROTOS?
@@ -19,6 +19,7 @@ INSTALL
 		--with-tcl
 		--with-tk	(exe 4x larger! 333K to 1333K, footprint 3.5x)
 		--without-dbm
+		--add-warn
 
 snobol4.1
 	-g &GTRACE?
