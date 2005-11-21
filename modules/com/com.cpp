@@ -60,11 +60,12 @@ extern "C"
 #include "equ.h"			/* datatypes I/S */
 #include "handle.h"
 
-static struct handle_list com_handles;
+static handle_handle_t com_handles;
 
 #ifdef NEED_WCSCHR
 // for CYGWIN:
-WCHAR *wcschr(WCHAR *str, WCHAR ch)
+WCHAR *
+wcschr(WCHAR *str, WCHAR ch)
 {
     for (; *str; str++)
 	if (ch == *str)

@@ -6,6 +6,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	Makefile2.m4: add ADD_WARN() and WARN for C compiler
 		warning options not to be included in HOST_COPT
 	configure: add -add-warn=
+	lib/win32/com.cpp: update for handle_handle_t
 
 11/20/2005
 	configure: include leading dot on DL_EXT and SO_EXT
