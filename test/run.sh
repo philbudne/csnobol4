@@ -54,11 +54,14 @@ while read TYPE PROG; do
 		;;
 	*)
 		echo '	' failed.
+		FAIL=`expr $FAIL + 1`
 		## sigh, can't seem to pass variables
 		## out to top level, so just exit from here!
 		exit $FAIL
 	esac
 done < $TESTS
-# would love to output counts, but "while" loop runs in a subshell(?)
-# so variable changes made inside loop are not available!!!
+
+# would love to output counts, but "while" loop runs in a subshell (due
+# to input redirection?), so variable changes made inside loop are not
+# available!!!
 #echo $PASS tests passed, $OPTFAIL optional tests failed.
