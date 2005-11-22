@@ -32,7 +32,8 @@
 
 const char AMPST[] = "&";
 const char QTSTR[] = "'";
-const char COLSTR[] = ": ";
+const char COLSTR[] = ":";
+const char SPCSTR[] = " ";
 
 #define ALPHSZ (sizeof(ALPHA))
 
