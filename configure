@@ -1374,11 +1374,11 @@ if [ "$WITH_TCL" ]; then
 			TCLLIB=tcl$MAJ.$MIN
 			FOUNDLIB=1
 			break
-		    elif [ -f $LIBDIR/libtcl.$MAJ$MIN.a -o \
-			 -f $LIBDIR/libtcl.$MAJ$MIN.so -o \
-			 -f $LIBDIR/libtcl.$MAJ$MIN.dylib ]; then
+		    elif [ -f $LIBDIR/libtcl$MAJ$MIN.a -o \
+			 -f $LIBDIR/libtcl$MAJ$MIN.so -o \
+			 -f $LIBDIR/libtcl$MAJ$MIN.dylib ]; then
 			TCLLIBDIR=$LIBDIR
-			TCLLIB=tcl.$MAJ$MIN
+			TCLLIB=tcl$MAJ$MIN
 			FOUNDLIB=1
 			break
 		    fi
