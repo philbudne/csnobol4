@@ -6,6 +6,10 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	timing.sno: fix tabbing for DATE(2)
 	configure: libtcl tweaks
 	test/run.sh: fix failure exit
+	data_init.c: remove space from COLSTR; add SPCSTR
+	v311.sil: add SPCSP, output spaces explicitly (not in file:line)
+		shorten "statement" to "stmt"
+	test/{ftrace,spit,trace1,trace2}.ref: new reference output
 
 11/21/2005
 	Makefile2.m4: add ADD_WARN() and WARN for C compiler
