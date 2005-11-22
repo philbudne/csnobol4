@@ -40,7 +40,7 @@ ECHECKHZ
 ****************************************************************
 * print environmental stuff
 
-	OUTPUT = 'DATE(2):' TAB TAB TAB DATE(2)
+	OUTPUT = 'DATE(2):' TAB TAB DATE(2)
 	OUTPUT = 'HOST(HOST_SYSINFO):' TAB HOST(HOST_SYSINFO)
 * config.guess value;
 	OUTPUT = 'HOST(HOST_CONFIG_GUESS):' SP HOST(HOST_CONFIG_GUESS)
