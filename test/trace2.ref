@@ -1,2 +1,2 @@
-trace2.sno: 4 statement 3: foo = 1, time = xxx
-trace2.sno: 6 statement 5: foo = 3, time = xxx
+trace2.sno:4 stmt 3: foo = 1, time = xxx
+trace2.sno:6 stmt 5: foo = 3, time = xxx

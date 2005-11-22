@@ -1,6 +1,6 @@
-spit.sno: 8 statement 7: C = 'yes', time = xxx
-spit.sno: 14 statement 10: B = 'yes!!', time = xxx
-spit.sno: 14 statement 10: A = 'yes!!', time = xxx
+spit.sno:8 stmt 7: C = 'yes', time = xxx
+spit.sno:14 stmt 10: B = 'yes!!', time = xxx
+spit.sno:14 stmt 10: A = 'yes!!', time = xxx
 yes!!
 yes!!
 42.
@@ -11,14 +11,14 @@ REAL: 3.14159
 TOO BIG
 too small
 Just Right
-spit.sno: 53 statement 38: B = 'yes!!', time = xxx
-spit.sno: 53 statement 38: A = 'yes!!', time = xxx
-spit.sno: 55 statement 40: C = 'yes!!', time = xxx
-spit.sno: 56 statement 41: C = 'yes!!', time = xxx
-spit.sno: 60 statement 43: C = 'yes!!', time = xxx
-spit.sno: 61 statement 44: C = 'yes!!', time = xxx
-spit.sno: 62 statement 45: C = 'yes!!', time = xxx
-spit.sno: 63 statement 46: C = 'yes!!', time = xxx
-spit.sno: 70 statement 50: B = '!!', time = xxx
-spit.sno: 74 statement 52: A = 'yes', time = xxx
+spit.sno:53 stmt 38: B = 'yes!!', time = xxx
+spit.sno:53 stmt 38: A = 'yes!!', time = xxx
+spit.sno:55 stmt 40: C = 'yes!!', time = xxx
+spit.sno:56 stmt 41: C = 'yes!!', time = xxx
+spit.sno:60 stmt 43: C = 'yes!!', time = xxx
+spit.sno:61 stmt 44: C = 'yes!!', time = xxx
+spit.sno:62 stmt 45: C = 'yes!!', time = xxx
+spit.sno:63 stmt 46: C = 'yes!!', time = xxx
+spit.sno:70 stmt 50: B = '!!', time = xxx
+spit.sno:74 stmt 52: A = 'yes', time = xxx
 all done
