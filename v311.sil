@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.111  2005/11/10 16:51:53  phil
+* [PLB94] decrement &GTRACE if positive
+*
 * Revision 1.110  2005/10/30 05:31:00  phil
 * [PLB93] Use TEMPCL for GC time tracking
 *
@@ -1681,10 +1684,11 @@ CDIAG2 GETSPC  TSP,EMSGCL,0	   Get error message		[PLB40]
        SETLC   CERRSP,0		   Clear specifier
        LOCSP   XSP,FILENM	   Get specifier for filename	[PLB40]
        APDSP   CERRSP,XSP	   Append filename		[PLB40]
-       APDSP   CERRSP,COL1SP	   Append colen			[PLB40]
+       APDSP   CERRSP,COLSP	   Append colon			[PLB40]
        INTSPC  XSP,LNNOCL	   Get specifer for line number	[PLB40]
        APDSP   CERRSP,XSP	   Append line number		[PLB40]
-       APDSP   CERRSP,COLSP	   Append colen space		[PLB40]
+       APDSP   CERRSP,COLSP	   Append colon			[PLB40]
+       APDSP   CERRSP,SPCSP	   Append space			[PLBXX]
        APDSP   CERRSP,STARSP	   Append attention getter
        APDSP   CERRSP,TSP	   Append error message
        AEQLC   LISTCL,0,,CDIAG1	   Check for listing mode	[PLB8]
@@ -5291,6 +5295,7 @@ FENTR3 SETLC   PROTSP,0		   Clear specifier
        INTSPC  XSP,STNOCL	   Convert &STNO to string
        APDSP   PROTSP,XSP	   Append &STNO
        APDSP   PROTSP,COLSP	   Append colon
+       APDSP   PROTSP,SPCSP	   Append space			[PLBXX]
        APDSP   PROTSP,TRLVSP	   Append level message
        INTSPC  XSP,LVLCL	   Convert &FNCLEVEL to string
        APDSP   PROTSP,XSP	   Append &FNCLEVEL
@@ -5369,6 +5374,7 @@ KEYTR3 SETLC   PROTSP,0		   Clear specifier
        INTSPC  TSP,STNOCL	   Convert &STNO to string
        APDSP   PROTSP,TSP	   Append &STNO
        APDSP   PROTSP,COLSP	   Append colon
+       APDSP   PROTSP,SPCSP	   Append space			[PLBXX]
        AEQLC   FNVLCL,0,,KEYTR4	   Check entry indicator
        APDSP   PROTSP,AMPSP	   Append ampersand
 KEYTR4 APDSP   PROTSP,XSP	   Append name of keyword
@@ -5433,6 +5439,7 @@ VALTR4 SETLC   TRACSP,0		   Clear specifier
        INTSPC  XSP,STNOCL	   Convert &STNO to string
        APDSP   TRACSP,XSP	   Append &STNO
        APDSP   TRACSP,COLSP	   Append colon
+       APDSP   TRACSP,SPCSP	   Append space			[PLBXX]
        AEQLC   FNVLCL,0,,FNEXT1	   Check entry indicator
        VEQLC   XPTR,S,DEFDT	   Is variable a string?
 VALTR3 LOCSP   XSP,XPTR		   Get specifier
@@ -7226,7 +7233,8 @@ RNOSP  SPEC    INBUF,0,0,CARDSZ+STNOSZ+1,STNOSZ
 ALPHSP SPEC    ALPHA,0,0,0,ALPHSZ  Alphabet
 AMPSP  SPEC    AMPST,0,0,0,1	   Ampersand
 CERRSP SPEC    ANYSP,0,0,0,0	   Buffer specifier
-COLSP  SPEC    COLSTR,0,0,0,2	   Colon for trace messages
+COLSP  SPEC    COLSTR,0,0,0,1	   Colon for trace messages	[PLBXX]
+SPCSP  SPEC    SPCSTR,0,0,0,1	   Space for trace messages	[PLBXX]
 DMPSP  SPEC    ANYSP,0,0,0,0	   Buffer specifier
 DTARSP SPEC    DTARBF,0,0,0,ARRLEN+9
 *				   Array representation specifier
@@ -7265,7 +7273,7 @@ RPRNSP STRING  ')'
 STARSP STRING  '*** '
 TRCLSP STRING  ' call of '					[PLB11]
 TRLVSP STRING  'level '						[PLB11]
-TRSTSP STRING  ' statement '					[PLB11]
+TRSTSP STRING  ' stmt '						[PLB11][PLBXX]
 SPITSP STRING  'PLUSOPS'					[PLB32]
 UNLSP  STRING  'UNLIST'
 XFERSP STRING  'transfer to'					[PLB11]
