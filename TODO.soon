@@ -1,8 +1,22 @@
 $Id$
 
-append /<version> to default SNOLIB?
+convert('2500000000', 'real') fails on home?
 
-	use SNOLIB/include and SNOLIB/ext ??
+have --no-inline compile snobol4.c?
+
+debug --longlong problems on iBook?
+	END not entered in symbol table!?
+
+IDENT() fails on real values under --longlong:
+	sizeof(int_t) > sizeof(real_t), clear D_A(), before setting D_RV()?
+
+dynamic.sno:
+	function(s) to create Makefile?
+
+append /<version> to default SNOLIB?
+	use seperate SNOLIB/include and SNOLIB/ext ??
+
+	also check old SNOLIB? SNOLIB/local??
 
 create ndbm.sno w/ NDBM_INSERT/REPLACE values, LOAD() calls
 	remove PMLPROTOS?
@@ -63,6 +77,10 @@ STCL
 	rename to TCL_?
 	use -framework on OS X??
 	add --with-x11
+
+================
+
+flush OTSATL, default formats?
 
 report max heap size used in stats
 
@@ -135,7 +153,7 @@ Test COM
 Test w/ non-libc gdbm??
 	debian include?
 
-Test STCL, NDBM on Cygwin!
+Test STCL on Cygwin!?!
 
 Release 1.1;
 	update History, version.c, README, tag it
