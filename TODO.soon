@@ -1,22 +1,9 @@
 $Id$
 
-convert('2500000000', 'real') fails on home?
-
 have --no-inline compile snobol4.c?
-
-debug --longlong problems on iBook?
-	END not entered in symbol table!?
-
-IDENT() fails on real values under --longlong:
-	sizeof(int_t) > sizeof(real_t), clear D_A(), before setting D_RV()?
 
 dynamic.sno:
 	function(s) to create Makefile?
-
-append /<version> to default SNOLIB?
-	use seperate SNOLIB/include and SNOLIB/ext ??
-
-	also check old SNOLIB? SNOLIB/local??
 
 create ndbm.sno w/ NDBM_INSERT/REPLACE values, LOAD() calls
 	remove PMLPROTOS?
@@ -42,6 +29,8 @@ snobol4.1
 snobol4dbm.3
 	DESCRIPTION section!!!
 	note key+data limits, page size limits?
+
+================ post 1.1:
 
 STCL:	put Object calls under ifdef?
 
@@ -71,14 +60,23 @@ DL params for:
 
 report percentage of time in GC?
 
-Implement SNOLIB search path, -I option
+convert('2500000000', 'real') fails on home?
+	strtol() does not detect overflow.
+	Delete SPCINT at CONVR+1?
+	Reverse SPCINT/SPREAL at EVAL
 
 STCL
 	rename to TCL_?
 	use -framework on OS X??
 	add --with-x11
 
-================
+SNOLIB:
+	Implement SNOLIB search path
+	-I option
+	iterator functions?
+	append /<version> to default SNOLIB?
+	use seperate SNOLIB/include and SNOLIB/ext ??
+	also check old SNOLIB? SNOLIB/local??
 
 flush OTSATL, default formats?
 
