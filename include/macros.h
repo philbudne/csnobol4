@@ -13,17 +13,19 @@
 #define D_V(x)	(D(x).v)
 
 #define D_RV(x) (D(x).a.f)
-#define D_PTR(x) (D(x).a.ptr)
+#define D_PTR(x) ((void *)D(x).a.i)	/* works w/ long long */
 
-/* compare two descrs (returns boolean) */
-#ifdef DCMP_BYTES
-/* this has never been tested! */
-/* here if sizeof(float) > sizeof(long) */
-#define DCMP(A,B) (bcmp(A, B, DESCR) == 0)
-#else  /* DCMP_BYTES not defined */
-/* here if sizeof(float) <= sizeof(long) */
+/*
+ * compare two descrs (returns boolean)
+ *
+ * NOTE! requires sizeof(real_t) == sizeof(int_t) or else DIFFER/IDENT
+ * will fail for shorter datatype.
+ *
+ * comparing A field based on type (V field) does NOT
+ * work because V field and A field are sometimes BOTH used to hold
+ * a pair of integer datatype codes.
+ */
 #define DCMP(A,B) (D_A(A) == D_A(B) && D_F(A) == D_F(B) && D_V(A) == D_V(B))
-#endif /* DCMP_BYTES not defined */
 
 /* clear B+1 descriptor block */
 #define ZERBLK(A,B) bzero((void *)(A), (long)((B)+DESCR)) /* XXX SIZE_T */
@@ -45,11 +47,20 @@
 #define _SPEC(x) (*(struct spec *)(x))
 
 /* access spec fields */
+#ifdef SPEC_FIELD_NAMES
 #define S_A(x) (_SPEC(x).a.i)
 #define S_F(x) (_SPEC(x).f)
 #define S_V(x) (_SPEC(x).v)
 #define S_L(x) (_SPEC(x).l.i)
 #define S_O(x) (_SPEC(x).o)
+#else  /* SPEC_FIELD_NAMES not defined */
+/* alignment safe version (esp when using long long / double) */
+#define S_A(x) (_SPEC(x).d[1].a.i)
+#define S_F(x) (_SPEC(x).d[1].f)
+#define S_V(x) (_SPEC(x).d[1].v)
+#define S_L(x) (_SPEC(x).d[0].a.i)
+#define S_O(x) (_SPEC(x).d[0].v)
+#endif /* SPEC_FIELD_NAMES not defined */
 
 #define S_SP(x) ((char *)S_A(x) + S_O(x))
 

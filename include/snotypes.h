@@ -113,12 +113,17 @@ struct descr {
  */
 
 struct spec {				/* (new: qualifier) */
+#ifdef SPEC_FIELD_NAMES
     union addr l;			/* length (overlays addr) */
     FFLD(unused);			/* MBZ (must overlay flags) */
     VFLD(o);				/* offset */
     union addr a;			/* address (new: v) */
     FFLD(f);				/* flags */
     VFLD(v);				/* value (new: t) */
+#else  /* SPEC_FIELD_NAMES not defined */
+/* alignment safe version (esp when using long long / double) */
+    struct descr d[2];
+#endif /* SPEC_FIELD_NAMES not defined */
 };
 #define SPEC (sizeof(struct spec))
 
