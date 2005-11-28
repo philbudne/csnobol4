@@ -101,7 +101,9 @@ DBM_OPEN( LA_ALIST ) LA_DCL
 {
     snohandle_t h;
     char base[1024];		/* XXX */
+    char modestr[1024];		/* XXX */
     const char *cp;
+    char *ep;
     int i;
     int flags;
     int wr, create;
@@ -111,7 +113,7 @@ DBM_OPEN( LA_ALIST ) LA_DCL
     getstring(LA_PTR(0), base, sizeof(base));
     cp = LA_STR_PTR(1);
     i = LA_STR_LEN(1);
-    mode = LA_INT(2);
+    getstring(LA_PTR(2), modestr, sizeof(modestr));
 
     wr = create = 0;
     while (i-- > 0) {
@@ -133,8 +135,12 @@ DBM_OPEN( LA_ALIST ) LA_DCL
 	flags = O_RDONLY;
 
 
-    if (mode == 0)
+    /* XXX take symbolic mode! */
+    if ((mode = strtod(modestr, &ep, 0)) == 0) {
+	if (*ep != '\0')
+	    RETFAIL;
 	mode = 0660;
+    }
 
     f = dbm_open(base, flags, mode);
     if (!f)
