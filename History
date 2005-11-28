@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/28/2005
+	lib/snolib/ndbm.c, pml.h:
+		have DBM_OPEN take mode as STRING
+
 11/25/2005
 	include/snotypes.h, include/macros.h:
 		fix to make --longlong + --double work on OS X

@@ -5,8 +5,9 @@ have --no-inline compile snobol4.c?
 dynamic.sno:
 	function(s) to create Makefile?
 
-create ndbm.sno w/ NDBM_INSERT/REPLACE values, LOAD() calls
+create ndbm.sno w/ NDBM_INSERT/REPLACE values, LOAD() calls?
 	remove PMLPROTOS?
+	have DBM_STORE take strings instead of integer flag?
 
 CHANGES
 	XXX mention MEM_IO, wrapper, dynamic
