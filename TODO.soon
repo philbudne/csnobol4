@@ -2,12 +2,13 @@ $Id$
 
 have --no-inline compile snobol4.c?
 
+tie --double & --longlong together? mention in INSTALL
+
 dynamic.sno:
 	function(s) to create Makefile?
 
-create ndbm.sno w/ NDBM_INSERT/REPLACE values, LOAD() calls?
+create ndbm.sno w/ DBM_INSERT/REPLACE constants, LOAD() calls?
 	remove PMLPROTOS?
-	have DBM_STORE take strings instead of integer flag?
 
 CHANGES
 	XXX mention MEM_IO, wrapper, dynamic
@@ -46,7 +47,9 @@ DBM
 	have way to find out which DB library in use??? if live update safe?
 		use flock/fcntl on dbm_dirfno??
 
-	convert SDBM to use bzero/bcopy?
+	convert SDBM to use bzero/bcopy???
+
+	create/use POSIX_MODE() conversion function.
 
 DL params for:
 	AIX????
