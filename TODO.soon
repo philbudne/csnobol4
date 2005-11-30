@@ -1,18 +1,13 @@
 $Id$
 
-have --no-inline compile snobol4.c?
-
-tie --double & --longlong together? mention in INSTALL
-
 dynamic.sno:
 	function(s) to create Makefile?
 
-create ndbm.sno w/ DBM_INSERT/REPLACE constants, LOAD() calls?
-	remove PMLPROTOS?
+create ndbm.sno w/ DBM_INSERT/REPLACE constants (take strings?)
+	LOAD() calls? remove PMLPROTOS?
 
 CHANGES
-	XXX mention MEM_IO, wrapper, dynamic
-		add SDBM credits to README
+	mention MEM_IO, wrapper, dynamic
 
 README
 	1.0 timing contributors
