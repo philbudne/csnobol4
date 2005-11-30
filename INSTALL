@@ -68,6 +68,13 @@ with "--add-" can appear);
 		--longlong), or the maximum object size (see
 		--no-bitfields).
 
+		NOTE! THIS IS UNLIKELY TO WORK!
+
+		It will probably fail the regression test diag1 when
+		it tries to use IDENT() to compare two REAL values.
+
+		Try using --longlong instead!
+
 	--fast
 		Enable use of vendor C compiler options which may make
 		snobol4 run faster, but may make the executable less

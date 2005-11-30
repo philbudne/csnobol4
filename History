@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/29/2005
+	INSTALL: document --double's failings
+	configure: --longlong implies --double, as documented!
+		note --double should probably be removed!
+
 11/28/2005
 	lib/snolib/ndbm.c, pml.h:
 		have DBM_OPEN take mode as STRING

@@ -117,6 +117,9 @@ while [ $# -gt 0 ]; do
 	set -x
 	;;
     --double)
+	# sizeof(real_t) must be <= sizeof(int_t),
+	#  or IDENT(REAL,REAL) won't work
+	# This probably ought to be removed.  Use --longlong instead!
 	DOUBLE=true
 	;;
     --fast)
@@ -742,6 +745,9 @@ if [ "$LONGLONG" ]; then
     # Force use of 64-bit int and real types even if native pointers
     # are smaller.  gcc generates TONS of compiler warnings!!
 
+    # make real_t same size as int_t
+    DOUBLE=true
+
     # Not tested in all environments (some compilers
     # may require options to enable "long long" data type)
 
@@ -773,7 +779,7 @@ if [ "$NO_BITFIELDS" ]; then
 fi
 
 if [ "$DOUBLE" ]; then
-    # same size as int_t
+    # sizeof(real_t) must be <= sizeof(int_t), or IDENT(REAL,REAL) won't work
     echo using double for SNOBOL4 REAL type 1>&2
     echo '#define REAL_T double'		>> $CONFIG_H
 fi
