@@ -6,6 +6,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	INSTALL: document --double's failings
 	configure: --longlong implies --double, as documented!
 		note --double should probably be removed!
+	test/test.trace.sh: handle very tiny F.P. numbers!
 
 11/28/2005
 	lib/snolib/ndbm.c, pml.h:
