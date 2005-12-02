@@ -230,7 +230,7 @@ changequote([,])dnl
 
 snobol4: xsnobol4 snobol4.c test/tests.in
 	@echo Running regression tests...
-	(cd test; ./run.sh ../xsnobol4 -L)
+	(cd test; ./run.sh ../xsnobol4)
 	@echo Passed regression tests.
 	./timing > timing.out
 	-rm -f snobol4$(EXT)

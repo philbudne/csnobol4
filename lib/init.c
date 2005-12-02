@@ -222,14 +222,14 @@ io_init()				/* here from INIT */
 	io_input_string( "input", str );
 #else
 	/* read code from stdin.... Macro SPITBOL requires '-' for this */
-#if 0
+#ifdef PRELOAD
+	io_input_file("-");		/* implicit "-"! */
+#else
 	/* blows away preload list */
 	if (!io_mkfile_noclose(UNITI, stdin, STDIN_NAME)) {
 	    perror("could not attach stdin to INPUT");
 	    exit(1);
 	}
-#else
-	io_input_file("-");		/* implicit "-"! */
 #endif
 #endif
     }
@@ -263,6 +263,7 @@ io_init()				/* here from INIT */
     }
 } /* io_init */
 
+#ifdef PRELOAD
 static int
 trypreload( var, defdir, file )
     char *var, *defdir, *file;
@@ -296,6 +297,7 @@ trypreload( var, defdir, file )
     }
     return 0;
 } /* trypreload */
+#endif
 
 /* called from main.c after init_data, before xfer to SIL BEGIN label */
 void
@@ -307,7 +309,9 @@ init_args( ac, av )
     int c;
     int multifile;
     int justversion;
-    int preload;
+#ifdef PRELOAD
+    int preload = 1;
+#endif
 
     ndynamic = NDYNAMIC;
     pmstack = PSSIZE;
@@ -324,7 +328,6 @@ init_args( ac, av )
     errs = 0;
     multifile = 0;			/* SITBOL behavior */
     justversion = 0;
-    preload = 1;
 
     /*
      * ***** NOTE ******
@@ -401,9 +404,11 @@ init_args( ac, av )
 	    params = optarg;
 	    break;
 
+#ifdef PRELOAD
 	case 'L':			/* pre-load files */
 	    preload = !preload;
 	    break;
+#endif
 
 	case 'M':			/* multi-file input */
 	    multifile = !multifile;
@@ -424,6 +429,7 @@ init_args( ac, av )
 	}
     }
 
+#ifdef PRELOAD
     if (preload) {
 	/* try version based filename(s) as well as unversioned? */
 	/* XXX defend against including same file twice?! use io_include()? */
@@ -432,6 +438,7 @@ init_args( ac, av )
 	trypreload("HOME",   NULL,	 "preload.sno");
 	trypreload(NULL,     NULL,	 "preload.sno");
     }
+#endif
 
     /*
      * append first file (or all additional args until "--" seen

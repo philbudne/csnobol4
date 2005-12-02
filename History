@@ -7,9 +7,10 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	Test/clean up under VMS, turn on SDBM:
 	config/vms/config.h: SNOLIB_DIR, NDBM defines
 	config/vms/descrip.mms: add ndbm, handle, SDBM
-	lib/init.c: missing return value
+	lib/init.c: missing return value; add ifdef PRELOAD (off by default)
 	include/load.h: turn off const in LA_STR_PTR() too much pain on VMS
 	pml.h: use PMLPROC2 for NDBM functions
+	Makefile2.m4: remove -L on test run (PRELOAD disabled)
 
 11/29/2005
 	INSTALL: document --double's failings
