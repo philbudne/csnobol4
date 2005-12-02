@@ -126,7 +126,9 @@ usage( jname, justversion )
     p('s',"toggle display of statistics");
     fprintf(stderr, "-u PARMS\n\tparameter data available via HOST(0)\n");
     p('v',"display version and exit");
+#ifdef PRELOAD
     p('L',"toggle pre-loading");
+#endif /* PRELOAD defined */
     p('M',"process multiple files for program code");
     fprintf(stderr, "-P DESCRS[km]\n");
     fprintf(stderr, "\tsize of pattern match stack in descriptors (default: %s)\n", showk(PSSIZE));
@@ -220,18 +222,18 @@ io_init()				/* here from INIT */
 #ifdef MEM_IO_TEST
 	char *str = "\tOUTPUT = 'Hello World'\n\tOUTPUT = INPUT\nEND\nFOO\n";
 	io_input_string( "input", str );
-#else
+#else  /* MEM_IO_TEST not defined */
 	/* read code from stdin.... Macro SPITBOL requires '-' for this */
 #ifdef PRELOAD
 	io_input_file("-");		/* implicit "-"! */
-#else
+#else  /* PRELOAD not defined */
 	/* blows away preload list */
 	if (!io_mkfile_noclose(UNITI, stdin, STDIN_NAME)) {
 	    perror("could not attach stdin to INPUT");
 	    exit(1);
 	}
-#endif
-#endif
+#endif /* PRELOAD not defined */
+#endif /* MEM_IO_TEST not defined */
     }
     else {
 	if (!io_skip(UNITI)) {		/* force file open */
@@ -297,7 +299,7 @@ trypreload( var, defdir, file )
     }
     return 0;
 } /* trypreload */
-#endif
+#endif /* PRELOAD defined */
 
 /* called from main.c after init_data, before xfer to SIL BEGIN label */
 void
@@ -311,7 +313,7 @@ init_args( ac, av )
     int justversion;
 #ifdef PRELOAD
     int preload = 1;
-#endif
+#endif /* PRELOAD defined */
 
     ndynamic = NDYNAMIC;
     pmstack = PSSIZE;
@@ -408,7 +410,7 @@ init_args( ac, av )
 	case 'L':			/* pre-load files */
 	    preload = !preload;
 	    break;
-#endif
+#endif /* PRELOAD defined */
 
 	case 'M':			/* multi-file input */
 	    multifile = !multifile;
@@ -438,7 +440,7 @@ init_args( ac, av )
 	trypreload("HOME",   NULL,	 "preload.sno");
 	trypreload(NULL,     NULL,	 "preload.sno");
     }
-#endif
+#endif /* PRELOAD defined */
 
     /*
      * append first file (or all additional args until "--" seen
