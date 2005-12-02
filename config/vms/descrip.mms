@@ -49,7 +49,10 @@ UCXLIB=+SYS$LIBRARY:UCX$IPC/LIB
 .else
 
 # ** DEFAULT**
-# Tested under Compaq C V6.5-001 on OpenVMS Alpha V8.2 (December 2005)
+# Tested under:
+#	Compaq C V6.5-001 on OpenVMS Alpha V8.2 (December 2005)
+#	HP C S7.1-013 on OpenVMS IA64 V8.2-1 (December 2005)
+
 # downright civilized!!
 
 CCFLAGS=/OPTIMIZE
@@ -154,8 +157,8 @@ TAN_C=[.lib.snolib]tan.c
 
 PML_OBJ=chop.obj, cos.obj, delete.obj, execute.obj, exit.obj, exp.obj, \
 	file.obj, findunit.obj, getstring.obj, handle.obj, host.obj, \
-	log.obj, logic.obj, ndbm.obj, , ord.obj, rename.obj, \
-	retstring.obj, sin.obj, sqrt.obj, sset.obj, sys.obj, tan.obj
+	log.obj, logic.obj, ndbm.obj, ord.obj, rename.obj, retstring.obj, \
+	sin.obj, sqrt.obj, sset.obj, sys.obj, tan.obj
 
 # .ifdef this if you want to use something else!
 NDBM_DEFS=,HAVE_SDBM_H
