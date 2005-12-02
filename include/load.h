@@ -44,7 +44,8 @@
 #define LA_STR_LEN(N) (LA_PTR(N) ? D_V(LA_PTR(N)) : 0)
 
 /* NOT NUL TERMINATED!!! MUST NOT BE MODIFIED!!! */
-#define LA_STR_PTR(N) (LA_PTR(N) ? ((const char *)LA_PTR(N) + BCDFLD) : NULL)
+/* used to use "const char *" but turned it off for NDBM on VMS */
+#define LA_STR_PTR(N) (LA_PTR(N) ? ((char *)LA_PTR(N) + BCDFLD) : NULL)
 
 /*
  * macros to return values;

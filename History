@@ -2,6 +2,15 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/1/2005
+	timing: show all emerge output (11/26 change)
+	Test/clean up under VMS, turn on SDBM:
+	config/vms/config.h: SNOLIB_DIR, NDBM defines
+	config/vms/descrip.mms: add ndbm, handle, SDBM
+	lib/init.c: missing return value
+	include/load.h: turn off const in LA_STR_PTR() too much pain on VMS
+	pml.h: use PMLPROC2 for NDBM functions
+
 11/29/2005
 	INSTALL: document --double's failings
 	configure: --longlong implies --double, as documented!

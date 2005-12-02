@@ -39,6 +39,8 @@ makewrapper:
 	use SNOEXP() for handle functions?
 
 DBM
+	Use SDBM on VMS?
+
 	have way to find out which DB library in use??? if live update safe?
 		use flock/fcntl on dbm_dirfno??
 

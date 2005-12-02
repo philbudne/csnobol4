@@ -49,7 +49,7 @@ UCXLIB=+SYS$LIBRARY:UCX$IPC/LIB
 .else
 
 # ** DEFAULT**
-# Tested under Compaq C V6.5-001 on OpenVMS Alpha V7.3-1 (November 2003)
+# Tested under Compaq C V6.5-001 on OpenVMS Alpha V8.2 (December 2005)
 # downright civilized!!
 
 CCFLAGS=/OPTIMIZE
@@ -137,9 +137,11 @@ FILE_C=[.lib.snolib]file.c
 FINDUNIT_C=[.lib.snolib]findunit.c
 FORK_C=[.lib.snolib]fork.c
 GETSTRING_C=[.lib.snolib]getstring.c
+HANDLE_C=[.lib.snolib]handle.c
 HOST_C=[.lib.snolib]host.c
 LOG_C=[.lib.snolib]log.c
 LOGIC_C=[.lib.snolib]logic.c
+NDBM_C=[.lib.snolib]ndbm.c
 ORD_C=[.lib.snolib]ord.c
 RENAME_C=[.lib.snolib]rename.c
 RETSTRING_C=[.lib.snolib]retstring.c
@@ -150,23 +152,29 @@ SSET_C=[.lib.snolib]sset.c
 SYS_C=[.lib.vms]sys.c
 TAN_C=[.lib.snolib]tan.c
 
-PML_OBJ=chop.obj, cos.obj, delete.obj, execute.obj, exit.obj, \
-	exp.obj, file.obj, findunit.obj, getstring.obj, host.obj, \
-	log.obj, logic.obj, ord.obj, rename.obj, retstring.obj, sin.obj, \
-	sqrt.obj, sset.obj, sys.obj, tan.obj
+PML_OBJ=chop.obj, cos.obj, delete.obj, execute.obj, exit.obj, exp.obj, \
+	file.obj, findunit.obj, getstring.obj, handle.obj, host.obj, \
+	log.obj, logic.obj, ndbm.obj, , ord.obj, rename.obj, \
+	retstring.obj, sin.obj, sqrt.obj, sset.obj, sys.obj, tan.obj
 
-CFLAGS=	$(CCFLAGS) /DEFINE=(HAVE_CONFIG_H$(CCDEFS)$(INETDEFS)) \
-	/INCLUDE=(SYS$DISK:[.CONFIG.VMS],SYS$DISK:[],SYS$DISK:[.INCLUDE])
+# .ifdef this if you want to use something else!
+NDBM_DEFS=,HAVE_SDBM_H
+NDBM_INCLUDE=,SYS$DISK:[.LIB.SDBM]
+NDBM_OBJ=,sdbm.obj, sdbm_hash.obj, sdbm_pair.obj
+
+CFLAGS=	$(CCFLAGS) /DEFINE=(HAVE_CONFIG_H$(CCDEFS)$(INETDEFS)$(NDBM_DEFS)) \
+	/INCLUDE=(SYS$DISK:[.CONFIG.VMS],SYS$DISK:[],SYS$DISK:[.INCLUDE]$(NDBM_INCLUDE))
 
 ################
 
 OBJS=	main.obj, $(SNOBOL4).obj, data.obj, data_init.obj, syn.obj, \
 	bal.obj, date.obj, dynamic.obj, endex.obj, exists.obj, \
-	expops.obj, hash.obj, init.obj, $(INETOBJ), intspc.obj, io.obj, \
-	lexcmp.obj, load.obj, mstime.obj, ordvst.obj, osopen.obj, pair.obj, \
-	pat.obj, pml.obj, realst.obj, replace.obj, spcint.obj, \
-	spreal.obj, str.obj, stream.obj, term.obj, top.obj, tty.obj, \
-	tree.obj, version.obj, getredirect.obj, $(AUX_OBJ) $(PML_OBJ)
+	expops.obj, hash.obj, init.obj, $(INETOBJ), intspc.obj, \
+	io.obj, lexcmp.obj, load.obj, mstime.obj, ordvst.obj, \
+	osopen.obj, pair.obj, pat.obj, pml.obj, realst.obj, \
+	replace.obj, spcint.obj, spreal.obj, str.obj, stream.obj, \
+	term.obj, top.obj, tty.obj, tree.obj, version.obj, \
+	getredirect.obj, $(AUX_OBJ) $(PML_OBJ) $(NDBM_OBJ)
 
 snobol4.exe : $(OBJS)
 	link /exec=snobol4.exe $(OBJS) $(LIBS)
@@ -326,11 +334,17 @@ getstring.obj : $(GETSTRING_C)
 host.obj : $(HOST_C)
 	$(CC) $(CFLAGS) $(HOST_C)
 
+handle.obj : $(HANDLE_C)
+	$(CC) $(CFLAGS) $(HANDLE_C)
+
 log.obj : $(LOG_C)
 	$(CC) $(CFLAGS) $(LOG_C)
 
 logic.obj : $(LOGIC_C)
 	$(CC) $(CFLAGS) $(LOGIC_C)
+
+ndbm.obj : $(NDBM_C)
+	$(CC) $(CFLAGS) $(NDBM_C)
 
 ord.obj : $(ORD_C)
 	$(CC) $(CFLAGS) $(ORD_C)
@@ -372,3 +386,15 @@ finite.obj : [.lib.dummy]finite.c
 
 bindresvport.obj : [.lib.auxil]bindresvport.c
 	$(CC) $(CFLAGS) [.lib.auxil]bindresvport.c
+
+################
+# SDBM (NDBM replacement)
+
+sdbm.obj : [.lib.sdbm]sdbm.c
+	$(CC) $(CFLAGS) [.lib.sdbm]sdbm.c
+
+sdbm_hash.obj : [.lib.sdbm]sdbm_hash.c
+	$(CC) $(CFLAGS) [.lib.sdbm]sdbm_hash.c
+
+sdbm_pair.obj : [.lib.sdbm]sdbm_pair.c
+	$(CC) $(CFLAGS) [.lib.sdbm]sdbm_pair.c
