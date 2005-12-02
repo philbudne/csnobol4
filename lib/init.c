@@ -312,7 +312,7 @@ init_args( ac, av )
     int multifile;
     int justversion;
 #ifdef PRELOAD
-    int preload = 1;
+    int preload = 0;			/* default to OFF! */
 #endif /* PRELOAD defined */
 
     ndynamic = NDYNAMIC;
@@ -432,11 +432,28 @@ init_args( ac, av )
     }
 
 #ifdef PRELOAD
+    /*
+     * NOTE! THIS FEATURE IS DISABLED.
+     * IT MAY DISAPPEAR ALTOGETHER!
+     * Or, It may appear in a future release, but not in this exact form!
+     *
+     * Use at your own risk!  It may make your code less portable
+     * than if you had used -INCLUDE "/path/file.sno"!!!!
+     */
+
     if (preload) {
 	/* try version based filename(s) as well as unversioned? */
 	/* XXX defend against including same file twice?! use io_include()? */
+	
+	/*
+	 * modification of this file reserved to CSNOBOL4 distribution
+	 * creator!! Do not edit locally, it may be crushed by the
+	 * install process.  YOU HAVE BEEN WARNED!!!
+	 */
+	trypreload("SNODIR", SNOLIB_DIR, "dist-preload.sno");
+
+	/* all of the following files may be created/modified by local users */
 	trypreload("SNODIR", SNOLIB_DIR, "preload.sno");
-	trypreload("SNODIR", SNOLIB_DIR, "prelocal.sno");
 	trypreload("HOME",   NULL,	 "preload.sno");
 	trypreload(NULL,     NULL,	 "preload.sno");
     }

@@ -4,6 +4,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 12/2/2005
 	lib/init.c: ifdef -L usage message (thanks to Rafal)
+		default preloading off (thanks to Rafal)
+		Change preload filenames, add warnings
 	lib/io.c: protect against overflow in io_printf()
 
 12/1/2005
