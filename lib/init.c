@@ -283,7 +283,7 @@ trypreload( var, defdir, file )
 	path = malloc(strlen(dir) + 1 + strlen(file) + 1);
 	if (!path)
 	    return 0;
-	sprintf(path, "%s/%s", dir, file);
+	sprintf(path, "%s%s%s", dir, DIR_SEP, file);
 	if (exists(path)) {
 	    io_input_file(path);
 	    ret = 1;
