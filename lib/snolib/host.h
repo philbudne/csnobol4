@@ -37,7 +37,7 @@
  */
  
 /* CSNOBOL4: returns "config.guess" output (arch-vendor-os) */
-#define HOST_CONFIG_GUESS	2000
+#define HOST_CONFIG_GUESS	2000	/* obsolete */
 
 /* CSNOBOL4: returns host where configure script was run */
 #define HOST_CONFIG_HOST	2001
@@ -100,6 +100,12 @@
 
 /* CSNOBOL4: Dynamic Loadable file load switches */
 #define HOST_DL_LDFLAGS		2211
+
+/* CSNOBOL4: return system directory seperator character (may be empty) */
+#define HOST_DIR_SEP		2212
+
+/* CSNOBOL4: return system PATH seperator character */
+#define HOST_PATH_SEP		2213
 
 /*****
  * integer constants;

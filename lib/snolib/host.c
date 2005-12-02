@@ -238,6 +238,16 @@ HOST( LA_ALIST ) LA_DCL
 	RETSTR(DL_LDFLAGS);
 #endif /* DL_LDFLAGS defined */
 
+#ifdef DIR_SEP
+    case HOST_DIR_SEP:
+	RETSTR(DIR_SEP);
+#endif /* DIR_SEP defined */
+
+#ifdef PATH_SEP
+    case HOST_PATH_SEP:
+	RETSTR(PATH_SEP);
+#endif /* PATH_SEP defined */
+
 /* integer constants; */
     case HOST_INTEGER_BITS:
 	RETINT(sizeof(INT_T)*BPC);	/* INTEGER size */
