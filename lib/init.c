@@ -433,7 +433,7 @@ init_args( ac, av )
 
 #ifdef PRELOAD
     /*
-     * NOTE! THIS FEATURE IS DISABLED.
+     * NOTE! THIS FEATURE IS DISABLED, UNDOCUMENTED and UNSUPPORTED.
      * IT MAY DISAPPEAR ALTOGETHER!
      * Or, It may appear in a future release, but not in this exact form!
      *
