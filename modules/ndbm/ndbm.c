@@ -136,7 +136,7 @@ DBM_OPEN( LA_ALIST ) LA_DCL
 
 
     /* XXX take symbolic mode! */
-    if ((mode = strtod(modestr, &ep, 0)) == 0) {
+    if ((mode = strtol(modestr, &ep, 0)) == 0) {
 	if (*ep != '\0')
 	    RETFAIL;
 	mode = 0660;
