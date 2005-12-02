@@ -823,6 +823,20 @@ mem_read_cooked(fp, cp, recl, keepeol)
  */
 
 /* limited printf */
+
+#define COPY(SRC,LEN) \
+{ \
+    int len = LEN; \
+    if (LEN > space) \
+	len = space; \
+    strncpy(lp, SRC, len); \
+    lp += len; \
+    space -= len; \
+    *lp = '\0'; \
+}
+
+#define COPYTEMP COPY(temp, strlen(temp))
+
 void
 io_printf
 #ifdef __STDC__
@@ -835,6 +849,7 @@ io_printf
     char *format;
     register char c;
     char line[1024];			/* XXX */
+    int space;
     char *lp;
     struct unit *up;
 #ifdef __STDC__
@@ -856,15 +871,18 @@ io_printf
 
     /* keep output in line buffer, in case output unbuffered (ie; stderr) */
     lp = line;
+    space = sizeof(line) - 1;
     format = va_arg(vp, char *);
-    while ((c = *format++) != '\0') {
+    while ((c = *format++) != '\0' && space > 0) {
 	struct descr *dp;
 	struct spec *sp;
+	char temp[32];			/* large enough for 2^64 */
 	char *cp;
 
 	/* scan forward until first %, and print all at once? */
 	if (c != '%') {
 	    *lp++ = c;
+	    space--;
 	    continue;
 	}
 	c = *format++;
@@ -873,38 +891,37 @@ io_printf
 	switch (c) {
 	case 'd':			/* plain decimal */
 	    dp = va_arg(vp, struct descr *);
-	    sprintf(lp, "%d", (long)D_A(dp)); /* XXX handle LP32LL64 int_t */
-	    lp += strlen(lp);
+	    sprintf(temp, "%d", (long)D_A(dp)); /* XXX handle LP32LL64 int_t */
+	    COPYTEMP;
 	    break;
 	case 'D':			/* padded decimal */
 	    dp = va_arg(vp, struct descr *);
-	    sprintf(lp, "%15d", (long)D_A(dp));	/* XXX handle LP32LL64 int_t */
-	    lp += strlen(lp);
+	    sprintf(temp, "%15d", (long)D_A(dp)); /* XXX handle LP32LL64 int_t */
+	    COPYTEMP;
 	    break;
 	case 'F':			/* padded float */
 	    dp = va_arg(vp, struct descr *);
-	    sprintf(lp, "%15.3f", D_RV(dp));
-	    lp += strlen(lp);
+	    sprintf(temp, "%15.3f", D_RV(dp));
+	    COPYTEMP;
 	    break;
 	case 'G':			/* padded g/float */
 	    dp = va_arg(vp, struct descr *);
 	    sprintf(lp, "%15.3g", D_RV(dp));
-	    lp += strlen(lp);
+	    COPYTEMP;
 	    break;
 	case 'g':			/* unpadded g/float */
 	    dp = va_arg(vp, struct descr *);
 	    sprintf(lp, "%g", D_RV(dp));
-	    lp += strlen(lp);
+	    COPYTEMP;
 	    break;
 	case 's':			/* c-string (from version.c) */
 	    cp = va_arg(vp, char *);
-	    strcpy(lp, cp);
-	    lp += strlen(lp);
+	    COPY(cp, strlen(cp));
 	    break;
 	case 'S':			/* spec */
 	    sp = va_arg(vp, struct spec *);
-	    strncpy(lp, S_SP(sp), (long)S_L(sp)); /* XXX SIZE_T */
-	    lp += S_L(sp);
+	    /* might contain NUL's... will stop short! */
+	    COPY(S_SP(sp), S_L(sp));
 	    break;
 	case 'v':			/* variable */
 	    dp = va_arg(vp, struct descr *);
@@ -912,13 +929,15 @@ io_printf
 	    if (dp) {
 		struct spec s[1];
 
-		X_LOCSP(s, dp);
-		strncpy(lp, S_SP(s), S_L(s));
-		lp += S_L(s);
+		X_LOCSP(s, dp);		/* get specifier */
+
+		/* might contain NUL's... will stop short! */
+		COPY(S_SP(s), S_L(s));
 	    }
 	    break;
 	default:
 	    *lp++ = c;
+	    space--;
 	    break;
 	}
     } /* while */
