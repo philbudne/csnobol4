@@ -20,3 +20,6 @@
 #define udp_open myudp_open
 #define tcp_open mytcp_open
 #endif /* HAVE_WATTCP defined */
+
+#define PATH_SEP	";"
+#define DIR_SEP		"\\"

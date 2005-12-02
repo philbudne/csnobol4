@@ -21,6 +21,9 @@
 #define SNOLIB_FILE	"snolib.dll"
 #define SNOLIB_DIR	"/snobol4"
 
+#define PATH_SEP	";"
+#define DIR_SEP		"\\"
+
 /* includes; */
 #define HAVE_STRING_H
 #define HAVE_STDARG_H
@@ -56,4 +59,3 @@
 #define isnan		_isnan
 #define popen		_popen
 #define pclose		_pclose
-

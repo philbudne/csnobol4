@@ -58,5 +58,7 @@
 #define DBM_NEXTKEY XDBM_NEXTKEY
 #define DBM_DELETE XDBM_DELETE
 
-/* this isn't right, since "/" will be appended! */
+#define DIR_SEP ""			/* ASSume brackets or device */
+#define PATH_SEP ";"			/* be DOS-ish */
+
 #define SNOLIB_DIR "CSNOBOL4$LIB:"
