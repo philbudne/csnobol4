@@ -22,6 +22,7 @@
 * DBM_DELETE(filepointer,key)
 * 
 
+* XXX want command line -I flag!
 -INCLUDE '../snolib/ndbm.sno'
 
 * store a key/datum pair, remember in table
