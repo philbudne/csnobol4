@@ -422,7 +422,14 @@ and fails if it does not.  The
 .B LABEL()
 predicate was copied from SITBOL and Steve Duff's version of Macro SPITBOL.
 .TP
-.B &LINE/&FILE
+.B &GTRACE
+.br
+keyword enables Garbage Collection tracing if non-zero.
+If positive, the value of
+.B &GTRACE
+will be decremented after it is tested.
+.TP
+.B &LINE/&FILE/&LASTLINE/&LASTFILE
 .br
 The
 .B &LINE
@@ -898,8 +905,9 @@ and
 .BR &CASE ).
 .TP
 .B -g
-Toggle garbage collection tracing (see
-.BR &GTRACE ).
+Enable garbage collection tracing (sets
+.B &GTRACE
+to -1).
 .TP
 .B -h
 Give help. Shows usage message, includes default sizes for
