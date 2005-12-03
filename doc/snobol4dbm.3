@@ -8,11 +8,13 @@
 .       ds rq ''
 .       ds lq ``
 .\}
-.TH SNOBOL4DBM 1 "14 Nov 2005" "Local"
+.TH SNOBOL4DBM 1 "3 Dec 2005" "Local"
 .SH NAME
 snobol4dbm \- SNOBOL4 ndbm interface
 
 .SH SYNOPSIS
+-INCLUDE 'ndbm.sno'
+.LP
 dbhandle = DBM_OPEN(file,flags,mode)
 .LP
 DBM_STORE(dbhandle,key,datum,flags)
