@@ -1,10 +1,5 @@
 $Id$
 
-create ndbm.sno w/ DBM_INSERT/REPLACE constants (take strings?)
-	LOAD() calls? remove PMLPROTOS?
-
-	mode processing broken??
-
 CHANGES
 	mention MEM_IO, wrapper, dynamic
 
@@ -24,6 +19,7 @@ snobol4.1
 snobol4dbm.3
 	DESCRIPTION section!!!
 	note key+data limits, page size limits?
+	NFS locking issues with GDBM on Linux?
 
 ================ post 1.1:
 
