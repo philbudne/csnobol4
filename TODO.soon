@@ -2,6 +2,8 @@ $Id$
 
 CHANGES
 	mention MEM_IO, wrapper, dynamic
+	&GTRACE
+	NDBM
 
 README
 	1.0 timing contributors
@@ -12,9 +14,6 @@ INSTALL
 		--with-tk	(exe 4x larger! 333K to 1333K, footprint 3.5x)
 		--without-dbm
 		--add-warn
-
-snobol4.1
-	-g &GTRACE?
 
 snobol4dbm.3
 	DESCRIPTION section!!!
