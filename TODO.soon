@@ -20,13 +20,14 @@ INSTALL
 
 snobol4.1
 	-g &GTRACE?
-	preload files, -L	(FLUSH??? -- ifdef out)
 
 snobol4dbm.3
 	DESCRIPTION section!!!
 	note key+data limits, page size limits?
 
 ================ post 1.1:
+
+use SDBM on DJGPP?
 
 dynamic.sno:
 	function(s) to create Makefile?

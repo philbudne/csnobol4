@@ -22,6 +22,8 @@
 * DBM_DELETE(filepointer,key)
 * 
 
+-INCLUDE '../snolib/ndbm.sno'
+
 * store a key/datum pair, remember in table
 	DEFINE("STORE(F,KEY,DATUM,T)")			:(ESTORE)
 STORE	DBM_STORE(F,KEY,DATUM)				:F(FRETURN)

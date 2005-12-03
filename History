@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/3/2004
+	new snolib/stcl.sno snolib/ndbm.sno: do LOAD()ing define constants
+	pml.h: remove PMPROTO lines for NDBM and STCL functions
+
 12/2/2005
 	lib/init.c: ifdef -L usage message (thanks to Rafal)
 		default preloading off (thanks to Rafal)
