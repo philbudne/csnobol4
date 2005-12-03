@@ -1,10 +1,9 @@
 $Id$
 
-dynamic.sno:
-	function(s) to create Makefile?
-
 create ndbm.sno w/ DBM_INSERT/REPLACE constants (take strings?)
 	LOAD() calls? remove PMLPROTOS?
+
+	mode processing broken??
 
 CHANGES
 	mention MEM_IO, wrapper, dynamic
@@ -21,13 +20,16 @@ INSTALL
 
 snobol4.1
 	-g &GTRACE?
-	preload files, -L	(FLUSH???)
+	preload files, -L	(FLUSH??? -- ifdef out)
 
 snobol4dbm.3
 	DESCRIPTION section!!!
 	note key+data limits, page size limits?
 
 ================ post 1.1:
+
+dynamic.sno:
+	function(s) to create Makefile?
 
 STCL:	put Object calls under ifdef?
 
@@ -39,8 +41,6 @@ makewrapper:
 	use SNOEXP() for handle functions?
 
 DBM
-	Use SDBM on VMS?
-
 	have way to find out which DB library in use??? if live update safe?
 		use flock/fcntl on dbm_dirfno??
 
