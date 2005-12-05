@@ -314,3 +314,33 @@ DBM_DELETE( LA_ALIST ) LA_DCL
 	RETFAIL;
     RETINT(ret);
 }
+
+/*
+ * LOAD("DBM_ERROR(INTEGER)STRING")
+ *
+ * predicate
+ */
+
+int
+DBM_ERROR( LA_ALIST ) LA_DCL
+{
+    DBM *f = lookup_handle(&dbm_files, LA_INT(0));
+    if (f && dbm_error(f))
+	RETNULL;
+    RETFAIL;				/* fails if no error! */
+}
+
+/*
+ * LOAD("DBM_CLEARERR(INTEGER)STRING")
+ * predicate
+ */
+
+int
+DBM_CLEARERR( LA_ALIST ) LA_DCL
+{
+    DBM *f = lookup_handle(&dbm_files, LA_INT(0));
+    if (!f)
+	RETFAIL;
+    dbm_clearerr(f);
+    RETNULL;
+}

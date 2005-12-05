@@ -2,7 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
-12/3/2004
+12/4/2005
+	lib/snolib/ndbm.c, snolib/ndbm.sno, pml.h, config/vms/config.h:
+		add DBM_ERROR, DBM_CLEARERR
+
+12/3/2005
 	new snolib/stcl.sno snolib/ndbm.sno: do LOAD()ing define constants
 	pml.h: remove PMPROTO lines for NDBM and STCL functions
 

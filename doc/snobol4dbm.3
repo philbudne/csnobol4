@@ -23,16 +23,20 @@ datum = DBM_FETCH(dbhandle,key)
 .LP
 key = DBM_FIRSTKEY(dbhandle)
 .LP
+DBM_ERROR(dbhandle)
+.LP
+DBM_CLEARERR(dbhandle)
+.LP
 key = DBM_NEXTKEY(dbhandle)
 .LP
 DBM_CLOSE(dbhandle)
 
 .SH DESCRIPTION
 "ndbm" is an industry standard database API first created in 4.3BSD,
-and included in Version 2 of the "Single Unix Specification" (SUSv2).
+and included in the Unix 98 (SUSv2) standard.
 
 .PP
-Several different packages implement this API, including:
+There are many different implementations of this API, including:
 
 .IP \(bu
 The original BSD 4.3 ndbm, based on AT&T dbm. Found in commercial Un*x

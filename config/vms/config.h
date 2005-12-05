@@ -57,6 +57,8 @@
 #define DBM_FIRSTKEY XDBM_FIRSTKEY
 #define DBM_NEXTKEY XDBM_NEXTKEY
 #define DBM_DELETE XDBM_DELETE
+#define DBM_ERROR XDBM_ERROR
+#define DBM_CLEARERR XDBM_CLEARERR
 
 #define DIR_SEP ""			/* ASSume brackets or device */
 #define PATH_SEP ";"			/* be DOS-ish */
