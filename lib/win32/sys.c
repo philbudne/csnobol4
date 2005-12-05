@@ -62,7 +62,11 @@ osname(cp)
     char *cp;
 {
     char osname[32], *os;
+#ifdef VER_NT_WORKSTATION
     OSVERSIONINFOEX osv;
+#else
+    OSVERSIONINFO osv;
+#endof
     int vnum;
 
     vnum = 0;
@@ -146,10 +150,14 @@ osname(cp)
 	case 6:
 	    switch (osv.dwMinorVersion) {
 	    case 0:
-		/* if (osv.wProductType == VER_NT_WORKSTATION) os = "WinVista"; */
-		os = "WinLH";		/* Longhorn */
+		os = "WinLH";		/* LongHorn family */
+#ifdef VER_NT_WORKSTATION
+		if (osv.wProductType == VER_NT_WORKSTATION)
+#endif
+		    os = "WinVista";
 		break;
 	    default:
+		vnum = 1;
 		break;
 	    }
 	    break;
