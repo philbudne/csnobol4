@@ -6,4 +6,6 @@
 	input(.i, 98,, "popen2.dat")
 	output = i
 	endfile(98)
+
+	delete("popen2.dat")
 end
