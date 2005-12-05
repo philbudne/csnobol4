@@ -21,6 +21,7 @@ extern void *malloc();
 #include "h.h"				/* __P() */
 #include "load.h"			/* SNOEXP() */
 #include "handle.h"
+#include "str.h"
 
 #define HANDLE_HASH_SIZE (1<<8)		/* power of two */
 

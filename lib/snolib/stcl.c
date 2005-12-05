@@ -28,6 +28,7 @@
 #include "macros.h"
 #include "load.h"
 #include "handle.h"
+#include "str.h"
 
 static handle_handle_t tcl_interps;
 static handle_handle_t tcl_objs;	/* Objects NOT per-interp!! */
