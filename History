@@ -2,9 +2,16 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/5/2005
+	lib/snolib/{stcl,handle}.c: include str.h
+	lib/io.c: try to keep gcc quiet
+
 12/4/2005
-	lib/snolib/ndbm.c, snolib/ndbm.sno, pml.h, config/vms/config.h:
-		add DBM_ERROR, DBM_CLEARERR
+	lib/snolib/ndbm.c, snolib/ndbm.sno, pml.h,
+	    config/vms/config.h, doc/snobol4dbm.3: add DBM_ERROR, DBM_CLEARERR
+	doc/Makefile: add snobol4dbm targets
+	lib/win32/sys.c: fall back to OSVERSIONINFO
+	lib/snolib/handle.c: bzero new hash tables!
 
 12/3/2005
 	new snolib/stcl.sno snolib/ndbm.sno: do LOAD()ing define constants
