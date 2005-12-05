@@ -34,8 +34,10 @@ snobol4dbm \- SNOBOL4 NDBM interface
 .B "DBM_CLEARERR(dbhandle)"
 
 .SH DESCRIPTION
-"ndbm" is an industry standard fast hashed storage API first created
-in 4.3BSD, and included in the Unix 98 (SUSv2) standard.
+"NDBM" (for New Data Base Managemnt) is an industry standard fast
+hashed storage API first created in 4.3BSD, and included in the Unix
+98 (SUSv2) standard.  The original DBM API appeared in AT&T Research
+Unix Version 7, and only allowed access to a single file at a time.
 
 .PP
 There are many different implementations of this API, including:
@@ -127,7 +129,13 @@ None of the implementations allow concurrent read and write.
 
 .PP
 Some implementations (classic NDBM and SDBM) place limits on the total
-size of key plus datum.
+size of key plus datum (typically slightly less than 1KB).
+
+.PP
+NOTE: Some implementations (classic NDBM and SDBM) create sparse file
+which appear (to "ls -l") to be larger than they are (see "ls -s").
+Copying such files may cause the non-allocated blocks to be "filled"
+with zeroed disk blocks, and then the files really will be large!
 
 .PP
 Only GDBM provides locking to eliminate the possibility of file corruption,
