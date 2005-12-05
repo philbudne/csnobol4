@@ -10,7 +10,7 @@
 .\}
 .TH SNOBOL4DBM 1 "3 Dec 2005" "Local"
 .SH NAME
-snobol4dbm \- SNOBOL4 ndbm interface
+snobol4dbm \- SNOBOL4 NDBM interface
 
 .SH SYNOPSIS
 -INCLUDE 'ndbm.sno'
@@ -23,11 +23,11 @@ datum = DBM_FETCH(dbhandle,key)
 .LP
 key = DBM_FIRSTKEY(dbhandle)
 .LP
+key = DBM_NEXTKEY(dbhandle)
+.LP
 DBM_ERROR(dbhandle)
 .LP
 DBM_CLEARERR(dbhandle)
-.LP
-key = DBM_NEXTKEY(dbhandle)
 .LP
 DBM_CLOSE(dbhandle)
 
@@ -65,11 +65,16 @@ Philip L. Budne
 
 .SH BUGS
 .PP
-None of the implements allow concurrent read and write.
+None of the implementations allow concurrent read and write.
 
 .PP
 Only GDBM provides locking to eliminate the possibility of file corruption,
 or reading of incomplete data.
+
+.PP
+GDBM locking sometimes fails on NFS mounted partitions (particularly on
+Linux systems).  GDBM's NDBM interface does not provide a way to disable
+locking.
 
 .PP
 DBM databases were traditionally (re)created from text files and used
