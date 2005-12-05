@@ -66,6 +66,7 @@ new_handle(hhp, vp)
 	hlp = malloc(sizeof(struct handle_list));
 	if (!hlp)
 	    return BAD_HANDLE;
+	bzero(hlp, sizeof(struct handle_list));
 	*hhp = hlp;
     }
 
