@@ -906,12 +906,12 @@ io_printf
 	    break;
 	case 'G':			/* padded g/float */
 	    dp = va_arg(vp, struct descr *);
-	    sprintf(lp, "%15.3g", D_RV(dp));
+	    sprintf(temp, "%15.3g", D_RV(dp));
 	    COPYTEMP;
 	    break;
 	case 'g':			/* unpadded g/float */
 	    dp = va_arg(vp, struct descr *);
-	    sprintf(lp, "%g", D_RV(dp));
+	    sprintf(temp, "%g", D_RV(dp));
 	    COPYTEMP;
 	    break;
 	case 's':			/* c-string (from version.c) */
@@ -929,7 +929,8 @@ io_printf
 	    if (dp) {
 		struct spec s[1];
 
-		S_SP(s) = 0;		/* try to keep gcc quiet */
+		S_A(s) = 0;		/* try to keep gcc quiet */
+		S_O(s) = 0;		/* try to keep gcc quiet */
 		X_LOCSP(s, dp);		/* get specifier */
 
 		/* might contain NUL's... will stop short! */
