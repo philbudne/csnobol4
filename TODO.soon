@@ -1,10 +1,5 @@
 $Id$
 
-CHANGES
-	mention MEM_IO, wrapper, dynamic
-	&GTRACE
-	NDBM
-
 README
 	1.0 timing contributors
 
@@ -15,19 +10,12 @@ INSTALL
 		--without-dbm
 		--add-warn
 
-snobol4dbm.3
-	DESCRIPTION section!!!
-	note key+data limits, page size limits?
-	NFS locking issues with GDBM on Linux?
-
 ================ post 1.1:
-
-use SDBM on DJGPP?
 
 dynamic.sno:
 	function(s) to create Makefile?
-
-STCL:	put Object calls under ifdef?
+	functions to read template file
+		(and either create on the fly, or build Makefile)?
 
 makewrapper:
 	have SYSPRED return int (not a predicate!)?

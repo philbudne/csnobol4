@@ -8,6 +8,8 @@ Changes since 1.0 release;
 		"DBM" -- "ndbm" keyed database access
 		"COM" -- COM/OLE Automation on Win32
 		"STCL" -- SNOBOL/Tcl interface (optional)
+	New library "dynamic.sno" to help compile/link
+		dynamicly loadable extensions.
 	Added HTTP.POST function to http.sno
 	Handle environments where pointers can have high order bit set
 		Linux 2.6 kernels in Fedora Core, SuSE 10 distributions
@@ -17,11 +19,10 @@ Changes since 1.0 release;
 	Fix compilation on pre-panther OSX
 	Fix second argument to DEFINE(): was not case folded!
 	Fix backtracking over unevaluated expressions
-	Prepend &FILE and &LINE to TRACE output
-	Experimenatl:
-		GC stats & tracing (-g command line option, &GTRACE keyword)
-		Preloaded files: SNOLIB/preload.sno SNOLIB/prelocal.sno
-				HOME/preload.sno ./preload.sno
+	Source &FILE and &LINE shown in TRACE output
+	Experimental: GC stats & tracing (-g on command line, &GTRACE keyword)
+	Completed support for "memory I/O" when CSNOBOL4 used as a library!
+	Added "PREDICATE" and "SYSPRED" return types in wrapper.sno
 
 Changes since 0.99.44 release;
 =============================

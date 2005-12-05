@@ -3,8 +3,13 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 12/5/2005
-	lib/snolib/{stcl,handle}.c: include str.h
+	lib/snolib/{stcl,handle}.c: include str.h to keep gcc4 quiet
 	lib/io.c: try to keep gcc quiet
+	snolib/ndbm.sno: add DBM_DELETE (thanks to Rafal)
+	snolib/stcl.sno: add comments
+	doc/.cvsignore: add snobol4dbm entries
+	doc/snobol4dbm.3: improved
+	CHANGES: updated
 
 12/4/2005
 	lib/snolib/ndbm.c, snolib/ndbm.sno, pml.h,
