@@ -929,6 +929,7 @@ io_printf
 	    if (dp) {
 		struct spec s[1];
 
+		S_SP(s) = 0;		/* try to keep gcc quiet */
 		X_LOCSP(s, dp);		/* get specifier */
 
 		/* might contain NUL's... will stop short! */
