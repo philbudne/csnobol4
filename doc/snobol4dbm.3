@@ -13,27 +13,29 @@
 snobol4dbm \- SNOBOL4 NDBM interface
 
 .SH SYNOPSIS
--INCLUDE 'ndbm.sno'
+.B "-INCLUDE 'ndbm.sno'"
 .LP
-dbhandle = DBM_OPEN(file,flags,mode)
+.B "dbhandle = DBM_OPEN(file,flags,mode)"
 .LP
-DBM_STORE(dbhandle,key,datum,flags)
+.B "DBM_CLOSE(dbhandle)"
 .LP
-datum = DBM_FETCH(dbhandle,key)
+.B "DBM_STORE(dbhandle,key,datum,flags)"
 .LP
-key = DBM_FIRSTKEY(dbhandle)
+.B "datum = DBM_FETCH(dbhandle,key)"
 .LP
-key = DBM_NEXTKEY(dbhandle)
+.B "DBM_DELETE(dbhandle,key)"
 .LP
-DBM_ERROR(dbhandle)
+.B "key = DBM_FIRSTKEY(dbhandle)"
 .LP
-DBM_CLEARERR(dbhandle)
+.B "key = DBM_NEXTKEY(dbhandle)"
 .LP
-DBM_CLOSE(dbhandle)
+.B "DBM_ERROR(dbhandle)"
+.LP
+.B "DBM_CLEARERR(dbhandle)"
 
 .SH DESCRIPTION
-"ndbm" is an industry standard database API first created in 4.3BSD,
-and included in the Unix 98 (SUSv2) standard.
+"ndbm" is an industry standard fast hashed storage API first created
+in 4.3BSD, and included in the Unix 98 (SUSv2) standard.
 
 .PP
 There are many different implementations of this API, including:
@@ -51,14 +53,69 @@ GNU DBM (GDBM) found in Linux distributions.
 
 .IP \(bu
 SDBM, Ozan Yigit's Public Domain implementation of NDBM.
-Supplied with this distribution
+Supplied with this distribution, and used as a last resort
+on Un*x systems (and by default on non Un*x systems).
+
+.PP
+.B DBM_OPEN
+takes a filename (STRING), flags (either "R" for read-only, "W" for
+write access, or "CW" to create and write a new file), and a "mode"
+string, which defaults to "0660" (octal) and returns an integer database
+handle which can be passed to the remaining functions.
+
+.PP DBM_CLOSE
+closes the database file.
+.BR DBM_CLOSE
+.I MUST
+be called to ensure that all your data is written.
+
+.PP
+.B DBM_STORE
+takes a database handle, key and datum strings, and a flag
+(either
+.B DBM_INSERT
+to insert a new pair, or fail if the key already exists, or
+.B DBM_REPLACE
+to insert or replace existing data).  The key and datum strings
+may contain an arbitrary series of characters.
+
+.PP
+.B DBM_FETCH
+returns the stored datum (if any) for the supplied key, or fails.
+
+.PP
+.B DBM_DELETE
+deletes the stored datum (if any) for the supplied key, or fails.
+
+.PP
+.B DBM_FIRSTKEY
+and subsequent calls to
+.B DBM_NEXTKEY
+allow you to traverse all stored keys.  The keys will be returned in
+arbitrary order, and the routines will fail at the end of the
+traversal.
+
+.PP
+.B DBM_ERROR
+is a predicate which succeeds if the database handle is valid
+and an I/O error has occurred on the file.
+.B DBM_CLEARERR
+is a predicate
+which succeeds if if the database handle is valid, and has
+the side effect of clearing the I/O error flag.
 
 .SH FILES
-NDBM, GDBM, SDBM create two files: filename.dir, filename.pag.
-Berkeley DB creates a a single filename.db file.
+NDBM, GDBM, and SDBM create two files:
+.IR filename .dir,
+.IR filename .pag.
+Berkeley DB creates a single
+.IR filename .db
+file.
 
 .SH SEE ALSO
-.BR ndbm (3), dbopen (3), gdbm (3).
+.BR ndbm (3),
+.BR dbopen (3),
+.BR gdbm (3).
 
 .SH AUTHOR
 Philip L. Budne
@@ -66,6 +123,10 @@ Philip L. Budne
 .SH BUGS
 .PP
 None of the implementations allow concurrent read and write.
+
+.PP
+Some implementations (classic NDBM and SDBM) place limits on the total
+size of key plus datum.
 
 .PP
 Only GDBM provides locking to eliminate the possibility of file corruption,
@@ -77,8 +138,8 @@ Linux systems).  GDBM's NDBM interface does not provide a way to disable
 locking.
 
 .PP
-DBM databases were traditionally (re)created from text files and used
+DBM databases are traditionally (re)created from text files and used
 for fast disk-based read-only table lookups.  Programs which need to
-update the file generated a new copy, and then renamed the new
-file(s), so that the next reader gets the new copies (existing readers
-continue to see old data).
+update the file generate a new copy, and then rename the new file(s),
+so that the next reader gets the new copies (existing readers continue
+to see old data).
