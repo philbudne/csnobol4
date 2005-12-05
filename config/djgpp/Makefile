@@ -16,13 +16,15 @@ LOAD_C=$(SRCDIR)lib/dummy/load.c
 # DXE2 LOAD() support.  DXE2 available from "v2tk" directory
 # on DJGPP distribution mirror sites.  Unpack and run "make install"
 #
-# "DXE3" now part of DJGPP distribution (as of April 2003)??
-#
 # uncomment next 4 lines to enable;
 #DXE_DEFS=-DHAVE_DXE2
 #LOAD_C=$(SRCDIR)lib/unix98/load.c
 #DXE_OBJS=osinit.o
 #DXE_LIBS=-ldl
+#
+# "DXE3" now part of DJGPP distribution (as of April 2003)
+#	Didn't find it in a basic install of v2 -phil
+#
 
 # TCP/IP support, using WATTCP (see www.wattcp.com)
 #
