@@ -147,8 +147,9 @@ Linux systems).  GDBM's NDBM interface does not provide a way to disable
 locking.
 
 .PP
-DBM databases are traditionally (re)created from text files and used
-for fast disk-based read-only table lookups.  Programs which need to
-update the file generate a new copy, and then rename the new file(s),
-so that the next reader gets the new copies (existing readers continue
-to see old data).
+DBM databases accessed concurrently by multiple processes are
+traditionally (re)created from text files and used for fast disk-based
+read-only table lookups.  Programs which need to update the file
+generate a new temporary copy using a different name, and then rename
+the new file(s), so that the next reader gets the new copies (existing
+readers continue to see old data).
