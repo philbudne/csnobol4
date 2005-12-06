@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/6/2005
+	configure: try to fix --mandir=
+
 12/5/2005
 	lib/snolib/{stcl,handle}.c: include str.h to keep gcc4 quiet
 	lib/io.c: try to keep gcc quiet
@@ -10,6 +13,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	doc/.cvsignore: add snobol4dbm entries
 	doc/snobol4dbm.3: improved
 	CHANGES: updated
+	test/popen2.sno: clean up
 
 12/4/2005
 	lib/snolib/ndbm.c, snolib/ndbm.sno, pml.h,
