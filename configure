@@ -140,8 +140,7 @@ while [ $# -gt 0 ]; do
 	LP64=true
 	;;
     --mandir=*)
-	STUFF=`echo "$1" | sed 's/--mandir=//'`
-	echo "MANDIR=$STUFF"			>> $CONFIG_M4
+	MANDIR=`echo "$1" | sed 's/--mandir=//'`
     	;;
     --no-bitfields)
 	NO_BITFIELDS=true
@@ -231,7 +230,9 @@ EOF
 done
 
 BINDIR="$PREFIX/bin"
-MANDIR="$PREFIX/man"
+if [ "x$MANDIR" == x ]; then
+	MANDIR="$PREFIX/man"
+fi
 MAN1DIR="$MANDIR/man1"
 MAN3DIR="$MANDIR/man3"
 SNOLIB_DIR="$PREFIX/lib/snobol4"
