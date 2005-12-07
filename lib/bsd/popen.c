@@ -63,6 +63,7 @@
 #include <stdio.h>
 
 #include "str.h"
+#include "h.h"		/* const */
 
 #ifndef _PATH_BSHELL
 #define _PATH_BSHELL "/bin/sh"
