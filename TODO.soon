@@ -1,10 +1,5 @@
 $Id$
 
-snobol4tcl.3
-
-tests:
-	clean up output: openo.tst? test.bin?
-
 README
 	1.0 timing contributors
 
