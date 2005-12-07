@@ -289,10 +289,15 @@ main() {
 #endif
 }
 EOF
-    if ${CC-cc} -o $TMP $TMP.c && ./$TMP; then
+    if [ "x$CC" = x ]; then
+	XCC=cc
+    else
+	XCC="$CC"
+    fi
+    if $XCC -o $TMP $TMP.c && ./$TMP; then
 	echo 'yes it is' 1>&2
 	echo "# cc is gcc"			>> $CONFIG_M4
-	GCCPATH="${CC-cc}"
+	GCCPATH="$XCC"
     fi
     rm -f $TMP $TMP.c $TMP.exe
 
