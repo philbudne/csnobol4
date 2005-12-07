@@ -4,7 +4,8 @@
 ALL=	porting.txt \
 	snobol4.0 snobol4.html snobol4.ps snobol4.pdf \
 	snolib.0 snolib.html snolib.ps snolib.pdf \
-	snobol4dbm.0 snobol4dbm.html snobol4dbm.ps snobol4dbm.pdf
+	snobol4dbm.0 snobol4dbm.html snobol4dbm.ps snobol4dbm.pdf \
+	snobol4tcl.0 snobol4tcl.html snobol4tcl.ps snobol4tcl.pdf
 
 all:	$(ALL)
 
@@ -75,6 +76,20 @@ snobol4dbm.ps: snobol4dbm.3 Makefile
 
 snobol4dbm.pdf: snobol4dbm.ps
 	ps2pdf snobol4dbm.ps snobol4dbm.pdf
+
+####
+
+snobol4tcl.0: snobol4tcl.3 Makefile
+	$(NROFF) $(MAN) snobol4tcl.3 > snobol4tcl.0
+
+snobol4tcl.html: snobol4tcl.3 Makefile
+	$(TROFF_HTML) $(MAN) snobol4tcl.3 > snobol4tcl.html
+
+snobol4tcl.ps: snobol4tcl.3 Makefile
+	$(TROFF_PS) $(MAN) snobol4tcl.3 > snobol4tcl.ps
+
+snobol4tcl.pdf: snobol4tcl.ps
+	ps2pdf snobol4tcl.ps snobol4tcl.pdf
 
 ################
 
