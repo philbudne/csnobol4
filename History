@@ -5,7 +5,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 12/6/2005
 	configure: try to fix --mandir=
 	new doc/snobol4tcl.3: STCL man page
-	Makefile snolib.3: update for STCL
+	Makefile2.m4 doc/Makefile doc/snolib.3: update for snobol4tcl(3)
 
 12/5/2005
 	lib/snolib/{stcl,handle}.c: include str.h to keep gcc4 quiet
