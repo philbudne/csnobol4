@@ -1,5 +1,5 @@
 # New ports collection makefile for:	snobol4
-# Version required:	1.0
+# Version required:	1.1
 # Date created:		18 February 2004
 # Whom:			Phil Budne <phil@ultimate.com>
 #
@@ -8,9 +8,9 @@
 
 # new:
 PORTNAME=	snobol4
-PORTVERSION=	1.0
+PORTVERSION=	1.1
 # old:
-DISTNAME=	snobol4-1.0
+DISTNAME=	snobol4-1.1
 CATEGORIES=	lang
 MASTER_SITES=	ftp://ftp.snobol4.org/snobol/
 

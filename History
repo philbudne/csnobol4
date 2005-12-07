@@ -4,6 +4,10 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 12/7/2005
 	INSTALL: update
+	bsd/Makefile.freebsd bsd/Makefile.netbsd debian/copyright
+		rpm/makerpm solaris/pkginfo: update for version 1.1
+	removed: rpm/snobol4-1.0-1.spec
+	new: rpm/snobol4-1.1-1.spec
 
 12/6/2005
 	configure: try to fix --mandir=

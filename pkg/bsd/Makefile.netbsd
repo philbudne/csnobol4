@@ -1,6 +1,6 @@
 # $Id$
 
-DISTNAME=	snobol4-1.0
+DISTNAME=	snobol4-1.1
 CATEGORIES=	lang
 MASTER_SITES=	ftp://ftp.snobol4.org/snobol/
 
