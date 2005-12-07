@@ -2,10 +2,14 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/7/2005
+	INSTALL: update
+
 12/6/2005
 	configure: try to fix --mandir=
 	new doc/snobol4tcl.3: STCL man page
 	Makefile2.m4 doc/Makefile doc/snolib.3: update for snobol4tcl(3)
+	lib/bsd/popen.c: include h.h for non-ansi compilation!
 
 12/5/2005
 	lib/snolib/{stcl,handle}.c: include str.h to keep gcc4 quiet

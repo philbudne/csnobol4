@@ -3,13 +3,6 @@ $Id$
 README
 	1.0 timing contributors
 
-INSTALL
-	new options:
-		--with-tcl
-		--with-tk	(exe 4x larger! 333K to 1333K, footprint 3.5x)
-		--without-dbm
-		--add-warn
-
 Release 1.1;
 	update History, version.c, README, tag it
 

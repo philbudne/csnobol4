@@ -53,6 +53,9 @@ with "--add-" can appear);
 
 	--add-srcs=STRING
 		Add additional source files for "make depend"
+
+	--add-warn=STRING
+		Add addiotional C Compiler warning options.
 
 	--double
 		Use C "double" data type to represent SNOBOL4 REALs.
