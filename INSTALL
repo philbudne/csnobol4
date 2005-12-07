@@ -115,7 +115,7 @@ with "--add-" can appear);
 		On systems which support the LP64 (64-bit longs and
 		pointers) data model as an option, using --lp64 is a
 		better idea.
-
+
 				*** WARNING ***
 
 		Expect to see large numbers of C compiler warnings when
@@ -123,7 +123,7 @@ with "--add-" can appear);
 
 		This option is experimental, and has not been extensively
 		tested, particularly with vendor supplied C compilers.
-
+
 	--lp64
 		Force the use of defines for LP64 (64-bit long and
 		pointer) data model where available, but not the
@@ -236,7 +236,27 @@ with "--add-" can appear);
 	--prefix=DIR
 		Supply a directory prefix for bin/ and lib/ directories.
 		Default prefix is /usr/local
+
+	--with-tcl
+		Try to compile in Tcl extension (see snobol4dbm man page)
+		A shared library installation of Tcl version 8.4 or later
+		is HIGHLY desirable!  See --with-tk
 
+	--with-tk
+		If --with-tcl has been given, and the most recent
+		version of Tcl available is prior to version 8.4, if
+		you want to use the Tk GUI toolkit, it will need to be
+		linked in.  If Tcl and Tk are staticly linked, this
+		may expand the snobol4 executable file four times
+		(from around 333K to around 1333K)!!
+
+		Consider installing newer, shared library versions of
+		Tcl and Tk!!!
+
+	--without-ndbm
+		Do not try to compile in NDBM extension
+		(see snobol4dbm man page)
+
 The configure script tries to select from among different versions
 of system support functions, including "dummy" versions which allow
 the software to be built, with reduced functionality.
@@ -247,8 +267,12 @@ available options for use in creating a system-specific config file.
 
 If you need assistance please contact me (phil@ultimate.com).
 
-I've spent untold hours working on this release, if you find it
-useful, please consider sending me a gift (phil@ultimate.com via paypal).
+I've spent untold hours working on this release (time, which if I had
+billed a client would have been in the tens of thousands of dollars),
+if you find it useful, please consider sending me a gift!
+
+This release was spurred on by a small donation (a user who gives each
+year when he renews his Public Broadcasting membership).
 
 I'm also available for contract development.
 
