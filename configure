@@ -230,7 +230,7 @@ EOF
 done
 
 BINDIR="$PREFIX/bin"
-if [ "x$MANDIR" == x ]; then
+if [ "x$MANDIR" = x ]; then
 	MANDIR="$PREFIX/man"
 fi
 MAN1DIR="$MANDIR/man1"
