@@ -66,7 +66,7 @@ osname(cp)
     OSVERSIONINFOEX osv;
 #else
     OSVERSIONINFO osv;
-#endof
+#endif
     int vnum;
 
     vnum = 0;
@@ -153,8 +153,8 @@ osname(cp)
 		os = "WinLH";		/* LongHorn family */
 #ifdef VER_NT_WORKSTATION
 		if (osv.wProductType == VER_NT_WORKSTATION)
-#endif
 		    os = "WinVista";
+#endif
 		break;
 	    default:
 		vnum = 1;
