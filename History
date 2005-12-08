@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/8/2005
+	doc/snobol4.1: add SEE snobol4tcl (Thanks to Phillip Thomas)
+		update date
+
 12/7/2005
 	INSTALL: update
 	bsd/Makefile.freebsd bsd/Makefile.netbsd debian/copyright
