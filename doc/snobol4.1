@@ -8,7 +8,7 @@
 .       ds rq ''
 .       ds lq ``
 .\}
-.TH SNOBOL4 1 "18 Feb 2004" "Local"
+.TH SNOBOL4 1 "08 Dec 2005" "Local"
 .SH NAME
 snobol4 \- SNOBOL4 interpreter
 .SH SYNOPSIS
@@ -33,7 +33,7 @@ This manual page describes a port of the original Bell Telephone Labs
 (32-bit int/long/pointer) or LP64 (64-bit long/pointer) C compilers by
 Philip L. Budne.  The language and it's implementation are described
 in [1] and [2].  Extensions from Catspaw SNOBOL4+, SPITBOL and SITBOL
-have been added.
+have been added.  This page discusses only the changes/extensions.
 
 .SS Limitations
 .PP
@@ -1009,7 +1009,7 @@ needing additional stack space is for tracing deeply nested DATA()
 structures during garbage collection.
 
 .SH SEE ALSO
-.BR snobol4dbm (3), snolib (3)
+.BR snobol4dbm (3), snobol4tcl (3), snolib (3).
 
 .TP
 http://www.snobol4.org
