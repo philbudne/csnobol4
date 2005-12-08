@@ -5,6 +5,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 12/8/2005
 	doc/snobol4.1: add SEE snobol4tcl (Thanks to Phillip Thomas)
 		update date
+	INSTALL: ran ispell, updated VMS info
+	README: add snobol4tcl, snobol4dbm. repaginate
 
 12/7/2005
 	INSTALL: update
