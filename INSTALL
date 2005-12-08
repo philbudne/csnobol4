@@ -55,7 +55,7 @@ with "--add-" can appear);
 		Add additional source files for "make depend"
 
 	--add-warn=STRING
-		Add addiotional C Compiler warning options.
+		Add additional C Compiler warning options.
 
 	--double
 		Use C "double" data type to represent SNOBOL4 REALs.
@@ -403,9 +403,9 @@ another program.  A dummy version is provided in lib/dummy/execute.c.
 VMS using DEC C
 ---------------
 
-CSNOBOL4 has been run on VMS (on VAXen using VAXC, and on Alphas
-using DECC), and the DEC C RTL.  config/vms/descrip.mms is an MMS
-description file, which can be used by typing:
+CSNOBOL4 has been run on VMS (VAX, Alpha, and IA64),
+config/vms/descrip.mms is an MMS description file, which can be used
+by typing:
 
 	MMS /DESCRIP=[.CONFIG.VMS]DESCRIP.MMS
 
@@ -413,7 +413,7 @@ If using VAXC, /MACRO=(VAX_C=1) should be appended to the command line.
 If using an older version of Alpha DECC, try adding /MACRO=(DECC4=1)
 
 The VMS port tries to use native calls to implement TTY I/O, and
-supports binary and noecho input.  TCP/IP I/O is implemented using DEC
+supports binary and noecho input.  TCP/IP I/O is implemented using
 TCP/IP Connection services for OpenVMS (formerly VAX/Ultrix connection
 product). It should be possible to use other TCP packages, but if not,
 or none is available, add /MACRO=(NO_TCP=1) to the MMS command line.
