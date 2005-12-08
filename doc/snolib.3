@@ -8,7 +8,7 @@
 .       ds rq ''
 .       ds lq ``
 .\}
-.TH SNOLIB 3 "04 Dec 2005" "Local"
+.TH SNOLIB 3 "08 Dec 2005" "Local"
 .SH NAME
 snolib \- SNOBOL4 library routines
 .SH SYNOPSIS
@@ -23,12 +23,13 @@ library routines are installed in
 
 .TP
 bq.sno
-run a program in a subprocess and capture all output
+run a program in a subprocess and capture all output,
+like shell/Perl backquote construct.
 
 .TP
 chars.sno
 defines a variable for each non-printing character
-in the local character set
+in the local character set.
 
 .TP
 dynamic.sno
@@ -36,16 +37,24 @@ functions to compile and link dynamicly LOADable extensions.
 
 .TP
 fence.sno, not.sno, unique.sno
-Emulation of SPITBOL FENCE() and NOT() functions, and unique
-variable creation support routine, thanks to Peter-Arno Coppen
+Emulation of SPITBOL
+.B FENCE()
+and
+.B NOT()
+functions, and unique variable creation support routine, thanks to
+Peter-Arno Coppen.
 
 .TP
 host.sno
-Function codes for HOST() function
+Function codes for
+.B HOST()
+function.
 
 .TP
 logic.sno
-Prototypes for Catspaw Macro SPITBOL compatible LOGIC() function
+Prototypes for Catspaw Macro SPITBOL compatible
+.B LOGIC()
+function.
 
 .TP
 ndbm.sno
@@ -54,25 +63,32 @@ Prototypes and values for SNOBOL4 NDBM Database Access routines, see
 
 .TP
 serv.sno
-Example TCP server program
+Example TCP server program.
 
 .TP
 smtp.sno
-Example code to send mail via TCP/SMTP
+Example code to send mail via TCP/SMTP.
 
 .TP
 snobol4+.sno
 SNOBOL4+ emulation functions:
-ENVIRONMENT(), EXECUTE(), TELL(), SEEK()
+.BR ENVIRONMENT() ,
+.BR EXECUTE() ,
+.BR TELL() ,
+.BR SEEK() .
 
 .TP
 spitbol.sno
-SPITBOL emulation functions:
-INPUT(), OUTPUT(), ENDFILE(), REWIND()
+SPITBOL emulation functions (no unit numbers)
+.BR INPUT() ,
+.BR OUTPUT() ,
+.BR ENDFILE() ,
+.BR REWIND() .
 
 .TP
 stcl.sno
-Prototypes and values for SNOBOL4 Tcl/Tk routines, see
+Prototypes and values for EXPERIMENTAL
+SNOBOL4 Tcl/Tk routines, see
 .BR snobol4tcl (3).
 
 .TP
@@ -81,18 +97,20 @@ TCP connection routines, used by the URL library (below)
 
 .TP
 url.sno, file.sno, ftp.sno, http.sno
-Internet URL file reading support (for file, ftp and http URL's)
+Internet URL file reading support (for file, ftp and http URL's).
 
 .TP
 utf.sno
-Experimental routines for handling UTF encoded (Unicode) data
+Experimental routines for handling UTF encoded (Unicode) data.
 
 .TP
 wrapper.sno
 Routines for creating C code wrappers for dynamicly loading code.
 
 .SH SEE ALSO
-.BR snobol4 (1)
+.BR snobol4 (1),
+.BR snobol4dbm (3),
+.BR snobol4tcl (3).
 
 .SH AUTHOR
 Philip Budne
@@ -100,6 +118,5 @@ Philip Budne
 Peter-Arno Coppen
 
 .SH BUGS
-This man page should describe how to use the routines,
-but for now just tells you the files exist (which is better
-than nothing).
+This man page should describe how to use the routines, but for now
+just tells you the files exist (which is better than nothing).
