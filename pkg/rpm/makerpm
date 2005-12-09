@@ -17,14 +17,35 @@ if [ ! -f ${VERS}.tar.gz ]; then
 	exit 1
 fi
 
-cp ${VERS}.tar.gz /usr/src/redhat/SOURCES/
-if rpm -ba ${SPEC}.spec; then
-	mv /usr/src/redhat/SRPMS/${SPEC}.src.rpm .
-	mv /usr/src/redhat/RPMS/i386/${SPEC}.i386.rpm .
-	rm /usr/src/redhat/SOURCES/${VERS}.tar.gz
-	rm -rf /usr/src/redhat/BUILD/${VERS}
+# attempt to avoid wiring in i386
+ARCH=`uname -i`
+
+for DIR in /usr/src/packages /usr/src/redhat; do
+	# look for RPMS/$ARCH?
+	if [ -d $DIR -a -d $DIR/RPMS ]; then
+		BASE=$DIR
+		break
+	fi
+done
+
+if [ ! "$BASE" ]; then
+	echo Could not find package base directory 1>&2
+	exit 1
+fi
+
+cp ${VERS}.tar.gz ${BASE}/SOURCES/
+
+# crawl along PATH looking for rpmbuild or rpm?
+RPMCMD=rpmbuild
+
+if $RPMCMD -ba ${SPEC}.spec; then
+	echo $RPMCMD command succeeded.  Copying files... 1>&2
+	mv ${BASE}/SRPMS/${SPEC}.src.rpm .
+	mv ${BASE}/RPMS/${ARCH}/${SPEC}.${ARCH}.rpm .
+	rm ${BASE}/SOURCES/${VERS}.tar.gz
+	rm -rf ${BASE}/BUILD/${VERS}
 	exit 0
 else
-	echo rpm command failed 1>&2
+	echo $RPMCMD command failed 1>&2
 	exit 1
 fi
