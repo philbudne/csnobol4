@@ -5,6 +5,8 @@ d	none	lib/snobol4			0755	root	sys
 f	none	lib/snobol4/bq.sno		0644	root	sys
 f	none	lib/snobol4/chars.sno		0644	root	sys
 f	none	lib/snobol4/config.h		0644	root	sys
+f	none	lib/snobol4/ndbm.sno		0644	root	sys
+f	none	lib/snobol4/dynamic.sno		0644	root	sys
 f	none	lib/snobol4/dt.h		0644	root	sys
 f	none	lib/snobol4/equ.h		0644	root	sys
 f	none	lib/snobol4/fence.sno		0644	root	sys
@@ -23,6 +25,7 @@ f	none	lib/snobol4/smtp.sno		0644	root	sys
 f	none	lib/snobol4/snobol4+.sno	0644	root	sys
 f	none	lib/snobol4/snotypes.h		0644	root	sys
 f	none	lib/snobol4/spitbol.sno		0644	root	sys
+f	none	lib/snobol4/stcl.sno		0644	root	sys
 f	none	lib/snobol4/tcp.sno		0644	root	sys
 f	none	lib/snobol4/unique.sno		0644	root	sys
 f	none	lib/snobol4/url.sno		0644	root	sys
@@ -30,3 +33,6 @@ f	none	lib/snobol4/utf.sno		0644	root	sys
 f	none	lib/snobol4/wrapper.sno		0644	root	sys
 f	none	bin/snobol4			0755	root	sys
 f	none	man/man1/snobol4.1		0644	root	sys
+f	none	man/man3/snolib.3		0644	root	sys
+f	none	man/man3/snobol4dbm.3		0644	root	sys
+f	none	man/man3/snobol4tcl.3		0644	root	sys
