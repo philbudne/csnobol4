@@ -2,11 +2,17 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+**************** release 1.1 (CVS tag REL_1_1)
+
+	(12th anniversary of ALPHA1 release)
+
 12/9/2005
 	pkg/rpm/makerpm: use rpmbuild command
 		attempt to be more eccumenical (Thanks to Rafal)
 	pkg/solaris/prototype:
 		add ndbm.sno stcl.sno dynamic.sno snolib.3 snobol4{dbm,tcl}.3
+	doc/snobol4.1: tweak HOST() description
+	version.c: update to 1.1, return instead of exit()
 
 12/8/2005
 	doc/snobol4.1: add SEE snobol4tcl (Thanks to Phillip Thomas)
