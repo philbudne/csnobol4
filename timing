@@ -286,13 +286,13 @@ TAIL1='sed -n 2,$p'
 	DEST=$TDIR/snobol4$EXT
 
 	# AFS (Andrew File System) won't hard link across directories!
-	ln $SNOBOL $DEST || ln -s $SNOBOL $DEST
+	ln $SNOBOL $DEST 2>/dev/null || ln -s $SNOBOL $DEST
 
 	cd $TDIR
 
 LNFILES='../procs ../globals ../v311.sil ../host.sno'
 # AFS doesn't allow hard links across directories!
-	ln $LNFILES . || ln -s $LNFILES .
+	ln $LNFILES . 2>/dev/null || ln -s $LNFILES .
 
 	# need eval on Debian 3.0 (no "time" binary)
 	# stderr to file "stderr", all but first line of stdout to "$OUT"
