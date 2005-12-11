@@ -2,7 +2,7 @@
 
 /*
  * SPARC SPITBOL compatibility;
- * LOAD("SIN(REAL)REAL")
+ * LOAD("COS(REAL)REAL")
  * cosine of angle in radians
  */
 
