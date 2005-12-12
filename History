@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/12/2005
+	configure: look for gdbm_compat in /usr/lib64, if it exists
+		add --force-sdbm
+	INSTALL: add --force-sdbm
+
 12/11/2005
 	lib/snolib/cos.c: fix comment (Thanks to Dave Feustel)
 	timing: send "ln" errors to /dev/null (thanks to Devon)

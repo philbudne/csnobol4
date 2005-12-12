@@ -94,6 +94,11 @@ with "--add-" can appear);
 		if no bcopy() function is available.  Otherwise the
 		bcopy.c source file will be used.
 
+	--force-sdbm
+		Force use of SDBM, a free portable DBM replacement
+		included in the CSNOBOL4 distribution, even when
+		alternatives are available.
+
 	--longlong
 		Attempt to use C "long long" data type to represent
 		SNOBOL4 INTEGERs when the default data model uses

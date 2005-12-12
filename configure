@@ -133,6 +133,9 @@ while [ $# -gt 0 ]; do
     --force-memmove)
 	FORCE_MEMMOVE=true
 	;;
+    --force-sdbm)
+	FORCE_SDBM=true
+	;;
     --longlong)
 	LONGLONG=true
 	;;
@@ -219,7 +222,7 @@ Install location;
 
 Optional items;
 	--with-tcl		--with-tk
-	--without-ndbm
+	--without-ndbm		--force-sdbm
 EOF
 
 	rm -f $CONFIG_M4 $CONFIG_H
@@ -1451,7 +1454,10 @@ if [ "$WITH_TCL" ]; then
 fi
 
 if [ ! "$WITHOUT_NDBM" ]; then
-    if [ -f $INCDIR/ndbm.h ]; then
+    if [ "$FORCE_SDBM" ]; then
+	# bypass checks
+	USE_SDBM=1
+    elif [ -f $INCDIR/ndbm.h ]; then
 	echo "using $INCDIR/ndbm.h for DBM support" 2>&1
 	echo '#define HAVE_NDBM_H'		>> $CONFIG_H
 	# see if ndbm.h is Berkeley DB wrapper
@@ -1486,13 +1492,17 @@ if [ ! "$WITHOUT_NDBM" ]; then
 
     if [ ! "$NO_NDBM" ]; then
 	if [ "$USE_GDBM" ]; then
+	    echo "using libgdbm for DBM support" 1>&2
+	    LIBDIR=/usr/lib
+	    if [ -d /usr/lib64 ]; then
+		LIBDIR=/usr/lib64
+	    fi
 	    # gdbm 1.8.1: assume if it exists, we need it?
-	    if [ -f /usr/lib/libgdbm_compat.a -o \
-		 -f /usr/lib/libgdbm_compat.so ]; then
+	    if [ -f $LIBDIR/libgdbm_compat.a -o \
+		 -f $LIBDIR/libgdbm_compat.so ]; then
 		echo "using libgdbm_compat" 1>&2
 		echo 'ADD_LDFLAGS([-lgdbm_compat])' >> $CONFIG_M4
 	    fi
-	    echo "using libgdbm for DBM support" 1>&2
 	    echo 'ADD_LDFLAGS([-lgdbm])'	>> $CONFIG_M4
 	fi
 	echo '#define PML_NDBM'			>> $CONFIG_H
@@ -1500,6 +1510,7 @@ if [ ! "$WITHOUT_NDBM" ]; then
 	echo 'ADD_SRCS([$(NDBM_C)])'		>> $CONFIG_M4
 
 	if [ "$USE_SDBM" ]; then
+	    echo "using SDBM for DBM support" 1>&2
 	    echo 'ADD_CPPFLAGS([-Ilib/sdbm])'	>> $CONFIG_M4
 	    echo 'ADD_OBJS([sdbm.o])'		>> $CONFIG_M4
 	    echo 'ADD_SRCS([$(SDBM_C)])'	>> $CONFIG_M4
