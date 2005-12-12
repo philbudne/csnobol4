@@ -5,6 +5,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 12/11/2005
 	lib/snolib/cos.c: fix comment (Thanks to Dave Feustel)
 	timing: send "ln" errors to /dev/null (thanks to Devon)
+		need to copy executable if hard link fails!
 	version.c: update to 1.1+
 
 **************** release 1.1 (CVS tag REL_1_1)
