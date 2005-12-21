@@ -290,9 +290,11 @@ retvariant(struct descr *retval, VARIANTARG *vp)
 	// convert (and free) string
 	return retbstring(retval, V_BSTR(vp));
     case VT_DISPATCH:			// pointer to IDispatch object
-	int_t i = (int_t) new_handle(&com_handles, V_DISPATCH(vp));
+	int_t h = new_handle(&com_handles, V_DISPATCH(vp));
+	if (h == BAD_HANDLE)
+	    RETFAIL;
 	RETTYPE = I;
-	RETINT(i);
+	RETINT(h);
     }
     // XXX COMPLAIN so new entries can be added?
     RETNULL;				/* ?? */
