@@ -30,25 +30,27 @@ struct handle_entry {
     snohandle_t handle;
 };
 
-struct handle_list {
+struct handle_table {
     long entries;
     struct handle_entry *hash[HANDLE_HASH_SIZE];
 };
 
 #define HANDLE_HASH(H) (((int)(H)) & (HANDLE_HASH_SIZE-1))
 
+#define VP2HANDLE(VP) ((snohandle_t)(VP))
+
 SNOEXP(void *)
 lookup_handle(hhp, h)
     handle_handle_t *hhp;
     snohandle_t h;
 {
-    struct handle_list *hlp = *hhp;
+    struct handle_table *htp = *hhp;
     struct handle_entry *hp;
 
-    if (!hlp)
+    if (!htp)
 	return NULL;
 
-    for (hp = hlp->hash[HANDLE_HASH(h)]; hp; hp = hp->next) {
+    for (hp = htp->hash[HANDLE_HASH(h)]; hp; hp = hp->next) {
 	if (hp->handle == h)
 	    return (void *)hp->handle;
     }
@@ -60,30 +62,32 @@ new_handle(hhp, vp)
     handle_handle_t *hhp;
     void *vp;
 {
-    struct handle_list *hlp = *hhp;
+    struct handle_table *htp = *hhp;
     struct handle_entry *hp;
 
-    if (!hlp) {
-	hlp = malloc(sizeof(struct handle_list));
-	if (!hlp)
+    if (!htp) {
+	/* first time thru? create hash table */
+	htp = malloc(sizeof(struct handle_table));
+	if (!htp)
 	    return BAD_HANDLE;
-	bzero(hlp, sizeof(struct handle_list));
-	*hhp = hlp;
+	bzero(htp, sizeof(struct handle_table));
+	*hhp = htp;
     }
 
-    if (lookup_handle(hhp, (snohandle_t)vp))
-	return BAD_HANDLE;
+    /* if it already exists, just return handle */
+    if (lookup_handle(hhp, VP2HANDLE(vp)) != NULL)
+	return VP2HANDLE(vp);
 
     /* allocate block */
     hp = malloc(sizeof(struct handle_entry));
     if (!hp)
 	return BAD_HANDLE;
 
-    hp->next = hlp->hash[HANDLE_HASH(hp->handle)];
-    hp->handle = (snohandle_t)vp;
+    hp->next = htp->hash[HANDLE_HASH(hp->handle)];
+    hp->handle = VP2HANDLE(vp);
 
-    hlp->hash[HANDLE_HASH(hp->handle)] = hp;
-    hlp->entries++;
+    htp->hash[HANDLE_HASH(hp->handle)] = hp;
+    htp->entries++;
 
     return hp->handle;
 }
@@ -93,22 +97,22 @@ remove_handle(hhp, h)
     handle_handle_t *hhp;
     snohandle_t h;
 {
-    struct handle_list *hlp = *hhp;
+    struct handle_table *htp = *hhp;
     struct handle_entry *hp, *pp;
     int hash = HANDLE_HASH(h);
 
-    if (!hlp)
+    if (!htp)
 	return;
 
     pp = NULL;
-    for (hp = hlp->hash[hash]; hp; pp = hp, hp = hp->next) {
+    for (hp = htp->hash[hash]; hp; pp = hp, hp = hp->next) {
 	if (hp->handle == h) {
 	    if (pp)
 		pp->next = hp->next;
 	    else
-		hlp->hash[hash] = hp->next;
+		htp->hash[hash] = hp->next;
 	    free(hp);
-	    hlp->entries--;
+	    htp->entries--;
 	    return;
 	}
     }
