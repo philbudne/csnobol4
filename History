@@ -2,8 +2,16 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/22/2005
+	configure: output alternate LIBDIR choice
+
+12/20/2005
+	lib/win32/com.cpp: check for BAD_HANDLE in retvariant
+	lib/snolib/handle.c: allow redundant create_handle calls
+		renamed handle_list to handle_table
+
 12/12/2005
-	configure: look for gdbm_compat in /usr/lib64, if it exists
+	configure: look for libraries in /usr/lib64, if it exists
 		add --force-sdbm
 	INSTALL: add --force-sdbm
 

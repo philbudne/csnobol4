@@ -22,6 +22,7 @@ LIBDIR=/usr/lib
 if [ -d /usr/lib64 ]; then
     # SuSE x86_64
     LIBDIR=/usr/lib64
+    echo "using $LIBDIR for LIBDIR" 1>&2
 fi
 
 # largefile support OK
