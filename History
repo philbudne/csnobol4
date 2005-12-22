@@ -4,6 +4,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 12/22/2005
 	configure: output alternate LIBDIR choice
+	INSTALL: update optimization discussion, mention CPUFlags
+		repaginate
 
 12/20/2005
 	lib/win32/com.cpp: check for BAD_HANDLE in retvariant

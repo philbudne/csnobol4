@@ -51,6 +51,10 @@ with "--add-" can appear);
 		actually improve performance (by examining before and
 		after versions of timing.out)!!
 
+		See discussion of the CPUFlags utility under --fast
+		below for how to get different optimization flags that
+		may help on your platform.
+		
 	--add-srcs=STRING
 		Add additional source files for "make depend"
 
@@ -85,6 +89,13 @@ with "--add-" can appear);
 		all systems).  This option should be considered
 		experimental.  If the build fails, try not using it!!
 
+		There is a Perl CPUFlags script:
+
+			http://www.hlnum.org/english/projects/tools/cpuflags/
+
+		that may suggest other/better choices for optimization flags
+		to use with --add-opt than --fast does.
+
 	--force-gcc
 		Force use of GCC, the GNU C Compiler;
 		fail if GCC not available.
@@ -98,7 +109,7 @@ with "--add-" can appear);
 		Force use of SDBM, a free portable DBM replacement
 		included in the CSNOBOL4 distribution, even when
 		alternatives are available.
-
+
 	--longlong
 		Attempt to use C "long long" data type to represent
 		SNOBOL4 INTEGERs when the default data model uses
@@ -123,7 +134,7 @@ with "--add-" can appear);
 		On systems which support the LP64 (64-bit longs and
 		pointers) data model as an option, using --lp64 is a
 		better idea.
-
+
 				*** WARNING ***
 
 		Expect to see large numbers of C compiler warnings when
@@ -164,7 +175,7 @@ with "--add-" can appear);
 
 	--no-dlopen
 		Disable use of Unix98 dlopen() API for dynamic LOAD() support
-
+
 	--no-bitfields
 		Disable use of C bitfields for SIL (SNOBOL
 		Implementation Language) descriptors (basic unit of
@@ -189,7 +200,7 @@ with "--add-" can appear);
 		and unpacking a 24-bit field, the larger descriptor
 		means increased memory bandwidth use, and less
 		efficient use of the CPU data cache.
-
+
 	--no-dynlib
 		Disable use of all dynamic LOAD() support mechanisms
 
@@ -214,33 +225,23 @@ with "--add-" can appear);
 		Turn off C compiler optimization.
 
 	--opt=STRING
-		Supply C optimization flags.  The default value when using
-		GCC is "-O3" (the -finline-functions flag is supplied
-		separately except when --no-inline has been given).
-
-		If the C compiler being used is not GCC based, the
-		default "-O", which is widely accepted.  Other values
-		to try depend on the C compiler in use.  Different
-		values to try;
-
-			SunPro/Sun Workshop: -fast
-
-		If you can tell me good values to use, and how to detect
-		the compiler to use them on, please let me know!
+		Supply C optimization flags.  Use of this option
+		overrides any values supplied via --add-opt options
+		(but not ones added by --fast).  Use --add-opt in
+		perference to --opt.  There is also discussion under
+		the --fast option.
 
 		Optimized compilation mail fail, to compile the large
 		machine generated files (due to swap space exhaustion,
 		or internal compiler limits), or may appear to take
 		forever to compile.
 
-		--opt=-g can be used to compile for debugging, with no
-		optimization.
-
 		When using GCC --add-opt=-g can be used to compile for
-		debugging without disabling optimization.
+		debugging without disabling optimization.  To compile
+		for debugging, with no optimizations, use --opt=-g
 
 		To turn off optimization, see --no-opt
-
+
 	--prefix=DIR
 		Supply a directory prefix for bin/ and lib/ directories.
 		Default prefix is /usr/local
@@ -249,7 +250,7 @@ with "--add-" can appear);
 		Try to compile in Tcl extension (see snobol4dbm man page)
 		A shared library installation of Tcl version 8.4 or later
 		is HIGHLY desirable!  See --with-tk
-
+
 	--with-tk
 		If --with-tcl has been given, and the most recent
 		version of Tcl available is prior to version 8.4, if
@@ -367,7 +368,7 @@ ADD_OBJS()
 
 ADD_LDFLAGS()
 	Add loader (ld) options.  Can be used to control libraries (e.g. -l -L)
-
+
 local-config
 ------------
 
@@ -376,7 +377,7 @@ it's contents to config.h.  config.h will be installed in a public
 location for inclusion into user loadable modules, so #defines that
 are necessary, or useful for their compilation should be placed
 in the local-config file.
-
+
 Non-unix systems;
 ================
 
