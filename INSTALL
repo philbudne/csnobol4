@@ -231,7 +231,7 @@ with "--add-" can appear);
 		perference to --opt.  There is also discussion under
 		the --fast option.
 
-		Optimized compilation mail fail, to compile the large
+		Optimized compilation may fail to compile the large
 		machine generated files (due to swap space exhaustion,
 		or internal compiler limits), or may appear to take
 		forever to compile.
