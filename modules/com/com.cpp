@@ -79,7 +79,7 @@ wcschr(WCHAR *str, WCHAR ch)
 static LPOLESTR
 getolestring(void *vp)
 {
-    char *narrow = mgetstring(vp);
+    char *narrow = mgetstring(vp);	// handles null vp
     int len = MultiByteToWideChar(CP_ACP, 0, narrow, -1, NULL, 0);
     LPWSTR p = new WCHAR[len];
     MultiByteToWideChar(CP_ACP, 0, narrow, -1, p, len);
@@ -119,6 +119,7 @@ COM_LOAD( LA_ALIST ) LA_DCL
 	hr = CoGetObject(progid,	// display name
 			NULL,		// BIND_OPTS*
 			IID_IUnknown, (void **)&punk);
+	freeolestring(progid);
 	if (FAILED(hr))
 	    RETFAIL;
 
@@ -132,9 +133,9 @@ COM_LOAD( LA_ALIST ) LA_DCL
 	    hr = pfact->CreateInstance(NULL,	// agregate object
 					IID_IUnknown,
 					(void **)&punk);
+	    pfact->Release();
 	    if (FAILED(hr))
 		RETFAIL;
-	    pfact->Release();		// XXX release regardless??
 	} // have class factory
     } // moniker display name
     else {
@@ -177,6 +178,7 @@ COM_LOAD( LA_ALIST ) LA_DCL
 static bool
 descr_to_variant(struct descr *dp, VARIANTARG *vp)
 {
+    VariantInit(vp);
     switch (D_V(dp)) {
     case I:
 #ifdef HAVE_I8
@@ -217,6 +219,7 @@ descr_to_variant(struct descr *dp, VARIANTARG *vp)
     return false;
 } // descr_to_variant
 
+// used to clean up args created by descr_to_variant
 static void
 freevariant(VARIANTARG *vp)
 {
@@ -225,12 +228,13 @@ freevariant(VARIANTARG *vp)
 
     switch (V_VT(vp)) {
     case VT_BSTR:
-	freeolestring(V_BSTR(vp));
+	freelolestring(VT_BSTR(vp));
+	VT_BSTR(vp) = NULL;
 	break;
     }
 } // freevariant
 
-// convert a Windows wide string (freed) to a SNOBOL4 return value
+// convert a Windows wide string to a SNOBOL4 return value
 static int
 retbstring(struct descr *retval, LPOLESTR olestr)
 {
@@ -238,15 +242,13 @@ retbstring(struct descr *retval, LPOLESTR olestr)
     len = WideCharToMultiByte(CP_ACP, 0, olestr, -1, NULL, 0, NULL, NULL);
     char *narrow = new char[len];
     WideCharToMultiByte(CP_ACP, 0, olestr, -1, narrow, len, NULL, NULL);
-    SysFreeString(olestr);
 
     // retstring usually hidden by a macro, but want to release
     // storage before return, since retstring copies the data
     // (otherwise would need to replicate retstring innards)
-    retstring(retval, narrow, len);
+    int ret = retstring(retval, narrow, len);
     delete [] narrow;
-
-    return TRUE;
+    return ret;
 } // retbstring
 
 // convert Windows VARIANTARG to a SNOBOL4 external function return value
@@ -288,7 +290,9 @@ retvariant(struct descr *retval, VARIANTARG *vp)
 	RETREAL(V_R8(vp));
     case VT_BSTR:
 	// convert (and free) string
-	return retbstring(retval, V_BSTR(vp));
+	int ret = retbstring(retval, V_BSTR(vp));
+	VariantClear(vp);
+	return ret;
     case VT_DISPATCH:			// pointer to IDispatch object
 	int_t h = new_handle(&com_handles, V_DISPATCH(vp));
 	if (h == BAD_HANDLE)
@@ -330,6 +334,8 @@ COM_INVOKE( LA_ALIST ) LA_DCL
 	RETFAIL;
 
     DISPPARAMS dispparams;
+    _fmemset(&dispparams, 0, sizeof dispparams);
+
     int dargs = nargs - 2;	// get method arg count
     VARIANTARG* vp = NULL;
     if (dargs)
@@ -350,6 +356,7 @@ COM_INVOKE( LA_ALIST ) LA_DCL
     }
 
     VARIANTARG result;
+    VariantInit(&result);
     hr = pdisp->Invoke(dispid,		// dispatch id member
 		       IID_NULL,	// ref iid
 		       LOCALE_SYSTEM_DEFAULT, // locale id
@@ -367,7 +374,7 @@ COM_INVOKE( LA_ALIST ) LA_DCL
 	    vp++;
         }
 	// free argument array
-	delete [] dispparams.rgvarg;
+	delete dispparams.rgvarg;
     }
 
     return retvariant(retval, &result);
@@ -391,11 +398,10 @@ COM_GETPROP( LA_ALIST ) LA_DCL
 	RETFAIL;
 
     DISPPARAMS dispparams;
-
-    dispparams.cArgs = 0;
-    dispparams.cNamedArgs = 0;
+    _fmemset(&dispparams, 0, sizeof dispparams);
 
     VARIANTARG result;
+    VariantInit(&result);
     hr = pdisp->Invoke(dispid,		// dispatch id member
 			IID_NULL,	// ref iid
 			LOCALE_SYSTEM_DEFAULT, // locale id
@@ -429,6 +435,7 @@ COM_PUTPROP( LA_ALIST ) LA_DCL
 	RETFAIL;
 
     DISPPARAMS dispparams;
+    _fmemset(&dispparams, 0, sizeof dispparams);
 
     VARIANTARG value;
     descr_to_variant(LA_DESCR(2), &value);
