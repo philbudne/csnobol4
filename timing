@@ -104,6 +104,13 @@ if [ "$UNAME" ]; then
 			echo ''
 			echo getconf MACHINE_MODEL:
 			/usr/bin/getconf MACHINE_MODEL
+
+		if [ -f /usr/bin/getconf ]; then
+			echo ''
+			# see CPUFlags script (URL in INSTALL)
+			# for decode...
+			echo getconf CPU_CHIP_TYPE:
+			/usr/bin/getconf CPU_CHIP_TYPE
 		fi
 
 		# PA-RISC: can lookup arch using model output

@@ -2,6 +2,12 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/24/2005
+	lib/win32/com.cpp: cleanup/fix?
+
+12/23/2005
+	timing: HP-UX getconf CPU_CHIP_TYPE
+
 12/22/2005
 	configure: output alternate LIBDIR choice
 	INSTALL: update optimization discussion, mention CPUFlags

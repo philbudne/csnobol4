@@ -1,10 +1,10 @@
 $Id$
 
-README
-	1.0 timing contributors
+1.1.1?
 
-Release 1.1;
-	update History, version.c, README, tag it
+fall back to "ln -s" in "make install"
+
+solve Ed Q's DBM problem (64/32 issue)?
 
 ================ post 1.1:
 
@@ -118,6 +118,8 @@ Rafal:
 		INPUT??
 		Compiler???
 	READLINE() function
+
+	http://www.star.le.ac.uk/~tjg/rc/misc/editline-1.5.tar.gz
 
 Create loadable modules:
 	STCL
