@@ -104,7 +104,7 @@ if [ "$UNAME" ]; then
 			echo ''
 			echo getconf MACHINE_MODEL:
 			/usr/bin/getconf MACHINE_MODEL
-
+		fi
 		if [ -f /usr/bin/getconf ]; then
 			echo ''
 			# see CPUFlags script (URL in INSTALL)
