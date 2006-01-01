@@ -9,6 +9,13 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
+#ifdef DEBUG
+#include <stdio.h>
+#define DEBUGF(X) printf X
+#else
+#define DEBUGF(X)
+#endif
+
 #include <windows.h>
 
 #if defined(__MINGW32__) || defined(__CYGWIN__)
@@ -119,6 +126,7 @@ COM_LOAD( LA_ALIST ) LA_DCL
 	hr = CoGetObject(progid,	// display name
 			NULL,		// BIND_OPTS*
 			IID_IUnknown, (void **)&punk);
+DEBUGF(("CoGetObject hr %d\n", hr));
 	freeolestring(progid);
 	if (FAILED(hr))
 	    RETFAIL;
@@ -126,6 +134,7 @@ COM_LOAD( LA_ALIST ) LA_DCL
 	// See if it has a class factory
 	IClassFactory *pfact;
 	hr = punk->QueryInterface(IID_IClassFactory, (void **)&pfact);
+DEBUGF(("QueryInterface hr %d\n", hr));
 	if (SUCCEEDED(hr)) {
 	    punk->Release();
 
@@ -133,6 +142,7 @@ COM_LOAD( LA_ALIST ) LA_DCL
 	    hr = pfact->CreateInstance(NULL,	// agregate object
 					IID_IUnknown,
 					(void **)&punk);
+DEBUGF(("CreateInstance hr %d\n", hr));
 	    pfact->Release();
 	    if (FAILED(hr))
 		RETFAIL;
@@ -141,6 +151,7 @@ COM_LOAD( LA_ALIST ) LA_DCL
     else {
 	// lookup classid from program ID string
 	hr = CLSIDFromProgID(progid, &clsid);
+DEBUGF(("CLSIDFromProgID hr %d\n", hr));
 	freeolestring(progid);
 	if (FAILED(hr))
 	    RETFAIL;
@@ -152,12 +163,14 @@ COM_LOAD( LA_ALIST ) LA_DCL
 			      CLSCTX_SERVER, // context
 			      IID_IUnknown, // interface identifier
 			      (void **)&punk); // out: interface pointer
+DEBUGF(("CoCreateInstance hr %d\n", hr));
 	if (FAILED(hr))
 	    RETFAIL;
     }
 
     // get IDispatch (automation) interface pointer from IUnknown object
     hr = punk->QueryInterface(IID_IDispatch, (void **)&pdisp);
+DEBUGF(("QueryInterface hr %d\n", hr));
 
     // undo AddRef performed by CoCreateInstance
     punk->Release();
@@ -228,13 +241,13 @@ freevariant(VARIANTARG *vp)
 
     switch (V_VT(vp)) {
     case VT_BSTR:
-	freelolestring(VT_BSTR(vp));
-	VT_BSTR(vp) = NULL;
+	freeolestring(V_BSTR(vp));
 	break;
     }
 } // freevariant
 
 // convert a Windows wide string to a SNOBOL4 return value
+// handle allocation failure?
 static int
 retbstring(struct descr *retval, LPOLESTR olestr)
 {
@@ -246,9 +259,9 @@ retbstring(struct descr *retval, LPOLESTR olestr)
     // retstring usually hidden by a macro, but want to release
     // storage before return, since retstring copies the data
     // (otherwise would need to replicate retstring innards)
-    int ret = retstring(retval, narrow, len);
+    retstring(retval, narrow, len);
     delete [] narrow;
-    return ret;
+    return TRUE;
 } // retbstring
 
 // convert Windows VARIANTARG to a SNOBOL4 external function return value
@@ -289,14 +302,18 @@ retvariant(struct descr *retval, VARIANTARG *vp)
 	RETTYPE = R;
 	RETREAL(V_R8(vp));
     case VT_BSTR:
-	// convert (and free) string
-	int ret = retbstring(retval, V_BSTR(vp));
-	VariantClear(vp);
-	return ret;
+      	{
+	    // convert (and free) string
+	    int ret = retbstring(retval, V_BSTR(vp));
+	    VariantClear(vp);
+	    return ret;
+	}
     case VT_DISPATCH:			// pointer to IDispatch object
-	int_t h = new_handle(&com_handles, V_DISPATCH(vp));
+	LPDISPATCH pdisp = V_DISPATCH(vp);
+	int_t h = new_handle(&com_handles, pdisp);
 	if (h == BAD_HANDLE)
 	    RETFAIL;
+	pdisp->AddRef();
 	RETTYPE = I;
 	RETINT(h);
     }
@@ -329,12 +346,14 @@ COM_INVOKE( LA_ALIST ) LA_DCL
 			      1,		// name count
 			      LOCALE_SYSTEM_DEFAULT, // locale id
 			      &dispid);		// DISPID*
+DEBUGF(("GetIDsOfNames hr %d\n", hr));
+
     freeolestring(name);
     if (FAILED(hr))
 	RETFAIL;
 
     DISPPARAMS dispparams;
-    _fmemset(&dispparams, 0, sizeof dispparams);
+    memset(&dispparams, 0, sizeof dispparams);
 
     int dargs = nargs - 2;	// get method arg count
     VARIANTARG* vp = NULL;
@@ -365,11 +384,12 @@ COM_INVOKE( LA_ALIST ) LA_DCL
 		       &result,		// VARIANT*
 		       NULL,		// EXCEPINFO*
 		       0);		// arg error pointer
+DEBUGF(("Invoke hr %d\n", hr));
 
     // clean up argument array
     if (dargs) {
 	vp = dispparams.rgvarg;
-	for (int i = nargs; i > nargs-2; i--) {
+	for (int i = 0; i < dargs; i++) {
 	    freevariant(vp);
 	    vp++;
         }
@@ -393,12 +413,13 @@ COM_GETPROP( LA_ALIST ) LA_DCL
     DISPID dispid;
     hr = pdisp->GetIDsOfNames(IID_NULL, &name, 1,
 				LOCALE_SYSTEM_DEFAULT, &dispid);
+DEBUGF(("GetIDsOfNames hr %d\n", hr));
     freeolestring(name);
     if (FAILED(hr))
 	RETFAIL;
 
     DISPPARAMS dispparams;
-    _fmemset(&dispparams, 0, sizeof dispparams);
+    memset(&dispparams, 0, sizeof dispparams);
 
     VARIANTARG result;
     VariantInit(&result);
@@ -411,6 +432,7 @@ COM_GETPROP( LA_ALIST ) LA_DCL
 			NULL,		// EXCEPINFO
 			0);		// arg error pointer
 
+DEBUGF(("Invoke hr %d\n", hr));
     if (FAILED(hr))
 	RETFAIL;
 
@@ -435,7 +457,7 @@ COM_PUTPROP( LA_ALIST ) LA_DCL
 	RETFAIL;
 
     DISPPARAMS dispparams;
-    _fmemset(&dispparams, 0, sizeof dispparams);
+    memset(&dispparams, 0, sizeof dispparams);
 
     VARIANTARG value;
     descr_to_variant(LA_DESCR(2), &value);
