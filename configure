@@ -704,7 +704,7 @@ if ${CCPATH-cc} -o $TMP $TMP.c && ./$TMP > $TMP.out &&
     echo 'sizeof(double) = '$SDOUB	1>&2
     echo '# sizeof(double) = '$SDOUB	>> $CONFIG_M4
 
-    # XXX ASSume sizeof(char) == 8
+    # XXX ASSume sizeof(char) == 1 (8 bits)
     if [ "$SPTR" = 8 -a "$SLONG" = 8 ]; then
 	echo 'LP64 is native programming model' 1>&2
 	LP64=true
@@ -793,6 +793,7 @@ if [ "$NO_BITFIELDS" ]; then
 	# (can't be confused for a negative int_t)
 	echo '#define SIZLIM (~(VFLD_T)0)'	>> $CONFIG_H
     fi
+    # otherwise snotypes uses 2^31-1 if NO_BITFIELDS defined.
 fi
 
 if [ "$DOUBLE" ]; then
