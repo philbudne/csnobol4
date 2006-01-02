@@ -1137,7 +1137,7 @@ if [ ! "$NO_DYNLIB" ]; then
 		echo 'ADD_LDFLAGS([-L/sw/lib -ldl])' >> $CONFIG_M4
 	    fi
 	    TRY_UNDERSCORE=true
-	    # SNOLIB_FILE=snolib.bundle ??
+	    SNOLIB_FILE=snolib.bundle
 	    ;;
 	FreeBSD*)
 	    if [ -x /usr/bin/objformat ]; then
