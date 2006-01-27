@@ -1199,6 +1199,7 @@ if [ ! "$NO_DYNLIB" ]; then
 	echo 'LOAD_C=$(SRCDIR)lib/next/load.c'	>> $CONFIG_M4
 	if [ "$OS" = Darwin ]; then
 	    echo '#define TRY_UNDERSCORE'	>> $CONFIG_H
+	    SNOLIB_FILE=snolib.bundle
 	else
 	    SNOLIB_FILE=snolib.dyld
 	fi
