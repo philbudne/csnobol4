@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+1/27/2006
+	lib/win32/com.cpp: add debug, have GET/PUT take arb arg (index) lists
+
 1/2/2006
 	configure: uncomment SNOLIB_FILE for NeXT style load
 

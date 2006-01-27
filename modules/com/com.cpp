@@ -9,6 +9,8 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
+#define DEBUG
+
 #ifdef DEBUG
 #include <stdio.h>
 #define DEBUGF(X) printf X
@@ -126,7 +128,7 @@ COM_LOAD( LA_ALIST ) LA_DCL
 	hr = CoGetObject(progid,	// display name
 			NULL,		// BIND_OPTS*
 			IID_IUnknown, (void **)&punk);
-DEBUGF(("CoGetObject hr %d\n", hr));
+	DEBUGF(("CoGetObject hr %x\n", hr));
 	freeolestring(progid);
 	if (FAILED(hr))
 	    RETFAIL;
@@ -134,7 +136,7 @@ DEBUGF(("CoGetObject hr %d\n", hr));
 	// See if it has a class factory
 	IClassFactory *pfact;
 	hr = punk->QueryInterface(IID_IClassFactory, (void **)&pfact);
-DEBUGF(("QueryInterface hr %d\n", hr));
+	DEBUGF(("QueryInterface hr %x\n", hr));
 	if (SUCCEEDED(hr)) {
 	    punk->Release();
 
@@ -142,7 +144,7 @@ DEBUGF(("QueryInterface hr %d\n", hr));
 	    hr = pfact->CreateInstance(NULL,	// agregate object
 					IID_IUnknown,
 					(void **)&punk);
-DEBUGF(("CreateInstance hr %d\n", hr));
+	    DEBUGF(("CreateInstance hr %x\n", hr));
 	    pfact->Release();
 	    if (FAILED(hr))
 		RETFAIL;
@@ -151,7 +153,7 @@ DEBUGF(("CreateInstance hr %d\n", hr));
     else {
 	// lookup classid from program ID string
 	hr = CLSIDFromProgID(progid, &clsid);
-DEBUGF(("CLSIDFromProgID hr %d\n", hr));
+	DEBUGF(("CLSIDFromProgID hr %x\n", hr));
 	freeolestring(progid);
 	if (FAILED(hr))
 	    RETFAIL;
@@ -163,14 +165,14 @@ DEBUGF(("CLSIDFromProgID hr %d\n", hr));
 			      CLSCTX_SERVER, // context
 			      IID_IUnknown, // interface identifier
 			      (void **)&punk); // out: interface pointer
-DEBUGF(("CoCreateInstance hr %d\n", hr));
+	DEBUGF(("CoCreateInstance hr %x\n", hr));
 	if (FAILED(hr))
 	    RETFAIL;
     }
 
     // get IDispatch (automation) interface pointer from IUnknown object
     hr = punk->QueryInterface(IID_IDispatch, (void **)&pdisp);
-DEBUGF(("QueryInterface hr %d\n", hr));
+    DEBUGF(("QueryInterface hr %x\n", hr));
 
     // undo AddRef performed by CoCreateInstance
     punk->Release();
@@ -302,12 +304,10 @@ retvariant(struct descr *retval, VARIANTARG *vp)
 	RETTYPE = R;
 	RETREAL(V_R8(vp));
     case VT_BSTR:
-      	{
-	    // convert (and free) string
-	    int ret = retbstring(retval, V_BSTR(vp));
-	    VariantClear(vp);
-	    return ret;
-	}
+	// convert (and free) string
+	int ret = retbstring(retval, V_BSTR(vp));
+	VariantClear(vp);
+	return ret;
     case VT_DISPATCH:			// pointer to IDispatch object
 	LPDISPATCH pdisp = V_DISPATCH(vp);
 	int_t h = new_handle(&com_handles, pdisp);
@@ -318,10 +318,12 @@ retvariant(struct descr *retval, VARIANTARG *vp)
 	RETINT(h);
     }
     // XXX COMPLAIN so new entries can be added?
+    DEBUGF(("unknown type %d\n", V_VT(vp) & VT_TYPEMASK));
     RETNULL;				/* ?? */
 } // retvariant
 
 //
+// Invoke as method
 // Polymorphic!! Takes arbitrary list of args!
 // LOAD("COM_INVOKE(INTEGER,STRING)")
 //
@@ -339,14 +341,14 @@ COM_INVOKE( LA_ALIST ) LA_DCL
 	RETFAIL;		// must have name string
     LPOLESTR name = getolestring(LA_PTR(1));
     HRESULT hr;
-    DISPID dispid;
+    DISPID dispid = -1;
 
     hr = pdisp->GetIDsOfNames(IID_NULL,		// REFIID
 			      &name,		// OLECHAR**
 			      1,		// name count
 			      LOCALE_SYSTEM_DEFAULT, // locale id
 			      &dispid);		// DISPID*
-DEBUGF(("GetIDsOfNames hr %d\n", hr));
+    DEBUGF(("INVOKE GetIDsOfNames hr %x dispid %x\n", hr, dispid));
 
     freeolestring(name);
     if (FAILED(hr))
@@ -355,20 +357,19 @@ DEBUGF(("GetIDsOfNames hr %d\n", hr));
     DISPPARAMS dispparams;
     memset(&dispparams, 0, sizeof dispparams);
 
-    int dargs = nargs - 2;	// get method arg count
-    VARIANTARG* vp = NULL;
-    if (dargs)
-	vp = new VARIANTARG[dargs];
-
-    dispparams.cArgs = dargs;
-    dispparams.rgvarg = vp;
-
+    dispparams.cArgs = nargs - 2; // method arg count
+    dispparams.rgvarg = NULL;
     dispparams.cNamedArgs = 0;
     dispparams.rgdispidNamedArgs = NULL; // Dispatch IDs of named arguments
 
-    // copy in reverse order
-    if (dargs) {
-	for (int i = nargs-1; i >= nargs-2; i--) {
+    if (dispparams.cArgs) {
+	dispparams.rgvarg = new VARIANTARG[dispparams.cArgs];
+	if (!dispparams.rgvarg)
+		RETFAIL;
+
+	// copy in reverse order
+	VARIANTARG* vp = dispparams.rgvarg;
+	for (int i = nargs-1; i > nargs-2; i--) {
 	    descr_to_variant(LA_DESCR(i), vp); // XXX check return??
 	    vp++;
 	}
@@ -384,23 +385,26 @@ DEBUGF(("GetIDsOfNames hr %d\n", hr));
 		       &result,		// VARIANT*
 		       NULL,		// EXCEPINFO*
 		       0);		// arg error pointer
-DEBUGF(("Invoke hr %d\n", hr));
+    DEBUGF(("INVOKE Invoke hr %x\n", hr));
 
     // clean up argument array
-    if (dargs) {
-	vp = dispparams.rgvarg;
-	for (int i = 0; i < dargs; i++) {
+    if (dispparams.cArgs) {
+	VARIANTARG* vp = dispparams.rgvarg;
+	for (int i = 0; i < dispparams.cArgs; i++) {
 	    freevariant(vp);
 	    vp++;
         }
 	// free argument array
-	delete dispparams.rgvarg;
+	delete [] dispparams.rgvarg;
     }
+    if (FAILED(hr))
+	RETFAIL;
 
     return retvariant(retval, &result);
 } // COM_INVOKE
 
-// LOAD("COM_GETPROP(INTEGER,STRING)")
+// LOAD("COM_GETPROP(INTEGER,STRING,)")
+// Polymorphic!! Takes arbitrary list of args!
 int
 COM_GETPROP( LA_ALIST ) LA_DCL
 {
@@ -410,16 +414,34 @@ COM_GETPROP( LA_ALIST ) LA_DCL
 
     LPOLESTR name = getolestring(LA_PTR(1));
     HRESULT hr;
-    DISPID dispid;
+    DISPID dispid= -1;
     hr = pdisp->GetIDsOfNames(IID_NULL, &name, 1,
 				LOCALE_SYSTEM_DEFAULT, &dispid);
-DEBUGF(("GetIDsOfNames hr %d\n", hr));
+    DEBUGF(("GETPROP GetIDsOfNames hr %x dispid %x\n", hr, dispid));
     freeolestring(name);
     if (FAILED(hr))
 	RETFAIL;
 
     DISPPARAMS dispparams;
     memset(&dispparams, 0, sizeof dispparams);
+
+    dispparams.cArgs = nargs - 2; // method arg count
+    dispparams.rgvarg = NULL;
+    dispparams.cNamedArgs = 0;
+    dispparams.rgdispidNamedArgs = NULL; // Dispatch IDs of named arguments
+
+    if (dispparams.cArgs) {
+	dispparams.rgvarg = new VARIANTARG[dispparams.cArgs];
+	if (!dispparams.rgvarg)
+		RETFAIL;
+
+	// copy in reverse order
+	VARIANTARG* vp = dispparams.rgvarg;
+	for (int i = nargs-1; i > nargs-2; i--) {
+	    descr_to_variant(LA_DESCR(i), vp); // XXX check return??
+	    vp++;
+	}
+    }
 
     VARIANTARG result;
     VariantInit(&result);
@@ -432,7 +454,18 @@ DEBUGF(("GetIDsOfNames hr %d\n", hr));
 			NULL,		// EXCEPINFO
 			0);		// arg error pointer
 
-DEBUGF(("Invoke hr %d\n", hr));
+    // clean up argument array
+    if (dispparams.cArgs) {
+	VARIANTARG* vp = dispparams.rgvarg;
+	for (int i = 0; i < dispparams.cArgs; i++) {
+	    freevariant(vp);
+	    vp++;
+        }
+	// free argument array
+	delete [] dispparams.rgvarg;
+    }
+
+    DEBUGF(("GETPROP Invoke hr %x\n", hr));
     if (FAILED(hr))
 	RETFAIL;
 
@@ -440,6 +473,7 @@ DEBUGF(("Invoke hr %d\n", hr));
 } // COM_GETPROP
 
 // LOAD("COM_PUTPROP(INTEGER,STRING,)STRING")
+// Polymorphic!! Takes arbitrary list of args!
 int
 COM_PUTPROP( LA_ALIST ) LA_DCL
 {
@@ -449,24 +483,26 @@ COM_PUTPROP( LA_ALIST ) LA_DCL
 
     LPOLESTR name = getolestring(LA_PTR(1));
     HRESULT hr;
-    DISPID dispid;
+    DISPID dispid = -1;
     hr = pdisp->GetIDsOfNames(IID_NULL, &name, 1,
 				LOCALE_SYSTEM_DEFAULT, &dispid);
     freeolestring(name);
     if (FAILED(hr))
 	RETFAIL;
 
-    DISPPARAMS dispparams;
-    memset(&dispparams, 0, sizeof dispparams);
 
     VARIANTARG value;
     descr_to_variant(LA_DESCR(2), &value);
-    dispparams.cArgs = 1;
-    dispparams.rgvarg = &value;
+
+    DISPPARAMS dispparams;
+    memset(&dispparams, 0, sizeof dispparams);
 
     DISPID mydispid = DISPID_PROPERTYPUT;
-    dispparams.cNamedArgs = 1;
+
     dispparams.rgdispidNamedArgs = &mydispid;
+    dispparams.rgvarg = &value;
+    dispparams.cArgs = 1;
+    dispparams.cNamedArgs = 1;
 
     hr = pdisp->Invoke(dispid,		// dispatch id member
 			IID_NULL,	// ref iid
