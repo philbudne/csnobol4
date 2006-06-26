@@ -1,0 +1,22 @@
+$Id$
+
+Linux Software Map file
+
+http://lsm.execpc.com/lsm/
+http://www.boutell.com/lsm/
+
+Begin4
+Title:          CSNOBOL4 -- SNOBOL4 Interpreter in C
+Version:        1.1
+Entered-date:   2006-06-23
+Description:    C port of the original SIL "Macro Implementation of SNOBOL4"
+Keywords:	text language interpreter 
+Author:		Philip L. Budne <snobol4@ultimate.com>
+Maintained-by:  Philip L. Budne <snobol4@ultimate.com>
+Primary-site:	ftp.snobol4.org	/snobol
+	662kB snobol4-1.1.tar.gz
+Alternate-site: 
+Original-site:
+Platforms:
+Copying-policy: BSD
+End
