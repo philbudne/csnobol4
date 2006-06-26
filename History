@@ -2,8 +2,12 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+6/26/2006
+	lib/snolib/host.[ch]: add comments, HOST_USER_EXTENSIONS
+
 1/27/2006
 	lib/win32/com.cpp: add debug, have GET/PUT take arb arg (index) lists
+	configure: 1/3 change: add snolib.bundle
 
 1/2/2006
 	configure: uncomment SNOLIB_FILE for NeXT style load

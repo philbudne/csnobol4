@@ -9,6 +9,11 @@
  *
  * simulates basic HOST() functions.
  * NOTE: Performs *NO* argument conversions (not even string to integer)!!
+ *
+ * While it might be tempting to add new functions here
+ * (since it's already built in), consider putting your new functions
+ * in a loadable module-- see the dynamic.sno -INCLUDE file for functions
+ * to help you do this.
  */
 
 #ifdef HAVE_CONFIG_H

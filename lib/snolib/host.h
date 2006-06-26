@@ -150,3 +150,10 @@
  * the build environment.  Perhaps it should be kept that way, and
  * other values added in a different range?
  */
+
+/*
+ * if you MUST add something to host.c (instead of creating a new
+ * dynamicly loaded extension), use codes starting here, to avoid
+ * conflicts with future CSNOBOL4 extensions:
+ */
+#define HOST_USER_EXTENSIONS	10000
