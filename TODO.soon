@@ -6,7 +6,8 @@ fall back to "ln -s" in "make install"
 
 solve Ed Q's DBM problem (64/32 issue)?
 
-================ post 1.1:
+integrate GC patch (--with-gc?)
+	find out if gc start/end hook possible.
 
 dynamic.sno:
 	function(s) to create Makefile?
