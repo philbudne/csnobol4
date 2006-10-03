@@ -32,10 +32,6 @@
 #include "str.h"			/* bcopy() */
 #include "bindresvport.h"
 
-#ifndef INADDR_NONE
-#define INADDR_NONE ((unsigned long)0xffffffff)	/* want u_int32_t! */
-#endif /* INADDR_NONE not defined */
-
 /* NOTE!! Ignores "port" arg!! */
 static int
 inet_socket( host, service, port, flags, type )
