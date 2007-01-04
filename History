@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/4/2007
+	timing: dump "machdep" sysctl, needed to find CPU model on MacIntel
+
 10/3/2006
 	lib/bsd/inet6.c: remove INADDR_NONE define
 

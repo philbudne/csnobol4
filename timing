@@ -74,6 +74,7 @@ if [ "$UNAME" ]; then
 			echo ''
 			echo ${SYSCTL}:
 			$SYSCTL hw 2>/dev/null
+			$SYSCTL machdep 2>/dev/null
 
 			# freebsd x86;
 			if FREQ=`$SYSCTL machdep.tsc_freq 2>/dev/null`; then
