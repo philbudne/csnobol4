@@ -462,9 +462,11 @@ if [ "$GCCPATH" -a "$WANTGCC" ]; then
 
     case "$MORV" in
     *:Darwin:*:*)
-	# "Apple gcc-934.3, based on gcc version 2.95.2 19991024"
-	# screws up data_init.c when compiled with -O2
-	echo 'DATA_INIT_CFLAGS=$(MYCPPFLAGS) -O'	>> $CONFIG_M4
+        if cc -v 2>&1 | grep 19991024 >/dev/null; then
+	    # "Apple gcc-934.3, based on gcc version 2.95.2 19991024"
+	    # screws up data_init.c when compiled with -O2
+	    echo 'DATA_INIT_CFLAGS=[]_CFLAGS $(MYCPPFLAGS) -O' >> $CONFIG_M4
+	fi
 
 	# MacOS has different file types for shared libraries (dylibs)
 	# and dynamicly loaded extensions (bundles)
@@ -637,7 +639,7 @@ else
 	echo 'CCM=$(CC) -M'			>> $CONFIG_M4
 	OPT=-O2
 	# cc can't optimize data_init.c at ALL
-	echo 'DATA_INIT_CFLAGS=$(MYCPPFLAGS)'	>> $CONFIG_M4
+	echo 'DATA_INIT_CFLAGS=[]_CFLAGS $(MYCPPFLAGS)'	>> $CONFIG_M4
 
 	SO_EXT=.so
 	SO_CFLAGS=-pic
