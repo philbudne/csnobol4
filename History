@@ -2,7 +2,12 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
-12/4/2007
+1/7/2007
+	configure, Makefile2.m4: replace ADD_WARN with ADD_CFLAGS
+		lp64 options ALWAYS need to be present!
+		add --add-cflags option to configure
+
+1/4/2007
 	timing: dump "machdep" sysctl, needed to find CPU model on MacIntel
 
 10/3/2006

@@ -84,6 +84,10 @@ echo '#define CONFIG_DATE "'$DATE'"'		>> $CONFIG_H
 ADD_DEFINE_USED=
 while [ $# -gt 0 ]; do
     case "$1" in
+    --add-cflags=*)
+	STUFF=`echo "$1" | sed 's/--add-cflags=//'`
+	echo 'ADD_CFLAGS(['"$STUFF"'])'		>> $CONFIG_M4
+	;;
     --add-cppflags=*)
 	STUFF=`echo "$1" | sed 's/--add-cppflags=//'`
 	echo 'ADD_CPPFLAGS(['"$STUFF"'])'	>> $CONFIG_M4
@@ -113,8 +117,9 @@ while [ $# -gt 0 ]; do
 	echo 'ADD_SRCS(['"$STUFF"'])'		>> $CONFIG_M4
     	;;
     --add-warn=*)
+	# deprecated: exactly the same as --add-flags!
 	STUFF=`echo "$1" | sed 's/--add-warn=//'`
-	echo 'ADD_WARN(['"$STUFF"'])'		>> $CONFIG_M4
+	echo 'ADD_CFLAGS(['"$STUFF"'])'		>> $CONFIG_M4
 	;;
     --bindir=*)
 	STUFF=`echo "$1" | sed 's/--bindir=//'`
@@ -212,7 +217,7 @@ C Compiler selection;
 	--force-gcc		--no-gcc
 
 C Compiler settings;
-	--add-opt=STR		--opt=STR
+	--add-cflags=STR	--opt=STR
 	--add-warn=STR		--no-inline
 
 SNOBOL4 Datatype selection;
@@ -354,7 +359,7 @@ case "$MORV" in
 	    WANTGCC=
 
 	    # LARGEFILE requires cc -Ae or c89 +e -D__STDC_EXT__
-	    echo 'ADD_OPT([-Ae])'	>> $CONFIG_M4
+	    echo 'ADD_CFLAGS([-Ae])'	>> $CONFIG_M4
 	else
 	    # gcc is preferable to bundled C, if it works,
 	    # but often gives trouble, so don't use if if
@@ -385,7 +390,7 @@ ia64:HP-UX:*:*)
 	    WANTGCC=
 
 	    # LARGEFILE requires cc -Ae or c89 +e -D__STDC_EXT__
-	    echo 'ADD_OPT([-Ae])'	>> $CONFIG_M4
+	    echo 'ADD_CFLAGS([-Ae])'	>> $CONFIG_M4
 	elif [ "$LP64" ]; then
 	    # gcc version 3.2 20020329 (experimental) beats
 	    # (Bundled) cc: HP ANSI C++/C B3910B A.05.36 [Apr 18 2002]
@@ -451,9 +456,9 @@ if [ "$GCCPATH" -a "$WANTGCC" ]; then
     if [ ! "$NO_OPT" ]; then
 	# only works when optimizing
 	# (will give warnings for --opt=-g)
-	echo 'ADD_WARN([-Wuninitialized])'	>> $CONFIG_M4
+	echo 'ADD_CFLAGS([-Wuninitialized])'	>> $CONFIG_M4
     fi
-    echo 'ADD_WARN([-Wunused])'			>> $CONFIG_M4
+    echo 'ADD_CFLAGS([-Wunused])'		>> $CONFIG_M4
 
     case "$MORV" in
     *:Darwin:*:*)
@@ -543,7 +548,7 @@ else
 
 	# Kill warnings: only needed with n32 and 64bit ABI
 	# compilers (but harmless with old compiler)?
-	echo 'ADD_OPT([-w])'			>> $CONFIG_M4
+	echo 'ADD_CFLAGS([-w])'			>> $CONFIG_M4
 
 	# optional 64-bit world;
 	# (only allow if "$OS" = IRIX64 ??
@@ -574,7 +579,7 @@ else
     *:AIX:2:3)
 	# AIX3 (not tested)
 	# for data_init.o
-	echo 'ADD_OPT([-qmaxmem=32000])'	>> $CONFIG_M4
+	echo 'ADD_CFLAGS([-qmaxmem=32000])'	>> $CONFIG_M4
 	;;
     *:AIX:*:[45])
 	# AIX4/xlc
@@ -588,7 +593,7 @@ else
 	    OPT=-O3
 	fi
 	# for data_init.o
-	echo 'ADD_OPT([-qmaxmem=32000])'	>> $CONFIG_M4
+	echo 'ADD_CFLAGS([-qmaxmem=32000])'	>> $CONFIG_M4
 
 	# XXX check if available? (how?) check for getconf error??
 	if [ "$LP64" ]; then
@@ -718,7 +723,7 @@ if [ "$USING_GCC" ]; then
     # avoid trying option where LP64 is the default, and the compiler could
     # be gcc2 -- there was no generic option back then!
     if [ "$LP64" -a ! "$LP64_NATIVE" ]; then
-	ARCH_OPT="$GCC64"
+	ARCH_CFLAGS="$GCC64"
     fi
 fi
 
@@ -736,8 +741,8 @@ if [ "$LP64" ]; then
     LONGLONG=
 fi
 
-if [ "$ARCH_OPT" ]; then
-    echo 'ADD_OPT(['$ARCH_OPT'])'		>> $CONFIG_M4
+if [ "$ARCH_CFLAGS" ]; then
+    echo 'ADD_CFLAGS(['$ARCH_CFLAGS'])'		>> $CONFIG_M4
 fi
 
 if [ "$NO_OPT" ]; then
@@ -1292,7 +1297,7 @@ if [ "$LARGEFILE_OK" ] &&
 		    sed -e 's/^X-U/#undef /' -e 's/=/ /' >> $CONFIG_H
 		;;
 	    *)
-		echo 'ADD_OPT(['$X'])'		>> $CONFIG_M4
+		echo 'ADD_CFLAGS(['$X'])'		>> $CONFIG_M4
 		;;
 	    esac
 	done
@@ -1567,7 +1572,7 @@ if [ "$CFLAGS" ]; then
 		 sed -e 's/^X-U/#undef /' -e 's/=/ /' >> $CONFIG_H
 	     ;;
 	 *)
-	     echo 'ADD_OPT(['$X'])'		>> $CONFIG_M4
+	     echo 'ADD_CFLAGS(['$X'])'		>> $CONFIG_M4
 	     ;;
 	 esac
      done
