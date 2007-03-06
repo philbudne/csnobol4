@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+3/6/2007
+	INSTALL: document --add-cflags
+
 1/7/2007
 	configure, Makefile2.m4: replace ADD_WARN with ADD_CFLAGS
 		lp64 options ALWAYS need to be present!

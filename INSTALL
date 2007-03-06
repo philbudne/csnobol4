@@ -23,6 +23,12 @@ can run it manually by typing "./configure OPTIONS" with zero or more
 of the following options (multiple instances of options that begin
 with "--add-" can appear);
 
+	--add-cflags=STRING
+		Add additional C compiler flags to all compile command lines.
+
+		When using GCC, "--add-opt=-g" can be used to compile
+		for debugging without disabling optimization.
+
 	--add-cppflags=STRING
 		Add additional C preprocessor flags to compile command
 		lines (see also --add-define)
@@ -39,10 +45,7 @@ with "--add-" can appear);
 		(ie; for "poor mans load" functions)
 
 	--add-opt=STRING
-		Add additional optimization flags to compile commands.
-
-		When using GCC, "--add-opt=-g" can be used to compile
-		for debugging without disabling optimization.
+		Add additional optimization flags to MOST compile commands.
 
 		GCC configuration dependent options (-mXXX) are
 		candidates for use with --add-opt=
