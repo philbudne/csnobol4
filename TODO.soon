@@ -1,5 +1,8 @@
 $Id$
 
+debug problem seen by Larry Gregg:  lrrygrgg@yahoo.com
+	t = table(); t[1] = 20; t[2] = 10; a = rsort(t,2)
+
 integrate GC patch (--with-gc?)
 	find out if gc start/end hook possible.
 
