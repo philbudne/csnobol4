@@ -193,6 +193,9 @@ while [ $# -gt 0 ]; do
     --prefix=*)
 	PREFIX=`echo "$1" | sed 's/--prefix=//'`
 	;;
+    --universal)
+	UNIVERSAL=true
+	;;
     --with-tcl)
 	WITH_TCL=1
 	;;
@@ -209,16 +212,17 @@ while [ $# -gt 0 ]; do
 See INSTALL for documentation on options;
 
 Makefile additions;
-	--add-cppflags=STR	--add-define=NAME[=VALUE]
-	--add-ldflags=STR	--add-objs=STR
-	--add-srcs=STR
+	--add-cflags=STR	--add-cppflags=STR	
+	--add-define=NAME[=VALUE] --add-ldflags=STR
+	--add-objs=STR	--add-srcs=STR
 
 C Compiler selection;
 	--force-gcc		--no-gcc
 
 C Compiler settings;
 	--add-cflags=STR	--opt=STR
-	--add-warn=STR		--no-inline
+	--add-warn=STR		--fast
+	--no-inline		--universal
 
 SNOBOL4 Datatype selection;
 	--double		--longlong
@@ -470,8 +474,8 @@ if [ "$GCCPATH" -a "$WANTGCC" ]; then
 
 	# MacOS has different file types for shared libraries (dylibs)
 	# and dynamicly loaded extensions (bundles)
-
 	# -fPIC is the default on OS X
+
 	SO_EXT=.dylib
 	SO_LD=$CCPATH
 	SO_LDFLAGS=-dynamiclib
@@ -479,6 +483,13 @@ if [ "$GCCPATH" -a "$WANTGCC" ]; then
 	DL_EXT=.bundle
 	DL_LD=$CCPATH
 	DL_LDFLAGS=-bundle
+
+	UNIVERSAL_SDK_DIR=/Developer/SDKs/MacOSX10.4u.sdk
+	if [ "$UNIVERSAL" -a -d $UNIVERSAL_SDK_DIR ]; then
+	    echo "ADD_CFLAGS([-arch ppc])"	>> $CONFIG_M4
+	    echo "ADD_CFLAGS([-arch i386])"	>> $CONFIG_M4
+	    echo "ADD_CFLAGS([-isysroot $UNIVERSAL_SDK_DIR])"	>> $CONFIG_M4
+	fi
 	;;
 
     *:SunOS:4*:*)
