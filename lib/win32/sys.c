@@ -134,10 +134,13 @@ osname(cp)
 		os = "WinXP";
 		break;
 	    case 2:
-		/* Could also be IA64
-		 * "Microsoft Windows XP Professional x64 Edition"
-		 * if( si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_IA64 &&
-                 *     osv.wProductType == VER_NT_WORKSTATION )
+		/*
+		 * if (GetSystemMetrics(SM_SERVERR2))
+		 *	os = "WinServer2003R2";
+		 * else if (osv.wProductType == VER_NT_WORKSTATION &&
+		 *	si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_IA64)
+		 *	os = "WinXPx64";
+		 * else
 		 */
 		os = "WinServer2003";
 		break;
