@@ -50,6 +50,12 @@ hwname(cp)
 	break;
 #endif
 
+#ifdef PROCESSOR_ARCHITECTURE_AMD64
+    case PROCESSOR_ARCHITECTURE_AMD64:
+	hw = "amd64";
+	break;
+#endif
+
     default:
 	sprintf(cp, "arch#%d", si.wProcessorArchitecture);
 	return;
@@ -138,7 +144,7 @@ osname(cp)
 		 * if (GetSystemMetrics(SM_SERVERR2))
 		 *	os = "WinServer2003R2";
 		 * else if (osv.wProductType == VER_NT_WORKSTATION &&
-		 *	si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_IA64)
+		 *	si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_AMD64)
 		 *	os = "WinXPx64";
 		 * else
 		 */
