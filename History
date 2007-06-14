@@ -2,8 +2,13 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+3/18/2006
+	lib/win32/sys.c: add amd64
+
 3/6/2007
 	INSTALL: document --add-cflags
+	configure: document --add-cflags --fast
+		add & document --universal
 
 1/7/2007
 	configure, Makefile2.m4: replace ADD_WARN with ADD_CFLAGS
