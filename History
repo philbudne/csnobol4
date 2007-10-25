@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/25/2007
+	snolib/utf.sno: fix UTFLEN() to handle zero
+
 3/18/2006
 	lib/win32/sys.c: add amd64
 

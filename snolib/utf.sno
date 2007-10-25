@@ -91,11 +91,11 @@ ERANGE
 ****************
 *	UTF analog of LEN
 	DEFINE("UTFLEN(N)")				:(EUTFLEN)
-UTFLEN	LT(N,1)						:(FRETURN)
-	UTFLEN = UTF.RUNE
-UTFLEN2	N = N - 1
-	EQ(N,0)						:S(RETURN)
-	UTFLEN = UTFLEN UTF.RUNE			:(UTFLEN2)
+UTFLEN	LT(N,0)						:(FRETURN)
+	UTFLEN =
+UTFLEN2	EQ(N,0)						:S(RETURN)
+	UTFLEN = UTFLEN UTF.RUNE
+	N = N - 1					:(UTFLEN2)
 EUTFLEN
 
 ****************
