@@ -1,5 +1,7 @@
 $Id$
 
+listing file? (-L?) have -LIST take filename???
+
 debug problem seen by Larry Gregg:  lrrygrgg@yahoo.com
 	t = table(); t[1] = 20; t[2] = 10; a = rsort(t,2)
 

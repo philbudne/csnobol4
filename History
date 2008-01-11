@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+1/11/2008
+	timing: run system_profiler on Darwin
+
 10/25/2007
 	snolib/utf.sno: fix UTFLEN() to handle zero
 

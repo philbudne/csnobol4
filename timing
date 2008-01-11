@@ -63,6 +63,11 @@ if [ "$UNAME" ]; then
 		fi
 		;;
 	*BSD*|Darwin)
+	        if [ -x /usr/sbin/system_profiler ]; then
+		    echo ''
+		    echo /usr/sbin/system_profiler:
+		    /usr/sbin/system_profiler SPHardwareDataType SPSoftwareDataType
+		fi
 		if [ -x /usr/sbin/sysctl ]; then
 			SYSCTL=/usr/sbin/sysctl
 		elif [ -x /sbin/sysctl ]; then
