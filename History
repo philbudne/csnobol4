@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+3/13/2008:
+	use $(MAKE) in "make pv"
+
 1/18/2008
 	lib/win32/sys.c: detect WOW64
 
