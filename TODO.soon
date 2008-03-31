@@ -1,9 +1,18 @@
 $Id$
 
-listing file? (-L?) have -LIST take filename???
+Include DDT debugger?
+	listing file? (-L?) have -LIST take filename???
 
-debug problem seen by Larry Gregg:  lrrygrgg@yahoo.com
+integrate GC patch (--with-gc?)
+	find out if gc start/end hook possible.
+
+debug Win32 problem seen by Larry Gregg:  lrrygrgg@yahoo.com
 	t = table(); t[1] = 20; t[2] = 10; a = rsort(t,2)
+
+warnings w/ gcc 4 on OS X:
+	bsdtsort: exit, malloc, strlen
+	conf$$.c: exit
+	bindresvport_sa() already defined
 
 Add "Windows Vista" (also Longhorn Server) detection:
     if ( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 0 ) {
@@ -12,9 +21,6 @@ Add "Windows Vista" (also Longhorn Server) detection:
         else
 	    printf ("Windows Server \"Longhorn\" " );
     }
-
-integrate GC patch (--with-gc?)
-	find out if gc start/end hook possible.
 
 Look at Ruby Win32API & win32ole facilities
 

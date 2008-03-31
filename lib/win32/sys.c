@@ -56,6 +56,12 @@ hwname(cp)
 	break;
 #endif
 
+#ifdef PROCESSOR_ARCHITECTURE_IA32_ON_WIN64
+    case PROCESSOR_ARCHITECTURE_IA32_ON_WIN64:
+	hw = "WOW64";
+	break;
+#endif
+
     default:
 	sprintf(cp, "arch#%d", si.wProcessorArchitecture);
 	return;

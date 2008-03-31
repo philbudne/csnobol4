@@ -558,7 +558,7 @@ install: snobol4 pv
 	@echo '*********************************************************' 1>&2
 
 pv:	version.c
-	make -f Makefile pv
+	$(MAKE) -f Makefile pv
 
 ################
 MAKEFILE2=Makefile2
