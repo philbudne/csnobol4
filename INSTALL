@@ -109,8 +109,8 @@ with "--add-" can appear);
 		bcopy.c source file will be used.
 
 	--force-sdbm
-		Force use of SDBM, a free portable DBM replacement
-		included in the CSNOBOL4 distribution, even when
+		Force use of SDBM (a free portable DBM replacement
+		included in the CSNOBOL4 distribution), even when
 		alternatives are available.
 
 	--longlong
@@ -249,8 +249,11 @@ with "--add-" can appear);
 		Supply a directory prefix for bin/ and lib/ directories.
 		Default prefix is /usr/local
 
+	--universal
+		Mac OS X: build a universal (Power PC / Intel x86) binary.
+
 	--with-tcl
-		Try to compile in Tcl extension (see snobol4dbm man page)
+		Try to compile in Tcl extension (see snobol4tcl man page)
 		A shared library installation of Tcl version 8.4 or later
 		is HIGHLY desirable!  See --with-tk
 
