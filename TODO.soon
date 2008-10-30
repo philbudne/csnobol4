@@ -1,5 +1,10 @@
 $Id$
 
+fix Centos5 timing report!!
+
+OS X 4-way Universal:
+	CFLAGS='-arch i386 -arch x86_64 -arch ppc7400 -arch ppc64'
+
 Include DDT debugger?
 	listing file? (-L?) have -LIST take filename???
 
