@@ -2,6 +2,9 @@
 
 /*
  * $Log$
+ * Revision 1.32  2005/12/11 16:52:46  phil
+ * 1.1+
+ *
  * Revision 1.31  2005/12/09 17:45:52  phil
  * update for 1.1 release
  *
@@ -98,8 +101,8 @@
 #include <stdio.h>
 #include "h.h"				/* const */
 
-const char vers[] = "1.1+";
-const char vdate[] = "December 11, 2005";
+const char vers[] = "1.2";
+const char vdate[] = "December 9, 2008";
 const char snoname[] = "CSNOBOL4";
 
 #ifdef MAIN

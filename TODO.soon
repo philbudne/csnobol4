@@ -2,7 +2,7 @@ $Id$
 
 fix Centos5 timing report!!
 
-OS X 4-way Universal:
+OS X 4-way Universal???
 	CFLAGS='-arch i386 -arch x86_64 -arch ppc7400 -arch ppc64'
 
 Include DDT debugger?
@@ -18,14 +18,6 @@ warnings w/ gcc 4 on OS X:
 	bsdtsort: exit, malloc, strlen
 	conf$$.c: exit
 	bindresvport_sa() already defined
-
-Add "Windows Vista" (also Longhorn Server) detection:
-    if ( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 0 ) {
-	if( osvi.wProductType == VER_NT_WORKSTATION )
-	    printf ("Windows Vista ");
-        else
-	    printf ("Windows Server \"Longhorn\" " );
-    }
 
 Look at Ruby Win32API & win32ole facilities
 

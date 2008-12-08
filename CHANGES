@@ -2,6 +2,20 @@ $Id$
 
 For detailed revision history see History file
 
+Changes since 1.1 release;
+=========================
+	Support for new platforms:
+		add "universal" (PPC and x86) configure option for MacOS X
+		report CPU model name on "MacIntel"
+		report "CPU CHIP TYPE" on HP-UX
+		detect Windows on Windows64
+		detect amd64 architecture on Windows
+		detect Windows Server 2008
+	Use $(MAKE) for all recursive make invocations
+	Add --force-sdbm configure option
+	Fix UTFLEN() to handle zero
+	fix timing script to deal with AFS
+
 Changes since 1.0 release;
 =========================
 	Added new (experimental) builtin function groups:
