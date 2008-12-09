@@ -14,6 +14,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	CHANGES: update for 1.2 release
 	doc/snobol4.1: update for 1.2
 	lib/win32/sys.c: detect WinServer2008
+	timing: output END_SYSTEM_PROFILER
 	
 4/25/2008:
 	INSTALL: document --universal
