@@ -67,6 +67,7 @@ if [ "$UNAME" ]; then
 		    echo ''
 		    echo /usr/sbin/system_profiler:
 		    /usr/sbin/system_profiler SPHardwareDataType SPSoftwareDataType
+		    echo END_SYSTEM_PROFILER
 		fi
 		if [ -x /usr/sbin/sysctl ]; then
 			SYSCTL=/usr/sbin/sysctl
