@@ -2,12 +2,18 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+**************** release 1.2 (CVS tag REL_1_2)
+
+	(15th anniversary of ALPHA1 release)
+
 12/8/2008:
-	lib/win32/sys.c: detect WinServer2008
+	History: update for 1.2
 	version.c: update to 1.2
 	README: update to 1.2
 	Copyright: update year
 	CHANGES: update for 1.2 release
+	doc/snobol4.1: update for 1.2
+	lib/win32/sys.c: detect WinServer2008
 	
 4/25/2008:
 	INSTALL: document --universal
