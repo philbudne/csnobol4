@@ -1,6 +1,6 @@
 $Id$
 
-1.1 release of ``The Macro Implementation of SNOBOL4 in C'' (CSNOBOL4)
+1.2 release of ``The Macro Implementation of SNOBOL4 in C'' (CSNOBOL4)
 
 This is a free port of the original SIL (SNOBOL4 Implementation
 Language) "macro" version of SNOBOL4 (developed at Bell Labs) with the
@@ -19,7 +19,7 @@ The latest release can be found at http://www.snobol4.org
 
 ****************************************************************
 
-Copyright (c) 1993-2005, Philip L. Budne
+Copyright (c) 1993-2008, Philip L. Budne
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

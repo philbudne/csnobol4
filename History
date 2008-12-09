@@ -5,6 +5,9 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 12/8/2008:
 	lib/win32/sys.c: detect WinServer2008
 	version.c: update to 1.2
+	README: update to 1.2
+	Copyright: update year
+	CHANGES: update for 1.2 release
 	
 4/25/2008:
 	INSTALL: document --universal
