@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/17/2008:
+	lib/win32/com/cpp: fix for VS2003 compilation
+	version.c: update to 1.2+
+
 **************** release 1.2 (CVS tag REL_1_2)
 
 	(15th anniversary of ALPHA1 release)

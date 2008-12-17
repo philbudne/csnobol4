@@ -304,11 +304,14 @@ retvariant(struct descr *retval, VARIANTARG *vp)
 	RETTYPE = R;
 	RETREAL(V_R8(vp));
     case VT_BSTR:
+	{
 	// convert (and free) string
 	int ret = retbstring(retval, V_BSTR(vp));
 	VariantClear(vp);
 	return ret;
+	}
     case VT_DISPATCH:			// pointer to IDispatch object
+	{
 	LPDISPATCH pdisp = V_DISPATCH(vp);
 	int_t h = new_handle(&com_handles, pdisp);
 	if (h == BAD_HANDLE)
@@ -316,6 +319,7 @@ retvariant(struct descr *retval, VARIANTARG *vp)
 	pdisp->AddRef();
 	RETTYPE = I;
 	RETINT(h);
+	}
     }
     // XXX COMPLAIN so new entries can be added?
     DEBUGF(("unknown type %d\n", V_VT(vp) & VT_TYPEMASK));
