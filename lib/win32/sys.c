@@ -74,21 +74,27 @@ osname(cp)
     char *cp;
 {
     char osname[32], *os;
-#ifdef VER_NT_WORKSTATION
+#ifdef HAVE_GETVERSIONEX
     OSVERSIONINFOEX osv;
 #else
-    OSVERSIONINFO osv;
+    OSVERSIONINFO osv;			/* NOT TESTED */
 #endif
     int vnum;
 
     vnum = 0;
     ZeroMemory(&osv, sizeof(osv));
     osv.dwOSVersionInfoSize = sizeof(osv);
+#ifdef HAVE_GETVERSIONEX
     if (!GetVersionEx(&osv)) {
 	strcpy(cp, "Win????");
 	return;
     }
-
+#else
+    if (!GetVersion(&osv)) {		/* NOT TESTED */
+	strcpy(cp, "Win????");
+	return;
+    }
+#endif
     switch (osv.dwPlatformId) {
     case VER_PLATFORM_WIN32s:
 	os = "Win32s";

@@ -20,7 +20,7 @@ INET_DEFS=-DINET_IO
 INET_LIBS=-lwsock32
 
 # to disable COM comment out next 3 lines:
-COM_LIBS=-lole32 -luuid -loleaut32
+COM_LIBS=-lole32 -luuid -loleaut32 -lstdc++
 COM_DEFS=-DPML_COM
 COM_OBJ=com.o
 
@@ -32,7 +32,7 @@ CFLAGS=	-c $(OPT) -I$(SRCDIR)config/win32 -I$(SRCDIR)include -I$(SRCDIR). \
 	-DHAVE_CONFIG_H $(INET_DEFS) $(COM_DEFS) $(SDBM_DEFS)
 
 # for com.cpp
-CXXFLAGS=$(CFLAGS) -fvtable-thunks -DNEED_COGETOBJECT
+CXXFLAGS=$(CFLAGS)
 
 OBJ=	isnobol4.o data.o data_init.o main.o syn.o version.o bal.o \
 	date.o dump.o endex.o hash.o intspc.o io.o lexcmp.o ordvst.o \

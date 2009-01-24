@@ -34,6 +34,7 @@
 #define OSDEP_OPEN
 #define TTY_READ_RAW
 #define WIN32_LEAN_AND_MEAN
+#define HAVE_GETVERSIONEX
 
 #define SOCKLEN_T int
 

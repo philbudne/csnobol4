@@ -2,8 +2,16 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+1/24/2009:
+	fix MinGW compilation (thanks to Bruce Axtens)
+	lib/win32/sys.c: use HAVE_GETVERSIONEX
+	config/win32/mingw.mak: link with libstdc++
+		removed -fvtable-thunks -DNEED_COGETOBJECT
+	config/win32/config.h: define HAVE_GETVERSIONEX
+	README: Add Bruce
+
 12/17/2008:
-	lib/win32/com/cpp: fix for VS2003 compilation
+	lib/win32/com.cpp: fix for VS2003 compilation
 	version.c: update to 1.2+
 
 **************** release 1.2 (CVS tag REL_1_2)
