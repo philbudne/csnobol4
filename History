@@ -6,6 +6,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	v311.sil: fix GC crash when COLLECT() called immediately after
 		an "external" function.  Reported by Laurence Battin.
 	tests/collect.sno, test/collect2.ref: regression tests
+	include/load.h: add SETRETVAL macro
 	README: Add Lawrence
 
 6/20/2009:
