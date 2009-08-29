@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+6/20/2009:
+	fix http.sno (thanks to Burkhard Mesisner)
+		to send entire request in one TCP segment
+		was giving trouble under DJGPP+WatTCP
+
 1/24/2009:
 	fix MinGW compilation (thanks to Bruce Axtens)
 	lib/win32/sys.c: use HAVE_GETVERSIONEX
