@@ -53,17 +53,21 @@
  * place macro invocations anywhere, and to use a ';' after
  */
 
-#define RETINT(x) \
-    do { D_A(retval) = (x); RETTYPE = I; return TRUE; } while (0)
+#define SETRETVAL(VAL, TYPE) \
+    do { \
+	VAL; \
+	D_F(retval) = 0; \
+	RETTYPE = (TYPE); \
+	return TRUE; \
+    } while (0)
 
-#define RETREAL(x) \
-    do { D_RV(retval) = (x); RETTYPE = R; return TRUE; } while (0)
+#define RETINT(x) SETRETVAL(D_A(retval) = (x), I)
+#define RETREAL(x) SETRETVAL(D_RV(retval) = (x), R)
+#define RETNULL SETRETVAL(D_A(retval) = 0, S)
 
 /* strings */
 #define RETSTR2(CP,LEN) \
     do { retstring(retval, (CP), (LEN)); return TRUE; } while(0)
-
-#define RETNULL do { D_A(retval) = 0; RETTYPE = S; return TRUE; } while (0)
 
 /*
  * improved!! old version now called RETSTR2().
