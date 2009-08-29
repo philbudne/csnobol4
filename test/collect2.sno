@@ -1,0 +1,8 @@
+* reported by Laurence Battin <beamtuner@att.net>
+	A B =
+* any "external" function will do!
+	C = SQRT(0.0)
+*	C = ORD("A")
+	D = COLLECT()
+	OUTPUT = "GOT HERE"
+END

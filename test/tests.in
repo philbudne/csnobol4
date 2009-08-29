@@ -117,3 +117,5 @@ dump diag2.sno
 reg unsc.sno
 # 11/16/2005
 opt ndbm.sno
+# 8/29/2009
+reg collect2.sno
