@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.112  2005/11/22 21:13:55  phil
+* [PLB95] Add SPCSP for explicit output of spaces
+*
 * Revision 1.111  2005/11/10 16:51:53  phil
 * [PLB94] decrement &GTRACE if positive
 *
@@ -1688,7 +1691,7 @@ CDIAG2 GETSPC  TSP,EMSGCL,0	   Get error message		[PLB40]
        INTSPC  XSP,LNNOCL	   Get specifer for line number	[PLB40]
        APDSP   CERRSP,XSP	   Append line number		[PLB40]
        APDSP   CERRSP,COLSP	   Append colon			[PLB40]
-       APDSP   CERRSP,SPCSP	   Append space			[PLBXX]
+       APDSP   CERRSP,SPCSP	   Append space			[PLB95]
        APDSP   CERRSP,STARSP	   Append attention getter
        APDSP   CERRSP,TSP	   Append error message
        AEQLC   LISTCL,0,,CDIAG1	   Check for listing mode	[PLB8]
@@ -4315,7 +4318,7 @@ LNKFNC PROC    ,		   Procedure to link to externals
        MOVD    YCL,INCL		   Save function descriptor
        GETDC   WCL,YCL,0	   Get procedure descriptor	[PLB87]
        SETAV   WCL,WCL		   Get formal argument count	[PLB87]
-       SETAC   WPTR,0		   Clear count of passed args	[PLB87]
+       MOVD    WPTR,ZEROCL	   Clear count of passed args	[PLB87][PLB96]
        GETDC   ZCL,YCL,DESCR	   Get definition block
        PSTACK  YPTR		   Post stack position
        SETAC   TCL,2*DESCR	   Set offset for first argument
@@ -5295,7 +5298,7 @@ FENTR3 SETLC   PROTSP,0		   Clear specifier
        INTSPC  XSP,STNOCL	   Convert &STNO to string
        APDSP   PROTSP,XSP	   Append &STNO
        APDSP   PROTSP,COLSP	   Append colon
-       APDSP   PROTSP,SPCSP	   Append space			[PLBXX]
+       APDSP   PROTSP,SPCSP	   Append space			[PLB95]
        APDSP   PROTSP,TRLVSP	   Append level message
        INTSPC  XSP,LVLCL	   Convert &FNCLEVEL to string
        APDSP   PROTSP,XSP	   Append &FNCLEVEL
@@ -5374,7 +5377,7 @@ KEYTR3 SETLC   PROTSP,0		   Clear specifier
        INTSPC  TSP,STNOCL	   Convert &STNO to string
        APDSP   PROTSP,TSP	   Append &STNO
        APDSP   PROTSP,COLSP	   Append colon
-       APDSP   PROTSP,SPCSP	   Append space			[PLBXX]
+       APDSP   PROTSP,SPCSP	   Append space			[PLB95]
        AEQLC   FNVLCL,0,,KEYTR4	   Check entry indicator
        APDSP   PROTSP,AMPSP	   Append ampersand
 KEYTR4 APDSP   PROTSP,XSP	   Append name of keyword
@@ -5439,7 +5442,7 @@ VALTR4 SETLC   TRACSP,0		   Clear specifier
        INTSPC  XSP,STNOCL	   Convert &STNO to string
        APDSP   TRACSP,XSP	   Append &STNO
        APDSP   TRACSP,COLSP	   Append colon
-       APDSP   TRACSP,SPCSP	   Append space			[PLBXX]
+       APDSP   TRACSP,SPCSP	   Append space			[PLB95]
        AEQLC   FNVLCL,0,,FNEXT1	   Check entry indicator
        VEQLC   XPTR,S,DEFDT	   Is variable a string?
 VALTR3 LOCSP   XSP,XPTR		   Get specifier
@@ -7233,8 +7236,8 @@ RNOSP  SPEC    INBUF,0,0,CARDSZ+STNOSZ+1,STNOSZ
 ALPHSP SPEC    ALPHA,0,0,0,ALPHSZ  Alphabet
 AMPSP  SPEC    AMPST,0,0,0,1	   Ampersand
 CERRSP SPEC    ANYSP,0,0,0,0	   Buffer specifier
-COLSP  SPEC    COLSTR,0,0,0,1	   Colon for trace messages	[PLBXX]
-SPCSP  SPEC    SPCSTR,0,0,0,1	   Space for trace messages	[PLBXX]
+COLSP  SPEC    COLSTR,0,0,0,1	   Colon for trace messages	[PLB95]
+SPCSP  SPEC    SPCSTR,0,0,0,1	   Space for trace messages	[PLB95]
 DMPSP  SPEC    ANYSP,0,0,0,0	   Buffer specifier
 DTARSP SPEC    DTARBF,0,0,0,ARRLEN+9
 *				   Array representation specifier
@@ -7273,7 +7276,7 @@ RPRNSP STRING  ')'
 STARSP STRING  '*** '
 TRCLSP STRING  ' call of '					[PLB11]
 TRLVSP STRING  'level '						[PLB11]
-TRSTSP STRING  ' stmt '						[PLB11][PLBXX]
+TRSTSP STRING  ' stmt '						[PLB11][PLB95]
 SPITSP STRING  'PLUSOPS'					[PLB32]
 UNLSP  STRING  'UNLIST'
 XFERSP STRING  'transfer to'					[PLB11]

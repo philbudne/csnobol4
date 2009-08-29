@@ -2,6 +2,12 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+8/29/2009:
+	v311.sil: fix GC crash when COLLECT() called immediately after
+		an "external" function.  Reported by Laurence Battin.
+	tests/collect.sno, test/collect2.ref: regression tests
+	README: Add Lawrence
+
 6/20/2009:
 	fix http.sno (thanks to Burkhard Mesisner)
 		to send entire request in one TCP segment
