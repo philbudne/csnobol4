@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/10/2009:
+	lib/win32/sys.c: put wProductType under ifdef HAVE_GETVERSIONEX, thanks to Dani Richard
+		Add Win7/WinServer2008R2
+	README: Add Dani Richard
+
 8/29/2009:
 	v311.sil: fix GC crash when COLLECT() called immediately after
 		an "external" function.  Reported by Laurence Battin.

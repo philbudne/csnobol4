@@ -169,28 +169,38 @@ osname(cp)
 	    break;
 
 	case 6:				/* "Longhorn" family */
-	    switch (osv.dwMinorVersion) {
-	    case 0:
+	    /* "GetProductInfo()" returns product type:
+	     * http://msdn.microsoft.com/en-us/library/ms724429(VS.85).aspx
+	     * PRODUCT_{ULTIMATE,
+	     *	    HOME_{PREMUIUM,BASIC,ENTERPRISE},
+	     *	    BUSINESS,STARTER,
+	     *	    CLUSTER_SERVER,
+	     *	    DATACENTER_{SERVER,SERVER_CORE},
+	     *	    ENTERPRISE_{SERVER,SERVER_CORE,SERVER_IA64},
+	     *	    SMALLBUSINESS_{SERVER,SERVER_PREMIUM},
+	     *	    STANDARD_{SERVER,SERVER_CORE},
+	     *	    WEB_SERVER}
+	     */
 #ifndef VER_NT_WORKSTATION
 #define VER_NT_WORKSTATION 1
 #endif
-		if (osv.wProductType == VER_NT_WORKSTATION)
-		    os = "WinVista";
-		else
+	    switch (osv.dwMinorVersion) {
+	    case 0:
+#ifdef HAVE_GETVERSIONEX
+		if (osv.wProductType != VER_NT_WORKSTATION)
 		    os = "WinServer2008";
+		else
+#endif
+		    os = "WinVista";
 		break;
-		/* "GetProductInfo()" returns product type:
-		 * http://msdn.microsoft.com/en-us/library/ms724429(VS.85).aspx
-		 * PRODUCT_{ULTIMATE,
-		 *	    HOME_{PREMUIUM,BASIC,ENTERPRISE},
-		 *	    BUSINESS,STARTER,
-		 *	    CLUSTER_SERVER,
-		 *	    DATACENTER_{SERVER,SERVER_CORE},
-		 *	    ENTERPRISE_{SERVER,SERVER_CORE,SERVER_IA64},
-		 *	    SMALLBUSINESS_{SERVER,SERVER_PREMIUM},
-		 *	    STANDARD_{SERVER,SERVER_CORE},
-		 *	    WEB_SERVER}
-		 */
+	    case 1:
+#ifdef HAVE_GETVERSIONEX
+		if (osv.wProductType != VER_NT_WORKSTATION)
+		    os = "WinServer2008R2";
+		else
+#endif
+		    os = "Win7";
+		break;
 	    default:
 		vnum = 1;
 		break;
