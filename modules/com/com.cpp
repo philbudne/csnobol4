@@ -270,6 +270,8 @@ retbstring(struct descr *retval, LPOLESTR olestr)
 static int
 retvariant(struct descr *retval, VARIANTARG *vp)
 {
+    int ret;
+
     switch (V_VT(vp) & VT_TYPEMASK) {
     case VT_EMPTY:
     case VT_NULL:
@@ -304,12 +306,10 @@ retvariant(struct descr *retval, VARIANTARG *vp)
 	RETTYPE = R;
 	RETREAL(V_R8(vp));
     case VT_BSTR:
-	{
 	// convert (and free) string
-	int ret = retbstring(retval, V_BSTR(vp));
+	ret = retbstring(retval, V_BSTR(vp));
 	VariantClear(vp);
 	return ret;
-	}
     case VT_DISPATCH:			// pointer to IDispatch object
 	{
 	LPDISPATCH pdisp = V_DISPATCH(vp);
