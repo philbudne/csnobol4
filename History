@@ -3,8 +3,10 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 11/10/2009:
-	lib/win32/sys.c: put wProductType under ifdef HAVE_GETVERSIONEX, thanks to Dani Richard
+	lib/win32/sys.c: put wProductType under ifdef HAVE_GETVERSIONEX,
+		thanks to Dani Richard.
 		Add Win7/WinServer2008R2
+	lib/win32/com.cpp: get rid of a VC 6.0 compiler complaint
 	README: Add Dani Richard
 
 8/29/2009:
