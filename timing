@@ -137,11 +137,13 @@ if [ "$UNAME" ]; then
 		fi
 		#
 		# mandrake before redhat
+		# lsb before debian
 		for RELEASE in /etc/mandrake-release \
 		    /etc/SuSe-release /etc/SuSE-release \
 		    /etc/slackware-version /etc/turbolinux-release \
-		    /etc/debian_version /usr/lib/setup/slack-version-?.?? \
-		    /etc/gentoo-release /etc/redhat-release /etc/*-release; do
+		    /etc/lsb-release /etc/debian_version \
+		    /usr/lib/setup/slack-version-?.?? /etc/gentoo-release \
+		    /etc/redhat-release /etc/*-release; do
 			if [ -f ${RELEASE} ]; then
 				echo ''
 				echo releasefile ${RELEASE}:
@@ -154,6 +156,11 @@ if [ "$UNAME" ]; then
 			echo emerge info:
 			/usr/bin/emerge info
 			echo 'EMERGE END'
+		fi
+		if [ -d /etc/lsb-release.d ]; then
+			echo ''
+			echo /etc/lsb-release.d:
+			cat  /etc/lsb-release.d:
 		fi
 		;;
 	OSF1)
