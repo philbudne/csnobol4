@@ -143,7 +143,7 @@ if [ "$UNAME" ]; then
 		    /etc/slackware-version /etc/turbolinux-release \
 		    /etc/lsb-release /etc/debian_version \
 		    /usr/lib/setup/slack-version-?.?? /etc/gentoo-release \
-		    /etc/redhat-release /etc/*-release; do
+		    /etc/fedora-release /etc/redhat-release /etc/*-release; do
 			if [ -f ${RELEASE} ]; then
 				echo ''
 				echo releasefile ${RELEASE}:
@@ -160,7 +160,12 @@ if [ "$UNAME" ]; then
 		if [ -d /etc/lsb-release.d ]; then
 			echo ''
 			echo /etc/lsb-release.d:
-			cat  /etc/lsb-release.d:
+			ls /etc/lsb-release.d
+		fi
+		if [ -f /usr/bin/lsb-version ]; then
+			echo ''
+			echo lsb_release -rd:
+			/usr/bin/lsb_release -rd
 		fi
 		;;
 	OSF1)
