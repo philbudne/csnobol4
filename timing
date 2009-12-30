@@ -157,12 +157,7 @@ if [ "$UNAME" ]; then
 			/usr/bin/emerge info
 			echo 'EMERGE END'
 		fi
-		if [ -d /etc/lsb-release.d ]; then
-			echo ''
-			echo /etc/lsb-release.d:
-			ls /etc/lsb-release.d
-		fi
-		if [ -f /usr/bin/lsb-version ]; then
+		if [ -f /usr/bin/lsb_release ]; then
 			echo ''
 			echo lsb_release -rd:
 			/usr/bin/lsb_release -rd

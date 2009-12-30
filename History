@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/24/2009:
+	timing: run lsb_release program, if found
+
 12/22/2009:
 	configure: be more careful about using /usr/lib64
 	timing: look for lsb-release before debian-version for Ubuntu
