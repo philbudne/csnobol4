@@ -43,7 +43,7 @@ CONFIG_M4=config.m4.tmp
 
 # libraries
 LIBDIR=/usr/lib
-if [ $MACHINE = x86_64 -a -d /usr/lib64 ]; then
+if [ "$MACHINE" = x86_64 -a -d /usr/lib64 ]; then
     LIBDIR=/usr/lib64
     echo "using $LIBDIR for LIBDIR" 1>&2
 fi

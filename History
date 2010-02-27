@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+2/27/2010:
+	configure: defend against empty MACHINE variable
+
 12/24/2009:
 	timing: run lsb_release program, if found
 
