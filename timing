@@ -175,6 +175,13 @@ if [ "$UNAME" ]; then
 		echo ''
 		echo 'sunmodel:'
 		./sunmodel 2>&1
+		if [ `uname -m` = i86pc ]; then
+			CPUID=1
+		fi
+		;;
+
+	MINGW*|CYGWIN*)
+		CPUID=1
 		;;
 	esac
 else
@@ -214,6 +221,14 @@ if [ -x /usr/sbin/system_profiler ]; then
 	echo /usr/sbin/system_profiler:
 	/usr/sbin/system_profiler SPHardwareDataType SPSoftwareDataType
 	echo END_SYSTEM_PROFILER
+fi
+
+if [ "$CPUID" ]; then
+	if gcc -o cpuid cpuid.c 2>&1 >/dev/null; then
+		echo ''
+		echo 'cpuid:'
+		./cpuid
+	fi
 fi
 
 if [ -f 00README.CVS ]; then
