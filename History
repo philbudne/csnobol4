@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+5/15/2010:
+	timing: try cpu id more freely
+
 3/10/2010:
 	timing: try compiling/running cpuid.c for CYGWIN/MINGW/SolX86
 	cpuid.c: fetch, print vendor and cpu model using cpuid instruction

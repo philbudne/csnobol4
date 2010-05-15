@@ -184,6 +184,10 @@ if [ "$UNAME" ]; then
 		CPUID=1
 		;;
 	esac
+
+	case `$UNAME -m` in
+	*86|*x86*) CPUID=1;;
+	esac
 else
 	for p in `echo $PATH | tr : ' '`; do
 		if [ -x $p/hostname ]; then
@@ -216,6 +220,7 @@ if [ -f /usr/bin/sw_vers ]; then
 	/usr/bin/sw_vers
 fi
 
+# Darwin
 if [ -x /usr/sbin/system_profiler ]; then
 	echo ''
 	echo /usr/sbin/system_profiler:
