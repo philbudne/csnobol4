@@ -185,7 +185,7 @@ tidy:
 
 # disposables
 DISP=*.o *.a callgraph prolog bsplitu pv vers build.c bsdtsort \
-	config.m4 config.h Makefile2 .depend
+	config.m4 config.h Makefile2 .depend cpuid
 
 # Inspired by PowderMilk bisquits
 # (made by Norwegian Bachelor farmers, so you know they're pure, mostly);
