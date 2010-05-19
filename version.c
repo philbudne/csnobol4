@@ -2,6 +2,10 @@
 
 /*
  * $Log$
+ * Revision 1.34  2008/12/17 22:42:42  phil
+ * lib/win32/com/cpp: fix for VS2003 compilation
+ * version.c: update to 1.2+
+ *
  * Revision 1.33  2008/12/08 22:29:32  phil
  * version.c: update to 1.2
  * CHANGES: add changes since 1.1
@@ -105,8 +109,8 @@
 #include <stdio.h>
 #include "h.h"				/* const */
 
-const char vers[] = "1.2+";
-const char vdate[] = "December 17, 2008";
+const char vers[] = "1.3";
+const char vdate[] = "May 19, 2010";
 const char snoname[] = "CSNOBOL4";
 
 #ifdef MAIN

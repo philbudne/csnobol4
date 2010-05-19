@@ -2,6 +2,17 @@ $Id$
 
 For detailed revision history see History file
 
+Changes since 1.2 release;
+	Try to fetch X86 CPU identification using "cpuid" instruction
+	Detect Ubuntu version
+	Only use 64-bit libraries when running on 64-bit kernel
+	Fixes for builds with older versions of Visual C
+	Dectect Windows 7
+	Fix Garbage Collection crashes after calling an external function
+	Fix HTTP w/ DOC/WatTCP
+	Fix MinGW compliation
+
+=========================
 Changes since 1.1 release;
 =========================
 	Support for new platforms:
