@@ -76,8 +76,10 @@ osname(cp)
     char osname[32], *os;
 #ifdef HAVE_GETVERSIONEX
     OSVERSIONINFOEX osv;
+    int server;
 #else
     OSVERSIONINFO osv;			/* NOT TESTED */
+    const int server = 0;
 #endif
     int vnum;
 
@@ -85,10 +87,16 @@ osname(cp)
     ZeroMemory(&osv, sizeof(osv));
     osv.dwOSVersionInfoSize = sizeof(osv);
 #ifdef HAVE_GETVERSIONEX
+    // VS10 expects LPOSVERSIONINFOA
     if (!GetVersionEx(&osv)) {
 	strcpy(cp, "Win????");
 	return;
     }
+#ifdef HAVE_GETVERSIONEX
+#ifndef VER_NT_WORKSTATION
+#define VER_NT_WORKSTATION 1
+#endif
+    server = (osv.wProductType != VER_NT_WORKSTATION);
 #else
     if (!GetVersion(&osv)) {		/* NOT TESTED */
 	strcpy(cp, "Win????");
@@ -181,24 +189,17 @@ osname(cp)
 	     *	    STANDARD_{SERVER,SERVER_CORE},
 	     *	    WEB_SERVER}
 	     */
-#ifndef VER_NT_WORKSTATION
-#define VER_NT_WORKSTATION 1
-#endif
 	    switch (osv.dwMinorVersion) {
 	    case 0:
-#ifdef HAVE_GETVERSIONEX
-		if (osv.wProductType != VER_NT_WORKSTATION)
+		if (server)
 		    os = "WinServer2008";
 		else
-#endif
 		    os = "WinVista";
 		break;
 	    case 1:
-#ifdef HAVE_GETVERSIONEX
-		if (osv.wProductType != VER_NT_WORKSTATION)
+		if (server)
 		    os = "WinServer2008R2";
 		else
-#endif
 		    os = "Win7";
 		break;
 	    default:

@@ -5,6 +5,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 5/24/2010:
 	lib/posix/dynamic.c: prefer posix_ api for madvise
 		latest CygWIN only supplies posix version
+	lib/win32/sys.c: add server variable
 
 **************** re-release 1.3 (CVS tag REL_1_3bis)
 
