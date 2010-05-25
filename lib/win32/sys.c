@@ -92,7 +92,6 @@ osname(cp)
 	strcpy(cp, "Win????");
 	return;
     }
-#ifdef HAVE_GETVERSIONEX
 #ifndef VER_NT_WORKSTATION
 #define VER_NT_WORKSTATION 1
 #endif

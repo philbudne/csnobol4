@@ -45,7 +45,7 @@ vm_gc_advise(gc)
     int gc;
 {
     if (gc)
-	madvise(dbase, dsize,  MADV_RANDOM); /* random during GC */
+	posix_madvise(dbase, dsize,  POSIX_MADV_RANDOM); /* random during GC */
     else
-	madvise(dbase, dsize,  MADV_NORMAL); /* normal */
+	posix_madvise(dbase, dsize,  POSIX_MADV_NORMAL); /* normal */
 }
