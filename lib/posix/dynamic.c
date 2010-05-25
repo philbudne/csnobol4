@@ -15,6 +15,13 @@
 extern void *malloc();
 #endif /* HAVE_STDLIB_H not defined */
 
+/* prefer standard POSIX interface; fall back to BSD */
+#if !defined(POSIX_MADV_RANDOM) && defined(MADV_RANDOM)
+#define POSIX_MADV_RANDOM MADV_RANDOM
+#define POSIX_MADV_NORMAL MADV_NORMAL
+#define posix_madvise madvise
+#endif /* !defined(POSIX_MADV_RANDOM) && defined(MADV_RANDOM) */
+
 /* for lib.h: */
 #include <stdio.h>
 #include "h.h"
