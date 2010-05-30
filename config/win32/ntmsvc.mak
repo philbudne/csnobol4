@@ -4,6 +4,7 @@
 # from batch file by David Feustel
 
 # tested 11/2005 w/ Visual Studio .NET 2003 (VC71)
+# tested 5/2010 w/ Visual C++ Express 2010
 
 # XXX use to define SNOLIB_DIR??
 DEST=\snobol4

@@ -2,6 +2,14 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+5/30/2010:
+	config/win32/snobol4.vcxproj: VS10 Project thanks to Meir Livneh
+	config/win32/ntmsvc.mak: comment tested w/ VS10
+	lib/win32/{osopen,load}.c: include string.h
+	lib/sdbm/sdbm.c: if'ed out extern errno
+	lib/auxil/bindresvport.c: only define EADDRINUSE if needed on Win32
+	README: Add Meir Livneh
+
 5/24/2010:
 	lib/posix/dynamic.c: prefer posix_ api for madvise
 		latest CygWIN only supplies posix version

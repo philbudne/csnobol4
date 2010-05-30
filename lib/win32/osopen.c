@@ -9,6 +9,7 @@
 #endif /* HAVE_CONFIG_H defined */
 
 #include <stdio.h>
+#include <string.h>			/* strcmp() */
 
 #include "h.h"
 #include "snotypes.h"

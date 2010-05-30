@@ -10,6 +10,7 @@
 #endif /* HAVE_CONFIG_H defined */
 
 #include <windows.h>
+#include <string.h>			/* strcmp() */
 #include <stdlib.h>			/* malloc(), getenv() */
 #include <stdio.h>			/* for lib.h */
 

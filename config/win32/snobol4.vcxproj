@@ -1,0 +1,173 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{32EA212B-1D00-44A8-9661-F2B08E90B0F5}</ProjectGuid>
+    <RootNamespace>snobol4</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level1</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)..\..\lib\sdbm;$(SolutionDir)..\..\include;$(SolutionDir)..\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <CompileAs>CompileAsC</CompileAs>
+      <PreprocessorDefinitions>HAVE_CONFIG_H;INET_IO;BITFIELDS_SAME_TYPE;PML_NDBM;HAVE_SDBM_H;DUFF;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>WS2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\data.c" />
+    <ClCompile Include="..\..\data_init.c" />
+    <ClCompile Include="..\..\isnobol4.c" />
+    <ClCompile Include="..\..\lib\ansi\spcint.c" />
+    <ClCompile Include="..\..\lib\ansi\spreal.c" />
+    <ClCompile Include="..\..\lib\auxil\bcopy.c" />
+    <ClCompile Include="..\..\lib\auxil\bindresvport.c" />
+    <ClCompile Include="..\..\lib\auxil\bzero.c" />
+    <ClCompile Include="..\..\lib\auxil\getopt.c" />
+    <ClCompile Include="..\..\lib\bal.c" />
+    <ClCompile Include="..\..\lib\date.c" />
+    <ClCompile Include="..\..\lib\dummy\execute.c" />
+    <ClCompile Include="..\..\lib\dump.c" />
+    <ClCompile Include="..\..\lib\endex.c" />
+    <ClCompile Include="..\..\lib\generic\dynamic.c" />
+    <ClCompile Include="..\..\lib\generic\expops.c" />
+    <ClCompile Include="..\..\lib\generic\intspc.c" />
+    <ClCompile Include="..\..\lib\hash.c" />
+    <ClCompile Include="..\..\lib\init.c" />
+    <ClCompile Include="..\..\lib\io.c" />
+    <ClCompile Include="..\..\lib\lexcmp.c" />
+    <ClCompile Include="..\..\lib\ordvst.c" />
+    <ClCompile Include="..\..\lib\pair.c" />
+    <ClCompile Include="..\..\lib\pat.c" />
+    <ClCompile Include="..\..\lib\pml.c" />
+    <ClCompile Include="..\..\lib\realst.c" />
+    <ClCompile Include="..\..\lib\replace.c" />
+    <ClCompile Include="..\..\lib\sdbm\sdbm.c" />
+    <ClCompile Include="..\..\lib\sdbm\sdbm_hash.c" />
+    <ClCompile Include="..\..\lib\sdbm\sdbm_pair.c" />
+    <ClCompile Include="..\..\lib\snolib\chop.c" />
+    <ClCompile Include="..\..\lib\snolib\cos.c" />
+    <ClCompile Include="..\..\lib\snolib\delete.c" />
+    <ClCompile Include="..\..\lib\snolib\environ.c" />
+    <ClCompile Include="..\..\lib\snolib\exit.c" />
+    <ClCompile Include="..\..\lib\snolib\exp.c" />
+    <ClCompile Include="..\..\lib\snolib\file.c" />
+    <ClCompile Include="..\..\lib\snolib\findunit.c" />
+    <ClCompile Include="..\..\lib\snolib\getstring.c" />
+    <ClCompile Include="..\..\lib\snolib\handle.c" />
+    <ClCompile Include="..\..\lib\snolib\host.c" />
+    <ClCompile Include="..\..\lib\snolib\log.c" />
+    <ClCompile Include="..\..\lib\snolib\logic.c" />
+    <ClCompile Include="..\..\lib\snolib\ndbm.c" />
+    <ClCompile Include="..\..\lib\snolib\ord.c" />
+    <ClCompile Include="..\..\lib\snolib\rename.c" />
+    <ClCompile Include="..\..\lib\snolib\retstring.c" />
+    <ClCompile Include="..\..\lib\snolib\sin.c" />
+    <ClCompile Include="..\..\lib\snolib\sqrt.c" />
+    <ClCompile Include="..\..\lib\snolib\sset.c" />
+    <ClCompile Include="..\..\lib\snolib\tan.c" />
+    <ClCompile Include="..\..\lib\str.c" />
+    <ClCompile Include="..\..\lib\stream.c" />
+    <ClCompile Include="..\..\lib\top.c" />
+    <ClCompile Include="..\..\lib\tree.c" />
+    <ClCompile Include="..\..\lib\win32\com.cpp">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="..\..\lib\win32\exists.c" />
+    <ClCompile Include="..\..\lib\win32\inet.c" />
+    <ClCompile Include="..\..\lib\win32\load.c" />
+    <ClCompile Include="..\..\lib\win32\mstime.c" />
+    <ClCompile Include="..\..\lib\win32\osopen.c" />
+    <ClCompile Include="..\..\lib\win32\sys.c" />
+    <ClCompile Include="..\..\lib\win32\term.c" />
+    <ClCompile Include="..\..\lib\win32\tty.c" />
+    <ClCompile Include="..\..\main.c" />
+    <ClCompile Include="..\..\syn.c" />
+    <ClCompile Include="..\..\version.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\data.h" />
+    <ClInclude Include="..\..\data_init.h" />
+    <ClInclude Include="..\..\equ.h" />
+    <ClInclude Include="..\..\include\bindresvport.h" />
+    <ClInclude Include="..\..\include\dt.h" />
+    <ClInclude Include="..\..\include\gen.h" />
+    <ClInclude Include="..\..\include\h.h" />
+    <ClInclude Include="..\..\include\handle.h" />
+    <ClInclude Include="..\..\include\lib.h" />
+    <ClInclude Include="..\..\include\libret.h" />
+    <ClInclude Include="..\..\include\load.h" />
+    <ClInclude Include="..\..\include\macros.h" />
+    <ClInclude Include="..\..\include\path.h" />
+    <ClInclude Include="..\..\include\snotypes.h" />
+    <ClInclude Include="..\..\include\str.h" />
+    <ClInclude Include="..\..\include\syntab.h" />
+    <ClInclude Include="..\..\include\units.h" />
+    <ClInclude Include="..\..\include\vars.h" />
+    <ClInclude Include="..\..\lib\sdbm\pair.h" />
+    <ClInclude Include="..\..\lib\sdbm\sdbm.h" />
+    <ClInclude Include="..\..\lib\sdbm\tune.h" />
+    <ClInclude Include="..\..\lib\snolib\host.h" />
+    <ClInclude Include="..\..\mdata.h" />
+    <ClInclude Include="..\..\mlink.h" />
+    <ClInclude Include="..\..\parms.h" />
+    <ClInclude Include="..\..\pml.h" />
+    <ClInclude Include="..\..\proc.h" />
+    <ClInclude Include="..\..\res.h" />
+    <ClInclude Include="..\..\static.h" />
+    <ClInclude Include="..\..\syn.h" />
+    <ClInclude Include="..\..\syn_init.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

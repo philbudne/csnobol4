@@ -49,8 +49,11 @@
 /*
  * externals
  */
+
+#if 0	/* phil: universally unnecessary? complaints on VS10 */
 #ifndef sun
 extern int errno;
+#endif
 #endif
 
 #if 0	/* phil: DJGPP complains; all unnecessary? */
