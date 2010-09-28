@@ -1624,29 +1624,23 @@ fi
 # IRIX /sbin/install
 
 # should always find ./install-sh
-for DIR in /usr/bin /usr/ucb /usr/local/bin /etc .; do
+for DIR in /usr/bin /usr/ucb /usr/local/bin /bin .; do
     for INSTALL in install ginstall scoinst install-sh; do
-	if [ "$INSTALL" = install ]; then
-	    IPATH=$DIR/$INSTALL
-	    if [ -d $IPATH ]; then
+	IPATH=$DIR/$INSTALL
+	if [ -d $IPATH ]; then
+	    continue
+	fi
+	if [ -x $IPATH ]; then
+	    # avoid broken AIX installer
+	    # this test blows on cygwin, where -x /usr/bin/install
+	    # succeeds for /usr/bin/install.exe, but grep on
+	    # /usr/bin/install fails, so send stderr to /dev/null
+	    if grep dspmsg $IPATH >/dev/null 2>&1; then
 		continue
 	    fi
-	    case $IPATH in
-	    /usr/sbin/install|/bin/install|/usr/etc/install|\
-		/sbin/install) continue;;
-	    esac
-	    if [ -x $IPATH ]; then
-		# avoid broken AIX installer
-		# this test blows on cygwin, where -x /usr/bin/install
-		# succeeds for /usr/bin/install.exe, but grep on
-		# /usr/bin/install fails, so send stderr to /dev/null
-		if grep dspmsg $IPATH >/dev/null 2>&1; then
-		    continue
-	        fi
-		echo "using $IPATH for make install" 1>&2
-		echo "INSTALL=$IPATH"		>> $CONFIG_M4
-		break 2
-	    fi
+	    echo "using $IPATH for make install" 1>&2
+	    echo "INSTALL=$IPATH"		>> $CONFIG_M4
+	    break 2
 	fi
     done
 done

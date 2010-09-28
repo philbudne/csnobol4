@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+9/28/2010:
+	configure: fix search for "install" script reported by Noah Birnel
+
 5/30/2010:
 	config/win32/snobol4.vcxproj: VS10 Project thanks to Meir Livneh
 	config/win32/ntmsvc.mak: comment tested w/ VS10
