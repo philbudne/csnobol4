@@ -31,7 +31,7 @@ snobol4 \- SNOBOL4 interpreter
 This manual page describes a port of the original Bell Telephone Labs
 (BTL) Macro Implementation of SNOBOL4 (MAINBOL) to machines with ILP32
 (32-bit int/long/pointer) or LP64 (64-bit long/pointer) C compilers by
-Philip L. Budne.  The language and it's implementation are described
+Philip L. Budne.  The language and its implementation are described
 in [1] and [2].  Extensions from Catspaw SNOBOL4+, SPITBOL and SITBOL
 have been added.  This page discusses only the changes/extensions.
 
@@ -303,7 +303,7 @@ function restores normal entry creation behavior.
 .br
 The
 .B FUNCTION()
-predicate evaluates it's argument as a string (with case folding), and
+predicate evaluates its argument as a string (with case folding), and
 returns the null string if a function with that name exists and fails
 if it does not.
 The
@@ -417,7 +417,7 @@ will never return a unit number below 20.
 .br
 The
 .B LABEL()
-predicate evaluates it's argument as a string (with case folding), and
+predicate evaluates its argument as a string (with case folding), and
 returns the null string if a label with that name has been defined,
 and fails if it does not.  The
 .B LABEL()
@@ -530,7 +530,7 @@ and the user's terminal/console, respectively.
 The
 .B "ORD()"
 function returns the ordinal value (zero to 255) of the first character in
-it's string argument (the inverse of the
+its string argument (the inverse of the
 .B "CHAR()"
 function).
 .TP
@@ -574,7 +574,7 @@ keyword values,
 .B REVERSE()
 .br
 .B REVERSE()
-returns it's subject string in reverse order.
+returns its subject string in reverse order.
 .TP
 Scientific notation
 .br
@@ -624,9 +624,9 @@ of a file can be accessed directly.
 .BR "SITBOL " "file functions"
 .br
 \fBFILE(\fIstring\fB)\fR is a predicate which returns the null string
-if it's argument is the name of a file that exists, and fails if it
+if its argument is the name of a file that exists, and fails if it
 does not.  \fBDELETE(\fIstring\fB)\fR is a predicate which tries to
-remove the file named by it's argument, and fails if it cannot.
+remove the file named by its argument, and fails if it cannot.
 \fBRENAME(\fIstring1\fB,\fIstring2\fB)\fR 
 is a predicate which attempts to rename the file named by
 .I string2
@@ -648,9 +648,9 @@ functions are available for compatibility with SNOBOL4+.
 returns the value
 .IR "e ** x" ,
 .B LOG()
-returns the natural logarithm of it's REAL argument, and
+returns the natural logarithm of its REAL argument, and
 .B CHOP()
-truncates the fractional part of it's REAL argument (rounding towards
+truncates the fractional part of its REAL argument (rounding towards
 zero), and returns a REAL.
 .TP
 .B SORT()/RSORT()
@@ -696,7 +696,7 @@ contains the number of occurrences of that word.
 .br
 The SPITBOL scan (?) and assignment (=) operators have been added.  A
 pattern match can appear within an expression, and returns the matched
-string as it's value.  Similarly assignment can appear in an
+string as its value.  Similarly assignment can appear in an
 expression, and returns the assigned value. An assignment after a scan
 (ie;
 .IR "STRING ? PATTERN = VALUE" )
@@ -708,7 +708,7 @@ precedence just higher than assignment.
 The SPITBOL selection/alternative construction can be used in any
 expression.  It consists of a comma separated list of expressions
 inside parentheses.  The expressions are evaluated until one succeeds,
-and it's value is returned.  Abuse of this construction may result in
+and its value is returned.  Abuse of this construction may result in
 incomprehensible code.
 
 .br
@@ -759,7 +759,7 @@ but not all file systems support them.
 .B SUBSTR()
 .br
 .B SUBSTR()
-takes a subject string as it's first argument, and returns the substring
+takes a subject string as its first argument, and returns the substring
 starting at the position specified by the second argument (one-based) with
 a length specified by the third argument.  If the third argument is missing
 or zero, the remainder of the string is returned.
