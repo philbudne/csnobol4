@@ -1,5 +1,7 @@
 $Id$
 
+Reference on-line green book!!!
+
 Fix utf.sno RUNE() function:
     use logic.sno (or wctomb()?)
 
