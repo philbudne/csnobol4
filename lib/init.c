@@ -54,9 +54,9 @@ extern const char build_date[];		/* from build.c */
 int rflag;
 
 /* global for access by host.c; */
-int ndynamic;
-int pmstack;
-int istack;
+size_t ndynamic;
+size_t pmstack;
+size_t istack;
 char *params;
 char **argv;
 int firstarg;
@@ -144,7 +144,7 @@ usage( jname, justversion )
 static int
 getk( str, out )
     char *str;
-    int *out;
+    size_t *out;
 {
     char suff;
     switch (sscanf(str, "%d%c", out, &suff)) {

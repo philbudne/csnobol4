@@ -2,6 +2,12 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/18/2010:
+	Handle allocations of > 4GB -- reported by Howard Bussey
+	include/lib.h: dynamic(size_t)
+	lib/init.c: size_t ndynamic, pmstack, istack; getk takes size_t
+	lib/{bsd,generic,posix}/dynamic.c: dynamic(size_t)
+
 10/23/2010:
 	doc/snobol4.1: fix incorrect usage of it's reported by Guido M.
 

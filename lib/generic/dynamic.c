@@ -14,7 +14,7 @@ extern void *malloc();
 
 char *
 dynamic( size )
-    int size;
+    size_t size;
 {
     return malloc(size);
 }

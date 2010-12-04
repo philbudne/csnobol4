@@ -29,11 +29,11 @@ extern void *malloc();
 #include "lib.h"			/* own prototypes */
 
 static char *dbase;
-static int dsize;
+static size_t dsize;
 
 char *
 dynamic( size )
-    int size;
+    size_t size;
 {
     dsize = size;
     dbase = malloc(size);

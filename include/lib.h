@@ -124,7 +124,7 @@ void intspc __P((struct spec *, struct descr *));
 int spreal __P((struct descr *,struct spec *));
 
 /* from dynamic.c */
-char *dynamic __P((int));
+char *dynamic __P((size_t));
 void vm_gc_advise __P((int));
 
 /* from execute.c */
