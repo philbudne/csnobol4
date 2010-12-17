@@ -3,7 +3,7 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 12/16/2010:
-	Add POSIX date/time handling
+	Add POSIX date/time handling; inspired by Rafal Sulejman
 	new lib/snolib/time.c
 	new snolib/time.sno
 	Makefile2.m4: add time.o, TIME_C
