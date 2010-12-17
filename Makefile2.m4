@@ -140,6 +140,7 @@ SSET_C=$(SRCDIR)lib/snolib/sset.c
 STCL_C=$(SRCDIR)lib/snolib/stcl.c
 SYS_C=$(SRCDIR)lib/posix/sys.c
 TAN_C=$(SRCDIR)lib/snolib/tan.c
+TIME_C=$(SRCDIR)lib/snolib/time.c
 # for cygwin!
 COM_CPP=$(SRCDIR)lib/win32/com.cpp
 
@@ -415,7 +416,7 @@ AUX_OBJS=[]_OBJS
 SNOLIB_OBJS=chop.o cos.o delete.o environ.o execute.o exists.o exit.o \
 	exp.o file.o findunit.o fork.o getstring.o handle.o host.o \
 	ord.o log.o logic.o rename.o retstring.o serv.o sin.o \
-	sprintf.o sqrt.o sset.o sys.o tan.o $(AUX_OBJS)
+	sprintf.o sqrt.o sset.o sys.o tan.o time.o $(AUX_OBJS)
 
 $(SNOLIB_A): $(SNOLIB_OBJS)
 	rm -f $(SNOLIB_A)
@@ -429,7 +430,7 @@ SNOLIB_SRCS=$(CHOP_C) $(COS_C) $(DELETE_C) $(ENVIRON_C) $(EXISTS_C) \
 	$(EXIT_C) $(EXECUTE_C) $(EXP_C) $(FILE_C) $(FINDUNIT_C) \
 	$(FORK_C) $(GETSTRING_C) $(HOST_C) $(LOG_C) $(LOGIC_C) \
 	$(ORD_C) $(RENAME_C) $(RETSTRING_C) $(SERV_C) $(SIN_C) \
-	$(SPRINTF_C) $(SQRT_C) $(SSET_C) $(SYS_C) $(TAN_C)
+	$(SPRINTF_C) $(SQRT_C) $(SSET_C) $(SYS_C) $(TAN_C) $(TIME_C)
 
 chop.o: $(CHOP_C)
 	$(CC) $(CFLAGS) -c $(CHOP_C)
@@ -512,6 +513,9 @@ sys.o:	$(SYS_C)
 
 tan.o:	$(TAN_C)
 	$(CC) $(CFLAGS) -c $(TAN_C)
+
+time.o:	$(TIME_C)
+	$(CC) $(CFLAGS) -c $(TIME_C)
 
 com.o:	$(COM_CPP)
 	$(CC) $(CFLAGS) -c -fvtable-thunks $(COM_CPP)
