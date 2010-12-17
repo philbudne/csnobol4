@@ -119,3 +119,5 @@ reg unsc.sno
 opt ndbm.sno
 # 8/29/2009
 reg collect2.sno
+# 12/16/2010
+reg time.sno
