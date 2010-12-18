@@ -11,6 +11,7 @@
 #include "load.h"
 
 #include <time.h>			/* struct tm */
+#include <string.h>
 
 #ifndef WIN32				/* XXX */
 #include <sys/time.h>
