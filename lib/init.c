@@ -52,6 +52,7 @@ extern const char build_date[];		/* from build.c */
 
 /* global for access by io.c; */
 int rflag;
+int lflag;
 
 /* global for access by host.c; */
 size_t ndynamic;
@@ -248,7 +249,7 @@ io_init()				/* here from INIT */
 
     /* XXX support -o outputfile? */
 
-    if (!io_mkfile_noclose(UNITO, stdout, STDOUT_NAME)) {
+    if (!D_A(LISTCL) && !io_mkfile_noclose(UNITO, stdout, STDOUT_NAME)) {
 	perror("could not attach stdout to OUTPUT");
 	exit(1);
     }
@@ -346,7 +347,7 @@ init_args( ac, av )
      *		added, but it better not want an argument!)
      */
 
-    while ((c = getopt(argc, argv, "+bd:fghklnprsu:vLMP:S:")) != -1) {
+    while ((c = getopt(argc, argv, "+bd:fghkl:nprsu:vLMP:S:")) != -1) {
 	switch (c) {
 	case 'b':
 	    D_A(BANRCL) = !D_A(BANRCL);	/* toggle banner output */
@@ -382,8 +383,15 @@ init_args( ac, av )
 	    break;
 
 	case 'l':			/* -LIST */
-	    /* XXX should take an argument!!! */
-	    D_A(LISTCL) = 1;
+	    {
+		/* now takes an argument!!! */
+		D_A(LISTCL) = lflag = 1;
+		FILE *listfile = fopen(optarg, "w");
+		if (!listfile || !io_mkfile(UNITO, listfile, optarg)) {
+		    perror(optarg);
+		    exit(1);
+		}
+	    }
 	    break;
 
 	case 'n':			/* toggle -[NO]EXECUTE */

@@ -206,6 +206,7 @@ struct iovars {
 #include "vars.h"
 #else  /* NO_STATIC_VARS not defined */
 extern int rflag;			/* from init.c */
+extern int lflag;			/* from init.c */
 static struct iovars iov;
 #endif /* NO_STATIC_VARS not defined */
 
@@ -1380,6 +1381,13 @@ io_ecomp()				/* XECOMP */
     struct unit *up;
     struct file *fp;
 
+    if (lflag) {
+	/* if -l was given, switch OUTPUT to stdout! */
+
+	/* XXX check return?! */
+	io_mkfile2( UNITO, stdout, STDOUT_NAME, FL_NOCLOSE );
+    }
+
     if (rflag == 0) {
 	/* if -r was not given, switch INPUT to stdin!! */
 
@@ -1387,6 +1395,7 @@ io_ecomp()				/* XECOMP */
 	io_mkfile2( UNITI, stdin, STDIN_NAME, FL_NOCLOSE );
 	return;
     }
+
     /*
      * else (start INPUT after END stmt)
      * save the file position the data begins at for rewind.

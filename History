@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/18/2010:
+	lib/init.c, lib/io.c: -l flag takes listing file name
+	pml.h, lib/snolib/time.c, snolib/time.sno, test/time.{ref,sno}:
+		clean/tweak time to be more standards aligned
+
 12/16/2010:
 	Add POSIX date/time handling; inspired by Rafal Sulejman
 	new lib/snolib/time.c

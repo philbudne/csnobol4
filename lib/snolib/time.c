@@ -10,7 +10,13 @@
 #include "macros.h"
 #include "load.h"
 
+#include <time.h>			/* struct tm */
+
+#ifndef WIN32				/* XXX */
 #include <sys/time.h>
+#define HAVE_STRPTIME			/* XXX */
+#define HAVE_GETTIMEOFDAY
+#endif
 
 #define SETINT(DP,N,VAL) (DP)[N].a.i = (VAL); (DP)[N].f = 0; (DP)[N].v = I
 
@@ -18,11 +24,16 @@ int
 GETTIMEOFDAY2( LA_ALIST ) LA_DCL
 {
     struct descr *dp = LA_PTR(0);
+#ifdef HAVE_GETTIMEOFDAY
     struct timeval tv;
     if (gettimeofday(&tv, NULL) < 0)
 	RETFAIL;
     SETINT(dp,1,tv.tv_sec);
     SETINT(dp,2,tv.tv_usec);
+#else
+    SETINT(dp,1,time(0));
+    SETINT(dp,1,0);
+#endif
     RETNULL;
 }
 
@@ -38,12 +49,13 @@ tm2sno(struct tm *tmp, struct descr *dp)
     SETINT(dp,7,tmp->tm_wday);
     SETINT(dp,8,tmp->tm_yday);
     SETINT(dp,9,tmp->tm_isdst);
-    SETINT(dp,10,tmp->tm_gmtoff);
+    /* gmtoff is non-standard! */
 }
 
 static void
 sno2tm(struct descr *dp, struct tm *tmp)
 {
+    memset(tmp, 0, sizeof(struct tm));
     tmp->tm_sec = dp[1].a.i;
     tmp->tm_min = dp[2].a.i;
     tmp->tm_hour = dp[3].a.i;
@@ -53,7 +65,7 @@ sno2tm(struct descr *dp, struct tm *tmp)
     tmp->tm_wday = dp[7].a.i;
     tmp->tm_yday = dp[8].a.i;
     tmp->tm_isdst = dp[9].a.i;
-    tmp->tm_gmtoff = dp[10].a.i;
+    /* gmtoff is non-standard! */
 }
 
 int
@@ -88,21 +100,19 @@ STRFTIME( LA_ALIST ) LA_DCL
 }
 
 int
-TIMELOCAL( LA_ALIST ) LA_DCL
+MKTIME( LA_ALIST ) LA_DCL
 {
     struct tm tm;
+    time_t ret;
     sno2tm(LA_PTR(0), &tm);
-    RETINT(timelocal(&tm));
+    mktime(&tm);
+    tm2sno(&tm, LA_PTR(0));		/* normalized?! */
+    if (ret < 0)
+	RETFAIL;
+    RETINT(ret);
 }
 
-int
-TIMEGM( LA_ALIST ) LA_DCL
-{
-    struct tm tm;
-    sno2tm(LA_PTR(0), &tm);
-    RETINT(timegm(&tm));
-}
-
+#ifdef HAVE_STRPTIME
 int
 STRPTIME( LA_ALIST ) LA_DCL
 {
@@ -114,10 +124,11 @@ STRPTIME( LA_ALIST ) LA_DCL
     getstring(LA_PTR(0), input, sizeof(input));
     getstring(LA_PTR(1), format, sizeof(format));
     ret = strptime(input, format, &tm);
+    tm2sno(LA_PTR(1), &tm);		/* only on success?? */
     if (ret) {
-	tm2sno(LA_PTR(1), &tm);		/* only on success?? */
-	RETSTR(ret);
+      RETSTR(ret);
     }
     RETFAIL;
 }
+#endif
 
