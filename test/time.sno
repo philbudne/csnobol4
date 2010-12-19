@@ -22,6 +22,8 @@ E.TMDUMP
 	GTM = GMTIME(T)
 	OUTPUT = "gmtime:"
 	TMDUMP(GTM)
+	OUTPUT =
+	OUTPUT = MKTIME(GTM)
 
 	OUTPUT =
 	OUTPUT = STRFTIME("%Y-%m-%d %H:%M:%S", GTM)
