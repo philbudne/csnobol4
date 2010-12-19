@@ -1356,6 +1356,19 @@ else
     echo 'SUSPEND_C=$(SRCDIR)lib/dummy/suspend.c' >> $CONFIG_M4
 fi
 
+if grep gettimeofday $INCDIR/sys/time.h >/dev/null 2>&1; then
+    echo 'found gettimeofday()' 1>&2
+    echo '#define HAVE_GETTIMEOFDAY'			>> $CONFIG_H
+fi
+if grep tm_gmtoff $INCDIR/time.h >/dev/null 2>&1; then
+    echo 'found tm_gmtoff' 1>&2
+    echo '#define HAVE_TM_GMTOFF'			>> $CONFIG_H
+fi
+if grep strptime $INCDIR/time.h >/dev/null 2>&1; then
+    echo 'found strptime()' 1>&2
+    echo '#define HAVE_STRPTIME'			>> $CONFIG_H
+fi
+
 # output SO/DL defines
 
 # on everything except Darwin, one format suffices
