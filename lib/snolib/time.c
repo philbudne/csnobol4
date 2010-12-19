@@ -13,16 +13,17 @@
 #include <time.h>			/* struct tm */
 #include <string.h>
 
-#ifndef WIN32				/* XXX */
+#ifdef HAVE_GETTIMEOFDAY
 #include <sys/time.h>
-#define HAVE_STRPTIME			/* XXX */
-#define HAVE_GETTIMEOFDAY
 #endif
 
 #define SETINT(DP,N,VAL) (DP)[N].a.i = (VAL); (DP)[N].f = 0; (DP)[N].v = I
 
+/*
+ * GETTIMEOFDAY_(TIMEVAL)
+ */
 int
-GETTIMEOFDAY2( LA_ALIST ) LA_DCL
+GETTIMEOFDAY_( LA_ALIST ) LA_DCL
 {
     struct descr *dp = LA_PTR(0);
 #ifdef HAVE_GETTIMEOFDAY
@@ -50,7 +51,11 @@ tm2sno(struct tm *tmp, struct descr *dp)
     SETINT(dp,7,tmp->tm_wday);
     SETINT(dp,8,tmp->tm_yday);
     SETINT(dp,9,tmp->tm_isdst);
-    /* gmtoff is non-standard! */
+#ifdef HAVE_TM_GMTOFF
+    SETINT(dp,10,tmp->tm_gmtoff);
+#else
+    SETINT(dp,10,-1);
+#endif
 }
 
 static void
@@ -66,11 +71,16 @@ sno2tm(struct descr *dp, struct tm *tmp)
     tmp->tm_wday = dp[7].a.i;
     tmp->tm_yday = dp[8].a.i;
     tmp->tm_isdst = dp[9].a.i;
-    /* gmtoff is non-standard! */
+#ifdef HAVE_TM_GMTOFF
+    tmp->tm_gmtoff = dp[10].a.i;
+#endif
 }
 
+/*
+ * LOCALTIME_(INTEGER,TM)
+ */
 int
-LOCALTIME2( LA_ALIST ) LA_DCL
+LOCALTIME_( LA_ALIST ) LA_DCL
 {
     time_t t = LA_INT(0);
     struct tm *tmp = localtime(&t);
@@ -78,8 +88,11 @@ LOCALTIME2( LA_ALIST ) LA_DCL
     RETNULL;
 }
 
+/*
+ * GMTIME_(INTEGER,TM)
+ */
 int
-GMTIME2( LA_ALIST ) LA_DCL
+GMTIME_( LA_ALIST ) LA_DCL
 {
     time_t t = LA_INT(0);
     struct tm *tmp = gmtime(&t);
@@ -87,6 +100,9 @@ GMTIME2( LA_ALIST ) LA_DCL
     RETNULL;
 }
 
+/*
+ * STRFTIME(STRING,TM)STRING
+ */
 int
 STRFTIME( LA_ALIST ) LA_DCL
 {
@@ -99,6 +115,10 @@ STRFTIME( LA_ALIST ) LA_DCL
     strftime(output, sizeof(output), format, &tm);
     RETSTR(output);
 }
+
+/*
+ * MKTIME(TM)INTEGER
+ */
 
 int
 MKTIME( LA_ALIST ) LA_DCL
@@ -114,6 +134,9 @@ MKTIME( LA_ALIST ) LA_DCL
 }
 
 #ifdef HAVE_STRPTIME
+/*
+ * STRPTIME(STRING,STRING,TM)
+ */
 int
 STRPTIME( LA_ALIST ) LA_DCL
 {
@@ -125,7 +148,7 @@ STRPTIME( LA_ALIST ) LA_DCL
     getstring(LA_PTR(0), input, sizeof(input));
     getstring(LA_PTR(1), format, sizeof(format));
     ret = strptime(input, format, &tm);
-    tm2sno(LA_PTR(1), &tm);		/* only on success?? */
+    tm2sno(LA_PTR(2), &tm);		/* only on success?? */
     if (ret) {
       RETSTR(ret);
     }
