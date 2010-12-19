@@ -126,9 +126,9 @@ MKTIME( LA_ALIST ) LA_DCL
     struct tm tm;
     time_t ret;
     sno2tm(LA_PTR(0), &tm);
-    mktime(&tm);
+    ret = mktime(&tm);
     tm2sno(&tm, LA_PTR(0));		/* normalized?! */
-    if (ret < 0)
+    if (ret == -1)
 	RETFAIL;
     RETINT(ret);
 }
