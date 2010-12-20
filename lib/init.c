@@ -385,8 +385,8 @@ init_args( ac, av )
 	case 'l':			/* -LIST */
 	    {
 		/* now takes an argument!!! */
-		D_A(LISTCL) = lflag = 1;
 		FILE *listfile = fopen(optarg, "w");
+		D_A(LISTCL) = lflag = 1;
 		if (!listfile || !io_mkfile(UNITO, listfile, optarg)) {
 		    perror(optarg);
 		    exit(1);
@@ -450,9 +450,11 @@ init_args( ac, av )
      */
 
     if (preload) {
+	/* XXX unsafe!! defend against world write dirs? suid?? */
+
 	/* try version based filename(s) as well as unversioned? */
 	/* XXX defend against including same file twice?! use io_include()? */
-	
+
 	/*
 	 * modification of this file reserved to CSNOBOL4 distribution
 	 * creator!! Do not edit locally, it may be crushed by the
