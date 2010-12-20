@@ -46,7 +46,7 @@ OBJ=	isnobol4.obj data.obj data_init.obj main.obj syn.obj \
 	getopt.obj init.obj load.obj mstime.obj chop.obj cos.obj \
 	delete.obj environ.obj exit.obj file.obj getstring.obj handle.obj \
 	host.obj log.obj logic.obj ord.obj rename.obj retstring.obj \
-	sin.obj spcint.obj spreal.obj sqrt.obj sset.obj tan.obj \
+	sin.obj spcint.obj spreal.obj sqrt.obj sset.obj tan.obj time.obj \
 	osopen.obj sys.obj tty.obj inet.obj bindresvport.obj \
 	execute.obj exists.obj term.obj findunit.obj exp.obj \
 	$(COM_OBJ) $(SDBM_OBJ)
@@ -256,6 +256,9 @@ sset.obj : $(SRCDIR)lib\snolib\sset.c
 
 tan.obj : $(SRCDIR)lib\snolib\tan.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\tan.c
+
+time.obj : $(SRCDIR)lib\snolib\time.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\time.c
 
 com.obj : $(SRCDIR)lib\win32\com.cpp
 	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\com.cpp

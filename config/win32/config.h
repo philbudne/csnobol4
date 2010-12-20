@@ -60,3 +60,6 @@
 #define isnan		_isnan
 #define popen		_popen
 #define pclose		_pclose
+
+/* optional features: */
+#define PML_TIME
