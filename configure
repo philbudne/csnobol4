@@ -1368,6 +1368,8 @@ if grep strptime $INCDIR/time.h >/dev/null 2>&1; then
     echo 'found strptime()' 1>&2
     echo '#define HAVE_STRPTIME'			>> $CONFIG_H
 fi
+# should be safe on all Un*x systems
+echo '#define PML_TIME'					>> $CONFIG_H
 
 # output SO/DL defines
 

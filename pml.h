@@ -144,7 +144,7 @@ PMLFUNC(DBM_CLEARERR)
 #endif
 
 /* 12/15/2010 */
-#ifndef NO_PML_TIME
+#ifdef PML_TIME
 /* prototypes in snolib/time.sno LOAD() calls */
 PMLFUNC(GETTIMEOFDAY_)
 PMLFUNC(LOCALTIME_)
