@@ -1,5 +1,9 @@
 $Id$
 
+Include DDT debugger?
+
+man page for TIME -- snotime?
+
 Enable PRELOAD?
 
 Reference on-line green book!!!
@@ -12,13 +16,10 @@ fix Centos5 timing report?
 OS X 4-way Universal???
 	CFLAGS='-arch i386 -arch x86_64 -arch ppc7400 -arch ppc64'
 
-Include DDT debugger?
-	listing file? (-L?) have -LIST take filename???
-
 integrate GC patch (--with-gc?)
 	find out if gc start/end hook possible.
 
-debug Win32 problem seen by Larry Gregg:  lrrygrgg@yahoo.com
+debug Win32 problem seen by Larry Gregg:  lrrygrgg@yahoo.com ???
 	t = table(); t[1] = 20; t[2] = 10; a = rsort(t,2)
 
 warnings w/ gcc 4 on OS X:
