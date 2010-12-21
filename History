@@ -2,6 +2,12 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/20/2010:
+	lib/io.c: quiet gcc warnings, again
+	snolib/time.sno: add STRPTIME
+	pml.h: renamed STRPTIME to STRPTIME_
+	lib/snolib/time.c: fix STRPTIME_
+	
 12/18/2010:
 	lib/init.c, lib/io.c: -l flag takes listing file name
 	pml.h, lib/snolib/time.c, snolib/time.sno, test/time.{ref,sno}:

@@ -10,6 +10,12 @@
 #include "macros.h"
 #include "load.h"
 
+#ifdef linux				/* UGH! */
+#define _XOPEN_SOURCE			/* enable strptime() */
+#include <features.h>
+#define __USE_BSD			/* keep tm_gmtoff */
+#endif
+
 #include <time.h>			/* struct tm */
 #include <string.h>
 
@@ -138,7 +144,7 @@ MKTIME( LA_ALIST ) LA_DCL
  * STRPTIME(STRING,STRING,TM)
  */
 int
-STRPTIME( LA_ALIST ) LA_DCL
+STRPTIME_( LA_ALIST ) LA_DCL
 {
     char input[1024];
     char format[1024];
@@ -148,7 +154,7 @@ STRPTIME( LA_ALIST ) LA_DCL
     getstring(LA_PTR(0), input, sizeof(input));
     getstring(LA_PTR(1), format, sizeof(format));
     ret = strptime(input, format, &tm);
-    tm2sno(LA_PTR(2), &tm);		/* only on success?? */
+    tm2sno(&tm, LA_PTR(2));		/* only on success?? */
     if (ret) {
       RETSTR(ret);
     }

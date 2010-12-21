@@ -892,12 +892,12 @@ io_printf
 	switch (c) {
 	case 'd':			/* plain decimal */
 	    dp = va_arg(vp, struct descr *);
-	    sprintf(temp, "%d", (long)D_A(dp)); /* XXX handle LP32LL64 int_t */
+	    sprintf(temp, "%ld", (long)D_A(dp)); /* XXX handle LP32LL64 int_t */
 	    COPYTEMP;
 	    break;
 	case 'D':			/* padded decimal */
 	    dp = va_arg(vp, struct descr *);
-	    sprintf(temp, "%15d", (long)D_A(dp)); /* XXX handle LP32LL64 int_t */
+	    sprintf(temp, "%15ld", (long)D_A(dp)); /* XXX handle LP32LL64 int_t */
 	    COPYTEMP;
 	    break;
 	case 'F':			/* padded float */
