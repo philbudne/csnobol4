@@ -34,7 +34,7 @@ GETTIMEOFDAY_( LA_ALIST ) LA_DCL
     SETINT(dp,2,tv.tv_usec);
 #else
     SETINT(dp,1,time(0));
-    SETINT(dp,1,0);
+    SETINT(dp,2,0);
 #endif
     RETNULL;
 }
