@@ -54,5 +54,7 @@ main() {
 
     // EAX=80000005h: L1 Cache and TLB Identifiers
     // EAX=80000006h: Extended L2 Cache Features
+
+    return 0;
 }
 
