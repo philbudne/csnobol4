@@ -8,6 +8,8 @@
 *	whatever needs to be appended to line to make a CRLF
 	HTTP.EOL = CHAR(13)
 
+	HTTP.CRLF = CHAR(13) CHAR(10)
+
 *	record length (and data mode) for HTTP.OPEN/POST
 	HTTP.RECL = 32767
 
@@ -26,9 +28,9 @@
 HTTP.OPEN
 	HTTP.PORT = IDENT(HTTP.PORT) "80" 
 	TCP.OPEN(HTTP.NAME,HTTP.HOST,HTTP.PORT,HTTP.RECL)	:F(FRETURN)
-	$HTTP.NAME = "GET " HTTP.FILE " HTTP/1.0" HTTP.EOL
-+		"User-Agent: " HOST() HTTP.EOL
-+		"Host: " HTTP.HOST HTTP.EOL
+	$HTTP.NAME = "GET " HTTP.FILE " HTTP/1.0" HTTP.CRLF
++		"User-Agent: " HOST() HTTP.CRLF
++		"Host: " HTTP.HOST HTTP.CRLF
 +		HTTP.EOL				:(RETURN)
 HTTP.OPEN.END
 
