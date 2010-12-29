@@ -1,0 +1,179 @@
+-UNLIST
+* XXX commands: cond, command, delete, list, help
+* XXX watchpoints?!
+* XXX disable tracing if "continue" w/ no breakpoints/watchpoints?
+* XXX all function args, local vars start w/ SDB.
+* XXX command match/arg processing:
+*	break, list:	stmt/lbl/e
+*	command, disable, enable: bkpt
+*	delete: bkpt/*/e
+*	continue, next, step
+*
+******* MUST BE FIRST STMT!
+	SDB.FIRST_STMT = &LASTNO
+
+	SDB.MAX_BREAK = 100
+	SDB.MAX_LINES = 5000
+	SDB.VARS = TABLE()
+	SDB.VARS['list_lines'] = 10
+	SDB.STEP_COUNT = LT(SDB.FIRST_STMT,5) 1
+	OUTPUT(.SDB.TT, IO_FINDUNIT(), 'T', '/dev/stdin')
+	SDB.BREAK_BY_LINE = ARRAY('1:' SDB.MAX_LINES)
+	SDB.BREAK_BY_NUM = ARRAY('1:' SDB.MAX_BREAK)
+	SDB.NEXT_BREAK = 1
+
+	DATA('SDB.BREAKPOINT(SDB.BREAK_LINE,SDB.BREAK_NUM,'
++		'SDB.BREAK_CONT,SDB.BREAK_COND)')
+
+	DEFINE("SDB.TRAP()SDB.LAST,SDB.LASTFL,SDB.BKPT,SDB.CMD")
+							:(SDB.TRAP.END)
+* here before executing each line of code
+SDB.TRAP
+* save all location info in one statement. just create a PAIR() datatype?
+	(&LASTFILE ':' &LASTLINE ';' &LASTNO)
++		BREAK(';') . SDB.LASTFL ';' REM . SDB.LAST
+	DIFFER((SDB.BKPT = SDB.BREAK_BY_LINE[SDB.LAST])) :F(SDB.CHECKLEVEL)
+* XXX check breakpoint condition
+* XXX check breakpoint continue count
+	TERMINAL = "breakpoint " SDB.BREAK_NUM(SDB.BKPT)
+* XXX execute breakpoint commands
+	:(SDB.STOPPED)
+
+* see if resume level (from finish or next) reached
+SDB.CHECKLEVEL
+	IDENT(SDB.RESUME_LEVEL)				:S(SDB.CHECKSTEP)
+	DIFFER(SDB.RESUME_LEVEL,&FNCLEVEL)		:S(RETURN)
+
+SDB.CHECKSTEP
+* see if step count set & reached
+	LE(SDB.STEP_COUNT,0)				:S(SDB.CHECKWATCH)
+	SDB.STEP_COUNT = SDB.STEP_COUNT - 1
+	EQ(SDB.STEP_COUNT,0)				:S(SDB.STOPPED)
+SDB.CHECKWATCH
+* XXX check watchpoints here
+	:(RETURN)
+
+SDB.STOPPED
+	TERMINAL = SDB.LASTFL ": stopped at statement " SDB.LAST 
++			", level " &FNCLEVEL - 1
+	SDB.DISPLAY_SOURCE(SDB.LAST)
+	SDB.FNCLEVEL = &FNCLEVEL
+SDB.GETCMD
+	SDB.TT = '(sdb) '
+* XXX use GNU readline, if available!!!!
+	SDB.CMD = TERMINAL				:F(END)
+	SDB.COMMAND(SDB.CMD)				:S(RETURN)F(SDB.GETCMD)
+SDB.TRAP.END
+**************** end of SDB.TRAP()
+
+* returns success to return to user, failure to process next command
+	DEFINE('SDB.COMMAND(CMD)ARGS,CMDP,TEMP,TEMP2')	:(SDB.COMMAND.END)
+SDB.COMMAND
+	(CMD ' ') BREAK(' ') $ CMD ((SPAN(' ') REM . ARGS) | ('' . ARGS))
+* XXX blank command: same as last (step, list, cont?? next??)
+	IDENT(CMD)					:S(FRETURN)
+* XXX TEMP; use TLU? match function??
+	CMDP = POS(0) REPLACE(CMD, &UCASE, &LCASE) 
+	'break' CMDP					:S(SDB.BREAK)
+	'continue' CMDP					:S(SDB.CONT)
+	'finish' CMDP					:S(SDB.FINISH)
+	'list' CMDP					:S(SDB.LIST)
+	'next' CMDP					:S(SDB.NEXT)
+	'print' CMDP					:S(SDB.PRINT)
+	'quit' CMDP					:S(END)
+	'step' CMDP					:S(SDB.STEP)
+	TERMINAL = 'Undefined command: "' CMD '"'	:(FRETURN)
+
+SDB.BREAK
+* default is current LINE
+* XXX check args
+* XXX allow label[+-]
+* XXX validate
+* XXX check if BREAK_BY_LINE[TEMP] empty?
+	TEMP = TRIM(ARGS) + 0
+	TEMP2 = SDB.NEXT_BREAK
+	SDB.NEXT_BREAK = SDB.NEXT_BREAK + 1
+	TERMINAL = 'breakpoint ' TEMP2 ' at statement ' TEMP
+	SDB.BREAK_BY_LINE[TEMP] = SDB.BREAK_BY_NUM[TEMP2] =
++		SDB.BREAKPOINT(TEMP, TEMP2)
+	:(FRETURN)
+
+SDB.CONT
+* process arg; set per-breakpoint continue count
+	SDB.RESUME_LEVEL =
+	SDB.STEP_COUNT = -1				:(RETURN)
+
+SDB.LIST
+* take function[+/-] or line
+	SDB.LIST_LINE = SDB.LAST
+	TEMP = SDB.LAST + SDB.VARS['list_lines']
+SDB.LIST_LOOP
+	SDB.DISPLAY_SOURCE(SDB.LIST_LINE)
+	SDB.LIST_LINE = SDB.LIST_LINE + 1
+	LT(SDB.LIST_LINE,TEMP)				:S(SDB.LIST_LOOP)
+	:(FRETURN)
+
+SDB.NEXT
+* process arg
+	SDB.STEP_COUNT = 1
+	SDB.RESUME_LEVEL = SDB.FNCLEVEL			:(RETURN)
+
+SDB.FINISH
+* error if arg!!
+* error at level 1!!
+	SDB.STEP_COUNT = 1
+	SDB.RESUME_LEVEL = SDB.FNCLEVEL - 1		:(RETURN)
+
+SDB.PRINT
+	EVAL(' TERMINAL = ' ARGS)			:(FRETURN)
+
+SDB.STEP
+* process arg
+	SDB.RESUME_LEVEL =
+	SDB.STEP_COUNT = 1				:(RETURN)
+
+SDB.COMMAND.END
+**************** end of SDB.COMMAND()
+
+	DEFINE('SDB.DISPLAY_SOURCE(LN)')		:(SDB.DISP_SOURCE.END)
+SDB.DISPLAY_SOURCE
+	TERMINAL = VDIFFER(SOURCE_BY_LINE[LN])		:(RETURN)
+SDB.DISP_SOURCE.END
+**************** end of SDB.DISPLAY_SOURCE
+
+	DEFINE('SDB.READ_SOURCE(FN)UNIT,LINE,LN,SRC')	:(SDB.READ_SOURCE.END)
+SDB.READ_SOURCE
+	SOURCE_BY_LINE = ARRAY('1:5000')
+	UNIT = IO_FINDUNIT()
+	INPUT(.LISTF, UNIT,, FN)
+SDB.SLOP
+	LINE = TRIM(LISTF)				:F(SDB.SEOF)
+	LINE SPAN('0123456789') . LN			:F(SDB.SLOP)
+*	TERMINAL = LN '>' LINE
+	IDENT(LN)					:S(SDB.SLOP)
+	LN = +LN
+* build tag table
+* handle continuations
+	
+	SOURCE_BY_LINE[LN] =
++		(DIFFER(SOURCE_BY_LINE[LN]) SOURCE_BY_LINE[LN] CHAR(10), '')
++		LINE
+*	TERMINAL = LN '>' SOURCE_BY_LINE[LN]
+	:(SDB.SLOP)
+SDB.SEOF
+*	DELETE(FN)
+	ENDFILE(UNIT)
+	DETACH(.LISTF)
+	:(RETURN)
+
+SDB.READ_SOURCE.END
+**************** end of SDB.READ_SOURCE()
+
+* XXX get filename from environment
+	SDB.READ_SOURCE('xxx')
+* XXX TABLE?
+
+* last: enables trace traps
+	&STLIMIT = &TRACE = 2147483647
+	TRACE('STCOUNT','KEYWORD',,'SDB.TRAP')
+-LIST
