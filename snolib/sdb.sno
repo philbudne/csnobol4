@@ -8,6 +8,7 @@
 *
 ******* MUST BE FIRST STMT!
 	SDB.FIRST_STMT = &STNO
+	SDB.VERSION = "0.2"
 
 	DEFINE("SDB.HELP()")				:(SDB.HELP.END)
 SDB.HELP
@@ -387,7 +388,7 @@ SDB.DEFINE.END
 SDB.NOSTACK
 
 	DIFFER(HOST(4,"SDB_NOBANNER"))
-	TERMINAL = "sdb version 0.1"
+	TERMINAL = "sdb version " SDB.VERSION
 	TERMINAL = "Copyright 2010 Philip L. Budne"
 	TERMINAL = 'Type "help" for help.'
 	TERMINAL =
