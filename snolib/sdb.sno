@@ -28,14 +28,13 @@ SDB.HELP
 SDB.HELP.END
 *
 * TODO:
-* XXX commands: cond, command, delete, list, help
-* XXX watchpoints?!
+* XXX table lookup for commands & help
+* XXX watchpoints (using value tracing?)
 * XXX disable tracing if "continue" w/ no breakpoints/watchpoints?
-* XXX all function args, (trap) local vars start w/ SDB.
-* XXX perform case folding on function names!
 * XXX command match/arg processing:
 *	command, disable, enable: bkpt
-*	continue, next, step: count
+*	cond: bkpt + expr
+*	continue: count
 *
 	SDB.MAXINT = 2147483647
 
@@ -51,7 +50,7 @@ SDB.GOT_MAX_LINES
 	SDB.SOURCE_BY_LINE = ARRAY('1:' SDB.MAX_LINES)
 	SDB.BREAK_BY_LINE = ARRAY('1:' SDB.MAX_LINES)
 	SDB.BREAK_BY_NUM = ARRAY('1:' SDB.MAX_BREAK)
-	SDB.LABELS = TABLE()
+	SDB.LABELS = TABLE(50,50)
 	SDB.WS = ' ' CHAR(9)
 	SDB.LABEL.PAT = POS(0) (ANY(&LCASE &UCASE) BREAK(SDB.WS)) . LBL
 * break before first statement
@@ -105,126 +104,133 @@ SDB.TRAP.END
 **************** end of SDB.TRAP()
 
 * returns success to return to user, failure to process next command
-* XXX all args/temps should start with SDB. 
-	DEFINE('SDB.COMMAND(CMD)ARGS,CMDP,TEMP,TEMP2,T3') :(SDB.COMMAND.END)
+* NOTE! all args/temps should start with SDB. to avoid confusion in PRINT cmd!
+	DEFINE('SDB.COMMAND(SDB.CMD)SDB.ARGS,SDB.CMDP,SDB.T1,SDB.T2,SDB.T3')
+	:(SDB.COMMAND.END)
 SDB.COMMAND
-	(CMD ' ') BREAK(' ') $ CMD ((SPAN(' ') REM . ARGS) | ('' . ARGS))
+	(SDB.CMD ' ') BREAK(' ') $ SDB.CMD
++			((SPAN(' ') REM . SDB.ARGS) | ('' . SDB.ARGS))
 * XXX blank command: same as last (step, list, cont?? next??)
-	IDENT(CMD)					:S(FRETURN)
+	IDENT(SDB.CMD)					:S(FRETURN)
 * XXX TEMP; use table lookup with minimum non-ambiguous prefix match
-	CMDP = POS(0) REPLACE(CMD, &UCASE, &LCASE) 
-	'break' CMDP					:S(SDB.BREAK)
-	'bt' CMDP					:S(SDB.BT)
-	'continue' CMDP					:S(SDB.CONTINUE)
-	'delete' CMDP					:S(SDB.DELETE)
-	'finish' CMDP					:S(SDB.FINISH)
-	'help' CMDP					:S(SDB.HELP)
-	'info' CMDP					:S(SDB.INFO)
-	'list' CMDP					:S(SDB.LIST)
-	'next' CMDP					:S(SDB.NEXT)
-	'print' CMDP					:S(SDB.PRINT)
-	'quit' CMDP					:S(END)
-	'step' CMDP					:S(SDB.STEP)
-	'where' CMDP					:S(SDB.BT)
-	TERMINAL = 'Undefined command: "' CMD '". Try "help".'
+	SDB.CMDP = POS(0) REPLACE(SDB.CMD, &UCASE, &LCASE)
+	SDB.ARGS = TRIM(SDB.ARGS)
+	'break' SDB.CMDP				:S(SDB.BREAK)
+	'bt' SDB.CMDP					:S(SDB.BT)
+	'continue' SDB.CMDP				:S(SDB.CONTINUE)
+	'delete' SDB.CMDP				:S(SDB.DELETE)
+	'finish' SDB.CMDP				:S(SDB.FINISH)
+	'help' SDB.CMDP					:S(SDB.HELP)
+	'info' SDB.CMDP					:S(SDB.INFO)
+	'list' SDB.CMDP					:S(SDB.LIST)
+	'next' SDB.CMDP					:S(SDB.NEXT)
+	'print' SDB.CMDP				:S(SDB.PRINT)
+	'quit' SDB.CMDP					:S(END)
+	'step' SDB.CMDP					:S(SDB.STEP)
+	'where' SDB.CMDP				:S(SDB.BT)
+	TERMINAL = 'Undefined command: "' SDB.CMD '". Try "help".'
 	:(FRETURN)
 
 SDB.BREAK
-	TEMP = SDB.ARG.STMT(ARGS)			:F(FRETURN)
-	TERMINAL = DIFFER(SDB.BREAK_BY_LINE[TEMP])
-+		"Breakpoint already set at statement " TEMP :S(FRETURN)
-	TEMP2 = SDB.NEXT_BREAK
+	SDB.T1 = SDB.ARG.STMT(SDB.ARGS)			:F(FRETURN)
+	TERMINAL = DIFFER(SDB.BREAK_BY_LINE[SDB.T1])
++		"Breakpoint already set at statement " SDB.T1 :S(FRETURN)
+	SDB.T2 = SDB.NEXT_BREAK
 	SDB.NEXT_BREAK = SDB.NEXT_BREAK + 1
-	TERMINAL = 'Breakpoint ' TEMP2 ' at statement ' TEMP
-	SDB.BREAK_BY_LINE[TEMP] = SDB.BREAK_BY_NUM[TEMP2] =
-+		SDB.BREAKPOINT(TEMP, TEMP2)
+	TERMINAL = 'Breakpoint ' SDB.T2 ' at statement ' SDB.T1
+	SDB.BREAK_BY_LINE[SDB.T1] = SDB.BREAK_BY_NUM[SDB.T2] =
++		SDB.BREAKPOINT(SDB.T1, SDB.T2)
 	:(FRETURN)
 
 * backtrace
-SDB.BT	TERMINAL = LT(SDB.CALL_LEVEL,1) 'No call stack.' :S(FRETURN)
-	TEMP = SDB.CALL_LEVEL
+SDB.BT	TERMINAL = 'at statement ' SDB.LAST
+	TERMINAL = LT(SDB.CALL_LEVEL,1) 'No call stack.' :S(FRETURN)
+	SDB.T1 = SDB.CALL_LEVEL
 SDB.BT.LOOP
-	OUTPUT = SDB.CALLS[TEMP]
-	TEMP = TEMP - 1
-	GT(TEMP,0)					:S(SDB.BT.LOOP)
+	OUTPUT = SDB.CALLS[SDB.T1]
+	SDB.T1 = SDB.T1 - 1
+	GT(SDB.T1,0)					:S(SDB.BT.LOOP)
 	:(FRETURN)
 
 SDB.CONTINUE
 * XXXX process arg; set per-breakpoint continue count
-	SDB.ARG.NOARGS(ARGS,"continue")			:F(FRETURN)
+	SDB.ARG.NOARGS(SDB.ARGS,"continue")			:F(FRETURN)
 	SDB.RESUME_LEVEL =
 	SDB.STEP_COUNT = -1				:(RETURN)
 
 SDB.DELETE
 * delete breakpoints: no arg means delete all
-	IDENT(ARGS)					:S(SDB.DELETE.ALL)
-	TEMP = SDB.ARG.BKPT(ARGS)			:F(FRETURN)
-	SDB.DELETE.BREAKPOINT(TEMP)			:(FRETURN)
+	IDENT(SDB.ARGS)					:S(SDB.DELETE.ALL)
+	SDB.T1 = SDB.ARG.BKPT(SDB.ARGS)			:F(FRETURN)
+	SDB.DELETE.BREAKPOINT(SDB.T1)			:(FRETURN)
 
 SDB.DELETE.ALL
-	TEMP = 1
+	SDB.T1 = 1
 	SDB.TT = "Delete all breakpoints (y or n)? "
 	OUTPUT = DIFFER(INPUT, "y") "Aborted."		:S(FRETURN)
-	TEMP = 1
+	SDB.T1 = 1
 SDB.DELETE.ALL.LOOP
-	GE(TEMP,SDB.MAX_BREAK)				:S(FRETURN)
-	SDB.DELETE.BREAKPOINT(TEMP)
-	TEMP = TEMP + 1					:(SDB.DELETE.ALL.LOOP)
+	GE(SDB.T1,SDB.MAX_BREAK)				:S(FRETURN)
+	SDB.DELETE.BREAKPOINT(SDB.T1)
+	SDB.T1 = SDB.T1 + 1					:(SDB.DELETE.ALL.LOOP)
 
 * info ("info break") -- display breakpoints
 SDB.INFO
-	TEMP = 1
-	T3 =
+	SDB.T1 = 1
+	SDB.T3 =
 SDB.INFO.LOOP
-	GE(TEMP,SDB.NEXT_BREAK)				:S(SDB.INFO.ELOOP)
-	TEMP2 = SDB.BREAK_BY_NUM[TEMP]
-	IDENT(TEMP2)					:S(SDB.INFO.NOBR)
-	TERMINAL = IDENT(T3) "Num Type       Enb Statement"
-	T3 = 1
-	TERMINAL = RPAD(TEMP,4) RPAD("breakpoint",11)
-+			"y   " SDB.BREAK_LINE(TEMP2)
+	GE(SDB.T1,SDB.NEXT_BREAK)				:S(SDB.INFO.ELOOP)
+	SDB.T2 = SDB.BREAK_BY_NUM[SDB.T1]
+	IDENT(SDB.T2)					:S(SDB.INFO.NOBR)
+	TERMINAL = IDENT(SDB.T3) "Num Type       Enb Statement"
+	SDB.T3 = 1
+	TERMINAL = RPAD(SDB.T1,4) RPAD("breakpoint",11)
++			"y   " SDB.BREAK_LINE(SDB.T2)
 SDB.INFO.NOBR
-	TEMP = TEMP + 1					:(SDB.INFO.LOOP)
+	SDB.T1 = SDB.T1 + 1					:(SDB.INFO.LOOP)
 SDB.INFO.ELOOP
-	TERMINAL = IDENT(T3) "No breakpoints set."
+	TERMINAL = IDENT(SDB.T3) "No breakpoints set."
 	:(FRETURN)
 
 SDB.LIST
-	SDB.LIST_LINE = IDENT(ARGS) SDB.LAST		:S(SDB.LIST.START)
-	SDB.LIST_LINE = SDB.ARG.STMT(ARGS)
+	SDB.LIST_LINE = IDENT(SDB.ARGS) SDB.LAST		:S(SDB.LIST.START)
+	SDB.LIST_LINE = SDB.ARG.STMT(SDB.ARGS)
 SDB.LIST.START
-	TEMP = SDB.LAST + SDB.VARS['list_lines']
+	SDB.T1 = SDB.LAST + SDB.VARS['list_lines']
 SDB.LIST_LOOP
 	SDB.DISPLAY_SOURCE(SDB.LIST_LINE)
 	SDB.LIST_LINE = SDB.LIST_LINE + 1
-	LT(SDB.LIST_LINE,TEMP)				:S(SDB.LIST_LOOP)
+	LT(SDB.LIST_LINE,SDB.T1)				:S(SDB.LIST_LOOP)
 	:(FRETURN)
 
 SDB.NEXT
-	SDB.STEP_COUNT = SDB.ARG.COUNT(ARGS)		:F(FRETURN)
+	SDB.STEP_COUNT = SDB.ARG.COUNT(SDB.ARGS)		:F(FRETURN)
 	SDB.RESUME_LEVEL = SDB.FNCLEVEL			:(RETURN)
 
 SDB.FINISH
 	TERMINAL = EQ(SDB.FNCLEVEL,1) "At top level."	:S(FRETURN)
-	SDB.ARG.NOARGS(ARGS,"finish")			:F(FRETURN)
+	SDB.ARG.NOARGS(SDB.ARGS,"finish")			:F(FRETURN)
 	SDB.STEP_COUNT = 1
 	SDB.RESUME_LEVEL = SDB.FNCLEVEL - 1		:(RETURN)
 
 SDB.PRINT
-	TEMP = &ERRLIMIT
+	SDB.T1 = &ERRLIMIT
+* catch compile errors:
 	&ERRLIMIT = 1234
-	TERMINAL = EVAL(ARGS)				:S(SDB.PRINT.OK)
+	TERMINAL = EVAL(SDB.ARGS)				:S(SDB.PRINT.OK)
 	TERMINAL = &ERRTEXT
 SDB.PRINT.OK
-	&ERRLIMIT = TEMP				:(FRETURN)
+	&ERRLIMIT = SDB.T1				:(FRETURN)
 
 SDB.STEP
-	SDB.STEP_COUNT = SDB.ARG.COUNT(ARGS)		:F(FRETURN)
+	SDB.STEP_COUNT = SDB.ARG.COUNT(SDB.ARGS)		:F(FRETURN)
 	SDB.RESUME_LEVEL =				:(RETURN)
 
 
 SDB.COMMAND.END
 **************** end of SDB.COMMAND()
+
+* helper functions for SDB.COMMAND:
 
 	DEFINE("SDB.DELETE.BREAKPOINT(NUM)BKPT,STMT")
 	:(SDB.DELETE.BREAKPOINT.END)
@@ -236,14 +242,15 @@ SDB.DELETE.BREAKPOINT
 	SDB.BREAK_BY_LINE[STMT] =			:(RETURN)
 SDB.DELETE.BREAKPOINT.END
 
+****************
 	DEFINE("SDB.ISINT(ARG)")			:(SDB.ISINT.END)
 SDB.ISINT
 	ARG POS(0) SPAN('0123456789') RPOS(0)		:S(RETURN)F(FRETURN)
 SDB.ISINT.END
 
+****************
 	DEFINE("SDB.ARG.COUNT(ARG)")			:(SDB.ARG.COUNT.END)
 SDB.ARG.COUNT
-	ARG = TRIM(ARG)
 	SDB.ARG.COUNT = IDENT(ARG) 1			:S(RETURN)
 	SDB.ISINT(ARG)					:F(SDB.ARG.COUNT.BAD)
 	SDB.ARG.COUNT = ARG + 0
@@ -251,9 +258,9 @@ SDB.ARG.COUNT.BAD
 	TERMINAL = "Bad count: " ARG			:(FRETURN)
 SDB.ARG.COUNT.END
 
+****************
 	DEFINE("SDB.ARG.STMT(ARG)")			:(SDB.ARG.STMT.END)
 SDB.ARG.STMT
-	ARG = TRIM(ARG)
 	SDB.ISINT(ARG)					:F(SDB.ARG.STMT.TAG)
 	SDB.ARG.STMT = ARG + 0
 	TERMINAL = GT(SDB.ARG.STMT,SDB.MAX_LINES)
@@ -267,11 +274,11 @@ SDB.ARG.STMT.TAG
 
 SDB.ARG.STMT.END
 
+****************
 	DEFINE("SDB.ARG.BKPT(ARG)")			:(SDB.ARG.BKPT.END)
 SDB.ARG.BKPT
-	ARGS = TRIM(ARG)
 	SDB.ISINT(ARG)					:F(SDB.ARG.BKPT.BAD)
-	SDB.ARG.BKPT = ARGS + 0
+	SDB.ARG.BKPT = ARG + 0
 	TERMINAL = GT(SDB.ARG.BKPT,SDB.MAX_BREAK)
 +		"Breakpoint number out of range"	:S(FRETURN)
 	TERMINAL = IDENT(SDB.BREAK_BY_NUM[SDB.ARG.BKPT])
@@ -283,9 +290,10 @@ SDB.ARG.BKPT.BAD
 
 SDB.ARG.BKPT.END
 
+****************
 	DEFINE("SDB.ARG.NOARGS(ARG,CMD)")		:(SDB.ARG.NOARGS.END)
 SDB.ARG.NOARGS
-	TERMINAL = DIFFER(ARGS)
+	TERMINAL = DIFFER(ARG)
 +		'"' CMD '" command does not take arguments.' :S(FRETURN)
 	:(RETURN)
 SDB.ARG.NOARGS.END
