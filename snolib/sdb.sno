@@ -1,23 +1,43 @@
-*-UNLIST
+-UNLIST
 * $Id$
 * "SDB" SNOBOL4 debugger
 *	command set is a clone of GNU "gdb" debugger
 * Copyright (C) 2010 Philip L. Budne
 *
-* ULTRA ULTRA PRELIMINARY!!!!
+* ULTRA ULTRA ULTRA PRELIMINARY!!!!
+*
+******* MUST BE FIRST STMT!
+	SDB.FIRST_STMT = &STNO
+
+	DEFINE("SDB.HELP()")				:(SDB.HELP.END)
+SDB.HELP
+	TERMINAL = "commands (all can be abbreviated):"
+	TERMINAL = " break LABEL_OR_STATEMENT_NUMBER -- set breakpoint"
+	TERMINAL = " bt -- display callstack backtrace (not available in SPITBOL)"
+	TERMINAL = " continue -- continue from breakpoint"
+	TERMINAL = " delete BREAKPOINT_NUMBER_OR_EMPTY"
+	TERMINAL = " finish -- resume debugging after current function returns"
+	TERMINAL = " info -- display list of breakpoints"
+	TERMINAL = " list EMPTY_OR_STATEMENT_NUMBER -- display source code"
+	TERMINAL = " next EMPTY_OR_COUNT -- single step, skipping over function calls"
+	TERMINAL = " print EXPRESSION -- evaluate expression and print result"
+	TERMINAL = " quit -- exit debugger"
+	TERMINAL = " step EMPTY_OR_COUNT -- single step"
+	TERMINAL = " where -- alias for bt"
+	:(FRETURN)
+SDB.HELP.END
+*
+* TODO:
 * XXX commands: cond, command, delete, list, help
 * XXX watchpoints?!
 * XXX disable tracing if "continue" w/ no breakpoints/watchpoints?
 * XXX all function args, (trap) local vars start w/ SDB.
 * XXX perform case folding on function names!
 * XXX command match/arg processing:
-*	break, list:	stmt/lbl/e
 *	command, disable, enable: bkpt
-*	delete: bkpt/*/e
-*	continue, next, step
+*	continue, next, step: count
 *
-******* MUST BE FIRST STMT!
-	SDB.FIRST_STMT = &STNO
+	SDB.MAXINT = 2147483647
 
 	SDB.NL = CHAR(10)
 	SDB.MAX_BREAK = 100
@@ -91,13 +111,14 @@ SDB.COMMAND
 	(CMD ' ') BREAK(' ') $ CMD ((SPAN(' ') REM . ARGS) | ('' . ARGS))
 * XXX blank command: same as last (step, list, cont?? next??)
 	IDENT(CMD)					:S(FRETURN)
-* XXX TEMP; use TLU? match function??
+* XXX TEMP; use table lookup with minimum non-ambiguous prefix match
 	CMDP = POS(0) REPLACE(CMD, &UCASE, &LCASE) 
 	'break' CMDP					:S(SDB.BREAK)
 	'bt' CMDP					:S(SDB.BT)
 	'continue' CMDP					:S(SDB.CONTINUE)
 	'delete' CMDP					:S(SDB.DELETE)
 	'finish' CMDP					:S(SDB.FINISH)
+	'help' CMDP					:S(SDB.HELP)
 	'info' CMDP					:S(SDB.INFO)
 	'list' CMDP					:S(SDB.LIST)
 	'next' CMDP					:S(SDB.NEXT)
@@ -105,7 +126,8 @@ SDB.COMMAND
 	'quit' CMDP					:S(END)
 	'step' CMDP					:S(SDB.STEP)
 	'where' CMDP					:S(SDB.BT)
-	TERMINAL = 'Undefined command: "' CMD '"'	:(FRETURN)
+	TERMINAL = 'Undefined command: "' CMD '". Try "help".'
+	:(FRETURN)
 
 SDB.BREAK
 	TEMP = SDB.ARG.STMT(ARGS)			:F(FRETURN)
@@ -128,7 +150,8 @@ SDB.BT.LOOP
 	:(FRETURN)
 
 SDB.CONTINUE
-* process arg; set per-breakpoint continue count
+* XXXX process arg; set per-breakpoint continue count
+	SDB.ARG.NOARGS(ARGS,"continue")			:F(FRETURN)
 	SDB.RESUME_LEVEL =
 	SDB.STEP_COUNT = -1				:(RETURN)
 
@@ -178,13 +201,12 @@ SDB.LIST_LOOP
 	:(FRETURN)
 
 SDB.NEXT
-* process arg
-	SDB.STEP_COUNT = 1
+	SDB.STEP_COUNT = SDB.ARG.COUNT(ARGS)		:F(FRETURN)
 	SDB.RESUME_LEVEL = SDB.FNCLEVEL			:(RETURN)
 
 SDB.FINISH
-* error if arg!!
-* error at level 1!!
+	TERMINAL = EQ(SDB.FNCLEVEL,1) "At top level."	:S(FRETURN)
+	SDB.ARG.NOARGS(ARGS,"finish")			:F(FRETURN)
 	SDB.STEP_COUNT = 1
 	SDB.RESUME_LEVEL = SDB.FNCLEVEL - 1		:(RETURN)
 
@@ -197,9 +219,9 @@ SDB.PRINT.OK
 	&ERRLIMIT = TEMP				:(FRETURN)
 
 SDB.STEP
-* process arg
-	SDB.RESUME_LEVEL =
-	SDB.STEP_COUNT = 1				:(RETURN)
+	SDB.STEP_COUNT = SDB.ARG.COUNT(ARGS)		:F(FRETURN)
+	SDB.RESUME_LEVEL =				:(RETURN)
+
 
 SDB.COMMAND.END
 **************** end of SDB.COMMAND()
@@ -216,8 +238,18 @@ SDB.DELETE.BREAKPOINT.END
 
 	DEFINE("SDB.ISINT(ARG)")			:(SDB.ISINT.END)
 SDB.ISINT
-	ARGS POS(0) SPAN('0123456789') RPOS(0)		:S(RETURN)F(FRETURN)
+	ARG POS(0) SPAN('0123456789') RPOS(0)		:S(RETURN)F(FRETURN)
 SDB.ISINT.END
+
+	DEFINE("SDB.ARG.COUNT(ARG)")			:(SDB.ARG.COUNT.END)
+SDB.ARG.COUNT
+	ARG = TRIM(ARG)
+	SDB.ARG.COUNT = IDENT(ARG) 1			:S(RETURN)
+	SDB.ISINT(ARG)					:F(SDB.ARG.COUNT.BAD)
+	SDB.ARG.COUNT = ARG + 0
+SDB.ARG.COUNT.BAD
+	TERMINAL = "Bad count: " ARG			:(FRETURN)
+SDB.ARG.COUNT.END
 
 	DEFINE("SDB.ARG.STMT(ARG)")			:(SDB.ARG.STMT.END)
 SDB.ARG.STMT
@@ -251,6 +283,13 @@ SDB.ARG.BKPT.BAD
 
 SDB.ARG.BKPT.END
 
+	DEFINE("SDB.ARG.NOARGS(ARG,CMD)")		:(SDB.ARG.NOARGS.END)
+SDB.ARG.NOARGS
+	TERMINAL = DIFFER(ARGS)
++		'"' CMD '" command does not take arguments.' :S(FRETURN)
+	:(RETUEN)
+SDB.ARG.NOARGS.END
+
 **************** end arg processing functions
 
 * display a line of source with statement number
@@ -264,7 +303,8 @@ SDB.DISP_SOURCE.END
 	DEFINE('SDB.READ_SOURCE(FN)LBL,UNIT,LINE,LN,SRC') :(SDB.READ_SOURCE.END)
 SDB.READ_SOURCE
 	UNIT = IO_FINDUNIT()
-	INPUT(.LISTF, UNIT,, FN)
+	INPUT(.LISTF, UNIT,, FN)			:F(FRETURN)
+*	TERMINAL = "Reading listing file " FN
 SDB.SLOP
 	LINE = TRIM(LISTF)				:F(SDB.SEOF)
 	LINE SPAN('0123456789') . LN			:F(SDB.SLOP)
@@ -338,13 +378,12 @@ SDB.DEFINE
 SDB.DEFINE.END
 SDB.NOSTACK
 
-* XXX get filename from environment
-	SDB.READ_SOURCE('xxx')
+* read listing file
+	SDB.READ_SOURCE(HOST(4,"SDB_LISTFILE"))
 
 	TRACE('STCOUNT','KEYWORD',,'SDB.TRAP')
 
 	SDB.LAST_STMT = &STNO
-	SDB.MAXINT = 2147483647
 * last: enables trace traps
 	&STLIMIT = &TRACE = SDB.MAXINT = 2147483647
 -LIST
