@@ -287,7 +287,7 @@ SDB.ARG.BKPT.END
 SDB.ARG.NOARGS
 	TERMINAL = DIFFER(ARGS)
 +		'"' CMD '" command does not take arguments.' :S(FRETURN)
-	:(RETUEN)
+	:(RETURN)
 SDB.ARG.NOARGS.END
 
 **************** end arg processing functions
@@ -377,6 +377,13 @@ SDB.DEFINE
         TRACE(NAME, 'RETURN', , 'SDB.FRET')      :(RETURN)
 SDB.DEFINE.END
 SDB.NOSTACK
+
+	DIFFER(HOST(4,"SDB_NOBANNER"))
+	TERMINAL = "sdb version 0.1"
+	TERMINAL = "Copyright 2010 Philip L. Budne"
+	TERMINAL = 'Type "help" for help.'
+	TERMINAL =
+SDB.NOBANNER
 
 * read listing file
 	SDB.READ_SOURCE(HOST(4,"SDB_LISTFILE"))
