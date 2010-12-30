@@ -1,8 +1,10 @@
 -UNLIST
+* $Id$
 * XXX commands: cond, command, delete, list, help
 * XXX watchpoints?!
 * XXX disable tracing if "continue" w/ no breakpoints/watchpoints?
-* XXX all function args, local vars start w/ SDB.
+* XXX all function args, (trap) local vars start w/ SDB.
+* XXX perform case folding on function names!
 * XXX command match/arg processing:
 *	break, list:	stmt/lbl/e
 *	command, disable, enable: bkpt
@@ -45,8 +47,9 @@ SDB.TRAP
 	DIFFER((SDB.BKPT = SDB.BREAK_BY_LINE[SDB.LAST])) :F(SDB.CHECKLEVEL)
 * XXX check breakpoint condition
 * XXX check breakpoint continue count
+* XXX execute breakpoint commands: "silent" makes this breakpoint silent!
+*	if any command returns success, break command loop!
 	TERMINAL = "breakpoint " SDB.BREAK_NUM(SDB.BKPT)
-* XXX execute breakpoint commands
 	:(SDB.STOPPED)
 
 * see if resume level (from finish or next) reached
@@ -93,6 +96,7 @@ SDB.COMMAND
 	'print' CMDP					:S(SDB.PRINT)
 	'quit' CMDP					:S(END)
 	'step' CMDP					:S(SDB.STEP)
+	'where' CMDP					:S(SDB.BT)
 	TERMINAL = 'Undefined command: "' CMD '"'	:(FRETURN)
 
 SDB.BREAK
@@ -100,6 +104,7 @@ SDB.BREAK
 * XXX check args
 * XXX allow label[+-]
 	ARGS = TRIM(ARGS)
+	ARGS = NE(&CASE,0) REPLACE(ARGS,&LCASE,&UCASE)
 	TEMP = VDIFFER(SDB.LABELS[ARGS])		:S(SDB.BREAK2)
 	TEMP = ARGS + 0
 SDB.BREAK2
@@ -148,7 +153,12 @@ SDB.FINISH
 	SDB.RESUME_LEVEL = SDB.FNCLEVEL - 1		:(RETURN)
 
 SDB.PRINT
-	TERMINAL = EVAL(ARGS)				:(FRETURN)
+	TEMP = &ERRLIMIT
+	&ERRLIMIT = 1234
+	TERMINAL = EVAL(ARGS)				:S(SDB.PRINT.OK)
+	TERMINAL = &ERRTEXT
+SDB.PRINT.OK
+	&ERRLIMIT = TEMP				:(FRETURN)
 
 SDB.STEP
 * process arg
