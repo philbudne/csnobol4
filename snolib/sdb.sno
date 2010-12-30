@@ -10,16 +10,24 @@
 *	continue, next, step
 *
 ******* MUST BE FIRST STMT!
-	SDB.FIRST_STMT = &LASTNO
+	SDB.FIRST_STMT = &STNO
 
+	SDB.NL = CHAR(10)
 	SDB.MAX_BREAK = 100
-	SDB.MAX_LINES = 5000
+* this trick from orange book "LPROG" function
+	:<CODE(' SDB.MAX_LINES = &STNO :(SDB.GOT_MAX_LINES)')>
+SDB.GOT_MAX_LINES
 	SDB.VARS = TABLE()
 	SDB.VARS['list_lines'] = 10
 	SDB.STEP_COUNT = LT(SDB.FIRST_STMT,5) 1
 	OUTPUT(.SDB.TT, IO_FINDUNIT(), 'T', '/dev/stdin')
+	SDB.SOURCE_BY_LINE = ARRAY('1:' SDB.MAX_LINES)
 	SDB.BREAK_BY_LINE = ARRAY('1:' SDB.MAX_LINES)
 	SDB.BREAK_BY_NUM = ARRAY('1:' SDB.MAX_BREAK)
+	SDB.LABELS = TABLE()
+	SDB.WS = ' ' CHAR(9)
+	SDB.LABEL.PAT = POS(0) (ANY(&LCASE &UCASE) BREAK(SDB.WS)) . LBL
+* break before first statement
 	SDB.NEXT_BREAK = 1
 
 	DATA('SDB.BREAKPOINT(SDB.BREAK_LINE,SDB.BREAK_NUM,'
@@ -32,6 +40,8 @@ SDB.TRAP
 * save all location info in one statement. just create a PAIR() datatype?
 	(&LASTFILE ':' &LASTLINE ';' &LASTNO)
 +		BREAK(';') . SDB.LASTFL ';' REM . SDB.LAST
+	SDB.LAST = +SDB.LAST
+	GE(SDB.LAST,SDB.FIRST_STMT) LE(SDB.LAST,SDB.LAST_STMT) :S(RETURN)
 	DIFFER((SDB.BKPT = SDB.BREAK_BY_LINE[SDB.LAST])) :F(SDB.CHECKLEVEL)
 * XXX check breakpoint condition
 * XXX check breakpoint continue count
@@ -75,6 +85,7 @@ SDB.COMMAND
 * XXX TEMP; use TLU? match function??
 	CMDP = POS(0) REPLACE(CMD, &UCASE, &LCASE) 
 	'break' CMDP					:S(SDB.BREAK)
+	'bt' CMDP					:S(SDB.BT)
 	'continue' CMDP					:S(SDB.CONT)
 	'finish' CMDP					:S(SDB.FINISH)
 	'list' CMDP					:S(SDB.LIST)
@@ -88,14 +99,26 @@ SDB.BREAK
 * default is current LINE
 * XXX check args
 * XXX allow label[+-]
-* XXX validate
-* XXX check if BREAK_BY_LINE[TEMP] empty?
-	TEMP = TRIM(ARGS) + 0
+	ARGS = TRIM(ARGS)
+	TEMP = VDIFFER(SDB.LABELS[ARGS])		:S(SDB.BREAK2)
+	TEMP = ARGS + 0
+SDB.BREAK2
+	TERMINAL = DIFFER(SDB.BREAK_BY_LINE[TEMP])
++		"Breakpoint already set at statement " TEMP :S(FRETURN)
 	TEMP2 = SDB.NEXT_BREAK
 	SDB.NEXT_BREAK = SDB.NEXT_BREAK + 1
-	TERMINAL = 'breakpoint ' TEMP2 ' at statement ' TEMP
+	TERMINAL = 'Breakpoint ' TEMP2 ' at statement ' TEMP
 	SDB.BREAK_BY_LINE[TEMP] = SDB.BREAK_BY_NUM[TEMP2] =
 +		SDB.BREAKPOINT(TEMP, TEMP2)
+	:(FRETURN)
+
+SDB.BT
+	TERMINAL = LT(SDB.CALL_LEVEL,1) 'No stack.'	:S(FRETURN)
+	TEMP = SDB.CALL_LEVEL
+SDB.BT.LOOP
+	OUTPUT = SDB.CALLS[TEMP]
+	TEMP = TEMP - 1
+	GT(TEMP,0)					:S(SDB.BT.LOOP)
 	:(FRETURN)
 
 SDB.CONT
@@ -125,7 +148,7 @@ SDB.FINISH
 	SDB.RESUME_LEVEL = SDB.FNCLEVEL - 1		:(RETURN)
 
 SDB.PRINT
-	EVAL(' TERMINAL = ' ARGS)			:(FRETURN)
+	TERMINAL = EVAL(ARGS)				:(FRETURN)
 
 SDB.STEP
 * process arg
@@ -135,15 +158,16 @@ SDB.STEP
 SDB.COMMAND.END
 **************** end of SDB.COMMAND()
 
+* display a line of source with statement number
+
 	DEFINE('SDB.DISPLAY_SOURCE(LN)')		:(SDB.DISP_SOURCE.END)
 SDB.DISPLAY_SOURCE
-	TERMINAL = VDIFFER(SOURCE_BY_LINE[LN])		:(RETURN)
+	TERMINAL = VDIFFER(SDB.SOURCE_BY_LINE[LN])	:(RETURN)
 SDB.DISP_SOURCE.END
 **************** end of SDB.DISPLAY_SOURCE
 
-	DEFINE('SDB.READ_SOURCE(FN)UNIT,LINE,LN,SRC')	:(SDB.READ_SOURCE.END)
+	DEFINE('SDB.READ_SOURCE(FN)LBL,UNIT,LINE,LN,SRC') :(SDB.READ_SOURCE.END)
 SDB.READ_SOURCE
-	SOURCE_BY_LINE = ARRAY('1:5000')
 	UNIT = IO_FINDUNIT()
 	INPUT(.LISTF, UNIT,, FN)
 SDB.SLOP
@@ -155,10 +179,13 @@ SDB.SLOP
 * build tag table
 * handle continuations
 	
-	SOURCE_BY_LINE[LN] =
-+		(DIFFER(SOURCE_BY_LINE[LN]) SOURCE_BY_LINE[LN] CHAR(10), '')
-+		LINE
+	SDB.SOURCE_BY_LINE[LN] = (DIFFER(SDB.SOURCE_BY_LINE[LN]) 
++				  SDB.SOURCE_BY_LINE[LN] SDB.NL, '') LINE
 *	TERMINAL = LN '>' SOURCE_BY_LINE[LN]
+
+	(SUBSTR(LINE,9) ' ') SDB.LABEL.PAT		:F(SDB.SLOP)
+	SDB.LABELS[LBL] = LN
+*	OUTPUT = LBL ' @ ' LN
 	:(SDB.SLOP)
 SDB.SEOF
 *	DELETE(FN)
@@ -169,11 +196,60 @@ SDB.SEOF
 SDB.READ_SOURCE.END
 **************** end of SDB.READ_SOURCE()
 
+* trace all function invocations & returns for backtrace stack
+	SDB.CALL_LEVEL = 0
+* bypass for SPITBOL -- can't OPSYN "DEFINE"
+	DIFFER(.NAME,'NAME')				:S(SDB.NOSTACK)
+	SDB.MAX_CALLS = 1000
+	SDB.CALLS = ARRAY('1:' SDB.MAX_CALLS)
+
+	DEFINE('SDB.FCALL(FNAME)S,I,L')			:(SDB.FCALL.END)
+* here on entry to all user-defined functions
+SDB.FCALL
+	L = &LASTFILE ':' &LASTLINE ' statement ' &LASTNO
+	&TRACE = 0
+	S = FNAME '('
+	C = ''
+	I = 1
+* loop accumulating argument values
+SDB.FCALL.ARGLOP
+	S = S C $ARG(FNAME,I)				:F(SDB.FCALL.EARGLOP)
+	C = ','
+	I = I + 1					:(SDB.FCALL.ARGLOP)
+SDB.FCALL.EARGLOP
+	SDB.CALL_LEVEL = SDB.CALL_LEVEL + 1
+	SDB.CALLS[SDB.CALL_LEVEL] = S ') from ' L
+	&TRACE = SDB.MAXINT
+	:(RETURN)
+SDB.FCALL.END
+ 
+	DEFINE('SDB.FRET(FNAME)')			:(SDB.FRET.END)
+SDB.FRET
+	SDB.CALL_LEVEL = SDB.CALL_LEVEL - 1		:(RETURN)
+SDB.FRET.END
+
+* this sorcery from Orange book "FTRACE" function
+* does not work in SPITBOL
+* must be after all SDB functions!!
+	DEFINE('SDB.DEFINE(PROTO,LABEL)NAME')
+* save built-in DEFINE as DEFINE.
+	OPSYN('DEFINE.','DEFINE')
+	OPSYN('DEFINE','SDB.DEFINE')		:(SDB.DEFINE.END)
+SDB.DEFINE
+	DEFINE.(PROTO, LABEL)
+        PROTO BREAK('(') . NAME
+        TRACE(NAME, 'CALL', , 'SDB.FCALL')
+        TRACE(NAME, 'RETURN', , 'SDB.FRET')      :(RETURN)
+SDB.DEFINE.END
+SDB.NOSTACK
+
 * XXX get filename from environment
 	SDB.READ_SOURCE('xxx')
-* XXX TABLE?
 
-* last: enables trace traps
-	&STLIMIT = &TRACE = 2147483647
 	TRACE('STCOUNT','KEYWORD',,'SDB.TRAP')
+
+	SDB.LAST_STMT = &STNO
+	SDB.MAXINT = 2147483647
+* last: enables trace traps
+	&STLIMIT = &TRACE = SDB.MAXINT = 2147483647
 -LIST
