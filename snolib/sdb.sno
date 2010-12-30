@@ -1,5 +1,10 @@
--UNLIST
+*-UNLIST
 * $Id$
+* "SDB" SNOBOL4 debugger
+*	command set is a clone of GNU "gdb" debugger
+* Copyright (C) 2010 Philip L. Budne
+*
+* ULTRA ULTRA PRELIMINARY!!!!
 * XXX commands: cond, command, delete, list, help
 * XXX watchpoints?!
 * XXX disable tracing if "continue" w/ no breakpoints/watchpoints?
@@ -20,7 +25,7 @@
 	:<CODE(' SDB.MAX_LINES = &STNO :(SDB.GOT_MAX_LINES)')>
 SDB.GOT_MAX_LINES
 	SDB.VARS = TABLE()
-	SDB.VARS['list_lines'] = 10
+	SDB.VARS['list_lines'] = 20
 	SDB.STEP_COUNT = LT(SDB.FIRST_STMT,5) 1
 	OUTPUT(.SDB.TT, IO_FINDUNIT(), 'T', '/dev/stdin')
 	SDB.SOURCE_BY_LINE = ARRAY('1:' SDB.MAX_LINES)
@@ -80,7 +85,8 @@ SDB.TRAP.END
 **************** end of SDB.TRAP()
 
 * returns success to return to user, failure to process next command
-	DEFINE('SDB.COMMAND(CMD)ARGS,CMDP,TEMP,TEMP2')	:(SDB.COMMAND.END)
+* XXX all args/temps should start with SDB. 
+	DEFINE('SDB.COMMAND(CMD)ARGS,CMDP,TEMP,TEMP2,T3') :(SDB.COMMAND.END)
 SDB.COMMAND
 	(CMD ' ') BREAK(' ') $ CMD ((SPAN(' ') REM . ARGS) | ('' . ARGS))
 * XXX blank command: same as last (step, list, cont?? next??)
@@ -89,8 +95,10 @@ SDB.COMMAND
 	CMDP = POS(0) REPLACE(CMD, &UCASE, &LCASE) 
 	'break' CMDP					:S(SDB.BREAK)
 	'bt' CMDP					:S(SDB.BT)
-	'continue' CMDP					:S(SDB.CONT)
+	'continue' CMDP					:S(SDB.CONTINUE)
+	'delete' CMDP					:S(SDB.DELETE)
 	'finish' CMDP					:S(SDB.FINISH)
+	'info' CMDP					:S(SDB.INFO)
 	'list' CMDP					:S(SDB.LIST)
 	'next' CMDP					:S(SDB.NEXT)
 	'print' CMDP					:S(SDB.PRINT)
@@ -100,14 +108,7 @@ SDB.COMMAND
 	TERMINAL = 'Undefined command: "' CMD '"'	:(FRETURN)
 
 SDB.BREAK
-* default is current LINE
-* XXX check args
-* XXX allow label[+-]
-	ARGS = TRIM(ARGS)
-	ARGS = NE(&CASE,0) REPLACE(ARGS,&LCASE,&UCASE)
-	TEMP = VDIFFER(SDB.LABELS[ARGS])		:S(SDB.BREAK2)
-	TEMP = ARGS + 0
-SDB.BREAK2
+	TEMP = SDB.ARG.STMT(ARGS)			:F(FRETURN)
 	TERMINAL = DIFFER(SDB.BREAK_BY_LINE[TEMP])
 +		"Breakpoint already set at statement " TEMP :S(FRETURN)
 	TEMP2 = SDB.NEXT_BREAK
@@ -117,8 +118,8 @@ SDB.BREAK2
 +		SDB.BREAKPOINT(TEMP, TEMP2)
 	:(FRETURN)
 
-SDB.BT
-	TERMINAL = LT(SDB.CALL_LEVEL,1) 'No stack.'	:S(FRETURN)
+* backtrace
+SDB.BT	TERMINAL = LT(SDB.CALL_LEVEL,1) 'No call stack.' :S(FRETURN)
 	TEMP = SDB.CALL_LEVEL
 SDB.BT.LOOP
 	OUTPUT = SDB.CALLS[TEMP]
@@ -126,14 +127,49 @@ SDB.BT.LOOP
 	GT(TEMP,0)					:S(SDB.BT.LOOP)
 	:(FRETURN)
 
-SDB.CONT
+SDB.CONTINUE
 * process arg; set per-breakpoint continue count
 	SDB.RESUME_LEVEL =
 	SDB.STEP_COUNT = -1				:(RETURN)
 
+SDB.DELETE
+* delete breakpoints: no arg means delete all
+	IDENT(ARGS)					:S(SDB.DELETE.ALL)
+	TEMP = SDB.ARG.BKPT(ARGS)			:F(FRETURN)
+	SDB.DELETE.BREAKPOINT(TEMP)			:(FRETURN)
+
+SDB.DELETE.ALL
+	TEMP = 1
+	SDB.TT = "Delete all breakpoints (y or n)? "
+	OUTPUT = DIFFER(INPUT, "y") "Aborted."		:S(FRETURN)
+	TEMP = 1
+SDB.DELETE.ALL.LOOP
+	GE(TEMP,SDB.MAX_BREAK)				:S(FRETURN)
+	SDB.DELETE.BREAKPOINT(TEMP)
+	TEMP = TEMP + 1					:(SDB.DELETE.ALL.LOOP)
+
+* info ("info break") -- display breakpoints
+SDB.INFO
+	TEMP = 1
+	T3 =
+SDB.INFO.LOOP
+	GE(TEMP,SDB.NEXT_BREAK)				:S(SDB.INFO.ELOOP)
+	TEMP2 = SDB.BREAK_BY_NUM[TEMP]
+	IDENT(TEMP2)					:S(SDB.INFO.NOBR)
+	TERMINAL = IDENT(T3) "Num Type       Enb Statement"
+	T3 = 1
+	TERMINAL = RPAD(TEMP,4) RPAD("breakpoint",11)
++			"y   " SDB.BREAK_LINE(TEMP2)
+SDB.INFO.NOBR
+	TEMP = TEMP + 1					:(SDB.INFO.LOOP)
+SDB.INFO.ELOOP
+	TERMINAL = IDENT(T3) "No breakpoints set."
+	:(FRETURN)
+
 SDB.LIST
-* take function[+/-] or line
-	SDB.LIST_LINE = SDB.LAST
+	SDB.LIST_LINE = IDENT(ARGS) SDB.LAST		:S(SDB.LIST.START)
+	SDB.LIST_LINE = SDB.ARG.STMT(ARGS)
+SDB.LIST.START
 	TEMP = SDB.LAST + SDB.VARS['list_lines']
 SDB.LIST_LOOP
 	SDB.DISPLAY_SOURCE(SDB.LIST_LINE)
@@ -167,6 +203,55 @@ SDB.STEP
 
 SDB.COMMAND.END
 **************** end of SDB.COMMAND()
+
+	DEFINE("SDB.DELETE.BREAKPOINT(NUM)BKPT,STMT")
+	:(SDB.DELETE.BREAKPOINT.END)
+SDB.DELETE.BREAKPOINT
+	BKPT = SDB.BREAK_BY_NUM[NUM]
+	IDENT(BKPT)					:S(FRETURN)
+	STMT = SDB.BREAK_LINE(BKPT)
+	SDB.BREAK_BY_NUM[NUM] =
+	SDB.BREAK_BY_LINE[STMT] =			:(RETURN)
+SDB.DELETE.BREAKPOINT.END
+
+	DEFINE("SDB.ISINT(ARG)")			:(SDB.ISINT.END)
+SDB.ISINT
+	ARGS POS(0) SPAN('0123456789') RPOS(0)		:S(RETURN)F(FRETURN)
+SDB.ISINT.END
+
+	DEFINE("SDB.ARG.STMT(ARG)")			:(SDB.ARG.STMT.END)
+SDB.ARG.STMT
+	ARG = TRIM(ARG)
+	SDB.ISINT(ARG)					:F(SDB.ARG.STMT.TAG)
+	SDB.ARG.STMT = ARG + 0
+	TERMINAL = GT(SDB.ARG.STMT,SDB.MAX_LINES)
++		"Statement out of range"		:S(FRETURN)
+	:(RETURN)
+
+SDB.ARG.STMT.TAG
+	ARG = NE(&CASE,0) REPLACE(ARG,&LCASE,&UCASE)
+	SDB.ARG.STMT = VDIFFER(SDB.LABELS[ARG])		:S(RETURN)
+	TERMINAL = "Need label or statement"		:(FRETURN)
+
+SDB.ARG.STMT.END
+
+	DEFINE("SDB.ARG.BKPT(ARG)")			:(SDB.ARG.BKPT.END)
+SDB.ARG.BKPT
+	ARGS = TRIM(ARG)
+	SDB.ISINT(ARG)					:F(SDB.ARG.BKPT.BAD)
+	SDB.ARG.BKPT = ARGS + 0
+	TERMINAL = GT(SDB.ARG.BKPT,SDB.MAX_BREAK)
++		"Breakpoint number out of range"	:S(FRETURN)
+	TERMINAL = IDENT(SDB.BREAK_BY_NUM[SDB.ARG.BKPT])
++		"No breakpoint number " SDB.ARG.BKPT '.' :S(FRETURN)
+	:(RETURN)
+
+SDB.ARG.BKPT.BAD
+	TERMINAL = "Need breakpoint number"		:(FRETURN)
+
+SDB.ARG.BKPT.END
+
+**************** end arg processing functions
 
 * display a line of source with statement number
 
