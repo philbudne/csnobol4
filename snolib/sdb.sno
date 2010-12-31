@@ -1,4 +1,4 @@
--UNLIST
+*-UNLIST
 * $Id$
 * "SDB" SNOBOL4 debugger
 *	command set is a clone of GNU "gdb" debugger
@@ -10,38 +10,46 @@
 	SDB.FIRST_STMT = &STNO
 	SDB.VERSION = "0.2"
 
-	DEFINE("SDB.HELP()")				:(SDB.HELP.END)
-SDB.HELP
-	TERMINAL = "commands (all can be abbreviated):"
-	TERMINAL = " break LABEL_OR_STATEMENT_NUMBER -- set breakpoint"
-	TERMINAL = " bt -- display callstack backtrace (not available in SPITBOL)"
-	TERMINAL = " continue -- continue from breakpoint"
-	TERMINAL = " delete BREAKPOINT_NUMBER_OR_EMPTY"
-	TERMINAL = " finish -- resume debugging after current function returns"
-	TERMINAL = " info -- display list of breakpoints"
-	TERMINAL = " list EMPTY_OR_STATEMENT_NUMBER -- display source code"
-	TERMINAL = " next EMPTY_OR_COUNT -- single step, skipping over function calls"
-	TERMINAL = " print EXPRESSION -- evaluate expression and print result"
-	TERMINAL = " quit -- exit debugger"
-	TERMINAL = " step EMPTY_OR_COUNT -- single step"
-	TERMINAL = " where -- alias for bt"
-	:(FRETURN)
-SDB.HELP.END
+* define commands
+	SDB.CMDS = ARRAY('1:20')
+	SDB.NC = 0
+	DATA("SDB.COMMAND(SDB.CMD_CMD,SDB.CMD_ARG,SDB.CMD_DESC,SDB.CMD_LBL)")
+	DEFINE("SDB.AC(CMD,DESC,ARG,LBL)")		:(SDB.AC.END)
+SDB.AC	LBL = IDENT(LBL) REPLACE(CMD,&LCASE,&UCASE)
+	LBL = 'SDB.CMD.' LBL
+	SDB.CMDS[SDB.NC = SDB.NC + 1] =
++		SDB.COMMAND(CMD,ARG,DESC,LBL) :(RETURN)
+SDB.AC.END
+
+* keep this alphabetic, or sort SDB.CMDS array
+ SDB.AC("break", "set breakpoint", "LABEL_OR_STATEMENT_NUMBER")
+ SDB.AC("bt", "display call stack backtrace (not available in SPITBOL)")
+ SDB.AC("continue","continue from breakpoint","EMPTY_OR_COUNT")
+ SDB.AC("delete", "delete breakpoint(s)","BREAKPOINT_NUMBER_OR_EMPTY")
+ SDB.AC("finish", "resume debugging after current function returns")
+ SDB.AC("help", "display help")
+ SDB.AC("info", "display list of breakpoints")
+ SDB.AC("list", "display source code", "EMPTY_OR_STATEMENT_NUMBER")
+ SDB.AC("next", "single step, skipping over function calls", "EMPTY_OR_COUNT")
+ SDB.AC("print", "evaluate expression and print result", "EXPRESSION")
+ SDB.AC("quit", "exit debugger")
+ SDB.AC("step", "single step", "EMPTY_OR_COUNT")
+ SDB.AC("where", "alias for bt",, "BT")
+
 *
 * TODO:
-* XXX table lookup for commands & help
-* XXX watchpoints (using value tracing?)
-* XXX disable tracing if "continue" w/ no breakpoints/watchpoints?
-* XXX command match/arg processing:
+* XXX more commands:
+*	set
 *	command, disable, enable: bkpt
 *	cond: bkpt + expr
-*	continue: count
-*
-	SDB.MAXINT = 2147483647
+*	continue: take count
+* XXX trace FNCLEVEL for finish/next??
+* XXX disable statement tracing if "continue" w/ no breakpoints
 
+	SDB.MAXINT = 2147483647
 	SDB.NL = CHAR(10)
 	SDB.MAX_BREAK = 100
-* this trick from orange book "LPROG" function
+* this trick from Orange book "LPROG" function to find number of stmts:
 	:<CODE(' SDB.MAX_LINES = &STNO :(SDB.GOT_MAX_LINES)')>
 SDB.GOT_MAX_LINES
 	SDB.VARS = TABLE()
@@ -54,9 +62,8 @@ SDB.GOT_MAX_LINES
 	SDB.LABELS = TABLE(50,50)
 	SDB.WS = ' ' CHAR(9)
 	SDB.LABEL.PAT = POS(0) (ANY(&LCASE &UCASE) BREAK(SDB.WS)) . LBL
-* break before first statement
-	SDB.NEXT_BREAK = 1
 
+	DATA("SDB.CONS(SDB.CAR,SDB.CDR)")
 	DATA('SDB.BREAKPOINT(SDB.BREAK_LINE,SDB.BREAK_NUM,'
 +		'SDB.BREAK_CONT,SDB.BREAK_COND)')
 
@@ -64,10 +71,10 @@ SDB.GOT_MAX_LINES
 							:(SDB.TRAP.END)
 * here before executing each line of code
 SDB.TRAP
-* save all location info in one statement. just create a PAIR() datatype?
-	(&LASTFILE ':' &LASTLINE ';' &LASTNO)
-+		BREAK(';') . SDB.LASTFL ';' REM . SDB.LAST
-	SDB.LAST = +SDB.LAST
+* save all location info in one statement
+	SDB.LAST = SDB.CONS(&LASTFILE ':' &LASTLINE, &LASTNO)
+	SDB.LASTFL = SDB.CAR(SDB.LAST)
+	SDB.LAST = SDB.CDR(SDB.LAST)
 	GE(SDB.LAST,SDB.FIRST_STMT) LE(SDB.LAST,SDB.LAST_STMT) :S(RETURN)
 	DIFFER((SDB.BKPT = SDB.BREAK_BY_LINE[SDB.LAST])) :F(SDB.CHECKLEVEL)
 * XXX check breakpoint condition
@@ -102,8 +109,9 @@ SDB.GETCMD
 	SDB.CMD = TERMINAL				:F(END)
 	SDB.COMMAND(SDB.CMD)				:S(RETURN)F(SDB.GETCMD)
 SDB.TRAP.END
-**************** end of SDB.TRAP()
 
+****************
+* process one command
 * returns success to return to user, failure to process next command
 * NOTE! all args/temps should start with SDB. to avoid confusion in PRINT cmd!
 	DEFINE('SDB.COMMAND(SDB.CMD)SDB.ARGS,SDB.CMDP,SDB.T1,SDB.T2,SDB.T3')
@@ -113,26 +121,30 @@ SDB.COMMAND
 +			((SPAN(' ') REM . SDB.ARGS) | ('' . SDB.ARGS))
 * XXX blank command: same as last (step, list, cont?? next??)
 	IDENT(SDB.CMD)					:S(FRETURN)
-* XXX TEMP; use table lookup with minimum non-ambiguous prefix match
 	SDB.CMDP = POS(0) REPLACE(SDB.CMD, &UCASE, &LCASE)
 	SDB.ARGS = TRIM(SDB.ARGS)
-	'break' SDB.CMDP				:S(SDB.BREAK)
-	'bt' SDB.CMDP					:S(SDB.BT)
-	'continue' SDB.CMDP				:S(SDB.CONTINUE)
-	'delete' SDB.CMDP				:S(SDB.DELETE)
-	'finish' SDB.CMDP				:S(SDB.FINISH)
-	'help' SDB.CMDP					:S(SDB.HELP)
-	'info' SDB.CMDP					:S(SDB.INFO)
-	'list' SDB.CMDP					:S(SDB.LIST)
-	'next' SDB.CMDP					:S(SDB.NEXT)
-	'print' SDB.CMDP				:S(SDB.PRINT)
-	'quit' SDB.CMDP					:S(END)
-	'step' SDB.CMDP					:S(SDB.STEP)
-	'where' SDB.CMDP				:S(SDB.BT)
+	SDB.T1 = 1
+SDB.COMMAND.LOOP
+	GT(SDB.T1,SDB.NC)			:S(SDB.COMMAND.NOMATCH)
+	SDB.T2 = SDB.CMDS[SDB.T1]
+	SDB.CMD_CMD(SDB.T2) SDB.CMDP		:S(SDB.COMMAND.MATCH)
+	SDB.T1 = SDB.T1 + 1			:(SDB.COMMAND.LOOP)
+
+SDB.COMMAND.MATCH
+	EQ(SDB.T1,SDB.NC)			:S(SDB.COMMAND.DISPATCH)
+	SDB.CMD_CMD(SDB.CMDS[SDB.T1 + 1]) SDB.CMDP :F(SDB.COMMAND.DISPATCH)
+	TERMINAL = 'Ambiguous command "' SDB.CMD '". Try "help".' :(FRETURN)
+
+SDB.COMMAND.DISPATCH
+	:($SDB.CMD_LBL(SDB.T2))
+
+SDB.COMMAND.NOMATCH
 	TERMINAL = 'Undefined command: "' SDB.CMD '". Try "help".'
 	:(FRETURN)
 
-SDB.BREAK
+**** SDB.COMMAND command handlers.  All start w/ SDB.CMD.
+
+SDB.CMD.BREAK
 	SDB.T1 = SDB.ARG.STMT(SDB.ARGS)			:F(FRETURN)
 	TERMINAL = DIFFER(SDB.BREAK_BY_LINE[SDB.T1])
 +		"Breakpoint already set at statement " SDB.T1 :S(FRETURN)
@@ -144,93 +156,114 @@ SDB.BREAK
 	:(FRETURN)
 
 * backtrace
-SDB.BT	TERMINAL = 'at statement ' SDB.LAST
+SDB.CMD.BT
+	TERMINAL = 'at statement ' SDB.LAST
 	TERMINAL = LT(SDB.CALL_LEVEL,1) 'No call stack.' :S(FRETURN)
 	SDB.T1 = SDB.CALL_LEVEL
-SDB.BT.LOOP
+SDB.CMD.BT.LOOP
 	OUTPUT = SDB.CALLS[SDB.T1]
 	SDB.T1 = SDB.T1 - 1
-	GT(SDB.T1,0)					:S(SDB.BT.LOOP)
+	GT(SDB.T1,0)					:S(SDB.CMD.BT.LOOP)
 	:(FRETURN)
 
-SDB.CONTINUE
+SDB.CMD.CONTINUE
 * XXXX process arg; set per-breakpoint continue count
 	SDB.ARG.NOARGS(SDB.ARGS,"continue")			:F(FRETURN)
 	SDB.RESUME_LEVEL =
 	SDB.STEP_COUNT = -1				:(RETURN)
 
-SDB.DELETE
+SDB.CMD.DELETE
 * delete breakpoints: no arg means delete all
-	IDENT(SDB.ARGS)					:S(SDB.DELETE.ALL)
+	IDENT(SDB.ARGS)					:S(SDB.CMD.DELETE.ALL)
 	SDB.T1 = SDB.ARG.BKPT(SDB.ARGS)			:F(FRETURN)
 	SDB.DELETE.BREAKPOINT(SDB.T1)			:(FRETURN)
 
-SDB.DELETE.ALL
+SDB.CMD.DELETE.ALL
 	SDB.T1 = 1
 	SDB.TT = "Delete all breakpoints (y or n)? "
 	OUTPUT = DIFFER(INPUT, "y") "Aborted."		:S(FRETURN)
 	SDB.T1 = 1
-SDB.DELETE.ALL.LOOP
-	GE(SDB.T1,SDB.MAX_BREAK)				:S(FRETURN)
+SDB.CMD.DELETE.ALL.LOOP
+	GE(SDB.T1,SDB.MAX_BREAK)			:S(FRETURN)
 	SDB.DELETE.BREAKPOINT(SDB.T1)
-	SDB.T1 = SDB.T1 + 1					:(SDB.DELETE.ALL.LOOP)
+	SDB.T1 = SDB.T1 + 1		    :(SDB.CMD.DELETE.ALL.LOOP)
+
+* help command
+SDB.CMD.HELP
+	SDB.T1 = 1
+SDB.CMD.HELP.LOOP
+	GT(SDB.T1,SDB.NC)			:S(FRETURN)
+	SDB.T2 = SDB.CMDS[SDB.T1]
+	TERMINAL = ' ' SDB.CMD_CMD(SDB.T2) ' ' SDB.CMD_ARG(SDB.T2) ' -- '
++		SDB.CMD_DESC(SDB.T2)
+	SDB.T1 = SDB.T1 + 1			:(SDB.CMD.HELP.LOOP)
 
 * info ("info break") -- display breakpoints
-SDB.INFO
+SDB.CMD.INFO
 	SDB.T1 = 1
 	SDB.T3 =
-SDB.INFO.LOOP
-	GE(SDB.T1,SDB.NEXT_BREAK)				:S(SDB.INFO.ELOOP)
+SDB.CMD.INFO.LOOP
+	GE(SDB.T1,SDB.NEXT_BREAK)		:S(SDB.CMD.INFO.ELOOP)
 	SDB.T2 = SDB.BREAK_BY_NUM[SDB.T1]
-	IDENT(SDB.T2)					:S(SDB.INFO.NOBR)
+	IDENT(SDB.T2)				:S(SDB.INFO.NOBR)
 	TERMINAL = IDENT(SDB.T3) "Num Type       Enb Statement"
 	SDB.T3 = 1
 	TERMINAL = RPAD(SDB.T1,4) RPAD("breakpoint",11)
 +			"y   " SDB.BREAK_LINE(SDB.T2)
-SDB.INFO.NOBR
-	SDB.T1 = SDB.T1 + 1					:(SDB.INFO.LOOP)
-SDB.INFO.ELOOP
+SDB.CMD.INFO.NOBR
+	SDB.T1 = SDB.T1 + 1			:(SDB.CMD.INFO.LOOP)
+SDB.CMD.INFO.ELOOP
 	TERMINAL = IDENT(SDB.T3) "No breakpoints set."
 	:(FRETURN)
 
-SDB.LIST
-	SDB.LIST_LINE = IDENT(SDB.ARGS) SDB.LAST		:S(SDB.LIST.START)
+* list source
+SDB.CMD.LIST
+	SDB.LIST_LINE = IDENT(SDB.ARGS) SDB.LAST :S(SDB.CMD.LIST.START)
 	SDB.LIST_LINE = SDB.ARG.STMT(SDB.ARGS)
-SDB.LIST.START
+SDB.CMD.LIST.START
 	SDB.T1 = SDB.LAST + SDB.VARS['list_lines']
-SDB.LIST_LOOP
+SDB.CMD.LIST_LOOP
 	SDB.DISPLAY_SOURCE(SDB.LIST_LINE)
 	SDB.LIST_LINE = SDB.LIST_LINE + 1
-	LT(SDB.LIST_LINE,SDB.T1)				:S(SDB.LIST_LOOP)
+	LT(SDB.LIST_LINE,SDB.T1)		 :S(SDB.CMD.LIST_LOOP)
 	:(FRETURN)
 
-SDB.NEXT
-	SDB.STEP_COUNT = SDB.ARG.COUNT(SDB.ARGS)		:F(FRETURN)
-	SDB.RESUME_LEVEL = SDB.FNCLEVEL			:(RETURN)
+* step to next line, skipping functions
+SDB.CMD.NEXT
+	SDB.STEP_COUNT = SDB.ARG.COUNT(SDB.ARGS) :F(FRETURN)
+	SDB.RESUME_LEVEL = SDB.FNCLEVEL		 :(RETURN)
 
-SDB.FINISH
-	TERMINAL = EQ(SDB.FNCLEVEL,1) "At top level."	:S(FRETURN)
-	SDB.ARG.NOARGS(SDB.ARGS,"finish")			:F(FRETURN)
+* return from current call
+SDB.CMD.FINISH
+	TERMINAL = EQ(SDB.FNCLEVEL,1) "At top level." :S(FRETURN)
+	SDB.ARG.NOARGS(SDB.ARGS,"finish")	:F(FRETURN)
 	SDB.STEP_COUNT = 1
-	SDB.RESUME_LEVEL = SDB.FNCLEVEL - 1		:(RETURN)
+	SDB.RESUME_LEVEL = SDB.FNCLEVEL - 1	:(RETURN)
 
-SDB.PRINT
+* print an expression
+SDB.CMD.PRINT
 	SDB.T1 = &ERRLIMIT
 * catch compile errors:
 	&ERRLIMIT = 1234
-	TERMINAL = EVAL(SDB.ARGS)				:S(SDB.PRINT.OK)
+	TERMINAL = EVAL(SDB.ARGS)		:S(SDB.CMD.PRINT.OK)
 	TERMINAL = &ERRTEXT
-SDB.PRINT.OK
-	&ERRLIMIT = SDB.T1				:(FRETURN)
+SDB.CMD.PRINT.OK
+	&ERRLIMIT = SDB.T1			:(FRETURN)
 
-SDB.STEP
-	SDB.STEP_COUNT = SDB.ARG.COUNT(SDB.ARGS)		:F(FRETURN)
-	SDB.RESUME_LEVEL =				:(RETURN)
+* quit
+SDB.CMD.QUIT
+* ask are you sure?
+						:(END)
+
+* single step
+SDB.CMD.STEP
+	SDB.STEP_COUNT = SDB.ARG.COUNT(SDB.ARGS) :F(FRETURN)
+	SDB.RESUME_LEVEL =			:(RETURN)
 
 
 SDB.COMMAND.END
-**************** end of SDB.COMMAND()
 
+****************
 * helper functions for SDB.COMMAND:
 
 	DEFINE("SDB.DELETE.BREAKPOINT(NUM)BKPT,STMT")
@@ -299,16 +332,17 @@ SDB.ARG.NOARGS
 	:(RETURN)
 SDB.ARG.NOARGS.END
 
-**************** end arg processing functions
-
+****************
 * display a line of source with statement number
 
 	DEFINE('SDB.DISPLAY_SOURCE(LN)')		:(SDB.DISP_SOURCE.END)
 SDB.DISPLAY_SOURCE
 	TERMINAL = VDIFFER(SDB.SOURCE_BY_LINE[LN])	:(RETURN)
 SDB.DISP_SOURCE.END
-**************** end of SDB.DISPLAY_SOURCE
 
+
+****************
+* read listing file
 	DEFINE('SDB.READ_SOURCE(FN)LBL,UNIT,LINE,LN,SRC') :(SDB.READ_SOURCE.END)
 SDB.READ_SOURCE
 	UNIT = IO_FINDUNIT()
@@ -336,10 +370,20 @@ SDB.SEOF
 	ENDFILE(UNIT)
 	DETACH(.LISTF)
 	:(RETURN)
-
 SDB.READ_SOURCE.END
-**************** end of SDB.READ_SOURCE()
 
+****************
+* list management
+
+* returns new/modified list
+* if used from tracing traps, make this iterative!
+	DEFINE("SDB.APPEND(LIST,NEW)")		:(SDB.APPEND.END)
+SDB.APPEND
+	SDB.APPEND = IDENT(LIST) SDB.CONS(NEW)	:S(RETURN)
+	SDB.APPEND = SDB.APPEND(SDB.CDR(LIST), NEW) :(RETURN)
+SDB.APPEND.END
+
+**************** keep backtrace stack
 * trace all function invocations & returns for backtrace stack
 	SDB.CALL_LEVEL = 0
 * bypass for SPITBOL -- can't OPSYN "DEFINE"
@@ -373,8 +417,9 @@ SDB.FRET
 SDB.FRET.END
 
 * this sorcery from Orange book "FTRACE" function
+* wrap DEFINE() so all user function calls/returns are traced
 * does not work in SPITBOL
-* must be after all SDB functions!!
+* *** must be after all SDB functions!! ***
 	DEFINE('SDB.DEFINE(PROTO,LABEL)NAME')
 * save built-in DEFINE as DEFINE.
 	OPSYN('DEFINE.','DEFINE')
@@ -387,6 +432,8 @@ SDB.DEFINE
 SDB.DEFINE.END
 SDB.NOSTACK
 
+**************** startup:
+
 	DIFFER(HOST(4,"SDB_NOBANNER"))
 	TERMINAL = "sdb version " SDB.VERSION
 	TERMINAL = "Copyright 2010 Philip L. Budne"
@@ -396,6 +443,9 @@ SDB.NOBANNER
 
 * read listing file
 	SDB.READ_SOURCE(HOST(4,"SDB_LISTFILE"))
+
+* break before first statement
+	SDB.NEXT_BREAK = 1
 
 	TRACE('STCOUNT','KEYWORD',,'SDB.TRAP')
 
