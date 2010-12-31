@@ -24,6 +24,9 @@ SDB.AC.END
 * keep this alphabetic, or sort SDB.CMDS array
  SDB.AC("break", "set breakpoint", "LABEL_OR_STATEMENT_NUMBER")
  SDB.AC("bt", "display call stack backtrace (not available in SPITBOL)")
+ SDB.AC("c",,, "CONTINUE")
+ SDB.AC("commands","add sdb commands to breakpoint","BREAKPOINT_NUMBER")
+ SDB.AC("condition","add condition to breakpoint","BREAKPOINT_NUMBER EXPR")
  SDB.AC("continue","continue from breakpoint","EMPTY_OR_COUNT")
  SDB.AC("delete", "delete breakpoint(s)","BREAKPOINT_NUMBER_OR_EMPTY")
  SDB.AC("finish", "resume debugging after current function returns")
@@ -39,7 +42,7 @@ SDB.AC.END
 *
 * TODO:
 * XXX more commands:
-*	set
+*	set (just SDB.VARS?)
 *	command, disable, enable: bkpt
 *	cond: bkpt + expr
 *	continue: take count
@@ -65,7 +68,7 @@ SDB.GOT_MAX_LINES
 
 	DATA("SDB.CONS(SDB.CAR,SDB.CDR)")
 	DATA('SDB.BREAKPOINT(SDB.BREAK_LINE,SDB.BREAK_NUM,'
-+		'SDB.BREAK_CONT,SDB.BREAK_COND)')
++		'SDB.BREAK_CONT,SDB.BREAK_COND,SDB.BREAK_CMDS,SDB.BREAK_HITS)')
 
 	DEFINE("SDB.TRAP()SDB.LAST,SDB.LASTFL,SDB.BKPT,SDB.CMD")
 							:(SDB.TRAP.END)
@@ -77,11 +80,36 @@ SDB.TRAP
 	SDB.LAST = SDB.CDR(SDB.LAST)
 	GE(SDB.LAST,SDB.FIRST_STMT) LE(SDB.LAST,SDB.LAST_STMT) :S(RETURN)
 	DIFFER((SDB.BKPT = SDB.BREAK_BY_LINE[SDB.LAST])) :F(SDB.CHECKLEVEL)
-* XXX check breakpoint condition
-* XXX check breakpoint continue count
-* XXX execute breakpoint commands: "silent" makes this breakpoint silent!
-*	if any command returns success, break command loop!
-	TERMINAL = "breakpoint " SDB.BREAK_NUM(SDB.BKPT)
+
+* check breakpoint condition
+	IDENT(SDB.BREAK_COND(SDB.BKPT))			:S(SDB.TRAP.COUNT)
+	SDB.EVAL(SDB.BREAK_COND(SDB.BKPT))		:F(RETURN)
+
+* increment hits, check breakpoint continue count, if any
+SDB.TRAP.COUNT
+	SDB.BREAK_HITS(SDB.BKPT) = SDB.BREAK_HITS(SDB.BKPT) + 1
+	SDB.T1 = SDB.BREAK_CONT(SDB.BKPT)
+	IDENT(SDB.T1)					:S(SDB.TRAP.CMDS)
+	LE(SDB.T1,1)					:S(SDB.TRAP.CMDS)
+	SDB.BREAK_CONT(SDB.BKPT) = SDB.T1 - 1		:S(RETURN)
+
+* check for list of sdb commands to execute on hitting breakpoint
+SDB.TRAP.CMDS
+* default to "noisey"
+	SDB.T2 = 1
+	SDB.T1 = SDB.BREAK_CMDS(SDB.BKPT)
+SDB.TRAP.CMDS.LOOP
+	IDENT(SDB.T1)					:S(SDB.TRAP.BREAK)
+* get command string
+	SDB.T3 = SDB.CAR(SDB.T1)
+	SDB.T2 = IDENT(SDB.T3, "silent")		:S(SDB.TRAP.CMDS.NEXT)
+	SDB.COMMAND(SDB.CAR(SDB.T1))			:S(RETURN)
+SDB.TRAP.CMDS.NEXT
+	SDB.T1 = SDB.CDR(SDB.T1)			:(SDB.TRAP.CMDS.LOOP)
+
+SDB.TRAP.BREAK
+	TERMINAL = DIFFER(SDB.T2) "breakpoint " SDB.BREAK_NUM(SDB.BKPT)
+	SDB.BREAK_CONT(SDB.BKPT) =
 	:(SDB.STOPPED)
 
 * see if resume level (from finish or next) reached
@@ -121,16 +149,19 @@ SDB.COMMAND
 +			((SPAN(' ') REM . SDB.ARGS) | ('' . SDB.ARGS))
 * XXX blank command: same as last (step, list, cont?? next??)
 	IDENT(SDB.CMD)					:S(FRETURN)
-	SDB.CMDP = POS(0) REPLACE(SDB.CMD, &UCASE, &LCASE)
+	SDB.T3 = REPLACE(SDB.CMD, &UCASE, &LCASE)
+	SDB.CMDP = POS(0) SDB.T3
 	SDB.ARGS = TRIM(SDB.ARGS)
 	SDB.T1 = 1
 SDB.COMMAND.LOOP
 	GT(SDB.T1,SDB.NC)			:S(SDB.COMMAND.NOMATCH)
 	SDB.T2 = SDB.CMDS[SDB.T1]
+	IDENT(SDB.CMD_CMD(SDB.T2), SDB.T3)	:S(SDB.COMMAND.DISPATCH)
 	SDB.CMD_CMD(SDB.T2) SDB.CMDP		:S(SDB.COMMAND.MATCH)
 	SDB.T1 = SDB.T1 + 1			:(SDB.COMMAND.LOOP)
 
 SDB.COMMAND.MATCH
+* if next command matches too, then ambiguous
 	EQ(SDB.T1,SDB.NC)			:S(SDB.COMMAND.DISPATCH)
 	SDB.CMD_CMD(SDB.CMDS[SDB.T1 + 1]) SDB.CMDP :F(SDB.COMMAND.DISPATCH)
 	TERMINAL = 'Ambiguous command "' SDB.CMD '". Try "help".' :(FRETURN)
@@ -166,9 +197,37 @@ SDB.CMD.BT.LOOP
 	GT(SDB.T1,0)					:S(SDB.CMD.BT.LOOP)
 	:(FRETURN)
 
+SDB.CMD.COMMANDS
+	SDB.T1 = SDB.ARG.BKPT(SDB.ARGS)			:F(FRETURN)
+	TERMINAL = "Type commands for when breakpoint " SDB.T1
++		" is hit, one per line."
+	TERMINAL = '"silent" suppresses breakpoint message.'
+	TERMINAL = 'End with a line saying just "end".'
+	SDB.T1 = SDB.BREAK_BY_NUM[SDB.T1]
+	SDB.BREAK_CMDS(SDB.T1) =
+SDB.CMD.COMMANDS.LOOP
+	SDB.TT = '> '
+	SDB.T2 = TERMINAL
+	IDENT(SDB.T2, "end")			:S(FRETURN)
+	SDB.BREAK_CMDS(SDB.T1) = SDB.APPEND(SDB.BREAK_CMDS(SDB.T1), SDB.T2)
+						:(SDB.CMD.COMMANDS.LOOP)
+
+SDB.CMD.CONDITION
+	SDB.ARGS SPAN('0123456789') . SDB.T1 (SPAN(SDB.WS) | '') =
++						:F(SDB.CMD.CONDITION.BAD)
+	SDB.T1 = SDB.ARG.BKPT(SDB.T1)		:F(FRETURN)
+	SDB.BREAK_COND(SDB.BREAK_BY_NUM[SDB.T1]) = SDB.ARGS
+	TERMINAL = IDENT(SDB.ARGS) "Breakpoint " SDB.T1 " now unconditional."
+	:(FRETURN)
+
+SDB.CMD.CONDITION.BAD
+	TERMINAL = '"condition" requires breakpoint number' :(FRETURN)
+
 SDB.CMD.CONTINUE
-* XXXX process arg; set per-breakpoint continue count
-	SDB.ARG.NOARGS(SDB.ARGS,"continue")			:F(FRETURN)
+	IDENT(SDB.BKPT)				:S(SDB.CMD.CONTINUE2)
+* set per-breakpoint continue count
+	SDB.BREAK_CONT(SDB.BKPT) = SDB.ARG.COUNT(SDB.ARGS) :F(FRETURN)
+SDB.CMD.CONTINUE2
 	SDB.RESUME_LEVEL =
 	SDB.STEP_COUNT = -1				:(RETURN)
 
@@ -194,8 +253,9 @@ SDB.CMD.HELP
 SDB.CMD.HELP.LOOP
 	GT(SDB.T1,SDB.NC)			:S(FRETURN)
 	SDB.T2 = SDB.CMDS[SDB.T1]
-	TERMINAL = ' ' SDB.CMD_CMD(SDB.T2) ' ' SDB.CMD_ARG(SDB.T2) ' -- '
-+		SDB.CMD_DESC(SDB.T2)
+	SDB.T3 = SDB.CMD_DESC(SDB.T2)
+	TERMINAL = ' ' DIFFER(SDB.T3) SDB.CMD_CMD(SDB.T2)
++		' ' SDB.CMD_ARG(SDB.T2) ' -- ' SDB.T3
 	SDB.T1 = SDB.T1 + 1			:(SDB.CMD.HELP.LOOP)
 
 * info ("info break") -- display breakpoints
@@ -210,6 +270,10 @@ SDB.CMD.INFO.LOOP
 	SDB.T3 = 1
 	TERMINAL = RPAD(SDB.T1,4) RPAD("breakpoint",11)
 +			"y   " SDB.BREAK_LINE(SDB.T2)
+	TERMINAL = DIFFER(SDB.BREAK_COND(SDB.T2))
++	    "	stop only if " SDB.BREAK_COND(SDB.T2)
+	TERMINAL = DIFFER(SDB.BREAK_HITS(SDB.T2))
++	    "	breakpoint already hit " SDB.BREAK_HITS(SDB.T2)	" times"
 SDB.CMD.INFO.NOBR
 	SDB.T1 = SDB.T1 + 1			:(SDB.CMD.INFO.LOOP)
 SDB.CMD.INFO.ELOOP
@@ -242,13 +306,7 @@ SDB.CMD.FINISH
 
 * print an expression
 SDB.CMD.PRINT
-	SDB.T1 = &ERRLIMIT
-* catch compile errors:
-	&ERRLIMIT = 1234
-	TERMINAL = EVAL(SDB.ARGS)		:S(SDB.CMD.PRINT.OK)
-	TERMINAL = &ERRTEXT
-SDB.CMD.PRINT.OK
-	&ERRLIMIT = SDB.T1			:(FRETURN)
+	TERMINAL = SDB.EVAL(SDB.ARGS)		:(FRETURN)
 
 * quit
 SDB.CMD.QUIT
@@ -259,7 +317,6 @@ SDB.CMD.QUIT
 SDB.CMD.STEP
 	SDB.STEP_COUNT = SDB.ARG.COUNT(SDB.ARGS) :F(FRETURN)
 	SDB.RESUME_LEVEL =			:(RETURN)
-
 
 SDB.COMMAND.END
 
@@ -287,7 +344,7 @@ SDB.ISINT.END
 SDB.ARG.COUNT
 	SDB.ARG.COUNT = IDENT(ARG) 1			:S(RETURN)
 	SDB.ISINT(ARG)					:F(SDB.ARG.COUNT.BAD)
-	SDB.ARG.COUNT = ARG + 0
+a	SDB.ARG.COUNT = ARG + 0				:(RETURN)
 SDB.ARG.COUNT.BAD
 	TERMINAL = "Bad count: " ARG			:(FRETURN)
 SDB.ARG.COUNT.END
@@ -377,11 +434,31 @@ SDB.READ_SOURCE.END
 
 * returns new/modified list
 * if used from tracing traps, make this iterative!
-	DEFINE("SDB.APPEND(LIST,NEW)")		:(SDB.APPEND.END)
+	DEFINE("SDB.APPEND(LIST,NEW)T")		:(SDB.APPEND.END)
 SDB.APPEND
 	SDB.APPEND = IDENT(LIST) SDB.CONS(NEW)	:S(RETURN)
-	SDB.APPEND = SDB.APPEND(SDB.CDR(LIST), NEW) :(RETURN)
+	SDB.APPEND = LIST
+SDB.APPEND.LOOP
+	T = SDB.CDR(LIST)
+	SDB.CDR(LIST) = IDENT(T) SDB.CONS(NEW) :S(RETURN)
+	LIST = T			       :(SDB.APPEND.LOOP)
 SDB.APPEND.END
+
+****************
+* safe eval
+	DEFINE("SDB.EVAL(SDB.EXPR)SDB.TEMP")	:(SDB.EVAL.END)
+SDB.EVAL
+	SDB.TEMP = &ERRLIMIT
+* catch compile errors:
+	&ERRLIMIT = 1234
+	TERMINAL = EVAL(SDB.EXPR)		:F(SDB.EVAL.FAIL)
+	NE(&ERRLIMIT,1234)			:S(SDB.EVAL.ERR)
+	&ERRLIMIT = SDB.TEMP			:(RETURN)
+SDB.EVAL.ERR
+	TERMINAL = &ERRTEXT
+SDB.EVAL.FAIL
+	&ERRLIMIT = SDB.TEMP			:(FRETURN)
+SDB.EVAL.END
 
 **************** keep backtrace stack
 * trace all function invocations & returns for backtrace stack
