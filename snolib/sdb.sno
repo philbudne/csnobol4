@@ -103,9 +103,9 @@ SDB.TRAP.STMT
 
 * check if enabled, and breakpoint condition, if any
 SDB.TRAP.COND
-	IDENT(SDB.BREAK_ENB(SDB.BKPT),"n")	:S(RETURN)
+	IDENT(SDB.BREAK_ENB(SDB.BKPT),"n")	:S(SDB.CHECKLEVEL)
 	IDENT(SDB.BREAK_COND(SDB.BKPT))		:S(SDB.TRAP.COUNT)
-	SDB.EVAL(SDB.BREAK_COND(SDB.BKPT))	:F(RETURN)
+	SDB.EVAL(SDB.BREAK_COND(SDB.BKPT))	:F(SDB.CHECKLEVEL)
 
 * increment hits, check breakpoint continue count, if any
 SDB.TRAP.COUNT
@@ -157,6 +157,8 @@ SDB.STOPPED
 +			", level " &FNCLEVEL - 1
 	SDB.DISPLAY_SOURCE(SDB.LAST)
 	SDB.FNCLEVEL = &FNCLEVEL
+
+* loop reading commands
 SDB.GETCMD
 	SDB.TT = '(sdb) '
 * XXX use GNU readline, if available!!!!
@@ -179,6 +181,8 @@ SDB.COMMAND
 	SDB.T3 = REPLACE(SDB.CMD, &UCASE, &LCASE)
 	SDB.CMDP = POS(0) SDB.T3
 	SDB.ARGS = TRIM(SDB.ARGS)
+
+* loop looking for prefix match
 	SDB.T1 = 1
 SDB.COMMAND.LOOP
 	GT(SDB.T1,SDB.NC)			:S(SDB.COMMAND.NOMATCH)
@@ -224,6 +228,7 @@ SDB.CMD.BT.LOOP
 	GT(SDB.T1,0)				:S(SDB.CMD.BT.LOOP)
 	:(FRETURN)
 
+* add (or remove) sdb commands from a breakpoint
 SDB.CMD.COMMANDS
 	SDB.T1 = SDB.ARG.BKPT(SDB.ARGS)		:F(FRETURN)
 	TERMINAL = "Type sdb commands for when breakpoint " SDB.T1
@@ -239,6 +244,7 @@ SDB.CMD.COMMANDS.LOOP
 	SDB.BREAK_CMDS(SDB.T1) = SDB.APPEND(SDB.BREAK_CMDS(SDB.T1), SDB.T2)
 						:(SDB.CMD.COMMANDS.LOOP)
 
+* add (or remove) condition to (from) a breakpont
 SDB.CMD.CONDITION
 	SDB.ARGS SPAN('0123456789') . SDB.T1 (SPAN(SDB.WS) | '') =
 +						:F(SDB.CMD.CONDITION.BAD)
