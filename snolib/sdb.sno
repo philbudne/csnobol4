@@ -32,6 +32,8 @@ SDB.DC.END
  SDB.DC("condition","add condition to breakpoint","BREAKPOINT_NUMBER EXPR")
  SDB.DC("continue","continue from breakpoint","EMPTY_OR_COUNT")
  SDB.DC("delete", "delete breakpoint(s)","BREAKPOINT_NUMBER_OR_EMPTY")
+ SDB.DC("disable", "disable breakpoint(s)","BREAKPOINT_NUMBER_OR_EMPTY")
+ SDB.DC("enable", "enable breakpoint(s)","BREAKPOINT_NUMBER_OR_EMPTY")
  SDB.DC("finish", "resume debugging after current function returns")
  SDB.DC("help", "display help")
  SDB.DC("info", "display list of breakpoints")
@@ -47,11 +49,9 @@ SDB.DC.END
 * TODO:
 * XXX more commands:
 *	set (just SDB.VARS?)
-*	watch var -- save old value
-*	disable, enable: bkpt
 * XXX trace FNCLEVEL for finish/next??
-* XXX disable statement tracing if "continue" w/ no breakpoints
-
+* XXX disable statement tracing if "continue" w/ no breakpoints enabled
+* XXX disable value tracing when watchpoint disabled
 	SDB.MAXINT = 2147483647
 	SDB.NL = CHAR(10)
 	SDB.MAX_BREAK = 100
@@ -78,7 +78,7 @@ SDB.GOT_MAX_STMTS
 
 	CODE("SDB.START")
 	SDB.TRAP.VARS = "SDB.LAST,SDB.LASTFL,SDB.BKPT,SDB.CMD,SDB.SILENT"
-	DEFINE("SDB.TRAP()" SDB.TRAP.VARS)
+	DEFINE("SDB.TRAP.STMT()" SDB.TRAP.VARS)
 	DEFINE("SDB.TRAP.WATCH(SDB.WATCHED)" SDB.TRAP.VARS)
 						:(SDB.TRAP.END)
 
@@ -93,7 +93,7 @@ SDB.TRAP.WATCH
 	:(SDB.TRAP.COND)
 
 * here before executing each line of code
-SDB.TRAP
+SDB.TRAP.STMT
 * save all location info in one statement
 	SDB.LAST = SDB.CONS(&LASTFILE ':' &LASTLINE, &LASTNO)
 	SDB.LASTFL = SDB.CAR(SDB.LAST)
@@ -101,8 +101,9 @@ SDB.TRAP
 	GE(SDB.LAST,SDB.FIRST_STMT) LE(SDB.LAST,SDB.LAST_STMT) :S(RETURN)
 	DIFFER((SDB.BKPT = SDB.BREAK_BY_STMT[SDB.LAST])) :F(SDB.CHECKLEVEL)
 
-* check breakpoint condition
+* check if enabled, and breakpoint condition, if any
 SDB.TRAP.COND
+	IDENT(SDB.BREAK_ENB(SDB.BKPT),"n")	:S(RETURN)
 	IDENT(SDB.BREAK_COND(SDB.BKPT))		:S(SDB.TRAP.COUNT)
 	SDB.EVAL(SDB.BREAK_COND(SDB.BKPT))	:F(RETURN)
 
@@ -272,6 +273,30 @@ SDB.CMD.DELETE.ALL.LOOP
 	GE(SDB.T1,SDB.MAX_BREAK)		:S(FRETURN)
 	SDB.DELETE.BREAKPOINT(SDB.T1)
 	SDB.T1 = SDB.T1 + 1			:(SDB.CMD.DELETE.ALL.LOOP)
+
+* disable breakpoints: no arg means all
+SDB.CMD.DISABLE
+	SDB.T2 = "n"
+	:(SDB.CMD.ENABLE2)
+
+* enable breakpoints: no arg means all
+SDB.CMD.ENABLE
+	SDB.T2 = "y"
+
+* common code for enable/disable
+SDB.CMD.ENABLE2
+	IDENT(SDB.ARGS)				:S(SDB.CMD.ENABLE.ALL)
+	SDB.T1 = SDB.ARG.BKPT(SDB.ARGS)		:F(FRETURN)
+	SDB.BREAK_ENB(BREAK_BY_NUM[SDB.T1]) = SDB.T2 :(FRETURN)
+
+SDB.CMD.ENABLE.ALL
+	SDB.T1 = 1
+SDB.CMD.ENABLE.ALL.LOOP
+	GE(SDB.T1,SDB.NEXT_BREAK)		:S(FRETURN)
+	IDENT((SDB.T3 = SDB.BREAK_BY_NUM[SDB.T1])) :S(SDB.CMD.ENABLE.ALL.NEXT)
+	SDB.BREAK_ENB(SDB.T3) = SDB.T2
+SDB.CMD.ENABLE.ALL.NEXT
+	SDB.T1 = SDB.T1 + 1			:(SDB.CMD.ENABLE.ALL.LOOP)
 
 * help command
 SDB.CMD.HELP
@@ -573,7 +598,7 @@ SDB.NOBANNER
 * break before first statement
 	SDB.NEXT_BREAK = 1
 
-	TRACE('STCOUNT','KEYWORD',,'SDB.TRAP')
+	TRACE('STCOUNT','KEYWORD',,'SDB.TRAP.STMT')
 
 	SDB.LAST_STMT = &STNO
 * last: enables trace traps
