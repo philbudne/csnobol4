@@ -1,10 +1,7 @@
 -UNLIST
 * $Id$
-* "SDB" SNOBOL4 debugger
-*	command set is a clone of GNU "gdb" debugger
-* Copyright (C) 2010 Philip L. Budne
-*
-* ULTRA ULTRA ULTRA PRELIMINARY!!!!
+* "SDB" SNOBOL4 debugger -- a clone (clown?) of GNU "gdb" debugger
+* Copyright (C) 2010, 2011 Philip L. Budne
 *
 SDB.START
 ******* MUST BE FIRST STMT!
@@ -76,7 +73,6 @@ SDB.GOT_MAX_STMTS
 +		'SDB.BREAK_CONT,SDB.BREAK_COND,SDB.BREAK_CMDS,SDB.BREAK_HITS,'
 +		'SDB.WATCH_NAME,SDB.WATCH_OLD)')
 
-	CODE("SDB.START")
 	SDB.TRAP.VARS = "SDB.LAST,SDB.LASTFL,SDB.BKPT,SDB.CMD,SDB.SILENT"
 	DEFINE("SDB.TRAP.STMT()" SDB.TRAP.VARS)
 	DEFINE("SDB.TRAP.WATCH(SDB.WATCHED)" SDB.TRAP.VARS)
@@ -144,8 +140,7 @@ SDB.TRAP.BREAK
 * see if resume level (from finish or next) reached
 * XXX TRACE FNCLEVL (traps BEFORE returning; need to set step count)
 SDB.CHECKLEVEL
-	IDENT(SDB.RESUME_LEVEL)			:S(SDB.CHECKSTEP)
-	DIFFER(SDB.RESUME_LEVEL,&FNCLEVEL)	:S(RETURN)
+	DIFFER(SDB.RESUME_LEVEL) GT(&FNCLEVEL, SDB.RESUME_LEVEL) :S(RETURN)
 
 * see if step count set & reached
 SDB.CHECKSTEP
@@ -275,8 +270,7 @@ SDB.CMD.DELETE
 SDB.CMD.DELETE.ALL
 	SDB.T1 = 1
 	DIFFER(SDB.AUTO)			:S(SDB.CMD.DELETE.ALL.LOOP)
-	SDB.TT = "Delete all breakpoints (y or n)? "
-	OUTPUT = DIFFER(INPUT, "y") "Aborted."	:S(FRETURN)
+	SDB.YORN('Delete all breakpoints (y or n)? ') :F(FRETURN)
 SDB.CMD.DELETE.ALL.LOOP
 	GE(SDB.T1,SDB.MAX_BREAK)		:S(FRETURN)
 	SDB.DELETE.BREAKPOINT(SDB.T1)
@@ -295,7 +289,7 @@ SDB.CMD.ENABLE
 SDB.CMD.ENABLE2
 	IDENT(SDB.ARGS)				:S(SDB.CMD.ENABLE.ALL)
 	SDB.T1 = SDB.ARG.BKPT(SDB.ARGS)		:F(FRETURN)
-	SDB.BREAK_ENB(BREAK_BY_NUM[SDB.T1]) = SDB.T2 :(FRETURN)
+	SDB.BREAK_ENB(SDB.BREAK_BY_NUM[SDB.T1]) = SDB.T2 :(FRETURN)
 
 SDB.CMD.ENABLE.ALL
 	SDB.T1 = 1
@@ -375,8 +369,8 @@ SDB.CMD.PRINT
 
 * quit
 SDB.CMD.QUIT
-* ask are you sure?
-						:(END)
+	SDB.YORN('The program is running.  Exit anyway? (y or n) ') :S(END)
+	:(FRETURN)
 
 * single step
 SDB.CMD.STEP
@@ -540,15 +534,25 @@ SDB.EVAL.FAIL
 	&ERRLIMIT = SDB.TEMP			:(FRETURN)
 SDB.EVAL.END
 
+****************
+* ask y or n question
+	DEFINE("SDB.YORN(PROMPT)ANS")		:(SDB.YORN.END)
+SDB.YORN
+	SDB.TT = PROMPT
+	ANS = TERMINAL				:F(FRETURN)
+	IDENT(ANS, "y")				:S(RETURN)
+	TERMINAL = IDENT(ANS,"n") "Not confirmed." :S(FRETURN)
+	TERMINAL = "Please answer y or n."	:(SDB.YORN)
+SDB.YORN.END
 **************** keep backtrace stack
 * trace all function invocations & returns for backtrace stack
 	SDB.CALL_LEVEL = 0
 * bypass for SPITBOL -- can't OPSYN "DEFINE"
-	DIFFER(.NAME,'NAME')				:S(SDB.NOSTACK)
+	DIFFER(.NAME,'NAME')			:S(SDB.NOSTACK)
 	SDB.MAX_CALLS = 1000
 	SDB.CALLS = ARRAY('1:' SDB.MAX_CALLS)
 
-	DEFINE('SDB.FCALL(FNAME)S,I,L')			:(SDB.FCALL.END)
+	DEFINE('SDB.FCALL(FNAME)S,I,L')		:(SDB.FCALL.END)
 * here on entry to all user-defined functions
 SDB.FCALL
 	L = &LASTFILE ':' &LASTLINE ' statement ' &LASTNO
@@ -563,7 +567,7 @@ SDB.FCALL.ARGLOP
 	I = I + 1					:(SDB.FCALL.ARGLOP)
 SDB.FCALL.EARGLOP
 	SDB.CALL_LEVEL = SDB.CALL_LEVEL + 1
-	SDB.CALLS[SDB.CALL_LEVEL] = S ') from ' L
+	SDB.CALLS[SDB.CALL_LEVEL] = S ') called from ' L
 	&TRACE = SDB.MAXINT
 	:(RETURN)
 SDB.FCALL.END
@@ -593,15 +597,19 @@ SDB.NOSTACK
 
 	DIFFER(HOST(4,"SDB_NOBANNER"))
 	TERMINAL = "sdb version " SDB.VERSION
-	TERMINAL = "Copyright 2010 Philip L. Budne"
+	TERMINAL = "Copyright 2010, 2011 Philip L. Budne"
 	TERMINAL = 'Type "help" for help.'
 	TERMINAL =
 SDB.NOBANNER
 
-* read listing file
-	SDB.READ_LISTING(HOST(4,"SDB_LISTFILE"))
+* free all initialization code
+	CODE("SDB.START")
 
-* break before first statement
+* read listing file
+	SDB.LISTING = HOST(4,"SDB_LISTFILE")
+	DIFFER(SDB.LF) SDB.READ_LISTING(SDB.LISTING)
+
+* break before first user statement
 	SDB.NEXT_BREAK = 1
 
 	TRACE('STCOUNT','KEYWORD',,'SDB.TRAP.STMT')
