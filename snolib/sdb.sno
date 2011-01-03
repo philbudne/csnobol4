@@ -1,3 +1,5 @@
+* don't create watchpoint if can't get name!!
+
 -UNLIST
 * $Id$
 * "SDB" SNOBOL4 debugger -- a clone (clown?) of GNU "gdb" debugger
@@ -216,7 +218,8 @@ SDB.CMD.BREAK
 
 * backtrace
 SDB.CMD.BT
-	TERMINAL = 'at statement ' SDB.LAST
+	TERMINAL = 'at ' SDB.LASTFL ', statement ' SDB.LAST
++			', level ' SDB.FNCLEVEL - 1
 	TERMINAL = LT(SDB.CALL_LEVEL,1) 'No call stack.' :S(FRETURN)
 	SDB.T1 = SDB.CALL_LEVEL
 SDB.CMD.BT.LOOP
@@ -567,7 +570,7 @@ SDB.FCALL.ARGLOP
 	I = I + 1					:(SDB.FCALL.ARGLOP)
 SDB.FCALL.EARGLOP
 	SDB.CALL_LEVEL = SDB.CALL_LEVEL + 1
-	SDB.CALLS[SDB.CALL_LEVEL] = S ') called from ' L
+	SDB.CALLS[SDB.CALL_LEVEL] = S ') called from ' L ', level ' SDB.CALL_LEVEL - 1
 	&TRACE = SDB.MAXINT
 	:(RETURN)
 SDB.FCALL.END
