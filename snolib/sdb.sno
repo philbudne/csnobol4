@@ -47,6 +47,9 @@ SDB.DC.END
 * TODO:
 * XXX more commands:
 *	set (just SDB.VARS?)
+*	read .sdbinit?
+*	ignore BKNO COUNT
+*	list [START [END]]
 * XXX trace FNCLEVEL for finish/next??
 * XXX disable statement tracing if "continue" w/ no breakpoints enabled
 * XXX disable value tracing when watchpoint disabled
@@ -162,6 +165,8 @@ SDB.GETCMD
 	SDB.TT = SDB.VARS['prompt']
 * XXX use GNU readline, if available!!!!
 	SDB.CMD = TERMINAL			:F(END)
+	SDB.CMD = IDENT(SDB.CMD) SDB.LAST_CMD
+	SDB.LAST_CMD = SDB.CMD
 	SDB.COMMAND(SDB.CMD)			:S(RETURN)F(SDB.GETCMD)
 SDB.TRAP.END
 
@@ -348,6 +353,7 @@ SDB.CMD.INFO.ELOOP
 SDB.CMD.LIST
 	SDB.LIST_LINE = DIFFER(SDB.ARGS) SDB.ARG.STMT(SDB.ARGS)
 	SDB.T1 = SDB.LIST_LINE + SDB.VARS['list_lines']
+	SDB.LAST_CMD = "list"
 SDB.CMD.LIST_LOOP
 	SDB.DISPLAY_SOURCE(SDB.LIST_LINE)
 	SDB.LIST_LINE = SDB.LIST_LINE + 1
