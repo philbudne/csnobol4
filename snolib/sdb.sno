@@ -50,6 +50,7 @@ SDB.DC.END
 *	read .sdbinit?
 *	ignore BKNO COUNT
 *	list [START [END]]
+* XXX save printed values? in SDB.VALUES[n]??
 * XXX trace FNCLEVEL for finish/next??
 * XXX disable statement tracing if "continue" w/ no breakpoints enabled
 * XXX disable value tracing when watchpoint disabled
@@ -311,6 +312,7 @@ SDB.CMD.ENABLE.ALL.NEXT
 * help command
 SDB.CMD.HELP
 	SDB.T1 = 1
+	TERMINAL = "Blank line repeats previous command."
 SDB.CMD.HELP.LOOP
 	GT(SDB.T1,SDB.NC)			:S(FRETURN)
 	SDB.T2 = SDB.CMDS[SDB.T1]
@@ -321,6 +323,7 @@ SDB.CMD.HELP.LOOP
 
 * info ("info break") -- display breakpoints
 SDB.CMD.INFO
+	SDB.ARG.NOARGS(SDB.ARGS,"info")		:F(FRETURN)
 	SDB.T1 = 1
 	SDB.T3 =
 SDB.CMD.INFO.LOOP
@@ -389,8 +392,8 @@ SDB.CMD.STEP
 * set watchpoint
 SDB.CMD.WATCH
 	TERMINAL = IDENT(SDB.ARGS) '"watch" requires variable name' :S(FRETURN)
-	SDB.ARGS = NE(&CASE,0) REPLACE(SDB.ARGS,&LCASE,&UCASE)
-	SDB.T3 = SDB.EVAL("." SDB.ARGS)		:F(FRETURN)
+	SDB.T3 = SDB.EVAL("." SDB.ARGS)		:F(SDB.CMD.WATCH.ERR)
+* XXX display watchpoint number!
 	TERMINAL = DIFFER(SDB.WATCH_BY_NAME[SDB.T3])
 +				SDB.ARGS " already being watched" :S(FRETURN)
 	SDB.T2 = SDB.NEXT_BREAK
@@ -403,6 +406,8 @@ SDB.CMD.WATCH
 	TRACE(SDB.T3, "VALUE",, "SDB.TRAP.WATCH")
 	:(FRETURN)
 
+SDB.CMD.WATCH.ERR
+	TERMINAL = "Error watching " SDB.ARGS	:(FRETURN)
 SDB.COMMAND.END
 
 ****************
