@@ -1,8 +1,12 @@
 $Id$
 
-Include DDT debugger?
+Document -l change!!
 
 man page for TIME -- snotime?
+
+DIFFTIME function??
+
+Include DDT debugger?
 
 Enable PRELOAD?
 
@@ -13,14 +17,36 @@ Fix utf.sno RUNE() function:
 
 fix Centos5 timing report?
 
+Fix univeral builds for non OSX 10.4 systems!!!
 OS X 4-way Universal???
 	CFLAGS='-arch i386 -arch x86_64 -arch ppc7400 -arch ppc64'
+
+increase dynamic region size?
+	512K descrs (4MB) is sufficient to run GENC w/o GC
+
+SNOLIB:
+	Implement SNOLIB search path
+	-I option
+	iterator functions?
+	append /<version> to default SNOLIB? ****************
+	use seperate SNOLIB/include and SNOLIB/ext ??
+	    /usr/local/include/snobol4-VERS?
+	also check old SNOLIB? SNOLIB/local??
 
 integrate GC patch (--with-gc?)
 	find out if gc start/end hook possible.
 
+================ 2.0?
+
+genc.sno option to use void ** & goto;
+	 make dump files.
+	 need to distribute two copies of isnobol4!
+
+================
+
 debug Win32 problem seen by Larry Gregg:  lrrygrgg@yahoo.com ???
 	t = table(); t[1] = 20; t[2] = 10; a = rsort(t,2)
+	NOT REPRODUCIBLE IN 1.3+ VS10 BUILD
 
 warnings w/ gcc 4 on OS X:
 	bsdtsort: exit, malloc, strlen
@@ -29,11 +55,7 @@ warnings w/ gcc 4 on OS X:
 
 Look at Ruby Win32API & win32ole facilities
 
-1.1.1?
-
 fall back to "ln -s" in "make install"
-
-solve Ed Q's DBM problem (64/32 issue)?
 
 dynamic.sno:
 	function(s) to create Makefile?
@@ -78,20 +100,9 @@ STCL
 	use -framework on OS X??
 	add --with-x11
 
-SNOLIB:
-	Implement SNOLIB search path
-	-I option
-	iterator functions?
-	append /<version> to default SNOLIB?
-	use seperate SNOLIB/include and SNOLIB/ext ??
-	also check old SNOLIB? SNOLIB/local??
-
 flush OTSATL, default formats?
 
 report max heap size used in stats
-
-increase dynamic region size?
-	512K descrs (4MB) is sufficient to run GENC w/o GC
 
 pattern match tracing PTRACE? MTRACE? under ifdef?
 	multi-level: entry/exit (subject, matched string)
@@ -323,16 +334,8 @@ have DOUBLE force NO_BITFIELDS??
 	check alignment?? sparc double is 64 bit aligned
 			x86 is 32-bit aligned
 
-keep track of time spent in GC?
-	TRACE() GC?
-
 script to grep for all "ifdefs" and output strings to build.c?
 	just stringify options in config.h?
-
-timing script;
-	translate bogomips + cpu into clock speed?
-	provide bogomips.c??
-	output machine readable format?
 
 add prototypes for getstring()/retstring() to load.h
 
@@ -403,6 +406,10 @@ SPITBOL features;
 	NOT()
 
 	SETEXIT()
+		SPITBOL
+			ERR07: save code pointer after ERRLIMIT decrement &
+				ERRTYPE trace
+			R$SXC is code pointer
 		CONTINUE, SCONTINUE, ABORT system labels
 		see SNOBOL4+ SETBREAK()???
 			SETBRK() in s9.a86

@@ -527,6 +527,8 @@ err_catch(sig)
     int sig;
 {
     D_A(SIGNCL) = sig;			/* save signal number for output */
+    // only for fatal errors? 
+    // else check SIGNCL in interpreter loop and go to FTLTST (for SETEXIT handling)
     SYSCUT(NORET);
 }
 

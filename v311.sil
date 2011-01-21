@@ -1,6 +1,12 @@
 * $Id$
 *
 * $Log$
+* Revision 1.113  2009/08/29 18:57:42  phil
+* [PLB96] need to FULLY clear WPTR in LNKFNC or
+* COLLECT() crashes if called immediately after an
+* "external" function.  Add collect2 test.
+* reported by Laurence Battin <beamtuner@att.net>
+*
 * Revision 1.112  2005/11/22 21:13:55  phil
 * [PLB95] Add SPCSP for explicit output of spaces
 *
@@ -2352,7 +2358,29 @@ GOTL1  DEQL    XPTR,FRETCL,GOTL2   Compare with FRETURN
 GOTL2  DEQL    XPTR,NRETCL,GOTL3   Compare with NRETURN
        RRTURN  ,5		   Return by name
 *_
-GOTL3  GETDC   OCBSCL,XPTR,ATTRIB  Get object code base
+GOTL3  DEQL    XPTR,ABORCL,GOTL4   Compare with ABORT		[PLB97]
+       MOVD    ERRTYP,XERRTY	   Restore saved &ERRTYPE	[PLB97]
+       MOVD    FILENM,XFILEN	   Restore saved &FILENM	[PLB97]
+       MOVD    STNOCL,XSTNOC	   Restore saved &STNO		[PLB97]
+       BRANCH  FTLEND		   Fatal ending			[PLB97]
+*_
+GOTL4  DEQL    XPTR,SCNTCL,GOTL5   Compare with SCONTINUE	[PLB97]
+       MOVD    FRTNCL,XOCICL	   Restore saved offset		[PLB97]
+       BRANCH  GOTL5B						[PLB97]
+*_
+GOTL5  DEQL    XPTR,CONTCL,GOTL6   Compare with CONTINUE	[PLB97]
+       MOVD    FRTNCL,XFRTNC	   Restore saved failure offset	[PLB97]
+GOTL5B AEQLC   XITLVL,0,,CNTERR	   Must be in a handler!!	[PLB97]
+       MOVD    OCBSCL,XOCBSC	   Restore code base		[PLB97]
+       MOVD    ERRTYP,XERRTY	   Restore &ERRTYPE		[PLB97]
+       MOVD    FILENM,XFILEN	   Restore &FILENM		[PLB97]
+       MOVD    STNOCL,XSTNOC	   Restore &STNO		[PLB97]
+       MOVD    LSFLNM,XLSFLN	   Restore &LASTFILE		[PLB97]
+       MOVD    LNNOCL,XLNNOC	   Restore &LASTNO		[PLB97]
+       DECRA   XITLVL,1		   Decrement handler depth	[PLB97]
+       BRANCH  FAIL		   Return eval failure		[PLB97]
+*_
+GOTL6  GETDC   OCBSCL,XPTR,ATTRIB  Get object code base
        AEQLC   OCBSCL,0,,INTR4	   Must not be zero
        SETAC   OCICL,0		   Zero offset
        BRANCH  RTNUL3		   Return
@@ -5512,6 +5540,42 @@ VXOVR  OUTPUT  OUTPUT,PRTOVF	   Print error message
        BRANCH  RTNUL3		   Return
 *_
 *---------------------------------------------------------------------*
+*
+* New [PLB97]
+*      SETEXIT(LBL)
+*
+SETXIT PROC    ,		   SETEXIT(LBL)
+       RCALL   XPTR,VARVUP,,INTR30 Get label
+       AEQLC   XPTR,0,,SETXI2	   Allow null string (clear handler)
+       GETDC   YPTR,XPTR,ATTRIB    Get label code base
+       AEQLC   YPTR,0,,INTR30	   Fatal if no code
+SETXI2 MOVD    XITPTR,XPTR	   Save handler
+       BRANCH  RTNUL3		   Return
+*_
+*---------------------------------------------------------------------*
+*
+* New [PLB97]
+*      SETEXIT handler
+*
+XITHND PROC    ,		   SETEXIT handling procedure
+       AEQLC   XITPTR,0,,RETNUL	   Handler not set
+       INCRA   XITLVL,1		   Increment handler depth
+       ACOMPC  XITLVL,5,XITERR,XITERR
+       MOVD    XFILEN,FILENM	   Save &FILE
+       MOVD    XSTNOC,STNOCL	   Save &STNO
+       MOVD    XLSFLN,LSFLNM	   Save &LASTFILE
+       MOVD    XLNNOC,LNNOCL	   Save &LASTNO
+       MOVD    XERRTY,ERRTYP	   Save &ERRTYPE
+       MOVD    XOCBSC,OCBSCL	   Save code base
+       MOVD    XFRTNC,FRTNCL	   Save failure offset
+       MOVD    XOCICL,OCICL	   Save code offset
+       GETDC   OCBSCL,XITPTR,ATTRIB  Get new object code base
+       AEQLC   OCBSCL,0,,INTR4	   Must not be zero
+       SETAC   FRTNCL,0		   Zero offset
+       SETAC   XITPTR,0		   Clear handler
+       BRANCH  RETNUL
+*_
+*---------------------------------------------------------------------*
        TITLE   'Other Operations'
 *
 *      Assignment
@@ -6845,8 +6909,14 @@ UNKNKW SETAC   ERRTYP,7		   Unknown keyword
 UNTERR SETAC   ERRTYP,12	   Illegal I/O unit
        BRANCH  FTLTST
 *_
+XITERR SETAC   ERRTYP,34	   Nested too deeply		[PLB97]
+       BRANCH  FTLEND						[PLB97]
+*_
+CNTERR SETAC   ERRTYP,35	   Not in a SETEXIT handler	[PLB97]
+       BRANCH  FTLEND						[PLB97]
+*_
 SCERST SETAC   SCERCL,1		   Note failure during pattern matching
-       BRANCH  FTLTST
+       BRANCH  FTERST						[PLB97]
 *_
 FTLTST SETAC   SCERCL,2		   Note failure out of pattern matching
 FTERST ACOMPC  ERRLCL,0,,FTLEND,FTLEND
@@ -6865,7 +6935,9 @@ FTERST ACOMPC  ERRLCL,0,,FTLEND,FTLEND
        RCALL   ,TRPHND,ATPTR					E3.3.1
 *				   Perform trace
        POP     SCERCL						E3.1.3
-FTERBR SELBRA  SCERCL,(FAIL,FAIL,RTNUL3)			[PLB65]
+FTERBR RCALL   ,XITHND
+* ,,(FAIL,,RTNUL3)				[PLB97]
+       SELBRA  SCERCL,(FAIL,FAIL,RTNUL3)			[PLB65]
        XECODE							[PLB82]
 *_
 *---------------------------------------------------------------------*
@@ -7355,6 +7427,8 @@ OCSVCL DESCR   0,0,0		   Pointer to basic object code
 PATBCL DESCR   0,0,0		   Pattern code base descriptor
 SCBSCL DESCR   0,0,0
 SRNCL  DESCR   0,0,0		   Success return descriptor
+XITPTR DESCR   0,0,0		   Pointer for SETEXIT handler [PLB97]
+XITLVL DESCR   0,0,0		   SETEXIT handler depth       [PLB97]
 *
 *      Compiler Descriptors
 *
@@ -7385,6 +7459,9 @@ FRETCL DESCR   0,0,0		   'FRETURN'
 NRETCL DESCR   0,0,0		   'NRETURN'
 RETCL  DESCR   0,0,0		   'RETURN'
 FUNTCL DESCR   0,0,0		   'FUNCTION'
+ABORCL DESCR   0,0,0		   'ABORT'			[PLB97]
+CONTCL DESCR   0,0,0		   'CONTINUE'			[PLB97]
+SCNTCL DESCR   0,0,0		   'SCONTINUE'			[PLB97]
 *
 *      Specifiers
 *
@@ -7449,6 +7526,18 @@ TLSGP1 DESCR   0,PTR,0		   End of allocated data region
 GCXTTL DESCR   GCXTTL,TTL+MARK,DESCR
 *				   Block to prime marking procedure
        DESCR   0,0,0		   Pointer to block to mark
+*
+* New [PLB97]
+*      Saved state for SETEXIT handlers
+*
+XERRTY DESCR   0,0,0		   Saved ERRTYP
+XFILEN DESCR   0,0,0   	           Saved FILENM
+XFRTNC DESCR   0,0,0		   Saved FRTNCL
+XLNNOC DESCR   0,0,0		   Saved LNNOCL
+XLSFLN DESCR   0,0,0		   Saved LSFLNM
+XOCBSC DESCR   0,0,0		   Saved OCBSCL
+XOCICL DESCR   0,0,0		   Saved OCICL
+XSTNOC DESCR   0,0,0		   Saved STNOCL
 *
 *      Machine-dependent Data
 *
@@ -7586,6 +7675,8 @@ RTABFN DESCR   RTAB,0,1
        DESCR   0,0,0
 SETFN  DESCR   SET,0,3						[PLB52]
        DESCR   0,0,0						[PLB52]
+SETXFN DESCR   SETXIT,0,1					[PLB97]
+       DESCR   0,0,0						[PLB97]
 SIZEFN DESCR   SIZE,0,1
        DESCR   0,0,0
 SORTFN DESCR   SORT,FNC,1					[PLB31]
@@ -7751,6 +7842,8 @@ FNLIST DESCR   FNLIST,TTL+MARK,FNCPLE-FNLIST-DESCR
        DESCR   RTABSP,0,0
        DESCR   SETFN,FNC,0	   SET(N,O,W)			[PLB52]
        DESCR   SETSP,0,0					[PLB52]
+       DESCR   SETXFN,FNC,0	   SETEXIT(LBL)			[PLB97]
+       DESCR   SETXSP,0,0					[PLB97]
        DESCR   SIZEFN,FNC,0	   SIZE(S)
        DESCR   SIZESP,0,0
        DESCR   SORTFN,FNC,0	   SORT(T,C)			[PLB31]
@@ -7947,6 +8040,7 @@ CHARSP STRING  'CHAR'						[PLB31]
 CLERSP STRING  'CLEAR'
 CODESP STRING  'CODE'
 CLSP   STRING  'COLLECT'
+CONTSP STRING  'CONTINUE'					[PLB97]
 CNVTSP STRING  'CONVERT'
 COPYSP STRING  'COPY'
 DATSP  STRING  'DATE'
@@ -8022,6 +8116,8 @@ RSRTSP STRING  'RSORT'						[PLB31]
 RTABSP STRING  'RTAB'
 RTYPSP STRING  'RTNTYPE'
 SETSP  STRING  'SET'						[PLB52]
+SETXSP STRING  'SETEXIT'					[PLB97]
+SCNTSP STRING  'SCONTINUE'					[PLB97]
 SIZESP STRING  'SIZE'
 SSTRSP STRING  'SUBSTR'						[PLB37]
 SORTSP STRING  'SORT'						[PLB31]
@@ -8069,7 +8165,13 @@ ABNDB  LHERE   ,
        DESCR   RETSP,0,0	   'RETURN'
        DESCR   RETCL,0,0					[PLB18]
        DESCR   UCASSP,0,0	   &UCASE			[PLB18]
-DTEND  DESCR   UCASVL,0,0					[PLB18]
+       DESCR   UCASVL,0,0					[PLB18]
+       DESCR   ABORSP,0,0	   'ABORT'			[PLB97]
+       DESCR   ABORCL,0,0					[PLB97]
+       DESCR   CONTSP,0,0	   'CONTINUE'			[PLB97]
+       DESCR   CONTCL,0,0					[PLB97]
+       DESCR   SCNTSP,0,0	   'SCONTINUE'			[PLB97]
+DTEND  DESCR   SCNTCL,0,0					[PLB97]
 *
 BUFEXT EQU     DTEND-ANYSP
 BUFLEN EQU     BUFEXT*CPA
@@ -8264,6 +8366,8 @@ MSGLST DESCR   0,0,0
        DESCR   MSG31,0,0					[PLB38]
        DESCR   MSG32,0,0					[PLB38]
        DESCR   MSG33,0,0					[PLB60]
+       DESCR   MSG34,0,0					[PLB97]
+       DESCR   MSG35,0,0					[PLB97]
 *
 *      Fatal Error Messages
 *
@@ -8301,6 +8405,8 @@ MSG30  STRING  'Cannot open INCLUDE file'			[PLB38]
 MSG31  STRING  'Erroneous LINE statement'			[PLB38]
 MSG32  STRING  'Missing END statement'				[PLB38]
 MSG33  STRING  'Output error'					[PLB60]
+MSG34  STRING  'SETEXIT handlers nested too deeply'		[PLB97]
+MSG35  STRING  'Not in a SETEXIT handler'			[PLB97]
 *
 *      Compiler Error Messages
 *

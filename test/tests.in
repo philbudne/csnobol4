@@ -121,3 +121,5 @@ opt ndbm.sno
 reg collect2.sno
 # 12/16/2010
 reg time.sno
+# 1/21/2011
+err setexit.sno

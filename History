@@ -2,6 +2,14 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+1/21/2011:
+	v311.sil: [PLB97] implement SETEXIT/CONTINUE/SCONTINUE/ABORT
+	globals, procs: add labels for SETEXIT
+	lib/init.c: comment in signal handler
+	test/setexit.{sno,ref}: SETEXIT test
+	test/test.err.sh: test runner for programs that err out!
+	test/tests.in: add SETEXIT test
+
 12/22/2010:
 	snolib/http.sno: 6/20/2009 fix broke it! add HTTP.CRLF!!
 	cpuid.c: return 0
