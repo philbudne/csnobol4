@@ -9,6 +9,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	test/setexit.sno: update
 	test/setexit2.{ref,sno}: test for END trap
 	test/tests.in: add setexit2.sno
+	test/time.{sno,ref}: test MKTIME w/ LOCALTIME
 
 1/20/2011:
 	v311.sil: [PLB97] implement SETEXIT/CONTINUE/SCONTINUE/ABORT

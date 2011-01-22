@@ -24,11 +24,9 @@ E.TMDUMP
 	OUTPUT = "gmtime:"
 	TMDUMP(GTM)
 
-* this blows on Linux (gnu libc) in Europe/Berlin?!
-* accept anything +/-12hrs?
-*	OUTPUT =
-*	OUTPUT = MKTIME(GTM)
-
 	OUTPUT =
 	OUTPUT = STRFTIME("%Y-%m-%d %H:%M:%S", GTM)
+
+	OUTPUT =
+	OUTPUT = MKTIME(LOCALTIME(T))
 END

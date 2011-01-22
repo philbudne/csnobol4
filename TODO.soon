@@ -1,6 +1,6 @@
 $Id$
 
-Clear saved SETEXIT variables on (S)CONTINUE?
+*** READLINE
 
 Enable PRELOAD?
 	Disable if running setuid!!!
@@ -9,6 +9,7 @@ Enable PRELOAD?
 [FN]RETURN illegal in SETEXIT handler!!
 
 Include sdb.sno/sdb script
+	use readline!
 	use SETEXIT in SDB??
 
 Document:
