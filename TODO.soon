@@ -1,28 +1,36 @@
 $Id$
 
-Document -l change!!
-
-man page for TIME -- snotime?
-
-DIFFTIME function??
-
-Include DDT debugger?
+Clear saved SETEXIT variables on (S)CONTINUE?
 
 Enable PRELOAD?
+	Disable if running setuid!!!
+	command line arg to disable?
 
-Reference on-line green book!!!
+[FN]RETURN illegal in SETEXIT handler!!
+
+Include sdb.sno/sdb script
+	use SETEXIT in SDB??
+
+Document:
+	-l change!!
+	SETEXIT()
+	time.sno -- snotime man page??
+	Reference on-line green book!!!
+
+DIFFTIME function??
 
 Fix utf.sno RUNE() function:
     use logic.sno (or wctomb()?)
 
-fix Centos5 timing report?
-
-Fix univeral builds for non OSX 10.4 systems!!!
-OS X 4-way Universal???
-	CFLAGS='-arch i386 -arch x86_64 -arch ppc7400 -arch ppc64'
+integrate GC patch (--with-gc?)
+	find out if gc start/end hook possible.
 
 increase dynamic region size?
 	512K descrs (4MB) is sufficient to run GENC w/o GC
+
+Fix univeral builds for non OSX 10.4 systems?
+OS X 4-way Universal???
+	CFLAGS='-arch i386 -arch x86_64 -arch ppc7400 -arch ppc64'
 
 SNOLIB:
 	Implement SNOLIB search path
@@ -32,9 +40,6 @@ SNOLIB:
 	use seperate SNOLIB/include and SNOLIB/ext ??
 	    /usr/local/include/snobol4-VERS?
 	also check old SNOLIB? SNOLIB/local??
-
-integrate GC patch (--with-gc?)
-	find out if gc start/end hook possible.
 
 ================ 2.0?
 
@@ -406,14 +411,6 @@ SPITBOL features;
 	NOT()
 
 	SETEXIT()
-		SPITBOL
-			ERR07: save code pointer after ERRLIMIT decrement &
-				ERRTYPE trace
-			R$SXC is code pointer
-		CONTINUE, SCONTINUE, ABORT system labels
-		see SNOBOL4+ SETBREAK()???
-			SETBRK() in s9.a86
-			BRKHND called from INIT5 in s4
 		Handle signals????
 
 	single letter abbrevs in TRACE()

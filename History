@@ -3,6 +3,14 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 1/21/2011:
+	v311.sil [PLB98] SETEXIT cleanup; prohibit re-entry, trap at END
+	test/diag1.{ref,sno}: update for SETEXIT
+	test/diag2.ref: update for SETEXIT
+	test/setexit.sno: update
+	test/setexit2.{ref,sno}: test for END trap
+	test/tests.in: add setexit2.sno
+
+1/20/2011:
 	v311.sil: [PLB97] implement SETEXIT/CONTINUE/SCONTINUE/ABORT
 	globals, procs: add labels for SETEXIT
 	lib/init.c: comment in signal handler

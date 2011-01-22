@@ -7,7 +7,7 @@
 
 * Illegal Data Type:
 l1	setexit(.scont)
-	output = -code('OUTPUT')	:s(l2)
+	output = -code('LBL')		:s(l2)
 	output = 'SCONTINUE returned failure?'
 
 * try before setting new handler; should be silently ignored

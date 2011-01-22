@@ -37,7 +37,7 @@ Unprotected keywords
 &CASE = 1
 &CODE = 0
 &DUMP = 2
-&ERRLIMIT = 100
+&ERRLIMIT = 99
 &FTRACE = 0
 &FULLSCAN = 1
 &GTRACE = 0

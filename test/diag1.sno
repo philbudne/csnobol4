@@ -7,7 +7,8 @@
 	 trace(.test)
 	 &trace	= 1000000
 	 stars =		     '	error detected		***'
-	 &errlimit = 000
+	 &errlimit = 1000
+	 setexit(.errors)
 	 output	= '************************************************'
 	 output	= '****	s n o b o l	 d i a g n o s t i c s ****'
 	 output	= '****		 p h a s e    o	n e	       ****'
@@ -348,7 +349,8 @@ terminate output = '**** n o	 e r r o r s	d e t e	c t e d	****'
 *
 *	 error handling	routine
 *
-errors	 output	= '****	 error at '
+errors	 eq(&errtype,0)                     :(continue)
+	 output	= '****	 error at '
 .	 lpad(&lastno,4)   '	  &errtype = ' lpad(&errtype,7,' ')
 .					    ' ****'
 	 &trace	= &trace - 1

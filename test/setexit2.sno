@@ -1,0 +1,12 @@
+* test SETEXIT trap on END
+
+	:(begin)
+
+xxx	output = &LASTFILE ':' &LASTLINE ' stmt ' &LASTNO
+	output = &ERRTYPE ' "' &ERRTEXT '"'
+	:(continue)
+
+begin
+	&errlimit = 10
+	setexit(.xxx)
+end
