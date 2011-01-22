@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.114  2011/01/21 06:04:31  phil
+* [PLB97] implement SETEXIT/CONTINUE/SCONTINUE/ABORT
+*
 * Revision 1.113  2009/08/29 18:57:42  phil
 * [PLB96] need to FULLY clear WPTR in LNKFNC or
 * COLLECT() crashes if called immediately after an
@@ -2359,6 +2362,7 @@ GOTL2  DEQL    XPTR,NRETCL,GOTL3   Compare with NRETURN
        RRTURN  ,5		   Return by name
 *_
 GOTL3  DEQL    XPTR,ABORCL,GOTL4   Compare with ABORT		[PLB97]
+       AEQLC   XOCBSC,0,,CNTERR	   Must be in a handler!!	[PLB98]
        MOVD    ERRTYP,XERRTY	   Restore saved &ERRTYPE	[PLB97]
        MOVD    FILENM,XFILEN	   Restore saved &FILENM	[PLB97]
        MOVD    STNOCL,XSTNOC	   Restore saved &STNO		[PLB97]
@@ -2370,14 +2374,16 @@ GOTL4  DEQL    XPTR,SCNTCL,GOTL5   Compare with SCONTINUE	[PLB97]
 *_
 GOTL5  DEQL    XPTR,CONTCL,GOTL6   Compare with CONTINUE	[PLB97]
        MOVD    FRTNCL,XFRTNC	   Restore saved failure offset	[PLB97]
-GOTL5B AEQLC   XITLVL,0,,CNTERR	   Must be in a handler!!	[PLB97]
+GOTL5B AEQLC   XOCBSC,0,,CNTERR	   Must be in a handler!!	[PLB97]
        MOVD    OCBSCL,XOCBSC	   Restore code base		[PLB97]
        MOVD    ERRTYP,XERRTY	   Restore &ERRTYPE		[PLB97]
-       MOVD    FILENM,XFILEN	   Restore &FILENM		[PLB97]
+       MOVD    FILENM,XFILEN	   Restore &FILE		[PLB97]
+       MOVD    LNNOCL,XLNNOC	   Restore &LINE		[PLB98]
        MOVD    STNOCL,XSTNOC	   Restore &STNO		[PLB97]
        MOVD    LSFLNM,XLSFLN	   Restore &LASTFILE		[PLB97]
-       MOVD    LNNOCL,XLNNOC	   Restore &LASTNO		[PLB97]
-       DECRA   XITLVL,1		   Decrement handler depth	[PLB97]
+       MOVD    LSLNCL,XLSLNC	   Restore &LASTLINE		[PLB98]
+       MOVD    LSTNCL,XLNNOC	   Restore &LASTNO		[PLB98]
+       SETAC   XOCBSC,0		   Clear saved code base	[PLB98]
        BRANCH  FAIL		   Return eval failure		[PLB97]
 *_
 GOTL6  GETDC   OCBSCL,XPTR,ATTRIB  Get object code base
@@ -5558,12 +5564,13 @@ SETXI2 MOVD    XITPTR,XPTR	   Save handler
 *      SETEXIT handler
 *
 XITHND PROC    ,		   SETEXIT handling procedure
-       AEQLC   XITPTR,0,,RETNUL	   Handler not set
-       INCRA   XITLVL,1		   Increment handler depth
-       ACOMPC  XITLVL,5,XITERR,XITERR
+       AEQLC   XITPTR,0,,FAIL	   Handler not set
+       AEQLC   XOCBSC,0,XITERR	   Already handling		[PLB98]
        MOVD    XFILEN,FILENM	   Save &FILE
+       MOVD    XLNNOC,LNNOCL	   Save &LINE			[PLB98]
        MOVD    XSTNOC,STNOCL	   Save &STNO
        MOVD    XLSFLN,LSFLNM	   Save &LASTFILE
+       MOVD    XLSLNC,LSLNCL	   Save &LASTLINE		[PLB98]
        MOVD    XLNNOC,LNNOCL	   Save &LASTNO
        MOVD    XERRTY,ERRTYP	   Save &ERRTYPE
        MOVD    XOCBSC,OCBSCL	   Save code base
@@ -6723,7 +6730,17 @@ GENVIX RCALL   XPTR,GNVARI,XPTR,RTXNAM
 *				   Generate variable from integer
 *_
        TITLE   'Termination'
-END    XCALLC  io_flushall,(0)	   Empty output buffers		[PLB53]
+END    ACOMPC  ERRLCL,0,,END2,END2 Check &ERRLIMIT		[PLB98]
+       DECRA   ERRLCL,1		   Decrement &ERRLIMIT		[PLB98]
+       SETAC   ERRTYP,0		   Clear &ERRTYPE		[PLB98]
+       SETAC   ERRTXT,0		   Clear &ERRTEXT		[PLB98]
+       MOVD    FRTNCL,OCICL	   Crock error return		[PLB98]
+       DECRA   FRTNCL,DESCR	   Back up to restart on return	[PLB98]
+       MOVD    LSTNCL,STNOCL	   Crock &LASTNO		[PLB98]
+       MOVA    LSLNCL,LNNOCL	   Crock &LASTLINE		[PLB98]
+       MOVA    LSFLNM,FILENM	   Crock &LASTFILE		[PLB98]
+       RCALL   ,XITHND,,(,,RTNUL3) Call exit handler, if any	[PLB98]
+END2   XCALLC  io_flushall,(0)	   Empty output buffers		[PLB53]
        AEQLC   BANRCL,0,,FTLEN2	   Skip message if banner (stats?) off [PLB12]
        OUTPUT  PUNCH,NRMEND,(LVLCL)				[PLB5]
 *				   End procedure
@@ -6935,8 +6952,7 @@ FTERST ACOMPC  ERRLCL,0,,FTLEND,FTLEND
        RCALL   ,TRPHND,ATPTR					E3.3.1
 *				   Perform trace
        POP     SCERCL						E3.1.3
-FTERBR RCALL   ,XITHND
-* ,,(FAIL,,RTNUL3)				[PLB97]
+FTERBR RCALL   ,XITHND		   Call SETEXIT handler, if any	[PLB97]
        SELBRA  SCERCL,(FAIL,FAIL,RTNUL3)			[PLB65]
        XECODE							[PLB82]
 *_
@@ -7428,7 +7444,6 @@ PATBCL DESCR   0,0,0		   Pattern code base descriptor
 SCBSCL DESCR   0,0,0
 SRNCL  DESCR   0,0,0		   Success return descriptor
 XITPTR DESCR   0,0,0		   Pointer for SETEXIT handler [PLB97]
-XITLVL DESCR   0,0,0		   SETEXIT handler depth       [PLB97]
 *
 *      Compiler Descriptors
 *
@@ -7527,17 +7542,18 @@ GCXTTL DESCR   GCXTTL,TTL+MARK,DESCR
 *				   Block to prime marking procedure
        DESCR   0,0,0		   Pointer to block to mark
 *
-* New [PLB97]
-*      Saved state for SETEXIT handlers
+*      Saved state for SETEXIT handler			[PLB97]
 *
-XERRTY DESCR   0,0,0		   Saved ERRTYP
-XFILEN DESCR   0,0,0   	           Saved FILENM
-XFRTNC DESCR   0,0,0		   Saved FRTNCL
-XLNNOC DESCR   0,0,0		   Saved LNNOCL
-XLSFLN DESCR   0,0,0		   Saved LSFLNM
-XOCBSC DESCR   0,0,0		   Saved OCBSCL
-XOCICL DESCR   0,0,0		   Saved OCICL
-XSTNOC DESCR   0,0,0		   Saved STNOCL
+XERRTY DESCR   0,0,0		   Saved &ERRTYPE	[PLB97]
+XFILEN DESCR   0,0,0   	           Saved &FILE		[PLB97]
+XLNNOC DESCR   0,0,0		   Saved &LINE		[PLB97]
+XSTNOC DESCR   0,0,0		   Saved &STNO		[PLB97]
+XLSFLN DESCR   0,0,0		   Saved &LASTFILE	[PLB97]
+XLSLNC DESCR   0,0,0		   Saved &LASTLINE	[PLB98]
+XLSTNC DESCR   0,0,0		   Saved &LASTNO	[PLB98]
+XFRTNC DESCR   0,0,0		   Saved FRTNCL		[PLB97]
+XOCBSC DESCR   0,0,0		   Saved OCBSCL		[PLB97]
+XOCICL DESCR   0,0,0		   Saved OCICL		[PLB97]
 *
 *      Machine-dependent Data
 *
