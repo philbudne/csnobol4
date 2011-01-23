@@ -130,6 +130,7 @@ LOG_C=$(SRCDIR)lib/snolib/log.c
 LOGIC_C=$(SRCDIR)lib/snolib/logic.c
 NDBM_C=$(SRCDIR)lib/snolib/ndbm.c
 ORD_C=$(SRCDIR)lib/snolib/ord.c
+READLINE=$(SRCDIR)lib/snolib/readline.c
 RENAME_C=$(SRCDIR)lib/snolib/rename.c
 RETSTRING_C=$(SRCDIR)lib/snolib/retstring.c
 SERV_C=$(SRCDIR)lib/snolib/serv.c
@@ -483,6 +484,9 @@ ndbm.o: $(NDBM_C)
 
 ord.o: $(ORD_C)
 	$(CC) $(CFLAGS) -c $(ORD_C)
+
+readline.o: $(READLINE_C)
+	$(CC) $(CFLAGS) -c $(READLINE_C)
 
 rename.o: $(RENAME_C)
 	$(CC) $(CFLAGS) -c $(RENAME_C)

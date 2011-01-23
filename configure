@@ -124,6 +124,9 @@ while [ $# -gt 0 ]; do
 	STUFF=`echo "$1" | sed 's/--bindir=//'`
 	echo "BINDIR=$STUFF"			>> $CONFIG_M4
     	;;
+    --snolibdir=*)
+	SNOLIB_DIR=`echo "$1" | sed 's/--snolibdir=//'`
+    	;;
     --debug)
 	DEBUG=true
 	set -x
@@ -195,6 +198,9 @@ while [ $# -gt 0 ]; do
     --universal)
 	UNIVERSAL=true
 	;;
+    --without-readline)
+	WITHOUT_READLINE=1
+	;;
     --with-tcl)
 	WITH_TCL=1
 	;;
@@ -235,10 +241,12 @@ Install location;
 	--prefix=PATH		[default: /usr/local]
 	--bindir=PATH		[default: PREFIX/bin]
 	--mandir=PATH		[default: PREFIX/man]
+	--snolibdir=PATH	[default: PREFIX/lib/snobol4]
 
 Optional items;
 	--with-tcl		--with-tk
 	--without-ndbm		--force-sdbm
+	--without-readline
 EOF
 
 	rm -f $CONFIG_M4 $CONFIG_H
@@ -254,7 +262,10 @@ if [ "x$MANDIR" = x ]; then
 fi
 MAN1DIR="$MANDIR/man1"
 MAN3DIR="$MANDIR/man3"
-SNOLIB_DIR="$PREFIX/lib/snobol4"
+if [ "x$SNOLIB_DIR" = x ]; then
+    # PREFIX/lib/snobol4/VERSION
+    SNOLIB_DIR="$PREFIX/lib/snobol4"
+fi
 
 echo 'BINDIR=$(DESTDIR)'"$BINDIR"		>> $CONFIG_M4
 echo 'MANDIR=$(DESTDIR)'"$MANDIR"		>> $CONFIG_M4
@@ -1401,7 +1412,6 @@ if [ "x$DL_EXT" != x ]; then
     echo "DL_CFLAGS=$DL_CFLAGS"		>> $CONFIG_M4
     echo "DL_LD=$DL_LD"			>> $CONFIG_M4
     echo "DL_LDFLAGS=$DL_LDFLAGS"	>> $CONFIG_M4
-
     echo '/* Dynamicly Loaded Extensions (in config.m4 too) */' >> $CONFIG_H
     echo "#define DL_EXT \"$DL_EXT\""	>> $CONFIG_H
     echo "#define DL_CFLAGS \"$DL_CFLAGS\"" >> $CONFIG_H
@@ -1560,6 +1570,15 @@ if [ ! "$WITHOUT_NDBM" ]; then
 	    echo '#define DUFF'			>> $CONFIG_H
 	fi
     fi
+fi
+
+# Include GNU readline support, if found -- look for library??
+if [ /usr/include/readline/readline.h -a ! "$WITHOUT_READLINE" ]; then
+    echo 'using readline' 1>&2
+    echo 'ADD_OBJS([readline.o])'		>> $CONFIG_M4
+    echo 'ADD_SRCS([$(READLINE_C)])'		>> $CONFIG_M4
+    echo 'ADD_LDFLAGS([-lreadline])'		>> $CONFIG_M4
+    echo '#define PML_READLINE'			>> $CONFIG_H
 fi
 
 # Include COM support under Cygwin!

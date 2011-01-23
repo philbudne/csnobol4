@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+1/22/2011:
+	configure: add --snolibdir= --without-readline
+	configure, pml.h, Makefile2.m4: add readline
+	new lib/snolib/readline.c: readline functions
+
 1/21/2011:
 	v311.sil [PLB98] SETEXIT cleanup; prohibit re-entry, trap at END
 	test/diag1.{ref,sno}: update for SETEXIT

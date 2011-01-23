@@ -2,11 +2,11 @@ $Id$
 
 *** READLINE
 
+Make some signals catchable
+
 Enable PRELOAD?
 	Disable if running setuid!!!
 	command line arg to disable?
-
-[FN]RETURN illegal in SETEXIT handler!!
 
 Include sdb.sno/sdb script
 	use readline!
