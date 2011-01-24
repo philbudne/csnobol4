@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.115  2011/01/22 02:39:38  phil
+* [PLB98] SETEXIT cleanup; prohibit re-entry, implement trap at END
+*
 * Revision 1.114  2011/01/21 06:04:31  phil
 * [PLB97] implement SETEXIT/CONTINUE/SCONTINUE/ABORT
 *
@@ -5851,9 +5854,12 @@ DIFFER PROC    ,		   DIFFER(X,Y)
 *      FUNCTION(X) test if named function defined
 *
 FUNCTN PROC    ,		   FUNCTION(X)
-       RCALL   ,VARVUP,,FAIL	   Evaluate argument
-       LOCAPV  XPTR,FNCPL,XPTR,FAIL,RETNUL
-*				   Locate function
+       RCALL   XPTR,VARVUP,,FAIL   Evaluate argument	[PLB99]
+       LOCAPV  XPTR,FNCPL,XPTR,FAIL Locate function	[PLB99]
+       GETDC   XPTR,XPTR,DESCR	   Get function descriptor [PLB99]
+       GETDC   XPTR,XPTR,0	   Get link descriptor	[PLB99]
+       AEQL    XPTR,UNDFCL,RETNUL,FAIL			[PLB99]
+*				   Fail if undefined	[PLB99]
 *_
 *---------------------------------------------------------------------*
 *

@@ -2,10 +2,17 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+1/23/2011:
+	v311.sil [PLB99] fix FUNCTION for referenced, but undefined functions
+
 1/22/2011:
 	configure: add --snolibdir= --without-readline
-	configure, pml.h, Makefile2.m4: add readline
+	configure, Makefile2.m4: add readline
+	pml.h: readline, atan, ln
 	new lib/snolib/readline.c: readline functions
+	new lin/snolib/atan.c: arc tangent
+	new snolib/sdb.sno
+	sdb.sno: use readline!
 
 1/21/2011:
 	v311.sil [PLB98] SETEXIT cleanup; prohibit re-entry, trap at END
