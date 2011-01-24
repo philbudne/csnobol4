@@ -1,14 +1,22 @@
-* don't create watchpoint if can't get name!!
-
 -UNLIST
-* $Id$
 * "SDB" SNOBOL4 debugger -- a clone (clown?) of GNU "gdb" debugger
 * Copyright (C) 2010, 2011 Philip L. Budne
 *
 SDB.START
 ******* MUST BE FIRST STMT!
 	SDB.FIRST_STMT = &STNO
-	SDB.VERSION = "0.2"
+	SDB.ID = "$Id$"
+	SDB.ID BREAK(' ') ' ' SPAN('0123456789.') . SDB.VERSION
+
+* TODO:
+* XXX more commands:
+*	set (just SDB.VARS?)
+*	read .sdbinit?
+*	list [START [END]]
+* XXX save printed values? in SDB.VALUES[n]??
+* XXX trace FNCLEVEL for finish/next??
+* XXX disable statement tracing if "continue" w/ no breakpoints enabled
+* XXX disable value tracing when watchpoint disabled?
 
 * define commands
 	SDB.CMDS = ARRAY('1:30')
@@ -45,16 +53,6 @@ SDB.DC.END
  SDB.DC("watch", "set watchpoint on a variable", "VARIABLE")
  SDB.DC("where", "alias for bt",, "BT")
 
-*
-* TODO:
-* XXX more commands:
-*	set (just SDB.VARS?)
-*	read .sdbinit?
-*	list [START [END]]
-* XXX save printed values? in SDB.VALUES[n]??
-* XXX trace FNCLEVEL for finish/next??
-* XXX disable statement tracing if "continue" w/ no breakpoints enabled
-* XXX disable value tracing when watchpoint disabled
 	SDB.MAXINT = 2147483647
 	SDB.NL = CHAR(10)
 	SDB.MAX_BREAK = 100
@@ -65,7 +63,6 @@ SDB.GOT_MAX_STMTS
 	SDB.VARS['list_lines'] = 10
 	SDB.VARS['prompt'] = '(sdb) '
 	SDB.STEP_COUNT = LT(SDB.FIRST_STMT,5) 1
-	OUTPUT(.SDB.TT, IO_FINDUNIT(), 'T', '/dev/tty')
 	SDB.SOURCE_BY_STMT = ARRAY('1:' SDB.MAX_STMTS)
 	SDB.BREAK_BY_STMT = ARRAY('1:' SDB.MAX_STMTS)
 	SDB.BREAK_BY_NUM = ARRAY('1:' SDB.MAX_BREAK)
@@ -76,6 +73,36 @@ SDB.GOT_MAX_STMTS
 	SDB.LABELP = POS(0) (ANY(&LCASE &UCASE) BREAK(SDB.WS)) . LBL
 	SDB.NUMP = SPAN(SDB.DIGITS)
 	SDB.SWSP = SPAN(SDB.WS)
+
+	DIFFER(.NAME, "NAME")			:S(SDB.SPITBOL)
+* CSNOBOL4 init:
+	OUTPUT(.SDB.TT, IO_FINDUNIT(), 'T', '/dev/tty')
+	SDB.HAVE_READLINE = FUNCTION(.READLINE) 1
+*	SDB.HAVE_READLINE = 1
+	output = sdb.have_readline
+	:(SDB.ESPITBOL)
+
+SDB.SPITBOL
+* SPITBOL init:
+* XXX flags here for no CRLF?
+	OUTPUT(.SDB.TT, 'SDB.TT', '/dev/tty')
+
+SDB.ESPITBOL
+	IDENT(SDB.HAVE_READLINE)		:S(SDB.NO.READLINE)
+* SDB.READLINE using GNU readline()
+	DEFINE('SDB.READLINE(PROMPT)')		:(SDB.READLINE.END)
+SDB.READLINE
+	SDB.READLINE = READLINE(PROMPT)		:F(FRETURN)
+	ADD_HISTORY(SDB.READLINE)		:(RETURN)
+
+SDB.NO.READLINE
+* SDB.READLINE using regular I/O
+	DEFINE('SDB.READLINE(PROMPT)', 'SDB.READLINE2') :(SDB.READLINE.END)
+SDB.READLINE2
+	SDB.TT = PROMPT
+	SDB.READLINE = TERMINAL			:F(FRETURN)S(RETURN)
+
+SDB.READLINE.END
 
 	DATA("SDB.CONS(SDB.CAR,SDB.CDR)")
 	DATA('SDB.BREAKPOINT(SDB.BREAK_LOCN,SDB.BREAK_NUM,SDB.BREAK_TYPE,'
@@ -171,9 +198,7 @@ SDB.STOPPED
 
 * loop reading commands
 SDB.GETCMD
-	SDB.TT = SDB.VARS['prompt']
-* XXX use GNU readline, if available!!!!
-	SDB.CMD = TERMINAL			:F(END)
+	SDB.CMD = SDB.READLINE(SDB.VARS['prompt']) :F(END)
 	SDB.CMD = IDENT(SDB.CMD) SDB.LAST_CMD
 	SDB.LAST_CMD = SDB.CMD
 	SDB.COMMAND(SDB.CMD)			:S(RETURN)F(SDB.GETCMD)
@@ -252,8 +277,7 @@ SDB.CMD.COMMANDS
 	SDB.T1 = SDB.BREAK_BY_NUM[SDB.T1]
 	SDB.BREAK_CMDS(SDB.T1) =
 SDB.CMD.COMMANDS.LOOP
-	SDB.TT = '> '
-	SDB.T2 = TERMINAL
+	SDB.T2 = SDB.READLINE('> ')
 	IDENT(SDB.T2, "end")			:S(FRETURN)
 	SDB.BREAK_CMDS(SDB.T1) = SDB.APPEND(SDB.BREAK_CMDS(SDB.T1), SDB.T2)
 						:(SDB.CMD.COMMANDS.LOOP)
@@ -630,7 +654,7 @@ SDB.NOSTACK
 **************** startup:
 
 	DIFFER(HOST(4,"SDB_NOBANNER"))
-	TERMINAL = "sdb version " SDB.VERSION
+	TERMINAL = "sdb SNOBOL4 debugger version " SDB.VERSION
 	TERMINAL = "Copyright 2010, 2011 Philip L. Budne"
 	TERMINAL = 'Type "help" for help.'
 	TERMINAL =
