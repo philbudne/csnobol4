@@ -113,6 +113,7 @@ SDBM_PAIR_C=$(SRCDIR)lib/sdbm/sdbm_pair.c
 SDBM_HASH_C=$(SRCDIR)lib/sdbm/sdbm_hash.c
 
 # snolib sources
+ATAN_C=$(SRCDIR)lib/snolib/atan.c
 CHOP_C=$(SRCDIR)lib/snolib/chop.c
 COS_C=$(SRCDIR)lib/snolib/cos.c
 DELETE_C=$(SRCDIR)lib/snolib/delete.c
@@ -414,7 +415,7 @@ system.o: $(SYSTEM_C)
 
 AUX_OBJS=[]_OBJS
 
-SNOLIB_OBJS=chop.o cos.o delete.o environ.o execute.o exists.o exit.o \
+SNOLIB_OBJS=atan.o chop.o cos.o delete.o environ.o execute.o exists.o exit.o \
 	exp.o file.o findunit.o fork.o getstring.o handle.o host.o \
 	ord.o log.o logic.o rename.o retstring.o serv.o sin.o \
 	sprintf.o sqrt.o sset.o sys.o tan.o time.o $(AUX_OBJS)
@@ -432,6 +433,9 @@ SNOLIB_SRCS=$(CHOP_C) $(COS_C) $(DELETE_C) $(ENVIRON_C) $(EXISTS_C) \
 	$(FORK_C) $(GETSTRING_C) $(HOST_C) $(LOG_C) $(LOGIC_C) \
 	$(ORD_C) $(RENAME_C) $(RETSTRING_C) $(SERV_C) $(SIN_C) \
 	$(SPRINTF_C) $(SQRT_C) $(SSET_C) $(SYS_C) $(TAN_C) $(TIME_C)
+
+atan.o:	$(ATAN_C)
+	$(CC) $(CFLAGS) -c $(ATAN_C)
 
 chop.o: $(CHOP_C)
 	$(CC) $(CFLAGS) -c $(CHOP_C)

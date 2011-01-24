@@ -36,6 +36,10 @@ PMPROTO("EXP(REAL)REAL")
 #ifndef NO_PML_LOG
 PMLFUNC2("LOG",LOG)
 PMPROTO("LOG(REAL)REAL")
+
+/* 1/23/2011 */
+PMLFUNC2("LN",LOG)
+PMPROTO("LN(REAL)REAL")
 #endif /* NO_PML_LOG not defined */
 
 #ifndef NO_PML_CHOP
@@ -52,6 +56,10 @@ PMPROTO("COS(REAL)REAL")
 
 PMLFUNC2("TAN",TAN)
 PMPROTO("TAN(REAL)REAL")
+
+/* 1/23/2011 */
+PMLFUNC2("ATAN",ATAN)
+PMPROTO("ATAN(REAL)REAL")
 #endif /* NO_PML_TRIG not defined */
 #endif /* NO_PML_REAL not defined */
 

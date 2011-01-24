@@ -1,20 +1,19 @@
 $Id$
 
-*** READLINE
+Include sdb.sno/sdb.sh script
+	use SETEXIT?
 
-Make some signals catchable
+Make some signals catchable??
 
 Enable PRELOAD?
 	Disable if running setuid!!!
 	command line arg to disable?
 
-Include sdb.sno/sdb script
-	use readline!
-	use SETEXIT in SDB??
-
 Document:
 	-l change!!
+	atan(), ln()
 	SETEXIT()
+	sdb!!
 	time.sno -- snotime man page??
 	Reference on-line green book!!!
 
