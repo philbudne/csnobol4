@@ -9,6 +9,9 @@ foo	OUTPUT = 'got here'				:(RETURN)
 EFOO
 	DEFINE("BAR()")					:(EBAR)
 BAR	OUTPUT = 'got here2'				:(RETURN)
+
+* refererence to undefined function
+	XXX = UNK2()
 EBAR
 
 	TEST("FOO")
@@ -19,6 +22,10 @@ EBAR
 	TEST("test")
 	TEST("DEFINE")
 	TEST("define")
+	TEST("UNK")
+	TEST("unk")
+	TEST("UNK2")
+	TEST("unk2")
 
 * turn case folding on
 	&CASE = 1
@@ -31,5 +38,10 @@ EBAR
 	TEST("test")
 	TEST("DEFINE")
 	TEST("define")
+	TEST("UNK")
+	TEST("unk")
+	TEST("UNK2")
+	TEST("unk2")
+
 END
 
