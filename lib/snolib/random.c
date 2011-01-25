@@ -306,11 +306,11 @@ bsd_srandomdev()
 		len = rand_deg * sizeof state[0];
 
 	done = 0;
-	fd = _open("/dev/random", O_RDONLY, 0);
+	fd = open("/dev/random", O_RDONLY, 0);
 	if (fd >= 0) {
-		if (_read(fd, (void *) state, len) == (ssize_t) len)
+		if (read(fd, (void *) state, len) == (ssize_t) len)
 			done = 1;
-		_close(fd);
+		close(fd);
 	}
 
 	if (!done) {
