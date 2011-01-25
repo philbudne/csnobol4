@@ -2,6 +2,12 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+1/24/2011:
+	new snolib/random.c: FreeBSD random() function
+	pml.h: add RANDOM
+	Makefile2.m4: add random
+	sdb.sno: cleanup
+
 1/23/2011:
 	v311.sil [PLB99] fix FUNCTION for referenced, but undefined functions
 	Makefile2.m4: add atan to snolib

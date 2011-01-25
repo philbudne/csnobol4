@@ -118,12 +118,6 @@ Unix domain sockets
 	datagram vs stream
 	allow single accept???
 
-Allow single accept for TCP?
-	ACCEPT1?
-
-RANDOM() function(s)
-	dynamic?
-
 DYNAMIC LOADING!!
 	add LOADMODULE() -- looks for prototypes?
 	    move pmprotos to loadable files?

@@ -131,6 +131,7 @@ LOG_C=$(SRCDIR)lib/snolib/log.c
 LOGIC_C=$(SRCDIR)lib/snolib/logic.c
 NDBM_C=$(SRCDIR)lib/snolib/ndbm.c
 ORD_C=$(SRCDIR)lib/snolib/ord.c
+RANDOM_C=$(SRCDIR)lib/snolib/random.c
 READLINE_C=$(SRCDIR)lib/snolib/readline.c
 RENAME_C=$(SRCDIR)lib/snolib/rename.c
 RETSTRING_C=$(SRCDIR)lib/snolib/retstring.c
@@ -417,7 +418,7 @@ AUX_OBJS=[]_OBJS
 
 SNOLIB_OBJS=atan.o chop.o cos.o delete.o environ.o execute.o exists.o exit.o \
 	exp.o file.o findunit.o fork.o getstring.o handle.o host.o \
-	ord.o log.o logic.o rename.o retstring.o serv.o sin.o \
+	ord.o log.o logic.o random.o rename.o retstring.o serv.o sin.o \
 	sprintf.o sqrt.o sset.o sys.o tan.o time.o $(AUX_OBJS)
 
 $(SNOLIB_A): $(SNOLIB_OBJS)
@@ -428,11 +429,12 @@ $(SNOLIB_A): $(SNOLIB_OBJS)
 ################
 # snolib files
 
-SNOLIB_SRCS=$(CHOP_C) $(COS_C) $(DELETE_C) $(ENVIRON_C) $(EXISTS_C) \
-	$(EXIT_C) $(EXECUTE_C) $(EXP_C) $(FILE_C) $(FINDUNIT_C) \
-	$(FORK_C) $(GETSTRING_C) $(HOST_C) $(LOG_C) $(LOGIC_C) \
-	$(ORD_C) $(RENAME_C) $(RETSTRING_C) $(SERV_C) $(SIN_C) \
-	$(SPRINTF_C) $(SQRT_C) $(SSET_C) $(SYS_C) $(TAN_C) $(TIME_C)
+SNOLIB_SRCS=$(ATAN_C) $(CHOP_C) $(COS_C) $(DELETE_C) $(ENVIRON_C) \
+	$(EXISTS_C) $(EXIT_C) $(EXECUTE_C) $(EXP_C) $(FILE_C) \
+	$(FINDUNIT_C) $(FORK_C) $(GETSTRING_C) $(HOST_C) $(LOG_C) \
+	$(LOGIC_C) $(ORD_C) $(RANDOM_C) $(READLINE_C) $(RENAME_C) \
+	$(RETSTRING_C) $(SERV_C) $(SIN_C) $(SPRINTF_C) $(SQRT_C) \
+	$(SSET_C) $(SYS_C) $(TAN_C) $(TIME_C)
 
 atan.o:	$(ATAN_C)
 	$(CC) $(CFLAGS) -c $(ATAN_C)
@@ -488,6 +490,9 @@ ndbm.o: $(NDBM_C)
 
 ord.o: $(ORD_C)
 	$(CC) $(CFLAGS) -c $(ORD_C)
+
+random.o: $(RANDOM_C)
+	$(CC) $(CFLAGS) -c $(RANDOM_C)
 
 readline.o: $(READLINE_C)
 	$(CC) $(CFLAGS) -c $(READLINE_C)
