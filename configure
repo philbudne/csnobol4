@@ -284,6 +284,9 @@ echo '#define PATH_SEP ":"'			>> $CONFIG_H
 # safe on all Unix systems (requires "fork")
 echo '#define PML_SERV'				>> $CONFIG_H
 
+# should work on all Unix systems
+echo '#define PML_RANDOM'			>> $CONFIG_H
+
 # Unix Makefile2 created build.c
 echo '#define HAVE_BUILD_VARS'			>> $CONFIG_H
 
