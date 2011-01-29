@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+1/29/2011:
+	new sdb.sh: driver script for SDB debugger
+	Makefile2.m4: create and install sdb from sdb.sh
+
 1/24/2011:
 	new snolib/random.c: FreeBSD random() function
 	pml.h: add RANDOM

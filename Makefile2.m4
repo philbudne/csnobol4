@@ -271,6 +271,14 @@ data_init.o: $(SRCDIR)data_init.c
 syn.o: $(SRCDIR)syn.c
 	$(CC) $(CFLAGS) -c $(SRCDIR)syn.c
 
+################ shell scripts
+
+sdb:	sdb.sh
+	sed -e "s@<SNOLIB_DIR>@$(SNOLIB_DIR)@" \
+	    -e "s@<BINDIR>@$(BINDIR)@" \
+	    < sdb.sh > sdb
+	chmod a+x sdb
+
 #################################################################
 # lib files
 
@@ -555,11 +563,12 @@ GENSNOLIB=host.sno
 SNOLIB_FILES=snolib/*.sno $(INSTALL_H) doc/load.txt README $(GENSNOLIB) 
 
 VERS=`./pv`
-install: snobol4 pv
+install: snobol4 pv sdb
 	$(INSTALL) -d $(BINDIR)
 	$(INSTALL) -s snobol4 $(BINDIR)
 	-rm -f $(BINDIR)/snobol4-$(VERS)
 	ln $(BINDIR)/snobol4 $(BINDIR)/snobol4-$(VERS)
+	$(INSTALL) -s sdb $(BINDIR)
 	$(INSTALL) -d $(MAN1DIR)
 	$(INSTALL) -m 644 doc/snobol4.1 $(MAN1DIR)
 	$(INSTALL) -d $(MAN3DIR)
