@@ -568,7 +568,7 @@ install: snobol4 pv sdb
 	$(INSTALL) -s snobol4 $(BINDIR)
 	-rm -f $(BINDIR)/snobol4-$(VERS)
 	ln $(BINDIR)/snobol4 $(BINDIR)/snobol4-$(VERS)
-	$(INSTALL) -s sdb $(BINDIR)
+	$(INSTALL) sdb $(BINDIR)
 	$(INSTALL) -d $(MAN1DIR)
 	$(INSTALL) -m 644 doc/snobol4.1 $(MAN1DIR)
 	$(INSTALL) -d $(MAN3DIR)
