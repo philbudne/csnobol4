@@ -139,6 +139,13 @@ MKTIME( LA_ALIST ) LA_DCL
     RETINT(ret);
 }
 
+int
+SLEEP( LA_ALIST ) LA_DCL
+{
+    sleep(LA_INT(0));
+    RETNULL;
+}
+
 #ifdef HAVE_STRPTIME
 /*
  * STRPTIME(STRING,STRING,TM)
@@ -161,4 +168,3 @@ STRPTIME_( LA_ALIST ) LA_DCL
     RETFAIL;
 }
 #endif
-

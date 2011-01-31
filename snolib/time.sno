@@ -3,7 +3,7 @@
 * Phil Budne <phil@ultimate.com>
 * December 15, 2010
 *
-* date/time conversions
+* date/time functions
 
 	DATA("TIMEVAL(TV_SEC,TV_USEC)")
 	DATA("TM(TM_SEC,TM_MIN,TM_HOUR,TM_MDAY,TM_MON,"
@@ -14,6 +14,7 @@
 	LOAD("GMTIME_(INTEGER,TM)")
 	LOAD("STRFTIME(STRING,TM)STRING")
 	LOAD("MKTIME(TM)INTEGER")
+	LOAD("SLEEP(INTEGER)")
 	LOAD("STRPTIME_(STRING,STRING,TM)")
 
 	DEFINE("GETTIMEOFDAY()TIMEVAL")	:(E.GETTIMEOFDAY)

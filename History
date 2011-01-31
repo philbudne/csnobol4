@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+1/30/2011:
+	lib/snolib/time.c: add SLEEP()
+	snolib/time.sno: add SLEEP()
+	pml.h: add SLEEP
+
 1/29/2011:
 	new sdb.sh: driver script for SDB debugger
 	Makefile2.m4: create and install sdb from sdb.sh
