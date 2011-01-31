@@ -38,6 +38,14 @@ struct vars *varp;
 
 # include "proc.h"			/* BEGIN() */
 
+# include "equ.h"			/* for res.h */
+# include "data.h"
+# include "res.h"			/* BANRCL */
+
+const char vers[] = VERSION;
+const char vdate[] = VERSION_DATE;
+const char snoname[] = "CSNOBOL4";
+
 int
 main(argc, argv)
     int argc;
@@ -60,7 +68,13 @@ main(argc, argv)
     init_data();
     init_syntab();
     init_args( argc, argv );
-    version();
+
+    if( D_A(BANRCL) != 0 ) {
+	io_printf(D_A(PUNCH),
+"The Macro Implementation of SNOBOL4 in C (%s) Version %s\n", snoname, vers);
+	io_printf(D_A(PUNCH), "    by Philip L. Budne, %s\n", vdate);
+    }
+
 # ifdef ENDEX_LONGJMP
     if (setjmp(endex_jmpbuf))
 	return(D_A(RETCOD));

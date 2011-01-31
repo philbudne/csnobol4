@@ -195,7 +195,7 @@ OBJS=	main.o $(SNOBOL4).o data.o data_init.o syn.o bal.o date.o \
 	dump.o dynamic.o endex.o expops.o hash.o $(INET_O) init.o \
 	intspc.o io.o lexcmp.o load.o mstime.o ordvst.o pair.o pat.o \
 	pml.o realst.o replace.o spcint.o spreal.o str.o stream.o \
-	suspend.o term.o top.o tree.o tty.o version.o \
+	suspend.o term.o top.o tree.o tty.o \
 	$(PML_OBJS) $(SNOLIB_A)
 
 AUX_SRCS=[]_SRCS
@@ -205,7 +205,7 @@ SRCS=	main.c $(SNOBOL4).c data.c data_init.c syn.c $(BAL_C) \
 	$(LOAD_C) $(MSTIME_C) $(ORDVST_C) $(PAIR_C) $(PAT_C) $(PML_C) \
 	$(REALST_C) $(REPLACE_C) $(SPCINT_C) $(SPREAL_C) $(STREAM_C) \
 	$(STR_C) $(SUSPEND_C) $(TOP_C) $(TERM_C) $(TREE_C) $(TTY_C) \
-	version.c $(AUX_SRCS) $(SNOLIB_SRCS)
+	$(AUX_SRCS) $(SNOLIB_SRCS)
 
 ################
 # link, regression test & timing
@@ -248,9 +248,6 @@ snobol4: xsnobol4 snobol4.c test/tests.in
 # may need additional options due to size!!
 $(SNOBOL4).o: $(SRCDIR)$(SNOBOL4).c 
 	$(CC) $(SNOBOL4_C_CFLAGS) $(CFLAGS) -c $(SRCDIR)$(SNOBOL4).c
-
-version.o: $(SRCDIR)version.c
-	$(CC) $(CFLAGS) -c $(SRCDIR)version.c
 
 main.o: $(SRCDIR)main.c
 	$(CC) $(CFLAGS) -c $(SRCDIR)main.c
@@ -562,8 +559,7 @@ GENSNOLIB=host.sno
 
 SNOLIB_FILES=snolib/*.sno $(INSTALL_H) doc/load.txt README $(GENSNOLIB) 
 
-VERS=`./pv`
-install: snobol4 pv sdb
+install: snobol4 sdb
 	$(INSTALL) -d $(BINDIR)
 	$(INSTALL) -s snobol4 $(BINDIR)
 	-rm -f $(BINDIR)/snobol4-$(VERS)
@@ -582,9 +578,6 @@ install: snobol4 pv sdb
 	@echo '*********************************************************' 1>&2
 	@echo 'Have you mailed a copy of timing.out to timing@snobol4.org ?' 1>&2
 	@echo '*********************************************************' 1>&2
-
-pv:	version.c
-	$(MAKE) -f Makefile pv
 
 ################
 MAKEFILE2=Makefile2

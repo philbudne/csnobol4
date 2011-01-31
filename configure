@@ -9,6 +9,10 @@ ID='$Id$'
 
 OPTIONS="$*"
 
+# needed in Makefile2 and config.h
+VERSION=1.3+
+VERSION_DATE="January 23, 2011"
+
 if [ ! "$CC" ]; then
     # on most system gcc is preferred if it can be found
     WANTGCC=true
@@ -72,6 +76,10 @@ echo ' * on '"$HOST ($OS)"			>> $CONFIG_H
 echo ' * by '"$ID"				>> $CONFIG_H
 echo ' */'					>> $CONFIG_H
 echo ''						>> $CONFIG_H
+echo '#define VERSION "'$VERSION'"'		>> $CONFIG_H
+echo '#define VERSION_DATE "'$VERSION_DATE'"'	>> $CONFIG_H
+echo "VERS=$VERSION"				>> $CONFIG_M4
+
 if [ "x$OPTIONS" != x ]; then
     echo '#define CONFIG_OPTIONS "'"$OPTIONS"'"' >> $CONFIG_H
 fi
@@ -264,7 +272,7 @@ MAN1DIR="$MANDIR/man1"
 MAN3DIR="$MANDIR/man3"
 if [ "x$SNOLIB_DIR" = x ]; then
     # PREFIX/lib/snobol4/VERSION
-    SNOLIB_DIR="$PREFIX/lib/snobol4"
+    SNOLIB_DIR="$PREFIX/lib/snobol4/$VERSION"
 fi
 
 echo 'BINDIR=$(DESTDIR)'"$BINDIR"		>> $CONFIG_M4

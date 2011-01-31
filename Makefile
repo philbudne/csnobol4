@@ -184,7 +184,7 @@ tidy:
 		-print | xargs -t rm -f
 
 # disposables
-DISP=*.o *.a callgraph prolog bsplitu pv vers build.c bsdtsort \
+DISP=*.o *.a callgraph prolog bsplitu vers build.c bsdtsort \
 	config.m4 config.h Makefile2 .depend cpuid
 
 # Inspired by PowderMilk bisquits
@@ -202,7 +202,3 @@ clean:	cleanmostly
 # remove objects, generated files (clean as a fresh CVS checkout)
 spotless: clean
 	rm -f $(GENERATED) $(G2) snobol4.c isnobol4.c snobol4 xsnobol4
-
-# "print version" -- for dir/tar names
-pv:	version.c
-	$(CC) -I./include -DMAIN -o pv version.c
