@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+2/2/2011:
+	configure: fix readline test
+
 1/30/2011:
 	lib/snolib/time.c: add SLEEP()
 	snolib/time.sno: add SLEEP()

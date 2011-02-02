@@ -1,5 +1,10 @@
 $Id$
 
+TIME:
+	SLEEP(REAL)
+		use nanosleep, select, Win32 Sleep()
+	prefix all data/functions with "TIME."?
+
 Include sdb.sno/sdb.sh script
 	use SETEXIT?
 

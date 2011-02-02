@@ -1584,7 +1584,7 @@ if [ ! "$WITHOUT_NDBM" ]; then
 fi
 
 # Include GNU readline support, if found -- look for library??
-if [ /usr/include/readline/readline.h -a ! "$WITHOUT_READLINE" ]; then
+if [ -f /usr/include/readline/readline.h -a ! "$WITHOUT_READLINE" ]; then
     echo 'using readline' 1>&2
     echo 'ADD_OBJS([readline.o])'		>> $CONFIG_M4
     echo 'ADD_SRCS([$(READLINE_C)])'		>> $CONFIG_M4
