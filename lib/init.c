@@ -120,7 +120,8 @@ usage( jname, justversion )
     p('g',"enable GC trace (&GTRACE)");
     p('h',"help (this message)");
     p('k',"toggle running programs with compilation errors (-[NO]ERRORS)");
-    p('l',"enable listings (-LIST)");
+    fprintf(stderr, 
+	    "-l LISTINGFILE\n\tenable listing (-LIST) and specify file\n");
     p('n',"toggle running program after compilation (-[NO]EXECUTE)");
     p('p',"toggle SPITBOL operators (-PLUSOPS)");
     p('r',"toggle reading INPUT from after END statement");
