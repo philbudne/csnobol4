@@ -62,7 +62,7 @@ generated: $(GENERATED)
 ################
 # run configuration script
 
-config.m4 config.h: configure
+config.m4 config.h version.h: configure
 	./configure
 
 ################

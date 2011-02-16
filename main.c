@@ -41,6 +41,7 @@ struct vars *varp;
 # include "equ.h"			/* for res.h */
 # include "data.h"
 # include "res.h"			/* BANRCL */
+# include "version.h"			/* VERSION, VERSION_DATE */
 
 const char vers[] = VERSION;
 const char vdate[] = VERSION_DATE;

@@ -42,6 +42,7 @@ DATE=`date`
 # run hostname from subshell to redirect shell "not found message"
 HOST=`(hostname) 2>/dev/null || uname -n`
 
+VERSION_H=version.h.tmp
 CONFIG_H=config.h.tmp
 CONFIG_M4=config.m4.tmp
 
@@ -52,7 +53,7 @@ if [ "$MACHINE" = x86_64 -a -d /usr/lib64 ]; then
     echo "using $LIBDIR for LIBDIR" 1>&2
 fi
 
-rm -f $CONFIG_H $CONFIG_M4
+rm -f $CONFIG_H $CONFIG_M4 $VERSION_H
 trap "rm -f $CONFIG_H $CONFIG_M4; exit 1" 1 2 15
 
 echo "# config generated "$DATE			>> $CONFIG_M4
@@ -70,15 +71,22 @@ echo 'undefine([include])'			>> $CONFIG_M4
 echo 'ADD_CPPFLAGS([-DHAVE_CONFIG_H])'		>> $CONFIG_M4
 echo '# see config.h for more defines'		>> $CONFIG_M4
 
+echo '/*'					>> $VERSION_H
+echo ' * generated '$DATE			>> $VERSION_H
+echo ' * on '"$HOST ($OS)"			>> $VERSION_H
+echo ' * by '"$ID"				>> $VERSION_H
+echo ' */'					>> $VERSION_H
+echo ''						>> $VERSION_H
+echo '#define VERSION "'$VERSION'"'		>> $VERSION_H
+echo '#define VERSION_DATE "'$VERSION_DATE'"'	>> $VERSION_H
+echo "VERS=$VERSION"				>> $CONFIG_M4
+
 echo '/*'					>> $CONFIG_H
 echo ' * generated '$DATE			>> $CONFIG_H
 echo ' * on '"$HOST ($OS)"			>> $CONFIG_H
 echo ' * by '"$ID"				>> $CONFIG_H
 echo ' */'					>> $CONFIG_H
 echo ''						>> $CONFIG_H
-echo '#define VERSION "'$VERSION'"'		>> $CONFIG_H
-echo '#define VERSION_DATE "'$VERSION_DATE'"'	>> $CONFIG_H
-echo "VERS=$VERSION"				>> $CONFIG_M4
 
 if [ "x$OPTIONS" != x ]; then
     echo '#define CONFIG_OPTIONS "'"$OPTIONS"'"' >> $CONFIG_H
@@ -1727,5 +1735,8 @@ if [ ! "$DEBUG" ]; then
     fi
     if [ $CONFIG_M4 != config.m4 ]; then
 	mv -f $CONFIG_M4 config.m4
+    fi
+    if [ $VERSION_H != version.h ]; then
+	mv -f $VERSION_H version.h
     fi
 fi

@@ -1,5 +1,9 @@
 $Id$
 
+move version defines to version.h
+	flush version.c deps from alien makefiles
+	include version.h in distribution?
+
 TIME:
 	SLEEP(REAL)
 		use nanosleep, select, Win32 Sleep()
