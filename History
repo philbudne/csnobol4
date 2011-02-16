@@ -12,7 +12,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 2/7/2011:
 	lib/init.c: fix "-l" entry in usage message
 	doc/snobol4.1: merge two &GTRACE entries
-		update -l entry
+		update -l entry, URLs
 
 2/2/2011:
 	configure: fix readline test
