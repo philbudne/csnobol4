@@ -52,6 +52,8 @@ __FBSDID("$FreeBSD: src/lib/libc/stdlib/random.c,v 1.25 2007/01/09 00:28:10 imp 
 #include <unistd.h>            /* for srandomdev() */
 #endif
 
+long bsd_random();
+
 /*
  * random.c:
  *
