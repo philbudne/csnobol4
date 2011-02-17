@@ -42,7 +42,7 @@ OBJ=	isnobol4.obj data.obj data_init.obj main.obj syn.obj \
 	bal.obj date.obj dump.obj endex.obj hash.obj \
 	intspc.obj io.obj lexcmp.obj ordvst.obj pair.obj \
 	pat.obj pml.obj realst.obj replace.obj str.obj stream.obj \
-	top.obj tree.obj bcopy.obj bzero.obj dynamic.obj expops.obj \
+	top.obj tree.obj atan.obj bcopy.obj bzero.obj dynamic.obj expops.obj \
 	getopt.obj init.obj load.obj mstime.obj chop.obj cos.obj \
 	delete.obj environ.obj exit.obj file.obj getstring.obj handle.obj \
 	host.obj log.obj logic.obj ord.obj rename.obj retstring.obj \
@@ -190,6 +190,9 @@ exists.obj : $(SRCDIR)lib\win32\exists.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\exists.c
 
 ################ snolib
+
+atan.obj : $(SRCDIR)lib\snolib\atan.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\atan.c
 
 chop.obj : $(SRCDIR)lib\snolib\chop.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\chop.c

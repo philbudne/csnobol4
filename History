@@ -14,6 +14,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	    config/win32/{borland.mak,mingw.mak,ntmsvc.mak,snobol4.vcxproj}:
 		flush version.c
 	lib/snolib/time.c: check HAVE_SLEEP
+	config/win32/ntmsvc.mak: add atan
 
 2/7/2011:
 	lib/init.c: fix "-l" entry in usage message
