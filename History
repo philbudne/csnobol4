@@ -15,6 +15,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 		flush version.c
 	lib/snolib/time.c: check HAVE_SLEEP
 	config/win32/ntmsvc.mak: add atan
+	lib/snolib/random.c: fix a warning, try making win32 safe
 
 2/7/2011:
 	lib/init.c: fix "-l" entry in usage message

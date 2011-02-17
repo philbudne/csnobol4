@@ -42,6 +42,10 @@ __FBSDID("$FreeBSD: src/lib/libc/stdlib/random.c,v 1.25 2007/01/09 00:28:10 imp 
 #include <stdlib.h>
 #include <unistd.h>            /* for srandomdev() */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 /*
  * random.c:
  *
@@ -314,11 +318,15 @@ bsd_srandomdev()
 	}
 
 	if (!done) {
-		struct timeval tv;
 		unsigned long junk;
+#ifdef HAVE_GETTIMEOFDAY
+		struct timeval tv;
 
 		gettimeofday(&tv, NULL);
 		srandom((getpid() << 16) ^ tv.tv_sec ^ tv.tv_usec ^ junk);
+#else
+		srandom(time(0) ^ rand()); /* win32 */
+#endif
 		return;
 	}
 
@@ -512,7 +520,6 @@ static int seeded = 0;
 int
 RANDOM( LA_ALIST ) LA_DCL
 {
-    int ret;
     if (!seeded) {
 	bsd_srandomdev();
 	seeded = 1;
