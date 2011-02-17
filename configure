@@ -1388,18 +1388,19 @@ fi
 
 if grep gettimeofday $INCDIR/sys/time.h >/dev/null 2>&1; then
     echo 'found gettimeofday()' 1>&2
-    echo '#define HAVE_GETTIMEOFDAY'			>> $CONFIG_H
+    echo '#define HAVE_GETTIMEOFDAY'		>> $CONFIG_H
 fi
 if grep tm_gmtoff $INCDIR/time.h >/dev/null 2>&1; then
     echo 'found tm_gmtoff' 1>&2
-    echo '#define HAVE_TM_GMTOFF'			>> $CONFIG_H
+    echo '#define HAVE_TM_GMTOFF'		>> $CONFIG_H
 fi
 if grep strptime $INCDIR/time.h >/dev/null 2>&1; then
     echo 'found strptime()' 1>&2
-    echo '#define HAVE_STRPTIME'			>> $CONFIG_H
+    echo '#define HAVE_STRPTIME'		>> $CONFIG_H
 fi
 # should be safe on all Un*x systems
-echo '#define PML_TIME'					>> $CONFIG_H
+echo '#define PML_TIME'				>> $CONFIG_H
+echo '#define HAVE_SLEEP'			>> $CONFIG_H
 
 # output SO/DL defines
 

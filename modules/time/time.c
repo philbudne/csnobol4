@@ -139,12 +139,14 @@ MKTIME( LA_ALIST ) LA_DCL
     RETINT(ret);
 }
 
+#ifdef HAVE_SLEEP
 int
 SLEEP( LA_ALIST ) LA_DCL
 {
     sleep(LA_INT(0));
     RETNULL;
 }
+#endif
 
 #ifdef HAVE_STRPTIME
 /*
