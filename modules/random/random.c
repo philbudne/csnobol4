@@ -35,15 +35,21 @@ static char sccsid[] = "@(#)random.c	8.2 (Berkeley) 5/19/95";
 __FBSDID("$FreeBSD: src/lib/libc/stdlib/random.c,v 1.25 2007/01/09 00:28:10 imp Exp $");
 #endif
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#ifdef HAVE_GETTIMEOFDAY
 #include <sys/time.h>          /* for srandomdev() */
+#endif
+#ifdef HAVE_DEV_RANDOM
 #include <fcntl.h>             /* for srandomdev() */
+#endif
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>            /* for srandomdev() */
-
-#ifdef HAVE_CONFIG_H
-#include "config.h"
 #endif
 
 /*
@@ -220,9 +226,8 @@ static int rand_deg = DEG_3;
 static int rand_sep = SEP_3;
 static uint32_t *end_ptr = &randtbl[DEG_3 + 1];
 
-static inline uint32_t good_rand(int32_t);
 
-static inline uint32_t good_rand (x)
+static uint32_t good_rand (x)
 	int32_t x;
 {
 #ifdef  USE_WEAK_SEEDING
@@ -284,7 +289,7 @@ bsd_srandom(x)
 		lim = 10 * rand_deg;
 	}
 	for (i = 0; i < lim; i++)
-		(void)random();
+		(void)bsd_random();
 }
 
 /*
@@ -301,7 +306,9 @@ bsd_srandom(x)
 void
 bsd_srandomdev()
 {
-	int fd, done;
+	int done = 0;
+#ifdef HAVE_DEV_RANDOM
+	int fd;
 	size_t len;
 
 	if (rand_type == TYPE_0)
@@ -309,23 +316,22 @@ bsd_srandomdev()
 	else
 		len = rand_deg * sizeof state[0];
 
-	done = 0;
 	fd = open("/dev/random", O_RDONLY, 0);
 	if (fd >= 0) {
 		if (read(fd, (void *) state, len) == (ssize_t) len)
 			done = 1;
 		close(fd);
 	}
-
+#endif
 	if (!done) {
-		unsigned long junk;
+		unsigned long junk;	/* intentionally uninitialized */
 #ifdef HAVE_GETTIMEOFDAY
 		struct timeval tv;
 
 		gettimeofday(&tv, NULL);
-		srandom((getpid() << 16) ^ tv.tv_sec ^ tv.tv_usec ^ junk);
+		bsd_srandom((getpid() << 16) ^ tv.tv_sec ^ tv.tv_usec ^ junk);
 #else
-		srandom(time(0) ^ rand()); /* win32 */
+		bsd_srandom(time(0) ^ junk); /* safe for win32 */
 #endif
 		return;
 	}
@@ -400,7 +406,7 @@ bsd_initstate(seed, arg_state, n)
 	}
 	state = int_arg_state + 1; /* first location */
 	end_ptr = &state[rand_deg];	/* must set end_ptr before srandom */
-	srandom(seed);
+	bsd_srandom(seed);
 	if (rand_type == TYPE_0)
 		int_arg_state[0] = rand_type;
 	else
