@@ -7,6 +7,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	removed version.c, no longer used
 	configure: put VERSION and VERSION_DATE in version.h
 		output HAVE_SLEEP
+		check for /dev/random, output HAVE_DEV_RANDOM
 	main.c: include version.h
 	Makefile: version.h create by configure
 	Makefile2.m4: install version.h

@@ -1601,6 +1601,11 @@ if [ -f /usr/include/readline/readline.h -a ! "$WITHOUT_READLINE" ]; then
     echo '#define PML_READLINE'			>> $CONFIG_H
 fi
 
+if [ -c /dev/random ]; then
+    echo 'using /dev/random' 1>&2
+    echo '#define HAVE_DEV_RANDOM'		>> $CONFIG_H
+fi
+
 # Include COM support under Cygwin!
 if [ "$CYGWIN" -a -f $INCDIR/w32api/objbase.h ]; then
     echo 'using Win32 COM support' 1>&2
