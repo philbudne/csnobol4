@@ -132,7 +132,6 @@
     <ClCompile Include="..\..\lib\win32\tty.c" />
     <ClCompile Include="..\..\main.c" />
     <ClCompile Include="..\..\syn.c" />
-    <ClCompile Include="..\..\version.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\data.h" />

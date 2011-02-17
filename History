@@ -2,12 +2,16 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+
 2/16/2011:
 	removed version.c, no longer used
 	configure: put VERSION and VERSION_DATE in version.h
 	main.c: include version.h
 	Makefile: version.h create by configure
 	Makefile2.m4: install version.h
+	config/djgpp/Makefile, config/vms/descrip.mms,
+	    config/win32/{borland.mak,mingw.mak,ntmsvc.mak,snobol4.vcxproj}:
+		flush version.c
 
 2/7/2011:
 	lib/init.c: fix "-l" entry in usage message

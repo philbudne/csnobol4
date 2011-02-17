@@ -176,7 +176,7 @@ OBJS=	main.obj, $(SNOBOL4).obj, data.obj, data_init.obj, syn.obj, \
 	io.obj, lexcmp.obj, load.obj, mstime.obj, ordvst.obj, \
 	osopen.obj, pair.obj, pat.obj, pml.obj, realst.obj, \
 	replace.obj, spcint.obj, spreal.obj, str.obj, stream.obj, \
-	term.obj, top.obj, tty.obj, tree.obj, version.obj, \
+	term.obj, top.obj, tty.obj, tree.obj, \
 	getredirect.obj, $(AUX_OBJ) $(PML_OBJ) $(NDBM_OBJ)
 
 snobol4.exe : $(OBJS)

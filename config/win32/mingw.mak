@@ -34,7 +34,7 @@ CFLAGS=	-c $(OPT) -I$(SRCDIR)config/win32 -I$(SRCDIR)include -I$(SRCDIR). \
 # for com.cpp
 CXXFLAGS=$(CFLAGS)
 
-OBJ=	isnobol4.o data.o data_init.o main.o syn.o version.o bal.o \
+OBJ=	isnobol4.o data.o data_init.o main.o syn.o bal.o \
 	date.o dump.o endex.o hash.o intspc.o io.o lexcmp.o ordvst.o \
 	pair.o pat.o pml.o realst.o replace.o str.o stream.o top.o \
 	tree.o bcopy.o bzero.o dynamic.o expops.o getopt.o init.o \
@@ -61,9 +61,6 @@ main.o:	$(SRCDIR)main.c
 
 syn.o:	$(SRCDIR)syn.c
 	$(CC) $(CFLAGS) $(SRCDIR)syn.c
-
-version.o: $(SRCDIR)version.c
-	$(CC) $(CFLAGS) $(SRCDIR)version.c
 
 ################ common
 

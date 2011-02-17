@@ -45,6 +45,7 @@ Trapping of arithmetic exceptions.
 can be used to access external functions on most platforms, but not all.
 External functions can be staticly linked (poor man's loading) into the
 snobol4 executable
+on
 .B ALL
 platforms.  See /usr/local/lib/snobol4/load.txt for more information.
 
@@ -59,7 +60,11 @@ or the
 .B -l
 command option is
 .BR LEFT .
-Listings are directed to standard output.
+Listings are directed to standard output (or file specified by the
+.B -l
+option,
+not the card
+.BR PUNCH .
 .IP \(bu
 Error messages, the startup banner and statistics are directed to
 standard error.  Compilation error messages (including erroneous
@@ -315,7 +320,9 @@ predicate exists in SITBOL.
 If set to a non-zero value, each time a garbage collection is run,
 a trace message is output indicating the source file and line number
 of the current statement, how long the GC took, and how many units
-of storage are now free.
+of storage are now free. If positive, the value of
+.B &GTRACE
+will be decremented after it is tested.
 .TP
 .B HOST()
 .br
@@ -422,13 +429,6 @@ returns the null string if a label with that name has been defined,
 and fails if it does not.  The
 .B LABEL()
 predicate was copied from SITBOL and Steve Duff's version of Macro SPITBOL.
-.TP
-.B &GTRACE
-.br
-keyword enables Garbage Collection tracing if non-zero.
-If positive, the value of
-.B &GTRACE
-will be decremented after it is tested.
 .TP
 .B &LINE/&FILE/&LASTLINE/&LASTFILE
 .br
@@ -922,9 +922,8 @@ and
 extensions).  By default programs with compilation errors will not be
 run.
 .TP
-.B -l
-Re-enable listing to stdout.  (default is
-.BR \-UNLIST ).
+.BI "-l " LISTINGFILE
+Enable listing output to
 Default listing side is
 .BR LEFT .
 .TP
@@ -1042,8 +1041,7 @@ Catspaw Macro SPITBOL manual
 .IR "The SNOBOL4 Programming Language" ,
 2nd ed., Prentice-Hall Inc., 1971.
 .br
-Reference manual for Macro SNOBOL4.
-(soon to be available as a PDF!!!)
+ftp://ftp.cs.arizona.edu/snobol4/gb.pdf
 
 .TP
 [2] R. E. Griswold,
@@ -1053,16 +1051,19 @@ W. H. Freeman and Co., 1972.
 Book describing the implementation techniques used in Macro SNOBOL4.
 
 .TP
-ftp://ftp.snobol4.org/snobol/doc/
+http://www.snobol4.org/docs/arizona/
 .br
-Directory with sources for University of Arizona SNOBOL4 memos,
-including formatted versions of memo s4d58, which describes each
-pseudo-instruction in the Snobol Implementation Language (SIL).
+University of Arizona SNOBOL4 memos,
+formatted as PDF files by Scott Marovich.
+Includes memo s4d58, which describes each
+pseudo-instruction in the Snobol Implementation Language (SIL),
+corrigendae for [1], [2] and
+.IR "String and List Processing in SNOBOL4" .
 
 .SH AUTHOR
 Philip L. Budne
 .PP
-with a little help from:
+with help from:
 .PP
 R. E. Griswold, J. F. Poage, and I. P. Polonsky
 .PP

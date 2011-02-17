@@ -50,7 +50,7 @@ CFLAGS=	-c $(OPT) -I$(SRCDIR)config/djgpp -I$(SRCDIR)include -I$(SRCDIR). \
 LIBS=$(WATTCP_LIBS) -lm -lc -lpc $(DXE_LIBS) 
 
 OBJ=	isnobol4.o data.o data_init.o main.o syn.o \
-	version.o bal.o date.o dump.o endex.o hash.o \
+	bal.o date.o dump.o endex.o hash.o \
 	intspc.o io.o lexcmp.o ordvst.o pair.o pat.o \
 	pml.o realst.o replace.o str.o stream.o top.o \
 	tree.o bcopy.o bzero.o dynamic.o expops.o getopt.o \
@@ -78,9 +78,6 @@ main.o:	$(SRCDIR)main.c
 
 syn.o:	$(SRCDIR)syn.c
 	$(CC) $(CFLAGS) $(SRCDIR)syn.c
-
-version.o: $(SRCDIR)version.c
-	$(CC) $(CFLAGS) $(SRCDIR)version.c
 
 ################ common
 
