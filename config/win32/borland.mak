@@ -37,10 +37,10 @@ OBJ=	isnobol4.obj data.obj data_init.obj main.obj syn.obj \
 	intspc.obj io.obj lexcmp.obj ordvst.obj pair.obj pat.obj \
 	pml.obj realst.obj replace.obj str.obj stream.obj top.obj \
 	tree.obj bcopy.obj bzero.obj dynamic.obj expops.obj getopt.obj \
-	init.obj load.obj mstime.obj chop.obj cos.obj delete.obj \
+	init.obj load.obj mstime.obj atan.obj chop.obj cos.obj delete.obj \
 	environ.obj exit.obj file.obj getstring.obj host.obj log.obj \
-	logic.obj ord.obj rename.obj retstring.obj sin.obj spcint.obj \
-	spreal.obj sqrt.obj sset.obj tan.obj osopen.obj sys.obj \
+	logic.obj ord.obj random.obj rename.obj retstring.obj sin.obj \
+	spcint.obj spreal.obj sqrt.obj sset.obj tan.obj osopen.obj sys.obj \
 	tty.obj inet.obj bindresvport.obj execute.obj exists.obj \
 	term.obj findunit.obj exp.obj
 
@@ -189,6 +189,9 @@ exists.obj : $(SRCDIR)lib\win32\exists.c
 
 ################ snolib
 
+atan.obj : $(SRCDIR)lib\snolib\atan.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\atan.c
+
 chop.obj : $(SRCDIR)lib\snolib\chop.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\chop.c
 
@@ -230,6 +233,9 @@ ord.obj : $(SRCDIR)lib\snolib\ord.c
 
 rename.obj : $(SRCDIR)lib\snolib\rename.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\rename.c
+
+random.obj : $(SRCDIR)lib\snolib\random.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\random.c
 
 retstring.obj : $(SRCDIR)lib\snolib\retstring.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\retstring.c

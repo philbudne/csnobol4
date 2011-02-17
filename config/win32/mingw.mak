@@ -38,9 +38,9 @@ OBJ=	isnobol4.o data.o data_init.o main.o syn.o bal.o \
 	date.o dump.o endex.o hash.o intspc.o io.o lexcmp.o ordvst.o \
 	pair.o pat.o pml.o realst.o replace.o str.o stream.o top.o \
 	tree.o bcopy.o bzero.o dynamic.o expops.o getopt.o init.o \
-	load.o mstime.o chop.o cos.o delete.o environ.o exit.o exp.o \
+	load.o mstime.o atan.o chop.o cos.o delete.o environ.o exit.o exp.o \
 	file.o getstring.o handle.o host.o log.o logic.o ord.o rename.o \
-	retstring.o sin.o spcint.o spreal.o sprintf.o sqrt.o sset.o \
+	random.o retstring.o sin.o spcint.o spreal.o sprintf.o sqrt.o sset.o \
 	tan.o osopen.o sys.o tty.o inet.o bindresvport.o execute.o \
 	exists.o term.o findunit.o $(COM_OBJ) $(SDBM_OBJ)
 
@@ -184,6 +184,9 @@ exists.o: $(SRCDIR)lib/win32/exists.c
 
 ################ snolib
 
+atan.o:	$(SRCDIR)lib/snolib/atan.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/atan.c
+
 chop.o:	$(SRCDIR)lib/snolib/chop.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/chop.c
 
@@ -228,6 +231,9 @@ ndbm.o: $(SRCDIR)lib/snolib/ndbm.c
 
 ord.o:	$(SRCDIR)lib/snolib/ord.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/ord.c
+
+random.o: $(SRCDIR)lib/snolib/random.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/random.c
 
 rename.o: $(SRCDIR)lib/snolib/rename.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/rename.c

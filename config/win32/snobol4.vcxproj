@@ -94,6 +94,7 @@
     <ClCompile Include="..\..\lib\sdbm\sdbm.c" />
     <ClCompile Include="..\..\lib\sdbm\sdbm_hash.c" />
     <ClCompile Include="..\..\lib\sdbm\sdbm_pair.c" />
+    <ClCompile Include="..\..\lib\snolib\atan.c" />
     <ClCompile Include="..\..\lib\snolib\chop.c" />
     <ClCompile Include="..\..\lib\snolib\cos.c" />
     <ClCompile Include="..\..\lib\snolib\delete.c" />
@@ -109,6 +110,7 @@
     <ClCompile Include="..\..\lib\snolib\logic.c" />
     <ClCompile Include="..\..\lib\snolib\ndbm.c" />
     <ClCompile Include="..\..\lib\snolib\ord.c" />
+    <ClCompile Include="..\..\lib\snolib\random.c" />
     <ClCompile Include="..\..\lib\snolib\rename.c" />
     <ClCompile Include="..\..\lib\snolib\retstring.c" />
     <ClCompile Include="..\..\lib\snolib\sin.c" />
