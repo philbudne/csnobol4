@@ -1,8 +1,6 @@
 $Id$
 
-move version defines to version.h
-	flush version.c deps from alien makefiles
-	include version.h in distribution?
+command line option to preload file(s): use for sdb!!
 
 TIME:
 	SLEEP(REAL)

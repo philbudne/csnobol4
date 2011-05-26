@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+5/25/2011:
+	doc/snobol4.1: fixes from Mark Laster
+	README: Add Mark Laster, update for 2011
+	COPYRIGHT: Update for 2011
+	TODO.soon: update (parity: removed one, added one)
 
 2/16/2011:
 	removed version.c, no longer used
@@ -15,7 +20,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	    config/win32/{borland.mak,mingw.mak,ntmsvc.mak,snobol4.vcxproj}:
 		flush version.c
 	lib/snolib/time.c: check HAVE_SLEEP
-	lib/snolib/random.c: fix a warning, try making win32 safe
+	lib/snolib/random.c: fix a warning, try making win32 safe,
+		always call into own [s]random() functions!
 	config/win32/{borland.mak,mingw.mak,ntmsvc.mak,snobol4.vcxproj}:
 		add atan, random
 
