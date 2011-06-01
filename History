@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+6/1/2011:
+	doc/snobol4tcl.3: remove FILES section (pasted from dbm page)!
+
 5/25/2011:
 	doc/snobol4.1: fixes from Mark Laster
 	README: Add Mark Laster, update for 2011
