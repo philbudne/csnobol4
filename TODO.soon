@@ -1,5 +1,9 @@
 $Id$
 
+Use /usr..../lib/tcl*.*/tclConfig.sh to pick tcl
+	find includes, libraries, etc
+	Thanks to Michael Richter
+
 document SLEEP, RANDOM, ATAN, LN.
 	 SETEXIT/CONTINUE/SCONTINUE/ABORT
 
