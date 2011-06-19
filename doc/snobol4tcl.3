@@ -90,15 +90,6 @@ CHECKTK TK_VERSION = STCL_GETVAR(INTERP, "tk_version")  :F(NOTK)
 
 NOTK    OUTPUT = "Could not find tk_version"            :(END)
                                                                               
-        STCL_EVAL(INTERP, "package require Tk")         :F(END)
- 
-* Check for Tk
-
-CHECKTK TK_VERSION = STCL_GETVAR(INTERP, "tk_version")  :F(NOTK)
-        DIFFER(TK_VERSION)                              :S(HAVETK)
-
-NOTK    OUTPUT = "Could not find tk_version"            :(END)
-
 HAVETK  OUTPUT = "Tk version: " TK_VERSION
         SEP = ';'
  

@@ -7,6 +7,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 		problem reported by Michael Richter
 		Fatal error if Tcl not found when --with-tcl given!
 
+	doc/snobol4tcl.3: remove duplicated code from example program
+
 6/1/2011:
 	doc/snobol4tcl.3: remove FILES section (pasted from dbm page)!
 
