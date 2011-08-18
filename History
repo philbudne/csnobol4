@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+8/18/2011:
+	configure: crock to look in /usr/lib/INSTSET-linux-gnu for
+		gdbm_compat library for Ubuntu 11.04
+
 6/19/2011:
 	configure: look in /usr/include/tcl*.* for tcl.h
 		problem reported by Michael Richter

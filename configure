@@ -1505,6 +1505,7 @@ if [ "$WITH_TCL" ]; then
     done
     if [ "$TCLLIB" ]; then
 	echo using $TCLLIBDIR/tcl$MAJ$MIN 1>&2
+	# XXX compare to LIBDIR?
 	if [ "$TCLLIBDIR" != /usr/lib ]; then
 	    echo 'ADD_LDFLAGS([-L'$TCLLIBDIR'])' >> $CONFIG_M4
 	fi
@@ -1570,8 +1571,14 @@ if [ ! "$WITHOUT_NDBM" ]; then
 	if [ "$USE_GDBM" ]; then
 	    echo "using libgdbm for DBM support" 1>&2
 	    # gdbm 1.8.1: assume if it exists, we need it?
+
+	    # need to look elsewhere on Ubuntu 11.04
+	    # (what about cross compilations!)
+	    ALTLIBDIR=/usr/lib/`uname -i`-linux-gnu
 	    if [ -f $LIBDIR/libgdbm_compat.a -o \
-		 -f $LIBDIR/libgdbm_compat.so ]; then
+		 -f $LIBDIR/libgdbm_compat.so -o \
+		 -f $ALTLIBDIR/libgdbm_compat.a -o \
+		 -f $ALTLIBDIR/libgdbm_compat.so ]; then
 		echo "using libgdbm_compat" 1>&2
 		echo 'ADD_LDFLAGS([-lgdbm_compat])' >> $CONFIG_M4
 	    fi
