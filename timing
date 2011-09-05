@@ -229,7 +229,8 @@ if [ -x /usr/sbin/system_profiler ]; then
 fi
 
 if [ "$CPUID" ]; then
-	if gcc -fpic -o cpuid cpuid.c 2>&1 >/dev/null; then
+	# -fPIC is default on MacOS, force it for others
+	if gcc -fPIC -o cpuid cpuid.c 2>&1 >/dev/null; then
 		echo ''
 		echo 'cpuid:'
 		./cpuid
