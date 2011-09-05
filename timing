@@ -229,7 +229,7 @@ if [ -x /usr/sbin/system_profiler ]; then
 fi
 
 if [ "$CPUID" ]; then
-	if gcc -o cpuid cpuid.c 2>&1 >/dev/null; then
+	if gcc -fpic -o cpuid cpuid.c 2>&1 >/dev/null; then
 		echo ''
 		echo 'cpuid:'
 		./cpuid
