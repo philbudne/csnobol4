@@ -5,7 +5,7 @@
 // http://softpixel.com/~cwright/programming/simd/cpuid.php
 // http://en.wikipedia.org/wiki/CPUID
 
-#if 0
+#ifdef NO_PIC
 #define cpuid(func,ax,bx,cx,dx)		\
 	__asm__ __volatile__ ("cpuid":\
 	"=a" (ax), "=b" (bx), "=c" (cx), "=d" (dx) : "a" (func));
