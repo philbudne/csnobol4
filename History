@@ -5,6 +5,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 9/5/2011:
 	cpuid.c: make PIC safe (for MacOS) with help from
 	  http://sam.zoy.org/blog/2007-04-13-shlib-with-non-pic-code-have-inlin
+	timing: force -fPIC for cpuid compile (default on MacOS)
 
 8/18/2011:
 	configure: crock to look in /usr/lib/INSTSET-linux-gnu for
