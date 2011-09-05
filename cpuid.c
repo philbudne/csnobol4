@@ -1,13 +1,23 @@
 #include <stdio.h>
 #include <string.h>
 
+// http://sam.zoy.org/blog/2007-04-13-shlib-with-non-pic-code-have-inlin
 // http://softpixel.com/~cwright/programming/simd/cpuid.php
 // http://en.wikipedia.org/wiki/CPUID
 
-#if 1
+#if 0
 #define cpuid(func,ax,bx,cx,dx)		\
 	__asm__ __volatile__ ("cpuid":\
 	"=a" (ax), "=b" (bx), "=c" (cx), "=d" (dx) : "a" (func));
+#else
+// works for PIC code
+#define cpuid(func,ax,bx,cx,dx)			\
+    __asm__ __volatile__(			\
+	"pushl %%ebx;"	/* save %ebx */		\
+	"cpuid;"				\
+	"movl %%ebx, %1;" /* save what cpuid justn put in %ebx */ \
+	"popl %%ebx" : /* restore the old %ebx */ \
+	"=a" (ax), "=r" (bx), "=c" (cx), "=d"(dx) : "a" (func) : "cc");
 #endif
 #ifdef MSVC
 #define cpuid(func,a,b,c,d)\
