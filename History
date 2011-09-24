@@ -2,6 +2,13 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+9/23/2011:
+	cpuid.c: Get Hypervisor info (name)
+		only use PIC code on OSX
+		ifdef body for x86[-64]
+	Makefile: always compile cpuid
+	timing: remove -fPIC, run cpuid if it exists
+
 9/5/2011:
 	cpuid.c: make PIC safe (for MacOS) with help from
 	  http://sam.zoy.org/blog/2007-04-13-shlib-with-non-pic-code-have-inlin

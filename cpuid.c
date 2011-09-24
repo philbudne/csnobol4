@@ -1,26 +1,36 @@
 #include <stdio.h>
 #include <string.h>
 
+main() {
+#if defined(__i386__) || defined(__x86_64__) || defined(MSVC)
+
+#ifdef __APPLE__
+#define PIC
+#endif
+
 // http://sam.zoy.org/blog/2007-04-13-shlib-with-non-pic-code-have-inlin
 // http://softpixel.com/~cwright/programming/simd/cpuid.php
 // http://en.wikipedia.org/wiki/CPUID
 
-#ifdef NO_PIC
-#define cpuid(func,ax,bx,cx,dx)		\
-	__asm__ __volatile__ ("cpuid":\
-	"=a" (ax), "=b" (bx), "=c" (cx), "=d" (dx) : "a" (func));
-#else
-// works for PIC code
-#define cpuid(func,ax,bx,cx,dx)			\
+#ifdef __GNUC__
+#ifndef PIC
+#define CPUID(FUNC,AX,BX,CX,DX)		\
+    __asm__ __volatile__ (		\
+	"cpuid" :			\
+	"=a" (AX), "=b" (BX), "=c" (CX), "=d" (DX) : "a" (FUNC));
+#else // works for PIC code (default on OSX)
+#define CPUID(FUNC,AX,BX,CX,DX)			\
     __asm__ __volatile__(			\
 	"pushl %%ebx;"	/* save %ebx */		\
 	"cpuid;"				\
-	"movl %%ebx, %1;" /* save what cpuid justn put in %ebx */ \
+	"movl %%ebx, %1;" /* save new %ebx value from cpuid */ \
 	"popl %%ebx" : /* restore the old %ebx */ \
-	"=a" (ax), "=r" (bx), "=c" (cx), "=d"(dx) : "a" (func) : "cc");
-#endif
+	"=a" (AX), "=r" (BX), "=c" (CX), "=d"(DX) : "a" (FUNC) : "cc");
+#endif /* PIC */
+#endif /* gcc */
+
 #ifdef MSVC
-#define cpuid(func,a,b,c,d)\
+#define CPUID(func,a,b,c,d)\
     asm {\
 	mov eax, func\
 	cpuid\
@@ -29,42 +39,53 @@
 	mov c, ecx\
 	mov d, edx\
 	}
-#endif
+#endif /* MSVC */
 
-main() {
-    int a,b,c,d;
+    int a, b, c, d;
     unsigned i;
-    char str[49];
+    volatile int *ip;
+    char str[3*4*4+1];			/* three rounds of four ints */
 
-    cpuid(0, a, b, c, d);
-    memcpy(str+0, &b, 4);
-    memcpy(str+4, &d, 4);
-    memcpy(str+8, &c, 4);
-
+    ip = (int *)str;
+    CPUID(0, a, ip[0], ip[2], ip[1]);	/* !! */
     str[12] = 0;
     printf("cpuid vendor: %s\n", str);
-    fflush(stdout);
+    fflush(stdout);			/* in case we crash! */
 
     // EAX=2: Cache and TLB Descriptor information
 
     // Get Highest Extended Function Supported
-    cpuid(0x80000000, a, b, c, d);
+    CPUID(0x80000000, a, b, c, d);
 
     if (a >= 0x80000004) {
-	for (i = 0; i < 3; i++) {
-	    cpuid(0x80000002+i, a, b, c, d);
-	    memcpy(str + i*16, &a, 4);
-	    memcpy(str + i*16 + 4, &b, 4);
-	    memcpy(str + i*16 + 8, &c, 4);
-	    memcpy(str + i*16 + 12, &d, 4);
+	ip = (int *) str;
+	for (i = 0x80000002; i <= 0x80000004; i++) {
+	    CPUID(i, ip[0], ip[1], ip[2], ip[3]);
+	    ip += 4;
 	}
-	str[48] = 0;
+	*(char *)ip = '\0';
 	printf("cpuid model: %s\n", str);
+	fflush(stdout);
     }
 
     // EAX=80000005h: L1 Cache and TLB Identifiers
     // EAX=80000006h: Extended L2 Cache Features
 
+    // http://msdn.microsoft.com/en-us/library/ff538624%28v=VS.85%29.aspx
+    CPUID(1, a, b, c, d);
+    // printf("a %x b %x c %x d %x\n", a, b, c, d);
+    if (c & 0x80000000) {
+	puts("running under hypervision!");
+	fflush(stdout);
+    }
+
+#define HVBASE 0x40000000		/* "base for hypervisor leaves" */
+    memset(str, 0, sizeof(str));
+    ip = (int *) str;
+    CPUID(HVBASE, a, ip[0], ip[1], ip[2]);
+    if (str[0])
+	printf("hypervisor: %s\n", str);
+#endif
+
     return 0;
 }
-

@@ -196,7 +196,7 @@ cleanmostly: tidy
 
 # clean as a freshly unpacked kit; remove binaries, timing file
 clean:	cleanmostly
-	rm -f snobol4 xsnobol4 timing.out *.ln
+	rm -f snobol4 xsnobol4 cpuid timing.out *.ln
 
 # DANGER: requires installed binary to rebuild!!
 # remove objects, generated files (clean as a fresh CVS checkout)

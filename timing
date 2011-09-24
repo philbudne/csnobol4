@@ -83,6 +83,7 @@ if [ "$UNAME" ]; then
 			grep -i '^cpu[0-9]*:' /var/run/dmesg.boot
 			# Alpha:
 			grep 'MHz' /var/run/dmesg.boot
+			grep -i '^MPtable' /var/run/dmesg.boot
 		fi
 		;;
 	HP-UX)
@@ -175,18 +176,7 @@ if [ "$UNAME" ]; then
 		echo ''
 		echo 'sunmodel:'
 		./sunmodel 2>&1
-		if [ `uname -m` = i86pc ]; then
-			CPUID=1
-		fi
 		;;
-
-	MINGW*|CYGWIN*)
-		CPUID=1
-		;;
-	esac
-
-	case `$UNAME -m` in
-	*86|*x86*) CPUID=1;;
 	esac
 else
 	for p in `echo $PATH | tr : ' '`; do
@@ -228,13 +218,11 @@ if [ -x /usr/sbin/system_profiler ]; then
 	echo END_SYSTEM_PROFILER
 fi
 
-if [ "$CPUID" ]; then
-	# -fPIC is default on MacOS, force it for others
-	if gcc -fPIC -o cpuid cpuid.c 2>&1 >/dev/null; then
-		echo ''
-		echo 'cpuid:'
-		./cpuid
-	fi
+
+if [ -x cpuid ]; then
+	echo ''
+	echo 'cpuid:'
+	./cpuid
 fi
 
 if [ -f 00README.CVS ]; then
