@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
+int
 main() {
 #if defined(__i386__) || defined(__x86_64__) || defined(MSVC)
 

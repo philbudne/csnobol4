@@ -330,11 +330,12 @@ if [ ! "$GCCPATH" ]; then
     TMP=conf$$
     # vanilla bsd43 systems can't use <<- AND EOF must be in col 0!
     cat << EOF > $TMP.c
+int
 main() {
 #if defined(__gcc__) || defined(__GNUC__)
-    exit(0);
+    return 0;
 #else
-    exit(1);
+    return 1;
 #endif
 }
 EOF
@@ -731,10 +732,11 @@ TMP=conf$$
 cat << EOF > $TMP.c
 #include <stdio.h>
 
+int
 main() {
     printf("%d %d %d %d\n", sizeof(void *), sizeof(long),
 	sizeof(double), sizeof(int));
-    exit(0);
+    return 0;
 }
 EOF
 if ${CCPATH-cc} -o $TMP $TMP.c && ./$TMP > $TMP.out &&
