@@ -534,3 +534,19 @@ RANDOM( LA_ALIST ) LA_DCL
     }
     RETINT(bsd_random());
 }
+
+int
+SRANDOM( LA_ALIST ) LA_DCL
+{
+    bsd_srandom(LA_INT(0));
+    seeded = 1;
+    RETNULL;
+}
+
+int
+SRANDOMDEV( LA_ALIST ) LA_DCL
+{
+    bsd_srandomdev();
+    seeded = 1;
+    RETNULL;
+}

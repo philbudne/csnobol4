@@ -1,23 +1,13 @@
 $Id$
 
-Use tclConfig.sh to pick tcl
-	find includes, libraries, etc
-	Thanks to Michael Richter
-
-	find /usr/local/lib /usr/lib \
-	     /System/Library/Frameworks/Tcl.framework /usr/share/tcltk \
-		-name tclConfig.sh
-
-document SLEEP, RANDOM, ATAN, LN.
+document RANDOM, SRANDOM, SRANDOMDEV, ATAN, LN.
 	 SETEXIT/CONTINUE/SCONTINUE/ABORT
 		http://www.uic.edu/depts/adn/infwww/txt/v5634001.txt
-
-create snobol4time man page? [also snolib3]
-
 
 TIME:
 	SLEEP(REAL)?? use nanosleep, select, Win32 Sleep()
 	prefix all data/functions with "TIME."?
+	create snobol4time man page? [also snolib3]
 
 Include sdb.sno/sdb.sh script
 	command line option to preload file(s): use for sdb!!
