@@ -529,7 +529,7 @@ int
 RANDOM( LA_ALIST ) LA_DCL
 {
     if (!seeded) {
-	bsd_srandomdev();
+	bsd_srandom(1);
 	seeded = 1;
     }
     RETINT(bsd_random());
