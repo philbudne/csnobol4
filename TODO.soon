@@ -1,9 +1,5 @@
 $Id$
 
-document RANDOM, SRANDOM, SRANDOMDEV, ATAN, LN.
-	 SETEXIT/CONTINUE/SCONTINUE/ABORT
-		http://www.uic.edu/depts/adn/infwww/txt/v5634001.txt
-
 TIME:
 	SLEEP(REAL)?? use nanosleep, select, Win32 Sleep()
 	prefix all data/functions with "TIME."?
