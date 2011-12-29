@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.116  2011/01/24 04:33:49  phil
+* [PLB99] fix FUNCTION for referenced, but undefined functions
+*
 * Revision 1.115  2011/01/22 02:39:38  phil
 * [PLB98] SETEXIT cleanup; prohibit re-entry, implement trap at END
 *
@@ -5558,8 +5561,9 @@ SETXIT PROC    ,		   SETEXIT(LBL)
        AEQLC   XPTR,0,,SETXI2	   Allow null string (clear handler)
        GETDC   YPTR,XPTR,ATTRIB    Get label code base
        AEQLC   YPTR,0,,INTR30	   Fatal if no code
-SETXI2 MOVD    XITPTR,XPTR	   Save handler
-       BRANCH  RTNUL3		   Return
+SETXI2 MOVD    YPTR,XITPTR	   Fetch old handler		[PLB100]
+       MOVD    XITPTR,XPTR	   Save new handler
+       BRANCH  RTYPTR		   Return old value		[PLB100]
 *_
 *---------------------------------------------------------------------*
 *
@@ -7449,7 +7453,7 @@ OCSVCL DESCR   0,0,0		   Pointer to basic object code
 PATBCL DESCR   0,0,0		   Pattern code base descriptor
 SCBSCL DESCR   0,0,0
 SRNCL  DESCR   0,0,0		   Success return descriptor
-XITPTR DESCR   0,0,0		   Pointer for SETEXIT handler [PLB97]
+XITPTR DESCR   0,0,S		   Pointer for SETEXIT handler [PLB97][PLB100]
 *
 *      Compiler Descriptors
 *

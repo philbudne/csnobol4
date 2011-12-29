@@ -1,0 +1,9 @@
+* test SETEXIT return value
+
+	OUTPUT = SETEXIT('FOO')
+	OUTPUT = SETEXIT('BAR')
+	OUTPUT = SETEXIT('')
+	OUTPUT = SETEXIT('')
+FOO
+BAR
+END

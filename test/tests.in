@@ -125,3 +125,5 @@ reg time.sno
 err setexit.sno
 # 1/22/2011
 reg setexit2.sno
+# 12/29/2011
+reg setexit3.sno
