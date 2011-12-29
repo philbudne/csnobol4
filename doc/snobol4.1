@@ -544,6 +544,44 @@ SPITBOL compatible
 function is preferable, as it makes it possible to tell if a positional
 parameter containing spaces was passed in using shell quote characters.
 .TP
+.B "Random number functions"
+The
+.BR RANDOM()
+function uses a non-linear additive feedback random number generator
+employing a default table of size 31 long integers to return
+successive pseudo-random numbers in the range from 0 to (2**31)-1.
+The period of this random number generator is very large,
+approximately 16*((2**31)-1).  The
+.B SRANDOM()
+function sets its
+.B INTEGER
+argument seed as the seed for a new sequence of pseudo-random numbers
+to be returned by
+.BR RANDOM() .
+These sequences
+are repeatable by calling
+.B SRANDOM()
+with the same seed value.
+.B RANDOM()
+will by default produce a sequence of numbers that can be duplicated
+by calling
+.B SRANDOM()
+with 1 as the seed.  The
+.B SRANDOMDEV()
+routine initializes a state array using the
+.BR random (4)
+random number device which returns good random numbers, suitable for
+cryptographic use.  Note that this particular seeding procedure can
+generate states which are impossible to reproduce by calling
+.B SRANDOM()
+with any value, since the succeeding terms in the state buffer are no
+longer derived from the LC algorithm applied to a fixed seed.  Data
+from the
+.BR random (4)
+device may be precious, and repeated calls to
+.B SRANDOM()
+should be avoided.
+.TP
 .BR "REAL" " numbers in " "INTEGER" " contexts"
 .br
 .B REAL
@@ -654,6 +692,10 @@ returns the natural logarithm of its REAL argument, and
 .B CHOP()
 truncates the fractional part of its REAL argument (rounding towards
 zero), and returns a REAL.
+.B LN()
+is an alias for
+.BR LOG() ,
+for compatibility with Catspaw SPITBOL.
 .TP
 .B SORT()/RSORT()
 .br
@@ -733,6 +775,60 @@ where
 is a non-zero integer enables them.  SPITBOL extensions are enabled by
 default.
 .TP
+.RB "SPITBOL " SETEXIT() " function"
+.br
+The argument to
+.B SETEXIT()
+is a label to which control is passed if a subsequent error occurs,
+providing that the value of the keyword
+.B &ERRLIMIT
+is non-zero.  The value of
+.B &ERRLIMIT
+is decremented when The error trap occurs.  A
+.B SETEXIT()
+call with a null argument causes cancellation of the intercept.  A
+Subsequent error will terminate execution as usual with an error
+message.  The result returned by
+.B SETEXIT()
+is the previous intercept setting (i.e., a label name or null if no
+intercept is set).  This can be used to save and restore the
+.B SETEXIT()
+conditions in a recursive environment.  The error intercept routine
+may inspect
+.B &ERRTYPE
+and take one of the following actions:
+
+.br
+1.  Terminate execution by transferring to the  special
+label
+.BR ABORT .
+This causes error processing to resume as though no error intercept
+had been set.
+
+.br
+2.  Branching to  the  special  label
+.B CONTINUE 
+causes execution to resume by taking the failure exit of the statement
+in error.
+
+.br
+3.  Branching to  the  special  label
+.B SCONTINUE
+causes execution to resume at the point of interruption.
+
+.br
+4. If the error occurred inside a function
+.RB ( &FNCLEVEL " is non-zero),"
+branch to label
+.BR RETURN , " FRETURN" , " NRETURN" .
+
+.br
+The occurrence of an error cancels the error intercept.  The error
+intercept routine must reissue the
+.B SETEXIT()
+Error handlers cannot be nested: only one copy of the saved execution
+state is kept.
+.TP
 .BR SQRT()
 .br
 The
@@ -775,12 +871,19 @@ and output.
 .TP
 Trig functions
 .br
+.BR ATAN() ,
 .BR SIN() ,
 .B COS()
 and
 .B TAN()
-functions are available for compatibility with SPARC SPITBOL
-and take arguments in radians.
+functions are available for compatibility with SPARC SPITBOL.
+.BR SIN() ,
+.B COS()
+and
+.B TAN()
+take arguments in radians.
+.B ATAN()
+returns the principal value of the arc tangent of its REAL argument.
 .TP
 .B &UCASE/&LCASE
 .br
