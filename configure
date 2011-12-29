@@ -1443,91 +1443,43 @@ fi
 
 # Include STCL (tcl/tk) support, if requested
 if [ "$WITH_TCL" ]; then
+
+    TCL_CONF_DIRS='/usr/local/lib /usr/lib /usr/share/tcltk /System/Library/Frameworks/Tcl.framework'
     TCL_MAJOR_VERSION=0
     TCL_MINOR_VERSION=0
-    for TINCDIR in $INCDIR /usr/include /usr/include/tcl*.* /usr/local/include /usr/local/include/tcl*.*; do
-	if [ -d "$TINCDIR" -a -f "$TINCDIR/tcl.h" ]; then
-	    MAJ=`grep 'TCL_MAJOR_VERSION' $TINCDIR/tcl.h | awk '{ print $3 }'`
-	    MIN=`grep 'TCL_MINOR_VERSION' $TINCDIR/tcl.h | awk '{ print $3 }'`
-	    if [ "$MAJ" -gt "$TCL_MAJOR_VERSION" -o \
-		 "$MAJ" -eq "$TCL_MAJOR_VERSION" -a \
-		 "$MIN" -gt "$TCL_MINOR_VERSION" ]; then
-		# search for matching library
-		# XXX based on include path?? LD_LIBRARY_PATH???
-		FOUNDLIB=
-		for DIR in $LIBDIR /usr/local/lib; do
-		    if [ -f $DIR/libtcl$MAJ.$MIN.a -o \
-			 -f $DIR/libtcl$MAJ.$MIN.so -o \
-			 -f $DIR/libtcl$MAJ.$MIN.dylib ]; then
-			TCLLIBDIR=$DIR
-			TCLLIB=tcl$MAJ.$MIN
-			FOUNDLIB=1
-			break
-		    elif [ -f $DIR/libtcl$MAJ$MIN.a -o \
-			 -f $DIR/libtcl$MAJ$MIN.so -o \
-			 -f $DIR/libtcl$MAJ$MIN.dylib ]; then
-			TCLLIBDIR=$DIR
-			TCLLIB=tcl$MAJ$MIN
-			FOUNDLIB=1
-			break
-		    fi
-		done
-		if [ ! "$FOUNDLIB" ]; then
-		    continue
-		fi
+    TCONF=
 
-		TCL_MAJOR_VERSION=$MAJ
-		TCL_MINOR_VERSION=$MIN
-		TCLINCDIR="$TINCDIR"
-		echo "found Tcl version $MAJ.$MIN" 1>&2
-
-		# Pick up Tk too, if needed (loads as package in 8.4+)
-		# makes a HUGE executable!!!
-		# also requires linking against X11 on Unix systems....
-		TKLIB=
-		if [ "$MAJ" -lt 8 -o "$MAJ" -eq 8 -a "$MIN" -lt 4 ]; then
-		    if [ "$WITH_TK" ]; then
-			echo checking for Tk libraries 1>&2
-			if [ -f $TCLLIBDIR/libtk$MAJ$MIN.a -o \
-			     -f $TCLLIBDIR/libtk$MAJ$MIN.so ]; then
-			    TKLIB=tk$MAJ$MIN
-			elif [ -f $TCLLIBDIR/libtk.$MAJ.$MIN.a -o \
-			       -f $TCLLIBDIR/libtk.$MAJ.$MIN.so ]; then
-			    TKLIB=tk.$MAJ.$MIN
-			fi
-			if [ ! "TKLIB" ]; then
-			    echo Tk$MAJ.$MIN not found 1>&2
-			fi
-		    else
-			echo Tk$MAJ.$MIN requires configure --with-tk 1>&2
-		    fi
-		fi
-	    fi
+    for CONF in `find $TCL_CONF_DIRS -name tclConfig.sh 2>/dev/null`; do
+	MAJ=`. $CONF; echo $TCL_MAJOR_VERSION`
+	MIN=`. $CONF; echo $TCL_MINOR_VERSION`
+	if [ "$MAJ" -gt "$TCL_MAJOR_VERSION" -o \
+	     "$MAJ" -eq "$TCL_MAJOR_VERSION" -a \
+	     "$MIN" -gt "$TCL_MINOR_VERSION" ]; then
+	    TCONF=$CONF
+	    # XXX validate paths in $CONF file?
+	    TCL_MAJOR_VERSION=$MAJ
+	    TCL_MINOR_VERSION=$MIN
 	fi
     done
-    if [ "$TCLLIB" ]; then
-	echo using $TCLLIBDIR/tcl$MAJ$MIN 1>&2
-	# XXX compare to LIBDIR?
-	if [ "$TCLLIBDIR" != /usr/lib ]; then
-	    echo 'ADD_LDFLAGS([-L'$TCLLIBDIR'])' >> $CONFIG_M4
+
+    if [ "$TCONF" ]; then
+	echo "found Tcl version $MAJ.$MIN" 1>&2
+	# Tk (loads as package in 8.4+)
+	if [ "$WITH_TK" -a \( $MAJ -lt 8 -o $MAJ -eq 8 -a $MIN -lt 4 \) ]; then
+	    echo 'use Tcl 8.4 or later for Tk' 1>&2
+	    exit 1
 	fi
-	# load libtk before libtcl?
-	if [ "$TKLIB" ]; then
-	    echo using $TCLLIBDIR/$TKLIB 1>&2
-	    echo '#define STCL_USE_TK'		>> $CONFIG_H
-	    echo 'ADD_LDFLAGS([-l'$TKLIB'])'	>> $CONFIG_M4
-	    # XXX check for existance, location?!! needed on cygwin???
-	    echo 'ADD_LDFLAGS([-lX11])'		>> $CONFIG_M4
-	fi
+
 	echo '#define PML_STCL'			>> $CONFIG_H
-	echo 'ADD_OBJS([stcl.o])'		>> $CONFIG_M4
-	echo 'ADD_SRCS([$(STCL_C)])'		>> $CONFIG_M4
-	if [ "$TCLINCDIR" != $INCDIR ]; then
-	    echo 'ADD_CPPFLAGS([-I'$TCLINCDIR'])' >> $CONFIG_M4
-	fi
-	echo 'ADD_LDFLAGS([-l'$TCLLIB'])'	>> $CONFIG_M4
+	(
+	    . $TCONF
+	    echo "ADD_LDFLAGS([$TCL_LIB_SPEC])"
+	    echo 'ADD_OBJS([stcl.o])'
+	    echo 'ADD_SRCS([$(STCL_C)])'
+	    echo "ADD_CPPFLAGS([$TCL_INCLUDE_SPEC])"
+	) >> $CONFIG_M4
     else
-	echo "Tcl library not found" 1>&2
+	echo "Tcl not found" 1>&2
 	exit 1
     fi
 fi

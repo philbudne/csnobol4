@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/28/2011:
+	configure: use tclConfig.sh for Tcl configuration
+		   (Thanks to Michael Richter)
+
 10/1/2011:
 	cpuid.c: declare main as returning int
 	configure: declare main as returning int, avoid exit()
