@@ -1,24 +1,35 @@
 $Id$
 
-Use /usr..../lib/tcl*.*/tclConfig.sh to pick tcl
+Use tclConfig.sh to pick tcl
 	find includes, libraries, etc
 	Thanks to Michael Richter
 
+	find /usr/local/lib /usr/lib \
+	     /System/Library/Frameworks/Tcl.framework /usr/share/tcltk \
+		-name tclConfig.sh
+
 document SLEEP, RANDOM, ATAN, LN.
 	 SETEXIT/CONTINUE/SCONTINUE/ABORT
+		http://www.uic.edu/depts/adn/infwww/txt/v5634001.txt
 
-create snobol4time man page?
+create snobol4time man page? [also snolib3]
 
-command line option to preload file(s): use for sdb!!
 
 TIME:
 	SLEEP(REAL)?? use nanosleep, select, Win32 Sleep()
 	prefix all data/functions with "TIME."?
 
 Include sdb.sno/sdb.sh script
+	command line option to preload file(s): use for sdb!!
+
 	use SETEXIT?
 
-create snobol4sdb man page?
+	create snobol4sdb man page?
+
+================
+Make use of tdb (from samba project: gdbm API w/ multiple writers)
+
+    Have seperate APIs for each DBM alternative, OPSYN to the default version?
 
 Make some signals catchable??
 
