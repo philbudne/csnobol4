@@ -1,0 +1,100 @@
+.\" -*-nroff-*-
+.\" $Id$
+.ie n \{\
+.       ds lq \&"\"
+.       ds rq \&"\"
+.\}
+.el \{\
+.       ds rq ''
+.       ds lq ``
+.\}
+.TH SNOBOL4TIME 1 "29 Dec 2011" "SNOBOL"
+.SH NAME
+snobol4time \- SNOBOL4 time functions
+
+.SH SYNOPSIS
+.B "-INCLUDE 'time.sno'"
+
+.SH DESCRIPTION
+.PP
+The
+.B "GETTIMEOFDAY()"
+function returns a
+.B DATA()
+object of type
+.B TIMEVAL
+with members
+.B TV_SEC
+(seconds since 1/1/1970 GMT)
+and
+.B TV_USEC
+(microseconds since start of day).
+.PP
+.BR LOCALTIME( sec )
+takes seconds since 1/1/1970, and returns a
+.B DATA()
+object of type
+.B TM
+with members:
+.TP 10
+.B TM_SEC
+seconds since start of local minute (0 to 60)
+.TP
+.B TM_MIN
+minutes since start of local hour (0 to 59)
+.TP
+.B TM_HOUR
+hours since start of local day (0 to 23)
+.TP
+.B TM_MDAY
+day of month (1 to 31)
+.TP
+.B TM_MON
+month of year (0 to 11)
+.TP
+.B TM_YEAR
+year minus 1900
+.TP
+.B TM_WDAY
+day of week (sunday = 0)
+.TP
+.B
+TM_YDAY
+day of year (0 to 365)
+.TP
+.B TM_ISDST
+is non-zero if summer time in effect at that time
+.TP
+.B TM_GMTOFF
+offset from UTC in seconds (or -1 if not available)
+.PP
+.BR GMTIME( sec )
+converts seconds to a
+.B TM
+object, but without any local time zone adjustments.
+.PP
+.BR MKTIME( tm )
+converts a
+.B TM
+object to seconds since 1/1/1970.
+.PP
+.BR SLEEP( sec )
+suspends program execution for a number of seconds.
+.PP
+.BR STRFTIME( format , tm )
+formats the date information in tm according to the format string.
+Consult your local
+.BR strftime (3)
+manual page (or C runtime manual) for more details.
+.PP
+.BR STRPTIME( str , format )
+parses a string using using the supplied format and returns a
+.B TM
+object with the parsed elements filled in.
+Consult your local
+.BR strptime (3)
+manual page (or C runtime manual) for more details.
+.SH SEE ALSO
+.BR snobol4 "(1), " ctime "(3), " strftime "(3), " strptime (3)
+.SH AUTHOR
+Philip L. Budne

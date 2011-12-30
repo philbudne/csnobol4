@@ -1,0 +1,110 @@
+.\" -*-nroff-*-
+.\" $Id$
+.ie n \{\
+.       ds lq \&"\"
+.       ds rq \&"\"
+.\}
+.el \{\
+.       ds rq ''
+.       ds lq ``
+.\}
+.TH SDB 1 "30 Dec 2011" "SNOBOL"
+.SH NAME
+sdb \- SNOBOL4 debugger
+.SH SYNOPSIS
+.B sdb
+.I program.sno
+.SH DESCRIPTION
+.PP
+.B sdb
+is a debugger for
+.BR snobol4 (1)
+programs, in the mold (fawning clone) of
+.BR gdb (1),
+The GNU debugger.
+.PP
+Commands:
+.TP 2
+.BI break " LABEL_OR_STATEMENT_NUMBER"
+Set a breakpoint
+.TP
+.B bt
+Display call stack backtrace.
+.TP
+.BI commands " BREAKPOINT_NUMBER"
+Add sdb commands to execute (ie; print & continue) to a breakpoint.
+.TP
+.BI condition " BREAKPOINT_NUMBER EXPR"
+If
+.I EXPR
+is supplied, it is used as a predicate to make the breakpoint conditional.
+.TP
+.BI continue " EMPTY_OR_COUNT"
+Continue from breakpoint.  The optional count specifies how many times
+to continue past this breakpoint (sets "ignore" count).
+.TP
+.BI delete " BREAKPOINT_NUMBER_OR_EMPTY"
+Delete a single breakpoint, or all breakpoints.
+.TP
+.BI disable " BREAKPOINT_NUMBER_OR_EMPTY"
+Temporarily disable a breakpoint, or all breakpoints.
+.TP
+.BI enable " BREAKPOINT_NUMBER_OR_EMPTY"
+Reenable a breakpoint, or all breakpoints.
+.TP
+.B finish
+Resume debugging after current function returns.
+.TP
+.B help
+Display help.
+.TP
+.BI ignore " BREAKPOINT_NUMBER COUNT"
+Set breakpoint ignore count.
+.TP
+.B info
+Display list of breakpoints and their status.
+.TP
+.BI list " EMPTY_OR_STATEMENT_NUMBER"
+Display source code.
+.TP
+.BI
+next " EMPTY_OR_COUNT"
+Single step execution, skipping over function calls.
+.TP
+.BI print " EXPRESSION"
+Evaluate expression and print result.  Can be used to call functions,
+or set variables.
+.TP
+.B quit
+Exit debugger.
+.TP
+.BI step " EMPTY_OR_COUNT"
+Single step.
+.TP
+.BI watch " VARIABLE"
+Set watchpoint on a variable (break when value changes).
+.TP
+.B where
+An alias for bt.
+
+.PP
+A blank line repeats the previous command.
+.PP
+Non-ambiguous abbreviations of commands can be used (ie; "s", "n").
+.PP
+The GNU Readline library (when available) will be used for sdb
+input for command editing and history.
+
+.SH SEE ALSO
+.BR snobol4 "(1), " gdb (1)
+
+.SH AUTHOR
+Philip L. Budne
+.PP
+with techniques cribbed from someone's DDT.SNO
+
+.SH BUGS
+.PP
+Doubtlessly many.
+.PP
+Cannot pass arbitrary flags and arguments on the command line.

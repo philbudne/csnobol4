@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/30/2011:
+	Update manual pages.
+	New: doc/snobol4time.3, doc/sdb.3
+
 12/29/2011:
 	pml.h, lib/snolib/random.c: add SRANDOM, SRANDOMDEV
 	       default to srandom(1) for seed.

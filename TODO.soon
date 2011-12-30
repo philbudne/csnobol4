@@ -1,35 +1,25 @@
 $Id$
 
-TIME:
-	SLEEP(REAL)?? use nanosleep, select, Win32 Sleep()
-	prefix all data/functions with "TIME."?
-	create snobol4time man page? [also snolib3]
+snobol4time man page
 
-Include sdb.sno/sdb.sh script
-	command line option to preload file(s): use for sdb!!
-
-	use SETEXIT?
-
-	create snobol4sdb man page?
+create sdb(1) man page
 
 ================
 Make use of tdb (from samba project: gdbm API w/ multiple writers)
 
     Have seperate APIs for each DBM alternative, OPSYN to the default version?
 
-Make some signals catchable??
+command line option to preload file(s): use for sdb!!
+
+sdb: use SETEXIT? [but setting &ERRLIMIT can change program behavior]
+
+SLEEP(REAL)?? use nanosleep, select, usleep, Win32 Sleep()
+
+Make some signals catchable via SETEXIT? INTR, CHLD, HUP, ALRM??
 
 Enable PRELOAD?
 	Disable if running setuid!!!
 	command line arg to disable?
-
-Document:
-	-l change!!
-	atan(), ln()
-	SETEXIT()
-	sdb!!
-	time.sno -- snotime man page??
-	Reference on-line green book!!!
 
 DIFFTIME function??
 
@@ -57,7 +47,7 @@ SNOLIB:
 
 ================ 2.0?
 
-genc.sno option to use void ** & goto;
+genc.sno option to use void ** & goto (or goto big_switch;)
 	 make dump files.
 	 need to distribute two copies of isnobol4!
 
