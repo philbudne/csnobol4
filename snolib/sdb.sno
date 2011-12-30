@@ -1,6 +1,14 @@
 -UNLIST
 * "SDB" SNOBOL4 debugger -- a clone (clown?) of GNU "gdb" debugger
-* Copyright (C) 2010, 2011 Philip L. Budne
+* Copyright (C) 2010-2012 Philip L. Budne
+* All rights reserved.
+* 
+* Redistribution and use in source and binary forms, with or without
+* modification, are permitted provided that the following conditions are
+* met:
+* 
+* Redistributions of source code must retain the above copyright notice and
+* this list of conditions.
 *
 SDB.START
 ******* MUST BE FIRST STMT!
