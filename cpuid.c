@@ -45,8 +45,8 @@ main() {
     int a, b, c, d;
     unsigned i;
     volatile int *ip;
-    char str[3*4*4+1];			/* three rounds of four ints */
-
+    char str[3*4*sizeof(int)+1];       /* three rounds of four ints */
+    
     ip = (int *)str;
     CPUID(0, a, ip[0], ip[2], ip[1]);	/* !! */
     str[12] = 0;
@@ -72,9 +72,11 @@ main() {
     // EAX=80000005h: L1 Cache and TLB Identifiers
     // EAX=80000006h: Extended L2 Cache Features
 
+    // EAX=1: Processor Info and Feature Bits
+    // http://en.wikipedia.org/wiki/CPUID#EAX.3D1:_Processor_Info_and_Feature_Bits
     // http://msdn.microsoft.com/en-us/library/ff538624%28v=VS.85%29.aspx
     CPUID(1, a, b, c, d);
-    // printf("a %x b %x c %x d %x\n", a, b, c, d);
+    // printf(fn1: "a %x b %x c %x d %x\n", a, b, c, d);
     if (c & 0x80000000) {
 	puts("running under hypervision!");
 	fflush(stdout);
@@ -84,7 +86,8 @@ main() {
     memset(str, 0, sizeof(str));
     ip = (int *) str;
     CPUID(HVBASE, a, ip[0], ip[1], ip[2]);
-    if (str[0])
+    // printf("a %x ip %x %x %x\n", a, ip[0], ip[1], ip[2]);
+    if (str[0] && a >= HVBASE)
 	printf("hypervisor: %s\n", str);
 #endif
 
