@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/31/2011:
+	cpuid.c: rework for 64-bit Mac and Windows
+
+*** 1.4-rc1
+
 12/30/2011:
 	Update manual pages, CHANGES, COPYRIGHT, README
 	New: doc/snobol4time.3, doc/sdb.3
