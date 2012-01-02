@@ -58,6 +58,7 @@ if [ -d /usr/lib/${INST}-linux-gnu ]; then
 elif [ "$MACHINE" = x86_64 -a -d /usr/lib64 ]; then
     LIBDIR=/usr/lib64
 fi
+# lib32 can exist as well?
 echo "using $LIBDIR for libraries" 1>&2
 
 rm -f $CONFIG_H $CONFIG_M4 $VERSION_H
@@ -1453,7 +1454,7 @@ fi
 # Include STCL (tcl/tk) support, if requested
 if [ "$WITH_TCL" ]; then
 
-    TCL_CONF_DIRS='/usr/local/lib /usr/lib /usr/share/tcltk /System/Library/Frameworks/Tcl.framework'
+    TCL_CONF_DIRS="/usr/local/lib $LIBDIR /usr/share/tcltk /System/Library/Frameworks/Tcl.framework"
     TCL_MAJOR_VERSION=0
     TCL_MINOR_VERSION=0
     TCONF=

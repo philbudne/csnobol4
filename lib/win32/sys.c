@@ -90,7 +90,7 @@ osname(cp)
     osv.dwOSVersionInfoSize = sizeof(osv);
 #ifdef HAVE_GETVERSIONEX
     // VS10 expects LPOSVERSIONINFOA
-    if (!GetVersionEx(&osv)) {
+    if (!GetVersionEx((LPOSVERSIONINFOA)&osv)) {
 	strcpy(cp, "Win????");
 	return;
     }

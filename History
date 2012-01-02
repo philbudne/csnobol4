@@ -2,10 +2,17 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+1/2/2012:
+	configure: use LIBDIR in TCL_CONF_DIRS instead of /usr/lib
+	lib/win32/sys.c: Add a cast
+
 1/1/2012:
 	snolib/sdb.sno: update copyright notice
 	configure: flush ALTLIBDIR
 	lib/snolib/time.c: cleanup: enums, error checks/returns
+	lib/snolib/readline.c: fix warning
+	lib/win32/sys.c: Add Win 8, show build on unknown systems
+	lib/init.c: fix warning
 
 12/31/2011:
 	cpuid.c: rework for 64-bit Mac and Windows
