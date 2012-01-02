@@ -41,7 +41,7 @@ OBJ=	isnobol4.o data.o data_init.o main.o syn.o bal.o \
 	load.o mstime.o atan.o chop.o cos.o delete.o environ.o exit.o exp.o \
 	file.o getstring.o handle.o host.o log.o logic.o ord.o rename.o \
 	random.o retstring.o sin.o spcint.o spreal.o sprintf.o sqrt.o sset.o \
-	tan.o osopen.o sys.o tty.o inet.o bindresvport.o execute.o \
+	osopen.o sys.o tan.o time.o tty.o inet.o bindresvport.o execute.o \
 	exists.o term.o findunit.o $(COM_OBJ) $(SDBM_OBJ)
 
 snobol4.exe: $(OBJ)
@@ -255,6 +255,9 @@ sset.o:	$(SRCDIR)lib/snolib/sset.c
 
 tan.o:	$(SRCDIR)lib/snolib/tan.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/tan.c
+
+time.o:	$(SRCDIR)lib/snolib/time.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/time.c
 
 com.o:	$(SRCDIR)lib/win32/com.cpp
 	$(CXX) $(CXXFLAGS) $(SRCDIR)lib/win32/com.cpp

@@ -117,6 +117,7 @@
     <ClCompile Include="..\..\lib\snolib\sqrt.c" />
     <ClCompile Include="..\..\lib\snolib\sset.c" />
     <ClCompile Include="..\..\lib\snolib\tan.c" />
+    <ClCompile Include="..\..\lib\snolib\time.c" />
     <ClCompile Include="..\..\lib\str.c" />
     <ClCompile Include="..\..\lib\stream.c" />
     <ClCompile Include="..\..\lib\top.c" />
