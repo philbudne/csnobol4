@@ -77,9 +77,11 @@ osname(cp)
 #ifdef HAVE_GETVERSIONEX
     OSVERSIONINFOEX osv;
     int server;
+    int build;
 #else
     OSVERSIONINFO osv;			/* NOT TESTED */
     const int server = 0;
+    const int build = 0;
 #endif
     int vnum;
 
@@ -96,6 +98,7 @@ osname(cp)
 #define VER_NT_WORKSTATION 1
 #endif
     server = (osv.wProductType != VER_NT_WORKSTATION);
+    build = osv.dwBuildNumber;
 #else
     if (!GetVersion(&osv)) {		/* NOT TESTED */
 	strcpy(cp, "Win????");
@@ -119,6 +122,7 @@ osname(cp)
 	 * major/minor version numbers.
 	 */
 	os = "Win??";
+	build &= 0xffff;
 	if (osv.dwMajorVersion == 4) {
 	    switch (osv.dwMinorVersion) {
 	    case 0:
@@ -159,14 +163,6 @@ osname(cp)
 		os = "WinXP";
 		break;
 	    case 2:
-		/*
-		 * if (GetSystemMetrics(SM_SERVERR2))
-		 *	os = "WinServer2003R2";
-		 * else if (osv.wProductType == VER_NT_WORKSTATION &&
-		 *	si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_AMD64)
-		 *	os = "WinXPx64";
-		 * else
-		 */
 		os = "WinServer2003";
 		break;
 	    default:
@@ -176,18 +172,6 @@ osname(cp)
 	    break;
 
 	case 6:				/* "Longhorn" family */
-	    /* "GetProductInfo()" returns product type:
-	     * http://msdn.microsoft.com/en-us/library/ms724429(VS.85).aspx
-	     * PRODUCT_{ULTIMATE,
-	     *	    HOME_{PREMUIUM,BASIC,ENTERPRISE},
-	     *	    BUSINESS,STARTER,
-	     *	    CLUSTER_SERVER,
-	     *	    DATACENTER_{SERVER,SERVER_CORE},
-	     *	    ENTERPRISE_{SERVER,SERVER_CORE,SERVER_IA64},
-	     *	    SMALLBUSINESS_{SERVER,SERVER_PREMIUM},
-	     *	    STANDARD_{SERVER,SERVER_CORE},
-	     *	    WEB_SERVER}
-	     */
 	    switch (osv.dwMinorVersion) {
 	    case 0:
 		if (server)
@@ -200,6 +184,12 @@ osname(cp)
 		    os = "WinServer2008R2";
 		else
 		    os = "Win7";
+		break;
+	    case 2:
+		if (server)
+		    vnum = 1;		/* fixme */
+		else
+		    os = "Win8";
 		break;
 	    default:
 		vnum = 1;
@@ -216,8 +206,15 @@ osname(cp)
 	break;
     }
 
-    if (vnum)
+    if (vnum) {
 	sprintf(cp, "%s %d.%d", os, osv.dwMajorVersion, osv.dwMinorVersion);
+	if (build) {
+	    cp += strlen(cp);
+	    sprintf(cp, ".%d", build);
+	}
+	if (server)
+	    strcat(cp, " server");
+    }
     else
 	strcpy(cp, os);
 
