@@ -660,24 +660,28 @@ SDB.NOSTACK
 
 	DIFFER(HOST(4,"SDB_NOBANNER"))
 	TERMINAL = "sdb SNOBOL4 debugger version " SDB.VERSION
-	TERMINAL = "Copyright 2010, 2011 Philip L. Budne"
+	TERMINAL = "Copyright 2010-2012 Philip L. Budne"
 	TERMINAL = 'Type "help" for help.'
 	TERMINAL =
 SDB.NOBANNER
-
-* free all initialization code
-	CODE("SDB.START")
 
 * read listing file
 	SDB.LISTING = HOST(4,"SDB_LISTFILE")
 	DIFFER(SDB.LISTING) SDB.READ_LISTING(SDB.LISTING)
 
+* free all initialization code
+	CODE("SDB.START")
+* XXX need to kill more labels!!
+	CODE("SDB.GOT_MAX_STMTS")
+	CODE("SDB.NOBANNER")
+
 * break before first user statement
 	SDB.NEXT_BREAK = 1
 
-	TRACE('STCOUNT','KEYWORD',,'SDB.TRAP.STMT')
-
+* last statement in SDB
 	SDB.LAST_STMT = &STNO
+
 * last: enables trace traps
+	TRACE('STCOUNT','KEYWORD',,'SDB.TRAP.STMT')
 	&STLIMIT = &TRACE = SDB.MAXINT
 -LIST
