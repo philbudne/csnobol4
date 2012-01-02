@@ -3,24 +3,27 @@ $Id$
 For detailed revision history see History file
 
 Changes since 1.3 release;
+=========================
 	Added high quality RANDOM() function
-	Added SLEEP function
-	Created SNOBOL4 debugger "sdb" see doc/sdb.*, man sdb
-	Access to GNU Readline/History functions
-	Implements SPITBOL SETEXIT function.
-	'-l' command line argument takes listing file name.
-	POSIX date/time handling functions see doc/snobol4time.*, man snobol4time
-	Add ATAN() and LN() functions
-	Fix FUNCTION() predicate for referenced (but undefined) functions!
+	Added SLEEP() function
+	Added SNOBOL4 debugger "sdb" see doc/sdb.*, "man sdb"
+	Added GNU Readline/History functions
+	Added SPITBOL SETEXIT() function
+	Added POSIX date/time handling functions;
+		see doc/snobol4time.*, "man snobol4time"
+	Added ATAN() and LN() functions
+	Changed '-l' command line argument to take listing file name
+	Fixed FUNCTION() predicate for referenced (but undefined) functions!
 	Fixed problem in http.sno
-	Get hypervisor name, if available
-	Allow allocations of more than 4GB
+	Fixed allocations of more than 4GB(!)
+	Fixed compilation on Ubuntu 11.04
+	Fixed compilation with MS VS10
+	Fixed compilation on CygWIN
+	Report hypervisor name, if available
 	Simplified tcl configuration
-	Fix compilation on Ubuntu 11.04
-	Fix compilation with MS VS10
-	Fix compilation on CygWIN
 	
 Changes since 1.2 release;
+=========================
 	Try to fetch X86 CPU identification using "cpuid" instruction
 	Detect Ubuntu version
 	Only use 64-bit libraries when running on 64-bit kernel
@@ -30,7 +33,6 @@ Changes since 1.2 release;
 	Fix HTTP w/ DOC/WatTCP
 	Fix MinGW compliation
 
-=========================
 Changes since 1.1 release;
 =========================
 	Support for new platforms:

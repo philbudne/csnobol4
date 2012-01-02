@@ -2,8 +2,15 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+1/1/2012:
+	snolib/sdb.sno: update copyright notice
+	configure: flush ALTLIBDIR
+	lib/snolib/time.c: cleanup: enums, error checks/returns
+
 12/31/2011:
 	cpuid.c: rework for 64-bit Mac and Windows
+	configure: quiet some compiler warnings, fix HWNAME display
+	CHANGES: cleanup
 
 *** 1.4-rc1
 

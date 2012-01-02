@@ -18,9 +18,6 @@ if [ ! "$CC" ]; then
     WANTGCC=true
 fi
 
-# includes directory
-INCDIR=/usr/include
-
 # largefile support OK
 LARGEFILE_OK=true
 
@@ -36,6 +33,8 @@ OS=`(uname -s || echo unknown) 2>/dev/null`
 OSREL=`(uname -r || echo unknown) 2>/dev/null`
 OSVERS=`(uname -v || echo unknown) 2>/dev/null`
 MACHINE=`(uname -m || echo unknown) 2>/dev/null`
+# Linux/GNU:
+INST=`(uname -i || echo unknown) 2>/dev/null`
 
 DATE=`date`
 
@@ -46,12 +45,20 @@ VERSION_H=version.h.tmp
 CONFIG_H=config.h.tmp
 CONFIG_M4=config.m4.tmp
 
+# includes
+INCDIR=/usr/include
+if [ -d /usr/include/${INST}-linux-gnu ]; then
+    ALTINCDIR=/usr/include/${INST}-linux-gnu
+fi
+
 # libraries
 LIBDIR=/usr/lib
-if [ "$MACHINE" = x86_64 -a -d /usr/lib64 ]; then
+if [ -d /usr/lib/${INST}-linux-gnu ]; then
+    LIBDIR=/usr/lib/${INST}-linux-gnu
+elif [ "$MACHINE" = x86_64 -a -d /usr/lib64 ]; then
     LIBDIR=/usr/lib64
-    echo "using $LIBDIR for LIBDIR" 1>&2
 fi
+echo "using $LIBDIR for libraries" 1>&2
 
 rm -f $CONFIG_H $CONFIG_M4 $VERSION_H
 trap "rm -f $CONFIG_H $CONFIG_M4; exit 1" 1 2 15
@@ -221,6 +228,7 @@ while [ $# -gt 0 ]; do
 	WITH_TCL=1
 	;;
     --with-tk)
+	echo "NOTE: --with-tk is obsolete" 1>&1
 	WITH_TK=1
 	;;
     --without-ndbm)
@@ -734,8 +742,8 @@ cat << EOF > $TMP.c
 
 int
 main() {
-    printf("%d %d %d %d\n", sizeof(void *), sizeof(long),
-	sizeof(double), sizeof(int));
+    printf("%d %d %d %d\n", (int)sizeof(void *), (int)sizeof(long),
+			    (int)sizeof(double), (int)sizeof(int));
     return 0;
 }
 EOF
@@ -933,17 +941,18 @@ else
     echo 'RANLIB=true'				>> $CONFIG_M4
 fi
 
-# prefer uname(2)
+# prefer uname(2/3)
 # NeXT/Open Step have $INCDIR/bsd/sys/utsname.h?? transparent??
 if [ -f $INCDIR/sys/utsname.h -o -f $INCDIR/bsd/sys/utsname.h ]; then
-    echo 'using uname(2) for system name information' 1>&2
+    echo 'using uname() for system name information' 1>&2
 else
     OSNAME="$OS $OSREL"
     if [ "$OSNAME" = 'unknown unknown' ]; then
 	OSNAME='unknown'
     fi
-    echo 'using "'$HWNAME:$OSNAME'" for system name information' 1>&2
+    echo 'using "'$MACHINE'" for hardware name' 1>&2
     echo '#define HWNAME "'$MACHINE'"'		>> $CONFIG_H
+    echo 'using "'$OSNAME'" for system name' 1>&2
     echo '#define OSNAME "'$OSNAME'"'		>> $CONFIG_H
     echo 'SYS_C=$(SRCDIR)lib/generic/sys.c'	>> $CONFIG_M4
 fi
@@ -1037,7 +1046,7 @@ if [ -f $INCDIR/sys/socket.h ]; then
 	# Darwin < 7.0 is broken?
 	case "$OS" in
 	Darwin)
-	    case `uname -r` in
+	    case "$OSREL" in
 	    [1-6].*)
 		# pre Panther (MacOS 10.3.x, Darwin 7.x) bug:
 		echo '#define _BSD_SOCKLEN_T int32_t' >> $CONFIG_H
@@ -1525,14 +1534,8 @@ if [ ! "$WITHOUT_NDBM" ]; then
 	if [ "$USE_GDBM" ]; then
 	    echo "using libgdbm for DBM support" 1>&2
 	    # gdbm 1.8.1: assume if it exists, we need it?
-
-	    # need to look elsewhere on Ubuntu 11.04
-	    # (what about cross compilations!)
-	    ALTLIBDIR=/usr/lib/`uname -i`-linux-gnu
 	    if [ -f $LIBDIR/libgdbm_compat.a -o \
-		 -f $LIBDIR/libgdbm_compat.so -o \
-		 -f $ALTLIBDIR/libgdbm_compat.a -o \
-		 -f $ALTLIBDIR/libgdbm_compat.so ]; then
+		 -f $LIBDIR/libgdbm_compat.so ]; then
 		echo "using libgdbm_compat" 1>&2
 		echo 'ADD_LDFLAGS([-lgdbm_compat])' >> $CONFIG_M4
 	    fi
