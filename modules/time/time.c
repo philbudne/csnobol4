@@ -24,6 +24,27 @@
 #endif
 
 #define SETINT(DP,N,VAL) (DP)[N].a.i = (VAL); (DP)[N].f = 0; (DP)[N].v = I
+#define SETNULL(DP,N) (DP)[N].a.i = 0; (DP)[N].f = 0; (DP)[N].v = S
+
+enum tv_member {
+    TV_DESCR,
+    TV_SEC,
+    TV_USEC
+};
+
+enum tm_member {
+    TM_DESCR,
+    TM_SEC,
+    TM_MIN,
+    TM_HOUR,
+    TM_MDAY,
+    TM_MON,
+    TM_YEAR,
+    TM_WDAY,
+    TM_YDAY,
+    TM_ISDST,
+    TM_GMTOFF
+};
 
 /*
  * GETTIMEOFDAY_(TIMEVAL)
@@ -32,54 +53,67 @@ int
 GETTIMEOFDAY_( LA_ALIST ) LA_DCL
 {
     struct descr *dp = LA_PTR(0);
+    if (!dp)
+	RETNULL;
+    /* validate dp[TV_DESCR]? */
 #ifdef HAVE_GETTIMEOFDAY
     struct timeval tv;
     if (gettimeofday(&tv, NULL) < 0)
 	RETFAIL;
-    SETINT(dp,1,tv.tv_sec);
-    SETINT(dp,2,tv.tv_usec);
+    SETINT(dp,TV_SEC,tv.tv_sec);
+    SETINT(dp,TV_USEC,tv.tv_usec);
 #else
-    SETINT(dp,1,time(0));
-    SETINT(dp,2,0);
+    SETINT(dp,TV_SEC,time(0));
+    SETINT(dp,TV_USEC,0);
 #endif
     RETNULL;
 }
 
-static void
+static int
 tm2sno(struct tm *tmp, struct descr *dp)
 {
-    SETINT(dp,1,tmp->tm_sec);
-    SETINT(dp,2,tmp->tm_min);
-    SETINT(dp,3,tmp->tm_hour);
-    SETINT(dp,4,tmp->tm_mday);
-    SETINT(dp,5,tmp->tm_mon);
-    SETINT(dp,6,tmp->tm_year);
-    SETINT(dp,7,tmp->tm_wday);
-    SETINT(dp,8,tmp->tm_yday);
-    SETINT(dp,9,tmp->tm_isdst);
+    if (!dp)
+	return 0;
+    /* validate dp[TM_DESCR]? */
+    SETINT(dp,TM_SEC,tmp->tm_sec);
+    SETINT(dp,TM_MIN,tmp->tm_min);
+    SETINT(dp,TM_HOUR,tmp->tm_hour);
+    SETINT(dp,TM_MDAY,tmp->tm_mday);
+    SETINT(dp,TM_MON,tmp->tm_mon);
+    SETINT(dp,TM_YEAR,tmp->tm_year);
+    SETINT(dp,TM_WDAY,tmp->tm_wday);
+    SETINT(dp,TM_YDAY,tmp->tm_yday);
+    SETINT(dp,TM_ISDST,tmp->tm_isdst);
 #ifdef HAVE_TM_GMTOFF
-    SETINT(dp,10,tmp->tm_gmtoff);
+    SETINT(dp,TM_GMTOFF,tmp->tm_gmtoff);
 #else
-    SETINT(dp,10,-1);
+    SETNULL(dp,TM_GMTOFF);
 #endif
+    return 1;
 }
 
-static void
+static int
 sno2tm(struct descr *dp, struct tm *tmp)
 {
     memset(tmp, 0, sizeof(struct tm));
-    tmp->tm_sec = dp[1].a.i;
-    tmp->tm_min = dp[2].a.i;
-    tmp->tm_hour = dp[3].a.i;
-    tmp->tm_mday = dp[4].a.i;
-    tmp->tm_mon = dp[5].a.i;
-    tmp->tm_year = dp[6].a.i;
-    tmp->tm_wday = dp[7].a.i;
-    tmp->tm_yday = dp[8].a.i;
-    tmp->tm_isdst = dp[9].a.i;
+    /* accept int or empty string */
+#define FETCH(X,Y) \
+    if (dp[Y].v == I) tmp->X = dp[Y].a.i; \
+    else if (dp[Y].v == S && dp[Y].a.ptr == 0) tmp->X = 0; \
+    else return 0
+    FETCH(tm_sec, TM_SEC);
+    FETCH(tm_min, TM_MIN);
+    FETCH(tm_hour, TM_HOUR);
+    FETCH(tm_mday, TM_MDAY);
+    FETCH(tm_mon, TM_MON);
+    FETCH(tm_year, TM_YEAR);
+    FETCH(tm_wday, TM_WDAY);
+    FETCH(tm_yday, TM_YDAY);
+    FETCH(tm_isdst, TM_ISDST);
 #ifdef HAVE_TM_GMTOFF
-    tmp->tm_gmtoff = dp[10].a.i;
+    FETCH(tm_gmtoff, TM_GMTOFF);
 #endif
+    return 1;
 }
 
 /*
@@ -90,7 +124,8 @@ LOCALTIME_( LA_ALIST ) LA_DCL
 {
     time_t t = LA_INT(0);
     struct tm *tmp = localtime(&t);
-    tm2sno(tmp, LA_PTR(1));
+    if (!tm2sno(tmp, LA_PTR(1)))
+	RETFAIL;
     RETNULL;
 }
 
@@ -102,7 +137,8 @@ GMTIME_( LA_ALIST ) LA_DCL
 {
     time_t t = LA_INT(0);
     struct tm *tmp = gmtime(&t);
-    tm2sno(tmp, LA_PTR(1));
+    if (!tm2sno(tmp, LA_PTR(1)))
+	RETFAIL;
     RETNULL;
 }
 
@@ -117,7 +153,8 @@ STRFTIME( LA_ALIST ) LA_DCL
     struct tm tm;
 
     getstring(LA_PTR(0), format, sizeof(format));
-    sno2tm(LA_PTR(1), &tm);
+    if (!sno2tm(LA_PTR(1), &tm))
+	RETFAIL;
     strftime(output, sizeof(output), format, &tm);
     RETSTR(output);
 }
@@ -131,10 +168,11 @@ MKTIME( LA_ALIST ) LA_DCL
 {
     struct tm tm;
     time_t ret;
-    sno2tm(LA_PTR(0), &tm);
+
+    if (!sno2tm(LA_PTR(0), &tm))
+	RETFAIL;
     ret = mktime(&tm);
-    tm2sno(&tm, LA_PTR(0));		/* normalized?! */
-    if (ret == -1)
+    if (ret == -1 || !tm2sno(&tm, LA_PTR(0)))
 	RETFAIL;
     RETINT(ret);
 }
@@ -162,11 +200,10 @@ STRPTIME_( LA_ALIST ) LA_DCL
 
     getstring(LA_PTR(0), input, sizeof(input));
     getstring(LA_PTR(1), format, sizeof(format));
+    memset(&tm, 0, sizeof(tm));		/* sno2tm(LA_PTR(2), &tm); ? */
     ret = strptime(input, format, &tm);
-    tm2sno(&tm, LA_PTR(2));		/* only on success?? */
-    if (ret) {
-      RETSTR(ret);
-    }
+    if (ret && tm2sno(&tm, LA_PTR(2)))
+	RETSTR(ret);			/* return remaining string */
     RETFAIL;
 }
 #endif

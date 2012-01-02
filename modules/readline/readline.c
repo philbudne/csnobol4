@@ -13,6 +13,7 @@
 #include "macros.h"
 #include "load.h"
 #include "equ.h"
+#include "str.h"			/* strlen() */
 #undef RETURN
 
 #include <stdio.h>
