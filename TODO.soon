@@ -5,7 +5,6 @@ snobol4 program to generate win32 .mak files?
 configure:
     Ubuntu multilib crap
 	test includes/libs by compiling test programs.
-    Detect MINGW
     Make COM optional (--with-com)
 
 Win32 sleep()???

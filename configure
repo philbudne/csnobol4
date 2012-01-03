@@ -34,7 +34,14 @@ OSREL=`(uname -r || echo unknown) 2>/dev/null`
 OSVERS=`(uname -v || echo unknown) 2>/dev/null`
 MACHINE=`(uname -m || echo unknown) 2>/dev/null`
 # Linux/GNU:
-INST=`(uname -i || echo unknown) 2>/dev/null`
+INST=`(uname -i || uname -m || echo unknown) 2>/dev/null`
+
+case "$OS" in
+MINGW*)
+    echo "MinGW detected; run make -f config/win32/mingw.mak"
+    exit
+    ;;
+esac
 
 DATE=`date`
 
@@ -595,7 +602,7 @@ else
 	;;
     *:IRIX*:*:*)
 	echo 'CCM=$(CC) -M'			>> $CONFIG_M4
-	FASTFLAGS=-Ofast=`uname -m`
+	FASTFLAGS=-Ofast=$MACHINE
 	CCVERS=-version
 
 	# Kill warnings: only needed with n32 and 64bit ABI
@@ -1075,7 +1082,7 @@ if [ -f $INCDIR/sys/socket.h ]; then
 	# SCO, SunOS5
 	echo 'using libsocket' 1>&2
 	echo 'ADD_LDFLAGS([-lsocket])'		>> $CONFIG_M4
-	if [ `uname` = SunOS ]; then
+	if [ "$OS" = SunOS ]; then
 	    echo 'using libnsl' 1>&2
 	    echo 'ADD_LDFLAGS([-lnsl])'		>> $CONFIG_M4
 	fi

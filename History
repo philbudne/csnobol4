@@ -4,6 +4,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 1/2/2012:
 	configure: use LIBDIR in TCL_CONF_DIRS instead of /usr/lib
+		detect MINGW
+		uname cleanup
 	lib/win32/sys.c: Add a cast, arm architecture
 	cpuid.c: fix MSC defines
 
