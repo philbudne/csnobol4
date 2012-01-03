@@ -1,10 +1,19 @@
 $Id$
 
+snobol4 program to generate win32 .mak files?
+
+configure:
+    Ubuntu multilib crap
+	test includes/libs by compiling test programs.
+    Detect MINGW
+    Make COM optional (--with-com)
+
 Win32 sleep()???
 
-Ubuntu multilib crap
+Direct GDBM support?
 
 ================
+
 Make use of tdb (from samba project: gdbm API w/ multiple writers)
 
     Have seperate APIs for each DBM alternative, OPSYN to the default version?

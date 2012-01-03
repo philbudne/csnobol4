@@ -3,7 +3,7 @@
 
 int debug = 0;
 
-#if defined(__i386__) || defined(__x86_64__) || defined(MSVC)
+#if defined(__i386__) || defined(__x86_64__) || defined(_M_IX86) || defined(_M_AMD64)
 void
 cpuid(int f, int v[4]) {
 #ifdef __GNUC__
@@ -17,10 +17,10 @@ cpuid(int f, int v[4]) {
 	: "a" (f)			/* in */
 	: "edi");			/* clobber */
 #endif /* __GNUC__ */
-#ifdef MSVC
+#ifdef _MSC_VER
     /* http://en.wikipedia.org/wiki/CPUID */
     __cpuid(v, f);			/* present in VS2005 */
-#endif /* MSVC */
+#endif /* _MSC_VER */
     if (debug)
 	printf("f %#x: %#x %#x %#x %#x\n", f, v[0],  v[1],  v[2],  v[3]);
 }

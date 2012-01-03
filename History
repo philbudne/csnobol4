@@ -5,6 +5,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 1/2/2012:
 	configure: use LIBDIR in TCL_CONF_DIRS instead of /usr/lib
 	lib/win32/sys.c: Add a cast, arm architecture
+	cpuid.c: fix MSC defines
 
 1/1/2012:
 	snolib/sdb.sno: update copyright notice
