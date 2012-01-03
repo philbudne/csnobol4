@@ -62,6 +62,12 @@ hwname(cp)
 	break;
 #endif
 
+#ifdef PROCESSOR_ARCHITECTURE_ARM
+    case PROCESSOR_ARCHITECTURE_ARM:
+	hw = "arm";
+	break;
+#endif
+
     default:
 	sprintf(cp, "arch#%d", si.wProcessorArchitecture);
 	return;
