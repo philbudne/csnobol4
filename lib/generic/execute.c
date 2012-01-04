@@ -25,8 +25,8 @@ void
 execute(buf)
     char *buf;
 {
-    execl(SH_PATH, "sh", "-c", buf, 0); /* XXX SH_NAME? */
+    execl(SH_PATH, "sh", "-c", buf, NULL); /* XXX SH_NAME? */
 
     /* must not have found shell; try alternate */
-    execl(SH_PATH2, "sh", "-c", buf, 0); /* XXX SH_NAME2? */
+    execl(SH_PATH2, "sh", "-c", buf, NULL); /* XXX SH_NAME2? */
 }
