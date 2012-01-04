@@ -229,6 +229,9 @@ while [ $# -gt 0 ]; do
     --universal)
 	UNIVERSAL=true
 	;;
+    --without-com)
+	WITHOUT_COM=1
+	;;
     --without-readline)
 	WITHOUT_READLINE=1
 	;;
@@ -276,9 +279,9 @@ Install location;
 	--snolibdir=PATH	[default: PREFIX/lib/snobol4]
 
 Optional items;
-	--with-tcl		--with-tk
+	--with-tcl		--with-tk (obsolete)
 	--without-ndbm		--force-sdbm
-	--without-readline
+	--without-readline	--without-com
 EOF
 
 	rm -f $CONFIG_M4 $CONFIG_H
@@ -836,7 +839,7 @@ if [ "$LONGLONG" ]; then
     echo using long long for SNOBOL4 INTEGER type 1>&2
     echo '#define INT_T long long'		>> $CONFIG_H
 
-    if grep strtoll $INCDIR/stdlib.h >/dev/null 2>&1; then
+    if config/check stdlib.h 'strtoll("", 0, 0)'; then
 	echo 'using C99 printf %lld' 1>&2
 	echo 'SPCINT_C=$(SRCDIR)lib/c99/spcint.c' >> $CONFIG_M4
 	echo 'using C99 strtoll()' 1>&2
@@ -867,13 +870,13 @@ if [ "$DOUBLE" ]; then
     echo '#define REAL_T double'		>> $CONFIG_H
 fi
 
-if [ -f $INCDIR/stdlib.h ]; then
+if config/check stdlib.h; then
     echo 'using ANSI stdlib.h' 1>&2
     echo '#define HAVE_STDLIB_H'		>> $CONFIG_H
     HAVE_STDLIB_H=1
 fi
 
-if [ -f $INCDIR/unistd.h ]; then
+if config/check unistd.h; then
     echo 'using POSIX unistd.h' 1>&2
     echo '#define HAVE_UNISTD_H'		>> $CONFIG_H
     HAVE_UNISTD_H=1
@@ -904,7 +907,8 @@ fi
 if [ "$CYGWIN" ]; then
     echo 'using Win32 native calls for runtimes' 1>&2
     echo 'MSTIME_C=$(SRCDIR)lib/win32/mstime.c'	>> $CONFIG_M4
-elif grep rusage $INCDIR/sys/resource.h >/dev/null 2>&1; then
+elif config/check "sys/time.h sys/resource.h" \
+    "struct rusage r; getrusage(&r, RUSAGE_SELF)"; then
     echo 'using getrusage() for runtimes' 1>&2
     echo 'MSTIME_C=$(SRCDIR)lib/bsd/mstime.c'	>> $CONFIG_M4
 
@@ -919,7 +923,7 @@ elif grep rusage $INCDIR/sys/resource.h >/dev/null 2>&1; then
 elif [ "$HAVE_UNISTD_H" ]; then
     echo 'using times() + sysconf() for runtimes' 1>&2
     echo 'MSTIME_C=$(SRCDIR)lib/posix/mstime.c'	>> $CONFIG_M4
-elif [ -f $INCDIR/sys/times.h ]; then
+elif config/cjeck sys/times.h "struct tms tt; times(&tt)"; then
     # V7 had times(), but not times.h!!!
     echo 'using times() for runtimes' 1>&2
     # XXX warning????
@@ -951,7 +955,7 @@ fi
 
 # prefer uname(2/3)
 # NeXT/Open Step have $INCDIR/bsd/sys/utsname.h?? transparent??
-if [ -f $INCDIR/sys/utsname.h -o -f $INCDIR/bsd/sys/utsname.h ]; then
+if config/check sys/utsname.h "struct utsname u; uname(&u)"; then
     echo 'using uname() for system name information' 1>&2
 else
     OSNAME="$OS $OSREL"
@@ -972,13 +976,13 @@ fi
 # it might be a superset of string.h.  I haven't (yet) seen a situation
 # where it's fatal to include both.
 
-if [ -f $INCDIR/strings.h ]; then
+if config/check strings.h 'rindex("", 65)'; then
     echo '#define HAVE_STRINGS_H'		>> $CONFIG_H
     echo 'using BSD strings.h' 1>&2
     HAVE_STRINGS_H=1
 fi
 
-if [ -f $INCDIR/string.h ]; then
+if config/check string.h 'strchr("", 65)'; then
     echo 'using ANSI string.h' 1>&2
     echo '#define HAVE_STRING_H'		>> $CONFIG_H
     if [ "$HAVE_STRINGS_H" ]; then
@@ -1009,8 +1013,9 @@ if [ -f $INCDIR/string.h ]; then
     fi
 fi
 
-if [ -f $INCDIR/sys/socket.h ]; then
-    if grep getaddrinfo $INCDIR/netdb.h >/dev/null 2>&1; then
+if config/check sys/socket.h; then
+    if config/check 'sys/socket netdb.h' \
+	'struct addrinfo h[2], *ap; getaddrinfo("", "", h, &ap)'; then
 	echo 'using getaddrinfo for TCP/IPv6 compatibility' 1>&2
 	echo 'INET_O=inet6.o'			>> $CONFIG_M4
 	if grep bindresvport_sa $INCDIR/rpc/rpc.h >/dev/null 2>&1; then
@@ -1043,11 +1048,12 @@ if [ -f $INCDIR/sys/socket.h ]; then
 	echo 'ADD_SRCS([$(BINDRESVPORT_C)])'	>> $CONFIG_M4
     fi
 
-    if grep sockaddr_in6 $INCDIR/netinet/in.h $INCDIR/netinet6/in6.h >/dev/null 2>&1; then
+    if config/check netinet/in.h 'struct sockaddr_in6 in6' || \
+	config/check netinet6/in.h 'struct sockaddr_in6 in6'; then
 	echo '#define HAVE_SOCKADDR_IN6' >> $CONFIG_H
     fi
 
-    if grep socklen_t $INCDIR/sys/socket.h >/dev/null 2>&1; then
+    if config/check sys/socket.h 'socklen_t len'; then
 	SOCKLEN_T=socklen_t
 	# What a PITA: HP and DEC/Q/HP are schizzoid.
 	# They have socklen_t as an option.
@@ -1078,24 +1084,28 @@ if [ -f $INCDIR/sys/socket.h ]; then
     echo '#define SOCKLEN_T '$SOCKLEN_T		>> $CONFIG_H
 
     # add network libraries if needed
-    if [ -f /usr/lib/libsocket.a -o -f /usr/lib/libsocket.so ]; then
-	# SCO, SunOS5
+    if config/check sys/socket.h 'socket(AF_INET, SOCK_STREAM, 0)'; then
+	true
+    elif config/check sys/socket.h \
+	'socket(AF_INET, SOCK_STREAM, 0)' -lsocket; then
 	echo 'using libsocket' 1>&2
 	echo 'ADD_LDFLAGS([-lsocket])'		>> $CONFIG_M4
-	if [ "$OS" = SunOS ]; then
-	    echo 'using libnsl' 1>&2
-	    echo 'ADD_LDFLAGS([-lnsl])'		>> $CONFIG_M4
-	fi
+    elif config/check sys/socket.h \
+	'socket(AF_INET, SOCK_STREAM, 0)' '-lsocket -lnsl'; then
+	echo 'using libsocket' 1>&2
+	echo 'ADD_LDFLAGS([-lsocket])'		>> $CONFIG_M4
+	echo 'using libnsl' 1>&2
+	echo 'ADD_LDFLAGS([-lnsl])'		>> $CONFIG_M4
     fi
 
     # BSD bidirectional popen (not needed on *BSD!)
     # no prototype on SunOS4, so check syscalls
-    if grep socketpair $INCDIR/sys/socket.h >/dev/null 2>&1  ||
-       grep socketpair $INCDIR/sys/syscall.h >/dev/null 2>&1; then
+    if config/check sys/socket.h \
+	'int s[2]; socketpair(AF_INET, SOCK_STREAM, 0, s)'; then
 	echo 'using private popen() function' 1>&2
 	echo 'ADD_OBJS([popen.o])'		>> $CONFIG_M4
 	echo 'ADD_SRCS([$(POPEN_C)])'		>> $CONFIG_M4
-	if [ -f $INCDIR/paths.h ]; then
+	if config/check paths.h 'char *foo = _PATH_BSHELL'; then
 	    echo 'using paths.h for popen() shell path' 1>&2
 	    echo '#define HAVE_PATHS_H'		>> $CONFIG_H
 	else
@@ -1114,16 +1124,14 @@ if [ -f $INCDIR/sys/socket.h ]; then
 	    fi
 	fi
 
-	# GNU libc 2.0 has __vfork
-	if grep '[^_]_vfork' $INCDIR/unistd.h >/dev/null 2>&1; then
+	# glibc 2.0 has __vfork
+	if grep '[^_]_vfork' $INCDIR/unistd.h; then
 	    # SGI
 	    NO_VFORK=1
-	elif grep 'vfork' $INCDIR/unistd.h >/dev/null 2>&1 || \
-		grep 'vfork' $INCDIR/sys/unistd.h >/dev/null 2>&1; then \
-	    # HP-UX has goods in sys/unistd.h, Tru64 grep hates missing files
+	elif config/check unistd.h 'vfork()'; then
 	    echo 'using vfork() from unistd.h' 1>&2
 	    echo '/* vfork() in unistd.h */'	>> $CONFIG_H
-	elif [ -f $INCDIR/vfork.h ]; then
+	elif config/check vfork.h 'vfork()'; then
 	    echo 'using vfork() from vfork.h' 1>&2
 	    echo '#define HAVE_VFORK_H'		>> $CONFIG_H
 	else
@@ -1139,19 +1147,19 @@ else
     echo 'INET_C=$(SRCDIR)lib/dummy/inet.c'	>> $CONFIG_M4
 fi
 
-if [ -f $INCDIR/termios.h ]; then
+if config/check termios.h 'struct termios t; tcgetattr(0, &t)'; then
     echo 'using termios.h for tty modes' 1>&2
     echo 'TTY_C=$(SRCDIR)lib/posix/tty.c'	>> $CONFIG_M4
-elif [ -f $INCDIR/termio.h ]; then
+elif config/check termio.h 'struct termio t; ioctl(0, TCGETA, &t)'; then
     echo 'using termio.h for tty modes' 1>&2
     echo '#define USE_TERMIO'			>> $CONFIG_H
     echo 'TTY_C=$(SRCDIR)lib/posix/tty.c'	>> $CONFIG_M4
-elif [ -f $INCDIR/sgtty.h ]; then
+elif config/check sgtty.h 'struct sgtty s; gtty(0, &s)'; then
     # systems with both termio/termios and sgtty usually
     # are simulating sgtty, so it's the last check.
     echo 'using sgtty.h for tty modes' 1>&2
     echo 'TTY_C=$(SRCDIR)lib/bsd/tty.c'		>> $CONFIG_M4
-elif [ -f $INCDIR/sys/ttyio.h ]; then
+elif config/check sys/ttyio.h 'struct sgtty s; gtty(0, &s)'; then
     # Bell Research Unix
     echo 'using sys/ttyio.h for tty modes' 1>&2
     echo 'TTY_C=$(SRCDIR)lib/bsd/tty.c'		>> $CONFIG_M4
@@ -1171,9 +1179,9 @@ fi
 # doesn't include them, but avoid compiling our own if system version
 # available).
 
-if grep getopt $INCDIR/stdio.h >/dev/null 2>&1 || \
-   grep getopt $INCDIR/stdlib.h >/dev/null 2>&1 || \
-   grep getopt $INCDIR/unistd.h >/dev/null 2>&1; then
+if config/check stdio.h 'getopt(argc, argv, "")' || \
+   config/check stdlib.h 'getopt(argc, argv, "")' || \
+   config/check unistd.h 'getopt(argc, argv, "")'; then
     echo 'using system provided getopt() function' 1>&2
 else
     # may not be needed, but should compile without error!
@@ -1186,7 +1194,9 @@ fi
 # overrides "dummy" and "bsd" style, unless given --no-dynlib
 if [ ! "$NO_DYNLIB" ]; then
     # look for sun/unix98 style dlopen()
-    if [ -f $INCDIR/dlfcn.h -a ! "$NO_DLOPEN" ]; then
+    if [ ! "$NO_DLOPEN" ]; then
+      if config/check dlfcn.h 'dlopen("", 0)' || \
+	  config/check dlfcn.h 'dlopen("", 0)' -ldl; then
 	LOAD=unix98
 	echo 'using dlopen() for LOAD() support' 1>&2
 	echo 'LOAD_C=$(SRCDIR)lib/unix98/load.c' >> $CONFIG_M4
@@ -1249,7 +1259,8 @@ if [ ! "$NO_DYNLIB" ]; then
 	if [ "$TRY_UNDERSCORE" ]; then
 	    echo '#define TRY_UNDERSCORE'	>> $CONFIG_H
 	fi
-    elif [ -f $INCDIR/dl.h ]; then
+      fi
+    elif config/check dl.h 'shl_load("", BIND_DEFERRED, 0L)'; then
 	LOAD=hpux
 	echo 'using HP-UX shl_load() for LOAD() support' 1>&2
 	echo 'undefine([hpux])'			>> $CONFIG_M4
@@ -1258,8 +1269,7 @@ if [ ! "$NO_DYNLIB" ]; then
 	# export all symbols
 	echo 'ADD_LDFLAGS([-Wl,-E])'		>> $CONFIG_M4
 	echo 'ADD_LDFLAGS([-ldld])'		>> $CONFIG_M4
-    elif [ -f /NextDeveloper/Headers/mach-o/dyld.h -o \
-           -f $INCDIR/mach-o/dyld.h ]; then
+    elif config/check mach-o/dyld.h 'NSObjectFileImage ofi'; then
 	LOAD=next
 	echo 'using NextStep/Darwin LOAD() support' 1>&2
 	echo 'LOAD_C=$(SRCDIR)lib/next/load.c'	>> $CONFIG_M4
@@ -1269,7 +1279,7 @@ if [ ! "$NO_DYNLIB" ]; then
 	else
 	    SNOLIB_FILE=snolib.dyld
 	fi
-    elif [ -f $INCDIR/a.out.h ]; then
+    elif config/check a.out.h 'struct exec a; int x = OMAGIC'; then
 	LOAD=aout
 	echo 'using a.out ld for LOAD() support' 1>&2
 	echo 'LOAD_C=$(SRCDIR)lib/bsd/load.c'	>> $CONFIG_M4
@@ -1303,7 +1313,7 @@ fi
 
 # fseeko isn't needed if "long" (the offset type used by fseek)
 # is 64 bits, but should be safe in any case (famous last words).
-if grep fseeko $INCDIR/stdio.h >/dev/null 2>&1; then
+if config/check stdio.h 'fseeko(stdout, 0, 0)'; then
     echo 'using fseeko for file positioning' 1>&2
     echo '#define HAVE_FSEEKO'			>> $CONFIG_H
 fi
@@ -1372,11 +1382,11 @@ if [ "$LARGEFILE_OK" ] &&
 fi
 
 # RedHat 6.0 has mman.h, but not madvise()
-if grep MADV_RANDOM $INCDIR/sys/mman.h >/dev/null 2>&1 ||
-   grep MADV_RANDOM $INCDIR/bits/mman.h >/dev/null 2>&1; then
+if config/check sys/mman.h 'madvise(0, 0, MADV_RANDOM)' || \
+    config/check sys/mman.h 'posix_madvise(0, 0, POSIX_MADV_RANDOM)'; then
     echo 'using madvise() during GC' 1>&2
     echo 'DYNAMIC_C=$(SRCDIR)lib/posix/dynamic.c' >> $CONFIG_M4
-elif [ -f $INCDIR/sys/vadvise.h ]; then
+elif config/check sys/vadvise.h 'vadvise(VA_ANOM)'; then
     echo 'using vadvise() during GC' 1>&2
     echo 'DYNAMIC_C=$(SRCDIR)lib/bsd/dynamic.c'	>> $CONFIG_M4
 else
@@ -1385,14 +1395,10 @@ else
 fi
 
 # just give in & compile a little program that uses SIGTSTP??
-if grep SIGTSTP $INCDIR/signal.h >/dev/null 2>&1 || \
-   grep SIGTSTP $INCDIR/sys/signal.h >/dev/null 2>&1 || \
-   grep SIGTSTP $INCDIR/bits/signum.h >/dev/null 2>&1 ||
-   grep SIGTSTP $INCDIR/sys/iso/signal_iso.h >/dev/null 2>&1; then
-    if grep sigset_t $INCDIR/signal.h >/dev/null 2>&1 || \
-       grep sigset_t $INCDIR/sys/signal.h >/dev/null 2>&1; then
+if config/check signal.h 'int i = SIGTSTP'; then
+    if config/check signal.h 'sigset_t ss; sigemptyset(&ss)'; then
 	echo 'using POSIX suspend.c' 1>&2
-    elif grep 'sigmask(' $INCDIR/sys/signal.h >/dev/null 2>&1; then
+    elif config/check signal.h 'sigmask(0)'; then
 	echo 'using BSD suspend.c' 1>&2
 	echo 'SUSPEND_C=$(SRCDIR)lib/bsd/suspend.c'	>> $CONFIG_M4
     else
@@ -1405,16 +1411,16 @@ else
     echo 'SUSPEND_C=$(SRCDIR)lib/dummy/suspend.c' >> $CONFIG_M4
 fi
 
-if grep gettimeofday $INCDIR/sys/time.h >/dev/null 2>&1; then
-    echo 'found gettimeofday()' 1>&2
+if config/check sys/time.h 'struct timeval tv; gettimeofday(&tv,0)'; then
+    echo 'using gettimeofday()' 1>&2
     echo '#define HAVE_GETTIMEOFDAY'		>> $CONFIG_H
 fi
-if grep tm_gmtoff $INCDIR/time.h >/dev/null 2>&1; then
-    echo 'found tm_gmtoff' 1>&2
+if config/check time.h 'struct tm tm; int i = tm.tm_gmtoff'; then
+    echo 'using tm_gmtoff' 1>&2
     echo '#define HAVE_TM_GMTOFF'		>> $CONFIG_H
 fi
-if grep strptime $INCDIR/time.h >/dev/null 2>&1; then
-    echo 'found strptime()' 1>&2
+if config/check time.h 'struct tm tm; strptime("", "", &tm)'; then
+    echo 'using strptime()' 1>&2
     echo '#define HAVE_STRPTIME'		>> $CONFIG_H
 fi
 # should be safe on all Un*x systems
@@ -1480,7 +1486,7 @@ if [ "$WITH_TCL" ]; then
     done
 
     if [ "$TCONF" ]; then
-	echo "found Tcl version $MAJ.$MIN" 1>&2
+	echo "using Tcl version $MAJ.$MIN" 1>&2
 	# Tk (loads as package in 8.4+)
 	if [ "$WITH_TK" -a \( $MAJ -lt 8 -o $MAJ -eq 8 -a $MIN -lt 4 \) ]; then
 	    echo 'use Tcl 8.4 or later for Tk' 1>&2
@@ -1496,94 +1502,94 @@ if [ "$WITH_TCL" ]; then
 	    echo "ADD_CPPFLAGS([$TCL_INCLUDE_SPEC])"
 	) >> $CONFIG_M4
     else
-	echo "Tcl not found" 1>&2
+	echo "Tcl not found (may be due to no 'tclX.Y-dev' package)" 1>&2
 	exit 1
     fi
 fi
 
 if [ ! "$WITHOUT_NDBM" ]; then
+    DBM_FRAG='DBM *db = dbm_open("", 0, 0)'
     if [ "$FORCE_SDBM" ]; then
 	# bypass checks
 	USE_SDBM=1
-    elif [ -f $INCDIR/ndbm.h ]; then
-	echo "using $INCDIR/ndbm.h for DBM support" 2>&1
+    elif config/check ndbm.h "$DBM_FRAG"; then
+	echo "using ndbm.h for DBM support" 2>&1
 	echo '#define HAVE_NDBM_H'		>> $CONFIG_H
-	# see if ndbm.h is Berkeley DB wrapper
-	if grep 'Margo Seltzer' $INCDIR/ndbm.h > /dev/null &&
-	    [ -f /usr/lib/libdb.a -o -f /usr/lib/libdb.so ]; then
-	    # RH5.2 has Berkeley DB ndbm.h, but seperate libdb.a
-	    # (BSD systems have BDB in libc)
-	    echo "using libdb for DBM support" 1>&2
-	    echo 'ADD_LDFLAGS([-ldb])'		>> $CONFIG_M4
-	elif grep 'GDBM' $INCDIR/ndbm.h > /dev/null &&
-	    [ -f /usr/lib/libgdbm.a -o /usr/lib/libgdbm.so -o \
-		/usr/lib/libgdbm.dll.a ]; then
-	    # Cygwin has gdbm <ndbm.h> and seperate libgdbm
-	    USE_GDBM=1
-	fi
-    elif [ -f $INCDIR/gdbm/ndbm.h ]; then
-	echo "using $INCDIR/gdbm/ndbm.h for DBM support" 1>&2
-	echo '#define HAVE_GDBM_SLASH_NDBM_H'	>> $CONFIG_H
-	USE_GDBM=1
-    elif [ -f $INCDIR/gdbm-ndbm.h ]; then
-	echo "using $INCDIR/gdbm-ndbm.h for DBM support" 1>&2
-	echo '#define HAVE_GDBM_DASH_NDBM_H'	>> $CONFIG_H
-	USE_GDBM=1
+    elif config/check ndbm.h "$DBM_FRAG" -ldb; then
+	echo "using ndbm.h for DBM support (with -ldb)" 2>&1
+	echo '#define HAVE_NDBM_H'		>> $CONFIG_H
     else
-	# XXX check /usr/local/include??
-#	echo 'no ndbm support found' 1>&2
-#	NO_NDBM=1
-
-	# use SDBM (have a command line option to disable?)!
-	USE_SDBM=1
+	for COMPAT in '' ' -lgdbm_compat'; do
+	    LIBS="-lgdbm$COMPAT"
+	    if config/check ndbm.h "$DBM_FRAG" "$LIBS"; then
+		# cygwin
+		USE_GDBM=1
+		echo "using ndbm.h for DBM support (with $LIBS)" 2>&1
+		echo "ADD_LDFLAGS([$LIBS])"	>> $CONFIG_M4
+		break
+	    elif config/check gdbm/ndbm.h "$DBM_FRAG" "$LIBS"; then
+		USE_GDBM=1
+		echo "using gdbm/ndbm.h for DBM support (with $LIBS)" 1>&2
+		echo '#define HAVE_GDBM_SLASH_NDBM_H'	>> $CONFIG_H
+		echo "ADD_LDFLAGS([$LIBS])"	>> $CONFIG_M4
+		break
+	    elif config/check gdbm-ndbm.h "$DBM_FRAG" "$LIBS"; then
+		USE_GDBM=1
+		echo "using gdbm-ndbm.h for DBM support (with $LIBS)" 1>&2
+		echo '#define HAVE_GDBM_DASH_NDBM_H'	>> $CONFIG_H	
+		echo "ADD_LDFLAGS([$LIBS])"	>> $CONFIG_M4
+		break
+	    fi
+	done
+	if [ ! "$USE_GDBM" ]; then
+	    USE_SDBM=1
+	fi
     fi
 
-    if [ ! "$NO_NDBM" ]; then
-	if [ "$USE_GDBM" ]; then
-	    echo "using libgdbm for DBM support" 1>&2
-	    # gdbm 1.8.1: assume if it exists, we need it?
-	    if [ -f $LIBDIR/libgdbm_compat.a -o \
-		 -f $LIBDIR/libgdbm_compat.so ]; then
-		echo "using libgdbm_compat" 1>&2
-		echo 'ADD_LDFLAGS([-lgdbm_compat])' >> $CONFIG_M4
-	    fi
-	    echo 'ADD_LDFLAGS([-lgdbm])'	>> $CONFIG_M4
-	fi
-	echo '#define PML_NDBM'			>> $CONFIG_H
-	echo 'ADD_OBJS([ndbm.o])'		>> $CONFIG_M4
-	echo 'ADD_SRCS([$(NDBM_C)])'		>> $CONFIG_M4
+    echo '#define PML_NDBM'		>> $CONFIG_H
+    echo 'ADD_OBJS([ndbm.o])'		>> $CONFIG_M4
+    echo 'ADD_SRCS([$(NDBM_C)])'	>> $CONFIG_M4
 
-	if [ "$USE_SDBM" ]; then
-	    echo "using SDBM for DBM support" 1>&2
-	    echo 'ADD_CPPFLAGS([-Ilib/sdbm])'	>> $CONFIG_M4
-	    echo 'ADD_OBJS([sdbm.o])'		>> $CONFIG_M4
-	    echo 'ADD_SRCS([$(SDBM_C)])'	>> $CONFIG_M4
-	    echo 'ADD_OBJS([sdbm_hash.o])'	>> $CONFIG_M4
-	    echo 'ADD_SRCS([$(SDBM_HASH_C)])'	>> $CONFIG_M4
-	    echo 'ADD_OBJS([sdbm_pair.o])'	>> $CONFIG_M4
-	    echo 'ADD_SRCS([$(SDBM_PAIR_C)])'	>> $CONFIG_M4
-	    echo '#define HAVE_SDBM_H'		>> $CONFIG_H
-	    echo '#define DUFF'			>> $CONFIG_H
-	fi
+    if [ "$USE_SDBM" ]; then
+	echo "using SDBM for DBM support" 1>&2
+	echo 'ADD_CPPFLAGS([-Ilib/sdbm])' >> $CONFIG_M4
+	echo 'ADD_OBJS([sdbm.o])'	>> $CONFIG_M4
+	echo 'ADD_SRCS([$(SDBM_C)])'	>> $CONFIG_M4
+	echo 'ADD_OBJS([sdbm_hash.o])'	>> $CONFIG_M4
+	echo 'ADD_SRCS([$(SDBM_HASH_C)])' >> $CONFIG_M4
+	echo 'ADD_OBJS([sdbm_pair.o])'	>> $CONFIG_M4
+	echo 'ADD_SRCS([$(SDBM_PAIR_C)])' >> $CONFIG_M4
+	echo '#define HAVE_SDBM_H'	>> $CONFIG_H
+	echo '#define DUFF'		>> $CONFIG_H
     fi
 fi
 
 # Include GNU readline support, if found -- look for library??
-if [ -f /usr/include/readline/readline.h -a ! "$WITHOUT_READLINE" ]; then
-    echo 'using readline' 1>&2
-    echo 'ADD_OBJS([readline.o])'		>> $CONFIG_M4
-    echo 'ADD_SRCS([$(READLINE_C)])'		>> $CONFIG_M4
-    echo 'ADD_LDFLAGS([-lreadline])'		>> $CONFIG_M4
-    echo '#define PML_READLINE'			>> $CONFIG_H
+if [ ! "$WITHOUT_READLINE" ]; then
+    RL_INC='stdio.h readline/readline.h'
+    RL_FRAG='readline("?")'
+    if config/check "$RL_INC" "$RL_FRAG" -lreadline; then
+	RLLIBS="-lreadline"
+    elif config/check "$RL_INC" "$RL_FRAG" '-lreadline -lncurses'; then
+	RLLIBS="-lreadline -lncurses"
+    fi
+    if [ "x$RLLIBS" != x ]; then
+	echo "using readline (with $RLLIBS)" 1>&2
+	echo 'ADD_OBJS([readline.o])'		>> $CONFIG_M4
+	echo 'ADD_SRCS([$(READLINE_C)])'	>> $CONFIG_M4
+	echo "ADD_LDFLAGS([$RLLIBS])"		>> $CONFIG_M4
+	echo '#define PML_READLINE'		>> $CONFIG_H
+    fi
 fi
 
 if [ -c /dev/random ]; then
-    echo 'using /dev/random' 1>&2
+    echo 'using /dev/random for SRANDOMDEV()' 1>&2
     echo '#define HAVE_DEV_RANDOM'		>> $CONFIG_H
 fi
 
 # Include COM support under Cygwin!
-if [ "$CYGWIN" -a -f $INCDIR/w32api/objbase.h ]; then
+# XXX missing symbols under Windows 7
+if [ "$CYGWIN" -a ! "$WITHOUT_COM" -a -f $INCDIR/w32api/objbase.h ]; then
     echo 'using Win32 COM support' 1>&2
     echo 'ADD_OBJS([com.o])'			>> $CONFIG_M4
     echo 'ADD_SRCS([$(COM_CPP)])'		>> $CONFIG_M4
@@ -1599,7 +1605,8 @@ if [ "$CYGWIN" -a -f $INCDIR/w32api/objbase.h ]; then
 	echo '#define NEED_COGETOBJECT'		>> $CONFIG_H
     fi
     echo '#define PML_COM'			>> $CONFIG_H
-    echo 'ADD_LDFLAGS([-lole32 -luuid -loleaut32])' >> $CONFIG_M4
+    # -L/usr/lib/w32api needed on Windows 7 (thanks to Robert Shanley!)
+    echo 'ADD_LDFLAGS([-L/usr/lib/w32api -lole32 -luuid -loleaut32])' >> $CONFIG_M4
     # needed w/ gcc 3.3.1 cygwin 1.5.9 (0.122/4/2)
     echo 'ADD_LDFLAGS([-lstdc++])'		>> $CONFIG_M4
 fi

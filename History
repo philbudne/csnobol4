@@ -2,6 +2,16 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+1/3/2012:
+	config/check (new): do a test compile w/ include, code, libs
+	configure: use config/check
+		fix COM on Windows 7 (thanks to Robert Shanley!)
+		add --without-com
+	snolib/readline.sno (new): readline prototypes
+	snolib/sdb.sno: use readline.sno
+	pml.h: removed readline prototypes
+	lib/generic/execute.c: use NULL to keep gcc quiet
+
 1/2/2012:
 	configure: use LIBDIR in TCL_CONF_DIRS instead of /usr/lib
 		detect MINGW

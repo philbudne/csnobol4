@@ -1,21 +1,25 @@
 $Id$
 
+add beta testers to README
+
 snobol4 program to generate win32 .mak files?
 
+mingw.mak:
+	use regular "install" !!
+	have configure copy config.{m4,h} from config/win32?
+
 configure:
-    Ubuntu multilib crap
-	test includes/libs by compiling test programs.
-    Make COM optional (--with-com)
+    Pass CC & CFLAGS to "check" script
 
-Win32 sleep()???
-
-Direct GDBM support?
+Win32 Sleep() in <windows.h>
 
 ================
 
 Make use of tdb (from samba project: gdbm API w/ multiple writers)
 
     Have seperate APIs for each DBM alternative, OPSYN to the default version?
+
+    Direct GDBM support?
 
 command line option to preload file(s): use for sdb!!
 
