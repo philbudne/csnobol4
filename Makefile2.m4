@@ -577,7 +577,10 @@ install: snobol4 sdb
 	$(INSTALL) -d $(MAN3DIR)
 	$(INSTALL) -m 644 doc/snolib.3 $(MAN3DIR)
 	$(INSTALL) -m 644 doc/snobol4dbm.3 $(MAN3DIR)
+	$(INSTALL) -m 644 doc/snobol4random.3 $(MAN3DIR)
+	$(INSTALL) -m 644 doc/snobol4readline.3 $(MAN3DIR)
 	$(INSTALL) -m 644 doc/snobol4tcl.3 $(MAN3DIR)
+	$(INSTALL) -m 644 doc/snobol4time.3 $(MAN3DIR)
 	$(INSTALL) -d $(SNOLIB_DIR)
 	for F in $(SNOLIB_FILES); do \
 		$(INSTALL) -m 644 $$F $(SNOLIB_DIR); \

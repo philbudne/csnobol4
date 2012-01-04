@@ -1423,15 +1423,15 @@ fi
 echo '#define HAVE_SLEEP'			>> $CONFIG_H
 SELECT_FRAG='fd_set x; struct timeval tv; select(0,&x,&x,&x,&tv);'
 if config/check time.h 'struct timespec ts; nanosleep(&ts,0)'; then
-    echo 'using posix sleep.c' 1>&2
+    echo 'using posix nanosleep()' 1>&2
     echo 'SLEEP_C=$(SRCDIR)lib/posix/sleep.c' >> $CONFIG_M4
 elif config/check sys/select.h "$SELECT_FRAG"; then
-    echo 'using sys/select.h for sleep' 1>&2
+    echo 'using posix select() for sleep' 1>&2
     echo '#define HAVE_SELECT_H'		>> $CONFIG_H
 elif config/check 'sys/time.h sys/types.h' "$SELECT_FRAG"; then
-    true
+    echo 'using select() for sleep' 1>&2
 else
-    echo 'using generic sleep.c' 1>&2
+    echo 'using generic sleep()' 1>&2
     echo 'SLEEP_C=$(SRCDIR)lib/generic/sleep.c' >> $CONFIG_M4
 fi
 if config/check time.h 'struct tm tm; strptime("", "", &tm)'; then

@@ -1,0 +1,35 @@
+.\" -*-nroff-*-
+.\" $Id$
+.ie n \{\
+.       ds lq \&"\"
+.       ds rq \&"\"
+.\}
+.el \{\
+.       ds rq ''
+.       ds lq ``
+.\}
+.TH SNOBOL4READLINE 1 "4 Jan 2012" "SNOBOL"
+.SH NAME
+snobol4readline \- SNOBOL4 line editing interface
+
+.SH SYNOPSIS
+.B "-INCLUDE 'readline.sno'"
+.LP
+.B "INPUT_STRING = READLINE(PROMPT_STRING)"
+.LP
+.B "ADD_HISTORY(STRING)"
+.LP
+.B "STRING = HISTORY_EXPAND(STRING)"
+
+.SH DESCRIPTION
+.PP
+.B READLINE()
+performs user input with line editing.
+.PP
+.B ADD_HISTORY()
+adds lines to the input history available via editing commands.
+
+.SH SEE ALSO
+.BR snobol4 "(1), " readline "(3)"
+.SH AUTHOR
+Philip L. Budne
