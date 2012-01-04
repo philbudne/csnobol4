@@ -1517,7 +1517,15 @@ if [ ! "$WITHOUT_NDBM" ]; then
 	echo '#define HAVE_NDBM_H'		>> $CONFIG_H
     elif config/check ndbm.h "$DBM_FRAG" -ldb; then
 	echo "using ndbm.h for DBM support (with -ldb)" 2>&1
+	# cygwin?
 	echo '#define HAVE_NDBM_H'		>> $CONFIG_H
+	echo 'ADD_LDFLAGS([-ldb])'		>> $CONFIG_M4
+    elif config/check db.h "$DBM_FRAG" '-ldb -DDB_DBM_HSEARCH'; then
+	# works with libdb4.8
+	echo "using db.h for DBM support (with -ldb)" 2>&1
+	echo '#define DB_DBM_HSEARCH 1'		>> $CONFIG_H
+	echo '#define HAVE_DB_H'		>> $CONFIG_H
+	echo 'ADD_LDFLAGS([-ldb])'		>> $CONFIG_M4
     else
 	for COMPAT in '' ' -lgdbm_compat'; do
 	    LIBS="-lgdbm$COMPAT"

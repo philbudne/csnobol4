@@ -214,7 +214,7 @@ SRCS=	main.c $(SNOBOL4).c data.c data_init.c syn.c $(BAL_C) \
 
 changequote(@,@)dnl
 
-xsnobol4: $(OBJS) cpuid
+xsnobol4: $(OBJS)
 	rm -f build.c
 	echo '/* MACHINE GENERATED.  EDITING IS FUTILE */'	> build.c
 	echo '#include "h.h"'					>> build.c
@@ -233,7 +233,7 @@ cpuid:
 ################
 # run regression tests.
 
-snobol4: xsnobol4 snobol4.c test/tests.in
+snobol4: xsnobol4 snobol4.c test/tests.in cpuid
 	@echo Running regression tests...
 	(cd test; ./run.sh ../xsnobol4)
 	@echo Passed regression tests.

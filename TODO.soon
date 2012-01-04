@@ -2,6 +2,8 @@ $Id$
 
 add beta testers to README
 
+separate include/snolib directories in LIBDIR/VERSION/ ??
+
 snobol4 program to generate win32 .mak files?
 
 mingw.mak:
@@ -14,6 +16,8 @@ configure:
 Win32 Sleep() in <windows.h>
 
 ================
+
+list utilities?
 
 Make use of tdb (from samba project: gdbm API w/ multiple writers)
 

@@ -7,6 +7,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	configure: use config/check
 		fix COM on Windows 7 (thanks to Robert Shanley!)
 		add --without-com
+		use db.h for dbm w/ DB_DBM_HSEARCH
 	snolib/readline.sno (new): readline prototypes
 	snolib/sdb.sno: use readline.sno
 	pml.h: removed readline prototypes
