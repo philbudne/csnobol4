@@ -55,6 +55,9 @@
  */
 #include <ndbm.h>			
 #endif /* HAVE NDBM_H */
+#ifdef HAVE_DB_H
+#include <db.h>
+#endif /* HAVE_DB_H defined */
 #ifdef HAVE_GDBM_SLASH_NDBM_H
 #include <gdbm/ndbm.h>
 #endif /* HAVE_GDBM_SLASH_NDBM_H defined */
