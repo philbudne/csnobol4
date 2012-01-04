@@ -144,8 +144,9 @@ if [ "$UNAME" ]; then
 		    /etc/SuSe-release /etc/SuSE-release \
 		    /etc/slackware-version /etc/turbolinux-release \
 		    /etc/lsb-release /etc/debian_version \
-		    /usr/lib/setup/slack-version-?.?? /etc/gentoo-release \
-		    /etc/fedora-release /etc/redhat-release /etc/*-release; do
+		    /usr/lib/setup/slack-version-*.* /etc/gentoo-release \
+		    /etc/fedora-release /etc/redhat-release \
+		    /etc/centos-release /etc/*-release; do
 			if [ -f ${RELEASE} ]; then
 				echo ''
 				echo releasefile ${RELEASE}:

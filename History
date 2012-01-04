@@ -20,6 +20,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	lib/win32/sleep.c (new): implement sleepf using Sleep
 	include/lib.h: add sleepf()
 	doc/snobol4time.3: document SLEEP taking f.p. seconds
+	timing: more release files
 
 1/2/2012:
 	configure: use LIBDIR in TCL_CONF_DIRS instead of /usr/lib
