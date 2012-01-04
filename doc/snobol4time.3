@@ -78,8 +78,10 @@ converts a
 .B TM
 object to seconds since 1/1/1970.
 .PP
-.BR SLEEP( sec )
-suspends program execution for a number of seconds.
+.BR SLEEP( fp_sec )
+suspends program execution for a number of (floating point) seconds.
+Not all platforms may support sleep for fractional seconds.
+Sleep resolution may vary between platforms.
 .PP
 .BR STRFTIME( format , tm )
 formats the date information in tm according to the format string.
