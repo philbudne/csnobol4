@@ -64,3 +64,4 @@
 /* optional features: */
 #define PML_TIME
 #define PML_RANDOM
+#define HAVE_SLEEP

@@ -20,16 +20,17 @@
 #include "h.h"
 #include "lib.h"
 
-void
+int
 sleepf(real_t t) {
     struct timeval tv;
 
     tv.tv_sec = (int) t;
     /* 0.0000005 + 0.0000005 < 0.000001! */
-    tv.tv_usec = (t - tv.tv_sec + 0.00000051) * 1000000;
+    tv.tv_usec = (t - tv.tv_sec + 0.000000501) * 1000000;
     /* printf("%d %d\n", tv.tv_sec, tv.tv_usec); */
-    if (tv.tv_sec || tv.tv_usec)
-	select(0, NULL, NULL, NULL, &tv);
+    if (!tv.tv_sec && !tv.tv_usec)
+	return 0;
+    return select(0, NULL, NULL, NULL, &tv);
 }
 
 #ifdef TEST

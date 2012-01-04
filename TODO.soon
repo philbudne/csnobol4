@@ -1,10 +1,10 @@
 $Id$
 
+snobol4readline man page
+
 add beta testers to README
 
 separate include/snolib directories in LIBDIR/VERSION/ ??
-
-snobol4 program to generate win32 .mak files?
 
 mingw.mak:
 	use regular "install" !!
@@ -16,6 +16,8 @@ configure:
 Add sleep to Win32 .mak files
 
 ================
+
+snobol4 program to generate win32 .mak files?
 
 list utilities?
 

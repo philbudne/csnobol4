@@ -25,7 +25,7 @@ Sleep(unsigned int ms) {
 }
 #endif
 
-void
+int
 sleepf(real_t t) {
     int sec = (int) t;
     int days = sec / DAYSEC;
@@ -38,6 +38,7 @@ sleepf(real_t t) {
 	Sleep(DAYSEC*1000);
     if (ms)
 	Sleep(ms);
+    return 0;
 }
 
 #ifdef TEST

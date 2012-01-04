@@ -41,8 +41,8 @@ OBJ=	isnobol4.o data.o data_init.o main.o syn.o bal.o \
 	load.o mstime.o atan.o chop.o cos.o delete.o environ.o exit.o exp.o \
 	file.o getstring.o handle.o host.o log.o logic.o ord.o rename.o \
 	random.o retstring.o sin.o spcint.o spreal.o sprintf.o sqrt.o sset.o \
-	osopen.o sys.o tan.o time.o tty.o inet.o bindresvport.o execute.o \
-	exists.o term.o findunit.o $(COM_OBJ) $(SDBM_OBJ)
+	osopen.o sleep.o sys.o tan.o time.o tty.o inet.o bindresvport.o \
+	execute.o exists.o term.o findunit.o $(COM_OBJ) $(SDBM_OBJ)
 
 snobol4.exe: $(OBJ)
 	$(CC) -o snobol4 $(OBJ) $(INET_LIBS) $(COM_LIBS)
@@ -170,6 +170,9 @@ mstime.o: $(SRCDIR)lib/win32/mstime.c
 osopen.o: $(SRCDIR)lib/win32/osopen.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/win32/osopen.c
 
+sleep.o: $(SRCDIR)lib/win32/sleep.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/win32/sleep.c
+
 sys.o:	$(SRCDIR)lib/win32/sys.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/win32/sys.c
 
@@ -276,4 +279,6 @@ sdbm_hash.o: $(SRCDIR)lib/sdbm/sdbm_hash.c
 ################################################################
 
 install: snobol4.exe
-	config\install.bat win32 $(DEST)
+	install snobol4.exe $(DEST)
+
+# XXX more files...

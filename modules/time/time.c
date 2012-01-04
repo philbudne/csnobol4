@@ -184,7 +184,8 @@ MKTIME( LA_ALIST ) LA_DCL
 int
 SLEEP( LA_ALIST ) LA_DCL
 {
-    sleepf(LA_REAL(0));
+    if (sleepf(LA_REAL(0)) < 0)
+	RETFAIL;			/* did not sleep full period */
     RETNULL;
 }
 #endif

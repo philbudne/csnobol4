@@ -127,3 +127,5 @@ err setexit.sno
 reg setexit2.sno
 # 12/29/2011
 reg setexit3.sno
+# 1/4/2012
+reg sleep.sno

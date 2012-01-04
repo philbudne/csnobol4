@@ -40,8 +40,8 @@ OBJ=	isnobol4.obj data.obj data_init.obj main.obj syn.obj \
 	init.obj load.obj mstime.obj atan.obj chop.obj cos.obj delete.obj \
 	environ.obj exit.obj file.obj getstring.obj host.obj log.obj \
 	logic.obj ord.obj random.obj rename.obj retstring.obj sin.obj \
-	spcint.obj spreal.obj sqrt.obj sset.obj tan.obj osopen.obj sys.obj \
-	tty.obj inet.obj bindresvport.obj execute.obj exists.obj \
+	spcint.obj spreal.obj sqrt.obj sset.obj tan.obj osopen.obj sleep.obj \
+	sys.obj tty.obj inet.obj bindresvport.obj execute.obj exists.obj \
 	term.obj findunit.obj exp.obj
 
 # Ensure Psdk directory (containing wsock32.lib) is included in the library
@@ -174,6 +174,9 @@ mstime.obj : $(SRCDIR)lib\win32\mstime.c
 
 osopen.obj : $(SRCDIR)lib\win32\osopen.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\osopen.c
+
+sleep.obj : $(SRCDIR)lib\win32\sleep.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\sleep.c
 
 sys.obj : $(SRCDIR)lib\win32\sys.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\sys.c

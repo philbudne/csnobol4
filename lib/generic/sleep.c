@@ -10,7 +10,8 @@
 #include "h.h"
 #include "lib.h"
 
-void
+int
 sleepf(real_t t) {
     sleep((int)t);
+    return 0;
 }
