@@ -8,10 +8,17 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 		fix COM on Windows 7 (thanks to Robert Shanley!)
 		add --without-com
 		use db.h for dbm w/ DB_DBM_HSEARCH
+		add checks for sleep.c
 	snolib/readline.sno (new): readline prototypes
 	snolib/sdb.sno: use readline.sno
 	pml.h: removed readline prototypes
 	lib/generic/execute.c: use NULL to keep gcc quiet
+	Makefile2.m4: add SLEEP_C/sleep.o
+	lib/snolib/time.c: use sleepf(real_t) for SLEEP()
+	lib/bsd/sleep.c (new): implement sleepf using select
+	lib/generic/sleep.c (new): implement sleepf using sleep
+	lib/win32/sleep.c (new): implement sleepf using Sleep
+	include/lib.h: add sleepf()
 
 1/2/2012:
 	configure: use LIBDIR in TCL_CONF_DIRS instead of /usr/lib

@@ -137,6 +137,7 @@ RENAME_C=$(SRCDIR)lib/snolib/rename.c
 RETSTRING_C=$(SRCDIR)lib/snolib/retstring.c
 SERV_C=$(SRCDIR)lib/snolib/serv.c
 SIN_C=$(SRCDIR)lib/snolib/sin.c
+SLEEP_C=$(SRCDIR)lib/bsd/sleep.c
 SPRINTF_C=$(SRCDIR)lib/snolib/sprintf.c
 SQRT_C=$(SRCDIR)lib/snolib/sqrt.c
 SSET_C=$(SRCDIR)lib/snolib/sset.c
@@ -351,6 +352,9 @@ realst.o: $(REALST_C)
 replace.o: $(REPLACE_C)
 	$(CC) $(CFLAGS) -c $(REPLACE_C)
 
+sleep.o: $(SLEEP_C)
+	$(CC) $(CFLAGS) -c $(SLEEP_C)
+
 spcint.o: $(SPCINT_C)
 	$(CC) $(CFLAGS) -c $(SPCINT_C)
 
@@ -427,7 +431,7 @@ AUX_OBJS=[]_OBJS
 SNOLIB_OBJS=atan.o chop.o cos.o delete.o environ.o execute.o exists.o exit.o \
 	exp.o file.o findunit.o fork.o getstring.o handle.o host.o \
 	ord.o log.o logic.o random.o rename.o retstring.o serv.o sin.o \
-	sprintf.o sqrt.o sset.o sys.o tan.o time.o $(AUX_OBJS)
+	sprintf.o sqrt.o sleep.o sset.o sys.o tan.o time.o $(AUX_OBJS)
 
 $(SNOLIB_A): $(SNOLIB_OBJS)
 	rm -f $(SNOLIB_A)

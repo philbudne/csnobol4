@@ -197,3 +197,6 @@ extern int pclose __P((FILE *));
 #ifdef OSDEP_OPEN
 extern int osdep_open __P((const char *, const char *, FILE **));
 #endif /* OSDEP_OPEN defined */
+
+/* from sleep.c */
+extern void sleepf __P((real_t));

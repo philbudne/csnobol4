@@ -13,7 +13,7 @@ mingw.mak:
 configure:
     Pass CC & CFLAGS to "check" script
 
-Win32 Sleep() in <windows.h>
+Add sleep to Win32 .mak files
 
 ================
 

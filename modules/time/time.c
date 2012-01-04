@@ -4,11 +4,14 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
+#include <stdio.h>			/* for lib.h */
+
 #include "h.h"
 #include "equ.h"
 #include "snotypes.h"
 #include "macros.h"
 #include "load.h"
+#include "lib.h"			/* sleepf() */
 
 #ifdef linux				/* UGH! */
 #define _XOPEN_SOURCE			/* enable strptime() */
@@ -55,7 +58,7 @@ GETTIMEOFDAY_( LA_ALIST ) LA_DCL
     struct descr *dp = LA_PTR(0);
     if (!dp)
 	RETNULL;
-    /* validate dp[TV_DESCR]? */
+    /* validate dp[TV_DESCR] type & length? */
 #ifdef HAVE_GETTIMEOFDAY
     struct timeval tv;
     if (gettimeofday(&tv, NULL) < 0)
@@ -74,7 +77,7 @@ tm2sno(struct tm *tmp, struct descr *dp)
 {
     if (!dp)
 	return 0;
-    /* validate dp[TM_DESCR]? */
+    /* validate dp[TM_DESCR] type & length? */
     SETINT(dp,TM_SEC,tmp->tm_sec);
     SETINT(dp,TM_MIN,tmp->tm_min);
     SETINT(dp,TM_HOUR,tmp->tm_hour);
@@ -181,7 +184,7 @@ MKTIME( LA_ALIST ) LA_DCL
 int
 SLEEP( LA_ALIST ) LA_DCL
 {
-    sleep(LA_INT(0));
+    sleepf(LA_REAL(0));
     RETNULL;
 }
 #endif

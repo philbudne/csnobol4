@@ -1419,13 +1419,23 @@ if config/check time.h 'struct tm tm; int i = tm.tm_gmtoff'; then
     echo 'using tm_gmtoff' 1>&2
     echo '#define HAVE_TM_GMTOFF'		>> $CONFIG_H
 fi
+
+echo '#define HAVE_SLEEP'			>> $CONFIG_H
+SELECT_FRAG='fd_set x; struct timeval tv; select(0,&x,&x,&x,&tv);'
+if config/check sys/select.h "$SELECT_FRAG"; then
+    echo 'using sys/select.h' 1>&2
+    echo '#define HAVE_SELECT_H'		>> $CONFIG_H
+elif config/check 'sys/time.h sys/types.h' "$SELECT_FRAG"; then
+    true
+else
+    echo 'using generic sleep.c' 1>&2
+    echo 'SLEEP_C=$(SRCDIR)lib/generic/sleep.c' >> $CONFIG_M4
+fi
 if config/check time.h 'struct tm tm; strptime("", "", &tm)'; then
     echo 'using strptime()' 1>&2
     echo '#define HAVE_STRPTIME'		>> $CONFIG_H
 fi
-# should be safe on all Un*x systems
 echo '#define PML_TIME'				>> $CONFIG_H
-echo '#define HAVE_SLEEP'			>> $CONFIG_H
 
 # output SO/DL defines
 
