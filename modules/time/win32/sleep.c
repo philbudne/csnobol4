@@ -4,9 +4,8 @@
 #include "config.h"
 #endif
 
-#ifdef TEST
 #include <stdio.h>
-#else
+#ifndef TEST
 #include <windows.h>
 #endif
 
