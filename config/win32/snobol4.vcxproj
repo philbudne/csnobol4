@@ -130,6 +130,7 @@
     <ClCompile Include="..\..\lib\win32\load.c" />
     <ClCompile Include="..\..\lib\win32\mstime.c" />
     <ClCompile Include="..\..\lib\win32\osopen.c" />
+    <ClCompile Include="..\..\lib\win32\sleep.c" />
     <ClCompile Include="..\..\lib\win32\sys.c" />
     <ClCompile Include="..\..\lib\win32\term.c" />
     <ClCompile Include="..\..\lib\win32\tty.c" />
