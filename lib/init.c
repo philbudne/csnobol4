@@ -149,16 +149,18 @@ getk( str, out )
     size_t *out;
 {
     char suff;
-    switch (sscanf(str, "%d%c", out, &suff)) {
+    unsigned long val;
+    switch (sscanf(str, "%lu%c", &val, &suff)) {
     case 2:				/* number & suffix */
 	if (suff == 'k' || suff == 'K')
-	    *out *= 1024;
+	    val *= 1024;
 	else if (suff == 'm' || suff == 'M')
-	    *out *= 1024*1024;
+	    val *= 1024*1024;
 	else
 	    return 0;			/* bad suffix; fail */
 	/* FALL */
     case 1:				/* just number */
+	*out = val;
 	return 1;			/* return OK */
 
     default:				/* no number */
