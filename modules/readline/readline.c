@@ -33,7 +33,7 @@ READLINE( LA_ALIST ) LA_DCL
     ret = readline(prompt);
     if (!ret)
 	RETFAIL;
-    RETSTR(ret);
+    RETSTR_FREE(ret);
 }
 
 /*
@@ -63,5 +63,5 @@ HISTORY_EXPAND( LA_ALIST ) LA_DCL
     ret = history_expand(line, &exp);
     if (ret < 0 || ret == 2)
 	RETFAIL;
-    RETSTR(exp);
+    RETSTR_FREE(exp);			/* hope this is right! */
 }
