@@ -2,8 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+*** 1.4-rc2
+
 1/4/2012:
-	configure: look for nanosleep(); use posix/sleep.c
+	configure: look for nanosleep(); use posix/sleep.c; update to -rc2
 	config/win32/{borland,mingw,ntmsvc}.mak: add sleep
 	config/win32/config.h: add HAVE_SLEEP
 	doc/snobol4time.3: document sleep failure return

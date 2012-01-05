@@ -1,25 +1,29 @@
 $Id$
 
-add beta testers to README
-
-add regression test for RANDOM()?
-
-separate include/snolib directories in LIBDIR/VERSION/ ??
-
-mingw.mak:
-	use regular "install" !!
-	have configure copy config.{m4,h} from config/win32?
-
 configure:
-    Pass CC & CFLAGS to "check" script
-
-Add sleep to Win32 .mak files
+	Pass CC & CFLAGS to "check" script
 
 ================
 
+command line option to preload file(s): use for sdb!!
+
+add regression test for RANDOM()?
+
 snobol4 program to generate win32 .mak files?
 
-list utilities?
+separate include/snolib directories in LIBDIR/VERSION/ ??
+	 new HOST() calls to return directories
+
+mingw.mak:
+	have configure copy config.{m4,h} from config/win32?
+
+Make some signals catchable via SETEXIT? INTR, CHLD, HUP, ALRM??
+
+Enable PRELOAD?
+	Disable if running setuid!!!
+	command line arg to disable?
+
+??list utilities???
 
 Make use of tdb (from samba project: gdbm API w/ multiple writers)
 
@@ -27,17 +31,7 @@ Make use of tdb (from samba project: gdbm API w/ multiple writers)
 
     Direct GDBM support?
 
-command line option to preload file(s): use for sdb!!
-
 sdb: use SETEXIT? [but setting &ERRLIMIT can change program behavior]
-
-SLEEP(REAL)?? use nanosleep, select, usleep, Win32 Sleep()
-
-Make some signals catchable via SETEXIT? INTR, CHLD, HUP, ALRM??
-
-Enable PRELOAD?
-	Disable if running setuid!!!
-	command line arg to disable?
 
 DIFFTIME function??
 

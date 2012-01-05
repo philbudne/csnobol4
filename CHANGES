@@ -4,19 +4,18 @@ For detailed revision history see History file
 
 Changes since 1.3 release;
 =========================
-	Added high quality RANDOM() function
-	Added SLEEP() function
-	Added SNOBOL4 debugger "sdb" see doc/sdb.*, "man sdb"
-	Added GNU Readline/History functions
 	Added SPITBOL SETEXIT() function
-	Added POSIX date/time handling functions;
+	Added SNOBOL4 debugger "sdb" see doc/sdb.*, "man sdb"
+	Added POSIX date/time handling functions, sleep function:
 		see doc/snobol4time.*, "man snobol4time"
+	Added high quality RANDOM() function; see "man snobol4time"
+	Added GNU Readline/History functions; see "man snobol4readline"
 	Added ATAN() and LN() functions
 	Changed '-l' command line argument to take listing file name
 	Fixed FUNCTION() predicate for referenced (but undefined) functions!
 	Fixed problem in http.sno
 	Fixed allocations of more than 4GB(!)
-	Fixed compilation on Ubuntu 11.04
+	Fixed compilation on Ubuntu 11.04, 11.10
 	Fixed compilation with MS VS10
 	Fixed compilation on CygWIN
 	Report hypervisor name, if available
