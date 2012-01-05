@@ -39,7 +39,7 @@ INST=`(uname -i || uname -m || echo unknown) 2>/dev/null`
 case "$OS" in
 MINGW*)
     echo "MinGW detected; run make -f config/win32/mingw.mak"
-    exit
+    exit 1
     ;;
 esac
 
