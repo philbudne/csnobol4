@@ -244,7 +244,8 @@ snobol4: xsnobol4 snobol4.c test/tests.in cpuid
 	@touch snobol4$(EXT)
 	@echo '********************************************************' 1>&2
 	@echo 'Please consider mailing timing.out to timing@snobol4.org' 1>&2
-	@echo 'along with information on your system model and CPU speed' 1>&2
+	@echo 'Anonymized results are posted at http://www.snobol4.org' 1>&2
+	@echo 'And you will be notified when test versions are available.' 1>&2
 	@echo '********************************************************' 1>&2
 
 ################

@@ -7,6 +7,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	lib/snolib/random.c: add GCC pragma to disable -Wunused
 	lib/snolib/readline.c: use RETSTR_FREE()
 	configure: export CC and CFLAGS (if needed) for "check script
+	Makefile2.m4: update timing.out advertisement
 
 1/5/2012:
 	configure: give error exit when MINGW detected to abort "make"
