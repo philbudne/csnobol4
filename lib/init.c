@@ -566,8 +566,8 @@ init()
     ptr = dynamic(ndynamic);
 
     if (ptr == NULL) {
-	fprintf( stderr, "%s: could not allocate dynamic region of %d bytes\n",
-		argv[0], ndynamic);
+	fprintf(stderr, "%s: could not allocate dynamic region of %lu bytes\n",
+		argv[0], (unsigned long)ndynamic);
 	exit(1);
     }
 
@@ -587,8 +587,8 @@ init()
 
     ptr = malloc(pmstack);		/* NOTE: malloc(), not dynamic() */
     if (ptr == NULL) {
-	fprintf( stderr, "%s: could not allocate pattern stack of %d bytes\n",
-		argv[0], pmstack);
+	fprintf(stderr, "%s: could not allocate pattern stack of %lu bytes\n",
+		argv[0], (unsigned long)pmstack);
 	exit(1);
     }
 
@@ -611,8 +611,8 @@ init()
 
     ptr = malloc(istack);		/* NOTE: malloc(), not dynamic() */
     if (ptr == NULL) {
-	fprintf( stderr, "%s: could not allocate interpreter stack of %d bytes\n",
-		argv[0], istack);
+	fprintf(stderr, "%s: could not allocate interpreter stack of %lu bytes\n",
+		argv[0], (unsigned long) istack);
 	exit(1);
     }
 

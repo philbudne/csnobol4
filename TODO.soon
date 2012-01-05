@@ -1,8 +1,8 @@
 $Id$
 
-snobol4readline man page
-
 add beta testers to README
+
+add regression test for RANDOM()?
 
 separate include/snolib directories in LIBDIR/VERSION/ ??
 

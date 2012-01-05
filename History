@@ -20,12 +20,12 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	snolib/random.sno (new): load RANDOM functions
 	snolib/readline.sno (new): load READLINE functions
 	Makefile2.m4: add snobol4{random,readline,time}.3
-	lib/init.c: use %lu in getk() to avoid warnings
+	lib/init.c: use %lu for sizes to avoid warnings (want %z)
 
 1/3/2012:
 	config/check (new): do a test compile w/ include, code, libs
 	configure: use config/check
-		fix COM on Windows 7 (thanks to Robert Shanley!)
+		fix for COM libs on Windows 7 (thanks to Robert Shanley)
 		add --without-com
 		use db.h for dbm w/ DB_DBM_HSEARCH
 		add checks for sleep.c
