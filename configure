@@ -730,6 +730,9 @@ fi
 
 if [ "$CCPATH" ]; then
     echo "CC=$CCPATH"				>> $CONFIG_M4
+    # for "check" script:
+    CC=$CCPATH
+    export CC
 fi
 
 # include C compiler version output in comments
@@ -787,6 +790,9 @@ if [ "$USING_GCC" ]; then
     # be gcc2 -- there was no generic option back then!
     if [ "$LP64" -a ! "$LP64_NATIVE" ]; then
 	ARCH_CFLAGS="$GCC64"
+	# for "check" script
+	CFLAGS="$GCC64"
+	export CFLAGS
     fi
 fi
 
