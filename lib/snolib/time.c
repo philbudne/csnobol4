@@ -4,7 +4,11 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
+#define _XOPEN_SOURCE			/* glibc: enable strptime() */
+#define _BSD_SOURCE			/* glibc: keep tm_gmtoff */
+
 #include <stdio.h>			/* for lib.h */
+#include <time.h>			/* time_t, strptime() */
 
 #include "h.h"
 #include "equ.h"
@@ -12,12 +16,6 @@
 #include "macros.h"
 #include "load.h"
 #include "lib.h"			/* sleepf() */
-
-#ifdef linux				/* UGH! */
-#define _XOPEN_SOURCE			/* enable strptime() */
-#include <features.h>
-#define __USE_BSD			/* keep tm_gmtoff */
-#endif
 
 #include <time.h>			/* struct tm */
 #include <string.h>

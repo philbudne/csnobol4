@@ -21,6 +21,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	snolib/readline.sno (new): load READLINE functions
 	Makefile2.m4: add snobol4{random,readline,time}.3
 	lib/init.c: use %lu for sizes to avoid warnings (want %z)
+	lib/snolib/time.c: fix features defines for Ubuntu 11.10 (glibc 2.13)
 
 1/3/2012:
 	config/check (new): do a test compile w/ include, code, libs
