@@ -305,6 +305,10 @@ bsd_srandom(x)
  * state buffer are no longer derived from the LC algorithm applied to
  * a fixed seed.
  */
+#ifdef __GNUC__
+/* quiet warning for use of unitialzed variable (works in gcc 4.4) */
+#pragma GCC diagnostic ignored "-Wuninitialized"
+#endif
 void
 bsd_srandomdev()
 {
@@ -343,6 +347,9 @@ bsd_srandomdev()
 		rptr = &state[0];
 	}
 }
+#ifdef __GNUC__
+#pragma GCC diagnostic warning "-Wuninitialized"
+#endif
 
 /*
  * initstate:
