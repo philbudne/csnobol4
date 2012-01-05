@@ -1,9 +1,8 @@
 $Id$
 
-configure:
-	Pass CC & CFLAGS to "check" script
-
 ================
+
+list/queue utility functions!!!
 
 command line option to preload file(s): use for sdb!!
 
@@ -22,8 +21,6 @@ Make some signals catchable via SETEXIT? INTR, CHLD, HUP, ALRM??
 Enable PRELOAD?
 	Disable if running setuid!!!
 	command line arg to disable?
-
-??list utilities???
 
 Make use of tdb (from samba project: gdbm API w/ multiple writers)
 

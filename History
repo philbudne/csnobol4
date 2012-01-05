@@ -3,10 +3,16 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 1/5/2012:
-	configure: give error exit on MINGW
+	load.h: add RETSTR_FREE() macro
+	lib/snolib/random.c: add GCC pragma to disable -Wunused
+	lib/snolib/readline.c: use RETSTR_FREE()
+	configure: export CC and CFLAGS (if needed) for "check script
+
+1/5/2012:
+	configure: give error exit when MINGW detected to abort "make"
 	config/win32/snobol4.vcxproj: add sleep.c
-	lib/win32/sleep.c: fix non-test compilation
-	lib/generic/sleep.c: fix
+	lib/win32/sleep.c: fix includes for non-test compilation
+	lib/generic/sleep.c: fix includes
 
 1/4/2012:
 	configure: look for nanosleep(); use posix/sleep.c; update to -rc2
