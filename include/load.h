@@ -82,6 +82,23 @@
 	RETSTR2(cp, strlen(cp)); \
     } while (0)
 
+/*
+ * return (& free) a malloc'ed C-string
+ *
+ * This is a quick and dirty implementation.  If this is used a lot, a
+ * better implementation might be a retstring_free() function that
+ * free'ed its existing buffer, and kept the new string and avoided
+ * copying the data.
+ */
+#define RETSTR_FREE(CP) \
+    do { \
+	const char *cp = (CP); \
+        if (cp == NULL) RETNULL; \
+	retstring(retval, (cp), strlen(cp)); \
+	free(cp); \
+	return TRUE; \
+    } while (0)
+
 /* return failure */
 #define RETFAIL return FALSE
 
