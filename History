@@ -2,11 +2,15 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+**************** release 1.4 (CVS tag REL_1_4)
+
 1/6/2012:
 	lib/snolib/readline.c: include stdlib.h for free()
 	include/load.h: fix RETSTR_FREE() warning
 	lib/auxil/bindresvport.c: fix VS10 warning
+	doc/snobol4tcl.3: update date
 	configure: fix gdbm support on cygwin, cleanup readline checks
+		update version to 1.4
 
 **** tag REL_1_4_RC2
 

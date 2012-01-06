@@ -10,8 +10,8 @@ ID='$Id$'
 OPTIONS="$*"
 
 # needed in Makefile2 and config.h
-VERSION=1.4-rc2
-VERSION_DATE="January 4, 2012"
+VERSION=1.4
+VERSION_DATE="January 6, 2012"
 
 if [ ! "$CC" ]; then
     # on most system gcc is preferred if it can be found
