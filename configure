@@ -1536,7 +1536,6 @@ if [ ! "$WITHOUT_NDBM" ]; then
 	echo '#define HAVE_NDBM_H'		>> $CONFIG_H
     elif config/check ndbm.h "$DBM_FRAG" -ldb; then
 	echo "using ndbm.h for DBM support (with -ldb)" 2>&1
-	# cygwin?
 	echo '#define HAVE_NDBM_H'		>> $CONFIG_H
 	echo 'ADD_LDFLAGS([-ldb])'		>> $CONFIG_M4
     elif config/check db.h "$DBM_FRAG" '-ldb -DDB_DBM_HSEARCH'; then
@@ -1552,6 +1551,7 @@ if [ ! "$WITHOUT_NDBM" ]; then
 		# cygwin
 		USE_GDBM=1
 		echo "using ndbm.h for DBM support (with $LIBS)" 2>&1
+		echo '#define HAVE_NDBM_H'	>> $CONFIG_H
 		echo "ADD_LDFLAGS([$LIBS])"	>> $CONFIG_M4
 		break
 	    elif config/check gdbm/ndbm.h "$DBM_FRAG" "$LIBS"; then
@@ -1591,20 +1591,20 @@ if [ ! "$WITHOUT_NDBM" ]; then
     fi
 fi
 
-# Include GNU readline support, if found -- look for library??
+# Include GNU readline support, if found
 if [ ! "$WITHOUT_READLINE" ]; then
-    RL_INC='stdio.h readline/readline.h'
+    RL_INC='stdio.h readline/readline.h readline/history.h'
     RL_FRAG='readline("?")'
     if config/check "$RL_INC" "$RL_FRAG" -lreadline; then
-	RLLIBS="-lreadline"
+	RL_LIBS="-lreadline"
     elif config/check "$RL_INC" "$RL_FRAG" '-lreadline -lncurses'; then
-	RLLIBS="-lreadline -lncurses"
+	RL_LIBS="-lreadline -lncurses"
     fi
-    if [ "x$RLLIBS" != x ]; then
-	echo "using readline (with $RLLIBS)" 1>&2
+    if [ "x$RL_LIBS" != x ]; then
+	echo "using readline (with $RL_LIBS)" 1>&2
 	echo 'ADD_OBJS([readline.o])'		>> $CONFIG_M4
 	echo 'ADD_SRCS([$(READLINE_C)])'	>> $CONFIG_M4
-	echo "ADD_LDFLAGS([$RLLIBS])"		>> $CONFIG_M4
+	echo "ADD_LDFLAGS([$RL_LIBS])"		>> $CONFIG_M4
 	echo '#define PML_READLINE'		>> $CONFIG_H
     fi
 fi
