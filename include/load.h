@@ -92,7 +92,7 @@
  */
 #define RETSTR_FREE(CP) \
     do { \
-	const char *cp = (CP); \
+	char *cp = (CP); \
         if (cp == NULL) RETNULL; \
 	retstring(retval, (cp), strlen(cp)); \
 	free(cp); \

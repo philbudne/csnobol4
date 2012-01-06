@@ -4,6 +4,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 1/6/2012:
 	lib/snolib/readline.c: include stdlib.h for free()
+	include/load.h: fix RETSTR_FREE() warning
+	lib/auxil/bindresvport.c: fix VS10 warning
 
 **** tag REL_1_4_RC2
 
