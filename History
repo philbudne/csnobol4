@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+1/6/2012:
+	lib/snolib/readline.c: include stdlib.h for free()
+
+**** tag REL_1_4_RC2
+
 1/5/2012:
 	load.h: add RETSTR_FREE() macro
 	lib/snolib/random.c: add GCC pragma to disable -Wunused

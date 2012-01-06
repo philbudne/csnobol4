@@ -19,6 +19,9 @@
 #include <stdio.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>			/* for free() */
+#endif
 
 /*
  * READLINE(STRING)STRING
