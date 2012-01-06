@@ -3,8 +3,8 @@ $Id$
        ``The Macro Implementation of SNOBOL4 in C'' (CSNOBOL4)
 		      Installation instructions
 
-Unix systems (or systems with POSIX shell, make, awk and m4);
-============================================================
+Un*x systems
+============
 
 Compilation
 -----------
@@ -14,8 +14,7 @@ In most cases all you need to type is "make".
 The top level makefile will run the "configure" script to create
 config.m4 and config.h. config.m4 is used to create Makefile2, which
 is then run, creating a test version of snobol4 (named "xsnobol4")
-which is then regression tested and timed, and finally named
-"snobol4".
+which is then regression tested and timed, and finally named "snobol4".
 
 The "configure" script tries to use the available C compiler which
 works best.  If you wish to alter configure's decision process, you
@@ -63,7 +62,9 @@ with "--add-" can appear);
 
 	--add-warn=STRING
 		Add additional C Compiler warning options.
-
+	--debug
+		Debug the configure script.
+
 	--double
 		Use C "double" data type to represent SNOBOL4 REALs.
 		This is the default when the environment defaults
@@ -105,16 +106,15 @@ with "--add-" can appear);
 
 	--force-memmove
 		Force use of system memmove() function (if present)
-		if no bcopy() function is available.  Otherwise the
-		bcopy.c source file will be used.
+		if no bcopy() function is available.  Otherwise a
+		provided bcopy.c source file will be used.
 
 	--force-sdbm
 		Force use of SDBM (a free portable DBM replacement
 		included in the CSNOBOL4 distribution), even when
-		alternatives are available.
-
-	--longlong
-		Attempt to use C "long long" data type to represent
+		alternatives are (or appear to be) available.
+	--longlong
+		Use the C "long long" data type to represent
 		SNOBOL4 INTEGERs when the default data model uses
 		32-bit integers, longs and pointers (ILP32).
 
@@ -175,10 +175,9 @@ with "--add-" can appear);
 		default, or only data model (e.g. Alpha).  Note that
 		under HP-UX on IA-64 (Itanium) the default data model
 		is ILP32, while under Linux, the default is LP64.
-
-	--no-dlopen
+	--no-dlopen
 		Disable use of Unix98 dlopen() API for dynamic LOAD() support
-
+
 	--no-bitfields
 		Disable use of C bitfields for SIL (SNOBOL
 		Implementation Language) descriptors (basic unit of
@@ -198,7 +197,7 @@ with "--add-" can appear);
 		entries, and the largest table from 1M entries to over
 		128M entries.
 
-		In most cases the larger descriptor size will decrease
+		In many cases the larger descriptor size will decrease
 		performance. Despite not having to deal with packing
 		and unpacking a 24-bit field, the larger descriptor
 		means increased memory bandwidth use, and less
@@ -226,8 +225,7 @@ with "--add-" can appear);
 
 	--no-opt
 		Turn off C compiler optimization.
-
-	--opt=STRING
+	--opt=STRING
 		Supply C optimization flags.  Use of this option
 		overrides any values supplied via --add-opt options
 		(but not ones added by --fast).  Use --add-opt in
@@ -244,34 +242,41 @@ with "--add-" can appear);
 		for debugging, with no optimizations, use --opt=-g
 
 		To turn off optimization, see --no-opt
-
+
 	--prefix=DIR
 		Supply a directory prefix for bin/ and lib/ directories.
 		Default prefix is /usr/local
+
+	--bindir=DIR
+		Supply a directory binary files. Default is PREFIX/bin
+
+	--snolibdir=DIR
+		Supply a directory for library files. Default is PREFIX/lib
+
+	--mandir=DIR
+		Supply a directory for man pages. Default is PREFIX/man
 
 	--universal
 		Mac OS X: build a universal (Power PC / Intel x86) binary.
 
 	--with-tcl
 		Try to compile in Tcl extension (see snobol4tcl man page)
-		A shared library installation of Tcl version 8.4 or later
-		is HIGHLY desirable!  See --with-tk
+		Tk 8.4 or later is necessary to use Tcl/Tk.
 
 	--with-tk
-		If --with-tcl has been given, and the most recent
-		version of Tcl available is prior to version 8.4, if
-		you want to use the Tk GUI toolkit, it will need to be
-		linked in.  If Tcl and Tk are staticly linked, this
-		may expand the snobol4 executable file four times
-		(from around 333K to around 1333K)!!
+		Obsolete.  Tk can be dynamicly loaded in Tcl 8.4 using
+		"package require Tk"
 
-		Consider installing newer, shared library versions of
-		Tcl and Tk!!!
+	--without-com
+		Do not compile in COM extension on CygWIN.
+
+	--without-readline
+		Do not compile in READLINE extension.
 
 	--without-ndbm
-		Do not try to compile in NDBM extension
-		(see snobol4dbm man page)
-
+		Do not try to compile in NDBM extension.
+		See --force-sdbm
+
 The configure script tries to select from among different versions
 of system support functions, including "dummy" versions which allow
 the software to be built, with reduced functionality.
@@ -282,11 +287,11 @@ available options for use in creating a system-specific config file.
 
 If you need assistance please contact me (phil@ultimate.com).
 
-I've spent untold hours working on this release (time, which if I had
+I've spent many hours working on this release (time, which if I had
 billed a client would have been in the tens of thousands of dollars),
-if you find it useful, please consider sending me a gift!
+if you find it useful, please consider a donation.
 
-This release was spurred on by a small donation (a user who gives each
+This release was supported on by a small donation (a user who gives each
 year when he renews his Public Broadcasting membership).
 
 I'm also available for contract development.
@@ -387,37 +392,52 @@ in the local-config file.
 Non-unix systems;
 ================
 
-The non-unix ports are not well tested.  Please send me any fixes you
-discover!  See doc/porting.txt for details on porting CSNOBOL4.
+The non-unix ports are less well tested.
 
-The routines in tty.c (tty_save, tty_restore, tty_mode, tty_close) and
-inet.c (tcp_open, udp_open) need to be supplied.  Dummy versions exist
-in lib/dummy/tty.c and lib/dummy/inet.c.
+Win32 using CygWin
+------------------
 
-The functions referenced from pml.h will not be loaded by the existing
-command files, and will cause the link to fail.  There are three
-possible solutions;
+Cygwin (http://cygwin.com), is a free Unix emulation environment for
+Windows.  Normal distributions build and run correctly, with the full
+Unix feature set including TCP client and server functionality;
+just type "make"!
 
-1. Add commands to build a SNOLIB library and include it in the link.
+Win32
+-----
 
-2. Compile the needed objects and add them directly to the link command.
+The Win32 port has been tested with Visual Studio 10 and MinGW.
 
-3. Define one or more of NO_PML_(HOST|EXIT|REAL|FILE|DELETE|RENAME)
-	when compiling pml.c.
+*	LOAD() of external functions from DLL's implemented, but not tested
 
-The SPITBOL HOST() function simulation may call functions not
-available on the target system.  Rather than adding a nest of ifdefs,
-dummy versions of getenv() and system() have been provided in the
-lib/dummy directory for this eventuality.  The SPITBOL EXIT()
-simulation requires an execute() function to pass pass control to
-another program.  A dummy version is provided in lib/dummy/execute.c.
+To compile using MINGW (http://www.mingw.org):
+	make -f config/win32/mingw.mak
 
-VMS using DEC C
+To compile using Microsoft Visual Studio:
+	nmake -f config\win32\ntmsvc.mak
+
+To compile using Borland C (not tested recently);
+	nmake -f config\win32\borland.mak
+
+DJGPP under DOS
 ---------------
 
-CSNOBOL4 has been run on VMS (VAX, Alpha, and IA64),
-config/vms/descrip.mms is an MMS description file, which can be used
-by typing:
+DJGPP (http://www.delorie.com/djgpp/) is a free 32-bit C/C++ MS-DOS
+development system, for Intel 80386 (and higher) PCs running DOS based
+on GCC.  Burkhard Meissner has ported CSNOBOL4 to DJGPP.
+
+To compile using GNU make (not updated/tested recently):
+
+	make -f config/djgpp/Makefile
+
+To enable optional support for TCP/IP using WATTCP and DXE2 based
+external function loading, see the commented out lines in the Makefile.
+
+VMS
+---
+
+VMS support has has not been tested recently.  CSNOBOL4 has been run
+on VMS (VAX, Alpha, and IA64), config/vms/descrip.mms is an MMS
+description file, which can be used by typing:
 
 	MMS /DESCRIP=[.CONFIG.VMS]DESCRIP.MMS
 
@@ -430,47 +450,6 @@ TCP/IP Connection services for OpenVMS (formerly VAX/Ultrix connection
 product). It should be possible to use other TCP packages, but if not,
 or none is available, add /MACRO=(NO_TCP=1) to the MMS command line.
 
-Win32 using CygWin
-------------------
-
-Cygwin (http://cygwin.com), is a free Unix emulation environment for
-Windows.  Normal distributions build and run correctly, with the full
-Unix feature set including TCP client and server functionality;
-just type "make"!
-
-Win32
------
-
-The Win32 port is in it's infancy, and has only been tested using the
-free MINGW C compiler.
-
-*	binary and no echo support for console I/O has been added recently
-*	TCP and UDP I/O work (with some hoop jumping)
-*	LOAD() of external functions from DLL's implemented, but not tested
-
-To compile using MINGW (http://www.mingw.org);
-	make -f config/win32/mingw.mak
-
-To compile using Microsoft Visual C++ (tested with Visual Studio .NET 2003);
-	nmake -f config\win32\ntmsvc.mak
-
-To compile using Borland C (not tested);
-	nmake -f config\win32\borland.mak
-
-DJGPP under DOS
----------------
-
-DJGPP (http://www.delorie.com/djgpp/) is a free 32-bit C/C++ MS-DOS
-development system, for Intel 80386 (and higher) PCs running DOS based
-on GCC.  Burkhard Meissner has ported CSNOBOL4 to DJGPP.
-
-To compile using GNU make;
-
-	make -f config/djgpp/Makefile
-
-To enable optional support for TCP/IP using WATTCP and DXE2 based
-external function loading, see the commented out lines in the Makefile.
-
 Anything else
 -------------
 
@@ -482,8 +461,9 @@ Let me know!
 
 Please let me know of your success and failures to bring up CSNOBOL4!
 
-Please mail timing.out files to timing@snobol4.org along with
-information on your system make, model and CPU clock, if known.
+Please mail timing.out files to timing@snobol4.org
+Anonymized results are published at http://www.snobol4.org
+And you will be notified when test versions are available.
 
 Announcements of new releases are made on the SNOBOL4 mailing list.
-See http://www.snobol4.com/listserv.htm for information on how to join.
+See http://tech.groups.yahoo.com/group/snobol/
