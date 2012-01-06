@@ -58,16 +58,6 @@ if [ -d /usr/include/${INST}-linux-gnu ]; then
     ALTINCDIR=/usr/include/${INST}-linux-gnu
 fi
 
-# libraries
-LIBDIR=/usr/lib
-if [ -d /usr/lib/${INST}-linux-gnu ]; then
-    LIBDIR=/usr/lib/${INST}-linux-gnu
-elif [ "$MACHINE" = x86_64 -a -d /usr/lib64 ]; then
-    LIBDIR=/usr/lib64
-fi
-# lib32 can exist as well?
-echo "using $LIBDIR for libraries" 1>&2
-
 rm -f $CONFIG_H $CONFIG_M4 $VERSION_H
 trap "rm -f $CONFIG_H $CONFIG_M4; exit 1" 1 2 15
 
@@ -1485,6 +1475,14 @@ fi
 
 # Include STCL (tcl/tk) support, if requested
 if [ "$WITH_TCL" ]; then
+    LIBDIR=/usr/lib
+    # XXX check LP64 / LP64_NATIVE
+    if [ -d /usr/lib/${INST}-linux-gnu ]; then
+	LIBDIR=/usr/lib/${INST}-linux-gnu
+    elif [ "$MACHINE" = x86_64 -a -d /usr/lib64 ]; then
+	LIBDIR=/usr/lib64
+    fi
+    # lib32 can exist as well?
 
     TCL_CONF_DIRS="/usr/local/lib $LIBDIR /usr/share/tcltk /System/Library/Frameworks/Tcl.framework"
     TCL_MAJOR_VERSION=0

@@ -11,6 +11,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	doc/snobol4tcl.3: update date
 	INSTALL: update for 1.4 release
 	configure: fix gdbm support on cygwin, cleanup readline checks
+		move LIBDIR under Tcl support
 		update version to 1.4
 
 **** tag REL_1_4_RC2
