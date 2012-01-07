@@ -5,11 +5,11 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 **************** release 1.4 (CVS tag REL_1_4)
 
 1/6/2012:
+	INSTALL, README: update for 1.4 release
 	lib/snolib/readline.c: include stdlib.h for free()
 	include/load.h: fix RETSTR_FREE() warning
 	lib/auxil/bindresvport.c: fix VS10 warning
 	doc/snobol4tcl.3: update date
-	INSTALL: update for 1.4 release
 	configure: fix gdbm support on cygwin, cleanup readline checks
 		move LIBDIR under Tcl support
 		update version to 1.4

@@ -67,68 +67,34 @@ README
 CHANGES
 	Important changes since last release
 
-doc/load.txt
-	Information on dynamicly loading code into SNOBOL4
-	(also installed in /usr/local/lib/snobol4/)
-
-doc/snobol4.1
-	man page for snobol4.
+doc/snobol4.0
+	text man page for SNOBOL4.
 	describes changes from the SNOBOL4 reference ("green book").
 
-doc/snobol4.0
-	text formatted output of snobol4 man page
+doc/sdb.0
+	text man page for SNOBOL4 debugger.
 
-doc/snobol4.html
-	WWW HyperText formatted output of snobol4.1
+doc/snobol4dbm.0
+	text man page for SNOBOL4 DBM library routines
 
-doc/snobol4.ps
-	PostScript formatted output of snobol4.1
+doc/snobol4random.0
+	text man page for SNOBOL4 random number support
+
+doc/snobol4readline.0
+	text man page for SNOBOL4 readline support
+
+doc/snobol4tcl.0
+	text man page for SNOBOL4 Tcl/Tk support
+
+doc/snobol4time.0
+	text man page for SNOBOL4 time support
 
 doc/snolib.3
 	man page for SNOBOL4 library routines
 
-doc/snolib.0
-	text formatted output of snolib.3 man page
-
-doc/snolib.html
-	WWW HyperText formatted output of snolib.3
-
-doc/snolib.ps
-	PostScript formatted output of snolib.3
-
-doc/snobol4dbm.3
-	man page for SNOBOL4 DBM library routines
-
-doc/snobol4dbm.0
-	text formatted output of snobol4dbm.3 man page
-
-doc/snobol4dbm.html
-	WWW HyperText formatted output of snobol4dbm.3
-
-doc/snobol4dbm.ps
-	PostScript formatted output of snobol4dbm.3
-
-doc/snobol4tcl.3
-	man page for SNOBOL4 TCL library routines
-
-doc/snobol4tcl.0
-	text formatted output of snobol4tcl.3 man page
-
-doc/snobol4tcl.html
-	WWW HyperText formatted output of snobol4tcl.3
-
-doc/snobol4dbm.ps
-	PostScript formatted output of snobol4dbm.3
-
 doc/porting.txt
 	information on porting to a new system,
 	particularly the usage of Makefile variables and m4 macros.
-
-doc/porting.ps
-	porting information in PostScript.
-
-doc/porting.html
-	porting information in HTML.
 
 TODO.soon
 	current top priority tasks (hopefully small in any release)
@@ -142,19 +108,8 @@ ftp://ftp.snobol4.com for it, many demo programs, SNOBOL4 language
 documentation, and ordering information for books & products from
 Catspaw!
 
-Mark Emmer also runs a SNOBOL4 mailing list;
-
-To join the list, send a mail message to "listserv@mercury.dsu.edu"
-with the line "subscribe SNOBOL4 Your Name" as the message body.
-"Your Name" should be your real name (your e-mail address will be used
-automatically for the subscription).
-
-Submissions to the list may be sent to "SNOBOL4@mercury.dsu.edu".
-
-To be removed from the list, send the message "unsubscribe SNOBOL4" to
-"listserv@mercury.dsu.edu".
-
-For more information see http://www.snobol4.com/listserv.htm
+There is a mailing list for SNOBOL4 on Yahoo Groups:
+http://tech.groups.yahoo.com/group/snobol/
 
 Acknowledgments;
 
@@ -172,7 +127,8 @@ Acknowledgments;
 	impossible.
 
 The following have also provided help, encouragement, support, input,
-historical background, testing, fixes, money, etc (in chronological order);
+historical background, testing, fixes, testing, money, etc
+(in chronological order);
 
 	Bill Henneman
 	Andrew Koenig
@@ -198,7 +154,7 @@ historical background, testing, fixes, money, etc (in chronological order);
 	Yuli Barcohen
 	Stephen Del Rea
 	David Feustel
-	L. Gene Battin
+	Laurence Battin
 	John Refling
 	Greg White
 	Russ Urquhart
@@ -216,10 +172,12 @@ historical background, testing, fixes, money, etc (in chronological order);
 	Meir Livneh
 	Mark Laster
 	Michael Richter
-
-If you make any changes/fixes/improvements, or port it to a new
-system, please send them to me (please include "timing.out" and tell
-me the system type, CPU clock speed, C compiler & version)!!
+	James McKelvey
+	Chap Harrison
+	Robert Shanley
+	Howard Modell
+	Ron Hochsprung
+	Steven Brenton
 
 If you are interested in getting mailings about new releases, send me
 a timing report.  I'm always interested in knowing what people are
