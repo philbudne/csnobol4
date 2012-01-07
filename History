@@ -2,8 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
-1/6/2012:
+1/7/2012:
 	configure: try to fix tcl search on ubuntu; update to v1.4+
+	doc/.cvsignore: add snobol4{random,tcl,time}.{0,html,ps,pdf}
 
 **************** release 1.4 (CVS tag REL_1_4)
 
