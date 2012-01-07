@@ -8,7 +8,7 @@ Changes since 1.3 release;
 	Added SNOBOL4 debugger "sdb" see doc/sdb.*, "man sdb"
 	Added POSIX date/time handling functions, sleep function:
 		see doc/snobol4time.*, "man snobol4time"
-	Added high quality RANDOM() function; see "man snobol4time"
+	Added high quality RANDOM() function; see "man snobol4random"
 	Added GNU Readline/History functions; see "man snobol4readline"
 	Added ATAN() and LN() functions
 	Changed '-l' command line argument to take listing file name
