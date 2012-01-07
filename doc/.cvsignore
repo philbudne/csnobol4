@@ -1,4 +1,8 @@
 porting.txt
+sdb.0
+sdb.html
+sdb.pdf
+sdb.ps
 snobol4.0
 snobol4.html
 snobol4.pdf
@@ -10,7 +14,11 @@ snobol4dbm.ps
 snobol4random.0
 snobol4random.html
 snobol4random.pdf
-snobol4random.ps
+snobol4readline.ps
+snobol4readline.0
+snobol4readline.html
+snobol4readline.pdf
+snobol4readline.ps
 snobol4tcl.0
 snobol4tcl.html
 snobol4tcl.pdf
