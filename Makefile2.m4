@@ -575,6 +575,7 @@ install: snobol4 sdb
 	$(INSTALL) sdb $(BINDIR)
 	$(INSTALL) -d $(MAN1DIR)
 	$(INSTALL) -m 644 doc/snobol4.1 $(MAN1DIR)
+	$(INSTALL) -m 644 doc/sdb.1 $(MAN1DIR)
 	$(INSTALL) -d $(MAN3DIR)
 	$(INSTALL) -m 644 doc/snolib.3 $(MAN3DIR)
 	$(INSTALL) -m 644 doc/snobol4dbm.3 $(MAN3DIR)
