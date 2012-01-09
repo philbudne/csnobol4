@@ -6,6 +6,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	Makefile2.m4: make sdb depend on configure
 	snolib/sdb.sno: fix readline test!
 	configure: fix typo
+	doc/sdb.1: can't break on END label
 
 1/7/2012:
 	configure: try to fix tcl search on ubuntu; update to v1.4+
