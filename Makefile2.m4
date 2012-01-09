@@ -275,7 +275,7 @@ syn.o: $(SRCDIR)syn.c
 
 ################ shell scripts
 
-sdb:	sdb.sh
+sdb:	sdb.sh configure
 	sed -e "s@<SNOLIB_DIR>@$(SNOLIB_DIR)@" \
 	    -e "s@<BINDIR>@$(BINDIR)@" \
 	    < sdb.sh > sdb

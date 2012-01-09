@@ -919,7 +919,7 @@ elif config/check "sys/time.h sys/resource.h" \
 elif [ "$HAVE_UNISTD_H" ]; then
     echo 'using times() + sysconf() for runtimes' 1>&2
     echo 'MSTIME_C=$(SRCDIR)lib/posix/mstime.c'	>> $CONFIG_M4
-elif config/cjeck sys/times.h "struct tms tt; times(&tt)"; then
+elif config/check sys/times.h "struct tms tt; times(&tt)"; then
     # V7 had times(), but not times.h!!!
     echo 'using times() for runtimes' 1>&2
     # XXX warning????

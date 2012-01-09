@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+1/9/2012:
+	Makefile2.m4: make sdb depend on configure
+	snolib/sdb.sno: fix readline test!
+	configure: fix typo
+
 1/7/2012:
 	configure: try to fix tcl search on ubuntu; update to v1.4+
 	doc/.cvsignore: add snobol4{random,tcl,time}.{0,html,ps,pdf}

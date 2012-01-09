@@ -1,6 +1,12 @@
 $Id$
 
+sdb/readline???
+
+constants for WS, DIGITS?
+
 ================
+
+report Kstatements/sec?
 
 list/queue utility functions!!!
 
@@ -10,7 +16,7 @@ add regression test for RANDOM()?
 
 snobol4 program to generate win32 .mak files?
 
-separate include/snolib directories in LIBDIR/VERSION/ ??
+separate include/snolib/dynlib directories?
 	 new HOST() calls to return directories
 
 mingw.mak:
