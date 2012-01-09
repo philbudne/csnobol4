@@ -16,6 +16,8 @@ SDB.START
 	SDB.ID = "$Id$"
 	SDB.ID BREAK(' ') ' ' SPAN('0123456789.') . SDB.VERSION
 
+-include 'readline.sno'
+
 * TODO:
 * XXX more commands:
 *	set (just SDB.VARS?)
@@ -83,9 +85,8 @@ SDB.GOT_MAX_STMTS
 
 	DIFFER(.NAME, "NAME")			:S(SDB.SPITBOL)
 * CSNOBOL4 init:
--include 'readline.sno'
 	OUTPUT(.SDB.TT, IO_FINDUNIT(), 'T', '-')
-	SDB.HAVE_READLINE = FUNCTION(.EXPAND_HISTORY) 1
+	SDB.HAVE_READLINE = FUNCTION(.HISTORY_EXPAND) 1
 	:(SDB.ESPITBOL)
 
 SDB.SPITBOL
