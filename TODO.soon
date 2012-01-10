@@ -1,32 +1,38 @@
 $Id$
 
-sdb/readline???
-
 constants for WS, DIGITS?
 
-================
+SNOLIB:
+	Implement SNOLIB search path
+	SNOLIB/local
+	-I option
+	iterator functions?
+	seperate "NOLIB/dynload" directory
+	    /usr/local/include/snobol4/VERS
+	also check old SNOLIB? 
+	new HOST() calls to return directories
 
-report Kstatements/sec?
+Distribute orange book library?
+
+Command line option to preload files: use for sdb!!
+Enable PRELOAD?
+	Disable if running setuid!!!
+	Command line arg to enable?
 
 list/queue utility functions!!!
-
-command line option to preload file(s): use for sdb!!
 
 add regression test for RANDOM()?
 
 snobol4 program to generate win32 .mak files?
 
-separate include/snolib/dynlib directories?
-	 new HOST() calls to return directories
+report Kstatements/sec?
+
+use readline() for compiler input?
 
 mingw.mak:
 	have configure copy config.{m4,h} from config/win32?
 
 Make some signals catchable via SETEXIT? INTR, CHLD, HUP, ALRM??
-
-Enable PRELOAD?
-	Disable if running setuid!!!
-	command line arg to disable?
 
 Make use of tdb (from samba project: gdbm API w/ multiple writers)
 
@@ -50,15 +56,6 @@ increase dynamic region size?
 Fix univeral builds for non OSX 10.4 systems?
 OS X 4-way Universal???
 	CFLAGS='-arch i386 -arch x86_64 -arch ppc7400 -arch ppc64'
-
-SNOLIB:
-	Implement SNOLIB search path
-	-I option
-	iterator functions?
-	append /<version> to default SNOLIB? ****************
-	use seperate SNOLIB/include and SNOLIB/ext ??
-	    /usr/local/include/snobol4-VERS?
-	also check old SNOLIB? SNOLIB/local??
 
 ================ 2.0?
 

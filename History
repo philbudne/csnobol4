@@ -7,6 +7,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	snolib/sdb.sno: fix readline test!
 	configure: fix typo
 	doc/sdb.1: can't break on END label
+		fix bolding on "next"
 
 1/7/2012:
 	configure: try to fix tcl search on ubuntu; update to v1.4+
