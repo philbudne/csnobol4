@@ -38,8 +38,6 @@ SIL=	v311.sil
 # AIX4 makes all targets, so added this;
 # must be named "all" for FreeBSD "ports"?
 
-all:	snobol4
-
 # force GNU make to run top Makefile serially
 .NOTPARALLEL: foo
 
@@ -49,7 +47,7 @@ all:	snobol4
 # files to avoid removing when interrupted
 .PRECIOUS: snobol4 xsnobol4 Makefile2 $(GENERATED)
 
-snobol4 xsnobol4 install lint: $(GENERATED) Makefile2 ALWAYS .depend
+all snobol4 xsnobol4 install lint: $(GENERATED) Makefile2 ALWAYS .depend
 	$(MAKE) -f Makefile2 $@
 
 # a rule depending on this target will always be run

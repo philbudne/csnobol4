@@ -1,5 +1,7 @@
 $Id$
 
+Run tests, timing on MinGW?
+
 constants for WS, DIGITS?
 
 SNOLIB:
@@ -12,12 +14,12 @@ SNOLIB:
 	also check old SNOLIB? 
 	new HOST() calls to return directories
 
-Distribute orange book library?
-
 Command line option to preload files: use for sdb!!
 Enable PRELOAD?
 	Disable if running setuid!!!
 	Command line arg to enable?
+
+Distribute orange book library?
 
 list/queue utility functions!!!
 

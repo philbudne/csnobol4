@@ -213,6 +213,9 @@ SRCS=	main.c $(SNOBOL4).c data.c data_init.c syn.c $(BAL_C) \
 
 .PRECIOUS: $(SNOBOL4).o data_init.o snobol4
 
+ALL=sdb snobol4
+all:	$(ALL)
+
 changequote(@,@)dnl
 
 xsnobol4: $(OBJS)
