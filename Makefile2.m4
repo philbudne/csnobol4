@@ -281,6 +281,7 @@ syn.o: $(SRCDIR)syn.c
 sdb:	sdb.sh configure
 	sed -e "s@<SNOLIB_DIR>@$(SNOLIB_DIR)@" \
 	    -e "s@<BINDIR>@$(BINDIR)@" \
+	    -e "s@<VERS>@-$(VERS)@" \
 	    < sdb.sh > sdb
 	chmod a+x sdb
 
@@ -572,10 +573,11 @@ SNOLIB_FILES=snolib/*.sno $(INSTALL_H) doc/load.txt README $(GENSNOLIB)
 
 install: snobol4 sdb
 	$(INSTALL) -d $(BINDIR)
-	$(INSTALL) -s snobol4 $(BINDIR)
-	-rm -f $(BINDIR)/snobol4-$(VERS)
-	ln $(BINDIR)/snobol4 $(BINDIR)/snobol4-$(VERS)
-	$(INSTALL) sdb $(BINDIR)
+	$(INSTALL) -s snobol4 $(BINDIR)/snobol4-$(VERS)
+	$(INSTALL) sdb $(BINDIR)/sdb-$(VERS)
+	rm -f $(BINDIR)/snobol4 $(BINDIR)/sdb
+	ln -s $(BINDIR)/snobol4-$(VERS) $(BINDIR)/snobol4 
+	ln -s $(BINDIR)/sdb-$(VERS) $(BINDIR)/sdb 
 	$(INSTALL) -d $(MAN1DIR)
 	$(INSTALL) -m 644 doc/snobol4.1 $(MAN1DIR)
 	$(INSTALL) -m 644 doc/sdb.1 $(MAN1DIR)

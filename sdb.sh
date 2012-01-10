@@ -2,7 +2,7 @@
 # $Id$
 
 SDB=<SNOLIB_DIR>/sdb.sno
-SNOBOL4=<BINDIR>/snobol4
+SNOBOL4=<BINDIR>/snobol4<VERS>
 
 # handle user args??
 

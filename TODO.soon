@@ -1,9 +1,5 @@
 $Id$
 
-sdb: use snobol4-VERS
-    install as sdb-VERS
-    make sdb and snobol4 SYMlinks
-
 Run tests, timing on MinGW?
 
 constants for WS, DIGITS?

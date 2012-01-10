@@ -3,8 +3,12 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 1/10/2012:
-	Makefile: add all
+	Makefile: add all, sdb
 	Makefile2.m4: add all, ALL
+		install sdb as sdb-VERS, snobol4-VERS
+		have sdb use snobol4-VERS
+		make symlinks to sdb, snobol4
+	sdb.sh: add <VERS>
 
 1/9/2012:
 	Makefile2.m4: make sdb depend on configure
