@@ -9,6 +9,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 		have sdb use snobol4-VERS
 		make symlinks to sdb, snobol4
 	sdb.sh: add <VERS>
+	test/random.{sno,ref}: test RANDOM()
+	tests.in: add random.sno
 
 1/9/2012:
 	Makefile2.m4: make sdb depend on configure
