@@ -4,6 +4,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 1/11/2012:
 	doc/sdb.1: add readline references
+	CHANGES: update
 
 1/10/2012:
 	Makefile: add all, sdb
