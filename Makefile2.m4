@@ -279,6 +279,7 @@ syn.o: $(SRCDIR)syn.c
 ################ shell scripts
 
 sdb:	sdb.sh configure
+	rm -f sdb
 	sed -e "s@<SNOLIB_DIR>@$(SNOLIB_DIR)@" \
 	    -e "s@<BINDIR>@$(BINDIR)@" \
 	    -e "s@<VERS>@-$(VERS)@" \
