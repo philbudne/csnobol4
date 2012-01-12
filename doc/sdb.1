@@ -22,6 +22,10 @@ is a debugger for
 programs, in the mold (fawning clone) of
 .BR gdb (1),
 The GNU debugger.
+.B sdb
+uses
+.BR readline (3)
+for command line editing/history when available.
 .PP
 Commands:
 .TP 2
@@ -95,7 +99,7 @@ The GNU Readline library (when available) will be used for sdb
 input for command editing and history.
 
 .SH SEE ALSO
-.BR snobol4 "(1), " gdb (1)
+.BR snobol4 "(1), " gdb "(1), " readline "(3), " snobol4readline (3)
 
 .SH AUTHOR
 Philip L. Budne

@@ -1,6 +1,8 @@
 $Id$
 
 Run tests, timing on MinGW?
+	Need to fix CR handling; EOLSTR, _setmode()
+	    URL/INET functions need to set binary mode to avoid double CR???
 
 constants for WS, DIGITS?
 
@@ -19,13 +21,13 @@ Enable PRELOAD?
 	Disable if running setuid!!!
 	Command line arg to enable?
 
-Distribute orange book library?
+Test/distribute modified orange book library?
 
 list/queue utility functions!!!
 
-add regression test for RANDOM()?
-
-snobol4 program to generate win32 .mak files?
+snobol4 machine generate win32 .mak files??
+	create a config.m4 file
+	post-process output
 
 report Kstatements/sec?
 
