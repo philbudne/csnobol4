@@ -52,11 +52,9 @@ VERSION_H=version.h.tmp
 CONFIG_H=config.h.tmp
 CONFIG_M4=config.m4.tmp
 
-# includes
+# DANGER: It's no longer safe to try to grep include files
+# (too many systems move them around), use sparingly!!
 INCDIR=/usr/include
-if [ -d /usr/include/${INST}-linux-gnu ]; then
-    ALTINCDIR=/usr/include/${INST}-linux-gnu
-fi
 
 rm -f $CONFIG_H $CONFIG_M4 $VERSION_H
 trap "rm -f $CONFIG_H $CONFIG_M4; exit 1" 1 2 15
@@ -1009,9 +1007,29 @@ if config/check string.h 'strchr("", 65)'; then
     fi
 fi
 
-if config/check sys/socket.h; then
-    if config/check 'sys/socket netdb.h' \
-	'struct addrinfo h[2], *ap; getaddrinfo("", "", h, &ap)'; then
+if config/check sys/socket.h ""; then
+    echo 'using sockets for TCP/IP support' 1>&2
+
+    # check if network libraries needed
+    SOCKINC='sys/socket.h netdb.h'
+    SOCKFRAG='int s = socket(AF_INET, SOCK_STREAM, 0); struct hostent *gethostbyname("")'
+    if config/check "$SOCKINC" "$SOCKFRAG"; then
+	NETLIBS=
+    elif config/check $SOCKINC" "$SOCKFRAG" -lsocket; then
+	echo 'using libsocket' 1>&2
+	echo 'ADD_LDFLAGS([-lsocket])'		>> $CONFIG_M4
+	NETLIBS=-lsocket
+    elif config/check $SOCKINC" "$SOCKFRAG" '-lsocket -lnsl'; then
+	echo 'using libsocket' 1>&2
+	echo 'ADD_LDFLAGS([-lsocket])'		>> $CONFIG_M4
+	echo 'using libnsl' 1>&2
+	echo 'ADD_LDFLAGS([-lnsl])'		>> $CONFIG_M4
+	NETLIBS='-lsocket -lnsl'
+    fi
+
+    if config/check "$SOCKINC" \
+	'struct addrinfo h[2], *ap; getaddrinfo("", "", h, &ap)' \
+	"$NETLIBS"; then
 	echo 'using getaddrinfo for TCP/IPv6 compatibility' 1>&2
 	echo 'INET_O=inet6.o'			>> $CONFIG_M4
 	if grep bindresvport_sa $INCDIR/rpc/rpc.h >/dev/null 2>&1; then
@@ -1025,8 +1043,7 @@ if config/check sys/socket.h; then
 	    echo '#define NEED_BINDRESVPORT_SA'	>> $CONFIG_H
 	    AUX_BINDRESVPORT=true
 	fi
-    else
-	echo 'using sockets for TCP/IP support' 1>&2
+    else # no getaddrinfo/IPv6
 	if grep bindresvport $INCDIR/rpc/rpc.h >/dev/null 2>&1; then
 	    # FreeBSD 3.x
 	    echo 'using system bindresvport() function' 1>&2
@@ -1049,53 +1066,15 @@ if config/check sys/socket.h; then
 	echo '#define HAVE_SOCKADDR_IN6' >> $CONFIG_H
     fi
 
+    # use socklen_t if avaialble
     if config/check sys/socket.h 'socklen_t len'; then
-	SOCKLEN_T=socklen_t
-	# What a PITA: HP and DEC/Q/HP are schizzoid.
-	# They have socklen_t as an option.
-	# Darwin < 7.0 is broken?
-	case "$OS" in
-	Darwin)
-	    case "$OSREL" in
-	    [1-6].*)
-		# pre Panther (MacOS 10.3.x, Darwin 7.x) bug:
-		echo '#define _BSD_SOCKLEN_T int32_t' >> $CONFIG_H
-		;;
-	    esac
-	    ;;
-	OSF1)
-	    # or _XOPEN_SOURCE >= 500
-	    echo '#define _POSIX_PII_SOCKET'	>> $CONFIG_H
-	    # no ill effects, so far!!
-	    ;;
-	HP-UX)
-	    # can define _XOPEN_SOURCE_EXTENDED, but htonx
-	    # macros move into arpa/inet.h.
-	    SOCKLEN_T=int
-	    ;;
-	esac
+	echo '#define SOCKLEN_T socklen_t'	>> $CONFIG_H
     else
-	SOCKLEN_T=int
-    fi
-    echo '#define SOCKLEN_T '$SOCKLEN_T		>> $CONFIG_H
-
-    # add network libraries if needed
-    if config/check sys/socket.h 'socket(AF_INET, SOCK_STREAM, 0)'; then
-	true
-    elif config/check sys/socket.h \
-	'socket(AF_INET, SOCK_STREAM, 0)' -lsocket; then
-	echo 'using libsocket' 1>&2
-	echo 'ADD_LDFLAGS([-lsocket])'		>> $CONFIG_M4
-    elif config/check sys/socket.h \
-	'socket(AF_INET, SOCK_STREAM, 0)' '-lsocket -lnsl'; then
-	echo 'using libsocket' 1>&2
-	echo 'ADD_LDFLAGS([-lsocket])'		>> $CONFIG_M4
-	echo 'using libnsl' 1>&2
-	echo 'ADD_LDFLAGS([-lnsl])'		>> $CONFIG_M4
+	echo '#define SOCKLEN_T int'		>> $CONFIG_H
     fi
 
-    # BSD bidirectional popen (not needed on *BSD!)
-    # no prototype on SunOS4, so check syscalls
+    # use BSD bidirectional popen if socketpair available
+    # (could try to use two pipes??)
     if config/check sys/socket.h \
 	'int s[2]; socketpair(AF_INET, SOCK_STREAM, 0, s)'; then
 	echo 'using private popen() function' 1>&2
@@ -1120,16 +1099,15 @@ if config/check sys/socket.h; then
 	    fi
 	fi
 
-	# glibc 2.0 has __vfork
-	if grep '[^_]_vfork' $INCDIR/unistd.h; then
-	    # SGI
-	    NO_VFORK=1
-	elif config/check unistd.h 'vfork()'; then
-	    echo 'using vfork() from unistd.h' 1>&2
-	    echo '/* vfork() in unistd.h */'	>> $CONFIG_H
-	elif config/check vfork.h 'vfork()'; then
+	if config/check vfork.h 'vfork()'; then
 	    echo 'using vfork() from vfork.h' 1>&2
 	    echo '#define HAVE_VFORK_H'		>> $CONFIG_H
+	elif config/check unistd.h 'vfork()'; then
+	    echo 'using vfork() (w/ unistd.h)' 1>&2
+	    echo '/* vfork() in unistd.h */'	>> $CONFIG_H
+	elif config/check '' 'vfork()'; then
+	    echo 'using vfork()' 1>&2
+	    echo '/* vfork() */'		>> $CONFIG_H
 	else
 	    NO_VFORK=1
 	fi

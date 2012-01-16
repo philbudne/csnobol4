@@ -8,6 +8,7 @@ Changes since 1.4 release;
 	Fix sdb test for readline
 	Add random number regression test
 	Fix Tcl search on Ububtu
+	Fix compilation on Solaris
 
 Changes since 1.3 release;
 =========================
