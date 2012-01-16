@@ -4,8 +4,14 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
+#if defined(HAVE_GLIBC) || defined(linux) /* linux test for safety */
 #define _XOPEN_SOURCE			/* glibc: enable strptime() */
 #define _BSD_SOURCE			/* glibc: keep tm_gmtoff */
+#endif
+
+#ifdef HAVE_GETTIMEOFDAY
+#include <sys/time.h>
+#endif
 
 #include <stdio.h>			/* for lib.h */
 #include <time.h>			/* time_t, strptime() */
@@ -16,13 +22,7 @@
 #include "macros.h"
 #include "load.h"
 #include "lib.h"			/* sleepf() */
-
-#include <time.h>			/* struct tm */
-#include <string.h>
-
-#ifdef HAVE_GETTIMEOFDAY
-#include <sys/time.h>
-#endif
+#include "str.h"
 
 #define SETINT(DP,N,VAL) (DP)[N].a.i = (VAL); (DP)[N].f = 0; (DP)[N].v = I
 #define SETNULL(DP,N) (DP)[N].a.i = 0; (DP)[N].f = 0; (DP)[N].v = S
@@ -30,7 +30,8 @@
 enum tv_member {
     TV_DESCR,
     TV_SEC,
-    TV_USEC
+    TV_USEC,
+    TV_COUNT				/* must be last */
 };
 
 enum tm_member {
@@ -44,8 +45,11 @@ enum tm_member {
     TM_WDAY,
     TM_YDAY,
     TM_ISDST,
-    TM_GMTOFF
+    TM_GMTOFF,
+    TM_COUNT				/* must be last */
 };
+
+#define COUNT(DP) ((DP)->v/DESCR+1)
 
 /*
  * GETTIMEOFDAY_(TIMEVAL)
@@ -54,11 +58,14 @@ int
 GETTIMEOFDAY_( LA_ALIST ) LA_DCL
 {
     struct descr *dp = LA_PTR(0);
-    if (!dp)
-	RETNULL;
-    /* validate dp[TV_DESCR] type & length? */
 #ifdef HAVE_GETTIMEOFDAY
     struct timeval tv;
+#endif
+
+    if (!dp || LA_TYPE(0) < DATSTA || COUNT(dp) != TV_COUNT)
+	RETNULL;
+    /* validate dp[TV_DESCR] */
+#ifdef HAVE_GETTIMEOFDAY
     if (gettimeofday(&tv, NULL) < 0)
 	RETFAIL;
     SETINT(dp,TV_SEC,tv.tv_sec);
@@ -73,9 +80,8 @@ GETTIMEOFDAY_( LA_ALIST ) LA_DCL
 static int
 tm2sno(struct tm *tmp, struct descr *dp)
 {
-    if (!dp)
+    if (!dp || COUNT(dp) != TM_COUNT)
 	return 0;
-    /* validate dp[TM_DESCR] type & length? */
     SETINT(dp,TM_SEC,tmp->tm_sec);
     SETINT(dp,TM_MIN,tmp->tm_min);
     SETINT(dp,TM_HOUR,tmp->tm_hour);
@@ -96,6 +102,8 @@ tm2sno(struct tm *tmp, struct descr *dp)
 static int
 sno2tm(struct descr *dp, struct tm *tmp)
 {
+    if (!dp || COUNT(dp) != TM_COUNT)
+	return 0;
     memset(tmp, 0, sizeof(struct tm));
     /* accept int or empty string */
 #define FETCH(X,Y) \
@@ -125,7 +133,7 @@ LOCALTIME_( LA_ALIST ) LA_DCL
 {
     time_t t = LA_INT(0);
     struct tm *tmp = localtime(&t);
-    if (!tm2sno(tmp, LA_PTR(1)))
+    if (LA_TYPE(1) < DATSTA || !tm2sno(tmp, LA_PTR(1)))
 	RETFAIL;
     RETNULL;
 }
