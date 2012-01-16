@@ -1318,10 +1318,11 @@ fi
 # if --version not a valid option.  Future versions might not print
 # version as last item on line (currently it's the 4th), but at this
 # moment, I only care about detecting version 2.1;
-GLIBC=`(getconf --version)2>&1 | awk '/GNU libc/ { print $NF }'`
+GLIBC=`(getconf --version)2>&1 | awk '/GNU libc/ || /EGLIBC/ { print $NF }'`
 
 if [ "x$GLIBC" != x ]; then
     echo "# GLIBC version $GLIBC"		>> $CONFIG_M4
+    echo '#define HAVE_GLIBC'			>> $CONFIG_H
     echo "detected GNU libc version $GLIBC" 1>&2
 
     # glibc 2.1 is broken; fseeko() cannot be used
@@ -1407,7 +1408,8 @@ else
     echo 'SUSPEND_C=$(SRCDIR)lib/dummy/suspend.c' >> $CONFIG_M4
 fi
 
-if config/check sys/time.h 'struct timeval tv; gettimeofday(&tv,0)'; then
+if config/check sys/time.h \
+    'struct timeval tv; int x; gettimeofday(&tv,0); x = tv.tv_sec'; then
     echo 'using gettimeofday()' 1>&2
     echo '#define HAVE_GETTIMEOFDAY'		>> $CONFIG_H
 fi

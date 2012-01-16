@@ -13,6 +13,7 @@ SNOLIB:
 	iterator functions?
 	seperate "NOLIB/dynload" directory
 	    /usr/local/include/snobol4/VERS
+		new HOST() var; use in dynamic.sno
 	also check old SNOLIB? 
 	new HOST() calls to return directories
 

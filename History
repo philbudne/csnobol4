@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+1/15/2012:
+	configure: detect glibc on Ubuntu, set HAVE_GLIBC
+	lib/snolib/time.c: test for HAVE_GLIBC, check datatypes, lengths
+
 1/11/2012:
 	doc/sdb.1: add readline references
 	CHANGES: update
