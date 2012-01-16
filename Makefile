@@ -192,9 +192,9 @@ cleanmostly: tidy
 	rm -f $(DISP)
 	rm -rf timdir.*
 
-# clean as a freshly unpacked kit; remove binaries, timing file
+# clean as a freshly unpacked kit; remove binaries, timing; leave version.h
 clean:	cleanmostly
-	rm -f snobol4 xsnobol4 cpuid timing.out *.ln
+	rm -f snobol4 xsnobol4 cpuid timing.out *.ln sdb
 
 # DANGER: requires installed binary to rebuild!!
 # remove objects, generated files (clean as a fresh CVS checkout)

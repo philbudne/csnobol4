@@ -5,6 +5,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 1/16/2012:
 	configure: rework socket library tests for Solaris
 		simplify socklen_t check
+	Makefile: remove sdb in make clean
 
 1/15/2012:
 	configure: detect glibc on Ubuntu, set HAVE_GLIBC
