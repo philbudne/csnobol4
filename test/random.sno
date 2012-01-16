@@ -9,7 +9,7 @@ loop	ident(n,0)				:s(done)
 	t = t + i
 	bins[i] = bins[i] + 1			:(loop)
 
-done	output = 'avg: ' (t / sn)
+done	output = 'avg: ' ((t * 100) / sn)
 	i = 0
 dloop	ident(i,100)				:s(end)
 	output = bins[i]
