@@ -17,13 +17,15 @@ COMPILE_C_DYNAMIC
 	DL_CFLAGS = HOST(HOST_DL_CFLAGS) ' '
 	COPT = HOST(HOST_COPT) ' '
 	CMD = CC ' ' COPT DL_CFLAGS '-c -I' HOST(HOST_SNOLIB_DIR) ' ' SRC
+	TERMINAL = DIFFER(DYNAMIC.DEBUG) CMD
 	HOST(HOST_SYSCMD, CMD)				:F(FRETURN)S(RETURN)
 COMPILE_C_DYNAMIC_END
 
 ****************
-* link a dynamicly loadable module
+* link a dynamicly loadable module given
+* an output filename, object files, and libraries
 
-	DEFINE('LINK_DYNAMIC(OUT,OBJ,LIBS)CMD,DL_LD,DL_EXT,DL_LDFLAGS')
+	DEFINE('LINK_DYNAMIC(OUT,OBJ,LIBS)CMD,DL_LD,DL_EXT,DL_LDFLAGS,DSEP')
 							:(LINK_DYNAMIC_END)
 LINK_DYNAMIC
 * fail if we don't have a command!
@@ -36,20 +38,17 @@ LINK_DYNAMIC
 
 	DL_LDFLAGS = HOST(HOST_DL_LDFLAGS) ' '
 	CMD = DL_LD ' ' DL_LDFLAGS '-o ' OUT ' ' OBJ ' ' LIBS
+	TERMINAL = DIFFER(DYNAMIC.DEBUG) CMD
 	HOST(HOST_SYSCMD, CMD)				:F(FRETURN)
 
 * return the name of the output file
 	LINK_DYNAMIC = OUT
 
-* some dynamic loaders will only look in global directories
-* if the pathname contains no path seperators!  If we can't
-* find a slash (hmmm... need a PATHSEP value?) prefix with "./"
-
-	LINK_DYNAMIC BREAK('/') '/'		:S(RETURN)
-	LINK_DYNAMIC = "./" LINK_DYNAMIC	:(RETURN)
-
-* XXX module name creation?
-							:(RETURN)
+* some dynamic loaders want to see a dir seperator, so make sure there is one!
+	DSEP = HOST(HOST_DIR_SEP)
+	LINK_DYNAMIC BREAK(DSEP) DSEP		:S(RETURN)
+* prepend "./"
+	LINK_DYNAMIC = "." DSEP LINK_DYNAMIC	:(RETURN)
 LINK_DYNAMIC_END
 
 ****************

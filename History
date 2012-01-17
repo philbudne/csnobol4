@@ -7,6 +7,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 		simplify socklen_t check
 	Makefile: remove sdb in make clean
 	.cvsignore: add version.h
+	snolib/dynamic.c: use DSEP, add DYNAMIC.DEBUG variable
 
 1/15/2012:
 	configure: detect glibc on Ubuntu, set HAVE_GLIBC
