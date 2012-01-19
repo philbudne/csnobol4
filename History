@@ -4,6 +4,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 1/18/2012:
 	configure: cleanup/fix socket tests (again)
+	README: add Israel Linetzky
 
 1/16/2012:
 	configure: rework socket library tests for Solaris

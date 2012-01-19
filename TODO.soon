@@ -1,5 +1,9 @@
 $Id$
 
+document snobol4dynamic, snobol4wrapper
+
+document SRANDOMDEV when /dev/random not available
+
 Run tests, timing on MinGW?
 	Need to fix CR handling; EOLSTR, _setmode()
 	    URL/INET functions need to set binary mode to avoid double CR???

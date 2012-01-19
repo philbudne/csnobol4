@@ -1012,7 +1012,7 @@ if config/check sys/socket.h ""; then
 
     # check if network libraries needed
     SOCKINC='sys/socket.h netdb.h'
-    SOCKFRAG='int s = socket(AF_INET, SOCK_STREAM, 0); struct hostent *gethostbyname("")'
+    SOCKFRAG='int s = socket(AF_INET, SOCK_STREAM, 0); struct hostent *hp = gethostbyname("")'
     if config/check "$SOCKINC" "$SOCKFRAG"; then
 	NETLIBS=
     elif config/check "$SOCKINC" "$SOCKFRAG" -lsocket; then
@@ -1028,7 +1028,7 @@ if config/check sys/socket.h ""; then
     fi
 
     if config/check "$SOCKINC" \
-	'struct addrinfo h[2], *ap; getaddrinfo("", "", h, &ap)' \
+	'struct addrinfo aa[2], *ap; getaddrinfo("", "", aa, &ap)' \
 	"$NETLIBS"; then
 	echo 'using getaddrinfo for TCP/IPv6 compatibility' 1>&2
 	echo 'INET_O=inet6.o'			>> $CONFIG_M4
