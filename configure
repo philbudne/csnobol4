@@ -749,7 +749,7 @@ main() {
     return 0;
 }
 EOF
-if ${CCPATH-cc} -o $TMP $TMP.c && ./$TMP > $TMP.out &&
+if ${CCPATH-cc} $CFLAGS -o $TMP $TMP.c && ./$TMP > $TMP.out &&
   read SPTR SLONG SDOUB SINT < $TMP.out; then
     echo 'sizeof(int) = '$SINT		1>&2
     echo '# sizeof(int) = '$SINT	>> $CONFIG_M4

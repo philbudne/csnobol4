@@ -11,6 +11,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	cpuid.c: update for Solaris Studio,
 		report compiler versions
 	configure: check for finite() in ieeefp.h on Solaris
+		use CFLAGS on size check
 	include/macros.h: check for FINITE_IN_IEEEFP_H
 
 1/18/2012:
