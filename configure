@@ -1015,11 +1015,11 @@ if config/check sys/socket.h ""; then
     SOCKFRAG='int s = socket(AF_INET, SOCK_STREAM, 0); struct hostent *gethostbyname("")'
     if config/check "$SOCKINC" "$SOCKFRAG"; then
 	NETLIBS=
-    elif config/check $SOCKINC" "$SOCKFRAG" -lsocket; then
+    elif config/check "$SOCKINC" "$SOCKFRAG" -lsocket; then
 	echo 'using libsocket' 1>&2
 	echo 'ADD_LDFLAGS([-lsocket])'		>> $CONFIG_M4
 	NETLIBS=-lsocket
-    elif config/check $SOCKINC" "$SOCKFRAG" '-lsocket -lnsl'; then
+    elif config/check "$SOCKINC" "$SOCKFRAG" '-lsocket -lnsl'; then
 	echo 'using libsocket' 1>&2
 	echo 'ADD_LDFLAGS([-lsocket])'		>> $CONFIG_M4
 	echo 'using libnsl' 1>&2
@@ -1034,7 +1034,7 @@ if config/check sys/socket.h ""; then
 	echo 'INET_O=inet6.o'			>> $CONFIG_M4
 	if grep bindresvport_sa $INCDIR/rpc/rpc.h >/dev/null 2>&1; then
 	    # FreeBSD 4, NetBSD
-	    echo 'using system bindresvport_sa() function' 1>&2
+	    echo 'using system bindresvport_sa() function (with rpc/rpc.h)' 1>&2
 	    echo '#define BINDRESVPORT_IN_RPC_H' >> $CONFIG_H
 	elif grep bindresvport_sa $INCDIR/netinet/in.h $INCDIR/unistd.h>/dev/null 2>&1; then
 	    echo 'using system bindresvport_sa() function' 1>&2
@@ -1046,7 +1046,7 @@ if config/check sys/socket.h ""; then
     else # no getaddrinfo/IPv6
 	if grep bindresvport $INCDIR/rpc/rpc.h >/dev/null 2>&1; then
 	    # FreeBSD 3.x
-	    echo 'using system bindresvport() function' 1>&2
+	    echo 'using system bindresvport() function (with rpc/rpc.h)' 1>&2
 	    echo '#define BINDRESVPORT_IN_RPC_H' >> $CONFIG_H
 	elif grep bindresvport $INCDIR/netinet/in.h $INCDIR/unistd.h >/dev/null 2>&1; then
 	    echo 'using system bindresvport() function' 1>&2
@@ -1103,7 +1103,7 @@ if config/check sys/socket.h ""; then
 	    echo 'using vfork() from vfork.h' 1>&2
 	    echo '#define HAVE_VFORK_H'		>> $CONFIG_H
 	elif config/check unistd.h 'vfork()'; then
-	    echo 'using vfork() (w/ unistd.h)' 1>&2
+	    echo 'using vfork() (with unistd.h)' 1>&2
 	    echo '/* vfork() in unistd.h */'	>> $CONFIG_H
 	elif config/check '' 'vfork()'; then
 	    echo 'using vfork()' 1>&2
