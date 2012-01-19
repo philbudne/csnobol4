@@ -1,8 +1,10 @@
 $Id$
 
+document SRANDOMDEV when /dev/random not available
+
 document snobol4dynamic, snobol4wrapper
 
-document SRANDOMDEV when /dev/random not available
+================================================================
 
 Run tests, timing on MinGW?
 	Need to fix CR handling; EOLSTR, _setmode()
