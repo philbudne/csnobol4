@@ -44,7 +44,7 @@ expint(result,x,y)
     }
     else {
 /* perform X *= Y, checking for overflow */
-#define SIGN (((int_t)1)<<(sizeof(int_t)*8-1))
+#define SIGN (((unsigned long)1)<<(sizeof(int_t)*8-1))
 #define MULT(X,Y) { \
     register int_t temp = (X) * (Y); \
     if (((X) ^ (Y) ^ temp) & SIGN) return 0; \
