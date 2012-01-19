@@ -10,6 +10,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	Makefile2.m4: have cpuid depend on cpuid.c, use CC
 	cpuid.c: update for Solaris Studio,
 		report compiler versions
+	configure: check for finite() in ieeefp.h on Solaris
+	include/macros.h: check for FINITE_IN_IEEEFP_H
 
 1/18/2012:
 	configure: cleanup/fix socket tests (again)

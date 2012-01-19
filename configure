@@ -370,19 +370,10 @@ fi
 # nearly generic gcc3 option for LP64
 GCC64=-m64
 
-case "${MACHINE}:${OS}" in
-ia64:HP-UX)
-    # default on HP-UX/ia64 is ILP32!
-
-    # different option to get LP64!
-    GCC64=-mlp64
-    ;;
-esac
-
 # machine, os, release, version
 MORV="${MACHINE}:${OS}:${OSREL}:${OSVERS}"
 
-# library support, C compiler choice
+# library support, C compiler choice, flags
 case "$MORV" in
 9000/[678]??:HP-UX:*:*)
     # dlfcn.h present on hpux 11 systems,
@@ -419,6 +410,10 @@ case "$MORV" in
     ;;
 
 ia64:HP-UX:*:*)
+    # default on HP-UX/ia64 is ILP32!
+    # different option to get LP64!
+    GCC64=-mlp64
+
     # ia64 has dlopen(), regardless of data model
 
     # look for unbundled C; prefer it to gcc
@@ -473,11 +468,16 @@ ia64:HP-UX:*:*)
     echo '#define GT GTX'			>> $CONFIG_H
     ;;
 
-*:CYGWIN*:*)
+*:CYGWIN*:*:*)
     # Cygnus Unix emulation under Win32
     echo 'EXT=.exe'				>> $CONFIG_M4
     CYGWIN=1
     ;;
+
+*:SunOS:*:*)
+    if grep 'finite(' /usr/include/ieeefp.h > /dev/null 2>&1; then
+	echo '#define FINITE_IN_IEEEFP_H'	>> $CONFIG_H
+    fi
 esac
 
 # compiler options
