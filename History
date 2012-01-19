@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+1/19/2012:
+	lib/generic/expops.c: fix Solaris Studio warning
+	cpuid.c: update for Solaris Studio,
+		report compiler versions
+
 1/18/2012:
 	configure: cleanup/fix socket tests (again)
 	README: add Israel Linetzky

@@ -3,10 +3,10 @@
 
 int debug = 0;
 
-#if defined(__i386__) || defined(__x86_64__) || defined(_M_IX86) || defined(_M_AMD64)
+#if defined(__i386__) || defined(__x86_64__) || defined(_M_IX86) || defined(_M_AMD64) || defined(__i386) || defined(__x86_64)
 void
 cpuid(int f, int v[4]) {
-#ifdef __GNUC__
+#if defined(__GNUC__) || defined(__SUNPRO_C)
     /* http://en.wikipedia.org/wiki/CPUID */
     __asm__ __volatile__ (
 	"mov %%ebx, %%edi;"		/* 32bit PIC: save ebx */
@@ -16,7 +16,7 @@ cpuid(int f, int v[4]) {
 	: "=a" (v[0]), "=S" (v[1]), "=c" (v[2]), "=d" (v[3]) /* out */
 	: "a" (f)			/* in */
 	: "edi");			/* clobber */
-#endif /* __GNUC__ */
+#endif /* GCC (and clang) or SUNPRO */
 #ifdef _MSC_VER
     /* http://en.wikipedia.org/wiki/CPUID */
     __cpuid(v, f);			/* present in VS2005 */
@@ -33,6 +33,20 @@ main(int argc, char *argv[]) {
     char str[3*4*sizeof(int)+1];	/* three rounds of four ints + NUL */
 
     debug = argc > 1;			/* any arg enables debug */
+
+#ifdef __clang__			/* also defines __GNUC__! */
+    printf("CLANG: %d.%d.%d\n",
+	   __clang_major__, __clang_minor__, __clang_patchlevel__);
+#elif defined(__GNUC__)
+    printf("GNUC: %d.%d.%d\n",
+	   __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
+#endif
+#ifdef __SUNPRO_C
+    printf("__SUNPRO_C: %#x\n", __SUNPRO_C);
+#endif
+#ifdef _MSC_VER
+    printf("_MSC_VER: %d\n", _MSC_VER);
+#endif
 
     ip = (int *)str;
     cpuid(0, v);
