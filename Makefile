@@ -47,7 +47,7 @@ SIL=	v311.sil
 # files to avoid removing when interrupted
 .PRECIOUS: snobol4 xsnobol4 Makefile2 $(GENERATED)
 
-all snobol4 xsnobol4 install lint sdb: $(GENERATED) Makefile2 ALWAYS .depend
+all snobol4 xsnobol4 install lint sdb cpuid: $(GENERATED) Makefile2 ALWAYS .depend
 	$(MAKE) -f Makefile2 $@
 
 # a rule depending on this target will always be run

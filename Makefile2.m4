@@ -231,8 +231,9 @@ xsnobol4: $(OBJS)
 
 changequote([,])dnl
 
+# avoid CFLAGS: -O causes crash on gcc 4.4.6 x86_64?
 cpuid:	cpuid.c
-	$(CC) $(CFLAGS) -o cpuid cpuid.c
+	$(CC) -o cpuid cpuid.c
 
 ################
 # run regression tests.
