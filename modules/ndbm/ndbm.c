@@ -43,6 +43,10 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
+#ifdef HAVE_STDLIB_H                    /* before stdio, h.h */
+#include <stdlib.h>                     /* for strtol() */
+#endif
+
 #include <fcntl.h>
 
 /* only one will be set: */
