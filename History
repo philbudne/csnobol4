@@ -6,6 +6,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	include/snotypes.h: add uint_t for expops.c
 	lib/generic/expops.c: use uint_t fix Solaris Studio warning
 	lib/snolib/ndbm.c: include stdlib for strtol()
+	Makefile2.m4: have cpuid depend on cpuid.c, use CC, CFLAGS
 	cpuid.c: update for Solaris Studio,
 		report compiler versions
 

@@ -231,8 +231,8 @@ xsnobol4: $(OBJS)
 
 changequote([,])dnl
 
-cpuid:
-	cc -o cpuid cpuid.c
+cpuid:	cpuid.c
+	$(CC) $(CFLAGS) -o cpuid cpuid.c
 
 ################
 # run regression tests.
