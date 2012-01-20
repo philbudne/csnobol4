@@ -2,6 +2,8 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+**************** release 1.4.1 (CVS tag REL_1_4_1)
+
 1/19/2012:
 	include/snotypes.h: add uint_t for expops.c
 	lib/generic/expops.c: use uint_t fix Solaris Studio warning
@@ -16,7 +18,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 1/18/2012:
 	configure: cleanup/fix socket tests (again)
-	README: add Israel Linetzky
+	README: add Anonymous
 
 1/16/2012:
 	configure: rework socket library tests for Solaris
