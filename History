@@ -2,6 +2,12 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+**************** rerelease 1.4.1 (CVS tag REL_1_4_1bis)
+
+1/22/2012:
+	include/snotypes.h: flush uint_t (Solaris sys/types.h has uint_t)
+	lib/generic/expops.c: flush uint_t; use unsigned INT_T
+	
 **************** release 1.4.1 (CVS tag REL_1_4_1)
 
 1/19/2012:

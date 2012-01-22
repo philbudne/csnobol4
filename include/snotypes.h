@@ -7,7 +7,6 @@
 #endif /* INT_T not defined */
 
 typedef INT_T int_t; 			/* used to hold integers, addrs */
-typedef unsigned INT_T uint_t;
 
 #ifndef REAL_T
 #define REAL_T float
