@@ -200,6 +200,9 @@ struct iovars {
     struct unit units[NUNITS];
     struct file *includes;		/* list of included files */
     int finger;				/* for io_findunit */
+    struct file *lib_dirs;		/* list of include directories */
+    struct file *lib_dir_last;	/* tail of include directory list */
+
 };
 
 #ifdef NO_STATIC_VARS
@@ -1432,6 +1435,16 @@ io_ecomp()				/* XECOMP */
 	free(iov.includes);
 	iov.includes = tp;
     }
+
+    /* free list of include file directories */
+    while (iov.lib_dirs) {
+	struct file *tp;
+
+	tp = iov.lib_dirs->next;
+	free(iov.lib_dirs);
+	iov.lib_dirs = tp;
+    }
+    iov.lib_dir_last = NULL;
 }
 
 /* process I/O option strings for io_openi and io_openo */
@@ -1683,25 +1696,17 @@ io_include( dp, sp )
 	return INC_FAIL;
 
     if (io_fopen( fp, "r") == NULL) {
-	char *snolib;
 	char *fn2;
 
 	free(fp);
 
-	/* try again, in SNOLIB dir */
-	snolib = getenv("SNOLIB");
-	if (!snolib)
-	    snolib = SNOLIB_DIR;
-
-	fn2 = malloc(strlen(snolib)+1+strlen(fname)+1);
-	strcpy(fn2, snolib);
-	strcat(fn2, "/");
-	strcat(fn2, fname);
-
+	fn2 = io_lib_find(NULL, fname, NULL);
+	if (!fn2)
+	    return INC_FAIL;		/* not found */
 	fp = io_newfile(fn2);
 	free(fn2);
 	if (fp == NULL)
-	    return INC_FAIL;
+	    return INC_FAIL;		/* alloc failure */
 
 	if (io_fopen( fp, "r") == NULL) {
 	    free(fp);
@@ -2036,4 +2041,119 @@ io_finish() {
 #endif /* NO_STATIC_VARS defined */
 
     return TRUE;
+}
+
+/* new 1/12/2012 call to add a dir to include dir list */
+int
+io_add_lib_dir(dirname)
+     char *dirname;
+{
+    struct file *fp = io_newfile(dirname);
+    if (!fp)
+	return FALSE;
+    if (iov.lib_dir_last)
+	iov.lib_dir_last->next = fp;
+    else
+	iov.lib_dirs = fp;		/* new list */
+    iov.lib_dir_last = fp;
+}
+
+/* new 1/12/2012 call to add a path to include dir list */
+int
+io_add_lib_path(path)
+    char *path;
+{
+    char *p2 = malloc(strlen(path)+1);
+    char *pp = p2;
+    if (!p2)
+	return FALSE;
+    strcpy(p2, path);			/* XXX strdup */
+
+    while (pp) {
+	/* XXX need strstr if sizeof(PATH_SEP) != 2 */
+	char *tpp = index(pp, PATH_SEP[0]);
+	if (tpp)
+	    *tpp++ = '\0';		/* tie off and advance */
+	io_add_lib_dir(pp);
+	pp = tpp;
+    }
+    free(p2);
+}
+
+/*
+ * search for a file, given a path, and optional subdir and extension
+ * returns malloc'ed string or NULL
+ */
+
+/* helper */
+static char *
+trypath(dir, subdir, file, ext)
+    char *dir;
+    char *subdir;			/* optional: may be NULL */
+    char *file;
+    char *ext;				/* optional: may be NULL */
+{
+    int l = strlen(dir) + strlen(file) + sizeof(DIR_SEP);
+    char *path;
+    if (subdir)
+	l += strlen(subdir) + sizeof(DIR_SEP) - 1;
+    if (ext)
+	l += strlen(ext);
+    path = malloc(l);
+    if (!path)
+	return NULL;
+    strcpy(path, dir);
+    strcat(path, DIR_SEP);
+    if (subdir) {
+	strcat(path, subdir);
+	strcat(path, DIR_SEP);
+    }
+    strcat(path, file);
+    if (ext)
+	strcat(path, ext);
+    if (exists(path))
+	return path;
+    free(path);
+    return NULL;
+}
+
+char *
+io_lib_find(subdir, file, ext)
+    char *subdir;
+    char *file;
+    char *ext;
+{
+    struct file *ip;
+
+    /* XXX need abspath function */
+    if (*file == '/' || strncmp(file, DIR_SEP, sizeof(DIR_SEP)-1) == 0)
+	return NULL;			/* absolute path */
+
+    for (ip = iov.lib_dirs; ip; ip = ip->next) {
+	char *path;
+
+	path = trypath(ip->fname, subdir, file, ext);
+	if (path)
+	    return path;
+
+	if (ext) {
+	    path = trypath(ip->fname, subdir, file, NULL);
+	    if (path)
+		return path;
+	}
+
+	/* if given subdir, try without it (for dynamic libraries) */
+	if (subdir) {
+	    path = trypath(ip->fname, NULL, file, ext);
+	    if (path)
+		return path;
+
+	    if (ext) {
+		path = trypath(ip->fname, NULL, file, NULL);
+		if (path)
+		    return path;
+	    }
+	}
+    }
+    return NULL;
 }

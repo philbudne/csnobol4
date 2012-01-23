@@ -219,8 +219,25 @@ void
 io_init()				/* here from INIT */
 {
     FILE *termin;
+    char *env;
 
     io_initvars();
+
+    /* -I paths have already been added */
+
+    /* give priority to old variable */
+    env = getenv("SNOLIB");
+    if (env)
+	io_add_lib_dir(env);
+
+    env = getenv("SNOPATH");
+    if (!env)
+	env = DEF_SNOPATH;
+    io_add_lib_path(env);
+
+#ifdef EXTRA_SNOPATH
+    io_add_lib_path(EXTRA_SNOPATH);
+#endif
 
     if (nfiles == 0) {			/* no input file(s)? */
 #ifdef MEM_IO_TEST
@@ -350,7 +367,7 @@ init_args( ac, av )
      *		added, but it better not want an argument!)
      */
 
-    while ((c = getopt(argc, argv, "+bd:fghkl:nprsu:vLMP:S:")) != -1) {
+    while ((c = getopt(argc, argv, "+bd:fghkl:nprsu:vI:LMP:S:")) != -1) {
 	switch (c) {
 	case 'b':
 	    D_A(BANRCL) = !D_A(BANRCL);	/* toggle banner output */
@@ -415,6 +432,10 @@ init_args( ac, av )
 
 	case 'u':			/* parameter data */
 	    params = optarg;
+	    break;
+
+	case 'I':			/* include path dir */
+	    io_add_lib_dir(optarg);
 	    break;
 
 #ifdef PRELOAD
