@@ -2,6 +2,13 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+1/22/2012:
+	configure: add INCLUDE_DIR, DEF_SNOPATH, version 1.5-
+	lib/io.c: add lib dirs; io_add_lib_{dir,path}, io_lib_find
+	include/lib.h: io_add_lib_{dir,path}, io_lib_find
+	lib/init.c: set up lib path: honor SNOPATH, -I option
+	lib/snolib/host.[ch]: add HOST_DEF_SNOPATH, HOST_INCLUDE_DIR
+
 **************** rerelease 1.4.1 (CVS tag REL_1_4_1bis)
 
 1/22/2012:
