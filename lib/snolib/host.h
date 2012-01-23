@@ -107,6 +107,12 @@
 /* CSNOBOL4: return system PATH seperator character */
 #define HOST_PATH_SEP		2213
 
+/* CSNOBOL4: default library search path */
+#define HOST_DEF_SNOPATH	2214
+
+/* CSNOBOL4: path for C headers */
+#define HOST_INCLUDE_DIR	2215
+
 /*****
  * integer constants;
  */

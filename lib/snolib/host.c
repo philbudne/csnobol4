@@ -253,6 +253,16 @@ HOST( LA_ALIST ) LA_DCL
 	RETSTR(PATH_SEP);
 #endif /* PATH_SEP defined */
 
+#ifdef DEF_SNOPATH
+    case HOST_DEF_SNOPATH:
+	RETSTR(DEF_SNOPATH);
+#endif /* DEF_SNOPATH defined */
+
+#ifdef INCLUDE_DIR
+    case HOST_INCLUDE_DIR:
+	RETSTR(INCLUDE_DIR);
+#endif /* INCLUDE_DIR defined */
+
 /* integer constants; */
     case HOST_INTEGER_BITS:
 	RETINT(sizeof(INT_T)*BPC);	/* INTEGER size */
