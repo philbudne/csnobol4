@@ -1,27 +1,20 @@
 $Id$
 
+search path regression test
+
+use io_lib_find in load() routines [factor out PML?]
+
 document SRANDOMDEV when /dev/random not available
 
 document snobol4dynamic, snobol4wrapper
-
-================================================================
 
 Run tests, timing on MinGW?
 	Need to fix CR handling; EOLSTR, _setmode()
 	    URL/INET functions need to set binary mode to avoid double CR???
 
-constants for WS, DIGITS?
+SDB.BAT file?
 
-SNOLIB:
-	Implement SNOLIB search path
-	SNOLIB/local
-	-I option
-	iterator functions?
-	seperate "NOLIB/dynload" directory
-	    /usr/local/include/snobol4/VERS
-		new HOST() var; use in dynamic.sno
-	also check old SNOLIB? 
-	new HOST() calls to return directories
+constants for WS, DIGITS?
 
 Command line option to preload files: use for sdb!!
 Enable PRELOAD?
