@@ -55,6 +55,9 @@ EXPORT(int) io_findunit __P((void));
 EXPORT(FILE *) io_getfp __P((int));
 int io_pad __P((struct spec *,int));
 int io_finish __P((void));
+int io_add_lib_dir __P((char *));
+int io_add_lib_path __P((char *));
+char *io_lib_find __P((char *, char *, char *));
 
 /* from lexcmp.c */
 int lexcmp __P((struct spec *,struct spec *));
