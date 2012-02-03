@@ -131,3 +131,5 @@ reg setexit3.sno
 reg sleep.sno
 # 1/10/2012
 reg random.sno
+# 2/3/1012
+reg loaderr.sno
