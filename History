@@ -2,6 +2,12 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+2/2/2012:
+	configure: add DEF_SNOBOL_PRELOAD_PATH
+	lib/init.c: new preload code: SNOBOL_PRELOAD_PATH env var
+		-L FILE preloads a file (search SNOPATH)
+	sdb.sh: use -L for sdb.sno
+
 1/22/2012:
 	configure: add INCLUDE_DIR, DEF_SNOPATH, version 1.5-
 	lib/io.c: add lib dirs; io_add_lib_{dir,path}, io_lib_find

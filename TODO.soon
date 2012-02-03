@@ -1,5 +1,17 @@
 $Id$
 
+Update snobol4 man page: -L file
+
+failed LOAD() leaves function which always failed (UNDFCL)
+
+configure options to set DEF_SNOPATH and DEF_SNOBOL_PRELOAD
+
+handle leading PATH_SEP on SNOPATH and PRELOAD_PATH
+
+SDB.BAT file
+
+abspath function
+
 search path regression test
 
 use io_lib_find in load() routines [factor out PML?]
@@ -11,8 +23,6 @@ document snobol4dynamic, snobol4wrapper
 Run tests, timing on MinGW?
 	Need to fix CR handling; EOLSTR, _setmode()
 	    URL/INET functions need to set binary mode to avoid double CR???
-
-SDB.BAT file?
 
 constants for WS, DIGITS?
 

@@ -9,4 +9,4 @@ SNOBOL4=<BINDIR>/snobol4<VERS>
 # create listing file, and pass filename in environment so sdb.sno can read it.
 SDB_LISTFILE=/tmp/sdb$$
 export SDB_LISTFILE
-$SNOBOL4 -b -l $SDB_LISTFILE -M $SDB $*
+$SNOBOL4 -b -l $SDB_LISTFILE -L $SDB "$@"
