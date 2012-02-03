@@ -128,9 +128,8 @@ usage( jname, justversion )
     p('s',"toggle display of statistics");
     fprintf(stderr, "-u PARMS\n\tparameter data available via HOST(0)\n");
     p('v',"display version and exit");
-#ifdef PRELOAD
-    p('L',"toggle pre-loading");
-#endif /* PRELOAD defined */
+    fprintf(stderr, "-L SOURCE\n");
+    fprintf(stderr, "\tload source file before user program\n");
     p('M',"process multiple files for program code");
     fprintf(stderr, "-P DESCRS[km]\n");
     fprintf(stderr, "\tsize of pattern match stack in descriptors (default: %s)\n", showk(PSSIZE));
@@ -245,15 +244,15 @@ io_init()				/* here from INIT */
 	io_input_string( "input", str );
 #else  /* MEM_IO_TEST not defined */
 	/* read code from stdin.... Macro SPITBOL requires '-' for this */
-#ifdef PRELOAD
+#if 1
 	io_input_file("-");		/* implicit "-"! */
-#else  /* PRELOAD not defined */
+#else
 	/* blows away preload list */
 	if (!io_mkfile_noclose(UNITI, stdin, STDIN_NAME)) {
 	    perror("could not attach stdin to INPUT");
 	    exit(1);
 	}
-#endif /* PRELOAD not defined */
+#endif
 #endif /* MEM_IO_TEST not defined */
     }
     else {
@@ -286,41 +285,31 @@ io_init()				/* here from INIT */
     }
 } /* io_init */
 
-#ifdef PRELOAD
-static int
-trypreload( var, defdir, file )
-    char *var, *defdir, *file;
-{
-    char *path;
-
-    if (var || defdir) {
-	char *dir = NULL;
-	int ret = 0;
-
-	if (var)
-	    dir = getenv(var);
-
-	if (!dir)
-	    dir = defdir;
-
-	path = malloc(strlen(dir) + 1 + strlen(file) + 1);
-	if (!path)
-	    return 0;
-	sprintf(path, "%s%s%s", dir, DIR_SEP, file);
-	if (exists(path)) {
-	    io_input_file(path);
-	    ret = 1;
-	}
-	free(path);
-	return ret;
+static void
+check_preload() {
+    char *env, *tmp, *tp;
+    env = getenv("SNOBOL_PRELOAD");
+    if (!env) {
+#ifdef DEF_SNOBOL_PRELOAD_PATH
+	env = DEF_SNOBOL_PRELOAD_PATH;
+#else
+	/* XXX build from SNOPATH? */
+	return;
+#endif
     }
-    else if (exists(file)) {
-	io_input_file(file);
-	return 1;
+    tmp = malloc(strlen(env)+1);	/* want strdup */
+    strcpy(tmp, env);
+    tp = tmp;
+    while (tp) {
+	char *np = index(tp, PATH_SEP[0]); /* strstr? */
+	if (np)
+	    *np++ = '\0';
+	if (exists(tp))
+	    io_input_file(tp);
+	tp = np;
     }
-    return 0;
-} /* trypreload */
-#endif /* PRELOAD defined */
+    free(tmp);
+} /* check_preload */
 
 /* called from main.c after init_data, before xfer to SIL BEGIN label */
 void
@@ -332,9 +321,6 @@ init_args( ac, av )
     int c;
     int multifile;
     int justversion;
-#ifdef PRELOAD
-    int preload = 0;			/* default to OFF! */
-#endif /* PRELOAD defined */
 
     ndynamic = NDYNAMIC;
     pmstack = PSSIZE;
@@ -367,7 +353,7 @@ init_args( ac, av )
      *		added, but it better not want an argument!)
      */
 
-    while ((c = getopt(argc, argv, "+bd:fghkl:nprsu:vI:LMP:S:")) != -1) {
+    while ((c = getopt(argc, argv, "+bd:fghkl:nprsu:vI:L:MP:S:")) != -1) {
 	switch (c) {
 	case 'b':
 	    D_A(BANRCL) = !D_A(BANRCL);	/* toggle banner output */
@@ -438,11 +424,17 @@ init_args( ac, av )
 	    io_add_lib_dir(optarg);
 	    break;
 
-#ifdef PRELOAD
 	case 'L':			/* pre-load files */
-	    preload = !preload;
+	    if (exists(optarg)) 
+		io_input_file(optarg);
+	    else {
+		/* look for file on SNOPATH */
+		/* XXX check for no DIR_SEP? */
+		char *path = io_lib_find(NULL, optarg, ".inc");
+		if (path)
+		    io_input_file(path);
+	    }
 	    break;
-#endif /* PRELOAD defined */
 
 	case 'M':			/* multi-file input */
 	    multifile = !multifile;
@@ -463,35 +455,7 @@ init_args( ac, av )
 	}
     }
 
-#ifdef PRELOAD
-    /*
-     * NOTE! THIS FEATURE IS DISABLED, UNDOCUMENTED and UNSUPPORTED.
-     * IT MAY DISAPPEAR ALTOGETHER!
-     * Or, It may appear in a future release, but not in this exact form!
-     *
-     * Use at your own risk!  It may make your code less portable
-     * than if you had used -INCLUDE "/path/file.sno"!!!!
-     */
-
-    if (preload) {
-	/* XXX unsafe!! defend against world write dirs? suid?? */
-
-	/* try version based filename(s) as well as unversioned? */
-	/* XXX defend against including same file twice?! use io_include()? */
-
-	/*
-	 * modification of this file reserved to CSNOBOL4 distribution
-	 * creator!! Do not edit locally, it may be crushed by the
-	 * install process.  YOU HAVE BEEN WARNED!!!
-	 */
-	trypreload("SNODIR", SNOLIB_DIR, "dist-preload.sno");
-
-	/* all of the following files may be created/modified by local users */
-	trypreload("SNODIR", SNOLIB_DIR, "preload.sno");
-	trypreload("HOME",   NULL,	 "preload.sno");
-	trypreload(NULL,     NULL,	 "preload.sno");
-    }
-#endif /* PRELOAD defined */
+    check_preload();
 
     /*
      * append first file (or all additional args until "--" seen
