@@ -3,6 +3,11 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 2/2/2012:
+	v311.sil: [PLB101] only modify function entry if LOAD succeeds
+	test/tests.in: add loaderr.sno
+	test/loaderr.{sno,ref}: test load failure
+
+2/2/2012:
 	configure: add DEF_SNOBOL_PRELOAD_PATH
 	lib/init.c: new preload code: SNOBOL_PRELOAD_PATH env var
 		-L FILE preloads a file (search SNOPATH)

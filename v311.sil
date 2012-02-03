@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.117  2011/12/29 23:00:30  phil
+* [PLB100] SETEXIT returns old value
+*
 * Revision 1.116  2011/01/24 04:33:49  phil
 * [PLB99] fix FUNCTION for referenced, but undefined functions
 *
@@ -4309,10 +4312,8 @@ LOAD8  SETVA   LODCL,YCL	   Insert number of arguments
        MULTC   XCL,YCL,DESCR	   Convert to address units
        INCRA   XCL,DESCR	   Add space for entry point
        SETVC   XCL,B		   Insert BLOCK data type
-       RCALL   XPTR,BLOCK,XCL	   Allocate block for definition
-       PUTDC   ZCL,0,LODCL	   Insert procedure descriptor
-       PUTDC   ZCL,DESCR,XPTR	   Insert definition block
-       SUM     XPTR,XPTR,XCL	   Compute pointer to end of block
+       RCALL   ZPTR,BLOCK,XCL	   Allocate block for definition [PLB101]
+       SUM     XPTR,ZPTR,XCL	   Compute pointer to end of block [PLB101]
 LOAD12 DECRA   XPTR,DESCR	   Decrement pointer
        POP     YPTR		   Restore data type
        PUTDC   XPTR,DESCR,YPTR	   Insert in block
@@ -4320,6 +4321,8 @@ LOAD12 DECRA   XPTR,DESCR	   Decrement pointer
        ACOMPC  YCL,0,LOAD12	   Check for end
        LOAD    YPTR,YSP,VSP,FAIL   Load external function
        PUTDC   XPTR,0,YPTR	   Insert entry point
+       PUTDC   ZCL,0,LODCL	   Insert procedure descriptor	[PLB101]
+       PUTDC   ZCL,DESCR,ZPTR	   Insert definition block	[PLB101]
        BRANCH  RETNUL		   Return null string as value
 *_
 LOAD7  PUSH    ZEROCL		   Save 0 for unspecified type
