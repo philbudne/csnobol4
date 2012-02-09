@@ -1,12 +1,25 @@
 $Id$
 
-Update snobol4 man page: -L file
+tests for SNOPATH, -I, preloads (SNOBOL_PRELOAD_PATH & default)
+	NOTE!!! -I doesn't effect preloads!!!
 
-failed LOAD() leaves function which always failed (UNDFCL)
+Update snobol4 man page:
+       -I dir
+       -L file
+       SNOPATH
+       SNOBOL_PRELOAD_PATH
 
-configure options to set DEF_SNOPATH and DEF_SNOBOL_PRELOAD
+Hide sdb.sno statement numbers???? Append it?????
 
-handle leading PATH_SEP on SNOPATH and PRELOAD_PATH
+Add FILE_ABSPATH and FILE_ISDIR predicates??
+
+configure options to set DEF_SNOPATH, DEF_SNOBOL_PRELOAD, PRELOAD_FILE??
+	(or fetch from environment!)
+
+handle leading or trailing PATH_SEP on SNOPATH and PRELOAD_PATH?
+
+if DEF_SNOBOL_PRELOAD not defined default to SNOPATH
+	append preload.sno if path element is a directory
 
 SDB.BAT file
 

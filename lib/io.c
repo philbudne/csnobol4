@@ -2125,8 +2125,7 @@ io_lib_find(subdir, file, ext)
 {
     struct file *ip;
 
-    /* XXX need abspath function */
-    if (*file == '/' || strncmp(file, DIR_SEP, sizeof(DIR_SEP)-1) == 0)
+    if (abspath(file))
 	return NULL;			/* absolute path */
 
     for (ip = iov.lib_dirs; ip; ip = ip->next) {

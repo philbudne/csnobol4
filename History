@@ -2,6 +2,15 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+2/9/2012:
+	configure: drop DEF_SNOBOL_PRELOAD_PATH
+	lib/init.c: default SNOBOL_PRELOAD_PATH from SNOPATH
+		append PRELOAD_FILENAME to dir names in SNOBOL_PRELOAD_PATH
+	lib/io.c: use abspath() function
+	include/lib.h: add prototypes for isdir() and abspath()
+	lib/generic/exists.c: add isdir() and abspath()
+	lib/win32/exists.c: add isdir() and abspath()
+
 2/2/2012:
 	v311.sil: [PLB101] only modify function entry if LOAD succeeds
 	test/tests.in: add loaderr.sno

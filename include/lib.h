@@ -135,6 +135,8 @@ void execute __P((char *));
 
 /* from exists.c */
 int exists __P((char *));
+int isdir __P((char *));
+int abspath __P((char *));
 
 /* from expops.c */
 int expint __P((struct descr *,struct descr *,struct descr *));
