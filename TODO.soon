@@ -1,13 +1,12 @@
 $Id$
 
 tests for SNOPATH, -I, preloads (SNOBOL_PRELOAD_PATH & default)
-	NOTE!!! -I doesn't effect preloads!!!
 
 Update snobol4 man page:
-       -I dir
-       -L file
-       SNOPATH
-       SNOBOL_PRELOAD_PATH
+	-I dir
+	-L file
+	SNOPATH
+	SNOBOL_PRELOAD_PATH
 
 Hide sdb.sno statement numbers???? Append it?????
 

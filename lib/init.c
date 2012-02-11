@@ -10,10 +10,6 @@
 extern void *malloc();
 #endif /* HAVE_STDLIB_H not defined */
 
-#ifndef PRELOAD_FILENAME
-#define PRELOAD_FILENAME "preload.sno"
-#endif
-
 #include <stdio.h>
 #include <signal.h>
 
@@ -218,14 +214,6 @@ getargs(start, sp)
     return parms;
 }
 
-static char *
-getsnopath() {
-    char *env = getenv("SNOPATH");
-    if (!env)
-	return DEF_SNOPATH;
-    return env;
-}
-
 void
 io_init()				/* here from INIT */
 {
@@ -241,7 +229,9 @@ io_init()				/* here from INIT */
     if (env)
 	io_add_lib_dir(env);
 
-    env = getsnopath();
+    env = getenv("SNOPATH");
+    if (!env)
+	env = DEF_SNOPATH;
     io_add_lib_path(env);
 
 #ifdef EXTRA_SNOPATH
@@ -294,46 +284,6 @@ io_init()				/* here from INIT */
 	exit(1);
     }
 } /* io_init */
-
-static void
-check_preload() {
-    char *env, *tmp, *tp;
-    env = getenv("SNOBOL_PRELOAD_PATH");
-    if (!env) {
-#ifdef DEF_SNOBOL_PRELOAD_PATH
-	env = DEF_SNOBOL_PRELOAD_PATH;
-#else
-	env = getsnopath();		/* get SNOPATH */
-#endif
-    }
-    tmp = malloc(strlen(env)+1);	/* want strdup */
-    strcpy(tmp, env);
-    tp = tmp;
-    while (tp) {
-	char *np = index(tp, PATH_SEP[0]); /* strstr? */
-	if (np)
-	    *np++ = '\0';
-	if (exists(tp)) {
-	    if (isdir(tp)) {
-		int len = strlen(tp) + sizeof(PRELOAD_FILENAME) +
-		    sizeof(DIR_SEP) - 1;
-		char *fname = malloc(len);
-		if (fname) {
-		    strcpy(fname, tp);
-		    strcat(fname, DIR_SEP);
-		    strcat(fname, PRELOAD_FILENAME);
-		    if (exists(fname)) 
-			io_input_file(fname);
-		    free(fname);
-		}
-	    }
-	    else
-		io_input_file(tp);
-	} /* tp exists */
-	tp = np;
-    }
-    free(tmp);
-} /* check_preload */
 
 /* called from main.c after init_data, before xfer to SIL BEGIN label */
 void
@@ -479,7 +429,8 @@ init_args( ac, av )
 	}
     }
 
-    check_preload();
+    /* XXX option to disable? */
+    io_preload();
 
     /*
      * append first file (or all additional args until "--" seen

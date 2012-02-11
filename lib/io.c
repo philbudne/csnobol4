@@ -101,6 +101,10 @@ typedef long off_t;
 #define SNOLIB_DIR "./"
 #endif /* SNOLIB_DIR not defined */
 
+#ifndef PRELOAD_FILENAME
+#define PRELOAD_FILENAME "preload.sno"
+#endif
+
 /* GOAL: "struct unit" does not leave io.c */
 struct unit {
     struct file *curr;			/* ptr to current file */
@@ -2156,3 +2160,53 @@ io_lib_find(subdir, file, ext)
     }
     return NULL;
 }
+
+static void
+try_preload(path)
+    char *path;
+{
+    if (!exists(path))
+	return;
+
+    if (isdir(path)) {
+	int len = strlen(path) + sizeof(PRELOAD_FILENAME) + sizeof(DIR_SEP) - 1;
+	char *fname = malloc(len);
+	if (fname) {
+	    strcpy(fname, path);
+	    strcat(fname, DIR_SEP);
+	    strcat(fname, PRELOAD_FILENAME);
+	    if (exists(fname)) 
+		io_input_file(fname);
+	    free(fname);
+	}
+    }
+    else
+	io_input_file(path);
+} /* try_preload */
+
+void
+io_preload() {
+    char *env;
+    env = getenv("SNOBOL_PRELOAD_PATH");
+    if (env) {
+	char *tmp, *tp;
+	tmp = tp = malloc(strlen(env)+1); /* want strdup */
+	strcpy(tmp, env);
+	while (tp) {
+	    char *np = index(tp, PATH_SEP[0]); /* strstr? */
+	    if (np)
+		*np++ = '\0';
+	    try_preload(tp);
+	    tp = np;
+	}
+	free(tmp);
+    }
+    else {				/* no SNOBOL_PRELOAD_PATH */
+	struct file *ip;
+
+	/* use include search path */
+	for (ip = iov.lib_dirs; ip; ip = ip->next)
+	    try_preload(ip->fname);
+    }
+} /* io_preload */
+

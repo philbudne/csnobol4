@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+2/10/2012:
+	lib/io.c: move preload code to io_preload()
+	lib/init.c: call io_preload()
+	include/lib.h: declare io_preload()
+
 2/9/2012:
 	configure: drop DEF_SNOBOL_PRELOAD_PATH
 	lib/init.c: default SNOBOL_PRELOAD_PATH from SNOPATH
