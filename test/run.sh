@@ -18,9 +18,9 @@ else
     fi
 fi
 
-ARGS="$*"
-echo "testing $SNOBOL $ARGS"
-export SNOBOL ARGS
+IARGS="$*"
+echo "testing $SNOBOL $IARGS"
+export SNOBOL
 
 # test list
 TESTS=tests.in
@@ -39,7 +39,16 @@ while read TYPE PROG; do
 	if [ "$TYPE" = '#' ]; then
 		continue
 	fi
+	ARGS="$IARGS"
+	for X in ${PROG}; do
+	    case "$X" in
+	    -*) ARGS="$ARGS $X"; shift;;
+	    *=*) eval export $X; shift;;
+	    *) PROG=$X;;
+	    esac
+	done
 	echo ${PROG}:
+	export ARGS
 	# XXX cope here with comments, empty lines?
 	./${FUNC}.${TYPE}.sh $PROG
 	case $? in

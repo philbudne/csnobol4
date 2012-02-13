@@ -131,5 +131,13 @@ reg setexit3.sno
 reg sleep.sno
 # 1/10/2012
 reg random.sno
-# 2/3/1012
+# 2/3/2012
 reg loaderr.sno
+# 2/12/2012
+reg -Iaa include2.sno
+reg -Iaa -Ibb include3.sno
+reg SNOPATH=aa:bb include4.sno
+reg -Laa/aa.sno preload1.sno
+reg -Laa/aa.sno -Lbb/bb.sno preload2.sno
+reg SNOBOL_PRELOAD_PATH=pa:pb preload3.sno
+reg SNOPATH=pa:pb preload4.sno

@@ -4,6 +4,14 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 2/12/2012:
 	doc/snobol4.1: update for SNOPATH, -I, -L
+	test/tests.in: add include path, preload tests
+	tests/run.sh: handle command line, environment args
+	tests/include{2,3,4}.{sno,ref}: include path tests
+	tests/preload{1,2,3,4}.{sno,ref}: preload tests
+	test/aa/aa.sno: include test file
+	test/bb/bb.sno: include test file
+	test/pa/preload.sno: preload test file
+	test/pb/preload.sno: preload test file
 
 2/10/2012:
 	lib/io.c: move preload code to io_preload()
