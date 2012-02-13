@@ -2046,7 +2046,7 @@ io_finish() {
 
     return TRUE;
 }
-
+
 /* new 1/12/2012 call to add a dir to include dir list */
 int
 io_add_lib_dir(dirname)
@@ -2160,7 +2160,7 @@ io_lib_find(subdir, file, ext)
     }
     return NULL;
 }
-
+
 static void
 try_preload(path)
     char *path;
@@ -2186,8 +2186,7 @@ try_preload(path)
 
 void
 io_preload() {
-    char *env;
-    env = getenv("SNOBOL_PRELOAD_PATH");
+    char *env = getenv("SNOBOL_PRELOAD_PATH");
     if (env) {
 	char *tmp, *tp;
 	tmp = tp = malloc(strlen(env)+1); /* want strdup */
@@ -2209,4 +2208,3 @@ io_preload() {
 	    try_preload(ip->fname);
     }
 } /* io_preload */
-
