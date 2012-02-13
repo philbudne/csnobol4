@@ -394,12 +394,15 @@ file enclosed in single or double quotes.  Any filename will be
 included only once, this can be overridden by appending a trailing
 space to the filename.  Trailing spaces are removed from the filename
 before use.  If the file is not found in the current working directory
-an attempt will be made to find it in the directory specified by the
-.B SNOLIB
-environment variable, or if that is not set, a predetermined library
-directory.
-
-.br
+an attempt will be made to find it in: the directories specified by
+command line
+.B -I
+options, the directory specified by the legacy
+.B SNODIR
+environment directory (if defined),
+followed by the list of directories in the
+.B SNOPATH
+environment variable (or a compiled in default path).
 .B \-COPY
 is a synonym for
 .B \-INCLUDE
@@ -1028,6 +1031,17 @@ Show version and exit.
 Terminates processing items as options. Any remaining strings are
 treated as files or user parameters.
 .TP
+.BI -I " directory"
+Appends directory argument to include search path (before elements
+from the
+.B SNOLIB
+or
+.B SNOPATH
+environment variables).
+.TP
+.BI -L " file"
+.TP
+Load source file before others on command line.  May be used multiple times.
 .B -M
 Specifies that all items left on the command line after option
 processing is complete are to be treated as filenames.  The files

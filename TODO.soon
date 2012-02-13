@@ -3,28 +3,19 @@ $Id$
 tests for SNOPATH, -I, preloads (SNOBOL_PRELOAD_PATH & default)
 
 Update snobol4 man page:
-	-I dir
-	-L file
 	SNOPATH
 	SNOBOL_PRELOAD_PATH
 
 Hide sdb.sno statement numbers???? Append it?????
+	Don't assign statement numbers if LISTING disabled?
 
 Add FILE_ABSPATH and FILE_ISDIR predicates??
 
-configure options to set DEF_SNOPATH, DEF_SNOBOL_PRELOAD, PRELOAD_FILE??
-	(or fetch from environment!)
+configure option to set DEF_SNOPATH (or fetch from environment?)
 
 handle leading or trailing PATH_SEP on SNOPATH and PRELOAD_PATH?
 
-if DEF_SNOBOL_PRELOAD not defined default to SNOPATH
-	append preload.sno if path element is a directory
-
 SDB.BAT file
-
-abspath function
-
-search path regression test
 
 use io_lib_find in load() routines [factor out PML?]
 
@@ -38,8 +29,7 @@ Run tests, timing on MinGW?
 
 constants for WS, DIGITS?
 
-Command line option to preload files: use for sdb!!
-Enable PRELOAD?
+Preloading:
 	Disable if running setuid!!!
 	Command line arg to enable?
 
