@@ -143,3 +143,4 @@ reg SNOBOL_PRELOAD_PATH=pa:pb preload3.sno
 reg SNOPATH=pa:pb preload4.sno
 # 2/14/2012
 reg file.sno
+reg hide.sno

@@ -1,0 +1,8 @@
+        -LIST
+1       	OUTPUT = &STNO
+2       	OUTPUT = &STNO
+3       END
+0
+0
+1
+2

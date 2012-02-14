@@ -6,12 +6,12 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	v311.sil: [PLB102] Add -HIDE for sdb
 	snolib/sdb.sno: use -HIDE
 	pml.h, lib/snolib/file.c: add FILE_ISDIR, FILE_ABSPATH, use mgetstring
-	test/tests.in: add file.sno
+	test/tests.in: add file.sno, hide.sno
 	test/file.{sno,ref} (new): test FILE, FILE_ISDIR, FILE_ABSPATH
 	load.h: add RETPRED(bool)
 	test/run.sh: set enviroment variables inside a subshell
 	lib/init.c: add pathinit(): called after options, before io_preload()
-
+	test/hide.{sno,ref} (new): test -HIDE
 
 2/13/2012:
 	tests/run.sh: remove bogus shifts

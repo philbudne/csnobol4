@@ -1,0 +1,8 @@
+* test of -HIDE (for sdb)
+-hide
+	output = &stno
+	output = &stno
+-list
+	output = &stno
+	output = &stno
+end
