@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+2/13/2012:
+	tests/run.sh: remove bogus shifts
+
 2/12/2012:
 	doc/snobol4.1: update for SNOPATH, -I, -L
 	test/tests.in: add include path, preload tests

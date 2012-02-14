@@ -42,9 +42,9 @@ while read TYPE PROG; do
 	ARGS="$IARGS"
 	for X in ${PROG}; do
 	    case "$X" in
-	    -*) ARGS="$ARGS $X"; shift;;
-	    *=*) eval export $X; shift;;
-	    *) PROG=$X;;
+	    -*) ARGS="$ARGS $X";;
+	    *=*) eval export $X;;
+	    *) PROG=$X; break;;
 	    esac
 	done
 	echo ${PROG}:
