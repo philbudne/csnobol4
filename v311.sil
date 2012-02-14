@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.118  2012/02/03 05:40:56  phil
+* [PLB101] only modify function entry if LOAD succeeds
+*
 * Revision 1.117  2011/12/29 23:00:30  phil
 * [PLB100] SETEXIT returns old value
 *
@@ -1437,8 +1440,9 @@ BINOP5 STREAM  XSP,TEXTSP,SBIPTB,BINCON				[PLB32]
 CMPILE PROC    ,		   Procedure to compile statement
        SETAC   BRTYPE,0		   Clear break indicator
        MOVD    BOSCL,CMOFCL	   Set statement beginning offset
+       AEQLC   HIDECL,0,CMPIL0	   Don't increment stno if hidden [PLB102]
        INCRA   CSTNCL,1		   Increment statement number
-       STREAM  XSP,TEXTSP,LBLTB,CERR1
+CMPIL0 STREAM  XSP,TEXTSP,LBLTB,CERR1				[PLB102]
 *				   Break out label
        LEQLC   XSP,0,,CMPILA	   Check for no label
        INCRA   CMOFCL,DESCR	   Increment offset
@@ -2151,12 +2155,15 @@ CTLCRD FSHRTN  TEXTSP,1		   Delete control character
        LEXCMP  XSP,EXECSP,,EXEC	   Is it EXECUTE?		[PLB34][PLB38]
        LEXCMP  XSP,NEXESP,,NOEXEC  Is it NOEXECUTE?		[PLB34][PLB38]
        LEXCMP  XSP,LINESP,,LINE	   Is it LINE?			[PLB38]
+       LEXCMP  XSP,HIDESP,,HIDE    Is it HIDE?			[PLB102]
        BRANCH  CMTCLR		   None of the above		[PLB38]
 *_
+HIDE   SETAC   HIDECL,1		   Hide statements		[PLB102]
 UNLIST SETAC   LISTCL,0		   Zero listing switch		[PLB38]
        BRANCH  RTN1		   Return
 *_
 LIST   SETAC   LISTCL,1		   Turn on listing		[PLB38]
+       SETAC   HIDECL,0		   Unhide statements		[PLB102]
        STREAM  XSP,TEXTSP,FRWDTB,COMP3,CMTCLR
 *				   Get to next nonblank character
        AEQLC   STYPE,NBTYP,CMTCLR  Verify nonbreak
@@ -7163,6 +7170,7 @@ CNSLCL DESCR   0,0,0		   Label redefinition switch
 DATACL DESCR   0,0,0		   Prototype end switch for DATA(P)
 EXECCL DESCR   1,0,0		   EXECUTE switch		[PLB34]
 FNVLCL DESCR   0,0,0		   FUNCTION-VALUE switch for trace
+HIDECL DESCR   0,0,0		   Hide statement numbers	[PLB102]
 INICOM DESCR   0,0,0		   INITIALIZATION SWITCH	E3.10.6
 LENFCL DESCR   0,0,0		   Length failure switch
 LISTCL DESCR   0,0,0		   Compiler listing switch	[PLB33]
@@ -7363,6 +7371,7 @@ EXECSP STRING  'EXECUTE'					[PLB34]
 EXDTSP STRING  'EXTERNAL'
 FILESP STRING  'FILE'						[PLB38]
 FRZNSP STRING  ' - FROZEN'					[PLB34]
+HIDESP STRING  'HIDE'						[PLB102]
 INCLSP STRING  'INCLUDE'					[PLB20]
 LEFTSP STRING  'LEFT'
 LINESP STRING  'LINE'						[PLB38]

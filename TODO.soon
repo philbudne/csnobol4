@@ -1,21 +1,21 @@
 $Id$
 
+use io_lib_find for LOAD() [factor out PML?]
+
 Update snobol4 man page:
+       Add ENVIRONMENT section:
 	SNOPATH
 	SNOBOL_PRELOAD_PATH
+	(SNOLIB)
 
 Hide sdb.sno statement numbers???? Append it?????
 	Don't assign statement numbers if LISTING disabled?
 
 Add FILE_ABSPATH and FILE_ISDIR predicates??
 
-configure option to set DEF_SNOPATH (or fetch from environment?)
-
-handle leading or trailing PATH_SEP on SNOPATH and PRELOAD_PATH?
+handle leading or trailing PATH_SEP on SNOPATH and PRELOAD_PATH???
 
 SDB.BAT file
-
-use io_lib_find in load() routines [factor out PML?]
 
 document SRANDOMDEV when /dev/random not available
 

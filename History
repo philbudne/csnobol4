@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+2/14/2012:
+	v311.sil: [PLB102] Add -HIDE for sdb
+	snolib/sdb.sno: use -HIDE
+
 2/13/2012:
 	tests/run.sh: remove bogus shifts
 
