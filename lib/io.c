@@ -2184,6 +2184,7 @@ try_preload(path)
 	io_input_file(path);
 } /* try_preload */
 
+/* called from init.c to preload source files */
 void
 io_preload() {
     char *env = getenv("SNOBOL_PRELOAD_PATH");

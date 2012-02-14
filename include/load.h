@@ -105,6 +105,13 @@
 /* access return value type */
 #define RETTYPE D_V(retval)
 
+/* return predicate value */
+#define RETPRED(SUCC) \
+    do { \
+	if (SUCC) RETNULL; \
+	else RETFAIL; \
+    } while (0)
+
 /* lib/pml.c; used by system load.c files */
 int (*pml_find(PML_FIND_ARG))(LOAD_PROTO);
 

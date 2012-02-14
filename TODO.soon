@@ -3,15 +3,11 @@ $Id$
 use io_lib_find for LOAD() [factor out PML?]
 
 Update snobol4 man page:
+       Add FILE_ABSPATH, FILE_ISDIR
        Add ENVIRONMENT section:
 	SNOPATH
 	SNOBOL_PRELOAD_PATH
 	(SNOLIB)
-
-Hide sdb.sno statement numbers???? Append it?????
-	Don't assign statement numbers if LISTING disabled?
-
-Add FILE_ABSPATH and FILE_ISDIR predicates??
 
 handle leading or trailing PATH_SEP on SNOPATH and PRELOAD_PATH???
 

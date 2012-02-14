@@ -218,25 +218,8 @@ void
 io_init()				/* here from INIT */
 {
     FILE *termin;
-    char *env;
 
     io_initvars();
-
-    /* -I paths have already been added */
-
-    /* give priority to old variable */
-    env = getenv("SNOLIB");
-    if (env)
-	io_add_lib_dir(env);
-
-    env = getenv("SNOPATH");
-    if (!env)
-	env = DEF_SNOPATH;
-    io_add_lib_path(env);
-
-#ifdef EXTRA_SNOPATH
-    io_add_lib_path(EXTRA_SNOPATH);
-#endif
 
     if (nfiles == 0) {			/* no input file(s)? */
 #ifdef MEM_IO_TEST
@@ -284,6 +267,24 @@ io_init()				/* here from INIT */
 	exit(1);
     }
 } /* io_init */
+
+/* called after -I paths have already been added, before preload, sources */
+static void
+pathinit() {
+    /* give priority to old variable */
+    char *env = getenv("SNOLIB");
+    if (env)
+	io_add_lib_dir(env);
+
+    env = getenv("SNOPATH");
+    if (!env)
+	env = DEF_SNOPATH;
+    io_add_lib_path(env);
+
+#ifdef EXTRA_SNOPATH
+    io_add_lib_path(EXTRA_SNOPATH);
+#endif
+}
 
 /* called from main.c after init_data, before xfer to SIL BEGIN label */
 void
@@ -427,7 +428,9 @@ init_args( ac, av )
 	default:
 	    errs++;
 	}
-    }
+    } /* while getopt */
+
+    pathinit();
 
     /* XXX option to disable? */
     io_preload();

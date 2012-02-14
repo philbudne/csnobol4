@@ -39,18 +39,20 @@ while read TYPE PROG; do
 	if [ "$TYPE" = '#' ]; then
 		continue
 	fi
-	ARGS="$IARGS"
-	for X in ${PROG}; do
-	    case "$X" in
-	    -*) ARGS="$ARGS $X";;
-	    *=*) eval export $X;;
-	    *) PROG=$X; break;;
-	    esac
-	done
-	echo ${PROG}:
-	export ARGS
-	# XXX cope here with comments, empty lines?
-	./${FUNC}.${TYPE}.sh $PROG
+	(
+	    ARGS="$IARGS"
+	    for X in ${PROG}; do
+		case "$X" in
+		-*) ARGS="$ARGS $X";;
+		*=*) eval export $X;;
+		*) PROG=$X; break;;
+		esac
+	    done
+	    echo ${PROG}:
+	    export ARGS
+	    # XXX cope here with comments, empty lines?
+	    ./${FUNC}.${TYPE}.sh $PROG
+	)
 	case $? in
 	0)
 		PASS=`expr $PASS + 1`

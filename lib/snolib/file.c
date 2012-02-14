@@ -28,11 +28,26 @@
 int
 FILE2( LA_ALIST ) LA_DCL		/* avoid stdio name collision */
 {
-    char path[1024];			/* XXX */
+    char *path = mgetstring(LA_PTR(0));
+    int succ = exists(path);
+    free(path);
+    RETPRED(succ);
+}
 
-    getstring( LA_PTR(0), path, sizeof(path) );
-    if (exists(path)) {
-	RETNULL;
-    }
-    RETFAIL;
+int
+FILE_ISDIR( LA_ALIST ) LA_DCL
+{
+    char *path = mgetstring(LA_PTR(0));
+    int succ = isdir(path);
+    free(path);
+    RETPRED(succ);
+}
+
+int
+FILE_ABSPATH( LA_ALIST ) LA_DCL
+{
+    char *path = mgetstring(LA_PTR(0));
+    int succ = abspath(path);
+    free(path);
+    RETPRED(succ);
 }
