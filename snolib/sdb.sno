@@ -1,4 +1,4 @@
--UNLIST
+-HIDE
 * "SDB" SNOBOL4 debugger -- a clone (clown?) of GNU "gdb" debugger
 * Copyright (C) 2010-2012 Philip L. Budne
 * All rights reserved.
