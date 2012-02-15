@@ -97,6 +97,7 @@ int reverse __P((struct spec *,struct spec *));
 int substr __P((struct spec *,struct spec *,struct descr *));
 void trimsp __P((struct spec *,struct spec *));
 void spec2str __P((struct spec *,char *,int));
+char *mspec2str __P((struct spec *));
 void apdsp __P((struct spec *, struct spec *));
 
 /* stream.c declarations in include/syntab.h */
@@ -144,9 +145,12 @@ int expint __P((struct descr *,struct descr *,struct descr *));
 int exreal __P((struct descr *,struct descr *,struct descr *));
 
 /* from load.c */
+void unload __P((struct spec *));
+void *os_load __P((char *, char *));
+
+/* from loadx.c (or load.c) */
 int callx __P((struct descr *,struct descr *,struct descr *,struct descr *));
 int load __P((struct descr *,struct spec *,struct spec *));
-void unload __P((struct spec *));
 
 /* from mstime.c */
 real_t mstime __P((void));

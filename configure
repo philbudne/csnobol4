@@ -1238,6 +1238,8 @@ if [ ! "$NO_DYNLIB" ]; then
 	if [ "$TRY_UNDERSCORE" ]; then
 	    echo '#define TRY_UNDERSCORE'	>> $CONFIG_H
 	fi
+	# TEMP: new load support (honors SNOPATH)
+	echo 'ADD_OBJS([loadx.o])'		>> $CONFIG_M4
       fi
     elif config/check dl.h 'shl_load("", BIND_DEFERRED, 0L)'; then
 	LOAD=hpux

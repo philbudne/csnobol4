@@ -76,6 +76,7 @@ INTSPC_C=$(SRCDIR)lib/generic/intspc.c
 IO_C=$(SRCDIR)lib/io.c
 LEXCMP_C=$(SRCDIR)lib/lexcmp.c
 LOAD_C=$(SRCDIR)lib/bsd/load.c
+LOADX_C=$(SRCDIR)lib/loadx.c
 MSTIME_C=$(SRCDIR)lib/bsd/mstime.c
 ORDVST_C=$(SRCDIR)lib/ordvst.c
 PAIR_C=$(SRCDIR)lib/pair.c
@@ -334,6 +335,9 @@ lexcmp.o: $(LEXCMP_C)
 
 load.o:	$(LOAD_C) $(MAKEFILE2)
 	$(CC) $(CFLAGS) -c $(LOAD_C)
+
+loadx.o: $(LOADX_C)
+	$(CC) $(CFLAGS) -c $(LOADX_C)
 
 mstime.o: $(MSTIME_C)
 	$(CC) $(CFLAGS) -c $(MSTIME_C)

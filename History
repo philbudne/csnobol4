@@ -2,6 +2,15 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+2/15/2012:
+	lib/loadx.c (new): O/S independant load(), callx(); uses "lib_find"
+	Makefile2.m4: add LOADX_C, loadx.o rule
+	configure: add loadx.o when using unix98/load.c
+	timing.sno: output KStatements/sec
+	include/lib.h: add mspec2str(), os_load()
+	lib/str.c: add mspec2str(), strjoin()
+	lib/unix98/load.c: implement os_load()
+
 2/14/2012:
 	v311.sil: [PLB102] Add -HIDE for sdb
 	snolib/sdb.sno: use -HIDE

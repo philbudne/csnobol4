@@ -3,6 +3,8 @@
 /*
  * load and run external functions for systems using dlopen()/dlsym()
  * -plb 4/13/97
+ *
+ * called by loadx.c 2/15/2012
  */
 
 #ifdef HAVE_CONFIG_H
@@ -31,137 +33,64 @@
 #define RTLD_LAZY 0			/* Needed on FreeBSD 2.2.1-RELEASE */
 #endif /* RTLD_LAZY not defined */
 
-/* external function returning pointer to loaded function */
-extern int (*pml_find())(LOAD_PROTO);
-
+/* keep list of loaded functions (for UNLOAD) */
 struct func {
     struct func *next;			/* next in loaded function list */
-    struct func *self;			/* for validity check */
-    int (*entry)(LOAD_PROTO);		/* function entry point */
     void *handle;			/* from dlopen() */
     char name[1];			/* for unload (MUST BE LAST)! */
 };
 
-/* keep list of loaded functions (for UNLOAD) */
 static struct func *funcs;
 
-#define PATHLEN 256			/* XXX use MAXPATHLEN from param.h? */
-
-int
-load(addr, sp1, sp2)
-    struct descr *addr;			/* OUT */
-    struct spec *sp1, *sp2;		/* function, library */
+/* called from loadx.c */
+void *
+os_load(fname, lname)
+    char *fname, *lname;
 {
+    void *handle;
+    int (*entry)(LOAD_PROTO);		/* function entry point */
     struct func *fp; 
-    int l1;
 
-    l1 = S_L(sp1);
-    fp = (struct func *) malloc( sizeof (struct func) + l1 );
-    if (fp == NULL)
-	return FALSE;			/* fail */
+    /* XXX if lname doesn't have a DIR_SEP, prepend . + DIR_SEP? */
+    /*
+     * SunOS4 (and others) only support LAZY mode.
+     * RTLD_GLOBAL could cause collisions between modules??
+     */
+    handle = dlopen(lname, RTLD_LAZY);
+    if (!handle)
+	return NULL;
 
-    strncpy( fp->name, S_SP(sp1), l1 );
-    fp->name[l1] = '\0';
-    fp->handle = NULL;			/* assume internal! */
-
-    /* try "poor mans load" first!!! */
-    fp->entry = pml_find(fp->name);
-    if (fp->entry == NULL) {		/* not found by pml */
-	char path[PATHLEN*2];		/* room for directory name */
-	char *pp;			/* path pointer */
-	char *snolib;
-	int mode;
-
-	snolib = getenv("SNOLIB");
-	if (snolib == NULL)
-	    snolib = SNOLIB_DIR;
-
-	if (sp2 && S_A(sp2) && S_L(sp2)) {
-	    struct stat st;
-	    char temp[PATHLEN];
-
-	    spec2str(sp2, temp, sizeof(temp));
-
-	    /* XXX just try dlopen() ?? */
-	    if (temp[0] != '/' && stat(temp, &st) < 0) {
-		/* not absolute and file does not exist; prepend libdir */
-		/* XXX limit length of snolib?? */
-		sprintf( path, "%s/%s", snolib, temp );
-	    }
-	    else
-		strcpy( path, temp );
-	    pp = path;
-	}
-	else {				/* no path */
-	    /* XXX limit length of snolib?? */
-	    sprintf( path, "%s/%s", snolib, SNOLIB_FILE );
-	    /* XXX just pass NULL pathname to dlopen (search main program)? */
-	    pp = path;
-	}
-
-	/*
-	 * SunOS4 (and others) only support LAZY mode.
-	 * set RTLD_GLOBAL (if available)?? nah; avoid module collisions
-	 */
-	mode = RTLD_LAZY;
-	fp->handle = dlopen(pp, mode);
-	if (fp->handle == NULL) {
-#ifdef DEBUG
-	    /* XXX always? to stderr?? */
-	    printf("dlopen: %s\n", dlerror());
-#endif /* DEBUG defined */
-	    free(fp);
-	    return FALSE;		/* fail */
-	}
-
-	fp->entry = (int (*)(LOAD_PROTO)) dlsym(fp->handle, fp->name);
-	if (fp->entry == NULL) {
+    entry = (int (*)(LOAD_PROTO)) dlsym(handle, fname);
+    if (!entry) {
 #ifdef TRY_UNDERSCORE
-	    char name2[1024];		/* XXX */
+	char name2[1024];		/* XXX */
 
-	    name2[0] = '_';
-	    strncpy(name2+1, fp->name, sizeof(name2)-2);
-	    name2[sizeof(name2)-1] = '\0';
+	name2[0] = '_';
+	strncpy(name2+1, fp->name, sizeof(name2)-2);
+	name2[sizeof(name2)-1] = '\0';
 
-	    fp->entry = (int (*)(LOAD_PROTO)) dlsym(fp->handle, name2);
-	    if (fp->entry != NULL)
-		goto found;
+	entry = (int (*)(LOAD_PROTO)) dlsym(fp->handle, name2);
+	if (entry != NULL)
+	    goto found;
 #endif /* TRY_UNDERSCORE defined */
 
-	    dlclose(fp->handle);
-	    free(fp);
-	    return FALSE;
-	} /* dlsym failed */
-    } /* not found by pml */
+	dlclose(handle);
+	return FALSE;
+    } /* dlsym failed */
 #ifdef TRY_UNDERSCORE
  found:
 #endif /* TRY_UNDERSCORE defined */
-    fp->self = fp;			/* make valid */
 
+    fp = (struct func *) malloc(sizeof(struct func) + strlen(fname));
+    if (fp == NULL)
+	return NULL;			/* fail */
+
+    strcpy(fp->name, fname);
+    fp->handle = handle;
     fp->next = funcs;			/* link into list (for unload) */
     funcs = fp;
 
-    D_A(addr) = (int_t) fp;
-    D_F(addr) = D_V(addr) = 0;		/* clear flags, type */
-    return TRUE;			/* success */
-}
-
-/* support for SIL "LINK" opcode -- call external function */
-int
-callx(retval, args, nargs, addr)
-    struct descr *retval, *args, *nargs, *addr;
-{
-    struct func *fp;
-
-    /* XXX check for zero V & F fields?? */
-    fp = (struct func *) D_A(addr);
-    if (fp == NULL)
-	return FALSE;
-
-    if (fp->self != fp)			/* validate, in case unloaded */
-	return FALSE;			/* fail (fatal error??) */
-
-    return (fp->entry)( retval, D_A(nargs), (struct descr *)D_A(args) );
+    return entry;
 }
 
 void
@@ -189,7 +118,5 @@ unload(sp)
     }
 
     dlclose(fp->handle);
-
-    fp->self = 0;			/* invalidate self pointer!! */
     free(fp);				/* free name block */
 }

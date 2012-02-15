@@ -1,6 +1,6 @@
 $Id$
 
-use io_lib_find for LOAD() [factor out PML?]
+convert lib/*/load.c to os_load() API
 
 Update snobol4 man page:
        Add FILE_ABSPATH, FILE_ISDIR
@@ -9,9 +9,11 @@ Update snobol4 man page:
 	SNOBOL_PRELOAD_PATH
 	(SNOLIB)
 
-handle leading or trailing PATH_SEP on SNOPATH and PRELOAD_PATH???
-
 SDB.BAT file
+
+use readline() for compiler input?
+
+handle leading or trailing PATH_SEP on SNOPATH and PRELOAD_PATH???
 
 document SRANDOMDEV when /dev/random not available
 
@@ -34,10 +36,6 @@ list/queue utility functions!!!
 snobol4 machine generate win32 .mak files??
 	create a config.m4 file
 	post-process output
-
-report Kstatements/sec?
-
-use readline() for compiler input?
 
 mingw.mak:
 	have configure copy config.{m4,h} from config/win32?

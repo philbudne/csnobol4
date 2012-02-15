@@ -169,6 +169,19 @@ spec2str(sp, dest, size)
     dest[l] = '\0';
 }
 
+/* 2/15/2012 */
+/* copy from specifier to c-string */
+char *
+mspec2str(sp)
+    struct spec *sp;
+{
+    int l = S_L(sp) + 1;
+    char *str = malloc(l);
+    if (str)
+	spec2str(sp, str, l);
+    return str;
+}
+
 /*  6/12/98 */
 
 /*#define APDSP_NLENS 4096*/
