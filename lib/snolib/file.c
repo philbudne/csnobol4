@@ -17,6 +17,11 @@
 #endif /* HAVE_CONFIG_H defined */
 
 #include <stdio.h>			/* for lib.h */
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>
+#else
+extern void *malloc();
+#endif
 
 #include "h.h"
 #include "equ.h"

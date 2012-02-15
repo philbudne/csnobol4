@@ -39,62 +39,6 @@ struct func {
 static struct func *funcs;
 #endif /* NO_STATIC_VARS not defined */
 
-#define PATHLEN 512			/* XXX */
-#define BS '\\'				/* exactly */
-
-#define ABSPATH(CP) \
-    ((CP)[0] == '/' || \
-     (CP)[0] == BS || \
-     isalpha((CP)[0]) && (CP)[1] == ':' && (CP)[2] == BS)
-
-/*
- * copy and concatenate path components,
- * second source path may be NULL
- * converting slashes (required by LoadLibrary)
- * remove double /'s
- */
-
-static int
-pathcpy(dp, cc, sp1, sp2)
-    char *dp, *sp1, *sp2;
-    int cc;
-{
-    char c, last;
-
-    cc--;				/* leave room for NUL */
-    last = '\0';
-    while (cc > 0 && (c = *sp1++)) {
-	if (c == '/') {
-	    c = BS;
-	    /* remove repeated /'s */
-	    if (last == BS)
-		continue;
-	}
-	*dp++ = last = c;
-	cc--;
-    }
-    if (sp2 && cc > 0) {
-	/* add seperator, if needed */
-	if (last != BS) {
-	    *dp++ = last = BS;
-	    cc--;
-	}
-	while (cc > 0 && (c = *sp2++)) {
-	    /* remove repeated /'s */
-	    if (c == '/') {
-		if (last == BS)
-		    continue;
-		c = BS;
-	    }
-
-	    *dp++ = last = c;
-	    cc--;
-	}
-    } /* sp2 && space */
-    *dp = '\0';
-    return cc > 0 || last == '\0';
-}
-
 void *
 os_load(fname, lname)
      char *fname, *lname;
@@ -109,6 +53,8 @@ os_load(fname, lname)
      * (including appl dir, cwd, SYSTEM(32),
      * windows dir, and dirs in PATH var)
      */
+
+    // XXX convert UTF-8 to UCS-2/UTF-16???
     handle = LoadLibrary(lname);
     if (!handle)
 	return NULL;

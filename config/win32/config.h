@@ -24,6 +24,17 @@
 #define PATH_SEP	";"
 #define DIR_SEP		"\\"
 
+#include "version.h"
+#define DEF_SNOPATH (SNOLIB_DIR DIR_SEP VERSION DIR_SEP "local" \
+		     PATH_SEP			\
+		     SNOLIB_DIR DIR_SEP "local" \
+		     PATH_SEP			\
+		     SNOLIB_DIR DIR_SEP VERSION \
+		     PATH_SEP			\
+		     SNOLIB_DIR)
+
+#define DL_EXT	".dll"
+
 /* includes; */
 #define HAVE_STRING_H
 #define HAVE_STDARG_H
@@ -37,6 +48,10 @@
 #define HAVE_GETVERSIONEX
 
 #define SOCKLEN_T int
+
+#ifdef __GNUC__
+/* declarations for gcc builtins? */
+#endif
 
 /* DLL import/export macros */
 

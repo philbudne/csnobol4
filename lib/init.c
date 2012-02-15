@@ -69,6 +69,8 @@ extern int optind;
 extern char *optarg;
 extern int getopt();
 
+char *def_snopath = DEF_SNOPATH;
+
 static void
 p( flag, str )
     char flag;
