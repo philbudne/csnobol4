@@ -38,7 +38,8 @@ OBJ=	isnobol4.o data.o data_init.o main.o syn.o bal.o \
 	date.o dump.o endex.o hash.o intspc.o io.o lexcmp.o ordvst.o \
 	pair.o pat.o pml.o realst.o replace.o str.o stream.o top.o \
 	tree.o bcopy.o bzero.o dynamic.o expops.o getopt.o init.o \
-	load.o mstime.o atan.o chop.o cos.o delete.o environ.o exit.o exp.o \
+	load.o loadx.o mstime.o atan.o chop.o cos.o delete.o \
+	environ.o exit.o exp.o \
 	file.o getstring.o handle.o host.o log.o logic.o ord.o rename.o \
 	random.o retstring.o sin.o spcint.o spreal.o sprintf.o sqrt.o sset.o \
 	osopen.o sleep.o sys.o tan.o time.o tty.o inet.o bindresvport.o \
@@ -87,6 +88,9 @@ io.o:	$(SRCDIR)lib/io.c
 
 lexcmp.o: $(SRCDIR)lib/lexcmp.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/lexcmp.c
+
+loadx.o: $(SRCDIR)lib/loadx.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/loadx.c
 
 ordvst.o: $(SRCDIR)lib/ordvst.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/ordvst.c

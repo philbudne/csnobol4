@@ -27,9 +27,7 @@ extern int (*pml_find())(LOAD_PROTO);
 
 struct func {
     struct func *next;			/* next in loaded function list */
-    struct func *self;			/* for validity check */
-    int (*entry)(LOAD_PROTO);		/* function entry point */
-    HINSTANCE handle;			/* from LoadLibrary() */
+    HMODULE handle;			/* from LoadLibrary() */
     char name[1];			/* for unload (MUST BE LAST)! */
 };
 
@@ -97,90 +95,41 @@ pathcpy(dp, cc, sp1, sp2)
     return cc > 0 || last == '\0';
 }
 
-int
-load(addr, sp1, sp2)
-    struct descr *addr;			/* OUT */
-    struct spec *sp1, *sp2;		/* function, library */
+void *
+os_load(fname, lname)
+     char *fname, *lname;
 {
+    HMODULE handle;
+    int (*entry)(LOAD_PROTO);		/* function entry point */
     struct func *fp; 
-    int l1;
 
-    l1 = S_L(sp1);
-    fp = (struct func *) malloc( sizeof (struct func) + l1 );
-    if (fp == NULL)
-	return FALSE;			/* fail */
+    /*
+     * try loading given path;
+     * system will scan various directories
+     * (including appl dir, cwd, SYSTEM(32),
+     * windows dir, and dirs in PATH var)
+     */
+    handle = LoadLibrary(lname);
+    if (!handle)
+	return NULL;
 
-    strncpy( fp->name, S_SP(sp1), l1 );
-    fp->name[l1] = '\0';
-    fp->handle = NULL;			/* assume internal! */
+    entry = (int (*)(LOAD_PROTO)) GetProcAddress(handle, fname);
+    if (entry == NULL)
+	goto fail;
 
-    /* try "poor mans load" first!!! */
-    fp->entry = pml_find(fp->name);
-    if (fp->entry == NULL) {		/* not found by pml */
-	char path[PATHLEN];
-	char path2[PATHLEN*2];		/* room for directory name */
-	char *snolib;
+    fp = (struct func *) malloc( sizeof (struct func) + strlen(fname) );
+    if (fp == NULL) {
+    fail:
+	FreeLibrary(handle);
+	return NULL;
+    }
 
-	snolib = getenv("SNOLIB");
-	if (snolib == NULL)
-	    snolib = SNOLIB_DIR;
-
-	if (sp2 && S_A(sp2) && S_L(sp2)) /* have filename */
-	    spec2str(sp2, path, sizeof(path));
-	else
-	    pathcpy(path, sizeof(path), SNOLIB_FILE, NULL );
-
-	/*
-	 * try loading given path;
-	 * system will scan various directories
-	 * (including appl dir, cwd, SYSTEM(32),
-	 * windows dir, and dirs in PATH var)
-	 */
-	fp->handle = LoadLibrary(path);
-	if (fp->handle == NULL) {
-
-	    /* try prepending SNOLIB directory */
-	    pathcpy(path2, sizeof(path2), snolib, path );
-	    fp->handle = LoadLibrary(path2);
-	    if (fp->handle == NULL) {
-		free(fp);
-		return FALSE;		/* fail */
-	    }
-	}
-
-	fp->entry = (int (*)(LOAD_PROTO)) GetProcAddress(fp->handle, fp->name);
-	if (fp->entry == NULL) {
-	    FreeLibrary(fp->handle);
-	    free(fp);
-	    return FALSE;
-	} /* dlsym failed */
-    } /* not found by pml */
-    fp->self = fp;			/* make valid */
-
+    strcpy(fp->name, fname);
+    fp->handle = handle;
     fp->next = funcs;			/* link into list (for unload) */
     funcs = fp;
 
-    D_A(addr) = (int_t) fp;
-    D_F(addr) = D_V(addr) = 0;		/* clear flags, type */
-    return TRUE;			/* success */
-}
-
-/* support for SIL "LINK" opcode -- call external function */
-int
-callx(retval, args, nargs, addr)
-    struct descr *retval, *args, *nargs, *addr;
-{
-    struct func *fp;
-
-    /* XXX check for zero V & F fields?? */
-    fp = (struct func *) D_A(addr);
-    if (fp == NULL)
-	return FALSE;
-
-    if (fp->self != fp)			/* validate, in case unloaded */
-	return FALSE;			/* fail (fatal error??) */
-
-    return (fp->entry)( retval, D_A(nargs), (struct descr *)D_A(args) );
+    return entry;
 }
 
 void
@@ -208,7 +157,5 @@ unload(sp)
     }
 
     FreeLibrary(fp->handle);
-
-    fp->self = 0;			/* invalidate self pointer!! */
     free(fp);				/* free name block */
 }

@@ -23,7 +23,7 @@ load(addr, sp1, sp2)
     struct spec *sp1, *sp2;		/* function, library */
 {
     char *fname = mspec2str(sp1);
-    char *lname = mspec2str(sp2);
+    char *lname = mspec2str(sp2);	/* XXX sub SNOLIB_FILE if empty? */
     int (*entry)(LOAD_PROTO);		/* function entry point */
 
     /* always try PML first? Only if lname is empty?? */

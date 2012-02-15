@@ -3,6 +3,12 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 2/15/2012:
+	Use loadx/os_load for Win32
+	config/win32/{borland,mingw,ntmsvc}.mak: add loadx.c
+	lib/loadx.c: add comment
+	lib/win32/load.c: convert to os_load() API
+
+2/15/2012:
 	lib/loadx.c (new): O/S independant load(), callx(); uses "lib_find"
 	Makefile2.m4: add LOADX_C, loadx.o rule
 	configure: add loadx.o when using unix98/load.c

@@ -37,7 +37,8 @@ OBJ=	isnobol4.obj data.obj data_init.obj main.obj syn.obj \
 	intspc.obj io.obj lexcmp.obj ordvst.obj pair.obj pat.obj \
 	pml.obj realst.obj replace.obj str.obj stream.obj top.obj \
 	tree.obj bcopy.obj bzero.obj dynamic.obj expops.obj getopt.obj \
-	init.obj load.obj mstime.obj atan.obj chop.obj cos.obj delete.obj \
+	init.obj load.obj loadx.obj mstime.obj \
+	atan.obj chop.obj cos.obj delete.obj \
 	environ.obj exit.obj file.obj getstring.obj host.obj log.obj \
 	logic.obj ord.obj random.obj rename.obj retstring.obj sin.obj \
 	spcint.obj spreal.obj sqrt.obj sset.obj tan.obj osopen.obj sleep.obj \
@@ -92,6 +93,9 @@ io.obj : $(SRCDIR)lib\io.c
 
 lexcmp.obj : $(SRCDIR)lib\lexcmp.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\lexcmp.c
+
+loadx.obj : $(SRCDIR)lib\loadx.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\loadx.c
 
 ordvst.obj : $(SRCDIR)lib\ordvst.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\ordvst.c
