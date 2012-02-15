@@ -6,12 +6,14 @@
 #include "config.h"
 #endif
 
+#include <stdio.h>
+
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
 #include "path.h"
 #include "load.h"
-//#include "lib.h"			/* spec2str() */
+#include "lib.h"			/* mspec2str() */
 #include "str.h"
 
 /* support for SIL "LOAD" opcode -- load external function */

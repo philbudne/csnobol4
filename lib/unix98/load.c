@@ -66,24 +66,21 @@ os_load(fname, lname)
 	char name2[1024];		/* XXX */
 
 	name2[0] = '_';
-	strncpy(name2+1, fp->name, sizeof(name2)-2);
+	strncpy(name2+1, fname, sizeof(name2)-2);
 	name2[sizeof(name2)-1] = '\0';
 
-	entry = (int (*)(LOAD_PROTO)) dlsym(fp->handle, name2);
-	if (entry != NULL)
-	    goto found;
-#endif /* TRY_UNDERSCORE defined */
-
-	dlclose(handle);
-	return FALSE;
+	entry = (int (*)(LOAD_PROTO)) dlsym(handle, name2);
+	if (entry = NULL)
+	    goto fail;
+#else  /* TRY_UNDERSCORE not defined */
+	goto fail;
+#endif /* TRY_UNDERSCORE not defined */
     } /* dlsym failed */
-#ifdef TRY_UNDERSCORE
- found:
-#endif /* TRY_UNDERSCORE defined */
-
     fp = (struct func *) malloc(sizeof(struct func) + strlen(fname));
-    if (fp == NULL)
-	return NULL;			/* fail */
+    if (fp == NULL) {
+    fail:
+	dlclose(handle);
+    }
 
     strcpy(fp->name, fname);
     fp->handle = handle;

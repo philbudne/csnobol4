@@ -9,6 +9,12 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
+#ifdef HAVE_STDLIB_H			/* before stdio */
+#include <stdlib.h>
+#else  /* HAVE_STDLIB_H not defined */
+extern void *malloc();
+#endif
+
 #include <ctype.h>
 #include <stdio.h>			/* for lib.h */
 
