@@ -1,7 +1,5 @@
 $Id$
 
-convert lib/*/load.c to os_load() API
-
 Update snobol4 man page:
        Add FILE_ABSPATH, FILE_ISDIR
        Add ENVIRONMENT section:
@@ -9,7 +7,13 @@ Update snobol4 man page:
 	SNOBOL_PRELOAD_PATH
 	(SNOLIB)
 
+install .h files in INCLUDE_DIR
+
 SDB.BAT file
+
+having timing loop for minimum run time
+
+add genc test program
 
 use readline() for compiler input?
 
@@ -41,6 +45,10 @@ mingw.mak:
 	have configure copy config.{m4,h} from config/win32?
 
 Make some signals catchable via SETEXIT? INTR, CHLD, HUP, ALRM??
+
+load.c:
+	allow access to "self" (NULL ptr to dlopen)?
+	convert lib/*/load.c to os_load() API
 
 Make use of tdb (from samba project: gdbm API w/ multiple writers)
 

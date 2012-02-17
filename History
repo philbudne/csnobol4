@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+2/17/2012:
+	lib/unix98/load.c: add missing return
+	configure: put SNOLIB_DIR/local (w/ version) before SNOLIB_BASE/local
+
 2/15/2012:
 	Use loadx/os_load for Win32
 	config/win32/{borland,mingw,ntmsvc}.mak: add loadx.c
