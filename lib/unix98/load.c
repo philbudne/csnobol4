@@ -52,6 +52,8 @@ os_load(fname, lname)
     struct func *fp; 
 
     /* XXX if lname doesn't have a DIR_SEP, prepend . + DIR_SEP? */
+    /* XXX if lname is empty, pass NULL (self) to dlopen?? */
+
     /*
      * SunOS4 (and others) only support LAZY mode.
      * RTLD_GLOBAL could cause collisions between modules??
@@ -80,6 +82,7 @@ os_load(fname, lname)
     if (fp == NULL) {
     fail:
 	dlclose(handle);
+	return;
     }
 
     strcpy(fp->name, fname);
