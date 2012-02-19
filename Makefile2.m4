@@ -575,7 +575,7 @@ INSTALL_H=[include]/h.h [include]/snotypes.h [include]/macros.h \
 # generated SNOLIB files (host.sno generated at top level)
 GENSNOLIB=host.sno
 
-SNOLIB_FILES=snolib/*.sno $(INSTALL_H) doc/load.txt README $(GENSNOLIB) 
+SNOLIB_FILES=snolib/*.sno doc/load.txt README $(GENSNOLIB) 
 
 install: snobol4 sdb
 	$(INSTALL) -d $(BINDIR)
@@ -597,6 +597,10 @@ install: snobol4 sdb
 	$(INSTALL) -d $(SNOLIB_DIR)
 	for F in $(SNOLIB_FILES); do \
 		$(INSTALL) -m 644 $$F $(SNOLIB_DIR); \
+	done
+	$(INSTALL) -d $(INCLUDE_DIR)
+	for F in $(INSTALL_H); do \
+		$(INSTALL) -m 644 $$F $(INCLUDE_DIR); \
 	done
 	@echo '*********************************************************' 1>&2
 	@echo 'Have you mailed a copy of timing.out to timing@snobol4.org ?' 1>&2
