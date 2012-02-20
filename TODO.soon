@@ -7,11 +7,11 @@ Update snobol4 man page:
 	SNOBOL_PRELOAD_PATH
 	(SNOLIB)
 
-install .h files in INCLUDE_DIR
-
 Increase default region sizes?
 	128K descrs (1MB on 32-bit systems)
 	poll users for max stack sizes?
+
+unix98/load.c: if no DIR_SEP, prefix name with "./"
 
 SDB.BAT file
 
