@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+2/23/2012:
+	doc/snobol4random.3: fix typo, enhance SRANDOMDEV entry.
+
 2/18/2012:
 	Makefile2.m4: install INCLUDE_H files in INCLUDE_DIR
 

@@ -17,7 +17,7 @@ snobol4random \- SNOBOL4 random number functions
 .LP
 .B "NUMBER = RANDOM()"
 .LP
-.B SRAMDOM(NUMBER)
+.B SRANDOM(NUMBER)
 .LP
 .B SRANDOMDEV()
 
@@ -53,9 +53,10 @@ The
 .B SRANDOMDEV()
 routine initializes a state array using the
 .BR random (4)
-random number device which returns good random numbers, suitable for
-cryptographic use.  Note that this particular seeding procedure can
-generate states which are impossible to reproduce by calling
+random number device (if available) which returns good random numbers,
+suitable for cryptographic use.  Note that this particular seeding
+procedure can generate states which are impossible to reproduce by
+calling
 .B SRANDOM()
 with any value, since the succeeding terms in the state buffer are no
 longer derived from the LC algorithm applied to a fixed seed.  Data
@@ -64,7 +65,10 @@ from the
 device may be precious, and repeated calls to
 .B SRANDOMDEV()
 should be avoided.
-
+When the 
+.BR random (4)
+device is not available, a 32-bit seed will be generated using
+time, process id, and an element of the process stack.
 .SH SEE ALSO
 .BR snobol4 "(1), " random "(3), " random (4)
 .SH AUTHOR
