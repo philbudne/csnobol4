@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.119  2012/02/14 19:04:16  phil
+* [PLB102] Add -HIDE for sdb
+*
 * Revision 1.118  2012/02/03 05:40:56  phil
 * [PLB101] only modify function entry if LOAD succeeds
 *
@@ -6833,6 +6836,8 @@ END2   INTRL   EXN2CL,EXN2CL	   Convert execution total to REAL
 	D_RV(FCL) *= 1000.0;
 %}
 AVTIME OUTPUT  PUNCH,TIMEPS,(FCL)  Print average time		[PLB5]
+       DVREAL  FCL,EXN2CL,ETMCL	   Compute KStatements/sec	[PLB103]
+       OUTPUT  PUNCH,KSTSF,FCL					[PLB103]
 ENDALL ENDEX   ABNDCL						E3.2.2
 *_
 SYSCUT XCALLC  io_flushall,(0)	   Empty output buffers		[PLB53]
@@ -8476,6 +8481,7 @@ FTLCF  FORMAT  '%v:%d: Error %d in statement %d at level %d\n'
 GCFMT  FORMAT  '%v:%d: GC %g ms %d free\n'			[PLB92]
 INCGCF FORMAT  'INCOMPLETE STORAGE REGENERATION.\n'
 INTIME FORMAT  '%F ms. Execution time\n'			[PLB71]
+KSTSF  FORMAT  '%F Thousand statements per second\n'		[PLB103]
 LASTSF FORMAT  '%v:%d: Last statement executed was %d\n'
 NODMPF FORMAT  'TERMINAL DUMP NOT POSSIBLE.\n'
 NRMEND FORMAT  'Normal termination at level %d\n'
