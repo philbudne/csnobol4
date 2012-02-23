@@ -18,7 +18,10 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	config/win32/{borland,mingw,ntmsvc}.mak: add loadx.c
 	lib/loadx.c: add comment
 	lib/win32/load.c: convert to os_load() API
-
+	lib/init.c: Add def_snopath
+		    Increased default dynamic region to 512K descrs
+		    (4MB on 32bits, 8MB on 64 bits)
+		    
 2/15/2012:
 	lib/loadx.c (new): O/S independant load(), callx(); uses "lib_find"
 	Makefile2.m4: add LOADX_C, loadx.o rule
