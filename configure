@@ -1591,6 +1591,8 @@ if [ ! "$WITHOUT_READLINE" ]; then
 	echo 'ADD_SRCS([$(READLINE_C)])'	>> $CONFIG_M4
 	echo "ADD_LDFLAGS([$RL_LIBS])"		>> $CONFIG_M4
 	echo '#define PML_READLINE'		>> $CONFIG_H
+	# Make optional?
+	echo '#define COMPILER_READLINE'	>> $CONFIG_H
     fi
 fi
 

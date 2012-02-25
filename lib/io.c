@@ -71,6 +71,12 @@ typedef long off_t;
 #include "data.h"			/* for FILENM */
 #include "proc.h"			/* UNDF() */
 
+#ifdef COMPILER_READLINE			/* after proc.h */
+#undef RETURN
+#include <readline/readline.h>
+#include <readline/history.h>
+#endif /* COMPILER_READLINE */
+
 #ifndef SEEK_SET
 #define SEEK_SET 0
 #endif /* SEEK_SET not defined */
@@ -1120,6 +1126,34 @@ io_endfile(unit)			/* ENFILE */
 
 #define COMPILING(UNIT) ((UNIT) == INTERN(UNITI) && D_A(COMPCL))
 
+#ifdef COMPILER_READLINE
+static int readline_inited;
+static Keymap initial_keymap, compile_keymap;
+
+static void
+init_readline() {
+    rl_initialize();
+    initial_keymap = rl_get_keymap();
+    compile_keymap = rl_copy_keymap(initial_keymap);
+    rl_set_keymap(compile_keymap);
+    rl_bind_key('\t', rl_insert);
+
+    readline_inited = 1;
+}
+
+static void
+restore_readline() {
+    if (!readline_inited)
+	return;
+    if (initial_keymap)
+	rl_set_keymap(initial_keymap);
+    if (compile_keymap)
+	rl_discard_keymap(compile_keymap);
+    compile_keymap = NULL;
+    clear_history();
+}
+#endif /* ifdef COMPILER_READLINE */
+
 enum io_read_ret
 io_read( dp, sp )			/* STREAD */
     struct descr *dp;
@@ -1207,6 +1241,25 @@ io_read( dp, sp )			/* STREAD */
 	    if (len > 0)
 		break;
 	} /* binary */
+#ifdef COMPILER_READLINE
+	else if (ISTTY(fp) && COMPILING(unit)) {
+	    char *tp;
+
+	    if (!readline_inited)
+		init_readline();
+	    tp = readline("snobol4> ");
+	    if (!tp)
+	       return IO_EOF;
+	    if (*tp)
+		add_history(tp);
+	    len = strlen(tp);
+	    if (len > recl-1)	/* leave room for space */
+	        len = recl-1;
+	    strncpy(cp, tp, len);
+	    free(tp);
+	    break;
+	}
+#endif /* COMPILER_READLINE defined */
 #ifdef INET_IO
 	else if (ISINET(fp)) {
 	    len = inet_read_cooked(f, cp, recl, (fp->flags & FL_EOL) == 0);
@@ -1387,6 +1440,10 @@ io_ecomp()				/* XECOMP */
 {
     struct unit *up;
     struct file *fp;
+
+#ifdef COMPILER_READLINE
+    restore_readline();
+#endif
 
     if (lflag) {
 	/* if -l was given, switch OUTPUT to stdout! */
