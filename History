@@ -5,6 +5,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 2/24/2012:
 	configure: replace HAVE_READLINE with COMPILER_READLINE
 	lib/io.c: honor COMPILER_READLINE
+	gendata.sno: add REAL op
+	genc.sno: fix many ops; set LIVE if no success label
 
 2/23/2012:
 	doc/snobol4random.3: fix typo, enhance SRANDOMDEV entry.

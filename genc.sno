@@ -1010,7 +1010,7 @@ INT_OP4	IDENT(ARGV<4>)					:S(INT_OP5)
 	INDENT()
 	BRANCH(ARGV<4>)
 	UNINDENT()
-INT_OP5	IDENT(ARGV<5>)					:S(OPDONE)
+INT_OP5	IDENT(ARGV<5>)					:S(OPDONEL)
 	BRANCH(ARGV<5>)					:(OPDONE)
 
 ****************************************************************
@@ -1055,7 +1055,7 @@ XMNSINT	OUTPUT = DIFFER(ARGV<3>) IND 'CLR_MATH_ERROR();'
 	INDENT()
 	BRANCH(ARGV<3>)
 	UNINDENT()
-XMNSIN2	IDENT(ARGV<4>)					:S(OPDONE)
+XMNSIN2	IDENT(ARGV<4>)					:S(OPDONEL)
 	BRANCH(ARGV<4>)					:(OPDONE)
 
 ****************
@@ -1107,7 +1107,7 @@ REALOP4	IDENT(ARGV<4>)					:S(REALOP5)
 	INDENT()
 	BRANCH(ARGV<4>)
 	UNINDENT()
-REALOP5	IDENT(ARGV<5>)					:S(OPDONE)
+REALOP5	IDENT(ARGV<5>)					:S(OPDONEL)
 	BRANCH(ARGV<5>)					:(OPDONE)
 
 ****************
@@ -1127,7 +1127,7 @@ XRLINT	OUTPUT = DIFFER(ARGV<3>) IND 'CLR_MATH_ERROR();'
 	INDENT()
 	BRANCH(ARGV<3>)
 	UNINDENT()
-RLINT2	IDENT(ARGV<4>)					:S(OPDONE)
+RLINT2	IDENT(ARGV<4>)					:S(OPDONEL)
 	BRANCH(ARGV<4>)					:(OPDONE)
 *
 ***************************************************************

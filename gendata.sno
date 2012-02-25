@@ -227,6 +227,7 @@ IN_DATA	IDENT(OP,'ARRAY')					:S(XARRAY)
 	IDENT(OP,'STRING')					:S(XSTRING)
 	IDENT(OP,'BUFFER')					:S(XBUFFER)
 	IDENT(OP,'FORMAT')					:S(XFORMAT)
+	IDENT(OP,'REAL')					:S(XREAL)
 								:(TOP)
 ****************
 
@@ -276,6 +277,13 @@ XSTRING	MK_LBL(LBL,'spec',1)
 	LOCN = '(' LOCATION() ') = '
 	DATA_INIT.H = IND 'S_A' LOCN INT_T ARGS ';'
 	DATA_INIT.H = IND 'S_L' LOCN 'STRLEN(' ARGS ');'	:(NEXT)
+
+****************
+XREAL	MK_LBL(LBL,'descr',1)
+	LOCN = '(' LOCATION() ') = '
+	DATA_INIT.H = IND 'D_RV' LOCN ARGS ';'
+	DATA_INIT.H = IND 'D_V' LOCN 'R;'
+								:(NEXT)
 
 ****************
 NEXT	LN = LN + 1						:(TOP)
