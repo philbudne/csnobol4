@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.120  2012/02/23 23:27:11  phil
+* [PLB103] Report K Statements/sec
+*
 * Revision 1.119  2012/02/14 19:04:16  phil
 * [PLB102] Add -HIDE for sdb
 *
@@ -721,11 +724,10 @@ OBSFT  EQU     13		   Power of two for bin headers		[PLB75]
 OBSIZ  EQU     1<<OBSFT		   Number of bin headers 		[PLB75]
 OBARY  EQU     OBSIZ+3		   Total number for bins
 OCASIZ EQU     1500		   Descriptors of initial object code
-SPDLSZ EQU     5000		   Descriptors of pattern stack	[PLB7][PLB41]
-STSIZE EQU     1500		   Descriptors of interpreter stack [PLB45]
+SPDLSZ EQU     8000		   Descriptors of pattern stack        [PLB104]
+STSIZE EQU     4000		   Descriptors of interpreter stack    [PLB104]
 SPDR   EQU     SPEC+DESCR	   Descriptor plus specifier
 OBOFF  EQU     OBSIZ-2		   Offset length in bins
-SPDLDR EQU     SPDLSZ*DESCR	   Size of pattern stack
 *
 *      Equivalences
 *
@@ -6830,14 +6832,11 @@ END1   AEQLC   STATCL,0,,ENDALL	   Skip stats if suppressed	[PLB12]
 *_
 END2   INTRL   EXN2CL,EXN2CL	   Convert execution total to REAL
        DVREAL  FCL,ETMCL,EXN2CL	   Compute average time		[PLB71]
-%{
-	/* convert to microseconds [PLB71] */
-	/* First (and only) use of REAL constant, so just escape to C */
-	D_RV(FCL) *= 1000.0;
-%}
+       MPREAL  FCL,FCL,R1KCL	   Convert to microseconds [PLB71][PLB104]
 AVTIME OUTPUT  PUNCH,TIMEPS,(FCL)  Print average time		[PLB5]
-       DVREAL  FCL,EXN2CL,ETMCL	   Compute KStatements/sec	[PLB103]
-       OUTPUT  PUNCH,KSTSF,FCL					[PLB103]
+       RCOMP   ETMCL,RZERCL,,ENDALL  Avoid divide by zero	[PLB104]
+       DVREAL  FCL,EXN2CL,ETMCL,ENDALL  Compute KStatements/sec	[PLB103][PLB104]
+       OUTPUT  PUNCH,KSTSF,(FCL)				[PLB103]
 ENDALL ENDEX   ABNDCL						E3.2.2
 *_
 SYSCUT XCALLC  io_flushall,(0)	   Empty output buffers		[PLB53]
@@ -8502,4 +8501,8 @@ TIMEPS FORMAT  '%G us. Average per statement executed\n'	[PLB71][PLB72]
 TITLEF FORMAT  'SNOBOL4 (Version 3.11, May 19, 1975)\n'
 *								V3.11
 WRITNO FORMAT  '%D Writes performed\n'
+*
+*      Real constants
+RZERCL REAL	0.0			Zero			[PLB104]
+R1KCL  REAL	1000.0			One Thousand		[PLB104]
        END
