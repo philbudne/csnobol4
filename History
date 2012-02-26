@@ -7,7 +7,9 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	lib/io.c: honor COMPILER_READLINE
 	gendata.sno: add REAL op
 	genc.sno: fix many ops; set LIVE if no success label
-
+	v311.sil: [PLB104] safety check KSt/sec division; use REAL constants
+		flush SPDLDR; increase PMSTACK to 8000, ISTACK to 4000
+	lib/init.c: increase NDYNAMIC to 512K, flush SPDLDR
 2/23/2012:
 	doc/snobol4random.3: fix typo, enhance SRANDOMDEV entry.
 	v311.sil: [PLB103] Report K Statements/sec

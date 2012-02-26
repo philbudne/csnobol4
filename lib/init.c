@@ -31,11 +31,11 @@ extern void *malloc();
 #endif /* SIGFUNC_T not defined */
 
 #ifndef NDYNAMIC
-#define NDYNAMIC (64*1024)		/* default dynamic region size */
+#define NDYNAMIC (512*1024)		/* default dynamic region size */
 #endif /* NDYNAMIC not defined */
 
 #ifndef PSSIZE
-#define PSSIZE (SPDLDR/DESCR)		/* default pattern stack size */
+#define PSSIZE SPDLSZ			/* default pattern stack size */
 #endif /* PSSIZE not defined */
 
 #ifndef ISSIZE
