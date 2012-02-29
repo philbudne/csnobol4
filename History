@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+2/29/2012:
+	configure: set HAVE_RL_SET_KEYMAP
+	lib/io.c: check HAVE_RL_SET_KEYMAP (OS X comes with NetBSD editline)
+
 2/24/2012:
 	configure: replace HAVE_READLINE with COMPILER_READLINE
 	lib/io.c: honor COMPILER_READLINE

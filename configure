@@ -33,8 +33,6 @@ OS=`(uname -s || echo unknown) 2>/dev/null`
 OSREL=`(uname -r || echo unknown) 2>/dev/null`
 OSVERS=`(uname -v || echo unknown) 2>/dev/null`
 MACHINE=`(uname -m || echo unknown) 2>/dev/null`
-# Linux/GNU:
-INST=`(uname -i || uname -m || echo unknown) 2>/dev/null`
 
 case "$OS" in
 MINGW*)
@@ -1593,6 +1591,11 @@ if [ ! "$WITHOUT_READLINE" ]; then
 	echo '#define PML_READLINE'		>> $CONFIG_H
 	# Make optional?
 	echo '#define COMPILER_READLINE'	>> $CONFIG_H
+	
+	if config/check "$RL_INC" "rl_set_keymap(rl_get_keymap)" -lreadline; then
+	echo "using rl_set_keymap()" 1>&2
+	    echo '#define HAVE_RL_SET_KEYMAP'	>> $CONFIG_H
+	fi
     fi
 fi
 

@@ -59,6 +59,7 @@ os_load(fname, lname)
      * RTLD_GLOBAL could cause collisions between modules??
      */
     handle = dlopen(lname, RTLD_LAZY);
+    /* XXX free allocated path, if any */
     if (!handle)
 	return NULL;
 

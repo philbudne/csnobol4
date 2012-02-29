@@ -1128,14 +1128,19 @@ io_endfile(unit)			/* ENFILE */
 
 #ifdef COMPILER_READLINE
 static int readline_inited;
+#ifdef HAVE_RL_SET_KEYMAP
 static Keymap initial_keymap, compile_keymap;
+#endif
 
 static void
 init_readline() {
     rl_initialize();
+#ifdef HAVE_RL_SET_KEYMAP
     initial_keymap = rl_get_keymap();
     compile_keymap = rl_copy_keymap(initial_keymap);
     rl_set_keymap(compile_keymap);
+#endif
+    /* disable TAB completion */
     rl_bind_key('\t', rl_insert);
 
     readline_inited = 1;
@@ -1145,11 +1150,20 @@ static void
 restore_readline() {
     if (!readline_inited)
 	return;
+#ifdef HAVE_RL_SET_KEYMAP
+    /* restore initial keymap */
     if (initial_keymap)
 	rl_set_keymap(initial_keymap);
     if (compile_keymap)
 	rl_discard_keymap(compile_keymap);
     compile_keymap = NULL;
+#else
+    /*
+     * editline: reenable TAB completion.
+     * THIS FAILS.  need to call editline calls directly?
+     */
+    rl_bind_key('\t', rl_complete);
+#endif
     clear_history();
 }
 #endif /* ifdef COMPILER_READLINE */

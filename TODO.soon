@@ -7,28 +7,22 @@ Update snobol4 man page:
 	SNOBOL_PRELOAD_PATH
 	(SNOLIB)
 
-Increase default region sizes?
-	128K descrs (1MB on 32-bit systems)
-	poll users for max stack sizes?
-
 unix98/load.c: if no DIR_SEP, prefix name with "./"
 
 SDB.BAT file
 
-having timing loop for minimum run time
+tests:
+	benchmark -- genc w/ loop for minimum time
+	genc w/ static input/output
 
-add genc test program
-
-use readline() for compiler input?
+merge in "one function" code
 
 handle leading or trailing PATH_SEP on SNOPATH and PRELOAD_PATH???
-
-document SRANDOMDEV when /dev/random not available
 
 document snobol4dynamic, snobol4wrapper
 
 Hash TABLES()?
-	need stable ID on all datatypes
+	need stable ID field on all datatypes
 
 Pure SNOBOL tests/timing
 
