@@ -15,6 +15,12 @@
 extern void *malloc();
 #endif
 
+#ifdef __STDC__
+#include <stdarg.h>
+#else
+#include <varargs.h>
+#endif
+
 #include <ctype.h>
 #include <stdio.h>			/* for lib.h */
 
@@ -226,4 +232,47 @@ apdsp(base, str)
 	    len--;
 	}
     }
+}
+
+/* added 3/4/2012 */
+char *
+strjoin
+#ifdef __STDC__
+	(char *str0, ...)
+#else
+	(va_alist) va_dcl
+#endif
+{
+    va_list vp;
+    int len;
+    char *str, *tp;
+
+#ifdef __STDC__
+    va_start(vp, str0);
+#else  /* __STDC__ not defined */
+    char *str0;
+    va_start(vp);
+
+    str0 = va_arg(vp, char *);
+#endif /* __STDC__ not defined */
+    len = strlen(str0) + 1;
+    while ((tp = va_arg(vp, char *)))
+	len += strlen(tp);
+    va_end(vp);
+
+    str = malloc(len);
+    if (!str)
+	return NULL;
+
+#ifdef __STDC__
+    va_start(vp, str0);
+#else  /* __STDC__ not defined */
+    va_start(vp);
+    str0 = va_arg(vp, char *);
+#endif
+    strcpy(str, str0);
+    while ((tp = va_arg(vp, char *)))
+	strcat(str, tp);
+    va_end(vp);
+    return str;
 }

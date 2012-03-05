@@ -2,6 +2,12 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+3/4/2012:
+	include/lib.h: add strjoin()
+	lib/str.c: add strjoin()
+	lib/loadx.c: try bare path + DL_EXT
+	lib/unix98/load.c: if path contaisn no DIR_SEP, try ./path
+
 2/29/2012:
 	configure: set HAVE_RL_SET_KEYMAP
 	lib/io.c: check HAVE_RL_SET_KEYMAP (OS X comes with NetBSD editline)

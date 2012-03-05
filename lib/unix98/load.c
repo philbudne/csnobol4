@@ -58,7 +58,13 @@ os_load(fname, lname)
      * SunOS4 (and others) only support LAZY mode.
      * RTLD_GLOBAL could cause collisions between modules??
      */
-    handle = dlopen(lname, RTLD_LAZY);
+    if (index(lname, DIR_SEP[0]) == 0) {
+	char *path = strjoin(".", DIR_SEP, lname, NULL);
+	handle = dlopen(path, RTLD_LAZY);
+	free(path);
+    }
+    else
+	handle = dlopen(lname, RTLD_LAZY);
     /* XXX free allocated path, if any */
     if (!handle)
 	return NULL;

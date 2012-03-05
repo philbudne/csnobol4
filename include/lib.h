@@ -99,6 +99,7 @@ void trimsp __P((struct spec *,struct spec *));
 void spec2str __P((struct spec *,char *,int));
 char *mspec2str __P((struct spec *));
 void apdsp __P((struct spec *, struct spec *));
+char *strjoin __P((char *str0, ...));
 
 /* stream.c declarations in include/syntab.h */
 

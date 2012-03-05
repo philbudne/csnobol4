@@ -31,6 +31,12 @@ load(addr, sp1, sp2)
     if (!entry) {
 	entry = os_load(fname, lname);
 
+	if (!entry) {
+	    char *l2 = strjoin(lname, DL_EXT, NULL);
+	    entry = os_load(fname, l2);
+	    free(l2);
+	}
+
 	if (!entry && !abspath(lname)) {
 	    char *path = io_lib_find("dynload", lname, DL_EXT);
 	    if (path) {
