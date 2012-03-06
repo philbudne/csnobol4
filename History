@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+3/6/2012:
+	lib/loadx.c: include stdlib.h
+
 3/4/2012:
 	include/lib.h: add strjoin()
 	lib/str.c: add strjoin()

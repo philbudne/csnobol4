@@ -7,6 +7,9 @@
 #endif
 
 #include <stdio.h>
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>			/* free() */
+#endif
 
 #include "h.h"
 #include "snotypes.h"
