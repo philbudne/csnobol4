@@ -1162,10 +1162,8 @@ restore_readline() {
 #endif
 #else
     /*
-     * editline: reenable TAB completion.
-     * THIS FAILS.  need to call editline calls directly?
-     */
-    rl_bind_key('\t', rl_complete);
+     * probably here with "editline" library (OS X, NetBSD?)
+    rl_initialize();			/* seems to work */
 #endif
     clear_history();
 }
