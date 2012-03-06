@@ -1154,9 +1154,12 @@ restore_readline() {
     /* restore initial keymap */
     if (initial_keymap)
 	rl_set_keymap(initial_keymap);
+#if 0
+    /* dies with free() of invalid pointer on Ubuntu. */
     if (compile_keymap)
 	rl_discard_keymap(compile_keymap);
     compile_keymap = NULL;
+#endif
 #else
     /*
      * editline: reenable TAB completion.

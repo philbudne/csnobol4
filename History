@@ -4,6 +4,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 3/6/2012:
 	lib/loadx.c: include stdlib.h
+	lib/io.c: avoid rl_keymap_discard()
 
 3/4/2012:
 	include/lib.h: add strjoin()
