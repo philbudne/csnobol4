@@ -6,7 +6,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	lib/loadx.c: include stdlib.h
 	lib/io.c: avoid rl_keymap_discard()
 		call rl_initialize() if no rl_keymap_discard() available
-		works on OS X 10.4
+		works on OS X 10.4 (but not NetBSD 5.1?)
+	configure: check libedit for readline()
 
 3/4/2012:
 	include/lib.h: add strjoin()

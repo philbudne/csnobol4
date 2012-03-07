@@ -1582,6 +1582,8 @@ if [ ! "$WITHOUT_READLINE" ]; then
 	RL_LIBS="-lreadline"
     elif config/check "$RL_INC" "$RL_FRAG" '-lreadline -lncurses'; then
 	RL_LIBS="-lreadline -lncurses"
+    elif config/check "$RL_INC" "$RL_FRAG" '-ledit'; then
+	RL_LIBS="-ledit"
     fi
     if [ "x$RL_LIBS" != x ]; then
 	echo "using readline (with $RL_LIBS)" 1>&2
