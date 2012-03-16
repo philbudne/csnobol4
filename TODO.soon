@@ -1,13 +1,18 @@
 $Id$
 
+Check for keyword trace on ERRTEXT at label END?
+	Use in sdb
+
+sdb: trace FNCLEVEL for finish/next
+	only enable when needed?
+	disable when done.
+
 Update snobol4 man page:
        Add FILE_ABSPATH, FILE_ISDIR
        Add ENVIRONMENT section:
 	SNOPATH
 	SNOBOL_PRELOAD_PATH
 	(SNOLIB)
-
-unix98/load.c: if no DIR_SEP, prefix name with "./"
 
 SDB.BAT file
 
@@ -18,6 +23,8 @@ tests:
 merge in "one function" code
 
 handle leading or trailing PATH_SEP on SNOPATH and PRELOAD_PATH???
+
+have COMPILE_C_DYNAMIC() return object file name??
 
 document snobol4dynamic, snobol4wrapper
 
