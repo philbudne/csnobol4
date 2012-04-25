@@ -905,8 +905,10 @@ number in the second argument.
 A span of digits will set the input record length for the named I/O
 variable.  This controls the maximum string that will be returned for
 regular text I/O, and the number of bytes returned for binary I/O.
-Record length is per-variable; multiple variables may be associated
-with the same unit, but with different record lengths.
+Record length is per-variable association; multiple variables may be
+associated with the same unit, but with different record lengths.  The
+default record length for input is 1024; longer lines will be silently
+truncated.
 .TP
 .B A
 For

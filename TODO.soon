@@ -1,11 +1,16 @@
 $Id$
 
-Check for keyword trace on ERRTEXT at label END?
-	Use in sdb
-
-sdb: trace FNCLEVEL for finish/next
-	only enable when needed?
-	disable when done.
+sdb:
+    use SETEXIT()
+    	catch errors, & exit
+	optional??
+    trace FNCLEVEL for finish/next (as needed)
+	disable on next break of any kind.
+	NOTE! breaks BEFORE return!
+	display return type (RTNTYPE)
+    Only trace STCOUNT when step count set?
+    Have trap handlers call function with params to save?
+    Use EQ() for string compares?
 
 Update snobol4 man page:
        Add FILE_ABSPATH, FILE_ISDIR
@@ -16,11 +21,12 @@ Update snobol4 man page:
 
 SDB.BAT file
 
-tests:
-	benchmark -- genc w/ loop for minimum time
-	genc w/ static input/output
+Pure SNOBOL tests/timing
 
-merge in "one function" code
+genc:
+	benchmark -- genc w/ loop for minimum time
+	test: genc w/ static input/output
+	merge in "one function" code
 
 handle leading or trailing PATH_SEP on SNOPATH and PRELOAD_PATH???
 
@@ -30,8 +36,6 @@ document snobol4dynamic, snobol4wrapper
 
 Hash TABLES()?
 	need stable ID field on all datatypes
-
-Pure SNOBOL tests/timing
 
 Run tests, timing on MinGW?
 	Need to fix CR handling; EOLSTR, _setmode()

@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+4/24/2012:
+	doc/snobol4.1: document default INPUT record length
+		(suggested by John McHugh)
+
 3/9/2012:
 	snolib/dynamic.sno: use HOST(HOST_INCLUDE_DIR)
 
