@@ -1010,11 +1010,11 @@ if config/check string.h 'strchr("", 65)'; then
     fi
 fi
 
-if config/check sys/socket.h ""; then
+if config/check 'sys/types.h sys/socket.h' ""; then
     echo 'using sockets for TCP/IP support' 1>&2
 
     # check if network libraries needed
-    SOCKINC='sys/socket.h netdb.h'
+    SOCKINC='sys/types.h sys/socket.h netdb.h'
     SOCKFRAG='int s = socket(AF_INET, SOCK_STREAM, 0); struct hostent *hp = gethostbyname("")'
     if config/check "$SOCKINC" "$SOCKFRAG"; then
 	NETLIBS=
