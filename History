@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/3/2012:
+	lib/win32/sys.c: add WinServer2012
+
 7/8/2012:
 	configure: OpenBSD MIPS requires sys/types.h before socket.h
 		(reported by Anonymous)

@@ -1,5 +1,19 @@
 $Id$
 
+genc:
+	merge in "one function" code
+	ntiming w/ static input
+	make a "genc" test w/ static input/output?
+
+Update snobol4 man page:
+       Add FILE_ABSPATH, FILE_ISDIR
+       Add ENVIRONMENT section:
+	SNOPATH
+	SNOBOL_PRELOAD_PATH
+	(SNOLIB)
+
+SDB.BAT file
+
 sdb:
     use SETEXIT()
     	catch errors, & exit
@@ -12,21 +26,7 @@ sdb:
     Have trap handlers call function with params to save?
     Use EQ() for string compares?
 
-Update snobol4 man page:
-       Add FILE_ABSPATH, FILE_ISDIR
-       Add ENVIRONMENT section:
-	SNOPATH
-	SNOBOL_PRELOAD_PATH
-	(SNOLIB)
-
-SDB.BAT file
-
 Pure SNOBOL tests/timing
-
-genc:
-	benchmark -- genc w/ loop for minimum time
-	test: genc w/ static input/output
-	merge in "one function" code
 
 handle leading or trailing PATH_SEP on SNOPATH and PRELOAD_PATH???
 

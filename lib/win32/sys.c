@@ -193,7 +193,7 @@ osname(cp)
 		break;
 	    case 2:
 		if (server)
-		    vnum = 1;		/* fixme */
+		    os = "WinServer2012";
 		else
 		    os = "Win8";
 		break;
