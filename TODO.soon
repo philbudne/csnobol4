@@ -5,6 +5,8 @@ genc:
 	ntiming w/ static input
 	make a "genc" test w/ static input/output?
 
+Have timing script POST results??
+
 Update snobol4 man page:
        Add FILE_ABSPATH, FILE_ISDIR
        Add ENVIRONMENT section:

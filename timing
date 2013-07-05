@@ -162,8 +162,8 @@ if [ "$UNAME" ]; then
 		fi
 		if [ -f /usr/bin/lsb_release ]; then
 			echo ''
-			echo lsb_release -rd:
-			/usr/bin/lsb_release -rd
+			echo lsb_release
+			/usr/bin/lsb_release -a || /usr/bin/lsb_release -rd || /usr/bin/lsb_release -r
 		fi
 		;;
 	OSF1)

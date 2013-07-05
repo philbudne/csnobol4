@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+7/5/2013:
+	timing: tweak lsb_release usage for Beaglebone "Angstrom"
+
 12/3/2012:
 	lib/win32/sys.c: add WinServer2012
 
@@ -41,6 +44,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	v311.sil: [PLB104] safety check KSt/sec division; use REAL constants
 		flush SPDLDR; increase PMSTACK to 8000, ISTACK to 4000
 	lib/init.c: increase NDYNAMIC to 512K, flush SPDLDR
+
 2/23/2012:
 	doc/snobol4random.3: fix typo, enhance SRANDOMDEV entry.
 	v311.sil: [PLB103] Report K Statements/sec
