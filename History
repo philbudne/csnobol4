@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+7/6/2013:
+	configure: define REALST_FORMAT when double precision in use
+	lib/realst.c: add REALST_FORMAT
+
 7/5/2013:
 	timing: tweak lsb_release usage for Beaglebone "Angstrom"
 

@@ -26,6 +26,11 @@
 static char strbuf[64];
 #endif /* NO_STATIC_VARS not defined */
 
+#ifndef REALST_FORMAT
+/* "l" is always redundant? */
+#define REALST_FORMAT "%lg"
+#endif
+
 void
 realst(sp, dp)
     struct spec *sp;
@@ -33,10 +38,12 @@ realst(sp, dp)
 {
     char *bp;
 
-    sprintf( strbuf, "%lg", D_RV(dp) );
+    sprintf( strbuf, REALST_FORMAT, D_RV(dp) );
     /*
      * "g" format can print an integer for exact values.
      * make sure we have an exponent or a dot.
+     *
+     * %#g may add dot, but also trailing zeroes!
      */
     bp = strbuf;
     while (*bp && isdigit(*bp))

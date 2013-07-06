@@ -865,6 +865,8 @@ if [ "$DOUBLE" ]; then
     # sizeof(real_t) must be <= sizeof(int_t), or IDENT(REAL,REAL) won't work
     echo using double for SNOBOL4 REAL type 1>&2
     echo '#define REAL_T double'		>> $CONFIG_H
+    # print lots of digits
+    echo '#define REALST_FORMAT "%.16lg"'	>> $CONFIG_H
 fi
 
 if config/check stdlib.h; then
