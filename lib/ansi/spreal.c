@@ -33,7 +33,7 @@ spreal(dp, sp)
     char buffer[64];			/* ??? */
     int len;
     char *cp;
-    float temp;
+    real_t temp;
     double strtod();
 
     len = S_L(sp);
