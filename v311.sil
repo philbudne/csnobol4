@@ -1,6 +1,10 @@
 * $Id$
 *
 * $Log$
+* Revision 1.121  2012/02/26 00:32:07  phil
+* [PLB104] safety check KSt/sec division; use REAL constants
+*          flush SPDLDR; increase PMSTACK to 8000, ISTACK to 4000
+*
 * Revision 1.120  2012/02/23 23:27:11  phil
 * [PLB103] Report K Statements/sec
 *
@@ -7086,6 +7090,8 @@ UCASVL DESCR   0,0,0		   &UCASE			[PLB18]
        DESCR   UCNMSP,0,0					[PLB18]
 PARMVL DESCR   0,0,S		   &PARM			[PLB39]
        DESCR   PARMSP,0,0					[PLB39]
+DIGSVL DESCR   0,0,0		   &DIGITS			[PLB105]
+       DESCR   DGNMSP,0,0					[PLB105]
 KVEND  LHERE   ,
 *
 INLIST DESCR   INLIST,TTL+MARK,4*DESCR				[PLB36]
@@ -7350,7 +7356,7 @@ ALPHSP SPEC    ALPHA,0,0,0,ALPHSZ  Alphabet
 AMPSP  SPEC    AMPST,0,0,0,1	   Ampersand
 CERRSP SPEC    ANYSP,0,0,0,0	   Buffer specifier
 COLSP  SPEC    COLSTR,0,0,0,1	   Colon for trace messages	[PLB95]
-SPCSP  SPEC    SPCSTR,0,0,0,1	   Space for trace messages	[PLB95]
+DIGSSP SPEC    DIGITS,0,0,0,DIGSSZ Digits			[PLB105]
 DMPSP  SPEC    ANYSP,0,0,0,0	   Buffer specifier
 DTARSP SPEC    DTARBF,0,0,0,ARRLEN+9
 *				   Array representation specifier
@@ -7358,6 +7364,7 @@ LCASSP SPEC    LCASE,0,0,0,LCASSZ  Lower case letters		[PLB18]
 PROTSP SPEC    ANYSP,0,0,0,0	   Buffer specifier
 QTSP   SPEC    QTSTR,0,0,0,1	   Quote for messages
 REALSP SPEC    REALBF,0,0,0,10	   Specifier for real conversion
+SPCSP  SPEC    SPCSTR,0,0,0,1	   Space for trace messages	[PLB95]
 TRACSP SPEC    ANYSP,0,0,0,0	   Buffer specifier
 UCASSP SPEC    UCASE,0,0,0,UCASSZ  Upper case letters		[PLB18]
 *
@@ -8089,6 +8096,7 @@ DATSP  STRING  'DATE'
 DATASP STRING  'DATA'
 DEFISP STRING  'DEFINE'
 DIFFSP STRING  'DIFFER'
+DGNMSP STRING  'DIGITS'						[PLB105]
 DTCHSP STRING  'DETACH'
 DTSP   STRING  'DATATYPE'
 DUMPSP STRING  'DUMP'
@@ -8208,6 +8216,8 @@ ABNDB  LHERE   ,
        DESCR   RETCL,0,0					[PLB18]
        DESCR   UCASSP,0,0	   &UCASE			[PLB18]
        DESCR   UCASVL,0,0					[PLB18]
+       DESCR   DIGSSP,0,0	   &DIGITS			[PLB105]
+       DESCR   DIGSVL,0,0	   				[PLB105]
        DESCR   ABORSP,0,0	   'ABORT'			[PLB97]
        DESCR   ABORCL,0,0					[PLB97]
        DESCR   CONTSP,0,0	   'CONTINUE'			[PLB97]
