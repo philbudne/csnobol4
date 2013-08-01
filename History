@@ -4,6 +4,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 7/31/2013:
 	test/float.{sno,ref}: output PI
+	test/pow.{sno,ref}: output only rational numbers
 	test/float2.{sno,ref}: test for double precision formatting
 	test/digits.{sno,ref}: test for &DIGITS &LCASE &UCASE
 	test/tests.in: add float2, digits
