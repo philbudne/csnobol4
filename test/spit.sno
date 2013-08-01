@@ -32,7 +32,7 @@
 	x = convert('17', .numeric)
 	output = datatype(x) ': ' x
 
-	x = convert('3.1415932384626433', .numeric)
+	x = convert('3.14159', .numeric)
 	output = datatype(x) ': ' x
 
 ****************
