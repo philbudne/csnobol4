@@ -14,6 +14,7 @@ Update snobol4 man page:
 	SNOBOL_PRELOAD_PATH
 	(SNOLIB)
 	NOTE that preloads can make code less portable!!!
+	&DIGITS -- note an extension!!!
 
 SDB.BAT file
 
