@@ -78,6 +78,9 @@ const char UCASE[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 #define LCASSZ (sizeof(LCASE)-1)
 const char LCASE[] = "abcdefghijklmnopqrstuvwxyz";
 
+#define DIGSSZ (sizeof(DIGITS)-1)
+const char DIGITS[] = "0123456789";
+
 void
 init_data() {
 # include "data_init.h"

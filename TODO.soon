@@ -13,6 +13,7 @@ Update snobol4 man page:
 	SNOPATH
 	SNOBOL_PRELOAD_PATH
 	(SNOLIB)
+	NOTE that preloads can make code less portable!!!
 
 SDB.BAT file
 

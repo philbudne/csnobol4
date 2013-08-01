@@ -2,10 +2,20 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+7/31/2013:
+	test/float2.{sno,ref}: test for double precision formatting
+	test/digits.{sno,ref}: test for &DIGITS &LCASE &UCASE
+	test/tests.in: add float2, digits
+	data_init.c: add DIGITS
+	v311.sil: [PLB105] add &DIGITS
+
 7/6/2013:
+	Discovered 64-bit doubles are never output with full precision,
+		Thanks to Phillip Thomas
 	configure: define REALST_FORMAT when double precision in use
 	lib/realst.c: add REALST_FORMAT
 	lib/ansi/spreal.c: use real_t
+
 7/5/2013:
 	timing: tweak lsb_release usage for Beaglebone "Angstrom"
 
