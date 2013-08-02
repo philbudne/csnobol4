@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+8/1/2013:
+	v311.sil: [PLB106] add &PI
+
 7/31/2013:
 	test/float.{sno,ref}: output PI
 	test/pow.{sno,ref}: output only rational numbers

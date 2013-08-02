@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.122  2013/08/01 02:58:32  phil
+* [PLB105] add &DIGITS
+*
 * Revision 1.121  2012/02/26 00:32:07  phil
 * [PLB104] safety check KSt/sec division; use REAL constants
 *          flush SPDLDR; increase PMSTACK to 8000, ISTACK to 4000
@@ -7092,6 +7095,8 @@ PARMVL DESCR   0,0,S		   &PARM			[PLB39]
        DESCR   PARMSP,0,0					[PLB39]
 DIGSVL DESCR   0,0,0		   &DIGITS			[PLB105]
        DESCR   DGNMSP,0,0					[PLB105]
+       REAL    3.1415926535897932384626433 &PI			[PLB106]
+       DESCR   PISP,0,0		   				[PLB106]
 KVEND  LHERE   ,
 *
 INLIST DESCR   INLIST,TTL+MARK,4*DESCR				[PLB36]
@@ -8151,6 +8156,7 @@ OPSNSP STRING  'OPSYN'
 OUTSP  STRING  'OUTPUT'
 PARMSP STRING  'PARM'						[PLB39]
 PATSP  STRING  'PATTERN'
+PISP   STRING  'PI'						[PLB106]
 POSSP  STRING  'POS'
 PRTSP  STRING  'PROTOTYPE'
 RLSP   STRING  'REAL'
