@@ -15,6 +15,7 @@ Update snobol4 man page:
 	(SNOLIB)
 	NOTE that preloads can make code less portable!!!
 	&DIGITS -- note an extension!!!
+	&PI -- note an extension!!!
 
 SDB.BAT file
 

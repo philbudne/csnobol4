@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.123  2013/08/02 04:09:07  phil
+* [PLB106] add &PI
+*
 * Revision 1.122  2013/08/01 02:58:32  phil
 * [PLB105] add &DIGITS
 *
@@ -6839,10 +6842,10 @@ END1   AEQLC   STATCL,0,,ENDALL	   Skip stats if suppressed	[PLB12]
 *_
 END2   INTRL   EXN2CL,EXN2CL	   Convert execution total to REAL
        DVREAL  FCL,ETMCL,EXN2CL	   Compute average time		[PLB71]
-       MPREAL  FCL,FCL,R1KCL	   Convert to microseconds [PLB71][PLB104]
+       MPREAL  FCL,FCL,R1MCL	   Convert to nanoseconds	[PLB71][PLB107]
 AVTIME OUTPUT  PUNCH,TIMEPS,(FCL)  Print average time		[PLB5]
        RCOMP   ETMCL,RZERCL,,ENDALL  Avoid divide by zero	[PLB104]
-       DVREAL  FCL,EXN2CL,ETMCL,ENDALL  Compute KStatements/sec	[PLB103][PLB104]
+       DVREAL  FCL,EXN2CL,ETMCL,ENDALL  Compute KStatements/s [PLB103][PLB104]
        OUTPUT  PUNCH,KSTSF,(FCL)				[PLB103]
 ENDALL ENDEX   ABNDCL						E3.2.2
 *_
@@ -7097,6 +7100,10 @@ DIGSVL DESCR   0,0,0		   &DIGITS			[PLB105]
        DESCR   DGNMSP,0,0					[PLB105]
        REAL    3.1415926535897932384626433 &PI			[PLB106]
        DESCR   PISP,0,0		   				[PLB106]
+EXN2CL DESCR   0,0,I		   Stats stmt count &STEXEC	[PLB38][PLB107]
+       DESCR   STXTSP,0,0	   	      	    		[PLB107]
+GCTTTL REAL    0.0		   GC total time &GCTIME	[PLB92][PLB107]
+       DESCR   GCTMSP,0,0					[PLB107]
 KVEND  LHERE   ,
 *
 INLIST DESCR   INLIST,TTL+MARK,4*DESCR				[PLB36]
@@ -7295,12 +7302,10 @@ EMSGCL DESCR   0,0,0		   Present error message address
 ERRBAS DESCR   CARDSZ+STNOSZ,0,0				[PLB61]
 ESAICL DESCR   0,0,0		   Count of compiler errors
 ETMCL  DESCR   0,0,0		   Time descriptor
-EXN2CL DESCR   0,0,I		   Statement count for stats	[PLB38]
 FCL    DESCR   0,0,0		   Real number descriptor
 NEXFCL DESCR   FBLKSZ,0,0	   Offset in function block
 FRTNCL DESCR   0,0,0		   Failure return
 GCTMCL DESCR   0,0,0		   GC Start time		[PLB92]
-GCTTTL DESCR   0,0,R		   GC total time (want FP zero!) [PLB92]
 GOGOCL DESCR   0,0,0		   goto descriptor
 INCL   DESCR   0,0,0		   Global function descriptor
 IOKEY  DESCR   0,0,0		   I/O indicator
@@ -8123,6 +8128,7 @@ FRETSP STRING  'FRETURN'
 FTRCSP STRING  'FTRACE'
 FULLSP STRING  'FULLSCAN'
 FUNTSP STRING  'FUNCTION'
+GCTMSP STRING  'GCTIME'						[PLB107]
 GESP   STRING  'GE'
 GTSP   STRING  'GT'
 GTRCSP STRING  'GTRACE'						[PLB92]
@@ -8182,6 +8188,7 @@ STCTSP STRING  'STCOUNT'
 STFCSP STRING  'STFCOUNT'
 STLMSP STRING  'STLIMIT'
 STPTSP STRING  'STOPTR'
+STXTSP STRING  'STEXEC'						[PLB107]
 STNOSP STRING  'STNO'
 VARSP  STRING  'STRING'
 SUCCSP STRING  'SUCCEED'
@@ -8513,12 +8520,12 @@ STGETM FORMAT  '%F ms. Execution time in GC\n'			[PLB92]
 SUCCF  FORMAT  'No errors detected in source program\n\n'
 SYSCMT FORMAT  '%v:%d: Caught signal %d in statement %d at level %d\n'
 *								E3.4.1[PLB47]
-TIMEPS FORMAT  '%G us. Average per statement executed\n'	[PLB71][PLB72]
+TIMEPS FORMAT  '%F ns. Average per statement executed\n' [PLB71][PLB72][PLB107]
 TITLEF FORMAT  'SNOBOL4 (Version 3.11, May 19, 1975)\n'
 *								V3.11
 WRITNO FORMAT  '%D Writes performed\n'
 *
 *      Real constants
 RZERCL REAL	0.0			Zero			[PLB104]
-R1KCL  REAL	1000.0			One Thousand		[PLB104]
+R1MCL  REAL	1.0e6			1e6			[PLB107]
        END

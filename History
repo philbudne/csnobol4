@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+8/4/2013:
+	v311.sil: [PLB107] Display avg ns. per statement
+		Add &STEXEC -- total statements executed
+		    &GCTIME -- total time in GC
+
 8/1/2013:
 	v311.sil: [PLB106] add &PI
 
