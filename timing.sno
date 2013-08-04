@@ -66,15 +66,16 @@ VLOP	LINE = INPUT					:F(NOVERS)
 
 	OUTPUT = 'Version:' TAB TAB VERS		:(CLOP)
 
-NOVERS	OUTPUT = "ERROR: could not find SNOBOL4 SIGNON/VERSION" :(FATAL)
+NOVERS	TERMINAL = OUTPUT = "ERROR: could not find SNOBOL4 SIGNON/VERSION"
+							:(FATAL)
 
 * COMPILING
 CLOP	LINE = INPUT					:F(NOCOMP)
 	LINE 'No errors detected in source program'	:S(ELOP)
 	LINE 'ERRORS DETECTED IN SOURCE PROGRAM'	:S(BADCOMP)F(CLOP)
 
-NOCOMP	OUTPUT = "ERROR: compilation interrupted?"	:(FATAL)
-BADCOMP	OUTPUT = "ERROR: compilation failed"		:(FATAL)
+NOCOMP	TERMINAL = OUTPUT = "ERROR: compilation interrupted?"	:(FATAL)
+BADCOMP	TERMINAL = OUTPUT = "ERROR: compilation failed"		:(FATAL)
 
 * EXECUTING
 ELOP	LINE = INPUT					:F(NOEXEC)
@@ -82,8 +83,8 @@ ELOP	LINE = INPUT					:F(NOEXEC)
 	LINE 'Error ' INT				:S(BADEXEC)
 	LINE 'Caught'					:S(BADEXEC)F(ELOP)
 
-NOEXEC	OUTPUT = "ERROR: genc.sno execution error"	:(FATAL)
-BADEXEC	OUTPUT = "ERROR: execution failed"
+NOEXEC	TERMINAL = OUTPUT = "ERROR: genc.sno execution error"	:(FATAL)
+BADEXEC	TERMINAL = OUTPUT = "ERROR: execution failed"
 	OUTPUT = LINE					:(FATAL)
 
 **************** here at end of normal execution
@@ -116,9 +117,9 @@ GETSTAT	LINE = INPUT					:F(NOSTAT)
 	OUTPUT = 'KStatements per second:' TAB STMTS / EXEC
 
 * calculate usec/stmt
-	A1 = EXEC * 1000.0 / STMTS
+	A1 = EXEC * 1000000.0 / STMTS
 
-	OUTPUT = 'Microseconds per statement: ' A1
+	OUTPUT = 'Nanoseconds per statement: ' A1
 
 * get SNOBOL time in 10ths
 NOET	SNOBOL = (COMP + EXEC) / SNODIV
@@ -126,7 +127,7 @@ NOET	SNOBOL = (COMP + EXEC) / SNODIV
 **************** get snobols's average ms/stmt
 
 ALOP	LINE = INPUT					:F(NOSTAT)
-	LINE WS NUM . AVG WS 'us. Average'		:F(ALOP)
+	LINE WS NUM . AVG WS 'ns. Average'		:F(ALOP)
 *	OUTPUT = '>>' LINE
 
 * get usec/stmt (as calculated by snobol)
@@ -236,7 +237,7 @@ TIMEOK	OUTPUT =
 
 * could not parse "snobol4" stats output; fatal
 NOSTAT	OUTPUT =
-	OUTPUT = "ERROR: could not get stats"		:(FATAL)
+	TERMINAL = OUTPUT = "ERROR: could not get stats" :(FATAL)
 
 * could not get shell "time" output; nonfatal
 NOTIME	OUTPUT =
