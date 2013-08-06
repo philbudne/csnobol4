@@ -86,7 +86,7 @@ STCL_EVALFILE( LA_ALIST ) LA_DCL
     if (Tcl_EvalFile(interp, file) != TCL_OK)
 	RETFAIL;
 
-    RETSTR(interp->result);
+    RETSTR(Tcl_GetStringResult(interp));
 }
 
 /*
@@ -146,7 +146,7 @@ STCL_EVAL( LA_ALIST ) LA_DCL
     if (Tcl_Eval(interp, cmd) != TCL_OK)
 	RETFAIL;
 
-    RETSTR(interp->result);
+    RETSTR(Tcl_GetStringResult(interp));
 }
 
 /*

@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+8/7/2013:
+	lib/snolib/stcl.c: fix for Tcl 8.6
+		problem found by Michael Richter
+
 8/4/2013:
 	v311.sil: [PLB107] Display avg ns. per statement
 		Add &STEXEC -- total statements executed
