@@ -55,10 +55,6 @@ extern const char build_date[];
 extern const char build_dir[];
 #endif /* HAVE_BUILD_VARS defined */
 
-#ifndef BPC
-#define BPC 8				/* 8 bits/char */
-#endif /* BPC not defined */
-
 int
 HOST( LA_ALIST ) LA_DCL
 {

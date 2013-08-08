@@ -129,3 +129,9 @@ struct spec {				/* (new: qualifier) */
 
 /* for generated code which deals with function pointers */
 typedef int (*func_t)();
+
+#ifndef BPC
+#define BPC 8				/* 8 bits/char */
+#endif /* BPC not defined */
+
+#define MAXINT ((1UL<<(sizeof(INT_T)*BPC-1))-1)
