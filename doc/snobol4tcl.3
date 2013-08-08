@@ -85,22 +85,16 @@ CHECKV  LT(VER, 8.4)                                    :S(CHECKTK)
         STCL_EVAL(INTERP, "package require Tk")         :F(END)
  
 * Check for Tk
-CHECKTK TK_VERSION = STCL_GETVAR(INTERP, "tk_version")  :F(NOTK)
+CHECKTK TK_VERSION = STCL_GETVAR(INTERP, "tk_version")  :F(NO_TK)
         DIFFER(TK_VERSION)                              :S(HAVETK)
-
-NOTK    OUTPUT = "Could not find tk_version"            :(END)
+NO_TK   OUTPUT = "Could not find tk_version"            :(END)
                                                                               
 HAVETK  OUTPUT = "Tk version: " TK_VERSION
- 
-        STCL_EVAL(INTERP,
-+               'button .hello -text "Hello, world" -command {set val hello};'
-+               "pack .hello;"
-+               'button .other -text "Other Choice" -command {set val other};'
-+               "pack .other;"
-+               "global val;"
-+               "vwait val")
- 
-        OUTPUT = STCL_GETVAR(INTERP, "val")
+
+LOOP    OUTPUT = STCL_EVAL(INTERP, 'tk_messageBox -message "Alert!" -type ok -icon info')
+        VAL = STCL_EVAL(INTERP, 'tk_messageBox -message "Really quit?" -type yesno -icon question')
+        OUTPUT = VAL
+        DIFFER(VAL, "yes")                              :S(LOOP)
 END
 .ft R
 .fi
