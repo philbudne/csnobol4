@@ -147,3 +147,5 @@ reg hide.sno
 # 7/31/2013
 reg -I.. float2.sno
 reg digits.sno
+# 8/7/2013
+reg maxint.sno

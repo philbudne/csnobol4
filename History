@@ -7,6 +7,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	v311.sil: [PLB108] Add &MAXINT
 	lib/snolib/host.c: moved BPS to include/snotypes.h
 	include/snotypes.h: add BPS, MAXINT
+	test/maxint.{sno,ref}: test &MAXINT
+	test/tests.in: add maxint
 
 8/6/2013:
 	lib/snolib/stcl.c: fix for Tcl 8.6
