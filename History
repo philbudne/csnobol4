@@ -9,6 +9,9 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	include/snotypes.h: add BPS, MAXINT
 	test/maxint.{sno,ref}: test &MAXINT
 	test/tests.in: add maxint
+	configure: drop down to 15 digits precision for double formatting
+		better safe than sorry.  15 is all Perl prints!
+	test/float2.{sno,ref}: add more tests
 
 8/6/2013:
 	lib/snolib/stcl.c: fix for Tcl 8.6
