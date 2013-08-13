@@ -149,3 +149,5 @@ reg -I.. float2.sno
 reg digits.sno
 # 8/7/2013
 reg maxint.sno
+# 8/13/2013
+genc genc.sno

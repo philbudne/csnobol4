@@ -1,5 +1,7 @@
 $Id$
 
+Allow trace of &STEXEC (ignoring &TRACE)?? use in SDB?
+
 genc:
 	merge in "one function" code
 	ntiming w/ static input
@@ -14,8 +16,11 @@ Update snobol4 man page:
 	SNOBOL_PRELOAD_PATH
 	(SNOLIB)
 	NOTE that preloads can make code less portable!!!
+       New Keywords:
 	&DIGITS -- note an extension!!!
 	&PI -- note an extension!!!
+	&MAXINT -- ditto
+	Document &STEXEC & GCTIME???
 
 SDB.BAT file
 
@@ -31,7 +36,7 @@ sdb:
     Have trap handlers call function with params to save?
     Use EQ() for string compares?
 
-Pure SNOBOL tests/timing
+Pure SNOBOL test driver (run under Cygwin!!)
 
 handle leading or trailing PATH_SEP on SNOPATH and PRELOAD_PATH???
 

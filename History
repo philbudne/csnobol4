@@ -2,6 +2,16 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+8/13/2013:
+	COPYRIGHT, README: update copyright for 2013
+	timing: run test/bench.sno
+	test/genc.sno: frozen version of 1.4.1 genc for regression test
+	test/test.genc.sh: test script for genc
+	test/tests.in: add genc test
+	test/{callgraph,genc,proc.h,static.h}.ref: genc test outputs
+	test/bench.sno: frozen benchmark 1.4.1 genc; loops for accuracy
+	test/v311.sil, test/globals, test/procs: 1.4.1 files for timing, genc
+
 8/7/2013:
 	doc/snobol4tcl.3: update example code
 	v311.sil: [PLB108] Add &MAXINT

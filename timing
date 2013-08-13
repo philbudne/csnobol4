@@ -319,26 +319,22 @@ TAIL1='sed -n 2,$p'
 
 	cd $TDIR
 
-LNFILES='../procs ../globals ../v311.sil ../host.sno'
+LNFILES='../test/procs ../test/globals ../host.sno'
 	# AFS doesn't allow hard links across directories!
 	ln $LNFILES . 2>/dev/null || ln -s $LNFILES .
 
 	# need eval on Debian 3.0 (no "time" binary)
 	# stderr to file "stderr", all but first line of stdout to "$OUT"
-	eval "$TIME ./snobol4 $ARGS -s ../genc.sno v311.sil" 2>stderr | $TAIL1 >$OUT
+	eval "$TIME ./snobol4 $ARGS -s ../test/bench.sno ../test/v311.sil" 2>stderr
 )
 # use snobol program to process output!!
 $SNOBOL $ARGS -b timing.sno < $TDIR/stderr
 # save exit status
 STAT=$?
 
-# check output regardless of timing.sno status
-if $TAIL1 < snobol4.c | cmp -s - $TDIR/$OUT; then
-	echo "genc.sno output checks out"
-	rm -rf $TDIR
+if [ $STAT = 0 ]; then
+    rm -rf $TDIR
 else
-	echo "ERROR: genc.sno output is bad; compare $TDIR/$OUT with snobol4.c"
-	STAT=2
+    echo ERROR: timing.sno status: $STAT
 fi
-
 exit $STAT
