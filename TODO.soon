@@ -1,12 +1,5 @@
 $Id$
 
-Allow trace of &STEXEC (ignoring &TRACE)?? use in SDB?
-
-genc:
-	merge in "one function" code
-	ntiming w/ static input
-	make a "genc" test w/ static input/output?
-
 Have timing script POST results??
 
 Update snobol4 man page:
@@ -20,13 +13,50 @@ Update snobol4 man page:
 	&DIGITS -- note an extension!!!
 	&PI -- note an extension!!!
 	&MAXINT -- ditto
-	Document &STEXEC & GCTIME???
+	Document &STEXEC & &GCTIME???
 
-SDB.BAT file
+(trace) timestamps are "noisy" on 64-bits
+
+SDB.BAT file??
+
+	call :GETTEMPNAME
+	echo "Temp file name is %TMPFILE%"
+	goto :EOF
+	:GETTEMPNAME
+	set TMPFILE=%TMP%\mytempfile-%RANDOM%-%TIME:~6,5%.tmp
+	if exist "%TMPFILE%" GOTO :GETTEMPNAME
+	:EOF
+
+TIMING.BAT file???
+	hostname
+	systeminfo
+	msinfo32
+	    Win7: C:\Windows\System32
+	    XP: C:\Program Files\Common Files\Microsoft Shared\MSInfo
+	wmic computersystem get TotalPhysicalMemory (admin only)
+	mem (last on XP)
+
+
+Preloading:
+	Disable if running setuid!!!
+	Command line arg to disable
+
+================
+
+genc:
+	merge in "one function" code
+
+integrate GC patch (--with-gc?)
+	find out if gc start/end hook possible.
+
+have COMPILE_C_DYNAMIC() return object file name??
+
+document snobol4dynamic, snobol4wrapper
 
 sdb:
     use SETEXIT()
-    	catch errors, & exit
+	but setting &ERRLIMIT can change program behavior
+    	catch errors, & exit?
 	optional??
     trace FNCLEVEL for finish/next (as needed)
 	disable on next break of any kind.
@@ -40,20 +70,12 @@ Pure SNOBOL test driver (run under Cygwin!!)
 
 handle leading or trailing PATH_SEP on SNOPATH and PRELOAD_PATH???
 
-have COMPILE_C_DYNAMIC() return object file name??
-
-document snobol4dynamic, snobol4wrapper
-
 Hash TABLES()?
 	need stable ID field on all datatypes
 
 Run tests, timing on MinGW?
 	Need to fix CR handling; EOLSTR, _setmode()
 	    URL/INET functions need to set binary mode to avoid double CR???
-
-Preloading:
-	Disable if running setuid!!!
-	Command line arg to disable
 
 constants file for WS, DIGITS?
 
@@ -70,12 +92,9 @@ mingw.mak:
 
 Make some signals catchable via SETEXIT? INTR, CHLD, HUP, ALRM??
 
-
 load.c:
 	unix98: allow access to "self" (NULL ptr to dlopen)?
 	convert lib/*/load.c to os_load() API
-
-sdb: use SETEXIT? [but setting &ERRLIMIT can change program behavior]
 
 Make use of tdb (from samba project: gdbm API w/ multiple writers)?
 
@@ -87,12 +106,6 @@ DIFFTIME function??
 
 Fix utf.sno RUNE() function:
     use logic.sno (or wctomb()?)
-
-integrate GC patch (--with-gc?)
-	find out if gc start/end hook possible.
-
-increase dynamic region size?
-	512K descrs (4MB) is sufficient to run GENC w/o GC
 
 Fix univeral builds for non OSX 10.4 systems?
 OS X 4-way Universal???

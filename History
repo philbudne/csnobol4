@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+8/14/2013:
+	configure: check for POSIX-2001 clock_gettime(CLOCK_PROCESS_CPUTIME_ID)
+	config/check: add -r and -d options (also honor CHECK_DEBUG)
+	lib/posix2001/mstime.c: get precise runtime on Linux
+
 8/13/2013:
 	COPYRIGHT, README: update copyright for 2013
 	timing: run test/bench.sno
@@ -11,6 +16,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	test/{callgraph,genc,proc.h,static.h}.ref: genc test outputs
 	test/bench.sno: frozen benchmark 1.4.1 genc; loops for accuracy
 	test/v311.sil, test/globals, test/procs: 1.4.1 files for timing, genc
+	test/{nqueens,sudoku}.{sno,ref}: from berstis.com
+	test/tests.in: add nqueens,sudoku
 
 8/7/2013:
 	doc/snobol4tcl.3: update example code

@@ -6,6 +6,16 @@
 
 # XXX options to enable output, run program?
 
+## ACK! accept options in any order?
+while [ "x$1" ]; do
+    case "$1" in
+    -r) RUN=1; shift;;
+    -d) DEBUG_CHECK=1; set -x; shift;;
+    -*) echo bad option $1; exit 1;;
+    *) break;;
+    esac
+done
+
 INCLUDES="$1"
 BODY="$2"
 LIBS="$3"
@@ -23,4 +33,15 @@ echo "    $BODY;"	>> $TMP_C
 echo "    return 0;"	>> $TMP_C
 echo "}"		>> $TMP_C
 
-${CC:-cc} $CFLAGS -o $TMP $TMP_C $LIBS >/dev/null 2>&1
+test "$DEBUG_CHECK" && cat $TMP_C
+
+if ${CC:-cc} $CFLAGS -o $TMP $TMP_C $LIBS >/dev/null 2>&1; then
+    if [ "$RUN" ]; then
+	$TMP
+	exit $?
+    else
+	exit 0
+    fi
+else
+    exit 1
+fi
