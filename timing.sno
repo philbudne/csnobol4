@@ -37,6 +37,19 @@ CHECKHZ	X = (REAL * 1000.0 / SNODIV) / (USED * SHMULT)
 	OUTPUT = "used HZ=" USED ", should use " REAL '?' :(RETURN)
 ECHECKHZ
 
+****************
+
+	DEFINE("INT(F)")				:(EINT)
+	INT = CONVERT(F, "INTEGER")			:(RETURN)
+EINT
+
+****************
+
+	DEFINE("PREC(IN)")				:(EPREC)
+PREC	PREC = LT(REAL_BITS,64) IN			:S(RETURN)
+	PREC = INT(IN * 1000) / 1000.0			:(RETURN)
+EPREC
+
 ****************************************************************
 * print environmental stuff
 
@@ -48,7 +61,8 @@ ECHECKHZ
 	OUTPUT = 'HOST(HOST_CONFIG_OPTIONS):' SP HOST(HOST_CONFIG_OPTIONS)
 
 	OUTPUT = 'HOST(HOST_INTEGER_BITS):' SP HOST(HOST_INTEGER_BITS)
-	OUTPUT = 'HOST(HOST_REAL_BITS):' TAB HOST(HOST_REAL_BITS)
+	REAL_BITS = HOST(HOST_REAL_BITS)
+	OUTPUT = 'HOST(HOST_REAL_BITS):' TAB REAL_BITS
 	OUTPUT = 'HOST(HOST_POINTER_BITS):' SP HOST(HOST_POINTER_BITS)
 	OUTPUT = 'HOST(HOST_LONG_BITS):' TAB HOST(HOST_LONG_BITS)
 	OUTPUT = 'HOST(HOST_DESCR_BITS):' TAB HOST(HOST_DESCR_BITS)
@@ -114,12 +128,12 @@ GETSTAT	LINE = INPUT					:F(NOSTAT)
 
 * beware dummy/mstime.c
 	EQ(EXEC,0)					:S(NOET)
-	OUTPUT = 'KStatements per second:' TAB STMTS / EXEC
+	OUTPUT = 'KStatements per second:' TAB PREC(STMTS / EXEC)
 
 * calculate usec/stmt
 	A1 = EXEC * 1000000.0 / STMTS
 
-	OUTPUT = 'Nanoseconds per statement: ' A1
+	OUTPUT = 'Nanoseconds per statement: ' PREC(A1)
 
 * get SNOBOL time in 10ths
 NOET	SNOBOL = (COMP + EXEC) / SNODIV
@@ -144,7 +158,7 @@ ALOP	LINE = INPUT					:F(NOSTAT)
 
 * get ratio, keep our version on the bottom (less likely to be zero)
 	X = 100 * AVG / A1
-	X = CONVERT(X, 'INTEGER')
+	X = INT(X)
 *	OUTPUT = 'X=' X
 
 * ignore errors of less than 4% (difference between 49 and 50us)
