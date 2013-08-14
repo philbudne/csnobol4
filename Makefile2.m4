@@ -239,10 +239,8 @@ cpuid:	cpuid.c
 ################
 # run regression tests.
 
-snobol4: xsnobol4 snobol4.c test/tests.in cpuid
-	@echo Running regression tests...
-	(cd test; ./run.sh ../xsnobol4)
-	@echo Passed regression tests.
+timing.out snobol4: tested xsnobol4
+	@echo Running timing script...
 	./timing > timing.out
 	-rm -f snobol4$(EXT)
 	ln xsnobol4$(EXT) snobol4$(EXT)
@@ -252,6 +250,12 @@ snobol4: xsnobol4 snobol4.c test/tests.in cpuid
 	@echo 'Anonymized results are posted at http://www.snobol4.org' 1>&2
 	@echo 'And you will be notified when test versions are available.' 1>&2
 	@echo '********************************************************' 1>&2
+
+tested:  xsnobol4 test/tests.in cpuid
+	@echo Running regression tests...
+	(cd test; ./run.sh ../xsnobol4)
+	@echo Passed regression tests.
+	date > tested
 
 ################
 

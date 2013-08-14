@@ -7,6 +7,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	config/check: add -r and -d options (also honor CHECK_DEBUG)
 	lib/posix2001/mstime.c: get precise runtime on Linux
 	timing.sno: add PREC() INT() functions
+	Makefile2.m4: make separate tested target
+	Makefile: have make clean remove tested
 
 8/13/2013:
 	COPYRIGHT, README: update copyright for 2013

@@ -194,7 +194,7 @@ cleanmostly: tidy
 
 # clean as a freshly unpacked kit; remove binaries, timing; leave version.h
 clean:	cleanmostly
-	rm -f snobol4 xsnobol4 cpuid timing.out *.ln sdb
+	rm -f snobol4 xsnobol4 cpuid timing.out tested *.ln sdb
 
 # DANGER: requires installed binary to rebuild!!
 # remove objects, generated files (clean as a fresh CVS checkout)
