@@ -24,5 +24,5 @@ mstime() {
     if (clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &ts) < 0)
 	return 0.0;
 
-    return ts.tv_sec * 1000.0 + ts.tv_nsec / 1000000000.0;
+    return ts.tv_sec * 1000.0 + ts.tv_nsec / 1000000.0;
 }

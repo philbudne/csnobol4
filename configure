@@ -908,11 +908,11 @@ GETTIME="struct timespec ts; int i; for (i=0;i<1000000;i++) if (clock_gettime(CL
 if [ "$CYGWIN" ]; then
     echo 'using Win32 native calls for runtimes' 1>&2
     echo 'MSTIME_C=$(SRCDIR)lib/win32/mstime.c'	>> $CONFIG_M4
-elif config/check -r "time.h" "$CLOCK_GETTIME"; then
+elif config/check -r "time.h" "$GETTIME"; then
     # -lrt not needed w/ kernel 3.9 and libc 2.17?
     echo 'using POSIX-2001 clock_gettime() for runtimes' 1>&2
     echo 'MSTIME_C=$(SRCDIR)lib/posix2001/mstime.c' >> $CONFIG_M4
-elif config/check -r "time.h" "$CLOCK_GETTIME" "-lrt"; then
+elif config/check -r "time.h" "$GETTIME" "-lrt"; then
     echo 'using POSIX-2001 clock_gettime() for runtimes (with -lrt)' 1>&2
     echo 'MSTIME_C=$(SRCDIR)lib/posix2001/mstime.c' >> $CONFIG_M4
     LIBRT=-lrt
