@@ -909,10 +909,10 @@ if [ "$CYGWIN" ]; then
     echo 'using Win32 native calls for runtimes' 1>&2
     echo 'MSTIME_C=$(SRCDIR)lib/win32/mstime.c'	>> $CONFIG_M4
 elif config/check -r "time.h" "$CLOCK_GETTIME"; then
-    echo 'using getrusage() for runtimes' 1>&2
+    echo 'using POSIX-2001 clock_gettime() for runtimes' 1>&2
     echo 'MSTIME_C=$(SRCDIR)lib/posix2001/mstime.c' >> $CONFIG_M4
 elif config/check -r "time.h" "$CLOCK_GETTIME" "-lrt"; then
-    echo 'using getrusage() for runtimes with -lrt' 1>&2
+    echo 'using POSIX-2001 clock_gettime() for runtimes with -lrt' 1>&2
     echo 'MSTIME_C=$(SRCDIR)lib/posix2001/mstime.c' >> $CONFIG_M4
     LIBRT=-lrt
 elif config/check "sys/time.h sys/resource.h" \
