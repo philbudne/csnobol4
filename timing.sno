@@ -47,7 +47,7 @@ EINT
 
 	DEFINE("PREC(IN)")				:(EPREC)
 PREC	PREC = LT(REAL_BITS,64) IN			:S(RETURN)
-	PREC = INT(IN * 1000) / 1000.0			:(RETURN)
+	PREC = INT(IN * 1000 + 0.5) / 1000.0		:(RETURN)
 EPREC
 
 ****************************************************************
