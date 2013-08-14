@@ -239,12 +239,11 @@ cpuid:	cpuid.c
 ################
 # run regression tests.
 
-timing.out snobol4: tested xsnobol4
+timing.out snobol4: tested xsnobol4 timing timing.sno test/bench.sno test/v311.sil
 	@echo Running timing script...
 	./timing > timing.out
 	-rm -f snobol4$(EXT)
-	ln xsnobol4$(EXT) snobol4$(EXT)
-	@touch snobol4$(EXT)
+	cp xsnobol4$(EXT) snobol4$(EXT)
 	@echo '********************************************************' 1>&2
 	@echo 'Please consider mailing timing.out to timing@snobol4.org' 1>&2
 	@echo 'Anonymized results are posted at http://www.snobol4.org' 1>&2
