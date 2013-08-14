@@ -39,15 +39,15 @@ ECHECKHZ
 
 ****************
 
-	DEFINE("INT(F)")				:(EINT)
-	INT = CONVERT(F, "INTEGER")			:(RETURN)
-EINT
+	DEFINE("FIX(F)")				:(EFIX)
+FIX	FIX = CONVERT(F + 0.5, "INTEGER")		:(RETURN)
+EFIX
 
 ****************
 
 	DEFINE("PREC(IN)")				:(EPREC)
 PREC	PREC = LT(REAL_BITS,64) IN			:S(RETURN)
-	PREC = INT(IN * 1000 + 0.5) / 1000.0		:(RETURN)
+	PREC = FIX(IN * 1000) / 1000.0			:(RETURN)
 EPREC
 
 ****************************************************************
@@ -158,7 +158,7 @@ ALOP	LINE = INPUT					:F(NOSTAT)
 
 * get ratio, keep our version on the bottom (less likely to be zero)
 	X = 100 * AVG / A1
-	X = INT(X)
+	X = FIX(X)
 *	OUTPUT = 'X=' X
 
 * ignore errors of less than 4% (difference between 49 and 50us)
