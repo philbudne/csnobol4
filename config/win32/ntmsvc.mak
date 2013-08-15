@@ -55,7 +55,8 @@ OBJ=	isnobol4.obj data.obj data_init.obj main.obj syn.obj \
 all:	cpuid.exe snobol4.exe
 
 cpuid.exe: cpuid.c
-	$(CC) /out:cpuid.exe cpuid.c
+	$(CC) -c cpuid.c
+	link /out:cpuid.exe cpuid.obj
 
 snobol4.exe : $(OBJ)
 	link /out:snobol4.exe $(OBJ) $(INET_LIBS) $(COM_LIBS)

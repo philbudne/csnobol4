@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+8/15/2013:
+	config/win32/snobol4.vcxproj: add loadx.c
+	config/win32/ntmsvc.mak: fix cpuid build
+
 8/14/2013:
 	configure: check for POSIX-2001 clock_gettime(CLOCK_PROCESS_CPUTIME_ID)
 	config/check: add -r and -d options (also honor CHECK_DEBUG)

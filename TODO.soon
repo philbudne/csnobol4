@@ -1,5 +1,13 @@
 $Id$
 
+cygwin script to create windows .zip file???
+	add archive comment asking for timing.out files?
+		zip -z foo < foowhat
+
+Preloading:
+	Disable if running setuid!!!
+	Command line arg to re-enable???
+
 Have timing script POST results??
 
 Update snobol4 man page:
@@ -14,32 +22,6 @@ Update snobol4 man page:
 	&PI -- note an extension!!!
 	&MAXINT -- ditto
 	Document &STEXEC & &GCTIME???
-
-(trace) timestamps are "noisy" on 64-bits
-
-SDB.BAT file??
-
-	call :GETTEMPNAME
-	echo "Temp file name is %TMPFILE%"
-	goto :EOF
-	:GETTEMPNAME
-	set TMPFILE=%TMP%\mytempfile-%RANDOM%-%TIME:~6,5%.tmp
-	if exist "%TMPFILE%" GOTO :GETTEMPNAME
-	:EOF
-
-TIMING.BAT file???
-	hostname
-	systeminfo
-	msinfo32
-	    Win7: C:\Windows\System32
-	    XP: C:\Program Files\Common Files\Microsoft Shared\MSInfo
-	wmic computersystem get TotalPhysicalMemory (admin only)
-	mem (last on XP)
-
-
-Preloading:
-	Disable if running setuid!!!
-	Command line arg to disable
 
 ================
 

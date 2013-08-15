@@ -85,6 +85,7 @@
     <ClCompile Include="..\..\lib\init.c" />
     <ClCompile Include="..\..\lib\io.c" />
     <ClCompile Include="..\..\lib\lexcmp.c" />
+    <ClCompile Include="..\..\lib\loadx.c" />
     <ClCompile Include="..\..\lib\ordvst.c" />
     <ClCompile Include="..\..\lib\pair.c" />
     <ClCompile Include="..\..\lib\pat.c" />
