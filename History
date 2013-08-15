@@ -9,8 +9,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	timing.sno: add PREC() INT() functions
 	Makefile2.m4: make separate tested target
 	Makefile: have make clean remove tested
-	config/win32/ntmsvc.mak: fix loadx.obj
-	lib/win32/osopen.c: fix /dev/null, line buffer /dev/tty
+	config/win32/ntmsvc.mak: fix loadx.obj, add cpuid.exe
+	lib/win32/osopen.c: fix /dev/null, unbuffer /dev/tty
 	pkg/win32/sdb.bat: script to run sdb!
 	pkg/win32/timing.bat: script to run timing!!
 	timing.sno: don't look for shell time on windows
