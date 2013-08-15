@@ -13,6 +13,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	lib/win32/osopen.c: fix /dev/null, line buffer /dev/tty
 	pkg/win32/sdb.bat: script to run sdb!
 	pkg/win32/timing.bat: script to run timing!!
+	timing.sno: don't look for shell time on windows
 
 8/13/2013:
 	COPYRIGHT, README: update copyright for 2013

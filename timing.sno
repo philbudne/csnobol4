@@ -169,9 +169,12 @@ ALOP	LINE = INPUT					:F(NOSTAT)
 	WARNINGS = 1
 
 ****************************************************************
-* deal with shell "time" output
+* deal with shell "time" output (but not on windoze)
 
-GETTIME	LINE = INPUT					:F(NOTIME)
+GETTIME	HOST() BREAK(':') ':Win'			:S(DONE)
+
+GETTIME2
+	LINE = INPUT					:F(NOTIME)
 * NOTE: all of the following could be one pattern/match, 
 * but kept seperate for sanity!!
 
@@ -194,7 +197,7 @@ GETTIME	LINE = INPUT					:F(NOTIME)
 * more here?
 
 * detect flag line for next section;
-	LINE '==== '					:F(GETTIME)
+	LINE '==== '					:F(GETTIME2)
 	OUTPUT =
 	OUTPUT = "WARNING: could not verify snobol4's cpu time measurements"
 	OUTPUT = '	(look in timing.sno at GETTIME patterns)'
