@@ -22,8 +22,13 @@ osdep_open(fname, mode, fpp)
 {
     if (strcmp(fname, "/dev/tty") == 0) {
 	*fpp = fopen("CON", mode);
-#ifdef _IOLBF
-	setvbuf(stream, (char *)NULL, _IOLBF, 0);
+#ifdef _IONBF
+	if (*fpp) {
+	    // no line buffering on windoze, so turn of buffering.
+	    // setbuf(*fpp, NULL) should do the same thing as this, and
+	    // might be more portable, but is now deprecated.
+	    setvbuf(*fpp, (char *)NULL, _IONBF, 0);
+	}
 #endif
 	return TRUE;			/* matched */
     }
