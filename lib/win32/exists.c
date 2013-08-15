@@ -35,7 +35,7 @@ abspath(path)
     char *path;
 {
 #define BS DIR_SEP[0]
-    return (*cp == '/' ||
-	    *cp == BS ||
-	    (isalpha(*cp) && cp[1] == ':' && cp[2] == BS));
+    return (*path == '/' ||
+	    *path == BS ||
+	    (isalpha(*path) && path[1] == ':' && path[2] == BS));
 }

@@ -43,7 +43,7 @@ OBJ=	isnobol4.obj data.obj data_init.obj main.obj syn.obj \
 	intspc.obj io.obj lexcmp.obj ordvst.obj pair.obj \
 	pat.obj pml.obj realst.obj replace.obj str.obj stream.obj \
 	top.obj tree.obj bcopy.obj bzero.obj dynamic.obj expops.obj \
-	getopt.obj init.obj load.obj loadx.o mstime.obj \
+	getopt.obj init.obj load.obj loadx.obj mstime.obj \
 	atan.obj chop.obj cos.obj \
 	delete.obj environ.obj exit.obj file.obj getstring.obj handle.obj \
 	host.obj log.obj logic.obj ord.obj random.obj rename.obj retstring.obj \

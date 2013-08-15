@@ -22,9 +22,12 @@ osdep_open(fname, mode, fpp)
 {
     if (strcmp(fname, "/dev/tty") == 0) {
 	*fpp = fopen("CON", mode);
+#ifdef _IOLBF
+	setvbuf(stream, (char *)NULL, _IOLBF, 0);
+#endif
 	return TRUE;			/* matched */
     }
-    if (strcmp(fname, "/dev/nul") == 0) {
+    if (strcmp(fname, "/dev/null") == 0) {
 	*fpp = fopen("NUL", mode);
 	return TRUE;			/* matched */
     }
