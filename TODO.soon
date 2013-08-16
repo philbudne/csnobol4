@@ -1,17 +1,22 @@
 $Id$
 
+Explicit io_add_lib_path(".") -- remove initial check in io_include?
+	but not if setuid!!!
+
 cygwin script to create windows .zip file???
 	add archive comment asking for timing.out files?
 		zip -z foo < foowhat
 
-Preloading:
-	Disable if running setuid!!!
+set-uid checks:
+	(silently?) ignore environment variables
+		(SNODIR, SNOPATH, SNOBOL_PRELOAD_PATH)
 	Command line arg to re-enable???
+	Command line args to ignore: -L -I??
 
 Have timing script POST results??
 
 Update snobol4 man page:
-       Add FILE_ABSPATH, FILE_ISDIR
+       Add FILE_ABSPATH, FILE_ISDIR, SPRINTF
        Add ENVIRONMENT section:
 	SNOPATH
 	SNOBOL_PRELOAD_PATH
@@ -24,6 +29,12 @@ Update snobol4 man page:
 	Document &STEXEC & &GCTIME???
 
 ================
+
+String/number conversion
+	Additional argument to CONVERT() like SITBOL
+	Add STRTOINT
+	Have SPRINTF check for reasonable format??
+		Add sprintf tests
 
 genc:
 	merge in "one function" code

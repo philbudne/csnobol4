@@ -223,6 +223,9 @@ io_init()				/* here from INIT */
 
     io_initvars();
 
+    /* but not if set-uid!!! */
+    io_add_lib_dir(".");
+
     if (nfiles == 0) {			/* no input file(s)? */
 #ifdef MEM_IO_TEST
 	char *str = "\tOUTPUT = 'Hello World'\n\tOUTPUT = INPUT\nEND\nFOO\n";
@@ -405,7 +408,7 @@ init_args( ac, av )
 	    if (exists(optarg)) 
 		io_input_file(optarg);
 	    else {
-		/* look for file on SNOPATH */
+		/* look for file on SNOPATH (BUG: not yet populated?) */
 		/* XXX check for no DIR_SEP? */
 		char *path = io_lib_find(NULL, optarg, ".inc");
 		if (path)

@@ -31,6 +31,11 @@ echo:
 cd %SNODIR%\timing
 echo Ids:
 find "Id:" bench.sno v311.sil timing.sno
+echo:
 
+echo running benchmark:
 ..\snobol4 -s bench.sno v311.sil 2>stderr
 ..\snobol4 -b timing.sno < stderr
+
+echo:
+echo END

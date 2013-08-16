@@ -1669,8 +1669,10 @@ io_openi(dunit, sfile, sopts, drecl)	/* called from SNOBOL INPUT() */
 	return FALSE;
 
     /* process options */
-    if (!io_options(fp, opts, &recl))
+    if (!io_options(fp, opts, &recl)) {
+	free(fp);
 	return FALSE;
+    }
 
     /* open it now, so we can return status! */
     if (fname[0]) {
@@ -1728,15 +1730,18 @@ io_openo(dunit, sfile, sopts)		/* called from SNOBOL OUTPUT() */
 	return FALSE;			/* fail; no harm done! */
 
     /* process options */
-    if (!io_options(fp, opts, NULL))    /* XXX error if recl set?? */
+    if (!io_options(fp, opts, NULL)) {	/* XXX error if recl set?? */
+	free(fp);
 	return FALSE;
+    }
 
     /* open it now, so we can return status! */
     if (fname[0]) {
 	f = io_fopen( fp, "w");
-	if (f == NULL)
+	if (f == NULL) {
+	    free(fp);
 	    return FALSE;		/* fail; no harm done! */
-
+	}
 	io_closeall(unit);
 	up->curr = up->head = fp;
     }
@@ -1752,8 +1757,11 @@ io_include( dp, sp )
     char fname[MAXFNAME];		/* XXX */
     struct file *fp;
     struct unit *up;
+    char *fn2;
 
     spec2str( sp, fname, sizeof(fname) );
+
+    /* if setuid, check for absolute path?? */
 
     /* search includes list to see if file already included!! */
     for (fp = iov.includes; fp; fp = fp->next)
@@ -1767,27 +1775,19 @@ io_include( dp, sp )
     }
     fname[l] = '\0';
 
-    fp = io_newfile(fname);
+    /* removed direct check; "." now explicitly added to lib path */
+    fn2 = io_lib_find(NULL, fname, NULL);
+    if (!fn2)
+	return INC_FAIL;		/* not found */
+
+    fp = io_newfile(fn2);
+    free(fn2);
     if (fp == NULL)
-	return INC_FAIL;
+	return INC_FAIL;		/* alloc failure */
 
     if (io_fopen( fp, "r") == NULL) {
-	char *fn2;
-
 	free(fp);
-
-	fn2 = io_lib_find(NULL, fname, NULL);
-	if (!fn2)
-	    return INC_FAIL;		/* not found */
-	fp = io_newfile(fn2);
-	free(fn2);
-	if (fp == NULL)
-	    return INC_FAIL;		/* alloc failure */
-
-	if (io_fopen( fp, "r") == NULL) {
-	    free(fp);
-	    return INC_FAIL;
-	}
+	return INC_FAIL;
     }
 
     up = FINDUNIT(INTERN(D_A(dp)));
@@ -2134,7 +2134,7 @@ io_add_lib_dir(dirname)
     iov.lib_dir_last = fp;
 }
 
-/* new 1/12/2012 call to add a path to include dir list */
+/* new 1/12/2012 add a (PATH_SEP separated) path to include dir list */
 int
 io_add_lib_path(path)
     char *path;

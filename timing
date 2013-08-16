@@ -337,4 +337,5 @@ if [ $STAT = 0 ]; then
 else
     echo ERROR: timing.sno status: $STAT
 fi
+echo END
 exit $STAT
