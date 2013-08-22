@@ -493,14 +493,29 @@ math_catch(sig)
     /* XXX need to longjump out on some systems to avoid restarting insn? */
 }
 
+/* handle fatal errors */
 static SIGFUNC_T
 err_catch(sig)
     int sig;
 {
     D_A(SIGNCL) = sig;			/* save signal number for output */
-    // only for fatal errors? 
-    // else check SIGNCL in interpreter loop and go to FTLTST (for SETEXIT handling)
     SYSCUT(NORET);
+}
+
+/* handle non-fatal errors here */
+static SIGFUNC_T
+sig_catch(sig)
+    int sig;
+{
+    if (!D_A(XITPTR))			/* SETEXIT handler? */
+	err_catch(sig);			/* no-- do it the normal way */
+
+    io_flushall(0);
+
+    /* INIT will see non-zero UINTCL and raise error 36 */
+    D_A(UINTCL) = 1;
+    /* NOTE!! multiple signals during one statement will be lost!! */
+    D_A(SIGNCL) = sig;			/* save signal number */
 }
 
 #ifdef SIGTSTP
@@ -599,7 +614,7 @@ init()
      * setup signal handlers
      */
 
-    signal( SIGINT, err_catch );
+    signal( SIGINT, sig_catch );
 
     /* catch bad memory references */
     signal( SIGSEGV, err_catch );
