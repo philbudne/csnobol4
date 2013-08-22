@@ -1757,11 +1757,8 @@ io_include( dp, sp )
     char fname[MAXFNAME];		/* XXX */
     struct file *fp;
     struct unit *up;
-    char *fn2;
 
     spec2str( sp, fname, sizeof(fname) );
-
-    /* if setuid, check for absolute path?? */
 
     /* search includes list to see if file already included!! */
     for (fp = iov.includes; fp; fp = fp->next)
@@ -1775,19 +1772,28 @@ io_include( dp, sp )
     }
     fname[l] = '\0';
 
-    /* removed direct check; "." now explicitly added to lib path */
-    fn2 = io_lib_find(NULL, fname, NULL);
-    if (!fn2)
-	return INC_FAIL;		/* not found */
-
-    fp = io_newfile(fn2);
-    free(fn2);
+    fp = io_newfile(fname);
     if (fp == NULL)
-	return INC_FAIL;		/* alloc failure */
+	return INC_FAIL;
 
     if (io_fopen( fp, "r") == NULL) {
+	char *fn2;
+
 	free(fp);
-	return INC_FAIL;
+
+	fn2 = io_lib_find(NULL, fname, NULL);
+	if (!fn2)
+	    return INC_FAIL;		/* not found */
+
+	fp = io_newfile(fn2);
+	free(fn2);
+	if (fp == NULL)
+	    return INC_FAIL;		/* alloc failure */
+
+	if (io_fopen( fp, "r") == NULL) {
+	    free(fp);
+	    return INC_FAIL;
+	}
     }
 
     up = FINDUNIT(INTERN(D_A(dp)));
