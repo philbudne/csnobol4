@@ -2,6 +2,15 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+8/22/2013:
+	init.c: if SETEXIT handler set, set UINTCL on SIGINT (^C)
+	v311.sil: [PLB109] Implement "User Interrupt" (SIGINT) handling
+		Set &LAST{NO,FILE,LINE} in XITHND
+		Allow new errors to overwrite old return information
+	procs: add USRINT
+	snolib/sdb.sno: cleanup, use SETEXIT()
+	snobol4.1: add missing .TP
+
 8/16/2013:
 	timing: add "END"
 	lib/init.c: explicitly init lib path with "."

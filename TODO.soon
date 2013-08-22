@@ -1,27 +1,34 @@
 $Id$
 
-Explicit io_add_lib_path(".") -- remove initial check in io_include?
-	but not if setuid!!!
+save/restore &TRACE on SETEXIT entry/exit??
+
+Add regression test for &LASTxxxx in SETEXIT handlers
+
+-L fails silently?????
+
+catch signals???
+
+sdb
+	use 3rd arg for value trace (passed as second arg)
+	use CALL (&FTRACE), LABEL tracing?
+	no need to zero &(F)TRACE on entry?
+
+	auto breakpoint on END?
 
 cygwin script to create windows .zip file???
 	add archive comment asking for timing.out files?
 		zip -z foo < foowhat
 
-set-uid checks:
-	(silently?) ignore environment variables
-		(SNODIR, SNOPATH, SNOBOL_PRELOAD_PATH)
-	Command line arg to re-enable???
-	Command line args to ignore: -L -I??
-
 Have timing script POST results??
 
 Update snobol4 man page:
-       Add FILE_ABSPATH, FILE_ISDIR, SPRINTF
+       -I & -L options
+       Add FILE_ABSPATH, FILE_ISDIR
        Add ENVIRONMENT section:
 	SNOPATH
 	SNOBOL_PRELOAD_PATH
 	(SNOLIB)
-	NOTE that preloads can make code less portable!!!
+	NOTE that PATHS can make code less portable, unsafe!!!
        New Keywords:
 	&DIGITS -- note an extension!!!
 	&PI -- note an extension!!!
@@ -29,6 +36,16 @@ Update snobol4 man page:
 	Document &STEXEC & &GCTIME???
 
 ================
+
+snolib:
+	build loadable library!
+	use mgetstring() in all of lib/snolib?
+
+set-uid checks:
+	(silently?) ignore environment variables
+		(SNODIR, SNOPATH, SNOBOL_PRELOAD_PATH)
+	Command line arg to re-enable???
+	Command line args to ignore: -L -I??
 
 String/number conversion
 	Additional argument to CONVERT() like SITBOL
