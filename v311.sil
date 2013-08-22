@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.125  2013/08/08 01:07:41  phil
+* [PLB108] Add &MAXINT
+*
 * Revision 1.124  2013/08/04 17:21:03  phil
 * [PLB107] Display avg ns. per statement
 * Add &STEXEC -- total statements executed
@@ -2457,6 +2460,7 @@ INIT   PROC    ,		   Statement initialization procedure
        INCRA   OCICL,DESCR	   Increment offset		[PLB38]
        GETD    FILENM,OCBSCL,OCICL Update &FILE			[PLB38]
        INCRA   EXN2CL,1		   Increment stats stmt count	[PLB38]
+       AEQLC   UINTCL,0,USRINT     Check for SIGINT		[PLB109]
        ACOMPC  EXLMCL,0,,,RTNUL3   Done if &STLIMIT < 0		[PLB33][PLB38]
        ACOMP   EXNOCL,EXLMCL,EXEX,EXEX
 *				   Check &STLIMIT
@@ -5602,7 +5606,6 @@ SETXI2 MOVD    YPTR,XITPTR	   Fetch old handler		[PLB100]
 *
 XITHND PROC    ,		   SETEXIT handling procedure
        AEQLC   XITPTR,0,,FAIL	   Handler not set
-       AEQLC   XOCBSC,0,XITERR	   Already handling		[PLB98]
        MOVD    XFILEN,FILENM	   Save &FILE
        MOVD    XLNNOC,LNNOCL	   Save &LINE			[PLB98]
        MOVD    XSTNOC,STNOCL	   Save &STNO
@@ -5617,6 +5620,9 @@ XITHND PROC    ,		   SETEXIT handling procedure
        AEQLC   OCBSCL,0,,INTR4	   Must not be zero
        SETAC   FRTNCL,0		   Zero offset
        SETAC   XITPTR,0		   Clear handler
+       MOVD    LSTNCL,STNOCL	   Update &LASTNO		[PLB109]
+       MOVA    LSLNCL,LNNOCL	   Update &LASTLINE		[PLB109]
+       MOVA    LSFLNM,FILENM	   Update &LASTFILE		[PLB109]
        BRANCH  RETNUL
 *_
 *---------------------------------------------------------------------*
@@ -6965,8 +6971,9 @@ UNKNKW SETAC   ERRTYP,7		   Unknown keyword
 UNTERR SETAC   ERRTYP,12	   Illegal I/O unit
        BRANCH  FTLTST
 *_
-XITERR SETAC   ERRTYP,34	   Nested too deeply		[PLB97]
-       BRANCH  FTLEND						[PLB97]
+USRINT SETAC   ERRTYP,34	   User Interrupt (SIGINT)	[PLB109]
+       SETAC   UINTCL,0		   Clear condition		[PLB109]
+       BRANCH  FTLTST						[PLB109]
 *_
 CNTERR SETAC   ERRTYP,35	   Not in a SETEXIT handler	[PLB97]
        BRANCH  FTLEND						[PLB97]
@@ -7332,6 +7339,7 @@ STKPTR DESCR   0,0,0		   Pointer to stack		[PLB85]
 STKEND DESCR   0,0,0		   Pointer to stack end		[PLB85]
 STYPE  DESCR   0,FNC,0		   Descriptor return by STREAM
 TBLFNC DESCR   0,0,0		   Pointer to last pattern table
+UINTCL DESCR   0,0,0		   User interrupt flag		[PLB109]
 UNIT   DESCR   0,0,0		   Input unit switch
 VARSYM DESCR   0,0,0
 *
@@ -8478,7 +8486,7 @@ MSG30  STRING  'Cannot open INCLUDE file'			[PLB38]
 MSG31  STRING  'Erroneous LINE statement'			[PLB38]
 MSG32  STRING  'Missing END statement'				[PLB38]
 MSG33  STRING  'Output error'					[PLB60]
-MSG34  STRING  'SETEXIT handlers nested too deeply'		[PLB97]
+MSG34  STRING  'User interrupt'					[PLB109]
 MSG35  STRING  'Not in a SETEXIT handler'			[PLB97]
 *
 *      Compiler Error Messages
