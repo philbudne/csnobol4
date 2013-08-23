@@ -1,18 +1,22 @@
 $Id$
 
-save/restore &TRACE on SETEXIT entry/exit??
-
-Add regression test for &LASTxxxx in SETEXIT handlers
-Add regression test for RETURN/FRETURN from SETEXIT handlers
+Add regression tests:
+	&LASTxxxx in SETEXIT handlers
+	RETURN/FRETURN from SETEXIT handlers
+	second CONTINUE/SCONTINUE
 
 -L fails silently?????
 
-sdb
-	use 3rd arg for value trace (passed as second arg)
-	use CALL (&FTRACE), LABEL tracing?
-	no need to zero &(F)TRACE on entry?
+"-l -" creates file named "-"
 
-	auto breakpoint on END?
+sdb
+    Only trace STCOUNT when step count set?
+    trace FNCLEVEL for finish/next (as needed)
+	disable on next break of any kind.
+	NOTE! breaks BEFORE return!
+	display return type (RTNTYPE)
+    Use EQ() for string compares?
+
 
 cygwin script to create windows .zip file???
 	add archive comment asking for timing.out files?
@@ -61,19 +65,6 @@ integrate GC patch (--with-gc?)
 have COMPILE_C_DYNAMIC() return object file name??
 
 document snobol4dynamic, snobol4wrapper
-
-sdb:
-    use SETEXIT()
-	but setting &ERRLIMIT can change program behavior
-    	catch errors, & exit?
-	optional??
-    trace FNCLEVEL for finish/next (as needed)
-	disable on next break of any kind.
-	NOTE! breaks BEFORE return!
-	display return type (RTNTYPE)
-    Only trace STCOUNT when step count set?
-    Have trap handlers call function with params to save?
-    Use EQ() for string compares?
 
 Pure SNOBOL test driver (run under Cygwin!!)
 

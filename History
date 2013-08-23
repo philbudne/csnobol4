@@ -2,12 +2,20 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+8/23/2013:
+	snolib/sdb.sno: allow continue after error
+		trap ^C (step once)
+	v311.sil: [PLB110] fix continue from END after an error
+			fix duplicate END2 label
+	procs: add END0
+	test/diag1.ref: adjust
+
 8/22/2013:
 	init.c: if SETEXIT handler set, set UINTCL on SIGINT (^C)
 	v311.sil: [PLB109] Implement "User Interrupt" (SIGINT) handling
 		Set &LAST{NO,FILE,LINE} in XITHND
 		Allow new errors to overwrite old return information
-	procs: add USRINT
+	procs: add USRINT, remove XITERR
 	snolib/sdb.sno: cleanup, use SETEXIT()
 	snobol4.1: add missing .TP
 

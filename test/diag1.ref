@@ -49,7 +49,7 @@ Unprotected keywords
 &CASE = 1
 &CODE = 0
 &DUMP = 2
-&ERRLIMIT = 998
+&ERRLIMIT = 999
 &FTRACE = 0
 &FULLSCAN = 0
 &GTRACE = 0

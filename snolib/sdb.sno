@@ -68,6 +68,7 @@ SDB.DC.END
  SDB.DC("where", "alias for bt",, "BT")
 
 	SDB.MAXINT = 2147483647
+	SDB.ERRLIMIT = 1234
 	SDB.NL = CHAR(10)
 * max breakpoints:
 	SDB.MAX_BREAK = 100
@@ -125,20 +126,21 @@ SDB.READLINE.END
 +		'SDB.WATCH_NAME,SDB.WATCH_OLD,SDB.WATCH_VAR)')
 
 * SDB.TRAP.STMT and SDB.TRAP.WATCH are different entries to trap code:
-	SDB.TRAP.VARS = "SDB.LAST,SDB.LASTFL,SDB.BKPT,SDB.CMD,SDB.SILENT,"
-+		"SDB.T1,SDB.T2,SDB.SETX"
+	SDB.TRAP.VARS0 = "SDB.BKPT,SDB.CMD,SDB.SILENT,SDB.T1,SDB.T2,SDB.ERROR"
+	SDB.TRAP.VARS = "SDB.LAST,SDB.LASTFL" SDB.VARS0
 	DEFINE("SDB.TRAP.STMT()" SDB.TRAP.VARS)
 	DEFINE("SDB.TRAP.WATCH(SDB.WATCHED,SDB.TAG)" SDB.TRAP.VARS)
-	DEFINE("SDB.TRAP.SETEXIT(Z,LASTFL,LAST)" SDB.TRAP.VARS)
+	DEFINE("SDB.TRAP.EXIT(SDB.Z,SDB.LASTFL,SDB.LAST)" SDB.TRAP.VARS0)
 						:(SDB.TRAP.END)
 
+****
 * called as function after a watched variable been written
 SDB.TRAP.WATCH
 	SDB.LAST = SDB.CONS(&LASTFILE ':' &LASTLINE, &LASTNO)
 	SDB.LASTFL = SDB.CAR(SDB.LAST)
 	SDB.LAST = SDB.CDR(SDB.LAST)
 	GE(SDB.LAST,SDB.FIRST_STMT) LE(SDB.LAST,SDB.LAST_STMT) :S(SDB.TRAP.RETURN)
-	SDB.SETX =
+	SDB.ERROR =
 	SDB.BKPT = SDB.WATCH_BY_NAME[SDB.WATCHED]
 	IDENT(SDB.BKPT)				:S(SDB.TRAP.RETURN)
 * noop if value hasn't changed!
@@ -147,20 +149,23 @@ SDB.TRAP.WATCH
 	IDENT(SDB.T1,SDB.T2)			:S(SDB.TRAP.RETURN)
 	:(SDB.TRAP.COND)
 
+****
 * trace function called on STCOUNT change
 SDB.TRAP.STMT
 * save all location info in one statement
 	SDB.LAST = SDB.CONS(&LASTFILE ':' &LASTLINE, &LASTNO)
 	SDB.LASTFL = SDB.CAR(SDB.LAST)
 	SDB.LAST = SDB.CDR(SDB.LAST)
-* never break inside sdb code (is this needed? &TRACE should be zero inside handler!)
+* never break inside sdb code (typ. 1st line of SDB.DEFINE, inside FCALL)
 	GE(SDB.LAST,SDB.FIRST_STMT) LE(SDB.LAST,SDB.LAST_STMT) :S(SDB.TRAP.RETURN)
-	SDB.SETX =
+	SDB.ERROR =
 	DIFFER((SDB.BKPT = SDB.BREAK_BY_STMT[SDB.LAST])) :F(SDB.CHECKLEVEL)
 
-* common code for SDB.TRAP.STMT and SDB.TRAP.WATCH
+****
+* SDB.TRAP.STMT and SDB.TRAP.WATCH join here
 * check if enabled, and breakpoint condition, if any
 SDB.TRAP.COND
+	SETEXIT()
 	IDENT(SDB.BREAK_ENB(SDB.BKPT),"n")	:S(SDB.CHECKLEVEL)
 	IDENT(SDB.BREAK_COND(SDB.BKPT))		:S(SDB.TRAP.COUNT)
 	SDB.EVAL(SDB.BREAK_COND(SDB.BKPT))	:F(SDB.CHECKLEVEL)
@@ -192,7 +197,8 @@ SDB.TRAP.BREAK
 	TERMINAL = IDENT(SDB.SILENT)
 +		SDB.BREAK_TYPE(SDB.BKPT) "point " SDB.BREAK_NUM(SDB.BKPT)
 	DIFFER(SDB.BREAK_TYPE(SDB.BKPT), "watch") :S(SDB.STOPPED)
-* here with watchpoint
+
+* here with watchpoint (variable changed)
 	SDB.T1 = $SDB.WATCHED
 	TERMINAL = IDENT(SDB.SILENT) "Variable:  " SDB.WATCH_VAR(SDB.BKPT)
 	TERMINAL = IDENT(SDB.SILENT) "Old value: " SDB.WATCH_OLD(SDB.BKPT)
@@ -205,21 +211,25 @@ SDB.CHECKLEVEL
 
 * see if step count set & reached
 SDB.CHECKSTEP
-	LE(SDB.STEP_COUNT,0)			:S(SDB.TRAP.RETURN)
+*	LE(SDB.STEP_COUNT,0)			:S(SDB.TRAP.RETURN)
+	LT(SDB.STEP_COUNT,0)			:S(SDB.TRAP.RETURN)
 	SDB.STEP_COUNT = SDB.STEP_COUNT - 1
 	NE(SDB.STEP_COUNT,0)			:S(SDB.TRAP.RETURN)
 
 SDB.STOPPED
 	TERMINAL = SDB.LASTFL ": stopped at statement " SDB.LAST 
 +			", level " &FNCLEVEL - 1
+
+* SETEXIT entry joins here
 SDB.DISPLAY
-	SDB.DISPLAY_SOURCE(SDB.LAST)
 	SDB.LIST_LINE = SDB.LAST
 	SDB.FNCLEVEL = &FNCLEVEL
+	TERMINAL = IDENT(SDB.RUNNING) 'Reached END' :S(SDB.GETCMD)
+	SDB.DISPLAY_SOURCE(SDB.LAST)
 
 * loop reading commands
 SDB.GETCMD
-	SDB.CMD = SDB.READLINE(SDB.VARS['prompt']) :F(SDB.INPUTERR)
+	SDB.CMD = SDB.READLINE(SDB.VARS['prompt']) :F(SDB.EXIT)
 	SDB.CMD = IDENT(SDB.CMD) SDB.LAST_CMD
 	SDB.LAST_CMD = SDB.CMD
 	SDB.COMMAND(SDB.CMD)			:F(SDB.GETCMD)
@@ -227,35 +237,45 @@ SDB.GETCMD
 * could make decisions on what tracing gets/stays enabled
 SDB.TRAP.RETURN
 	TERMINAL = IDENT(SDB.RUNNING) "at END; use quit to exit" :S(SDB.GETCMD)
-	TERMINAL = DIFFER(SDB.SETX) "Can't return from ERROR" :S(SDB.GETCMD)
+*	TERMINAL = DIFFER(SDB.ERROR) "Can't return from ERROR" :S(SDB.GETCMD)
+	SETEXIT('SDB.SETEXIT_HANDLER')
+	&ERRLIMIT = SDB.ERRLIMIT
 						:(RETURN)
-
-SDB.INPUTERR
-	TERMINAL = 'sdb input error'		:(END)
 
 * SETEXIT handler (branched to, not called!!!)
 SDB.SETEXIT_HANDLER
-	SDB.TRAP.SETEXIT((&TRACE = 0), &LASTFILE ':' &LASTLINE, &LASTNO)
-* here if user steps/continues after "Reached END"
-	:(END)
+	SDB.TRAP.EXIT((&TRACE = 0), &LASTFILE ':' &LASTLINE, &LASTNO) :F(CONTINUE)
+* reenable handler:
+	&ERRLIMIT = SDB.ERRLIMIT
+	SETEXIT('SDB.SETEXIT_HANDLER')
+	TERMINAL = "(treating error statement as success)"
+* reenable trace
+	&TRACE = SDB.MAXINT			:(SCONTINUE)
 
-* called as function from SETEXIT handler
-SDB.TRAP.SETEXIT
-	SDB.LASTFL = LASTFL
-	SDB.LAST = LAST
-	EQ(&ERRTYPE,0)				:S(SDB.TRAP.ENDLABEL)
-	TERMINAL = SDB.LASTFL ': Error ' &ERRTYPE
-+		' in statement ' SDB.LAST ' at level ' &FNCLEVEL
-	TERMINAL = &ERRTEXT			:(SDB.TRAP.SETX)
+* called as function from SETEXIT handler (above)
+* SDB.LAST{,FL} are args
+SDB.TRAP.EXIT
+	SDB.ERROR = &ERRTYPE
+	EQ(SDB.ERROR,0)				:S(SDB.TRAP.ENDLABEL)
+	NE(SDB.ERROR,34)			:S(SDB.TRAP.ERR)
 
+* here on ^C -- set step count and return so we're CONTINUEd
+* (otherwise "continue" or "step" skips the interrupted stmt)
+	SDB.STEP_COUNT = 1
+	TERMINAL =
+	:(FRETURN)
+
+* here after reaching END label
 SDB.TRAP.ENDLABEL
-	TERMINAL =  "Reached END"
 	SDB.RUNNING =
-SDB.TRAP.SETX
-	SDB.SETX = 1
+* join common trap handler function code
+	:(SDB.DISPLAY)
 
-* jump into common trap handler
-* NOTE!!! still in SETEXIT handler!! Can't catch any new errors!!!
+SDB.TRAP.ERR
+	TERMINAL = SDB.LASTFL ': Error ' SDB.ERROR
++		' in statement ' SDB.LAST ' at level ' &FNCLEVEL
+	TERMINAL = &ERRTEXT
+* join common trap handler function code
 	:(SDB.DISPLAY)
 
 SDB.TRAP.END
@@ -496,9 +516,11 @@ SDB.CMD.PRINT
 
 * quit command
 SDB.CMD.QUIT
-	IDENT(SDB.RUNNING)			:S(END)
-	SDB.YORN('The program is running.  Exit anyway? (y or n) ') :S(END)
-	:(SDB.COMMAND.STAY)
+	IDENT(SDB.RUNNING)			:S(SDB.EXIT)
+	SDB.YORN('The program is running.  Exit anyway? (y or n) ')
++						:F(SDB.COMMAND.STAY)
+SDB.EXIT
+	SETEXIT()				:(END)
 
 **** single step command
 SDB.CMD.STEP
@@ -655,15 +677,11 @@ SDB.APPEND.END
 * safe eval
 	DEFINE("SDB.EVAL(SDB.EXPR)SDB.TEMP")	:(SDB.EVAL.END)
 SDB.EVAL
-	SDB.TEMP = &ERRLIMIT
-* catch compile errors:
-	&ERRLIMIT = 1234
-	SDB.EVAL = EVAL(SDB.EXPR)		:F(SDB.EVAL.FAIL)
-	NE(&ERRLIMIT,1234)			:S(SDB.EVAL.ERR)
-	&ERRLIMIT = SDB.TEMP			:(RETURN)
-SDB.EVAL.ERR
+	&ERRLIMIT = SDB.ERRLIMIT
+	SDB.EVAL = EVAL(SDB.EXPR)		:F(FRETURN)
+	EQ(&ERRLIMIT,SDB.ERRLIMIT)		:S(RETURN)
+* here on compile error, fatal error
 	TERMINAL = &ERRTEXT ": " SDB.EXPR
-SDB.EVAL.FAIL
 	&ERRLIMIT = SDB.TEMP			:(FRETURN)
 SDB.EVAL.END
 
@@ -703,7 +721,7 @@ SDB.FCALL.EARGLOP
 	&TRACE = SDB.MAXINT
 	:(RETURN)
 SDB.FCALL.END
- 
+
 	DEFINE('SDB.FRET(FNAME)')			:(SDB.FRET.END)
 SDB.FRET
 	SDB.CALL_LEVEL = SDB.CALL_LEVEL - 1		:(RETURN)
@@ -711,17 +729,19 @@ SDB.FRET.END
 
 * this sorcery from Orange book "FTRACE" function
 * wrap DEFINE() so all user function calls/returns are traced
-* does not work in SPITBOL
+* does not work in SPITBOL (cannot OPSYN functions)
 * *** must be after all SDB functions!! ***
 	DEFINE('SDB.DEFINE(PROTO,LABEL)NAME')
 * save built-in DEFINE as DEFINE.
 	OPSYN('DEFINE.','DEFINE')
-	OPSYN('DEFINE','SDB.DEFINE')		:(SDB.DEFINE.END)
+	OPSYN('DEFINE','SDB.DEFINE')			:(SDB.DEFINE.END)
 SDB.DEFINE
+	&TRACE = 0
 	DEFINE.(PROTO, LABEL)
-        PROTO BREAK('(') . NAME
-        TRACE(NAME, 'CALL', , 'SDB.FCALL')
-        TRACE(NAME, 'RETURN', , 'SDB.FRET')      :(RETURN)
+	PROTO BREAK('(') . NAME
+	TRACE(NAME, 'CALL', , 'SDB.FCALL')
+	TRACE(NAME, 'RETURN', , 'SDB.FRET')
+	&TRACE = SDB.MAXINT				:(RETURN)
 SDB.DEFINE.END
 SDB.NOSTACK
 
