@@ -1,6 +1,11 @@
 * $Id$
 *
 * $Log$
+* Revision 1.126  2013/08/22 19:52:30  phil
+* [PLB109] Implement "User Interrupt" (SIGINT) handling
+* Set &LAST{NO,FILE,LINE} in XITHND
+* Allow new errors to overwrite old return information
+*
 * Revision 1.125  2013/08/08 01:07:41  phil
 * [PLB108] Add &MAXINT
 *
@@ -2415,7 +2420,6 @@ GOTL5  DEQL    XPTR,CONTCL,GOTL6   Compare with CONTINUE	[PLB97]
        MOVD    FRTNCL,XFRTNC	   Restore saved failure offset	[PLB97]
 GOTL5B AEQLC   XOCBSC,0,,CNTERR	   Must be in a handler!!	[PLB97]
        MOVD    OCBSCL,XOCBSC	   Restore code base		[PLB97]
-       MOVD    ERRTYP,XERRTY	   Restore &ERRTYPE		[PLB97]
        MOVD    FILENM,XFILEN	   Restore &FILE		[PLB97]
        MOVD    LNNOCL,XLNNOC	   Restore &LINE		[PLB98]
        MOVD    STNOCL,XSTNOC	   Restore &STNO		[PLB97]
@@ -2423,6 +2427,8 @@ GOTL5B AEQLC   XOCBSC,0,,CNTERR	   Must be in a handler!!	[PLB97]
        MOVD    LSLNCL,XLSLNC	   Restore &LASTLINE		[PLB98]
        MOVD    LSTNCL,XLNNOC	   Restore &LASTNO		[PLB98]
        SETAC   XOCBSC,0		   Clear saved code base	[PLB98]
+       AEQLC   ERRTYP,0,,END0	   Check if at END		[PLB110]
+       MOVD    ERRTYP,XERRTY	   Restore &ERRTYPE		[PLB97][PLB110]
        BRANCH  FAIL		   Return eval failure		[PLB97]
 *_
 GOTL6  GETDC   OCBSCL,XPTR,ATTRIB  Get object code base
@@ -6776,7 +6782,7 @@ GENVIX RCALL   XPTR,GNVARI,XPTR,RTXNAM
 *				   Generate variable from integer
 *_
        TITLE   'Termination'
-END    ACOMPC  ERRLCL,0,,END2,END2 Check &ERRLIMIT		[PLB98]
+END    ACOMPC  ERRLCL,0,,END0,END0 Check &ERRLIMIT		[PLB98][PLB110]
        DECRA   ERRLCL,1		   Decrement &ERRLIMIT		[PLB98]
        SETAC   ERRTYP,0		   Clear &ERRTYPE		[PLB98]
        SETAC   ERRTXT,0		   Clear &ERRTEXT		[PLB98]
@@ -6786,7 +6792,7 @@ END    ACOMPC  ERRLCL,0,,END2,END2 Check &ERRLIMIT		[PLB98]
        MOVA    LSLNCL,LNNOCL	   Crock &LASTLINE		[PLB98]
        MOVA    LSFLNM,FILENM	   Crock &LASTFILE		[PLB98]
        RCALL   ,XITHND,,(,,RTNUL3) Call exit handler, if any	[PLB98]
-END2   XCALLC  io_flushall,(0)	   Empty output buffers		[PLB53]
+END0   XCALLC  io_flushall,(0)	   Empty output buffers		[PLB53][PLB110]
        AEQLC   BANRCL,0,,FTLEN2	   Skip message if banner (stats?) off [PLB12]
        OUTPUT  PUNCH,NRMEND,(LVLCL)				[PLB5]
 *				   End procedure
