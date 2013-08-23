@@ -3,10 +3,9 @@ $Id$
 save/restore &TRACE on SETEXIT entry/exit??
 
 Add regression test for &LASTxxxx in SETEXIT handlers
+Add regression test for RETURN/FRETURN from SETEXIT handlers
 
 -L fails silently?????
-
-catch signals???
 
 sdb
 	use 3rd arg for value trace (passed as second arg)
