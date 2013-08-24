@@ -154,3 +154,6 @@ genc genc.sno
 # 8/13/2013 from berstis.com
 reg nqueens.sno
 reg sudoku.sno
+# 8/24/2013
+reg setexit4.sno
+reg setexit5.sno

@@ -49,7 +49,7 @@ typedef long off_t;
 #endif /* NEED_OFF_T not defined */
 
 #ifdef HAVE_UNISTD_H
-#include <unistd.h>			/* SEEK_xxx */
+#include <unistd.h>			/* SEEK_xxx, xxx_FILENO */
 #endif /* HAVE_UNISTD_H defined */
 
 #ifdef HAVE_UNIXIO_H			/* DECC v4 */

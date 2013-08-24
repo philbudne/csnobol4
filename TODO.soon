@@ -1,12 +1,5 @@
 $Id$
 
-Add regression tests:
-	&LASTxxxx in SETEXIT handlers
-	RETURN/FRETURN from SETEXIT handlers
-	second CONTINUE/SCONTINUE
-
--L fails silently?????
-
 "-l -" creates file named "-"
 
 sdb
@@ -16,7 +9,6 @@ sdb
 	NOTE! breaks BEFORE return!
 	display return type (RTNTYPE)
     Use EQ() for string compares?
-
 
 cygwin script to create windows .zip file???
 	add archive comment asking for timing.out files?
@@ -39,6 +31,10 @@ Update snobol4 man page:
 	Document &STEXEC & &GCTIME???
 
 ================
+
+SETEXIT() w/ "continue", "scontinue", "return", "freturn" don't work
+
+TRACE(STNO, 'STNO', TAG, .FUNCTION)
 
 snolib:
 	build loadable library!

@@ -241,7 +241,8 @@ cpuid:	cpuid.c
 
 timing.out snobol4: tested xsnobol4 timing timing.sno test/bench.sno test/v311.sil
 	@echo Running timing script...
-	./timing > timing.out
+	./timing > timing.out.tmp
+	mv timing.out.tmp timing.out
 	-rm -f snobol4$(EXT)
 	cp xsnobol4$(EXT) snobol4$(EXT)
 	@echo '********************************************************' 1>&2

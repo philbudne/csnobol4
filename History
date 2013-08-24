@@ -2,6 +2,13 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+8/24/2013:
+	lib/init.c: fatal error if -L file doesn't exist
+		allow list to stdout w/ -l -
+	test/setexit4.{sno,ref}: test END trap after error
+	test/setexit5.{sno,ref}: test [F]RETURN from error handler
+	test/tests.in: add setexit[45]
+
 8/23/2013:
 	snolib/sdb.sno: allow continue after error
 		trap ^C (step once)

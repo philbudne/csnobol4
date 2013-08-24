@@ -1,0 +1,48 @@
+* test return/freturn from setexit handler, &LASTxxx
+	&errlimit = 100
+
+	define("f()")		:(ef)
+f	output = 'f'
+	setexit(.fr)
+	&z = 1
+	output = 'oops1'
+	:(return)
+
+fr	output = &LASTFILE ':' &LASTLINE ' S' &LASTNO ' ' &ERRTEXT
+	:(freturn)
+ef
+
+	define("g()")		:(eg)
+g	output = 'g'
+	setexit(.gr)
+	x = 1 / 0
+	output = 'oops2'
+	:(freturn)
+
+gr	output = &LASTFILE ':' &LASTLINE ' S' &LASTNO ' ' &ERRTEXT
+	:(return)
+eg
+
+	define("h()")		:(eh)
+h
+	setexit(.hh)
+	x = -code("foo")
+	output = "h scontinue"
+	:(return)
+
+hh	output = 'hh'
+	output = &LASTFILE ':' &LASTLINE ' S' &LASTNO ' ' &ERRTYPE ' ' &ERRTEXT
+	:(scontinue)
+eh
+
+****************
+
+	f()			:f(fok)
+	output = 'f succeeded?'
+
+fok	g()			:s(gok)
+	output = 'g failed?'
+
+gok
+
+end

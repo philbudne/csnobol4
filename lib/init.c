@@ -13,6 +13,10 @@ extern void *malloc();
 #include <stdio.h>
 #include <signal.h>
 
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>			/* xxx_FILENO */
+#endif /* HAVE_UNISTD_H defined */
+
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
@@ -49,6 +53,10 @@ extern void *malloc();
 #ifdef HAVE_BUILD_VARS
 extern const char build_date[];		/* from build.c */
 #endif /* HAVE_BUILD_VARS defined */
+
+#ifndef STDOUT_FILENO
+#define STDOUT_FILENO 1
+#endif /* STDOUT_FILENO not defined */
 
 /* global for access by io.c; */
 int rflag;
@@ -371,7 +379,11 @@ init_args( ac, av )
 	case 'l':			/* -LIST */
 	    {
 		/* now takes an argument!!! */
-		FILE *listfile = fopen(optarg, "w");
+		FILE *listfile;
+		if (strcmp(optarg, "-") == 0)
+		    listfile = fdopen(dup(STDOUT_FILENO), "w");
+		else
+		    listfile = fopen(optarg, "w");
 		D_A(LISTCL) = lflag = 1;
 		if (!listfile || !io_mkfile(UNITO, listfile, optarg)) {
 		    perror(optarg);
@@ -413,6 +425,10 @@ init_args( ac, av )
 		char *path = io_lib_find(NULL, optarg, ".inc");
 		if (path)
 		    io_input_file(path);
+		else {
+		    fprintf(stderr, "%s: file not found\n", optarg);
+		    exit(1);
+		}
 	    }
 	    break;
 

@@ -1,0 +1,20 @@
+	setexit(.f)
+	&errlimit = 10
+	&stlimit = 1000
+	define("s()")
+	trace('STCOUNT','KEYWORD',,.s)
+	&trace = 1000
+
+	output = 'a'
+	&z = 1
+	output = 'b'
+	output = 'c'	:(end)
+
+f	output = 'err: ' &ERRTYPE ' (' &ERRTEXT ') @S' &LASTNO
+	setexit(.f)
+	&errlimit = 10
+	:(scontinue)
+
+s	output = 'S' &LASTNO	:(return)
+
+end
