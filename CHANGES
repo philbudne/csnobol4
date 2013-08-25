@@ -2,12 +2,50 @@ $Id$
 
 For detailed revision history see History file
 
+Changes since 1.4.1 release;
+===========================
+	Larger default stack/dynamic regions.
+	Timing changes:
+	    Stats/timings show K (1000) lines per sec
+	    Stats/timings show nanoseconds (ns) per statement
+	    New benchmark: loops for better accuracy
+		no longer depends on per-release input/code
+	Debugger (sdb) improvements:
+	    sdb source lines no longer visible in debugger
+	    use SETEXIT() to trap ^C, fatal errors, END statement
+	Trap ^C (SIGINT) catchable w/ SETEXIT() as "User Interrupt"
+	Add include/library path:
+	    SNOPATH environment variable
+	    -I DIR command line option
+	Add "preloading"
+	    SNOBOL4_PRELOAD_PATH environment variable
+	    -L FILE command line option
+	Document default INPUT record length
+	Extensions:
+	    keywords: &DIGITS &PI &STEXEC &GCTIME &MAXINT
+	    functions: FILE_ISDIR() FILE_ABSPATH()
+	Fixes:
+	    Display more digits for 64-bit REALs
+	    READLINE() fixes on OS X / NetBSD
+	    Fix compilation with Tcl 8.6
+	    Allow new SETEXIT() trap w/o [S]CONTINUE
+	    Allow command line -l - to mean list to stdout
+	Portability:
+	    Get more precise CPU times on Linux
+	    Fix compilation on OpenBSD/MIPS
+	    Display Window Server 2012
+	    timing.bat sdb.bat files for Windows
+	    Fixes for Beaglebone "Angstrom" Linux distribution
+	LOAD() improvements:
+	    Fixed bug (name modified on LOAD() failure)
+	    Most versions respect library path
+
 Changes since 1.4 release;
 =========================
 	Install sdb man page
 	Fix sdb test for readline
 	Add random number regression test
-	Fix Tcl search on Ububtu
+	Fix Tcl search on Ubuntu
 	Fix compilation on Solaris
 
 Changes since 1.3 release;

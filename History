@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+8/25/2013:
+	CHANGES: updated
+	README: updated for 1.5
+	snolib/sdb.sno: updated copyright
+
 8/24/2013:
 	lib/init.c: fatal error if -L file doesn't exist
 		allow list to stdout w/ -l -
@@ -36,7 +41,6 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 8/15/2013:
 	config/win32/snobol4.vcxproj: add loadx.c
 	config/win32/ntmsvc.mak: fix cpuid build
-	pml.h: add SPRINTF
 
 8/14/2013:
 	configure: check for POSIX-2001 clock_gettime(CLOCK_PROCESS_CPUTIME_ID)
@@ -164,7 +168,6 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	lib/loadx.c: add comment
 	lib/win32/load.c: convert to os_load() API
 	lib/init.c: Add def_snopath
-
 		    
 2/15/2012:
 	lib/loadx.c (new): O/S independant load(), callx(); uses "lib_find"
@@ -216,7 +219,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 2/2/2012:
 	v311.sil: [PLB101] only modify function entry if LOAD succeeds
-	test/tests.in: add loaderr.sno
+o	test/tests.in: add loaderr.sno
 	test/loaderr.{sno,ref}: test load failure
 
 2/2/2012:

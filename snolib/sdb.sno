@@ -1,6 +1,6 @@
 -HIDE
 * "SDB" SNOBOL4 debugger -- a clone (clown?) of GNU "gdb" debugger
-* Copyright (C) 2010-2012 Philip L. Budne
+* Copyright (C) 2010-2013 Philip L. Budne
 * All rights reserved.
 * 
 * Redistribution and use in source and binary forms, with or without
@@ -749,7 +749,7 @@ SDB.NOSTACK
 
 	DIFFER(HOST(4,"SDB_NOBANNER"))
 	TERMINAL = "sdb SNOBOL4 debugger version " SDB.VERSION
-	TERMINAL = "Copyright 2010-2012 Philip L. Budne"
+	TERMINAL = "Copyright 2010-2013 Philip L. Budne"
 	TERMINAL = 'Type "help" for help.'
 	TERMINAL =
 SDB.NOBANNER

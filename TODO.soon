@@ -1,19 +1,5 @@
 $Id$
 
-"-l -" creates file named "-"
-
-sdb
-    Only trace STCOUNT when step count set?
-    trace FNCLEVEL for finish/next (as needed)
-	disable on next break of any kind.
-	NOTE! breaks BEFORE return!
-	display return type (RTNTYPE)
-    Use EQ() for string compares?
-
-cygwin script to create windows .zip file???
-	add archive comment asking for timing.out files?
-		zip -z foo < foowhat
-
 Have timing script POST results??
 
 Update snobol4 man page:
@@ -28,13 +14,25 @@ Update snobol4 man page:
 	&DIGITS -- note an extension!!!
 	&PI -- note an extension!!!
 	&MAXINT -- ditto
-	Document &STEXEC & &GCTIME???
+	&STEXEC & &GCTIME???
+
+cygwin script to create windows .zip file???
+	add archive comment asking for timing.out files?
+		zip -z foo < foowhat
 
 ================
 
-SETEXIT() w/ "continue", "scontinue", "return", "freturn" don't work
+sdb
+    Only trace STCOUNT when step count set?
+    trace FNCLEVEL for finish/next (as needed)
+	disable on next break of any kind.
+	NOTE! breaks BEFORE return!
+	display return type (RTNTYPE)
+    Use EQ() for string compares?
 
 TRACE(STNO, 'STNO', TAG, .FUNCTION)
+
+SETEXIT() w/ "continue", "scontinue", "return", "freturn" as arg don't work
 
 snolib:
 	build loadable library!
