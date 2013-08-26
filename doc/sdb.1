@@ -8,7 +8,7 @@
 .       ds rq ''
 .       ds lq ``
 .\}
-.TH SDB 1 "30 Dec 2011" "SNOBOL"
+.TH SDB 1 "Aug 2013" "SNOBOL"
 .SH NAME
 sdb \- SNOBOL4 debugger
 .SH SYNOPSIS
@@ -97,6 +97,10 @@ Non-ambiguous abbreviations of commands can be used (ie; "s", "n").
 .PP
 The GNU Readline library (when available) will be used for sdb
 input for command editing and history.
+.PP
+The keyboard interrupt character (eg; Control C) will stop a running
+program and return control to
+.BR sdb .
 
 .SH SEE ALSO
 .BR snobol4 "(1), " gdb "(1), " readline "(3), " snobol4readline (3)
@@ -108,6 +112,8 @@ with techniques cribbed from someone's DDT.SNO
 
 .SH BUGS
 .PP
-Cannot put a breakpoint on END label.
+Cannot put a breakpoint on END label
+(however control always returns to sdb when the END label is reached).
 .PP
-Cannot pass arbitrary flags and arguments on the command line.
+Currently all execution is single-stepped, with commensurate impact
+on performance.

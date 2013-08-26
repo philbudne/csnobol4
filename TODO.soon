@@ -1,26 +1,26 @@
 $Id$
 
-Have timing script POST results??
+Make utf8 versions of man pages?
 
 Update snobol4 man page:
-       -I & -L options
-       Add FILE_ABSPATH, FILE_ISDIR
        Add ENVIRONMENT section:
 	SNOPATH
 	SNOBOL_PRELOAD_PATH
 	(SNOLIB)
 	NOTE that PATHS can make code less portable, unsafe!!!
-       New Keywords:
-	&DIGITS -- note an extension!!!
-	&PI -- note an extension!!!
-	&MAXINT -- ditto
-	&STEXEC & &GCTIME???
 
 cygwin script to create windows .zip file???
 	add archive comment asking for timing.out files?
 		zip -z foo < foowhat
 
 ================
+
+Have timing script POST results??
+
+man pages:
+    snobol4err
+    snobol4load
+    snobol4func
 
 sdb
     Only trace STCOUNT when step count set?
@@ -31,6 +31,7 @@ sdb
     Use EQ() for string compares?
 
 TRACE(STNO, 'STNO', TAG, .FUNCTION)
+	look at SITBOL INSERTBP() REMOVEBP()
 
 SETEXIT() w/ "continue", "scontinue", "return", "freturn" as arg don't work
 
@@ -312,8 +313,7 @@ have tests cleanup after themselves?  Add Makefile for "make clean"?
 
 ==== stuff to do for releases;
 
-update version in CHANGES, README, INSTALL version.c
-	on branch??
+update version in CHANGES, README, INSTALL, configure
 
 update packaging
 
@@ -334,12 +334,7 @@ note release in TODO.soon
 
 tag all files
 
-make branch for major releases
-
 ================
-
-flush CONFIG_GUESS
-	snolib/host.[ch]!!
 
 use const for ordvst qsort function?  use bcmp? memcmp??
 	(Solaris)
@@ -352,15 +347,8 @@ Add -Wimplicit (if not on SunOS4?)?
 protoize all sources?
 	provide "unproto"?
 
-detect gcc v3?
-	look at __GNUC__ and __GNUC_MINOR__
-
 HOST() to return CSNOBOL4 version level??
 	release date???
-
-use ptime on Solaris for runtime checks?
-
-create generic load framework???
 
 Add FORK() to pml.h (under PML_FORK?)
 
@@ -374,12 +362,6 @@ pass CPP directives thru gendata.sno??
 add const's to getstring, retstring defns?
 
 put default prefix in configure script (so --prefix help can display it)?
-
-split LIBDIR into;
-	"PREFIX/libexec/snobol4"	binaries
-	"PREFIX/share/lib/snobol4"	.sno files
-	"PREFIX/include/snobol4"	.h files
-	what about .txt files???
 
 man page
 	sed current version into man page??
@@ -400,13 +382,7 @@ have DOUBLE force NO_BITFIELDS??
 script to grep for all "ifdefs" and output strings to build.c?
 	just stringify options in config.h?
 
-add prototypes for getstring()/retstring() to load.h
-
 if using bitfields, try reordering v/f fields depending	on endian-ness?
-
-add logic.c u_int_t to snotypes.h?
-
-replace pv with VERSION file (or script)?
 
 split procs into static & procified?
 	only procified need top label!!
@@ -416,13 +392,6 @@ tsort:	use a snocone version?
 HOST()
 	add build_user???
 		move to mkbuild script?
-
-"pmake" on csa loses (in depend?)
-
-change NO_UNDERSCORE to NEED_UNDERSCORE?
-
-use getconf(CHAR_BIT) if available in host.c for BPC??
-	AIX has it
 
 new versions of RETxxx macros cause "code not reached" warnings
 	change to obscene use of  "," construct???
@@ -437,8 +406,6 @@ add config options;
 		add -g (leave opt on if gcc?)
 
 create snolib_pic.a???
-
-use "pax -pe -rw src-dir dst-dir" for sourcekit?
 
 timing;	genc.sno runtimes too small; need better code for timing test?
 
@@ -468,12 +435,7 @@ SPITBOL features;
 	FENCE()
 	NOT()
 
-	SETEXIT()
-		Handle signals????
-
 	single letter abbrevs in TRACE()
-
-	-FAIL/-NOFAIL?
 
 	allow STRING for units???
 
@@ -573,12 +535,8 @@ Implement REALCVT??
 	using catspaw code??
 	autoload it???
 
-switch to unroff for html file prep??
-	RosettaMan???
-
 autoconf:
 	check for index() in <string.h> (BSD44)
-	--max-opt
 	save additions in (local-config?) file??
 
 unix98/load.c
@@ -665,9 +623,6 @@ add new utf.sno to snolib??
 
 add to snobol4+.inc?
 	PATHNAME(), ASC(), SETBREAK()
-
-add to spitbol.inc;?
-	SETEXIT()
 
 add UNAME_DOT_VERSION ifdef in posix/sys.c for AIX?
 
@@ -851,7 +806,7 @@ from s4+
 
 better math exception catching;
 
-	Ensure operands "finite" before/after floating point ops???
+	Ensure operands "finite" before floating point ops???
 		fp_class_d():	irix5.3 <fp_class.h>
 		fp_class():	sunos4 <math.h>
 		fpclassify():	hpux9 ("ANSI future directions")
@@ -877,7 +832,6 @@ better math exception catching;
 		Sun:		ieee_flags("get", "exception", ...)
 				(man floatingpoint)
 		
-
 	catching library errs;
 		matherr:	sunos4, sunos5, SVID3, (deprecated in XPG3)
 
@@ -885,10 +839,6 @@ better math exception catching;
 
 in make depend;
 	sed "s/$(SNOBOL4)\./"'$(SNOBOL4)./'
-
-================
-
-try appending .sno to command line filenames, if not found?
 
 ================
 

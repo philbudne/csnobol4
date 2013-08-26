@@ -2,7 +2,7 @@
 :: Phil Budne 8/14/2013
 
 setlocal
-set SNODIR=%HOMEDRIVE%\snobol4
+set SNODIR=%SYSTEMDRIVE%\snobol4
 
 echo Date:
 echo %date% %time%

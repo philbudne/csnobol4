@@ -4,12 +4,7 @@ For detailed revision history see History file
 
 Changes since 1.4.1 release;
 ===========================
-	Larger default stack/dynamic regions.
-	Timing changes:
-	    Stats/timings show K (1000) lines per sec
-	    Stats/timings show nanoseconds (ns) per statement
-	    New benchmark: loops for better accuracy
-		no longer depends on per-release input/code
+	Larger default stack and dynamic regions
 	Debugger (sdb) improvements:
 	    sdb source lines no longer visible in debugger
 	    use SETEXIT() to trap ^C, fatal errors, END statement
@@ -36,6 +31,11 @@ Changes since 1.4.1 release;
 	    Display Window Server 2012
 	    timing.bat sdb.bat files for Windows
 	    Fixes for Beaglebone "Angstrom" Linux distribution
+	Timing changes:
+	    Stats/timings show K (1000) lines per sec
+	    Stats/timings show nanoseconds (ns) per statement
+	    New benchmark: loops for better accuracy
+		no longer depends on per-release input/code
 	LOAD() improvements:
 	    Fixed bug (name modified on LOAD() failure)
 	    Most versions respect library path

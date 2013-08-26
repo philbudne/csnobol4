@@ -10,8 +10,8 @@ ID='$Id$'
 OPTIONS="$*"
 
 # needed in Makefile2 and config.h
-VERSION=1.5-
-VERSION_DATE="January 22, 2012"
+VERSION=1.5rc1
+VERSION_DATE="August 25, 2013" # configure script 17yo+1d
 
 if [ ! "$CC" ]; then
     # on most system gcc is preferred if it can be found
@@ -225,7 +225,7 @@ while [ $# -gt 0 ]; do
 	WITH_TCL=1
 	;;
     --with-tk)
-	echo "NOTE: --with-tk is obsolete" 1>&1
+	echo "NOTE: --with-tk is obsolete" 1>&2
 	WITH_TK=1
 	;;
     --without-ndbm)

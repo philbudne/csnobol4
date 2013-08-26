@@ -6,6 +6,10 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	CHANGES: updated
 	README: updated for 1.5
 	snolib/sdb.sno: updated copyright
+	doc/snobol4.1: update with 1.5 changes, all error numbers
+	configure: update to 1.5rc1
+	doc/sdb.1: mention error catching, ^C
+	pkg/win32/{sdb,timing}.bat: use SYSTEMDRIVE
 
 8/24/2013:
 	lib/init.c: fatal error if -L file doesn't exist

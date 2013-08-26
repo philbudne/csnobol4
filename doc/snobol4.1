@@ -1,14 +1,16 @@
 .\" -*-nroff-*-
 .\" $Id$
-.ie n \{\
+.ie '\*[.T]'ascii' \{\
 .       ds lq \&"\"
 .       ds rq \&"\"
+.	ds pi \fIpi\fR
 .\}
 .el \{\
 .       ds rq ''
 .       ds lq ``
+.	ds pi \[*p]
 .\}
-.TH SNOBOL4 1 "4 Jan 2012" "SNOBOL"
+.TH SNOBOL4 1 "Aug 2013" "SNOBOL"
 .SH NAME
 snobol4 \- SNOBOL4 interpreter
 .SH SYNOPSIS
@@ -29,11 +31,11 @@ snobol4 \- SNOBOL4 interpreter
 .SH DESCRIPTION
 .PP
 This manual page describes a port of the original Bell Telephone Labs
-(BTL) Macro Implementation of SNOBOL4 (MAINBOL) to machines with ILP32
-(32-bit int/long/pointer) or LP64 (64-bit long/pointer) C compilers by
-Philip L. Budne.  The language and its implementation are described
-in [1] and [2].  Extensions from Catspaw SNOBOL4+, SPITBOL and SITBOL
-have been added.  This page discusses only the changes/extensions.
+(BTL) Macro Implementation of SNOBOL4 to machines with ILP32 (32-bit
+int/long/pointer) or LP64 (64-bit long/pointer) C compilers by Philip
+L. Budne.  The language and its implementation are described in [1]
+and [2].  Extensions from Catspaw SNOBOL4+, SPITBOL and SITBOL have
+been added.  This page discusses only the changes/extensions.
 
 .SS Limitations
 .PP
@@ -47,7 +49,9 @@ External functions can be statically linked (poor man's loading) into the
 snobol4 executable
 on
 .B ALL
-platforms.  See /usr/local/lib/snobol4/load.txt for more information.
+platforms.  See
+.RI /usr/local/lib/snobol4/ version /load.txt
+for more information.
 
 .SS "Changes"
 .PP
@@ -58,13 +62,11 @@ Default listing side (when enabled by
 .BR -LIST
 or the
 .B -l
-command option is
+command line option is
 .BR LEFT .
 Listings are directed to standard output (or file specified by the
 .B -l
-option,
-not the card
-.BR PUNCH .
+command line option.
 .IP \(bu
 Error messages, the startup banner and statistics are directed to
 standard error.  Compilation error messages (including erroneous
@@ -141,14 +143,12 @@ program.  The value of the SNOBOL protected keyword
 .B &ALPHABET
 is a 256-character string of all bytes from 0 to 255, in ascending
 order.
-
 .PP
 On ASCII-based systems, any character with the 8th bit set is treated
 as \*(lqalphabetic\*(rq, and can start, or be used in identifiers and
 labels.  This includes characters from the \*(lqupper half\*(rq of
 national character sets and all bytes resulting from the UTF-8
 encoding of Unicode characters.
-
 .PP
 Programs may be entered in mixed case; By default lower case
 identifiers are folded to upper case (see
@@ -163,11 +163,9 @@ to convert the lower-case characters to upper case.  When using UTF-8
 encoded characters in code, case folding should be disabled, to
 prevent any bytes which appear to be lower case in the current locale
 from being modified.
-
 .PP
 The following operator character sequences are permitted and represent
 a cross between PDP-10 Macro SNOBOL, SITBOL and Catspaw SPITBOL usage:
-
 .ta 2i
 .nf
 Exponentiation:	^\0**
@@ -242,6 +240,7 @@ in
 .BR &ALPHABET .
 .TP
 .B DATE()
+.br
 For compatibility with new versions of Catspaw SPITBOL,
 .B DATE(0)
 returns strings of the form
@@ -254,6 +253,14 @@ With any other arguments
 .B DATE()
 returns strings of the form
 .IR "MM/DD/YYYY HH:MM:SS" .
+.TP
+.B &DIGITS
+.br
+The protected keyword
+.B &DIGITS
+contains the string
+.B 0123456789
+for compatibility with the Unicon/Icon languages!
 .TP
 .B \-ERROR/\-NOERRORS
 .br
@@ -290,6 +297,14 @@ directive is given, the program will be not executed after compilation.
 cancels any previous
 .BR \-NOEXECUTE .
 .TP
+.B FILE_ABSPATH()/FILE_ISDIR()
+.br
+\fBFILE_ABSPATH(\fIstring\fB)\fR is a predicate which returns the null string
+if its argument is an absolute file path, and returns failure if the path
+is relative.
+\fBFILE_ISDIR(\fIstring\fB)\fR is a predicate which returns the null string
+if its argument is the pathname of a directory, and returns failure if not.
+.TP
 .B FREEZE()/THAW()
 .br
 The
@@ -315,9 +330,19 @@ The
 .B FUNCTION()
 predicate exists in SITBOL.
 .TP
+.B &GCTIME
+.br
+The protected keyword
+.B &GCTIME
+contains a
+.B REAL
+number of milliseconds of execution time spent in the garbage collector.
+.TP
 .B &GTRACE
 .br
-If set to a non-zero value, each time a garbage collection is run,
+If the unprotected keyword
+.B &GTRACE
+set to a non-zero value, each time a garbage collection is run,
 a trace message is output indicating the source file and line number
 of the current statement, how long the GC took, and how many units
 of storage are now free. If positive, the value of
@@ -481,6 +506,14 @@ of the optional third argument.  If the third argument is missing, or
 is the null string, spaces will be used for padding.  The subject will
 be returned unmodified if already long enough.
 .TP
+.B &MAXINT
+.br
+The protected keyword
+.B &MAXINT
+contains the largest positive integer value that can be represented by the
+.B INTEGER
+data type.
+.TP
 Named files
 .br
 Filenames
@@ -546,6 +579,13 @@ SPITBOL compatible
 .B HOST()
 function is preferable, as it makes it possible to tell if a positional
 parameter containing spaces was passed in using shell quote characters.
+.TP
+.B &PI
+.br
+The protected keyword
+.B &PI
+contains value of the transendental number
+\*(pi.
 .TP
 .BR "REAL" " numbers in " "INTEGER" " contexts"
 .br
@@ -819,6 +859,14 @@ system file offsets are larger than can be represented in a SNOBOL4
 Support for "Large Files" is enabled when available,
 but not all file systems support them.
 .TP
+.B &STEXEC
+.br
+The protected keyword
+.B &STEXEC
+contains the number of statements executed, regardless of the value
+of
+.BR &STLIMIT .
+.TP
 .B SUBSTR()
 .br
 .B SUBSTR()
@@ -969,7 +1017,9 @@ values may cause execution to slow down when large amounts of garbage
 collect.  Most programs do not need an increased dynamic region to
 run.  If your program terminates with an \*(lqInsufficient storage to
 continue\*(rq message you need to increase the dynamic storage region
-size.
+size.  The
+.B -h
+option displays the default dynamic region size.
 .TP
 .B -f
 Toggle folding of identifiers to upper case (see
@@ -1042,7 +1092,6 @@ or
 environment variables).
 .TP
 .BI -L " file"
-.TP
 Load source file before others on command line.  May be used multiple times.
 .TP
 .B -M
@@ -1075,7 +1124,9 @@ multiplies the number by 1048576.  The pattern match stack is used to
 save backtracking and conditional assignment information during
 pattern matching.  If your program terminates with an \*(lqOverflow
 during pattern matching\*(rq message (Error 16) you need to increase
-the pattern match stack size.
+the pattern match stack size.   The
+.B -h
+option displays the default pattern match stack size.
 .TP
 .BI "-S " DDD
 Allocate
@@ -1090,7 +1141,9 @@ saving data, and passing parameters to internal procedures. If your
 program terminates with an \*(lqStack overflow\*(rq message (Error 21)
 you need to increase the interpreter stack size.  A common reason for
 needing additional stack space is for tracing deeply nested DATA()
-structures during garbage collection.
+structures during garbage collection.  The
+.B -h
+option displays the default interpreter stack size.
 
 .SH SEE ALSO
 .BR sdb (1), snobol4dbm (3), snobol4tcl (3), snobol4time (3), snolib (3).
@@ -1125,6 +1178,8 @@ Catspaw Macro SPITBOL manual
 .IR "The SNOBOL4 Programming Language" ,
 2nd ed., Prentice-Hall Inc., 1971.
 .br
+.I "(aka the green book)"
+.br
 ftp://ftp.cs.arizona.edu/snobol4/gb.pdf
 
 .TP
@@ -1156,20 +1211,121 @@ Mark Emmer (code from SNOBOL4+)
 Viktors Berstis (code from Minnesota SNOBOL4)
 
 .SH DIAGNOSTICS
-.TP
-\*(lqInsufficient storage to continue\*(rq (error 20)
-.br
-\*(lqDynamic\*(rq storage exhausted. See the
+SNOBOL4 errors shown with
+.BR &ERRTYPE
+values.
+Errors marked 
+.I fatal
+cannot be curtailed by setting
+.BR &ERRLIMIT .
+.IP 1
+"Illegal data type"
+.IP 2
+"Error in arithmetic operation"
+.IP 3
+"Erroneous array or table reference"
+.IP 4
+"Null string in illegal context"
+.IP 5
+"Undefined function or operation"
+.IP 6
+"Erroneous prototype"
+.IP 7
+"Unknown keyword"
+.IP 8
+"Variable not present where required"
+.IP 9
+"Entry point of function not label"
+.IP 10
+"Illegal argument to primitive function"
+.IP 11
+"Reading error"
+.IP 12
+"Illegal i/o unit"
+.IP 13
+"Limit on defined data types exceeded"
+.IP 14
+"Negative number in illegal context"
+.IP 15
+"String overflow"
+.IP 16
+"Overflow during pattern matching"
+.I fatal.
+See the
+.B "-P"
+option.
+.IP 17
+"Error in SNOBOL4 system"
+.I fatal.
+Various internal errors.
+.IP 18
+"Return from level zero"
+.I fatal.
+.IP 19
+"Failure during goto evaluation"
+.I fatal.
+.IP 20
+"Insufficient storage to continue"
+.I fatal.
+See the
 .B "-d"
 option.
-
-.TP
-\*(lqStack overflow\*(rq (error 21)
-.br
-Interpreter stack exhausted. See the
+.IP 21
+"Stack overflow"
+.I fatal.
+See the
 .B "-S"
 option.
-
+.IP 22
+"Limit on statement execution exceeded"
+.I fatal.
+.IP 23
+"Object exceeds size limit"
+.I fatal.
+.IP 24
+"Undefined or erroneous goto"
+.I fatal.
+.IP 25
+"Incorrect number of arguments"
+.I fatal.
+.IP 26
+"Limit on compilation errors exceeded"
+.I fatal.
+.IP 27
+"Erroneous END statement"
+.I fatal.
+.IP 28
+"Execution of statement with compilation error"
+.I fatal.
+Last error in standard SNOBOL4.
+.IP 29
+"Erroneous INCLUDE statement"
+.I fatal.
+.IP 30
+"Cannot open INCLUDE file"
+.I fatal.
+.IP 31
+"Erroneous LINE statement"
+.I fatal.
+.IP 32
+"Missing END statement"
+.I fatal.
+.IP 33
+"Output error"
+.IP 34
+"User interrupt"
+Interrupt character (SIGINT) was recieved.
+This error is not seen unless a
+.B SETEXIT()
+handler has been set.
+.IP 35
+"Not in a SETEXIT handler"
+Attempt to branch to
+.BR CONTINUE ,
+.BR SCONTINUE ,
+or
+.B ABORT
+when no unhandled error condition present.
 .SH BUGS
 .PP
 I/O retains some record oriented flavor.
