@@ -65,6 +65,7 @@ SDB.DC.END
  SDB.DC("quit", "exit debugger")
  SDB.DC("step", "single step", "EMPTY_OR_COUNT")
  SDB.DC("watch", "set watchpoint on a variable", "VARIABLE")
+ SDB.DC("what", "display data type", "EXPRESSION")
  SDB.DC("where", "alias for bt",, "BT")
 
 	SDB.MAXINT = 2147483647
@@ -158,6 +159,7 @@ SDB.TRAP.STMT
 	SDB.LAST = SDB.CDR(SDB.LAST)
 * never break inside sdb code (typ. 1st line of SDB.DEFINE, inside FCALL)
 	GE(SDB.LAST,SDB.FIRST_STMT) LE(SDB.LAST,SDB.LAST_STMT) :S(SDB.TRAP.RETURN)
+*	TERMINAL = GE(SDB.LAST,SDB.FIRST_STMT) LE(SDB.LAST,SDB.LAST_STMT) SDB.LASTFL :S(SDB.TRAP.RETURN)
 	SDB.ERROR =
 	DIFFER((SDB.BKPT = SDB.BREAK_BY_STMT[SDB.LAST])) :F(SDB.CHECKLEVEL)
 
@@ -236,8 +238,7 @@ SDB.GETCMD
 * here to return to user
 * could make decisions on what tracing gets/stays enabled
 SDB.TRAP.RETURN
-	TERMINAL = IDENT(SDB.RUNNING) "at END; use quit to exit" :S(SDB.GETCMD)
-*	TERMINAL = DIFFER(SDB.ERROR) "Can't return from ERROR" :S(SDB.GETCMD)
+	TERMINAL = IDENT(SDB.RUNNING) "The program is not being run." :S(SDB.GETCMD)
 	SETEXIT('SDB.SETEXIT_HANDLER')
 	&ERRLIMIT = SDB.ERRLIMIT
 						:(RETURN)
@@ -512,7 +513,7 @@ SDB.CMD.FINISH
 **** print command
 SDB.CMD.PRINT
 	TERMINAL = SDB.EVAL(SDB.ARGS)		:S(SDB.COMMAND.STAY)
-	TERMINAL = "error in expression"	:(SDB.COMMAND.STAY)
+	TERMINAL = "Expression eval failed."	:(SDB.COMMAND.STAY)
 
 * quit command
 SDB.CMD.QUIT
@@ -544,9 +545,22 @@ SDB.CMD.WATCH
 	TERMINAL = 'Watchpoint ' SDB.T2 ' on ' SDB.ARGS
 	TRACE(SDB.T3, "VALUE", SDB.T1, "SDB.TRAP.WATCH")
 	:(SDB.COMMAND.STAY)
-
 SDB.CMD.WATCH.ERR
 	TERMINAL = "Error watching " SDB.ARGS	:(SDB.COMMAND.STAY)
+
+**** what command
+
+SDB.CMD.WHAT
+	TERMINAL = IDENT(SDB.ARGS) '"what" requires expression' :S(SDB.COMMAND.STAY)
+	TERMINAL = LABEL(SDB.ARGS) SDB.ARGS " is label"
+	TERMINAL = FUNCTION(SDB.ARGS) SDB.ARGS " is function"
+	SDB.T1 = SDB.EVAL(SDB.ARGS)		:F(SDB.CMD.WHAT.ERR)
+	TERMINAL = "type = " DATATYPE(SDB.T1)
+	TERMINAL = "value = " SDB.T1		:(SDB.COMMAND.STAY)
+SDB.CMD.WHAT.ERR
+	TERMINAL = "error in expression"	:(SDB.COMMAND.STAY)
+
+
 SDB.COMMAND.END
 
 ****************
@@ -678,9 +692,10 @@ SDB.APPEND.END
 	DEFINE("SDB.EVAL(SDB.EXPR)SDB.TEMP")	:(SDB.EVAL.END)
 SDB.EVAL
 	&ERRLIMIT = SDB.ERRLIMIT
+	SETEXIT()
 	SDB.EVAL = EVAL(SDB.EXPR)		:F(FRETURN)
 	EQ(&ERRLIMIT,SDB.ERRLIMIT)		:S(RETURN)
-* here on compile error, fatal error
+* here on trapped error:
 	TERMINAL = &ERRTEXT ": " SDB.EXPR
 	&ERRLIMIT = SDB.TEMP			:(FRETURN)
 SDB.EVAL.END

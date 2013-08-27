@@ -2,6 +2,14 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+8/26/2013:
+	snolib/sdb.sno: add "what" command
+	v311.sil: [PLB111] check for null value in LABEL()
+	pkg/win32/{sdb,timing}.bat: use %~dp0 to get SNODIR
+	pkg/win32/timing.bat: use start for ^C trapping
+	lib/posix2001/mstime.c: fall back to getrusage()
+	    flush unused variable
+
 8/25/2013:
 	CHANGES: updated
 	README: updated for 1.5

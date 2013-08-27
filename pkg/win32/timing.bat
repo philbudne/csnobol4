@@ -2,7 +2,7 @@
 :: Phil Budne 8/14/2013
 
 setlocal
-set SNODIR=%SYSTEMDRIVE%\snobol4
+set SNODIR=%~dp0
 
 echo Date:
 echo %date% %time%
@@ -28,7 +28,7 @@ echo cpuid:
 %SNODIR%\cpuid
 echo:
 
-cd %SNODIR%\timing
+cd /d %SNODIR%\timing
 echo Ids:
 find "Id:" bench.sno v311.sil timing.sno
 echo:
