@@ -1,6 +1,10 @@
 * $Id$
 *
 * $Log$
+* Revision 1.127  2013/08/23 23:08:13  phil
+* [PLB110] fix continue from END after an error
+* 	fix duplicate END2 label
+*
 * Revision 1.126  2013/08/22 19:52:30  phil
 * [PLB109] Implement "User Interrupt" (SIGINT) handling
 * Set &LAST{NO,FILE,LINE} in XITHND
@@ -5923,6 +5927,7 @@ IDENT  PROC    ,		   IDENT(X,Y)
 *
 LABEL  PROC    ,		   LABEL(X)
        RCALL   ,VARVUP,,FAIL	   Evaluate argument		[PLB79]
+       AEQLC   XPTR,0,,FAIL	   Check for null		[PLB111]
        GETDC   XPTR,XPTR,ATTRIB    Get object code base
        AEQLC   XPTR,0,RETNUL,FAIL  Fail if zero
 *_
