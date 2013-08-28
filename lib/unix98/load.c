@@ -89,7 +89,7 @@ os_load(fname, lname)
     if (fp == NULL) {
     fail:
 	dlclose(handle);
-	return;
+	return NULL;
     }
 
     strcpy(fp->name, fname);
