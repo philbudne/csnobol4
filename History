@@ -2,6 +2,14 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+8/27/2013:
+	lib/unix98/load.c: fix missing return value (found by clang)
+	test/tests.in: add atn.sno
+	test/atn.{sno,ref}: new test
+	CHANGES: updated
+	README: add Fred Weigel to credits
+	doc/sdb.1: credit Fred Weigel for DDT
+
 8/26/2013:
 	snolib/sdb.sno: add "what" command
 	v311.sil: [PLB111] check for null value in LABEL()

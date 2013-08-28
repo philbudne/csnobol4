@@ -2,6 +2,8 @@ $Id$
 
 ^C in sdb sometimes displays empty file & line
 
+^C in sdb sometimes displays empty file & line
+
 Make utf8 versions of man pages?
 
 Update snobol4 man page:

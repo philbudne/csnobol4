@@ -6,8 +6,9 @@ Changes since 1.4.1 release;
 ===========================
 	Larger default stack and dynamic regions
 	Debugger (sdb) improvements:
+	    ^C, fatal errors and END statement return user to (sdb) prompt
 	    sdb source lines no longer visible in debugger
-	    use SETEXIT() to trap ^C, fatal errors, END statement
+	    "what" command
 	Trap ^C (SIGINT) catchable w/ SETEXIT() as "User Interrupt"
 	Add include/library path:
 	    SNOPATH environment variable
@@ -17,7 +18,7 @@ Changes since 1.4.1 release;
 	    -L FILE command line option
 	Document default INPUT record length
 	Extensions:
-	    keywords: &DIGITS &PI &STEXEC &GCTIME &MAXINT
+	    protected keywords: &DIGITS &PI &STEXEC &GCTIME &MAXINT
 	    functions: FILE_ISDIR() FILE_ABSPATH()
 	Fixes:
 	    Display more digits for 64-bit REALs
