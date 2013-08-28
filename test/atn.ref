@@ -1,0 +1,664 @@
+**********************************
+ NETWORK PARSE_CLAUSE
+**********************************
+    S1
+        IF PARSE_NOUN_GROUP(THIS_NODE) GOTO S2
+        AFTER SETR('SUBJECT',LAST_PARSED)
+        ENDIF
+    END S1
+**********************************
+    S2
+        IF PARSE_WORD(THIS_NODE,'VERB TENSED ') GOTO S3
+        AFTER SETR('VERB',LAST_PARSED)
+        ENDIF
+    END S2
+**********************************
+    S3
+        IF    TESTF(LAST_PARSED,'BE ')
+        PARSE_WORD(THIS_NODE,'PASTPARTICIPLE ') GOTO S4
+        AFTER    SETR('OBJECT',GETR('SUBJECT'))
+            SETR('SUBJECT')
+            SETR('VERB',LAST_PARSED)
+        ENDIF
+        IF    TESTF(GETR('VERB'),'TRANSITIVE ')
+        PARSE_NOUN_GROUP(THIS_NODE) GOTO S4
+        AFTER SETR('OBJECT',LAST_PARSED)
+        ENDIF
+        IF TESTF(GETR('VERB'),'INTRANSITIVE ') GOTO S4 ENDIF
+        IF ~NULL(GETR('OBJECT')) GOTO S4 ENDIF
+    END S3
+**********************************
+    S4
+        IF    ~NULL(GETR('SUBJECT'))
+        NULL(REMAINING_WORDS) GOTO WIN
+        ENDIF
+        IF    NULL(GETR('SUBJECT'))
+        IDENT(CURRENT_WORD,'BY')
+        PARSE_WORD(THIS_NODE) GOTO S5
+        ENDIF
+        IF NULL(GETR('SUBJECT')) GOTO S4
+        AFTER SETR('SUBJECT','SOMEONE')
+        ENDIF
+    END S4
+**********************************
+    S5
+        IF PARSE_NOUN_GROUP(THIS_NODE) GOTO S4
+        AFTER SETR('SUBJECT',LAST_PARSED)
+        ENDIF
+    END S5
+ END PARSE_CLAUSE
+
+------ Code ------
+
+     | PARSE_CLAUSE
+     |  HOLD = REMAINING_WORDS
+     |  REMAINING_WORDS (BREAK(" ") $ CURRENT_WORD)
+     |  THIS_NODE = GENNAME("PARSE_CLAUSE")
+     |  :(PARSE_CLAUSE_START)
+     | PARSE_CLAUSE_WIN
+     |  TESTF(THIS_NODE,FEATS) :F(PARSE_CLAUSE_LOSE)
+     |  ATTACH(THIS_NODE,PARENT)
+     |  LAST_PARSED = THIS_NODE :(RETURN)
+     | PARSE_CLAUSE_LOSE
+     |  REMAINING_WORDS = HOLD
+     |  REMAINING_WORDS (BREAK(" ") $ CURRENT_WORD) :(FRETURN)
+     | PARSE_CLAUSE_START
+     | PARSE_CLAUSE_S1
+     |  ?( PARSE_NOUN_GROUP(THIS_NODE) SETR('SUBJECT',LAST_PARSED) ) :S(PARSE_CLAUSE_S2)
+     |  :(PARSE_CLAUSE_LOSE)
+     | PARSE_CLAUSE_S2
+     |  ?( PARSE_WORD(THIS_NODE,'VERB TENSED ') SETR('VERB',LAST_PARSED) ) :S(PARSE_CLAUSE_S3)
+     |  :(PARSE_CLAUSE_LOSE)
+     | PARSE_CLAUSE_S3
+     |  ?( TESTF(LAST_PARSED,'BE ') PARSE_WORD(THIS_NODE,'PASTPARTICIPLE ') SETR('OBJECT',GETR('SUBJECT')) SETR('SUBJECT') SETR('VERB',LAST_PARSED) ) :S(PARSE_CLAUSE_S4)
+     |  ?( TESTF(GETR('VERB'),'TRANSITIVE ') PARSE_NOUN_GROUP(THIS_NODE) SETR('OBJECT',LAST_PARSED) ) :S(PARSE_CLAUSE_S4)
+     |  ?( TESTF(GETR('VERB'),'INTRANSITIVE ')  ) :S(PARSE_CLAUSE_S4)
+     |  ?( ~NULL(GETR('OBJECT'))  ) :S(PARSE_CLAUSE_S4)
+     |  :(PARSE_CLAUSE_LOSE)
+     | PARSE_CLAUSE_S4
+     |  ?( ~NULL(GETR('SUBJECT')) NULL(REMAINING_WORDS)  ) :S(PARSE_CLAUSE_WIN)
+     |  ?( NULL(GETR('SUBJECT')) IDENT(CURRENT_WORD,'BY') PARSE_WORD(THIS_NODE)  ) :S(PARSE_CLAUSE_S5)
+     |  ?( NULL(GETR('SUBJECT')) SETR('SUBJECT','SOMEONE') ) :S(PARSE_CLAUSE_S4)
+     |  :(PARSE_CLAUSE_LOSE)
+     | PARSE_CLAUSE_S5
+     |  ?( PARSE_NOUN_GROUP(THIS_NODE) SETR('SUBJECT',LAST_PARSED) ) :S(PARSE_CLAUSE_S4)
+     |  :(PARSE_CLAUSE_LOSE)
+
+------ End of Code ------
+
+
+------ Code ------
+
+     |  DEFINE('PARSE_CLAUSE(PARENT,FEATS)THIS_NODE,HOLD')
+
+------ End of Code ------
+
+
+
+
+**********************************
+ NETWORK PARSE_NOUN_GROUP
+**********************************
+    S1
+        IF PARSE_WORD(THIS_NODE,'DETERMINER ') GOTO S2
+        AFTER SETR('NUMBER',
+               SELECT('SINGULAR PLURAL ',
+                  GETF(LAST_PARSED)))
+              SETR('DETERMINER',
+               SELECT('DEFINITE INDEFINITE ',
+                  GETF(LAST_PARSED)))
+        ENDIF
+    END S1
+**********************************
+    S2
+        IF PARSE_WORD(THIS_NODE,'ADJECTIVE ') GOTO S2
+         AFTER ADDR('ADJECTIVES',LAST_PARSED)
+        ENDIF
+        IF PARSE_WORD(THIS_NODE,'NOUN ') GOTO WIN
+         AFTER SETR('NUMBER',
+                SELECT('SINGULAR PLURAL ',
+                   GETF(LAST_PARSED)))
+               SETR('NOUN',LAST_PARSED)
+        ENDIF
+    END S2
+ END PARSE_NOUN_GROUP
+
+------ Code ------
+
+     | PARSE_NOUN_GROUP
+     |  HOLD = REMAINING_WORDS
+     |  REMAINING_WORDS (BREAK(" ") $ CURRENT_WORD)
+     |  THIS_NODE = GENNAME("PARSE_NOUN_GROUP")
+     |  :(PARSE_NOUN_GROUP_START)
+     | PARSE_NOUN_GROUP_WIN
+     |  TESTF(THIS_NODE,FEATS) :F(PARSE_NOUN_GROUP_LOSE)
+     |  ATTACH(THIS_NODE,PARENT)
+     |  LAST_PARSED = THIS_NODE :(RETURN)
+     | PARSE_NOUN_GROUP_LOSE
+     |  REMAINING_WORDS = HOLD
+     |  REMAINING_WORDS (BREAK(" ") $ CURRENT_WORD) :(FRETURN)
+     | PARSE_NOUN_GROUP_START
+     | PARSE_NOUN_GROUP_S1
+     |  ?( PARSE_WORD(THIS_NODE,'DETERMINER ') SETR('NUMBER', SELECT('SINGULAR PLURAL ', GETF(LAST_PARSED))) SETR('DETERMINER', SELECT('DEFINITE INDEFINITE ', GETF(LAST_PARSED))) ) :S(PARSE_NOUN_GROUP_S2)
+     |  :(PARSE_NOUN_GROUP_LOSE)
+     | PARSE_NOUN_GROUP_S2
+     |  ?( PARSE_WORD(THIS_NODE,'ADJECTIVE ') ADDR('ADJECTIVES',LAST_PARSED) ) :S(PARSE_NOUN_GROUP_S2)
+     |  ?( PARSE_WORD(THIS_NODE,'NOUN ') SETR('NUMBER', SELECT('SINGULAR PLURAL ', GETF(LAST_PARSED))) SETR('NOUN',LAST_PARSED) ) :S(PARSE_NOUN_GROUP_WIN)
+     |  :(PARSE_NOUN_GROUP_LOSE)
+
+------ End of Code ------
+
+
+------ Code ------
+
+     |  DEFINE('PARSE_NOUN_GROUP(PARENT,FEATS)THIS_NODE,HOLD')
+
+------ End of Code ------
+
+
+
+
+**********************************
+ NETWORK PARSE_WORD
+    S1
+        IF NULL(null) GOTO WIN
+        AFTER PARSE_WORD_1()
+        ENDIF
+    END S1
+ END PARSE_WORD
+
+------ Code ------
+
+     | PARSE_WORD
+     |  HOLD = REMAINING_WORDS
+     |  REMAINING_WORDS (BREAK(" ") $ CURRENT_WORD)
+     |  THIS_NODE = GENNAME("PARSE_WORD")
+     |  :(PARSE_WORD_START)
+     | PARSE_WORD_WIN
+     |  TESTF(THIS_NODE,FEATS) :F(PARSE_WORD_LOSE)
+     |  ATTACH(THIS_NODE,PARENT)
+     |  LAST_PARSED = THIS_NODE :(RETURN)
+     | PARSE_WORD_LOSE
+     |  REMAINING_WORDS = HOLD
+     |  REMAINING_WORDS (BREAK(" ") $ CURRENT_WORD) :(FRETURN)
+     | PARSE_WORD_START
+     | PARSE_WORD_S1
+     |  ?( NULL(null) PARSE_WORD_1() ) :S(PARSE_WORD_WIN)
+     |  :(PARSE_WORD_LOSE)
+
+------ End of Code ------
+
+
+------ Code ------
+
+     |  DEFINE('PARSE_WORD(PARENT,FEATS)THIS_NODE,HOLD')
+
+------ End of Code ------
+
+
+
+
+**********************************
+ FUNCTION PARSE_WORD_1 () ()
+    THIS_NODE = CURRENT_WORD ;
+    REMAINING_WORDS BREAK(" ") SPAN(" ") = ;
+    REMAINING_WORDS (BREAK(" ") | null) $ CURRENT_WORD    :(RETURN) ;
+ END PARSE_WORD_1
+
+------ Code ------
+
+     | PARSE_WORD_1
+     |  THIS_NODE = CURRENT_WORD
+     |  REMAINING_WORDS BREAK(" ") SPAN(" ") =
+     |  REMAINING_WORDS (BREAK(" ") | null) $ CURRENT_WORD    :(RETURN)
+     |  ERROR('No return from ' 'PARSE_WORD_1') :(END)
+
+------ End of Code ------
+
+
+------ Code ------
+
+     |  DEFINE('PARSE_WORD_1()')
+
+------ End of Code ------
+
+
+
+
+**********************************
+ FUNCTION SETR (REGISTER,VALUE) ()
+    PUT(THIS_NODE,VALUE,REGISTER)        :(RETURN) ;
+ END SETR
+
+------ Code ------
+
+     | SETR
+     |  PUT(THIS_NODE,VALUE,REGISTER)        :(RETURN)
+     |  ERROR('No return from ' 'SETR') :(END)
+
+------ End of Code ------
+
+
+------ Code ------
+
+     |  DEFINE('SETR(REGISTER,VALUE)')
+
+------ End of Code ------
+
+
+
+
+**********************************
+ FUNCTION GETR (REGISTER) ()
+    GETR = GET(THIS_NODE,REGISTER)        :(RETURN) ;
+ END GETR
+
+------ Code ------
+
+     | GETR
+     |  GETR = GET(THIS_NODE,REGISTER)        :(RETURN)
+     |  ERROR('No return from ' 'GETR') :(END)
+
+------ End of Code ------
+
+
+------ Code ------
+
+     |  DEFINE('GETR(REGISTER)')
+
+------ End of Code ------
+
+
+
+
+**********************************
+ FUNCTION ADDR (REGISTER,VALUE) ()
+    SETR(REGISTER,GETR(REGISTER) VALUE " ")    :(RETURN) ;
+ END ADDR
+
+------ Code ------
+
+     | ADDR
+     |  SETR(REGISTER,GETR(REGISTER) VALUE " ")    :(RETURN)
+     |  ERROR('No return from ' 'ADDR') :(END)
+
+------ End of Code ------
+
+
+------ Code ------
+
+     |  DEFINE('ADDR(REGISTER,VALUE)')
+
+------ End of Code ------
+
+
+
+
+**********************************
+ FUNCTION GENNAME (X) ()
+    GENNAME =
+        '*' X '_' (NEXTNUM = NEXTNUM + 1) '*'
+        :(RETURN) ;
+ END GENNAME
+
+------ Code ------
+
+     | GENNAME
+     |  GENNAME = '*' X '_' (NEXTNUM = NEXTNUM + 1) '*' :(RETURN)
+     |  ERROR('No return from ' 'GENNAME') :(END)
+
+------ End of Code ------
+
+
+------ Code ------
+
+     |  DEFINE('GENNAME(X)')
+
+------ End of Code ------
+
+
+
+
+**********************************
+ FUNCTION ATTACH (C,P) ()
+    PUT(C,P,'PARENT') ;
+    PUT(P,GET(P,'CHILDREN') C " ",'CHILDREN')
+        :(RETURN) ;
+ END ATTACH
+
+------ Code ------
+
+     | ATTACH
+     |  PUT(C,P,'PARENT')
+     |  PUT(P,GET(P,'CHILDREN') C " ",'CHILDREN') :(RETURN)
+     |  ERROR('No return from ' 'ATTACH') :(END)
+
+------ End of Code ------
+
+
+------ Code ------
+
+     |  DEFINE('ATTACH(C,P)')
+
+------ End of Code ------
+
+
+
+
+**********************************
+ FUNCTION SELECT (S,T) ()
+    S (BREAK(" ") $ SELECT) SPAN(" ") =    :F(FRETURN) ;
+    T (POS(0) | " ") SELECT " "
+        :S(RETURN)F(SELECT) ;
+ END SELECT
+
+------ Code ------
+
+     | SELECT
+     |  S (BREAK(" ") $ SELECT) SPAN(" ") =    :F(FRETURN)
+     |  T (POS(0) | " ") SELECT " " :S(RETURN)F(SELECT)
+     |  ERROR('No return from ' 'SELECT') :(END)
+
+------ End of Code ------
+
+
+------ Code ------
+
+     |  DEFINE('SELECT(S,T)')
+
+------ End of Code ------
+
+
+
+
+**********************************
+ FUNCTION TESTF (X,F) (W,G)
+    NULL(F)        :S(RETURN) ;
+    G = GETF(X) ;
+TESTF1
+    F (BREAK(" ") $ W) SPAN(" ") =    :F(RETURN) ;
+    G (POS(0) | " ") W " "    :S(TESTF)F(FRETURN) ;
+ END TESTF
+
+------ Code ------
+
+     | TESTF
+     |  NULL(F)        :S(RETURN)
+     |  G = GETF(X)
+     | TESTF1
+     |  F (BREAK(" ") $ W) SPAN(" ") =    :F(RETURN)
+     |  G (POS(0) | " ") W " "    :S(TESTF)F(FRETURN)
+     |  ERROR('No return from ' 'TESTF') :(END)
+
+------ End of Code ------
+
+
+------ Code ------
+
+     |  DEFINE('TESTF(X,F)W,G')
+
+------ End of Code ------
+
+
+
+
+**********************************
+ FUNCTION GETF (X) ()
+    GETF = LEXICAL_FEATURES<X> :(RETURN) ;
+ END GETF
+
+------ Code ------
+
+     | GETF
+     |  GETF = LEXICAL_FEATURES<X> :(RETURN)
+     |  ERROR('No return from ' 'GETF') :(END)
+
+------ End of Code ------
+
+
+------ Code ------
+
+     |  DEFINE('GETF(X)')
+
+------ End of Code ------
+
+
+
+
+**********************************
+ LEXICON L1
+    <* >NOUN >SINGULAR BLOCK BOY
+    <* >DETERMINER >SINGULAR >INDEFINITE A
+               <SINGULAR >DEFINITE THE
+    <* >VERB >TENSED >TRANSITIVE >INTRANSITIVE >PASTPARTICIPLE DROPPED
+         <TENSED >BE WAS
+    <* >ADJECTIVE BIG RED
+    <* >PREPOSITION BY
+    <*
+ END L1
+     | BLOCK:  NOUN SINGULAR 
+     | BOY:  NOUN SINGULAR 
+     | A:  DETERMINER SINGULAR INDEFINITE 
+     | THE:  DETERMINER SINGULAR DEFINITE 
+     | DROPPED:  VERB TENSED TRANSITIVE INTRANSITIVE PASTPARTICIPLE 
+     | WAS:  VERB TENSED BE 
+     | BIG:  ADJECTIVE 
+     | RED:  ADJECTIVE 
+     | BY:  PREPOSITION 
+
+
+
+**********************************
+ SENTENCES S1
+    A BIG RED BLOCK WAS DROPPED BY THE BOY ;
+    THE BOY DROPPED A BIG RED BLOCK ;
+    A BLOCK WAS DROPPED ;
+    THE BLOCK DROPPED ;
+ END S1
+
+
+
+**********************************
+ EXEC PARSE_CLAUSE("SENTENCE",null)
+
+
+****** EXECUTION BEGINS WITH PARSE_CLAUSE("SENTENCE",null) ******
+
+
+
+------------------
+
+THE BLOCK DROPPED 
+
+------------------
+
+
+Parsing Succeeded
+
+
+NODE: THE
+          PARENT = *PARSE_NOUN_GROUP_2*
+
+NODE: *PARSE_NOUN_GROUP_2*
+          CHILDREN = THE BLOCK 
+          NUMBER = SINGULAR
+          DETERMINER = DEFINITE
+          NOUN = BLOCK
+          PARENT = *PARSE_CLAUSE_1*
+
+NODE: BLOCK
+          PARENT = *PARSE_NOUN_GROUP_2*
+
+NODE: *PARSE_CLAUSE_1*
+          CHILDREN = *PARSE_NOUN_GROUP_2* DROPPED 
+          SUBJECT = *PARSE_NOUN_GROUP_2*
+          VERB = DROPPED
+          PARENT = SENTENCE
+
+NODE: DROPPED
+          PARENT = *PARSE_CLAUSE_1*
+
+NODE: SENTENCE
+          CHILDREN = *PARSE_CLAUSE_1* 
+
+
+--------------------
+
+A BLOCK WAS DROPPED 
+
+--------------------
+
+
+Parsing Succeeded
+
+
+NODE: A
+          PARENT = *PARSE_NOUN_GROUP_10*
+
+NODE: *PARSE_NOUN_GROUP_10*
+          CHILDREN = A BLOCK 
+          NUMBER = SINGULAR
+          DETERMINER = INDEFINITE
+          NOUN = BLOCK
+          PARENT = *PARSE_CLAUSE_9*
+
+NODE: BLOCK
+          PARENT = *PARSE_NOUN_GROUP_10*
+
+NODE: *PARSE_CLAUSE_9*
+          CHILDREN = *PARSE_NOUN_GROUP_10* WAS DROPPED 
+          SUBJECT = SOMEONE
+          VERB = DROPPED
+          OBJECT = *PARSE_NOUN_GROUP_10*
+          PARENT = SENTENCE
+
+NODE: WAS
+          PARENT = *PARSE_CLAUSE_9*
+
+NODE: DROPPED
+          PARENT = *PARSE_CLAUSE_9*
+
+NODE: SENTENCE
+          CHILDREN = *PARSE_CLAUSE_9* 
+
+
+--------------------------------
+
+THE BOY DROPPED A BIG RED BLOCK 
+
+--------------------------------
+
+
+Parsing Succeeded
+
+
+NODE: THE
+          PARENT = *PARSE_NOUN_GROUP_17*
+
+NODE: *PARSE_NOUN_GROUP_17*
+          CHILDREN = THE BOY 
+          NUMBER = SINGULAR
+          DETERMINER = DEFINITE
+          NOUN = BOY
+          PARENT = *PARSE_CLAUSE_16*
+
+NODE: BOY
+          PARENT = *PARSE_NOUN_GROUP_17*
+
+NODE: *PARSE_CLAUSE_16*
+          CHILDREN = *PARSE_NOUN_GROUP_17* DROPPED *PARSE_NOUN_GROUP_22* 
+          SUBJECT = *PARSE_NOUN_GROUP_17*
+          VERB = DROPPED
+          OBJECT = *PARSE_NOUN_GROUP_22*
+          PARENT = SENTENCE
+
+NODE: DROPPED
+          PARENT = *PARSE_CLAUSE_16*
+
+NODE: A
+          PARENT = *PARSE_NOUN_GROUP_22*
+
+NODE: *PARSE_NOUN_GROUP_22*
+          CHILDREN = A BIG RED BLOCK 
+          NUMBER = SINGULAR
+          DETERMINER = INDEFINITE
+          ADJECTIVES = BIG RED 
+          NOUN = BLOCK
+          PARENT = *PARSE_CLAUSE_16*
+
+NODE: BIG
+          PARENT = *PARSE_NOUN_GROUP_22*
+
+NODE: RED
+          PARENT = *PARSE_NOUN_GROUP_22*
+
+NODE: BLOCK
+          PARENT = *PARSE_NOUN_GROUP_22*
+
+NODE: SENTENCE
+          CHILDREN = *PARSE_CLAUSE_16* 
+
+
+---------------------------------------
+
+A BIG RED BLOCK WAS DROPPED BY THE BOY 
+
+---------------------------------------
+
+
+Parsing Succeeded
+
+
+NODE: A
+          PARENT = *PARSE_NOUN_GROUP_29*
+
+NODE: *PARSE_NOUN_GROUP_29*
+          CHILDREN = A BIG RED BLOCK 
+          NUMBER = SINGULAR
+          DETERMINER = INDEFINITE
+          ADJECTIVES = BIG RED 
+          NOUN = BLOCK
+          PARENT = *PARSE_CLAUSE_28*
+
+NODE: BIG
+          PARENT = *PARSE_NOUN_GROUP_29*
+
+NODE: RED
+          PARENT = *PARSE_NOUN_GROUP_29*
+
+NODE: BLOCK
+          PARENT = *PARSE_NOUN_GROUP_29*
+
+NODE: *PARSE_CLAUSE_28*
+          CHILDREN = *PARSE_NOUN_GROUP_29* WAS DROPPED BY *PARSE_NOUN_GROUP_38* 
+          SUBJECT = *PARSE_NOUN_GROUP_38*
+          VERB = DROPPED
+          OBJECT = *PARSE_NOUN_GROUP_29*
+          PARENT = SENTENCE
+
+NODE: WAS
+          PARENT = *PARSE_CLAUSE_28*
+
+NODE: DROPPED
+          PARENT = *PARSE_CLAUSE_28*
+
+NODE: BY
+          PARENT = *PARSE_CLAUSE_28*
+
+NODE: THE
+          PARENT = *PARSE_NOUN_GROUP_38*
+
+NODE: *PARSE_NOUN_GROUP_38*
+          CHILDREN = THE BOY 
+          NUMBER = SINGULAR
+          DETERMINER = DEFINITE
+          NOUN = BOY
+          PARENT = *PARSE_CLAUSE_28*
+
+NODE: BOY
+          PARENT = *PARSE_NOUN_GROUP_38*
+
+NODE: SENTENCE
+          CHILDREN = *PARSE_CLAUSE_28* 
+
+
