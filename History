@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+8/29/2013:
+	configure: test for rl_copy_keymap() -- missing on NetBSD/OSX
+
 8/27/2013:
 	lib/unix98/load.c: fix missing return value (found by clang)
 	test/tests.in: add atn.sno

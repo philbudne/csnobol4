@@ -1605,9 +1605,10 @@ if [ ! "$WITHOUT_READLINE" ]; then
 	echo '#define PML_READLINE'		>> $CONFIG_H
 	# Make optional?
 	echo '#define COMPILER_READLINE'	>> $CONFIG_H
-	
-	if config/check "$RL_INC" "rl_set_keymap(rl_get_keymap)" -lreadline; then
-	echo "using rl_set_keymap()" 1>&2
+	# NetBSD/OSX have rl_[gs]et_keymap, but they're noops,
+	# rl_copy_keymap() isn't even faked.
+	if config/check "$RL_INC" "rl_copy_keymap()" $RL_LIBS; then
+	    echo "using rl_set_keymap()" 1>&2
 	    echo '#define HAVE_RL_SET_KEYMAP'	>> $CONFIG_H
 	fi
     fi
