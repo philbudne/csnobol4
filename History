@@ -2,8 +2,13 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+*** 1.5-rc2 (tag REL_1_5_RC2)
+
 8/29/2013:
 	configure: test for rl_copy_keymap() -- missing on NetBSD/OSX
+		update for 1.5-rc2
+
+*** 1.5-rc1 (tag REL_1_5_RC2)
 
 8/27/2013:
 	lib/unix98/load.c: fix missing return value (found by clang)
