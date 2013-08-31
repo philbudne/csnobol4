@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.128  2013/08/27 04:59:02  phil
+* [PLB111] check for null value in LABEL()
+*
 * Revision 1.127  2013/08/23 23:08:13  phil
 * [PLB110] fix continue from END after an error
 * 	fix duplicate END2 label
@@ -2412,7 +2415,8 @@ GOTL2  DEQL    XPTR,NRETCL,GOTL3   Compare with NRETURN
 GOTL3  DEQL    XPTR,ABORCL,GOTL4   Compare with ABORT		[PLB97]
        AEQLC   XOCBSC,0,,CNTERR	   Must be in a handler!!	[PLB98]
        MOVD    ERRTYP,XERRTY	   Restore saved &ERRTYPE	[PLB97]
-       MOVD    FILENM,XFILEN	   Restore saved &FILENM	[PLB97]
+       MOVD    FILENM,XFILEN	   Restore saved &FILE		[PLB97]
+       MOVD    LNNOCL,XLNNOC	   Restore saved &LINE		[PLB112]
        MOVD    STNOCL,XSTNOC	   Restore saved &STNO		[PLB97]
        BRANCH  FTLEND		   Fatal ending			[PLB97]
 *_
@@ -5494,6 +5498,7 @@ TRPHND PROC    ,		   Trace handling procedure
        DECRA   TRAPCL,1		   Decrement &TRACE
        PUSH    (FILENM,LNNOCL,LSTNCL,STNOCL,FRTNCL,OCBSCL,OCICL,TRAPCL,TRACL)
 *				   Save system descriptors	[PLB38]
+       PUSH    (LSFLNM,LSLNCL)	   Save &LAST{FILE,LINE}	[PLB112]
        GETDC   OCBSCL,ATPTR,2*DESCR    NEW CODE BASE
 *				   Get new code base
        SETAC   OCICL,DESCR	   Set up offset
@@ -5502,6 +5507,7 @@ TRPHND PROC    ,		   Trace handling procedure
        SETAC   TRACL,0		   Set &FTRACE to 0
        RCALL   ,INVOKE,XPTR					E3.3.1[PLB84]
 *				   Evaluate function
+       POP     (LSLNCL,LSFLNM)	   Restore &LAST{FILE,LINE}	[PLB112]
        POP     (TRACL,TRAPCL,OCICL,OCBSCL,FRTNCL,STNOCL,LSTNCL,LNNOCL,FILENM)
 *				   Restore system descriptors	[PLB38]
        BRANCH  RTN1						E3.3.1
