@@ -9,6 +9,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	test/setexit6.{sno,ref}: setexit.sno w/ STCOUNT trace
 	test/tests.in: add setexit6
 	snolib/sdb.sno: output date as well as version
+	test/bench.sno: drop max time to 60s (from 120s)
 
 *** 1.5-rc2 (tag REL_1_5_RC2)
 
