@@ -1,6 +1,8 @@
-cont: Error in arithmetic operation
-scont: Illegal data type
+cont: setexit.sno:5 Error in arithmetic operation S4
+@l1: last: setexit.sno:5 S4
+scont: setexit.sno:11 Illegal data type S9
+back from scont: last setexit.sno:11 S9
 HERE: Illegal argument to primitive function
-abrt: Negative number in illegal context
-setexit.sno:30: Error 14 in statement 15 at level 0
+abrt: setexit.sno:23 Negative number in illegal context S18
+setexit.sno:23: Error 14 in statement 18 at level 0
 Negative number in illegal context

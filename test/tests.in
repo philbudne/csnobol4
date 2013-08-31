@@ -159,3 +159,5 @@ reg setexit4.sno
 reg setexit5.sno
 # 8/27
 reg atn.sno
+# 8/30
+err setexit6.sno

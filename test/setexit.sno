@@ -6,13 +6,16 @@
 	output = 'CONTINUE returned success?'
 
 * Illegal Data Type:
-l1	setexit(.scont)
+l1	output = "@l1: last: " &LASTFILE ':' &LASTLINE ' S' &LASTNO
+	setexit(.scont)
 	output = -code('LBL')		:s(l2)
-	output = 'SCONTINUE returned failure?'
+	output = 'SCONTINUE returned failure?' :(END)
+
+l2	output = "back from scont: last " &LASTFILE ':' &LASTLINE ' S' &LASTNO
 
 * try before setting new handler; should be silently ignored
 * Illegal Argument
-l2	output = char(1000)
+	output = char(1000)
 	output = "HERE: " &ERRTEXT
 
 	setexit(.abrt)
@@ -21,13 +24,16 @@ l2	output = char(1000)
 	output = 'ABORT returned?'
 	:(end)
 
-cont	output = "cont: " &ERRTEXT	:(CONTINUE)
+cont	output = "cont: " &LASTFILE ':' &LASTLINE ' ' &ERRTEXT  ' S' &LASTNO
+	:(CONTINUE)
 	output = 'CONTINUE did not branch' :(END)
 
-scont	output = "scont: " &ERRTEXT	:(SCONTINUE)
+scont	output = "scont: " &LASTFILE ':' &LASTLINE ' ' &ERRTEXT ' S' &LASTNO
+	:(SCONTINUE)
 	output = 'SCONTINUE did not branch' :(END)
 
-abrt	output = "abrt: " &ERRTEXT	:(ABORT)
+abrt	output = "abrt: " &LASTFILE ':' &LASTLINE ' ' &ERRTEXT  ' S' &LASTNO
+	:(ABORT)
 	output = 'ABORT did not branch'
 
 end
