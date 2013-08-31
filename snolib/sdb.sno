@@ -14,7 +14,9 @@ SDB.START
 ******* MUST BE FIRST STMT!
 	SDB.FIRST_STMT = &STNO
 	SDB.ID = "$Id$"
-	SDB.ID BREAK(' ') ' ' SPAN('0123456789.') . SDB.VERSION
+	SDB.NUMP = SPAN('0123456789')
+	SDB.ID BREAK(' ') ' ' 
++	  (SPAN('0123456789.') ' ' SDB.NUMP '/' SDB.NUMP '/' SDB.NUMP) . SDB.VDATE
 
 -include 'readline.sno'
 
@@ -89,7 +91,6 @@ SDB.GOT_MAX_STMTS
 	SDB.LABELS = TABLE(50, 50)
 	SDB.WS = ' ' CHAR(9)
 	SDB.LABELP = POS(0) (ANY(&LCASE &UCASE) BREAK(SDB.WS)) . LBL
-	SDB.NUMP = SPAN('0123456789')
 	SDB.SWSP = SPAN(SDB.WS)
 
 	DIFFER(.NAME, "NAME")			:S(SDB.SPITBOL)
@@ -235,7 +236,7 @@ SDB.GETCMD
 	SDB.CMD = IDENT(SDB.CMD) SDB.LAST_CMD
 	SDB.LAST_CMD = SDB.CMD
 	SDB.COMMAND(SDB.CMD)			:F(SDB.GETCMD)
-* here to return to user
+* here to return to user (unless END was reached)
 * could make decisions on what tracing gets/stays enabled
 SDB.TRAP.RETURN
 	TERMINAL = IDENT(SDB.RUNNING) "The program is not being run." :S(SDB.GETCMD)
@@ -245,6 +246,8 @@ SDB.TRAP.RETURN
 
 * SETEXIT handler (branched to, not called!!!)
 SDB.SETEXIT_HANDLER
+* SDB.TRAP.EXIT call *MUST* be 1st statement.
+* fail return means ^C: step count set, restart current statement
 	SDB.TRAP.EXIT((&TRACE = 0), &LASTFILE ':' &LASTLINE, &LASTNO) :F(CONTINUE)
 * reenable handler:
 	&ERRLIMIT = SDB.ERRLIMIT
@@ -763,7 +766,7 @@ SDB.NOSTACK
 **************** startup:
 
 	DIFFER(HOST(4,"SDB_NOBANNER"))
-	TERMINAL = "sdb SNOBOL4 debugger version " SDB.VERSION
+	TERMINAL = "sdb SNOBOL4 debugger version " SDB.VDATE
 	TERMINAL = "Copyright 2010-2013 Philip L. Budne"
 	TERMINAL = 'Type "help" for help.'
 	TERMINAL =
