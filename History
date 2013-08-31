@@ -7,6 +7,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 		set SDB.INTERRUPT on ^C instead of STEP_COUNT
 		move SDB.TRAP.EXIT entry up
 		clean up SETEXIT_HANDLER
+	doc/sdb.1: add "what" command
 
 8/30/2013:
 	v311.sil: [PLB112] save/restore &LAST{FILE,LINE} in TRPHND
