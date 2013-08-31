@@ -2,6 +2,14 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+8/30/2013:
+	v311.sil: [PLB112] save/restore &LAST{FILE,LINE} in TRPHND
+		restore saved &LINE at GOTL3 (ABORT handler)
+	test/setexit.{sno,ref}: output &LAST{NO,FILE,LINE}
+	test/setexit6.{sno,ref}: setexit.sno w/ STCOUNT trace
+	test/tests.in: add setexit6
+	snolib/sdb.sno: output date as well as version
+
 *** 1.5-rc2 (tag REL_1_5_RC2)
 
 8/29/2013:
