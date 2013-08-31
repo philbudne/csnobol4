@@ -1,0 +1,8 @@
+cont: setexit6.sno:13 Error in arithmetic operation S8
+@l1: last: setexit6.sno:13 S8
+scont: setexit6.sno:19 Illegal data type S13
+back from scont: last setexit6.sno:19 S13
+HERE: Illegal argument to primitive function
+abrt: setexit6.sno:31 Negative number in illegal context S22
+setexit6.sno:31: Error 14 in statement 22 at level 0
+Negative number in illegal context

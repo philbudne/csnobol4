@@ -1,0 +1,52 @@
+* setexit.sno w/ statment tracing (like sdb does)
+* to make sure &LAST{FILE,LINE} are restored.
+* should also test
+	DEFINE('t(type,tag)')
+	TRACE('STCOUNT','KEYWORD', 'tag', 't')
+* change to zero to generate reference output:
+	&TRACE = &STLIMIT = 10000
+
+	&ERRLIMIT = 1000
+
+* Arith Error:
+	setexit(.cont)
+	output = 'DIVIDE: ' (1 / 0)	:f(l1)
+	output = 'CONTINUE returned success?'
+
+* Illegal Data Type:
+l1	output = "@l1: last: " &LASTFILE ':' &LASTLINE ' S' &LASTNO
+	setexit(.scont)
+	output = -code('LBL')		:s(l2)
+	output = 'SCONTINUE returned failure?' :(END)
+
+l2	output = "back from scont: last " &LASTFILE ':' &LASTLINE ' S' &LASTNO
+
+* try before setting new handler; should be silently ignored
+* Illegal Argument
+	output = char(1000)
+	output = "HERE: " &ERRTEXT
+
+	setexit(.abrt)
+* Length error
+	output = len(-1)
+	output = 'ABORT returned?'
+	:(end)
+
+cont	output = "cont: " &LASTFILE ':' &LASTLINE ' ' &ERRTEXT  ' S' &LASTNO
+	:(CONTINUE)
+	output = 'CONTINUE did not branch' :(END)
+
+scont	output = "scont: " &LASTFILE ':' &LASTLINE ' ' &ERRTEXT ' S' &LASTNO
+	:(SCONTINUE)
+	output = 'SCONTINUE did not branch' :(END)
+
+abrt	output = "abrt: " &LASTFILE ':' &LASTLINE ' ' &ERRTEXT  ' S' &LASTNO
+	:(ABORT)
+	output = 'ABORT did not branch'
+
+* trace handler: must have a real statement
+t
+*	output = '@ ' &LASTFILE ':' &LASTLINE ' S' &LASTNO
+	a = 1
+	:(RETURN)
+end
