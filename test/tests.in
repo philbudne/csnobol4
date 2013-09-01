@@ -161,3 +161,5 @@ reg setexit5.sno
 reg atn.sno
 # 8/30
 err setexit6.sno
+# 8/31
+trace keytrace.sno

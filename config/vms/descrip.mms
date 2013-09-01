@@ -93,6 +93,7 @@ LIBS=$(INETLIB) $(CLIB)
 SNOBOL4=isnobol4
 
 BAL_C=[.lib]bal.c
+BREAK_C=[.lib]break.c
 DATE_C=[.lib]date.c
 DUMP_C=[.lib]dump.c
 DYNAMIC_C=[.lib.generic]dynamic.c
@@ -171,7 +172,7 @@ CFLAGS=	$(CCFLAGS) /DEFINE=(HAVE_CONFIG_H$(CCDEFS)$(INETDEFS)$(NDBM_DEFS)) \
 ################
 
 OBJS=	main.obj, $(SNOBOL4).obj, data.obj, data_init.obj, syn.obj, \
-	bal.obj, date.obj, dynamic.obj, endex.obj, exists.obj, \
+	bal.obj, break.obj, date.obj, dynamic.obj, endex.obj, exists.obj, \
 	expops.obj, hash.obj, init.obj, $(INETOBJ), intspc.obj, \
 	io.obj, lexcmp.obj, load.obj, mstime.obj, ordvst.obj, \
 	osopen.obj, pair.obj, pat.obj, pml.obj, realst.obj, \
@@ -187,6 +188,9 @@ snobol4.exe : $(OBJS)
 
 bal.obj : $(BAL_C)
 	$(CC) $(CFLAGS) $(BAL_C)
+
+break.obj : $(BREAK_C)
+	$(CC) $(CFLAGS) $(BREAK_C)
 
 date.obj : $(DATE_C)
 	$(CC) $(CFLAGS) $(DATE_C)

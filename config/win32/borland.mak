@@ -33,7 +33,7 @@ CFLAGS= -c $(OPT) -WC -Tml -w- \
 	-DHAVE_CONFIG_H $(NO_BITFIELDS) $(INET_DEFS)
 
 OBJ=	isnobol4.obj data.obj data_init.obj main.obj syn.obj \
-	bal.obj date.obj dump.obj endex.obj hash.obj \
+	bal.obj break.obj date.obj dump.obj endex.obj hash.obj \
 	intspc.obj io.obj lexcmp.obj ordvst.obj pair.obj pat.obj \
 	pml.obj realst.obj replace.obj str.obj stream.obj top.obj \
 	tree.obj bcopy.obj bzero.obj dynamic.obj expops.obj getopt.obj \
@@ -72,6 +72,9 @@ syn.obj : $(SRCDIR)syn.c
 
 bal.obj : $(SRCDIR)lib\bal.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\bal.c
+
+break.obj : $(SRCDIR)lib\break.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\break.c
 
 date.obj : $(SRCDIR)lib\date.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\date.c

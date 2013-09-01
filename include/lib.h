@@ -211,3 +211,6 @@ extern int osdep_open __P((const char *, const char *, FILE **));
 
 /* from sleep.c */
 extern int sleepf __P((real_t));
+
+/* from break.c */
+extern int chk_break __P((int));
