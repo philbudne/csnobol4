@@ -45,6 +45,8 @@ chk_break(x)
     /* XXX what to do with value?? could:
      * post-decrement if non-zero (limit number of hits)
      * if non-zero: pre-decrement, and return !value (pass count)
+     * OR -- allow signed value, and do BOTH!! have ~0 mean ALWAYS??
+     * OR.... take two values
      */
     return breakpoints[stn];
 }
@@ -61,14 +63,17 @@ BREAKPOINT( LA_ALIST ) LA_DCL
     int stn = LA_INT(0);
     int enab = LA_INT(1);
     int save;
-    if (!breakpoints && enab) {
+    if (!breakpoints) {
+	if (!enab)
+	    return 0;
 	break_max = D_A(CSTNCL);
 	breakpoints = (break_t *) malloc(break_max * sizeof(break_t));
-	if (!breakpoints) {
+	if (!breakpoints)
 	    RETFAIL;
-	}
 	bzero(breakpoints, break_max * sizeof(break_t));
     }
+    if (stn > break_max)
+	RETFAIL;
     save = breakpoints[stn];
     breakpoints[stn] = !!enab;		/* just zero or one for now */
     RETINT(save);
