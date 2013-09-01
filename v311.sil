@@ -1,6 +1,10 @@
 * $Id$
 *
 * $Log$
+* Revision 1.129  2013/08/31 03:02:30  phil
+* [PLB112] save/restore &LAST{FILE,LINE} calling trace handlers
+* restore saved &LINE in ABORT handler
+*
 * Revision 1.128  2013/08/27 04:59:02  phil
 * [PLB111] check for null value in LABEL()
 *
@@ -2481,6 +2485,11 @@ INIT   PROC    ,		   Statement initialization procedure
        INCRA   EXNOCL,1		   Increment &STCOUNT
        ACOMPC  TRAPCL,0,,RTNUL3,RTNUL3
 *				   Check &TRACE
+       XCALLC  chk_break,(0),INIT1 Check for breakpoint		[PLB113]
+       LOCAPT  ATPTR,TKEYL,STNOKY,INIT1				[PLB113]
+*				   Look for STNO trace		[PLB113]
+       RCALL   ,TRPHND,ATPTR					[PLB113]
+INIT1  LHERE							[PLB113]
        LOCAPT  ATPTR,TKEYL,STCTKY,RTNUL3
        RCALL   ,TRPHND,ATPTR					E3.3.1
 *				   Perform trace
@@ -5456,11 +5465,11 @@ KEYTR  PROC    ,		   Procedure to trace keywords
        RCALL   YCL,KEYT,(WPTR),(INTR10,)
 *				   Get value of keyword
 KEYTR3 SETLC   PROTSP,0		   Clear specifier
-       LOCSP   XSP,FILENM	   Get specifier for &FILE	[PLB90]
-       APDSP   PROTSP,XSP	   Append &FILE			[PLB90]
+       LOCSP   TSP,FILENM	   Get specifier for &FILE	[PLB90][PLB113]
+       APDSP   PROTSP,TSP	   Append &FILE			[PLB90][PLB113]
        APDSP   PROTSP,COLSP	   Append colon			[PLB90]
-       INTSPC  XSP,LNNOCL	   Convert &LINE to string	[PLB90]
-       APDSP   PROTSP,XSP	   Append &LINE			[PLB90]
+       INTSPC  TSP,LNNOCL	   Convert &LINE to string	[PLB90][PLB113]
+       APDSP   PROTSP,TSP	   Append &LINE			[PLB90][PLB113]
        APDSP   PROTSP,TRSTSP	   Append trace message
        INTSPC  TSP,STNOCL	   Convert &STNO to string
        APDSP   PROTSP,TSP	   Append &STNO
@@ -7112,7 +7121,7 @@ LSTNCL DESCR   0,0,I		   &LASTNO
 RETPCL DESCR   0,0,S		   &RTNTYPE
        DESCR   RTYPSP,0,0
 STNOCL DESCR   0,0,I		   &STNO
-       DESCR   STNOSP,0,0
+STNOKY DESCR   STNOSP,0,0					[PLB113]
 ALPHVL DESCR   0,0,0		   &ALPHABET
        DESCR   ALNMSP,0,0
 EXNOCL DESCR   0,0,I		   &STCOUNT
