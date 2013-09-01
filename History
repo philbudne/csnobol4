@@ -17,7 +17,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	pml.h: add BREAKPOINT() function
 	include/lib.h: add chk_break()
 	test/tests.in: add keytrace.sno
-	test/keytrace.{sno,ref}: test STCOUNT trace, BREAKPOINT()
+	test/keytrace.{sno,ref}: test KEYWORD tracing, incl. BREAKPOINT()
 
 8/30/2013:
 	v311.sil: [PLB112] save/restore &LAST{FILE,LINE} in TRPHND
