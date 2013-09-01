@@ -1,40 +1,131 @@
-keytrace.sno:5 stmt 5: &STCOUNT = 4, time = xxx
-keytrace.sno:6 stmt 6: &STCOUNT = 5, time = xxx
-keytrace.sno:7 stmt 7: &STCOUNT = 6, time = xxx
-keytrace.sno:8 stmt 8: &STCOUNT = 7, time = xxx
-keytrace.sno:9 stmt 9: &STCOUNT = 8, time = xxx
-keytrace.sno:10 stmt 10: &STCOUNT = 9, time = xxx
-keytrace.sno:11 stmt 11: &STNO = 11, time = xxx
-keytrace.sno:11 stmt 11: &STCOUNT = 10, time = xxx
-keytrace.sno:12 stmt 12: &STCOUNT = 11, time = xxx
-keytrace.sno:13 stmt 13: &STNO = 13, time = xxx
-keytrace.sno:13 stmt 13: &STCOUNT = 12, time = xxx
-keytrace.sno:14 stmt 14: &STCOUNT = 13, time = xxx
-keytrace.sno:15 stmt 15: &STNO = 15, time = xxx
-keytrace.sno:15 stmt 15: &STCOUNT = 14, time = xxx
-keytrace.sno:16 stmt 16: &STCOUNT = 15, time = xxx
-keytrace.sno:17 stmt 17: &STNO = 17, time = xxx
-keytrace.sno:17 stmt 17: &STCOUNT = 16, time = xxx
-keytrace.sno:18 stmt 18: &STCOUNT = 17, time = xxx
-keytrace.sno:19 stmt 19: &STCOUNT = 18, time = xxx
-keytrace.sno:20 stmt 20: &STCOUNT = 19, time = xxx
-keytrace.sno:21 stmt 21: &STCOUNT = 20, time = xxx
-keytrace.sno:22 stmt 22: &STCOUNT = 21, time = xxx
-keytrace.sno:23 stmt 23: &STCOUNT = 22, time = xxx
-keytrace.sno:10 stmt 10: &STCOUNT = 23, time = xxx
-keytrace.sno:11 stmt 11: &STNO = 11, time = xxx
-keytrace.sno:11 stmt 11: &STCOUNT = 24, time = xxx
-keytrace.sno:12 stmt 12: &STCOUNT = 25, time = xxx
-keytrace.sno:13 stmt 13: &STCOUNT = 26, time = xxx
-keytrace.sno:14 stmt 14: &STCOUNT = 27, time = xxx
-keytrace.sno:15 stmt 15: &STNO = 15, time = xxx
-keytrace.sno:15 stmt 15: &STCOUNT = 28, time = xxx
-keytrace.sno:16 stmt 16: &STCOUNT = 29, time = xxx
-keytrace.sno:17 stmt 17: &STCOUNT = 30, time = xxx
-keytrace.sno:18 stmt 18: &STCOUNT = 31, time = xxx
-keytrace.sno:19 stmt 19: &STCOUNT = 32, time = xxx
-keytrace.sno:20 stmt 20: &STCOUNT = 33, time = xxx
-keytrace.sno:21 stmt 21: &STCOUNT = 34, time = xxx
-keytrace.sno:22 stmt 22: &STCOUNT = 35, time = xxx
-keytrace.sno:23 stmt 23: &STCOUNT = 36, time = xxx
-keytrace.sno:10 stmt 10: &STCOUNT = 37, time = xxx
+keytrace.sno:6 stmt 5: &STCOUNT = 4, time = xxx
+keytrace.sno:7 stmt 6: &STCOUNT = 5, time = xxx
+keytrace.sno:8 stmt 7: &STCOUNT = 6, time = xxx
+keytrace.sno:9 stmt 8: &STCOUNT = 7, time = xxx
+keytrace.sno:10 stmt 9: &STCOUNT = 8, time = xxx
+keytrace.sno:11 stmt 10: &STCOUNT = 9, time = xxx
+keytrace.sno:12 stmt 11: &STCOUNT = 10, time = xxx
+keytrace.sno:13 stmt 12: &STCOUNT = 11, time = xxx
+keytrace.sno:14 stmt 13: &STCOUNT = 12, time = xxx
+keytrace.sno:15 stmt 14: &STCOUNT = 13, time = xxx
+keytrace.sno:15 stmt 14: &STFCOUNT = 1, time = xxx
+keytrace.sno:16 stmt 15: &STNO = 15, time = xxx
+keytrace.sno:16 stmt 15: &STCOUNT = 14, time = xxx
+keytrace.sno:16 stmt 15: &ERRTYPE = 2, time = xxx
+keytrace.sno:16 stmt 15: &STFCOUNT = 2, time = xxx
+keytrace.sno:17 stmt 16: &STCOUNT = 15, time = xxx
+keytrace.sno:17 stmt 16: &FNCLEVEL = 1, time = xxx
+keytrace.sno:33 stmt 32: &STCOUNT = 16, time = xxx
+1
+keytrace.sno:33 stmt 32: &FNCLEVEL = 0, time = xxx
+keytrace.sno:18 stmt 17: &STNO = 17, time = xxx
+keytrace.sno:18 stmt 17: &STCOUNT = 17, time = xxx
+keytrace.sno:18 stmt 17: &FNCLEVEL = 1, time = xxx
+keytrace.sno:33 stmt 32: &STCOUNT = 18, time = xxx
+2
+keytrace.sno:33 stmt 32: &FNCLEVEL = 0, time = xxx
+keytrace.sno:19 stmt 18: &STCOUNT = 19, time = xxx
+keytrace.sno:19 stmt 18: &FNCLEVEL = 1, time = xxx
+keytrace.sno:33 stmt 32: &STCOUNT = 20, time = xxx
+3
+keytrace.sno:33 stmt 32: &FNCLEVEL = 0, time = xxx
+keytrace.sno:20 stmt 19: &STNO = 19, time = xxx
+keytrace.sno:20 stmt 19: &STCOUNT = 21, time = xxx
+keytrace.sno:20 stmt 19: &FNCLEVEL = 1, time = xxx
+keytrace.sno:33 stmt 32: &STCOUNT = 22, time = xxx
+4
+keytrace.sno:33 stmt 32: &FNCLEVEL = 0, time = xxx
+keytrace.sno:21 stmt 20: &STCOUNT = 23, time = xxx
+keytrace.sno:21 stmt 20: &FNCLEVEL = 1, time = xxx
+keytrace.sno:33 stmt 32: &STCOUNT = 24, time = xxx
+5
+keytrace.sno:33 stmt 32: &FNCLEVEL = 0, time = xxx
+keytrace.sno:22 stmt 21: &STNO = 21, time = xxx
+keytrace.sno:22 stmt 21: &STCOUNT = 25, time = xxx
+keytrace.sno:22 stmt 21: &FNCLEVEL = 1, time = xxx
+keytrace.sno:33 stmt 32: &STCOUNT = 26, time = xxx
+6
+keytrace.sno:33 stmt 32: &FNCLEVEL = 0, time = xxx
+keytrace.sno:23 stmt 22: &STCOUNT = 27, time = xxx
+keytrace.sno:23 stmt 22: &FNCLEVEL = 1, time = xxx
+keytrace.sno:33 stmt 32: &STCOUNT = 28, time = xxx
+7
+keytrace.sno:33 stmt 32: &FNCLEVEL = 0, time = xxx
+keytrace.sno:24 stmt 23: &STCOUNT = 29, time = xxx
+keytrace.sno:24 stmt 23: &FNCLEVEL = 1, time = xxx
+keytrace.sno:33 stmt 32: &STCOUNT = 30, time = xxx
+8
+keytrace.sno:33 stmt 32: &FNCLEVEL = 0, time = xxx
+keytrace.sno:25 stmt 24: &STCOUNT = 31, time = xxx
+keytrace.sno:25 stmt 24: &FNCLEVEL = 1, time = xxx
+keytrace.sno:33 stmt 32: &STCOUNT = 32, time = xxx
+9
+keytrace.sno:33 stmt 32: &FNCLEVEL = 0, time = xxx
+keytrace.sno:26 stmt 25: &STCOUNT = 33, time = xxx
+keytrace.sno:26 stmt 25: &ERRTYPE = 14, time = xxx
+keytrace.sno:26 stmt 25: &STFCOUNT = 3, time = xxx
+keytrace.sno:27 stmt 26: &STCOUNT = 34, time = xxx
+keytrace.sno:28 stmt 27: &STCOUNT = 35, time = xxx
+keytrace.sno:29 stmt 28: &STCOUNT = 36, time = xxx
+keytrace.sno:30 stmt 29: &STCOUNT = 37, time = xxx
+keytrace.sno:15 stmt 14: &STCOUNT = 38, time = xxx
+keytrace.sno:15 stmt 14: &STFCOUNT = 4, time = xxx
+keytrace.sno:16 stmt 15: &STNO = 15, time = xxx
+keytrace.sno:16 stmt 15: &STCOUNT = 39, time = xxx
+keytrace.sno:16 stmt 15: &ERRTYPE = 2, time = xxx
+keytrace.sno:16 stmt 15: &STFCOUNT = 5, time = xxx
+keytrace.sno:17 stmt 16: &STCOUNT = 40, time = xxx
+keytrace.sno:17 stmt 16: &FNCLEVEL = 1, time = xxx
+keytrace.sno:33 stmt 32: &STCOUNT = 41, time = xxx
+10
+keytrace.sno:33 stmt 32: &FNCLEVEL = 0, time = xxx
+keytrace.sno:18 stmt 17: &STCOUNT = 42, time = xxx
+keytrace.sno:18 stmt 17: &FNCLEVEL = 1, time = xxx
+keytrace.sno:33 stmt 32: &STCOUNT = 43, time = xxx
+11
+keytrace.sno:33 stmt 32: &FNCLEVEL = 0, time = xxx
+keytrace.sno:19 stmt 18: &STCOUNT = 44, time = xxx
+keytrace.sno:19 stmt 18: &FNCLEVEL = 1, time = xxx
+keytrace.sno:33 stmt 32: &STCOUNT = 45, time = xxx
+12
+keytrace.sno:33 stmt 32: &FNCLEVEL = 0, time = xxx
+keytrace.sno:20 stmt 19: &STNO = 19, time = xxx
+keytrace.sno:20 stmt 19: &STCOUNT = 46, time = xxx
+keytrace.sno:20 stmt 19: &FNCLEVEL = 1, time = xxx
+keytrace.sno:33 stmt 32: &STCOUNT = 47, time = xxx
+13
+keytrace.sno:33 stmt 32: &FNCLEVEL = 0, time = xxx
+keytrace.sno:21 stmt 20: &STCOUNT = 48, time = xxx
+keytrace.sno:21 stmt 20: &FNCLEVEL = 1, time = xxx
+keytrace.sno:33 stmt 32: &STCOUNT = 49, time = xxx
+14
+keytrace.sno:33 stmt 32: &FNCLEVEL = 0, time = xxx
+keytrace.sno:22 stmt 21: &STNO = 21, time = xxx
+keytrace.sno:22 stmt 21: &STCOUNT = 50, time = xxx
+keytrace.sno:22 stmt 21: &FNCLEVEL = 1, time = xxx
+keytrace.sno:33 stmt 32: &STCOUNT = 51, time = xxx
+15
+keytrace.sno:33 stmt 32: &FNCLEVEL = 0, time = xxx
+keytrace.sno:23 stmt 22: &STCOUNT = 52, time = xxx
+keytrace.sno:23 stmt 22: &FNCLEVEL = 1, time = xxx
+keytrace.sno:33 stmt 32: &STCOUNT = 53, time = xxx
+16
+keytrace.sno:33 stmt 32: &FNCLEVEL = 0, time = xxx
+keytrace.sno:24 stmt 23: &STCOUNT = 54, time = xxx
+keytrace.sno:24 stmt 23: &FNCLEVEL = 1, time = xxx
+keytrace.sno:33 stmt 32: &STCOUNT = 55, time = xxx
+17
+keytrace.sno:33 stmt 32: &FNCLEVEL = 0, time = xxx
+keytrace.sno:25 stmt 24: &STCOUNT = 56, time = xxx
+keytrace.sno:25 stmt 24: &FNCLEVEL = 1, time = xxx
+keytrace.sno:33 stmt 32: &STCOUNT = 57, time = xxx
+18
+keytrace.sno:33 stmt 32: &FNCLEVEL = 0, time = xxx
+keytrace.sno:26 stmt 25: &STCOUNT = 58, time = xxx
+keytrace.sno:26 stmt 25: &ERRTYPE = 14, time = xxx
+keytrace.sno:26 stmt 25: &STFCOUNT = 6, time = xxx
+keytrace.sno:27 stmt 26: &STCOUNT = 59, time = xxx
+keytrace.sno:28 stmt 27: &STCOUNT = 60, time = xxx
+keytrace.sno:29 stmt 28: &STCOUNT = 61, time = xxx
+keytrace.sno:30 stmt 29: &STCOUNT = 62, time = xxx
+keytrace.sno:15 stmt 14: &STCOUNT = 63, time = xxx

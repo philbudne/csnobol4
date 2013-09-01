@@ -1,26 +1,34 @@
-	&STLIMIT = &TRACE = 10000
+* tests all types of keyword trace, including STNO/BREAKPOINT
+	&STLIMIT = &TRACE = &ERRLIMIT = 10000
 	DEFINE("T(X,Y)")
 	TRACE("STNO", "KEYWORD")
 	TRACE("STCOUNT", "KEYWORD")
-	BREAKPOINT(11, 1)
-	BREAKPOINT(13, 1)
+	TRACE("FNCLEVEL", "KEYWORD")
+	TRACE("STFCOUNT", "KEYWORD")
+	TRACE("ERRTYPE", "KEYWORD")
+	DEFINE("A()")
 	BREAKPOINT(15, 1)
 	BREAKPOINT(17, 1)
+	BREAKPOINT(19, 1)
+	BREAKPOINT(21, 1)
 	LOOPS = 0
 LOOP	EQ(LOOPS,2)	:S(END)
-	A = 1
-	A = 1
-	A = 1
-	A = 1
-	A = 1
-	A = 1
-	A = 1
-	A = 1
-	A = 1
+	X = 1 / 0
+	A()
+	A()
+	A()
+	A()
+	A()
+	A()
+	A()
+	A()
+	A()
+	X = LEN(-1)
 	BREAKPOINT(13, 0)
 	BREAKPOINT(17, 0)
 	LOOPS = LOOPS + 1
 	:(LOOP)
 
 T	OUTPUT = &LASTFILE ':' &LASTLINE ' ' &LASTNO	:(RETURN)
+A	OUTPUT = (N = N + 1) :(RETURN)
 END
