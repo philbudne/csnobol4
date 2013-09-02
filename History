@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+9/2/2013:
+	test/keytrace.{sno,ref}: test STOPTR and reenable
+
 8/31/2013:
 	snolib/sdb.sno: get rid of CONS on first trap line (was failing?)
 		set SDB.INTERRUPT on ^C instead of STEP_COUNT
