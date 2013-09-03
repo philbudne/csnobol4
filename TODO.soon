@@ -1,8 +1,8 @@
 $Id$
 
-Document BREAKPOINT()
-
 Update CHANGES file!
+
+Document BREAKPOINT(), use in sdb
 
 Make utf8 versions of man pages?
 
