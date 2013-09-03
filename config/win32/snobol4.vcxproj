@@ -74,6 +74,7 @@
     <ClCompile Include="..\..\lib\auxil\bzero.c" />
     <ClCompile Include="..\..\lib\auxil\getopt.c" />
     <ClCompile Include="..\..\lib\bal.c" />
+    <ClCompile Include="..\..\lib\break.c" />
     <ClCompile Include="..\..\lib\date.c" />
     <ClCompile Include="..\..\lib\dummy\execute.c" />
     <ClCompile Include="..\..\lib\dump.c" />

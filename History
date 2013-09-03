@@ -4,6 +4,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/2/2013:
 	test/keytrace.{sno,ref}: test STOPTR and reenable
+	config/win32/snobol4.vcxproj: add break.c
+	snolib/sdb.sno: flush VARS0
 
 8/31/2013:
 	snolib/sdb.sno: get rid of CONS on first trap line (was failing?)
