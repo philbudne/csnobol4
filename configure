@@ -89,6 +89,9 @@ echo ' * by '"$ID"				>> $CONFIG_H
 echo ' */'					>> $CONFIG_H
 echo ''						>> $CONFIG_H
 
+# for windows install.bat
+echo $VERSION					> version
+
 if [ "x$OPTIONS" != x ]; then
     echo '#define CONFIG_OPTIONS "'"$OPTIONS"'"' >> $CONFIG_H
 fi

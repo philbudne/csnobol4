@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+9/3/2013:
+	configure: create version file
+	Makefile: note version file
+
 9/2/2013:
 	test/keytrace.{sno,ref}: test STOPTR and reenable
 	config/win32/snobol4.vcxproj: add break.c
