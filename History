@@ -2,6 +2,12 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+9/5/2013:
+	snolib/sdb.sno: upto 25x faster!!
+		enable STCOUNT trace ONLY when needed!!
+		use BREAKPOINT() (&STNO trace)
+		use FNCLEVEL trace for finish/next
+
 9/3/2013:
 	configure: create version file
 	Makefile: note version file
