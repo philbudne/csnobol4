@@ -1,7 +1,6 @@
 $Id$
 
-"next" still stepping all the way--
-       need "STEP_ONCE", cleared after triggered??
+See if STEP_ONCE could be used in other places?
 
 config/win32/config.h: SNOLIB_DIR -- use /usr/local/lib/snobol4/VERS on MINGW??
 
