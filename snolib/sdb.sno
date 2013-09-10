@@ -1,4 +1,5 @@
 -HIDE
+* XXX shouldn't need FNCLEVEL trace-- put step enable logic in SDB.FRET
 * "SDB" SNOBOL4 debugger -- a clone (clown?) of GNU "gdb" debugger
 * Copyright (C) 2010-2013 Philip L. Budne
 * All rights reserved.
@@ -25,7 +26,7 @@ SDB.START
 +	  (SPAN('0123456789.') ' ' SDB.NUMP '/' SDB.NUMP '/' SDB.NUMP) . SDB.VDATE
 
 	DIFFER((SDB.DEBUG_FILE = HOST(4,"SDB_DEBUG")))
-+		OUTPUT(.SDB.DEBUG,IO_FINDUNIT(),,SDB.DEBUG_FILE)
++		OUTPUT(.SDB.DEBUG,IO_FINDUNIT(),"W",SDB.DEBUG_FILE)
 
 -include 'readline.sno'
 
@@ -261,17 +262,19 @@ SDB.CHECKLEVEL
 	SDB.DEBUG = ' resume_level: ' SDB.RESUME_LEVEL ' @' &FNCLEVEL
 * if STEP_ONCE set ("next" command), done stepping; wait for FNCLEVEL change
 * STEP_ONCE might be used in (many) other places -- could pull up????
-	SDB.STEPPING = SDB.STEP_ONCE = DIFFER(SDB.STEP_ONCE)
+	SDB.STEPPING = SDB.STEP_ONCE =
++		DIFFER(SDB.STEP_ONCE) GT(&FNCLEVEL,SDB.RESUME_LEVEL)
 	GT(&FNCLEVEL, SDB.RESUME_LEVEL)		:S(SDB.TRAP.RETURN)
 
 * see if step count set & reached
 SDB.CHECKSTEP
-	LT(SDB.PROCEED_COUNT,0)			:S(SDB.TRAP.RETURN)
+	LE(SDB.PROCEED_COUNT,0)			:S(SDB.TRAP.RETURN)
  SDB.DEBUG = " proceed: " SDB.PROCEED_COUNT
 	SDB.PROCEED_COUNT = SDB.PROCEED_COUNT - 1
 	NE(SDB.PROCEED_COUNT,0)			:S(SDB.TRAP.RETURN)
 
 SDB.STOPPED
+	TERMINAL = DIFFER(SDB.RETVAL SDB.RETTYP) "Return value: " SDB.RETVAL ' (' SDB.RETTYP ')'
  SDB.DEBUG = DIFFER(SDB.STEPPING) " stepping"
 	SDB.STEPPING =
 	TERMINAL = SDB.LASTFL ": stopped at statement " SDB.LAST 
@@ -283,14 +286,16 @@ SDB.STOPPED
 * SDB.LAST{,FL} are args
 SDB.TRAP.EXIT
 	SDB.ERROR = &ERRTYPE
+ SDB.DEBUG = '<trap.exit @ ' SDB.LASTFL
+ SDB.DEBUG = DIFFER(SDB.STEPPING) " stepping"
 	EQ(SDB.ERROR,0)				:S(SDB.TRAP.ENDLABEL)
 	NE(SDB.ERROR,34)			:S(SDB.TRAP.ERR)
 
 * here on ^C -- re-execute the current statement & break
 * (otherwise "continue" or "step" skips the interrupted stmt)
-	SDB.INTERRUPT = 1
+	SDB.INTERRUPT = SDB.STEPPING = 1
 	TERMINAL =
-	:(FRETURN)
+	:(SDB.TRAP.RETURN)
 
 * here after reaching END label
 SDB.TRAP.ENDLABEL
@@ -319,7 +324,7 @@ SDB.GETCMD
 	SDB.COMMAND(SDB.CMD)			:F(SDB.GETCMD)
 
 * here to return to user (unless END was reached)
-* could make decisions on what tracing gets/stays enabled
+* make decisions on what tracing enabled
 SDB.TRAP.RETURN
 	TERMINAL = IDENT(SDB.RUNNING) "The program is not being run." :S(SDB.GETCMD)
 	SDB.DEBUG = ' ---'
@@ -353,39 +358,34 @@ SDB.TRAP.FL.NC
 	SDB.OLDRESL = SDB.RESUME_LEVEL
 	SETEXIT('SDB.SETEXIT_HANDLER')
 	&ERRLIMIT = SDB.ERRLIMIT
+	SDB.RETTYP = SDB.RETVAL =
 
 * from SDB.TRAP.*; early return with no changes
 SDB.TRAP.RETURN2
 	SDB.DEBUG = '>sdb.trap.return2'
-				:(RETURN)
+	:(RETURN)
 
 ********************
 * SETEXIT handler (branched to, not called!!!)
 SDB.SETEXIT_HANDLER
 * SDB.TRAP.EXIT call *MUST* be 1st statement.
 	SDB.TRAP.EXIT((&TRACE = 0), &LASTFILE ':' &LASTLINE, &LASTNO)
-+						:F(SDB.SX.CONTINUE)
-	TERMINAL = "(treating error statement as success)"
-* reenable handler:
-	&ERRLIMIT = SDB.ERRLIMIT
 * reenable SETEXIT handler
-	SETEXIT('SDB.SETEXIT_HANDLER')
-* reenable trace
-	&TRACE = SDB.MAXINT			:(SCONTINUE)
-
-* here on ^C -- restart statement, and break
-SDB.SX.CONTINUE
-* reenable handler:
 	&ERRLIMIT = SDB.ERRLIMIT
-* reenable SETEXIT handler
 	SETEXIT('SDB.SETEXIT_HANDLER')
+	DIFFER(SDB.INTERRUPT)		       :S(SDB.SX.RETRY)
+	TERMINAL = "(treating error statement as failure)"
 * reenable trace
 	&TRACE = SDB.MAXINT			:(CONTINUE)
 
+* here on ^C -- reenable trace, restart statement, and break
+SDB.SX.RETRY
+	&TRACE = SDB.MAXINT			:(RETRY)
+
 SDB.TRAP.END
 
-****************
-* process one sdb command (either interactive or attached to a breakpoint)
+****************************************************************
+* function process one sdb command (either interactive or attached to a breakpoint)
 * returns success to return to user, failure to process next command
 * NOTE! all args/temps should start with SDB. to avoid confusion in PRINT cmd!
 	DEFINE('SDB.COMMAND(SDB.CMD,SDB.AUTO)'
@@ -485,14 +485,15 @@ SDB.CMD.CONTINUE
 * set per-breakpoint continue count
 	SDB.BREAK_SKIP(SDB.BKPT) = SDB.ARG.COUNT(SDB.ARGS) - 1 :F(SDB.COMMAND.STAY)
 SDB.CMD.CONTINUE2
-	SDB.PROCEED_COUNT = -1
+	SDB.PROCEED_COUNT = 0
 	SDB.STEPPING =
 
 * return to user w/o resume level watch
 SDB.COMMAND.GO.NL
 	SDB.RESUME_LEVEL =
 
-* return to user w/ resume level watch
+* return to user w/ resume level watch;
+* success return from SDB.COMMAND means return to user
 SDB.COMMAND.GO.LVL
 	:(RETURN)
 
@@ -821,16 +822,19 @@ SDB.YORN
 SDB.YORN.END
 **************** keep backtrace stack
 * trace all function invocations & returns for backtrace stack
+* by altering "DEFINE()" function!
+
 	SDB.CALL_LEVEL = 0
 * bypass for SPITBOL -- can't OPSYN "DEFINE"
 	DIFFER(.NAME,'NAME')			:S(SDB.NOSTACK)
 	SDB.CALLS = ARRAY('1:' SDB.MAX_CALLS)
 
-	DEFINE('SDB.FCALL(FNAME)S,I,L')		:(SDB.FCALL.END)
+	DEFINE('SDB.FCALL(FNAME)S,I,L,C')	:(SDB.FCALL.END)
 * here on entry to all user-defined functions
 SDB.FCALL
 	L = &LASTFILE ':' &LASTLINE ' statement ' &LASTNO
-	&TRACE = 0
+* should not be needed????
+*	&TRACE = 0
 	S = FNAME '('
 	C = ''
 	I = 1
@@ -843,19 +847,25 @@ SDB.FCALL.EARGLOP
 	SDB.CALL_LEVEL = SDB.CALL_LEVEL + 1
 	SDB.CALLS[SDB.CALL_LEVEL] = S ') called from ' L ', level '
 +						SDB.CALL_LEVEL - 1
-	&TRACE = SDB.MAXINT
+* XXX check resume_level, disable stepping???
+*	&TRACE = SDB.MAXINT
 	:(RETURN)
 SDB.FCALL.END
 
 	DEFINE('SDB.FRET(FNAME)')			:(SDB.FRET.END)
 SDB.FRET
-	SDB.CALL_LEVEL = SDB.CALL_LEVEL - 1		:(RETURN)
+* save for display by next/finish
+	SDB.RETVAL = DIFFER(&RTNTYPE,"FRETURN") $FNAME
+	SDB.RETTYP = &RTNTYPE
+	SDB.CALL_LEVEL = SDB.CALL_LEVEL - 1
+* XXX check resume_level, enable stepping???
+	:(RETURN)
 SDB.FRET.END
 
 * this sorcery from Orange book "FTRACE" function
 * wrap DEFINE() so all user function calls/returns are traced
 * does not work in SPITBOL (cannot OPSYN functions)
-* *** must be after all SDB functions!! ***
+* *** must be after all SDB function definitions ***
 	DEFINE('SDB.DEFINE(PROTO,LABEL)NAME')
 * save built-in DEFINE as DEFINE.
 	OPSYN('DEFINE.','DEFINE')
@@ -871,55 +881,51 @@ SDB.DEFINE.END
 SDB.NOSTACK
 
 **************** startup:
-
+*
 	SDB.VARS = TABLE()
 	SDB.VARS['list_lines'] = 10
 	SDB.VARS['prompt'] = '(sdb) '
 * XXX try reading ./.sdbinit or $HOME/.sdbinit
-
+*
 	TERMINAL = "sdb SNOBOL4 debugger version " SDB.VDATE
 	TERMINAL = "Copyright 2010-2013 Philip L. Budne"
 	TERMINAL = 'Type "help" for help.'
 	TERMINAL =
-
+*
 * read listing file
 	SDB.LISTING = HOST(4,"SDB_LISTFILE")
 	DIFFER(SDB.LISTING) SDB.READ_LISTING(SDB.LISTING)
-
+*
 * free all initialization code
 	CODE("SDB.START")
 * XXX need to kill more labels!!
 	CODE("SDB.GOT_MAX_STMTS")
 	CODE("SDB.NOBANNER")
-
+*
 * mark as running (until END)
 	SDB.RUNNING = 1
-
-* PROCEED_COUNT is number of times to pass on STCOUNT
+*
 *  (from "step" or "next" commands).
 *  one means stop on next STCOUNT trace event
 	SDB.PROCEED_COUNT = 1
-
+*
 * STEPPING is whether or not to enable STCOUNT
 *  With "next" command, PROCEED_COUNT can be non-zero,
 *  but stepping won't be enabled until FNCLEVEL drops to RESUME_LEVEL
 	SDB.OLDSTEP = SDB.STEPPING = 1
-
-	SDB.OLDFNCL =
+	DIFFER(SDB.STEPPING) TRACE('STCOUNT','KEYWORD',,'SDB.TRAP.STCOUNT') 
 
 * ERRLIMIT must be positive for SETEXIT
 	&ERRLIMIT = SDB.ERRLIMIT
 	SETEXIT('SDB.SETEXIT_HANDLER')
-
-	DIFFER(SDB.STEPPING) TRACE('STCOUNT','KEYWORD',,'SDB.TRAP.STCOUNT') 
-
+*
 * for BREAKPOINT():
 	TRACE('STNO','KEYWORD',,'SDB.TRAP.STNO')
-
+*
 * SECOND TO LAST STATEMENT:
 * record last statement number in SDB (to avoid breaking inside SDB):
 	SDB.LAST_STMT = &STNO
-
+*
 * VERY LAST STATEMENT -- 
 * STLIMIT must have positive value to trace STCOUNT
 	&STLIMIT = &TRACE = SDB.MAXINT
