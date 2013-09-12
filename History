@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+9/12/2013:
+	snolib/sdb.sno: fix watchpoints
+
 9/11/2013:
 	snolib/sdb.sno: cleanup;
 		"silent" command now works

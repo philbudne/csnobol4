@@ -235,6 +235,7 @@ SDB.TRAP.COND
 * increment hits, check breakpoint continue count, if any
 SDB.TRAP.COUNT
 	SDB.BREAK_HITS(SDB.BKPT) = SDB.BREAK_HITS(SDB.BKPT) + 1
+* XXX if watchpoint, fetch & save new value regardless??
 	SDB.T1 = SDB.BREAK_SKIP(SDB.BKPT)
 	IDENT(SDB.T1)				:S(SDB.TRAP.CMDS)
 	LE(SDB.T1,1)				:S(SDB.TRAP.CMDS)
@@ -248,22 +249,24 @@ SDB.TRAP.CMDS
 * magic: if first command is "silent" suppress breakpoint messages
  	DIFFER(SDB.T1) IDENT(SDB.CAR(SDB.T1), "silent")	:S(SDB.TRAP.CMDS.NEXT)
 *
-SDB.BREAK
 	TERMINAL = SDB.BREAK_TYPE(SDB.BKPT) "point " SDB.BREAK_NUM(SDB.BKPT)
 +		' at ' SDB.LASTFL ' statement ' SDB.LAST
 +		", level " &FNCLEVEL - 1
 	DIFFER(SDB.BREAK_TYPE(SDB.BKPT), "watch") :S(SDB.TRAP.CMDS.LOOP)
 *
 * here with watchpoint (variable changed)
-	SDB.T1 = $SDB.WATCHED
+	SDB.T2 = $SDB.WATCHED
 	TERMINAL = IDENT(SDB.SILENT) "Variable:  " SDB.WATCH_VAR(SDB.BKPT)
 	TERMINAL = IDENT(SDB.SILENT) "Old value: " SDB.WATCH_OLD(SDB.BKPT)
-	TERMINAL = IDENT(SDB.SILENT) "New value: " SDB.T1
-	SDB.WATCH_OLD(SDB.BKPT) = SDB.T1
-
+	TERMINAL = IDENT(SDB.SILENT) "New value: " SDB.T2
+	SDB.WATCH_OLD(SDB.BKPT) = SDB.T2
+*
+* here with BREAK_CMDS pointer in T1
 SDB.TRAP.CMDS.LOOP
 	IDENT(SDB.T1)				:S(SDB.STOPPED2)
+	DIFFER(DATATYPE(SDB.T1),'SDB.CONS')	:S(SDB.STOPPED2)
 	SDB.COMMAND(SDB.CAR(SDB.T1),1)		:S(SDB.TRAP.RETURN)
+* enter here after "slient"
 SDB.TRAP.CMDS.NEXT
 	IDENT(SDB.T1)				:S(SDB.STOPPED2)
 	SDB.T1 = SDB.CDR(SDB.T1)		:(SDB.TRAP.CMDS.LOOP)
