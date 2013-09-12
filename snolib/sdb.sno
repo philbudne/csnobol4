@@ -138,17 +138,19 @@ SDB.READLINE.END
 SDB
  SDB.DEBUG = '<sdb @ ' &LASTFILE ':' &LASTLINE
 * trigger break on next statement
-	SDB.PROCEED_COUNT = SDB.STEPPING = 1
+	SDB.PROCEED_COUNT = 1
+	SDB.RESUME_LEVEL =
 * YIKES! go thru common TRAP return!!
 	:(SDB.TRAP.RETURN)
 
 ****
 * called as function after a watched variable been written
-SDB.TRAP.WATCH
 * save all location info info in first statement;
-	(SDB.LASTFL = &LASTFILE ':' &LASTLINE) (SDB.LAST = &LASTNO)
+SDB.TRAP.WATCH
++	(SDB.LASTFL = &LASTFILE ':' &LASTLINE) (SDB.LAST = &LASTNO)
 * don't break inside sdb
-	GE(SDB.LAST,SDB.FIRST_STMT) LE(SDB.LAST,SDB.LAST_STMT) :S(SDB.TRAP.RETURN)
+	GE(SDB.LAST,SDB.FIRST_STMT) LE(SDB.LAST,SDB.LAST_STMT) :S(SDB.TRAP.RETURNQ)
+ SDB.DEBUG = '<trap.watch'
 	SDB.ERROR =
 	SDB.BKPT = SDB.WATCH_BY_NAME[SDB.WATCHED]
 	IDENT(SDB.BKPT)				:S(SDB.TRAP.RETURN)
@@ -162,61 +164,70 @@ SDB.TRAP.WATCH
 ****
 * trace function called on FNCLEVEL trace.
 * called BEFORE return, so enables stepping
-SDB.TRAP.FNCLVL
 * save all location info in first statement:
-	(SDB.LASTFL = &LASTFILE ':' &LASTLINE) (SDB.LAST = &LASTNO)
- SDB.DEBUG = '<trap.fnclevel @ ' SDB.LASTFL ' (' &FNCLEVEL ')'
-	IDENT(SDB.RESUME_LEVEL)			:S(SDB.TRAP.RETURN2)
- SDB.DEBUG = ' resume_level: ' SDB.RESUME_LEVEL ' @' &FNCLEVEL 
-	GT(&FNCLEVEL, SDB.RESUME_LEVEL)		:S(SDB.TRAP.RETURN2)
+SDB.TRAP.FNCLVL
++	(SDB.LASTFL = &LASTFILE ':' &LASTLINE) (SDB.LAST = &LASTNO)
 * never break inside sdb code
 	GE(SDB.LAST,SDB.FIRST_STMT) LE(SDB.LAST,SDB.LAST_STMT)
-+						:S(SDB.TRAP.RETURN2)
-* FNCLEVEL trap happens on RETURN, stop before next statement:
-* XXX WISH: display return value!!!
-	SDB.STEPPING = 1			:(SDB.TRAP.RETURN)
-
++						:S(SDB.TRAP.RETURNQ)
+ SDB.DEBUG = '<trap.fnclevel @ ' SDB.LASTFL ' (' &FNCLEVEL ')'
+ SDB.DEBUG = ' resume_level: ' SDB.RESUME_LEVEL ' @' &FNCLEVEL 
+ SDB.DEBUG = ' proceed: ' SDB.PROCEED_COUNT
+	IDENT(SDB.RESUME_LEVEL)			:S(SDB.TRAP.RETURN2)
+	GT(&FNCLEVEL, SDB.RESUME_LEVEL)		:S(SDB.TRAP.RETURN2)
+* FNCLEVEL trap happens on RETURN, wait for STCOUNT trap, honor PROCEED_COUNT for "next n"
+	SDB.FORCE_STEP = 1
+	DIFFER(SDB.PROCEED_COUNT)		:S(SDB.TRAP.RETURN)
+* "finish"; display return info, force stop
+* works because if "RETURN" trace fires first!
+	TERMINAL = DIFFER(SDB.RETURN) SDB.RETURN
+	SDB.FORCE_STOP = 1
+	SDB.RETURN =				:(SDB.TRAP.RETURN)
 ****
 * trace function called on STNO trace via BREAKPOINT()
+* save all location info in first statement:
 SDB.TRAP.STNO
-* save all location info in first statement:
-	(SDB.LASTFL = &LASTFILE ':' &LASTLINE) (SDB.LAST = &LASTNO)
++	(SDB.LASTFL = &LASTFILE ':' &LASTLINE) (SDB.LAST = &LASTNO)
+* never break inside sdb code (typ. 1st line of SDB.DEFINE, inside FCALL)
+	GE(SDB.LAST,SDB.FIRST_STMT) LE(SDB.LAST,SDB.LAST_STMT)
++						:S(SDB.TRAP.RETURNQ)
  SDB.DEBUG = '<trap.stno @ ' SDB.LASTFL
-* never break inside sdb code (typ. 1st line of SDB.DEFINE, inside FCALL)
-	GE(SDB.LAST,SDB.FIRST_STMT) LE(SDB.LAST,SDB.LAST_STMT)
-+						:S(SDB.TRAP.RETURN2)
 	SDB.ERROR =
-	SDB.INTERRUPT = DIFFER(SDB.INTERRUPT)	:S(SDB.STOPPED)
 * STNO trap happens before STCOUNT, so just force STCOUNT trap
-	SDB.STEPPING = DIFFER((SDB.BKPT = SDB.BREAK_BY_STMT[SDB.LAST])) 1
-+						:S(SDB.TRAP.RETURN)
+* XXX go thru SDB.COND first??
+	SDB.FORCE_STEP = DIFFER(SDB.BREAK_BY_STMT[SDB.LAST]) 1 :S(SDB.TRAP.RETURN)
 * not found: clear it
- SDB.DEBUG = " should not happen"
-	BREAKPOINT(SDB.LAST, 0)			:(SDB.TRAP.RETURN)
+	TERMINAL = 'should not happen @ ' &FILE ':' &LINE
+	BREAKPOINT(SDB.LAST, 0)			:(SDB.TRAP.RETURN2)
 
 ****
-* trace function called on STCOUNT trace
-SDB.TRAP.STCOUNT
+* trace function called on STCOUNT trace (possibly by FORCE_STEP)
 * save all location info in first statement:
-	(SDB.LASTFL = &LASTFILE ':' &LASTLINE) (SDB.LAST = &LASTNO)
- SDB.DEBUG = '<trap.stcount @ ' SDB.LASTFL
+SDB.TRAP.STCOUNT
++	(SDB.LASTFL = &LASTFILE ':' &LASTLINE) (SDB.LAST = &LASTNO)
 * never break inside sdb code (typ. 1st line of SDB.DEFINE, inside FCALL)
 	GE(SDB.LAST,SDB.FIRST_STMT) LE(SDB.LAST,SDB.LAST_STMT)
-+						:S(SDB.TRAP.RETURN2)
-	SDB.ERROR =
-* check and clear ^C flag
-	SDB.INTERRUPT = DIFFER(SDB.INTERRUPT)	:S(SDB.STOPPED)
-	IDENT(SDB.STEPPING)			:S(SDB.TRAP.RETURN2)
-* EXP!!!!
-* OFF -- interferes with "step N"
-*	SDB.STEPPING =
-	DIFFER((SDB.BKPT = SDB.BREAK_BY_STMT[SDB.LAST])) :F(SDB.CHECKLEVEL)
-* FALL!
++						:S(SDB.TRAP.RETURNQ)
+ SDB.DEBUG = '<trap.stcount @ ' SDB.LASTFL
+ SDB.DEBUG = DIFFER(SDB.INTERRUPT) ' interrupt'
+ SDB.DEBUG = DIFFER(SDB.FORCE_STOP) ' force_stop'
+ SDB.DEBUG = DIFFER(SDB.FORCE_STEP) ' force_step'
+ SDB.DEBUG = DIFFER(SDB.PROCEED_COUNT) ' proceed: ' SDB.PROCEED_COUNT
+	SDB.T1 = (SDB.INTERRUPT + SDB.FORCE_STOP)
+	SDB.T2 = (SDB.FORCE_STEP + SDB.PROCEED_COUNT)
+	SDB.ERROR = SDB.FORCE_STEP = SDB.FORCE_STOP = SDB.INTERRUPT = 
+* check for ^C or force_stop
+	NE(SDB.T1,0)				:S(SDB.STOPPED)
+* check for breakpoint
+	DIFFER((SDB.BKPT = SDB.BREAK_BY_STMT[SDB.LAST])) :S(SDB.TRAP.COND)
+* check for proceed count or force_step
+	NE(SDB.T2,0)				:S(SDB.CHECKLEVEL)
+	:(SDB.TRAP.RETURN)
 
 ****
-* SDB.TRAP.WATCH and SDB.TRAP.STNO join here
-* check if enabled, and breakpoint condition, if any
+* here on a breakpoint; check if enabled, and whether conditional
 SDB.TRAP.COND
+ SDB.DEBUG = ' @' SDB.BREAK_TYPE(SDB.BKPT) 'point #' SDB.BREAK_NUM(SDB.BKPT)
 	IDENT(SDB.BREAK_ENB(SDB.BKPT),"n")	:S(SDB.TRAP.RETURN)
 	IDENT(SDB.BREAK_COND(SDB.BKPT))		:S(SDB.TRAP.COUNT)
 	SDB.EVAL(SDB.BREAK_COND(SDB.BKPT))	:F(SDB.TRAP.RETURN)
@@ -228,57 +239,54 @@ SDB.TRAP.COUNT
 	IDENT(SDB.T1)				:S(SDB.TRAP.CMDS)
 	LE(SDB.T1,1)				:S(SDB.TRAP.CMDS)
 	SDB.BREAK_SKIP(SDB.BKPT) = SDB.T1 - 1	:S(SDB.CHECKLEVEL)
-
+*
 * check for list of sdb commands to execute on hitting breakpoint
 SDB.TRAP.CMDS
-	SDB.SILENT =
-	SDB.T1 = SDB.BREAK_CMDS(SDB.BKPT)
-	IDENT(SDB.T1)				:S(SDB.TRAP.BREAK)
-
-* magic: if first command is "silent" suppress breakpoint messages
-	SDB.SILENT = IDENT(SDB.CAR(SDB.T1), "silent") 1	:S(SDB.TRAP.CMDS.NEXT)
-SDB.TRAP.CMDS.LOOP
-	IDENT(SDB.T1)				:S(SDB.TRAP.BREAK)
-	SDB.COMMAND(SDB.CAR(SDB.T1),1)		:S(SDB.TRAP.RETURN)
-SDB.TRAP.CMDS.NEXT
-	SDB.T1 = SDB.CDR(SDB.T1)		:(SDB.TRAP.CMDS.LOOP)
-
-SDB.TRAP.BREAK
 	SDB.BREAK_SKIP(SDB.BKPT) =
-	TERMINAL = IDENT(SDB.SILENT)
-+		SDB.BREAK_TYPE(SDB.BKPT) "point " SDB.BREAK_NUM(SDB.BKPT)
-	DIFFER(SDB.BREAK_TYPE(SDB.BKPT), "watch") :S(SDB.STOPPED)
-
+	SDB.T1 = SDB.BREAK_CMDS(SDB.BKPT)
+*
+* magic: if first command is "silent" suppress breakpoint messages
+ 	DIFFER(SDB.T1) IDENT(SDB.CAR(SDB.T1), "silent")	:S(SDB.TRAP.CMDS.NEXT)
+*
+SDB.BREAK
+	TERMINAL = SDB.BREAK_TYPE(SDB.BKPT) "point " SDB.BREAK_NUM(SDB.BKPT)
++		' at ' SDB.LASTFL ' statement ' SDB.LAST
++		", level " &FNCLEVEL - 1
+	DIFFER(SDB.BREAK_TYPE(SDB.BKPT), "watch") :S(SDB.TRAP.CMDS.LOOP)
+*
 * here with watchpoint (variable changed)
 	SDB.T1 = $SDB.WATCHED
 	TERMINAL = IDENT(SDB.SILENT) "Variable:  " SDB.WATCH_VAR(SDB.BKPT)
 	TERMINAL = IDENT(SDB.SILENT) "Old value: " SDB.WATCH_OLD(SDB.BKPT)
 	TERMINAL = IDENT(SDB.SILENT) "New value: " SDB.T1
-	SDB.WATCH_OLD(SDB.BKPT) = SDB.T1	:(SDB.STOPPED)
+	SDB.WATCH_OLD(SDB.BKPT) = SDB.T1
 
+SDB.TRAP.CMDS.LOOP
+	IDENT(SDB.T1)				:S(SDB.STOPPED2)
+	SDB.COMMAND(SDB.CAR(SDB.T1),1)		:S(SDB.TRAP.RETURN)
+SDB.TRAP.CMDS.NEXT
+	IDENT(SDB.T1)				:S(SDB.STOPPED2)
+	SDB.T1 = SDB.CDR(SDB.T1)		:(SDB.TRAP.CMDS.LOOP)
+
+****************
 * see if resume level (from finish or next) reached
 SDB.CHECKLEVEL
 	IDENT(SDB.RESUME_LEVEL)			:S(SDB.CHECKSTEP)
 	SDB.DEBUG = ' resume_level: ' SDB.RESUME_LEVEL ' @' &FNCLEVEL
 * if STEP_ONCE set ("next" command), done stepping; wait for FNCLEVEL change
 * STEP_ONCE might be used in (many) other places -- could pull up????
-	SDB.STEPPING = SDB.STEP_ONCE =
-+		DIFFER(SDB.STEP_ONCE) GT(&FNCLEVEL,SDB.RESUME_LEVEL)
 	GT(&FNCLEVEL, SDB.RESUME_LEVEL)		:S(SDB.TRAP.RETURN)
 
 * see if step count set & reached
 SDB.CHECKSTEP
 	LE(SDB.PROCEED_COUNT,0)			:S(SDB.TRAP.RETURN)
- SDB.DEBUG = " proceed: " SDB.PROCEED_COUNT
 	SDB.PROCEED_COUNT = SDB.PROCEED_COUNT - 1
 	NE(SDB.PROCEED_COUNT,0)			:S(SDB.TRAP.RETURN)
 
 SDB.STOPPED
-	TERMINAL = DIFFER(SDB.RETVAL SDB.RETTYP) "Return value: " SDB.RETVAL ' (' SDB.RETTYP ')'
- SDB.DEBUG = DIFFER(SDB.STEPPING) " stepping"
-	SDB.STEPPING =
 	TERMINAL = SDB.LASTFL ": stopped at statement " SDB.LAST 
 +			", level " &FNCLEVEL - 1
+SDB.STOPPED2
 	SETEXIT()				:(SDB.DISPLAY)
 
 ****
@@ -287,13 +295,12 @@ SDB.STOPPED
 SDB.TRAP.EXIT
 	SDB.ERROR = &ERRTYPE
  SDB.DEBUG = '<trap.exit @ ' SDB.LASTFL
- SDB.DEBUG = DIFFER(SDB.STEPPING) " stepping"
 	EQ(SDB.ERROR,0)				:S(SDB.TRAP.ENDLABEL)
 	NE(SDB.ERROR,34)			:S(SDB.TRAP.ERR)
 
 * here on ^C -- re-execute the current statement & break
 * (otherwise "continue" or "step" skips the interrupted stmt)
-	SDB.INTERRUPT = SDB.STEPPING = 1
+	SDB.INTERRUPT = SDB.FORCE_STEP = 1
 	TERMINAL =
 	:(SDB.TRAP.RETURN)
 
@@ -312,58 +319,63 @@ SDB.TRAP.ERR
 
 SDB.DISPLAY
 	SDB.LIST_LINE = SDB.LAST
-	SDB.FNCLEVEL = &FNCLEVEL
 	IDENT(SDB.RUNNING)		:S(SDB.GETCMD)
 	SDB.DISPLAY_SOURCE(SDB.LAST)
-
+* used by SDB.COMMAND:
+	SDB.FNCLEVEL = &FNCLEVEL
+*
 * loop reading commands
 SDB.GETCMD
 	SDB.CMD = SDB.READLINE(SDB.VARS['prompt']) :F(SDB.EXIT)
 	SDB.CMD = IDENT(SDB.CMD) SDB.LAST_CMD
 	SDB.LAST_CMD = SDB.CMD
 	SDB.COMMAND(SDB.CMD)			:F(SDB.GETCMD)
+	TERMINAL = IDENT(SDB.RUNNING) "The program is not being run." :S(SDB.GETCMD)
 
 * here to return to user (unless END was reached)
 * make decisions on what tracing enabled
 SDB.TRAP.RETURN
-	TERMINAL = IDENT(SDB.RUNNING) "The program is not being run." :S(SDB.GETCMD)
 	SDB.DEBUG = ' ---'
 	SDB.DEBUG = GT(SDB.PROCEED_COUNT,0) ' proceed: ' SDB.PROCEED_COUNT
-	SDB.DEBUG = DIFFER(SDB.STEPPING) ' stepping'
-	IDENT(SDB.STEPPING, SDB.OLDSTEP)	:S(SDB.TRAP.ST.NC)
-	IDENT(SDB.STEPPING)			:F(SDB.TRAP.ST.ENA)
-	SDB.DEBUG = ' DISABLE STCOUNT'
-	STOPTR('STCOUNT','KEYWORD') 		:(SDB.TRAP.ST.NC)
+	SDB.DEBUG = DIFFER(SDB.RESUME_LEVEL) ' r_l: ' SDB.RESUME_LEVEL ' @' &FNCLEVEL
+	SDB.DEBUG = DIFFER(SDB.FORCE_STEP) ' force_step'
+*
+* look at RESUME_LEVEL, PROCEED_COUNT to determine what should be enabled
+	SDB.FNC_ENA = (DIFFER(SDB.RESUME_LEVEL) 1, '')
+	SDB.STC_ENA = (IDENT(SDB.FNC_ENA) DIFFER(SDB.PROCEED_COUNT) 1,
++			DIFFER(SDB.FORCE_STEP) 1,
++			EQ(SDB.RESUME_LEVEL, &FNCLEVEL) 1, '')
+*
+* enable or disable traces
+	IDENT(SDB.STC_ENA, SDB.OLD_STC_ENA)	:S(SDB.TRAP.ST.NC)
+	  DIFFER(SDB.STC_ENA)			:S(SDB.TRAP.ST.ENA)
+	    SDB.DEBUG = ' DISABLE STCOUNT'
+	    STOPTR('STCOUNT','KEYWORD') 	:(SDB.TRAP.ST.NC)
+*         enable stepping:
 SDB.TRAP.ST.ENA
-* reenable stepping:
-	SDB.DEBUG = ' ENABLE STCOUNT'
-	TRACE('STCOUNT','KEYWORD',,'SDB.TRAP.STCOUNT')	
+	    SDB.DEBUG = ' ENABLE STCOUNT'
+	    TRACE('STCOUNT','KEYWORD',,'SDB.TRAP.STCOUNT')	
 SDB.TRAP.ST.NC
-	SDB.OLDSTEP = SDB.STEPPING
-
-	DIFFER(SDB.RESUME_LEVEL)		:S(SDB.TRAP.FL.ENA)
-* NOTE!! side effect!!
-	SDB.DEBUG = 
-+	   DIFFER(SDB.OLDRESL) STOPTR('FNCLEVEL','KEYWORD')
-+		' DISABLE FNCLEVEL'
-						:(SDB.TRAP.FL.NC)
+	SDB.OLD_STC_ENA = SDB.STC_ENA
+*
+	IDENT(SDB.FNC_ENA, SDB.OLD_FNC_ENA)	:S(SDB.TRAP.FL.NC)
+	  DIFFER(SDB.FNC_ENA)			:S(SDB.TRAP.FL.ENA)
+	    SDB.DEBUG =' DISABLE FNCLEVEL'
+	    STOPTR('FNCLEVEL','KEYWORD')	:(SDB.TRAP.FL.NC)
+*         enable fnclevel (could do work in SDB.FCALL/SDB.FRET but they're not called w/ SPITBOL)
 SDB.TRAP.FL.ENA
-* NOTE!! side effect!!
-	SDB.DEBUG =
-+	   IDENT(SDB.OLDRESL) TRACE('FNCLEVEL','KEYWORD',,'SDB.TRAP.FNCLVL')
-+		' ENABLE FNCLEVEL'
-
+	    SDB.DEBUG = ' ENABLE FNCLEVEL'
+	    TRACE('FNCLEVEL','KEYWORD',,'SDB.TRAP.FNCLVL')
 SDB.TRAP.FL.NC
-* EXP:
-	SDB.OLDRESL = SDB.RESUME_LEVEL
+	SDB.OLD_FNC_ENA = SDB.FNC_ENA
 	SETEXIT('SDB.SETEXIT_HANDLER')
 	&ERRLIMIT = SDB.ERRLIMIT
-	SDB.RETTYP = SDB.RETVAL =
-
+*
 * from SDB.TRAP.*; early return with no changes
 SDB.TRAP.RETURN2
-	SDB.DEBUG = '>sdb.trap.return2'
-	:(RETURN)
++	SDB.DEBUG = '>sdb.trap.return2'
+* from SDB.TRAP.*; trap inside sdb
+SDB.TRAP.RETURNQ :(RETURN)
 
 ********************
 * SETEXIT handler (branched to, not called!!!)
@@ -453,7 +465,7 @@ SDB.CMD.BT.LOOP
 	GT(SDB.T1,0)				:S(SDB.CMD.BT.LOOP)
 	:(SDB.COMMAND.STAY)
 
-* add (or remove) sdb commands from a breakpoint
+**** add (or remove) sdb commands from a breakpoint
 SDB.CMD.COMMANDS
 	SDB.T1 = SDB.ARG.BKPT(SDB.ARGS)		:F(SDB.COMMAND.STAY)
 	TERMINAL = "Type sdb commands for when breakpoint " SDB.T1
@@ -468,7 +480,7 @@ SDB.CMD.COMMANDS.LOOP
 	SDB.BREAK_CMDS(SDB.T1) = SDB.APPEND(SDB.BREAK_CMDS(SDB.T1), SDB.T2)
 						:(SDB.CMD.COMMANDS.LOOP)
 
-* add (or remove) condition to (from) a breakpont
+**** add (or remove) condition to (from) a breakpont
 SDB.CMD.CONDITION
 	SDB.ARGS SDB.NUMP . SDB.T1 (SDB.SWSP | '') =
 +						:F(SDB.CMD.CONDITION.BAD)
@@ -480,22 +492,25 @@ SDB.CMD.CONDITION
 SDB.CMD.CONDITION.BAD
 	TERMINAL = '"condition" requires breakpoint number' :(SDB.COMMAND.STAY)
 
+**** continue execution
 SDB.CMD.CONTINUE
 	IDENT(SDB.BKPT)				:S(SDB.CMD.CONTINUE2)
 * set per-breakpoint continue count
-	SDB.BREAK_SKIP(SDB.BKPT) = SDB.ARG.COUNT(SDB.ARGS) - 1 :F(SDB.COMMAND.STAY)
+* XXX
+* w/ arg > 1; Will ignore next <arg> crossings of breakpoint <N>.  Continuing.
+* w/ arg = 1; Will stop next time breakpoint <N> is reached.  Continuing.
+	SDB.BREAK_SKIP(SDB.BKPT) = SDB.ARG.COUNT(SDB.ARGS)
++						:F(SDB.COMMAND.STAY)
+* here w/o breakpoint; complain if arg(s) present??
 SDB.CMD.CONTINUE2
-	SDB.PROCEED_COUNT = 0
-	SDB.STEPPING =
-
-* return to user w/o resume level watch
+	SDB.PROCEED_COUNT =
+* FALL!
+* COMMON code: return to user w/o resume level watch
 SDB.COMMAND.GO.NL
-	SDB.RESUME_LEVEL =
-
-* return to user w/ resume level watch;
++	SDB.RESUME_LEVEL =
+* return to user w/ resume level watch set
 * success return from SDB.COMMAND means return to user
-SDB.COMMAND.GO.LVL
-	:(RETURN)
+SDB.COMMAND.GO.LVL				:(RETURN)
 
 **** delete breakpoints command: no arg means delete all
 SDB.CMD.DELETE
@@ -606,17 +621,17 @@ SDB.CMD.NEXT
 	SDB.PROCEED_COUNT = SDB.ARG.COUNT(SDB.ARGS) :F(SDB.COMMAND.STAY)
 	EQ(SDB.PROCEED_COUNT,0)			:S(SDB.COMMAND.STAY)
 	SDB.RESUME_LEVEL = SDB.FNCLEVEL
-	SDB.STEP_ONCE = 1
-	SDB.STEPPING = 1			:(SDB.COMMAND.GO.LVL)
+	:(SDB.COMMAND.GO.LVL)
 
 **** command to continue until end of current function
 SDB.CMD.FINISH
 	TERMINAL = EQ(SDB.FNCLEVEL,1) "At top level." :S(SDB.COMMAND.STAY)
 	SDB.ARG.NOARGS(SDB.ARGS,"finish")	:F(SDB.COMMAND.STAY)
-	SDB.PROCEED_COUNT = 1
+	SDB.PROCEED_COUNT =
 	SDB.RESUME_LEVEL = SDB.FNCLEVEL - 1	:(SDB.COMMAND.GO.LVL)
 
 **** print command
+* save value?
 SDB.CMD.PRINT
 	TERMINAL = SDB.EVAL(SDB.ARGS)		:S(SDB.COMMAND.STAY)
 	TERMINAL = "Expression eval failed."	:(SDB.COMMAND.STAY)
@@ -633,8 +648,7 @@ SDB.EXIT
 SDB.CMD.STEP
 	SDB.PROCEED_COUNT = SDB.ARG.COUNT(SDB.ARGS)  :F(SDB.COMMAND.STAY)
 	EQ(SDB.PROCEED_COUNT,0)			:S(SDB.COMMAND.STAY)
-	SDB.STEPPING = 1
-						:(SDB.COMMAND.GO.NL)
+	:(SDB.COMMAND.GO.NL)
 
 **** watchpoint command
 SDB.CMD.WATCH
@@ -657,7 +671,6 @@ SDB.CMD.WATCH.ERR
 	TERMINAL = "Error watching " SDB.ARGS	:(SDB.COMMAND.STAY)
 
 **** what command
-
 SDB.CMD.WHAT
 	TERMINAL = IDENT(SDB.ARGS) '"what" requires expression' :S(SDB.COMMAND.STAY)
 	TERMINAL = LABEL(SDB.ARGS) SDB.ARGS " is label"
@@ -667,7 +680,6 @@ SDB.CMD.WHAT
 	TERMINAL = "value = " SDB.T1		:(SDB.COMMAND.STAY)
 SDB.CMD.WHAT.ERR
 	TERMINAL = "error in expression"	:(SDB.COMMAND.STAY)
-
 
 SDB.COMMAND.END
 
@@ -833,8 +845,6 @@ SDB.YORN.END
 * here on entry to all user-defined functions
 SDB.FCALL
 	L = &LASTFILE ':' &LASTLINE ' statement ' &LASTNO
-* should not be needed????
-*	&TRACE = 0
 	S = FNAME '('
 	C = ''
 	I = 1
@@ -847,18 +857,16 @@ SDB.FCALL.EARGLOP
 	SDB.CALL_LEVEL = SDB.CALL_LEVEL + 1
 	SDB.CALLS[SDB.CALL_LEVEL] = S ') called from ' L ', level '
 +						SDB.CALL_LEVEL - 1
-* XXX check resume_level, disable stepping???
 *	&TRACE = SDB.MAXINT
 	:(RETURN)
 SDB.FCALL.END
 
 	DEFINE('SDB.FRET(FNAME)')			:(SDB.FRET.END)
 SDB.FRET
-* save for display by next/finish
-	SDB.RETVAL = DIFFER(&RTNTYPE,"FRETURN") $FNAME
-	SDB.RETTYP = &RTNTYPE
+* save return info for display by finish
+	SDB.RETURN = &RTNTYPE 
++		(DIFFER(&RTNTYPE,'FRETURN') ' ' FNAME ' = ' $FNAME, '')
 	SDB.CALL_LEVEL = SDB.CALL_LEVEL - 1
-* XXX check resume_level, enable stepping???
 	:(RETURN)
 SDB.FRET.END
 
@@ -879,8 +887,9 @@ SDB.DEFINE
 	&TRACE = SDB.MAXINT				:(RETURN)
 SDB.DEFINE.END
 SDB.NOSTACK
-
-**************** startup:
+*
+****************************************************************
+* startup:
 *
 	SDB.VARS = TABLE()
 	SDB.VARS['list_lines'] = 10
@@ -909,12 +918,12 @@ SDB.NOSTACK
 *  one means stop on next STCOUNT trace event
 	SDB.PROCEED_COUNT = 1
 *
-* STEPPING is whether or not to enable STCOUNT
-*  With "next" command, PROCEED_COUNT can be non-zero,
-*  but stepping won't be enabled until FNCLEVEL drops to RESUME_LEVEL
-	SDB.OLDSTEP = SDB.STEPPING = 1
-	DIFFER(SDB.STEPPING) TRACE('STCOUNT','KEYWORD',,'SDB.TRAP.STCOUNT') 
-
+* STC_ENA is whether or not to enable STCOUNT
+	SDB.OLD_STC_ENA = 1
+	TRACE('STCOUNT','KEYWORD',,'SDB.TRAP.STCOUNT') 
+* FNCLEVEL tracing not enabled:
+	SDB.OLD_FNC_ENA =
+*
 * ERRLIMIT must be positive for SETEXIT
 	&ERRLIMIT = SDB.ERRLIMIT
 	SETEXIT('SDB.SETEXIT_HANDLER')
