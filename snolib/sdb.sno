@@ -395,7 +395,7 @@ SDB.SETEXIT_HANDLER
 
 * here on ^C -- reenable trace, restart statement, and break
 SDB.SX.RETRY
-	&TRACE = SDB.MAXINT			:(RETRY)
+	&TRACE = SDB.MAXINT			:(SCONTINUE)
 
 SDB.TRAP.END
 
