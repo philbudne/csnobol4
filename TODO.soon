@@ -1,28 +1,36 @@
 $Id$
 
-See if STEP_ONCE could be used in other places?
+Use clock_getcpuclockid() in linux/mstime.c?
 
-config/win32/config.h: SNOLIB_DIR -- use /usr/local/lib/snobol4/VERS on MINGW??
+Move ^C check to INTERP, before incrementing offset?
+	FLUSH RETRY
+	only allow SCONTINUE for user interrupt (like SPITBOL)
 
-Document packages needed for build
+document SDB() function
+
+Compiler: get rid of null statements (don't incr STNO)
+
+config/win32/config.h: SNOLIB_DIR --
+	use C:\snobol4-VERS for SNODIR??
+	use /usr/local/lib/snobol4/VERS on MINGW??
+	checkin install.bat (new location??)
+		put progs in \bin, *.sno in \lib ??
+		mkdir site directory?
+
+Document packages needed for build??
 	C compiler
 	m4
 	readline (developer package)
 	gdbm (developer)
 
-Document BREAKPOINT()??
+Document BREAKPOINT()????
 
 Update CHANGES file!
 
 sdb:
-	REGRESSION TESTS!!!!!!
 	break LABEL doesn't work if nothing but label on line!!!
+	      (compiler puts null statement on empty lines)
 	remove break/watchpoints when disabled?
-	WISH: display return value on "finish"
-
-	have an SDB() function user can call at any time??
-	use BREAKPOINT()/FNCLEVEL tracing
-	can't ^C into l3.sno??
 
 Make utf8 versions of man pages?
 
@@ -38,10 +46,18 @@ cygwin script to create windows .zip file???
 		zip -z foo < foowhat
 
 Oddness:
-	(sdb) print define()
-	The program is not being run!!
+	(sdb) print define() => "The program is not being run!!"
 
 ================
+
+SNOBOL4B (BLOCKS)
+
+Implement sdb "run" command, using CLEAR()?!
+	preserve: listings, breakpoints
+
+non-existant file on sdb command line shows "No END"!!!
+
+Agregate dumping (DUMP(2); &DUMP = 2)
 
 sdb:
 	set (just SDB.VARS?)
@@ -51,6 +67,8 @@ sdb:
 	save printed values? in SDB.VALUES[n]??
 	save breakpoint state in .sdbstate?
 
+Single letter trace types (ala Macro SPITBOL): V, K, L, C, R, F
+
 Have timing script POST results??
 
 man pages:
@@ -59,14 +77,13 @@ man pages:
     snobol4func
 
 sdb
-    Only trace STCOUNT when step count set?
-    trace FNCLEVEL for finish/next (as needed)
-	disable on next break of any kind.
-	NOTE! breaks BEFORE return!
-	display return type (RTNTYPE)
-    Use EQ() for string compares?
+	display return type (RTNTYPE), value??
 
 SETEXIT() w/ "continue", "scontinue", "return", "freturn" as arg don't work
+
+genc.sno option to use void ** & goto (or goto big_switch;)
+
+configure --with-boehm-gc
 
 snolib:
 	build loadable library!
@@ -128,7 +145,7 @@ Make use of tdb (from samba project: gdbm API w/ multiple writers)?
 
     Have seperate APIs for each DBM alternative, OPSYN to the default version?
 
-    Direct GDBM support?
+    Direct GDBM support (allows simultaneous access)??
 
 DIFFTIME function??
 
@@ -136,14 +153,14 @@ Fix utf.sno RUNE() function:
     use logic.sno (or wctomb()?)
 
 Fix univeral builds for non OSX 10.4 systems?
-OS X 4-way Universal???
-	CFLAGS='-arch i386 -arch x86_64 -arch ppc7400 -arch ppc64'
 
 ================ 2.0?
 
-genc.sno option to use void ** & goto (or goto big_switch;)
-	 make dump files.
-	 need to distribute two copies of isnobol4!
+only work with boehm GC?
+
+allow LOADed functions to "intern" strings...
+
+hash TABLEs
 
 ================
 
