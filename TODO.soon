@@ -7,28 +7,13 @@ sdb man page:
 	BUG: labels on empty lines 
 
 config/win32/config.h: SNOLIB_DIR --
-	use C:\snobol4-VERS for SNODIR??
-	use /usr/local/lib/snobol4/VERS on MINGW??
 	checkin install.bat (new location??)
 		put progs in \bin, *.sno in \lib ??
-		mkdir site directory?
-
-Document packages needed for build??
-	C compiler
-	m4
-	readline (developer package)
-	gdbm (developer)
+		create empty "local" directory/s
 
 Update CHANGES file!
 
 Make utf8 versions of man pages?
-
-Update snobol4 man page:
-       Add ENVIRONMENT section:
-	SNOPATH
-	SNOBOL_PRELOAD_PATH
-	(SNOLIB)
-	NOTE that PATHS can make code less portable, unsafe!!!
 
 cygwin script to create windows .zip file???
 	add archive comment asking for timing.out files?
@@ -38,6 +23,13 @@ Oddness:
 	(sdb) print define() => "The program is not being run!!"
 
 ================
+
+Update snobol4 man page:
+       Add ENVIRONMENT section:
+	SNOPATH
+	SNOBOL_PRELOAD_PATH
+	(SNOLIB)
+	NOTE that PATHS can make code less portable, unsafe!!!
 
 Document BREAKPOINT()????
 
