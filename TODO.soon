@@ -2,13 +2,9 @@ $Id$
 
 Use clock_getcpuclockid() in linux/mstime.c?
 
-Move ^C check to INTERP, before incrementing offset?
-	FLUSH RETRY
-	only allow SCONTINUE for user interrupt (like SPITBOL)
-
-document SDB() function
-
-Compiler: get rid of null statements (don't incr STNO)
+sdb man page:
+	document SDB() function
+	BUG: labels on empty lines 
 
 config/win32/config.h: SNOLIB_DIR --
 	use C:\snobol4-VERS for SNODIR??
@@ -23,14 +19,7 @@ Document packages needed for build??
 	readline (developer package)
 	gdbm (developer)
 
-Document BREAKPOINT()????
-
 Update CHANGES file!
-
-sdb:
-	break LABEL doesn't work if nothing but label on line!!!
-	      (compiler puts null statement on empty lines)
-	remove break/watchpoints when disabled?
 
 Make utf8 versions of man pages?
 
@@ -50,24 +39,34 @@ Oddness:
 
 ================
 
+Document BREAKPOINT()????
+
+Compiler: get rid of null statements (don't incr STNO)
+
 SNOBOL4B (BLOCKS)
 
-Implement sdb "run" command, using CLEAR()?!
-	preserve: listings, breakpoints
-
-non-existant file on sdb command line shows "No END"!!!
-
-Agregate dumping (DUMP(2); &DUMP = 2)
+Single letter trace types (ala Macro SPITBOL): V, K, L, C, R, F
 
 sdb:
-	set (just SDB.VARS?)
+	implement "run" command, using CLEAR()?!
+	    preserve: listings, breakpoints
+		ABORT, ARB, BAL, FAIL, FENCE, REM, SUCCEED
+	set: (just SDB.VARS?)
+		"trace" (via FCALL/FRET)
+		"debug"
 	read .sdbinit?
 	list [START [END]]
-	"trace" command (function call/return tracing)?
 	save printed values? in SDB.VALUES[n]??
-	save breakpoint state in .sdbstate?
+	remove break/watchpoints when disabled?
+	non-existant file on sdb command line shows "No END"!!!
+		really compiler bug!
+	BUG: breakpoint on bare label (compiler bug)
+		could deal with it in sdb??
+	BUG: ignored watchpoings (cont N or ignore B N) don't update old value
+	"code" command?
 
-Single letter trace types (ala Macro SPITBOL): V, K, L, C, R, F
+Agregate dumping (DUMP(2); &DUMP = 2)
+	What about NAMEs?
 
 Have timing script POST results??
 
@@ -75,18 +74,18 @@ man pages:
     snobol4err
     snobol4load
     snobol4func
-
-sdb
-	display return type (RTNTYPE), value??
+    document snobol4dynamic, snobol4wrapper
 
 SETEXIT() w/ "continue", "scontinue", "return", "freturn" as arg don't work
 
 genc.sno option to use void ** & goto (or goto big_switch;)
+	(configure --mode=xxx)???
 
 configure --with-boehm-gc
+	find out if gc start/end hook possible.
 
 snolib:
-	build loadable library!
+	build shared library!!
 	use mgetstring() in all of lib/snolib?
 
 set-uid checks:
@@ -101,22 +100,11 @@ String/number conversion
 	Have SPRINTF check for reasonable format??
 		Add sprintf tests
 
-genc:
-	merge in "one function" code
-
-integrate GC patch (--with-gc?)
-	find out if gc start/end hook possible.
-
 have COMPILE_C_DYNAMIC() return object file name??
 
-document snobol4dynamic, snobol4wrapper
-
-Pure SNOBOL test driver (run under Cygwin!!)
+Pure SNOBOL test driver (run under windows??)
 
 handle leading or trailing PATH_SEP on SNOPATH and PRELOAD_PATH???
-
-Hash TABLES()?
-	need stable ID field on all datatypes
 
 Run tests, timing on MinGW?
 	Need to fix CR handling; EOLSTR, _setmode()
@@ -134,8 +122,6 @@ snobol4 machine generate win32 .mak files??
 
 mingw.mak:
 	have configure copy config.{m4,h} from config/win32?
-
-Make some signals catchable via SETEXIT? INTR, CHLD, HUP, ALRM??
 
 load.c:
 	unix98: allow access to "self" (NULL ptr to dlopen)?
