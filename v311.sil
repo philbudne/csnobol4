@@ -1,6 +1,10 @@
 * $Id$
 *
 * $Log$
+* Revision 1.130  2013/09/01 03:37:25  phil
+* v311.sil: [PLB113] fix keyword trace output I broke in 2005 (edit PLB90)
+* add chk_break() call -- fires &STNO KEYWORD trace
+*
 * Revision 1.129  2013/08/31 03:02:30  phil
 * [PLB112] save/restore &LAST{FILE,LINE} calling trace handlers
 * restore saved &LINE in ABORT handler
@@ -2467,18 +2471,19 @@ GOTO   PROC    ,		   Interpreter goto procedure
 *
 INIT   PROC    ,		   Statement initialization procedure
        MOVD    LSTNCL,STNOCL	   Update &LASTNO
+* [PLB114] pulled LASTFILE/LINE & USRINT checks to top;
+       MOVA    LSFLNM,FILENM	   Update &LASTFILE		[PLB38][PLB40]
+       MOVA    LSLNCL,LNNOCL	   Update &LASTLINE		[PLB38][PLB40]
+       AEQLC   UINTCL,0,USRINT     Check for SIGINT		[PLB109]
        INCRA   OCICL,DESCR	   Increment offset
        GETD    XCL,OCBSCL,OCICL	   Get statement data
        MOVA    STNOCL,XCL	   Update &STNO
        SETAV   FRTNCL,XCL	   Set up failure offset
-       MOVA    LSLNCL,LNNOCL	   Update &LASTLINE		[PLB38][PLB40]
        INCRA   OCICL,DESCR	   Increment offset		[PLB38]
        GETD    LNNOCL,OCBSCL,OCICL Update &LINE			[PLB38]
-       MOVA    LSFLNM,FILENM	   Update &LASTFILE		[PLB38][PLB40]
        INCRA   OCICL,DESCR	   Increment offset		[PLB38]
        GETD    FILENM,OCBSCL,OCICL Update &FILE			[PLB38]
        INCRA   EXN2CL,1		   Increment stats stmt count	[PLB38]
-       AEQLC   UINTCL,0,USRINT     Check for SIGINT		[PLB109]
        ACOMPC  EXLMCL,0,,,RTNUL3   Done if &STLIMIT < 0		[PLB33][PLB38]
        ACOMP   EXNOCL,EXLMCL,EXEX,EXEX
 *				   Check &STLIMIT
