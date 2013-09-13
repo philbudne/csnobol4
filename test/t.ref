@@ -1,0 +1,21 @@
+t.sno:7 stmt 6: &STCOUNT = 4, time = xxx
+t.sno:11 stmt 10: &STCOUNT = 5, time = xxx
+t.sno:11 stmt 10: level 0 call of F(1), time = xxx
+t.sno:8 stmt 7: &STCOUNT = 6, time = xxx
+t.sno:8 stmt 7: XXX = 1, time = xxx
+t.sno:8 stmt 7: level 0 RETURN of F = '', time = xxx
+t.sno:12 stmt 11: &STCOUNT = 7, time = xxx
+t.sno:12 stmt 11: level 0 call of F(2), time = xxx
+t.sno:8 stmt 7: &STCOUNT = 8, time = xxx
+t.sno:8 stmt 7: XXX = 2, time = xxx
+t.sno:8 stmt 7: level 0 RETURN of F = '', time = xxx
+t.sno:13 stmt 12: &STCOUNT = 9, time = xxx
+t.sno:13 stmt 12: level 0 call of F(3), time = xxx
+t.sno:8 stmt 7: &STCOUNT = 10, time = xxx
+t.sno:8 stmt 7: XXX = 3, time = xxx
+t.sno:8 stmt 7: level 0 RETURN of F = '', time = xxx
+t.sno:14 stmt 13: &STCOUNT = 11, time = xxx
+t.sno:14 stmt 13: level 0 call of F(4), time = xxx
+t.sno:8 stmt 7: &STCOUNT = 12, time = xxx
+t.sno:8 stmt 7: XXX = 4, time = xxx
+t.sno:8 stmt 7: level 0 RETURN of F = '', time = xxx

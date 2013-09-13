@@ -5,6 +5,9 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 9/12/2013:
 	snolib/sdb.sno: fix watchpoints, use SCONTINUE for ^C (again)
 	v311.sil: [PLB114] pulled LASTFILE/LINE & USRINT checks to top of INIT
+		[PLB115] single letter trace types (ala SPITBOL)
+	test/t.{sno,ref} (new): test single letter trace types
+	test/tests.in: add t.sno
 
 9/11/2013:
 	snolib/sdb.sno: cleanup;

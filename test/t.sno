@@ -1,0 +1,15 @@
+* test single letter trace type
+	&trace = &stlimit = 1000
+	trace('f', 'f')
+	trace('xxx', 'v')
+	trace('stcount', 'k')
+
+	define("f(x)")	:(ef)
+f	xxx = x		:(return)
+ef
+
+	f(1)
+	f(2)
+	f(3)
+	f(4)
+end
