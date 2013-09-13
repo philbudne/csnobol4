@@ -60,7 +60,7 @@ generated: $(GENERATED)
 ################
 # run configuration script
 
-config.m4 config.h version.h: configure
+config.m4 config.h version.h version: configure
 	./configure
 
 ################
@@ -192,7 +192,8 @@ cleanmostly: tidy
 	rm -f $(DISP)
 	rm -rf timdir.*
 
-# clean as a freshly unpacked kit; remove binaries, timing; leave version.h
+# clean as a freshly unpacked kit; remove binaries, timing;
+# leave version.h, version
 clean:	cleanmostly
 	rm -f snobol4 xsnobol4 cpuid timing.out tested *.ln sdb
 
