@@ -19,10 +19,10 @@
 
 /* paths; */
 #define SNOLIB_FILE	"snolib.dll"
-#define SNOLIB_DIR	"/snobol4"
+#define DIR_SEP		"\\"
+#define SNOLIB_DIR	"C:" DIR_SEP "snobol4"
 
 #define PATH_SEP	";"
-#define DIR_SEP		"\\"
 
 #include "version.h"
 #define DEF_SNOPATH (SNOLIB_DIR DIR_SEP VERSION DIR_SEP "local" \

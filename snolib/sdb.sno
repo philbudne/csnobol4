@@ -1,5 +1,4 @@
 -HIDE
-* XXX shouldn't need FNCLEVEL trace-- put step enable logic in SDB.FRET
 * "SDB" SNOBOL4 debugger -- a clone (clown?) of GNU "gdb" debugger
 * Copyright (C) 2010-2013 Philip L. Budne
 * All rights reserved.
@@ -76,6 +75,8 @@ SDB.DC.END
 * this trick from Orange book "LPROG" function to find total number of stmts:
 	:<CODE(' SDB.MAX_STMTS = &STNO :(SDB.GOT_MAX_STMTS)')>
 SDB.GOT_MAX_STMTS
+
+** preserve these!!
 	SDB.SOURCE_BY_STMT = ARRAY('1:' SDB.MAX_STMTS)
 	SDB.BREAK_BY_STMT = ARRAY('1:' SDB.MAX_STMTS)
 	SDB.BREAK_BY_NUM = ARRAY('1:' SDB.MAX_BREAK)
@@ -134,11 +135,12 @@ SDB.READLINE.END
 						:(SDB.TRAP.END)
 
 ****
-* EXP: called as function by user to enter debugger
-SDB
- SDB.DEBUG = '<sdb @ ' &LASTFILE ':' &LASTLINE
-* trigger break on next statement
-	SDB.PROCEED_COUNT = 1
+* SDB() called as function by user to enter debugger, ie;
+*	FUNCTION('SDB') SDB()
+
+SDB	SDB.DEBUG = '<sdb @ ' &LASTFILE ':' &LASTLINE
+* trigger break on next statement, clear any next/step/finish conditions
+	SDB.PROCEED_COUNT = SDB.FORCE_STEP = SDB.FORCE_STOP = 1
 	SDB.RESUME_LEVEL =
 * YIKES! go thru common TRAP return!!
 	:(SDB.TRAP.RETURN)
@@ -149,7 +151,7 @@ SDB
 SDB.TRAP.WATCH
 +	(SDB.LASTFL = &LASTFILE ':' &LASTLINE) (SDB.LAST = &LASTNO)
 * don't break inside sdb
-	GE(SDB.LAST,SDB.FIRST_STMT) LE(SDB.LAST,SDB.LAST_STMT) :S(SDB.TRAP.RETURNQ)
+	GE(SDB.LAST,SDB.FIRST_STMT) LE(SDB.LAST,SDB.LAST_STMT) :S(SDB.TRAP.RQ)
  SDB.DEBUG = '<trap.watch'
 	SDB.ERROR =
 	SDB.BKPT = SDB.WATCH_BY_NAME[SDB.WATCHED]
@@ -169,7 +171,7 @@ SDB.TRAP.FNCLVL
 +	(SDB.LASTFL = &LASTFILE ':' &LASTLINE) (SDB.LAST = &LASTNO)
 * never break inside sdb code
 	GE(SDB.LAST,SDB.FIRST_STMT) LE(SDB.LAST,SDB.LAST_STMT)
-+						:S(SDB.TRAP.RETURNQ)
++						:S(SDB.TRAP.RQ)
  SDB.DEBUG = '<trap.fnclevel @ ' SDB.LASTFL ' (' &FNCLEVEL ')'
  SDB.DEBUG = ' resume_level: ' SDB.RESUME_LEVEL ' @' &FNCLEVEL 
  SDB.DEBUG = ' proceed: ' SDB.PROCEED_COUNT
@@ -190,7 +192,7 @@ SDB.TRAP.STNO
 +	(SDB.LASTFL = &LASTFILE ':' &LASTLINE) (SDB.LAST = &LASTNO)
 * never break inside sdb code (typ. 1st line of SDB.DEFINE, inside FCALL)
 	GE(SDB.LAST,SDB.FIRST_STMT) LE(SDB.LAST,SDB.LAST_STMT)
-+						:S(SDB.TRAP.RETURNQ)
++						:S(SDB.TRAP.RQ)
  SDB.DEBUG = '<trap.stno @ ' SDB.LASTFL
 	SDB.ERROR =
 * STNO trap happens before STCOUNT, so just force STCOUNT trap
@@ -207,7 +209,7 @@ SDB.TRAP.STCOUNT
 +	(SDB.LASTFL = &LASTFILE ':' &LASTLINE) (SDB.LAST = &LASTNO)
 * never break inside sdb code (typ. 1st line of SDB.DEFINE, inside FCALL)
 	GE(SDB.LAST,SDB.FIRST_STMT) LE(SDB.LAST,SDB.LAST_STMT)
-+						:S(SDB.TRAP.RETURNQ)
++						:S(SDB.TRAP.RQ)
  SDB.DEBUG = '<trap.stcount @ ' SDB.LASTFL
  SDB.DEBUG = DIFFER(SDB.INTERRUPT) ' interrupt'
  SDB.DEBUG = DIFFER(SDB.FORCE_STOP) ' force_stop'
@@ -365,7 +367,8 @@ SDB.TRAP.ST.NC
 	  DIFFER(SDB.FNC_ENA)			:S(SDB.TRAP.FL.ENA)
 	    SDB.DEBUG =' DISABLE FNCLEVEL'
 	    STOPTR('FNCLEVEL','KEYWORD')	:(SDB.TRAP.FL.NC)
-*         enable fnclevel (could do work in SDB.FCALL/SDB.FRET but they're not called w/ SPITBOL)
+*         enable fnclevel
+*	 (could do work in SDB.FCALL/SDB.FRET but they don't work on SPITBOL)
 SDB.TRAP.FL.ENA
 	    SDB.DEBUG = ' ENABLE FNCLEVEL'
 	    TRACE('FNCLEVEL','KEYWORD',,'SDB.TRAP.FNCLVL')
@@ -377,8 +380,8 @@ SDB.TRAP.FL.NC
 * from SDB.TRAP.*; early return with no changes
 SDB.TRAP.RETURN2
 +	SDB.DEBUG = '>sdb.trap.return2'
-* from SDB.TRAP.*; trap inside sdb
-SDB.TRAP.RETURNQ :(RETURN)
+* Return Quick from SDB.TRAP.*; trap event was inside sdb
+SDB.TRAP.RQ :(RETURN)
 
 ********************
 * SETEXIT handler (branched to, not called!!!)
@@ -400,7 +403,8 @@ SDB.SX.RETRY
 SDB.TRAP.END
 
 ****************************************************************
-* function process one sdb command (either interactive or attached to a breakpoint)
+* function to  process one sdb command
+* (either interactive or attached to a breakpoint)
 * returns success to return to user, failure to process next command
 * NOTE! all args/temps should start with SDB. to avoid confusion in PRINT cmd!
 	DEFINE('SDB.COMMAND(SDB.CMD,SDB.AUTO)'
@@ -447,7 +451,7 @@ SDB.COMMAND.STAY				:(FRETURN)
 SDB.CMD.BREAK
 	SDB.T1 = SDB.ARG.STMT(SDB.ARGS)		:F(SDB.COMMAND.STAY)
 	TERMINAL = DIFFER(SDB.BREAK_BY_STMT[SDB.T1])
-+		"Breakpoint already set at statement " SDB.T1 :S(SDB.COMMAND.STAY)
++	    "Breakpoint already set at statement " SDB.T1 :S(SDB.COMMAND.STAY)
 	SDB.T2 = SDB.NEXT_BREAK
 	SDB.NEXT_BREAK = SDB.NEXT_BREAK + 1
 	TERMINAL = 'Breakpoint ' SDB.T2 ' at statement ' SDB.T1

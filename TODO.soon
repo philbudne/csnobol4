@@ -24,6 +24,8 @@ Oddness:
 
 ================
 
+SNOBOL4B (BLOCKS)
+
 Update snobol4 man page:
        Add ENVIRONMENT section:
 	SNOPATH
@@ -35,9 +37,10 @@ Document BREAKPOINT()????
 
 Compiler: get rid of null statements (don't incr STNO)
 
-SNOBOL4B (BLOCKS)
-
 Single letter trace types (ala Macro SPITBOL): V, K, L, C, R, F
+
+SETEXITFUNC() using function calls??
+	allow nested handlers!
 
 sdb:
 	implement "run" command, using CLEAR()?!

@@ -1,19 +1,52 @@
 rem $Id$
+rem install batch file for CSNOBOL4 when building from source
 
-mkdir %2
+setlocal
 
-copy equ.h %2
-copy include\dt.h %2
-copy include\equ.h %2
-copy include\h.h %2
-copy include\load.h %2
-copy include\macros.h %2
-copy include\snotypes.h %2
-copy config\%1\config.h %2
+rem NOTE!! Compiled in defaults are in config\win32\config.h
+set SNOBASE=C:\snobol4
+mkdir %SNOBASE%
 
-copy snolib\*.sno %2
-copy host.sno %2
+rem read file created by Un*x configure shell script;
+set /p VERSION=<version
+set SNODIR=%SNOBASE%\%VERSION%
+mkdir %SNODIR%
 
-copy doc\load.doc %2
+set BINDIR=%SNODIR%\bin
+set LIBDIR=%SNODIR%\lib
+set DOCDIR=%SNODIR%\doc
+set INCDIR=%SNODIR%\include
+set TIMDIR=%SNODIR%\timing
 
-copy snobol4.exe %2
+mkdir %BINDIR%
+copy cpuid.exe %BINDIR%
+copy snobol4.exe %BINDIR%
+copy pkg\win32\sdb.bat %BINDIR%
+copy pkg\win32\timing.bat %BINDIR%
+
+mkdir %LIBDIR%
+copy host.sno %LIBDIR%
+copy snolib\*.sno %LIBDIR%
+
+mkdir %DOCDIR%
+copy doc\*.0 %DOCDIR%
+copy doc\*.pdf %DOCDIR%
+copy doc\*.txt %DOCDIR%
+copy doc\*.html %DOCDIR%
+copy doc\load.doc %DOCDIR%
+
+mkdir %INCDIR%
+copy config\win32\config.h %INCDIR%
+copy equ.h %INCDIR%
+copy version.h %INCDIR%
+copy include\h.h %INCDIR%
+copy include\snotypes.h %INCDIR%
+copy include\macros.h %INCDIR%
+copy include\load.h %INCDIR%
+
+mkdir %TIMDIR%
+copy timing.sno %TIMDIR%
+copy test\v311.sil %TIMDIR%
+copy test\procs %TIMDIR%
+copy test\globals %TIMDIR%
+copy test\bench.sno %TIMDIR%
