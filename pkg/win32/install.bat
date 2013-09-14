@@ -7,6 +7,8 @@ rem NOTE!! Compiled in defaults are in config\win32\config.h
 set SNOBASE=C:\snobol4
 mkdir %SNOBASE%
 
+mkdir %SNOBASE%\local
+
 rem read file created by Un*x configure shell script;
 set /p VERSION=<version
 set SNODIR=%SNOBASE%\%VERSION%
@@ -50,3 +52,5 @@ copy test\v311.sil %TIMDIR%
 copy test\procs %TIMDIR%
 copy test\globals %TIMDIR%
 copy test\bench.sno %TIMDIR%
+
+mkdir %SNODIR%\local
