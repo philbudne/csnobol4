@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+9/14/2013:
+	configure: check for forkpty
+	lib/io.c: add support for ||ptycommand
+		unionize variant data
+
 9/13/2013:
 	configure: check for clock_getcpuclockid()
 	lib/posix2001/mstime.c: use clock_getcpuclockid()

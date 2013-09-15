@@ -1098,25 +1098,7 @@ if config/check 'sys/types.h sys/socket.h' ""; then
 	echo 'using private popen() function' 1>&2
 	echo 'ADD_OBJS([popen.o])'		>> $CONFIG_M4
 	echo 'ADD_SRCS([$(POPEN_C)])'		>> $CONFIG_M4
-	if config/check paths.h 'char *foo = _PATH_BSHELL'; then
-	    echo 'using paths.h for popen() shell path' 1>&2
-	    echo '#define HAVE_PATHS_H'		>> $CONFIG_H
-	else
-	    # XXX outer loop for sh, ksh, bash, csh, tcsh?
-	    for DIR in /usr/bin /bin `echo $PATH | tr ':' ' '`; do
-		if [ -x $DIR/sh ]; then
-		    BSHELL=$DIR/sh
-		    break
-		fi
-	    done
-	    if [ "$BSHELL" ]; then
-		echo "using $BSHELL for popen() shell" 1>&2
-		echo '#define _PATH_BSHELL "'$BSHELL'"'	>> $CONFIG_H
-	    else
-		echo 'WARNING: could not find shell for popen()' 1>&2
-	    fi
-	fi
-
+	NEED_PATHS_H=1
 	if config/check vfork.h 'vfork()'; then
 	    echo 'using vfork() from vfork.h' 1>&2
 	    echo '#define HAVE_VFORK_H'		>> $CONFIG_H
@@ -1137,6 +1119,51 @@ if config/check 'sys/types.h sys/socket.h' ""; then
 else
     echo 'no sockets; TCP not available' 1>&2
     echo 'INET_C=$(SRCDIR)lib/dummy/inet.c'	>> $CONFIG_M4
+fi
+
+FORKPTY="int f; pid_t pid = forkpty(&f, 0, 0, 0);"
+if config/check "sys/types.h libutil.h" "$FORKPTY" -lutil; then
+    # FreeBSD
+    echo 'using forkpty() with libutil.h and -lutil' 1>&2
+    echo '#define HAVE_FORKPTY'		>> $CONFIG_H
+    echo '#define HAVE_LIBUTIL_H'	>> $CONFIG_H
+    echo "ADD_LDFLAGS([-lutil])"	>> $CONFIG_M4
+    NEED_PATHS_H=1
+elif config/check "sys/types.h util.h" "$FORKPTY" -lutil; then
+    # NetBSD, OSX
+    echo 'using forkpty() with util.h and -lutil' 1>&2
+    echo '#define HAVE_FORKPTY'		>> $CONFIG_H
+    echo '#define HAVE_UTIL_H'		>> $CONFIG_H
+    echo "ADD_LDFLAGS([-lutil])"	>> $CONFIG_M4
+    NEED_PATHS_H=1
+elif config/check "sys/types.h pty.h" "$FORKPTY" -lutil; then
+    # Linux
+    echo 'using forkpty() with pty.h and -lutil' 1>&2
+    echo '#define HAVE_FORKPTY'		>> $CONFIG_H
+    echo '#define HAVE_PTY_H'		>> $CONFIG_H
+    echo "ADD_LDFLAGS([-lutil])"	>> $CONFIG_M4
+    NEED_PATHS_H=1
+fi
+
+if [ "$NEED_PATHS_H" ]; then
+    if config/check paths.h 'char *foo = _PATH_BSHELL'; then
+	echo 'using paths.h for shell path' 1>&2
+	echo '#define HAVE_PATHS_H'		>> $CONFIG_H
+    else
+	# XXX outer loop for sh, ksh, bash, csh, tcsh?
+	for DIR in /usr/bin /bin `echo $PATH | tr ':' ' '`; do
+	    if [ -x $DIR/sh ]; then
+		BSHELL=$DIR/sh
+		break
+	    fi
+	done
+	if [ "$BSHELL" ]; then
+	    echo "using $BSHELL for shell" 1>&2
+	    echo '#define _PATH_BSHELL "'$BSHELL'"'	>> $CONFIG_H
+	else
+	    echo 'WARNING: could not find shell!' 1>&2
+	fi
+    fi
 fi
 
 if config/check termios.h 'struct termios t; tcgetattr(0, &t)'; then

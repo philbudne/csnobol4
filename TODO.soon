@@ -1,5 +1,8 @@
 $Id$
 
+Document ||ptycommand
+	show example (& for pipe?)
+
 sdb man page:
 	document SDB() function
 	sdb can't catch ^C!!
