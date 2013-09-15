@@ -6,14 +6,9 @@
 # tested 11/2005 w/ Visual Studio .NET 2003 (VC71)
 # tested 5/2010 w/ Visual C++ Express 2010
 
-# XXX use to define SNOLIB_DIR??
-DEST=\snobol4
-
 CC=cl
 
-# -O2 opt speed
-# -Ot favor speed
-# -Ox max opt (for space)
+# -O2 opt for speed
 OPT=-O2
 
 # can also use msdos version (less friendly in multitasking env)
@@ -293,7 +288,3 @@ sdbm_pair.obj : $(SRCDIR)lib\sdbm\sdbm_pair.c
 sdbm_hash.obj : $(SRCDIR)lib\sdbm\sdbm_hash.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\sdbm\sdbm_hash.c
 
-################################################################
-
-install:
-	config\install.bat win32 $(DEST)
