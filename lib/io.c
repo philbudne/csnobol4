@@ -56,6 +56,26 @@ typedef long off_t;
 #include <unixio.h>			/* read(), lseek(), etc */
 #endif /* HAVE_UNIXIO_H defined */
 
+#include <sys/types.h>			/* pid_t */
+
+#ifdef HAVE_FORKPTY
+#include <sys/wait.h>			/* waitpid() */
+#include <errno.h>
+
+#ifdef HAVE_LIBUTIL_H
+#include <libutil.h>			/* FreeBSD: forkpty */
+#endif
+#ifdef HAVE_UTIL_H
+#include <util.h>			/* NetBSD: forkpty */
+#endif
+#ifdef HAVE_PTY_H
+#include <pty.h>			/* linux: forkpty() */
+#endif
+#ifdef HAVE_PATHS_H
+#include <paths.h>			/* _PATH_BSHELL */
+#endif
+#endif /* HAVE_FORKPTY */
+
 #include "h.h"
 #include "units.h"
 #include "snotypes.h"
@@ -128,15 +148,27 @@ struct file {
 	TYPE_NORM,
 	TYPE_PIPE,
 	TYPE_TTY,
+#ifdef HAVE_FORKPTY
+	TYPE_PTY,
+#endif
 #ifdef MEM_IO
 	TYPE_MEM,
 #endif /* MEM_IO defined */
 	TYPE_INET } type;
+    union {
 #ifdef MEM_IO
-    char *memptr;			/* pointer to buffer */
-    int memlen;				/* length of buffer */
-    off_t mempos;			/* current position in buffer */
+	struct {
+	    char *ptr;		      /* pointer to buffer */
+	    int len;		      /* length of buffer */
+	    off_t pos;		      /* current position in buffer */
+	} mem;
 #endif /* MEM_IO defined */
+#ifdef HAVE_FORKPTY
+	struct {
+	    pid_t pid;
+	} pty;
+#endif
+    } u;
     /* XXX add methods for read/write/eof/mode/seek/close */
     /* XXX keep recl (shift flags up?)? */
     enum { LAST_NONE, LAST_OUTPUT, LAST_INPUT } last;
@@ -198,6 +230,7 @@ struct file {
 
 #define ISPIPE(FP) ((FP)->type == TYPE_PIPE)
 #define ISTTY(FP)  ((FP)->type == TYPE_TTY)
+#define ISPTY(FP)  ((FP)->type == TYPE_PTY)
 #define ISINET(FP) ((FP)->type == TYPE_INET)
 
 #define ISOPEN(FP) ((FP)->f || IEMEM(FP))
@@ -284,9 +317,9 @@ io_memfile(name, data, len)
 
     fp->type = TYPE_MEM;
     fp->flags |= FL_NOTAFILE;
-    fp->memptr = data;
-    fp->memlen = len;
-    fp->mempos = 0;
+    fp->u.mem.ptr = data;
+    fp->u.mem.len = len;
+    fp->u.mem.pos = 0;
     return fp;
 }
 #endif /* MEM_IO defined */
@@ -375,6 +408,23 @@ io_close(unit)				/* internal (zero-based unit) */
 	    ret = (pclose(fp->f) == 0);	/* XXX is process status!! */
 	    fp->f = NULL;
 	}
+#ifdef HAVE_FORKPTY
+	else if (ISPTY(fp)) {
+	    pid_t pid;
+	    int pstat;
+
+	    fclose(fp->f);
+	    fp->f = NULL;
+	    // issue kill() if needed????
+	    do {
+                pid = waitpid(fp->u.pty.pid, &pstat, 0);
+	    } while (pid == -1 && errno == EINTR);
+	    if (pid == -1)
+		ret = TRUE;
+	    else
+		ret = (pstat == 0);
+	}
+#endif
 	else {				/* not a pipe */
 	    if (ISTTY(fp)) {
 		tty_close(fp->f);	/* advisory */
@@ -436,7 +486,7 @@ io_fopen2( fp, mode )
 
 #ifdef MEM_IO
     if (ISMEM(fp)) {
-	fp->mempos = 0;
+	fp->u.mem.pos = 0;
 	fp->f = (FILE *)1;		/* non-NULL */
 	return;
     }
@@ -582,6 +632,26 @@ io_fopen2( fp, mode )
      */
     if (fp->fname[0] == '|') {
 	/* filename with leading '|' opens a pipe! */
+	if (fp->fname[1] == '|') {	/* || opens a pty!! */
+#ifdef HAVE_FORKPTY
+	    int master;
+	    pid_t pid = forkpty(&master, NULL, NULL, NULL);
+	    if (pid == 0) {
+		int i;
+		for (i = getdtablesize(); i > 2; i--)
+		    close(i);
+		execl(_PATH_BSHELL, "sh", "-c", fp->fname+2, 0);
+		_exit(1);
+	    }
+	    else if (pid > 0) {
+		fp->f = fdopen(master, buf);
+		fp->type = TYPE_PTY;
+		fp->u.pty.pid = pid;
+	    }
+#endif
+	    return;
+	} // ||
+
 	/* SPITBOL: leading '!' means pipe, (with escaping?) */
 	fp->type = TYPE_PIPE;
 	fp->f = popen(fp->fname+1, buf);
@@ -778,10 +848,10 @@ mem_write(fp, cp, len)
     char *cp;
     int len;
 {
-    if (len + fp->mempos + 1 <= fp->memlen) {
-	memcpy(fp->memptr + fp->mempos, cp, len);
-	fp->mempos += len;
-	fp->memptr[fp->mempos] = '\0';
+    if (len + fp->u.mem.pos + 1 <= fp->u.mem.len) {
+	memcpy(fp->u.mem.ptr + fp->u.mem.pos, cp, len);
+	fp->u.mem.pos += len;
+	fp->u.mem.ptr[fp->u.mem.pos] = '\0';
 	return TRUE;
     }
     return FALSE;
@@ -793,13 +863,13 @@ mem_read_raw(fp, cp, recl)
     char *cp;
     int recl;
 {
-    int rem = fp->memlen - fp->mempos;
+    int rem = fp->u.mem.len - fp->u.mem.pos;
     if (rem == 0)
 	return -1;			/* 0? */
     if (recl > rem)
 	recl = rem;
-    memcpy(cp, fp->memptr + fp->mempos, recl);
-    fp->mempos += recl;
+    memcpy(cp, fp->u.mem.ptr + fp->u.mem.pos, recl);
+    fp->u.mem.pos += recl;
     return recl;
 }
 
@@ -813,8 +883,8 @@ mem_read_cooked(fp, cp, recl, keepeol)
     int cc = 0;
     int nread = 0;
     int eol = FALSE;
-    while (cc < recl && !eol && fp->mempos < fp->memlen) {
-	char c = fp->memptr[fp->mempos++];
+    while (cc < recl && !eol && fp->u.mem.pos < fp->u.mem.len) {
+	char c = fp->u.mem.ptr[fp->u.mem.pos++];
 	nread++;
 	if (c == '\r')
 	    continue;
@@ -1432,16 +1502,16 @@ io_rewind(unit)				/* REWIND */
 
 #ifdef MEM_IO
     if (ISMEM(fp)) {
-	if (up->offset <= fp->memlen)
-	    fp->mempos = up->offset;
+	if (up->offset <= fp->u.mem.len)
+	    fp->u.mem.pos = up->offset;
 	else
-	    fp->mempos = 0;		/* XXX fp->memlen? */
+	    fp->u.mem.pos = 0;		/* XXX fp->u.mem.len? */
 	return;
     }
 #endif /* MEM_IO defined */
 
     f = fp->f;
-    if (f != NULL && !ISPIPE(fp) && ISAFILE(fp)) {
+    if (f != NULL && !ISPIPE(fp) && ISAFILE(fp) && !ISPTY(fp)) {
 	fseeko(f, up->offset, SEEK_SET);
 	fp->last = LAST_NONE;		/* reset last I/O type */
    }
@@ -1498,7 +1568,7 @@ io_ecomp()				/* XECOMP */
     up->head = up->curr;		/* save file for rewind */
 #ifdef MEM_IO
     if (ISMEM(up->curr))
-	up->offset = up->curr->mempos;
+	up->offset = up->curr->u.mem.pos;
     else
 #endif
 	up->offset = ftello(up->curr->f); /* save offset for rewind */
