@@ -278,11 +278,9 @@ SDB.TRAP.CMDS.NEXT
 SDB.CHECKLEVEL
 	IDENT(SDB.RESUME_LEVEL)			:S(SDB.CHECKSTEP)
 	SDB.DEBUG = ' resume_level: ' SDB.RESUME_LEVEL ' @' &FNCLEVEL
-* if STEP_ONCE set ("next" command), done stepping; wait for FNCLEVEL change
-* STEP_ONCE might be used in (many) other places -- could pull up????
 	GT(&FNCLEVEL, SDB.RESUME_LEVEL)		:S(SDB.TRAP.RETURN)
 
-* see if step count set & reached
+* see if step/next count set & reached
 SDB.CHECKSTEP
 	LE(SDB.PROCEED_COUNT,0)			:S(SDB.TRAP.RETURN)
 	SDB.PROCEED_COUNT = SDB.PROCEED_COUNT - 1
