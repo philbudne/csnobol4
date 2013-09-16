@@ -29,7 +29,7 @@
 		     PATH_SEP			\
 		     SNOLIB_DIR DIR_SEP "local" \
 		     PATH_SEP			\
-		     SNOLIB_DIR DIR_SEP VERSION \
+		     SNOLIB_DIR DIR_SEP VERSION DIR_SEP "lib" \
 		     PATH_SEP			\
 		     SNOLIB_DIR)
 
