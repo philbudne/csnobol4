@@ -638,7 +638,7 @@ io_fopen2( fp, mode )
 		int i;
 		for (i = getdtablesize(); i > 2; i--)
 		    close(i);
-		execl(_PATH_BSHELL, "sh", "-c", fp->fname+2, 0);
+		execl(_PATH_BSHELL, "sh", "-c", fp->fname+2, NULL);
 		_exit(1);
 	    }
 	    else if (pid > 0) {
