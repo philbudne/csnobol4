@@ -228,7 +228,7 @@ while [ $# -gt 0 ]; do
 	TCONF=`echo "$1" | sed 's/--with-tcl=//'`
 	if [ "x$TCONF" = x ]; then
 	    echo " --with-tcl requires path to tclConfig.sh" 1>&2
-	if [ -d "$TCONF" -a -f "$TCONF/tclConfig.sh" ]; then
+	elif [ -d "$TCONF" -a -f "$TCONF/tclConfig.sh" ]; then
 	    TCONF="$TCONF/tclConfig.sh"
 	elif [ ! -f "$TCONF" ]; then
 	    echo "$TCONF is not a file or directory" 1>&2
