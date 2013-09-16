@@ -166,6 +166,7 @@ struct file {
 	    pid_t pid;
 	} pty;
 #endif
+	int nota;
     } u;
     /* XXX add methods for read/write/eof/mode/seek/close */
     /* XXX keep recl (shift flags up?)? */
