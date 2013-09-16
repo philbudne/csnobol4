@@ -148,9 +148,7 @@ struct file {
 	TYPE_NORM,
 	TYPE_PIPE,
 	TYPE_TTY,
-#ifdef HAVE_FORKPTY
 	TYPE_PTY,
-#endif
 #ifdef MEM_IO
 	TYPE_MEM,
 #endif /* MEM_IO defined */
