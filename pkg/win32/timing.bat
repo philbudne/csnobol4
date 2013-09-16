@@ -2,7 +2,7 @@
 :: Phil Budne 8/14/2013
 
 setlocal
-set SNODIR=%~dp0
+set BINDIR=%~dp0
 
 echo Date:
 echo %date% %time%
@@ -25,17 +25,17 @@ hostname
 echo:
 
 echo cpuid:
-%SNODIR%\cpuid
+%BINDIR%\cpuid
 echo:
 
-cd /d %SNODIR%\timing
+cd /d %BINDIR%\..\timing
 echo Ids:
 find "Id:" bench.sno v311.sil timing.sno
 echo:
 
 echo running benchmark:
-..\snobol4 -s bench.sno v311.sil 2>stderr
-..\snobol4 -b timing.sno < stderr
+%BINDIR%\snobol4 -s bench.sno v311.sil 2>stderr
+%BINDIR%\snobol4 -b timing.sno < stderr
 
 echo:
 echo END
