@@ -4,6 +4,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/15/2013:
 	configure: --with-tcl= now requires path to tclConfig.sh
+		fix forkpty check on OSX
 	INSTALL: document --with-tcl=
 
 9/14/2013:

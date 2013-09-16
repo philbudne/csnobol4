@@ -1133,8 +1133,14 @@ if config/check "sys/types.h libutil.h" "$FORKPTY" -lutil; then
     echo '#define HAVE_LIBUTIL_H'	>> $CONFIG_H
     echo "ADD_LDFLAGS([-lutil])"	>> $CONFIG_M4
     NEED_PATHS_H=1
+elif config/check "sys/types.h util.h" "$FORKPTY"; then
+    # OSX
+    echo 'using forkpty() with util.h' 1>&2
+    echo '#define HAVE_FORKPTY'		>> $CONFIG_H
+    echo '#define HAVE_UTIL_H'		>> $CONFIG_H
+    NEED_PATHS_H=1
 elif config/check "sys/types.h util.h" "$FORKPTY" -lutil; then
-    # NetBSD, OSX
+    # NetBSD
     echo 'using forkpty() with util.h and -lutil' 1>&2
     echo '#define HAVE_FORKPTY'		>> $CONFIG_H
     echo '#define HAVE_UTIL_H'		>> $CONFIG_H
