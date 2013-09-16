@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+9/16/2013:
+	config/win32/config.h: add "lib" to default SNOPATH
+	pkg/win32/sdb.bat: add \lib\ to sdb.sno path
+
 9/15/2013:
 	configure: --with-tcl= now requires path to tclConfig.sh
 		fix forkpty check on OSX
