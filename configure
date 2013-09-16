@@ -224,12 +224,16 @@ while [ $# -gt 0 ]; do
     --without-readline)
 	WITHOUT_READLINE=1
 	;;
-    --with-tcl)
-	WITH_TCL=1
-	;;
-    --with-tk)
-	echo "NOTE: --with-tk is obsolete" 1>&2
-	WITH_TK=1
+    --with-tcl=*)
+	TCONF=`echo "$1" | sed 's/--with-tcl=//'`
+	if [ "x$TCONF" = x ]; then
+	    echo " --with-tcl requires path to tclConfig.sh" 1>&2
+	if [ -d "$TCONF" -a -f "$TCONF/tclConfig.sh" ]; then
+	    TCONF="$TCONF/tclConfig.sh"
+	elif [ ! -f "$TCONF" ]; then
+	    echo "$TCONF is not a file or directory" 1>&2
+	    exit 1
+	fi
 	;;
     --without-ndbm)
 	WITHOUT_NDBM=1
@@ -268,7 +272,7 @@ Install location;
 	--snolibdir=PATH	[default: PREFIX/lib/snobol4]
 
 Optional items;
-	--with-tcl		--with-tk (obsolete)
+	--with-tcl=/path/to/tclConfig.sh
 	--without-ndbm		--force-sdbm
 	--without-readline	--without-com
 EOF
@@ -1503,52 +1507,17 @@ if [ "x$DL_EXT" != x ]; then
 fi
 
 # Include STCL (tcl/tk) support, if requested
-if [ "$WITH_TCL" ]; then
-    LIBDIR=/usr/lib
-    # XXX check LP64 / LP64_NATIVE
-    if [ "$MACHINE" = x86_64 -a -d /usr/lib64 ]; then
-	LIBDIR=/usr/lib64
-    fi
-    # lib32 can exist as well, but we don't have a --lp32 option!
-
-    TCL_CONF_DIRS="/usr/local/lib $LIBDIR /usr/share/tcltk /System/Library/Frameworks/Tcl.framework"
-    TCL_MAJOR_VERSION=0
-    TCL_MINOR_VERSION=0
-    TCONF=
-
-    for CONF in `find $TCL_CONF_DIRS -name tclConfig.sh 2>/dev/null`; do
-	MAJ=`. $CONF; echo $TCL_MAJOR_VERSION`
-	MIN=`. $CONF; echo $TCL_MINOR_VERSION`
-	if [ "$MAJ" -gt "$TCL_MAJOR_VERSION" -o \
-	     "$MAJ" -eq "$TCL_MAJOR_VERSION" -a \
-	     "$MIN" -gt "$TCL_MINOR_VERSION" ]; then
-	    TCONF=$CONF
-	    # XXX validate paths in $CONF file?
-	    TCL_MAJOR_VERSION=$MAJ
-	    TCL_MINOR_VERSION=$MIN
-	fi
-    done
-
-    if [ "$TCONF" ]; then
-	echo "using Tcl version $MAJ.$MIN" 1>&2
-	# Tk (loads as package in 8.4+)
-	if [ "$WITH_TK" -a \( $MAJ -lt 8 -o $MAJ -eq 8 -a $MIN -lt 4 \) ]; then
-	    echo 'use Tcl 8.4 or later for Tk' 1>&2
-	    exit 1
-	fi
-
+# Tk (loads as package in 8.4+)
+if [ "$TCONF" ]; then
 	echo '#define PML_STCL'			>> $CONFIG_H
 	(
-	    . $TCONF
+	    . "$TCONF"
+	    echo "Using Tcl version $TCL_VERSION" 1>&2
 	    echo "ADD_LDFLAGS([$TCL_LIB_SPEC])"
 	    echo 'ADD_OBJS([stcl.o])'
 	    echo 'ADD_SRCS([$(STCL_C)])'
 	    echo "ADD_CPPFLAGS([$TCL_INCLUDE_SPEC])"
 	) >> $CONFIG_M4
-    else
-	echo "Tcl not found (may be due to no 'tclX.Y-dev' package)" 1>&2
-	exit 1
-    fi
 fi
 
 if [ ! "$WITHOUT_NDBM" ]; then
@@ -1557,15 +1526,15 @@ if [ ! "$WITHOUT_NDBM" ]; then
 	# bypass checks
 	USE_SDBM=1
     elif config/check ndbm.h "$DBM_FRAG"; then
-	echo "using ndbm.h for DBM support" 2>&1
+	echo "using ndbm.h for DBM support" 1>&2
 	echo '#define HAVE_NDBM_H'		>> $CONFIG_H
     elif config/check ndbm.h "$DBM_FRAG" -ldb; then
-	echo "using ndbm.h for DBM support (with -ldb)" 2>&1
+	echo "using ndbm.h for DBM support (with -ldb)" 1>&2
 	echo '#define HAVE_NDBM_H'		>> $CONFIG_H
 	echo 'ADD_LDFLAGS([-ldb])'		>> $CONFIG_M4
     elif config/check db.h "$DBM_FRAG" '-ldb -DDB_DBM_HSEARCH'; then
 	# works with libdb4.8
-	echo "using db.h for DBM support (with -ldb)" 2>&1
+	echo "using db.h for DBM support (with -ldb)" 1>&2
 	echo '#define DB_DBM_HSEARCH 1'		>> $CONFIG_H
 	echo '#define HAVE_DB_H'		>> $CONFIG_H
 	echo 'ADD_LDFLAGS([-ldb])'		>> $CONFIG_M4
@@ -1575,7 +1544,7 @@ if [ ! "$WITHOUT_NDBM" ]; then
 	    if config/check ndbm.h "$DBM_FRAG" "$LIBS"; then
 		# cygwin
 		USE_GDBM=1
-		echo "using ndbm.h for DBM support (with $LIBS)" 2>&1
+		echo "using ndbm.h for DBM support (with $LIBS)" 1>&2
 		echo '#define HAVE_NDBM_H'	>> $CONFIG_H
 		echo "ADD_LDFLAGS([$LIBS])"	>> $CONFIG_M4
 		break

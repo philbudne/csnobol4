@@ -259,13 +259,9 @@ with "--add-" can appear);
 	--universal
 		Mac OS X: build a universal (Power PC / Intel x86) binary.
 
-	--with-tcl
-		Try to compile in Tcl extension (see snobol4tcl man page)
+	--with-tcl=/path/to/tclConfig.sh
+		Compile in Tcl extension (see snobol4tcl man page)
 		Tk 8.4 or later is necessary to use Tcl/Tk.
-
-	--with-tk
-		Obsolete.  Tk can be dynamicly loaded in Tcl 8.4 using
-		"package require Tk"
 
 	--without-com
 		Do not compile in COM extension on CygWIN.
