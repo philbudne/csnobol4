@@ -329,12 +329,23 @@ SDB.DISPLAY
 *
 * loop reading commands
 SDB.GETCMD
-	SDB.CMD = SDB.READLINE(SDB.VARS['prompt']) :F(SDB.EXIT)
+	&ERRLIMIT = SDB.ERRLIMIT
+	SDB.CMD = SDB.READLINE(SDB.VARS['prompt']) :F(SDB.CMD.ERR)
 	SDB.CMD = IDENT(SDB.CMD) SDB.LAST_CMD
 	SDB.LAST_CMD = SDB.CMD
 	SDB.COMMAND(SDB.CMD)			:F(SDB.GETCMD)
-	TERMINAL = IDENT(SDB.RUNNING) "The program is not being run." :S(SDB.GETCMD)
-
+	TERMINAL = IDENT(SDB.RUNNING) "The program is not being run."
++					:S(SDB.GETCMD)F(SDB.TRAP.RETURN)
+*
+*****
+* here on READLINE failure from command loop
+* ^C at sdb prompt will decrement ERRLIMIT
+SDB.CMD.ERR
+	EQ(SDB.ERRLIMIT,&ERRLIMIT)		:S(SDB.EXIT)
+	EQ(&ERRTYPE,34)				:S(SDB.GETCMD)
+	:(SDB.EXIT)
+*
+*****
 * here to return to user (unless END was reached)
 * make decisions on what tracing enabled
 SDB.TRAP.RETURN
@@ -380,7 +391,7 @@ SDB.TRAP.RETURN2
 +	SDB.DEBUG = '>sdb.trap.return2'
 * Return Quick from SDB.TRAP.*; trap event was inside sdb
 SDB.TRAP.RQ :(RETURN)
-
+*
 ********************
 * SETEXIT handler (branched to, not called!!!)
 SDB.SETEXIT_HANDLER
@@ -638,9 +649,9 @@ SDB.CMD.FINISH
 **** print command
 * save value?
 SDB.CMD.PRINT
-	TERMINAL = SDB.EVAL(SDB.ARGS)		:S(SDB.COMMAND.STAY)
++	TERMINAL = SDB.EVAL(SDB.ARGS)		:S(SDB.COMMAND.STAY)
 	TERMINAL = "Expression eval failed."	:(SDB.COMMAND.STAY)
-
+*
 * quit command
 SDB.CMD.QUIT
 	IDENT(SDB.RUNNING)			:S(SDB.EXIT)
@@ -648,18 +659,18 @@ SDB.CMD.QUIT
 +						:F(SDB.COMMAND.STAY)
 SDB.EXIT
 	SETEXIT()				:(END)
-
+*
 **** single step command
 SDB.CMD.STEP
-	SDB.PROCEED_COUNT = SDB.ARG.COUNT(SDB.ARGS)  :F(SDB.COMMAND.STAY)
++	SDB.PROCEED_COUNT = SDB.ARG.COUNT(SDB.ARGS)  :F(SDB.COMMAND.STAY)
 	EQ(SDB.PROCEED_COUNT,0)			:S(SDB.COMMAND.STAY)
 	:(SDB.COMMAND.GO.NL)
-
+*
 **** watchpoint command
 SDB.CMD.WATCH
-	TERMINAL = IDENT(SDB.ARGS) '"watch" requires variable name' :S(SDB.COMMAND.STAY)
++	TERMINAL = IDENT(SDB.ARGS) '"watch" requires variable name' :S(SDB.COMMAND.STAY)
 	SDB.T3 = SDB.EVAL("." SDB.ARGS)		:F(SDB.CMD.WATCH.ERR)
-* XXX display watchpoint number!
+* XXX display watchpoint number?
 	TERMINAL = DIFFER(SDB.WATCH_BY_NAME[SDB.T3])
 +				SDB.ARGS " already being watched" :S(SDB.COMMAND.STAY)
 	SDB.T2 = SDB.NEXT_BREAK
@@ -674,7 +685,7 @@ SDB.CMD.WATCH
 	:(SDB.COMMAND.STAY)
 SDB.CMD.WATCH.ERR
 	TERMINAL = "Error watching " SDB.ARGS	:(SDB.COMMAND.STAY)
-
+*
 **** what command
 SDB.CMD.WHAT
 	TERMINAL = IDENT(SDB.ARGS) '"what" requires expression' :S(SDB.COMMAND.STAY)
@@ -685,9 +696,9 @@ SDB.CMD.WHAT
 	TERMINAL = "value = " SDB.T1		:(SDB.COMMAND.STAY)
 SDB.CMD.WHAT.ERR
 	TERMINAL = "error in expression"	:(SDB.COMMAND.STAY)
-
+* end of SDB.COMMAND function
 SDB.COMMAND.END
-
+*
 ****************
 * helper functions for SDB.COMMAND:
 
@@ -824,7 +835,7 @@ SDB.EVAL
 	EQ(&ERRLIMIT,SDB.ERRLIMIT)		:S(RETURN)
 * here on trapped error:
 	TERMINAL = &ERRTEXT ": " SDB.EXPR
-	&ERRLIMIT = SDB.TEMP			:(FRETURN)
+	&ERRLIMIT = SDB.ERRLIMIT		:(FRETURN)
 SDB.EVAL.END
 
 ****************

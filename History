@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+9/17/2013:
+	lib/init.c: Set UINTCL on SIGINT except if in compiler
+	snolib/sdb.sno: detect and ignore ^C in readline()
+
 9/16/2013:
 	config/win32/config.h: add "lib" to default SNOPATH
 	pkg/win32/sdb.bat: add \lib\ to sdb.sno path

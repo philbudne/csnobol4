@@ -1,11 +1,19 @@
 $Id$
 
-Document ||ptycommand
-	show example (& for pipe?)
+Update snobol4 man page:
+	Document ||ptycommand
+		show example (& for pipe?)
+       Add ENVIRONMENT section:
+	SNOPATH
+	SNOBOL_PRELOAD_PATH
+	(SNOLIB)
+	NOTE that PATHS can make code less portable, unsafe!!!
+
+	"User Interrupt"
 
 sdb man page:
 	document SDB() function
-	sdb can't catch ^C!!
+	sdb can't catch ^C!! --- FIX by always 
 
 Update CHANGES file!
 
@@ -15,14 +23,13 @@ cygwin script to create windows .zip file???
 
 ================
 
-SNOBOL4B (BLOCKS)
+TAINT flag??? reuse FROZEN???
+	any input string
+	all string values from external functions?
+	any concatenation with a tainted value
+	checked by: system (HOST), io_fopen (pipe & pty)
 
-Update snobol4 man page:
-       Add ENVIRONMENT section:
-	SNOPATH
-	SNOBOL_PRELOAD_PATH
-	(SNOLIB)
-	NOTE that PATHS can make code less portable, unsafe!!!
+SNOBOL4B (BLOCKS)
 
 Document BREAKPOINT()????
 

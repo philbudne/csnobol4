@@ -518,20 +518,19 @@ err_catch(sig)
     SYSCUT(NORET);
 }
 
-/* handle non-fatal errors here */
+/* handle ^C (SIGINT) here */
 static SIGFUNC_T
 sig_catch(sig)
     int sig;
 {
-    if (!D_A(XITPTR))			/* SETEXIT handler? */
-	err_catch(sig);			/* no-- do it the normal way */
+    if (D_A(COMPCL))			/* in compiler */
+	err_catch(sig);			/* treat as before */
 
-    io_flushall(0);
-
-    /* INIT will see non-zero UINTCL and raise error 36 */
+    /*
+     * top of INIT checks UINTCL and causes "User Interrupt" error
+     * which can be caught with SETEXIT() and continued with :(SCONTINUE)
+     */
     D_A(UINTCL) = 1;
-    /* NOTE!! multiple signals during one statement will be lost!! */
-    D_A(SIGNCL) = sig;			/* save signal number */
 }
 
 #ifdef SIGTSTP
