@@ -5,6 +5,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 9/17/2013:
 	lib/init.c: Set UINTCL on SIGINT except if in compiler
 	snolib/sdb.sno: detect and ignore ^C in readline()
+	Makefile: bsdtsort requires config.h to build/run correctly on 64bits
+	bsdsort.c: need config.h to get include file ifdefs
 
 9/16/2013:
 	config/win32/config.h: add "lib" to default SNOPATH
