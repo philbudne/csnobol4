@@ -149,6 +149,8 @@ usage( jname, justversion )
     fprintf(stderr, "\n");
     fprintf(stderr, "For memory region sizes a suffix of 'k' (1024) and 'm' (1024*1024)\n");
     fprintf(stderr, "can be used. A descriptor takes up %d bytes.\n", (int)DESCR );
+    fprintf(stderr, "\n");
+    fprintf(stderr, "Default SNOPATH: %s\n", DEF_SNOPATH);
     exit(1);
 }
 

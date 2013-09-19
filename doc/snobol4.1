@@ -10,7 +10,7 @@
 .       ds lq ``
 .	ds pi \[*p]
 .\}
-.TH SNOBOL4 1 "Aug 2013" "SNOBOL"
+.TH SNOBOL4 1 "19 Sep 2013" "SNOBOL"
 .SH NAME
 snobol4 \- SNOBOL4 interpreter
 .SH SYNOPSIS
@@ -542,7 +542,15 @@ can be supplied to the
 .B INPUT()
 and
 .B OUTPUT()
-functions via an optional fourth argument.  If the filename begins
+functions via an optional fourth argument.
+.IP
+The filename - (hyphen) is interpreted as stdin on
+.B INPUT()
+and stdout
+on
+.BR OUTPUT() .
+.IP
+If the filename begins
 with a vertical bar (|), the remainder is used as a shell command
 whose stdin (in the case of
 .BR OUTPUT() )
@@ -561,12 +569,6 @@ C library contains the
 routine.  Use of ptys are necessary when the program to be invoked
 cannot be run without a "terminal" for I/O.
 See below on how to properly associate the I/O variable.
-.IP
-The filename - (hyphen) is interpreted as stdin on
-.B INPUT()
-and stdout
-on
-.BR OUTPUT() .
 .IP
 The magic filenames
 .BR /dev/stdin ,
@@ -923,6 +925,23 @@ The variable
 is associated with the standard error file descriptor for both input
 and output.
 .TP
+.BR TRACE() " function type argument"
+The second argument of the
+.B TRACE()
+function can be abbreviated to a single letter:
+.B C
+(CALL),
+.B F
+(FUNCTION),
+.B K
+(KEYWORD),
+.B L
+(LABEL),
+.B R
+(RETURN), or
+.B V
+(VALUE) as in Macro SPITBOL.
+.TP
 Trig functions
 .br
 .BR ATAN() ,
@@ -1039,8 +1058,8 @@ Here is how to associate a variable for I/O in both directions:
 \~\~\~\~\~\~\~\~INPUT(.name, unit, 'U', 'filepath')
 .br
 \~\~\~\~\~\~\~\~OUTPUT(.name, unit)
-.IP
 .ft
+.IP
 Useful situations for this when filepath is
 .BI /dev/fd/ n
 where
@@ -1049,6 +1068,13 @@ is a file descriptor number returned by
 .BR SERV_LISTEN,
 filepath specifies a pipe (|command) 
 or pseudo-terminal (||command) paths.
+The above sequence is also useful with when combined with fixed record length,
+binary mode and the
+.B SET()
+function for I/O to preexisting files.  Performing
+.B OUTPUT()
+first will create a regular file if it does not exist,
+but will also truncate a preexisting file!
 .TP
 .B W
 Unbuffered writes.  Each output variable assignment causes
@@ -1104,8 +1130,7 @@ extensions).  By default programs with compilation errors will not be
 run.
 .TP
 .BI "-l " LISTINGFILE
-Enable listing output to
-Default listing side is
+Enable listing output to the named file. The default listing side is
 .BR LEFT .
 .TP
 .B -n
@@ -1152,6 +1177,9 @@ environment variables).
 .TP
 .BI -L " file"
 Load source file before others on command line.  May be used multiple times.
+Used to preload the
+.BR sdb (1)
+source code debugger.
 .TP
 .B -M
 Specifies that all items left on the command line after option
@@ -1208,15 +1236,46 @@ option displays the default interpreter stack size.
 .TP
 .B SNOPATH
 .br
-blah blah blah.
+Is a list of directories delimited by colons (semi-colons on VMS and
+Windows) appended to the library directory search list used to search
+for files in
+.B \-INCLUDE
+and
+.B LOAD()
+requests.  The default value of SNOPATH is displayed by the
+.B -h
+command line option.  Including files via
+.B SNOPATH
+may make your programs harder to share, since the dependancies are
+less visible.  Writable directories in any directory component in
+any member of
+.B SNOPATH
+or writable files are a security risk, since they introduce the
+possibility that a mal-doer could modify files.
 .TP
 .B SNOBOL_PRELOAD_PATH
 .br
-blah blah blah.
+Is a list of source files delimited by colons
+(semi-colons on VMS and Windows) that will be read before the program source.
+Like
+.BR SNOPATH ,
+.B SNOBOL_PRELOAD_PATH
+introduces security and portability issues.
 .TP
 .B SNOLIB
 .br
-blah blah blah.
+is the predecessor of
+.BR SNOPATH .
+If set,
+.B SNOPATH
+is appended to the
+library directory path list after any directories from
+.B -I
+command line options, and before any from
+.BR SNOPATH .
+Use of
+.B SNOLIB
+should be avoided, as it mat be removed in a future release.
 
 .SH SEE ALSO
 .BR sdb (1), snobol4dbm (3), snobol4tcl (3), snobol4time (3), snolib (3).
