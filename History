@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+9/18/2013:
+	Makefile: use HAVE_CONFIG_H w/ tsort
+		recurse to make tsort, so isnobol4.c doesn't depend on tsort or config.h!!
+	bsdsort.c: use HAVE_CONFIG_H
+
 9/17/2013:
 	lib/init.c: Set UINTCL on SIGINT except if in compiler
 	snolib/sdb.sno: detect and ignore ^C in readline()
