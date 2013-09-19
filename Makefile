@@ -94,14 +94,11 @@ snobol4.c proc.h2 static.h2: procs genc.sno globals $(SIL)
 
 # isnobol4.c can't depend on bsdtsort (which depends on config.h),
 # since that would force isnobol4.c to be rebuilt (which requires a
-# snobol4 binary) when starting with a distribution kit.  Using a
-# SNOBOL4 tsort.sno program would solve the problem, but I've yet to
-# find/write one that works as well as the C version.
+# snobol4 binary) when starting with a distribution kit.
 
 isnobol4.c: procs genc.sno globals $(SIL)
 	rm -rf isnobol4.c2 proc.h2 static.h2 prolog subr
-	test -f bsdtsort || (test -f config.h || ./configure) && \
-		$(CC) -o bsdtsort bsdtsort.c
+	$(MAKE) bsdtsort
 	mkdir subr
 	$(SNO) -- genc.sno --inline $(SIL) > prolog
 	cd subr && ../bsdtsort < ../callgraph > order && \
@@ -114,6 +111,9 @@ proc.h:	proc.h2
 
 static.h: static.h2
 	@cmp static.h static.h2 || cp static.h2 static.h
+
+bsdtsort: bsdtsort.c config.h
+	$(CC) -o bsdtsort -DHAVE_CONFIG_H bsdtsort.c
 
 ################
 # syntax tables
