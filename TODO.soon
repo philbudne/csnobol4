@@ -1,6 +1,10 @@
 $Id$
 
+Update all man page dates??
+	snobol4tcl!!
+
 Update snobol4 man page:
+       Single letter trace types (ala SPITBOL).
        Fill in ENVIRONMENT section.
 	NOTE that PATHS can make code less portable, unsafe!!!
 
@@ -11,7 +15,7 @@ cygwin script to create windows .zip file???
 		Ask for timing reports!!!
 	Install in base, and use as archive comment:
 	cd /cygdrive/c
-	zip -r -z ~/snobol4-VERS.zip snobol4/VERS < snobol4/VERS/README.win32
+	zip -r -z ~/snobol4-VERS.zip snobol4 < snobol4/VERS/README.win32
 
 ================
 

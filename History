@@ -12,6 +12,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	doc/snobol4.1: update
 	lib/init.c: don't raise "User Interrupt" if &ERRLIMIT is zero.
 	snolib/sdb.sno: comment
+	configure: remove old comments
 
 9/17/2013:
 	lib/init.c: Set UINTCL on SIGINT except if in compiler
