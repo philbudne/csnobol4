@@ -4,8 +4,14 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/18/2013:
 	Makefile: use HAVE_CONFIG_H w/ tsort
-		recurse to make tsort, so isnobol4.c doesn't depend on tsort or config.h!!
+		recurse to make tsort, so isnobol4.c doesn't
+		depend on tsort or config.h!!
 	bsdsort.c: use HAVE_CONFIG_H
+	INSTALL: update
+	doc/sdb.1: update
+	doc/snobol4.1: update
+	lib/init.c: don't raise "User Interrupt" if &ERRLIMIT is zero.
+	snolib/sdb.sno: comment
 
 9/17/2013:
 	lib/init.c: Set UINTCL on SIGINT except if in compiler

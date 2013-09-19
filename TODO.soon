@@ -1,23 +1,17 @@
 $Id$
 
 Update snobol4 man page:
-	Document ||ptycommand
-		show example (& for pipe?)
-       Add ENVIRONMENT section:
-	SNOPATH
-	SNOBOL_PRELOAD_PATH
-	(SNOLIB)
+       Fill in ENVIRONMENT section.
 	NOTE that PATHS can make code less portable, unsafe!!!
-
-sdb man page:
-	document SDB() function
-	sdb can't catch ^C!! --- FIX by always 
 
 Update CHANGES file!
 
 cygwin script to create windows .zip file???
-	add archive comment asking for timing.out files?
-		zip -z foo < foowhat
+	README.win32 file
+		Ask for timing reports!!!
+	Install in base, and use as archive comment:
+	cd /cygdrive/c
+	zip -r -z ~/snobol4-VERS.zip snobol4/VERS < snobol4/VERS/README.win32
 
 ================
 

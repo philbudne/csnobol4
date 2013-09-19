@@ -3,8 +3,8 @@ $Id$
        ``The Macro Implementation of SNOBOL4 in C'' (CSNOBOL4)
 		      Installation instructions
 
-Un*x systems
-============
+Un*x/POSIX/Linux systems (including Cygwin)
+===========================================
 
 Compilation
 -----------
@@ -87,17 +87,21 @@ with "--add-" can appear);
 		Try using --longlong instead!
 
 	--fast
+		This option should be considered experimental, and
+		unlikely to give useful results!!
+
 		Enable use of vendor C compiler options which may make
 		snobol4 run faster, but may make the executable less
 		portable (e.g. by using instructions not available on
-		all systems).  This option should be considered
-		experimental.  If the build fails, try not using it!!
+		all systems).
+
+		If the build fails, try not using it!!
 
 		There is a Perl CPUFlags script:
 
 			http://www.hlnum.org/english/projects/tools/cpuflags/
 
-		that may suggest other/better choices for optimization flags
+		that might suggest better choices for optimization flags
 		to use with --add-opt than --fast does.
 
 	--force-gcc
@@ -285,10 +289,10 @@ If you need assistance please contact me (phil@ultimate.com).
 
 I've spent many hours working on this release (time, which if I had
 billed a client would have been in the tens of thousands of dollars),
-if you find it useful, please consider a donation.
+if you find it useful, please consider a gift.
 
-This release was supported on by a small donation (a user who gives each
-year when he renews his Public Broadcasting membership).
+This release was encouraged on by a gift from a long time user
+who has used CSNOBOL4 in their work.
 
 I'm also available for contract development.
 
@@ -390,26 +394,23 @@ Non-unix systems;
 
 The non-unix ports are less well tested.
 
-Win32 using CygWin
-------------------
-
-Cygwin (http://cygwin.com), is a free Unix emulation environment for
-Windows.  Normal distributions build and run correctly, with the full
-Unix feature set including TCP client and server functionality;
-just type "make"!
-
 Win32
 -----
 
-The Win32 port has been tested with Visual Studio 10 and MinGW.
+The Win32 port has been tested with Visual Studio 10.
 
 *	LOAD() of external functions from DLL's implemented, but not tested
 
-To compile using MINGW (http://www.mingw.org):
-	make -f config/win32/mingw.mak
-
 To compile using Microsoft Visual Studio:
 	nmake -f config\win32\ntmsvc.mak
+
+To install:
+	pkg\win32\install.bat
+
+NOT TESTED:
+
+To compile using MINGW (http://www.mingw.org):
+	make -f config/win32/mingw.mak
 
 To compile using Borland C (not tested recently);
 	nmake -f config\win32\borland.mak
@@ -458,7 +459,7 @@ Let me know!
 Please let me know of your success and failures to bring up CSNOBOL4!
 
 Please mail timing.out files to timing@snobol4.org
-Anonymized results are published at http://www.snobol4.org
+Anonymized results are published at http://www.snobol4.org/csnobol4/
 And you will be notified when test versions are available.
 
 Announcements of new releases are made on the SNOBOL4 mailing list.
