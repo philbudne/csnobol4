@@ -523,7 +523,7 @@ static SIGFUNC_T
 sig_catch(sig)
     int sig;
 {
-    if (D_A(COMPCL))			/* in compiler */
+    if (D_A(COMPCL) || D_A(ERRLCL) == 0) /* in compiler or &ERRLIMIT == 0*/
 	err_catch(sig);			/* treat as before */
 
     /*
