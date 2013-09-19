@@ -7,6 +7,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	lib/init.c: usage() displays built-in SNOPATH setting
 	doc/snobol4.1: update
 	doc/snobol4tcl.3: update date
+	lib/io.c: moved "mode" string creation to of io_fopen2()
 
 9/18/2013:
 	Makefile: use HAVE_CONFIG_H w/ tsort

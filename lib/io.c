@@ -474,12 +474,12 @@ io_closeall(unit)			/* internal (zero-based unit) */
 }
 
 static void
-io_fopen2( fp, mode )
+io_fopen2( fp, base )
     struct file *fp;
-    char *mode;
+    char *base;
 {
     char *mp;
-    char buf[4];			/* x+b<NUL> */
+    char mode[4];			/* x+b<NUL> */
 
     fp->f = NULL;
 
@@ -490,6 +490,20 @@ io_fopen2( fp, mode )
 	return;
     }
 #endif
+
+    /* create full mode string for fopen() */
+    mp = mode;
+    if (base[0] == 'w' && (fp->flags & FL_APPEND))
+	*mp++ = 'a';
+    else
+	*mp++ = base[0];		/* XXX append whole string? */
+    if (fp->flags & FL_UPDATE)
+	*mp++ = '+';
+#ifndef NO_FOPEN_B
+    if (fp->flags & FL_BINARY)
+	*mp++ = 'b';
+#endif /* NO_FOPEN_B not defined */
+    *mp++ = '\0';
 
     /* handle magic filenames (have a table (prefix or full str)??) */
 
@@ -611,26 +625,7 @@ io_fopen2( fp, mode )
 
     /* **** add new special filename hacks here *** */
 
-    /* create full mode string for fopen() */
-    mp = buf;
-    if (mode[0] == 'w' && (fp->flags & FL_APPEND))
-	*mp++ = 'a';
-    else
-	*mp++ = mode[0];		/* XXX append whole string? */
-    if (fp->flags & FL_UPDATE)
-	*mp++ = '+';
-#ifndef NO_FOPEN_B
-    if (fp->flags & FL_BINARY)
-	*mp++ = 'b';
-#endif /* NO_FOPEN_B not defined */
-    *mp++ = '\0';
-
-    /*
-     * moved from top of function to here, to take advantage
-     * of 44BSD popen() which allows bi-directional I/O with "r+"
-     */
-    if (fp->fname[0] == '|') {
-	/* filename with leading '|' opens a pipe! */
+    if (fp->fname[0] == '|') { /* filename with leading '|' opens a pipe! */
 	if (fp->fname[1] == '|') {	/* || opens a pty!! */
 #ifdef HAVE_FORKPTY
 	    int master;
@@ -643,7 +638,7 @@ io_fopen2( fp, mode )
 		_exit(1);
 	    }
 	    else if (pid > 0) {
-		fp->f = fdopen(master, buf);
+		fp->f = fdopen(master, mode);
 		fp->type = TYPE_PTY;
 		fp->u.pty.pid = pid;
 	    }
@@ -653,11 +648,11 @@ io_fopen2( fp, mode )
 
 	/* SPITBOL: leading '!' means pipe, (with escaping?) */
 	fp->type = TYPE_PIPE;
-	fp->f = popen(fp->fname+1, buf);
+	fp->f = popen(fp->fname+1, mode);
 	return;
     }
 
-    fp->f = fopen(fp->fname, buf);
+    fp->f = fopen(fp->fname, mode);
 } /* io_fopen2 */
 
 static FILE *
