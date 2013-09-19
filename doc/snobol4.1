@@ -278,11 +278,15 @@ this can be restored using
 .TP
 .B &ERRTEXT
 .br
-After an otherwise fatal error is curtailed due to a non-zero value in
+After a statement with an error has been handled due to a non-zero
+value in
 .BR &ERRLIMIT ,
 the protected keyword
 .B &ERRTEXT
 will contain the error message.
+See the
+.B DIAGNOSTICS
+section below for explanations of errors, and whether they are fatal or not.
 .TP
 .B \-EXECUTE/\-NOEXECUTE
 .br
@@ -348,6 +352,14 @@ of the current statement, how long the GC took, and how many units
 of storage are now free. If positive, the value of
 .B &GTRACE
 will be decremented after it is tested.
+.TP
+.B "-HIDE"
+The
+.B "-HIDE"
+directive stops listing, and assignment of new statement numbers.
+It is used to hide the sourcecode for the
+.BR sdb (1)
+sourcecode debugger.
 .TP
 .B HOST()
 .br
@@ -456,7 +468,12 @@ predicate evaluates its argument as a string (with case folding), and
 returns the null string if a label with that name has been defined,
 and fails if it does not.  The
 .B LABEL()
-predicate was copied from SITBOL and Steve Duff's version of Macro SPITBOL.
+predicate was copied from Steve Duff's version of Macro SPITBOL.
+SITBOL has a
+.B LABEL function that takes an optional line offset
+from the label and returns a
+.B CODE
+pointer.
 .TP
 .B &LINE/&FILE/&LASTLINE/&LASTFILE
 .br
@@ -470,7 +487,11 @@ associated with the current statement.  The
 and
 .B &LASTFILE
 return the source file and file line
-associated with the previous statement.
+associated with the previous statement (and are useful in
+.B TRACE
+and
+.B SETEXIT
+handlers.
 .TP
 .B \-LINE
 .br
@@ -530,11 +551,23 @@ or stdout (in the case of
 will be connected to the file variable via a pipe.  If a pipe is
 opened by INPUT() input in \*(lqupdate\*(rq mode, the connection will be
 bi-directional (on systems with socketpair and Unix-domain sockets).
+See below for how to associate a variable for I/O in both directions.
+.IP
+If the filename begins with two vertical bars (||) the remainder
+is used as a shell command executed with stdin, stdout and stderr
+attached to the slave side of a pseudo-terminal (pty), if the system
+C library contains the
+.BR forkpty (3)
+routine.  Use of ptys are necessary when the program to be invoked
+cannot be run without a "terminal" for I/O.
+See below on how to properly associate the I/O variable.
+.IP
 The filename - (hyphen) is interpreted as stdin on
 .B INPUT()
 and stdout
 on
 .BR OUTPUT() .
+.IP
 The magic filenames
 .BR /dev/stdin ,
 .BR /dev/stdout ,
@@ -542,10 +575,13 @@ and
 .B /dev/stderr
 refer to the current process standard input, standard output and
 standard error I/O streams respectively regardless of whether those special
-filenames exist on your system.  The magic pathname
+filenames exist on your system.
+.IP
+The magic pathname
 .BI /dev/fd/ n,
 opens a new I/O stream associated with file descriptor number
 .IR n .
+.IP
 The magic pathname
 \fB/tcp/\fIhostname\fB/\fIservice\fR can be used to open connection
 to a TCP server. If the path ends in the optional suffix
@@ -553,12 +589,17 @@ to a TCP server. If the path ends in the optional suffix
 the local address will be bound to a port number below 1024,
 if process privileges allow.
 \fB/udp/\fIhostname\fB/\fIservice\fR behaves similarly for UDP.
+.IP
 The magic pathname
 .B /dev/tmpfile
 opens an anonymous temporary file for reading and writing, see
 .BR tmpfile (3).
-On VMS, Win32, and MS-DOS (when compiled with DJGPP), the pathnames
-/dev/null and /dev/tty are magical, and refer to the null device,
+.IP
+On VMS, Win32, and MS-DOS the pathnames
+.B /dev/null
+and
+.B /dev/tty
+are magical, and refer to the null device,
 and the user's terminal/console, respectively.
 .TP
 .B ORD()
@@ -990,6 +1031,24 @@ from this unit.
 .TP
 .B U
 Update mode.  The unit is opened for both input and output.
+Here is how to associate a variable for I/O in both directions:
+.IP
+.ft TR
+\~\~\~\~\~\~\~\~unit = IO_FINDUNIT()
+.br
+\~\~\~\~\~\~\~\~INPUT(.name, unit, 'U', 'filepath')
+.br
+\~\~\~\~\~\~\~\~OUTPUT(.name, unit)
+.IP
+.ft
+Useful situations for this when filepath is
+.BI /dev/fd/ n
+where
+.I n
+is a file descriptor number returned by
+.BR SERV_LISTEN,
+filepath specifies a pipe (|command) 
+or pseudo-terminal (||command) paths.
 .TP
 .B W
 Unbuffered writes.  Each output variable assignment causes
@@ -1144,6 +1203,20 @@ needing additional stack space is for tracing deeply nested DATA()
 structures during garbage collection.  The
 .B -h
 option displays the default interpreter stack size.
+
+.SH ENVIRONMENT
+.TP
+.B SNOPATH
+.br
+blah blah blah.
+.TP
+.B SNOBOL_PRELOAD_PATH
+.br
+blah blah blah.
+.TP
+.B SNOLIB
+.br
+blah blah blah.
 
 .SH SEE ALSO
 .BR sdb (1), snobol4dbm (3), snobol4tcl (3), snobol4time (3), snolib (3).
@@ -1334,3 +1407,11 @@ I/O is still tied to unit numbers.
 Integer math can never \*(lqfail\*(rq, even on overflow.
 .PP
 Oversize integer constants may not be detected.
+.PP
+This manual page is too long, and should be split up!
+.PP
+There should be a
+.BR snobol4func (1)
+man page which describes all intrinsic functions
+(this page only includes extensions).
+

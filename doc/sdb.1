@@ -8,29 +8,33 @@
 .       ds rq ''
 .       ds lq ``
 .\}
-.TH SDB 1 "Aug 2013" "SNOBOL"
+.TH SDB 1 "Sep 2013" "SNOBOL"
 .SH NAME
 sdb \- SNOBOL4 debugger
 .SH SYNOPSIS
 .B sdb
+[
+.I options
+\&.\|.\|.
+]
 .I program.sno
 .SH DESCRIPTION
 .PP
 .B sdb
 is a debugger for
 .BR snobol4 (1)
-programs, in the mold (fawning clone) of
+programs, in the mold (clawning fone) of
 .BR gdb (1),
 The GNU debugger.
-.B sdb
+.BR sdb (1)
 uses
 .BR readline (3)
 for command line editing/history when available.
-.PP
+.SS
 Commands:
 .TP 2
 .BI break " LABEL_OR_STATEMENT_NUMBER"
-Set a breakpoint
+Set a breakpoint.
 .TP
 .B bt
 Display call stack backtrace.
@@ -58,6 +62,7 @@ Reenable a breakpoint, or all breakpoints.
 .TP
 .B finish
 Resume debugging after current function returns.
+Will display function return type and value, if any.
 .TP
 .B help
 Display help.
@@ -102,21 +107,66 @@ The GNU Readline library (when available) will be used for sdb
 input for command editing and history.
 .PP
 The keyboard interrupt character (eg; Control C) will stop a running
-program and return control to
-.BR sdb .
-
+program and return control to the
+.BR sdb (1)
+command prompt.
+.PP
+If your program calls the
+.B SDB()
+function, it will act as a breakpoint.
+You can check whether
+.BR sdb (1)
+is loaded with the
+.B FUNCTION
+predicate, ie;
+.IP
+.ft TR
+\~\~\~\~\~\~\~\~FUNCTION('SDB') SDB()
+.ft
 .SH SEE ALSO
 .BR snobol4 "(1), " gdb "(1), " readline "(3), " snobol4readline (3)
 
 .SH AUTHOR
 Philip L. Budne
 .PP
-Inspired by Fred Weigel's DDT.SNO
+Inspired by Fred Weigel's DDT.SNO and
+.BR SITBOL 's
+SNODDT.
 
+.SH "NOTA BENE"
+.PP
+.BR sdb (1)
+uses a wide variety of system facilities and will interact poorly with
+any programs that use any number of features, including:
+.IP \(bu
+Altering listing settings with directive/control lines.
+.IP \(bu
+Altering
+.BR &STLIMIT ,
+.BR &ERRLIMIT ,
+or
+.BR &TRACE .
+.IP \(bu
+Calling
+.B SETEXIT()
 .SH BUGS
 .PP
-Cannot put a breakpoint on END label
-(however control always returns to sdb when the END label is reached).
+If you try to put a breakpoint on a label or line with no code or goto fields,
+the breakpoint will never be triggered.
 .PP
-Currently all execution is single-stepped, with commensurate impact
-on performance.
+You cannot put a breakpoint on the
+.B END
+label (however control always returns to sdb when the
+.B END
+label is reached).
+.PP
+There is no "run" command; you cannot restart the program without quitting and losing breakpoint settings.
+.PP
+Interrupt character trapping is in it's infancy, and only occurs at
+the start of a each statement executed.
+.PP
+The interrupt character is silently ignored when at the
+.B sdb
+command prompt.
+.PP
+.B sdb does not read an init file (ie; .sdbinit).
