@@ -889,30 +889,10 @@ if config/check unistd.h; then
     HAVE_UNISTD_H=1
 fi
 
-# Berkeley rusage() preferable, since it returns a timeval,
-# which gives both a large range of return times, and possible
-# resolution down to microseconds.
-
-# grep needed for Solaris 2.4 which has resource.h but not defines
-# (it's in /usr/ucbinclude/rusage.h!), but it's just simulated via times()
-# anyhow).  Later versions of Solaris (8 and up) implement getrusage by
-# opening /proc/pid/usage, which contains a timestruc_t, with possible
-# nanosecond resolution.
-
-# Linux has getrusage() system call, "getrusage()" in resource.h.
-# struct "rusage" is in a "bits" include file.  Most implementations
-# keep runtimes in HZ ticks, and default HZ value is 100, so times()
-# is just as good.
-
-# SunOS4 resource.h has "struct rusage", but no prototype,
-# so we grep for just "rusage", which catches either struct
-# or "getrusage()" prototype
-
-# Cygwin has getrusage(), but it only works under NT, so use the
-# Win32 native mstime.c, which will fall back to Win9x compatibility.
-
 GETTIME="struct timespec ts; int i; clockid_t c; clock_getcpuclockid(0, &c); for (i=0;i<1000000;i++) if (clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &ts)<0) return 1; else if (ts.tv_nsec) return 0; return 1;"
 if [ "$CYGWIN" ]; then
+    # Cygwin has getrusage(), but it only works under NT, so use the
+    # Win32 native mstime.c, which will fall back to Win9x compatibility.
     echo 'using Win32 native calls for runtimes' 1>&2
     echo 'MSTIME_C=$(SRCDIR)lib/win32/mstime.c'	>> $CONFIG_M4
 elif config/check -r "time.h" "$GETTIME"; then
