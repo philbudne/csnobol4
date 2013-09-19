@@ -4,34 +4,41 @@ For detailed revision history see History file
 
 Changes since 1.4.1 release;
 ===========================
-	Larger default stack and dynamic regions
 	Debugger (sdb) improvements:
+	    At least 10 times faster!! no longer single steps all execution.
 	    ^C, fatal errors and END statement return user to (sdb) prompt
 	    sdb source lines no longer visible in debugger
 	    "what" command
-	Trap ^C (SIGINT) catchable w/ SETEXIT() as "User Interrupt"
-	Add include/library path:
-	    SNOPATH environment variable
-	    -I DIR command line option
-	Add "preloading"
-	    SNOBOL4_PRELOAD_PATH environment variable
-	    -L FILE command line option
-	Document default INPUT record length
+	    fixed "silent" commands
+	Larger default stack and dynamic regions
 	Extensions:
 	    protected keywords: &DIGITS &PI &STEXEC &GCTIME &MAXINT
 	    functions: FILE_ISDIR() FILE_ABSPATH()
+	    single letters accepted for TRACE types. 
+	    I/O w/ programs running under a pseudo-terminal (pty)
+	    ^C (SIGINT) catchable w/ &ERRLIMIT/SETEXIT() as "User Interrupt"
+	    Add include/library path:
+		SNOPATH environment variable
+		-I DIR command line option
+	    Add "preloading"
+		SNOBOL4_PRELOAD_PATH environment variable
+		-L FILE command line option
+	Document default INPUT record length
+	manual page now includes all &ERRTYPE/&ERRTEXT values
 	Fixes:
 	    Display more digits for 64-bit REALs
 	    READLINE() fixes on OS X / NetBSD
 	    Fix compilation with Tcl 8.6
 	    Allow new SETEXIT() trap w/o [S]CONTINUE
 	    Allow command line -l - to mean list to stdout
+	    Keyword TRACE output
 	Portability:
 	    Get more precise CPU times on Linux
 	    Fix compilation on OpenBSD/MIPS
 	    Display Window Server 2012
 	    timing.bat sdb.bat files for Windows
 	    Fixes for Beaglebone "Angstrom" Linux distribution
+	    Allow full/development build on 64-bit platforms
 	Timing changes:
 	    Stats/timings show K (1000) lines per sec
 	    Stats/timings show nanoseconds (ns) per statement
