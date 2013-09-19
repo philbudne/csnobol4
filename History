@@ -2,7 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+*** 1.5-rc3 (tag REL_1_5_RC3)
+
 9/19/2013:
+	configure: update to 1.5-rc3
 	CHANGES: update
 	lib/init.c: usage() displays built-in SNOPATH setting
 	doc/snobol4.1: update
