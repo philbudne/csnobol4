@@ -52,10 +52,12 @@ static char copyright[] =
 static char sccsid[] = "@(#)tsort.c	8.3 (Berkeley) 5/4/95";
 #endif /* not lint */
 
-#include "config.h"
-
 #include <ctype.h>
 #include <stdio.h>
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
