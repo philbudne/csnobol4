@@ -342,8 +342,10 @@ SDB.GETCMD
 * ^C at sdb prompt will decrement ERRLIMIT
 SDB.CMD.ERR
 	EQ(SDB.ERRLIMIT,&ERRLIMIT)		:S(SDB.EXIT)
-	EQ(&ERRTYPE,34)				:S(SDB.GETCMD)
-	:(SDB.EXIT)
+	NE(&ERRTYPE,34)				:S(SDB.EXIT)
+* gdb outputs "Quit", but sdb doesn't see the event until after
+* the user has hit the RETURN key...
+	:(SDB.GETCMD)
 *
 *****
 * here to return to user (unless END was reached)
