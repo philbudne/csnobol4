@@ -533,6 +533,7 @@ sig_catch(sig)
      * which can be caught with SETEXIT() and continued with :(SCONTINUE)
      */
     D_A(UINTCL) = 1;
+    signal( SIGINT, sig_catch );	/* re-arm for Win32/VC10 */
 }
 
 #ifdef SIGTSTP

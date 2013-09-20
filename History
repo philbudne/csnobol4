@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+9/19/2013:
+	lib/init.c: re-arm SIGINT handler for Win32/VC10
+
 *** 1.5-rc3 (tag REL_1_5_RC3)
 
 9/19/2013:
