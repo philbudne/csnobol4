@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+9/20/2013:
+	lib/io.c: try to clear EOF condition from ^C in VC10
+
 9/19/2013:
 	lib/init.c: re-arm SIGINT handler for Win32/VC10
 

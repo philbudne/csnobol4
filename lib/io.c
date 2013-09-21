@@ -1435,6 +1435,14 @@ io_read( dp, sp )			/* STREAD */
 
 	/* here when read failed */
 	if (!ISAFILE(fp) || feof(f)) {
+#ifdef _MSC_VER
+	    /* Control C causes EOF to be set in VS10 */
+	    if (D_A(UINTCL)) {
+		if (ISAFILE(fp))
+		    clearerr(f);
+		continue;
+	    }
+#endif
 	    if (!io_next(unit)) {	/* skip to next file, if any */
 		/* XXX perror? */
 		return IO_EOF;		/* no more files */
