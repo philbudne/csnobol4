@@ -531,8 +531,9 @@ sig_catch(sig)
     /*
      * top of INIT checks UINTCL and causes "User Interrupt" error
      * which can be caught with SETEXIT() and continued with :(SCONTINUE)
+     * Keep count, so windoze code in io.c can detect ^C vs EOF
      */
-    D_A(UINTCL) = 1;
+    D_A(UINTCL)++;
     signal( SIGINT, sig_catch );	/* re-arm for Win32/VC10 */
 }
 

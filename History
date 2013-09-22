@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+9/22/2013:
+	lib/io.c, lib/init.c: make UINTCL a counter for VC10 ^C handling
+
 9/20/2013:
 	lib/io.c: try to clear EOF condition from ^C in VC10
 

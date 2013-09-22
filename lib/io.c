@@ -202,6 +202,9 @@ struct file {
  * ordinary file I/O calls (e.g. ReadFile, WriteFile), so attempting
  * to wrap a socket in a stdio stream won't work.
  *
+ * [On NT based systems (XP and later), _open_osfhandle() + _fdopen
+ *  may do the trick, as ReadFile() is supposed to work on winsockets]
+ *
  * To work around this "feature", if INET_IO is defined, tcp_open()
  * and udp_open() return a "struct inet_file" pointer.  The code in
  * io.c has been crocked not to try normal I/O on things which have
@@ -1245,6 +1248,9 @@ io_read( dp, sp )			/* STREAD */
     FILE *f;
     struct file *fp;
     struct unit *up;
+#ifdef _MSC_VER
+    int_t err_count = D_A(UINTCL);
+#endif
 
     unit = INTERN(D_A(dp));
     if (BADUNIT(unit) || (up = FINDUNIT(unit)) == NULL || up->curr == NULL) {
@@ -1436,10 +1442,12 @@ io_read( dp, sp )			/* STREAD */
 	/* here when read failed */
 	if (!ISAFILE(fp) || feof(f)) {
 #ifdef _MSC_VER
-	    /* Control C causes EOF to be set in VS10 */
-	    if (D_A(UINTCL)) {
-		if (ISAFILE(fp))
-		    clearerr(f);
+	    /* Control C causes EOF to be set in VS10;
+	     * SIGINT catcher increments UINTCL, so hopefully
+	     * combinations of ^C and ^Z won't cause infinite loop!
+	     */
+	    if (++err_count == D_A(UINTCL) && ISAFILE(fp) && ISTTY(fp)) {
+		clearerr(f);
 		continue;
 	    }
 #endif
