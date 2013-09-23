@@ -69,3 +69,14 @@
 #define PML_TIME
 #define PML_RANDOM
 #define HAVE_SLEEP
+
+#ifdef _WIN64
+#define NO_BITFIELDS
+#define SIZLIM (~(VFLD_T)0)
+#define INT_T long long
+#define REAL_T double
+#define REALST_FORMAT "%.15lg"
+#endif
+
+#define USE_MEMMOVE
+#define USE_MEMSET

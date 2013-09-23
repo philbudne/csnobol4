@@ -3,8 +3,11 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/23/2013:
-	v311.sil: 
+	v311.sil: [PLB116] use SMAXINT
 	config/win32/config.h: add ifdef _WIN64, USE_MEMMOVE, USE_MEMSET
+	config/win32/ntmsvc.mak: remove bcopy, bzero
+	include/str.h: add ifdef USE_MEMSET
+	include/snotypes.h: define SMAXINT, use (unsigned INT_T)1
 
 9/22/2013:
 	lib/io.c, lib/init.c: make UINTCL a counter for VC10 ^C handling

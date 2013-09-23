@@ -32,6 +32,10 @@ void bcopy __P((const void *, void *, int));
 #define bcopy(SRC,DEST,LEN) memmove(DEST,SRC,LEN)
 #endif /* USE_MEMMOVE defined */
 
+#ifdef USE_MEMSET
+#define bzero(A,B) memset(A,0,B)
+#endif
+
 #ifdef NEED_BZERO
 /* use lib/aux/bzero.c (faster than memset) */
 void bzero __P((char *, unsigned int));

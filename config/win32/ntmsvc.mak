@@ -37,7 +37,7 @@ OBJ=	isnobol4.obj data.obj data_init.obj main.obj syn.obj \
 	bal.obj break.obj date.obj dump.obj endex.obj hash.obj \
 	intspc.obj io.obj lexcmp.obj ordvst.obj pair.obj \
 	pat.obj pml.obj realst.obj replace.obj str.obj stream.obj \
-	top.obj tree.obj bcopy.obj bzero.obj dynamic.obj expops.obj \
+	top.obj tree.obj dynamic.obj expops.obj \
 	getopt.obj init.obj load.obj loadx.obj mstime.obj \
 	atan.obj chop.obj cos.obj \
 	delete.obj environ.obj exit.obj file.obj getstring.obj handle.obj \
@@ -142,12 +142,6 @@ spreal.obj : $(SRCDIR)lib\ansi\spreal.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\ansi\spreal.c
 
 ################ auxil
-
-bcopy.obj : $(SRCDIR)lib\auxil\bcopy.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib\auxil\bcopy.c
-
-bzero.obj : $(SRCDIR)lib\auxil\bzero.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib\auxil\bzero.c
 
 getopt.obj : $(SRCDIR)lib\auxil\getopt.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\auxil\getopt.c

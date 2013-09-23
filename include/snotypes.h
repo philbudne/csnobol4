@@ -134,4 +134,4 @@ typedef int (*func_t)();
 #define BPC 8				/* 8 bits/char */
 #endif /* BPC not defined */
 
-#define MAXINT ((1UL<<(sizeof(INT_T)*BPC-1))-1)
+#define SMAXINT ((((unsigned INT_T)1)<<(sizeof(INT_T)*BPC-1))-1)
