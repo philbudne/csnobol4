@@ -336,7 +336,7 @@ init_args( ac, av )
     int c;
     int multifile;
     int justversion;
-    int showpaths;
+    int showpaths = 0;
 
     ndynamic = NDYNAMIC;
     pmstack = PSSIZE;
