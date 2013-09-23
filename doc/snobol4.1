@@ -431,15 +431,8 @@ file enclosed in single or double quotes.  Any filename will be
 included only once, this can be overridden by appending a trailing
 space to the filename.  Trailing spaces are removed from the filename
 before use.  If the file is not found in the current working directory
-an attempt will be made to find it in: the directories specified by
-command line
-.B -I
-options, the directory specified by the legacy
-.B SNODIR
-environment directory (if defined),
-followed by the list of directories in the
-.B SNOPATH
-environment variable (or a compiled in default path).
+an attempt will be made to find it in the directories specified in the
+search path.
 .B \-COPY
 is a synonym for
 .B \-INCLUDE
@@ -1163,6 +1156,11 @@ specifies a parameter string available via
 .B -v
 Show version and exit.
 .TP
+.B -z
+Show directory search path in use (including
+.B -I
+options) and exit.
+.TP
 .B --
 Terminates processing items as options. Any remaining strings are
 treated as files or user parameters.
@@ -1232,26 +1230,39 @@ structures during garbage collection.  The
 .B -h
 option displays the default interpreter stack size.
 
+.SS "Directory Search List"
+Files specified in
+.B -INCLUDE
+directives and
+.B LOAD()
+function calls are first checked for in the current working directory.
+If not found, the following directory search order is used:
+Any directories specified on the command line using
+.B -I
+options, in the order specified;
+The list of directories from the
+.B SNOPATH
+environment variable, if defined;
+If
+.B SNOPATH
+is not defined, the
+.B SNODIR
+environment directory (or a compiled in default) is used to add the
+following:
+.IP SNODIR/VERSION/local
+.IP SNODIR/VERSION
+.IP SNODIR/local
+.IP SNODIR
+
 .SH ENVIRONMENT
 .TP
 .B SNOPATH
 .br
 Is a list of directories delimited by colons (semi-colons on VMS and
-Windows) appended to the library directory search list used to search
-for files in
-.B \-INCLUDE
-and
-.B LOAD()
-requests.  The default value of SNOPATH is displayed by the
-.B -h
-command line option.  Including files via
-.B SNOPATH
-may make your programs harder to share, since the dependancies are
-less visible.  Writable directories in any directory component in
-any member of
-.B SNOPATH
-or writable files are a security risk, since they introduce the
-possibility that a mal-doer could modify files.
+Windows) appended to the Directory Search List (see above).  NOTE!!
+.BR SNOPATH ,
+.B SNOBOL_PRELOAD_PATH
+introduces security and portability issues!!
 .TP
 .B SNOBOL_PRELOAD_PATH
 .br
@@ -1264,18 +1275,10 @@ introduces security and portability issues.
 .TP
 .B SNOLIB
 .br
-is the predecessor of
-.BR SNOPATH .
-If set,
-.B SNOPATH
-is appended to the
-library directory path list after any directories from
-.B -I
-command line options, and before any from
-.BR SNOPATH .
-Use of
-.B SNOLIB
-should be avoided, as it mat be removed in a future release.
+(the sole search directory in versions of CSNOBOL4 prior to version 1.5)
+is used to establish the base libary path if
+.BR SNOPATH
+is not defined.  See Directory Search List above.
 
 .SH SEE ALSO
 .BR sdb (1), snobol4dbm (3), snobol4tcl (3), snobol4time (3), snolib (3).

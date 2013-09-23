@@ -2242,6 +2242,14 @@ io_add_lib_path(path)
     free(p2);
 }
 
+void
+io_show_paths()
+{
+    struct file *fp;
+    for (fp = iov.lib_dirs; fp; fp = fp->next)
+	puts(fp->fname);
+}
+
 /*
  * search for a file, given a path, and optional subdir and extension
  * returns malloc'ed string or NULL

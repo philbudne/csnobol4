@@ -13,6 +13,10 @@ cygwin script to create windows .zip file???
 
 ================
 
+Use "assention" to implement skip-list???
+Look at hash function, OBSFT
+sqlite3 interface?
+
 TAINT flag??? reuse FROZEN???
 	any input string
 	all string values from external functions?
@@ -25,8 +29,6 @@ Document BREAKPOINT()????
 
 Compiler: get rid of null statements (don't incr STNO)
 
-Single letter trace types (ala Macro SPITBOL): V, K, L, C, R, F
-
 SETEXITFUNC() using function calls??
 	allow nested handlers!
 
@@ -37,8 +39,8 @@ sdb:
 	set: (just SDB.VARS?)
 		"trace" (via FCALL/FRET)
 		"debug"
+	handle multi-statement lines better?
 	read .sdbinit?
-	list [START [END]]
 	save printed values? in SDB.VALUES[n]??
 	remove break/watchpoints when disabled?
 	non-existant file on sdb command line shows "No END"!!!
@@ -47,6 +49,7 @@ sdb:
 		could deal with it in sdb??
 	BUG: ignored watchpoings (cont N or ignore B N) don't update old value
 	"code" command?
+	list [START [END]]
 
 Agregate dumping (DUMP(2); &DUMP = 2)
 	What about NAMEs?

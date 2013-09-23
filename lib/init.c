@@ -29,6 +29,10 @@ extern void *malloc();
 #include "data.h"			/* SIL data */
 #include "proc.h"			/* for SYSCUT() */
 
+#ifndef DEF_SNOPATH
+#include "version.h"
+#endif
+
 /* return type of signal handler functions */
 #ifndef SIGFUNC_T
 #define SIGFUNC_T void
@@ -76,8 +80,6 @@ int nfiles;
 extern int optind;
 extern char *optarg;
 extern int getopt();
-
-char *def_snopath = DEF_SNOPATH;
 
 static void
 p( flag, str )
@@ -149,8 +151,6 @@ usage( jname, justversion )
     fprintf(stderr, "\n");
     fprintf(stderr, "For memory region sizes a suffix of 'k' (1024) and 'm' (1024*1024)\n");
     fprintf(stderr, "can be used. A descriptor takes up %d bytes.\n", (int)DESCR );
-    fprintf(stderr, "\n");
-    fprintf(stderr, "Default SNOPATH: %s\n", DEF_SNOPATH);
     exit(1);
 }
 
@@ -286,15 +286,40 @@ io_init()				/* here from INIT */
 /* called after -I paths have already been added, before preload, sources */
 static void
 pathinit() {
-    /* give priority to old variable */
-    char *env = getenv("SNOLIB");
-    if (env)
-	io_add_lib_dir(env);
+    char *env = getenv("SNOPATH");
+    if (env) {
+	io_add_lib_path(env);
+    }
+    else {
+#ifdef DEF_SNOPATH
+	io_add_lib_path(DEF_SNOPATH);
+#else
+	char *tmp;
 
-    env = getenv("SNOPATH");
-    if (!env)
-	env = DEF_SNOPATH;
-    io_add_lib_path(env);
+	/* get old variable */
+	env = getenv("SNOLIB");
+	if (!env)
+	    env = SNOLIB_BASE;
+
+	/* local, version-specific */
+	tmp = strjoin(env, DIR_SEP VERSION DIR_SEP "local", NULL);
+	io_add_lib_dir(tmp);
+	free(tmp);
+
+	/* distribution files */
+	tmp = strjoin(env, DIR_SEP VERSION, NULL);
+	io_add_lib_dir(tmp);
+	free(tmp);
+
+	/* local -- all versions */
+	tmp = strjoin(env, DIR_SEP "local", NULL);
+	io_add_lib_dir(tmp);
+	free(tmp);
+
+	/* old directory */
+	io_add_lib_dir(env);
+#endif
+    }
 
 #ifdef EXTRA_SNOPATH
     io_add_lib_path(EXTRA_SNOPATH);
@@ -311,6 +336,7 @@ init_args( ac, av )
     int c;
     int multifile;
     int justversion;
+    int showpaths;
 
     ndynamic = NDYNAMIC;
     pmstack = PSSIZE;
@@ -343,7 +369,7 @@ init_args( ac, av )
      *		added, but it better not want an argument!)
      */
 
-    while ((c = getopt(argc, argv, "+bd:fghkl:nprsu:vI:L:MP:S:")) != -1) {
+    while ((c = getopt(argc, argv, "+bd:fghkl:nprsu:vzI:L:MP:S:")) != -1) {
 	switch (c) {
 	case 'b':
 	    D_A(BANRCL) = !D_A(BANRCL);	/* toggle banner output */
@@ -414,6 +440,10 @@ init_args( ac, av )
 	    params = optarg;
 	    break;
 
+	case 'z':
+	    showpaths = 1;
+	    break;
+
 	case 'I':			/* include path dir */
 	    io_add_lib_dir(optarg);
 	    break;
@@ -454,6 +484,11 @@ init_args( ac, av )
     } /* while getopt */
 
     pathinit();
+
+    if (showpaths) {
+	io_show_paths();
+	exit(0);
+    }
 
     /* XXX option to disable? */
     io_preload();

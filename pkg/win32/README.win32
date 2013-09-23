@@ -1,0 +1,8 @@
+This package was built to be unzipped at C:\ If you place it
+elsewhere, globally define SNODIR to point to the location (or define
+SNOPATH).
+
+The \bin directory contains an sdb.bat file to run the debugger, and a
+timing script.  Please consider running the speed test:
+	timing.bat >timing.txt
+and attaching timing.txt to an email to timing@snobol4.org

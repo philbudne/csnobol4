@@ -296,8 +296,6 @@ fi
 SNOLIB_DIR="$SNOLIB_BASE/$VERSION"
 # XXX could use $PREFIX/include/snobol4
 INCLUDE_DIR="$SNOLIB_DIR/include"
-LOCAL=local
-DEF_SNOPATH="$SNOLIB_DIR/$LOCAL:$SNOLIB_DIR:$SNOLIB_BASE/$LOCAL:$SNOLIB_BASE"
 
 echo 'BINDIR=$(DESTDIR)'"$BINDIR"		>> $CONFIG_M4
 echo 'MANDIR=$(DESTDIR)'"$MANDIR"		>> $CONFIG_M4
@@ -1305,9 +1303,9 @@ if [ ! "$NO_DYNLIB" ]; then
 fi
 
 # used for includes, and by load functions
+echo '#define SNOLIB_BASE "'"$SNOLIB_BASE"'"'	>> $CONFIG_H
 echo '#define SNOLIB_DIR "'"$SNOLIB_DIR"'"'	>> $CONFIG_H
 echo '#define INCLUDE_DIR "'"$INCLUDE_DIR"'"'	>> $CONFIG_H
-echo '#define DEF_SNOPATH "'$DEF_SNOPATH'"'	>> $CONFIG_H
 
 if [ "$SNOLIB_FILE" ]; then
     echo '# NOTE: SNOLIB_FILE in config.h too!'	>> $CONFIG_M4

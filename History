@@ -4,6 +4,14 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/22/2013:
 	lib/io.c, lib/init.c: make UINTCL a counter for VC10 ^C handling
+		ditched DEF_SNOPATH; build using SNODIR for base
+		add io_show_path() -- command line option -z
+	include/lib.h: add io_show_path()
+	pkg/win32/README.win32 (new)
+	pkg/win32/install.bat: install README.win32
+	configure: ditch DEF_SNOPATH, add SNOLIB_BASE
+	config/win32/config.h: ditch DEF_SNOPATH
+	doc/snobol4.1: update
 
 9/20/2013:
 	lib/io.c: try to clear EOF condition from ^C in VC10

@@ -59,6 +59,7 @@ int io_add_lib_dir __P((char *));
 int io_add_lib_path __P((char *));
 char *io_lib_find __P((char *, char *, char *));
 void io_preload __P((void));
+void io_show_paths __P((void));
 
 /* from lexcmp.c */
 int lexcmp __P((struct spec *,struct spec *));

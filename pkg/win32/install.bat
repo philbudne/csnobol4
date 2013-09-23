@@ -13,6 +13,7 @@ rem read file created by Un*x configure shell script;
 set /p VERSION=<version
 set SNODIR=%SNOBASE%\%VERSION%
 mkdir %SNODIR%
+copy pkg\win32\README.win32 %BINDIR%
 
 set BINDIR=%SNODIR%\bin
 set LIBDIR=%SNODIR%\lib
