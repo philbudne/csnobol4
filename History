@@ -10,7 +10,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	pkg/win32/README.win32 (new)
 	pkg/win32/install.bat: install README.win32
 	configure: ditch DEF_SNOPATH, add SNOLIB_BASE
-	config/win32/config.h: ditch DEF_SNOPATH
+	config/win32/config.h: ditch DEF_SNOPATH, define SNOLIB_BASE
 	doc/snobol4.1: update
 
 9/20/2013:

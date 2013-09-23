@@ -123,10 +123,6 @@ typedef long off_t;
 
 #define NUNITS 256			/* XXX set at runtime? */
 
-#ifndef SNOLIB_DIR
-#define SNOLIB_DIR "./"
-#endif /* SNOLIB_DIR not defined */
-
 #ifndef PRELOAD_FILENAME
 #define PRELOAD_FILENAME "preload.sno"
 #endif

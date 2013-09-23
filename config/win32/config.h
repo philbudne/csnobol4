@@ -19,11 +19,9 @@
 
 /* paths; */
 #define SNOLIB_FILE	"snolib.dll"
+#define SNOLIB_BASE	"C:\\snobol4"
 #define DIR_SEP		"\\"
-#define SNOLIB_DIR	"C:\\snobol4"
-
 #define PATH_SEP	";"
-
 #define DL_EXT	".dll"
 
 /* includes; */
