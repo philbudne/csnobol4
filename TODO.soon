@@ -1,8 +1,6 @@
 $Id$
 
-Update man page dates??
-
-Update CHANGES file!
+disable clang warnings?
 
 cygwin script to create windows .zip file???
 	README.win32 file
@@ -12,6 +10,7 @@ cygwin script to create windows .zip file???
 	zip -r -z ~/snobol4-VERS.zip snobol4 < snobol4/VERS/README.win32
 
 ================
+default REAL to double?? Look at SNOBOL4+
 
 Use "assention" to implement skip-list???
 Look at hash function, OBSFT
