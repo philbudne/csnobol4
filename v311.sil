@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.132  2013/09/13 01:14:07  phil
+* [PLB115] single letter trace types (ala SPITBOL)
+*
 * Revision 1.131  2013/09/13 00:35:38  phil
 * [PLB114] pulled LASTFILE/LINE & USRINT checks to top of INIT
 *
@@ -7152,7 +7155,7 @@ EXN2CL DESCR   0,0,I		   Stats stmt count &STEXEC	[PLB38][PLB107]
        DESCR   STXTSP,0,0	   	      	    		[PLB107]
 GCTTTL REAL    0.0		   GC total time &GCTIME	[PLB92][PLB107]
        DESCR   GCTMSP,0,0					[PLB107]
-       DESCR   MAXINT,0,I	   &MAXINT			[PLB108]
+       DESCR   SMAXINT,0,I	   &MAXINT			[PLB108][PLB116]
        DESCR   MAXISP,0,0	   				[PLB108]
 KVEND  LHERE   ,
 *
