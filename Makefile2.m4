@@ -152,7 +152,7 @@ COM_CPP=$(SRCDIR)lib/win32/com.cpp
 
 # private copy of CFLAGS for data_init.o; here so it can be overridden
 # (ie; to just $(MYCPPFLAGS)) by config.m4 during debug (optimizing it
-# is painful but worthwhile for production).
+# is painful but worthwhile for production, or for compiler bugs!)
 
 DATA_INIT_CFLAGS=$(CFLAGS)
 
@@ -277,6 +277,7 @@ data.o: $(SRCDIR)data.c
 # result in a slightly larger executable, or slower startup, but since
 # I may compile data_init.c many times in the course of a debug
 # session, it's worth it.
+# NOTE! 9/2013: gcc no longer takes forever!!
 data_init.o: $(SRCDIR)data_init.c 
 	$(CC) $(DATA_INIT_CFLAGS) -c $(SRCDIR)data_init.c
 
