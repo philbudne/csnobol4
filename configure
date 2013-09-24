@@ -342,20 +342,24 @@ if [ "$WANTGCC" ]; then
 fi
 
 
-# didn't find gcc in PATH; check if CC is gcc
-# NOTE!! clang pretends to be gcc, catch it here??
+# didn't find gcc in PATH; check if CC is gcc or clang
 if [ ! "$GCCPATH" ]; then
-    echo 'checking if cc is gcc' 1>&2
+    echo 'checking cc' 1>&2
     TMP=conf$$
     # vanilla bsd43 systems can't use <<- AND EOF must be in col 0!
     cat << EOF > $TMP.c
+#include <stdio.h>
 int
 main() {
-#if defined(__gcc__) || defined(__GNUC__)
-    return 0;
+#ifdef __clang__
+    printf("clang\n"); /* bitches that puts() deprecated in C99! */
 #else
-    return 1;
+#if defined(__gcc__) || defined(__GNUC__)
+    printf("gcc\n"); /* bitches that puts() deprecated in C99! */
+#else
 #endif
+#endif
+    return 0;
 }
 EOF
     if [ "x$CC" = x ]; then
@@ -363,17 +367,23 @@ EOF
     else
 	XCC="$CC"
     fi
-    if $XCC -o $TMP $TMP.c && ./$TMP; then
-	echo 'yes it is' 1>&2
-	echo "# cc is gcc"			>> $CONFIG_M4
-	GCCPATH="$XCC"
+    if $XCC -o $TMP $TMP.c; then
+	CC_IS=`./$TMP`
+	if [ "$CC_IS" ]; then
+	    echo "cc is $CC_IS" 1>&2
+	    echo "# $XCC is $CC_IS"		>> $CONFIG_M4
+	    if [ "$CC_IS" = gcc ]; then
+		GCCPATH="$XCC"
+
+		# if cc is gcc, disregard --no-gcc
+		WANTGCC=true
+	    fi
+	fi
     fi
     rm -f $TMP $TMP.c $TMP.exe
-
-    # if cc is gcc, disregard --no-gcc
-    WANTGCC=true
 fi
 
+# clang does not qualify!
 if [ "$FORCEGCC" -a ! "$GCCPATH" ]; then
     echo ' gcc not available' 1>&2
     exit 1
@@ -566,6 +576,36 @@ if [ "$GCCPATH" -a "$WANTGCC" ]; then
     FASTFLAGS=-fomit-frame-pointer
 
     USING_GCC=true
+elif [ "$CC_IS" = clang ]; then
+    CCVERS=-v
+    echo 'CCM=$(CC) -M'				>> $CONFIG_M4
+
+    # disable warnings enabled by default in code generated from SIL;
+    echo 'SNOBOL4_C_CFLAGS=-Wno-return-type -Wno-switch' >> $CONFIG_M4
+
+    case "$MORV" in
+    *:Darwin:*:*)
+	# MacOS has different file types for shared libraries (dylibs)
+	# and dynamicly loaded extensions (bundles)
+	# -fPIC is the default on OS X
+	# ~sigh~ copied from gcc case!
+
+	SO_EXT=.dylib
+	SO_LD=$CCPATH
+	SO_LDFLAGS=-dynamiclib
+
+	DL_EXT=.bundle
+	DL_LD=$CCPATH
+	DL_LDFLAGS=-bundle
+	;;
+
+    *)
+	SO_EXT=.so
+	SO_CFLAGS=-fpic		# ??
+	SO_LD=$CCPATH
+	SO_LDFLAGS=-shared
+	;;
+    esac
 else
     # required options for native compilers
     case "$MORV" in
@@ -737,27 +777,6 @@ if [ "$CCPATH" ]; then
     # for "check" script:
     CC=$CCPATH
     export CC
-fi
-
-# see if chosen C compiler is "clang", and if so, disable warnings
-# not normally enabled in gcc:
-TMP=conf$$
-cat << EOF > $TMP.c
-int
-main() {
-#ifdef __clang__
-    return 0;
-#else
-    return 1;
-#endif
-}
-EOF
-if $CC -o $TMP $TMP.c; then
-    if ./$TMP; then
-	echo "$CC is clang" 2>&1
-	CC_IS_CLANG=1
-	CCVERS=-v
-    fi
 fi
 
 # include C compiler version output in comments
@@ -1661,7 +1680,6 @@ fi
 # default warning settings on clang under FreeBSD10 and MacOS 10.8(?)
 # are louder than gcc defaults.  Just tell clang to stiffle.
 if [ "$CC_IS_CLANG" ]; then
-    echo 'ADD_CFLAGS([-Wno-return-type -Wno-switch])' >> $CONFIG_M4
 fi
 
 if [ "$INITIAL_CFLAGS" ]; then
