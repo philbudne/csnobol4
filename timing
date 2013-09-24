@@ -80,11 +80,8 @@ if [ "$UNAME" ]; then
 		if [ -f /var/run/dmesg.boot ]; then
 			echo ''
 			echo /var/run/dmesg.boot
-			grep -i '^cpu[0-9]*:' /var/run/dmesg.boot
-			# Alpha:
-			grep 'MHz' /var/run/dmesg.boot
 			# mptable/acpi signatures may include hypervisor info:
-			grep -i '^(MPTable|acpi0:)' /var/run/dmesg.boot
+			egrep -i '^(cpu[0-9]*:|MPTable|acpi0:|.*MHz)' /var/run/dmesg.boot
 		fi
 		;;
 	HP-UX)
@@ -167,6 +164,14 @@ if [ "$UNAME" ]; then
 			    /usr/bin/lsb_release -rd 2>/dev/null || \
 			    /usr/bin/lsb_release -r
 		fi
+		# look for evidence of VM type
+		for p in /sbin /usr/sbin /bin /usr/bin `echo $PATH | tr : ' '` ; do
+		    if [ -x $p/lspci ]; then
+			echo ''
+			echo $p/lspci -v
+			$p/lspci -v
+		    fi
+		done
 		;;
 	OSF1)
 		if [ -f /usr/sbin/snmp_request ]; then
@@ -222,7 +227,6 @@ if [ -x /usr/sbin/system_profiler ]; then
 	echo END_SYSTEM_PROFILER
 fi
 
-
 if [ -x cpuid ]; then
 	echo ''
 	echo 'cpuid:'
@@ -238,13 +242,6 @@ if [ -f 00README.CVS ]; then
 		ls -l CVS/Entries
 		cat CVS/Entries
 	fi
-fi
-
-# kinda redundant, but timing script could be run on a different host!
-if [ -x config.guess ]; then
-	echo ''
-	echo 'config.guess:'
-	./config.guess
 fi
 
 echo ''

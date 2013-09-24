@@ -2,6 +2,16 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+9/24/2013:
+	Makefile2.m4: put SNOBOL4_C_FLAGS after CFLAGS
+	configure: enable -Wall for gcc, set SNOBOL4_C_FLAGS like w/ clang
+		OPT=-O3 w/ clang
+	timing: clean up dmesg.boot (e)grep
+		find/run lspci -v on linux for any VM info
+		flush ref to config.guess
+	lib/init.c: fix strjoin() calls for K&R C
+		fix VER/lib path (found on Windows!)
+
 9/23/2013:
 	v311.sil: [PLB116] use SMAXINT
 	config/win32/config.h: add ifdef _WIN64, USE_MEMMOVE, USE_MEMSET

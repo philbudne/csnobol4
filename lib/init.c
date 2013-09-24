@@ -302,17 +302,17 @@ pathinit() {
 	    env = SNOLIB_BASE;
 
 	/* local, version-specific */
-	tmp = strjoin(env, DIR_SEP VERSION DIR_SEP "local", NULL);
+	tmp = strjoin(env, DIR_SEP, VERSION, DIR_SEP, "local", NULL);
 	io_add_lib_dir(tmp);
 	free(tmp);
 
-	/* distribution files */
-	tmp = strjoin(env, DIR_SEP VERSION, NULL);
+	/* distribution files (version-specific) */
+	tmp = strjoin(env, DIR_SEP, VERSION, DIR_SEP, "lib", NULL);
 	io_add_lib_dir(tmp);
 	free(tmp);
 
 	/* local -- all versions */
-	tmp = strjoin(env, DIR_SEP "local", NULL);
+	tmp = strjoin(env, DIR_SEP, "local", NULL);
 	io_add_lib_dir(tmp);
 	free(tmp);
 
@@ -497,7 +497,6 @@ init_args( ac, av )
      * append first file (or all additional args until "--" seen
      * in "multi-file" mode) to INPUT stream
      */
-
     while (optind < argc) {
 	if (strcmp(argv[optind], "--") == 0) { /* terminator? */
 	    optind++;			/* skip it */

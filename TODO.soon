@@ -1,18 +1,20 @@
 $Id$
 
-detect clang and disable warnings?
-
 cygwin script to create windows .zip file???
-	Run install.bat take dest directory?
-
-	README.win32 file
-		Ask for timing reports!!!
+	Run install.bat -- take dest directory (again?)
 	Install in base, and use as archive comment:
 	cd /cygdrive/c
 	zip -r -z ~/snobol4-VERS.zip snobol4 < snobol4/VERS/README.win32
 
+trap "0" in sdb.sh -- remove listing file!
+
 ================
-default REAL to double?? Look at SNOBOL4+
+
+process.sno:
+	merge clock into CPU
+	note if under hypervision!!! -- ignore string if no @!!!
+
+default REAL to double???
 
 Use "assention" to implement skip-list???
 Look at hash function, OBSFT

@@ -341,7 +341,6 @@ if [ "$WANTGCC" ]; then
     done
 fi
 
-
 # didn't find gcc in PATH; check if CC is gcc or clang
 if [ ! "$GCCPATH" ]; then
     echo 'checking cc' 1>&2
@@ -355,9 +354,9 @@ main() {
     printf("clang\n"); /* bitches that puts() deprecated in C99! */
 #else
 #if defined(__gcc__) || defined(__GNUC__)
-    printf("gcc\n"); /* bitches that puts() deprecated in C99! */
+    printf("gcc\n");
 #else
-#endif
+    printf("unknown\n");
 #endif
     return 0;
 }
@@ -370,7 +369,7 @@ EOF
     if $XCC -o $TMP $TMP.c; then
 	CC_IS=`./$TMP`
 	if [ "$CC_IS" ]; then
-	    echo "cc is $CC_IS" 1>&2
+	    echo "$XCC is $CC_IS" 1>&2
 	    echo "# $XCC is $CC_IS"		>> $CONFIG_M4
 	    if [ "$CC_IS" = gcc ]; then
 		GCCPATH="$XCC"
@@ -516,16 +515,11 @@ if [ "$GCCPATH" -a "$WANTGCC" ]; then
     if [ ! "$INLINE_OK" ]; then
 	echo 'ADD_OPT([-fno-inline-functions])'	>> $CONFIG_M4
     fi
-    if [ ! "$NO_OPT" ]; then
-	# only works when optimizing
-	# (will give warnings for --opt=-g)
-	# on by default in clang??
-	echo 'ADD_CFLAGS([-Wuninitialized])'	>> $CONFIG_M4
-    fi
     # on by default in clang??
-    echo 'ADD_CFLAGS([-Wunused])'		>> $CONFIG_M4
-    # clang found bugs enabled by these, so why not?
-    echo 'ADD_CFLAGS([-Wcomment -Wparentheses])' >> $CONFIG_M4
+    echo 'ADD_CFLAGS([-Wall])'			>> $CONFIG_M4
+
+    # disable warnings enabled by default in code generated from SIL;
+    echo 'SNOBOL4_C_CFLAGS=-Wno-return-type -Wno-switch' >> $CONFIG_M4
 
     case "$MORV" in
     *:Darwin:*:*)
@@ -579,6 +573,8 @@ if [ "$GCCPATH" -a "$WANTGCC" ]; then
 elif [ "$CC_IS" = clang ]; then
     CCVERS=-v
     echo 'CCM=$(CC) -M'				>> $CONFIG_M4
+
+    OPT=-O3
 
     # disable warnings enabled by default in code generated from SIL;
     echo 'SNOBOL4_C_CFLAGS=-Wno-return-type -Wno-switch' >> $CONFIG_M4

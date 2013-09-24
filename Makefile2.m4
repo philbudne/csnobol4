@@ -260,9 +260,9 @@ tested:  xsnobol4 test/tests.in cpuid
 
 ################
 
-# may need additional options due to size!!
+# may need additional options due to size (and SIL code issues)
 $(SNOBOL4).o: $(SRCDIR)$(SNOBOL4).c 
-	$(CC) $(SNOBOL4_C_CFLAGS) $(CFLAGS) -c $(SRCDIR)$(SNOBOL4).c
+	$(CC) $(CFLAGS) $(SNOBOL4_C_CFLAGS) -c $(SRCDIR)$(SNOBOL4).c
 
 main.o: $(SRCDIR)main.c
 	$(CC) $(CFLAGS) -c $(SRCDIR)main.c
