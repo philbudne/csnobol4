@@ -358,6 +358,7 @@ main() {
 #else
     printf("unknown\n");
 #endif
+#endif
     return 0;
 }
 EOF
