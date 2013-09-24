@@ -2215,6 +2215,7 @@ io_add_lib_dir(dirname)
     else
 	iov.lib_dirs = fp;		/* new list */
     iov.lib_dir_last = fp;
+    return TRUE;
 }
 
 /* new 1/12/2012 add a (PATH_SEP separated) path to include dir list */
@@ -2237,6 +2238,7 @@ io_add_lib_path(path)
 	pp = tpp;
     }
     free(p2);
+    return TRUE;
 }
 
 void
