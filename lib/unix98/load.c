@@ -79,7 +79,7 @@ os_load(fname, lname)
 	name2[sizeof(name2)-1] = '\0';
 
 	entry = (int (*)(LOAD_PROTO)) dlsym(handle, name2);
-	if (entry = NULL)
+	if (entry == NULL)
 	    goto fail;
 #else  /* TRY_UNDERSCORE not defined */
 	goto fail;

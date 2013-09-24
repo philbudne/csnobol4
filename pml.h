@@ -4,7 +4,7 @@
  * ``Poor Man's LOAD''
  * list of functions loaded with snobol4 image.
  *
- * See lib/snolib/*.c for example functions
+ * See lib/snolib *.c for example functions
  */
 
 /*

@@ -1,8 +1,10 @@
 $Id$
 
-disable clang warnings?
+detect clang and disable warnings?
 
 cygwin script to create windows .zip file???
+	Run install.bat take dest directory?
+
 	README.win32 file
 		Ask for timing reports!!!
 	Install in base, and use as archive comment:

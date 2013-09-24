@@ -12,13 +12,12 @@
  * XXX just use UNITP for output unit?
  */
 
-/*#define DUMP				/* TEMP */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#ifdef DUMP
+#ifdef TEST_DUMP
 #include <stdio.h>
 
 #include "snotypes.h"

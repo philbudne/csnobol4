@@ -1226,6 +1226,7 @@ restore_readline() {
 #else
     /*
      * probably here with "editline" library (OS X, NetBSD?)
+     */
     rl_initialize();			/* seems to work */
 #endif
     clear_history();

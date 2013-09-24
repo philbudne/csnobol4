@@ -8,6 +8,14 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	config/win32/ntmsvc.mak: remove bcopy, bzero
 	include/str.h: add ifdef USE_MEMSET
 	include/snotypes.h: define SMAXINT, use (unsigned INT_T)1
+	configure: save INITIAL_CFLAGS
+		enable warnings for problems found by clang
+		detect clang, disable warnings for SIL code issues
+	pml.h, lib/dump.c, lib/{dump,bsd/inet6,posix/tty}.c
+		fix nits to quiet clang
+	include/macros.h: fix nit found by gcc w/ -Wparens enabled
+	lib/{io,snolib/serv,unix98/load}.c: fix bugs found by clang warnings
+	pkg/win32/sdb.bat: add LIBDIR, comments, RCS-Id
 
 9/22/2013:
 	lib/io.c, lib/init.c: make UINTCL a counter for VC10 ^C handling

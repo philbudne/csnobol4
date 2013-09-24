@@ -65,7 +65,7 @@ inet_socket( host, service, port, flags, type )
 #define TRYOPT(FLAG,LAYER,OPT) \
 	((flags & FLAG) && setsockopt(s,LAYER,OPT,&true,sizeof(true)) < 0)
 
-	if ((flags & INET_PRIV) && bindresvport_sa(s, NULL) < 0 ||
+	if (((flags & INET_PRIV) && bindresvport_sa(s, NULL) < 0) ||
 	    TRYOPT(INET_BROADCAST,SOL_SOCKET,SO_BROADCAST) ||
 	    TRYOPT(INET_REUSEADDR,SOL_SOCKET,SO_REUSEADDR) ||
 	    TRYOPT(INET_DONTROUTE,SOL_SOCKET,SO_DONTROUTE) ||

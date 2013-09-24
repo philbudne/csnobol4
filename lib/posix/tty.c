@@ -101,11 +101,12 @@ find_by_fd(fd, action)
     
     for (pp = NULL, sp = list; sp; pp = sp, sp = sp->next) {
 	if (sp->dev == st.st_rdev) {
-	    if (action == REMOVE)
+	    if (action == REMOVE) {
 		if (pp)			/* not first? */
 		    pp->next = sp->next; /* alter prev's next */
 		else
 		    list = sp->next;	/* alter list head */
+	    }
 	    return sp;
 	}
     }

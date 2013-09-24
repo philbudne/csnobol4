@@ -232,7 +232,7 @@ SERV_LISTEN( LA_ALIST ) LA_DCL
 	}
 
 	if (pid == 0) {
-	    /* here in child process
+	    /* here in child process */
 	    close(s);			/* close master socket */
 	    signal(SIGCHLD, SIG_DFL);
 	    RETINT( slave );		/* return fd */
