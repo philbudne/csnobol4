@@ -308,7 +308,7 @@ bsd_srandom(x)
 #ifdef __GNUC__
 /*
  * quiet warning for intentional use of uninitialized variable for seed
- * works in gcc 4.4 and 4.7.3 (but not 4.5.2)!!
+ * works in gcc 4.4 and 4.7.3 (but not 4.4.6, 4.4.7 or 4.5.2)!!
  */
 #pragma GCC diagnostic ignored "-Wuninitialized"
 #endif
