@@ -296,16 +296,20 @@ MAN3DIR="$MANDIR/man3"
 if [ "x$SNOLIB_BASE" = x ]; then
     SNOLIB_BASE="$PREFIX/lib/snobol4"
 fi
-SNOLIB_DIR="$SNOLIB_BASE/$VERSION"
+SNOLIB_VER="$SNOLIB_BASE/$VERSION"
+SNOLIB_LIB="$SNOLIB_VER/lib"
+SNOLIB_DOC="$SNOLIB_VER/lib"
 # XXX could use $PREFIX/include/snobol4
-INCLUDE_DIR="$SNOLIB_DIR/include"
+INCLUDE_DIR="$SNOLIB_VER/include"
 
 echo 'BINDIR=$(DESTDIR)'"$BINDIR"		>> $CONFIG_M4
 echo 'MANDIR=$(DESTDIR)'"$MANDIR"		>> $CONFIG_M4
 echo 'MAN1DIR=$(DESTDIR)'"$MAN1DIR"		>> $CONFIG_M4
 echo 'MAN3DIR=$(DESTDIR)'"$MAN3DIR"		>> $CONFIG_M4
-echo 'SNOLIB_DIR=$(DESTDIR)'"$SNOLIB_DIR"	>> $CONFIG_M4
-echo 'INCLUDE_DIR=$(DESTDIR)'"$INCLUDE_DIR" >> $CONFIG_M4
+echo 'SNOLIB_VER=$(DESTDIR)'"$SNOLIB_VER"	>> $CONFIG_M4
+echo 'SNOLIB_LIB=$(DESTDIR)'"$SNOLIB_LIB"	>> $CONFIG_M4
+echo 'SNOLIB_DOC=$(DESTDIR)'"$SNOLIB_DOC"	>> $CONFIG_M4
+echo 'INCLUDE_DIR=$(DESTDIR)'"$INCLUDE_DIR"	>> $CONFIG_M4
 
 if [ "$ADD_DEFINE_USED" ]; then
     echo '/* end defines from command line */'	>> $CONFIG_H
@@ -1350,9 +1354,11 @@ if [ ! "$NO_DYNLIB" ]; then
     fi
 fi
 
-# used for includes, and by load functions
+# used to construct default SNOPATH
 echo '#define SNOLIB_BASE "'"$SNOLIB_BASE"'"'	>> $CONFIG_H
-echo '#define SNOLIB_DIR "'"$SNOLIB_DIR"'"'	>> $CONFIG_H
+# used by old load.c functions and host.c:
+echo '#define SNOLIB_DIR "'"$SNOLIB_LIB"'"'	>> $CONFIG_H
+# host.c:
 echo '#define INCLUDE_DIR "'"$INCLUDE_DIR"'"'	>> $CONFIG_H
 
 if [ "$SNOLIB_FILE" ]; then

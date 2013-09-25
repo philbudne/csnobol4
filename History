@@ -4,8 +4,11 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/24/2013:
 	Makefile2.m4: put SNOBOL4_C_FLAGS after CFLAGS
+		straighten out(?) SNOLIB_xxx paths
+		install docs at version top level
 	configure: enable -Wall for gcc, set SNOBOL4_C_FLAGS like w/ clang
 		OPT=-O3 w/ clang
+		straighten out(?) SNOLIB_xxx paths
 	timing: clean up dmesg.boot (e)grep
 		find/run lspci -v on linux for any VM info
 		flush ref to config.guess
