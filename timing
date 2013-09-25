@@ -164,15 +164,23 @@ if [ "$UNAME" ]; then
 			    /usr/bin/lsb_release -rd 2>/dev/null || \
 			    /usr/bin/lsb_release -r
 		fi
+		# look at disk model names for VM information
+		if [ -d /sys/devices ]; then
+		    echo ''
+		    echo device model files:
+		    find /sys/devices -name model -print0 | xargs -0 grep .
+		fi
+		;;
 		# look for evidence of VM type
 		for p in /sbin /usr/sbin /bin /usr/bin `echo $PATH | tr : ' '` ; do
 		    if [ -x $p/lspci ]; then
 			echo ''
 			echo $p/lspci -v
 			$p/lspci -v
+			echo 'END_LSPCI'
+			break
 		    fi
 		done
-		;;
 	OSF1)
 		if [ -f /usr/sbin/snmp_request ]; then
 			echo ''

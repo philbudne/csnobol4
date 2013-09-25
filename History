@@ -9,6 +9,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	timing: clean up dmesg.boot (e)grep
 		find/run lspci -v on linux for any VM info
 		flush ref to config.guess
+		find /sys/devices/...../model files
 	lib/init.c: fix strjoin() calls for K&R C
 		fix VER/lib path (found on Windows!)
 	lib/snolib/random.c: enhance comment
