@@ -4,9 +4,10 @@ rem install batch file for CSNOBOL4 when building from source
 setlocal
 
 rem NOTE!! Compiled in defaults are in config\win32\config.h
-set SNOBASE=%1
-if NOT DEFINED SNOBASE set SNOBASE=C:\snobol4
+set DEST=%1
+if NOT DEFINED DEST set DEST=C:\
 
+set SNOBASE=%DEST%\snobol4
 mkdir %SNOBASE%
 mkdir %SNOBASE%\local
 
