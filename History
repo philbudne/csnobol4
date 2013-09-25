@@ -11,6 +11,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 		flush ref to config.guess
 	lib/init.c: fix strjoin() calls for K&R C
 		fix VER/lib path (found on Windows!)
+	lib/snolib/random.c: enhance comment
+	.cvsignore: add version
 
 9/23/2013:
 	v311.sil: [PLB116] use SMAXINT

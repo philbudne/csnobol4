@@ -306,7 +306,10 @@ bsd_srandom(x)
  * a fixed seed.
  */
 #ifdef __GNUC__
-/* quiet warning for use of unitialzed variable (works in gcc 4.4) */
+/*
+ * quiet warning for intentional use of unitialzed variable for seed
+ * works in gcc 4.4 and 4.7.3 (but not 4.5.2)!!
+ */
 #pragma GCC diagnostic ignored "-Wuninitialized"
 #endif
 void
@@ -330,7 +333,7 @@ bsd_srandomdev()
 	}
 #endif
 	if (!done) {
-		unsigned long junk;	/* intentionally uninitialized */
+		unsigned long junk;	/* intentionally used uninitialized! */
 #ifdef HAVE_GETTIMEOFDAY
 		struct timeval tv;
 
