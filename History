@@ -14,7 +14,9 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 		fix VER/lib path (found on Windows!)
 	lib/snolib/random.c: enhance comment
 	.cvsignore: add version
+	sdb.sh: remove listfile on exit trap
 	pkg/win32/install.bat: COPYRIGHT, CHANGES, README, fix README.win32
+		take SNOBASE as optional argument
 
 9/23/2013:
 	v311.sil: [PLB116] use SMAXINT

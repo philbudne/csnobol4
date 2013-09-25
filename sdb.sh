@@ -9,4 +9,8 @@ SNOBOL4=<BINDIR>/snobol4<VERS>
 # create listing file, and pass filename in environment so sdb.sno can read it.
 SDB_LISTFILE=/tmp/sdb$$
 export SDB_LISTFILE
+
+# remove listing file on exit (if not already removed by sdb)
+trap "rm -f $SDB_LISTFILE" 0
+
 $SNOBOL4 -b -l $SDB_LISTFILE -L $SDB "$@"

@@ -6,8 +6,6 @@ cygwin script to create windows .zip file???
 	cd /cygdrive/c
 	zip -r -z ~/snobol4-VERS.zip snobol4 < snobol4/VERS/README.win32
 
-trap "0" in sdb.sh -- remove listing file!
-
 ================
 
 process.sno:
