@@ -17,6 +17,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	sdb.sh: remove listfile on exit trap
 	pkg/win32/install.bat: COPYRIGHT, CHANGES, README, fix README.win32
 		take SNOBASE as optional argument
+	pkg/win32/makezip.sh (new)
 
 9/23/2013:
 	v311.sil: [PLB116] use SMAXINT

@@ -1,12 +1,8 @@
 $Id$
 
-cygwin script to create windows .zip file???
-	Run install.bat -- take dest directory (again?)
-	Install in base, and use as archive comment:
-	cd /cygdrive/c
-	zip -r -z ~/snobol4-VERS.zip snobol4 < snobol4/VERS/README.win32
-
 ================
+
+SNOBOL4B (BLOCKS)
 
 process.sno:
 	merge clock into CPU
@@ -16,6 +12,7 @@ default REAL to double???
 
 Use "assention" to implement skip-list???
 Look at hash function, OBSFT
+
 sqlite3 interface?
 
 TAINT flag??? reuse FROZEN???
@@ -24,7 +21,7 @@ TAINT flag??? reuse FROZEN???
 	any concatenation with a tainted value
 	checked by: system (HOST), io_fopen (pipe & pty)
 
-SNOBOL4B (BLOCKS)
+windows has _mktime and _mkgmtime
 
 Document BREAKPOINT()????
 
