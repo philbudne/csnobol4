@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+9/25/2013:
+	Makefile2.m4, configure, sdb.sh: fix sdb.sno path
+
 9/24/2013:
 	Makefile2.m4: put SNOBOL4_C_FLAGS after CFLAGS
 		straighten out(?) SNOLIB_xxx paths

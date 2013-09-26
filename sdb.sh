@@ -1,7 +1,7 @@
 #!/bin/sh
 # $Id$
 
-SDB=<SNOLIB_DIR>/sdb.sno
+SDB=<SNOLIB_LIB>/sdb.sno
 SNOBOL4=<BINDIR>/snobol4<VERS>
 
 # handle user args??

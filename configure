@@ -298,7 +298,7 @@ if [ "x$SNOLIB_BASE" = x ]; then
 fi
 SNOLIB_VER="$SNOLIB_BASE/$VERSION"
 SNOLIB_LIB="$SNOLIB_VER/lib"
-SNOLIB_DOC="$SNOLIB_VER/lib"
+SNOLIB_DOC="$SNOLIB_VER"
 # XXX could use $PREFIX/include/snobol4
 INCLUDE_DIR="$SNOLIB_VER/include"
 

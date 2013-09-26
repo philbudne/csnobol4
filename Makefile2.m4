@@ -286,9 +286,9 @@ syn.o: $(SRCDIR)syn.c
 
 ################ shell scripts
 
-sdb:	sdb.sh configure
+sdb:	sdb.sh config.m4
 	rm -f sdb
-	sed -e "s@<SNOLIB_DIR>@$(SNOLIB_DIR)@" \
+	sed -e "s@<SNOLIB_LIB>@$(SNOLIB_LIB)@" \
 	    -e "s@<BINDIR>@$(BINDIR)@" \
 	    -e "s@<VERS>@-$(VERS)@" \
 	    < sdb.sh > sdb
@@ -604,9 +604,10 @@ install: snobol4 sdb
 	$(INSTALL) -m 644 doc/snobol4tcl.3 $(MAN3DIR)
 	$(INSTALL) -m 644 doc/snobol4time.3 $(MAN3DIR)
 	$(INSTALL) -d $(SNOLIB_VER)
-	$(INSTALL) -m 644 README $(SNOLIB_VER)
-	$(INSTALL) -m 644 CHANGES $(SNOLIB_VER)
-	$(INSTALL) -m 644 doc/load.txt $(SNOLIB_VER)
+	$(INSTALL) -d $(SNOLIB_DOC)
+	$(INSTALL) -m 644 README $(SNOLIB_DOC)
+	$(INSTALL) -m 644 CHANGES $(SNOLIB_DOC)
+	$(INSTALL) -m 644 doc/load.txt $(SNOLIB_DOC)
 	$(INSTALL) -d $(SNOLIB_VER)/local
 	$(INSTALL) -d $(SNOLIB_LIB)
 	for F in $(SNOLIB_FILES); do \
