@@ -314,6 +314,10 @@ bsd_srandom(x)
  */
 #pragma GCC diagnostic ignored "-Wuninitialized"
 #endif
+#ifdef _MSC_VER
+#pragma warning( push )
+#pragma warning( disable : 4700 )
+#endif
 void
 bsd_srandomdev()
 {
@@ -352,6 +356,9 @@ bsd_srandomdev()
 }
 #ifdef __GNUC__
 #pragma GCC diagnostic warning "-Wuninitialized"
+#endif
+#ifdef _MSC_VER
+#pragma warning( pop )
 #endif
 
 /*

@@ -8,6 +8,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 		remove *.exe in "make clean"
 	make.bat: (new) got tired of typing makefile path for VS
 	lib/snolib/random.c: forgo use of [s]size_t for VS
+		add pragma to disable warning on VS
 
 9/26/2013:
 	snolib/sdb.sno: make sure &INPUT enabled before trying to read!!
