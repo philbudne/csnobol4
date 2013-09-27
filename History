@@ -9,6 +9,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	make.bat: (new) got tired of typing makefile path for VS
 	lib/snolib/random.c: forgo use of [s]size_t for VS
 		add pragma to disable warning on VS
+	doc/snobol4.1: update HOST() example
 
 9/26/2013:
 	snolib/sdb.sno: make sure &INPUT enabled before trying to read!!
