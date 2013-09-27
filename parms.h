@@ -57,7 +57,6 @@ extern int returns[];
 #define STATIC_PAT static
 #include "lib/pat.c"
 #endif /* NO_INLINE_PAT not defined */
+#endif /* INLINING defined */
 
 #include "lib.h"			/* after all STATIC_xxx defines */
-
-#endif /* INLINING defined */

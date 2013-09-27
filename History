@@ -4,6 +4,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/25/2013:
 	Makefile2.m4, configure, sdb.sh: fix sdb.sno path
+	params.h: fix snobol4.c compilation!
 
 9/24/2013:
 	Makefile2.m4: put SNOBOL4_C_FLAGS after CFLAGS
