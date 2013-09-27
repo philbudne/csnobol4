@@ -319,7 +319,7 @@ bsd_srandomdev()
 {
 	int done = 0;
 	int fd;
-	size_t len;
+	int len;
 
 	if (rand_type == TYPE_0)
 		len = sizeof state[0];
@@ -328,7 +328,7 @@ bsd_srandomdev()
 
 	fd = open(DEV_RANDOM, O_RDONLY, 0);
 	if (fd >= 0) {
-		if (read(fd, (void *) state, len) == (ssize_t) len)
+		if (read(fd, (void *) state, len) == len)
 			done = 1;
 		close(fd);
 	}
