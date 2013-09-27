@@ -2,18 +2,25 @@ $Id$
 
 ================
 
+SNOBOL4B (BLOCKS)
+
+Default REAL to double???
+	DCMP: TYPE == TYPE && ((TYPE == R && D_R == D_R) || D_A == D_A)
+
+Benchmark USE_MEM{MOVE,SET}
+Flush direct use of b{copy,zero}??
+	
+save and enable &INPUT and &OUTPUT on all debugger entries,
+	restore on all exits!!
+
 get rid of old FORTRAN FORMAT strings!!
 	OTSATL: DFLFST, PCHFST
 
 update install-sh (many to choose from!)??
 
-SNOBOL4B (BLOCKS)
-
 process.sno:
 	note if under hypervision!!!
 	     replace CPU string if no @?
-
-default REAL to double???
 
 Use "assention" to implement skip-list???
 Look at hash function, OBSFT
