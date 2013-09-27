@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+9/27/2013:
+	conf/win32/config.h: comments on _WIN64 ifdef
+
 9/26/2013:
 	snolib/sdb.sno: make sure &INPUT enabled before trying to read!!
 		found trying to debug genc.sno (for SNOBOL4B)
