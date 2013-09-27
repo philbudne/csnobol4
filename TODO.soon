@@ -2,9 +2,16 @@ $Id$
 
 fix -PLUSOPS description (& others???)
 
+get rid of old FORTRAN FORMAT strings!!
+
+looping after quit:
+	sdb genc.sno v311.sil
+
 ================
 
 update install-sh (many to choose from!)??
+
+see if clearing V&F is necessary in all cases??
 
 SNOBOL4B (BLOCKS)
 
