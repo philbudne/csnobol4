@@ -182,21 +182,21 @@ tidy:
 		-name '*~' -o -name '#*' -o -name '*.tmp' -o -name '.#*' \) \
 		-print | xargs -t rm -f
 
-# disposables
-DISP=*.o *.a callgraph prolog bsplitu vers build.c bsdtsort \
-	config.m4 config.h Makefile2 .depend cpuid
-
 # Inspired by PowderMilk bisquits
 # (made by Norwegian Bachelor farmers, so you know they're pure, mostly);
 # remove objects, turds; leave generated sources, final binary.
+
+DISP=*.o *.a callgraph prolog bsplitu vers build.c bsdtsort \
+	config.m4 config.h Makefile2 .depend
+
 cleanmostly: tidy
 	rm -f $(DISP)
 	rm -rf timdir.*
 
 # clean as a freshly unpacked kit; remove binaries, timing;
-# leave version.h, version
+# leave version.h, version for Windoze
 clean:	cleanmostly
-	rm -f snobol4 xsnobol4 cpuid timing.out tested *.ln sdb
+	rm -f snobol4 xsnobol4 cpuid timing.out tested *.ln sdb *.exe
 
 # DANGER: requires installed binary to rebuild!!
 # remove objects, generated files (clean as a fresh CVS checkout)
