@@ -1,14 +1,20 @@
 $Id$
 
-================
+process.sno:
+	note if under hypervision!!!
+	     replace CPU string if no @?
 
-SNOBOL4B (BLOCKS)
+================ next release
 
-Default REAL to double???
+SNOBOL4B (BLOCKS)!!
+
+make --double work! (default to it??)
 	DCMP: TYPE == TYPE && ((TYPE == R && D_R == D_R) || D_A == D_A)
 
+compile test program to check if "long long" exists (output size?)
+
 Benchmark USE_MEM{MOVE,SET}
-Flush direct use of b{copy,zero}??
+	Flush direct use of b{copy,zero}??
 	
 save and enable &INPUT and &OUTPUT on all debugger entries,
 	restore on all exits!!
@@ -18,12 +24,11 @@ get rid of old FORTRAN FORMAT strings!!
 
 update install-sh (many to choose from!)??
 
-process.sno:
-	note if under hypervision!!!
-	     replace CPU string if no @?
+INPUT mode flag(s) for readline / history??
+	use "libedit" natively??
 
-Use "assention" to implement skip-list???
 Look at hash function, OBSFT
+	Use "assention" to implement skip-list???
 
 sqlite3 interface?
 
@@ -37,10 +42,14 @@ windows has _mktime and _mkgmtime -- compare with timelocal & timegm
 
 Document BREAKPOINT()????
 
-Compiler: get rid of null statements (don't incr STNO)
+Compiler:
+	get rid of null statements (don't incr STNO)
+	COMPILE(file,listing) function??
+		allow (re)loading in debugger
 
-SETEXITFUNC() using function calls??
-	allow nested handlers!
+SETEXITFUNC()
+	enter handler as function to allow nested handlers!
+	take action depending on return
 
 sdb:
 	implement "run" command, using CLEAR()?!
@@ -60,8 +69,6 @@ sdb:
 	BUG: ignored watchpoings (cont N or ignore B N) don't update old value
 	"code" command?
 	list [START [END]]
-
-COMPILE(file) function??
 
 Agregate dumping (DUMP(2); &DUMP = 2)
 	What about NAMEs?
@@ -83,7 +90,15 @@ genc.sno option to use void ** & goto (or goto big_switch;)
 configure --with-boehm-gc
 	find out if gc start/end hook possible.
 
+have "with" file -- updated by configure only when changed
+	to allow configure to control .IF's in SIL
+		(gen{c,data} --with XXX)
+
+make "FTRACE" TRACE()able?  pass: CALL/RETURN/FRETURN/NRETURN, NAME&ARGS/VALUE
+	use in sdb to avoid DEFINE() hack, and CALL/RETURN tracing
+
 see if clearing V&F is necessary in all cases??
+	look at 360, VAX macros, B6700 source
 
 snolib:
 	build shared library!!
@@ -103,13 +118,13 @@ String/number conversion
 
 have COMPILE_C_DYNAMIC() return object file name??
 
-Pure SNOBOL test driver (run under windows??)
+Pure SNOBOL test driver able to run under windows
+	need to differentiate between text and binary reference files
+	Need to fix CR handling (mingw?); EOLSTR, _setmode()
+	URL/INET functions need to set binary mode to avoid double CR???
 
-handle leading or trailing PATH_SEP on SNOPATH and PRELOAD_PATH???
-
-Run tests, timing on MinGW?
-	Need to fix CR handling; EOLSTR, _setmode()
-	    URL/INET functions need to set binary mode to avoid double CR???
+handle leading or trailing PATH_SEP on SNOPATH and PRELOAD_PATH
+	to mean "and also the default"
 
 constants file for WS, DIGITS?
 
@@ -139,7 +154,7 @@ DIFFTIME function??
 Fix utf.sno RUNE() function:
     use logic.sno (or wctomb()?)
 
-Fix univeral builds for non OSX 10.4 systems?
+Does "universal" mean anything post OSX 10.4??
 
 ================ 2.0?
 
@@ -150,15 +165,6 @@ allow LOADed functions to "intern" strings...
 hash TABLEs
 
 ================
-
-debug Win32 problem seen by Larry Gregg:  lrrygrgg@yahoo.com ???
-	t = table(); t[1] = 20; t[2] = 10; a = rsort(t,2)
-	NOT REPRODUCIBLE IN 1.3+ VS10 BUILD
-
-warnings w/ gcc 4 on OS X:
-	bsdtsort: exit, malloc, strlen
-	conf$$.c: exit
-	bindresvport_sa() already defined
 
 Look at Ruby Win32API & win32ole facilities
 
@@ -205,7 +211,6 @@ convert('2500000000', 'real') fails on home?
 STCL
 	rename to TCL_?
 	use -framework on OS X??
-	add --with-x11
 
 flush OTSATL, default formats?
 
