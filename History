@@ -6,6 +6,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	conf/win32/config.h: comments on _WIN64 ifdef
 	Makefile: took cpuid out of "make cleanmostly"
 		remove *.exe in "make clean"
+	make.bat: (new) got tired of typing makefile path on Windoze
 
 9/26/2013:
 	snolib/sdb.sno: make sure &INPUT enabled before trying to read!!
