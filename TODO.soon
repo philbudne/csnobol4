@@ -1,23 +1,17 @@
 $Id$
 
-fix -PLUSOPS description (& others???)
-
-get rid of old FORTRAN FORMAT strings!!
-
-looping after quit:
-	sdb genc.sno v311.sil
-
 ================
 
-update install-sh (many to choose from!)??
+get rid of old FORTRAN FORMAT strings!!
+	OTSATL: DFLFST, PCHFST
 
-see if clearing V&F is necessary in all cases??
+update install-sh (many to choose from!)??
 
 SNOBOL4B (BLOCKS)
 
 process.sno:
-	merge clock into CPU
-	note if under hypervision!!! -- ignore string if no @!!!
+	note if under hypervision!!!
+	     replace CPU string if no @?
 
 default REAL to double???
 
@@ -32,7 +26,7 @@ TAINT flag??? reuse FROZEN???
 	any concatenation with a tainted value
 	checked by: system (HOST), io_fopen (pipe & pty)
 
-windows has _mktime and _mkgmtime
+windows has _mktime and _mkgmtime -- compare with timelocal & timegm
 
 Document BREAKPOINT()????
 
@@ -60,6 +54,8 @@ sdb:
 	"code" command?
 	list [START [END]]
 
+COMPILE(file) function??
+
 Agregate dumping (DUMP(2); &DUMP = 2)
 	What about NAMEs?
 
@@ -72,12 +68,15 @@ man pages:
     document snobol4dynamic, snobol4wrapper
 
 SETEXIT() w/ "continue", "scontinue", "return", "freturn" as arg don't work
+	see what SPITBOL does!
 
 genc.sno option to use void ** & goto (or goto big_switch;)
 	(configure --mode=xxx)???
 
 configure --with-boehm-gc
 	find out if gc start/end hook possible.
+
+see if clearing V&F is necessary in all cases??
 
 snolib:
 	build shared library!!
