@@ -71,6 +71,12 @@
 #define HAVE_SLEEP
 
 #ifdef _WIN64
+/*
+ * I've cross compiled a 64-bit binary with VS2012, but not tested it!
+ * It looks like it's an "LLP64" evironment:
+ *	".... a 32-bit model with 64-bit addresses ...."
+ *	http://www.unix.org/version2/whatsnew/lp64_wp.html
+ */
 #define NO_BITFIELDS
 #define SIZLIM (~(VFLD_T)0)
 #define INT_T long long
@@ -78,5 +84,6 @@
 #define REALST_FORMAT "%.15lg"
 #endif
 
+/* use native routines */
 #define USE_MEMMOVE
 #define USE_MEMSET
