@@ -6,6 +6,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	snolib/sdb.sno: make sure &INPUT enabled before trying to read!!
 		found trying to debug genc.sno (for SNOBOL4B)
 	doc/snobol4.1: fix documentation for "-PLUSOPS"
+	configure, lib/snolib/random.c: ditched HAVE_DEV_RANDOM
+		pick up DEV_RANDOM, if defined
 
 9/25/2013:
 	Makefile2.m4, configure, sdb.sh: fix sdb.sno path

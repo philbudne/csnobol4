@@ -42,14 +42,16 @@ __FBSDID("$FreeBSD: src/lib/libc/stdlib/random.c,v 1.25 2007/01/09 00:28:10 imp 
 #ifdef HAVE_GETTIMEOFDAY
 #include <sys/time.h>          /* for srandomdev() */
 #endif
-#ifdef HAVE_DEV_RANDOM
 #include <fcntl.h>             /* for srandomdev() */
-#endif
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>            /* for srandomdev() */
+#endif
+
+#ifndef DEV_RANDOM
+#define DEV_RANDOM "/dev/randm"
 #endif
 
 long bsd_random();
@@ -316,7 +318,6 @@ void
 bsd_srandomdev()
 {
 	int done = 0;
-#ifdef HAVE_DEV_RANDOM
 	int fd;
 	size_t len;
 
@@ -325,13 +326,12 @@ bsd_srandomdev()
 	else
 		len = rand_deg * sizeof state[0];
 
-	fd = open("/dev/random", O_RDONLY, 0);
+	fd = open(DEV_RANDOM, O_RDONLY, 0);
 	if (fd >= 0) {
 		if (read(fd, (void *) state, len) == (ssize_t) len)
 			done = 1;
 		close(fd);
 	}
-#endif
 	if (!done) {
 		unsigned long junk;	/* intentionally used uninitialized! */
 #ifdef HAVE_GETTIMEOFDAY

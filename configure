@@ -1651,11 +1651,6 @@ if [ ! "$WITHOUT_READLINE" ]; then
     fi
 fi
 
-if [ -c /dev/random ]; then
-    echo 'using /dev/random for SRANDOMDEV()' 1>&2
-    echo '#define HAVE_DEV_RANDOM'		>> $CONFIG_H
-fi
-
 # Include COM support under Cygwin!
 # XXX missing symbols under Windows 7
 if [ "$CYGWIN" -a ! "$WITHOUT_COM" -a -f $INCDIR/w32api/objbase.h ]; then
