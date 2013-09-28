@@ -6,10 +6,18 @@ process.sno:
 
 ================ next release
 
+genc:
+	handle nested .IF, add .ELSE
+
 SNOBOL4B (BLOCKS)!!
 
 make --double work! (default to it??)
 	DCMP: TYPE == TYPE && ((TYPE == R && D_R == D_R) || D_A == D_A)
+	have DOUBLE force NO_BITFIELDS??
+		check alignment!!
+		      sparc double is 64 bit aligned
+			x86 is 32-bit aligned
+
 
 compile test program to check if "long long" exists (output size?)
 
@@ -104,13 +112,15 @@ have "with" file -- updated by configure only when changed
 	to allow configure to control .IF's in SIL
 		(gen{c,data} --with XXX)
 
-make "FTRACE" TRACE()able?  pass: FUNCTION, CALL/RETURN/FRETURN/NRETURN, ARGS/VALUE
+make "FTRACE" TRACE()able?
+	pass FUNCTION, CALL/RETURN/FRETURN/NRETURN, ARGS/VALUE
 	use in sdb to avoid DEFINE() hack, and CALL/RETURN tracing
 
 SETEXIT() w/ "continue", "scontinue", "return", "freturn" as argument don't work
 	see what SPITBOL does!
 
 see if clearing V&F is necessary in all cases??
+	looked at PDP-10
 	look at 360, VAX macros, B6700 source
 
 set-uid checks:
@@ -164,6 +174,7 @@ Fix utf.sno RUNE() function:
     use logic.sno (or wctomb()?)
 
 Does "universal" mean anything post OSX 10.4??
+	just flush
 
 ================ 2.0?
 
@@ -283,16 +294,6 @@ Oversize integer constants not detected on all systems!
 	use own strtol(l)?
 	document as BUG??
 
-always send timing.out via e-mail?
-	explain why?
-		Hall of fame
-		Known working platforms
-		Relative speed of hardware (bang for buck)
-	document it (in INSTALL, README)
-	add --opt-out to disable
-	(unless (.)timing.out.hostname exists?)
-	only if part of a real kit???
-
 verify correctness of line.ref, include.ref
 
 have tests cleanup after themselves?  Add Makefile for "make clean"?
@@ -342,21 +343,11 @@ add const's to getstring, retstring defns?
 
 put default prefix in configure script (so --prefix help can display it)?
 
-man page
-	sed current version into man page??
-
-	sed SNOLIB_PATH into man page?
-		give load.txt full path!!
-
 eliminate patern match "function" pointer indirections??
 
 	ANYCCL -> ANYCFN (XANY)
 
 	Just push index value???
-
-have DOUBLE force NO_BITFIELDS??
-	check alignment?? sparc double is 64 bit aligned
-			x86 is 32-bit aligned
 
 script to grep for all "ifdefs" and output strings to build.c?
 	just stringify options in config.h?
@@ -375,18 +366,7 @@ HOST()
 new versions of RETxxx macros cause "code not reached" warnings
 	change to obscene use of  "," construct???
 
-add config options;
-	if using gcc, enable -fomit-frame-pointer by default (unless --debug)?
-	--optimize
-		gcc: -O5
-		sunpro: -xO5
-	--debug??
-		disable -fomit-frame-pointer
-		add -g (leave opt on if gcc?)
-
 create snolib_pic.a???
-
-timing;	genc.sno runtimes too small; need better code for timing test?
 
 sysinfo(SI_PLATFORM, .... ) for HOST()?		Sun
 SI_ARCHITECTURE??				Sun, IRIX6.2!
@@ -396,11 +376,6 @@ SI_ARCHITECTURE??				Sun, IRIX6.2!
 define SIZE_T macro? (grep for SIZE_T comments)
 
 all S_L fetches should use int_t variables!
-
-change tty_mode to take single "mode" argument (flags + recl)?
-	add "superbinary mode"?
-
-add "EXPORT" defns to lib functions (for windoze)???
 
 avoid using unit 8 for terminal?
 	do all systems open stderr (and/or fd 2) r/w???
@@ -414,20 +389,11 @@ SPITBOL features;
 	FENCE()
 	NOT()
 
-	single letter abbrevs in TRACE()
-
 	allow STRING for units???
 
 	SPITBOL-386 HOST() functions?????
  
 ================
-
-devise a new syntax to use for PTY based subprocesses!?
-	use forkpty()
-
-Flush ADD_xxx macros?
-	do all accumulation in autoconf script CONFIG_XXX variables
-		consult LOCAL_XXXX vars for local changes (local-config)
 
 GC
 	recode GC in C -- use pointer reversal?
@@ -448,8 +414,6 @@ per-machine (arch?) build dirs
 	leave flat, but split up Makefile work?
 **	Need to add $(SRCDIR) to all 'xxx_C=' lines in config/*.m4
 
-tmpnam() call in snolib?
-
 io.c cleanup;
 	fseeko by zero not needed if !defined(NO_UNBUF_RW) and !FL_UNBUF
 		set LAST_NONE after fseeko, don't set LAST_{IN,OUT}PUT
@@ -457,7 +421,6 @@ io.c cleanup;
 	io_flushall
 		external MINUNIT, MAXUNIT
 		fflush before mode restore?
-	use stdlib.h, if available (for getenv())
 	io_relfile (instead of free(fp)?)
 	io_ecomp()
 		if -r not given, include files not freed?
@@ -471,7 +434,6 @@ URL package;
 	Allow user:password@host in ftp url
 
 Win32;
-	try turning on bitfields?
 	replace dummy execute function?
 	document DLL creation in load.txt
 	    mention http://www.geocities.com/SiliconValley/5806/implib32.htm
@@ -495,8 +457,6 @@ man page;
 
 make NO_BITFIELDS VFLD_T "long"??
 	need to use vfld_t in place of "int" in library routines???
-	what is borland "int" size with build.com?
-	force to "int" on alpha, irix64?
 	remove default (must supply VFLD_T if defining NO_BITFIELDS)??
 
 ================
@@ -585,14 +545,10 @@ Implement select()/poll()???
 Test:
 	I/O options (include bad strings!)
 
-Add to porting.ms;
-	common problems;
-		cannot optimize isnobol4.c or data_init.c
-		try other C compilers
-
 release updated rebus
 
 update v311.sil table of contents?
+	remove??
 
 add new utf.sno to snolib??
 
@@ -644,8 +600,6 @@ announce/notify;
 
 ================ later;
 
-hash table entries?
-
 table default values???
 
 add $(OBJDIR) prefix before all .o filenames in Makefile2?
@@ -655,8 +609,7 @@ add io_flushall() to snolib/system.c
 	add dummy io_flushall to snolib.a?
 
 posix/tty.c; enable 8-bit datapath on "raw"?
-		/netbsd/sys/kern/tty_compat.c "RAW" simulation
-		/netbsd/usr/src/lib/libc/termios/cfmakeraw.c
+		cfmakeraw(3)
 
 I/O;
 	pass back flags with recl (so "T" is per-var?)??
@@ -680,9 +633,6 @@ Create test for plusops off?
 
 ====
 
-allow expansion of dynamic storage?
-	(re-write GC in C)
-
 SITBOL features;
 	relative/numeric goto
 		foo pat =	:<>
@@ -694,11 +644,6 @@ move data_init into (i)snobol4.c,
 		[except for SYSCUT, UNDF, INTR10, more? ]
 
 ================
-
-have all genc, gendata, gensyn output .[ch]3 files; mv to .[ch]2 on exit??
-
-Have gensyn read character classes from file?
-	(CLASSNAME TAB STRING)
 
 add code to ato[id]() version of spcint()/spreal()
 	to check syntax?? (so CONVERT NUMERIC works)
@@ -811,12 +756,6 @@ file stat releated functions;
 	FILESIZE()??
 	STAT()??
 
-Add -XXX directive cards for:
-	PSTACK
-	DYNAMIC
-	ISTACK
-	(too late to alter sizes)
-
 see the old TODO file!!!
 
 VMS timing script?
@@ -825,9 +764,6 @@ VMS timing script?
 Add __P((ret_t)) to func_t?
 
 Create fconvert/gconvert or fcvt/gcvt for realst?
-
-configure:
-	deal with missing "uname"??
 
 new I/O
 
@@ -845,10 +781,6 @@ create Makefiles from file list?
 implement UDP server ICP in SERV_LISTEN?
 	use select to wait for packet?
 	need ungetc?
-
-NetBSD/VAX has no isnan()?
-
-add optional bi-directional popen test???
 
 document new INET_xxx flags in man page???
 
