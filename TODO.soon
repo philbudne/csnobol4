@@ -16,21 +16,26 @@ compile test program to check if "long long" exists (output size?)
 Benchmark USE_MEM{MOVE,SET}
 	Flush direct use of b{copy,zero}??
 	
-save and enable &INPUT and &OUTPUT on all debugger entries,
-	restore on all exits!!
-
 get rid of old FORTRAN FORMAT strings!!
 	OTSATL: DFLFST, PCHFST
 
 update install-sh (many to choose from!)??
 
-INPUT mode flag(s) for readline / history??
+readline:
+	Allow READLINE() via INPUT? (magic path, or option)
+		Allow control of history
+		Allow control of filename expansion
 	use "libedit" natively??
 
 Look at hash function, OBSFT
 	Use "assention" to implement skip-list???
 
+Eliminate GC copying, keep free list?
+	Copy into new semi-space?
+
 sqlite3 interface?
+
+list/queue utility functions!!!
 
 TAINT flag??? reuse FROZEN???
 	any input string
@@ -43,35 +48,40 @@ windows has _mktime and _mkgmtime -- compare with timelocal & timegm
 Document BREAKPOINT()????
 
 Compiler:
-	get rid of null statements (don't incr STNO)
 	COMPILE(file,listing) function??
-		allow (re)loading in debugger
+		allow (re)loading in debugger/IDE
+	get rid of null statements (don't incr STNO)
+	list ';' separated statements on own lines?
 
 SETEXITFUNC()
 	enter handler as function to allow nested handlers!
 	take action depending on return
 
 sdb:
-	implement "run" command, using CLEAR()?!
-	    preserve: listings, breakpoints
-		ABORT, ARB, BAL, FAIL, FENCE, REM, SUCCEED
 	set: (just SDB.VARS?)
 		"trace" (via FCALL/FRET)
 		"debug"
 	handle multi-statement lines better?
+	handle block comments better?
+	save and enable &INPUT and &OUTPUT on all debugger entries,
+		restore on all exits!!
 	read .sdbinit?
 	save printed values? in SDB.VALUES[n]??
 	remove break/watchpoints when disabled?
 	non-existant file on sdb command line shows "No END"!!!
 		really compiler bug!
 	BUG: breakpoint on bare label (compiler bug)
-		could deal with it in sdb??
-	BUG: ignored watchpoings (cont N or ignore B N) don't update old value
+		could deal with it in sdb listing file parser
+	BUG: ignored watchpoints (cont N or ignore B N) don't update old value
 	"code" command?
 	list [START [END]]
+	implement "run" command, using CLEAR()?!
+	    preserve: listings, breakpoints
+		ABORT, ARB, BAL, FAIL, FENCE, REM, SUCCEED
 
-Agregate dumping (DUMP(2); &DUMP = 2)
-	What about NAMEs?
+snolib:
+	build shared library!!
+	use mgetstring() in all of lib/snolib?
 
 Have timing script POST results??
 
@@ -81,8 +91,8 @@ man pages:
     snobol4func
     document snobol4dynamic, snobol4wrapper
 
-SETEXIT() w/ "continue", "scontinue", "return", "freturn" as arg don't work
-	see what SPITBOL does!
+Agregate dumping (DUMP(2); &DUMP = 2)
+	What about NAMEs?
 
 genc.sno option to use void ** & goto (or goto big_switch;)
 	(configure --mode=xxx)???
@@ -94,15 +104,14 @@ have "with" file -- updated by configure only when changed
 	to allow configure to control .IF's in SIL
 		(gen{c,data} --with XXX)
 
-make "FTRACE" TRACE()able?  pass: CALL/RETURN/FRETURN/NRETURN, NAME&ARGS/VALUE
+make "FTRACE" TRACE()able?  pass: FUNCTION, CALL/RETURN/FRETURN/NRETURN, ARGS/VALUE
 	use in sdb to avoid DEFINE() hack, and CALL/RETURN tracing
+
+SETEXIT() w/ "continue", "scontinue", "return", "freturn" as argument don't work
+	see what SPITBOL does!
 
 see if clearing V&F is necessary in all cases??
 	look at 360, VAX macros, B6700 source
-
-snolib:
-	build shared library!!
-	use mgetstring() in all of lib/snolib?
 
 set-uid checks:
 	(silently?) ignore environment variables
@@ -126,11 +135,11 @@ Pure SNOBOL test driver able to run under windows
 handle leading or trailing PATH_SEP on SNOPATH and PRELOAD_PATH
 	to mean "and also the default"
 
-constants file for WS, DIGITS?
+Test/distribute modified orange book library [gimpel]
 
-Test/distribute modified orange book library?
+Make book scans avaialble
 
-list/queue utility functions!!!
+Package up SNOSTORM??  W/ MTS document???
 
 snobol4 machine generate win32 .mak files??
 	create a config.m4 file
@@ -164,6 +173,12 @@ allow LOADed functions to "intern" strings...
 
 hash TABLEs
 
+ANSIfy
+
+Implement SPITBOL EXIT [+-][34] freeze functionality
+
+SITBOL &HISTOGRAM support?
+
 ================
 
 Look at Ruby Win32API & win32ole facilities
@@ -190,18 +205,7 @@ DBM
 
 	create/use POSIX_MODE() conversion function.
 
-DL params for:
-	AIX????
-	Cygwin??
-	DJGPP?!
-		dxe now part of djgpp?
-		dxe{2,3}gen? to link
-		.dxe extension??
-	MINGW??
-	MSVC???
-		need to create DLL!
-
-report percentage of time in GC?
+undefined function (label?) hooks?
 
 convert('2500000000', 'real') fails on home?
 	strtol() does not detect overflow.
@@ -212,7 +216,7 @@ STCL
 	rename to TCL_?
 	use -framework on OS X??
 
-flush OTSATL, default formats?
+report percentage of time in GC?
 
 report max heap size used in stats
 
@@ -253,16 +257,12 @@ DYNAMIC LOADING!!
 		TESTED 4/15/2003 -- not needed??
 		http://cvs.opendarwin.org//cgi-bin/cvsweb.cgi/proj/dlcompat/
 
+output missing function/label name in bad call/goto?
+
 expand interpreter routines?
 	(instead of set constant, prelude, switch on constant)
 
 Rafal:
-	Use readline (if available) for (cooked)
-		TERMINAL?
-		INPUT??
-		Compiler???
-	READLINE() function
-
 	http://www.star.le.ac.uk/~tjg/rc/misc/editline-1.5.tar.gz
 
 Create loadable modules:
@@ -270,17 +270,11 @@ Create loadable modules:
 	POSIX
 		MKFIFO, etc?
 
-undefined function (label?) hooks?
-
 Test COM
 	InternetExploder??
 
 Test w/ non-libc gdbm??
 	debian include?
-
-Test STCL on Cygwin!?!
-
-create version specific subdir in SNOLIB_DIR?
 
 man page installation:
 	install preformatted, compressed where it's the norm?!
@@ -288,17 +282,6 @@ man page installation:
 Oversize integer constants not detected on all systems!
 	use own strtol(l)?
 	document as BUG??
-
-output missing function/label name in bad call/goto?
-
-Green Book URL(!!) in snobol4.1
-
-do CVS check out on branch??
-	move "make release" out to seperate script?
-		do a test build of checked out files???
-
-make timing output machine friendly??
-	output something like timing.44 entries!
 
 always send timing.out via e-mail?
 	explain why?
@@ -311,44 +294,6 @@ always send timing.out via e-mail?
 	only if part of a real kit???
 
 verify correctness of line.ref, include.ref
-
-create csnobol4 home page (seperate sections for 0.99.4, 0.99.44, new);
-	page for CVS repository instructions
-		CVS view??
-	links to distribution (w/ mirror locations)
-	links to documentation
-		man pages (html, ps, pdf)
-		README
-		INSTALL
-		COPYRIGHT
-		Changes
-		History
-		porting.html
-		timings.html		generate from timings file(s)
-		load.txt
-
-test
-	VMS, DJGPP, Cygwin, MINGW
-	@HP testdrive & ICS
-
-packaging;
-	LSM file? http://lsm.execpc.com/lsm
-	put pkg/ .... files under RCS (CVS)??
-	make snobol*4*-VERSION directory/tarfile???
-		csnobol-VERSION?? csnobol4?
-	update RPM, *bsd for 1.0
-
-	create BSD port/pkg for snocone!!!
-
-	create freebsd binary "package"???
-	release binary RPMs?
-
-	create debian package?
-		http://www.debian.org/doc/FAQ/ch-pkg_basics.en.html
-		http://people.debian.org/~jaldhar/make_package1.html
-
-
-	create solaris package???
 
 have tests cleanup after themselves?  Add Makefile for "make clean"?
 	just add files to "make spotless"
@@ -380,14 +325,6 @@ tag all files
 
 use const for ordvst qsort function?  use bcmp? memcmp??
 	(Solaris)
-
-control lines (and keyword variables?) for BANNER and STATS???
-
-Add -Wimplicit (if not on SunOS4?)?
-	check system includes for prototypes??
-
-protoize all sources?
-	provide "unproto"?
 
 HOST() to return CSNOBOL4 version level??
 	release date???
@@ -484,10 +421,6 @@ SPITBOL features;
 	SPITBOL-386 HOST() functions?????
  
 ================
-
-Conversions for hex/octal;
-	output possible using SPRINTF();  create STRTOINT() (use strtol(l))?
-		look at SITBOL CONVERT()!!
 
 devise a new syntax to use for PTY based subprocesses!?
 	use forkpty()
@@ -679,16 +612,9 @@ update web pages;
 	snobol4.man.html
 	timing lists
 
-binary packages;
-	linux: RPM (debian??)
-	win32
-		http://pweb.netcom.com/~feustel/index.html
-	freebsd?
-
 announce/notify;
 	SNOBOL4 list
-
-	:login;
+	SPITBOL list
 
 	SIGPLAN notices
 
@@ -733,35 +659,15 @@ posix/tty.c; enable 8-bit datapath on "raw"?
 		/netbsd/usr/src/lib/libc/termios/cfmakeraw.c
 
 I/O;
-	implement BACKSPACE() if binary???
-		NAH; need to keep recl per unit
 	pass back flags with recl (so "T" is per-var?)??
 		need to mask off flags to get recl
 	use COMPCL instead of "compiling"???
 	implement I/O objects (input, output, close methods)
 	add option char to ignore "magic" pathnames?
 		(or char to enter magic namespace)
-malloc system stack (STACK)? [see new/sysstk.diffs]
-	slows down OFCHK(); 2+% overall penalty
-
-BUG: &stlimit = -1; output = &stcount; end
-	SPITBOL outputs 1? C-MAINBOL outputs zero!
-
-move SPDLDZ/DPSLDR from SIL to init.c??
-
-move more tests into autoconf, (less stuff in config/*.m4)
 
 have gen*.sno output to xxx.[ch]3, perform mv to .[ch]2 after completion?
 	avoids problems when ^C'ed and partial .h2 files written!
-
-GCCBUILD.COM for VMS?
-
-create config.h on misc ports (vms, djgpp, borland, win32)??
-
-include tests for auto-loads;
-	host.sno
-	float.sno
-	chop.sno
 
 rewind tests;
 	split program across files
@@ -778,11 +684,10 @@ allow expansion of dynamic storage?
 	(re-write GC in C)
 
 SITBOL features;
-	allow null string in alternation;
-		A = 'foo' |
 	relative/numeric goto
 		foo pat =	:<>
 				:<-1>
+	LABEL(.FUNC,OFF) returns CODE!
 
 move data_init into (i)snobol4.c,
 	get rid of (most) entries in "globals"
@@ -790,41 +695,10 @@ move data_init into (i)snobol4.c,
 
 ================
 
-load changes;
-	Use AIX dlopen() simulation by Jens-Uwe Mager <jum@anubis.han.de>
-		ftp://anubis.han.de/pub/aix/dlfcn.shar
-		document DLL creation in load.txt;
-		create snobol4.exp file;
-			{g,r}etstring
-			io_{findunit,getfp,mkfile,endfile,flushall}
-
-	load.c using GNU dynamic load library (dld);
-		version 4.0 is supposed to support COFF & ELF
-
-	bsd;
-		default LD_PATH to /bin/ld (only used now on bsd43,sony_news)?
-		load "object" once, read symtab for multiple entry points
-			use -A on original / current symtab
-		allow using GNU ld (has -Ttext flag) & libbfd?
-
-================
-
-Expand DIAGNOSTICS of man page
-	document all error numbers/strings and reasons!!
-
 have all genc, gendata, gensyn output .[ch]3 files; mv to .[ch]2 on exit??
 
 Have gensyn read character classes from file?
 	(CLASSNAME TAB STRING)
-
-Improve porting.txt / INSTALL
-	talk about C compilers
-		sun cc vs. gcc
-		hp cc vs. gcc
-	optimization (none/-O/-O2 etc)
-	mention "timing" script!!
-
-try adding SOME explicit "inline" decls?
 
 add code to ato[id]() version of spcint()/spreal()
 	to check syntax?? (so CONVERT NUMERIC works)
@@ -879,11 +753,6 @@ better math exception catching;
 
 ================================================================
 
-in make depend;
-	sed "s/$(SNOBOL4)\./"'$(SNOBOL4)./'
-
-================
-
 CHAR/LPAD/RPAD in wrong section of v311.sil?!
 
 ================ DUMP;
@@ -907,12 +776,6 @@ disallow 0 ^ 0?
 SPITBOL x ^ y (y < 0) always yields REAL?
 
 ================
-
-Implement SPITBOL EXIT [+-][34] freeze functionality
-
-================
-
-SITBOL &HISTOGRAM support?
 
 SITBOL	(DIS)ASSOCIATE()
 	INSERTBP() REMOVEBP()
@@ -972,8 +835,6 @@ flag in descriptor for I/O association?
 	in variable?
 	in in hash table?
 
-tweak maxmem up for AIX?
-
 implement tty image mode?
 	pass flags to tty_mode? change "cbreak" to enum cooked/cbreak/raw
 
@@ -995,15 +856,8 @@ document API's in snolib.3!
 
 check if REPLACE() args same as last time
 
-win32;
-	link against msvcXX.dll?
-		Win98:	MSVCRT{20,40}.DLL
-		XP:	+ mscvr{70,71}
-
 implement -IFINCLUDE?
 	process $VAR (as prefix?)
 
 new SPITBOL -IF???
 
-database w/ simultaneous updates?
-	TDB  by Andrew Tridgell <tridge@linuxcare.com> et al
