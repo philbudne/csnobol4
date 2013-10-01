@@ -3,6 +3,11 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/1/2013:
+	config/win32/ntmsvc.mak: add SNOBOL4_C_CFLAGS
+
+**************** release 1.5 (CVS tag REL_1_5)
+
+10/1/2013:
 	configure: update version to 1.5
 
 9/27/2013:
