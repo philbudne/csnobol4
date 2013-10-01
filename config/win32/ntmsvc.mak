@@ -33,6 +33,8 @@ CFLAGS=	-c $(OPT) \
 	-DHAVE_CONFIG_H $(INET_DEFS) -DBITFIELDS_SAME_TYPE \
 	$(COM_DEFS) $(SDBM_DEFS)
 
+SNOBOL4_C_CFLAGS=/wd4715
+
 OBJ=	isnobol4.obj data.obj data_init.obj main.obj syn.obj \
 	bal.obj break.obj date.obj dump.obj endex.obj hash.obj \
 	intspc.obj io.obj lexcmp.obj ordvst.obj pair.obj \
@@ -63,7 +65,7 @@ data_init.obj : $(SRCDIR)data_init.c
 	$(CC) $(CFLAGS) $(SRCDIR)data_init.c
 
 isnobol4.obj : $(SRCDIR)isnobol4.c
-	$(CC) $(CFLAGS) $(SRCDIR)isnobol4.c
+	$(CC) $(CFLAGS) $(SNOBOL4_C_CFLAGS) $(SRCDIR)isnobol4.c
 
 main.obj : $(SRCDIR)main.c
 	$(CC) $(CFLAGS) $(SRCDIR)main.c
