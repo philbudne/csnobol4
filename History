@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/1/2013:
+	configure: update version to 1.5
+
 9/27/2013:
 	conf/win32/config.h: comments on _WIN64 ifdef
 	Makefile: took cpuid out of "make cleanmostly"
