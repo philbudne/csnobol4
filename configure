@@ -692,6 +692,7 @@ else
 	# -v outputs man page!!
 	# -qlonglong enables "long long"?
 	# -Q! turns off inlining (C++ only?)
+	CFLAGS_LONGLONG=-qlonglong
 	if [ "$FAST" ]; then
 	    OPT=-O4
 	else
@@ -838,13 +839,12 @@ main() {
     return 0;
 }
 EOF
-    if ${CCPATH-cc} $CFLAGS -o $TMP $TMP.c && ./$TMP > $TMP.out; then
+    if ${CCPATH-cc} $CFLAGS $CFLAGS_LONGLONG -o $TMP $TMP.c && ./$TMP > $TMP.out; then
 	SLONGLONG=`cat $TMP.out`
 	echo 'sizeof(long long) = '$SLONGLONG		1>&2
 	echo '# sizeof(long long) = '$SLONGLONG		>> $CONFIG_M4
     fi
 fi
-
 rm -f $TMP $TMP.c $TMP.out $TMP.exe
 
 # after size checks;
@@ -914,6 +914,10 @@ if [ "$LONGLONG" ]; then
     echo '#define INT_T long long'		>> $CONFIG_H
     SIZEOF_INT_T=$SLONGLONG
 
+    if [ "x$CFLAGS_LONGLONG" != x ]; then
+	# add any flags necessary to enable "long long"
+	echo 'ADD_CFLAGS(['$CFLAGS_LONGLONG'])' >> $CONFIG_M4
+    fi
     if config/check stdlib.h 'strtoll("", 0, 0)'; then
 	# XXX try running a program to verify??
 	echo 'using C99 printf %lld' 1>&2

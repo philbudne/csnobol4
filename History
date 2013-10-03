@@ -4,6 +4,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/3/2013:
 	timing: force display of /sys//devices/..../name path
+	configure: add CFLAGS_LONGLONG
 
 10/2/2013:
 	configure: update to version 1.5+
