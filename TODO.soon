@@ -116,6 +116,8 @@ make "FTRACE" TRACE()able?
 	pass FUNCTION, CALL/RETURN/FRETURN/NRETURN, ARGS/VALUE
 	use in sdb to avoid DEFINE() hack, and CALL/RETURN tracing
 
+	see FENTR2, FNEXT2
+
 SETEXIT() w/ "continue", "scontinue", "return", "freturn" as argument don't work
 	see what SPITBOL does!
 

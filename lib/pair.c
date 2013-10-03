@@ -16,6 +16,7 @@
 #include "snotypes.h"
 #include "macros.h"
 #include "lib.h"
+#include "equ.h"			/* R & I for DCMP */
 
 #define STATIC_PAIR
 #endif /* STATIC_PAIR not defined */

@@ -82,6 +82,11 @@
 #define INT_T long long
 #define REAL_T double
 #define REALST_FORMAT "%.15lg"
+#define SIZEOF_INT_T 8
+#define SIZEOF_REAL_T 8
+#else
+#define SIZEOF_INT_T 4
+#define SIZEOF_REAL_T 4
 #endif
 
 /* use native routines */

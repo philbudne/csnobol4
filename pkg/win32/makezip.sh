@@ -11,6 +11,6 @@ rm -f snobol4-$vers.zip
 mkdir zipdir
 ./pkg/win32/install.bat zipdir >/dev/null
 cd zipdir
-zip -r -z ../snobol4-$vers.zip snobol4 < snobol4/$vers/README.win32
+zip -r -z ../snobol4-$vers.zip SNOBOL4 < snobol4/$vers/README.win32
 cd ../
 rm -rf zipdir

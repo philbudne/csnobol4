@@ -29,7 +29,12 @@
  * work because V field and A field are sometimes BOTH used to hold
  * a pair of integer datatype codes.
  */
+#if SIZEOF_INT_T == SIZEOF_REAL_T
 #define DCMP(A,B) (D_A(A) == D_A(B) && D_F(A) == D_F(B) && D_V(A) == D_V(B))
+#else
+#define DCMP(A,B) (D_F(A) == D_F(B) && D_V(A) == D_V(B) && \
+		   ((D_V(A) == R && D_RV(A) == D_RV(B)) || D_A(A) == D_A(B)))
+#endif
 
 /* clear B+1 descriptor block */
 #define ZERBLK(A,B) bzero((void *)(A), (long)((B)+DESCR)) /* XXX SIZE_T */

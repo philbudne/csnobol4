@@ -155,9 +155,6 @@ while [ $# -gt 0 ]; do
 	set -x
 	;;
     --double)
-	# sizeof(real_t) must be <= sizeof(int_t),
-	#  or IDENT(REAL,REAL) won't work
-	# This probably ought to be removed.  Use --longlong instead!
 	DOUBLE=true
 	;;
     --fast)
@@ -345,10 +342,11 @@ if [ "$WANTGCC" ]; then
     done
 fi
 
+TMP=conf$$
+
 # didn't find gcc in PATH; check if CC is gcc or clang
 if [ ! "$GCCPATH" ]; then
     echo 'checking cc' 1>&2
-    TMP=conf$$
     # vanilla bsd43 systems can't use <<- AND EOF must be in col 0!
     cat << EOF > $TMP.c
 #include <stdio.h>
@@ -795,19 +793,19 @@ echo checking sizes of C types 1>&2
 # check for alignment as well (for NO_BITFIELDS)?
 # use SDOUB for "DOUBLE" (check vs. int_t)??
 # see if "long long" available (need to compile seperately)???
-TMP=conf$$
 cat << EOF > $TMP.c
 #include <stdio.h>
 
 int
 main() {
-    printf("%d %d %d %d\n", (int)sizeof(void *), (int)sizeof(long),
-			    (int)sizeof(double), (int)sizeof(int));
+    printf("%d %d %d %d %d\n", (int)sizeof(void *),
+	(int)sizeof(int), (int)sizeof(long),
+	(int)sizeof(float), (int)sizeof(double));
     return 0;
 }
 EOF
 if ${CCPATH-cc} $CFLAGS -o $TMP $TMP.c && ./$TMP > $TMP.out &&
-  read SPTR SLONG SDOUB SINT < $TMP.out; then
+  read SPTR SINT SLONG SFLOAT SDOUBLE < $TMP.out; then
     echo 'sizeof(int) = '$SINT		1>&2
     echo '# sizeof(int) = '$SINT	>> $CONFIG_M4
 
@@ -817,8 +815,11 @@ if ${CCPATH-cc} $CFLAGS -o $TMP $TMP.c && ./$TMP > $TMP.out &&
     echo 'sizeof(long) = '$SLONG	1>&2
     echo '# sizeof(long) = '$SLONG	>> $CONFIG_M4
 
-    echo 'sizeof(double) = '$SDOUB	1>&2
-    echo '# sizeof(double) = '$SDOUB	>> $CONFIG_M4
+    echo 'sizeof(float) = '$SFLOAT	1>&2
+    echo '# sizeof(float) = '$SFLOAT	>> $CONFIG_M4
+
+    echo 'sizeof(double) = '$SDOUBLE	1>&2
+    echo '# sizeof(double) = '$SDOUBLE	>> $CONFIG_M4
 
     # XXX ASSume sizeof(char) == 1 (8 bits)
     if [ "$SPTR" = 8 -a "$SLONG" = 8 ]; then
@@ -827,6 +828,23 @@ if ${CCPATH-cc} $CFLAGS -o $TMP $TMP.c && ./$TMP > $TMP.out &&
 	LP64_NATIVE=true
     fi
 fi
+if [ "$LONGLONG" -a "x$LP64_NATIVE" = x ]; then
+cat << EOF > $TMP.c
+#include <stdio.h>
+
+int
+main() {
+    printf("%d\n", (int)sizeof(long long));
+    return 0;
+}
+EOF
+    if ${CCPATH-cc} $CFLAGS -o $TMP $TMP.c && ./$TMP > $TMP.out; then
+	SLONGLONG=`cat $TMP.out`
+	echo 'sizeof(long long) = '$SLONGLONG		1>&2
+	echo '# sizeof(long long) = '$SLONGLONG		>> $CONFIG_M4
+    fi
+fi
+
 rm -f $TMP $TMP.c $TMP.out $TMP.exe
 
 # after size checks;
@@ -879,19 +897,25 @@ if [ ! "$INLINE_OK" ]; then
 fi
 
 if [ "$LONGLONG" ]; then
-    # Force use of 64-bit int and real types even if native pointers
-    # are smaller.  gcc generates TONS of compiler warnings!!
-
+    # Force use of 64-bit int and real types on ILP32 systems.
+    # Not tested in all environments (some compilers
+    # may require options to enable "long long" data type)
+    if [ "$SLONGLONG" = '' ]; then
+	echo 'FATAL: --longlong selected but no long long type available' 1>&2
+	exit 1
+    fi
     # make real_t same size as int_t
     DOUBLE=true
 
-    # Not tested in all environments (some compilers
-    # may require options to enable "long long" data type)
+    # turn off bitfields
+    NO_BITFIELDS=true
 
     echo using long long for SNOBOL4 INTEGER type 1>&2
     echo '#define INT_T long long'		>> $CONFIG_H
+    SIZEOF_INT_T=$SLONGLONG
 
     if config/check stdlib.h 'strtoll("", 0, 0)'; then
+	# XXX try running a program to verify??
 	echo 'using C99 printf %lld' 1>&2
 	echo 'SPCINT_C=$(SRCDIR)lib/c99/spcint.c' >> $CONFIG_M4
 	echo 'using C99 strtoll()' 1>&2
@@ -903,7 +927,16 @@ if [ "$LONGLONG" ]; then
 	echo 'using private integer to string' 1>&2
 	echo 'INTSPC_C=$(SRCDIR)lib/longlong/intspc.c' >> $CONFIG_M4
     fi
+
+    if [ "$USING_GCC" -o "$CC_IS" = clang ]; then
+	# keep gcc (& clang?) from screaming about copious warnings
+        echo 'ADD_CFLAGS([-Wno-pointer-to-int-cast -Wno-int-to-pointer-cast])' >> $CONFIG_M4
+    fi
+else
+    LONGLONG=
+    SIZEOF_INT_T=$SLONG
 fi
+
 
 if [ "$NO_BITFIELDS" ]; then
     echo '#define NO_BITFIELDS'			>> $CONFIG_H
@@ -923,7 +956,13 @@ if [ "$DOUBLE" ]; then
     # print lots of digits -- possibly suboptimal, but safe
     # wikipedia page on IEEE FP says binary64 format has 15.95 sig digs
     echo '#define REALST_FORMAT "%.15lg"'	>> $CONFIG_H
+    SIZEOF_REAL_T=$SDOUBLE
+else
+    SIZEOF_REAL_T=$SFLOAT
 fi
+
+echo '#define SIZEOF_INT_T	'$SIZEOF_INT_T'	/* for use in ifdefs */' >> $CONFIG_H
+echo '#define SIZEOF_REAL_T	'$SIZEOF_REAL_T'	/* for use in ifdefs */' >> $CONFIG_H
 
 if config/check stdlib.h; then
     echo 'using ANSI stdlib.h' 1>&2
@@ -1490,7 +1529,7 @@ fi
 echo '#define HAVE_SLEEP'			>> $CONFIG_H
 SELECT_FRAG='fd_set x; struct timeval tv; select(0,&x,&x,&x,&tv);'
 if config/check time.h 'struct timespec ts; nanosleep(&ts,0)'; then
-    echo 'using posix nanosleep()' 1>&2
+    echo 'using POSIX nanosleep()' 1>&2
     echo 'SLEEP_C=$(SRCDIR)lib/posix/sleep.c' >> $CONFIG_M4
 elif config/check sys/select.h "$SELECT_FRAG"; then
     echo 'using posix select() for sleep' 1>&2
@@ -1623,7 +1662,7 @@ if [ ! "$WITHOUT_NDBM" ]; then
     fi
 fi
 
-# Include GNU readline support, if found
+# Include readline support, if found
 if [ ! "$WITHOUT_READLINE" ]; then
     RL_INC='stdio.h readline/readline.h readline/history.h'
     RL_FRAG='readline("?")'
