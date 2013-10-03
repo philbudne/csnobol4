@@ -2,12 +2,16 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/2/2013:
+	configure: update to version 1.5+
+
 10/1/2013:
 	config/win32/ntmsvc.mak: add SNOBOL4_C_CFLAGS
 	pkg/win32/makezip.sh: make SNOBOL4 upper case
 	configure: check for long long, output SIZEOF_{INT,REAL}_T
 	include/macros.h: handle SIZEOF_INT_T != SIZEOF_REAL_T in DCMP
 	lib/pair.c: include equ.h for DCMP()
+	config/win32/config.h: add SIZEOF_{INT,REAL}_T
 
 **************** release 1.5 (CVS tag REL_1_5)
 
