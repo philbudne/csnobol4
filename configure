@@ -286,7 +286,18 @@ done
 
 BINDIR="$PREFIX/bin"
 if [ "x$MANDIR" = x ]; then
+    # config filename varies:
+    #	/etc/manpaths (OSX 10.6)
+    #   /etc/manpath.config (FreeBSD 7)
+    #	/etc/man.config (RHEL 6)
+    # Thoughts: if both present in config file, check in that order
+    # for existance of "man1" subdir.
+    SD="$PREFIX/share/man"
+    if grep "$SD" /etc/man* >/dev/null 2>&1; then
+	MANDIR="$SD"
+    else
 	MANDIR="$PREFIX/man"
+    fi
 fi
 MAN1DIR="$MANDIR/man1"
 MAN3DIR="$MANDIR/man3"
