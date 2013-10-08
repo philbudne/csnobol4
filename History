@@ -6,6 +6,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	make.bat, pkg/win32/{sdb,timing}.bat:
 		wrap batch file variable expansions in double quotes
 		replace NL with CRLF
+	configure: check for ELF the same way on all BSD systems
 
 10/6/2013:
 	configure: check for BASEDIR/share/man (Reported by Mike Greenberg)

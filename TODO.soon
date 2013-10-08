@@ -1,14 +1,5 @@
 $Id$
 
-use CRLF in .bat files
-
-timing.bat doesn't handle spaces in path
-
-Check /etc/manpath*  /etc/manpath*/* (& existing dirs?)
-	for correct (local) directory for man pages...
-
-FreeBSD objformat obsolete!!!
-
 ================ next release
 
 SNOBOL4B (BLOCKS)!!

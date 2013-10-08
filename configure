@@ -1328,17 +1328,12 @@ if [ ! "$NO_DYNLIB" ]; then
 	    TRY_UNDERSCORE=true
 	    SNOLIB_FILE=snolib.bundle
 	    ;;
-	FreeBSD*)
-	    if [ -x /usr/bin/objformat ]; then
-		case `/usr/bin/objformat` in
-		elf)
-		    echo 'ADD_LDFLAGS([-export-dynamic])' >> $CONFIG_M4
-		    ;;
-		*)
-		    TRY_UNDERSCORE=true
-		    ;;
-		esac
+	*BSD*)
+	    if file /bin/ls | grep -i elf >/dev/null; then
+		echo 'ADD_LDFLAGS([-export-dynamic])' >> $CONFIG_M4
 	    else
+		# old a.out systems:
+		# COFF may not, but this should be mostly harmless
 		TRY_UNDERSCORE=true
 	    fi
 	    ;;
@@ -1346,19 +1341,6 @@ if [ ! "$NO_DYNLIB" ]; then
 	    # XXX detect a.out systems?
 	    echo 'ADD_LDFLAGS([-ldl])'		>> $CONFIG_M4
 	    echo 'ADD_LDFLAGS([-export-dynamic])' >> $CONFIG_M4
-	    ;;
-	NetBSD*)
-	    if echo __ELF__ | cc -E - | grep __ELF__ >/dev/null; then
-		echo 'ADD_LDFLAGS([-export-dynamic])' >> $CONFIG_M4
-	    else
-		# a.out system; need underscore
-		# COFF may not, but this should be mostly harmless
-		TRY_UNDERSCORE=true
-	    fi
-	    ;;
-	OpenBSD*)
-	    # XXX detect ELF??
-	    TRY_UNDERSCORE=true
 	    ;;
 	SunOS4*)
 	    echo 'ADD_LDFLAGS([-ldl])'		>> $CONFIG_M4
@@ -1372,7 +1354,7 @@ if [ ! "$NO_DYNLIB" ]; then
 	if [ "$TRY_UNDERSCORE" ]; then
 	    echo '#define TRY_UNDERSCORE'	>> $CONFIG_H
 	fi
-	# TEMP: new load support (honors SNOPATH)
+	# new load support (honors SNOPATH)
 	echo 'ADD_OBJS([loadx.o])'		>> $CONFIG_M4
       fi
     elif config/check dl.h 'shl_load("", BIND_DEFERRED, 0L)'; then
