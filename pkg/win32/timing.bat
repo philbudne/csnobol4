@@ -2,7 +2,10 @@
 :: Phil Budne 8/14/2013
 
 setlocal
-set BINDIR=%~dp0
+set "BINDIR=%~dp0"
+
+echo timing.bat $Id$
+echo:
 
 echo Date:
 echo %date% %time%
@@ -25,17 +28,20 @@ hostname
 echo:
 
 echo cpuid:
-%BINDIR%\cpuid
+"%BINDIR%\cpuid"
 echo:
 
-cd /d %BINDIR%\..\timing
+cd /d "%BINDIR%\..\timing"
 echo Ids:
 find "Id:" bench.sno v311.sil timing.sno
 echo:
 
-echo running benchmark:
-%BINDIR%\snobol4 -s bench.sno v311.sil 2>stderr
-%BINDIR%\snobol4 -b timing.sno < stderr
-
+echo running bench.sno:
+"%BINDIR%\snobol4" -s bench.sno v311.sil 2>stderr
 echo:
+
+echo running timing.sno:
+"%BINDIR%\snobol4" -b timing.sno < stderr
+echo:
+
 echo END

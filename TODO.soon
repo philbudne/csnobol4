@@ -1,15 +1,20 @@
 $Id$
 
-process.sno:
-	note if under hypervision!!!
-	     replace CPU string if no @?
+use CRLF in .bat files
+
+timing.bat doesn't handle spaces in path
+
+Check /etc/manpath*  /etc/manpath*/* (& existing dirs?)
+	for correct (local) directory for man pages...
+
+FreeBSD objformat obsolete!!!
 
 ================ next release
 
-genc:
-	handle nested .IF, add .ELSE
-
 SNOBOL4B (BLOCKS)!!
+	gendata, gensyn: handle .IF
+
+	genc: handle nested .IF, add .ELSE
 
 make --double work! (default to it??)
 	DCMP: TYPE == TYPE && ((TYPE == R && D_R == D_R) || D_A == D_A)
@@ -17,9 +22,6 @@ make --double work! (default to it??)
 		check alignment!!
 		      sparc double is 64 bit aligned
 			x86 is 32-bit aligned
-
-
-compile test program to check if "long long" exists (output size?)
 
 Benchmark USE_MEM{MOVE,SET}
 	Flush direct use of b{copy,zero}??
@@ -794,4 +796,3 @@ implement -IFINCLUDE?
 	process $VAR (as prefix?)
 
 new SPITBOL -IF???
-
