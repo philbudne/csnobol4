@@ -3,16 +3,10 @@ $Id$
 ================ next release
 
 SNOBOL4B (BLOCKS)!!
-	gendata, gensyn: handle .IF
+	handle nested .IF, add .ELSE??
 
-	genc: handle nested .IF, add .ELSE
-
-make --double work! (default to it??)
-	DCMP: TYPE == TYPE && ((TYPE == R && D_R == D_R) || D_A == D_A)
-	have DOUBLE force NO_BITFIELDS??
-		check alignment!!
-		      sparc double is 64 bit aligned
-			x86 is 32-bit aligned
+--double; check double alignment;
+	If not 32 bit alignable use NO_BITFIELDS?
 
 Benchmark USE_MEM{MOVE,SET}
 	Flush direct use of b{copy,zero}??
@@ -56,7 +50,7 @@ Compiler:
 
 SETEXITFUNC()
 	enter handler as function to allow nested handlers!
-	take action depending on return
+	take action depending on return (abort, continue, scontinue)
 
 sdb:
 	set: (just SDB.VARS?)
