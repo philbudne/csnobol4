@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/11/2013:
+	tag TAG_1_5_PLUS
+	branch BR_1_5_PLUS_BLOCKS
+
 10/8/2013:
 	make.bat, pkg/win32/{sdb,timing}.bat:
 		wrap batch file variable expansions in double quotes
