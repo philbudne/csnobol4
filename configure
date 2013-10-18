@@ -802,22 +802,25 @@ fi
 echo checking sizes of C types 1>&2
 # detect compilers/architectures where LP64 is the default
 # MUST be after compiler choice
-# check for alignment as well (for NO_BITFIELDS)?
-# use SDOUB for "DOUBLE" (check vs. int_t)??
-# see if "long long" available (need to compile seperately)???
 cat << EOF > $TMP.c
 #include <stdio.h>
 
+struct foo {
+    char c;
+    double y;
+};
+
 int
 main() {
-    printf("%d %d %d %d %d\n", (int)sizeof(void *),
+    printf("%d %d %d %d %d %lu\n", (int)sizeof(void *),
 	(int)sizeof(int), (int)sizeof(long),
-	(int)sizeof(float), (int)sizeof(double));
+	(int)sizeof(float), (int)sizeof(double),
+	&((struct foo *)0)->y);
     return 0;
 }
 EOF
 if ${CCPATH-cc} $CFLAGS -o $TMP $TMP.c && ./$TMP > $TMP.out &&
-  read SPTR SINT SLONG SFLOAT SDOUBLE < $TMP.out; then
+  read SPTR SINT SLONG SFLOAT SDOUBLE ADOUBLE < $TMP.out; then
     echo 'sizeof(int) = '$SINT		1>&2
     echo '# sizeof(int) = '$SINT	>> $CONFIG_M4
 
@@ -832,6 +835,9 @@ if ${CCPATH-cc} $CFLAGS -o $TMP $TMP.c && ./$TMP > $TMP.out &&
 
     echo 'sizeof(double) = '$SDOUBLE	1>&2
     echo '# sizeof(double) = '$SDOUBLE	>> $CONFIG_M4
+
+    echo 'alignment(double) = '$ADOUBLE	1>&2
+    echo '# alignment(double) = '$ADOUBLE	>> $CONFIG_M4
 
     # XXX ASSume sizeof(char) == 1 (8 bits)
     if [ "$SPTR" = 8 -a "$SLONG" = 8 ]; then
@@ -882,6 +888,12 @@ if [ "$LP64" ]; then
 
     # make --longlong a noop
     LONGLONG=
+elif [ "$DOUBLE" ]; then
+    # if double in use for float_t, and would force 16 byte descriptors
+    # (eg; on sparc or w/ -malign-double) don't pack "v" field into 24 bits
+    if [ "$ADOUBLE" = "$SDOUBLE" ]; then
+	NO_BITFIELDS=true
+    fi
 fi
 
 if [ "$ARCH_CFLAGS" ]; then

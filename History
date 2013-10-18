@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/15/2013:
+	configure: check double alignment; disable bitfields if strict
+		(would pad descriptor to 16 bytes).
+
 10/11/2013:
 	tag TAG_1_5_PLUS
 	branch BR_1_5_PLUS_BLOCKS
