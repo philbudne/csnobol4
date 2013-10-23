@@ -276,3 +276,66 @@ strjoin
     va_end(vp);
     return str;
 }
+
+#ifdef BLOCKS
+/* for BLOCKS; translated from the BAL macro 9/26/2013 */
+/*
+#define DEBUG_MERGSP
+#define DEBUG_MERGSP2
+*/
+#ifdef DEBUG_MERGSP2
+#define DUMP(S,L) dump(#S, S, L)
+static void
+dump(n, s, l)
+     char *n, *s;
+     int l;
+{
+    fprintf(stderr, "%-4s '", n);
+    while (l-- > 0) {
+	char c = *s++;
+	if (c == '\0') c = '~';
+	fputc(c, stderr);
+    }
+    fprintf(stderr, "'\n");
+}
+#else
+#define DUMP(S,L)
+#endif
+
+void
+mergsp(sp1, sp2, sp3)
+    struct spec *sp1, *sp2, *sp3;
+{
+    int len = S_L(sp2);			/* GR1 "length" */
+    char *dest = S_SP(sp1);		/* GR2 "first string" */
+    char *src = S_SP(sp2);		/* GR3 "2nd string" */
+    char bg = *S_SP(sp3);		/* GR4 "background" */
+    char c;				/* GR5 */
+#ifdef DEBUG_MERGSP
+    fprintf(stderr, "mergsp len %d bg '%c'\n", len, bg);
+#endif
+    if (len < 1)
+	return;
+    DUMP(src, len);
+    DUMP(dest, len);
+    do {
+	--len;
+	c = src[len];
+	if (c != bg)
+	    dest[len] = c;
+    } while (len > 0);
+    DUMP(dest, S_L(sp2));
+}
+
+/* 10/11/2013 BLOCKS BLAND routine requires BLT-like behavior! */
+void
+movblk2(d1, d2, len)
+    struct descr *d1, *d2;
+    int_t len;
+{
+    while (len > 0) {
+	*++d1 = *++d2;
+	len -= DESCR;
+    }
+}
+#endif /* BLOCKS */

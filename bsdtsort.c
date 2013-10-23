@@ -295,12 +295,12 @@ get_node(name)
 	char *name;
 {
 	NODE *n;
-	int hash;
+	unsigned int hash;
 	char *cp;
 
 	hash = 0;
 	for (cp = name; *cp; ) {
-	    hash <<= 4;
+	    hash = (hash<<4) | (hash>>28);
 	    hash ^= *cp++;
 	}
 

@@ -60,6 +60,7 @@ int io_add_lib_path __P((char *));
 char *io_lib_find __P((char *, char *, char *));
 void io_preload __P((void));
 void io_show_paths __P((void));
+void io_fastpr __P((struct descr *,struct descr *,struct descr *,struct spec *,struct spec *));
 
 /* from lexcmp.c */
 int lexcmp __P((struct spec *,struct spec *));
@@ -101,6 +102,8 @@ void spec2str __P((struct spec *,char *,int));
 char *mspec2str __P((struct spec *));
 void apdsp __P((struct spec *, struct spec *));
 char *strjoin __P((char *str0, ...));
+void mergsp __P((struct spec *,struct spec *,struct spec *));
+void movblk2 __P((struct descr *,struct descr *,int_t));
 
 /* stream.c declarations in include/syntab.h */
 

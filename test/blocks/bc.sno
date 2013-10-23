@@ -1,0 +1,12 @@
+-BLOCKS
+	x = ('A' # '_') % 'B'
+	PRINT(x)
+	a = BCHAR(x)
+	OUTPUT = a
+	i = j = 1
+	OUTPUT = a[1,1]
+	OUTPUT = a[2,1]
+	OUTPUT = a[1,2]
+	OUTPUT = a[2,2]
+END
+

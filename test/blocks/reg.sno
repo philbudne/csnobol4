@@ -1,0 +1,25 @@
+-BLOCKS
+# CACM 6/1972 v15n6 p441
+
+	B = FRONT(8,10) # '*'
+	PRINT(B)
+
+	DEFINE("PRHV(B,H,V)")		:(EPRHV)
+PRHV	HOR_REG(B) = H
+	VER_REG(B) = V
+	OUTPUT = "===="
+	OUTPUT = "H: '" H "' V: '" V "'"
+	PRINT(B)			:(RETURN)
+EPRHV
+
+	DEFINE("PRV(B,V)")		:(EPRV)
+PRV	PRHV(B,'', V)
+	PRHV(B,'RIGHT', V)
+	PRHV(B,'LEFT', V)		:(RETURN)
+EPRV
+
+	PRV(B, '')
+	PRV(B, 'TOP')
+	PRV(B, 'BOTTOM')
+END
+	

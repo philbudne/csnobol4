@@ -1,0 +1,8 @@
+-BLOCKS
+# CACM 6/1972 v15n6 p443 (right column)
+
+	N = NODE('O')
+	CROSS = 'CR' N 'SS'
+	WORD = 'W' % N % 'R' % 'D'
+	PRINT( MERGE(CROSS,WORD) )
+END

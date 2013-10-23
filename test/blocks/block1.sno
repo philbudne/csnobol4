@@ -1,0 +1,9 @@
+-PLUSOPS 1
+-BLOCKS
+        OPSYN('#','+',2)
+* 15 + 5
+	OUTPUT = 1 5 # 5
+	foo = 'foo'
+	foo ? span('o') = 'x'
+	output = foo
+END

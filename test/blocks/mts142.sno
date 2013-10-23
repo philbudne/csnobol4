@@ -1,0 +1,10 @@
+-BLOCKS
+# MTS Volume 9 (Sept 1975) p142
+	E = IT('*')
+	PRINT(E % E ' ENCLOSED ' E % E)
+	OUTPUT =
+
+	E = IT(' *' % '* ')
+	B = 'DOUBLY' % ' ENCLOSED '
+	PRINT(E % E B E % E)
+END

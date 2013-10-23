@@ -1,0 +1,105 @@
+-BLOCKS
+# CACM 6/1972 v15n6 p445
+*	&FTRACE = 1000
+
+* magic value!!!
+*	&DUMP = 50
+
+* VT100 enter graphics: ESC(0 leave: ESC(B
+* UNICODE 250x, 251x in Windows Glyph List 4
+* upper left (UNICODE 250C; DOS AD; VT100 "l"; UNICODE ROUNDED 256D; UNICODE PAREN 239B)
+	UL = '+'
+* lower left (UNICODE 2514; DOS C0; VT100 "m"; UNICODE ROUNDED 2570; UNICODE PAREN 239C)
+	LL = '+'
+* upper right (UNICODE 2510; DOS BF; VT100 "k"; UNICODE ROUNDED 256E; UNICODE PAREN 239E)
+	UR = '+'
+* lower right (UNICODE 2518; DOS D9; VT100 "j"; UNICODE ROUNDED 256F; UNICODE PAREN 23A0)
+	LR = '+'
+* vertical line (UNICODE 2502; DOS B3; VT100 "q"; UNICODE LEFT PAREN 239C;
+*						  UNICODE RIGHT PAREN 239F)
+	LP = RP = '|'
+* horizontal line (UNICODE 2500; DOS C4; VT100 "y"; UNICODE 23AF)
+	HL = '-'
+
+	OP.N = POS(0) ANY('=+-*/^(') . OP ',' BREAK(',') . N ','
+	DEFINE('IMAGE(POLISH)HT')
+	DEFINE('WORKER()OP,N,WORKER1,HT1,WORKER2,HT2')
+	DEFINE('MAX(MAX,MAX2)')				:(IMAGE_END)
+
+* entry point:
+IMAGE	IMAGE = WORKER()				:(RETURN)
+
+MAX	MAX = GT(MAX2,MAX) MAX2				:(RETURN)
+
+* worker -- POLISH is local variable of outer IMAGE() function
+WORKER	POLISH OP.N =					:F(WFAIL)
+*	TERMINAL = '>>>' N
+	:($('WORKER' N))
+WFAIL	POLISH BREAK(',') . WORKER ',' =
+	HT = 0						:(RETURN)
+
+****************
+* unary operators
+WORKER1	WORKER = WORKER()
+*	TERMINAL = '>>>' OP N
+	:($('WORKER' OP N))
+
+WORKER+1
+WORKER-1
+* PLB X -C is less confusing than X - C for X * -C!!
+*	WORKER = (VER(HT) % OP) HOR(1) WORKER		:(WORKER_RET)
+	WORKER = (VER(HT) % OP) WORKER			:(WORKER_RET)
+
+* parens
+WORKER(1
+	H = HEIGHT(WORKER)
+	WORKER = EQ(H,1) '(' WORKER ')'			:S(RETURN)
+	HT = H / 2
+	WORKER = (UL % REP(LP) % LL) WORKER (UR % REP(RP) % LR)
+	WORKER = FIX(WORKER)				:(RETURN)
+
+****************
+* binary operators
+WORKER2	WORKER1 = WORKER() ; HT1 = HT
+	WORKER2 = WORKER() ; HT2 = HT			:($('WORKER' OP N))
+
+* horizontal joining
+WORKER=2
+WORKER+2
+WORKER-2
+WORKER*2
+	OP = ' ' OP ' '
+	OP = IDENT(OP, ' * ') ' '
+	HT = MAX(HT1, HT2)
+	WORKER = (VER(HT - HT1) % WORKER1)
++		(VER(HT) % OP)
++		(VER(HT - HT2) % WORKER2)		:(WORKER_RET)
+
+* division
+WORKER/2
+	W = MAX(WIDTH(WORKER1), WIDTH(WORKER2))
+	HT = HEIGHT(WORKER1)
+	WORKER = WORKER1 % DUP(HL, 1, W + 2) % WORKER2
+	WORKER = FIX(WORKER)				:(RETURN)
+
+* exponentiation
+WORKER^2
+	HT = HEIGHT(WORKER2) + HT1
+	WORKER = (VER(HEIGHT(WORKER2)) % WORKER1) WORKER2
+	WORKER = FIX(WORKER)				:(RETURN)
+
+****************
+* common return
+WORKER_RET
+	VER_REG(WORKER) = 'TOP'
+	WORKER = FIX(WORKER)				:(RETURN)
+
+IMAGE_END
+****************************************************************
+
+*	1/(1+1/x)
+	PRINT(IMAGE('/,2,1,+,2,1,/,2,1,x,'))
+	OUTPUT =
+
+	PRINT(IMAGE('*,2,(,1,+,2,A,B,-,1,C,'))
+END

@@ -140,6 +140,9 @@ usage( jname, justversion )
     p('s',"toggle display of statistics");
     fprintf(stderr, "-u PARMS\n\tparameter data available via HOST(0)\n");
     p('v',"display version and exit");
+#ifdef BLOCKS
+    p('B',"toggle SNOBOL4B operators (-[NO]BLOCKS)");
+#endif
     fprintf(stderr, "-L SOURCE\n");
     fprintf(stderr, "\tload source file before user program\n");
     p('M',"process multiple files for program code");
@@ -369,7 +372,7 @@ init_args( ac, av )
      *		added, but it better not want an argument!)
      */
 
-    while ((c = getopt(argc, argv, "+bd:fghkl:nprsu:vzI:L:MP:S:")) != -1) {
+    while ((c = getopt(argc, argv, "+bd:fghkl:nprsu:vzBI:L:MP:S:")) != -1) {
 	switch (c) {
 	case 'b':
 	    D_A(BANRCL) = !D_A(BANRCL);	/* toggle banner output */
@@ -443,6 +446,12 @@ init_args( ac, av )
 	case 'z':
 	    showpaths = 1;
 	    break;
+
+#ifdef BLOCKS
+	case 'B':			/* toggle BLOCKS */
+	    D_A(BLOKCL) = !D_A(BLOKCL);
+	    break;
+#endif
 
 	case 'I':			/* include path dir */
 	    io_add_lib_dir(optarg);

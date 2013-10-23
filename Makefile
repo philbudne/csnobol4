@@ -28,7 +28,7 @@ SNO=snobol4 -b
 # machine generated files (final products);
 
 GENERATED=data.c data_init.h proc.h static.h syn.h data.h \
-	equ.h res.h syn.c syn_init.h isnobol4.c snobol4.c host.sno
+	equ.h res.h syn.c syn_init.h snobol4.c host.sno isnobol4.c with
 
 ################
 # SIL source file
@@ -81,9 +81,9 @@ Makefile2 .depend: config.m4 Makefile2.m4
 # code
 
 # regular version
-snobol4.c proc.h2 static.h2: procs genc.sno globals $(SIL) 
+snobol4.c proc.h2 static.h2: procs genc.sno globals $(SIL) with
 	rm -f snobol4.c2 proc.h2 static.h2
-	$(SNO) genc.sno $(SIL) > snobol4.c2
+	$(SNO) genc.sno `cat with` $(SIL) > snobol4.c2
 	mv -f snobol4.c2 snobol4.c
 
 # generate inline version (functions reordered)
@@ -96,11 +96,11 @@ snobol4.c proc.h2 static.h2: procs genc.sno globals $(SIL)
 # since that would force isnobol4.c to be rebuilt (which requires a
 # snobol4 binary) when starting with a distribution kit.
 
-isnobol4.c: procs genc.sno globals $(SIL)
+isnobol4.c: procs genc.sno globals $(SIL) with
 	rm -rf isnobol4.c2 proc.h2 static.h2 prolog subr
 	$(MAKE) bsdtsort
 	mkdir subr
-	$(SNO) -- genc.sno --inline $(SIL) > prolog
+	$(SNO) -- genc.sno --inline `cat with` $(SIL) > prolog
 	cd subr && ../bsdtsort < ../callgraph > order && \
 		cat ../prolog `cat order` > ../isnobol4.c2
 	mv -f isnobol4.c2 isnobol4.c
@@ -120,9 +120,9 @@ bsdtsort: bsdtsort.c config.h
 
 # only change syn.h if it has changed from last run!
 
-syn.c syn.h2 syn_init.h2: syntax.tbl gensyn.sno
+syn.c syn.h2 syn_init.h2: syntax.tbl gensyn.sno with
 	rm -f syn.c2 syn.h2
-	$(SNO) gensyn.sno syntax.tbl
+	$(SNO) gensyn.sno `cat with` syntax.tbl
 	mv -f syn.c2 syn.c
 
 syn.h:	syn.h2
@@ -134,9 +134,9 @@ syn_init.h: syn_init.h2
 ################
 # resident data
 
-data.h2 data.c2 equ.h2 data_init.h2 res.h2: $(SIL) gendata.sno
+data.h2 data.c2 equ.h2 data_init.h2 res.h2: $(SIL) gendata.sno with
 	rm -f data.h2 data.c2 equ.h2 data_init.h2 res.h2
-	$(SNO) gendata.sno $(SIL)
+	$(SNO) gendata.sno `cat with` $(SIL)
 
 data.h:	data.h2
 	@cmp data.h data.h2 || cp data.h2 data.h

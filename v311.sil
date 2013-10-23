@@ -1,6 +1,27 @@
 * $Id$
 *
 * $Log$
+* Revision 1.133.2.5  2013/10/18 02:30:58  phil
+* v311.sil: [PLB121] Clean up PRINT/EJECT carriage control
+* Implement ASCII Carriage Control if CC(unit) < 0
+*
+* Revision 1.133.2.4  2013/10/16 00:33:37  phil
+* [PLB120] change DI_8 to DI_DSC for 64-bit systems!
+*
+* Revision 1.133.2.3  2013/10/15 20:23:52  phil
+* [PLB119] fix BCHAR() -- was writing into const string
+* clean up warning FORMATs, report file & line
+*
+* Revision 1.133.2.2  2013/10/12 02:03:55  phil
+* v311.sil: [PLB118] replace MOVBLK with MOVBLK2 in BLAND
+*
+* Revision 1.133.2.1  2013/10/11 23:09:06  phil
+* [BLOCKS] add BLOCKS code thanks to Mike Alexander
+* [PLB117] add -[NO]BLOCKS to disable/enable blocks operator changes
+*
+* Revision 1.133  2013/09/23 21:38:32  phil
+* [PLB116] use SMAXINT
+*
 * Revision 1.132  2013/09/13 01:14:07  phil
 * [PLB115] single letter trace types (ala SPITBOL)
 *
@@ -816,6 +837,7 @@ P      EQU     3		   PATTERN
 R      EQU     7		   REAL
 S      EQU     1		   STRING
 T      EQU     5		   TABLE
+BL     EQU     20		   BLOCK			[BLOCKS]
 DATSTA EQU     100		   First user datatpe		[PLB31]
 *
 * [PLB65] pattern matching function indexes (see PATBRA);
@@ -861,6 +883,9 @@ BEGIN  INIT    ,		   Initialize system
        ISTACK  ,		   Initialize stack
        AEQLC   BANRCL,0,,NOBANR	   Check if banner suppressed	[PLB12]
        OUTPUT  PUNCH,TITLEF	   Title listing		[PLB3]
+.IF BLOCKS
+       OUTPUT  PUNCH,TITLEF1	   BLOCKS version		[BLOCKS]
+.FI
        OUTPUT  PUNCH,SOURCF	   Print attribution		[PLB3]
 NOBANR LHERE			   here after banner		[PLB12]
        MSTIME  TIMECL		   Time in compiler
@@ -1462,6 +1487,9 @@ BINOP  PROC    ,		   Compiler binary operator analysis
 *				   Embedded ='s			[PLB32]
 BINOP4 AEQLC   BRTYPE,NBTYP,RTN2   If so, fail on break		[PLB32]
        AEQLC   SPITCL,0,BINOP5	   Jump if SPITBOL ops enabled	[PLB32]
+.IF BLOCKS
+       AEQLC   BLOKCL,0,BINOP7	   Jump if BLOCKS enabled	[PLB117]
+.FI
        STREAM  XSP,TEXTSP,BIOPTB,BINCON
 BINOP3 MOVD    ZPTR,STYPE	   Move function descriptor	[PLB32]
        BRANCH  RTZPTR		   Return function descriptor
@@ -1478,10 +1506,27 @@ BINOP1 RCALL   ,FORWRD,,COMP3	   If no blank, find character
 BINCON MOVD    ZPTR,CONCL	   No operator, concatenation
        BRANCH  RTZPTR		   Return function descriptor
 *_
-BINOP5 STREAM  XSP,TEXTSP,SBIPTB,BINCON				[PLB32]
+* Here for SPITBOL ops
+BINOP5 LHERE
+.IF BLOCKS
+       AEQLC   BLOKCL,0,BINOP6	   Jump if BLOCKS enabled	[PLB117]
+.FI
+       STREAM  XSP,TEXTSP,SBIPTB,BINCON				[PLB32]
 *				   Use special SPITBOL table	[PLB32]
        BRANCH  BINOP3		   Rejoin regular program	[PLB32]
 *_
+.IF BLOCKS
+* Here for SPITBOL ops + BLOCKS!!
+BINOP6 STREAM  XSP,TEXTSP,BSBIPTB,BINCON			[PLB117]
+*				   Use SPITBOL + BLOCKS table	[PLB117]
+       BRANCH  BINOP3		   Rejoin regular program	[PLB117]
+*_
+* BLOCKS, but no SPITBOL ops
+BINOP7 STREAM  XSP,TEXTSP,BBIOPTB,BINCON			[PLB117]
+*				   Use special BLOCKS table	[PLB117]
+       BRANCH  BINOP3		   Rejoin regular program	[PLB117]
+*_
+.FI
 *---------------------------------------------------------------------*
 *
 *      Statement Compilation
@@ -2205,6 +2250,10 @@ CTLCRD FSHRTN  TEXTSP,1		   Delete control character
        LEXCMP  XSP,NEXESP,,NOEXEC  Is it NOEXECUTE?		[PLB34][PLB38]
        LEXCMP  XSP,LINESP,,LINE	   Is it LINE?			[PLB38]
        LEXCMP  XSP,HIDESP,,HIDE    Is it HIDE?			[PLB102]
+.IF BLOCKS
+       LEXCMP  XSP,BLKSSP,,BLOCKS  Is it BLOCKS?		[PLB117]
+       LEXCMP  XSP,NOBLSP,,NOBLKS  Is it NOBLOCKS?		[PLB117]
+.FI
        BRANCH  CMTCLR		   None of the above		[PLB38]
 *_
 HIDE   SETAC   HIDECL,1		   Hide statements		[PLB102]
@@ -2302,6 +2351,14 @@ LINE1  SPCINT  LNNOCL,XSP,COMP12   Get line number		[PLB38]
 COMP12 SETAC   ERRTYP,31	   Erroneous LINE statement	[PLB38]
        BRANCH  FTLEND						[PLB38]
 *_
+.IF BLOCKS
+BLOCKS SETAC   BLOKCL,1		   Enable SNOBOL4B operators 	[PLB117]
+       BRANCH  CMTCLR		   Join terminal processing	[PLB117]
+*_
+NOBLKS SETAC   BLOKCL,0		   Disable SNOBOL4B operators 	[PLB117]
+       BRANCH  CMTCLR		   Join terminal processing	[PLB117]
+*_
+.FI
 *---------------------------------------------------------------------*
 *
 * New [PLB38] from SNOBOL4+
@@ -4998,13 +5055,13 @@ SORT8  SUM     LPTR,A7PTR,A6PTR	   J = I + G
 * COMPARE ELEMENTS IN A1PTR AND A2PTR
 *
 * was:								[PLB31]
-*      DEQBRA  A1PTR,A2PTR,(VVQ,IRQ,RIQ,IIQ,RRQ),(CVV,CIR,CRI,CII,CRR),COTH
+*      DEQBRA  A1PTR,A2PTR,(VVQ,IRQ,RIQ,IIQ,RRQ),(CVV,CIRX,CRI,CII,CRR),COTH
 SORT9  SETAV   DTCL,A1PTR	   Set up data type pair	[PLB31]
        MOVV    DTCL,A2PTR					[PLB31]
        DEQL    DTCL,VVDTP,,CVV	   STRING-STRING		[PLB31]
        DEQL    DTCL,IIDTP,,CII	   INTEGER-INTEGER		[PLB31]
        DEQL    DTCL,RIDTP,,CRI	   REAL-INTEGER			[PLB31]
-       DEQL    DTCL,IRDTP,,CIR	   INTEGER-REAL			[PLB31]
+       DEQL    DTCL,IRDTP,,CIRX	   INTEGER-REAL			[PLB31]
        DEQL    DTCL,RRDTP,,CRR	   REAL-REAL			[PLB31]
        BRANCH  COTH		   None of the above		[PLB31]
 *_
@@ -5012,7 +5069,7 @@ CVV    LOCSP   XSP,A1PTR	   String/String
        LOCSP   YSP,A2PTR
        LEXCMP  XSP,YSP,CMPGT,CMPEQ,CMPLT			[PLB82]
 *
-CIR    INTRL   A1PTR,A1PTR	   Integer/Real
+CIRX  INTRL   A1PTR,A1PTR	   Integer/Real
        BRANCH  CRR		   Compare as reals
 *_
 CRI    INTRL   A2PTR,A2PTR	   Real/Integer
@@ -5724,6 +5781,9 @@ CONCAT PROC    ,		   X Y (concatenation)		[PLB74]
        VEQLC   XPTR,P,,CON5	   Is first PATTERN?
        VEQLC   XPTR,I,,CON4I	   Is first INTEGER?
        VEQLC   XPTR,R,,CON4R	   Is first REAL?
+.IF BLOCKS
+       VEQLC   XPTR,BL,,CON5	   Is first BLOCK?		[BLOCKS]
+.FI
        VEQLC   XPTR,E,INTR1	   Is first EXPRESSION?
        RCALL   TPTR,BLOCK,STARSZ   Allocate block for pattern
        MOVBLK  TPTR,STRPAT,STARSZ  Set up pattern for expression
@@ -5743,6 +5803,9 @@ CON5   VEQLC   YPTR,S,,CON7	   Is second STRING?
        VEQLC   YPTR,P,,CON7	   Is second PATTERN?
        VEQLC   YPTR,I,,CON5I	   Is second INTEGER?
        VEQLC   YPTR,R,,CON5R	   Is second REAL?
+.IF BLOCKS
+       VEQLC   YPTR,BL,,CON7	   Is second BLOCK?		[BLOCKS]
+.FI
        VEQLC   YPTR,E,INTR1	   Is second EXPRESSION?
        RCALL   TPTR,BLOCK,STARSZ   Allocate block for pattern
        MOVBLK  TPTR,STRPAT,STARSZ  Set up pattern for expression
@@ -5763,21 +5826,15 @@ CON7   SETAV   DTCL,XPTR	   Get data type of first
        DEQL    DTCL,VVDTP,,CONVV   Check for STRING-STRING
        DEQL    DTCL,VPDTP,,CONVP   Check for STRING-PATTERN
        DEQL    DTCL,PVDTP,,CONPV   Check for PATTERN-STRING
+.IF BLOCKS
+       DEQL    DTCL,PPDTP,CCATB,CONPP
+*				   Check for PATTERN-PATTERN
+*				   Else hand to BLOCKS code
+.FI
+.IFE BLOCKS
        DEQL    DTCL,PPDTP,INTR1,CONPP
 *				   Check for PATTERN-PATTERN
-*_
-CONVV  LOCSP   XSP,XPTR		   Specifier for first string
-       LOCSP   YSP,YPTR		   Specifier for second string
-       GETLG   XCL,XSP		   Length of first string
-       GETLG   YCL,YSP		   Length of second string
-       SUM     XCL,XCL,YCL	   Total length
-       ACOMP   XCL,MLENCL,INTR8	   Check against &MAXLNGTH
-       RCALL   ZPTR,CONVAR,(XCL)   Allocate space for string
-       LOCSP   TSP,ZPTR		   Get specifier to allocated space
-       SETLC   TSP,0		   Clear length
-       APDSP   TSP,XSP		   Move in first string
-       APDSP   TSP,YSP		   Append second string
-       BRANCH  GENVSZ		   Generate variable
+.FI
 *_
 CONVP  LOCSP   TSP,XPTR		   Specifier to string
        GETLG   TMVAL,TSP	   Get length of string
@@ -5803,6 +5860,20 @@ CONPV  LOCSP   TSP,YPTR		   Get specifier to string
        MAKNOD  YPTR,TPTR,TMVAL,ZEROCL,CHRCL,YPTR
 *				   Construct pattern for string
        BRANCH  CONPP		   Join common processing
+*_
+* [PLB117] moved
+CONVV  LOCSP   XSP,XPTR		   Specifier for first string
+       LOCSP   YSP,YPTR		   Specifier for second string
+       GETLG   XCL,XSP		   Length of first string
+       GETLG   YCL,YSP		   Length of second string
+       SUM     XCL,XCL,YCL	   Total length
+       ACOMP   XCL,MLENCL,INTR8	   Check against &MAXLNGTH
+       RCALL   ZPTR,CONVAR,(XCL)   Allocate space for string
+       LOCSP   TSP,ZPTR		   Get specifier to allocated space
+       SETLC   TSP,0		   Clear length
+       APDSP   TSP,XSP		   Move in first string
+       APDSP   TSP,YSP		   Append second string
+       BRANCH  GENVSZ		   Generate variable
 *_
 *---------------------------------------------------------------------*
 *
@@ -5830,6 +5901,13 @@ KEYWRD PROC    ,		   &X
        TESTF   XPTR,FNC,,KEYC	   Check for function
 KEYN   LOCAPV  XPTR,KNATL,XPTR,KEYV
 *				   Look up X on unprotected list
+.IF BLOCKS
+       GETDC   YPTR,XPTR,DESCR					[BLOCKS]
+       VEQLC   YPTR,I,,KEYN1	   Is value an integer?		[BLOCKS]
+       SETVC   XPTR,N		   No, take any value		[BLOCKS]
+       BRANCH  RTXNAM		       	    			[BLOCKS]
+KEYN1  LHERE							[BLOCKS]
+.FI
        SETVC   XPTR,K		   Set KEYWORD (NAME) data type
        BRANCH  RTXNAM		   Return by name
 *_
@@ -6563,11 +6641,27 @@ DMPK1  GETD    XPTR,KNLIST,XCL	   Get name of keyword
        APDSP   DMPSP,AMPSP	   Append ampersand
        APDSP   DMPSP,XSP	   Append name
        APDSP   DMPSP,BLEQSP	   Append ' = '
+.IF BLOCKS
+       VEQLC   YPTR,S,,DMPKV	   Is string?			[BLOCKS]
+.FI
        APDSP   DMPSP,YSP	   Append value
+.IF BLOCKS
+DMPK2  LHERE   			      				[BLOCKS]
+.FI
        STPRNT  IOKEY,OUTBLK,DMPSP  Print line
        DECRA   XCL,DESCR	   Adjust offset
        AEQLC   XCL,0,DMPK1,RTN1	   Check for end
 *_
+.IF BLOCKS
+DMPKV  LOCSP   YSP,YPTR						[BLOCKS]
+       APDSP   DMPSP,QTSP	   Append quote			[BLOCKS]
+       GETLG   YCL,YSP						[BLOCKS]
+       ACOMPC  YCL,BUFLEN-20,DMPK3 Skip if value is large	[BLOCKS]
+       APDSP   DMPSP,YSP	   Append value			[BLOCKS]
+DMPK3  APDSP   DMPSP,QTSP	   Append quote			[BLOCKS]
+       BRANCH  DMPK2		   	  			[BLOCKS]
+*_
+.FI      
 *---------------------------------------------------------------------*
 *
 *      DUPL(S,N)
@@ -6638,10 +6732,31 @@ BNYOP  LOCSP   XSP,XPTR		   Get specifier for image
        APDSP   ZSP,XSP						E3.5.3
        APDSP   ZSP,BLSP						E3.5.3
        AEQLC   SPITCL,0,BNYOP2	   SPITBOL ops enabled?		[PLB32]
+.IF BLOCKS
+       AEQLC   BLOKCL,0,BNYOP4	   BLOCKS enabled?		[PLB117]
+.FI
        STREAM  TSP,ZSP,BIOPTB,BNAF,BNAF				E3.5.3
        BRANCH  BNYOP3						[PLB32]
 *_
-BNYOP2 STREAM  TSP,ZSP,SBIPTB,BNAF,BNAF				[PLB32]
+.IF BLOCKS
+* SNOBOL4B, no SPITBOL ops
+BNYOP4 STREAM  TSP,ZSP,BBIOPTB,BNAF,BNAF			[PLB117]
+       BRANCH  BNYOP3						[PLB117]
+*_
+.FI
+* here with SPITBOL ops enabled
+BNYOP2 LHERE
+.IF BLOCKS
+       AEQLC   BLOKCL,0,BNYOP5	   BLOCKS enabled?		[PLB117]
+.FI
+* SPITBOL, no BLOCKS
+       STREAM  TSP,ZSP,SBIPTB,BNAF,BNAF				[PLB32]
+.IF BLOCKS
+       BRANCH  BNYOP3						[PLB117]
+*_
+* BLOCKS & SPITBOL!
+BNYOP5 STREAM  TSP,ZSP,BSBIPTB,BNAF,BNAF			[PLB117]
+.FI
 BNYOP3 LEQLC   ZSP,0,BNAF					E3.5.3 [PLB32]
        MOVD    XPTR,STYPE	   STYPE has function descriptor
 BNCF   LOCSP   YSP,YPTR		   Get specifier for object
@@ -6651,10 +6766,31 @@ BNCF   LOCSP   YSP,YPTR		   Get specifier for object
        APDSP   ZSP,YSP						E3.5.3
        APDSP   ZSP,BLSP						E3.5.3
        AEQLC   SPITCL,0,BNCF2	   SPITBOL ops enabled?		[PLB32]
+.IF BLOCKS
+       AEQLC   BLOKSP,0,BNCF4	   BLOCKS enabled?		[PLB117]
+.FI
        STREAM  TSP,ZSP,BIOPTB,BNBF,BNBF				E3.5.3
-       BRANCH  BNCF3						[PLB32]
+       BRANCH  BNCF3						[PLB117]
 *_
-BNCF2  STREAM  TSP,ZSP,SBIPTB,BNBF,BNBF				E3.5.3
+.IF BLOCKS
+* SNOBOL4B, no SPITBOL ops
+BNCF4  STREAM  TSP,ZSP,BBIOPTB,BNBF,BNBF			[PLB117]
+       BRANCH  BNCF3						[PLB117]
+*_
+.FI
+* here with SPITBOL ops enabled
+BNCF2  LHERE
+.IF BLOCKS
+       AEQLC   BLOKSP,0,BNCF5	   BLOCKS enabled?		[PLB117]
+.FI
+* SPITBOL, no BLOCKS:
+       STREAM  TSP,ZSP,SBIPTB,BNBF,BNBF				E3.5.3
+.IF BLOCKS
+       BRANCH  BNCF3						[PLB117]
+*_
+* BLOCKS & SPITBOL!
+BNCF5  STREAM  TSP,ZSP,BSBIPTB,BNBF,BNBF			[PLB117]
+.FI
 BNCF3  LEQLC   ZSP,0,BNBF					E3.5.3 [PLB32]
        MOVD    YPTR,STYPE	   STYPE has function descriptor
        BRANCH  OPPD		   Join to copy descriptors
@@ -6780,6 +6916,3181 @@ VDIFFR PROC    ,		   VDIFFER(X,Y)
        DEQL    XPTR,YPTR,RTXPTR,FAIL
 *				   Compare them, return X if they DIFFER()
 *_
+*---------------------------------------------------------------------*
+.IF BLOCKS
+****************
+* BLOCKS (VERSION 1.10, APRIL 1, 1973)
+         TITLE     'BLOCKS'
+*
+*        BLOCK ORGANIZATIONS
+*
+SER_     EQU       1
+PAR_     EQU       2
+OVY_     EQU       3
+MERGE_   EQU       4
+IT_      EQU       5
+REP_     EQU       6
+NODE_    EQU       7
+DEF_     EQU       8
+PHY_     EQU       9
+*
+*        DIRECTIONS
+*
+HT_      EQU       DESCR
+WTH_     EQU       2*DESCR
+DTH_     EQU       3*DESCR
+*
+*        BLOCK FIELDS
+*
+ORG_     EQU       DESCR           VALUE FIELD
+REG_     EQU       2*DESCR         WHOLE WORD OR ADDRESS
+SET_     EQU       REG_            VALUE FIELD
+TOP_     EQU       DESCR           ADDRESS FIELD
+FIRST_   EQU       3*DESCR
+ELEMENT_ EQU       2*DESCR
+NAME_    EQU       2*DESCR
+ID_      EQU       DESCR           ADDRESS FIELD
+*
+*        P_BLOCK FIELDS
+*
+BL_      EQU       2*DESCR
+FRAME_   EQU       3*DESCR
+ARRAY_   EQU       4*DESCR
+*
+*        EDGES
+*
+*        ACTIVE EDGE
+AEDGDT   EQU       40
+AEDGEDT  EQU       AEDGDT
+VAL_     EQU       DESCR
+NEXT_    EQU       2*DESCR
+*        PLAIN EDGE
+EDGDT    EQU       41
+TR1_     EQU       DESCR
+NN1_     EQU       2*DESCR
+RELS1_   EQU       3*DESCR
+*
+*        TREE NODE
+*
+TNDT     EQU       42
+FATHER_  EQU       DESCR
+LSO_     EQU       2*DESCR
+RSIB_    EQU       3*DESCR
+VALUE_   EQU       4*DESCR
+TNREG_   EQU       5*DESCR
+*
+*        MISCELLANY
+*
+SBDT     EQU       43
+FRSIZE_  EQU       DTH_            FRAME SIZE
+DIAGUN   EQU       UNITP           FORTRAN UNIT NO FOR DIAGNOSTIC OUTPUT [PLB117]
+PRUNO    EQU       UNITO           PRINTER UNIT NO     		  	 [PLB117]
+MAXW     EQU       20              MAXIMUM WARNINGS
+ERRNO    EQU       35		   Last error before BLOCKS		 [PLB117]
+*
+**********************************************************************
+*                                                                     *
+*        ADD_NP  ADDS A NODE PAIR TO AN EDGE.  THE EDGE MAY BE        *
+*        SIMPLE OR COMPOUND.                                          *
+*        CALLING SEQUENCE:                                            *
+*        RCALL     ______,ADD_NP,(EDGE,NODE,DIST)                     *
+*        REGISTERS CLOBBERED:  TEMP31,TEMP32,TEMP33                   *
+*                                                                     *
+**********************************************************************
+ADD_NP   PROC
+         POP       (AN_EDGE,AN_NODE,AN_DIST)
+         SETVA     AN_NODE,AN_DIST
+         VEQLC     AN_EDGE,EDGDT,,AN1
+         RCALL     TEMP31,BLOCK,(AN_RD)
+         RCALL     TEMP32,BLOCK,(AN_ED)
+         PUTDC     TEMP32,RELS1_,TEMP31
+         PUTDC     TEMP32,NN1_,AN_1
+         PUTDC     TEMP32,TR1_,AN_EDGE
+         PUTDC     TEMP31,DESCR,AN_NODE
+         BRANCH    AN99
+AN1      LHERE
+         GETDC     TEMP32,AN_EDGE,RELS1_
+         RCALL     AN_EDGE,BCOPY,AN_EDGE
+         PUSH      AN_EDGE
+         RCALL     TEMP32,BCOPY,TEMP32
+         POP       AN_EDGE
+         GETSIZ    TEMP31,TEMP32
+         GETDC     TEMP33,AN_EDGE,NN1_
+         INCRA     TEMP33,1
+         PUTDC     AN_EDGE,NN1_,TEMP33
+         MULTC     TEMP33,TEMP33,DESCR
+         ACOMP     TEMP31,TEMP33,,,AN2
+AN3      LHERE
+         PUTD      TEMP32,TEMP33,AN_NODE
+         MOVD      TEMP32,AN_EDGE
+         BRANCH    AN99
+AN2      LHERE
+         PUSH      (AN_EDGE,XPTR)
+         RCALL     TEMP32,MORE,(TEMP32)
+         POP       (XPTR,AN_EDGE)
+         PUTDC     AN_EDGE,RELS1_,TEMP32
+         BRANCH    AN3
+AN99     RRTURN    TEMP32,1
+AN_EDGE  DESCR     0,0,0
+AN_NODE  DESCR     0,0,0
+AN_DIST  DESCR     0,0,0
+AN_RD    DESCR     3*DESCR,0,A
+AN_ED    DESCR     RELS1_,0,EDGDT
+AN_1     DESCR     1,0,I
+*
+***********************************************************************
+*                                                                     *
+*        AF_MERGE  MERGES TWO ACTIVE FRAMES AF1 AND AF2 AND REPLACES  *
+*        THE FIRST ARGUMENT WITH THE RESULT                           *
+*        CALLING SEQUENCE:                                            *
+*        RCALL     ,AF_MERGE,(AF1,AF2)                                *
+*                                                                     *
+***********************************************************************
+AF_MERGE PROC
+         POP       (TEMP41,TEMP42)
+*        TEMP41 = AF1
+*        TEMP42 = AF2
+*        TEMP43 = E1
+*        TEMP44 = E2
+         MOVD      AM_DIR,ZEROCL
+AM4      INCRA     AM_DIR,DESCR
+         ACOMPC    AM_DIR,FRSIZE_,RTN1
+         GETD      TEMP43,TEMP41,AM_DIR
+         VEQLC     TEMP43,AEDGDT,,AM1
+         RCALL     AM_AE,BLOCK,(AM_DE)
+         PUTDC     AM_AE,VAL_,TEMP43
+         PUTD      TEMP41,AM_DIR,AM_AE
+         MOVD      TEMP43,AM_AE
+AM1      LHERE
+         GETD      TEMP44,TEMP42,AM_DIR
+         VEQLC     TEMP44,AEDGDT,,AM2
+         RCALL     ,COAG,(TEMP43,TEMP44)
+         BRANCH    AM4
+AM2      LHERE
+AM3      GETDC     AM_E,TEMP44,VAL_
+         RCALL     ,COAG,(TEMP43,AM_E)
+         GETDC     TEMP44,TEMP44,NEXT_
+         AEQLC     TEMP44,0,AM3
+         BRANCH    AM4
+AM_E     DESCR     0,0,0
+AM_AE    DESCR     0,0,0
+AM_DE    DESCR     NEXT_,0,AEDGDT
+AM_DIR   DESCR     0,0,0
+*
+***********************************************************************
+*                                                                     *
+*        AFRAME  RETURNS AN ACTIVE FRAME.  IT CAN CALL ITSELF RECUR-  *
+*        SIVELY BY CALLING FORCING WHICH CALLS B_PB WHICH CALLS AFRAME*
+*        AN AFRAME CONTAINS ALL FRAME INFORMATION EXCEPT THAT PROVIDED*
+*        BY UNRESOLVED REPLICATED BLOCKS                              *
+*        CALLING SEQUENCE:                                            *
+*           RCALL    ______,AFRAME,(TN)                               *
+*                                                                     *
+***********************************************************************
+AFRAME   PROC
+         POP       TEMP1                     TEMP1 IS TN
+         GETDC     TEMP2,TEMP1,VALUE_        TEMP2 IS B
+         IFCONT    TEMP2,AFR4
+         RCALL     TEMP3,BLOCK,(AF_SIZE)
+*                                            TEMP3 IS AFRAME
+         GETDC     TEMP4,TEMP2,ORG_          TEMP4 IS DIR
+         SETAV     TEMP4,TEMP4
+         MULTC     TEMP4,TEMP4,DESCR
+         GETDC     TEMP5,TEMP1,TNREG_        TEMP5 IS REG
+         RCALL     TEMP6,BLOCK,(AF_SIZE)
+*                                            TEMP6 IS F
+         PUTD      TEMP6,TEMP4,AF_Z        ZERO OUT THE EDGE IN THE
+*                                          DIRECTION OF JOINING
+         RCALL     TEMP7,LSOHN,(TEMP1)
+         PUSH      (TEMP2,TEMP3,TEMP5)
+         PUSH      (TEMP1,TEMP4,TEMP6)
+         MOVD      AF_NF,ZEROCL            NODE FLAG
+*        BUILD ALL DAUGHTERS THAT ARE NOT REPLICATED (I.E. THAT CAN BE
+*        BE BUILT)
+AFR3A    LHERE
+         GETDC     TEMP31,TEMP7,VALUE_     PICK UP THE BLOCK
+         IFREP     TEMP31,,AFR1A           BRANCH IF REPLICATED
+         PUSH      (TEMP7,AF_NF)
+         RCALL     TEMP31,B_PB,(TEMP7,NULVCL)
+         POP       (AF_NF,TEMP7)
+         GETDC     TEMP31,TEMP31,FRAME_    BRANCH IF ...
+         GETDC     TEMP31,TEMP31,HT_       IT HAS ...
+         VEQLC     TEMP31,EDGDT,AFR1A      NO NODES
+         SETAC     AF_NF,1                 SET NODE FLAG
+AFR1A    LHERE
+         GETDC     TEMP7,TEMP7,RSIB_       GET NEXT SIBLING
+         AEQLC     TEMP7,0,AFR3A           GO BACK UNLESS NULL
+* THIS SECTION SETS THE OVERALL OTHOGONAL SIZES OF THE FRMME.
+         POP       (TEMP6,TEMP4,TEMP1)
+         PUSH      AF_NF                   SAVE NODE FLAG
+         CYC       TEMP4                   GET FIRST ORTH. DIR.
+         PUSH      (TEMP1,TEMP4,TEMP6)
+         RCALL     TEMP31,FORCING,(TEMP1,TEMP4)
+         POP       (TEMP6,TEMP4,TEMP1)
+         PUTD      TEMP6,TEMP4,TEMP31      KEEP SIZE
+         CYC       TEMP4                   GET NEXT DIRECTION
+         PUSH      (TEMP1,TEMP4,TEMP6)
+         RCALL     TEMP31,FORCING,(TEMP1,TEMP4)
+         POP       (TEMP6,TEMP4,TEMP1)
+         PUTD      TEMP6,TEMP4,TEMP31      KEEP IT
+         CYC       TEMP4                   RESTORE THE DIRECTION
+         POP       AF_NF
+* NOW WE GO THROUGH THE LOOP TO COMPUTE THE FRAME
+         POP       (TEMP5,TEMP3,TEMP2)
+         GETDC     TEMP7,TEMP1,LSO_
+AFR3     LHERE
+         GETDC     TEMP31,TEMP7,VALUE_
+         IFREP     TEMP31,,AFR1
+         GETDC     TEMP8,TEMP31,FRAME_
+         AEQLC     AF_NF,0,AFR6            BRANCH IF NODES
+         GETD      TEMP8,TEMP8,TEMP4       GET THE EDGE
+         GETD      TEMP31,TEMP6,TEMP4
+         SUM       TEMP31,TEMP31,TEMP8
+         PUTD      TEMP6,TEMP4,TEMP31
+         BRANCH    AFR2
+AFR6     LHERE
+         RCALL     TEMP6,F_JOIN,(TEMP4,TEMP6,TEMP8,TEMP5)
+AFR2     LHERE
+         GETDC     TEMP7,TEMP7,RSIB_
+         AEQLC     TEMP7,0,AFR3
+         GETD      TEMP31,TEMP3,TEMP4
+         GETD      TEMP32,TEMP6,TEMP4
+         DEQL      TEMP31,ZEROCL,,AFNOTA     IF AFRAME<DIR> IS NULL
+*                                            THEN THE FRAME IS NOT ACT.
+         RCALL     TEMP32,E_ATTACH,(TEMP31,TEMP32)
+         PUTD      TEMP3,TEMP4,TEMP32
+         CYC       TEMP4
+         GETD      TEMP31,TEMP6,TEMP4
+         PUTD      TEMP3,TEMP4,TEMP31
+         CYC       TEMP4
+         GETD      TEMP31,TEMP6,TEMP4
+         PUTD      TEMP3,TEMP4,TEMP31
+AFR21    LHERE
+         RCALL     TEMP31,NP_BLOCK,(TEMP2,TEMP3,NULVCL)
+         PUTDC     TEMP1,VALUE_,TEMP31
+         BRANCH    AFR99
+AFNOTA   MOVD      TEMP3,TEMP6
+         BRANCH    AFR21
+AFR1     LHERE
+         GETD      TEMP31,TEMP3,TEMP4
+         GETD      TEMP32,TEMP6,TEMP4
+         DEQL      TEMP31,ZEROCL,,AFR11
+         RCALL     TEMP32,E_ATTACH,(TEMP31,TEMP32)
+AFR11    PUTD      TEMP3,TEMP4,TEMP32
+         PUTD      TEMP6,TEMP4,AF_Z
+         BRANCH    AFR2
+* TRANSFER IS MADE HERE IF THE BLOCK IS NOT CONTIGUOUS.
+AFR4     LHERE
+         GETDC   TEMP31,TEMP2,ORG_     PICK UP ORG.-BEARING DESCRIPTOR
+         VEQLC   TEMP31,NODE_,AFR5     IS IT A NODE?
+         PUSH    TEMP1                 YES , MUST FIX IT
+         RCALL   TEMP2,B_PB,(TEMP1)
+         POP     TEMP1
+AFR5     LHERE   ,                     IF NOT PHYSICAL ..
+         IFPHY   TEMP2,,AFR51          AT THIS POINT THEN ERROR
+         SETAC   ERRTYP,ERRNO+3					[PLB117]
+         BRANCH  FTLEND
+AFR51    LHERE   ,                     ARRIVAL HERE MEANS PHYSICAL BL
+         GETDC   TEMP3,TEMP2,FRAME_    PICK UP FRAME AND RETURN
+         BRANCH    AFR99
+AFR99    RRTURN    TEMP3,1
+AF_Z     DESCR     0,0,I
+AF_SIZE  DESCR     3*DESCR,0,A
+AF_DIRS  DESCR     0,0,0
+AF_NF    DESCR     0,0,0
+*
+**********************************************************************
+*        B_PB  BUILDS A PHYSICAL BLOCK GIVEN A TREE NODE AS ARGUMENT. *
+*        A  IS THE AMOUNT OF SPACE AVAILABLE (USED ONLY WITH REPLICA- *
+*        TED BLOCKS.)                                                 *
+*        CALLING SEQUENCE:                                            *
+*        RCALL     ______,B_PB,(TN,A)                                 *
+*                                                                     *
+**********************************************************************
+B_PB     PROC
+         POP       XPTR
+         GETDC     TEMP1,XPTR,VALUE_   TEMP1 IS B
+         VEQLC     TEMP1,S,BPNOST
+         AEQLC     TEMP1,0,BPNONL
+         RCALL     TEMP12,P_BLOCK,(NULVCL,BP_0,BP_0,BP_0,NULVCL)
+         BRANCH    BPST1
+BPNONL   RCALL     BP_T,BLOCK,(BP_ARY)
+         PUTDC     BP_T,DESCR,TEMP1
+         GETSIZ    BP_L,TEMP1
+         SETVC     BP_L,I
+         RCALL     TEMP12,P_BLOCK,(TEMP1,BP_1,BP_L,BP_1,BP_T)
+BPST1    PUTDC     XPTR,VALUE_,TEMP12
+         BRANCH    BP99
+BPNOST   LHERE
+         GETDC     BP_ORG,TEMP1,ORG_
+         SETAV     BP_ORG,BP_ORG
+         SELBRA    BP_ORG,(BPORG1,BPORG2,BPORG3,BPORG4,BPORG5,BPORG6,BPORG7,BPORG8,BPORG9)
+*        CONTIGUOUS ORGANIZATION
+BPORG1   LHERE
+BPORG2   LHERE
+BPORG3   LHERE
+         PUSH      (XPTR,TEMP1)
+         RCALL     TEMP3,AFRAME,(XPTR)
+         POP       (TEMP1,XPTR)
+*                                      TEMP3 IS AF
+         GETDC     BP_ORG,TEMP1,ORG_
+         SETAV     BP_ORG,BP_ORG
+         MULTC     BP_DIR,BP_ORG,DESCR
+         GETDC     TEMP2,XPTR,TNREG_
+*                                      TEMP2 IS REG
+         GETD      TEMP4,TEMP3,BP_DIR
+*                                             TEMP4 IS CURRENT
+         VEQLC     TEMP4,AEDGEDT,BPCONT1
+         MOVD      BP_N,ZEROCL
+         MOVD      BP_L,ZEROCL
+BPCONT2  LHERE
+         INCRA     BP_N,DESCR
+         GETDC     BP_EDGE,TEMP4,VAL_
+         TRL       XCL,BP_EDGE
+         SUM       BP_L,BP_L,XCL
+         GETDC     YPTR,TEMP4,NEXT_
+         AEQLC     YPTR,0,,BPCONT3
+         MOVD      TEMP4,YPTR
+         BRANCH    BPCONT2
+BPCONT1  LHERE
+         SETAC     BP_N,DESCR
+         MOVD      TEMP5,TEMP3         TEMP5 IS F
+         GETD      BP_L,TEMP3,BP_DIR
+         TRL       BP_L,BP_L
+         BRANCH    BPCONT4
+BPCONT3  LHERE
+         PUSH      (XPTR,TEMP1,TEMP2,TEMP3)
+         PUSH      (BP_DIR,BP_L,BP_N)
+         MOVD      BP_A,BP_L
+         RCALL     YPTR,PAR_CONG,(XPTR),BPCONT31
+         RCALL     BP_A,FORCING,(YPTR,BP_DIR)
+BPCONT31 LHERE
+         POP       (BP_N,BP_L,BP_DIR)
+         POP       (TEMP3,TEMP2,TEMP1,XPTR)
+         SUBTRT    BP_A,BP_A,BP_L
+         DECRA     BP_N,DESCR
+         RCALL     TEMP6,DISTR,(BP_A,BP_N)
+         SETAC     BP_N,DESCR
+*                                      TEMP6 IS THE ARRAY A
+         GETD      TEMP4,TEMP3,BP_DIR
+         GETDC     TEMP7,TEMP4,VAL_    TEMP7 IS EDGE
+         VEQLC     TEMP7,EDGDT,BPCONT33
+         RCALL     TEMP7,BCOPY,(TEMP7)
+BPCONT33 LHERE
+         GETDC     TEMP4,TEMP4,NEXT_
+         AEQLC     TEMP4,0,,BPCONT34
+         GETD      BP_L,TEMP6,BP_N
+         INCRA     BP_N,DESCR
+         RCALL     TEMP7,JE_LONGI,(TEMP7,BP_L)
+         GETDC     BP_L,TEMP4,VAL_
+         RCALL     TEMP7,JE_LONGI,(TEMP7,BP_L)
+         BRANCH    BPCONT33
+BPCONT34 LHERE
+         MOVD      BP_N,ZEROCL
+         RCALL     TEMP5,BCOPY,(TEMP3)
+         PUTD      TEMP5,BP_DIR,TEMP7
+BPCONT4  LHERE
+         RCALL     TEMP8,LSOHN,(XPTR)        TEMP8 IS D
+         RCALL     TEMP9,STRIP_F,(TEMP5)
+*                                      TEMP9 IS SF
+         GETDC     BP_H,TEMP9,HT_
+         GETDC     BP_D,TEMP9,DTH_
+         GETDC     BP_W,TEMP9,WTH_
+         PUSH      XPTR
+         RCALL     TEMP10,BLAND,(BP_H,BP_W,BP_D),BPCONTNL
+*                                            TEMP10 IS PHY
+         POP       XPTR
+*BPCT1    LHERE
+         RCALL     TEMP11,IDENT_SB,(TEMP9)
+*                                      TEMP11 IS S
+         RCALL     TEMP12,NP_BLOCK,(TEMP1,TEMP5,TEMP10)
+*                                      TEMP12 IS B.PB
+BPCONT5  LHERE
+         GETDC     BP_T,TEMP8,VALUE_
+         IFREP     BP_T,,BPCONT6
+         PUSH      TEMP9
+         PUSH      (XPTR,BP_DIR,BP_N,TEMP2,TEMP5,TEMP6,TEMP8,TEMP10,TEMP11,TEMP12)
+         RCALL     TEMP13,B_PB,(TEMP8,NULVCL)
+         POP       (TEMP12,TEMP11,TEMP10,TEMP8,TEMP6,TEMP5,TEMP2,BP_N,BP_DIR,XPTR)
+         POP       TEMP9
+*                                      TEMP13 IS PB
+         GETDC     BP_T,TEMP13,FRAME_
+         RCALL     TEMP14,STRIP_F,(BP_T)
+*                                      TEMP14 IS DF
+BPCONT51 LHERE
+         RCALL     TEMP15,INIT_SUB,(TEMP11,TEMP14,BP_DIR,TEMP2)
+*                                      TEMP15 IS SD
+BPCONT52 LHERE
+         GETDC     BP_T,TEMP13,ARRAY_
+         RCALL     ,INSERT,(TEMP10,TEMP9,BP_T,TEMP15)
+*BPCONT7  LHERE
+         GETDC     TEMP8,TEMP8,RSIB_
+         AEQLC     TEMP8,0,BPCONT5
+         PUTDC     XPTR,LSO_,NULVCL
+         PUTDC     XPTR,VALUE_,TEMP12
+         BRANCH    BP99
+BPCONT6  LHERE
+         INCRA     BP_N,DESCR
+         GETD      BP_L,TEMP6,BP_N
+         PUSH      (TEMP2,TEMP5,TEMP6,TEMP8,TEMP9,TEMP10,TEMP11,TEMP12)
+         PUSH      (XPTR,BP_L,BP_DIR,BP_N)
+         RCALL     TEMP13,B_PB,(TEMP8,BP_L)
+         POP       (BP_N,BP_DIR,BP_L,XPTR)
+         POP       (TEMP12,TEMP11,TEMP10,TEMP9,TEMP8,TEMP6,TEMP5,TEMP2)
+         GETDC     TEMP14,TEMP13,FRAME_
+         GETD      BP_T,TEMP14,BP_DIR
+         AEQL      BP_T,BP_L,,BPCONT8
+         RCALL     TEMP16,BCOPY,(TEMP5)
+*                                      TEMP16 IS PF
+         RCALL     TEMP17,BCOPY,(TEMP5)
+*                                      TEMP17 IS SF
+         SUBTRT    BP_DIF,BP_L,BP_T
+         DIVIDE    BP_PREF,BP_DIF,BP_TWO,FAIL
+         PUTD      TEMP16,BP_DIR,BP_PREF
+         SUBTRT    BP_T,BP_DIF,BP_PREF
+         PUTD      TEMP17,BP_DIR,BP_T
+         RCALL     ,INIT_SUB,(TEMP11,TEMP16,BP_DIR,TEMP2)
+         RCALL     TEMP15,INIT_SUB,(TEMP11,TEMP14,BP_DIR,TEMP2)
+         RCALL     ,INIT_SUB,(TEMP11,TEMP17,BP_DIR,TEMP2)
+         BRANCH    BPCONT52
+BPCONT8  LHERE
+         BRANCH    BPCONT51
+BPCONTNL LHERE
+         RCALL     TEMP12,NP_BLOCK,(TEMP1,TEMP5,NULVCL)
+         PUTDC     XPTR,LSO_,NULVCL
+         PUTDC     XPTR,VALUE_,TEMP12
+         BRANCH    BP99
+BPORG4   BRANCH    BMORG4,BMORG4
+BPORG5   BRANCH    BMORG5,BMORG5
+BPORG6   BRANCH    BMORG6,BMORG6
+BPORG7   BRANCH    BMORG7,BMORG7
+BP99     RRTURN    TEMP12,1
+BPORG8   LHERE
+         SETAC     ERRTYP,ERRNO+1
+         BRANCH    FTLEND
+BPORG9   MOVD      TEMP12,TEMP1
+         BRANCH    BP99
+BP_T     DESCR     0,0,0
+BP_ARY   DESCR     DESCR,0,A
+BP_L     DESCR     0,0,0
+BP_EDGE  DESCR     0,0,0
+BP_TWO   DESCR     2,0,I
+BP_DIF   DESCR     0,0,0
+BP_PREF  DESCR     0,0,0
+BP_DIR   DESCR     0,0,0
+BP_N     DESCR     0,0,0
+BP_A     DESCR     0,0,0
+BP_W     DESCR     0,0,0
+BP_H     DESCR     0,0,0
+BP_D     DESCR     0,0,0
+BP_ORG   DESCR     0,0,0
+BP_0     DESCR     0,0,I
+BP_1     DESCR     1,0,I
+*BMORG    PROC
+*
+*        MERGED ORGANIZATION
+BMORG4   PROC      BMORG
+*                  D = LSON(TN)
+         RCALL     TEMP8,LSOHN,(XPTR)
+*BPMRG5   LHERE
+*                  F  =  COPY(AFRAME(D))
+         PUSH      (XPTR,TEMP8)
+         RCALL     TEMP5,AFRAME,(TEMP8)
+         POP       (TEMP8,XPTR)
+         RCALL     TEMP5,BCOPY,(TEMP5)
+*        F<HT.> = CAE(F<HT.>)
+*        F<WTH.> = CAE(F<WTH.>)
+*        F<DTH.> = CAE(F<DTH.>)
+         MOVD    TEMP32,ZEROCL
+BPMRG51  INCRA     TEMP32,DESCR
+         ACOMPC    TEMP32,FRSIZE_,BPMRG52
+         GETD      TEMP31,TEMP5,TEMP32
+         RCALL     TEMP31,CAE,(TEMP31)
+         PUTD      TEMP5,TEMP32,TEMP31
+         BRANCH    BPMRG51
+BPMRG52  LHERE
+         MOVD      TEMP31,NULVCL
+*                  D  =  RSIB(D)  DIFFER(RSIB(D))   :F(BPMRG2)
+BPMRG1   LHERE
+         GETDC     TEMP8,TEMP8,RSIB_
+         AEQLC     TEMP8,0,,BPMRG2
+*                  F  =  AF.MERGE(F,AFRAME(D))
+         PUSH      (XPTR,TEMP5,TEMP8)
+         RCALL     TEMP31,AFRAME,(TEMP8)
+         POP       (TEMP8,TEMP5,XPTR)
+         RCALL     ,AF_MERGE,(TEMP5,TEMP31)
+         BRANCH    BPMRG1
+BPMRG2   LHERE
+*                  F  =  COMPLETED.FRAME(F)
+         RCALL     ,COMPFR,(TEMP5)
+         BRANCH    BPMRG22
+R_R_N    LHERE
+*        REMOVE REDUNDANT NODES HAS NOT BEEN ENCODED YET
+*                  R.R.N(F<HT.>)
+*                  R.R.N(F<WTH.>)
+*                  R.R.N(F<DTH.>)
+         MOVD      TEMP31,TEMP5
+         MOVD      TEMP32,TEMP5
+         INCRA     TEMP32,FRSIZE_
+BPMRG21  LHERE
+         INCRA     TEMP31,DESCR
+         ACOMP     TEMP31,TEMP32,BPMRG22
+         RCALL     ,R_R_N,(TEMP31),BPMRG21
+BPMRG22  LHERE
+*                  SF  =  STRIP.FRAME(F)
+         RCALL     TEMP9,STRIP_F,(TEMP5)
+*                  PHY = BLAND(SF<HT.> , SF<WTH.> , SF<DTH.> )
+         GETDC     BM_H,TEMP9,HT_
+         GETDC     BM_W,TEMP9,WTH_
+         GETDC     BM_D,TEMP9,DTH_
+         PUSH      XPTR
+         RCALL     TEMP10,BLAND,(BM_H,BM_W,BM_D),BMNULL
+         POP       XPTR
+*                  B.PB = NP.BLOCK(VALUE(TN),F,PHY)
+         GETDC     TEMP1,XPTR,VALUE_
+         RCALL     TEMP12,NP_BLOCK,(TEMP1,TEMP5,TEMP10)
+*                  VALUE(TN) = B.PB
+         PUTDC     XPTR,VALUE_,TEMP12
+*                  D = LSON(TN)
+         GETDC     TEMP8,XPTR,LSO_
+BPMRG3   LHERE
+*                  EMB.PHY(D)
+         PUSH      (XPTR,TEMP8,TEMP12)
+         RCALL     ,EMB_PHY,(TEMP8)
+         POP       (TEMP12,TEMP8,XPTR)
+*                  D  =  RSIB(D)  DIFFER(RSIB(D))   :S(BPMRG3)
+         GETDC     TEMP8,TEMP8,RSIB_
+         AEQLC     TEMP8,0,BPMRG3
+*                  LSO(TN)  =    :(RETURN)
+         PUTDC     XPTR,LSO_,NULVCL
+         BRANCH    BM99
+*
+*        ITERATED ORGANIZATION
+BMORG5   PROC      BMORG
+         GETDC     TEMP31,XPTR,LSO_
+         PUSH      XPTR
+         RCALL     TEMP13,B_PB,(TEMP31)
+         POP       XPTR
+         GETDC     TEMP10,TEMP13,ARRAY_
+         GETDC     TEMP31,TEMP13,FRAME_
+         RCALL     TEMP5,STRIP_F,(TEMP31)
+*
+         RCALL     BM_PC,PAR_CONG,(XPTR),BMNULL
+         GETDC     BM_PCD,BM_PC,VALUE_
+         IFPHY     BM_PCD,BPIT3
+         GETDC     BM_PCD,BM_PCD,BL_
+BPIT3    LHERE
+         GETDC     BM_PCD,BM_PCD,ORG_
+         SETAV     BM_PCD,BM_PCD
+         MULTC     BM_PCD,BM_PCD,DESCR
+         MOVD      BM_DIR,BM_PCD
+         CYC       BM_DIR
+BPIT1    LHERE
+         PUSH      (XPTR,TEMP10,TEMP5,BM_DIR,BM_PC,BM_PCD)
+         RCALL     TEMP6,FORCING,(BM_PC,BM_DIR)
+         POP       (BM_PCD,BM_PC,BM_DIR,TEMP5,TEMP10,XPTR)
+         GETD      TEMP31,TEMP5,BM_DIR
+         AEQLC     TEMP31,0,,BPIT2
+         DIVIDE    TEMP6,TEMP6,TEMP31,FAIL
+BPIT2    LHERE
+         PUSH    BM_PC
+         RCALL     TEMP10,REPL,(TEMP10,TEMP5,BM_DIR,TEMP6)
+         POP     BM_PC
+         CYC       BM_DIR
+         AEQL      BM_DIR,BM_PCD,BPIT1
+         GETDC     TEMP31,XPTR,VALUE_
+         RCALL     TEMP12,NP_BLOCK,(TEMP31,TEMP5,TEMP10)
+         PUTDC     XPTR,VALUE_,TEMP12
+         PUTDC     XPTR,LSO_,NULVCL
+         BRANCH    BM99
+*
+*        REPLICATED ORGANIZATION
+*
+BMORG6   PROC      BMORG
+*        THE REPLICATED BLOCK'S FATHER IS ASSUMED TO HAVE HAD ITS
+* AFRAME COMPUTED AND THEREFORE WILL APPEAR TO BE PHYSICAL.
+         GETDC     TEMP31,XPTR,FATHER_
+         GETDC     BM_PC,TEMP31,VALUE_
+*        PC IS THE PARENTIAL CONGLOMERATE, ITS PHYSICAL, GO AFTER THE
+*        ORGANIZATION.
+         GETDC     TEMP32,BM_PC,BL_
+         GETDC     BM_ORG,TEMP32,ORG_
+         SETAV     BM_DIR,BM_ORG
+         MULTC     BM_DIR,BM_DIR,DESCR
+*
+         GETDC     TEMP31,XPTR,LSO_
+         PUSH      (BM_DIR,XPTR)
+         RCALL     TEMP13,B_PB,(TEMP31,NULVCL)
+         POP       (XPTR,BM_DIR)
+         GETDC     TEMP10,TEMP13,ARRAY_
+         GETDC     TEMP31,TEMP13,FRAME_
+         RCALL     TEMP5,STRIP_F,(TEMP31)
+         POP       BM_A
+         GETD      BM_L,TEMP5,BM_DIR
+         DIVIDE    BM_A,BM_A,BM_L,BPREP1
+BPREP1   LHERE
+         RCALL     TEMP10,REPL,(TEMP10,TEMP5,BM_DIR,BM_A)
+         RCALL     TEMP12,NP_BLOCK,(NULVCL,TEMP5,TEMP10)
+         PUTDC     XPTR,VALUE_,TEMP12
+         PUTDC     XPTR,LSO_,NULVCL
+         BRANCH    BM99
+*
+*        NODE ORGANIZATION
+*
+BMORG7   PROC      BMORG
+         GETDC     BM_T,TEMP1,ID_
+         LOCAPT    TEMP31,TEMP50,BM_T,BPND0
+*        WAS PREVIOUSLY CREATED
+         GETDC     TEMP12,TEMP31,2*DESCR
+         PUTDC     XPTR,VALUE_,TEMP12
+         BRANCH    BM99
+BPND0    LHERE
+*        NOT PREVIOUSLY CREATED
+         GETDC     TEMP31,XPTR,LSO_
+         PUSH      (XPTR,BM_T,TEMP1)
+         RCALL     TEMP13,B_PB,(TEMP31,NULVCL)
+         POP       (TEMP1,BM_T,XPTR)
+*                  F  =  PB<FRAME.>
+         GETDC     TEMP5,TEMP13,FRAME_
+         RCALL     TEMP5,BCOPY,TEMP5
+         SETAC     BM_DIR,0
+BPND1    LHERE
+         INCRA     BM_DIR,DESCR
+         ACOMPC    BM_DIR,DTH_,BPND2
+         GETD      TEMP31,TEMP5,BM_DIR
+         RCALL     TEMP31,ADD_NP,(TEMP31,BM_T,BM_0)
+         PUTD      TEMP5,BM_DIR,TEMP31
+         BRANCH    BPND1
+BPND2    LHERE
+         GETDC     TEMP31,TEMP13,ARRAY_
+         RCALL     TEMP12,NP_BLOCK,(TEMP1,TEMP5,TEMP31)
+         MOVD      WCL,TEMP50
+         RCALL     TEMP31,BTAIL
+         PUTD      WCL,TEMP31,BM_T
+         RCALL     TEMP31,BTAIL
+         PUTD      WCL,TEMP31,TEMP12
+         MOVD      TEMP50,WCL
+         PUTDC     XPTR,VALUE_,TEMP12
+         BRANCH    BM99
+BMNULL   LHERE
+         PUTDC     XPTR,LSO_,NULVCL
+         RCALL     TEMP12,P_BLOCK,(NULVCL,BM_0,BM_0,BM_0,NULVCL)
+         PUTDC     XPTR,VALUE_,TEMP12
+         BRANCH    BM99
+BM99     RRTURN    TEMP12,1
+BM_T     DESCR     0,0,0
+BM_L     DESCR     0,0,0
+BM_DIR   DESCR     0,0,0
+BM_A     DESCR     0,0,0
+BM_W     DESCR     0,0,0
+BM_H     DESCR     0,0,0
+BM_D     DESCR     0,0,0
+BM_ORG   DESCR     0,0,0
+BM_0     DESCR     0,0,I
+BM_PC    DESCR     0,0,0
+BM_PCD   DESCR     0,0,0
+*
+***********************************************************************
+*                                                                     *
+*         BCOPY   WILL COPY A BLOCK WITHOUT DESTROYING TEMPORARY      *
+*         LOCATIONS.                                                  *
+*         CALLING SEQUENCE:                                           *
+*         RCALL      ______,BCOPY,(BLOCK)                             *
+*                                                                     *
+***********************************************************************
+BCOPY    PROC
+         POP       BC_B1
+         GETSIZ    BC_N,BC_B1
+         PUSH      BC_B1
+         MOVV      BC_N,BC_B1
+         RCALL     BC_B2,BLOCK,(BC_N)
+         POP       BC_B1
+         MOVBLK    BC_B2,BC_B1,BC_N
+         RRTURN    BC_B2,1
+BC_B1    DESCR     0,0,0
+BC_B2    DESCR     0,0,0
+BC_N     DESCR     0,0,0
+*
+***********************************************************************
+*                                                                     *
+*         BHEAD   MOVES THE DAUGHTERS OF THE BLOCK  WCL   ONE SPACE   *
+*         FORWARD TO MAKE ROOM FOR AN ENTRY AT THE BEGINNING          *
+*            CALLING SEQUENCE:                                        *
+*            RCALL    ,BHEAD
+*             LOCATIONS CLOBBERED:  WCL,XPTR                          *
+*                                                                     *
+***********************************************************************
+BHEAD    PROC
+BHEAD0	 LHERE								[PLB117]
+         GETSIZ    BH_SIZE,WCL
+         GETDC     BH_TOP,WCL,TOP_
+         ACOMP     BH_TOP,BH_SIZE,BH_MORE,BH_MORE
+         SUM       BH_PTR,WCL,BH_TOP
+         INCRA     BH_TOP,DESCR
+         PUTDC     WCL,TOP_,BH_TOP
+         MOVD      BH_1ST,WCL
+         INCRA     BH_1ST,FIRST_
+BH1      LHERE
+         GETDC     BH_TEMP,BH_PTR,0
+         PUTDC     BH_PTR,DESCR,BH_TEMP
+         DECRA     BH_PTR,DESCR
+         ACOMP     BH_PTR,BH_1ST,BH1,BH1
+         RRTURN    ,1
+BH_MORE  RCALL     WCL,MORE,WCL
+         BRANCH    BHEAD0						[PLB117]
+BH_SIZE  DESCR     0,0,0
+BH_TOP   DESCR     0,0,0
+BH_PTR   DESCR     0,0,0
+BH_1ST   DESCR     0,0,0
+BH_TEMP  DESCR     0,0,0
+*
+***********************************************************************
+*                                                                     *
+*        BLAND   RETURNS AN ARRAY OF LENGTH H * D EACH OF WHOSE ELEM- *
+*        ENTS POINTS TO A BLANK STRING OF WIDTH W.  IT FAILS IF THE   *
+*        BLOCK IS EMPTY.                                              *
+*        CALLING SEQUENCE:                                            *
+*        RCALL     ______,BLAND,(H,W,D),(FAIL,SUCCESS)                *
+***********************************************************************
+BLAND    PROC
+         POP       (BL_H,BL_W,BL_D)
+         MULT      BL_L,BL_H,BL_D
+         MULTC     BL_L,BL_L,DESCR
+         AEQLC     BL_L,0,,FAIL
+         AEQLC     BL_W,0,,FAIL
+        SETVC     BL_L,A
+         RCALL     TEMP31,BLOCK,(BL_L)
+         RCALL     TEMP32,BLANK,(BL_W)
+         PUTDC     TEMP31,DESCR,TEMP32
+         MOVD      TEMP33,TEMP31             33 POINTS TO ONE MORE THAN
+         INCRA     TEMP33,DESCR              TEMP31
+         DECRA     BL_L,DESCR                INIT THE L-1 DESCRIPTORS
+         AEQLC     BL_L,0,,BL1
+         MOVBLK2   TEMP33,TEMP31,BL_L				[PLB118]
+*        NOTE:  THIS SHOULD WORK IF MOVBLK IS IMPLEMENTED STRICTLY AC-
+*        CORDING TO THE RULES.  I.E. ONE DESCRIPTOR AT A TIME FROM
+*        TOP TO BOTTOM.
+BL1      LHERE
+         RRTURN    TEMP31,2
+BL_H     DESCR     0,0,0
+BL_W     DESCR     0,0,0
+BL_D     DESCR     0,0,0
+BL_L     DESCR     0,0,0
+*
+***********************************************************************
+*                                                                     *
+*        BLANK   RETURNS A BLANK STRING OF LENGTH N                   *
+*        CALLING SEQUENCE:                                            *
+*        RCALL     ______,BLANK,(N)                                   *
+*        LOCATIONS CLOBBERED:  ZPTR,YPTR,ZPTR,XCL,YCL,TEMP49,         *
+*                  TSP,XSP,YSP,ZSP                                    *
+*                                                                     *
+***********************************************************************
+BLANK    PROC
+         POP       BK_N
+BKB      PUTLG     YSP,BK_N
+         AEQLC     TEMP49,0,,BK3
+         DEQL      BKGNCL,TEMP26,,BK2
+         VEQLC     BKGNCL,S,BK2
+         AEQLC     BKGNCL,0,,BK2
+         MOVD      TEMP26,BKGNCL
+         MOVD      TEMP49,BKGNCL
+BK2      LOCSP     ZSP,TEMP49            TEMP49 CONTAINS MANY BLANKS
+         SUBSP     ZSP,YSP,ZSP,BK1
+         RCALL     YPTR,GENVAR,(ZSPPTR)
+         RRTURN    YPTR,1
+BK1      LHERE
+*        DOUBLE THE NUMBER OF BLANKS
+         MOVD      XPTR,TEMP49
+         MOVD      YPTR,TEMP49
+         RCALL     TEMP49,CONVV,,(FAIL,FAIL,BKB)
+BK3      LHERE
+         RCALL     TEMP49,GENVAR,(BK_PTR)
+         MOVD      TEMP26,TEMP49
+         BRANCH    BKB
+BK_N     DESCR     0,0,0
+BK_PTR   DESCR     BK_SPEC,0,0
+BK_SPEC  STRING    ' '
+*
+***********************************************************************
+*                                                                     *
+*        ENTRY POINTS:                                                *
+*                  HEIGHT   DEPTH   WIDTH   BLOCK.SIZE                *
+*                                                                     *
+***********************************************************************
+HEIGHT   PROC
+         SETAC     BS_DIR,HT_
+         BRANCH    BLS2,BLS2
+WIDTH    PROC
+         SETAC     BS_DIR,WTH_
+         BRANCH    BLS2,BLS2
+DEPTH    PROC
+         SETAC     BS_DIR,DTH_
+         BRANCH    BLS2,BLS2
+BLS2     PROC
+         VEQLC     INCL,1,BLS3
+         RCALL     BS_B,BLOKVAL,,FAIL
+         BRANCH    BLS1,BLS1
+BLS3     VEQLC     INCL,0,ARGNER
+         MOVD      BS_B,NULVCL
+         BRANCH    BLS1,BLS1
+BLOCKSIZ PROC
+         VEQLC     INCL,2,ARGNER
+         RCALL     BS_B,BLOKVAL,,FAIL
+         PUSH      BS_B
+         RCALL     BS_DIR,INTVAL,,FAIL
+         POP       BS_B
+         INCRA     BS_DIR,1
+         MULTC     BS_DIR,BS_DIR,DESCR
+         BRANCH    BLS1,BLS1
+BLS1     PROC
+         RCALL     BS_B,FIXINL,(BS_B,BS_B)
+         GETDC     BS_B,BS_B,FRAME_
+         GETD      BS_B,BS_B,BS_DIR
+         SETVC     BS_B,I
+         RRTURN    BS_B,3
+BS_DIR   DESCR     0,0,0
+BS_B     DESCR     0,0,0
+*
+***********************************************************************
+*                                                                     *
+*        BLOKVAL    FETCHES  THE NEXT ARGUMENT AND CONVERTS IT TO     *
+*                  BLOCK IF NECESSARY.  THE CALLING SEQUENCE IS       *
+*        RCALL     _____,BLOKVAL,,(FAIL,SUCCESS)                      *
+*        LOCATIONS CLOBBERED:   ANYTHING EXCEPT THE STACK!            *
+*                  BLOKVAL CALLS ARGVAL WHICH CAN CALL APPLY WHICH    *
+*                  IN TURN CAN CALL ANY FUNCTION UNDER THE SUN.       *
+*                                                                     *
+***********************************************************************
+BLOKVAL  PROC
+         RCALL     XPTR,ARGVAL,,FAIL
+         VEQLC     XPTR,BL,,RTXNAM
+         VEQLC     XPTR,S,,RTXNAM
+         VEQLC     XPTR,R,BLOKV1
+         REALST    REALSP,XPTR
+         SETSP     XSP,REALSP
+         RCALL     XPTR,GENVAR,XSPPTR,RTXNAM
+BLOKV1   LHERE
+         VEQLC     XPTR,I,INTR1,BLOKVI
+BLOKVI   RCALL     XPTR,GNVARI,XPTR,RTXNAM
+*
+***********************************************************************
+*                                                                     *
+*        BOX IS A PRIMITIVE FUNCTION WHICH RETURNS A MILKY WHITENESS  *
+*        OF SPECIFIED DIMENSION.  THE OTHER ENTRY POINTS ARE:         *
+*        FRONT   VER   HOR                                            *
+*                                                                     *
+***********************************************************************
+FRONT    PROC
+         BRANCH    BOX,BOX
+VER      PROC
+         BRANCH    BOX,BOX
+HOR      PROC
+         RCALL     BX_W,INTVAL,,FAIL
+         ACOMPC    BX_W,0,,,FAIL
+         MOVD      BX_H,BX_ZERO
+         MOVD      BX_D,BX_ZERO
+         BRANCH    BOXIN,BOXIN
+*HOR1     BRANCH    BOX,BOX
+BOX      PROC
+         SETAV     TEMP1,INCL
+         PUSH      TEMP1
+         RCALL     BX_H,INTVAL,,FAIL
+         POP       TEMP1
+         ACOMPC    BX_H,0,,,LENERR
+         MOVD      BX_W,BX_ZERO
+         ACOMPC    TEMP1,1,,BOX2,BOX2
+         PUSH      (TEMP1,BX_H)
+         RCALL     BX_W,INTVAL,,FAIL
+         POP       (BX_H,TEMP1)
+         ACOMPC    BX_W,0,,,LENERR
+BOX2     LHERE
+         MOVD      BX_D,BX_ZERO
+         ACOMPC    TEMP1,2,,BOX3,BOX3
+         PUSH      (BX_H,BX_W)
+         RCALL     BX_D,INTVAL,,FAIL
+         POP       (BX_W,BX_H)
+         ACOMPC    BX_D,0,,,LENERR
+BOX3     LHERE
+         BRANCH    BOXIN,BOXIN
+BOXIN    PROC
+         RCALL     XPTR,BLAND,(BX_H,BX_W,BX_D),BOXNL
+BOX4     RCALL     XPTR,P_BLOCK,(NULVCL,BX_H,BX_W,BX_D,XPTR)
+         BRANCH    RTXPTR
+BOXNL    MOVD      XPTR,NULVCL
+         BRANCH    BOX4
+BX_H     DESCR     0,0,0
+BX_W     DESCR     0,0,0
+BX_D     DESCR     0,0,0
+BX_ZERO  DESCR     0,0,I
+*
+***********************************************************************
+*                                                                     *
+*         BTAIL   RETURNS THE FIRST LOCATION IN THE BLOCK   WCL       *
+*         NOT OCCUPIED BY A DAUGHTER                                  *
+*         CALLING SEQUENCE:                                           *
+*         RCALL     ______,BTAIL                                      *
+*         LOCATIONS CLOBBERED:   WCL,XPTR                             *
+*                                                                     *
+***********************************************************************
+BTAIL    PROC
+BTAIL0	 LHERE								[PLB117]
+         GETSIZ    BT_SIZE,WCL
+         GETDC     BT_TOP,WCL,TOP_
+         ACOMP     BT_TOP,BT_SIZE,BT_MORE,BT_MORE
+         INCRA     BT_TOP,DESCR
+         PUTDC     WCL,TOP_,BT_TOP
+         RRTURN    BT_TOP,1
+BT_MORE  RCALL     WCL,MORE,(WCL)
+         BRANCH    BTAIL0						[PLB117]
+BT_TOP   DESCR     0,0,0
+BT_SIZE  DESCR     0,0,0
+*
+**********************************************************************
+*                                                                     *
+*        CAE  COPIES AN ACTIVE EDGE                                   *
+*        CALLING SEQUENCE:                                            *
+*        RCALL     ______,CAE,(AE)                                    *
+*        REGISTERS CLOBBERED:  TEMP35,TEMP36                          *
+*                                                                     *
+**********************************************************************
+CAE      PROC
+         POP       TEMP35
+         VEQLC     TEMP35,AEDGDT,CA99
+         RCALL     TEMP35,BCOPY,(TEMP35)
+         GETDC     TEMP36,TEMP35,NEXT_
+         PUSH      TEMP35
+         RCALL     TEMP36,CAE,(TEMP36)
+         POP       TEMP35
+         PUTDC     TEMP35,NEXT_,TEMP36
+CA99     RRTURN    TEMP35,1
+*
+***********************************************************************
+* [PLB117] was CHAR                                                   *
+*        BCHAR  IS AN EXTERNAL PROCEDURE WHICH RETURNS AN ARRAY OF    *
+*        CHARACTERS CORRESPONDING TO THE BLOCK WHICH IT RECEIVES AS   *
+*        ARGUMENT.  THE ARRAY RETURNED IS TWO DIMENSIONAL.            *
+*        THE FIRST DIMENSION IS EQUAL TO THE DEPTH OF THE BLOCK AND   *
+*        THE SECOND DIMENSION IS EQUAL TO THE HEIGHT OF THE BLOCK.    *
+*        EACH STRING IN THE ARRAY IS AS LONG AS THE BLOCK IS WIDE.    *
+*                                                                     *
+***********************************************************************
+BCHAR    PROC							[PLB117]
+         VEQLC     INCL,1,CH1
+         RCALL     ZPTR,BLOKVAL,,FAIL
+         RCALL     ZPTR,FIXINL,(ZPTR,ZPTR)
+         GETDC     CH_F,ZPTR,FRAME_
+         GETDC     TEMP1,ZPTR,ARRAY_
+         GETDC     CH_H,CH_F,HT_
+         GETDC     CH_D,CH_F,DTH_
+         SETVA     CH_H1,CH_H
+         SETVA     CH_D1,CH_D
+         MULT      TEMP3,CH_H,CH_D
+         MULTC     TEMP2,TEMP3,DESCR
+         MOVA      CH_LG,TEMP2
+         SUM       TEMP2,TEMP2,CH_DL
+         SETVC     TEMP2,A
+         RCALL     YPTR,BLOCK,(TEMP2)
+         SETSP     TSP,CH_SPEC					[PLB119]
+         PUTLG     TSP,ZEROCL
+         INTSPC    XSP,CH_D
+         APDSP     TSP,XSP
+         APDSP     TSP,CMASP
+         INTSPC    XSP,CH_H
+         APDSP     TSP,XSP
+         RCALL     CH_PR,GENVAR,(TSPPTR)
+         MOVBLK    YPTR,CH_DOPE,CH_DL
+         SUM       TPTR,YPTR,CH_DL
+         AEQLC     TEMP1,0,,CH2
+         MOVBLK    TPTR,TEMP1,CH_LG
+CH3      LHERE
+         BRANCH    RTYPTR
+CH1      VEQLC     INCL,0,ARGNER,RETNUL
+CH2      AEQLC     CH_LG,0,,CH3
+         MOVD      TEMP4,CH_LG
+         DECRA     TEMP4,DESCR
+         PUTDC     TPTR,DESCR,NULVCL
+         MOVD      TEMP5,TPTR
+         INCRA     TEMP5,DESCR
+         AEQLC     TEMP4,0,,CH3
+         MOVBLK    TEMP5,TPTR,TEMP4
+         BRANCH    CH3
+CH_DOPE  DESCR     CH_DOPE,0,0
+CH_PR    DESCR     0,0,0               PROTOTYPE
+         DESCR     2,0,0               DIMENSIONALITY
+CH_H1    DESCR     1,0,S-S             VERTICAL DIMENSION
+CH_D1    DESCR     1,0,S-S             NORMAL DIMENSION
+CH_DL    DESCR     4*DESCR,0,0         DOPE LENGTH
+CH_LG    DESCR     0,0,0               ARRAY LENGTH
+CH_D     DESCR     0,0,0               DEPTH
+CH_H     DESCR     0,0,0               HEIGHT
+CH_F     DESCR     0,0,0               FRAME
+CH_SPEC  SPEC      CH_BUF,0,0,0,16     Specifier for PROTOTYPE BUFFER [PLB119]
+CH_BUF   BUFFER    16		       BUFFER FOR PROTOTYPE [PLB119]
+*
+***********************************************************************
+*                                                                     *
+*        CIR  -  COMBINE AND INCREMENT RELATIONS.                     *
+*        THIS ROUTINE TAKES RELATION SEQUENCE A1 OF LENGTH N1         *
+*        AND RELATION SEQUENCE A2 OF LENGTH N2 AND RETURNS A RELATION *
+*        SEQUENCE OF LENGTH N1 + N2 SUCH THAT THE FIRST N1 TERMS      *
+*        ARE EQUAL TO A1 AND THE SECOND N2 TERMS ARE EQUAL TO A2 BUT  *
+*        WITH THE DISTANCE FIELD INCREASED BY D.                      *
+*        A1 AND A2 AREN'T DISTURBED BUT EITHER MAY BE RETURNED IF     *
+*        THAT WILL SPEED THINGS UP                                    *
+*        CALLING SEQUENCE:                                            *
+*        RCALL     ______,CIR,(A1,N1,A2,N2,D)                         *
+*        LOCATIONS CLOBBERED:  POTENTIALLY ANY POINTER                *
+*                                                                     *
+***********************************************************************
+CIR      PROC
+         POP       (CI_A1,CI_N1,CI_A2,CI_N2,CI_D)
+         AEQLC     CI_N2,0,CIR11
+         MOVD      CI_CI,CI_A1
+         BRANCH    CI99
+CIR11    AEQLC     CI_N1,0,CIR12
+         AEQLC     CI_D,0,CIR12
+         MOVD      CI_CI,CI_A2
+         BRANCH    CI99
+CIR12    LHERE
+         MULTC     CI_N1,CI_N1,DESCR
+         MULTC     CI_N2,CI_N2,DESCR
+         SUM       TEMP31,CI_N1,CI_N2
+         PUSH      (CI_A1,CI_A2)
+         SETVC     TEMP31,A
+         RCALL     CI_CI,BLOCK,(TEMP31)
+         POP       (CI_A2,CI_A1)
+         MOVBLK    CI_CI,CI_A1,CI_N1
+         SETAC     CI_J,0
+         SUM       TEMP31,CI_CI,CI_N1
+CIR1     LHERE
+         ACOMP     CI_J,CI_N2,CI99,CI99
+         INCRA     CI_J,DESCR
+         GETD      TEMP32,CI_A2,CI_J
+         SETAV     TEMP33,TEMP32
+         SUM       TEMP33,TEMP33,CI_D
+         SETVA     TEMP32,TEMP33
+         PUTD      TEMP31,CI_J,TEMP32
+         BRANCH    CIR1
+CI99     LHERE
+         RRTURN    CI_CI,1
+CI_A1    DESCR     0,0,0
+CI_N1    DESCR     0,0,0
+CI_A2    DESCR     0,0,0
+CI_N2    DESCR     0,0,0
+CI_D     DESCR     0,0,0
+CI_CI    DESCR     0,0,0
+CI_J     DESCR     0,0,0
+*
+***********************************************************************
+*                                                                     *
+*         CLASS     CLASSIFIES ITS ARGUMENT AS EITHER A BLOCK WITH THE*
+*         GRAIN, AGAINST THE GRAIN OR A STRING.  THE 'GRAIN' IS       *
+*         CONTAINED IN TEMP1.                                         *
+*         0  =  STRING                                                *
+*         1  =  BLOCK  WITH THE GRAIN                                 *
+*         2  =  BLOCK AGAINST THE GRAIN                               *
+*                                                                     *
+*         CALLING SEQUENCE:                                           *
+*         RCALL  ______,CLASS,(BLOCK)                                 *
+*         LOCATIONS CLOBBERED:   NONE                                 *
+*                                                                     *
+***********************************************************************
+CLASS    PROC
+         POP       (CL_B)
+         VEQLC     CL_B,S,CLASS1
+         SETAC     CL_CLASS,0
+CLASS2   RRTURN    CL_CLASS,1
+CLASS1   LHERE
+         SETAC     CL_CLASS,1
+         GETDC     CL_REG,CL_B,SET_
+         VEQLC     CL_REG,0,CLASS3
+         GETDC     CL_B,CL_B,ORG_
+         VEQL      CL_B,TEMP1,,CLASS2
+CLASS3   INCRA     CL_CLASS,1
+         BRANCH    CLASS2
+CL_CLASS DESCR     0,0,0
+CL_B     DESCR     0,0,0
+CL_REG   DESCR     0,0,0
+*
+**********************************************************************
+*
+*        COAG      COAGULATES THE ACTIVE EDGE AE BY INFORMATION
+*        SUPPLIED WITH THE EDGE E.  THAT IS THE RELATIONS OF E ARE    *
+*        THROWN IN WITH THE GROWING COLLECTION OF RELATIONS ASSOCIATED
+*        WITH AE.
+*        CALLING SEQUENCE:
+*        RCALL     ,COAG,(AE,E)
+*                                                                     *
+***********************************************************************
+COAG     PROC
+         POP       (TEMP45,TEMP46)
+*        TEMP45 IS AE
+*        TEMP46 IS E
+*        TEMP47 IS AESAVED
+         MOVD      TEMP47,TEMP45
+         SETAC     CO_HIT,0
+COAG2    LHERE
+         GETDC     TEMP31,TEMP45,VAL_
+         RCALL     TEMP46,MINGLE,(TEMP31,TEMP46),COAG1
+         SETAC     CO_HIT,1
+         PUTDC     TEMP45,VAL_,ZEROCL
+COAG1    LHERE
+         AEQLIC    TEMP45,NEXT_,0,,COAG11
+         GETDC     TEMP45,TEMP45,NEXT_
+         BRANCH    COAG2
+COAG11   LHERE
+         AEQLC     CO_HIT,0,COAG12
+*        NO HITS, APPEND E
+         RCALL     TEMP31,BLOCK,(CO_DE)
+         PUTDC     TEMP31,VAL_,TEMP46
+         PUTDC     TEMP45,NEXT_,TEMP31
+         BRANCH    COAG99
+COAG12   LHERE
+         MOVD      TEMP45,TEMP47
+*        FIND THE FIRST NULL OPENING
+COAG3    LHERE
+         AEQLIC    TEMP45,VAL_,0,,COAG31
+         GETDC     TEMP45,TEMP45,NEXT_
+         BRANCH    COAG3
+COAG31   PUTDC     TEMP45,VAL_,TEMP46
+*        NOW CLEAR OUT THE NULL LINKS
+COAG4    LHERE
+         AEQLIC    TEMP45,NEXT_,0,,COAG99
+         GETDC     TEMP31,TEMP45,NEXT_
+         AEQLIC    TEMP31,VAL_,0,COAG41
+         GETDC     TEMP31,TEMP31,NEXT_
+         PUTDC     TEMP45,NEXT_,TEMP31
+         BRANCH    COAG4
+COAG41   LHERE
+         GETDC     TEMP45,TEMP45,NEXT_
+         BRANCH    COAG4
+COAG99   BRANCH    RTN1
+CO_HIT   DESCR     0,0,0
+CO_DE    DESCR     2*DESCR,0,AEDGDT
+*
+**********************************************************************
+*                                                                     *
+*        COMPFR  COMPLETES A FRAME.  IF ALL WENT WELL IN THE MERGING  *
+*        PROCESS, COMPFR HAS NOTHING TO DO BUT RETURN THE RESULTING   *
+*        FRAME.  IF SOME INFORMATION WAS MISSING SO THAT A COMPLETE   *
+*        FRAME COULD NOT BE BUILT THEN COMPFR MAKES A GUESS AS TO HOW *
+*        THE COMPONENTS SHOULD FIT TOGETHER.                          *
+*        CALLING SEQUENCE:                                            *
+*        RCALL     ,COMPFR,(AF)                                       *
+*        REGISTERS CLOBBERED:   TEMP31,TEMP32                         *
+*                                                                     *
+**********************************************************************
+COMPFR   PROC
+         POP       (CF_AF)
+         SETAC     CF_DIR,HT_
+CF2      GETD      CF_E,CF_AF,CF_DIR
+         VEQLC     CF_E,AEDGDT,CF1
+         AEQLIC    CF_E,NEXT_,0,CF3
+         GETDC     CF_E,CF_E,VAL_
+         PUTD      CF_AF,CF_DIR,CF_E
+         BRANCH    CF1
+CF3      OUTPUT    CF_UNIT,CF_FMT
+         RCALL     ,WARNING
+         GETDC     TEMP31,CF_E,VAL_
+CF5      GETDC     CF_E,CF_E,NEXT_
+         AEQLC     CF_E,0,,CF4
+         GETDC     TEMP32,CF_E,VAL_
+         PUSH      (CF_AF,CF_E)
+         RCALL     TEMP31,JE_LONGI,(TEMP31,TEMP32)
+         POP       (CF_E,CF_AF)
+         BRANCH    CF5
+CF4      PUTD      CF_AF,CF_DIR,TEMP31
+CF1      INCRA     CF_DIR,DESCR
+         ACOMPC    CF_DIR,DTH_,RTN1,CF2,CF2
+CF_AF    DESCR     0,0,0
+CF_DIR   DESCR     0,0,0
+CF_E     DESCR     0,0,0
+CF_UNIT  DESCR     DIAGUN,0,0
+CF_FMT   FORMAT    'Some information needed to form a merger was missing; A guess was made.\n'
+*
+***********************************************************************
+*                                                                     *
+*        DISTR   DISTRIBUTES IN AS EVEN A WAY AS POSSIBLE AN INTEGER  *
+*        A  INTO N INTEGERS WHOSE SUM IS A.  IT RETURNS AN ARRAY      *
+*                                                                     *
+***********************************************************************
+DISTR    PROC
+         POP       (DI_A,DI_N)
+        SETVC     DI_N,A
+         RCALL     DI_DI,BLOCK,(DI_N)
+DI1      LHERE
+         ACOMPC    DI_N,0,,DI99,DI99
+         DIVIDE    DI_M,DI_N,DI_DSC,FAIL
+         DIVIDE    DI_V,DI_A,DI_M,FAIL
+         PUTD      DI_DI,DI_N,DI_V
+         SUBTRT    DI_A,DI_A,DI_V
+         DECRA     DI_N,DESCR
+         BRANCH    DI1
+DI99     LHERE
+         RRTURN    DI_DI,1
+DI_DI    DESCR     0,0,0
+DI_N     DESCR     0,0,0
+DI_A     DESCR     0,0,0
+DI_M     DESCR     0,0,0
+DI_V     DESCR     0,0,0
+DI_DSC   DESCR     DESCR,0,0				[PLB120]
+*
+***********************************************************************
+*                                                                     *
+*        DUMP_B  DUMPS  A  BLOCK                                      *
+*        CALLING  SEQUENCE:                                           *
+*        RCALL     ,DUMP_B,(BLOCK)                                    *
+*                  NO REGISTERS ARE CLOBBERED                         *
+*                                                                     *
+***********************************************************************
+DUMP_B   PROC
+         OUTPUT    DP_UNIT,DP_FT1      PUT OUT HEADER
+         POP       DP_BLOCK            FETCH ARG
+         GETAC     DP_TEMP,DP_BLOCK,0  DOES ARG POINT TO BLOCK
+         AEQL      DP_TEMP,DP_BLOCK,DP_NOBLK
+         SETAC     DP_I,0              INITIALIZE ITERATION VARIABLE
+         GETSIZ    DP_SIZE,DP_BLOCK
+DP_LOOP  GETD      DP_TEMP,DP_BLOCK,DP_I
+         OUTPUT    DP_UNIT,DP_FT2,(DP_TEMP,DP_TEMP,DP_TEMP)
+         ACOMP     DP_I,DP_SIZE,DP_END,DP_END
+         INCRA     DP_I,DESCR
+         BRANCH    DP_LOOP
+DP_NOBLK LHERE
+DP_END   LHERE
+         RRTURN    ,1
+DUMP_A   PROC      DUMP_B
+         POP       DP_BLOCK
+         AEQLC     DP_BLOCK,0,DP1
+         OUTPUT    DP_UNIT,DP_FT3,(ZEROCL)
+         BRANCH    RTN1
+DP1      LHERE
+         GETSIZ    DP_SIZE,DP_BLOCK
+         DIVIDE    DP_TEMP,DP_SIZE,DP_8,FAIL
+         OUTPUT    DP_UNIT,DP_FT3,(DP_TEMP)
+         SETAC     DP_I,DESCR
+DP_LP    GETD      DP_TEMP,DP_BLOCK,DP_I
+         LOCSP     YSP,DP_TEMP
+         FASTPR    IOKEY,DP_UNIT,DP_UNIT,YSP,BLSP
+         INCRA     DP_I,DESCR
+         ACOMP     DP_I,DP_SIZE,RTN1,DP_LP,DP_LP
+DP_UF1   DESCR     0,0,0
+DP_8     DESCR     8,0,0
+DP_FT3   FORMAT    '\nARRAY of length %d\n'
+DP_FT1   FORMAT    '        Address            Flag           Value\n'
+DP_FT2   FORMAT    '%A %L %V\n'
+DP_I     DESCR     0,0,0
+DP_SIZE  DESCR     0,0,0
+DP_TEMP  DESCR     0,0,0
+DP_BLOCK DESCR     0,0,0
+DP_UNIT  DESCR     PRUNO,0,0
+**********************************************************************
+*                                                                     *
+*        DUP  DUPLICATES A BLOCK B A NUMBER OF TIMES N IN THE         *
+*        DIRECTION DIR                                                *
+*        CALLING SEQUENCE (EXTERNAL):                                 *
+*        DUP(B,DIR,N)                                                 *
+*        WHERE DIR IS 0,1 OR 2 FOR VERTICAL, HORIZONTAL OR NORMAL     *
+*                                                                     *
+**********************************************************************
+DUP      PROC
+         SETAV     DUP_NA,INCL
+         ACOMPC    DUP_NA,3,ARGNER,,ARGNER
+         RCALL     XPTR,BLOKVAL,,FAIL
+         IFPHY     XPTR,DUP2
+         RCALL     XPTR,BCOPY,(XPTR)
+DUP2     LHERE
+         PUSH      XPTR
+         RCALL     DUP_DIR,INTVAL,,FAIL
+         PUSH      DUP_DIR
+         RCALL     DUP_N,INTVAL,,FAIL
+         POP       (DUP_DIR,XPTR)
+         ACOMPC    DUP_N,0,,,FAIL
+         VEQLC     XPTR,S,DUP1
+         AEQLC     DUP_DIR,1,DUP1
+         RCALL     XPTR,DUPE,(XPTR,DUP_N),RTXPTR
+DUP1     LHERE
+         RCALL     XPTR,FIXINL,(XPTR,XPTR)
+         INCRA     DUP_DIR,1
+         MULTC     DUP_DIR,DUP_DIR,DESCR
+         GETDC     TEMP1,XPTR,ARRAY_
+         GETDC     TEMP2,XPTR,FRAME_
+         PUSH      XPTR
+         RCALL     TEMP1,REPL,(TEMP1,TEMP2,DUP_DIR,DUP_N)
+         POP       XPTR
+         PUTDC     XPTR,ARRAY_,TEMP1
+         BRANCH    RTXPTR
+DUP_N    DESCR     0,0,0
+DUP_DIR  DESCR     0,0,0
+DUP_NA   DESCR     0,0,0
+***********************************************************************
+*                                                                     *
+*        DUPE   WILL DUPLICATE A STRING N TIMES.                      *
+*                                                                     *
+***********************************************************************
+DUPE     PROC
+         POP       (YPTR,DU_N)
+         AEQLC     DU_N,0,,RT1NUL
+         LOCSP     YSP,YPTR
+         GETLG     YCL,YSP
+         MULT      YCL,YCL,DU_N
+         ACOMP     YCL,MLENCL,INTR8          CHECK FOR EXCESSIVELY L S
+         RCALL     ZPTR,CONVAR,(YCL)
+         LOCSP     TSP,ZPTR
+         SETLC     TSP,0
+DUPE2    ACOMPC    DU_N,0,,DUPE1,DUPE1
+         DECRA     DU_N,1
+         APDSP     TSP,YSP
+         BRANCH    DUPE2
+DUPE1    LHERE
+         RCALL     ZPTR,GNVARS,(YCL)
+         RRTURN    ZPTR,1
+DU_N     DESCR     0,0,0
+***********************************************************************
+*                                                                     *
+*        E_ATTACH   ATTACHES AN EDGE E TO A POSSIBLY ACTIVE EDGE AE.  *
+*        CALLING SEQUENCE:                                            *
+*        RCALL     ______,E_ATTACH,(AE,E)                             *
+*                                                                     *
+***********************************************************************
+E_ATTACH PROC
+         POP       (EA_AE,EA_E)
+*        IF THE FIRST ARGUMENT IS NOT ACTIVE MAKE IT ACTIVE.
+         VEQLC     EA_AE,AEDGDT,,EA1
+         PUSH      (EA_AE,EA_E)
+         RCALL     EA_T,BLOCK,(EA_DE)
+         POP       (EA_E,EA_AE)
+         PUTDC     EA_T,VAL_,EA_AE
+         MOVD      EA_AE,EA_T
+*
+EA1      MOVD      EA_T,EA_AE
+EA2      LHERE
+         AEQLIC    EA_T,NEXT_,0,,EA3
+         GETDC     EA_T,EA_T,NEXT_
+         BRANCH    EA2
+EA3      LHERE
+         PUSH      (EA_AE,EA_T,EA_E)
+         RCALL     TEMP31,BLOCK,(EA_DE)
+         POP       (EA_E,EA_T,EA_AE)
+         PUTDC     EA_T,NEXT_,TEMP31
+         PUTDC     TEMP31,VAL_,EA_E
+         RRTURN    EA_AE,1
+EA_AE    DESCR     0,0,0
+EA_E     DESCR     0,0,0
+EA_T     DESCR     0,0,0
+EA_DE    DESCR     NEXT_,0,AEDGDT
+***********************************************************************
+*                                                                     *
+*        EMB_PHY   EMBELLISHES A PHYSICAL BLOCK.  THE ARGUMENT IS A   *
+*        TREE NODE WHICH POINTS TO AN EMBELLISHER                     *
+*        CALLING SEQUENCE:                                            *
+*        RCALL     ,EMB_PHY,(TN)                                      *
+*                                                                     *
+***********************************************************************
+EMB_PHY  PROC
+         POP       XPTR
+*                  IFPHY(VALUE(TN))          :F(EMERR)
+         GETDC     TEMP31,XPTR,VALUE_
+         IFPHY     TEMP31,EMERR
+*                  B = ITEM(VALUE(TN),BL.)
+         GETDC     TEMP1,TEMP31,BL_
+*                  AF = ITEM(VALUE(TN),FRAME.)
+         GETDC     TEMP3,TEMP31,FRAME_
+*                  F  =  COPY(AF)
+         RCALL     TEMP5,BCOPY,(TEMP3)
+*                  GF = ITEM(VALUE(FATHER(TN)),FRAME)
+         GETDC     TEMP32,XPTR,FATHER_
+         GETDC     TEMP33,TEMP32,VALUE_
+         GETDC     TEMP18,TEMP33,FRAME_
+*                  PHY  =  ITEM(VALUE(FATHER(TN)),ARRAY_)
+         GETDC     TEMP10,TEMP33,ARRAY_
+*                  IDENT(B)                  :S(EM4)
+         AEQLC     TEMP1,0,,EM4
+*                  DIR  =  B<ORG.>
+         GETDC     EM_DIR,TEMP1,ORG_
+         SETAV     EM_DIR,EM_DIR
+         MULTC     EM_DIR,EM_DIR,DESCR
+*                  CURRENT = AF<DIR>
+         GETD      TEMP4,TEMP3,EM_DIR
+*                  F<DIR>  =  IDENT(DATATYPE(CURRENT),'AEDGE')  VALUE(
+*                                            CURRENT)
+         VEQLC     TEMP4,AEDGDT,EM11
+         GETDC     TEMP31,TEMP4,VAL_
+         PUTD      TEMP5,EM_DIR,TEMP31
+EM11     LHERE
+*                  SF = STRIP.FRAME(GF)
+         RCALL     TEMP9,STRIP_F,(TEMP18)
+*                  S = SUBBLOCK(GF,F)
+         RCALL     TEMP11,SUBBLOCK,(TEMP18,TEMP5),EMERR1
+*                  IFCONT(B)                 :F(EM3)
+         IFCONT    TEMP1,EM3
+*                  SS =  COPY(S)
+         RCALL     TEMP20,BCOPY,(TEMP11)
+*                  REG = REG(TN)
+         GETDC     TEMP2,XPTR,TNREG_
+*                  D  =  LSO(TN)
+         GETDC     TEMP8,XPTR,LSO_
+EM1      LHERE
+*                  DF = STRIP.FRAME(ITEM(VALUE(D)),FRAME.)
+         GETDC     TEMP31,TEMP8,VALUE_
+         GETDC     TEMP32,TEMP31,FRAME_
+         RCALL     TEMP21,STRIP_F,(TEMP32)
+*                  D.PHY = ITEM(VALUE(D),ARRAY.)
+         GETDC     TEMP22,TEMP31,ARRAY_
+*                  SD = INIT.SUB(S,DF,DIR,REG)
+         RCALL     TEMP15,INIT_SUB,(TEMP11,TEMP21,EM_DIR,TEMP2)
+*                  INSERT(PHY,SF,D.PHY,SD)
+         RCALL     ,INSERT,(TEMP10,TEMP9,TEMP22,TEMP15)
+*                  D  =  RSIB(D)  DIFFER(RSIB(D))            :F(RETURN)
+         GETDC     TEMP8,TEMP8,RSIB_
+         AEQLC     TEMP8,0,,EM99
+*                  IFREP(VALUE(D))           :F(EM1)
+         GETDC     TEMP31,TEMP8,VALUE_
+         IFREP     TEMP31,EM1
+*                  CURRENT  =  NEXT(CURRENT)
+         GETDC     TEMP4,TEMP4,NEXT_
+*                  F<DIR>  =  VALUE(CURRENT)
+         GETDC     TEMP32,TEMP4,VAL_
+         PUTD      TEMP5,EM_DIR,TEMP32
+*                  SNEXT = SUBBLOCK(GF,F)
+         RCALL     TEMP23,SUBBLOCK,(TEMP18,TEMP5),EMERR1
+*                  S  =  MIDREGION(SS,SNEXT,DIR)  :S(EM2)
+         RCALL     TEMP11,MIDREG,(TEMP20,TEMP23,EM_DIR),(,EM2)
+*                  S  =  MIDREGION(SNEXT,SS,DIR)     :S(EM2)
+         RCALL     TEMP11,MIDREG,(TEMP23,TEMP20,EM_DIR),(,EM2)
+*                  S  =  SNEXT
+         MOVD      TEMP11,TEMP23
+*                  SS  =  COPY(S)
+         RCALL     TEMP20,BCOPY,(TEMP11)
+*                  D  =  RSIB(D)           :(EM1)
+         GETDC     TEMP8,TEMP8,RSIB_
+         BRANCH    EM1
+EM2      LHERE
+*                  A  =  EXT(S<DIR>)
+         GETD      TEMP31,TEMP11,EM_DIR
+         SETAV     EM_A,TEMP31
+*                  DPB = B.PB(D,A)
+         PUSH      (EM_DIR,TEMP2,TEMP4,TEMP5,TEMP8,TEMP9,TEMP10,TEMP11)
+         PUSH      (TEMP18,TEMP21,TEMP23)
+         RCALL     TEMP24,B_PB,(TEMP8,EM_A)
+         POP       (TEMP23,TEMP21,TEMP18)
+         POP       (TEMP11,TEMP10,TEMP9,TEMP8,TEMP5,TEMP4,TEMP2,EM_DIR)
+*                  DF = DPB<FRAME.>
+         GETDC     TEMP14,TEMP24,FRAME_
+*                  SD = INIT.SUB(S,DF,DIR,REG)
+         RCALL     TEMP15,INIT_SUB,(TEMP11,TEMP14,EM_DIR,TEMP2)
+*                  INSERT(PHY,SF,DPB<ARRAY.>,SD)
+         GETDC     TEMP31,TEMP24,ARRAY_
+         RCALL     ,INSERT,(TEMP10,TEMP9,TEMP31,TEMP15)
+*                  S = SNEXT
+         MOVD      TEMP11,TEMP23
+*                  SS = COPY(S)
+         RCALL     TEMP20,BCOPY,(TEMP11)
+*                  D = RSIB(D)               :(EM1)
+         GETDC     TEMP8,TEMP8,RSIB_
+         BRANCH    EM1
+EM4      LHERE
+*                  F = STRIP.FRAME(GF)
+         RCALL     TEMP9,STRIP_F,TEMP18
+*                  S  =  SUBBLOCK(GF,F)
+         RCALL     TEMP11,SUBBLOCK,(TEMP18,TEMP5),EMERR1
+EM3      LHERE
+*                  B = VALUE(TN)
+         GETDC     TEMP1,XPTR,VALUE_
+*                  INSERT(PHY,SF,B<ARRAY.>,S)     :(RETURN)
+         GETDC     TEMP31,TEMP1,ARRAY_
+         RCALL     ,INSERT,(TEMP10,TEMP9,TEMP31,TEMP11)
+         BRANCH    EM99
+EMERR1   LHERE
+         OUTPUT    EM_DIAG,EM_FMT2
+         RCALL     ,WARNING
+         BRANCH    EM99
+EMERR    LHERE
+         OUTPUT    EM_DIAG,EM_FMT3
+         RCALL     ,WARNING
+         BRANCH    EM99
+EM99     RRTURN    ,1
+EM_A     DESCR     0,0,0
+EM_DIR   DESCR     0,0,0
+EM_DIAG  DESCR     DIAGUN,0,0
+EM_FMT1  FORMAT 'A replicated block appears between two blocks which overlap\n'
+EM_FMT2  FORMAT 'All or part of an embellisher could not be located within a merged block\n'
+EM_FMT3  FORMAT 'Meaningless embellisher\n'
+***********************************************************************
+*                                                                     *
+*        FICOM SEARCHES FOR A PAIR OF IDENTICAL NODES IN TWO LISTS OF *
+*        NODES (LIST A1 HAS LENGTH N1 AND LIST A2 HAS LENGTH N2).  IF *
+*        A PAIR OF IDENTICAL NODES CANNOT BE FOUND THEN THE FUNCTION  *
+*        FAILS.  OTHERWISE GLOBAL INDICES TEMP31 AND TEMP32 ARE SET TO*
+*        POINT TO THE IDENTICAL NODES.                                *
+*        CALLING SEQUENCE:                                            *
+*        RCALL     ,FICOM,(A1,N1,A2,N2),(FAIL,SUCC)                   *
+*                                                                     *
+***********************************************************************
+FICOM    PROC
+         POP       (FC_A1,FC_N1,FC_A2,FC_N2)
+         MOVD      TEMP31,ZEROCL
+         MOVD      TEMP32,ZEROCL
+         MULTC     FC_N1,FC_N1,DESCR
+         MULTC     FC_N2,FC_N2,DESCR
+FICOM2   LHERE
+         INCRA     TEMP31,DESCR
+         ACOMP     TEMP31,FC_N1,FAIL
+         SETAC     TEMP32,0
+         GETD      FC_ND1,FC_A1,TEMP31
+FICOM1   LHERE
+         INCRA     TEMP32,DESCR
+         ACOMP     TEMP32,FC_N2,FICOM2
+         GETD      FC_ND2,FC_A2,TEMP32
+         AEQL      FC_ND1,FC_ND2,FICOM1,RTN2
+FC_A1    DESCR     0,0,0
+FC_A2    DESCR     0,0,0
+FC_N1    DESCR     0,0,0
+FC_N2    DESCR     0,0,0
+FC_ND1   DESCR     0,0,0
+FC_ND2   DESCR     0,0,0
+***********************************************************************
+*                                                                     *
+*        FIX  IS A PRIMITIVE FUNCTION WHICH WILL CONVERT ANY BLOCK    *
+*        TO PHYSICAL ORGANIZATION.  CALLING SEQUENCE:                 *
+*             FIX(B,FLAG)                                             *
+*        WHERE FLAG IS 1 WILL STRIP AWAY NODE INFORMATION.  IF FLAG   *
+*        IS 0 OR ABSENT, ALL NODE INFO IS RETAINED.                   *
+*             FIX(B,N1,N2,...,NK)                                     *
+*        WILL REMOVE ALL NODE INFO EXCEPT THAT PERTAINING TO THE GIVEN*
+*        NODES.                                                       *
+*                                                                     *
+***********************************************************************
+FIX      PROC
+         PUSH      INCL
+         RCALL     TEMP1,BLOKVAL,,FAIL
+         POP       INCL
+         MOVD      TEMP2,NULVCL
+         VEQLC     INCL,1,,FIXCL
+         PUSH      (INCL,TEMP1)
+         RCALL     TEMP2,ARGVAL,,FAIL
+         POP       (TEMP1,INCL)
+         AEQLC     TEMP2,1,FIXNDS
+FIXCL    RCALL     ZPTR,FIXINL,(TEMP1,TEMP2),RTZPTR
+FIXNDS   LHERE     ,                     TEMP2 IS A NODE
+         PUSH      (TEMP2,INCL)
+         RCALL     ZPTR,FIXINL,(TEMP1,NULVCL)
+         POP       (INCL,TEMP2)
+         SETAV     FX_ARGS,INCL          CONTAINS NO. OF ARGS
+         DECRA     FX_ARGS,2             ... REMAINING
+         GETDC     TEMP10,ZPTR,FRAME_    TEMP10 HOLDS OLD FRAME
+         RCALL     TEMP20,STRIP_F,(TEMP10)
+*                                        TEMP20 HOLDS NEW FRAME
+         BRANCH    FIX1
+FIX2     LHERE     ,                     PICK UP NEXT ARGUMENT
+         ACOMPC    FX_ARGS,0,,FIX99,FIX99  ARE WE DONE?
+         DECRA     FX_ARGS,1             NO, GO ON
+         PUSH      (FX_ARGS,TEMP10,TEMP20,ZPTR)
+         RCALL     TEMP2,BLOKVAL,,FAIL
+         POP       (ZPTR,TEMP20,TEMP10,FX_ARGS)
+FIX1     LHERE     ,                     PROCESS NODE (TEMP2)
+         GETDC     FX_ND,TEMP2,ID_       GET THE NODE I.D.
+         SETAC     FX_DIR,HT_            DIRECTION 1 IS HEIGHT
+FIX11    GETD      TEMP11,TEMP10,FX_DIR  GET THE OLD EDGE
+         RELS TEMP12,TEMP11              GET THE OLD RELATIONS
+         NN        TEMP13,TEMP11         FIND THE NO. OF NODES
+*        FIND A COMMON NODE
+         RCALL     ,FICOM,(FX_A1,FX_N1,TEMP12,TEMP13),FIX2
+         GETD      TEMP14,TEMP12,TEMP32  GET FOUND NODE
+         SETAV     TEMP13,TEMP14         GET DISTANCE
+         GETD      TEMP21,TEMP20,FX_DIR  GET NEW EDGE
+*  ADD NODE-PAIR TO IT
+         RCALL     TEMP21,ADD_NP,(TEMP21,TEMP14,TEMP13)
+         PUTD      TEMP20,FX_DIR,TEMP21  PUT AUGMENTED EDGE BACK
+         INCRA     FX_DIR,DESCR          GET NEXT DIRECTION
+         ACOMPC    FX_DIR,DTH_,FIX2,FIX11,FIX11   ARE WE BEYOND DEPTH?
+FIX99    LHERE
+         PUTDC     ZPTR,FRAME_,TEMP20
+         BRANCH    RTZPTR
+FX_DIR   DESCR     0,0,0                 HOLDS CURRENT DIRECTION
+FX_ARGS  DESCR     0,0,0                 HOLDS NO. OF ARGUMENTS.
+FX_A1    DESCR     FX_N1,0,4             SIMULATED ARRAY PTR.
+FX_N1    DESCR     1,0,6                 SIMULATED ARRAY OF RELATIONS.
+FX_ND    DESCR     0,0,0                 NODE-DISTANCE(TO BE PLUGGED)
+***********************************************************************
+*                                                                     *
+*        FIXINL IS THE INTERNAL VERSION OF THE FIX ROUTINE            *
+*        CALLING SEQUENCE:                                            *
+*             RCALL   ______,FIXINL,(BLOCK,FLAG)                      *
+*                                                                     *
+***********************************************************************
+FIXINL   PROC
+         POP       (FIX_B,FIX_FLAG)
+         IFPHY     FIX_B,,FIXI1
+         MOVD      TEMP50,FX_NN
+         RCALL     FIX_B,T_LEAF,(NULVCL,NULVCL,FIX_B)
+         RCALL     FIX_B,B_PB,(FIX_B)
+         PUTDC     FIX_B,BL_,NULVCL
+         MOVD      TEMP50,FX_NN
+FIXI1    LHERE
+         RCALL     FIX_B,BCOPY,FIX_B
+         AEQLC     FIX_FLAG,0,,FIXI99
+         GETDC     TEMP31,FIX_B,FRAME_
+         PUSH      FIX_B
+         RCALL     TEMP31,STRIP_F,(TEMP31)
+         POP       FIX_B
+         PUTDC     FIX_B,FRAME_,TEMP31
+FIXI99   LHERE
+         RRTURN    FIX_B,1
+FIX_B    DESCR     0,0,0
+FIX_FLAG DESCR     0,0,0
+FX_NN    DESCR     FX_NA,0,A
+FX_NA    DESCR     FX_NA,0,2*DESCR
+         DESCR     2*DESCR,0,0
+         DESCR     0,0,0
+***********************************************************************
+*                                                                     *
+*        FORCING    FINDS THE FORCING SIZE OF THE BLOCK ASSOCIATED    *
+*        WITH TREE NODE TN IN THE DIRECTION DIR.  THE FORCING SIZE OF *
+*        A BLOCK IS THE ABSOLUTELY MINIMUM SPACE THAT A BLOCK CAN     *
+*        OCCUPY TAKING THE MINIMUM OVERALL POSSIBLE ENVIRONMENT.      *
+*        CALLING SEQUENCE:                                            *
+*        RCALL    ______,FORCING,(TN,DIR)                             *
+*        WHERE DIR IS EQUAL TO EITHER HT_, WTH_, OR DTH_.             *
+*        LOCATIONS CLOBBERED:  POTENTIALLY ANYTHING                   *
+*                                                                     *
+***********************************************************************
+FORCING  PROC
+         POP       (FO_TN,FO_DIR)
+         MOVD      FO_FO,FO_ZERO
+         GETDC     FO_B,FO_TN,VALUE_
+         VEQLC     FO_B,S,FO1
+         AEQLC     FO_B,0,,FO99
+         AEQLC     FO_DIR,WTH_,,FO2
+         SETAC     FO_FO,1
+         BRANCH    FO99
+FO2      GETSIZ    FO_FO,FO_B
+         SETVC     FO_FO,I
+         BRANCH    FO99
+FO1      LHERE
+         GETDC     TEMP1,FO_B,ORG_
+         SETAV     TEMP1,TEMP1
+         SELBRA    TEMP1,(FORCE1,FORCE2,FORCE3,FORCE4,FORCE5,FORCE6,FORCE7,FORCE8,FORCE9)
+*
+*        CONTIGUOUS ORGANIZATION
+*
+FORCE1   LHERE
+FORCE2   LHERE
+FORCE3   LHERE
+         PUSH      FO_TN
+         RCALL     FO_P,LSOHN,FO_TN
+         POP       (FO_TN)
+*        IS THE ORG. THE SAME AS THE DIRECTION?  IF SO WE MUST TOTAL
+*        THE FORCING SIZES OF EACH DAUGHTER.  OTHERWISE WE FIND THE MAX
+         SETAC     FO_SW,1             SWITCH IS 1 IF ORTHOGONAL
+         MULTC     TEMP1,TEMP1,DESCR
+         AEQL      TEMP1,FO_DIR,FO3    IS 2 IF LONGITUDINAL
+         SETAC     FO_SW,2
+FO3      LHERE
+         BRANCH    FO4
+FO31     GETDC     FO_P,FO_P,RSIB_
+FO4      AEQLC     FO_P,0,,FO99
+         PUSH      (FO_P,FO_DIR,FO_SW,FO_FO)
+         RCALL     TEMP1,FORCING,(FO_P,FO_DIR)
+         POP       (FO_FO,FO_SW,FO_DIR,FO_P)
+         SELBRA    FO_SW,(FO_ORTH,FO_LONGI)
+FO_ORTH  LHERE
+         ACOMP     FO_FO,TEMP1,FO31,FO31
+         MOVA      FO_FO,TEMP1
+         BRANCH    FO31
+FO_LONGI LHERE
+         SUM       FO_FO,FO_FO,TEMP1
+         BRANCH    FO31
+*
+*        COMPOSITE ORGANIZATION
+*
+FORCE4   LHERE
+         PUSH      (FO_DIR)
+         RCALL     FO_B,B_PB,(FO_TN,NULVCL)
+         POP       (FO_DIR)
+         GETDC     FO_B,FO_B,FRAME_
+         GETD      FO_E,FO_B,FO_DIR
+         TRL       FO_FO,FO_E
+         BRANCH    FO99
+*
+*        ITERATED AND REPLICATED ORGANIZATION
+*
+FORCE5   LHERE
+FORCE6   LHERE
+         RCALL     FO_P,PAR_CONG,(FO_TN),FO99
+         GETDC     FO_P,FO_P,VALUE_    GET THE ORG. OF THE PARENTIAL
+         GETDC     FO_P,FO_P,ORG_      CONGLOMERATE
+         SETAV     FO_P,FO_P           TIMES
+         MULTC     FO_P,FO_P,DESCR     DESCR.
+         AEQL      FO_P,FO_DIR,FORCE52
+         AEQLC     TEMP1,REP_,FORCE51,FO99
+FORCE52  AEQLC     TEMP1,IT_,FORCE51,FO99
+FORCE51  LHERE
+         RCALL     FO_TN,LSOHN,(FO_TN)
+         RCALL     FO_FO,FORCING,(FO_TN,FO_DIR),FO99
+*
+*        NODE ORGANIZATION
+*
+FORCE7   LHERE
+         BRANCH    FORCE51
+FORCE8   LHERE     ,                   THIS LOCATION CAN'T BE REACHED
+         SETAC     ERRTYP,ERRNO+1
+         BRANCH    FTLEND
+*
+*        PHYSICAL ORGANIZATION
+*
+FORCE9   LHERE
+         GETDC     FO_P,FO_B,FRAME_    FIRST GET
+         GETD      FO_P,FO_P,FO_DIR    THE RIGHT EDGE
+         VEQLC     FO_P,AEDGEDT,,FORCE91
+         TRL       FO_FO,FO_P
+         BRANCH    FO99
+FORCE91  LHERE
+         GETDC     FO_E,FO_P,VAL_
+         TRL       TEMP1,FO_E
+         SUM       FO_FO,FO_FO,TEMP1
+         GETDC     FO_P,FO_P,NEXT_
+         AEQLC     FO_P,0,FORCE91,FO99
+*
+FO99     RRTURN    FO_FO,1
+*
+FO_FO    DESCR     0,0,0
+FO_P     DESCR     0,0,0
+FO_E     DESCR     0,0,0
+FO_B     DESCR     0,0,0
+FO_DIR   DESCR     0,0,0
+FO_TN    DESCR     0,0,0
+FO_SW    DESCR     0,0,0
+FO_ZERO  DESCR     0,0,I
+***********************************************************************
+*                                                                     *
+*        F_JOIN     JOINS TWO FRAMES TOGETHER IN THE DIRECTION DIR    *
+*        WITH REGISTRATION REG.  THE FIRST FRAME IS MODIFIED          *
+*        CALLING SEQUENCE:                                            *
+*        RCALL     ______,F_JOIN,(DIR,F1,F2,REG)                      *
+*                                                                     *
+***********************************************************************
+F_JOIN   PROC
+         POP       (FJ_DIR,FJ_F1,FJ_F2,FJ_REG)
+*FJ1	 LHERE
+         DEQL      FJ_F2,NULVCL,,FJ99
+         SETAC     FJ_I,HT_
+FJ6      GETD      FJ_T1,FJ_F1,FJ_I
+         GETD      FJ_T2,FJ_F2,FJ_I
+         GETD      FJ_RI,FJ_REG,FJ_I
+         PUSH      (FJ_F1,FJ_F2,FJ_REG)
+         AEQL      FJ_I,FJ_DIR,FJ3
+         RCALL     FJ_T,JE_LONGI,(FJ_T1,FJ_T2),FJ4
+FJ3      RCALL     FJ_T,JE_ORTHO,(FJ_T1,FJ_T2,FJ_RI)
+FJ4      LHERE
+         POP       (FJ_REG,FJ_F2,FJ_F1)
+         PUTD      FJ_F1,FJ_I,FJ_T
+         AEQLC     FJ_I,DTH_,,FJ99
+         INCRA     FJ_I,DESCR
+         BRANCH    FJ6
+FJ99     RRTURN    FJ_F1,1
+FJ_I     DESCR     0,0,0
+FJ_F1    DESCR     0,0,0
+FJ_F2    DESCR     0,0,0
+FJ_REG   DESCR     0,0,0
+FJ_RI    DESCR     0,0,0
+FJ_T1    DESCR     0,0,0
+FJ_T2    DESCR     0,0,0
+FJ_DIR   DESCR     0,0,0
+FJ_T     DESCR     0,0,0
+***********************************************************************
+*                                                                     *
+*        ENTRY POINTS:                                                *
+*            HOR_REG, VER_REG, NORM_REG                               *
+*        ARE EXTERNAL ENTRY POINTS FOR SETTING THE REGISTRATIONS IN TH*
+*        E INDICATED DIRECTIONS                                       *
+*                                                                     *
+***********************************************************************
+HOR_REG  PROC
+         SETAC     GR_DIR,WTH_-DESCR
+         BRANCH    GR1,GR1
+VER_REG  PROC
+         SETAC     GR_DIR,HT_-DESCR
+         BRANCH    GR1,GR1
+NORM_REG PROC
+         SETAC     GR_DIR,DTH_-DESCR
+         BRANCH    GR1,GR1
+GR1      PROC
+         VEQLC     INCL,1,GRERR
+         RCALL     TEMP1,BLOKVAL,,FAIL
+         IFCONT    TEMP1,FAIL
+         AEQLIC    TEMP1,REG_,0,GR2
+         RCALL     TEMP2,BLOCK,(GR_REG)
+         PUTDC     TEMP1,REG_,TEMP2
+GR2      GETDC     XPTR,TEMP1,REG_
+         SUM       XPTR,XPTR,GR_DIR
+         BRANCH    RTXNAM
+GRERR    BRANCH    ARGNER
+GR_REG   DESCR     3*DESCR,0,A
+GR_DIR   DESCR     0,0,0
+***********************************************************************
+*                                                                     *
+*        IDENT_SB  RETURNS THE IDENTITY SUBBLOCK.  THAT IS THE        *
+*        IMPROPER, NONNULL, SUBBLOCK OF A BLOCK WHOSE SIZE IS DICTATED*
+*        BY THE STRIPPED FRAME RECEIVED AS ARGUMENT.                  *
+*        CALLING SEQUENCE:                                            *
+*        RCALL     ______,IDENT_SB,(SF)                               *
+*                                                                     *
+***********************************************************************
+IDENT_SB PROC
+         RCALL     ID_ID,BLOCK,(ID_D)
+         POP       ID_SF
+         GETDC     ID_T,ID_SF,HT_
+         SETVA     ID_T,ID_T
+         PUTVC     ID_ID,HT_,ID_T
+         GETDC     ID_T,ID_SF,WTH_
+         SETVA     ID_T,ID_T
+         PUTVC     ID_ID,WTH_,ID_T
+         GETDC     ID_T,ID_SF,DTH_
+         SETVA     ID_T,ID_T
+         PUTVC     ID_ID,DTH_,ID_T
+         RRTURN    ID_ID,1
+ID_D     DESCR     DTH_,0,SBDT
+ID_ID    DESCR     0,0,0
+ID_T     DESCR     0,0,0
+ID_SF    DESCR     0,0,0
+***********************************************************************
+*                                                                     *
+*        INIT.SUB   RETURNS AN INITIAL SUBBLOCK OF THE STRIPPED FRAME *
+*        SF.  THE ARGUMENT SB IS A SUBBLOCK.  DIR IS A DIRECTION AND  *
+*        REG IS AN ARRAY OF REGISTRATIONS.  THE FUNCTION RETURNS      *
+*        A SUBBLOCK AND REDUCES SB ACCORDINGLY.                       *
+*        CALLING SEQUENCE:                                            *
+*        RCALL     ______,INIT.SUB,(SB,SF,DIR,REG)                    *
+*                                                                     *
+***********************************************************************
+INIT_SUB PROC
+         RCALL     IS_IS,BLOCK,(IS_SBD)
+         POP       (IS_SB,IS_SF,IS_DIR,IS_REG)
+         MOVD      IS_DS,IS_DIR
+*
+         GETD      TEMP31,IS_SF,IS_DIR
+         GETD      TEMP32,IS_SB,IS_DIR
+         MOVD      TEMP33,TEMP32
+         SETVA     TEMP32,TEMP31
+         PUTD      IS_IS,IS_DIR,TEMP32
+*
+         SETAV     TEMP34,TEMP33
+         SUBTRT    TEMP34,TEMP34,TEMP31
+         SUM       TEMP33,TEMP33,TEMP31
+         SETVA     TEMP33,TEMP34
+         PUTD      IS_SB,IS_DIR,TEMP33
+*
+IS1      LHERE
+         CYC       IS_DIR
+*
+         AEQL      IS_DIR,IS_DS,,IS2
+         GETD      IS_ST,IS_SB,IS_DIR
+         SETAV     TEMP31,IS_ST
+         GETD      IS_SFD,IS_SF,IS_DIR
+         GETD      TEMP33,IS_REG,IS_DIR
+         RCALL     ,PRE_SUF,(TEMP31,IS_SFD,TEMP33)
+*
+         SUM       IS_ST,IS_ST,TEMP31
+         SETVA     IS_ST,IS_SFD
+         PUTD      IS_IS,IS_DIR,IS_ST
+*
+         BRANCH    IS1
+*
+IS2      LHERE
+         RRTURN    IS_IS,1
+IS_IS    DESCR     0,0,0
+IS_DIR   DESCR     0,0,0
+IS_SF    DESCR     0,0,0
+IS_SBD   DESCR     3*DESCR,0,SBDT
+IS_SB    DESCR     0,0,0
+IS_REG   DESCR     0,0,0
+IS_SFD   DESCR     0,0,0
+IS_ST    DESCR     0,0,0
+IS_DS    DESCR     0,0,0
+***********************************************************************
+*                                                                     *
+*        INSERT   INSERTS A LOCAL PHYSICAL BLOCK (LP) INTO A GLOBAL   *
+*        PHYSICAL BLOCK (GP) ACCORDING TO A POSITION INDICATED BY     *
+*        SUBBLOCK SB.  GF IS A STRIPPED FRAME OF THE GLOBAL BLOCK     *
+*        CALLING SEQUENCE:                                            *
+*        RCALL     ,INSERT,(GP,GF,LP,SB)                              *
+*        REGISTERS CLOBBERED:   TEMP31,TEMP32,TEMP35,TEMP36,ZPTR,VSP  *
+*                  ,XSP,YSP,ZSP                                       *
+*                                                                     *
+***********************************************************************
+INSERT   PROC
+         POP       (TEMP35,IN_GF,TEMP36,IN_SB)
+         GETDC     IN_HO,IN_SB,HT_
+         SETAV     IN_H,IN_HO
+         GETDC     IN_WO,IN_SB,WTH_
+         SETAV     IN_W,IN_WO
+         GETDC     IN_DO,IN_SB,DTH_
+         SETAV     IN_D,IN_DO
+         GETDC     IN_DG,IN_GF,DTH_
+         GETDC     IN_WG,IN_GF,WTH_
+         PUTLG IN_REM,IN_WO
+         AEQLC     IN_W,0,,IN99
+*        INITIALIZE N AND INC
+         MULT      IN_N,IN_HO,IN_DG
+         SUBTRT    IN_INC,IN_DG,IN_D
+         SUBTRT    IN_N,IN_N,IN_INC
+         SUM       IN_N,IN_N,IN_DO
+         MULTC     IN_N,IN_N,DESCR
+         MULTC     IN_INC,IN_INC,DESCR
+         SETAC     IN_I,0
+         SETAC     IN_M,0
+         LOCSP     TXSP,BKGNCL
+IN1      LHERE
+         SETAC     IN_J,0
+         INCRA     IN_I,1
+         ACOMP     IN_I,IN_H,IN99
+         SUM       IN_N,IN_N,IN_INC
+IN2      LHERE
+         INCRA     IN_J,1
+         ACOMP     IN_J,IN_D,IN1
+         INCRA     IN_M,DESCR
+         INCRA     IN_N,DESCR
+*        N  NOW POINTS INTO THE GLOBAL PHYSICAL BLOCK
+*        M NOW POINTS INTO THE LOCAL PHYSICAL BLOCK
+         GETD      TEMP31,TEMP35,IN_N
+         LOCSP     VSP,TEMP31                VSP IS STRING OF GLOBAL
+         GETD      TEMP32,TEMP36,IN_M
+         LOCSP     YSP,TEMP32                YSP IS STRING OF LOCAL
+         RCALL     ZPTR,CONVAR,(IN_WG) MANUFACTURE STR. STRUCTURE
+         LOCSP     XSP,ZPTR
+         SETLC     XSP,0
+         APDSP     XSP,VSP             ZPTR NOW POINTS TO REPLICA OF
+*                                      GLOBAL STRING
+         REMSP     ZSP,XSP,IN_REM      ZSP SPECIFIES AREA INTO WHICH
+*                                      LOCAL STRING IS TO BE MERGED
+         MERGSP    ZSP,YSP,TXSP        NOW DO THE MERGE
+         RCALL     ZPTR,GNVARS,(IN_WG)  PUT STRING INTO HASH STORAGE
+         PUTD      TEMP35,IN_N,ZPTR
+         BRANCH    IN2
+IN99     LHERE
+         AEQLC     DMPCL,50,RTN1
+         OUTPUT    IN_UNIT,IN_FT1
+         RCALL     ,DUMP_A,(TEMP35)
+         RCALL     ,DUMP_B,(IN_GF)
+         RCALL     ,DUMP_A,(TEMP36)
+         RCALL     ,DUMP_B,(IN_SB)
+         BRANCH    RTN1
+*
+IN_UNIT  DESCR     DIAGUN,0,0
+IN_FT1   FORMAT    '\nOn exit from INSERT: GP,GF,LP,SB\n'
+IN_HO    DESCR     0,0,0
+IN_H     DESCR     0,0,0
+IN_WO    DESCR     0,0,0
+IN_W     DESCR     0,0,0
+IN_DO    DESCR     0,0,0
+IN_D     DESCR     0,0,0
+IN_DG    DESCR     0,0,0
+IN_WG    DESCR     0,0,0
+IN_GF    DESCR     0,0,0
+IN_SB    DESCR     0,0,0
+IN_N     DESCR     0,0,0
+IN_M     DESCR     0,0,0
+IN_I     DESCR     0,0,0
+IN_J     DESCR     0,0,0
+IN_INC   DESCR     0,0,0
+IN_GP    DESCR     0,0,0
+IN_REM   SPEC      0,0,0,0,0
+***********************************************************************
+*                                                                     *
+*        JE_LONGI   JOINS TWO EDGES LONGITUDINALLY.  THE FIRST EDGE   *
+*        IF IT IS COMPLEX IS SUBJECT TO MODIFICATION                  *
+*        CALLING SEQUENCE:                                            *
+*        RCALL     ______,JE_LONGI,(E1,E2)                            *
+*                                                                     *
+***********************************************************************
+JE_LONGI PROC
+         POP       (JEL_E1,JEL_E2)
+         VEQLC     JEL_E1,EDGDT,,JEL1
+         VEQLC     JEL_E2,EDGDT,,JEL1
+         SUM       JEL_E1,JEL_E1,JEL_E2
+         BRANCH    JEL99
+JEL1     LHERE
+         TRL       JEL_T1,JEL_E1
+         TRL       JEL_T2,JEL_E2
+         SUM       JEL_T,JEL_T1,JEL_T2
+         NN        JEL_N1,JEL_E1
+         NN        JEL_N2,JEL_E2
+         SUM       JEL_N,JEL_N1,JEL_N2
+         RELS      JEL_R1,JEL_E1
+         RELS      JEL_R2,JEL_E2
+         BRANCH    JELCO
+***********************************************************************
+*                                                                     *
+*        JE_ORTHO  JOINS TWO EDGES ORTHOGONALLY.                      *
+*        THE THIRD ARGUMENT IS THE REGISTRATION.                      *
+*        THE FIRST ARGUMENT IS SUBJECT TO BEING MODIFIED              *
+*        CALLING SEQUENCE:                                            *
+*        RCALL     ______,JE_ORTHO,(E1,E2,REG)                        *
+*                                                                     *
+***********************************************************************
+JE_ORTHO PROC      JE_LONGI
+         POP       (JEL_E1,JEL_E2,JEL_REG)
+         VEQLC     JEL_E1,EDGDT,,JEL3
+         VEQLC     JEL_E2,EDGDT,,JEL3
+         MAX       JEL_E1,JEL_E1,JEL_E2
+         BRANCH    JEL99
+JEL3     LHERE
+         TRL       JEL_T1,JEL_E1
+         TRL       JEL_T2,JEL_E2
+         NN        JEL_N1,JEL_E1
+         NN        JEL_N2,JEL_E2
+         RELS      JEL_R1,JEL_E1
+         RELS      JEL_R2,JEL_E2
+         ACOMP     JEL_T1,JEL_T2,JEL4,JEL4
+         SWAP      JEL_T1,JEL_T2
+         SWAP      JEL_N1,JEL_N2
+         SWAP      JEL_R1,JEL_R2
+JEL4     LHERE
+         SUM       JEL_N,JEL_N1,JEL_N2
+         MOVD      JEL_T,JEL_T1
+         RCALL     ,PRE_SUF,(JEL_T1,JEL_T2,JEL_REG)
+         MOVD      JEL_T1,TEMP31
+JELCO    LHERE
+         PUSH      JEL_E1
+         RCALL     JEL_R,CIR,(JEL_R1,JEL_N1,JEL_R2,JEL_N2,JEL_T1)
+         POP       JEL_E1
+         VEQLC     JEL_E1,EDGDT,,JEL2
+         PUSH      JEL_R
+         RCALL     JEL_E1,BLOCK,(JEL_SIZE)
+         POP       JEL_R
+JEL2     PUTDC     JEL_E1,TR1_,JEL_T
+         PUTDC     JEL_E1,NN1_,JEL_N
+         PUTDC     JEL_E1,RELS1_,JEL_R
+JEL99    RRTURN    JEL_E1,1
+JEL_T1   DESCR     0,0,0
+JEL_T2   DESCR     0,0,0
+JEL_T    DESCR     0,0,0
+JEL_N1   DESCR     0,0,0
+JEL_N2   DESCR     0,0,0
+JEL_R1   DESCR     0,0,0
+JEL_R2   DESCR     0,0,0
+JEL_R    DESCR     0,0,0
+JEL_E1   DESCR     0,0,0
+JEL_E2   DESCR     0,0,0
+JEL_SIZE DESCR     RELS1_,0,EDGDT
+JEL_REG  DESCR     0,0,0
+JEL_N    DESCR     0,0,0
+***********************************************************************
+*                                                                     *
+*         JOIN    JOINS TWO BLOCKS TOGETHER ACCORDING TO AN ORGANIZA- *
+*         TION INDICATED IN TEMP1.                                    *
+*         CALLING SEQUENCE:                                           *
+*         RCALL    ______,JOIN,(B1,B2)                                *
+*         LOCATIONS CLOBBERED:  WCL,XPTR,YPTR,TEMP2                   *
+*                                                                     *
+***********************************************************************
+JOIN     PROC
+         POP       (JN_B1,JN_B2)
+         DEQL      JN_B1,NULVCL,JOIN1
+         MOVD      WCL,JN_B2
+         BRANCH    JOIN99
+JOIN1    DEQL      JN_B2,NULVCL,JOIN2
+         MOVD      WCL,JN_B1
+         BRANCH    JOIN99
+JOIN2    RCALL     JN_CL1,CLASS,JN_B1
+         MULTC     JN_CL1,JN_CL1,3
+         RCALL     JN_CL2,CLASS,JN_B2
+         SUM        JN_CL1,JN_CL1,JN_CL2
+         INCRA     JN_CL1,1
+         PUSH      (JN_B1,JN_B2)
+         SELBRA    JN_CL1,(ST_ST,ST_BW,ST_BA,BW_ST,BW_BW,BW_BA,BA_ST,BA_BW,BA_BA)
+ST_BA    LHERE
+BA_ST    LHERE
+BA_BA    RCALL     WCL,BLOCK,(JN_SIZE)
+         POP       (JN_B2,JN_B1)
+         PUTVC     WCL,ORG_,TEMP1
+         SETAC     TEMP1,FIRST_+DESCR
+         PUTAC     WCL,TOP_,TEMP1
+         PUTDC     WCL,FIRST_,JN_B1
+         PUTDC     WCL,FIRST_+DESCR,JN_B2
+         BRANCH    JOIN99
+ST_BW    LHERE
+BA_BW    LHERE
+         RCALL     WCL,BCOPY,JN_B2
+         RCALL     ,BHEAD
+         POP       (JN_B2,JN_B1)
+         PUTDC     WCL,FIRST_,JN_B1
+         BRANCH    JOIN99
+BW_ST    LHERE
+BW_BA    LHERE
+         RCALL     WCL,BCOPY,JN_B1
+         RCALL     JN_TOP,BTAIL
+         POP       (JN_B2,JN_B1)
+         PUTD      WCL,JN_TOP,JN_B2
+         BRANCH    JOIN99
+BW_BW    LHERE
+         RCALL     WCL,BCOPY,JN_B1
+         POP       TEMP2
+         GETDC     JN_TOP,TEMP2,TOP_
+         SETAC     JN_I,FIRST_
+BW_BW_1  LHERE
+         ACOMP     JN_I,JN_TOP,JOIN99
+         RCALL     JN_K,BTAIL
+         GETD      TEMP22,TEMP2,JN_I
+         PUTD      WCL,JN_K,TEMP22
+         INCRA     JN_I,DESCR
+         BRANCH    BW_BW_1
+ST_ST    VEQLC     TEMP1,PAR_,BA_BA
+         MOVD      XPTR,JN_B1
+         MOVD      YPTR,JN_B2
+         RCALL     WCL,CONVV,,(FAIL,,JOIN99)
+JOIN99   RRTURN    WCL,1
+JN_B1    DESCR     0,0,0
+JN_B2    DESCR     0,0,0
+JN_CL1   DESCR     0,0,0
+JN_CL2   DESCR     0,0,0
+JN_TOP   DESCR     0,0,0
+JN_I     DESCR     0,0,0
+JN_K     DESCR     0,0,0
+JN_SIZE  DESCR     3*DESCR+FIRST_,0,BL
+***********************************************************************
+*                                                                     *
+*        LOC(N,B,D)  IS AN EXTERNAL FUNCTION WHICH WILL DETERMINE THE *
+*        LOCATION OF A NODE N IN BLOCK B IN DIRECTION D.              *
+*                                                                     *
+***********************************************************************
+LOC      PROC
+         SETAV     LO_AC,INCL
+         ACOMPC    LO_AC,2,,,FAIL
+         PUSH      LO_AC
+         RCALL     TEMP1,BLOKVAL,,FAIL
+         PUSH      TEMP1
+         RCALL     TEMP2,BLOKVAL,,FAIL
+         RCALL     TEMP2,FIXINL,(TEMP2,NULVCL)
+         POP       (TEMP1,LO_AC)
+         MOVD      TEMP3,ZEROCL
+         AEQLC     LO_AC,3,LOC1
+         PUSH      (TEMP1,TEMP2)
+         RCALL     TEMP3,INTVAL,,FAIL
+LOC1     LHERE
+         GETDC     LO_ND,TEMP1,ID_       GET THE NODE I.D.
+         INCRA     TEMP3,1
+         MULTC     TEMP3,TEMP3,DESCR     MULT. DIR. BY ADDR. MULT.
+         GETDC     TEMP4,TEMP2,FRAME_    GET THE FRAME
+         GETD      TEMP5,TEMP4,TEMP3     GET APPROPRIATE EDGE
+         RELS      TEMP6,TEMP5           GET RELATIONS
+         NN        TEMP7,TEMP5           GET NUMBER OF NODES
+*                                        NOW FIND THE NODE IN QUESTION
+         RCALL     ,FICOM,(LO_A1,LO_N1,TEMP6,TEMP7),FAIL
+         GETD      ZPTR,TEMP6,TEMP32     GET FOUND NODE
+         SETAV     ZPTR,ZPTR             GET DISTANCE INTO ADD.
+         SETVC     ZPTR,I            SET INTEGER DATA TYPE
+         BRANCH    RTZPTR
+LO_AC    DESCR     0,0,0                 ARGUMENT COUNT
+LO_A1    DESCR     LO_N1,0,4             SIMULATED ARRAY PTR
+LO_N1    DESCR     1,0,6                 NUMBER OF NODES IN THE ARRAY
+LO_ND    DESCR     0,0,0                 NODE-DISTANCE (TO BE PLUGGED)
+LRECL    PROC
+CC       PROC
+         VEQLC     INCL,1,ARGNER
+         RCALL     XPTR,INTVAL,,FAIL
+         MOVD    YPTR,ONECL        PUT DEFAULT VALUE INTO YPTR
+         SETVC   YPTR,I            MAKE IT AN INTEGER
+         AEQLC   XPTR,0,,LRECL5    EQUAL TO 1 IF XPTR = 0
+         SETAC   YPTR,0            EQUAL TO 0 IF OTHERWISE
+LRECL5   LHERE
+         AEQLC     TEMP48,0,,LRECL4
+LRECL3   LOCAPT    XPTR,TEMP48,XPTR,LRECL2
+         INCRA     XPTR,DESCR
+         SETVC     XPTR,N
+         BRANCH    RTXNAM
+LRECL2   LHERE
+         RCALL     TEMP48,AUGATL,(TEMP48,XPTR,YPTR)
+         BRANCH    LRECL3
+LRECL4   LHERE
+         MOVD      TEMP48,LR_1
+         BRANCH    LRECL2
+LR_1     DESCR     LR_2,0,B
+LR_2     DESCR     LR_2,0,2*DESCR
+         DESCR     0,0,0
+         DESCR     0,0,0
+***********************************************************************
+*                                                                     *
+*        LSOHN  RETURNS THE LEFT SON OF A TREE NODE.                  *
+*        IF THIS LEFT SON IS NULL IT BUILDS THE TREE NODES FOR EACH   *
+*        DAUGHTER.                                                    *
+*        CALLING SEQUENCE:                                            *
+*          RCALL    ______,LSOHN,(TN)                                 *
+*        LOCATIONS CLOBBERED:   NONE                                  *
+*                                                                     *
+***********************************************************************
+LSOHN    PROC
+         POP       LS_TN
+         GETDC     LS_LS,LS_TN,LSO_
+         AEQLC     LS_LS,0,LS99
+         GETDC     LS_B,LS_TN,VALUE_
+         GETDC     LS_I,LS_B,TOP_
+         GETDC     LS_ORG,LS_B,ORG_
+LS1      LHERE
+         ACOMPC    LS_I,FIRST_,,,LS2
+         GETD      LS_BI,LS_B,LS_I
+         DECRA     LS_I,DESCR
+LS4      LHERE
+         IFDEF     LS_BI,,LS3
+         PUSH      (LS_TN,LS_B)
+         RCALL     LS_LS,T_LEAF,(LS_TN,LS_LS,LS_BI)
+         POP       (LS_B,LS_TN)
+         BRANCH    LS1
+LS2      PUTDC     LS_TN,LSO_,LS_LS
+         BRANCH    LS99
+LS3      LHERE
+         GETDC     LS_BI,LS_BI,NAME_
+         GETDC     LS_BI,LS_BI,DESCR
+         VEQLC     LS_BI,BL,,LS7
+         VEQLC     LS_BI,S,,LS4
+         VEQLC     LS_BI,I,LS8
+         RCALL     LS_BI,GNVARI,LS_BI,LS4
+LS8      LHERE
+         VEQLC     LS_BI,R,INTR1
+         REALST    REALSP,LS_BI
+         SETSP     YSP,REALSP
+         RCALL     YPTR,GENVAR,YSPPTR,LS4
+LS7      LHERE
+         VCMPIC    LS_BI,ORG_,LS_ORG,LS4,,LS4
+         VCMPIC    LS_BI,SET_,LS_NULL,LS4,,LS4
+*        ARRIVAL HERE MEANS THAT THE DAUGHTERS OF THE DEFERED BLOCK
+*        WILL BE DAUGHTERS OF THE NODE.
+         MOVD      LS_OLDP,LS_LS
+         PUTDC     LS_TN,VALUE_,LS_BI
+         PUSH      (LS_OLDP,LS_TN,LS_B,LS_I,LS_ORG)
+         RCALL     LS_LS,LSOHN,(LS_TN)
+         POP       (LS_ORG,LS_I,LS_B,LS_TN,LS_OLDP)
+         PUTDC     LS_TN,VALUE_,LS_B
+         MOVD      LS_P,LS_LS
+LS5      LHERE
+         AEQLIC    LS_P,RSIB_,0,,LS6
+         GETDC     LS_P,LS_P,RSIB_
+         BRANCH    LS5
+LS6      LHERE
+         PUTDC     LS_P,RSIB_,LS_OLDP
+         BRANCH    LS1
+LS99     RRTURN    LS_LS,1
+LS_TN    DESCR     0,0,0
+LS_LS    DESCR     0,0,0
+LS_B     DESCR     0,0,0
+LS_I     DESCR     0,0,0
+LS_ORG   DESCR     0,0,0
+LS_BI    DESCR     0,0,0
+LS_NULL  DESCR     0,0,0
+LS_P     DESCR     0,0,0
+LS_OLDP  DESCR     0,0,0
+***********************************************************************
+*                                                                     *
+*        MIDREG      RETURNS A SUBBLOCK EQUAL TO THE MIDREGION BETWEEN*
+*        TWO SUBBLOCKS SB1 AND SB2. THEY ARE ASSUMED TO BE SEPARATED  *
+*        IN THE DIRECTION DIR.  IF THE TRAILING EDGE OF SB1 FOLLOWS   *
+*        THE LEADING EDGE OF SB2 THEN THE FUNCTION FAILS.             *
+*        CALLING SEQUENCE:                                            *
+*        RCALL     ,MIDREG,(SB1,SB2,DIR),(FAIL,SUCC)                  *
+*                                                                     *
+***********************************************************************
+MIDREG   PROC
+         POP       (MR_SB1,MR_SB2,MR_DIR)
+         GETD      TEMP31,MR_SB1,MR_DIR
+         SETAV     TEMP32,TEMP31
+         SUM       MR_NO,TEMP32,TEMP31
+         GETD      TEMP31,MR_SB2,MR_DIR
+         SUBTRT    MR_NE,TEMP31,MR_NO
+         ACOMPC    MR_NE,0,,,FAIL
+         SETVA     MR_NO,MR_NE
+         RCALL     MR_MR,BCOPY,(MR_SB1)
+         PUTD      MR_MR,MR_DIR,MR_NO
+         RRTURN    MR_MR,2
+MR_SB1   DESCR     0,0,0
+MR_SB2   DESCR     0,0,0
+MR_DIR   DESCR     0,0,0
+MR_NO    DESCR     0,0,0                         NEW.OFFSET
+MR_NE    DESCR     0,0,0                         NEW.EXTENT
+MR_MR    DESCR     0,0,0                         VALUE
+**********************************************************************
+*                                                                     *
+*        MINGLE  MERGES TWO EDGES TOGETHER IF THEY HAVE A COMMON NODE.*
+*        IF THEY DO NOT HAVE A COMMON NODE MINGLE FAILS.              *
+*        CALLING SEQUENCE:                                            *
+*        RCALL     ______,MINGLE,(E1,E2),(FAIL,SUCCESS)               *
+*        REGISTERS CLOBBERED:  TEMP28,TEMP29,TEMP31,TEMP32,TEMP33     *
+*                                                                     *
+**********************************************************************
+MINGLE   PROC
+         POP       (TEMP28,TEMP29)
+         RELS      MI_R1,TEMP28
+         NN        MI_N1,TEMP28
+         RELS      MI_R2,TEMP29
+         NN        MI_N2,TEMP29
+         RCALL     ,FICOM,(MI_R1,MI_N1,MI_R2,MI_N2),FAIL
+         GETD      MI_D1,MI_R1,TEMP31
+         SETAV     MI_D1,MI_D1
+         GETD      MI_D2,MI_R2,TEMP32
+         SETAV     MI_D2,MI_D2
+         SUBTRT    MI_D1,MI_D1,MI_D2
+         ACOMPC    MI_D1,0,MI1,MI1
+         MNSINT    MI_D1,MI_D1,MI62,MI62
+MI62     LHERE
+         SWAP      TEMP28,TEMP29
+         SWAP      MI_R1,MI_R2
+         SWAP      MI_N1,MI_N2
+MI1      LHERE
+         RCALL     TEMP33,CIR,(MI_R1,MI_N1,MI_R2,MI_N2,MI_D1)
+         TRL       MI_T1,TEMP28
+         TRL       MI_T2,TEMP29
+         SUM       MI_T2,MI_T2,MI_D1
+         SUM       MI_N1,MI_N1,MI_N2
+         MAX       MI_T1,MI_T1,MI_T2
+         RCALL     MI_MI,BLOCK,(MI_ED)
+         PUTDC     MI_MI,TR1_,MI_T1
+         PUTDC     MI_MI,NN1_,MI_N1
+         PUTDC     MI_MI,RELS1_,TEMP33
+         RRTURN    MI_MI,2
+MI_R1    DESCR     0,0,0
+MI_R2    DESCR     0,0,0
+MI_D1    DESCR     0,0,0
+MI_D2    DESCR     0,0,0
+MI_N1    DESCR     0,0,0
+MI_N2    DESCR     0,0,0
+MI_T1    DESCR     0,0,0
+MI_T2    DESCR     0,0,0
+MI_ED    DESCR     RELS1_,0,EDGDT
+MI_MI    DESCR     0,0,0
+***********************************************************************
+*                                                                     *
+*         MORE   ASSUMES ITS ARGUMENT IS A POINTER TO A BLOCK.        *
+*         IT DOUBLES ITS SIZE COPYING THE OLD CONTENTS INTO THE       *
+*         INITIAL PART OF THE NEW BLOCK AND RETURNS THE NEW BLOCK     *
+*         CALLING SEQUENCE:                                           *
+*         RCALL  ______,MORE,(BLOCK)                                  *
+*                                                                     *
+***********************************************************************
+MORE     PROC
+         POP       MR_BLOCK
+         GETSIZ    MR_SIZE1,MR_BLOCK
+         MULTC     MR_SIZE2,MR_SIZE1,2
+         MOVV     MR_SIZE2,MR_BLOCK
+         RCALL     MR_X,BLOCK,(MR_SIZE2)
+         MOVBLK    MR_X,MR_BLOCK,MR_SIZE1
+         RRTURN    MR_X,1
+MR_SIZE1 DESCR     0,0,0
+MR_SIZE2 DESCR     0,0,0
+MR_BLOCK DESCR     0,0,0
+MR_X     DESCR     0,0,0
+***********************************************************************
+*                                                                     *
+*        NRMZ_REG IS CALLED TO NORMALIZE THE REGISTRATION (I.E. PUT   *
+*        IT IN A STANDARD FORMAT).  IT REPLACES THE STRINGS WITH INT- *
+*        EGERS.                                                       *
+*        0  =  CENTRAL REGISTRATION                                   *
+*        1  =  ALLIGNED FORE (LEFT,TOP,FRONT)                         *
+*        2  =  ALLIGNED AFT (RIGHT,BOTTOM,REAR)                       *
+*        CALLING SEQUENCE:                                            *
+*        RCALL     ,NRMZ_REG,(REG)                                    *
+*                                                                     *
+***********************************************************************
+NRMZ_REG PROC
+         POP       ZCL
+         SETAC     NR_DIR,HT_
+         RCALL     ,N_REG,(NR_VF,NR_VA)
+         SETAC     NR_DIR,WTH_
+         RCALL     ,N_REG,(NR_HF,NR_HA)
+         SETAC     NR_DIR,DTH_
+         RCALL     ,N_REG,(NR_NF,NR_NA)
+         BRANCH    NR99
+N_REG    PROC
+         POP       (NR_F,NR_A)
+         GETD      NR_VAL,ZCL,NR_DIR
+         VEQLC     NR_VAL,S,NR99
+         AEQLC     NR_VAL,0,NR1
+NR0      LHERE
+         PUTD      ZCL,NR_DIR,NR_SC
+         BRANCH    NR99
+NR1      LOCSP     TXSP,NR_VAL         SPECIFY ...
+         SETLC     TXSP,1              1ST CHAR. OF USER'S STRING
+         GETSPC    NR_SP,NR_F,0        GET FORE SPECIFIER
+         LEXCMP    TXSP,NR_SP,NR2,,NR2 DOES IT REPRESENT FORE?
+         PUTD      ZCL,NR_DIR,NR_SF    YES, PUT IN STND FORE
+         BRANCH    NR99                BRANCH TO COMMON RETURN
+NR2      LHERE     ,                   NOT FORE, TRY AFT.
+         GETSPC    NR_SP,NR_A,0        GET AFT SPECIFIER
+         LEXCMP    TXSP,NR_SP,NR3,,NR3 DOES IT REPRESENT AFT?
+         PUTD      ZCL,NR_DIR,NR_SA    YES, PUT IN STND AFT.
+         BRANCH    NR99                BRANCH TO COMMON RETURN
+NR3      LHERE     ,                   ERROR:  STRING NOT RECOGNIZED
+         LOCSP     TXSP,NR_VAL         REOBTAIN SPECIFIER TO USER'S ...
+*                                      STRING.
+         DIVIDE    NR_DIR,NR_DIR,NR_DES,NR9
+NR9      LHERE
+         DECRA     NR_DIR,1            MAKE DIR. NO MEANINGFUL TO USER
+         OUTPUT    NR_UNIT,NR_FMT1
+         OUTPUT    NR_UNIT,NR_FMT2,(NR_DIR)
+         INCRA     NR_DIR,1            RESTORE DIRECTION
+         MULTC     NR_DIR,NR_DIR,DESCR
+         FASTPR    IOKEY,NR_UNIT,NR_UNIT,TXSP,BLSP
+         RCALL     ,WARNING
+         BRANCH    NR0
+NR99     RRTURN    ,1
+NR_VF    DESCR     NR_VFS,0,0                    VERTICAL
+NR_VA    DESCR     NR_VAS,0,0                    VERTICAL
+NR_HF    DESCR     NR_HFS,0,0                    HORIZONTAL
+NR_HA    DESCR     NR_HAS,0,0                    HORIZONTAL
+NR_NF    DESCR     NR_NFS,0,0                    NORMAL
+NR_NA    DESCR     NR_NAS,0,0                    NORMAL
+NR_VFS   STRING    'T'
+NR_VAS   STRING    'B'
+NR_HFS   STRING    'L'
+NR_HAS   STRING    'R'
+NR_NFS   STRING    'F'
+NR_NAS   STRING    'R'
+NR_SC    DESCR     0,0,I                  STANDARD
+NR_SF    DESCR     1,0,I                  STANDARD
+NR_SA    DESCR     2,0,I                  STANDARD
+NR_F     DESCR     0,0,0
+NR_A     DESCR     0,0,0
+NR_DIR   DESCR     0,0,0
+NR_VAL   DESCR     0,0,0
+NR_FMT1  FORMAT    'The following string was used to set the '
+NR_FMT2  FORMAT    'registration of a BLOCK in the direction %d'
+NR_UNIT  DESCR     PRUNO,0,0
+NR_DES   DESCR     DESCR,0,0           CONSTANT VALUE
+NR_SP    SPEC      0,0,0,0,0
+***********************************************************************
+*                                                                     *
+*         PAR    SER    OVY     MERGE                                 *
+*         CALLED COLLECTIVELY   OPS                                   *
+*         ARE PRIMITIVE ROUTINES BEARING THE SAME NAMES.              *
+*                                                                     *
+***********************************************************************
+PAR      PROC
+         MOVD      TEMP1,ZEROCL
+         SETVC     TEMP1,PAR_
+         BRANCH    OPS1,OPS1
+SER      PROC
+         MOVD      TEMP1,ZEROCL
+         SETVC     TEMP1,SER_
+         BRANCH    OPS1,OPS1
+OVY      PROC
+         MOVD      TEMP1,ZEROCL
+         SETVC     TEMP1,OVY_
+         BRANCH    OPS1,OPS1
+MERGE    PROC
+         MOVD      TEMP1,ZEROCL
+         SETVC     TEMP1,MERGE_
+         BRANCH    OPS1,OPS1
+OPS1     PROC
+         MOVD      ZPTR,NULVCL
+         SETAV     OP_N,INCL
+OPS4     AEQLC     OP_N,0,OPS2
+         BRANCH    RTZPTR
+OPS2     DECRA     OP_N,1
+         PUSH      (ZPTR,TEMP1,OP_N)
+         RCALL     YPTR,BLOKVAL,,FAIL
+         POP       (OP_N,TEMP1,ZPTR)
+         RCALL     ZPTR,JOIN,(ZPTR,YPTR)
+         BRANCH    OPS4
+OP_N     DESCR     0,0,0
+*        CONCATENATE BLOCKS
+CCATB    PROC
+         MOVD      TEMP1,ZEROCL
+         SETVC     TEMP1,PAR_
+         RCALL     XPTR,JOIN,(XPTR,YPTR)
+         BRANCH    RTXPTR
+***********************************************************************
+*                                                                     *
+*        PAR_CONG  RETURNS THE PARENTIAL CONGLOMERATE OF A TREE NODE. *
+*        IT CRAWLS UP THE TREE UNTIL IT HITS A PARENT WHOSE           *
+*        ORGANIZATION IS CONGLOMERATE.                                *
+*        CALLING SEQUENCE:                                            *
+*           RCALL   ______,PAR_CONG,(TN)                              *
+*        LOCATIONS CLOBBERED:  NONE                                   *
+*                                                                     *
+***********************************************************************
+PAR_CONG PROC
+         POP       (PC_TN)
+PC1      GETDC     PC_PC,PC_TN,FATHER_
+         AEQLC     PC_PC,0,,FAIL
+         GETDC     PC_VAL,PC_PC,VALUE_
+         VCMPIC    PC_VAL,ORG_,PC_MG,,PC3,PC3
+         IFPHY     PC_VAL,PC2
+PC3      LHERE
+         RRTURN    PC_PC,2
+PC2      MOVD      PC_TN,PC_PC
+         BRANCH    PC1
+PC_MG    DESCR     0,0,MERGE_
+PC_PC    DESCR     0,0,0
+PC_TN    DESCR     0,0,0
+PC_VAL   DESCR     0,0,0
+***********************************************************************
+*                                                                     *
+*        PRE_SUF   SETS TEMP31 AND TEMP32 TO THE PREFIX AND SUFFIX    *
+*        RESPECTIVELY WHERE OTR IS THE OVERALL SIZE OF THE PARENT,    *
+*        INR IS THE SIZE OF THE DAUGHTER AND REG IS THE REGISTRATION. *
+*        CALLING SEQUENCE:                                            *
+*        RCALL     ,PRE_SUF,(OTR,INR,REG)                             *
+*        LOCATIONS CLOBBERRED:   TEMP31,TEMP32,TEMP33                 *
+*                                                                     *
+***********************************************************************
+PRE_SUF  PROC
+         POP       (PS_OTR,PS_INR,PS_REG)
+         SUBTRT    TEMP33,PS_OTR,PS_INR      TEMP33 IS THE DIFFERENCE
+*                  IN SIZE BETWEEN THE PARENT AND THE DAUGHTER
+         AEQLC     PS_REG,0,PS1
+         DIVIDE    TEMP31,TEMP33,PS_TWO,FAIL
+         SUBTRT    TEMP32,TEMP33,TEMP31
+PS99     RRTURN    ,1
+PS1      AEQLC     PS_REG,1,PS2
+         MOVD      TEMP32,TEMP33
+         MOVD      TEMP31,PS_ZR
+         BRANCH    PS99
+PS2      MOVD      TEMP32,PS_ZR
+         MOVD      TEMP31,TEMP33
+         BRANCH    PS99
+PS_OTR   DESCR     0,0,0
+PS_INR   DESCR     0,0,0
+PS_REG   DESCR     0,0,0
+PS_TWO   DESCR     2,0,I
+PS_ZR    DESCR     0,0,I
+***********************************************************************
+*                                                                     *
+*        PRINTB    PRINTS A BLOCK                                     *
+*                                                                     *
+***********************************************************************
+PRINTB   PROC
+         SETAV     PR_NA,INCL
+         AEQLC     PR_NA,0,,ARGNER
+         DECRA     PR_NA,1
+         RCALL     XCL,BLOKVAL,,FAIL
+         AEQLC   XCL,0,,RETNUL
+         VEQLC   XCL,S,,PR6
+         RCALL     XCL,FIXINL,(XCL,ZEROCL)
+PR6      LHERE
+         PUSH      XCL
+         RCALL     PR_UF1,UNITS,(PR_NA),FAIL
+         POP       XCL
+         AEQLC     PR_UF1,0,,RETNUL
+         GETSIZ    PR_NA,PR_UF1
+         BRANCH    PR3
+PR4      INCRA     PR_UF1,2*DESCR
+PR3      AEQLC     PR_NA,0,,RETNUL
+         DECRA   PR_NA,2*DESCR
+         GETDC   PR_UNIT,PR_UF1,DESCR
+         AEQLC     PR_UNIT,0,,PR4
+         GETDC   PR_FLAG,PR_UF1,2*DESCR
+         VEQLC   XCL,S,,PRSTR
+         GETDC     TEMP2,XCL,FRAME_
+         GETDC     PR_HT,TEMP2,HT_
+         TRL       PR_HT,PR_HT
+         GETDC     PR_DTH,TEMP2,DTH_
+         TRL       PR_DTH,PR_DTH
+         SETAC     PR_N,0
+         SETAC     PR_I,0
+         GETDC     TEMP1,XCL,ARRAY_
+         AEQLC     TEMP1,0,,PRNOTH
+         MOVD      PR_UF2,ZEROCL
+PR1      LHERE
+         INCRA     PR_I,1
+         ACOMP     PR_I,PR_HT,PR99
+         SETAC     PR_J,1
+         INCRA     PR_N,DESCR
+         GETD      YCL,TEMP1,PR_N
+         LOCSP     YSP,YCL
+         FASTPR    IOKEY,PR_UNIT,PR_FLAG,YSP,BLSP
+         AEQLC     IOKEY,0,PRERR
+PR2      LHERE
+         INCRA     PR_J,1
+         ACOMP     PR_J,PR_DTH,PR1
+         INCRA     PR_N,DESCR
+         GETD      YCL,TEMP1,PR_N
+         AEQLC     PR_UF2,0,PR21
+         LOCSP     YSP,YCL
+         STREAM    XSP,YSP,FRWDTB,PR23,PR23
+PR22     LHERE
+         LOCSP     YSP,YCL
+         FASTPR  IOKEY,PR_UNIT,PR_FLAG,YSP,PR_PLUS
+         AEQLC     IOKEY,0,PRERR
+         BRANCH    PR2
+PR21     ACOMP     PR_UF2,YCL,,PR2
+         BRANCH    PR22
+PR23     MOVD      PR_UF2,YCL
+         BRANCH    PR2
+PR99     ACOMPC	   PR_FLAG,0,PR4,PR4		If ASCII CC	[PLB121]
+         FASTPR    IOKEY,PR_UNIT,PR_FLAG,PR_NULL,BLSP  add NL	[PLB121]
+         AEQLC     IOKEY,0,PRERR				[PLB121]
+         BRANCH    PR4
+PRSTR    LHERE
+         LOCSP   YSP,XCL
+         FASTPR  IOKEY,PR_UNIT,PR_FLAG,YSP,BLSP
+         AEQLC     IOKEY,0,PRERR
+         BRANCH  PR99
+* here to print nothing!
+PRNOTH   LHERE
+PRN1     INCRA     PR_I,1
+         ACOMP     PR_I,PR_HT,PR99
+         FASTPR    IOKEY,PR_UNIT,PR_FLAG,PR_NULL,BLSP		[PLB121]
+
+         AEQLC     IOKEY,0,PRERR
+         BRANCH    PRN1
+NEW_PAGE PROC      PRINTB
+         SETAV     PR_NA,INCL
+         RCALL     PR_UF1,UNITS,(PR_NA),FAIL
+         AEQLC     PR_UF1,0,,RETNUL
+         GETSIZ    PR_NA,PR_UF1
+NP1      AEQLC     PR_NA,0,,RETNUL
+         GETDC     PR_I,PR_UF1,DESCR
+         AEQLC     PR_I,0,,NP2
+         GETDC     PR_FLAG,PR_UF1,2*DESCR			[PLB121]
+         FASTPR    IOKEY,PR_I,PR_FLAG,PR_NULL,PR_1		[PLB121]
+         AEQLC     IOKEY,0,PRERR
+NP2      LHERE
+         DECRA     PR_NA,2*DESCR
+         INCRA     PR_UF1,2*DESCR
+         BRANCH    NP1
+PRERR    BRANCH    COMP6					[PLB117]
+PR_NA    DESCR     0,0,0
+PR_UF1   DESCR     0,0,0
+PR_UF2   DESCR     0,0,0
+PR_I     DESCR     0,0,0
+PR_J     DESCR     0,0,0
+PR_N     DESCR     0,0,0
+PR_DTH   DESCR     0,0,0
+PR_HT    DESCR     0,0,0
+PR_PUN   DESCR     PRUNO,0,0
+PR_FLAG  DESCR     0,0,0
+PR_UNIT  DESCR     0,0,0
+PR_PLUS  STRING    '+'			Overstrike
+PR_1     STRING    '1'			Form feed
+PR_NULL  STRING	   ''			Null string		[PLB121]
+
+***********************************************************************
+*                                                                     *
+*        P_BLOCK  RETURNS A PHYSICAL BLOCK.  IT COMBINES ITS 2ND      *
+*        THROUGH 4TH ARGUMENT INTO A FRAME.                           *
+*        CALLING SEQUENCE:                                            *
+*        RCALL     ______,P_BLOCK,(BL,H,W,D,ARRAY)                    *
+***********************************************************************
+P_BLOCK  PROC
+         SETVC     PB_FS,A
+         RCALL     NP_FR,BLOCK,(PB_FS)
+         POP       (NP_BL,PB_H,PB_W,PB_D,NP_AR)
+         MOVBLK    NP_FR,PB_FR,PB_FS
+         PUSH      (NP_AR,NP_FR,NP_BL)
+         BRANCH    NP_BLOCK,NP_BLOCK
+PB_FS    DESCR     DTH_,0,0
+PB_FR    DESCR     PB_FR,0,0
+PB_H     DESCR     0,0,0
+PB_W     DESCR     0,0,0
+PB_D     DESCR     0,0,0
+***********************************************************************
+*                                                                     *
+*        NP_BLOCK   ALLOCATES SPACE FOR A NEW PHYSICAL BLOCK AND      *
+*        PLUNKS ITS ARGUMENTS INTO THE APPROPRIATE LOCATIONS.         *
+*        CALLING SEQUENCE:                                            *
+*        RCALL     ______,NP_BLOCK,(BL,FRAME,ARRAY)                   *
+*                                                                     *
+***********************************************************************
+NP_BLOCK PROC
+         RCALL     NP_NP,BLOCK,(NP_DE)
+         POP       (NP_BL,NP_FR,NP_AR)
+         MOVBLK    NP_NP,NP_BK,NP_DE
+         RRTURN    NP_NP,1
+NP_DE    DESCR     ARRAY_,0,BL
+NP_BK    DESCR     NP_BK,0,0
+NP_ORG   DESCR     0,0,PHY_
+NP_BL    DESCR     0,0,0
+NP_FR    DESCR     0,0,0
+NP_AR    DESCR     0,0,0
+NP_NP    DESCR     0,0,0
+***********************************************************************
+*                                                                     *
+*        REPLICATE   REPLICATES AN ARRAY A WITH FRAME F  A NUMBER OF  *
+*        TIMES  N IN A DIRECTION  DIR.   THE ARRAY A IS NOT MODIFIED. *
+*        BUT THE FRAME F IS.                                          *
+*                                                                     *
+***********************************************************************
+REPL     PROC
+         POP       (RE_A,RE_F,RE_DIR,RE_N)
+         MOVD      RE_RE,NULVCL
+         AEQLC     RE_A,0,,RE99
+         ACOMPC    RE_N,1,,RES1,RESZ
+         AEQLC     RE_DIR,WTH_,,REH
+*
+*        THIS IS COMMON CODE FOR REPLICATING IN THE VERTICAL
+*        AND NORMAL DIRECTIONS
+         GETDC     RE_H,RE_F,HT_
+         GETDC     RE_D,RE_F,DTH_
+         MULT      RE_L,RE_D,RE_H
+         MULTC     RE_L,RE_L,DESCR
+         MULT      RE_SIZE,RE_L,RE_N
+         PUSH      (RE_A,RE_F)
+        SETVC     RE_SIZE,A
+         RCALL     RE_RE,BLOCK,(RE_SIZE)
+         POP       (RE_F,RE_A)
+         MOVD      RE_P,RE_RE
+         AEQLC     RE_DIR,HT_,REN
+*
+*        REPLICATE IN THE VERTICAL DIRECTION
+         MULT      RE_H,RE_H,RE_N
+         PUTDC     RE_F,HT_,RE_H
+REV1     LHERE
+         AEQLC     RE_N,0,,REV2
+         DECRA     RE_N,1
+         MOVBLK    RE_P,RE_A,RE_L
+         SUM       RE_P,RE_P,RE_L
+         BRANCH    REV1
+REV2     LHERE
+         BRANCH    RE99
+*
+*        REPLICATE IN THE NORMAL DIRECTION
+REN      LHERE
+         MULT      RE_L,RE_D,RE_N
+         PUTDC     RE_F,DTH_,RE_L
+         MULTC     RE_D,RE_D,DESCR
+         MOVD      RE_Q,RE_A
+         MOVD      RE_I,RE_N
+REN1     LHERE
+         AEQLC     RE_H,0,,RE99
+         DECRA     RE_H,1
+REN2     LHERE
+         AEQLC     RE_I,0,,REN3
+         DECRA     RE_I,1
+         MOVBLK    RE_P,RE_Q,RE_D
+         SUM       RE_P,RE_P,RE_D
+         BRANCH    REN2
+REN3     SUM       RE_Q,RE_Q,RE_D
+         MOVD      RE_I,RE_N
+         BRANCH    REN1
+*
+*        REPLICATING IN THE HORIZONTAL DIRECTION
+REH      LHERE
+         RCALL     TEMP31,BCOPY,(RE_A)
+         GETSIZ    RE_SIZE,TEMP31
+         MOVD      TEMP32,TEMP31
+         SUM       TEMP33,TEMP32,RE_SIZE
+*
+         GETDC     RE_W,RE_F,WTH_
+         MULT      RE_W,RE_W,RE_N
+         PUTDC     RE_F,WTH_,RE_W
+*
+REH1     LHERE
+         INCRA     TEMP32,DESCR
+         ACOMP     TEMP32,TEMP33,REH99
+         GETDC     RE_P,TEMP32,0
+         RCALL     RE_P,DUPE,(RE_P,RE_N)
+         PUTDC     TEMP32,0,RE_P
+         BRANCH    REH1
+REH99    MOVD      RE_RE,TEMP31
+         BRANCH    RE99
+RES1     LHERE
+         RCALL     RE_RE,BCOPY,(RE_A)
+         BRANCH    RE99
+RESZ     LHERE
+         MOVD      RE_RE,NULVCL
+         PUTD      RE_F,RE_DIR,RE_0
+         BRANCH    RE99
+RE99     RRTURN    RE_RE,1
+RE_A     DESCR     0,0,0
+RE_D     DESCR     0,0,0
+RE_DIR   DESCR     0,0,0
+RE_F     DESCR     0,0,0
+RE_H     DESCR     0,0,0
+RE_L     DESCR     0,0,0
+RE_N     DESCR     0,0,0
+RE_P     DESCR     0,0,0
+RE_Q     DESCR     0,0,0
+RE_RE    DESCR     0,0,0
+RE_SIZE  DESCR     0,0,0
+RE_W     DESCR     0,0,0
+RE_I     DESCR     0,0,0
+RE_0     DESCR     0,0,I
+***********************************************************************
+*        SLAB  RETURNS A SUBSECTION OF A BLOCK B EQUAL TO A COLLECTION*
+*        OF CONTIGUOUS PLANES NORMAL TO THE DIRECTION DIR STARTING    *
+*        WITH THE ITH PLANE.                                          *
+*        THE LENGTH OF THE BLOCK IN THE DIR TH DIRECTION IS GIVEN     *
+*        BY L.                                                        *
+*        CALLING SEQUENCE (EXTERNAL):                                 *
+*        SLAB(B,DIR,I,L)                                              *
+*                                                                     *
+***********************************************************************
+SLAB     PROC
+         SETAV     SL_NA,INCL
+         ACOMPC    SL_NA,4,ARGNER,,ARGNER
+         RCALL     ZPTR,BLOKVAL,,FAIL
+         RCALL     ZPTR,FIXINL,(ZPTR,NULVCL)
+         RCALL     ZPTR,BCOPY,(ZPTR)
+         GETDC     TEMP2,ZPTR,FRAME_
+         RCALL     TEMP2,STRIP_F,TEMP2
+         PUTDC     ZPTR,FRAME_,TEMP2
+         PUSH      ZPTR
+         RCALL     SL_DIR,INTVAL,,FAIL
+         ACOMPC  SL_DIR,0,,,LENERR
+         PUSH      SL_DIR
+         RCALL     SL_I,INTVAL,,FAIL
+         PUSH      SL_I
+         RCALL     SL_L,INTVAL,,FAIL
+         ACOMPC   SL_L,0,,,LENERR
+         POP       (SL_I,SL_DIR,ZPTR)
+         INCRA     SL_DIR,1
+         GETDC     TEMP1,ZPTR,ARRAY_
+         PUTDC   ZPTR,ARRAY_,NULVCL
+         GETDC     TEMP2,ZPTR,FRAME_
+         GETDC     SL_H,TEMP2,HT_
+         GETDC     SL_W,TEMP2,WTH_
+         GETDC     SL_D,TEMP2,DTH_
+*        CONSTRAIN THE SLAB TO DWELL WITHIN THE BORDERS OF THE
+*                                            ORIGINAL BLOCK.
+         MOVD      WPTR,ZEROCL
+         MULTC     WPTR,SL_DIR,DESCR
+         GETD      SL_T,TEMP2,WPTR           GET SIZE OF ORIGINAL
+*                                            BLOCK IN THE DIRECTION DIR
+         ACOMPC    SL_I,1,SL1,SL1                MAKE SURE START OF
+         DECRA   SL_L,1
+         SUM     SL_L,SL_L,SL_I
+         SETAC     SL_I,1                    SLAB IS AFTER BEGINNING
+*                                            OF THE BLOCK
+         ACOMPC   SL_L,0,SL1
+         SETAC   SL_L,0
+         BRANCH  SL2
+SL1      LHERE
+         ACOMP     SL_I,SL_T,,SL11,SL11         MAKE SURE START OF SLAB
+         SETAC   SL_L,0
+         BRANCH  SL2
+*                                            IS NOT AFTER THE END
+SL11     LHERE
+         DECRA     SL_I,1                    THIS IS MORE CONVENIENT
+         SUBTRT    SL_T,SL_T,SL_I            FIND MAX. POSSIBLE SLAB
+*                                            LENGTH
+         ACOMP     SL_L,SL_T,,SL2,SL2        MAKE SURE SLAB LENGTH DOES
+*                                            NOT EXCEED THIS LENGTH
+         MOVA      SL_L,SL_T
+SL2      LHERE
+         PUTD      TEMP2,WPTR,SL_L           FIX FRAME TO SHOW
+*                                            SIZE OF SLAB
+         AEQLC     SL_L,0,,RTZPTR
+         AEQLC   TEMP1,0,,RTZPTR   IF ARRAY IS BARE, SLAB WILL ALSO BE
+         SELBRA    SL_DIR,(SLAB1,SLAB2,SLAB3)
+*
+*        THE VERTICAL
+SLAB1    LHERE
+         MULTC     SL_D,SL_D,DESCR
+         MULT      SL_L,SL_L,SL_D
+        SETVC     SL_L,A
+         RCALL     TEMP3,BLOCK,(SL_L)
+         MULT      SL_I,SL_I,SL_D
+         SUM       TEMP1,TEMP1,SL_I
+         MOVBLK    TEMP3,TEMP1,SL_L
+         PUTDC     ZPTR,ARRAY_,TEMP3
+         BRANCH    RTZPTR
+*
+*        THE HORIZONTAL
+SLAB2    LHERE
+         RCALL     TEMP1,BCOPY,(TEMP1)
+         GETSIZ    SL_T,TEMP1
+         SETAC     SL_H,0
+SLAB21   INCRA     SL_H,DESCR
+         ACOMP     SL_H,SL_T,SLAB22
+         GETD      YPTR,TEMP1,SL_H
+         RCALL     XPTR,CONVAR,(SL_L)
+         LOCSP     YSP,YPTR
+         LOCSP     VSP,XPTR
+         SETLC     VSP,0
+*        GET SPECIFIER OF SUBSTRING
+         PUTLG     XSP,SL_I
+         REMSP     YSP,YSP,XSP               OFFSET HS BEEN BUMPED BY I
+         PUTLG     YSP,SL_L
+         APDSP     VSP,YSP
+         RCALL     XPTR,GNVARS,(SL_L)
+         PUTD      TEMP1,SL_H,XPTR
+         BRANCH    SLAB21
+SLAB22   LHERE
+         PUTDC     ZPTR,ARRAY_,TEMP1
+         BRANCH    RTZPTR
+*
+*        THE NORMAL
+SLAB3    LHERE
+         MULTC     SL_D,SL_D,DESCR
+         MULTC     SL_L,SL_L,DESCR
+         MULT      SL_T,SL_H,SL_L
+        SETVC     SL_T,A
+         RCALL     TEMP3,BLOCK,(SL_T)
+         MOVD      TEMP11,TEMP1
+         MOVD      TEMP31,TEMP3
+         MULTC     SL_I,SL_I,DESCR
+         SUM       TEMP11,TEMP11,SL_I
+         SETAC     SL_T,0
+SLAB32   INCRA     SL_T,1
+         ACOMP     SL_T,SL_H,SLAB31
+         MOVBLK    TEMP31,TEMP11,SL_L
+         SUM       TEMP31,TEMP31,SL_L
+         SUM       TEMP11,TEMP11,SL_D
+         BRANCH    SLAB32
+SLAB31   LHERE
+         PUTDC     ZPTR,ARRAY_,TEMP3
+         BRANCH    RTZPTR
+SL_H     DESCR     0,0,0
+SL_D     DESCR     0,0,0
+SL_W     DESCR     0,0,0
+SL_L     DESCR     0,0,0
+SL_I     DESCR     0,0,0
+SL_T     DESCR     0,0,0
+SL_DIR   DESCR     0,0,0
+SL_NA    DESCR     0,0,0
+***********************************************************************
+*                                                                     *
+*        SUBBLOCK  RETURNS A SUBBLOCK WHICH DESCRIBES WHERE WITHIN    *
+*        THE GLOBAL FRAME GF THE LOCAL FRAME LF IS SITUATED.  IT IS   *
+*        ASSUMED THAT LF AND GF HAVE AT LEAST ONE NODE IN COMMON.  IF *
+*        THIS IS NOT THE CASE THEN SUBBLOCK FAILS.                    *
+*        CALLING SEQUENCE:                                            *
+*        RCALL     ______,SUBBLOCK,(GF,LF),(FAIL,SUCCESS)             *
+*                                                                     *
+***********************************************************************
+SUBBLOCK PROC
+         RCALL     SB_SB,BLOCK,(SB_DSB)
+         POP       (SB_GF,SB_LF)
+         SETAC     SB_DIR,0
+SB1      INCRA     SB_DIR,DESCR
+         ACOMPC    SB_DIR,FRSIZE_,SB99
+         GETD      SB_GE,SB_GF,SB_DIR
+         GETD      SB_LE,SB_LF,SB_DIR
+         RELS      SB_GR,SB_GE
+         RELS      SB_LR,SB_LE
+         NN        SB_GN,SB_GE
+         NN        SB_LN,SB_LE
+         RCALL     ,FICOM,(SB_GR,SB_GN,SB_LR,SB_LN),FAIL
+         GETD      TEMP33,SB_GR,TEMP31
+         GETD      TEMP34,SB_LR,TEMP32
+         SETAV     TEMP33,TEMP33
+         SETAV     TEMP34,TEMP34
+         SUBTRT    TEMP35,TEMP33,TEMP34
+         TRL       TEMP36,SB_LE
+         SETVA     TEMP35,TEMP36
+         PUTD      SB_SB,SB_DIR,TEMP35
+         BRANCH    SB1
+SB99     RRTURN    SB_SB,2
+SB_DSB   DESCR     FRSIZE_,0,SBDT
+SB_GF    DESCR     0,0,0
+SB_LF    DESCR     0,0,0
+SB_DIR   DESCR     0,0,0
+SB_GE    DESCR     0,0,0
+SB_LE    DESCR     0,0,0
+SB_GR    DESCR     0,0,0
+SB_LR    DESCR     0,0,0
+SB_GN    DESCR     0,0,0
+SB_LN    DESCR     0,0,0
+SB_SB    DESCR     0,0,0
+***********************************************************************
+*                                                                     *
+*        STRIP_F    STRIP_F  IS USED TO STRIP A FRAME OF ALL          *
+*        NODE INFORMATION.IT DOES NOT ALTER THE FRAME WHICH IS        *
+*        GIVEN AS ARGUMENT                                            *
+*                                                                     *
+***********************************************************************
+STRIP_F  PROC
+         POP       SF_F
+         RCALL     SF_F,BCOPY,(SF_F)
+         SETAC     SF_DIR,HT_
+SF1      GETD      SF_E,SF_F,SF_DIR
+         TRL       SF_E,SF_E
+         PUTD      SF_F,SF_DIR,SF_E
+         INCRA     SF_DIR,DESCR
+         ACOMPC    SF_DIR,DTH_,,SF1,SF1
+         RRTURN    SF_F,1
+SF_DIR   DESCR     0,0,0
+SF_E     DESCR     0,0,0
+SF_F     DESCR     0,0,0
+***********************************************************************
+*                                                                     *
+*        T_LEAF  BUILDS A LEAF OF THE GROWING TREE.  A LEAF IS        *
+*        DEFINED AS THE LONGEST SEQUENCE OF NODES                     *
+*        WITHOUT GOING INTO MULTIBLE DAUGHTERS                        *
+*        CALLING SEQUENCE:                                            *
+*                  RCALL    ______,T_LEAF,(F,RS,V)                    *
+*        LOCATIONS CLOBBERED:  NONE                                   *
+*                                                                     *
+***********************************************************************
+T_LEAF   PROC
+         RCALL     TL_TL,BLOCK,(TL_SIZE)
+         POP       (TL_F,TL_RS,TL_V)
+         PUTDC     TL_TL,FATHER_,TL_F
+         PUTDC     TL_TL,RSIB_,TL_RS
+TLF0     PUTDC     TL_TL,VALUE_,TL_V
+         VEQLC     TL_V,S,,TLF99
+         GETDC     TL_N,TL_V,ORG_
+         SETAV     TL_N,TL_N
+         SELBRA    TL_N,(TLF1,TLF2,TLF3,TLF4,TLF5,TLF6,TLF7,TLF8,TLF9)
+*
+*        CONTIGUOUS ORGANIZATIONS
+*
+TLF1     LHERE
+TLF2     LHERE
+TLF3     LHERE
+         GETDC     TL_REG,TL_V,REG_
+         AEQLC     TL_REG,0,TLF11
+         PUTDC     TL_TL,TNREG_,CTR_REG
+         BRANCH    TLF99
+TLF11    PUSH      TL_TL
+         RCALL     TL_REG,BCOPY,(TL_REG)
+         POP       TL_TL
+         RCALL     ,NRMZ_REG,(TL_REG)
+         PUTDC     TL_TL,TNREG_,TL_REG
+         BRANCH    TLF99
+*        MERGE ORGANIZATION
+TLF4     BRANCH    TLF99
+*        ITERATED ORGANIZATION
+TLF5     LHERE
+         GETDC     TL_V,TL_V,ELEMENT_
+         PUSH      TL_TL
+         RCALL     TL_TN2,T_LEAF,(TL_TL,NULVCL,TL_V)
+         POP       TL_TL
+         PUTDC     TL_TL,LSO_,TL_TN2
+         GETDC     TL_V,TL_TN2,VALUE_
+         IFREP     TL_V,TLF99
+         GETDC     TL_TEMP,TL_TL,VALUE_
+         PUTDC     TL_TN2,VALUE_,TL_TEMP
+         PUTDC     TL_TL,VALUE_,TL_V
+         BRANCH    TLF99
+*        REPLICATED AND NODE ORGANIZATION
+TLF6     LHERE
+TLF7     LHERE
+         GETDC     TL_V,TL_V,ELEMENT_
+         PUSH      TL_TL
+         RCALL     TL_TN2,T_LEAF,(TL_TL,NULVCL,TL_V)
+         POP       TL_TL
+         PUTDC     TL_TL,LSO_,TL_TN2
+         BRANCH    TLF99
+*        DEFERED ORGANIZATION
+TLF8     LHERE
+         GETDC     TL_V,TL_V,NAME_
+         GETDC     TL_V,TL_V,DESCR
+         BRANCH    TLF0
+*        PHYSICAL ORGANIZATION
+TLF9     BRANCH    TLF99
+TLF99    RRTURN    TL_TL,1
+CTR_REG  DESCR     TL_STR,0,A
+TL_STR   DESCR     TL_STR,0,3*DESCR
+         DESCR     0,0,0
+         DESCR     0,0,0
+         DESCR     0,0,0
+TL_F     DESCR     0,0,0
+TL_RS    DESCR     0,0,0
+TL_V     DESCR     0,0,0
+TL_TL    DESCR     0,0,0
+TL_N     DESCR     0,0,0
+TL_REG   DESCR     0,0,0
+TL_TN2   DESCR     0,0,0
+TL_SIZE  DESCR     TNREG_,0,TNDT
+TL_TEMP  DESCR     0,0,0
+***********************************************************************
+*                                                                     *
+*        UNI-DAUGHTER BLOCKS :                                        *
+*        IT   REP   NODE   DEF                                        *
+*                                                                     *
+***********************************************************************
+*
+IT       PROC
+         MOVD      UD_TP,UD_IT
+         BRANCH    UDCOM,UDCOM
+*
+REP      PROC
+         MOVD      UD_TP,UD_REP
+         BRANCH    UDCOM,UDCOM
+*
+NODE     PROC
+         INCRA     UD_ID,1
+         MOVD      UD_TP,UD_ID
+         BRANCH    UDCOM,UDCOM
+*
+UDCOM    PROC
+         PUSH      UD_TP
+         RCALL     TEMP1,BLOKVAL,,FAIL
+         VEQLC   TEMP1,S,UDCOM1
+         RCALL   TEMP1,FIXINL,(TEMP1,NULVCL)
+UDCOM1   LHERE
+         POP       UD_TP
+         RCALL     XPTR,BLOCK,(UD_SIZE)
+         PUTDC     XPTR,ELEMENT_,TEMP1
+         PUTDC     XPTR,ORG_,UD_TP
+         BRANCH    RTXPTR
+*
+DEF      PROC
+         RCALL     TEMP1,IND,,FAIL
+         RCALL     XPTR,BLOCK,(UD_SIZE)
+         PUTDC     XPTR,ORG_,UD_DFT
+         PUTDC     XPTR,NAME_,TEMP1
+         BRANCH    RTXPTR
+UD_DFT   DESCR     0,0,DEF_
+UD_ID    DESCR     0,0,NODE_
+UD_TP    DESCR     0,0,0
+UD_SIZE  DESCR     ELEMENT_,0,BL
+UD_IT    DESCR     0,0,IT_
+UD_REP   DESCR     0,0,REP_
+*
+UNITS    PROC
+         MOVD    UN_I,UN_0             DEFAULT ARG IF NO ARGS
+         MOVD    UN_UN,UN_UN1          INITIALIZE LIST CONTAINING ...
+         ZERBLK  UN_UN3,UN_UN4         RESULT TO ZERO
+         POP       UN_N
+         AEQLC     UN_N,0,,UNITS2
+UNITS1   LHERE
+         AEQLC     UN_N,0,,UN99
+         DECRA     UN_N,1
+         PUSH    (UN_UN,UN_N)
+         RCALL     UN_I,INTVAL,,FAIL
+         POP     (UN_N,UN_UN)
+*UNITS3   LHERE
+         ACOMPC    UN_I,0,,,UNITS1
+UNITS2   LHERE
+         AEQLC     TEMP48,0,,UNNATL
+         LOCAPT    XCL,TEMP48,UN_I,UNNATL
+         GETDC     YCL,XCL,2*DESCR
+         AEQLC   UN_I,0,UNITS5         IF ZERO ...
+         SETAC   UN_I,PRUNO            SET UNIT TO DEFAULT
+UNITS5   LHERE
+         RCALL     UN_UN,AUGATL,(UN_UN,UN_I,YCL)
+         BRANCH    UNITS1
+UNNATL   LHERE
+*        NOT ON THE ATTRIBUTE LIST
+         MOVD    YPTR,ZEROCL           DEFAULT CARRIAGE CONTROL IS NO
+         AEQLC   UN_I,0,UNITS4         IF UNIT IS NONZERO
+         SETAC   YPTR,1                IS YES OTHERWISE
+         SETAC   UN_I,PRUNO         ALSO SET PRINTER UNIT NO.
+UNITS4   LHERE
+         RCALL     UN_UN,AUGATL,(UN_UN,UN_I,YPTR)
+         BRANCH    UNITS1
+UN99     RRTURN    UN_UN,2
+UN_STD   DESCR     PRUNO,0,I
+UN_DFP   DESCR     UN_DFT,0,0
+UN_DFT   DESCR     UN_DFT,0,2*DESCR
+         DESCR     PRUNO,0,I
+         DESCR     1,0,0
+UN_UN    DESCR     0,0,0
+UN_N     DESCR     0,0,0
+UN_I     DESCR     0,0,0
+UN_0     DESCR     0,0,I
+UN_UN4   DESCR     3*DESCR,0,0
+UN_UN3   DESCR     UN_UN2+DESCR,0,0
+UN_UN1   DESCR     UN_UN2,0,0
+UN_UN2   DESCR     UN_UN2,0,4*DESCR
+         DESCR     0,0,0
+         DESCR     0,0,0
+         DESCR     0,0,0
+         DESCR     0,0,0
+*
+WARNING  PROC
+         INCRA     WA_N,1
+         OUTPUT    WA_DIAG,WA_FMT,(FILENM,LNNOCL,WA_N,STNOCL)	[PLB119]
+         ACOMPC    WA_N,MAXW,WA1
+         BRANCH    RTN1
+WA_FMT   FORMAT    '%v:%d: BLOCKS warning #%d in statement %d\n' [PLB119]
+WA1      LHERE
+         SETAC     ERRTYP,ERRNO+2
+         BRANCH    FTLEND
+WA_N     DESCR     0,0,0
+WA_DIAG  DESCR     DIAGUN,0,0
+.FI
 *---------------------------------------------------------------------*
        TITLE   'Common Code'
 RT1NUL RRTURN  NULVCL,1		   Return null string by exit 1
@@ -7064,6 +10375,10 @@ DTLIST DESCR   DTLIST,TTL+MARK,DTLEND-DTLIST-DESCR
        DESCR   EXPSP,0,0	   EXPRESSION
        DESCR   0,0,T
        DESCR   ASSCSP,0,0	   TABLE
+.IF BLOCKS
+       DESCR   0,0,BL
+       DESCR   BLOKSP,0,0	   BLOCK
+.FI
 DTLEND LHERE   ,
 *
 * [PLB92] NOTE! In reverse alphabetical order!
@@ -7086,6 +10401,10 @@ FULLCL DESCR   0,0,I		   &FULLSCAN
        DESCR   FULLSP,0,0
 TRACL  DESCR   0,0,I		   &FTRACE
        DESCR   FTRCSP,0,0
+.IF BLOCKS
+BKGNCL DESCR   0,0,0		   &FILL			[BLOCKS]
+       DESCR   BKGNSP,0,0
+.FI
 ERRLCL DESCR   0,0,I		   &ERRLIMIT
        DESCR   ERRLSP,0,0
 DMPCL  DESCR   0,0,I		   &DUMP
@@ -7266,6 +10585,9 @@ NERRCL DESCR   1,0,0		   NOERROR switch		[PLB9]
 SCERCL DESCR   0,0,0		   Error branch switch
 SPITCL DESCR   1,0,I		   SPITBOL features (-PLUSOPS)	[PLB32][PLB33]
 STATCL DESCR   0,0,0		   Display statistics		[PLB12][PLB33]
+.IF BLOCKS
+BLOKCL DESCR   0,0,I		   SNOBOL4B/BLOCKS (-BLOCKS)	[PLB117]
+.FI
 *
 *      Constants
 *
@@ -7538,6 +10860,58 @@ ZPTR   DESCR   0,0,0
 ZSIZ   DESCR   0,0,0
 UNSCCL DESCR   0,0,0		   SCIN entry point hack for UNSC [PLB65]
 PTBRCL DESCR   0,0,0		   Index for BATPRA dispatch	[PLB65]
+.IF BLOCKS
+TEMP1  DESCR   0,0,0
+TEMP2  DESCR   0,0,0
+TEMP3  DESCR   0,0,0
+TEMP4  DESCR   0,0,0
+TEMP5  DESCR   0,0,0
+TEMP6  DESCR   0,0,0
+TEMP7  DESCR   0,0,0
+TEMP8  DESCR   0,0,0
+TEMP9  DESCR   0,0,0
+TEMP10 DESCR   0,0,0
+TEMP11 DESCR   0,0,0
+TEMP12 DESCR   0,0,0
+TEMP13 DESCR   0,0,0
+TEMP14 DESCR   0,0,0
+TEMP15 DESCR   0,0,0
+TEMP16 DESCR   0,0,0
+TEMP17 DESCR   0,0,0
+TEMP18 DESCR   0,0,0
+TEMP19 DESCR   0,0,0
+TEMP20 DESCR   0,0,0
+TEMP21 DESCR   0,0,0
+TEMP22 DESCR   0,0,0
+TEMP23 DESCR   0,0,0
+TEMP24 DESCR   0,0,0
+TEMP25 DESCR   0,0,0
+TEMP26 DESCR   0,0,0
+TEMP27 DESCR   0,0,0
+TEMP28 DESCR   0,0,0
+TEMP29 DESCR   0,0,0
+TEMP30 DESCR   0,0,0
+TEMP31 DESCR   0,0,0
+TEMP32 DESCR   0,0,0
+TEMP33 DESCR   0,0,0
+TEMP34 DESCR   0,0,0
+TEMP35 DESCR   0,0,0
+TEMP36 DESCR   0,0,0
+TEMP37 DESCR   0,0,0
+TEMP38 DESCR   0,0,0
+TEMP39 DESCR   0,0,0
+TEMP40 DESCR   0,0,0
+TEMP41 DESCR   0,0,0
+TEMP42 DESCR   0,0,0
+TEMP43 DESCR   0,0,0
+TEMP44 DESCR   0,0,0
+TEMP45 DESCR   0,0,0
+TEMP46 DESCR   0,0,0
+TEMP47 DESCR   0,0,0
+TEMP48 DESCR   0,0,0
+TEMP49 DESCR   0,0,0
+TEMP50 DESCR   0,0,0
+.FI
 *
 *      System Descriptors
 *
@@ -7828,6 +11202,64 @@ VALFN  DESCR   FIELD,0,1
        DESCR   VALBLK,0,0
 VDIFFN DESCR   VDIFFR,0,2
        DESCR   0,0,0
+.IF BLOCKS
+F1FN   DESCR   PRINTB,FNC,0	   PRINT
+       DESCR   0,0,0
+F2FN   DESCR   HOR,FNC,0	   HOR
+       DESCR   0,0,0
+F3FN   DESCR   VER,FNC,0	   VER
+       DESCR   0,0,0
+F4FN   DESCR   FRONT,FNC,0	   FRONT
+       DESCR   0,0,0
+F5FN   DESCR   BOX,FNC,0	   BOX
+       DESCR   0,0,0
+F6FN   DESCR   PAR,FNC,0	   PAR
+       DESCR   0,0,0
+F7FN   DESCR   SER,FNC,0	   SER
+       DESCR   0,0,0
+F8FN   DESCR   OVY,FNC,0	   OVY
+       DESCR   0,0,0
+F9FN   DESCR   HOR_REG,FNC,0	   HOR_REG
+       DESCR   0,0,0
+F10FN  DESCR   VER_REG,FNC,0	   VER_REG
+       DESCR   0,0,0
+F11FN  DESCR   NORM_REG,FNC,0	   NORM_REG
+       DESCR   0,0,0
+F12FN  DESCR   IT,FNC,0		   IT
+       DESCR   0,0,0
+F13FN  DESCR   REP,FNC,0	   REP
+       DESCR   0,0,0
+F14FN  DESCR   DEF,FNC,0	   DEF
+       DESCR   0,0,0
+F15FN  DESCR   NODE,FNC,0	   NODE
+       DESCR   0,0,0
+F16FN  DESCR   MERGE,FNC,0	   MERGE
+       DESCR   0,0,0
+F17FN  DESCR   HEIGHT,FNC,0	   HEIGHT
+       DESCR   0,0,0
+F18FN  DESCR   WIDTH,FNC,0	   WIDTH
+       DESCR   0,0,0
+F19FN  DESCR   DEPTH,FNC,0	   DEPTH
+       DESCR   0,0,0
+F20FN  DESCR   BLOCKSIZ,FNC,0	   BSIZE
+       DESCR   0,0,0
+F21FN  DESCR   SLAB,FNC,0	   SLAB
+       DESCR   0,0,0
+F22FN  DESCR   FIX,FNC,0	   FIX
+       DESCR   0,0,0
+F23FN  DESCR   BCHAR,FNC,0	   BCHAR			[PLB117]
+       DESCR   0,0,0
+F24FN  DESCR   DUP,FNC,0	   DUP
+       DESCR   0,0,0
+F25FN  DESCR   CC,FNC,0		   CC
+       DESCR   0,0,0
+F26FN  DESCR   NEW_PAGE,FNC,0	   EJECT
+       DESCR   0,0,0
+F27FN  DESCR   LRECL,FNC,0	   LRECL
+       DESCR   0,0,0
+F28FN  DESCR   LOC,FNC,0	   LOC
+       DESCR   0,0,0
+.FI       
 FTBLND LHERE   ,
 *
 INITLS DESCR   INITLS,TTL+MARK,8*DESCR
@@ -7997,6 +11429,64 @@ FNLIST DESCR   FNLIST,TTL+MARK,FNCPLE-FNLIST-DESCR
        DESCR   VALSP,0,0
        DESCR   VDIFFN,FNC,0	   VDIFFER(V1,V2)		[PLB78]
        DESCR   VDIFSP,0,0					[PLB78]
+.IF BLOCKS
+       DESCR   F1FN,FNC,0	   PRINT
+       DESCR   F1SP,0,0
+       DESCR   F2FN,FNC,0		   HOR
+       DESCR   F2SP,0,0
+       DESCR   F3FN,FNC,0	   VER
+       DESCR   F3SP,0,0
+       DESCR   F4FN,FNC,0	   FRONT
+       DESCR   F4SP,0,0
+       DESCR   F5FN,0,0		   BOX
+       DESCR   F5SP,0,0
+       DESCR   F6FN,FNC,0	   PAR
+       DESCR   F6SP,0,0
+       DESCR   F7FN,FNC,0	   SER
+       DESCR   F7SP,0,0
+       DESCR   F8FN,FNC,0	   OVY
+       DESCR   F8SP,0,0
+       DESCR   F9FN,FNC,0	   HOR_REG
+       DESCR   F9SP,0,0
+       DESCR   F10FN,FNC,0	   VER_REG
+       DESCR   F10SP,0,0
+       DESCR   F11FN,FNC,0	   NORM_REG
+       DESCR   F11SP,0,0
+       DESCR   F12FN,FNC,0	   IT
+       DESCR   F12SP,0,0
+       DESCR   F13FN,FNC,0	   REP
+       DESCR   F13SP,0,0
+       DESCR   F14FN,FNC,0	   DEF
+       DESCR   F14SP,0,0
+       DESCR   F15FN,FNC,0	   NODE
+       DESCR   F15SP,0,0
+       DESCR   F16FN,FNC,0	   MERGE
+       DESCR   F16SP,0,0
+       DESCR   F17FN,FNC,0	   HEIGHT
+       DESCR   F17SP,0,0
+       DESCR   F18FN,FNC,0	   WIDTH
+       DESCR   F18SP,0,0
+       DESCR   F19FN,FNC,0	   DEPTH
+       DESCR   F19SP,0,0
+       DESCR   F20FN,FNC,0	   BSIZE
+       DESCR   F20SP,0,0
+       DESCR   F21FN,FNC,0	   SLAB
+       DESCR   F21SP,0,0
+       DESCR   F22FN,FNC,0	   FIX
+       DESCR   F22SP,0,0
+       DESCR   F23FN,FNC,0	   BCHAR			[PLB117]
+       DESCR   F23SP,0,0
+       DESCR   F24FN,FNC,0	   DUP
+       DESCR   F24SP,0,0
+       DESCR   F25FN,FNC,0	   CC
+       DESCR   F25SP,0,0
+       DESCR   F26FN,FNC,0	   EJECT
+       DESCR   F26SP,0,0
+       DESCR   F27FN,FNC,0	   LRECL
+       DESCR   F27SP,0,0
+       DESCR   F28FN,FNC,0	   LOC
+       DESCR   F28SP,0,0
+.FI
        ARRAY   40*2		   Space for 40 more functions	[PLB56][PLB81]
 FNCPLE LHERE   ,		   End of function pair list
 OPTBL  DESCR   OPTBL,TTL+MARK,OPTBND-OPTBL-DESCR
@@ -8018,6 +11508,14 @@ BIPDFN DESCR   UNDF,FNC,0	   X # Y    definable
 BIPRFN DESCR   UNDF,FNC,0	   X % Y    definable
        DESCR   0,0,0
        DESCR   45,0,44
+.IF BLOCKS
+BIBDFN DESCR   OVY,FNC,0	   X # Y    overlay		[BLOCKS]
+       DESCR   0,0,0
+       DESCR   16,0,15
+BIBRFN DESCR   SER,FNC,0	   X % Y    serial?		[BLOCKS]
+       DESCR   0,0,0
+       DESCR   18,0,17
+.FI
 BISNFN LHERE   ,						[PLB32]
 SCANFN DESCR   SCAN,0,2		   X ? Y    SPITBOL scan	[PLB32]
        DESCR   0,0,0						[PLB32]
@@ -8275,6 +11773,40 @@ UNLDSP STRING  'UNLOAD'
 VEESP  STRING  'V'						[PLB115]
 VALSP  STRING  'VALUE'
 VDIFSP STRING  'VDIFFER'					[PLB78]
+.IF BLOCKS
+BLOKSP STRING  'BLOCK'
+BLKSSP STRING  'BLOCKS'
+BKGNSP STRING  'FILL'
+NOBLSP STRING  'NOBLOCKS'
+F1SP   STRING  'PRINT'
+F2SP   STRING  'HOR'
+F3SP   STRING  'VER'
+F4SP   STRING  'FRONT'
+F5SP   STRING  'BOX'
+F6SP   STRING  'PAR'
+F7SP   STRING  'SER'
+F8SP   STRING  'OVY'
+F9SP   STRING  'HOR_REG'
+F10SP  STRING  'VER_REG'
+F11SP  STRING  'NORM_REG'
+F12SP  STRING  'IT'
+F13SP  STRING  'REP'
+F14SP  STRING  'DEF'
+F15SP  STRING  'NODE'
+F16SP  STRING  'MERGE'
+F17SP  STRING  'HEIGHT'
+F18SP  STRING  'WIDTH'
+F19SP  STRING  'DEPTH'
+F20SP  STRING  'BSIZE'
+F21SP  STRING  'SLAB'
+F22SP  STRING  'FIX'
+F23SP  STRING  'BCHAR'				[PLB117]
+F24SP  STRING  'DUP'
+F25SP  STRING  'CC'
+F26SP  STRING  'EJECT'
+F27SP  STRING  'LRECL'
+F28SP  STRING  'LOC'
+.FI
 *
 CRDFSP STRING  '(80A1)'		   Default output format
 OUTPSP STRING  '(1X,132A1)'	   Standard print format
@@ -8310,6 +11842,10 @@ ABNDB  LHERE   ,
        DESCR   CONTCL,0,0					[PLB97]
        DESCR   SCNTSP,0,0	   'SCONTINUE'			[PLB97]
        DESCR   SCNTCL,0,0					[PLB97]
+.IF BLOCKS
+       DESCR   BLSP,0,0		   &FILL			[BLOCKS]
+       DESCR   BKGNCL,0,0					[BLOCKS]
+.FI
        DESCR   FSP,0,0		   'F'				[PLB115]
 DTEND  DESCR   FUNTCL,0,0					[PLB115]
 *
@@ -8508,6 +12044,9 @@ MSGLST DESCR   0,0,0
        DESCR   MSG33,0,0					[PLB60]
        DESCR   MSG34,0,0					[PLB97]
        DESCR   MSG35,0,0					[PLB97]
+       DESCR   MSG36,0,0					[BLOCKS]
+       DESCR   MSG37,0,0					[BLOCKS]
+       DESCR   MSG38,0,0					[BLOCKS]
 *
 *      Fatal Error Messages
 *
@@ -8547,6 +12086,9 @@ MSG32  STRING  'Missing END statement'				[PLB38]
 MSG33  STRING  'Output error'					[PLB60]
 MSG34  STRING  'User interrupt'					[PLB109]
 MSG35  STRING  'Not in a SETEXIT handler'			[PLB97]
+MSG36  STRING  'Error in BLOCKS'				[BLOCKS]
+MSG37  STRING  'Too many warnings in BLOCKS'			[BLOCKS]
+MSG38  STRING  'Mystery error in BLOCKS'			[BLOCKS]
 *
 *      Compiler Error Messages
 *
@@ -8598,6 +12140,9 @@ SYSCMT FORMAT  '%v:%d: Caught signal %d in statement %d at level %d\n'
 TIMEPS FORMAT  '%F ns. Average per statement executed\n' [PLB71][PLB72][PLB107]
 TITLEF FORMAT  'SNOBOL4 (Version 3.11, May 19, 1975)\n'
 *								V3.11
+.IF BLOCKS
+TITLEF1 FORMAT  'BLOCKS (Version 1.10, April 1, 1973)\n'	[BLOCKS]
+.FI
 WRITNO FORMAT  '%D Writes performed\n'
 *
 *      Real constants

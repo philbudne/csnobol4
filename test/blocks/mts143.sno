@@ -1,0 +1,6 @@
+-BLOCKS
+# MTS Volume 9 (Sept 1975) p143
+	POLES = IT(HOR(5) % '|')
+	BARS = IT(VER(5) '-')
+	PRINT(FRONT(20,55) # POLES # BARS)
+END

@@ -1,0 +1,30 @@
+Dump of variables at termination
+
+Natural variables
+
+ABORT = PATTERN
+ARB = PATTERN
+BAL = PATTERN
+FAIL = PATTERN
+FENCE = PATTERN
+REM = PATTERN
+SUCCEED = PATTERN
+
+Unprotected keywords
+
+&ABEND = 0
+&ANCHOR = 0
+&CASE = 1
+&CODE = 0
+&DUMP = 1
+&ERRLIMIT = 0
+&FILL = ' '
+&FTRACE = 0
+&FULLSCAN = 0
+&GTRACE = 0
+&INPUT = 1
+&MAXLNGTH = xxx
+&OUTPUT = 1
+&STLIMIT = -1
+&TRACE = 0
+&TRIM = 0

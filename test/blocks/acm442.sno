@@ -1,0 +1,43 @@
+-BLOCKS
+# CACM 6/1972 v15n6 p442
+
+	COL1 = 1 % 2 % 3
+	COL2 = 4 % 5 % 6
+	COL3 = 7 % 8 % 9
+
+	PRINT(COL1 IT('|') COL2)
+	OUTPUT =
+
+	PRINT(COL1 IT('|') COL2 IT('|') COL3)
+	OUTPUT =
+
+	PRINT( HOR(20) % 'INTRO' REP('.') '1'
++		       % 'DEFS'  REP('.') '1')
+	OUTPUT =
+
+	SP = REP(' ')
+	PRINT(COL1 SP COL2 SP COL3 % HOR(30))
+	OUTPUT =
+
+	PRINT(SP COL1 SP COL2 SP COL3 SP % HOR(30))
+	OUTPUT =
+
+	SP2 = SP SP
+	PRINT(SP COL1 SP2 COL2 SP2 COL3 SP % HOR(30))
+	OUTPUT =
+
+	B = FRONT(10,20) # 'HI'
+*	PRINT(IT('_') % IT('|') B IT('|') % IT('_'))
+*	OUTPUT =
+
+	B = FRONT(10,20) # 'HI'
+	B = IT('|') (B % IT('_')) IT('|')
+	B = ' ' REP('_') ' ' % B
+*	PRINT(B)
+*	OUTPUT =
+
+	ST = IT('*')
+	B = ST % ST DEF('V') ST % ST
+	V = 'JOHN SMITH'
+	PRINT(B)
+END

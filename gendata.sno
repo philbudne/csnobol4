@@ -22,8 +22,22 @@
 	&ANCHOR = 1
 
 *	process options!
+	WITH = TABLE()
 	IND = HOST(3)
-	ARG = HOST(2,IND)				:F(NOFILE)
+OPTLOOP	ARG = HOST(2,IND)				:F(NOFILE)
+	ARG POS(0) '-'					:F(GETFILE)
+	IND = IND + 1
+
+	IDENT(ARG,'--with')		       		:S(WITH)
+	DIFFER(ARG,'-w')				:S(UNKOPT)
+WITH	ARG = HOST(2,IND)				:F(NOWITHARG)
+	IND = IND + 1
+	WITH[ARG] = 1					:(OPTLOOP)
+
+UNKOPT	TERMINAL = 'gendata.sno: unknown option ' ARG
+EXIT1	&CODE = 1					:(END)
+
+OPTEND	SILPATH = ARG
 
 *	get input filename
 GETFILE	SILPATH = ARG
@@ -56,6 +70,8 @@ MB1
 
 **************** I/O ERRORS
 
+ERROR	TERMINAL = "ERROR: " &LASTFILE ':' &LASTLINE
+	TERMINAL = SAVELINE				:(FATAL)
 NOFILE	TERMINAL = "NO FILENAME ON COMMAND LINE"	:(FATAL)
 BADFILE	TERMINAL = "CANNOT OPEN FILE " SILPATH
 FATAL	&CODE = 1					:(END)
@@ -108,6 +124,9 @@ EIO
 	LINE_PAT = (TNUL . LBL) WS (TNUL . OP) WS 
 	QS_ARG_PAT = STR . ARGS
 	TOK_ARG_PAT = TOK . ARGS
+
+	ID = ANY(&UCASE) SPAN(&UCASE &DIGITS)
+
 ****************************************************************
 *	functions
 
@@ -196,6 +215,7 @@ BEGIN
 
 ****************************************************************
 TOP	LINE = INPUT						:F(EOF)
+	SAVELINE = LINE
 	LINE = LINE SP
 	LBL =
 	OP =
@@ -206,7 +226,27 @@ TOP	LINE = INPUT						:F(EOF)
 	LINE '*'						:S(TOP)
 
 *	here if not a comment
-	OLINE = LINE
+** new: check for .IF
+* can't nest for now....
+	IDENT(IN_IF)						:S(NOTINIF)
+	LINE '.FI'						:F(NOTFI)
+	IN_IF = IF_TRUE =					:(TOP)
+
+NOTFI	IDENT(IF_TRUE)						:S(TOP)
+
+NOTINIF	LINE '.IF' WS ID . IFID					:F(NOTIF)
+	IN_IF = 1
+	IF_TRUE = WITH[IFID]
+*	TERMINAL = 'saw .IF ' IFID ' -- ' IF_TRUE
+	:(TOP)
+
+NOTIF	LINE '.IFE' WS ID . IFID				:F(NOTIFE)
+	IN_IF = 1
+	IF_TRUE = (DIFFER(WITH[IFID]), 1)
+*	TERMINAL = 'saw .IFE ' IFID ' -- ' IF_TRUE
+	:(TOP)
+
+NOTIFE	OLINE = LINE
 	LINE LINE_PAT =
 
 	LINE QS_ARG_PAT						:S(STRARG)
@@ -217,7 +257,6 @@ STRARG
 	DIFFER(DATA)						:S(IN_DATA)
 
 * skip non-data; avoid clogging label table!!
-	IDENT(OP,'XECODE')					:F(TOP)
 
 	DATA = 1
 IN_DATA	IDENT(OP,'ARRAY')					:S(XARRAY)
@@ -228,6 +267,7 @@ IN_DATA	IDENT(OP,'ARRAY')					:S(XARRAY)
 	IDENT(OP,'BUFFER')					:S(XBUFFER)
 	IDENT(OP,'FORMAT')					:S(XFORMAT)
 	IDENT(OP,'REAL')					:S(XREAL)
+	HERE =
 								:(TOP)
 ****************
 
@@ -258,8 +298,7 @@ XFORMAT	ARGS = REPLACE(ARGS, "'", '"')
 	DATA.C = 'const char ' LBL '[] = ' ARGS ';' SP FMT
 	DATA.H = 'extern const char ' LBL '[];' TAB TAB FMT	:(NEXT)
 ****************
-XLHERE	DIFFER(HERE)						:S(ERROR)
-	HERE = LBL						:(NEXT)
+XLHERE HERE = LBL						:(NEXT)
 
 ****************
 XSPEC	ARGS SPECARGS						:F(ERROR)

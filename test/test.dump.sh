@@ -4,11 +4,15 @@
 #	mash MAXLNGTH = nnn
 
 PROG=$1
-BASE=`basename $PROG .sno`
+BASE=`echo $PROG | sed s/.sno//`
 STATUS=1
 #
+if [ "$BLOCKS" ]; then
+    # darn! couldn't get spaces to work here!
+    FILL="-e /^&FILL.=.'/d"
+fi
 if $SNOBOL $ARGS -r $PROG 2>/dev/null | \
-    sed 's/MAXLNGTH = [0-9]*/MAXLNGTH = xxx/' > ${BASE}.tmp; then
+    sed -e 's/MAXLNGTH = [0-9]*/MAXLNGTH = xxx/' $FILL > ${BASE}.tmp; then
 	if cmp ${BASE}.ref ${BASE}.tmp; then
 		STATUS=0
 		rm -f ${BASE}.tmp

@@ -2,6 +2,82 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/22/2013:
+	Merge from BR_1_5_PLUS_BLOCKS (see below)
+
+=== merged from BR_1_5_PLUS_BLOCKS
+
+10/17/2013:
+	v311.sil: [PLB121] Clean up PRINT/EJECT carriage control
+		Implement ASCII Carriage Control if CC(unit) < 0
+	lib/io.c: Implement ASCII Carriage Control if CC(unit) < 0
+		add findfile() function; do multiple writes in fastpr
+	{acm44[01],mts1{44,6[46]},reg,tree[12]}.ref: update
+
+10/15/2013:
+	v311.sil: [PLB119] fix BCHAR() -- was writing into const string
+		  clean up warning FORMATs, report file & line
+		  [PLB120] change DI_8 to DI_DSC for 64-bit systems!
+	test/blocks/bc.{sno,ref}: test BCHAR
+	test/blocks.in: add blocks/bc.sno
+
+10/13/2013:
+	test/blocks.in: tweak dump test
+	test/blocks/dump.ref: update
+	lib/io.c: supply missing argument to io_print_str()!
+
+10/12/2013:
+	test/blocks.in: blocks/mts16[246].sno
+	blocks/mts16[246].{sno,ref}
+	lib/str.c: remove divide from movblk2
+
+10/11/2013:
+	Working better!
+	v311.sil: [PLB118] replace MOVBLK with MOVBLK2 in BLAND
+	genc.sno: add MOVBLK2
+	include/macros.h: add MOVBLK2
+	include/lib.h: add movblk2
+	lib/str.c: add movblk2
+	test/blocks.in: blocks/{box,acm443a,mts145,tree1,tree2}
+	test/test.in.sh: (new) take BASE from environment
+	test/blocks/{box,mts14[35],tree[12]}.ref (new)
+	test/blocks/{mts145,tree}.sno (new)
+
+10/11/2013:
+	On branch BR_1_5_PLUS_BLOCKS
+	SNOBOL4B (SNOBOL4 with BLOCKS) thanks to Mike Alexander <mta@umich.edu>
+	new: procs.blocks
+	genc.sno: Make macros used by BLOCKS macros into functions.
+		Add --with NAME flag, process .IF[E] NAME / .FI
+		Add notes about clearing F&V from reading PDP-10 macros
+		Read procs.blocks if --with BLOCKS selected
+		BLOCKS macros: CYC IF{DEF,FIT,MERGE,PHY,REP,ST,CONT}
+			MAX, MERGSP, NN, RELS, SWAP, TRL, FASTPR
+	Makefile: add "with"
+	bsdtsort.c: make hash unsigned, do rotate
+	configure: add --with-blocks, write "with" file (if changed)
+	gendata.sno: Add --with flag, process .IF NAME / .FI
+		Process data defns before end of code (for BLOCKS)
+	gensyn.sno: Add --with flag, process .IF NAME / .FI
+	globals: add BLOCKS related globals
+	main.c: change name to CSNOBOL4B under ifdef BLOCKS
+	syntax.tbl: add blocks binary operator tables: BBIOPTB and BSBIPTB
+	v311.sil: [BLOCKS] add BLOCKS code
+		  [PLB117] add -[NO]BLOCKS to dis/enable blocks operators
+	lib.h: add io_fastpr(), mergsp()
+	macros.h: renamed INSERT macro to X_INSERT; add FASTPR, MERGSP macros
+	lib/init.c: add -B option to toggle blocks
+	lib/io.c: io_printf(): add %A %L %V
+	test/blocks.in: list of blocks tests
+	test/test.{dump,err,genc,opt,reg,trace}.sh: handle test with dir name
+	test/blocks/ (new)
+	test/blocks/{ab,acm4{39,40,41,42,43,43a,43b},
+			block{0,0n,1,1b,1b},
+			box,dump,image,reg,tree
+			mts14{2,3,4}.{sno,ref}
+
+==== end merge from BR_1_5_PLUS_BLOCKS
+
 10/15/2013:
 	configure: check double alignment; disable bitfields if strict
 		(would pad descriptor to 16 bytes).

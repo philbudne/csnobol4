@@ -1,0 +1,28 @@
+-BLOCKS
+# CACM 6/1972 v15n6 p443
+
+	DEFINE("MAKEBOX(X,H,W)TB")			:(EBOX)
+MAKEBOX
+	MAKEBOX = FRONT(H,W) # X
+	MAKEBOX = IT('|') MAKEBOX IT('|')
+	TB = '+' REP('-') '+'
+	MAKEBOX = TB % MAKEBOX % TB
+	:(RETURN)
+EBOX
+
+	BOX1 = MAKEBOX('N1',10,20)
+	BOX2 = MAKEBOX('N2',5,10)
+	BOX3 = MAKEBOX('N3',10,6)
+	BOX4 = MAKEBOX('N4',7,40)
+
+	N1 = NODE(BOX1)
+	N2 = NODE(BOX2)
+	N3 = NODE(BOX3)
+	N4 = NODE(BOX4)
+	VERT = DUP('|', 0, 3)
+	B = MERGE(N1 '-----------' N2,
++		N1 % VERT % N3,
++	    	N2 % REP('|') % N4,
++		N3 REP('-') N4)
+	PRINT(B)
+END

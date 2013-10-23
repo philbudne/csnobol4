@@ -224,6 +224,9 @@ while [ $# -gt 0 ]; do
     --without-readline)
 	WITHOUT_READLINE=1
 	;;
+    --with-blocks)
+	WITH_BLOCKS=1
+	;;
     --with-tcl=*)
 	TCONF=`echo "$1" | sed 's/--with-tcl=//'`
 	if [ "x$TCONF" = x ]; then
@@ -273,6 +276,7 @@ Install location;
 
 Optional items;
 	--with-tcl=/path/to/tclConfig.sh
+	--with-blocks
 	--without-ndbm		--force-sdbm
 	--without-readline	--without-com
 EOF
@@ -1802,6 +1806,18 @@ for DIR in /usr/bin /usr/ucb /usr/local/bin /bin .; do
 done
 
 ################################
+# construct new "with" file
+
+WITH=with.new
+rm -f $WITH
+touch $WITH
+if [ "$WITH_BLOCKS" ]; then
+    echo "BLOCKS=1"				>> $CONFIG_M4
+    echo '#define BLOCKS'			>> $CONFIG_H
+    echo ' --with BLOCKS'			>> $WITH
+fi
+
+################################
 # should be last thing done;
 
 if [ -f local-config ]; then
@@ -1841,5 +1857,13 @@ if [ ! "$DEBUG" ]; then
     fi
     if [ $VERSION_H != version.h ]; then
 	mv -f $VERSION_H version.h
+    fi
+    if [ $WITH != with ]; then
+	if cmp $WITH with >/dev/null 2>&1; then
+	    rm -f $WITH
+	else
+	    # XXX check if snobol4 executable can be found???
+	    mv $WITH with
+	fi
     fi
 fi

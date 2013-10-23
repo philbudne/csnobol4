@@ -1,0 +1,9 @@
+-BLOCKS
+# CACM 6/1972 v15n6 p439
+        Q = '300' % '--------' % 'Z + 2'
+        PRINT('X = ' Q)
+
+        OUTPUT =
+
+        PRINT( ('THIS' # '____') ' IS UNDERLINED')
+END

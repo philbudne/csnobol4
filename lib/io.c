@@ -282,6 +282,20 @@ static struct iovars iov;
 #define fseeko(FP,OFF,WHENCE) fseek(FP,(long)(OFF),WHENCE)
 #endif /* HAVE_FSEEKO not defined */
 
+/* internal helper; take internal unit, return struct file *, or NULL */
+static struct file *
+findfile( iunit )
+    int iunit;
+{
+    struct unit *up;
+
+    if (BADUNIT(iunit))
+	return NULL;
+
+    up = FINDUNIT(iunit);
+    return up->curr;			/* may be NULL */
+}
+
 static struct file *
 io_newfile( path )
     char *path;
@@ -914,6 +928,7 @@ mem_read_cooked(fp, cp, recl, keepeol)
 
 #define COPYTEMP COPY(temp, strlen(temp))
 
+/* IOPRINT -- formatted stats/error output */
 void
 io_printf
 #ifdef __STDC__
@@ -928,7 +943,7 @@ io_printf
     char line[1024];			/* XXX */
     int space;
     char *lp;
-    struct unit *up;
+    struct file *fp;
 #ifdef __STDC__
     va_start(vp,unit);
 #else  /* __STDC__ not defined */
@@ -938,12 +953,8 @@ io_printf
     unit = va_arg(vp, int_t);
 #endif /* __STDC__ not defined */
 
-    unit = INTERN(unit);
-    if (BADUNIT(unit))
-	return;
-
-    up = FINDUNIT(unit);
-    if (up->curr == NULL)
+    fp = findfile(INTERN(unit));
+    if (!fp)
 	return;
 
     /* keep output in line buffer, in case output unbuffered (ie; stderr) */
@@ -1014,6 +1025,26 @@ io_printf
 		COPY(S_SP(s), S_L(s));
 	    }
 	    break;
+	case 'A':			/* padded descriptor Addr */
+	    dp = va_arg(vp, struct descr *);
+	    if (D_V(dp) == I)		/* INTEGER */
+		sprintf(temp, "%15ld", (long)D_A(dp)); /* XXX handle LP32LL64 int_t */
+	    else if (D_V(dp) == R)	/* REAL */
+		sprintf(temp, "%#15.3g", (double)D_RV(dp));
+	    else			/* presumed to be pointer */
+		sprintf(temp, "%#15lx", (unsigned long)D_A(dp)); /* XXX handle LP32LL64 int_t */
+	    COPYTEMP;
+	    break;
+	case 'L':			/* padded descriptor fLags */
+	    dp = va_arg(vp, struct descr *);
+	    sprintf(temp, "%#15o", (int)D_F(dp)); /* defined in octal!! */
+	    COPYTEMP;
+	    break;
+	case 'V':			/* padded descriptor Value (type) */
+	    dp = va_arg(vp, struct descr *);
+	    sprintf(temp, "%15d", (int)D_V(dp));
+	    COPYTEMP;
+	    break;
 	default:
 	    *lp++ = c;
 	    space--;
@@ -1024,55 +1055,25 @@ io_printf
     *lp = '\0';
 
 #ifdef MEM_IO
-    if (ISMEM(up->curr))
-	mem_write(up->curr, line, strlen(line));
+    if (ISMEM(fp))
+	mem_write(fp, line, strlen(line));
     else
 #endif
-    if (up->curr->f)
-	fputs(line, up->curr->f);
+    if (ISAFILE(fp) && fp->f)
+	fputs(line, fp->f);
 } /* io_printf */
 
-void
-io_print( iokey, iob, sp )		/* STPRNT */
-    struct descr *iokey;
-    struct descr *iob;
-    struct spec *sp;
+static int
+io_write(fp, cp, len)
+     struct file *fp;
+     char *cp;
+     int len;
 {
-    int unit;
-    struct file *fp;
-    struct unit *up;
-    FILE *f;
-    int ret;
-
-    /* IOB->
-     * title descr
-     * integer unit number
-     * pointer to natural var for format
-     */
-
-    D_A(iokey) = FALSE;			/* default to error */
-
-    unit = INTERN(D_A(D_A(iob) + DESCR));
-    if (BADUNIT(unit))
-	return;
-
-    up = FINDUNIT(unit);
-    fp = up->curr;
-    if (fp == NULL)
-	return;
-
-    f = fp->f;
-    if (f == NULL)
-	return;
-
-    /*
-     * ANSI C requires that a file positioning function intervene
-     * between output and input. Would not be needed if UPDATE I/O
-     * performed using read()/write() (ie; FL_UNBUF)
-     */
+    if (len == 0)
+	return TRUE;
 
     if ((fp->flags & FL_UPDATE) && fp->last == LAST_INPUT && ISAFILE(fp)) {
-	fseeko(f, (off_t)0, SEEK_CUR);	/* seek relative by zero */
+	fseeko(fp->f, (off_t)0, SEEK_CUR);	/* seek relative by zero */
 	/*
 	 * XXX set fp->last to LAST_NONE; don't set to LAST_OUTPUT
 	 * until an actual stdio operation is done?
@@ -1080,19 +1081,54 @@ io_print( iokey, iob, sp )		/* STPRNT */
     }
     fp->last = LAST_OUTPUT;
 
-    ret = TRUE;
-    if (S_A(sp) && S_L(sp)) {
-	int len;
-	char *cp;
+#ifdef INET_IO
+    if (ISINET(fp)) {
+	return inet_write(fp->f, cp, len) == len;
+    }
+    else
+#endif /* INET_IO defined */
+#ifdef MEM_IO
+    if (ISMEM(fp)) {
+	return mem_write(fp, cp, len);
+    }
+    else
+#endif /* MEM_IO defined */
+#ifndef NO_UNBUF_RW
+    if (fp->flags & FL_UNBUF) {
+	return write(fileno(fp->f), cp, len) == len;
+    }
+    else
+#endif /* NO_UNBUF_RW not defined */
+    if (ISAFILE(fp))
+	return fwrite( cp, 1, len, fp->f ) == len;
+    return FALSE;
+}
 
-	len = S_L(sp);
-	cp = S_SP(sp);
-	if (D_A(COMPCL)) {
+static int
+io_print_str(fp, cp, len, needfill, eol)
+    struct file *fp;
+    char *cp;
+    int len;
+    int needfill;
+    int eol;
+{
+    int ret;
+
+    /*
+     * ANSI C requires that a file positioning function intervene
+     * between output and input. Would not be needed if UPDATE I/O
+     * performed using read()/write() (ie; FL_UNBUF)
+     */
+
+    ret = TRUE;
+    if (cp && len) {
+	if (needfill) {
 	    char *ep;
 	    int l2;
+	    char *tp = cp;
 
-	    /* trim spaces & NUL's (without altering specifier) */
-	    ep = cp + len - 1;
+	    /* trim trailing spaces & NUL's (without altering specifier) */
+	    ep = tp + len - 1;
 	    while (len > 0 && (*ep == ' ' || *ep == '\0')) {
 		len--;
 		ep--;
@@ -1100,63 +1136,19 @@ io_print( iokey, iob, sp )		/* STPRNT */
 
 	    /* plug remaining NULs with spaces */
 	    for (l2 = len; l2 > 0; l2--) {
-		if (*cp == '\0')
-		    *cp = ' ';
-		cp++;
+		if (*tp == '\0')
+		    *tp = ' ';
+		tp++;
 	    }
-	    cp = S_SP(sp);
 	} /* compiling */
 
-#ifdef INET_IO
-	if (ISINET(fp)) {
-	    if (inet_write(f, cp, len) != len)
-		ret = FALSE;
-	}
-	else
-#endif /* INET_IO defined */
-#ifdef MEM_IO
-	if (ISMEM(fp)) {
-	    ret = mem_write(fp, cp, len);
-	}
-	else
-#endif /* MEM_IO defined */
-#ifndef NO_UNBUF_RW
-	if (fp->flags & FL_UNBUF) {
-	    if (write(fileno(f), cp, len) != len)
-		ret = FALSE;
-	}
-	else
-#endif /* NO_UNBUF_RW not defined */
-	if (fwrite( cp, 1, len, f ) != len)
-	    ret = FALSE;
+	ret = io_write(fp, cp, len);
     } /* have string */
 
     /* XXX check ret first? */
 
-    if (fp->flags & FL_EOL) {
-#ifdef INET_IO
-	if (ISINET(fp)) {
-	    if (inet_write(f, "\n", 1) != 1)
-		ret = FALSE;
-	}
-	else
-#endif /* INET_IO defined */
-#ifdef MEM_IO
-	if (ISMEM(fp)) {
-	    ret = mem_write(fp, "\n", 1);
-	}
-	else
-#endif /* MEM_IO defined */
-#ifndef NO_UNBUF_RW
-	if (fp->flags & FL_UNBUF) {
-	    if (write(fileno(f), "\n", 1) != 1)
-		ret = FALSE;
-	}
-	else
-#endif /* NO_UNBUF_RW not defined */
-	if (putc( '\n', f ) == EOF)
-	    ret = FALSE;
-    }
+    if (eol && (fp->flags & FL_EOL))
+	ret = io_write(fp, "\n", 1);
 
 #ifdef NO_UNBUF_RW
     if ((fp->flags & FL_UNBUF) && ISAFILE(fp)) {
@@ -1165,9 +1157,24 @@ io_print( iokey, iob, sp )		/* STPRNT */
 	    ret = FALSE;
     }
 #endif /* NO_UNBUF_RW defined */
+    return ret;
+} /* io_print_str */
 
-    D_A(iokey) = ret;
-} /* io_print */
+void
+io_print( iokey, iob, sp )		/* STPRNT */
+    struct descr *iokey;
+    struct descr *iob;
+    struct spec *sp;
+{
+    /* IOB->
+     * title descr
+     * integer unit number
+     * pointer to natural var for format
+     */
+    int xunit = D_A(D_A(iob) + DESCR);
+    struct file *fp = findfile(INTERN(xunit));
+    D_A(iokey) = io_print_str(fp, S_SP(sp), S_L(sp), D_A(COMPCL), 1);
+}
 
 int
 io_endfile(unit)			/* ENFILE */
@@ -1246,7 +1253,7 @@ io_read( dp, sp )			/* STREAD */
     struct file *fp;
     struct unit *up;
 #ifdef _MSC_VER
-    int_t err_count = D_A(UINTCL);
+    int_t err_count = D_A(UINTCL);	/* ^C count */
 #endif
 
     unit = INTERN(D_A(dp));
@@ -2374,3 +2381,50 @@ io_preload() {
 	    try_preload(ip->fname);
     }
 } /* io_preload */
+
+#ifdef BLOCKS
+/*
+ * support for BLOCKS FASTPR macro
+ * translated from the BAL in "cleanio"
+ * 9/26/2013
+ */
+void
+io_fastpr(iokey, unit, ccfp, sp1, sp2)
+    struct descr *iokey, *unit, *ccfp;
+    struct spec *sp1, *sp2;
+{
+    int len = S_L(sp1);
+    char *src = S_SP(sp1);
+    int xunit = D_A(unit);		/* external */
+    int ccf = D_A(ccfp);		/* carriage control flag */
+    struct file *fp = findfile(INTERN(xunit));
+    char save;
+    int ret;
+
+    /* NOTE!! CC doesn't get written in one write if unbuffered!! */
+    if (ccf > 0) {			/* FORTRAN/ASA carriage control */
+	ret = (io_print_str(fp, S_SP(sp2), 1, 0, 0) &&
+	       io_print_str(fp, src, len, 1, 1));
+    }
+    else if (ccf < 0) {			/* EXT: ASCII carriage control */
+	char ccc = *S_SP(sp2);		/* carriage control char */
+	ret = TRUE;
+	switch (ccc) {
+	case '1':			/* form feed */
+	    ret = io_write(fp, "\f", 1);
+	    break;
+	case '+':			/* overstrike */
+	    ret = io_write(fp, "\r", 1);
+	    break;
+	case ' ':			/* fresh line */
+	    ret = io_write(fp, "\n", 1);
+	    break;
+	}
+	if (src && len && ret)
+	    ret = io_print_str(fp, src, len, 1, 0); /* NO EOL! */
+    }
+    else				/* ccf == 0: no carriage control */
+	ret = io_print_str(fp, src, len, 1, 1);
+    D_A(iokey) = !ret;
+} /* io_fastpr */
+#endif /* BLOCKS */

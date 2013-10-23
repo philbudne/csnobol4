@@ -1,0 +1,18 @@
+-BLOCKS
+	print('a')
+	output =
+
+	na = node('a')
+	output = datatype(na)
+	print(na)
+	output =
+
+	ab = 'a' % 'b'
+	output = datatype(ab)
+	print(ab)
+	output =
+
+	xo = 'x' # 'o'
+	output = datatype(xo)
+	print(xo)
+end

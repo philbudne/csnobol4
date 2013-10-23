@@ -1,0 +1,6 @@
+-PLUSOPS 1
+-NOBLOCKS
+        OPSYN('#','+',2)
+# 15 + 5
+        OUTPUT = 1 5 # 5
+END

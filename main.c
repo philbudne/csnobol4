@@ -43,9 +43,15 @@ struct vars *varp;
 # include "res.h"			/* BANRCL */
 # include "version.h"			/* VERSION, VERSION_DATE */
 
+#ifdef BLOCKS
+#define SNONAME "CSNOBOL4B"
+#else
+#define SNONAME "CSNOBOL4"
+#endif
+
 const char vers[] = VERSION;
 const char vdate[] = VERSION_DATE;
-const char snoname[] = "CSNOBOL4";
+const char snoname[] = SNONAME;
 
 int
 main(argc, argv)

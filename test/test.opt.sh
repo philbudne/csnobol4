@@ -4,7 +4,7 @@
 #	captures stdout with no post-processing
 
 PROG=$1
-BASE=`basename $PROG .sno`
+BASE=`echo $PROG | sed s/.sno//`
 STATUS=2
 #
 if $SNOBOL $ARGS -r $PROG > ${BASE}.tmp 2>/dev/null; then

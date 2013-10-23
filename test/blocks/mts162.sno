@@ -1,0 +1,27 @@
+-BLOCKS
+# MTS Volume 9 (Sept 1975) p162
+
+	UL = LL = UR = LR = '+'
+	HL = '-'
+	VL = '|'
+
+	DEFINE('PIPED(LA,H,W,D)HH,WW,I,BL')	:(PIPED_END)
+PIPED	H = H - 1;   W = W - 1;   D = D - 1
+*	Surround label with a rectangle.
+*	This will comprise the front plane of the parallelelepiped.
+	HH = DUP(VL, 0, H)
+	WW = DUP(HL, 1, W)
+	LA = FRONT(H, W) # LA
+	BL = UL WW UR  %  HH LA HH  %  LL WW LR
+*	Each time through the loop add on a layer of depth
+PIPED_2	I = I + 1 LT(I,D)			:F(PIPED_1)
+	BL = HOR(I) '/' HOR(W) '/' % BL (VER(H) % '/' % VER(I))
+	BL = FIX(BL)				:(PIPED_2)
+
+*	Now add on the back plane
+PIPED_1	BL = HOR(D + 1) UL WW UR  %  BL (HH % LR % VER(D + 1))
+	PIPED = FIX(BL)				:(RETURN)
+PIPED_END
+
+	PRINT(PIPED("this is not" % "a box", 5, 20, 2))
+END

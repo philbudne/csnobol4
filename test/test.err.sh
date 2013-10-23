@@ -4,7 +4,7 @@
 #	expects error exit; captures stderr
 
 PROG=$1
-BASE=`basename $PROG .sno`
+BASE=`echo $PROG | sed s/.sno//`
 STATUS=1
 #
 if $SNOBOL $ARGS -b -r $PROG > ${BASE}.tmp 2>&1; then

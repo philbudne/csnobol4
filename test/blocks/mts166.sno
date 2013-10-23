@@ -1,0 +1,186 @@
+-BLOCKS
+# MTS Volume 9 (Sept 1975) p166-168
+
+*	&TRACE = 1000
+	TRACE('POLISH', 'V')
+	TRACE('OP', 'V')
+	TRACE('N', 'V')
+
+*	&FTRACE = 1000
+
+* magic value!!!
+*	&DUMP = 50
+
+* VT100 enter graphics: ESC(0 leave: ESC(B
+* UNICODE 250x, 251x in Windows Glyph List 4
+* upper left (UNICODE 250C; DOS AD; VT100 "l"; UNICODE UL PAREN 239B)
+	UL = '/'
+* lower left (UNICODE 2514; DOS C0; VT100 "m"; UNICODE LL PAREN 239C)
+	LL = '\'
+* upper right (UNICODE 2510; DOS BF; VT100 "k"; UNICODE UR PAREN 239E)
+	UR = '\'
+* lower right (UNICODE 2518; DOS D9; VT100 "j"; UNICODE LR PAREN 23A0)
+	LR = '/'
+* vertical line (UNICODE 2502; DOS B3; VT100 "q";
+*	UNICODE LEFT PAREN EXT 239C; UNICODE RIGHT PAREN EXT 239F)
+	LP = RP = '|'
+* horizontal line (UNICODE 2500; DOS C4; VT100 "y"; UNICODE 23AF)
+	HL = '-'
+
+	DEFINE('POLISH(STR)E1,E2,TEMP,OPS,OP,T')
+	UNARY = '+- '
+	BINARY = '= +- */ ^ '
+	E1.OP.E2 = POS(0) BAL . E1 ANY(*OPS) . OP BAL . E2 RPOS(0)
+	OP.E1 = POS(0) ANY(UNARY) . OP BAL . E1 RPOS(0)
+	PARENS = POS(0) '(' BAL . E1 ')' RPOS(0)
+
+	DEFINE('REV(S)')				:(REV_END)
+REV	REV = REPLACE(REVERSE(S), '()', ')(')		:(RETURN)
+REV_END							:(POLISH_END)
+
+POLISH	STR ANY(UNARY BINARY '()')			:S(POLPAREN)
+	POLISH = STR ','				:(RETURN)
+
+POLPAREN
+	STR PARENS					:F(POLBIN)
+	POLISH = '(,1,' POLISH(E1)			:(RETURN)
+
+POLBIN	TEMP = BINARY
+	STR = REV(STR)
+POLOOP	TEMP BREAK(' ') . OPS ' ' =
+	IDENT(OPS,'^')					:S(POLEXP)
+	STR E1.OP.E2					:F(POLOOP)
+	POLISH = OP ',2,' POLISH(REV(E2)) POLISH(REV(E1)) :(RETURN)
+
+POLEXP	STR = REV(STR)
+	STR E1.OP.E2					:F(POLUNY)
+	POLISH = OP ',2,' POLISH(E1) POLISH(E2)		:(RETURN)
+
+POLUNY	STR OP.E1					:F(POLERROR)
+	POLISH = OP ',1,' POLISH(E1)			:(RETURN)
+
+POLERROR
+	TERMINAL = 'UNDECIPERABLE: ' STR		:(FRETURN)
+POLISH_END
+
+****************************************************************
+	DEFINE('DEBRACKET(POLISH)EXP,DIV,B,NL,T')	:(DEBRACKET_END)
+DEBRACKET
+	EXP = '^,2,'
+	DIV = '/,2,'
+	B = '(,1,'
+	NL = ' ,1,'
+DEB_DIV	POLISH B DIV = NL DIV				:S(DEB_DIV)
+
+DEB_EXP	POLISH B EXP = NL EXP				:S(DEB_EXP)
+
+DEB_NUM	POLISH DIV B = DIV NL				:S(DEB_NUM)
+
+DEB_DEN	POLISH (DIV POLPAT) . T B = T NL		:S(DEB_DEN)
+
+DEB_NL	POLISH NL =					:S(DEB_NL)
+
+DEB_BB	POLISH B B = B					:S(DEB_BB)
+
+	DEBRACKET = POLISH				:(RETURN)
+DEBRACKET_END
+
+****************************************************************
+
+	DEFINE('IMAGE(POLISH)H')
+	DEFINE('WORK()OP,N,PICT,LNUB,RNUB,WORK1,WORK2')
+	DATA('CLUMP(PICT,LNUB,RNUB)')
+	OP.N = POS(0) ANY(UNARY BINARY '(') . OP ',' BREAK(',') . N ','
+	:(IMAGE_END)
+
+* entry point: WORK works on "POLISH" argument to IMAGE
+IMAGE	IMAGE = WORK()					:(RETURN)
+
+* worker -- POLISH is local variable of outer IMAGE() function
+WORK	POLISH OP.N =					:F(WORK_SIMPLE)
+	WORK1 = WORK()
+	WORK2 = EQ(N,2) WORK()
+	:($('WORK' OP N))
+
+WORK(1	PICT = FIX(PICT(WORK1),1)
+	H = HEIGHT(PICT)
+	PICT = EQ(H,1) '(' PICT ')'			:S(WORK_SIM)
+	WORK = (UL % DUP(LP,0,H) % LL) ' ' PICT ' ' (UR % DUP(RP,0,H) % LR)
+							:(WORK_SIM)
+
+WORK=2
+WORK+2
+WORK-2
+WORK*2	OP = ' ' OP ' '
+	OP = IDENT(OP, ' * ') ' '
+	PICT = MERGE(PICT(WORK1),
++		     RNUB(WORK1) OP LNUB(WORK2),
++		     PICT(WORK2))
+	LNUB = LNUB(WORK1)
+	RNUB = RNUB(WORK2)				:(WORK_RET)
+
+WORK+1
+WORK-1	LNUB = NODE(OP)
+* PLB X -C is less confusing than X - C for X * -C!!
+*	PICT = MERGE(LNUB ' ' LNUB(WORK1), PICT(WORK1))
+	PICT = MERGE(LNUB LNUB(WORK1), PICT(WORK1))
+	RNUB = RNUB(WORK1)				:(WORK_RET)
+
+WORK/2	TEMP = NODE(IT(HL))
+	LNUB = NODE(HL)
+	RNUB = NODE(HL)
+	PICT = MERGE(PICT(WORK1) % TEMP % PICT(WORK2),
++		     LNUB TEMP RNUB)			:(WORK_RET)
+	
+WORK^2	PICT = FIX(PICT(WORK2),1)
+	LINE = HOR(WIDTH(PICT))
+	PICT = PICT % PICT(WORK1) LINE
+	HOR_REG(PICT) = 'RIGHT'
+	RNUB = NODE()
+	LNUB = LNUB(WORK1)
+	PICT = MERGE(PICT, RNUB(WORK1) LINE RNUB)	:(WORK_RET)
+
+WORK_SIMPLE
+	POLISH BREAK(',') . PICT ',' =
+
+WORK_SIM
+	LNUB = NODE()
+	RNUB = NODE()
+	PICT = LNUB PICT RNUB
+* FALL*
+
+WORK_RET
+	WORK = CLUMP(PICT,LNUB,RNUB)			:(RETURN)
+
+IMAGE_END
+
+****************************************************************
+
+	DEFINE('EQU(S)P')				:(EQU_END)
+EQU	S '**' = '^'					:S(EQU)
+EQU_1	S ' ' =						:S(EQU_1)
+	P = POLISH(S)					:F(FRETURN)
+*	PRINT(P)
+	P = DEBRACKET(P)
+*	PRINT(P)
+*	PRINT(' ')
+	EQU = PICT(IMAGE(P))				:(RETURN)
+EQU_END
+
+****************************************************************
+
+LOOP	LINE = INPUT					:F(END)
+	PRINT(' ')
+	PRINT(LINE)
+	PRINT(' ')
+	PRINT(EQU(LINE))
+	PRINT(' ')
+	PRINT('===')					:(LOOP)
+
+END
+a / b
+(A + B) * (-C)
+1/ (1 + 1/x)
+1 / (1 + 1 / (1 + 1 / (1 + 1 / (1 + 1 / (1 + 1 / (1 + 1 / x))))))
+D * (F / G) / DZ = (G * (DF / DZ) - F * (DG / DZ)) / G ** 2
+1/(1+T)=1 - T + T**2 - T**3 + ... + (-1)**N*T**N

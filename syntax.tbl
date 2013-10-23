@@ -1,6 +1,40 @@
 * $Id$
 *
 * $Log$
+* Revision 1.7.2.1  2013/10/11 23:09:59  phil
+* SNOBOL4B (SNOBOL4 with BLOCKS) thanks to Mike Alexander <mta@umich.edu>
+* new: procs.blocks
+* genc.sno: Make macros used by BLOCKS macros into functions.
+* 	Add --with NAME flag, process .IF[E] NAME / .FI
+* 	Add notes about clearing F&V from reading PDP-10 macros
+* 	Read procs.blocks if --with BLOCKS selected
+* 	BLOCKS macros: CYC IF{DEF,FIT,MERGE,PHY,REP,ST,CONT}
+* 		MAX, MERGSP, NN, RELS, SWAP, TRL, FASTPR
+* Makefile: add "with"
+* bsdtsort.c: make hash unsigned, do rotate
+* configure: add --with-blocks, write "with" file (if changed)
+* gendata.sno: Add --with flag, process .IF NAME / .FI
+* 	Process data defns before end of code (for BLOCKS)
+* gensyn.sno: Add --with flag, process .IF NAME / .FI
+* globals: add BLOCKS related globals
+* main.c: change name to CSNOBOL4B under ifdef BLOCKS
+* syntax.tbl: add blocks binary operator tables: BBIOPTB and BSBIPTB
+* v311.sil: [BLOCKS] add BLOCKS code
+* 	  [PLBXXX] add -[NO]BLOCKS to disable/enable blocks operator changes
+* lib.h: add io_fastpr(), mergsp()
+* macros.h: renamed INSERT macro to X_INSERT; add FASTPR, MERGSP macros
+* lib/init.c: add -B option to toggle blocks
+* lib/io.c: io_printf(): add %A %L %V
+* test/blocks.in: list of blocks tests
+* test/test.{dump,err,genc,opt,reg,trace}.sh: handle test with directory name
+* test/blocks/ (new)
+* 	{ab,acm4{39,40,41,42,43,43a,43b},block{0,0n,1,1b,1b},box,dump,image,reg,tree.{sno,ref}
+*
+* Revision 1.7  1997/08/06 05:51:27  phil
+* [PLB59] from SNOBOL4+
+* seperate syntax tables for BREAK(X) and SPAN
+* simple index lookup for ANY/NOTANY
+*
 * Revision 1.6  1997/06/20  05:07:41  phil
 * allow exponent without fraction (ie; 1e5), like SPITBOL
 *
@@ -55,6 +89,47 @@ FOR(QUESYM) PUT(BISNFN) GOTO(TBLKTB)
 FOR(EQUAL) PUT(BIEQFN) GOTO(TBLKTB)
 ELSE ERROR
 END SBIPTB
+
+.IF BLOCKS
+* [BLOCKS] blocks version of BIOPTB
+BEGIN BBIOPTB
+FOR(PLUS) PUT(ADDFN) GOTO(TBLKTB)
+FOR(MINUS) PUT(SUBFN) GOTO(TBLKTB)
+FOR(DOT) PUT(NAMFN) GOTO(TBLKTB)
+FOR(DOLLAR) PUT(DOLFN) GOTO(TBLKTB)
+FOR(STAR) PUT(MPYFN) GOTO(STARTB)
+FOR(SLASH) PUT(DIVFN) GOTO(TBLKTB)
+FOR(AT) PUT(BIATFN) GOTO(TBLKTB)
+FOR(POUND) PUT(BIBDFN) GOTO(TBLKTB)
+FOR(PERCENT) PUT(BIBRFN) GOTO(TBLKTB)
+FOR(RAISE) PUT(EXPFN) GOTO(TBLKTB)
+FOR(ORSYM) PUT(ORFN) GOTO(TBLKTB)
+FOR(KEYSYM) PUT(BIAMFN) GOTO(TBLKTB)
+FOR(NOTSYM) PUT(BINGFN) GOTO(TBLKTB)
+FOR(QUESYM) PUT(BIQSFN) GOTO(TBLKTB)
+ELSE ERROR
+END BBIOPTB
+
+* [BLOCKS] BLOCKS + SPITBOL syntax!!
+BEGIN BSBIPTB
+FOR(PLUS) PUT(ADDFN) GOTO(TBLKTB)
+FOR(MINUS) PUT(SUBFN) GOTO(TBLKTB)
+FOR(DOT) PUT(NAMFN) GOTO(TBLKTB)
+FOR(DOLLAR) PUT(DOLFN) GOTO(TBLKTB)
+FOR(STAR) PUT(MPYFN) GOTO(STARTB)
+FOR(SLASH) PUT(DIVFN) GOTO(TBLKTB)
+FOR(AT) PUT(BIATFN) GOTO(TBLKTB)
+FOR(POUND) PUT(BIBDFN) GOTO(TBLKTB)
+FOR(PERCENT) PUT(BIBRFN) GOTO(TBLKTB)
+FOR(RAISE) PUT(EXPFN) GOTO(TBLKTB)
+FOR(ORSYM) PUT(ORFN) GOTO(TBLKTB)
+FOR(KEYSYM) PUT(BIAMFN) GOTO(TBLKTB)
+FOR(NOTSYM) PUT(BINGFN) GOTO(TBLKTB)
+FOR(QUESYM) PUT(BISNFN) GOTO(TBLKTB)
+FOR(EQUAL) PUT(BIEQFN) GOTO(TBLKTB)
+ELSE ERROR
+END BSBIPTB
+.FI
 
 BEGIN CARDTB
 FOR(CMT) PUT(CMTTYP) STOPSH

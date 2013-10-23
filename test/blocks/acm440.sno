@@ -1,0 +1,11 @@
+-BLOCKS
+# CACM 6/1972 v15n6 p440
+        OUTPUT =
+        OUTPUT = ' 123456789012345678901234567890'
+        PRINT(HOR(30) % 'x')
+
+        OUTPUT =
+
+        OUTPUT = ' 1234567890'
+        PRINT(FRONT(3,10) # 'x')
+END

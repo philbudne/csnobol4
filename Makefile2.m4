@@ -254,7 +254,7 @@ timing.out snobol4: tested xsnobol4 timing timing.sno test/bench.sno test/v311.s
 
 tested:  xsnobol4 test/tests.in cpuid
 	@echo Running regression tests...
-	(cd test; ./run.sh ../xsnobol4)
+	(cd test; BLOCKS=$(BLOCKS) ./run.sh ../xsnobol4)
 	@echo Passed regression tests.
 	date > tested
 

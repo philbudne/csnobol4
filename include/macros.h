@@ -45,8 +45,10 @@
  * NOTE: may overlap!!
  * (bcopy deals with this but some memcpy's do not)!!!
  */
-/* XXX SIZE_T */
 #define MOVBLK(A,B,C) bcopy((void *)((B)+DESCR),(void *)((A)+DESCR),(long)(C) )
+#ifdef BLOCKS
+#define MOVBLK2(A,B,C) movblk2((struct descr *)(A),(struct descr *)(B),(C))
+#endif
 
 /****************
  * string specifiers (qualifiers)
@@ -205,7 +207,7 @@ struct descr _NORET[1];
 
 #define ADDSIB(A,B) addsib((struct descr *)(A),(struct descr *)(B))
 #define ADDSON(A,B) addson((struct descr *)(A),(struct descr *)(B))
-#define INSERT(A,B) insert((struct descr *)(A),(struct descr *)(B))
+#define X_INSERT(A,B) insert((struct descr *)(A),(struct descr *)(B))
 #define LINKOR(A,B) linkor((struct descr *)(A),(struct descr *)(B))
 #define LVALUE(A,B) lvalue((struct descr *)(A),(struct descr *)(B))
 
@@ -286,3 +288,8 @@ struct descr _NORET[1];
      io_openi((struct descr *)(A),(struct spec *)(B),\
 	      (struct spec *)(C),(struct descr *)(D))
 
+/* for BLOCKS! 9/26/2013 */
+#define MERGSP(A,B,C) mergsp((struct spec *)(A),(struct spec *)(B),(struct spec *)(C))
+#define FASTPR(A,B,C,S,T) \
+	io_fastpr((struct descr *)(A),(struct descr *)(B),(struct descr *)(C),\
+		  (struct spec *)(S),(struct spec *)(T))

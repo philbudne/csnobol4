@@ -1,0 +1,51 @@
+-BLOCKS
+# MTS Volume 9 (Sept 1975) p145
+	A = 'A'
+	B = 'B'
+	C1 = A % A % A
+	C2 = B % B % B % B % B
+	C3 = A % B % A % B
+	SP = REP(' ')
+	C = C1 SP C2 SP C3
+	PRINT(HOR(20) % C)
+	OUTPUT =
+
+	VER_REG(C) = 'TOP'
+	PRINT(HOR(20) % C)
+	OUTPUT =
+
+	DEFINE('OUTLINE(B,DH,DW)UL,UR,LL,LR')		:(OUTLINE_END)
+OUTLINE
+	UL = UR = LL = LR = '+'
+	B = VER(DH) % HOR(DW) B HOR(DW) % VER(DH)
+	B = UL REP('-') UR %
++	    IT('|') B IT('|') %
++	    LL REP('-') LR
+	OUTLINE = FIX(B)				:(RETURN)
+OUTLINE_END
+
+	PRINT(OUTLINE('ABC', 5, 10))
+	OUTPUT =
+
+# MTS Volume 9 (Sept 1975) p146
+	PRINT(OUTLINE(OUTLINE('ABC', 5, 10),,1))
+	OUTPUT =
+
+	SP = REP(' ')
+	S1 = 'A' SP
+	S2 = 'AARDVARK' SP
+	S3 = 'ABC' SP
+	PRINT(S1 % S2 % S3)
+
+# MTS Volume 9 (Sept 1975) p151
+	N1 = NODE(OUTLINE('N1',2,4))
+	N2 = NODE(OUTLINE('N2',1,2))
+	N3 = NODE(OUTLINE('N3',3,1))
+	N4 = NODE(OUTLINE('N4',2,8))
+	VERT = '|' % '|' % '|'
+	B = MERGE(N1 '-----------' N2,
++		N1 % VERT % N3,
++	    	N2 % REP('|') % N4,
++		N3 REP('-') N4)
+	PRINT(B)
+END

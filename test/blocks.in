@@ -1,0 +1,42 @@
+# 9/25/2013
+dump BLOCKS= blocks/dump.sno
+reg blocks/block0.sno
+reg blocks/block0n.sno
+reg blocks/block1.sno
+reg blocks/block1b.sno
+reg blocks/block1n.sno
+#
+# 9/26/2013
+reg blocks/ab.sno
+reg blocks/acm439.sno
+reg blocks/acm440.sno
+#
+# 10/10/2013
+reg blocks/reg.sno
+reg blocks/acm441.sno
+reg blocks/acm442.sno
+reg blocks/acm443.sno
+reg blocks/acm443a.sno
+reg blocks/acm443b.sno
+reg blocks/image.sno
+#
+# 10/11/2013
+reg blocks/box.sno
+#
+# from MTS manual 10/11/2013
+reg blocks/mts142.sno
+reg blocks/mts143.sno
+reg blocks/mts144.sno
+reg blocks/mts145.sno
+#
+# from MTS distribution 10/11/2013
+in BASE=blocks/tree1 blocks/tree.sno
+in BASE=blocks/tree2 blocks/tree.sno
+#
+# from MTS manual 10/12/2013
+reg blocks/mts162.sno
+reg blocks/mts164.sno
+reg blocks/mts166.sno
+#
+# 10/15/2013 -- fixed BCHAR
+reg blocks/bc.sno

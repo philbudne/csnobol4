@@ -1,0 +1,185 @@
+# Test program from MTS distribution
+-BLOCKS
+************************************************************************ 
+*                                                                      * 
+*        THIS IS A TEST PROGRAM.  IT'S SUPPOSED TO PRINT OUT A TREE    * 
+*                                                                      * 
+*                          FROM INPUT SUCH AS                          * 
+*                                                                      * 
+*                                 1 A                                  * 
+*                                 2 B                                  * 
+*                                 3 C                                  * 
+*                                 3 D                                  * 
+*                                 2 E                                  * 
+*                                                                      * 
+*                          IT WILL PRINT OUT:                          * 
+*                                                                      * 
+*                                      ____                            * 
+*                                     |    |                           * 
+*                                     | A  |                           * 
+*                                     |____|                           * 
+*                                       | |                            * 
+*                                       | |                            * 
+*                                   ____| |                            * 
+*                                  |      |                            * 
+*                                  |      |                            * 
+*                                 ____                                 * 
+*                                |    |   E                            * 
+*                                | B  |                                * 
+*                                |____|                                * 
+*                                  | |                                 * 
+*                                  | |                                 * 
+*                                 _| |                                 * 
+*                                |   |                                 * 
+*                                |   |                                 * 
+*                                C   D                                 * 
+*                                                                      * 
+*                                          J.F.GIMPEL   4/15/69        * 
+*                                                                      * 
+************************************************************************ 
+ 
+         DEFINE( 'REC(LABEL,H,W)TOP,BOT')          :(REC.END) 
+* REC RETURNS A RECTANGLE OF HEIGHT H & WIDTH W 
+* AND LABELED WITH THE BLOCK LABEL 
+REC 
+         REC  =  FRONT(H - 1,W) # VER(1) % LABEL 
+         REC  =  IT('|') REC IT('|') 
+         TOP  =  ' ' REP('_') ' ' 
+         BOT  =  '|' REP('_') '|' 
+         REC  =  TOP % REC % BOT 
+         REC  =  FIX(REC)                          :(RETURN) 
+REC.END 
+ 
+         DEFINE('TREE()OP,ARGNO,N,CELLPINS,OFF,T,G,CELL,DIA,A,B') 
+* TREE EXPECTS IN THE VARIABLE LINE A STRING REPRESENTING A TREE IN 
+* POLISH NOTATION AS PRODUCED BY THE FUNCTION POLISH (SEE POLISH) 
+* IT RETURNS A TWO PART ENTITY WHICH  INDICATES THE GRAPH OF THE TREE 
+* AND THE LOCATION OF THE ROOT NODE. 
+*        A PICTURE OF A TREE CONSISTS OF TWO PARTS, THE GRAPH OF THE 
+*        TREE PLUS THE LOCATION OF THE ROOT 
+         DATA('PICTURE(GRAPH,ROOT)') 
+*        BC  =  BREAK CHARACTER 
+         BC  =  ',' 
+*        LC  =  LINE CHARACTER 
+         LC  =  '_' 
+*        VC  =  VERTICAL CHARACTER 
+         VC  =  '|' 
+*        HS  =  THE HORIZONTAL SEPARATOR BETWEEN BRANCHES OF THE TREE 
+         HS  =  HOR(3) 
+*        CPS  =  THE CELL PIN SEPARATOR 
+         CPS  =  HOR(1) 
+                                                           :(TREE.END) 
+TREE 
+*        A  =  VERTICAL DISTANCE FROM CELL TO FIRST BEND 
+*        B  =  VERTICAL DISTANCE FROM THE LOWEST BEND IN THE LINE TO 
+*              THE TOPS OF THE ROOTS OF THE SUBTREES 
+         A  =  1   ;  B  =  1 
+         LINE  POS(0) BREAK(BC) . OP BC  =                 :F(ERROR) 
+         LINE   POS(0) SPAN('0123456789') . N BC  =        :F(TRIVIALTR) 
+TREE.1 
+         ARGNO  =  ARGNO + 1  LT(ARGNO,N)                  :F(TREE.2) 
+         T  =  TREE() 
+         G  =  G HS (GRAPH(T) % REP(' ')) 
+         OFFSET  =  N + 1 - (2 * ARGNO) 
+         OFFSET  =  LT(OFFSET,0)  -OFFSET 
+         PIN1  =  NODE(VC) 
+         CELLPINS  =  CELLPINS  CPS  PIN1 
+         EQ(N / 2 + 1,ARGNO)                       :S(TREE.MIDDLE) 
+         PIN2  =  NODE(VC) 
+         PIN3  =  NODE(' ') 
+         DIA  =  MERGE(DIA, 
+.		PIN1 % REP(VC) % PIN2,  PIN2 REP(LC) PIN3, 
+.		PIN3 % DUP(VC,0,B + OFFSET) % ROOT(T)  ) 
+                                                           :(TREE.1) 
+TREE.MIDDLE 
+         DIA  =  MERGE(DIA, PIN1 % DUP(VC,0,A + B + N) % ROOT(T)) 
+                                                   :(TREE.1) 
+TREE.2 
+        OP  =  ' ' OP ' ' 
+         CELLPINS  =  CELLPINS  CPS 
+	 WW = WIDTH(CELLPINS)
+	 RR = REC(OP,3,WW )
+         CELL  =  NODE(RR ) 
+         SELL  =  CELL 
+         CELL  =  CELL  #  '|' % REP(' ') 
+         DIA  =  MERGE(DIA, CELL % CELLPINS, G) 
+         TREE  =  PICTURE(FIX(DIA,SELL),CELL)           :(RETURN) 
+TRIVIALTR 
+         OP  =  NODE(VER(1) % OP) 
+         TREE  =  PICTURE(OP,OP)                           :(RETURN) 
+TREE.END 
+ 
+ 
+         DEFINE('PRINTLB(B)W') 
+*        PRINTLB     PRINT LARGE BLOCK 
+         PAGE.WIDTH  =  132 
+                                                   :(PRINTLB.END) 
+PRINTLB 
+         B  =  FIX(B,1) 
+PRINTLB.1 
+         EJECT() 
+         W  =  WIDTH(B) 
+         GT(W,PAGE.WIDTH) 
+.                                                  :F(PRINTLB.2) 
+         PRINT(SLAB(B,1,1,PAGE.WIDTH)) 
+         B  =  SLAB(B,1,PAGE.WIDTH + 1,W - PAGE.WIDTH) 
+                                                   :(PRINTLB.1) 
+PRINTLB.2 
+         PRINT(B)                                 :(RETURN) 
+PRINTLB.END 
+ 
+ 
+         DEFINE('GRAB(LEVEL)L') 
+*        GRAB WILL RETURN THE NEXT NAME ON THE INPUT STREAM 
+*        PROVIDED IT IS AT THE LEVEL INDICATED BY ITS ARGUMENT 
+         EXTRACT.L.N  =  POS(0) ARBNO(' ') SPAN('0123456789') . L 
+.        ARBNO(' ')  (NOTANY(' ') REM) . GRAB 
+.                                                  :(GRAB.END) 
+GRAB 
+         IDENT(GRAB.BUFFER)                        :F(GRAB.1) 
+         GRAB.BUFFER  =  TRIM(INPUT)               :F(GRAB.DONE) 
+         PRINT('       '  GRAB.BUFFER) 
+GRAB.1 
+         GRAB.BUFFER    EXTRACT.L.N 
+         EQ(L,LEVEL)                               :F(FRETURN) 
+         GRAB.BUFFER  =                            :(RETURN) 
+GRAB.DONE 
+         DEFINE('GRAB(X)','GRAB.2') 
+GRAB.2                                             :(FRETURN) 
+GRAB.END 
+ 
+ 
+         DEFINE('POLISH(LEV)SUBS,N') 
+* POLISH WILL READ IN A TREE FROM THE INPUT STREAM IN A FORM INDICATED 
+* ABOVE.  IT WILL CONVERT  THIS FORM OF THE TREE INTO POLISH PREFIX 
+* NOTATION WITH AN ARGUMENT COUNT IMMEDIATELY FOLLOWING THE 
+* PARENT NODE.  THUS THE TREE INDICATED IN THE OPENING COMMENTS 
+* WOULD BE REPRESENTED BY POLISH AS A,2,B,2,C,D,E, 
+                                                   :(POLISH.END) 
+* THE FIRST NODE MUST BE AT A LEVEL EQUAL TO THE ARGUMENT TO POLISH. 
+* OTHERERWISE POLISH WILL FAIL.  POLISH CALLS ITSELF RECURSIVELY AND USES 
+* THIS FACT TO CUT OUT AT A PARTICULAR LEVEL. 
+POLISH 
+         POLISH  =  GRAB(LEV)  ','                 :F(FRETURN) 
+         SUBS  =  POLISH(LEV + 1)                  :F(RETURN) 
+         N  =  1 
+POL1     SUBS  =  SUBS  POLISH(LEV + 1)            :F(POL2) 
+         N  =  N  +  1                             :(POL1) 
+POL2     POLISH  =  POLISH  N  ','  SUBS 
+.                                                  :(RETURN) 
+POLISH.END 
+*        &ABEND = 1 
+*	 &DUMP  =  1 
+         PAGE  =  FRONT(60,130) 
+         EJECT() 
+READ 
+        LINE  =  POLISH(1) 
+.                                                  :F(END) 
+
+	T = TREE()
+	G = GRAPH(T)
+	PG = PAGE # G
+         PRINTLB(PG)
+*        &ABEND  =  0 
+	 &DUMP = 0
+END 

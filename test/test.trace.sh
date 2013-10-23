@@ -6,7 +6,7 @@
 # ~sigh~ wish I could use *SNOBOL*
 
 PROG=$1
-BASE=`basename $PROG .sno`
+BASE=`echo $PROG | sed s/.sno//`
 STATUS=1
 #
 if $SNOBOL $ARGS -r $PROG 2>/dev/null | \

@@ -24,7 +24,6 @@ export SNOBOL
 
 # test list
 TESTS=tests.in
-echo "tests from $TESTS"
 
 # function (ie; test or ref)
 FUNC=test
@@ -35,12 +34,17 @@ FAIL=0
 # optional fail count
 OPTFAIL=0
 
-while read TYPE PROG; do
+if [ "$BLOCKS" ]; then
+	TESTS="$TESTS blocks.in"
+fi
+echo "tests from $TESTS"
+cat $TESTS | while read TYPE PROG; do
 	if [ "$TYPE" = '#' ]; then
 		continue
 	fi
 	(
 	    ARGS="$IARGS"
+	    echo ${PROG}:
 	    for X in ${PROG}; do
 		case "$X" in
 		-*) ARGS="$ARGS $X";;
@@ -48,7 +52,6 @@ while read TYPE PROG; do
 		*) PROG=$X; break;;
 		esac
 	    done
-	    echo ${PROG}:
 	    export ARGS
 	    # XXX cope here with comments, empty lines?
 	    ./${FUNC}.${TYPE}.sh $PROG
@@ -70,7 +73,7 @@ while read TYPE PROG; do
 		## out to top level, so just exit from here!
 		exit $FAIL
 	esac
-done < $TESTS
+done
 
 # would love to output counts, but "while" loop runs in a subshell (due
 # to input redirection?), so variable changes made inside loop are not
