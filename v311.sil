@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.134  2013/10/23 02:49:46  phil
+* Merge from BR_1_5_PLUS_BLOCKS
+*
 * Revision 1.133.2.5  2013/10/18 02:30:58  phil
 * v311.sil: [PLB121] Clean up PRINT/EJECT carriage control
 * Implement ASCII Carriage Control if CC(unit) < 0
@@ -11734,7 +11737,7 @@ PATSP  STRING  'PATTERN'
 PISP   STRING  'PI'						[PLB106]
 POSSP  STRING  'POS'
 PRTSP  STRING  'PROTOTYPE'
-RSP    STRING  'V'						[PLB115]
+RSP    STRING  'R'						[PLB122]
 RLSP   STRING  'REAL'
 REMSP  STRING  'REM'
 REMDSP STRING  'REMDR'

@@ -1,12 +1,17 @@
 $Id$
 
-================ next release
+Allow trapping more fatal errors (except storage allocation/internal)?
+	SITBOL &ERRPARM for:
+		undefined function/label/operator
+		offending value (wrong datatype)
+	Keep flag: "last error was fatal, cannot CONTINUE"
+		Make visible as &ERRFATAL?
 
-SNOBOL4B (BLOCKS)!!
-	handle nested .IF, add .ELSE??
+Allow strings for units numbers!!!
 
---double; check double alignment;
-	If not 32 bit alignable use NO_BITFIELDS?
+&COMPNO ala SITBOL & SNOBOL4B? (MTS??)
+
+Enable blocks by default?
 
 Benchmark USE_MEM{MOVE,SET}
 	Flush direct use of b{copy,zero}??

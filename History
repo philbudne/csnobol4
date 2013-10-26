@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/26/2013:
+	v311.sil: [PLB122] Fix paste-o for single letter 'R' trace
+
 10/22/2013:
 	Merge from BR_1_5_PLUS_BLOCKS (see below)
 
