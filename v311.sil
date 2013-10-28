@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.135  2013/10/26 19:17:38  phil
+* [PLB122] Fix paste-o for single letter 'R' trace
+*
 * Revision 1.134  2013/10/23 02:49:46  phil
 * Merge from BR_1_5_PLUS_BLOCKS
 *
@@ -1649,6 +1652,7 @@ CMPFT  RCALL   ,TREPUB,FORMND,CMPTGO
 *_
 CMPNGO SETVA   CSTNCL,CMOFCL	   Set up offset for failure
        PUTD    CMBSCL,FRNCL,CSTNCL Insert argument of INIT
+       SETVC   CSTNCL,I		   Restore type for &COMPNO	[PLB123]
        BRANCH  RTN3		   Statement compilation is done
 *_				   Get to next character
 CMPGO  RCALL   ,FORWRD,,COMP3	   Check for end of statement
@@ -1667,6 +1671,7 @@ CMPGG  SELBRA  STYPE,(,CMPSGO,CMPFGO,,CMPSGO,CMPFGO)
 *				   Branch on type
 CMPUGO SETVA   CSTNCL,CMOFCL	   Set up offset for failure
        PUTD    CMBSCL,FRNCL,CSTNCL Insert argument of INIT
+       SETVC   CSTNCL,I		   Restore type for &COMPNO	[PLB123]
        RCALL   GOTOND,EXPR,,CDIAG  Compile goto
        AEQL    BRTYPE,GOBRCL,CERR11
 *				   Verify closing break
@@ -1690,6 +1695,7 @@ CMPSGO RCALL   SGOND,EXPR,,CDIAG   Compile success goto
 *				   Check for end of statement
        SETVA   CSTNCL,CMOFCL	   Set up offset for failure
        PUTD    CMBSCL,FRNCL,CSTNCL Insert argument of INIT
+       SETVC   CSTNCL,I		   Restore type for &COMPNO	[PLB123]
        BRANCH  RTN3		   Compilation is complete, return
 *_
 CMPILL AEQLC   BRTYPE,NBTYP,CERR11 Check for nonbreak
@@ -1718,6 +1724,7 @@ CMPFGO RCALL   FGOND,EXPR,,CDIAG   Compile failure goto
        MOVD    SRNCL,CMOFCL	   Save location for success
        SETVA   CSTNCL,CMOFCL	   Set up failure offset
        PUTD    CMBSCL,FRNCL,CSTNCL Insert argument of INIT
+       SETVC   CSTNCL,I		   Restore type for &COMPNO	[PLB123]
        INCRA   CMOFCL,DESCR	   Increment offset
        PUTD    CMBSCL,CMOFCL,GOGOCL
 *				   Insert goto function
@@ -1748,6 +1755,7 @@ CMPILN RCALL   SGOND,EXPR,,CDIAG   Compile success goto
        RCALL   ,TREPUB,(SGOND)	   Copy goto into object code
        SETVA   CSTNCL,CMOFCL	   Set up failure offset
        PUTD    CMBSCL,FRNCL,CSTNCL Insert argument of INIT
+       SETVC   CSTNCL,I		   Restore type for &COMPNO	[PLB123]
        INCRA   CMOFCL,DESCR	   Increment offset
        PUTD    CMBSCL,CMOFCL,GOGOCL
 *				   Insert goto function
@@ -5384,7 +5392,7 @@ TRAC5  LOCAPV  YPTR,TRATL,YPTR,TRAC1
 *_
 * moved [PLB73]
 TRAC1  DEQL    YPTR,FUNTCL,,TRACF  Is type FUNCTION?		[PLB115]
-       DEQL    YPTR,EFFCL,INTR30  Is 'F'?			[PLB115]
+       DEQL    YPTR,EFFCL,INTR30   Is 'F'?			[PLB115]
 TRACF  MOVD    YPTR,TFNCLP	   Set up CALL trace
        RCALL   ,TRACEP,,(INTR10,INTR10)
 *				   Call subentry to do it
@@ -10479,6 +10487,8 @@ GCTTTL REAL    0.0		   GC total time &GCTIME	[PLB92][PLB107]
        DESCR   GCTMSP,0,0					[PLB107]
        DESCR   SMAXINT,0,I	   &MAXINT			[PLB108][PLB116]
        DESCR   MAXISP,0,0	   				[PLB108]
+CSTNCL DESCR   0,0,I		   Compiler statement number	[PLB123]
+       DESCR   CNOSP,0,0	   &COMPNO  	      		[PLB123]
 KVEND  LHERE   ,
 *
 INLIST DESCR   INLIST,TTL+MARK,4*DESCR				[PLB36]
@@ -10561,7 +10571,6 @@ VRDTP  DESCR   S,0,R		   STRING-REAL
 VVDTP  DESCR   S,0,S		   STRING-STRING
 *
 ARTHCL DESCR   0,0,0		   Number of arithmetic operations
-CSTNCL DESCR   0,0,I		   Compiler statement number
 RSTAT  DESCR   0,0,0		   Number of reads
 SCNCL  DESCR   0,0,0		   Number of scanner entrances
 WSTAT  DESCR   0,0,0		   Number of writes
@@ -11667,8 +11676,9 @@ CHARSP STRING  'CHAR'						[PLB31]
 CLERSP STRING  'CLEAR'
 CODESP STRING  'CODE'
 CLSP   STRING  'COLLECT'
-CONTSP STRING  'CONTINUE'					[PLB97]
+CNOSP  STRING  'COMPNO'						[PLB123]
 CNVTSP STRING  'CONVERT'
+CONTSP STRING  'CONTINUE'					[PLB97]
 COPYSP STRING  'COPY'
 DATSP  STRING  'DATE'
 DATASP STRING  'DATA'
