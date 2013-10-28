@@ -1,5 +1,11 @@
 $Id$
 
+Supply implicit END?
+
+configure --mandir=
+
+unused "save" variable in io_fastpr()
+
 Allow trapping more fatal errors (except storage allocation/internal)?
 	SITBOL &ERRPARM for:
 		undefined function/label/operator

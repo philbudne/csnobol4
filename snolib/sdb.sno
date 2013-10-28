@@ -72,8 +72,9 @@ SDB.DC.END
 	SDB.MAX_BREAK = 100
 * max call stack depth (keep low, and break when reached??)
 	SDB.MAX_CALLS = 3000
-* this trick from Orange book "LPROG" function to find total number of stmts:
-	:<CODE(' SDB.MAX_STMTS = &STNO :(SDB.GOT_MAX_STMTS)')>
+* &COMPNO (extension from SNOBOL4B/SITBOL) replaces "LPROG" hack from Orange book:
+*	:<CODE(' SDB.MAX_STMTS = &STNO :(SDB.GOT_MAX_STMTS)')>
+	SDB.MAX_STMTS = &COMPNO
 SDB.GOT_MAX_STMTS
 
 ** preserve these!!

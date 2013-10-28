@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/27/2013:
+	v311.sil: [PLB123] Add &COMPNO (ala SITBOL/SNOBOL4B)
+	snolib/sdb.sno: use &COMPNO
+	lib/io.c: flush unused variable
+
 10/26/2013:
 	v311.sil: [PLB122] Fix paste-o for single letter 'R' trace
 

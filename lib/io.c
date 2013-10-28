@@ -2398,7 +2398,6 @@ io_fastpr(iokey, unit, ccfp, sp1, sp2)
     int xunit = D_A(unit);		/* external */
     int ccf = D_A(ccfp);		/* carriage control flag */
     struct file *fp = findfile(INTERN(xunit));
-    char save;
     int ret;
 
     /* NOTE!! CC doesn't get written in one write if unbuffered!! */
