@@ -1,23 +1,19 @@
 $Id$
 
-Supply implicit END?
-
-configure --mandir=
-
-unused "save" variable in io_fastpr()
-
-Allow trapping more fatal errors (except storage allocation/internal)?
-	SITBOL &ERRPARM for:
-		undefined function/label/operator
-		offending value (wrong datatype)
-	Keep flag: "last error was fatal, cannot CONTINUE"
-		Make visible as &ERRFATAL?
+Enable blocks by default?
 
 Allow strings for units numbers!!!
 
-&COMPNO ala SITBOL & SNOBOL4B? (MTS??)
+Supply implicit END (ala SITBOL)
 
-Enable blocks by default?
+Allow trapping more fatal errors (except storage allocation/internal)?
+	SITBOL &ERRPARM for:
+		undefined function/function entry/label/operator
+			different flavors of UNDF (to set ERRPARAM)??
+			add 4th slot to OPTBL w/ operator name/string?
+		offending value (wrong datatype)
+	Keep flag: "last error was fatal, cannot CONTINUE"
+		Make visible as &ERRFATAL?
 
 Benchmark USE_MEM{MOVE,SET}
 	Flush direct use of b{copy,zero}??

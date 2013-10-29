@@ -271,7 +271,7 @@ C Library support selection;
 Install location;
 	--prefix=PATH		[default: /usr/local]
 	--bindir=PATH		[default: PREFIX/bin]
-	--mandir=PATH		[default: PREFIX/man]
+	--mandir=PATH		[default: PREFIX/share/man]
 	--snolibdir=PATH	[default: PREFIX/lib/snobol4]
 
 Optional items;
