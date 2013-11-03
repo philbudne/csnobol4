@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/3/2013:
+	configure: use "check" for bindresvport_sa()
+
 10/28/2013:
 	configure: fix manpath default display
 

@@ -1154,11 +1154,11 @@ if config/check 'sys/types.h sys/socket.h' ""; then
 	"$NETLIBS"; then
 	echo 'using getaddrinfo for TCP/IPv6 compatibility' 1>&2
 	echo 'INET_O=inet6.o'			>> $CONFIG_M4
-	if grep bindresvport_sa $INCDIR/rpc/rpc.h >/dev/null 2>&1; then
-	    # FreeBSD 4, NetBSD
+	if config/check 'sys/types.h rpc/rpc.h' 'struct sockaddr sa; bindresvport_sa(0, &sa);' >/dev/null 2>&1; then
+	    # FreeBSD 4-7, NetBSD, MacOS
 	    echo 'using system bindresvport_sa() function (with rpc/rpc.h)' 1>&2
 	    echo '#define BINDRESVPORT_IN_RPC_H' >> $CONFIG_H
-	elif grep bindresvport_sa $INCDIR/netinet/in.h $INCDIR/unistd.h>/dev/null 2>&1; then
+	elif config/check 'sys/types.h netinet/in.h unistd.h' 'struct sockaddr sa; bindresvport_sa(0, &sa);' >/dev/null 2>&1; then
 	    echo 'using system bindresvport_sa() function' 1>&2
 	else
 	    echo 'using private bindresvport_sa() function' 1>&2
