@@ -213,12 +213,12 @@ descr_to_variant(struct descr *dp, VARIANTARG *vp)
     case R:
 	if (sizeof(real_t) == 4) {
 	    V_VT(vp) = VT_R4;
-	    V_R4(vp) = D_A(dp);
+	    V_R4(vp) = D_RV(dp);
 	    return true;
 	}
-	else if (sizeof(int_t) == 8) {
+	else if (sizeof(real_t) == 8) {
 	    V_VT(vp) = VT_R8;
-	    V_R8(vp) = D_A(dp);
+	    V_R8(vp) = D_RV(dp);
 	    return true;
 	}
 	break;
