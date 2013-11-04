@@ -2,9 +2,12 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/4/2013:
+	pml.h: BREAKPOINT() was under ifdef PML_RANDOM
+
 11/3/2013:
 	Makefile2.m4: add INSTALL_BIN_FLAGS
-	configure: use "check" for bindresvport_sa()
+	configure: use "check" for bindresvport[_sa]()
 		clear INSTALL_BIN_FLAGS on MacOS
 		add '-undefined dynamic_lookup' on MacOS
 	lib/win32/com.cpp: fix a paste-o
