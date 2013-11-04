@@ -557,7 +557,11 @@ if [ "$GCCPATH" -a "$WANTGCC" ]; then
 
 	DL_EXT=.bundle
 	DL_LD=$CCPATH
-	DL_LDFLAGS=-bundle
+	DL_LDFLAGS='-bundle -undefined dynamic_lookup'
+
+	# don't strip installed binary; 
+	# need symbols to find (m)getstring....
+	echo "INSTALL_BIN_FLAGS="	>> $CONFIG_M4
 
 	UNIVERSAL_SDK_DIR=/Developer/SDKs/MacOSX10.4u.sdk
 	if [ "$UNIVERSAL" -a -d $UNIVERSAL_SDK_DIR ]; then
@@ -610,8 +614,13 @@ elif [ "$CC_IS" = clang ]; then
 
 	DL_EXT=.bundle
 	DL_LD=$CCPATH
-	DL_LDFLAGS=-bundle
+	DL_LDFLAGS='-bundle -undefined dynamic_lookup'
+
+	# don't strip installed binary; 
+	# need symbols to find (m)getstring....
+	echo "INSTALL_BIN_FLAGS="	>> $CONFIG_M4
 	;;
+
 
     *)
 	SO_EXT=.so

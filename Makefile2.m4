@@ -58,6 +58,9 @@ SNOLIB_FILE=snolib.a
 SNOBOL4=isnobol4
 #SNOBOL4=snobol4
 
+# default flags for install of binaries:
+INSTALL_BIN_FLAGS=-s
+
 ########
 # default lib source files
 
@@ -588,7 +591,7 @@ SNOLIB_FILES=snolib/*.sno $(GENSNOLIB)
 
 install: snobol4 sdb
 	$(INSTALL) -d $(BINDIR)
-	$(INSTALL) -s snobol4 $(BINDIR)/snobol4-$(VERS)
+	$(INSTALL) $(INSTALL_BIN_FLAGS) snobol4 $(BINDIR)/snobol4-$(VERS)
 	$(INSTALL) sdb $(BINDIR)/sdb-$(VERS)
 	rm -f $(BINDIR)/snobol4 $(BINDIR)/sdb
 	ln -s $(BINDIR)/snobol4-$(VERS) $(BINDIR)/snobol4 
