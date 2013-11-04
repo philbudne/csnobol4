@@ -1175,11 +1175,12 @@ if config/check 'sys/types.h sys/socket.h' ""; then
 	    AUX_BINDRESVPORT=true
 	fi
     else # no getaddrinfo/IPv6
-	if grep bindresvport $INCDIR/rpc/rpc.h >/dev/null 2>&1; then
+	BINDRESVTEST='struct sockaddr_in sin; bindresvport(0, &sin)'
+	if config/check 'sys/types.h rpc/rpc.h' "$BINDRESVTEST" >/dev/null 2>&1; then
 	    # FreeBSD 3.x
 	    echo 'using system bindresvport() function (with rpc/rpc.h)' 1>&2
 	    echo '#define BINDRESVPORT_IN_RPC_H' >> $CONFIG_H
-	elif grep bindresvport $INCDIR/netinet/in.h $INCDIR/unistd.h >/dev/null 2>&1; then
+	elif config/check 'netinet/in.h unistd.h' "$BINDRESVTEST" >/dev/null 2>&1; then
 	    echo 'using system bindresvport() function' 1>&2
 	else
 	    echo 'using private bindresvport() function' 1>&2
