@@ -573,14 +573,14 @@ if [ "$GCCPATH" -a "$WANTGCC" ]; then
 
     *:SunOS:4*:*)
 	SO_EXT=.so
-	SO_CFLAGS=-fpic
+	SO_CFLAGS=-fPIC
 	SO_LD=/usr/bin/ld
 	SO_LDFLAGS='-assert nodefinitions'
 	;;
 
     *)
 	SO_EXT=.so
-	SO_CFLAGS=-fpic
+	SO_CFLAGS=-fPIC
 	SO_LD=$CCPATH
 	SO_LDFLAGS=-shared
 	;;
@@ -624,7 +624,7 @@ elif [ "$CC_IS" = clang ]; then
 
     *)
 	SO_EXT=.so
-	SO_CFLAGS=-fpic		# ??
+	SO_CFLAGS=-fPIC		# ??
 	SO_LD=$CCPATH
 	SO_LDFLAGS=-shared
 	;;
