@@ -1,6 +1,35 @@
 $Id$
 
-Enable blocks by default?
+Flush all use of grep/INCDIR!!!
+
+Make all path element generated in init.c available!!
+	BASE/VERSION/local	HOST_SNOLIB_VLOCAL
+	BASE/VERSION/lib	HOST_SNOLIB
+	BASE/local		HOST_SNOLIB_LOCAL
+
+Libraries!!!
+	-fPIC???
+	HOST_OBJ_EXT
+	HOST_SETUP_SYS???
+	Install load.h, str.h !! [flush str.h???]
+	Subdir per module w/ params, tests; using setuputil.sno
+	       Put stcl, ndbm config in config.sno!!!
+		time, logic, random, ndbm, stcl
+		sqlite3
+		create stat!!!
+		       STAT, USTAT, NEWER
+		readdir?!
+
+	Linux:
+		pass -Wl,--copy-dt-needed-entries ???
+
+	MacOS:
+		work s/ LDFLAG -undefined dynamic_lookup
+			and NON-stripped binary
+		-exported_symbols_list FOO
+			must be all inclusive
+
+Enable BLOCKS by default!
 
 Allow strings for units numbers!!!
 
@@ -12,8 +41,7 @@ Allow trapping more fatal errors (except storage allocation/internal)?
 			different flavors of UNDF (to set ERRPARAM)??
 			add 4th slot to OPTBL w/ operator name/string?
 		offending value (wrong datatype)
-	Keep flag: "last error was fatal, cannot CONTINUE"
-		Make visible as &ERRFATAL?
+	Example: &RTNTYPE: RETPCL <- pointer to nat var?
 
 Benchmark USE_MEM{MOVE,SET}
 	Flush direct use of b{copy,zero}??
