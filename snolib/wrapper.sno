@@ -16,11 +16,14 @@
 	wpmaxstr = 1024
 	wpstrtype = 'STRING'
 	wpinttype = 'INTEGER'
+	wpint32type = 'INT32'
+	wpint64type = 'INT64'
 	wprealtype = 'REAL'
 	wphdltype = 'HANDLE'
 	wppredtype = 'PREDICATE'
 	wpspredtype = 'SYSPRED'
-	wptypes = wpinttype | wprealtype | wpstrtype
+	wptypes = wpinttype | wprealtype | wpstrtype |
++		wpint64type | wpint32type
 *		 | wphdltype
 	wprtypes = wptypes | wpredtype | wpspredtype | ''
 	wpname = ANY(&UCASE &LCASE '_') SPAN(&UCASE &LCASE '0123456789_')
@@ -123,6 +126,8 @@ wpcpy_STRING
 wpcpy_HANDLE
 *	XXXX handle HANDLE here!!
 wpcpy_INTEGER
+wpcpy_INT64
+wpcpy_INT32
 wpcpy_REAL
 wpcpy_
 wpncopy	i = i + 1
@@ -141,7 +146,10 @@ wpcall	GE(i,n)						:s(wpecall)
 		:($('wparg_' types[i]))
 
 wparg_INTEGER
+wparg_INT32
 	call = call '(int)LA_INT(' i ')'		:s(wpncall)
+wparg_INT64
+	call = call '(long long)LA_INT(' i ')'		:s(wpncall)
 wparg_REAL
 	call = call '(double)LA_REAL(' i ')'		:s(wpncall)
 wparg_STRING
@@ -158,6 +166,8 @@ wpecall	call = call ')'
 
 wpret_STRING
 	$fn = wp4sp 'RETSTR((char *)' call ');'		:s(wpdone)
+wpret_INT32
+wpret_INT64
 wpret_INTEGER
 	$fn = wp4sp 'RETINT(' call ');'			:s(wpdone)
 wpret_REAL
