@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/22/2013:
+	configure: switch to --without-blocks
+
 11/9/2013:
 	snolib/wrapper.sno: add INT32, INT64
 	configure: use -fPIC

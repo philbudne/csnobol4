@@ -224,8 +224,8 @@ while [ $# -gt 0 ]; do
     --without-readline)
 	WITHOUT_READLINE=1
 	;;
-    --with-blocks)
-	WITH_BLOCKS=1
+    --without-blocks)
+	WITHOUT_BLOCKS=1
 	;;
     --with-tcl=*)
 	TCONF=`echo "$1" | sed 's/--with-tcl=//'`
@@ -276,7 +276,7 @@ Install location;
 
 Optional items;
 	--with-tcl=/path/to/tclConfig.sh
-	--with-blocks
+	--without-blocks
 	--without-ndbm		--force-sdbm
 	--without-readline	--without-com
 EOF
@@ -1821,7 +1821,7 @@ done
 WITH=with.new
 rm -f $WITH
 touch $WITH
-if [ "$WITH_BLOCKS" ]; then
+if [ ! "$WITHOUT_BLOCKS" ]; then
     echo "BLOCKS=1"				>> $CONFIG_M4
     echo '#define BLOCKS'			>> $CONFIG_H
     echo ' --with BLOCKS'			>> $WITH
