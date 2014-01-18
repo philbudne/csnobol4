@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.136  2013/10/28 02:52:30  phil
+* [PLB123] Add &COMPNO (ala SITBOL/SNOBOL4B)
+*
 * Revision 1.135  2013/10/26 19:17:38  phil
 * [PLB122] Fix paste-o for single letter 'R' trace
 *
@@ -11860,7 +11863,7 @@ ABNDB  LHERE   ,
        DESCR   BKGNCL,0,0					[BLOCKS]
 .FI
        DESCR   FSP,0,0		   'F'				[PLB115]
-DTEND  DESCR   FUNTCL,0,0					[PLB115]
+DTEND  DESCR   EFFCL,0,0					[PLB115][PLB124]
 *
 BUFEXT EQU     DTEND-ANYSP
 BUFLEN EQU     BUFEXT*CPA
