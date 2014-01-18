@@ -23,3 +23,4 @@
 
 #define PATH_SEP	";"
 #define DIR_SEP		"\\"
+#define OBJECT_EXT	".o"

@@ -582,7 +582,8 @@ llib-lf.ln:
 
 # install .h files for dynamicly loaded functions
 INSTALL_H=[include]/h.h [include]/snotypes.h [include]/macros.h \
-	[include]/load.h [include]/dt.h config.h equ.h version.h
+	[include]/load.h [include]/dt.h [include]/str.h \
+	config.h equ.h version.h
 
 # generated SNOLIB files (host.sno generated at top level)
 GENSNOLIB=host.sno

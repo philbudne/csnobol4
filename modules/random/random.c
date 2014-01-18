@@ -542,6 +542,9 @@ bsd_random()
 
 static int seeded = 0;
 
+/*
+ * LOAD("RANDOM()INTEGER", RANDOM_DL)
+ */
 int
 RANDOM( LA_ALIST ) LA_DCL
 {
@@ -552,6 +555,9 @@ RANDOM( LA_ALIST ) LA_DCL
     RETINT(bsd_random());
 }
 
+/*
+ * LOAD("SRANDOM(INTEGER)STRING", RANDOM_DL)
+ */
 int
 SRANDOM( LA_ALIST ) LA_DCL
 {
@@ -560,6 +566,9 @@ SRANDOM( LA_ALIST ) LA_DCL
     RETNULL;
 }
 
+/*
+ * LOAD("SRANDOMDEV()STRING", RANDOM_DL)
+ */
 int
 SRANDOMDEV( LA_ALIST ) LA_DCL
 {

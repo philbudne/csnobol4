@@ -113,6 +113,9 @@
 /* CSNOBOL4: path for C headers */
 #define HOST_INCLUDE_DIR	2215
 
+/* CSNOBOL4: object file extension */
+#define HOST_OBJ_EXT		2216
+
 /*****
  * integer constants;
  */

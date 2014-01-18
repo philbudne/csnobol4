@@ -165,3 +165,5 @@ err setexit6.sno
 trace keytrace.sno
 # 9/12/2013
 trace t.sno
+# 1/18/2014
+trace trfunc.sno

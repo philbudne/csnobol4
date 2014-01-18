@@ -259,7 +259,14 @@ HOST( LA_ALIST ) LA_DCL
 	RETSTR(INCLUDE_DIR);
 #endif /* INCLUDE_DIR defined */
 
-/* integer constants; */
+#ifdef OBJECT_EXT
+    case HOST_OBJ_EXT:
+	RETSTR(OBJECT_EXT);
+#endif /* OBJECT_EXT defined */
+
+/****************
+ * integer constants;
+ */
     case HOST_INTEGER_BITS:
 	RETINT(sizeof(INT_T)*BPC);	/* INTEGER size */
     case HOST_REAL_BITS:

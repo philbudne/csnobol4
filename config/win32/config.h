@@ -22,7 +22,7 @@
 #define SNOLIB_BASE	"C:\\snobol4"
 #define DIR_SEP		"\\"
 #define PATH_SEP	";"
-#define DL_EXT	".dll"
+#define DL_EXT		".dll"
 
 /* includes; */
 #define HAVE_STRING_H
@@ -65,6 +65,9 @@
 #define popen		_popen
 #define pclose		_pclose
 
+#define stat		_stat
+#define fstat		_fstat
+
 /* optional features: */
 #define PML_TIME
 #define PML_RANDOM
@@ -72,7 +75,7 @@
 
 #ifdef _WIN64
 /*
- * I've cross compiled a 64-bit binary with VS2012, but not tested it!
+ * 64-bit binary cross-compiled with VS2012 worked (the first time!)
  * It looks like it's an "LLP64" evironment:
  *	".... a 32-bit model with 64-bit addresses ...."
  *	http://www.unix.org/version2/whatsnew/lp64_wp.html
@@ -92,3 +95,9 @@
 /* use native routines */
 #define USE_MEMMOVE
 #define USE_MEMSET
+
+#ifdef __GNUC__
+#define OBJECT_EXT ".o"
+#else
+#define OBJECT_EXT ".obj"
+#endif

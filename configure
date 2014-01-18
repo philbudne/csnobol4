@@ -330,6 +330,7 @@ fi
 # Unix seperators
 echo '#define DIR_SEP "/"'			>> $CONFIG_H
 echo '#define PATH_SEP ":"'			>> $CONFIG_H
+echo '#define OBJECT_EXT ".o"'			>> $CONFIG_H
 
 # safe on all Unix systems (requires "fork")
 echo '#define PML_SERV'				>> $CONFIG_H
@@ -828,7 +829,7 @@ main() {
     printf("%d %d %d %d %d %lu\n", (int)sizeof(void *),
 	(int)sizeof(int), (int)sizeof(long),
 	(int)sizeof(float), (int)sizeof(double),
-	&((struct foo *)0)->y);
+	(unsigned long)&((struct foo *)0)->y);
     return 0;
 }
 EOF

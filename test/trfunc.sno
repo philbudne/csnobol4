@@ -1,0 +1,33 @@
+	DEFINE('A()')
+	DEFINE('B()')
+	DEFINE('C()')
+
+	DEFINE('D()')
+	DEFINE('E()')
+	DEFINE('F()')
+
+	TRACE(.A, "F")
+	TRACE(.B, "C")
+	TRACE(.C, "R")
+
+	TRACE(.D, "FUNCTION")
+	TRACE(.E, "CALL")
+	TRACE(.F, "RETURN")
+
+	&TRACE = 100
+	A()
+	B()
+	C()
+	D()
+	E()
+	F()
+	:(END)
+
+A	A = 1	:(RETURN)
+B	B = 1	:(RETURN)
+C	C = 1	:(RETURN)
+D	D = 1	:(RETURN)
+E	E = 1	:(RETURN)
+F	F = 1	:(RETURN)
+
+END

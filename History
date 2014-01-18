@@ -2,6 +2,21 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+1/18/2014:
+	v311.sil: [PLB124] fix "FUNCTION" TRACE()
+	test/tests.in: add trfunc.sno
+	test/trfunc.{sno,ref}: new: tests for TRACE
+
+1/1/2014:
+	configure: quiet warnings for "alignof"
+
+12/24/2013:
+	Makefile2.m4: install str.h
+	configure: add OBJECT_EXT
+	config/{win32,vms,djgpp}/config.h: add OBJECT_EXT
+	lib/snolib/host.[ch]: add OBJECT_EXT, HOST_OBJ_EXT
+	lib/snolib/{logic,random,time}.c: add LOAD() comments
+
 12/22/2013:
 	configure: switch to --without-blocks
 

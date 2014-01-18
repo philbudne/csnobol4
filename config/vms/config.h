@@ -64,3 +64,4 @@
 #define PATH_SEP ";"			/* be DOS-ish */
 
 #define SNOLIB_DIR "CSNOBOL4$LIB:"
+#define OBJECT_EXT ".obj"

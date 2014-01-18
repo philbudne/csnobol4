@@ -8,16 +8,13 @@ Make all path element generated in init.c available!!
 	BASE/local		HOST_SNOLIB_LOCAL
 
 Libraries!!!
-	-fPIC???
 	HOST_OBJ_EXT
 	HOST_SETUP_SYS???
-	Install load.h, str.h !! [flush str.h???]
 	Subdir per module w/ params, tests; using setuputil.sno
 	       Put stcl, ndbm config in config.sno!!!
 		time, logic, random, ndbm, stcl
 		sqlite3
-		create stat!!!
-		       STAT, USTAT, NEWER
+		stat
 		readdir?!
 
 	Linux:
@@ -28,8 +25,6 @@ Libraries!!!
 			and NON-stripped binary
 		-exported_symbols_list FOO
 			must be all inclusive
-
-Enable BLOCKS by default!
 
 Allow strings for units numbers!!!
 
@@ -52,6 +47,7 @@ get rid of old FORTRAN FORMAT strings!!
 update install-sh (many to choose from!)??
 
 readline:
+	Allow initial text????
 	Allow READLINE() via INPUT? (magic path, or option)
 		Allow control of history
 		Allow control of filename expansion
@@ -116,6 +112,7 @@ snolib:
 Have timing script POST results??
 
 man pages:
+    snobol4blocks
     snobol4err
     snobol4load
     snobol4func
@@ -209,6 +206,7 @@ allow LOADed functions to "intern" strings...
 hash TABLEs
 
 ANSIfy
+	flush str.h
 
 Implement SPITBOL EXIT [+-][34] freeze functionality
 

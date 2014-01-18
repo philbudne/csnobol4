@@ -1,0 +1,8 @@
+trfunc.sno:18 stmt 18: level 0 call of A(), time = xxx
+trfunc.sno:26 stmt 26: level 0 RETURN of A = 1, time = xxx
+trfunc.sno:19 stmt 19: level 0 call of B(), time = xxx
+trfunc.sno:28 stmt 28: level 0 RETURN of C = 1, time = xxx
+trfunc.sno:21 stmt 21: level 0 call of D(), time = xxx
+trfunc.sno:29 stmt 29: level 0 RETURN of D = 1, time = xxx
+trfunc.sno:22 stmt 22: level 0 call of E(), time = xxx
+trfunc.sno:31 stmt 31: level 0 RETURN of F = 1, time = xxx
