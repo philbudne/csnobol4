@@ -4,6 +4,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 1/18/2014:
 	v311.sil: [PLB124] fix "FUNCTION" TRACE()
+		(problem reported by Dani Richard)
 	test/tests.in: add trfunc.sno
 	test/trfunc.{sno,ref}: new: tests for TRACE
 
