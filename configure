@@ -439,14 +439,6 @@ case "$MORV" in
 	    WANTGCC=
 	fi
     fi
-
-    # hpux9 and hpux10 have finite(). hpux11 has isfinite().
-    if grep '[^s]finite' $INCDIR/math.h >/dev/null; then
-	echo 'using system finite() function' 1>&2
-    else
-	echo 'using system isfinite() macro' 1>&2
-        echo '#define finite isfinite'		>> $CONFIG_H
-    fi
     ;;
 
 ia64:HP-UX:*:*)
@@ -476,14 +468,6 @@ ia64:HP-UX:*:*)
 	    # compiler ignores -O (complains)
 	    #NO_OPT=true
 	fi
-    fi
-
-    # hpux11 has isfinite() macro
-    if grep '[^s]finite' $INCDIR/math.h >/dev/null; then
-	echo 'using system finite() function' 1>&2
-    else
-	echo 'using system isfinite() macro' 1>&2
-        echo '#define finite isfinite'		>> $CONFIG_H
     fi
     ;;
 
@@ -1069,6 +1053,14 @@ elif [ "$HAVE_STDLIB_H" ]; then
 else
     echo 'using dummy mstime.c' 1>&2	
     echo 'MSTIME_C=$(SRCDIR)lib/dummy/mstime.c'	>> $CONFIG_M4
+fi
+
+
+# prefer C99 "isfinite" function:
+# hpux9 and hpux10 have finite(). hpux11 has isfinite().
+if config/check math.h 'float f; isfinite(f)'; then
+    echo 'using system isfinite()' 1>&2
+    echo '#define HAVE_ISFINITE'		>> $CONFIG_H
 fi
 
 # prefer ranlib

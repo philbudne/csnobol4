@@ -2,6 +2,12 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+2/22/2014:
+	configure: check for isfinite(); define HAVE_ISFINITE
+	include/macros.h: check HAVE_ISFINITE
+		"finite" gives warning on MacOS 10.9
+		(reported by Clem Cole)
+
 1/18/2014:
 	v311.sil: [PLB124] fix "FUNCTION" TRACE()
 		(problem reported by Dani Richard)
