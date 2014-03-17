@@ -1706,6 +1706,12 @@ if [ ! "$WITHOUT_READLINE" ]; then
     fi
 fi
 
+# test lstat() for "stat" package
+if config/check 'sys/types.h sys/stat.h' 'struct stat st; lstat("foo", &st)'; then
+    echo '#define HAVE_LSTAT'	>> $CONFIG_H
+    echo 'using lstat()' 1>&2
+fi
+
 # Include COM support under Cygwin!
 # XXX missing symbols under Windows 7
 if [ "$CYGWIN" -a ! "$WITHOUT_COM" -a -f $INCDIR/w32api/objbase.h ]; then
