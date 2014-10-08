@@ -548,12 +548,18 @@ if [ "$GCCPATH" -a "$WANTGCC" ]; then
 	# need symbols to find (m)getstring....
 	echo "INSTALL_BIN_FLAGS="	>> $CONFIG_M4
 
+	# old!!!
 	UNIVERSAL_SDK_DIR=/Developer/SDKs/MacOSX10.4u.sdk
 	if [ "$UNIVERSAL" -a -d $UNIVERSAL_SDK_DIR ]; then
 	    echo "ADD_CFLAGS([-arch ppc])"	>> $CONFIG_M4
 	    echo "ADD_CFLAGS([-arch i386])"	>> $CONFIG_M4
 	    echo "ADD_CFLAGS([-isysroot $UNIVERSAL_SDK_DIR])"	>> $CONFIG_M4
 	fi
+
+	# try:
+	# -exported_symbols_list filename
+	# or
+	# -exported_symbol getstring ......
 	;;
 
     *:SunOS:4*:*)
@@ -567,7 +573,10 @@ if [ "$GCCPATH" -a "$WANTGCC" ]; then
 	SO_EXT=.so
 	SO_CFLAGS=-fPIC
 	SO_LD=$CCPATH
-	SO_LDFLAGS=-shared
+	# gcc: "For predictable results, you must also specify the
+	# same set of options that were used to generate code (-fpic,-fPIC)
+	# when you specify -shared"
+	SO_LDFLAGS="-shared $SO_CFLAGS"
 	;;
     esac
 
@@ -608,10 +617,14 @@ elif [ "$CC_IS" = clang ]; then
 
 
     *)
+	# ~sigh~ copied from gcc case!
 	SO_EXT=.so
 	SO_CFLAGS=-fPIC		# ??
 	SO_LD=$CCPATH
-	SO_LDFLAGS=-shared
+	# gcc: "For predictable results, you must also specify the
+	# same set of options that were used to generate code (-fpic,-fPIC)
+	# when you specify -shared"
+	SO_LDFLAGS="-shared $SO_CFLAGS"
 	;;
     esac
 else
@@ -1349,7 +1362,8 @@ if [ ! "$NO_DYNLIB" ]; then
 	    ;;
 	*BSD*)
 	    if file /bin/ls | grep -i elf >/dev/null; then
-		echo 'ADD_LDFLAGS([-export-dynamic])' >> $CONFIG_M4
+		# only on ELF systems with GNU ld:
+		echo 'ADD_LDFLAGS([-rdynamic])' >> $CONFIG_M4
 	    else
 		# old a.out systems:
 		# COFF may not, but this should be mostly harmless
@@ -1359,7 +1373,8 @@ if [ ! "$NO_DYNLIB" ]; then
 	Linux*)
 	    # XXX detect a.out systems?
 	    echo 'ADD_LDFLAGS([-ldl])'		>> $CONFIG_M4
-	    echo 'ADD_LDFLAGS([-export-dynamic])' >> $CONFIG_M4
+	    # only on ELF systems with GNU ld:
+	    echo 'ADD_LDFLAGS([-rdynamic])' >> $CONFIG_M4
 	    ;;
 	SunOS4*)
 	    echo 'ADD_LDFLAGS([-ldl])'		>> $CONFIG_M4
