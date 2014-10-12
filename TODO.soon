@@ -1,15 +1,28 @@
 $Id$
 
-Flush all use of grep/INCDIR!!!
+--add-module=modname
 
 Make all path element generated in init.c available!!
 	BASE/VERSION/local	HOST_SNOLIB_VLOCAL
 	BASE/VERSION/lib	HOST_SNOLIB
 	BASE/local		HOST_SNOLIB_LOCAL
 
-Libraries!!!
-	HOST_OBJ_EXT
-	HOST_SETUP_SYS???
+Modules:
+	PML for new modules: dirs, stat, sqlite3??
+		generate PML decls from source comments????
+		setup.sno include
+
+	generate/use module.sno files, even with PMLing???
+
+	tests for logic(!!), sqlite3, stat
+
+	setup.sno files: get sources from old locations
+
+	setuputil.sno
+		use HOST_OBJ_EXT?
+
+		HOST_SETUP_SYS (posix or otherwise)
+
 	Subdir per module w/ params, tests; using setuputil.sno
 	       Put stcl, ndbm config in config.sno!!!
 		time, logic, random, ndbm, stcl
@@ -17,14 +30,10 @@ Libraries!!!
 		stat
 		readdir?!
 
-	Linux:
-		pass -Wl,--copy-dt-needed-entries ???
+	Fred W wants: FORK(), WAIT() and SPRINTF()
+	     Also uses: CLOSE(), SELECT(), FILENO(), ACCEPT(), MALLOC, FREE
 
-	MacOS:
-		work s/ LDFLAG -undefined dynamic_lookup
-			and NON-stripped binary
-		-exported_symbols_list FOO
-			must be all inclusive
+Flush all use of grep/INCDIR!!!
 
 Allow strings for units numbers!!!
 
