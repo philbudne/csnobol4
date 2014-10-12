@@ -188,8 +188,8 @@ setup.posix.buildcmd2
 
 	link = HOST(HOST_DL_LD)
 +		' ' HOST(HOST_DL_LDFLAGS)
-+		' ' t['ldflags']
 +		' -o ' setup.dlname(t) ' ' setup.posix.objs(t) libdirs libs
++		' ' t['ldflags']
 	setup.posix.system(link)		:f(FRETURN)
 	setup.makeinclude(t)			:(RETURN)
 setup.posix.buildcmd.end

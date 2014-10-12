@@ -1708,14 +1708,15 @@ if true; then
 	fi
     fi
 
-    if [ "x$NDBM_LIBS" != x ]; then
-	echo "ADD_LDFLAGS([$NDBM_LIBS])" >> $CONFIG_M4
-    fi
     if [ "$FORCE_PML" ]; then
 	echo '#define PML_NDBM'		>> $CONFIG_H
 	echo 'ADD_OBJS([ndbm.o])'	>> $CONFIG_M4
 	echo 'ADD_SRCS([$(NDBM_C)])'	>> $CONFIG_M4
+	if [ "x$NDBM_LIBS" != x ]; then
+	    echo "ADD_LDFLAGS([$NDBM_LIBS])" >> $CONFIG_M4
+	fi
     else
+	echo "	NDBM_LDFLAGS = '$NDBM_LIBS'" >> $CONFIG_SNO
 	MODULES="$MODULES ndbm"
     fi
     if [ "$USE_SDBM" ]; then

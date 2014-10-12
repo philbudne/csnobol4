@@ -2,6 +2,13 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/11/2014:
+	modules: dirs logic ndbm random sqlite3 stat stcl time
+	(only a year after code was written!)
+	too many changes to mention.
+	-N option
+	-INCLUDE no longer implicitly searches local dir (must be in path)
+
 10/8/2014:
 	Makefile2.m4: install handle.h
 	configure: use -rdynamic on ELF systems; add -fPIC to SO_LDFLAGS
