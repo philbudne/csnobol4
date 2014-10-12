@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/12/2014:
+	Makefile2.m4: install MODULES_{INCLUDE,LOADABLE}
+
 10/11/2014:
 	modules: dirs logic ndbm random sqlite3 stat stcl time
 	(only a year after code was written!)

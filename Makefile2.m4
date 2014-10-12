@@ -588,7 +588,7 @@ INSTALL_H=[include]/h.h [include]/snotypes.h [include]/macros.h \
 # generated SNOLIB files (host.sno generated at top level)
 GENSNOLIB=host.sno
 
-SNOLIB_FILES=snolib/*.sno modules/setuputil.sno $(GENSNOLIB)
+SNOLIB_FILES=snolib/*.sno modules/setuputil.sno $(GENSNOLIB) $(MODULES_INCLUDE)
 
 install: snobol4 sdb
 	$(INSTALL) -d $(BINDIR)
@@ -616,6 +616,10 @@ install: snobol4 sdb
 	$(INSTALL) -d $(SNOLIB_LIB)
 	for F in $(SNOLIB_FILES); do \
 		$(INSTALL) -m 644 $$F $(SNOLIB_LIB); \
+	done
+	$(INSTALL) -d $(SNOLIB_LIB)/dynload
+	for F in $(MODULES_LOADABLE); do \
+		$(INSTALL) -m 644 $$F $(SNOLIB_LIB)/dynload; \
 	done
 	$(INSTALL) -d $(INCLUDE_DIR)
 	for F in $(INSTALL_H); do \
