@@ -8,6 +8,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	too many changes to mention.
 	-N option
 	-INCLUDE no longer implicitly searches local dir (must be in path)
+	Tested on FreeBSD 10.0, Ubuntu 12.04.05, MacOS 10.7.5
 
 10/8/2014:
 	Makefile2.m4: install handle.h
