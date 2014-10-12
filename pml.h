@@ -104,8 +104,10 @@ PMLFUNC(ORD)
 PMPROTO("ORD(STRING)INTEGER")
 
 /* 1/21/2002; */
+#ifdef PML_LOGIC
 PMLFUNC(LOGIC)
 /* LOAD() in logic.sno */
+#endif
 
 /* 6/19/2004; */
 #ifdef PML_COM

@@ -43,7 +43,7 @@ cat $TESTS | while read TYPE PROG; do
 		continue
 	fi
 	(
-	    ARGS="$IARGS"
+	    ARGS="$IARGS -N -b"
 	    echo ${PROG}:
 	    for X in ${PROG}; do
 		case "$X" in

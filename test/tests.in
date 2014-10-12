@@ -116,7 +116,7 @@ dump diag1.sno
 dump diag2.sno
 reg unsc.sno
 # 11/16/2005
-opt ndbm.sno
+reg ndbm.sno
 # 8/29/2009
 reg collect2.sno
 # 12/16/2010

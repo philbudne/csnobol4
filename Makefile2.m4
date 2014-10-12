@@ -142,7 +142,7 @@ RENAME_C=$(SRCDIR)lib/snolib/rename.c
 RETSTRING_C=$(SRCDIR)lib/snolib/retstring.c
 SERV_C=$(SRCDIR)lib/snolib/serv.c
 SIN_C=$(SRCDIR)lib/snolib/sin.c
-SLEEP_C=$(SRCDIR)lib/bsd/sleep.c
+# SLEEP_C set by configure
 SPRINTF_C=$(SRCDIR)lib/snolib/sprintf.c
 SQRT_C=$(SRCDIR)lib/snolib/sqrt.c
 SSET_C=$(SRCDIR)lib/snolib/sset.c
@@ -202,7 +202,7 @@ OBJS=	main.o $(SNOBOL4).o data.o data_init.o syn.o bal.o break.o date.o \
 	intspc.o io.o lexcmp.o load.o mstime.o ordvst.o pair.o pat.o \
 	pml.o realst.o replace.o spcint.o spreal.o str.o stream.o \
 	suspend.o term.o top.o tree.o tty.o \
-	$(PML_OBJS) $(SNOLIB_A)
+	$(EXTRA_OBJS) $(SNOLIB_A)
 
 AUX_SRCS=[]_SRCS
 SRCS=	main.c $(SNOBOL4).c data.c data_init.c syn.c $(BAL_C) $(BREAK_C) \
@@ -232,7 +232,7 @@ xsnobol4: $(OBJS)
 	echo 'const char build_dir[] = "'`pwd`'";'		>> build.c
 	$(CC) $(CFLAGS) -c build.c
 	rm -f xsnobol4$(EXT)
-	$(CC) $(CFLAGS) -o xsnobol4 $(OBJS) build.o $(LDFLAGS)
+	$(CC) -o xsnobol4 $(OBJS) build.o $(LDFLAGS)
 
 changequote([,])dnl
 
@@ -255,9 +255,9 @@ timing.out snobol4: tested xsnobol4 timing timing.sno test/bench.sno test/v311.s
 	@echo 'And you will be notified when test versions are available.' 1>&2
 	@echo '********************************************************' 1>&2
 
-tested:  xsnobol4 test/tests.in cpuid
+tested:  xsnobol4 test/tests.in cpuid $(MODULES_GENERATED)
 	@echo Running regression tests...
-	(cd test; BLOCKS=$(BLOCKS) ./run.sh ../xsnobol4)
+	(cd test; BLOCKS=$(BLOCKS) SNOPATH="$(TEST_SNOPATH)" ./run.sh ../xsnobol4)
 	@echo Passed regression tests.
 	date > tested
 
@@ -588,7 +588,7 @@ INSTALL_H=[include]/h.h [include]/snotypes.h [include]/macros.h \
 # generated SNOLIB files (host.sno generated at top level)
 GENSNOLIB=host.sno
 
-SNOLIB_FILES=snolib/*.sno $(GENSNOLIB)
+SNOLIB_FILES=snolib/*.sno modules/setuputil.sno $(GENSNOLIB)
 
 install: snobol4 sdb
 	$(INSTALL) -d $(BINDIR)

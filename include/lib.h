@@ -19,7 +19,6 @@ void hash __P((struct descr *,struct spec *));
 /* from init.c */
 int getparm __P((struct spec *));
 void init_args __P((int, char *[]));
-void io_init __P((void));		/* was in io.c move to own file? */
 void init __P((void));
 
 /* from io.c */

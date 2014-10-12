@@ -1596,6 +1596,7 @@ io_ecomp()				/* XECOMP */
 	iov.includes = tp;
     }
 
+#if 0			   /* need for LOAD()!! */
     /* free list of include file directories */
     while (iov.lib_dirs) {
 	struct file *tp;
@@ -1605,6 +1606,7 @@ io_ecomp()				/* XECOMP */
 	iov.lib_dirs = tp;
     }
     iov.lib_dir_last = NULL;
+#endif
 }
 
 /* process I/O option strings for io_openi and io_openo */
@@ -1841,6 +1843,7 @@ io_include( dp, sp )
     char fname[MAXFNAME];		/* XXX */
     struct file *fp;
     struct unit *up;
+    char *fn2;
 
     spec2str( sp, fname, sizeof(fname) );
 
@@ -1856,28 +1859,20 @@ io_include( dp, sp )
     }
     fname[l] = '\0';
 
-    fp = io_newfile(fname);
+    /* NOTE!!! No longer trying local directory: must be in path!!! */
+
+    fn2 = io_lib_find(NULL, fname, NULL);
+    if (!fn2)
+	return INC_FAIL;		/* not found */
+
+    fp = io_newfile(fn2);
+    free(fn2);
     if (fp == NULL)
-	return INC_FAIL;
+	return INC_FAIL;		/* alloc failure */
 
     if (io_fopen( fp, "r") == NULL) {
-	char *fn2;
-
 	free(fp);
-
-	fn2 = io_lib_find(NULL, fname, NULL);
-	if (!fn2)
-	    return INC_FAIL;		/* not found */
-
-	fp = io_newfile(fn2);
-	free(fn2);
-	if (fp == NULL)
-	    return INC_FAIL;		/* alloc failure */
-
-	if (io_fopen( fp, "r") == NULL) {
-	    free(fp);
-	    return INC_FAIL;
-	}
+	return INC_FAIL;
     }
 
     up = FINDUNIT(INTERN(D_A(dp)));
@@ -2271,6 +2266,7 @@ trypath(dir, subdir, file, ext)
 {
     int l = strlen(dir) + strlen(file) + sizeof(DIR_SEP);
     char *path;
+
     if (subdir)
 	l += strlen(subdir) + sizeof(DIR_SEP) - 1;
     if (ext)
@@ -2287,6 +2283,9 @@ trypath(dir, subdir, file, ext)
     strcat(path, file);
     if (ext)
 	strcat(path, ext);
+#if 0
+    fprintf(stderr, "trypath: %s\n", path);
+#endif
     if (exists(path))
 	return path;
     free(path);

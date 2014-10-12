@@ -1,0 +1,15 @@
+-INCLUDE 'setuputil.sno'
+
+	t = TABLE()
+	t['module'] = 'stat'
+	t['sources'] = 'stat.c'
+
+	t['author'] = t['maintainer'] = 'Phil Budne'
+	t['author_email'] = t['maintainer_email'] = 'phil@snobol4.org'
+	t['license'] = 'BSD'
+* description
+* long_description
+* version (get from RCS ID?)
+
+	setup(t)
+end

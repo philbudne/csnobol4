@@ -88,7 +88,7 @@
 static handle_handle_t dbm_files;
 
 /*
- * LOAD("DBM_OPEN(STRING,STRING,INTEGER)INTEGER")
+ * LOAD("DBM_OPEN(STRING,STRING,INTEGER)INTEGER", NDBM_DL)
  * Open or create an indexed data file
  *
  * first arg:
@@ -162,7 +162,7 @@ DBM_OPEN( LA_ALIST ) LA_DCL
 }
 
 /*
- * LOAD("DBM_CLOSE(INTEGER)STRING")
+ * LOAD("DBM_CLOSE(INTEGER)STRING", NDBM_DL)
  *
  * return null string or failure
  */
@@ -179,7 +179,7 @@ DBM_CLOSE( LA_ALIST ) LA_DCL
 }
 
 /*
- * LOAD("DBM_STORE(INTEGER,STRING,STRING,INTEGER)INTEGER")
+ * LOAD("DBM_STORE(INTEGER,STRING,STRING,INTEGER)INTEGER", NDBM_DL)
  *
  * arg 1:	file handle
  * arg 2:	key
@@ -220,7 +220,7 @@ DBM_STORE( LA_ALIST ) LA_DCL
 }
 
 /*
- * LOAD("DBM_FETCH(INTEGER,STRING)STRING")
+ * LOAD("DBM_FETCH(INTEGER,STRING)STRING", NDBM_DL)
  *
  * arg 1:	file handle
  * arg 2:	key
@@ -246,7 +246,7 @@ DBM_FETCH( LA_ALIST ) LA_DCL
 }
 
 /*
- * LOAD("DBM_FIRSTKEY(INTEGER)STRING")
+ * LOAD("DBM_FIRSTKEY(INTEGER)STRING", NDBM_DL)
  *
  * arg 1:	file handle
  *
@@ -269,7 +269,7 @@ DBM_FIRSTKEY( LA_ALIST ) LA_DCL
 }
 
 /*
- * LOAD("DBM_NEXTKEY(INTEGER)STRING")
+ * LOAD("DBM_NEXTKEY(INTEGER)STRING", NDBM_DL)
  *
  * arg 1:	file handle
  *
@@ -293,7 +293,7 @@ DBM_NEXTKEY( LA_ALIST ) LA_DCL
 
 
 /*
- * LOAD("DBM_DELETE(INTEGER,STRING)INTEGER")
+ * LOAD("DBM_DELETE(INTEGER,STRING)INTEGER", NDBM_DL)
  *
  * arg 1:	file handle
  * arg 2:	key
@@ -323,7 +323,7 @@ DBM_DELETE( LA_ALIST ) LA_DCL
 }
 
 /*
- * LOAD("DBM_ERROR(INTEGER)STRING")
+ * LOAD("DBM_ERROR(INTEGER)STRING", NDBM_DL)
  *
  * predicate
  */
@@ -338,7 +338,7 @@ DBM_ERROR( LA_ALIST ) LA_DCL
 }
 
 /*
- * LOAD("DBM_CLEARERR(INTEGER)STRING")
+ * LOAD("DBM_CLEARERR(INTEGER)STRING", NDBM_DL)
  * predicate
  */
 

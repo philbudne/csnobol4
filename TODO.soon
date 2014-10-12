@@ -3,9 +3,6 @@ $Id$
 Modules:
 	make clean!!
 
-	Fail tests when ndbm built, but not working!!!
-		flush --without-dbm??
-
 	for new modules: sqlite3, stat, dirs
 		PML?? generate PMLPROC, config.m4 lines for Makefile2
 		man pages -- mention sqlite3 in ndbm page!

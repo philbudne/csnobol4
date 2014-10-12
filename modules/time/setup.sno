@@ -1,0 +1,17 @@
+-INCLUDE 'setuputil.sno'
+-INCLUDE 'config.sno'
+
+	t = TABLE()
+	t['module'] = 'time'
+	t['sources'] = '../../lib/snolib/time.c,../../' SLEEP_C
+	t['include_dirs'] = '../..,../../include'
+
+	t['author'] = t['maintainer'] = 'Phil Budne'
+	t['author_email'] = t['maintainer_email'] = 'phil@snobol4.org'
+	t['license'] = 'BSD'
+* description
+* long_description
+* version (get from RCS ID?)
+
+	setup(t)
+end

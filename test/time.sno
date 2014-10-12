@@ -1,4 +1,4 @@
--INCLUDE "../snolib/time.sno"
+-INCLUDE 'time.sno'
 
 	DEFINE("TMDUMP(T)")	:(E.TMDUMP)
 TMDUMP	OUTPUT = "TM_SEC " TM_SEC(T)

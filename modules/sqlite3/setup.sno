@@ -1,0 +1,22 @@
+-INCLUDE 'setuputil.sno'
+-INCLUDE 'config.sno'
+
+	t = TABLE()
+
+	t['module'] = 'sqlite3'
+	t['sources'] = 'sqlite3.c'
+	t['libraries'] = 'sqlite3'
+
+	t['author'] = t['maintainer'] = 'Phil Budne'
+	t['author_email'] = t['maintainer_email'] = 'phil@snobol4.org'
+	t['license'] = 'BSD'
+* description
+* long_description
+* version (get from RCS ID?)
+
+* info from configure script:
+	t['include_dirs'] = SQLITE_INCLUDE
+	t['library_dirs'] = SQLITE_LIBDIR
+
+	setup(t)
+end

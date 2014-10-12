@@ -229,15 +229,18 @@ getargs(start, sp)
     return parms;
 }
 
-void
-io_init()				/* here from INIT */
+static void
+io_init(stdinc)				/* here from init_args() */
+    int stdinc;
 {
     FILE *termin;
 
     io_initvars();
 
-    /* but not if set-uid!!! */
-    io_add_lib_dir(".");
+    if (stdinc) {
+	/* but not if set-uid!!! */
+	io_add_lib_dir(".");
+    }
 
     if (nfiles == 0) {			/* no input file(s)? */
 #ifdef MEM_IO_TEST
@@ -288,21 +291,25 @@ io_init()				/* here from INIT */
 
 /* called after -I paths have already been added, before preload, sources */
 static void
-pathinit() {
+pathinit(int stdinc) {
     char *env = getenv("SNOPATH");
     if (env) {
 	io_add_lib_path(env);
     }
     else {
 #ifdef DEF_SNOPATH
-	io_add_lib_path(DEF_SNOPATH);
+	if (stdinc)
+	    io_add_lib_path(DEF_SNOPATH);
 #else
 	char *tmp;
 
 	/* get old variable */
 	env = getenv("SNOLIB");
-	if (!env)
+	if (!env) {
+	    if (!stdinc)
+		return;
 	    env = SNOLIB_BASE;
+	}
 
 	/* local, version-specific */
 	tmp = strjoin(env, DIR_SEP, VERSION, DIR_SEP, "local", NULL);
@@ -325,7 +332,8 @@ pathinit() {
     }
 
 #ifdef EXTRA_SNOPATH
-    io_add_lib_path(EXTRA_SNOPATH);
+    if (stdinc)
+	io_add_lib_path(EXTRA_SNOPATH);
 #endif
 }
 
@@ -340,6 +348,7 @@ init_args( ac, av )
     int multifile;
     int justversion;
     int showpaths = 0;
+    int stdinc = 1;
 
     ndynamic = NDYNAMIC;
     pmstack = PSSIZE;
@@ -372,7 +381,7 @@ init_args( ac, av )
      *		added, but it better not want an argument!)
      */
 
-    while ((c = getopt(argc, argv, "+bd:fghkl:nprsu:vzBI:L:MP:S:")) != -1) {
+    while ((c = getopt(argc, argv, "+bd:fghkl:nprsu:vzBI:L:MNP:S:")) != -1) {
 	switch (c) {
 	case 'b':
 	    D_A(BANRCL) = !D_A(BANRCL);	/* toggle banner output */
@@ -477,6 +486,10 @@ init_args( ac, av )
 	    multifile = !multifile;
 	    break;
 
+	case 'N':			/* no standard includes */
+	    stdinc = 0;
+	    break;
+
 	case 'P':			/* pattern match stack size */
 	    if (!getk(optarg, &pmstack))
 		errs++;
@@ -492,12 +505,7 @@ init_args( ac, av )
 	}
     } /* while getopt */
 
-    pathinit();
-
-    if (showpaths) {
-	io_show_paths();
-	exit(0);
-    }
+    pathinit(stdinc);
 
     /* XXX option to disable? */
     io_preload();
@@ -529,7 +537,13 @@ init_args( ac, av )
 	usage(argv[0], justversion);
     }
 
-    io_init();				/* AFTER io_input calls! */
+    io_init(stdinc);			/* AFTER io_input calls! */
+
+    if (showpaths) {			/* after io_init() */
+	io_show_paths();
+	exit(0);
+    }
+
 #ifdef HAVE_OS_INIT
     os_init();
 #endif /* HAVE_OS_INIT defined */

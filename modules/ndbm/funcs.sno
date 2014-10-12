@@ -1,0 +1,10 @@
+*
+* $Id$
+*
+* Phil Budne <phil@ultimate.com>
+* December 3, 2005
+*
+* NDBM interface for CSNOBOL4
+
+	DBM_INSERT = 0
+	DBM_REPLACE = 1

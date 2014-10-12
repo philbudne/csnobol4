@@ -22,8 +22,7 @@
 * DBM_DELETE(filepointer,key)
 * 
 
-* XXX want command line -I flag!
--INCLUDE '../snolib/ndbm.sno'
+-INCLUDE 'ndbm.sno'
 
 * store a key/datum pair, remember in table
 	DEFINE("STORE(F,KEY,DATUM,T)")			:(ESTORE)

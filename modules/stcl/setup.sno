@@ -1,0 +1,20 @@
+-INCLUDE 'setuputil.sno'
+-INCLUDE 'config.sno'
+
+	t = TABLE()
+	t['module'] = 'stcl'
+	t['sources'] = '../../lib/snolib/stcl.c'
+
+	t['author'] = t['maintainer'] = 'Phil Budne'
+	t['author_email'] = t['maintainer_email'] = 'phil@snobol4.org'
+	t['license'] = 'BSD'
+* description
+* long_description
+* version (get from RCS ID?)
+
+* from tclConfig.sh via configure script:
+	t['cflags'] = TCL_INCLUDE_SPEC
+	t['ldflags'] = TCL_LIB_SPEC
+
+	setup(t)
+END

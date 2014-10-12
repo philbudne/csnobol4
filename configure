@@ -52,13 +52,14 @@ HOST=`(hostname) 2>/dev/null || uname -n`
 VERSION_H=version.h.tmp
 CONFIG_H=config.h.tmp
 CONFIG_M4=config.m4.tmp
+CONFIG_SNO=config.sno.tmp
 
 # DANGER: It's no longer safe to try to grep include files
 # (too many systems move them around), use sparingly!!
 INCDIR=/usr/include
 
-rm -f $CONFIG_H $CONFIG_M4 $VERSION_H
-trap "rm -f $CONFIG_H $CONFIG_M4; exit 1" 1 2 15
+rm -f $CONFIG_H $CONFIG_M4 $VERSION_H $CONFIG_SNO
+trap "rm -f $CONFIG_H $CONFIG_M4 $CONFIG_SNO; exit 1" 1 2 15
 
 echo "# config generated "$DATE			>> $CONFIG_M4
 echo "# on $HOST ($OS)"				>> $CONFIG_M4
@@ -67,6 +68,8 @@ if [ "x$OPTIONS" != x ]; then
    echo "# options: $OPTIONS"			>> $CONFIG_M4
 fi
 echo 'undefine([include])'			>> $CONFIG_M4
+
+echo "# config generated "$DATE			>> $CONFIG_SNO
 
 ################
 # most defines now in config.h so seperately compiled
@@ -168,6 +171,9 @@ while [ $# -gt 0 ]; do
     --force-memmove)
 	FORCE_MEMMOVE=true
 	;;
+    --force-pml)
+	FORCE_PML=true
+	;;
     --force-sdbm)
 	FORCE_SDBM=true
 	;;
@@ -238,9 +244,6 @@ while [ $# -gt 0 ]; do
 	    exit 1
 	fi
 	;;
-    --without-ndbm)
-	WITHOUT_NDBM=1
-	;;
     '')
 	;;
     *)
@@ -276,9 +279,9 @@ Install location;
 
 Optional items;
 	--with-tcl=/path/to/tclConfig.sh
-	--without-blocks
-	--without-ndbm		--force-sdbm
-	--without-readline	--without-com
+	--without-blocks	--force-pml
+	--without-readline	--force-sdbm
+	--without-com
 EOF
 
 	rm -f $CONFIG_M4 $CONFIG_H
@@ -332,11 +335,22 @@ echo '#define DIR_SEP "/"'			>> $CONFIG_H
 echo '#define PATH_SEP ":"'			>> $CONFIG_H
 echo '#define OBJECT_EXT ".o"'			>> $CONFIG_H
 
+
 # safe on all Unix systems (requires "fork")
 echo '#define PML_SERV'				>> $CONFIG_H
 
-# should work on all Unix systems
-echo '#define PML_RANDOM'			>> $CONFIG_H
+if [ "$FORCE_PML" ]; then
+    # should work on all Unix systems:
+    echo '#define PML_LOGIC'			>> $CONFIG_H
+    echo '#define PML_RANDOM'			>> $CONFIG_H
+    echo '#define PML_TIME'			>> $CONFIG_H
+    # XXX add dirs & stat??!!
+else
+    MODULES='dirs logic random stat time'
+    # force inclusion of common routines!!
+    echo 'EXTRA_OBJS=getstring.o retstring.o handle.o' >> $CONFIG_M4
+    echo 'ADD_SRCS([$(GETSTRING_C) $(RETSTRING_C) $(HANDLE_C)])' >> $CONFIG_M4
+fi
 
 # Unix Makefile2 created build.c
 echo '#define HAVE_BUILD_VARS'			>> $CONFIG_H
@@ -1557,25 +1571,28 @@ if config/check time.h 'struct tm tm; int i = tm.tm_gmtoff'; then
     echo '#define HAVE_TM_GMTOFF'		>> $CONFIG_H
 fi
 
+SLEEP_C=lib/bsd/sleep.c
 echo '#define HAVE_SLEEP'			>> $CONFIG_H
 SELECT_FRAG='fd_set x; struct timeval tv; select(0,&x,&x,&x,&tv);'
 if config/check time.h 'struct timespec ts; nanosleep(&ts,0)'; then
     echo 'using POSIX nanosleep()' 1>&2
-    echo 'SLEEP_C=$(SRCDIR)lib/posix/sleep.c' >> $CONFIG_M4
+    SLEEP_C=lib/posix/sleep.c
 elif config/check sys/select.h "$SELECT_FRAG"; then
-    echo 'using posix select() for sleep' 1>&2
+    echo 'using posix select() for sleep'	1>&2
     echo '#define HAVE_SELECT_H'		>> $CONFIG_H
 elif config/check 'sys/time.h sys/types.h' "$SELECT_FRAG"; then
     echo 'using select() for sleep' 1>&2
 else
     echo 'using generic sleep()' 1>&2
-    echo 'SLEEP_C=$(SRCDIR)lib/generic/sleep.c' >> $CONFIG_M4
+    SLEEP_C=lib/generic/sleep.			>> $CONFIG_M4
 fi
+echo 'SLEEP_C=$(SRCDIR)'$SLEEP_C		>> $CONFIG_M4
+echo "	SLEEP_C = '$SLEEP_C'"			>> $CONFIG_SNO
+
 if config/check time.h 'struct tm tm; strptime("", "", &tm)'; then
     echo 'using strptime()' 1>&2
     echo '#define HAVE_STRPTIME'		>> $CONFIG_H
 fi
-echo '#define PML_TIME'				>> $CONFIG_H
 
 # output SO/DL defines
 
@@ -1617,18 +1634,24 @@ fi
 # Include STCL (tcl/tk) support, if requested
 # Tk (loads as package in 8.4+)
 if [ "$TCONF" ]; then
-	echo '#define PML_STCL'			>> $CONFIG_H
-	(
-	    . "$TCONF"
-	    echo "Using Tcl version $TCL_VERSION" 1>&2
-	    echo "ADD_LDFLAGS([$TCL_LIB_SPEC])"
-	    echo 'ADD_OBJS([stcl.o])'
-	    echo 'ADD_SRCS([$(STCL_C)])'
-	    echo "ADD_CPPFLAGS([$TCL_INCLUDE_SPEC])"
-	) >> $CONFIG_M4
+    # check if file exists??
+    . "$TCONF"
+    echo "Using Tcl version $TCL_VERSION" 1>&2
+    if [ "$FORCE_PML" ]; then
+	echo '#define PML_STCL'	>> $CONFIG_H
+	echo "ADD_LDFLAGS([$TCL_LIB_SPEC])" >> $CONFIG_M4
+	echo 'ADD_OBJS([stcl.o])'	>> $CONFIG_M4
+	echo 'ADD_SRCS([$(STCL_C)])' >> $CONFIG_M4
+	echo "ADD_CPPFLAGS([$TCL_INCLUDE_SPEC])" >> $CONFIG_M4
+    else
+	MODULES="$MODULES stcl"
+	echo "	TCL_LIB_SPEC = '$TCL_LIB_SPEC'" >> $CONFIG_SNO
+	echo "	TCL_INCLUDE_SPEC = '$TCL_INCLUDE_SPEC'" >> $CONFIG_SNO
+    fi
 fi
 
-if [ ! "$WITHOUT_NDBM" ]; then
+if true; then
+    NDBM_LIBS=
     DBM_FRAG='DBM *db = dbm_open("", 0, 0)'
     if [ "$FORCE_SDBM" ]; then
 	# bypass checks
@@ -1639,55 +1662,73 @@ if [ ! "$WITHOUT_NDBM" ]; then
     elif config/check ndbm.h "$DBM_FRAG" -ldb; then
 	echo "using ndbm.h for DBM support (with -ldb)" 1>&2
 	echo '#define HAVE_NDBM_H'		>> $CONFIG_H
-	echo 'ADD_LDFLAGS([-ldb])'		>> $CONFIG_M4
+	NDBM_LIBS='-ldb'
+    elif config/check db.h "$DBM_FRAG" '-DDB_DBM_HSEARCH'; then
+	# check for Berkeley DB in libc
+	echo "using db.h for DBM support" 1>&2
+	echo '#define DB_DBM_HSEARCH 1'		>> $CONFIG_H
+	echo '#define HAVE_DB_H'		>> $CONFIG_H
     elif config/check db.h "$DBM_FRAG" '-ldb -DDB_DBM_HSEARCH'; then
 	# works with libdb4.8
 	echo "using db.h for DBM support (with -ldb)" 1>&2
 	echo '#define DB_DBM_HSEARCH 1'		>> $CONFIG_H
 	echo '#define HAVE_DB_H'		>> $CONFIG_H
-	echo 'ADD_LDFLAGS([-ldb])'		>> $CONFIG_M4
+	NDBM_LIBS='-ldb'
     else
+	# not force sdbm, or ndbm.h w/o libs, or db.h
+	# (ie; here on most Linux systems w/o Berkeley DB)
+	# Some Linux distributions fraction off ndbm compatibility:
+	# many different names/locations for compat header file: try them all.
+
+	# *BUT* will still fail (and silently use SDBM) if *all*
+	# the right (dev) packages not installed!!!
 	for COMPAT in '' ' -lgdbm_compat'; do
-	    LIBS="-lgdbm$COMPAT"
-	    if config/check ndbm.h "$DBM_FRAG" "$LIBS"; then
+	    NDBM_LIBS="-lgdbm$COMPAT"
+	    if config/check ndbm.h "$DBM_FRAG" "$NDBM_LIBS"; then
 		# cygwin
 		USE_GDBM=1
-		echo "using ndbm.h for DBM support (with $LIBS)" 1>&2
+		echo "using ndbm.h for DBM support (with $NDBM_LIBS)" 1>&2
 		echo '#define HAVE_NDBM_H'	>> $CONFIG_H
-		echo "ADD_LDFLAGS([$LIBS])"	>> $CONFIG_M4
 		break
-	    elif config/check gdbm/ndbm.h "$DBM_FRAG" "$LIBS"; then
+	    elif config/check gdbm/ndbm.h "$DBM_FRAG" "$NDBM_LIBS"; then
 		USE_GDBM=1
-		echo "using gdbm/ndbm.h for DBM support (with $LIBS)" 1>&2
+		echo "using gdbm/ndbm.h for DBM support (with $NDBM_LIBS)" 1>&2
 		echo '#define HAVE_GDBM_SLASH_NDBM_H'	>> $CONFIG_H
-		echo "ADD_LDFLAGS([$LIBS])"	>> $CONFIG_M4
 		break
-	    elif config/check gdbm-ndbm.h "$DBM_FRAG" "$LIBS"; then
+	    elif config/check gdbm-ndbm.h "$DBM_FRAG" "$NDBM_LIBS"; then
 		USE_GDBM=1
-		echo "using gdbm-ndbm.h for DBM support (with $LIBS)" 1>&2
+		echo "using gdbm-ndbm.h for DBM support (with $NDBM_LIBS)" 1>&2
 		echo '#define HAVE_GDBM_DASH_NDBM_H'	>> $CONFIG_H	
-		echo "ADD_LDFLAGS([$LIBS])"	>> $CONFIG_M4
 		break
 	    fi
+	    NDBM_LIBS=""
 	done
 	if [ ! "$USE_GDBM" ]; then
 	    USE_SDBM=1
 	fi
     fi
 
-    echo '#define PML_NDBM'		>> $CONFIG_H
-    echo 'ADD_OBJS([ndbm.o])'		>> $CONFIG_M4
-    echo 'ADD_SRCS([$(NDBM_C)])'	>> $CONFIG_M4
-
+    if [ "x$NDBM_LIBS" != x ]; then
+	echo "ADD_LDFLAGS([$NDBM_LIBS])" >> $CONFIG_M4
+    fi
+    if [ "$FORCE_PML" ]; then
+	echo '#define PML_NDBM'		>> $CONFIG_H
+	echo 'ADD_OBJS([ndbm.o])'	>> $CONFIG_M4
+	echo 'ADD_SRCS([$(NDBM_C)])'	>> $CONFIG_M4
+    else
+	MODULES="$MODULES ndbm"
+    fi
     if [ "$USE_SDBM" ]; then
 	echo "using SDBM for DBM support" 1>&2
-	echo 'ADD_CPPFLAGS([-Ilib/sdbm])' >> $CONFIG_M4
-	echo 'ADD_OBJS([sdbm.o])'	>> $CONFIG_M4
-	echo 'ADD_SRCS([$(SDBM_C)])'	>> $CONFIG_M4
-	echo 'ADD_OBJS([sdbm_hash.o])'	>> $CONFIG_M4
-	echo 'ADD_SRCS([$(SDBM_HASH_C)])' >> $CONFIG_M4
-	echo 'ADD_OBJS([sdbm_pair.o])'	>> $CONFIG_M4
-	echo 'ADD_SRCS([$(SDBM_PAIR_C)])' >> $CONFIG_M4
+	if [ "$FORCE_PML" ]; then
+	    echo 'ADD_CPPFLAGS([-Ilib/sdbm])' >> $CONFIG_M4
+	    echo 'ADD_SRCS([$(SDBM_C)$(SDBM_HASH_C) $(SDBM_PAIR_C)])' >> $CONFIG_M4
+	    echo 'ADD_OBJS([sdbm.o sdbm_hash.o sdbm_pair.o])' >> $CONFIG_M4
+	else
+	    # for modules/ndbm/setup.sno:
+	    echo '	NDBM_INCLUDE = ",../../lib/sdbm"' >> $CONFIG_SNO
+	    echo '	NDBM_SRCS = ",../../lib/sdbm/sdbm.c,../../lib/sdbm/sdbm_hash.c,../../lib/sdbm/sdbm_pair.c"' >> $CONFIG_SNO
+	fi
 	echo '#define HAVE_SDBM_H'	>> $CONFIG_H
 	echo '#define DUFF'		>> $CONFIG_H
     fi
@@ -1725,6 +1766,27 @@ fi
 if config/check 'sys/types.h sys/stat.h' 'struct stat st; lstat("foo", &st)'; then
     echo '#define HAVE_LSTAT'	>> $CONFIG_H
     echo 'using lstat()' 1>&2
+fi
+
+if [ ! "$FORCE_PML" ]; then
+    SQLITE_FRAGMENT='sqlite3 *db; sqlite3_open("foo", &db)'
+    if config/check 'sqlite3.h' "$SQLITE_FRAGMENT" '-lsqlite3'; then
+	echo 'using sqlite3' 1>&2
+	MODULES="$MODULES sqlite3"
+	SQLITE_INCLUDE=
+	SQLITE_LIBDIR=
+    else
+	# MacPorts: /opt/local
+	for DIR in /usr/local /opt/local; do
+	    if config/check sqlite3.h "$SQLITE3_FRAG" "-I$DIR/include -L$DIR/lib -lsqlite3"; then
+	        echo "using sqlite3 from $DIR" 1>&2
+		echo "	SQLITE_INCLUDE = '$DIR/include'" >> $CONFIG_SNO
+		echo "	SQLITE_LIBDIR = '$DIR/lib'" >> $CONFIG_SNO
+		MODULES="$MODULES sqlite3"
+		break
+	    fi
+	done
+    fi
 fi
 
 # Include COM support under Cygwin!
@@ -1844,6 +1906,34 @@ fi
 ################################
 # should be last thing done;
 
+BUILD_DL=
+BUILD_INC=
+# for host.sno:
+TEST_SNOPATH=..
+for M in $MODULES; do
+    DL="modules/$M/$M$DL_EXT"
+    INC="modules/$M/$M.sno"
+    BUILD_DL="$BUILD_DL $DL"
+    BUILD_INC="$BUILD_INC $INC"
+    TEST_SNOPATH="$TEST_SNOPATH:../modules/$M"
+    echo ''					>> $CONFIG_M4
+    echo "$DL $INC: xsnobol4 modules/$M/setup.sno" >> $CONFIG_M4
+    echo "	cd modules/$M; ../../xsnobol4 -N -b -I.. -I../.. setup.sno dbuild" >> $CONFIG_M4
+done
+TEST_SNOPATH="$TEST_SNOPATH:../snolib:."
+echo ''						>> $CONFIG_M4
+echo "MODULES=$MODULES"				>> $CONFIG_M4
+echo "MODULES_LOADABLE=$BUILD_DL"		>> $CONFIG_M4
+echo "MODULES_INCLUDE=$BUILD_INC"		>> $CONFIG_M4
+echo 'MODULES_GENERATED=$(MODULES_LOADABLE) $(MODULES_INCLUDE)' >> $CONFIG_M4
+echo "TEST_SNOPATH=$TEST_SNOPATH"		>> $CONFIG_M4
+echo ''						>> $CONFIG_M4
+echo 'clean_modules:'				>> $CONFIG_M4
+echo '	rm -f $(MODULES_GENERATED)'		>> $CONFIG_M4
+echo ''						>> $CONFIG_M4
+echo 'build_modules: $(MODULES_GENERATED)'	>> $CONFIG_M4
+echo ''						>> $CONFIG_M4
+
 if [ -f local-config ]; then
     echo 'using local-config' 1>&2
     echo '################'			>> $CONFIG_M4
@@ -1878,6 +1968,9 @@ if [ ! "$DEBUG" ]; then
     fi
     if [ $CONFIG_M4 != config.m4 ]; then
 	mv -f $CONFIG_M4 config.m4
+    fi
+    if [ $CONFIG_SNO != config.sno ]; then
+	mv -f $CONFIG_SNO config.sno
     fi
     if [ $VERSION_H != version.h ]; then
 	mv -f $VERSION_H version.h

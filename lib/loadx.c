@@ -46,6 +46,14 @@ load(addr, sp1, sp2)
 		entry = os_load(fname, path);
 		free(path);
 	    }
+
+	    if (!entry) {
+		path = io_lib_find(NULL, lname, DL_EXT);
+		if (path) {
+		    entry = os_load(fname, path);
+		    free(path);
+		}
+	    }
 	}
     }
     free(fname);
