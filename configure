@@ -1976,6 +1976,8 @@ if [ ! "$DEBUG" ]; then
     if [ $VERSION_H != version.h ]; then
 	mv -f $VERSION_H version.h
     fi
+    # updating "with" file causes regeneration of .sno files
+    # which requires an installed snobol4 binary
     if [ $WITH != with ]; then
 	if cmp $WITH with >/dev/null 2>&1; then
 	    rm -f $WITH

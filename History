@@ -5,6 +5,10 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 10/13/2014:
 	Makefile: cleanup for modules directories
 		add "with" as configure output
+		remove configure dependancy
+			(runs constantly when newer than with)
+	Makefile2.m4: explictly pass -N to test/run.sh
+	v311.sil,procs: remove unused blocks code/functions
 
 10/12/2014:
 	Makefile2.m4: install MODULES_{INCLUDE,LOADABLE}

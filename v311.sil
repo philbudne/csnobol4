@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.137  2014/01/18 23:37:31  phil
+* [PLB124] fix "FUNCTION" TRACE()
+*
 * Revision 1.136  2013/10/28 02:52:30  phil
 * [PLB123] Add &COMPNO (ala SITBOL/SNOBOL4B)
 *
@@ -7437,6 +7440,7 @@ BPMRG1   LHERE
 BPMRG2   LHERE
 *                  F  =  COMPLETED.FRAME(F)
          RCALL     ,COMPFR,(TEMP5)
+.IF NOTDEF
          BRANCH    BPMRG22
 R_R_N    LHERE
 *        REMOVE REDUNDANT NODES HAS NOT BEEN ENCODED YET
@@ -7451,6 +7455,7 @@ BPMRG21  LHERE
          ACOMP     TEMP31,TEMP32,BPMRG22
          RCALL     ,R_R_N,(TEMP31),BPMRG21
 BPMRG22  LHERE
+.FI
 *                  SF  =  STRIP.FRAME(F)
          RCALL     TEMP9,STRIP_F,(TEMP5)
 *                  PHY = BLAND(SF<HT.> , SF<WTH.> , SF<DTH.> )
