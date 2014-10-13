@@ -4,6 +4,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/13/2014:
 	Makefile: cleanup for modules directories
+		add "with" as configure output
 
 10/12/2014:
 	Makefile2.m4: install MODULES_{INCLUDE,LOADABLE}
