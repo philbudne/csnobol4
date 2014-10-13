@@ -192,6 +192,9 @@ DISP=*.o *.a callgraph prolog bsplitu vers build.c bsdtsort \
 cleanmostly: tidy
 	rm -f $(DISP)
 	rm -rf timdir.*
+	cd modules; for m in [a-z]*; do \
+		test -d $$m && (cd $$m; rm -f $$m.sno *.o *.so *.bundle); \
+	done
 
 # clean as a freshly unpacked kit; remove binaries, timing;
 # leave version.h, version for Windoze
