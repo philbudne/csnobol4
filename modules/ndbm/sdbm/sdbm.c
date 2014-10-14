@@ -62,6 +62,9 @@ extern void free proto((void *));
 extern long lseek();
 #endif
 
+/* phil 10/13/2014 */
+static int myerrno;
+
 /*
  * forward
  */
@@ -76,7 +79,7 @@ static int makroom proto((DBM *, long, int));
  */
 #define bad(x)		((x).dptr == NULL || (x).dsize <= 0)
 #define exhash(item)	dbm_hash((item).dptr, (item).dsize)
-#define ioerr(db)	((db)->flags |= DBM_IOERR)
+#define ioerr(db)	(myerrno = errno, ((db)->flags |= DBM_IOERR))
 
 #define OFF_PAG(off)	(long) (off) * PBLKSIZ
 #define OFF_DIR(off)	(long) (off) * DBLKSIZ
@@ -538,4 +541,22 @@ register DBM *db;
 	}
 
 	return ioerr(db), nullitem;
+}
+
+int
+dbm_error(db)
+    register DBM *db;
+{
+    if (db->flags & DBM_IOERR)
+	return myerrno;
+    return 0;
+}
+
+int
+dbm_clearerr(db)
+    register DBM *db;
+{
+    db->flags &= ~DBM_IOERR;
+    myerrno = 0;
+    return 0;
 }

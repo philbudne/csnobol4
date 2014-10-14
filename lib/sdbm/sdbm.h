@@ -35,9 +35,6 @@ typedef struct {
  * utility macros
  */
 #define dbm_rdonly(db)		((db)->flags & DBM_RDONLY)
-#define dbm_error(db)		((db)->flags & DBM_IOERR)
-
-#define dbm_clearerr(db)	((db)->flags &= ~DBM_IOERR)  /* ouch */
 
 #define dbm_dirfno(db)	((db)->dirf)
 #define dbm_pagfno(db)	((db)->pagf)
@@ -71,6 +68,8 @@ extern int dbm_delete proto((DBM *, datum));
 extern int dbm_store proto((DBM *, datum, datum, int));
 extern datum dbm_firstkey proto((DBM *));
 extern datum dbm_nextkey proto((DBM *));
+extern int dbm_error proto((DBM *));
+extern int dbm_clearerr proto((DBM *));
 
 /*
  * other
