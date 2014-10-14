@@ -1727,7 +1727,7 @@ if true; then
 	    echo 'ADD_OBJS([sdbm.o sdbm_hash.o sdbm_pair.o])' >> $CONFIG_M4
 	else
 	    # for modules/ndbm/setup.sno:
-	    echo '	NDBM_INCLUDE = ",../../lib/sdbm"' >> $CONFIG_SNO
+	    echo '	NDBM_INCLUDE = "../../lib/sdbm"' >> $CONFIG_SNO
 	    echo '	NDBM_SRCS = ",../../lib/sdbm/sdbm.c,../../lib/sdbm/sdbm_hash.c,../../lib/sdbm/sdbm_pair.c"' >> $CONFIG_SNO
 	fi
 	echo '#define HAVE_SDBM_H'	>> $CONFIG_H

@@ -11,6 +11,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	test/run.sh: remove -N (explicitly passed by Makefile2)
 	v311.sil,procs: remove unused blocks code/functions
 	bsdtsort.c: quiet clang 3.3 warnings
+	configure: fix ndbm loadable w/ sdbm
+	sdbm.c: save errno for dbm_error
 
 10/12/2014:
 	Makefile2.m4: install MODULES_{INCLUDE,LOADABLE}

@@ -11,9 +11,6 @@ Modules:
 	generate/install module.sno files regardless of PML
 		flush snolib/{ndbm,random,stcl,time}.sno files
 
-	install DL files into SNOLIB_LIB/dynload (for distribution files)
-		else SNOLIB_LIB/local/dynload (not in path)
-
 	tests for: logic(!!), sqlite3, stat, dirs
 		tests in modules subdirs???
 
