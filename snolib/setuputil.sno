@@ -168,10 +168,9 @@ setup.posix.buildcmd2
 	idirs = t['include_dirs']
 	iflags = DIFFER(idirs) iflags setup.repl(setup.c idirs, setup.c, ' -I')
 
-* build "dynamic library" (DL) -- something attached at runtime
-
 	sources = setup.repl(t['sources'], setup.c, setup.s)
 
+* build "dynamic library" (DL) -- something attached at runtime
 	compile = HOST(HOST_CC) ' -c ' HOST(HOST_COPT)
 +		' ' HOST(HOST_DL_CFLAGS)
 +		' ' t['cflags']
