@@ -88,7 +88,7 @@
 static handle_handle_t dbm_files;
 
 /*
- * LOAD("DBM_OPEN(STRING,STRING,INTEGER)INTEGER", NDBM_DL)
+ * LOAD("DBM_OPEN(STRING,STRING,STRING)INTEGER", NDBM_DL)
  * Open or create an indexed data file
  *
  * first arg:

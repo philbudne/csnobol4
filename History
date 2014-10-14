@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/14/2014:
+	lib/snolib/ndbm.c: fix day one error in LOAD() comment
+		(now being used to generate ndbm.sno)!!
+		Misbehavior spotted by Rafal Sulejman
+
 10/13/2014:
 	Makefile: cleanup for modules directories
 		add "with" as configure output
