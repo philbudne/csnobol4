@@ -8,7 +8,9 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 		remove configure dependancy
 			(runs constantly when newer than with)
 	Makefile2.m4: explictly pass -N to test/run.sh
+	test/run.sh: remove -N (explicitly passed by Makefile2)
 	v311.sil,procs: remove unused blocks code/functions
+	bsdtsort.c: quiet clang 3.3 warnings
 
 10/12/2014:
 	Makefile2.m4: install MODULES_{INCLUDE,LOADABLE}

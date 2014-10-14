@@ -242,11 +242,11 @@ grow_buf(bp, size)
 {
 	if (bp == NULL) {
 	    if ((bp = (void *)malloc(size)) == NULL)
-		err(1, NULL);
+		err(1, NULL, NULL);
 	    return (bp);
 	}
 	if ((bp = (void *)realloc(bp, (unsigned int)size)) == NULL)
-		err(1, NULL);
+	    err(1, NULL, NULL);
 	return (bp);
 }
 
@@ -310,7 +310,7 @@ get_node(name)
 		return n;
 
 	if ((n = (NODE *)malloc(sizeof(NODE) + strlen(name) + 1)) == NULL)
-		err(1, NULL);
+	    err(1, NULL, NULL);
 
 	n->n_narcs = 0;
 	n->n_arcsize = 0;
@@ -382,7 +382,7 @@ tsort()
 			cycle_buf = (NODE **)malloc((unsigned int)sizeof(NODE *) * cnt);
 			longest_cycle = (NODE **)malloc((unsigned int)sizeof(NODE *) * cnt);
 			if (cycle_buf == NULL || longest_cycle == NULL)
-				err(1, NULL);
+			    err(1, NULL, NULL);
 		}
 		for (n = graph; n != NULL; n = n->n_next)
 			if (!(n->n_flags & NF_ACYCLIC)) {
