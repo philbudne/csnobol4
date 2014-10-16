@@ -1,23 +1,26 @@
 $Id$
 
 Modules:
-	make clean!!
+	setuputil.sno:
+		eliminate "dbuild"?  Look for ../../config.sno??
+		"install" command: allow addition install files
+			install to "local" unless .... ??? (hidden file?)
+		generate/install module.sno files regardless of PML
+			flush snolib/{ndbm,random,stcl,time}.sno files
+		"test" command?
+		allow appending arbitrary .sno file(s) [not just funcs.sno]?
+		use HOST_OBJ_EXT (for .o)
+		need HOST_SETUP_SYS (posix or otherwise)
 
-	for new modules: sqlite3, stat, dirs
+	Install config.sno??
+
+	for new modules sqlite3, stat, dirs:
 		PML?? generate PMLPROC, config.m4 lines for Makefile2
 		man pages -- mention sqlite3 in ndbm page!
 		only install sqlite3 man page if sqlite3 available???
 
-	generate/install module.sno files regardless of PML
-		flush snolib/{ndbm,random,stcl,time}.sno files
-
 	tests for: logic(!!), sqlite3, stat, dirs
 		tests in modules subdirs???
-
-	setuputil.sno
-		allow appending arbitrary .sno file(s) [not just funcs.sno]?
-		use HOST_OBJ_EXT (for .o)
-		need HOST_SETUP_SYS (posix or otherwise)
 
 	More:
 		glob?? fnmatch?
@@ -66,8 +69,6 @@ Look at hash function, OBSFT
 
 Eliminate GC copying, keep free list?
 	Copy into new semi-space?
-
-sqlite3 interface?
 
 list/queue utility functions!!!
 
