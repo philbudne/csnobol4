@@ -6,6 +6,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	modules/setuputil.sno: auto-detect distribution builds
 	configure: flush dbuild
 	test/run.sh: show search path
+	lib/snolib/{delete,exit,getenv,host,ndbm,
+		readline,rename,sprintf,stcl}.c: use mgetstring, free
 
 10/16/2014:
 	configure: check for timegm; fix missing "c"; add SETUP_SYS

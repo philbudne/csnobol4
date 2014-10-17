@@ -33,9 +33,10 @@ extern char *getenv();
 int
 GETENV( LA_ALIST ) LA_DCL
 {
-    char buf[256];			/* XXX */
-    char *env;
+    char *var, *val;
 
-    getstring(LA_PTR(0), buf, sizeof(buf) );
-    RETSTR(getenv(buf));
+    var = mgetstring(LA_PTR(0));
+    val = getenv(var);
+    free(var);
+    RETSTR(val);
 }

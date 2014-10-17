@@ -77,13 +77,17 @@ STCL_CREATEINTERP( LA_ALIST ) LA_DCL
 int
 STCL_EVALFILE( LA_ALIST ) LA_DCL
 {
-    char file[1024];			/* XXX */
+    char *file;
+    int ret;
+
     Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_INT(0));
     if (!interp)
 	RETFAIL;
 
-    getstring(LA_PTR(0), file, sizeof(file));
-    if (Tcl_EvalFile(interp, file) != TCL_OK)
+    file = mgetstring(LA_PTR(0));
+    ret = Tcl_EvalFile(interp, file);
+    free(file);
+    if (ret != TCL_OK)
 	RETFAIL;
 
     RETSTR(Tcl_GetStringResult(interp));
@@ -96,12 +100,12 @@ STCL_EVALFILE( LA_ALIST ) LA_DCL
 int
 STCL_GETVAR( LA_ALIST ) LA_DCL
 {
-    char name[1024];			/* XXX */
+    char *name;
     const char *val;
     Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_INT(0));
     if (!interp)
 	RETFAIL;
-    getstring(LA_PTR(1), name, sizeof(name));
+    name = mgetstring(LA_PTR(1));
     val = Tcl_GetVar(interp, name, 0);
     RETSTR(val);
 }
@@ -115,15 +119,18 @@ STCL_GETVAR( LA_ALIST ) LA_DCL
 int
 STCL_SETVAR( LA_ALIST ) LA_DCL
 {
-    char name[1024];			/* XXX */
-    char value[1024];			/* XXX */
+    char *name;
+    char *value;
+    int ret;
     Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_INT(0));
     if (!interp)
 	RETFAIL;
-    getstring(LA_PTR(1), name, sizeof(name));
-    getstring(LA_PTR(2), value, sizeof(value));
-
-    if (!Tcl_SetVar(interp, name, value, 0))
+    name = mgetstring(LA_PTR(1));
+    value = mgetstring(LA_PTR(2));
+    ret = Tcl_SetVar(interp, name, value, 0);
+    free(name);
+    free(value);
+    if (!ret)
 	RETFAIL;
     RETNULL;
 }
@@ -137,13 +144,15 @@ STCL_SETVAR( LA_ALIST ) LA_DCL
 int
 STCL_EVAL( LA_ALIST ) LA_DCL
 {
-    char cmd[1024];			/* XXX */
+    char *cmd;
+    int ret;
     Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_INT(0));
     if (!interp)
 	RETFAIL;
-    getstring(LA_PTR(1), cmd, sizeof(cmd));
-
-    if (Tcl_Eval(interp, cmd) != TCL_OK)
+    cmd = mgetstring(LA_PTR(1));
+    ret = Tcl_Eval(interp, cmd);
+    free(cmd);
+    if (ret != TCL_OK)
 	RETFAIL;
 
     RETSTR(Tcl_GetStringResult(interp));

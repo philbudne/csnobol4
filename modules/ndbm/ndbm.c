@@ -107,8 +107,8 @@ int
 DBM_OPEN( LA_ALIST ) LA_DCL
 {
     snohandle_t h;
-    char base[1024];		/* XXX */
-    char modestr[1024];		/* XXX */
+    char *base;
+    char modestr[1024];
     const char *cp;
     char *ep;
     int i;
@@ -117,7 +117,6 @@ DBM_OPEN( LA_ALIST ) LA_DCL
     int mode;
     DBM *f;
 
-    getstring(LA_PTR(0), base, sizeof(base));
     cp = LA_STR_PTR(1);
     i = LA_STR_LEN(1);
     getstring(LA_PTR(2), modestr, sizeof(modestr));
@@ -146,10 +145,12 @@ DBM_OPEN( LA_ALIST ) LA_DCL
     if ((mode = strtol(modestr, &ep, 0)) == 0) {
 	if (*ep != '\0')
 	    RETFAIL;
-	mode = 0660;
+	mode = 0666;
     }
 
+    base = mgetstring(LA_PTR(0));
     f = dbm_open(base, flags, mode);
+    free(base);
     if (!f)
 	RETFAIL;
 

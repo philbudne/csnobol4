@@ -29,11 +29,12 @@
 int
 READLINE( LA_ALIST ) LA_DCL
 {
-    char prompt[128];
+    char *prompt;
     char *ret;
 
-    getstring(LA_PTR(0), prompt, sizeof(prompt));
+    prompt = mgetstring(LA_PTR(0));
     ret = readline(prompt);
+    free(prompt);
     if (!ret)
 	RETFAIL;
     RETSTR_FREE(ret);
@@ -45,10 +46,11 @@ READLINE( LA_ALIST ) LA_DCL
 int
 ADD_HISTORY( LA_ALIST ) LA_DCL
 {
-    char line[1024];
+    char *line;
 
-    getstring(LA_PTR(0), line, sizeof(line));
+    line = mgetstring(LA_PTR(0));
     add_history(line);
+    free(line);
     RETNULL;
 }
 
@@ -58,11 +60,11 @@ ADD_HISTORY( LA_ALIST ) LA_DCL
 int
 HISTORY_EXPAND( LA_ALIST ) LA_DCL
 {
-    char line[1024];
+    char *line;
     char *exp;
     int ret;
 
-    getstring(LA_PTR(0), line, sizeof(line));
+    line = mgetstring(LA_PTR(0));
     ret = history_expand(line, &exp);
     if (ret < 0 || ret == 2)
 	RETFAIL;

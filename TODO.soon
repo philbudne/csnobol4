@@ -5,13 +5,14 @@ Modules:
 	setuputil.sno:
 		make work on win32 with "cl"
 			http://msdn.microsoft.com/en-us/library/aa278396%28v=vs.60%29.aspx
-		eliminate "dbuild"? look for hidden file??
 		"install" command: allow addition install files
 			install to "local" unless .... ??? (hidden file?)
 		generate/install module.sno files regardless of PML
 			flush snolib/{ndbm,random,stcl,time}.sno files
 		"test" command?
 		allow appending arbitrary .sno file(s) [not just funcs.sno]?
+
+	Flush getenv.c???
 
 	Install config.sno???
 

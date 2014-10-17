@@ -16,6 +16,10 @@
 #include <unistd.h>			/* unlink() */
 #endif /* HAVE_UNISTD_H defined */
 
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>			/* for free() */
+#endif
+
 #include "h.h"
 #include "equ.h"
 #include "snotypes.h"
@@ -25,11 +29,13 @@
 int
 DELETE( LA_ALIST ) LA_DCL
 {
-    char path[256];			/* XXX */
+    char *path;
+    int ret;
 
-    getstring( LA_PTR(0), path, sizeof(path) );
-    if (unlink(path) < 0) {
+    path = mgetstring(LA_PTR(0));
+    ret = unlink(path);
+    free(path);
+    if (ret < 0)
 	RETFAIL;
-    }
     RETNULL;
 }

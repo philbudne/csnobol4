@@ -38,7 +38,7 @@ int
 SPRINTF( LA_ALIST ) LA_DCL
 {
     char fmt[1024];			/* XXX */
-    char buf[1024];			/* XXX */
+    char buf[2048];			/* XXX */
 
     getstring(LA_PTR(0), fmt, sizeof(fmt));
     switch (LA_TYPE(1)) {

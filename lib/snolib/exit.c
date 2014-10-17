@@ -16,6 +16,10 @@
 
 #include <stdio.h>			/* for lib.h */
 
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>			/* for free() */
+#endif
+
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
@@ -27,13 +31,14 @@
 int
 EXIT( LA_ALIST ) LA_DCL
 {
-    char buf[512];			/* XXX */
+    char *str;
 
     if (LA_TYPE(0) == S) {		/* EXIT("command") */
-	getstring( LA_PTR(0), buf, sizeof(buf));
+	str = mgetstring(LA_PTR(0));
 	io_flushall(0);			/* flush output buffers */
-	execute(buf);			/* should not return */
+	execute(str);			/* should not return */
 	/* ~sigh~ */
+	free(str);
 	RETFAIL;
     }
 

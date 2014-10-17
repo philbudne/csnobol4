@@ -20,7 +20,7 @@ fi
 
 IARGS="$*"
 echo "testing $SNOBOL $IARGS"
-$SNOBOL -z
+echo 'search path:' `$SNOBOL $IARGS -z`
 export SNOBOL
 
 # test list

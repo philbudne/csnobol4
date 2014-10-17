@@ -23,15 +23,18 @@
 int
 RENAME( LA_ALIST ) LA_DCL
 {
-    char path1[1024];			/* XXX */
-    char path2[1024];			/* XXX */
+    char *path1;
+    char *path2;
+    int ret;
 
-    getstring(LA_PTR(0), path1, sizeof(path1) );
-    getstring(LA_PTR(1), path2, sizeof(path2) );
+    path1 = mgetstring(LA_PTR(0));
+    path2 = mgetstring(LA_PTR(1));
 
     /* ANSI C, POSIX.1 and XPG3 have rename() */
-    if (rename(path2, path1) < 0) {
+    ret = rename(path2, path1);
+    free(path1);
+    free(path2);
+    if (ret < 0)
 	RETFAIL;
-    }
     RETNULL;
 }

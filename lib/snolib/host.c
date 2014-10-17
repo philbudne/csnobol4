@@ -21,7 +21,7 @@
 #endif /* HAVE_CONFIG_H defined */
 
 #ifdef HAVE_STDLIB_H			/* before stdio */
-#include <stdlib.h>			/* getenv(),system() */
+#include <stdlib.h>			/* getenv(),system(),free() */
 #else  /* HAVE_STDLIB_H not defined */
 extern char *getenv();
 #endif /* HAVE_STDLIB_H not defined */
@@ -59,7 +59,7 @@ int
 HOST( LA_ALIST ) LA_DCL
 {
     char buf[512];			/* XXX */
-    char *env;
+    char *str;
     int_t n;
 
     switch (LA_TYPE(0)) {
@@ -113,9 +113,11 @@ HOST( LA_ALIST ) LA_DCL
 	    /* GNAT programs expect "HOST(1)" to return zero; */
 	    RETINT(0);
 	}
-	getstring(LA_PTR(1), buf, sizeof(buf)); /* get arg as c-string */
+	str = mgetstring(LA_PTR(1));	/* get arg as c-string */
 	io_flushall(0);			/* flush output buffers */
-	RETINT(system(buf));		/* run in sub-shell */
+	n = system(str);		/* run in sub-shell */
+	free(str);
+	RETINT(n);
 
     case HOST_ARGN:			/* HOST(2,n); argument n */
 	if (nargs >= 2 && LA_TYPE(1) == I) {
@@ -131,8 +133,10 @@ HOST( LA_ALIST ) LA_DCL
 
     case HOST_GETENV:			/* HOST(4,s); environment var s */
 	if (nargs >= 2 && LA_TYPE(1) == S) {
-	    getstring(LA_PTR(1), buf, sizeof(buf));
-	    env = getenv(buf);
+	    char *env;
+	    str = mgetstring(LA_PTR(1));
+	    env = getenv(str);
+	    free(str);
 	    /* RETSTR handles NULL as empty string, we want to RETFAIL */
 	    if (env)
 		RETSTR(env);
