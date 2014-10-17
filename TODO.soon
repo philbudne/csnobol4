@@ -2,13 +2,11 @@ $Id$
 
 Modules:
 	use mgetstring!
-	add timegm to time.c? need HAVE_TIMEGM??
-		try windows has _mktime and _mkgmtime (mktime/timegm)
-	supply strptime if not available [incl windows)
-	    http://cvsweb.netbsd.org/bsdweb.cgi/src/lib/libc/time/strptime.c?rev=HEAD
 	setuputil.sno:
+		use HOST_OBJ_EXT (for .o)
+		need HOST_SETUP_SYS (posix, "msvc")
 		make work on win32 with "cl"
-
+			http://msdn.microsoft.com/en-us/library/aa278396%28v=vs.60%29.aspx
 		eliminate "dbuild"? look for hidden file??
 		"install" command: allow addition install files
 			install to "local" unless .... ??? (hidden file?)
@@ -16,8 +14,6 @@ Modules:
 			flush snolib/{ndbm,random,stcl,time}.sno files
 		"test" command?
 		allow appending arbitrary .sno file(s) [not just funcs.sno]?
-		use HOST_OBJ_EXT (for .o)
-		need HOST_SETUP_SYS (posix or otherwise)
 
 	Install config.sno???
 
@@ -28,6 +24,8 @@ Modules:
 
 	tests for: logic(!!), sqlite3, stat, dirs
 		tests in modules subdirs???
+
+	Move SERV_LISTEN() into server module??
 
 	More:
 		glob?? fnmatch?

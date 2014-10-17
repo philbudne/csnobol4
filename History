@@ -3,9 +3,12 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/16/2014:
-	configure: check for timegm; fix missing "c"
+	configure: check for timegm; fix missing "c"; add SETUP_SYS
 	lib/snolib/time.c: add TIMEGM()
+	lib/snolib/host.[ch]: add HOST_SETUP_SYS
 	config/win32/config.h: alias for timegm, add HAVE_TIMEGM
+		add SETUP_SYS, SO_LD, DL_LD
+	modules/setuputil.sno: use HOST_OBJ_EXT, HOST_SETUP_SYS
 
 10/14/2014:
 	lib/snolib/ndbm.c: fix day one error in LOAD() comment

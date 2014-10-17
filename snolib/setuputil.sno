@@ -24,10 +24,11 @@
 	setup.t = '	'
 
 	DEFINE('setup(t)')			:(setup.end)
-setup	TERMINAL = DIFFER(DATATYPE(t),'TABLE') 'setup needs TABLE' :s(setup.fatal)
+setup	TERMINAL = DIFFER(DATATYPE(t),'TABLE') 'setup needs TABLE'
++						:s(setup.fatal)
 
-*	TEMP!! Get from HOST()????
-	sys = 'posix'
+	objext = HOST(HOST_OBJ_EXT)
+	sys = HOST(HOST_SETUP_SYS)
 
 *	XXX parse options!!
 	cmd = HOST(HOST_ARGN, HOST(HOST_FIRSTARG))
@@ -136,6 +137,7 @@ setup.posix.system
 	EQ(&CODE, 0)		  		:s(RETURN)f(FRETURN)
 setup.posix.system.end
 
+# XXX UGH!
 	DEFINE('setup.posix.basename(fname)') :(setup.posix.basename.end)
 setup.posix.basename
 	fname POS(0) BREAKX('/') '/' =		:S(setup.posix.basename)
@@ -144,7 +146,7 @@ setup.posix.basename.end
 
 	DEFINE('setup.posix.objs(t)srcs,file')	:(setup.posix.objs.end)
 setup.posix.objs
-	srcs = setup.repl(t['sources'] setup.c, '.c,', '.o ')
+	srcs = setup.repl(t['sources'] setup.c, '.c,', objext ' ')
 setup.posix.objs.loop
 	IDENT(srcs)				:s(RETURN)
 	srcs (break(' ') ' ') . file =		:f(RETURN)

@@ -116,6 +116,9 @@
 /* CSNOBOL4: object file extension */
 #define HOST_OBJ_EXT		2216
 
+/* CSNOBOL4: setuputil system name */
+#define HOST_SETUP_SYS		2217
+
 /*****
  * integer constants;
  */

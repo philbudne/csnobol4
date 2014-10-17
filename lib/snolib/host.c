@@ -264,6 +264,11 @@ HOST( LA_ALIST ) LA_DCL
 	RETSTR(OBJECT_EXT);
 #endif /* OBJECT_EXT defined */
 
+#ifdef SETUP_SYS
+    case HOST_SETUP_SYS:
+	RETSTR(SETUP_SYS);
+#endif /* SETUP_SYS defined */
+
 /****************
  * integer constants;
  */

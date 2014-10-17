@@ -104,3 +104,18 @@
 #else
 #define OBJECT_EXT ".obj"
 #endif
+
+/* system command flavor for setuptil.sno */
+#if defined(_MSC_VER)
+#define SETUP_SYS "win.msc"
+#define CC "cl"
+#elif defined(__GNUC__)
+#define SETUP_SYS "posix"		/* mingw uses posix paths */
+#define CC "gcc"
+#elif defined(__BORLANDC__)
+#define SETUP_SYS "win.borland"
+#define CC "bcc32"
+#endif /* defined(__BORLANDC__) */
+
+#define SO_LD CC
+#define DL_LD CC
