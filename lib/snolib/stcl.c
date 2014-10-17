@@ -17,6 +17,10 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>			/* for free() */
+#endif
+
 #include <tcl.h>
 #ifdef STCL_USE_TK
 #include <tk.h>

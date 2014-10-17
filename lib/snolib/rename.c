@@ -12,6 +12,10 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>			/* for free() */
+#endif
+
 #include <stdio.h>			/* rename */
 
 #include "h.h"
