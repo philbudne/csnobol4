@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/16/2014:
+	configure: check for timegm; fix missing "c"
+	lib/snolib/time.c: add TIMEGM()
+	config/win32/config.h: alias for timegm, add HAVE_TIMEGM
+
 10/14/2014:
 	lib/snolib/ndbm.c: fix day one error in LOAD() comment
 		(now being used to generate ndbm.sno)!!

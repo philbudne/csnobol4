@@ -68,10 +68,13 @@
 #define stat		_stat
 #define fstat		_fstat
 
+#define timegm		_mkgmtime
+
 /* optional features: */
 #define PML_TIME
 #define PML_RANDOM
 #define HAVE_SLEEP
+#define HAVE_TIMEGM
 
 #ifdef _WIN64
 /*

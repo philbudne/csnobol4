@@ -1584,7 +1584,7 @@ elif config/check 'sys/time.h sys/types.h' "$SELECT_FRAG"; then
     echo 'using select() for sleep' 1>&2
 else
     echo 'using generic sleep()' 1>&2
-    SLEEP_C=lib/generic/sleep.			>> $CONFIG_M4
+    SLEEP_C=lib/generic/sleep.c			>> $CONFIG_M4
 fi
 echo 'SLEEP_C=$(SRCDIR)'$SLEEP_C		>> $CONFIG_M4
 echo "	SLEEP_C = '$SLEEP_C'"			>> $CONFIG_SNO
@@ -1592,6 +1592,11 @@ echo "	SLEEP_C = '$SLEEP_C'"			>> $CONFIG_SNO
 if config/check time.h 'struct tm tm; strptime("", "", &tm)'; then
     echo 'using strptime()' 1>&2
     echo '#define HAVE_STRPTIME'		>> $CONFIG_H
+fi
+
+if config/check time.h 'struct tm tm; timegm(&tm)'; then
+    echo 'using timegm()' 1>&2
+    echo '#define HAVE_TIMEGM'			>> $CONFIG_H
 fi
 
 # output SO/DL defines

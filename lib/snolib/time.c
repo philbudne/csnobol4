@@ -220,3 +220,23 @@ STRPTIME_( LA_ALIST ) LA_DCL
     RETFAIL;
 }
 #endif
+
+#ifdef HAVE_TIMEGM
+/*
+ * LOAD("TIMEGM(TM)INTEGER", TIME_DL)
+ */
+
+int
+TIMEGM( LA_ALIST ) LA_DCL
+{
+    struct tm tm;
+    time_t ret;
+
+    if (!sno2tm(LA_PTR(0), &tm))
+	RETFAIL;
+    ret = timegm(&tm);
+    if (ret == -1 || !tm2sno(&tm, LA_PTR(0)))
+	RETFAIL;
+    RETINT(ret);
+}
+#endif

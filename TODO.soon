@@ -1,8 +1,15 @@
 $Id$
 
 Modules:
+	use mgetstring!
+	add timegm to time.c? need HAVE_TIMEGM??
+		try windows has _mktime and _mkgmtime (mktime/timegm)
+	supply strptime if not available [incl windows)
+	    http://cvsweb.netbsd.org/bsdweb.cgi/src/lib/libc/time/strptime.c?rev=HEAD
 	setuputil.sno:
-		eliminate "dbuild"?  Look for ../../config.sno??
+		make work on win32 with "cl"
+
+		eliminate "dbuild"? look for hidden file??
 		"install" command: allow addition install files
 			install to "local" unless .... ??? (hidden file?)
 		generate/install module.sno files regardless of PML
@@ -12,7 +19,7 @@ Modules:
 		use HOST_OBJ_EXT (for .o)
 		need HOST_SETUP_SYS (posix or otherwise)
 
-	Install config.sno??
+	Install config.sno???
 
 	for new modules sqlite3, stat, dirs:
 		PML?? generate PMLPROC, config.m4 lines for Makefile2
@@ -25,15 +32,30 @@ Modules:
 	More:
 		glob?? fnmatch?
 		Fred W wants:
-			FORK(), WAIT()
+			FORK(), WAIT() -- add WAITPID()!!
 			SPRINTF()
-			CLOSE(), SELECT(), FILENO() [ACCEPT()??]
+			FILENO(), CLOSE(), SELECT(),
 			MALLOC(), FREE()
+			ACCEPT()?
+
+STCL
+	use -framework on OS X??
+
 
 Make all path element generated in init.c available!!
 	BASE/VERSION/local	HOST_SNOLIB_VLOCAL
 	BASE/VERSION/lib	HOST_SNOLIB
 	BASE/local		HOST_SNOLIB_LOCAL
+
+readline:
+	Allow initial text????
+	Allow READLINE() via INPUT? (magic path, or option)
+		Allow control of history
+		Allow control of filename expansion
+	use "libedit" natively??
+
+
+================
 
 Flush all use of grep/INCDIR!!!
 
@@ -57,13 +79,6 @@ get rid of old FORTRAN FORMAT strings!!
 
 update install-sh (many to choose from!)??
 
-readline:
-	Allow initial text????
-	Allow READLINE() via INPUT? (magic path, or option)
-		Allow control of history
-		Allow control of filename expansion
-	use "libedit" natively??
-
 Look at hash function, OBSFT
 	Use "assention" to implement skip-list???
 
@@ -77,8 +92,6 @@ TAINT flag??? reuse FROZEN???
 	all string values from external functions?
 	any concatenation with a tainted value
 	checked by: system (HOST), io_fopen (pipe & pty)
-
-windows has _mktime and _mkgmtime -- compare with timelocal & timegm
 
 Document BREAKPOINT()????
 
@@ -253,10 +266,6 @@ convert('2500000000', 'real') fails on home?
 	strtol() does not detect overflow.
 	Delete SPCINT at CONVR+1?
 	Reverse SPCINT/SPREAL at EVAL
-
-STCL
-	rename to TCL_?
-	use -framework on OS X??
 
 report percentage of time in GC?
 
