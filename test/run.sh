@@ -20,6 +20,7 @@ fi
 
 IARGS="$*"
 echo "testing $SNOBOL $IARGS"
+$SNOBOL -z
 export SNOBOL
 
 # test list

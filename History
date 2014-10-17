@@ -3,6 +3,11 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/16/2014:
+	modules/setuputil.sno: auto-detect distribution builds
+	configure: flush dbuild
+	test/run.sh: show search path
+
+10/16/2014:
 	configure: check for timegm; fix missing "c"; add SETUP_SYS
 	lib/snolib/time.c: add TIMEGM()
 	lib/snolib/host.[ch]: add HOST_SETUP_SYS

@@ -3,8 +3,6 @@ $Id$
 Modules:
 	use mgetstring!
 	setuputil.sno:
-		use HOST_OBJ_EXT (for .o)
-		need HOST_SETUP_SYS (posix, "msvc")
 		make work on win32 with "cl"
 			http://msdn.microsoft.com/en-us/library/aa278396%28v=vs.60%29.aspx
 		eliminate "dbuild"? look for hidden file??
