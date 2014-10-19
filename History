@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/19/2014:
+	configure: add fork module
+	lib/snolib/fork.c: add WAITPID()
+	modules/fork/setup.sno: new
+
 10/18/2014:
 	Makefile2.m4: removed time.o sleep.o logic.o random.o sprintf.o
 		from snolib.a

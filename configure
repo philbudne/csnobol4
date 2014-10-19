@@ -339,16 +339,16 @@ echo '#define SETUP_SYS "posix"'		>> $CONFIG_H
 # safe on all Unix systems (requires "fork")
 echo '#define PML_SERV'				>> $CONFIG_H
 
+# should work on all Unix systems:
 if [ "$FORCE_PML" ]; then
-    # should work on all Unix systems:
+    # NOTE! Only includes v1.5 extensions!!
     echo '#define PML_LOGIC'			>> $CONFIG_H
     echo '#define PML_RANDOM'			>> $CONFIG_H
     echo '#define PML_TIME'			>> $CONFIG_H
-    # XXX add dirs & stat??!!
     echo 'ADD_OBJS([logic.o random.o time.o sleep.o])'	>> $CONFIG_M4
 else
-    MODULES='dirs logic random stat time sprintf'
-    # force inclusion of common routines!!
+    MODULES='dirs logic random stat time sprintf fork'
+    # force common routines to be linked into snobol4 executable:
     echo 'EXTRA_OBJS=getstring.o retstring.o handle.o' >> $CONFIG_M4
     echo 'ADD_SRCS([$(GETSTRING_C) $(RETSTRING_C) $(HANDLE_C)])' >> $CONFIG_M4
 fi

@@ -1,5 +1,8 @@
 $Id$
 
+STCL
+	use -framework on OS X??
+
 Modules:
 	setuputil.sno:
 		"install" command: allow addition install files
@@ -10,35 +13,26 @@ Modules:
 		allow appending arbitrary .sno file(s) [not just funcs.sno]?
 		make work on win32 with "cl"
 			http://msdn.microsoft.com/en-us/library/aa278396%28v=vs.60%29.aspx
-
-	Remove module .o files (& getenv.o) from snolib.a::
-
 	Install config.sno???
 
-	for new modules sqlite3, stat, dirs:
+	for new modules sqlite3, stat, dirs, sprintf, fork:
 		PML?? generate PMLPROC, config.m4 lines for Makefile2
 		man pages -- mention sqlite3 in ndbm page!
 		only install sqlite3 man page if sqlite3 available???
 
-	tests for: logic(!!), sqlite3, stat, dirs
+	tests for: logic(!!), sqlite3, stat, dirs, sprintf, fork
 		tests in modules subdirs???
 
-	Move SERV_LISTEN() into server module??
+	Move SERV_LISTEN() into "server" module??
 
 	More:
 		glob?? fnmatch?
 		Fred W wants:
-			FORK(), WAIT() -- add WAITPID()!!
-			SPRINTF()
 			FILENO(), CLOSE(), SELECT(),
 			MALLOC(), FREE()
 			ACCEPT()?
 
-	use mgetstring!
-
-STCL
-	use -framework on OS X??
-
+	use mgetstring (even more!)
 
 Make all path element generated in init.c available!!
 	BASE/VERSION/local	HOST_SNOLIB_VLOCAL
@@ -52,6 +46,9 @@ readline:
 		Allow control of filename expansion
 	use "libedit" natively??
 
+
+ndbm module:
+	direct interface to gdbm???
 
 ================
 
