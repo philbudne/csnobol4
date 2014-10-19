@@ -1,18 +1,17 @@
 $Id$
 
 Modules:
-	use mgetstring!
 	setuputil.sno:
-		make work on win32 with "cl"
-			http://msdn.microsoft.com/en-us/library/aa278396%28v=vs.60%29.aspx
 		"install" command: allow addition install files
 			install to "local" unless .... ??? (hidden file?)
 		generate/install module.sno files regardless of PML
 			flush snolib/{ndbm,random,stcl,time}.sno files
 		"test" command?
 		allow appending arbitrary .sno file(s) [not just funcs.sno]?
+		make work on win32 with "cl"
+			http://msdn.microsoft.com/en-us/library/aa278396%28v=vs.60%29.aspx
 
-	Flush getenv.c???
+	Remove module .o files (& getenv.o) from snolib.a::
 
 	Install config.sno???
 
@@ -34,6 +33,8 @@ Modules:
 			FILENO(), CLOSE(), SELECT(),
 			MALLOC(), FREE()
 			ACCEPT()?
+
+	use mgetstring!
 
 STCL
 	use -framework on OS X??

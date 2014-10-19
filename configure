@@ -345,6 +345,7 @@ if [ "$FORCE_PML" ]; then
     echo '#define PML_RANDOM'			>> $CONFIG_H
     echo '#define PML_TIME'			>> $CONFIG_H
     # XXX add dirs & stat??!!
+    echo 'ADD_OBJS([logic.o random.o time.o sleep.o])'	>> $CONFIG_M4
 else
     MODULES='dirs logic random stat time'
     # force inclusion of common routines!!

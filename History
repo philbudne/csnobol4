@@ -2,6 +2,12 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/18/2014:
+	Makefile2.m4: removed time.o sleep.o logic.o random.o sprintf.o
+		from snolib.a
+	configure: ADD_OBJS([logic.o random.o time.o sleep.o]) if --force-pml
+	config/win32/config.h: first cut at MSC, Borland flags
+
 10/16/2014:
 	modules/setuputil.sno: auto-detect distribution builds
 	configure: flush dbuild
