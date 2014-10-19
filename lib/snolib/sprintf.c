@@ -11,7 +11,7 @@
  */
 
 /*
- * LOAD("SPRINTF(STRING,)STRING")
+ * LOAD("SPRINTF(STRING,)STRING", SPRINTF_DL)
  *
  * Usage;	SPRINTF(format,value)
  *			ie; SPRINTF("%x",32)
