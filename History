@@ -4,6 +4,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/19/2014:
 	configure: add fork module
+		auto-detect Tcl on MacOS
 	lib/snolib/fork.c: add WAITPID()
 	modules/fork/setup.sno: new
 

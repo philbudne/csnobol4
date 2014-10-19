@@ -1639,6 +1639,12 @@ fi
 
 # Include STCL (tcl/tk) support, if requested
 # Tk (loads as package in 8.4+)
+if [ "x$TCONF" = x ]; then
+    FRAMEWORK=/System/Library/Frameworks/Tcl.framework/tclConfig.sh
+    if [ -f $FRAMEWORK ]; then
+	TCONF=$FRAMEWORK
+    fi
+fi
 if [ "$TCONF" ]; then
     # check if file exists??
     . "$TCONF"
