@@ -68,5 +68,6 @@ HISTORY_EXPAND( LA_ALIST ) LA_DCL
     ret = history_expand(line, &exp);
     if (ret < 0 || ret == 2)
 	RETFAIL;
+    free(line);
     RETSTR_FREE(exp);			/* hope this is right! */
 }

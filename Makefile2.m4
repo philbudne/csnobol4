@@ -447,15 +447,16 @@ system.o: $(SYSTEM_C)
 	$(CC) $(CFLAGS) -c $(SYSTEM_C)
 
 ################################################################
-# snolib -- library of external functions
+# snolib -- library of external functions (and their support functions)
 # all loaded by default w/ "PML" and available w/o LOAD()
+# everything else is now built as a module!
 
 AUX_OBJS=[]_OBJS
 
-SNOLIB_OBJS=atan.o chop.o cos.o delete.o environ.o execute.o exists.o exit.o \
-	exp.o file.o findunit.o fork.o getstring.o handle.o host.o \
-	ord.o log.o rename.o retstring.o serv.o sin.o sqrt.o \
-	sset.o sys.o tan.o $(AUX_OBJS)
+SNOLIB_OBJS=atan.o chop.o cos.o delete.o environ.o execute.o exists.o \
+	exit.o exp.o file.o findunit.o host.o ord.o log.o rename.o \
+	serv.o sin.o sqrt.o sset.o sys.o tan.o $(AUX_OBJS) \
+	retstring.o getstring.o handle.o
 
 $(SNOLIB_A): $(SNOLIB_OBJS)
 	rm -f $(SNOLIB_A)

@@ -59,19 +59,17 @@ WAITPID( LA_ALIST) LA_DCL
     getstring(LA_PTR(1), str, sizeof(str));
     for (cp = str; *cp; cp++) {
 	switch (*cp) {
-	case 'c': case 'C': options |= WCONTINUED; break;;
+#ifdef WCONTINUED
+	case 'c': case 'C': options |= WCONTINUED; break;
+#endif
 	case 'h': case 'H': options |= WNOHANG; break;
-	case 'u': case 'U': case 's': case 'S': 
-	    /* synonyms: */
-#ifdef WUNTRACED
-	    options |= WUNTRACED;
+#ifdef WTRAPPED				/* FreeBSD */
+	case 't': case 'T': options |= WTRAPPED; break;
 #endif
-#ifdef WSTOPPED
-	    options |= WSTOPPED;
-#endif
-	    break;
-	case 'x': case 'X': options |= WEXITED; break; /* implicit! */
+	case 'u': case 'U': options |= WUNTRACED; break;
+#ifdef WNOTWAIT
 	case 'w': case 'W': options |= WNOWAIT; break;
+#endif
 	default: RETFAIL;
 	}
     }
@@ -80,12 +78,8 @@ WAITPID( LA_ALIST) LA_DCL
     if (pid == -1)
 	RETFAIL;
 
-    if (WIFCONTINUED(status))
-	sprintf(str, "%u continued", (unsigned)pid);
-    else if (WIFEXITED(status))
+    if (WIFEXITED(status))
 	sprintf(str, "%u exit %d", (unsigned)pid, WEXITSTATUS(status));
-    else if (WIFSTOPPED(status))
-	sprintf(str, "%u stopped %d", (unsigned)pid, WSTOPSIG(status));
     else if (WIFSIGNALED(status)) {
 	sprintf(str, "%u killed %d%s", (unsigned)pid, WTERMSIG(status), 
 #ifdef WCOREDUMP
@@ -95,5 +89,11 @@ WAITPID( LA_ALIST) LA_DCL
 #endif
 		);
     }
+    else if (WIFSTOPPED(status))
+	sprintf(str, "%u stopped %d", (unsigned)pid, WSTOPSIG(status));
+#ifdef WIFCONTINUED
+    else if (WIFCONTINUED(status))
+	sprintf(str, "%u continued", (unsigned)pid);
+#endif
     RETSTR(str);
 }

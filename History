@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/20/2014:
+	Makefile2.m4: snolib cleanup
+	lib/snolib/fork.c: WAITPID cleanup
+	lib/snolib/readline.c: add free()
+
 10/19/2014:
 	configure: add fork module
 		auto-detect Tcl on MacOS

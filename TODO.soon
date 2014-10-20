@@ -1,29 +1,43 @@
 $Id$
 
-STCL
-	use -framework on OS X??
-
 Modules:
 	setuputil.sno:
-		"install" command: allow addition install files
-			install to "local" unless .... ??? (hidden file?)
-		generate/install module.sno files regardless of PML
-			flush snolib/{ndbm,random,stcl,time}.sno files
 		"test" command?
-		allow appending arbitrary .sno file(s) [not just funcs.sno]?
+		"install" command: allow addition install files
+			Install config.sno (for man path)?
+			install to "local" unless .... ??? (hidden file?)
+			install man pages!!!
 		make work on win32 with "cl"
 			http://msdn.microsoft.com/en-us/library/aa278396%28v=vs.60%29.aspx
-	Install config.sno???
 
-	for new modules sqlite3, stat, dirs, sprintf, fork:
-		PML?? generate PMLPROC, config.m4 lines for Makefile2
+	for new modules (sqlite3, stat, dirs, sprintf, fork):
 		man pages -- mention sqlite3 in ndbm page!
-		only install sqlite3 man page if sqlite3 available???
 
 	tests for: logic(!!), sqlite3, stat, dirs, sprintf, fork
 		tests in modules subdirs???
 
-	Move SERV_LISTEN() into "server" module??
+Make all path element generated in init.c available!!
+	BASE/VERSION/local	HOST_SNOLIB_VLOCAL
+	BASE/VERSION/lib	HOST_SNOLIB
+	BASE/local		HOST_SNOLIB_LOCAL
+
+readline:
+	Allow initial text (for Fred W)
+	use "libedit" natively??
+		FreeBSD man editline
+		include <edit/readline/readline.h>?
+
+================
+
+modules:
+	for new modules (sqlite3, stat, dirs, sprintf, fork):
+		PML?? generate PMLPROC, config.m4 lines for Makefile2
+	setuputil.sno
+		generate/install module.sno files regardless of PML
+			flush snolib/{ndbm,random,stcl,time}.sno files
+
+	ndbm module:
+		direct interface to gdbm???
 
 	More:
 		glob?? fnmatch?
@@ -34,23 +48,9 @@ Modules:
 
 	use mgetstring (even more!)
 
-Make all path element generated in init.c available!!
-	BASE/VERSION/local	HOST_SNOLIB_VLOCAL
-	BASE/VERSION/lib	HOST_SNOLIB
-	BASE/local		HOST_SNOLIB_LOCAL
-
-readline:
-	Allow initial text????
-	Allow READLINE() via INPUT? (magic path, or option)
-		Allow control of history
-		Allow control of filename expansion
-	use "libedit" natively??
-
-
-ndbm module:
-	direct interface to gdbm???
-
-================
+Allow readline() access via INPUT? (magic path, or option)
+	Allow control of history
+	Allow control of filename expansion
 
 Flush all use of grep/INCDIR!!!
 
