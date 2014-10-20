@@ -4,6 +4,12 @@
  * ``Poor Man's LOAD''
  * list of functions loaded with snobol4 image.
  *
+ * NOTE!! After version 1.5, all new functionality being built/installed
+ * in dynamicly loadable files!!
+ *
+ * The following are only defined if "configure --force-pml" is used:
+ * PML_LOGIC, PML_STCL, PML_NDBM, PML_TIME, PML_RANDOM
+ *
  * See lib/snolib *.c for example functions
  */
 
