@@ -27,6 +27,14 @@ readline:
 		FreeBSD man editline
 		include <edit/readline/readline.h>?
 
+man pages:
+    snobol4error  -- error codes (from end of man page)
+    snobol4load   -- C functions/macros
+    snobol4func   -- all (non-block) built-in functions
+    snobol4blocks -- new functions
+    snobol4snolib -- overview of snolib/*.sno
+    document snobol4dynamic, snobol4wrapper
+
 ================
 
 modules:
@@ -122,18 +130,7 @@ sdb:
 	    preserve: listings, breakpoints
 		ABORT, ARB, BAL, FAIL, FENCE, REM, SUCCEED
 
-snolib:
-	build shared library!!
-	use mgetstring() in all of lib/snolib?
-
 Have timing script POST results??
-
-man pages:
-    snobol4blocks
-    snobol4err
-    snobol4load
-    snobol4func
-    document snobol4dynamic, snobol4wrapper
 
 Agregate dumping (DUMP(2); &DUMP = 2)
 	What about NAMEs?
