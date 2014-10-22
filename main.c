@@ -80,6 +80,9 @@ main(argc, argv)
 	io_printf(D_A(PUNCH),
 "The Macro Implementation of SNOBOL4 in C (%s) Version %s\n", snoname, vers);
 	io_printf(D_A(PUNCH), "    by Philip L. Budne, %s\n", vdate);
+# ifdef MODIFIED_BANNER
+	io_printf(D_A(PUNCH), "%s\n", MODIFIED_BANNER);
+# endif /* MODIFIED_BANNER defined */
     }
 
 # ifdef ENDEX_LONGJMP

@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/21/2014:
+	main.c: display MODIFIED_BANNER if defined
+
 10/20/2014:
 	Makefile2.m4: snolib cleanup
 	lib/snolib/fork.c: WAITPID cleanup
