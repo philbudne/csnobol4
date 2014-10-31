@@ -2,6 +2,7 @@
 
 /*
  * Windows32 config.h 1/27/2002
+ * Window64 too! 9/23/2013
  *
  * Used for Borland, MINGW, and MSVC
  */
