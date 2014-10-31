@@ -3,7 +3,7 @@
 /*
  * sqlite3 database module for CSNOBOL4
  * Phil Budne <phil@ultimate.com> 11/2/2013
- * fom ndbm.c 9/2/2004
+ * from ndbm.c 9/2/2004
  */
 
 #ifdef HAVE_CONFIG_H
@@ -107,7 +107,7 @@ SQLITE3_LAST_INSERT_ROWID( LA_ALIST ) LA_DCL
 /*
  * LOAD("SQLITE3_PREPARE(INTEGER,STRING)INTEGER", SQLITE3_DL)
  *
- * arg 1:	file handle
+ * arg 1:	db handle
  * arg 2:	SQL statement
  *
  * returns:
@@ -151,7 +151,7 @@ SQLITE3_PREPARE( LA_ALIST ) LA_DCL
 		ret = sqlite3_bind_int(st, par, LA_INT(arg));
 	    break;
 	case R:
-	    ret = sqlite3_bind_double(st, par, LA_REAL(arg));
+	    ret = sqlite3_bind_double(st, par, (double)LA_REAL(arg));
 	    break;
 	case S:
 	    if (LA_STR_LEN(arg) > 0)
@@ -203,7 +203,7 @@ SQLITE3_BIND_ANY( LA_ALIST ) LA_DCL
 	    ret = sqlite3_bind_int(st, par, LA_INT(2));
 	break;
     case R:
-	ret = sqlite3_bind_double(st, par, LA_REAL(2));
+	ret = sqlite3_bind_double(st, par, (double)LA_REAL(2));
 	break;
     case S:
 	if (LA_STR_LEN(2) > 0)
@@ -292,7 +292,7 @@ SQLITE3_BIND_MANY( LA_ALIST ) LA_DCL
 		ret = sqlite3_bind_int(st, par, LA_INT(arg));
 	    break;
 	case R:
-	    ret = sqlite3_bind_double(st, par, LA_REAL(arg));
+	    ret = sqlite3_bind_double(st, par, (double)LA_REAL(arg));
 	    break;
 	case S:
 	    if (LA_STR_LEN(arg) > 0)
@@ -463,7 +463,7 @@ SQLITE3_COLUMN_VALUE( LA_ALIST ) LA_DCL
     case SQLITE_INTEGER:
 	RETINT(sqlite3_column_int64(st, col));
     case SQLITE_FLOAT:
-	RETREAL(sqlite3_column_int64(st, col));
+	RETREAL(sqlite3_column_double(st, col));
     case SQLITE_BLOB:
 	RETSTR2((char *)sqlite3_column_blob(st, col),
 		sqlite3_column_bytes(st, col));
@@ -544,7 +544,7 @@ SQLITE3_FINALIZE( LA_ALIST ) LA_DCL
 /*
  * LOAD("SQLITE3_EXEC(INTEGER,STRING)STRING", SQLITE3_DL)
  *
- * arg 1:	file handle
+ * arg 1:	db handle
  * arg 2:	SQL statement
  *
  * returns:
