@@ -584,6 +584,13 @@ if [ "$GCCPATH" -a "$WANTGCC" ]; then
 	SO_LDFLAGS='-assert nodefinitions'
 	;;
 
+    *:Cygwin*)
+	SO_EXT=.dll
+	SO_CFLAGS=
+	SO_LD=$CCPATH
+	SO_LDFLAGS=-shared
+	;;
+
     *)
 	SO_EXT=.so
 	SO_CFLAGS=-fPIC
@@ -1182,7 +1189,7 @@ if config/check 'sys/types.h sys/socket.h' ""; then
     if config/check "$SOCKINC" \
 	'struct addrinfo aa[2], *ap; getaddrinfo("", "", aa, &ap)' \
 	"$NETLIBS"; then
-	echo 'using getaddrinfo for TCP/IPv6 compatibility' 1>&2
+	echo 'using getaddrinfo() for TCP/IPv6 compatibility' 1>&2
 	echo 'INET_O=inet6.o'			>> $CONFIG_M4
 	if config/check 'sys/types.h rpc/rpc.h' 'struct sockaddr sa; bindresvport_sa(0, &sa);' >/dev/null 2>&1; then
 	    # FreeBSD 4-7, NetBSD, MacOS
@@ -1464,7 +1471,7 @@ fi
 # fseeko isn't needed if "long" (the offset type used by fseek)
 # is 64 bits, but should be safe in any case (famous last words).
 if config/check stdio.h 'fseeko(stdout, 0, 0)'; then
-    echo 'using fseeko for file positioning' 1>&2
+    echo 'using fseeko() for file positioning' 1>&2
     echo '#define HAVE_FSEEKO'			>> $CONFIG_H
 fi
 

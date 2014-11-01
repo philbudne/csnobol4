@@ -228,7 +228,7 @@ handle.o: $(SRCDIR)lib/snolib/handle.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/handle.c
 
 host.o:	$(SRCDIR)lib/snolib/host.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/host.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/host.c -DCC=\"$(CC)\"
 
 log.o:	$(SRCDIR)lib/snolib/log.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/log.c

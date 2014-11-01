@@ -109,20 +109,20 @@
 /* system command flavor for setuptil.sno */
 #if defined(_MSC_VER)
 #define SETUP_SYS "win.msc"
-#define CC "cl"
+#define CCOMPILER "cl"
 #define DL_CFLAGS "/D_USRDLL /D_WINDLL"	/* /LD ??? */
 #define DL_LDFLAGS "/link /DLL"		/* /LD ??? */
 #elif defined(__GNUC__)
 #define SETUP_SYS "posix"		/* mingw uses posix paths */
-#define CC "gcc"
+#define CCOMPILER "gcc"
 #define DL_CFLAGS ""
 #define DL_LDFLAGS "-shared"
 #elif defined(__BORLANDC__)
 #define SETUP_SYS "win.borland"
-#define CC "bcc32"
+#define CCOMPILER "bcc32"
 #define DL_LDFLAGS "-tWD"
 #endif /* defined(__BORLANDC__) */
 
 #define SO_LDFLAGS DL_CFLAGS
-#define SO_LD CC
-#define DL_LD CC
+#define SO_LD CCOMPILER
+#define DL_LD CCOMPILER

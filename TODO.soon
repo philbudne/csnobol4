@@ -7,7 +7,7 @@ Modules:
 			Install config.sno (for man path)?
 			install to "local" unless .... ??? (hidden file?)
 			install man pages!!!
-		make work on win32 with "cl"
+		make work on win32 with "mingw", "cl"
 			http://msdn.microsoft.com/en-us/library/aa278396%28v=vs.60%29.aspx
 
 	for new modules (sqlite3, stat, dirs, sprintf, fork):
@@ -15,6 +15,8 @@ Modules:
 
 	tests for: logic(!!), sqlite3, stat, dirs, sprintf, fork
 		tests in modules subdirs???
+
+	curses simulation of DOS SPITBOL screen functions??
 
 Make all path element generated in init.c available!!
 	BASE/VERSION/local	HOST_SNOLIB_VLOCAL
