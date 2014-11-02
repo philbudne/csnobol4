@@ -10,11 +10,13 @@ Modules:
 		make work on win32 with "mingw", "cl"
 			http://msdn.microsoft.com/en-us/library/aa278396%28v=vs.60%29.aspx
 
-	for new modules (sqlite3, stat, dirs, sprintf, fork):
+	for new modules (sqlite3, stat, dirs, sprintf, fork, ffi):
 		man pages -- mention sqlite3 in ndbm page!
 
-	tests for: logic(!!), sqlite3, stat, dirs, sprintf, fork
+	tests for: logic(!!), sqlite3, stat, dirs, sprintf, fork, ffi
 		tests in modules subdirs???
+
+	ffi: handle variadic functions
 
 	curses simulation of DOS SPITBOL screen functions??
 
