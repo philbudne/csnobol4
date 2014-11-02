@@ -19,7 +19,6 @@
 #include <dlfcn.h>			/* XXX call out to load.c?? */
 
 #include <ffi.h>
-#include <ffitarget.h>
 
 #include "h.h"
 #include "equ.h"
