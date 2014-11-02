@@ -16,7 +16,9 @@ Modules:
 	tests for: logic(!!), sqlite3, stat, dirs, sprintf, fork, ffi
 		tests in modules subdirs???
 
-	ffi: handle variadic functions
+	ffi:
+		have FFI_DLSYM return handles?!
+		handle variadic functions
 
 	curses simulation of DOS SPITBOL screen functions??
 

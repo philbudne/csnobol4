@@ -584,11 +584,12 @@ if [ "$GCCPATH" -a "$WANTGCC" ]; then
 	SO_LDFLAGS='-assert nodefinitions'
 	;;
 
-    *:Cygwin*)
+    *:CYGWIN*)
 	SO_EXT=.dll
 	SO_CFLAGS=
 	SO_LD=$CCPATH
 	SO_LDFLAGS=-shared
+	ADD_LDFLAGS([-Wl,--out-implib,libsnobol4export.a])
 	;;
 
     *)

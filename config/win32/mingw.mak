@@ -31,6 +31,8 @@ SDBM_OBJ=ndbm.o sdbm_pair.o sdbm_hash.o sdbm.o
 CFLAGS=	-c $(OPT) -I$(SRCDIR)config/win32 -I$(SRCDIR)include -I$(SRCDIR). \
 	-DHAVE_CONFIG_H $(INET_DEFS) $(COM_DEFS) $(SDBM_DEFS)
 
+LDFLAGS=-Wl,--out-implib,libsnobol4export.a
+
 # for com.cpp
 CXXFLAGS=$(CFLAGS)
 
@@ -46,7 +48,7 @@ OBJ=	isnobol4.o data.o data_init.o main.o syn.o bal.o break.o \
 	execute.o exists.o term.o findunit.o $(COM_OBJ) $(SDBM_OBJ)
 
 snobol4.exe: $(OBJ)
-	$(CC) -o snobol4 $(OBJ) $(INET_LIBS) $(COM_LIBS)
+	$(CC) -o snobol4 $(OBJ) $(INET_LIBS) $(COM_LIBS) $(LDFLAGS)
 
 data.o:	$(SRCDIR)data.c
 	$(CC) $(CFLAGS) $(SRCDIR)data.c
