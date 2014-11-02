@@ -1366,6 +1366,7 @@ if [ ! "$NO_DYNLIB" ]; then
 	  config/check dlfcn.h 'dlopen("", 0)' -ldl; then
 	LOAD=unix98
 	echo 'using dlopen() for LOAD() support' 1>&2
+	HAVE_DLOPEN=1
 	echo 'LOAD_C=$(SRCDIR)lib/unix98/load.c' >> $CONFIG_M4
 	# XXX use .dll under Cygwin??
 	SNOLIB_FILE=snolib.so
@@ -1644,7 +1645,7 @@ if [ "x$DL_EXT" != x ]; then
     echo "#define DL_LDFLAGS \"$DL_LDFLAGS\"" >> $CONFIG_H
 fi
 
-# Tcl auto-detect is only easy on Mac!
+# Tcl auto-detect is only easy on Mac (system supplied, no version in path)
 if [ "x$TCONF" = x ]; then
     FRAMEWORK=/System/Library/Frameworks/Tcl.framework/tclConfig.sh
     if [ -f $FRAMEWORK ]; then
@@ -1788,16 +1789,17 @@ if config/check 'sys/types.h sys/stat.h' 'struct stat st; lstat("foo", &st)'; th
     echo 'using lstat()' 1>&2
 fi
 
+# MacPorts: /opt/local
+SEARCH_DIRS='/usr/local /opt/local'
 if [ ! "$FORCE_PML" ]; then
-    SQLITE_FRAGMENT='sqlite3 *db; sqlite3_open("foo", &db)'
-    if config/check 'sqlite3.h' "$SQLITE_FRAGMENT" '-lsqlite3'; then
+    SQLITE_FRAG='sqlite3 *db; sqlite3_open("foo", &db)'
+    if config/check 'sqlite3.h' "$SQLITE_FRAG" '-lsqlite3'; then
 	echo 'using sqlite3' 1>&2
 	MODULES="$MODULES sqlite3"
 	SQLITE_INCLUDE=
 	SQLITE_LIBDIR=
     else
-	# MacPorts: /opt/local
-	for DIR in /usr/local /opt/local; do
+	for DIR in $SEARCH_DIRS; do
 	    if config/check sqlite3.h "$SQLITE3_FRAG" "-I$DIR/include -L$DIR/lib -lsqlite3"; then
 	        echo "using sqlite3 from $DIR" 1>&2
 		echo "	SQLITE_INCLUDE = '$DIR/include'" >> $CONFIG_SNO
@@ -1806,6 +1808,26 @@ if [ ! "$FORCE_PML" ]; then
 		break
 	    fi
 	done
+    fi
+
+    if [ "$HAVE_DLOPEN" ]; then
+	FFI_FRAG='ffi_cif cif; ffi_prep_cif(&cif, FFI_DEFAULT_ABI, 0, 0, 0)'
+	if config/check 'ffi.h' "$FFI_FRAG" '-lffi'; then
+	    echo 'using ffi' 1>&2
+	    MODULES="$MODULES ffi"
+	    FFI_INCLUDE=
+	    FFI_LIBDIR=
+	else
+	    for DIR in $SEARCH_DIRS; do
+		if config/check ffi.h "$FFI_FRAG" "-I$DIR/include -L$DIR/lib -lffi"; then
+		    echo "using ffi from $DIR" 1>&2
+		    echo "	FFI_INCLUDE = '$DIR/include'" >> $CONFIG_SNO
+		    echo "	FFI_LIBDIR = '$DIR/lib'" >> $CONFIG_SNO
+		    MODULES="$MODULES ffi"
+		    break
+		fi
+	    done
+	fi
     fi
 fi
 

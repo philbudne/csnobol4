@@ -1,5 +1,5 @@
 -INCLUDE 'setuputil.sno'
-*-INCLUDE 'config.sno'
+-INCLUDE 'config.sno'
 
 	t = TABLE()
 
@@ -15,8 +15,8 @@
 * version (get from RCS ID?)
 
 * info from configure script:
-	t['include_dirs'] = '/usr/local/include'
-	t['library_dirs'] = '/usr/local/lib'
+	t['include_dirs'] = FFI_INCLUDE
+	t['library_dirs'] = FFI_LIBDIR
 
 	setup(t)
 end
