@@ -17,8 +17,8 @@ Modules:
 		tests in modules subdirs???
 
 	ffi:
-		have FFI_DLSYM return handles?!
-		handle variadic functions
+		FFI_PREP_CIF -- take single "(args)return"
+		FFI_CALL_VAR(proto, fhandle, args....)
 
 	curses simulation of DOS SPITBOL screen functions??
 

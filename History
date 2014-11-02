@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/2/2014:
+	modules/ffi/{ffi.c,funcs.sno,test.sno,test2.sno}: PREP takes one arg
+
 11/1/2014:
 	configure: tweak messages, add SO_XXX for Cygwin
 	config/win32/config.h: fix CC collision

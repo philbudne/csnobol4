@@ -1,4 +1,5 @@
 /* $Id$ */
+/*#define DEBUG_FFI*/
 
 /*
  * FFI loadable module for CSNOBOL4
@@ -34,8 +35,11 @@ static handle_handle_t ffi_cifplus;
 static handle_handle_t ffi_dlibs;
 static handle_handle_t ffi_dlsyms;
 
+#define RETSTRING "string"
+#define RETFREESTRING "freestring"
+
 struct cifplus {
-    enum { STR, FREESTR, NOTSTR } pret;	/* pointer return */
+    enum { STR='s', FREESTR='f', NOTSTR='p' } pret;	/* pointer return */
     ffi_cif cif;
 };
 
@@ -53,9 +57,6 @@ union argval {
     long double ld;
     void *p;
 };
-
-#define RETSTRING "string"
-#define RETFREESTRING "freestring"
 
 #define FFI_TYPE(NAME) { #NAME, &ffi_type_##NAME, 0 }
 
@@ -127,8 +128,8 @@ ffi_convert(cp, ret)
 }
 
 /*
- * LOAD("FFI_PREP_CIF(STRING,STRING)INTEGER", FFI_DL)
- * arg types(s), return type
+ * LOAD("FFI_PREP_CIF(STRING)INTEGER", FFI_DL)
+ * arg: "(argtype[,...])rettype"
  * Create and initialize an ffi_cif
  *
  * return handle, or failure
@@ -141,14 +142,17 @@ FFI_PREP_CIF( LA_ALIST ) LA_DCL
     char *cp = mgetstring(LA_PTR(0));
     ffi_type *rtype, **atypes = NULL;
     snohandle_t h;
-    char *xp, *comma;
+    char *xp, *comma, *rp;
     int n = 0;
     int i;
 
-    if (!cp)
-	goto fail;
+    if (!cp || *cp != '(') goto fail;
 
-    comma = cp;
+    comma = cp + 1;			/* skip open paren */
+    rp = index(comma, ')');
+    if (!rp) goto fail;
+    *rp++ = '\0';
+
     for (;;) {
 	comma = index(comma, ',');
 	n++;
@@ -161,11 +165,14 @@ FFI_PREP_CIF( LA_ALIST ) LA_DCL
     if (!atypes)
 	goto fail;
 
-    xp = cp;
+    xp = cp + 1;
     for (;;) {
 	comma = index(xp, ',');
 	if (comma)
 	    *comma = '\0';
+#ifdef DEBUG_FFI
+	printf("arg %d %s\n", i, xp);
+#endif
 	if (!(atypes[i] = ffi_convert(xp, 0)))
 	    goto fail;
 	i++;
@@ -179,11 +186,10 @@ FFI_PREP_CIF( LA_ALIST ) LA_DCL
 	goto fail;
     bzero(cpp, sizeof(struct cifplus));
 
-    free(cp);
-    /* DON'T PUT ANYTHING HERE! */
-    cp = mgetstring(LA_PTR(1));		/* get return type */
-    if (!cp ||
-	!(rtype = ffi_convert(cp, 1)) ||
+#ifdef DEBUG_FFI
+	printf("ret %s\n", rp);
+#endif
+    if (!(rtype = ffi_convert(rp, 1)) ||
 	ffi_prep_cif(&cpp->cif, FFI_DEFAULT_ABI, n, rtype, atypes) != FFI_OK ||
 	(h = new_handle(&ffi_cifplus, cpp)) == BAD_HANDLE) {
     fail:
@@ -193,9 +199,9 @@ FFI_PREP_CIF( LA_ALIST ) LA_DCL
 	RETFAIL;
     }
 
-    if (strcmp(cp, RETSTRING) == 0)
+    if (strcmp(rp, RETSTRING) == 0)
 	cpp->pret = STR;
-    else if (strcmp(cp, RETFREESTRING) == 0)
+    else if (strcmp(rp, RETFREESTRING) == 0)
 	cpp->pret = FREESTR;
     else
 	cpp->pret = NOTSTR;
@@ -229,8 +235,8 @@ FFI_CALL( LA_ALIST ) LA_DCL
     int fail = 1;
     int i;
 
-#ifdef FFI_DEBUG
-    printf("FFI_CALL %ld %p %ld %p\n", LA_INT(0), cpp, LA_INT(1), func);
+#ifdef DEBUG_FFI
+    printf("FFI_CALL %ld (%p) %ld (%p)\n", LA_INT(0), cpp, LA_INT(1), func);
 #endif
     if (!cpp || !func) RETFAIL;
 
@@ -284,6 +290,9 @@ FFI_CALL( LA_ALIST ) LA_DCL
 	    goto ret;
     } // for
 
+#ifdef DEBUG_FFI
+    printf("calling\n");
+#endif
     ffi_call(cif, FFI_FN(func), &result, arg_pointers);
     fail = 0;
 
@@ -316,6 +325,9 @@ FFI_CALL( LA_ALIST ) LA_DCL
 	RET(longdouble,RETREAL,long double);
 	else if (a == &ffi_type_pointer) {
 	    char *ptr = *(char **)&result;
+#ifdef DEBUG_FFI
+	    printf("pret %c\n", cpp->pret);
+#endif
 	    switch (cpp->pret) {
 	    case STR:	RETSTR2(ptr, strlen(ptr));
 	    case FREESTR: RETSTR_FREE(ptr);

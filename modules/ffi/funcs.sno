@@ -11,21 +11,21 @@
 *				float,double,longdouble,pointer
 *	ret_type can be any argtype or "string" or "freestring"
 
-	DEFINE("DEFINE_FFI(proto,ptr)func,args,tmp,ret,i,dummies")
+	DEFINE("DEFINE_FFI(proto,ptr)func,args,tmp,i,dummies")
 						     :(define_ffi.end)
 define_ffi
-	proto pos(0) break('(') . fname bal . args rem . ret :f(FRETURN)
-	args pos(0) '(' break(')') . args	   :f(FRETURN)
+	proto pos(0) break('(') . fname (bal . args rem) . proto
++						:f(FRETURN)
 *	output = fname
+*	output = proto
 *	output = args
-*	output = ret
 	i = 0
 	tmp = args ','
 define_ffi.loop
 	tmp pos(0) break(',') ',' =		:f(define_ffi.eloop)
 	dummies = dummies ',a' (i = i + 1)	:(define_ffi.loop)
 define_ffi.eloop
-	i = FFI_PREP_CIF(args, ret)		:f(FRETURN)
+	i = FFI_PREP_CIF(proto)			:f(FRETURN)
 	tmp = fname ' ' fname ' = FFI_CALL(' i ',' ptr dummies ') '
 +						':f(FRETURN)s(RETURN)'
 *	output = tmp

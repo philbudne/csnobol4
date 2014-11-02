@@ -1,7 +1,7 @@
 -include 'ffi.sno'
 
 	OUTPUT = 'prep'
-        c = FFI_PREP_CIF("double,double", "freestring")	:f(err)
+        c = FFI_PREP_CIF("(double,double)freestring")	:f(err)
 
 	OUTPUT = 'dlopen'
 	d = FFI_RTLD_SELF()
