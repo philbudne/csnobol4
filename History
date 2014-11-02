@@ -6,6 +6,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	modules/ffi/{ffi.c,funcs.sno,test.sno,test2.sno}: PREP takes one arg
 		fix ffi.c for Linux
 	modules/setuputil.sno: fix config.h check
+	configure: fix cygwin --out-implib
 
 11/1/2014:
 	configure: tweak messages, add SO_XXX for Cygwin

@@ -589,7 +589,7 @@ if [ "$GCCPATH" -a "$WANTGCC" ]; then
 	SO_CFLAGS=
 	SO_LD=$CCPATH
 	SO_LDFLAGS=-shared
-	ADD_LDFLAGS([-Wl,--out-implib,libsnobol4export.a])
+	echo 'ADD_LDFLAGS([-Wl,--out-implib,libsnobol4export.a])' >> $CONFIG_M4
 	;;
 
     *)
