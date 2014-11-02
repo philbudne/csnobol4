@@ -21,6 +21,8 @@
 #include <ffi.h>
 
 /* XXX call out to load.c?? */
+#define _GNU_SOURCE			/* for RTLD_{DEFAULT,NEXT} */
+#define __USE_GNU
 #include <dlfcn.h>
 
 #include "h.h"
@@ -391,7 +393,11 @@ FFI_DLSYM( LA_ALIST ) LA_DCL
     int_t ret;
     char *str;
     void *val;
-    if (dl != RTLD_SELF && dl != RTLD_DEFAULT && dl == RTLD_NEXT) {
+    if (dl != RTLD_DEFAULT && dl == RTLD_NEXT
+#ifdef RTLD_SELF
+	&& dl != RTLD_SELF
+#endif
+	) {
 	dl = lookup_handle(&ffi_dlibs, LA_INT(0));
 	if (!dl) RETFAIL;
     }
@@ -452,5 +458,9 @@ FFI_RTLD_DEFAULT( LA_ALIST ) LA_DCL
 int
 FFI_RTLD_SELF( LA_ALIST ) LA_DCL
 {
+#ifdef RTLD_SELF
     RETINT((int_t)RTLD_SELF);
+#else
+    RETNULL;				/* works on Linux */
+#endif
 }

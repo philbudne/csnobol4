@@ -30,7 +30,7 @@ setup	TERMINAL = DIFFER(DATATYPE(t),'TABLE') 'setup needs TABLE'
 	objext = HOST(HOST_OBJ_EXT)
 	sys = HOST(HOST_SETUP_SYS)
 * build against local include files
-	dist_build = FILE("../../setup.sno") FILE("../../config.h") 1
+	dist_build = FILE("setup.sno") FILE("../../config.h") 1
 * module from distribution sources-- use for installation?
 	dist_src = FILE("CVS/Entries") 1
 
