@@ -16,9 +16,11 @@
 #endif
 
 #include <inttypes.h>
-#include <dlfcn.h>			/* XXX call out to load.c?? */
-
+#include <stdio.h>			/* for debug, test function */
 #include <ffi.h>
+
+/* XXX call out to load.c?? */
+#include <dlfcn.h>
 
 #include "h.h"
 #include "equ.h"
@@ -28,24 +30,34 @@
 #include "handle.h"
 #include "str.h"
 
-#include <stdio.h>			/* TEMP */
-
 static handle_handle_t ffi_cifplus;
 static handle_handle_t ffi_dlibs;
+static handle_handle_t ffi_dlsyms;
 
 struct cifplus {
-    enum { NORM, STR, FREESTR } ret;
+    enum { STR, FREESTR, NOTSTR } pret;	/* pointer return */
     ffi_cif cif;
 };
 
-#ifdef __STDC__
-#define FFI_TYPE(NAME) { #NAME, &ffi_type_##NAME, 0 }
-#else
-#define FFI_TYPE(NAME) { "NAME", &ffi_type_/**/NAME, 0 }
-#endif
+union argval {
+    int8_t s8;
+    uint8_t u8;
+    int16_t s16;
+    uint16_t u16;
+    int32_t s32;
+    uint32_t u32;
+    int64_t s64;
+    uint64_t u64;
+    float f;
+    double d;
+    long double ld;
+    void *p;
+};
 
 #define RETSTRING "string"
 #define RETFREESTRING "freestring"
+
+#define FFI_TYPE(NAME) { #NAME, &ffi_type_##NAME, 0 }
 
 const struct ffi_type_name {
     char *name;
@@ -78,16 +90,16 @@ const struct ffi_type_name {
     FFI_TYPE(sint),
     FFI_TYPE(ulong),
     FFI_TYPE(slong),
-    /* for return type: */
+    /* for return type only: */
     { RETSTRING, &ffi_type_pointer, 1 },
     { RETFREESTRING, &ffi_type_pointer, 1 },
     { "void", &ffi_type_void, 1 },
     { NULL, NULL }
 };
 
-#if 1
+#ifdef DEBUG_FFI
 static char *
-pr_type(ftp)
+ffi_str(ftp)
     ffi_type *ftp;
 {
     const struct ffi_type_name *ftnp;
@@ -105,6 +117,7 @@ ffi_convert(cp, ret)
 {
     const struct ffi_type_name *ftnp;
     for (ftnp = ffi_type_names; ftnp->name; ftnp++) {
+	/* only allow return only when called for return type! */
 	if ((ret || !ftnp->ret) &&
 	    strcmp(cp, ftnp->name) == 0) {
 	    return ftnp->ptr;
@@ -181,9 +194,11 @@ FFI_PREP_CIF( LA_ALIST ) LA_DCL
     }
 
     if (strcmp(cp, RETSTRING) == 0)
-	cpp->ret = STR;
+	cpp->pret = STR;
     else if (strcmp(cp, RETFREESTRING) == 0)
-	cpp->ret = FREESTR;
+	cpp->pret = FREESTR;
+    else
+	cpp->pret = NOTSTR;
     free(cp);
     RETINT(h);				/* XXX make string tcl%d? */
 }
@@ -192,60 +207,51 @@ FFI_PREP_CIF( LA_ALIST ) LA_DCL
 char *
 foo(double a, double b) {
     char ret[512];
-    sprintf(ret, "foo %f + %f = %f", a, b, a + b);
+    sprintf(ret, "foo %g + %g = %g", a, b, a + b);
     return strdup(ret);
 }
 
 /*
- * LOAD("FFI_CALL(CIF,ADDR,)", FFI_DL)
+ * LOAD("FFI_CALL(INTEGER,INTEGER)", FFI_DL)
+ * arg 1: handle from FFI_PREP_CIF
+ * arg 2: handle from FFI_DLSYM (function pointer)
+ * args 3+: arguments to pass to function
  */
 int
 FFI_CALL( LA_ALIST ) LA_DCL
 {
-    int fail = 1;
     struct cifplus *cpp = lookup_handle(&ffi_cifplus, LA_INT(0));
-    void *func = (void *)LA_INT(1);	/* YIKES!!! */
+    void *func = lookup_handle(&ffi_dlsyms, LA_INT(1));
     void **arg_pointers = NULL;
+    union argval *cargs = NULL;
     ffi_arg result;
     ffi_cif *cif;
-    union argval {
-	int8_t s8;
-	uint8_t u8;
-	int16_t s16;
-	uint16_t u16;
-	int32_t s32;
-	uint32_t u32;
-	int64_t s64;
-	uint64_t u64;
-	float f;
-	double d;
-	long double ld;
-	void *p;
-    } *cargs = NULL;
+    int fail = 1;
     int i;
 
-    if (!cpp)
-	RETFAIL;
+#ifdef FFI_DEBUG
+    printf("FFI_CALL %ld %p %ld %p\n", LA_INT(0), cpp, LA_INT(1), func);
+#endif
+    if (!cpp || !func) RETFAIL;
 
     cif = &cpp->cif;
-    if (nargs-2 < cif->nargs)
-	RETFAIL;
+    if (nargs-2 < cif->nargs) RETFAIL;
 
     arg_pointers = malloc(sizeof(void *) * cif->nargs);
-    if (!arg_pointers)
-	goto ret;
+    if (!arg_pointers) goto ret;
     bzero(arg_pointers, sizeof(void *) * cif->nargs);
 
     cargs = malloc(sizeof(union argval) * cif->nargs);
-    if (!cargs)
-	goto ret;
+    if (!cargs) goto ret;
     bzero(cargs, sizeof(union argval) * cif->nargs);
 
+#define ARG_OFFSET 2
     for (i = 0; i < cif->nargs; i++) {
-	int s = i + 2;			/* SNOBOL4 argument index */
+	int s = i + ARG_OFFSET;		/* SNOBOL4 argument index */
 	ffi_type *a = cif->arg_types[i];
-	/*printf("arg %d type %d %s\n", i, LA_TYPE(s), pr_type(a));*/
-
+#ifdef DEBUG_FFI
+	printf("arg %d type %d %s\n", i, LA_TYPE(s), ffi_str(a));
+#endif
 #define ARG(TYPE,FIELD) \
 	else if (a == &ffi_type_##TYPE) { \
 	    if (LA_TYPE(s) == I) cargs[i].FIELD = LA_INT(s); \
@@ -253,6 +259,7 @@ FFI_CALL( LA_ALIST ) LA_DCL
 	    else goto ret; \
 	    arg_pointers[i] = &cargs[i].FIELD; \
 	}
+
 	if (0) ;
 	ARG(uint8,u8)
 	ARG(sint8,s8)
@@ -266,9 +273,11 @@ FFI_CALL( LA_ALIST ) LA_DCL
 	ARG(double,d)
 	ARG(longdouble,ld)
 	else if (a == &ffi_type_pointer) {
-	    if (LA_TYPE(s) != S) goto ret;
-	    cargs[i].p = mgetstring(LA_PTR(s));
-	    /* XXX accept "I"??? */
+	    if (LA_TYPE(s) == S)
+		cargs[i].p = mgetstring(LA_PTR(s));
+	    else if (LA_TYPE(s) != I ||
+		     !(cargs[i].p = lookup_handle(&ffi_dlsyms, LA_INT(1))))
+		goto ret;
 	    arg_pointers[i] = &cargs[i].p;
 	}
 	else
@@ -279,40 +288,38 @@ FFI_CALL( LA_ALIST ) LA_DCL
     fail = 0;
 
  ret:
-    /* free any mgetstring pointers! */
+    /* free strings from mgetstring */
     for (i = 0; i < cif->nargs; i++) {
 	if (cif->arg_types[i] == &ffi_type_pointer &&
-	    LA_TYPE(i+1) == S && cargs[i].p)
+	    LA_TYPE(i+ARG_OFFSET) == S && cargs[i].p)
 	    free(cargs[i].p);
     }
-
     if (cargs) free(cargs);
     if (arg_pointers) free(arg_pointers);
 
     if (!fail) {
 	ffi_type *a = cif->rtype;
-/* bash these out via a macro? */
-	if (a == &ffi_type_uint8)	    RETINT(*(uint8_t *)&result);
-	else if (a == &ffi_type_sint8)	    RETINT(*(int8_t *)&result);
-	else if (a == &ffi_type_uint16)	    RETINT(*(uint16_t *)&result);
-	else if (a == &ffi_type_sint16)	    RETINT(*(int16_t *)&result);
-	else if (a == &ffi_type_uint32)	    RETINT(*(uint32_t *)&result);
-	else if (a == &ffi_type_sint32)	    RETINT(*(int32_t *)&result);
-	else if (a == &ffi_type_uint64)	    RETINT(*(uint64_t *)&result);
-	else if (a == &ffi_type_sint64)	    RETINT(*(int64_t *)&result);
-	else if (a == &ffi_type_float)	    RETREAL(*(float *)&result);
-	else if (a == &ffi_type_double)	    RETREAL(*(double *)&result);
-	else if (a == &ffi_type_longdouble) RETREAL(*(long double *)&result);/*?*/
+#define RET(FFI,RETMACRO,CTYPE) \
+	else if (a == &ffi_type_##FFI) RETMACRO(*(CTYPE *)&result)
+
+	if (0) ;
+	RET(uint8,RETINT,uint8_t);
+	RET(sint8,RETINT,int8_t);
+	RET(uint16,RETINT,uint16_t);
+	RET(sint16,RETINT,int16_t);
+	RET(uint32,RETINT,uint32_t);
+	RET(sint32,RETINT,int32_t);
+	RET(uint64,RETINT,uint64_t);
+	RET(sint64,RETINT,int64_t);
+	RET(float,RETREAL,float);
+	RET(double,RETREAL,double);
+	RET(longdouble,RETREAL,long double);
 	else if (a == &ffi_type_pointer) {
-	    char *str = *(char **)&result;
-	    switch (cpp->ret) {
-	    case STR:
-		RETSTR2(str, strlen(str));
-	    case FREESTR:
-		RETSTR_FREE(str);
-	    case NORM:
-		/* On Un*x long always large enough for pointer? */
-		RETINT((int_t)str);
+	    char *ptr = *(char **)&result;
+	    switch (cpp->pret) {
+	    case STR:	RETSTR2(ptr, strlen(ptr));
+	    case FREESTR: RETSTR_FREE(ptr);
+	    case NOTSTR: RETINT((int_t)ptr); /* UGH!!! */
 	    }
 	}
     }
@@ -353,35 +360,43 @@ FFI_DLOPEN( LA_ALIST ) LA_DCL
     /* XXX should call out to load.c!!! */
     void *dl = dlopen(str, RTLD_LAZY);	/* XXX take mode arg??? */
     if (str) free(str);
-    if (!dl || (h = new_handle(&ffi_cifplus, dl)) == BAD_HANDLE)
+    if (!dl) RETFAIL;
+    if ((h = new_handle(&ffi_dlibs, dl)) == BAD_HANDLE) {
+	dlclose(dl);
 	RETFAIL;
-    RETINT(I);
+    }
+    RETINT(h);
 }
 
 /*
- * LOAD("FFI_DLSYM(INTEGER,STRING)STRING", FFI_DL)
+ * LOAD("FFI_DLSYM(INTEGER,STRING)INTEGER", FFI_DL)
+ * returns a handle for FFI_CALL
  */
 int
 FFI_DLSYM( LA_ALIST ) LA_DCL
 {
-    void *h = (void *)LA_INT(0);
+    void *dl = (void *)LA_INT(0);
+    int_t ret;
     char *str;
     void *val;
-    if (h != RTLD_SELF && h != RTLD_DEFAULT && h == RTLD_NEXT) {
-	h = lookup_handle(&ffi_dlibs, LA_INT(0));
-	if (!h)
-	    RETFAIL;
+    if (dl != RTLD_SELF && dl != RTLD_DEFAULT && dl == RTLD_NEXT) {
+	dl = lookup_handle(&ffi_dlibs, LA_INT(0));
+	if (!dl) RETFAIL;
     }
     str = mgetstring(LA_PTR(1));
-    val = dlsym(h, str);
+    val = dlsym(dl, str);
     if (str) free(str);
-    if (!val)
-	RETFAIL;
-    RETINT((int_t)val);
+    if (!val) RETFAIL;
+    if ((ret = new_handle(&ffi_dlsyms, val)) == BAD_HANDLE) RETFAIL;
+#ifdef FFI_DEBUG
+    printf("dlsym %ld %p\n", ret, val);
+#endif
+    RETINT(ret);
 }
 
+#if 0 /* would need to invalidate function handles */
 /*
- * LOAD("FFI_DLCLOSE(INTEGER)STRING", FFI_DL)
+ * XXX("FFI_DLCLOSE(INTEGER)STRING", FFI_DL)
  */
 int
 FFI_DLCLOSE( LA_ALIST ) LA_DCL
@@ -393,6 +408,7 @@ FFI_DLCLOSE( LA_ALIST ) LA_DCL
     remove_handle(&ffi_dlibs, LA_INT(0)); /* gone to SNOBOL world... */
     RETNULL;
 }
+#endif
 
 /*
  * LOAD("FFI_RTLD_NEXT()INTEGER", FFI_DL)

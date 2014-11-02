@@ -5,9 +5,11 @@
 
 	OUTPUT = 'dlopen'
 	d = FFI_RTLD_SELF()
+*	output = d
 
 	OUTPUT = 'sym'
 	f = FFI_DLSYM(d, "foo")
+*	output = f
 
 	OUTPUT = 'call'
 	OUTPUT = FFI_CALL(c, f, 1.0, 4.0)		:f(err)
