@@ -1,0 +1,22 @@
+-INCLUDE 'setuputil.sno'
+*-INCLUDE 'config.sno'
+
+	t = TABLE()
+
+	t['module'] = 'ffi'
+	t['sources'] = 'ffi.c'
+	t['libraries'] = 'ffi'
+
+	t['author'] = t['maintainer'] = 'Phil Budne'
+	t['author_email'] = t['maintainer_email'] = 'phil@snobol4.org'
+	t['license'] = 'BSD'
+* description
+* long_description
+* version (get from RCS ID?)
+
+* info from configure script:
+	t['include_dirs'] = '/usr/local/include'
+	t['library_dirs'] = '/usr/local/lib'
+
+	setup(t)
+end

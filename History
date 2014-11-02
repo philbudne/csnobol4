@@ -6,6 +6,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	configure: tweak messages, add SO_XXX for Cygwin
 	config/win32/config.h: fix CC collision
 	config/win32/mingw.mak: define CC on command line
+	modules/ffi/{ffi.c,setup.sno,test.sno,test2.sno}: FFI interface!!
 
 10/22/2014:
 	modules/sqlite3/sqlite3.c: fix typo, floating point tweaks

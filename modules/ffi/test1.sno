@@ -1,0 +1,20 @@
+-include 'ffi.sno'
+
+	OUTPUT = 'prep'
+        c = FFI_PREP_CIF("double,double", "freestring")	:f(err)
+
+	OUTPUT = 'dlopen'
+	d = FFI_RTLD_SELF()
+
+	OUTPUT = 'sym'
+	f = FFI_DLSYM(d, "foo")
+
+	OUTPUT = 'call'
+	OUTPUT = FFI_CALL(c, f, 1.0, 4.0)		:f(err)
+
+	OUTPUT = 'free'
+        FFI_FREE_CIF(c)					:s(end)
+
+err	OUTPUT = 'err'
+
+END

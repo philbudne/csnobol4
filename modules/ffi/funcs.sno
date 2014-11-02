@@ -1,0 +1,34 @@
+* $Id$
+
+*	DEFINE_FFI(prototype, pointer)
+*	define a SNOBOL4 function that calls an external function via FFI
+*
+*	arguments:
+*	prototype: (argtype[,argtype]...)ret_type
+*	ptr: integer pointer to function to call!!
+*
+*	argtype can be any of: [us]int{8,16,32,64} [us]{char,short,int,long}
+*				float,double,longdouble,pointer
+*	ret_type can be any argtype or "string" or "freestring"
+
+	DEFINE("DEFINE_FFI(proto,ptr)func,args,tmp,ret,i,dummies")    :(define_ffi.end)
+define_ffi
+	proto pos(0) break('(') . fname bal . args rem . ret :f(FRETURN)
+	args pos(0) '(' break(')') . args	   :f(FRETURN)
+*	output = fname
+*	output = args
+*	output = ret
+
+	i = 0
+	tmp = args ','
+define_ffi.loop
+	tmp pos(0) break(',') ',' =		:f(define_ffi.eloop)
+	dummies = dummies ',a' (i = i + 1)	:(define_ffi.loop)
+define_ffi.eloop
+	i = FFI_PREP_CIF(args, ret)		:f(FRETURN)
+	tmp = fname ' ' fname ' = FFI_CALL(' i ',' ptr dummies ') :f(FRETURN)s(RETURN)'
+*	output = tmp
+	CODE(tmp)				:f(FRETURN)
+	DEFINE(fname '(' dummies ')')		:f(FRETURN)s(RETURN)
+define_ffi.end
+

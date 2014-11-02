@@ -1,0 +1,7 @@
+-include 'ffi.sno'
+
+	foo = FFI_DLSYM(FFI_RTLD_SELF(), "foo")
+	DEFINE_FFI('foo(double,double)freestring', foo)
+	output = foo(1.0, 2.0)
+
+end
