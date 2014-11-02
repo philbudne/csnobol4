@@ -18,7 +18,6 @@ define_ffi
 *	output = fname
 *	output = args
 *	output = ret
-
 	i = 0
 	tmp = args ','
 define_ffi.loop
@@ -29,6 +28,9 @@ define_ffi.eloop
 	tmp = fname ' ' fname ' = FFI_CALL(' i ',' ptr dummies ') :f(FRETURN)s(RETURN)'
 *	output = tmp
 	CODE(tmp)				:f(FRETURN)
-	DEFINE(fname '(' dummies ')')		:f(FRETURN)s(RETURN)
+	dummies pos(0) ',' =
+	tmp = fname '(' dummies ')'
+*	output = tmp
+	DEFINE(tmp)				 :f(FRETURN)s(RETURN)
 define_ffi.end
 

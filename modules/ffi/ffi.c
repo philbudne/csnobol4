@@ -39,9 +39,9 @@ struct cifplus {
 };
 
 #ifdef __STDC__
-#define FFI_TYPE(NAME) { #NAME, &ffi_type_##NAME }
+#define FFI_TYPE(NAME) { #NAME, &ffi_type_##NAME, 0 }
 #else
-#define FFI_TYPE(NAME) { "NAME", &ffi_type_/**/NAME }
+#define FFI_TYPE(NAME) { "NAME", &ffi_type_/**/NAME, 0 }
 #endif
 
 #define RETSTRING "string"
@@ -50,6 +50,7 @@ struct cifplus {
 const struct ffi_type_name {
     char *name;
     ffi_type *ptr;
+    int ret;
 } ffi_type_names[] = {
     /* integer by length: */
     FFI_TYPE(uint8),
@@ -78,8 +79,9 @@ const struct ffi_type_name {
     FFI_TYPE(ulong),
     FFI_TYPE(slong),
     /* for return type: */
-    { RETSTRING, &ffi_type_pointer },
-    { RETFREESTRING, &ffi_type_pointer },
+    { RETSTRING, &ffi_type_pointer, 1 },
+    { RETFREESTRING, &ffi_type_pointer, 1 },
+    { "void", &ffi_type_void, 1 },
     { NULL, NULL }
 };
 
@@ -97,12 +99,14 @@ pr_type(ftp)
 #endif
 
 static ffi_type *
-ffi_convert(cp)
+ffi_convert(cp, ret)
     char *cp;
+    int ret;
 {
     const struct ffi_type_name *ftnp;
     for (ftnp = ffi_type_names; ftnp->name; ftnp++) {
-	if (strcmp(cp, ftnp->name) == 0) {
+	if ((ret || !ftnp->ret) &&
+	    strcmp(cp, ftnp->name) == 0) {
 	    return ftnp->ptr;
 	}
     }
@@ -149,7 +153,7 @@ FFI_PREP_CIF( LA_ALIST ) LA_DCL
 	comma = index(xp, ',');
 	if (comma)
 	    *comma = '\0';
-	if (!(atypes[i] = ffi_convert(xp)))
+	if (!(atypes[i] = ffi_convert(xp, 0)))
 	    goto fail;
 	i++;
 	if (!comma)
@@ -166,7 +170,7 @@ FFI_PREP_CIF( LA_ALIST ) LA_DCL
     /* DON'T PUT ANYTHING HERE! */
     cp = mgetstring(LA_PTR(1));		/* get return type */
     if (!cp ||
-	!(rtype = ffi_convert(cp)) ||
+	!(rtype = ffi_convert(cp, 1)) ||
 	ffi_prep_cif(&cpp->cif, FFI_DEFAULT_ABI, n, rtype, atypes) != FFI_OK ||
 	(h = new_handle(&ffi_cifplus, cpp)) == BAD_HANDLE) {
     fail:
@@ -242,65 +246,29 @@ FFI_CALL( LA_ALIST ) LA_DCL
 	ffi_type *a = cif->arg_types[i];
 	/*printf("arg %d type %d %s\n", i, LA_TYPE(s), pr_type(a));*/
 
-/* bash these out via a macro? */
-	if (a == &ffi_type_uint8) {
-	    if (LA_TYPE(s) != I) goto ret;
-	    cargs[i].u8 = LA_INT(s);
-	    arg_pointers[i] = &cargs[i].u8;
+#define ARG(TYPE,FIELD) \
+	else if (a == &ffi_type_##TYPE) { \
+	    if (LA_TYPE(s) == I) cargs[i].FIELD = LA_INT(s); \
+	    else if (LA_TYPE(s) == R) cargs[i].FIELD = LA_REAL(s); \
+	    else goto ret; \
+	    arg_pointers[i] = &cargs[i].FIELD; \
 	}
-	else if (a == &ffi_type_sint8) {
-	    if (LA_TYPE(s) != I) goto ret;
-	    cargs[i].s8 = LA_INT(s);
-	    arg_pointers[i] = &cargs[i].s8;
-	}
-	else if (a == &ffi_type_uint16) {
-	    if (LA_TYPE(s) != I) goto ret;
-	    cargs[i].u16 = LA_INT(s);
-	    arg_pointers[i] = &cargs[i].u16;
-	}
-	else if (a == &ffi_type_sint16) {
-	    if (LA_TYPE(s) != I) goto ret;
-	    cargs[i].s16 = LA_INT(s);
-	    arg_pointers[i] = &cargs[i].s16;
-	}
-	else if (a == &ffi_type_uint32) {
-	    if (LA_TYPE(s) != I) goto ret;
-	    cargs[i].u32 = LA_INT(s);
-	    arg_pointers[i] = &cargs[i].u32;
-	}
-	else if (a == &ffi_type_sint32) {
-	    if (LA_TYPE(s) != I) goto ret;
-	    cargs[i].s32 = LA_INT(s);
-	    arg_pointers[i] = &cargs[i].s32;
-	}
-	else if (a == &ffi_type_uint64) {
-	    if (LA_TYPE(s) != I) goto ret;
-	    cargs[i].u64 = LA_INT(s);
-	    arg_pointers[i] = &cargs[i].u64;
-	}
-	else if (a == &ffi_type_sint64) {
-	    if (LA_TYPE(s) != I) goto ret;
-	    cargs[i].s64 = LA_INT(s);
-	    arg_pointers[i] = &cargs[i].s64;
-	}
-	else if (a == &ffi_type_float) {
-	    if (LA_TYPE(s) != R) goto ret;
-	    cargs[i].f = LA_REAL(s);
-	    arg_pointers[i] = &cargs[i].f;
-	}
-	else if (a == &ffi_type_double) {
-	    if (LA_TYPE(s) != R) goto ret;
-	    cargs[i].d = LA_REAL(s);
-	    arg_pointers[i] = &cargs[i].d;
-	}
-	else if (a == &ffi_type_longdouble) {
-	    if (LA_TYPE(s) != R) goto ret;
-	    cargs[i].ld = LA_REAL(s);
-	    arg_pointers[i] = &cargs[i].ld;
-	}
+	if (0) ;
+	ARG(uint8,u8)
+	ARG(sint8,s8)
+	ARG(uint16,u16)
+	ARG(sint16,s16)
+	ARG(uint32,u32)
+	ARG(sint32,s32)
+	ARG(uint64,u64)
+	ARG(sint64,s64)
+	ARG(float,f)
+	ARG(double,d)
+	ARG(longdouble,ld)
 	else if (a == &ffi_type_pointer) {
 	    if (LA_TYPE(s) != S) goto ret;
 	    cargs[i].p = mgetstring(LA_PTR(s));
+	    /* XXX accept "I"??? */
 	    arg_pointers[i] = &cargs[i].p;
 	}
 	else
