@@ -14,6 +14,10 @@
 #include <windows.h>
 #include <io.h>
 
+#ifdef __GNUC__
+#include <malloc.h>
+#endif
+
 #include "h.h"
 #include "snotypes.h"
 #include "lib.h"

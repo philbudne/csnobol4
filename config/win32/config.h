@@ -75,7 +75,10 @@
 #define PML_TIME
 #define PML_RANDOM
 #define HAVE_SLEEP
-#define HAVE_TIMEGM
+
+#ifndef __GNUC__
+#define HAVE_TIMEGM			/* not in MINGW 1.0.7(0.48/3/2) */
+#endif
 
 #ifdef _WIN64
 /*
@@ -102,6 +105,7 @@
 
 #ifdef __GNUC__
 #define OBJECT_EXT ".o"
+#define USE_WCHAR_H
 #else
 #define OBJECT_EXT ".obj"
 #endif
@@ -126,3 +130,5 @@
 #define SO_LDFLAGS DL_CFLAGS
 #define SO_LD CCOMPILER
 #define DL_LD CCOMPILER
+
+#define BLOCKS

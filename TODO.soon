@@ -7,7 +7,7 @@ Modules:
 			Install config.sno (for man path)?
 			install to "local" unless .... ??? (hidden file?)
 			install man pages!!!
-		make work on win32 with "mingw", "cl"
+		make work on win32 with "cl"
 			http://msdn.microsoft.com/en-us/library/aa278396%28v=vs.60%29.aspx
 
 	for new modules (sqlite3, stat, dirs, sprintf, fork, ffi):
