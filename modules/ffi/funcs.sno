@@ -14,7 +14,7 @@
 **which can followed by a return type, which can be
 **any of the above parameter types, or
 **B<void>, B<string>, B<freestring> and
-**I<pointer> is a value returned by B<FFI_DLSYM>.
+**I<pointer> is a value returned by B<FFI_DLSYM()>.
 **=cut
 	DEFINE("DEFINE_FFI(proto,ptr)func,args,tmp,i,dummies")
 						     :(define_ffi.end)
