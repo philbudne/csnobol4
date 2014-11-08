@@ -27,8 +27,19 @@
 static handle_handle_t dir_handles;
 
 /*
+**=pod
+**=head1 NAME
+**snobol4dirs - filesystem directory interface for SNOBOL4
+**=head1 SYNOPSYS
+**B<-INCLUDE 'dirs.sno'>
+**=head1 DESCRIPTION
+**B<OPENDIR(>I<path>B<)> opens a directory and returns a handle.
+**=cut
+*/
+
+/*
  * LOAD("OPENDIR(STRING)INTEGER", DIRS_DL)
- * Open a database file
+ * Open a directory
  *
  * first arg:
  *	filename
@@ -55,6 +66,12 @@ OPENDIR( LA_ALIST ) LA_DCL
 }
 
 /*
+**=pod
+**
+**B<READDIR(>I<handle>B<)> returns a filename or fails.
+**=cut
+*/
+/*
  * LOAD("READDIR(INTEGER)STRING", DIRS_DL)
  *
  * return name or failure
@@ -77,6 +94,12 @@ READDIR( LA_ALIST ) LA_DCL
 }
 
 /*
+**=pod
+**
+**B<REWINDDIR(>I<handle>B<)> rewinds a directory handle.
+**=cut
+*/
+/*
  * LOAD("REWINDDIR(INTEGER)STRING", DIRS_DL)
  * returns: null string or failure
  */
@@ -94,6 +117,13 @@ REWINDDIR( LA_ALIST ) LA_DCL
 
 #ifndef _WIN32 				/* should be HAVE_SEEKDIR */
 /*
+**=pod
+**
+**B<TELLDIR(>I<handle>B<)> reports directory handle position.
+**(may not be available on all platforms).
+**=cut
+*/
+/*
  * LOAD("TELLDIR(INTEGER)INTEGER", DIRS_DL)
  * returns: integer or failure
  */
@@ -108,6 +138,12 @@ TELLDIR( LA_ALIST ) LA_DCL
     RETINT(telldir(d));
 }
 
+/*
+**=pod
+**
+**B<TELLDIR(>I<handle>B<)> adjusts directory handle position.
+**=cut
+*/
 /*
  * LOAD("SEEKDIR(INTEGER,INTEGER)STRING", DIRS_DL)
  * returns: null string or failure
@@ -125,6 +161,12 @@ SEEKDIR( LA_ALIST ) LA_DCL
 #endif
 
 /*
+**=pod
+**
+**B<TELLDIR(>I<handle>B<)> closes directory handle.
+**=cut
+*/
+/*
  * LOAD("CLOSEDIR(INTEGER)STRING", DIRS_DL)
  * returns: null string or failure
  */
@@ -141,3 +183,12 @@ CLOSEDIR( LA_ALIST ) LA_DCL
 	RETFAIL;
     RETNULL;
 }
+
+/*
+**=pod
+**=head1 SEE ALSO
+**B<snobol4(>1B<)>, B<stat(>2B<)>, B<lstat(>2B<)>, B<fstat(>2B<)>
+**=head1 AUTHOR
+**Philip L. Budne
+**=cut
+*/

@@ -9,6 +9,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	modules/ffi/{ffi.c,funcs.sno}: add documentation
 	modules/stat/funcs.sno: add documentation
 	modules/stat/stat.c: add block device
+	modules/dirs/dirs.c: add POD docs
 	config/win32/config.h: more tweaking for mingw
 	lib/win32/tty.c: include malloc.h under mingw
 
