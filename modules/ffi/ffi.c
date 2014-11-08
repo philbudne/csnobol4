@@ -8,6 +8,16 @@
  * Fred Weigel wrote a different FFI interface, which inspired this...
  */
 
+/*
+**=pod
+**=head1 NAME
+**snobol4ffi - Foreign Function Interface for SNOBOL4
+**=head1 SYNOPSYS
+**B<-INCLUDE 'ffi.sno'>
+**=head1 DESCRIPTION
+**=cut
+*/
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
@@ -120,9 +130,8 @@ ffi_convert(cp, ret)
 {
     const struct ffi_type_name *ftnp;
     for (ftnp = ffi_type_names; ftnp->name; ftnp++) {
-	/* only allow return only when called for return type! */
-	if ((ret || !ftnp->ret) &&
-	    strcmp(cp, ftnp->name) == 0) {
+	/* only allow "return only" when called for return type! */
+	if ((ret || !ftnp->ret) && strcmp(cp, ftnp->name) == 0) {
 	    return ftnp->ptr;
 	}
     }
@@ -362,6 +371,16 @@ FFI_FREE_CIF( LA_ALIST ) LA_DCL
 /****************************************************************/
 
 /*
+**=pod
+**
+**B<FFI_DLOPEN(>I<filename>B<)> takes the path of a dynamicly loadable
+**executable file (B<.so>, B<.bundle>,  or B<.DLL>) and returns a value
+**which can be passed to B<FFI_DLSYM()>.
+**
+**=cut
+*/
+
+/*
  * LOAD("FFI_DLOPEN(STRING)INTEGER", FFI_DL)
  */
 int
@@ -381,6 +400,14 @@ FFI_DLOPEN( LA_ALIST ) LA_DCL
     }
     RETINT(h);
 }
+
+/*
+**=pod
+**B<FFI_DLSYM(>I<library>,I<function>B<)> takes a I<library> value
+**returned by B<FFI_DLOPEN()>, and a function name, and returns a
+**value which can be passed to B<DEFINE_FFI()>.
+**=cut
+*/
 
 /*
  * LOAD("FFI_DLSYM(INTEGER,STRING)INTEGER", FFI_DL)

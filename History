@@ -2,6 +2,12 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/7/2014:
+	snolib/snopea.sno (new): tiny "POD" formatter
+	modules/setuputil.sno: add pre.sno, pass POD documentation
+		first cut at msc commands
+	modules/ffi/{ffi.c,funcs.sno}: add documentation
+
 11/2/2014:
 	modules/ffi/{ffi.c,funcs.sno,test.sno,test2.sno}: PREP takes one arg
 		fix ffi.c for Linux
