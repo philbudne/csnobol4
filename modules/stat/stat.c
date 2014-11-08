@@ -68,6 +68,9 @@ st2sno(st, dp)
     case S_IFCHR: type = 'c'; break;
     case S_IFDIR: type = 'd'; break;
     case S_IFREG: type = '-'; break;
+#ifdef S_IFBLK
+    case S_IFBLK: type = 'b'; break;
+#endif
 #ifdef S_IFLNK
     case S_IFLNK: type = 'l'; break;
 #endif
