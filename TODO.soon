@@ -13,8 +13,7 @@ Modules:
 			build/install man pages!!!
 		make work on win32 with "cl"
 			http://msdn.microsoft.com/en-us/library/aa278396%28v=vs.60%29.aspx
-
-	POD docs: sqlite, sprintf, fork, logic?
+	POD docs: sqlite, logic?
 		mention sqlite3 in ndbm page!
 
 	tests for: logic(!!), sqlite3, stat, dirs, sprintf, fork, ffi

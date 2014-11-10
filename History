@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/10/2014:
+	lib/snolib/{fork,sprintf}.c: add POD doc
+
 11/8/2014:
 	modules/setuputil.sno: add POD doc
 	modules/dirs/dirs.c: fix documentation

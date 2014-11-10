@@ -20,6 +20,38 @@
 #include "str.h"			/* for strlen */
 
 /*
+**=pod
+**=head1 NAME
+**snobol4fork - POSIX fork for SNOBOL4
+**=head1 SYNOPSYS
+**=code
+**-INCLUDE 'fork.sno'
+**
+**        pid = B<FORK()>
+**
+**        status = B<WAITPID(>[I<pid>][,I<options>]B<)>
+**=ecode
+**=head1 DESCRIPTION
+**B<FORK()> creates a process: returns 0 in child, process ID in parent.
+**
+**B<WAITPID()> takes an optional process id to wait for, and returns a string
+**with the process id, status, and additional status about the child.
+**I<options> is a string of optional flags (see the B<waitpid(>2B<)>
+**man page for details):
+**=item c
+**WCONTINUED
+**=item h
+**WNOHANG
+**=item t
+**WTRAPPED
+**=item u
+**WUNTRACED
+**=item w
+**NOWAIT
+**=cut
+*/
+
+/*
  * LOAD("FORK()INTEGER", FORK_DL)
  *
  * Usage;	FORK()
@@ -97,3 +129,12 @@ WAITPID( LA_ALIST) LA_DCL
 #endif
     RETSTR(str);
 }
+
+/*
+**=pod
+**=head1 SEE ALSO
+**B<snobol4(>1B<)>, B<fork(>2B<)>, B<waitpid(>2B<)>
+**=head1 AUTHOR
+**Philip L. Budne
+**=cut
+*/

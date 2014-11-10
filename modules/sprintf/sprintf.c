@@ -11,6 +11,20 @@
  */
 
 /*
+**=pod
+**=head1 NAME
+**snobol4fork - POSIX fork for SNOBOL4
+**=head1 SYNOPSYS
+**=code
+**-INCLUDE 'sprintf.sno'
+**
+**        string = B<SPRINTF(>I<format>,I<value>B<)>
+**=ecode
+**=head1 DESCRIPTION
+**B<SPRINTF()> can be used to format B<INTEGER> and B<REAL> values.
+**=cut
+*/
+/*
  * LOAD("SPRINTF(STRING,)STRING", SPRINTF_DL)
  *
  * Usage;	SPRINTF(format,value)
@@ -53,3 +67,12 @@ SPRINTF( LA_ALIST ) LA_DCL
     }
     RETSTR(buf);
 }
+
+/*
+**=pod
+**=head1 SEE ALSO
+**B<snobol4(>1B<)>, B<sprintf(>3B<)>
+**=head1 AUTHOR
+**Philip L. Budne
+**=cut
+*/
