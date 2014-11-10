@@ -1,23 +1,26 @@
 $Id$
 
+Ditch PDF versions of man pages???
+
 Modules:
 	setuputil.sno:
+		run snopea on setuputil.sno & install man page!!
 		"test" command?
 		"install" command: allow addition install files
 			Install config.sno (for man path)?
 			install to "local" unless .... ??? (hidden file?)
-			install man pages!!!
+			run snopea to create man page!!!
+			build/install man pages!!!
 		make work on win32 with "cl"
 			http://msdn.microsoft.com/en-us/library/aa278396%28v=vs.60%29.aspx
 
-	for new modules (sqlite3, stat, dirs, sprintf, fork, ffi):
-		man pages -- mention sqlite3 in ndbm page!
+	POD docs: sqlite, sprintf, fork, logic?
+		mention sqlite3 in ndbm page!
 
 	tests for: logic(!!), sqlite3, stat, dirs, sprintf, fork, ffi
 		tests in modules subdirs???
 
 	ffi:
-		FFI_PREP_CIF -- take single "(args)return"
 		FFI_CALL_VAR(proto, fhandle, args....)
 
 	curses simulation of DOS SPITBOL screen functions??
@@ -34,12 +37,14 @@ readline:
 		include <edit/readline/readline.h>?
 
 man pages:
+    snobol4snopea -- put POD comments in snopea.sno!!!
     snobol4error  -- error codes (from end of man page)
-    snobol4load   -- C functions/macros
     snobol4func   -- all (non-block) built-in functions
-    snobol4blocks -- new functions
+    snobol4blocks -- list/document new functions/operators
     snobol4snolib -- overview of snolib/*.sno
-    document snobol4dynamic, snobol4wrapper
+    snobol4dynamic -- POD comments in dynamic.sno
+    snobol4wrapper -- POD comments in wrapper.sno
+    snobol4load   -- C functions/macros
 
 ================
 

@@ -163,7 +163,7 @@ SEEKDIR( LA_ALIST ) LA_DCL
 /*
 **=pod
 **
-**B<TELLDIR(>I<handle>B<)> closes directory handle.
+**B<CLOSEDIR(>I<handle>B<)> closes directory handle.
 **=cut
 */
 /*
@@ -187,7 +187,8 @@ CLOSEDIR( LA_ALIST ) LA_DCL
 /*
 **=pod
 **=head1 SEE ALSO
-**B<snobol4(>1B<)>, B<stat(>2B<)>, B<lstat(>2B<)>, B<fstat(>2B<)>
+**B<snobol4(>1B<)>, B<opendir(>3B<)>, B<readdir(>3B<), B<rewinddir(>3B<)>,
+**B<telldir(>3B<)>, B<seekdir(>3B<)>, B<closedir(>3B<)
 **=head1 AUTHOR
 **Philip L. Budne
 **=cut

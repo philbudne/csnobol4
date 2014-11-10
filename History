@@ -2,6 +2,12 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/8/2014:
+	modules/setuputil.sno: add POD doc
+	modules/dirs/dirs.c: fix documentation
+	snolib/snopea.sno: use basename, add =bull, =code, =ecode
+	snolib/basename.sno (new)
+
 11/7/2014:
 	snolib/snopea.sno (new): tiny "POD" formatter
 	modules/setuputil.sno: add pre.sno, pass POD documentation

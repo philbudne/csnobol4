@@ -4,19 +4,71 @@
 * Phil Budne November 3, 2013
 * from sqlite3 build.sno, in imitation of Python setup/distutils
 
+* NOTE! Not careful about local variables!
+* This is NOT meant for general inclusion into programs!!
+
 -INCLUDE 'host.sno'
 
-* more vars:
+* TODO
+*   Honor more vars:
 *	name
+*	author -- write into POD "AUTHOR" section!!
 *	version
 *	description
-*	author
 *	url
 *	download_url
 *	extra_compile_args
 
-* not sweating local vars for now!!!
-
+**=pod
+**=sect NAME
+**snobol4setuputil - Loadable module setup utility
+**=sect SYNOPSIS
+**B<snobol4 setup.sno build>
+**=sect DESCRIPTION
+**The example program below (canonically called B<setup.sno>) can be invoked
+**(portably across different operating systems)
+**with the following commands:
+**
+**=sect OPTIONS
+**=item build
+**Compiles and links a dynamicly loadable executable file
+**named I<modulename> (with the appropriate extension for the local system).
+**I<modulename>B<.sno> will be created from
+**B<pre.sno> (if it exists),
+**any I<LOAD()> present in comments 
+**and any lines starting with B<*=pod> and ending with B<*=cut>
+**in I<sourcefiles>,
+**and finally B<funcs.sno> (if it exists).
+**
+**=item clean
+**cleans up.
+**
+**=sect EXAMPLE
+**=code
+**-INCLUDE 'setuputil.sno'
+**        t = TABLE()
+**        t['module'] = 'I<modulename>'
+**        t['sources'] = 'I<sourcefile>.c,I<othername.c>'
+**        t['author'] = t['maintainer'] = 'I<Yourname Here>'
+**        t['author_email'] = t['maintainer_email'] = 'I<name@doma.in>'
+**        t['include_dirs'] = 'I<list,of,dirs,to,search>'
+**        t['library_dirs'] = 'I<list,of,dirs,to,search>'
+**        t['libraries'] = 'I<list,of,library,name,to,link,against>'
+**        t['license'] = 'BSD'
+**        setup(t)
+**end
+**=ecode
+**=sect NOT CONFORMING TO
+**Inspired by Python setuptools, easyinstall, et.al.
+**=sect AUTHOR
+**Philip L. Budne
+**=sect BUGS
+**Only supports "POSIX" systems.
+**Tested on OS X, FreeBSD and Linux.
+**=head1 SEE ALSO
+**B<snobol4(>1B<)>
+**=cut
+****************
 * make code less confusing!
 	setup.c = ','
 	setup.s = ' '
@@ -26,7 +78,6 @@
 	DEFINE('setup(t)')			:(setup.end)
 setup	TERMINAL = DIFFER(DATATYPE(t),'TABLE') 'setup needs TABLE'
 +						:s(setup.fatal)
-
 	objext = HOST(HOST_OBJ_EXT)
 	sys = HOST(HOST_SETUP_SYS)
 * build against local include files
@@ -311,4 +362,3 @@ setup.win.msc.buildcmd2
 	setup.posix.system(link)		:f(FRETURN)
 	setup.makeinclude(t)			:(RETURN)
 setup.win.msc.buildcmd.end
-
