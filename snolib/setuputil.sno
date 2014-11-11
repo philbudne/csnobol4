@@ -219,12 +219,10 @@ smi.close
 * delete if EQ(lines,0) ???
 	ident(podseen)				:s(return)
 
-	mf = of
+	mf = 'snobol4' of
 	mf '.sno' = '.3'
-	snopea(of, mf)				:(freturn)
-	TERMINAL = 'created ' mf
-	cmd = 
-	:(return)
+	TERMINAL = snopea(of, mf) 'created ' mf :(return)
+
 smi.openerr
 	TERMINAL = "Could not open " file	:(freturn)
 setup.makeinclude.end
@@ -322,7 +320,7 @@ setup.posix.installcmd.end
 	DEFINE('setup.posix.cleancmd(t)sno,man') :(setup.posix.cleancmd.end)
 setup.posix.cleancmd
 	sno = setup.sno(t)
-	man = sno
+	man = 'snobol4' sno
 	man '.sno' = '.3'
 	command = 'rm -f ' setup.posix.objs(t) setup.dlname(t) ' ' sno ' ' man
 	setup.posix.system(command)		:s(RETURN)f(FRETURN)
