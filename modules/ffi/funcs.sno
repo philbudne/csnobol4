@@ -1,7 +1,6 @@
 * $Id$
 **=pod
-**
-**B<DEFINE_FFI(>I<prototype>,I<pointer>B<)>
+**=item B<DEFINE_FFI(>I<prototype>,I<pointer>B<)>
 **defines a SNOBOL4 function that calls an external function via B<ffi>(3).
 **I<prototype> contains a string name for the function followed
 **by a comma separated list of parameter types inside of parenthesis,
@@ -11,7 +10,7 @@
 **B<schar>, B<sshort>, B<sint>, B<slong>,
 **B<uchar>, B<ushort>, B<uint>, B<ulong>,
 **B<float>, B<double>, B<longdouble>, B<pointer>,
-**which can followed by a return type, which can be
+**followed by a return type, which can be
 **any of the above parameter types, or
 **B<void>, B<string>, B<freestring> and
 **I<pointer> is a value returned by B<FFI_DLSYM()>.

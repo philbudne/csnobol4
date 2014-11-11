@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/11/2014:
+	modules/ffi/{ffi.c,funcs.sno}: tweak doc
+
 11/10/2014:
 	snolib/snopea.sno: made into an include file
 	modules/setuputil.sno: call snopea() if pod seen
