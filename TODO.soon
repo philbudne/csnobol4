@@ -1,21 +1,22 @@
 $Id$
 
-Ditch man pages output files
+Implicit -b if file(s) given on command line?
 
 install generated man pages
+
+snopea command file
 
 Modules:
 	setuputil.sno:
 		run snopea on setuputil.sno & install man page!!
 		"test" command?
 		make work on win32 with "cl"
-			http://msdn.microsoft.com/en-us/library/aa278396%28v=vs.60%29.aspx
-	POD docs: sqlite, logic, ffi --needs work
+			http://msdn.microsoft.com/en-us/
+				library/aa278396%28v=vs.60%29.aspx
+	POD docs: sqlite, logic,
 		mention sqlite3 in ndbm page!
-
 	tests for: logic(!!), sqlite3, stat, dirs, sprintf, fork, ffi
 		tests in modules subdirs???
-
 	ffi:
 		FFI_CALL_VAR(proto, fhandle, args....)
 
