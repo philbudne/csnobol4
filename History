@@ -6,6 +6,9 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	snolib/snopea.sno: made into an include file
 	modules/setuputil.sno: call snopea() if pod seen
 	configure: use SNOPATH, add ../../snolib to setup.sno
+	modules/ffi/ffi.c: more POD
+	doc/Makefile: force old-style bolding (no escapes)
+		turned off ps, pdf, html
 
 11/9/2014:
 	lib/snolib/{fork,sprintf}.c: add POD doc

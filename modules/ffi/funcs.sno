@@ -41,3 +41,9 @@ define_ffi.eloop
 	DEFINE(tmp)				 :f(FRETURN)s(RETURN)
 define_ffi.end
 
+**=pod
+**=head1 SEE ALSO
+**B<snobol4(>1B<)>, B<ffi(>3B<)>, B<dlopen(>3B<)>
+**=head1 AUTHOR
+**Philip L. Budne
+**=cut

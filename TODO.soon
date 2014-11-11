@@ -1,16 +1,13 @@
 $Id$
 
-Ditch PDF versions of man pages???
+Ditch man pages output files
+
+install generated man pages
 
 Modules:
 	setuputil.sno:
 		run snopea on setuputil.sno & install man page!!
 		"test" command?
-		"install" command: allow addition install files
-			Install config.sno (for man path)?
-			install to "local" unless .... ??? (hidden file?)
-			run snopea to create man page!!!
-			build/install man pages!!!
 		make work on win32 with "cl"
 			http://msdn.microsoft.com/en-us/library/aa278396%28v=vs.60%29.aspx
 	POD docs: sqlite, logic, ffi --needs work

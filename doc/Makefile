@@ -1,7 +1,7 @@
 # Makefile for doc files
 # $Id$
 
-ALL=	txt html ps pdf
+ALL=	txt
 
 TXT=	porting.txt snobol4.0 sdb.0 \
 	snobol4dbm.0 snobol4random.0 snobol4readline.0 \
@@ -29,7 +29,7 @@ MS=-ms
 MAN=-man
 
 # Use groff; does bolding!!
-NROFF=groff -Tascii
+NROFF=groff -Tascii -P-c
 
 # troff to PostScript
 TROFF_PS=groff -Tps
