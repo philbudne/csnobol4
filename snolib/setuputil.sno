@@ -8,6 +8,7 @@
 * This is NOT meant for general inclusion into programs!!
 
 -INCLUDE 'host.sno'
+-INCLUDE 'snopea.sno'
 
 * TODO
 *   Honor more vars:
@@ -74,6 +75,8 @@
 	setup.s = ' '
 *	tab
 	setup.t = '	'
+
+	podseen =
 
 	DEFINE('setup(t)')			:(setup.end)
 setup	TERMINAL = DIFFER(DATATYPE(t),'TABLE') 'setup needs TABLE'
@@ -146,10 +149,14 @@ setup.makeinclude
 	out = '**** pre.sno:'
 smi.copy.pre
 	lines = lines + 1
-	out = in				:s(smi.copy.pre)
+	line = in				:f(smi.copy.pre.eof)
+	line '=pod'				:f(smi.copy.pre.out)
+	podseen = 1
+smi.copy.pre.out
+	out = line				:s(smi.copy.pre)
+smi.copy.pre.eof
 	ENDFILE(iu)
 	DETACH(.in)
-* XXX add "extras" file(s)?
 	out = '******** end pre.sno'
 smi.nopre
 
@@ -169,6 +176,7 @@ smi.iloop
 * copy SNOPOD sections to output
 	differ(inpod)				:s(smi.inpod)
 	line POS(0) span('*') '='		:f(smi.lloop)
+	podseen = 1
 	inpod = 1
 smi.inpod
 	out = line
@@ -187,11 +195,17 @@ smi.eof
 	INPUT(.in, iu,, 'funcs.sno')		:f(smi.nofuncs)
 	out = '**** funcs.sno:'
 smi.copy.funcs
+	line = in				:f(smi.copy.funcs.eof)
+	line '=pod'				:f(smi.copy.funcs.out)
+	podseen = 1
+smi.copy.funcs.out
+	out = line				:s(smi.copy.funcs)
+smi.copy.funcs.eof
+
 	lines = lines + 1
 	out = in				:s(smi.copy.funcs)
 	ENDFILE(iu)
 	DETACH(.in)
-* XXX add "extras" file(s)?
 	out = '******** end funcs.sno'
 smi.nofuncs
 	out = '**************** end ' t['module'] '.sno'
@@ -203,6 +217,13 @@ smi.close
 	DETACH(.out)
 	TERMINAL = GT(lines,0) 'created ' of
 * delete if EQ(lines,0) ???
+	ident(podseen)				:s(return)
+
+	mf = of
+	mf '.sno' = '.3'
+	snopea(of, mf)				:(freturn)
+	TERMINAL = 'created ' mf
+	cmd = 
 	:(return)
 smi.openerr
 	TERMINAL = "Could not open " file	:(freturn)
@@ -298,9 +319,12 @@ setup.posix.installcmd.end
 *	POSIX clean command
 *		uses "rm -f"
 
-	DEFINE('setup.posix.cleancmd(t)')	:(setup.posix.cleancmd.end)
+	DEFINE('setup.posix.cleancmd(t)sno,man') :(setup.posix.cleancmd.end)
 setup.posix.cleancmd
-	command = 'rm -f ' setup.posix.objs(t) setup.dlname(t) ' ' setup.sno(t)
+	sno = setup.sno(t)
+	man = sno
+	man '.sno' = '.3'
+	command = 'rm -f ' setup.posix.objs(t) setup.dlname(t) ' ' sno ' ' man
 	setup.posix.system(command)		:s(RETURN)f(FRETURN)
 setup.posix.cleancmd.end
 *
@@ -362,3 +386,4 @@ setup.win.msc.buildcmd2
 	setup.posix.system(link)		:f(FRETURN)
 	setup.makeinclude(t)			:(RETURN)
 setup.win.msc.buildcmd.end
+

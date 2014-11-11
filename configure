@@ -1961,7 +1961,7 @@ for M in $MODULES; do
     TEST_SNOPATH="$TEST_SNOPATH:../modules/$M"
     echo ''					>> $CONFIG_M4
     echo "$DL $INC: xsnobol4 modules/$M/setup.sno" >> $CONFIG_M4
-    echo "	cd modules/$M; ../../xsnobol4 -N -b -I.. -I../.. setup.sno build" >> $CONFIG_M4
+    echo "	cd modules/$M; SNOPATH=..:../..:../../snolib ../../xsnobol4 -N -b setup.sno build" >> $CONFIG_M4
 done
 TEST_SNOPATH="$TEST_SNOPATH:../snolib:."
 echo ''						>> $CONFIG_M4
