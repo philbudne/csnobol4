@@ -1,0 +1,17 @@
+#!/usr/bin/env snobol4 -b
+
+-include 'host.sno'
+-include 'snopea.sno'
+
+	optind = HOST(3)
+	
+# XXX check for failure
+	infile = HOST(2, optind)		:f(usage)
+	outfile = HOST(2, optind + 1)		:f(usage)
+
+	snopea(infile, outfile)			:s(end)
+
+usage	TERMINAL = 'Usage: snopea INFILE OUTFILE'
+	&CODE = 1
+
+end
