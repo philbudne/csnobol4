@@ -330,10 +330,10 @@ LNFILES='../test/procs ../test/globals ../host.sno'
 
 	# need eval on Debian 3.0 (no "time" binary)
 	# stderr to file "stderr", all but first line of stdout to "$OUT"
-	eval "$TIME ./snobol4 $ARGS -s ../test/bench.sno ../test/v311.sil" 2>stderr
+	eval "$TIME ./snobol4 -x $ARGS -s ../test/bench.sno ../test/v311.sil" 2>stderr
 )
 # use snobol program to process output!!
-$SNOBOL $ARGS -b timing.sno < $TDIR/stderr
+$SNOBOL $ARGS timing.sno < $TDIR/stderr
 # save exit status
 STAT=$?
 

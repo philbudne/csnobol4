@@ -3,7 +3,8 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 11/15/2014:
-	timing.sno: no longer looks for banner
+	lib/init.c: add -x to force banner
+	timing: use -x
 	lib/snolib/{fork,sprintf}.c: head1 -> head
 	LOTS: replace =head1 w/ =sect
 	snolib/snopea.sno: first cut at HTML output

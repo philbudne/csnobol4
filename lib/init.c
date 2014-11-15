@@ -75,6 +75,7 @@ char **argv;
 int firstarg;
 int argc;
 int nfiles;
+static int xflag;
 #endif /* NO_STATIC_VARS not defined */
 
 extern int optind;
@@ -381,7 +382,7 @@ init_args( ac, av )
      *		added, but it better not want an argument!)
      */
 
-    while ((c = getopt(argc, argv, "+bd:fghkl:nprsu:vzBI:L:MNP:S:")) != -1) {
+    while ((c = getopt(argc, argv, "+bd:fghkl:nprsu:vxzBI:L:MNP:S:")) != -1) {
 	switch (c) {
 	case 'b':
 	    D_A(BANRCL) = 0;		/* disable banner output */
@@ -399,11 +400,6 @@ init_args( ac, av )
 
 	case 'g':
 	    D_A(GCTRCL) = -1;		/* enable &GCTRACE */
-	    break;
-
-	case 'v':			/* version */
-	    justversion = 1;
-	    errs++;
 	    break;
 
 	case 'h':			/* help */
@@ -450,6 +446,15 @@ init_args( ac, av )
 
 	case 'u':			/* parameter data */
 	    params = optarg;
+	    break;
+
+	case 'v':			/* version */
+	    justversion = 1;
+	    errs++;
+	    break;
+
+	case 'x':
+	    xflag = D_A(BANRCL) = 1;	/* force banner output */
 	    break;
 
 	case 'z':
@@ -520,7 +525,8 @@ init_args( ac, av )
 	    break;			/* leave loop */
 	}
 	io_input_file( argv[optind] );
-	D_A(BANRCL) = 0;		/* disable banner output */
+	if (!xflag)
+	    D_A(BANRCL) = 0;		/* disable banner output */
 	optind++;
 	nfiles++;
 	if (!multifile)			/* not in multi-file mode? */
