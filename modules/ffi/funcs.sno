@@ -41,8 +41,8 @@ define_ffi.eloop
 define_ffi.end
 
 **=pod
-**=head1 SEE ALSO
+**=sect SEE ALSO
 **B<snobol4(>1B<)>, B<ffi(>3B<)>, B<dlopen(>3B<)>
-**=head1 AUTHOR
+**=sect AUTHOR
 **Philip L. Budne
 **=cut

@@ -592,7 +592,7 @@ GENSNOLIB=host.sno
 
 SNOLIB_FILES=snolib/*.sno modules/setuputil.sno $(GENSNOLIB) $(MODULES_INCLUDE)
 
-install: snobol4 sdb
+install: snobol4 sdb modules/snobol4setup.3
 	$(INSTALL) -d $(BINDIR)
 	$(INSTALL) $(INSTALL_BIN_FLAGS) snobol4 $(BINDIR)/snobol4-$(VERS)
 	$(INSTALL) sdb $(BINDIR)/sdb-$(VERS)
@@ -609,6 +609,7 @@ install: snobol4 sdb
 	$(INSTALL) -m 644 doc/snobol4readline.3 $(MAN3DIR)
 	$(INSTALL) -m 644 doc/snobol4tcl.3 $(MAN3DIR)
 	$(INSTALL) -m 644 doc/snobol4time.3 $(MAN3DIR)
+	$(INSTALL) -m 644 modules/snobol4setup.3 $(MAN3DIR)
 	$(INSTALL) -d $(SNOLIB_VER)
 	$(INSTALL) -d $(SNOLIB_DOC)
 	$(INSTALL) -m 644 README $(SNOLIB_DOC)
@@ -623,6 +624,9 @@ install: snobol4 sdb
 	for F in $(MODULES_LOADABLE); do \
 		$(INSTALL) -m 644 $$F $(SNOLIB_LIB)/dynload; \
 	done
+	for F in modules/*/*.3; do \
+		$(INSTALL) -m 644 $$F $(MAN3DIR); \
+	done
 	$(INSTALL) -d $(INCLUDE_DIR)
 	for F in $(INSTALL_H); do \
 		$(INSTALL) -m 644 $$F $(INCLUDE_DIR); \
@@ -630,6 +634,9 @@ install: snobol4 sdb
 	@echo '*********************************************************' 1>&2
 	@echo 'Have you mailed a copy of timing.out to timing@snobol4.org ?' 1>&2
 	@echo '*********************************************************' 1>&2
+
+modules/snobol4setup.3: modules/setuputil.sno snobol4
+	env SNOPATH=snolib ./snobol4 snopea modules/setuputil.sno modules/snobol4setup.3
 
 ################
 MAKEFILE2=Makefile2

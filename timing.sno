@@ -74,15 +74,6 @@ EPREC
 ****************************************************************
 * parse snobol's messages
 
-VLOP	LINE = INPUT					:F(NOVERS)
-	LINE "The Macro Implementation of SNOBOL4" BREAKX("V") "Version "
-+		REM . VERS				:F(VLOP)
-
-	OUTPUT = 'Version:' TAB TAB VERS		:(CLOP)
-
-NOVERS	TERMINAL = OUTPUT = "ERROR: could not find SNOBOL4 SIGNON/VERSION"
-							:(FATAL)
-
 * COMPILING
 CLOP	LINE = INPUT					:F(NOCOMP)
 	LINE 'No errors detected in source program'	:S(ELOP)

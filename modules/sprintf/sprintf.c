@@ -12,15 +12,15 @@
 
 /*
 **=pod
-**=head1 NAME
+**=sect NAME
 **snobol4fork - POSIX fork for SNOBOL4
-**=head1 SYNOPSYS
+**=sect SYNOPSYS
 **=code
 **-INCLUDE 'sprintf.sno'
 **
 **        string = B<SPRINTF(>I<format>,I<value>B<)>
 **=ecode
-**=head1 DESCRIPTION
+**=sect DESCRIPTION
 **B<SPRINTF()> can be used to format B<INTEGER> and B<REAL> values.
 **=cut
 */
@@ -70,9 +70,9 @@ SPRINTF( LA_ALIST ) LA_DCL
 
 /*
 **=pod
-**=head1 SEE ALSO
+**=sect SEE ALSO
 **B<snobol4(>1B<)>, B<sprintf(>3B<)>
-**=head1 AUTHOR
+**=sect AUTHOR
 **Philip L. Budne
 **=cut
 */

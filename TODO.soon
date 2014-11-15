@@ -1,14 +1,11 @@
 $Id$
 
-Implicit -b if file(s) given on command line?
+snobol4.1: -b always cancels banner
 
-install generated man pages
-
-snopea command file
+snopea.1, snopea.3, snopea.7 man pages???
 
 Modules:
 	setuputil.sno:
-		run snopea on setuputil.sno & install man page!!
 		"test" command?
 		make work on win32 with "cl"
 			http://msdn.microsoft.com/en-us/
@@ -17,8 +14,8 @@ Modules:
 		mention sqlite3 in ndbm page!
 	tests for: logic(!!), sqlite3, stat, dirs, sprintf, fork, ffi
 		tests in modules subdirs???
-	ffi:
-		FFI_CALL_VAR(proto, fhandle, args....)
+	sqlite: bind & execute in one call?
+	ffi: FFI_CALL_VAR(proto, fhandle, args....)
 
 	curses simulation of DOS SPITBOL screen functions??
 

@@ -22,9 +22,9 @@
 
 **=pod
 **=sect NAME
-**snobol4setuputil - Loadable module setup utility
+**snobol4setup - Loadable module setup utility
 **=sect SYNOPSIS
-**B<snobol4 setup.sno build>
+**B<snobol4 setup.sno> I<command>
 **=sect DESCRIPTION
 **The example program below (canonically called B<setup.sno>) can be invoked
 **(portably across different operating systems)
@@ -66,8 +66,8 @@
 **=sect BUGS
 **Only supports "POSIX" systems.
 **Tested on OS X, FreeBSD and Linux.
-**=head1 SEE ALSO
-**B<snobol4(>1B<)>
+**=sect SEE ALSO
+**B<snobol4(>1B<)>, B<snopea(>1B<)>
 **=cut
 ****************
 * make code less confusing!
@@ -217,11 +217,16 @@ smi.close
 	DETACH(.out)
 	TERMINAL = GT(lines,0) 'created ' of
 * delete if EQ(lines,0) ???
-	ident(podseen)				:s(return)
+	IDENT(podseen)				:s(return)
 
-	mf = 'snobol4' of
+* man file
+	mf = pn = 'snobol4' of
 	mf '.sno' = '.3'
-	TERMINAL = snopea(of, mf) 'created ' mf :(return)
+
+* page name
+	pn '.sno' =
+
+	TERMINAL = snopea(of, mf, pn, '3', 'roff') 'created ' mf :(return)
 
 smi.openerr
 	TERMINAL = "Could not open " file	:(freturn)

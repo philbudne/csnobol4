@@ -1,15 +1,15 @@
 * $Id$
 **=pod
-**=head1 NAME
+**=sect NAME
 **snobol4stat - file status interface for SNOBOL4
-**=head1 SYNOPSYS
+**=sect SYNOPSYS
 **B<-INCLUDE 'stat.sno'>
-**=head1 DESCRIPTION
+**=sect DESCRIPTION
 **B<STAT(>I<path>B<)> returns file status for I<path>, following symbolic links.
 **B<LSTAT(>I<path>B<)> returns file status for I<path>, returning information on symbolic links.
 **B<FSTAT(>I<fd>B<)> returns file status for the open file descriptor I<fd>.
 All three return a B<DATA()> object with the following members:
-**=over 15
+**=indent 15
 **=item B<ST_DEV>
 **The device containing the file.
 **=item B<ST_INO>
@@ -56,9 +56,9 @@ All three return a B<DATA()> object with the following members:
 **
 **Values will be the empty string if the
 **data is not available.
-**=head1 SEE ALSO
+**=sect SEE ALSO
 **B<snobol4(>1B<)>, B<stat(>2B<)>, B<lstat(>2B<)>, B<fstat(>2B<)>
-**=head1 AUTHOR
+**=sect AUTHOR
 **Philip L. Budne
 **=cut
 	DATA("ST(ST_DEV,ST_INO,ST_TYPE,ST_MODE,ST_NLINK,"

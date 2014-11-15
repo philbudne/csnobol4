@@ -21,9 +21,9 @@
 
 /*
 **=pod
-**=head1 NAME
+**=sect NAME
 **snobol4fork - POSIX fork for SNOBOL4
-**=head1 SYNOPSYS
+**=sect SYNOPSYS
 **=code
 **-INCLUDE 'fork.sno'
 **
@@ -31,7 +31,7 @@
 **
 **        status = B<WAITPID(>[I<pid>][,I<options>]B<)>
 **=ecode
-**=head1 DESCRIPTION
+**=sect DESCRIPTION
 **B<FORK()> creates a process: returns 0 in child, process ID in parent.
 **
 **B<WAITPID()> takes an optional process id to wait for, and returns a string
@@ -132,9 +132,9 @@ WAITPID( LA_ALIST) LA_DCL
 
 /*
 **=pod
-**=head1 SEE ALSO
+**=sect SEE ALSO
 **B<snobol4(>1B<)>, B<fork(>2B<)>, B<waitpid(>2B<)>
-**=head1 AUTHOR
+**=sect AUTHOR
 **Philip L. Budne
 **=cut
 */

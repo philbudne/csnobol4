@@ -28,11 +28,11 @@ static handle_handle_t dir_handles;
 
 /*
 **=pod
-**=head1 NAME
+**=sect NAME
 **snobol4dirs - filesystem directory interface for SNOBOL4
-**=head1 SYNOPSYS
+**=sect SYNOPSYS
 **B<-INCLUDE 'dirs.sno'>
-**=head1 DESCRIPTION
+**=sect DESCRIPTION
 **B<OPENDIR(>I<path>B<)> opens a directory and returns a handle.
 **=cut
 */
@@ -186,10 +186,10 @@ CLOSEDIR( LA_ALIST ) LA_DCL
 
 /*
 **=pod
-**=head1 SEE ALSO
+**=sect SEE ALSO
 **B<snobol4(>1B<)>, B<opendir(>3B<)>, B<readdir(>3B<), B<rewinddir(>3B<)>,
-**B<telldir(>3B<)>, B<seekdir(>3B<)>, B<closedir(>3B<)
-**=head1 AUTHOR
+**B<telldir(>3B<)>, B<seekdir(>3B<)>, B<closedir(>3B<)>
+**=sect AUTHOR
 **Philip L. Budne
 **=cut
 */

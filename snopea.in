@@ -1,4 +1,4 @@
-#!/usr/bin/env snobol4 -b
+#!/usr/bin/env snobol4
 
 -include 'host.sno'
 -include 'snopea.sno'
@@ -9,9 +9,11 @@
 	infile = HOST(2, optind)		:f(usage)
 	outfile = HOST(2, optind + 1)		:f(usage)
 
+	TERMINAL = infile ' => ' outfile
 	snopea(infile, outfile)			:s(end)
 
 usage	TERMINAL = 'Usage: snopea INFILE OUTFILE'
 	&CODE = 1
 
 end
+EOF

@@ -10,16 +10,16 @@
 
 /*
 **=pod
-**=head1 NAME
+**=sect NAME
 **snobol4ffi - Foreign Function Interface for SNOBOL4
-**=head1 SYNOPSYS
+**=sect SYNOPSYS
 **=code
 **B<-INCLUDE 'ffi.sno'>
 **        dl = FFI_DLOPEN("/usr/lib/libm.so")
 **        sym = FFI_DLSYM(dl, "hypot")
 **        DEFINE_FFI("hypot(double,double)double", sym)
 **        OUTPUT = hypot(3, 4)
-**=head1 DESCRIPTION
+**=sect DESCRIPTION
 **=cut
 */
 

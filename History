@@ -2,6 +2,23 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/15/2014:
+	timing.sno: no longer looks for banner
+	lib/snolib/{fork,sprintf}.c: head1 -> head
+	LOTS: replace =head1 w/ =sect
+	snolib/snopea.sno: first cut at HTML output
+
+11/13/2014:
+	Makefile2.m4: install depends on modules/snobol4setup.3
+		add rule for modules/snobol4setup.3
+		install modules/snobol4setup.3
+		install modules/*/*.3
+
+11/12/2014:
+	lib/init.c: no banner if source file on command line
+		-b always cancels banner
+	snopea: remove -b
+
 11/11/2014:
 	modules/ffi/{ffi.c,funcs.sno}: tweak doc
 	snopea (new): program to run snopea

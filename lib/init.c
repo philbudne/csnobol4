@@ -384,7 +384,7 @@ init_args( ac, av )
     while ((c = getopt(argc, argv, "+bd:fghkl:nprsu:vzBI:L:MNP:S:")) != -1) {
 	switch (c) {
 	case 'b':
-	    D_A(BANRCL) = !D_A(BANRCL);	/* toggle banner output */
+	    D_A(BANRCL) = 0;		/* disable banner output */
 	    break;
 
 	case 'd':			/* number of dynamic descrs */
@@ -520,6 +520,7 @@ init_args( ac, av )
 	    break;			/* leave loop */
 	}
 	io_input_file( argv[optind] );
+	D_A(BANRCL) = 0;		/* disable banner output */
 	optind++;
 	nfiles++;
 	if (!multifile)			/* not in multi-file mode? */
