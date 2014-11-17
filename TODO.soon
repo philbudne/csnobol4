@@ -1,20 +1,27 @@
 $Id$
 
-snobol4.1: -b always cancels banner
+snobol4.1: document -b/-x behaviors
 
-snopea.1, snopea.3, snopea.7 man pages???
+snopea:
+	snopea: take -s section & -f format flags?
+		snopea.1 man page
+
+	snopea.7 man page!!
 
 Modules:
+	sqlite: bind & execute in one call?
+
 	setuputil.sno:
 		"test" command?
 		make work on win32 with "cl"
 			http://msdn.microsoft.com/en-us/
 				library/aa278396%28v=vs.60%29.aspx
+		"install" command (for users)
+
 	POD docs: sqlite, logic,
 		mention sqlite3 in ndbm page!
 	tests for: logic(!!), sqlite3, stat, dirs, sprintf, fork, ffi
 		tests in modules subdirs???
-	sqlite: bind & execute in one call?
 	ffi: FFI_CALL_VAR(proto, fhandle, args....)
 
 	curses simulation of DOS SPITBOL screen functions??
@@ -31,7 +38,6 @@ readline:
 		include <edit/readline/readline.h>?
 
 man pages:
-    snobol4snopea -- put POD comments in snopea.sno!!!
     snobol4error  -- error codes (from end of man page)
     snobol4func   -- all (non-block) built-in functions
     snobol4blocks -- list/document new functions/operators
