@@ -167,7 +167,7 @@ sp.html.head
 	out = '<title>SNOBOL4 | ' page '(' sect ') ' date '</title>'
 	out = '</head>'
 
-	out = '<h1>' page '(' sect ') ' date
+	out = '<h1>' page '(' sect ') ' date '</h1>'
 
 	indent = 4
 	text =
