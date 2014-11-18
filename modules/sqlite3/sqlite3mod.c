@@ -4,6 +4,9 @@
  * sqlite3 database module for CSNOBOL4
  * Phil Budne <phil@ultimate.com> 11/2/2013
  * from ndbm.c 9/2/2004
+ *
+ * For sqlite3 function docs, see:
+ * https://www.sqlite.org/c3ref/funclist.html
  */
 
 #ifdef HAVE_CONFIG_H
@@ -546,6 +549,11 @@ SQLITE3_FINALIZE( LA_ALIST ) LA_DCL
  *
  * arg 1:	db handle
  * arg 2:	SQL statement
+ *
+ * "The sqlite3_exec() interface is a convenience wrapper around
+ * sqlite3_prepare_v2(), sqlite3_step(), and sqlite3_finalize(), that
+ * allows an application to run multiple statements of SQL without
+ * having to use a lot of C code.
  *
  * returns:
  * null string or failure
