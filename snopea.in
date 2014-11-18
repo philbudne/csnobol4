@@ -33,7 +33,7 @@ havepage
 
 havesect	
 	snopea(infile, outfile, page, sect, fmt) :s(end)
-	TERMINAL = 'Error in translation'	:(err)
+
 usage	TERMINAL = 'Usage: snopea [opts] INFILE OUTFILE'
 	TERMINAL = 'opts:'
 	TERMINAL = '	--format roff|html'
