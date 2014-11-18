@@ -1956,11 +1956,15 @@ TEST_SNOPATH=..
 for M in $MODULES; do
     DL="modules/$M/$M$DL_EXT"
     INC="modules/$M/$M.sno"
+    MAN="modules/$M/snobol4$M.3"
+    HTML="modules/$M/snobol4$M.3.html"
     BUILD_DL="$BUILD_DL $DL"
     BUILD_INC="$BUILD_INC $INC"
+    BUILD_MAN="$BUILD_MAN $MAN"
+    BUILD_HTML="$BUILD_HTML $HTML"
     TEST_SNOPATH="$TEST_SNOPATH:../modules/$M"
     echo ''					>> $CONFIG_M4
-    echo "$DL $INC: xsnobol4 modules/$M/setup.sno" >> $CONFIG_M4
+    echo "$DL $INC $MAN $HTML: xsnobol4 modules/setuputil.sno modules/$M/setup.sno" >> $CONFIG_M4
     echo "	cd modules/$M; SNOPATH=..:../..:../../snolib ../../xsnobol4 -N -b setup.sno build" >> $CONFIG_M4
 done
 TEST_SNOPATH="$TEST_SNOPATH:../snolib:."
@@ -1968,7 +1972,9 @@ echo ''						>> $CONFIG_M4
 echo "MODULES=$MODULES"				>> $CONFIG_M4
 echo "MODULES_LOADABLE=$BUILD_DL"		>> $CONFIG_M4
 echo "MODULES_INCLUDE=$BUILD_INC"		>> $CONFIG_M4
-echo 'MODULES_GENERATED=$(MODULES_LOADABLE) $(MODULES_INCLUDE)' >> $CONFIG_M4
+echo "MODULES_MAN=$BUILD_MAN"			>> $CONFIG_M4
+echo "MODULES_HTML=$BUILD_HTML"			>> $CONFIG_M4
+echo 'MODULES_GENERATED=$(MODULES_LOADABLE) $(MODULES_INCLUDE) $(MODULES_MAN) $(MODULES_HTML)' >> $CONFIG_M4
 echo "TEST_SNOPATH=$TEST_SNOPATH"		>> $CONFIG_M4
 echo ''						>> $CONFIG_M4
 echo 'clean_modules:'				>> $CONFIG_M4

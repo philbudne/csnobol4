@@ -6,6 +6,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	snopea: flush single letter opts, some renaming
 	modules/setuputil.sno: make html man pages
 	snolib/snopea.sno: </h1>
+	configure: output MODULES_HTML MODULES_MAN
+	Makefile2.m4: use MODULES_MAN
 
 11/17/2014:
 	snopea: add argument processing

@@ -624,8 +624,8 @@ install: snobol4 sdb modules/snobol4setup.3
 	for F in $(MODULES_LOADABLE); do \
 		$(INSTALL) -m 644 $$F $(SNOLIB_LIB)/dynload; \
 	done
-	for F in modules/*/*.3; do \
-		$(INSTALL) -m 644 $$F $(MAN3DIR); \
+	for F in $(MODULES_MAN); do \
+		test -s $$F && $(INSTALL) -m 644 $$F $(MAN3DIR); \
 	done
 	$(INSTALL) -d $(INCLUDE_DIR)
 	for F in $(INSTALL_H); do \
