@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/17/2014:
+	snopea: add argument processing
+	snolib/snopea.sno: add lsep for <dd>, fix html fonts
+
 11/15/2014:
 	lib/init.c: add -x to force banner
 	timing: use -x

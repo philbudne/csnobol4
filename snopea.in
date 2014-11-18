@@ -3,17 +3,41 @@
 -include 'host.sno'
 -include 'snopea.sno'
 
+	fmt = 'roff'
+
 	optind = HOST(3)
-	
-# XXX check for failure
-	infile = HOST(2, optind)		:f(usage)
+arglop	arg = HOST(2, optind)			:f(usage)
+	arg POS(0) '-'				:f(endargs)
+	optind = optind + 1
+	val = HOST(2, optind)			:f(usage)
+	optind = optind + 1
+	fmt = ident(arg, '--format') val	:s(arglop)
+	fmt = ident(arg, '-f') val		:s(arglop)
+	sect = ident(arg, '--section') val	:s(arglop)
+	sect = ident(arg, '-s') val		:s(arglop)
+	page = ident(arg, '--page') val		:s(arglop)
+	page = ident(arg, '-p') val		:s(arglop)
+	:(usage)
+
+endargs	infile = HOST(2, optind)		:f(usage)
 	outfile = HOST(2, optind + 1)		:f(usage)
 
 	TERMINAL = infile ' => ' outfile
-	snopea(infile, outfile)			:s(end)
 
-usage	TERMINAL = 'Usage: snopea INFILE OUTFILE'
-	&CODE = 1
+	DIFFER(page)				:s(havepage)
+	outfile BREAK('.') . page
 
-end
-EOF
+havepage
+	DIFFER(sect)				:s(havesect)
+	outfile POS(0) BREAKX('.') '.' ANY(&DIGITS) . sect
+
+havesect	
+	snopea(infile, outfile, page, sect, fmt) :s(end)
+	TERMINAL = 'Error in translation'	:(err)
+usage	TERMINAL = 'Usage: snopea [opts] INFILE OUTFILE'
+	TERMINAL = 'opts:'
+	TERMINAL = '	--format roff|html'
+	TERMINAL = '	--section 1..9'
+	TERMINAL = '	--page PAGENAME'
+err	&CODE = 1
+END
