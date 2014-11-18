@@ -222,11 +222,14 @@ smi.close
 * man file
 	mf = pn = 'snobol4' of
 	mf '.sno' = '.3'
+	htmlmf = mf '.html'
 
 * page name
 	pn '.sno' =
 
-	TERMINAL = snopea(of, mf, pn, '3', 'roff') 'created ' mf :(return)
+	TERMINAL = snopea(of, mf, pn, '3', 'roff') 'created ' mf
+	TERMINAL = snopea(of, htmlmf, pn, '3', 'html') 'created ' htmlmf
+	:(return)
 
 smi.openerr
 	TERMINAL = "Could not open " file	:(freturn)

@@ -1,28 +1,28 @@
 #!/usr/bin/env snobol4
 
+* snopea (POD for SNOBOL4) command
+
 -include 'host.sno'
 -include 'snopea.sno'
 
 	fmt = 'roff'
 
 	optind = HOST(3)
-arglop	arg = HOST(2, optind)			:f(usage)
-	arg POS(0) '-'				:f(endargs)
+optlop	opt = HOST(2, optind)			:f(usage)
+	opt POS(0) '-'				:f(endopts)
 	optind = optind + 1
 	val = HOST(2, optind)			:f(usage)
 	optind = optind + 1
-	fmt = ident(arg, '--format') val	:s(arglop)
-	fmt = ident(arg, '-f') val		:s(arglop)
-	sect = ident(arg, '--section') val	:s(arglop)
-	sect = ident(arg, '-s') val		:s(arglop)
-	page = ident(arg, '--page') val		:s(arglop)
-	page = ident(arg, '-p') val		:s(arglop)
+	fmt = ident(opt, '--format') val	:s(optlop)
+	fmt = ident(opt, '-f') val		:s(optlop)
+	sect = ident(opt, '--section') val	:s(optlop)
+	sect = ident(opt, '-s') val		:s(optlop)
+	page = ident(opt, '--page') val		:s(optlop)
+	page = ident(opt, '-p') val		:s(optlop)
 	:(usage)
 
-endargs	infile = HOST(2, optind)		:f(usage)
+endopts	infile = HOST(2, optind)		:f(usage)
 	outfile = HOST(2, optind + 1)		:f(usage)
-
-	TERMINAL = infile ' => ' outfile
 
 	DIFFER(page)				:s(havepage)
 	outfile BREAK('.') . page
@@ -32,7 +32,7 @@ havepage
 	outfile POS(0) BREAKX('.') '.' ANY(&DIGITS) . sect
 
 havesect	
-	snopea(infile, outfile, page, sect, fmt) :s(end)
+	snopea(infile, outfile, page, sect, fmt) :s(end)f(err)
 
 usage	TERMINAL = 'Usage: snopea [opts] INFILE OUTFILE'
 	TERMINAL = 'opts:'
