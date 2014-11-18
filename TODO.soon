@@ -152,10 +152,6 @@ genc.sno option to use void ** & goto (or goto big_switch;)
 configure --with-boehm-gc
 	find out if gc start/end hook possible.
 
-have "with" file -- updated by configure only when changed
-	to allow configure to control .IF's in SIL
-		(gen{c,data} --with XXX)
-
 make "FTRACE" TRACE()able?
 	pass FUNCTION, CALL/RETURN/FRETURN/NRETURN, ARGS/VALUE
 	use in sdb to avoid DEFINE() hack, and CALL/RETURN tracing
