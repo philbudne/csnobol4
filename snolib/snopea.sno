@@ -33,10 +33,10 @@ sp.begin
 sp.top	line = in					:F(sp.saweof)
 	line POS(0) SPAN('*') =
 	cmd = 'XXX'
-	line POS(0) '=' SPAN(&LCASE) . cmd REM . rest	:S(sp.dispatch)
+	line POS(0) '=' SPAN(&LCASE) . cmd REM . rest	:S(sp.cmd)
 	IDENT(inpod)					:S(sp.top)
 	IDENT(line)					:S(sp.eop)
-	cmd = DIFFER(needspace) 'para'			:S(sp.dispatch)
+	cmd = DIFFER(needspace) 'para'			:S(sp.cmd)
 
 * handle text, process fonts
 sp.text
@@ -61,9 +61,9 @@ sp.saweof
 sp.eop	needspace = text
 	text =						:(sp.top)
 
-sp.cmd	rest SPAN(' ') =
-
 sp.dispatch
+	rest =
+sp.cmd	rest SPAN(' ') =
 	inpod = 1
 sp.dispatch2
 	lsep =
