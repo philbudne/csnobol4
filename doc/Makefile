@@ -5,11 +5,11 @@ ALL=	txt
 
 TXT=	porting.txt snobol4.0 sdb.0 \
 	snobol4dbm.0 snobol4random.0 snobol4readline.0 \
-	snobol4tcl.0 snobol4time.0
+	snobol4tcl.0 snobol4time.0 snopea.0
 
 HTML=	snobol4.html sdb.html \
 	snobol4dbm.html snobol4random.html snobol4readline.html \
-	snobol4tcl.html snobol4time.html
+	snobol4tcl.html snobol4time.html snopea.html
 
 PS=	snobol4.ps sdb.ps \
 	snobol4dbm.ps snobol4random.ps snobol4readline.ps \
@@ -40,7 +40,13 @@ TROFF_HTML=groff -Thtml
 # PostScript to PSF
 PS2PDF=ps2pdf
 
-.SUFFIXES: .ms .1 .3 .0 .txt .ps .pdf .html
+.SUFFIXES: .ms .1 .3 .7 .0 .txt .ps .pdf .html .pea
+
+snopea.7: snopea.pea
+	../xsnobol4 -I../snolib ../snopea snopea.pea snopea.7
+
+snopea.7.html: snopea.pea
+	../xsnobol4 -I../snolib ../snopea --format html snopea.pea snopea.7.html
 
 ####
 
@@ -74,9 +80,13 @@ PS2PDF=ps2pdf
 	$(TROFF_PS) $(MAN) $< > $@
 
 ####
+.7.0:
+	$(NROFF) $(MAN) $< > $@
+
+####
 .ps.pdf:
 	$(PS2PDF) $< $@
 
 ####
 clean:
-	rm -f *.0 porting.txt *.html *.ps *.pdf \#* *~
+	rm -f *.0 porting.txt *.html *.ps *.pdf \#* *~ snopea.7

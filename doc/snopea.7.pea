@@ -1,0 +1,44 @@
+$Id$
+
+=pod
+=sect NAME
+snopea - A tiny Plain Old Documentation format for SNOBOL4
+=sect DESCRIPTION
+
+B<snopea(>7B<)> is a simple-to-use markup language used for writing
+documentation for SNOBOL4, SNOBOL4 programs, and SNOBOL4 modules
+inspired by B<perlpod(>1B<)>.   The B<snopea(>1B<)> command translates
+B<snopea(>7B<)> to *roff B<man(>7B<)> format or HTML.
+
+New paragraphs are started with a blank line. Text enclosed in angle
+brackets (<>) and preceeded with B, I, or C will be formatted in 
+bold, italic, and constant-width fonts, respectively.
+
+=sect DIRECTIVES
+=item B<=pod>
+signals start of a block of documentation.
+any number of star (*) characters may proceed the B<=pod>
+and will be removed.  All lines until a B<=cut> directive
+will be processed (sans leading stars).
+=item B<=cut>
+signals end of a block of documentation.
+=item B<=sect> I<name>
+declares man page section I<name>.
+=item B<=item> I<label>
+starts an indented paragraph with I<label>.
+=item B<=indent> I<number>
+controls the indentation of B<=item> paragraphs.
+=item B<=bull> I<text>
+indicates a bullet item in a list.
+=item B<=code>
+starts a block of code, lines will be formatted in a constant-width font,
+and line breaks will be preserved.
+=item B<=ecode>
+ends a block of code.
+=sect NOT CONFORMING TO
+Inspired by (but not compatible with) Perl POD format.
+=sect AUTHOR
+Philip L. Budne
+=sect SEE ALSO
+B<snobol4(>1B<)>, B<snopea(>1B<)>
+=cut
