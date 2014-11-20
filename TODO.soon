@@ -1,11 +1,8 @@
 $Id$
 
-snobol4.1: document -b/-x behaviors
-
 snopea:
-	snopea: take -s section & -f format flags?
-		snopea.1 man page
-
+	replace =pod w/ =pea???
+	snopea.1 man page
 	snopea.7 man page!!
 
 Modules:
@@ -23,8 +20,6 @@ Modules:
 	tests for: logic(!!), sqlite3, stat, dirs, sprintf, fork, ffi
 		tests in modules subdirs???
 	ffi: FFI_CALL_VAR(proto, fhandle, args....)
-
-	curses simulation of DOS SPITBOL screen functions??
 
 Make all path element generated in init.c available!!
 	BASE/VERSION/local	HOST_SNOLIB_VLOCAL
@@ -48,6 +43,8 @@ man pages:
 
 ================
 
+translate *roff man pages to snopea!!
+
 modules:
 	for new modules (sqlite3, stat, dirs, sprintf, fork):
 		PML?? generate PMLPROC, config.m4 lines for Makefile2
@@ -66,6 +63,8 @@ modules:
 			ACCEPT()?
 
 	use mgetstring (even more!)
+
+	curses simulation of DOS SPITBOL screen functions??
 
 Allow readline() access via INPUT? (magic path, or option)
 	Allow control of history

@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/20/2014:
+	doc/snobol4.1: document -b change, -x option
+	doc/snobol4dbm.3: fix spelling
+
 11/18/2014:
 	snopea: flush single letter opts, some renaming
 	modules/setuputil.sno: make html man pages

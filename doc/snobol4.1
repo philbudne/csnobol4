@@ -1082,7 +1082,11 @@ in a buffer for efficiency.
 .SH OPTIONS
 .TP 1i
 .B -b
-Toggle startup banner output (by default on).
+Disable startup banner and termination output (only displayed when no
+source files are given on the command line).  In earlier releases
+.B -b
+.I toggled
+banner output.
 .TP
 .BI "-d " DDD
 Allocate \*(lqdynamic storage\*(rq region
@@ -1160,6 +1164,9 @@ specifies a parameter string available via
 .TP
 .B -v
 Show version and exit.
+.TP
+.B -x
+Force banner and termination output.
 .TP
 .B -z
 Show directory search path in use (including
