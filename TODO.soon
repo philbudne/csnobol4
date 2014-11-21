@@ -1,11 +1,12 @@
 $Id$
 
 snopea:
-	replace =pod w/ =pea???
-	snopea.1 man page
-	snopea.7 man page!!
+	snopea.7: document character entities!!
+	display uc words in small caps?
 
 Modules:
+	use \- in page titles??
+
 	sqlite: bind & execute in one call?
 
 	setuputil.sno:
@@ -44,6 +45,7 @@ man pages:
 ================
 
 translate *roff man pages to snopea!!
+	need subsect directive
 
 modules:
 	for new modules (sqlite3, stat, dirs, sprintf, fork):

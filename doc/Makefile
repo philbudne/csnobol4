@@ -1,7 +1,7 @@
 # Makefile for doc files
 # $Id$
 
-ALL=	txt
+ALL=	txt html
 
 TXT=	porting.txt snobol4.0 sdb.0 \
 	snobol4dbm.0 snobol4random.0 snobol4readline.0 \
@@ -9,7 +9,7 @@ TXT=	porting.txt snobol4.0 sdb.0 \
 
 HTML=	snobol4.html sdb.html \
 	snobol4dbm.html snobol4random.html snobol4readline.html \
-	snobol4tcl.html snobol4time.html snopea.html
+	snobol4tcl.html snobol4time.html snopea.7.html
 
 PS=	snobol4.ps sdb.ps \
 	snobol4dbm.ps snobol4random.ps snobol4readline.ps \
@@ -25,11 +25,13 @@ html:	$(HTML)
 ps:	$(PS)
 pdf:	$(PDF)
 
+test:	test.7 test.0 test.7.html test.ps
+
 MS=-ms
 MAN=-man
 
 # Use groff; does bolding!!
-NROFF=groff -Tascii -P-c
+NROFF=nroff -Tascii -c
 
 # troff to PostScript
 TROFF_PS=groff -Tps
@@ -40,13 +42,7 @@ TROFF_HTML=groff -Thtml
 # PostScript to PSF
 PS2PDF=ps2pdf
 
-.SUFFIXES: .ms .1 .3 .7 .0 .txt .ps .pdf .html .pea
-
-snopea.7: snopea.pea
-	../xsnobol4 -I../snolib ../snopea snopea.pea snopea.7
-
-snopea.7.html: snopea.pea
-	../xsnobol4 -I../snolib ../snopea --format html snopea.pea snopea.7.html
+.SUFFIXES: .ms .1 .3 .7 .0 .txt .ps .pdf .7.html .html .pea
 
 ####
 
@@ -83,10 +79,21 @@ snopea.7.html: snopea.pea
 .7.0:
 	$(NROFF) $(MAN) $< > $@
 
+.7.ps:
+	$(TROFF_PS) $(MAN) $< > $@
+
 ####
 .ps.pdf:
 	$(PS2PDF) $< $@
 
 ####
+.pea.7:
+	../xsnobol4 -I../snolib ../snopea $< $@
+
+.pea.7.html:
+	../xsnobol4 -I../snolib ../snopea --format html $< $@
+
+####
+
 clean:
-	rm -f *.0 porting.txt *.html *.ps *.pdf \#* *~ snopea.7
+	rm -f *.0 porting.txt *.html *.ps *.pdf \#* *~ snopea.7 test.7

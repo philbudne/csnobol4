@@ -5,10 +5,33 @@
 * NOTE!  The directives are only inspired by "POD" format
 -include 'basename.sno'
 
+* character entity handling... A mishmash of troff and HTML!
+	snopea.charpats = TABLE()
+
+	snopea.charmaps = TABLE()
+	snopea.charpats['roff'] = "''" | "``" |
++			'&lt;' | '&gt;' | '&pi;' | '&amp;'
+	snopea.charmaps['roff'] = snopea.charmap.roff = TABLE()
+	snopea.charmap.roff["``"] = '\*(lq'
+	snopea.charmap.roff["''"] = '\*(rq'
+	snopea.charmap.roff["&lt;"] = '<'
+	snopea.charmap.roff["&gt;"] = '>'
+	snopea.charmap.roff["&pi;"] = '\*(pi'
+	snopea.charmap.roff["&amp;"] = '&'
+
+	snopea.charpats['html'] = "''" | "``"  | '\' ANY("-.'&|")
+	snopea.charmaps['html'] = snopea.charmap.html = TABLE()
+	snopea.charmap.html["``"] = '&ldquo;'
+	snopea.charmap.html["''"] = '&rdquo;'
+	snopea.charmap.html["\'"] = "'"
+	snopea.charmap.html["\."] = '.'
+	snopea.charmap.html["\-"] = '-'
+	snopea.charmap.html["\&"] = ''
+	snopea.charmap.html["\|"] = '&thinsp;'
 
 	DEFINE('snopea(ifile,ofile,page,sect,format)'
-+			'font,efont,endlist,lsep,'
-+			'date,text,regfont,snomod,line,inpod,needspace,'
++			'font,efont,endlist,lsep,pre,chr,ctab'
++			'date,text,snomod,line,inpod,needspace,'
 +			'oline,text,iunit,ounit,lbl,cmd') :(snopea.end)
 snopea
 	iunit = IO_FINDUNIT()
@@ -47,9 +70,17 @@ sp.lloop
 +							:f(sp.ldone)
 	cmd = 'font'					:(sp.dispatch)
 
+* perform character substitutions
 sp.ldone
+	line = oline line
+	oline =
+sp.cloop
+	line POS(0) ARB . pre snopea.charpats[format] . chr = :f(sp.cdone)
+	oline = oline pre snopea.charmaps[format][chr]	:(sp.cloop)
+
+sp.cdone
 	out = oline line
-	out = vdiffer(lsep)
+sp.out	out = vdiffer(lsep)
 	text = 1
 	:(sp.top)
 
@@ -85,6 +116,16 @@ sp.roff.head
 
 *	if nroff, give "ragged right" output':
 	out = '.if n .ad l'
+	out = ".ie '\*[.T]'ascii' \{\"
+	out = '.	ds lq \&"\"'
+	out = '.	ds rq \&"\"'
+	out = ".	ds pi \fIpi\fP"
+	out = ".\}"
+	out = ".el \{\"
+	out = ".	ds rq ''"
+	out = ".	ds lq ``"
+	out = ".	ds pi \[*p]"
+	out = ".\}"
 
 *	disable hyphenation:
 	out = '.nh'
@@ -106,7 +147,7 @@ sp.roff.cut
 
 sp.roff.font
 	font = (IDENT(font, 'C') '\f(CW', '\f' font)
-	oline = oline pre font txt regfont		:(sp.lloop)
+	oline = oline pre font txt '\fP'		:(sp.lloop)
 
 sp.roff.sect
 	rest POS(0) SPAN(' ') =
@@ -132,7 +173,6 @@ sp.roff.bull
 sp.roff.code
 * constant width font:
 	out = '.ft CW'
-	regfont = '\f(CW'
 * fresh line
 	out = '.br'
 * need 20 lines (soft break):
@@ -146,7 +186,6 @@ sp.roff.code
 sp.roff.ecode
 * back to "Roman" typeface:
 	out = '.ft R'
-	regfont = '\fR'
 * fill, no hyphenation:
 	out = '.fi'
 	out = '.nh'
@@ -171,7 +210,6 @@ sp.html.head
 
 	indent = 4
 	text =
-	regfont = '\fR'					:(sp.top)
 
 sp.html.pod						:(sp.top)
 

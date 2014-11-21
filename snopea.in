@@ -1,17 +1,43 @@
 #!/usr/bin/env snobol4
 
-* snopea (POD for SNOBOL4) command
+* snopea (pod2{roff,html}) for SNOBOL4) command
+
+**=pod
+**=sect NAME
+**snopea - convert SNOBOL snopea documentation to roff and HTML
+**=sect SYNOPSIS
+**B<snopea> B<--format> I<format>] [B<--section> I<section>] [B<--page> I<pagename>] I<input> I<output>
+**=sect DESCRIPTION
+**The B<snopea(>1B<)> command converts embedded documentation in
+**B<snopea(>7B<)> format to B<roff(>7B<)> or HTML format.
+**=sect OPTIONS
+**=item B<--format>
+**takes either B<roff> or B<html> as an argument.
+**=item B<--section>
+**takes a single digit section number (otherwise the section number
+**will be inferred from the I<output> file name)
+**=item B<--page>
+**takes a page name as an argument
+**(otherwise the page name
+**will be inferred from the I<output> file name)
+**=sect NOT CONFORMING TO
+**Inspired by (but not compatible with) Perl POD format.
+**=sect AUTHOR
+**Philip L. Budne
+**=sect SEE ALSO
+**B<snobol4(>1B<)>, B<snopea(>7B<)>
+**=cut
 
 -include 'host.sno'
 -include 'snopea.sno'
 
 	fmt = 'roff'
 
-	optind = HOST(3)
-optlop	opt = HOST(2, optind)			:f(usage)
+	optind = HOST(HOST_FIRSTARG)
+optlop	opt = HOST(HOST_ARGN, optind)		:f(usage)
 	opt POS(0) '-'				:f(endopts)
 	optind = optind + 1
-	val = HOST(2, optind)			:f(usage)
+	val = HOST(HOST_ARGN, optind)		:f(usage)
 	optind = optind + 1
 	fmt = IDENT(opt, '--format') val	:s(optlop)
 	fmt = IDENT(opt, '-f') val		:s(optlop)
@@ -21,8 +47,8 @@ optlop	opt = HOST(2, optind)			:f(usage)
 	page = IDENT(opt, '-p') val		:s(optlop)
 	:(usage)
 
-endopts	infile = HOST(2, optind)		:f(usage)
-	outfile = HOST(2, optind + 1)		:f(usage)
+endopts	infile = HOST(HOST_ARGN, optind)	:f(usage)
+	outfile = HOST(HOST_ARGN, optind + 1)	:f(usage)
 
 	DIFFER(page)				:s(havepage)
 	outfile BREAK('.') . page

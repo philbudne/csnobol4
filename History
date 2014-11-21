@@ -3,6 +3,11 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 11/20/2014:
+	snolib/snopea.sno: implement character mappings
+	doc/snopea.7: tweak
+	snopea: use HOST_xxx constants
+
+11/19/2014:
 	doc/snobol4.1: document -b change, -x option
 	doc/snobol4dbm.3: fix spelling
 	doc/snopea.pea (new): snopea(7) man page
