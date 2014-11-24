@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/23/2014:
+	snopea, modules/dirs/dirs.c, modules/ffi/ffi.c, modules/stat/funcs.sno:
+		use \- in man page header
+
 11/21/2014:
 	snolib/snopea.sno: disable hyphenation after .SH
 

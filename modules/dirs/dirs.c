@@ -29,7 +29,7 @@ static handle_handle_t dir_handles;
 /*
 **=pod
 **=sect NAME
-**snobol4dirs - filesystem directory interface for SNOBOL4
+**snobol4dirs \- filesystem directory interface for SNOBOL4
 **=sect SYNOPSYS
 **B<-INCLUDE 'dirs.sno'>
 **=sect DESCRIPTION

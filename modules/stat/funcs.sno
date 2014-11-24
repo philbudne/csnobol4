@@ -1,7 +1,7 @@
 * $Id$
 **=pod
 **=sect NAME
-**snobol4stat - file status interface for SNOBOL4
+**snobol4stat \- file status interface for SNOBOL4
 **=sect SYNOPSYS
 **B<-INCLUDE 'stat.sno'>
 **=sect DESCRIPTION

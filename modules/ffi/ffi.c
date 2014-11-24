@@ -11,7 +11,7 @@
 /*
 **=pod
 **=sect NAME
-**snobol4ffi - Foreign Function Interface for SNOBOL4
+**snobol4ffi \- Foreign Function Interface for SNOBOL4
 **=sect SYNOPSYS
 **=code
 **B<-INCLUDE 'ffi.sno'>

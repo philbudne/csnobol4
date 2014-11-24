@@ -4,7 +4,7 @@
 
 **=pod
 **=sect NAME
-**snopea - convert SNOBOL snopea documentation to roff and HTML
+**snopea \- convert SNOBOL snopea documentation to roff and HTML
 **=sect SYNOPSIS
 **B<snopea> B<--format> I<format>] [B<--section> I<section>] [B<--page> I<pagename>] I<input> I<output>
 **=sect DESCRIPTION
