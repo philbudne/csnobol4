@@ -1,6 +1,6 @@
 $Id$
 
-=pod
+=pea
 =sect NAME
 snopea \- A tiny Plain Old Documentation format for SNOBOL4
 
@@ -15,9 +15,9 @@ brackets (<>) preceeded with B, I, or C will be formatted in
 bold, italic, and constant-width fonts, respectively.
 
 =sect DIRECTIVES
-=item B<=pod>
+=item B<=pea>
 signals start of a block of documentation.
-any number of star/asterisk (*) characters may proceed the B<=pod>
+any number of star/asterisk (*) characters may proceed the B<=pea>
 and will be removed.  All lines until a B<=cut> directive
 will be processed after removal of leading star characters.
 

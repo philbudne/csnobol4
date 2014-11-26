@@ -20,7 +20,7 @@
 #include "str.h"			/* for strlen */
 
 /*
-**=pod
+**=pea
 **=sect NAME
 **snobol4fork - POSIX fork for SNOBOL4
 **=sect SYNOPSYS
@@ -131,7 +131,7 @@ WAITPID( LA_ALIST) LA_DCL
 }
 
 /*
-**=pod
+**=pea
 **=sect SEE ALSO
 **B<snobol4(>1B<)>, B<fork(>2B<)>, B<waitpid(>2B<)>
 **=sect AUTHOR

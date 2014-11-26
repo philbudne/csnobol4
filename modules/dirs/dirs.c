@@ -27,7 +27,7 @@
 static handle_handle_t dir_handles;
 
 /*
-**=pod
+**=pea
 **=sect NAME
 **snobol4dirs \- filesystem directory interface for SNOBOL4
 **=sect SYNOPSYS
@@ -66,7 +66,7 @@ OPENDIR( LA_ALIST ) LA_DCL
 }
 
 /*
-**=pod
+**=pea
 **
 **B<READDIR(>I<handle>B<)> returns a filename or fails.
 **=cut
@@ -94,7 +94,7 @@ READDIR( LA_ALIST ) LA_DCL
 }
 
 /*
-**=pod
+**=pea
 **
 **B<REWINDDIR(>I<handle>B<)> rewinds a directory handle.
 **=cut
@@ -117,7 +117,7 @@ REWINDDIR( LA_ALIST ) LA_DCL
 
 #ifndef _WIN32 				/* should be HAVE_SEEKDIR */
 /*
-**=pod
+**=pea
 **
 **B<TELLDIR(>I<handle>B<)> reports directory handle position.
 **(may not be available on all platforms).
@@ -139,7 +139,7 @@ TELLDIR( LA_ALIST ) LA_DCL
 }
 
 /*
-**=pod
+**=pea
 **
 **B<TELLDIR(>I<handle>B<)> adjusts directory handle position.
 **=cut
@@ -161,7 +161,7 @@ SEEKDIR( LA_ALIST ) LA_DCL
 #endif
 
 /*
-**=pod
+**=pea
 **
 **B<CLOSEDIR(>I<handle>B<)> closes directory handle.
 **=cut
@@ -185,7 +185,7 @@ CLOSEDIR( LA_ALIST ) LA_DCL
 }
 
 /*
-**=pod
+**=pea
 **=sect SEE ALSO
 **B<snobol4(>1B<)>, B<opendir(>3B<)>, B<readdir(>3B<), B<rewinddir(>3B<)>,
 **B<telldir(>3B<)>, B<seekdir(>3B<)>, B<closedir(>3B<)>

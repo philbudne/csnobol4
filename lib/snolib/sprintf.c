@@ -11,7 +11,7 @@
  */
 
 /*
-**=pod
+**=pea
 **=sect NAME
 **snobol4fork - POSIX fork for SNOBOL4
 **=sect SYNOPSYS
@@ -69,7 +69,7 @@ SPRINTF( LA_ALIST ) LA_DCL
 }
 
 /*
-**=pod
+**=pea
 **=sect SEE ALSO
 **B<snobol4(>1B<)>, B<sprintf(>3B<)>
 **=sect AUTHOR

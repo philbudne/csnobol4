@@ -2,7 +2,7 @@
 
 * snopea (pod2{roff,html}) for SNOBOL4) command
 
-**=pod
+**=pea
 **=sect NAME
 **snopea \- convert SNOBOL snopea documentation to roff and HTML
 **=sect SYNOPSIS

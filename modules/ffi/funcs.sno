@@ -1,5 +1,5 @@
 * $Id$
-**=pod
+**=pea
 **=item B<DEFINE_FFI(>I<prototype>,I<pointer>B<)>
 **defines a SNOBOL4 function that calls an external function via B<ffi>(3).
 **I<prototype> contains a string name for the function followed
@@ -40,7 +40,7 @@ define_ffi.eloop
 	DEFINE(tmp)				 :f(FRETURN)s(RETURN)
 define_ffi.end
 
-**=pod
+**=pea
 **=sect SEE ALSO
 **B<snobol4(>1B<)>, B<ffi(>3B<)>, B<dlopen(>3B<)>
 **=sect AUTHOR

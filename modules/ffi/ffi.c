@@ -9,7 +9,7 @@
  */
 
 /*
-**=pod
+**=pea
 **=sect NAME
 **snobol4ffi \- Foreign Function Interface for SNOBOL4
 **=sect SYNOPSYS
@@ -376,7 +376,7 @@ FFI_FREE_CIF( LA_ALIST ) LA_DCL
 /****************************************************************/
 
 /*
-**=pod
+**=pea
 **=item B<FFI_DLOPEN(>I<filename>B<)>
 **takes the path of a dynamicly loadable
 **executable file (B<.so>, B<.bundle>,  or B<.DLL>) and returns a value
@@ -407,7 +407,7 @@ FFI_DLOPEN( LA_ALIST ) LA_DCL
 }
 
 /*
-**=pod
+**=pea
 **=item B<FFI_DLSYM(>I<library>,I<function>B<)>
 **takes a I<library> value
 **returned by B<FFI_DLOPEN()>, and a function name, and returns a

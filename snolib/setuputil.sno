@@ -20,7 +20,7 @@
 *	download_url
 *	extra_compile_args
 
-**=pod
+**=pea
 **=sect NAME
 **snobol4setup - Loadable module setup utility
 **=sect SYNOPSIS
@@ -37,7 +37,7 @@
 **I<modulename>B<.sno> will be created from
 **B<pre.sno> (if it exists),
 **any I<LOAD()> present in comments 
-**and any lines starting with B<*=pod> and ending with B<*=cut>
+**and any lines starting with B<*=pea> and ending with B<*=cut>
 **in I<sourcefiles>,
 **and finally B<funcs.sno> (if it exists).
 **
@@ -150,7 +150,7 @@ setup.makeinclude
 smi.copy.pre
 	lines = lines + 1
 	line = in				:f(smi.copy.pre.eof)
-	line '=pod'				:f(smi.copy.pre.out)
+	line '=pea'				:f(smi.copy.pre.out)
 	podseen = 1
 smi.copy.pre.out
 	out = line				:s(smi.copy.pre)
@@ -196,7 +196,7 @@ smi.eof
 	out = '**** funcs.sno:'
 smi.copy.funcs
 	line = in				:f(smi.copy.funcs.eof)
-	line '=pod'				:f(smi.copy.funcs.out)
+	line '=pea'				:f(smi.copy.funcs.out)
 	podseen = 1
 smi.copy.funcs.out
 	out = line				:s(smi.copy.funcs)
