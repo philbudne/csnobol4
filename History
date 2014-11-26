@@ -4,6 +4,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 11/26/2014:
 	modules/sqlite3/{sqlite3dbm,testdbm}.sno: DBM interface, test
+	modules/sqlite3/sqlite3.c: ifdef DEBUG
 
 11/25/2014:
 	many: replace =pod with =pea
