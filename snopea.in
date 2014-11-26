@@ -6,7 +6,7 @@
 **=sect NAME
 **snopea \- convert SNOBOL snopea documentation to roff and HTML
 **=sect SYNOPSIS
-**B<snopea> B<--format> I<format>] [B<--section> I<section>] [B<--page> I<pagename>] I<input> I<output>
+**B<snopea> [B<--format> I<format>] [B<--section> I<section>] [B<--page> I<pagename>] I<in> I<out>
 **=sect DESCRIPTION
 **The B<snopea(>1B<)> command converts embedded documentation in
 **B<snopea(>7B<)> format to B<roff(>7B<)> or HTML format.
