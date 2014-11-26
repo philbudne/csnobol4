@@ -5,8 +5,6 @@ snopea:
 	display uc words in small caps?
 
 Modules:
-	use \- in page titles??
-
 	sqlite: bind & execute in one call?
 
 	setuputil.sno:
@@ -16,22 +14,16 @@ Modules:
 				library/aa278396%28v=vs.60%29.aspx
 		"install" command (for users)
 
-	POD docs: sqlite, logic,
-		mention sqlite3 in ndbm page!
+	POD docs: sqlite -- mention sqlite3 in ndbm page!
+		sqlitedbm
+
 	tests for: logic(!!), sqlite3, stat, dirs, sprintf, fork, ffi
 		tests in modules subdirs???
-	ffi: FFI_CALL_VAR(proto, fhandle, args....)
 
 Make all path element generated in init.c available!!
 	BASE/VERSION/local	HOST_SNOLIB_VLOCAL
 	BASE/VERSION/lib	HOST_SNOLIB
 	BASE/local		HOST_SNOLIB_LOCAL
-
-readline:
-	Allow initial text (for Fred W)
-	use "libedit" natively??
-		FreeBSD man editline
-		include <edit/readline/readline.h>?
 
 man pages:
     snobol4error  -- error codes (from end of man page)
@@ -54,6 +46,8 @@ modules:
 		generate/install module.sno files regardless of PML
 			flush snolib/{ndbm,random,stcl,time}.sno files
 
+	ffi: FFI_CALL_VAR(proto, fhandle, args....)
+
 	ndbm module:
 		direct interface to gdbm???
 
@@ -68,9 +62,14 @@ modules:
 
 	curses simulation of DOS SPITBOL screen functions??
 
-Allow readline() access via INPUT? (magic path, or option)
-	Allow control of history
-	Allow control of filename expansion
+readline:
+	Allow initial text (for Fred W)
+	use "libedit" natively??
+		FreeBSD man editline
+		include <edit/readline/readline.h>?
+	Allow readline() access via INPUT? (magic path, or option)
+		Allow control of history
+		Allow control of filename expansion
 
 Flush all use of grep/INCDIR!!!
 
