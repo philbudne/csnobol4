@@ -218,7 +218,7 @@ SRCS=	main.c $(SNOBOL4).c data.c data_init.c syn.c $(BAL_C) $(BREAK_C) \
 
 .PRECIOUS: $(SNOBOL4).o data_init.o snobol4
 
-ALL=sdb snobol4
+ALL=sdb snobol4 $(GENERATED_DOCS)
 all:	$(ALL)
 
 changequote(@,@)dnl
@@ -243,22 +243,22 @@ cpuid:	cpuid.c
 ################
 # run regression tests.
 
-timing.out snobol4: tested xsnobol4 timing timing.sno test/bench.sno test/v311.sil
+timing.out: tested xsnobol4 timing timing.sno test/bench.sno test/v311.sil
 	@echo Running timing script...
 	./timing > timing.out.tmp
 	mv timing.out.tmp timing.out
-	-rm -f snobol4$(EXT)
-	cp xsnobol4$(EXT) snobol4$(EXT)
 	@echo '********************************************************' 1>&2
 	@echo 'Please consider mailing timing.out to timing@snobol4.org' 1>&2
 	@echo 'Anonymized results are posted at http://www.snobol4.org' 1>&2
 	@echo 'And you will be notified when test versions are available.' 1>&2
 	@echo '********************************************************' 1>&2
 
-tested:  xsnobol4 test/tests.in cpuid $(MODULES_GENERATED)
+tested snobol4: xsnobol4 test/tests.in cpuid $(MODULES_GENERATED)
 	@echo Running regression tests...
 	(cd test; BLOCKS=$(BLOCKS) SNOPATH="$(TEST_SNOPATH)" ./run.sh ../xsnobol4 -N)
 	@echo Passed regression tests.
+	-rm -f snobol4$(EXT)
+	cp xsnobol4$(EXT) snobol4$(EXT)
 	date > tested
 
 ################
@@ -579,6 +579,22 @@ lint:   llib-lf.ln
 llib-lf.ln:
 	lint -Cf $(MYCPPFLAGS) $(SRCS) > /dev/null 2>&1
 
+################
+GENERATED_DOCS=snopea.1 snopea.1.html \
+	modules/snobol4setup.3 modules/snobol4setup.4.html
+
+snopea.1: snopea snolib/snopea.sno snobol4
+	env SNOPATH=snolib ./snobol4 snopea snopea snopea.1
+
+snopea.1.html: snopea snolib/snopea.sno snobol4
+	env SNOPATH=snolib ./snobol4 snopea --format html snopea snopea.1.html
+
+modules/snobol4setup.3: modules/setuputil.sno snobol4
+	env SNOPATH=snolib ./snobol4 snopea modules/setuputil.sno modules/snobol4setup.3
+
+modules/snobol4setup.3.html: modules/setuputil.sno snobol4
+	env SNOPATH=snolib ./snobol4 snopea --format html modules/setuputil.sno modules/snobol4setup.3.html
+
 #################
 # installation
 
@@ -592,7 +608,7 @@ GENSNOLIB=host.sno
 
 SNOLIB_FILES=snolib/*.sno modules/setuputil.sno $(GENSNOLIB) $(MODULES_INCLUDE)
 
-install: snobol4 sdb modules/snobol4setup.3
+install: snobol4 sdb timing.out $(GENERATED_DOCS)
 	$(INSTALL) -d $(BINDIR)
 	$(INSTALL) $(INSTALL_BIN_FLAGS) snobol4 $(BINDIR)/snobol4-$(VERS)
 	$(INSTALL) sdb $(BINDIR)/sdb-$(VERS)
@@ -602,6 +618,7 @@ install: snobol4 sdb modules/snobol4setup.3
 	$(INSTALL) -d $(MAN1DIR)
 	$(INSTALL) -m 644 doc/snobol4.1 $(MAN1DIR)
 	$(INSTALL) -m 644 doc/sdb.1 $(MAN1DIR)
+	$(INSTALL) -m 644 snopea.1 $(MAN1DIR)
 	$(INSTALL) -d $(MAN3DIR)
 	$(INSTALL) -m 644 doc/snolib.3 $(MAN3DIR)
 	$(INSTALL) -m 644 doc/snobol4dbm.3 $(MAN3DIR)
@@ -634,9 +651,6 @@ install: snobol4 sdb modules/snobol4setup.3
 	@echo '*********************************************************' 1>&2
 	@echo 'Have you mailed a copy of timing.out to timing@snobol4.org ?' 1>&2
 	@echo '*********************************************************' 1>&2
-
-modules/snobol4setup.3: modules/setuputil.sno snobol4
-	env SNOPATH=snolib ./snobol4 snopea modules/setuputil.sno modules/snobol4setup.3
 
 ################
 MAKEFILE2=Makefile2

@@ -5,6 +5,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 11/25/2014:
 	many: replace =pod with =pea
 	modules/logic/funcs.sno: add documentation
+	Makefile2.m4: generated docs
 
 11/23/2014:
 	snopea, modules/dirs/dirs.c, modules/ffi/ffi.c, modules/stat/funcs.sno:
