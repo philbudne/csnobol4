@@ -1,8 +1,10 @@
 # $Id$
 -include 'sqlite3dbm.sno'
 
+	FILENAME = 'test.sqlite3'
+
 	MSG = 'open'
-	db = SQL3DBM_OPEN('test.sqlite3')		:F(ERR)
+	db = SQL3DBM_OPEN(FILENAME)			:F(ERR)
 
 	MSG = 'REPLACE'
 	SQL3DBM_STORE(db, 'foo', 'bar', SQL3DBM_REPLACE) :F(ERR)
@@ -29,14 +31,18 @@
 
 	MSG = 'fetch existing2'
 	VAL = SQL3DBM_FETCH(db, 'foo')			:F(ERR)
+	MSG = DIFFER(VAL, 'zzz') 'wrong value2: ' VAL	:S(ERR)
 
-	MSG = 'fetched wrong val2'
-	DIFFER(VAL, 'zzz')				:S(ERR)
+	MSG = 'expected key'
+	key = SQL3DBM_FIRSTKEY(db)
+	DIFFER(key, 'foo')				:S(ERR)
+	MSG = 'expected null: ' VDIFFER(SQL3DBM_NEXTKEY(db)) :S(ERR)
+	MSG = 'expected failure: ' SQL3DBM_NEXTKEY(db)	:S(ERR)
 
-	TERMINAL = 'OK'
-	:(END)
+	OUTPUT = 'OK'
+	:(DONE)
 
 ERR	TERMINAL = 'ERROR: ' MSG
 	&CODE = 1
-
+DONE	DELETE(FILENAME)
 END
