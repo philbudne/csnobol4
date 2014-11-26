@@ -136,7 +136,7 @@ sp.roff.head
 	text =
 	regfont = '\fR'					:(sp.top)
 
-sp.roff.pod						:(sp.top)
+sp.roff.pea						:(sp.top)
 
 sp.roff.para
 	out = ".PP"
@@ -211,7 +211,7 @@ sp.html.head
 	indent = 4
 	text =
 
-sp.html.pod						:(sp.top)
+sp.html.pea						:(sp.top)
 
 sp.html.para
 	out = vdiffer(endlist)
