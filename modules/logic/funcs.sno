@@ -8,26 +8,81 @@
 * NOTE!!! BASE argument must be passed an explicit null string for default!!
 *
 LOGIC.DEFINE
-
+**=pea
+**=sect NAME
+**snobol4logic \- bitwise logic and conversions for SNOBOL4
+**=sect SYNOPSYS
+**=code
+**B<-INCLUDE 'logic.sno'>
+**=sect DESCRIPTION
+**=cut
 	DEFINE("NOT(ARG)")
 	DEFINE("AND(ARG1,ARG2)")
 	DEFINE("OR(ARG1,ARG2)")
 	DEFINE("XOR(ARG1,ARG2)")
 	DEFINE("NAND(ARG1,ARG2)")
 	DEFINE("NOR(ARG1,ARG2)")
+**=pea
+**For binary operations,
+**either argument can be B<INTEGER> or B<STRING>
+**(if both string, must be of same length).
+**=item B<NOT(>I<arg>B<)>
+**returns bitwise not (complement) of integer argument.
+**=item B<AND(>I<arg1>,I<arg2>B<)>
+**bitwise intersection.
+**=item B<OR(>I<arg1>,I<arg2>B<)>
+**bitwise union.
+**=item B<XOR(>I<arg1>,I<arg2>B<)>
+**bitwise exclusive or (equivalence).
+**=item B<NAND(>I<arg1>,I<arg2>B<)>
+**bitwise intersection (first argument complemented).
+**=item B<NOR(>I<arg1>,I<arg2>B<)>
+**bitwise union (first argument complemented).
+**=cut
 	DEFINE("UPLUS(ARG1,ARG2)")
 	DEFINE("UMINUS(ARG1,ARG2)")
 	DEFINE("UMUL(ARG1,ARG2)")
 	DEFINE("UDIV(ARG1,ARG2)")
+**=item B<UPLUS(>I<arg1>,I<arg2>B<)>
+**unsigned addition.
+**=item B<UMINUS(>I<arg1>,I<arg2>B<)>
+**unsigned subtraction.
+**=item B<UMUL(>I<arg1>,I<arg2>B<)>
+**unsigned multiplication.
+**=item B<UDIV(>I<arg1>,I<arg2>B<)>
+**unsigned division.
+**=cut
 	DEFINE("SHL(ARG1,ARG2)")
 	DEFINE("SHR(ARG1,ARG2)")
 	DEFINE("SAR(ARG1,ARG2)")
 	DEFINE("ROL(ARG1,ARG2)")
 	DEFINE("ROR(ARG1,ARG2)")
+**=pea
+**=item B<SHL(>I<arg1>,I<arg2>B<)>
+**shift left.
+**=item B<SHR(>I<arg1>,I<arg2>B<)>
+**shift right.
+**=item B<SAR(>I<arg1>,I<arg2>B<)>
+**arithmetic (signed) shift right.
+**=item B<ROL(>I<arg1>,I<arg2>B<)>
+**rotate left.
+**=item B<ROR(>I<arg1>,I<arg2>B<)>
+**rotate right.
+**=cut
 	DEFINE("HI(ARG)")
 	DEFINE("IH(ARG)")
 	DEFINE("DIB(ARG,BASE)")
 	DEFINE("IDB(ARG,BASE)")
+**=pea
+**=item B<HI(>I<str>B<)>
+**convert base 16 string to integer.
+**=item B<IH(>I<int>B<)>
+**convert integer to base16 string.
+**=item B<DIB(>I<str>,I<n>B<)>
+**convert base I<n> string to integer.
+**=item B<IDB(>I<int>,I<n>B<)>
+**convert integer to base I<n> string.
+**=cut
 							:(LOGIC.END)
 
 NOT	NOT	= LOGIC(1,ARG)				:S(RETURN)F(FRETURN)
@@ -53,3 +108,12 @@ IDB	IDB	= LOGIC(17,CONVERT(ARG,'INTEGER'),BASE)	:S(RETURN)F(FRETURN)
 LOGIC.END
 	CODE('LOGIC.DEFINE')
 	CODE('LOGIC.END')
+
+**=pea
+**=sect COMPATIBILITY
+**compatible with Catspaw SPITBOL LOGIC function.
+**=sect SEE ALSO
+**B<snobol4(>1B<)>
+**=sect AUTHOR
+**Philip L. Budne
+**=cut
