@@ -1,7 +1,5 @@
 # $Id$
 
-# XXX honor "flags" on STORE
-
 # sqlite3dbm -- "dbm" style interface using SQLite3
 # database compatible with Python sqlite3dbm
 
