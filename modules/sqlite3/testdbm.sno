@@ -1,0 +1,42 @@
+# $Id$
+-include 'sqlite3dbm.sno'
+
+	MSG = 'open'
+	db = SQL3DBM_OPEN('test.sqlite3')		:F(ERR)
+
+	MSG = 'REPLACE'
+	SQL3DBM_STORE(db, 'foo', 'bar', SQL3DBM_REPLACE) :F(ERR)
+
+	MSG = 'INSERT w/ existing key'
+	SQL3DBM_STORE(db, 'foo', 'baz', SQL3DBM_INSERT)	:S(ERR)
+
+	MSG = 'fetch existing'
+	VAL = SQL3DBM_FETCH(db, 'foo')			:F(ERR)
+
+	MSG = 'fetched wrong val'
+	DIFFER(VAL, 'bar')				:S(ERR)
+
+	MSG = 'delete'
+	SQL3DBM_DELETE(db, 'foo')			:F(ERR)
+
+	MSG = 'deleted ' SQL3DBM_FETCH(db, 'foo')	:S(ERR)
+
+	MSG = 'delete deleted'
+	SQL3DBM_DELETE(db, 'foo')			:F(ERR)
+
+	MSG = 'INSERT non-existant'
+	SQL3DBM_STORE(db, 'foo', 'zzz', SQL3DBM_INSERT)	:F(ERR)
+
+	MSG = 'fetch existing2'
+	VAL = SQL3DBM_FETCH(db, 'foo')			:F(ERR)
+
+	MSG = 'fetched wrong val2'
+	DIFFER(VAL, 'zzz')				:S(ERR)
+
+	TERMINAL = 'OK'
+	:(END)
+
+ERR	TERMINAL = 'ERROR: ' MSG
+	&CODE = 1
+
+END

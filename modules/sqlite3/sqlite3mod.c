@@ -19,6 +19,13 @@
 
 #include <sqlite3.h>
 
+#ifdef DEBUG
+#include <stdio.h>
+#define DEBUGF(X) printf X
+#else
+#define DEBUGF(X)
+#endif
+
 #include "h.h"
 #include "equ.h"
 #include "snotypes.h"
@@ -135,11 +142,15 @@ SQLITE3_PREPARE( LA_ALIST ) LA_DCL
     if (ret != SQLITE_OK)
 	RETFAIL;
 
+    DEBUGF(("PREP: dbh %ld db %p stp %p\n", LA_INT(0), db, st));
+
     sh = new_handle(&sqlite3_stmts, st);
     if (sh == BAD_HANDLE) {
 	sqlite3_finalize(st);
 	RETFAIL;
     }
+
+    DEBUGF(("PREP: dbh %ld db %p stp %p sth %ld\n", LA_INT(0), db, st, sh));
 
     /* take additional arguments as positional parameters */
     for (arg = 2; arg < nargs; arg++) {
@@ -386,16 +397,19 @@ int
 SQLITE3_STEP( LA_ALIST ) LA_DCL
 {
     sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_INT(0));
-    int ret;
+    int val;
 
     if (!st)
 	RETFAIL;
 
-    switch (sqlite3_step(st)) {
+    val = sqlite3_step(st);
+    DEBUGF(("STEP: sth %ld stp %p val: %d\n", LA_INT(0), st, val));
+    switch (val) {
     case SQLITE_ROW: RETSTR("row");
     case SQLITE_DONE: RETSTR("done");
+    case SQLITE_BUSY: RETSTR("busy");	/* retry?? */
+    case SQLITE_ERROR: RETFAIL;
     }
-    /* here with BUSY or ERROR; if BUSY retry???? */
     /* also SQLITE_INTERRUPT, SQLITE_SCHEMA, SQLITE_CORRUPT?? */
     RETFAIL;
 }
@@ -459,9 +473,11 @@ SQLITE3_COLUMN_VALUE( LA_ALIST ) LA_DCL
     sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_INT(0));
     int col = LA_INT(1);
 
+    DEBUGF(("COLVAL: sth %ld stp %p col %d\n", LA_INT(0), st, col));
     if (!st)
 	RETFAIL;
 
+    DEBUGF(("COLVAL: type %d\n", sqlite3_column_type(st, col)));
     switch (sqlite3_column_type(st, col)) {
     case SQLITE_INTEGER:
 	RETINT(sqlite3_column_int64(st, col));

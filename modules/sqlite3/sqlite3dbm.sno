@@ -1,0 +1,69 @@
+# $Id$
+
+# XXX honor "flags" on STORE
+
+# sqlite3dbm -- "dbm" style interface using SQLite3
+# database compatible with Python sqlite3dbm
+
+-include "sqlite3.sno"
+
+	SQL3DBM_CREATE = 'CREATE TABLE IF NOT EXISTS kv_table ('
++				'key TEXT PRIMARY KEY,'
++				'val TEXT)'
+
+	SQL3DBM_SET = 'INSERT INTO kv_table (key, val) VALUES (?, ?)'
+	SQL3DBM_REP = 'INSERT OR REPLACE INTO kv_table (key, val)'
++				' VALUES (?, ?)'
+	SQL3DBM_GET = 'SELECT val FROM kv_table WHERE key = ?'
+	SQL3DBM_DEL = 'DELETE FROM kv_table WHERE key = ?'
+
+	DEFINE("SQL3DBM_OPEN(file,flags,mode)conn,dbh,data")
+	DEFINE("SQL3DBM_CLOSE(dbh)")
+	DEFINE("SQL3DBM_STORE(dbh,key,val,flags)stmt,sql")
+	DEFINE("SQL3DBM_FETCH(dbh,key)stmt")
+	DEFINE("SQL3DBM_DELETE(dbh,key)stmt")
+*	DEFINE("SQL3DBM_FIRSTKEY(dbh)")
+*	DEFINE("SQL3DBM_NEXTKEY(dbh)")
+	DEFINE("SQL3DBM_ERROR(dbh)")
+	DEFINE("SQL3DBM_CLEARERR(dbh)")
+
+	SQL3DBM_INSERT = 0
+	SQL3DBM_REPLACE = 1
+
+	:(SQL3DBM.END)
+
+SQL3DBM_OPEN
++	SQL3DBM_OPEN = SQLITE3_OPEN(file)		:F(FRETURN)
+	SQLITE3_EXEC(SQL3DBM_OPEN, SQL3DBM_CREATE)	:S(RETURN)
+	SQLITE3_CLOSE(SQL3DBM_OPEN)			:(FRETURN)
+****
+SQL3DBM_CLOSE
++	SQLITE3_CLOSE(dbh)				:S(RETURN)F(FRETURN)
+
+****
+SQL3DBM_STORE
++	sql = (EQ(flags,SQL3DBM_REPLACE) SQL3DBM_REP, SQL3DBM_SET)
+	stmt = SQLITE3_PREPARE(dbh, sql, key, val)	:F(FRETURN)
+	IDENT(SQLITE3_STEP(stmt),"done")		:F(SQL3DBM_FINALIZE)
+	SQLITE3_FINALIZE(stmt)				:S(RETURN)F(FRETURN)
+****
+SQL3DBM_FETCH
++	stmt = SQLITE3_PREPARE(dbh, SQL3DBM_GET, key)	:F(FRETURN)
+	IDENT(SQLITE3_STEP(stmt),"row")			:F(SQL3DBM_FINALIZE)
+	SQL3DBM_FETCH = SQLITE3_COLUMN_VALUE(stmt, 0)	:F(SQL3DBM_FINALIZE)
+	SQLITE3_FINALIZE(stmt)				:S(RETURN)F(FRETURN)
+****
+SQL3DBM_DELETE
++	stmt = SQLITE3_PREPARE(dbh, SQL3DBM_DEL, key)	:F(FRETURN)
+	IDENT(SQLITE3_STEP(stmt),"done")		:F(SQL3DBM_FINALIZE)
+	SQLITE3_FINALIZE(stmt)				:S(RETURN)F(FRETURN)
+****
+SQL3DBM_ERROR
++	SQL3DBM_ERROR = SQLITE3_ERRMSG(dbh)		:S(RETURN)F(FRETURN)
+**** noop
+SQL3DBM_CLEARERR					:(RETURN)
+**** common error tail
+SQL3DBM_FINALIZE
++	SQLITE3_FINALIZE(stmt)				:(FRETURN)
+
+SQL3DBM.END
