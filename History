@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/27/2014:
+	config/win32/config.sno (new)
+	config/win32/{config.h,ntmsvc.mak}: tweakage for MSC
+	modules/stat/stat.c: tweak for MSC
+
 11/26/2014:
 	modules/sqlite3/{sqlite3dbm,testdbm}.sno: DBM interface, test
 	modules/sqlite3/sqlite3.c: ifdef DEBUG
