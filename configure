@@ -339,6 +339,8 @@ echo '#define SETUP_SYS "posix"'		>> $CONFIG_H
 # safe on all Unix systems (requires "fork")
 echo '#define PML_SERV'				>> $CONFIG_H
 
+echo '#define HAVE_FILE_NSEC'			>> $CONFIG_H
+
 # should work on all Unix systems:
 if [ "$FORCE_PML" ]; then
     # NOTE! Only includes v1.5 extensions!!

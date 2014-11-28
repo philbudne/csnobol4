@@ -64,7 +64,9 @@ st2sno(st, dp)
 {
     int type;
     switch (st->st_mode & S_IFMT) {
+#ifdef S_IFIFO
     case S_IFIFO: type = 'p'; break;
+#endif
     case S_IFCHR: type = 'c'; break;
     case S_IFDIR: type = 'd'; break;
     case S_IFREG: type = '-'; break;
@@ -94,11 +96,13 @@ st2sno(st, dp)
     SETINT(dp,ST_BLKSIZE,st->st_blksize);
     SETINT(dp,ST_BLOCKS,st->st_blocks);
     SETINT(dp,ST_ATIME,st->st_atime);
-    SETINT(dp,ST_ATIMENSEC,st->st_atimensec);
     SETINT(dp,ST_MTIME,st->st_mtime);
-    SETINT(dp,ST_MTIMENSEC,st->st_mtimensec);
     SETINT(dp,ST_CTIME,st->st_ctime);
+#ifdef HAVE_FILE_NSEC
+    SETINT(dp,ST_ATIMENSEC,st->st_atimensec);
+    SETINT(dp,ST_MTIMENSEC,st->st_mtimensec);
     SETINT(dp,ST_CTIMENSEC,st->st_ctimensec);
+#endif
 }
 
 /*

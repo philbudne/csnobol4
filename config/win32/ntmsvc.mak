@@ -4,9 +4,10 @@
 # from batch file by David Feustel
 
 # tested 11/2005 w/ Visual Studio .NET 2003 (VC71)
-# tested 5/2010 w/ Visual C++ Express 2010
+# tested  5/2010 w/ Visual C++ Express 2010
 
 CC=cl
+LINK=link
 
 # -O2 opt for speed
 OPT=-O2
@@ -53,10 +54,10 @@ all:	cpuid.exe snobol4.exe
 
 cpuid.exe: cpuid.c
 	$(CC) -c cpuid.c
-	link /out:cpuid.exe cpuid.obj
+	$(LINK) /out:cpuid.exe cpuid.obj
 
 snobol4.exe : $(OBJ)
-	link /out:snobol4.exe $(OBJ) $(INET_LIBS) $(COM_LIBS)
+	$(LINK) /out:snobol4.exe $(OBJ) $(INET_LIBS) $(COM_LIBS)
 
 data.obj : $(SRCDIR)data.c
 	$(CC) $(CFLAGS) $(SRCDIR)data.c
@@ -232,7 +233,7 @@ handle.obj : $(SRCDIR)lib\snolib\handle.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\handle.c
 
 host.obj : $(SRCDIR)lib\snolib\host.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\host.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\host.c -DCC=\"$(CC)\" -DCOPT=\"$(COPT)\" -DSO_LD=\"$(LINK)\" -DDL_LD=\"$(LINK)\"
 
 log.obj : $(SRCDIR)lib\snolib\log.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\log.c

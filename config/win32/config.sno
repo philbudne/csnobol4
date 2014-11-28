@@ -1,0 +1,2 @@
+# $Id$
+	SLEEP_C = 'lib/win32/sleep.c'

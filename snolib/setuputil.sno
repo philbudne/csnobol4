@@ -83,10 +83,10 @@ setup	TERMINAL = DIFFER(DATATYPE(t),'TABLE') 'setup needs TABLE'
 +						:s(setup.fatal)
 	objext = HOST(HOST_OBJ_EXT)
 	sys = HOST(HOST_SETUP_SYS)
-* build against local include files
-	dist_build = FILE("setup.sno") FILE("../../config.h") 1
-* module from distribution sources-- use for installation?
-	dist_src = FILE("CVS/Entries") 1
+* build against distribution include files
+	dist_build = FILE("../setuputil.sno") FILE("../../config.h") 1
+	dist_build = 
++		FILE("..\setuputil.sno") FILE("..\..\config\win32\config.h") 1
 
 *	XXX parse options!!
 	cmd = HOST(HOST_ARGN, HOST(HOST_FIRSTARG))
@@ -340,7 +340,7 @@ setup.posix.cleancmd.end
 # XXX UGH!
 	DEFINE('setup.win.msc.basename(fname)') :(setup.win.msc.basename.end)
 setup.win.msc.basename
-	fname POS(0) BREAKX('\') '\' =		:S(setup.win.msc.basename)
+	fname POS(0) BREAKX('/\') ANY('/\') =	:S(setup.win.msc.basename)
 	setup.win.msc.basename = fname		:(RETURN)
 setup.win.msc.basename.end
 
@@ -356,13 +356,14 @@ setup.win.msc.objs.end
 
 ****************
 *	Windows build command using MSC
-*		requires C compiler have -c and -I options
-*		and linker/loader with -o option
 
 	DEFINE('setup.win.msc.buildcmd(t)')	:(setup.win.msc.buildcmd.end)
 setup.win.msc.buildcmd
   	iflags = ' -I' HOST(HOST_INCLUDE_DIR)
-	iflags = DIFFER(dist_build) ' -I..\.. -I..\..\include'
+	iflags = DIFFER(dist_build)
++		' -I..\.. -I..\..\include -I..\..\config\win32'
+
+# XXX /LIBDIR: ..\.. or some SNOLIB dir
 
 setup.win.msc.buildcmd2
 	idirs = t['include_dirs']
@@ -380,15 +381,16 @@ setup.win.msc.buildcmd2
 	setup.posix.system(compile)		 :f(FRETURN)
 
 	libdirs = t['library_dirs']
-	libdirs = DIFFER(libdirs) setup.repl(setup.c libdirs, setup.c, ' -L')
+	libdirs = DIFFER(libdirs) setup.repl(setup.c libdirs, setup.c, ' /LIBDIR:')
 
 	libs = t['libraries']
-	libs = DIFFER(libs) setup.repl(setup.c libs, setup.c, ' -l')
+	libs = DIFFER(libs) setup.repl(setup.c libs, setup.c, ' ')
 
 	link = HOST(HOST_DL_LD)
 +		' ' HOST(HOST_DL_LDFLAGS)
-+		' -o ' setup.dlname(t) ' ' setup.win.msc.objs(t) libdirs libs
 +		' ' t['ldflags']
++		' /OUT:' setup.dlname(t)
++		' ' setup.win.msc.objs(t) libdirs libs ' snobol4.lib'
 	setup.posix.system(link)		:f(FRETURN)
 	setup.makeinclude(t)			:(RETURN)
 setup.win.msc.buildcmd.end

@@ -5,17 +5,14 @@ snopea:
 	display uc words in small caps?
 
 Modules:
-	sqlite: bind & execute in one call?
-
 	setuputil.sno:
 		"test" command?
 		make work on win32 with "cl"
-			http://msdn.microsoft.com/en-us/
-				library/aa278396%28v=vs.60%29.aspx
+		http://msdn.microsoft.com/en-us/library/aa278396%28v=vs.60%29.aspx
 		"install" command (for users)
 
-	POD docs: sqlite -- mention sqlite3 in ndbm page!
-		sqlitedbm
+	POD docs: sqlite
+		sqlitedbm -- mention in ndbm page!
 
 	tests for: logic(!!), sqlite3, stat, dirs, sprintf, fork, ffi
 		tests in modules subdirs???
