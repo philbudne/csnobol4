@@ -363,8 +363,6 @@ setup.win.msc.buildcmd
 	iflags = DIFFER(dist_build)
 +		' -I..\.. -I..\..\include -I..\..\config\win32'
 
-# XXX /LIBDIR: ..\.. or some SNOLIB dir
-
 setup.win.msc.buildcmd2
 	idirs = t['include_dirs']
 	iflags = DIFFER(idirs) iflags setup.repl(setup.c idirs, setup.c, ' -I')
@@ -381,16 +379,23 @@ setup.win.msc.buildcmd2
 	setup.posix.system(compile)		 :f(FRETURN)
 
 	libdirs = t['library_dirs']
-	libdirs = DIFFER(libdirs) setup.repl(setup.c libdirs, setup.c, ' /LIBDIR:')
+	libdirs = DIFFER(libdirs)
++		setup.repl(setup.c libdirs, setup.c, ' /LIBDIR:')
+
+	snobol4lib_dir = ' /LIBDIR:' (DIFFER(dist_build) '..\..',
++					HOST(HOST_SNOLIB_DIR))
 
 	libs = t['libraries']
 	libs = DIFFER(libs) setup.repl(setup.c libs, setup.c, ' ')
 
 	link = HOST(HOST_DL_LD)
 +		' ' HOST(HOST_DL_LDFLAGS)
-+		' ' t['ldflags']
 +		' /OUT:' setup.dlname(t)
-+		' ' setup.win.msc.objs(t) libdirs libs ' snobol4.lib'
++		' ' t['ldflags']
++		' ' setup.win.msc.objs(t)
++		' ' libdirs snobol4lib_dir
++		' ' libs ' snobol4.lib'
+
 	setup.posix.system(link)		:f(FRETURN)
 	setup.makeinclude(t)			:(RETURN)
 setup.win.msc.buildcmd.end

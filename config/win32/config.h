@@ -113,10 +113,10 @@
 /* system command flavor for setuptil.sno */
 #if defined(_MSC_VER)
 #define SETUP_SYS "win.msc"
-#define DL_CFLAGS "/D_USRDLL /D_WINDLL"	/* /LD ??? */
-#define DL_LDFLAGS "/DLL"		/* /LD ??? */
+#define DL_CFLAGS "/LD"
+#define DL_LDFLAGS "/DLL"
 #elif defined(__GNUC__)
-#define SETUP_SYS "posix"		/* mingw uses posix paths */
+#define SETUP_SYS "posix"		/* mingw uses posix paths? */
 #define DL_CFLAGS ""
 #define DL_LDFLAGS "-shared"
 #elif defined(__BORLANDC__)
