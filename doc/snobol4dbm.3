@@ -116,6 +116,7 @@ Berkeley DB creates a single
 file.
 
 .SH SEE ALSO
+.BR snobol4sqlite3dbm (3),
 .BR ndbm (3),
 .BR dbopen (3),
 .BR gdbm (3).
@@ -126,6 +127,10 @@ Philip L. Budne
 .SH BUGS
 .PP
 None of the implementations allow concurrent read and write.
+(the
+.BR snobol4sqlite3dbm (3)
+interface achives this portably using
+.BR sqlite (1)).
 
 .PP
 Some implementations (classic NDBM and SDBM) place limits on the total

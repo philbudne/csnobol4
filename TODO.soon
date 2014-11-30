@@ -6,6 +6,8 @@ snopea:
 
 Modules:
 	setuputil.sno:
+		remove empty "extras" man pages?
+		"cleanup" for 'extras' man pages?
 		"test" command?
 		make work on win32 with "cl"
 		http://msdn.microsoft.com/en-us/library/aa278396%28v=vs.60%29.aspx
@@ -14,7 +16,6 @@ Modules:
 			install "extras"!!
 
 	POD docs: sqlite
-		mantion sqlite3dbm in ndbm page!
 
 	tests for: logic(!!), sqlite3, stat, dirs, sprintf, fork, ffi
 
