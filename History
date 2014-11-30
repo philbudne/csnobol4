@@ -3,7 +3,9 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 11/30/2014:
-	doc/snobol4dbm.3: mention snobol4sqlite3dbm
+	doc/snobol4dbm.3: mention snobol4sqlite3dbm(3)
+	doc/snobol4tcl.3: reference wish(1) man page
+	doc/man2pea.sno: a start
 
 11/29/2014:
 	modules/setuputil.sno: process 'extras' w/ snopea

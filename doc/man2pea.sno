@@ -1,0 +1,66 @@
+	&anchor = 1
+
+	tab = char(9)
+	ws = span(' ' tab)
+	breakws = break(' ' tab)
+	twofontcmd = '.' ANY('RBI') . f1 ANY('RBI') . f2 ws rem . rest
+	onefontcmd = '.' ANY('BI') . font ws rem . rest
+
+	q = '"'
+	tokpat = ((q break(q) . text q) | breakws . text) ws
+
+****************
+start	line = input					:f(end)
+	line '.TH'					:f(start)
+
+loop	prefix =
+loop1	line = input					:f(end)
+
+	line '.'					:f(notcmd)
+	line twofontcmd					:s(twofontcmd)
+	line onefontcmd					:s(onefontcmd)
+	line '.SH'					:s(shcmd)
+	line '.PP'					:s(ppcmd)
+	line '.LP'					:s(lpcmd)
+	line '.IP \(bu'					:s(bullcmd)
+
+	terminal = 'Unknown command: ' line
+	output = '>>>' line
+	:(loop)
+
+notcmd
+* XXX handle \fX
+	output = prefix line
+	:(loop)
+
+****
+twofontcmd
+	rest = rest ' '
+	oline = prefix
+
+f1	rest tokpat =					:f(efont)
+	ident(text)					:s(efont)
+	oline = oline (ident(f1,'R') text, f1 '<' text '>')
+
+f2	rest tokpat =					:f(efont)
+	ident(text)					:s(efont)
+	oline = oline (ident(f2,'R') text, f2 '<' text '>') :(f1)
+
+efont	output = oline					:(loop)
+****
+onefontcmd
+	rest = rest ' '
+	rest tokpat =					:f(efont)
+	output = prefix font '<' text '>'		:(loop)
+
+****
+shcmd	line '.SH' = '=sect'
+	output = line					:(loop)
+****
+ppcmd	output =					:(loop)
+****
+lpcmd	prefix = '=item '				:(loop1)
+****
+bullcmd	prefix = '=bull '				:(loop1)
+
+end
