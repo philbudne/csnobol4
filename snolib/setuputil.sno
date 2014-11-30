@@ -217,7 +217,7 @@ smi.close
 	DETACH(.out)
 	TERMINAL = GT(lines,0) 'created ' of
 * delete if EQ(lines,0) ???
-	IDENT(podseen)				:s(return)
+	IDENT(podseen)				:s(smi.endman)
 
 * man file
 	mf = pn = 'snobol4' of
@@ -229,6 +229,20 @@ smi.close
 
 	TERMINAL = snopea(of, mf, pn, '3', 'roff') 'created ' mf
 	TERMINAL = snopea(of, htmlmf, pn, '3', 'html') 'created ' htmlmf
+smi.endman
+	extras = t['extras'] ','
+smi.extras
+	extras break(',') . fn ',' =		:f(smi.done)
+
+	pn = 'snobol4' fn
+	pn '.sno' =
+	mf = pn '.3'
+	htmlmf = mf '.html'
+
+	TERMINAL = snopea(fn, mf, pn, '3', 'roff') 'created ' mf
+	TERMINAL = snopea(fn, htmlmf, pn, '3', 'html') 'created ' htmlmf
+
+smi.done
 	:(return)
 
 smi.openerr

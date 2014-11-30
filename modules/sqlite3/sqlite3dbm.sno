@@ -1,23 +1,68 @@
 # $Id$
-
-# sqlite3dbm -- "dbm" style interface using SQLite3
-# database compatible with Python sqlite3dbm
-
+# database compatible with Pythonn sqlite3dbm
+**=pea
+**=sect NAME
+**snobol4sqlite3dbm \- "dbm" style interface for SNOBOL4 using SQLite3
+**=cut
 -include "sqlite3.sno"
-
+*
 	SQL3DBM_CREATE = 'CREATE TABLE IF NOT EXISTS kv_table ('
 +				'key TEXT PRIMARY KEY,'
 +				'val TEXT)'
-
 	SQL3DBM_SET = 'INSERT INTO kv_table (key, val) VALUES (?, ?)'
 	SQL3DBM_REP = 'INSERT OR REPLACE INTO kv_table (key, val)'
 +				' VALUES (?, ?)'
 	SQL3DBM_GET = 'SELECT val FROM kv_table WHERE key = ?'
 	SQL3DBM_DEL = 'DELETE FROM kv_table WHERE key = ?'
 	SQL3DBM_KEYS = 'SELECT key FROM kv_table'
-
+*
 	SQL3DBM_CURSORS = TABLE()
-
+*
+**=pea
+**=sect SYNOPSIS
+**=code
+**-INCLUDE 'ndbm.sno'
+**
+**        dbhandle = SQL3DBM_OPEN(file,flags,mode)
+**
+**        SQL3DBM_CLOSE(dbhandle)
+**
+**        SQL3DBM_STORE(dbhandle,key,datum,flags)
+**
+**        datum = SQL3DBM_FETCH(dbhandle,key)
+**
+**        SQL3DBM_DELETE(dbhandle,key)
+**
+**        key = SQL3DBM_FIRSTKEY(dbhandle)
+**
+**        key = SQL3DBM_NEXTKEY(dbhandle)
+**
+**        SQL3DBM_ERROR(dbhandle)
+**=ecode
+**=sect DESCRIPTION
+**B<sqlite3dbm(>3B<)> implements a DBM compatible interface for
+**B<snobol4(>1B<)> using the B<sqlite> embedded database engine.  It
+**allows concurrent access by multiple programs.  =item B<DBM_OPEN>
+**takes a filename (STRING), and ignores any additional arguments, and
+**returns a database handle.
+**=item B<DBM_CLOSE>
+**takes a database handle and closes it.
+**=item B<DBM_STORE>
+**takes a database handle, a key, a value, and a flag,
+**one of B<SQL3DBM_INSERT> or B<SQL3DBM_REPLACE>.
+**=item B<DBM_FETCH>
+**takes a database handle and a key and returns a datum (if any) stored with
+**that key.
+**=item B<DBM_DELETE>
+**takes a database handle and a key and deletes the stored datum (if any).
+**=item B<SQL3DBM_FIRSTKEY>
+**takes a database handle and returns a database key.
+**=item B<SQL3DBM_NEXTKEY>
+**takes a database handle and returns a database key
+**when called after B<SQL3DBM_FIRSTKEY>.
+**=item B<SQL3DBM_ERROR>
+**takes a database handle and string for the last B<sqlite3> database error.
+**=cut
 	DEFINE("SQL3DBM_OPEN(file,flags,mode)conn,dbh,data")
 	DEFINE("SQL3DBM_CLOSE(dbh)")
 	DEFINE("SQL3DBM_STORE(dbh,key,val,flags)stmt,sql")
@@ -42,7 +87,6 @@ SQL3DBM_CLOSE
 +	DIFFER(SQL3DBM_CURSORS[dbh]) SQLITE3_FINALIZE(SQL3DBM_CURSORS[dbh])
 	SQL3DBM_CURSORS[dbh] =
 +	SQLITE3_CLOSE(dbh)				:S(RETURN)F(FRETURN)
-
 ****
 SQL3DBM_STORE
 +	sql = (EQ(flags,SQL3DBM_REPLACE) SQL3DBM_REP, SQL3DBM_SET)
@@ -84,5 +128,13 @@ SQL3DBM_CLEARERR					:(RETURN)
 **** common error tail
 SQL3DBM_FINALIZE
 +	SQLITE3_FINALIZE(stmt)				:(FRETURN)
-
+****
 SQL3DBM.END
+**=pea
+**=sect COMPATIBILITY
+**database compatible with Python sqlite3dbm
+**=sect SEE ALSO
+**B<snobol4(>1B<)>, B<snobol4dbm(>3B<)>, B<sqlite3(>1B<)>
+**=sect AUTHOR
+**Philip L. Budne
+**=cut

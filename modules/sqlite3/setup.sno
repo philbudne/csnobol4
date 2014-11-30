@@ -18,5 +18,7 @@
 	t['include_dirs'] = SQLITE_INCLUDE
 	t['library_dirs'] = SQLITE_LIBDIR
 
+	t['extras'] = 'sqlite3dbm.sno'
+
 	setup(t)
 end
