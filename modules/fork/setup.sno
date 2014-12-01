@@ -2,7 +2,7 @@
 
 	t = TABLE()
 	t['module'] = 'fork'
-	t['sources'] = '../../lib/snolib/fork.c'
+	t['sources'] = 'fork.c'
 
 	t['author'] = t['maintainer'] = 'Phil Budne'
 	t['author_email'] = t['maintainer_email'] = 'phil@snobol4.org'

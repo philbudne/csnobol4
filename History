@@ -6,7 +6,10 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	doc/snobol4dbm.3: mention snobol4sqlite3dbm(3)
 	doc/snobol4tcl.3: reference wish(1) man page
 	doc/man2pea.sno: a start
-
+	moved (copied & removed) files to modules/
+		snolib/{fork,logic,ndbm,random,sprintf,stcl,time}.c
+		sdbm directory
+	
 11/29/2014:
 	modules/setuputil.sno: process 'extras' w/ snopea
 	modules/sqlite3/sqlite3dbm.sno: add snopea docs

@@ -3,7 +3,7 @@
 
 	t = TABLE()
 	t['module'] = 'stcl'
-	t['sources'] = '../../lib/snolib/stcl.c'
+	t['sources'] = 'stcl.c'
 
 	t['author'] = t['maintainer'] = 'Phil Budne'
 	t['author_email'] = t['maintainer_email'] = 'phil@snobol4.org'

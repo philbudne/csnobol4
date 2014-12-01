@@ -2,7 +2,7 @@
 
 	t = TABLE()
 	t['module'] = 'sprintf'
-	t['sources'] = '../../lib/snolib/sprintf.c'
+	t['sources'] = 'sprintf.c'
 
 	t['author'] = t['maintainer'] = 'Phil Budne'
 	t['author_email'] = t['maintainer_email'] = 'phil@snobol4.org'

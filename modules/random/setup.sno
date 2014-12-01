@@ -2,7 +2,7 @@
 
 	t = TABLE()
 	t['module'] = 'random'
-	t['sources'] = '../../lib/snolib/random.c'
+	t['sources'] = 'random.c'
 
 	t['author'] = t['maintainer'] = 'Phil Budne'
 	t['author_email'] = t['maintainer_email'] = 'phil@snobol4.org'

@@ -1583,12 +1583,12 @@ if config/check time.h 'struct tm tm; int i = tm.tm_gmtoff'; then
     echo '#define HAVE_TM_GMTOFF'		>> $CONFIG_H
 fi
 
-SLEEP_C=lib/bsd/sleep.c
+SLEEP_C=modules/time/bsd/sleep.c
 echo '#define HAVE_SLEEP'			>> $CONFIG_H
 SELECT_FRAG='fd_set x; struct timeval tv; select(0,&x,&x,&x,&tv);'
 if config/check time.h 'struct timespec ts; nanosleep(&ts,0)'; then
     echo 'using POSIX nanosleep()' 1>&2
-    SLEEP_C=lib/posix/sleep.c
+    SLEEP_C=modules/time/posix/sleep.c
 elif config/check sys/select.h "$SELECT_FRAG"; then
     echo 'using posix select() for sleep'	1>&2
     echo '#define HAVE_SELECT_H'		>> $CONFIG_H
@@ -1596,7 +1596,7 @@ elif config/check 'sys/time.h sys/types.h' "$SELECT_FRAG"; then
     echo 'using select() for sleep' 1>&2
 else
     echo 'using generic sleep()' 1>&2
-    SLEEP_C=lib/generic/sleep.c			>> $CONFIG_M4
+    SLEEP_C=modules/time/generic/sleep.c			>> $CONFIG_M4
 fi
 echo 'SLEEP_C=$(SRCDIR)'$SLEEP_C		>> $CONFIG_M4
 echo "	SLEEP_C = '$SLEEP_C'"			>> $CONFIG_SNO
@@ -1750,8 +1750,8 @@ if true; then
 	    echo 'ADD_OBJS([sdbm.o sdbm_hash.o sdbm_pair.o])' >> $CONFIG_M4
 	else
 	    # for modules/ndbm/setup.sno:
-	    echo '	NDBM_INCLUDE = "../../lib/sdbm"' >> $CONFIG_SNO
-	    echo '	NDBM_SRCS = ",../../lib/sdbm/sdbm.c,../../lib/sdbm/sdbm_hash.c,../../lib/sdbm/sdbm_pair.c"' >> $CONFIG_SNO
+	    echo '	NDBM_INCLUDE = "sdbm"' >> $CONFIG_SNO
+	    echo '	NDBM_SRCS = ",sdbm/sdbm.c,sdbm/sdbm_hash.c,sdbm/sdbm_pair.c"' >> $CONFIG_SNO
 	fi
 	echo '#define HAVE_SDBM_H'	>> $CONFIG_H
 	echo '#define DUFF'		>> $CONFIG_H

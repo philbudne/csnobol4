@@ -3,7 +3,7 @@
 
 	t = TABLE()
 	t['module'] = 'ndbm'
-	t['sources'] = '../../lib/snolib/ndbm.c' NDBM_SRCS
+	t['sources'] = 'ndbm.c' NDBM_SRCS
 	t['include_dirs'] = NDBM_INCLUDE
 	t['ldflags'] = NDBM_LDFLAGS
 	

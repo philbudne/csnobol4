@@ -2,7 +2,7 @@
 
 	t = TABLE()
 	t['module'] = 'logic'
-	t['sources'] = '../../lib/snolib/logic.c'
+	t['sources'] = 'logic.c'
 
 	t['author'] = t['maintainer'] = 'Phil Budne'
 	t['author_email'] = t['maintainer_email'] = 'phil@snobol4.org'

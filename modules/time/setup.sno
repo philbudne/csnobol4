@@ -3,7 +3,7 @@
 
 	t = TABLE()
 	t['module'] = 'time'
-	t['sources'] = '../../lib/snolib/time.c,../../' SLEEP_C
+	t['sources'] = 'time.c,../../' SLEEP_C
 	t['include_dirs'] = '../..,../../include'
 
 	t['author'] = t['maintainer'] = 'Phil Budne'

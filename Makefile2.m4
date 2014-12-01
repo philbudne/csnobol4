@@ -113,9 +113,9 @@ ISNAN_C=$(SRCDIR)lib/dummy/isnan.c
 SYSTEM_C=$(SRCDIR)lib/dummy/system.c
 
 # SDBM sources
-SDBM_C=$(SRCDIR)lib/sdbm/sdbm.c
-SDBM_PAIR_C=$(SRCDIR)lib/sdbm/sdbm_pair.c
-SDBM_HASH_C=$(SRCDIR)lib/sdbm/sdbm_hash.c
+SDBM_C=$(SRCDIR)modules/sdbm/sdbm.c
+SDBM_PAIR_C=$(SRCDIR)modules/sdbm/sdbm_pair.c
+SDBM_HASH_C=$(SRCDIR)modules/sdbm/sdbm_hash.c
 
 # snolib sources
 ATAN_C=$(SRCDIR)lib/snolib/atan.c
@@ -128,28 +128,28 @@ EXIT_C=$(SRCDIR)lib/snolib/exit.c
 EXP_C=$(SRCDIR)lib/snolib/exp.c
 FILE_C=$(SRCDIR)lib/snolib/file.c
 FINDUNIT_C=$(SRCDIR)lib/snolib/findunit.c
-FORK_C=$(SRCDIR)lib/snolib/fork.c
+FORK_C=$(SRCDIR)modules/fork/fork.c
 GETSTRING_C=$(SRCDIR)lib/snolib/getstring.c
 HANDLE_C=$(SRCDIR)lib/snolib/handle.c
 HOST_C=$(SRCDIR)lib/snolib/host.c
 LOG_C=$(SRCDIR)lib/snolib/log.c
-LOGIC_C=$(SRCDIR)lib/snolib/logic.c
-NDBM_C=$(SRCDIR)lib/snolib/ndbm.c
+LOGIC_C=$(SRCDIR)modules/logic/logic.c
+NDBM_C=$(SRCDIR)modues/ndbm/ndbm.c
 ORD_C=$(SRCDIR)lib/snolib/ord.c
-RANDOM_C=$(SRCDIR)lib/snolib/random.c
+RANDOM_C=$(SRCDIR)modules/random/random.c
 READLINE_C=$(SRCDIR)lib/snolib/readline.c
 RENAME_C=$(SRCDIR)lib/snolib/rename.c
 RETSTRING_C=$(SRCDIR)lib/snolib/retstring.c
 SERV_C=$(SRCDIR)lib/snolib/serv.c
 SIN_C=$(SRCDIR)lib/snolib/sin.c
 # SLEEP_C set by configure
-SPRINTF_C=$(SRCDIR)lib/snolib/sprintf.c
+SPRINTF_C=$(SRCDIR)modules/sprintf/sprintf.c
 SQRT_C=$(SRCDIR)lib/snolib/sqrt.c
 SSET_C=$(SRCDIR)lib/snolib/sset.c
 STCL_C=$(SRCDIR)lib/snolib/stcl.c
 SYS_C=$(SRCDIR)lib/posix/sys.c
 TAN_C=$(SRCDIR)lib/snolib/tan.c
-TIME_C=$(SRCDIR)lib/snolib/time.c
+TIME_C=$(SRCDIR)modules/time/time.c
 # for cygwin!
 COM_CPP=$(SRCDIR)lib/win32/com.cpp
 
