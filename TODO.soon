@@ -15,7 +15,8 @@ Modules:
 			install module.so, module.sno, man page (if any)
 			install "extras"!!
 
-	POD docs: sqlite
+	pea docs: sqlite
+	Translate to pea: dbm random readline tcl time
 
 	tests for: logic(!!), sqlite3, stat, dirs, sprintf, fork, ffi
 

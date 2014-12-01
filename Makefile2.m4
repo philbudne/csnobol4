@@ -375,8 +375,8 @@ realst.o: $(REALST_C)
 replace.o: $(REPLACE_C)
 	$(CC) $(CFLAGS) -c $(REPLACE_C)
 
-sleep.o: $(SLEEP_C)
-	$(CC) $(CFLAGS) -c $(SLEEP_C)
+sleep.o: modules/time/$(SLEEP_C)
+	$(CC) $(CFLAGS) -c modules/time/$(SLEEP_C)
 
 spcint.o: $(SPCINT_C)
 	$(CC) $(CFLAGS) -c $(SPCINT_C)

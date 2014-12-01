@@ -1583,12 +1583,12 @@ if config/check time.h 'struct tm tm; int i = tm.tm_gmtoff'; then
     echo '#define HAVE_TM_GMTOFF'		>> $CONFIG_H
 fi
 
-SLEEP_C=modules/time/bsd/sleep.c
+SLEEP_C=bsd/sleep.c
 echo '#define HAVE_SLEEP'			>> $CONFIG_H
 SELECT_FRAG='fd_set x; struct timeval tv; select(0,&x,&x,&x,&tv);'
 if config/check time.h 'struct timespec ts; nanosleep(&ts,0)'; then
     echo 'using POSIX nanosleep()' 1>&2
-    SLEEP_C=modules/time/posix/sleep.c
+    SLEEP_C=posix/sleep.c
 elif config/check sys/select.h "$SELECT_FRAG"; then
     echo 'using posix select() for sleep'	1>&2
     echo '#define HAVE_SELECT_H'		>> $CONFIG_H
@@ -1596,7 +1596,7 @@ elif config/check 'sys/time.h sys/types.h' "$SELECT_FRAG"; then
     echo 'using select() for sleep' 1>&2
 else
     echo 'using generic sleep()' 1>&2
-    SLEEP_C=modules/time/generic/sleep.c			>> $CONFIG_M4
+    SLEEP_C=generic/sleep.c			>> $CONFIG_M4
 fi
 echo 'SLEEP_C=$(SRCDIR)'$SLEEP_C		>> $CONFIG_M4
 echo "	SLEEP_C = '$SLEEP_C'"			>> $CONFIG_SNO
