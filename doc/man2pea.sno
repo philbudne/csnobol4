@@ -1,3 +1,7 @@
+# $Id$
+# make a quick cut at converting a man page to "snopea" format
+# Phil Budne, November 30, 2014
+
 	&anchor = 1
 
 	tab = char(9)

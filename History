@@ -4,6 +4,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 12/1/2014:
 	snolib/snopea.sno: cleanup & add oline "command"
+	doc/snobol4tcl.3: fix typo
+	doc/man2pea.sno: comment
 
 11/30/2014:
 	doc/snobol4dbm.3: mention snobol4sqlite3dbm(3)
