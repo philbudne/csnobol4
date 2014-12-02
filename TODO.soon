@@ -1,5 +1,7 @@
 $Id$
 
+create snobol4.org/books page!!
+
 snopea:
 	snopea.7: document character entities!!
 	display uc words in small caps?
@@ -16,9 +18,10 @@ Modules:
 			install "extras"!!
 
 	pea docs: sqlite
-	Translate to pea: dbm random readline tcl time
+	Translate to pea & embed: dbm random readline tcl time
 
-	tests for: logic(!!), sqlite3, stat, dirs, sprintf, fork, ffi
+	tests:
+		logic(!!), sqlite3, stat, dirs, sprintf, fork, ffi
 
 Make all path element generated in init.c available!!
 	BASE/VERSION/local	HOST_SNOLIB_VLOCAL
@@ -29,9 +32,10 @@ man pages:
     snobol4error  -- error codes (from end of man page)
     snobol4func   -- all (non-block) built-in functions
     snobol4blocks -- list/document new functions/operators
+	reference orange book, MTS manual
     snobol4snolib -- overview of snolib/*.sno
-    snobol4dynamic -- POD comments in dynamic.sno
-    snobol4wrapper -- POD comments in wrapper.sno
+    snobol4dynamic -- pea comments in dynamic.sno
+    snobol4wrapper -- pea comments in wrapper.sno
     snobol4load   -- C functions/macros
 
 ================
