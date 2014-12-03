@@ -215,6 +215,9 @@ sp.roff.ecode
 * unindent:
 	out = '.RE'					:(sp.top)
 
+sp.roff.break
+	out = '.br'					:(sp.top)
+
 sp.roff.eof						:(sp.close)
 
 ****************
@@ -293,6 +296,9 @@ sp.html.code
 
 sp.html.ecode
 	out = '</pre>'					:(sp.top)
+
+sp.html.break
+	out = '<br>'					:(sp.top)
 
 sp.html.eof
 	out = vdiffer(endlist)

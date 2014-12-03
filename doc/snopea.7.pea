@@ -43,6 +43,9 @@ and line breaks will be preserved.
 =item B<=ecode>
 ends a block of code.
 
+=item B<=break>
+indicates a line break.
+
 =sect NOT CONFORMING TO
 Inspired by (but not compatible with) Perl POD format.
 

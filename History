@@ -5,6 +5,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 12/3/2014:
 	Makefile: clean up more generated doc files
 	snopea, doc/snopea.pea, modules/LOTS: don't bold parens in man page refs
+	snolib/snopea.sno, doc/snopea.pea: add =break
 
 12/2/2014:
 	Makefile: config.m4 config.h config.sno version.h version: configure
