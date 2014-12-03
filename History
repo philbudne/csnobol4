@@ -15,6 +15,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	Makefile2.m4: fix modules/snobol4setup.3.html
 		remove snobol4{dbm,random,tcl,time}.3
 		install snopea script
+		install snopea.7 page
+	configure: output MAN7DIR
 
 12/2/2014:
 	Makefile: config.m4 config.h config.sno version.h version: configure
