@@ -7,6 +7,8 @@ snopea:
 	display uc words in small caps?
 
 Modules:
+	SQL3DBM_ERROR returns string!!!!
+
 	setuputil.sno:
 		remove empty "extras" man pages?
 		"cleanup" for 'extras' man pages?

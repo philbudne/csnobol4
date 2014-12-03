@@ -57,7 +57,7 @@ All three return a B<DATA()> object with the following members:
 **Values will be the empty string if the
 **data is not available.
 **=sect SEE ALSO
-**B<snobol4(>1B<)>, B<stat(>2B<)>, B<lstat(>2B<)>, B<fstat(>2B<)>
+**B<snobol4>(1), B<stat>(2), B<lstat>(2), B<fstat>(2)
 **=sect AUTHOR
 **Philip L. Budne
 **=cut

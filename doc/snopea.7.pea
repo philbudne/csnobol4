@@ -5,10 +5,10 @@ $Id$
 snopea \- A tiny Plain Old Documentation format for SNOBOL4
 
 =sect DESCRIPTION
-B<snopea(>7B<)> is a simple-to-use markup language used for writing
+B<snopea>(7) is a simple-to-use markup language used for writing
 documentation for SNOBOL4, SNOBOL4 programs, and SNOBOL4 modules
-inspired by B<perlpod(>1B<)>.  The B<snopea(>1B<)> command translates
-B<snopea(>7B<)> to B<man(>7B<)> macro format or HTML.
+inspired by B<perlpod>(1).  The B<snopea>(1) command translates
+B<snopea>(7) to B<man>(7) macro format or HTML.
 
 New paragraphs are started with a blank line. Text enclosed in angle
 brackets (<>) preceeded with B, I, or C will be formatted in 
@@ -50,5 +50,5 @@ Inspired by (but not compatible with) Perl POD format.
 Philip L. Budne
 
 =sect SEE ALSO
-B<snobol4(>1B<)>, B<snopea(>1B<)>
+B<snobol4>(1), B<snopea>(1)
 =cut

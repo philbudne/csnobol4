@@ -36,7 +36,7 @@
 **
 **B<WAITPID()> takes an optional process id to wait for, and returns a string
 **with the process id, status, and additional status about the child.
-**I<options> is a string of optional flags (see the B<waitpid(>2B<)>
+**I<options> is a string of optional flags (see the B<waitpid>(2)
 **man page for details):
 **=item c
 **WCONTINUED
@@ -133,7 +133,7 @@ WAITPID( LA_ALIST) LA_DCL
 /*
 **=pea
 **=sect SEE ALSO
-**B<snobol4(>1B<)>, B<fork(>2B<)>, B<waitpid(>2B<)>
+**B<snobol4>(1), B<fork>(2), B<waitpid>(2)
 **=sect AUTHOR
 **Philip L. Budne
 **=cut

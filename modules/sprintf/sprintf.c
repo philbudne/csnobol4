@@ -71,7 +71,7 @@ SPRINTF( LA_ALIST ) LA_DCL
 /*
 **=pea
 **=sect SEE ALSO
-**B<snobol4(>1B<)>, B<sprintf(>3B<)>
+**B<snobol4>(1), B<sprintf>(3)
 **=sect AUTHOR
 **Philip L. Budne
 **=cut

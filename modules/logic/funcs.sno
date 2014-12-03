@@ -113,7 +113,7 @@ LOGIC.END
 **=sect COMPATIBILITY
 **compatible with Catspaw SPITBOL LOGIC function.
 **=sect SEE ALSO
-**B<snobol4(>1B<)>
+**B<snobol4>(1)
 **=sect AUTHOR
 **Philip L. Budne
 **=cut

@@ -40,8 +40,8 @@
 **        SQL3DBM_ERROR(dbhandle)
 **=ecode
 **=sect DESCRIPTION
-**B<sqlite3dbm(>3B<)> implements a DBM compatible interface for
-**B<snobol4(>1B<)> using the B<sqlite> embedded database engine.  It
+**B<sqlite3dbm>(3) implements a DBM compatible interface for
+**B<snobol4>(1) using the B<sqlite> embedded database engine.  It
 **allows concurrent access by multiple programs.  =item B<DBM_OPEN>
 **takes a filename (STRING), and ignores any additional arguments, and
 **returns a database handle.
@@ -134,7 +134,7 @@ SQL3DBM.END
 **=sect COMPATIBILITY
 **database compatible with Python sqlite3dbm
 **=sect SEE ALSO
-**B<snobol4(>1B<)>, B<snobol4dbm(>3B<)>, B<sqlite3(>1B<)>
+**B<snobol4>(1), B<snobol4dbm>(3), B<sqlite3>(1)
 **=sect AUTHOR
 **Philip L. Budne
 **=cut

@@ -187,8 +187,8 @@ CLOSEDIR( LA_ALIST ) LA_DCL
 /*
 **=pea
 **=sect SEE ALSO
-**B<snobol4(>1B<)>, B<opendir(>3B<)>, B<readdir(>3B<), B<rewinddir(>3B<)>,
-**B<telldir(>3B<)>, B<seekdir(>3B<)>, B<closedir(>3B<)>
+**B<snobol4>(1), B<opendir>(3), B<readdir(>3B<), B<rewinddir>(3),
+**B<telldir>(3), B<seekdir>(3), B<closedir>(3)
 **=sect AUTHOR
 **Philip L. Budne
 **=cut

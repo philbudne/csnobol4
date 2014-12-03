@@ -187,18 +187,19 @@ tidy:
 # remove objects, turds; leave generated sources, final binary.
 
 DISP=*.o *.a callgraph prolog bsplitu vers build.c bsdtsort \
-	config.m4 config.h Makefile2 .depend
+	config.m4 config.h Makefile2 .depend *.1 *.html
 
 cleanmostly: tidy
 	rm -f $(DISP)
 	rm -rf timdir.*
 	cd modules; for m in [a-z]*; do \
-		test -d $$m && (cd $$m; rm -f $$m.sno *.o *.so *.bundle); \
+	    test -d $$m && (cd $$m; rm -f $$m.sno *.o *.so *.bundle *.3 *.html); \
 	done
 
 # clean as a freshly unpacked kit; remove binaries, timing;
 # leave version.h, version for Windoze
 clean:	cleanmostly
+	(cd doc; make clean)
 	rm -f snobol4 xsnobol4 cpuid timing.out tested *.ln sdb *.exe
 
 # DANGER: requires installed binary to rebuild!!

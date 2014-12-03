@@ -42,7 +42,7 @@ define_ffi.end
 
 **=pea
 **=sect SEE ALSO
-**B<snobol4(>1B<)>, B<ffi(>3B<)>, B<dlopen(>3B<)>
+**B<snobol4>(1), B<ffi>(3), B<dlopen>(3)
 **=sect AUTHOR
 **Philip L. Budne
 **=cut

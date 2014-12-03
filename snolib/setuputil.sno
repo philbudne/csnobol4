@@ -67,7 +67,7 @@
 **Only supports "POSIX" systems.
 **Tested on OS X, FreeBSD and Linux.
 **=sect SEE ALSO
-**B<snobol4(>1B<)>, B<snopea(>1B<)>
+**B<snobol4>(1), B<snopea>(1)
 **=cut
 ****************
 * make code less confusing!
