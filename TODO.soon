@@ -20,7 +20,7 @@ Modules:
 			install "extras"!!
 
 	pea docs: sqlite
-	Translate to pea & embed: dbm random readline tcl time
+	Translate to pea & embed: readline
 
 	tests:
 		logic(!!), sqlite3, stat, dirs, sprintf, fork, ffi
