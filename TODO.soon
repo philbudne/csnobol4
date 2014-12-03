@@ -1,6 +1,10 @@
 $Id$
 
+snopea.sh -- sed in explicit version/path for snobol4 executable
+
 create snobol4.org/books page!!
+
+reference all man pages (in snolib.3?)
 
 snopea:
 	snopea.7: document character entities!!

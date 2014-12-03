@@ -612,9 +612,11 @@ install: snobol4 sdb timing.out $(GENERATED_DOCS)
 	$(INSTALL) -d $(BINDIR)
 	$(INSTALL) $(INSTALL_BIN_FLAGS) snobol4 $(BINDIR)/snobol4-$(VERS)
 	$(INSTALL) sdb $(BINDIR)/sdb-$(VERS)
-	rm -f $(BINDIR)/snobol4 $(BINDIR)/sdb
-	ln -s $(BINDIR)/snobol4-$(VERS) $(BINDIR)/snobol4 
-	ln -s $(BINDIR)/sdb-$(VERS) $(BINDIR)/sdb 
+	$(INSTALL) snopea $(BINDIR)/snopea-$(VERS)
+	rm -f $(BINDIR)/snobol4 $(BINDIR)/sdb $(BINDIR)/snopea
+	ln -s $(BINDIR)/snobol4-$(VERS) $(BINDIR)/snobol4
+	ln -s $(BINDIR)/sdb-$(VERS) $(BINDIR)/sdb
+	ln -s $(BINDIR)/snopea-$(VERS) $(BINDIR)/snopea
 	$(INSTALL) -d $(MAN1DIR)
 	$(INSTALL) -m 644 doc/snobol4.1 $(MAN1DIR)
 	$(INSTALL) -m 644 doc/sdb.1 $(MAN1DIR)
