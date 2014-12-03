@@ -19,7 +19,7 @@ The latest release can be found at http://www.snobol4.org/csnobol4
 
 ****************************************************************
 
-Copyright (c) 1993-2013, Philip L. Budne
+Copyright © 1993-2014, Philip L. Budne
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -180,6 +180,8 @@ historical background, testing, fixes, testing, money, etc
 	Steven Brenton
 	Fred Weigel
 	Anonymous
+	Mike Greenberg
+	Mike Alexander
 	Clem Cole
 
 If you are interested in getting mailings about new releases, send me

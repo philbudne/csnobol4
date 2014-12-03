@@ -11,7 +11,7 @@ Modules:
 		remove empty "extras" man pages?
 		"cleanup" for 'extras' man pages?
 		"test" command?
-		make work on win32 with "cl"
+		test/debug on win32 with "cl"
 		http://msdn.microsoft.com/en-us/library/aa278396%28v=vs.60%29.aspx
 		"install" command:
 			install module.so, module.sno, man page (if any)
@@ -40,7 +40,11 @@ man pages:
 
 ================
 
-translate *roff man pages to snopea!!
+accept string for unit?
+	default to I/O association variable name?!
+	use io_findunit if unit not given????
+
+translate all *roff man pages to snopea!!
 	need subsect directive
 
 modules:

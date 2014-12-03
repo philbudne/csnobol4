@@ -1,7 +1,7 @@
 -HIDE
 * "SDB" SNOBOL4 debugger -- a clone (clown?) of GNU "gdb" debugger
-* Copyright (C) 2010-2013 Philip L. Budne
-* All rights reserved.
+	SDB.COPYRIGHT = 'Copyright © 2010-2014 Philip L. Budne'
+*			All rights reserved.
 * 
 * Redistribution and use in source and binary forms, with or without
 * modification, are permitted provided that the following conditions are
@@ -925,7 +925,7 @@ SDB.NOSTACK
 * XXX try reading ./.sdbinit or $HOME/.sdbinit
 *
 	TERMINAL = "sdb SNOBOL4 debugger version " SDB.VDATE
-	TERMINAL = "Copyright 2010-2013 Philip L. Budne"
+	TERMINAL = SDB.COPYRIGHT
 	TERMINAL = 'Type "help" for help.'
 	TERMINAL =
 *

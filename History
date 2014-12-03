@@ -4,6 +4,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 12/2/2014:
 	Makefile: config.m4 config.h config.sno version.h version: configure
+	COPYRIGHT, README, snolib/sdb.sno: update copyright date, use utf
 
 12/1/2014:
 	snolib/snopea.sno: cleanup & add oline "command"
