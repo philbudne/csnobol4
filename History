@@ -11,6 +11,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	modules/stcl/stcl.c: add pea docs
 	modules/time/funcs.sno: add pea docs
 	doc/snobol4{dbm,random,tcl,time}.3: deleted
+	doc/Makefile: remove snobol4{dbm,random,tcl,time}
+	Makefile2.m4: fix modules/snobol4setup.3.html
 
 12/2/2014:
 	Makefile: config.m4 config.h config.sno version.h version: configure

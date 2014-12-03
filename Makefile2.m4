@@ -581,7 +581,7 @@ llib-lf.ln:
 
 ################
 GENERATED_DOCS=snopea.1 snopea.1.html \
-	modules/snobol4setup.3 modules/snobol4setup.4.html
+	modules/snobol4setup.3 modules/snobol4setup.3.html
 
 snopea.1: snopea snolib/snopea.sno snobol4
 	env SNOPATH=snolib ./snobol4 snopea snopea snopea.1
