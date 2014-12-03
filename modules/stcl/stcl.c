@@ -13,6 +13,32 @@
  * Remove IncrRefCounts?  Add explicit calls?
  */
 
+/*
+**=pea
+**=sect NAME
+**snobol4tcl \- SNOBOL4 Tcl/Tk interface
+**
+**=sect SYNOPSIS
+**=code
+**-INCLUDE 'stcl.sno'
+**        tclhandle = STCL_CREATEINTERP()
+**        STCL_DELETEINTERP(tclhandle)
+**        STCL_EVALFILE(tclhandle,tclfilename)
+**        value = STCL_GETVAR(tclhandle,varname)
+**        STCL_SETVAR(tclhandle,varname,value)
+**        STCL_EVAL(tclhandle,tclstmt)
+**=ecode
+**
+**=sect DESCRIPTION
+**Tcl is an embedable scripting language developed by John Osterhout,
+**while at the University of California, Berkeley.  Tk is a graphical
+**user interface toolkit developed for Tcl.
+**
+**This page describes a facility for invoking Tcl and Tk from SNOBOL4
+**programs, inspired by Arjen Markus' "ftcl" FORTRAN/Tcl interface
+**=cut
+*/
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
@@ -36,6 +62,14 @@
 
 static handle_handle_t tcl_interps;
 static handle_handle_t tcl_objs;	/* Objects NOT per-interp!! */
+
+/*
+**=pea
+**=item B<STCL_CREATEINTERP>
+**creates a Tcl interpreter and returns a handle which can be passed to
+**the remaining functions.
+**=cut
+*/
 
 /*
  * LOAD("STCL_CREATEINTERP()INTEGER", STCL_DL)
@@ -74,6 +108,13 @@ STCL_CREATEINTERP( LA_ALIST ) LA_DCL
 }
 
 /*
+**=pea
+**=item B<STCL_EVALFILE>
+**reads a Tcl script file into the referenced Tcl interpreter.
+**
+**=cut
+*/
+/*
  * LOAD("STCL_EVALFILE(INTEGER,STRING)STRING", STCL_DL)
  *
  * return result string, or failure
@@ -97,6 +138,15 @@ STCL_EVALFILE( LA_ALIST ) LA_DCL
     RETSTR(Tcl_GetStringResult(interp));
 }
 
+/*
+**=pea
+**=item B<STCL_GETVAR>
+**retrieves the string value of named variable from a Tcl interpreter.
+**B<STCL_GETVAR>
+**stores a string value of named variable in a Tcl interpreter.
+**
+**=cut
+*/
 /*
  * LOAD("STCL_GETVAR(INTEGER,STRING)STRING", STCL_DL)
  * return value of a Tcl variable (all Tcl variables are strings)
@@ -140,6 +190,13 @@ STCL_SETVAR( LA_ALIST ) LA_DCL
 }
 
 /*
+**=pea
+**=item B<STCL_EVAL>
+**evaluates a string containing Tcl code in a Tcl interpreter.
+**
+**=cut
+*/
+/*
  * LOAD("STCL_EVAL(INTEGER,STRING)STRING", STCL_DL)
  * Eval a tcl command
  *
@@ -162,6 +219,13 @@ STCL_EVAL( LA_ALIST ) LA_DCL
     RETSTR(Tcl_GetStringResult(interp));
 }
 
+/*
+**=pea
+**=item B<STCL_DELETEINTERP>
+**destroys a Tcl interpreter.
+**
+**=cut
+*/
 /*
  * LOAD("STCL_DELETEINTERP(INTEGER)STRING", STCL_DL)
  * Delete TCL interpreter
@@ -356,3 +420,57 @@ STCL_RELEASEOBJ( LA_ALIST ) LA_DCL
     remove_handle(&tcl_objs, LA_INT(0)); /* gone to SNOBOL world... */
     RETNULL;
 }
+
+/*
+**=pea
+**=sect EXAMPLE
+**=code
+**-INCLUDE 'stcl.sno'
+**        INTERP = STCL_CREATEINTERP()
+**        TCL_VERSION = STCL_GETVAR(INTERP, "tcl_version")
+**        OUTPUT = IDENT(TCL_VERSION) "Could not get tcl_version" :S(END)
+**        OUTPUT = "Tcl Version: " TCL_VERSION
+** 
+**# check Tcl version
+**        NUM = SPAN('0123456789')
+**        VPAT = NUM '.' NUM
+**        TCL_VERSION VPAT . VER                          :S(CHECKV)
+**        OUTPUT = "could not parse tcl_version"          :(END)
+** 
+**CHECKV  LT(VER, 8.4)                                    :S(CHECKTK)
+** 
+**# Tcl 8.4 and later can dynamicly load Tk!
+**        STCL_EVAL(INTERP, "package require Tk")         :F(END)
+** 
+**# Check for Tk
+**CHECKTK TK_VERSION = STCL_GETVAR(INTERP, "tk_version")  :F(NO_TK)
+**        DIFFER(TK_VERSION)                              :S(HAVETK)
+**NO_TK   OUTPUT = "Could not find tk_version"            :(END)
+**                                                                              
+**HAVETK  OUTPUT = "Tk version: " TK_VERSION
+**
+**LOOP    OUTPUT = STCL_EVAL(INTERP,
+**+                   'tk_messageBox -message "Alert!"'
+**+                   ' -type ok -icon info')
+**        VAL = STCL_EVAL(INTERP,
+**+                   'tk_messageBox -message "Really quit?"'
+**+                   ' -type yesno -icon question')
+**        OUTPUT = VAL
+**        DIFFER(VAL, "yes")                              :S(LOOP)
+**END
+**=ecode
+**
+**=sect SEE ALSO
+**B<tclsh>(1), B<wish>(1).
+**=break
+**http://ftcl.sourceforge.net/
+**
+**=sect AUTHOR
+**Philip L. Budne
+**
+**=sect BUGS
+**Because multiple versions of Tcl can be installed, the location of the
+**tclConfig.sh must be manually specified to the B<snobol4>(1)
+**B<configure> script.
+**=cut
+*/

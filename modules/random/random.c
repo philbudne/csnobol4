@@ -51,7 +51,7 @@ __FBSDID("$FreeBSD: src/lib/libc/stdlib/random.c,v 1.25 2007/01/09 00:28:10 imp 
 #endif
 
 #ifndef DEV_RANDOM
-#define DEV_RANDOM "/dev/randm"
+#define DEV_RANDOM "/dev/random"
 #endif
 
 long bsd_random();
@@ -534,6 +534,8 @@ bsd_random()
 	return((long)i);
 }
 
+/****************************************************************/
+
 #include "h.h"
 #include "equ.h"
 #include "snotypes.h"
@@ -541,6 +543,30 @@ bsd_random()
 #include "load.h"
 
 static int seeded = 0;
+
+/*
+**=pea
+**=sect NAME
+**snobol4random \- SNOBOL4 random number functions
+**
+**=sect SYNOPSIS
+**=code
+**-INCLUDE 'random.sno'
+**        SRANDOM(number)
+**        SRANDOMDEV()
+**        number = RANDOM()
+**=ecode
+**
+**=sect DESCRIPTION
+**B<The functions described in this manual page are not cryptographically secure.>
+**
+**The B<RANDOM()> function uses a non-linear additive feedback random
+**number generator employing a default table of size 31 long integers to
+**return successive pseudo-random numbers in the range from 0 to
+**(2**31)-1.  The period of this random number generator is very large,
+**approximately 16*((2**31)-1).
+**=cut
+*/
 
 /*
  * LOAD("RANDOM()INTEGER", RANDOM_DL)
@@ -556,6 +582,17 @@ RANDOM( LA_ALIST ) LA_DCL
 }
 
 /*
+**=pea
+**=item B<SRANDOM()>
+**takes its B<INTEGER> argument as the seed for a new sequence of
+**pseudo-random numbers to be returned by B<RANDOM()>.  These sequences
+**are repeatable by calling B<SRANDOM()> with the same seed value.
+**B<RANDOM()> will by default produce a sequence of numbers that can be
+**duplicated by calling B<SRANDOM()> with 1 as the seed.
+**=cut
+*/
+
+/*
  * LOAD("SRANDOM(INTEGER)STRING", RANDOM_DL)
  */
 int
@@ -567,6 +604,22 @@ SRANDOM( LA_ALIST ) LA_DCL
 }
 
 /*
+**=pea
+**=item B<SRANDOMDEV()>
+**initializes a state array using the B<random>(4) random number device
+**(if available) which returns good random numbers, suitable for
+**cryptographic use.  Note that this particular seeding procedure can
+**generate states which are impossible to reproduce by calling
+**B<SRANDOM()> with any value, since the succeeding terms in the state
+**buffer are no longer derived from the LC algorithm applied to a fixed
+**seed.  Data from the B<random>(4) device may be precious, and repeated
+**calls to B<SRANDOMDEV()> should be avoided.  When the B<random>(4)
+**device is not available, a 32-bit seed will be generated using time,
+**process id, and an element of the process stack.
+**=cut
+*/
+
+/*
  * LOAD("SRANDOMDEV()STRING", RANDOM_DL)
  */
 int
@@ -576,3 +629,17 @@ SRANDOMDEV( LA_ALIST ) LA_DCL
     seeded = 1;
     RETNULL;
 }
+
+/*
+**=pea
+**=sect SEE ALSO
+**B<snobol4>(1), B<random>(3), B<random>(4).
+**
+**=sect AUTHORS
+**Earl T. Cohen
+**=break
+**Jacob S. Rosenberg
+**=break
+**Philip L. Budne
+*=cut
+*/

@@ -6,6 +6,11 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	Makefile: clean up more generated doc files
 	snopea, doc/snopea.pea, modules/LOTS: don't bold parens in man page refs
 	snolib/snopea.sno, doc/snopea.pea: add =break
+	modules/ndbm/ndbm.c: add pea docs
+	modules/random/random.c: add pea docs
+	modules/stcl/stcl.c: add pea docs
+	modules/time/funcs.sno: add pea docs
+	doc/snobol4{dbm,random,tcl,time}.3: deleted
 
 12/2/2014:
 	Makefile: config.m4 config.h config.sno version.h version: configure
