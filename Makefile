@@ -167,6 +167,15 @@ host.sno: host.awk lib/snolib/host.h
 #	$(SNO) gendep.sno < $(SIL) > procs2
 #	mv -f procs2 procs
 
+################
+# shorthands
+
+clean_modules: Makefile2
+	make -f Makefile2 clean_modules
+
+build_modules: Makefile2
+	make -f Makefile2 build_modules
+
 ##################################################################
 # housekeeping
 

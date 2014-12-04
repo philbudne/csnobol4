@@ -3,8 +3,11 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 12/4/2014:
+	Makefile: {clean,build}_modules shorthands
 	Makefile2.m4: add rule for snopea.7, move GENERATED_DOCS up
 		add sdb.1 to GENERATED_DOCS
+		add $(SNOPEA) shorthand
+	configure: output, use $(RUNSETUP) shorthand
 	doc/Makefile: flush test, output snopea.7 as snopea-format.{html,ps,pdf}
 	modules/setuputil.sno: fix extras handling, check for =pea lines
 	snolib/snopea.sno: cleanup html charpat, complain on open errors

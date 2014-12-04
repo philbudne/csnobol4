@@ -1957,6 +1957,7 @@ BUILD_DL=
 BUILD_INC=
 # for host.sno:
 TEST_SNOPATH=..
+echo 'RUNSETUP=SNOPATH=..:../..:../../snolib ../../xsnobol4 -N setup.sno' >> $CONFIG_M4
 for M in $MODULES; do
     DL="modules/$M/$M$DL_EXT"
     INC="modules/$M/$M.sno"
@@ -1969,7 +1970,7 @@ for M in $MODULES; do
     TEST_SNOPATH="$TEST_SNOPATH:../modules/$M"
     echo ''					>> $CONFIG_M4
     echo "$DL $INC $MAN $HTML: xsnobol4 modules/setuputil.sno modules/$M/setup.sno" >> $CONFIG_M4
-    echo "	cd modules/$M; SNOPATH=..:../..:../../snolib ../../xsnobol4 -N -b setup.sno build" >> $CONFIG_M4
+    echo "	cd modules/$M; \$(RUNSETUP) build" >> $CONFIG_M4
 done
 TEST_SNOPATH="$TEST_SNOPATH:../snolib:."
 echo ''						>> $CONFIG_M4

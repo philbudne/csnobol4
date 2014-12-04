@@ -585,20 +585,22 @@ llib-lf.ln:
 ################
 # GENERATED_DOCS:
 
+SNOPEA=env SNOPATH=snolib ./snobol4 snopea
+
 snopea.1: snopea snolib/snopea.sno snobol4
-	env SNOPATH=snolib ./snobol4 snopea snopea snopea.1
+	$(SNOPEA) snopea snopea.1
 
 snopea.1.html: snopea snolib/snopea.sno snobol4
-	env SNOPATH=snolib ./snobol4 snopea --format html snopea snopea.1.html
+	$(SNOPEA) --format html snopea snopea.1.html
 
-doc/snopea.7: doc/snopea.pea snobol4
+doc/snopea.7 doc/sdb.1: snopea snolib/snopea.sno snobol4
 	cd doc; make
 
 modules/snobol4setup.3: modules/setuputil.sno snobol4
-	env SNOPATH=snolib ./snobol4 snopea modules/setuputil.sno modules/snobol4setup.3
+	$(SNOPEA) modules/setuputil.sno modules/snobol4setup.3
 
 modules/snobol4setup.3.html: modules/setuputil.sno snobol4
-	env SNOPATH=snolib ./snobol4 snopea --format html modules/setuputil.sno modules/snobol4setup.3.html
+	$(SNOPEA) --format html modules/setuputil.sno modules/snobol4setup.3.html
 
 #################
 # installation
