@@ -42,6 +42,8 @@ TROFF_HTML=groff -Thtml
 # PostScript to PSF
 PS2PDF=ps2pdf
 
+SNOPEA=../xsnobol4 -N -I../snolib -I.. ../snopea
+
 .SUFFIXES: .ms .1 .3 .7 .0 .txt .ps .pdf .html .pea
 
 ####
@@ -56,7 +58,7 @@ PS2PDF=ps2pdf
 	$(TROFF_PS) $(MS) $< > $@
 
 .pea.html:
-	../xsnobol4 -I../snolib ../snopea --format html $< $@
+	$(SNOPEA) --format html $< $@
 
 ####
 .1.0:
@@ -91,24 +93,23 @@ PS2PDF=ps2pdf
 
 ####
 .pea.1:
-	../xsnobol4 -I../snolib ../snopea $< $@
+	$(SNOPEA) $< $@
 
 .pea.1.html:
-	../xsnobol4 -I../snolib ../snopea --format html $< $@
+	$(SNOPEA) --format html $< $@
 
 ####
 
 .pea.7:
-	../xsnobol4 -I../snolib ../snopea $< $@
+	$(SNOPEA) $< $@
 
 ################
 
 snopea-format.html: snopea.pea
-	../xsnobol4 -I../snolib ../snopea --format html --section 7 \
-		snopea.pea snopea-format.html
+	$(SNOPEA) --format html --section 7 snopea.pea snopea-format.html
 
-snopea-format.7: snopea.7
-	cp snopea.7 snopea-format.7
+snopea-format.7:
+	ln -s snopea.7 snopea-format.7
 
 ####
 
