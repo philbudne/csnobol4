@@ -3,7 +3,7 @@
 
 GENERATED=sdb.1 snopea.7 snopea-format.7
 
-ALL=	$(GENERATED)
+ALL=	$(GENERATED) $(TXT) $(HTML)
 
 TXT=	porting.txt snobol4.0 sdb.0 \
 	snobol4readline.0 \
