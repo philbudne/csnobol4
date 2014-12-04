@@ -213,6 +213,9 @@ SRCS=	main.c $(SNOBOL4).c data.c data_init.c syn.c $(BAL_C) $(BREAK_C) \
 	$(STR_C) $(SUSPEND_C) $(TOP_C) $(TERM_C) $(TREE_C) $(TTY_C) \
 	$(AUX_SRCS) $(SNOLIB_SRCS)
 
+GENERATED_DOCS=snopea.1 snopea.1.html doc/snopea.7 \
+	modules/snobol4setup.3 modules/snobol4setup.3.html
+
 ################
 # link, regression test & timing
 
@@ -580,14 +583,16 @@ llib-lf.ln:
 	lint -Cf $(MYCPPFLAGS) $(SRCS) > /dev/null 2>&1
 
 ################
-GENERATED_DOCS=snopea.1 snopea.1.html \
-	modules/snobol4setup.3 modules/snobol4setup.3.html
+# GENERATED_DOCS:
 
 snopea.1: snopea snolib/snopea.sno snobol4
 	env SNOPATH=snolib ./snobol4 snopea snopea snopea.1
 
 snopea.1.html: snopea snolib/snopea.sno snobol4
 	env SNOPATH=snolib ./snobol4 snopea --format html snopea snopea.1.html
+
+doc/snopea.7: doc/snopea.pea snobol4
+	cd doc; make
 
 modules/snobol4setup.3: modules/setuputil.sno snobol4
 	env SNOPATH=snolib ./snobol4 snopea modules/setuputil.sno modules/snobol4setup.3

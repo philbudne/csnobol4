@@ -25,8 +25,6 @@ html:	$(HTML)
 ps:	$(PS)
 pdf:	$(PDF)
 
-test:	test.7 test.0 test.7.html test.ps
-
 MS=-ms
 MAN=-man
 

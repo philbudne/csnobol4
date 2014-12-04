@@ -8,6 +8,7 @@ reference all man pages (in snolib.3?)
 
 snopea:
 	snopea.7: document character entities!!
+		examples of B<blah> etc
 	display uc words in small caps?
 
 Modules:
@@ -17,7 +18,7 @@ Modules:
 		remove empty "extras" man pages?
 		"cleanup" for 'extras' man pages?
 		"test" command?
-		test/debug on win32 with "cl"
+		test/debug on win32 with "cl" -- remove restriction in setup pea
 		http://msdn.microsoft.com/en-us/library/aa278396%28v=vs.60%29.aspx
 		"install" command:
 			install module.so, module.sno, man page (if any)

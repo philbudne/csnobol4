@@ -19,7 +19,7 @@
 	snopea.charmap.roff["&pi;"] = '\*(pi'
 	snopea.charmap.roff["&amp;"] = '&'
 
-	snopea.charpats['html'] = "''" | "``"  | '\' ANY("-.'&|")
+	snopea.charpats['html'] = "''" | "``"  | '\' ANY("-&|")
 	snopea.charmaps['html'] = snopea.charmap.html = TABLE()
 	snopea.charmap.html["``"] = '&ldquo;'
 	snopea.charmap.html["''"] = '&rdquo;'
@@ -33,10 +33,13 @@
 +			'oline,text,iunit,ounit,lbl,cmd') :(snopea.end)
 snopea
 	iunit = IO_FINDUNIT()
-	INPUT(.in, iunit,, ifile)			:F(FRETURN)
+	INPUT(.in, iunit,, ifile)			:S(sp.oo)
+	TERMINAL = 'snopea: could not open ' ifile	:(FRETURN)
+
+sp.oo	DELETE(ofile)
 	ounit = IO_FINDUNIT()
 	OUTPUT(.out, ounit,, ofile)			:S(sp.begin)
-
+	TERMINAL = 'snopea: could not open ' ofile
 	ENDFILE(iunit)
 	DETACH(.in)					:(FRETURN)
 
