@@ -4,9 +4,14 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 12/4/2014:
 	Makefile2.m4: add rule for snopea.7, move GENERATED_DOCS up
-	doc/Makefile: flush test
+	doc/Makefile: flush test, output snopea.7 as snopea-format.{html,ps,pdf}
 	modules/setuputil.sno: fix extras handling, check for =pea lines
 	snolib/snopea.sno: cleanup html charpat, complain on open errors
+		add subsect, new special chars
+	doc/snopea.pea: add subsect, special characters
+	doc/sdb.pea: snopea version of sdb man page
+	doc/sdb.1 (deleted)
+	doc/man2pea.sno: handle SS, TP
 
 12/3/2014:
 	Makefile: clean up more generated doc files

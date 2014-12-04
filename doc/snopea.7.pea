@@ -2,36 +2,34 @@ $Id$
 
 =pea
 =sect NAME
-snopea \- A tiny Plain Old Documentation format for SNOBOL4
+snopea \- A little ``Plain Old Documentation'' format for SNOBOL4
 
 =sect DESCRIPTION
 B<snopea>(7) is a simple-to-use markup language used for writing
 documentation for SNOBOL4, SNOBOL4 programs, and SNOBOL4 modules
 inspired by B<perlpod>(1).  The B<snopea>(1) command translates
-B<snopea>(7) to B<man>(7) macro format or HTML.
+B<snopea>(7) to *roff B<man>(7) macro format or B<HTML>.
 
-New paragraphs are started with a blank line. Text enclosed in angle
-brackets (<>) preceeded with B, I, or C will be formatted in 
-bold, italic, and constant-width fonts, respectively.
+A line that starts with zero or more star/asterisk (*) characters and
+B<=pea> signals start of a block of documentation.  All lines until a
+B<=cut> directive will be processed after removal of leading star
+characters.
+
+New paragraphs are started with a blank line.
+
+=sect FONTS
+=item B<B&lt;>I<text>B<&gt;>
+I<text> is formatted in B<bold>.
+
+=item B<I&lt;>I<text>B<&gt;>
+I<text> is formatted in I<italic>.
+
+=item B<C&lt;>I<text>B<&gt;>
+I<text> is formatted in C<constant width>.
 
 =sect DIRECTIVES
-=item B<=pea>
-signals start of a block of documentation.
-any number of star/asterisk (*) characters may proceed the B<=pea>
-and will be removed.  All lines until a B<=cut> directive
-will be processed after removal of leading star characters.
-
-=item B<=cut>
-signals end of a block of documentation.
-
-=item B<=sect> I<name>
-declares man page section I<name>.
-
-=item B<=item> I<label>
-starts an indented paragraph with I<label>.
-
-=item B<=indent> I<number>
-controls the indentation of B<=item> paragraphs.
+=item B<=break>
+inserts a line break.
 
 =item B<=bull> I<text>
 indicates a bullet item in a list.
@@ -40,11 +38,60 @@ indicates a bullet item in a list.
 starts a block of code, lines will be formatted in a constant-width font,
 and line breaks will be preserved.
 
+=item B<=cut>
+signals end of a block of documentation.
+
 =item B<=ecode>
 ends a block of code.
 
-=item B<=break>
-indicates a line break.
+=item B<=item> I<label>
+starts an indented paragraph with I<label>.
+
+=item B<=indent> I<number>
+controls the indentation of B<=item> paragraphs.
+
+=item B<=sect> I<name>
+declares man page section I<name>.
+
+=item B<=subsect> I<name>
+declares man page subsection I<name>.
+
+=sect SPECIAL CHARACTERS
+The following sequences (an unholy mix of B<troff>(1) and B<HTML>)
+B<MUST> be used to portably format certain special characters:
+
+=item \`\`
+left double quote (``)
+
+=item \'\'
+right double quote ('')
+
+=item B<&amp;amp;>
+ampersand (&amp;)
+
+=item B<&amp;pi;>
+greek lower-case pi (&pi;)
+
+=item \ee
+backslash (\e)
+
+=item \e`
+accent grave (`)
+
+=item \e'
+apostrophe (')
+
+=item \e-
+en-dash
+
+=item \e&amp;
+zero-width space
+
+=item \e|
+thin space
+
+=item \e~
+non-breaking space
 
 =sect NOT CONFORMING TO
 Inspired by (but not compatible with) Perl POD format.

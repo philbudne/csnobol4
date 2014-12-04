@@ -9,7 +9,7 @@
 
 	snopea.charmaps = TABLE()
 	snopea.charpats['roff'] = "''" | "``" |
-+			'&lt;' | '&gt;' | '&pi;' | '&amp;'
++			'&' ANY(&LCASE) SPAN(&LCASE) ';'
 *	Turn \- into \[en]?
 	snopea.charmaps['roff'] = snopea.charmap.roff = TABLE()
 	snopea.charmap.roff["``"] = '\*(lq'
@@ -19,13 +19,17 @@
 	snopea.charmap.roff["&pi;"] = '\*(pi'
 	snopea.charmap.roff["&amp;"] = '&'
 
-	snopea.charpats['html'] = "''" | "``"  | '\' ANY("-&|")
+	snopea.charpats['html'] = "''" | "``"  | '\' ANY("-&|e'`")
 	snopea.charmaps['html'] = snopea.charmap.html = TABLE()
 	snopea.charmap.html["``"] = '&ldquo;'
 	snopea.charmap.html["''"] = '&rdquo;'
+	snopea.charmap.html["\e"] = '\'
 	snopea.charmap.html["\-"] = '&ndash;'
 	snopea.charmap.html["\&"] = ''
 	snopea.charmap.html["\|"] = '&thinsp;'
+	snopea.charmap.html["\~"] = '&nbsp;'
+	snopea.charmap.html["\'"] = "'"
+	snopea.charmap.html["\`"] = '`'
 
 	DEFINE('snopea(ifile,ofile,page,sect,format)'
 +			'font,efont,endlist,lsep,pre,chr,ctab'
@@ -180,6 +184,12 @@ sp.roff.sect
 	out = '.nh'
 	needspace = 1					:(sp.top)
 
+sp.roff.subsect
+	rest POS(0) SPAN(' ') =
+	out = '.SS "' rest '"'
+	out = '.nh'
+	needspace = 1					:(sp.top)
+
 * set indent level for items
 sp.roff.indent
 	indent = rest
@@ -266,6 +276,12 @@ sp.html.sect
 	out = vdiffer(endlist)
 	endlist =
 	out = '<h2>' rest '</h2>'
+	needspace = 1					:(sp.top)
+
+sp.html.subsect
+	out = vdiffer(endlist)
+	endlist =
+	out = '<h3>' rest '</h3>'
 	needspace = 1					:(sp.top)
 
 * set indent level for items

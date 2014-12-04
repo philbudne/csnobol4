@@ -24,8 +24,10 @@ loop1	line = input					:f(end)
 	line twofontcmd					:s(twofontcmd)
 	line onefontcmd					:s(onefontcmd)
 	line '.SH'					:s(shcmd)
+	line '.SS'					:s(sscmd)
 	line '.PP'					:s(ppcmd)
 	line '.LP'					:s(lpcmd)
+	line '.TP'					:s(lpcmd)
 	line '.IP \(bu'					:s(bullcmd)
 
 	terminal = 'Unknown command: ' line
@@ -59,6 +61,9 @@ onefontcmd
 
 ****
 shcmd	line '.SH' = '=sect'
+	output = line					:(loop)
+****
+sscmd	line '.SS' = '=subsect'
 	output = line					:(loop)
 ****
 ppcmd	output =					:(loop)

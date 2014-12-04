@@ -1,0 +1,107 @@
+=sect NAME
+sdb \- SNOBOL4 debugger
+=sect SYNOPSIS
+B<sdb> [ I<options> .\|.\|. ] I<program.sno>
+
+=sect DESCRIPTION
+B<sdb> is a debugger for B<snobol4>(1) programs, in the mold (clawning
+fone) of B<gdb>(1), The GNU debugger.  B<sdb>(1) uses B<readline>(3)
+for command line editing/history when available.
+
+=subsect
+Commands:
+=item B<break> I<LABEL_OR_STATEMENT_NUMBER>
+Set a breakpoint.
+=item B<bt>
+Display call stack backtrace.
+=item B<commands> I<BREAKPOINT_NUMBER>
+Add sdb commands to execute (ie; print & continue) to a breakpoint.
+=item B<condition> I<BREAKPOINT_NUMBER EXPR>
+If I<EXPR> is supplied, it is used as a predicate to make the
+breakpoint conditional.
+=item B<continue> I<EMPTY_OR_COUNT>
+Continue from breakpoint.  The optional count specifies how many times
+to continue past this breakpoint (sets "ignore" count).
+=item B<delete> I<BREAKPOINT_NUMBER_OR_EMPTY>
+Delete a single breakpoint, or all breakpoints.
+=item B<disable> I<BREAKPOINT_NUMBER_OR_EMPTY>
+Temporarily disable a breakpoint, or all breakpoints.
+=item B<enable> I<BREAKPOINT_NUMBER_OR_EMPTY>
+Reenable a breakpoint, or all breakpoints.
+=item B<finish>
+Resume debugging after current function returns.
+Will display function return type and value, if any.
+=item B<help>
+Display help.
+=item B<ignore> I<BREAKPOINT_NUMBER COUNT>
+Set breakpoint ignore count.
+=item B<info>
+Display list of breakpoints and their status.
+=item B<list> I<EMPTY_OR_STATEMENT_NUMBER>
+Display source code.
+=item B<next> I<EMPTY_OR_COUNT>
+Single step execution, skipping over function calls.
+=item B<print> I<EXPRESSION>
+Evaluate expression and print result.  Can be used to call functions,
+or set variables.
+=item B<quit>
+Exit debugger.
+=item B<step> I<EMPTY_OR_COUNT>
+Single step.
+=item B<watch> I<VARIABLE>
+Set watchpoint on a variable (break when value changes).
+=item B<what>
+Display the datatype of variable contents (or expression).
+=item B<where>
+An alias for bt.
+
+A blank line repeats the previous command.
+
+Non-ambiguous abbreviations of commands can be used (ie; "s", "n").
+
+The GNU Readline library (when available) will be used for sdb
+input for command editing and history.
+
+The keyboard interrupt character (eg; Control-C) will stop a running
+program and return control to the B<sdb>(1) command prompt.
+
+If your program calls the B<SDB()> function, it will act as a
+breakpoint.  You can check whether B<sdb>(1) is loaded with the
+B<FUNCTION> predicate, ie;
+
+=code
+        FUNCTION('SDB') SDB()
+=ecode
+=sect SEE ALSO
+B<snobol4>(1), B<gdb>(1), B<readline>(3), B<snobol4readline>(3)
+
+=sect AUTHOR
+Philip L. Budne
+
+Inspired by Fred Weigel's DDT.SNO and B<SITBOL>'s SNODDT.
+
+=sect NOTA BENE
+B<sdb>(1) uses a wide variety of system facilities and will interact
+poorly with any programs that use any number of features, including:
+
+=bull Altering listing settings with directive/control lines.
+=bull Altering B<&STLIMIT>, B<&ERRLIMIT>, or B<&TRACE>.
+=bull Calling B<SETEXIT()>
+
+=sect BUGS
+If you try to put a breakpoint on a label or line with no code or goto
+fields, the breakpoint will never be triggered.
+
+You cannot put a breakpoint on the B<END> label (however control
+always returns to sdb when the B<END> label is reached).
+
+There is no "run" command; you cannot restart the program without
+quitting and losing breakpoint settings.
+
+Interrupt character trapping is in it's infancy, and only occurs at
+the start of a each statement executed.
+
+The interrupt character is silently ignored when at the B<sdb> command
+prompt.
+
+B<sdb> does not read an init file (ie; .sdbinit).

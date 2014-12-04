@@ -1,29 +1,31 @@
 # Makefile for doc files
 # $Id$
 
-ALL=	txt html
+GENERATED=sdb.1 snopea.7 snopea-format.7
+
+ALL=	$(GENERATED)
 
 TXT=	porting.txt snobol4.0 sdb.0 \
 	snobol4readline.0 \
-	snopea.0
+	snopea-format.0
 
 HTML=	snobol4.html sdb.html \
 	snobol4readline.html \
-	snopea.7.html
+	snopea-format.html
 
 PS=	snobol4.ps sdb.ps \
 	snobol4readline.ps \
-	snopea.7.ps
+	snopea-format.ps
 
 PDF=	snobol4.pdf sdb.pdf \
 	snobol4readline.pdf \
-	snopea.7.pdf
+	snopea-format.pdf
 
 all:	$(ALL)
-txt:	$(TXT)
-html:	$(HTML)
-ps:	$(PS)
-pdf:	$(PDF)
+txt:	$(GENERATED) $(TXT)
+html:	$(GENERATED) $(HTML)
+ps:	$(GENERATED) $(PS)
+pdf:	$(GENERATED) $(PDF)
 
 MS=-ms
 MAN=-man
@@ -40,7 +42,7 @@ TROFF_HTML=groff -Thtml
 # PostScript to PSF
 PS2PDF=ps2pdf
 
-.SUFFIXES: .ms .1 .3 .7 .0 .txt .ps .pdf .7.html .html .pea
+.SUFFIXES: .ms .1 .3 .7 .0 .txt .ps .pdf .html .pea
 
 ####
 
@@ -52,6 +54,9 @@ PS2PDF=ps2pdf
 
 .ms.ps:
 	$(TROFF_PS) $(MS) $< > $@
+
+.pea.html:
+	../xsnobol4 -I../snolib ../snopea --format html $< $@
 
 ####
 .1.0:
@@ -85,13 +90,27 @@ PS2PDF=ps2pdf
 	$(PS2PDF) $< $@
 
 ####
-.pea.7:
+.pea.1:
 	../xsnobol4 -I../snolib ../snopea $< $@
 
-.pea.7.html:
+.pea.1.html:
 	../xsnobol4 -I../snolib ../snopea --format html $< $@
 
 ####
 
+.pea.7:
+	../xsnobol4 -I../snolib ../snopea $< $@
+
+################
+
+snopea-format.html: snopea.pea
+	../xsnobol4 -I../snolib ../snopea --format html --section 7 \
+		snopea.pea snopea-format.html
+
+snopea-format.7: snopea.7
+	cp snopea.7 snopea-format.7
+
+####
+
 clean:
-	rm -f *.0 porting.txt *.html *.ps *.pdf \#* *~ snopea.7 test.7
+	rm -f *.0 porting.txt *.html *.ps *.pdf \#* *~ $(GENERATED)
