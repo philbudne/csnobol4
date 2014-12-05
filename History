@@ -7,6 +7,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	Makefile2.m4: add rule for snopea.7, move GENERATED_DOCS up
 		add sdb.1 to GENERATED_DOCS
 		add $(SNOPEA) shorthand
+		sed BINDIR/VERS into snopea.in
 	configure: output, use $(RUNSETUP) shorthand
 	doc/Makefile: flush test, output snopea.7 as snopea-format.{html,ps,pdf}
 		Add SNOPEA=, use -N
@@ -19,6 +20,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	doc/sdb.pea: snopea version of sdb man page
 	doc/sdb.1 (deleted)
 	doc/man2pea.sno: handle SS, TP
+	snopea.in (was snopea)
 
 12/3/2014:
 	Makefile: clean up more generated doc files

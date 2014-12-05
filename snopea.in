@@ -1,6 +1,6 @@
-#!/usr/bin/env snobol4
+#!<BINDIR>/snobol4<VERS>
 
-* snopea (pod2{roff,html}) for SNOBOL4) command
+* snopea (a pod2{roff,html} for SNOBOL4) command
 
 **=pea
 **=sect NAME

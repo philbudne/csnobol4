@@ -222,7 +222,7 @@ GENERATED_DOCS=snopea.1 snopea.html \
 
 .PRECIOUS: $(SNOBOL4).o data_init.o snobol4
 
-ALL=sdb snobol4 $(GENERATED_DOCS)
+ALL=sdb snobol4 snopea $(GENERATED_DOCS)
 all:	$(ALL)
 
 changequote(@,@)dnl
@@ -291,7 +291,7 @@ data_init.o: $(SRCDIR)data_init.c
 syn.o: $(SRCDIR)syn.c
 	$(CC) $(CFLAGS) -c $(SRCDIR)syn.c
 
-################ shell scripts
+################ scripts
 
 sdb:	sdb.sh config.m4
 	rm -f sdb
@@ -300,6 +300,13 @@ sdb:	sdb.sh config.m4
 	    -e "s@<VERS>@-$(VERS)@" \
 	    < sdb.sh > sdb
 	chmod a+x sdb
+
+snopea:	snopea.in config.m4
+	rm -f snopea
+	sed -e "s@<BINDIR>@$(BINDIR)@" \
+	    -e "s@<VERS>@-$(VERS)@" \
+	    < snopea.in > snopea
+	chmod a+x snopea
 
 #################################################################
 # lib files
