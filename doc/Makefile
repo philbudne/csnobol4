@@ -1,7 +1,10 @@
 # Makefile for documentation
 # $Id$
 
-GENERATED=sdb.1 snopea.7 snobol4error.1
+GENERATED1=sdb.1 snobol4error.1
+GENERATED7=snopea.7
+
+GENERATED=$(GENERATED1) $(GENERATED7)
 
 ALL=	$(GENERATED) $(TXT) $(HTML)
 
