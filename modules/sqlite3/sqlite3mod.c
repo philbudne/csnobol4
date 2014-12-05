@@ -38,12 +38,24 @@ static handle_handle_t sqlite3_dbs;
 static handle_handle_t sqlite3_stmts;
 
 /*
+**=pea
+**=sect NAME
+**snobol4sqlite3 \- SQLITE3 interface for SNOBOL4
+**=sect SYNOPSYS
+**B<-INCLUDE 'sqlite3.sno'>
+**=sect DESCRIPTION
+**=item B<SQLITE3_OPEN(>I<path>B<)>
+**opens a database and returns a database handle or failure.
+**=cut
+*/
+
+/*
  * LOAD("SQLITE3_OPEN(STRING)INTEGER", SQLITE3_DL)
  * Open a database file
  *
  * first arg:
  *	filename
- * return handle, or failure
+ * return db_handle, or failure
  */
 int
 SQLITE3_OPEN( LA_ALIST ) LA_DCL
@@ -67,6 +79,12 @@ SQLITE3_OPEN( LA_ALIST ) LA_DCL
 }
 
 /*
+**=pea
+**=item B<SQLITE3_CLOSE(>I<db_handle>B<)>
+**closes database and returns empty string or failure.
+**=cut
+*/
+/*
  * LOAD("SQLITE3_CLOSE(INTEGER)STRING", SQLITE3_DL)
  *
  * return null string or failure
@@ -85,6 +103,12 @@ SQLITE3_CLOSE( LA_ALIST ) LA_DCL
 }
 
 /*
+**=pea
+**=item B<SQLITE3_ERRMSG(>I<db_handle>B<)>
+**Returns an SQLITE3 error string or failure if the handle is invalid.
+**=cut
+*/
+/*
  * LOAD("SQLITE3_ERRMSG(INTEGER)STRING", SQLITE3_DL)
  * arg1: db handle
  * return string or failure
@@ -100,6 +124,12 @@ SQLITE3_ERRMSG( LA_ALIST ) LA_DCL
 }
 
 /*
+**=pea
+**=item B<SQLITE3_LAST_INSERT_ROWID(>I<db_handle>B<)>
+**Returns an integer or failure if the handle is invalid.
+**=cut
+*/
+/*
  * LOAD("SQLITE3_LAST_INSERT_ROWID(INTEGER)INTEGER", SQLITE3_DL)
  * arg1: db handle
  * return id or failure
@@ -114,6 +144,15 @@ SQLITE3_LAST_INSERT_ROWID( LA_ALIST ) LA_DCL
     RETINT(sqlite3_last_insert_rowid(db));
 }
 
+/*
+**=pea
+**=item B<SQLITE3_PREPARE(>I<db_handle>,I<SQL>[,I<params ...>]B<)>
+**Parses an SQL statement and optionally binds positional parameters to it.
+**Call B<SQLITE3_ROW_ARRAY()> or B<SQLITE3_ROW_TABLE()> to fetch a row of results
+**once all parameters have been bound.
+**Returns a statement handle or failure.
+**=cut
+*/
 /*
  * LOAD("SQLITE3_PREPARE(INTEGER,STRING)INTEGER", SQLITE3_DL)
  *
@@ -188,6 +227,13 @@ SQLITE3_PREPARE( LA_ALIST ) LA_DCL
 }
 
 /*
+**=pea
+**=item B<SQLITE3_BIND_ANY(>I<st_handle>, I<position>, I<value>B<)>
+**Binds I<value> at (one-based) I<position> to a prepared SQL statement.
+**Returns null string or failure.
+**=cut
+*/
+/*
  * bind a single host parameter (any type)
  * LOAD("SQLITE3_BIND_ANY(INTEGER,INTEGER,)STRING", SQLITE3_DL)
  *
@@ -239,6 +285,13 @@ SQLITE3_BIND_ANY( LA_ALIST ) LA_DCL
 }
 
 /*
+**=pea
+**=item B<SQLITE3_BIND_BLOB(>I<st_handle>, I<position>, I<value>B<)>
+**Binds I<value> to (one-based) I<position> as a BLOB value to prepared SQL statement.
+**Returns null string or failure.
+**=cut
+*/
+/*
  * bind a single host parameter with a BLOB value
  * LOAD("SQLITE3_BIND_BLOB(INTEGER,INTEGER,STRING)STRING", SQLITE3_DL)
  *
@@ -274,6 +327,13 @@ SQLITE3_BIND_BLOB( LA_ALIST ) LA_DCL
     RETNULL;
 }
 
+/*
+**=pea
+**=item B<SQLITE3_BIND_MANY(>I<st_handle>, I<values ...>B<)>
+**Binds multiple positional parameter I<values> to a prepared SQL statement.
+**Returns null string or failure.
+**=cut
+*/
 /*
  * bind multiple positional arguments to a prepared statement
  * LOAD("SQLITE3_BIND_MANY(INTEGER,)STRING", SQLITE3_DL)
@@ -329,6 +389,12 @@ SQLITE3_BIND_MANY( LA_ALIST ) LA_DCL
 }
 
 /*
+**=pea
+**=item B<SQLITE3_BIND_PARAMETER_COUNT(>I<st_handle>B<)>
+**Returns the number of parameters required by a prepared SQL statement, or fails.
+**=cut
+*/
+/*
  * LOAD("SQLITE3_BIND_PARAMETER_COUNT(INTEGER)INTEGER", SQLITE3_DL)
  * arg1: stmt handle
  * return integer or failure
@@ -343,6 +409,13 @@ SQLITE3_BIND_PARAMETER_COUNT( LA_ALIST ) LA_DCL
     RETFAIL;
 }
 
+/*
+**=pea
+**=item B<SQLITE3_BIND_PARAMETER_NAME(>I<st_handle>, I<position>B<)>
+**Returns the name (if any) for the parameter I<position> number in
+**a prepared SQL statement.
+**=cut
+*/
 /*
  * LOAD("SQLITE3_BIND_PARAMETER_NAME(INTEGER,INTEGER)STRING", SQLITE3_DL)
  *
@@ -362,6 +435,13 @@ SQLITE3_BIND_PARAMETER_NAME( LA_ALIST ) LA_DCL
     RETFAIL;
 }
 
+/*
+**=pea
+**=item B<SQLITE3_BIND_PARAMETER_INDEX(>I<st_handle>, I<name>B<)>
+**Returns the positional index for named parameter I<name> in
+**prepared SQL statement.
+**=cut
+*/
 /*
  * LOAD("SQLITE3_BIND_PARAMETER_INDEX(INTEGER,STRING)INTEGER", SQLITE3_DL)
  *
@@ -496,11 +576,12 @@ SQLITE3_COLUMN_VALUE( LA_ALIST ) LA_DCL
 }
 
 /*
- * Reset All Bindings On A Prepared Statement
- *    "Contrary to the intuition of many, sqlite3_reset() does not
- *    reset the bindings on a prepared statement. Use this routine to
- *    reset all host parameters to NULL."
- *
+**=pea
+**=item B<SQLITE3_CLEAR_BINDINGS(>I<st_handle>B<)>
+**Use this routine to reset all parameter bindings to NULL.
+**=cut
+*/
+/*
  * LOAD("SQLITE3_CLEAR_BINDINGS(INTEGER)STRING", SQLITE3_DL)
  * arg1: stmt handle
  * return empty string or failure
@@ -519,13 +600,15 @@ SQLITE3_CLEAR_BINDINGS( LA_ALIST ) LA_DCL
 }
 
 /*
- * Reset A Prepared Statement Object
- *   "The sqlite3_reset() function is called to reset a prepared
- *   statement object back to its initial state, ready to be
- *   re-executed. Any SQL statement variables that had values bound to
- *   them using the sqlite3_bind_*() API retain their values. Use
- *   sqlite3_clear_bindings() to reset the bindings."
- *
+**=pea
+**=item B<SQLITE3_RESET(>I<st_handle>B<)>
+**Reset a prepared statement back to its initial state, ready to be
+**re-executed. Any SQL statement variables that had values bound to
+**them retain their values. Use B<sqlite3_clear_bindings()>
+**to reset the bindings.
+**=cut
+*/
+/*
  * LOAD("SQLITE3_RESET(INTEGER)STRING", SQLITE3_DL)
  * arg1: stmt handle
  * return empty string or failure
@@ -542,6 +625,12 @@ SQLITE3_RESET( LA_ALIST ) LA_DCL
     RETFAIL;
 }
 
+/*
+**=pea
+**=item B<SQLITE3_FINALIZE(>I<st_handle>B<)>
+**Release (delete) a statement handle.
+**=cut
+*/
 /*
  * LOAD("SQLITE3_FINALIZE(INTEGER)STRING", SQLITE3_DL)
  * arg1: stmt handle
@@ -560,6 +649,12 @@ SQLITE3_FINALIZE( LA_ALIST ) LA_DCL
     RETFAIL;
 }
 
+/*
+**=pea
+**=item B<SQLITE3_EXEC(>I<db_handle>,I<SQL statement(s)>B<)>
+**Run one or more SQL statements that do not require parameters.
+**=cut
+*/
 /*
  * LOAD("SQLITE3_EXEC(INTEGER,STRING)STRING", SQLITE3_DL)
  *

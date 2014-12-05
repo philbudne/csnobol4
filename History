@@ -7,6 +7,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	doc/snobol4.1: move error codes to snobol4error(1)
 	doc/snobol4error.pea (new): from snobol4.1
 	Makefile2.m4: install config.sno
+	modules/sqlite3/{sqlite3.c,funcs.sno}: add pea docs
 
 12/4/2014:
 	Makefile: {clean,build}_modules shorthands

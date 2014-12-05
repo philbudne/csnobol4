@@ -6,6 +6,10 @@
 ****************************************************************
 *	Fetch a row, and return as an ARRAY
 *
+**=pea
+**=item B<SQLITE3_ROW_ARRAY(>I<st_handle>B<)>
+**Returns an B<ARRAY> with a row of statement results or fails.
+**=cut
 	DEFINE("SQLITE3_ROW_ARRAY(STMT)S,CC,COL") :(SQLITE3_ROW_ARRAY.END)
 SQLITE3_ROW_ARRAY
 	DIFFER(SQLITE3_STEP(STMT), "row")	:S(FRETURN)
@@ -21,6 +25,10 @@ SQLITE3_ROW_ARRAY.END
 ****************************************************************
 *	Return an ARRAY of COLUMN names
 *
+**=pea
+**=item B<SQLITE3_COLUMN_NAMES_ARRAY(>I<st_handle>B<)>
+**Returns an B<ARRAY> with SQL statement result column names or fails.
+**=cut
 	DEFINE("SQLITE3_COLUMN_NAMES_ARRAY(STMT)CC,COL")
 +					:(SQLITE3_COLUMN_NAMES_ARRAY.END)
 SQLITE3_COLUMN_NAMES_ARRAY
@@ -39,6 +47,10 @@ SQLITE3_COLUMN_NAMES_ARRAY.END
 ****************************************************************
 *	Fetch a row, and return as a TABLE
 *
+**=pea
+**=item B<SQLITE3_ROW_TABLE(>I<st_handle>B<)>
+**Returns a B<TABLE> with statement results indexed by column name or fails.
+**=cut
 	DEFINE("SQLITE3_ROW_TABLE(STMT)CC,COL,NAME")
 						:(SQLITE3_ROW_TABLE.END)
 SQLITE3_ROW_TABLE
@@ -73,3 +85,13 @@ SQLITE3_BIND_TABLE.LOOP
 +						:F(FRETURN)
 	I = I + 1				:(SQLITE3_BIND_TABLE.LOOP)
 SQLITE3_BIND_TABLE.END
+
+****************
+**=pea
+**=sect SEE ALSO
+**B<snobol4>(1)
+**=break
+**http://www.sqlite.org
+**=break
+**http://www.sqlite.org/c3ref/funclist.html
+**=cut
