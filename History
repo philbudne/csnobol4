@@ -4,6 +4,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 12/5/2014:
 	doc/Makefile: use explicit rules
+		GENERATED files depend on ../snobol4
 	doc/snobol4.1: move error codes to snobol4error(1)
 	doc/snobol4error.pea (new): from snobol4.1
 	Makefile2.m4: install config.sno

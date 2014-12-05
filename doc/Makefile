@@ -35,6 +35,8 @@ html:	$(GENERATED) $(HTML)
 ps:	$(GENERATED) $(PS)
 pdf:	$(GENERATED) $(PDF)
 
+$(GENERATED): ../snobol4
+
 MS=-ms
 MAN=-man
 
