@@ -620,7 +620,7 @@ INSTALL_H=[include]/h.h [include]/snotypes.h [include]/macros.h \
 	config.h equ.h version.h
 
 # generated SNOLIB files (host.sno generated at top level)
-GENSNOLIB=host.sno
+GENSNOLIB=host.sno config.sno
 
 SNOLIB_FILES=snolib/*.sno modules/setuputil.sno $(GENSNOLIB) $(MODULES_INCLUDE)
 
