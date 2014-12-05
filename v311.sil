@@ -1,6 +1,10 @@
 * $Id$
 *
 * $Log$
+* Revision 1.139  2014/12/05 18:58:11  phil
+* v311.sil: Fix compilation without BLOCKS: commented out unused R_R_N
+* (nested .IFs don't work)
+*
 * Revision 1.138  2014/10/13 23:32:28  phil
 * Makefile: cleanup for modules directories
 * 	add "with" as configure output
@@ -7448,21 +7452,20 @@ BPMRG1   LHERE
 BPMRG2   LHERE
 *                  F  =  COMPLETED.FRAME(F)
          RCALL     ,COMPFR,(TEMP5)
-![PLB
-!         BRANCH    BPMRG22
-!R_R_N    LHERE
-!*        REMOVE REDUNDANT NODES HAS NOT BEEN ENCODED YET
-!*                  R.R.N(F<HT.>)
-!*                  R.R.N(F<WTH.>)
-!*                  R.R.N(F<DTH.>)
-!         MOVD      TEMP31,TEMP5
-!         MOVD      TEMP32,TEMP5
-!         INCRA     TEMP32,FRSIZE_
-!BPMRG21  LHERE
-!         INCRA     TEMP31,DESCR
-!         ACOMP     TEMP31,TEMP32,BPMRG22
-!         RCALL     ,R_R_N,(TEMP31),BPMRG21
-!BPMRG22  LHERE
+*!         BRANCH    BPMRG22
+*!R_R_N    LHERE
+*!*        REMOVE REDUNDANT NODES HAS NOT BEEN ENCODED YET
+*!*                  R.R.N(F<HT.>)
+*!*                  R.R.N(F<WTH.>)
+*!*                  R.R.N(F<DTH.>)
+*!         MOVD      TEMP31,TEMP5
+*!         MOVD      TEMP32,TEMP5
+*!         INCRA     TEMP32,FRSIZE_
+*!BPMRG21  LHERE
+*!         INCRA     TEMP31,DESCR
+*!         ACOMP     TEMP31,TEMP32,BPMRG22
+*!         RCALL     ,R_R_N,(TEMP31),BPMRG21
+*!BPMRG22  LHERE
 *                  SF  =  STRIP.FRAME(F)
          RCALL     TEMP9,STRIP_F,(TEMP5)
 *                  PHY = BLAND(SF<HT.> , SF<WTH.> , SF<DTH.> )
