@@ -1,16 +1,10 @@
 $Id$
 
-snopea.sh -- sed in explicit version/path for snobol4 executable
-
 create snobol4.org/books page!!
 
-snobol4.1:
-	reference all man pages
+snobol4.1: reference all man pages
 
-snopea:
-	snopea.7: document character entities!!
-		examples of B<blah> etc
-	display uc words in small caps?
+snopea.sno: display uc words in small caps?
 
 Modules:
 	SQL3DBM_ERROR returns string!!!!
@@ -23,8 +17,7 @@ Modules:
 		http://msdn.microsoft.com/en-us/library/aa278396%28v=vs.60%29.aspx
 		"install" command:
 			install module.so, module.sno, man page (if any)
-			install "extras"!!
-
+			***** install "extras"!! *****
 	pea docs: sqlite
 	Translate to pea & embed: readline
 
