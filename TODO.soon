@@ -4,7 +4,8 @@ snopea.sh -- sed in explicit version/path for snobol4 executable
 
 create snobol4.org/books page!!
 
-reference all man pages (in snolib.3?)
+snobol4.1:
+	reference all man pages
 
 snopea:
 	snopea.7: document character entities!!
@@ -36,7 +37,6 @@ Make all path element generated in init.c available!!
 	BASE/local		HOST_SNOLIB_LOCAL
 
 man pages:
-    snobol4error  -- error codes (from end of man page)
     snobol4func   -- all (non-block) built-in functions
     snobol4blocks -- list/document new functions/operators
 	reference orange book, MTS manual

@@ -1,0 +1,98 @@
+=pea
+=sect NAME
+snobol4error \- SNOBOL4 error codes
+
+=sect SYNOPSIS
+SNOBOL4 B<&ERRTYPE> and B<&ERRTEXT> values.
+
+Errors marked I<fatal> cannot be curtailed by setting B<&ERRLIMIT>.
+
+=item 1
+``Illegal data type''
+=item 2
+``Error in arithmetic operation''
+=item 3
+``Erroneous array or table reference''
+=item 4
+``Null string in illegal context''
+=item 5
+``Undefined function or operation''
+=item 6
+``Erroneous prototype''
+=item 7
+``Unknown keyword''
+=item 8
+``Variable not present where required''
+=item 9
+``Entry point of function not label''
+=item 10
+``Illegal argument to primitive function''
+=item 11
+``Reading error''
+=item 12
+``Illegal i/o unit''
+=item 13
+``Limit on defined data types exceeded''
+=item 14
+``Negative number in illegal context''
+=item 15
+``String overflow''
+=item 16
+``Overflow during pattern matching'' I<fatal>.
+See the B<-P> option.
+=item 17
+``Error in SNOBOL4 system'' I<fatal>.
+Various internal errors.
+=item 18
+``Return from level zero'' I<fatal>.
+=item 19
+``Failure during goto evaluation'' I<fatal>.
+=item 20
+``Insufficient storage to continue'' I<fatal>.
+See the B<-d> option.
+=item 21
+``Stack overflow'' I<fatal>.
+See the B<-S> option.
+=item 22
+``Limit on statement execution exceeded'' I<fatal>.
+=item 23
+``Object exceeds size limit'' I<fatal>.
+=item 24
+``Undefined or erroneous goto'' I<fatal>.
+=item 25
+``Incorrect number of arguments'' I<fatal>.
+=item 26
+``Limit on compilation errors exceeded'' I<fatal>.
+=item 27
+``Erroneous END statement'' I<fatal>.
+=item 28
+``Execution of statement with compilation error'' I<fatal>.
+Last error in standard SNOBOL4.
+=item 29
+``Erroneous INCLUDE statement'' I<fatal>.
+=item 30
+``Cannot open INCLUDE file'' I<fatal>.
+=item 31
+``Erroneous LINE statement'' I<fatal>.
+=item 32
+``Missing END statement'' I<fatal>.
+=item 33
+``Output error''
+=item 34
+``User interrupt''
+Interrupt character (SIGINT) was recieved.
+=item 35
+``Not in a SETEXIT handler''
+Attempt to branch to B<CONTINUE>, B<SCONTINUE>, or B<ABORT>
+when no unhandled error condition present.
+=item 36
+``Error in BLOCKS''  I<fatal>.
+Internal error.
+=item 37
+``Too many warnings in BLOCKS''  I<fatal>.
+=item 38
+``Mystery error in BLOCKS'' I<fatal>.
+Unexplained internal error.
+=sect SEE ALSO
+B<snobol4>(1).
+=cut

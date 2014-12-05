@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/5/2014:
+	doc/Makefile: use explicit rules
+	doc/snobol4.1: move error codes to snobol4error(1)
+	doc/snobol4error.pea (new): from snobol4.1
+
 12/4/2014:
 	Makefile: {clean,build}_modules shorthands
 	Makefile2.m4: add rule for snopea.7, move GENERATED_DOCS up
