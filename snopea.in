@@ -9,7 +9,7 @@
 **B<snopea> [B<--format> I<format>] [B<--section> I<section>] [B<--page> I<pagename>] I<in> I<out>
 **=sect DESCRIPTION
 **The B<snopea>(1) command converts embedded documentation in
-**B<snopea>(7) format to B<roff>(7) or HTML format.
+**B<snopea>(7) format to B<man>(7) or HTML format.
 **=sect OPTIONS
 **=item B<--format>
 **takes either B<roff> or B<html> as an argument.
