@@ -213,8 +213,9 @@ SRCS=	main.c $(SNOBOL4).c data.c data_init.c syn.c $(BAL_C) $(BREAK_C) \
 	$(STR_C) $(SUSPEND_C) $(TOP_C) $(TERM_C) $(TREE_C) $(TTY_C) \
 	$(AUX_SRCS) $(SNOLIB_SRCS)
 
+GENERATED_DOCS_DOCDIR=doc/sdb.1 doc/snobol4error.1 doc/snopea.7
 GENERATED_DOCS=snopea.1 snopea.html \
-	doc/sdb.1 doc/snopea.7 \
+	$(GENERATED_DOCS_DOCDIR) \
 	modules/snobol4setup.3 modules/snobol4setup.3.html
 
 ################
@@ -601,7 +602,7 @@ snopea.1: snopea snolib/snopea.sno snobol4
 snopea.html: snopea snolib/snopea.sno snobol4
 	$(SNOPEA) --format html --section 1 snopea snopea.html
 
-doc/snopea.7 doc/sdb.1: snopea snolib/snopea.sno snobol4
+$(GENERATED_DOCS_DOCDIR): snopea snolib/snopea.sno snobol4
 	cd doc; make
 
 modules/snobol4setup.3: modules/setuputil.sno snobol4
@@ -634,6 +635,7 @@ install: snobol4 sdb timing.out $(GENERATED_DOCS)
 	ln -s $(BINDIR)/snopea-$(VERS) $(BINDIR)/snopea
 	$(INSTALL) -d $(MAN1DIR)
 	$(INSTALL) -m 644 doc/snobol4.1 $(MAN1DIR)
+	$(INSTALL) -m 644 doc/snobol4error.1 $(MAN1DIR)
 	$(INSTALL) -m 644 doc/sdb.1 $(MAN1DIR)
 	$(INSTALL) -m 644 snopea.1 $(MAN1DIR)
 	$(INSTALL) -d $(MAN3DIR)
