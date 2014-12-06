@@ -1,11 +1,12 @@
+$Id$
 =pea
 =sect NAME
 snobol4error \- SNOBOL4 error codes
 
 =sect SYNOPSIS
-SNOBOL4 B<&ERRTYPE> and B<&ERRTEXT> values.
+SNOBOL4 B<&amp;ERRTYPE> and B<&amp;ERRTEXT> values.
 
-Errors marked I<fatal> cannot be curtailed by setting B<&ERRLIMIT>.
+Errors marked I<fatal> cannot be curtailed by setting B<&amp;ERRLIMIT>.
 
 =item 1
 ``Illegal data type''
@@ -39,9 +40,11 @@ Errors marked I<fatal> cannot be curtailed by setting B<&ERRLIMIT>.
 ``String overflow''
 =item 16
 ``Overflow during pattern matching'' I<fatal>.
+=break
 See the B<-P> option.
 =item 17
 ``Error in SNOBOL4 system'' I<fatal>.
+=break
 Various internal errors.
 =item 18
 ``Return from level zero'' I<fatal>.
@@ -49,9 +52,11 @@ Various internal errors.
 ``Failure during goto evaluation'' I<fatal>.
 =item 20
 ``Insufficient storage to continue'' I<fatal>.
+=break
 See the B<-d> option.
 =item 21
 ``Stack overflow'' I<fatal>.
+=break
 See the B<-S> option.
 =item 22
 ``Limit on statement execution exceeded'' I<fatal>.
@@ -80,19 +85,23 @@ Last error in standard SNOBOL4.
 ``Output error''
 =item 34
 ``User interrupt''
+=break
 Interrupt character (SIGINT) was recieved.
 =item 35
 ``Not in a SETEXIT handler''
+=break
 Attempt to branch to B<CONTINUE>, B<SCONTINUE>, or B<ABORT>
 when no unhandled error condition present.
 =item 36
 ``Error in BLOCKS''  I<fatal>.
+=break
 Internal error.
 =item 37
 ``Too many warnings in BLOCKS''  I<fatal>.
 =item 38
 ``Mystery error in BLOCKS'' I<fatal>.
-Unexplained internal error.
+=break
+Undocumented internal error.
 =sect SEE ALSO
 B<snobol4>(1).
 =cut
