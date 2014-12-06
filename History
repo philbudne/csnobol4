@@ -12,6 +12,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	v311.sil: Fix compilation withut BLOCKS:
 		commented out unused R_R_N
 		(nested .IFs don't work)
+	snolib/snopea.sno: fix HTML =item formatting
 
 12/4/2014:
 	Makefile: {clean,build}_modules shorthands

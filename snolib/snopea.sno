@@ -4,6 +4,8 @@
 * NOTE!  The directives are only inspired by "POD" format
 -include 'basename.sno'
 
+*	snopea.debug = 1
+
 * character entity handling... A mishmash of troff and HTML!
 	snopea.charpats = TABLE()
 
@@ -33,7 +35,7 @@
 
 	DEFINE('snopea(ifile,ofile,page,sect,format)'
 +			'font,efont,endlist,lsep,pre,chr,ctab'
-+			'date,text,snomod,line,inpea,needspace,'
++			'date,text,snomod,line,inpea,needspace,after,'
 +			'oline,text,iunit,ounit,lbl,cmd') :(snopea.end)
 snopea
 	iunit = IO_FINDUNIT()
@@ -120,6 +122,7 @@ sp.cmd	rest POS(0) SPAN(' ') =
 * NOTE!! commands may return to someplace OTHER than sp.top!!!
 sp.dispatch2
 	lsep =
+	TERMINAL = DIFFER(snopea.debug) '>>> ' cmd
 	lbl = 'sp.' format '.' cmd
 	LABEL(lbl)					:S($lbl)
 	TERMINAL = 'Unknown command ' cmd		:(sp.top)
@@ -270,7 +273,9 @@ sp.html.font3
 	oline = oline pre font txt efont		:(sp.floop)
 
 sp.html.oline
-	out = oline					:(sp.out)
+	out = oline
+	out = VDIFFER(after)
+	after =						:(sp.out)
 
 sp.html.sect
 	out = vdiffer(endlist)
@@ -296,7 +301,7 @@ sp.html.item
 	endlist = '</dl>'
 sp.html.item2
 	out = '<dt>'
-	lsep = '<dd>'
+	after = '<dd>'
 	needspace =
 	line = rest					:(sp.text)
 
