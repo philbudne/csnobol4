@@ -38,8 +38,8 @@ optlop	opt = HOST(HOST_ARGN, optind)		:f(usage)
 	optind = optind + 1
 	val = HOST(HOST_ARGN, optind)		:f(usage)
 	optind = optind + 1
-	fmt = IDENT(opt, '--format') val	:s(optlop)
-	fmt = IDENT(opt, '-f') val		:s(optlop)
+	format = IDENT(opt, '--format') val	:s(optlop)
+	format = IDENT(opt, '-f') val		:s(optlop)
 	sect = IDENT(opt, '--section') val	:s(optlop)
 	sect = IDENT(opt, '-s') val		:s(optlop)
 	page = IDENT(opt, '--page') val		:s(optlop)
@@ -66,7 +66,7 @@ not.html
 	format = 'roff'
 
 havefmt
-	snopea(infile, outfile, page, sect, fmt) :s(end)f(err)
+	snopea(infile, outfile, page, sect, format) :s(end)f(err)
 
 usage	TERMINAL = 'Usage: snopea [opts] INFILE OUTFILE'
 	TERMINAL = 'opts:'
