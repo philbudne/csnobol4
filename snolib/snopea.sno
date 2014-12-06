@@ -1,8 +1,10 @@
-* snopea -- a tiny "pod2man/pod2html" for SNOBOL4
+* snopea -- a tiny "Plain Old Document" formatter for SNOBOL4
 	sp.version = '$Id$'
 
-* NOTE!  The directives are only inspired by "POD" format
+* NOTE!  The directives are only *inspired* by "POD" format
+
 -include 'basename.sno'
+-include 'host.sno'
 
 *	snopea.debug = 1
 
@@ -33,8 +35,13 @@
 	snopea.charmap.html["\'"] = "'"
 	snopea.charmap.html["\`"] = '`'
 
+	snopea.tab = CHAR(9)
+	snopea.ws = SPAN(' ' snopea.tab)
+
+	HOST() POS(0) BREAK(':') ':' BREAK(':') ':' REM . snopea.snovers
+
 	DEFINE('snopea(ifile,ofile,page,sect,format)'
-+			'font,efont,endlist,lsep,pre,chr,ctab'
++			'font,efont,endlist,lsep,pre,chr,ctab,numb,'
 +			'date,text,snomod,line,inpea,needspace,after,'
 +			'oline,text,iunit,ounit,lbl,cmd') :(snopea.end)
 snopea
@@ -115,7 +122,7 @@ sp.eop	needspace = text
 sp.dispatch
 	rest =
 * here with user command, remove leading spaces on argument
-sp.cmd	rest POS(0) SPAN(' ') =
+sp.cmd	rest POS(0) snopea.ws =
 	inpea = 1
 
 **** dispatch a command without altering "inpea"
@@ -126,7 +133,6 @@ sp.dispatch2
 	lbl = 'sp.' format '.' cmd
 	LABEL(lbl)					:S($lbl)
 	TERMINAL = 'Unknown command ' cmd		:(sp.top)
-
 
 ****
 * here from 'eof' command processing
@@ -158,7 +164,7 @@ sp.roff.head
 *	disable hyphenation:
 	out = '.nh'
 
-	out = '.TH ' page ' ' sect ' "' date '" "SNOBOL4"'
+	out = '.TH ' page ' ' sect ' "' date '" "' snopea.snovers '"'
 
 	indent = 4
 	text =
@@ -168,7 +174,7 @@ sp.roff.pea						:(sp.top)
 
 sp.roff.para
 	out = ".PP"
-	needspace =					:(sp.text)
+	needspace = numb =				:(sp.text)
 
 sp.roff.cut
 	inpea =						:(sp.top)
@@ -182,13 +188,13 @@ sp.roff.oline
 	out = oline					:(sp.out)
 
 sp.roff.sect
-	rest POS(0) SPAN(' ') =
+	rest POS(0) snopea.ws =
 	out = '.SH "' rest '"'
 	out = '.nh'
 	needspace = 1					:(sp.top)
 
 sp.roff.subsect
-	rest POS(0) SPAN(' ') =
+	rest POS(0) snopea.ws =
 	out = '.SS "' rest '"'
 	out = '.nh'
 	needspace = 1					:(sp.top)
@@ -198,6 +204,7 @@ sp.roff.indent
 	indent = rest
 	needspace =					:(sp.top)
 
+* unadorned item
 sp.roff.item
 	out = '.TP ' indent
 	needspace =
@@ -206,6 +213,14 @@ sp.roff.item
 * bullet item
 sp.roff.bull
 	out = '.IP \(bu'
+	needspace =
+	line = rest					:(sp.text)
+
+* numbered item
+sp.roff.nitem
+	numb = (VDIFFER(numb), 1)
+	out = '.IP ' numb
+	numb = numb + 1
 	needspace =
 	line = rest					:(sp.text)
 
@@ -234,6 +249,18 @@ sp.roff.ecode
 sp.roff.break
 	out = '.br'					:(sp.top)
 
+sp.roff.table
+	rest POS(0) snopea.ws =
+	out = DIFFER(rest) '.ta ' rest
+	out = '.nf'					:(sp.top)
+
+sp.roff.row						:(sp.text)
+
+sp.roff.etable
+	out = '.fi'					:(sp.top)
+
+* ADD NEW OPS ABOVE THIS LINE
+
 sp.roff.eof						:(sp.close)
 
 ****************
@@ -244,8 +271,9 @@ sp.html.head
 
 	out = '<html>'
 	out = '<head>'
-	out = '<title>SNOBOL4 | ' page '(' sect ') ' date '</title>'
+	out = '<title>' snopea.snovers ' | ' page '(' sect ') ' date '</title>'
 	out = '</head>'
+	out = '<body>'
 
 	out = '<h1>' page '(' sect ') ' date '</h1>'
 
@@ -315,6 +343,12 @@ sp.html.bull2
 	needspace =
 	line = rest					:(sp.text)
 
+* numbered item
+sp.html.nitem
+	differ(endlist)					:s(sp.html.bull2)
+	out = '<ol>'
+	endlist = '</ol>'				:(sp.html.bull2)
+
 sp.html.code
 	out = '<pre>'					:(sp.top)
 
@@ -324,9 +358,24 @@ sp.html.ecode
 sp.html.break
 	out = '<br>'					:(sp.top)
 
+sp.html.table
+	out = '<table>'					:(sp.top)
+
+sp.html.row						:(sp.text)
+	rest = '<tr>' snopea.tab rest
+sp.html.rowloop
+	rest snopea.tab = '<td>'			:s(sp.html.rowloop)
+	out = rest					:(sp.top)
+
+sp.html.etable
+	out = '</table>'				:(sp.top)
+
+* ADD NEW OPS ABOVE THIS LINE
+
 sp.html.eof
 	out = vdiffer(endlist)
 *	output footer?  link to csnobol4 home page??
+	out = '</body>'
 	out = '</html>'					:(sp.close)
 
 ****************

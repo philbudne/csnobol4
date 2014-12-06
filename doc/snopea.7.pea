@@ -10,9 +10,9 @@ documentation for SNOBOL4, SNOBOL4 programs, and SNOBOL4 modules
 inspired by B<perlpod>(1).  The B<snopea>(1) command translates
 B<snopea>(7) to *roff B<man>(7) macro format or B<HTML>.
 
-A line that starts with zero or more star/asterisk (*) characters and
-B<=pea> signals start of a block of documentation.  All lines until a
-B<=cut> directive will be processed after removal of leading star
+A line that starts with zero or more asterisk (*) characters followed
+by B<=pea> signals start of a block of documentation.  All lines until
+a B<=cut> directive will be processed after removal of leading star
 characters.
 
 New paragraphs are started with a blank line.
@@ -29,36 +29,49 @@ I<text> is formatted in C<constant width>.
 
 =sect DIRECTIVES
 =item B<=break>
-inserts a line break.
+Inserts a line break.
 
 =item B<=bull> I<text>
-indicates a bullet item in a list.
+Indicates a bullet item in a list.
 
 =item B<=code>
-starts a block of code, lines will be formatted in a constant-width font,
+Starts a block of code, lines will be formatted in a constant-width font,
 and line breaks will be preserved.
 
 =item B<=cut>
-signals end of a block of documentation.
+Signals end of a block of documentation.
 
 =item B<=ecode>
-ends a block of code.
+Ends a block of code.
+
+=item B<=etable>
+Ends a table.
 
 =item B<=item> I<label>
-starts an indented paragraph with I<label>.
+A list item with tag I<label>.
 
 =item B<=indent> I<number>
-controls the indentation of B<=item> paragraphs.
+Controls the indentation of B<=item> paragraphs.
+
+=item B<=nitem> I<text>
+A numbered list item with tag I<label>.
+
+=item B<=row> I<columns>
+A table row. I<columns> is a tab separated list.
 
 =item B<=sect> I<name>
-declares man page section I<name>.
+Declares man page section I<name>.
 
 =item B<=subsect> I<name>
-declares man page subsection I<name>.
+Declares man page subsection I<name>.
+
+=item B<=table> I<tab stops>
+Begin a table, setting I<tab stops>, a sequence of positions
+in inches, each followed by B<i> (ie; B<1i 2i 3i>)
 
 =sect SPECIAL CHARACTERS
 The following sequences (an unholy mix of B<troff>(1) and B<HTML>)
-B<MUST> be used to portably format certain special characters:
+B<MUST> be used for portable formatting:
 
 =item \`\`
 left double quote (``)
@@ -100,5 +113,5 @@ Inspired by (but not compatible with) Perl POD format.
 Philip L. Budne
 
 =sect SEE ALSO
-B<snobol4>(1), B<snopea>(1)
+B<snobol4>(1), B<snopea>(1), B<perlpod>(1).
 =cut

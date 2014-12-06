@@ -2,6 +2,12 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/6/2014:
+	snolib/snopea.sno: add =nitem, =table/=row/=etable
+		put CSNOBOL4(B) version in headers
+		output <body> & </body>
+	doc/snopea.pea: document =nitem, =table/=row/=etable
+
 12/5/2014:
 	doc/Makefile: use explicit rules
 		GENERATED files depend on ../snobol4
