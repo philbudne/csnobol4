@@ -13,6 +13,17 @@
 	q = '"'
 	tokpat = ((q break(q) . text q) | breakws . text) ws
 
+	charpats = '\*(lq' | '\*(rq' | '\&' | ANY('<>&') | '\*(pi' | '\0'
+	charmap = TABLE()
+	charmap['\*(lq'] = "``"
+	charmap['\*(rq'] = "''"
+	charmap['\*(pi'] = '&pi;'
+	charmap['\0'] = '\~'
+	charmap['\&'] = '\&'
+	charmap['&'] = '&amp;'
+	charmap['<'] = '&lt;'
+	charmap['>'] = '&gt;'
+
 ****************
 start	line = input					:f(end)
 	line '.TH'					:f(start)
@@ -20,6 +31,14 @@ start	line = input					:f(end)
 loop	prefix =
 loop1	line = input					:f(end)
 
+*	TERMINAL = '>>' line
+* handle character entities
+	oline =
+cloop	line POS(0) ARB . pre charpats . chr =		:f(cdone)
+*	TERMINAL = oline '/' pre '/' chr
+
+	oline = oline pre charmap[chr]			:(cloop)
+cdone	line =  oline line
 	line '.'					:f(notcmd)
 	line twofontcmd					:s(twofontcmd)
 	line onefontcmd					:s(onefontcmd)
@@ -28,15 +47,15 @@ loop1	line = input					:f(end)
 	line '.PP'					:s(ppcmd)
 	line '.LP'					:s(lpcmd)
 	line '.TP'					:s(lpcmd)
+	line '.IP'					:s(lpcmd)
 	line '.IP \(bu'					:s(bullcmd)
+	line '.br'					:s(brcmd)
 
 	terminal = 'Unknown command: ' line
 	output = '>>>' line
 	:(loop)
 
-notcmd
-* XXX handle \fX
-	output = prefix line
+notcmd	output = prefix line
 	:(loop)
 
 ****
@@ -71,5 +90,6 @@ ppcmd	output =					:(loop)
 lpcmd	prefix = '=item '				:(loop1)
 ****
 bullcmd	prefix = '=bull '				:(loop1)
-
+****
+brcmd	output = '=break'				:(loop)
 end
