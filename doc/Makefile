@@ -8,29 +8,25 @@ GENERATED=$(GENERATED1) $(GENERATED7)
 
 ALL=	$(GENERATED) $(TXT) $(HTML)
 
-TXT=	porting.txt \
-	snobol4.0 sdb.0 \
-	snobol4readline.0 \
-	snobol4error.0 \
-	snopea-format.0
+TXT=	porting.txt
 
-HTML=	snobol4.html sdb.html \
-	snobol4readline.html \
-	snobol4error.html \
-	snopea-format.html
+HTML=	snobol4.1.html sdb.1.html \
+	snobol4error.1.html \
+	snobol4readline.3.html \
+	snopea.7.html
 
-PS=	snobol4.ps sdb.ps \
-	snobol4readline.ps \
-	snobol4error.ps \
-	snopea-format.ps
+PS=	snobol4.1.ps sdb.1.ps \
+	snobol4error.1.ps \
+	snobol4readline.3.ps \
+	snopea.7.ps
 
-PDF=	snobol4.pdf sdb.pdf \
-	snobol4readline.pdf \
-	snobol4error.pdf \
-	snopea-format.pdf
+PDF=	snobol4.1.pdf sdb.1.pdf \
+	snobol4error.1.pdf \
+	snobol4readline.3.pdf \
+	snopea.7.pdf
 
 all:	$(ALL)
-txt:	$(GENERATED) $(TXT)
+txt:	$(TXT)
 html:	$(GENERATED) $(HTML)
 ps:	$(GENERATED) $(PS)
 pdf:	$(GENERATED) $(PDF)
@@ -53,8 +49,9 @@ PS2PDF=ps2pdf
 
 # run snopea using our own files
 SNOPEA=../snobol4 -N -I../snolib -I.. ../snopea
+SNOPEA_DEPS=../snobol4 ../snopea ../snolib/snopea.sno
 
-.SUFFIXES: .ms .1 .3 .7 .0 .txt .ps .pdf .html .pea
+.SUFFIXES: .html .ms .txt .ps .pdf
 
 ####
 
@@ -67,62 +64,39 @@ SNOPEA=../snobol4 -N -I../snolib -I.. ../snopea
 .ms.ps:
 	$(TROFF_PS) $(MS) $< > $@
 
-.pea.html:
-	$(SNOPEA) --format html --section 1 $< $@
-
-####
-
-.pea.1:
-	$(SNOPEA) $< $@
-
-.pea.7:
-	$(SNOPEA) $< $@
-
-####
-.1.0:
-	$(NROFF) $(MAN) $< > $@
-
-.1.ps:
-	$(TROFF_PS) $(MAN) $< > $@
-
-####
-.3.0:
-	$(NROFF) $(MAN) $< > $@
-
-.3.ps:
-	$(TROFF_PS) $(MAN) $< > $@
-
-####
-.7.0:
-	$(NROFF) $(MAN) $< > $@
-
-.7.ps:
-	$(TROFF_PS) $(MAN) $< > $@
-
-####
-
-.ps.pdf:
-	$(PS2PDF) $< $@
-
 ################
 # explicit rules
 
-snobol4.html: snobol4.1
-	$(TROFF_HTML) snobol4.1 > snobol4.html
+HHH=--format html
 
-snobol4readline.html: snobol4readline.3
-	$(TROFF_HTML) snobol4readline.3 > snobol4readline.html
+snobol4.1.html: snobol4.1
+	$(TROFF_HTML) snobol4.1 > snobol4.1.html
+
+snobol4readline.3.html: snobol4readline.3
+	$(TROFF_HTML) snobol4readline.3 > snobol4readline.3.html
+
+snobol4error.1: snobol4error.1.pea $(SNOPEA_DEPS)
+	$(SNOPEA) snobol4error.1.pea snobol4error.1
+
+snobol4error.1.html: snobol4error.1.pea $(SNOPEA_DEPS)
+	$(SNOPEA) $(HHH) snobol4error.1.pea snobol4error.1.html
+
+sdb.1: sdb.1.pea $(SNOPEA_DEPS)
+	$(SNOPEA) sdb.1.pea sdb.1
+
+sdb.1.html: sdb.1.pea $(SNOPEA_DEPS)
+	$(SNOPEA) $(HHH) sdb.1.pea sdb.1.html
 
 snolib.html: snolib.3
-	$(TROFF_HTML) snolib.3 > snolib.html
+	$(TROFF_HTML) snolib.3 > snolib.3.html
 
-snopea-format.html: snopea.pea
-	$(SNOPEA) --format html --section 7 snopea.pea snopea-format.html
+snopea.7: snopea.7.pea $(SNOPEA_DEPS)
+	$(SNOPEA) snopea.7.pea snopea.7
 
-snopea-format.0: snopea.7
-	$(NROFF) -man snopea.7 > snopea-format.0
+snopea.7.html: snopea.7.pea $(SNOPEA_DEPS)
+	$(SNOPEA) $(HHH) snopea.7.pea snopea.7.html
 
 ####
 
 clean:
-	rm -f *.0 porting.txt *.html *.ps *.pdf \#* *~ $(GENERATED)
+	rm -f porting.txt *.html *.ps *.pdf \#* *~ $(GENERATED)

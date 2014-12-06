@@ -8,6 +8,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 		output <body> & </body>
 	doc/snopea.pea: document =nitem, =table/=row/=etable
 	snopea.in: infer output format from output filename
+	renamed doc/*.pea to doc/*.sect.pea *.sect.html
+	doc/Makefile: explicit rules
 
 12/5/2014:
 	Makefile: add callgraph to GENERATED
