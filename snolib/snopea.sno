@@ -165,6 +165,7 @@ sp.roff.head
 	out = '.nh'
 
 	out = '.TH ' page ' ' sect ' "' date '" "' snopea.snovers '"'
++		' "CSNOBOL4 Manual"'
 
 	indent = 4
 	text =
