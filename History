@@ -13,6 +13,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 		commented out unused R_R_N
 		(nested .IFs don't work)
 	snolib/snopea.sno: fix HTML =item formatting
+	doc/man2pea.sno: char mapping; handle .br, .IP
 
 12/4/2014:
 	Makefile: {clean,build}_modules shorthands
