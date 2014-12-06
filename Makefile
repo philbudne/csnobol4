@@ -27,7 +27,7 @@ SNO=snobol4 -b
 ################
 # machine generated files (final products);
 
-GENERATED=data.c data_init.h proc.h static.h syn.h data.h \
+GENERATED=data.c data_init.h proc.h static.h syn.h data.h callgraph \
 	equ.h res.h syn.c syn_init.h snobol4.c host.sno isnobol4.c with
 
 ################

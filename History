@@ -9,6 +9,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	doc/snopea.pea: document =nitem, =table/=row/=etable
 
 12/5/2014:
+	Makefile: add callgraph to GENERATED
 	doc/Makefile: use explicit rules
 		GENERATED files depend on ../snobol4
 	doc/snobol4.1: move error codes to snobol4error(1)
