@@ -7,6 +7,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 		put CSNOBOL4(B) version in headers
 		output <body> & </body>
 	doc/snopea.pea: document =nitem, =table/=row/=etable
+	snopea.in: infer output format from output filename
 
 12/5/2014:
 	Makefile: add callgraph to GENERATED

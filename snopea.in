@@ -1,6 +1,5 @@
 #!<BINDIR>/snobol4<VERS>
-
-* snopea (a pod2{roff,html} for SNOBOL4) command
+# $Id$
 
 **=pea
 **=sect NAME
@@ -12,14 +11,16 @@
 **B<snopea>(7) format to B<man>(7) or HTML format.
 **=sect OPTIONS
 **=item B<--format>
-**takes either B<roff> or B<html> as an argument.
+**Takes either B<roff> or B<html> as an argument
+**(otherwise the output format
+**will be inferred from the I<output> file name).
 **=item B<--section>
-**takes a single digit section number (otherwise the section number
-**will be inferred from the I<output> file name)
+**Takes a single digit section number (otherwise the section number
+**will be inferred from the I<output> file name).
 **=item B<--page>
-**takes a page name as an argument
+**Takes a page name as an argument
 **(otherwise the page name
-**will be inferred from the I<output> file name)
+**will be inferred from the I<output> file name).
 **=sect NOT CONFORMING TO
 **Inspired by (but not compatible with) Perl POD format.
 **=sect AUTHOR
@@ -30,8 +31,6 @@
 
 -include 'host.sno'
 -include 'snopea.sno'
-
-	fmt = 'roff'
 
 	optind = HOST(HOST_FIRSTARG)
 optlop	opt = HOST(HOST_ARGN, optind)		:f(usage)
@@ -57,7 +56,16 @@ havepage
 	DIFFER(sect)				:s(havesect)
 	outfile POS(0) BREAKX('.') '.' ANY(&DIGITS) . sect :f(usage)
 
-havesect	
+havesect
+	DIFFER(fmt)				:s(havefmt)
+	outfile POS(0) BREAKX('.') '.html' RPOS(0) :f(not.html)
+	format = 'html'				:(havefmt)
+
+not.html
+	outfile POS(0) BREAKX('.') '.' ANY(&DIGITS) RPOS(0) :f(usage)
+	format = 'roff'
+
+havefmt
 	snopea(infile, outfile, page, sect, fmt) :s(end)f(err)
 
 usage	TERMINAL = 'Usage: snopea [opts] INFILE OUTFILE'
@@ -66,4 +74,4 @@ usage	TERMINAL = 'Usage: snopea [opts] INFILE OUTFILE'
 	TERMINAL = '	--section 1..9'
 	TERMINAL = '	--page PAGENAME'
 err	&CODE = 1
-END
+end
