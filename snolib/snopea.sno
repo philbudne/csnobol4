@@ -255,7 +255,9 @@ sp.roff.table
 	out = DIFFER(rest) '.ta ' rest
 	out = '.nf'					:(sp.top)
 
-sp.roff.row						:(sp.text)
+sp.roff.row
+	rest POS(0) snopea.ws =
+	line = rest					:(sp.text)
 
 sp.roff.etable
 	out = '.fi'					:(sp.top)
