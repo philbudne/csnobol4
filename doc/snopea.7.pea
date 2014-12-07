@@ -10,9 +10,9 @@ documentation for SNOBOL4, SNOBOL4 programs, and SNOBOL4 modules
 inspired by B<perlpod>(1).  The B<snopea>(1) command translates
 B<snopea>(7) to *roff B<man>(7) macro format or B<HTML>.
 
-A line that starts with zero or more asterisk (*) characters followed
+A line that starts with zero or more star/asterisk (B<*>) characters followed
 by B<=pea> signals start of a block of documentation.  All lines until
-a B<=cut> directive will be processed after removal of leading star
+a B<=cut> directive will be processed after removal of leading star/asterisk
 characters.
 
 New paragraphs are started with a blank line.
@@ -42,7 +42,7 @@ and line breaks will be preserved.
 Signals end of a block of documentation.
 
 =item B<=ecode>
-Ends a C<=code> block.
+Ends a B<=code> block.
 
 =item B<=etable>
 Ends a table.

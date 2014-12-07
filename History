@@ -4,6 +4,9 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 12/7/2014:
 	doc/sdb.1.pea: clean up
+	doc/snopea.7.pea: clean up
+	doc/snobol4.1.pea split out snobol4cmd
+	doc/snobol4cmd.1.pea split out of snobol4.1.pea
 
 12/6/2014:
 	snolib/snopea.sno: add =nitem, =table/=row/=etable
