@@ -364,11 +364,11 @@ sp.html.break
 sp.html.table
 	out = '<table>'					:(sp.top)
 
-sp.html.row						:(sp.text)
+sp.html.row
 	rest = '<tr>' snopea.tab rest
 sp.html.rowloop
 	rest snopea.tab = '<td>'			:s(sp.html.rowloop)
-	out = rest					:(sp.top)
+	line = rest					:(sp.text)
 
 sp.html.etable
 	out = '</table>'				:(sp.top)
