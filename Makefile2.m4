@@ -213,7 +213,13 @@ SRCS=	main.c $(SNOBOL4).c data.c data_init.c syn.c $(BAL_C) $(BREAK_C) \
 	$(STR_C) $(SUSPEND_C) $(TOP_C) $(TERM_C) $(TREE_C) $(TTY_C) \
 	$(AUX_SRCS) $(SNOLIB_SRCS)
 
-GENERATED_DOCS_DOCDIR=doc/sdb.1 doc/snobol4error.1 doc/snopea.7
+GENERATED_DOCS_DOCDIR1=doc/sdb.1 doc/snobol4error.1 \
+	doc/snobol4ext.1 doc/snobol4io.1
+
+GENERATED_DOCS_DOCDIR7=doc/snopea.7
+
+GENERATED_DOCS_DOCDIR=$(GENERATED_DOCS_DOCDIR1) $(GENERATED_DOCS_DOCDIR7)
+
 GENERATED_DOCS=snopea.1 snopea.1.html \
 	$(GENERATED_DOCS_DOCDIR) \
 	modules/snobol4setup.3 modules/snobol4setup.3.html
@@ -594,7 +600,7 @@ llib-lf.ln:
 ################
 # GENERATED_DOCS:
 
-SNOPEA=env SNOPATH=snolib ./snobol4 snopea
+SNOPEA=env SNOPATH=snolib ./snobol4 snopea.in
 
 snopea.1: snopea snolib/snopea.sno snobol4
 	$(SNOPEA) snopea snopea.1
@@ -634,15 +640,18 @@ install: snobol4 sdb timing.out $(GENERATED_DOCS)
 	ln -s $(BINDIR)/sdb-$(VERS) $(BINDIR)/sdb
 	ln -s $(BINDIR)/snopea-$(VERS) $(BINDIR)/snopea
 	$(INSTALL) -d $(MAN1DIR)
-	$(INSTALL) -m 644 doc/snobol4.1 $(MAN1DIR)
-	$(INSTALL) -m 644 doc/snobol4error.1 $(MAN1DIR)
-	$(INSTALL) -m 644 doc/sdb.1 $(MAN1DIR)
+	for F in $(GENERATED_DOCS_DOCDIR1); do \
+		$(INSTALL) -m 644 $$F $(MAN1DIR); \
+	done
 	$(INSTALL) -m 644 snopea.1 $(MAN1DIR)
 	$(INSTALL) -d $(MAN3DIR)
 	$(INSTALL) -m 644 doc/snolib.3 $(MAN3DIR)
 	$(INSTALL) -m 644 doc/snobol4readline.3 $(MAN3DIR)
-	$(INSTALL) -m 644 doc/snopea.7 $(MAN7DIR)
 	$(INSTALL) -m 644 modules/snobol4setup.3 $(MAN3DIR)
+	$(INSTALL) -d $(MAN7DIR)
+	for F in $(GENERATED_DOCS_DOCDIR7); do \
+		$(INSTALL) -m 644 $$F $(MAN7DIR); \
+	done
 	$(INSTALL) -d $(SNOLIB_VER)
 	$(INSTALL) -d $(SNOLIB_DOC)
 	$(INSTALL) -m 644 README $(SNOLIB_DOC)
@@ -658,7 +667,7 @@ install: snobol4 sdb timing.out $(GENERATED_DOCS)
 		$(INSTALL) -m 644 $$F $(SNOLIB_LIB)/dynload; \
 	done
 	for F in $(MODULES_MAN); do \
-		test -s $$F && $(INSTALL) -m 644 $$F $(MAN3DIR); \
+		$(INSTALL) -m 644 $$F $(MAN3DIR); \
 	done
 	$(INSTALL) -d $(INCLUDE_DIR)
 	for F in $(INSTALL_H); do \
