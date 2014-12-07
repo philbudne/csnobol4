@@ -137,7 +137,7 @@ LOGIC_C=$(SRCDIR)modules/logic/logic.c
 NDBM_C=$(SRCDIR)modues/ndbm/ndbm.c
 ORD_C=$(SRCDIR)lib/snolib/ord.c
 RANDOM_C=$(SRCDIR)modules/random/random.c
-READLINE_C=$(SRCDIR)lib/snolib/readline.c
+READLINE_C=$(SRCDIR)modules/readline/readline.c
 RENAME_C=$(SRCDIR)lib/snolib/rename.c
 RETSTRING_C=$(SRCDIR)lib/snolib/retstring.c
 SERV_C=$(SRCDIR)lib/snolib/serv.c
@@ -615,7 +615,7 @@ modules/snobol4setup.3: modules/setuputil.sno snobol4
 	$(SNOPEA) modules/setuputil.sno modules/snobol4setup.3
 
 modules/snobol4setup.3.html: modules/setuputil.sno snobol4
-	$(SNOPEA) --format html modules/setuputil.sno modules/snobol4setup.3.html
+	$(SNOPEA) modules/setuputil.sno modules/snobol4setup.3.html
 
 #################
 # installation

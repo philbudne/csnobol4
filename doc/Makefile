@@ -14,21 +14,18 @@ HTML=	snobol4.1.html sdb.1.html \
 	snobol4error.1.html \
 	snobol4ext.1.html \
 	snobol4io.1.html \
-	snobol4readline.3.html \
 	snopea.7.html
 
 PS=	snobol4.1.ps sdb.1.ps \
 	snobol4error.1.ps \
 	snobol4ext.1.ps \
 	snobol4io.1.ps \
-	snobol4readline.3.ps \
 	snopea.7.ps
 
 PDF=	snobol4.1.pdf sdb.1.pdf \
 	snobol4error.1.pdf \
 	snobol4ext.1.pdf \
 	snobol4io.1.pdf \
-	snobol4readline.3.pdf \
 	snopea.7.pdf
 
 all:	$(ALL)
@@ -127,12 +124,6 @@ sdb.1.ps: sdb.1
 	$(TROFF_PS) -man sdb.1 > sdb.1.ps
 
 ################
-
-snobol4readline.3.html: snobol4readline.3
-	$(TROFF_HTML) -man snobol4readline.3 > snobol4readline.3.html
-
-snobol4readline.3.ps: snobol4readline.3
-	$(TROFF_PS) -man snobol4readline.3 > snobol4readline.3.ps
 
 snolib.html: snolib.3
 	$(TROFF_HTML) -man snolib.3 > snolib.3.html

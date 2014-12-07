@@ -1771,12 +1771,18 @@ if [ ! "$WITHOUT_READLINE" ]; then
     elif config/check "$RL_INC" "$RL_FRAG" '-ledit'; then
 	RL_LIBS="-ledit"
     fi
+
     if [ "x$RL_LIBS" != x ]; then
 	echo "using readline (with $RL_LIBS)" 1>&2
-	echo 'ADD_OBJS([readline.o])'		>> $CONFIG_M4
-	echo 'ADD_SRCS([$(READLINE_C)])'	>> $CONFIG_M4
+	if [ "$FORCE_PML" ]; then
+	    echo 'ADD_OBJS([readline.o])'	>> $CONFIG_M4
+	    echo 'ADD_SRCS([$(READLINE_C)])'	>> $CONFIG_M4
+	    echo '#define PML_READLINE'		>> $CONFIG_H
+	else
+	    echo "	READLINE_LDFLAGS = '$RL_LIBS'" >> $CONFIG_SNO
+	    MODULES="$MODULES readline"
+	fi
 	echo "ADD_LDFLAGS([$RL_LIBS])"		>> $CONFIG_M4
-	echo '#define PML_READLINE'		>> $CONFIG_H
 	# Make optional?
 	echo '#define COMPILER_READLINE'	>> $CONFIG_H
 	# NetBSD/OSX have rl_[gs]et_keymap, but they're noops,

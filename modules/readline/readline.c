@@ -4,6 +4,20 @@
  * GNU readline() function
  */
 
+/*
+**=pea
+**=sect NAME
+**snobol4dbm \- SNOBOL4 NDBM interface
+**=sect SYNOPSIS
+**=code
+**-INCLUDE 'readline.sno'
+**        INPUT_STRING = READLINE(PROMPT_STRING)
+**        ADD_HISTORY(STRING)
+**        STRING = HISTORY_EXPAND(STRING)
+**=sect DESCRIPTION
+**=cut
+*/
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
@@ -24,7 +38,13 @@
 #endif
 
 /*
- * READLINE(STRING)STRING
+**=pea
+**=item B<READLINE(>I<prompt>B<)>
+**performs user input with line editing.
+**=cut
+*/
+/*
+ * LOAD("READLINE(STRING)STRING", READLINE_DL)
  */
 int
 READLINE( LA_ALIST ) LA_DCL
@@ -41,7 +61,13 @@ READLINE( LA_ALIST ) LA_DCL
 }
 
 /*
- * ADD_HISTORY(STRING)
+**=pea
+**=item B<ADD_HISTORY(>I<string>B<)>
+**add I<string> to the input history available via editing commands.
+**=cut
+*/
+/*
+ * LOAD("ADD_HISTORY(STRING)", READLINE_DL)
  */
 int
 ADD_HISTORY( LA_ALIST ) LA_DCL
@@ -55,7 +81,13 @@ ADD_HISTORY( LA_ALIST ) LA_DCL
 }
 
 /*
- * HISTORY_EXPAND(STRING)STRING
+**=pea
+**=item B<HISTORY_EXPAND(>I<string>B<)>
+**expand I<string> (typically B<!command>).
+**=cut
+*/
+/*
+ * LOAD("HISTORY_EXPAND(STRING)STRING", READLINE_DL)
  */
 int
 HISTORY_EXPAND( LA_ALIST ) LA_DCL
@@ -71,3 +103,13 @@ HISTORY_EXPAND( LA_ALIST ) LA_DCL
     free(line);
     RETSTR_FREE(exp);			/* hope this is right! */
 }
+
+/*
+**=pea
+**=sect SEE ALSO
+**B<snobol4>(1) B<readline>(3)
+**=sect AUTHOR
+**Philip L. Budne
+**=cut
+*/
+

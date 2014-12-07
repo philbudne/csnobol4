@@ -11,7 +11,14 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	renamed doc/*.pea to doc/*.sect.pea *.sect.html
 	doc/Makefile: explicit rules
 	new: doc/snobol4.1.pea doc/snobol4ext.1.pea doc/snobol4io.1.pea
-	removed old snobol4.1
+	removed old doc/snobol4.1
+	moved lib/snolib/readline.c to modules/readline/
+	configure: make readline a module
+	modules/readline/setup.sno (new)
+	modules/readline/readline.c: add pea docs
+	removed old doc/snobol4readline.3
+	doc/Makefile: removed snobol4readline
+	Makefile2.m4: adjust READLINE_C, remove an --format option
 
 12/5/2014:
 	Makefile: add callgraph to GENERATED
