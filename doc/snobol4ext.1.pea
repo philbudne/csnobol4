@@ -1,7 +1,7 @@
 $Id$
 =pea
 =sect NAME
-snobol4ext \- SNOBOL4 extensions
+snobol4ext \- CSNOBOL4 extensions
 
 =sect DESCRIPTION
 This page describes extensions to the Bell Telephone Laboratories
@@ -66,9 +66,9 @@ be not executed after compilation.  B<-EXECUTE> cancels any previous
 B<-NOEXECUTE>.
 
 =item B<FILE_ABSPATH()/FILE_ISDIR()>
-B<FILE_ABSPATH(>I<stringB<)> is a predicate which returns the null
+B<FILE_ABSPATH(>I<string>B<)> is a predicate which returns the null
 string if its argument is an absolute file path, and returns failure
-if the path is relative.  B<FILE_ISDIR(>I<stringB<)> is a predicate
+if the path is relative.  B<FILE_ISDIR(>I<string>B<)> is a predicate
 which returns the null string if its argument is the pathname of a
 directory, and returns failure if not.
 
