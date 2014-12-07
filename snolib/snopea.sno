@@ -192,13 +192,13 @@ sp.roff.sect
 	rest POS(0) snopea.ws =
 	out = '.SH "' rest '"'
 	out = '.nh'
-	needspace = 1					:(sp.top)
+	needspace =					:(sp.top)
 
 sp.roff.subsect
 	rest POS(0) snopea.ws =
 	out = '.SS "' rest '"'
 	out = '.nh'
-	needspace = 1					:(sp.top)
+	needspace =					:(sp.top)
 
 * set indent level for items
 sp.roff.indent
@@ -312,13 +312,13 @@ sp.html.sect
 	out = vdiffer(endlist)
 	endlist =
 	out = '<h2>' rest '</h2>'
-	needspace = 1					:(sp.top)
+	needspace =					:(sp.top)
 
 sp.html.subsect
 	out = vdiffer(endlist)
 	endlist =
 	out = '<h3>' rest '</h3>'
-	needspace = 1					:(sp.top)
+	needspace =					:(sp.top)
 
 * set indent level for items
 sp.html.indent
