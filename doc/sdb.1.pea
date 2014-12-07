@@ -14,7 +14,7 @@ for command line editing/history when available.
 =item B<break> I<LABEL_OR_STATEMENT_NUMBER>
 Set a breakpoint.
 =item B<bt>
-Display call stack backtrace.
+Display call stack I<back trace>.
 =item B<commands> I<BREAKPOINT_NUMBER>
 Add sdb commands to execute (ie; print &amp; continue) to a breakpoint.
 =item B<condition> I<BREAKPOINT_NUMBER> [ I<EXPR> ]
@@ -23,7 +23,7 @@ breakpoint conditional, if no I<EXPR> is supplied, any previous condition
 is removed.
 =item B<continue> [ I<COUNT> ]
 Continue from breakpoint.  The optional count specifies how many times
-to continue past this breakpoint (sets ``ignore'' count).
+to continue past this breakpoint (sets B<ignore> count).
 =item B<delete> [ I<BREAKPOINT_NUMBER> ]
 Delete a single breakpoint, or all breakpoints.
 =item B<disable> [ I<BREAKPOINT_NUMBER> ]
@@ -55,13 +55,13 @@ Set watchpoint on a variable (break when value changes).
 =item B<what>
 Display the datatype of variable contents (or expression).
 =item B<where>
-An alias for bt.
+An alias for B<bt>.
 
 A blank line repeats the previous command.
 
 Non-ambiguous abbreviations of commands can be used (ie; B<s>, B<n>).
 
-The GNU Readline library (when available) will be used for sdb
+The GNU Readline library (when available) will be used for B<sdb>(1)
 input for command editing and history.
 
 The keyboard interrupt character (eg; Control-C) will stop a running
@@ -69,7 +69,7 @@ program and return control to the B<sdb>(1) command prompt.
 
 If your program calls the B<SDB()> function, it will act as a
 breakpoint.  You can check whether B<sdb>(1) is loaded with the
-B<FUNCTION> predicate, ie;
+B<FUNCTION()> predicate, ie;
 
 =code
         FUNCTION('SDB') SDB()
