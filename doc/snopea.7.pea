@@ -42,7 +42,7 @@ and line breaks will be preserved.
 Signals end of a block of documentation.
 
 =item B<=ecode>
-Ends a block of code.
+Ends a C<=code> block.
 
 =item B<=etable>
 Ends a table.
