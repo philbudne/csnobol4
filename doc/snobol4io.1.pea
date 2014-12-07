@@ -1,7 +1,10 @@
 $Id$
 =pea
-=subsect "I/O Associations"
+=sect NAME
+snobol4io \- SNOBOL4 file I/O
 
+=sect DESCRIPTION
+=subsect I/O Associations
 I/O is performed by associating a variable name with a numbered I/O
 unit using the B<INPUT()> and B<OUTPUT()> functions.  The following
 associations are available by default;
@@ -14,8 +17,7 @@ associations are available by default;
 =row B<TERMINAL>	8	/dev/tty (input)
 =etable
 
-=subsect "I/O Options"
-
+=subsect I/O Options
 The third argument of the B<INPUT()> and B<OUTPUT()> functions is
 interpreted as a string of single letter options, commas are ignored.
 Some options effect only the I/O variable named in the first argument,
