@@ -266,7 +266,29 @@ not defined.  See Directory Search List above.  (B<SNOLIB> was the
 sole search directory in versions of CSNOBOL4 prior to version 1.5).
 
 =sect SEE ALSO
-B<sdb>(1),B<snobol4dbm>(3),B<snobol4tcl>(3),B<snobol4time>(3),B<snolib>(3).
+
+=sect DIAGNOSTICS
+=table 2i
+=row B<sdb>(1)	SNOBOL4 Debugger
+=row B<snobol4dirs>(3)	directory access
+=row B<snobol4error>(1)	<&amp;ERRTYPE> and B<&amp;ERRTEXT> values
+=row B<snobol4ext>(1)	extensions to BTL SNOBOL4
+=row B<snobol4ffi>(3)	Foreign Function Interface
+=row B<snobol4fork>(3)	subprocess interface
+=row B<snobol4io>(1)	I/O extensions
+=row B<snobol4logic>(3)	bit logic &amp; formatting functions
+=row B<snobol4ndbm>(3)	keyed file access
+=row B<snobol4random>(3)	pseudo-random numbers
+=row B<snobol4setup>(3)	loadable module builder
+=row B<snobol4sprintf>(3)	formatting function
+=row B<snobol4sqlite3>(3)	SQLite database interface
+=row B<snobol4stat>(3)	file metadata
+=row B<snobol4tcl>(3)	interface to Tcl/Tk
+=row B<snobol4time>(3)	date/time functions
+=row B<snolib>(3)	misc library functions
+=etable
+
+
 
 =item http://www.snobol4.org
 =break
@@ -321,14 +343,6 @@ R. E. Griswold, J. F. Poage, and I. P. Polonsky
 Mark Emmer (code from SNOBOL4+)
 
 Viktors Berstis (code from Minnesota SNOBOL4)
-
-=sect DIAGNOSTICS
-For SNOBOL4 error
-B<&amp;ERRTYPE>
-and
-B<&amp;ERRTEXT>
-values, see
-B<snobol4error>(1).
 
 =sect BUGS
 
