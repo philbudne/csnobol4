@@ -214,7 +214,7 @@ SRCS=	main.c $(SNOBOL4).c data.c data_init.c syn.c $(BAL_C) $(BREAK_C) \
 	$(AUX_SRCS) $(SNOLIB_SRCS)
 
 GENERATED_DOCS_DOCDIR=doc/sdb.1 doc/snobol4error.1 doc/snopea.7
-GENERATED_DOCS=snopea.1 snopea.html \
+GENERATED_DOCS=snopea.1 snopea.1.html \
 	$(GENERATED_DOCS_DOCDIR) \
 	modules/snobol4setup.3 modules/snobol4setup.3.html
 
@@ -599,8 +599,8 @@ SNOPEA=env SNOPATH=snolib ./snobol4 snopea
 snopea.1: snopea snolib/snopea.sno snobol4
 	$(SNOPEA) snopea snopea.1
 
-snopea.html: snopea snolib/snopea.sno snobol4
-	$(SNOPEA) --format html --section 1 snopea snopea.html
+snopea.1.html: snopea snolib/snopea.sno snobol4
+	$(SNOPEA) snopea snopea.1.html
 
 $(GENERATED_DOCS_DOCDIR): snopea snolib/snopea.sno snobol4
 	cd doc; make

@@ -10,6 +10,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	snopea.in: infer output format from output filename
 	renamed doc/*.pea to doc/*.sect.pea *.sect.html
 	doc/Makefile: explicit rules
+	new: doc/snobol4.1.pea doc/snobol4ext.1.pea doc/snobol4io.1.pea
 
 12/5/2014:
 	Makefile: add callgraph to GENERATED

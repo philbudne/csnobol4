@@ -1,7 +1,7 @@
 # Makefile for documentation
 # $Id$
 
-GENERATED1=sdb.1 snobol4error.1
+GENERATED1=sdb.1 snobol4error.1 snobol4ext.1 snobol4io.1
 GENERATED7=snopea.7
 
 GENERATED=$(GENERATED1) $(GENERATED7)
@@ -12,16 +12,22 @@ TXT=	porting.txt
 
 HTML=	snobol4.1.html sdb.1.html \
 	snobol4error.1.html \
+	snobol4ext.1.html \
+	snobol4io.1.html \
 	snobol4readline.3.html \
 	snopea.7.html
 
 PS=	snobol4.1.ps sdb.1.ps \
 	snobol4error.1.ps \
+	snobol4ext.1.ps \
+	snobol4io.1.ps \
 	snobol4readline.3.ps \
 	snopea.7.ps
 
 PDF=	snobol4.1.pdf sdb.1.pdf \
 	snobol4error.1.pdf \
+	snobol4ext.1.pdf \
+	snobol4io.1.pdf \
 	snobol4readline.3.pdf \
 	snopea.7.pdf
 
@@ -73,11 +79,7 @@ snobol4.1.html: snobol4.1
 snobol4.1.ps: snobol4.1
 	$(TROFF_PS) -man snobol4.1 > snobol4.1.ps
 
-snobol4readline.3.html: snobol4readline.3
-	$(TROFF_HTML) -man snobol4readline.3 > snobol4readline.3.html
-
-snobol4readline.3.ps: snobol4readline.3
-	$(TROFF_PS) -man snobol4readline.3 > snobol4readline.3.ps
+####
 
 snobol4error.1: snobol4error.1.pea $(SNOPEA_DEPS)
 	$(SNOPEA) snobol4error.1.pea snobol4error.1
@@ -88,6 +90,30 @@ snobol4error.1.html: snobol4error.1.pea $(SNOPEA_DEPS)
 snobol4error.1.ps: snobol4error.1
 	$(TROFF_PS) -man snobol4error.1 > snobol4error.1.ps
 
+####
+
+snobol4ext.1: snobol4ext.1.pea $(SNOPEA_DEPS)
+	$(SNOPEA) snobol4ext.1.pea snobol4ext.1
+
+snobol4ext.1.html: snobol4ext.1.pea $(SNOPEA_DEPS)
+	$(SNOPEA) snobol4ext.1.pea snobol4ext.1.html
+
+snobol4ext.1.ps: snobol4ext.1
+	$(TROFF_PS) -man snobol4ext.1 > snobol4ext.1.ps
+
+####
+
+snobol4io.1: snobol4io.1.pea $(SNOPEA_DEPS)
+	$(SNOPEA) snobol4io.1.pea snobol4io.1
+
+snobol4io.1.html: snobol4io.1.pea $(SNOPEA_DEPS)
+	$(SNOPEA) snobol4io.1.pea snobol4io.1.html
+
+snobol4io.1.ps: snobol4io.1
+	$(TROFF_PS) -man snobol4io.1 > snobol4io.1.ps
+
+####
+
 sdb.1: sdb.1.pea $(SNOPEA_DEPS)
 	$(SNOPEA) sdb.1.pea sdb.1
 
@@ -97,11 +123,21 @@ sdb.1.html: sdb.1.pea $(SNOPEA_DEPS)
 sdb.1.ps: sdb.1
 	$(TROFF_PS) -man sdb.1 > sdb.1.ps
 
+################
+
+snobol4readline.3.html: snobol4readline.3
+	$(TROFF_HTML) -man snobol4readline.3 > snobol4readline.3.html
+
+snobol4readline.3.ps: snobol4readline.3
+	$(TROFF_PS) -man snobol4readline.3 > snobol4readline.3.ps
+
 snolib.html: snolib.3
 	$(TROFF_HTML) -man snolib.3 > snolib.3.html
 
 snolib.ps: snolib.3
 	$(TROFF_PS) -man snolib.3 > snolib.3.ps
+
+################
 
 snopea.7: snopea.7.pea $(SNOPEA_DEPS)
 	$(SNOPEA) snopea.7.pea snopea.7

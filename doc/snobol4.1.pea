@@ -1,0 +1,351 @@
+=sect NAME
+snobol4 \- SNOBOL4 interpreter
+=sect SYNOPSIS
+B<snobol4> [ I<options> .\|.\|. ] [ I<file(s)> .\|.\|. ] [ I<params> .\|.\|. ]
+
+=sect DESCRIPTION
+This manual page describes a port of the original Bell Telephone Labs
+(BTL) Macro Implementation of SNOBOL4 to machines with ILP32 (32-bit
+int/long/pointer) or LP64 (64-bit long/pointer) C compilers by Philip
+L. Budne.  The language and its implementation are described in [1]
+and [2].  Extensions from Catspaw SNOBOL4+, SPITBOL and SITBOL have
+been added.  This page discusses only the changes/extensions.
+
+=subsect Limitations
+All aspects of the language are implemented except:
+=item Trapping of arithmetic exceptions.
+=item B<LOAD()>
+can be used to access external functions using dynamic linking.
+
+=subsect "Changes"
+The following behaviors have been changed from the original Macro SNOBOL4;
+
+=item Listings are disabled by default.
+Default listing side (when enabled by B<-LIST> or the B<-l> command
+line option is B<LEFT>.  Listings are directed to standard output (or
+file specified by the B<-l> command line option.
+
+=item Messages
+The the startup banner and statistics are directed to standard error.
+Compilation error messages (including erroneous lines) appear on
+standard error as well as in the listings.  Error messages now
+reference the source file name and line number.
+
+=item Character set (see below).
+
+=item B<PUNCH>
+The B<PUNCH> output variable no longer exists (see B<TERMINAL> variable below).
+
+=item NO FORTRAN I/O
+I/O is not performed using FORTRAN I/O.
+The 3rd argument to the B<OUTPUT()> and B<INPUT()>
+functions is interpreted as a string of I/O options (see below).
+
+=item Statement separator
+Control lines and comment characters are valid after the 
+(;) statement separator.  Listing statement numbers show the statement
+number of the LAST statement on the line (rather than the first).
+
+=item B<&amp;ABEND>
+Setting the B<&amp;ABEND> keyword causes a core dump upon termination!
+
+=item B<&amp;CODE>
+The value of the B<&amp;CODE> keyword determines the exit status of
+B<snobol4>(1) application.
+
+=item B<DATE()>
+The B<DATE()> function returns strings of the form: I<MM/DD/YYYY
+HH:MM:SS>.  See extensions section for arguments to the B<DATE()>
+function.
+
+=item <&amp;STLIMIT>
+When B<&amp;STLIMIT> is less than zero there is no limit to the number
+of statements executed, and B<&amp;STCOUNT> is not incremented.
+<&amp;STLIMIT> now defaults to -1.
+
+=item Tracing
+
+B<VALUE> tracing applies to variables modified by immediate value
+assignment ($ operator) and value assignment (. operator) during
+pattern matching.
+
+=item B<BACKSPACE()>
+The B<BACKSPACE()> function is not implemented. Use the
+B<SET()> function instead.
+=item I/O unit numbers up to 256 can be used.
+=item Attempts to output on a closed unit generates a fatal
+``Output error''.
+
+=subsect "Character set"
+
+B<snobol4>(1) is 8-bit clean, and uses the native character set.  Any
+8-bit byte is accepted as a SNOBOL datum or in a string constant of a
+SNOBOL source program.  The value of the SNOBOL protected keyword
+B<&amp;ALPHABET> is a 256-character string of all bytes from 0 to 255,
+in ascending order.
+
+On ASCII-based systems, any character with the 8th bit set is treated
+as ``alphabetic'', and can start, or be used in identifiers and
+labels.  This includes characters from the ``upper half'' of
+national character sets and all bytes resulting from the UTF-8
+encoding of Unicode characters.
+
+Programs may be entered in mixed case; By default lower case
+identifiers are folded to upper case (see B<&amp;CASE> and B<\-CASE>
+extensions below).  Case folding is performed by using the C library
+B<islower>(3) test, and then using B<toupper>(3) to convert the
+lower-case characters to upper case.  When using UTF-8 encoded
+characters in code, case folding should be disabled, to prevent any
+bytes which appear to be lower case in the current locale from being
+modified.
+
+The following operator character sequences are permitted and represent
+a cross between PDP-10 Macro SNOBOL, SITBOL and Catspaw SPITBOL usage:
+
+=table 2i
+=row Exponentiation:	^\~**
+=row Alternation:	|\~!
+=row Unary negation:	~\~\\
+=row Assignment:	=\~_
+=row Comment line:	*\~#\~|\~;\~!
+=row Continuation line:	+\~.
+=etable
+
+Both square brackets ([]) and angle brackets (&lt;&gt;) may be used to
+subscript arrays and tables.  The B<TAB> (ASCII 9) character is
+accepted as whitespace.  Note that the use of the pound sign for
+comments allows use of the script interpreter (hash-bang) sequence at
+the top of a file marked as executable: "#!/usr/local/bin/snobol4".
+Underscore (_) and period (.) are legal within identifiers and labels.
+
+=sect OPTIONS
+=item B<-b>
+Disable startup banner and termination output (only displayed when no
+source files are given on the command line).  In earlier releases
+B<-b> I<toggled> banner output.
+
+=item B<-d> I<ndesc>
+Allocate ``dynamic storage'' region of I<ndesc> descriptors for program
+code and data. A suffix of B<k> multiplies the number by 1024, a
+suffix of B<m> multiplies the number by 1048576.  A larger dynamic
+region may result in fewer garbage collections (storage
+regenerations), however large values may cause execution to slow down
+when large amounts of garbage collect.  Most programs do not need an
+increased dynamic region to run.  If your program terminates with an
+``Insufficient storage to continue'' message you need to increase the
+dynamic storage region size.  The B<-h> option displays the default
+dynamic region size.
+
+=item B<-f>
+Toggle folding of identifiers to upper case (see
+B<\-CASE>
+and
+B<&amp;CASE>).
+=item B<-g>
+Enable garbage collection tracing (sets
+B<&amp;GTRACE>
+to -1).
+=item B<-h>
+Give help. Shows usage message, includes default sizes for
+``dynamic region'' and pattern match stack.
+=item B<-k>
+Toggle running programs with compilation errors (see
+B<\-ERROR>
+and
+B<\-NOERRORS>
+extensions).  By default programs with compilation errors will not be
+run.
+=item B<-l >I<LISTINGFILE>
+Enable listing output to the named file. The default listing side is
+B<LEFT>.
+=item B<-n>
+Toggle running programs after compilation (see
+B<\-EXECUTE>
+and
+B<\-NOEXECUTE>
+extensions).  By default programs are run after compilation.
+=item B<-p>
+Toggle SPITBOL extensions (also controlled by
+B<\-PLUSOPS>).
+=item B<-r>
+Toggle reading
+B<INPUT>
+from input file(s) after
+B<END>
+label.  Otherwise
+B<INPUT>
+defaults (back) to standard input after program compilation is complete.
+=item B<-s>
+Toggle termination statistics (off by default).
+=item B<-u >I<params>
+specifies a parameter string available via
+B<HOST(0)>.
+=item B<-v>
+Show version and exit.
+=item B<-x>
+Force banner and termination output.
+=item B<-z>
+Show directory search path in use (including
+B<-I>
+options) and exit.
+=item B<-->
+Terminates processing items as options. Any remaining strings are
+treated as files or user parameters.
+=item B<-I>I< directory>
+Appends directory argument to include search path (before elements
+from the
+B<SNOLIB>
+or
+B<SNOPATH>
+environment variables).
+=item B<-L>I< file>
+Load source file before others on command line.  May be used multiple times.
+Used to preload the
+B<sdb>(1)
+source code debugger.
+
+=item B<-M>
+Specifies that all items left on the command line after option
+processing is complete are to be treated as filenames.  The files are
+read in turn until an B<END> statement is found (Any remaining data is
+available via the B<INPUT> variable if the B<-r> option is also
+given).  A B<--> terminates processing of arguments as files, and
+makes the remaining arguments available as user parameters (see the
+B<HOST()> function).
+
+=item B<-P> I<ndesc>
+Allocate I<ndesc> descriptors for the pattern match stack.  A suffix
+of B<k> multiplies the number by 1024, a suffix of B<m> multiplies the
+number by 1048576.  The pattern match stack is used to save
+backtracking and conditional assignment information during pattern
+matching.  If your program terminates with an ``Overflow during
+pattern matching'' message (Error 16) you need to increase the pattern
+match stack size.  The B<-h> option displays the default pattern match
+stack size.
+
+=item B<-S >I<ndesc>
+Allocate I<ndesc> descriptors for the interpreter stack.  A suffix of
+B<k> multiplies the number by 1024, a suffix of B<m> multiplies the
+number by 1048576.  The interpreter stack is used for saving data, and
+passing parameters to internal procedures. If your program terminates
+with an ``Stack overflow'' message (Error 21) you need to increase the
+interpreter stack size.  A common reason for needing additional stack
+space is for tracing deeply nested DATA() structures during garbage
+collection.  The B<-h> option displays the default interpreter stack
+size.
+
+=subsect "Directory Search List"
+
+Files specified in B<-INCLUDE> directives and B<LOAD()> function calls
+are first checked for in the current working directory.  If not found,
+the following directory search order is used: Any directories
+specified on the command line using B<-I> options, in the order
+specified; The list of directories from the B<SNOPATH> environment
+variable, if defined; If B<SNOPATH> is not defined, the B<SNODIR>
+environment directory (or a compiled in default) is used to add the
+following:
+
+XXX MISSING??? XXX
+
+=sect ENVIRONMENT
+
+=item B<SNOPATH>
+Is a list of directories delimited by colons (semi-colons on VMS and
+Windows) appended to the Directory Search List (see above).  NOTE!!
+Use of B<SNOPATH> introduces security and portability issues!!
+
+=item B<SNOBOL_PRELOAD_PATH>
+Is a list of source files delimited by colons (semi-colons on VMS and
+Windows) that will be read before the program source.  Like
+B<SNOPATH>, Use of B<SNOBOL_PRELOAD_PATH> introduces security and portability
+issues.
+
+=item B<SNOLIB>
+B<SNOLIB> is used to establish the base libary path if B<SNOPATH> is
+not defined.  See Directory Search List above.  (B<SNOLIB> was the
+sole search directory in versions of CSNOBOL4 prior to version 1.5).
+
+=sect SEE ALSO
+B<sdb>(1),B<snobol4dbm>(3),B<snobol4tcl>(3),B<snobol4time>(3),B<snolib>(3).
+
+=item http://www.snobol4.org
+=break
+All things SNOBOL4 related.
+
+=item http://www.snobol4.com
+=break
+Catspaw: commercial SPITBOL implementations, Free SNOBOL4+ for DOS.
+
+=item http://www.snobol4.org/doc/burks/tutorial/contents.htm
+=break
+SNOBOL4 language tutorial (from Catspaw Vanilla SNOBOL4)
+
+=item http://www.snobol4.org/doc/burks/manual/contents.htm
+=break
+Catspaw Vanilla SNOBOL4 manual.
+
+=item ftp://ftp.snobol4.com/spitman.pdf
+=break
+Catspaw Macro SPITBOL manual
+
+=item [1] R. E. Griswold, J. F. Poage, and I. P. Polonsky
+I<The SNOBOL4 Programming Language>,
+2nd ed., Prentice-Hall Inc., 1971.
+=break
+I<(aka the green book)>
+=break
+ftp://ftp.cs.arizona.edu/snobol4/gb.pdf
+
+=item [2] R. E. Griswold,
+I<The Macro Implementation of SNOBOL4>,
+W. H. Freeman and Co., 1972.
+=break
+Book describing the implementation techniques used in Macro SNOBOL4.
+
+=item http://www.snobol4.org/docs/arizona/
+=break
+University of Arizona SNOBOL4 memos,
+formatted as PDF files by Scott Marovich.
+Includes memo s4d58, which describes each
+pseudo-instruction in the Snobol Implementation Language (SIL),
+corrigendae for [1], [2] and
+I<String and List Processing in SNOBOL4>.
+
+=sect AUTHOR
+Philip L. Budne
+
+with help from:
+
+R. E. Griswold, J. F. Poage, and I. P. Polonsky
+
+Mark Emmer (code from SNOBOL4+)
+
+Viktors Berstis (code from Minnesota SNOBOL4)
+
+=sect DIAGNOSTICS
+For SNOBOL4 error
+B<&amp;ERRTYPE>
+and
+B<&amp;ERRTEXT>
+values, see
+B<snobol4error>(1).
+
+=sect BUGS
+
+I/O retains some record oriented flavor.
+
+I/O is still tied to unit numbers.
+
+``Dynamic'' storage cannot be expanded after startup.
+
+Integer math can never ``fail'', even on overflow.
+
+Oversize integer constants may not be detected.
+
+This manual page is too long, and should be split up!
+
+There should be a
+B<snobol4func>(1)
+man page which describes all intrinsic functions
+(this page only includes extensions).
+

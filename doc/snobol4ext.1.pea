@@ -1,0 +1,403 @@
+$Id$
+=pea
+=sect NAME
+snobol4ext \- SNOBOL4 extensions
+
+=sect DESCRIPTION
+This page describes extensions to the Bell Telephone Laboratories
+portable implementation of SNOBOL4 in B<snobol4>(1).
+
+=item B<ARRAY/TABLE> access
+Multiple B<ARRAY> and/or B<TABLE> index operations may appear in a
+row, without having to resort to use of the B<ELEMENT> function, so
+long as no intervening spaces (or line continuations) appear.
+
+=item B<BREAKX()>
+The B<BREAKX()> function is a pattern function used for fast scanning.
+B<BREAKX(>I<str>B<)> is equivalent to
+B<BREAK(>I<str>B<)> B<ARBNO(LEN(1) BREAK(>I<strB><))>.
+In other words BREAKX matches a sequence of ever larger strings
+terminated by a break set.  BREAKX can be used as a faster matching
+replacement for B<ARB>: B<BREAKX('S') 'STRING'> always runs faster
+than B<ARB 'STRING'> since it only attempts matching B<'STRING'> at
+locations where an B<'S'> has been detected.
+
+=item Case folding
+By default the compiler folds identifiers and directives to upper
+case, so programs can be entered in either case.  To disable case
+folding use the directive B<-CASE 0>.  To re-enable case
+folding use directive B<-CASE >I<n> where I<n> is a non-zero integer.
+The status of case folding may be examined and controlled from a
+running program by the unprotected system keyword B<&amp;CASE>.
+
+=item B<CHAR()>
+The B<CHAR()> function takes an integer from 0 to 255 and returns the
+nth character in B<&amp;ALPHABET>.
+
+=item B<DATE()>
+For compatibility with new versions of Catspaw SPITBOL, B<DATE(0)>
+returns strings of the form I<MM/DD/YY HH:MM:SS>, and B<DATE(2)>
+returns strings of the form I<YYYY-MM-YY HH:MM:SS>.  With any other
+arguments B<DATE()> returns strings of the form
+I<MM/DD/YYYY HH:MM:SS>.
+
+=item B<&amp;DIGITS>
+The protected keyword B<&amp;DIGITS> contains the string B<0123456789>.
+The Unicon and Icon languages implement B<&amp;DIGITS>.
+
+=item B<-ERROR/-NOERRORS>
+Directives B<-ERROR> and B<-NOERRORS> control execution of program
+with compiler errors.  If the B<-ERROR> directive is given, the
+program will be executed (but any attempt to execute a statement with
+a compiler error will cause a fatal execution error).  By default
+programs with compiler errors will not be started, this can be
+restored using B<-NOERRORS>.
+
+=item B<&amp;ERRTEXT>
+After a statement with an error has been handled due to a non-zero
+value in B<&amp;ERRLIMIT>, the protected keyword B<&amp;ERRTEXT> will
+contain the error message.  See B<snobol4error>(1) for explanations of
+errors, and whether they are fatal or not.
+
+=item B<-EXECUTE/-NOEXECUTE>
+Directives B<-EXECUTE> and B<-NOEXECUTE> control execution of
+programs.  If the B<-NOEXECUTE> directive is given, the program will
+be not executed after compilation.  B<-EXECUTE> cancels any previous
+B<-NOEXECUTE>.
+
+=item B<FILE_ABSPATH()/FILE_ISDIR()>
+B<FILE_ABSPATH(>I<stringB<)> is a predicate which returns the null
+string if its argument is an absolute file path, and returns failure
+if the path is relative.  B<FILE_ISDIR(>I<stringB<)> is a predicate
+which returns the null string if its argument is the pathname of a
+directory, and returns failure if not.
+
+=item B<FREEZE()/THAW()>
+The B<FREEZE()> function prohibits creation of new entries in the
+referenced table.  This is useful once a table has been initialized to
+avoid creating empty entries on lookups that fail.  This can greatly
+improve program speed, since frozen tables will not become clogged
+with empty entries.  Lookups for uninitialized entries will return the
+null string.  Attempts to assign to a non-existent entry will cause a
+``Variable not present where required'' error. The B<THAW()> function
+restores normal entry creation behavior.
+
+=item B<FUNCTION()>
+The B<FUNCTION()> predicate evaluates its argument as a string (with
+case folding), and returns the null string if a function with that
+name exists and fails if it does not.  The B<FUNCTION()> predicate
+exists in SITBOL.
+
+=item B<&amp;GCTIME>
+The protected keyword B<&amp;GCTIME> contains a B<REAL> number of
+milliseconds of execution time spent in the garbage collector.
+
+=item B<&amp;GTRACE>
+If the unprotected keyword B<&amp;GTRACE> set to a non-zero value,
+each time a garbage collection is run, a trace message is output
+indicating the source file and line number of the current statement,
+how long the GC took, and how many units of storage are now free. If
+positive, the value of B<&amp;GTRACE> will be decremented after it is
+tested.
+
+=item B<-HIDE>
+The B<-HIDE> directive stops listing, and assignment of new statement
+numbers.  It is used to hide the source code for the B<sdb>(1) source
+code debugger.
+
+=item B<HOST()>
+A simulation of the SPITBOL B<HOST()> function (with liberal
+implementation specific extensions) is included.
+
+=break
+The B<-INCLUDE> file B<host.sno> contains symbolic defines for these
+(and B<many> other) function codes.
+
+=break
+B<HOST()> with no parameters returns a string describing the system
+the program is running on.  The string contains three parts, separated
+by colons.  The first part describes the physical architecture, the
+second describes the operating system, and the third describes the
+language implementation name. NOTE! Architecture names come from the
+B<uname>(3) library call, and may be different for the same hardware
+when running different operating systems.  An example value:
+I<i386:FreeBSD 10.0-ALPHA2:CSNOBOL4 1.5>
+
+=break
+B<HOST(0)> returns a string containing the command line parameter
+supplied to the B<-u> option, if any.  If no B<-u> option was given,
+B<HOST(0)> returns the concatenation of all user parameters following
+the input filename(s).
+
+=break
+B<HOST(1,>I<string>B<)> passes the string to the B<system>(3) C
+library function, and returns the subprocess exit status.
+
+=break
+B<HOST(2,>I<n>B<)> for integer I<n> returns the I<n>'th command line
+argument (regardless of whether the argument was the command name, an
+option, a filename or a user parameter) as a string, or failure if
+I<n> is out of range.
+
+=break
+B<HOST(3)> returns an integer for use with B<HOST(2)> indicating the
+first command line argument available as a user parameter.
+
+=break
+B<HOST(4,>I<string>I<)> returns the value of the environment variable
+named I<string>.
+
+=item B<-INCLUDE>
+The B<-INCLUDE> directive causes the compiler to interpolate the
+contents of the named file enclosed in single or double quotes.  Any
+filename will be included only once, this can be overridden by
+appending a trailing space to the filename.  Trailing spaces are
+removed from the filename before use.  If the file is not found in the
+current working directory an attempt will be made to find it in the
+directories specified in the search path.  B<-COPY> is a synonym for
+B<-INCLUDE> for compatibility with SPITBOL/370.
+
+=item B<IO_FINDUNIT()>
+The B<IO_FINDUNIT()> function returns an unused I/O unit number for
+use with the B<INPUT()> or B<OUTPUT()> functions.  B<IO_FINDUNIT()> is
+meant for use in subroutines which can be reused.  B<IO_FINDUNIT()>
+will never return a unit number below 20.
+
+=item B<LABEL()>
+The B<LABEL()> predicate evaluates its argument as a string (with case
+folding), and returns the null string if a label with that name has
+been defined, and fails if it does not.  The B<LABEL()> predicate was
+copied from Steve Duff's version of Macro SPITBOL.  SITBOL has a
+B<LABEL> from the label and returns a B<CODE> pointer.
+
+=item B<&amp;LINE/&amp;FILE/&amp;LASTLINE/&amp;LASTFILE>
+The B<&amp;LINE> and B<&amp;FILE> keywords can be used to determine
+the source file and file line associated with the current statement.
+The B<&amp;LASTLINE> and B<&amp;LASTFILE> return the source file and
+file line associated with the previous statement (and are useful in
+B<TRACE> and B<SETEXIT> handlers.
+
+=item B<-LINE>
+The B<-LINE> directive can be used to alter SNOBOL's idea of the
+current source file and line (ie; for use by preprocessors).  B<-LINE>
+takes a line number and an optional quoted string filename.
+
+=item Lexical comparison
+A full set of lexical (string) comparison predicates have been added
+to complement the standard B<LGT()> function: B<LEQ()>, B<LGE()>,
+B<LLE()>, B<LLT()>, B<LNE()>.
+
+=item B<LPAD()/RPAD()>
+The B<LPAD()> and B<RPAD()> functions take the first argument
+(subject) string, and pad it out to the length specified in the second
+argument, using the first character of the optional third argument.
+If the third argument is missing, or is the null string, spaces will
+be used for padding.  The subject will be returned unmodified if
+already long enough.
+
+=item B<&amp;MAXINT>
+The protected keyword B<&amp;MAXINT> contains the largest positive
+integer value that can be represented by the B<INTEGER> data type.
+
+=item B<ORD()>
+The B<ORD()> function returns the ordinal value (zero to 255) of the
+first character in its string argument (the inverse of the B<CHAR()>
+function).
+
+=item B<&amp;PARM>
+The entire command line is available via the B<&amp;PARM> protected
+keyword for compatibility with Catspaw SNOBOL4+. Use of the SPITBOL
+compatible B<HOST()> function is preferable, as it makes it possible
+to tell if a positional parameter containing spaces was passed in
+using shell quote characters.
+
+=item B<&amp;PI>
+The protected keyword B<&amp;PI> contains value of the transendental
+number &pi;.
+
+=item B<REAL> numbers in B<INTEGER> contexts
+B<REAL> numbers (or strings convertible to B<REAL>) are accepted in
+all contexts which previously required an B<INTEGER> (or string
+convertible to B<INTEGER>).  Contexts include B<TABLE()>, B<ITEM()>,
+array indices, B<INPUT()>, B<OUTPUT(),> B<SET()>, keyword values,
+B<CHAR()>, B<RPAD()>, B<LPAD()>, B<FIELD()>, B<COLLECT()>, B<DUMP()>,
+B<DUPL()>, B<OPSYN()>, B<SUBSTR()>.
+
+=item B<REVERSE()>
+B<REVERSE()> returns its subject string in reverse order. 
+
+=item Scientific notation
+B<REAL> number syntax has been expanded to allow exponents of the
+form: I<ANY('Ee') ('+' | '-' | '') SPAN('0123456789')>.  Exponential
+format reals need not contain a decimal point.
+
+=item B<SET()>
+The B<SET()> function can be used to seek the file pointer of an open
+file.  The first argument is an I/O unit number, the second is an
+integer offset.  The third argument, an integer determines from
+B<whence> the file pointer will be adjusted.  If whence is zero the
+starting point is the beginning of the file, if whence is one, the
+starting point is the current file pointer, and if whence is two, the
+starting point is the end of the file.  B<SET()> returns the new file
+pointer value.  On systems with 64-bit file pointers and 32-bit
+integers (ie; 4.4BSD on i386) the return value will be truncated to
+32-bits, and only the first and last 4 gigabytes of a file can be
+accessed directly.
+
+=item B<SITBOL> file functions
+B<FILE(>I<string>B<)> is a predicate which returns the null string if
+its argument is the name of a file that exists, and fails if it does
+not.  B<DELETE(>I<string>B<)> is a predicate which tries to remove the
+file named by its argument, and fails if it cannot.
+
+B<RENAME(>I<string>B<,>f<Istring2>B<)> is a predicate which attempts
+to rename the file named by I<string2> to the file named by
+I<string1>.  Unlike the B<SITBOL> version, if the target file exists,
+it will be removed.
+
+=item B<SNOBOL4+ >real functions
+B<EXP()>, B<LOG()> and B<CHOP()> functions are available for
+compatibility with SNOBOL4+.  B<EXP()> returns the value I<e ** x>,
+B<LOG()> returns the natural logarithm of its REAL argument, and
+B<CHOP()> truncates the fractional part of its REAL argument (rounding
+towards zero), and returns a REAL.  B<LN()> is an alias for B<LOG()>,
+for compatibility with Catspaw SPITBOL.
+
+=item B<SORT()/RSORT()>
+The B<SORT()> and B<RSORT()> functions take two arguments.  The first
+can be either an array or a table.  If the first argument is an array,
+it may be singly-dimensioned in which case the second argument, if
+non-null should indicate the name of a field of a programmer defined
+data type to use to access the sort key.  Otherwise the first argument
+should be a table or a doubly-dimensioned array, in which case the
+second argument may an integer indicating the array column on which to
+sort.  If the second argument is null, it is taken to be 1.  The array
+(or table) is not modified; a new array is allocated and returned.
+B<SORT()> sorts elements in ascending order, while B<RSORT()> sorts in
+descending order.
+=break
+Example: for a table I<TAB> of integers, indexed by strings being used
+to tabulate word counts I<FREQ = RSORT(TAB,2)> returns an array such
+that I<FREQ&lt;1,1&gt;> contains the most frequent word while
+I<FREQ&lt;1,2&gt;> contains the number of occurrences of that word.
+While I<WORDS = SORT(TAB,1)> returns an array with the rows by the
+lexicographical ordering of the words; I<WORDS&lt;1,1&gt;> contains
+the lexicographically first word and I<WORDS&lt;1,2&gt;> contains the
+number of occurrences of that word.
+
+=item B<SPITBOL >operators
+The SPITBOL scan (?) and assignment (=) operators have been added.  A
+pattern match can appear within an expression, and returns the matched
+string as its value.  Similarly assignment can appear in an
+expression, and returns the assigned value. An assignment after a scan
+(ie; I<STRING ? PATTERN = VALUE>) performs a scan and replace.
+Assignment is right associative, and has the lowest precedence, while
+scan is left associative and has a precedence just higher than
+assignment.
+
+The SPITBOL selection/alternative construction can be used in any
+expression.  It consists of a comma separated list of expressions
+inside parentheses.  The expressions are evaluated until one succeeds,
+and its value is returned.  Abuse of this construction may result in
+incomprehensible code.
+
+The type B<NUMERIC> with B<CONVERT()> and the removal of leading
+spaces from strings converted to numbers (implicitly or explicitly)
+are also legal when SPITBOL extensions are enabled.  SPITBOL
+extensions can be enabled and disabled using the B<-PLUSOPS>
+directive.  B<-PLUSOPS 0> or B<-PLUSOPS> disables SPITBOL operators,
+while B<-PLUSOPS >I<n> where I<n> is a non-zero integer enables them.
+SPITBOL extensions are enabled by default.
+
+=item SPITBOL B<SETEXIT()> function
+The argument to B<SETEXIT()> is a label to which control is passed if
+a subsequent error occurs, providing that the value of the keyword
+B<&amp;ERRLIMIT> is non-zero.  The value of B<&amp;ERRLIMIT> is
+decremented when The error trap occurs.  A B<SETEXIT()> call with a
+null argument causes cancellation of the intercept.  A Subsequent
+error will terminate execution as usual with an error message.  The
+result returned by B<SETEXIT()> is the previous intercept setting
+(i.e., a label name or null if no intercept is set).  This can be used
+to save and restore the B<SETEXIT()> conditions in a recursive
+environment.  The error intercept routine may inspect B<&amp;ERRTYPE>
+and take one of the following actions:
+
+1.  Terminate execution by transferring to the special label
+B<ABORT>. This causes error processing to resume as though no error
+intercept had been set.
+
+2.  Branching to the special label B<CONTINUE> causes execution to
+resume by taking the failure exit of the statement in error.
+
+3.  Branching to the special label B<SCONTINUE> causes execution to
+resume at the point of interruption.
+
+4. If the error occurred inside a function (B<&amp;FNCLEVEL> is
+non-zero), branch to labels B<RETURN>, B<FRETURN>, or B<NRETURN>.
+
+The error intercept routine must reissue the B<SETEXIT()>. Error
+handlers cannot be nested: only one copy of the saved execution state
+is kept.
+
+=item B<SQRT()>
+The B<SQRT()> function is available for compatibility with SPARC
+SPITBOL.  B<SQRT()> fails if the argument is negative, but does not
+cause a fatal error.
+
+=item B<SSET()>
+Experimental "scaled set" function, to handle files larger than 4GB.
+Takes arguments unit, offset, whence, and scale.  The first three are
+analogous to the same arguments for the B<SET()> function.  The last
+parameter is used as a multiplicative scaling factor on the B<offset>
+parameter, and as a divisor on the return value.  When used in
+combination with relative B<SET()> calls (whence of one), any file
+offset can be achieved, even when system file offsets are larger than
+can be represented in a SNOBOL4 B<INTEGER>.  Support for "Large Files"
+is enabled when available, but not all file systems support them.
+
+=item B<&amp;STEXEC>
+The protected keyword B<&amp;STEXEC> contains the number of statements
+executed, regardless of the value of B<&amp;STLIMIT>.
+
+=item B<SUBSTR()>
+B<SUBSTR()> takes a subject string as its first argument, and returns
+the substring starting at the position specified by the second
+argument (one-based) with a length specified by the third argument.
+If the third argument is missing or zero, the remainder of the string
+is returned.
+
+=item B<TERMINAL> I/O variable
+The variable B<TERMINAL> is associated with the standard error file
+descriptor for both input and output.
+
+=item B<TRACE()> function type argument
+
+The second argument of the B<TRACE()> function can be abbreviated to a
+single letter:
+B<C> (CALL),
+B<F> (FUNCTION),
+B<K> (KEYWORD),
+B<L> (LABEL),
+B<R> (RETURN), or
+B<V> (VALUE) as in Macro SPITBOL.
+
+=item Trig functions
+B<ATAN()>, B<SIN()>, B<COS()> and B<TAN()> functions are available for
+compatibility with SPARC SPITBOL.  B<SIN()>, B<COS()> and B<TAN()>
+take B<REAL> arguments in radians.  B<ATAN()> returns the principal
+value of the arc tangent of its B<REAL> argument.
+
+=item B<&amp;UCASE/&amp;LCASE>
+Protected keywords B<&amp;UCASE> and B<&amp;LCASE> the 
+case characters ``a'' through ``z'' in upper and lower case,
+respectively.
+
+=item B<VDIFFER()>
+The B<VDIFFER()> function takes two arguments, if they B<DIFFER()>,
+the first argument's value is returned.  This is intended to be used
+in contexts where I<DIFFER(X) X> would otherwise have been used.  The
+B<VDIFFER()> function was copied from Steve Duff's version of Macro
+SPITBOL.
+
+=sect SEE ALSO
+B<snobol4>(1).
