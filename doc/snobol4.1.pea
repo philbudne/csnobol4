@@ -62,7 +62,7 @@ B<snobol4>(1) application.
 The B<DATE()> function returns strings of the form: I<MM/DD/YYYY HH:MM:SS>.
 See B<snobol4ext>(1)> for arguments to the B<DATE()> function.
 
-=item <&amp;STLIMIT>
+=item B<&amp;STLIMIT>
 When B<&amp;STLIMIT> is less than zero there is no limit to the number
 of statements executed, and B<&amp;STCOUNT> is not incremented.
 <&amp;STLIMIT> defaults to -1.
@@ -161,7 +161,7 @@ sole search directory in versions of CSNOBOL4 prior to version 1.5).
 =sect SEE ALSO
 =table 2i
 =row B<sdb>(1)	SNOBOL4 Debugger
--row B<snobol4cmd>(1)	command line options
+=row B<snobol4cmd>(1)	command line options
 =row B<snobol4error>(1)	B<&amp;ERRTYPE> and B<&amp;ERRTEXT> values
 =row B<snobol4ext>(1)	extensions to BTL SNOBOL4
 =row B<snobol4io>(1)	I/O extensions
