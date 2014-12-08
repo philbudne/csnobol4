@@ -23,7 +23,7 @@
 	snopea.charmap.roff["&pi;"] = '\*(pi'
 	snopea.charmap.roff["&amp;"] = '&'
 
-	snopea.charpats['html'] = "''" | "``"  | '\' ANY("-&|e'`")
+	snopea.charpats['html'] = "''" | "``"  | '\' ANY("e-&|~`")
 	snopea.charmaps['html'] = snopea.charmap.html = TABLE()
 	snopea.charmap.html["``"] = '&ldquo;'
 	snopea.charmap.html["''"] = '&rdquo;'
