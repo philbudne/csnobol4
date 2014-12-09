@@ -4,6 +4,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 12/8/2014:
 	doc/snobol4.1.pea: fixes
+	Makefile: add rule for "with"; remove callgraph from DISP
+	modules/ndbm/ndbm.c: tweak documentation
 
 12/7/2014:
 	snolib/snopea.sno: add missing escapes to html charpats

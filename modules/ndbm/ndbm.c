@@ -8,7 +8,7 @@
 /*
 **=pea
 **=sect NAME
-**snobol4dbm \- SNOBOL4 NDBM interface
+**snobol4ndbm \- SNOBOL4 NDBM interface
 **
 **=sect SYNOPSIS
 **=code
@@ -32,19 +32,18 @@
 **
 **There are many different implementations of this API, including:
 **
-**=bull
-**The original BSD 4.3 ndbm, based on AT&T dbm. Found in commercial Un*x offerings.
+**=bull The original BSD 4.3 ndbm
+**Based on AT&T dbm.
+**Found in commercial Un*x offerings.
 **
-**=bull
-**Berkeley DB v1 compatibility interface.
+**=bull Berkeley DB v1 compatibility interface.
 **Supplied with 4.4BSD based systems: (Free|Open|Net)BSD, MacOS X.
 **
-**=bull
-**GNU DBM (GDBM) found in Linux distributions
+**=bull GNU DBM (GDBM)
+**Found in Linux distributions
 **(may require a DBM compatibility package to be installed).
 **
-**=bull
-**SDBM, Ozan Yigit's Public Domain implementation of NDBM.
+**=bull SDBM, Ozan Yigit's Public Domain implementation of NDBM.
 **Supplied with this distribution, and used as a last resort
 **on Un*x systems (and by default on non Un*x systems).
 **=cut
@@ -431,14 +430,13 @@ DBM_CLEARERR( LA_ALIST ) LA_DCL
 **Philip L. Budne
 **
 **=sect BUGS
-**None of the implementations allow concurrent read and write. The
-**B<snobol4sqlite3dbm>(3) interface achives this portably using
-**B<sqlite>(1).
+**Not safe for concurrent read and write. The B<snobol4sqlite3dbm>(3)
+**interface achieves this portably using B<snobol4sqlite3>(3).
 **
 **Some implementations (classic NDBM and SDBM) place limits on the total
 **size of key plus datum (typically slightly less than 1KB).
 **
-**NOTE: Some implementations (classic NDBM and SDBM) create sparse file
+**NOTE: Some implementations (classic NDBM and SDBM) create sparse files
 **which appear (to "ls -l") to be larger than they are (see "ls -s").
 **Copying such files may cause the non-allocated blocks to be "filled"
 **with zeroed disk blocks, and then the files really will be large!
@@ -446,9 +444,8 @@ DBM_CLEARERR( LA_ALIST ) LA_DCL
 **Only GDBM provides locking to eliminate the possibility of file corruption,
 **or reading of incomplete data.
 **
-**GDBM locking sometimes fails on NFS mounted partitions (particularly on
-**Linux systems).  GDBM's NDBM interface does not provide a way to disable
-**locking.
+**GDBM locking sometimes fails on NFS mounted partitions
+**but does not provide a way to disable locking.
 **
 **DBM databases accessed concurrently by multiple processes are
 **traditionally (re)created from text files and used for fast disk-based
