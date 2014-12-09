@@ -63,6 +63,14 @@ generated: $(GENERATED)
 config.m4 config.h config.sno version.h version: configure
 	./configure
 
+# ~~SIGH~~ adding "with" above would cause regeneration of source when
+# configure script changed...  _could_ have configure output with.tmp
+# and only rename if it has changed...  But THAT would still cause
+# configure to be re-run and necessitate recompilation of all files
+# even if it didn't change....
+with:
+	./configure
+
 ################
 # make second level makefile
 
@@ -195,7 +203,7 @@ tidy:
 # (made by Norwegian Bachelor farmers, so you know they're pure, mostly);
 # remove objects, turds; leave generated sources, final binary.
 
-DISP=*.o *.a callgraph prolog bsplitu vers build.c bsdtsort \
+DISP=*.o *.a prolog bsplitu vers build.c bsdtsort \
 	config.m4 config.h Makefile2 .depend *.1 *.html
 
 cleanmostly: tidy

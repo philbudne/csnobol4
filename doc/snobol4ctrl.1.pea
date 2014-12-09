@@ -1,0 +1,29 @@
+$Id$
+=pea
+=sect NAME
+snobol4ctrl \- SNOBOL4 control lines
+
+=sect DESCRIPTION
+Just the skeleton of a page!  For each type, should have:
+semantics, group, standard/modified/extension,
+If extension: ``added in'' and ``compatible with.''
+
+=sect DESCRIPTION
+=item -BLOCKS
+=item -CASE
+=item -COPY
+=item -EJECT
+=item -ERRORS
+=item -EXEC
+=item -HIDE
+=item -INCLUDE
+=item -LINE
+=item -LIST
+=item -NOBLOCKS
+=item -NOERRS
+=item -NOEXECUTE
+=item -PLUSOPS
+=item -UNLIST
+
+=sect SEE ALSO
+B<snobol4>(1).

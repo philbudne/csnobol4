@@ -22,7 +22,7 @@
 
 **=pea
 **=sect NAME
-**snobol4setup - Loadable module setup utility
+**snobol4setup \- SNOBOL4 Loadable module setup utility
 **=sect SYNOPSIS
 **B<snobol4 setup.sno> I<command>
 **=sect DESCRIPTION

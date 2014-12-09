@@ -3,11 +3,12 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 12/9/2014:
-	Makefile2.m4: add snobol4{func,blocks,key}
-	doc/Makefile: add snobol4{func,blocks,key}
-	doc/snobol4func.1.pea: list of functions
-	doc/snobol4blocks.1.pea: blocks extension
-	doc/snobol4key.1.pea: list of keywords
+	Makefile2.m4: add snobol4{func,blocks,key,ctrl}
+	doc/Makefile: add snobol4{func,blocks,key,ctrl}
+	doc/snobol4func.1.pea (new): list of functions
+	doc/snobol4blocks.1.pea (new): blocks extension
+	doc/snobol4key.1.pea (new): list of keywords
+	doc/snobol4ctrl.1.pea (new): list of keywords
 
 12/8/2014:
 	doc/snobol4.1.pea: fixes

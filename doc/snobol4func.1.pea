@@ -3,6 +3,10 @@
 snobol4func \- SNOBOL4 builtin functions
 
 =sect DESCRIPTION
+Just the skeleton of a page!  For each function, should have:
+semantics, group, standard/modified/extension,
+If extension: ``added in'' and ``compatible with.''
+
 =item ANY(CS)
 Pattern, Standard
 =item APPLY(F,A1,...,AN)
@@ -199,4 +203,5 @@ Interpreter, Standard
 Extension
 
 =sect SEE ALSO
-B<snobol4>(1).
+B<snobol4>(1),
+B<snobol4blocks>(1).

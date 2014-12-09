@@ -1,10 +1,17 @@
 $Id$
 
+Does -L search Directory Search List???????
+
 create snobol4.org/books page!!
 
 update usage message: missing -N?
 
+sdb: ignore w/o count: clear ignore count!!
+
+snopea.sno: output links for URLs, snobol4 man pages????
+
 Modules:
+	snobol4[n]dbm confusion???
 	SQL3DBM_ERROR returns string!!!!
 	setuputil.sno:
 		"cleanup":
@@ -16,8 +23,7 @@ Modules:
 		"install" command:
 			install module.so, module.sno, man page (if any)
 			***** install "extras"!! *****
-	Translate to pea & embed: readline
-
+	Translate to pea: snolib.3 (rename to snobol4lib???)
 	tests:
 		logic(!!), sqlite3, stat, dirs, sprintf, fork, ffi
 
@@ -27,11 +33,11 @@ Make all path element generated in init.c available!!
 	BASE/local		HOST_SNOLIB_LOCAL
 
 man pages:
+    snobol4ctrl -- control lines
+    snobol4utf -- from pea comments in utf.sno
     snobol4host -- from pea comments in host.c???
-    snobol4func   -- all (non-block) built-in functions
-    snobol4blocks -- list/document new functions/operators
-	reference orange book, MTS manual
-    snobol4snolib -- overview of snolib/*.sno
+    snobol4blocks -- reference orange book
+
     snobol4dynamic -- pea comments in dynamic.sno
     snobol4wrapper -- pea comments in wrapper.sno
     snobol4load   -- C functions/macros
@@ -43,7 +49,6 @@ snopea.sno: display uc words in small caps?
 
 accept string for unit?
 	default to I/O association variable name?!
-	use io_findunit if unit not given????
 
 translate all *roff man pages to snopea!!
 	need subsect directive

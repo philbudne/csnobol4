@@ -3,94 +3,142 @@
 snobol4key \- SNOBOL4 keywords
 
 =sect DESCRIPTION
+Just the skeleton of a page!  For each function, should have:
+semantics, group, standard/modified/extension,
+If extension: ``added in'' and ``compatible with.''
+
 =item &ABEND
 Unprotected, Standard
+
 =item &ABORT
 Protected, Standard
+
 =item &ALPHABET
 Protected, Standard
+
 =item &ANCHOR
 Unprotected, Standard
+
 =item &ARB
 Protected, Standard
+
 =item &BAL
 Protected, Standard
+
 =item &CASE
 Unprotected, Extension
+
 =item &CODE
 Unprotected, Standard
+
 =item &COMPNO
 Protected, Extension
+
 =item &DIGITS
 Protected, Extension
+
 =item &DUMP
 Unprotected, Standard
+
 =item &ERRLIMIT
 Unprotected, Standard*
+
 =item &ERRTEXT
 Protected, Extension
+
 =item &ERRTYPE
 Protected, Standard
+
 =item &FAIL
 Protected, Standard
+
 =item &FENCE
 Protected, Standard
+
 =item &FILE
 Protected, Extension
+
 =item &FILL
 Unprotected, BLOCKS
+
 =item &FNCLEVEL
 Protected, Standard
+
 =item &FTRACE
 Unprotected, Standard
+
 =item &FULLSCAN
 Unprotected, Standard
+
 =item &GCTIME
 Protected, Extension
+
 =item &GTRACE
 Unprotected, Extension
+
 =item &INPUT
 Unprotected, Standard
+
 =item &LASTFILE
 Protected, Extension
+
 =item &LASTLINE
 Protected, Extension
+
 =item &LASTNO
 Protected, Standard
+
 =item &LCASE
 Protected, Extension
+
 =item &LINE
 Protected, Extension
+
 =item &MAXINT
 Protected, Extension
+
 =item &MAXLNGTH
 Unprotected, Standard*
+
 =item &OUTPUT
 Unprotected, Standard
+
 =item &PARM
 Protected, Extension
+
 =item &PI
 Protected, Extension
+
 =item &REM
 Protected, Standard
+
 =item &RTNTYPE
 Protected, Standard
+
 =item &STCOUNT
 Protected, Standard
+
 =item &STEXEC
 Protected, Extension
+
 =item &STFCOUNT
 Protected, Standard
+
 =item &STLIMIT
 Unprotected, Standard*
+
 =item &STNO
 Protected, Standard
+
 =item &SUCCEED
 Protected, Standard
+
 =item &TRACE
 Unprotected, Standard
+
 =item &TRIM
 Unprotected, Standard*
+
 =item &UCASE
 Protected, Extension
 
