@@ -643,10 +643,8 @@ install: snobol4 sdb timing.out $(GENERATED_DOCS)
 	for F in $(GENERATED_DOCS_DOCDIR1); do \
 		$(INSTALL) -m 644 $$F $(MAN1DIR); \
 	done
-	$(INSTALL) -m 644 snopea.1 $(MAN1DIR)
 	$(INSTALL) -d $(MAN3DIR)
 	$(INSTALL) -m 644 doc/snolib.3 $(MAN3DIR)
-	$(INSTALL) -m 644 doc/snobol4readline.3 $(MAN3DIR)
 	$(INSTALL) -m 644 modules/snobol4setup.3 $(MAN3DIR)
 	$(INSTALL) -d $(MAN7DIR)
 	for F in $(GENERATED_DOCS_DOCDIR7); do \
