@@ -7,7 +7,7 @@
 /*
 **=pea
 **=sect NAME
-**snobol4dbm \- SNOBOL4 NDBM interface
+**snobol4readline \- SNOBOL4 readline interface
 **=sect SYNOPSIS
 **=code
 **-INCLUDE 'readline.sno'
