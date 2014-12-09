@@ -163,6 +163,7 @@ sole search directory in versions of CSNOBOL4 prior to version 1.5).
 =row B<sdb>(1)	SNOBOL4 Debugger
 =row B<snobol4blocks>(3)	SNOBOL4B BLOCKS extension
 =row B<snobol4cmd>(1)	command line options
+=row B<snobol4ctrl>(1)	control lines
 =row B<snobol4error>(1)	B<&amp;ERRTYPE> and B<&amp;ERRTEXT> values
 =row B<snobol4ext>(1)	extensions to BTL SNOBOL4
 =row B<snobol4io>(1)	input/output
