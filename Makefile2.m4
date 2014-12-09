@@ -213,15 +213,15 @@ SRCS=	main.c $(SNOBOL4).c data.c data_init.c syn.c $(BAL_C) $(BREAK_C) \
 	$(STR_C) $(SUSPEND_C) $(TOP_C) $(TERM_C) $(TREE_C) $(TTY_C) \
 	$(AUX_SRCS) $(SNOLIB_SRCS)
 
-GENERATED_DOCS_DOCDIR1=doc/sdb.1 doc/snobol4error.1 \
-	doc/snobol4ext.1 doc/snobol4io.1
+GENERATED_DOCS_DOCDIR1=doc/sdb.1 doc/snobol4.1 doc/snopea.1 \
+	doc/snobol4blocks.1 doc/snobol4error.1 \
+	doc/snobol4ext.1 doc/snobol4func.1 doc/snobol4io.1
 
 GENERATED_DOCS_DOCDIR7=doc/snopea.7
 
 GENERATED_DOCS_DOCDIR=$(GENERATED_DOCS_DOCDIR1) $(GENERATED_DOCS_DOCDIR7)
 
-GENERATED_DOCS=snopea.1 snopea.1.html \
-	$(GENERATED_DOCS_DOCDIR) \
+GENERATED_DOCS=	$(GENERATED_DOCS_DOCDIR) \
 	modules/snobol4setup.3 modules/snobol4setup.3.html
 
 ################
@@ -600,7 +600,7 @@ llib-lf.ln:
 ################
 # GENERATED_DOCS:
 
-SNOPEA=env SNOPATH=snolib ./snobol4 snopea.in
+SNOPEA=./snobol4 -N -Isnolib -I. snopea.in
 
 snopea.1: snopea snolib/snopea.sno snobol4
 	$(SNOPEA) snopea snopea.1
