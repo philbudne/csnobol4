@@ -2,6 +2,7 @@
 =sect NAME
 snobol4func \- SNOBOL4 builtin functions
 
+=sect DESCRIPTION
 =item ANY(CS)
 Pattern, Standard
 =item APPLY(F,A1,...,AN)
@@ -87,7 +88,7 @@ Predicate, Standard
 =item INPUT(V,U,O,N)
 I/O, Standard*
 =item INTEGER(V)
-???, Standard
+Predicate, Standard
 =item IO_FINDUNIT()INTEGER
 I/O, Extension
 =item ITEM(A,I1,...,IN)
@@ -193,7 +194,7 @@ String, Standard
 =item UNLOAD(S)
 Function, Standard
 =item VALUE(S)
-???, Standard
+Interpreter, Standard
 =item VDIFFER(V1,V2)
 Extension
 

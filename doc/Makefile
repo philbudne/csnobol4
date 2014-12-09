@@ -2,7 +2,7 @@
 # $Id$
 
 GENERATED1=sdb.1 snobol4.1 snobol4blocks.1 snobol4cmd.1 snobol4error.1 \
-	snobol4ext.1 snobol4func.1 snobol4io.1 snopea.1
+	snobol4ext.1 snobol4func.1 snobol4io.1 snobol4key.1 snopea.1
 GENERATED7=snopea.7
 
 GENERATED=$(GENERATED1) $(GENERATED7)
@@ -18,6 +18,7 @@ HTML=	snobol4.1.html sdb.1.html snopea.1.html \
 	snobol4ext.1.html \
 	snobol4func.1.html \
 	snobol4io.1.html \
+	snobol4key.1.html \
 	snopea.7.html
 
 PS=	snobol4.1.ps sdb.1.ps snopea.1.ps \
@@ -27,6 +28,7 @@ PS=	snobol4.1.ps sdb.1.ps snopea.1.ps \
 	snobol4ext.1.ps \
 	snobol4func.1.ps \
 	snobol4io.1.ps \
+	snobol4key.1.ps \
 	snopea.7.ps
 
 PDF=	snobol4.1.pdf sdb.1.pdf snopea.1.pdf \
@@ -36,6 +38,7 @@ PDF=	snobol4.1.pdf sdb.1.pdf snopea.1.pdf \
 	snobol4ext.1.pdf \
 	snobol4func.1.pdf \
 	snobol4io.1.pdf \
+	snobol4key.1.pdf \
 	snopea.7.pdf
 
 all:	$(ALL)
@@ -154,6 +157,17 @@ snobol4io.1.html: snobol4io.1.pea $(SNOPEA_DEPS)
 
 snobol4io.1.ps: snobol4io.1
 	$(TROFF_PS) -man snobol4io.1 > snobol4io.1.ps
+
+####
+
+snobol4key.1: snobol4key.1.pea $(SNOPEA_DEPS)
+	$(SNOPEA) snobol4key.1.pea snobol4key.1
+
+snobol4key.1.html: snobol4key.1.pea $(SNOPEA_DEPS)
+	$(SNOPEA) snobol4key.1.pea snobol4key.1.html
+
+snobol4key.1.ps: snobol4key.1
+	$(TROFF_PS) -man snobol4key.1 > snobol4key.1.ps
 
 ####
 
