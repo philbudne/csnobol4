@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/9/2014:
+	doc/Makefile: add snobol4{func,blocks}
+	doc/snobol4func.1.pea: list of functions
+	doc/snobol4blocks.1.pea: blocks extension
+
 12/8/2014:
 	doc/snobol4.1.pea: fixes
 	Makefile: add rule for "with"; remove callgraph from DISP

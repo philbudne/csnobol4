@@ -1,7 +1,8 @@
 # Makefile for documentation
 # $Id$
 
-GENERATED1=sdb.1 snobol4.1 snobol4cmd.1 snobol4error.1 snobol4ext.1 snobol4io.1
+GENERATED1=sdb.1 snobol4.1 snobol4blocks.1 snobol4cmd.1 snobol4error.1 \
+	snobol4ext.1 snobol4func.1 snobol4io.1 snopea.1
 GENERATED7=snopea.7
 
 GENERATED=$(GENERATED1) $(GENERATED7)
@@ -10,24 +11,30 @@ ALL=	$(GENERATED) $(TXT) $(HTML)
 
 TXT=	porting.txt
 
-HTML=	snobol4.1.html sdb.1.html \
+HTML=	snobol4.1.html sdb.1.html snopea.1.html \
+	snobol4blocks.1.html \
 	snobol4cmd.1.html \
 	snobol4error.1.html \
 	snobol4ext.1.html \
+	snobol4func.1.html \
 	snobol4io.1.html \
 	snopea.7.html
 
-PS=	snobol4.1.ps sdb.1.ps \
+PS=	snobol4.1.ps sdb.1.ps snopea.1.ps \
+	snobol4blocks.1.ps \
 	snobol4cmd.1.ps \
 	snobol4error.1.ps \
 	snobol4ext.1.ps \
+	snobol4func.1.ps \
 	snobol4io.1.ps \
 	snopea.7.ps
 
-PDF=	snobol4.1.pdf sdb.1.pdf \
+PDF=	snobol4.1.pdf sdb.1.pdf snopea.1.pdf \
+	snobol4blocks.1.pdf \
 	snobol4cmd.1.pdf \
 	snobol4error.1.pdf \
 	snobol4ext.1.pdf \
+	snobol4func.1.pdf \
 	snobol4io.1.pdf \
 	snopea.7.pdf
 
@@ -84,6 +91,17 @@ snobol4.1.ps: snobol4.1
 
 ####
 
+snobol4blocks.1: snobol4blocks.1.pea $(SNOPEA_DEPS)
+	$(SNOPEA) snobol4blocks.1.pea snobol4blocks.1
+
+snobol4blocks.1.html: snobol4blocks.1.pea $(SNOPEA_DEPS)
+	$(SNOPEA) snobol4blocks.1.pea snobol4blocks.1.html
+
+snobol4blocks.1.ps: snobol4blocks.1
+	$(TROFF_PS) -man snobol4blocks.1 > snobol4blocks.1.ps
+
+####
+
 snobol4cmd.1: snobol4cmd.1.pea $(SNOPEA_DEPS)
 	$(SNOPEA) snobol4cmd.1.pea snobol4cmd.1
 
@@ -117,6 +135,17 @@ snobol4ext.1.ps: snobol4ext.1
 
 ####
 
+snobol4func.1: snobol4func.1.pea $(SNOPEA_DEPS)
+	$(SNOPEA) snobol4func.1.pea snobol4func.1
+
+snobol4func.1.html: snobol4func.1.pea $(SNOPEA_DEPS)
+	$(SNOPEA) snobol4func.1.pea snobol4func.1.html
+
+snobol4func.1.ps: snobol4func.1
+	$(TROFF_PS) -man snobol4func.1 > snobol4func.1.ps
+
+####
+
 snobol4io.1: snobol4io.1.pea $(SNOPEA_DEPS)
 	$(SNOPEA) snobol4io.1.pea snobol4io.1
 
@@ -136,6 +165,17 @@ sdb.1.html: sdb.1.pea $(SNOPEA_DEPS)
 
 sdb.1.ps: sdb.1
 	$(TROFF_PS) -man sdb.1 > sdb.1.ps
+
+####
+
+snopea.1: ../snopea.in $(SNOPEA_DEPS)
+	$(SNOPEA) ../snopea.in snopea.1
+
+snopea.1.html: ../snopea.in $(SNOPEA_DEPS)
+	$(SNOPEA) ../snopea.in snopea.1.html
+
+snopea.1.ps: snopea.1
+	$(TROFF_PS) -man snopea.1 > snopea.1.ps
 
 ################
 

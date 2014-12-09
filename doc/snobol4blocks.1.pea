@@ -1,0 +1,121 @@
+=pea
+=sect NAME
+snobol4blocks \- SNOBOL4 BLOCKS extension
+
+XXX talk about -BLOCKS ......
+
+=subsect Operators
+=item vertical concatenation: %
+=item normal concatenation: #
+(normal to the plane of the paper)
+
+=subsect Functions
+	
+For I<dir> arguments: B<0>=vertical, B<1>=horizonal, B<2>=normal.
+
+=item BCHAR(b)
+Returns an ARRAY of strings, dimensioned depth x height.
+(renamed from B<CHAR>)
+
+=item BOX(h,w,d)
+Returns a BLOCK of fill characters of height I<h>, width I<w> and depth I<d>.
+
+=item BLOCKSIZE(b,dir)
+Return INTEGER size of block I<b> in direction I<dir>.
+
+=item CC(unit)
+Accessor function to change carriage control on I/O unit I<unit>.
+If value is positive ASA carriage control is output in
+column one (the B<asa2pdf> program converts ASA format to PDF).
+If value is zero, no carriage control is output.
+If value is negative, ASCII carriage control characters are output (B<CSNOBOL4> extension).
+
+=item DEF(block)
+Returns a BLOCK whose organization is I<deferred>.
+
+=item DEPTH(b)
+Returns INTEGER depth of BLOCK I<b>.
+
+
+=item DUP(b,dir,n)
+Duplicate BLOCK I<b> I<n> times in direction I<dir>.
+
+=item EJECT([i,...])
+Eject a page and return the null string.
+Optional unit numbers may be given to ``broadcast'' the form feed.
+
+=item FIX(b)
+Returns a block whose organization is I<physical> -- all positioning is
+done at this time, and no information on how the block was formed is
+retained.
+
+=item FRONT(h,w)
+A special case of B<BOX()>.
+Returns a BLOCK of fill characters of height I<h> and width I<w> and of depth zero.
+
+=item HEIGHT(b)
+Returns INTEGER height of BLOCK I<b>.
+
+=item HOR(n)
+A special case of B<BOX()>.
+Returns a block of fill characters whose width in I<n>
+and height and depth zero.
+
+=item HOR_REG(block)
+Accessor which returns or sets the horizontal registration of I<block>.
+Values: B<'RIGHT'>, B<'RIGHT'>, B<''>.
+The null string means the block will be centered.
+
+=item IT(b)
+Returns a block whose organization is I<iterated> orthogonally to parent.
+
+=item LOC(n,b,dir)
+Returns the location of NODE I<n> in BLOCK I<b> in direction I<dir>.
+
+=item LRECL(unit)
+Undocumented!! Accessor for I/O unit record length???
+
+=item MERGE(b1,b2,....)
+Returns a BLOCK whose organization is I<merged>.
+
+=item NODE(block)
+Returns a BLOCK whose organization is I<deferred>.
+
+=item NORM_REG(block)
+Accessor which returns or sets the normal plane registration of I<block>.
+Values: B<'FRONT'>, B<'REAR'>, B<''>.
+The null string means the block will be centered.
+
+=item PRINT(block,[i1,....])
+Prints block to I/O unit 5.
+Additional unit numbers may be given to ``broadcast'' the block
+
+=item REP(block)
+Returns a block whose organization is I<replicated>.
+
+=item SLAB(b,dir,offset,length)
+Returns a physical block which is a cross-sectional cut of I<b>,
+in direction I<dir>
+
+=item VER(n)
+A special case of B<BOX()>.
+Returns a BLOCK of fill characters whose height is I<n>.
+
+=item VER_REG(block)
+Accessor which returns or sets the vertical registration of I<block>.
+Values: B<'TOP'>, B<'BOTTOM'>, B<''>.
+The null string means the block will be centered.
+
+=item WIDTH(b)
+Returns INTEGER width of BLOCK I<b>.
+=subsect Keywords
+
+=item B<&FILL>
+The fill character (defaults to space).
+
+=sect SEE ALSO
+B<snobol4>(1)
+=break
+http://deepblue.lib.umich.edu/bitstream/handle/2027.42/79574/MTSVol09-SNOBOLInMTS-May1984.pdf
+=break
+http://home.comcast.net/~urbanjost/LIBRARY/EXE/ASA/html/asa2pdf_doc.html
