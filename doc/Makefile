@@ -4,9 +4,10 @@
 GENERATED1=sdb.1 snobol4.1 snobol4blocks.1 snobol4cmd.1 snobol4ctrl.1 \
 	snobol4error.1 snobol4ext.1 snobol4func.1 snobol4io.1 \
 	snobol4key.1 snopea.1
+GENERATED3=snolib.3
 GENERATED7=snopea.7
 
-GENERATED=$(GENERATED1) $(GENERATED7)
+GENERATED=$(GENERATED1) $(GENERATED3) $(GENERATED7)
 
 ALL=	$(GENERATED) $(TXT) $(HTML)
 
@@ -21,6 +22,7 @@ HTML=	snobol4.1.html sdb.1.html snopea.1.html \
 	snobol4func.1.html \
 	snobol4io.1.html \
 	snobol4key.1.html \
+	snolib.3.html \
 	snopea.7.html
 
 PS=	snobol4.1.ps sdb.1.ps snopea.1.ps \
@@ -32,6 +34,7 @@ PS=	snobol4.1.ps sdb.1.ps snopea.1.ps \
 	snobol4func.1.ps \
 	snobol4io.1.ps \
 	snobol4key.1.ps \
+	snolib.3.ps \
 	snopea.7.ps
 
 PDF=	snobol4.1.pdf sdb.1.pdf snopea.1.pdf \
@@ -43,6 +46,7 @@ PDF=	snobol4.1.pdf sdb.1.pdf snopea.1.pdf \
 	snobol4func.1.pdf \
 	snobol4io.1.pdf \
 	snobol4key.1.pdf \
+	snolib.3.pdf \
 	snopea.7.pdf
 
 all:	$(ALL)
@@ -64,7 +68,7 @@ TROFF_PS=groff -Tps
 # troff to HTML
 TROFF_HTML=groff -Thtml
 
-# PostScript to PSF
+# PostScript to PDF
 PS2PDF=ps2pdf
 
 # run snopea using our own files
@@ -83,6 +87,9 @@ SNOPEA_DEPS=../snobol4 ../snopea.in ../snolib/snopea.sno
 
 .ms.ps:
 	$(TROFF_PS) $(MS) $< > $@
+
+.ps.pdf:
+	$(PS2PDF) $< $@
 
 ################
 # explicit rules
@@ -208,11 +215,15 @@ snopea.1.ps: snopea.1
 
 ################
 
-snolib.html: snolib.3
-	$(TROFF_HTML) -man snolib.3 > snolib.3.html
+snolib.3: snolib.3.pea $(SNOPEA_DEPS)
+	$(SNOPEA) snolib.3.pea snolib.3
 
-snolib.ps: snolib.3
+snolib.3.html: snolib.3.pea $(SNOPEA_DEPS)
+	$(SNOPEA) snolib.3.pea snolib.3.html
+
+snolib.3.ps: snolib.3
 	$(TROFF_PS) -man snolib.3 > snolib.3.ps
+
 
 ################
 

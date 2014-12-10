@@ -1,0 +1,74 @@
+=pea
+=sect NAME
+snolib \- SNOBOL4 library routines
+
+=sect SYNOPSIS
+B<-INCLUDE '>I<filename.sno>B<'>
+
+=sect DESCRIPTION
+
+The following B<snobol4>(1) library routines are available for
+B<-INCLUDE>:
+
+=item bq.sno
+run a program in a subprocess and capture all output,
+like shell/Perl backquote construct.
+
+=item chars.sno
+defines a variable for each non-printing character
+in the local character set.
+
+=item dynamic.sno
+functions to compile and link dynamicly LOADable extensions.
+
+=item fence.sno, not.sno
+Emulation of SPITBOL B<FENCE()> and B<NOT()> functions
+thanks to Peter-Arno Coppen.
+
+=item host.sno
+Function codes for B<HOST()> function.
+
+=item serv.sno
+Example TCP server program.
+
+=item smtp.sno
+Example code to send mail via TCP/SMTP.
+
+=item snobol4+.sno
+SNOBOL4+ emulation functions: B<ENVIRONMENT()>, B<EXECUTE()>,
+B<TELL()>, B<SEEK()>.
+
+=item spitbol.sno
+SPITBOL I/O emulation functions (no unit numbers) B<INPUT()>, B<OUTPUT()>,
+B<ENDFILE()>, B<REWIND()>.
+
+=item stcl.sno
+Prototypes and values for EXPERIMENTAL SNOBOL4 Tcl/Tk routines, see
+B<snobol4tcl>(3).
+
+=item tcp.sno
+TCP connection routines, used by the URL library (below)
+
+=item url.sno, file.sno, ftp.sno, http.sno
+Internet URL file reading support (for file, ftp and http URL's).
+
+=item utf.sno
+Experimental routines for handling UTF encoded (Unicode) data.
+
+=item wrapper.sno
+Routines for creating C code wrappers for dynamicly loading code.
+
+=sect SEE ALSO
+B<snobol4>(1),
+B<snobol4dirs>(3), B<snobol4ffi>(3), B<snobol4fork>(3),
+B<snobol4logic>(3), B<snobol4ndbm>(3), B<snobol4random>(3),
+B<snobol4setup>(3), B<snobol4sprintf>(3), B<snobol4sqlite3>(3),
+B<snobol4stat>(3), B<snobol4tcl>(3), B<snobol4time>(3).
+
+=sect AUTHOR
+Philip Budne
+=break
+Peter-Arno Coppen
+
+=sect BUGS
+Each include file should have it's own man page!

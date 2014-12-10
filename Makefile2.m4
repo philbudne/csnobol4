@@ -217,9 +217,13 @@ GENERATED_DOCS_DOCDIR1=doc/sdb.1 doc/snobol4.1 doc/snopea.1 \
 	doc/snobol4blocks.1 doc/snobol4ctrl.1 doc/snobol4error.1 \
 	doc/snobol4ext.1 doc/snobol4func.1 doc/snobol4io.1 doc/snobol4key.1
 
+GENERATED_DOCS_DOCDIR3=doc/snolib.3
+
 GENERATED_DOCS_DOCDIR7=doc/snopea.7
 
-GENERATED_DOCS_DOCDIR=$(GENERATED_DOCS_DOCDIR1) $(GENERATED_DOCS_DOCDIR7)
+GENERATED_DOCS_DOCDIR=$(GENERATED_DOCS_DOCDIR1) \
+	$(GENERATED_DOCS_DOCDIR3) \
+	$(GENERATED_DOCS_DOCDIR7)
 
 GENERATED_DOCS=	$(GENERATED_DOCS_DOCDIR) \
 	modules/snobol4setup.3 modules/snobol4setup.3.html
