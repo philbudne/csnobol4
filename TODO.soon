@@ -6,12 +6,11 @@ create snobol4.org/books page!!
 
 update usage message: missing -N?
 
-sdb: ignore w/o count: clear ignore count!!
+sdb: ignore w/o count should clear ignore count!!
 
 snopea.sno: output links for URLs, snobol4 man pages????
 
 Modules:
-	snobol4[n]dbm confusion???
 	SQL3DBM_ERROR returns string!!!!
 	setuputil.sno:
 		"cleanup":
@@ -32,11 +31,13 @@ Make all path element generated in init.c available!!
 	BASE/VERSION/lib	HOST_SNOLIB
 	BASE/local		HOST_SNOLIB_LOCAL
 
+snobol4blocks.3.pea -- reference orange book
+
 man pages:
-    snobol4ctrl -- control lines
+    need work: snobol4ctrl, snobol4func, snobol4key
+
     snobol4utf -- from pea comments in utf.sno
     snobol4host -- from pea comments in host.c???
-    snobol4blocks -- reference orange book
 
     snobol4dynamic -- pea comments in dynamic.sno
     snobol4wrapper -- pea comments in wrapper.sno

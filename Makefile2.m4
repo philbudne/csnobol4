@@ -214,8 +214,9 @@ SRCS=	main.c $(SNOBOL4).c data.c data_init.c syn.c $(BAL_C) $(BREAK_C) \
 	$(AUX_SRCS) $(SNOLIB_SRCS)
 
 GENERATED_DOCS_DOCDIR1=doc/sdb.1 doc/snobol4.1 doc/snopea.1 \
-	doc/snobol4blocks.1 doc/snobol4ctrl.1 doc/snobol4error.1 \
-	doc/snobol4ext.1 doc/snobol4func.1 doc/snobol4io.1 doc/snobol4key.1
+	doc/snobol4blocks.1 doc/snobol4cmd.1 doc/snobol4ctrl.1 \
+	doc/snobol4error.1 doc/snobol4ext.1 doc/snobol4func.1 \
+	doc/snobol4io.1 doc/snobol4key.1
 
 GENERATED_DOCS_DOCDIR3=doc/snolib.3
 

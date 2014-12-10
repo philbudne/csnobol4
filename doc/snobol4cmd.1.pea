@@ -61,8 +61,8 @@ after program compilation is complete.
 =item B<-s>
 Toggle termination statistics (off by default).
 
-=item B<-u >I<params>
-specifies a parameter string available via B<HOST(0)>.
+=item B<-u> I<param>
+Specify a parameter string available via B<HOST(0)>.
 
 =item B<-v>
 Show version and exit.
@@ -88,6 +88,9 @@ processing is complete are to be treated as filenames.  The files are
 read in turn until an B<END> statement is found (Any remaining data is
 available via the B<INPUT> variable if the B<-r> option is also
 given).
+
+=item B<-N>
+Disable standard search path ``no standard include.''
 
 =item B<-P> I<ndesc>
 Allocate I<ndesc> descriptors for the pattern match stack.  A suffix

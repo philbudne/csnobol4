@@ -126,7 +126,7 @@ usage( jname, justversion )
     fprintf( stderr,
 	    "Usage: %s [options...] [files...] [parameters...]\n", jname );
 /* XXX stuff about parameters */
-    p('b',"toggle display of startup banner");
+    p('b',"disable display of startup banner");
     fprintf(stderr,
 	    "-d DESCRS[km]\n\tsize of dynamic region in descriptors (default: %s)\n", showk(NDYNAMIC));
     p('f',"toggle folding of identifiers to upper case (-CASE)");
@@ -144,9 +144,11 @@ usage( jname, justversion )
 #ifdef BLOCKS
     p('B',"toggle SNOBOL4B operators (-[NO]BLOCKS)");
 #endif
+    fprintf(stderr, "-I DIR\tadd directory to search path");
     fprintf(stderr, "-L SOURCE\n");
     fprintf(stderr, "\tload source file before user program\n");
     p('M',"process multiple files for program code");
+    p('N',"clear search path");
     fprintf(stderr, "-P DESCRS[km]\n");
     fprintf(stderr, "\tsize of pattern match stack in descriptors (default: %s)\n", showk(PSSIZE));
     fprintf(stderr, "-S DESCRS[km]\n");

@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/10/2014:
+	lib/init.c: usage: fix -b, add -N/-I
+	doc/snobol4cmd.1.pea: add -N
+	Makefile2.m4: install snobol4cmd.1
+
 12/9/2014:
 	Makefile2.m4: add snobol4{func,blocks,key,ctrl}
 	doc/Makefile: add snobol4{func,blocks,key,ctrl}
