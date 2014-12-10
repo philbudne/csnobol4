@@ -4,10 +4,6 @@ Does -L search Directory Search List???????
 
 create snobol4.org/books page!!
 
-update usage message: missing -N?
-
-sdb: ignore w/o count should clear ignore count!!
-
 snopea.sno: output links for URLs, snobol4 man pages????
 
 Modules:

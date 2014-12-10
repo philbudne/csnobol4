@@ -35,8 +35,8 @@ Resume debugging after current function returns.
 Will display function return type and value, if any.
 =item B<help>
 Display help.
-=item B<ignore> I<BREAKPOINT_NUMBER COUNT>
-Set breakpoint ignore count.
+=item B<ignore> I<BREAKPOINT_NUMBER> [ I<COUNT> ]
+Set (or clear) breakpoint ignore count.
 =item B<info>
 Display list of breakpoints and their status.
 =item B<list> [ I<STATEMENT_NUMBER> ]
