@@ -7,6 +7,8 @@ Just the skeleton of a page!  For each function, should have:
 semantics, group, standard/modified/extension,
 If extension: ``added in'' and ``compatible with.''
 
+For extensions, see B<snobol4ext>(1).
+
 =item ANY(CS)
 Pattern, Standard
 =item APPLY(F,A1,...,AN)

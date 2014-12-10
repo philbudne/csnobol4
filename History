@@ -9,6 +9,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	snolib/sdb.sno: fix "info"; allow "ignore bkpt"
 		use built-in INTEGER()
 	doc/sdb.1.pea: document "ignore" change
+	doc/snobol4{ctrl,func,key}.1.pea reference snobol4ext(1)
 
 12/9/2014:
 	Makefile2.m4: add snobol4{func,blocks,key,ctrl}

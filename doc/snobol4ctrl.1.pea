@@ -8,6 +8,8 @@ Just the skeleton of a page!  For each type, should have:
 semantics, group, standard/modified/extension,
 If extension: ``added in'' and ``compatible with.''
 
+For extensions, see B<snobol4ext>(1).
+
 =sect DESCRIPTION
 =item -BLOCKS
 =item -CASE
