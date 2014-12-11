@@ -2,111 +2,108 @@
 =sect NAME
 snobol4blocks \- SNOBOL4 BLOCKS extension
 
-XXX talk about -BLOCKS ......
+=sect DESCRIPTION
+XXX talk about MTS manual, -BLOCKS ......
 
 =subsect Operators
+When BLOCKS enabled ...
+
 =item vertical concatenation: %
-=item normal concatenation: #
-(normal to the plane of the paper)
+=item normal (to the plane of the paper) concatenation: #
 
 =subsect Functions
-	
-For I<dir> arguments: B<0>=vertical, B<1>=horizonal, B<2>=normal.
+For I<dir> arguments: B<0>=``vertical'', B<1>=``horizonal'', B<2>=``normal''
 
-=item BCHAR(b)
+=item B<BCHAR(>I<b>B<)>
 Returns an ARRAY of strings, dimensioned depth x height.
 (renamed from B<CHAR>)
 
-=item BOX(h,w,d)
+=item B<BOX(>I<h,w,d>B<)>
 Returns a BLOCK of fill characters of height I<h>, width I<w> and depth I<d>.
 
-=item BLOCKSIZE(b,dir)
+=item B<BLOCKSIZE(>I<b,dir>B<)>
 Return INTEGER size of block I<b> in direction I<dir>.
 
-=item CC(unit)
+=item B<CC(>I<unit>B<)>
 Accessor function to change carriage control on I/O unit I<unit>.
 If value is positive ASA carriage control is output in
 column one (the B<asa2pdf> program converts ASA format to PDF).
 If value is zero, no carriage control is output.
 If value is negative, ASCII carriage control characters are output (B<CSNOBOL4> extension).
 
-=item DEF(block)
+=item B<DEF(>I<b>B<)>
 Returns a BLOCK whose organization is I<deferred>.
 
-=item DEPTH(b)
+=item B<DEPTH(>I<b>B<)>
 Returns INTEGER depth of BLOCK I<b>.
 
-
-=item DUP(b,dir,n)
+=item B<DUP(>I<b,dir,n>B<)>
 Duplicate BLOCK I<b> I<n> times in direction I<dir>.
 
-=item EJECT([i,...])
+=item B<EJECT(>[I<i,...>]B<)>
 Eject a page and return the null string.
 Optional unit numbers may be given to ``broadcast'' the form feed.
 
-=item FIX(b)
+=item B<FIX(>I<b>B<)>
 Returns a block whose organization is I<physical> -- all positioning is
 done at this time, and no information on how the block was formed is
 retained.
 
-=item FRONT(h,w)
+=item B<FRONT(>I<h,w>B<)>
 A special case of B<BOX()>.
 Returns a BLOCK of fill characters of height I<h> and width I<w> and of depth zero.
 
-=item HEIGHT(b)
+=item B<HEIGHT(>I<b>B<)>
 Returns INTEGER height of BLOCK I<b>.
 
-=item HOR(n)
+=item B<HOR(>I<n>B<)>
 A special case of B<BOX()>.
 Returns a block of fill characters whose width in I<n>
 and height and depth zero.
 
-=item HOR_REG(block)
-Accessor which returns or sets the horizontal registration of I<block>.
-Values: B<'RIGHT'>, B<'RIGHT'>, B<''>.
-The null string means the block will be centered.
+=item B<HOR_REG(>I<b>B<)>
+Accessor which returns or sets the horizontal registration of BLOCK I<b>.
+Values: B<'RIGHT'>, B<'RIGHT'>, B<\'\'> (centered).
 
-=item IT(b)
+=item B<IT(>I<b>B<)>
 Returns a block whose organization is I<iterated> orthogonally to parent.
 
-=item LOC(n,b,dir)
+=item B<LOC(>I<n,b,dir>B<)>
 Returns the location of NODE I<n> in BLOCK I<b> in direction I<dir>.
 
-=item LRECL(unit)
+=item B<LRECL(>I<unit>B<)>
 Undocumented!! Accessor for I/O unit record length???
 
-=item MERGE(b1,b2,....)
+=item B<MERGE(>I<b1,b2,....>B<)>
 Returns a BLOCK whose organization is I<merged>.
 
-=item NODE(block)
+=item B<NODE(>I<b>B<)>
 Returns a BLOCK whose organization is I<deferred>.
 
-=item NORM_REG(block)
-Accessor which returns or sets the normal plane registration of I<block>.
-Values: B<'FRONT'>, B<'REAR'>, B<''>.
-The null string means the block will be centered.
+=item B<NORM_REG(>I<b>B<)>
+Accessor which returns or sets the normal plane registration of BLOCK I<b>.
+Values: B<'FRONT'>, B<'REAR'>, B<\'\'> (centered).
 
-=item PRINT(block,[i1,....])
+=item B<PRINT(>I<b>,[I<i1,....>]B<)>
 Prints block to I/O unit 5.
-Additional unit numbers may be given to ``broadcast'' the block
+Additional unit numbers may be given to ``broadcast'' BLOCK I<b>.
 
-=item REP(block)
-Returns a block whose organization is I<replicated>.
+=item B<REP(>I<b>B<)>
+Returns a BLOCK whose organization is I<replicated>.
 
-=item SLAB(b,dir,offset,length)
+=item B<SLAB(>I<b,dir,offset,length>B<)>
 Returns a physical block which is a cross-sectional cut of I<b>,
 in direction I<dir>
 
-=item VER(n)
+=item B<VER(>I<n>B<)>
 A special case of B<BOX()>.
 Returns a BLOCK of fill characters whose height is I<n>.
 
-=item VER_REG(block)
-Accessor which returns or sets the vertical registration of I<block>.
-Values: B<'TOP'>, B<'BOTTOM'>, B<''>.
-The null string means the block will be centered.
+=item B<VER_REG(>I<b>B<)>
+Accessor which returns or sets the vertical registration of BLOCK I<b>.
+Values: B<'TOP'>, B<'BOTTOM'>, B<\'\'> (centered).
 
-=item WIDTH(b)
+=item B<WIDTH(>I<b>B<)>
 Returns INTEGER width of BLOCK I<b>.
 =subsect Keywords
 
@@ -115,7 +112,7 @@ The fill character (defaults to space).
 
 =sect SEE ALSO
 B<snobol4>(1)
-=break
+
 http://deepblue.lib.umich.edu/bitstream/handle/2027.42/79574/MTSVol09-SNOBOLInMTS-May1984.pdf
-=break
+
 http://home.comcast.net/~urbanjost/LIBRARY/EXE/ASA/html/asa2pdf_doc.html
