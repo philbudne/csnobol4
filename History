@@ -5,6 +5,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 12/11/2014:
 	doc/snobol4blocks.1.pea: fonts, cleanup
 	snolib/snopea.sno: fix html \'
+	modules/setuputil.sno: clean -- remove extras man pages
+	modules/*/Makefile: ../../snobol4, remove -b
 
 12/10/2014:
 	lib/init.c: usage: fix -b, add -N/-I

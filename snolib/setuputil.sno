@@ -359,12 +359,25 @@ setup.posix.installcmd.end
 *	POSIX clean command
 *		uses "rm -f"
 
-	DEFINE('setup.posix.cleancmd(t)sno,man') :(setup.posix.cleancmd.end)
+	DEFINE('setup.posix.cleancmd(t)sno,man,x') :(setup.posix.cleancmd.end)
 setup.posix.cleancmd
+* XXX move path generation into a function???
 	sno = setup.sno(t)
 	man = 'snobol4' sno
 	man '.sno' = '.3'
+	man = man ' ' man '.html'
+
+	x = t['extras'] ','
+	xfiles =
+setup.posix.cleancmd.xloop
+	x break(',') . fn ',' =			:f(setup.posix.cleancmd.xdone)
+	ident(fn)				:s(setup.posix.cleancmd.xdone)
+	fn '.sno' = '.3'
+	fn = 'snobol4' fn
+	xfiles = xfiles ' ' fn ' ' fn '.html'	(setup.posix.cleancmd.xloop)
+setup.posix.cleancmd.xdone
 	command = 'rm -f ' setup.posix.objs(t) setup.dlname(t) ' ' sno ' ' man
++				xfiles
 	setup.posix.system(command)		:s(RETURN)f(FRETURN)
 setup.posix.cleancmd.end
 *
