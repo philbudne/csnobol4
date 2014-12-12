@@ -5,6 +5,8 @@ create snobol4.org/books page!!
 
 snobol4blocks.3.pea -- reference orange book (w/ URL!)
 
+================
+
 Modules:
 	setuputil.sno:
 		"test" command?
@@ -14,12 +16,12 @@ Modules:
 	tests:
 		logic(!!), sqlite3, stat, dirs, sprintf, fork, ffi
 
-Make all path element generated in init.c available!!
+Make all generated path elements available via HOST()!
 	BASE/VERSION/local	HOST_SNOLIB_VLOCAL
 	BASE/VERSION/lib	HOST_SNOLIB
+	BASE/VERSION/local/shared HOST_SNOLIB_VLOCAL_SHARED
+	BASE/VERSION/lib/shared	HOST_SNOLIB_SHARED
 	BASE/local		HOST_SNOLIB_LOCAL
-
-================
 
 man pages:
     need work: snobol4ctrl, snobol4func, snobol4key
