@@ -9,6 +9,7 @@
 
 -INCLUDE 'host.sno'
 -INCLUDE 'snopea.sno'
+-INCLUDE 'config.sno'
 
 * TODO
 *   Honor more vars:
@@ -343,16 +344,36 @@ setup.posix.buildcmd.end
 
 	DEFINE('setup.posix.installcmd(t)')	:(setup.posix.installcmd.end)
 setup.posix.installcmd
-	setup.posix.buildcmd(t)			:f(FRETURN)
-
 	dest = HOST(HOST_SNOLIB_DIR)
-* XXX honor flag for system vs. local module!!!! -- replace "lib" w/ "local"
-* (check environment var????)
+	FILE_ISDIR('CVS')			:S(setup.posix.instcmd.nlocal)
+* no CVS directory-- must be local source
+	dest 'lib' = 'local'
+setup.posix.instcmd.nlocal
 
-* XXX install setup.sno(t) if exists
-	command = 'cp -f ' setup.dlname(t) ' ' 
-+			' ' dest
-	setup.posix.system(command)		:s(RETURN)f(FRETURN)
+	libfiles = setup.dlname(t)
+	sno = setup.sno(t)
+	libfiles = FILE(sno) libfiles ' ' sno
+	command = 'cp -f ' libfiles ' ' dest
+	setup.posix.system(command)		:f(FRETURN)
+
+* get man files:
+	manfiles =
+	man = 'snobol4' sno
+	man '.sno' = '.3'
+	manfiles = FILE(man) man
+
+	x = t['extras'] ','
+	xfiles =
+setup.posix.instcmd.xloop
+	x break(',') . fn ',' =			:f(setup.posix.instcmd.xdone)
+	ident(fn)				:s(setup.posix.instcmd.xdone)
+	fn '.sno' = '.3'
+	fn = 'snobol4' fn
+	manfiles = FILE(fn) manfiles ' ' fn 	:(setup.posix.instcmd.xloop)
+setup.posix.instcmd.xdone
+	IDENT(manfiles)				:s(return)
+	command = 'cp -f ' manfiles ' ' MAN3DIR
+	setup.posix.system(command)		:f(FRETURN)s(RETURN)
 setup.posix.installcmd.end
 
 ****************

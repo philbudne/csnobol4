@@ -2,12 +2,11 @@ $Id$
 
 create snobol4.org/books page!!
 
+use setup.sno "install" !!
+
 Modules:
 	setuputil.sno:
 		"test" command?
-		"install" command:
-			install module.so, module.sno, man page (if any)
-			***** install "extras"!! *****
 		test/debug on win32 with "cl"
 			install snobol4.lib
 			remove restriction note in src & man page
