@@ -328,6 +328,8 @@ echo 'SNOLIB_LIB=$(DESTDIR)'"$SNOLIB_LIB"	>> $CONFIG_M4
 echo 'SNOLIB_DOC=$(DESTDIR)'"$SNOLIB_DOC"	>> $CONFIG_M4
 echo 'INCLUDE_DIR=$(DESTDIR)'"$INCLUDE_DIR"	>> $CONFIG_M4
 
+echo "	MAN3DIR = '$(DESTDIR)$MAN3DIR'"		>> $CONFIG_SNO
+
 if [ "$ADD_DEFINE_USED" ]; then
     echo '/* end defines from command line */'	>> $CONFIG_H
 fi
