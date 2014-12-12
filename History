@@ -5,6 +5,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 12/12/2014:
 	configure: fix config.sno MAN3DIR
 	Makefile: add timing.out target
+	Makefile2.m4: remove obsolete man files
 
 12/11/2014:
 	doc/snobol4blocks.1.pea: fonts, cleanup
@@ -17,6 +18,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	Makefile2.m4: use setup.sno install
 		create local/shared
 	Changed "dynload" to "shared"
+
 12/10/2014:
 	lib/init.c: usage: fix -b, add -N/-I
 	doc/snobol4cmd.1.pea: add -N

@@ -665,6 +665,8 @@ install: snobol4 sdb timing.out $(GENERATED_DOCS)
 	$(INSTALL) -d $(SNOLIB_VER)/local/shared
 	$(INSTALL) -d $(SNOLIB_LIB)
 	$(INSTALL) -d $(SNOLIB_LIB)/shared
+	rm -f $(SNOLIB_LIB)/dynload
+	rm -f $(MAN3DIR)/snobol4tcl.3 $(MAN3DIR)/snobol4dbm.3
 	for F in $(SNOLIB_FILES); do \
 		$(INSTALL) -m 644 $$F $(SNOLIB_LIB); \
 	done
