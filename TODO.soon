@@ -2,8 +2,6 @@ $Id$
 
 create snobol4.org/books page!!
 
-use setup.sno "install" !!
-
 Modules:
 	setuputil.sno:
 		"test" command?
