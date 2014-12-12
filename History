@@ -4,6 +4,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 12/12/2014:
 	configure: fix config.sno MAN3DIR
+	Makefile: add timing.out target
 
 12/11/2014:
 	doc/snobol4blocks.1.pea: fonts, cleanup
