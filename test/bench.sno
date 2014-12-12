@@ -3,13 +3,15 @@
 * modified version of genc from CSNOBOL 1.4.1:
 *	$oldId: genc.sno,v 1.63 2004/08/12 16:10:13 phil Exp $
 
-	MIN_S = 30
-	MAX_S = 60
+	MIN_SEC = 30
+	MAX_SEC = 60
+	MIN_STMT = 100 * 1000000
+	MAX_STMT = 200 * 1000000
 
 	KSS = -1
 
 	OUTPUT(.TTY, IO_FINDUNIT(),, '/dev/tty')
-	TTY = 'Min runtime ' MIN_S 's.; Maximum: ' MAX_S 's.'
+	TTY = 'Min runtime ' MIN_SEC 's.; Maximum: ' MAX_SEC 's.'
 
 *
 *	Translator for the "Macro Implementation of SNOBOL" (aka MAINBOL)
@@ -1563,16 +1565,29 @@ NOTMOD
 * punt if one more loop might overflow STEXEC:
 	GE((st / LOOPS), (&MAXINT / (LOOPS + 1)))	:S(XEND3)
 
-* average at least four loops:
-	LT(LOOPS,4)					:S(AGAIN)
+* average at least ten loops:
+	LT(LOOPS, 10)					:S(AGAIN)
 
-* at least MIN_S secconds:
-	LT(SEC, MIN_S)					:S(AGAIN)
-* no more than MAX_S seconds
-	GE(SEC, MAX_S)					:S(XEND3)
+* at least MIN_SEC secconds:
+	LT(SEC, MIN_SEC)				:S(AGAIN)
+* no more than MAX_SEC seconds
+	GE(SEC, MAX_SEC)				:S(XEND3)
 
-* quit if same ST/SEC at last
+* at least MIN_STMT statements
+	LT(st, MIN_STMT)				:S(AGAIN)
+* no more than MAX_STMT statements
+	GE(st, MAX_STMT)				:S(XEND3)
+
+* quit if same ST/SEC as last
 	EQ(OSS, SS)					:S(XEND3)
+
+	EQ(OSS, 0)					:S(AGAIN)
+
+* quit if within 1/10 percent of last:
+	percent = 0.1
+	ratio = SS / OSS
+	GT(ratio, 1 + percent / 100)			:S(AGAIN)
+	GT(ratio, 1 - percent / 100)			:S(XEND3)
 
 AGAIN	REWIND(5)
 	COLLECT()
