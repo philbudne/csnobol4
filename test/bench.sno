@@ -3,7 +3,7 @@
 * modified version of genc from CSNOBOL 1.4.1:
 *	$oldId: genc.sno,v 1.63 2004/08/12 16:10:13 phil Exp $
 
-	MIN_SEC = 30
+	MIN_SEC = 15
 	MAX_SEC = 60
 	MIN_STMT = 100 * 1000000
 	MAX_STMT = 200 * 1000000
@@ -1546,24 +1546,23 @@ XEND2	UNINDENT()
 	TMGC = t - &GCTIME
 	LOOPS = LOOPS + 1
 
+* punt if one more loop might overflow STEXEC:
+	GE((st / LOOPS), (&MAXINT / (LOOPS + 1)))	:S(XEND3)
+
 * calculate Kst/sec, output time every 5 seconds:
 	MS = CONVERT(TMGC + 0.5, "INTEGER")
 	SEC = MS / 1000
 	NTDIV5 = SEC / 5
-	EQ(TDIV5, NTDIV5)				:S(NOTMOD)
+	EQ(TDIV5, NTDIV5)				:S(AGAIN)
 	TDIV5 = NTDIV5
 
 	TDISP = ((NE(SEC, 0) SEC 's'), (MS 'ms'))
 	OSS = SS
 	SS = CONVERT((st / t) + 0.5, 'INTEGER')
+
 	TTY = LPAD(LOOPS,4) ' loops; ' 
 +		LPAD(TDISP,8) '; ' LPAD(st / 1000,7) ' Kstmts; '
-+		SS  ' Kst/sec'				:F(NOTMOD)
-
-NOTMOD	
-
-* punt if one more loop might overflow STEXEC:
-	GE((st / LOOPS), (&MAXINT / (LOOPS + 1)))	:S(XEND3)
++		SS  ' Kst/sec'
 
 * average at least ten loops:
 	LT(LOOPS, 10)					:S(AGAIN)
@@ -1576,16 +1575,18 @@ NOTMOD
 * at least MIN_STMT statements
 	LT(st, MIN_STMT)				:S(AGAIN)
 * no more than MAX_STMT statements
+*	TTY = 'st: ' st ' / ' MAX_STMT
 	GE(st, MAX_STMT)				:S(XEND3)
+
+	IDENT(OSS)					:S(AGAIN)
 
 * quit if same ST/SEC as last
 	EQ(OSS, SS)					:S(XEND3)
 
-	EQ(OSS, 0)					:S(AGAIN)
-
-* quit if within 1/10 percent of last:
-	percent = 0.1
-	ratio = SS / OSS
+* quit if within 2/10ths of a percent of last
+	percent = 0.2
+	ratio = (1.0 * SS) / OSS
+*	TTY = 'ratio: ' ratio '(' SS '/' OSS ')'
 	GT(ratio, 1 + percent / 100)			:S(AGAIN)
 	GT(ratio, 1 - percent / 100)			:S(XEND3)
 
