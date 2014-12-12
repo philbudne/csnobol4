@@ -1,6 +1,9 @@
 $Id$
 
 create snobol4.org/books page!!
+	ask SNOBOL/SPITBOL lists for sources??
+
+snobol4blocks.3.pea -- reference orange book (w/ URL!)
 
 Modules:
 	setuputil.sno:
@@ -15,8 +18,6 @@ Make all path element generated in init.c available!!
 	BASE/VERSION/local	HOST_SNOLIB_VLOCAL
 	BASE/VERSION/lib	HOST_SNOLIB
 	BASE/local		HOST_SNOLIB_LOCAL
-
-snobol4blocks.3.pea -- reference orange book (w/ URL!)
 
 ================
 

@@ -234,8 +234,10 @@ GENERATED_DOCS=	$(GENERATED_DOCS_DOCDIR) \
 
 .PRECIOUS: $(SNOBOL4).o data_init.o snobol4
 
-ALL=sdb snobol4 snopea $(GENERATED_DOCS)
-all:	$(ALL)
+all:	build_all timing.out
+
+BUILD_ALL=sdb snobol4 snopea $(GENERATED_DOCS)
+build_all: $(BUILD_ALL)
 
 changequote(@,@)dnl
 
