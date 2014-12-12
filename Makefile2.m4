@@ -660,17 +660,16 @@ install: snobol4 sdb timing.out $(GENERATED_DOCS)
 	$(INSTALL) -m 644 README $(SNOLIB_DOC)
 	$(INSTALL) -m 644 CHANGES $(SNOLIB_DOC)
 	$(INSTALL) -m 644 doc/load.txt $(SNOLIB_DOC)
+	$(INSTALL) -d $(SNOLIB_VER)
 	$(INSTALL) -d $(SNOLIB_VER)/local
+	$(INSTALL) -d $(SNOLIB_VER)/local/shared
 	$(INSTALL) -d $(SNOLIB_LIB)
+	$(INSTALL) -d $(SNOLIB_LIB)/shared
 	for F in $(SNOLIB_FILES); do \
 		$(INSTALL) -m 644 $$F $(SNOLIB_LIB); \
 	done
-	$(INSTALL) -d $(SNOLIB_LIB)/dynload
-	for F in $(MODULES_LOADABLE); do \
-		$(INSTALL) -m 644 $$F $(SNOLIB_LIB)/dynload; \
-	done
-	for F in $(MODULES_MAN); do \
-		$(INSTALL) -m 644 $$F $(MAN3DIR); \
+	for M in $(MODULES); do \
+		(cd modules/$$M; $(RUNSETUP) install); \
 	done
 	$(INSTALL) -d $(INCLUDE_DIR)
 	for F in $(INSTALL_H); do \

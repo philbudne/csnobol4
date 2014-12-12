@@ -41,12 +41,13 @@ load(addr, sp1, sp2)
 	}
 
 	if (!entry && !abspath(lname)) {
-	    char *path = io_lib_find("dynload", lname, DL_EXT);
+	    char *path = io_lib_find("shared", lname, DL_EXT);
+	    if (!path)
+		path = io_lib_find("dynload", lname, DL_EXT);
 	    if (path) {
 		entry = os_load(fname, path);
 		free(path);
 	    }
-
 	    if (!entry) {
 		path = io_lib_find(NULL, lname, DL_EXT);
 		if (path) {

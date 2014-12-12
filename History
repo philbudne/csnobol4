@@ -6,10 +6,13 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	doc/snobol4blocks.1.pea: fonts, cleanup
 	snolib/snopea.sno: fix html \'
 	modules/setuputil.sno: clean -- remove extras man pages
-		install .sno & man files
+		install .sno & man files (extras too!)
 	modules/*/Makefile: ../../snobol4, remove -b
 	modules/sqlite3/sqlite3dbm.sno: rename SQL3DBM_ERRMSG, flush CLEARERR
 	configure: output MAN3DIR in config.sno
+	Makefile2.m4: use setup.sno install
+		create local/shared
+	Changed "dynload" to "shared"
 12/10/2014:
 	lib/init.c: usage: fix -b, add -N/-I
 	doc/snobol4cmd.1.pea: add -N

@@ -351,10 +351,12 @@ setup.posix.installcmd
 setup.posix.instcmd.nlocal
 
 	libfiles = setup.dlname(t)
-	sno = setup.sno(t)
-	libfiles = FILE(sno) libfiles ' ' sno
-	command = 'cp -f ' libfiles ' ' dest
+* XXX get dirname from config.sno or HOST()!!!!
+	command = 'cp -f ' libfiles ' ' dest '/shared'
 	setup.posix.system(command)		:f(FRETURN)
+
+	sno = setup.sno(t)
+	snofiles = sno
 
 * get man files:
 	manfiles =
@@ -367,11 +369,16 @@ setup.posix.instcmd.nlocal
 setup.posix.instcmd.xloop
 	x break(',') . fn ',' =			:f(setup.posix.instcmd.xdone)
 	ident(fn)				:s(setup.posix.instcmd.xdone)
+	snofiles = FILE(fn) snofiles ' ' fn
 	fn '.sno' = '.3'
 	fn = 'snobol4' fn
 	manfiles = FILE(fn) manfiles ' ' fn 	:(setup.posix.instcmd.xloop)
 setup.posix.instcmd.xdone
 	IDENT(manfiles)				:s(return)
+
+	command = 'cp -f ' snofiles ' ' dest
+	setup.posix.system(command)		:f(FRETURN)
+
 	command = 'cp -f ' manfiles ' ' MAN3DIR
 	setup.posix.system(command)		:f(FRETURN)s(RETURN)
 setup.posix.installcmd.end
