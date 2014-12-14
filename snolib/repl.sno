@@ -1,0 +1,11 @@
+* $Id$
+* replace pat with expr
+* Phil Budne 12/13/14
+	DEFINE("repl(src,pat,expr)")		:(repl.end)
+repl	IDENT(src)				:s(return)
+	src pat =				:f(repl.done)
+	repl = repl EVAL(expr)			:(repl)
+
+repl.done
++	repl = repl src				:(return)
+repl.end

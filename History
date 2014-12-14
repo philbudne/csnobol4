@@ -8,7 +8,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	configure: define SHARED_OBJ_SUBDIR
 	lib/snolib/host.[ch]: HOST_SHARED_OBJ_SUBDIR
 	modules/setuputil.sno: use HOST_{SHARED_OBJ_SUBDIR,LIB_V{LIB,LOCAL}}
-	snolib/replace.sno
+	snolib/repl.sno: replace pattern w/ EVAL(expr)
 
 12/12/2014:
 	configure: fix config.sno MAN3DIR
