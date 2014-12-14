@@ -57,6 +57,7 @@ int io_finish __P((void));
 int io_add_lib_dir __P((char *));
 int io_add_lib_path __P((char *));
 char *io_lib_find __P((char *, char *, char *));
+char *io_lib_dir __P((int n));
 void io_preload __P((void));
 void io_show_paths __P((void));
 void io_fastpr __P((struct descr *,struct descr *,struct descr *,struct spec *,struct spec *));

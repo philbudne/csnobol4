@@ -75,9 +75,15 @@ char **argv;
 int firstarg;
 int argc;
 int nfiles;
+char *snolib_base;			/* BASE */
+char *snolib_local;			/* BASE/local */
+char *snolib_vlib;			/* BASE/VERSION/lib */
+char *snolib_vlocal;			/* BASE/VERSION/local */
+
 static int xflag;
 #endif /* NO_STATIC_VARS not defined */
 
+/* from getopt() */
 extern int optind;
 extern char *optarg;
 extern int getopt();
@@ -295,45 +301,34 @@ io_init(stdinc)				/* here from init_args() */
 /* called after -I paths have already been added, before preload, sources */
 static void
 pathinit(int stdinc) {
-    char *env = getenv("SNOPATH");
+    char *env;
+
+    /* generate directory names for HOST() even if not in search path */
+    snolib_base = getenv("SNOLIB");	/* old variable */
+    if (!snolib_base)
+	snolib_base = SNOLIB_BASE;
+
+    /* local, version-specific */
+    snolib_vlocal = strjoin(snolib_base, DIR_SEP, VERSION, DIR_SEP, "local",
+			    NULL);
+
+    /* distribution files (version-specific) */
+    snolib_vlib = strjoin(snolib_base, DIR_SEP, VERSION, DIR_SEP, "lib", NULL);
+
+    /* local -- all versions */
+    snolib_local = strjoin(snolib_base, DIR_SEP, "local", NULL);
+
+    /* add to search path (after -I options) */
+    env = getenv("SNOPATH");
     if (env) {
 	io_add_lib_path(env);
     }
-    else {
-#ifdef DEF_SNOPATH
-	if (stdinc)
-	    io_add_lib_path(DEF_SNOPATH);
-#else
-	char *tmp;
-
-	/* get old variable */
-	env = getenv("SNOLIB");
-	if (!env) {
-	    if (!stdinc)
-		return;
-	    env = SNOLIB_BASE;
-	}
-
-	/* local, version-specific */
-	tmp = strjoin(env, DIR_SEP, VERSION, DIR_SEP, "local", NULL);
-	io_add_lib_dir(tmp);
-	free(tmp);
-
-	/* distribution files (version-specific) */
-	tmp = strjoin(env, DIR_SEP, VERSION, DIR_SEP, "lib", NULL);
-	io_add_lib_dir(tmp);
-	free(tmp);
-
-	/* local -- all versions */
-	tmp = strjoin(env, DIR_SEP, "local", NULL);
-	io_add_lib_dir(tmp);
-	free(tmp);
-
-	/* old directory */
-	io_add_lib_dir(env);
-#endif
+    else if (stdinc) {
+	io_add_lib_dir(snolib_vlib);	/* dist, (version-specific) */
+	io_add_lib_dir(snolib_vlocal);	/* local, version-specific */
+	io_add_lib_dir(snolib_local);	/* local -- all versions */
+	io_add_lib_dir(snolib_base);	/* old directory */
     }
-
 #ifdef EXTRA_SNOPATH
     if (stdinc)
 	io_add_lib_path(EXTRA_SNOPATH);

@@ -46,6 +46,10 @@ extern int argc, firstarg;
 extern int pmstack, ndynamic, istack;
 extern char **argv;
 extern char *params;
+extern char *snolib_base;		/* BASE */
+extern char *snolib_local;		/* BASE/local */
+extern char *snolib_vlib;		/* BASE/VERSION/lib */
+extern char *snolib_vlocal;		/* BASE/VERSION/local */
 #endif /* NO_STATIC_VARS not defined */
 
 #ifdef HAVE_BUILD_VARS
@@ -298,6 +302,29 @@ HOST( LA_ALIST ) LA_DCL
 	RETINT(pmstack/DESCR);		/* pattern match stack length */
     case HOST_ISTACK_SIZE:
 	RETINT(istack/DESCR);		/* interpreter stack length */
+
+/* string variables; */
+
+    case HOST_SNOLIB_BASE:
+	RETSTR(snolib_base);		/* library base directory in use */
+
+    case HOST_SNOLIB_LOCAL:
+	RETSTR(snolib_local);		/* local, version-independant files */
+
+    case HOST_SNOLIB_VLIB:
+	RETSTR(snolib_vlib);		/* distribution (version-specific) */
+
+    case HOST_SNOLIB_VLOCAL:
+	RETSTR(snolib_vlocal);		/* local, version-specific files */
+
+    case HOST_SNOPATH_DIR:
+	if (nargs >= 2 && LA_TYPE(1) == I) {
+	    char *val = io_lib_dir(LA_INT(1)); /* n'th elt of search path */
+	    if (val)
+		RETSTR(val);
+	}
+	/* bad argument type, or out of range */
+	break;
 
 /*
  * NOTE!! All of the above 2xxx values are related to internals, and

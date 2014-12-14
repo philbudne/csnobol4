@@ -157,6 +157,24 @@
 /* CSNOBOL4: size of interpreter stack in descriptors */
 #define HOST_ISTACK_SIZE	2402
 
+/*****
+ * string variables;
+ */
+/* CSNOBOL4: library base directory in use */
+#define HOST_SNOLIB_BASE	2500
+
+/* CSNOBOL4: local, version-independant files */
+#define HOST_SNOLIB_LOCAL	2501
+
+/* CSNOBOL4: distribution files (version-specific) */
+#define HOST_SNOLIB_VLIB	2502
+
+/* CSNOBOL4: local, version-specific files */
+#define HOST_SNOLIB_VLOCAL	2503
+
+/* CSNOBOL4: return n'th element in search directory list */
+#define HOST_SNOPATH_DIR	2504
+
 /*
  * NOTE!! All of the above 2xxx values are related to internals, and
  * the build environment.  Perhaps it should be kept that way, and

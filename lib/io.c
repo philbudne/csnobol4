@@ -2331,6 +2331,22 @@ io_lib_find(subdir, file, ext)
     }
     return NULL;
 }
+
+/* 12/13/14 return n'th lib directory for HOST() */
+char *
+io_lib_dir(n)
+    int n;
+{
+    struct file *ip = iov.lib_dirs;
+
+    while (ip && n > 0) {
+	n--;
+	ip = ip->next;
+    }
+    if (ip)
+	return ip->fname;
+    return NULL;
+}
 
 static void
 try_preload(path)
