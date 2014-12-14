@@ -5,6 +5,7 @@
 
 -include 'basename.sno'
 -include 'host.sno'
+-include 'repl.sno'
 
 *	snopea.debug = 1
 
@@ -41,7 +42,7 @@
 	HOST() POS(0) BREAK(':') ':' BREAK(':') ':' REM . snopea.snovers
 
 	DEFINE('snopea(ifile,ofile,page,sect,format)'
-+			'font,efont,endlist,lsep,pre,chr,ctab,numb,'
++			'font,efont,endlist,lsep,pre,chr,ctab,numb,o2,pat,'
 +			'date,text,snomod,line,inpea,needspace,after,'
 +			'oline,text,iunit,ounit,lbl,cmd') :(snopea.end)
 snopea
@@ -303,8 +304,22 @@ sp.html.font2
 sp.html.font3
 	oline = oline pre font txt efont		:(sp.floop)
 
+* MASSIVE CROCK!!! detect snobol4 man page refs, and turn into links!!
 sp.html.oline
-	out = oline
++	o2 =
+	pat = POS(0) BREAKX('<') . pre 
++	       ('<B>'
++	         (('snobol4' | 'sdb' | 'snolib') BREAK('<')) . pg
++               '</B>'
++	        '(' ANY('137') . sec ')'
++              ) . full
+sp.html.oline1
++	IDENT(oline)					:s(sp.html.oline2)
+	oline pat =					:f(sp.html.oline2)
+	o2 = o2 pre '<a href="' pg '.' sec '.html">' full '</a>'
+	:(sp.html.oline1)
+sp.html.oline2
++	out = o2 oline
 	out = VDIFFER(after)
 	after =						:(sp.out)
 

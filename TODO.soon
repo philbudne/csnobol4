@@ -5,8 +5,6 @@ snopea:
 	=anchor name [ anchor text? ]
 	use for book refs
 
-	crock HTML refs to pages!!
-
 create snobol4.org/books page!!
 	ask SNOBOL/SPITBOL lists for sources??
 
