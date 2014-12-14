@@ -1,9 +1,25 @@
 $Id$
 
+snopea:
+	=link URL [ anchor text ]
+	=anchor name [ anchor text? ]
+	use for book refs
+
+	crock HTML refs to pages!!
+
 create snobol4.org/books page!!
 	ask SNOBOL/SPITBOL lists for sources??
 
+snobol4.1.pea -- reference books page
 snobol4blocks.3.pea -- reference orange book (w/ URL!)
+
+document:
+    HOST_SNOLIB_BASE
+    HOST_SNOLIB_LOCAL
+    HOST_SNOLIB_VLIB
+    HOST_SNOLIB_VLOCAL
+    HOST_SNOPATH_DIR
+    repl.sno
 
 ================
 
@@ -15,13 +31,6 @@ Modules:
 			remove restriction note in src & man page
 	tests:
 		logic(!!), sqlite3, stat, dirs, sprintf, fork, ffi
-
-Make all generated path elements available via HOST()!
-	BASE/VERSION/local	HOST_SNOLIB_VLOCAL
-	BASE/VERSION/lib	HOST_SNOLIB
-	BASE/VERSION/local/shared HOST_SNOLIB_VLOCAL_SHARED
-	BASE/VERSION/lib/shared	HOST_SNOLIB_SHARED
-	BASE/local		HOST_SNOLIB_LOCAL
 
 man pages:
     need work: snobol4ctrl, snobol4func, snobol4key
