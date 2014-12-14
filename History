@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/14/2014:
+	CHANGES: Updated
+
 12/13/14!
 	include/lib.h, lib/{init.c,io.c,snolib/host.[ch]}:
 		HOST_SNO{LIB_{BASE,LOCAL,V{LIB,LOCAL}},PATH_DIR}

@@ -2,6 +2,32 @@ $Id$
 
 For detailed revision history see History file
 
+Changes since 1.5 release;
+=========================
+	Gimpel's BLOCKS extension (thanks to Mike Alexander for the files!)
+	Add &COMPNO (from SITBOL/SNOBOL4B)
+	Fix man page installation directory (reported by Mike Greenberg)
+	Fix R(ETURN) TRACE
+	Fix FUNCTION TRACE (reported by Dani Richard)
+	Fix "finite" warning (reported by Clem Cole)
+	Added framework/utility for loadable extension modules.
+	Made existing facilities into modules:
+		logic, ndbm, random, stcl, time
+	Added new modules:
+		dirs (directory scanning)
+		sqlite3 (light weight SQL database)
+		stat (file meta-info retrieval)
+		fork (Un*x/POSIX FORK/WAITPID)
+		ffi (Foreign Function Interface)
+	Added -N option (disable standard search directories)
+	Added TIMEGM function to time module.
+	All documentation in "snopea" format: used to generate man/HTML pages
+	Split up man page into multiple pages.
+	Startup banner disabled when source files given:
+		-b always disables (used to toggle)
+		-x always enables (new)
+	sdb debugger: "ignore" command can now clear ignore count
+
 Changes since 1.4.1 release;
 ===========================
 	Debugger (sdb) improvements:
