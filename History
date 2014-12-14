@@ -5,6 +5,9 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 12/13/14!
 	include/lib.h, lib/{init.c,io.c,snolib/host.[ch]}:
 		HOST_SNO{LIB_{BASE,LOCAL,V{LIB,LOCAL}},PATH_DIR}
+	configure: define SHARED_OBJ_SUBDIR
+	lib/snolib/host.[ch]: HOST_SHARED_OBJ_SUBDIR
+	modules/setuputil.sno: use HOST_{SHARED_OBJ_SUBDIR,LIB_V{LIB,LOCAL}}
 	snolib/replace.sno
 
 12/12/2014:

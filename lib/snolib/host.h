@@ -119,6 +119,9 @@
 /* CSNOBOL4: setuputil system name */
 #define HOST_SETUP_SYS		2217
 
+/* CSNOBOL4: shared object subdir */
+#define HOST_SHARED_OBJ_SUBDIR	2218
+
 /*****
  * integer constants;
  */

@@ -42,6 +42,9 @@
 **in I<sourcefiles>,
 **and finally B<funcs.sno> (if it exists).
 **
+**=item install
+**installs binary, include and man page files.
+**
 **=item clean
 **cleans up.
 **
@@ -344,25 +347,23 @@ setup.posix.buildcmd.end
 
 	DEFINE('setup.posix.installcmd(t)')	:(setup.posix.installcmd.end)
 setup.posix.installcmd
-	dest = HOST(HOST_SNOLIB_DIR)
-	FILE_ISDIR('CVS')			:S(setup.posix.instcmd.nlocal)
-* no CVS directory-- must be local source
-	dest 'lib' = 'local'
-setup.posix.instcmd.nlocal
 
-	libfiles = setup.dlname(t)
-* XXX get dirname from config.sno or HOST()!!!!
-	command = 'cp -f ' libfiles ' ' dest '/shared'
+* if no CVS directory-- install as a "local" file
+	dest = (FILE_ISDIR('CVS') HOST(HOST_SNOLIB_VLIB), 
++			HOST(HOST_SNOLIB_VLOCAL))
+
+	libfile = setup.dlname(t)
+	shared = ('/' HOST(HOST_SHARED_OBJ_SUBDIR), '')
+	command = 'cp -f ' libfile ' ' dest shared
 	setup.posix.system(command)		:f(FRETURN)
 
 	sno = setup.sno(t)
 	snofiles = sno
 
 * get man files:
-	manfiles =
 	man = 'snobol4' sno
 	man '.sno' = '.3'
-	manfiles = FILE(man) man
+	manfiles = (FILE(man) man, '')
 
 	x = t['extras'] ','
 	xfiles =

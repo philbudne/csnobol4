@@ -277,6 +277,11 @@ HOST( LA_ALIST ) LA_DCL
 	RETSTR(SETUP_SYS);
 #endif /* SETUP_SYS defined */
 
+#ifdef SHARED_OBJ_SUBDIR
+    case HOST_SHARED_OBJ_SUBDIR:
+	RETSTR(SHARED_OBJ_SUBDIR);
+#endif /* SHARED_OBJ_SUBDIR defined */
+
 /****************
  * integer constants;
  */

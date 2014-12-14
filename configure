@@ -339,6 +339,7 @@ echo '#define DIR_SEP "/"'			>> $CONFIG_H
 echo '#define PATH_SEP ":"'			>> $CONFIG_H
 echo '#define OBJECT_EXT ".o"'			>> $CONFIG_H
 echo '#define SETUP_SYS "posix"'		>> $CONFIG_H
+echo '#define SHARED_OBJ_SUBDIR "shared"'	>> $CONFIG_H
 
 # safe on all Unix systems (requires "fork")
 echo '#define PML_SERV'				>> $CONFIG_H
