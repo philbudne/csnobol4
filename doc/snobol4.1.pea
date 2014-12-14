@@ -66,7 +66,7 @@ B<snobol4>(1) application.
 
 =item B<DATE()>
 The B<DATE()> function returns strings of the form: I<MM/DD/YYYY HH:MM:SS>.
-See B<snobol4ext>(1)> for arguments to the B<DATE()> function.
+See B<snobol4ext>(1) for arguments to the B<DATE()> function.
 
 =item B<&amp;STLIMIT>
 When B<&amp;STLIMIT> is less than zero there is no limit to the number
