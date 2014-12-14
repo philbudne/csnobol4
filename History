@@ -10,6 +10,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	modules/setuputil.sno: use HOST_{SHARED_OBJ_SUBDIR,LIB_V{LIB,LOCAL}}
 	snolib/repl.sno: replace pattern w/ EVAL(expr)
 	snolib/snopea.sno: crock to detect man pages, and turn into links!
+		add =link and =anchor
+	doc/snobol4.1.pea: use =link & =anchor
 
 12/12/2014:
 	configure: fix config.sno MAN3DIR

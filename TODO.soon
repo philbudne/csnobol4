@@ -1,15 +1,10 @@
 $Id$
 
-snopea:
-	=link URL [ anchor text ]
-	=anchor name [ anchor text? ]
-	use for book refs
+link to books page at www.snobol4.org/index.html
 
-create snobol4.org/books page!!
-	ask SNOBOL/SPITBOL lists for sources??
+install HTML pages in SNOLIB/VERS/html??
 
-snobol4.1.pea -- reference books page
-snobol4blocks.3.pea -- reference orange book (w/ URL!)
+snobol4blocks.3.pea -- reference orange book (link to books page)
 
 document:
     HOST_SNOLIB_BASE

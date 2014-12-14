@@ -308,12 +308,12 @@ pathinit(int stdinc) {
     if (!snolib_base)
 	snolib_base = SNOLIB_BASE;
 
+    /* distribution files (version-specific) */
+    snolib_vlib = strjoin(snolib_base, DIR_SEP, VERSION, DIR_SEP, "lib", NULL);
+
     /* local, version-specific */
     snolib_vlocal = strjoin(snolib_base, DIR_SEP, VERSION, DIR_SEP, "local",
 			    NULL);
-
-    /* distribution files (version-specific) */
-    snolib_vlib = strjoin(snolib_base, DIR_SEP, VERSION, DIR_SEP, "lib", NULL);
 
     /* local -- all versions */
     snolib_local = strjoin(snolib_base, DIR_SEP, "local", NULL);

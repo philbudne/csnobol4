@@ -38,11 +38,12 @@
 
 	snopea.tab = CHAR(9)
 	snopea.ws = SPAN(' ' snopea.tab)
+	snopea.bws = BREAK(' ' snopea.tab)
 
 	HOST() POS(0) BREAK(':') ':' BREAK(':') ':' REM . snopea.snovers
 
 	DEFINE('snopea(ifile,ofile,page,sect,format)'
-+			'font,efont,endlist,lsep,pre,chr,ctab,numb,o2,pat,'
++			'font,efont,endlist,lsep,pre,chr,ctab,numb,t1,t2,pat,'
 +			'date,text,snomod,line,inpea,needspace,after,'
 +			'oline,text,iunit,ounit,lbl,cmd') :(snopea.end)
 snopea
@@ -239,8 +240,8 @@ sp.roff.code
 	out = '.nh'
 	out = '.nf'					:(sp.top)
 
-sp.roff.ecode
 * back to "Roman" typeface:
+sp.roff.ecode
 	out = '.ft R'
 * fill, no hyphenation:
 	out = '.fi'
@@ -262,6 +263,15 @@ sp.roff.row
 
 sp.roff.etable
 	out = '.fi'					:(sp.top)
+
+sp.roff.anchor						:(sp.top)
+
+sp.roff.link
+	rest = rest ' '
+	rest POS(0) snopea.ws =
+	rest POS(0) snopea.bws . t1 =
+	rest POS(0) snopea.ws =
+	line = (VDIFFER(rest), t1)			:s(sp.text)
 
 * ADD NEW OPS ABOVE THIS LINE
 
@@ -306,7 +316,7 @@ sp.html.font3
 
 * MASSIVE CROCK!!! detect snobol4 man page refs, and turn into links!!
 sp.html.oline
-+	o2 =
++	t1 =
 	pat = POS(0) BREAKX('<') . pre 
 +	       ('<B>'
 +	         (('snobol4' | 'sdb' | 'snolib') BREAK('<')) . pg
@@ -316,10 +326,10 @@ sp.html.oline
 sp.html.oline1
 +	IDENT(oline)					:s(sp.html.oline2)
 	oline pat =					:f(sp.html.oline2)
-	o2 = o2 pre '<a href="' pg '.' sec '.html">' full '</a>'
+	t1 = t1 pre '<a href="' pg '.' sec '.html">' full '</a>'
 	:(sp.html.oline1)
 sp.html.oline2
-+	out = o2 oline
++	out = t1 oline
 	out = VDIFFER(after)
 	after =						:(sp.out)
 
@@ -387,6 +397,17 @@ sp.html.rowloop
 
 sp.html.etable
 	out = '</table>'				:(sp.top)
+
+sp.html.anchor
+	rest POS(0) snopea.ws =
+	out = '<a name="' rest '"></a>'			:(sp.top)
+
+sp.html.link
+	rest = rest ' '
+	rest POS(0) snopea.ws =
+	rest POS(0) snopea.bws . t1 =
+	rest POS(0) snopea.ws =
+	line = '<a href="' t1 '">' (VDIFFER(rest), t1) '</a>' :(sp.text)
 
 * ADD NEW OPS ABOVE THIS LINE
 

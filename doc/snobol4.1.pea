@@ -7,9 +7,15 @@ snobol4 \- SNOBOL4 interpreter
 This manual page describes a port of the original Bell Telephone Labs
 (BTL) Macro Implementation of SNOBOL4 to machines with ILP32 (32-bit
 int/long/pointer) or LP64 (64-bit long/pointer) C compilers by Philip
-L. Budne.  The language and its implementation are described in [1]
-and [2].  Extensions from Catspaw SNOBOL4+, SPITBOL and SITBOL have
-been added.  This page discusses only the changes/extensions.
+L. Budne.
+
+The language and its implementation are described in
+=link #Griswold1971 [Griswold1971]
+and 
+=link #Griswold1972 [Griswold1972].
+
+Extensions from Catspaw SNOBOL4+, SPITBOL and SITBOL have
+been added.
 
 For command line options see B<snobol4cmd>(1).
 
@@ -80,7 +86,8 @@ B<SET()> function instead.
 Unit numbers up to 256 can be used.
 
 =item Output on closed unit
-Attempts to output on a closed unit generates a fatal ``Output error''.
+Attempts to output on a closed unit generate a fatal ``Output error'',
+see B<snobol4error>(1).
 
 =subsect Extensions
 Further additions are documented in B<snobol4ext>(1).
@@ -122,10 +129,14 @@ a cross between PDP-10 Macro SNOBOL, SITBOL and Catspaw SPITBOL usage:
 
 Both square brackets (B<[]>) and angle brackets (B<&lt;&gt;>) may be
 used to subscript arrays and tables.  The B<TAB> (ASCII 9) character
-is accepted as whitespace.  Note that the use of the pound sign for
-comments allows use of the script interpreter (hash-bang) sequence at
-the top of a file marked as executable: "#!/usr/local/bin/snobol4".
-Underscore (B<_>) and period (B<.>) are legal I<within> identifiers and labels.
+is accepted as whitespace.
+
+Underscore (B<_>) and period (B<.>) are legal I<within> identifiers
+and labels.
+
+Note that the use of the pound sign for comments allows use of the
+script interpreter (hash-bang) sequence at the top of a file marked as
+executable: ``#!/usr/local/bin/snobol4''.
 
 =subsect Directory Search List
 
@@ -135,10 +146,12 @@ the following directory search order is used: Any directories
 specified on the command line using B<-I> options, in the order
 specified; The list of directories from the B<SNOPATH> environment
 variable, if defined; If B<SNOPATH> is not defined, the B<SNODIR>
-environment directory (or a compiled in default) is used to add the
-following:
+environment variable (or a compiled in default) is used as I<base>
+to add the following directories:
 
-XXX MISSING FIXME XXX
+=bull I<base>/I<version>/I<lib>
+=bull I<base>/I<version>/I<local>
+=bull  I<base>/I<local>
 
 =sect ENVIRONMENT
 
@@ -184,47 +197,41 @@ sole search directory in versions of CSNOBOL4 prior to version 1.5).
 =row B<snolib>(3)	misc library functions
 =etable
 
-=item http://www.snobol4.org
-All things SNOBOL4 related.
+=item All things SNOBOL4 related.
+=link http://www.snobol4.org
 
-=item http://www.snobol4.com
-Catspaw: commercial SPITBOL implementations, Free SNOBOL4+ for DOS.
+=item Catspaw: commercial SPITBOL implementations, Free SNOBOL4+ for DOS.
+=link http://www.snobol4.com
 
-=item http://www.snobol4.org/doc/burks/tutorial/contents.htm
-SNOBOL4 language tutorial (from Catspaw Vanilla SNOBOL4)
+=item SNOBOL4 language tutorial (from Catspaw Vanilla SNOBOL4)
+=link http://www.snobol4.org/doc/burks/tutorial/contents.htm
 
-=item http://www.snobol4.org/doc/burks/manual/contents.htm
-Catspaw Vanilla SNOBOL4 manual.
-
-=item ftp://ftp.snobol4.com/spitman.pdf
-Catspaw Macro SPITBOL manual
-
-=item [1] R. E. Griswold, J. F. Poage, and I. P. Polonsky
+=anchor Griswold1971
+=item [Griswold1971] R. E. Griswold, J. F. Poage, and I. P. Polonsky
 I<The SNOBOL4 Programming Language>, 2nd ed., Prentice-Hall Inc., 1971.
 =break
 I<(aka the green book)>
 =break
-ftp://ftp.cs.arizona.edu/snobol4/gb.pdf
+=link http://www.snobol4.org/docs/books.html#green
 
-=item [2] R. E. Griswold,
+=anchor Griswold1972
+=item [Griswold1972] R. E. Griswold,
 I<The Macro Implementation of SNOBOL4>, W. H. Freeman and Co., 1972.
 =break
 Book describing the implementation techniques used in Macro SNOBOL4.
+=break
+=link http://www.snobol4.org/docs/books.html#macro
 
-=item http://www.snobol4.org/docs/arizona/
-University of Arizona SNOBOL4 memos,
-formatted as PDF files by Scott Marovich.
-Includes memo s4d58, which describes each
-pseudo-instruction in the Snobol Implementation Language (SIL),
-corrigendae for [1], [2] and
-I<String and List Processing in SNOBOL4>.
+=item Catspaw Vanilla SNOBOL4 manual.
+=link http://www.snobol4.org/doc/burks/manual/contents.htm
+
+=item Catspaw Macro SPITBOL manual
+=link ftp://ftp.snobol4.com/spitman.pdf
 
 =sect AUTHOR
-Philip L. Budne
+R. E. Griswold, J. F. Poage, I. P. Polonsky, Philip L. Budne
 
 with help from:
-
-R. E. Griswold, J. F. Poage, and I. P. Polonsky
 
 Mark Emmer (code from SNOBOL4+)
 
