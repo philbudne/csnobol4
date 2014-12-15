@@ -22,7 +22,7 @@ int
 TAN( LA_ALIST ) LA_DCL
 {
     real_t ret = tan(LA_REAL(0));
-    if (!finite(ret))
+    if (!REAL_ISFINITE(ret))
 	RETFAIL;
     RETREAL(ret);
 }

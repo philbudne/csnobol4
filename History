@@ -2,10 +2,16 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/15/2014:
+	modules/stcl/stcl.c: clean up warning (reported by Clem Cole)
+	lib/snolib/{atan,exp,tan}.c: propogate REAL_ISFINITE (Clem again)
+
+*** 2.0-rc1 (tag REL_2_0_RC1)
+
 12/14/2014:
 	CHANGES: Updated
 	configure: update version to 2.0-rc1
-
+	
 12/13/14!
 	include/lib.h, lib/{init.c,io.c,snolib/host.[ch]}:
 		HOST_SNO{LIB_{BASE,LOCAL,V{LIB,LOCAL}},PATH_DIR}
