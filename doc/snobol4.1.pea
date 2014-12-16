@@ -14,40 +14,40 @@ The language and its implementation are described in
 and 
 =link #Griswold1972 [Griswold1972].
 
-Extensions from Catspaw SNOBOL4+, SPITBOL and SITBOL have
-been added.
-
 For command line options see B<snobol4cmd>(1).
 
-All aspects of the language are implemented except
-trapping of B<INTEGER> arithmetic exceptions.
+Extensions from Catspaw SNOBOL4+, SPITBOL and SITBOL have
+been added, see B<snobol4ext>(1).
 
 =subsect Changes
 The following behaviors have been changed from the original Macro SNOBOL4
 in ways that might effect old programs:
 
-=item Listings are disabled by default.
+=item B<INTEGER> exceptions
+B<INTEGER> math can never cause expression failure.
+
+=item Listings are disabled by default
 Default listing side (when enabled by B<-LIST> or the B<-l> command
-line option is B<LEFT>.  Listings are directed to standard output (or
-file specified by the B<-l> command line option.
+line option is B<LEFT>.  Listings are directed to standard error
+(or file specified by the B<-l> command line option.
 
 =item Messages
-The the startup banner and statistics are directed to standard error.
+The the startup banner and statistics (if enabled) are directed to standard error.
+
 Compilation error messages (including erroneous lines) appear on
-standard error as well as in the listings.  Error messages now
-reference the source file name and line number.
+standard error. Error messages reference the source file name and line number.
 
 =item Character set
 see below.
 
-=item Input/Output
+=item B<INPUT()> and B<OUTPUT()>
 FORTRAN formats are not used to control I/O.
 The 3rd argument to the B<OUTPUT()> and B<INPUT()>
 functions is interpreted as a string of I/O options,
 The 4th argument is used to specify a file name,
-see B<snobol4io>(1).
+see B<snobol4io>(1) for details.
 
-=item B<PUNCH>
+=item B<PUNCH> variable
 The B<PUNCH> output variable no longer exists,
 the B<TERMINAL> variable has been added in it's place,
 see B<snobol4io>(1).
@@ -151,7 +151,7 @@ to add the following directories:
 
 =bull I<base>/I<version>/I<lib>
 =bull I<base>/I<version>/I<local>
-=bull  I<base>/I<local>
+=bull I<base>/I<local>
 
 =sect ENVIRONMENT
 
@@ -207,7 +207,8 @@ sole search directory in versions of CSNOBOL4 prior to version 1.5).
 =link http://www.snobol4.org/doc/burks/tutorial/contents.htm
 
 =anchor Griswold1971
-=item [Griswold1971] R. E. Griswold, J. F. Poage, and I. P. Polonsky
+=item [Griswold1971]
+R. E. Griswold, J. F. Poage, and I. P. Polonsky,
 I<The SNOBOL4 Programming Language>, 2nd ed., Prentice-Hall Inc., 1971.
 =break
 I<(aka the green book)>
@@ -215,7 +216,8 @@ I<(aka the green book)>
 =link http://www.snobol4.org/docs/books.html#green
 
 =anchor Griswold1972
-=item [Griswold1972] R. E. Griswold,
+=item [Griswold1972]
+R. E. Griswold,
 I<The Macro Implementation of SNOBOL4>, W. H. Freeman and Co., 1972.
 =break
 Book describing the implementation techniques used in Macro SNOBOL4.
@@ -228,8 +230,10 @@ Book describing the implementation techniques used in Macro SNOBOL4.
 =item Catspaw Macro SPITBOL manual
 =link ftp://ftp.snobol4.com/spitman.pdf
 
-=sect AUTHOR
-R. E. Griswold, J. F. Poage, I. P. Polonsky, Philip L. Budne
+=sect AUTHORS
+Ralph E. Griswold, James F. Poage, Ivan P. Polonsky (Macro SNOBOL4)
+
+Philip. L. Budne (CSNOBOL4)
 
 with help from:
 
@@ -248,7 +252,5 @@ Integer math can never fail, even on overflow.
 
 Oversize integer constants may not be detected.
 
-This manual page is I<still> too long, and should be split up even further.
+This manual page is I<still> too long, and should be split up even further!
 
-There should be a B<snobol4func>(1) man page which describes all
-intrinsic functions (this page only includes extensions).

@@ -4,8 +4,8 @@ $Id$
 snobol4ctrl \- SNOBOL4 control lines
 
 =sect DESCRIPTION
-Just the skeleton of a page!  For each type, should have:
-semantics, group, standard/modified/extension,
+Just the skeleton of a page!  For each control line should have
+semantics, standard/modified/extension.
 If extension: ``added in'' and ``compatible with.''
 
 For extensions, see B<snobol4ext>(1).

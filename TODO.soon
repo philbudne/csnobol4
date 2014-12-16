@@ -1,12 +1,25 @@
 $Id$
 
-Update CHANGES file!!!
+mention "." in default SNOPATH!!!!
+
+Problem not running ./configure first?????
+
+test setup.sno in a private directory!!!
+
+update README
+	version
+	man page list
 
 link to books page at www.snobol4.org/index.html
 
-install HTML pages in SNOLIB/VERS/html??
+snobol4blocks.1.pea:
+	reference CACM June 1972 15(6) pp438-447
 
-snobol4blocks.3.pea -- reference orange book (link to books page)
+move snopea.1(.html) generation to doc/Makefile?
+
+HTML:
+	install in SNOLIB/VERS/html??
+	put in "html" directory on build?
 
 document:
     HOST_SNOLIB_BASE
@@ -14,7 +27,7 @@ document:
     HOST_SNOLIB_VLIB
     HOST_SNOLIB_VLOCAL
     HOST_SNOPATH_DIR
-    repl.sno
+    snobol4host.3.pea??
 
 ================
 

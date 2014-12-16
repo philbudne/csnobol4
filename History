@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/16/2014:
+	man page tweaks
+
 12/15/2014:
 	modules/stcl/stcl.c: clean up warning (reported by Clem Cole)
 	lib/snolib/{atan,exp,tan}.c: propogate REAL_ISFINITE (Clem again)

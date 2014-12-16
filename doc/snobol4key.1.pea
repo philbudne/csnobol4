@@ -3,145 +3,148 @@
 snobol4key \- SNOBOL4 keywords
 
 =sect DESCRIPTION
-Just the skeleton of a page!  For each function, should have:
+Just the skeleton of a page!  Each keyword should have:
 semantics, group, standard/modified/extension,
 If extension: ``added in'' and ``compatible with.''
 
 For extensions, see B<snobol4ext>(1).
 
-=item &ABEND
+=item &amp;ABEND
+Setting the B<&amp;ABEND> keyword causes a core dump upon termination!
 Unprotected, Standard
 
-=item &ABORT
+=item &amp;ABORT
 Protected, Standard
 
-=item &ALPHABET
+=item &amp;ALPHABET
 Protected, Standard
 
-=item &ANCHOR
+=item &amp;ANCHOR
 Unprotected, Standard
 
-=item &ARB
+=item &amp;ARB
 Protected, Standard
 
-=item &BAL
+=item &amp;BAL
 Protected, Standard
 
-=item &CASE
+=item &amp;CASE
 Unprotected, Extension
 
-=item &CODE
-Unprotected, Standard
+=item &amp;CODE
+The value of the B<&amp;CODE> keyword determines the exit status of
+B<snobol4>(1) application.
+Unprotected, Standard;
 
-=item &COMPNO
+=item &amp;COMPNO
 Protected, Extension
 
-=item &DIGITS
+=item &amp;DIGITS
 Protected, Extension
 
-=item &DUMP
+=item &amp;DUMP
 Unprotected, Standard
 
-=item &ERRLIMIT
+=item &amp;ERRLIMIT
 Unprotected, Standard*
 
-=item &ERRTEXT
+=item &amp;ERRTEXT
 Protected, Extension
 
-=item &ERRTYPE
+=item &amp;ERRTYPE
 Protected, Standard
 
-=item &FAIL
+=item &amp;FAIL
 Protected, Standard
 
-=item &FENCE
+=item &amp;FENCE
 Protected, Standard
 
-=item &FILE
+=item &amp;FILE
 Protected, Extension
 
-=item &FILL
+=item &amp;FILL
 Unprotected, BLOCKS
 
-=item &FNCLEVEL
+=item &amp;FNCLEVEL
 Protected, Standard
 
-=item &FTRACE
+=item &amp;FTRACE
 Unprotected, Standard
 
-=item &FULLSCAN
+=item &amp;FULLSCAN
 Unprotected, Standard
 
-=item &GCTIME
+=item &amp;GCTIME
 Protected, Extension
 
-=item &GTRACE
+=item &amp;GTRACE
 Unprotected, Extension
 
-=item &INPUT
+=item &amp;INPUT
 Unprotected, Standard
 
-=item &LASTFILE
+=item &amp;LASTFILE
 Protected, Extension
 
-=item &LASTLINE
+=item &amp;LASTLINE
 Protected, Extension
 
-=item &LASTNO
+=item &amp;LASTNO
 Protected, Standard
 
-=item &LCASE
+=item &amp;LCASE
 Protected, Extension
 
-=item &LINE
+=item &amp;LINE
 Protected, Extension
 
-=item &MAXINT
+=item &amp;MAXINT
 Protected, Extension
 
-=item &MAXLNGTH
+=item &amp;MAXLNGTH
 Unprotected, Standard*
 
-=item &OUTPUT
+=item &amp;OUTPUT
 Unprotected, Standard
 
-=item &PARM
+=item &amp;PARM
 Protected, Extension
 
-=item &PI
+=item &amp;PI
 Protected, Extension
 
-=item &REM
+=item &amp;REM
 Protected, Standard
 
-=item &RTNTYPE
+=item &amp;RTNTYPE
 Protected, Standard
 
-=item &STCOUNT
+=item &amp;STCOUNT
 Protected, Standard
 
-=item &STEXEC
+=item &amp;STEXEC
 Protected, Extension
 
-=item &STFCOUNT
+=item &amp;STFCOUNT
 Protected, Standard
 
-=item &STLIMIT
+=item &amp;STLIMIT
 Unprotected, Standard*
 
-=item &STNO
+=item &amp;STNO
 Protected, Standard
 
-=item &SUCCEED
+=item &amp;SUCCEED
 Protected, Standard
 
-=item &TRACE
+=item &amp;TRACE
 Unprotected, Standard
 
-=item &TRIM
+=item &amp;TRIM
 Unprotected, Standard*
 
-=item &UCASE
+=item &amp;UCASE
 Protected, Extension
 
 =sect SEE ALSO

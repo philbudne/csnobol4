@@ -14,7 +14,7 @@
 **snobol4ffi \- Foreign Function Interface for SNOBOL4
 **=sect SYNOPSYS
 **=code
-**B<-INCLUDE 'ffi.sno'>
+**-INCLUDE 'ffi.sno'
 **        dl = FFI_DLOPEN("/usr/lib/libm.so")
 **        sym = FFI_DLSYM(dl, "hypot")
 **        DEFINE_FFI("hypot(double,double)double", sym)
@@ -379,7 +379,7 @@ FFI_FREE_CIF( LA_ALIST ) LA_DCL
 **=pea
 **=item B<FFI_DLOPEN(>I<filename>B<)>
 **takes the path of a dynamicly loadable
-**executable file (B<.so>, B<.bundle>,  or B<.DLL>) and returns a value
+**executable file and returns a value
 **which can be passed to B<FFI_DLSYM()>.
 **
 **=cut

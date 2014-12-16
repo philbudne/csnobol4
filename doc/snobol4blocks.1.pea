@@ -15,8 +15,9 @@ When BLOCKS enabled ...
 For I<dir> arguments: B<0>=``vertical'', B<1>=``horizonal'', B<2>=``normal''
 
 =item B<BCHAR(>I<b>B<)>
-Returns an ARRAY of strings, dimensioned depth x height.
-(renamed from B<CHAR>)
+Returns character representation of BLOCK I<b> as an ARRAY of strings,
+dimensioned I<d> x I<h>, where I<d> is the depth of the block and I<h>
+is the height of the block (renamed from B<CHAR>).
 
 =item B<BOX(>I<h,w,d>B<)>
 Returns a BLOCK of fill characters of height I<h>, width I<w> and depth I<d>.
@@ -26,10 +27,11 @@ Return INTEGER size of block I<b> in direction I<dir>.
 
 =item B<CC(>I<unit>B<)>
 Accessor function to change carriage control on I/O unit I<unit>.
-If value is positive ASA carriage control is output in
+If value is positive ASA (FORTRAN style) carriage control is output in
 column one (the B<asa2pdf> program converts ASA format to PDF).
 If value is zero, no carriage control is output.
-If value is negative, ASCII carriage control characters are output (B<CSNOBOL4> extension).
+If value is negative, ASCII carriage control characters are output
+(B<CSNOBOL4> extension).
 
 =item B<DEF(>I<b>B<)>
 Returns a BLOCK whose organization is I<deferred>.
@@ -113,6 +115,6 @@ The fill character (defaults to space).
 =sect SEE ALSO
 B<snobol4>(1)
 
-http://deepblue.lib.umich.edu/bitstream/handle/2027.42/79574/MTSVol09-SNOBOLInMTS-May1984.pdf
+=link http://deepblue.lib.umich.edu/bitstream/handle/2027.42/79574/MTSVol09-SNOBOLInMTS-May1984.pdf
 
-http://home.comcast.net/~urbanjost/LIBRARY/EXE/ASA/html/asa2pdf_doc.html
+=link http://home.comcast.net/~urbanjost/LIBRARY/EXE/ASA/html/asa2pdf_doc.html
