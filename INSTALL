@@ -11,6 +11,10 @@ Compilation
 
 In most cases all you need to type is "make".
 
+CSNOBOL 2.0 has been tested on a limited range of systems.  Expect
+that most proprietary Unix systems (Solaris, AIX, HP-UX and older
+systems) will require some work.
+
 The top level makefile will run the "configure" script to create
 config.m4 and config.h. config.m4 is used to create Makefile2, which
 is then run, creating a test version of snobol4 (named "xsnobol4")
@@ -266,6 +270,11 @@ with "--add-" can appear);
 	--with-tcl=/path/to/tclConfig.sh
 		Compile in Tcl extension (see snobol4tcl man page)
 		Tk 8.4 or later is necessary to use Tcl/Tk.
+
+	--without-blocks
+		Do not include BLOCKS extension.
+		Requires working install of snobol4 to rebuild
+		sources.
 
 	--without-com
 		Do not compile in COM extension on CygWIN.

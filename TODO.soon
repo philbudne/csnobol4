@@ -1,23 +1,9 @@
 $Id$
 
-Problem not running ./configure first?????
-
 update README
 	version
 	man page list
-
-link to books page at www.snobol4.org/index.html
-
-HTML:
-	install in SNOLIB/VERS/html??
-	put in "html" directory on build?
-
-document:
-    HOST_SNOLIB_BASE
-    HOST_SNOLIB_LOCAL
-    HOST_SNOLIB_VLIB
-    HOST_SNOLIB_VLOCAL
-    HOST_SNOPATH_DIR
+	books.html
 
 ================
 

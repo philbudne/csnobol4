@@ -1,6 +1,6 @@
 $Id$
 
-1.5 release of ``The Macro Implementation of SNOBOL4 in C'' (CSNOBOL4)
+2.0 release of ``The Macro Implementation of SNOBOL4 in C'' (CSNOBOL4)
 
 This is a free port of the original SIL (SNOBOL4 Implementation
 Language) "macro" version of SNOBOL4 (developed at Bell Labs) with the
@@ -8,12 +8,7 @@ Language) "macro" version of SNOBOL4 (developed at Bell Labs) with the
 
 SNOBOL4, while known primarily as a string language excels at any task
 involving symbolic manipulations.  It provides dynamic typing, garbage
-collection, user data types, on the fly compilation.  It's primary
-weakness is it's simple syntax, and lack of "structured programming"
-and "object oriented" constructs.
-
-However some consider the spareness of SNOBOL4 syntax a strength when
-compared to some "modern" agglomerations such as Perl.
+collection, user data types, on the fly compilation.
 
 The latest release can be found at http://www.snobol4.org/csnobol4
 
@@ -58,6 +53,9 @@ Also useful are the Catspaw Vanilla SNOBOL4 manual;
 and the Catspaw SPITBOL manual
     ftp://ftp.snobol4.com/spitman.pdf
 
+Scans of SNOBOL4 books;
+    http://www.snobol4.org/doc/books.html
+
 INSTALL
 	Information on building and installing CSNOBOL4
 
@@ -67,49 +65,17 @@ README
 CHANGES
 	Important changes since last release
 
-doc/snobol4.0
-	text man page for SNOBOL4.
-	describes changes from the SNOBOL4 reference ("green book").
-
-doc/sdb.0
-	text man page for SNOBOL4 debugger.
-
-doc/snobol4dbm.0
-	text man page for SNOBOL4 DBM library routines
-
-doc/snobol4random.0
-	text man page for SNOBOL4 random number support
-
-doc/snobol4readline.0
-	text man page for SNOBOL4 readline support
-
-doc/snobol4tcl.0
-	text man page for SNOBOL4 Tcl/Tk support
-
-doc/snobol4time.0
-	text man page for SNOBOL4 time support
-
-doc/snolib.3
-	man page for SNOBOL4 library routines
-
-doc/porting.txt
-	information on porting to a new system,
-	particularly the usage of Makefile variables and m4 macros.
-
 TODO.soon
 	current top priority tasks (hopefully small in any release)
 
 TODO
-	older identified tasks / wish list.
-
-Mark Emmer has made his old 16-bit DOS Macro SNOBOL4 based product
-"SNOBOL4+" available for free.  See http://www.snobol4.com and
-ftp://ftp.snobol4.com for it, many demo programs, SNOBOL4 language
-documentation, and ordering information for books & products from
-Catspaw!
+	older/ancient identified tasks
 
 There is a mailing list for SNOBOL4 on Yahoo Groups:
-http://tech.groups.yahoo.com/group/snobol/
+https://groups.yahoo.com/neo/groups/snobol/info
+
+http://www.snobol4.org/
+	SNOBOL4 resources
 
 Acknowledgments;
 
