@@ -4,10 +4,9 @@ $Id$
 snobol4 \- SNOBOL4 interpreter
 
 =sect DESCRIPTION
-This manual page describes a port of the original Bell Telephone Labs
-(BTL) Macro Implementation of SNOBOL4 to machines with ILP32 (32-bit
-int/long/pointer) or LP64 (64-bit long/pointer) C compilers by Philip
-L. Budne.
+This manual page describes CSNOBOL4, a port of the original Bell
+Telephone Labs (BTL) Macro Implementation of SNOBOL4 to the C
+language.
 
 The language and its implementation are described in
 =link #Griswold1971 [Griswold1971]
@@ -140,47 +139,49 @@ executable: ``#!/usr/local/bin/snobol4''.
 
 =subsect Directory Search List
 
-Files specified in B<-INCLUDE> directives and B<LOAD()> function calls
-are first checked for in the current working directory.  If not found,
-the following directory search order is used: Any directories
-specified on the command line using B<-I> options, in the order
-specified; The list of directories from the B<SNOPATH> environment
-variable, if defined; If B<SNOPATH> is not defined, the B<SNODIR>
-environment variable (or a compiled in default) is used as I<base>
-to add the following directories:
+A directory search list is used for files specified in B<-INCLUDE>
+directives and B<LOAD()> function calls is constructed from:
 
+Any directories specified on the command line using B<-I> options, in
+the order specified.
+
+The list of directories from the B<SNOPATH> environment variable, if
+defined; If B<SNOPATH> is not defined, the B<SNODIR> environment
+variable (or a compiled in default) is used as I<base> to add the
+following directories:
 =bull I<base>/I<version>/I<lib>
 =bull I<base>/I<version>/I<local>
 =bull I<base>/I<local>
+
+The current working directory.
 
 =sect ENVIRONMENT
 
 =item B<SNOPATH>
 Is a list of directories delimited by colons (semi-colons on VMS and
-Windows) appended to the Directory Search List (see above).  NOTE!!
-Use of B<SNOPATH> introduces security and portability issues!!
+Windows) appended to the Directory Search List (see above).
+
+=item B<SNOLIB>
+B<SNOLIB> is used to establish the base libary path if
+B<SNOPATH> is not defined.  See Directory Search List above.
+B<SNOLIB> was the sole search directory in versions of CSNOBOL4 prior
+to version 1.5.
 
 =item B<SNOBOL_PRELOAD_PATH>
 Is a list of source files delimited by colons (semi-colons on VMS and
-Windows) that will be read before the program source.  Like
-B<SNOPATH>, Use of B<SNOBOL_PRELOAD_PATH> introduces security and portability
-issues.
-
-=item B<SNOLIB>
-B<SNOLIB> is used to establish the base libary path if B<SNOPATH> is
-not defined.  See Directory Search List above.  (B<SNOLIB> was the
-sole search directory in versions of CSNOBOL4 prior to version 1.5).
+Windows) that will be read before the program source.
+Using B<SNOBOL_PRELOAD_PATH> will make your code less portable.
 
 =sect SEE ALSO
 =table 2i
 =row B<sdb>(1)	SNOBOL4 Debugger
-=row B<snobol4cmd>(1)	command line options
-=row B<snobol4ctrl>(1)	control lines
+=row B<snobol4cmd>(1)	CSNOBOL4 command line options
+=row B<snobol4ctrl>(1)	CSNOBOL4 control lines
 =row B<snobol4error>(1)	B<&amp;ERRTYPE> and B<&amp;ERRTEXT> values
-=row B<snobol4ext>(1)	extensions to BTL SNOBOL4
-=row B<snobol4funcs>(1)	CSNOBOL4 built-in functions
+=row B<snobol4ext>(1)	CSNOBOL4 extensions to BTL SNOBOL4
+=row B<snobol4funcs>(1)	CSNOBOL4 built-in function list
 =row B<snobol4io>(1)	input/output
-=row B<snobol4key>(1)	keywords
+=row B<snobol4key>(1)	CSNOBOL4 keywords
 =row B<snobol4blocks>(1)	SNOBOL4B BLOCKS extension
 =row B<snobol4dirs>(3)	directory access functions
 =row B<snobol4ffi>(3)	Foreign Function Interface functions
@@ -230,21 +231,25 @@ Book describing the implementation techniques used in Macro SNOBOL4.
 =item Catspaw Macro SPITBOL manual
 =link ftp://ftp.snobol4.com/spitman.pdf
 
+=item I<Algorithms in SNOBOL4>
+James Gimpel
+=link http://www.snobol4.org/docs/books.html#orange
+
 =sect AUTHORS
-Ralph E. Griswold, James F. Poage, Ivan P. Polonsky (Macro SNOBOL4)
+Ralph E. Griswold, James F. Poage, Ivan P. Polonsky, et al (Macro SNOBOL4)
 
 Philip. L. Budne (CSNOBOL4)
-
-with help from:
 
 Mark Emmer (code from SNOBOL4+)
 
 Viktors Berstis (code from Minnesota SNOBOL4)
 
-=sect BUGS
-I/O retains some record oriented flavor (maximum line length on input).
+James Gimpel (SNOBOL4B)
 
+=sect BUGS
 I/O is still tied to unit numbers.
+
+I/O retains some record oriented flavor (maximum line length on input).
 
 ``Dynamic'' storage cannot be expanded after startup.
 
@@ -253,4 +258,3 @@ Integer math can never fail, even on overflow.
 Oversize integer constants may not be detected.
 
 This manual page is I<still> too long, and should be split up even further!
-

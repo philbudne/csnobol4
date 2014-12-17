@@ -661,7 +661,6 @@ install: snobol4 sdb timing.out $(GENERATED_DOCS)
 	$(INSTALL) -d $(SNOLIB_DOC)
 	$(INSTALL) -m 644 README $(SNOLIB_DOC)
 	$(INSTALL) -m 644 CHANGES $(SNOLIB_DOC)
-	$(INSTALL) -m 644 doc/load.txt $(SNOLIB_DOC)
 	$(INSTALL) -d $(SNOLIB_VER)
 	$(INSTALL) -d $(SNOLIB_VER)/local
 	$(INSTALL) -d $(SNOLIB_VER)/local/shared
@@ -678,6 +677,10 @@ install: snobol4 sdb timing.out $(GENERATED_DOCS)
 	$(INSTALL) -d $(INCLUDE_DIR)
 	for F in $(INSTALL_H); do \
 		$(INSTALL) -m 644 $$F $(INCLUDE_DIR); \
+	done
+	$(INSTALL) -d $(DOC_DIR)
+	for F in doc/load.txt doc/*.html modules/*/*.html; do \
+		$(INSTALL) -m 644 $$F $(DOC_DIR); \
 	done
 	@echo '*********************************************************' 1>&2
 	@echo 'Have you mailed a copy of timing.out to timing@snobol4.org ?' 1>&2

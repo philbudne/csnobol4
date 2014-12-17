@@ -1,21 +1,12 @@
 $Id$
 
-mention "." in default SNOPATH!!!!
-
 Problem not running ./configure first?????
-
-test setup.sno in a private directory!!!
 
 update README
 	version
 	man page list
 
 link to books page at www.snobol4.org/index.html
-
-snobol4blocks.1.pea:
-	reference CACM June 1972 15(6) pp438-447
-
-move snopea.1(.html) generation to doc/Makefile?
 
 HTML:
 	install in SNOLIB/VERS/html??
@@ -27,7 +18,6 @@ document:
     HOST_SNOLIB_VLIB
     HOST_SNOLIB_VLOCAL
     HOST_SNOPATH_DIR
-    snobol4host.3.pea??
 
 ================
 
@@ -50,7 +40,9 @@ man pages:
     snobol4wrapper -- pea comments in wrapper.sno
     snobol4load   -- C functions/macros
 
-snopea.sno: display uc words in small caps?
+snopea.sno:
+	display UC words in small caps?
+	L<URL>
 	E<entity>??
 	output HTML links for URLs, snobol4 man pages????
 

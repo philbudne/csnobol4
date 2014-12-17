@@ -4,6 +4,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 12/16/2014:
 	man page tweaks
+	configure, Makefile2.m4: install HTML in $PREFIX/share/doc/snobol4
 
 12/15/2014:
 	modules/stcl/stcl.c: clean up warning (reported by Clem Cole)
