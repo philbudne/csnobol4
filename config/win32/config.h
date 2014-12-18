@@ -72,7 +72,7 @@
 /* optional features: */
 /*#define PML_TIME*/
 /*#define PML_RANDOM*/
-/*#define HAVE_SLEEP*/
+#define HAVE_SLEEP
 
 #ifndef __GNUC__
 #define HAVE_TIMEGM			/* not in MINGW 1.0.7(0.48/3/2) */
