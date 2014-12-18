@@ -29,9 +29,7 @@ extern void *malloc();
 #include "data.h"			/* SIL data */
 #include "proc.h"			/* for SYSCUT() */
 
-#ifndef DEF_SNOPATH
 #include "version.h"
-#endif
 
 /* return type of signal handler functions */
 #ifndef SIGFUNC_T
