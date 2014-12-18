@@ -5,7 +5,14 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 12/18/2014:
 	config/win32/{config.h,ntmsvc.mak}:
 		disable PML_{TIME,RANDOM,COM,NDBM}
-		remove logic.obj
+		remove logic.obj, sleep.obj
+	modules/stat/stat.c: ifdef st_atimensec
+	config/win32/config.sno: fix sleep path, add sdbm files
+	modules/setuputil.sno: /LIBPATH
+	include/load.h: define lret_t (required in windows DLLs)
+	modules/*/*.c: use lret_t
+	Makefile2.m4: remove obsolete option for com.cpp
+	configure: ditch HAVE_FILE_NSEC, tweak cygwin LDFLAGS
 
 12/17/2014:
 	README, INSTALL: update for 2.0

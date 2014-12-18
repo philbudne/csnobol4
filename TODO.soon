@@ -1,9 +1,17 @@
 $Id$
 
-update README
-	version
-	man page list
-	books.html
+README / INSTALL
+	note HTML page install directory??
+
+benchmark:
+	only compare Kst/sec??
+
+construct a config.m4 file for mingw/msc???
+
+cygwin:
+	Makefile2.m4: install libsnobol4.a!!
+
+create "com" module!!!!
 
 ================
 
