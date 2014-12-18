@@ -171,6 +171,7 @@ LSTAT_( LA_ALIST ) LA_DCL
 lret_t
 FSTAT_( LA_ALIST ) LA_DCL
 {
+#ifdef HAVE_FSTAT
     struct descr *dp = LA_PTR(1);
     STAT_STRUCT st;
     int ret;
@@ -183,5 +184,6 @@ FSTAT_( LA_ALIST ) LA_DCL
 
     /* validate dp[ST_DESCR] */
     st2sno(&st, dp);
+#endif
     RETNULL;
 }

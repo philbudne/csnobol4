@@ -7,6 +7,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 		disable PML_{TIME,RANDOM,COM,NDBM}
 		remove logic.obj, sleep.obj
 		define HAVE_SDBM_H
+		define STAT_STRUCT
 	modules/stat/stat.c: ifdef st_atimensec
 	config/win32/config.sno: fix sleep path, add sdbm files
 	modules/setuputil.sno: /LIBPATH
@@ -18,6 +19,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	modules/dirs/win32/dirent.[ch]: utilities for win32
 	modules/com/com.cpp (moved from snolib/win32): add COM_DL
 	modules/com/setup.sno (new)
+	modules/ndbm/sdbm.c: use STAT_STRUCT
+	modules/stat/stat.c: use STAT_STRUCT, HAVE_FSTAT
 
 12/17/2014:
 	README, INSTALL: update for 2.0

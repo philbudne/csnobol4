@@ -1753,7 +1753,7 @@ if true; then
     if [ "$USE_SDBM" ]; then
 	echo "using SDBM for DBM support" 1>&2
 	if [ "$FORCE_PML" ]; then
-	    echo 'ADD_CPPFLAGS([-Ilib/sdbm])' >> $CONFIG_M4
+	    echo 'ADD_CPPFLAGS([-Imodules/ndbm/sdbm])' >> $CONFIG_M4
 	    echo 'ADD_SRCS([$(SDBM_C)$(SDBM_HASH_C) $(SDBM_PAIR_C)])' >> $CONFIG_M4
 	    echo 'ADD_OBJS([sdbm.o sdbm_hash.o sdbm_pair.o])' >> $CONFIG_M4
 	else
@@ -1804,6 +1804,12 @@ fi
 if config/check 'sys/types.h sys/stat.h' 'struct stat st; lstat("foo", &st)'; then
     echo '#define HAVE_LSTAT'	>> $CONFIG_H
     echo 'using lstat()' 1>&2
+fi
+
+# test fstat() for "stat" package
+if config/check 'sys/types.h sys/stat.h' 'struct stat st; fstat(0, &st)'; then
+    echo '#define HAVE_FSTAT'	>> $CONFIG_H
+    echo 'using fstat()' 1>&2
 fi
 
 # MacPorts: /opt/local

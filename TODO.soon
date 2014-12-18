@@ -11,7 +11,15 @@ construct a config.m4 file for mingw/msc???
 cygwin:
 	Makefile2.m4: install libsnobol4.a!!
 
-create "com" module!!!!
+modules/sqlite3/setup.sno: detect local sources (amalgum?)
+
+tweak modules for msc:
+	ndbm
+	stat
+	dirs
+
+	sqlite3????
+	readline??
 
 ================
 
