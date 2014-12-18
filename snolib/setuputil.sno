@@ -428,6 +428,8 @@ setup.win.msc.basename.end
 	DEFINE('setup.win.msc.objs(t)srcs,file') :(setup.win.msc.objs.end)
 setup.win.msc.objs
 	srcs = setup.repl(t['sources'] setup.c, '.c,', objext ' ')
+	srcs = setup.repl(srcs setup.c, '.cpp,', objext ' ')
+
 setup.win.msc.objs.loop
 	IDENT(srcs)				:s(RETURN)
 	srcs (break(' ') ' ') . file =		:f(RETURN)
