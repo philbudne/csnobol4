@@ -1849,11 +1849,9 @@ if [ ! "$FORCE_PML" ]; then
 fi
 
 # Include COM support under Cygwin!
-# XXX missing symbols under Windows 7
 if [ "$CYGWIN" -a ! "$WITHOUT_COM" -a -f $INCDIR/w32api/objbase.h ]; then
     echo 'using Win32 COM support' 1>&2
-    echo 'ADD_OBJS([com.o])'			>> $CONFIG_M4
-    echo 'ADD_SRCS([$(COM_CPP)])'		>> $CONFIG_M4
+    MODULES="$MODULES com"
     if grep wcschr $INCDIR/wchar.h >/dev/null 2>&1; then
 	echo '#define USE_WCHAR_H'		>> $CONFIG_H
     else
@@ -1865,11 +1863,12 @@ if [ "$CYGWIN" -a ! "$WITHOUT_COM" -a -f $INCDIR/w32api/objbase.h ]; then
     else
 	echo '#define NEED_COGETOBJECT'		>> $CONFIG_H
     fi
-    echo '#define PML_COM'			>> $CONFIG_H
+
     # -L/usr/lib/w32api needed on Windows 7 (thanks to Robert Shanley!)
-    echo 'ADD_LDFLAGS([-L/usr/lib/w32api -lole32 -luuid -loleaut32])' >> $CONFIG_M4
-    # needed w/ gcc 3.3.1 cygwin 1.5.9 (0.122/4/2)
-    echo 'ADD_LDFLAGS([-lstdc++])'		>> $CONFIG_M4
+    echo '	COM_LIBDIRS = "/usr/lib/w32api"' >> $CONFIG_SNO
+
+    # -lstdc++ needed w/ gcc 3.3.1 cygwin 1.5.9 (0.122/4/2)
+    echo '	COM_LIBS = "ole32,uuid,oleaut32,stdc++"' >> $CONFIG_SNO
 fi
 
 if [ "$INITIAL_CFLAGS" ]; then

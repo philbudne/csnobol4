@@ -13,6 +13,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	modules/*/*.c: use lret_t
 	Makefile2.m4: remove obsolete option for com.cpp
 	configure: ditch HAVE_FILE_NSEC, tweak cygwin LDFLAGS
+		output to config.sno for COM module
 	modules/dirs/win32/dirent.[ch]: utilities for win32
 	modules/com/com.cpp (moved from snolib/win32): add COM_DL
 
