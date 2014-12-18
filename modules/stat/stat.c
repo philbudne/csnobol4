@@ -98,7 +98,7 @@ st2sno(st, dp)
     SETINT(dp,ST_ATIME,st->st_atime);
     SETINT(dp,ST_MTIME,st->st_mtime);
     SETINT(dp,ST_CTIME,st->st_ctime);
-#ifdef HAVE_FILE_NSEC
+#ifdef st_atimensec
     SETINT(dp,ST_ATIMENSEC,st->st_atimensec);
     SETINT(dp,ST_MTIMENSEC,st->st_mtimensec);
     SETINT(dp,ST_CTIMENSEC,st->st_ctimensec);
@@ -108,7 +108,7 @@ st2sno(st, dp)
 /*
  * LOAD("STAT_(STRING,ST)STRING", STAT_DL)
  */
-int
+lret_t
 STAT_( LA_ALIST ) LA_DCL
 {
     char *path;
@@ -134,7 +134,7 @@ STAT_( LA_ALIST ) LA_DCL
 /*
  * LOAD("LSTAT_(STRING,ST)STRING", STAT_DL)
  */
-int
+lret_t
 LSTAT_( LA_ALIST ) LA_DCL
 {
 #ifdef HAVE_LSTAT
@@ -164,7 +164,7 @@ LSTAT_( LA_ALIST ) LA_DCL
 /*
  * LOAD("FSTAT_(INTEGER,ST)STRING", STAT_DL)
  */
-int
+lret_t
 FSTAT_( LA_ALIST ) LA_DCL
 {
     struct descr *dp = LA_PTR(1);

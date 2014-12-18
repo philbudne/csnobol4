@@ -151,7 +151,7 @@ ffi_convert(cp, ret)
  * return handle, or failure
  * XXX handle trailing ... on args!!
  */
-int
+lret_t
 FFI_PREP_CIF( LA_ALIST ) LA_DCL
 {
     struct cifplus *cpp = NULL;
@@ -239,7 +239,7 @@ foo(double a, double b) {
  * arg 2: handle from FFI_DLSYM (function pointer)
  * args 3+: arguments to pass to function
  */
-int
+lret_t
 FFI_CALL( LA_ALIST ) LA_DCL
 {
     struct cifplus *cpp = lookup_handle(&ffi_cifplus, LA_INT(0));
@@ -357,7 +357,7 @@ FFI_CALL( LA_ALIST ) LA_DCL
 /*
  * LOAD("FFI_FREE_CIF(INTEGER)STRING", FFI_DL)
  */
-int
+lret_t
 FFI_FREE_CIF( LA_ALIST ) LA_DCL
 {
     struct cifplus *cpp = lookup_handle(&ffi_cifplus, LA_INT(0));
@@ -388,7 +388,7 @@ FFI_FREE_CIF( LA_ALIST ) LA_DCL
 /*
  * LOAD("FFI_DLOPEN(STRING)INTEGER", FFI_DL)
  */
-int
+lret_t
 FFI_DLOPEN( LA_ALIST ) LA_DCL
 {
     int_t h;
@@ -419,7 +419,7 @@ FFI_DLOPEN( LA_ALIST ) LA_DCL
  * LOAD("FFI_DLSYM(INTEGER,STRING)INTEGER", FFI_DL)
  * returns a handle for FFI_CALL
  */
-int
+lret_t
 FFI_DLSYM( LA_ALIST ) LA_DCL
 {
     void *dl = (void *)LA_INT(0);
@@ -449,7 +449,7 @@ FFI_DLSYM( LA_ALIST ) LA_DCL
 /*
  * XXX("FFI_DLCLOSE(INTEGER)STRING", FFI_DL)
  */
-int
+lret_t
 FFI_DLCLOSE( LA_ALIST ) LA_DCL
 {
     void *dlp = lookup_handle(&ffi_dlibs, LA_INT(0));
@@ -466,7 +466,7 @@ FFI_DLCLOSE( LA_ALIST ) LA_DCL
  * return RTLD_NEXT value for FFI_DLSYM
  * (could also use C program to output include file line)
  */
-int
+lret_t
 FFI_RTLD_NEXT( LA_ALIST ) LA_DCL
 {
     RETINT((int_t)RTLD_NEXT);
@@ -477,7 +477,7 @@ FFI_RTLD_NEXT( LA_ALIST ) LA_DCL
  * return RTLD_DEFAULT value for FFI_DLSYM
  * (could also use C program to output include file line)
  */
-int
+lret_t
 FFI_RTLD_DEFAULT( LA_ALIST ) LA_DCL
 {
     RETINT((int_t)RTLD_DEFAULT);
@@ -488,7 +488,7 @@ FFI_RTLD_DEFAULT( LA_ALIST ) LA_DCL
  * return RTLD_SELF value for FFI_DLSYM
  * (could also use C program to output include file line)
  */
-int
+lret_t
 FFI_RTLD_SELF( LA_ALIST ) LA_DCL
 {
 #ifdef RTLD_SELF

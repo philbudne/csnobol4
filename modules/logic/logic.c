@@ -107,7 +107,7 @@ static const char alphabet[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 /*
  * LOAD("LOGIC(INTEGER,,)", LOGIC_DL)
  */
-int
+lret_t
 LOGIC( LA_ALIST ) LA_DCL
 {
     int_t op = LA_INT(0);

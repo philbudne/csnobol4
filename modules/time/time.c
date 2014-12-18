@@ -54,7 +54,7 @@ enum tm_member {
 /*
  * LOAD("GETTIMEOFDAY_(TIMEVAL)", TIME_DL)
  */
-int
+lret_t
 GETTIMEOFDAY_( LA_ALIST ) LA_DCL
 {
     struct descr *dp = LA_PTR(0);
@@ -128,7 +128,7 @@ sno2tm(struct descr *dp, struct tm *tmp)
 /*
  * LOAD("LOCALTIME_(INTEGER,TM)", TIME_DL)
  */
-int
+lret_t
 LOCALTIME_( LA_ALIST ) LA_DCL
 {
     time_t t = LA_INT(0);
@@ -141,7 +141,7 @@ LOCALTIME_( LA_ALIST ) LA_DCL
 /*
  * LOAD("GMTIME_(INTEGER,TM)", TIME_DL)
  */
-int
+lret_t
 GMTIME_( LA_ALIST ) LA_DCL
 {
     time_t t = LA_INT(0);
@@ -154,7 +154,7 @@ GMTIME_( LA_ALIST ) LA_DCL
 /*
  * LOAD("STRFTIME(STRING,TM)STRING", TIME_DL)
  */
-int
+lret_t
 STRFTIME( LA_ALIST ) LA_DCL
 {
     char format[1024];
@@ -172,7 +172,7 @@ STRFTIME( LA_ALIST ) LA_DCL
  * LOAD("MKTIME(TM)INTEGER", TIME_DL)
  */
 
-int
+lret_t
 MKTIME( LA_ALIST ) LA_DCL
 {
     struct tm tm;
@@ -190,7 +190,7 @@ MKTIME( LA_ALIST ) LA_DCL
 /*
  * LOAD("SLEEP(REAL)", TIME_DL)
  */
-int
+lret_t
 SLEEP( LA_ALIST ) LA_DCL
 {
     if (sleepf(LA_REAL(0)) < 0)
@@ -203,7 +203,7 @@ SLEEP( LA_ALIST ) LA_DCL
 /*
  * LOAD("STRPTIME_(STRING,STRING,TM)", TIME_DL)
  */
-int
+lret_t
 STRPTIME_( LA_ALIST ) LA_DCL
 {
     char input[1024];
@@ -226,7 +226,7 @@ STRPTIME_( LA_ALIST ) LA_DCL
  * LOAD("TIMEGM(TM)INTEGER", TIME_DL)
  */
 
-int
+lret_t
 TIMEGM( LA_ALIST ) LA_DCL
 {
     struct tm tm;

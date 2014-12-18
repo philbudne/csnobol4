@@ -16,11 +16,13 @@
 /* macros for loadable user functions;
  *
  * ie;
- * int
+ * LRET
  * myfunc(LA_ALIST) LA_DCL
  * {
  * }
  */
+
+#define lret_t EXPORT(int)
 
 #ifdef __STDC__
 #define LA_ALIST LOAD_PROTO

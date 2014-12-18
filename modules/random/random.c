@@ -571,7 +571,7 @@ static int seeded = 0;
 /*
  * LOAD("RANDOM()INTEGER", RANDOM_DL)
  */
-int
+lret_t
 RANDOM( LA_ALIST ) LA_DCL
 {
     if (!seeded) {
@@ -595,7 +595,7 @@ RANDOM( LA_ALIST ) LA_DCL
 /*
  * LOAD("SRANDOM(INTEGER)STRING", RANDOM_DL)
  */
-int
+lret_t
 SRANDOM( LA_ALIST ) LA_DCL
 {
     bsd_srandom(LA_INT(0));
@@ -622,7 +622,7 @@ SRANDOM( LA_ALIST ) LA_DCL
 /*
  * LOAD("SRANDOMDEV()STRING", RANDOM_DL)
  */
-int
+lret_t
 SRANDOMDEV( LA_ALIST ) LA_DCL
 {
     bsd_srandomdev();

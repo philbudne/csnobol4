@@ -48,7 +48,7 @@
 /* machine generated: */
 #include "equ.h"			/* I & R */
 
-int
+lret_t
 SPRINTF( LA_ALIST ) LA_DCL
 {
     char fmt[1024];			/* XXX */
