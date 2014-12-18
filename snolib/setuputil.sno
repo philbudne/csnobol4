@@ -87,6 +87,8 @@ setup	TERMINAL = DIFFER(DATATYPE(t),'TABLE') 'setup needs TABLE'
 +						:s(setup.fatal)
 	objext = HOST(HOST_OBJ_EXT)
 	sys = HOST(HOST_SETUP_SYS)
+	cygwin = DIFFER(HOST() ? POS(0) BREAKX(':') ':CYGWIN') 1
+
 * build against distribution include files
 	dist_build = FILE("../setuputil.sno") FILE("../../config.h") 1
 	dist_build = 
@@ -332,11 +334,13 @@ setup.posix.buildcmd2
 
 	libs = t['libraries']
 	libs = DIFFER(libs) setup.repl(setup.c libs, setup.c, ' -l')
+	libs = DIFFER(cygwin) libs ' -lsnobol4'
 
 	link = HOST(HOST_DL_LD)
 +		' ' HOST(HOST_DL_LDFLAGS)
 +		' -o ' setup.dlname(t) ' ' setup.posix.objs(t) libdirs libs
 +		' ' t['ldflags']
+
 	setup.posix.system(link)		:f(FRETURN)
 	setup.makeinclude(t)			:(RETURN)
 setup.posix.buildcmd.end
@@ -457,9 +461,9 @@ setup.win.msc.buildcmd2
 
 	libdirs = t['library_dirs']
 	libdirs = DIFFER(libdirs)
-+		setup.repl(setup.c libdirs, setup.c, ' /LIBDIR:')
++		setup.repl(setup.c libdirs, setup.c, ' /LIBPATH:')
 
-	snobol4lib_dir = ' /LIBDIR:' (DIFFER(dist_build) '..\..',
+	snobol4lib_dir = ' /LIBPATH:' (DIFFER(dist_build) '..\..',
 +					HOST(HOST_SNOLIB_DIR))
 
 	libs = t['libraries']
