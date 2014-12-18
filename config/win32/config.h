@@ -67,13 +67,16 @@
 #define popen		_popen
 #define pclose		_pclose
 
-#define stat(a,b)	_stat(a,b)
-#define fstat(a,b)	_fstat(a,b)
+#ifdef _USE_INT64			/* ??? */
+#define stat(a,b)	_stat64(a,b)
+#define fstat(a,b)	_fstat64(a,b)
+#define STAT_STRUCT	struct _stat64
+#else
+#define stat(a,b)	_stat64i32(a,b)
+#define fstat(a,b)	_fstat64i32(a,b)
 #define STAT_STRUCT	struct _stat64i32
+#endif
 
-/* optional features: */
-/*#define PML_TIME*/
-/*#define PML_RANDOM*/
 #define HAVE_SLEEP
 
 #ifndef __GNUC__
