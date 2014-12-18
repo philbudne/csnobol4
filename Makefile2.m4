@@ -593,7 +593,7 @@ time.o:	$(TIME_C)
 	$(CC) $(CFLAGS) -c $(TIME_C)
 
 com.o:	$(COM_CPP)
-	$(CC) $(CFLAGS) -c -fvtable-thunks $(COM_CPP)
+	$(CC) $(CFLAGS) -c $(COM_CPP)
 
 #################
 # lint picking
