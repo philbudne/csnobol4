@@ -2,7 +2,7 @@
 
 /*
  * Windows32 config.h 1/27/2002
- * Window64 too! 9/23/2013
+ * Windows64 too! 9/23/2013
  *
  * Used for Borland, MINGW, and MSVC
  */
@@ -66,18 +66,17 @@
 #define popen		_popen
 #define pclose		_pclose
 
-#define stat		_stat
-#define fstat		_fstat
-
-#define timegm		_mkgmtime
+#define stat(a,b)	_stat(a,b)
+#define fstat(a,b)	_fstat(a,b)
 
 /* optional features: */
-#define PML_TIME
-#define PML_RANDOM
-#define HAVE_SLEEP
+/*#define PML_TIME*/
+/*#define PML_RANDOM*/
+/*#define HAVE_SLEEP*/
 
 #ifndef __GNUC__
 #define HAVE_TIMEGM			/* not in MINGW 1.0.7(0.48/3/2) */
+#define timegm		_mkgmtime
 #endif
 
 #ifdef _WIN64

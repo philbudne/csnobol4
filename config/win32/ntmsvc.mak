@@ -21,13 +21,13 @@ INET_DEFS=-DINET_IO
 INET_LIBS=wsock32.lib
 
 # to disable COM comment out next 3 lines:
-COM_LIBS=ole32.lib uuid.lib oleaut32.lib
-COM_DEFS=-DPML_COM
-COM_OBJ=com.obj
+#COM_LIBS=ole32.lib uuid.lib oleaut32.lib
+#COM_DEFS=-DPML_COM
+#COM_OBJ=com.obj
 
 # Ozan Yigit's SDBM routines for NDBM interface
-SDBM_DEFS=-DPML_NDBM -DHAVE_SDBM_H -DDUFF -Ilib\sdbm
-SDBM_OBJ=ndbm.obj sdbm_pair.obj sdbm_hash.obj sdbm.obj
+#SDBM_DEFS=-DPML_NDBM -DHAVE_SDBM_H -DDUFF -Ilib\sdbm
+#SDBM_OBJ=ndbm.obj sdbm_pair.obj sdbm_hash.obj sdbm.obj
 
 CFLAGS=	-c $(OPT) \
 	-I$(SRCDIR)config\win32 -I$(SRCDIR)include -I$(SRCDIR). \
@@ -44,8 +44,8 @@ OBJ=	isnobol4.obj data.obj data_init.obj main.obj syn.obj \
 	getopt.obj init.obj load.obj loadx.obj mstime.obj \
 	atan.obj chop.obj cos.obj \
 	delete.obj environ.obj exit.obj file.obj getstring.obj handle.obj \
-	host.obj log.obj logic.obj ord.obj random.obj rename.obj retstring.obj \
-	sin.obj spcint.obj spreal.obj sqrt.obj sset.obj tan.obj time.obj \
+	host.obj log.obj logic.obj ord.obj rename.obj retstring.obj \
+	sin.obj spcint.obj spreal.obj sqrt.obj sset.obj tan.obj \
 	osopen.obj sleep.obj sys.obj tty.obj inet.obj bindresvport.obj \
 	execute.obj exists.obj term.obj findunit.obj exp.obj \
 	$(COM_OBJ) $(SDBM_OBJ)
