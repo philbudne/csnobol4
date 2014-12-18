@@ -17,6 +17,10 @@
 #include "macros.h"
 #include "load.h"
 
+#ifndef STAT_STRUCT
+#define STAT_STRUCT struct stat
+#endif
+
 /*
  * TODO: chmod, fchmod, mkfifo, mkdir
  */
@@ -59,7 +63,7 @@ enum st_member {
 
 static void
 st2sno(st, dp)
-    struct stat *st;
+    STAT_STRUCT *st;
     struct descr *dp;
 {
     int type;
@@ -113,7 +117,7 @@ STAT_( LA_ALIST ) LA_DCL
 {
     char *path;
     struct descr *dp = LA_PTR(1);
-    struct stat st;
+    STAT_STRUCT st;
     int ret;
 
     if (!dp || LA_TYPE(1) < DATSTA || COUNT(dp) != ST_COUNT)
@@ -140,7 +144,7 @@ LSTAT_( LA_ALIST ) LA_DCL
 #ifdef HAVE_LSTAT
     char *path;
     struct descr *dp = LA_PTR(1);
-    struct stat st;
+    STAT_STRUCT st;
     int ret;
 
     if (!dp || LA_TYPE(1) < DATSTA || COUNT(dp) != ST_COUNT)
@@ -168,7 +172,7 @@ lret_t
 FSTAT_( LA_ALIST ) LA_DCL
 {
     struct descr *dp = LA_PTR(1);
-    struct stat st;
+    STAT_STRUCT st;
     int ret;
 
     if (!dp || LA_TYPE(1) < DATSTA || COUNT(dp) != ST_COUNT)

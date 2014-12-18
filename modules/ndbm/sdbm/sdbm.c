@@ -46,6 +46,10 @@
 #define NULL	0
 #endif
 
+#ifndef STAT_STRUCT
+#define STAT_STRUCT struct stat
+#endif
+
 /*
  * externals
  */
@@ -137,7 +141,7 @@ int flags;
 int mode;
 {
 	register DBM *db;
-	struct stat dstat;
+	STAT_STRUCT dstat;
 
 	if ((db = (DBM *) malloc(sizeof(DBM))) == NULL)
 		return errno = ENOMEM, (DBM *) NULL;

@@ -69,6 +69,7 @@
 
 #define stat(a,b)	_stat(a,b)
 #define fstat(a,b)	_fstat(a,b)
+#define STAT_STRUCT	struct _stat64i32
 
 /* optional features: */
 /*#define PML_TIME*/
