@@ -1,2 +1,5 @@
 # $Id$
-	SLEEP_C = 'lib/win32/sleep.c'
+	SLEEP_C = 'win32/sleep.c'
+	
+	NDBM_INCLUDE = "sdbm"
+	NDBM_SRCS = ",sdbm/sdbm.c,sdbm/sdbm_hash.c,sdbm/sdbm_pair.c"
