@@ -347,8 +347,6 @@ echo '#define SHARED_OBJ_SUBDIR "shared"'	>> $CONFIG_H
 # safe on all Unix systems (requires "fork")
 echo '#define PML_SERV'				>> $CONFIG_H
 
-echo '#define HAVE_FILE_NSEC'			>> $CONFIG_H
-
 # should work on all Unix systems:
 if [ "$FORCE_PML" ]; then
     # NOTE! Only includes v1.5 extensions!!
@@ -599,7 +597,9 @@ if [ "$GCCPATH" -a "$WANTGCC" ]; then
 	SO_CFLAGS=
 	SO_LD=$CCPATH
 	SO_LDFLAGS=-shared
-	echo 'ADD_LDFLAGS([-Wl,--out-implib,libsnobol4export.a])' >> $CONFIG_M4
+	echo 'ADD_LDFLAGS([-Wl,--out-implib,libsnobol4.a])' >> $CONFIG_M4
+	# libsnobol4.a not created unless this given:
+	echo 'ADD_LDFLAGS([-Wl,--export-all-symbols])' >> $CONFIG_M4
 	;;
 
     *)
