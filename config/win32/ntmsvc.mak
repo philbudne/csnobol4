@@ -44,7 +44,7 @@ OBJ=	isnobol4.obj data.obj data_init.obj main.obj syn.obj \
 	getopt.obj init.obj load.obj loadx.obj mstime.obj \
 	atan.obj chop.obj cos.obj \
 	delete.obj environ.obj exit.obj file.obj getstring.obj handle.obj \
-	host.obj log.obj logic.obj ord.obj rename.obj retstring.obj \
+	host.obj log.obj ord.obj rename.obj retstring.obj \
 	sin.obj spcint.obj spreal.obj sqrt.obj sset.obj tan.obj \
 	osopen.obj sleep.obj sys.obj tty.obj inet.obj bindresvport.obj \
 	execute.obj exists.obj term.obj findunit.obj exp.obj \
