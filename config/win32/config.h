@@ -30,6 +30,7 @@
 #define HAVE_STDARG_H
 #define HAVE_STDLIB_H
 #define HAVE_WINSOCK_H
+#define HAVE_SDBM_H
 
 #define NEED_BINDRESVPORT
 #define OSDEP_OPEN
