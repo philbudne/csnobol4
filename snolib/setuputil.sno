@@ -467,7 +467,7 @@ setup.win.msc.buildcmd2
 +					HOST(HOST_SNOLIB_DIR))
 
 	libs = t['libraries']
-	libs = DIFFER(libs) setup.repl(setup.c libs, setup.c, ' ')
+	libs = DIFFER(libs) setup.repl(libs setup.c, setup.c, '.lib ')
 
 	link = HOST(HOST_DL_LD)
 +		' ' HOST(HOST_DL_LDFLAGS)
@@ -475,7 +475,7 @@ setup.win.msc.buildcmd2
 +		' ' t['ldflags']
 +		' ' setup.win.msc.objs(t)
 +		' ' libdirs snobol4lib_dir
-+		' ' libs ' snobol4.lib'
++		' ' libs 'snobol4.lib'
 
 	setup.posix.system(link)		:f(FRETURN)
 	setup.makeinclude(t)			:(RETURN)
