@@ -170,7 +170,7 @@ lret_t
 FSTAT_( LA_ALIST ) LA_DCL
 {
     struct descr *dp = LA_PTR(1);
-    STAT_STRUCT st;
+    struct stat st;
     int ret;
 
     if (!dp || LA_TYPE(1) < DATSTA || COUNT(dp) != ST_COUNT)
