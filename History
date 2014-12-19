@@ -4,6 +4,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 12/19/2014:
 	config/win32/modules.bat: use %TOP%
+	modules/sqlite3/setup.sno: detect amalgamation sources
+	modules/sqlite3/sqlite3mod.c (renamed)
 
 12/18/2014:
 	config/win32/{config.h,ntmsvc.mak}:

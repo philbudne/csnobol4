@@ -4,10 +4,19 @@
 	t = TABLE()
 
 	t['module'] = 'sqlite3'
-	t['sources'] = 'sqlite3.c'
-	t['libraries'] = 'sqlite3'
+	t['sources'] = 'sqlite3mod.c'
 
-	t['author'] = t['maintainer'] = 'Phil Budne'
+	FILE('sqlite3.c') FILE('sqlite3.h') :f(uselib)
+
+	TERMINAL = 'Found amalgamation source file!!'
+	t['sources'] = t['sources'] ',sqlite3.c'
+	t['include_dirs'] = '.'		:(skiplib)
+	
+uselib	t['libraries'] = 'sqlite3'
+	t['include_dirs'] = SQLITE_INCLUDE
+	t['library_dirs'] = SQLITE_LIBDIR
+
+skiplib	t['author'] = t['maintainer'] = 'Phil Budne'
 	t['author_email'] = t['maintainer_email'] = 'phil@snobol4.org'
 	t['license'] = 'BSD'
 * description
@@ -15,8 +24,6 @@
 * version (get from RCS ID?)
 
 * info from configure script:
-	t['include_dirs'] = SQLITE_INCLUDE
-	t['library_dirs'] = SQLITE_LIBDIR
 
 	t['extras'] = 'sqlite3dbm.sno'
 
