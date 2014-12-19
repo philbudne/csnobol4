@@ -20,6 +20,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	modules/com/setup.sno (new)
 	config/win32/config.sno: set DIRS_{INCLUDE,FILES}
 	modules/dirs/setup.sno: use DIRS_{INCLUDE,FILES}
+	config/win32/modules.bat (new)
 
 12/17/2014:
 	README, INSTALL: update for 2.0
