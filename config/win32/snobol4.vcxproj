@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -43,7 +43,7 @@
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)..\..\lib\sdbm;$(SolutionDir)..\..\include;$(SolutionDir)..\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <CompileAs>CompileAsC</CompileAs>
-      <PreprocessorDefinitions>HAVE_CONFIG_H;INET_IO;BITFIELDS_SAME_TYPE;PML_NDBM;HAVE_SDBM_H;DUFF;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>HAVE_CONFIG_H;INET_IO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -93,9 +93,6 @@
     <ClCompile Include="..\..\lib\pml.c" />
     <ClCompile Include="..\..\lib\realst.c" />
     <ClCompile Include="..\..\lib\replace.c" />
-    <ClCompile Include="..\..\lib\sdbm\sdbm.c" />
-    <ClCompile Include="..\..\lib\sdbm\sdbm_hash.c" />
-    <ClCompile Include="..\..\lib\sdbm\sdbm_pair.c" />
     <ClCompile Include="..\..\lib\snolib\atan.c" />
     <ClCompile Include="..\..\lib\snolib\chop.c" />
     <ClCompile Include="..\..\lib\snolib\cos.c" />
@@ -109,30 +106,22 @@
     <ClCompile Include="..\..\lib\snolib\handle.c" />
     <ClCompile Include="..\..\lib\snolib\host.c" />
     <ClCompile Include="..\..\lib\snolib\log.c" />
-    <ClCompile Include="..\..\lib\snolib\logic.c" />
-    <ClCompile Include="..\..\lib\snolib\ndbm.c" />
     <ClCompile Include="..\..\lib\snolib\ord.c" />
-    <ClCompile Include="..\..\lib\snolib\random.c" />
     <ClCompile Include="..\..\lib\snolib\rename.c" />
     <ClCompile Include="..\..\lib\snolib\retstring.c" />
     <ClCompile Include="..\..\lib\snolib\sin.c" />
     <ClCompile Include="..\..\lib\snolib\sqrt.c" />
     <ClCompile Include="..\..\lib\snolib\sset.c" />
     <ClCompile Include="..\..\lib\snolib\tan.c" />
-    <ClCompile Include="..\..\lib\snolib\time.c" />
     <ClCompile Include="..\..\lib\str.c" />
     <ClCompile Include="..\..\lib\stream.c" />
     <ClCompile Include="..\..\lib\top.c" />
     <ClCompile Include="..\..\lib\tree.c" />
-    <ClCompile Include="..\..\lib\win32\com.cpp">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsCpp</CompileAs>
-    </ClCompile>
     <ClCompile Include="..\..\lib\win32\exists.c" />
     <ClCompile Include="..\..\lib\win32\inet.c" />
     <ClCompile Include="..\..\lib\win32\load.c" />
     <ClCompile Include="..\..\lib\win32\mstime.c" />
     <ClCompile Include="..\..\lib\win32\osopen.c" />
-    <ClCompile Include="..\..\lib\win32\sleep.c" />
     <ClCompile Include="..\..\lib\win32\sys.c" />
     <ClCompile Include="..\..\lib\win32\term.c" />
     <ClCompile Include="..\..\lib\win32\tty.c" />
@@ -158,9 +147,6 @@
     <ClInclude Include="..\..\include\syntab.h" />
     <ClInclude Include="..\..\include\units.h" />
     <ClInclude Include="..\..\include\vars.h" />
-    <ClInclude Include="..\..\lib\sdbm\pair.h" />
-    <ClInclude Include="..\..\lib\sdbm\sdbm.h" />
-    <ClInclude Include="..\..\lib\sdbm\tune.h" />
     <ClInclude Include="..\..\lib\snolib\host.h" />
     <ClInclude Include="..\..\mdata.h" />
     <ClInclude Include="..\..\mlink.h" />

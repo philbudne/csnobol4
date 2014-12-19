@@ -4,9 +4,6 @@
 # from nmake file for VC++ 5.0 on WinNT 4.0 P. Budne 2/4/1998
 # from batch file by David Feustel
 
-# XXX use to define SNOLIB_DIR??
-DEST=\snobol4
-
 CC=gcc
 # includes -finline-functions (and others in gcc v3)
 OPT=-O3 -g
@@ -19,22 +16,10 @@ INET_DEFS=-DINET_IO
 # wsock32 present on both Win95 and WinNT
 INET_LIBS=-lwsock32
 
-# to disable COM comment out next 3 lines:
-COM_LIBS=-lole32 -luuid -loleaut32 -lstdc++
-COM_DEFS=-DPML_COM
-COM_OBJ=com.o
-
-# Ozan Yigit's SDBM routines for NDBM interface
-SDBM_DEFS=-DPML_NDBM -DHAVE_SDBM_H -DDUFF -Ilib/sdbm
-SDBM_OBJ=ndbm.o sdbm_pair.o sdbm_hash.o sdbm.o
-
 CFLAGS=	-c $(OPT) -I$(SRCDIR)config/win32 -I$(SRCDIR)include -I$(SRCDIR). \
-	-DHAVE_CONFIG_H $(INET_DEFS) $(COM_DEFS) $(SDBM_DEFS)
+	-DHAVE_CONFIG_H $(INET_DEFS)
 
-LDFLAGS=-Wl,--out-implib,libsnobol4export.a
-
-# for com.cpp
-CXXFLAGS=$(CFLAGS)
+LDFLAGS=-Wl,--out-implib,libsnobol4.a
 
 OBJ=	isnobol4.o data.o data_init.o main.o syn.o bal.o break.o \
 	date.o dump.o endex.o hash.o intspc.o io.o lexcmp.o ordvst.o \
@@ -42,13 +27,13 @@ OBJ=	isnobol4.o data.o data_init.o main.o syn.o bal.o break.o \
 	tree.o bcopy.o bzero.o dynamic.o expops.o getopt.o init.o \
 	load.o loadx.o mstime.o atan.o chop.o cos.o delete.o \
 	environ.o exit.o exp.o \
-	file.o getstring.o handle.o host.o log.o logic.o ord.o rename.o \
-	random.o retstring.o sin.o spcint.o spreal.o sprintf.o sqrt.o sset.o \
-	osopen.o sleep.o sys.o tan.o time.o tty.o inet.o bindresvport.o \
-	execute.o exists.o term.o findunit.o $(COM_OBJ) $(SDBM_OBJ)
+	file.o getstring.o handle.o host.o log.o ord.o rename.o \
+	retstring.o sin.o spcint.o spreal.o sqrt.o sset.o \
+	osopen.o sys.o tan.o tty.o inet.o bindresvport.o \
+	execute.o exists.o term.o findunit.o
 
 snobol4.exe: $(OBJ)
-	$(CC) -o snobol4 $(OBJ) $(INET_LIBS) $(COM_LIBS) $(LDFLAGS)
+	$(CC) -o snobol4 $(OBJ) $(INET_LIBS) $(LDFLAGS)
 
 data.o:	$(SRCDIR)data.c
 	$(CC) $(CFLAGS) $(SRCDIR)data.c
@@ -179,9 +164,6 @@ mstime.o: $(SRCDIR)lib/win32/mstime.c
 osopen.o: $(SRCDIR)lib/win32/osopen.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/win32/osopen.c
 
-sleep.o: $(SRCDIR)lib/win32/sleep.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib/win32/sleep.c
-
 sys.o:	$(SRCDIR)lib/win32/sys.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/win32/sys.c
 
@@ -235,17 +217,8 @@ host.o:	$(SRCDIR)lib/snolib/host.c
 log.o:	$(SRCDIR)lib/snolib/log.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/log.c
 
-logic.o: $(SRCDIR)lib/snolib/logic.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/logic.c
-
-ndbm.o: $(SRCDIR)lib/snolib/ndbm.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/ndbm.c
-
 ord.o:	$(SRCDIR)lib/snolib/ord.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/ord.c
-
-random.o: $(SRCDIR)lib/snolib/random.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/random.c
 
 rename.o: $(SRCDIR)lib/snolib/rename.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/rename.c
@@ -267,27 +240,3 @@ sset.o:	$(SRCDIR)lib/snolib/sset.c
 
 tan.o:	$(SRCDIR)lib/snolib/tan.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/tan.c
-
-time.o:	$(SRCDIR)lib/snolib/time.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/time.c
-
-com.o:	$(SRCDIR)lib/win32/com.cpp
-	$(CXX) $(CXXFLAGS) $(SRCDIR)lib/win32/com.cpp
-
-#### sdbm
-
-sdbm.o: $(SRCDIR)lib/sdbm/sdbm.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib/sdbm/sdbm.c
-
-sdbm_pair.o: $(SRCDIR)lib/sdbm/sdbm_pair.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib/sdbm/sdbm_pair.c
-
-sdbm_hash.o: $(SRCDIR)lib/sdbm/sdbm_hash.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib/sdbm/sdbm_hash.c
-
-################################################################
-
-install: snobol4.exe
-	install snobol4.exe $(DEST)
-
-# XXX more files...

@@ -15,6 +15,8 @@
 #define __STDC__	0
 #endif /* __STDC__ not defined */
 
+#define BLOCKS
+
 /* datatypes; */
 #define SIGFUNC_T	void __cdecl
 
@@ -32,10 +34,11 @@
 #define HAVE_WINSOCK_H
 #define HAVE_SDBM_H
 
+#define WIN32_LEAN_AND_MEAN
+
 #define NEED_BINDRESVPORT
 #define OSDEP_OPEN
 #define TTY_READ_RAW
-#define WIN32_LEAN_AND_MEAN
 #define HAVE_GETVERSIONEX
 
 #define SOCKLEN_T int
@@ -71,12 +74,18 @@
 #define popen		_popen
 #define pclose		_pclose
 
+/****
+ * for time module
+ */
 #define HAVE_SLEEP
 
 #ifndef __GNUC__
 #define HAVE_TIMEGM			/* not in MINGW 1.0.7(0.48/3/2) */
 #define timegm		_mkgmtime
 #endif
+/*
+ * end for time module
+ ****/
 
 #ifdef _WIN64
 /*
@@ -104,8 +113,8 @@
 #if defined(_MSC_VER)
 #define OBJECT_EXT ".obj"
 #define SETUP_SYS "win.msc"
-#define DL_CFLAGS ""			/* /LD? */
-#define DL_LDFLAGS "/DLL"
+#define DL_CFLAGS "-nologo"		/* /LD? */
+#define DL_LDFLAGS "/DLL /NOLOGO"
 #elif defined(__GNUC__)
 #define OBJECT_EXT ".o"
 #define USE_WCHAR_H
@@ -120,5 +129,3 @@
 #endif /* defined(__BORLANDC__) */
 
 #define SO_LDFLAGS DL_CFLAGS
-
-#define BLOCKS
