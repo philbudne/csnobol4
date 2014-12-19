@@ -10,6 +10,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	config/win32/ntmsvc.mak: cleanup, removed module files
 	config/win32/mingw.mak: removed module files
 	config/win32/snobol4.vcxproj: removed module files
+	modules/stat/funcs.sno: fix comment/docs.
 
 12/18/2014:
 	config/win32/{config.h,ntmsvc.mak}:

@@ -8,12 +8,12 @@
 **B<STAT(>I<path>B<)> returns file status for I<path>, following symbolic links.
 **B<LSTAT(>I<path>B<)> returns file status for I<path>, returning information on symbolic links.
 **B<FSTAT(>I<fd>B<)> returns file status for the open file descriptor I<fd>.
-All three return a B<DATA()> object with the following members:
+**All three return a B<DATA()> object with the following members:
 **=indent 15
 **=item B<ST_DEV>
-**The device containing the file.
+**The device number containing the file.
 **=item B<ST_INO>
-**The file within the device.
+**The file number within the device.
 **=item B<ST_TYPE>
 **Is a B<STRING> identifiying the file type:
 **B<'-'> for a regular file,
@@ -28,7 +28,7 @@ All three return a B<DATA()> object with the following members:
 **=item B<ST_MODE>
 **File "mode" (protection and type) bits.
 **=item B<ST_NLINK>
-**The number of hard links to the file.
+**The number of (hard) links to the file.
 **=item B<ST_UID>
 **The owner of the file.
 **=item B<ST_GID>
