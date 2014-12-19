@@ -1,5 +1,3 @@
-	setup.verbose = 1
-
 * $Id$
 * setuputil.sno - help build CSNOBOL4 LOAD()able libraries
 * (Un*x/POSIX only for now)
