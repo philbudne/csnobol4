@@ -1,6 +1,7 @@
 # $Id$
 
 # make file for MINGW - P. Budne 2/14/2002
+# tested with MINGW 1.7.33 (w/ gcc 4.8.3)
 # from nmake file for VC++ 5.0 on WinNT 4.0 P. Budne 2/4/1998
 # from batch file by David Feustel
 
@@ -24,13 +25,27 @@ LDFLAGS=-Wl,--out-implib,libsnobol4.a
 OBJ=	isnobol4.o data.o data_init.o main.o syn.o bal.o break.o \
 	date.o dump.o endex.o hash.o intspc.o io.o lexcmp.o ordvst.o \
 	pair.o pat.o pml.o realst.o replace.o str.o stream.o top.o \
-	tree.o bcopy.o bzero.o dynamic.o expops.o getopt.o init.o \
+	tree.o dynamic.o expops.o getopt.o init.o \
 	load.o loadx.o mstime.o atan.o chop.o cos.o delete.o \
 	environ.o exit.o exp.o \
 	file.o getstring.o handle.o host.o log.o ord.o rename.o \
 	retstring.o sin.o spcint.o spreal.o sqrt.o sset.o \
 	osopen.o sys.o tan.o tty.o inet.o bindresvport.o \
-	execute.o exists.o term.o findunit.o
+	execute.o exists.o term.o findunit.o $(BSTRING)
+
+# no longer needed!
+#BSTRING=bcopy.o bzero.o
+
+# requires amalgamation sqlite.[ch] in modules/sqlite3:
+SQLITE3=sqlite3
+
+MODULES=com dirs logic ndbm sprintf stat time $(SQLITE3)
+
+mods:	snobol4.exe
+	for M in $(MODULES); do \
+	    (cd modules/$$M; ../../snobol4 -N -I.. -I../.. -I../../snolib \
+		-I../../config/win32 setup.sno build); \
+	done
 
 snobol4.exe: $(OBJ)
 	$(CC) -o snobol4 $(OBJ) $(INET_LIBS) $(LDFLAGS)
@@ -212,7 +227,7 @@ handle.o: $(SRCDIR)lib/snolib/handle.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/handle.c
 
 host.o:	$(SRCDIR)lib/snolib/host.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/host.c -DCC=\"$(CC)\"
+	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/host.c -DCC=\""$(CC)"\" -DCOPT=\""$(OPT)"\" -DSO_LD=\""$(CC)"\" -DDL_LD=\""$(CC)"\"
 
 log.o:	$(SRCDIR)lib/snolib/log.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/log.c
@@ -228,9 +243,6 @@ retstring.o: $(SRCDIR)lib/snolib/retstring.c
 
 sin.o:	$(SRCDIR)lib/snolib/sin.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/sin.c
-
-sprintf.o: $(SRCDIR)lib/snolib/sprintf.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/sprintf.c
 
 sqrt.o:	$(SRCDIR)lib/snolib/sqrt.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/sqrt.c

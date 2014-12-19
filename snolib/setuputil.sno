@@ -1,3 +1,5 @@
+	setup.verbose = 1
+
 * $Id$
 * setuputil.sno - help build CSNOBOL4 LOAD()able libraries
 * (Un*x/POSIX only for now)
@@ -80,14 +82,18 @@
 *	tab
 	setup.t = '	'
 
-	podseen =
 
 	DEFINE('setup(t)')			:(setup.end)
 setup	TERMINAL = DIFFER(DATATYPE(t),'TABLE') 'setup needs TABLE'
 +						:s(setup.fatal)
+	podseen =
+
 	objext = HOST(HOST_OBJ_EXT)
 	sys = HOST(HOST_SETUP_SYS)
-	cygwin = DIFFER(HOST() ? POS(0) BREAKX(':') ':CYGWIN') 1
+
+	cygwin = DIFFER(HOST() ? POS(0) BREAK(':') ':CYGWIN') 1
+	windows = DIFFER(HOST() ? POS(0) BREAK(':') ':Win') 1
+	mingw = DIFFER(windows) IDENT(sys, "posix") 1
 
 * build against distribution include files
 	dist_build = FILE("../setuputil.sno") FILE("../../config.h") 1
@@ -282,7 +288,8 @@ setup.makeinclude.end
 * (ie; NOT VMS!!!)
 	DEFINE('setup.posix.system(command)')	:(setup.posix.system.end)
 setup.posix.system
-	TERMINAL = IDENT(setup.quiet) command
+	TERMINAL = DIFFER(setup.verbose) '>>' command
+	IDENT(command)				:s(FRETURN)
 	&CODE = HOST(HOST_SYSCMD, command)	:f(FRETURN)
 	EQ(&CODE, 0)		  		:s(RETURN)f(FRETURN)
 setup.posix.system.end
@@ -313,6 +320,7 @@ setup.posix.objs.end
 setup.posix.buildcmd
   	iflags = ' -I' HOST(HOST_INCLUDE_DIR)
 	iflags = DIFFER(dist_build) ' -I../.. -I../../include'
+	iflags = DIFFER(dist_build) DIFFER(mingw) iflags ' -I../../config/win32'
 
 setup.posix.buildcmd2
 	idirs = t['include_dirs']
@@ -331,10 +339,12 @@ setup.posix.buildcmd2
 
 	libdirs = t['library_dirs']
 	libdirs = DIFFER(libdirs) setup.repl(setup.c libdirs, setup.c, ' -L')
+	libdirs = DIFFER(dist_build) DIFFER(windows) libdirs ' -L../..'
+* XXX need -L for mingw/cygwin when NOT building from distribution!!
 
 	libs = t['libraries']
 	libs = DIFFER(libs) setup.repl(setup.c libs, setup.c, ' -l')
-	libs = DIFFER(cygwin) libs ' -lsnobol4'
+	libs = DIFFER(windows) libs ' -lsnobol4'
 
 	link = HOST(HOST_DL_LD)
 +		' ' HOST(HOST_DL_LDFLAGS)

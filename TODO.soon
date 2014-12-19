@@ -8,20 +8,24 @@ benchmark:
 
 construct a config.m4 file for mingw/msc???
 
-cygwin:
-	Makefile2.m4: install libsnobol4.a!!
+cygwin:	Makefile2.m4: install libsnobol4.a!! where??
 
-modules/sqlite3/setup.sno: detect local sources (amalgum?)
+MSC:
+	install:
+		snobol4.lib
+		config.h
+		config.sno, setuputil.sno
+		run module "install" commands (.dll & .sno)
 
-tweak modules for msc:
-	ndbm
-	stat
-	dirs
-
-	sqlite3????
-	readline??
+mingw:	debug sqlite3
 
 ================
+
+Windows readline:
+	http://sourceforge.net/projects/mingweditline/?source=directory
+
+MinGW:
+	try stcl?
 
 Modules:
 	setuputil.sno:

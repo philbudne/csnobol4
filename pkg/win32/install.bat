@@ -22,6 +22,7 @@ copy pkg\win32\README.win32 %SNODIR%
 
 set BINDIR=%SNODIR%\bin
 set LIBDIR=%SNODIR%\lib
+set DLLDIR=%SNODIR%\lib\shared
 set DOCDIR=%SNODIR%\doc
 set INCDIR=%SNODIR%\include
 set TIMDIR=%SNODIR%\timing
@@ -34,14 +35,17 @@ copy pkg\win32\timing.bat %BINDIR%
 
 mkdir %LIBDIR%
 copy host.sno %LIBDIR%
+copy snobol4.lib %LIBDIR%
 copy snolib\*.sno %LIBDIR%
+copy config\win32\config.sno %LIBDIR%
+
+mkdir %DLLDIR%
+copy modules\*\*.dll %DLLDIR%
 
 mkdir %DOCDIR%
-copy doc\*.0 %DOCDIR%
-copy doc\*.pdf %DOCDIR%
-copy doc\*.txt %DOCDIR%
 copy doc\*.html %DOCDIR%
 copy doc\load.doc %DOCDIR%
+copy modules\*\*.html %DOCDIR%
 
 mkdir %INCDIR%
 copy config\win32\config.h %INCDIR%
@@ -60,3 +64,4 @@ copy test\globals %TIMDIR%
 copy test\bench.sno %TIMDIR%
 
 mkdir %SNODIR%\local
+mkdir %SNODIR%\local\shared

@@ -3,14 +3,16 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 12/19/2014:
-	config/win32/modules.bat: use %TOP%
 	modules/sqlite3/setup.sno: detect amalgamation sources
 	modules/sqlite3/sqlite3mod.c (renamed)
+	modules/setuputil.sno: add mingw
+	config/win32/modules.bat: use %TOP%
 	config/win32/config.h: cleanup
 	config/win32/ntmsvc.mak: cleanup, removed module files
-	config/win32/mingw.mak: removed module files
+	config/win32/mingw.mak: removed PML files, make modules
 	config/win32/snobol4.vcxproj: removed module files
 	modules/stat/funcs.sno: fix comment/docs.
+	pkg/win32/install.bat: update
 
 12/18/2014:
 	config/win32/{config.h,ntmsvc.mak}:
