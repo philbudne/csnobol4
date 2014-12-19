@@ -1,24 +1,26 @@
-set SNOPATH=..;..\..;..\..\snolib;..\..\config\win32
+set TOP=%CD%
+set SNOPATH=%TOP%\modules;%TOP%;%TOP%\snolib;%TOP%\config\win32
 
-cd modules\logic
-..\..\snobol4 -N setup.sno build
 
-cd ..\ndbm
-..\..\snobol4 -N setup.sno build
+cd "%TOP%\modules\com"
+"%TOP%\snobol4" -N setup.sno build
 
-cd ..\com
-..\..\snobol4 -N setup.sno build
+cd "%TOP%\modules\dirs"
+"%TOP%\snobol4" -N setup.sno build
 
-cd ..\sprintf
-..\..\snobol4 -N setup.sno build
+cd "%TOP%\modules\logic"
+"%TOP%\snobol4" -N setup.sno build
 
-cd ..\stat
-..\..\snobol4 -N setup.sno build
+cd "%TOP%\modules\ndbm"
+"%TOP%\snobol4" -N setup.sno build
 
-cd ..\dirs
-..\..\snobol4 -N setup.sno build
+cd "%TOP%\modules\sprintf"
+"%TOP%\snobol4" -N setup.sno build
 
-cd ..\time
-..\..\snobol4 -N setup.sno build
+cd "%TOP%\modules\stat"
+"%TOP%\snobol4" -N setup.sno build
 
-cd ..\..
+cd "%TOP%\modules\time"
+"%TOP%\snobol4" -N setup.sno build
+
+cd "%TOP%"

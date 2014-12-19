@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/19/2014:
+	config/win32/modules.bat: use %TOP%
+
 12/18/2014:
 	config/win32/{config.h,ntmsvc.mak}:
 		disable PML_{TIME,RANDOM,COM,NDBM}
