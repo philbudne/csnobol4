@@ -44,6 +44,10 @@
 /* declarations for gcc builtins? */
 #endif
 
+#ifdef _MSC_VER
+#define BITFIELDS_SAME_SIZE
+#endif
+
 /* DLL import/export macros */
 
 #if defined(_MSC_VER) || defined(__MINGW32__)
@@ -66,16 +70,6 @@
 #define isnan		_isnan
 #define popen		_popen
 #define pclose		_pclose
-
-#ifdef _USE_INT64			/* ??? */
-#define stat(a,b)	_stat64(a,b)
-#define fstat(a,b)	_fstat64(a,b)
-#define STAT_STRUCT	struct _stat64
-#else
-#define stat(a,b)	_stat64i32(a,b)
-#define fstat(a,b)	_fstat64i32(a,b)
-#define STAT_STRUCT	struct _stat64i32
-#endif
 
 #define HAVE_SLEEP
 
@@ -107,23 +101,19 @@
 #define USE_MEMMOVE
 #define USE_MEMSET
 
-#ifdef __GNUC__
-#define OBJECT_EXT ".o"
-#define USE_WCHAR_H
-#else
-#define OBJECT_EXT ".obj"
-#endif
-
-/* system command flavor for setuptil.sno */
 #if defined(_MSC_VER)
+#define OBJECT_EXT ".obj"
 #define SETUP_SYS "win.msc"
-#define DL_CFLAGS "/LD"
+#define DL_CFLAGS ""			/* /LD? */
 #define DL_LDFLAGS "/DLL"
 #elif defined(__GNUC__)
-#define SETUP_SYS "posix"		/* mingw uses posix paths? */
+#define OBJECT_EXT ".o"
+#define USE_WCHAR_H
+#define SETUP_SYS "posix"		/* !!! */
 #define DL_CFLAGS ""
 #define DL_LDFLAGS "-shared"
 #elif defined(__BORLANDC__)
+#define OBJECT_EXT ".obj"
 #define SETUP_SYS "win.borland"
 #define CCOMPILER "bcc32"
 #define DL_LDFLAGS "-tWD"

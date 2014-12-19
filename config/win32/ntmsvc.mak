@@ -29,7 +29,7 @@ INET_LIBS=wsock32.lib
 #SDBM_DEFS=-DPML_NDBM -DHAVE_SDBM_H -DDUFF -Ilib\sdbm
 #SDBM_OBJ=ndbm.obj sdbm_pair.obj sdbm_hash.obj sdbm.obj
 
-CFLAGS=	-c $(OPT) \
+CFLAGS=	-c $(OPT) -nologo \
 	-I$(SRCDIR)config\win32 -I$(SRCDIR)include -I$(SRCDIR). \
 	-DHAVE_CONFIG_H $(INET_DEFS) -DBITFIELDS_SAME_TYPE \
 	$(COM_DEFS) $(SDBM_DEFS)

@@ -17,10 +17,6 @@
 #include "macros.h"
 #include "load.h"
 
-#ifndef STAT_STRUCT
-#define STAT_STRUCT struct stat
-#endif
-
 /*
  * TODO: chmod, fchmod, mkfifo, mkdir
  */
@@ -63,7 +59,7 @@ enum st_member {
 
 static void
 st2sno(st, dp)
-    STAT_STRUCT *st;
+    struct stat *st;
     struct descr *dp;
 {
     int type;
@@ -97,8 +93,10 @@ st2sno(st, dp)
     SETINT(dp,ST_GID,st->st_gid);
     SETINT(dp,ST_RDEV,st->st_rdev);
     SETINT(dp,ST_SIZE,st->st_size);
+#ifndef _WIN32
     SETINT(dp,ST_BLKSIZE,st->st_blksize);
     SETINT(dp,ST_BLOCKS,st->st_blocks);
+#endif
     SETINT(dp,ST_ATIME,st->st_atime);
     SETINT(dp,ST_MTIME,st->st_mtime);
     SETINT(dp,ST_CTIME,st->st_ctime);
@@ -117,7 +115,7 @@ STAT_( LA_ALIST ) LA_DCL
 {
     char *path;
     struct descr *dp = LA_PTR(1);
-    STAT_STRUCT st;
+    struct stat st;
     int ret;
 
     if (!dp || LA_TYPE(1) < DATSTA || COUNT(dp) != ST_COUNT)
@@ -144,7 +142,7 @@ LSTAT_( LA_ALIST ) LA_DCL
 #ifdef HAVE_LSTAT
     char *path;
     struct descr *dp = LA_PTR(1);
-    STAT_STRUCT st;
+    struct stat st;
     int ret;
 
     if (!dp || LA_TYPE(1) < DATSTA || COUNT(dp) != ST_COUNT)
@@ -161,7 +159,7 @@ LSTAT_( LA_ALIST ) LA_DCL
     st2sno(&st, dp);
     RETNULL;
 #else
-    RETFAIL;				/* just call STAT_? */
+    RETFAIL;
 #endif
 }
 
@@ -171,7 +169,6 @@ LSTAT_( LA_ALIST ) LA_DCL
 lret_t
 FSTAT_( LA_ALIST ) LA_DCL
 {
-#ifdef HAVE_FSTAT
     struct descr *dp = LA_PTR(1);
     STAT_STRUCT st;
     int ret;
@@ -184,6 +181,5 @@ FSTAT_( LA_ALIST ) LA_DCL
 
     /* validate dp[ST_DESCR] */
     st2sno(&st, dp);
-#endif
     RETNULL;
 }

@@ -453,10 +453,10 @@ setup.win.msc.buildcmd2
 	sources = setup.repl(t['sources'], setup.c, setup.s)
 
 * build "dynamic library" (DL) -- something attached at runtime
-	compile = HOST(HOST_CC) ' -c ' HOST(HOST_COPT)
+	compile = HOST(HOST_CC) ' -c -nologo -DHAVE_CONFIG_H ' HOST(HOST_COPT)
 +		' ' HOST(HOST_DL_CFLAGS)
 +		' ' t['cflags']
-+		' -DHAVE_CONFIG_H' iflags
++		' ' iflags
 +		' ' sources
 
 	setup.posix.system(compile)		 :f(FRETURN)
@@ -473,7 +473,7 @@ setup.win.msc.buildcmd2
 
 	link = HOST(HOST_DL_LD)
 +		' ' HOST(HOST_DL_LDFLAGS)
-+		' /OUT:' setup.dlname(t)
++		' /NOLOGO /OUT:' setup.dlname(t)
 +		' ' t['ldflags']
 +		' ' setup.win.msc.objs(t)
 +		' ' libdirs snobol4lib_dir
