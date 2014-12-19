@@ -1,8 +1,10 @@
 -INCLUDE 'setuputil.sno'
+-INCLUDE 'config.sno'
 
 	t = TABLE()
 	t['module'] = 'dirs'
-	t['sources'] = 'dirs.c'
+	t['sources'] = 'dirs.c' DIRS_SRCS
+	t['include_dirs'] = DIRS_INCLUDE
 
 	t['author'] = t['maintainer'] = 'Phil Budne'
 	t['author_email'] = t['maintainer_email'] = 'phil@snobol4.org'

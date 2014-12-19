@@ -18,6 +18,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	modules/dirs/win32/dirent.[ch]: utilities for win32
 	modules/com/com.cpp (moved from snolib/win32): add COM_DL
 	modules/com/setup.sno (new)
+	config/win32/config.sno: set DIRS_{INCLUDE,FILES}
+	modules/dirs/setup.sno: use DIRS_{INCLUDE,FILES}
 
 12/17/2014:
 	README, INSTALL: update for 2.0
