@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/20/2014:
+	doc/snobol4key.1.pea: made it real.
+	doc/snobol4key.1.pea: made it realer with stuff from snobol4ext(1).
+	doc/snobol4ext.1.pea: moved stuff to other pages.
+
 12/19/2014:
 	modules/sqlite3/setup.sno: detect amalgamation sources
 	modules/sqlite3/sqlite3mod.c (renamed)

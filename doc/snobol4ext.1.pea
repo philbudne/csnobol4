@@ -24,11 +24,9 @@ locations where an B<'S'> has been detected.
 
 =item Case folding
 By default the compiler folds identifiers and directives to upper
-case, so programs can be entered in either case.  To disable case
-folding use the directive B<-CASE 0>.  To re-enable case
-folding use directive B<-CASE >I<n> where I<n> is a non-zero integer.
-The status of case folding may be examined and controlled from a
-running program by the unprotected system keyword B<&amp;CASE>.
+case, so programs can be entered in either case.
+See B<-CASE> in B<snobol4ctrl>(1),
+and B<&CASE> in B<snobol4key>(1).
 
 =item B<CHAR()>
 The B<CHAR()> function takes an integer from 0 to 255 and returns the
@@ -89,31 +87,23 @@ name exists and fails if it does not.  The B<FUNCTION()> predicate
 exists in SITBOL.
 
 =item B<&amp;GCTIME>
-The protected keyword B<&amp;GCTIME> contains a B<REAL> number of
-milliseconds of execution time spent in the garbage collector.
+see B<snobol4key>(1).
 
 =item B<&amp;GTRACE>
-If the unprotected keyword B<&amp;GTRACE> set to a non-zero value,
-each time a garbage collection is run, a trace message is output
-indicating the source file and line number of the current statement,
-how long the GC took, and how many units of storage are now free. If
-positive, the value of B<&amp;GTRACE> will be decremented after it is
-tested.
+see B<snobol4key>(1).
 
 =item B<-HIDE>
-The B<-HIDE> directive stops listing, and assignment of new statement
-numbers.  It is used to hide the source code for the B<sdb>(1) source
-code debugger.
+see B<snobol4ctrl>(1).
 
 =item B<HOST()>
 A simulation of the SPITBOL B<HOST()> function (with liberal
 implementation specific extensions) is included.
 
-=break
+=item
 The B<-INCLUDE> file B<host.sno> contains symbolic defines for these
 (and B<many> other) function codes.
 
-=break
+=item
 B<HOST()> with no parameters returns a string describing the system
 the program is running on.  The string contains three parts, separated
 by colons.  The first part describes the physical architecture, the
@@ -123,39 +113,32 @@ B<uname>(3) library call, and may be different for the same hardware
 when running different operating systems.  An example value:
 I<i386:FreeBSD 10.0-ALPHA2:CSNOBOL4 1.5>
 
-=break
+=item
 B<HOST(0)> returns a string containing the command line parameter
 supplied to the B<-u> option, if any.  If no B<-u> option was given,
 B<HOST(0)> returns the concatenation of all user parameters following
 the input filename(s).
 
-=break
+=item
 B<HOST(1,>I<string>B<)> passes the string to the B<system>(3) C
 library function, and returns the subprocess exit status.
 
-=break
+=item
 B<HOST(2,>I<n>B<)> for integer I<n> returns the I<n>'th command line
 argument (regardless of whether the argument was the command name, an
 option, a filename or a user parameter) as a string, or failure if
 I<n> is out of range.
 
-=break
+=item
 B<HOST(3)> returns an integer for use with B<HOST(2)> indicating the
 first command line argument available as a user parameter.
 
-=break
+=item
 B<HOST(4,>I<string>I<)> returns the value of the environment variable
 named I<string>.
 
-=item B<-INCLUDE>
-The B<-INCLUDE> directive causes the compiler to interpolate the
-contents of the named file enclosed in single or double quotes.  Any
-filename will be included only once, this can be overridden by
-appending a trailing space to the filename.  Trailing spaces are
-removed from the filename before use.  If the file is not found in the
-current working directory an attempt will be made to find it in the
-directories specified in the search path.  B<-COPY> is a synonym for
-B<-INCLUDE> for compatibility with SPITBOL/370.
+=item B<-INCLUDE/-COPY>
+see B<snobol4ctrl>(1).
 
 =item B<IO_FINDUNIT()>
 The B<IO_FINDUNIT()> function returns an unused I/O unit number for
@@ -168,7 +151,7 @@ The B<LABEL()> predicate evaluates its argument as a string (with case
 folding), and returns the null string if a label with that name has
 been defined, and fails if it does not.  The B<LABEL()> predicate was
 copied from Steve Duff's version of Macro SPITBOL.  SITBOL has a
-B<LABEL> from the label and returns a B<CODE> pointer.
+B<LABEL> function which returns a B<CODE> pointer.
 
 =item B<&amp;LINE/&amp;FILE/&amp;LASTLINE/&amp;LASTFILE>
 The B<&amp;LINE> and B<&amp;FILE> keywords can be used to determine
@@ -178,9 +161,7 @@ file line associated with the previous statement (and are useful in
 B<TRACE> and B<SETEXIT> handlers.
 
 =item B<-LINE>
-The B<-LINE> directive can be used to alter SNOBOL's idea of the
-current source file and line (ie; for use by preprocessors).  B<-LINE>
-takes a line number and an optional quoted string filename.
+See B<snobol4ctrl>(1).
 
 =item Lexical comparison
 A full set of lexical (string) comparison predicates have been added
@@ -399,5 +380,11 @@ in contexts where I<DIFFER(X) X> would otherwise have been used.  The
 B<VDIFFER()> function was copied from Steve Duff's version of Macro
 SPITBOL.
 
+=sect BUGS
+This should just be a list of references to other pages.
+
 =sect SEE ALSO
 B<snobol4>(1).
+B<snobol4ctrl>(1),
+B<snobol4func>(1),
+B<snobol4key>(1).

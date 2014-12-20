@@ -3,150 +3,266 @@
 snobol4key \- SNOBOL4 keywords
 
 =sect DESCRIPTION
-Just the skeleton of a page!  Each keyword should have:
-semantics, group, standard/modified/extension,
-If extension: ``added in'' and ``compatible with.''
 
-For extensions, see B<snobol4ext>(1).
+=item B<&amp;ABEND>
+Unprotected, INTEGER:
+Setting to a non-zero value causes a call to B<abort>(3)
+(causes a core dump) instead of ```exit'' when B<snobol4>(1) finishes
+program execution.  A relic of when ``ABEND'' meant program memory
+would be dumped on the line printer on ``abnormal ending'' of a batch job!
+I<Standard>.
 
-=item &amp;ABEND
-Setting the B<&amp;ABEND> keyword causes a core dump upon termination!
-Unprotected, Standard
+=item B<&amp;ABORT>
+Protected, PATTERN:
+Initial value of B<ABORT> variable.
+I<Standard>.
 
-=item &amp;ABORT
-Protected, Standard
+=item B<&amp;ALPHABET>
+Protected, STRING:
+Native character set (always 255 characters long).
+I<Standard>.
 
-=item &amp;ALPHABET
-Protected, Standard
+=item B<&amp;ANCHOR>
+Unprotected, INTEGER:
+When set to a non-zero value, pattern matching is done in ``anchored
+mode'' (pattern matches will not be retried skipping successive
+numbers of leading subject characters), and patterns must match the
+initial part of the subject. B<NOTE!>  Anchored matching is faster, but
+portable code should not depend on (or modify) the value of
+B<&ANCHOR>!!  Individual patterns can be anchored using B<POS(0)>, and
+B<BREAKX()> avoids repeated match failures that occur in non-anchored
+scanning.
+I<Standard>.
 
-=item &amp;ANCHOR
-Unprotected, Standard
+=item B<&amp;ARB>
+Protected, PATTERN:
+Initial value of B<ARB> variable.
+I<Standard>.
 
-=item &amp;ARB
-Protected, Standard
+=item B<&amp;BAL>
+Protected, PATTERN:
+Initial value of B<BAL> pattern variable.
+I<Standard>.
 
-=item &amp;BAL
-Protected, Standard
+=item B<&amp;CASE>
+Unprotected, INTEGER:
+Zero disables case folding in a running program, non-zero value reenables.
+See B<-CASE> in B<snobol4ctrl>(1).
+I<Extension from SPITBOL, added in CSNOBOL4 version 0.91>
 
-=item &amp;CASE
-Unprotected, Extension
+=item B<&amp;CODE>
+Unprotected, INTEGER:
+Controls the status code when B<snobol4>(1) exits \- defaults to zero.
+I<Standard>.
 
-=item &amp;CODE
-The value of the B<&amp;CODE> keyword determines the exit status of
-B<snobol4>(1) application.
-Unprotected, Standard;
+=item B<&amp;COMPNO>
+Protected, INTEGER:
+Number of compiled statements.
+I<Extension from SNOBOL4B, SITBOL, added in CSNOBOL4 version 2.0>
 
-=item &amp;COMPNO
-Protected, Extension
+=item B<&amp;DIGITS>
+Protected, STRING:
+Digits ``0123456789''.
+I<Extension from Icon!, added in CSNOBOL4 version 1.5>
 
-=item &amp;DIGITS
-Protected, Extension
+=item B<&amp;DUMP>
+Unprotected, INTEGER:
+If non-zero dump variables (to stderr) on termination.
+I<Standard>.
 
-=item &amp;DUMP
-Unprotected, Standard
+=item B<&amp;ERRLIMIT>
+Unprotected, INTEGER:
+Number of (otherwise fatal) errors to allow/trap.
+I<Standard>.
 
-=item &amp;ERRLIMIT
-Unprotected, Standard*
+=item B<&amp;ERRTEXT>
+Protected, STRING:
+Description of last error, see B<snobol4err>(1).
+I<Extension from SPITBOL, added in CSNOBOL4>.
 
-=item &amp;ERRTEXT
-Protected, Extension
+=item B<&amp;ERRTYPE>
+Protected, INTEGER:
+Last error code, see B<snobol4err>(1).
+I<Standard>.
 
-=item &amp;ERRTYPE
-Protected, Standard
+=item B<&amp;FAIL>
+Protected:
+Initial value of B<FAIL> pattern variable.
+I<Standard>.
 
-=item &amp;FAIL
-Protected, Standard
+=item B<&amp;FENCE>
+Protected, PATTERN:
+Initial value of B<FENCE> pattern variable.
+I<Standard>.
 
-=item &amp;FENCE
-Protected, Standard
+=item B<&amp;FILE>
+Protected, STRING:
+Name of source file.
+I<Extension from SPITBOL?, added in CSNOBOL4 version 0.98.2>.
 
-=item &amp;FILE
-Protected, Extension
+=item B<&amp;FILL>
+Unprotected, STRING:
+I<Extension from BLOCKS, added in CSNOBOL4 version 2.0>.
 
-=item &amp;FILL
-Unprotected, BLOCKS
+=item B<&amp;FNCLEVEL>
+Protected, INTEGER:
+Depth of function call stack.
+I<Standard>.
 
-=item &amp;FNCLEVEL
-Protected, Standard
+=item B<&amp;FTRACE>
+Unprotected, INTEGER:
+Non-zero to enable function call tracing.
+Decremented after each trace event.
+I<Standard>.
 
-=item &amp;FTRACE
-Unprotected, Standard
+=item B<&amp;FULLSCAN>
+Unprotected, INTEGER:
+Non-zero to enable ``fullscan'' heuristic.
+I<Standard>.
 
-=item &amp;FULLSCAN
-Unprotected, Standard
+=item B<&amp;GCTIME>
+Protected, REAL:
+Milliseconds of execution time spent in the garbage collector.
+I<CSNOBOL4 Extension, added in version 1.5>.
 
-=item &amp;GCTIME
-Protected, Extension
+=item B<&amp;GTRACE>
+Unprotected, INTEGER:
+If set to a non-zero value,
+each time a garbage collection is run, a trace message is output
+indicating the source file and line number of the current statement,
+how long the GC took, and how many units of storage are now free. If
+positive, the value of B<&amp;GTRACE> will be decremented after it is
+tested.
+I<CSNOBOL4 Extension, added in version 1.1>.
 
-=item &amp;GTRACE
-Unprotected, Extension
+=item B<&amp;INPUT>
+Unprotected, INTEGER:
+If zero, disables checking for input associations for variables.
+I<Standard>.
 
-=item &amp;INPUT
-Unprotected, Standard
+=item B<&amp;LASTFILE>
+Protected, STRING:
+Source file name for last statement executed;
+useful in B<TRACE()> and B<SETEXIT()> handlers.
+I<Extension from SPITBOL, added in CSNOBOL4 version 0.98.2>.
 
-=item &amp;LASTFILE
-Protected, Extension
+=item B<&amp;LASTLINE>
+Protected, INTEGER:
+Source file line number for last statement executed;
+useful in B<TRACE()> and B<SETEXIT()> handlers.
+I<Extension from SPITBOL, added in CSNOBOL4 version 0.98.2>.
 
-=item &amp;LASTLINE
-Protected, Extension
+=item B<&amp;LASTNO>
+Protected, INTEGER:
+Statement number for last statement executed;
+useful in B<TRACE()> and B<SETEXIT()> handlers.
+I<Standard>.
 
-=item &amp;LASTNO
-Protected, Standard
+=item B<&amp;LCASE>
+Protected, STRING:
+Lower case (english) letters, in alphabetical order.
+I<Extension from SPITBOL, added in CSNOBOL4 version 0.91>
 
-=item &amp;LCASE
-Protected, Extension
+=item B<&amp;LINE>
+Protected, INTEGER:
+I<Extension from SPITBOL, added in CSNOBOL4 version 0.98.2>.
 
-=item &amp;LINE
-Protected, Extension
+=item B<&amp;MAXINT>
+Protected, INTEGER:
+Maximum positive INTEGER value.
+I<CSNOBOL4 Extension added in version 1.5>.
 
-=item &amp;MAXINT
-Protected, Extension
+=item B<&amp;MAXLNGTH>
+Unprotected, INTEGER:
+I<Standard (unlimited since CSNOBOL4 version 0.99.44)>.
 
-=item &amp;MAXLNGTH
-Unprotected, Standard*
+=item B<&amp;OUTPUT>
+Unprotected:
+If zero, disables checking for output associations for variables.
+I<Standard>.
 
-=item &amp;OUTPUT
-Unprotected, Standard
+=item B<&amp;PARM>
+Protected, STRING:
+The entire command line.  Use of the SPITBOL compatible B<HOST()>
+function is preferable, as it makes it possible to tell if a
+positional parameter containing spaces was passed in using shell quote
+characters.
+I<SNOBOL4+ Extension, added in CSNOBOL4 version 0.98.3>.
 
-=item &amp;PARM
-Protected, Extension
+=item B<&amp;PI>
+Protected, REAL:
+The transcendental number &pi;.
+I<CSNOBOL4 Extension, added in version 1.5>.
 
-=item &amp;PI
-Protected, Extension
+=item B<&amp;REM>
+Protected, PATTERN:
+Initial value of B<REM> variable.
+I<Standard>.
 
-=item &amp;REM
-Protected, Standard
+=item B<&amp;RTNTYPE>
+Protected, STRING:
+One of B<RETURN>, B<FRETURN>, B<NRETURN>.
+I<Standard>.
 
-=item &amp;RTNTYPE
-Protected, Standard
+=item B<&amp;STCOUNT>
+Protected, INTEGER:
+Count of the number of statements executed
+(extension: not incremented when B<&amp;STLIMIT> is less than zero).
+I<Standard>.
 
-=item &amp;STCOUNT
-Protected, Standard
+=item B<&amp;STEXEC>
+Protected, INTEGER:
+Count of the number of statements executed
+(regardless of the value of B<&amp;STLIMIT>).
+I<CSNOBOL4 Extension, added in version 1.5>.
 
-=item &amp;STEXEC
-Protected, Extension
+=item B<&amp;STFCOUNT>
+Protected, INTEGER:
+Count of the number of statements executed that failed.
+I<Standard>.
 
-=item &amp;STFCOUNT
-Protected, Standard
+=item B<&amp;STLIMIT>
+Unprotected:
+Number of (remaining) statements to be executed.
+CSNOBOL4 implements the XXX extension that values less than zero
+remove the statement limit.  When less than zero, B<&amp;STCOUNT>
+is not incremented.
+I<Standard, Defaults to -1 since CSNOBOL4 version 0.98>.
 
-=item &amp;STLIMIT
-Unprotected, Standard*
+=item B<&amp;STNO>
+Protected, INTEGER:
+Current statement number.
+I<Standard>.
 
-=item &amp;STNO
-Protected, Standard
+=item B<&amp;SUCCEED>
+Protected, PATTERN:
+Initial value of B<SUCCEED> variable.
+I<Standard>.
 
-=item &amp;SUCCEED
-Protected, Standard
+=item B<&amp;TRACE>
+Unprotected, INTEGER:
+Positive values enable TRACE functionality (other than FUNCTION trace).
+Decremented after each TRACE event.
+I<Standard>.
 
-=item &amp;TRACE
-Unprotected, Standard
+=item B<&amp;TRIM>
+Unprotected, INTEGER:
+If non-zero, trailing spaces are removed from input from files.
+A relic of fixed record length (eg; card reader) input.
+I<Standard, disabled by default since CSNOBOL4 version 0.91>.
 
-=item &amp;TRIM
-Unprotected, Standard*
+=item B<&amp;UCASE>
+Protected, STRING:
+Upper case (english) letters, in alphabetical order.
+I<Extension from SPITBOL, added in CSNOBOL4 version 0.91>.
 
-=item &amp;UCASE
-Protected, Extension
+=sect BUGS
+Need to research origins SPITBOL extensions.
+
+Note which keywords can be traced (and whether this is an extension).
 
 =sect SEE ALSO
-B<snobol4>(1).
+B<snobol4>(1),
+B<snobol4ctrl>(1),
+B<snobol4ext>(1).
 =cut
