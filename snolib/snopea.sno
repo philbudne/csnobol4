@@ -356,6 +356,8 @@ sp.html.item
 	out = '<dl>'
 	endlist = '</dl>'
 sp.html.item2
+* don't REALLY want whitespace immediately after a (sub)section header:
+	out = '<p>'
 	out = '<dt>'
 	after = '<dd>'
 	needspace =
