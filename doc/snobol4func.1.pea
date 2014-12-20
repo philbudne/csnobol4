@@ -25,10 +25,25 @@ Math, Extension
 I/O, Standard
 =item BREAK(CS)
 Pattern, Standard
+
 =item BREAKX(CS)
-Pattern, Extension
+Pattern:
+The B<BREAKX()> function is a pattern function used for fast scanning.
+B<BREAKX(>I<str>B<)> is equivalent to
+B<BREAK(>I<str>B<)> B<ARBNO(LEN(1) BREAK(>I<strB><))>.
+In other words BREAKX matches a sequence of ever larger strings
+terminated by a break set.  BREAKX can be used as a faster matching
+replacement for B<ARB>: B<BREAKX('S') 'STRING'> always runs faster
+than B<ARB 'STRING'> since it only attempts matching B<'STRING'> at
+locations where an B<'S'> has been detected.
+I<SPITBOL Extension, added in CSNOBOL4 version 0.98>.
+
 =item CHAR(N)
-String, Extension
+String:
+takes an integer from 0 to 255 and returns the
+I<n>th character in B<&amp;ALPHABET>.
+I<SPITBOL Extension, added in CSNOBOL4 version 0.98>.
+
 =item CHOP(REAL)REAL
 Math, Extension
 =item CLEAR()
@@ -47,8 +62,15 @@ Math, Extension
 Data, Standard
 =item DATATYPE(V)
 Data, Standard
+
 =item DATE()
-String, Standard
+String:
+returns I<MM/DD/YYYY HH:MM:SS>.
+For compatibility with new versions of Catspaw SPITBOL,
+B<DATE(0)> returns strings of the form I<MM/DD/YY HH:MM:SS>, and
+B<DATE(2)> returns strings of the form I<YYYY-MM-YY HH:MM:SS>.
+I<Standard*>.
+
 =item DEFINE(P,L)
 Functions, Standard
 =item DELETE(STRING)STRING

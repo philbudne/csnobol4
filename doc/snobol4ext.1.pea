@@ -13,14 +13,7 @@ row, without having to resort to use of the B<ELEMENT> function, so
 long as no intervening spaces (or line continuations) appear.
 
 =item B<BREAKX()>
-The B<BREAKX()> function is a pattern function used for fast scanning.
-B<BREAKX(>I<str>B<)> is equivalent to
-B<BREAK(>I<str>B<)> B<ARBNO(LEN(1) BREAK(>I<strB><))>.
-In other words BREAKX matches a sequence of ever larger strings
-terminated by a break set.  BREAKX can be used as a faster matching
-replacement for B<ARB>: B<BREAKX('S') 'STRING'> always runs faster
-than B<ARB 'STRING'> since it only attempts matching B<'STRING'> at
-locations where an B<'S'> has been detected.
+see B<snobol4func>(1).
 
 =item Case folding
 By default the compiler folds identifiers and directives to upper
@@ -29,48 +22,51 @@ See B<-CASE> in B<snobol4ctrl>(1),
 and B<&CASE> in B<snobol4key>(1).
 
 =item B<CHAR()>
-The B<CHAR()> function takes an integer from 0 to 255 and returns the
-nth character in B<&amp;ALPHABET>.
+see B<snobol4func>(1).
 
-=item B<DATE()>
-For compatibility with new versions of Catspaw SPITBOL, B<DATE(0)>
-returns strings of the form I<MM/DD/YY HH:MM:SS>, and B<DATE(2)>
-returns strings of the form I<YYYY-MM-YY HH:MM:SS>.  With any other
-arguments B<DATE()> returns strings of the form
-I<MM/DD/YYYY HH:MM:SS>.
+=item B<DATE()> arguments
+see B<snobol4func>(1).
+
+=item B<DELETE()> function
+B<DELETE(>I<string>B<)> is a predicate which tries to remove the
+file named by its argument, and fails if it cannot.
+I<Extension from SITBOL>.
 
 =item B<&amp;DIGITS>
-The protected keyword B<&amp;DIGITS> contains the string B<0123456789>.
-The Unicon and Icon languages implement B<&amp;DIGITS>.
+See B<snobol4key>(1).
 
 =item B<-ERROR/-NOERRORS>
 See B<snobol4ctrl>(1).
 
 =item B<&amp;ERRTEXT>
-After a statement with an error has been handled due to a non-zero
-value in B<&amp;ERRLIMIT>, the protected keyword B<&amp;ERRTEXT> will
-contain the error message.  See B<snobol4error>(1) for explanations of
-errors, and whether they are fatal or not.
+See B<snobol4key>(1).
 
 =item B<-EXECUTE/-NOEXECUTE>
 See B<snobol4ctrl>(1).
 
-=item B<FILE_ABSPATH()/FILE_ISDIR()>
+=item B<FILE()> function
+B<FILE(>I<string>B<)> is a predicate which returns the null string if
+its argument is the name of a file that exists, and fails if it does
+not. I<SITBOL Extension>.
+
+=item B<FILE_ABSPATH()>
 B<FILE_ABSPATH(>I<string>B<)> is a predicate which returns the null
 string if its argument is an absolute file path, and returns failure
-if the path is relative.  B<FILE_ISDIR(>I<string>B<)> is a predicate
+if the path is relative.
+
+=item B<FILE_ISDIR()>
+B<FILE_ISDIR(>I<string>B<)> is a predicate
 which returns the null string if its argument is the pathname of a
 directory, and returns failure if not.
 
-=item B<FREEZE()/THAW()>
+=item B<FREEZE()>
 The B<FREEZE()> function prohibits creation of new entries in the
 referenced table.  This is useful once a table has been initialized to
 avoid creating empty entries on lookups that fail.  This can greatly
 improve program speed, since frozen tables will not become clogged
 with empty entries.  Lookups for uninitialized entries will return the
 null string.  Attempts to assign to a non-existent entry will cause a
-``Variable not present where required'' error. The B<THAW()> function
-restores normal entry creation behavior.
+``Variable not present where required'' error.
 
 =item B<FUNCTION()>
 The B<FUNCTION()> predicate evaluates its argument as a string (with
@@ -145,12 +141,11 @@ been defined, and fails if it does not.  The B<LABEL()> predicate was
 copied from Steve Duff's version of Macro SPITBOL.  SITBOL has a
 B<LABEL> function which returns a B<CODE> pointer.
 
+=item B<&amp;LCASE>
+see B<snobol4key>(1).
+
 =item B<&amp;LINE/&amp;FILE/&amp;LASTLINE/&amp;LASTFILE>
-The B<&amp;LINE> and B<&amp;FILE> keywords can be used to determine
-the source file and file line associated with the current statement.
-The B<&amp;LASTLINE> and B<&amp;LASTFILE> return the source file and
-file line associated with the previous statement (and are useful in
-B<TRACE> and B<SETEXIT> handlers.
+see B<snobol4key>(1).
 
 =item B<-LINE>
 See B<snobol4ctrl>(1).
@@ -169,8 +164,7 @@ be used for padding.  The subject will be returned unmodified if
 already long enough.
 
 =item B<&amp;MAXINT>
-The protected keyword B<&amp;MAXINT> contains the largest positive
-integer value that can be represented by the B<INTEGER> data type.
+see B<snobol4key>(1).
 
 =item B<ORD()>
 The B<ORD()> function returns the ordinal value (zero to 255) of the
@@ -178,15 +172,10 @@ first character in its string argument (the inverse of the B<CHAR()>
 function).
 
 =item B<&amp;PARM>
-The entire command line is available via the B<&amp;PARM> protected
-keyword for compatibility with Catspaw SNOBOL4+. Use of the SPITBOL
-compatible B<HOST()> function is preferable, as it makes it possible
-to tell if a positional parameter containing spaces was passed in
-using shell quote characters.
+see B<snobol4key>(1).
 
 =item B<&amp;PI>
-The protected keyword B<&amp;PI> contains value of the transendental
-number &pi;.
+see B<snobol4key>(1).
 
 =item B<REAL> numbers in B<INTEGER> contexts
 B<REAL> numbers (or strings convertible to B<REAL>) are accepted in
@@ -217,24 +206,20 @@ integers (ie; 4.4BSD on i386) the return value will be truncated to
 32-bits, and only the first and last 4 gigabytes of a file can be
 accessed directly.
 
-=item B<SITBOL> file functions
-B<FILE(>I<string>B<)> is a predicate which returns the null string if
-its argument is the name of a file that exists, and fails if it does
-not.  B<DELETE(>I<string>B<)> is a predicate which tries to remove the
-file named by its argument, and fails if it cannot.
-
-B<RENAME(>I<string>B<,>f<Istring2>B<)> is a predicate which attempts
-to rename the file named by I<string2> to the file named by
-I<string1>.  Unlike the B<SITBOL> version, if the target file exists,
-it will be removed.
-
-=item B<SNOBOL4+ >real functions
+=item Real functions
 B<EXP()>, B<LOG()> and B<CHOP()> functions are available for
 compatibility with SNOBOL4+.  B<EXP()> returns the value I<e ** x>,
 B<LOG()> returns the natural logarithm of its REAL argument, and
 B<CHOP()> truncates the fractional part of its REAL argument (rounding
 towards zero), and returns a REAL.  B<LN()> is an alias for B<LOG()>,
 for compatibility with Catspaw SPITBOL.
+
+=item B<RENAME()> function
+B<RENAME(>I<string>B<,>f<Istring2>B<)> is a predicate which attempts
+to rename the file named by I<string2> to the file named by I<string1>.
+I<SITBOL Extension>:
+Unlike the B<SITBOL> version, if the target file exists,
+it will be removed.
 
 =item B<SORT()/RSORT()>
 The B<SORT()> and B<RSORT()> functions take two arguments.  The first
@@ -248,7 +233,7 @@ sort.  If the second argument is null, it is taken to be 1.  The array
 (or table) is not modified; a new array is allocated and returned.
 B<SORT()> sorts elements in ascending order, while B<RSORT()> sorts in
 descending order.
-=break
+=item
 Example: for a table I<TAB> of integers, indexed by strings being used
 to tabulate word counts I<FREQ = RSORT(TAB,2)> returns an array such
 that I<FREQ&lt;1,1&gt;> contains the most frequent word while
@@ -258,7 +243,7 @@ lexicographical ordering of the words; I<WORDS&lt;1,1&gt;> contains
 the lexicographically first word and I<WORDS&lt;1,2&gt;> contains the
 number of occurrences of that word.
 
-=item B<SPITBOL >operators
+=item B<SPITBOL> operators
 The SPITBOL scan (?) and assignment (=) operators have been added.  A
 pattern match can appear within an expression, and returns the matched
 string as its value.  Similarly assignment can appear in an
@@ -268,12 +253,14 @@ Assignment is right associative, and has the lowest precedence, while
 scan is left associative and has a precedence just higher than
 assignment.
 
+=item
 The SPITBOL selection/alternative construction can be used in any
 expression.  It consists of a comma separated list of expressions
 inside parentheses.  The expressions are evaluated until one succeeds,
 and its value is returned.  Abuse of this construction may result in
 incomprehensible code.
 
+=item
 The type B<NUMERIC> with B<CONVERT()> and the removal of leading
 spaces from strings converted to numbers (implicitly or explicitly)
 are also legal when SPITBOL extensions are enabled.  SPITBOL
@@ -295,19 +282,24 @@ to save and restore the B<SETEXIT()> conditions in a recursive
 environment.  The error intercept routine may inspect B<&amp;ERRTYPE>
 and take one of the following actions:
 
+=item
 1.  Terminate execution by transferring to the special label
 B<ABORT>. This causes error processing to resume as though no error
 intercept had been set.
 
+=item
 2.  Branching to the special label B<CONTINUE> causes execution to
 resume by taking the failure exit of the statement in error.
 
+=item
 3.  Branching to the special label B<SCONTINUE> causes execution to
 resume at the point of interruption.
 
+=item
 4. If the error occurred inside a function (B<&amp;FNCLEVEL> is
 non-zero), branch to labels B<RETURN>, B<FRETURN>, or B<NRETURN>.
 
+=item
 The error intercept routine must reissue the B<SETEXIT()>. Error
 handlers cannot be nested: only one copy of the saved execution state
 is kept.
@@ -318,7 +310,8 @@ SPITBOL.  B<SQRT()> fails if the argument is negative, but does not
 cause a fatal error.
 
 =item B<SSET()>
-Experimental "scaled set" function, to handle files larger than 4GB.
+Experimental "scaled set" function, to handle files larger than 4GB
+on systems with 32-bit B<INTEGER> variables.
 Takes arguments unit, offset, whence, and scale.  The first three are
 analogous to the same arguments for the B<SET()> function.  The last
 parameter is used as a multiplicative scaling factor on the B<offset>
@@ -326,11 +319,10 @@ parameter, and as a divisor on the return value.  When used in
 combination with relative B<SET()> calls (whence of one), any file
 offset can be achieved, even when system file offsets are larger than
 can be represented in a SNOBOL4 B<INTEGER>.  Support for "Large Files"
-is enabled when available, but not all file systems support them.
+is enabled when available, but not all file systems support large files.
 
 =item B<&amp;STEXEC>
-The protected keyword B<&amp;STEXEC> contains the number of statements
-executed, regardless of the value of B<&amp;STLIMIT>.
+see B<snobol4key>(1).
 
 =item B<SUBSTR()>
 B<SUBSTR()> takes a subject string as its first argument, and returns
@@ -343,8 +335,12 @@ is returned.
 The variable B<TERMINAL> is associated with the standard error file
 descriptor for both input and output.
 
-=item B<TRACE()> function type argument
+=item B<THAW()>
+The B<THAW()> function
+restores normal entry creation behavior after
+a B<FREEZE()>.
 
+=item B<TRACE()> function type argument
 The second argument of the B<TRACE()> function can be abbreviated to a
 single letter:
 B<C> (CALL),
@@ -354,16 +350,20 @@ B<L> (LABEL),
 B<R> (RETURN), or
 B<V> (VALUE) as in Macro SPITBOL.
 
+=item B<TRACE()> of additional keywords
+B<&amp;ERRTEXT> and B<&amp;STFCOUNT> can be traced.
+
 =item Trig functions
 B<ATAN()>, B<SIN()>, B<COS()> and B<TAN()> functions are available for
 compatibility with SPARC SPITBOL.  B<SIN()>, B<COS()> and B<TAN()>
 take B<REAL> arguments in radians.  B<ATAN()> returns the principal
 value of the arc tangent of its B<REAL> argument.
 
-=item B<&amp;UCASE/&amp;LCASE>
-Protected keywords B<&amp;UCASE> and B<&amp;LCASE> the 
-case characters ``a'' through ``z'' in upper and lower case,
-respectively.
+=item B<&amp;UCASE>
+see B<snobol4key>(1).
+
+=item Value B<TRACE()> on pattern match assignments
+variable changes by B<.> and B<$> operators are visible via value trace.
 
 =item B<VDIFFER()>
 The B<VDIFFER()> function takes two arguments, if they B<DIFFER()>,
@@ -373,7 +373,7 @@ B<VDIFFER()> function was copied from Steve Duff's version of Macro
 SPITBOL.
 
 =sect BUGS
-This should just be a list of references to other pages.
+A lot of stuff still needs to move to other pages!
 
 =sect SEE ALSO
 B<snobol4>(1).
