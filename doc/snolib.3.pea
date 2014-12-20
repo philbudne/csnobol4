@@ -6,7 +6,6 @@ snolib \- SNOBOL4 library routines
 B<-INCLUDE '>I<filename.sno>B<'>
 
 =sect DESCRIPTION
-
 The following B<snobol4>(1) library routines are available for
 B<-INCLUDE>:
 

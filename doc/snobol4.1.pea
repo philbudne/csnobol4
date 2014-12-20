@@ -32,7 +32,7 @@ line option is B<LEFT>.  Listings are directed to standard error
 
 =item Messages
 The the startup banner and statistics (if enabled) are directed to standard error.
-
+=item
 Compilation error messages (including erroneous lines) appear on
 standard error. Error messages reference the source file name and line number.
 
@@ -148,10 +148,10 @@ The list of directories from the B<SNOPATH> environment variable, if
 defined; If B<SNOPATH> is not defined, the B<SNODIR> environment
 variable (or a compiled in default) is used as I<base> to add the
 following directories:
-=bull I<base>/I<version>/I<lib>
-=bull I<base>/I<version>/I<local>
-=bull I<base>/I<local>
-=bull I<.>
+=bull I<base>/I<version>/B<lib>
+=bull I<base>/I<version>/B<local>
+=bull I<base>/B<local>
+=bull B<.>
 
 =sect ENVIRONMENT
 
@@ -254,5 +254,3 @@ I/O retains some record oriented flavor (maximum line length on input).
 Integer math can never fail, even on overflow.
 
 Oversize integer constants may not be detected.
-
-This manual page is I<still> too long, and should be split up even further!
