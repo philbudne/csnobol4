@@ -6,6 +6,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	doc/snobol4key.1.pea: made it real.
 	doc/snobol4ctrl.1.pea: made it real.
 	doc/snobol4ext.1.pea: moved stuff to other pages.
+	doc/snobol4error.1.pea: ref snobol4cmd(1), remove =break
 
 12/19/2014:
 	modules/sqlite3/setup.sno: detect amalgamation sources

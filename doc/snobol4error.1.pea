@@ -6,7 +6,7 @@ snobol4error \- SNOBOL4 error codes
 =sect SYNOPSIS
 SNOBOL4 B<&amp;ERRTYPE> and B<&amp;ERRTEXT> values.
 
-Errors marked I<fatal> cannot be curtailed by setting B<&amp;ERRLIMIT>.
+Errors marked I<(fatal)> cannot be curtailed by setting B<&amp;ERRLIMIT>.
 
 =item 1
 ``Illegal data type''
@@ -39,68 +39,68 @@ Errors marked I<fatal> cannot be curtailed by setting B<&amp;ERRLIMIT>.
 =item 15
 ``String overflow''
 =item 16
-``Overflow during pattern matching'' I<fatal>.
-=break
-See the B<-P> option.
+``Overflow during pattern matching'' I<(fatal)>.
+=item
+See the B<-P> option in B<snobol4cmd>(1).
 =item 17
-``Error in SNOBOL4 system'' I<fatal>.
-=break
+``Error in SNOBOL4 system'' I<(fatal)>.
+=item
 Various internal errors.
 =item 18
-``Return from level zero'' I<fatal>.
+``Return from level zero'' I<(fatal)>.
 =item 19
-``Failure during goto evaluation'' I<fatal>.
+``Failure during goto evaluation'' I<(fatal)>.
 =item 20
-``Insufficient storage to continue'' I<fatal>.
-=break
-See the B<-d> option.
+``Insufficient storage to continue'' I<(fatal)>.
+=item
+See the B<-d> option in B<snobol4cmd>(1).
 =item 21
-``Stack overflow'' I<fatal>.
-=break
-See the B<-S> option.
+``Stack overflow'' I<(fatal)>.
+=item
+See the B<-S> option in B<snobol4cmd>(1).
 =item 22
-``Limit on statement execution exceeded'' I<fatal>.
+``Limit on statement execution exceeded'' I<(fatal)>.
 =item 23
-``Object exceeds size limit'' I<fatal>.
+``Object exceeds size limit'' I<(fatal)>.
 =item 24
-``Undefined or erroneous goto'' I<fatal>.
+``Undefined or erroneous goto'' I<(fatal)>.
 =item 25
-``Incorrect number of arguments'' I<fatal>.
+``Incorrect number of arguments'' I<(fatal)>.
 =item 26
-``Limit on compilation errors exceeded'' I<fatal>.
+``Limit on compilation errors exceeded'' I<(fatal)>.
 =item 27
-``Erroneous END statement'' I<fatal>.
+``Erroneous END statement'' I<(fatal)>.
 =item 28
-``Execution of statement with compilation error'' I<fatal>.
+``Execution of statement with compilation error'' I<(fatal)>.
 Last error in standard SNOBOL4.
 =item 29
-``Erroneous INCLUDE statement'' I<fatal>.
+``Erroneous INCLUDE statement'' I<(fatal)>.
 =item 30
-``Cannot open INCLUDE file'' I<fatal>.
+``Cannot open INCLUDE file'' I<(fatal)>.
 =item 31
-``Erroneous LINE statement'' I<fatal>.
+``Erroneous LINE statement'' I<(fatal)>.
 =item 32
-``Missing END statement'' I<fatal>.
+``Missing END statement'' I<(fatal)>.
 =item 33
 ``Output error''
 =item 34
 ``User interrupt''
-=break
+=item
 Interrupt character (SIGINT) was recieved.
 =item 35
 ``Not in a SETEXIT handler''
-=break
+=item
 Attempt to branch to B<CONTINUE>, B<SCONTINUE>, or B<ABORT>
 when no unhandled error condition present.
 =item 36
-``Error in BLOCKS''  I<fatal>.
-=break
+``Error in BLOCKS''  I<(fatal)>.
+=item
 Internal error.
 =item 37
-``Too many warnings in BLOCKS''  I<fatal>.
+``Too many warnings in BLOCKS''  I<(fatal)>.
 =item 38
-``Mystery error in BLOCKS'' I<fatal>.
-=break
+``Mystery error in BLOCKS'' I<(fatal)>.
+=item
 Undocumented internal error.
 =sect SEE ALSO
 B<snobol4>(1).
