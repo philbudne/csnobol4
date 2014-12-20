@@ -13,6 +13,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	config/win32/snobol4.vcxproj: removed module files
 	modules/stat/funcs.sno: fix comment/docs.
 	pkg/win32/install.bat: update
+	doc/snobol4.1.pea: snobol4func(1) ref
 
 12/18/2014:
 	config/win32/{config.h,ntmsvc.mak}:
