@@ -64,7 +64,7 @@ The value of the B<&amp;CODE> keyword determines the exit status of
 B<snobol4>(1) application.
 
 =item B<DATE()>
-B<snobol4func>(1).
+see B<snobol4func>(1).
 
 =item B<&amp;STLIMIT>
 When B<&amp;STLIMIT> is less than zero there is no limit to the number
