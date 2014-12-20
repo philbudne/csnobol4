@@ -56,36 +56,13 @@ Control lines and comment characters are valid after the
 (B<;>) statement separator.  Listing statement numbers show the statement
 number of the LAST statement on the line (rather than the first).
 
-=item B<&amp;ABEND>
-Setting the B<&amp;ABEND> keyword causes a core dump upon termination!
-
-=item B<&amp;CODE>
-The value of the B<&amp;CODE> keyword determines the exit status of
-B<snobol4>(1) application.
-
-=item B<DATE()>
-see B<snobol4func>(1).
-
 =item B<&amp;STLIMIT>
-When B<&amp;STLIMIT> is less than zero there is no limit to the number
-of statements executed, and B<&amp;STCOUNT> is not incremented.
-<&amp;STLIMIT> defaults to -1.
+B<&amp;STLIMIT> defaults to -1, see B<snobol4key>(1).
 
 =item Tracing
 B<VALUE> tracing applies to variables modified by immediate value
 assignment (B<$> operator) and value assignment (B<.> operator) during
 pattern matching.
-
-=item B<BACKSPACE()>
-The B<BACKSPACE()> function is not implemented. Use the
-B<SET()> function instead.
-
-=item I/O unit numbers
-Unit numbers up to 256 can be used.
-
-=item Output on closed unit
-Attempts to output on a closed unit generate a fatal ``Output error'',
-see B<snobol4error>(1).
 
 =subsect Extensions
 Further additions are documented in B<snobol4ext>(1).
