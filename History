@@ -5,7 +5,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 12/19/2014:
 	modules/sqlite3/setup.sno: detect amalgamation sources
 	modules/sqlite3/sqlite3mod.c (renamed)
-	modules/setuputil.sno: add mingw
+	modules/setuputil.sno: add mingw, remove nologo
 	config/win32/modules.bat: use %TOP%
 	config/win32/config.h: cleanup
 	config/win32/ntmsvc.mak: cleanup, removed module files
