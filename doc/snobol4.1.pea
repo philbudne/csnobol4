@@ -64,8 +64,7 @@ The value of the B<&amp;CODE> keyword determines the exit status of
 B<snobol4>(1) application.
 
 =item B<DATE()>
-The B<DATE()> function returns strings of the form: I<MM/DD/YYYY HH:MM:SS>.
-See B<snobol4ext>(1) for arguments to the B<DATE()> function.
+B<snobol4func>(1).
 
 =item B<&amp;STLIMIT>
 When B<&amp;STLIMIT> is less than zero there is no limit to the number
@@ -106,8 +105,8 @@ Unicode characters.  Include file B<utf.sno> implements
 pattern matching functions for UTF-8 sequences.
 
 Programs may be entered in mixed case; By default lower case
-identifiers are folded to upper case (see B<&amp;CASE> and B<\-CASE>
-extensions below).  Case folding is performed by using the C library
+identifiers are folded to upper case (see B<&amp;CASE> and B<\-CASE>).
+Case folding is performed by using the C library
 B<islower>(3) test, and then using B<toupper>(3) to convert the
 lower-case characters to upper case.  When using UTF-8 encoded
 characters in code, case folding should be disabled, to prevent any
@@ -152,8 +151,7 @@ following directories:
 =bull I<base>/I<version>/I<lib>
 =bull I<base>/I<version>/I<local>
 =bull I<base>/I<local>
-
-The current working directory.
+=bull I<.>
 
 =sect ENVIRONMENT
 
@@ -211,18 +209,18 @@ Using B<SNOBOL_PRELOAD_PATH> will make your code less portable.
 =item [Griswold1971]
 R. E. Griswold, J. F. Poage, and I. P. Polonsky,
 I<The SNOBOL4 Programming Language>, 2nd ed., Prentice-Hall Inc., 1971.
-=break
+=item
 I<(aka the green book)>
-=break
+=item
 =link http://www.snobol4.org/docs/books.html#green
 
 =anchor Griswold1972
 =item [Griswold1972]
 R. E. Griswold,
 I<The Macro Implementation of SNOBOL4>, W. H. Freeman and Co., 1972.
-=break
+=item
 Book describing the implementation techniques used in Macro SNOBOL4.
-=break
+=item
 =link http://www.snobol4.org/docs/books.html#macro
 
 =item Catspaw Vanilla SNOBOL4 manual.
