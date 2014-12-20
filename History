@@ -8,8 +8,10 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	doc/snobol4ext.1.pea: moved stuff to other pages.
 	doc/snobol4error.1.pea: ref snobol4cmd(1), remove =break
 	doc/snobol4func.1.pea: add first entries!
-	doc/snobol4.1.pea: remove =break
+	doc/snobol4.1.pea: remove =break, moved stuff into snobol4io(1)
 	modules/sprintf/sprintf.c: fix man page title line
+	doc/snobol4io.1.pea: cleaned up.
+	snolib/snopea.sno: force paragraph before =item
 
 12/19/2014:
 	modules/sqlite3/setup.sno: detect amalgamation sources

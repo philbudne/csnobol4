@@ -4,123 +4,69 @@ $Id$
 snobol4io \- SNOBOL4 file I/O
 
 =sect DESCRIPTION
+
+Macro SNOBOL4 originally depended on B<FORTRAN> libraries, unit
+numbers and B<FORMAT>s for input and output.  CSNOBOL4 uses the C
+B<stdio>(3) library instead, but unit numbers (INTEGERs between 1 and
+256) and record lengths remain embedded in the Macro SNOBOL4 code.
+
 =subsect I/O Associations
-I/O is performed by associating a variable name with a numbered I/O
-unit using the B<INPUT()> and B<OUTPUT()> functions.  The following
-associations are available by default;
+
+Output on a closed unit generates a fatal ``Output error'',
+see B<snobol4error>(1).
+
+The following variable/unit/file associations exist by default;
 
 =table 1i 2i
 =row Variable	Unit	Association
-=row B<INPUT>	5	standard input
-=row B<OUTPUT>	6	standard output
+=row B<INPUT>	5	standard input (input)
+=row B<OUTPUT>	6	standard output (output)
 =row B<TERMINAL>	7	standard error (output)
 =row B<TERMINAL>	8	/dev/tty (input)
 =etable
 
-=subsect I/O Options
-The third argument of the B<INPUT()> and B<OUTPUT()> functions is
-interpreted as a string of single letter options, commas are ignored.
-Some options effect only the I/O variable named in the first argument,
-others effect any variable associated with the unit number in the
-second argument.
-
-=item I<digits>
-A span of digits will set the input record length for the named I/O
-variable.  This controls the maximum string that will be returned for
-regular text I/O, and the number of bytes returned for binary I/O.
-Record length is per-variable association; multiple variables may be
-associated with the same unit, but with different record lengths.  The
-default record length for input is 1024; longer lines will be silently
-truncated.
-
-=item B<A>
-For B<OUTPUT()> the unit will be opened for append access (no-op for
-B<INPUT()>).
-
-=item B<B>
-The unit will be opened for binary access.  On input newline
-characters have no special meaning; the number of bytes transferred
-depends on record length (see above). On output no newline is
-appended.  For terminal devices, all I/O to this unit will be done
-without special processing for line editing or EOF, while characters
-which deliver signals (interrupt, kill, suspend) are still processed.
-Units opened on the same terminal device entry operate independently;
-some can use binary mode, while others operate in text mode.
-
-=item B<C>
-Character at a time I/O.  A synonym for B<B,1>.
-
-=item B<T>
-Terminal mode.  No newline characters are added on output, and any
-newline characters are returned on input.  Terminal mode effects only
-the referenced unit.  Terminal mode is useful for outputting prompts
-in interactive programs.
-
-=item B<Q>
-Quiet mode.  Turns off input echo on terminals.
-Effects only input from this unit.
-
-=item B<U>
-Update mode.  The unit is opened for both input and output.
-Here is how to associate a variable for I/O in both directions:
-=code
-        unit = IO_FINDUNIT()
-        INPUT(.name, unit, 'U', 'filepath')
-        OUTPUT(.name, unit)
-=ecode
-
-Useful situations for this when filepath is B</dev/fd/>I<n> where
-I<n> is a file descriptor number returned by B<SERV_LISTEN(),> filepath
-specifies a pipe (|command) or pseudo-terminal (||command) paths.
-The above sequence is also useful with when combined with fixed record
-length, binary mode and the B<SET()> function for I/O to preexisting
-files.  Performing B<OUTPUT()> first will create a regular file if it
-does not exist, but will also truncate a preexisting file!
-
-=item B<W>
-Unbuffered writes.  Each output variable assignment causes an I/O
-transfer to occur, rather than collecting the data in a buffer for
-efficiency.
-
-=item Named files
+=subsect Named files
 Input and output filenames can be supplied to the B<INPUT()> and
 B<OUTPUT()> functions via an optional fourth argument.
 
 =item filename - (hyphen)
 is interpreted as stdin on B<INPUT()> and stdout on B<OUTPUT()>.
 
-=item PIPE/PTY I/O
-If the filename begins with a vertical bar (|), the remainder is used
+=item subprocess I/O using PIPE and Pseudo-terminals
+If the filename begins with single a vertical bar (B<|>),
+the remainder is used
 as a shell command whose stdin (in the case of B<OUTPUT()>) or stdout
 (in the case of B<INPUT()>) will be connected to the file variable via
 a pipe.  If a pipe is opened by INPUT() input in ``update'' mode, the
 connection will be bi-directional (on systems with socketpair and
 Unix-domain sockets).  See below for how to associate a variable for
-I/O in both directions.  =item If the filename begins with two
-vertical bars (||) the remainder is used as a shell command executed
-with stdin, stdout and stderr attached to the slave side of a
-pseudo-terminal (pty), if the system C library contains the
-B<forkpty>(3) routine.  Use of ptys are necessary when the program to
-be invoked cannot be run without a "terminal" for I/O.  See below on
-how to properly associate the I/O variable.
+I/O in both directions.
 
-=item magic filenames B</dev/stdin>, B</dev/stdout>, and B</dev/stderr>
+=item
+If the filename begins with two vertical bars (B<||>) the remainder is
+used as a shell command executed with stdin, stdout and stderr
+attached to the slave side of a pseudo-terminal (pty), if the system C
+library contains the B<forkpty>(3) routine.  Use of ptys are necessary
+when the program to be invoked cannot be run without a "terminal" for
+I/O.  See below on how to properly associate the I/O variable.
+
+=item magic paths B</dev/stdin>, B</dev/stdout>, and B</dev/stderr>
 B</dev/stdin>, B</dev/stdout>, and B</dev/stderr> refer to the current
 process standard input, standard output and standard error I/O streams
-respectively regardless of whether those special filenames exist on
+respectively I<regardless> of whether those special filenames exist on
 your system.
 
 =item magic path B</dev/fd/>I<n>
-B</dev/fd/>I<n> opens a new I/O stream associated with file descriptor
-number I<n>.
+B</dev/fd/>I<n> uses B<fdopen>(3) to open a new I/O stream associated
+with file descriptor number I<n>, regardless of whether the special
+device entries exist.
 
-=item magic path B</tcp/>I<hostname>/I<service>
-B</tcp/>I<hostname>/I<service> can be used to open connection
-to a TCP server. If the path ends in the optional suffix
-B</priv>
-the local address will be bound to a port number below 1024,
-if process privileges allow.
-B</udp/>I<hostname>/I<service> behaves similarly for UDP.
+=item magic paths B</tcp/>I<hostname>/I<service> and  B</udp/>I<hostname>/I<service>
+B</tcp/>I<hostname>/I<service> can be used to open connection to a TCP
+server. If the path ends in the optional suffix B</priv> the local
+address will be bound to a port number below 1024, if process
+privileges allow.  B</udp/>I<hostname>/I<service> behaves similarly
+for UDP.
 
 =item magic pathname B</dev/tmpfile>
 B</dev/tmpfile> opens an anonymous temporary file for reading and writing, see
@@ -131,21 +77,167 @@ On non-POSIX systems B</dev/null> and B</dev/tty> are magical, and
 refer to the null device, and the user's terminal/console,
 respectively.
 
+=subsect I/O Options
+Originally the third argument specified record length for B<INPUT()>,
+or a B<FORTRAN> B<FORMAT> for B<OUTPUT()>.
 
+CSNOBOL4 interprets it as string of single letter options, commas are ignored.
+Some options effect only the I/O variable named in the first argument,
+others effect any variable associated with the unit number in the
+second argument.
+
+=item I<digits>
+A span of digits will set the input record length for the named I/O
+variable.  This controls the maximum string that will be returned for
+regular text I/O, and the number of bytes returned for binary I/O.
+Record length is per-variable association; multiple variables may be
+associated with the same unit, but with different record lengths.  The
+default record length for input is 1024. Lines longer than the record
+length will be silently truncated.
+
+=item B<A>
+For B<OUTPUT()> the unit will be opened for append access (and ignored by
+B<INPUT()>).  All writes will occur at the end of the file at the time
+of the write, regardless of the file position before the write.
+
+=item B<B>
+The unit will be opened for binary access.  On input, newline
+characters have no special meaning; the number of bytes transferred
+depends on record length (see above). On output, no newline is
+appended.
+
+=item
+For terminal devices, all input from this unit will be done without
+special processing for line editing or EOF; the number of characters
+returned depends on the record length.
+Characters which deliver signals (including interrupt, kill, and suspend)
+are still processed.  Units (with different fds) opened on the same terminal
+device operate independently; some can use binary mode, while others
+operate in text mode.
+
+=item B<C>
+Character at a time I/O.  A synonym for B<B,1>.
+
+=item B<T>
+Terminal mode.  Writes are performed ``unbuffered'' (see below), and
+no newline characters are added. On input newline characters are
+returned.  Terminal mode effects only the referenced unit, and does
+not require opening a new file descriptor (ie; by using a magic
+pathname): B<OUTPUT(.TT, 8, "T", "-")>.  Terminal mode is useful for
+outputting prompts in interactive programs.
+=item B<Q>
+Quiet mode.  Turns off input echo on terminals.
+Effects only input on this file descriptor.
+
+=item B<U>
+Update mode.  The unit is opened for both input and output.
+Example of associating a variable for I/O in both directions:
+=code
+        unit = IO_FINDUNIT()
+        INPUT(.name, unit, 'U', 'filepath')
+        OUTPUT(.name, unit)
+=ecode
+
+Useful situations for this when filepath is B</dev/fd/>I<n> where I<n>
+is a file descriptor number returned by B<SERV_LISTEN(),> or
+C<filepath> specifies a pipe (B<|command>) or pseudo-terminal
+(B<||command>) paths.
+
+=item
+The above sequence is also useful with when combined with fixed record
+length, binary mode and the B<SET()> function for I/O to preexisting
+files.  Performing B<OUTPUT()> first will create a regular file if it
+does not exist, but will also truncate a preexisting file!
+
+=item B<W>
+Unbuffered mode.  Each output variable assignment causes an immediate I/O
+transfer to occur by direct B<read>(1) or B<write>(1) system calls,
+rather than collecting the data in a buffer for efficiency.
+
+=subsect Other I/O extensions
 =item B<SERV_LISTEN()>
-The B<SERV_LISTEN()> function makes SNOBOL4 into a network server
-process, and takes three STRING arguments: FAMILY, TYPE, SERVICE.
-FAMILY must be either "inet" for an Internet Protocol v4 socket,
-"inet6" for an Internet Protocol v6 socket, or "unix" for a local
-("unix domain") socket.  The second argument, TYPE must be "stream",
-and the third argument, SERVICE must be a port number or service name
-(for an internet socket), or a pathname (for a "unix" socket).
-SERV_LISTEN() listens for incoming requests, accepts them, then
-``forks'' a child process and returns an integer file descriptor which
-can be opened for bidirectional I/O using a "/dev/fd/n" magic
-pathname.  The original (``parent'') process never returns from the
-SERV_LISTEN() call.  This function is only available on systems with
-the ``fork'' system call, which makes a child process which is an
-identical copy of the parent process.
+=item B<SET()>
+=item B<SSET()>
+see B<snobol4func>(1).
 
+=subsect I/O Layers
+
+The Macro SNOBOL4 and POSIX I/O architectures
+have subtleties which interact, and are explained here:
+
+=item Variable association
+Input and output is done by reading or writing variables associated
+with a unit number for I/O.
+
+=item
+Input (maximum) record lengths are associated each I<variable association>!
+
+=item Unit number
+Multiple variables can be associated with the same unit number
+using the B<INPUT()> and B<OUTPUT()> functions.
+
+=item
+Each unit number refers to a B<stdio>(3) stream
+(except on broken systems like Windows, where socket handles
+are incompatible with file handles, and all network I/O
+is performed ``unbuffered'').
+
+=item
+Sequential named files can be associated with an I/O unit
+when the B<-r> option is given on the command line!
+B<REWIND()> should return to to after the program B<END> label!
+
+=item ``Standard I/O'' Stream
+B<snobol4>(1) performs B<MOST> I/O through ``Standard Input/Output''
+streams. Multiple units can be associated with the same stdio stream
+(B<FILE> struct) using magic pathnames
+(``B<->'' and B</dev/std>{B<in,out,err>}).
+Buffering is performed by the stdio layer.
+
+=item Operating System file descriptor
+More than one stdio stream can be associated with the same O/S ``fd''
+(by opening magic pathname ``B</dev/fd/>I<n>'').
+
+=item
+Each POSIX ``fd'' has a file position pointer, changed by
+reading, writing and the B<REWIND()>, B<SET()> and B<SSET()> functions.
+
+=item
+I<Normally> terminal device ``special files'' have one set of
+mode settings, but CSNOBOL4 associates (saves and restores) different
+terminal settings (echo and the number of characters returned on read)
+based on fd numbers.
+
+=item Operating System open file object
+More than one ``fd'' slot can be associated with the same ``open file''
+object, either in multiple forks, or by B<dup>(2) of the same fd.
+This is often the case for stdin, stdout and stderr.
+
+=item
+Open file objects have flags which effect all associated fds,
+including input, output and append modes.
+
+=item Operating System named file
+Independant opens of the same named ``regular'' file will have
+different open file objects, and thus have independant access modes
+and file positions.
+
+=item
+Terminal ``special'' devices normally have one set of ``line discipline''
+mode settings, but CSNOBOL4 maintains different settings for each
+file descriptor (see above).
+
+=sect BUGS
+This page was cut and pasted from various parts of the original (big)
+B<snobol4>(1) man page, and still needs review and cleanup.
+
+All extensions should be annotated with the version they appeared in
+(and what other implementations they're compatible or inspired by).
+
+Record lengths.
+
+Unit numbers.
+
+=sect AUTHOR
+Philip L. Budne
 =cut
