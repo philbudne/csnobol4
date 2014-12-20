@@ -396,8 +396,21 @@ Pattern:
 I<Standard>.
 
 =item SERV_LISTEN(STRING,STRING,STRING)INTEGER
-I/O:
-I<Extension>.
+I/O: takes three STRING arguments: FAMILY, TYPE, SERVICE
+and makes B<snobol4>(1) into a network server process.
+FAMILY must be either "inet" for an Internet Protocol v4 socket,
+"inet6" for an Internet Protocol v6 socket, or "unix" for a local
+("unix domain") socket.  The second argument, TYPE must be "stream",
+and the third argument, SERVICE must be a port number or service name
+(for an internet socket), or a pathname (for a "unix" socket).
+SERV_LISTEN() listens for incoming requests, accepts them, then
+``forks'' a child process and returns an integer file descriptor which
+can be opened for bidirectional I/O using a "/dev/fd/n" magic
+pathname.  The original (``parent'') process never returns from the
+SERV_LISTEN() call.  This function is only available on systems with
+the ``fork'' system call, which makes a child process which is an
+identical copy of the parent process.
+I<CSNOBOL4 Extension, added in version ?.?>
 
 =item SET(N,O,W)
 I/O: Seeks the file pointer of an open file.  The
