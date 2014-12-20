@@ -7,7 +7,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	doc/snobol4ctrl.1.pea: made it real.
 	doc/snobol4ext.1.pea: moved stuff to other pages.
 	doc/snobol4error.1.pea: ref snobol4cmd(1), remove =break
-	doc/snobol4func.1.pea: add some entries!
+	doc/snobol4func.1.pea: add first entries!
 	doc/snobol4.1.pea: remove =break
 	modules/sprintf/sprintf.c: fix man page title line
 
