@@ -48,8 +48,10 @@ man pages:
 
 snopea.sno:
 	display UC words in small caps?
-	L<URL>
+	L<URL|text>
 	E<entity>??
+	S<superscript>
+	s<subscript>???
 	output HTML links for URLs, snobol4 man pages????
 
 accept string for unit?
