@@ -44,12 +44,7 @@ The protected keyword B<&amp;DIGITS> contains the string B<0123456789>.
 The Unicon and Icon languages implement B<&amp;DIGITS>.
 
 =item B<-ERROR/-NOERRORS>
-Directives B<-ERROR> and B<-NOERRORS> control execution of program
-with compiler errors.  If the B<-ERROR> directive is given, the
-program will be executed (but any attempt to execute a statement with
-a compiler error will cause a fatal execution error).  By default
-programs with compiler errors will not be started, this can be
-restored using B<-NOERRORS>.
+See B<snobol4ctrl>(1).
 
 =item B<&amp;ERRTEXT>
 After a statement with an error has been handled due to a non-zero
@@ -58,10 +53,7 @@ contain the error message.  See B<snobol4error>(1) for explanations of
 errors, and whether they are fatal or not.
 
 =item B<-EXECUTE/-NOEXECUTE>
-Directives B<-EXECUTE> and B<-NOEXECUTE> control execution of
-programs.  If the B<-NOEXECUTE> directive is given, the program will
-be not executed after compilation.  B<-EXECUTE> cancels any previous
-B<-NOEXECUTE>.
+See B<snobol4ctrl>(1).
 
 =item B<FILE_ABSPATH()/FILE_ISDIR()>
 B<FILE_ABSPATH(>I<string>B<)> is a predicate which returns the null

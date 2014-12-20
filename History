@@ -4,7 +4,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 12/20/2014:
 	doc/snobol4key.1.pea: made it real.
-	doc/snobol4key.1.pea: made it realer with stuff from snobol4ext(1).
+	doc/snobol4ctrl.1.pea: made it real.
 	doc/snobol4ext.1.pea: moved stuff to other pages.
 
 12/19/2014:

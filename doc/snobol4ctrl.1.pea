@@ -4,13 +4,7 @@ $Id$
 snobol4ctrl \- SNOBOL4 control lines
 
 =sect DESCRIPTION
-Just the skeleton of a page!  For each control line should have:
-=bull semantics
-=bull standard/modified/extension from ... added in ...
 
-For undocumented extensions, see B<snobol4ext>(1).
-
-=sect DESCRIPTION
 =item B<-BLOCKS>
 Enable BLOCKS extension.
 See see B<snobol4blocks>(1).
@@ -31,7 +25,15 @@ Output page break in listing.
 I<Standard>.
 
 =item B<-ERRORS>
-=item B<-EXEC>
+Enables program execution even if the compiler detected errors.
+Any attempt to execute a statement with a compiler error will cause a
+fatal execution error.  By default programs with compiler errors will
+not be started.
+I<SPITBOL? extension, added before CSNOBOL4 version 0.90>.
+
+=item B<-EXECUTE>
+Cancels any previous B<-NOEXECUTE>.
+I<SPITBOL extension, added in CSNOBOL4 version 0.98.1>.
 
 =item B<-HIDE>
 Disable listing; statement numbers will not be assigned
@@ -65,8 +67,13 @@ Disable BLOCKS extension.
 See see B<snobol4blocks>(1).
 I<CSNOBOL4 extension, added in CSNOBOL4 version 2.0>.
 
-=item B<-NOERRS>
+=item B<-NOERRORS>
+Disable effect of B<-ERROR> directive.
+I<SPITBOL? extension, added before CSNOBOL4 version 0.90>.
+
 =item B<-NOEXECUTE>
+Disables execution of the program.
+I<SPITBOL extension, added in CSNOBOL4 version 0.98.1>.
 
 =item B<-PLUSOPS>
 With no argument, or zero, disables SPITBOL extensions listed in
@@ -82,4 +89,3 @@ I<Standard>.
 B<snobol4>(1),
 B<snobol4key>(1),
 B<sdb>(1).
-
