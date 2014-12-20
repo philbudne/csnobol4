@@ -9,6 +9,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	doc/snobol4error.1.pea: ref snobol4cmd(1), remove =break
 	doc/snobol4func.1.pea: add some entries!
 	doc/snobol4.1.pea: remove =break
+	modules/sprintf/sprintf.c: fix man page title line
 
 12/19/2014:
 	modules/sqlite3/setup.sno: detect amalgamation sources

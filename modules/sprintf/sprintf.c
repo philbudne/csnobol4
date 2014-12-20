@@ -13,7 +13,7 @@
 /*
 **=pea
 **=sect NAME
-**snobol4fork - POSIX fork for SNOBOL4
+**snobol4sprintf - numeric formatting
 **=sect SYNOPSYS
 **=code
 **-INCLUDE 'sprintf.sno'
