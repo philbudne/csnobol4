@@ -6,6 +6,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	snolib/snopea.sno: output .IP for empty =item
 	doc/snobol4io.1.pea: cleanup
 	modules/setuputil.sno: update BUGS
+	lib/snolib/host.[ch]: add HOST_VERSION_DATE
 
 *** 2.0-rc2 (tag REL_2_0_RC2)
 

@@ -48,6 +48,9 @@
 /* CSNOBOL4: returns configure command line options (or fails) */
 #define HOST_CONFIG_OPTIONS	2003
 
+/* CSNOBOL4: version date (from configure script) */
+#define HOST_VERSION_DATE	2004
+
 /*****
  * variables from build.c, created before linking snobol4 executable
  */
