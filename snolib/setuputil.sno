@@ -68,8 +68,7 @@
 **=sect AUTHOR
 **Philip L. Budne
 **=sect BUGS
-**Only supports "POSIX" systems.
-**Tested on OS X, FreeBSD and Linux.
+**Only tested under OS X, FreeBSD, Linux, CYGWIN, MINGW, Visual Studio.
 **=sect SEE ALSO
 **B<snobol4>(1), B<snopea>(1)
 **=cut
