@@ -31,9 +31,12 @@ static handle_handle_t dir_handles;
 **=sect NAME
 **snobol4dirs \- filesystem directory interface for SNOBOL4
 **=sect SYNOPSYS
+**=code
 **B<-INCLUDE 'dirs.sno'>
+**=ecode
 **=sect DESCRIPTION
-**B<OPENDIR(>I<path>B<)> opens a directory and returns a handle.
+**=item B<OPENDIR(>I<path>B<)>
+**opens a directory and returns a handle.
 **=cut
 */
 
@@ -68,7 +71,8 @@ OPENDIR( LA_ALIST ) LA_DCL
 /*
 **=pea
 **
-**B<READDIR(>I<handle>B<)> returns a filename or fails.
+**=item B<READDIR(>I<handle>B<)>
+**returns a filename or fails.
 **=cut
 */
 /*
@@ -96,7 +100,8 @@ READDIR( LA_ALIST ) LA_DCL
 /*
 **=pea
 **
-**B<REWINDDIR(>I<handle>B<)> rewinds a directory handle.
+**=item B<REWINDDIR(>I<handle>B<)>
+**rewinds a directory handle.
 **=cut
 */
 /*
@@ -119,7 +124,8 @@ REWINDDIR( LA_ALIST ) LA_DCL
 /*
 **=pea
 **
-**B<TELLDIR(>I<handle>B<)> reports directory handle position.
+**=item B<TELLDIR(>I<handle>B<)>
+**reports directory handle position.
 **(may not be available on all platforms).
 **=cut
 */
@@ -141,7 +147,8 @@ TELLDIR( LA_ALIST ) LA_DCL
 /*
 **=pea
 **
-**B<TELLDIR(>I<handle>B<)> adjusts directory handle position.
+**=item B<TELLDIR(>I<handle>,I<position>B<)>
+**adjusts directory handle position.
 **=cut
 */
 /*
@@ -163,7 +170,8 @@ SEEKDIR( LA_ALIST ) LA_DCL
 /*
 **=pea
 **
-**B<CLOSEDIR(>I<handle>B<)> closes directory handle.
+**=item B<CLOSEDIR(>I<handle>B<)>
+**closes directory handle.
 **=cut
 */
 /*
@@ -187,7 +195,7 @@ CLOSEDIR( LA_ALIST ) LA_DCL
 /*
 **=pea
 **=sect SEE ALSO
-**B<snobol4>(1), B<opendir>(3), B<readdir(>3B<), B<rewinddir>(3),
+**B<snobol4>(1), B<opendir>(3), B<readdir>(3), B<rewinddir>(3),
 **B<telldir>(3), B<seekdir>(3), B<closedir>(3)
 **=sect AUTHOR
 **Philip L. Budne
