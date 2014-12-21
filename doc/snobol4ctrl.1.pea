@@ -6,13 +6,11 @@ snobol4ctrl \- SNOBOL4 control lines
 =sect DESCRIPTION
 
 =item B<-BLOCKS>
-Enable BLOCKS extension.
-See see B<snobol4blocks>(1).
+Enable BLOCKS operators, see B<snobol4blocks>(1).
 I<CSNOBOL4 extension, added in CSNOBOL4 version 2.0>.
 
 =item B<-CASE>
-Disable/re-enable case folding during compilation.
-To disable case folding use B<-CASE 0>.
+To disable case folding in compiler, use B<-CASE 0>.
 To re-enable case folding use B<-CASE> I<n>, where I<n> is a non-zero integer.
 I<SPITBOL? extension, added in CSNOBOL4 version 0.91>.
 
