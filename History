@@ -2,6 +2,8 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+*** 2.0-rc2 (tag REL_2_0_RC2)
+
 12/20/2014:
 	doc/snobol4key.1.pea: made it real.
 	doc/snobol4ctrl.1.pea: made it real.
