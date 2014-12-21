@@ -17,6 +17,7 @@ see B<snobol4error>(1).
 
 The following variable/unit/file associations exist by default;
 
+=item
 =table 1i 2i
 =row Variable	Unit	Association
 =row B<INPUT>	5	standard input (input)
@@ -137,7 +138,7 @@ Example of associating a variable for I/O in both directions:
         INPUT(.name, unit, 'U', 'filepath')
         OUTPUT(.name, unit)
 =ecode
-
+=item
 Useful situations for this when filepath is B</dev/fd/>I<n> where I<n>
 is a file descriptor number returned by B<SERV_LISTEN(),> or
 C<filepath> specifies a pipe (B<|command>) or pseudo-terminal
@@ -155,9 +156,7 @@ transfer to occur by direct B<read>(1) or B<write>(1) system calls,
 rather than collecting the data in a buffer for efficiency.
 
 =subsect Other I/O extensions
-=item B<SERV_LISTEN()>
-=item B<SET()>
-=item B<SSET()>
+=item B<SERV_LISTEN()>, B<SET()>, B<SSET()>
 see B<snobol4func>(1).
 
 =subsect I/O Layers
@@ -223,12 +222,12 @@ different open file objects, and thus have independant access modes
 and file positions.
 
 =item
-Terminal ``special'' devices normally have one set of ``line discipline''
+Terminal devices normally have one set of ``line discipline''
 mode settings, but CSNOBOL4 maintains different settings for each
 file descriptor (see above).
 
 =sect BUGS
-This page was cut and pasted from various parts of the original (big)
+This page was cut and pasted from various parts of the original
 B<snobol4>(1) man page, and still needs review and cleanup.
 
 All extensions should be annotated with the version they appeared in
