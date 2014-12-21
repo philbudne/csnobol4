@@ -6,6 +6,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	configure, Makefile2.m4: s/SNOLIB_VER/SNOLIB/
 	snolib/snopea.sno: tweak headers, links for snopea
 	doc/snobol4.1.pea: ref snopea(1) & snopea(7)
+	doc/snobol4func.1.pea: add entries for some standard functions!
 
 12/20/2014:
 	snolib/snopea.sno: output .IP for empty =item
