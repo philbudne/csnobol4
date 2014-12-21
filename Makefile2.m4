@@ -657,13 +657,13 @@ install: snobol4 sdb timing.out $(GENERATED_DOCS)
 	for F in $(GENERATED_DOCS_DOCDIR7); do \
 		$(INSTALL) -m 644 $$F $(MAN7DIR); \
 	done
-	$(INSTALL) -d $(SNOLIB_VER)
+	$(INSTALL) -d $(SNOLIB)
 	$(INSTALL) -d $(SNOLIB_DOC)
 	$(INSTALL) -m 644 README $(SNOLIB_DOC)
 	$(INSTALL) -m 644 CHANGES $(SNOLIB_DOC)
-	$(INSTALL) -d $(SNOLIB_VER)
-	$(INSTALL) -d $(SNOLIB_VER)/local
-	$(INSTALL) -d $(SNOLIB_VER)/local/shared
+	$(INSTALL) -d $(SNOLIB)
+	$(INSTALL) -d $(SNOLIB)/local
+	$(INSTALL) -d $(SNOLIB)/local/shared
 	$(INSTALL) -d $(SNOLIB_LIB)
 	$(INSTALL) -d $(SNOLIB_LIB)/shared
 	rm -f $(SNOLIB_LIB)/dynload
