@@ -14,6 +14,7 @@ mkdir %SNOBASE%\local
 rem read file created by Un*x configure shell script;
 set /p VERSION=<version
 set SNODIR=%SNOBASE%\%VERSION%
+
 mkdir %SNODIR%
 copy README %SNODIR%
 copy CHANGES %SNODIR%
@@ -37,8 +38,10 @@ mkdir %LIBDIR%
 copy host.sno %LIBDIR%
 copy snobol4.lib %LIBDIR%
 copy snolib\*.sno %LIBDIR%
+copy modules\setuputil.sno %LIBDIR%
 copy config\win32\config.sno %LIBDIR%
 
+rem XXX loop running setup.sno "install" !!!!
 mkdir %DLLDIR%
 copy modules\*\*.dll %DLLDIR%
 
@@ -48,19 +51,19 @@ copy doc\load.doc %DOCDIR%
 copy modules\*\*.html %DOCDIR%
 
 mkdir %INCDIR%
-copy config\win32\config.h %INCDIR%
 copy equ.h %INCDIR%
 copy version.h %INCDIR%
 copy include\h.h %INCDIR%
-copy include\snotypes.h %INCDIR%
-copy include\macros.h %INCDIR%
 copy include\load.h %INCDIR%
+copy include\macros.h %INCDIR%
+copy include\snotypes.h %INCDIR%
+copy config\win32\config.h %INCDIR%
 
 mkdir %TIMDIR%
 copy timing.sno %TIMDIR%
-copy test\v311.sil %TIMDIR%
 copy test\procs %TIMDIR%
 copy test\globals %TIMDIR%
+copy test\v311.sil %TIMDIR%
 copy test\bench.sno %TIMDIR%
 
 mkdir %SNODIR%\local
