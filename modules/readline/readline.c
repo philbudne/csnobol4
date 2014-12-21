@@ -14,6 +14,7 @@
 **        INPUT_STRING = READLINE(PROMPT_STRING)
 **        ADD_HISTORY(STRING)
 **        STRING = HISTORY_EXPAND(STRING)
+**=ecode
 **=sect DESCRIPTION
 **=cut
 */
