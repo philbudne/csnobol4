@@ -287,12 +287,10 @@ sp.html.head
 
 	out = '<html>'
 	out = '<head>'
-	out = '<title>' snopea.snovers ' | ' page '(' sect ') ' | date '</title>'
+	out = '<title>' page '(' sect ') | ' snopea.snovers '|' date '</title>'
 	out = '</head>'
 	out = '<body>'
-
-	out = '<h1>' page '(' sect ') <br> ' date '</h1>'
-
+	out = '<h1>' page '(' sect ') | ' snopea.snovers ' | ' date '</h1>'
 	indent = 4
 	text =
 
@@ -321,7 +319,7 @@ sp.html.oline
 +	t1 =
 	pat = POS(0) BREAKX('<') . pre 
 +	       ('<B>'
-+	         (('snobol4' | 'sdb' | 'snolib') BREAK('<')) . pg
++	         (('snobol4' | 'sdb' | 'snolib' | 'snopea') BREAK('<')) . pg
 +               '</B>'
 +	        '(' ANY('137') . sec ')'
 +              ) . full
