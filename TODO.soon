@@ -3,11 +3,6 @@ $Id$
 README / INSTALL
 	note HTML page install directory??
 
-benchmark:
-	only compare Kst/sec??
-
-construct a config.m4 file for mingw/msc???
-
 cygwin:	Makefile2.m4: install libsnobol4.a!! where??
 
 MSC:
@@ -18,6 +13,7 @@ MSC:
 		run module "install" commands (.dll & .sno)
 
 mingw:	debug sqlite3
+	make install?
 
 ================
 
@@ -37,7 +33,9 @@ Modules:
 		logic(!!), sqlite3, stat, dirs, sprintf, fork, ffi
 
 man pages:
-    need work: snobol4ctrl, snobol4func, snobol4key
+    finish: snobol4func
+
+    snobol4opr -- operators
 
     snobol4utf -- from pea comments in utf.sno
     snobol4host -- from pea comments in host.c???
