@@ -79,7 +79,7 @@ Data:
 I<Standard>.
 
 =item COS(REAL)REAL
-Math: Takes B<REAL> argument in radians.
+Math: Return cosine of argument in radians.
 I<Extension from SPITBOL, added in CSNOBOL4 version 0.98.4>.
 
 =item DATA(P)
@@ -468,7 +468,7 @@ the saved execution state is kept.
 I<Extension from SPITBOL, added in CSNOBOL4 version 1.4>.
 
 =item SIN(REAL)REAL
-Math: Takes B<REAL> argument in radians.
+Math: Return sine of argument in radians.
 I<Extension from SPITBOL, added in CSNOBOL4 version 0.98.4>.
 
 =item SIZE(S)
@@ -540,7 +540,7 @@ Data:
 I<Standard>.
 
 =item TAN(REAL)REAL
-Math: Takes B<REAL> argument in radians.
+Math: Return tangent of argument in radians.
 I<Extension from SPITBOL, added in CSNOBOL4 version 0.98.4>.
 
 =item THAW(TABLE)
