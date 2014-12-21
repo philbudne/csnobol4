@@ -578,6 +578,8 @@ A predicate is a function which returns either a null value or failure.
 
 =sect BUGS
 Most standard functions are undocumented!!
+See
+=link http://www.snobol4.org/docs/books.html#green
 
 =sect SEE ALSO
 B<snobol4>(1),
