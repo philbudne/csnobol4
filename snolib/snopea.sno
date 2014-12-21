@@ -209,8 +209,10 @@ sp.roff.indent
 
 * unadorned item
 sp.roff.item
-	out = '.TP ' indent
 	needspace =
+	rest POS(0) snopea.ws =
+	out = IDENT(rest) '.IP'				:s(sp.top)
+	out = '.TP ' indent
 	line = rest					:(sp.text)
 
 * bullet item
