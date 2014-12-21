@@ -52,6 +52,8 @@ extern char *snolib_vlib;		/* BASE/VERSION/lib */
 extern char *snolib_vlocal;		/* BASE/VERSION/local */
 #endif /* NO_STATIC_VARS not defined */
 
+extern const char snoname[], vers[], vdate[];
+
 #ifdef HAVE_BUILD_VARS
 extern const char build_files[];
 extern const char build_lib[];
@@ -78,7 +80,6 @@ HOST( LA_ALIST ) LA_DCL
 	 */
 	if (strcmp(buf, HOST_SYSINFO) == 0) {
 	    char os[256], hw[256];
-	    extern const char snoname[], vers[];
 
 	    /* use routines from SYSDEP/sys.c; */
 	    osname(os);
@@ -176,7 +177,7 @@ HOST( LA_ALIST ) LA_DCL
 
 #ifdef HOST_VERSION_DATE
     case HOST_VERSION_DATE:
-	RETSTR(HOST_VERSION_DATE);	/* from configure script */
+	RETSTR(vdate);			/* from configure script */
 #endif /* HOST_VERSION_DATE */
 
 /* variables from build.c, created before linking snobol4 executable */
