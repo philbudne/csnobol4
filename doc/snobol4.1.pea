@@ -111,7 +111,8 @@ and labels.
 
 Note that the use of the pound sign for comments allows use of the
 script interpreter (hash-bang) sequence at the top of a file marked as
-executable: ``#!/usr/local/bin/snobol4''.
+executable: ``B<#!/usr/local/bin/snobol4>'' or
+``B<#!/usr/bin/env snobol4>''
 
 =subsect Directory Search List
 
@@ -158,6 +159,7 @@ Using B<SNOBOL_PRELOAD_PATH> will make your code less portable.
 =row B<snobol4io>(1)	input/output
 =row B<snobol4key>(1)	CSNOBOL4 keywords
 =row B<snobol4blocks>(1)	SNOBOL4B BLOCKS extension
+=row B<snopea>(1)	convert SNOBOL snopea documentation to roff and HTML
 =row B<snobol4dirs>(3)	directory access functions
 =row B<snobol4ffi>(3)	Foreign Function Interface functions
 =row B<snobol4fork>(3)	subprocess interface functions
@@ -171,6 +173,7 @@ Using B<SNOBOL_PRELOAD_PATH> will make your code less portable.
 =row B<snobol4tcl>(3)	Tcl/Tk interface functions
 =row B<snobol4time>(3)	date/time functions
 =row B<snolib>(3)	misc library functions
+=row B<snopea>(7)	A little ``Plain Old Documentation'' format for SNOBOL4
 =etable
 
 =item All things SNOBOL4 related.
