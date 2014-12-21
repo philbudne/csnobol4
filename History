@@ -12,6 +12,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	modules/sprintf/sprintf.c: fix man page title line
 	doc/snobol4io.1.pea: cleaned up.
 	snolib/snopea.sno: force paragraph before =item
+	configure: update version to 2.0-rc2
 
 12/19/2014:
 	modules/sqlite3/setup.sno: detect amalgamation sources
