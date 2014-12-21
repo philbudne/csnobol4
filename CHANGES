@@ -9,7 +9,7 @@ Changes since 1.5 release;
 	Fix man page installation directory (reported by Mike Greenberg)
 	Fix R(ETURN) TRACE
 	Fix FUNCTION TRACE (reported by Dani Richard)
-	Fix "finite" warning (reported by Clem Cole)
+	Fix "finite" warnings (reported by Clem Cole)
 	Added framework/utility for loadable extension modules.
 	Made existing facilities into modules:
 		logic, ndbm, random, stcl, time
