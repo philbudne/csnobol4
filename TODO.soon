@@ -5,17 +5,25 @@ README / INSTALL
 
 cygwin:	Makefile2.m4: install libsnobol4.a!! where??
 
-MSC:
-	install:
-		snobol4.lib
-		config.h
-		config.sno, setuputil.sno
-		run module "install" commands (.dll & .sno)
+install.bat:
+	run setup.sno "install" commands
 
 mingw:	debug sqlite3
 	make install?
 
 ================
+
+snobol4func.1.pea:
+	fix ??? and ?.? items
+	bold function & type names!
+
+snopea.sno:
+	output anchors for sect/subsect
+	style sheet for HTML!!!
+
+EXIT()
+	does not call io_flushall??
+	implement Win32 version of execute()??
 
 Windows readline:
 	http://sourceforge.net/projects/mingweditline/?source=directory
