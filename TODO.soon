@@ -3,10 +3,12 @@ $Id$
 README / INSTALL
 	note HTML page install directory??
 
+setuputil.sno: wrap output directory in quotes
+
 cygwin:	Makefile2.m4: install libsnobol4.a!! where??
 
 install.bat:
-	run setup.sno "install" commands
+	run "config\win32\modules.bat install"
 
 mingw:	debug sqlite3
 	make install?
@@ -14,7 +16,6 @@ mingw:	debug sqlite3
 ================
 
 snobol4func.1.pea:
-	fix ??? and ?.? items
 	bold function & type names!
 
 snopea.sno:
