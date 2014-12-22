@@ -11,6 +11,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	doc/snobol4ctrl.1.pea: tweaks
 	modules/dirs/dirs.c: use =item
 	modules/logic/readline.c: add missing =ecode
+	modules/setuputil.sno: honor DESTDIR
 
 12/20/2014:
 	snolib/snopea.sno: output .IP for empty =item

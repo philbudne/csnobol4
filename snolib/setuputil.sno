@@ -11,6 +11,8 @@
 -INCLUDE 'snopea.sno'
 -INCLUDE 'config.sno'
 
+	setup.verbse = 1
+
 * TODO
 *   Honor more vars:
 *	name
@@ -363,9 +365,10 @@ setup.posix.installcmd
 	dest = (FILE_ISDIR('CVS') HOST(HOST_SNOLIB_VLIB), 
 +			HOST(HOST_SNOLIB_VLOCAL))
 
+	destdir = HOST(HOST_GETENV, 'DESTDIR')
 	libfile = setup.dlname(t)
 	shared = ('/' HOST(HOST_SHARED_OBJ_SUBDIR), '')
-	command = 'cp -f ' libfile ' ' dest shared
+	command = 'cp -f ' libfile ' ' destdir dest shared
 	setup.posix.system(command)		:f(FRETURN)
 
 	sno = setup.sno(t)
@@ -388,11 +391,10 @@ setup.posix.instcmd.xloop
 setup.posix.instcmd.xdone
 	IDENT(manfiles)				:s(return)
 
-	command = 'cp -f ' snofiles ' ' dest
+	command = 'cp -f ' snofiles ' ' destdir dest
 	setup.posix.system(command)		:f(FRETURN)
 
-# XXX prepend DESTDIR environment variable to MAN3DIR??
-	command = 'cp -f ' manfiles ' ' MAN3DIR
+	command = 'cp -f ' manfiles ' ' destdir MAN3DIR
 	setup.posix.system(command)		:f(FRETURN)s(RETURN)
 setup.posix.installcmd.end
 
