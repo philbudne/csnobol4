@@ -16,6 +16,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	Makefile: cleanup *_modules, add printenv
 	Makefile2.m4: add printenv
 	pkg/win32/install.bat: use copy /y
+	config/win32/modules.bat: take command argument
 
 12/20/2014:
 	snolib/snopea.sno: output .IP for empty =item
