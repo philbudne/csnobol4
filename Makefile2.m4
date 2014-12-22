@@ -686,6 +686,9 @@ install: snobol4 sdb timing.out $(GENERATED_DOCS)
 	@echo 'Have you mailed a copy of timing.out to timing@snobol4.org ?' 1>&2
 	@echo '*********************************************************' 1>&2
 
+printenv:
+	env
+
 ################
 MAKEFILE2=Makefile2
 DEPENDFLAGS=$(MYCPPFLAGS)

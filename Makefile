@@ -47,7 +47,8 @@ SIL=	v311.sil
 # files to avoid removing when interrupted
 .PRECIOUS: snobol4 xsnobol4 Makefile2 $(GENERATED)
 
-M2TARGETS=all snobol4 xsnobol4 install lint sdb cpuid timing.out build_all
+M2TARGETS=all snobol4 xsnobol4 install lint sdb cpuid timing.out build_all \
+	clean_modules build_modules printenv
 $(M2TARGETS): $(GENERATED) Makefile2 ALWAYS .depend
 	$(MAKE) -f Makefile2 $@
 
@@ -175,15 +176,6 @@ host.sno: host.awk lib/snolib/host.h
 #procs:	gendep.sno
 #	$(SNO) gendep.sno < $(SIL) > procs2
 #	mv -f procs2 procs
-
-################
-# shorthands
-
-clean_modules: Makefile2
-	make -f Makefile2 clean_modules
-
-build_modules: Makefile2
-	make -f Makefile2 build_modules
 
 ##################################################################
 # housekeeping
