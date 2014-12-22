@@ -26,7 +26,7 @@ I<Standard>.
 
 =item ATAN(REAL)REAL
 Math: Returns the principal value of the arc tangent of its argument.
-I<Extension, added in CSNOBOL4 1.4>.
+I<Extension from SNOBOL4+?, added in CSNOBOL4 1.4>.
 
 =item BACKSPACE(N)
 I/O: Not implemented!! See B<SET()> and B<SSET()>.
@@ -48,21 +48,22 @@ terminated by a break set.  BREAKX can be used as a faster matching
 replacement for B<ARB>: B<BREAKX('S') 'STRING'> always runs faster
 than B<ARB 'STRING'> since it only attempts matching B<'STRING'> at
 locations where an B<'S'> has been detected.
-I<SPITBOL Extension, added in CSNOBOL4 version 0.98>.
+I<SPITBOL 360 Extension, added in CSNOBOL4 version 0.98>.
 
 =item CHAR(n)
 String: takes an integer from 0 to 255 and returns the
 I<n>th character in B<&amp;ALPHABET>.
-I<SPITBOL Extension, added in CSNOBOL4 version 0.98>.
+I<SPITBOL 360 Extension, added in CSNOBOL4 version 0.98>.
+SNOBOL4+ has a B<CHR()> function.
 
 =item CHOP(real)
 Math: truncates the fractional part of its argument
 (rounding towards zero), and returns a REAL value.
-I<SNOBOL4+ Extension, added in CSNOBOL4 version ?.?>.
+I<SPITBOL Extension, added in CSNOBOL4 version 0.98.4>.
 
 =item CLEAR()
 Interpreter: Clears ALL natural variable values (including predefined pattern
-variables B<ABORT>, B<ARB>, B<BAL>, B<FENCE>, B<REM>, and B<SUCCEED>.
+variables B<ABORT>, B<ARB>, B<BAL>, B<FENCE>, B<REM>, and B<SUCCEED>).
 I<Standard>.
 
 =item CODE(str)
@@ -88,7 +89,7 @@ I<Standard>.
 
 =item COS(REAL)REAL
 Math: Return cosine of argument in radians.
-I<SPITBOL Extension, added in CSNOBOL4 version 0.98.4>.
+I<SNOBOL4+ Extension?, added in CSNOBOL4 version 0.98.4>.
 
 =item DATA(prototype)
 Data: Declares a B<DATA> struct type: I<prototype> is of the form
@@ -104,11 +105,11 @@ I<Standard>.
 
 =item DATE()
 String: returns I<MM/DD/YYYY HH:MM:SS>.
-For compatibility with new versions of Catspaw SPITBOL, since CSNOBOL4
-version 0.99.4,
+I<Standard>.
+For compatibility with Catspaw Macro SPITBOL,
+since CSNOBOL4 version 0.99.4
 B<DATE(0)> returns strings of the form I<MM/DD/YY HH:MM:SS>, and
 B<DATE(2)> returns strings of the form I<YYYY-MM-YY HH:MM:SS>.
-I<Standard (with extensions from Catspaw SPITBOL)>.
 
 =item DEFINE(prototype[,label])
 Functions: declares a function using I<prototype> of the form
@@ -159,7 +160,7 @@ Does B<NOT> implement ``save file'' feature of B<SPITBOL>.
 
 =item EXP(x)
 Math: returns the value B<e **> I<x>.
-I<SNOBOL4+ Extension, added in CSNOBOL4 version ?.?>.
+I<SPITBOL Extension, added in CSNOBOL4 version 0.98.4>.
 
 =item FIELD(name,n)
 Data: Returns a string with the name of the I<n>th member of
@@ -216,8 +217,8 @@ by colons.  The first part describes the physical architecture, the
 second describes the operating system, and the third describes the
 language implementation name. NOTE! Architecture names come from the
 B<uname>(3) library call, and may be different for the same hardware
-when running different operating systems.  An example value:
-B<amd64:FreeBSD 10.0-RELEASE-p7:CSNOBOL4B 2.0>
+when running different operating systems. Example:
+B<amd64:FreeBSD 10.0:CSNOBOL4B 2.0>
 
 =item
 B<HOST(0)> returns a string containing the command line parameter
@@ -289,33 +290,33 @@ I<Standard>.
 
 =item LEQ(s1,s2)
 Predicate: tests if first argument is lexically equal to second argument.
-I<??? Extension, added in CSNOBOL4 version 0.98.2>.
+I<SPITBOL Extension, added in CSNOBOL4 version 0.98.2>.
 
 =item LGE(S1,S2)
 Predicate: tests if first argument is lexically greater than or equal to second
 argument.
-I<??? Extension, added in CSNOBOL4 version 0.98.2>.
+I<SPITBOL Extension, added in CSNOBOL4 version 0.98.2>.
 
 =item LGT(S1,S2)
 Predicate: tests if first argument is lexically greater than second argument.
-I<??? Extension, added in CSNOBOL4 version 0.98.2>.
+I<SPITBOL Extension, added in CSNOBOL4 version 0.98.2>.
 
 =item LLE(S1,S2)
 Predicate: tests if first argument is lexically less than or equal to second
 argument.
-I<??? Extension, added in CSNOBOL4 version 0.98.2>.
+I<SPITBOL Extension, added in CSNOBOL4 version 0.98.2>.
 
 =item LLT(S1,S2)
 Predicate: tests if first argument is lexically less than second argument.
-I<??? Extension, added in CSNOBOL4 version 0.98.2>.
+I<SPITBOL Extension, added in CSNOBOL4 version 0.98.2>.
 
 =item LNE(S1,S2)
 Predicate: tests if first argument is lexically different from second argument.
-I<??? Extension, added in CSNOBOL4 version 0.98.2>.
+I<SPITBOL Extension, added in CSNOBOL4 version 0.98.2>.
 
 =item LN(REAL)REAL
 Math: an alias for B<LOG()>,
-I<SPITBOL Extension, added in CSNOBOL4 version ?.?>.
+I<SPITBOL Extension, added in CSNOBOL4 version 1.4>.
 
 =item LOAD(PROTOTYPE,FILE)
 Function:
@@ -328,16 +329,15 @@ I<Standard>.
 
 =item LOG(REAL)REAL
 Math: returns the natural logarithm of its argument.
-I<Extension from SNOBOL4+, added in CSNOBOL4 version ?.?>.
+I<Extension from SNOBOL4+, added in CSNOBOL4 version 0.98.4>.
 
 =item LPAD(str,n,char)
-String:
-Takes the first argument (subject) string, and left pads it out to the
-length specified in the second argument, using the first character of
-the optional third argument.  If the third argument is missing, or is
-the null string, spaces will be used for padding.  The subject will be
-returned unmodified if already long enough.
-I<SPITBOL? Extension, added in CSNOBOL4 version ?.?>.
+String: Takes the first argument (subject) string, and left pads it
+out to the length specified in the second argument, using the first
+character of the optional third argument.  If the third argument is
+missing, or is the null string, spaces will be used for padding.  The
+subject will be returned unmodified if already long enough.
+I<SPITBOL 360 Extension, added in CSNOBOL4 version 0.98>.
 
 =item LT(I1,I2)
 Predicate: Succeeds if I<i1> is arithmetically less than I<i2>.
@@ -358,8 +358,8 @@ I<Standard>.
 =item ORD(STRING)INTEGER
 String: returns the ordinal value (zero to 255) of the
 first character in its string argument (the inverse of B<CHAR()>).
-I<CSNOBOL4 Extension, added in version ?.?>.
-??? has an B<ASCII()> function.
+I<CSNOBOL4 Extension, added in version 0.99.44>.
+SNOBOL4+ has an B<ASC()> function.
 
 =item OUTPUT(VAR,UNIT,OPT,NAME)
 I/O:
@@ -389,7 +389,7 @@ I<Standard>.
 
 =item REVERSE(str)
 String: returns its subject string in reverse order. 
-I<SPITBOL? Extension, added in CSNOBOL4 version ?.?>.
+I<SPITBOL Extension, added in CSNOBOL4 version 0.98.2>.
 
 =item REWIND(unit)
 I/O:
@@ -402,7 +402,7 @@ length specified in the second argument, using the first character of
 the optional third argument.  If the third argument is missing, or is
 the null string, spaces will be used for padding.  The subject will be
 returned unmodified if already long enough.
-I<SPITBOL? Extension, added in CSNOBOL4 version ?.?>.
+I<SPITBOL 360 Extension, added in CSNOBOL4 version 0.98>.
 
 =item RPOS(N)
 Pattern:
@@ -410,6 +410,7 @@ I<Standard>.
 
 =item RSORT(T,C)
 Data: see B<SORT()>.
+I<Macro SPITBOL extension, added in CSNOBOL4 version 0.98>.
 
 =item RTAB(N)
 Pattern:
@@ -430,7 +431,7 @@ pathname.  The original (``parent'') process never returns from the
 SERV_LISTEN() call.  This function is only available on systems with
 the ``fork'' system call, which makes a child process which is an
 identical copy of the parent process.
-I<CSNOBOL4 Extension, added in version ?.?>
+I<CSNOBOL4 Extension, added in version 0.99.44>
 
 =item SET(unit,offset,whence)
 I/O: Seeks the file pointer of an open file.  The
@@ -443,7 +444,7 @@ end of the file.  B<SET()> returns the new file pointer value.  On
 systems with 64-bit file pointers and 32-bit integers the return value
 will be truncated to 32-bits, and only the first and last 4 gigabytes
 of a file can be accessed directly: see B<SSET()>.
-I<SPITBOL? Extension, added in CSNOBOL4 version ?.?>.
+I<Catspaw Macro SPITBOL Extension, added in CSNOBOL4 version 0.99.1>.
 
 =item SETEXIT(label)
 Interpreter: The argument to B<SETEXIT()> is the name of a label to
@@ -485,11 +486,11 @@ catch further errors. Handlers cannot be nested: only one copy of the
 saved execution state is kept.
 
 =item
-I<Extension from SPITBOL, added in CSNOBOL4 version 1.4>.
+I<Extension from SPITBOL 360, added in CSNOBOL4 version 1.4>.
 
 =item SIN(real)
 Math: Return sine of argument in radians.
-I<Extension from SPITBOL, added in CSNOBOL4 version 0.98.4>.
+I<SNOBOL4+ Extension?, added in CSNOBOL4 version 0.98.4>.
 
 =item SIZE(string)
 String: returns the length of the argument.
@@ -516,7 +517,7 @@ While I<WORDS = SORT(TAB,1)> returns an array with the rows by the
 lexicographical ordering of the words; I<WORDS&lt;1,1&gt;> contains
 the lexicographically first word and I<WORDS&lt;1,2&gt;> contains the
 number of occurrences of that word.
-I<Extension from SPITBOL?, added in CSNOBOL4 version ?.?>.
+I<Macro SPITBOL extension?, added in CSNOBOL4 version 0.98>.
 
 =item SPAN(CS)
 Pattern:
@@ -537,7 +538,7 @@ combination with relative B<SET()> calls (whence of one), any file
 offset can be achieved, even when system file offsets are larger than
 can be represented in a SNOBOL4 B<INTEGER>.  Support for ``Large Files''
 is enabled when available, but not all file systems support large files.
-I<CSNOBOL4 Extension, added in version ?.?>.
+I<CSNOBOL4 Extension, added in version 0.99.44>.
 
 =item STOPTR(V,R)
 Interpreter:
@@ -549,7 +550,7 @@ the substring starting at the position specified by the second
 argument (one-based) with a length specified by the third argument.
 If the third argument is missing or zero, the remainder of the string
 is returned.
-I<Extension from SPITBOL, added in CSNOBOL4 version ?.?>.
+I<SPITBOL 360 extension, added in CSNOBOL4 version 0.98.2>.
 
 =item TAB(N)
 Pattern:
@@ -561,15 +562,16 @@ I<Standard>.
 
 =item TAN(REAL)REAL
 Math: Return tangent of argument in radians.
-I<Extension from SPITBOL, added in CSNOBOL4 version 0.98.4>.
+I<SNOBOL4+ extension?, added in CSNOBOL4 version 0.98.4>.
 
 =item THAW(TABLE)
 Data: restores normal entry creation behavior after B<FREEZE()>.
-I<Extension from SNOBOL4+, added in CSNOBOL4 version 0.98.2>.
+I<SNOBOL4+ extension, added in CSNOBOL4 version 0.98.2>.
 
 =item TIME()
-Interpreter:
-I<Standard> (did standard version return INT????)
+Interpreter: return CPU time in milliseconds.
+I<Standard (returning INTEGER)>.
+Returns REAL since CSNOBOL4 0.99.44.
 
 =item TRACE(V,R,T,F)
 Intrepreter:
