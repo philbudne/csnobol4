@@ -1,9 +1,0 @@
-* $Id$
-*
-* Phil Budne <phil@ultimate.com>
-* January 4, 2011
-*
-* random number functions
-	LOAD("RANDOM()INTEGER")
-	LOAD("SRANDOM(INTEGER)STRING")
-	LOAD("SRANDOMDEV()STRING")

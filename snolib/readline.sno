@@ -1,9 +1,0 @@
-* $Id$
-*
-* Phil Budne <phil@ultimate.com>
-* January 3, 2011
-*
-* readline functions
-	LOAD("READLINE(STRING)STRING")
-	LOAD("ADD_HISTORY(STRING)STRING")
-	LOAD("HISTORY_EXPAND(STRING)STRING")
