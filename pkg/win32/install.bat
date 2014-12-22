@@ -16,10 +16,10 @@ set /p VERSION=<version
 set SNODIR=%SNOBASE%\%VERSION%
 
 mkdir %SNODIR%
-copy README %SNODIR%
-copy CHANGES %SNODIR%
-copy COPYRIGHT %SNODIR%
-copy pkg\win32\README.win32 %SNODIR%
+copy /y README %SNODIR%
+copy /y CHANGES %SNODIR%
+copy /y COPYRIGHT %SNODIR%
+copy /y pkg\win32\README.win32 %SNODIR%
 
 set BINDIR=%SNODIR%\bin
 set LIBDIR=%SNODIR%\lib
@@ -29,42 +29,42 @@ set INCDIR=%SNODIR%\include
 set TIMDIR=%SNODIR%\timing
 
 mkdir %BINDIR%
-copy cpuid.exe %BINDIR%
-copy snobol4.exe %BINDIR%
-copy pkg\win32\sdb.bat %BINDIR%
-copy pkg\win32\timing.bat %BINDIR%
+copy /y cpuid.exe %BINDIR%
+copy /y snobol4.exe %BINDIR%
+copy /y pkg\win32\sdb.bat %BINDIR%
+copy /y pkg\win32\timing.bat %BINDIR%
 
 mkdir %LIBDIR%
-copy host.sno %LIBDIR%
-copy snobol4.lib %LIBDIR%
-copy snolib\*.sno %LIBDIR%
-copy modules\setuputil.sno %LIBDIR%
-copy config\win32\config.sno %LIBDIR%
+copy /y host.sno %LIBDIR%
+copy /y snobol4.lib %LIBDIR%
+copy /y snolib\*.sno %LIBDIR%
+copy /y modules\setuputil.sno %LIBDIR%
+copy /y config\win32\config.sno %LIBDIR%
 
 rem XXX loop running setup.sno "install" !!!!
 mkdir %DLLDIR%
-copy modules\*\*.dll %DLLDIR%
+copy /y modules\*\*.dll %DLLDIR%
 
 mkdir %DOCDIR%
-copy doc\*.html %DOCDIR%
-copy doc\load.doc %DOCDIR%
-copy modules\*\*.html %DOCDIR%
+copy /y doc\*.html %DOCDIR%
+copy /y doc\load.doc %DOCDIR%
+copy /y modules\*\*.html %DOCDIR%
 
 mkdir %INCDIR%
-copy equ.h %INCDIR%
-copy version.h %INCDIR%
-copy include\h.h %INCDIR%
-copy include\load.h %INCDIR%
-copy include\macros.h %INCDIR%
-copy include\snotypes.h %INCDIR%
-copy config\win32\config.h %INCDIR%
+copy /y equ.h %INCDIR%
+copy /y version.h %INCDIR%
+copy /y include\h.h %INCDIR%
+copy /y include\load.h %INCDIR%
+copy /y include\macros.h %INCDIR%
+copy /y include\snotypes.h %INCDIR%
+copy /y config\win32\config.h %INCDIR%
 
 mkdir %TIMDIR%
-copy timing.sno %TIMDIR%
-copy test\procs %TIMDIR%
-copy test\globals %TIMDIR%
-copy test\v311.sil %TIMDIR%
-copy test\bench.sno %TIMDIR%
+copy /y timing.sno %TIMDIR%
+copy /y test\procs %TIMDIR%
+copy /y test\globals %TIMDIR%
+copy /y test\v311.sil %TIMDIR%
+copy /y test\bench.sno %TIMDIR%
 
 mkdir %SNODIR%\local
 mkdir %SNODIR%\local\shared
