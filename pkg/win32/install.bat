@@ -3,30 +3,29 @@ rem install batch file for CSNOBOL4 when building from source
 
 setlocal
 
-rem NOTE!! Compiled in defaults are in config\win32\config.h
-set DEST=%1
-if NOT DEFINED DEST set DEST=C:\
+if "%1" != "" set SNOLIB=%1
+rem Default set in config\win32\config.h:
+if not DEFINED SNOLIB set SNOLIB=C:\snobol4
 
-set SNOBASE=%DEST%\snobol4
-mkdir %SNOBASE%
-mkdir %SNOBASE%\local
+mkdir %SNOLIB%
+mkdir %SNOLIB%\local
 
 rem read file created by Un*x configure shell script;
 set /p VERSION=<version
-set SNODIR=%SNOBASE%\%VERSION%
+set SNOVER=%SNOLIB%\%VERSION%
 
-mkdir %SNODIR%
-copy /y README %SNODIR%
-copy /y CHANGES %SNODIR%
-copy /y COPYRIGHT %SNODIR%
-copy /y pkg\win32\README.win32 %SNODIR%
+mkdir %SNOVER%
+copy /y README %SNOVER%
+copy /y CHANGES %SNOVER%
+copy /y COPYRIGHT %SNOVER%
+copy /y pkg\win32\README.win32 %SNOVER%
 
-set BINDIR=%SNODIR%\bin
-set LIBDIR=%SNODIR%\lib
-set DLLDIR=%SNODIR%\lib\shared
-set DOCDIR=%SNODIR%\doc
-set INCDIR=%SNODIR%\include
-set TIMDIR=%SNODIR%\timing
+set BINDIR=%SNOVER%\bin
+set LIBDIR=%SNOVER%\lib
+set DLLDIR=%SNOVER%\lib\shared
+set DOCDIR=%SNOVER%\doc
+set INCDIR=%SNOVER%\include
+set TIMDIR=%SNOVER%\timing
 
 mkdir %BINDIR%
 copy /y cpuid.exe %BINDIR%
@@ -41,13 +40,13 @@ copy /y snolib\*.sno %LIBDIR%
 copy /y modules\setuputil.sno %LIBDIR%
 copy /y config\win32\config.sno %LIBDIR%
 
-rem XXX loop running setup.sno "install" !!!!
 mkdir %DLLDIR%
+config\win32\modules.bat install
+
 mkdir %DOCDIR%
 copy /y doc\*.html %DOCDIR%
-copy /y doc\load.doc %DOCDIR%
-
-config\win32\modules.bat install
+copy /y doc\load.doc %DOCDIR%\load.txt
+copy /y modules\*\*.html %DOCDIR%
 
 mkdir %INCDIR%
 copy /y equ.h %INCDIR%
@@ -65,5 +64,5 @@ copy /y test\globals %TIMDIR%
 copy /y test\v311.sil %TIMDIR%
 copy /y test\bench.sno %TIMDIR%
 
-mkdir %SNODIR%\local
-mkdir %SNODIR%\local\shared
+mkdir %SNOVER%\local
+mkdir %SNOVER%\local\shared

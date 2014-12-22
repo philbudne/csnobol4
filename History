@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/22/2014:
+	modules/setuputil.sno: wrap copy dest in quotes
+	pkg/win32/install.bat: cleanup, set SNOLIB
+
 12/21/2014:
 	configure, Makefile2.m4: s/SNOLIB_VER/SNOLIB/
 	snolib/snopea.sno: tweak headers, links for snopea

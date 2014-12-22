@@ -1,17 +1,26 @@
 $Id$
 
+disable sqlite3 in mingw.mak, modules.bat??
+
 README / INSTALL
-	note HTML page install directory??
+	note HTML page install directory!!
 
-setuputil.sno: wrap output directory in quotes
+setuputil.sno:
+	win.msc install: wrap output directory in quotes
 
-cygwin:	Makefile2.m4: install libsnobol4.a!! where??
-
-install.bat:
-	run "config\win32\modules.bat install"
+cygwin:
+	Makefile2.m4: install libsnobol4.a!! where?? LIBDIR?
 
 mingw:	debug sqlite3
 	make install?
+
+install.bat:
+	install snobol4.lib
+
+EXIT()
+	does not call io_flushall??!!!
+	implement Win32 version of execute()??
+	output to stderr if "save" attempted???
 
 ================
 
@@ -21,10 +30,6 @@ snobol4func.1.pea:
 snopea.sno:
 	output anchors for sect/subsect
 	style sheet for HTML!!!
-
-EXIT()
-	does not call io_flushall??
-	implement Win32 version of execute()??
 
 Windows readline:
 	http://sourceforge.net/projects/mingweditline/?source=directory
