@@ -43,12 +43,11 @@ copy /y config\win32\config.sno %LIBDIR%
 
 rem XXX loop running setup.sno "install" !!!!
 mkdir %DLLDIR%
-copy /y modules\*\*.dll %DLLDIR%
-
 mkdir %DOCDIR%
 copy /y doc\*.html %DOCDIR%
 copy /y doc\load.doc %DOCDIR%
-copy /y modules\*\*.html %DOCDIR%
+
+config\win32\modules.bat install
 
 mkdir %INCDIR%
 copy /y equ.h %INCDIR%

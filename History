@@ -7,6 +7,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	snolib/snopea.sno: tweak headers, links for snopea
 	doc/snobol4.1.pea: ref snopea(1) & snopea(7)
 	doc/snobol4func.1.pea: add entries for some standard functions!
+		clean up (most) question marks about extensions
 	modules/logic/funcs.sno: add missing =ecode
 	doc/snobol4ctrl.1.pea: tweaks
 	modules/dirs/dirs.c: use =item
@@ -15,7 +16,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 		implement install for win.msc
 	Makefile: cleanup *_modules, add printenv
 	Makefile2.m4: add printenv
-	pkg/win32/install.bat: use copy /y
+	pkg/win32/install.bat: use copy /y & modules.bat install
 	config/win32/modules.bat: take command argument
 	snolib/{logic,ndbm,random,readline,stcl,time}.sno: removed
 
