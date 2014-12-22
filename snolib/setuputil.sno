@@ -389,11 +389,11 @@ setup.posix.instcmd.xloop
 	fn = 'snobol4' fn
 	manfiles = FILE(fn) manfiles ' ' fn 	:(setup.posix.instcmd.xloop)
 setup.posix.instcmd.xdone
-	IDENT(manfiles)				:s(return)
 
 	command = 'cp -f ' snofiles ' ' destdir dest
 	setup.posix.system(command)		:f(FRETURN)
 
+	IDENT(manfiles)				:s(RETURN)
 	command = 'cp -f ' manfiles ' ' destdir MAN3DIR
 	setup.posix.system(command)		:f(FRETURN)s(RETURN)
 setup.posix.installcmd.end
@@ -491,4 +491,48 @@ setup.win.msc.buildcmd2
 	setup.posix.system(link)		:f(FRETURN)
 	setup.makeinclude(t)			:(RETURN)
 setup.win.msc.buildcmd.end
+
+****************
+*	Windows install command w/o MINGW
+*		uses "copy /y"
+
+	DEFINE('setup.win.msc.installcmd(t)')	:(setup.win.msc.installcmd.end)
+setup.win.msc.installcmd
+
+* if no CVS directory-- install as a "local" file
+	dest = (FILE_ISDIR('CVS') HOST(HOST_SNOLIB_VLIB), 
++			HOST(HOST_SNOLIB_VLOCAL))
+
+	destdir = HOST(HOST_GETENV, 'DESTDIR')
+	libfile = setup.dlname(t)
+	shared = ('/' HOST(HOST_SHARED_OBJ_SUBDIR), '')
+	command = 'copy /y ' libfile ' ' destdir dest shared
+	setup.win.msc.system(command)		:f(FRETURN)
+
+	sno = setup.sno(t)
+	snofiles = sno
+
+* get man files:
+	man = 'snobol4' sno
+	man '.sno' = '.3'
+	manfiles = (FILE(man) man, '')
+
+	x = t['extras'] ','
+	xfiles =
+setup.win.msc.instcmd.xloop
+	x break(',') . fn ',' =			:f(setup.win.msc.instcmd.xdone)
+	ident(fn)				:s(setup.win.msc.instcmd.xdone)
+	snofiles = FILE(fn) snofiles ' ' fn
+	fn '.sno' = '.3'
+	fn = 'snobol4' fn
+	manfiles = FILE(fn) manfiles ' ' fn 	:(setup.win.msc.instcmd.xloop)
+setup.win.msc.instcmd.xdone
+
+	command = 'copy /y ' snofiles ' ' destdir dest
+	setup.win.msc.system(command)		:f(FRETURN)
+
+	IDENT(manfiles)				:s(RETURN)
+	command = 'copy /y ' manfiles ' ' destdir MAN3DIR
+	setup.win.msc.system(command)		:f(FRETURN)s(RETURN)
+setup.win.msc.installcmd.end
 

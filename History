@@ -12,6 +12,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	modules/dirs/dirs.c: use =item
 	modules/logic/readline.c: add missing =ecode
 	modules/setuputil.sno: honor DESTDIR
+		implement install for win.msc
 	Makefile: cleanup *_modules, add printenv
 	Makefile2.m4: add printenv
 
