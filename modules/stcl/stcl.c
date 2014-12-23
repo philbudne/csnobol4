@@ -175,7 +175,7 @@ STCL_SETVAR( LA_ALIST ) LA_DCL
 {
     char *name;
     char *value;
-    char *ret;
+    const char *ret;
     Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_INT(0));
     if (!interp)
 	RETFAIL;
