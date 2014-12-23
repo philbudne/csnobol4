@@ -682,6 +682,8 @@ install: snobol4 sdb timing.out $(GENERATED_DOCS)
 	for F in doc/load.txt doc/*.html modules/*/*.html; do \
 		$(INSTALL) -m 644 $$F $(DOC_DIR); \
 	done
+ifdef([INSTALL_SYSDEP],	INSTALL_SYSDEP
+,)dnl
 	@echo '*********************************************************' 1>&2
 	@echo 'Have you mailed a copy of timing.out to timing@snobol4.org ?' 1>&2
 	@echo '*********************************************************' 1>&2

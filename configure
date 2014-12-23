@@ -325,7 +325,7 @@ echo 'MANDIR=$(DESTDIR)'"$MANDIR"		>> $CONFIG_M4
 echo 'MAN1DIR=$(DESTDIR)'"$MAN1DIR"		>> $CONFIG_M4
 echo 'MAN3DIR=$(DESTDIR)'"$MAN3DIR"		>> $CONFIG_M4
 echo 'MAN7DIR=$(DESTDIR)'"$MAN7DIR"		>> $CONFIG_M4
-echo 'SNOLIB=$(DESTDIR)'"$SNOLIB"	>> $CONFIG_M4
+echo 'SNOLIB=$(DESTDIR)'"$SNOLIB"		>> $CONFIG_M4
 echo 'SNOLIB_LIB=$(DESTDIR)'"$SNOLIB_LIB"	>> $CONFIG_M4
 echo 'SNOLIB_DOC=$(DESTDIR)'"$SNOLIB_DOC"	>> $CONFIG_M4
 echo 'INCLUDE_DIR=$(DESTDIR)'"$INCLUDE_DIR"	>> $CONFIG_M4
@@ -598,8 +598,9 @@ if [ "$GCCPATH" -a "$WANTGCC" ]; then
 	SO_LD=$CCPATH
 	SO_LDFLAGS=-shared
 	echo 'ADD_LDFLAGS([-Wl,--out-implib,libsnobol4.a])' >> $CONFIG_M4
-	# libsnobol4.a not created unless this given:
+	# libsnobol4.a not created unless this given???:
 	echo 'ADD_LDFLAGS([-Wl,--export-all-symbols])' >> $CONFIG_M4
+	echo 'define([INSTALL_SYSDEP],[$(INSTALL) -m 644 libsnobol4.a $(SNOLIB)]) >> $CONFIG_M4
 	;;
 
     *)

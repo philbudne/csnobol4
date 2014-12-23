@@ -8,6 +8,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	modules/setuputil.sno: use HOST_SNOLIB_VERS
 	pkg/win32/install.bat: put snobol4.lib in %SNOVER%
 	config/win32/{mingw,ntmsvc}.mak: kill cygwin config.{h,sno}
+	configure: output INSTALL_SYSDEP on cygwin to install libsnobol4.a
+	Makefile2.m4: use INSTALL_SYSDEP
 
 12/22/2014:
 	modules/setuputil.sno: wrap copy dest in quotes
