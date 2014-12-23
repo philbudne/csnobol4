@@ -10,11 +10,9 @@ README / INSTALL
 
 install.bat:
 	test it!!!
-	install snobol4.lib
 
 cygwin:
 	Makefile2.m4: install libsnobol4.a!!
-	setuputil.sno use -L HOST(HOST_SNOLIB_VLIB)
 
 mingw:	debug sqlite3
 	make install?

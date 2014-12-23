@@ -181,6 +181,9 @@
 /* CSNOBOL4: return n'th element in search directory list */
 #define HOST_SNOPATH_DIR	2504
 
+/* CSNOBOL4: versioned base directory */
+#define HOST_SNOLIB_VERS	2505
+
 /*
  * NOTE!! All of the above 2xxx values are related to internals, and
  * the build environment.  Perhaps it should be kept that way, and

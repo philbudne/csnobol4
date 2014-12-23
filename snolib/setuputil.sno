@@ -338,12 +338,12 @@ setup.posix.buildcmd2
 
 	libdirs = t['library_dirs']
 	libdirs = DIFFER(libdirs) setup.repl(setup.c libdirs, setup.c, ' -L')
-	libdirs = DIFFER(dist_build) DIFFER(windows) libdirs ' -L../..'
-* XXX need -L for mingw/cygwin when NOT building from distribution!!
+	libdirs = DIFFER(mingw cygwin) libdirs ' -L' (DIFFER(dist_build) '../..',
++							HOST(HOST_SNOLIB_VERS))
 
 	libs = t['libraries']
 	libs = DIFFER(libs) setup.repl(setup.c libs, setup.c, ' -l')
-	libs = DIFFER(windows) libs ' -lsnobol4'
+	libs = DIFFER(mingw cygwin) libs ' -lsnobol4'
 
 	link = HOST(HOST_DL_LD)
 +		' ' HOST(HOST_DL_LDFLAGS)
@@ -425,9 +425,8 @@ setup.posix.cleancmd.xdone
 setup.posix.cleancmd.end
 *
 ****************************************************************
-* more systems here (ie; Windows w/ "cl")
+* Windows with MicroSoft C
 
-# XXX UGH!
 	DEFINE('setup.win.msc.basename(fname)') :(setup.win.msc.basename.end)
 setup.win.msc.basename
 	fname POS(0) BREAKX('/\') ANY('/\') =	:S(setup.win.msc.basename)
@@ -474,8 +473,9 @@ setup.win.msc.buildcmd2
 	libdirs = DIFFER(libdirs)
 +		setup.repl(setup.c libdirs, setup.c, ' /LIBPATH:')
 
+* XXX might need quotes on HOST_SNOLIB_VERS????
 	snobol4lib_dir = ' /LIBPATH:' (DIFFER(dist_build) '..\..',
-+					HOST(HOST_SNOLIB_DIR))
++					HOST(HOST_SNOLIB_VERS))
 
 	libs = t['libraries']
 	libs = DIFFER(libs) setup.repl(libs setup.c, setup.c, '.lib ')
@@ -535,4 +535,8 @@ setup.win.msc.instcmd.xdone
 	command = 'copy /y ' manfiles ' "' destdir MAN3DIR '"'
 	setup.win.msc.system(command)		:f(FRETURN)s(RETURN)
 setup.win.msc.installcmd.end
+
+****************************************************************
+* more systems here
+
 

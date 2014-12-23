@@ -2,6 +2,12 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/23/2014:
+	lib/init.c: create, use, export snolib_vers
+	lib/snolib/host.[ch]: HOST_SNOLIB_VERS
+	modules/setuputil.sno: use HOST_SNOLIB_VERS
+	pkg/win32/install.bat: put snobol4.lib in %SNOVER%
+
 12/22/2014:
 	modules/setuputil.sno: wrap copy dest in quotes
 	pkg/win32/install.bat: cleanup, set SNOLIB

@@ -18,6 +18,7 @@ mkdir %SNOVER%
 copy /y README %SNOVER%
 copy /y CHANGES %SNOVER%
 copy /y COPYRIGHT %SNOVER%
+copy /y snobol4.lib %SNOVER%
 copy /y pkg\win32\README.win32 %SNOVER%
 
 set BINDIR=%SNOVER%\bin
@@ -35,7 +36,6 @@ copy /y pkg\win32\timing.bat %BINDIR%
 
 mkdir %LIBDIR%
 copy /y host.sno %LIBDIR%
-copy /y snobol4.lib %LIBDIR%
 copy /y snolib\*.sno %LIBDIR%
 copy /y modules\setuputil.sno %LIBDIR%
 copy /y config\win32\config.sno %LIBDIR%

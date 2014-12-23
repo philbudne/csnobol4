@@ -75,6 +75,7 @@ int argc;
 int nfiles;
 char *snolib_base;			/* BASE */
 char *snolib_local;			/* BASE/local */
+char *snolib_vers;			/* BASE/VERSION */
 char *snolib_vlib;			/* BASE/VERSION/lib */
 char *snolib_vlocal;			/* BASE/VERSION/local */
 
@@ -306,12 +307,14 @@ pathinit(int stdinc) {
     if (!snolib_base)
 	snolib_base = SNOLIB_BASE;
 
+    /* versioned directory */
+    snolib_vers = strjoin(snolib_base, DIR_SEP, VERSION, NULL);
+
     /* distribution files (version-specific) */
-    snolib_vlib = strjoin(snolib_base, DIR_SEP, VERSION, DIR_SEP, "lib", NULL);
+    snolib_vlib = strjoin(snolib_vers, DIR_SEP, "lib", NULL);
 
     /* local, version-specific */
-    snolib_vlocal = strjoin(snolib_base, DIR_SEP, VERSION, DIR_SEP, "local",
-			    NULL);
+    snolib_vlocal = strjoin(snolib_vers, DIR_SEP, "local", NULL);
 
     /* local -- all versions */
     snolib_local = strjoin(snolib_base, DIR_SEP, "local", NULL);

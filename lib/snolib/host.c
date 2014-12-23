@@ -48,6 +48,7 @@ extern char **argv;
 extern char *params;
 extern char *snolib_base;		/* BASE */
 extern char *snolib_local;		/* BASE/local */
+extern char *snolib_vers;		/* BASE/VERSION */
 extern char *snolib_vlib;		/* BASE/VERSION/lib */
 extern char *snolib_vlocal;		/* BASE/VERSION/local */
 #endif /* NO_STATIC_VARS not defined */
@@ -336,6 +337,9 @@ HOST( LA_ALIST ) LA_DCL
 	}
 	/* bad argument type, or out of range */
 	break;
+
+    case HOST_SNOLIB_VERS:
+	RETSTR(snolib_vers);		/* versioned base directory */
 
 /*
  * NOTE!! All of the above 2xxx values are related to internals, and
