@@ -1,21 +1,24 @@
 $Id$
 
+have mingw.mak & ntmsvc.mak delete config.{h,sno}??
+	always copy from win32/config to base????n
+
 disable sqlite3 in mingw.mak, modules.bat??
 
 README / INSTALL
 	note HTML page install directory!!
 
-setuputil.sno:
-	win.msc install: wrap output directory in quotes
+install.bat:
+	test it!!!
+	install snobol4.lib
 
 cygwin:
-	Makefile2.m4: install libsnobol4.a!! where?? LIBDIR?
+	Makefile2.m4: install libsnobol4.a!!
+	setuputil.sno use -L HOST(HOST_SNOLIB_VLIB)
 
 mingw:	debug sqlite3
 	make install?
-
-install.bat:
-	install snobol4.lib
+	install libsnolib4.a
 
 EXIT()
 	does not call io_flushall??!!!
