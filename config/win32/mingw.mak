@@ -47,8 +47,12 @@ mods:	snobol4.exe
 		-I../../config/win32 setup.sno build); \
 	done
 
-snobol4.exe: $(OBJ)
+snobol4.exe: always $(OBJ)
 	$(CC) -o snobol4 $(OBJ) $(INET_LIBS) $(LDFLAGS)
+
+# kill leftovers from cygwin builds!!!
+always:
+	rm -f config.h config.sno
 
 data.o:	$(SRCDIR)data.c
 	$(CC) $(CFLAGS) $(SRCDIR)data.c

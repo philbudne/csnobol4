@@ -56,8 +56,13 @@ cpuid.exe: cpuid.c
 	$(CC) -c cpuid.c
 	$(LINK) /out:cpuid.exe cpuid.obj
 
-snobol4.exe : $(OBJ)
+snobol4.exe : always $(OBJ)
 	$(LINK) /out:snobol4.exe $(OBJ) $(INET_LIBS) $(COM_LIBS)
+
+# kill leftovers from cygwin builds!!!
+always:
+	delete config.h config.sno
+
 
 data.obj : $(SRCDIR)data.c
 	$(CC) $(CFLAGS) $(SRCDIR)data.c

@@ -1,8 +1,5 @@
 $Id$
 
-have mingw.mak & ntmsvc.mak delete config.{h,sno}??
-	always copy from win32/config to base????n
-
 disable sqlite3 in mingw.mak, modules.bat??
 
 README / INSTALL
