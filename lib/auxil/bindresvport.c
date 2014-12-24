@@ -69,6 +69,15 @@ static char *rcsid = "$OpenBSD: bindresvport.c,v 1.13 2000/01/26 03:43:21 deraad
 
 #include <errno.h>
 
+#if !defined(IPPORT_RESERVED) && !defined(__GLIBC__)
+/*
+ * could be using broken musl libc!
+ * they refuse to identify themselves:
+ * http://wiki.musl-libc.org/wiki/FAQ#Q:_why_is_there_no_MUSL_macro_.3F
+ */
+#include <netdb.h>
+#endif
+
 #include "h.h"				/* __P() */
 #include "str.h"			/* bzero() */
 #include "bindresvport.h"
