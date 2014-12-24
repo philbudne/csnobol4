@@ -163,7 +163,7 @@ DBM_OPEN( LA_ALIST ) LA_DCL
     if (!f)
 	RETFAIL;
 
-    h = new_handle(&dbm_files, f);
+    h = new_handle(&dbm_files, f, "dbm_files");
     if (!OK_HANDLE(h)) {
 	dbm_close(f);
 	RETFAIL;

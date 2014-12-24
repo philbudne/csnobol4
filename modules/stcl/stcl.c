@@ -96,7 +96,7 @@ STCL_CREATEINTERP( LA_ALIST ) LA_DCL
     Tk_Init(interp);			/* XXX check return? */
 #endif
 
-    h = new_handle(&tcl_interps, interp);
+    h = new_handle(&tcl_interps, interp, "tcl_interps");
     if (!OK_HANDLE(h)) {
 	Tcl_DeleteInterp(interp);
 	/* XXX Release? */
@@ -161,6 +161,8 @@ STCL_GETVAR( LA_ALIST ) LA_DCL
 	RETFAIL;
     name = mgetstring(LA_PTR(1));
     val = Tcl_GetVar(interp, name, 0);
+    free(name);
+    printf("getvar %p %s => %s\n", interp, name, val);
     RETSTR(val);
 }
 
@@ -263,7 +265,7 @@ STCL_NEWSTRINGOBJ( LA_ALIST ) LA_DCL
     if (!obj)
 	RETFAIL;
 
-    h = new_handle(&tcl_objs, obj);
+    h = new_handle(&tcl_objs, obj, "tcl_objs");
     if (!OK_HANDLE(h))
 	RETFAIL;
 
@@ -342,7 +344,7 @@ STCL_GETOBJRESULT(LA_ALIST ) LA_DCL
     if (!interp || !obj)
 	RETFAIL;
 
-    h = new_handle(&tcl_objs, obj);
+    h = new_handle(&tcl_objs, obj, "tcl_objs");
     if (!OK_HANDLE(h))
 	RETFAIL;
 
@@ -370,7 +372,7 @@ STCL_OBJSETVAR2( LA_ALIST ) LA_DCL
     if (!res)
 	RETFAIL;
 
-    h = new_handle(&tcl_objs, res);
+    h = new_handle(&tcl_objs, res, "tcl_objs");
     if (!OK_HANDLE(h))
 	RETFAIL;
 
@@ -397,7 +399,7 @@ STCL_OBJGETVAR2( LA_ALIST ) LA_DCL
     if (!res)
 	RETFAIL;
 
-    h = new_handle(&tcl_objs, res);
+    h = new_handle(&tcl_objs, res, "tcl_objs");
     if (!OK_HANDLE(h))
 	RETFAIL;
 

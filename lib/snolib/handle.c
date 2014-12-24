@@ -26,7 +26,7 @@ extern void *malloc();
 #define HANDLE_HASH_SIZE (1<<8)		/* power of two */
 
 typedef unsigned int handle_datatype_t;	/* must fit in vfld */
-static handle_datatype_t next_handle_datatype = 0;
+static handle_datatype_t next_handle_datatype = SIZLIM;
 
 typedef int_t handle_number_t;
 
@@ -36,8 +36,9 @@ struct handle_entry {
 };
 
 struct handle_table {
-    handle_datatype_t datatype;
     long entries;
+    const char *name;
+    handle_datatype_t datatype;
     struct handle_entry *hash[HANDLE_HASH_SIZE];
 };
 
@@ -59,6 +60,7 @@ lookup_handle(hhp, h)
     if (!htp)
 	return NULL;
 
+    /* printf("lookup_handle %s %#lx\n", htp->name, h.a.i); */
     if (h.v != htp->datatype)
 	return NULL;
 
@@ -70,9 +72,10 @@ lookup_handle(hhp, h)
 }
 
 SNOEXP(snohandle_t)
-new_handle(hhp, vp)
+new_handle(hhp, vp, tname)
     handle_handle_t *hhp;
     void *vp;
+    const char *tname;
 {
     struct handle_table *htp = *hhp;
     struct handle_entry *hp;
@@ -86,6 +89,7 @@ new_handle(hhp, vp)
 	    return bad_handle;
 	bzero(htp, sizeof(struct handle_table));
 	htp->datatype = --next_handle_datatype; /* assign datatype */
+	htp->name = tname;
 	*hhp = htp;
     }
 

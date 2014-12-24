@@ -207,7 +207,7 @@ FFI_PREP_CIF( LA_ALIST ) LA_DCL
 #endif
     if ((rtype = ffi_convert(rp, 1)) &&
 	ffi_prep_cif(&cpp->cif, FFI_DEFAULT_ABI, n, rtype, atypes) == FFI_OK) {
-	snohandle_t h = new_handle(&ffi_cifplus, cpp);
+	snohandle_t h = new_handle(&ffi_cifplus, cpp, "ffi_cifplus");
 	if (OK_HANDLE(h)) {
 	    if (strcmp(rp, RETSTRING) == 0)
 		cpp->pret = STR;
@@ -400,7 +400,7 @@ FFI_DLOPEN( LA_ALIST ) LA_DCL
     void *dl = dlopen(str, RTLD_LAZY);	/* XXX take mode arg??? */
     if (str) free(str);
     if (!dl) RETFAIL;
-    h = new_handle(&ffi_dlibs, dl);
+    h = new_handle(&ffi_dlibs, dl, "ffi_dlibs");
     if (!OK_HANDLE(h)) {
 	dlclose(dl);
 	RETFAIL;
@@ -443,7 +443,7 @@ FFI_DLSYM( LA_ALIST ) LA_DCL
     val = dlsym(dl, str);
     if (str) free(str);
     if (!val) RETFAIL;
-    ret = new_handle(&ffi_dlsyms, val);
+    ret = new_handle(&ffi_dlsyms, val, "ffi_dlsyms");
     if (!OK_HANDLE(ret)) RETFAIL;
     RETHANDLE(ret);
 }

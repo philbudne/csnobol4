@@ -60,7 +60,7 @@ OPENDIR( LA_ALIST ) LA_DCL
     if (!d)
 	RETFAIL;
 
-    h = new_handle(&dir_handles, d);
+    h = new_handle(&dir_handles, d, "dir_handles");
     if (!OK_HANDLE(h)) {
 	closedir(d);
 	RETFAIL;

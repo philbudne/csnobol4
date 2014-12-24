@@ -70,7 +70,7 @@ SQLITE3_OPEN( LA_ALIST ) LA_DCL
     if (ret != SQLITE_OK)
 	RETFAIL;
 
-    h = new_handle(&sqlite3_dbs, db);
+    h = new_handle(&sqlite3_dbs, db, "sqlite3_dbs");
     if (!OK_HANDLE(h)) {
 	sqlite3_close(db);
 	RETFAIL;
@@ -183,7 +183,7 @@ SQLITE3_PREPARE( LA_ALIST ) LA_DCL
 
     DEBUGF(("PREP: dbh %ld db %p stp %p\n", LA_INT(0), db, st));
 
-    sh = new_handle(&sqlite3_stmts, st);
+    sh = new_handle(&sqlite3_stmts, st, "sqlite3_stmts");
     if (!OK_HANDLE(sh)) {
 	sqlite3_finalize(st);
 	RETFAIL;

@@ -13,9 +13,13 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	Makefile2.m4: use INSTALL_SYSDEP
 	include/handle.h: make snohandle_t a descr
 		add LA_HANDLE/RETHANDLE
+		new_handle() takes table name
+		fix handle lookup on 32 bit system
 	lib/snolib/handle.c: return handles as EXTERN types
+		new_handle() takes table name
 	module/{dir/dirs.c,ffi/ffi.c,ndbm/ndm.c,sqlite3/sqlite3mod.c,
 		stcl/stcl.c}: use LA_HANDLE/RETHANDLE
+			pass table name to new_handle()
 	module/ffi/funcs.sno: use unique to generate vars to hold handles
 
 12/22/2014:
