@@ -2,13 +2,11 @@ $Id$
 
 ***** disable sqlite3 in mingw.mak, modules.bat??
 
-**** test stcl!!!! ****
-
 README / INSTALL
 	note HTML page install directory!!
 
 	note sqlite3 amalgamation source!!
-	 & how to build/install
+		& how to build/install
 
 install.bat:
 	test it!!!
