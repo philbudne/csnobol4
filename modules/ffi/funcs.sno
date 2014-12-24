@@ -15,7 +15,8 @@
 **B<void>, B<string>, B<freestring>.
 **I<pointer> is a value returned by B<FFI_DLSYM()>.
 **=cut
-	DEFINE("DEFINE_FFI(proto,ptr)func,args,tmp,i,dummies")
+-include 'unique.sno'
+	DEFINE("DEFINE_FFI(proto,ptr)func,args,tmp,i,cifvar,ptrvar,,dummies")
 						     :(define_ffi.end)
 define_ffi
 	proto pos(0) break('(') . fname (bal . args rem) . proto
@@ -29,8 +30,11 @@ define_ffi.loop
 	tmp pos(0) break(',') ',' =		:f(define_ffi.eloop)
 	dummies = dummies ',a' (i = i + 1)	:(define_ffi.loop)
 define_ffi.eloop
-	i = FFI_PREP_CIF(proto)			:f(FRETURN)
-	tmp = fname ' ' fname ' = FFI_CALL(' i ',' ptr dummies ') '
+	cifvar = UNIQUE()
+	ptrvar = UNIQUE()
+	$cifvar = FFI_PREP_CIF(proto)		:f(FRETURN)
+	$ptrvar = ptr
+	tmp = fname ' ' fname ' = FFI_CALL(' cifvar ',' ptrvar dummies ') '
 +						':f(FRETURN)s(RETURN)'
 *	output = tmp
 	CODE(tmp)				:f(FRETURN)

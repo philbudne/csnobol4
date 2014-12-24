@@ -50,7 +50,7 @@ static handle_handle_t sqlite3_stmts;
 */
 
 /*
- * LOAD("SQLITE3_OPEN(STRING)INTEGER", SQLITE3_DL)
+ * LOAD("SQLITE3_OPEN(STRING)", SQLITE3_DL)
  * Open a database file
  *
  * first arg:
@@ -71,11 +71,11 @@ SQLITE3_OPEN( LA_ALIST ) LA_DCL
 	RETFAIL;
 
     h = new_handle(&sqlite3_dbs, db);
-    if (h == BAD_HANDLE) {
+    if (!OK_HANDLE(h)) {
 	sqlite3_close(db);
 	RETFAIL;
     }
-    RETINT(h);
+    RETHANDLE(h);
 }
 
 /*
@@ -85,14 +85,14 @@ SQLITE3_OPEN( LA_ALIST ) LA_DCL
 **=cut
 */
 /*
- * LOAD("SQLITE3_CLOSE(INTEGER)STRING", SQLITE3_DL)
+ * LOAD("SQLITE3_CLOSE(EXTERNAL)STRING", SQLITE3_DL)
  *
  * return null string or failure
  */
 int
 SQLITE3_CLOSE( LA_ALIST ) LA_DCL
 {
-    int h = LA_INT(0);
+    snohandle_t h = LA_HANDLE(0);
     sqlite3 *db = lookup_handle(&sqlite3_dbs, h);
     if (!db)
 	RETFAIL;
@@ -109,14 +109,14 @@ SQLITE3_CLOSE( LA_ALIST ) LA_DCL
 **=cut
 */
 /*
- * LOAD("SQLITE3_ERRMSG(INTEGER)STRING", SQLITE3_DL)
+ * LOAD("SQLITE3_ERRMSG(EXTERNAL)STRING", SQLITE3_DL)
  * arg1: db handle
  * return string or failure
  */
 int
 SQLITE3_ERRMSG( LA_ALIST ) LA_DCL
 {
-    sqlite3 *db = lookup_handle(&sqlite3_dbs, LA_INT(0));
+    sqlite3 *db = lookup_handle(&sqlite3_dbs, LA_HANDLE(0));
     if (!db)
 	RETFAIL;
 
@@ -130,14 +130,14 @@ SQLITE3_ERRMSG( LA_ALIST ) LA_DCL
 **=cut
 */
 /*
- * LOAD("SQLITE3_LAST_INSERT_ROWID(INTEGER)INTEGER", SQLITE3_DL)
+ * LOAD("SQLITE3_LAST_INSERT_ROWID(EXTERNAL)INTEGER", SQLITE3_DL)
  * arg1: db handle
  * return id or failure
  */
 int
 SQLITE3_LAST_INSERT_ROWID( LA_ALIST ) LA_DCL
 {
-    sqlite3 *db = lookup_handle(&sqlite3_dbs, LA_INT(0));
+    sqlite3 *db = lookup_handle(&sqlite3_dbs, LA_HANDLE(0));
     if (!db)
 	RETFAIL;
 
@@ -154,7 +154,7 @@ SQLITE3_LAST_INSERT_ROWID( LA_ALIST ) LA_DCL
 **=cut
 */
 /*
- * LOAD("SQLITE3_PREPARE(INTEGER,STRING)INTEGER", SQLITE3_DL)
+ * LOAD("SQLITE3_PREPARE(EXTERNAL,STRING)", SQLITE3_DL)
  *
  * arg 1:	db handle
  * arg 2:	SQL statement
@@ -167,7 +167,7 @@ SQLITE3_LAST_INSERT_ROWID( LA_ALIST ) LA_DCL
 int
 SQLITE3_PREPARE( LA_ALIST ) LA_DCL
 {
-    sqlite3 *db = lookup_handle(&sqlite3_dbs, LA_INT(0));
+    sqlite3 *db = lookup_handle(&sqlite3_dbs, LA_HANDLE(0));
     sqlite3_stmt *st;
     snohandle_t sh;			/* stmt handle */
     int arg;
@@ -184,7 +184,7 @@ SQLITE3_PREPARE( LA_ALIST ) LA_DCL
     DEBUGF(("PREP: dbh %ld db %p stp %p\n", LA_INT(0), db, st));
 
     sh = new_handle(&sqlite3_stmts, st);
-    if (sh == BAD_HANDLE) {
+    if (!OK_HANDLE(sh)) {
 	sqlite3_finalize(st);
 	RETFAIL;
     }
@@ -223,7 +223,7 @@ SQLITE3_PREPARE( LA_ALIST ) LA_DCL
 	    RETFAIL;
 #endif
     }
-    RETINT(sh);
+    RETHANDLE(sh);
 }
 
 /*
@@ -235,7 +235,7 @@ SQLITE3_PREPARE( LA_ALIST ) LA_DCL
 */
 /*
  * bind a single host parameter (any type)
- * LOAD("SQLITE3_BIND_ANY(INTEGER,INTEGER,)STRING", SQLITE3_DL)
+ * LOAD("SQLITE3_BIND_ANY(EXTERNAL,INTEGER,)STRING", SQLITE3_DL)
  *
  * arg 1:	stmt handle
  * arg 2:	anonymous host parameter number to bind (one based)
@@ -248,7 +248,7 @@ SQLITE3_PREPARE( LA_ALIST ) LA_DCL
 int
 SQLITE3_BIND_ANY( LA_ALIST ) LA_DCL
 {
-    sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_INT(0));
+    sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_HANDLE(0));
     int par = LA_INT(1);		/* parameter number */
     int ret;
 
@@ -293,7 +293,7 @@ SQLITE3_BIND_ANY( LA_ALIST ) LA_DCL
 */
 /*
  * bind a single host parameter with a BLOB value
- * LOAD("SQLITE3_BIND_BLOB(INTEGER,INTEGER,STRING)STRING", SQLITE3_DL)
+ * LOAD("SQLITE3_BIND_BLOB(EXTERNAL,INTEGER,STRING)STRING", SQLITE3_DL)
  *
  * arg 1:	stmt handle
  * arg 2:	anonymous host parameter number to bind (one based)
@@ -306,7 +306,7 @@ SQLITE3_BIND_ANY( LA_ALIST ) LA_DCL
 int
 SQLITE3_BIND_BLOB( LA_ALIST ) LA_DCL
 {
-    sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_INT(0));
+    sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_HANDLE(0));
     int par = LA_INT(1);		/* parameter number */
     int ret;
 
@@ -336,7 +336,7 @@ SQLITE3_BIND_BLOB( LA_ALIST ) LA_DCL
 */
 /*
  * bind multiple positional arguments to a prepared statement
- * LOAD("SQLITE3_BIND_MANY(INTEGER,)STRING", SQLITE3_DL)
+ * LOAD("SQLITE3_BIND_MANY(EXTERNAL,)STRING", SQLITE3_DL)
  *
  * arg 1:	stmt handle
  * arg 2+:	values...
@@ -348,7 +348,7 @@ SQLITE3_BIND_BLOB( LA_ALIST ) LA_DCL
 int
 SQLITE3_BIND_MANY( LA_ALIST ) LA_DCL
 {
-    sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_INT(0));
+    sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_HANDLE(0));
     int arg;
 
     if (!st)
@@ -395,14 +395,14 @@ SQLITE3_BIND_MANY( LA_ALIST ) LA_DCL
 **=cut
 */
 /*
- * LOAD("SQLITE3_BIND_PARAMETER_COUNT(INTEGER)INTEGER", SQLITE3_DL)
+ * LOAD("SQLITE3_BIND_PARAMETER_COUNT(EXTERNAL)INTEGER", SQLITE3_DL)
  * arg1: stmt handle
  * return integer or failure
  */
 int
 SQLITE3_BIND_PARAMETER_COUNT( LA_ALIST ) LA_DCL
 {
-    sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_INT(0));
+    sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_HANDLE(0));
 
     if (st)
 	RETINT(sqlite3_bind_parameter_count(st));
@@ -417,7 +417,7 @@ SQLITE3_BIND_PARAMETER_COUNT( LA_ALIST ) LA_DCL
 **=cut
 */
 /*
- * LOAD("SQLITE3_BIND_PARAMETER_NAME(INTEGER,INTEGER)STRING", SQLITE3_DL)
+ * LOAD("SQLITE3_BIND_PARAMETER_NAME(EXTERNAL,INTEGER)STRING", SQLITE3_DL)
  *
  * arg 1:	stmt handle
  * arg 2:	named parameter number fetch name for
@@ -429,7 +429,7 @@ SQLITE3_BIND_PARAMETER_COUNT( LA_ALIST ) LA_DCL
 int
 SQLITE3_BIND_PARAMETER_NAME( LA_ALIST ) LA_DCL
 {
-    sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_INT(0));
+    sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_HANDLE(0));
     if (st)
 	RETSTR(sqlite3_bind_parameter_name(st, LA_INT(1)));
     RETFAIL;
@@ -443,7 +443,7 @@ SQLITE3_BIND_PARAMETER_NAME( LA_ALIST ) LA_DCL
 **=cut
 */
 /*
- * LOAD("SQLITE3_BIND_PARAMETER_INDEX(INTEGER,STRING)INTEGER", SQLITE3_DL)
+ * LOAD("SQLITE3_BIND_PARAMETER_INDEX(EXTERNAL,STRING)INTEGER", SQLITE3_DL)
  *
  * arg 1:	stmt handle
  * arg 2:	parameter name to fetch index for
@@ -455,7 +455,7 @@ SQLITE3_BIND_PARAMETER_NAME( LA_ALIST ) LA_DCL
 int
 SQLITE3_BIND_PARAMETER_INDEX( LA_ALIST ) LA_DCL
 {
-    sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_INT(0));
+    sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_HANDLE(0));
     char *name;
     int ret;
 
@@ -469,14 +469,14 @@ SQLITE3_BIND_PARAMETER_INDEX( LA_ALIST ) LA_DCL
 }
 
 /*
- * LOAD("SQLITE3_STEP(INTEGER)STRING", SQLITE3_DL)
+ * LOAD("SQLITE3_STEP(EXTERNAL)STRING", SQLITE3_DL)
  * arg1: stmt handle
  * return string or failure
  */
 int
 SQLITE3_STEP( LA_ALIST ) LA_DCL
 {
-    sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_INT(0));
+    sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_HANDLE(0));
     int val;
 
     if (!st)
@@ -495,14 +495,14 @@ SQLITE3_STEP( LA_ALIST ) LA_DCL
 }
 
 /*
- * LOAD("SQLITE3_COLUMN_COUNT(INTEGER)INTEGER", SQLITE3_DL)
+ * LOAD("SQLITE3_COLUMN_COUNT(EXTERNAL)INTEGER", SQLITE3_DL)
  * arg1: stmt handle
  * return int or failure
  */
 int
 SQLITE3_COLUMN_COUNT( LA_ALIST ) LA_DCL
 {
-    sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_INT(0));
+    sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_HANDLE(0));
 
     if (!st)
 	RETFAIL;
@@ -511,7 +511,7 @@ SQLITE3_COLUMN_COUNT( LA_ALIST ) LA_DCL
 }
 
 /*
- * LOAD("SQLITE3_COLUMN_NAME(INTEGER,INTEGER)STRING", SQLITE3_DL)
+ * LOAD("SQLITE3_COLUMN_NAME(EXTERNAL,INTEGER)STRING", SQLITE3_DL)
  * arg1: stmt handle
  * arg2: column number
  * return string or failure
@@ -519,7 +519,7 @@ SQLITE3_COLUMN_COUNT( LA_ALIST ) LA_DCL
 int
 SQLITE3_COLUMN_NAME( LA_ALIST ) LA_DCL
 {
-    sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_INT(0));
+    sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_HANDLE(0));
 
     if (st)
 	RETSTR((char *)sqlite3_column_name(st, LA_INT(1)));
@@ -527,7 +527,7 @@ SQLITE3_COLUMN_NAME( LA_ALIST ) LA_DCL
 }
 
 /*
- * LOAD("SQLITE3_COLUMN_TEXT(INTEGER,INTEGER)STRING", SQLITE3_DL)
+ * LOAD("SQLITE3_COLUMN_TEXT(EXTERNAL,INTEGER)STRING", SQLITE3_DL)
  * arg1: stmt handle
  * arg2: column number
  * return string or failure
@@ -535,14 +535,14 @@ SQLITE3_COLUMN_NAME( LA_ALIST ) LA_DCL
 int
 SQLITE3_COLUMN_TEXT( LA_ALIST ) LA_DCL
 {
-    sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_INT(0));
+    sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_HANDLE(0));
     if (st)
 	RETSTR((char *)sqlite3_column_text(st, LA_INT(1)));
     RETFAIL;
 }
 
 /*
- * LOAD("SQLITE3_COLUMN_VALUE(INTEGER,INTEGER)", SQLITE3_DL)
+ * LOAD("SQLITE3_COLUMN_VALUE(EXTERNAL,INTEGER)", SQLITE3_DL)
  * arg1: stmt handle
  * arg2: column number
  * return value or failure
@@ -550,7 +550,7 @@ SQLITE3_COLUMN_TEXT( LA_ALIST ) LA_DCL
 int
 SQLITE3_COLUMN_VALUE( LA_ALIST ) LA_DCL
 {
-    sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_INT(0));
+    sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_HANDLE(0));
     int col = LA_INT(1);
 
     DEBUGF(("COLVAL: sth %ld stp %p col %d\n", LA_INT(0), st, col));
@@ -582,14 +582,14 @@ SQLITE3_COLUMN_VALUE( LA_ALIST ) LA_DCL
 **=cut
 */
 /*
- * LOAD("SQLITE3_CLEAR_BINDINGS(INTEGER)STRING", SQLITE3_DL)
+ * LOAD("SQLITE3_CLEAR_BINDINGS(EXTERNAL)STRING", SQLITE3_DL)
  * arg1: stmt handle
  * return empty string or failure
  */
 int
 SQLITE3_CLEAR_BINDINGS( LA_ALIST ) LA_DCL
 {
-    sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_INT(0));
+    sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_HANDLE(0));
 
     if (!st)
 	RETFAIL;
@@ -609,14 +609,14 @@ SQLITE3_CLEAR_BINDINGS( LA_ALIST ) LA_DCL
 **=cut
 */
 /*
- * LOAD("SQLITE3_RESET(INTEGER)STRING", SQLITE3_DL)
+ * LOAD("SQLITE3_RESET(EXTERNAL)STRING", SQLITE3_DL)
  * arg1: stmt handle
  * return empty string or failure
  */
 int
 SQLITE3_RESET( LA_ALIST ) LA_DCL
 {
-    sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_INT(0));
+    sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_HANDLE(0));
 
     if (!st)
 	RETFAIL;
@@ -632,14 +632,14 @@ SQLITE3_RESET( LA_ALIST ) LA_DCL
 **=cut
 */
 /*
- * LOAD("SQLITE3_FINALIZE(INTEGER)STRING", SQLITE3_DL)
+ * LOAD("SQLITE3_FINALIZE(EXTERNAL)STRING", SQLITE3_DL)
  * arg1: stmt handle
  * return empty string or failure
  */
 int
 SQLITE3_FINALIZE( LA_ALIST ) LA_DCL
 {
-    sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_INT(0));
+    sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_HANDLE(0));
 
     if (!st)
 	RETFAIL;
@@ -656,7 +656,7 @@ SQLITE3_FINALIZE( LA_ALIST ) LA_DCL
 **=cut
 */
 /*
- * LOAD("SQLITE3_EXEC(INTEGER,STRING)STRING", SQLITE3_DL)
+ * LOAD("SQLITE3_EXEC(EXTERNAL,STRING)STRING", SQLITE3_DL)
  *
  * arg 1:	db handle
  * arg 2:	SQL statement
@@ -675,7 +675,7 @@ SQLITE3_FINALIZE( LA_ALIST ) LA_DCL
 int
 SQLITE3_EXEC( LA_ALIST ) LA_DCL
 {
-    sqlite3 *db = lookup_handle(&sqlite3_dbs, LA_INT(0));
+    sqlite3 *db = lookup_handle(&sqlite3_dbs, LA_HANDLE(0));
     char *sql;
     int ret;
 

@@ -164,11 +164,11 @@ DBM_OPEN( LA_ALIST ) LA_DCL
 	RETFAIL;
 
     h = new_handle(&dbm_files, f);
-    if (h == BAD_HANDLE) {
+    if (!OK_HANDLE(h)) {
 	dbm_close(f);
 	RETFAIL;
     }
-    RETINT(h);
+    RETHANDLE(h);
 }
 
 /*
@@ -180,18 +180,18 @@ DBM_OPEN( LA_ALIST ) LA_DCL
 */
 
 /*
- * LOAD("DBM_CLOSE(INTEGER)STRING", NDBM_DL)
+ * LOAD("DBM_CLOSE(EXTERNAL)STRING", NDBM_DL)
  *
  * return null string or failure
  */
 int
 DBM_CLOSE( LA_ALIST ) LA_DCL
 {
-    DBM *f = lookup_handle(&dbm_files, LA_INT(0));
+    DBM *f = lookup_handle(&dbm_files, LA_HANDLE(0));
     if (!f)
 	RETFAIL;
 
-    remove_handle(&dbm_files, LA_INT(0));
+    remove_handle(&dbm_files, LA_HANDLE(0));
     dbm_close(f);
     RETNULL;
 }
@@ -207,7 +207,7 @@ DBM_CLOSE( LA_ALIST ) LA_DCL
 */
 
 /*
- * LOAD("DBM_STORE(INTEGER,STRING,STRING,INTEGER)INTEGER", NDBM_DL)
+ * LOAD("DBM_STORE(EXTERNAL,STRING,STRING,INTEGER)INTEGER", NDBM_DL)
  *
  * arg 1:	file handle
  * arg 2:	key
@@ -223,7 +223,7 @@ int
 DBM_STORE( LA_ALIST ) LA_DCL
 {
     datum key, data;
-    DBM *f = lookup_handle(&dbm_files, LA_INT(0));
+    DBM *f = lookup_handle(&dbm_files, LA_HANDLE(0));
     int flags;
     int ret;
 
@@ -254,7 +254,7 @@ DBM_STORE( LA_ALIST ) LA_DCL
 **=cut
 */
 /*
- * LOAD("DBM_FETCH(INTEGER,STRING)STRING", NDBM_DL)
+ * LOAD("DBM_FETCH(EXTERNAL,STRING)STRING", NDBM_DL)
  *
  * arg 1:	file handle
  * arg 2:	key
@@ -266,7 +266,7 @@ int
 DBM_FETCH( LA_ALIST ) LA_DCL
 {
     datum key, data;
-    DBM *f = lookup_handle(&dbm_files, LA_INT(0));
+    DBM *f = lookup_handle(&dbm_files, LA_HANDLE(0));
     if (!f)
 	RETFAIL;
 
@@ -286,7 +286,7 @@ DBM_FETCH( LA_ALIST ) LA_DCL
 **=cut
 */
 /*
- * LOAD("DBM_DELETE(INTEGER,STRING)INTEGER", NDBM_DL)
+ * LOAD("DBM_DELETE(EXTERNAL,STRING)INTEGER", NDBM_DL)
  *
  * arg 1:	file handle
  * arg 2:	key
@@ -300,7 +300,7 @@ int
 DBM_DELETE( LA_ALIST ) LA_DCL
 {
     datum key;
-    DBM *f = lookup_handle(&dbm_files, LA_INT(0));
+    DBM *f = lookup_handle(&dbm_files, LA_HANDLE(0));
     int ret;
 
     if (!f)
@@ -325,7 +325,7 @@ DBM_DELETE( LA_ALIST ) LA_DCL
 **=cut
 */
 /*
- * LOAD("DBM_FIRSTKEY(INTEGER)STRING", NDBM_DL)
+ * LOAD("DBM_FIRSTKEY(EXTERNAL)STRING", NDBM_DL)
  *
  * arg 1:	file handle
  *
@@ -336,7 +336,7 @@ int
 DBM_FIRSTKEY( LA_ALIST ) LA_DCL
 {
     datum key;
-    DBM *f = lookup_handle(&dbm_files, LA_INT(0));
+    DBM *f = lookup_handle(&dbm_files, LA_HANDLE(0));
     if (!f)
 	RETFAIL;
 
@@ -348,7 +348,7 @@ DBM_FIRSTKEY( LA_ALIST ) LA_DCL
 }
 
 /*
- * LOAD("DBM_NEXTKEY(INTEGER)STRING", NDBM_DL)
+ * LOAD("DBM_NEXTKEY(EXTERNAL)STRING", NDBM_DL)
  *
  * arg 1:	file handle
  *
@@ -359,7 +359,7 @@ int
 DBM_NEXTKEY( LA_ALIST ) LA_DCL
 {
     datum key;
-    DBM *f = lookup_handle(&dbm_files, LA_INT(0));
+    DBM *f = lookup_handle(&dbm_files, LA_HANDLE(0));
     if (!f)
 	RETFAIL;
 
@@ -378,7 +378,7 @@ DBM_NEXTKEY( LA_ALIST ) LA_DCL
 **=cut
 */
 /*
- * LOAD("DBM_ERROR(INTEGER)STRING", NDBM_DL)
+ * LOAD("DBM_ERROR(EXTERNAL)STRING", NDBM_DL)
  *
  * predicate
  */
@@ -386,7 +386,7 @@ DBM_NEXTKEY( LA_ALIST ) LA_DCL
 int
 DBM_ERROR( LA_ALIST ) LA_DCL
 {
-    DBM *f = lookup_handle(&dbm_files, LA_INT(0));
+    DBM *f = lookup_handle(&dbm_files, LA_HANDLE(0));
     if (f && dbm_error(f))
 	RETNULL;
     RETFAIL;				/* fails if no error! */
@@ -400,14 +400,14 @@ DBM_ERROR( LA_ALIST ) LA_DCL
 **=cut
 */
 /*
- * LOAD("DBM_CLEARERR(INTEGER)STRING", NDBM_DL)
+ * LOAD("DBM_CLEARERR(EXTERNAL)STRING", NDBM_DL)
  * predicate
  */
 
 int
 DBM_CLEARERR( LA_ALIST ) LA_DCL
 {
-    DBM *f = lookup_handle(&dbm_files, LA_INT(0));
+    DBM *f = lookup_handle(&dbm_files, LA_HANDLE(0));
     if (!f)
 	RETFAIL;
     dbm_clearerr(f);

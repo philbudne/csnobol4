@@ -25,19 +25,28 @@ extern void *malloc();
 
 #define HANDLE_HASH_SIZE (1<<8)		/* power of two */
 
+typedef unsigned int handle_datatype_t;	/* must fit in vfld */
+static handle_datatype_t next_handle_datatype = 0;
+
+typedef int_t handle_number_t;
+
 struct handle_entry {
     struct handle_entry *next;
-    snohandle_t handle;
+    handle_number_t handle_number;
 };
 
 struct handle_table {
+    handle_datatype_t datatype;
     long entries;
     struct handle_entry *hash[HANDLE_HASH_SIZE];
 };
 
 #define HANDLE_HASH(H) (((int)(H)) & (HANDLE_HASH_SIZE-1))
 
-#define VP2HANDLE(VP) ((snohandle_t)(VP))
+/* void pointer to handle_number */
+#define VP2HANDLENUM(VP) ((handle_number_t)(VP))
+
+static const struct descr bad_handle;
 
 SNOEXP(void *)
 lookup_handle(hhp, h)
@@ -50,9 +59,12 @@ lookup_handle(hhp, h)
     if (!htp)
 	return NULL;
 
-    for (hp = htp->hash[HANDLE_HASH(h)]; hp; hp = hp->next) {
-	if (hp->handle == h)
-	    return (void *)hp->handle;
+    if (h.v != htp->datatype)
+	return NULL;
+
+    for (hp = htp->hash[HANDLE_HASH(h.a.i)]; hp; hp = hp->next) {
+	if (hp->handle_number == h.a.i)
+	    return (void *)hp->handle_number;
     }
     return NULL;
 }
@@ -64,32 +76,41 @@ new_handle(hhp, vp)
 {
     struct handle_table *htp = *hhp;
     struct handle_entry *hp;
+    struct descr h;
+    int hash;
 
     if (!htp) {
 	/* first time thru? create hash table */
 	htp = malloc(sizeof(struct handle_table));
 	if (!htp)
-	    return BAD_HANDLE;
+	    return bad_handle;
 	bzero(htp, sizeof(struct handle_table));
+	htp->datatype = --next_handle_datatype; /* assign datatype */
 	*hhp = htp;
     }
 
+    h.f = 0;
+    h.v = htp->datatype;
+    h.a.i = VP2HANDLENUM(vp);
+
     /* if it already exists, just return handle */
-    if (lookup_handle(hhp, VP2HANDLE(vp)) != NULL)
-	return VP2HANDLE(vp);
+    if (lookup_handle(hhp, h) != NULL)
+	return h;
 
     /* allocate block */
     hp = malloc(sizeof(struct handle_entry));
     if (!hp)
-	return BAD_HANDLE;
+	return bad_handle;
 
-    hp->next = htp->hash[HANDLE_HASH(hp->handle)];
-    hp->handle = VP2HANDLE(vp);
+    hash = HANDLE_HASH(h.a.i);
 
-    htp->hash[HANDLE_HASH(hp->handle)] = hp;
+    hp->next = htp->hash[hash];
+    hp->handle_number = h.a.i;
+
+    htp->hash[hash] = hp;
     htp->entries++;
 
-    return hp->handle;
+    return h;
 }
 
 SNOEXP(void)
@@ -99,14 +120,14 @@ remove_handle(hhp, h)
 {
     struct handle_table *htp = *hhp;
     struct handle_entry *hp, *pp;
-    int hash = HANDLE_HASH(h);
+    int hash = HANDLE_HASH(h.a.i);
 
     if (!htp)
 	return;
 
     pp = NULL;
     for (hp = htp->hash[hash]; hp; pp = hp, hp = hp->next) {
-	if (hp->handle == h) {
+	if (hp->handle_number == h.a.i) {
 	    if (pp)
 		pp->next = hp->next;
 	    else

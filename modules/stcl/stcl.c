@@ -97,14 +97,14 @@ STCL_CREATEINTERP( LA_ALIST ) LA_DCL
 #endif
 
     h = new_handle(&tcl_interps, interp);
-    if (h == BAD_HANDLE) {
+    if (!OK_HANDLE(h)) {
 	Tcl_DeleteInterp(interp);
 	/* XXX Release? */
 	/* XXX remove_handle? */
 	RETFAIL;
     }
     /* XXX Release? */
-    RETINT(h);				/* XXX make string tcl%d? */
+    RETHANDLE(h);				/* XXX make string tcl%d? */
 }
 
 /*
@@ -125,7 +125,7 @@ STCL_EVALFILE( LA_ALIST ) LA_DCL
     char *file;
     int ret;
 
-    Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_INT(0));
+    Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_HANDLE(0));
     if (!interp)
 	RETFAIL;
 
@@ -156,7 +156,7 @@ STCL_GETVAR( LA_ALIST ) LA_DCL
 {
     char *name;
     const char *val;
-    Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_INT(0));
+    Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_HANDLE(0));
     if (!interp)
 	RETFAIL;
     name = mgetstring(LA_PTR(1));
@@ -176,7 +176,7 @@ STCL_SETVAR( LA_ALIST ) LA_DCL
     char *name;
     char *value;
     const char *ret;
-    Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_INT(0));
+    Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_HANDLE(0));
     if (!interp)
 	RETFAIL;
     name = mgetstring(LA_PTR(1));
@@ -207,7 +207,7 @@ STCL_EVAL( LA_ALIST ) LA_DCL
 {
     char *cmd;
     int ret;
-    Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_INT(0));
+    Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_HANDLE(0));
     if (!interp)
 	RETFAIL;
     cmd = mgetstring(LA_PTR(1));
@@ -235,11 +235,11 @@ STCL_EVAL( LA_ALIST ) LA_DCL
 int
 STCL_DELETEINTERP( LA_ALIST ) LA_DCL
 {
-    Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_INT(0));
+    Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_HANDLE(0));
     if (!interp)
 	RETFAIL;
     Tcl_DeleteInterp(interp);
-    remove_handle(&tcl_interps, LA_INT(0)); /* gone to SNOBOL world... */
+    remove_handle(&tcl_interps, LA_HANDLE(0)); /* gone to SNOBOL world... */
     RETNULL;
 }
 
@@ -256,7 +256,7 @@ int
 STCL_NEWSTRINGOBJ( LA_ALIST ) LA_DCL
 {
     Tcl_Obj *obj;
-    int h;
+    snohandle_t h;
 
     obj = Tcl_NewStringObj(LA_STR_PTR(0), LA_STR_LEN(0));
 
@@ -264,11 +264,11 @@ STCL_NEWSTRINGOBJ( LA_ALIST ) LA_DCL
 	RETFAIL;
 
     h = new_handle(&tcl_objs, obj);
-    if (h == BAD_HANDLE)
+    if (!OK_HANDLE(h))
 	RETFAIL;
 
     Tcl_IncrRefCount(obj);		/* XXX? */
-    RETINT(h);
+    RETHANDLE(h);
 }
 
 /*
@@ -282,7 +282,7 @@ STCL_GETSTRINGFROMOBJ( LA_ALIST ) LA_DCL
     Tcl_Obj *obj;
     char *val;
 
-    obj = lookup_handle(&tcl_objs, LA_INT(0));
+    obj = lookup_handle(&tcl_objs, LA_HANDLE(0));
     if (!obj)
 	RETFAIL;
 
@@ -302,7 +302,7 @@ STCL_APPENDTOOBJ( LA_ALIST ) LA_DCL
 {
     Tcl_Obj *obj;
 
-    obj = lookup_handle(&tcl_objs, LA_INT(0));
+    obj = lookup_handle(&tcl_objs, LA_HANDLE(0));
     if (!obj)
 	RETFAIL;
 
@@ -317,15 +317,15 @@ STCL_APPENDTOOBJ( LA_ALIST ) LA_DCL
 int
 STCL_EVALOBJEX( LA_ALIST ) LA_DCL
 {
-    Tcl_Interp *interp = lookup_handle(&tcl_objs, LA_INT(0));
-    Tcl_Obj *obj = lookup_handle(&tcl_objs, LA_INT(1));
+    Tcl_Interp *interp = lookup_handle(&tcl_objs, LA_HANDLE(0));
+    Tcl_Obj *obj = lookup_handle(&tcl_objs, LA_HANDLE(1));
     int ret;
 
     if (!interp || !obj)
 	RETFAIL;
 
     ret = Tcl_EvalObjEx(interp, obj, LA_INT(2));
-    RETINT(ret);
+    RETHANDLE(ret);
 }
 
 /*
@@ -335,19 +335,19 @@ STCL_EVALOBJEX( LA_ALIST ) LA_DCL
 int
 STCL_GETOBJRESULT(LA_ALIST ) LA_DCL
 {
-    Tcl_Interp *interp = lookup_handle(&tcl_objs, LA_INT(0));
+    Tcl_Interp *interp = lookup_handle(&tcl_objs, LA_HANDLE(0));
     Tcl_Obj *obj = Tcl_GetObjResult(interp);
-    int h;
+    snohandle_t h;
 
     if (!interp || !obj)
 	RETFAIL;
 
     h = new_handle(&tcl_objs, obj);
-    if (h == BAD_HANDLE)
+    if (!OK_HANDLE(h))
 	RETFAIL;
 
     Tcl_IncrRefCount(obj);
-    RETINT(h);
+    RETHANDLE(h);
 }
 
 /*
@@ -356,12 +356,12 @@ STCL_GETOBJRESULT(LA_ALIST ) LA_DCL
 int
 STCL_OBJSETVAR2( LA_ALIST ) LA_DCL
 {
-    Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_INT(0));
-    Tcl_Obj *part1 = lookup_handle(&tcl_objs, LA_INT(1));
-    Tcl_Obj *part2 = lookup_handle(&tcl_objs, LA_INT(2)); /* index */
-    Tcl_Obj *val = lookup_handle(&tcl_objs, LA_INT(3));	/* new value */
+    Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_HANDLE(0));
+    Tcl_Obj *part1 = lookup_handle(&tcl_objs, LA_HANDLE(1));
+    Tcl_Obj *part2 = lookup_handle(&tcl_objs, LA_HANDLE(2)); /* index */
+    Tcl_Obj *val = lookup_handle(&tcl_objs, LA_HANDLE(3));	/* new value */
     Tcl_Obj *res;
-    int h;
+    snohandle_t h;
 
     if (!interp)
 	RETFAIL;
@@ -371,11 +371,11 @@ STCL_OBJSETVAR2( LA_ALIST ) LA_DCL
 	RETFAIL;
 
     h = new_handle(&tcl_objs, res);
-    if (h == BAD_HANDLE)
+    if (!OK_HANDLE(h))
 	RETFAIL;
 
     Tcl_IncrRefCount(res);		/* XXX needed? */
-    RETINT(h);
+    RETHANDLE(h);
 }
 
 /*
@@ -384,11 +384,11 @@ STCL_OBJSETVAR2( LA_ALIST ) LA_DCL
 int
 STCL_OBJGETVAR2( LA_ALIST ) LA_DCL
 {
-    Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_INT(0));
-    Tcl_Obj *part1 = lookup_handle(&tcl_objs, LA_INT(1));
-    Tcl_Obj *part2 = lookup_handle(&tcl_objs, LA_INT(2));
+    Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_HANDLE(0));
+    Tcl_Obj *part1 = lookup_handle(&tcl_objs, LA_HANDLE(1));
+    Tcl_Obj *part2 = lookup_handle(&tcl_objs, LA_HANDLE(2));
     Tcl_Obj *res;
-    int h;
+    snohandle_t h;
 
     if (!interp)
 	RETFAIL;
@@ -398,11 +398,11 @@ STCL_OBJGETVAR2( LA_ALIST ) LA_DCL
 	RETFAIL;
 
     h = new_handle(&tcl_objs, res);
-    if (h == BAD_HANDLE)
+    if (!OK_HANDLE(h))
 	RETFAIL;
 
     Tcl_IncrRefCount(res);
-    RETINT(h);
+    RETHANDLE(h);
 }
 
 /*
@@ -412,12 +412,12 @@ STCL_OBJGETVAR2( LA_ALIST ) LA_DCL
 int
 STCL_RELEASEOBJ( LA_ALIST ) LA_DCL
 {
-    Tcl_Obj *obj = lookup_handle(&tcl_objs, LA_INT(0));
+    Tcl_Obj *obj = lookup_handle(&tcl_objs, LA_HANDLE(0));
     if (!obj)
 	RETFAIL;
     Tcl_DecrRefCount(obj);
     /* XXX check IsShared? */
-    remove_handle(&tcl_objs, LA_INT(0)); /* gone to SNOBOL world... */
+    remove_handle(&tcl_objs, LA_HANDLE(0)); /* gone to SNOBOL world... */
     RETNULL;
 }
 
@@ -463,7 +463,7 @@ STCL_RELEASEOBJ( LA_ALIST ) LA_DCL
 **=sect SEE ALSO
 **B<tclsh>(1), B<wish>(1).
 **=break
-**http://ftcl.sourceforge.net/
+**=link http://ftcl.sourceforge.net/
 **
 **=sect AUTHOR
 **Philip L. Budne

@@ -12,7 +12,11 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	configure: output INSTALL_SYSDEP on cygwin to install libsnobol4.a
 	Makefile2.m4: use INSTALL_SYSDEP
 	include/handle.h: make snohandle_t a descr
+		add LA_HANDLE/RETHANDLE
 	lib/snolib/handle.c: return handles as EXTERN types
+	module/{dir/dirs.c,ffi/ffi.c,ndbm/ndm.c,sqlite3/sqlite3mod.c,
+		stcl/stcl.c}: use LA_HANDLE/RETHANDLE
+	module/ffi/funcs.sno: use unique to generate vars to hold handles
 
 12/22/2014:
 	modules/setuputil.sno: wrap copy dest in quotes

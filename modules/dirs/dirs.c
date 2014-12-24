@@ -41,7 +41,7 @@ static handle_handle_t dir_handles;
 */
 
 /*
- * LOAD("OPENDIR(STRING)INTEGER", DIRS_DL)
+ * LOAD("OPENDIR(STRING)", DIRS_DL)
  * Open a directory
  *
  * first arg:
@@ -61,11 +61,11 @@ OPENDIR( LA_ALIST ) LA_DCL
 	RETFAIL;
 
     h = new_handle(&dir_handles, d);
-    if (h == BAD_HANDLE) {
+    if (!OK_HANDLE(h)) {
 	closedir(d);
 	RETFAIL;
     }
-    RETINT(h);
+    RETHANDLE(h);
 }
 
 /*
@@ -76,14 +76,14 @@ OPENDIR( LA_ALIST ) LA_DCL
 **=cut
 */
 /*
- * LOAD("READDIR(INTEGER)STRING", DIRS_DL)
+ * LOAD("READDIR(EXTERNAL)STRING", DIRS_DL)
  *
  * return name or failure
  */
 int
 READDIR( LA_ALIST ) LA_DCL
 {
-    DIR *d = lookup_handle(&dir_handles, LA_INT(0));
+    DIR *d = lookup_handle(&dir_handles, LA_HANDLE(0));
     struct dirent *dp;
 
     if (!d)
@@ -105,14 +105,14 @@ READDIR( LA_ALIST ) LA_DCL
 **=cut
 */
 /*
- * LOAD("REWINDDIR(INTEGER)STRING", DIRS_DL)
+ * LOAD("REWINDDIR()STRING", DIRS_DL)
  * returns: null string or failure
  */
 int
 REWINDDIR( LA_ALIST ) LA_DCL
 {
-    snohandle_t h = LA_INT(0);
-    DIR *d = lookup_handle(&dir_handles, LA_INT(0));
+    snohandle_t h = LA_HANDLE(0);
+    DIR *d = lookup_handle(&dir_handles, LA_HANDLE(0));
 
     if (!d)
 	RETFAIL;
@@ -130,14 +130,14 @@ REWINDDIR( LA_ALIST ) LA_DCL
 **=cut
 */
 /*
- * LOAD("TELLDIR(INTEGER)INTEGER", DIRS_DL)
+ * LOAD("TELLDIR()INTEGER", DIRS_DL)
  * returns: integer or failure
  */
 int
 TELLDIR( LA_ALIST ) LA_DCL
 {
-    snohandle_t h = LA_INT(0);
-    DIR *d = lookup_handle(&dir_handles, LA_INT(0));
+    snohandle_t h = LA_HANDLE(0);
+    DIR *d = lookup_handle(&dir_handles, LA_HANDLE(0));
 
     if (!d)
 	RETFAIL;
@@ -152,14 +152,14 @@ TELLDIR( LA_ALIST ) LA_DCL
 **=cut
 */
 /*
- * LOAD("SEEKDIR(INTEGER,INTEGER)STRING", DIRS_DL)
+ * LOAD("SEEKDIR(,INTEGER)STRING", DIRS_DL)
  * returns: null string or failure
  */
 int
 SEEKDIR( LA_ALIST ) LA_DCL
 {
-    snohandle_t h = LA_INT(0);
-    DIR *d = lookup_handle(&dir_handles, LA_INT(0));
+    snohandle_t h = LA_HANDLE(0);
+    DIR *d = lookup_handle(&dir_handles, LA_HANDLE(0));
     if (!d)
 	RETFAIL;
     seekdir(d, LA_INT(1));
@@ -175,14 +175,14 @@ SEEKDIR( LA_ALIST ) LA_DCL
 **=cut
 */
 /*
- * LOAD("CLOSEDIR(INTEGER)STRING", DIRS_DL)
+ * LOAD("CLOSEDIR()STRING", DIRS_DL)
  * returns: null string or failure
  */
 int
 CLOSEDIR( LA_ALIST ) LA_DCL
 {
-    snohandle_t h = LA_INT(0);
-    DIR *d = lookup_handle(&dir_handles, LA_INT(0));
+    snohandle_t h = LA_HANDLE(0);
+    DIR *d = lookup_handle(&dir_handles, LA_HANDLE(0));
 
     if (!d)
 	RETFAIL;

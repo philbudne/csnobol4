@@ -144,7 +144,7 @@ ffi_convert(cp, ret)
 }
 
 /*
- * LOAD("FFI_PREP_CIF(STRING)INTEGER", FFI_DL)
+ * LOAD("FFI_PREP_CIF(STRING)", FFI_DL)
  * arg: "(argtype[,...])rettype"
  * Create and initialize an ffi_cif
  *
@@ -157,7 +157,6 @@ FFI_PREP_CIF( LA_ALIST ) LA_DCL
     struct cifplus *cpp = NULL;
     char *cp = mgetstring(LA_PTR(0));
     ffi_type *rtype, **atypes = NULL;
-    snohandle_t h;
     char *xp, *comma, *rp;
     int n = 0;
     int i;
@@ -182,6 +181,7 @@ FFI_PREP_CIF( LA_ALIST ) LA_DCL
 	goto fail;
 
     xp = cp + 1;
+    i = 0;
     for (;;) {
 	comma = index(xp, ',');
 	if (comma)
@@ -205,24 +205,25 @@ FFI_PREP_CIF( LA_ALIST ) LA_DCL
 #ifdef DEBUG_FFI
 	printf("ret %s\n", rp);
 #endif
-    if (!(rtype = ffi_convert(rp, 1)) ||
-	ffi_prep_cif(&cpp->cif, FFI_DEFAULT_ABI, n, rtype, atypes) != FFI_OK ||
-	(h = new_handle(&ffi_cifplus, cpp)) == BAD_HANDLE) {
-    fail:
-	if (cpp) free(cpp);
-	if (atypes) free(atypes);
-    	if (cp) free(cp);
-	RETFAIL;
+    if ((rtype = ffi_convert(rp, 1)) &&
+	ffi_prep_cif(&cpp->cif, FFI_DEFAULT_ABI, n, rtype, atypes) == FFI_OK) {
+	snohandle_t h = new_handle(&ffi_cifplus, cpp);
+	if (OK_HANDLE(h)) {
+	    if (strcmp(rp, RETSTRING) == 0)
+		cpp->pret = STR;
+	    else if (strcmp(rp, RETFREESTRING) == 0)
+		cpp->pret = FREESTR;
+	    else
+		cpp->pret = NOTSTR;
+	    free(cp);
+	    RETHANDLE(h);
+	}
     }
-
-    if (strcmp(rp, RETSTRING) == 0)
-	cpp->pret = STR;
-    else if (strcmp(rp, RETFREESTRING) == 0)
-	cpp->pret = FREESTR;
-    else
-	cpp->pret = NOTSTR;
-    free(cp);
-    RETINT(h);				/* XXX make string tcl%d? */
+ fail:
+    if (cpp) free(cpp);
+    if (atypes) free(atypes);
+    if (cp) free(cp);
+    RETFAIL;
 }
 
 /* test function */
@@ -234,7 +235,7 @@ foo(double a, double b) {
 }
 
 /*
- * LOAD("FFI_CALL(INTEGER,INTEGER)", FFI_DL)
+ * LOAD("FFI_CALL(EXTERNAL,EXTERNAL)", FFI_DL)
  * arg 1: handle from FFI_PREP_CIF
  * arg 2: handle from FFI_DLSYM (function pointer)
  * args 3+: arguments to pass to function
@@ -242,8 +243,8 @@ foo(double a, double b) {
 lret_t
 FFI_CALL( LA_ALIST ) LA_DCL
 {
-    struct cifplus *cpp = lookup_handle(&ffi_cifplus, LA_INT(0));
-    void *func = lookup_handle(&ffi_dlsyms, LA_INT(1));
+    struct cifplus *cpp = lookup_handle(&ffi_cifplus, LA_HANDLE(0));
+    void *func = lookup_handle(&ffi_dlsyms, LA_HANDLE(1));
     void **arg_pointers = NULL;
     union argval *cargs = NULL;
     ffi_arg result;
@@ -252,7 +253,7 @@ FFI_CALL( LA_ALIST ) LA_DCL
     int i;
 
 #ifdef DEBUG_FFI
-    printf("FFI_CALL %ld (%p) %ld (%p)\n", LA_INT(0), cpp, LA_INT(1), func);
+    printf("FFI_CALL %p %p\n", cpp, func);
 #endif
     if (!cpp || !func) RETFAIL;
 
@@ -298,7 +299,7 @@ FFI_CALL( LA_ALIST ) LA_DCL
 	    if (LA_TYPE(s) == S)
 		cargs[i].p = mgetstring(LA_PTR(s));
 	    else if (LA_TYPE(s) != I ||
-		     !(cargs[i].p = lookup_handle(&ffi_dlsyms, LA_INT(1))))
+		     !(cargs[i].p = lookup_handle(&ffi_dlsyms, LA_HANDLE(1))))
 		goto ret;
 	    arg_pointers[i] = &cargs[i].p;
 	}
@@ -355,12 +356,12 @@ FFI_CALL( LA_ALIST ) LA_DCL
 }
 
 /*
- * LOAD("FFI_FREE_CIF(INTEGER)STRING", FFI_DL)
+ * LOAD("FFI_FREE_CIF(EXTERNAL)STRING", FFI_DL)
  */
 lret_t
 FFI_FREE_CIF( LA_ALIST ) LA_DCL
 {
-    struct cifplus *cpp = lookup_handle(&ffi_cifplus, LA_INT(0));
+    struct cifplus *cpp = lookup_handle(&ffi_cifplus, LA_HANDLE(0));
 
     if (!cpp)
 	RETFAIL;
@@ -369,7 +370,7 @@ FFI_FREE_CIF( LA_ALIST ) LA_DCL
 	free(cpp->cif.arg_types);
     free(cpp);
 
-    remove_handle(&ffi_cifplus, LA_INT(0)); /* gone to SNOBOL world... */
+    remove_handle(&ffi_cifplus, LA_HANDLE(0)); /* gone to SNOBOL world... */
     RETNULL;
 }
 
@@ -386,12 +387,12 @@ FFI_FREE_CIF( LA_ALIST ) LA_DCL
 */
 
 /*
- * LOAD("FFI_DLOPEN(STRING)INTEGER", FFI_DL)
+ * LOAD("FFI_DLOPEN(STRING)", FFI_DL)
  */
 lret_t
 FFI_DLOPEN( LA_ALIST ) LA_DCL
 {
-    int_t h;
+    snohandle_t h;
     // take empty string to mean NULL pointer
     char *str = LA_PTR(0) ? mgetstring(LA_PTR(0)) : NULL;
 
@@ -399,11 +400,12 @@ FFI_DLOPEN( LA_ALIST ) LA_DCL
     void *dl = dlopen(str, RTLD_LAZY);	/* XXX take mode arg??? */
     if (str) free(str);
     if (!dl) RETFAIL;
-    if ((h = new_handle(&ffi_dlibs, dl)) == BAD_HANDLE) {
+    h = new_handle(&ffi_dlibs, dl);
+    if (!OK_HANDLE(h)) {
 	dlclose(dl);
 	RETFAIL;
     }
-    RETINT(h);
+    RETHANDLE(h);
 }
 
 /*
@@ -416,53 +418,54 @@ FFI_DLOPEN( LA_ALIST ) LA_DCL
 */
 
 /*
- * LOAD("FFI_DLSYM(INTEGER,STRING)INTEGER", FFI_DL)
+ * LOAD("FFI_DLSYM(,STRING)", FFI_DL)
  * returns a handle for FFI_CALL
  */
 lret_t
 FFI_DLSYM( LA_ALIST ) LA_DCL
 {
-    void *dl = (void *)LA_INT(0);
-    int_t ret;
+    snohandle_t ret;
     char *str;
     void *val;
+    void *dl = NULL;
+    if (LA_TYPE(0) == I)
+	dl = (void *)LA_INT(0);
+
     if (dl != RTLD_DEFAULT && dl == RTLD_NEXT
 #ifdef RTLD_SELF
 	&& dl != RTLD_SELF
 #endif
 	) {
-	dl = lookup_handle(&ffi_dlibs, LA_INT(0));
+	dl = lookup_handle(&ffi_dlibs, LA_HANDLE(0));
 	if (!dl) RETFAIL;
     }
     str = mgetstring(LA_PTR(1));
     val = dlsym(dl, str);
     if (str) free(str);
     if (!val) RETFAIL;
-    if ((ret = new_handle(&ffi_dlsyms, val)) == BAD_HANDLE) RETFAIL;
-#ifdef FFI_DEBUG
-    printf("dlsym %ld %p\n", ret, val);
-#endif
-    RETINT(ret);
+    ret = new_handle(&ffi_dlsyms, val);
+    if (!OK_HANDLE(ret)) RETFAIL;
+    RETHANDLE(ret);
 }
 
 #if 0 /* would need to invalidate function handles */
 /*
- * XXX("FFI_DLCLOSE(INTEGER)STRING", FFI_DL)
+ * XXX("FFI_DLCLOSE(EXTERNAL)STRING", FFI_DL)
  */
 lret_t
 FFI_DLCLOSE( LA_ALIST ) LA_DCL
 {
-    void *dlp = lookup_handle(&ffi_dlibs, LA_INT(0));
+    void *dlp = lookup_handle(&ffi_dlibs, LA_HANDLE(0));
     if (!dlp)
 	RETFAIL;
     dlclose(dlp);
-    remove_handle(&ffi_dlibs, LA_INT(0)); /* gone to SNOBOL world... */
+    remove_handle(&ffi_dlibs, LA_HANDLE(0)); /* gone to SNOBOL world... */
     RETNULL;
 }
 #endif
 
 /*
- * LOAD("FFI_RTLD_NEXT()INTEGER", FFI_DL)
+ * LOAD("FFI_RTLD_NEXT()", FFI_DL)
  * return RTLD_NEXT value for FFI_DLSYM
  * (could also use C program to output include file line)
  */
@@ -473,7 +476,7 @@ FFI_RTLD_NEXT( LA_ALIST ) LA_DCL
 }
 
 /*
- * LOAD("FFI_RTLD_DEFAULT()INTEGER", FFI_DL)
+ * LOAD("FFI_RTLD_DEFAULT()", FFI_DL)
  * return RTLD_DEFAULT value for FFI_DLSYM
  * (could also use C program to output include file line)
  */
@@ -484,7 +487,7 @@ FFI_RTLD_DEFAULT( LA_ALIST ) LA_DCL
 }
 
 /*
- * LOAD("FFI_RTLD_SELF()INTEGER", FFI_DL)
+ * LOAD("FFI_RTLD_SELF()", FFI_DL)
  * return RTLD_SELF value for FFI_DLSYM
  * (could also use C program to output include file line)
  */

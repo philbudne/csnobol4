@@ -2,7 +2,7 @@ $Id$
 
 ***** disable sqlite3 in mingw.mak, modules.bat??
 
-Try using EXTERNAL type to return handles!!!!!
+**** test stcl!!!! ****
 
 README / INSTALL
 	note HTML page install directory!!
@@ -14,8 +14,7 @@ install.bat:
 	test it!!!
 
 mingw:	debug sqlite3
-	make install?
-	install libsnolib4.a
+	make install? install libsnolib4.a!!
 
 ================
 
