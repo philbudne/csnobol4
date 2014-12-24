@@ -23,6 +23,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 		stcl/stcl.c}: use LA_HANDLE/RETHANDLE
 			pass table name to new_handle()
 	module/ffi/funcs.sno: use unique to generate vars to hold handles
+	lib/io.o: try fixing iNTEL C warnings (reported by Clem Cole)
 
 12/22/2014:
 	modules/setuputil.sno: wrap copy dest in quotes

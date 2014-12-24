@@ -953,7 +953,7 @@ io_printf
     unit = va_arg(vp, int_t);
 #endif /* __STDC__ not defined */
 
-    fp = findfile(INTERN(unit));
+    fp = findfile((int)INTERN(unit));
     if (!fp)
 	return;
 
@@ -1108,7 +1108,7 @@ static int
 io_print_str(fp, cp, len, needfill, eol)
     struct file *fp;
     char *cp;
-    int len;
+    int_t len;
     int needfill;
     int eol;
 {
@@ -1173,7 +1173,7 @@ io_print( iokey, iob, sp )		/* STPRNT */
      */
     int xunit = D_A(D_A(iob) + DESCR);
     struct file *fp = findfile(INTERN(xunit));
-    D_A(iokey) = io_print_str(fp, S_SP(sp), S_L(sp), D_A(COMPCL), 1);
+    D_A(iokey) = io_print_str(fp, S_SP(sp), S_L(sp), (int)D_A(COMPCL), 1);
 }
 
 int
@@ -1505,7 +1505,7 @@ io_rewind(unit)				/* REWIND */
     up = FINDUNIT(unit);
     if (up->curr != up->head) {
 	if (up->curr != NULL)		/* open file not first in list */
-	    io_close(unit);		/* close it */
+	    io_close((int)unit);	/* close it */
 	up->curr = up->head;		/* reset to head of list */
 	if (up->curr->f == NULL)
 	    io_fopen(up->curr, "r");	/* XXX use original mode? */
@@ -2408,7 +2408,7 @@ io_fastpr(iokey, unit, ccfp, sp1, sp2)
     struct descr *iokey, *unit, *ccfp;
     struct spec *sp1, *sp2;
 {
-    int len = S_L(sp1);
+    int_t len = S_L(sp1);
     char *src = S_SP(sp1);
     int xunit = D_A(unit);		/* external */
     int ccf = D_A(ccfp);		/* carriage control flag */
