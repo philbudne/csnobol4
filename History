@@ -6,10 +6,13 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	lib/init.c: create, use, export snolib_vers
 	lib/snolib/host.[ch]: HOST_SNOLIB_VERS
 	modules/setuputil.sno: use HOST_SNOLIB_VERS
+		process -d and -v
 	pkg/win32/install.bat: put snobol4.lib in %SNOVER%
 	config/win32/{mingw,ntmsvc}.mak: kill cygwin config.{h,sno}
 	configure: output INSTALL_SYSDEP on cygwin to install libsnobol4.a
 	Makefile2.m4: use INSTALL_SYSDEP
+	include/handle.h: make snohandle_t a descr
+	lib/snolib/handle.c: return handles as EXTERN types
 
 12/22/2014:
 	modules/setuputil.sno: wrap copy dest in quotes

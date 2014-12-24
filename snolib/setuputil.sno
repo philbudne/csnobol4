@@ -11,8 +11,6 @@
 -INCLUDE 'snopea.sno'
 -INCLUDE 'config.sno'
 
-	setup.verbse = 1
-
 * TODO
 *   Honor more vars:
 *	name
@@ -100,8 +98,17 @@ setup	TERMINAL = DIFFER(DATATYPE(t),'TABLE') 'setup needs TABLE'
 +		FILE("..\setuputil.sno") FILE("..\..\config\win32\config.h") 1
 
 *	XXX parse options!!
-	cmd = HOST(HOST_ARGN, HOST(HOST_FIRSTARG))
+	i = HOST(HOST_FIRSTARG)
+setup.switches
+	cmd = HOST(HOST_ARGN, i)		:f(setup.usage)
+	i = i + 1
 	IDENT(cmd)				:s(setup.usage)
+	cmd POS(0) '-'				:f(setup.cmd)
+	setup.verbose = IDENT(cmd, '-v') 1	:s(setup.switches)
+	setup.debug = IDENT(cmd, '-d') ' -g'	:s(setup.switches)
+	:(setup.usage)
+
+setup.cmd
 	IDENT(cmd, 'help')			:s(setup.usage)
 
 	lbl = 'setup.' sys '.' cmd 'cmd'
@@ -112,7 +119,7 @@ setup	TERMINAL = DIFFER(DATATYPE(t),'TABLE') 'setup needs TABLE'
 setup.not.found
 +	TERMINAL = sys ' ' cmd ' not found'
 setup.usage
-+	TERMINAL = 'Usage: snobol4 setup.sno COMMAND'
++	TERMINAL = 'Usage: snobol4 setup.sno [-v] [-d] COMMAND'
 	TERMINAL = 'Commands: build install clean help'
 setup.fatal
 +	&CODE = 1				:(freturn)
@@ -287,9 +294,10 @@ setup.makeinclude.end
 * (ie; NOT VMS!!!)
 	DEFINE('setup.posix.system(command)')	:(setup.posix.system.end)
 setup.posix.system
-	TERMINAL = DIFFER(setup.verbose) '>>' command
+	TERMINAL = DIFFER(setup.verbose) 'command: ' command
 	IDENT(command)				:s(FRETURN)
 	&CODE = HOST(HOST_SYSCMD, command)	:f(FRETURN)
+	TERMINAL = DIFFER(setup.verbose) 'status: ' &CODE
 	EQ(&CODE, 0)		  		:s(RETURN)f(FRETURN)
 setup.posix.system.end
 
@@ -329,7 +337,7 @@ setup.posix.buildcmd2
 
 * build "dynamic library" (DL) -- something attached at runtime
 	compile = HOST(HOST_CC) ' -c ' HOST(HOST_COPT)
-+		' ' HOST(HOST_DL_CFLAGS)
++		' ' HOST(HOST_DL_CFLAGS) setup.debug
 +		' ' t['cflags']
 +		' -DHAVE_CONFIG_H' iflags
 +		' ' sources
