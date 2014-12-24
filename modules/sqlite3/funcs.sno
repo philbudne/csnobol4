@@ -91,7 +91,7 @@ SQLITE3_BIND_TABLE.END
 **=sect SEE ALSO
 **B<snobol4>(1)
 **=break
-**http://www.sqlite.org
+**=link http://www.sqlite.org
 **=break
-**http://www.sqlite.org/c3ref/funclist.html
+**=link http://www.sqlite.org/c3ref/funclist.html
 **=cut
