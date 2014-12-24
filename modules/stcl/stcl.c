@@ -115,7 +115,7 @@ STCL_CREATEINTERP( LA_ALIST ) LA_DCL
 **=cut
 */
 /*
- * LOAD("STCL_EVALFILE(INTEGER,STRING)STRING", STCL_DL)
+ * LOAD("STCL_EVALFILE(EXTERNAL,STRING)STRING", STCL_DL)
  *
  * return result string, or failure
  */
@@ -129,7 +129,7 @@ STCL_EVALFILE( LA_ALIST ) LA_DCL
     if (!interp)
 	RETFAIL;
 
-    file = mgetstring(LA_PTR(0));
+    file = mgetstring(LA_PTR(1));
     ret = Tcl_EvalFile(interp, file);
     free(file);
     if (ret != TCL_OK)
@@ -148,7 +148,7 @@ STCL_EVALFILE( LA_ALIST ) LA_DCL
 **=cut
 */
 /*
- * LOAD("STCL_GETVAR(INTEGER,STRING)STRING", STCL_DL)
+ * LOAD("STCL_GETVAR(EXTERNAL,STRING)STRING", STCL_DL)
  * return value of a Tcl variable (all Tcl variables are strings)
  */
 int
@@ -165,7 +165,7 @@ STCL_GETVAR( LA_ALIST ) LA_DCL
 }
 
 /*
- * LOAD("STCL_SETVAR(INTEGER,STRING,STRING)STRING", STCL_DL)
+ * LOAD("STCL_SETVAR(EXTERNAL,STRING,STRING)STRING", STCL_DL)
  * Set value of a Tcl variable
  *
  * returns null string or failure 
@@ -197,7 +197,7 @@ STCL_SETVAR( LA_ALIST ) LA_DCL
 **=cut
 */
 /*
- * LOAD("STCL_EVAL(INTEGER,STRING)STRING", STCL_DL)
+ * LOAD("STCL_EVAL(EXTERNAL,STRING)STRING", STCL_DL)
  * Eval a tcl command
  *
  * returns result string or failure
@@ -227,7 +227,7 @@ STCL_EVAL( LA_ALIST ) LA_DCL
 **=cut
 */
 /*
- * LOAD("STCL_DELETEINTERP(INTEGER)STRING", STCL_DL)
+ * LOAD("STCL_DELETEINTERP(EXTERNAL)STRING", STCL_DL)
  * Delete TCL interpreter
  *
  * return null string, or failure
@@ -272,7 +272,7 @@ STCL_NEWSTRINGOBJ( LA_ALIST ) LA_DCL
 }
 
 /*
- * LOAD("STCL_GETSTRINGFROMOBJ(INTEGER)STRING", STCL_DL)
+ * LOAD("STCL_GETSTRINGFROMOBJ(EXTERNAL)STRING", STCL_DL)
  * Get string from an Object (given object handle)
  */
 int
@@ -293,7 +293,7 @@ STCL_GETSTRINGFROMOBJ( LA_ALIST ) LA_DCL
 }
 
 /*
- * LOAD("STCL_APPENDTOOBJ(INTEGER,STRING)STRING", STCL_DL)
+ * LOAD("STCL_APPENDTOOBJ(EXTERNAL,STRING)STRING", STCL_DL)
  * Append string to an Object.
  * returns null string, or failure
  */
@@ -311,7 +311,7 @@ STCL_APPENDTOOBJ( LA_ALIST ) LA_DCL
 }
 
 /*
- * LOAD("STCL_EVALOBJEX(INTEGER,INTEGER,INTEGER)STRING", STCL_DL)
+ * LOAD("STCL_EVALOBJEX(EXTERNAL,EXTERNAL,INTEGER)STRING", STCL_DL)
  * Evaluate (execute) an object -- saves compiled byte code
  */
 int
@@ -325,11 +325,11 @@ STCL_EVALOBJEX( LA_ALIST ) LA_DCL
 	RETFAIL;
 
     ret = Tcl_EvalObjEx(interp, obj, LA_INT(2));
-    RETHANDLE(ret);
+    RETINT(ret);
 }
 
 /*
- * LOAD("STCL_GETOBJRESULT(INTEGER)", STCL_DL)
+ * LOAD("STCL_GETOBJRESULT(EXTERNAL)", STCL_DL)
  * return a result object from an interpreter (after Tcl_EvalObjEx)
  */
 int
@@ -351,7 +351,7 @@ STCL_GETOBJRESULT(LA_ALIST ) LA_DCL
 }
 
 /*
- * LOAD("STCL_OBJSETVAR2(INTEGER,INTEGER,INTEGER,INTEGER,INTEGER)STRING", STCL_DL)
+ * LOAD("STCL_OBJSETVAR2(HANDLE,HANDLE,HANDLE,HANDLE,INTEGER)STRING", STCL_DL)
  */
 int
 STCL_OBJSETVAR2( LA_ALIST ) LA_DCL
@@ -379,7 +379,7 @@ STCL_OBJSETVAR2( LA_ALIST ) LA_DCL
 }
 
 /*
- * LOAD("STCL_OBJGETVAR2(INTEGER,STRING,STRING,INTEGER)STRING", STCL_DL)
+ * LOAD("STCL_OBJGETVAR2(HANDLE,HANDLE,HANDLE,INTEGER)STRING", STCL_DL)
  */
 int
 STCL_OBJGETVAR2( LA_ALIST ) LA_DCL
@@ -406,7 +406,7 @@ STCL_OBJGETVAR2( LA_ALIST ) LA_DCL
 }
 
 /*
- * LOAD("STCL_RELEASEOBJ(INTEGER)STRING", STCL_DL)
+ * LOAD("STCL_RELEASEOBJ(HANDLE)STRING", STCL_DL)
  * release a Tcl Object
  */
 int
