@@ -120,7 +120,7 @@
 #define USE_WCHAR_H
 #define SETUP_SYS "posix"		/* !!! */
 #define DL_CFLAGS ""
-#define DL_LDFLAGS "-shared"
+#define DL_LDFLAGS "-shared -shared-libgcc"
 #elif defined(__BORLANDC__)
 #define OBJECT_EXT ".obj"
 #define SETUP_SYS "win.borland"

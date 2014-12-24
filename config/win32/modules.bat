@@ -20,6 +20,9 @@ cd "%TOP%\modules\ndbm"
 cd "%TOP%\modules\sprintf"
 "%TOP%\snobol4" -N setup.sno %CMD%
 
+cd "%TOP%\modules\sqlite3"
+if EXIST sqlite3.c "%TOP%\snobol4" -N setup.sno build
+
 cd "%TOP%\modules\stat"
 "%TOP%\snobol4" -N setup.sno %CMD%
 

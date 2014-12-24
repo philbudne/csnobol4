@@ -57,7 +57,7 @@ WINOLEAPI CoGetObject(const LPWSTR name, BIND_OPTS *pbo, REFIID riid, void **ppv
 #define V_UI4(X) V_UNION(X,ulVal)
 #endif
 
-#define LA_DISP(N) (LPDISPATCH)lookup_handle(&com_handles, LA_INT(N))
+#define LA_DISP(N) (LPDISPATCH)lookup_handle(&com_handles, LA_HANDLE(N))
 
 extern "C"
 {
@@ -180,12 +180,12 @@ COM_LOAD( LA_ALIST ) LA_DCL
     if (FAILED(hr))
 	RETFAIL;
 
-    h = new_handle(&com_handles, pdisp);
-    if (h == BAD_HANDLE) {
+    h = new_handle(&com_handles, pdisp, "com_handles");
+    if (!OK_HANDLE(h)) {
 	pdisp->Release();
 	RETFAIL;
     }
-    RETINT(h);
+    RETHANDLE(h);
 } // COM_LOAD
 
 
@@ -313,12 +313,12 @@ retvariant(struct descr *retval, VARIANTARG *vp)
     case VT_DISPATCH:			// pointer to IDispatch object
 	{
 	LPDISPATCH pdisp = V_DISPATCH(vp);
-	int_t h = new_handle(&com_handles, pdisp);
-	if (h == BAD_HANDLE)
+	snohandle_t h = new_handle(&com_handles, pdisp, "com_handles");
+	if (!OK_HANDLE(h))
 	    RETFAIL;
 	pdisp->AddRef();
 	RETTYPE = I;
-	RETINT(h);
+	RETHANDLE(h);
 	}
     }
     // XXX COMPLAIN so new entries can be added?
@@ -530,7 +530,7 @@ COM_RELEASE( LA_ALIST ) LA_DCL
     if (!pdisp)
 	RETFAIL;
 
-    remove_handle(&com_handles, LA_INT(0));
+    remove_handle(&com_handles, LA_HANDLE(0));
     pdisp->Release();
     RETNULL;
 } // COM_RELEASE

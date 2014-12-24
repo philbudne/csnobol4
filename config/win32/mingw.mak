@@ -48,7 +48,7 @@ mods:	snobol4.exe
 	done
 
 snobol4.exe: always $(OBJ)
-	$(CC) -o snobol4 $(OBJ) $(INET_LIBS) $(LDFLAGS)
+	$(CC) -shared-libgcc -o snobol4 $(OBJ) $(INET_LIBS) $(LDFLAGS)
 
 # kill leftovers from cygwin builds!!!
 always:

@@ -5,7 +5,6 @@
 
 -include 'basename.sno'
 -include 'host.sno'
--include 'repl.sno'
 
 *	snopea.debug = 1
 

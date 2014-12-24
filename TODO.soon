@@ -17,7 +17,7 @@ mingw:	debug sqlite3
 ================
 
 EXIT()
-	does not call io_flushall??!!!
+	call io_finish()????????
 	implement Win32 version of execute()??
 	output to stderr if "save" attempted???
 
