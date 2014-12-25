@@ -294,11 +294,11 @@ If this occurs, or if the build does not succeed, you can consult
 doc/porting.txt (also available as html) for information on the
 available options for use in creating a system-specific config file.
 
-If you need assistance please contact me (phil@ultimate.com).
+If you need assistance please contact me (phil@snobol4.org).
 
-I've spent many hours working on this release (time, which if I had
+I've spent MANY hours working on this release (time, which if I had
 billed a client would have been in the tens of thousands of dollars),
-if you find it useful, please consider a gift.
+if you find it useful, please consider making a gift.
 
 This release was encouraged on by a gift from a long time user
 who has used CSNOBOL4 in their work.
@@ -411,21 +411,21 @@ The Win32 port has been tested with Visual Studio 10.
 *	LOAD() of external functions from DLL's implemented, but not tested
 
 To compile using Microsoft Visual Studio:
-	nmake -f config\win32\ntmsvc.mak
+	make
 
 To install:
 	pkg\win32\install.bat
 
-NOT TESTED:
-
 To compile using MINGW (http://www.mingw.org):
 	make -f config/win32/mingw.mak
 
-To compile using Borland C (not tested recently);
+To compile using Borland C (not tested in a long time, almost certainly broken):
 	nmake -f config\win32\borland.mak
 
 DJGPP under DOS
 ---------------
+
+NOTE! Not tested with version 2.0, almost certainly broken!
 
 DJGPP (http://www.delorie.com/djgpp/) is a free 32-bit C/C++ MS-DOS
 development system, for Intel 80386 (and higher) PCs running DOS based
@@ -441,7 +441,7 @@ external function loading, see the commented out lines in the Makefile.
 VMS
 ---
 
-VMS support has has not been tested recently.  CSNOBOL4 has been run
+VMS support has has not been tested recently. CSNOBOL4 has been run
 on VMS (VAX, Alpha, and IA64), config/vms/descrip.mms is an MMS
 description file, which can be used by typing:
 

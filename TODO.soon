@@ -1,6 +1,8 @@
 $Id$
 
-***** disable sqlite3 in mingw.mak, modules.bat??
+****************************************
+***** disable sqlite3 in mingw.mak *****
+****************************************
 
 README / INSTALL
 	note HTML page install directory!!
@@ -9,12 +11,14 @@ README / INSTALL
 
 install.bat: test!!!
 
-mingw:	debug sqlite3
-	make install? install libsnolib4.a!!
-
 msc:	debug modules
 
+mingw:	debug absolute paths w/ -include!
+
 ================
+
+snopea.bat file:
+	install snopea.in as snopeacmd.sno??
 
 EXIT()
 	call io_finish()????????

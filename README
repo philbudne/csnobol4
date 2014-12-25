@@ -44,6 +44,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 Documentation;
 
+Scans of SNOBOL4 books;
+    http://www.snobol4.org/doc/books.html
+
 For a good SNOBOL4 tutorial look at the Catspaw SNOBOL4 tutorial;
     http://www.snobol4.org/doc/burks/tutorial/contents.htm
 
@@ -52,9 +55,6 @@ Also useful are the Catspaw Vanilla SNOBOL4 manual;
 
 and the Catspaw SPITBOL manual
     ftp://ftp.snobol4.com/spitman.pdf
-
-Scans of SNOBOL4 books;
-    http://www.snobol4.org/doc/books.html
 
 INSTALL
 	Information on building and installing CSNOBOL4
@@ -147,12 +147,14 @@ historical background, testing, fixes, testing, money, etc
 	Fred Weigel
 	Anonymous
 	Mike Greenberg
-	Mike Alexander
+	Mike Alexander	(SNOBOL4B sources)
 	Clem Cole
 	Harald Arnesen
+	Kevlin Henney	(Windows opendir emulation)
+	Ozan Yigit	(SDBM library)
 
 If you are interested in getting mailings about new releases, send me
 a timing report.  I'm always interested in knowing what people are
 using SNOBOL4 for!
 
-Phil Budne <phil@ultimate.com>
+Phil Budne <phil@snobol4.org>

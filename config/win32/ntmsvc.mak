@@ -61,7 +61,8 @@ snobol4.exe : always $(OBJ)
 
 # kill leftovers from cygwin builds!!!
 always:
-	delete config.h config.sno
+	if EXIST config.h erase config.h
+	if EXIST config.sno erase config.sno
 
 
 data.obj : $(SRCDIR)data.c

@@ -5,8 +5,9 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 **** NOTE!! changed handle.h API/ABI!!!
 
 12/24/2014:
-	README: update
+	README, INSTALL: update
 	config/win32/{mingw.mak,config.h}: add -shared-libgcc
+	config/win32/ntmsvc.mak: if EXISTS
 	config/modules.bat: add sqlite3 (test for sqlite3.c)
 	modules/com/com.cpp: fix handle handling
 	snolib/snopea.sno: don't need repl.sno
