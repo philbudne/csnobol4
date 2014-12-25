@@ -31,7 +31,7 @@ OBJ=	isnobol4.o data.o data_init.o main.o syn.o bal.o break.o \
 	execute.o exists.o term.o findunit.o
 
 # requires amalgamation sqlite.[ch] in modules/sqlite3:
-ifneq (,$(wildcard modules/sqlite3/sqlite3.[ch])
+ifneq (,$(wildcard modules/sqlite3/sqlite3.[ch]))
 SQLITE3=sqlite3
 endif
 
