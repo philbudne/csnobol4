@@ -4,6 +4,9 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 **** NOTE!! changed handle.h API/ABI!!!
 
+12/25/2014:
+	config/win32/mingw.mak: clean out old stuff, conditionalize sqlite
+
 12/24/2014:
 	README, INSTALL: update
 	config/win32/{mingw.mak,config.h}: add -shared-libgcc

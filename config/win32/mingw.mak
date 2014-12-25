@@ -9,9 +9,6 @@ CC=gcc
 # includes -finline-functions (and others in gcc v3)
 OPT=-O3 -g
 
-# can also use msdos version (less friendly in multitasking env)
-TTY_C=$(SRCDIR)lib/win32/tty.c
-
 # crocks for winsock I/O on Win9x
 INET_DEFS=-DINET_IO
 # wsock32 present on both Win95 and WinNT
@@ -31,13 +28,12 @@ OBJ=	isnobol4.o data.o data_init.o main.o syn.o bal.o break.o \
 	file.o getstring.o handle.o host.o log.o ord.o rename.o \
 	retstring.o sin.o spcint.o spreal.o sqrt.o sset.o \
 	osopen.o sys.o tan.o tty.o inet.o bindresvport.o \
-	execute.o exists.o term.o findunit.o $(BSTRING)
-
-# no longer needed!
-#BSTRING=bcopy.o bzero.o
+	execute.o exists.o term.o findunit.o
 
 # requires amalgamation sqlite.[ch] in modules/sqlite3:
+ifneq (,$(wildcard modules/sqlite3/sqlite3.[ch])
 SQLITE3=sqlite3
+endif
 
 MODULES=com dirs logic ndbm sprintf stat time $(SQLITE3)
 
@@ -189,8 +185,8 @@ sys.o:	$(SRCDIR)lib/win32/sys.c
 term.o:	$(SRCDIR)lib/win32/term.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/win32/term.c
 
-tty.o:	$(TTY_C)
-	$(CC) $(CFLAGS) $(TTY_C)
+tty.o:	$(SRCDIR)lib/win32/tty.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/win32/tty.c
 
 exists.o: $(SRCDIR)lib/win32/exists.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/win32/exists.c
