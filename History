@@ -6,6 +6,9 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 12/25/2014:
 	config/win32/mingw.mak: clean out old stuff, conditionalize sqlite
+	config/win32/ntmsvc.mak: clean out more old stuff
+	config/win32/borland.mak: clean out more old stuff
+	pkg/win32/install.bat: fix
 
 12/24/2014:
 	README, INSTALL: update

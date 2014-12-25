@@ -20,19 +20,9 @@ INET_DEFS=-DINET_IO
 # wsock32 present on both Win95 and WinNT
 INET_LIBS=wsock32.lib
 
-# to disable COM comment out next 3 lines:
-#COM_LIBS=ole32.lib uuid.lib oleaut32.lib
-#COM_DEFS=-DPML_COM
-#COM_OBJ=com.obj
-
-# Ozan Yigit's SDBM routines for NDBM interface
-#SDBM_DEFS=-DPML_NDBM -DHAVE_SDBM_H -DDUFF -Ilib\sdbm
-#SDBM_OBJ=ndbm.obj sdbm_pair.obj sdbm_hash.obj sdbm.obj
-
 CFLAGS=	-c $(OPT) -nologo \
 	-I$(SRCDIR)config\win32 -I$(SRCDIR)include -I$(SRCDIR). \
-	-DHAVE_CONFIG_H $(INET_DEFS) -DBITFIELDS_SAME_TYPE \
-	$(COM_DEFS) $(SDBM_DEFS)
+	-DHAVE_CONFIG_H $(INET_DEFS)
 
 SNOBOL4_C_CFLAGS=/wd4715
 
@@ -47,8 +37,7 @@ OBJ=	isnobol4.obj data.obj data_init.obj main.obj syn.obj \
 	host.obj log.obj ord.obj rename.obj retstring.obj \
 	sin.obj spcint.obj spreal.obj sqrt.obj sset.obj tan.obj \
 	osopen.obj sleep.obj sys.obj tty.obj inet.obj bindresvport.obj \
-	execute.obj exists.obj term.obj findunit.obj exp.obj \
-	$(COM_OBJ) $(SDBM_OBJ)
+	execute.obj exists.obj term.obj findunit.obj exp.obj
 
 all:	cpuid.exe snobol4.exe
 
@@ -57,7 +46,7 @@ cpuid.exe: cpuid.c
 	$(LINK) /out:cpuid.exe cpuid.obj
 
 snobol4.exe : always $(OBJ)
-	$(LINK) /out:snobol4.exe $(OBJ) $(INET_LIBS) $(COM_LIBS)
+	$(LINK) /out:snobol4.exe $(OBJ) $(INET_LIBS)
 
 # kill leftovers from cygwin builds!!!
 always:
@@ -277,17 +266,7 @@ tan.obj : $(SRCDIR)lib\snolib\tan.c
 time.obj : $(SRCDIR)lib\snolib\time.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\time.c
 
-com.obj : $(SRCDIR)lib\win32\com.cpp
-	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\com.cpp
+################################################################
 
-#### sdbm
-
-sdbm.obj : $(SRCDIR)lib\sdbm\sdbm.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib\sdbm\sdbm.c
-
-sdbm_pair.obj : $(SRCDIR)lib\sdbm\sdbm_pair.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib\sdbm\sdbm_pair.c
-
-sdbm_hash.obj : $(SRCDIR)lib\sdbm\sdbm_hash.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib\sdbm\sdbm_hash.c
-
+install:
+	pkg\win32\install.bat

@@ -3,7 +3,7 @@ rem install batch file for CSNOBOL4 when building from source
 
 setlocal
 
-if "%1" != "" set SNOLIB=%1
+if NOT "%1" == "" set SNOLIB=%1
 rem Default set in config\win32\config.h:
 if not DEFINED SNOLIB set SNOLIB=C:\snobol4
 

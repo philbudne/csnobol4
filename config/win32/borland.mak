@@ -40,8 +40,8 @@ OBJ=	isnobol4.obj data.obj data_init.obj main.obj syn.obj \
 	init.obj load.obj loadx.obj mstime.obj \
 	atan.obj chop.obj cos.obj delete.obj \
 	environ.obj exit.obj file.obj getstring.obj host.obj log.obj \
-	logic.obj ord.obj random.obj rename.obj retstring.obj sin.obj \
-	spcint.obj spreal.obj sqrt.obj sset.obj tan.obj osopen.obj sleep.obj \
+	ord.obj random.obj rename.obj retstring.obj sin.obj \
+	spcint.obj spreal.obj sqrt.obj sset.obj tan.obj osopen.obj \
 	sys.obj tty.obj inet.obj bindresvport.obj execute.obj exists.obj \
 	term.obj findunit.obj exp.obj
 
@@ -182,9 +182,6 @@ mstime.obj : $(SRCDIR)lib\win32\mstime.c
 osopen.obj : $(SRCDIR)lib\win32\osopen.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\osopen.c
 
-sleep.obj : $(SRCDIR)lib\win32\sleep.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\sleep.c
-
 sys.obj : $(SRCDIR)lib\win32\sys.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\sys.c
 
@@ -235,9 +232,6 @@ host.obj : $(SRCDIR)lib\snolib\host.c
 log.obj : $(SRCDIR)lib\snolib\log.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\log.c
 
-logic.obj : $(SRCDIR)lib\snolib\logic.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\logic.c
-
 ord.obj : $(SRCDIR)lib\snolib\ord.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\ord.c
 
@@ -265,4 +259,4 @@ tan.obj : $(SRCDIR)lib\snolib\tan.c
 ################################################################
 
 install:
-	config\install.bat win32 $(DEST)
+	pkg\win32\install.bat $(DEST)
