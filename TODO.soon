@@ -4,15 +4,15 @@ $Id$
 
 README / INSTALL
 	note HTML page install directory!!
-
 	note sqlite3 amalgamation source!!
 		& how to build/install
 
-install.bat:
-	test it!!!
+install.bat: test!!!
 
 mingw:	debug sqlite3
 	make install? install libsnolib4.a!!
+
+msc:	debug modules
 
 ================
 

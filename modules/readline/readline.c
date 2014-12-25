@@ -47,7 +47,7 @@
 /*
  * LOAD("READLINE(STRING)STRING", READLINE_DL)
  */
-int
+lret_t
 READLINE( LA_ALIST ) LA_DCL
 {
     char *prompt;
@@ -70,7 +70,7 @@ READLINE( LA_ALIST ) LA_DCL
 /*
  * LOAD("ADD_HISTORY(STRING)", READLINE_DL)
  */
-int
+lret_t
 ADD_HISTORY( LA_ALIST ) LA_DCL
 {
     char *line;
@@ -90,7 +90,7 @@ ADD_HISTORY( LA_ALIST ) LA_DCL
 /*
  * LOAD("HISTORY_EXPAND(STRING)STRING", READLINE_DL)
  */
-int
+lret_t
 HISTORY_EXPAND( LA_ALIST ) LA_DCL
 {
     char *line;

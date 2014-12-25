@@ -112,7 +112,7 @@ static handle_handle_t dbm_files;
  * Open or create an indexed data file
  * return handle, or failure
  */
-int
+lret_t
 DBM_OPEN( LA_ALIST ) LA_DCL
 {
     snohandle_t h;
@@ -184,7 +184,7 @@ DBM_OPEN( LA_ALIST ) LA_DCL
  *
  * return null string or failure
  */
-int
+lret_t
 DBM_CLOSE( LA_ALIST ) LA_DCL
 {
     DBM *f = lookup_handle(&dbm_files, LA_HANDLE(0));
@@ -219,7 +219,7 @@ DBM_CLOSE( LA_ALIST ) LA_DCL
  * 1	key exists
  *
  */
-int
+lret_t
 DBM_STORE( LA_ALIST ) LA_DCL
 {
     datum key, data;
@@ -262,7 +262,7 @@ DBM_STORE( LA_ALIST ) LA_DCL
  * returns:
  * datum or failure
  */
-int
+lret_t
 DBM_FETCH( LA_ALIST ) LA_DCL
 {
     datum key, data;
@@ -296,7 +296,7 @@ DBM_FETCH( LA_ALIST ) LA_DCL
  * 1	key did not exist
  * failure: error
  */
-int
+lret_t
 DBM_DELETE( LA_ALIST ) LA_DCL
 {
     datum key;
@@ -332,7 +332,7 @@ DBM_DELETE( LA_ALIST ) LA_DCL
  * returns:
  * datum or failure
  */
-int
+lret_t
 DBM_FIRSTKEY( LA_ALIST ) LA_DCL
 {
     datum key;
@@ -355,7 +355,7 @@ DBM_FIRSTKEY( LA_ALIST ) LA_DCL
  * returns:
  * data or failure
  */
-int
+lret_t
 DBM_NEXTKEY( LA_ALIST ) LA_DCL
 {
     datum key;
@@ -383,7 +383,7 @@ DBM_NEXTKEY( LA_ALIST ) LA_DCL
  * predicate
  */
 
-int
+lret_t
 DBM_ERROR( LA_ALIST ) LA_DCL
 {
     DBM *f = lookup_handle(&dbm_files, LA_HANDLE(0));
@@ -404,7 +404,7 @@ DBM_ERROR( LA_ALIST ) LA_DCL
  * predicate
  */
 
-int
+lret_t
 DBM_CLEARERR( LA_ALIST ) LA_DCL
 {
     DBM *f = lookup_handle(&dbm_files, LA_HANDLE(0));

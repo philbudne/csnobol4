@@ -77,7 +77,7 @@ static handle_handle_t tcl_objs;	/* Objects NOT per-interp!! */
  *
  * return handle, or failure
  */
-int
+lret_t
 STCL_CREATEINTERP( LA_ALIST ) LA_DCL
 {
     snohandle_t h;
@@ -119,7 +119,7 @@ STCL_CREATEINTERP( LA_ALIST ) LA_DCL
  *
  * return result string, or failure
  */
-int
+lret_t
 STCL_EVALFILE( LA_ALIST ) LA_DCL
 {
     char *file;
@@ -151,7 +151,7 @@ STCL_EVALFILE( LA_ALIST ) LA_DCL
  * LOAD("STCL_GETVAR(EXTERNAL,STRING)STRING", STCL_DL)
  * return value of a Tcl variable (all Tcl variables are strings)
  */
-int
+lret_t
 STCL_GETVAR( LA_ALIST ) LA_DCL
 {
     char *name;
@@ -172,7 +172,7 @@ STCL_GETVAR( LA_ALIST ) LA_DCL
  *
  * returns null string or failure 
 */
-int
+lret_t
 STCL_SETVAR( LA_ALIST ) LA_DCL
 {
     char *name;
@@ -204,7 +204,7 @@ STCL_SETVAR( LA_ALIST ) LA_DCL
  *
  * returns result string or failure
  */
-int
+lret_t
 STCL_EVAL( LA_ALIST ) LA_DCL
 {
     char *cmd;
@@ -234,7 +234,7 @@ STCL_EVAL( LA_ALIST ) LA_DCL
  *
  * return null string, or failure
  */
-int
+lret_t
 STCL_DELETEINTERP( LA_ALIST ) LA_DCL
 {
     Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_HANDLE(0));
@@ -254,7 +254,7 @@ STCL_DELETEINTERP( LA_ALIST ) LA_DCL
  * LOAD("STCL_NEWSTRINGOBJ(STRING)INTEGER", STCL_DL)
  * Create new string object, returns handle
  */
-int
+lret_t
 STCL_NEWSTRINGOBJ( LA_ALIST ) LA_DCL
 {
     Tcl_Obj *obj;
@@ -277,7 +277,7 @@ STCL_NEWSTRINGOBJ( LA_ALIST ) LA_DCL
  * LOAD("STCL_GETSTRINGFROMOBJ(EXTERNAL)STRING", STCL_DL)
  * Get string from an Object (given object handle)
  */
-int
+lret_t
 STCL_GETSTRINGFROMOBJ( LA_ALIST ) LA_DCL
 {
     int length;
@@ -299,7 +299,7 @@ STCL_GETSTRINGFROMOBJ( LA_ALIST ) LA_DCL
  * Append string to an Object.
  * returns null string, or failure
  */
-int
+lret_t
 STCL_APPENDTOOBJ( LA_ALIST ) LA_DCL
 {
     Tcl_Obj *obj;
@@ -316,7 +316,7 @@ STCL_APPENDTOOBJ( LA_ALIST ) LA_DCL
  * LOAD("STCL_EVALOBJEX(EXTERNAL,EXTERNAL,INTEGER)STRING", STCL_DL)
  * Evaluate (execute) an object -- saves compiled byte code
  */
-int
+lret_t
 STCL_EVALOBJEX( LA_ALIST ) LA_DCL
 {
     Tcl_Interp *interp = lookup_handle(&tcl_objs, LA_HANDLE(0));
@@ -334,7 +334,7 @@ STCL_EVALOBJEX( LA_ALIST ) LA_DCL
  * LOAD("STCL_GETOBJRESULT(EXTERNAL)", STCL_DL)
  * return a result object from an interpreter (after Tcl_EvalObjEx)
  */
-int
+lret_t
 STCL_GETOBJRESULT(LA_ALIST ) LA_DCL
 {
     Tcl_Interp *interp = lookup_handle(&tcl_objs, LA_HANDLE(0));
@@ -355,7 +355,7 @@ STCL_GETOBJRESULT(LA_ALIST ) LA_DCL
 /*
  * LOAD("STCL_OBJSETVAR2(HANDLE,HANDLE,HANDLE,HANDLE,INTEGER)STRING", STCL_DL)
  */
-int
+lret_t
 STCL_OBJSETVAR2( LA_ALIST ) LA_DCL
 {
     Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_HANDLE(0));
@@ -383,7 +383,7 @@ STCL_OBJSETVAR2( LA_ALIST ) LA_DCL
 /*
  * LOAD("STCL_OBJGETVAR2(HANDLE,HANDLE,HANDLE,INTEGER)STRING", STCL_DL)
  */
-int
+lret_t
 STCL_OBJGETVAR2( LA_ALIST ) LA_DCL
 {
     Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_HANDLE(0));
@@ -411,7 +411,7 @@ STCL_OBJGETVAR2( LA_ALIST ) LA_DCL
  * LOAD("STCL_RELEASEOBJ(HANDLE)STRING", STCL_DL)
  * release a Tcl Object
  */
-int
+lret_t
 STCL_RELEASEOBJ( LA_ALIST ) LA_DCL
 {
     Tcl_Obj *obj = lookup_handle(&tcl_objs, LA_HANDLE(0));

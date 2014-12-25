@@ -16,7 +16,7 @@
 /* macros for loadable user functions;
  *
  * ie;
- * LRET
+ * lret_t
  * myfunc(LA_ALIST) LA_DCL
  * {
  * }

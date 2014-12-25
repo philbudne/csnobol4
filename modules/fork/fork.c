@@ -58,7 +58,7 @@
  * Returns;	0 if child, pid if parent, fails if fork() does
  */
 
-int
+lret_t
 FORK( LA_ALIST ) LA_DCL
 {
     int pid;
@@ -72,7 +72,7 @@ FORK( LA_ALIST ) LA_DCL
 /*
  * LOAD("WAITPID(,STRING)STRING", FORK_DL)
  */
-int
+lret_t
 WAITPID( LA_ALIST) LA_DCL
 {
     pid_t pid, wpid;

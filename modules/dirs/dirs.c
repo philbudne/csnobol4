@@ -48,7 +48,7 @@ static handle_handle_t dir_handles;
  *	filename
  * return handle, or failure
  */
-int
+lret_t
 OPENDIR( LA_ALIST ) LA_DCL
 {
     char *fname = mgetstring(LA_PTR(0));
@@ -80,7 +80,7 @@ OPENDIR( LA_ALIST ) LA_DCL
  *
  * return name or failure
  */
-int
+lret_t
 READDIR( LA_ALIST ) LA_DCL
 {
     DIR *d = lookup_handle(&dir_handles, LA_HANDLE(0));
@@ -108,7 +108,7 @@ READDIR( LA_ALIST ) LA_DCL
  * LOAD("REWINDDIR()STRING", DIRS_DL)
  * returns: null string or failure
  */
-int
+lret_t
 REWINDDIR( LA_ALIST ) LA_DCL
 {
     snohandle_t h = LA_HANDLE(0);
@@ -133,7 +133,7 @@ REWINDDIR( LA_ALIST ) LA_DCL
  * LOAD("TELLDIR()INTEGER", DIRS_DL)
  * returns: integer or failure
  */
-int
+lret_t
 TELLDIR( LA_ALIST ) LA_DCL
 {
     snohandle_t h = LA_HANDLE(0);
@@ -155,7 +155,7 @@ TELLDIR( LA_ALIST ) LA_DCL
  * LOAD("SEEKDIR(,INTEGER)STRING", DIRS_DL)
  * returns: null string or failure
  */
-int
+lret_t
 SEEKDIR( LA_ALIST ) LA_DCL
 {
     snohandle_t h = LA_HANDLE(0);
@@ -178,7 +178,7 @@ SEEKDIR( LA_ALIST ) LA_DCL
  * LOAD("CLOSEDIR()STRING", DIRS_DL)
  * returns: null string or failure
  */
-int
+lret_t
 CLOSEDIR( LA_ALIST ) LA_DCL
 {
     snohandle_t h = LA_HANDLE(0);

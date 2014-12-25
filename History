@@ -10,6 +10,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	config/modules.bat: add sqlite3 (test for sqlite3.c)
 	modules/com/com.cpp: fix handle handling
 	snolib/snopea.sno: don't need repl.sno
+	modules/{dirs/dirs.c,fork/fork.c,ndbm/ndbm.c,readline/readline.c,
+		sqlite3/sqlite3mod.c,stcl/stcl.c}: lret_t
 
 12/23/2014:
 	lib/init.c: create, use, export snolib_vers
