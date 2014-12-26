@@ -113,7 +113,7 @@
 #if defined(_MSC_VER)
 #define OBJECT_EXT ".obj"
 #define SETUP_SYS "win.msc"
-#define DL_CFLAGS "-nologo"		/* /LD? */
+/* DL_CFLAGS from ntmsvc.mak */
 #define DL_LDFLAGS "/DLL /NOLOGO"
 #elif defined(__GNUC__)
 #define OBJECT_EXT ".o"

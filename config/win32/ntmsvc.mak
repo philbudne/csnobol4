@@ -20,9 +20,10 @@ INET_DEFS=-DINET_IO
 # wsock32 present on both Win95 and WinNT
 INET_LIBS=wsock32.lib
 
-CFLAGS=	-c $(OPT) -nologo \
-	-I$(SRCDIR)config\win32 -I$(SRCDIR)include -I$(SRCDIR). \
-	-DHAVE_CONFIG_H $(INET_DEFS)
+COMMON_CFLAGS=-nologo -DHAVE_CONFIG_H
+DL_CFLAGS=$(COMMON_CFLAGS)
+CFLAGS=-c $(OPT) $(COMMON_CFLAGS) $(INET_DEFS) \
+	-I$(SRCDIR)config\win32 -I$(SRCDIR)include -I$(SRCDIR).
 
 SNOBOL4_C_CFLAGS=/wd4715
 
@@ -52,7 +53,6 @@ snobol4.exe : always $(OBJ)
 always:
 	if EXIST config.h erase config.h
 	if EXIST config.sno erase config.sno
-
 
 data.obj : $(SRCDIR)data.c
 	$(CC) $(CFLAGS) $(SRCDIR)data.c
@@ -227,17 +227,11 @@ getstring.obj : $(SRCDIR)lib\snolib\getstring.c
 handle.obj : $(SRCDIR)lib\snolib\handle.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\handle.c
 
-host.obj : $(SRCDIR)lib\snolib\host.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\host.c -DCC=\"$(CC)\" -DCOPT=\"$(COPT)\" -DSO_LD=\"$(LINK)\" -DDL_LD=\"$(LINK)\"
+host.obj : $(SRCDIR)lib\snolib\host.c config\win32\ntmsvc.mak config\win32\config.h
+	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\host.c -DCC=\"$(CC)\" -DCOPT=\"$(COPT)\" -DSO_LD=\"$(LINK)\" -DDL_LD=\"$(LINK)\" -DDL_CFLAGS=\"$(DL_CFLAGS)\"
 
 log.obj : $(SRCDIR)lib\snolib\log.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\log.c
-
-logic.obj : $(SRCDIR)lib\snolib\logic.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\logic.c
-
-ndbm.obj : $(SRCDIR)lib\snolib\ndbm.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\ndbm.c
 
 ord.obj : $(SRCDIR)lib\snolib\ord.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\ord.c
