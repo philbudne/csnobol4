@@ -23,6 +23,7 @@
 /* paths; */
 #define SNOLIB_FILE	"snolib.dll"
 #define SNOLIB_BASE	"C:\\snobol4"
+#define SHARED_OBJ_SUBDIR "shared"
 #define DIR_SEP		"\\"
 #define PATH_SEP	";"
 #define DL_EXT		".dll"
@@ -130,5 +131,3 @@
 
 #define SO_CFLAGS DL_CFLAGS
 #define SO_DLFLAGS DL_DLFLAGS
-
-#define HOST_SHARED_OBJ_SUBDIR "shared"

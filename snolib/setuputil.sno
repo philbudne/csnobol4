@@ -537,11 +537,11 @@ setup.win.msc.instcmd.xloop
 setup.win.msc.instcmd.xdone
 
 	command = 'copy /y ' snofiles ' "' destdir dest '"'
-	setup.win.msc.system(command)		:f(FRETURN)
+	setup.posix.system(command)		:f(FRETURN)
 
 	IDENT(manfiles)				:s(RETURN)
 	command = 'copy /y ' manfiles ' "' destdir MAN3DIR '"'
-	setup.win.msc.system(command)		:f(FRETURN)s(RETURN)
+	setup.posix.system(command)		:f(FRETURN)s(RETURN)
 setup.win.msc.installcmd.end
 
 ****************************************************************
