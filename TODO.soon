@@ -1,21 +1,20 @@
 $Id$
 
-****************************************
-***** disable sqlite3 in mingw.mak *****
-****************************************
+move setuputil.sno to snolib??
+	remove .. from paths!!!
 
 README / INSTALL
 	note HTML page install directory!!
 	note sqlite3 amalgamation source!!
 		& how to build/install
 
-install.bat: test!!!
-
-msc:	debug modules
-
-mingw:	debug absolute paths w/ -include!
+install.bat:
+	double check all files installed vs 1.5
+	plus setuputil.sno, config.sno
 
 ================
+
+mingw:	do absolute paths in includes work??
 
 snopea.bat file:
 	install snopea.in as snopeacmd.sno??
