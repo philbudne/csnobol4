@@ -1,6 +1,6 @@
 setlocal
 set CMD=%1
-if NOT DEFINED CMD set CMD=build
+if "%CMD%" == "" set CMD=build
 
 set TOP=%CD%
 set SNOPATH=%TOP%\modules;%TOP%;%TOP%\snolib;%TOP%\config\win32

@@ -8,7 +8,10 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	config/win32/mingw.mak: clean out old stuff, conditionalize sqlite
 	config/win32/ntmsvc.mak: clean out more old stuff
 	config/win32/borland.mak: clean out more old stuff
+	config/win32/config.h: define HOST_SHARED_OBJ_SUBDIR
 	pkg/win32/install.bat: fix
+	modules/setuputil.sno: fix for windows install
+	make.bat: pass %1
 
 12/24/2014:
 	README, INSTALL: update

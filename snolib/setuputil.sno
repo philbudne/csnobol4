@@ -375,8 +375,8 @@ setup.posix.installcmd
 
 	destdir = HOST(HOST_GETENV, 'DESTDIR')
 	libfile = setup.dlname(t)
-	shared = ('/' HOST(HOST_SHARED_OBJ_SUBDIR), '')
-	command = 'cp -f ' libfile ' ' destdir dest shared
+	shared = HOST(HOST_SHARED_OBJ_SUBDIR), 'shared')
+	command = 'cp -f ' libfile ' ' destdir dest '/' shared
 	setup.posix.system(command)		:f(FRETURN)
 
 	sno = setup.sno(t)
@@ -513,9 +513,9 @@ setup.win.msc.installcmd
 
 	destdir = HOST(HOST_GETENV, 'DESTDIR')
 	libfile = setup.dlname(t)
-	shared = ('/' HOST(HOST_SHARED_OBJ_SUBDIR), '')
-	command = 'copy /y ' libfile ' "' destdir dest shared '"'
-	setup.win.msc.system(command)		:f(FRETURN)
+	shared = (HOST(HOST_SHARED_OBJ_SUBDIR), 'shared')
+	command = 'copy /y ' libfile ' "' destdir dest '\' shared '"'
+	setup.posix.system(command)		:f(FRETURN)
 
 	sno = setup.sno(t)
 	snofiles = sno

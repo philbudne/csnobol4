@@ -130,3 +130,5 @@
 
 #define SO_CFLAGS DL_CFLAGS
 #define SO_DLFLAGS DL_DLFLAGS
+
+#define HOST_SHARED_OBJ_SUBDIR "shared"
