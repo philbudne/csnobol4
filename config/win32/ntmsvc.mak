@@ -227,7 +227,7 @@ handle.obj : $(SRCDIR)lib\snolib\handle.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\handle.c
 
 host.obj : $(SRCDIR)lib\snolib\host.c config\win32\ntmsvc.mak config\win32\config.h
-	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\host.c -DCC=\"$(CC)\" -DCOPT=\"$(OPT)\" -DSO_LD=\"$(LINK)\" -DDL_LD=\"$(LINK)\" -DDL_CFLAGS=\"$(DL_CFLAGS)\"
+	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\host.c -DCC=\"$(CC)\" -DCOPT=\"$(OPT)\" -DSO_LD=\"$(LINK)\" -DDL_LD=\"$(LINK)\" -DDL_CFLAGS=\""$(DL_CFLAGS)\""
 
 log.obj : $(SRCDIR)lib\snolib\log.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\log.c
