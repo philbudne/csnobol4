@@ -128,4 +128,5 @@
 #define DL_LDFLAGS "-tWD"
 #endif /* defined(__BORLANDC__) */
 
-#define SO_LDFLAGS DL_CFLAGS
+#define SO_CFLAGS DL_CFLAGS
+#define SO_DLFLAGS DL_DLFLAGS
