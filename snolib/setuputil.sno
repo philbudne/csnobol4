@@ -375,7 +375,7 @@ setup.posix.installcmd
 
 	destdir = HOST(HOST_GETENV, 'DESTDIR')
 	libfile = setup.dlname(t)
-	shared = HOST(HOST_SHARED_OBJ_SUBDIR), 'shared')
+	shared = (HOST(HOST_SHARED_OBJ_SUBDIR), 'shared')
 	command = 'cp -f ' libfile ' ' destdir dest '/' shared
 	setup.posix.system(command)		:f(FRETURN)
 
