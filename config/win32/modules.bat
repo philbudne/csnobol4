@@ -3,7 +3,7 @@ set CMD=%1
 if "%CMD%" == "" set CMD=build
 
 set TOP=%CD%
-set SNOPATH=%TOP%\modules;%TOP%;%TOP%\snolib;%TOP%\config\win32
+set SNOPATH=%TOP%;%TOP%\snolib;%TOP%\config\win32
 
 cd "%TOP%\modules\com"
 "%TOP%\snobol4" -N setup.sno %CMD%

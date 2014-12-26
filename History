@@ -12,6 +12,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	pkg/win32/install.bat: fix
 	modules/setuputil.sno: fix for windows install
 	make.bat: pass %1
+	Makefile2.m4,configure,doc/Makefile: moved setuputil.sno to snolib
+	snolib/setuputil.sno: change path tests
 
 12/24/2014:
 	README, INSTALL: update

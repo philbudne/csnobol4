@@ -1,7 +1,7 @@
 $Id$
 
-move setuputil.sno to snolib??
-	remove .. from paths!!!
+windows:
+	**** build doc directory HTML files ****
 
 README / INSTALL
 	note HTML page install directory!!
@@ -10,7 +10,7 @@ README / INSTALL
 
 install.bat:
 	double check all files installed vs 1.5
-	plus setuputil.sno, config.sno
+	plus config.sno
 
 ================
 

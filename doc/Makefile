@@ -4,7 +4,7 @@
 GENERATED1=sdb.1 snobol4.1 snobol4blocks.1 snobol4cmd.1 snobol4ctrl.1 \
 	snobol4error.1 snobol4ext.1 snobol4func.1 snobol4io.1 \
 	snobol4key.1 snopea.1
-GENERATED3=snolib.3
+GENERATED3=snolib.3 snobol4setup.3
 GENERATED7=snopea.7
 
 GENERATED=$(GENERATED1) $(GENERATED3) $(GENERATED7)
@@ -23,6 +23,7 @@ HTML=	snobol4.1.html sdb.1.html snopea.1.html \
 	snobol4io.1.html \
 	snobol4key.1.html \
 	snolib.3.html \
+	snobol4setup.3.html \
 	snopea.7.html
 
 PS=	snobol4.1.ps sdb.1.ps snopea.1.ps \
@@ -35,6 +36,7 @@ PS=	snobol4.1.ps sdb.1.ps snopea.1.ps \
 	snobol4io.1.ps \
 	snobol4key.1.ps \
 	snolib.3.ps \
+	snobol4setup.3.ps \
 	snopea.7.ps
 
 PDF=	snobol4.1.pdf sdb.1.pdf snopea.1.pdf \
@@ -47,6 +49,7 @@ PDF=	snobol4.1.pdf sdb.1.pdf snopea.1.pdf \
 	snobol4io.1.pdf \
 	snobol4key.1.pdf \
 	snolib.3.pdf \
+	snobol4setup.3.pdf \
 	snopea.7.pdf
 
 all:	$(ALL)
@@ -224,6 +227,13 @@ snolib.3.html: snolib.3.pea $(SNOPEA_DEPS)
 snolib.3.ps: snolib.3
 	$(TROFF_PS) -man snolib.3 > snolib.3.ps
 
+####
+
+snobol4setup.3: ../snolib/setuputil.sno $(SNOPEA_DEPS)
+	$(SNOPEA) ../snolib/setuputil.sno snobol4setup.3
+
+snobol4setup.3.html: ../snolib/setuputil.sno $(SNOPEA_DEPS)
+	$(SNOPEA) ../snolib/setuputil.sno snobol4setup.3.html
 
 ################
 

@@ -226,8 +226,7 @@ GENERATED_DOCS_DOCDIR=$(GENERATED_DOCS_DOCDIR1) \
 	$(GENERATED_DOCS_DOCDIR3) \
 	$(GENERATED_DOCS_DOCDIR7)
 
-GENERATED_DOCS=	$(GENERATED_DOCS_DOCDIR) \
-	modules/snobol4setup.3 modules/snobol4setup.3.html
+GENERATED_DOCS=	$(GENERATED_DOCS_DOCDIR)
 
 ################
 # link, regression test & timing
@@ -618,12 +617,6 @@ snopea.1.html: snopea snolib/snopea.sno snobol4
 $(GENERATED_DOCS_DOCDIR): snopea snolib/snopea.sno snobol4
 	cd doc; make
 
-modules/snobol4setup.3: modules/setuputil.sno snobol4
-	$(SNOPEA) modules/setuputil.sno modules/snobol4setup.3
-
-modules/snobol4setup.3.html: modules/setuputil.sno snobol4
-	$(SNOPEA) modules/setuputil.sno modules/snobol4setup.3.html
-
 #################
 # installation
 
@@ -652,7 +645,7 @@ install: snobol4 sdb timing.out $(GENERATED_DOCS)
 	done
 	$(INSTALL) -d $(MAN3DIR)
 	$(INSTALL) -m 644 doc/snolib.3 $(MAN3DIR)
-	$(INSTALL) -m 644 modules/snobol4setup.3 $(MAN3DIR)
+	$(INSTALL) -m 644 doc/snobol4setup.3 $(MAN3DIR)
 	$(INSTALL) -d $(MAN7DIR)
 	for F in $(GENERATED_DOCS_DOCDIR7); do \
 		$(INSTALL) -m 644 $$F $(MAN7DIR); \
