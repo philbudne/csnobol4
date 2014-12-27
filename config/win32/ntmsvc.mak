@@ -265,7 +265,7 @@ build_modules:
 	config\win32\modules.bat
 
 docs:
-	for %%F in (*.pea) do ..\snobol4 -N -I.. -I..\snolib ..\snopea.in %%F %%~nF.html
+	config\win32\format.bat
 
 install:
 	pkg\win32\install.bat
