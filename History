@@ -7,6 +7,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 12/27/2014:
 	snolib/setuputil.sno: win: install one file at a time, html files
 	config/win32/modules.bat: add random, add -v
+	config/win32/ntmsvc.mak: add docs
 	pkg/win32/install.bat: install modules last, check if dirs exist
 
 12/26/2014:

@@ -39,7 +39,7 @@ OBJ=	isnobol4.obj data.obj data_init.obj main.obj syn.obj \
 	osopen.obj sleep.obj sys.obj tty.obj inet.obj bindresvport.obj \
 	execute.obj exists.obj term.obj findunit.obj exp.obj
 
-all:	cpuid.exe snobol4.exe build_modules
+all:	cpuid.exe snobol4.exe build_modules docs
 
 cpuid.exe: cpuid.c
 	$(CC) -c cpuid.c
@@ -263,6 +263,9 @@ time.obj : $(SRCDIR)lib\snolib\time.c
 
 build_modules:
 	config\win32\modules.bat
+
+docs:
+	for %%F in (*.pea) do ..\snobol4 -N -I.. -I..\snolib ..\snopea.in %%F %%~nF.html
 
 install:
 	pkg\win32\install.bat
