@@ -6,6 +6,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 12/26/2014:
 	modules/ffi/ffi.c: add =ecode
+	doc/snobol4.1.pea: fix snobol4stcl
 
 12/25/2014:
 	config/win32/mingw.mak: clean out old stuff, conditionalize sqlite

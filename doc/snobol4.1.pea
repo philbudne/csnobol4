@@ -170,7 +170,7 @@ Using B<SNOBOL_PRELOAD_PATH> will make your code less portable.
 =row B<snobol4sprintf>(3)	formatting function
 =row B<snobol4sqlite3>(3)	SQLite database interface functions
 =row B<snobol4stat>(3)	file metadata functions
-=row B<snobol4tcl>(3)	Tcl/Tk interface functions
+=row B<snobol4stcl>(3)	Tcl/Tk interface functions
 =row B<snobol4time>(3)	date/time functions
 =row B<snolib>(3)	misc library functions
 =row B<snopea>(7)	A little ``Plain Old Documentation'' format for SNOBOL4
