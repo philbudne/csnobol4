@@ -5,14 +5,17 @@ README / INSTALL
 	note sqlite3 amalgamation source!!
 		& how to build/install
 
+HOST_DEFINES?? 
+	-DHAVE_CONFIG_H
+	Move -D....BITFIELDS back to ntmsvc.mak
+
 install.bat:
-	format .pea files!!!!!
 	double check all files installed vs 1.5
 	plus config.sno
+	timing.bat cannot find signon/version
 
 ================
 
-HOST_DEFINES?? (-DHAVE_CONFIG_H)
 
 mingw:	do absolute paths in includes work??
 

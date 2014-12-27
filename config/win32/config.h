@@ -48,10 +48,6 @@
 /* declarations for gcc builtins? */
 #endif
 
-#ifdef _MSC_VER
-#define BITFIELDS_SAME_SIZE
-#endif
-
 /* DLL import/export macros */
 
 #if defined(_MSC_VER) || defined(__MINGW32__)
