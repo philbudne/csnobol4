@@ -458,9 +458,8 @@ setup.win.msc.objs.end
 
 	DEFINE('setup.win.msc.buildcmd(t)')	:(setup.win.msc.buildcmd.end)
 setup.win.msc.buildcmd
-  	iflags = ' -I' HOST(HOST_INCLUDE_DIR)
-	iflags = DIFFER(dist_build)
-+		' -I..\.. -I..\..\include -I..\..\config\win32'
+  	iflags = (IDENT(dist_build) ' -I' HOST(HOST_INCLUDE_DIR),
++			' -I..\.. -I..\..\include -I..\..\config\win32')
 
 setup.win.msc.buildcmd2
 	idirs = t['include_dirs']
