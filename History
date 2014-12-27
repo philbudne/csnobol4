@@ -4,6 +4,9 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 **** NOTE!! changed handle.h API/ABI!!!
 
+12/26/2014:
+	modules/ffi/ffi.c: add =ecode
+
 12/25/2014:
 	config/win32/mingw.mak: clean out old stuff, conditionalize sqlite
 	config/win32/ntmsvc.mak: clean out more old stuff

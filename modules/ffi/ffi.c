@@ -19,6 +19,7 @@
 **        sym = FFI_DLSYM(dl, "hypot")
 **        DEFINE_FFI("hypot(double,double)double", sym)
 **        OUTPUT = hypot(3, 4)
+**=ecode
 **=sect DESCRIPTION
 **=cut
 */
