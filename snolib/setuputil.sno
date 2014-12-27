@@ -532,9 +532,9 @@ setup.win.msc.instcmd.xloop
 	x break(',') . fn ',' =			:f(setup.win.msc.instcmd.xdone)
 	ident(fn)				:s(setup.win.msc.instcmd.xdone)
 
-	fn = 'snobol4' fn
 	FILE(fn) setup.posix.system('copy /y ' fn ' "' destdir dest '"')
 
+	fn = 'snobol4' fn
 	fn '.sno' = '.3.html'
 	FILE(fn) setup.posix.system('copy /y ' fn ' "' destdir htmldir '"')
 	:(setup.win.msc.instcmd.xloop)
