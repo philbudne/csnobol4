@@ -1,18 +1,18 @@
 $Id$
 
-windows:
-	**** build doc directory HTML files ****
-
 README / INSTALL
 	note HTML page install directory!!
 	note sqlite3 amalgamation source!!
 		& how to build/install
 
 install.bat:
+	format .pea files!!!!!
 	double check all files installed vs 1.5
 	plus config.sno
 
 ================
+
+HOST_DEFINES?? (-DHAVE_CONFIG_H)
 
 mingw:	do absolute paths in includes work??
 

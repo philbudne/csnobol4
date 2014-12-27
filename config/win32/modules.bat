@@ -17,6 +17,9 @@ cd "%TOP%\modules\logic"
 cd "%TOP%\modules\ndbm"
 "%TOP%\snobol4" -N setup.sno %CMD%
 
+cd "%TOP%\modules\random"
+"%TOP%\snobol4" -N setup.sno %CMD%
+
 cd "%TOP%\modules\sprintf"
 "%TOP%\snobol4" -N setup.sno %CMD%
 

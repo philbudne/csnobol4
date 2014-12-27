@@ -37,16 +37,11 @@ copy /y pkg\win32\timing.bat %BINDIR%
 mkdir %LIBDIR%
 copy /y host.sno %LIBDIR%
 copy /y snolib\*.sno %LIBDIR%
-copy /y modules\setuputil.sno %LIBDIR%
 copy /y config\win32\config.sno %LIBDIR%
-
-mkdir %DLLDIR%
-config\win32\modules.bat install
 
 mkdir %DOCDIR%
 copy /y doc\*.html %DOCDIR%
 copy /y doc\load.doc %DOCDIR%\load.txt
-copy /y modules\*\*.html %DOCDIR%
 
 mkdir %INCDIR%
 copy /y equ.h %INCDIR%
@@ -66,3 +61,6 @@ copy /y test\bench.sno %TIMDIR%
 
 mkdir %SNOVER%\local
 mkdir %SNOVER%\local\shared
+
+mkdir %DLLDIR%
+config\win32\modules.bat install

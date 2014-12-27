@@ -4,6 +4,11 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 **** NOTE!! changed handle.h API/ABI!!!
 
+12/27/2014:
+	snolib/setuputil.sno: install HTML files on windoze
+	config/win32/modules.bat: add random
+	pkg/win32/install.bat: install modules last
+
 12/26/2014:
 	modules/ffi/ffi.c: add =ecode
 	doc/snobol4.1.pea: fix snobol4stcl
