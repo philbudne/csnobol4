@@ -514,35 +514,30 @@ setup.win.msc.installcmd
 	destdir = HOST(HOST_GETENV, 'DESTDIR')
 	libfile = setup.dlname(t)
 	shared = (HOST(HOST_SHARED_OBJ_SUBDIR), 'shared')
+
 	command = 'copy /y ' libfile ' "' destdir dest '\' shared '"'
 	setup.posix.system(command)		:f(FRETURN)
 
-	sno = setup.sno(t)
-	snofiles = sno
+* snobol4<module>.sno, snobol4<module>.html
+	fn = 'snobol4' setup.sno(t)
+	FILE(fn) setup.posix.system('copy /y ' fn ' "' destdir dest '"')
 
-* get html files:
-	man = 'snobol4' sno
-	man '.sno' = '.3.html'
-	htmlfiles = (FILE(man) man, '')
+	fn '.sno' = '.3.html'
+	FILE(fn) setup.posix.system('copy /y ' fn ' "' destdir htmldir '"')
 
 	x = t['extras'] ','
-	xfiles =
 setup.win.msc.instcmd.xloop
 	x break(',') . fn ',' =			:f(setup.win.msc.instcmd.xdone)
 	ident(fn)				:s(setup.win.msc.instcmd.xdone)
-	snofiles = FILE(fn) snofiles ' ' fn
-	fn '.sno' = '.3.html'
+
 	fn = 'snobol4' fn
-	htmlfiles = FILE(fn) htmlfiles ' ' fn 	:(setup.win.msc.instcmd.xloop)
-setup.win.msc.instcmd.xdone
+	FILE(fn) setup.posix.system('copy /y ' fn ' "' destdir dest '"')
 
-	command = 'copy /y ' snofiles ' "' destdir dest '"'
-	setup.posix.system(command)		:f(FRETURN)
+	fn '.sno' = '.3.html'
+	FILE(fn) setup.posix.system('copy /y ' fn ' "' destdir htmldir '"')
+	:(setup.win.msc.instcmd.xloop)
+setup.win.msc.instcmd.xdone			:(RETURN)
 
-	IDENT(htmlfiles)			:s(RETURN)
-	IDENT(htmldir)				:s(RETURN)
-	command = 'copy /y ' htmlfiles ' "' destdir htmldir '"'
-	setup.posix.system(command)		:f(FRETURN)s(RETURN)
 setup.win.msc.installcmd.end
 
 ****************************************************************
