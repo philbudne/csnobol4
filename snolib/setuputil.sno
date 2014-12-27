@@ -520,9 +520,10 @@ setup.win.msc.installcmd
 	setup.posix.system(command)
 
 * snobol4<module>.sno, snobol4<module>.html
-	fn = 'snobol4' setup.sno(t)
+	fn = setup.sno(t)
 	FILE(fn) setup.posix.system('copy /y ' fn ' "' destdir dest '"')
 
+	fn = 'snobol4' fn
 	fn '.sno' = '.3.html'
 	FILE(fn) setup.posix.system('copy /y ' fn ' "' destdir htmldir '"')
 
