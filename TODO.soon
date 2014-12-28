@@ -8,14 +8,11 @@ README / INSTALL
 install.bat:
 	double check all files installed vs 1.5
 	plus config.sno
+	test snopea command
 
 ================
 
-
 mingw:	do absolute paths in includes work??
-
-snopea.bat file:
-	install snopea.in as snopeacmd.sno??
 
 EXIT()
 	call io_finish()????????
