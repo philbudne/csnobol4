@@ -93,7 +93,7 @@ st2sno(st, dp)
     SETINT(dp,ST_GID,st->st_gid);
     SETINT(dp,ST_RDEV,st->st_rdev);
     SETINT(dp,ST_SIZE,st->st_size);
-#ifndef _WIN32
+#ifndef _WIN32				/* UGH!!!! */
     SETINT(dp,ST_BLKSIZE,st->st_blksize);
     SETINT(dp,ST_BLOCKS,st->st_blocks);
 #endif
