@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/28/2014:
+	configure: check for TCL_VERSION
+
 12/27/2014:
 	snolib/setuputil.sno: win: install one file at a time, html files
 	config/win32/modules.bat: add random, add -v

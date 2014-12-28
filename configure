@@ -1657,17 +1657,18 @@ if [ "x$DL_EXT" != x ]; then
     echo "#define DL_LDFLAGS \"$DL_LDFLAGS\"" >> $CONFIG_H
 fi
 
-# Tcl auto-detect is only easy on Mac (system supplied, no version in path)
 if [ "x$TCONF" = x ]; then
+    # Tcl auto-detect is only easy on Mac (system supplied, no version in path)
     FRAMEWORK=/System/Library/Frameworks/Tcl.framework/tclConfig.sh
     if [ -f $FRAMEWORK ]; then
 	TCONF=$FRAMEWORK
     fi
 fi
-# Include STCL (tcl) support, if requested
+# Include STCL (tcl) support, if available/requested
 # (Tk loads as package in 8.4+)
 if [ "$TCONF" -a -f "$TCONF" ]; then
-    . "$TCONF"
+  . "$TCONF"
+  if [ "$TCL_VERSION" ]; then
     echo "Using Tcl version $TCL_VERSION" 1>&2
     if [ "$FORCE_PML" ]; then
 	echo '#define PML_STCL'	>> $CONFIG_H
@@ -1680,6 +1681,7 @@ if [ "$TCONF" -a -f "$TCONF" ]; then
 	echo "	TCL_LIB_SPEC = '$TCL_LIB_SPEC'" >> $CONFIG_SNO
 	echo "	TCL_INCLUDE_SPEC = '$TCL_INCLUDE_SPEC'" >> $CONFIG_SNO
     fi
+  fi
 fi
 
 if true; then
