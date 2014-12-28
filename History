@@ -9,7 +9,10 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	config/win32/format.bat: format .pea files
 	config/win32/config.h: BITFIELDS_SAME_SIZE moved back to makefile
 	pkg/win32/install.bat: install modules last, check if dirs exist
+		install snopea.in as lib\snopeacmd.sno
+		install snopea.bat
 	pkg/win32/timing.bat: add -x
+	pkg/win32/snopea.bat (new)
 	lib/init.c: add -x to usage
 
 12/26/2014:

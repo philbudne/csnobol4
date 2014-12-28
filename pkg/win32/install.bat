@@ -33,9 +33,11 @@ copy /y cpuid.exe %BINDIR%
 copy /y snobol4.exe %BINDIR%
 copy /y pkg\win32\sdb.bat %BINDIR%
 copy /y pkg\win32\timing.bat %BINDIR%
+copy /y pkg\win32\snopea.bat %BINDIR%
 
 if not exist %LIBDIR% mkdir %LIBDIR%
 copy /y host.sno %LIBDIR%
+copy /y snopea.in %LIBDIR%\snopeacmd.sno
 copy /y snolib\*.sno %LIBDIR%
 copy /y config\win32\config.sno %LIBDIR%
 
