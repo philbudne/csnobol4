@@ -146,6 +146,7 @@ usage( jname, justversion )
     p('s',"toggle display of statistics");
     fprintf(stderr, "-u PARMS\n\tparameter data available via HOST(0)\n");
     p('v',"display version and exit");
+    p('x',"force display of startup banner");
 #ifdef BLOCKS
     p('B',"toggle SNOBOL4B operators (-[NO]BLOCKS)");
 #endif

@@ -10,6 +10,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	config/win32/config.h: BITFIELDS_SAME_SIZE moved back to makefile
 	pkg/win32/install.bat: install modules last, check if dirs exist
 	pkg/win32/timing.bat: add -x
+	lib/init.c: add -x to usage
 
 12/26/2014:
 	modules/ffi/ffi.c: add =ecode
