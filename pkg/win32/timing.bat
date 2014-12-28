@@ -37,7 +37,7 @@ find "Id:" bench.sno v311.sil timing.sno
 echo:
 
 echo running bench.sno:
-"%BINDIR%\snobol4" -s bench.sno v311.sil 2>stderr
+"%BINDIR%\snobol4" -sx bench.sno v311.sil 2>stderr
 echo:
 
 echo running timing.sno:

@@ -2,8 +2,6 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
-**** NOTE!! changed handle.h API/ABI!!!
-
 12/27/2014:
 	snolib/setuputil.sno: win: install one file at a time, html files
 	config/win32/modules.bat: add random, add -v
@@ -11,6 +9,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	config/win32/format.bat: format .pea files
 	config/win32/config.h: BITFIELDS_SAME_SIZE moved back to makefile
 	pkg/win32/install.bat: install modules last, check if dirs exist
+	pkg/win32/timing.bat: add -x
 
 12/26/2014:
 	modules/ffi/ffi.c: add =ecode
@@ -36,6 +35,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	snolib/snopea.sno: don't need repl.sno
 	modules/{dirs/dirs.c,fork/fork.c,ndbm/ndbm.c,readline/readline.c,
 		sqlite3/sqlite3mod.c,stcl/stcl.c}: lret_t
+
+**** NOTE!! changed handle.h API/ABI!!!
 
 12/23/2014:
 	lib/init.c: create, use, export snolib_vers
