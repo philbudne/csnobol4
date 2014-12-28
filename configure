@@ -1809,12 +1809,6 @@ if config/check 'sys/types.h sys/stat.h' 'struct stat st; lstat("foo", &st)'; th
     echo 'using lstat()' 1>&2
 fi
 
-# test fstat() for "stat" package
-if config/check 'sys/types.h sys/stat.h' 'struct stat st; fstat(0, &st)'; then
-    echo '#define HAVE_FSTAT'	>> $CONFIG_H
-    echo 'using fstat()' 1>&2
-fi
-
 # MacPorts: /opt/local
 SEARCH_DIRS='/usr/local /opt/local'
 if [ ! "$FORCE_PML" ]; then
