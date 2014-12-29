@@ -1207,7 +1207,8 @@ if config/check 'sys/types.h sys/socket.h' ""; then
 	    # FreeBSD 4-7, NetBSD, MacOS
 	    echo 'using system bindresvport_sa() function (with rpc/rpc.h)' 1>&2
 	    echo '#define BINDRESVPORT_IN_RPC_H' >> $CONFIG_H
-	elif config/check 'sys/types.h netinet/in.h unistd.h' 'struct sockaddr sa; bindresvport_sa(0, &sa);' >/dev/null 2>&1; then
+	    # OpenBSD 5.6
+	elif config/check 'sys/types.h sys/socket.h netinet/in.h unistd.h' 'struct sockaddr sa; bindresvport_sa(0, &sa);' >/dev/null 2>&1; then
 	    echo 'using system bindresvport_sa() function' 1>&2
 	else
 	    echo 'using private bindresvport_sa() function' 1>&2
@@ -1290,7 +1291,7 @@ elif config/check "sys/types.h util.h" "$FORKPTY"; then
     echo '#define HAVE_UTIL_H'		>> $CONFIG_H
     NEED_PATHS_H=1
 elif config/check "sys/types.h util.h" "$FORKPTY" -lutil; then
-    # NetBSD
+    # NetBSD, OpenBSD
     echo 'using forkpty() with util.h and -lutil' 1>&2
     echo '#define HAVE_FORKPTY'		>> $CONFIG_H
     echo '#define HAVE_UTIL_H'		>> $CONFIG_H
