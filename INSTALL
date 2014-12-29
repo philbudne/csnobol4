@@ -9,7 +9,9 @@ Un*x/POSIX/Linux systems (including Cygwin)
 Compilation
 -----------
 
-In most cases all you need to type is "make".
+In most cases all you need to type is "make".  The "m4" macro
+processor is required, and on some Linux distributions a package may
+need to be installed for the "time" command.
 
 NOTE!!! CSNOBOL 2.0 has been tested on a limited range of systems.
 Expect that most proprietary Unix systems (Solaris, AIX, HP-UX and
@@ -17,10 +19,10 @@ older systems) will require some work.
 
 Some extensions will only be built if necessary support is found:
 
-ffi depends on libffi.
-tcl depends on libtcl (must be manually configured, see below).
-sqlite depends on libsqlite3 (or "amalgamation" source in module/sqlite3).
-ndbm will fall back to a provided "sdbm" library if no system version
+* ffi depends on libffi.
+* sqlite depends on libsqlite3 (or "amalgamation" source in module/sqlite3).
+* tcl depends on libtcl (must be manually configured, see below).
+* ndbm will fall back to a provided "sdbm" library if no system version
 	of Berkeley DB or GNU DBM can be found.
 
 The top level makefile will run the "configure" script to create
