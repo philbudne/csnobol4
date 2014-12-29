@@ -1,0 +1,41 @@
+$Id$
+=pea
+=sect NAME
+snobol4op \- SNOBOL4 operators
+
+=sect DESCRIPTION
+All SNOBOL4 operators can be redefined with B<OPSYN()>.
+These are the default assignments.
+
+=subsect Binary Operators
+List of Binary Operators, in decreasing order of precedence.
+When operators of equal precedence are adjacent, associativity
+determines order of evaluation.
+
+SPITBOL and BLOCKS extensions control operator definitions
+are orthogonal and can be controlled separately.
+
+=table 1i 3i 4i
+=row Char	Defn.	Assoc.	Enabled
+=row =	assignment	RIGHT	w/ SPITBOL
+=row ?	pattern match	LEFT	w/ SPITBOL
+=row &	definable	LEFT
+=row |	alternation	LEFT
+=row #	normal concat	LEFT	w/ BLOCKS
+=row %	vertical concat	LEFT	w/ BLOCKS
+=row sp	concatenation	LEFT
+=row @	definable	LEFT
+=row -+	subtract, add	LEFT
+=row #	definable	LEFT	w/o BLOCKS
+=row *	multiplication	LEFT
+=row %	definable	LEFT	w/o BLOCKS
+=row ?	definable	LEFT	w/o SPITBOL
+=row /	division	LEFT
+=row ^	exponentiation	RIGHT
+=row $.	match naming	LEFT
+=row ~	definable	RIGHT
+=etable
+=cut
+
+=sect SEE ALSO
+B<snobol4>(1)

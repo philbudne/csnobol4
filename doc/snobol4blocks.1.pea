@@ -4,13 +4,21 @@ $Id$
 snobol4blocks \- SNOBOL4 BLOCKS extension
 
 =sect DESCRIPTION
-XXX talk about MTS manual, -BLOCKS ......
+The BLOCKS extension was developed by Jim Gimpel while at Bell Labs.
+A BLOCK is a data type that allows string concatenation to three dimensions.
 
-=subsect Operators
-When BLOCKS enabled ...
+Enabling the BLOCKS extension with the B<-BLOCKS> control line (see
+B<snobol4ctrl>(1)) or the B<-B> command line option (see
+B<snobol4cmd>(1)) alters the definition and precedence of percent and
+pound (see B<snobol4op>(1)):
 
-=item vertical concatenation: %
-=item normal (to the plane of the paper) concatenation: #
+Whitespace concatenates two BLOCKs in the horizontal dimension,
+the percent sign (B<%>) concatenates two BLOCKs in the vertical dimension,
+and the pound sign (B<#>) concatenates two BLOCKs in the dimension
+``normal'' to the paper (overstrike).
+
+The functions defined below are always present when CSNOBOL4 has been
+built with blocks enabled.
 
 =subsect Functions
 For I<dir> arguments: B<0>=``vertical'', B<1>=``horizonal'', B<2>=``normal''
@@ -87,12 +95,18 @@ Returns a BLOCK whose organization is I<deferred>.
 Accessor which returns or sets the normal plane registration of BLOCK I<b>.
 Values: B<'FRONT'>, B<'REAR'>, B<\'\'> (centered).
 
+=item B<OVY(>I<b1>,I<b2>B<)>
+``Overlay'' -- concatenation in the ``normal'' plane.
+
 =item B<PRINT(>I<b>,[I<i1,....>]B<)>
 Prints block to I/O unit 5.
 Additional unit numbers may be given to ``broadcast'' BLOCK I<b>.
 
 =item B<REP(>I<b>B<)>
 Returns a BLOCK whose organization is I<replicated>.
+
+=item B<SER(>I<b1>,I<b2>B<)>
+``Serial?'' -- concatenation in the vertical plane.
 
 =item B<SLAB(>I<b,dir,offset,length>B<)>
 Returns a physical block which is a cross-sectional cut of I<b>,
@@ -117,11 +131,14 @@ The fill character (defaults to space).
 B<snobol4>(1)
 
 =link http://deepblue.lib.umich.edu/bitstream/handle/2027.42/79574/MTSVol09-SNOBOLInMTS-May1984.pdf
+Contains a manual for the BLOCKS extension.
 
 =link http://home.comcast.net/~urbanjost/LIBRARY/EXE/ASA/html/asa2pdf_doc.html
+A utility to conver ``ASA carriage control'' into B<PDF>, complete with green
+stripes.
 
 I<Blocks a new datatype for SNOBOL4>
 James F. Gimpel,
-Communications of the ACM,
+I<Communications of the ACM>,
 Volume 15 Issue 6, June 1972,
 Pages 438-447
