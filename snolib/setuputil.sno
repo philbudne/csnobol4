@@ -1,6 +1,6 @@
 * $Id$
 * setuputil.sno - help build CSNOBOL4 LOAD()able libraries
-* (Un*x/POSIX only for now)
+* (on POSIX and Win32)
 * Phil Budne November 3, 2013
 * from sqlite3 build.sno, in imitation of Python setup/distutils
 
