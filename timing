@@ -81,7 +81,7 @@ if [ "$UNAME" ]; then
 			echo ''
 			echo /var/run/dmesg.boot
 			# mptable/acpi signatures may include hypervisor info:
-			egrep -i '^(cpu[0-9]*:|MPTable|acpi0:|.*MHz)' /var/run/dmesg.boot
+			egrep -i '^(cpu[0-9]*:|MPTable|acpi0:|.*MHz)|VBOX' /var/run/dmesg.boot
 		fi
 		;;
 	HP-UX)
