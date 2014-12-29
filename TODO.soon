@@ -1,26 +1,30 @@
 $Id$
 
-README / INSTALL
-	note HTML page install directory!!
-	note sqlite3 amalgamation source!!
-		& how to build/install
-
 install.bat:
+	test snopea.bat
 	double check all files installed vs 1.5
-	plus config.sno
-	test snopea command
+		plus config.sno
 
 ================
 
-mingw:	do absolute paths in includes work??
+man pages:
+    finish: snobol4func
+	bold function & type names!
+	italicize argument names
+
+    snobol4op -- add unary operators
+
+    snobol4utf -- from pea comments in utf.sno
+    snobol4host -- from pea comments in host.c???
+
+    snobol4load   -- C functions/macros
+    snobol4dynamic -- pea comments in dynamic.sno
+    snobol4wrapper -- pea comments in wrapper.sno
 
 EXIT()
 	call io_finish()????????
 	implement Win32 version of execute()??
 	output to stderr if "save" attempted???
-
-snobol4func.1.pea:
-	bold function & type names!
 
 snopea.sno:
 	output anchors for sect/subsect
@@ -31,27 +35,7 @@ Windows readline:
 
 MinGW:
 	try stcl?
-
-Modules:
-	setuputil.sno:
-		"test" command?
-		test/debug on win32 with "cl"
-			install snobol4.lib
-			remove restriction note in src & man page
-	tests:
-		logic(!!), sqlite3, stat, dirs, sprintf, fork, ffi
-
-man pages:
-    finish: snobol4func
-
-    snobol4opr -- operators
-
-    snobol4utf -- from pea comments in utf.sno
-    snobol4host -- from pea comments in host.c???
-
-    snobol4dynamic -- pea comments in dynamic.sno
-    snobol4wrapper -- pea comments in wrapper.sno
-    snobol4load   -- C functions/macros
+	do absolute paths in includes work??
 
 snopea.sno:
 	display UC words in small caps?
@@ -62,19 +46,26 @@ snopea.sno:
 	output HTML links for URLs, snobol4 man pages????
 
 accept string for unit?
+	-NEWIO -OLDIO???
 	default to I/O association variable name?!
 
 translate all *roff man pages to snopea!!
 	need subsect directive
 
 modules:
+	setuputil.sno:
+		"test" command?
+			logic(!!), sqlite3, stat, dirs, sprintf, fork, ffi
+
+	ffi:
+		FFI_CALL_VAR(proto, fhandle, args....)
+		port to windows -- need to abstract dlopen calls
+
 	for new modules (sqlite3, stat, dirs, sprintf, fork):
 		PML?? generate PMLPROC, config.m4 lines for Makefile2
+
 	setuputil.sno
 		generate/install module.sno files regardless of PML
-			flush snolib/{ndbm,random,stcl,time}.sno files
-
-	ffi: FFI_CALL_VAR(proto, fhandle, args....)
 
 	ndbm module:
 		direct interface to gdbm???
@@ -95,13 +86,12 @@ readline:
 	use "libedit" natively??
 		FreeBSD man editline
 		include <edit/readline/readline.h>?
+	supply/use private version of libedit????
 	Allow readline() access via INPUT? (magic path, or option)
 		Allow control of history
 		Allow control of filename expansion
 
 Flush all use of grep/INCDIR!!!
-
-Allow strings for units numbers!!!
 
 Supply implicit END (ala SITBOL)
 
@@ -114,8 +104,9 @@ Allow trapping more fatal errors (except storage allocation/internal)?
 	Example: &RTNTYPE: RETPCL <- pointer to nat var?
 
 Benchmark USE_MEM{MOVE,SET}
-	Flush direct use of b{copy,zero}??
-	
+
+Flush direct use of b{copy,zero}??
+
 get rid of old FORTRAN FORMAT strings!!
 	OTSATL: DFLFST, PCHFST
 
@@ -243,10 +234,8 @@ DIFFTIME function??
 Fix utf.sno RUNE() function:
     use logic.sno (or wctomb()?)
 
-Does "universal" mean anything post OSX 10.4??
-	just flush
-
-================ 2.0?
+Mac "universal"
+	update, or just just flush??
 
 only work with boehm GC?
 
@@ -280,10 +269,7 @@ makewrapper:
 	use SNOEXP() for handle functions?
 
 DBM
-	have way to find out which DB library in use??? if live update safe?
-		use flock/fcntl on dbm_dirfno??
-
-	convert SDBM to use bzero/bcopy???
+	have way to find out which DB library in use???
 
 	create/use POSIX_MODE() conversion function.
 
@@ -344,7 +330,6 @@ Rafal:
 	http://www.star.le.ac.uk/~tjg/rc/misc/editline-1.5.tar.gz
 
 Create loadable modules:
-	STCL
 	POSIX
 		MKFIFO, etc?
 
@@ -359,7 +344,6 @@ man page installation:
 
 Oversize integer constants not detected on all systems!
 	use own strtol(l)?
-	document as BUG??
 
 verify correctness of line.ref, include.ref
 
@@ -395,7 +379,6 @@ use const for ordvst qsort function?  use bcmp? memcmp??
 	(Solaris)
 
 HOST() to return CSNOBOL4 version level??
-	release date???
 
 Add FORK() to pml.h (under PML_FORK?)
 
@@ -558,7 +541,6 @@ SPITBOL/SNOBOL4+ compatibility document?
 	'd' exponents
 	data type conversions??
 	no NAME datatype
-	must give full name to CONVERT()
 	table access creates empty entry (see FREEZE/THAW)
 	APPLY() requires arguments
 	no ATAN() function
@@ -570,29 +552,10 @@ SPITBOL/SNOBOL4+ compatibility document?
 
 ================
 
-I/O system document;
-
-	layers;
-		I/O variable
-			INPUT, OUTPUT, or both!
-				both; may use same unit (update)
-				or different units (ie; TERMINAL)!!
-		Unit number
-			multiple INPUT/OUTPUT calls with same unit
-				most often with different recls.
-		stdio stream
-			"-", /dev/std*
-			same I/O buffer(s), file pointer
-		system fd
-			opens via /dev/fd/N
-			dup'ed fd's
-			same file pointer, different stdio buffers
-		file object
-			some fcntl() operations
-
+snobol4io page:
 	properties;		layer;
-		recl		I/O variable
-		binary		stream(/fd) [per-unit for ttys]
+		recl		I/O variable [per-fd for ttys]
+		binary		stream(/fd) [per-fd? for ttys]
 		noecho		unit
 		append		stream/fd
 		update		unit/stream/fd
@@ -639,7 +602,7 @@ announce/notify;
 	SNOBOL4 list
 	SPITBOL list
 
-	SIGPLAN notices
+	SIGPLAN notices??
 
 	comp.lang.icon,comp.lang.misc,comp.compilers
 

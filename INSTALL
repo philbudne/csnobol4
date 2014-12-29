@@ -11,9 +11,17 @@ Compilation
 
 In most cases all you need to type is "make".
 
-CSNOBOL 2.0 has been tested on a limited range of systems.  Expect
-that most proprietary Unix systems (Solaris, AIX, HP-UX and older
-systems) will require some work.
+NOTE!!! CSNOBOL 2.0 has been tested on a limited range of systems.
+Expect that most proprietary Unix systems (Solaris, AIX, HP-UX and
+older systems) will require some work.
+
+Some extensions will only be built if necessary support is found:
+
+ffi depends on libffi.
+tcl depends on libtcl (must be manually configured, see below).
+sqlite depends on libsqlite3 (or "amalgamation" source in module/sqlite3).
+ndbm will fall back to a provided "sdbm" library if no system version
+	of Berkeley DB or GNU DBM can be found.
 
 The top level makefile will run the "configure" script to create
 config.m4 and config.h. config.m4 is used to create Makefile2, which
@@ -121,6 +129,7 @@ with "--add-" can appear);
 		Force use of SDBM (a free portable DBM replacement
 		included in the CSNOBOL4 distribution), even when
 		alternatives are (or appear to be) available.
+
 	--longlong
 		Use the C "long long" data type to represent
 		SNOBOL4 INTEGERs when the default data model uses
@@ -169,8 +178,8 @@ with "--add-" can appear);
 		LP64 model doubles the size of each SIL descriptor,
 		and while it allows larger strings (4GB vs. 16MB) and
 		compound objects (128M descriptors vs.  2M), the
-		increased descriptor and arithmetic type sizes also
-		degrade performance.
+		increased descriptor and arithmetic type sizes may
+		degrade performance on some systems.
 
 		If the underlying C compiler does not implement the
 		LP64 model, this option may have disastrous results.
