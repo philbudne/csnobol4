@@ -5,28 +5,44 @@ For detailed revision history see History file
 Changes since 1.5 release;
 =========================
 	Gimpel's BLOCKS extension (thanks to Mike Alexander for the files!)
+	Split up man page into multiple pages:
+		snobol4		Main page, references all pages
+		snobol4cmd	Command line options
+		snobol4blocks	BLOCKS functions
+		snobol4ctrl	Compiler control lines
+		snobol4error	Error codes
+		snobol4ext	List of extensions to SNOBOL4
+		snobol4func	List of (non-BLOCKS) functions implemented
+		snobol4io	Input/Output details
+		snobol4key	List of keywords implemented
 	Add &COMPNO (from SITBOL/SNOBOL4B)
-	Fix man page installation directory (reported by Mike Greenberg)
-	Fix R(ETURN) TRACE
-	Fix FUNCTION TRACE (reported by Dani Richard)
-	Fix "finite" warnings (reported by Clem Cole)
-	Added framework/utility for loadable extension modules.
-	Made existing facilities into modules:
+	Added framework/utility "setuputil" for building loadable extensions
+	Added new loadable extensions
+	    all with snobol4<thing> man pages:
+		dirs		Directory scanning
+		ffi		Foreign Function Interface
+		fork		Un*x/POSIX fork/waitpid
+		sprintf		Numeric formatting function
+		sqlite3		SQL database
+		stat		File meta info
+	Moved existing facilities into loadable extensions:
+	    all already required use of an -INCLUDE file,
+	    all with snobol4<thing> man pages:
 		logic, ndbm, random, stcl, time
-	Added new modules:
-		dirs (directory scanning)
-		sqlite3 (light weight SQL database)
-		stat (file meta-info retrieval)
-		fork (Un*x/POSIX FORK/WAITPID)
-		ffi (Foreign Function Interface)
+	All "handles" returned by loadable modules are now opaque (EXTERNAL)
+	All documentation in "snopea" format (a small POD for SNOBOL)
+		allows embedded documentation
+		used to generate man/HTML pages
 	Added -N option (disable standard search directories)
 	Added TIMEGM function to time module.
-	All documentation in "snopea" format: used to generate man/HTML pages
-	Split up man page into multiple pages.
-	Startup banner disabled when source files given:
+	Startup banner disabled when source files given on command line:
 		-b always disables (used to toggle)
 		-x always enables (new)
 	sdb debugger: "ignore" command can now clear ignore count
+	Fix man page installation directory (reported by Mike Greenberg)
+	Fix R(ETURN) TRACE
+	Fix FUNCTION TRACE (reported by Dani Richard)
+	Fix "finite", stcl & icc warnings (reported by Clem Cole)
 
 Changes since 1.4.1 release;
 ===========================
