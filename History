@@ -11,6 +11,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	doc/snobol4.1.pea: update for snobol4op(1)
 	doc/Makefile: add snobol4op
 	snolib/setuputil.sno: update support comment
+	snolib/snopea.sno: force paragraph before table
 
 12/27/2014:
 	snolib/setuputil.sno: win: install one file at a time, html files

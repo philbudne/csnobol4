@@ -254,6 +254,7 @@ sp.roff.break
 	out = '.br'					:(sp.top)
 
 sp.roff.table
+	out = '.PP'
 	rest POS(0) snopea.ws =
 	out = DIFFER(rest) '.ta ' rest
 	out = '.nf'					:(sp.top)
@@ -388,6 +389,7 @@ sp.html.break
 	out = '<br>'					:(sp.top)
 
 sp.html.table
+	out = '<p>'
 	out = '<table>'					:(sp.top)
 
 sp.html.row
