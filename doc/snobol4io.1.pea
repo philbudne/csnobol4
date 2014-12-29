@@ -236,6 +236,6 @@ Record lengths.
 
 Unit numbers.
 
-=sect AUTHOR
-Philip L. Budne
+=sect SEE ALSO
+B<snobol4>(1)
 =cut
