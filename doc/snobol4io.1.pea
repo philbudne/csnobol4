@@ -17,7 +17,6 @@ see B<snobol4error>(1).
 
 The following variable/unit/file associations exist by default;
 
-=item
 =table 1i 2i
 =row Variable	Unit	Association
 =row B<INPUT>	5	standard input (input)
@@ -33,7 +32,7 @@ B<OUTPUT()> functions via an optional fourth argument.
 =item filename - (hyphen)
 is interpreted as stdin on B<INPUT()> and stdout on B<OUTPUT()>.
 
-=item subprocess I/O using PIPE and Pseudo-terminals
+=item sub-process I/O using PIPE and Pseudo-terminals
 If the filename begins with single a vertical bar (B<|>),
 the remainder is used
 as a shell command whose stdin (in the case of B<OUTPUT()>) or stdout
@@ -217,8 +216,8 @@ Open file objects have flags which effect all associated fds,
 including input, output and append modes.
 
 =item Operating System named file
-Independant opens of the same named ``regular'' file will have
-different open file objects, and thus have independant access modes
+Independent opens of the same named ``regular'' file will have
+different open file objects, and thus have independent access modes
 and file positions.
 
 =item
