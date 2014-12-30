@@ -55,7 +55,7 @@ B<&amp;LASTLINE>.
 I<SPITBOL Extension, added in CSNOBOL4 version 0.98.2>.
 
 =item B<-LIST>
-Reenables listing from previous B<-UNLIST> or B<-HIDE>.
+Re-enables listing from previous B<-UNLIST> or B<-HIDE>.
 With optional B<LEFT> or B<RIGHT> controls side of page
 for statement numbers.
 I<Standard> (defaults to B<LEFT> since CSNOBOL4 0.90).
@@ -75,7 +75,7 @@ I<SPITBOL extension, added in CSNOBOL4 version 0.98.1>.
 
 =item B<-PLUSOPS>
 With no argument, or zero, disables SPITBOL extensions listed in
-B<snobol4ext>(1).  With a non-zero integer argument, reenables SPITBOL
+B<snobol4ext>(1).  With a non-zero integer argument, re-enables SPITBOL
 extensions.
 I<SNOBOL4+ extension, added in CSNOBOL4 version 0.98>.
 

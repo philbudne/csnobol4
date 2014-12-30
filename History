@@ -10,6 +10,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	v311.sil: [PLB125] use PCOMP in GC
 		died when dynamic region straddled 2G line on OpenBSD
 	modules/sqlite3/sqlite3dbm.sno: fix docs
+	doc/{sdb,snobol4{blocks,cmd,ctrl,func}}.1.pea: ran ispell
 
 12/28/2014:
 	configure: check for TCL_VERSION

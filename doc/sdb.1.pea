@@ -29,7 +29,7 @@ Delete a single breakpoint, or all breakpoints.
 =item B<disable> [ I<BREAKPOINT_NUMBER> ]
 Temporarily disable a breakpoint, or all breakpoints.
 =item B<enable> [ I<BREAKPOINT_NUMBER> ]
-Reenable a breakpoint, or all breakpoints.
+Re-enable a breakpoint, or all breakpoints.
 =item B<finish>
 Resume debugging after current function returns.
 Will display function return type and value, if any.

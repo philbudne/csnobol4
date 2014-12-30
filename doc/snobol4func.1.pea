@@ -1,7 +1,7 @@
 $Id$
 =pea
 =sect NAME
-snobol4func \- SNOBOL4 builtin functions
+snobol4func \- SNOBOL4 built-in functions
 
 =sect DESCRIPTION
 =item ANY(charset)

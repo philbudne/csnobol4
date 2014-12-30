@@ -12,16 +12,16 @@ B<snobol4ctrl>(1)) or the B<-B> command line option (see
 B<snobol4cmd>(1)) alters the definition and precedence of percent and
 pound (see B<snobol4op>(1)):
 
-Whitespace concatenates two BLOCKs in the horizontal dimension,
+White space concatenates two BLOCKs in the horizontal dimension,
 the percent sign (B<%>) concatenates two BLOCKs in the vertical dimension,
 and the pound sign (B<#>) concatenates two BLOCKs in the dimension
-``normal'' to the paper (overstrike).
+``normal'' to the paper (over-strike).
 
 The functions defined below are always present when CSNOBOL4 has been
 built with blocks enabled.
 
 =subsect Functions
-For I<dir> arguments: B<0>=``vertical'', B<1>=``horizonal'', B<2>=``normal''
+For I<dir> arguments: B<0>=``vertical'', B<1>=``horizontal'', B<2>=``normal''
 
 =item B<BCHAR(>I<b>B<)>
 Returns character representation of BLOCK I<b> as an ARRAY of strings,
@@ -134,7 +134,7 @@ B<snobol4>(1)
 Contains a manual for the BLOCKS extension.
 
 =link http://home.comcast.net/~urbanjost/LIBRARY/EXE/ASA/html/asa2pdf_doc.html
-A utility to conver ``ASA carriage control'' into B<PDF>, complete with green
+A utility to convert ``ASA carriage control'' into B<PDF>, complete with green
 stripes.
 
 I<Blocks a new datatype for SNOBOL4>

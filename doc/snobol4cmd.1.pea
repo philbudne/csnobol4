@@ -8,7 +8,7 @@ B<snobol4> [ I<options> .\|.\|. ] [ I<file> .\|.\|. ] [ I<param> .\|.\|. ]
 
 =sect OPTIONS
 =item B<-b>
-Disable startup banner and termination output (only displayed when no
+Disable start up banner and termination output (only displayed when no
 source files are given on the command line).  In earlier releases of
 CSNOBOL4 B<-b> I<toggled> banner output, and banners were enabled by
 default.
