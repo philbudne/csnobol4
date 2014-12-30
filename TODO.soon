@@ -5,6 +5,12 @@ install.bat:
 	double check all files installed vs 1.5
 		plus config.sno
 
+OpenBSD:
+	fails random tests???
+
+Enable -Wimplicit-function-declaration -Werror for "check" script??
+	pass CHECK_CFLAGS env var?
+
 ================
 
 man pages:

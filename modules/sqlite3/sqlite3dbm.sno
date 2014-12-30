@@ -40,9 +40,10 @@
 **        SQL3DBM_ERRMSG(dbhandle)
 **=ecode
 **=sect DESCRIPTION
-**B<sqlite3dbm>(3) implements a DBM compatible interface for
-**B<snobol4>(1) using the B<sqlite> embedded database engine.  It
-**allows concurrent access by multiple programs.  =item B<DBM_OPEN>
+**A DBM compatible interface for B<snobol4>(1) using the B<sqlite3>
+**embedded database engine, and allows concurrent access by multiple
+**processes.
+**=item B<DBM_OPEN>
 **takes a filename (STRING), and ignores any additional arguments, and
 **returns a database handle.
 **=item B<DBM_CLOSE>
