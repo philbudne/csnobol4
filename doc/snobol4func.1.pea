@@ -1,9 +1,15 @@
 $Id$
 =pea
 =sect NAME
-snobol4func \- SNOBOL4 built-in functions
+snobol4func \- SNOBOL4 summary of built-in functions
 
 =sect DESCRIPTION
+
+A I<predicate> is a function that either returns the null string or failure.
+
+An ``accessor'' is a function which returns it's value by NAME
+(and can be used on the right hand side of an assignment).
+
 =item ANY(charset)
 Pattern: returns a pattern that matches one character in the STRING I<charset>.
 I<Standard>.
@@ -21,7 +27,7 @@ Function: returns the name of the I<n>th argument to function I<func>.
 I<Standard>.
 
 =item ARRAY(proto,value)
-Data:
+Data: Creates an ARRAY object.
 I<Standard>.
 
 =item ATAN(REAL)REAL
@@ -33,9 +39,8 @@ I/O: Not implemented!! See B<SET()> and B<SSET()>.
 I<Standard>.
 
 =item BREAK(charset)
-Pattern: returns a pattern which matches an ever larger sequence of
-characters terminated by I<charset>.  After the scan has seen a break
-character, backtracking will fail.
+Pattern: Returns a pattern that matches the longest run of one or more
+characters NOT in string I<charset>.
 I<Standard>.
 
 =item BREAKX(CS)
@@ -78,7 +83,8 @@ I<n> bytes are available after collection.
 I<Standard>.
 
 =item CONVERT(value,type)
-Data:
+Data: Convert I<value> to data type I<type>.  Can convert TABLE to ARRAY
+for iteration over members.
 I<Standard>.
 
 =item COPY(value)
@@ -92,15 +98,17 @@ Math: Return cosine of argument in radians.
 I<SNOBOL4+ Extension?, added in CSNOBOL4 version 0.98.4>.
 
 =item DATA(prototype)
-Data: Declares a B<DATA> struct type: I<prototype> is of the form
-I<name>B<(>I<member>,...B<)>.
+Data: Declares a B<DATA> struct type. I<prototype> is of the form
+I<name>B<(>I<field>,...B<)>.  I<name> is declared as a ``constructor''
+function, and each I<field> is declared as an ``accessor'' function
+for the type.  Any number of types can use the same I<field> names
+(regardless of position).
 I<Standard>.
 
 =item DATATYPE(value)
 Data: Returns a string with the data type of I<value>, one of:
 B<ARRAY>, B<BLOCK>, B<CODE>, B<EXPRESSION>, B<EXTERNAL>, B<INTEGER>,
-B<NAME>, B<PATTERN>, B<REAL>, B<STRING>, B<TABLE>, or a B<DATA()> type
-name.
+B<NAME>, B<PATTERN>, B<REAL>, B<STRING>, B<TABLE>, or a B<DATA()> type name.
 I<Standard>.
 
 =item DATE()
@@ -127,8 +135,8 @@ I/O:  Detach any I/O associations for named I<variable>.
 I<Standard>.
 
 =item DIFFER(val1,val2)
-Predicate:  Succeeds if the supplied values refer to the same object,
-string, or numeric value.
+Predicate:  Succeeds if the supplied values refer to different objects,
+strings, or numeric values.
 I<Standard>.
 
 =item DUMP(n)
@@ -147,9 +155,10 @@ I<Standard>.
 Predicate: Succeeds if I<i1> is arithmetically equal to I<i2>.
 I<Standard>.
 
-=item EVAL(string)
-Interpreter:  Evaluates I<string> as SNOBOL4 expression and returns the
-result; returns failure on syntax error or the expression fails.
+=item EVAL(v)
+Interpreter: Evaluates I<v> (an unevaluated expression,
+B<INTEGER>, B<REAL>, or B<STRING>), and returns the result;
+returns failure on syntax error or the expression fails.
 I<Standard>.
 
 =item EXIT(arg)
@@ -248,27 +257,28 @@ named I<string>.
 I<SPITBOL Extension, added in CSNOBOL4 version 0.98.4>.
 
 =item IDENT(V1,V2)
-Predicate:
+Predicate: Succeeds if the supplied values refer to the same object,
+string, or numeric value.
 I<Standard>.
 
-=item INPUT(VAR,UNIT,OPT,NAME)
-I/O:
+=item INPUT(variable,unit,opt,name)
+I/O:  Associate I<variable> for input, see B<snobol4io>(1).
 I<Standard>.*
 
-=item INTEGER(V)
-Predicate:
+=item INTEGER(value)
+Predicate:  Succeed if I<value> is an INTEGER.
 I<Standard>.
 
 =item IO_FINDUNIT()INTEGER
-I/O:
-Returns an unused I/O unit number for
+I/O: Returns an unused I/O unit number for
 use with the B<INPUT()> or B<OUTPUT()> functions.  B<IO_FINDUNIT()> is
 meant for use in subroutines which can be reused.  B<IO_FINDUNIT()>
 will never return a unit number below 20.
 I<CSNOBOL4 Extension, added in version 0.99.4>.
 
 =item ITEM(A,I1,...,IN)
-Data:
+Data:  Reference an element of an ARRAY or TABLE which is the result
+of an expression (ie; B<$>I<variable>).
 I<Standard>.
 
 =item LABEL(V)
@@ -314,12 +324,12 @@ I<SPITBOL Extension, added in CSNOBOL4 version 0.98.2>.
 Predicate: tests if first argument is lexically different from second argument.
 I<SPITBOL Extension, added in CSNOBOL4 version 0.98.2>.
 
-=item LN(REAL)REAL
+=item LN(value)
 Math: an alias for B<LOG()>,
 I<SPITBOL Extension, added in CSNOBOL4 version 1.4>.
 
-=item LOAD(PROTOTYPE,FILE)
-Function:
+=item LOAD(prototype,file)
+Function:  Load an external function from dynamically loaded library i<file>.
 I<Standard>.
 
 =item LOCAL(func,n)
@@ -327,7 +337,7 @@ Interpreter: Returns a STRING with the I<n>th argument to function named
 I<func>.
 I<Standard>.
 
-=item LOG(REAL)REAL
+=item LOG(value)
 Math: returns the natural logarithm of its argument.
 I<Extension from SNOBOL4+, added in CSNOBOL4 version 0.98.4>.
 
@@ -339,42 +349,48 @@ missing, or is the null string, spaces will be used for padding.  The
 subject will be returned unmodified if already long enough.
 I<SPITBOL 360 Extension, added in CSNOBOL4 version 0.98>.
 
-=item LT(I1,I2)
+=item LT(i1,i2)
 Predicate: Succeeds if I<i1> is arithmetically less than I<i2>.
 I<Standard>.
 
-=item NE(I1,I2)
+=item NE(i1,i2)
 Predicate: Succeeds if I<i1> is arithmetically not equal to I<i2>.
 I<Standard>.
 
-=item NOTANY(CS)
-Pattern:
+=item NOTANY(cs)
+Pattern:  Returns a pattern which matches on character NOT present in
+STRING I<cs>.
 I<Standard>.
 
-=item OPSYN(F1,F2,N)
-Interpreter:
+=item OPSYN(new,old,n)
+Interpreter: If I<n> omitted (or zero), new and old are treated as function
+names, and new becomes a synonym for old:  A call to a synonym MUST have the
+correct number of arguments; trailing arguments can NOT be omitted.
+If I<n> is 1, new and old are treated as unary operators, or function names.
+If I<n> is 2, new and old are treated as binary operators, or function names.
 I<Standard>.
 
-=item ORD(STRING)INTEGER
-String: returns the ordinal value (zero to 255) of the
+=item ORD(string)
+String: returns the INTEGER ordinal value (zero to 255) of the
 first character in its string argument (the inverse of B<CHAR()>).
 I<CSNOBOL4 Extension, added in version 0.99.44>.
 SNOBOL4+ has an B<ASC()> function.
 
-=item OUTPUT(VAR,UNIT,OPT,NAME)
-I/O:
+=item OUTPUT(variable,unit,options,name)
+I/O:  Associate I<variable> for output, see B<snobol4io>(1).
 I<Standard>*.
 
-=item POS(N)
-Pattern:
+=item POS(n)
+Pattern:  Returns a pattern which succeeds if the pattern matching
+cursor is at (non-negative INTEGER) position I<n>, or fails.
 I<Standard>.
 
-=item PROTOTYPE(A)
-Data:
+=item PROTOTYPE(a)
+Data:  Returns the prototype of ARRAY I<a>.
 I<Standard>.
 
-=item REMDR(N,M)
-Math:
+=item REMDR(n,m)
+Math:  Returns the remainder from dividing INTEGER I<n> with INTEGER I<m>.
 I<Standard>.
 
 =item RENAME(string1,string2)
@@ -383,8 +399,9 @@ to rename the file named by I<string2> to the name I<string1>.
 I<Extension from SITBOL: added in CSNOBOL4 version 0.98.5>.
 Unlike the B<SITBOL> version, if the target file exists, it will be removed.
 
-=item REPLACE(str,CS1,CS2)
-String:
+=item REPLACE(str,cs1,cs2)
+String: Returns a string with each character I<str> that appears in
+I<cs1> replaced by the corresponding character in <cs2>.
 I<Standard>.
 
 =item REVERSE(str)
@@ -392,28 +409,31 @@ String: returns its subject string in reverse order.
 I<SPITBOL Extension, added in CSNOBOL4 version 0.98.2>.
 
 =item REWIND(unit)
-I/O:
-I<Standard>.*
+I/O:  Reset input pointer of file associated with I<unit> to start of file.
+I<Standard>.
 
 =item RPAD(str,n,char)
-String:
-Takes the first argument (subject) string, and right pads it out to the
-length specified in the second argument, using the first character of
-the optional third argument.  If the third argument is missing, or is
-the null string, spaces will be used for padding.  The subject will be
-returned unmodified if already long enough.
+String: Takes the first argument (subject) string, and right pads it
+out to the length specified in the second argument, using the first
+character of the optional third argument.  If the third argument is
+missing, or is the null string, spaces will be used for padding.  The
+subject will be returned unmodified if already long enough.
 I<SPITBOL 360 Extension, added in CSNOBOL4 version 0.98>.
 
 =item RPOS(N)
-Pattern:
+Pattern: Returns a pattern which succeeds if the pattern
+matching cursor is at (non-negative INTEGER) position I<n>, counting
+from the end of the subject string, or fails.
 I<Standard>.
 
 =item RSORT(T,C)
 Data: see B<SORT()>.
 I<Macro SPITBOL extension, added in CSNOBOL4 version 0.98>.
 
-=item RTAB(N)
-Pattern:
+=item RTAB(N) Pattern: Returns a PATTERN which matches all characters
+up to (non-negative INTEGER) position I<n>, counting from the end of
+the subject string; matching fails if cursor is past position <n>.
+B<REM> is a synonym for B<RTAB(0)>.
 I<Standard>.
 
 =item SERV_LISTEN(STRING,STRING,STRING)INTEGER
@@ -519,8 +539,9 @@ the lexicographically first word and I<WORDS&lt;1,2&gt;> contains the
 number of occurrences of that word.
 I<Macro SPITBOL extension?, added in CSNOBOL4 version 0.98>.
 
-=item SPAN(CS)
-Pattern:
+=item SPAN(charset)
+Pattern: Returns a pattern that matches the longest run of one or more
+characters in string I<charset>.
 I<Standard>.
 
 =item SQRT(REAL)REAL
@@ -540,8 +561,8 @@ can be represented in a SNOBOL4 B<INTEGER>.  Support for ``Large Files''
 is enabled when available, but not all file systems support large files.
 I<CSNOBOL4 Extension, added in version 0.99.44>.
 
-=item STOPTR(V,R)
-Interpreter:
+=item STOPTR(name,type)
+Interpreter:  Disable I<type> tracing for I<name>.
 I<Standard>.
 
 =item SUBSTR(S,P,L)
@@ -552,47 +573,55 @@ If the third argument is missing or zero, the remainder of the string
 is returned.
 I<SPITBOL 360 extension, added in CSNOBOL4 version 0.98.2>.
 
-=item TAB(N)
-Pattern:
+=item TAB(n)
+Pattern:  Returns a PATTERN which matches all characters up
+to (non-negative INTEGER) position I<n>;  matching fails if cursor is past
+position <n>.
 I<Standard>.
 
-=item TABLE(N,M)
-Data:
+=item TABLE(n,m)
+Data:  Return a B<TABLE> object, with (optional) initial size I<n>
+and additional extent size I<m>.
 I<Standard>.
 
-=item TAN(REAL)REAL
+=item TAN(arg)
 Math: Return tangent of argument in radians.
 I<SNOBOL4+ extension?, added in CSNOBOL4 version 0.98.4>.
 
-=item THAW(TABLE)
+=item THAW(table)
 Data: restores normal entry creation behavior after B<FREEZE()>.
 I<SNOBOL4+ extension, added in CSNOBOL4 version 0.98.2>.
 
 =item TIME()
-Interpreter: return CPU time in milliseconds.
+Interpreter: Returns program execution time in milliseconds.
 I<Standard (returning INTEGER)>.
 Returns REAL since CSNOBOL4 0.99.44.
 
-=item TRACE(V,R,T,F)
-Intrepreter:
+=item TRACE(name,type,id,func)
+Intrepreter: Associates I<name> for I<type> (VALUE, CALL, RETURN,
+FUNCTION, LABEL, KEYWORD) tracing;  I<id> is included in trace output;
+I<func> is optional name of function to call.  See B<snobol4key>(1) for
+B<&amp;TRACE> and B<&amp;FTRACE> keywords.
+I<Standard>.
+SPITBOL extension of first letter of trace type accepted since CSNOBOL4 2.0.
+
+=item TRIM(str)
+String: Returns I<str> with trailing blanks and tabs removed.
 I<Standard>.
 
-=item TRIM(S)
-String:
+=item UNLOAD(name)
+Function: Removes the function definition for function I<name>.
 I<Standard>.
 
-=item UNLOAD(S)
-Function:
-I<Standard>.
-
-=item VALUE(S)
-Interpreter:
+=item VALUE(name)
+Interpreter:  An ``accessor'' function, defined for B<STRING> and B<NAME>,
+so that user data types can declare a B<VALUE> field, and allow uniform
+treatment of variables and user types.
 I<Standard>.
 
 =item VDIFFER(V1,V2)
-Misc:
-If the two arguments, B<DIFFER()>, the first argument's value is returned.
-This is intended to be used in contexts where B<DIFFER(X) X>
+Misc: If the two arguments, B<DIFFER()>, the first argument's value is
+returned.  This is intended to be used in contexts where B<DIFFER(X) X>
 would otherwise have been used.
 I<Extension from Steve Duff's Macro SPITBOL, added in CSNOBOL4 version 0.99.44>.
 
@@ -600,9 +629,12 @@ I<Extension from Steve Duff's Macro SPITBOL, added in CSNOBOL4 version 0.99.44>.
 A predicate is a function which returns either a null value or failure.
 
 =sect BUGS
-Most standard functions are undocumented!!
-See
+Descriptions are too brief!!
+See 
 =link http://www.snobol4.org/docs/books.html#green
+for I<Standard> function definitions.
+ 
+Need to research origins of ``SPITBOL'' extensions!
 
 =sect SEE ALSO
 B<snobol4>(1),
