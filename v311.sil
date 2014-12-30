@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.140  2014/12/05 18:59:40  phil
+* fix commenting
+*
 * Revision 1.139  2014/12/05 18:58:11  phil
 * v311.sil: Fix compilation without BLOCKS: commented out unused R_R_N
 * (nested .IFs don't work)
@@ -1179,7 +1182,7 @@ BLOCK1 MOVD    BLOCL,FRSGPT	   Position pointer to title
        INCRA   FRSGPT,DESCR	   Leave room for title
        SUM     FRSGPT,FRSGPT,ARG1CL
 *				   Move position pointer past end
-       ACOMP   TLSGP1,FRSGPT,,,BLOGC
+       PCOMP   TLSGP1,FRSGPT,,,BLOGC				[PLB125]
 *				   Check for end of region
        ZERBLK  BLOCL,ARG1CL	   Clear block
        PUTAC   BLOCL,0,BLOCL	   Set up self-pointer in title
@@ -1223,7 +1226,7 @@ LOCA7  MOVD    LCPTR,FRSGPT	   Point to position in storage
        INCRA   FRSGPT,DESCR	   Leave space for title
        SUM     FRSGPT,FRSGPT,BKLTCL
 *				   Skip required space
-       ACOMP   TLSGP1,FRSGPT,,,LOCA4
+       PCOMP   TLSGP1,FRSGPT,,,LOCA4				[PLB125]
 *				   Check for end of region
        PUTDC   LCPTR,0,ZEROCL	   Clear title
        PUTAC   LCPTR,0,LCPTR	   Point title to self

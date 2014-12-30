@@ -7,6 +7,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	configure: fix bindresvport_sa detection on OpenBSD 5.6
 	timing: grep for VBOX, bios0: in dmesg.boot
 	doc/load.txt: add lret_t
+	v311.sil: [PLB125] use PCOMP in GC
+		died when dynamic region straddled 2G line on OpenBSD
 
 12/28/2014:
 	configure: check for TCL_VERSION
