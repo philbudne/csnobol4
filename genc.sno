@@ -576,6 +576,12 @@ MKPROC	DIFFER(ISPROC<PROC>)				:S(RETURN)
 	ISPROC<PROC> = 1
 	FREEZE(ISPROC)					:(RETURN)
 EMKPROC
+
+* PLB 12/30/2014: detect inc/dec by one!!
+	DEFINE("INCDEC(VAR,OP,VAL)")			:(EINCDEC)
+INCDEC	INCDEC = IDENT(VAL,'1') VAR OP OP		:S(RETURN)
+	INCDEC = VAR ' ' OP '= ' VAL			:(RETURN)
+EINCDEC
 *
 ****************************************************************
 * SUPPORT FOR BLOCKS
@@ -998,12 +1004,12 @@ XAPDSP	OUTPUT = IND 'APDSP(' ARGV<1> ',' ARGV<2> ');'		:(OPDONE)
 
 ****************
 *	SIL FSHRTN (DELQC) MACRO 10/20/93
-XFSHRTN	OUTPUT = IND S_L(ARGV<1>) ' -= ' ARGV<2> ';'
-	OUTPUT = IND S_O(ARGV<1>) ' += ' ARGV<2> ';'		:(OPDONE)
+XFSHRTN	OUTPUT = IND INCDEC(S_L(ARGV<1>), '-', ARGV<2>) ';'
+	OUTPUT = IND INCDEC(S_O(ARGV<1>), '+', ARGV<2>) ';'	:(OPDONE)
 
 ****************
 *	SIL SHORTN (DELLC) MACRO 10/24/93
-XSHORTN	OUTPUT = IND S_L(ARGV<1>) ' -= ' ARGV<2> ';'		:(OPDONE)
+XSHORTN	OUTPUT = IND INCDEC(S_L(ARGV<1>), '-', ARGV<2>) ';'	:(OPDONE)
 
 ****************
 *	SIL LOCSP (COMQNV) MACRO 10/18/93
@@ -1119,7 +1125,7 @@ XADDLG	OUTPUT = IND S_L(ARGV<1>) ' += ' D_A(ARGV<2>) ';' :(OPDONE)
 
 ****************
 *	SIL INCRA (INCVC) MACRO
-XINCRA	OUTPUT = IND D_A(ARGV<1>) ' += ' ARGV<2> ';'	:(OPDONE)
+XINCRA	OUTPUT = IND INCDEC(D_A(ARGV<1>), '+', ARGV<2>) ';' :(OPDONE)
 
 ****************
 *	SIL ADJUST (RELPTR) MACRO 11/1/93
@@ -1128,11 +1134,11 @@ XADJUST	OUTPUT = IND D_A(ARGV<1>) ' = '
 
 ****************
 *	SIL INCRV (INCTC) MACRO
-XINCRV	OUTPUT = IND D_V(ARGV<1>) ' += ' ARGV<2> ';'	:(OPDONE)
+XINCRV	OUTPUT = IND INCDEC(D_V(ARGV<1>), '+', ARGV<2>) ';' :(OPDONE)
 
 ****************
 *	SIL DECRA (DECVC) MACRO
-XDECRA	OUTPUT = IND D_A(ARGV<1>) ' -= ' ARGV<2> ';'	:(OPDONE)
+XDECRA	OUTPUT = IND INCDEC(D_A(ARGV<1>), '-', ARGV<2>) ';' :(OPDONE)
 
 ****************
 *	SIL MNSINT (NEGV) MACRO

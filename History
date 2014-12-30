@@ -2,13 +2,16 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/30/2014:
+	genc.sno: add INCDEC to generate ++/--
+
 12/29/2014:
 	README: update
 	configure: fix bindresvport_sa detection on OpenBSD 5.6
 	timing: grep for VBOX, bios0: in dmesg.boot
 	doc/load.txt: add lret_t
-	v311.sil: [PLB125] use PCOMP in GC
-		died when dynamic region straddled 2G line on OpenBSD
+	v311.sil: [PLB125] two more PCOMPs
+		died when dynamic region straddled 2G line on OpenBSD!!
 	modules/sqlite3/sqlite3dbm.sno: fix docs
 	doc/{sdb,snobol4{blocks,cmd,ctrl,func}}.1.pea: ran ispell
 
