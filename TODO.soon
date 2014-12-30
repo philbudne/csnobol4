@@ -5,10 +5,17 @@ install.bat:
 	double check all files installed vs 1.5
 		plus config.sno
 
+README -- make more conversational?
+
+ispell INSTALL, README
+
 ================
 
-2.1: Enable -Wimplicit-function-declaration -Werror for "check" script??
-	pass CHECK_CFLAGS env var?
+2.1:
+	Enable -Wimplicit-function-declaration -Werror for "check" script??
+		pass CFLAGS env var?
+	ANSIfy: flush str.h
+
 
 setuputil.sno:
 	"test" command!!!!
@@ -17,7 +24,7 @@ setuputil.sno:
 
 man pages:
     snobol4func
-	bold (CW?) function & type names!
+	bold function & type names!
 	italicize argument names
 
     snobol4syn:
@@ -52,6 +59,8 @@ MinGW:
 	do absolute paths in includes work??
 
 snopea.sno:
+	rewrite to use functions!!!!!
+	=hdr for table header row?
 	display UC words in small caps?
 	allow nested attributes?!
 	L<URL|text>
@@ -59,6 +68,7 @@ snopea.sno:
 	S<superscript>
 	s<subscript>???
 	automatic links for URLs??
+	Descriptive attribute for example (bold in man, TT in HTML)????
 
 accept string for unit?
 	-NEWIO -OLDIO???
@@ -96,7 +106,7 @@ readline:
 		Allow control of history
 		Allow control of filename expansion
 
-Flush all use of grep/INCDIR!!!
+configure: Flush all use of grep/INCDIR!!!
 
 Supply implicit END (ala SITBOL)
 
@@ -182,10 +192,7 @@ make "FTRACE" TRACE()able?
 
 	see FENTR2, FNEXT2
 
-SETEXIT() w/ "continue", "scontinue", "return", "freturn" as argument don't work
-	see what SPITBOL does!
-
-see if clearing V&F is necessary in all cases??
+see if clearing V&F is necessary in all cases?? try just F????
 	looked at PDP-10
 	look at 360, VAX macros, B6700 source
 
@@ -199,7 +206,6 @@ String/number conversion
 	Additional argument to CONVERT() like SITBOL
 	Add STRTOINT
 	Have SPRINTF check for reasonable format??
-		Add sprintf tests
 
 have COMPILE_C_DYNAMIC() return object file name??
 
@@ -213,20 +219,14 @@ handle leading or trailing PATH_SEP on SNOPATH and PRELOAD_PATH
 
 Test/distribute modified orange book library [gimpel]
 
-Make book scans avaialble
-
 Package up SNOSTORM??  W/ MTS document???
 
 snobol4 machine generate win32 .mak files??
 	create a config.m4 file
 	post-process output
 
-mingw.mak:
-	have configure copy config.{m4,h} from config/win32?
-
-load.c:
-	unix98: allow access to "self" (NULL ptr to dlopen)?
-	convert lib/*/load.c to os_load() API
+convert lib/{hpux,vms,next}/load.c to os_load() API
+	simulate dlopen(), then use unix98 load.c?
 
 Make use of tdb (from samba project: gdbm API w/ multiple writers)?
 
@@ -234,7 +234,7 @@ Make use of tdb (from samba project: gdbm API w/ multiple writers)?
 
     Direct GDBM support (allows simultaneous access)??
 
-DIFFTIME function??
+Add DIFFTIME function??
 
 Fix utf.sno RUNE() function:
     use logic.sno (or wctomb()?)
@@ -247,9 +247,6 @@ only work with boehm GC?
 allow LOADed functions to "intern" strings...
 
 hash TABLEs
-
-ANSIfy
-	flush str.h
 
 Implement SPITBOL EXIT [+-][34] freeze functionality
 
@@ -321,7 +318,6 @@ DYNAMIC LOADING!!
 	create libtool/load.c??
 		use -lltdl
 
-	simulate dlopen() on HP-UX and NextStep, then use unix98 load.c?
 	keep usecount in next/load.c?  Apple dlopen() simulation does!
 		TESTED 4/15/2003 -- not needed??
 		http://cvs.opendarwin.org//cgi-bin/cvsweb.cgi/proj/dlcompat/
@@ -340,9 +336,6 @@ Create loadable modules:
 
 Test COM
 	InternetExploder??
-
-Test w/ non-libc gdbm??
-	debian include?
 
 man page installation:
 	install preformatted, compressed where it's the norm?!
