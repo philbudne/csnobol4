@@ -5,20 +5,19 @@ For detailed revision history see History file
 Changes since 1.5 release;
 =========================
 	Gimpel's BLOCKS extension (thanks to Mike Alexander for the files!)
-	Split up man page into multiple pages:
+	Split up man page:
 		snobol4		Main page, references all pages
 		snobol4cmd	Command line options
 		snobol4blocks	BLOCKS functions
 		snobol4ctrl	Compiler control lines
 		snobol4error	Error codes
 		snobol4ext	List of extensions to SNOBOL4
-		snobol4func	List of (non-BLOCKS) functions implemented
+		snobol4func	List of all (non-BLOCKS) functions implemented
 		snobol4io	Input/Output details
 		snobol4key	List of keywords implemented
 	Add &COMPNO (from SITBOL/SNOBOL4B)
 	Added framework/utility "setuputil" for building loadable extensions
-	Added new loadable extensions
-	    all with snobol4<thing> man pages:
+	Added new loadable extensions (all with snobol4<thing> man pages):
 		dirs		Directory scanning
 		ffi		Foreign Function Interface
 		fork		Un*x/POSIX fork/waitpid
@@ -28,21 +27,21 @@ Changes since 1.5 release;
 	Moved existing facilities into loadable extensions:
 	    all already required use of an -INCLUDE file,
 	    all with snobol4<thing> man pages:
-		logic, ndbm, random, stcl, time
+		logic, ndbm, random, stcl, time, com
 	All "handles" returned by loadable modules are now opaque (EXTERNAL)
 	All documentation in "snopea" format (a small POD for SNOBOL)
 		allows embedded documentation
-		used to generate man/HTML pages
+		used to generate both man and HTML pages
 	Added -N option (disable standard search directories)
 	Added TIMEGM function to time module.
 	Startup banner disabled when source files given on command line:
 		-b always disables (used to toggle)
 		-x always enables (new)
 	sdb debugger: "ignore" command can now clear ignore count
-	Fix man page installation directory (reported by Mike Greenberg)
-	Fix R(ETURN) TRACE
-	Fix FUNCTION TRACE (reported by Dani Richard)
-	Fix "finite", stcl & icc warnings (reported by Clem Cole)
+	Fixed man page installation directory (reported by Mike Greenberg)
+	Fixed FUNCTION TRACE (reported by Dani Richard)
+	Fixed "finite", stcl & icc warnings (reported by Clem Cole)
+	Fixed R(ETURN) TRACE
 
 Changes since 1.4.1 release;
 ===========================
