@@ -5,18 +5,26 @@ install.bat:
 	double check all files installed vs 1.5
 		plus config.sno
 
-OpenBSD:
-	fails random tests???
-
-Enable -Wimplicit-function-declaration -Werror for "check" script??
-	pass CHECK_CFLAGS env var?
-
 ================
 
+2.1: Enable -Wimplicit-function-declaration -Werror for "check" script??
+	pass CHECK_CFLAGS env var?
+
+setuputil.sno:
+	"test" command!!!!
+		logic(!!), sqlite3, stat, dirs, sprintf, fork, ffi
+	run regular regression tests BEFORE generating modules!!!!
+
 man pages:
-    finish: snobol4func
-	bold function & type names!
+    snobol4func
+	bold (CW?) function & type names!
 	italicize argument names
+
+    snobol4syn:
+	statement syntax
+	goto
+	expressions:
+		(expr, ....)
 
     snobol4op -- add unary operators
 
@@ -34,7 +42,7 @@ EXIT()
 
 snopea.sno:
 	output anchors for sect/subsect
-	style sheet for HTML!!!
+	use style sheet for HTML!!!
 
 Windows readline:
 	http://sourceforge.net/projects/mingweditline/?source=directory
@@ -45,11 +53,12 @@ MinGW:
 
 snopea.sno:
 	display UC words in small caps?
+	allow nested attributes?!
 	L<URL|text>
 	E<entity>??
 	S<superscript>
 	s<subscript>???
-	output HTML links for URLs, snobol4 man pages????
+	automatic links for URLs??
 
 accept string for unit?
 	-NEWIO -OLDIO???
@@ -59,19 +68,9 @@ translate all *roff man pages to snopea!!
 	need subsect directive
 
 modules:
-	setuputil.sno:
-		"test" command?
-			logic(!!), sqlite3, stat, dirs, sprintf, fork, ffi
-
 	ffi:
 		FFI_CALL_VAR(proto, fhandle, args....)
 		port to windows -- need to abstract dlopen calls
-
-	for new modules (sqlite3, stat, dirs, sprintf, fork):
-		PML?? generate PMLPROC, config.m4 lines for Makefile2
-
-	setuputil.sno
-		generate/install module.sno files regardless of PML
 
 	ndbm module:
 		direct interface to gdbm???
