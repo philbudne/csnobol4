@@ -60,7 +60,7 @@ for many examples);
     #include "load.h"
     #include "equ.h"
 
-    int
+    lret_t
     NAME( LA_ALIST ) LA_DCL
     {
 	/* function body */
