@@ -6,6 +6,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	genc.sno: add INCDEC to generate ++/--
 	doc/snobol4func.1.pea: fill in remaining empty spots.
 	README, CHANGES: update
+	configure: update to 2.0-rc3
 
 12/29/2014:
 	README: update
