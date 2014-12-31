@@ -318,7 +318,7 @@ SNOLIB_DOC="$SNOLIB"
 # XXX use $PREFIX/include/snobol4 ???
 INCLUDE_DIR="$SNOLIB/include"
 
-DOC_DIR="$PREFIX/share/doc/snobol4"
+DOC_DIR="$PREFIX/share/doc/snobol4-$VERSION"
 
 echo 'BINDIR=$(DESTDIR)'"$BINDIR"		>> $CONFIG_M4
 echo 'MANDIR=$(DESTDIR)'"$MANDIR"		>> $CONFIG_M4
