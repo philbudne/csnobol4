@@ -7,7 +7,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	doc/snobol4func.1.pea: fontify!
 	snolib/snopea.sno,doc/snopea.7.pea: add L<>
 	doc/snobol4[blocks].1.pea: use L<>
-	Makefile2.m4: remove modules/setuputil.sno (spotted by Jonathan Kaye)
+	Makefile2.m4: remove modules/setuputil.sno
+		(spotted by Jonathan Kaye, Harald Arnesen)
 
 *** 2.0-rc3 (tag REL_2_0_RC3)
 
