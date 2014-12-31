@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/31/2014:
+	README: update
+	INSTALL: ran ispell
+
 12/30/2014:
 	doc/snobol4.1.pea: add snobol4{readline,sqlite3dbm}(3) refs
 	doc/snobol4func.1.pea: fontify!
