@@ -7,6 +7,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	INSTALL: ran ispell
 	configure: append -VERSION to DOC_DIR
 	doc/snobol4blocks.1.pea: fix, add link
+	lib/init.c: fix missing newline (thanks to Phillip Thomas)
 
 12/30/2014:
 	doc/snobol4.1.pea: add snobol4{readline,sqlite3dbm}(3) refs

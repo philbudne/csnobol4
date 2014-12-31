@@ -150,7 +150,7 @@ usage( jname, justversion )
 #ifdef BLOCKS
     p('B',"toggle SNOBOL4B operators (-[NO]BLOCKS)");
 #endif
-    fprintf(stderr, "-I DIR\tadd directory to search path");
+    fprintf(stderr, "-I DIR\tadd directory to search path\n");
     fprintf(stderr, "-L SOURCE\n");
     fprintf(stderr, "\tload source file before user program\n");
     p('M',"process multiple files for program code");
