@@ -429,7 +429,7 @@ I<Macro SPITBOL extension, added in CSNOBOL4 version 0.98>.
 =item B<RTAB(>I<n>B<)>
 Pattern: Returns a PATTERN which matches all characters
 up to (non-negative INTEGER) position I<n>, counting from the end of
-the subject string; matching fails if cursor is past position <n>.
+the subject string; matching fails if cursor is past position I<n>.
 B<REM> is a synonym for B<RTAB(0)>.
 I<Standard>.
 
@@ -572,7 +572,7 @@ I<SPITBOL 360 extension, added in CSNOBOL4 version 0.98.2>.
 =item B<TAB(>I<n>B<)>
 Pattern:  Returns a PATTERN which matches all characters up
 to (non-negative INTEGER) position I<n>;  matching fails if cursor is past
-position <n>.
+position I<n>.
 I<Standard>.
 
 =item B<TABLE(>I<n,m>B<)>
