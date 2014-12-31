@@ -5,12 +5,6 @@ install.bat:
 	double check all files installed vs 1.5
 		plus config.sno
 
-README -- make more conversational?
-
-man page for "com"!!
-
-ispell INSTALL, README
-
 ================
 
 2.1:
@@ -39,6 +33,7 @@ man pages:
 
     snobol4utf -- from pea comments in utf.sno
     snobol4host -- from pea comments in host.c???
+    snobol4com
 
     snobol4load   -- C functions/macros
     snobol4dynamic -- pea comments in dynamic.sno
