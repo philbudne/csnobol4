@@ -17,7 +17,7 @@ characters.
 
 New paragraphs are started with a blank line.
 
-=sect FONTS
+=sect FORMATTING
 =item B<B&lt;>I<text>B<&gt;>
 I<text> is formatted in B<bold>.
 
@@ -26,6 +26,9 @@ I<text> is formatted in I<italic>.
 
 =item B<C&lt;>I<text>B<&gt;>
 I<text> is formatted in C<constant width>.
+
+=item B<L&lt;>I<text>B<&gt;>
+I<text> is formatted as an HTML link.
 
 =sect DIRECTIVES
 =item B<=break>
@@ -55,9 +58,6 @@ Controls the indentation of B<=item> paragraphs.
 
 =item B<=nitem> I<text>
 A numbered list item with tag I<label>.
-
-=item B<=p>
-Start new paragraph.
 
 =item B<=row> I<columns>
 A table row. I<columns> is a tab separated list.

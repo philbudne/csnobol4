@@ -179,42 +179,37 @@ Using B<SNOBOL_PRELOAD_PATH> will make your code less portable.
 =row B<snopea>(7)	A little ``Plain Old Documentation'' format for SNOBOL4
 =etable
 
-=item All things SNOBOL4 related.
-=link http://www.snobol4.org
+=item L<http://www.snobol4.org>
+All things SNOBOL4 related.
 
-=item Catspaw: commercial SPITBOL implementations, Free SNOBOL4+ for DOS.
-=link http://www.snobol4.com
+=item L<http://www.snobol4.com>
+Catspaw: commercial SPITBOL implementations, Free SNOBOL4+ for DOS.
 
-=item SNOBOL4 language tutorial (from Catspaw Vanilla SNOBOL4)
-=link http://www.snobol4.org/doc/burks/tutorial/contents.htm
+=item L<http://www.snobol4.org/doc/burks/tutorial/contents.htm>
+SNOBOL4 language tutorial (from Catspaw Vanilla SNOBOL4)
 
 =anchor Griswold1971
 =item [Griswold1971]
 R. E. Griswold, J. F. Poage, and I. P. Polonsky,
 I<The SNOBOL4 Programming Language>, 2nd ed., Prentice-Hall Inc., 1971.
-=item
-I<(aka the green book)>
-=item
-=link http://www.snobol4.org/docs/books.html#green
+I<(aka the ``green book'')>
+L<http://www.snobol4.org/docs/books.html#green>
 
 =anchor Griswold1972
 =item [Griswold1972]
 R. E. Griswold,
 I<The Macro Implementation of SNOBOL4>, W. H. Freeman and Co., 1972.
-=item
 Book describing the implementation techniques used in Macro SNOBOL4.
-=item
-=link http://www.snobol4.org/docs/books.html#macro
+L<http://www.snobol4.org/docs/books.html#macro>
 
-=item Catspaw Vanilla SNOBOL4 manual.
-=link http://www.snobol4.org/doc/burks/manual/contents.htm
+=item L<http://www.snobol4.org/doc/burks/manual/contents.htm>
+Catspaw Vanilla SNOBOL4 manual.
 
-=item Catspaw Macro SPITBOL manual
-=link ftp://ftp.snobol4.com/spitman.pdf
+=item L<ftp://ftp.snobol4.com/spitman.pdf>
+Catspaw Macro SPITBOL manual
 
-=item I<Algorithms in SNOBOL4>
-James Gimpel
-=link http://www.snobol4.org/docs/books.html#orange
+=item L<http://www.snobol4.org/docs/books.html#orange>
+I<Algorithms in SNOBOL4>, James F. Gimpel, Wiley, New York, 1976.
 
 =sect AUTHORS
 Ralph E. Griswold, James F. Poage, Ivan P. Polonsky, et al (Macro SNOBOL4)
@@ -225,7 +220,7 @@ Mark Emmer (code from SNOBOL4+)
 
 Viktors Berstis (code from Minnesota SNOBOL4)
 
-James Gimpel (SNOBOL4B)
+James F. Gimpel (SNOBOL4B)
 
 =sect BUGS
 I/O is still tied to unit numbers.

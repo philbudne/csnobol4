@@ -130,18 +130,15 @@ The fill character (defaults to space).
 =sect SEE ALSO
 B<snobol4>(1)
 
-=p
-=link http://deepblue.lib.umich.edu/bitstream/handle/2027.42/79574/MTSVol09-SNOBOLInMTS-May1984.pdf
-Contains a manual for the BLOCKS extension.
-
-=p
-=link http://home.comcast.net/~urbanjost/LIBRARY/EXE/ASA/html/asa2pdf_doc.html
-A utility to convert ``ASA carriage control'' into B<PDF>, complete with green
-stripes.
-
-=p
-I<Blocks a new datatype for SNOBOL4>
+I<Blocks a new datatype for SNOBOL4>,
 James F. Gimpel,
 I<Communications of the ACM>,
 Volume 15 Issue 6, June 1972,
 Pages 438-447
+
+=item L<http://deepblue.lib.umich.edu/bitstream/handle/2027.42/79574/MTSVol09-SNOBOLInMTS-May1984.pdf>
+Contains a manual for the BLOCKS extension.
+
+=item L<http://home.comcast.net/~urbanjost/LIBRARY/EXE/ASA/html/asa2pdf_doc.html>
+A utility to convert ``ASA carriage control'' into B<PDF>, complete with green
+stripes.

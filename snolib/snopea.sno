@@ -83,8 +83,8 @@ sp.top	line = in					:F(sp.eof)
 sp.text	oline =
 * font loop: here back from 'font' dispatch
 sp.floop
-	line POS(0) BREAKX('BIC') . pre 
-+			ANY('BIC') . font '<' BREAK('>') . txt '>' =
+	line POS(0) BREAKX('BICL') . pre 
++			ANY('BICL') . font '<' BREAK('>') . txt '>' =
 +							:f(sp.fdone)
 * here with pre, font & txt:
 	cmd = 'font'					:(sp.dispatch)
@@ -174,10 +174,7 @@ sp.roff.head
 
 sp.roff.pea						:(sp.top)
 
-sp.roff.p
-	out = ".PP"
-	needspace = numb =				:(sp.top)
-
+* internal (blank line seen)
 sp.roff.para
 	out = ".PP"
 	needspace = numb =				:(sp.text)
@@ -186,6 +183,7 @@ sp.roff.cut
 	inpea =						:(sp.top)
 
 sp.roff.font
+	oline = IDENT(font, 'L') oline pre txt		:s(sp.floop)
 	font = (IDENT(font, 'C') '\f(CW', '\f' font)
 	oline = oline pre font txt '\fP'		:(sp.floop)
 
@@ -300,17 +298,15 @@ sp.html.head
 
 sp.html.pea						:(sp.top)
 
-sp.html.p
-	out = vdiffer(endlist)
-	out = "<p>"
-	needspace = endlist =				:(sp.top)
-
+* internal (blank line seen)
 sp.html.para
+	out = '<p>'
 	needspace = endlist =				:(sp.text)
 
 sp.html.cut						:(sp.roff.cut)
 
 sp.html.font
+	oline = IDENT(font, 'L') oline pre '<a href="' txt '">' txt '</a>' :s(sp.floop)
 	font = ident(font, 'R')				:s(sp.html.font2)
 	font = ident(font, 'C') 'TT'
 sp.html.font2
