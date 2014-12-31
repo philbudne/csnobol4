@@ -56,6 +56,9 @@ Controls the indentation of B<=item> paragraphs.
 =item B<=nitem> I<text>
 A numbered list item with tag I<label>.
 
+=item B<=p>
+Start new paragraph.
+
 =item B<=row> I<columns>
 A table row. I<columns> is a tab separated list.
 
