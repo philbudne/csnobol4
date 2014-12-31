@@ -5,7 +5,7 @@ snobol4blocks \- SNOBOL4 BLOCKS extension
 
 =sect DESCRIPTION
 The BLOCKS extension was developed by Jim Gimpel while at Bell Labs.
-A BLOCK is a data type that allows string concatenation to three dimensions.
+A BLOCK is a data type that extends string concatenation to three dimensions.
 
 Enabling the BLOCKS extension with the B<-BLOCKS> control line (see
 B<snobol4ctrl>(1)) or the B<-B> command line option (see
@@ -142,3 +142,5 @@ Contains a manual for the BLOCKS extension.
 =item L<http://home.comcast.net/~urbanjost/LIBRARY/EXE/ASA/html/asa2pdf_doc.html>
 A utility to convert ``ASA carriage control'' into B<PDF>, complete with green
 stripes.
+
+L<http://www.snobol4.org/blocks/>
