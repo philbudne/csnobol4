@@ -628,7 +628,7 @@ INSTALL_H=[include]/h.h [include]/snotypes.h [include]/macros.h \
 # generated SNOLIB files (host.sno generated at top level)
 GENSNOLIB=host.sno config.sno
 
-SNOLIB_FILES=snolib/*.sno modules/setuputil.sno $(GENSNOLIB) $(MODULES_INCLUDE)
+SNOLIB_FILES=snolib/*.sno $(GENSNOLIB) $(MODULES_INCLUDE)
 
 install: snobol4 sdb timing.out $(GENERATED_DOCS)
 	$(INSTALL) -d $(BINDIR)
