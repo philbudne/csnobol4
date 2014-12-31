@@ -8,7 +8,7 @@ snobol4key \- SNOBOL4 keywords
 =item B<&amp;ABEND>
 Unprotected, INTEGER:
 Setting to a non-zero value causes a call to B<abort>(3)
-(causes a core dump) instead of ```exit'' when B<snobol4>(1) finishes
+(causes a core dump) instead of ``exit'' when B<snobol4>(1) finishes
 program execution.  A relic of when ``ABEND'' meant program memory
 would be dumped on the line printer on ``abnormal ending'' of a batch job!
 I<Standard>.
@@ -31,7 +31,7 @@ numbers of leading subject characters), and patterns must match the
 initial part of the subject. B<NOTE!>  Anchored matching is faster, but
 portable code should not depend on (or modify) the value of
 B<&ANCHOR>!!  Individual patterns can be anchored using B<POS(0)>, and
-B<BREAKX()> avoids repeated match failures that occur in non-anchored
+use of B<BREAKX()> avoids repeated match failures that occur in non-anchored
 scanning.
 I<Standard>.
 
