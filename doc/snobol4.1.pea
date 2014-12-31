@@ -167,9 +167,11 @@ Using B<SNOBOL_PRELOAD_PATH> will make your code less portable.
 =row B<snobol4logic>(3)	bit logic &amp; formatting functions
 =row B<snobol4ndbm>(3)	keyed file access functions
 =row B<snobol4random>(3)	pseudo-random numbers functions
+=row B<snobol4readline>(3)	input with line editing
 =row B<snobol4setup>(3)	loadable module builder
 =row B<snobol4sprintf>(3)	formatting function
 =row B<snobol4sqlite3>(3)	SQLite database interface functions
+=row B<snobol4sqlite3dbm>(3)	DBM interface using SQLite
 =row B<snobol4stat>(3)	file metadata functions
 =row B<snobol4stcl>(3)	Tcl/Tk interface functions
 =row B<snobol4time>(3)	date/time functions
