@@ -7,6 +7,8 @@ install.bat:
 
 README -- make more conversational?
 
+man page for "com"!!
+
 ispell INSTALL, README
 
 ================
@@ -16,7 +18,6 @@ ispell INSTALL, README
 		pass CFLAGS env var?
 	ANSIfy: flush str.h
 
-
 setuputil.sno:
 	"test" command!!!!
 		logic(!!), sqlite3, stat, dirs, sprintf, fork, ffi
@@ -24,8 +25,9 @@ setuputil.sno:
 
 man pages:
     snobol4func
-	bold function & type names!
-	italicize argument names
+	make sure all function & type names in bold,
+		argument names in italic.
+	add better descriptions (esp ARRAY, DEFINE)
 
     snobol4syn:
 	statement syntax

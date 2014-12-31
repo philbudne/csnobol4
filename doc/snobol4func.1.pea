@@ -4,46 +4,41 @@ $Id$
 snobol4func \- SNOBOL4 summary of built-in functions
 
 =sect DESCRIPTION
-
-A I<predicate> is a function that either returns the null string or failure.
-
-An ``accessor'' is a function which returns it's value by NAME
-(and can be used on the right hand side of an assignment).
-
-=item ANY(charset)
-Pattern: returns a pattern that matches one character in the STRING I<charset>.
+=item B<ANY(>I<charset>B<)>
+Pattern: returns a pattern that matches one character in the B<STRING>
+I<charset>.
 I<Standard>.
 
-=item APPLY(func,arg1,...)
+=item B<APPLY(>I<func,arg1,...>B<)>
 Function: calls function I<func> with the supplied arguments.
 I<Standard>.
 
-=item ARBNO(pattern)
+=item B<ARBNO(>I<pattern>B<)>
 Pattern: returns a pattern that matches zero or more repeats of I<pattern>.
 I:<Standard>.
 
-=item ARG(func,n)
+=item B<ARG(>I<func,n>B<)>
 Function: returns the name of the I<n>th argument to function I<func>.
 I<Standard>.
 
-=item ARRAY(proto,value)
+=item B<ARRAY(>I<proto,value>B<)>
 Data: Creates an ARRAY object.
 I<Standard>.
 
-=item ATAN(REAL)REAL
+=item B<ATAN(>I<arg>B<)>
 Math: Returns the principal value of the arc tangent of its argument.
 I<Extension from SNOBOL4+?, added in CSNOBOL4 1.4>.
 
-=item BACKSPACE(N)
+=item B<BACKSPACE(>I<unit>B<)>
 I/O: Not implemented!! See B<SET()> and B<SSET()>.
 I<Standard>.
 
-=item BREAK(charset)
+=item B<BREAK(>I<charset>B<)>
 Pattern: Returns a pattern that matches the longest run of one or more
 characters NOT in string I<charset>.
 I<Standard>.
 
-=item BREAKX(CS)
+=item B<BREAKX(>I<charset>B<)>
 Pattern: A pattern function used for fast
 scanning.  B<BREAKX(>I<str>B<)> is equivalent to
 B<BREAK(>I<str>B<) ARBNO(LEN(1) BREAK(>I<str>B<))>.
@@ -55,49 +50,49 @@ than B<ARB 'STRING'> since it only attempts matching B<'STRING'> at
 locations where an B<'S'> has been detected.
 I<SPITBOL 360 Extension, added in CSNOBOL4 version 0.98>.
 
-=item CHAR(n)
+=item B<CHAR(>I<n>B<)>
 String: takes an integer from 0 to 255 and returns the
 I<n>th character in B<&amp;ALPHABET>.
 I<SPITBOL 360 Extension, added in CSNOBOL4 version 0.98>.
 SNOBOL4+ has a B<CHR()> function.
 
-=item CHOP(real)
+=item B<CHOP(>I<real>B<)>
 Math: truncates the fractional part of its argument
 (rounding towards zero), and returns a REAL value.
 I<SPITBOL Extension, added in CSNOBOL4 version 0.98.4>.
 
-=item CLEAR()
+=item B<CLEAR(>I<>B<)>
 Interpreter: Clears ALL natural variable values (including predefined pattern
 variables B<ABORT>, B<ARB>, B<BAL>, B<FENCE>, B<REM>, and B<SUCCEED>).
 I<Standard>.
 
-=item CODE(str)
+=item B<CODE(>I<str>B<)>
 Interpreter: Compiles the argument as source code and returns a B<CODE>
 value, suitable for use with B<:&lt;>I<code>B<&gt;>.  If execution falls
 off the end of the code, the program will exit.
 I<Standard>.
 
-=item COLLECT(n)
+=item B<COLLECT(>I<n>B<)>
 Interpreter:  Triggers garbage collection.  Returns failure if less than
 I<n> bytes are available after collection.
 I<Standard>.
 
-=item CONVERT(value,type)
+=item B<CONVERT(>I<value,type>B<)>
 Data: Convert I<value> to data type I<type>.  Can convert TABLE to ARRAY
 for iteration over members.
 I<Standard>.
 
-=item COPY(value)
+=item B<COPY(>I<value>B<)>
 Data: returns a copy of the supplied I<value>.  Copies of 
 B<ARRAY>, B<DATA> and B<TABLE> objects are ``shallow'': the returned
 object will point to the same objects as the source container.
 I<Standard>.
 
-=item COS(REAL)REAL
-Math: Return cosine of argument in radians.
+=item B<COS(>I<argument>B<)>
+Math: Return cosine of I<argument> in radians.
 I<SNOBOL4+ Extension?, added in CSNOBOL4 version 0.98.4>.
 
-=item DATA(prototype)
+=item B<DATA(>I<prototype>B<)>
 Data: Declares a B<DATA> struct type. I<prototype> is of the form
 I<name>B<(>I<field>,...B<)>.  I<name> is declared as a ``constructor''
 function, and each I<field> is declared as an ``accessor'' function
@@ -105,13 +100,13 @@ for the type.  Any number of types can use the same I<field> names
 (regardless of position).
 I<Standard>.
 
-=item DATATYPE(value)
+=item B<DATATYPE(>I<value>B<)>
 Data: Returns a string with the data type of I<value>, one of:
 B<ARRAY>, B<BLOCK>, B<CODE>, B<EXPRESSION>, B<EXTERNAL>, B<INTEGER>,
 B<NAME>, B<PATTERN>, B<REAL>, B<STRING>, B<TABLE>, or a B<DATA()> type name.
 I<Standard>.
 
-=item DATE()
+=item B<DATE()>
 String: returns I<MM/DD/YYYY HH:MM:SS>.
 I<Standard>.
 For compatibility with Catspaw Macro SPITBOL,
@@ -119,78 +114,78 @@ since CSNOBOL4 version 0.99.4
 B<DATE(0)> returns strings of the form I<MM/DD/YY HH:MM:SS>, and
 B<DATE(2)> returns strings of the form I<YYYY-MM-YY HH:MM:SS>.
 
-=item DEFINE(prototype[,label])
+=item B<DEFINE(>I<prototype[,label]>B<)>
 Functions: declares a function using I<prototype> of the form
 ``I<name>B<(>[I<argname>,...]B<)>[I<localname>,...]''.
 Optional I<label> supplies the function entry point.
 I<Standard>.
 
-=item DELETE(filename)
+=item B<DELETE(>I<filename>B<)>
 I/O: A predicate which tries to remove the
 named file, and fails if it cannot.
 I<SITBOL Extension: added in CSNOBOL4 version 0.98.5>.
 
-=item DETACH(variable)
+=item B<DETACH(>I<name>B<)>
 I/O:  Detach any I/O associations for named I<variable>.
 I<Standard>.
 
-=item DIFFER(val1,val2)
+=item B<DIFFER(>I<val1,val2>B<)>
 Predicate:  Succeeds if the supplied values refer to different objects,
 strings, or numeric values.
 I<Standard>.
 
-=item DUMP(n)
+=item B<DUMP(>I<n>B<)>
 Data: dumps natural variable values to stdout if argument I<n> is non-zero.
 I<Standard>.
 
-=item DUPL(string,n)
+=item B<DUPL(>I<string,n>B<)>
 String: Returns a string with I<n> copies of argument I<string>.
 I<Standard>.
 
-=item ENDFILE(unit)
+=item B<ENDFILE(>I<unit>B<)>
 I/O:  Closes the file attached to I/O unit I<unit>.
 I<Standard>.
 
-=item EQ(i1,i2)
+=item B<EQ(>I<i1,i2>B<)>
 Predicate: Succeeds if I<i1> is arithmetically equal to I<i2>.
 I<Standard>.
 
-=item EVAL(v)
+=item B<EVAL(>I<v>B<)>
 Interpreter: Evaluates I<v> (an unevaluated expression,
 B<INTEGER>, B<REAL>, or B<STRING>), and returns the result;
 returns failure on syntax error or the expression fails.
 I<Standard>.
 
-=item EXIT(arg)
+=item B<EXIT(>I<arg>B<)>
 System: Passes process control to a shell to execute I<arg> as a command.
-Returns failure if I<arg> is not a STRING.
+Returns failure if I<arg> is not a B<STRING>.
 I<SPITBOL Extension, added in CSNOBOL>.
 Does B<NOT> implement ``save file'' feature of B<SPITBOL>.
 
-=item EXP(x)
+=item B<EXP(>I<x>B<)>
 Math: returns the value B<e **> I<x>.
 I<SPITBOL Extension, added in CSNOBOL4 version 0.98.4>.
 
-=item FIELD(name,n)
+=item B<FIELD(>I<name,n>B<)>
 Data: Returns a string with the name of the I<n>th member of
 B<DATA()> type I<name>.
 I<Standard>.
 
-=item FILE(STRING)STRING
+=item B<FILE(>I<string>B<)>
 I/O: A predicate which tests if a file exists, and fails if it does not.
 I<SITBOL Extension, added in CSNOBOL4 version 0.98.5>.
 
-=item FILE_ABSPATH(STRING)STRING
+=item B<FILE_ABSPATH(>I<string>B<)>
 I/O: A predicate which returns null if its argument is an absolute file path,
 and failure if the path is relative.
 I<CSNOBOL4 Extension, added in CSNOBOL4 version 1.5>.
 
-=item FILE_ISDIR(STRING)STRING
+=item B<FILE_ISDIR(>I<string>B<)>
 I/O: A predicate which returns the null string if its argument is the
 pathname of a directory, and returns failure if not.
 I<CSNOBOL4 Extension, added in CSNOBOL4 version 1.5>.
 
-=item FREEZE(TABLE)
+=item B<FREEZE(>I<table>B<)>
 Data: prohibits creation of new entries in the referenced table.  This
 is useful once a table has been initialized to avoid creating empty
 entries on lookups that fail.  This can greatly improve program speed,
@@ -200,21 +195,21 @@ Attempts to assign to a non-existent entry will cause a ``Variable not
 present where required'' error.
 I<SNOBOL4+ Extension, added in CSNOBOL4 version 0.98.2>.
 
-=item FUNCTION(NAME)
+=item B<FUNCTION(>I<name>B<)>
 Function: A predicate which evaluates its argument as a string
 (with case folding), and returns the null string if a function with that
 name exists and fails if it does not.
 I<SITBOL Extension, added in CSNOBOL4 version 0.99.44>.
 
-=item GE(I1,I2)
+=item B<GE(>I<i1,i2>B<)>
 Predicate: Succeeds if I<i1> is arithmetically equal than or equal to I<i2>.
 I<Standard>.
 
-=item GT(I1,I2)
+=item B<GT(>I<i1,i2>B<)>
 Predicate: Succeeds if I<i1> is arithmetically equal than I<i2>.
 I<Standard>.
 
-=item B<HOST(I,...)>
+=item B<HOST(>I<i,...>B<)>
 System: This ought to be on it's own man page!!
 The B<host.sno> B<-INCLUDE> contains symbolic defines for these
 (and B<many> other) functions:
@@ -256,32 +251,32 @@ named I<string>.
 =item
 I<SPITBOL Extension, added in CSNOBOL4 version 0.98.4>.
 
-=item IDENT(V1,V2)
+=item B<IDENT(>I<v1,v2>B<)>
 Predicate: Succeeds if the supplied values refer to the same object,
 string, or numeric value.
 I<Standard>.
 
-=item INPUT(variable,unit,opt,name)
+=item B<INPUT(>I<variable,unit,opt,name>B<)>
 I/O:  Associate I<variable> for input, see B<snobol4io>(1).
 I<Standard>.*
 
-=item INTEGER(value)
+=item B<INTEGER(>I<value>B<)>
 Predicate:  Succeed if I<value> is an INTEGER.
 I<Standard>.
 
-=item IO_FINDUNIT()INTEGER
+=item B<IO_FINDUNIT()>
 I/O: Returns an unused I/O unit number for
 use with the B<INPUT()> or B<OUTPUT()> functions.  B<IO_FINDUNIT()> is
 meant for use in subroutines which can be reused.  B<IO_FINDUNIT()>
 will never return a unit number below 20.
 I<CSNOBOL4 Extension, added in version 0.99.4>.
 
-=item ITEM(A,I1,...,IN)
+=item B<ITEM(>I<a,i1,...>B<)>
 Data:  Reference an element of an ARRAY or TABLE which is the result
 of an expression (ie; B<$>I<variable>).
 I<Standard>.
 
-=item LABEL(V)
+=item B<LABEL(>I<name>B<)>
 Predicate: Evaluates argument as a string (with case folding), and returns the
 null string if a label with that name has been defined, and fails if
 it does not.
@@ -289,59 +284,59 @@ I<Steve Duff's Macro SPITBOL Extension, added in CSNOBOL4 version 1.5>*.
 SITBOL has a B<LABEL> function which returns a B<CODE> pointer.
 *Added in CSNOBOL4 version 0.99.44, but unreliable until version 1.5.
 
-=item LE(I1,I2)
+=item B<LE(>I<i1,i2>B<)>
 Predicate: tests if first argument is arithmetically less than or
 equal to second argument.
 I<Standard>.
 
-=item LEN(n)
+=item B<LEN(>I<n>B<)>
 Pattern:  Returns a PATTERN which matches exactly I<n> characters.
 I<Standard>.
 
-=item LEQ(s1,s2)
+=item B<LEQ(>I<s1,s2>B<)>
 Predicate: tests if first argument is lexically equal to second argument.
 I<SPITBOL Extension, added in CSNOBOL4 version 0.98.2>.
 
-=item LGE(S1,S2)
+=item B<LGE(>I<S1,S2>B<)>
 Predicate: tests if first argument is lexically greater than or equal to second
 argument.
 I<SPITBOL Extension, added in CSNOBOL4 version 0.98.2>.
 
-=item LGT(S1,S2)
+=item B<LGT(>I<s1,s2>B<)>
 Predicate: tests if first argument is lexically greater than second argument.
 I<SPITBOL Extension, added in CSNOBOL4 version 0.98.2>.
 
-=item LLE(S1,S2)
+=item B<LLE(>I<s1,s2>B<)>
 Predicate: tests if first argument is lexically less than or equal to second
 argument.
 I<SPITBOL Extension, added in CSNOBOL4 version 0.98.2>.
 
-=item LLT(S1,S2)
+=item B<LLT(>I<s1,s2>B<)>
 Predicate: tests if first argument is lexically less than second argument.
 I<SPITBOL Extension, added in CSNOBOL4 version 0.98.2>.
 
-=item LNE(S1,S2)
+=item B<LNE(>I<s1,s2>B<)>
 Predicate: tests if first argument is lexically different from second argument.
 I<SPITBOL Extension, added in CSNOBOL4 version 0.98.2>.
 
-=item LN(value)
+=item B<LN(>I<value>B<)>
 Math: an alias for B<LOG()>,
 I<SPITBOL Extension, added in CSNOBOL4 version 1.4>.
 
-=item LOAD(prototype,file)
-Function:  Load an external function from dynamically loaded library i<file>.
+=item B<LOAD(>I<prototype,file>B<)>
+Function:  Load an external function from dynamically loaded library I<file>.
 I<Standard>.
 
-=item LOCAL(func,n)
-Interpreter: Returns a STRING with the I<n>th argument to function named
-I<func>.
+=item B<LOCAL(>I<name,n>B<)>
+Interpreter: Returns a B<STRING> with the I<n>th argument to function named
+I<name>.
 I<Standard>.
 
-=item LOG(value)
+=item B<LOG(>I<value>B<)>
 Math: returns the natural logarithm of its argument.
 I<Extension from SNOBOL4+, added in CSNOBOL4 version 0.98.4>.
 
-=item LPAD(str,n,char)
+=item B<LPAD(>I<str,n,char>B<)>
 String: Takes the first argument (subject) string, and left pads it
 out to the length specified in the second argument, using the first
 character of the optional third argument.  If the third argument is
@@ -349,70 +344,71 @@ missing, or is the null string, spaces will be used for padding.  The
 subject will be returned unmodified if already long enough.
 I<SPITBOL 360 Extension, added in CSNOBOL4 version 0.98>.
 
-=item LT(i1,i2)
+=item B<LT(>I<i1,i2>B<)>
 Predicate: Succeeds if I<i1> is arithmetically less than I<i2>.
 I<Standard>.
 
-=item NE(i1,i2)
+=item B<NE(>I<i1,i2>B<)>
 Predicate: Succeeds if I<i1> is arithmetically not equal to I<i2>.
 I<Standard>.
 
-=item NOTANY(cs)
+=item B<NOTANY(>I<charset>B<)>
 Pattern:  Returns a pattern which matches on character NOT present in
-STRING I<cs>.
+STRING I<charset>.
 I<Standard>.
 
-=item OPSYN(new,old,n)
-Interpreter: If I<n> omitted (or zero), new and old are treated as function
-names, and new becomes a synonym for old:  A call to a synonym MUST have the
-correct number of arguments; trailing arguments can NOT be omitted.
-If I<n> is 1, new and old are treated as unary operators, or function names.
-If I<n> is 2, new and old are treated as binary operators, or function names.
+=item B<OPSYN(>I<new,old,n>B<)>
+Interpreter: If I<n> omitted (or zero), I<new> and I<old> are treated
+as function names, and I<new> becomes a synonym for I<old>: A call to a
+synonym MUST have the correct number of arguments; trailing arguments
+can NOT be omitted.  If I<n> is 1, I<new> and I<old> are treated as unary
+operators, or function names.  If I<n> is 2, I<new> and I<old> are treated
+as binary operators, or function names.
 I<Standard>.
 
-=item ORD(string)
+=item B<ORD(>I<string>B<)>
 String: returns the INTEGER ordinal value (zero to 255) of the
 first character in its string argument (the inverse of B<CHAR()>).
 I<CSNOBOL4 Extension, added in version 0.99.44>.
 SNOBOL4+ has an B<ASC()> function.
 
-=item OUTPUT(variable,unit,options,name)
+=item B<OUTPUT(>I<variable,unit,options,name>B<)>
 I/O:  Associate I<variable> for output, see B<snobol4io>(1).
 I<Standard>*.
 
-=item POS(n)
+=item B<POS(>I<n>B<)>
 Pattern:  Returns a pattern which succeeds if the pattern matching
 cursor is at (non-negative INTEGER) position I<n>, or fails.
 I<Standard>.
 
-=item PROTOTYPE(a)
+=item B<PROTOTYPE(>I<a>B<)>
 Data:  Returns the prototype of ARRAY I<a>.
 I<Standard>.
 
-=item REMDR(n,m)
+=item B<REMDR(>I<n,m>B<)>
 Math:  Returns the remainder from dividing INTEGER I<n> with INTEGER I<m>.
 I<Standard>.
 
-=item RENAME(string1,string2)
+=item B<RENAME(>I<new,old>B<)>
 I/O: A predicate which attempts
-to rename the file named by I<string2> to the name I<string1>.
+to rename the file named by I<old> to the name I<new>.
 I<Extension from SITBOL: added in CSNOBOL4 version 0.98.5>.
 Unlike the B<SITBOL> version, if the target file exists, it will be removed.
 
-=item REPLACE(str,cs1,cs2)
+=item B<REPLACE(>I<str,charset1,charset2>B<)>
 String: Returns a string with each character I<str> that appears in
-I<cs1> replaced by the corresponding character in <cs2>.
+I<charset1> replaced by the corresponding character in <charset2>.
 I<Standard>.
 
-=item REVERSE(str)
+=item B<REVERSE(>I<str>B<)>
 String: returns its subject string in reverse order. 
 I<SPITBOL Extension, added in CSNOBOL4 version 0.98.2>.
 
-=item REWIND(unit)
+=item B<REWIND(>I<unit>B<)>
 I/O:  Reset input pointer of file associated with I<unit> to start of file.
 I<Standard>.
 
-=item RPAD(str,n,char)
+=item B<RPAD(>I<str,n,char>B<)>
 String: Takes the first argument (subject) string, and right pads it
 out to the length specified in the second argument, using the first
 character of the optional third argument.  If the third argument is
@@ -420,59 +416,59 @@ missing, or is the null string, spaces will be used for padding.  The
 subject will be returned unmodified if already long enough.
 I<SPITBOL 360 Extension, added in CSNOBOL4 version 0.98>.
 
-=item RPOS(N)
+=item B<RPOS(>I<n>B<)>
 Pattern: Returns a pattern which succeeds if the pattern
 matching cursor is at (non-negative INTEGER) position I<n>, counting
 from the end of the subject string, or fails.
 I<Standard>.
 
-=item RSORT(T,C)
+=item B<RSORT(>I<ta,c>B<)>
 Data: see B<SORT()>.
 I<Macro SPITBOL extension, added in CSNOBOL4 version 0.98>.
 
-=item RTAB(N) Pattern: Returns a PATTERN which matches all characters
+=item B<RTAB(>I<n>B<)>
+Pattern: Returns a PATTERN which matches all characters
 up to (non-negative INTEGER) position I<n>, counting from the end of
 the subject string; matching fails if cursor is past position <n>.
 B<REM> is a synonym for B<RTAB(0)>.
 I<Standard>.
 
-=item SERV_LISTEN(STRING,STRING,STRING)INTEGER
-I/O: takes three STRING arguments: FAMILY, TYPE, SERVICE
-and makes B<snobol4>(1) into a network server process.
-FAMILY must be either "inet" for an Internet Protocol v4 socket,
-"inet6" for an Internet Protocol v6 socket, or "unix" for a local
-("unix domain") socket.  The second argument, TYPE must be "stream",
-and the third argument, SERVICE must be a port number or service name
-(for an internet socket), or a pathname (for a "unix" socket).
-SERV_LISTEN() listens for incoming requests, accepts them, then
-``forks'' a child process and returns an integer file descriptor which
-can be opened for bidirectional I/O using a "/dev/fd/n" magic
-pathname.  The original (``parent'') process never returns from the
-SERV_LISTEN() call.  This function is only available on systems with
-the ``fork'' system call, which makes a child process which is an
-identical copy of the parent process.
+=item B<SERV_LISTEN(>I<family,type,service>B<)>
+I/O: takes three B<STRING> arguments and makes B<snobol4>(1) into a
+network server process.  I<family> must be either C<"inet"> for an Internet
+Protocol v4 socket, C<"inet6"> for an Internet Protocol v6 socket, or
+C<"unix"> for a local (``unix domain'') socket.  The second argument, TYPE
+must be C<"stream">, and the third argument, I<service> must be a port
+number or service name (for an internet socket), or a pathname (for a
+C<"unix"> socket).  B<SERV_LISTEN()> listens for incoming requests, accepts
+them, then ``forks'' a child process and returns an integer file
+descriptor which can be opened for bidirectional I/O using a
+"/dev/fd/n" magic pathname.  The original (``parent'') process never
+returns from the B<SERV_LISTEN()> call.  This function is only available
+on systems with the ``fork'' system call, which makes a child process
+which is an identical copy of the parent process.
 I<CSNOBOL4 Extension, added in version 0.99.44>
 
-=item SET(unit,offset,whence)
+=item B<SET(>I<unit,offset,whence>B<)>
 I/O: Seeks the file pointer of an open file.  The
 first argument is an I/O unit number, the second is an integer offset.
-The third argument, an integer determines from B<whence> the file
-pointer will be adjusted.  If whence is zero the starting point is the
-beginning of the file, if whence is one, the starting point is the
-current file pointer, and if whence is two, the starting point is the
+The third argument, an integer determines from ``whence'' the file
+pointer will be adjusted.  If I<whence> is zero the starting point is the
+beginning of the file, if I<whence> is one, the starting point is the
+current file pointer, and if I<whence> is two, the starting point is the
 end of the file.  B<SET()> returns the new file pointer value.  On
-systems with 64-bit file pointers and 32-bit integers the return value
-will be truncated to 32-bits, and only the first and last 4 gigabytes
+systems with 64-bit file pointers and 32-bit integers the values
+will be truncated to 32 bits, and only the first and last 4 gigabytes
 of a file can be accessed directly: see B<SSET()>.
 I<Catspaw Macro SPITBOL Extension, added in CSNOBOL4 version 0.99.1>.
 
-=item SETEXIT(label)
+=item B<SETEXIT(>I<label>B<)>
 Interpreter: The argument to B<SETEXIT()> is the name of a label to
 pass control to if a subsequent error occurs, when the keyword
-B<&amp;ERRLIMIT> is non-zero.  The value of B<&amp;ERRLIMIT> is
+B<&amp;ERRLIMIT> is non-zero.  The value of B<&amp;ERRLIMIT> is positive, it is
 decremented when the error trap occurs.  A B<SETEXIT()> call with a
-null argument causes cancellation of the intercept.  A Subsequent
-error will terminate execution as usual with an error message.  The
+null argument causes cancellation of the intercept.  Subsequent
+errors will terminate execution as usual with an error message.  The
 result returned by B<SETEXIT()> is the previous intercept setting
 (i.e., a label name or null if no intercept is set).  This can be used
 to save and restore the B<SETEXIT()> conditions in a recursive
@@ -508,15 +504,15 @@ saved execution state is kept.
 =item
 I<Extension from SPITBOL 360, added in CSNOBOL4 version 1.4>.
 
-=item SIN(real)
-Math: Return sine of argument in radians.
+=item B<SIN(>I<argument>B<)>
+Math: Return sine of I<argument> in radians.
 I<SNOBOL4+ Extension?, added in CSNOBOL4 version 0.98.4>.
 
-=item SIZE(string)
-String: returns the length of the argument.
+=item B<SIZE(>I<string>B<)>
+String: returns the length of the B<STRING> argument.
 I<Standard>.
 
-=item SORT(TA,C)
+=item B<SORT(>I<ta,c>B<)>
 Data: takes two arguments.  The first can be either an array or a table.
 If the first argument is an array,
 it may be singly-dimensioned in which case the second argument, if
@@ -529,43 +525,43 @@ sort.  If the second argument is null, it is taken to be 1.  The array
 B<SORT()> sorts elements in ascending order, while B<RSORT()> sorts in
 descending order.
 =item
-Example: for a table I<TAB> of integers, indexed by strings being used
-to tabulate word counts I<FREQ = RSORT(TAB,2)> returns an array such
-that I<FREQ&lt;1,1&gt;> contains the most frequent word while
-I<FREQ&lt;1,2&gt;> contains the number of occurrences of that word.
-While I<WORDS = SORT(TAB,1)> returns an array with the rows by the
-lexicographical ordering of the words; I<WORDS&lt;1,1&gt;> contains
-the lexicographically first word and I<WORDS&lt;1,2&gt;> contains the
+Example: for a table C<TAB> of integers, indexed by strings being used
+to tabulate word counts C<FREQ = RSORT(TAB,2)> returns an array such
+that C<FREQ&lt;1,1&gt;> contains the most frequent word while
+C<FREQ&lt;1,2&gt;> contains the number of occurrences of that word.
+While C<WORDS = SORT(TAB,1)> returns an array with the rows by the
+lexicographical ordering of the words; C<WORDS&lt;1,1&gt;> contains
+the lexicographically first word and C<WORDS&lt;1,2&gt;> contains the
 number of occurrences of that word.
 I<Macro SPITBOL extension?, added in CSNOBOL4 version 0.98>.
 
-=item SPAN(charset)
+=item B<SPAN(>I<charset>B<)>
 Pattern: Returns a pattern that matches the longest run of one or more
 characters in string I<charset>.
 I<Standard>.
 
-=item SQRT(REAL)REAL
+=item B<SQRT(>I<argument>B<)>
 Math: Return the square root. Fails if the argument is negative.
 I<Extension from SPITBOL, added in CSNOBOL4 version 0.90>.
 
-=item SSET(INTEGER,INTEGER,INTEGER,INTEGER)INTEGER
-I/O: "scaled set" function, to handle files larger than 4GB
+=item B<SSET(>I<unit,offset,whence,scale>B<)>
+I/O: ``scaled set'' function, to handle files larger than 4GB
 on systems with 32-bit B<INTEGER> variables.
-Takes arguments unit, offset, whence, and scale.  The first three are
-analogous to the same arguments for the B<SET()> function.  The last
-parameter is used as a multiplicative scaling factor on the B<offset>
-parameter, and as a divisor on the return value.  When used in
-combination with relative B<SET()> calls (whence of one), any file
-offset can be achieved, even when system file offsets are larger than
-can be represented in a SNOBOL4 B<INTEGER>.  Support for ``Large Files''
-is enabled when available, but not all file systems support large files.
+The first three arguments analogous to the same arguments for the
+B<SET()> function.  The last parameter is used as a multiplicative
+scaling factor on the B<offset> parameter, and as a divisor on the
+return value.  When used in combination with relative B<SET()> calls
+(whence of one), any file offset can be achieved, even when system
+file offsets are larger than can be represented in a SNOBOL4
+B<INTEGER>.  Support for ``Large Files'' is enabled when available,
+but not all file systems support large files.
 I<CSNOBOL4 Extension, added in version 0.99.44>.
 
-=item STOPTR(name,type)
+=item B<STOPTR(>I<name,type>B<)>
 Interpreter:  Disable I<type> tracing for I<name>.
 I<Standard>.
 
-=item SUBSTR(S,P,L)
+=item B<SUBSTR(>I<subject,pos,len>B<)>
 String: Takes a subject string as its first argument, and returns
 the substring starting at the position specified by the second
 argument (one-based) with a length specified by the third argument.
@@ -573,31 +569,31 @@ If the third argument is missing or zero, the remainder of the string
 is returned.
 I<SPITBOL 360 extension, added in CSNOBOL4 version 0.98.2>.
 
-=item TAB(n)
+=item B<TAB(>I<n>B<)>
 Pattern:  Returns a PATTERN which matches all characters up
 to (non-negative INTEGER) position I<n>;  matching fails if cursor is past
 position <n>.
 I<Standard>.
 
-=item TABLE(n,m)
+=item B<TABLE(>I<n,m>B<)>
 Data:  Return a B<TABLE> object, with (optional) initial size I<n>
 and additional extent size I<m>.
 I<Standard>.
 
-=item TAN(arg)
-Math: Return tangent of argument in radians.
+=item B<TAN(>I<argument>B<)>
+Math: Return tangent of I<argument> in radians.
 I<SNOBOL4+ extension?, added in CSNOBOL4 version 0.98.4>.
 
-=item THAW(table)
+=item B<THAW(>I<table>B<)>
 Data: restores normal entry creation behavior after B<FREEZE()>.
 I<SNOBOL4+ extension, added in CSNOBOL4 version 0.98.2>.
 
-=item TIME()
+=item B<TIME()>
 Interpreter: Returns program execution time in milliseconds.
 I<Standard (returning INTEGER)>.
 Returns REAL since CSNOBOL4 0.99.44.
 
-=item TRACE(name,type,id,func)
+=item B<TRACE(>I<name,type,id,func>B<)>
 Intrepreter: Associates I<name> for I<type> (VALUE, CALL, RETURN,
 FUNCTION, LABEL, KEYWORD) tracing;  I<id> is included in trace output;
 I<func> is optional name of function to call.  See B<snobol4key>(1) for
@@ -605,35 +601,39 @@ B<&amp;TRACE> and B<&amp;FTRACE> keywords.
 I<Standard>.
 SPITBOL extension of first letter of trace type accepted since CSNOBOL4 2.0.
 
-=item TRIM(str)
+=item B<TRIM(>I<str>B<)>
 String: Returns I<str> with trailing blanks and tabs removed.
 I<Standard>.
 
-=item UNLOAD(name)
+=item B<UNLOAD(>I<name>B<)>
 Function: Removes the function definition for function I<name>.
 I<Standard>.
 
-=item VALUE(name)
+=item B<VALUE(>I<name>B<)>
 Interpreter:  An ``accessor'' function, defined for B<STRING> and B<NAME>,
 so that user data types can declare a B<VALUE> field, and allow uniform
 treatment of variables and user types.
 I<Standard>.
 
-=item VDIFFER(V1,V2)
+=item B<VDIFFER(>I<v1,v2>B<)>
 Misc: If the two arguments, B<DIFFER()>, the first argument's value is
 returned.  This is intended to be used in contexts where B<DIFFER(X) X>
 would otherwise have been used.
 I<Extension from Steve Duff's Macro SPITBOL, added in CSNOBOL4 version 0.99.44>.
 
 =sect NOTES
-A predicate is a function which returns either a null value or failure.
+A ``predicate'' is a function that either returns the null string or failure.
+
+An ``accessor'' is a function which returns it's value by NAME
+(and can be used on the right hand side of an assignment).
 
 =sect BUGS
 Descriptions are too brief!!
+
 See 
 =link http://www.snobol4.org/docs/books.html#green
 for I<Standard> function definitions.
- 
+
 Need to research origins of ``SPITBOL'' extensions!
 
 =sect SEE ALSO
