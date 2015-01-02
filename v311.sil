@@ -1,6 +1,10 @@
 * $Id$
 *
 * $Log$
+* Revision 1.141  2014/12/30 05:05:00  phil
+* [PLB125] two more PCOMPs
+* died when dynamic region straddled 2G line on OpenBSD
+*
 * Revision 1.140  2014/12/05 18:59:40  phil
 * fix commenting
 *
@@ -1286,7 +1290,7 @@ CONVAR PROC    GENVAR		   Procedure to get space for variable
        SUM     TEMPCL,FRSGPT,BKLTCL
 *				   Skip required space
        INCRA   TEMPCL,DESCR	   Save space for title
-       ACOMP   TLSGP1,TEMPCL,,,CONVR4
+       PCOMP   TLSGP1,TEMPCL,,,CONVR4				[PLB126]
 *				   Check for end of region
 CONVR5 PUTDC   FRSGPT,0,ZEROCL	   Clear title
        PUTAC   FRSGPT,0,FRSGPT	   Set up self pointer
