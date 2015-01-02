@@ -8,6 +8,9 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	lib/init.c: move "." first in search path
 	snolib/snopea.sno: output <p> before <ul>; htext;
 		output endlist in 'para'
+	doc/snobol4.1.pea: fix search list order,
+		made "DIRECTORY SEARCH LIST" a section
+		add more spacing in characters table
 
 12/31/2014:
 	README: update
