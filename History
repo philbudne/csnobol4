@@ -11,6 +11,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	doc/snobol4.1.pea: fix search list order,
 		made "DIRECTORY SEARCH LIST" a section
 		add more spacing in characters table
+	snolib/setuputil.sno: use basename.sno
 
 12/31/2014:
 	README: update
