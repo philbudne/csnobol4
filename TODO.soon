@@ -67,6 +67,8 @@ snopea.sno:
 	automatic links for URLs??
 	Descriptive attribute for example (bold in man, TT in HTML)????
 
+Phillip Thomas: check if -l is a source file!!
+
 accept string for unit?
 	-NEWIO -OLDIO???
 	default to I/O association variable name?!
