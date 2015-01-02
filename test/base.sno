@@ -1,0 +1,26 @@
+-include 'basename.sno'
+
+	output = basename('a', '/')
+	output = basename('a/b', '/')
+	output = basename('a/b/c', '/')
+	output = basename('a/b/c/', '/')
+
+	output = basename('a/b', '/\')
+	output = basename('a/b/c', '/\')
+	output = basename('a/b/c/', '/\')
+
+	output = basename('a\b', '\')
+	output = basename('a\b\c', '\')
+	output = basename('a\b\c\', '\')
+
+	output = basename('a\b', '/\')
+	output = basename('a\b\c', '/\')
+	output = basename('a\b\c\', '/\')
+
+	output = basename('a\b', '/\')
+	output = basename('a/b\c', '/\')
+	output = basename('a\b/c\', '/\')
+
+
+
+end

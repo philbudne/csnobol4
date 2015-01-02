@@ -167,3 +167,5 @@ trace keytrace.sno
 trace t.sno
 # 1/18/2014
 trace trfunc.sno
+# 1/2/2015
+trace base.sno

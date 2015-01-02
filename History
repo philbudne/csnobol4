@@ -5,6 +5,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 1/2/2014:
 	v311.sil: another PCOMP!
 	doc/snobol4io.1.pea: ``terminal''
+	test/base.{sno,ref} (new): test basename.sno
+	test/tests.in: add base.sno
 
 **************** release 2.0 (CVS tag REL_2_0)
 
