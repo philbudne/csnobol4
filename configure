@@ -325,7 +325,7 @@ echo 'MANDIR=$(DESTDIR)'"$MANDIR"		>> $CONFIG_M4
 echo 'MAN1DIR=$(DESTDIR)'"$MAN1DIR"		>> $CONFIG_M4
 echo 'MAN3DIR=$(DESTDIR)'"$MAN3DIR"		>> $CONFIG_M4
 echo 'MAN7DIR=$(DESTDIR)'"$MAN7DIR"		>> $CONFIG_M4
-echo 'SNOLIB=$(DESTDIR)'"$SNOLIB"		>> $CONFIG_M4
+echo 'SNOLIB=$(DESTDIR)'"$SNOLIB_BASE"		>> $CONFIG_M4
 echo 'SNOLIB_LIB=$(DESTDIR)'"$SNOLIB_LIB"	>> $CONFIG_M4
 echo 'SNOLIB_DOC=$(DESTDIR)'"$SNOLIB_DOC"	>> $CONFIG_M4
 echo 'INCLUDE_DIR=$(DESTDIR)'"$INCLUDE_DIR"	>> $CONFIG_M4
@@ -1980,7 +1980,7 @@ BUILD_DL=
 BUILD_INC=
 # for host.sno:
 TEST_SNOPATH=..
-echo 'RUNSETUP=SNOPATH=../..:../../snolib ../../xsnobol4 -N setup.sno' >> $CONFIG_M4
+echo 'RUNSETUP=SNOLIB=$(SNOLIB) SNOPATH=../..:../../snolib ../../xsnobol4 -N setup.sno' >> $CONFIG_M4
 for M in $MODULES; do
     DL="modules/$M/$M$DL_EXT"
     INC="modules/$M/$M.sno"
