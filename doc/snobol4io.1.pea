@@ -47,7 +47,7 @@ If the filename begins with two vertical bars (B<||>) the remainder is
 used as a shell command executed with stdin, stdout and stderr
 attached to the slave side of a pseudo-terminal (pty), if the system C
 library contains the B<forkpty>(3) routine.  Use of ptys are necessary
-when the program to be invoked cannot be run without a "terminal" for
+when the program to be invoked cannot be run without a ``terminal'' for
 I/O.  See below on how to properly associate the I/O variable.
 
 =item magic paths B</dev/stdin>, B</dev/stdout>, and B</dev/stderr>
