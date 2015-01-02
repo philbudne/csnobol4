@@ -248,7 +248,7 @@ with "--add-" can appear);
 		Supply C optimization flags.  Use of this option
 		overrides any values supplied via --add-opt options
 		(but not ones added by --fast).  Use --add-opt in
-		perference to --opt.  There is also discussion under
+		preference to --opt.  There is also discussion under
 		the --fast option.
 
 		Optimized compilation may fail to compile the large
