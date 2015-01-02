@@ -1,10 +1,13 @@
 * $Id$
+* Phil Budne (idea from Phillip Thomas) January 2015
 -INCLUDE 'host.sno'
 * return trailing element separated by character SEP
 * (SEP defaults to system directory path separator)
 	DEFINE("BASENAME(X,SEP)")		:(BASENAME.END)
 BASENAME
-* XXX get system default via HOST()??
 	SEP = IDENT(SEP) HOST(HOST_DIR_SEP)
-	X POS(0) (BREAKX(SEP) SEP | '') (REM RPOS(0)) . BASENAME  :(RETURN)
+	X = REVERSE(X) SEP
+	X POS(0) SPAN(SEP) =
+	X POS(0) BREAK(SEP) . BASENAME
+	BASENAME = REVERSE(BASENAME)		:(RETURN)
 BASENAME.END
