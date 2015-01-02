@@ -246,11 +246,6 @@ io_init(stdinc)				/* here from init_args() */
 
     io_initvars();
 
-    if (stdinc) {
-	/* but not if set-uid!!! */
-	io_add_lib_dir(".");
-    }
-
     if (nfiles == 0) {			/* no input file(s)? */
 #ifdef MEM_IO_TEST
 	char *str = "\tOUTPUT = 'Hello World'\n\tOUTPUT = INPUT\nEND\nFOO\n";
@@ -326,6 +321,8 @@ pathinit(int stdinc) {
 	io_add_lib_path(env);
     }
     else if (stdinc) {
+	io_add_lib_dir(".");		/* XXX but not if set-uid!!! */
+
 	io_add_lib_dir(snolib_vlib);	/* dist, (version-specific) */
 	io_add_lib_dir(snolib_vlocal);	/* local, version-specific */
 	io_add_lib_dir(snolib_local);	/* local -- all versions */
