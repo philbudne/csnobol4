@@ -15,6 +15,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 		add more spacing in characters table
 	snolib/setuputil.sno: use basename.sno
 		fix windoze setuputil path
+	README, COPYRIGHT, snolib/sdb.sno: update Copyright date
 
 12/31/2014:
 	README: update

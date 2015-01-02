@@ -1,6 +1,6 @@
 -HIDE
 * "SDB" SNOBOL4 debugger -- a clone (clown?) of GNU "gdb" debugger
-	SDB.COPYRIGHT = 'Copyright © 2010-2014 Philip L. Budne'
+	SDB.COPYRIGHT = 'Copyright © 2010-2015 Philip L. Budne'
 *			All rights reserved.
 * 
 * Redistribution and use in source and binary forms, with or without
