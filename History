@@ -6,6 +6,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	configure: set SO_LD for Solaris/cc; quit if SO_LD not set
 		fix SNOLIB= value
 		override SNOLIB in RUNSETUP (problem seen by Phillip Thomas)
+		update version to 2.0
 	snolib/basename.sno: revised (idea thanks to Phillip Thomas)
 	lib/init.c: move "." first in search path
 	snolib/snopea.sno: output <p> before <ul>; htext;
