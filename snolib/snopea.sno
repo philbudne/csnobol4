@@ -289,10 +289,11 @@ sp.html.head
 
 	out = '<html>'
 	out = '<head>'
-	out = '<title>' page '(' sect ') | ' snopea.snovers '|' date '</title>'
+	htext =  page '(' sect ') | ' snopea.snovers ' | ' date
+	out = '<title>' htext '</title>'
 	out = '</head>'
 	out = '<body>'
-	out = '<h1>' page '(' sect ') | ' snopea.snovers ' | ' date '</h1>'
+	out = '<h1>' htext '</h1>'
 	indent = 4
 	text =
 
@@ -300,6 +301,7 @@ sp.html.pea						:(sp.top)
 
 * internal (blank line seen)
 sp.html.para
+	out = VDIFFER(endlist)
 	out = '<p>'
 	needspace = endlist =				:(sp.text)
 
@@ -369,6 +371,7 @@ sp.html.item2
 * bullet item
 sp.html.bull
 	differ(endlist)					:s(sp.html.bull2)
+	out = '<p>'
 	out = '<ul>'
 	endlist = '</ul>'
 sp.html.bull2
