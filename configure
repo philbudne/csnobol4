@@ -823,9 +823,16 @@ else
 
 	SO_EXT=.so
 	SO_CFLAGS=-Kpic
+	SO_LD=$CCPATH
 	SO_LDFLAGS=-G
 	;;
     esac
+fi
+
+# sanity check 1/1/2015:
+if [ "x$LDFLAGS" != x -a "SO_LD" = "" ]; then
+    echo 'LDFLAGS set without SO_LD' 1>&2
+    exit 1
 fi
 
 if [ "$CCPATH" ]; then
@@ -1632,6 +1639,7 @@ if [ "x$SO_EXT" != x -a "x$DL_EXT" = x ]; then
 fi
 
 if [ "x$SO_EXT" != x ]; then
+# not used:
     echo '# Shared Object Libraries'	>> $CONFIG_M4
     echo "SO_EXT=$SO_EXT"		>> $CONFIG_M4
     echo "SO_CFLAGS=$SO_CFLAGS"		>> $CONFIG_M4
