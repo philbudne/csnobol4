@@ -15,7 +15,7 @@ I<Standard>.
 
 =item B<ARBNO(>I<pattern>B<)>
 Pattern: returns a pattern that matches zero or more repeats of I<pattern>.
-I:<Standard>.
+I<Standard>.
 
 =item B<ARG(>I<func,n>B<)>
 Function: returns the name of the I<n>th argument to function I<func>.
