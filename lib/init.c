@@ -315,14 +315,12 @@ pathinit(int stdinc) {
     /* local -- all versions */
     snolib_local = strjoin(snolib_base, DIR_SEP, "local", NULL);
 
-    /* add to search path (after -I options) */
+    /* add to search path (after . & -I options) */
     env = getenv("SNOPATH");
     if (env) {
 	io_add_lib_path(env);
     }
     else if (stdinc) {
-	io_add_lib_dir(".");		/* XXX but not if set-uid!!! */
-
 	io_add_lib_dir(snolib_vlib);	/* dist, (version-specific) */
 	io_add_lib_dir(snolib_vlocal);	/* local, version-specific */
 	io_add_lib_dir(snolib_local);	/* local -- all versions */
@@ -362,6 +360,8 @@ init_args( ac, av )
     errs = 0;
     multifile = 0;			/* SITBOL behavior */
     justversion = 0;
+
+    io_add_lib_dir(".");		/* XXX but not if set-uid??? */
 
     /*
      * ***** NOTE ******
