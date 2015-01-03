@@ -7,6 +7,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	doc/snobol4io.1.pea: ``terminal''
 	test/base.{sno,ref} (new): test basename.sno
 	test/tests.in: add base.sno
+	Makefile2.m4: add snobol4op to GENERATED_DOCS_DOCDIR1
 
 **************** release 2.0 (CVS tag REL_2_0)
 
