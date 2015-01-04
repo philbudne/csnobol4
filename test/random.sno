@@ -1,5 +1,5 @@
 * without SRANDOMDEV() call, results should always be identical!
--include 'random.sno'
+-include '../modules/random/random.sno'
 	bins = array('0:99')
 	n = sn = 10000
 	t = 0

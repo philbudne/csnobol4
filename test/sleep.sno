@@ -1,4 +1,4 @@
--INCLUDE "time.sno"
+-INCLUDE "../modules/time/time.sno"
 	s = 2
 	tries = 5
 top	output = lt(tries, 1) 'failed'			:s(end)

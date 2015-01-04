@@ -1,4 +1,4 @@
--INCLUDE 'time.sno'
+-INCLUDE '../modules/time/time.sno'
 
 	DEFINE("TMDUMP(T)")	:(E.TMDUMP)
 TMDUMP	OUTPUT = "TM_SEC " TM_SEC(T)

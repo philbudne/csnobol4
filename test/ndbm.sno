@@ -22,7 +22,7 @@
 * DBM_DELETE(filepointer,key)
 * 
 
--INCLUDE 'ndbm.sno'
+-INCLUDE '../modules/ndbm/ndbm.sno'
 
 * store a key/datum pair, remember in table
 	DEFINE("STORE(F,KEY,DATUM,T)")			:(ESTORE)
