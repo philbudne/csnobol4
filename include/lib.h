@@ -151,7 +151,10 @@ int exreal __P((struct descr *,struct descr *,struct descr *));
 
 /* from load.c */
 void unload __P((struct spec *));
-void *os_load __P((char *, char *));
+#ifdef LOAD_PROTO
+typedef int (loadable_func_t)(LOAD_PROTO); /* function entry point */
+loadable_func_t *os_load __P((char *, char *));
+#endif
 
 /* from loadx.c (or load.c) */
 int callx __P((struct descr *,struct descr *,struct descr *,struct descr *));

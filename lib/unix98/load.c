@@ -43,12 +43,12 @@ struct func {
 static struct func *funcs;
 
 /* called from loadx.c */
-void *
+loadable_func_t *
 os_load(fname, lname)
     char *fname, *lname;
 {
     void *handle;
-    int (*entry)(LOAD_PROTO);		/* function entry point */
+    loadable_func_t *entry;
     struct func *fp; 
 
     /* XXX if lname doesn't have a DIR_SEP, prepend . + DIR_SEP? */
@@ -69,7 +69,7 @@ os_load(fname, lname)
     if (!handle)
 	return NULL;
 
-    entry = (int (*)(LOAD_PROTO)) dlsym(handle, fname);
+    entry = (loadable_func_t *) dlsym(handle, fname);
     if (!entry) {
 #ifdef TRY_UNDERSCORE
 	char name2[1024];		/* XXX */
@@ -78,7 +78,7 @@ os_load(fname, lname)
 	strncpy(name2+1, fname, sizeof(name2)-2);
 	name2[sizeof(name2)-1] = '\0';
 
-	entry = (int (*)(LOAD_PROTO)) dlsym(handle, name2);
+	entry = (loadable_func_t *) dlsym(handle, name2);
 	if (entry == NULL)
 	    goto fail;
 #else  /* TRY_UNDERSCORE not defined */

@@ -39,12 +39,12 @@ struct func {
 static struct func *funcs;
 #endif /* NO_STATIC_VARS not defined */
 
-void *
+loadable_func_t *
 os_load(fname, lname)
      char *fname, *lname;
 {
     HMODULE handle;
-    int (*entry)(LOAD_PROTO);		/* function entry point */
+    loadable_func_t *entry;		/* function entry point */
     struct func *fp; 
 
     /*
@@ -59,7 +59,7 @@ os_load(fname, lname)
     if (!handle)
 	return NULL;
 
-    entry = (int (*)(LOAD_PROTO)) GetProcAddress(handle, fname);
+    entry = (loadable_func_t *) GetProcAddress(handle, fname);
     if (entry == NULL)
 	goto fail;
 
