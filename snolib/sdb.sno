@@ -89,6 +89,12 @@ SDB.GOT_MAX_STMTS
 * map label names to statement numbers
 	SDB.LABELS = TABLE(50, 50)
 
+* scalar datatypes (OK to append values for display)
+	SDB.SCALAR = TABLE()
+	SDB.SCALAR['INTEGER'] = 1
+	SDB.SCALAR['REAL'] = 1
+	SDB.SCALAR['STRING'] = 1
+
 * initialize I/O
 	DIFFER(.NAME, "NAME")			:S(SDB.SPITBOL)
 * CSNOBOL4 init:
@@ -865,7 +871,7 @@ SDB.YORN.END
 	DIFFER(.NAME,'NAME')			:S(SDB.NOSTACK)
 	SDB.CALLS = ARRAY('1:' SDB.MAX_CALLS)
 
-	DEFINE('SDB.FCALL(FNAME)S,I,L,C')	:(SDB.FCALL.END)
+	DEFINE('SDB.FCALL(FNAME)S,I,L,C,V')	:(SDB.FCALL.END)
 * here on entry to all user-defined functions
 SDB.FCALL
 	L = &LASTFILE ':' &LASTLINE ' statement ' &LASTNO
@@ -874,7 +880,9 @@ SDB.FCALL
 	I = 1
 * loop accumulating argument values
 SDB.FCALL.ARGLOP
-	S = S C $ARG(FNAME,I)				:F(SDB.FCALL.EARGLOP)
+	V = $ARG(FNAME,I)				:F(SDB.FCALL.EARGLOP)
+	V = IDENT(SDB.SCALAR[DATATYPE(V)]) '<' CONVERT(V, 'STRING') '>'
+	S = S C V
 	C = ','
 	I = I + 1					:(SDB.FCALL.ARGLOP)
 SDB.FCALL.EARGLOP
