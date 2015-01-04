@@ -263,4 +263,7 @@ snopea.7.ps: snopea.7
 ####
 
 clean:
-	rm -f porting.txt *.html *.ps *.pdf \#* *~ $(GENERATED)
+	rm -f *.html *.ps *.pdf \#* *~ $(GENERATED)
+
+spotless: clean
+	rm -f porting.txt

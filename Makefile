@@ -215,4 +215,5 @@ clean:	cleanmostly
 # DANGER: requires installed binary to rebuild!!
 # remove objects, generated files (clean as a fresh CVS checkout)
 spotless: clean
+	(cd doc; make spotless)
 	rm -f $(GENERATED) $(G2) snobol4.c isnobol4.c snobol4 xsnobol4
