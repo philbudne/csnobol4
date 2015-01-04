@@ -1,9 +1,7 @@
 $Id$
 
-install.bat:
-	test snopea.bat
-	double check all files installed vs 1.5
-		plus config.sno
+Solaris
+icc
 
 ================
 
