@@ -49,7 +49,7 @@ cat $TESTS | while read TYPE PROG; do
 	    for X in ${PROG}; do
 		case "$X" in
 		-*) ARGS="$ARGS $X";;
-		*=*) eval export $X;;
+		*=*) eval $X; export `echo $X | sed 's/=.*$//'`;;
 		*) PROG=$X; break;;
 		esac
 	    done

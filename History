@@ -10,8 +10,10 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	configure: update to 2.0+
 		add missing quote
 	doc/snobol4cmd.1.pea: update -I description
+	Solaris fixes, thanks to Mark R Riordan:
 	include/lib.h: add loadable_function_t for os_load() (SunCC warning)
 	lib/{unix98,win32}/load.c: use loadable_function_t *
+	test/run.sh: avoid ksh-ism (export VAR=var)
 
 1/3/2014:
 	lib/init.c: always add ".", before processing options
