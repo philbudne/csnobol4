@@ -600,7 +600,7 @@ if [ "$GCCPATH" -a "$WANTGCC" ]; then
 	echo 'ADD_LDFLAGS([-Wl,--out-implib,libsnobol4.a])' >> $CONFIG_M4
 	# libsnobol4.a not created unless this given???:
 	echo 'ADD_LDFLAGS([-Wl,--export-all-symbols])' >> $CONFIG_M4
-	echo 'define([INSTALL_SYSDEP],[$(INSTALL) -m 644 libsnobol4.a $(SNOLIB)]) >> $CONFIG_M4
+	echo 'define([INSTALL_SYSDEP],[$(INSTALL) -m 644 libsnobol4.a $(SNOLIB)])' >> $CONFIG_M4
 	;;
 
     *)
