@@ -42,7 +42,7 @@ Toggle running programs with compilation errors
 (see B<\-ERROR> and B<\-NOERRORS> extensions).
 By default programs with compilation errors will not be run.
 
-=item B<-l >I<LISTINGFILE>
+=item B<-l> I<LISTINGFILE>
 Enable listing output to the named file. The default listing side is B<LEFT>.
 
 =item B<-n>
@@ -72,14 +72,15 @@ Force banner and termination output.
 
 =item B<-z>
 Show directory search path in use
-(including B<-I> options) and exit.
+(including all B<-I> options on the command line) and exit.
 
 =item B<-I> I<directory>
-Appends directory argument to include search path (before elements
-from the B<SNOLIB> or B<SNOPATH> environment variables).
+Add I<directory> to the directory search path before any
+other directories (ie; from B<SNOPATH> or default entries).
+May be used multiple times.
 
 =item B<-L> I<file>
-Load source file before others on command line.  May be used multiple times.
+Preload SNOBOL4 source I<file>. May be used multiple times.
 Used to preload the B<sdb>(1) source code debugger.
 
 =item B<-M>
@@ -90,7 +91,9 @@ available via the B<INPUT> variable if the B<-r> option is also
 given).
 
 =item B<-N>
-Disable standard search path ``no standard include.''
+Disable standard search path, I<INCLUDING> current working directory.
+Only directories specified by B<-I> options will be searched.
+Mnemonic: ``no standard include''.
 
 =item B<-P> I<ndesc>
 Allocate I<ndesc> descriptors for the pattern match stack.  A suffix

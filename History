@@ -8,6 +8,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	lib/io.c: io_ecomp() -- check for NULL pointer
 	test/{ndbm,random,sleep,time}.sno: use ../modules/... for includes
 	configure: update to 2.0+
+	doc/snobol4cmd.1.pea: update -I description
 
 1/3/2014:
 	lib/init.c: always add ".", before processing options
