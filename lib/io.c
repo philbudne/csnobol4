@@ -1571,7 +1571,7 @@ io_ecomp()				/* XECOMP */
 
     /* free source files... */
     fp = up->head;
-    while (fp != up->curr) {
+    while (fp && fp != up->curr) {
 	struct file *tp;
 
 	tp = fp->next;
