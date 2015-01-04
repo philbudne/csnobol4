@@ -116,18 +116,19 @@ executable: ``B<#!/usr/local/bin/snobol4>'' or
 
 =sect DIRECTORY SEARCH LIST
 A directory search list is used for files specified in B<-INCLUDE>
-directives and B<LOAD()> function calls is constructed from:
+directives and B<LOAD()> function calls, and is constructed from:
 
-Any directories specified on the command line using B<-I> options, in
+1. The current working directory (``.'').
+
+2. Any directories specified on the command line using B<-I> options, in
 the order specified.
 
-Directories from the the B<SNOPATH> environment variable (see below), if defined.
+3a. Directories from the the B<SNOPATH> environment variable (see below), if defined.
 
-If B<SNOPATH> is not defined, the B<SNODIR> environment variable (or a
-compiled in default) is used as I<base> to add the following
+3b. If B<SNOPATH> is not defined, the B<SNOLIB> environment variable
+(or a compiled in default) is used as I<base> to add the following
 directories:
 
-=bull B<.> I<(the current working directory)>
 =bull I<base>/I<version>/B<lib>
 =bull I<base>/I<version>/B<local>
 =bull I<base>/B<local>
