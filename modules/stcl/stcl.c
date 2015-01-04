@@ -162,7 +162,6 @@ STCL_GETVAR( LA_ALIST ) LA_DCL
     name = mgetstring(LA_PTR(1));
     val = Tcl_GetVar(interp, name, 0);
     free(name);
-    printf("getvar %p %s => %s\n", interp, name, val);
     RETSTR(val);
 }
 
