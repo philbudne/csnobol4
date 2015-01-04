@@ -6,7 +6,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	snolib/sdb.sno: add SDB.SCALAR:
 		table of datatypes safe to display
 	lib/io.c: io_ecomp() -- check for NULL pointer
-	test/{ndbm,random,sleep,time}.sno: ../modules/... for includes
+	test/{ndbm,random,sleep,time}.sno: use ../modules/... for includes
+	configure: update to 2.0+
 
 1/3/2014:
 	lib/init.c: always add ".", before processing options
