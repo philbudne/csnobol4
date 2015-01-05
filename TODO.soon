@@ -3,7 +3,7 @@ $Id$
 ================
 
 2.1:
-	Enable -Wimplicit-function-declaration -Werror for "check" script??
+	Enable -Wimplicit-function-declaration -Werror in configure "check"??
 		pass CFLAGS env var?
 	ANSIfy: flush str.h
 
@@ -16,7 +16,7 @@ man pages:
     snobol4func
 	make sure all function & type names in bold,
 		argument names in italic.
-	add better descriptions (esp ARRAY, DEFINE)
+	add better descriptions (esp ARRAY, DEFINE, PROTOTYPE)
 
     snobol4syn:
 	statement syntax
