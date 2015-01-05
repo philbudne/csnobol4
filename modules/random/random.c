@@ -575,7 +575,7 @@ lret_t
 RANDOM( LA_ALIST ) LA_DCL
 {
     if (!seeded) {
-	bsd_srandom(1);
+	bsd_srandom(1UL);
 	seeded = 1;
     }
     RETINT(bsd_random());
