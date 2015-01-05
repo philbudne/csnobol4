@@ -1067,7 +1067,7 @@ static int
 io_write(fp, cp, len)
      struct file *fp;
      char *cp;
-     int len;
+     int_t len;
 {
     if (len == 0)
 	return TRUE;

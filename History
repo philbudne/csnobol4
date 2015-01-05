@@ -16,7 +16,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	test/run.sh: avoid ksh-ism (export VAR=var)
 	Makefile: pass make spotless down to doc/Makefile
 	doc/Makefile: add make spotless (remove porting.txt)
-	modules/random/random.c: fix icc warning
+	modules/random/random.c, lib/io.c: try fixing icc warning
 
 1/3/2014:
 	lib/init.c: always add ".", before processing options
