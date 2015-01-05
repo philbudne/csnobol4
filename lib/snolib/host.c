@@ -176,10 +176,13 @@ HOST( LA_ALIST ) LA_DCL
 	RETSTR(CONFIG_OPTIONS);		/* autoconf options */
 #endif /* CONFIG_OPTIONS defined */
 
-#ifdef HOST_VERSION_DATE
     case HOST_VERSION_DATE:
 	RETSTR(vdate);			/* from configure script */
-#endif /* HOST_VERSION_DATE */
+
+#ifdef CC_IS
+    case HOST_CC_IS:
+	RETSTR(CC_IS);			/* from configure script */
+#endif /* CC_IS defined */
 
 /* variables from build.c, created before linking snobol4 executable */
 #ifdef HAVE_BUILD_VARS

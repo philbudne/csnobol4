@@ -51,6 +51,9 @@
 /* CSNOBOL4: version date (from configure script) */
 #define HOST_VERSION_DATE	2004
 
+/* CSNOBOL4: C compiler name/id */
+#define HOST_CC_IS		2005
+
 /*****
  * variables from build.c, created before linking snobol4 executable
  */

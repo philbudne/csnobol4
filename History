@@ -12,6 +12,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	doc/snobol4cmd.1.pea: update -I description
 	modules/random/random.c, lib/io.c: try fixing icc warning
 	configure: removed some ancient stuff, add icc support
+	lib/snolib/host.[ch]: add HOST_CC_IS
 	Solaris fixes, thanks to Mark R Riordan:
 	include/lib.h: add loadable_function_t for os_load() (SunCC warning)
 	lib/{unix98,win32}/load.c: use loadable_function_t *
