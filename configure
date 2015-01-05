@@ -13,11 +13,6 @@ OPTIONS="$*"
 VERSION=2.0+
 VERSION_DATE="January 4, 2015"
 
-if [ ! "$CC" ]; then
-    # on most system gcc is preferred if it can be found
-    WANTGCC=true
-fi
-
 # save any CFLAGS passed to us...
 INITIAL_CFLAGS="$CFLAGS"
 
@@ -163,11 +158,6 @@ while [ $# -gt 0 ]; do
     --fast)
 	FAST=true
 	;;
-    --force-gcc)
-	FORCEGCC=true
-	#WANTGCC=true
-	CC=
-	;;
     --force-memmove)
 	FORCE_MEMMOVE=true
 	;;
@@ -189,17 +179,6 @@ while [ $# -gt 0 ]; do
     --no-bitfields)
 	NO_BITFIELDS=true
 	;;
-    --no-dlopen)
-	NO_DLOPEN=true
-	;;
-    --no-dynlib)
-	NO_DYNLIB=true
-	;;
-    --no-gcc)
-	WANTGCC=
-	#FORCEGCC=
-	CC=
-	;;
     --no-inline)
 	INLINE_OK=
 	;;
@@ -220,9 +199,6 @@ while [ $# -gt 0 ]; do
 	;;
     --prefix=*)
 	PREFIX=`echo "$1" | sed 's/--prefix=//'`
-	;;
-    --universal)
-	UNIVERSAL=true
 	;;
     --without-com)
 	WITHOUT_COM=1
@@ -255,21 +231,17 @@ Makefile additions;
 	--add-define=NAME[=VALUE] --add-ldflags=STR
 	--add-objs=STR	--add-srcs=STR
 
-C Compiler selection;
-	--force-gcc		--no-gcc
-
 C Compiler settings;
 	--add-cflags=STR	--opt=STR
 	--add-warn=STR		--fast
-	--no-inline		--universal
+	--no-inline
 
 SNOBOL4 Datatype selection;
 	--double		--longlong
 	--lp64			--no-bitfields
 
 C Library support selection;
-	--force-memmove		--no-dlopen
-	--no-dynlib		--no-largefile
+	--force-memmove		--no-largefile
 
 Install location;
 	--prefix=PATH		[default: /usr/local]
@@ -367,68 +339,58 @@ echo '#define HAVE_BUILD_VARS'			>> $CONFIG_H
 if [ "$CC" ]; then
     echo 'using CC environment variable' 1>&2
     CCPATH="$CC"
-fi
-
-if [ "$WANTGCC" ]; then
-    # look for gcc up front (for Solaris/x86)
-    echo 'looking for gcc' 1>&2
-    for DIR in `echo $PATH | tr ':' ' '`; do
-	if [ -x $DIR/gcc ]; then
-	    echo "found gcc in $DIR" 1>&2
-	    GCCPATH=gcc
-	    break
-	fi
-    done
+else
+    CCPATH=cc
 fi
 
 TMP=conf$$
 
-# didn't find gcc in PATH; check if CC is gcc or clang
-if [ ! "$GCCPATH" ]; then
-    echo 'checking cc' 1>&2
+echo "checking $CCPATH" 1>&2
     # vanilla bsd43 systems can't use <<- AND EOF must be in col 0!
     cat << EOF > $TMP.c
 #include <stdio.h>
 int
 main() {
-#ifdef __clang__
-    printf("clang\n"); /* bitches that puts() deprecated in C99! */
-#else
-#if defined(__gcc__) || defined(__GNUC__)
-    printf("gcc\n");
-#else
-    printf("unknown\n");
+#if defined(__clang__)
+#define COMPILER "clang"
 #endif
+
+#if !defined(COMPILER) && (defined(__ICC) || defined(__INTEL_COMPILER))
+#define COMPILER "icc"
 #endif
+
+/* after anything that might imitate gcc for compatibility */
+#if !defined(COMPILER) && (defined(__gcc__) || defined(__GNUC__))
+#define COMPILER "gcc"
+#endif
+
+#ifdef __SUNPRO_C
+#undef COMPILER
+#define COMPILER "sunpro"
+#endif
+
+#ifndef COMPILER
+#define COMPILER "unknown"
+#endif
+    /* clang bitches that puts() deprecated in C99! */
+    printf("%s\n", COMPILER);
     return 0;
 }
 EOF
-    if [ "x$CC" = x ]; then
-	XCC=cc
-    else
-	XCC="$CC"
-    fi
-    if $XCC -o $TMP $TMP.c; then
-	CC_IS=`./$TMP`
-	if [ "$CC_IS" ]; then
-	    echo "$XCC is $CC_IS" 1>&2
-	    echo "# $XCC is $CC_IS"		>> $CONFIG_M4
-	    if [ "$CC_IS" = gcc ]; then
-		GCCPATH="$XCC"
-
-		# if cc is gcc, disregard --no-gcc
-		WANTGCC=true
-	    fi
-	fi
+if $CCPATH -o $TMP $TMP.c; then
+    CC_IS=`./$TMP`
+    if [ "$CC_IS" ]; then
+	echo "$CCPATH is $CC_IS" 1>&2
+	echo "# $CCPATH is $CC_IS"		>> $CONFIG_M4
     fi
     rm -f $TMP $TMP.c $TMP.exe
-fi
-
-# clang does not qualify!
-if [ "$FORCEGCC" -a ! "$GCCPATH" ]; then
-    echo ' gcc not available' 1>&2
+else
+    echo $CCPATH failed: status=$? 1>&2
+    rm -f $TMP
     exit 1
 fi
+
+echo '#define CC_IS "'$CC_IS'"'			>> $CONFIG_H
 
 # nearly generic gcc3 option for LP64
 GCC64=-m64
@@ -438,75 +400,6 @@ MORV="${MACHINE}:${OS}:${OSREL}:${OSVERS}"
 
 # library support, C compiler choice, flags
 case "$MORV" in
-9000/[678]??:HP-UX:*:*)
-    # dlfcn.h present on hpux 11 systems,
-    # but no library on 32-bit systems
-    # (this will be reset below for 64-bit compilation)
-    NO_DLOPEN=true
-
-    # look for unbundled C; prefer it to gcc
-    if [ ! "$FORCEGCC" ]; then
-	if [ -x /bin/c89 -o -x /usr/bin/c89 ]; then
-	    # ASSume presense of c89 means cc is unbundled compiler
-	    # used to use c89 with -D_HPUX_SOURCE
-	    echo 'using unbundled cc' 1>&2
-	    CCPATH=cc
-	    WANTGCC=
-
-	    # LARGEFILE requires cc -Ae or c89 +e -D__STDC_EXT__
-	    echo 'ADD_CFLAGS([-Ae])'	>> $CONFIG_M4
-	else
-	    # gcc is preferable to bundled C, if it works,
-	    # but often gives trouble, so don't use if if
-	    # not forced!
-	    WANTGCC=
-	fi
-    fi
-    ;;
-
-ia64:HP-UX:*:*)
-    # default on HP-UX/ia64 is ILP32!
-    # different option to get LP64!
-    GCC64=-mlp64
-
-    # ia64 has dlopen(), regardless of data model
-
-    # look for unbundled C; prefer it to gcc
-    if [ ! "$FORCEGCC" ]; then
-	if [ -x /bin/c89 -o -x /usr/bin/c89 ]; then
-	    # ASSume presense of c89 means cc is unbundled compiler
-	    # used to use c89 with -D_HPUX_SOURCE
-	    echo 'using unbundled cc' 1>&2
-	    CCPATH=cc
-	    WANTGCC=
-
-	    # LARGEFILE requires cc -Ae or c89 +e -D__STDC_EXT__
-	    echo 'ADD_CFLAGS([-Ae])'	>> $CONFIG_M4
-	elif [ "$LP64" ]; then
-	    # gcc version 3.2 20020329 (experimental) beats
-	    # (Bundled) cc: HP ANSI C++/C B3910B A.05.36 [Apr 18 2002]
-	    # for ILP32 compilations (but doesn't support LP64?!)
-	    WANTGCC=
-
-	    # compiler ignores -O (complains)
-	    #NO_OPT=true
-	fi
-    fi
-    ;;
-
-9000/[34]??:4.3bsd:*:*)
-    # Mt Xinu 4.3 on hp300
-    echo 'using dummy isnan() and finite() functions' 1>&2
-    echo 'ADD_OBJS([isnan.o finite.o])'		>> $CONFIG_M4
-    echo 'ADD_SRCS([$(ISNAN_C) $(FINITE_C)])'	>> $CONFIG_M4
-    ;;
-
-# POWER(RS6k)/PowerPC AIX
-*:AIX:2:3|*:AIX:*:[45])
-    # prefer regular cc to gcc (only use gcc if forced)
-    WANTGCC="$FORCEGCC"
-    ;;
-
 *:Darwin:*:*)
     # includes MacOS X
     # libm integrated into libc
@@ -528,19 +421,12 @@ ia64:HP-UX:*:*)
 esac
 
 # compiler options
-if [ "$GCCPATH" -a "$WANTGCC" ]; then
-    echo using gcc 1>&2
-    CCPATH="$GCCPATH"
+case "$CC_IS" in
+gcc|clang|icc)
     CCVERS=-v
     echo 'CCM=$(CC) -M'				>> $CONFIG_M4
-
-    # w/ gcc v3 -O3 turns on things OTHER than -finline-functions,
-    # so make -O3 the default, and use -fno-inline-functions
     OPT=-O3
 
-    if [ ! "$INLINE_OK" ]; then
-	echo 'ADD_OPT([-fno-inline-functions])'	>> $CONFIG_M4
-    fi
     # on by default in clang??
     echo 'ADD_CFLAGS([-Wall])'			>> $CONFIG_M4
 
@@ -571,14 +457,6 @@ if [ "$GCCPATH" -a "$WANTGCC" ]; then
 	# need symbols to find (m)getstring....
 	echo "INSTALL_BIN_FLAGS="	>> $CONFIG_M4
 
-	# old!!!
-	UNIVERSAL_SDK_DIR=/Developer/SDKs/MacOSX10.4u.sdk
-	if [ "$UNIVERSAL" -a -d $UNIVERSAL_SDK_DIR ]; then
-	    echo "ADD_CFLAGS([-arch ppc])"	>> $CONFIG_M4
-	    echo "ADD_CFLAGS([-arch i386])"	>> $CONFIG_M4
-	    echo "ADD_CFLAGS([-isysroot $UNIVERSAL_SDK_DIR])"	>> $CONFIG_M4
-	fi
-
 	# try:
 	# -exported_symbols_list filename
 	# or
@@ -589,7 +467,7 @@ if [ "$GCCPATH" -a "$WANTGCC" ]; then
 	SO_EXT=.so
 	SO_CFLAGS=-fPIC
 	SO_LD=/usr/bin/ld
-	SO_LDFLAGS='-assert nodefinitions'
+	SO_LDFLAGS="-assert nodefinitions $SO_CFLAGS"
 	;;
 
     *:CYGWIN*)
@@ -612,56 +490,16 @@ if [ "$GCCPATH" -a "$WANTGCC" ]; then
 	# when you specify -shared"
 	SO_LDFLAGS="-shared $SO_CFLAGS"
 	;;
-    esac
+    esac # morv
 
     # -fstrength-reduce is no gain?
     # -fomit-frame-pointer can make debugging harder, so put it here
     #	(on systems where it's harmless, it's turned on by -O)
     FASTFLAGS=-fomit-frame-pointer
-
-    USING_GCC=true
-elif [ "$CC_IS" = clang ]; then
-    CCVERS=-v
-    echo 'CCM=$(CC) -M'				>> $CONFIG_M4
-
-    OPT=-O3
-
-    # disable warnings enabled by default in code generated from SIL;
-    echo 'SNOBOL4_C_CFLAGS=-Wno-return-type -Wno-switch' >> $CONFIG_M4
-
-    case "$MORV" in
-    *:Darwin:*:*)
-	# MacOS has different file types for shared libraries (dylibs)
-	# and dynamicly loaded extensions (bundles)
-	# -fPIC is the default on OS X
-	# ~sigh~ copied from gcc case!
-
-	SO_EXT=.dylib
-	SO_LD=$CCPATH
-	SO_LDFLAGS=-dynamiclib
-
-	DL_EXT=.bundle
-	DL_LD=$CCPATH
-	DL_LDFLAGS='-bundle -undefined dynamic_lookup'
-
-	# don't strip installed binary; 
-	# need symbols to find (m)getstring....
-	echo "INSTALL_BIN_FLAGS="	>> $CONFIG_M4
-	;;
-
-
-    *)
-	# ~sigh~ copied from gcc case!
-	SO_EXT=.so
-	SO_CFLAGS=-fPIC		# ??
-	SO_LD=$CCPATH
-	# gcc: "For predictable results, you must also specify the
-	# same set of options that were used to generate code (-fpic,-fPIC)
-	# when you specify -shared"
-	SO_LDFLAGS="-shared $SO_CFLAGS"
-	;;
-    esac
-else
+    # end gcc|clang|icc
+    ;;
+*)
+    # not gcc, clang or icc
     # required options for native compilers
     case "$MORV" in
     9000/[34]*:HP-UX:*:*)
@@ -674,8 +512,6 @@ else
 	KERNEL_BITS=`(/usr/bin/getconf SC_KERNEL_BITS || echo 32) 2>/dev/null`
 	if [ "$KERNEL_BITS" = 64 -a "$LP64" ]; then
 	    ARCH_OPT=`getconf XBS5_LP64_OFF64_CFLAGS`
-	    # dlopen available in 64-bit world!
-	    NO_DLOPEN=
 	fi
 	if [ -x /bin/c89 -o -x /usr/bin/c89 ]; then
 	    SO_EXT=.sl
@@ -742,7 +578,7 @@ else
 	# for data_init.o
 	echo 'ADD_CFLAGS([-qmaxmem=32000])'	>> $CONFIG_M4
 	;;
-    *:AIX:*:[45])
+    *:AIX:*:[4-9])
 	# AIX4/xlc
 	# -M creates .u files
 	# -v outputs man page!!
@@ -770,8 +606,20 @@ else
 	fi
 
 	# "AIX 4.3 and later"
+
+	# -G == "-bM:SRE -berok -brtl -bnortllib -bnosymbolic -bnoautoexp"
+
+	# ftp://plasma-gate.weizmann.ac.il/pub/grace/aux/dlfcn-aix.README says:
+	# If you want to reference symbols from the main part of the
+	# program in a loaded module, you will have to link against
+	# the export file of the main part:
+	# cc -o main -bE:main.exp $(MAIN_OBJS)
+	echo 'ADD_LDFLAGS([-bE:snobol4.exp])'	>> $CONFIG_M4
+
+	# cc -o module.so -bM:SRE -bI:main.exp -bE:module.exp -bnoentry $(OBJS)
 	SO_EXT=.so
-	SO_LDFLAGS=-bM:SRE
+	SO_LD=ld
+	SO_LDFLAGS='-G'
 	;;
     *:OSF1:*:*)
 	OPT=-O4
@@ -826,8 +674,10 @@ else
 	SO_LD=$CCPATH
 	SO_LDFLAGS=-G
 	;;
-    esac
-fi
+    esac # morv
+    # not gcc|clang|icc
+    ;;
+esac # CC_IS
 
 # sanity check 1/1/2015:
 if [ "x$LDFLAGS" != x -a "SO_LD" = "" ]; then
@@ -893,7 +743,7 @@ if ${CCPATH-cc} $CFLAGS -o $TMP $TMP.c && ./$TMP > $TMP.out &&
 
     # XXX ASSume sizeof(char) == 1 (8 bits)
     if [ "$SPTR" = 8 -a "$SLONG" = 8 ]; then
-	echo 'LP64 is native programming model' 1>&2
+	echo 'native programming model is LP64' 1>&2
 	LP64=true
 	LP64_NATIVE=true
     fi
@@ -908,7 +758,7 @@ main() {
     return 0;
 }
 EOF
-    if ${CCPATH-cc} $CFLAGS $CFLAGS_LONGLONG -o $TMP $TMP.c && ./$TMP > $TMP.out; then
+    if ${CCPATH} $CFLAGS $CFLAGS_LONGLONG -o $TMP $TMP.c && ./$TMP > $TMP.out; then
 	SLONGLONG=`cat $TMP.out`
 	echo 'sizeof(long long) = '$SLONGLONG		1>&2
 	echo '# sizeof(long long) = '$SLONGLONG		>> $CONFIG_M4
@@ -917,7 +767,8 @@ fi
 rm -f $TMP $TMP.c $TMP.out $TMP.exe
 
 # after size checks;
-if [ "$USING_GCC" ]; then
+case "$CC_IS" in
+gcc)
     # avoid trying option where LP64 is the default, and the compiler could
     # be gcc2 -- there was no generic option back then!
     if [ "$LP64" -a ! "$LP64_NATIVE" ]; then
@@ -926,7 +777,8 @@ if [ "$USING_GCC" ]; then
 	CFLAGS="$GCC64"
 	export CFLAGS
     fi
-fi
+    ;;
+esac
 
 # after size checks;
 if [ "$LP64" ]; then
@@ -951,7 +803,6 @@ fi
 if [ "$ARCH_CFLAGS" ]; then
     echo 'ADD_CFLAGS(['$ARCH_CFLAGS'])'		>> $CONFIG_M4
 fi
-
 
 if [ "$NO_OPT" ]; then
     echo OPT=					>> $CONFIG_M4
@@ -1007,10 +858,12 @@ if [ "$LONGLONG" ]; then
 	echo 'INTSPC_C=$(SRCDIR)lib/longlong/intspc.c' >> $CONFIG_M4
     fi
 
-    if [ "$USING_GCC" -o "$CC_IS" = clang ]; then
+    case "$CC_IS" in
+    gcc|clang)
 	# keep gcc (& clang?) from screaming about copious warnings
         echo 'ADD_CFLAGS([-Wno-pointer-to-int-cast -Wno-int-to-pointer-cast])' >> $CONFIG_M4
-    fi
+	;;
+    esac
 else
     LONGLONG=
     SIZEOF_INT_T=$SLONG
@@ -1378,11 +1231,9 @@ else
 fi
 
 # look for dynamic library support for "load";
-# overrides "dummy" and "bsd" style, unless given --no-dynlib
-if [ ! "$NO_DYNLIB" ]; then
-    # look for sun/unix98 style dlopen()
-    if [ ! "$NO_DLOPEN" ]; then
-      if config/check dlfcn.h 'dlopen("", 0)' || \
+# overrides "dummy" and "bsd" style
+# look for sun/unix98 style dlopen()
+if config/check dlfcn.h 'dlopen("", 0)' || \
 	  config/check dlfcn.h 'dlopen("", 0)' -ldl; then
 	LOAD=unix98
 	echo 'using dlopen() for LOAD() support' 1>&2
@@ -1433,8 +1284,7 @@ if [ ! "$NO_DYNLIB" ]; then
 	fi
 	# new load support (honors SNOPATH)
 	echo 'ADD_OBJS([loadx.o])'		>> $CONFIG_M4
-      fi
-    elif config/check dl.h 'shl_load("", BIND_DEFERRED, 0L)'; then
+elif config/check dl.h 'shl_load("", BIND_DEFERRED, 0L)'; then
 	LOAD=hpux
 	echo 'using HP-UX shl_load() for LOAD() support' 1>&2
 	echo 'undefine([hpux])'			>> $CONFIG_M4
@@ -1443,7 +1293,7 @@ if [ ! "$NO_DYNLIB" ]; then
 	# export all symbols
 	echo 'ADD_LDFLAGS([-Wl,-E])'		>> $CONFIG_M4
 	echo 'ADD_LDFLAGS([-ldld])'		>> $CONFIG_M4
-    elif config/check mach-o/dyld.h 'NSObjectFileImage ofi'; then
+elif config/check mach-o/dyld.h 'NSObjectFileImage ofi'; then
 	LOAD=next
 	echo 'using NextStep/Darwin LOAD() support' 1>&2
 	echo 'LOAD_C=$(SRCDIR)lib/next/load.c'	>> $CONFIG_M4
@@ -1453,7 +1303,7 @@ if [ ! "$NO_DYNLIB" ]; then
 	else
 	    SNOLIB_FILE=snolib.dyld
 	fi
-    elif config/check a.out.h 'struct exec a; int x = OMAGIC'; then
+elif config/check a.out.h 'struct exec a; int x = OMAGIC'; then
 	LOAD=aout
 	echo 'using a.out ld for LOAD() support' 1>&2
 	echo 'LOAD_C=$(SRCDIR)lib/bsd/load.c'	>> $CONFIG_M4
@@ -1464,7 +1314,6 @@ if [ ! "$NO_DYNLIB" ]; then
 	    echo '#define LD_PATH "/bin/ld"'	>> $CONFIG_H
 	fi
 	SNOLIB_FILE=snolib.a
-    fi
 fi
 
 # used to construct default SNOPATH
