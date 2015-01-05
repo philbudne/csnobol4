@@ -112,17 +112,20 @@
 #define SETUP_SYS "win.msc"
 /* DL_CFLAGS from ntmsvc.mak */
 #define DL_LDFLAGS "/DLL /NOLOGO"
+#define CC_IS "msc"
 #elif defined(__GNUC__)
 #define OBJECT_EXT ".o"
 #define USE_WCHAR_H
 #define SETUP_SYS "posix"		/* !!! */
 #define DL_CFLAGS ""
 #define DL_LDFLAGS "-shared -shared-libgcc"
+#define CC_IS "gcc"
 #elif defined(__BORLANDC__)
 #define OBJECT_EXT ".obj"
 #define SETUP_SYS "win.borland"
 #define CCOMPILER "bcc32"
 #define DL_LDFLAGS "-tWD"
+#define CC_IS "borland"
 #endif /* defined(__BORLANDC__) */
 
 #define SO_CFLAGS DL_CFLAGS
