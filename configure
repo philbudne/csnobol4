@@ -609,17 +609,20 @@ gcc|clang|icc)
 
 	# -G == "-bM:SRE -berok -brtl -bnortllib -bnosymbolic -bnoautoexp"
 
+	# http://www.ibm.com/developerworks/aix/library/au-gnu.html
+	# gcc -shared == "-bM:SRE -bnoentry"
+
 	# ftp://plasma-gate.weizmann.ac.il/pub/grace/aux/dlfcn-aix.README says:
 	# If you want to reference symbols from the main part of the
 	# program in a loaded module, you will have to link against
 	# the export file of the main part:
 	# cc -o main -bE:main.exp $(MAIN_OBJS)
-	echo 'ADD_LDFLAGS([-bE:snobol4.exp])'	>> $CONFIG_M4
-
 	# cc -o module.so -bM:SRE -bI:main.exp -bE:module.exp -bnoentry $(OBJS)
+
+	echo 'ADD_LDFLAGS([-bE:snobol4.exp])'	>> $CONFIG_M4
 	SO_EXT=.so
 	SO_LD=ld
-	SO_LDFLAGS='-G'
+	SO_LDFLAGS='-bM:SRE -bnoentry'
 	;;
     *:OSF1:*:*)
 	OPT=-O4
