@@ -5,6 +5,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 1/5/2014:
 	configure: AIX flags & comments, add SNOLIB_LOCAL
 	Makefile2.m4: use SNOLIB_LOCAL
+	snolib/sdb.sno: FREEZE SDB.SCALAR
 
 1/4/2014:
 	snolib/sdb.sno: add SDB.SCALAR:
