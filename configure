@@ -1677,11 +1677,12 @@ fi
 SEARCH_DIRS='/usr/local /opt/local'
 if [ ! "$FORCE_PML" ]; then
     SQLITE_FRAG='sqlite3 *db; sqlite3_open("foo", &db)'
-    if config/check 'sqlite3.h' "$SQLITE_FRAG" '-lsqlite3'; then
+    if [ -f modules/sqlite3/sqlite3.c -a -f modules/sqlite3/sqlite3.h ]; then
+	echo 'using sqlite3 amalgamation sources' 1>&2
+	MODULES="$MODULES sqlite3"
+    elif config/check 'sqlite3.h' "$SQLITE_FRAG" '-lsqlite3'; then
 	echo 'using sqlite3' 1>&2
 	MODULES="$MODULES sqlite3"
-	SQLITE_INCLUDE=
-	SQLITE_LIBDIR=
     else
 	for DIR in $SEARCH_DIRS; do
 	    if config/check sqlite3.h "$SQLITE3_FRAG" "-I$DIR/include -L$DIR/lib -lsqlite3"; then

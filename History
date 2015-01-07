@@ -5,6 +5,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 1/6/2014:
 	INSTALL: mention development packages
 	configure: warn when falling back to sdbm
+		fix "Using"
+		check for sqlite3 amalgamation sources in modules/sqlite3
 
 1/5/2014:
 	configure: AIX flags & comments, add SNOLIB_LOCAL
