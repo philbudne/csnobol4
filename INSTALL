@@ -17,7 +17,9 @@ NOTE!!! CSNOBOL 2.0 has been tested on a limited range of systems.
 Expect that most proprietary Unix systems (Solaris, AIX, HP-UX and
 older systems) will require some work.
 
-Some extensions will only be built if necessary support is found:
+Some extensions will only be built if necessary support is found (in
+some Linux distributions this requires "development" packages to be
+installed):
 
 * ffi depends on libffi.
 * sqlite depends on libsqlite3 (or "amalgamation" source in module/sqlite3).

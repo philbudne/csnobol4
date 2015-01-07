@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+1/6/2014:
+	INSTALL: mention development packages
+
 1/5/2014:
 	configure: AIX flags & comments, add SNOLIB_LOCAL
 	Makefile2.m4: use SNOLIB_LOCAL
