@@ -1601,6 +1601,7 @@ if true; then
 	    NDBM_LIBS=""
 	done
 	if [ ! "$USE_GDBM" ]; then
+	    echo 'WARNING: no ndbm support found: using sdbm' 1>&2
 	    USE_SDBM=1
 	fi
     fi
