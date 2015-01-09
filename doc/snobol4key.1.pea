@@ -80,14 +80,14 @@ I<Standard>.
 Protected, STRING:
 Contains description of last error after a statement with an error has
 been handled due to a non-zero value in B<&amp;ERRLIMIT>, see
-B<snobol4err>(1).
+B<snobol4error>(1).
 I<SPITBOL Extension, added in CSNOBOL4 0.98.2>.
 
 =item B<&amp;ERRTYPE>
 Protected, INTEGER:
 Contains last error code after a statement with an error has
 been handled due to a non-zero value in B<&amp;ERRLIMIT>, see
-B<snobol4err>(1).
+B<snobol4error>(1).
 I<Standard>.
 
 =item B<&amp;FAIL>
