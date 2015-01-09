@@ -4,6 +4,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 1/8/2014:
 	doc/snobol4key.1.pea: fix snobol4error refs
+	modules/readline/readline.c: add comma in SEE ALSO
 
 1/6/2014:
 	INSTALL: mention development packages

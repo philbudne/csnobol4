@@ -108,7 +108,7 @@ HISTORY_EXPAND( LA_ALIST ) LA_DCL
 /*
 **=pea
 **=sect SEE ALSO
-**B<snobol4>(1) B<readline>(3)
+**B<snobol4>(1), B<readline>(3)
 **=sect AUTHOR
 **Philip L. Budne
 **=cut
