@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+1/10/2014:
+	doc/snobol4key.1.pea: note Traceable keywords.x
+
 1/8/2014:
 	doc/snobol4key.1.pea: fix snobol4error refs
 	modules/readline/readline.c: add comma in SEE ALSO

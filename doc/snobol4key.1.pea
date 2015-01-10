@@ -88,7 +88,7 @@ Protected, INTEGER:
 Contains last error code after a statement with an error has
 been handled due to a non-zero value in B<&amp;ERRLIMIT>, see
 B<snobol4error>(1).
-I<Standard>.
+I<Standard>, I<Traceable>.
 
 =item B<&amp;FAIL>
 Protected:
@@ -112,7 +112,7 @@ I<Extension from BLOCKS, added in CSNOBOL4 version 2.0>.
 =item B<&amp;FNCLEVEL>
 Protected, INTEGER:
 Depth of function call stack.
-I<Standard>.
+I<Standard>, I<Traceable>.
 
 =item B<&amp;FTRACE>
 Unprotected, INTEGER:
@@ -214,7 +214,7 @@ I<Standard>.
 Protected, INTEGER:
 Count of the number of statements executed
 (extension: not incremented when B<&amp;STLIMIT> is less than zero).
-I<Standard>.
+I<Standard>, I<Traceable>.
 
 =item B<&amp;STEXEC>
 Protected, INTEGER:
@@ -225,7 +225,7 @@ I<CSNOBOL4 Extension, added in version 1.5>.
 =item B<&amp;STFCOUNT>
 Protected, INTEGER:
 Count of the number of statements executed that failed.
-I<Standard>.
+I<Standard>, I<Traceable>.
 
 =item B<&amp;STLIMIT>
 Unprotected:
