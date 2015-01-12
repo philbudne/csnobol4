@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+1/11/2014:
+	Makefile2.m4: NDBM_C typo (thanks to Burkhard Meissner)
+
 1/10/2014:
 	doc/snobol4key.1.pea: note Traceable keywords.x
 
