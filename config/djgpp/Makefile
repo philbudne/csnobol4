@@ -1,5 +1,7 @@
 # $Id$
 
+# NOTE! Does not build modules!!!  No "install"
+
 # make file for DJGPP - P. Budne 2/16/2002
 # from make file for MINGW - P. Budne 2/14/2002
 # and batch files by Burkhard Meissner
@@ -19,7 +21,7 @@ LOAD_C=$(SRCDIR)lib/dummy/load.c
 # uncomment next 4 lines to enable;
 #DXE_DEFS=-DHAVE_DXE2
 #LOAD_C=$(SRCDIR)lib/unix98/load.c
-#DXE_OBJS=osinit.o
+#DXE_OBJS=osinit.o loadx.o
 #DXE_LIBS=-ldl
 #
 # "DXE3" now part of DJGPP distribution (as of April 2003)
@@ -39,12 +41,8 @@ WATTCP_LIBDIR=${WATTCP_DIR}/lib
 #INET_OBJS=bindresvport.o
 #WATTCP_LIBS=-L${WATTCP_LIBDIR} -lwatt
 
-# Ozan Yigit's SDBM routines for NDBM interface
-SDBM_DEFS=-DPML_NDBM -DHAVE_SDBM_H -DDUFF -Ilib/sdbm
-SDBM_OBJS=ndbm.o sdbm_pair.o sdbm_hash.o sdbm.o
-
 CFLAGS=	-c $(OPT) -I$(SRCDIR)config/djgpp -I$(SRCDIR)include -I$(SRCDIR). \
-	-DHAVE_CONFIG_H $(WATTCP_DEFS) $(DXE_DEFS) $(SDBM_DEFS)
+	-DHAVE_CONFIG_H $(WATTCP_DEFS) $(DXE_DEFS)
 
 # WATTCP must be first!
 LIBS=$(WATTCP_LIBS) -lm -lc -lpc $(DXE_LIBS) 
@@ -56,10 +54,10 @@ OBJ=	isnobol4.o data.o data_init.o main.o syn.o \
 	tree.o bcopy.o bzero.o dynamic.o expops.o getopt.o \
 	init.o load.o mstime.o chop.o cos.o delete.o \
 	exit.o exp.o file.o getstring.o handle.o \
-	host.o log.o logic.o ord.o rename.o retstring.o sin.o \
-	spcint.o spreal.o sprintf.o sqrt.o sset.o \
+	host.o log.o ord.o rename.o retstring.o sin.o \
+	spcint.o spreal.o sqrt.o sset.o \
 	tan.o sys.o tty.o inet.o execute.o exists.o \
-	term.o findunit.o $(DXE_OBJS) $(INET_OBJS) $(SDBM_OBJS)
+	term.o findunit.o $(DXE_OBJS) $(INET_OBJS)
 
 snobol4.exe: $(OBJ)
 	$(CC) -o snobol4 $(OBJ) $(LIBS)
@@ -107,6 +105,9 @@ io.o:	$(SRCDIR)lib/io.c
 
 lexcmp.o: $(SRCDIR)lib/lexcmp.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/lexcmp.c
+
+loadx.o: $(SRCDIR)lib/loadx.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/loadx.c
 
 ordvst.o: $(SRCDIR)lib/ordvst.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/ordvst.c
@@ -237,12 +238,6 @@ host.o:	$(SRCDIR)lib/snolib/host.c
 log.o:	$(SRCDIR)lib/snolib/log.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/log.c
 
-logic.o: $(SRCDIR)lib/snolib/logic.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/logic.c
-
-ndbm.o: $(SRCDIR)lib/snolib/ndbm.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/ndbm.c
-
 ord.o:	$(SRCDIR)lib/snolib/ord.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/ord.c
 
@@ -255,9 +250,6 @@ retstring.o: $(SRCDIR)lib/snolib/retstring.c
 sin.o:	$(SRCDIR)lib/snolib/sin.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/sin.c
 
-sprintf.o: $(SRCDIR)lib/snolib/sprintf.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/sprintf.c
-
 sqrt.o:	$(SRCDIR)lib/snolib/sqrt.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/sqrt.c
 
@@ -266,17 +258,6 @@ sset.o:	$(SRCDIR)lib/snolib/sset.c
 
 tan.o:	$(SRCDIR)lib/snolib/tan.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/tan.c
-
-#### sdbm
-
-sdbm.o: $(SRCDIR)lib/sdbm/sdbm.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib/sdbm/sdbm.c
-
-sdbm_pair.o: $(SRCDIR)lib/sdbm/sdbm_pair.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib/sdbm/sdbm_pair.c
-
-sdbm_hash.o: $(SRCDIR)lib/sdbm/sdbm_hash.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib/sdbm/sdbm_hash.c
 
 ################ djgpp
 
@@ -287,8 +268,5 @@ sys.o:	$(SRCDIR)lib/djgpp/sys.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/djgpp/sys.c
 
 ################################################################
-
-install: always
-	config/install.bat djgpp \snobol4
 
 always:
