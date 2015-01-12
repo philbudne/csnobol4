@@ -342,6 +342,7 @@ DXE_EXPORT_TABLE_AUTO(exports)
 	DXE_EXPORT(__dj_stderr)
 	DXE_EXPORT(__dj_ctype_flags)
 	DXE_EXPORT(__dj_stdin)
+        DXE_EXPORT(__dpmi_int)
 
 	DXE_EXPORT(exit)
 DXE_EXPORT_END
