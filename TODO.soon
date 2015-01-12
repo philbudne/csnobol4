@@ -1,5 +1,9 @@
 $Id$
 
+snobol4key/func: document &STNO trace / BREAKPOINT()
+	describe protected patterns
+		&ARB
+
 ================
 
 2.1:
