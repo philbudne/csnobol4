@@ -332,6 +332,7 @@ SDB.TRAP.ERR
 	TERMINAL = &ERRTEXT
 * join common trap handler function code
 
+* common trap handler function code
 SDB.DISPLAY
 	SDB.LIST_LINE = SDB.LAST
 	IDENT(SDB.RUNNING)		:S(SDB.GETCMD)
@@ -952,6 +953,7 @@ SDB.NOSTACK
 	SDB.PROCEED_COUNT = 1
 *
 * STC_ENA is whether or not to enable STCOUNT
+* *MUST* preenable to break on first user statement!
 	SDB.OLD_STC_ENA = 1
 	TRACE('STCOUNT','KEYWORD',,'SDB.TRAP.STCOUNT') 
 * FNCLEVEL tracing not enabled:
