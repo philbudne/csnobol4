@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+3/30/2014:
+	snolib/sdb.sno: create, use SDB.VALUE for what, args
+
 1/12/2014:
 	DJGPP updates (from Burkhard Meissner)
 	config/djgpp/Makefile: remove module files, add loadx.o

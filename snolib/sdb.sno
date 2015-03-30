@@ -710,7 +710,7 @@ SDB.CMD.WHAT
 	TERMINAL = FUNCTION(SDB.ARGS) SDB.ARGS " is function"
 	SDB.T1 = SDB.EVAL(SDB.ARGS)		:F(SDB.CMD.WHAT.ERR)
 	TERMINAL = "type = " DATATYPE(SDB.T1)
-	TERMINAL = "value = " SDB.T1		:(SDB.COMMAND.STAY)
+	TERMINAL = "value = " SDB.VALUE(SDB.T1)	:(SDB.COMMAND.STAY)
 SDB.CMD.WHAT.ERR
 	TERMINAL = "error in expression"	:(SDB.COMMAND.STAY)
 * end of SDB.COMMAND function
@@ -882,11 +882,9 @@ SDB.FCALL
 	I = 1
 * loop accumulating argument values
 SDB.FCALL.ARGLOP
-	V = $ARG(FNAME,I)				:F(SDB.FCALL.EARGLOP)
-	V = IDENT(SDB.SCALAR[DATATYPE(V)]) '<' CONVERT(V, 'STRING') '>'
-	S = S C V
+	S = S C SDB.VALUE($ARG(FNAME,I))	:F(SDB.FCALL.EARGLOP)
 	C = ','
-	I = I + 1					:(SDB.FCALL.ARGLOP)
+	I = I + 1				:(SDB.FCALL.ARGLOP)
 SDB.FCALL.EARGLOP
 	SDB.CALL_LEVEL = SDB.CALL_LEVEL + 1
 	SDB.CALLS[SDB.CALL_LEVEL] = S ') called from ' L ', level '
@@ -903,6 +901,13 @@ SDB.FRET
 	SDB.CALL_LEVEL = SDB.CALL_LEVEL - 1
 	:(RETURN)
 SDB.FRET.END
+
+* return a string representation of a value
+	DEFINE('SDB.VALUE(V)')				:(SDB.VALUE.END)
+SDB.VALUE
++	SDB.VALUE = (DIFFER(SDB.SCALAR[DATATYPE(V)]) V,
++			'<' CONVERT(V, 'STRING') '>')	:(RETURN)
+SDB.VALUE.END
 
 * this sorcery from Orange book "FTRACE" function
 * wrap DEFINE() so all user function calls/returns are traced
