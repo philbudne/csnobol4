@@ -1114,6 +1114,9 @@ io_print_str(fp, cp, len, needfill, eol)
 {
     int ret;
 
+    if (fp == NULL)
+	return FALSE;
+
     /*
      * ANSI C requires that a file positioning function intervene
      * between output and input. Would not be needed if UPDATE I/O
