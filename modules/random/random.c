@@ -313,10 +313,12 @@ bsd_srandom(x)
  * works in gcc 4.4 and 4.7.3 (but not 4.4.6, 4.4.7 or 4.5.2)!!
  */
 #pragma GCC diagnostic ignored "-Wuninitialized"
+#ifndef __clang__
 /*
  * gcc 4.8.2:
  */
 #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#endif
 #endif
 #ifdef _MSC_VER
 #pragma warning( push )
@@ -360,7 +362,9 @@ bsd_srandomdev()
 }
 #ifdef __GNUC__
 #pragma GCC diagnostic warning "-Wuninitialized"
+#ifndef __clang__
 #pragma GCC diagnostic warning "-Wmaybe-uninitialized"
+#endif
 #endif
 #ifdef _MSC_VER
 #pragma warning( pop )
