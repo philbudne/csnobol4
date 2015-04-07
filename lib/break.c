@@ -27,7 +27,7 @@ extern void *malloc();
 #include "res.h"
 #include "data.h"			/* SIL data */
 
-typedef unsigned char break_t;
+typedef unsigned char break_t;		/* one byte/break for fast access */
 static int break_max = -1;
 static break_t *breakpoints;
 
@@ -40,7 +40,7 @@ chk_break(x)
     int x;
 {
     int stn = D_A(STNOCL);
-    if (!breakpoints || stn > break_max)
+    if (!breakpoints || stn > break_max || stn == 0)
 	return 0;
     /* XXX what to do with value?? could:
      * post-decrement if non-zero (limit number of hits)
@@ -48,7 +48,7 @@ chk_break(x)
      * OR -- allow signed value, and do BOTH!! have ~0 mean ALWAYS??
      * OR.... take two values
      */
-    return breakpoints[stn];
+    return breakpoints[stn-1];
 }
 
 /*
@@ -63,6 +63,10 @@ BREAKPOINT( LA_ALIST ) LA_DCL
     int stn = LA_INT(0);
     int enab = LA_INT(1);
     int save;
+
+    if (stn == 0)
+	RETFAIL;
+
     if (!breakpoints) {
 	if (!enab)
 	    return 0;
@@ -72,8 +76,27 @@ BREAKPOINT( LA_ALIST ) LA_DCL
 	    RETFAIL;
 	bzero(breakpoints, break_max * sizeof(break_t));
     }
-    if (stn > break_max)
-	RETFAIL;
+    else if (stn > break_max) {
+	static break_t *nbreak;
+	int new_max;
+	int new_slots;
+	if (stn > D_A(CSTNCL))		/* only allow break on existing stmt */
+	    RETFAIL;
+
+	/* add twice the number of statements added since last allocation */
+	new_slots = 2 * (D_A(CSTNCL)-break_max);
+	new_max = D_A(CSTNCL) + new_slots;
+	nbreak = (break_t *) realloc(breakpoints, new_max*sizeof(break_t));
+	if (!nbreak)
+	    RETFAIL;			/* realloc failed */
+
+	/* clear new slots: */
+	bzero(nbreak+break_max, new_slots*sizeof(break_t));
+	breakpoints = nbreak;
+	break_max = new_max;
+    }
+    stn--;				/* make zero based */
+
     save = breakpoints[stn];
     breakpoints[stn] = !!enab;		/* just zero or one for now */
     RETINT(save);

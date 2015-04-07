@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+4/7/2015:
+	lib/break.c: allow breakpoint table expansion for Fred Weigel
+
 4/6/2015:
 	modules/random/random.c: kill warning for gcc 4.8.2
 	History: fix 2015 dates!
