@@ -1,8 +1,13 @@
 $Id$
 
-snobol4key/func: document &STNO trace / BREAKPOINT()
+snobol4key/func: document &STNO trace / BREAKPOINT()???
 	describe protected patterns
 		&ARB
+
+setuputil.sno:
+	"test" command!!!!
+		logic(!!), sqlite3, stat, dirs, sprintf, fork, ffi
+	run regular regression tests BEFORE generating modules!!!!
 
 ================
 
@@ -10,11 +15,6 @@ snobol4key/func: document &STNO trace / BREAKPOINT()
 	Enable -Wimplicit-function-declaration -Werror in configure "check"??
 		pass CFLAGS env var?
 	ANSIfy: flush str.h
-
-setuputil.sno:
-	"test" command!!!!
-		logic(!!), sqlite3, stat, dirs, sprintf, fork, ffi
-	run regular regression tests BEFORE generating modules!!!!
 
 man pages:
     snobol4func
