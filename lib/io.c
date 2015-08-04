@@ -188,6 +188,7 @@ struct file {
 #define FL_APPEND	020		/* append */
 #define FL_NOECHO	040		/* tty: no echo */
 #define FL_NOCLOSE	0100		/* don't fclose() */
+#define FL_BREAK	0200		/* breaK long lines (EXPERIMENTAL) */
 
 #if defined(INET_IO) || defined (MEM_IO)
 /*
@@ -1354,7 +1355,9 @@ io_read( dp, sp )			/* STREAD */
 #endif /* COMPILER_READLINE defined */
 #ifdef INET_IO
 	else if (ISINET(fp)) {
-	    len = inet_read_cooked(f, cp, recl, (fp->flags & FL_EOL) == 0);
+	    len = inet_read_cooked(f, cp, recl,
+				   (fp->flags & FL_EOL) == 0, 
+				   (fp->flags & FL_BREAK) != 0);
 	    if (len > 0)
 		break;
 	}
@@ -1436,10 +1439,11 @@ io_read( dp, sp )			/* STREAD */
 			} /* not EOL or not hiding EOL */
 		    } /* extra char not EOF */
 
-		    /* if not at EOL or EOF, discard rest of "record" */
-		    while (c != EOF && c != '\n')
-			c = getc(f);
-
+		    if (!(fp->flags & FL_BREAK)) {	/* not experimenting? */
+			/* if not at EOL or EOF, discard rest of "record" */
+			while (c != EOF && c != '\n')
+			    c = getc(f);
+		    }
 		    /* don't care if line terminated by EOL or EOF? */
 		} /* no EOL */
 		break;
@@ -1667,19 +1671,26 @@ io_options( fp, op, rp )
 	case 'B':			/* SITBOL/SNOBOL4+: binary */
 	case 'b':
 	    flags |= FL_BINARY;
-	    flags &= ~FL_EOL;
+	    flags &= ~(FL_EOL|FL_BREAK);
 	    op++;
 	    break;
 
 	case 'C':			/* SITBOL/SPITBOL: character */
 	case 'c':
 	    flags |= FL_BINARY;
-	    flags &= ~FL_EOL;
+	    flags &= ~(FL_EOL|FL_BREAK);
 #if 0
 	    if (recl)			/* already have recl? */
 		return FALSE;		/* fail */
 #endif /* 0 */
 	    recl = 1;
+	    op++;
+	    break;
+
+	case 'K':			/* Local/experimental: breaK long lines */
+	case 'k':
+	    flags |= FL_BREAK;
+	    flags &= ~FL_BINARY;
 	    op++;
 	    break;
 

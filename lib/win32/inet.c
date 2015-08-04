@@ -302,11 +302,12 @@ inet_getc(fp, recl)
  * or use cygwin!!
  */
 int
-inet_read_cooked(f, cp, recl, keepeol)
+inet_read_cooked(f, cp, recl, keepeol, breaklines)
     FILE *f;
     char *cp;
     int recl;
     int keepeol;
+    int breaklines;
 {
     int c;
     int n = 0;				/* characters kept */
@@ -338,7 +339,7 @@ inet_read_cooked(f, cp, recl, keepeol)
      * maintain record flavoredness; if EOL not seen, the line
      * was longer than our record length.  Discard rest of "record"
      */
-    if (!eol) {				/* didn't see EOL */
+    if (!eol && !breaklines) {		/* didn't see EOL */
 	while ((c = inet_getc(fp, recl)) != EOF && c != '\n')
 	    ;
     }

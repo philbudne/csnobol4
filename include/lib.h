@@ -221,3 +221,15 @@ extern int sleepf __P((real_t));
 
 /* from break.c */
 extern int chk_break __P((int));
+
+/* from inet.c */
+extern FILE *tcp_open __P((char *, char *, int, int));
+extern FILE *udp_open __P((char *, char *, int, int));
+extern int inet_close __P((FILE *));
+extern void inet_cleanup __P((void));
+
+#ifdef INET_IO
+extern int inet_write __P((FILE *, char *, int));
+extern int inet_read_raw __P((FILE *f, char *, int));
+extern int inet_read_cooked __P((FILE *f, char *, int, int, int));
+#endif
