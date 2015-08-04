@@ -1,7 +1,12 @@
 $Id$
 
+sdb-- handle missing readline.sno!!!
+	do own LOAD()???
+
+allow OPSYN of "["
+
 snobol4key/func: document &STNO trace / BREAKPOINT()???
-	describe protected patterns
+	describe protected keyword patterns
 		&ARB
 
 setuputil.sno:
