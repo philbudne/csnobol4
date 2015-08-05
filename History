@@ -4,7 +4,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 8/4/2015:
 	include/lib.h: add inet routines
-	lib/io.c: implement experimental 'K' (breaK) flag
+	lib/io.c: implement experimental 'K' (breaK) flag for Phillip Thomas
 	lib/win32/inet.c: support breakline
 	test/tests.in: add breakline.sno
 	test/breakline.{sno,ref}: breakline tests
