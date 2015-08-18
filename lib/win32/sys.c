@@ -203,6 +203,12 @@ osname(cp)
 		else
 		    os = "Win8.1";
 		break;
+	    case 4:
+		if (server)
+		    os = "WinServer2016";
+		else
+		    os = "Win10";	/* first tech preview */
+		break;
 	    default:
 		vnum = 1;
 		break;
@@ -213,7 +219,7 @@ osname(cp)
 	    switch (osv.dwMinorVersion) {
 	    case 0:
 		if (server)
-		    vnum = 1; /* 'Windows Server Technical Preview' 8/2015 */
+		    os = "WinServer2016";
 		else
 		    os = "Win10";
 		break;
