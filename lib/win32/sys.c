@@ -174,7 +174,7 @@ osname(cp)
 	    default:
 		vnum = 1;
 		break;
-	    }
+	    } // 5
 	    break;
 
 	case 6:				/* "Longhorn" family */
@@ -197,12 +197,36 @@ osname(cp)
 		else
 		    os = "Win8";
 		break;
+	    case 3:
+		if (server)
+		    os = "WinServer2012R2";
+		else
+		    os = "Win8.1";
+		break;
 	    default:
 		vnum = 1;
 		break;
-	    }
+	    } // 6
 	    break;
-	}
+
+	case 10:
+	    switch (osv.dwMinorVersion) {
+	    case 0:
+		if (server)
+		    vnum = 1; /* 'Windows Server Technical Preview' 8/2015 */
+		else
+		    os = "Win10";
+		break;
+
+	    default:
+		vnum = 1;
+		break;
+	    } // 10
+
+	default:
+	    vnum = 1;
+	    break;
+	} // dwMajorVersion
 	break;
 
     default:
@@ -210,7 +234,7 @@ osname(cp)
 	os = osname;
 	vnum = 1;
 	break;
-    }
+    } // dwPlatformId
 
     if (vnum) {
 	sprintf(cp, "%s %d.%d", os, osv.dwMajorVersion, osv.dwMinorVersion);
