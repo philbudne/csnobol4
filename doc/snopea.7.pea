@@ -111,6 +111,7 @@ non-breaking space
 
 =sect NOT CONFORMING TO
 Inspired by (but not compatible with) Perl POD format.
+L<http://perldoc.perl.org/perlpod.html>
 
 =sect AUTHOR
 Philip L. Budne

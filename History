@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/8/2015:
+	doc/snopea.7.pea: add perlpod link
+
 8/18/2015:
 	lib/win32/sys.c: add Win8.1, Win10
 
