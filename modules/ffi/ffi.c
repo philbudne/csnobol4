@@ -432,7 +432,7 @@ FFI_DLSYM( LA_ALIST ) LA_DCL
     if (LA_TYPE(0) == I)
 	dl = (void *)LA_INT(0);
 
-    if (dl != RTLD_DEFAULT && dl == RTLD_NEXT
+    if (dl != RTLD_DEFAULT && dl != RTLD_NEXT
 #ifdef RTLD_SELF
 	&& dl != RTLD_SELF
 #endif

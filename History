@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/29/2015:
+	modules/ffi/ffi.c: fix FFI_DLSYM
+		Fix submitted by Fred Weigel in February!
+
 11/8/2015:
 	doc/snopea.7.pea: add perlpod link
 

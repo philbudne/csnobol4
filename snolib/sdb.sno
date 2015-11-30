@@ -151,6 +151,7 @@ SDB.READLINE.END
 *	FUNCTION('SDB') SDB()
 
 SDB	SDB.DEBUG = '<sdb @ ' &LASTFILE ':' &LASTLINE
+	TERMINAL = 'SDB() called'
 * trigger break on next statement, clear any next/step/finish conditions
 	SDB.PROCEED_COUNT = SDB.FORCE_STEP = SDB.FORCE_STOP = 1
 	SDB.RESUME_LEVEL =
