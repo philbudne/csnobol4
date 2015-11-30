@@ -74,6 +74,9 @@ Force banner and termination output.
 Show directory search path in use
 (including all B<-I> options on the command line) and exit.
 
+=item B<-B>
+Toggle SNOBOL4B operators (also controlled by B<-[NO]BLOCKS>).
+
 =item B<-I> I<directory>
 Add I<directory> to the directory search path before any
 other directories (ie; from B<SNOPATH> or default entries).

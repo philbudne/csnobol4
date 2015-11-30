@@ -5,6 +5,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 11/29/2015:
 	modules/ffi/ffi.c: fix FFI_DLSYM
 		Fix submitted by Fred Weigel in February!
+	doc/snobol4cmd.1.pea: Add -B
+	doc/snobol4io.1.pea: Document 'K'
 
 11/8/2015:
 	doc/snopea.7.pea: add perlpod link
@@ -43,7 +45,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	Makefile2.m4: NDBM_C typo (thanks to Burkhard Meissner)
 
 1/10/2015:
-	doc/snobol4key.1.pea: note Traceable keywords.x
+	doc/snobol4key.1.pea: note Traceable keywords.
 
 1/8/2015:
 	doc/snobol4key.1.pea: fix snobol4error refs

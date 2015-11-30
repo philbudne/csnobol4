@@ -118,6 +118,11 @@ operate in text mode.
 =item B<C>
 Character at a time I/O.  A synonym for B<B,1>.
 
+=item B<K>
+If an input line is longer than the input record length,
+return the line in multiple reads (breaK up the line)
+instead of discarding the extra characters.
+
 =item B<T>
 Terminal mode.  Writes are performed ``unbuffered'' (see below), and
 no newline characters are added. On input newline characters are
