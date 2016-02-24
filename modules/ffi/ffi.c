@@ -432,7 +432,10 @@ FFI_DLSYM( LA_ALIST ) LA_DCL
     if (LA_TYPE(0) == I)
 	dl = (void *)LA_INT(0);
 
-    if (dl != RTLD_DEFAULT && dl != RTLD_NEXT
+    if (dl != RTLD_DEFAULT
+#ifdef RTLD_SELF			/* not in Cygwin or POSIX */
+	&& dl != RTLD_NEXT
+#endif
 #ifdef RTLD_SELF
 	&& dl != RTLD_SELF
 #endif
@@ -473,7 +476,16 @@ FFI_DLCLOSE( LA_ALIST ) LA_DCL
 lret_t
 FFI_RTLD_NEXT( LA_ALIST ) LA_DCL
 {
+#ifdef RTLD_NEXT
     RETINT((int_t)RTLD_NEXT);
+#else
+    /*
+     * not available on Cygwin (not in POSIX)
+     * foo = FFI_RTLD_NEXT() could fail silently.
+     * maybe ifdef out the whole function to make SURE you notice??
+     */
+    RETFAIL;
+#endif
 }
 
 /*

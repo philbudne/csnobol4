@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+20/23/2016:
+	modules/ffi/ffi.c: handle no RTLD_NEXT (Cygwin)
+		reported by Laurence G. Battin
+
 11/29/2015:
 	modules/ffi/ffi.c: fix FFI_DLSYM
 		Fix submitted by Fred Weigel in February!
