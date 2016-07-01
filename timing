@@ -129,11 +129,16 @@ if [ "$UNAME" ]; then
 			cat /proc/cpuinfo
 			echo 'ENDCPUINFO'
 		fi
-		if [ -f /proc/meminfo ]; then
+		# memory size, mobo vendor, model
+		for x in /proc/meminfo \
+		    /sys/class/dmi/id/sys_vendor \
+		    /sys/class/dmi/id/product_name; do
+		    if [ -f $x ]; then
 			echo ''
-			echo /proc/meminfo:
-			cat /proc/meminfo
-		fi
+			echo ${x}:
+			cat $x
+		    fi
+	        done
 		#
 		# mandrake before redhat
 		# lsb before debian
