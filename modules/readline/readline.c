@@ -2,6 +2,9 @@
 
 /*
  * GNU readline() function
+ *
+ * sdb depends on readline, and can't avoid the include,
+ * so supply trivial functionality even if readline not available.
  */
 
 /*
@@ -32,8 +35,14 @@
 #undef RETURN
 
 #include <stdio.h>
+#ifdef HAVE_READLINE
 #include <readline/readline.h>
 #include <readline/history.h>
+#else  /* not HAVE_READLINE */
+#ifdef HAVE_STRING_H
+#include <string.h>			/* strlen() */
+#endif
+#endif /* not HAVE_READLINE */
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>			/* for free() */
 #endif
@@ -50,14 +59,33 @@
 lret_t
 READLINE( LA_ALIST ) LA_DCL
 {
-    char *prompt;
-    char *ret;
-
-    prompt = mgetstring(LA_PTR(0));
-    ret = readline(prompt);
+    char *prompt = mgetstring(LA_PTR(0));
+#ifdef HAVE_READLINE
+    char *ret = readline(prompt);
     free(prompt);
     if (!ret)
 	RETFAIL;
+#else
+#define BUFSIZE 1024
+    char *ret = malloc(BUFSIZE+1);
+    int len;
+    ret[BUFSIZE] = '\0';
+    /* maybe this should be in io.c, to deal with terminal modes?? */
+    fputs(prompt, stdout);
+    fflush(stdout);
+    if (!fgets(ret, BUFSIZE, stdin)) {
+	free(ret);
+	RETFAIL;
+    }
+    len = strlen(ret);
+    while (len > 0) {
+	if (ret[len-1] == '\n' || ret[len-1] == '\r')
+	    len--;
+	else
+	    break;
+    }
+    ret[len] = '\0';
+#endif
     RETSTR_FREE(ret);
 }
 
@@ -73,12 +101,16 @@ READLINE( LA_ALIST ) LA_DCL
 lret_t
 ADD_HISTORY( LA_ALIST ) LA_DCL
 {
+#ifdef HAVE_READLINE
     char *line;
 
     line = mgetstring(LA_PTR(0));
     add_history(line);
     free(line);
     RETNULL;
+#else
+    RETFAIL;
+#endif
 }
 
 /*
@@ -93,6 +125,7 @@ ADD_HISTORY( LA_ALIST ) LA_DCL
 lret_t
 HISTORY_EXPAND( LA_ALIST ) LA_DCL
 {
+#ifdef HAVE_READLINE
     char *line;
     char *exp;
     int ret;
@@ -103,6 +136,9 @@ HISTORY_EXPAND( LA_ALIST ) LA_DCL
 	RETFAIL;
     free(line);
     RETSTR_FREE(exp);			/* hope this is right! */
+#else
+    RETFAIL;
+#endif
 }
 
 /*

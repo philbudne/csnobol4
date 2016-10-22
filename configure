@@ -1647,6 +1647,7 @@ if [ ! "$WITHOUT_READLINE" ]; then
 
     if [ "x$RL_LIBS" != x ]; then
 	echo "using readline (with $RL_LIBS)" 1>&2
+	echo '#define HAVE_READLINE'		>> $CONFIG_H
 	if [ "$FORCE_PML" ]; then
 	    echo 'ADD_OBJS([readline.o])'	>> $CONFIG_M4
 	    echo 'ADD_SRCS([$(READLINE_C)])'	>> $CONFIG_M4
@@ -1665,6 +1666,12 @@ if [ ! "$WITHOUT_READLINE" ]; then
 	    echo '#define HAVE_RL_SET_KEYMAP'	>> $CONFIG_H
 	fi
     fi
+fi
+
+if [ "x$RL_LIBS" = x ]; then
+    # not if FORCE_PML??
+    echo "using dummy readline (for sdb)" 1>&2
+    MODULES="$MODULES readline"
 fi
 
 # test lstat() for "stat" package

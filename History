@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/22/2016:
+	configure, modules/readline/readline.sno
+		Supply dummy READLINE() for sdb
+		reported by many(?)
+
 10/13/2016:
 	doc/snobol4blocks.1.pea
 		new URL for asa2pdf
