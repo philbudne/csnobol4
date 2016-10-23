@@ -1,7 +1,5 @@
 $Id$
 
-Document 'K' flag!!!!
-
 allow OPSYN of "["
 
 snobol4key/func: document &STNO trace / BREAKPOINT()???
