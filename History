@@ -4,6 +4,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 11/18/2016:
 	modules/ffi/ffi.c: fix RTLD_NEXT paste-o
+	configure: fix help output tabbing
 
 10/22/2016:
 	configure, modules/readline/readline.sno

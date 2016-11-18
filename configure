@@ -229,7 +229,7 @@ See INSTALL for documentation on options;
 Makefile additions;
 	--add-cflags=STR	--add-cppflags=STR	
 	--add-define=NAME[=VALUE] --add-ldflags=STR
-	--add-objs=STR	--add-srcs=STR
+	--add-objs=STR		--add-srcs=STR
 
 C Compiler settings;
 	--add-cflags=STR	--opt=STR
