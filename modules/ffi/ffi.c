@@ -433,7 +433,7 @@ FFI_DLSYM( LA_ALIST ) LA_DCL
 	dl = (void *)LA_INT(0);
 
     if (dl != RTLD_DEFAULT
-#ifdef RTLD_SELF			/* not in Cygwin or POSIX */
+#ifdef RTLD_NEXT			/* not in Cygwin or POSIX */
 	&& dl != RTLD_NEXT
 #endif
 #ifdef RTLD_SELF
