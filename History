@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+9/7/2017:
+	snolib/sdb.sno: add missing comma to SDB.TRAP.VARS	
+	pkg/win32/timing.bat: changes from 11/14/2016
+
 11/18/2016:
 	modules/ffi/ffi.c: fix RTLD_NEXT paste-o
 	configure: fix help output tabbing

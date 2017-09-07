@@ -2,7 +2,8 @@
 :: Phil Budne 8/14/2013
 
 setlocal
-set "BINDIR=%~dp0"
+set "PKGDIR=%~dp0"
+set "BINDIR=%PKGDIR%..\..
 
 echo timing.bat $Id$
 echo:
@@ -31,7 +32,7 @@ echo cpuid:
 "%BINDIR%\cpuid"
 echo:
 
-cd /d "%BINDIR%\..\timing"
+cd /d %BINDIR%\timing
 echo Ids:
 find "Id:" bench.sno v311.sil timing.sno
 echo:
