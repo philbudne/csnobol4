@@ -124,7 +124,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 **************** release 2.0 (CVS tag REL_2_0)
 
-1/1/2014:
+1/1/2015:
 	configure: set SO_LD for Solaris/cc; quit if SO_LD not set
 		fix SNOLIB= value
 		override SNOLIB in RUNSETUP (problem seen by Phillip Thomas)
