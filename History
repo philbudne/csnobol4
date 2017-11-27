@@ -2,6 +2,12 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/19/2017:
+	snolib/sdb.sno: start of work for "run" command
+		Read commands from .sdbinit file
+		Modifications to watch/break @NUMBER
+		Start of "run" command (output commands to restore breakpoints)
+
 9/7/2017:
 	snolib/sdb.sno: add missing comma to SDB.TRAP.VARS	
 	pkg/win32/timing.bat: changes from 11/14/2016
