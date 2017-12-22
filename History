@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/21/2017
+	doc/sdb.1.pea: document that "list" takes LABEL_OR_STATEMENT_NUMBER
+
 11/19/2017:
 	snolib/sdb.sno: start of work for "run" command
 		Read commands from .sdbinit file

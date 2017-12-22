@@ -39,7 +39,7 @@ Display help.
 Set (or clear) breakpoint ignore count.
 =item B<info>
 Display list of breakpoints and their status.
-=item B<list> [ I<STATEMENT_NUMBER> ]
+=item B<list> [ I<LABEL_OR_STATEMENT_NUMBER> ]
 Display source code.
 =item B<next> [ I<COUNT> ]
 Single step execution, skipping over function calls.
