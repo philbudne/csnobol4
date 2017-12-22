@@ -18,6 +18,8 @@ For command line options see B<snobol4cmd>(1).
 Extensions from Catspaw SNOBOL4+, SPITBOL and SITBOL have
 been added, see B<snobol4ext>(1).
 
+Includes BLOCKS (SNOBOL4B) extensions, see B<snobol4blocks>(1).
+
 =subsect Changes
 The following behaviors have been changed from the original Macro SNOBOL4
 in ways that might effect old programs:

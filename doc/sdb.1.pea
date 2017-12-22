@@ -48,6 +48,10 @@ Evaluate expression and print result.  Can be used to call functions,
 or set variables.
 =item B<quit>
 Exit debugger.
+=item B<save> I<FILENAME>
+Save breakpoints to file.
+=item B<source> I<FILENAME>
+Read sdb commands from file.
 =item B<step> [ I<COUNT> ]
 Single step.
 =item B<watch> I<VARIABLE>

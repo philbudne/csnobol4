@@ -60,7 +60,7 @@ SDB.DC.END
  SDB.DC("next", "single step, skipping over function calls", "EMPTY_OR_COUNT")
  SDB.DC("print", "evaluate expression and print result", "EXPRESSION")
  SDB.DC("quit", "exit debugger")
- SDB.DC("run", "start program (NOT YET COMPLETE)")
+ SDB.DC("save", "save breakpoints to file", "FILE_NAME")
  SDB.DC("source", "read commands from file", "FILE_NAME")
  SDB.DC("step", "single step", "EMPTY_OR_COUNT")
  SDB.DC("watch", "set watchpoint on a variable", "VARIABLE")
@@ -683,32 +683,11 @@ SDB.CMD.PRINT
 
 *
 *** (start of) run command
-SDB.CMD.RUN
-	SDB.T1 = 1
-	TERMINAL = "XXX TEMP DUMPING COMMANDS TO SAVE TO TERMINAL:"
-SDB.CMD.RUN.LOOP
-	GE(SDB.T1, SDB.NEXT_BREAK)		:S(SDB.COMMAND.STAY)
-	SDB.T2 = SDB.BREAK_BY_NUM[SDB.T1]	:F(SDB.COMMAND.STAY)
-	IDENT(SDB.T2)				:S(SDB.CMD.RUN.NOBR)
-* output commands to reestablish breakpoints (to file)
-	TERMINAL = SDB.BREAK_TYPE(SDB.T2) " @" SDB.T1 " " SDB.BREAK_LOCN(SDB.T2)
-	TERMINAL = IDENT(SDB.BREAK_ENB(SDB.T2),"n") "disable " SDB.T1
-	TERMINAL = DIFFER(SDB.BREAK_COND(SDB.T2)) "cond " SDB.T1 " " SDB.BREAK_COND(SDB.T2)
-	TERMINAL = DIFFER(SDB.BREAK_SKIP(SDB.T2)) GT(SDB.BREAK_SKIP(SDB.T2),1)
-+			"ignore " SDB.T1 " " SDB.BREAK_SKIP(SDB.T2)
-	SDB.T2 = SDB.BREAK_CMDS(SDB.T2)
-	IDENT(SDB.T2)				:S(SDB.CMD.RUN.NOBR)
-SDB.CMD.RUN.CMD.LOOP
-	IDENT(SDB.T2)				:S(SDB.CMD.RUN.CMD.END)
-	TERMINAL = SDB.CAR(SDB.T2)
-	SDB.T2 = SDB.CDR(SDB.T2)		:(SDB.CMD.RUN.CMD.LOOP)
-SDB.CMD.RUN.CMD.END
-	TERMINAL = "end"
-SDB.CMD.RUN.NOBR
-	SDB.T1 = SDB.T1 + 1
-	:(SDB.CMD.RUN.LOOP)
+SDB.CMD.SAVE
+	TERMINAL = IDENT(SDB.ARGS) "Need filename" :S(SDB.COMMAND.STAY)
+	SDB.SAVE(SDB.ARGS)			:(SDB.COMMAND.STAY)
 *
-* quit command
+*** quit command
 SDB.CMD.QUIT
 	IDENT(SDB.RUNNING)			:S(SDB.EXIT)
 	SDB.YORN('The program is running.  Exit anyway? (y or n) ')
@@ -907,6 +886,38 @@ SDB.YORN
 SDB.YORN.ERR
 	&INPUT = ISAVE				:(FRETURN)
 SDB.YORN.END
+**************** save breakpoints to file
+	DEFINE("SDB.SAVE(FNAME)N,PTR,UNIT,TMP")	:(SDB.SAVE.END)
+SDB.SAVE
++	N = 1
+	UNIT = IO_FINDUNIT()
+	OUTPUT(.SDB.SAVE.VAR, UNIT,, FNAME)	:F(FRETURN)
+SDB.SAVE.LOOP
+	GE(N, SDB.NEXT_BREAK)			:S(SDB.SAVE.DONE)
+	PTR = SDB.BREAK_BY_NUM[N]		:F(SDB.SAVE.DONE)
+	IDENT(PTR)				:S(SDB.SAVE.NEXT)
+	SDB.SAVE.VAR = SDB.BREAK_TYPE(PTR) " @" N " " SDB.BREAK_LOCN(PTR)
+	SDB.SAVE.VAR = IDENT(SDB.BREAK_ENB(PTR),"n") "disable " N
+	TMP = SDB.BREAK_COND(PTR)
+	SDB.SAVE.VAR = DIFFER(TMP) "cond " N " " TMP
+	TMP = SDB.BREAK_SKIP(PTR)
+	SDB.SAVE.VAR = DIFFER(TMP) GT(TMP,1) "ignore " N " " TMP
+	PTR = SDB.BREAK_CMDS(PTR)
+	IDENT(PTR)				:S(SDB.SAVE.NEXT)
+* output sdb commands associated with breakpoint
+SDB.SAVE.CMD
+	IDENT(PTR)				:S(SDB.SAVE.ENDCMD)
+	SDB.SAVE.VAR = SDB.CAR(PTR)
+	PTR = SDB.CDR(PTR)			:(SDB.SAVE.CMD)
+SDB.SAVE.ENDCMD
+	SDB.SAVE.VAR = "end"
+SDB.SAVE.NEXT
+	N = N + 1				:(SDB.SAVE.LOOP)
+SDB.SAVE.DONE
+	ENDFILE(UNIT)
+	DETACH(.SDB.SAVE.VAR)			:(RETURN)
+SDB.SAVE.END
+
 **************** keep backtrace stack
 * trace all function invocations & returns for backtrace stack
 * by altering "DEFINE()" function!
