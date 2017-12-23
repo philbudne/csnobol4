@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/23/2017
+	snolib/sdb.sno: make "s" mean "step" again
+		prevent "source" loops
+
 12/22/2017
 	snolib/sdb.sno: add save command (and function) from start of run
 	doc/sdb.1.pea: document "save" and "source"
