@@ -1035,7 +1035,7 @@ SDB.SOURCE.ERR
 	OUTPUT = 'Error opening ' SDBS.FNAME	:(FRETURN)
 SDB.SOURCE.END
 *
-* read .sdbinit file (if any)
+* read .sdbinit file (if any) -- check for SDBINIT environment variable??
 	FILE('.sdbinit') SDB.SOURCE('.sdbinit')
 
 * mark as running (until END)
