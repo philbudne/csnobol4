@@ -78,6 +78,11 @@ B<FUNCTION()> predicate, ie;
 =code
         FUNCTION('SDB') SDB()
 =ecode
+
+=sect FILES
+=item B<.sdbinit>
+initial command file, read on startup.
+
 =sect SEE ALSO
 B<snobol4>(1), B<gdb>(1), B<readline>(3), B<snobol4readline>(3)
 
@@ -109,5 +114,3 @@ the start of a each statement executed.
 
 The interrupt character is silently ignored when at the B<sdb> command
 prompt.
-
-B<sdb> does not read an init file (ie; .sdbinit).
