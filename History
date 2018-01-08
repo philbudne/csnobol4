@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+1/7/2018
+	timing: fix emerge command (thanks to Mateusz Grotek)
+
 12/30/2017
 	doc/sdb.1.pea: document .sdbinit
 

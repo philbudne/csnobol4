@@ -158,8 +158,8 @@ if [ "$UNAME" ]; then
 		done
 		if [ -f /usr/bin/emerge ]; then
 			echo ''
-			echo emerge info:
-			/usr/bin/emerge info
+			echo emerge --info:
+			/usr/bin/emerge --info
 			echo 'EMERGE END'
 		fi
 		if [ -f /usr/bin/lsb_release ]; then
