@@ -51,7 +51,7 @@
 **Fractional modification time in nanoseconds.
 **=item B<ST_CTIME>
 **Metadata change time in seconds since January 1st, 1970.
-**=item B<ST_ATIMENSEC>
+**=item B<ST_CTIMENSEC>
 **Fractional change time in nanoseconds.
 **
 **Values will be the empty string if the

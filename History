@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+1/22/2018
+	modules/stat/funcs.sno: fix ATIMENS paste-o
+
 1/7/2018
 	timing: fix emerge command (thanks to Mateusz Grotek)
 
