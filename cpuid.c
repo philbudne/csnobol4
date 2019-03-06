@@ -31,6 +31,7 @@ main(int argc, char *argv[]) {
     unsigned i;
     int *ip;
     char str[3*4*sizeof(int)+1];	/* three rounds of four ints + NUL */
+    int xfam, xmod, ptype, fam, mod, step;
 
     debug = argc > 1;			/* any arg enables debug */
 
@@ -72,6 +73,18 @@ main(int argc, char *argv[]) {
 
     // EAX=1: Processor Info and Feature Bits
     cpuid(1, v);
+    xfam  = (v[0] >> 20) & 0xff;
+    xmod  = (v[0] >> 16) & 0x0f;
+    ptype = (v[0] >> 12) & 0x03;
+    fam   = (v[0] >>  8) & 0x0f;
+    mod   = (v[0] >>  4) & 0x0f;
+    step  =  v[0]        & 0x0f;
+    if (fam >= 6)
+	mod |= xmod << 4;
+    if (fam == 0xf)
+	fam += xfam;
+    printf("cpuid proc: %#x (family %d model %d step %d)\n", v[0], fam, mod, step);
+    fflush(stdout);
     if (v[2] & 0x80000000) {
 	puts("running under hypervision!");
 	fflush(stdout);

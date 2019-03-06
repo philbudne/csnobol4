@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+3/6/2018
+	cpuid.c: decode cpuid model number
+
 1/22/2018
 	modules/stat/funcs.sno: fix ATIMENS paste-o
 
