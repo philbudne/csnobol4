@@ -147,7 +147,7 @@ TELLDIR( LA_ALIST ) LA_DCL
 /*
 **=pea
 **
-**=item B<TELLDIR(>I<handle>,I<position>B<)>
+**=item B<SEEKDIR(>I<handle>,I<position>B<)>
 **adjusts directory handle position.
 **=cut
 */
