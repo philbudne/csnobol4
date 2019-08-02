@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+8/2/2019
+	timing: add lscpu
+
 3/22/2019
 	modules/dirs/dirs.c: fix SEEKDIR doc text
 

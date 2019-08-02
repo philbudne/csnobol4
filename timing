@@ -123,6 +123,12 @@ if [ "$UNAME" ]; then
 		hinv
 		;;
 	Linux)
+	        if [ -x /usr/bin/lscpu ]; then
+			echo ''
+			echo lscpu:
+			/usr/bin/lscpu
+			echo 'ENDLSCPU'
+		fi
 		if [ -f /proc/cpuinfo ]; then
 			echo ''
 			echo /proc/cpuinfo:
