@@ -13,6 +13,9 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 8/2/2019
 	timing: add lscpu
 
+6/15/2019:
+	modules/ffi/ffi.c: switch from <inttypes.h> (SUSv2) to <stdint.h> (C99)
+
 3/22/2019
 	modules/dirs/dirs.c: fix SEEKDIR doc text
 

@@ -32,7 +32,7 @@
 #include <stdlib.h>			/* for free() */
 #endif
 
-#include <inttypes.h>
+#include <stdint.h>			/* was inttypes.h */
 #include <stdio.h>			/* for debug, test function */
 #include <ffi.h>
 
