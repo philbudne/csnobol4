@@ -5,6 +5,11 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 10/13/2019
 	doc/snobol4blocks.1.pea: fix text
 
+	configure: check for C99 <stdint.h>
+	modules/random/random.c: use HAVE_STDINT_H
+		to help compilation on Solaris 5.7!
+		reported by John Willis
+
 8/2/2019
 	timing: add lscpu
 
