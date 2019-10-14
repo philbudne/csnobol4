@@ -10,7 +10,7 @@ A BLOCK is a data type that extends string concatenation to three dimensions.
 Enabling the BLOCKS extension with the B<-BLOCKS> control line (see
 B<snobol4ctrl>(1)) or the B<-B> command line option (see
 B<snobol4cmd>(1)) alters the definition and precedence of percent and
-pound (see B<snobol4op>(1)):
+pound operators (see B<snobol4op>(1)):
 
 White space concatenates two BLOCKs in the horizontal dimension,
 the percent sign (B<%>) concatenates two BLOCKs in the vertical dimension,
