@@ -21,7 +21,7 @@
 **=pea
 **=sect SYNOPSIS
 **=code
-**-INCLUDE 'ndbm.sno'
+**-INCLUDE 'sqlite3dbm.3'
 **
 **        dbhandle = SQL3DBM_OPEN(file,flags,mode)
 **

@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/22/2019
+	modules/sqlite3/sqlite3dbm.sno: fix documentation
+
 10/13/2019
 	doc/snobol4blocks.1.pea: fix text
 
