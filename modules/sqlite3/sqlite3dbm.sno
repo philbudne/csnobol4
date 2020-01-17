@@ -43,18 +43,18 @@
 **A DBM compatible interface for B<snobol4>(1) using the B<sqlite3>
 **embedded database engine, and allows concurrent access by multiple
 **processes.
-**=item B<DBM_OPEN>
+**=item B<SQL3DBM_OPEN>
 **takes a filename (STRING), and ignores any additional arguments, and
 **returns a database handle.
-**=item B<DBM_CLOSE>
+**=item B<SQL3DBM_CLOSE>
 **takes a database handle and closes it.
-**=item B<DBM_STORE>
+**=item B<SQL3DBM_STORE>
 **takes a database handle, a key, a value, and a flag,
 **one of B<SQL3DBM_INSERT> or B<SQL3DBM_REPLACE>.
-**=item B<DBM_FETCH>
+**=item B<SQL3DBM_FETCH>
 **takes a database handle and a key and returns a datum (if any) stored with
 **that key.
-**=item B<DBM_DELETE>
+**=item B<SQL3DBM_DELETE>
 **takes a database handle and a key and deletes the stored datum (if any).
 **=item B<SQL3DBM_FIRSTKEY>
 **takes a database handle and returns a database key.
