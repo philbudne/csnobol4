@@ -1648,6 +1648,10 @@ if [ ! "$WITHOUT_READLINE" ]; then
 	RL_LIBS="-lreadline -lncurses"
     elif config/check "$RL_INC" "$RL_FRAG" '-ledit'; then
 	RL_LIBS="-ledit"
+    elif config/check "$RL_INC" "$RL_FRAG" '-ledit -I/usr/include/edit'; then
+	# FreeBSD 12
+	RL_LIBS="-ledit"
+	RL_INCDIR="/usr/include/edit"
     fi
 
     if [ "x$RL_LIBS" != x ]; then
@@ -1662,6 +1666,10 @@ if [ ! "$WITHOUT_READLINE" ]; then
 	    MODULES="$MODULES readline"
 	fi
 	echo "ADD_LDFLAGS([$RL_LIBS])"		>> $CONFIG_M4
+	if [ "x$RL_INCDIR" ]; then
+	    echo "ADD_CPPFLAGS([-I$RL_INCDIR])"	>> $CONFIG_M4
+	    echo "	READLINE_INCLUDE = '$RL_INCDIR'" >> $CONFIG_SNO
+	fi
 	# Make optional?
 	echo '#define COMPILER_READLINE'	>> $CONFIG_H
 	# NetBSD/OSX have rl_[gs]et_keymap, but they're noops,

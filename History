@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+01/21/2020
+	FreeBSD 12:
+	configure: check for readline.h in /usr/include/edit
+	modules/readline/setup.sno: use READLINE_INCLUDE
+
 01/12/2020
 	modules/sqlite3/sqlite3dbm.sno: more doc fixes
 

@@ -6,7 +6,8 @@
 	t['module'] = 'readline'
 	t['sources'] = 'readline.c'
 	t['ldflags'] = READLINE_LDFLAGS
-	
+	t['include_dirs'] = READLINE_INCLUDE
+
 	t['author'] = t['maintainer'] = 'Phil Budne'
 	t['author_email'] = t['maintainer_email'] = 'phil@snobol4.org'
 	t['license'] = 'BSD'
