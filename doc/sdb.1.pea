@@ -117,5 +117,5 @@ prompt.
 
 Leaves an unprotected listing file of the sources in the /tmp directory.
 
-``run'' command asks about restarting even when the first line of the
-program has not yet been executed!
+``quit'' and ``run'' commands say program is running even if first
+line of the program has not yet been executed!
