@@ -116,3 +116,6 @@ The interrupt character is silently ignored when at the B<sdb> command
 prompt.
 
 Leaves an unprotected listing file of the sources in the /tmp directory.
+
+``run'' command asks about restarting even when the first line of the
+program has not yet been executed!
