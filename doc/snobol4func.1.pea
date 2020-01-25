@@ -222,7 +222,7 @@ second describes the operating system, and the third describes the
 language implementation name. NOTE! Architecture names come from the
 B<uname>(3) library call, and may be different for the same hardware
 when running different operating systems. Example:
-B<amd64:FreeBSD 10.0:CSNOBOL4B 2.0>
+B<amd64:FreeBSD 12.1-RELEASE-p1:CSNOBOL4B 2.1>
 
 =item
 B<HOST(0)> returns a string containing the command line parameter

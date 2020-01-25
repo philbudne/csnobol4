@@ -4,6 +4,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 01/24/2020
 	configure: fix for build with libreadline
+	doc/snobol4func.1.pea: update HOST() output!
 
 01/24/2020
 	Add run command!
