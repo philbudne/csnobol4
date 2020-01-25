@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+01/25/2020
+	doc/snobol4func.1.pea: note more extensions from SPITBOL 360
+
 01/24/2020
 	configure: fix for build with libreadline
 	doc/snobol4func.1.pea: update HOST() output!

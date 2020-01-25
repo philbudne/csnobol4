@@ -81,6 +81,8 @@ I<Standard>.
 Data: Convert I<value> to data type I<type>.  Can convert TABLE to ARRAY
 for iteration over members.
 I<Standard>.
+Supports conversion to B<NUMERIC>, 
+I<SPITBOL Extension, added in CSNOBOL4 version 0.99.4>.
 
 =item B<COPY(>I<value>B<)>
 Data: returns a copy of the supplied I<value>.  Copies of 
@@ -295,29 +297,29 @@ I<Standard>.
 
 =item B<LEQ(>I<s1,s2>B<)>
 Predicate: tests if first argument is lexically equal to second argument.
-I<SPITBOL Extension, added in CSNOBOL4 version 0.98.2>.
+I<SPITBOL 360 Extension, added in CSNOBOL4 version 0.98.2>.
 
 =item B<LGE(>I<S1,S2>B<)>
 Predicate: tests if first argument is lexically greater than or equal to second
 argument.
-I<SPITBOL Extension, added in CSNOBOL4 version 0.98.2>.
+I<SPITBOL 360 Extension, added in CSNOBOL4 version 0.98.2>.
 
 =item B<LGT(>I<s1,s2>B<)>
 Predicate: tests if first argument is lexically greater than second argument.
-I<SPITBOL Extension, added in CSNOBOL4 version 0.98.2>.
+I<SPITBOL 360 Extension, added in CSNOBOL4 version 0.98.2>.
 
 =item B<LLE(>I<s1,s2>B<)>
 Predicate: tests if first argument is lexically less than or equal to second
 argument.
-I<SPITBOL Extension, added in CSNOBOL4 version 0.98.2>.
+I<SPITBOL 360 Extension, added in CSNOBOL4 version 0.98.2>.
 
 =item B<LLT(>I<s1,s2>B<)>
 Predicate: tests if first argument is lexically less than second argument.
-I<SPITBOL Extension, added in CSNOBOL4 version 0.98.2>.
+I<SPITBOL 360 Extension, added in CSNOBOL4 version 0.98.2>.
 
 =item B<LNE(>I<s1,s2>B<)>
 Predicate: tests if first argument is lexically different from second argument.
-I<SPITBOL Extension, added in CSNOBOL4 version 0.98.2>.
+I<SPITBOL 360 xtension, added in CSNOBOL4 version 0.98.2>.
 
 =item B<LN(>I<value>B<)>
 Math: an alias for B<LOG()>,
@@ -402,7 +404,7 @@ I<Standard>.
 
 =item B<REVERSE(>I<str>B<)>
 String: returns its subject string in reverse order. 
-I<SPITBOL Extension, added in CSNOBOL4 version 0.98.2>.
+I<SPITBOL 360 Extension, added in CSNOBOL4 version 0.98.2>.
 
 =item B<REWIND(>I<unit>B<)>
 I/O:  Reset input pointer of file associated with I<unit> to start of file.
@@ -599,7 +601,8 @@ FUNCTION, LABEL, KEYWORD) tracing;  I<id> is included in trace output;
 I<func> is optional name of function to call.  See B<snobol4key>(1) for
 B<&amp;TRACE> and B<&amp;FTRACE> keywords.
 I<Standard>.
-SPITBOL extension of first letter of trace type accepted since CSNOBOL4 2.0.
+I<SPITBOL 360 extension of first letter of trace type
+accepted since CSNOBOL4 2.0>.
 
 =item B<TRIM(>I<str>B<)>
 String: Returns I<str> with trailing blanks and tabs removed.
