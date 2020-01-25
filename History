@@ -3,8 +3,13 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 01/24/2020
-	doc/sdb.1.pea: update "run" bug description.
-		add /tmp file bug
+	configure: fix for build with libreadline
+
+01/24/2020
+	Add run command!
+	snolib/sdb.sno: add run command!
+	sdb.sh: support run command via temporary file!
+	doc/sdb.1.pea: add run command, /tmp file bug
 
 01/21/2020
 	FreeBSD 12:

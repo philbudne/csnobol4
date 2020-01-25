@@ -1666,7 +1666,7 @@ if [ ! "$WITHOUT_READLINE" ]; then
 	    MODULES="$MODULES readline"
 	fi
 	echo "ADD_LDFLAGS([$RL_LIBS])"		>> $CONFIG_M4
-	if [ "x$RL_INCDIR" ]; then
+	if [ "x$RL_INCDIR" != x ]; then
 	    echo "ADD_CPPFLAGS([-I$RL_INCDIR])"	>> $CONFIG_M4
 	    echo "	READLINE_INCLUDE = '$RL_INCDIR'" >> $CONFIG_SNO
 	fi
