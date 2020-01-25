@@ -27,7 +27,7 @@ I<Standard>.
 
 =item B<ATAN(>I<arg>B<)>
 Math: Returns the principal value of the arc tangent of its argument.
-I<Extension from SNOBOL4+?, added in CSNOBOL4 1.4>.
+I<Macro SPITBOL?? extension, added in CSNOBOL4 1.4>.
 
 =item B<BACKSPACE(>I<unit>B<)>
 I/O: Not implemented!! See B<SET()> and B<SSET()>.
@@ -48,18 +48,18 @@ terminated by a break set.  BREAKX can be used as a faster matching
 replacement for B<ARB>: B<BREAKX('S') 'STRING'> always runs faster
 than B<ARB 'STRING'> since it only attempts matching B<'STRING'> at
 locations where an B<'S'> has been detected.
-I<SPITBOL 360 Extension, added in CSNOBOL4 version 0.98>.
+I<SPITBOL 360 extension, added in CSNOBOL4 version 0.98>.
 
 =item B<CHAR(>I<n>B<)>
 String: takes an integer from 0 to 255 and returns the
 I<n>th character in B<&amp;ALPHABET>.
-I<SPITBOL 360 Extension, added in CSNOBOL4 version 0.98>.
+I<SPITBOL 360 extension, added in CSNOBOL4 version 0.98>.
 SNOBOL4+ has a B<CHR()> function.
 
 =item B<CHOP(>I<real>B<)>
 Math: truncates the fractional part of its argument
 (rounding towards zero), and returns a REAL value.
-I<SPITBOL Extension, added in CSNOBOL4 version 0.98.4>.
+I<SNOBOL4+ extension(?), added in CSNOBOL4 version 0.98.4>.
 
 =item B<CLEAR(>I<>B<)>
 Interpreter: Clears ALL natural variable values (including predefined pattern
@@ -82,7 +82,7 @@ Data: Convert I<value> to data type I<type>.  Can convert TABLE to ARRAY
 for iteration over members.
 I<Standard>.
 Supports conversion to B<NUMERIC>, 
-I<SPITBOL Extension, added in CSNOBOL4 version 0.99.4>.
+I<SPITBOL 360 extension, added in CSNOBOL4 version 0.99.4>.
 
 =item B<COPY(>I<value>B<)>
 Data: returns a copy of the supplied I<value>.  Copies of 
@@ -92,7 +92,7 @@ I<Standard>.
 
 =item B<COS(>I<argument>B<)>
 Math: Return cosine of I<argument> in radians.
-I<SNOBOL4+ Extension?, added in CSNOBOL4 version 0.98.4>.
+I<Macro SPITBOL extension(?), added in CSNOBOL4 version 0.98.4>.
 
 =item B<DATA(>I<prototype>B<)>
 Data: Declares a B<DATA> struct type. I<prototype> is of the form
@@ -125,7 +125,7 @@ I<Standard>.
 =item B<DELETE(>I<filename>B<)>
 I/O: A predicate which tries to remove the
 named file, and fails if it cannot.
-I<SITBOL Extension: added in CSNOBOL4 version 0.98.5>.
+I<SITBOL extension: added in CSNOBOL4 version 0.98.5>.
 
 =item B<DETACH(>I<name>B<)>
 I/O:  Detach any I/O associations for named I<variable>.
@@ -161,12 +161,12 @@ I<Standard>.
 =item B<EXIT(>I<arg>B<)>
 System: Passes process control to a shell to execute I<arg> as a command.
 Returns failure if I<arg> is not a B<STRING>.
-I<SPITBOL Extension, added in CSNOBOL>.
+I<Macro SPITBOL extension(?), added in CSNOBOL>.
 Does B<NOT> implement ``save file'' feature of B<SPITBOL>.
 
 =item B<EXP(>I<x>B<)>
 Math: returns the value B<e **> I<x>.
-I<SPITBOL Extension, added in CSNOBOL4 version 0.98.4>.
+I<SNOBOL4+ extension, added in CSNOBOL4 version 0.98.4>.
 
 =item B<FIELD(>I<name,n>B<)>
 Data: Returns a string with the name of the I<n>th member of
@@ -175,17 +175,17 @@ I<Standard>.
 
 =item B<FILE(>I<string>B<)>
 I/O: A predicate which tests if a file exists, and fails if it does not.
-I<SITBOL Extension, added in CSNOBOL4 version 0.98.5>.
+I<SITBOL extension, added in CSNOBOL4 version 0.98.5>.
 
 =item B<FILE_ABSPATH(>I<string>B<)>
 I/O: A predicate which returns null if its argument is an absolute file path,
 and failure if the path is relative.
-I<CSNOBOL4 Extension, added in CSNOBOL4 version 1.5>.
+I<CSNOBOL4 extension, added in CSNOBOL4 version 1.5>.
 
 =item B<FILE_ISDIR(>I<string>B<)>
 I/O: A predicate which returns the null string if its argument is the
 pathname of a directory, and returns failure if not.
-I<CSNOBOL4 Extension, added in CSNOBOL4 version 1.5>.
+I<CSNOBOL4 extension, added in CSNOBOL4 version 1.5>.
 
 =item B<FREEZE(>I<table>B<)>
 Data: prohibits creation of new entries in the referenced table.  This
@@ -195,13 +195,13 @@ since frozen tables will not become clogged with empty entries.
 Lookups for uninitialized entries will return the null string.
 Attempts to assign to a non-existent entry will cause a ``Variable not
 present where required'' error.
-I<SNOBOL4+ Extension, added in CSNOBOL4 version 0.98.2>.
+I<SNOBOL4+ extension, added in CSNOBOL4 version 0.98.2>.
 
 =item B<FUNCTION(>I<name>B<)>
 Function: A predicate which evaluates its argument as a string
 (with case folding), and returns the null string if a function with that
 name exists and fails if it does not.
-I<SITBOL Extension, added in CSNOBOL4 version 0.99.44>.
+I<SITBOL extension, added in CSNOBOL4 version 0.99.44>.
 
 =item B<GE(>I<i1,i2>B<)>
 Predicate: Succeeds if I<i1> is arithmetically equal than or equal to I<i2>.
@@ -251,7 +251,7 @@ B<HOST(4,>I<string>I<)> returns the value of the environment variable
 named I<string>.
 
 =item
-I<SPITBOL Extension, added in CSNOBOL4 version 0.98.4>.
+I<Macro SPITBOL extension(?), added in CSNOBOL4 version 0.98.4>.
 
 =item B<IDENT(>I<v1,v2>B<)>
 Predicate: Succeeds if the supplied values refer to the same object,
@@ -271,7 +271,7 @@ I/O: Returns an unused I/O unit number for
 use with the B<INPUT()> or B<OUTPUT()> functions.  B<IO_FINDUNIT()> is
 meant for use in subroutines which can be reused.  B<IO_FINDUNIT()>
 will never return a unit number below 20.
-I<CSNOBOL4 Extension, added in version 0.99.4>.
+I<CSNOBOL4 extension, added in version 0.99.4>.
 
 =item B<ITEM(>I<a,i1,...>B<)>
 Data:  Reference an element of an ARRAY or TABLE which is the result
@@ -282,7 +282,7 @@ I<Standard>.
 Predicate: Evaluates argument as a string (with case folding), and returns the
 null string if a label with that name has been defined, and fails if
 it does not.
-I<Steve Duff's Macro SPITBOL Extension, added in CSNOBOL4 version 1.5>*.
+I<Steve Duff's Macro SPITBOL extension, added in CSNOBOL4 version 1.5>*.
 SITBOL has a B<LABEL> function which returns a B<CODE> pointer.
 *Added in CSNOBOL4 version 0.99.44, but unreliable until version 1.5.
 
@@ -297,33 +297,33 @@ I<Standard>.
 
 =item B<LEQ(>I<s1,s2>B<)>
 Predicate: tests if first argument is lexically equal to second argument.
-I<SPITBOL 360 Extension, added in CSNOBOL4 version 0.98.2>.
+I<SPITBOL 360 extension, added in CSNOBOL4 version 0.98.2>.
 
 =item B<LGE(>I<S1,S2>B<)>
 Predicate: tests if first argument is lexically greater than or equal to second
 argument.
-I<SPITBOL 360 Extension, added in CSNOBOL4 version 0.98.2>.
+I<SPITBOL 360 extension, added in CSNOBOL4 version 0.98.2>.
 
 =item B<LGT(>I<s1,s2>B<)>
 Predicate: tests if first argument is lexically greater than second argument.
-I<SPITBOL 360 Extension, added in CSNOBOL4 version 0.98.2>.
+I<SPITBOL 360 extension, added in CSNOBOL4 version 0.98.2>.
 
 =item B<LLE(>I<s1,s2>B<)>
 Predicate: tests if first argument is lexically less than or equal to second
 argument.
-I<SPITBOL 360 Extension, added in CSNOBOL4 version 0.98.2>.
+I<SPITBOL 360 extension, added in CSNOBOL4 version 0.98.2>.
 
 =item B<LLT(>I<s1,s2>B<)>
 Predicate: tests if first argument is lexically less than second argument.
-I<SPITBOL 360 Extension, added in CSNOBOL4 version 0.98.2>.
+I<SPITBOL 360 extension, added in CSNOBOL4 version 0.98.2>.
 
 =item B<LNE(>I<s1,s2>B<)>
 Predicate: tests if first argument is lexically different from second argument.
-I<SPITBOL 360 xtension, added in CSNOBOL4 version 0.98.2>.
+I<SPITBOL 360 extension, added in CSNOBOL4 version 0.98.2>.
 
 =item B<LN(>I<value>B<)>
 Math: an alias for B<LOG()>,
-I<SPITBOL Extension, added in CSNOBOL4 version 1.4>.
+I<SNOBOL4+ extension, added in CSNOBOL4 version 1.4>.
 
 =item B<LOAD(>I<prototype,file>B<)>
 Function:  Load an external function from dynamically loaded library I<file>.
@@ -336,7 +336,7 @@ I<Standard>.
 
 =item B<LOG(>I<value>B<)>
 Math: returns the natural logarithm of its argument.
-I<Extension from SNOBOL4+, added in CSNOBOL4 version 0.98.4>.
+I<SNOBOL4+ extension, added in CSNOBOL4 version 0.98.4>.
 
 =item B<LPAD(>I<str,n,char>B<)>
 String: Takes the first argument (subject) string, and left pads it
@@ -344,7 +344,7 @@ out to the length specified in the second argument, using the first
 character of the optional third argument.  If the third argument is
 missing, or is the null string, spaces will be used for padding.  The
 subject will be returned unmodified if already long enough.
-I<SPITBOL 360 Extension, added in CSNOBOL4 version 0.98>.
+I<SPITBOL 360 extension, added in CSNOBOL4 version 0.98>.
 
 =item B<LT(>I<i1,i2>B<)>
 Predicate: Succeeds if I<i1> is arithmetically less than I<i2>.
@@ -371,7 +371,7 @@ I<Standard>.
 =item B<ORD(>I<string>B<)>
 String: returns the INTEGER ordinal value (zero to 255) of the
 first character in its string argument (the inverse of B<CHAR()>).
-I<CSNOBOL4 Extension, added in version 0.99.44>.
+I<CSNOBOL4 extension, added in version 0.99.44>.
 SNOBOL4+ has an B<ASC()> function.
 
 =item B<OUTPUT(>I<variable,unit,options,name>B<)>
@@ -394,7 +394,7 @@ I<Standard>.
 =item B<RENAME(>I<new,old>B<)>
 I/O: A predicate which attempts
 to rename the file named by I<old> to the name I<new>.
-I<Extension from SITBOL: added in CSNOBOL4 version 0.98.5>.
+I<SITBOL extension: added in CSNOBOL4 version 0.98.5>.
 Unlike the B<SITBOL> version, if the target file exists, it will be removed.
 
 =item B<REPLACE(>I<str,charset1,charset2>B<)>
@@ -404,7 +404,7 @@ I<Standard>.
 
 =item B<REVERSE(>I<str>B<)>
 String: returns its subject string in reverse order. 
-I<SPITBOL 360 Extension, added in CSNOBOL4 version 0.98.2>.
+I<SPITBOL 360 extension, added in CSNOBOL4 version 0.98.2>.
 
 =item B<REWIND(>I<unit>B<)>
 I/O:  Reset input pointer of file associated with I<unit> to start of file.
@@ -416,7 +416,7 @@ out to the length specified in the second argument, using the first
 character of the optional third argument.  If the third argument is
 missing, or is the null string, spaces will be used for padding.  The
 subject will be returned unmodified if already long enough.
-I<SPITBOL 360 Extension, added in CSNOBOL4 version 0.98>.
+I<SPITBOL 360 extension, added in CSNOBOL4 version 0.98>.
 
 =item B<RPOS(>I<n>B<)>
 Pattern: Returns a pattern which succeeds if the pattern
@@ -426,7 +426,7 @@ I<Standard>.
 
 =item B<RSORT(>I<ta,c>B<)>
 Data: see B<SORT()>.
-I<Macro SPITBOL extension, added in CSNOBOL4 version 0.98>.
+I<Macro SPITBOL extension(?), added in CSNOBOL4 version 0.98>.
 
 =item B<RTAB(>I<n>B<)>
 Pattern: Returns a PATTERN which matches all characters
@@ -449,7 +449,7 @@ descriptor which can be opened for bidirectional I/O using a
 returns from the B<SERV_LISTEN()> call.  This function is only available
 on systems with the ``fork'' system call, which makes a child process
 which is an identical copy of the parent process.
-I<CSNOBOL4 Extension, added in version 0.99.44>
+I<CSNOBOL4 extension, added in version 0.99.44>
 
 =item B<SET(>I<unit,offset,whence>B<)>
 I/O: Seeks the file pointer of an open file.  The
@@ -462,7 +462,7 @@ end of the file.  B<SET()> returns the new file pointer value.  On
 systems with 64-bit file pointers and 32-bit integers the values
 will be truncated to 32 bits, and only the first and last 4 gigabytes
 of a file can be accessed directly: see B<SSET()>.
-I<Catspaw Macro SPITBOL Extension, added in CSNOBOL4 version 0.99.1>.
+I<Catspaw Macro SPITBOL extension, added in CSNOBOL4 version 0.99.1>.
 
 =item B<SETEXIT(>I<label>B<)>
 Interpreter: The argument to B<SETEXIT()> is the name of a label to
@@ -504,11 +504,11 @@ catch further errors. Handlers cannot be nested: only one copy of the
 saved execution state is kept.
 
 =item
-I<Extension from SPITBOL 360, added in CSNOBOL4 version 1.4>.
+I<SPITBOL 360 extension, added in CSNOBOL4 version 1.4>.
 
 =item B<SIN(>I<argument>B<)>
 Math: Return sine of I<argument> in radians.
-I<SNOBOL4+ Extension?, added in CSNOBOL4 version 0.98.4>.
+I<SNOBOL4+ extension?, added in CSNOBOL4 version 0.98.4>.
 
 =item B<SIZE(>I<string>B<)>
 String: returns the length of the B<STRING> argument.
@@ -535,7 +535,7 @@ While C<WORDS = SORT(TAB,1)> returns an array with the rows by the
 lexicographical ordering of the words; C<WORDS&lt;1,1&gt;> contains
 the lexicographically first word and C<WORDS&lt;1,2&gt;> contains the
 number of occurrences of that word.
-I<Macro SPITBOL extension?, added in CSNOBOL4 version 0.98>.
+I<Macro SPITBOL extension(?), added in CSNOBOL4 version 0.98>.
 
 =item B<SPAN(>I<charset>B<)>
 Pattern: Returns a pattern that matches the longest run of one or more
@@ -544,7 +544,7 @@ I<Standard>.
 
 =item B<SQRT(>I<argument>B<)>
 Math: Return the square root. Fails if the argument is negative.
-I<Extension from SPITBOL, added in CSNOBOL4 version 0.90>.
+I<Macro SPITBOL extension(?), added in CSNOBOL4 version 0.90>.
 
 =item B<SSET(>I<unit,offset,whence,scale>B<)>
 I/O: ``scaled set'' function, to handle files larger than 4GB
@@ -557,7 +557,7 @@ return value.  When used in combination with relative B<SET()> calls
 file offsets are larger than can be represented in a SNOBOL4
 B<INTEGER>.  Support for ``Large Files'' is enabled when available,
 but not all file systems support large files.
-I<CSNOBOL4 Extension, added in version 0.99.44>.
+I<CSNOBOL4 extension, added in version 0.99.44>.
 
 =item B<STOPTR(>I<name,type>B<)>
 Interpreter:  Disable I<type> tracing for I<name>.
@@ -637,7 +637,7 @@ See
 =link http://www.snobol4.org/docs/books.html#green
 for I<Standard> function definitions.
 
-Need to research origins of ``SPITBOL'' extensions!
+Need to research origins of Macro SPITBOL extensions.
 
 =sect SEE ALSO
 B<snobol4>(1),
