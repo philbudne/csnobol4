@@ -1,6 +1,8 @@
 $Id$
 
-allow OPSYN of "["
+allow OPSYN of "[" ?  underlying function looks at arg count??
+
+command line option for read/eval/print loop?
 
 snobol4key/func: document &STNO trace / BREAKPOINT()???
 	describe protected keyword patterns
@@ -24,6 +26,10 @@ man pages:
 		argument names in italic.
 	add better descriptions (esp ARRAY, DEFINE, PROTOTYPE)
 
+    snobol4host
+	Document -include 'host.sno' !!
+	from pea comments in host.c???
+
     snobol4syn:
 	statement syntax
 	goto
@@ -33,7 +39,6 @@ man pages:
     snobol4op -- add unary operators
 
     snobol4utf -- from pea comments in utf.sno
-    snobol4host -- from pea comments in host.c???
     snobol4com
 
     snobol4load   -- C functions/macros
@@ -74,8 +79,16 @@ accept string for unit?
 	-NEWIO -OLDIO???
 	default to I/O association variable name?!
 
-translate all *roff man pages to snopea!!
-	need subsect directive
+have HAVE_TELLDIR define??
+	test with:
+
+	#include <dirent.h>
+
+	int
+	main() {
+		DIR *d = opendir(".");
+		return telldir(d) != 0;
+	}
 
 modules:
 	ffi:
@@ -99,8 +112,6 @@ modules:
 readline:
 	Allow initial text (for Fred W)
 	use "libedit" natively??
-		FreeBSD man editline
-		include <edit/readline/readline.h>?
 	supply/use private version of libedit????
 	Allow readline() access via INPUT? (magic path, or option)
 		Allow control of history
@@ -154,6 +165,8 @@ SETEXITFUNC()
 	take action depending on return (abort, continue, scontinue)
 
 sdb:
+	don't whine when quitting at first prompt
+	force "run" (rather than continue) at first prompt?
 	set: (just SDB.VARS?)
 		"trace" (via FCALL/FRET)
 		"debug"
@@ -161,7 +174,6 @@ sdb:
 	handle block comments better?
 	save and enable &INPUT and &OUTPUT on all debugger entries,
 		restore on all exits!!
-	read .sdbinit?
 	save printed values? in SDB.VALUES[n]??
 	remove break/watchpoints when disabled?
 	non-existant file on sdb command line shows "No END"!!!
@@ -171,9 +183,6 @@ sdb:
 	BUG: ignored watchpoints (cont N or ignore B N) don't update old value
 	"code" command?
 	list [START [END]]
-	implement "run" command, using CLEAR()?!
-	    preserve: listings, breakpoints
-		ABORT, ARB, BAL, FAIL, FENCE, REM, SUCCEED
 
 Have timing script POST results??
 
