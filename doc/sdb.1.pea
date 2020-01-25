@@ -115,3 +115,5 @@ the start of a each statement executed.
 
 The interrupt character is silently ignored when at the B<sdb> command
 prompt.
+
+Leaves an unprotected listing file of the sources in the /tmp directory.

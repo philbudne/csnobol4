@@ -4,6 +4,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 01/24/2020
 	doc/sdb.1.pea: update "run" bug description.
+		add /tmp file bug
 
 01/21/2020
 	FreeBSD 12:
