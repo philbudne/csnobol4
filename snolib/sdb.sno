@@ -1,6 +1,6 @@
 -HIDE
 * "SDB" SNOBOL4 debugger -- a clone (clown?) of GNU "gdb" debugger
-	SDB.COPYRIGHT = 'Copyright © 2010-2017 Philip L. Budne'
+	SDB.COPYRIGHT = 'Copyright © 2010-2020 Philip L. Budne'
 *			All rights reserved.
 * 
 * Redistribution and use in source and binary forms, with or without
@@ -26,6 +26,8 @@ SDB.START
 
 	DIFFER((SDB.DEBUG_FILE = HOST(4,"SDB_DEBUG")))
 +		OUTPUT(.SDB.DEBUG,IO_FINDUNIT(),"W",SDB.DEBUG_FILE)
+
+	SDB.BKPT_FILE = HOST(4, "SDB_BREAKPOINTS")
 
 -include 'readline.sno'
 
@@ -60,6 +62,7 @@ SDB.DC.END
  SDB.DC("next", "single step, skipping over function calls", "EMPTY_OR_COUNT")
  SDB.DC("print", "evaluate expression and print result", "EXPRESSION")
  SDB.DC("quit", "exit debugger")
+ SDB.DC("run", "restart program, saving breakpoints")
  SDB.DC("s",,, "STEP")
  SDB.DC("save", "save breakpoints to file", "FILE_NAME")
  SDB.DC("source", "read commands from file", "FILE_NAME")
@@ -491,7 +494,8 @@ SDB.CMD.BREAK
 	TERMINAL = DIFFER(SDB.BREAK_BY_STMT[SDB.T1])
 +	    "Breakpoint already set at statement " SDB.T1 :S(SDB.COMMAND.STAY)
 	SDB.NEXT_BREAK = SDB.T2 + 1
-	TERMINAL = 'Breakpoint ' SDB.T2 ' at statement ' SDB.T1
+* silence output if reloading from "run" command
+	TERMINAL = IDENT(SDB.SILENT) 'Breakpoint ' SDB.T2 ' at statement ' SDB.T1
 	SDB.BREAK_BY_STMT[SDB.T1] = SDB.BREAK_BY_NUM[SDB.T2] =
 +		SDB.BREAKPOINT(SDB.T1, SDB.T2, "break", "y")
 	BREAKPOINT(SDB.T1, 1)
@@ -682,12 +686,6 @@ SDB.CMD.PRINT
 +	TERMINAL = SDB.EVAL(SDB.ARGS)		:S(SDB.COMMAND.STAY)
 	TERMINAL = "Expression eval failed."	:(SDB.COMMAND.STAY)
 
-*
-*** (start of) run command
-SDB.CMD.SAVE
-	TERMINAL = IDENT(SDB.ARGS) "Need filename" :S(SDB.COMMAND.STAY)
-	SDB.SAVE(SDB.ARGS)			:(SDB.COMMAND.STAY)
-*
 *** quit command
 SDB.CMD.QUIT
 	IDENT(SDB.RUNNING)			:S(SDB.EXIT)
@@ -695,6 +693,20 @@ SDB.CMD.QUIT
 +						:F(SDB.COMMAND.STAY)
 SDB.EXIT
 	SETEXIT()				:(END)
+
+*** run command!!
+* there's no way to reset process state
+* so write out a magic file with sdb state
+* and sdb script will restart process!
+SDB.CMD.RUN
+	TERMINAL = 'The program being debugged has been started already.'
+	SDB.YORN('Start it from the beginning? (y or n) ') :F(SDB.COMMAND.STAY)
+	SDB.SAVE(SDB.BKPT_FILE)			 :(SDB.EXIT)
+
+*** save command
+SDB.CMD.SAVE
+	TERMINAL = IDENT(SDB.ARGS) "Need filename" :S(SDB.COMMAND.STAY)
+	SDB.SAVE(SDB.ARGS)			:(SDB.COMMAND.STAY)
 *
 *** source command
 SDB.CMD.SOURCE
@@ -720,7 +732,7 @@ SDB.CMD.WATCH
 	SDB.WATCH_NAME(SDB.T1) = SDB.T3
 	SDB.WATCH_OLD(SDB.T1) = $SDB.T3
 	SDB.WATCH_VAR(SDB.T1) = SDB.ARGS
-	TERMINAL = 'Watchpoint ' SDB.T2 ' on ' SDB.ARGS
+	TERMINAL = IDENT(SDB.SILENT) 'Watchpoint ' SDB.T2 ' on ' SDB.ARGS
 	TRACE(SDB.T3, "VALUE", SDB.T1, "SDB.TRAP.WATCH")
 	:(SDB.COMMAND.STAY)
 SDB.CMD.WATCH.ERR
@@ -989,10 +1001,13 @@ SDB.NOSTACK
 	SDB.VARS['list_lines'] = 10
 	SDB.VARS['prompt'] = '(sdb) '
 *
+	SDB.RELOADING = FILE(SDB.BKPT_FILE) 1		:S(SDB.NO_BANNER)
+
 	TERMINAL = "sdb SNOBOL4 debugger version " SDB.VDATE
 	TERMINAL = SDB.COPYRIGHT
 	TERMINAL = 'Type "help" for help.'
 	TERMINAL =
+SDB.NO_BANNER
 *
 * read listing file
 	SDB.LISTING = HOST(4,"SDB_LISTFILE")
@@ -1035,15 +1050,24 @@ SDB.SOURCE.ERR
 	OUTPUT = 'Error opening ' SDBS.FNAME	:(FRETURN)
 SDB.SOURCE.END
 *
+
 * read .sdbinit file (if any) -- check for SDBINIT environment variable??
 	FILE('.sdbinit') SDB.SOURCE('.sdbinit')
 
-* mark as running (until END)
-	SDB.RUNNING = 1
-*
-*  (from "step" or "next" commands).
+* reload breakpoints (if any), remove file
+	IDENT(SDB.RELOADING)			:S(SDB.NO_RELOAD)
+	SDB.SILENT = 1
+	SDB.SOURCE(SDB.BKPT_FILE)
+	SDB.SILENT =
+	DELETE(SDB.BKPT_FILE)			:(SDB.RELOAD_DONE)
+
+SDB.NO_RELOAD
 *  one means stop on next STCOUNT trace event
 	SDB.PROCEED_COUNT = 1
+
+* mark as running (until END)
+SDB.RELOAD_DONE
+	SDB.RUNNING = 1
 *
 * STC_ENA is whether or not to enable STCOUNT
 * *MUST* preenable to break on first user statement!

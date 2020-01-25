@@ -48,6 +48,9 @@ Evaluate expression and print result.  Can be used to call functions,
 or set variables.
 =item B<quit>
 Exit debugger.
+=item B<run>
+Restart program (works by saving breakpoints and restarting snobol4).
+New in version 2.1, some restrictions may apply.
 =item B<save> I<FILENAME>
 Save breakpoints to file.
 =item B<source> I<FILENAME>
@@ -105,10 +108,6 @@ fields, the breakpoint will never be triggered.
 
 You cannot put a breakpoint on the B<END> label (however control
 always returns to sdb when the B<END> label is reached).
-
-There is no ``run'' command; you cannot restart the program, but you
-can use ``save'' to a temporary file, restart B<sdb>, and use
-``source'' to restore your breakpoints.
 
 Interrupt character trapping is in it's infancy, and only occurs at
 the start of a each statement executed.
