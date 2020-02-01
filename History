@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+02/01/2020
+	configure: try /usr/lib/tclConfig.sh as default TCONF
+
 01/25/2020
 	doc/snobol4func.1.pea: note more extensions from SPITBOL 360
 

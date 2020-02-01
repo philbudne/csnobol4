@@ -101,6 +101,11 @@ if [ "x$HOST" != x ]; then
 fi
 echo '#define CONFIG_DATE "'$DATE'"'		>> $CONFIG_H
 
+# 2020-02-01 -- start with a default?!
+if [ -f /usr/lib/tclConfig.sh ]; then
+    TCONF=/usr/lib/tclConfig.sh
+fi
+
 ADD_DEFINE_USED=
 while [ $# -gt 0 ]; do
     case "$1" in
