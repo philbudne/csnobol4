@@ -5,6 +5,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 02/02/2020!!!
 	snolib/sdb.sno: add .sdb_history file
 		need to keep history over "run" commands if nothing else!
+	doc/sdb.1.pea: document .sdb_history, /tmp files
 
 02/01/2020
 	configure: try /usr/lib/tclConfig.sh as default TCONF

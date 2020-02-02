@@ -85,6 +85,12 @@ B<FUNCTION()> predicate, ie;
 =sect FILES
 =item B<.sdbinit>
 initial command file, read on startup.
+=item B<.sdb_history>
+saved command history
+=item B</tmp/sdb_listing.>I<pid>
+temporary listing file for sdb.sno to read
+=item B</tmp/sdb_bkpts.>I<pid>
+temporary breakpoint save file for "run" command
 
 =sect SEE ALSO
 B<snobol4>(1), B<gdb>(1), B<readline>(3), B<snobol4readline>(3)
