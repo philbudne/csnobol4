@@ -83,7 +83,7 @@ B<FUNCTION()> predicate, ie;
 =ecode
 
 =sect FILES
-=item B<.sdbinit>
+=item B<~/.sdbinit>
 initial command file, read on startup.
 =item B<.sdb_history>
 saved command history
