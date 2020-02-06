@@ -212,46 +212,8 @@ Predicate: Succeeds if I<i1> is arithmetically equal than I<i2>.
 I<Standard>.
 
 =item B<HOST(>I<i,...>B<)>
-System: This ought to be on it's own man page!!
-The B<host.sno> B<-INCLUDE> contains symbolic defines for these
-(and B<many> other) functions:
-
-=item
-With no parameters returns a string describing the system
-the program is running on.  The string contains three parts, separated
-by colons.  The first part describes the physical architecture, the
-second describes the operating system, and the third describes the
-language implementation name. NOTE! Architecture names come from the
-B<uname>(3) library call, and may be different for the same hardware
-when running different operating systems. Example:
-B<amd64:FreeBSD 12.1-RELEASE-p1:CSNOBOL4B 2.1>
-
-=item
-B<HOST(0)> returns a string containing the command line parameter
-supplied to the B<-u> option, if any.  If no B<-u> option was given,
-B<HOST(0)> returns the concatenation of all user parameters following
-the input filename(s).
-
-=item
-B<HOST(1,>I<string>B<)> passes the string to the B<system>(3) C
-library function, and returns the subprocess exit status.
-
-=item
-B<HOST(2,>I<n>B<)> for integer I<n> returns the I<n>'th command line
-argument (regardless of whether the argument was the command name, an
-option, a filename or a user parameter) as a string, or failure if
-I<n> is out of range.
-
-=item
-B<HOST(3)> returns an integer for use with B<HOST(2)> indicating the
-first command line argument available as a user parameter.
-
-=item
-B<HOST(4,>I<string>I<)> returns the value of the environment variable
-named I<string>.
-
-=item
-I<Macro SPITBOL extension(?), added in CSNOBOL4 version 0.98.4>.
+Host O/S functions. See B<snobol4host>(3).
+I<Macro SPITBOL extension, added in CSNOBOL4 version 0.98.4>.
 
 =item B<IDENT(>I<v1,v2>B<)>
 Predicate: Succeeds if the supplied values refer to the same object,
