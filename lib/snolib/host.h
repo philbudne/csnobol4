@@ -26,17 +26,16 @@
 **=pea
 **=item B<HOST()>
 **Macro SPITBOL: returns ARCHITECTURE:OPERATING_SYSTEM:SNOBOL_VERSION
-**With no parameters returns a string describing the system
-**the program is running on.  The string contains three parts, separated
-**by colons.  The first part describes the physical architecture, the
-**second describes the operating system, and the third describes the
-**language implementation name. NOTE! Architecture names come from the
-**B<uname>(3) library call, and may be different for the same hardware
-**when running different operating systems. Example:
+**The string contains three parts, separated by colons.  The first
+**part describes the physical architecture, the second describes the
+**operating system, and the third describes the language
+**implementation name and version.  NOTE! Architecture names come from
+**the B<uname>(3) library call, and may be different for the same
+**hardware when running different operating systems. Examples:
 **=break
-**B<amd64:FreeBSD 12.1-RELEASE-p1:CSNOBOL4B 2.1>
+**\~\~\~\~B<amd64:FreeBSD 12.1-RELEASE-p1:CSNOBOL4B 2.1>
 **=break
-**B<x86_64:Linux 5.4.0-12-generic:CSNOBOL4B 2.1>
+**\~\~\~\~B<x86_64:Linux 5.4.0-12-generic:CSNOBOL4B 2.1>
 **=cut
 */
 #define HOST_SYSINFO		""
