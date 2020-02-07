@@ -2,6 +2,14 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+2/6/2020
+	doc/snobol4func.1.pea: more history corrections
+
+2/4/2020
+	lib/snolib/host.h: add snopea doc for snobol4host(3)
+	doc/snobol4func.1.pea: reference snobol4host(3)
+	doc/Makefile: commands to create snobol4host.3[.html]
+
 02/02/2020!!!
 	snolib/sdb.sno: add .sdb_history file
 		need to keep history over "run" commands if nothing else!

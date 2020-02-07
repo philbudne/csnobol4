@@ -27,7 +27,7 @@ I<Standard>.
 
 =item B<ATAN(>I<arg>B<)>
 Math: Returns the principal value of the arc tangent of its argument.
-I<Macro SPITBOL?? extension, added in CSNOBOL4 1.4>.
+I<Catspaw Macro SPITBOL extension, added in CSNOBOL4 1.4>.
 
 =item B<BACKSPACE(>I<unit>B<)>
 I/O: Not implemented!! See B<SET()> and B<SSET()>.
@@ -59,7 +59,7 @@ SNOBOL4+ has a B<CHR()> function.
 =item B<CHOP(>I<real>B<)>
 Math: truncates the fractional part of its argument
 (rounding towards zero), and returns a REAL value.
-I<SNOBOL4+ extension(?), added in CSNOBOL4 version 0.98.4>.
+I<Catspaw SNOBOL4+ extension(?), added in CSNOBOL4 version 0.98.4>.
 
 =item B<CLEAR(>I<>B<)>
 Interpreter: Clears ALL natural variable values (including predefined pattern
@@ -92,7 +92,7 @@ I<Standard>.
 
 =item B<COS(>I<argument>B<)>
 Math: Return cosine of I<argument> in radians.
-I<Macro SPITBOL extension(?), added in CSNOBOL4 version 0.98.4>.
+I<Catspaw Macro SPITBOL extension, added in CSNOBOL4 version 0.98.4>.
 
 =item B<DATA(>I<prototype>B<)>
 Data: Declares a B<DATA> struct type. I<prototype> is of the form
@@ -166,7 +166,7 @@ Does B<NOT> implement ``save file'' feature of B<SPITBOL>.
 
 =item B<EXP(>I<x>B<)>
 Math: returns the value B<e **> I<x>.
-I<SNOBOL4+ extension, added in CSNOBOL4 version 0.98.4>.
+I<Catspaw SNOBOL4+ extension, added in CSNOBOL4 version 0.98.4>.
 
 =item B<FIELD(>I<name,n>B<)>
 Data: Returns a string with the name of the I<n>th member of
@@ -195,7 +195,7 @@ since frozen tables will not become clogged with empty entries.
 Lookups for uninitialized entries will return the null string.
 Attempts to assign to a non-existent entry will cause a ``Variable not
 present where required'' error.
-I<SNOBOL4+ extension, added in CSNOBOL4 version 0.98.2>.
+I<Catspaw SNOBOL4+ extension, added in CSNOBOL4 version 0.98.2>.
 
 =item B<FUNCTION(>I<name>B<)>
 Function: A predicate which evaluates its argument as a string
@@ -285,7 +285,7 @@ I<SPITBOL 360 extension, added in CSNOBOL4 version 0.98.2>.
 
 =item B<LN(>I<value>B<)>
 Math: an alias for B<LOG()>,
-I<SNOBOL4+ extension, added in CSNOBOL4 version 1.4>.
+I<Catspaw SNOBOL4+ extension, added in CSNOBOL4 version 1.4>.
 
 =item B<LOAD(>I<prototype,file>B<)>
 Function:  Load an external function from dynamically loaded library I<file>.
@@ -298,7 +298,7 @@ I<Standard>.
 
 =item B<LOG(>I<value>B<)>
 Math: returns the natural logarithm of its argument.
-I<SNOBOL4+ extension, added in CSNOBOL4 version 0.98.4>.
+I<Catspaw SNOBOL4+ extension, added in CSNOBOL4 version 0.98.4>.
 
 =item B<LPAD(>I<str,n,char>B<)>
 String: Takes the first argument (subject) string, and left pads it
@@ -470,7 +470,7 @@ I<SPITBOL 360 extension, added in CSNOBOL4 version 1.4>.
 
 =item B<SIN(>I<argument>B<)>
 Math: Return sine of I<argument> in radians.
-I<SNOBOL4+ extension?, added in CSNOBOL4 version 0.98.4>.
+I<Catspaw Macro SPITBOL extension, added in CSNOBOL4 version 0.98.4>.
 
 =item B<SIZE(>I<string>B<)>
 String: returns the length of the B<STRING> argument.
@@ -506,7 +506,7 @@ I<Standard>.
 
 =item B<SQRT(>I<argument>B<)>
 Math: Return the square root. Fails if the argument is negative.
-I<Macro SPITBOL extension(?), added in CSNOBOL4 version 0.90>.
+I<Catspaw Macro SPITBOL extension, added in CSNOBOL4 version 0.90>.
 
 =item B<SSET(>I<unit,offset,whence,scale>B<)>
 I/O: ``scaled set'' function, to handle files larger than 4GB
@@ -546,11 +546,11 @@ I<Standard>.
 
 =item B<TAN(>I<argument>B<)>
 Math: Return tangent of I<argument> in radians.
-I<SNOBOL4+ extension?, added in CSNOBOL4 version 0.98.4>.
+I<Catspaw SNOBOL4+ extension?, added in CSNOBOL4 version 0.98.4>.
 
 =item B<THAW(>I<table>B<)>
 Data: restores normal entry creation behavior after B<FREEZE()>.
-I<SNOBOL4+ extension, added in CSNOBOL4 version 0.98.2>.
+I<Catspaw SNOBOL4+ extension, added in CSNOBOL4 version 0.98.2>.
 
 =item B<TIME()>
 Interpreter: Returns program execution time in milliseconds.
