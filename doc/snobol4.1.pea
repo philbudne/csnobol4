@@ -96,9 +96,6 @@ The following operator character sequences are permitted and represent
 a cross between PDP-10 Macro SNOBOL, SITBOL and Catspaw SPITBOL usage:
 
 =table 2i
-=row Exponentiation:	^\~\~**
-=row Alternation:	|\~\~!
-=row Unary negation:	~\~\~\e
 =row Assignment:	=\~\~_
 =row Comment line:	*\~\~#\~\~|\~\~;\~\~!
 =row Continuation line:	+\~\~.
@@ -115,6 +112,8 @@ Note that the use of the pound sign for comments allows use of the
 script interpreter (hash-bang) sequence at the top of a file marked as
 executable: ``B<#!/usr/local/bin/snobol4>'' or
 ``B<#!/usr/bin/env snobol4>''
+
+See I<snobol4op>(1) for operators.
 
 =sect DIRECTORY SEARCH LIST
 A directory search list is used for files specified in B<-INCLUDE>
@@ -170,6 +169,7 @@ Using B<SNOBOL_PRELOAD_PATH> will make your code less portable.
 =row B<snobol4dirs>(3)	directory access functions
 =row B<snobol4ffi>(3)	Foreign Function Interface functions
 =row B<snobol4fork>(3)	subprocess interface functions
+=row B<snobol4host>(3)	HOST and O/S functions
 =row B<snobol4logic>(3)	bit logic &amp; formatting functions
 =row B<snobol4ndbm>(3)	keyed file access functions
 =row B<snobol4random>(3)	pseudo-random numbers functions

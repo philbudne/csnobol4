@@ -31,8 +31,6 @@ embed lua interpreter??
 	ANSIfy: flush str.h
 
 man pages:
-    snobol4op -- add unary operators -- move operator tables from snobol4(1)
-
     snobol4func
 	make sure all function & type names in bold,
 		argument names in italic.
@@ -43,6 +41,7 @@ man pages:
 	goto
 	expressions:
 		(expr, ....)
+	comment / continuation
 
     snobol4utf -- from pea comments in utf.sno
     snobol4com
