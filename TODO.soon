@@ -1,42 +1,48 @@
 $Id$
 
-allow OPSYN of "[" ?  underlying function looks at arg count??
+Accept:
+	INPUT(NAME, FNAME[, OPTIONS])
+	OUTPUT(NAME,FNAME[, OPTIONS])
+	REWIND(NAME)
+	CLOSE(NAME)
+	[S]SET(NAME)
 
-command line option for read/eval/print loop?
+repl.sno?? run if -R given???
 
 snobol4key/func: document &STNO trace / BREAKPOINT()???
-	describe protected keyword patterns
-		&ARB
 
 setuputil.sno:
 	"test" command!!!!
 		logic(!!), sqlite3, stat, dirs, sprintf, fork, ffi
 	run regular regression tests BEFORE generating modules!!!!
 
+allow too few function arguments to APPLY?
+
+allow OPSYN of "[" ?  underlying function looks at arg count??
+
+embed lua interpreter??
+	https://developer.ibm.com/tutorials/l-embed-lua/
+
 ================
 
-2.1:
+2.1+:
 	Enable -Wimplicit-function-declaration -Werror in configure "check"??
 		pass CFLAGS env var?
 	ANSIfy: flush str.h
 
 man pages:
+    snobol4op -- add unary operators -- move operator tables from snobol4(1)
+
     snobol4func
 	make sure all function & type names in bold,
 		argument names in italic.
 	add better descriptions (esp ARRAY, DEFINE, PROTOTYPE)
-
-    snobol4host
-	Document -include 'host.sno' !!
-	from pea comments in host.c???
 
     snobol4syn:
 	statement syntax
 	goto
 	expressions:
 		(expr, ....)
-
-    snobol4op -- add unary operators
 
     snobol4utf -- from pea comments in utf.sno
     snobol4com
