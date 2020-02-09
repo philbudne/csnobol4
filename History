@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+2/7/2020:
+	Makefile2.m4: use GENERATED_DOCS_DOCDIR3 for installs
+
 2/6/2020
 	doc/snobol4func.1.pea: more history corrections
 

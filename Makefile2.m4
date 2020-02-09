@@ -218,7 +218,8 @@ GENERATED_DOCS_DOCDIR1=doc/sdb.1 doc/snobol4.1 doc/snopea.1 \
 	doc/snobol4error.1 doc/snobol4ext.1 doc/snobol4func.1 \
 	doc/snobol4io.1 doc/snobol4key.1 doc/snobol4op.1
 
-GENERATED_DOCS_DOCDIR3=doc/snolib.3
+GENERATED_DOCS_DOCDIR3=doc/snobol4host.3 \
+	doc/snobol4setup.3 doc/snolib.3
 
 GENERATED_DOCS_DOCDIR7=doc/snopea.7
 
@@ -644,8 +645,9 @@ install: snobol4 sdb timing.out $(GENERATED_DOCS)
 		$(INSTALL) -m 644 $$F $(MAN1DIR); \
 	done
 	$(INSTALL) -d $(MAN3DIR)
-	$(INSTALL) -m 644 doc/snolib.3 $(MAN3DIR)
-	$(INSTALL) -m 644 doc/snobol4setup.3 $(MAN3DIR)
+	for F in $(GENERATED_DOCS_DOCDIR3); do \
+		$(INSTALL) -m 644 $$F $(MAN3DIR); \
+	done
 	$(INSTALL) -d $(MAN7DIR)
 	for F in $(GENERATED_DOCS_DOCDIR7); do \
 		$(INSTALL) -m 644 $$F $(MAN7DIR); \
