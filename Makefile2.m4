@@ -236,7 +236,7 @@ GENERATED_DOCS=	$(GENERATED_DOCS_DOCDIR)
 
 all:	build_all timing.out
 
-BUILD_ALL=sdb snobol4 snopea $(GENERATED_DOCS)
+BUILD_ALL=sdb snobol4 snopea docs
 build_all: $(BUILD_ALL)
 
 changequote(@,@)dnl
@@ -615,8 +615,10 @@ snopea.1: snopea snolib/snopea.sno snobol4
 snopea.1.html: snopea snolib/snopea.sno snobol4
 	$(SNOPEA) snopea snopea.1.html
 
-$(GENERATED_DOCS_DOCDIR): snopea snolib/snopea.sno snobol4
+docs $(GENERATED_DOCS_DOCDIR): snopea snolib/snopea.sno snobol4 always
 	cd doc; make
+
+always:
 
 #################
 # installation
