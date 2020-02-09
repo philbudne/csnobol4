@@ -6,6 +6,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	Makefile2.m4: use GENERATED_DOCS_DOCDIR3 for installs
 	v311.sil, globals, test/labelcode.{sno,ref}, test/tests.in,
 	    doc/snobol4func.1.pea: add LABELCODE function (ala SITBOL LABEL())
+	modules/time/time.c: quash glibc 2.20+ warning
 
 2/6/2020
 	doc/snobol4func.1.pea: more history corrections
