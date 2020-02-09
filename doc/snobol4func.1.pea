@@ -241,12 +241,17 @@ of an expression (ie; B<$>I<variable>).
 I<Standard>.
 
 =item B<LABEL(>I<name>B<)>
-Predicate: Evaluates argument as a string (with case folding), and returns the
+Predicate: Evaluates argument as a name (with case folding), and returns the
 null string if a label with that name has been defined, and fails if
 it does not.
-I<Steve Duff's Macro SPITBOL extension, added in CSNOBOL4 version 1.5>*.
-SITBOL has a B<LABEL> function which returns a B<CODE> pointer.
-*Added in CSNOBOL4 version 0.99.44, but unreliable until version 1.5.
+I<Steve Duff's Macro SPITBOL extension, added in CSNOBOL4 version 1.5>
+(Added in CSNOBOL4 version 0.99.44, but unreliable until version 1.5).
+
+=item B<LABELCODE(>I<name>B<)>
+Interpreter: Evaluates argument as a name (with case folding), and
+returns the CODE (if any) associated with the label of that name,
+or fails.
+I<SITBOL extension, added in CSNOBOL4 2.1>.
 
 =item B<LE(>I<i1,i2>B<)>
 Predicate: tests if first argument is arithmetically less than or

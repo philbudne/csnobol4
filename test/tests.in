@@ -171,3 +171,5 @@ trace trfunc.sno
 trace base.sno
 # 8/4/2015
 trace breakline.sno
+# 2/8/2020
+reg labelcode.sno

@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.142  2015/01/02 15:00:02  phil
+* [PLB126] another PCOMP!
+*
 * Revision 1.141  2014/12/30 05:05:00  phil
 * [PLB125] two more PCOMPs
 * died when dynamic region straddled 2G line on OpenBSD
@@ -6075,6 +6078,17 @@ LABEL  PROC    ,		   LABEL(X)
 *_
 *---------------------------------------------------------------------*
 *
+* New [PLB127] return CODE, like SITBOL LABEL()
+*      LABELCODE(X)
+*
+LABELC PROC    ,		   LABEL(X)
+       RCALL   ,VARVUP,,FAIL	   Evaluate argument
+       AEQLC   XPTR,0,,FAIL	   Check for null
+       GETDC   XPTR,XPTR,ATTRIB    Get object code base
+       AEQLC   XPTR,0,RTXPTR,FAIL  Fail if zero
+*_
+*---------------------------------------------------------------------*
+*
 * New [PLB37] copied from LGT
 *      LEQ(X,Y)
 *
@@ -11155,6 +11169,8 @@ ITEMFN DESCR   ITEM,FNC,1
        DESCR   0,0,0
 LABLFN DESCR   LABEL,0,1					[PLB78]
        DESCR   0,0,0						[PLB78]
+LABCFN DESCR   LABELC,0,1					[PLB127]
+       DESCR   0,0,0						[PLB127]
 LEFN   DESCR   LE,0,2
        DESCR   0,0,0
 LENFN  DESCR   LEN,0,1
@@ -11382,6 +11398,8 @@ FNLIST DESCR   FNLIST,TTL+MARK,FNCPLE-FNLIST-DESCR
        DESCR   ITEMSP,0,0
        DESCR   LABLFN,FNC,0	   LABEL(V)			[PLB78]
        DESCR   TRLASP,0,0					[PLB78]
+       DESCR   LABCFN,FNC,0	   LABEL(V)			[PLB127]
+       DESCR   LABCSP,0,0					[PLB127]
        DESCR   LENFN,FNC,0	   LEN(N)
        DESCR   LENSP,0,0
        DESCR   LEFN,FNC,0	   LE(I1,I2)
@@ -11744,6 +11762,7 @@ KSP    STRING  'K'						[PLB115]
 TRKYSP STRING  'KEYWORD'
 LSP    STRING  'L'						[PLB115]
 TRLASP STRING  'LABEL'
+LABCSP STRING  'LABELCODE'					[PLB127]
 LSTNSP STRING  'LASTNO'
 LCNMSP STRING  'LCASE'						[PLB18]
 LENSP  STRING  'LEN'
