@@ -568,8 +568,7 @@ FUNCTION, LABEL, KEYWORD) tracing;  I<id> is included in trace output;
 I<func> is optional name of function to call.  See B<snobol4key>(1) for
 B<&amp;TRACE> and B<&amp;FTRACE> keywords.
 I<Standard>.
-I<SPITBOL 360 extension of first letter of trace type
-accepted since CSNOBOL4 2.0>.
+I<SPITBOL 360 extension of first letter of trace type accepted since CSNOBOL4 2.0>.
 
 =item B<TRIM(>I<str>B<)>
 String: Returns I<str> with trailing blanks and tabs removed.
