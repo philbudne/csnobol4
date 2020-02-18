@@ -20,13 +20,7 @@
 **
 **=sect SYNOPSIS
 **=code
-**-INCLUDE 'stcl.sno'
-**        tclhandle = STCL_CREATEINTERP()
-**        STCL_DELETEINTERP(tclhandle)
-**        STCL_EVALFILE(tclhandle,tclfilename)
-**        value = STCL_GETVAR(tclhandle,varname)
-**        STCL_SETVAR(tclhandle,varname,value)
-**        STCL_EVAL(tclhandle,tclstmt)
+**\~\~\~-INCLUDE 'stcl.sno'
 **=ecode
 **
 **=sect DESCRIPTION
@@ -65,7 +59,7 @@ static handle_handle_t tcl_objs;	/* Objects NOT per-interp!! */
 
 /*
 **=pea
-**=item B<STCL_CREATEINTERP>
+**=item I<tclhandle> = B<STCL_CREATEINTERP()>
 **creates a Tcl interpreter and returns a handle which can be passed to
 **the remaining functions.
 **=cut
@@ -109,7 +103,7 @@ STCL_CREATEINTERP( LA_ALIST ) LA_DCL
 
 /*
 **=pea
-**=item B<STCL_EVALFILE>
+**=item B<STCL_EVALFILE>(I<tclhandle>,I<filename>)
 **reads a Tcl script file into the referenced Tcl interpreter.
 **
 **=cut
@@ -140,11 +134,8 @@ STCL_EVALFILE( LA_ALIST ) LA_DCL
 
 /*
 **=pea
-**=item B<STCL_GETVAR>
+**=item B<STCL_GETVAR>(I<tclhandle>,I<varname>)
 **retrieves the string value of named variable from a Tcl interpreter.
-**B<STCL_GETVAR>
-**stores a string value of named variable in a Tcl interpreter.
-**
 **=cut
 */
 /*
@@ -165,6 +156,12 @@ STCL_GETVAR( LA_ALIST ) LA_DCL
     RETSTR(val);
 }
 
+/*
+**=pea
+**=item B<STCL_SETVAR>(I<tclhandle>,I<varname>,I<value>)
+**sets the string value of named variable in a Tcl interpreter.
+**=cut
+*/
 /*
  * LOAD("STCL_SETVAR(EXTERNAL,STRING,STRING)STRING", STCL_DL)
  * Set value of a Tcl variable
@@ -192,7 +189,7 @@ STCL_SETVAR( LA_ALIST ) LA_DCL
 
 /*
 **=pea
-**=item B<STCL_EVAL>
+**=item B<STCL_EVAL>(I<tclhandle>,I<tclstmt>)
 **evaluates a string containing Tcl code in a Tcl interpreter.
 **
 **=cut
@@ -222,7 +219,7 @@ STCL_EVAL( LA_ALIST ) LA_DCL
 
 /*
 **=pea
-**=item B<STCL_DELETEINTERP>
+**=item B<STCL_DELETEINTERP>(I<tclhandle>)
 **destroys a Tcl interpreter.
 **
 **=cut
@@ -250,7 +247,13 @@ STCL_DELETEINTERP( LA_ALIST ) LA_DCL
  */
 
 /*
- * LOAD("STCL_NEWSTRINGOBJ(STRING)INTEGER", STCL_DL)
+**=pea
+**=item B<STCL_NEWSTRINGOBJ>(I<string>)
+**Creates a tcl string object, and returns a handle for it.
+**=cut
+*/
+/*
+ * LOAD("STCL_NEWSTRINGOBJ(STRING)EXTERNAL", STCL_DL)
  * Create new string object, returns handle
  */
 lret_t
@@ -273,8 +276,13 @@ STCL_NEWSTRINGOBJ( LA_ALIST ) LA_DCL
 }
 
 /*
+**=pea
+**=item B<STCL_GETSTRINGFROMOBJ>(I<objhandle>)
+**Get string from an Object (given object handle).
+**=cut
+*/
+/*
  * LOAD("STCL_GETSTRINGFROMOBJ(EXTERNAL)STRING", STCL_DL)
- * Get string from an Object (given object handle)
  */
 lret_t
 STCL_GETSTRINGFROMOBJ( LA_ALIST ) LA_DCL
@@ -294,9 +302,13 @@ STCL_GETSTRINGFROMOBJ( LA_ALIST ) LA_DCL
 }
 
 /*
+**=pea
+**=item B<STCL_APPENDTOOBJ>(I<objhandle>, I<string>)
+**Append string to an Object returns null string, or failure
+**=cut
+*/
+/*
  * LOAD("STCL_APPENDTOOBJ(EXTERNAL,STRING)STRING", STCL_DL)
- * Append string to an Object.
- * returns null string, or failure
  */
 lret_t
 STCL_APPENDTOOBJ( LA_ALIST ) LA_DCL
@@ -312,8 +324,14 @@ STCL_APPENDTOOBJ( LA_ALIST ) LA_DCL
 }
 
 /*
+**=pea
+**=item B<STCL_EVALOBJEX>(I<tclhandle>, I<objhandle>, I<flags>)
+**Evaluate (execute) an object -- saves compiled byte code.
+**Returns integer.
+**=cut
+*/
+/*
  * LOAD("STCL_EVALOBJEX(EXTERNAL,EXTERNAL,INTEGER)STRING", STCL_DL)
- * Evaluate (execute) an object -- saves compiled byte code
  */
 lret_t
 STCL_EVALOBJEX( LA_ALIST ) LA_DCL
@@ -330,8 +348,13 @@ STCL_EVALOBJEX( LA_ALIST ) LA_DCL
 }
 
 /*
+**=pea
+**=item I<objhandle> = B<STCL_GETOBJRESULT>(I<tclhandle>)
+**return a result object from an interpreter (after B<TCL_EVALOBJEX>)
+**=cut
+*/
+/*
  * LOAD("STCL_GETOBJRESULT(EXTERNAL)", STCL_DL)
- * return a result object from an interpreter (after Tcl_EvalObjEx)
  */
 lret_t
 STCL_GETOBJRESULT(LA_ALIST ) LA_DCL
@@ -351,6 +374,11 @@ STCL_GETOBJRESULT(LA_ALIST ) LA_DCL
     RETHANDLE(h);
 }
 
+/*
+**=pea
+**=item B<STCL_OBJSETVAR2>(I<tclhandle>, I<oh_name1>, I<oh_name2>, I<oh_value>, I<flags>)
+**=cut
+*/
 /*
  * LOAD("STCL_OBJSETVAR2(HANDLE,HANDLE,HANDLE,HANDLE,INTEGER)STRING", STCL_DL)
  */
@@ -380,6 +408,11 @@ STCL_OBJSETVAR2( LA_ALIST ) LA_DCL
 }
 
 /*
+**=pea
+**=item B<STCL_OBJGETVAR2>(I<tclhandle>, I<oh_name1>, I<oh_name2>, I<flags>)
+**=cut
+*/
+/*
  * LOAD("STCL_OBJGETVAR2(HANDLE,HANDLE,HANDLE,INTEGER)STRING", STCL_DL)
  */
 lret_t
@@ -407,8 +440,13 @@ STCL_OBJGETVAR2( LA_ALIST ) LA_DCL
 }
 
 /*
+**=pea
+**=item B<STCL_RELEASEOBJ>(I<objhandle>)
+**release a Tcl Object
+**=cut
+*/
+/*
  * LOAD("STCL_RELEASEOBJ(HANDLE)STRING", STCL_DL)
- * release a Tcl Object
  */
 lret_t
 STCL_RELEASEOBJ( LA_ALIST ) LA_DCL
@@ -447,7 +485,7 @@ STCL_RELEASEOBJ( LA_ALIST ) LA_DCL
 **CHECKTK TK_VERSION = STCL_GETVAR(INTERP, "tk_version")  :F(NO_TK)
 **        DIFFER(TK_VERSION)                              :S(HAVETK)
 **NO_TK   OUTPUT = "Could not find tk_version"            :(END)
-**                                                                              
+**
 **HAVETK  OUTPUT = "Tk version: " TK_VERSION
 **
 **LOOP    OUTPUT = STCL_EVAL(INTERP,
@@ -468,10 +506,5 @@ STCL_RELEASEOBJ( LA_ALIST ) LA_DCL
 **
 **=sect AUTHOR
 **Philip L. Budne
-**
-**=sect BUGS
-**Because multiple versions of Tcl can be installed, the location of the
-**tclConfig.sh must be manually specified to the B<snobol4>(1)
-**B<configure> script.
 **=cut
 */
