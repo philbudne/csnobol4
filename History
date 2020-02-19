@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+2/18/2020:
+	doc/snobol4func.1.pea: note STOPTR extension
+
 2/17/2020:
 	modules/stcl/stcl.c: improve documentation
 

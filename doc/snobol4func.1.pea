@@ -529,6 +529,7 @@ I<CSNOBOL4 extension, added in version 0.99.44>.
 =item B<STOPTR(>I<name,type>B<)>
 Interpreter:  Disable I<type> tracing for I<name>.
 I<Standard>.
+I<SPITBOL 360 extension of first letter of trace type accepted since CSNOBOL4 2.0>.
 
 =item B<SUBSTR(>I<subject,pos,len>B<)>
 String: Takes a subject string as its first argument, and returns
