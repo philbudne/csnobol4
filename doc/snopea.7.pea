@@ -88,6 +88,12 @@ ampersand (&amp;)
 =item B<&amp;pi;>
 greek lower-case pi (&pi;)
 
+=item B<&amp;lt;>
+less than sign (&lt;)
+
+=item B<&amp;gt;>
+greater than sign (&gt;)
+
 =item \ee
 backslash (\e)
 
