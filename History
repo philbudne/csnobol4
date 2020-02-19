@@ -2,8 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+NEXT EDIT IS #1000!
+
 2/18/2020:
 	doc/snobol4func.1.pea: note STOPTR extension
+	doc/snobol4pea.7.pea: tweaks; add perlpodspec link
 
 2/17/2020:
 	modules/stcl/stcl.c: improve documentation
