@@ -2,7 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
-NEXT EDIT IS #1000!
+6/7/2020:
+	1000th version of History file!!
+	new snolib/ezio.sno: easy to use I/O functions
+	Makefile: make snobol4ezio manual pages
+	doc/snobol4io.1.pea: reference snobol4ezio(3) man page
 
 2/18/2020:
 	doc/snobol4func.1.pea: note STOPTR extension

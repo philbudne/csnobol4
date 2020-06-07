@@ -242,5 +242,6 @@ Record lengths.
 Unit numbers.
 
 =sect SEE ALSO
-B<snobol4>(1)
+B<snobol4>(1),
+B<snobol4ezio>(3)
 =cut
