@@ -189,6 +189,8 @@ struct file {
 #define FL_NOECHO	040		/* tty: no echo */
 #define FL_NOCLOSE	0100		/* don't fclose() */
 #define FL_BREAK	0200		/* breaK long lines (EXPERIMENTAL) */
+#define FL_EXCL		0400		/* eXclusive open (fail if eXists) */
+#define FL_CLOEXEC	01000		/* mark for close on exec */
 
 #if defined(INET_IO) || defined (MEM_IO)
 /*
@@ -517,6 +519,12 @@ io_fopen2( fp, base )
     if (fp->flags & FL_BINARY)
 	*mp++ = 'b';
 #endif /* NO_FOPEN_B not defined */
+
+    if (fp->flags & FL_EXCL)
+	*mp++ = 'x';			/* in FreeBSD 10, in glibc ?.? */
+
+    if (fp->flags & FL_CLOEXEC)
+	*mp++ = 'e';			/* in FreeBSD 10, in glibc 2.7 */
     *mp++ = '\0';
 
     /* handle magic filenames (have a table (prefix or full str)??) */
@@ -618,6 +626,9 @@ io_fopen2( fp, base )
 		/* XXX more magic? non-booleans? linger?? */
 	    } while (cp);
 	} /* have suffixes */
+
+	if (fp->flags & FL_CLOEXEC)
+	    flags |= INET_CLOEXEC;
 
 	if (fp->fname[1] == 'u')
 	    fp->f = udp_open( host, service, -1, flags );
@@ -1687,6 +1698,12 @@ io_options( fp, op, rp )
 	    op++;
 	    break;
 
+	case 'E':			/* extension: close on Exec */
+	case 'e':
+	    flags |= FL_CLOEXEC;
+	    op++;
+	    break;
+
 	case 'K':			/* Local/experimental: breaK long lines */
 	case 'k':
 	    flags |= FL_BREAK;
@@ -1716,6 +1733,12 @@ io_options( fp, op, rp )
 	case 'W':			/* SPITBOL: write unbuffered */
 	case 'w':
 	    flags |= FL_UNBUF;
+	    op++;
+	    break;
+
+	case 'X':			/* extension: eXclusive (fail if eXists) */
+	case 'x':
+	    flags |= FL_EXCL;
 	    op++;
 	    break;
 

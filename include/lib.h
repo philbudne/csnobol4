@@ -186,6 +186,7 @@ int inet_close __P((FILE *));
 #define INET_OOBINLINE	020
 #define INET_KEEPALIVE	040
 #define INET_NODELAY	0100
+#define INET_CLOEXEC	0200
 
 /* from tty.c */
 int fisatty __P((FILE *, char *));

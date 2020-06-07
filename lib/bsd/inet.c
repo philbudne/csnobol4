@@ -33,6 +33,7 @@
 #endif /* HAVE_INCLUDES not defined */
 
 #include <netdb.h>
+#include <fcntl.h>
 
 #include "h.h"				/* TRUE/FALSE */
 #include "snotypes.h"
@@ -104,6 +105,14 @@ inet_socket( host, service, port, flags, type )
 	TRYOPT(INET_NODELAY,IPPROTO_TCP,TCP_NODELAY)) {
 	close(s);
 	return -1;
+    }
+
+    if (flags & INET_CLOEXEC) {
+	int ff = fcntl(s, F_GETFD, 0);
+	if (ff != -1 || fcntl(s, F_SETFD, ff|FD_CLOEXEC) < 0) {
+	    close(s);
+	    return -1;
+	}
     }
 
     hp = gethostbyname( host );

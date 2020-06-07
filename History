@@ -3,6 +3,13 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 6/7/2020:
+	Implement I/O 'x' (eXclusive) and 'e' (closE on ExEc)
+		depends on stdio support (FreeBSD 10, glibc 2.7)
+	lib/io.c, lib/bsd/inet[6].c, lib/win32/inet.c, include/lib.h
+	README: John Willis
+	Update TODO.soon
+
+6/7/2020:
 	1000th version of History file!!
 	new snolib/ezio.sno: easy to use I/O functions
 	Makefile: make snobol4ezio manual pages

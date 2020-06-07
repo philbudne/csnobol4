@@ -19,6 +19,7 @@
 
 #include <stdio.h>
 #include <ctype.h>
+#include <fcntl.h>
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -61,6 +62,14 @@ inet_socket( host, service, port, flags, type )
 	if (s < 0)
 	    continue;
 
+	if (flags & INET_CLOEXEC) {
+	    int ff = fcntl(s, F_GETFD, 0);
+	    if (ff != -1 || fcntl(s, F_SETFD, ff|FD_CLOEXEC) < 0) {
+		close(s);
+		return -1;
+	    }
+	}
+
 /* set a boolean option: TRUE iff flag set and attempt fails */
 #define TRYOPT(FLAG,LAYER,OPT) \
 	((flags & FLAG) && setsockopt(s,LAYER,OPT,&true,sizeof(true)) < 0)
@@ -80,6 +89,7 @@ inet_socket( host, service, port, flags, type )
 	break;				/* got one! */
     }
     freeaddrinfo(res0);
+
     return s;
 }
 

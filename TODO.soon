@@ -1,11 +1,8 @@
 $Id$
 
-Accept:
-	INPUT(NAME, FNAME[, OPTIONS])
-	OUTPUT(NAME,FNAME[, OPTIONS])
-	REWIND(NAME)
-	CLOSE(NAME)
-	[S]SET(NAME)
+improve ezio man page?
+
+ST_TYPE(X) returns ORD(chr)!!!!!!
 
 repl.sno?? run if -R given???
 

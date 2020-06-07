@@ -140,6 +140,10 @@ inet_socket( host, service, port, flags, type )
     else
 	return -1;
 
+    /*
+     * need winsock2.h WSASocketA call with
+     * WSA_FLAG_NO_HANDLE_INHERIT to implement INET_CLOEXEC?
+     */
     s = socket( AF_INET, type, 0 );
     if (s == INVALID_SOCKET)
 	return -1;
