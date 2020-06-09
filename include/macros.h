@@ -204,7 +204,7 @@ extern volatile int math_error;
 #define RETURN(VALUE) {RSTSTK(); return (VALUE);}
 #endif /* TRACE_DEPTH not defined */
 
-struct descr _NORET[1];
+S4_EXTERN struct descr _NORET[1];
 #define NORET ((ptr_t)_NORET)
 
 /****************/

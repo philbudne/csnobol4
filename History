@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+6/8/2020:
+	include/macros.h: Use S4_EXTERN on _NORET
+
 6/7/2020:
 	Implement I/O 'x' (eXclusive) and 'e' (closE on ExEc)
 		depends on stdio support (FreeBSD 10, glibc 2.7)
