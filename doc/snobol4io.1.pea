@@ -122,7 +122,7 @@ Character at a time I/O.  A synonym for B<B,1>.
 Set the "close on exec" flag for the underlying file descriptor.
 Depends on support by the C library B<fopen>(3) call for 'e' in the
 mode string for regular files.  Honored for sockets regardless, (but
-not on Windows).  Not currently honored for B</dev/fd/>I<n>.
+not on Windows).
 
 =item B<K>
 If an input line is longer than the input record length,
