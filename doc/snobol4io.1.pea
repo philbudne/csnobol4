@@ -106,7 +106,7 @@ characters have no special meaning; the number of bytes transferred
 depends on record length (see above). On output, no newline is
 appended.
 
-=item
+=item B<B>
 For terminal devices, all input from this unit will be done without
 special processing for line editing or EOF; the number of characters
 returned depends on the record length.
@@ -117,6 +117,12 @@ operate in text mode.
 
 =item B<C>
 Character at a time I/O.  A synonym for B<B,1>.
+
+=item B<E>
+Set the "close on exec" flag for the underlying file descriptor.
+Depends on support by the C library B<fopen>(3) call for 'e' in the
+mode string for regular files.  Honored for sockets regardless, (but
+not on Windows).  Not currently honored for B</dev/fd/>I<n>.
 
 =item B<K>
 If an input line is longer than the input record length,
@@ -142,6 +148,7 @@ Example of associating a variable for I/O in both directions:
         INPUT(.name, unit, 'U', 'filepath')
         OUTPUT(.name, unit)
 =ecode
+
 =item
 Useful situations for this when filepath is B</dev/fd/>I<n> where I<n>
 is a file descriptor number returned by B<SERV_LISTEN(),> or
@@ -158,6 +165,11 @@ does not exist, but will also truncate a preexisting file!
 Unbuffered mode.  Each output variable assignment causes an immediate I/O
 transfer to occur by direct B<read>(1) or B<write>(1) system calls,
 rather than collecting the data in a buffer for efficiency.
+
+=item B<X>
+Open fails if file exists (meaningless for I</dev/fd/>I<n> and
+sockets).  Depends on support by the C library B<fopen>(3) call for
+'x' in the mode string.
 
 =subsect Other I/O extensions
 =item B<SERV_LISTEN()>, B<SET()>, B<SSET()>
