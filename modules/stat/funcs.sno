@@ -14,7 +14,7 @@
 **The device number containing the file.
 **=item B<ST_INO>
 **The file number within the device.
-**=item B<ST_TYPE>
+**=item B<ST_TYPE_STR>
 **Is a B<STRING> identifiying the file type:
 **B<'-'> for a regular file,
 **B<'b'> for a block special file (device),
@@ -25,6 +25,10 @@
 **B<'s'> for a local (Unix) domain socket,
 **B<'w'> for a whiteout,
 **B<'?'> for none of the above.
+I<(new in CSNOBOL4 2.1)>
+**=item B<ST_TYPE>
+**Is an B<INTEGER> identifiying the file type
+**(ordinal value of ST_TYPE_STR result, for backwards compatibility).
 **=item B<ST_MODE>
 **File "mode" (protection and type) bits.
 **=item B<ST_NLINK>
@@ -81,3 +85,7 @@ LSTAT.END
 FSTAT	FSTAT = ST()
 	FSTAT_(FD,FSTAT)				:F(FRETURN)S(RETURN)
 FSTAT.END
+
+	DEFINE("ST_TYPE_STR(ST)")			:(ST_TYPE_STR.END)
+ST_TYPE_STR ST_TYPE_STR = CHAR(ST_TYPE(ST))		:F(FRETURN)S(RETURN)
+ST_TYPE_STR.END

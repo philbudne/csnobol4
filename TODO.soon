@@ -1,9 +1,5 @@
 $Id$
 
-improve ezio man page?
-
-ST_TYPE(X) returns ORD(chr)!!!!!!
-
 repl.sno?? run if -R given???
 
 snobol4key/func: document &STNO trace / BREAKPOINT()???
