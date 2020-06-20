@@ -8,15 +8,24 @@
 *=sect NAME
 *snobol4ezio \- SNOBOL4 easy to use file I/O
 *
-*=sect DESCRIPTION
+*=sect SYNOPSIS
 *=code
--include 'ezio.sno'
+*-include 'ezio.sno'
 *
-*	B<EZINPUT>(name, filename[, options])
-*	B<EZOUTPUT>(name, filename[, options])
-*	B<EZUPDATE>(name, filename[, options])
-*	B<EZCLOSE>(name)
+*	B<EZINPUT(>I<name>, I<filename>[, I<options>])
+*	B<EZOUTPUT(>I<name>, I<filename>[, I<options>])
+*	B<EZUPDATE(>I<name>, I<filename>[, I<options>])
+*	B<EZCLOSE(>I<name>)
 *=ecode
+*=sect DESCRIPTION
+*This library provides I/O functions that avoid the need to specify a
+*"unit number" (an artifact of Macro SNOBOL4 having been originally
+*written to use native FORTRAN runtime code for I/O functions).
+*
+*I<name> is a SNOBOL4 NAME (.VARIABLE) or STRING (note: if a NAME,
+*it may be forced to upper case depending on the setting of case folding).
+*I<filename> is a STRING specifying a filename.
+*I<options> is a STRING specifying I/O options (see B<snobol4io>(1)).
 *=sect SEE ALSO
 *B<snobol4>(1),
 *B<snobol4io>(1)

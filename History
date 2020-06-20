@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+6/20/2020:
+	snolib/ezio.sno: improve snopea embedded documentation
+
 6/9/2020:
 	doc/snobol4io.1.pea: document 'E' and 'X'
 
