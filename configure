@@ -1742,7 +1742,24 @@ if [ ! "$FORCE_PML" ]; then
 fi
 
 # Include COM support under Cygwin!
-if [ "$CYGWIN" -a ! "$WITHOUT_COM" -a -f $INCDIR/w32api/objbase.h ]; then
+if [ "$CYGWIN" ]; then
+  cat << EOF > $TMP.cpp
+#include <iostream>
+
+int
+main() {
+    std::cout << "Hello\n";
+    return 0;
+}
+EOF
+  if g++ -o $TMP $TMP.cpp -a `./$TMP` = 'Hello' ]; then
+      true
+  else
+      echo 'could not find C++ compiler: Win32 COM support disabled' 1>&2
+      WITHOUT_COM=1
+  fi
+  rm -f $TMP $TMP.exe $TMP.cpp
+  if [ "$WITHOUT_COM" -a -f $INCDIR/w32api/objbase.h ]; then
     echo 'using Win32 COM support' 1>&2
     MODULES="$MODULES com"
     if grep wcschr $INCDIR/wchar.h >/dev/null 2>&1; then
@@ -1762,6 +1779,7 @@ if [ "$CYGWIN" -a ! "$WITHOUT_COM" -a -f $INCDIR/w32api/objbase.h ]; then
 
     # -lstdc++ needed w/ gcc 3.3.1 cygwin 1.5.9 (0.122/4/2)
     echo '	COM_LIBS = "ole32,uuid,oleaut32,stdc++"' >> $CONFIG_SNO
+  fi
 fi
 
 if [ "$INITIAL_CFLAGS" ]; then
