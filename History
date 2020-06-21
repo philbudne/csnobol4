@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+**************** release 2.1 (CVS tag REL_2_1)
+
+6/20/2020:
+	README, CHANGES, configure: update for version 2.1
+
 6/20/2020:
 	modules/stat/funcs.sno: add ST_TYPE_STR
 	TODO.soon: update

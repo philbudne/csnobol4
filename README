@@ -1,18 +1,6 @@
 $Id$
 
-2.0 release of ``The Macro Implementation of SNOBOL4 in C'' (CSNOBOL4)
-
-	For users of earlier releases:
-
-	A change in the "major version" number to 2.0 was chosen to
-	reflect not only a major change in functionality -- addition
-	of the long (thought) lost "BLOCKS" extension, and many new
-	extensions (see the CHANGES file for more details), but to
-	also reflect that this release DEPENDS on loadable module
-	support that has only been tested on a few popular platforms
-	(OS X, FreeBSD, Linux, Windows).
-
-	The online "man pages" have been GREATLY improved.
+2.1 release of ``The Macro Implementation of SNOBOL4 in C'' (CSNOBOL4)
 
 This is a free port of the original SIL (SNOBOL4 Implementation
 Language) "macro" version of SNOBOL4 (developed at Bell Labs) with the
@@ -26,7 +14,7 @@ The latest release can always be found at http://www.snobol4.org/csnobol4
 
 ****************************************************************
 
-Copyright © 1993-2015, Philip L. Budne
+Copyright © 1993-2020, Philip L. Budne
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

@@ -10,8 +10,8 @@ ID='$Id$'
 OPTIONS="$*"
 
 # needed in Makefile2 and config.h
-VERSION=2.0+
-VERSION_DATE="January 4, 2015"
+VERSION=2.1
+VERSION_DATE="June 20, 2020"
 
 # save any CFLAGS passed to us...
 INITIAL_CFLAGS="$CFLAGS"
