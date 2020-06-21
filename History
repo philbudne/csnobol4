@@ -2,6 +2,13 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+**************** release 2.1.1 (CVS tag REL_2_1_1)
+
+6/20/2020:
+	doc/Makefile: remove $(TXT) from $(ALL)
+		nroff and/or -ms not always available!
+	configure: update for version 2.1.1
+
 **************** release 2.1 (CVS tag REL_2_1)
 
 6/20/2020:
