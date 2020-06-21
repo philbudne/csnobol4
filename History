@@ -3,8 +3,11 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 6/21/2020:
-	configure: test for g++ for COM module
+	Makefile2.m4: install snobol4ezio.3 man page
+	doc/Makefile: note generated list in two places!
 
+6/21/2020:
+	configure: test for g++ for COM module
 **************** release 2.1.1 (CVS tag REL_2_1_1)
 
 6/20/2020:

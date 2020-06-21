@@ -1,6 +1,7 @@
 # Makefile for documentation
 # $Id$
 
+# ~sigh~ duplicated in Makefile2:
 GENERATED1=sdb.1 snobol4.1 snobol4blocks.1 snobol4cmd.1 snobol4ctrl.1 \
 	snobol4error.1 snobol4ext.1 snobol4func.1 snobol4io.1 \
 	snobol4key.1 snobol4op.1 snopea.1

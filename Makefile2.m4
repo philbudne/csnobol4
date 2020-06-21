@@ -219,7 +219,7 @@ GENERATED_DOCS_DOCDIR1=doc/sdb.1 doc/snobol4.1 doc/snopea.1 \
 	doc/snobol4io.1 doc/snobol4key.1 doc/snobol4op.1
 
 GENERATED_DOCS_DOCDIR3=doc/snobol4host.3 \
-	doc/snobol4setup.3 doc/snolib.3
+	doc/snobol4setup.3 doc/snolib.3 doc/snobol4ezio.3
 
 GENERATED_DOCS_DOCDIR7=doc/snopea.7
 
