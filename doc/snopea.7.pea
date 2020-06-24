@@ -27,8 +27,8 @@ I<text> is formatted in I<italic>.
 =item B<C&lt;>I<text>B<&gt;>
 I<text> is formatted in C<constant width>.
 
-=item B<L&lt;>I<text>B<&gt;>
-I<text> is formatted as an HTML link.
+=item B<L&lt;>I<url>B<&gt;>
+I<url> is formatted as an HTML link.
 
 =sect DIRECTIVES
 =item B<=break>

@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+6/23/2020:
+	doc/snopea.7.pea: tweak L format example
+
 **************** release 2.1.2 (CVS tag REL_2_1_2)
 
 6/21/2020:
