@@ -246,7 +246,8 @@ with "--add-" can appear);
 
 	--no-opt
 		Turn off C compiler optimization.
-	--opt=STRING
+
+	--opt=STRING
 		Supply C optimization flags.  Use of this option
 		overrides any values supplied via --add-opt options
 		(but not ones added by --fast).  Use --add-opt in

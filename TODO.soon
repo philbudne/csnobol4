@@ -1,5 +1,7 @@
 $Id$
 
+setuputil.sno: doc man html commands
+
 repl.sno?? run if -R given???
 
 snobol4key/func: document &STNO trace / BREAKPOINT()???

@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+6/28/2020:
+	CHANGES, README: tiny tweaks
+	TODO.soon: add doc/html/man ideas for setuputils
+
 **************** release 2.1.3 (CVS tag REL_2_1_3)
 
 6/25/2020:

@@ -7,7 +7,7 @@ Changes since 2.0 release;
 	Debugger improvements:
 		add "run", "save" and "source" commands
 		load .sdbinit file, write and read .sdb_history file
-		work correctly when readline not available
+		works correctly when readline not available
 	New I/O options:
 		E: close on exec (where supported by fopen)
 		K: break up long lines
