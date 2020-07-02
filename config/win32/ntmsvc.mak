@@ -271,6 +271,9 @@ docs:
 install:
 	pkg\win32\install.bat
 
+tar:
+	pkg\win32\maketar.bat
+
 clean:
 	config\win32\modules.bat clean
 	erase *.obj *.exe
