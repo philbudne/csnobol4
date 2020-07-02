@@ -2,6 +2,22 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+7/1/2020:
+	Updates for build on Windows 10:
+	new pkg/win32/maketar.bat: make tarball
+	removed: pkg/win32/makezip.sh
+	config/win32/config.h: ifndef isnan
+	config/win32/format.bat: create snopea.1.html
+	config/win32/mingw.mak: add all, cpuid.exe
+	config/win32/modules.bat: explicit snobol4.exe
+	config/win32/ntmsvc.mak: add clean
+	lib/win32/sys.c: version
+	lib/win32/tty.c: needs malloc.h (now available) on 64 bits
+	modules/random/Makefile: fix INC, dependencies
+	modules/random/random.c: fix typedefs, make bsd_random uint32_t
+	pkg/win32/install.bat: comment out load.doc, use "call"
+	snolib/setuputil.sno: remove destdir for win.msc install
+
 6/28/2020:
 	CHANGES, README: tiny tweaks
 	TODO.soon: add doc/html/man ideas for setuputils

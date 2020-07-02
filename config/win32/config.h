@@ -67,7 +67,9 @@
 
 /* non-standard functions; */
 #define finite		_finite
+#ifndef isnan				/* defined in VS 2019 */
 #define isnan		_isnan
+#endif
 #define popen		_popen
 #define pclose		_pclose
 

@@ -47,8 +47,8 @@ __FBSDID("$FreeBSD: src/lib/libc/stdlib/random.c,v 1.25 2007/01/09 00:28:10 imp 
 #include <stdint.h>
 #else
 /* use INT32_T define? */
-typedef u_int32_t unsigned int;
-typedef int32_t int;
+typedef unsigned int uint32_t;
+typedef int int32_t;
 #endif
 #include <stdio.h>
 #include <stdlib.h>
@@ -60,7 +60,7 @@ typedef int32_t int;
 #define DEV_RANDOM "/dev/random"
 #endif
 
-long bsd_random();
+uint32_t bsd_random();
 
 /*
  * random.c:
@@ -520,7 +520,7 @@ bsd_setstate(arg_state)
  *
  * Returns a 31-bit random number.
  */
-long
+uint32_t
 bsd_random()
 {
 	uint32_t i;
@@ -546,7 +546,7 @@ bsd_random()
 
 		fptr = f; rptr = r;
 	}
-	return((long)i);
+	return((uint32_t)i);
 }
 
 /****************************************************************/

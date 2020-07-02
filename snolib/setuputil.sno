@@ -503,32 +503,31 @@ setup.win.msc.installcmd
 	dest = (FILE_ISDIR('CVS') HOST(HOST_SNOLIB_VLIB), 
 +			HOST(HOST_SNOLIB_VLOCAL))
 	htmldir = HOST(HOST_SNOLIB_VERS) '\doc'
-	destdir = HOST(HOST_GETENV, 'DESTDIR')
 
 	libfile = setup.dlname(t)
 	FILE(libfile)				:F(FRETURN)
 	shared = (HOST(HOST_SHARED_OBJ_SUBDIR), 'shared')
-	command = 'copy /y ' libfile ' "' destdir dest '\' shared '"'
+	command = 'copy /y ' libfile ' "' dest '\' shared '"'
 	setup.posix.system(command)
 
 * snobol4<module>.sno, snobol4<module>.html
 	fn = setup.sno(t)
-	FILE(fn) setup.posix.system('copy /y ' fn ' "' destdir dest '"')
+	FILE(fn) setup.posix.system('copy /y ' fn ' "' dest '"')
 
 	fn = 'snobol4' fn
 	fn '.sno' = '.3.html'
-	FILE(fn) setup.posix.system('copy /y ' fn ' "' destdir htmldir '"')
+	FILE(fn) setup.posix.system('copy /y ' fn ' "' htmldir '"')
 
 	x = t['extras'] ','
 setup.win.msc.instcmd.xloop
 	x break(',') . fn ',' =			:f(setup.win.msc.instcmd.xdone)
 	ident(fn)				:s(setup.win.msc.instcmd.xdone)
 
-	FILE(fn) setup.posix.system('copy /y ' fn ' "' destdir dest '"')
+	FILE(fn) setup.posix.system('copy /y ' fn ' "' dest '"')
 
 	fn = 'snobol4' fn
 	fn '.sno' = '.3.html'
-	FILE(fn) setup.posix.system('copy /y ' fn ' "' destdir htmldir '"')
+	FILE(fn) setup.posix.system('copy /y ' fn ' "' htmldir '"')
 	:(setup.win.msc.instcmd.xloop)
 setup.win.msc.instcmd.xdone			:(RETURN)
 

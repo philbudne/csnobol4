@@ -43,7 +43,7 @@ copy /y config\win32\config.sno %LIBDIR%
 
 if not exist %DOCDIR% mkdir %DOCDIR%
 copy /y doc\*.html %DOCDIR%
-copy /y doc\load.doc %DOCDIR%\load.txt
+rem copy /y doc\load.doc %DOCDIR%\load.txt
 
 if not exist %INCDIR% mkdir %INCDIR%
 copy /y equ.h %INCDIR%
@@ -65,4 +65,4 @@ if not exist %SNOVER%\local mkdir %SNOVER%\local
 if not exist %SNOVER%\local\shared mkdir %SNOVER%\local\shared
 
 if not exist %DLLDIR% mkdir %DLLDIR%
-config\win32\modules.bat install
+call config\win32\modules.bat install

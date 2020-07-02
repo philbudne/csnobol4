@@ -13,10 +13,7 @@
 #include <stdio.h>
 #include <windows.h>
 #include <io.h>
-
-#ifdef __GNUC__
-#include <malloc.h>
-#endif
+#include <malloc.h>	/* available (must have!) in VS 2019 Win64 */
 
 #include "h.h"
 #include "snotypes.h"

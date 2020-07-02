@@ -35,8 +35,12 @@ ifneq (,$(wildcard modules/sqlite3/sqlite3.[ch]))
 SQLITE3=sqlite3
 endif
 
-MODULES=com dirs logic ndbm sprintf stat time $(SQLITE3)
+all:	cpuid.exe snobol4.exe mods
 
+cpuid.exe: cpuid.c
+	$(CC) -o cpuid cpuid.c
+
+MODULES=com dirs logic ndbm sprintf stat time $(SQLITE3)
 mods:	snobol4.exe
 	for M in $(MODULES); do \
 	    (cd modules/$$M; ../../snobol4 -N -I.. -I../.. -I../../snolib \

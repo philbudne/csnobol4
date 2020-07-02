@@ -81,7 +81,8 @@ osname(cp)
 {
     char osname[32], *os;
 #ifdef HAVE_GETVERSIONEX
-    OSVERSIONINFOEX osv;
+    // VS10 expects OSVERSIONINFOA
+    OSVERSIONINFOA osv;
     int server;
     int build;
 #else
@@ -95,8 +96,7 @@ osname(cp)
     ZeroMemory(&osv, sizeof(osv));
     osv.dwOSVersionInfoSize = sizeof(osv);
 #ifdef HAVE_GETVERSIONEX
-    // VS10 expects LPOSVERSIONINFOA
-    if (!GetVersionEx((LPOSVERSIONINFOA)&osv)) {
+    if (!GetVersionEx(&osv)) {
 	strcpy(cp, "Win????");
 	return;
     }

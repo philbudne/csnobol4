@@ -24,6 +24,7 @@ COMMON_CFLAGS=-nologo -DHAVE_CONFIG_H -DBITFIELDS_SAME_TYPE
 DL_CFLAGS=$(COMMON_CFLAGS)
 CFLAGS=-c $(OPT) $(COMMON_CFLAGS) $(INET_DEFS) -I$(SRCDIR)config\win32 -I$(SRCDIR)include -I$(SRCDIR).
 
+# switch/enum warning?
 SNOBOL4_C_CFLAGS=/wd4715
 
 OBJ=	isnobol4.obj data.obj data_init.obj main.obj syn.obj \
@@ -269,3 +270,10 @@ docs:
 
 install:
 	pkg\win32\install.bat
+
+clean:
+	erase *.obj *.exe
+	config\win32\modules.bat clean
+	erase doc\*.html
+
+	
