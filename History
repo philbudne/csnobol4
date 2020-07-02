@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+**************** release 2.1.4 (CVS tag REL_2_1_4)
+
+7/1/2020:
+	configure: update for version 2.1.4
+
 7/1/2020:
 	Updates for build on Windows 10:
 	new pkg/win32/maketar.bat: make tarball
