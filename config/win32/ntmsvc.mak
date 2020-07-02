@@ -272,8 +272,6 @@ install:
 	pkg\win32\install.bat
 
 clean:
-	erase *.obj *.exe
 	config\win32\modules.bat clean
+	erase *.obj *.exe
 	erase doc\*.html
-
-	
