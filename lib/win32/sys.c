@@ -80,36 +80,26 @@ osname(cp)
     char *cp;
 {
     char osname[32], *os;
-#ifdef HAVE_GETVERSIONEX
-    // VS10 expects OSVERSIONINFOA
-    OSVERSIONINFOA osv;
+    OSVERSIONINFO osv;
     int server;
     int build;
-#else
-    OSVERSIONINFO osv;			/* NOT TESTED */
-    const int server = 0;
-    const int build = 0;
-#endif
     int vnum;
 
     vnum = 0;
     ZeroMemory(&osv, sizeof(osv));
     osv.dwOSVersionInfoSize = sizeof(osv);
-#ifdef HAVE_GETVERSIONEX
     if (!GetVersionEx(&osv)) {
 	strcpy(cp, "Win????");
 	return;
     }
+#if 0			 /* I'm soooo confused! Did this ever work? */
 #ifndef VER_NT_WORKSTATION
 #define VER_NT_WORKSTATION 1
 #endif
     server = (osv.wProductType != VER_NT_WORKSTATION);
     build = osv.dwBuildNumber;
 #else
-    if (!GetVersion(&osv)) {		/* NOT TESTED */
-	strcpy(cp, "Win????");
-	return;
-    }
+    server = build = 0;
 #endif
     switch (osv.dwPlatformId) {
     case VER_PLATFORM_WIN32s:
@@ -215,7 +205,7 @@ osname(cp)
 	    } // 6
 	    break;
 
-	case 10:
+	case 10: /* not returned unless binary manifested for Win10 (else 6.2) */
 	    switch (osv.dwMinorVersion) {
 	    case 0:
 		if (server)
