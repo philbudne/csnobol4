@@ -5,15 +5,15 @@ For detailed revision history see History file
 Changes since 2.0 release;
 =========================
 	Debugger improvements:
-		add "run", "save" and "source" commands
-		load .sdbinit file, write and read .sdb_history file
+		added "run", "save" and "source" commands
+		loads .sdbinit file, writes and reads .sdb_history file
 		works correctly when readline not available
 	New I/O options:
 		E: close on exec (where supported by fopen)
 		K: break up long lines
 		X: exclusive open (where supported by fopen)
-	Add "ezio" library (look!! no unit numbers!)
-	Add ST_TYPE_STR to stat module (does what ST_TYPE was supposed to do!)
+	Added "ezio" library (look!! no unit numbers!)
+	Added ST_TYPE_STR to stat module (does what ST_TYPE was supposed to do!)
 	LABELCODE() function returns CODE for a LABEL (ala SITBOL)
 	Portability fixes (Solaris, 32-bit systems, DJGPP, Cygwin)
 	Documentation improvements
