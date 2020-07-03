@@ -278,3 +278,4 @@ clean:
 	config\win32\modules.bat clean
 	erase *.obj *.exe
 	erase doc\*.html
+	erase snolib4.lib snobol4.exp

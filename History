@@ -7,6 +7,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	config/win32/
 		modules.bat: clean up, add readline
 		format.bat: clean up
+		ntmsvc.mak: remove snobol4.exp snolib4.lib
 	lib/win32/sys.c: cleanup, again
 	pkg/win32/
 		README.win32: s/zip/tar/
