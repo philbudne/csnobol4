@@ -11,6 +11,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 		sdb.bat: fix, support run command
 		timing.bat: run in temp dir; fix/cleanup; add systeminfo
 	snolib/setuputil.sno: add win.msc clean command
+	parms.h: move config.h include
 
 **************** release 2.1.4 (CVS tag REL_2_1_4)
 

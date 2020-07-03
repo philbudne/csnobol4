@@ -1,14 +1,15 @@
 /* $Id$ */
 
 /* header files for snobol4.c; included by SIL "COPY PARMS" macro */
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif /* HAVE_CONFIG_H defined */
-
 #define S4_EXTERN			/* for cstack */
 
 #include <stdio.h>			/* for lib.h */
 #include <math.h>			/* finite(), isnan() */
+
+#ifdef HAVE_CONFIG_H
+/* after math.h; isnan defined in VS 2019 math.h */
+#include "config.h"
+#endif /* HAVE_CONFIG_H defined */
 
 #include "snotypes.h"
 #include "h.h"
