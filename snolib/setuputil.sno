@@ -419,7 +419,7 @@ setup.posix.cleancmd.xloop
 	ident(fn)				:s(setup.posix.cleancmd.xdone)
 	fn '.sno' = '.3'
 	fn = 'snobol4' fn
-	xfiles = xfiles ' ' fn ' ' fn '.html'	(setup.posix.cleancmd.xloop)
+	xfiles = xfiles ' ' fn ' ' fn '.html'	:(setup.posix.cleancmd.xloop)
 setup.posix.cleancmd.xdone
 	command = 'rm -f ' setup.posix.objs(t) setup.dlname(t) ' ' sno ' ' man
 +				xfiles
@@ -532,6 +532,33 @@ setup.win.msc.instcmd.xloop
 setup.win.msc.instcmd.xdone			:(RETURN)
 
 setup.win.msc.installcmd.end
+
+****************
+*	Windows clean command w/ Microsoft C
+*		uses "rm -f"
+
+	DEFINE('setup.win.msc.cleancmd(t)sno,man,x') :(setup.win.msc.cleancmd.end)
+setup.win.msc.cleancmd
+* XXX move path generation into a function???
+	sno = setup.sno(t)
+	man = 'snobol4' sno
+	man '.sno' = '.3'
+	man = man ' ' man '.html'
+
+	x = t['extras'] ','
+	xfiles =
+setup.win.msc.cleancmd.xloop
+	x break(',') . fn ',' =			:f(setup.win.msc.cleancmd.xdone)
+	ident(fn)				:s(setup.win.msc.cleancmd.xdone)
+	fn '.sno' = '.3'
+	fn = 'snobol4' fn
+	xfiles = xfiles ' ' fn ' ' fn '.html'	:(setup.win.msc.cleancmd.xloop)
+setup.win.msc.cleancmd.xdone
+	command = 'erase ' setup.win.msc.objs(t) setup.dlname(t) ' ' sno ' ' man
++				xfiles
+	setup.win.msc.system(command)		:s(RETURN)f(FRETURN)
+setup.win.msc.cleancmd.end
+*
 
 ****************************************************************
 * more systems here
