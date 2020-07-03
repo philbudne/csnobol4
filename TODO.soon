@@ -1,5 +1,7 @@
 $Id$
 
+INSTALL: update with build instructions for Windows
+
 setuputil.sno: doc man html commands
 
 repl.sno?? run if -R given???

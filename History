@@ -2,9 +2,12 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+7/2/2020:
+	doc/snobol4.1.pea: add ezio link
+
 **************** release 2.1.5 (CVS tag REL_2_1_5)
 
-7/1/2020:
+7/2/2020:
 	configure: update for version 2.1.5
 
 7/2/2020:

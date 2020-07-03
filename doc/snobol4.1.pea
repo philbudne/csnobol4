@@ -167,6 +167,7 @@ Using B<SNOBOL_PRELOAD_PATH> will make your code less portable.
 =row B<snobol4blocks>(1)	SNOBOL4B BLOCKS extension
 =row B<snopea>(1)	convert snopea documentation to roff and HTML
 =row B<snobol4dirs>(3)	directory access functions
+=row B<snobol4ezio>(3)	easy to use file I/O
 =row B<snobol4ffi>(3)	Foreign Function Interface functions
 =row B<snobol4fork>(3)	subprocess interface functions
 =row B<snobol4host>(3)	HOST and O/S functions
