@@ -555,7 +555,11 @@ setup.win.msc.cleancmd.xloop
 	fn = 'snobol4' fn
 	xfiles = xfiles ' ' fn ' ' fn '.html'	:(setup.win.msc.cleancmd.xloop)
 setup.win.msc.cleancmd.xdone
-	command = 'erase ' setup.win.msc.objs(t) setup.dlname(t) ' ' sno ' ' man
+	dll = setup.dlname(t)
+	exp = lib = dll
+	exp '.dll' = '.exp'
+	lib '.dll' = '.lib'
+	command = 'erase ' setup.win.msc.objs(t) dll ' ' sno ' ' man ' ' exp ' ' lib
 +				xfiles
 	setup.posix.system(command)		:s(RETURN)f(FRETURN)
 setup.win.msc.cleancmd.end
