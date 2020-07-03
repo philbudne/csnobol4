@@ -4,7 +4,9 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 7/2/2020:
 	More Win10 cleanup: make more batch scripts work!
-	config/win32/modules.bat: add readline
+	config/win32/
+		modules.bat: clean up, add readline
+		format.bat: clean up
 	lib/win32/sys.c: cleanup, again
 	pkg/win32/
 		README.win32: s/zip/tar/

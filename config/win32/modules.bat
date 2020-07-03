@@ -8,35 +8,38 @@ if "%CMD%" == "" set CMD=build
 
 set TOP=%CD%
 set SNOPATH=%TOP%;%TOP%\snolib;%TOP%\config\win32
+rem set V=-v
+set SETUP=..\..\snobol4.exe -N setup.sno %V%
 
-cd "%TOP%\modules\com"
-"%TOP%\snobol4.exe" -N setup.sno -v %CMD%
+cd modules\com
+%SETUP% %CMD%
 
-cd "%TOP%\modules\dirs"
-"%TOP%\snobol4.exe" -N setup.sno -v %CMD%
+cd ..\dirs
+%SETUP% %CMD%
 
-cd "%TOP%\modules\logic"
-"%TOP%\snobol4.exe" -N setup.sno -v %CMD%
+cd ..\logic
+%SETUP% %CMD%
 
-cd "%TOP%\modules\ndbm"
-"%TOP%\snobol4.exe" -N setup.sno -v %CMD%
+cd ..\ndbm
+%SETUP% %CMD%
 
-cd "%TOP%\modules\random"
-"%TOP%\snobol4.exe" -N setup.sno -v %CMD%
+cd ..\random
+%SETUP% %CMD%
 
-cd "%TOP%\modules\readline"
-"%TOP%\snobol4.exe" -N setup.sno -v %CMD%
+cd ..\readline
+%SETUP% %CMD%
 
-cd "%TOP%\modules\sprintf"
-"%TOP%\snobol4.exe" -N setup.sno -v %CMD%
+cd  ..\sprintf
+%SETUP% %CMD%
 
-cd "%TOP%\modules\sqlite3"
-if EXIST sqlite3.c "%TOP%\snobol4.exe" -N setup.sno -v %CMD%
+cd ..\sqlite3
+if EXIST sqlite3.c %SETUP% %CMD%
 
-cd "%TOP%\modules\stat"
-"%TOP%\snobol4.exe" -N setup.sno -v %CMD%
+cd ..\stat
+%SETUP% %CMD%
 
-cd "%TOP%\modules\time"
-"%TOP%\snobol4.exe" -N setup.sno -v %CMD%
+cd ..\time
+%SETUP% %CMD%
 
-cd "%TOP%"
+cd ..\..
+
