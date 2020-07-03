@@ -24,6 +24,9 @@ cd "%TOP%\modules\ndbm"
 cd "%TOP%\modules\random"
 "%TOP%\snobol4.exe" -N setup.sno -v %CMD%
 
+cd "%TOP%\modules\readline"
+"%TOP%\snobol4.exe" -N setup.sno -v %CMD%
+
 cd "%TOP%\modules\sprintf"
 "%TOP%\snobol4.exe" -N setup.sno -v %CMD%
 

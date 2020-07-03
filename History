@@ -2,6 +2,15 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+7/2/2020:
+	More Win10 cleanup: make more batch scripts work!
+	config/win32/modules.bat: add readline
+	lib/win32/sys.c: cleanup, again
+	pkg/win32/
+		README.win32: s/zip/tar/
+		sdb.bat: fix, support run command
+		timing.bat: run in temp dir; fix/cleanup; add systeminfo
+
 **************** release 2.1.4 (CVS tag REL_2_1_4)
 
 7/1/2020:

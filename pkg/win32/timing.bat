@@ -1,12 +1,37 @@
 @echo off
+:: $Id$
 :: Phil Budne 8/14/2013
+:: Updated 7/2/2020
 
 setlocal
-set "PKGDIR=%~dp0"
-set "BINDIR=%PKGDIR%..\..
+set "BINDIR=%~dp0"
+set "OLD=%CD%"
 
+set "TMPDIR=%TMP%\sno-timing-%RANDOM%-%TIME:~6,5%"
+
+if exist "%TMPDIR%" rmdir "%TMPDIR%" /Q /S
+mkdir "%TMPDIR%"
+
+copy "%BINDIR%..\timing\*.*" "%TMPDIR%" >"%TMPDIR%\copy.out"
+cd /d "%TMPDIR%"
+
+rem output progress to stderr:
+"%BINDIR%snobol4" -sx bench.sno v311.sil 2>stderr
+set STATUS=%ERRORLEVEL%
+if %STATUS% GEQ 1 (
+   echo bench.sno failed with status %STATUS% 1>&2
+   type stderr 1>&2
+   cd "%OLD%"
+   rmdir "%TMPDIR%" /Q /S
+   exit /B %STATUS
+)
+rem ================
+rem now create output file
+
+rem must be first:
 echo timing.bat $Id$
 echo:
+
 
 echo Date:
 echo %date% %time%
@@ -29,20 +54,29 @@ hostname
 echo:
 
 echo cpuid:
-"%BINDIR%\cpuid"
+"%BINDIR%cpuid"
 echo:
 
-cd /d %BINDIR%\timing
 echo Ids:
 find "Id:" bench.sno v311.sil timing.sno
 echo:
 
-echo running bench.sno:
-"%BINDIR%\snobol4" -sx bench.sno v311.sil 2>stderr
+echo getting system info 1>&2
+systeminfo > sysinfo.out
+
+echo systeminfo:
+:: OS info; gets BIOS Version too!
+findstr /C:"OS " sysinfo.out
+:: Manufacturer & Model
+findstr /C:"System M" sysinfo.out
+findstr /C:Memory sysinfo.out
 echo:
 
 echo running timing.sno:
-"%BINDIR%\snobol4" -b timing.sno < stderr
+"%BINDIR%snobol4" -b timing.sno < stderr
 echo:
 
 echo END
+
+cd "%OLD%"
+rmdir "%TMPDIR%" /Q /S

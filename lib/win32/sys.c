@@ -81,26 +81,27 @@ osname(cp)
 {
     char osname[32], *os;
     OSVERSIONINFO osv;
-    int server;
-    int build;
+    int server = 0;
+    int build = 0;
     int vnum;
 
     vnum = 0;
     ZeroMemory(&osv, sizeof(osv));
     osv.dwOSVersionInfoSize = sizeof(osv);
-    if (!GetVersionEx(&osv)) {
+    /*
+     * https://docs.microsoft.com/en-us/windows/win32/sysinfo/targeting-your-application-at-windows-8-1
+     * 5/31/2018:
+     * In Windows 8.1 and Windows 10, the GetVersion and GetVersionEx
+     * functions have been deprecated. In Windows 10, the
+     * VerifyVersionInfo function has also been deprecated. While you
+     * can still call the deprecated functions, if your application
+     * does not specifically target Windows 8.1 or Windows 10, the
+     * functions will return the Windows 8 version (6.2).
+     */
+    if (!GetVersionEx(&osv)) { /* takes OSVERSIONINFO, not OSVERSIONINFOEX!!! */
 	strcpy(cp, "Win????");
 	return;
     }
-#if 0			 /* I'm soooo confused! Did this ever work? */
-#ifndef VER_NT_WORKSTATION
-#define VER_NT_WORKSTATION 1
-#endif
-    server = (osv.wProductType != VER_NT_WORKSTATION);
-    build = osv.dwBuildNumber;
-#else
-    server = build = 0;
-#endif
     switch (osv.dwPlatformId) {
     case VER_PLATFORM_WIN32s:
 	os = "Win32s";
@@ -187,7 +188,7 @@ osname(cp)
 		else
 		    os = "Win8";
 		break;
-	    case 3:
+	    case 3:			/* not returned unless manifested (see above) */
 		if (server)
 		    os = "WinServer2012R2";
 		else

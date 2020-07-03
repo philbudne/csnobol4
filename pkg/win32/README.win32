@@ -1,6 +1,6 @@
-This package was built to be unzipped at C:\ If you place it
+This package was built to be installed as C:\SNOBOL4 If you place it
 elsewhere, define evironment variable SNODIR to point to the the
-snobol4 directory.
+SNOBOL4 directory.
 
 The \bin directory contains an sdb.bat file to run the debugger,
 and also a benchmark:
