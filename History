@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+7/4/2020:
+	pkg/win32/README.win32: fix SNOLIB (was SNODIR)
+
 7/2/2020:
 	doc/snobol4.1.pea: add ezio link
 
