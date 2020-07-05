@@ -17,8 +17,11 @@ allow too few function arguments to APPLY?
 
 allow OPSYN of "[" ?  underlying function looks at arg count??
 
-embed lua interpreter??
-	https://developer.ibm.com/tutorials/l-embed-lua/
+Newer GUI options (by embedding lua?)
+    wxWidgets
+    GTK+
+    Qt
+    comparisons: https://wiki.wxwidgets.org/WxWidgets_Compared_To_Other_Toolkits
 
 ================
 
