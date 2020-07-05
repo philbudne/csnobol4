@@ -268,7 +268,8 @@ build_modules:
 docs:
 	config\win32\format.bat
 
-install:
+# cannot be install due to INSTALL doc file
+runinstall:
 	pkg\win32\install.bat
 
 tar:
