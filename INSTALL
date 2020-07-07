@@ -13,17 +13,17 @@ In most cases all you need to type is "make".  The "m4" macro
 processor is required, and on some Linux distributions a package may
 need to be installed for the "time" command.
 
-NOTE!!! CSNOBOL 2.0 has been tested on a limited range of systems.
-Expect that most proprietary Unix systems (Solaris, AIX, HP-UX and
-older systems) will require some work.
+NOTE!!! CSNOBOL 2.1 has been tested on Linux, FreeBSD, Mac OS X.
+Expect that most other proprietary Unix systems (Solaris, AIX, HP-UX
+and older systems) may require some work.
 
-Some extensions will only be built if necessary support is found (in
-some Linux distributions this requires "development" packages to be
-installed):
+Some extensions will only be built if necessary support is found
+(in some Linux distributions this requires both library and
+"development" packages to be installed):
 
 * ffi depends on libffi.
 * sqlite depends on libsqlite3 (or "amalgamation" source in module/sqlite3).
-* tcl depends on libtcl (must be manually configured, see below).
+* tcl depends on libtcl
 * ndbm will fall back to a provided "sdbm" library if no system version
 	of Berkeley DB or GNU DBM can be found.
 
@@ -417,18 +417,35 @@ Non-unix systems;
 
 The non-unix ports are less well tested.
 
-Win32
------
+Windows
+-------
 
-The Win32 port has been tested with Visual Studio 10.
+The Windows port has been tested with Visual Studio 2019 (free
+Community Edition) on 64-bit Windows 10.
 
-*	LOAD() of external functions from DLL's implemented, but not tested
+In the VS installer, there should be a "Workloads" tab.  The only tool
+set needed is "Desktop development with C++".
 
-To compile using Microsoft Visual Studio:
-	make
+Once it's installed click on the Windows menu, scroll down to "Visual
+Studio 2019" and select "x64 Native Tools Command Prompt" and you
+should be in a CMD window with the proper environment variables set.
 
-To install:
-	pkg\win32\install.bat
+Use the cd command to navigate to where you downloaded the snobol-2.1.x.tar.gz
+file to, ie:
+
+     cd C:\Users\Myname\Downloads
+
+Extract the tar file (where x is the current version):
+    tar -x -z -f snobol-2.1.x.tar.gz
+
+and type (where x is the current version):
+    cd snobol-2.1.x
+    make.bat
+
+and then
+    pkg\win32\install.bat
+
+NOTE: Not all DLL loadable code has been tested.
 
 To compile using MINGW (http://www.mingw.org):
 	make -f config/win32/mingw.mak
@@ -438,8 +455,6 @@ To compile using Borland C (not tested in a long time, almost certainly broken):
 
 DJGPP under DOS
 ---------------
-
-NOTE! Not tested with version 2.0, almost certainly broken!
 
 DJGPP (http://www.delorie.com/djgpp/) is a free 32-bit C/C++ MS-DOS
 development system, for Intel 80386 (and higher) PCs running DOS based

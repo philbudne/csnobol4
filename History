@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+7/6/2020:
+	INSTALL: update Windows info
+
 7/4/2020:
 	pkg/win32/README.win32: fix SNOLIB (was SNODIR)
 	config/win32/ntmsvc.mak: runinstall
@@ -56,7 +59,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 **************** release 2.1.3 (CVS tag REL_2_1_3)
 
 6/25/2020:
-	configure: update for versio 2.1.3
+	configure: update for version 2.1.3
 
 6/23/2020:
 	doc/snopea.7.pea: tweak L format example
