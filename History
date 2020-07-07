@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+7/7/2020:
+	pkg/win32/README.win32: add doc directory mention.
+
 7/6/2020:
 	INSTALL: update Windows info
 
