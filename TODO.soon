@@ -1,5 +1,7 @@
 $Id$
 
+Show filename for failed include!!!!!!
+
 INSTALL: update with build instructions for Windows
 
 setuputil.sno: doc man html commands
@@ -24,6 +26,18 @@ Newer GUI options (by embedding lua?)
     comparisons: https://wiki.wxwidgets.org/WxWidgets_Compared_To_Other_Toolkits
 
 ================
+
+snopea:
+	\^ == "hair space" == &#x200a; ??
+	\% == soft hyphen == &shy;
+
+	dashes:
+		\(em == em dash == &emdash; == &#x2014;
+		\(en == en dash == &endash
+		groff sets - as u2010; \- as u2212 (minus sign)
+		- == \[hy] => u2010 (hyphen)
+		\[en] => u2013 == \(en
+		\[em] => u2014 == \(em
 
 2.1+:
 	Enable -Wimplicit-function-declaration -Werror in configure "check"??
