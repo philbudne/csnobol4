@@ -1,6 +1,13 @@
 $Id$
 
-Show filename for failed include!!!!!!
+sdb man page LIMITATIONS:
+	cannot trao fatal errors (see snobol4error)
+
+Allow SETEXIT trap (but not resume) except on 15,16,20,21
+
+branch to (F)RETURN in exit handler should clear XOCBSC????
+
+Show filename for failed include???
 
 setuputil.sno: doc man html commands
 

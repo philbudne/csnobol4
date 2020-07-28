@@ -14,6 +14,7 @@ for command line editing/history when available.
 =item B<break> I<LABEL_OR_STATEMENT_NUMBER>
 Set a breakpoint.
 =item B<bt>
+=break
 Display call stack I<back trace>.
 =item B<commands> I<BREAKPOINT_NUMBER>
 Add sdb commands to execute (ie; print &amp; continue) to a breakpoint.
@@ -49,6 +50,7 @@ or set variables.
 =item B<quit>
 Exit debugger.
 =item B<run>
+=break
 Restart program (works by saving breakpoints and restarting snobol4).
 New in version 2.1, some restrictions may apply.
 =item B<save> I<FILENAME>
@@ -59,8 +61,8 @@ Read sdb commands from file.
 Single step.
 =item B<watch> I<VARIABLE>
 Set watchpoint on a variable (break when value changes).
-=item B<what>
-Display the datatype of variable contents (or expression).
+=item B<what> I<EXPRESSION>
+Display the datatype of expression.
 =item B<where>
 An alias for B<bt>.
 
@@ -121,7 +123,10 @@ the start of a each statement executed.
 The interrupt character is silently ignored when at the B<sdb> command
 prompt.
 
-Leaves an unprotected listing file of the sources in the /tmp directory.
+Leaves an unprotected listing file of the sources in the /tmp directory
+(create a protected directory?).
 
 ``quit'' and ``run'' commands say program is running even if first
 line of the program has not yet been executed!
+
+Some fatal errors cannot be trapped, and sdb will be terminated.

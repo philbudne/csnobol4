@@ -2,6 +2,12 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+7/28/2020:
+	doc/sdb.1.pea:
+		Add =break for bt/run
+		Fix what description
+		Add a bug (cannot trap fatal errors)
+
 7/7/2020:
 	pkg/win32/README.win32: add doc directory mention.
 
