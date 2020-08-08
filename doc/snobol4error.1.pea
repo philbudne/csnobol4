@@ -6,7 +6,10 @@ snobol4error \- SNOBOL4 error codes
 =sect SYNOPSIS
 SNOBOL4 B<&amp;ERRTYPE> and B<&amp;ERRTEXT> values.
 
-Errors marked I<(fatal)> cannot be curtailed by setting B<&amp;ERRLIMIT>.
+Errors not marked I<(fatal)> or I<(fatal-)> cannot be caught/ignored
+by setting B<&amp;ERRLIMIT>.  Errors marked I<(fatal-)> can be caught
+by SETEXIT by setting both B<&amp;ERRLIMIT> and B<&amp;FATALLIMIT>,
+but cannot be CONTINUEd (extension added in CSNOBOL4 2.1.6).
 
 =item 1
 ``Illegal data type''
@@ -49,7 +52,7 @@ Various internal errors.
 =item 18
 ``Return from level zero'' I<(fatal)>.
 =item 19
-``Failure during goto evaluation'' I<(fatal)>.
+``Failure during goto evaluation'' I<(fatal-)>.
 =item 20
 ``Insufficient storage to continue'' I<(fatal)>.
 =item
@@ -63,9 +66,9 @@ See the B<-S> option in B<snobol4cmd>(1).
 =item 23
 ``Object exceeds size limit'' I<(fatal)>.
 =item 24
-``Undefined or erroneous goto'' I<(fatal)>.
+``Undefined or erroneous goto'' I<(fatal-)>.
 =item 25
-``Incorrect number of arguments'' I<(fatal)>.
+``Incorrect number of arguments'' I<(fatal-)>.
 =item 26
 ``Limit on compilation errors exceeded'' I<(fatal)>.
 =item 27
@@ -88,10 +91,10 @@ Last error in standard SNOBOL4.
 =item
 Interrupt character (SIGINT) was recieved.
 =item 35
-``Not in a SETEXIT handler''
+``Not in a SETEXIT handler'' I<(fatal-)>.
 =item
 Attempt to branch to B<CONTINUE>, B<SCONTINUE>, or B<ABORT>
-when no unhandled error condition present.
+when no unhandled error condition present
 =item 36
 ``Error in BLOCKS''  I<(fatal)>.
 =item
@@ -102,6 +105,13 @@ Internal error.
 ``Mystery error in BLOCKS'' I<(fatal)>.
 =item
 Undocumented internal error.
+=item 39
+``Cannot CONTINUE from FATAL error'' I<(fatal)>.
+=item
+Attempt to branch to B<CONTINUE> or B<SCONTINUE>
+after a I<fatal-> error condition.
+
+
 =sect SEE ALSO
 B<snobol4>(1).
 =cut

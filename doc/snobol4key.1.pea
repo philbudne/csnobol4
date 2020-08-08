@@ -73,7 +73,8 @@ I<Standard>.
 
 =item B<&amp;ERRLIMIT>
 Unprotected, INTEGER:
-Number of (otherwise fatal) errors to allow/trap.
+Positive number of (otherwise fatal) errors to allow/trap,
+decremented on each error.
 I<Standard>.
 
 =item B<&amp;ERRTEXT>
@@ -94,6 +95,19 @@ I<Standard>, I<Traceable>.
 Protected:
 Initial value of B<FAIL> pattern variable.
 I<Standard>.
+
+=item B<&amp;FATAL>
+Protected, INTEGER:
+Set to one when an otherwise fatal error has been trapped via SETEXIT
+(because FATALLIMIT was positive).
+Fatal errors cannot be resumed via CONTINUE or SCONTINUE.
+I<CSNOBOL4 Extension, added in version 2.2>.
+
+=item B<&amp;FATALLIMIT>
+Unprotected, INTEGER:
+Positive number of (otherwise fatal in standard SNOBOL4) errors to
+trap via SETEXIT; decremented on each error.
+I<CSNOBOL4 Extension, added in version 2.2>.
 
 =item B<&amp;FENCE>
 Protected, PATTERN:

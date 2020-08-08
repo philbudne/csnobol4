@@ -38,6 +38,7 @@ Unprotected keywords
 &CODE = 0
 &DUMP = 2
 &ERRLIMIT = 99
+&FATALLIMIT = 0
 &FTRACE = 0
 &FULLSCAN = 1
 &GTRACE = 0

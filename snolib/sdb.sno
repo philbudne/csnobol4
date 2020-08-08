@@ -151,7 +151,7 @@ SDB.READLINE.END
 
 * SDB.READLINE using regular I/O
 	DEFINE('ADD_HISTORY(LINE)', 'SDB.ADD_HISTORY')
-	DEFINE('READLINE(PROMPT)', 'SDB.READLINE2')
+	DEFINE('READLINE(PROMPT)', 'SDB.READLINE2') :(SDB.HAVE_READLINE)
 SDB.READLINE2
 	SDB.TT = PROMPT
 	ISAVE = &INPUT
@@ -345,7 +345,9 @@ SDB.STOPPED2
 SDB.TRAP.EXIT
 	SDB.ERROR = &ERRTYPE
  SDB.DEBUG = '<trap.exit @ ' SDB.LASTFL
+* check for END
 	EQ(SDB.ERROR,0)				:S(SDB.TRAP.ENDLABEL)
+* check if not ^C
 	NE(SDB.ERROR,34)			:S(SDB.TRAP.ERR)
 
 * here on ^C -- re-execute the current statement & break
@@ -361,10 +363,13 @@ SDB.TRAP.ENDLABEL
 * join common trap handler function code
 	:(SDB.DISPLAY)
 
+* display error in format similar to interpreter:
 SDB.TRAP.ERR
-	TERMINAL = SDB.LASTFL ': Error ' SDB.ERROR
-+		' in statement ' SDB.LAST ' at level ' &FNCLEVEL
++	TERMINAL = SDB.LASTFL ': '
++		(EQ(&FATAL,1) 'Fatal error ', 'Error ') SDB.ERROR
++		' in statement ' SDB.LAST ' at level ' &FNCLEVEL - 1
 	TERMINAL = &ERRTEXT
+
 * join common trap handler function code
 
 * common trap handler function code
@@ -374,10 +379,12 @@ SDB.DISPLAY
 	SDB.DISPLAY_SOURCE(SDB.LAST)
 * used by SDB.COMMAND:
 	SDB.FNCLEVEL = &FNCLEVEL
+* clear running on non-continuable error
+	SDB.RUNNING = EQ(&FATAL,1)
 *
 * loop reading commands
 SDB.GETCMD
-	&ERRLIMIT = SDB.ERRLIMIT
+	&ERRLIMIT = &FATALLIMIT = SDB.ERRLIMIT
 	SDB.CMD = SDB.READLINE(SDB.VARS['prompt']) :F(SDB.CMD.ERR)
 	SDB.CMD = IDENT(SDB.CMD) SDB.LAST_CMD
 	SDB.LAST_CMD = SDB.CMD
@@ -434,7 +441,7 @@ SDB.TRAP.FL.ENA
 SDB.TRAP.FL.NC
 	SDB.OLD_FNC_ENA = SDB.FNC_ENA
 	SETEXIT('SDB.SETEXIT_HANDLER')
-	&ERRLIMIT = SDB.ERRLIMIT
+	&ERRLIMIT = &FATALLIMIT = SDB.ERRLIMIT
 *
 * from SDB.TRAP.*; early return with no changes
 SDB.TRAP.RETURN2
@@ -448,7 +455,7 @@ SDB.SETEXIT_HANDLER
 * SDB.TRAP.EXIT call *MUST* be 1st statement.
 	SDB.TRAP.EXIT((&TRACE = 0), &LASTFILE ':' &LASTLINE, &LASTNO)
 * reenable SETEXIT handler
-	&ERRLIMIT = SDB.ERRLIMIT
+	&ERRLIMIT = &FATALLIMIT = SDB.ERRLIMIT
 	SETEXIT('SDB.SETEXIT_HANDLER')
 	DIFFER(SDB.INTERRUPT)		       :S(SDB.SX.RETRY)
 	TERMINAL = "(treating error statement as failure)"
@@ -730,8 +737,10 @@ SDB.EHISTOUT
 * so write out a magic file with sdb state
 * and sdb script will restart process!
 SDB.CMD.RUN
+	EQ(&FATAL,1)				:S(SDB.CMD.RUN2)
 	TERMINAL = 'The program being debugged has been started already.'
 	SDB.YORN('Start it from the beginning? (y or n) ') :F(SDB.COMMAND.STAY)
+SDB.CMD.RUN2
 	SDB.SAVE(SDB.BKPT_FILE)			 :(SDB.EXIT)
 
 *** save command
@@ -906,13 +915,13 @@ SDB.APPEND.END
 * safe eval
 	DEFINE("SDB.EVAL(SDB.EXPR)SDB.TEMP")	:(SDB.EVAL.END)
 SDB.EVAL
-	&ERRLIMIT = SDB.ERRLIMIT
+	&ERRLIMIT = &FATALLIMIT = SDB.ERRLIMIT
 	SETEXIT()
 	SDB.EVAL = EVAL(SDB.EXPR)		:F(FRETURN)
 	EQ(&ERRLIMIT,SDB.ERRLIMIT)		:S(RETURN)
 * here on trapped error:
 	TERMINAL = &ERRTEXT ": " SDB.EXPR
-	&ERRLIMIT = SDB.ERRLIMIT		:(FRETURN)
+	&ERRLIMIT = &FATALLIMIT = SDB.ERRLIMIT		:(FRETURN)
 SDB.EVAL.END
 
 ****************
@@ -1108,7 +1117,7 @@ SDB.RELOAD_DONE
 	SDB.OLD_FNC_ENA =
 *
 * ERRLIMIT must be positive for SETEXIT
-	&ERRLIMIT = SDB.ERRLIMIT
+	&ERRLIMIT = &FATALLIMIT = SDB.ERRLIMIT
 	SETEXIT('SDB.SETEXIT_HANDLER')
 *
 * for BREAKPOINT():

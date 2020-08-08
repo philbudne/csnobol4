@@ -1,9 +1,11 @@
 $Id$
 
+Allow SETEXIT trap (but not resume) except on 15,16,20,21
+
+Make err 39 (Cannot CONTINUE from FATAL error) non-fatal????!!!
+
 sdb man page LIMITATIONS:
 	cannot trao fatal errors (see snobol4error)
-
-Allow SETEXIT trap (but not resume) except on 15,16,20,21
 
 branch to (F)RETURN in exit handler should clear XOCBSC????
 
@@ -11,9 +13,13 @@ Show filename for failed include???
 
 setuputil.sno: doc man html commands
 
-repl.sno?? run if -R given???
+repl.sno (read/eval/print loop)?? run if -R given???
+
+snobol4key: document if TRACEable
 
 snobol4key/func: document &STNO trace / BREAKPOINT()???
+
+snobol4key.1: Where does STLIMIT < 0 extension come from???
 
 setuputil.sno:
 	"test" command!!!!
@@ -36,13 +42,13 @@ snopea:
 	\^ == "hair space" == &#x200a; ??
 	\% == soft hyphen == &shy;
 
-	dashes:
-		\(em == em dash == &emdash; == &#x2014;
-		\(en == en dash == &endash
-		groff sets - as u2010; \- as u2212 (minus sign)
+	groff dashes:
 		- == \[hy] => u2010 (hyphen)
-		\[en] => u2013 == \(en
-		\[em] => u2014 == \(em
+		\- as u2212 (minus sign)
+		\(en == \[en] == en dash == &ndash == &#x2013;
+		\(em == \[em] == em dash == &mdash == &#x2014;
+
+		???? 2011 == non-breaking hyphen
 
 2.1+:
 	Enable -Wimplicit-function-declaration -Werror in configure "check"??

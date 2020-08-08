@@ -2,6 +2,17 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+8/8/2020:
+	v311.sil: [PLB128] add &FATALLIMIT
+		enables trapping some otherwise fatal errors for sdb
+	procs: new labels/functions for FATALLIMIT
+	snolib/sdb.sno: use &FATALLIMIT to trap some fatal errors
+	doc/snobol4error.1.pea: note trapable fatal errors!
+	doc/snobol4ext.1.pea: remove "ERRTEXT can be traced"
+	doc/snobol4key.1.pea: add &FATAL, &FATALLIMIT
+	test/{a,diag1,diag2,dump}.ref: add &FATALLIMIT
+	test/blocks/dump.ref: add &FATALLIMIT
+
 7/28/2020:
 	doc/sdb.1.pea:
 		Add =break for bt/run
