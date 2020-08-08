@@ -147,8 +147,8 @@ B<L> (LABEL),
 B<R> (RETURN), or
 B<V> (VALUE) as in Macro SPITBOL.
 
-=item B<TRACE()> of additional keywords
-B<&amp;ERRTEXT> and B<&amp;STFCOUNT> can be traced.
+=item Keyword trace
+B<TRACE()> works on B<&amp;STFCOUNT> keyword.
 
 =item Value B<TRACE()> on pattern match assignments
 variable changes by B<.> and B<$> operators are visible via value trace.
