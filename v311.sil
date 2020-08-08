@@ -1,6 +1,11 @@
 * $Id$
 *
 * $Log$
+* Revision 1.143  2020/02/09 04:55:04  phil
+* [PLB127] v311.sil, globals, test/labelcode.{sno,ref}, test/tests.in,
+*    doc/snobol4func.1.pea:
+* 	add LABELCODE function (ala SITBOL LABEL())
+*
 * Revision 1.142  2015/01/02 15:00:02  phil
 * [PLB126] another PCOMP!
 *
@@ -2531,10 +2536,12 @@ GOTL3  DEQL    XPTR,ABORCL,GOTL4   Compare with ABORT		[PLB97]
        BRANCH  FTLEND		   Fatal ending			[PLB97]
 *_
 GOTL4  DEQL    XPTR,SCNTCL,GOTL5   Compare with SCONTINUE	[PLB97]
+       AEQLC   FATLCL,0,CFTERR	   FATAL error?			[PLB128]
        MOVD    FRTNCL,XOCICL	   Restore saved offset		[PLB97]
        BRANCH  GOTL5B						[PLB97]
 *_
 GOTL5  DEQL    XPTR,CONTCL,GOTL6   Compare with CONTINUE	[PLB97]
+       AEQLC   FATLCL,0,CFTERR	   FATAL error?			[PLB128]
        MOVD    FRTNCL,XFRTNC	   Restore saved failure offset	[PLB97]
 GOTL5B AEQLC   XOCBSC,0,,CNTERR	   Must be in a handler!!	[PLB97]
        MOVD    OCBSCL,XOCBSC	   Restore code base		[PLB97]
@@ -9579,7 +9586,6 @@ PRNOTH   LHERE
 PRN1     INCRA     PR_I,1
          ACOMP     PR_I,PR_HT,PR99
          FASTPR    IOKEY,PR_UNIT,PR_FLAG,PR_NULL,BLSP		[PLB121]
-
          AEQLC     IOKEY,0,PRERR
          BRANCH    PRN1
 NEW_PAGE PROC      PRINTB
@@ -10278,7 +10284,7 @@ ALOC2  SETAC   ERRTYP,20	   Storage exhausted
        BRANCH  FTLEND
 *_
 ARGNER SETAC   ERRTYP,25	   Incorrect number of arguments
-       BRANCH  FTLEND
+       BRANCH  FTLERR						[PLB128]
 *_
 COMP1  SETAC   ERRTYP,32	   Missing END statement	[PLB38]
        BRANCH  FTLTST						[PLB38]
@@ -10317,10 +10323,10 @@ INTR1  SETAC   ERRTYP,1		   Illegal data type
        BRANCH  FTLTST
 *_
 INTR4  SETAC   ERRTYP,24	   Erroneous goto
-       BRANCH  FTLEND
+       BRANCH  FTLERR						[PLB128]
 *_
 INTR5  SETAC   ERRTYP,19	   Failure in goto
-       BRANCH  FTLEND
+       BRANCH  FTLERR						[PLB128]
 *_
 INTR8  SETAC   ERRTYP,15	   Exceeded &MAXLNGTH
        BRANCH  FTLTST
@@ -10376,12 +10382,23 @@ USRINT SETAC   ERRTYP,34	   User Interrupt (SIGINT)	[PLB109]
        BRANCH  FTLTST						[PLB109]
 *_
 CNTERR SETAC   ERRTYP,35	   Not in a SETEXIT handler	[PLB97]
-       BRANCH  FTLEND						[PLB97]
+       BRANCH  FTLERR						[PLB97][PLB128]
+*_
+CFTERR SETAC   ERRTYP,39	   Cannot CONTINUE from FATAL	[PLB128]
+       BRANCH  FTLEND						[PLB128]
 *_
 SCERST SETAC   SCERCL,1		   Note failure during pattern matching
        BRANCH  FTERST						[PLB97]
 *_
-FTLTST SETAC   SCERCL,2		   Note failure out of pattern matching
+* [PLB128] enable SETEXIT trapping of previously fatal errors
+*	for use by sdb debugger.  ERRLIMIT must also be set!!
+FTLERR ACOMPC  FTLLCL,0,,FTLEND,FTLEND	Check &FATALLIMIT	[PLB128]
+       DECRA   FTLLCL,1		   Decrement &FATALLIMIT	[PLB128]
+       SETAC   FATLCL,1		   FATAL: cannot be resumed	[PLB128]
+       BRANCH  FTLTS2						[PLB128]
+*_
+FTLTST SETAC   FATLCL,0		   Non-fatal			[PLB128]
+FTLTS2 SETAC   SCERCL,2		   Note failure out of pattern matching [PLB128]
 FTERST ACOMPC  ERRLCL,0,,FTLEND,FTLEND
 *				   Check &ERRLIMIT
        DECRA   ERRLCL,1		   Decrement &ERRLIMIT
@@ -10455,6 +10472,8 @@ TRACL  DESCR   0,0,I		   &FTRACE
 BKGNCL DESCR   0,0,0		   &FILL			[BLOCKS]
        DESCR   BKGNSP,0,0
 .FI
+FTLLCL DESCR   0,0,I		   &FATALLIMIT			[PLB128]
+       DESCR   FTLLSP,0,0					[PLB128]
 ERRLCL DESCR   0,0,I		   &ERRLIMIT
        DESCR   ERRLSP,0,0
 DMPCL  DESCR   0,0,I		   &DUMP
@@ -10528,6 +10547,8 @@ GCTTTL REAL    0.0		   GC total time &GCTIME	[PLB92][PLB107]
        DESCR   MAXISP,0,0	   				[PLB108]
 CSTNCL DESCR   0,0,I		   Compiler statement number	[PLB123]
        DESCR   CNOSP,0,0	   &COMPNO  	      		[PLB123]
+FATLCL DESCR   0,0,I		   &FATAL			[PLB128]
+       DESCR   FATLSP,0,0					[PLB128]
 KVEND  LHERE   ,
 *
 INLIST DESCR   INLIST,TTL+MARK,4*DESCR				[PLB36]
@@ -11088,6 +11109,7 @@ XLSTNC DESCR   0,0,0		   Saved &LASTNO	[PLB98]
 XFRTNC DESCR   0,0,0		   Saved FRTNCL		[PLB97]
 XOCBSC DESCR   0,0,0		   Saved OCBSCL		[PLB97]
 XOCICL DESCR   0,0,0		   Saved OCICL		[PLB97]
+FATAL  DESCR   0,0,0		   Cannot be resumed	[PLB128]
 *
 *      Machine-dependent Data
 *
@@ -11742,6 +11764,8 @@ EVALSP STRING  'EVAL'
 EXPSP  STRING  'EXPRESSION'
 FSP    STRING  'F'						[PLB115]
 FAILSP STRING  'FAIL'
+FATLSP STRING  'FATAL'						[PLB128]
+FTLLSP STRING  'FATALLIMIT'					[PLB128]
 FNCESP STRING  'FENCE'
 FLDSSP STRING  'FIELD'
 FNCLSP STRING  'FNCLEVEL'
@@ -12104,6 +12128,7 @@ MSGLST DESCR   0,0,0
        DESCR   MSG36,0,0					[BLOCKS]
        DESCR   MSG37,0,0					[BLOCKS]
        DESCR   MSG38,0,0					[BLOCKS]
+       DESCR   MSG39,0,0					[PLB128]
 *
 *      Fatal Error Messages
 *
@@ -12146,6 +12171,7 @@ MSG35  STRING  'Not in a SETEXIT handler'			[PLB97]
 MSG36  STRING  'Error in BLOCKS'				[BLOCKS]
 MSG37  STRING  'Too many warnings in BLOCKS'			[BLOCKS]
 MSG38  STRING  'Mystery error in BLOCKS'			[BLOCKS]
+MSG39  STRING  'Cannot CONTINUE from FATAL error'		[PLB128]
 *
 *      Compiler Error Messages
 *
