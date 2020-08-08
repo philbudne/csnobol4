@@ -3,6 +3,9 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 8/8/2020:
+	modules/ffi/funcs.sno: credit Fred Weigel in AUTHOR section
+
+8/8/2020:
 	v311.sil: [PLB128] add &FATALLIMIT
 		enables trapping some otherwise fatal errors for sdb
 	procs: new labels/functions for FATALLIMIT

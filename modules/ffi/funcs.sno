@@ -49,4 +49,6 @@ define_ffi.end
 **B<snobol4>(1), B<ffi>(3), B<dlopen>(3)
 **=sect AUTHOR
 **Philip L. Budne
+**=break
+**Inspired by an FFI interface by Fred Weigel
 **=cut
