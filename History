@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+**************** release 2.1.6 (CVS tag REL_2_1_6)
+
+8/9/2020:
+	configure: update for version 2.1.6
+
 8/8/2020:
 	tests/{tests.in,setexit7.{sno,ref}}: add &FATALLIMIT test
 
