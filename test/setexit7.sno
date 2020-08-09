@@ -1,0 +1,32 @@
+	&errlimit = &fatallimit = 100
+
+* MUST BE FIRST!!!
+* CNTERR 35	   "Not in a SETEXIT handler"
+	setexit(.eh35)
+	:(continue)
+eh35	output = 'S' &LASTNO ' ' &ERRTEXT ' (' &ERRTYPE ')'
+
+* not yet:
+* MAIN1	 18	   Return from level zero
+*	setexit(.eh18)
+*	:(return)
+*eh18	output = 'S' &LASTNO ' ' &ERRTEXT ' ' &ERRTYPE
+
+* INTR5  19	   "Failure during goto evaluation"
+	setexit(.eh19)
+	define('freturn()')
+	:<freturn()>
+eh19	output = 'S' &LASTNO ' ' &ERRTEXT ' (' &ERRTYPE ')'
+
+** EXEX  22	   
+*	setexit(.eh22)
+*	&STLIMIT = 2
+*loop	:(loop)
+*eh22	output = 'S' &LASTNO ' ' &ERRTEXT ' (' &ERRTYPE ')'
+
+* INTR4  24	   "Undefined or erroneous goto"
+	setexit(.eh24)
+	:(foo)
+eh24	output = 'S' &LASTNO ' ' &ERRTEXT ' (' &ERRTYPE ')'
+
+end

@@ -173,3 +173,5 @@ trace base.sno
 trace breakline.sno
 # 2/8/2020
 reg labelcode.sno
+# 8/8/2020
+reg setexit7.sno

@@ -3,6 +3,9 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 8/8/2020:
+	tests/{tests.in,setexit7.{sno,ref}}: add &FATALLIMIT test
+
+8/8/2020:
 	modules/ffi/funcs.sno: credit Fred Weigel in AUTHOR section
 
 8/8/2020:
