@@ -135,8 +135,10 @@ if [ "$UNAME" ]; then
 			cat /proc/cpuinfo
 			echo 'ENDCPUINFO'
 		fi
-		# memory size, mobo vendor, model
+		# memory size, mobo vendor, model, clocks (prefer base)
 		for x in /proc/meminfo \
+		    /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq \
+		    /sys/devices/system/cpu/cpu0/cpufreq/base_frequency \
 		    /sys/class/dmi/id/sys_vendor \
 		    /sys/class/dmi/id/product_name; do
 		    if [ -f $x ]; then
@@ -191,6 +193,14 @@ if [ "$UNAME" ]; then
 			break
 		    fi
 		done
+
+		# Android
+		if [ -x /usr/bin/getprop ]; then
+		    echo ''
+		    echo /usr/bin/getprop
+		    /usr/bin/getprop | \
+			egrep 'ro\.(product\.vendor|build\.version)'
+		fi
 		;;
 	OSF1)
 		if [ -f /usr/sbin/snmp_request ]; then
