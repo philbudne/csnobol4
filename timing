@@ -195,12 +195,15 @@ if [ "$UNAME" ]; then
 		done
 
 		# Android
-		if [ -x /usr/bin/getprop ]; then
-		    echo ''
-		    echo /usr/bin/getprop
-		    /usr/bin/getprop | \
-			egrep 'ro\.(product\.vendor|build\.version)'
-		fi
+		for x in `echo $PATH | tr : ' '`; do
+		    if [ -x $x/getprop ]; then
+			echo ''
+			echo getprop
+			$x/getprop | \
+			    egrep 'ro\.(product\.vendor|build\.version)'
+			break
+		    fi
+		done
 		;;
 	OSF1)
 		if [ -f /usr/sbin/snmp_request ]; then

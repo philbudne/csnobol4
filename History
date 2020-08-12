@@ -2,6 +2,16 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+8/11/2020:
+	Cleanup for Android:
+	timing: search PATH for getprop
+	config/check: check for /tmp (Android)
+	configure: check for closefrom
+	include/lib.h: add closefrom, getdtablesize
+	lib/bsd/closefrom.c: closefrom using getdtablesize
+	lib/posix/getdtablesize.c: getdtablesize using sysconf
+	lib/dummy/getdtablesize.c: dummy getdtablesize
+
 8/10/2020:
 	timing: add stuff for version, hw & clock on Android
 

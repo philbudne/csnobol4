@@ -20,7 +20,12 @@ INCLUDES="$1"
 BODY="$2"
 LIBS="$3"
 
-TMP=/tmp/check$$
+if [ -d /tmp ]; then
+    TMP=/tmp/check$$
+else
+    # Android
+    TMP=check$$
+fi
 TMP_C=${TMP}.c
 trap "rm -f $TMP $TMP_C" 0
 

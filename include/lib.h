@@ -234,3 +234,10 @@ extern int inet_write __P((FILE *, char *, int));
 extern int inet_read_raw __P((FILE *f, char *, int));
 extern int inet_read_cooked __P((FILE *f, char *, int, int, int));
 #endif
+
+#ifndef HAVE_CLOSEFROM
+extern void closefrom __P((int minfd));
+#endif
+#ifndef HAVE_GETDTABLESIZE
+extern int getdtablesize __P((void));
+#endif

@@ -656,9 +656,7 @@ io_fopen2( fp, base )
 	    int master;
 	    pid_t pid = forkpty(&master, NULL, NULL, NULL);
 	    if (pid == 0) {
-		int i;
-		for (i = getdtablesize(); i > 2; i--)
-		    close(i);
+		closefrom(3);
 		execl(_PATH_BSHELL, "sh", "-c", fp->fname+2, NULL);
 		_exit(1);
 	    }

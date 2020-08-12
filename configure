@@ -1159,12 +1159,14 @@ if config/check "sys/types.h libutil.h" "$FORKPTY" -lutil; then
     echo '#define HAVE_LIBUTIL_H'	>> $CONFIG_H
     echo "ADD_LDFLAGS([-lutil])"	>> $CONFIG_M4
     NEED_PATHS_H=1
+    HAVE_FORKPTY=1
 elif config/check "sys/types.h util.h" "$FORKPTY"; then
     # OSX
     echo 'using forkpty() with util.h' 1>&2
     echo '#define HAVE_FORKPTY'		>> $CONFIG_H
     echo '#define HAVE_UTIL_H'		>> $CONFIG_H
     NEED_PATHS_H=1
+    HAVE_FORKPTY=1
 elif config/check "sys/types.h util.h" "$FORKPTY" -lutil; then
     # NetBSD, OpenBSD
     echo 'using forkpty() with util.h and -lutil' 1>&2
@@ -1172,6 +1174,7 @@ elif config/check "sys/types.h util.h" "$FORKPTY" -lutil; then
     echo '#define HAVE_UTIL_H'		>> $CONFIG_H
     echo "ADD_LDFLAGS([-lutil])"	>> $CONFIG_M4
     NEED_PATHS_H=1
+    HAVE_FORKPTY=1
 elif config/check "sys/types.h pty.h" "$FORKPTY" -lutil; then
     # Linux
     echo 'using forkpty() with pty.h and -lutil' 1>&2
@@ -1179,12 +1182,13 @@ elif config/check "sys/types.h pty.h" "$FORKPTY" -lutil; then
     echo '#define HAVE_PTY_H'		>> $CONFIG_H
     echo "ADD_LDFLAGS([-lutil])"	>> $CONFIG_M4
     NEED_PATHS_H=1
+    HAVE_FORKPTY=1
 fi
 
 if [ "$NEED_PATHS_H" ]; then
     if config/check paths.h 'char *foo = _PATH_BSHELL'; then
 	echo 'using paths.h for shell path' 1>&2
-	echo '#define HAVE_PATHS_H'		>> $CONFIG_H
+	echo '#define HAVE_PATHS_H'	>> $CONFIG_H
     else
 	# XXX outer loop for sh, ksh, bash, csh, tcsh?
 	for DIR in /usr/bin /bin `echo $PATH | tr ':' ' '`; do
@@ -1198,6 +1202,34 @@ if [ "$NEED_PATHS_H" ]; then
 	    echo '#define _PATH_BSHELL "'$BSHELL'"'	>> $CONFIG_H
 	else
 	    echo 'WARNING: could not find shell!' 1>&2
+	fi
+    fi
+fi
+
+if [ "x$HAVE_FORKPTY" = x1 ]; then
+    if config/check "unistd.h" "closefrom(3);"; then
+	# FreeBSD, OpenBSD
+	echo 'using closefrom() from unistd.h' 1>&2
+	echo '#define HAVE_CLOSEFROM'	>> $CONFIG_H
+    elif config/check "stdlib.h" "closefrom(3);"; then
+	# Solaris
+	echo 'using closefrom() from stdlib.h' 1>&2
+	echo '#define HAVE_CLOSEFROM'	>> $CONFIG_H
+    else
+	echo 'using private closefrom()' 1>&2
+	echo 'ADD_OBJS([closefrom.o])'	>> $CONFIG_M4
+	echo 'ADD_SRCS([lib/bsd/closefrom.c])'	>> $CONFIG_M4
+	if config/check "unistd.h" 'getdtablesize();'; then
+	    echo '#define HAVE_GETDTABLESIZE'	>> $CONFIG_H
+	    echo 'using getdtablesize() from unistd.h' 1>&2
+	elif config/check "unistd.h" 'sysconf(_SC_OPEN_MAX)'; then
+	    echo 'using private getdtablesize() with sysconf()' 1>&2
+	    echo 'ADD_OBJS([getdtablesize.o])'	>> $CONFIG_M4
+	    echo 'ADD_SRCS([lib/posix/getdtablesize.c])' >> $CONFIG_M4
+	else
+	    echo 'using dummy getdtablesize()' 1>&2
+	    echo 'ADD_OBJS([getdtablesize.o])'	>> $CONFIG_M4
+	    echo 'ADD_SRCS([lib/dummy/getdtablesize.c])' >> $CONFIG_M4
 	fi
     fi
 fi
@@ -1859,6 +1891,12 @@ for DIR in /usr/bin /usr/ucb /usr/local/bin /bin .; do
 	fi
     done
 done
+
+#### Android
+
+if [ ! -d /tmp ]; then
+    echo '#define TMP_DIR "."'			>> $CONFIG_H
+fi
 
 ################################
 # construct new "with" file
