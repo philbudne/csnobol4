@@ -152,6 +152,7 @@ GMTIME_( LA_ALIST ) LA_DCL
     RETNULL;
 }
 
+#ifdef HAVE_STRFTIME
 /*
  * LOAD("STRFTIME(STRING,TM)STRING", TIME_DL)
  */
@@ -168,6 +169,7 @@ STRFTIME( LA_ALIST ) LA_DCL
     strftime(output, sizeof(output), format, &tm);
     RETSTR(output);
 }
+#endif
 
 /*
  * LOAD("MKTIME(TM)INTEGER", TIME_DL)
