@@ -445,6 +445,12 @@ getopt.o: $(GETOPT_C)
 bindresvport.o: $(BINDRESVPORT_C)
 	$(CC) $(CFLAGS) -c $(BINDRESVPORT_C)
 
+closefrom.o: lib/bsd/closefrom.c
+	$(CC) $(CFLAGS) -c lib/bsd/closefrom.c
+
+getdtablesize.o: $(GETDTABLESIZE_C)
+	$(CC) $(CFLAGS) -c $(GETDTABLESIZE_C)
+
 ################
 # SDBM files -- only when needed
 

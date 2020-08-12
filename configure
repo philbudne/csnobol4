@@ -1225,11 +1225,11 @@ if [ "x$HAVE_FORKPTY" = x1 ]; then
 	elif config/check "unistd.h" 'sysconf(_SC_OPEN_MAX)'; then
 	    echo 'using private getdtablesize() with sysconf()' 1>&2
 	    echo 'ADD_OBJS([getdtablesize.o])'	>> $CONFIG_M4
-	    echo 'ADD_SRCS([lib/posix/getdtablesize.c])' >> $CONFIG_M4
+	    echo 'GETDTABLESIZE_C=lib/posix/getdtablesize.c' >> $CONFIG_M4
 	else
 	    echo 'using dummy getdtablesize()' 1>&2
 	    echo 'ADD_OBJS([getdtablesize.o])'	>> $CONFIG_M4
-	    echo 'ADD_SRCS([lib/dummy/getdtablesize.c])' >> $CONFIG_M4
+	    echo 'GETDTABLESIZE_C=lib/dummy/getdtablesize.c' >> $CONFIG_M4
 	fi
     fi
 fi

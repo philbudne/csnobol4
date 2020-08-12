@@ -11,6 +11,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	lib/bsd/closefrom.c: closefrom using getdtablesize
 	lib/posix/getdtablesize.c: getdtablesize using sysconf
 	lib/dummy/getdtablesize.c: dummy getdtablesize
+	Makefile2.m4: add closfrom.o getdtablesize.o rules
 
 8/10/2020:
 	timing: add stuff for version, hw & clock on Android
