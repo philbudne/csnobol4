@@ -57,6 +57,9 @@ date( sp, dp )
     default:				/* out-of-range */
     case NEW:				/* SPITBOL new format */
 	/* MM/DD/YYYY HH:MM:SS */
+#ifdef HAVE_STRFTIME
+	strftime(strbuf, sizeof(strbuf), "%m/%d/%Y %H:%M:%S", tm);
+#else
 	sprintf( strbuf, "%02d/%02d/%d %02d:%02d:%02d",
 		tm->tm_mon + 1,
 		tm->tm_mday,
@@ -64,9 +67,13 @@ date( sp, dp )
 		tm->tm_hour,
 		tm->tm_min,
 		tm->tm_sec );
+#endif
 	break;
     case OLD:				/* SPITBOL default */
 	/* MM/DD/YY HH:MM:SS */
+#ifdef HAVE_STRFTIME
+	strftime(strbuf, sizeof(strbuf), "%m/%d/%y %H:%M:%S", tm);
+#else
 	sprintf( strbuf, "%02d/%02d/%02d %02d:%02d:%02d",
 		tm->tm_mon + 1,
 		tm->tm_mday,
@@ -74,9 +81,13 @@ date( sp, dp )
 		tm->tm_hour,
 		tm->tm_min,
 		tm->tm_sec );
+#endif
 	break;
     case ISO:				/* ISO style with 4-digit year */
 	/* YYYY-MM-DD HH:MM:SS */
+#ifdef HAVE_STRFTIME
+	strftime(strbuf, sizeof(strbuf), "%Y-%m-%d %H:%M:%S", tm);
+#else
 	sprintf( strbuf, "%d-%02d-%02d %02d:%02d:%02d",
 		tm->tm_year + 1900,
 		tm->tm_mon + 1,
@@ -84,6 +95,7 @@ date( sp, dp )
 		tm->tm_hour,
 		tm->tm_min,
 		tm->tm_sec );
+#endif
 	break;
     }
 

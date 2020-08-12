@@ -3,6 +3,10 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 8/11/2020:
+	configure: check for strftime, set HAVE_STRFTIME
+	lib/date.c: use HAVE_STRFTIME -- reduce gcc space complaints
+
+8/11/2020:
 	Cleanup for Android:
 	timing: search PATH for getprop
 	config/check: check for /tmp (Android)

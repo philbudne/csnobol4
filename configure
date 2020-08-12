@@ -1151,6 +1151,11 @@ else
     echo 'INET_C=$(SRCDIR)lib/dummy/inet.c'	>> $CONFIG_M4
 fi
 
+if config/check "time.h" 'char buf[1024]; strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", localtime(time(0)));'; then
+    echo 'using strftime()' 1>&2
+    echo '#define HAVE_STRFTIME'	>> $CONFIG_H
+fi
+
 FORKPTY="int f; pid_t pid = forkpty(&f, 0, 0, 0);"
 if config/check "sys/types.h libutil.h" "$FORKPTY" -lutil; then
     # FreeBSD
@@ -1216,7 +1221,7 @@ if [ "x$HAVE_FORKPTY" = x1 ]; then
 	echo 'using closefrom() from stdlib.h' 1>&2
 	echo '#define HAVE_CLOSEFROM'	>> $CONFIG_H
     else
-	echo 'using private closefrom()' 1>&2
+	echo 'using private closefrom() function' 1>&2
 	echo 'ADD_OBJS([closefrom.o])'	>> $CONFIG_M4
 	echo 'ADD_SRCS([lib/bsd/closefrom.c])'	>> $CONFIG_M4
 	if config/check "unistd.h" 'getdtablesize();'; then
