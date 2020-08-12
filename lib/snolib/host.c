@@ -65,7 +65,7 @@ extern const char build_dir[];
 int
 HOST( LA_ALIST ) LA_DCL
 {
-    char buf[512];			/* XXX */
+    char buf[1024];			/* XXX */
     char *str;
     int_t n;
 

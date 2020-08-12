@@ -1,5 +1,12 @@
 $Id$
 
+gcc warnings:
+	lib/snolib/host.c:89:28: warning: ‘ ’ directive writing 1 byte into a region of size between 0 and 510 [-Wformat-overflow=]
+
+    inlined from ‘SERV_LISTEN’ at lib/snolib/serv.c:180:2:
+/usr/include/x86_64-linux-gnu/bits/string_fortified.h:106:10: warning: ‘__builtin_strncpy’ output may be truncated copying 108 bytes from a string of length 127 [-Wstringop-truncation]
+
+
 Allow SETEXIT trap (but not resume) except on 15,16,20,21
 
 Make err 39 (Cannot CONTINUE from FATAL error) non-fatal????!!!

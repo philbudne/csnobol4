@@ -6,6 +6,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	configure: check for strftime, set HAVE_STRFTIME
 	lib/date.c: use HAVE_STRFTIME -- reduce gcc space complaints
 	modules/time/time.c: use HAVE_STRFTIME
+	lib/snolib/host.c: enlarge buffer to make gcc happy
 
 8/11/2020:
 	Cleanup for Android:
