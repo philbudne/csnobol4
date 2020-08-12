@@ -7,6 +7,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	timing: search PATH for getprop
 	config/check: check for /tmp (Android)
 	configure: check for closefrom
+		try checking for libncursesw for readline
 	include/lib.h: add closefrom, getdtablesize
 	lib/bsd/closefrom.c: closefrom using getdtablesize
 	lib/posix/getdtablesize.c: getdtablesize using sysconf
