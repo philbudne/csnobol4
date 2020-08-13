@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+8/12/2020:
+	lib/snolib/serv.c: try to quell gcc9 truncation complaint
+
 8/11/2020:
 	configure: check for strftime, set HAVE_STRFTIME
 	lib/date.c: use HAVE_STRFTIME -- reduce gcc space complaints

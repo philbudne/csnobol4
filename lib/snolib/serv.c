@@ -48,6 +48,10 @@
 #define SIGFUNC_T void
 #endif /* SIGFUNC_T not defined */
 
+#ifndef UNIX_PATH_MAX
+#define UNIX_PATH_MAX 104		/* OSX, many BSDs */
+#endif /* UNIX_PATH_MAX not defined */
+
 static SIGFUNC_T
 fireman(sig)
     int sig;
@@ -80,7 +84,7 @@ SERV_LISTEN( LA_ALIST ) LA_DCL
 {
     char sfam[128];
     char stype[128];
-    char sserv[128];
+    char sserv[UNIX_PATH_MAX];
     int type;
     int s;				/* "master" socket */
 
