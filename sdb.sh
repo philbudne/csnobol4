@@ -6,11 +6,17 @@ SNOBOL4=<BINDIR>/snobol4<VERS>
 
 # handle user args??
 
+if [ -d /tmp ]; then
+    TMP=/tmp
+else
+    # Android
+    TMP=.
+fi
 # create listing file, and pass filename in environment so sdb.sno can read it.
-SDB_LISTFILE=/tmp/sdb_listing.$$
+SDB_LISTFILE=$TMP/sdb_listing.$$
 export SDB_LISTFILE
 
-SDB_BREAKPOINTS=/tmp/sdb_bkpts.$$
+SDB_BREAKPOINTS=$TMP/sdb_bkpts.$$
 export SDB_BREAKPOINTS
 
 # remove listing/breakpoints files on exit (if not already removed by sdb)
