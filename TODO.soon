@@ -1,10 +1,5 @@
 $Id$
 
-gcc warnings:
-    inlined from ‘SERV_LISTEN’ at lib/snolib/serv.c:180:2:
-/usr/include/x86_64-linux-gnu/bits/string_fortified.h:106:10: warning: ‘__builtin_strncpy’ output may be truncated copying 108 bytes from a string of length 127 [-Wstringop-truncation]
-
-
 Allow SETEXIT trap (but not resume) except on 15,16,20,21
 
 Make err 39 (Cannot CONTINUE from FATAL error) non-fatal????!!!
