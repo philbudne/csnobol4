@@ -1,17 +1,24 @@
 $Id$
 
+snobol4.1, snobol4ext man pages: include CSNOBOL4 versions for changes
+
+***** show failed include statement
+      like a syntax error?!!!
+      Show filename for failed include???
+      include as "extra info"?????
+
+add SITBOL variable for error info (undefined label or function)
+
+Add snobol4load man page (replace load.txt)??
+	add mgetstr
+
 Allow SETEXIT trap (but not resume) except on 15,16,20,21
 
 Make err 39 (Cannot CONTINUE from FATAL error) non-fatal????!!!
 
-sdb man page LIMITATIONS:
-	cannot trao fatal errors (see snobol4error)
+branch to (F)RETURN in SETEXIT handler should clear XOCBSC????
 
-branch to (F)RETURN in exit handler should clear XOCBSC????
-
-Show filename for failed include???
-
-setuputil.sno: doc man html commands
+setuputil.sno: add doc man html commands
 
 repl.sno (read/eval/print loop)?? run if -R given???
 
