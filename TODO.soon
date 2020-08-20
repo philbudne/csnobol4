@@ -2,15 +2,17 @@ $Id$
 
 snobol4.1, snobol4ext man pages: include CSNOBOL4 versions for changes
 
+Add SITBOL &ERRPARM variable for error info (undefined label or function)?
+
 ***** show failed include statement
       like a syntax error?!!!
       Show filename for failed include???
-      include as "extra info"?????
-
-add SITBOL variable for error info (undefined label or function)
+      Return in &ERRPARAM??
 
 Add snobol4load man page (replace load.txt)??
 	add mgetstr
+
+snobol4.1, snobol4ext man pages: include CSNOBOL4 versions for changes
 
 Allow SETEXIT trap (but not resume) except on 15,16,20,21
 
@@ -220,6 +222,8 @@ sdb:
 	BUG: ignored watchpoints (cont N or ignore B N) don't update old value
 	"code" command?
 	list [START [END]]
+
+Implement SITBOL (DIS)ASSOCIATE
 
 Have timing script POST results??
 
