@@ -1151,11 +1151,6 @@ else
     echo 'INET_C=$(SRCDIR)lib/dummy/inet.c'	>> $CONFIG_M4
 fi
 
-if config/check "time.h" 'char buf[1024]; strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", localtime(time(0)));'; then
-    echo 'using strftime()' 1>&2
-    echo '#define HAVE_STRFTIME'	>> $CONFIG_H
-fi
-
 FORKPTY="int f; pid_t pid = forkpty(&f, 0, 0, 0);"
 if config/check "sys/types.h libutil.h" "$FORKPTY" -lutil; then
     # FreeBSD
@@ -1518,6 +1513,11 @@ else
 fi
 echo 'SLEEP_C=$(SRCDIR)'$SLEEP_C		>> $CONFIG_M4
 echo "	SLEEP_C = '$SLEEP_C'"			>> $CONFIG_SNO
+
+if config/check "time.h" 'char buf[1024]; strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", localtime(time(0)));'; then
+    echo 'using strftime()' 1>&2
+    echo '#define HAVE_STRFTIME'		>> $CONFIG_H
+fi
 
 if config/check time.h 'struct tm tm; strptime("", "", &tm)'; then
     echo 'using strptime()' 1>&2
