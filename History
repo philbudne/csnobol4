@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+8/17/2020:
+	man page fixes
+
 8/13/2020:
 	sdb.sh: handle lack of /tmp (Android)
 

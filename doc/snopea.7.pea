@@ -6,7 +6,7 @@ snopea \- A little ``Plain Old Documentation'' format for SNOBOL4
 
 =sect DESCRIPTION
 B<snopea> is a simple-to-use markup language used for writing
-documentation for SNOBOL4, SNOBOL4 programs, and SNOBOL4 modules
+documentation for SNOBOL4, SNOBOL4 programs, and SNOBOL4 modules,
 inspired by B<perlpod>(1).  The B<snopea>(1) command translates
 B<snopea> to *roff B<man>(7) macro format or B<HTML>.
 

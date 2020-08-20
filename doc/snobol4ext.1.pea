@@ -23,10 +23,9 @@ B<&CASE> in B<snobol4key>(1).
 The following additional ``control lines'' are implemented:
 B<-CASE>,
 B<-COPY>,
-B<-ERROR>,
-B<-NOERRORS>,
-B<-EXECUTE>,
-B<-NOEXECUTE>,
+B<-BLOCKS>/B<-NOBLOCKS>,
+B<-ERROR>/B<-NOERRORS>,
+B<-EXECUTE>/B<-NOEXECUTE>,
 B<-HIDE>,
 B<-INCLUDE>,
 B<-LINE>:
@@ -80,6 +79,8 @@ The following additional keywords are implemented:
 B<&amp;CASE>,
 B<&amp;DIGITS>,
 B<&amp;ERRTEXT>
+B<&amp;FATAL>,
+B<&amp;FATALLIMIT>,
 B<&amp;FILE>,
 B<&amp;GCTIME>,
 B<&amp;GTRACE>
@@ -100,14 +101,25 @@ all contexts which previously required an B<INTEGER> (or string
 convertible to B<INTEGER>).  Contexts include B<TABLE()>, B<ITEM()>,
 array indices, B<INPUT()>, B<OUTPUT(),> B<SET()>, keyword values,
 B<CHAR()>, B<RPAD()>, B<LPAD()>, B<FIELD()>, B<COLLECT()>, B<DUMP()>,
-B<DUPL()>, B<OPSYN()>, B<SUBSTR()>.
+B<DUPL()>, B<OPSYN()>, B<SUBSTR()> I<added in CSNOBOL4 0.99.44>.
 
 =item Scientific notation
 B<REAL> number syntax has been expanded to allow exponents of the
-form: I<ANY('Ee') ('+' | '-' | '') SPAN('0123456789')>.  Exponential
-format reals need not contain a decimal point.
+form: I<ANY('Ee') ('+' | '-' | '') SPAN('0123456789')> --
+I<added in CSNOBOL4 0.98>.
 
-=item B<SPITBOL> operators
+=item
+Exponential format reals need not contain a decimal point
+ I<added in CSNOBOL4 0.99.44>.
+ 
+=item B<SPITBOL> extensions
+For compatibility with SNOBOL4+, certain SPITBOL extensions can be
+enabled and disabled using the B<-PLUSOPS> directive.  B<-PLUSOPS 0>
+or B<-PLUSOPS> disables SPITBOL operators, while B<-PLUSOPS >I<n>
+where I<n> is a non-zero integer enables them.  SPITBOL extensions are
+enabled by default.  Extensions controlled by PLUSOPS are as follows:
+
+=item
 The SPITBOL scan (?) and assignment (=) operators have been added.  A
 pattern match can appear within an expression, and returns the matched
 string as its value.  Similarly assignment can appear in an
@@ -127,15 +139,11 @@ incomprehensible code.
 =item
 The type B<NUMERIC> with B<CONVERT()> and the removal of leading
 spaces from strings converted to numbers (implicitly or explicitly)
-are also legal when SPITBOL extensions are enabled.  SPITBOL
-extensions can be enabled and disabled using the B<-PLUSOPS>
-directive.  B<-PLUSOPS 0> or B<-PLUSOPS> disables SPITBOL operators,
-while B<-PLUSOPS >I<n> where I<n> is a non-zero integer enables them.
-SPITBOL extensions are enabled by default.
+are also legal when SPITBOL extensions are enabled.
 
 =item B<TERMINAL> I/O variable
 The variable B<TERMINAL> is associated with the standard error file
-descriptor for both input and output.
+descriptor for both input and output (replaces B<PUNCH> variable).
 
 =item B<TRACE()> function type argument
 The second argument of the B<TRACE()> function can be abbreviated to a
@@ -148,15 +156,15 @@ B<R> (RETURN), or
 B<V> (VALUE) as in Macro SPITBOL.
 
 =item Keyword trace
-B<TRACE()> works on B<&amp;STFCOUNT> keyword.
+B<TRACE()> works on B<&amp;STFCOUNT> keyword I<added in CSNOBOL4 0.99.44>.
 
 =item Value B<TRACE()> on pattern match assignments
 variable changes by B<.> and B<$> operators are visible via value trace.
 
 =sect BUGS
-A lot of stuff still needs to move to other pages!
+Add CSNOBOL4 version where each extension added?
 
-Group the keywords, control lines, functions, operators together!
+Group the keywords, control lines, functions, operators together?
 
 =sect SEE ALSO
 B<snobol4>(1).
