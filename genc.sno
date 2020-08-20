@@ -1538,8 +1538,14 @@ NOARGS	DIFFER(ALTS)					:F(NOALT2)
 
 *	here with list of alternate rets
 	ALTS LP						:S(NOALT3)
-*	deal with singleton (no parens)
-	ALTS = LP ALTS RP
+
+* no parens: output if == 1 for singleton
+	OUTPUT = IND 'if (' ARGV<2> '(' VAL ') == 1)'
+	INDENT()
+	BRANCH(ALTS)
+	UNINDENT()
+	:(ERCALL)
+
 NOALT3	SELBRA( ARGV<2> '(' VAL ')', ALTS )		:(ERCALL)
 
 *	no alternate return points
