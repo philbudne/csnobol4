@@ -241,3 +241,5 @@ extern void closefrom __P((int minfd));
 #ifndef HAVE_GETDTABLESIZE
 extern int getdtablesize __P((void));
 #endif
+extern int forkexecpty __P((char *cmd, long *pio, long *ppid));
+extern int waitpty __P((FILE *f, long io, long pid));

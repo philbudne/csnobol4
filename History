@@ -2,6 +2,14 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+8/20/2020:
+	new: lib/{bsd,dummy}/pty.c
+	include/lib.h: add forkexecpty, waitpty
+	lib/io.c: use forkexecpty, waitpty
+	config/win32/{mingw,ntmsvc}.mak
+	configure: add PTY_C=lib/bsd/pty.c
+	Makefile2.m4: add PTY_C=lib/dummy/pty.c
+
 8/17/2020:
 	man page fixes
 	configure: move strftime test

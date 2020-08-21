@@ -58,24 +58,6 @@ typedef long off_t;
 
 #include <sys/types.h>			/* pid_t */
 
-#ifdef HAVE_FORKPTY
-#include <sys/wait.h>			/* waitpid() */
-#include <errno.h>
-
-#ifdef HAVE_LIBUTIL_H
-#include <libutil.h>			/* FreeBSD: forkpty */
-#endif
-#ifdef HAVE_UTIL_H
-#include <util.h>			/* NetBSD: forkpty */
-#endif
-#ifdef HAVE_PTY_H
-#include <pty.h>			/* linux: forkpty() */
-#endif
-#ifdef HAVE_PATHS_H
-#include <paths.h>			/* _PATH_BSHELL */
-#endif
-#endif /* HAVE_FORKPTY */
-
 #include "h.h"
 #include "units.h"
 #include "snotypes.h"
@@ -157,11 +139,10 @@ struct file {
 	    off_t pos;		      /* current position in buffer */
 	} mem;
 #endif /* MEM_IO defined */
-#ifdef HAVE_FORKPTY
 	struct {
-	    pid_t pid;
+	    long pid;
+	    long io;
 	} pty;
-#endif
 	int nota;
     } u;
     /* XXX add methods for read/write/eof/mode/seek/close */
@@ -423,23 +404,10 @@ io_close(unit)				/* internal (zero-based unit) */
 	    ret = (pclose(fp->f) == 0);	/* XXX is process status!! */
 	    fp->f = NULL;
 	}
-#ifdef HAVE_FORKPTY
 	else if (ISPTY(fp)) {
-	    pid_t pid;
-	    int pstat;
-
-	    fclose(fp->f);
+	    ret = waitpty(fp->f, fp->u.pty.io, fp->u.pty.pid);
 	    fp->f = NULL;
-	    // issue kill() if needed????
-	    do {
-                pid = waitpid(fp->u.pty.pid, &pstat, 0);
-	    } while (pid == -1 && errno == EINTR);
-	    if (pid == -1)
-		ret = TRUE;
-	    else
-		ret = (pstat == 0);
 	}
-#endif
 	else {				/* not a pipe */
 	    if (ISTTY(fp)) {
 		tty_close(fp->f);	/* advisory */
@@ -652,20 +620,13 @@ io_fopen2( fp, base )
 
     if (fp->fname[0] == '|') { /* filename with leading '|' opens a pipe! */
 	if (fp->fname[1] == '|') {	/* || opens a pty!! */
-#ifdef HAVE_FORKPTY
-	    int master;
-	    pid_t pid = forkpty(&master, NULL, NULL, NULL);
-	    if (pid == 0) {
-		closefrom(3);
-		execl(_PATH_BSHELL, "sh", "-c", fp->fname+2, NULL);
-		_exit(1);
-	    }
-	    else if (pid > 0) {
-		fp->f = fdopen(master, mode);
+	    long io, pid;
+	    if (forkexecpty(fp->fname+2, &io, &pid) >= 0) {
+		fp->f = fdopen(io, mode);
 		fp->type = TYPE_PTY;
+		fp->u.pty.io = io;
 		fp->u.pty.pid = pid;
 	    }
-#endif
 	    return;
 	} // ||
 

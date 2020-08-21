@@ -98,6 +98,7 @@ TERM_C=$(SRCDIR)lib/posix/term.c
 TOP_C=$(SRCDIR)lib/top.c
 TREE_C=$(SRCDIR)lib/tree.c
 TTY_C=$(SRCDIR)lib/posix/tty.c
+PTY_C=$(SRCDIR)lib/dummy/pty.c
 
 # aux sources
 BZERO_C=$(SRCDIR)lib/auxil/bzero.c
@@ -201,7 +202,7 @@ OBJS=	main.o $(SNOBOL4).o data.o data_init.o syn.o bal.o break.o date.o \
 	dump.o dynamic.o endex.o expops.o hash.o $(INET_O) init.o \
 	intspc.o io.o lexcmp.o load.o mstime.o ordvst.o pair.o pat.o \
 	pml.o realst.o replace.o spcint.o spreal.o str.o stream.o \
-	suspend.o term.o top.o tree.o tty.o \
+	suspend.o term.o top.o tree.o tty.o pty.o \
 	$(EXTRA_OBJS) $(SNOLIB_A)
 
 AUX_SRCS=[]_SRCS
@@ -429,6 +430,9 @@ tree.o:	$(TREE_C)
 
 tty.o:	$(TTY_C)
 	$(CC) $(CFLAGS) -c $(TTY_C)
+
+pty.o:	$(PTY_C)
+	$(CC) $(CFLAGS) -c $(PTY_C)
 
 #################
 # aux files -- porting aids not used in all builds;

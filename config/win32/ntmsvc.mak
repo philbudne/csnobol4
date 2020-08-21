@@ -152,6 +152,10 @@ bindresvport.obj : $(SRCDIR)lib\auxil\bindresvport.c
 execute.obj : $(SRCDIR)lib\dummy\execute.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\dummy\execute.c
 
+# write win32 version using winpty!!!
+pty.obj : $(SRCDIR)lib\dummy\pty.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\dummy\pty.c
+
 ################ generic
 
 dynamic.obj : $(SRCDIR)lib\generic\dynamic.c

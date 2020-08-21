@@ -1,5 +1,7 @@
 $Id$
 
+Use Windows conpty for "||cmd"??
+
 snobol4.1, snobol4ext man pages: include CSNOBOL4 versions for changes
 
 Add SITBOL &ERRPARM variable for error info (undefined label or function)?

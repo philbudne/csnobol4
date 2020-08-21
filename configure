@@ -1155,7 +1155,6 @@ FORKPTY="int f; pid_t pid = forkpty(&f, 0, 0, 0);"
 if config/check "sys/types.h libutil.h" "$FORKPTY" -lutil; then
     # FreeBSD
     echo 'using forkpty() with libutil.h and -lutil' 1>&2
-    echo '#define HAVE_FORKPTY'		>> $CONFIG_H
     echo '#define HAVE_LIBUTIL_H'	>> $CONFIG_H
     echo "ADD_LDFLAGS([-lutil])"	>> $CONFIG_M4
     NEED_PATHS_H=1
@@ -1163,14 +1162,12 @@ if config/check "sys/types.h libutil.h" "$FORKPTY" -lutil; then
 elif config/check "sys/types.h util.h" "$FORKPTY"; then
     # OSX
     echo 'using forkpty() with util.h' 1>&2
-    echo '#define HAVE_FORKPTY'		>> $CONFIG_H
     echo '#define HAVE_UTIL_H'		>> $CONFIG_H
     NEED_PATHS_H=1
     HAVE_FORKPTY=1
 elif config/check "sys/types.h util.h" "$FORKPTY" -lutil; then
     # NetBSD, OpenBSD
     echo 'using forkpty() with util.h and -lutil' 1>&2
-    echo '#define HAVE_FORKPTY'		>> $CONFIG_H
     echo '#define HAVE_UTIL_H'		>> $CONFIG_H
     echo "ADD_LDFLAGS([-lutil])"	>> $CONFIG_M4
     NEED_PATHS_H=1
@@ -1178,7 +1175,6 @@ elif config/check "sys/types.h util.h" "$FORKPTY" -lutil; then
 elif config/check "sys/types.h pty.h" "$FORKPTY" -lutil; then
     # Linux
     echo 'using forkpty() with pty.h and -lutil' 1>&2
-    echo '#define HAVE_FORKPTY'		>> $CONFIG_H
     echo '#define HAVE_PTY_H'		>> $CONFIG_H
     echo "ADD_LDFLAGS([-lutil])"	>> $CONFIG_M4
     NEED_PATHS_H=1
@@ -1207,6 +1203,7 @@ if [ "$NEED_PATHS_H" ]; then
 fi
 
 if [ "x$HAVE_FORKPTY" = x1 ]; then
+    echo 'PTY_C=lib/bsd/pty.c'		>> $CONFIG_M4
     if config/check "unistd.h" "closefrom(3);"; then
 	# FreeBSD, OpenBSD
 	echo 'using closefrom() from unistd.h' 1>&2
