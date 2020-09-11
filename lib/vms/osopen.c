@@ -24,7 +24,7 @@ osdep_open(fname, mode, fpp)
 	*fpp = fopen("TT:", mode);
 	return TRUE;			/* matched */
     }
-    if (strcmp(fname, "/dev/nul") == 0) {
+    if (strcmp(fname, "/dev/null") == 0) {
 	*fpp = fopen("NL:", mode);	/* NLA0:? */
 	return TRUE;			/* matched */
     }

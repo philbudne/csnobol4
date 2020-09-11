@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+9/11/2020:
+	lib/io.c: expand mode storage, add comments
+	lib/vms/osopen.c: fix /dev/null
+
 8/20/2020:
 	new: lib/{bsd,dummy}/pty.c
 	include/lib.h: add forkexecpty, waitpty

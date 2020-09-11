@@ -1,6 +1,6 @@
 $Id$
 
-Use Windows conpty for "||cmd"??
+Seek to end at open in append mode for "tell"?
 
 snobol4.1, snobol4ext man pages: include CSNOBOL4 versions for changes
 
@@ -9,16 +9,19 @@ Add SITBOL &ERRPARM variable for error info (undefined label or function)?
 ***** show failed include statement
       like a syntax error?!!!
       Show filename for failed include???
-      Return in &ERRPARAM??
+
+Windows:
+	switch to winsock2 (getaddrinfo available)
+	Use Windows conpty for "||cmd"??
 
 Add snobol4load man page (replace load.txt)??
 	add mgetstr
 
 snobol4.1, snobol4ext man pages: include CSNOBOL4 versions for changes
 
-Allow SETEXIT trap (but not resume) except on 15,16,20,21
-
-Make err 39 (Cannot CONTINUE from FATAL error) non-fatal????!!!
+fatal error handling:
+	Allow SETEXIT trap (but not resume) except on 15,16,20,21
+	Make err 39 (Cannot CONTINUE from FATAL error) non-fatal????!!!
 
 branch to (F)RETURN in SETEXIT handler should clear XOCBSC????
 

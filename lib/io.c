@@ -463,7 +463,7 @@ io_fopen2( fp, base )
     char *base;
 {
     char *mp;
-    char mode[4];			/* x+b<NUL> */
+    char mode[8];			/* X+bxe<NUL> */
 
     fp->f = NULL;
 
@@ -489,10 +489,10 @@ io_fopen2( fp, base )
 #endif /* NO_FOPEN_B not defined */
 
     if (fp->flags & FL_EXCL)
-	*mp++ = 'x';			/* in FreeBSD 10, in glibc ?.? */
+	*mp++ = 'x';			/* C11: FreeBSD 10, glibc 2.0.94 */
 
     if (fp->flags & FL_CLOEXEC)
-	*mp++ = 'e';			/* in FreeBSD 10, in glibc 2.7 */
+	*mp++ = 'e';			/* FreeBSD 10, glibc 2.7 */
     *mp++ = '\0';
 
     /* handle magic filenames (have a table (prefix or full str)??) */
@@ -597,6 +597,8 @@ io_fopen2( fp, base )
 
 	if (fp->flags & FL_CLOEXEC)
 	    flags |= INET_CLOEXEC;
+
+	/* XXX set INET_REUSE unless FL_EXCL set? */
 
 	if (fp->fname[1] == 'u')
 	    fp->f = udp_open( host, service, -1, flags );
