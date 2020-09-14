@@ -47,6 +47,7 @@ typedef long off_t;
 #endif /* NEED_OFF_T not defined */
 
 struct io_ops {
+    const char *io_name;
     const struct io_ops *io_super;	/* superclass */
     ssize_t (*io_read) __P((struct io_obj *, char *, size_t));
     ssize_t (*io_write) __P((struct io_obj *, char *, size_t));
@@ -84,6 +85,7 @@ struct io_ops {
 
 #define MAKE_OPS(NAME, SUPER) \
 const struct io_ops NAME##_ops = { \
+    #NAME, \
     SUPER, \
     NAME##_read, \
     NAME##_write, \

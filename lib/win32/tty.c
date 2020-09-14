@@ -52,7 +52,7 @@ fisatty(f)
      * use GetCommState() to detect serial lines
      */
 
-    h = _get_osfhandle(fileno(f));
+    h = (HANDLE)_get_osfhandle(fileno(f));
     return GetConsoleMode(h, &flags);
 }
 

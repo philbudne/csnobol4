@@ -30,40 +30,54 @@
 
 #include <Windows.h>
 #include <process.h>
-#include <io.h>			/* _open_osfhandle */
 
-#include <stdio.h>
+#include <stdio.h>		/* NULL, size_t */
 #include <malloc.h>
-#include <fcntl.h>		/* O_RDONLY */
 
 #include "h.h"
 #include "io_obj.h"
-#include "stdio_obj.h"		/* stdio_wrap, flags2mode */
+#include "bufio_obj.h"
 
 #define DEFAULT_X_SIZE 24
 #define DEFAULT_Y_SIZE 80
 
+#define CMD "cmd.exe"
+#define CMD_OPT " /c "
+
 struct ptyio_obj {
-    struct stdio_obj sio;
+    struct bufio_obj bio;
 
     // no bi-directional unnamed pipes
     // (AF_UNIX, but no socketpair)
-    // output (to child) is done without stdio
-    HANDLE writeh;
+    // so no hope of using just stdio.
+    HANDLE readh, writeh;
 
     // pseudoconsole
     HPCON hpc;
+
+    int eof;
 };
 
-// see above: no bidirectional pipes
+static ssize_t
+ptyio_read_raw(struct io_obj *iop, char *buf, size_t len) {
+    struct ptyio_obj *piop = (struct ptyio_obj *)iop;
+    DWORD sent;
+
+    if (!ReadFile(piop->writeh, buf, len, &sent, NULL)) {
+	piop->eof = 1;
+	return -1;
+    }
+    return sent;
+}
+
 static ssize_t
 ptyio_write(struct io_obj *iop, char *buf, size_t len) {
     struct ptyio_obj *piop = (struct ptyio_obj *)iop;
+    DWORD sent;
 
     if (len == 0)
 	return 0;
 
-    DWORD sent;
     if (!WriteFile(piop->writeh, buf, len, &sent, NULL))
 	return -1;
     return sent;
@@ -71,10 +85,8 @@ ptyio_write(struct io_obj *iop, char *buf, size_t len) {
 
 static int
 ptyio_flush(struct io_obj *iop) {
-    struct stdio_obj *siop = (struct stdio_obj *)iop;
-
     // output is done direct w/ WriteFile
-    return 0;
+    return TRUE;
 }
 
 int
@@ -95,28 +107,21 @@ ptyio_close(struct io_obj *iop) {
     puts("ClosePseudoConsole");
     ClosePseudoConsole(piop->hpc);
 
-    puts("close writeh");
-    CloseHandle(piop->writeh);
+    puts("close write");
+    CloseHandle(piop->write);
 
     /* try draining: */
     char buf[1024];
 
     puts("before loop");
     int cc;
-    while ((cc = fread(buf, 1, sizeof(buf), piop->sio.f)) > 0)
+    while ((cc = ptyio_read_raw(iop, buf, sizeof(buf))) > 0)
 	printf("read %d\n", cc);
-    puts("fclose");
-    fclose(piop->sio.f);
+    puts("close read");
+    CloseHandle(piop->read);
 
     return 1;				/* OK */
 }
-
-#define ptyio_read NULL
-#define ptyio_seeko NULL
-#define ptyio_tello NULL
-#define ptyio_eof NULL
-#define ptyio_clearerr NULL
-#define ptyio_read_raw NULL
 
 MAKE_OPS(ptyio, &stdio_ops);
 
@@ -138,7 +143,8 @@ PrepareStartupInformation(HPCON hpc, STARTUPINFOEX* psi) {
 	return -1;
 
     // Initialize the list memory location
-    if (!InitializeProcThreadAttributeList(psi->lpAttributeList, 1, 0, &bytesRequired)) {
+    if (!InitializeProcThreadAttributeList(psi->lpAttributeList,
+					   1, 0, &bytesRequired)) {
 	free(psi->lpAttributeList);
 	return -1;
     }
@@ -168,9 +174,16 @@ ptyio_open(path, flags, dir)
     // so executable more universal??
     COORD size = { DEFAULT_X_SIZE, DEFAULT_Y_SIZE };
 
+    // allocate ptyio_obj early to avoid late disappointment
+    struct ptyio_obj *piop = (struct ptyio_obj *)
+	io_alloc(sizeof(*piop), &ptyio_ops, flags);
+    if (!piop)
+	return NULL;
+
 #if 0 // from EchoCon.cpp:
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    // Enable Console VT Processing
+
+    // Enable Console VT Processing (so child output interpreted correctly?)
     DWORD consoleMode;
     GetConsoleMode(hConsole, &consoleMode);
     (void) SetConsoleMode(hConsole, consoleMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING)
@@ -181,35 +194,42 @@ ptyio_open(path, flags, dir)
 	size.X = csbi.srWindow.Right - csbi.srWindow.Left + 1;
 	size.Y = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
     }
-    // XXX close hConsole?
+    CloseHandle(hConsole);		/* added by PLB */
 #endif
 	    
     // https://docs.microsoft.com/en-us/windows/console/creating-a-pseudoconsole-session
 
     // Create communication channels
-    // "input" and "output" from child perspective
+    // "input" and "output" directions from child perspective
 
     // Child side:
-    // - Closed after CreateProcess of child application with pseudoconsole object.
+    // - Closed after CreateProcess of child application with PC object.
     HANDLE inputReadSide, outputWriteSide; 
 
     // Parent side:
-    // - Held and used for communication with the child through the pseudoconsole. 
+    // - Held and used for communication with the child through the PC
     HANDLE outputReadSide, inputWriteSide; 
 
     if (!CreatePipe(&inputReadSide, &inputWriteSide, NULL, 0))
         return NULL;
+    printf("input pipes %p %p\n", inputReadSide,, inputWriteSide);
 
     if (!CreatePipe(&outputReadSide, &outputWriteSide, NULL, 0))
 	goto close_input_pipes;
+    printf("output pipes %p %p\n", outputReadSide,, outputWriteSide);
 
     HPCON hPC;
-    if (CreatePseudoConsole(size, inputReadSide, outputWriteSide, 0, &hPC) < 0) {
+    HRESULT hr;
+    hr = CreatePseudoConsole(size, inputReadSide, outputWriteSide, 0, &hPC);
+    printf("CreatePseudoConsole %ld\n", hr);
+    if (hr != 0) {
+	printf("CreatePseudoConsole failed %#lx\n", hr);
 	CloseHandle(outputReadSide);
 	CloseHandle(outputWriteSide);
     close_input_pipes:
 	CloseHandle(inputReadSide);
 	CloseHandle(inputWriteSide);
+	free(piop);
 	return NULL;
     }
 
@@ -217,52 +237,33 @@ ptyio_open(path, flags, dir)
     CloseHandle(inputReadSide);
     CloseHandle(outputWriteSide);
 
-    // wrap the child output pipe in a stdio stream for line buffering
-    // XXX _O_[W]TEXT?? based on flags???
-    int fd = _open_osfhandle((long)outputReadSide, _O_RDONLY);
-    if (fd < 0) {
-	ClosePseudoConsole(hPC);
-	CloseHandle(outputReadSide);
-	CloseHandle(inputWriteSide);
-	return NULL;
-    }
-
-    // from here down, outputReadSide is owned by fd: call _close
-    char mode[MAXMODE];
-    flags2mode(flags, mode, 'r');
-    FILE *f = fdopen(fd, mode);
-    if (!f) {
-	_close(fd);
-	CloseHandle(inputWriteSide);
-	ClosePseudoConsole(hPC);
-	return NULL;
-    }
-
-    // allocate ptyio_obj early to avoid late disappointment
-    struct ptyio_obj *piop = (struct ptyio_obj *)
-	stdio_wrap(path, f, sizeof(*piop), &ptyio_ops, flags);
-    if (!piop)
-	goto error1;
-
     piop->writeh = inputWriteSide;
+    piop->readh  = outputReadSide;
+
+    int cmd_line_size = sizeof(CMD CMD_OPT) + strlen(path+2);
+    char *cmd_line = malloc(cmd_line_size);
+    if (!cmd_line)
+	goto close_parent_pipes_and_console;
+    snprintf(cmd_line, cmd_line_size "%s %s", CMD CMD_OPT, path+2);
 
     STARTUPINFOEXA si;	// STARTUPINFOA StartupInfo
 			// LPPROC_THREAD_ATTRIBUTE_LIST lpAttributeList
-    if (PrepareStartupInformation(hPC, &si) < 0)
-	goto error2;
+    if (PrepareStartupInformation(hPC, &si) < 0) {
+	puts("PrepareStartupInformation failed");
+	goto free_cmd_line;
+    }
 
     // here down from SetUpPseudoConsole
     // https://docs.microsoft.com/en-us/windows/console/creating-a-pseudoconsole-session
 
-    // never used!!
+    // never used!! handles must be released!!
     // HANDLE hProcess, hThread
     // DWORD dwProcessId, dwThreadId
     PROCESS_INFORMATION pi;
+    ZeroMemory(&pi, sizeof(pi));
 
-    // "ASCII" version does not require mutable command line?
-    // process information never used: pass NULL?
-    if (!CreateProcessA(NULL,	// app name
-                        path+2,	// cmd line
+    if (!CreateProcessA(CMD,	// app name
+                        command_line,
                         NULL,	// process attrs
                         NULL,	// thread attrs
                         FALSE,	// inherit handles
@@ -271,24 +272,29 @@ ptyio_open(path, flags, dir)
                         NULL,	// use current dir
                         &si.StartupInfo, // point to first (non-extended) member
                         &pi)) {	// process information
-    error2:
+	printf("CreateProcessA: %#lx\n", GetLastError());
 	DeleteProcThreadAttributeList(si.lpAttributeList);
         free(si.lpAttributeList);
-    error1:
-	if (piop)
-	    free(piop);
-	fclose(f);
+    free_cmd_line:
+	puts("@free_cmd_line");
+	free(cmd_line);
+    close_parent_pipes_and_console:
 	ClosePseudoConsole(hPC);
 	CloseHandle(inputWriteSide);
+	CloseHandle(outputReadSide);
+	free(piop);
 	return NULL;
     }
+    puts("CreateProcessA OK!");
+
+    free(command_line);
 
     // safe now?? else locate in piop until close.
     // never used, must be freed:
     CloseHandle(pi.hThread);
-    CloseHandle(pi.hProcess);
+    CloseHandle(pi.hProcess);		/* can use with _cwait */
     DeleteProcThreadAttributeList(si.lpAttributeList);
     free(si.lpAttributeList);
 
-    return &piop->sio.io;
+    return &piop->bio.io;
 }

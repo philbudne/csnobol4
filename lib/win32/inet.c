@@ -47,10 +47,9 @@ static int wsock_init;
 #define VMINOR 1
 
 struct inetio_obj {
-    struct bufio_obj bio;
+    struct bufio_obj bio;		/* line buffered input */
 
     SOCKET s;
-    int eof;
 };
 
 static SOCKET
@@ -196,18 +195,15 @@ inet_cleanup() {
 }
 
 /****************************************************************
- * XXX move to inet_io.c (use with both inet.c and inet6.c)
+ * XXX move to inetio_obj.c (use with both inet.c and inet6.c)??
+ * maybe winsockio_obj.c: include WSA{Start,Clean}up)?
+ *	get desired WS version from a global??
  */
-
-#define inetio_read NULL		/* use bufio */
 
 static ssize_t
 inetio_read_raw(struct io_obj *iop, char *buf, size_t len) {
     struct inetio_obj *iiop = (struct inetio_obj *) iop;
-    int ret = recv(iiop->s, buf, len, 0);
-    if (ret <= 0)
-	iiop->eof = 1;
-    return ret;
+    return recv(iiop->s, buf, len, 0);
 }
 
 static ssize_t
@@ -217,33 +213,9 @@ inetio_write(struct io_obj *iop, char *buf, size_t len) {
 }
 
 static int
-inetio_seeko(struct io_obj *iop, off_t off, int whence) {
-    (void) iop;
-    return FALSE;
-}
-
-static off_t
-inetio_tello(struct io_obj *iop) {
-    (void) iop;
-    return -1;
-}
-
-static int
 inetio_flush(struct io_obj *iop) {
     (void) iop;
     return TRUE;
-}
-
-static int
-inetio_eof(struct io_obj *iop) {
-    struct inetio_obj *iiop = (struct inetio_obj *) iop;
-    return iiop->eof;
-}
-
-static void
-inetio_clearerr(struct io_obj *iop) {
-    struct inetio_obj *iiop = (struct inetio_obj *) iop;
-    iiop->eof = 0;			/* !! */
 }
 
 static int
@@ -259,6 +231,12 @@ inetio_close(struct io_obj *iop) {
      */
     return closesocket(iiop->s) == 0;
 } /* inet_close */
+
+#define bufio_read NULL			/* use bufio */
+#define bufio_seeko NULL		/* use bufio */
+#define bufio_tello NULL		/* use bufio */
+#define bufio_eof NULL			/* use bufio */
+#define bufio_clearerr NULL		/* use bufio */
 
 MAKE_OPS(inetio, &bufio_ops);
 
@@ -299,4 +277,3 @@ inetio_open(char *path, int flags, int dir) {
 
     return &iiop->bio.io;
 } /* inet_open */
-

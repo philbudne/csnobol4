@@ -247,18 +247,23 @@ ioo_clearerr(struct io_obj *iop) {
 static int
 ioo_close(struct io_obj *iop) {
     const struct io_ops *op;
-    int ret = FALSE;
+    int ret = TRUE;
+    int called = 0;
 
     if (!iop)
 	return FALSE;
 
+    /* NOTE! special case! all layers called for cleanup */
     for (op = iop->ops; op; op = op->io_super) {
 	if (op->io_close) {
-	    ret = (op->io_close)(iop);
-	    break;
+	    called++;
+	    if (!(op->io_close)(iop))
+		ret = FALSE;
 	}
     }
     free(iop);
+    if (called == 0)
+	return FALSE;			/* no methods found! abort?? */
     return ret;
 }
 
