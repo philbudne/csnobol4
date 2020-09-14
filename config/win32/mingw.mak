@@ -156,13 +156,17 @@ getopt.o: $(SRCDIR)lib/auxil/getopt.c
 bindresvport.o: $(SRCDIR)lib/auxil/bindresvport.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/auxil/bindresvport.c
 
-bufio_obj.o: $(SRCDIR)lib/bufio_obj.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib/bufio_obj.c
+bufio_obj.o: $(SRCDIR)lib/auxil/bufio_obj.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/auxil/bufio_obj.c
 
 ################ dummy
 
 execute.o: $(SRCDIR)lib/dummy/execute.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/dummy/execute.c
+
+# dummy version for now!
+pty.o: $(SRCDIR)lib/dummy/pty.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/dummy/pty.c
 
 ################ generic
 
@@ -188,9 +192,6 @@ mstime.o: $(SRCDIR)lib/win32/mstime.c
 
 osopen.o: $(SRCDIR)lib/win32/osopen.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/win32/osopen.c
-
-pty.o: $(SRCDIR)lib/win32/pty.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib/win32/pty.c
 
 sys.o:	$(SRCDIR)lib/win32/sys.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/win32/sys.c

@@ -172,7 +172,7 @@ intspc.obj : $(SRCDIR)lib\generic\intspc.c
 
 ################ auxil
 
-bufio_obj.obj: $(SRCDIR)lib\auxil\bufio_obj.c
+bufio_obj.obj : $(SRCDIR)lib\auxil\bufio_obj.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\auxil\bufio_obj.c
 
 ################ win32!
