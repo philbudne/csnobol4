@@ -3,6 +3,9 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/13/2020:
+	MSVC doesn't like io.h, rename to io_obj.h
+
+9/13/2020:
 	Another hack attack (or three):
 	lib/init.c: Implement -U option, SNOBOL4UNBUFFERED
 	doc/snobol4cmd.1.pea: Document -U SNOBOL4UNBUFFERED

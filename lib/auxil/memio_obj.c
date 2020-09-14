@@ -14,7 +14,7 @@
 #include <string.h>			/* memcpy */
 
 #include "h.h"				/* TRUE */
-#include "io.h"
+#include "io_obj.h"
 
 struct memio_obj {
     struct io_obj io;

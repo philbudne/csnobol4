@@ -36,7 +36,7 @@ void free();
 #include "h.h"				/* __P */
 #include "snotypes.h"
 
-#include "io.h"				/* struct io_obj, io_ops, MAKEOPS */
+#include "io_obj.h"				/* struct io_obj, io_ops, MAKEOPS */
 #include "lib.h"			/* tty_mode */
 #include "stdio_obj.h"			/* MAXMODE, our own prototypes! */
 

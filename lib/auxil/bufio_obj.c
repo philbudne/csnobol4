@@ -18,7 +18,7 @@ extern void *malloc();
 #endif /* HAVE_STDLIB_H not defined */
 
 #include "h.h"				/* TRUE */
-#include "io.h"
+#include "io_obj.h"
 #include "bufio_obj.h"
 
 static ssize_t

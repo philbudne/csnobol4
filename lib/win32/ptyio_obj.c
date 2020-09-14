@@ -36,7 +36,7 @@
 #include <fcntl.h>		/* O_RDONLY */
 
 #include "h.h"
-#include "io.h"
+#include "io_obj.h"
 #include "stdio_obj.h"		/* stdio_wrap, flags2mode */
 
 #define DEFAULT_X_SIZE 24

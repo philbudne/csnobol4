@@ -7,7 +7,7 @@
 
 #include <stdio.h>
 
-#include "io.h"
+#include "io_obj.h"
 
 struct io_obj *
 ptyio_open(char *path, int flags, int dir) {

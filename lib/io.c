@@ -55,7 +55,7 @@ extern char *getenv();
 #include "libret.h"			/* IO_xxx, INC_xxx */
 #include "lib.h"
 #include "str.h"
-#include "io.h"				/* io_obj, FL_xxx */
+#include "io_obj.h"				/* io_obj, FL_xxx */
 #include "stdio_obj.h"			/* stdio_{wrap,obj} */
 
 /* generated */

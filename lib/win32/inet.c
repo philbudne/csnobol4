@@ -15,7 +15,7 @@
 #include "snotypes.h"			/* needed on VAX/VMS for macros.h */
 #include "lib.h"
 #include "str.h"			/* bcopy */
-#include "io.h"
+#include "io_obj.h"
 #include "bufio_obj.h"
 
 #ifdef NO_STATIC_VARS
