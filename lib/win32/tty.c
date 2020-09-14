@@ -12,7 +12,7 @@
 
 #include <stdio.h>
 #include <windows.h>
-#include <io.h>
+#include <io.h>		/* _get_osfhandle */
 #include <malloc.h>	/* available (must have!) in VS 2019 Win64 */
 
 #include "h.h"
@@ -52,7 +52,7 @@ fisatty(f)
      * use GetCommState() to detect serial lines
      */
 
-    h = (HANDLE)_get_osfhandle(fileno(f));
+    h = _get_osfhandle(fileno(f));
     return GetConsoleMode(h, &flags);
 }
 

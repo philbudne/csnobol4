@@ -981,7 +981,7 @@ io_read( dp, sp )			/* STREAD */
 	 *
 	 * XXX add ISTTY(fp)?  Want "ISCONSOLE" (ctty)??
 	 */
-	if (++err_count == D_A(UINTCL))
+	if (++err_count == D_A(UINTCL)) {
 	    ioo_clearerr(iop);
 	    continue;			/* try again */
 	}

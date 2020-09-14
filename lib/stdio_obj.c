@@ -106,11 +106,11 @@ stdio_read(struct io_obj *iop, char *buf, size_t len) {
 
 #ifdef TTY_READ_RAW
 	if (ISTTY(iop))
-	    return tty_read(f, cp, recl,
+	    return tty_read(siop->f, buf, len,
 			   TRUE,	/* "raw" */
 			   (iop->flags & FL_NOECHO) != 0, /* "noecho" */
 			   FALSE,	/* "keepeol" */
-			   iop->fname);	/* XXX YIKES */
+			   iop->fname);
 #endif /* TTY_READ_RAW defined */
 
 	return fread(buf, 1, len, siop->f);
@@ -122,11 +122,11 @@ stdio_read(struct io_obj *iop, char *buf, size_t len) {
 
 #ifdef TTY_READ_COOKED			/* used on VMS */
     if (ISTTY(iop))
-	return tty_read(f, cp, recl,
+	return tty_read(siop->f, buf, len,
 			FALSE,	/* "raw" */
 			(iop->flags & FL_NOECHO) != 0, /* "noecho" */
 			(iop->flags & FL_EOL) == 0, /* "keepeol" */
-			iop->fname);		   /* XXX YIKES!!! */
+			iop->fname);
 #endif /* TTY_READ_COOKED defined */
 
     /*

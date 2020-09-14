@@ -30,6 +30,7 @@
 
 #include <Windows.h>
 #include <process.h>
+#include <io.h>			/* _open_osfhandle */
 
 #include <stdio.h>
 #include <malloc.h>
@@ -218,7 +219,7 @@ ptyio_open(path, flags, dir)
 
     // wrap the child output pipe in a stdio stream for line buffering
     // XXX _O_[W]TEXT?? based on flags???
-    int fd = _open_osfhandle(outputReadSide, _O_RDONLY);
+    int fd = _open_osfhandle((long)outputReadSide, _O_RDONLY);
     if (fd < 0) {
 	ClosePseudoConsole(hPC);
 	CloseHandle(outputReadSide);
@@ -239,7 +240,7 @@ ptyio_open(path, flags, dir)
 
     // allocate ptyio_obj early to avoid late disappointment
     struct ptyio_obj *piop = (struct ptyio_obj *)
-	stdio_wrap(f, sizeof(*piop), &ptyio_ops, flags);
+	stdio_wrap(path, f, sizeof(*piop), &ptyio_ops, flags);
     if (!piop)
 	goto error1;
 

@@ -53,7 +53,7 @@ struct inetio_obj {
     int eof;
 };
 
-static int
+static SOCKET
 inet_socket( host, service, port, flags, type )
     char *host, *service;
     int type;
@@ -196,10 +196,19 @@ inet_cleanup() {
 }
 
 /****************************************************************
- * inetio_obj methods
+ * XXX move to inet_io.c (use with both inet.c and inet6.c)
  */
 
 #define inetio_read NULL		/* use bufio */
+
+static ssize_t
+inetio_read_raw(struct io_obj *iop, char *buf, size_t len) {
+    struct inetio_obj *iiop = (struct inetio_obj *) iop;
+    int ret = recv(iiop->s, buf, len, 0);
+    if (ret <= 0)
+	iiop->eof = 1;
+    return ret;
+}
 
 static ssize_t
 inetio_write(struct io_obj *iop, char *buf, size_t len) {
@@ -207,43 +216,20 @@ inetio_write(struct io_obj *iop, char *buf, size_t len) {
     return send(iiop->s, buf, len, 0);
 }
 
-static ssize_t
-inet_read_raw(struct io_obj *iop, char *buf, size_t len) {
-    struct inetio_obj *iiop = (struct inetio_obj *) iop;
-    int ret = recv(iiop->s, cp, recl, 0);
-    if (ret <= 0)
-	iiop->eof = 1;
-    return ret;
+static int
+inetio_seeko(struct io_obj *iop, off_t off, int whence) {
+    (void) iop;
+    return FALSE;
 }
 
-static int
-inet_close(struct io_obj *iop) {
-    struct inetio_obj *iiop = (struct inetio_obj *) iop;
-
-    /* ensure all data has been sent? does not block?? */
-    shutdown(iiop->s, SD_BOTH);
-
-    /*
-     * need to wait for an FD_CLOSE event??
-     * then recv() until socket drained?
-     */
-    return closesocket(iiop->s) == 0;
-} /* inet_close */
-
 static off_t
-memio_tello(struct io_obj *iop) {
+inetio_tello(struct io_obj *iop) {
     (void) iop;
     return -1;
 }
 
 static int
-memio_seeko(struct io_obj *iop, off_t off, int whence) {
-    (void) iop;
-    return FALSE;
-}
-
-static int
-memio_flush(struct io_obj *iop) {
+inetio_flush(struct io_obj *iop) {
     (void) iop;
     return TRUE;
 }
@@ -260,6 +246,20 @@ inetio_clearerr(struct io_obj *iop) {
     iiop->eof = 0;			/* !! */
 }
 
+static int
+inetio_close(struct io_obj *iop) {
+    struct inetio_obj *iiop = (struct inetio_obj *) iop;
+
+    /* ensure all data has been sent? does not block?? */
+    shutdown(iiop->s, SD_BOTH);
+
+    /*
+     * need to wait for an FD_CLOSE event??
+     * then recv() until socket drained?
+     */
+    return closesocket(iiop->s) == 0;
+} /* inet_close */
+
 MAKE_OPS(inetio, &bufio_ops);
 
 struct io_obj *
@@ -269,8 +269,8 @@ inetio_open(char *path, int flags, int dir) {
     int inet_flags;
     SOCKET s;
 
-    if (strncmp(path, "/tcp/, 5) != 0 &&
-	strncmp(path, "/udp/, 5) != 0)
+    if (strncmp(path, "/tcp/", 5) != 0 &&
+	strncmp(path, "/udp/", 5) != 0)
 	return NOMATCH;
 
 

@@ -5,8 +5,13 @@
  * 2020-08-20
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <stdio.h>
 
+#include "h.h"				/* TRUE, __P */
 #include "io_obj.h"
 
 struct io_obj *

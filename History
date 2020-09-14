@@ -3,6 +3,9 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/13/2020:
+	Windows compilation fixes.  inetio seems to be working!
+
+9/13/2020:
 	MSVC doesn't like io.h, rename to io_obj.h
 
 9/13/2020:

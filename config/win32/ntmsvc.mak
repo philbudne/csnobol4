@@ -28,17 +28,17 @@ CFLAGS=-c $(OPT) $(COMMON_CFLAGS) $(INET_DEFS) -I$(SRCDIR)config\win32 -I$(SRCDI
 SNOBOL4_C_CFLAGS=/wd4715
 
 OBJ=	isnobol4.obj data.obj data_init.obj main.obj syn.obj \
-	bal.obj break.obj date.obj dump.obj endex.obj hash.obj \
+	bal.obj break.obj bufio_obj.obj date.obj dump.obj endex.obj hash.obj \
 	intspc.obj io.obj lexcmp.obj ordvst.obj pair.obj \
-	pat.obj pml.obj realst.obj replace.obj str.obj stream.obj \
+	pat.obj pml.obj pty.obj realst.obj replace.obj str.obj stream.obj \
 	top.obj tree.obj dynamic.obj expops.obj \
 	getopt.obj init.obj load.obj loadx.obj mstime.obj \
 	atan.obj chop.obj cos.obj \
 	delete.obj environ.obj exit.obj file.obj getstring.obj handle.obj \
 	host.obj log.obj ord.obj rename.obj retstring.obj \
 	sin.obj spcint.obj spreal.obj sqrt.obj sset.obj tan.obj \
-	osopen.obj sleep.obj sys.obj tty.obj inet.obj bindresvport.obj \
-	execute.obj exists.obj term.obj findunit.obj exp.obj
+	osopen.obj stdio_obj.obj sleep.obj sys.obj tty.obj inet.obj \
+	bindresvport.obj execute.obj exists.obj term.obj findunit.obj exp.obj
 
 all:	cpuid.exe snobol4.exe build_modules docs
 
@@ -119,6 +119,9 @@ realst.obj : $(SRCDIR)lib\realst.c
 replace.obj : $(SRCDIR)lib\replace.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\replace.c
 
+stdio_obj.obj : $(SRCDIR)lib\stdio_obj.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\stdio_obj.c
+
 str.obj : $(SRCDIR)lib\str.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\str.c
 
@@ -153,8 +156,8 @@ execute.obj : $(SRCDIR)lib\dummy\execute.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\dummy\execute.c
 
 # write win32 version using winpty!!!
-pty.obj : $(SRCDIR)lib\dummy\pty.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib\dummy\pty.c
+#pty.obj : $(SRCDIR)lib\dummy\pty.c
+#	$(CC) $(CFLAGS) $(SRCDIR)lib\dummy\pty.c
 
 ################ generic
 
@@ -166,6 +169,11 @@ expops.obj : $(SRCDIR)lib\generic\expops.c
 
 intspc.obj : $(SRCDIR)lib\generic\intspc.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\generic\intspc.c
+
+################ auxil
+
+bufio_obj.obj: $(SRCDIR)lib\auxil\bufio_obj.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\auxil\bufio_obj.c
 
 ################ win32!
 
@@ -180,6 +188,9 @@ mstime.obj : $(SRCDIR)lib\win32\mstime.c
 
 osopen.obj : $(SRCDIR)lib\win32\osopen.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\osopen.c
+
+pty.obj : $(SRCDIR)lib\win32\pty.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\pty.c
 
 sleep.obj : $(SRCDIR)lib\win32\sleep.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\sleep.c

@@ -174,8 +174,10 @@ void osname __P((char *));
 FILE * term_input __P((void));
 
 /* from inet(6).c */
+#ifndef INET_IO
 int tcp_socket __P((char *, char *, int, int));
 int udp_socket __P((char *, char *, int, int));
+#endif
 void inet_cleanup __P((void));
 
 #define INET_PRIV	01
