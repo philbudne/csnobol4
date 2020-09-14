@@ -63,6 +63,7 @@ extern const char build_date[];		/* from build.c */
 /* global for access by io.c; */
 int rflag;
 int lflag;
+int unbuffer_all;
 
 /* global for access by host.c; */
 size_t ndynamic;
@@ -85,7 +86,7 @@ static int xflag;
 /* from getopt() */
 extern int optind;
 extern char *optarg;
-extern int getopt();
+extern int getopt();			/* in unistd.h now? */
 
 static void
 p( flag, str )
@@ -159,7 +160,7 @@ usage( jname, justversion )
     fprintf(stderr, "\tsize of pattern match stack in descriptors (default: %s)\n", showk(PSSIZE));
     fprintf(stderr, "-S DESCRS[km]\n");
     fprintf(stderr, "\tsize of interpreter stack in descriptors (default: %s)\n", showk(ISSIZE));
-
+    fprintf(stderr, "-U\tmake all stdio I/O unbuffered\n");
     fprintf(stderr, "\n");
     fprintf(stderr, "For memory region sizes a suffix of 'k' (1024) and 'm' (1024*1024)\n");
     fprintf(stderr, "can be used. A descriptor takes up %d bytes.\n", (int)DESCR );
@@ -378,7 +379,7 @@ init_args( ac, av )
      *		added, but it better not want an argument!)
      */
 
-    while ((c = getopt(argc, argv, "+bd:fghkl:nprsu:vxzBI:L:MNP:S:")) != -1) {
+    while ((c = getopt(argc, argv, "+bd:fghkl:nprsu:vxzBI:L:MNP:S:U")) != -1) {
 	switch (c) {
 	case 'b':
 	    D_A(BANRCL) = 0;		/* disable banner output */
@@ -501,6 +502,10 @@ init_args( ac, av )
 		errs++;
 	    break;
 
+	case 'U':			/* make all stdio I/O unbuffered */
+	    unbuffer_all = 1;
+	    break;
+
 	default:
 	    errs++;
 	}
@@ -510,6 +515,12 @@ init_args( ac, av )
 
     /* XXX option to disable? */
     io_preload();
+
+    if (!unbuffer_all) {
+	char *u = getenv("SNOBOL4UNBUFFERED"); /* like PYTHONUNBUFFERED */
+	if (u || *u)
+	    unbuffer_all = 1;
+    }
 
     /*
      * append first file (or all additional args until "--" seen

@@ -69,6 +69,8 @@ void free();
 
 #define ISTTY(IOP) ((IOP)->flags & FL_TTY)
 
+extern int unbuffer_all;
+
 /****************************************************************
  * methods
  */
@@ -309,7 +311,7 @@ flags2mode(int flags, char *mode, char dir) {
  * this is the one only place for creating an io object from a stdio stream
  */
 struct io_obj *
-stdio_wrap(FILE *f, size_t size, const struct io_ops *ops, int flags) {
+stdio_wrap(char *path, FILE *f, size_t size, const struct io_ops *ops, int flags) {
     struct stdio_obj *siop;
 
     if (!ops)
@@ -323,12 +325,11 @@ stdio_wrap(FILE *f, size_t size, const struct io_ops *ops, int flags) {
 
     siop = (struct stdio_obj *) io_alloc(size, ops, flags);
 
-    /*
-     * XXX have a SNOBOL4UNBUFFERED env var (like PYTHONUNBUFFERED)
-     * (and/or a command line option)
-     * and if non-null, turn off buffering with
-     * setvbuf(*fpp, (char *)NULL, _IONBF, 0)??
-     */
+    /* Windoze doesn't have line buffer, so go Full Monty */
+    if (unbuffer_all)
+	setvbuf(f, (char *)NULL, _IONBF, 0);
+
+    siop->io.fname = path;		/* borrowed from fp */
     siop->f = f;
     siop->last = LAST_NONE;
     return &siop->io;
@@ -404,6 +405,7 @@ stdio_open(path, flags, dir)
 	     strncmp(path, "/udp/", 5) == 0) {
 	char *fn2, *host, *service;
 	int inet_flags;
+	int s;
 
 	fn2 = strdup(path+5);		/* make writable copy */
 	if (inet_parse(fn2, &host, &service, &inet_flags) < 0) {
@@ -412,21 +414,25 @@ stdio_open(path, flags, dir)
 	}
 
 	if (path[1] == 'u')
-	    f = udp_open( host, service, -1, inet_flags );
+	    s = udp_socket( host, service, -1, inet_flags );
 	else
-	    f = tcp_open( host, service, -1, inet_flags );
+	    s = tcp_socket( host, service, -1, inet_flags );
 
 	free(fn2);			/* free strdup'ed memory */
 
-	// XXX do fdopen/wrapfd here???
+	/* XXX want stdio_wrapfd */
+	f = fdopen(s, mode);
+	if (!f)
+	    close(s);
     }
-#endif
+#endif /* INET_IO not defined */
     else
-	f = fopen(path, mode);
+	f = fopen(path, mode);		/* local file! */
+
     if (!f)
 	return NULL;
 
-    return stdio_wrap(f, 0, NULL, flags);
+    return stdio_wrap(path, f, 0, NULL, flags);
 }
 
 /****************************************************************
@@ -464,5 +470,5 @@ pipeio_open(char *path, int flags, int dir) {
     if (!p)
 	return NULL;
 
-    return stdio_wrap(p, 0, &pipeio_ops, flags);
+    return stdio_wrap(path, p, 0, &pipeio_ops, flags);
 }

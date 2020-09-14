@@ -117,18 +117,20 @@ struct iovars {
     struct file *includes;		/* list of included files */
     int finger;				/* for io_findunit */
     struct file *lib_dirs;		/* list of include directories */
-    struct file *lib_dir_last;	/* tail of include directory list */
-
+    struct file *lib_dir_last;	  /* tail of include directory list */
 };
 
 /* private, r/o array of pointers to io_open functions returning pointers to io_obj */
 static struct io_obj *(*const io_open_funcs[]) __P((char *, int, int)) = {
-    ptyio_open,				/* dummy ptyio_open available */
-    pipeio_open,			/* dummy popen available */
 #ifdef OSDEPIO_OBJ
     osdepio_open,			/* local I/O that can't be wrapped */
 #endif
-    stdio_open				/* never returns NOMATCH!! */
+    ptyio_open,				/* dummy ptyio_open available */
+    pipeio_open,			/* dummy popen available */
+#ifdef INET_IO
+    inetio_open,			/* winsockets */
+#endif
+    stdio_open				/* LAST! Never returns NOMATCH!! */
 };
 #define N_OPEN_FUNCS (sizeof(io_open_funcs)/sizeof(io_open_funcs[0]))
 
@@ -541,9 +543,7 @@ io_mkfile2( unit, f, fname, flags )
     fp = io_newfile(fname);
     if (fp == NULL)
 	return FALSE;
-    fp->iop = stdio_wrap(f, 0, NULL, flags);
-    if (fp->iop)
-	fp->iop->fname = fp->fname;	/* borrow pointer */
+    fp->iop = stdio_wrap(fp->fname, f, 0, NULL, flags);
     fp->flags |= flags;
     io_setfile(unit, fp);
     return TRUE;

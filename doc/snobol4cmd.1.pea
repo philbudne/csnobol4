@@ -119,6 +119,12 @@ space is for tracing deeply nested DATA() structures during garbage
 collection.  The B<-h> option displays the default interpreter stack
 size.
 
+=item B<-U>
+Disable stdio buffering.
+Also set if SNOBOL4UNBUFFERED environment variable is set
+to a non-null value.  Will increase runtime, but improve
+behavior when sucking on pipes (use ptys!).
+
 =item B<-->
 Terminates processing items as options. Any remaining strings are
 treated as files or user parameters (see the B<HOST()> function).

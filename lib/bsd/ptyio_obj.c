@@ -98,7 +98,7 @@ ptyio_open(char *path, int flags, int dir) {
 	    return NULL;
 	}
 	piop = (struct ptyio_obj *)
-	    stdio_wrap(f, sizeof(*piop), &ptyio_ops, flags);
+	    stdio_wrap(path, f, sizeof(*piop), &ptyio_ops, flags);
 	if (!piop) {
 	    fclose(f);
 	    /* XXX kill child & wait for it? */

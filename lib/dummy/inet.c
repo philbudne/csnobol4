@@ -9,21 +9,21 @@
 #include <stdio.h>
 #include "h.h"				/* TRUE */
 
-FILE *
-tcp_open( host, service, port, priv )
+int
+tcp_socket( host, service, port, priv )
     char *host, *service;
     int port, priv;
 {
-    return NULL;
+    return -1;
 }
 
 
 FILE *
-udp_open( host, service, port, priv )
+udp_socket( host, service, port, priv )
     char *host, *service;
     int port, priv;
 {
-    return NULL;
+    return -1;
 }
 
 void

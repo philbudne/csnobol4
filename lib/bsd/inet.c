@@ -1,6 +1,6 @@
 /* $Id$ */
 
-/* Berkeley sockets inet interface */
+/* Berkeley sockets inet interface (IPv4 only) */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -46,7 +46,7 @@
 #endif /* INADDR_NONE not defined */
 
 static int
-inet_socket( host, service, port, flags, type )
+inet_socket2( host, service, port, flags, type )
     char *host, *service;
     int type;
     int flags;
@@ -141,54 +141,45 @@ inet_socket( host, service, port, flags, type )
     return -1;
 }
 
-static FILE *
-inet_open( host, service, port, flags, type )
+static int
+inet_socket( host, service, port, flags, type )
     char *host, *service;
     int port, flags, type;
 {
     int s;
-    FILE *f;
+
 #ifdef FOLD_HOSTNAMES
     /* WATTCP on DOS requires hostname in upper case?! */
     char *cp = host;
+    if (!cp)
+	return -1;
     while ((*cp++ = toupper(*cp)))
 	;
 #endif /* FOLD_HOSTNAMES defined */
 
     s = inet_socket(host, service, port, flags, type );
-    if (s < 0)
-	return NULL;
 
-    f = fdopen(s, "r+");
-    if (f == NULL)
-	close(s);
-    return f;
+    return s;
 }
 
-FILE *
-tcp_open( host, service, port, flags )
+/* called from stdio_obj.c */
+int
+tcp_socket( host, service, port, flags )
     char *host, *service;
     int port, flags;
 {
-    return inet_open( host, service, port, flags, SOCK_STREAM );
+    return inet_socket( host, service, port, flags, SOCK_STREAM );
 }
 
-
-FILE *
-udp_open( host, service, port, flags )
+/* called from stdio_obj.c */
+int
+udp_socket( host, service, port, flags )
     char *host, *service;
     int port, flags;
 {
-    return inet_open( host, service, port, flags, SOCK_DGRAM );
+    return inet_socket( host, service, port, flags, SOCK_DGRAM );
 }
 
 void
 inet_cleanup() {
-}
-
-int
-inet_close( f )
-    FILE *f;
-{
-    return fclose(f) == 0;
 }

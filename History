@@ -3,6 +3,22 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/13/2020:
+	Another hack attack (or three):
+	lib/init.c: Implement -U option, SNOBOL4UNBUFFERED
+	doc/snobol4cmd.1.pea: Document -U SNOBOL4UNBUFFERED
+	include/stdio_obj.h: stdio_wrap takes path
+	lib/stdio_obj.c: honor unbuffer_all,
+		have stdio_wrap take path
+	lib/io.c: add inetio_open, pass path to stdio_wrap
+	lib/bsd/pty.c: pass path to stdio_wrap
+	include/lib.h: convert {tcp,udp}_open to _socket, remove inet_close
+	lib/bsd/inet(6).c: convert {tcp,udp}_open to ..._socket
+	lib/dummy/inet.c: convert {tcp,udp}_open to ..._socket
+	lib/win32/inet.c: implement as inetio_open (io_obj provider)
+	include/io.h: add inetio_open
+	lib/auxil/memio_obj.c: cleanup header comments
+
+9/13/2020:
 	LOOOONG overdue OO refactoring of I/O
 	  (lamented as badly needed & last attempted in 2002)
 	Makefile2.m4: add FISATTY, STDIO_OBJ, fix PTY_C

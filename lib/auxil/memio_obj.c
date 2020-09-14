@@ -1,8 +1,9 @@
 /*
- * Phil 9/13/2020 (not tested!)
  * *A* memio implementation
  * for systems without POSIX.1-2008 fmemopen
- * (Windows DLL)
+ * (eg; Windows DLL)
+ * Phil Budne
+ * 9/13/2020 (not tested!)
  */
 
 #ifdef HAVE_CONFIG_H

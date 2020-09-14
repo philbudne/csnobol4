@@ -104,4 +104,6 @@ struct io_obj nomatch;
 #define NOMATCH &nomatch
 
 struct io_obj *memio_open(char *buf, size_t len, int flags);
-
+#ifdef INET_IO
+struct io_obj *inetio_open __P((char *path, int flags, int dir));
+#endif

@@ -35,7 +35,7 @@
 
 /* NOTE!! Ignores "port" arg!! */
 static int
-inet_socket( host, service, port, flags, type )
+inet_socket2( host, service, port, flags, type )
     char *host, *service;
     int type;
     int flags;
@@ -94,13 +94,11 @@ inet_socket( host, service, port, flags, type )
 }
 
 /* NOTE!! Ignores "port" arg!! */
-static FILE *
-inet_open( host, service, port, flags, type )
+static int
+inet_socket( host, service, port, flags, type )
     char *host, *service;
     int port, flags, type;
 {
-    int s;
-    FILE *f;
 #ifdef FOLD_HOSTNAMES
     /* WATTCP on DOS requires hostname in upper case?! */
     char *cp = host;
@@ -108,32 +106,25 @@ inet_open( host, service, port, flags, type )
 	;
 #endif /* FOLD_HOSTNAMES defined */
 
-    s = inet_socket(host, service, port, flags, type );
-    if (s < 0)
-	return NULL;
-
-    f = fdopen(s, "r+");
-    if (f == NULL)
-	close(s);
-    return f;
+    return inet_socket2(host, service, port, flags, type );
 }
 
 /* NOTE!! Ignores "port" arg!! */
-FILE *
-tcp_open( host, service, port, flags )
+int
+tcp_socket( host, service, port, flags )
     char *host, *service;
     int port, flags;
 {
-    return inet_open( host, service, port, flags, SOCK_STREAM );
+    return inet_socket( host, service, port, flags, SOCK_STREAM );
 }
 
 /* NOTE!! Ignores "port" arg!! */
-FILE *
-udp_open( host, service, port, flags )
+int
+udp_socket( host, service, port, flags )
     char *host, *service;
     int port, flags;
 {
-    return inet_open( host, service, port, flags, SOCK_DGRAM );
+    return inet_socket( host, service, port, flags, SOCK_DGRAM );
 }
 
 void

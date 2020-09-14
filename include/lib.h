@@ -174,10 +174,9 @@ void osname __P((char *));
 FILE * term_input __P((void));
 
 /* from inet(6).c */
-FILE *tcp_open __P((char *, char *, int, int));
-FILE *udp_open __P((char *, char *, int, int));
+int tcp_socket __P((char *, char *, int, int));
+int udp_socket __P((char *, char *, int, int));
 void inet_cleanup __P((void));
-int inet_close __P((FILE *));
 
 #define INET_PRIV	01
 #define INET_BROADCAST	02
@@ -223,23 +222,9 @@ extern int sleepf __P((real_t));
 /* from break.c */
 extern int chk_break __P((int));
 
-/* from inet.c */
-extern FILE *tcp_open __P((char *, char *, int, int));
-extern FILE *udp_open __P((char *, char *, int, int));
-extern int inet_close __P((FILE *));
-extern void inet_cleanup __P((void));
-
-#ifdef INET_IO
-extern int inet_write __P((FILE *, char *, int));
-extern int inet_read_raw __P((FILE *f, char *, int));
-extern int inet_read_cooked __P((FILE *f, char *, int, int, int));
-#endif
-
 #ifndef HAVE_CLOSEFROM
 extern void closefrom __P((int minfd));
 #endif
 #ifndef HAVE_GETDTABLESIZE
 extern int getdtablesize __P((void));
 #endif
-extern int forkexecpty __P((char *cmd, long *pio, long *ppid));
-extern int waitpty __P((FILE *f, long io, long pid));
