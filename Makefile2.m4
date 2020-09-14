@@ -423,6 +423,9 @@ spreal.o: $(SPREAL_C)
 stdio_obj.o: $(STDIO_OBJ_C)
 	$(CC) $(CFLAGS) -c $(STDIO_OBJ_C)
 
+str.o: $(STR_C)
+	$(CC) $(CFLAGS) -c $(STR_C)
+
 stream.o: $(STREAM_C)
 	$(CC) $(CFLAGS) -c $(STREAM_C)
 

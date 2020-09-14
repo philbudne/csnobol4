@@ -31,6 +31,9 @@
 #include <paths.h>			/* _PATH_BSHELL */
 #endif
 
+#include "h.h"				/* for lib.h */
+#include "snotypes.h"			/* for lib.h */
+#include "lib.h"			/* closefrom */
 #include "io.h"
 #include "stdio_obj.h"			/* stdio_wrap, flags2mode */
 
