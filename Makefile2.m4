@@ -426,9 +426,6 @@ stdio_obj.o: $(STDIO_OBJ_C)
 stream.o: $(STREAM_C)
 	$(CC) $(CFLAGS) -c $(STREAM_C)
 
-stream.o: $(STREAM_C)
-	$(CC) $(CFLAGS) -c $(STREAM_C)
-
 suspend.o: $(SUSPEND_C)
 	$(CC) $(CFLAGS) -c $(SUSPEND_C)
 
