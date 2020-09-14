@@ -71,14 +71,6 @@ enum action { FIND, CREATE, REMOVE };
 #define VALID(SP) \
     ((SP)->cbreak != -1 && (SP)->noecho != -1 && (SP)->recl != -1)
 
-int
-fisatty(f, fname)
-    FILE *f;
-    char *fname;
-{
-    return isatty(fileno(f));
-}
-
 /* invalid last mode; insure next use sets to "curr" state */
 static void
 tty_invalidate(sp)

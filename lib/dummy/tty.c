@@ -16,9 +16,8 @@
  */
 
 int
-fisatty(f, fname)
+fisatty(f)
     FILE *f;
-    char *fname;
 {
     return FALSE;			/* why not? */
 }

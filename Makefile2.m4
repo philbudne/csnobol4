@@ -72,6 +72,7 @@ DYNAMIC_C=$(SRCDIR)lib/bsd/dynamic.c
 ENDEX_C=$(SRCDIR)lib/endex.c
 EXISTS_C=$(SRCDIR)lib/generic/exists.c
 EXPOPS_C=$(SRCDIR)lib/generic/expops.c
+FISATTY_C=$(SRCDIR)lib/generic/fisatty.c
 HASH_C=$(SRCDIR)lib/hash.c
 INET_C=$(SRCDIR)lib/bsd/inet.c
 INET6_C=$(SRCDIR)lib/bsd/inet6.c
@@ -86,11 +87,13 @@ ORDVST_C=$(SRCDIR)lib/ordvst.c
 PAIR_C=$(SRCDIR)lib/pair.c
 PAT_C=$(SRCDIR)lib/pat.c
 PML_C=$(SRCDIR)lib/pml.c
+PTY_C=$(SRCDIR)lib/dummy/pty.c
 POPEN_C=$(SRCDIR)lib/bsd/popen.c
 REALST_C=$(SRCDIR)lib/realst.c
 REPLACE_C=$(SRCDIR)lib/replace.c
 SPCINT_C=$(SRCDIR)lib/ansi/spcint.c
 SPREAL_C=$(SRCDIR)lib/ansi/spreal.c
+STDIO_OBJ_C=$(SRCDIR)lib/stdio_obj.c
 STREAM_C=$(SRCDIR)lib/stream.c
 SUSPEND_C=$(SRCDIR)lib/posix/suspend.c
 STR_C=$(SRCDIR)lib/str.c
@@ -98,7 +101,7 @@ TERM_C=$(SRCDIR)lib/posix/term.c
 TOP_C=$(SRCDIR)lib/top.c
 TREE_C=$(SRCDIR)lib/tree.c
 TTY_C=$(SRCDIR)lib/posix/tty.c
-PTY_C=$(SRCDIR)lib/dummy/pty.c
+# please keep in alphabetical order!!
 
 # aux sources
 BZERO_C=$(SRCDIR)lib/auxil/bzero.c
@@ -198,21 +201,25 @@ CFLAGS=[]_CFLAGS $(COPT) $(MYCPPFLAGS)
 # XXX replace SNOLIB_A with SNOLIB_FILE??
 #	need to add rules to make shared libraries (to config/xxx.m4 files)
 
-OBJS=	main.o $(SNOBOL4).o data.o data_init.o syn.o bal.o break.o date.o \
-	dump.o dynamic.o endex.o expops.o hash.o $(INET_O) init.o \
-	intspc.o io.o lexcmp.o load.o mstime.o ordvst.o pair.o pat.o \
-	pml.o realst.o replace.o spcint.o spreal.o str.o stream.o \
-	suspend.o term.o top.o tree.o tty.o pty.o \
-	$(EXTRA_OBJS) $(SNOLIB_A)
+# add to new files to SRCS too!
+
+OBJS=	main.o $(SNOBOL4).o data.o data_init.o syn.o bal.o break.o \
+	date.o dump.o dynamic.o endex.o expops.o fisatty.o hash.o \
+	$(INET_O) init.o intspc.o io.o lexcmp.o load.o mstime.o \
+	ordvst.o pair.o pat.o pml.o pty.o realst.o replace.o spcint.o \
+	spreal.o stdio_obj.o str.o stream.o suspend.o term.o top.o \
+	tree.o tty.o $(EXTRA_OBJS) $(SNOLIB_A)
 
 AUX_SRCS=[]_SRCS
+
 SRCS=	main.c $(SNOBOL4).c data.c data_init.c syn.c $(BAL_C) $(BREAK_C) \
 	$(DATE_C) $(DUMP_C) $(DYNAMIC_C) $(ENDEX_C) $(EXPOPS_C) \
-	$(HASH_C) $(INET_C) $(INIT_C) $(INTSPC_C) $(IO_C) $(LEXCMP_C) \
-	$(LOAD_C) $(MSTIME_C) $(ORDVST_C) $(PAIR_C) $(PAT_C) $(PML_C) \
-	$(REALST_C) $(REPLACE_C) $(SPCINT_C) $(SPREAL_C) $(STREAM_C) \
-	$(STR_C) $(SUSPEND_C) $(TOP_C) $(TERM_C) $(TREE_C) $(TTY_C) \
-	$(AUX_SRCS) $(SNOLIB_SRCS)
+	$(FISATTY_C) $(HASH_C) $(INET_C) $(INIT_C) $(INTSPC_C) $(IO_C) \
+	$(LEXCMP_C) $(LOAD_C) $(MSTIME_C) $(ORDVST_C) $(PAIR_C) \
+	$(PAT_C) $(PML_C) $(PTY_C) $(REALST_C) $(REPLACE_C) $(SPCINT_C) \
+	$(SPREAL_C) $(STDIO_OBJ_C) $(STR_C) $(STREAM_C) $(SUSPEND_C) \
+	$(TERM_C) $(TOP_C) $(TREE_C) $(TTY_C) $(AUX_SRCS) \
+	$(SNOLIB_SRCS)
 
 GENERATED_DOCS_DOCDIR1=doc/sdb.1 doc/snobol4.1 doc/snopea.1 \
 	doc/snobol4blocks.1 doc/snobol4cmd.1 doc/snobol4ctrl.1 \
@@ -349,6 +356,9 @@ exists.o: $(EXISTS_C)
 
 expops.o: $(EXPOPS_C)
 	$(CC) $(CFLAGS) -c $(EXPOPS_C)
+
+fisatty.o: $(FISATTY_C)
+	$(CC) $(CFLAGS) -c $(FISATTY_C)
 
 hash.o:	$(HASH_C)
 	$(CC) $(CFLAGS) -c $(HASH_C)

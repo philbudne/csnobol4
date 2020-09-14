@@ -1,6 +1,6 @@
 /*
  * $Id$
- * forkexecpty -- using BSD forkpty
+ * ptyio -- using BSD forkpty
  * Phil Budne
  * 2020-08-20
  */
@@ -31,51 +31,79 @@
 #include <paths.h>			/* _PATH_BSHELL */
 #endif
 
-#include "h.h"
-#include "snotypes.h"
-#include "lib.h"
+#include "io.h"
+#include "stdio_obj.h"			/* stdio_wrap, flags2mode */
 
-int
-forkexecpty(cmd, pio, ppid)
-    char *cmd;
-    long *pio;
-    long *ppid;
-{
-    int master;
-    pid_t pid = forkpty(&master, NULL, NULL, NULL);
-    if (pid == 0) {
-	closefrom(3);
-	execl(_PATH_BSHELL, "sh", "-c", cmd, NULL);
-	_exit(1);
-    }
-    else if (pid > 0) {
-	*pio = master;			/* fd */
-	*ppid = pid;
-	return 0;
-    }
-    else
-	return -1;
-}
-
-int
-waitpty(f, io, ptypid)
-    FILE *f;
-    long io;
-    long ptypid;
-{
+struct ptyio_obj {
+    struct stdio_obj sio;
     pid_t pid;
-    int pstat;
+};
 
-    fclose(f);
-    (void) io;
+int
+ptyio_close(struct io_obj *iop) {
+    struct ptyio_obj *piop = (struct ptyio_obj *)iop;
+    pid_t pid;
+    int ret;
+
+    ret = fclose(piop->sio.f) == 0;
 
     // issue kill() if needed????
     do {
-	pid = waitpid((pid_t)ptypid, &pstat, 0);
+	pid = waitpid(piop->pid, NULL, 0);
     } while (pid == -1 && errno == EINTR);
 
-    if (pid == -1)
-	return 1;			/* assume OK */
+    /* only fail because of I/O errors! */
+    return ret;
+}
+
+#define ptyio_read NULL
+#define ptyio_write NULL
+#define ptyio_seeko NULL
+#define ptyio_tello NULL
+#define ptyio_flush NULL
+#define ptyio_eof NULL
+#define ptyio_clearerr NULL
+#define ptyio_read_raw NULL
+
+MAKE_OPS(ptyio, &stdio_ops);
+
+struct io_obj *
+ptyio_open(char *path, int flags, int dir) {
+    int master;
+    pid_t pid;
+
+    if (path[0] != '|' || path[1] != '|')
+	return NOMATCH;
+
+    pid = forkpty(&master, NULL, NULL, NULL);
+    if (pid == 0) {
+	closefrom(3);
+	execl(_PATH_BSHELL, "sh", "-c", path+2, NULL);
+	_exit(1);
+    }
+    else if (pid > 0) {
+	char mode[MAXMODE];
+	struct ptyio_obj *piop;
+	FILE *f;
+
+	/* XXX need stdio_wrapfd!! */
+	flags2mode(flags, mode, dir);
+	f = fdopen(master, mode);
+	if (!f) {
+	    close(master);
+	    /* XXX kill child & wait for it? */
+	    return NULL;
+	}
+	piop = (struct ptyio_obj *)
+	    stdio_wrap(f, sizeof(*piop), &ptyio_ops, flags);
+	if (!piop) {
+	    fclose(f);
+	    /* XXX kill child & wait for it? */
+	    return NULL;
+	}
+	piop->pid = pid;
+	return &piop->sio.io;
+    }
     else
-	return (pstat == 0);
+	return NULL;			/* forkpty failed */
 }

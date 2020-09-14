@@ -189,7 +189,7 @@ int inet_close __P((FILE *));
 #define INET_CLOEXEC	0200
 
 /* from tty.c */
-int fisatty __P((FILE *, char *));
+int fisatty __P((FILE *));		/* or fisatty.c */
 void tty_mode __P((FILE *, int, int, int));
 void tty_close __P((FILE *));		/* advisory! */
 void tty_suspend __P((void));		/* SIG_TSTP */

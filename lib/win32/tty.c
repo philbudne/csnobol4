@@ -36,9 +36,8 @@ static struct save *list;
 #endif /* NO_STATIC_VARS not defined */
 
 int
-fisatty(f, fname)
+fisatty(f)
     FILE *f;
-    char *fname;
 {
     DWORD flags;
     HANDLE h;
@@ -48,7 +47,7 @@ fisatty(f, fname)
      *
      * Microsoft isatty() returns true for any character device
      * (including console, serial, printer).  Revert this to
-     * isatty(fileno(fp)) when all devices supported below?
+     * isatty(fileno(fp)) when more devices supported below?
      *
      * use GetCommState() to detect serial lines
      */

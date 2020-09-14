@@ -67,11 +67,16 @@
 
 /* non-standard functions; */
 #define finite		_finite
-#ifndef isnan				/* defined in VS 2019 */
-#define isnan		_isnan
+#ifndef _MSC_VER
+#define isnan		_isnan		/* not needed w/ VS 2019(?) */
 #endif
 #define popen		_popen
 #define pclose		_pclose
+
+/* 64-bit windows is an LLP64 system (long is 32-bits */
+#define ftello(FP) _ftelli64(FP)
+#define fseeko(FP,OFF,WHENCE) _fseeki64(FP,OFF,WHENCE)
+#define HAVE_FSEEKO			/* now we do! */
 
 /****
  * for time module
@@ -100,9 +105,11 @@
 #define REALST_FORMAT "%.15lg"
 #define SIZEOF_INT_T 8
 #define SIZEOF_REAL_T 8
+#define ssize_t INT_T
 #else
 #define SIZEOF_INT_T 4
 #define SIZEOF_REAL_T 4
+#define size_t long
 #endif
 
 /* use native routines */

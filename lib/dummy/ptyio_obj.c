@@ -1,30 +1,18 @@
 /*
  * $Id$
- * forkexecpty -- dummy version
+ * ptyio_open -- dummy version
  * Phil Budne
  * 2020-08-20
  */
 
 #include <stdio.h>
 
-#include "h.h"
-#include "snotypes.h"
-#include "lib.h"
+#include "io.h"
 
-int
-forkexecpty(cmd, pio, ppid)
-    char *cmd;
-    long *pio;
-    long *ppid;
-{
-    return -1;
-}
+struct io_obj *
+ptyio_open(char *path, int flags, int dir) {
+    if (path[0] != '|' || path[1] != '|')
+	return NOMATCH;
 
-int
-waitpty(f, io, ptypid)
-    FILE *f;
-    long io;
-    long ptypid;
-{
-    return 0;
+    return NULL;
 }

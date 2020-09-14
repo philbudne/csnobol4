@@ -17,9 +17,8 @@
 #include "lib.h"
 
 int
-fisatty(f, fname)
+fisatty(f)
     FILE *f;
-    char *fname;
 {
     /*
      * XXX we can only do tty_read() on keyboard so this better not

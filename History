@@ -2,6 +2,29 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+9/13/2020:
+	LOOOONG overdue OO refactoring of I/O
+	  (lamented as badly needed & last attempted in 2002)
+	Makefile2.m4: add FISATTY, STDIO_OBJ, fix PTY_C
+	config/win32/config.h: fix isnan, fake ftello/fseeko, add ssize_t
+	include/lib.h: fisatty no longer takes fname
+	lib/io.c: reduced by 20% (chars) 18% (lines)
+	lib/bsd/pty.c: convert from forkexecpty to io_obj
+	lib/bsd/tty.c: removed fisatty
+	lib/dummy/pty.c: convert from forkexecpty to io_obj
+	lib/dummy/tty.c: remove fname arg from fisatty
+	lib/msdos/tty.c: remove fname arg from fisatty
+	lib/posix/tty.c: remove fisatty
+	lib/vms/tty.c: remove fname arg from fisatty
+	lib/win32/tty.c: remove fname arg from fisatty
+	new:
+	include/io.h: OO base class/API
+	lib/stdio_obj.c include/stdio_obj.h: most I/O code here
+	lib/auxil/bufio_obj.c include/bufio_obj.h: helper for reading lines
+	lib/auxil/memio_obj.c: memory based I/O w/o fmemopen
+	lib/generic/fisatty.c: generic code moved from lib/many/tty.c
+	lib/win32/pty.c: compiles, not tested
+
 9/11/2020:
 	lib/io.c: expand mode storage, add comments
 	lib/vms/osopen.c: fix /dev/null

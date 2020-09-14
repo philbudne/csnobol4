@@ -72,14 +72,6 @@ static int lflags;
 
 enum action { FIND, CREATE, REMOVE };
 
-int
-fisatty(f, fname)
-    FILE *f;
-    char *fname;
-{
-    return isatty(fileno(f));
-}
-
 static void
 tty_invalidate(sp)
     struct save *sp;

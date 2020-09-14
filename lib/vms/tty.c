@@ -51,9 +51,8 @@ struct ttychan {
 static struct ttychan *chans;
 
 int
-fisatty(f, fname)
+fisatty(f)
     FILE *f;
-    char *fname;
 {
     /* should only return true for files that tty_read() works with! */
     return isatty(fileno(f));

@@ -3,23 +3,28 @@
 /*
  * I/O support for CSNOBOL4
  *
- * This is the largest and nastiest file in the support library, and
- * the only one where I've tolerated extensive use of "ifdef".  The
- * complexity (and fragility) of the I/O support is due to a number of
- * factors;
+ * FINALLY refactored in 2020 (last attempted in 2002, but never
+ * debugged) this file is now an adaptation layer over 
+ * I/O Objects (and much nastiness has thus moved to stdio_obj.c!)
  *
- * Assumptions built into the SIL source (both compiler and runtime).
- * Multiple layers of I/O (assocation, unit, stdio, fd)
- * Interactions of I/O options (buffered vs binary
- * Handling file lists.
- * O/S differnces (esp tty handling and winsock)
+ * Still the largest file in the support library, and the one with the
+ * most ifdefs.  The complexity (and fragility) of the I/O support is
+ * due to a number of factors:
  *
- * A rewrite is badly needed, but would likely delay version 1.0, and
- * chances are good the result would not (initially) have fewer
- * problems.  An original goal was to depend entirely on stdio, but it
- * turns out almost every platform also provides open/close/read/write
- * support as well, so it's tempting to do away with stdio, and or at
- * add an abstraction layer over it.
+ * Assumptions built into the SIL source (both compiler and runtime) e.g.
+ * * compiler insists lines end with a space
+ * * runtime passes in fixed (record) length buffers for input
+ *	(see if can be fixed using 'L' returns as with LOAD)
+ * * Multiple layers of I/O:
+ *  A single disk file or device might be associated with one or more:
+ *  + SNOBOL variable associations
+ *  + FORTRAN unit numbers
+ *  + stdio FILE streams
+ *  + POSIX file descriptors
+ *  + (possible C runtime system handles/channels)
+ *  + open file object in system space
+ *  + Interactions of (excessive) I/O options/flags
+ *  + Handling file lists.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -42,22 +47,6 @@ extern char *getenv();
 #include <stdio.h>
 #include <ctype.h>
 
-#ifdef NEED_OFF_T
-typedef long off_t;
-#else  /* NEED_OFF_T not defined */
-#include <sys/types.h>			/* off_t */
-#endif /* NEED_OFF_T not defined */
-
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>			/* SEEK_xxx, xxx_FILENO */
-#endif /* HAVE_UNISTD_H defined */
-
-#ifdef HAVE_UNIXIO_H			/* DECC v4 */
-#include <unixio.h>			/* read(), lseek(), etc */
-#endif /* HAVE_UNIXIO_H defined */
-
-#include <sys/types.h>			/* pid_t */
-
 #include "h.h"
 #include "units.h"
 #include "snotypes.h"
@@ -66,6 +55,8 @@ typedef long off_t;
 #include "libret.h"			/* IO_xxx, INC_xxx */
 #include "lib.h"
 #include "str.h"
+#include "io.h"				/* io_obj, FL_xxx */
+#include "stdio_obj.h"			/* stdio_{wrap,obj} */
 
 /* generated */
 #include "equ.h"			/* for BCDFLD (for X_LOCSP), res.h */
@@ -79,143 +70,43 @@ typedef long off_t;
 #include <readline/history.h>
 #endif /* COMPILER_READLINE */
 
-#ifndef SEEK_SET
-#define SEEK_SET 0
-#endif /* SEEK_SET not defined */
-
-#ifndef SEEK_CUR
-#define SEEK_CUR 1
-#endif /* SEEK_CUR not defined */
-
-#ifndef SEEK_END
-#define SEEK_END 2
-#endif /* SEEK_END not defined */
-
-#ifndef STDIN_FILENO
-#define STDIN_FILENO 0
-#endif /* STDIN_FILENO not defined */
-
-#ifndef STDOUT_FILENO
-#define STDOUT_FILENO 1
-#endif /* STDOUT_FILENO not defined */
-
-#ifndef STDERR_FILENO
-#define STDERR_FILENO 2
-#endif /* STDERR_FILENO not defined */
-
 #define NUNITS 256			/* XXX set at runtime? */
 
 #ifndef PRELOAD_FILENAME
 #define PRELOAD_FILENAME "preload.sno"
 #endif
 
+#define ISTTY(FP) ((FP)->iop && ((FP)->iop->flags & FL_TTY))
+
 /* GOAL: "struct unit" does not leave io.c */
 struct unit {
     struct file *curr;			/* ptr to current file */
     /* for rewind; */
     struct file *head;			/* first file in list */
-    off_t offset;			/* offset in first file to rewind to */
+    off_t offset;			/* offset in "head" to rewind to */
+    /*
+     * PLB 2020-09-11 keep flags & recl HERE??
+     * would only matter if INPUT/OUTPUT calls allowed lists of files
+     * (like SITBOL)?
+     */
 };
 
-/* GOAL: "struct file" does not leave io.c */
+/* GOAL: "struct file" does not leave io.c
+ * Represents a named file from the command line, an include file,
+ *	INPUT or OUTPUT call (or passed into a DLL)
+ *
+ * Open files are represented by io_obj.
+ */
 struct file {
     struct file *next;			/* next input file */
-    FILE *f;				/* may be NULL if not (yet) open */
-    int flags;				/* FL_xxx */
-    enum {
-	TYPE_NORM,
-	TYPE_PIPE,
-	TYPE_TTY,
-	TYPE_PTY,
-#ifdef MEM_IO
-	TYPE_MEM,
-#endif /* MEM_IO defined */
-	TYPE_INET } type;
-    union {
-#ifdef MEM_IO
-	struct {
-	    char *ptr;		      /* pointer to buffer */
-	    int len;		      /* length of buffer */
-	    off_t pos;		      /* current position in buffer */
-	} mem;
-#endif /* MEM_IO defined */
-	struct {
-	    long pid;
-	    long io;
-	} pty;
-	int nota;
-    } u;
-    /* XXX add methods for read/write/eof/mode/seek/close */
-    /* XXX keep recl (shift flags up?)? */
-    enum { LAST_NONE, LAST_OUTPUT, LAST_INPUT } last;
+    struct io_obj *iop;
+    int flags;				/* XXX temp? pull up?? */
+
     /* MUST BE LAST!! */
     char fname[1];
 };
 
-/*
- * Per-file (unit) flags.
- *
- * ** NOTE **
- *
- * multiple units may refer to same stdio stream (via "-" and
- * /dev/std{in,out,err} magic files) or the same file descriptors (via
- * /dev/fd/N magic pathname) and have different behaviors.
- */
-
-#define FL_EOL		01		/* strip EOL on input, add on output */
-#define FL_BINARY	02		/* binary: no EOL; use recl */
-#define FL_UPDATE	04		/* update: read+write */
-#define FL_UNBUF	010		/* unbuffered write */
-#define FL_APPEND	020		/* append */
-#define FL_NOECHO	040		/* tty: no echo */
-#define FL_NOCLOSE	0100		/* don't fclose() */
-#define FL_BREAK	0200		/* breaK long lines (EXPERIMENTAL) */
-#define FL_EXCL		0400		/* eXclusive open (fail if eXists) */
-#define FL_CLOEXEC	01000		/* mark for close on exec */
-
-#if defined(INET_IO) || defined (MEM_IO)
-/*
- * About the INET_IO crock:
- *
- * On Windows 3.1 and Win9x, file handles and winsock handles are
- * incompatible; winsock handles cannot be read or written with
- * ordinary file I/O calls (e.g. ReadFile, WriteFile), so attempting
- * to wrap a socket in a stdio stream won't work.
- *
- * [On NT based systems (XP and later), _open_osfhandle() + _fdopen
- *  may do the trick, as ReadFile() is supposed to work on winsockets]
- *
- * To work around this "feature", if INET_IO is defined, tcp_open()
- * and udp_open() return a "struct inet_file" pointer.  The code in
- * io.c has been crocked not to try normal I/O on things which have
- * the "NOTAFILE" flag set, instead calls inet_read_{raw,cooked},
- * inet_write and inet_close in inet.c, which merrily cast the "FILE *"
- * back to an "inet_file"
- *
- * The MEM_IO crock is to allow SNOBOL4 to be built as a shared
- * library (or DLL) which takes handles for buffers for input and
- * output.  BSD stdio funopen() would make this easy.
- *
- * All of this could go away if the I/O system were more object oriented.
- */
-#define FL_NOTAFILE	0200		/* "f" is not a file (XXX TEMP) */
-#define ISAFILE(FP) !((FP)->flags & FL_NOTAFILE)
-#else  /* not defined(INET_IO) || defined(MEM_IO) */
-#define ISAFILE(FP) 1
-#endif /* not defined(INET_IO) || defined(MEM_IO) */
-
-#ifdef MEM_IO
-#define ISMEM(FP) ((FP)->type == TYPE_MEM)
-#else  /* MEM_IO not defined */
-#define ISMEM(FP) 0
-#endif /* MEM_IO not defined */
-
-#define ISPIPE(FP) ((FP)->type == TYPE_PIPE)
-#define ISTTY(FP)  ((FP)->type == TYPE_TTY)
-#define ISPTY(FP)  ((FP)->type == TYPE_PTY)
-#define ISINET(FP) ((FP)->type == TYPE_INET)
-
-#define ISOPEN(FP) ((FP)->f || IEMEM(FP))
+#define ISOPEN(FP) ((FP)->iop)
 
 #define MAXFNAME	1024		/* XXX use MAXPATHLEN? POSIX?? */
 #define MAXOPTS		1024
@@ -229,6 +120,17 @@ struct iovars {
     struct file *lib_dir_last;	/* tail of include directory list */
 
 };
+
+/* private, r/o array of pointers to io_open functions returning pointers to io_obj */
+static struct io_obj *(*const io_open_funcs[]) __P((char *, int, int)) = {
+    ptyio_open,				/* dummy ptyio_open available */
+    pipeio_open,			/* dummy popen available */
+#ifdef OSDEPIO_OBJ
+    osdepio_open,			/* local I/O that can't be wrapped */
+#endif
+    stdio_open				/* never returns NOMATCH!! */
+};
+#define N_OPEN_FUNCS (sizeof(io_open_funcs)/sizeof(io_open_funcs[0]))
 
 #ifdef NO_STATIC_VARS
 #include "vars.h"
@@ -249,22 +151,114 @@ static struct iovars iov;
  * all access to units array hidden, so it can be made sparse
  */
 #define FINDUNIT(N) (iov.units + (N))
-
-/*
- * Systems could implement 64-bit offsets using ANSI f[sg]etpos(),
- * and not have fseeko/ftello.
+
+/****************
+ * io_obj wrappers
  *
- * create generic/fpos.c (use fseek/ftell to implement fseeko/ftello)
- * 	ansi/fpos.c	(use fsetpos/fgetpos)
- * ??
- *
- * nasty bit about fgetpos() is that the return value is opaque
- * (may return a cookie, without meaning, except to fsetpos)
+ * for efficiency, could leave io_ops structs writable (non-const)
+ * and drag up (swizzle?) the superclass method pointer on first use.
+ * BUT, MOST I/O will be thru stdio_ops, which is fully populated.
+ * Currently, only oddball things like pipes, ptys and winsock are layered.
  */
-#ifndef HAVE_FSEEKO
-#define ftello(FP) ftell(FP)
-#define fseeko(FP,OFF,WHENCE) fseek(FP,(long)(OFF),WHENCE)
-#endif /* HAVE_FSEEKO not defined */
+
+static ssize_t
+ioo_read(struct io_obj *iop, char *buf, size_t len) {
+    const struct io_ops *op;
+
+    for (op = iop->ops; op; op = op->io_super)
+	if (op->io_read)
+	    return (op->io_read)(iop, buf, len);
+
+    return -1;
+}
+
+static ssize_t
+ioo_write(struct io_obj *iop, char *buf, size_t len) {
+    const struct io_ops *op;
+
+    for (op = iop->ops; op; op = op->io_super)
+	if (op->io_write)
+	    return (op->io_write)(iop, buf, len);
+
+    return -1;
+}
+
+static int
+ioo_flush(iop)
+    struct io_obj *iop;
+{
+    const struct io_ops *op;
+    for (op = iop->ops; op; op = op->io_super)
+	if (op->io_flush)
+	    return (op->io_flush)(iop);
+
+    return FALSE;
+}
+
+static int
+ioo_seeko(struct io_obj *iop, off_t off, int whence) {
+    const struct io_ops *op;
+
+    for (op = iop->ops; op; op = op->io_super)
+	if (op->io_seeko)
+	    return (op->io_seeko)(iop, off, whence);
+
+    return FALSE;
+}
+
+static off_t
+ioo_tello(struct io_obj *iop) {
+    const struct io_ops *op;
+
+    for (op = iop->ops; op; op = op->io_super)
+	if (op->io_tello)
+	    return (op->io_tello)(iop);
+
+    return -1;				/* SNH */
+}
+
+static int
+ioo_eof(struct io_obj *iop) {
+    const struct io_ops *op;
+
+    for (op = iop->ops; op; op = op->io_super)
+	if (op->io_eof)
+	    return (op->io_eof)(iop);
+
+    return FALSE;			/* treat as non-EOF I/O error */
+}
+
+#ifdef _MSC_VER
+static void
+ioo_clearerr(struct io_obj *iop) {
+    const struct io_ops *op;
+
+    for (op = iop->ops; op; op = op->io_super) {
+	if (op->io_clearerr) {
+	    (op->io_clearerr)(iop);
+	    return;
+	}
+    }
+}
+#endif
+
+static int
+ioo_close(struct io_obj *iop) {
+    const struct io_ops *op;
+    int ret = FALSE;
+
+    if (!iop)
+	return FALSE;
+
+    for (op = iop->ops; op; op = op->io_super) {
+	if (op->io_close) {
+	    ret = (op->io_close)(iop);
+	    break;
+	}
+    }
+    free(iop);
+    return ret;
+}
 
 /* internal helper; take internal unit, return struct file *, or NULL */
 static struct file *
@@ -280,6 +274,10 @@ findfile( iunit )
     return up->curr;			/* may be NULL */
 }
 
+/* the ONE place that allocates a "struct file"
+ * path is saved at the end of the struct
+ * (so only free(fp) is needed)
+ */
 static struct file *
 io_newfile( path )
     char *path;
@@ -293,8 +291,6 @@ io_newfile( path )
     bzero( (char *)fp, sizeof (struct file) );
     strcpy(fp->fname,path);
     fp->flags = FL_EOL;			/* normal */
-    fp->type = TYPE_NORM;
-    fp->last = LAST_NONE;		/* nothing yet */
     return fp;
 }
 
@@ -311,11 +307,12 @@ io_memfile(name, data, len)
     if (!fp)
 	return NULL;
 
-    fp->type = TYPE_MEM;
-    fp->flags |= FL_NOTAFILE;
-    fp->u.mem.ptr = data;
-    fp->u.mem.len = len;
-    fp->u.mem.pos = 0;
+    fp->iop = memio_open(data, len, FL_EOF);
+    if (!fp->iop) {
+	free(fp);
+	return NULL;
+    }
+    fp->iop->fname = fp->fname;		/* "borrowed" */
     return fp;
 }
 #endif /* MEM_IO defined */
@@ -380,51 +377,17 @@ io_close(unit)				/* internal (zero-based unit) */
 {
     struct file *fp;
     struct unit *up;
-    int ret;
+    int ret = TRUE;
 
     up = FINDUNIT(unit);
     fp = up->curr;
     if (fp == NULL)
 	return TRUE;
 
-    if (fp->f) {
-	/* XXX call close hook? */
-#ifdef MEM_IO
-	if (ISMEM(fp)) {
-	    ret = TRUE;
-	    fp->f = NULL;
-	}
-	else
-#endif
-	if (ISINET(fp)) {
-	    ret = inet_close(fp->f);
-	    fp->f = NULL;
-	}
-	else if (ISPIPE(fp)) {
-	    ret = (pclose(fp->f) == 0);	/* XXX is process status!! */
-	    fp->f = NULL;
-	}
-	else if (ISPTY(fp)) {
-	    ret = waitpty(fp->f, fp->u.pty.io, fp->u.pty.pid);
-	    fp->f = NULL;
-	}
-	else {				/* not a pipe */
-	    if (ISTTY(fp)) {
-		tty_close(fp->f);	/* advisory */
-	    }
-	    if (fp->flags & FL_NOCLOSE) {
-		/* never close stdin, stdout, stderr */
-		ret = (fflush(fp->f) != EOF);
-	    }
-	    else {
-		ret = (fclose(fp->f) == 0);
-		fp->f = NULL;
-	    }
-	} /* not a pipe */
-    } /* have fp->f */
-    else
-	ret = TRUE;			/* keep gcc quiet! */
-
+    if (fp->iop) {
+	ret = ioo_close(fp->iop);
+	fp->iop = NULL;
+    }
     up->curr = fp->next;
     return ret;
 } /* io_close */
@@ -457,209 +420,25 @@ io_closeall(unit)			/* internal (zero-based unit) */
     return ret;
 }
 
-static void
-io_fopen2( fp, base )
+static struct io_obj *
+io_fopen( fp, dir )
     struct file *fp;
-    char *base;
+    int dir;				/* 'r' or 'w' */
 {
-    char *mp;
-    char mode[8];			/* X+bxe<NUL> */
+    int i;
 
-    fp->f = NULL;
-
-#ifdef MEM_IO
-    if (ISMEM(fp)) {
-	fp->u.mem.pos = 0;
-	fp->f = (FILE *)1;		/* non-NULL */
-	return;
+    for (i = 0; i < N_OPEN_FUNCS; i++) {
+	struct io_obj *iop = (io_open_funcs[i])(fp->fname, fp->flags, dir);
+	if (iop == NOMATCH)
+	    continue;
+	fp->iop = iop;
+	if (iop)
+	    iop->fname = fp->fname;	/* borrow pointer */
+	return fp->iop;
     }
-#endif
-
-    /* create full mode string for fopen() */
-    mp = mode;
-    if (base[0] == 'w' && (fp->flags & FL_APPEND))
-	*mp++ = 'a';
-    else
-	*mp++ = base[0];		/* XXX append whole string? */
-    if (fp->flags & FL_UPDATE)
-	*mp++ = '+';
-#ifndef NO_FOPEN_B
-    if (fp->flags & FL_BINARY)
-	*mp++ = 'b';
-#endif /* NO_FOPEN_B not defined */
-
-    if (fp->flags & FL_EXCL)
-	*mp++ = 'x';			/* C11: FreeBSD 10, glibc 2.0.94 */
-
-    if (fp->flags & FL_CLOEXEC)
-	*mp++ = 'e';			/* FreeBSD 10, glibc 2.7 */
-    *mp++ = '\0';
-
-    /* handle magic filenames (have a table (prefix or full str)??) */
-
-#ifdef OSDEP_OPEN
-    /*
-     * Allow interception of /dev/tty, /dev/null, etc on non-unix
-     * systems.  Function should return TRUE if filename is being
-     * intercepted, REGARDLESS of whether the actual open succeeds
-     * (on successs, the function should set the FILE ** to point
-     * to the open stream).
-     */
-    if (osdep_open(fp->fname, mode, &fp->f))
-	return;				/* intercepted */
-#endif /* OSDEP_OPEN defined */
-
-    /* filename "-" goes to stdin/out */
-    if (strcmp(fp->fname,"-") == 0) {
-	if (mode[0] == 'r')
-	    fp->f = stdin;
-	else
-	    fp->f = stdout;
-	fp->flags |= FL_NOCLOSE;
-	return;
-    }
-    if (strcmp(fp->fname,"/dev/stdin") == 0) {
-	fp->f = stdin;
-	fp->flags |= FL_NOCLOSE;
-	return;
-    }
-    if (strcmp(fp->fname,"/dev/stdout") == 0) {
-	fp->f = stdout;
-	fp->flags |= FL_NOCLOSE;
-	return;
-    }
-    if (strcmp(fp->fname,"/dev/stderr") == 0) {
-	fp->f = stderr;
-	fp->flags |= FL_NOCLOSE;
-	return;
-    }
-#ifndef NO_FDOPEN
-    if (strncmp(fp->fname, "/dev/fd/", 8) == 0) {
-	int fd;
-
-	if (sscanf(fp->fname+8, "%d", &fd) == 1) {
-	    fp->f = fdopen(fd, mode);
-	    switch (fd) {
-	    case STDIN_FILENO:
-	    case STDOUT_FILENO:
-	    case STDERR_FILENO:
-		fp->flags |= FL_NOCLOSE;
-		break;
-	    }
-	}
-	return;
-    }
-#endif /* NO_FDOPEN not defined */
-    if (strncmp(fp->fname, "/tcp/", 5) == 0 ||
-	strncmp(fp->fname, "/udp/", 5) == 0) {
-	char fn2[MAXFNAME];		/* XXX */
-	char *host, *service, *cp;
-	int flags;
-
-	flags = 0;
-	strcpy( fn2, fp->fname + 5 );	/* XXX strdup()? */
-	host = fn2;
-	service = index(host, '/');
-	if (service == NULL)
-	    return;
-	*service++ = '\0';
-
-	/* look for option suffixes, ignore if unknown */
-	cp = index(service, '/');
-	if (cp) {
-	    char *op;
-
-	    *cp++ = '\0';
-	    do {
-		op = cp;
-		cp = index(cp, '/');
-		if (cp)
-		    *cp++ = '\0';
-
-		if (strcmp(op, "priv") == 0)
-		    flags |= INET_PRIV;
-		else if (strcmp(op, "broadcast") == 0)
-		    flags |= INET_BROADCAST;
-		else if (strcmp(op, "reuseaddr") == 0)
-		    flags |= INET_REUSEADDR;
-		else if (strcmp(op, "dontroute") == 0)
-		    flags |= INET_DONTROUTE;
-		else if (strcmp(op, "oobinline") == 0)
-		    flags |= INET_OOBINLINE;
-		else if (strcmp(op, "keepalive") == 0)
-		    flags |= INET_KEEPALIVE;
-		else if (strcmp(op, "nodelay") == 0)
-		    flags |= INET_NODELAY;
-
-		/* XXX more magic? non-booleans? linger?? */
-	    } while (cp);
-	} /* have suffixes */
-
-	if (fp->flags & FL_CLOEXEC)
-	    flags |= INET_CLOEXEC;
-
-	/* XXX set INET_REUSE unless FL_EXCL set? */
-
-	if (fp->fname[1] == 'u')
-	    fp->f = udp_open( host, service, -1, flags );
-	else
-	    fp->f = tcp_open( host, service, -1, flags );
-#ifdef INET_IO
-	/* awful crock; fp->f is a SOCKET; do away with this!!!! */
-	fp->flags |= FL_NOTAFILE;
-#endif /* INET_IO defined */
-	fp->type = TYPE_INET;
-	return;
-    }
-
-    /* ANSI tmpfile() function returns anonymous file open for R/W */
-    if (strcmp(fp->fname, "/dev/tmpfile") == 0) {
-	fp->f = tmpfile();
-	return;
-    }
-
-    /* **** add new special filename hacks here *** */
-
-    if (fp->fname[0] == '|') { /* filename with leading '|' opens a pipe! */
-	if (fp->fname[1] == '|') {	/* || opens a pty!! */
-	    long io, pid;
-	    if (forkexecpty(fp->fname+2, &io, &pid) >= 0) {
-		fp->f = fdopen(io, mode);
-		fp->type = TYPE_PTY;
-		fp->u.pty.io = io;
-		fp->u.pty.pid = pid;
-	    }
-	    return;
-	} // ||
-
-	/* SPITBOL: leading '!' means pipe, (with escaping?) */
-	fp->type = TYPE_PIPE;
-	fp->f = popen(fp->fname+1, mode);
-	return;
-    }
-
-    fp->f = fopen(fp->fname, mode);
-} /* io_fopen2 */
-
-static FILE *
-io_fopen( fp, mode )
-    struct file *fp;
-    char *mode;
-{
-    io_fopen2(fp,mode);
-    if (fp->f == NULL)
-	return NULL;
-
-    if (ISAFILE(fp) && fisatty(fp->f, fp->fname))
-	/* XXX set close hook? */
-	fp->type = TYPE_TTY;
-
-
-    /* XXX if FL_UNBUF call setbuf(fp->f, NULL)??
-     * this may force a read or write per-character, which
-     * isn't what we're after!
-     */
-    return fp->f;
+    /* should not happen: stdio should never return NOMATCH */
+    fp->iop = NULL;
+    return NULL;
 } /* io_fopen */
 
 /* skip to next input file */
@@ -676,7 +455,7 @@ io_next( unit )				/* internal (zero-based unit) */
 	return FALSE;
 
     /* in case called preemptively! */
-    if (fp->f != NULL)
+    if (fp->iop != NULL)
 	io_close(unit);			/* close, and advance */
 
     /* get new current file (io_close advances to next file in list) */
@@ -684,14 +463,14 @@ io_next( unit )				/* internal (zero-based unit) */
     if (fp == NULL)
 	return FALSE;
 
-    if (fp->f != NULL)			/* already open? */
+    if (fp->iop != NULL)		/* already open? */
 	return TRUE;
 
     /* XXX let io_read() do the work??? */
     /* XXX copy flags from previous file? */
-    io_fopen( fp, "r");
+    io_fopen( fp, 'r');
 
-    return fp->f != NULL;
+    return fp->iop != NULL;
 } /* io_next */
 
 
@@ -762,13 +541,10 @@ io_mkfile2( unit, f, fname, flags )
     fp = io_newfile(fname);
     if (fp == NULL)
 	return FALSE;
-    fp->f = f;
+    fp->iop = stdio_wrap(f, 0, NULL, flags);
+    if (fp->iop)
+	fp->iop->fname = fp->fname;	/* borrow pointer */
     fp->flags |= flags;
-    if (ISAFILE(fp) && fisatty(f, fname)) {
-	/* XXX set close hook? */
-	fp->type = TYPE_TTY;
-    }
-
     io_setfile(unit, fp);
     return TRUE;
 }
@@ -799,6 +575,7 @@ io_attached( unit )
     struct unit *up = FINDUNIT(INTERN(unit));
     return up->curr != NULL;
 }
+
 #ifdef MEM_IO
 /*
  * create a memory based output file and attach for output
@@ -821,67 +598,6 @@ io_output_string( unit, fname, buf, len )
 }
 #endif
 
-#ifdef MEM_IO
-static int
-mem_write(fp, cp, len)
-    struct file *fp;
-    char *cp;
-    int len;
-{
-    if (len + fp->u.mem.pos + 1 <= fp->u.mem.len) {
-	memcpy(fp->u.mem.ptr + fp->u.mem.pos, cp, len);
-	fp->u.mem.pos += len;
-	fp->u.mem.ptr[fp->u.mem.pos] = '\0';
-	return TRUE;
-    }
-    return FALSE;
-}
-
-static int
-mem_read_raw(fp, cp, recl)
-    struct file *fp;
-    char *cp;
-    int recl;
-{
-    int rem = fp->u.mem.len - fp->u.mem.pos;
-    if (rem == 0)
-	return -1;			/* 0? */
-    if (recl > rem)
-	recl = rem;
-    memcpy(cp, fp->u.mem.ptr + fp->u.mem.pos, recl);
-    fp->u.mem.pos += recl;
-    return recl;
-}
-
-static int
-mem_read_cooked(fp, cp, recl, keepeol)
-    struct file *fp;
-    char *cp;
-    int recl;
-    int keepeol;
-{
-    int cc = 0;
-    int nread = 0;
-    int eol = FALSE;
-    while (cc < recl && !eol && fp->u.mem.pos < fp->u.mem.len) {
-	char c = fp->u.mem.ptr[fp->u.mem.pos++];
-	nread++;
-	if (c == '\r')
-	    continue;
-	if (c == '\n') {
-	    eol = TRUE;
-	    if (!keepeol)
-		break;
-	}
-	*cp++ = c;
-        cc++;
-    }
-    if (nread == 0)
-	return -1;
-    return cc;
-}
-#endif /* MEM_IO defined */
-
 /*
  * implement SIL operations;
  */
@@ -890,7 +606,7 @@ mem_read_cooked(fp, cp, recl, keepeol)
 
 #define COPY(SRC,LEN) \
 { \
-    int len = LEN; \
+    size_t len = LEN; \
     if (LEN > space) \
 	len = space; \
     strncpy(lp, SRC, len); \
@@ -901,7 +617,10 @@ mem_read_cooked(fp, cp, recl, keepeol)
 
 #define COPYTEMP COPY(temp, strlen(temp))
 
-/* IOPRINT -- formatted stats/error output */
+/*
+ * IOPRINT -- formatted stats/error output (SIL OUTPUT op)
+ *	orignally "format" was in FORTRAN FORMAT format!!
+ */
 void
 io_printf
 #ifdef __STDC__
@@ -914,7 +633,7 @@ io_printf
     char *format;
     register char c;
     char line[1024];			/* XXX */
-    int space;
+    size_t space;
     char *lp;
     struct file *fp;
 #ifdef __STDC__
@@ -982,7 +701,7 @@ io_printf
 	case 'S':			/* spec */
 	    sp = va_arg(vp, struct spec *);
 	    /* might contain NUL's... will stop short! */
-	    COPY(S_SP(sp), S_L(sp));
+	    COPY(S_SP(sp), (size_t)S_L(sp));
 	    break;
 	case 'v':			/* variable */
 	    dp = va_arg(vp, struct descr *);
@@ -995,7 +714,7 @@ io_printf
 		X_LOCSP(s, dp);		/* get specifier */
 
 		/* might contain NUL's... will stop short! */
-		COPY(S_SP(s), S_L(s));
+		COPY(S_SP(s), (size_t)S_L(s));
 	    }
 	    break;
 	case 'A':			/* padded descriptor Addr */
@@ -1027,13 +746,8 @@ io_printf
     va_end(vp);
     *lp = '\0';
 
-#ifdef MEM_IO
-    if (ISMEM(fp))
-	mem_write(fp, line, strlen(line));
-    else
-#endif
-    if (ISAFILE(fp) && fp->f)
-	fputs(line, fp->f);
+    if (fp->iop)
+	ioo_write(fp->iop, line, strlen(line));	/* was fputs */
 } /* io_printf */
 
 static int
@@ -1045,39 +759,10 @@ io_write(fp, cp, len)
     if (len == 0)
 	return TRUE;
 
-    if ((fp->flags & FL_UPDATE) && fp->last == LAST_INPUT && ISAFILE(fp)) {
-	fseeko(fp->f, (off_t)0, SEEK_CUR);	/* seek relative by zero */
-	/*
-	 * XXX set fp->last to LAST_NONE; don't set to LAST_OUTPUT
-	 * until an actual stdio operation is done?
-	 */
-    }
-    fp->last = LAST_OUTPUT;
-
-#ifdef INET_IO
-    if (ISINET(fp)) {
-	return inet_write(fp->f, cp, len) == len;
-    }
-    else
-#endif /* INET_IO defined */
-#ifdef MEM_IO
-    if (ISMEM(fp)) {
-	return mem_write(fp, cp, len);
-    }
-    else
-#endif /* MEM_IO defined */
-#ifndef NO_UNBUF_RW
-    if (fp->flags & FL_UNBUF) {
-	return write(fileno(fp->f), cp, len) == len;
-    }
-    else
-#endif /* NO_UNBUF_RW not defined */
-    if (ISAFILE(fp))
-	return fwrite( cp, 1, len, fp->f ) == len;
-    return FALSE;
+    return ioo_write(fp->iop, cp, len) == len;
 }
 
-static int
+static int				/* bool */
 io_print_str(fp, cp, len, needfill, eol)
     struct file *fp;
     char *cp;
@@ -1127,9 +812,9 @@ io_print_str(fp, cp, len, needfill, eol)
 	ret = io_write(fp, "\n", 1);
 
 #ifdef NO_UNBUF_RW
-    if ((fp->flags & FL_UNBUF) && ISAFILE(fp)) {
+    if ((fp->flags & FL_UNBUF)) {
 	/* simulate unbuffered I/O */
-	if (fflush(f) == EOF)
+	if (io_fflush(f) == -1)
 	    ret = FALSE;
     }
 #endif /* NO_UNBUF_RW defined */
@@ -1225,9 +910,9 @@ io_read( dp, sp )			/* STREAD */
     int recl;
     int len;
     char *cp;
-    FILE *f;
     struct file *fp;
     struct unit *up;
+    struct io_obj *iop;
 #ifdef _MSC_VER
     int_t err_count = D_A(UINTCL);	/* ^C count */
 #endif
@@ -1244,68 +929,15 @@ io_read( dp, sp )			/* STREAD */
     cp = S_SP(sp);
     for (;;) {
 	fp = up->curr;
-	f = fp->f;
-	if (f == NULL) {
-	    f = io_fopen( fp, "r" );
-	    if (f == NULL)
+	iop = fp->iop;
+	if (iop == NULL) {
+	    iop = io_fopen( fp, 'r' );
+	    if (iop == NULL)
 		return IO_ERR;
 	}
 
-	/*
-	 * ANSI C requires that a file positioning function intervene
-	 * between output and input. Would not be needed if UPDATE I/O
-	 * performed using read()/write() (ie; FL_UNBUF).
-	 *
-	 * before FL_TTY check, in case tty_read() uses stdio functions.
-	 */
-
-	if ((fp->flags & FL_UPDATE) && fp->last == LAST_OUTPUT && ISAFILE(fp)) {
-	    fseeko(f, (off_t)0, SEEK_CUR); /* seek relative by zero */
-	    /*
-	     * XXX set fp->last to LAST_NONE; don't set to LAST_OUTPUT
-	     * until an actual stdio operation is done?
-	     */
-	}
-	fp->last = LAST_INPUT;
-
-	if (ISTTY(fp)) {
-	    tty_mode( fp->f,
-		     (fp->flags & FL_BINARY) != 0,
-		     (fp->flags & FL_NOECHO) != 0,
-		     recl );
-	} /* FL_TTY set */
-
-	if (fp->flags & FL_BINARY) {
-#ifdef INET_IO
-	    if (ISINET(fp))
-		len = inet_read_raw(f, cp, recl);
-	    else
-#endif /* INET_IO defined */
-#ifdef MEM_IO
-	    if (ISMEM(fp)) {
-		len = mem_read_raw(fp, cp, recl);
-	    }
-	    else
-#endif /* MEM_IO defined */
-#ifdef TTY_READ_RAW
-	    if (ISTTY(fp))
-		len = tty_read(f, cp, recl,
-			       TRUE,	/* "raw" */
-			       (fp->flags & FL_NOECHO) != 0, /* "noecho" */
-			       FALSE,	/* "keepeol" */
-			       fp->fname);
-	    else
-#endif /* TTY_READ_RAW defined */
-#ifndef NO_UNBUF_RW
-	    if (fp->flags & FL_UNBUF)
-		len = read(fileno(f), cp, recl);
-	    else
-#endif /* NO_UNBUF_RW not defined */
-		len = fread(cp, 1, recl, f);
-
-	    if (len > 0)
-		break;
-	} /* binary */
+	if (0)
+	    ;
 #ifdef COMPILER_READLINE
 	else if (ISTTY(fp) && COMPILING(unit)) {
 	    char *tp;
@@ -1325,128 +957,43 @@ io_read( dp, sp )			/* STREAD */
 	    break;
 	}
 #endif /* COMPILER_READLINE defined */
-#ifdef INET_IO
-	else if (ISINET(fp)) {
-	    len = inet_read_cooked(f, cp, recl,
-				   (fp->flags & FL_EOL) == 0, 
-				   (fp->flags & FL_BREAK) != 0);
-	    if (len > 0)
+	else {			/* normal, cooked (line) I/O */
+	    len = ioo_read(iop, cp, recl);
+	    if (len >= 0)
 		break;
 	}
-#endif /* INET_IO defined */
-#ifdef MEM_IO
-	else if (ISMEM(fp)) {
-	    len = mem_read_cooked(fp, cp, recl, (fp->flags & FL_EOL) == 0);
-	    if (len > 0)
-		break;
+
+	/* here when read failed; see if non-EOF error */
+	if (!ioo_eof(iop) )
+	    return IO_ERR;	/* error wasn't EOF */
+
+	/* here with EOF */
+#ifdef _MSC_VER			/* (MINGW too??) */
+	/*
+	 * [can't be moved to stdio_obj, because currently no way
+	 *  to signal "continue big loop" -- io_read could return -2?]
+	 *
+	 * Control C causes EOF to be set in VS10;
+	 * SIGINT catcher increments UINTCL, so hopefully
+	 * combinations of ^C and ^Z won't cause infinite loop!
+	 *
+	 * (checks if UNITCL increased while in this routine)
+	 *
+	 * XXX add ISTTY(fp)?  Want "ISCONSOLE" (ctty)??
+	 */
+	if (++err_count == D_A(UINTCL))
+	    ioo_clearerr(iop);
+	    continue;			/* try again */
 	}
-#endif /* MEM_IO defined */
-#ifdef TTY_READ_COOKED
-	else if (ISTTY(fp)) {
-	    len = tty_read(f, cp, recl,
-			   FALSE,	/* "raw" */
-			   (fp->flags & FL_NOECHO) != 0, /* "noecho" */
-			   (fp->flags & FL_EOL) == 0, /* "keepeol" */
-			   fp->fname);
-	    if (len >= 0)		/* allow empty lines! */
-		break;
-	}
-#endif /* TTY_READ_COOKED defined */
-	else {				/* not binary */
-	    /*
-	     * fgets() returns at most recl-1 characters + NUL; we
-	     * want excactly recl characters, and don't want the NUL
-	     * but the buffer (passed in from SIL) doesn't have room
-	     * for recl+1 characters.  Use fgets(), then fudge the
-	     * last character, since fgets() can be much more
-	     * efficient than a getc() loop (good implementations can
-	     * block transfer characters from stdio buffers to ours).
-	     *
-	     * Handle CRLF for files ftp'ed from DOS in BINARY mode
-	     * or on Cygwin with files transferred in ASCII mode!
-	     * Don't treat a bare CR as an EOL; just discard it.
-	     */
-	    if (fgets(cp, recl, f) != NULL) {
-		len = strlen(cp);
-
-		/* ASSERT(len > 0) ??? */
-		if (cp[len-1] == '\n') {	/* saw EOL */
-		    if (fp->flags & FL_EOL) {	/* hide eol? */
-			len--;			/* yes. */
-
-			if (len > 0 && cp[len-1] == '\r')
-			    len--;
-		    }
-		    else if (len > 1 && cp[len-2] == '\r') {
-			/*
-			 * If not hiding EOL, and saw CRLF
-			 * replace CRLF with just NL
-			 */
-			len--;
-			cp[len-1] = '\n';
-		    }
-		}
-		else {				/* no EOL seen */
-		    register int c;
-
-		    /* ASSERT(len == recl-1) ??? */
-
-		    /* read one more character, to fill in for NUL byte */
-		    c = getc(f);
-
-		    /*
-		     * Handle CRLF for files transferred from DOS,
-		     * or on cygwin with files transferred in ASCII mode!
-		     */
-		    if (c == '\r')		/* CR? */
-			c = getc(f);		/* toss it */
-
-		    if (c != EOF) {
-			/* save additional character if not EOL
-			 * or if EOL should be returned
-			 */
-			if (c != '\n' || !(fp->flags & FL_EOL)) {
-			    cp[len] = c;
-			    len++;
-			} /* not EOL or not hiding EOL */
-		    } /* extra char not EOF */
-
-		    if (!(fp->flags & FL_BREAK)) {	/* not experimenting? */
-			/* if not at EOL or EOF, discard rest of "record" */
-			while (c != EOF && c != '\n')
-			    c = getc(f);
-		    }
-		    /* don't care if line terminated by EOL or EOF? */
-		} /* no EOL */
-		break;
-	    } /* fgets OK */
-	} /* not binary */
-
-	/* here when read failed */
-	if (!ISAFILE(fp) || feof(f)) {
-#ifdef _MSC_VER
-	    /* Control C causes EOF to be set in VS10;
-	     * SIGINT catcher increments UINTCL, so hopefully
-	     * combinations of ^C and ^Z won't cause infinite loop!
-	     */
-	    if (++err_count == D_A(UINTCL) && ISAFILE(fp) && ISTTY(fp)) {
-		clearerr(f);
-		continue;
-	    }
 #endif
-	    if (!io_next(unit)) {	/* skip to next file, if any */
-		/* XXX perror? */
-		return IO_EOF;		/* no more files */
-	    }
-	    if (COMPILING(unit)) {
-		/* force call to INCCK to pop old FILENM and LNNOCL */
-		return IO_EOF;
-	    }
-	    continue;			/* try again! */
-	} /* feof */
-
-	/* error, wasn't eof?! */
-	return IO_ERR;
+	if (!io_next(unit)) {		/* skip to next file, if any */
+	    /* XXX perror? */
+	    return IO_EOF;		/* no more files */
+	}
+	if (COMPILING(unit)) {
+	    /* force call to INCCK to pop old FILENM and LNNOCL */
+	    return IO_EOF;
+	}
     } /* forever */
 
     /* here on successful read */
@@ -1461,19 +1008,23 @@ io_read( dp, sp )			/* STREAD */
     return IO_OK;
 } /* io_read */
 
-/* will never be implemented; I/O is not record oriented; use "SET" to seek */
+/*
+ * will never be implemented
+ * I/O is not record oriented (no magtape support); use "SET" to seek 
+ * (might as well just remove from the SIL code!)
+ */
 void
-io_backspace(unit)			/* BKSPCE */
+io_backspace(unit)			/* SIL BKSPCE op */
     int_t unit;
 {
+    (void) unit;
     UNDF(NORET);
 }
 
 void
-io_rewind(unit)				/* REWIND */
+io_rewind(unit)				/* SIL REWIND op */
     int_t unit;
 {
-    FILE *f;
     struct file *fp;
     struct unit *up;
 
@@ -1486,35 +1037,21 @@ io_rewind(unit)				/* REWIND */
 	if (up->curr != NULL)		/* open file not first in list */
 	    io_close((int)unit);	/* close it */
 	up->curr = up->head;		/* reset to head of list */
-	if (up->curr->f == NULL)
-	    io_fopen(up->curr, "r");	/* XXX use original mode? */
+	if (up->curr->iop == NULL)
+	    io_fopen(up->curr, 'r');
     }
     fp = up->curr;
     if (fp == NULL)
 	return;
 
-#ifdef MEM_IO
-    if (ISMEM(fp)) {
-	if (up->offset <= fp->u.mem.len)
-	    fp->u.mem.pos = up->offset;
-	else
-	    fp->u.mem.pos = 0;		/* XXX fp->u.mem.len? */
-	return;
-    }
-#endif /* MEM_IO defined */
-
-    f = fp->f;
-    if (f != NULL && !ISPIPE(fp) && ISAFILE(fp) && !ISPTY(fp)) {
-	fseeko(f, up->offset, SEEK_SET);
-	fp->last = LAST_NONE;		/* reset last I/O type */
-   }
+    ioo_seeko(fp->iop, up->offset, SEEK_SET);
 } /* io_rewind */
 
 /* extensions; */
 
 /* here at end of compilation */
 void
-io_ecomp()				/* XECOMP */
+io_ecomp()				/* SIL XECOMP op */
 {
     struct unit *up;
     struct file *fp;
@@ -1559,12 +1096,7 @@ io_ecomp()				/* XECOMP */
     }
 
     up->head = up->curr;		/* save file for rewind */
-#ifdef MEM_IO
-    if (ISMEM(up->curr))
-	up->offset = up->curr->u.mem.pos;
-    else
-#endif
-	up->offset = ftello(up->curr->f); /* save offset for rewind */
+    up->offset = ioo_tello(up->curr->iop); /* save offset for rewind */
 
     /* free list of included filenames */
     while (iov.includes) {
@@ -1590,15 +1122,15 @@ io_ecomp()				/* XECOMP */
 
 /* process I/O option strings for io_openi and io_openo */
 static int
-io_options( fp, op, rp )
-    struct file *fp;			/* IN: file pointer */
+io_options( op, rp, fp )
     char *op;				/* IN: options */
-    int *rp;				/* OUT: recl */
+    int *rp;				/* OUT: recl (optional) */
+    int *fp;				/* OUT: flags */
 {
     int flags;
     int recl;
 
-    flags = fp->flags;
+    flags = *fp;
     recl = 0;
 
     /* XXX check here for leading hyphen; process SPITBOL style options? */
@@ -1709,9 +1241,9 @@ io_options( fp, op, rp )
 	}
     } /* while *op */
 
-    fp->flags = flags;
     if (rp)
 	*rp = recl;
+    *fp = flags;
     return TRUE;
 }
 
@@ -1726,7 +1258,6 @@ io_openi(dunit, sfile, sopts, drecl)	/* called from SNOBOL INPUT() */
     char opts[MAXOPTS];			/* XXX malloc(S_L(sopts)+1)? */
     struct file *fp;
     struct unit *up;
-    FILE *f;
     int unit;
     int recl;
 
@@ -1753,15 +1284,14 @@ io_openi(dunit, sfile, sopts, drecl)	/* called from SNOBOL INPUT() */
 	return FALSE;
 
     /* process options */
-    if (!io_options(fp, opts, &recl)) {
+    if (!io_options(opts, &recl, &fp->flags)) {
 	free(fp);
 	return FALSE;
     }
 
     /* open it now, so we can return status! */
     if (fname[0]) {
-	f = io_fopen( fp, "r");
-	if (f == NULL) {
+	if (io_fopen( fp, 'r') == NULL) {
 	    free(fp);
 	    return FALSE;		/* fail; no harm done! */
 	}
@@ -1788,7 +1318,6 @@ io_openo(dunit, sfile, sopts)		/* called from SNOBOL OUTPUT() */
     struct file *fp;
     struct unit *up;
     int unit;
-    FILE *f;
 
     unit = INTERN(D_A(dunit));
     if (BADUNIT(unit))
@@ -1814,15 +1343,14 @@ io_openo(dunit, sfile, sopts)		/* called from SNOBOL OUTPUT() */
 	return FALSE;			/* fail; no harm done! */
 
     /* process options */
-    if (!io_options(fp, opts, NULL)) {	/* XXX error if recl set?? */
+    if (!io_options(opts, NULL, &fp->flags)) { /* XXX error if recl set?? */
 	free(fp);
 	return FALSE;
     }
 
     /* open it now, so we can return status! */
     if (fname[0]) {
-	f = io_fopen( fp, "w");
-	if (f == NULL) {
+	if (io_fopen( fp, 'w') == NULL) {
 	    free(fp);
 	    return FALSE;		/* fail; no harm done! */
 	}
@@ -1868,7 +1396,7 @@ io_include( dp, sp )
     if (fp == NULL)
 	return INC_FAIL;		/* alloc failure */
 
-    if (io_fopen( fp, "r") == NULL) {
+    if (io_fopen( fp, 'r') == NULL) {
 	free(fp);
 	return INC_FAIL;
     }
@@ -1942,9 +1470,10 @@ io_file( dp, sp )
 /*
  * support for SPITBOL SET() function
  *
- * problems on systems (like bsd44) where sizeof(off_t) > sizeof(int_t)
- * on most hardware...
+ * problems on modern 32-bit systems where sizeof(off_t) > sizeof(int_t)
+ * called via IO_SEEK macro using XCALLC in SIL code
  */
+
 int
 io_seek(dunit, doff, dwhence)
     struct descr *dunit, *doff, *dwhence;
@@ -1953,7 +1482,6 @@ io_seek(dunit, doff, dwhence)
     off_t off;
     struct file *fp;
     struct unit *up;
-    FILE *f;
 
     unit = INTERN(D_A(dunit));
     if (BADUNIT(unit))
@@ -1970,40 +1498,10 @@ io_seek(dunit, doff, dwhence)
 
     /* translate n -> SEEK_xxx using switch stmt (if SEEK_xxx available)? */
 
-#ifdef MEM_IO
-    if (ISMEM(fp)) {
-	/* XXX special fun here */
-	return FALSE;
-    }
-#endif /* MEM_IO defined */
-
-    if (!ISAFILE(fp))
-	return FALSE;
-
-    f = fp->f;
-    if (f == NULL)
-	return FALSE;
-
-#ifndef NO_UNBUF_RW
-    if (fp->flags & FL_UNBUF) {
-	off_t pos;
-
-	/* optimized stdio libraries might try to optimize away
-	 * the lseek if they've seen no read/write ops!
-	 */
-	pos = lseek(fileno(f), off, whence);
-	if (pos != (off_t)-1)
-	    return FALSE;
-	D_A(doff) = (int_t)pos;		/* XXX truncation possible! */
-    }
-    else
-#endif /* NO_UNBUF_RW not defined */
-    if (fseeko(f, off, whence) == 0)
-	D_A(doff) = (int_t)ftello(f);	/* XXX truncation possible! */
+    if (ioo_seeko(fp->iop, off, whence) == 0)
+	D_A(doff) = (int_t)ioo_tello(fp->iop);	/* XXX truncation possible (on 32b)! */
     else
 	return FALSE;
-
-    fp->last = LAST_NONE;		/* reset last I/O type */
 
     return TRUE;
 }
@@ -2012,6 +1510,7 @@ io_seek(dunit, doff, dwhence)
  * new 3/12/99
  * Experimental "scaled SET" function
  * called as external function from snolib/sset.c
+ * (not needed on 64-bit systems)
  */
 int
 io_sseek(unit, soff, whence, scale, oof )
@@ -2020,7 +1519,7 @@ io_sseek(unit, soff, whence, scale, oof )
     off_t off;
     struct file *fp;
     struct unit *up;
-    FILE *f;
+    struct io_obj *iop;
 
     unit = INTERN(unit);
     if (BADUNIT(unit))
@@ -2036,66 +1535,36 @@ io_sseek(unit, soff, whence, scale, oof )
 
     /* translate n -> SEEK_xxx using switch stmt (if SEEK_xxx available)? */
 
-#ifdef MEM_IO
-    if (ISMEM(fp)) {
-	/* XXX special fun here */
-	return FALSE;
-    }
-#endif /* MEM_IO defined */
-
-    if (!ISAFILE(fp))
+    iop = fp->iop;
+    if (iop == NULL)
 	return FALSE;
 
-    f = fp->f;
-    if (f == NULL)
-	return FALSE;
-
-#ifndef NO_UNBUF_RW
-    if (fp->flags & FL_UNBUF) {
-	off_t pos;			/* XXX pos_t? */
-
-	/* optimized stdio libraries might try to optimize away
-	 * the lseek if they've seen no read/write ops!
-	 */
-	pos = lseek(fileno(f), off, whence);
-	if (pos != (off_t)-1)
-	    return FALSE;
-	*oof = pos / scale;
-    }
-    else
-#endif /* NO_UNBUF_RW not defined */
-    if (fseeko(f, off, whence) == 0)
-	*oof = ftello(f)/scale;
+    if (ioo_seeko(iop, off, whence) == 0)
+	*oof = ioo_tello(iop)/scale;
     else
 	return FALSE;
-
-    fp->last = LAST_NONE;		/* reset last I/O type */
 
     return TRUE;
 }
 
 /* flush all pending output before system(), exec(), or death */
 int
-io_flushall(dummy)
+io_flushall(dummy)			/* called w/ SIL XCALLC */
     int dummy;
 {
     int i;
 
+    (void) dummy;
     for (i = 1; i <= NUNITS; i++) {
 	struct file *fp;
 	struct unit *up;
 
 	up = FINDUNIT(INTERN(i));
 	fp = up->curr;
-	if (fp) {
-	    FILE *f;
-
-	    f = fp->f;
-	    if (f) {
-		if (fp->last == LAST_OUTPUT && ISAFILE(fp))
-		    fflush(f);		/* keep err count?? */
-	    } /* have f */
-	} /* have fp */
+	if (fp && fp->iop) {
+	    /* keep err count?? */
+	    ioo_flush(fp->iop);
+	}
     } /* foreach unit */
     return TRUE;
 }
@@ -2103,6 +1572,8 @@ io_flushall(dummy)
 /*
  * for PML functions; return a free unit number, returns -1 on failure
  * (use io_mkfile() to attach open file to unit)
+ *
+ * available in SNOBOL via snolib/findunit.c (PML'ed)
  */
 
 #define MINFIND 20			/* minimum unit to return */
@@ -2143,6 +1614,15 @@ io_findunit()
     }
 } /* io_findunit */
 
+/*
+ * only stdio_obj subclass of io_obj has FILE pointer.
+ * COULD implement a getfp io_obj method
+ * BUT in some subclasses (Windows PTY) that's only for one direction
+ *   (win32/pty.c could implement it as return NULL.)
+ *   and all files implementing io_obj interface already include <stdio.h>
+ *	(for NULL and size_t)
+ */
+#if 0
 /* for PML functions; get current fp on a unit */
 EXPORT(FILE *)
 io_getfp(unit)
@@ -2160,6 +1640,7 @@ io_getfp(unit)
 
     return up->curr->f;
 } /* io_getfp */
+#endif
 
 /*
  * new 9/9/97
@@ -2185,7 +1666,7 @@ io_pad(sp, len)
     return 1;				/* for XCALLC */
 }
 
-/* new 9/21/97 called from endex() */
+/* new 9/21/97 called from lib/endex.c (which is called from main.c) */
 int
 io_finish() {
     int i;
@@ -2202,7 +1683,7 @@ io_finish() {
     return TRUE;
 }
 
-/* new 1/12/2012 call to add a dir to include dir list */
+/* new 1/12/2012 called to add a dir to include dir list (from init.c) */
 int
 io_add_lib_dir(dirname)
      char *dirname;
@@ -2218,7 +1699,9 @@ io_add_lib_dir(dirname)
     return TRUE;
 }
 
-/* new 1/12/2012 add a (PATH_SEP separated) path to include dir list */
+/* new 1/12/2012 add a (PATH_SEP separated) path to include dir list
+ * (called from init.c)
+ */
 int
 io_add_lib_path(path)
     char *path;
@@ -2241,6 +1724,7 @@ io_add_lib_path(path)
     return TRUE;
 }
 
+/* called from init.c to display paths (for -z option) */
 void
 io_show_paths()
 {
@@ -2290,6 +1774,7 @@ trypath(dir, subdir, file, ext)
     return NULL;
 }
 
+/* used by io_include(), lib/loadx.c, -L option */
 char *
 io_lib_find(subdir, file, ext)
     char *subdir;
@@ -2346,6 +1831,7 @@ io_lib_dir(n)
     return NULL;
 }
 
+/* helper for io_preload (adds to input file list) */
 static void
 try_preload(path)
     char *path;
@@ -2440,3 +1926,78 @@ io_fastpr(iokey, unit, ccfp, sp1, sp2)
     D_A(iokey) = !ret;
 } /* io_fastpr */
 #endif /* BLOCKS */
+
+/*
+ * support for io_obj framework: the one place to allocate an io_obj
+ */
+struct io_obj *
+io_alloc(int size, const struct io_ops *ops, int flags) {
+    struct io_obj *iop = calloc(1, size); /* note zeroed! */
+    if (iop) {
+	iop->ops = ops;
+	iop->flags = flags;
+    }
+    return iop;
+}
+
+/*
+ * code excised from io_fopen2. called from stdio_obj.c (& winsock support?)
+ * NOTE!! path must be writable, and point AFTER the initial prefix
+ * returned pointers will point inside path buffer.
+ */
+int
+inet_parse(char *path, char **hostp, char **servicep, int *inet_flagp) {
+    char *host, *service, *cp;
+    int flags;
+
+    flags = 0;
+
+    host = path;
+    service = index(host, '/');
+    if (service == NULL)
+	return -1;
+    *service++ = '\0';
+
+    /* look for option suffixes, ignore if unknown */
+    cp = index(service, '/');
+    if (cp) {
+	char *op;
+
+	*cp++ = '\0';
+	do {
+	    op = cp;
+	    cp = index(cp, '/');
+	    if (cp)
+		*cp++ = '\0';
+
+	    if (strcmp(op, "priv") == 0)
+		flags |= INET_PRIV;
+	    else if (strcmp(op, "broadcast") == 0)
+		flags |= INET_BROADCAST;
+	    else if (strcmp(op, "reuseaddr") == 0)
+		flags |= INET_REUSEADDR;
+	    else if (strcmp(op, "dontroute") == 0)
+		flags |= INET_DONTROUTE;
+	    else if (strcmp(op, "oobinline") == 0)
+		flags |= INET_OOBINLINE;
+	    else if (strcmp(op, "keepalive") == 0)
+		flags |= INET_KEEPALIVE;
+	    else if (strcmp(op, "nodelay") == 0)
+		flags |= INET_NODELAY;
+
+	    /* XXX more magic? non-booleans? linger?? */
+	} while (cp);
+    } /* have suffixes */
+
+    if (flags & FL_CLOEXEC)
+	flags |= INET_CLOEXEC;
+
+    if (!(flags & FL_EXCL))
+	flags |= INET_REUSEADDR;	/* NEW: reuse, unless exclusive */
+
+    *hostp = host;
+    *servicep = service;
+    *inet_flagp = flags;
+
+    return 0;
+}
