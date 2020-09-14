@@ -38,7 +38,7 @@ WATTCP_LIBDIR=${WATTCP_DIR}/lib
 # uncomment next 4 lines to enable;
 #WATTCP_DEFS=-I${WATTCP_INCDIR} -DHAVE_WATTCP
 #INET_C=$(SRCDIR)lib/bsd/inet.c
-#INET_OBJS=bindresvport.o
+#INET_OBJS=bindresvport.o bufio_obj.o
 #WATTCP_LIBS=-L${WATTCP_LIBDIR} -lwatt
 
 CFLAGS=	-c $(OPT) -I$(SRCDIR)config/djgpp -I$(SRCDIR)include -I$(SRCDIR). \
@@ -50,11 +50,11 @@ LIBS=$(WATTCP_LIBS) -lm -lc -lpc $(DXE_LIBS)
 OBJ=	isnobol4.o data.o data_init.o main.o syn.o \
 	bal.o break.o date.o dump.o endex.o hash.o \
 	intspc.o io.o lexcmp.o ordvst.o pair.o pat.o \
-	pml.o realst.o replace.o str.o stream.o top.o \
+	pml.o realst.o replace.o stdio_obj.o str.o stream.o top.o \
 	tree.o bcopy.o bzero.o dynamic.o expops.o getopt.o \
 	init.o load.o mstime.o chop.o cos.o delete.o \
 	exit.o exp.o file.o getstring.o handle.o \
-	host.o log.o ord.o rename.o retstring.o sin.o \
+	host.o log.o ord.o pty.o rename.o retstring.o sin.o \
 	spcint.o spreal.o sqrt.o sset.o \
 	tan.o sys.o tty.o inet.o execute.o exists.o \
 	term.o findunit.o $(DXE_OBJS) $(INET_OBJS)
@@ -127,6 +127,9 @@ realst.o: $(SRCDIR)lib/realst.c
 replace.o: $(SRCDIR)lib/replace.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/replace.c
 
+stdio_obj.o: $(SRCDIR)lib/stdio_obj.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/stdio_obj.c
+
 str.o:	$(SRCDIR)lib/str.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/str.c
 
@@ -161,10 +164,16 @@ getopt.o: $(SRCDIR)lib/auxil/getopt.c
 bindresvport.o: $(SRCDIR)lib/auxil/bindresvport.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/auxil/bindresvport.c
 
+bufio_obj.o: $(SRCDIR)lib/auxil/bufio_obj.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/auxil/bufio_obj.c
+
 ################ dummy
 
 execute.o: $(SRCDIR)lib/dummy/execute.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/dummy/execute.c
+
+pty.o: $(SRCDIR)lib/dummy/pty.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/dummy/pty.c
 
 ################ generic
 

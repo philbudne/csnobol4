@@ -28,7 +28,7 @@ OBJ=	isnobol4.o data.o data_init.o main.o syn.o bal.o break.o \
 	file.o getstring.o handle.o host.o log.o ord.o rename.o \
 	retstring.o sin.o spcint.o spreal.o sqrt.o sset.o \
 	osopen.o sys.o tan.o tty.o inet.o bindresvport.o \
-	execute.o exists.o term.o findunit.o pty.o
+	execute.o exists.o term.o findunit.o pty.o stdio_obj.o bufio_obj.o
 
 # requires amalgamation sqlite.[ch] in modules/sqlite3:
 ifneq (,$(wildcard modules/sqlite3/sqlite3.[ch]))
@@ -119,6 +119,9 @@ realst.o: $(SRCDIR)lib/realst.c
 replace.o: $(SRCDIR)lib/replace.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/replace.c
 
+stdio_obj.o:	$(SRCDIR)lib/stdio_obj.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/stdio_obj.c
+
 str.o:	$(SRCDIR)lib/str.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/str.c
 
@@ -153,14 +156,13 @@ getopt.o: $(SRCDIR)lib/auxil/getopt.c
 bindresvport.o: $(SRCDIR)lib/auxil/bindresvport.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/auxil/bindresvport.c
 
+bufio_obj.o: $(SRCDIR)lib/bufio_obj.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/bufio_obj.c
+
 ################ dummy
 
 execute.o: $(SRCDIR)lib/dummy/execute.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/dummy/execute.c
-
-# write win32 version using winpty!!!
-pty.o: $(SRCDIR)lib/dummy/pty.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib/dummy/pty.c
 
 ################ generic
 
@@ -186,6 +188,9 @@ mstime.o: $(SRCDIR)lib/win32/mstime.c
 
 osopen.o: $(SRCDIR)lib/win32/osopen.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/win32/osopen.c
+
+pty.o: $(SRCDIR)lib/win32/pty.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/win32/pty.c
 
 sys.o:	$(SRCDIR)lib/win32/sys.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/win32/sys.c
