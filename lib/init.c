@@ -518,7 +518,7 @@ init_args( ac, av )
 
     if (!unbuffer_all) {
 	char *u = getenv("SNOBOL4UNBUFFERED"); /* like PYTHONUNBUFFERED */
-	if (u || *u)
+	if (u && *u)
 	    unbuffer_all = 1;
     }
 
