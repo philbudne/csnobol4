@@ -4,6 +4,10 @@
  * as of 2020 only Windows can't use this
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <stdio.h>
 
 #ifdef HAVE_UNISTD_H
