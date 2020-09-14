@@ -6,6 +6,10 @@
 
 #include <stdio.h>
 
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>			/* here w/ glibc */
+#endif
+
 #include "h.h"
 #include "snotypes.h"
 #include "lib.h"

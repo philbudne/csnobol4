@@ -420,8 +420,11 @@ spcint.o: $(SPCINT_C)
 spreal.o: $(SPREAL_C)
 	$(CC) $(CFLAGS) -c $(SPREAL_C)
 
-str.o:	$(STR_C)
-	$(CC) $(CFLAGS) -c $(STR_C)
+stdio_obj.o: $(STDIO_OBJ_C)
+	$(CC) $(CFLAGS) -c $(STDIO_OBJ_C)
+
+stream.o: $(STREAM_C)
+	$(CC) $(CFLAGS) -c $(STREAM_C)
 
 stream.o: $(STREAM_C)
 	$(CC) $(CFLAGS) -c $(STREAM_C)
