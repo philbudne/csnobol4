@@ -32,6 +32,8 @@ static int wsock_init;
 #include <fcntl.h>
 #include <io.h>
 
+#define SUPER bufio_ops
+
 #ifndef INADDR_NONE
 #define INADDR_NONE ((unsigned long)0xffffffff)	/* want u_int32_t! */
 #endif /* INADDR_NONE not defined */
@@ -222,6 +224,8 @@ static int
 inetio_close(struct io_obj *iop) {
     struct inetio_obj *iiop = (struct inetio_obj *) iop;
 
+    SUPER.io_close(iop);		/* free buffer */
+
     /* ensure all data has been sent? does not block?? */
     shutdown(iiop->s, SD_BOTH);
 
@@ -238,7 +242,7 @@ inetio_close(struct io_obj *iop) {
 #define inetio_eof NULL			/* use bufio */
 #define inetio_clearerr NULL		/* use bufio */
 
-MAKE_OPS(inetio, &bufio_ops);
+MAKE_OPS(inetio, &SUPER);
 
 struct io_obj *
 inetio_open(char *path, int flags, int dir) {

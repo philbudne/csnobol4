@@ -38,6 +38,8 @@
 #include "io_obj.h"
 #include "bufio_obj.h"
 
+#define SUPER bufio_ops
+
 #define DEFAULT_X_SIZE 24
 #define DEFAULT_Y_SIZE 80
 
@@ -100,6 +102,8 @@ int
 ptyio_close(struct io_obj *iop) {
     struct ptyio_obj *piop = (struct ptyio_obj *)iop;
 
+    SUPER.io_close(iop);		/* free buffer */
+
     // "A final painted frame may arrive on hOutput from the
     // pseudoconsole when (ClosePseudoConsole) is called. It is
     // expected that the caller will drain this information from the
@@ -136,7 +140,7 @@ ptyio_close(struct io_obj *iop) {
 #define ptyio_eof NULL			/* use bufio */
 #define ptyio_clearerr NULL		/* use bufio */
 
-MAKE_OPS(ptyio, &bufio_ops);
+MAKE_OPS(ptyio, &SUPER);
 
 
 // https://docs.microsoft.com/en-us/windows/console/creating-a-pseudoconsole-session
