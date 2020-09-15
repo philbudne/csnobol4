@@ -27,14 +27,13 @@
 #include <netinet/in.h>
 #include <netinet/tcp.h>		/* TCP_NODELAY */
 
-#include "h.h"				/* TRUE/FALSE */
-#include "snotypes.h"
-#include "lib.h"			/* own prototypes */
+#include "h.h"				/* TRUE/FALSE, __P */
+#include "inet.h"			/* own prototypes */
 #include "str.h"			/* bcopy() */
 #include "bindresvport.h"
 
 /* NOTE!! Ignores "port" arg!! */
-static int
+static sock_t
 inet_socket2( host, service, port, flags, type )
     char *host, *service;
     int type;
@@ -42,8 +41,9 @@ inet_socket2( host, service, port, flags, type )
     int port;
 {
     struct addrinfo hint, *res0, *res;
-    int error, s;
     int true = 1;
+    int error;
+    sock_t s;
 
     if (!host || !service)
 	return -1;
@@ -94,7 +94,7 @@ inet_socket2( host, service, port, flags, type )
 }
 
 /* NOTE!! Ignores "port" arg!! */
-static int
+static sock_t
 inet_socket( host, service, port, flags, type )
     char *host, *service;
     int port, flags, type;
@@ -110,7 +110,7 @@ inet_socket( host, service, port, flags, type )
 }
 
 /* NOTE!! Ignores "port" arg!! */
-int
+sock_t
 tcp_socket( host, service, port, flags )
     char *host, *service;
     int port, flags;
@@ -119,7 +119,7 @@ tcp_socket( host, service, port, flags )
 }
 
 /* NOTE!! Ignores "port" arg!! */
-int
+sock_t
 udp_socket( host, service, port, flags )
     char *host, *service;
     int port, flags;
@@ -129,11 +129,4 @@ udp_socket( host, service, port, flags )
 
 void
 inet_cleanup() {
-}
-
-int
-inet_close( f )
-    FILE *f;
-{
-    return fclose(f) == 0;
 }

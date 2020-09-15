@@ -7,9 +7,11 @@
 #endif /* HAVE_CONFIG_H defined */
 
 #include <stdio.h>
-#include "h.h"				/* TRUE */
 
-int
+#include "h.h"				/* TRUE, __P */
+#incldde "inet.h"			/* prototypes */
+
+sock_t
 tcp_socket( host, service, port, priv )
     char *host, *service;
     int port, priv;
@@ -17,8 +19,7 @@ tcp_socket( host, service, port, priv )
     return -1;
 }
 
-
-FILE *
+sock_t
 udp_socket( host, service, port, priv )
     char *host, *service;
     int port, priv;
@@ -28,11 +29,4 @@ udp_socket( host, service, port, priv )
 
 void
 inet_cleanup() {
-}
-
-int
-inet_close( f )
-    FILE *f;
-{
-    return TRUE;
 }

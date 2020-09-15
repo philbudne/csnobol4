@@ -52,10 +52,11 @@ extern char *getenv();
 #include "snotypes.h"
 #include "macros.h"
 #include "path.h"
-#include "libret.h"			/* IO_xxx, INC_xxx */
 #include "lib.h"
+#include "inet.h"			/* INET_XXX */
+#include "libret.h"			/* IO_xxx, INC_xxx */
 #include "str.h"
-#include "io_obj.h"				/* io_obj, FL_xxx */
+#include "io_obj.h"			/* io_obj, FL_xxx */
 #include "stdio_obj.h"			/* stdio_{wrap,obj} */
 
 /* generated */
@@ -609,7 +610,7 @@ io_output_string( unit, fname, buf, len )
     size_t len = LEN; \
     if (LEN > space) \
 	len = space; \
-    strncpy(lp, SRC, len); \
+    memcpy(lp, SRC, len); \
     lp += len; \
     space -= len; \
     *lp = '\0'; \

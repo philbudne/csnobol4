@@ -173,21 +173,7 @@ void osname __P((char *));
 /* from term.c */
 FILE * term_input __P((void));
 
-/* from inet(6).c */
-#ifndef INET_IO
-int tcp_socket __P((char *, char *, int, int));
-int udp_socket __P((char *, char *, int, int));
-#endif
-void inet_cleanup __P((void));
-
-#define INET_PRIV	01
-#define INET_BROADCAST	02
-#define INET_REUSEADDR	04
-#define INET_DONTROUTE	010
-#define INET_OOBINLINE	020
-#define INET_KEEPALIVE	040
-#define INET_NODELAY	0100
-#define INET_CLOEXEC	0200
+/* {tc,ud}p_socket moved to inet.h */
 
 /* from tty.c */
 int fisatty __P((FILE *));		/* or fisatty.c */

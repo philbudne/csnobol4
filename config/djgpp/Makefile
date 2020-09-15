@@ -8,38 +8,43 @@
 # from nmake file for VC++ 5.0 on WinNT 4.0 P. Budne 2/4/1998
 # from batch file by David Feustel
 
+# Uncomment for DXE2 load() support.
+# DXE2 available from "v2tk" directory on DJGPP distribution mirror sites.
+# Unpack and run "make install"
+#HAVE_DXE=1
+
+# Uncomment for TCP/IP support with WATTCP (www.wattcp.com)
+#HAVE_WATTCH=1
+# edit as needed for your installation;
+WATTCP_DIR=/djgpp/wattcp
+
 CC=gcc
 OPT=-O3
 
-# defaults
-INET_C=$(SRCDIR)lib/dummy/inet.c
-LOAD_C=$(SRCDIR)lib/dummy/load.c
-
-# DXE2 LOAD() support.  DXE2 available from "v2tk" directory
-# on DJGPP distribution mirror sites.  Unpack and run "make install"
+ifdef HAVE_DXE2
 #
-# uncomment next 4 lines to enable;
-#DXE_DEFS=-DHAVE_DXE2
-#LOAD_C=$(SRCDIR)lib/unix98/load.c
-#DXE_OBJS=osinit.o loadx.o
-#DXE_LIBS=-ldl
+DXE_DEFS=-DHAVE_DXE2
+LOAD_C=$(SRCDIR)lib/unix98/load.c
+DXE_OBJS=osinit.o loadx.o
+DXE_LIBS=-ldl
 #
 # "DXE3" now part of DJGPP distribution (as of April 2003)
 #	Didn't find it in a basic install of v2 -phil
-#
+else
+LOAD_C=$(SRCDIR)lib/dummy/load.c
+endif
 
-# TCP/IP support, using WATTCP (see www.wattcp.com)
-#
-# edit as needed for your installation;
-WATTCP_DIR=/djgpp/wattcp
+ifdef HAVE_WATTCP
 WATTCP_INCDIR=${WATTCP_DIR}/inc
 WATTCP_LIBDIR=${WATTCP_DIR}/lib
 #
-# uncomment next 4 lines to enable;
-#WATTCP_DEFS=-I${WATTCP_INCDIR} -DHAVE_WATTCP
-#INET_C=$(SRCDIR)lib/bsd/inet.c
-#INET_OBJS=bindresvport.o bufio_obj.o
-#WATTCP_LIBS=-L${WATTCP_LIBDIR} -lwatt
+WATTCP_DEFS=-I${WATTCP_INCDIR} -DHAVE_WATTCP
+INET_C=$(SRCDIR)lib/bsd/inet.c
+INET_OBJS=bindresvport.o
+WATTCP_LIBS=-L${WATTCP_LIBDIR} -lwatt
+else
+INET_C=$(SRCDIR)lib/dummy/inet.c
+endif
 
 CFLAGS=	-c $(OPT) -I$(SRCDIR)config/djgpp -I$(SRCDIR)include -I$(SRCDIR). \
 	-DHAVE_CONFIG_H $(WATTCP_DEFS) $(DXE_DEFS)

@@ -52,7 +52,7 @@ struct vars {
 #endif /* ENDEX_LONGJMP defined */
 
 #ifdef HAVE_WINSOCK_H
-    int v_wsock_init;
+    int v_wsock_init_done;
 #endif /* HAVE_WINSOCK_H defined */
 };
 
@@ -78,6 +78,6 @@ struct vars {
 #define loadptr (varp->v_loadptr)
 #define timeptr	(varp->v_timeptr)
 #define endex_jmpbuf (varp->v_endex_jmpbuf)
-#define wsock_init (varp->v_wsock_init)
+#define wsock_init_done (varp->v_wsock_init_done)
 
 extern struct vars *varp;

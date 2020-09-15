@@ -14,15 +14,10 @@
 #include "h.h"				/* TRUE/FALSE */
 #include "snotypes.h"			/* needed on VAX/VMS for macros.h */
 #include "lib.h"
+#include "inet.h"			/* {tcp,udp}_socket */
 #include "str.h"			/* bcopy */
 #include "io_obj.h"
 #include "bufio_obj.h"
-
-#ifdef NO_STATIC_VARS
-#include "vars.h"
-#else  /* NO_STATIC_VARS not defined */
-static int wsock_init;
-#endif /* NO_STATIC_VARS not defined */
 
 /*
  * fcntl.h and io.h included for borland BCC32 v5.5
@@ -47,12 +42,7 @@ static int wsock_init;
  */
 #define VMAJOR 1
 #define VMINOR 1
-
-struct inetio_obj {
-    struct bufio_obj bio;		/* line buffered input */
-
-    SOCKET s;
-};
+WORD wVersionRequested = MAKEWORD(VMAJOR,VMINOR);
 
 static SOCKET
 inet_socket( host, service, port, flags, type )
@@ -68,35 +58,6 @@ inet_socket( host, service, port, flags, type )
     int true = 1;
 
     if (!host || !service)
-	return INVALID_SOCKET;
-
-    if (wsock_init == 0) {
-	WSADATA wsaData;
-	WORD wVersionRequested;
-	int opt;
-	long ret;
-
-	wVersionRequested = MAKEWORD(VMAJOR,VMINOR);
-	ret = WSAStartup(wVersionRequested, &wsaData);
-	if (ret == 0) {
-	    /*
-	     * XXX examine wsaData.wVersion and wsaData.wHighVersion?
-	     * LOBYTE(ver) is major version, HIBYTE(ver) is minor version
-	     */
-	    wsock_init = 1;
-
-	    /*
-	     * For WinNT; switch to blocking/non-overlapped I/O
-	     * see http://www.telicsolutions.com/techsupport/WinFAQ.htm
-	     */
-	    opt = SO_SYNCHRONOUS_NONALERT;
-	    setsockopt(INVALID_SOCKET, SOL_SOCKET, SO_OPENTYPE,
-		       (char *)&opt, sizeof(opt));
-	}
-	else
-	    wsock_init = -1;
-    }
-    if (wsock_init < 0)
 	return INVALID_SOCKET;
 
     bzero(&sin, sizeof(sin));
@@ -174,7 +135,7 @@ inet_socket( host, service, port, flags, type )
     return INVALID_SOCKET;
 } /* inet_socket */
 
-static SOCKET
+SOCKET
 tcp_socket( host, service, port, flags )
     char *host, *service;
     int port, flags;
@@ -182,25 +143,23 @@ tcp_socket( host, service, port, flags )
     return inet_socket( host, service, port, flags, SOCK_STREAM );
 }
 
-static SOCKET
+SOCKET
 udp_socket( host, service, port, flags )
     char *host, *service;
     int port, flags;
 {
     return inet_socket( host, service, port, flags, SOCK_DGRAM );
 }
-
-void
-inet_cleanup() {
-    if (wsock_init > 0)
-	WSACleanup();
-}
 
 /****************************************************************
- * XXX move to inetio_obj.c (use with both inet.c and inet6.c)??
- * maybe winsockio_obj.c: include WSA{Start,Clean}up)?
- *	get desired WS version from a global??
+ * XXX move to win32/inetio_obj.c (use with both inet.c and inet6.c)??
  */
+
+struct inetio_obj {
+    struct bufio_obj bio;		/* line buffered input */
+
+    SOCKET s;
+};
 
 static ssize_t
 inetio_read_raw(struct io_obj *iop, char *buf, size_t len) {
@@ -234,7 +193,7 @@ inetio_close(struct io_obj *iop) {
      * then recv() until socket drained?
      */
     return closesocket(iiop->s) == 0;
-} /* inet_close */
+} /* inetio_close */
 
 #define inetio_read NULL		/* use bufio */
 #define inetio_seeko NULL		/* use bufio */
@@ -243,6 +202,46 @@ inetio_close(struct io_obj *iop) {
 #define inetio_clearerr NULL		/* use bufio */
 
 MAKE_OPS(inetio, &SUPER);
+
+#ifdef NO_STATIC_VARS
+#include "vars.h"
+#else  /* NO_STATIC_VARS not defined */
+static int wsock_init_done;
+#endif /* NO_STATIC_VARS not defined */
+
+/* extern WORD wVersionRequested; */
+static void
+wsock_init(void) {
+    if (wsock_init != 0)
+	return;
+
+    WSADATA wsaData;
+    long ret = WSAStartup(wVersionRequested, &wsaData);
+    if (ret != 0) {
+	wsock_init_done = -1;
+	return;
+    }
+    /*
+     * XXX examine wsaData.wVersion and wsaData.wHighVersion?
+     * LOBYTE(ver) is major version, HIBYTE(ver) is minor version
+     */
+    wsock_init_done = 1;
+
+    /*
+     * For WinNT; switch to blocking/non-overlapped I/O
+     * see http://www.telicsolutions.com/techsupport/WinFAQ.htm
+     */
+    int opt = SO_SYNCHRONOUS_NONALERT;
+    setsockopt(INVALID_SOCKET, SOL_SOCKET, SO_OPENTYPE,
+	       (char *)&opt, sizeof(opt));
+}
+
+void
+inet_cleanup() {
+    if (wsock_init_done > 0)
+	WSACleanup();
+    wsock_init_done = 0
+}
 
 struct io_obj *
 inetio_open(char *path, int flags, int dir) {
@@ -255,6 +254,10 @@ inetio_open(char *path, int flags, int dir) {
 	strncmp(path, "/udp/", 5) != 0)
 	return NOMATCH;
 
+    if (wsock_init_done == 0)
+	wsock_init();
+    if (wsock_init_done < 0)
+	return NULL;
 
     fn2 = strdup(path+5);		/* make writable copy */
     if (inet_parse(fn2, &host, &service, &inet_flags) < 0) {

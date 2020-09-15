@@ -35,9 +35,8 @@
 #include <netdb.h>
 #include <fcntl.h>
 
-#include "h.h"				/* TRUE/FALSE */
-#include "snotypes.h"
-#include "lib.h"			/* own prototypes */
+#include "h.h"				/* TRUE/FALSE, __P */
+#include "inet.h"			/* own prototypes */
 #include "str.h"			/* bcopy() */
 #include "bindresvport.h"
 

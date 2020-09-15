@@ -2,11 +2,23 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+9/15/2020:
+	config/djgpp/Makefile: use gmake ifdef
+	lib/win32/inet.c: refactoring, use inet.h
+	config/win32/config.h: add sock_t, remove isnan
+	include/lib.h: move {tc,ud}p_socket, flags to inet.h
+	include/inet.h (new)
+	include/vars.h: rename wsock_init to wsock_init_done
+	lib/io.c: use inet.h, silence strncpy complaints w/ memcpy
+	lib/stdio_obj.c: use inet.h
+	lib/bsd/inet.c: use inet.h
+	lib/bsd/inet6.c: use inet.h, sock_t, remove inet_close
+	lib/dummy/inet.c: remove inet_close, use inet.h
+
 9/14/2020:
 	modules: add .cvsignore files
 	doc: update .cvsignore
 	test: add .cvsignore
-	
 
 9/14/2020:
 	lib/auxil.c/bufio_obj.c: fully populate methods

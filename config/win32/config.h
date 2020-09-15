@@ -43,6 +43,7 @@
 #define HAVE_GETVERSIONEX
 
 #define SOCKLEN_T int
+#define sock_t SOCKET
 
 #ifdef __GNUC__
 /* declarations for gcc builtins? */
@@ -67,16 +68,17 @@
 
 /* non-standard functions; */
 #define finite		_finite
-#ifndef _MSC_VER
-#define isnan		_isnan		/* not needed w/ VS 2019(?) */
-#endif
+//#define isnan		_isnan		/* 2020: not needed w/ VSC or MINGW */
 #define popen		_popen
 #define pclose		_pclose
 
-/* 64-bit windows is an LLP64 system (long is 32-bits */
+/*
+ * POSIX.1-2001/C90
+ * 64-bit windows is an LLP64 system (long is 32-bits)
+ */
+#define HAVE_FSEEKO			/* now we do! */
 #define ftello(FP) _ftelli64(FP)
 #define fseeko(FP,OFF,WHENCE) _fseeki64(FP,OFF,WHENCE)
-#define HAVE_FSEEKO			/* now we do! */
 
 /****
  * for time module
