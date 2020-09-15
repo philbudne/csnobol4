@@ -2,6 +2,7 @@
 .gdb_history
 .sdb_history
 Makefile2
+REPL.log
 bsdtsort
 build.c
 callgraph
