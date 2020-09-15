@@ -3,6 +3,9 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/14/2020:
+	modules: add .cvsignore files
+
+9/14/2020:
 	lib/auxil.c/bufio_obj.c: fully populate methods
 		(io_write and io_read raw print message and abort)
 		io_close frees buffer
