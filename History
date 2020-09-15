@@ -4,6 +4,9 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/14/2020:
 	modules: add .cvsignore files
+	doc: update .cvsignore
+	test: add .cvsignore
+	
 
 9/14/2020:
 	lib/auxil.c/bufio_obj.c: fully populate methods
