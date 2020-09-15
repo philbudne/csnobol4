@@ -3,14 +3,16 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/14/2020:
-	lib/io.c: call all io_close methods in ioo_close
 	lib/auxil.c/bufio_obj.c: fully populate methods
 		(io_write and io_read raw print message and abort)
+		io_close frees buffer
 		do eof tracking, add MINBUFLEN
 	include/bufio_obj.h: add eof member
 	include/io_obj.h: add io_name to io_ops, MAKE_OPS for error messages
 	lib/win32/inet.c: remove eof (now handled in bufio) and many methods
+		call bufio close
 	lib/win32/pty.c: convert to bufio, add command, make command_line
+		call bufio close
 
 9/13/2020:
 	Windows compilation fixes.  inetio seems to be working!
