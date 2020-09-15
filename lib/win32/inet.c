@@ -232,11 +232,11 @@ inetio_close(struct io_obj *iop) {
     return closesocket(iiop->s) == 0;
 } /* inet_close */
 
-#define bufio_read NULL			/* use bufio */
-#define bufio_seeko NULL		/* use bufio */
-#define bufio_tello NULL		/* use bufio */
-#define bufio_eof NULL			/* use bufio */
-#define bufio_clearerr NULL		/* use bufio */
+#define inetio_read NULL		/* use bufio */
+#define inetio_seeko NULL		/* use bufio */
+#define inetio_tello NULL		/* use bufio */
+#define inetio_eof NULL			/* use bufio */
+#define inetio_clearerr NULL		/* use bufio */
 
 MAKE_OPS(inetio, &bufio_ops);
 

@@ -32,7 +32,7 @@ ioo_read_raw(struct bufio_obj *biop, char *buf, size_t len) {
 	if (op->io_read_raw) {
 	    ret = (op->io_read_raw)(&biop->io, biop->buffer, biop->buflen);
 	    if (ret <= 0)		/* zero is socket EOF */
-		bio->eof = 1;
+		biop->eof = 1;
 	    return ret;
 	}
     }
@@ -83,7 +83,7 @@ bufio_read(struct io_obj *iop, char *buf, size_t len) {
 	    biop->buflen = MINBUFLEN;
 	else
 	    biop->buflen = len;
-	biop->buffer = malloc(bio->buflen); 
+	biop->buffer = malloc(biop->buflen); 
 	if (!biop->buffer)
 	    return -1;
     }
@@ -164,9 +164,9 @@ bufio_clearerr(struct io_obj *iop) {
 static int
 bufio_close(struct io_obj *iop) {
     struct bufio_obj *biop = (struct bufio_obj *) iop;
-    if (bio->buffer) {
-	free(bio->buffer);
-	bio->buffer = NULL;
+    if (biop->buffer) {
+	free(biop->buffer);
+	biop->buffer = NULL;
     }
     return TRUE;
 }

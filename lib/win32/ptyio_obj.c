@@ -41,8 +41,8 @@
 #define DEFAULT_X_SIZE 24
 #define DEFAULT_Y_SIZE 80
 
-#define CMD "cmd.exe"
-#define CMD_OPT " /c "
+#define CMD "C:\\Windows\\system32\\cmd.exe"
+#define CMD_OPT "cmd.exe /c "
 
 struct ptyio_obj {
     struct bufio_obj bio;
@@ -61,13 +61,20 @@ struct ptyio_obj {
 static ssize_t
 ptyio_read_raw(struct io_obj *iop, char *buf, size_t len) {
     struct ptyio_obj *piop = (struct ptyio_obj *)iop;
-    DWORD sent;
+    DWORD rcvd;
 
-    if (!ReadFile(piop->writeh, buf, len, &sent, NULL)) {
+    printf("ptyio_read_raw %zd\n", len);
+    if (!ReadFile(piop->readh, buf, len, &rcvd, NULL)) {
+        puts("ptyio_read_raw EOF");
 	piop->eof = 1;
 	return -1;
     }
-    return sent;
+    printf("ptyio_read_raw got %ld\n", rcvd);
+#if 0
+    buf[rcvd] = '\0';
+    printf("<<<%s>>>\n", buf);
+#endif
+    return rcvd;
 }
 
 static ssize_t
@@ -93,8 +100,6 @@ int
 ptyio_close(struct io_obj *iop) {
     struct ptyio_obj *piop = (struct ptyio_obj *)iop;
 
-    puts("ptyio_close");
-
     // "A final painted frame may arrive on hOutput from the
     // pseudoconsole when (ClosePseudoConsole) is called. It is
     // expected that the caller will drain this information from the
@@ -104,12 +109,13 @@ ptyio_close(struct io_obj *iop) {
     // drained or the communication channels are broken another way."
     //
     // EchoCon.cpp-- "will terminate child process if running"
-    puts("ClosePseudoConsole");
+    printf("ClosePseudoConsole %p\n", piop->hpc);
     ClosePseudoConsole(piop->hpc);
 
-    puts("close write");
-    CloseHandle(piop->write);
+    printf("close write %p\n", piop->writeh);
+    CloseHandle(piop->writeh);
 
+#if 0
     /* try draining: */
     char buf[1024];
 
@@ -117,13 +123,20 @@ ptyio_close(struct io_obj *iop) {
     int cc;
     while ((cc = ptyio_read_raw(iop, buf, sizeof(buf))) > 0)
 	printf("read %d\n", cc);
-    puts("close read");
-    CloseHandle(piop->read);
+#endif
+    printf("close read %p\n", piop->readh);
+    CloseHandle(piop->readh);
 
     return 1;				/* OK */
 }
 
-MAKE_OPS(ptyio, &stdio_ops);
+#define ptyio_read NULL			/* use bufio */
+#define ptyio_seeko NULL		/* use bufio */
+#define ptyio_tello NULL		/* use bufio */
+#define ptyio_eof NULL			/* use bufio */
+#define ptyio_clearerr NULL		/* use bufio */
+
+MAKE_OPS(ptyio, &bufio_ops);
 
 
 // https://docs.microsoft.com/en-us/windows/console/creating-a-pseudoconsole-session
@@ -170,6 +183,9 @@ ptyio_open(path, flags, dir)
     int flags;
     int dir;				/* 'r' or 'w' */
 {
+    if (path[0] != '|' || path[1] != '|')
+	return NOMATCH;
+
     // XXX first time only: try finding necessary symbols dynamically
     // so executable more universal??
     COORD size = { DEFAULT_X_SIZE, DEFAULT_Y_SIZE };
@@ -212,11 +228,11 @@ ptyio_open(path, flags, dir)
 
     if (!CreatePipe(&inputReadSide, &inputWriteSide, NULL, 0))
         return NULL;
-    printf("input pipes %p %p\n", inputReadSide,, inputWriteSide);
+    printf("input pipes %p %p\n", inputReadSide, inputWriteSide);
 
     if (!CreatePipe(&outputReadSide, &outputWriteSide, NULL, 0))
 	goto close_input_pipes;
-    printf("output pipes %p %p\n", outputReadSide,, outputWriteSide);
+    printf("output pipes %p %p\n", outputReadSide, outputWriteSide);
 
     HPCON hPC;
     HRESULT hr;
@@ -233,6 +249,8 @@ ptyio_open(path, flags, dir)
 	return NULL;
     }
 
+    printf("hpc %p\n", piop->hpc);
+
     // EchoCon.cpp frees child side pipes here
     CloseHandle(inputReadSide);
     CloseHandle(outputWriteSide);
@@ -240,11 +258,12 @@ ptyio_open(path, flags, dir)
     piop->writeh = inputWriteSide;
     piop->readh  = outputReadSide;
 
-    int cmd_line_size = sizeof(CMD CMD_OPT) + strlen(path+2);
+    int cmd_line_size = sizeof(CMD_OPT) + strlen(path+2) + 100;
     char *cmd_line = malloc(cmd_line_size);
     if (!cmd_line)
 	goto close_parent_pipes_and_console;
-    snprintf(cmd_line, cmd_line_size "%s %s", CMD CMD_OPT, path+2);
+    snprintf(cmd_line, cmd_line_size, "%s %s", CMD_OPT, path+2);
+    printf("cmd_line: %s\n", cmd_line);
 
     STARTUPINFOEXA si;	// STARTUPINFOA StartupInfo
 			// LPPROC_THREAD_ATTRIBUTE_LIST lpAttributeList
@@ -263,7 +282,7 @@ ptyio_open(path, flags, dir)
     ZeroMemory(&pi, sizeof(pi));
 
     if (!CreateProcessA(CMD,	// app name
-                        command_line,
+                        cmd_line,
                         NULL,	// process attrs
                         NULL,	// thread attrs
                         FALSE,	// inherit handles
@@ -287,7 +306,7 @@ ptyio_open(path, flags, dir)
     }
     puts("CreateProcessA OK!");
 
-    free(command_line);
+    free(cmd_line);
 
     // safe now?? else locate in piop until close.
     // never used, must be freed:
