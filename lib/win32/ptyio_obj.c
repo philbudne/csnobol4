@@ -60,6 +60,40 @@ struct ptyio_obj {
     int eof;
 };
 
+/*
+ * do runtime lookups for C{reate,lose}PseudoConsole
+ * (first supported in Windows 10 1809 (win10 nov. update) / Windows Server 2019)
+ */
+HRESULT (WINAPI *CreatePseudoConsole)(COORD, HANDLE, HANDLE, DWORD, HPCON*);
+VOID (WINAPI *ClosePseudoConsole)(HPCON);
+
+static int
+pty_init() {
+    if (CreatePseudoConsole && ClosePseudoConsole)
+	return TRUE;
+
+    HMODULE h = GetModuleHandle("kernel32.dll");
+    if (h == INVALID_HANDLE_VALUE)
+	return FALSE;
+
+    FARPROC f = GetProcAddress(h, "CreatePseudoConsole");
+    if (f == NULL)
+	return FALSE;
+    CreatePseudoConsole = 
+	(HRESULT (WINAPI *)(COORD, HANDLE, HANDLE, DWORD, HPCON*))f;
+
+    f = GetProcAddress(h, "ClosePseudoConsole");
+    if (f == NULL)
+	return FALSE;
+    ClosePseudoConsole = (VOID (WINAPI *)(HPCON))f;
+
+    return TRUE;
+}
+
+/****************************************************************
+ * ptyio methods
+ */
+
 static ssize_t
 ptyio_read_raw(struct io_obj *iop, char *buf, size_t len) {
     struct ptyio_obj *piop = (struct ptyio_obj *)iop;
@@ -114,7 +148,7 @@ ptyio_close(struct io_obj *iop) {
     //
     // EchoCon.cpp-- "will terminate child process if running"
     printf("ClosePseudoConsole %p\n", piop->hpc);
-    ClosePseudoConsole(piop->hpc);
+    (*ClosePseudoConsole)(piop->hpc);
 
     printf("close write %p\n", piop->writeh);
     CloseHandle(piop->writeh);
@@ -190,6 +224,9 @@ ptyio_open(path, flags, dir)
     if (path[0] != '|' || path[1] != '|')
 	return NOMATCH;
 
+    if (!pty_init())
+	return FALSE;
+
     // XXX first time only: try finding necessary symbols dynamically
     // so executable more universal??
     COORD size = { DEFAULT_X_SIZE, DEFAULT_Y_SIZE };
@@ -240,7 +277,7 @@ ptyio_open(path, flags, dir)
 
     HPCON hPC;
     HRESULT hr;
-    hr = CreatePseudoConsole(size, inputReadSide, outputWriteSide, 0, &hPC);
+    hr = (*CreatePseudoConsole)(size, inputReadSide, outputWriteSide, 0, &hPC);
     printf("CreatePseudoConsole %ld\n", hr);
     if (hr != 0) {
 	printf("CreatePseudoConsole failed %#lx\n", hr);
@@ -302,7 +339,7 @@ ptyio_open(path, flags, dir)
 	puts("@free_cmd_line");
 	free(cmd_line);
     close_parent_pipes_and_console:
-	ClosePseudoConsole(hPC);
+	(*ClosePseudoConsole)(hPC);
 	CloseHandle(inputWriteSide);
 	CloseHandle(outputReadSide);
 	free(piop);

@@ -15,7 +15,8 @@
 #include "equ.h"
 #include "res.h"
 #include "data.h"			/* for RETCOD */
-#include "lib.h"			/* for io_finish(), inet_cleanup() */
+#include "lib.h"			/* for io_finish() */
+#include "inet.h"			/* inet_cleanup() */
 
 #ifdef NO_STATIC_VARS
 #include "vars.h"

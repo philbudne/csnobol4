@@ -19,6 +19,11 @@
 
 /* datatypes; */
 #define SIGFUNC_T	void __cdecl
+#define SOCKLEN_T	int
+#if defined(HAVE_WINSOCK_H) || defined(HAVE_WINSOCK2_H) /* from command line */
+#define sock_t SOCKET
+#define SETSOCKOPT_ARG_CAST (const char *)
+#endif
 
 /* paths; */
 #define SNOLIB_FILE	"snolib.dll"
@@ -32,7 +37,6 @@
 #define HAVE_STRING_H
 #define HAVE_STDARG_H
 #define HAVE_STDLIB_H
-#define HAVE_WINSOCK_H
 #define HAVE_SDBM_H
 
 #define WIN32_LEAN_AND_MEAN
@@ -41,9 +45,6 @@
 #define OSDEP_OPEN
 #define TTY_READ_RAW
 #define HAVE_GETVERSIONEX
-
-#define SOCKLEN_T int
-#define sock_t SOCKET
 
 #ifdef __GNUC__
 /* declarations for gcc builtins? */
@@ -67,6 +68,7 @@
 #endif /* DLL defined */
 
 /* non-standard functions; */
+#define close_socket	closesocket
 #define finite		_finite
 //#define isnan		_isnan		/* 2020: not needed w/ VSC or MINGW */
 #define popen		_popen

@@ -59,7 +59,7 @@ OBJ=	isnobol4.o data.o data_init.o main.o syn.o \
 	tree.o bcopy.o bzero.o dynamic.o expops.o getopt.o \
 	init.o load.o mstime.o chop.o cos.o delete.o \
 	exit.o exp.o file.o getstring.o handle.o \
-	host.o log.o ord.o pty.o rename.o retstring.o sin.o \
+	host.o log.o ord.o ptyio_obj.o rename.o retstring.o sin.o \
 	spcint.o spreal.o sqrt.o sset.o \
 	tan.o sys.o tty.o inet.o execute.o exists.o \
 	term.o findunit.o $(DXE_OBJS) $(INET_OBJS)
@@ -177,8 +177,8 @@ bufio_obj.o: $(SRCDIR)lib/auxil/bufio_obj.c
 execute.o: $(SRCDIR)lib/dummy/execute.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/dummy/execute.c
 
-pty.o: $(SRCDIR)lib/dummy/pty.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib/dummy/pty.c
+ptyio_obj.o: $(SRCDIR)lib/dummy/ptyio_obj.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/dummy/ptyio_obj.c
 
 ################ generic
 

@@ -7,6 +7,8 @@
 
 #ifndef sock_t
 #define sock_t int
+#define close_socket close
+#define SETSOCKOPT_ARG_CAST
 #endif
 
 sock_t tcp_socket __P((char *, char *, int, int));

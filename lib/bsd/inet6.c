@@ -34,7 +34,7 @@
 
 /* NOTE!! Ignores "port" arg!! */
 static sock_t
-inet_socket2( host, service, port, flags, type )
+inet_socket( host, service, port, flags, type )
     char *host, *service;
     int type;
     int flags;
@@ -52,6 +52,13 @@ inet_socket2( host, service, port, flags, type )
     hint.ai_family = PF_UNSPEC;
     hint.ai_socktype = type;
 
+#ifdef FOLD_HOSTNAMES
+    /* WATTCP on DOS requires hostname in upper case?! */
+    char *cp = host;
+    while ((*cp++ = toupper(*cp)))
+	;
+#endif /* FOLD_HOSTNAMES defined */
+
     error = getaddrinfo(host, service, &hint, &res0);
     if (error)
 	return -1;
@@ -62,17 +69,20 @@ inet_socket2( host, service, port, flags, type )
 	if (s < 0)
 	    continue;
 
+#ifdef F_SETFD
 	if (flags & INET_CLOEXEC) {
 	    int ff = fcntl(s, F_GETFD, 0);
 	    if (ff != -1 || fcntl(s, F_SETFD, ff|FD_CLOEXEC) < 0) {
-		close(s);
+		close_socket(s);
 		return -1;
 	    }
 	}
+#endif
 
 /* set a boolean option: TRUE iff flag set and attempt fails */
 #define TRYOPT(FLAG,LAYER,OPT) \
-	((flags & FLAG) && setsockopt(s,LAYER,OPT,&true,sizeof(true)) < 0)
+	((flags & FLAG) && \
+	 setsockopt(s,LAYER,OPT,SETSOCKOPT_ARG_CAST &true,sizeof(true)) < 0)
 
 	if (((flags & INET_PRIV) && bindresvport_sa(s, NULL) < 0) ||
 	    TRYOPT(INET_BROADCAST,SOL_SOCKET,SO_BROADCAST) ||
@@ -82,7 +92,7 @@ inet_socket2( host, service, port, flags, type )
 	    TRYOPT(INET_KEEPALIVE,SOL_SOCKET,SO_KEEPALIVE) ||
 	    TRYOPT(INET_NODELAY,IPPROTO_TCP,TCP_NODELAY) ||
 	    connect(s, res->ai_addr, res->ai_addrlen) < 0) {
-	    close(s);
+	    close_socket(s);
 	    s = -1;
 	    continue;
 	}
@@ -91,22 +101,6 @@ inet_socket2( host, service, port, flags, type )
     freeaddrinfo(res0);
 
     return s;
-}
-
-/* NOTE!! Ignores "port" arg!! */
-static sock_t
-inet_socket( host, service, port, flags, type )
-    char *host, *service;
-    int port, flags, type;
-{
-#ifdef FOLD_HOSTNAMES
-    /* WATTCP on DOS requires hostname in upper case?! */
-    char *cp = host;
-    while ((*cp++ = toupper(*cp)))
-	;
-#endif /* FOLD_HOSTNAMES defined */
-
-    return inet_socket2(host, service, port, flags, type );
 }
 
 /* NOTE!! Ignores "port" arg!! */
@@ -127,6 +121,8 @@ udp_socket( host, service, port, flags )
     return inet_socket( host, service, port, flags, SOCK_DGRAM );
 }
 
+#ifndef INET_IO
 void
 inet_cleanup() {
 }
+#endif

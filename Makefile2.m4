@@ -87,8 +87,8 @@ ORDVST_C=$(SRCDIR)lib/ordvst.c
 PAIR_C=$(SRCDIR)lib/pair.c
 PAT_C=$(SRCDIR)lib/pat.c
 PML_C=$(SRCDIR)lib/pml.c
-PTY_C=$(SRCDIR)lib/dummy/pty.c
 POPEN_C=$(SRCDIR)lib/bsd/popen.c
+PTYIO_OBJ_C=$(SRCDIR)lib/dummy/ptyio_obj.c
 REALST_C=$(SRCDIR)lib/realst.c
 REPLACE_C=$(SRCDIR)lib/replace.c
 SPCINT_C=$(SRCDIR)lib/ansi/spcint.c
@@ -206,7 +206,7 @@ CFLAGS=[]_CFLAGS $(COPT) $(MYCPPFLAGS)
 OBJS=	main.o $(SNOBOL4).o data.o data_init.o syn.o bal.o break.o \
 	date.o dump.o dynamic.o endex.o expops.o fisatty.o hash.o \
 	$(INET_O) init.o intspc.o io.o lexcmp.o load.o mstime.o \
-	ordvst.o pair.o pat.o pml.o pty.o realst.o replace.o spcint.o \
+	ordvst.o pair.o pat.o pml.o ptyio_obj.o realst.o replace.o spcint.o \
 	spreal.o stdio_obj.o str.o stream.o suspend.o term.o top.o \
 	tree.o tty.o $(EXTRA_OBJS) $(SNOLIB_A)
 
@@ -216,7 +216,7 @@ SRCS=	main.c $(SNOBOL4).c data.c data_init.c syn.c $(BAL_C) $(BREAK_C) \
 	$(DATE_C) $(DUMP_C) $(DYNAMIC_C) $(ENDEX_C) $(EXPOPS_C) \
 	$(FISATTY_C) $(HASH_C) $(INET_C) $(INIT_C) $(INTSPC_C) $(IO_C) \
 	$(LEXCMP_C) $(LOAD_C) $(MSTIME_C) $(ORDVST_C) $(PAIR_C) \
-	$(PAT_C) $(PML_C) $(PTY_C) $(REALST_C) $(REPLACE_C) $(SPCINT_C) \
+	$(PAT_C) $(PML_C) $(PTYIO_OBJ_C) $(REALST_C) $(REPLACE_C) $(SPCINT_C) \
 	$(SPREAL_C) $(STDIO_OBJ_C) $(STR_C) $(STREAM_C) $(SUSPEND_C) \
 	$(TERM_C) $(TOP_C) $(TREE_C) $(TTY_C) $(AUX_SRCS) \
 	$(SNOLIB_SRCS)
@@ -444,8 +444,8 @@ tree.o:	$(TREE_C)
 tty.o:	$(TTY_C)
 	$(CC) $(CFLAGS) -c $(TTY_C)
 
-pty.o:	$(PTY_C)
-	$(CC) $(CFLAGS) -c $(PTY_C)
+ptyio_obj.o: $(PTYIO_OBJ_C)
+	$(CC) $(CFLAGS) -c $(PTYIO_OBJ_C)
 
 #################
 # aux files -- porting aids not used in all builds;

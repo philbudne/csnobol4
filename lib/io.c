@@ -107,8 +107,6 @@ struct file {
     char fname[1];
 };
 
-#define ISOPEN(FP) ((FP)->iop)
-
 #define MAXFNAME	1024		/* XXX use MAXPATHLEN? POSIX?? */
 #define MAXOPTS		1024
 

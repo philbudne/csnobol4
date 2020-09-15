@@ -2,7 +2,23 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+XXX TODO: conditionalize mingw.mak for WS2, make sure new files have Id:
+
 9/15/2020:
+	renamed all/pty.c to all/ptyio_obj.c
+	split win32/inetio_obj.c from win32/inet.c
+	Begin WS2 conditionalization
+
+	include/inet.h: add close_socket, SETSOCKOPT_ARG_CAST
+	config/win32/config.h: remove HAVE_WINSOCK_H
+	config/win32/ntmsvc.mak: add WINSOCK conditionals
+	lib/win32/ptyio_obj.c: dynamic lookup of C{reate,lose}PseudoConsole
+	lib/endex.c: need inet.h for inet_cleanup
+	lib/auxil/bindresvport.c: conditionalize for WS2
+	lib/io.c: remove ISOPEN
+	lib/bsd/inet6.c: start of WS2 support
+
+9/14/2020:
 	config/djgpp/Makefile: use gmake ifdef
 	lib/win32/inet.c: refactoring, use inet.h
 	config/win32/config.h: add sock_t, remove isnan
@@ -117,7 +133,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	lib/bsd/closefrom.c: closefrom using getdtablesize
 	lib/posix/getdtablesize.c: getdtablesize using sysconf
 	lib/dummy/getdtablesize.c: dummy getdtablesize
-	Makefile2.m4: add closfrom.o getdtablesize.o rules
+	Makefile2.m4: add closefrom.o getdtablesize.o rules
 
 8/10/2020:
 	timing: add stuff for version, hw & clock on Android

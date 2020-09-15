@@ -28,7 +28,7 @@ OBJ=	isnobol4.o data.o data_init.o main.o syn.o bal.o break.o \
 	file.o getstring.o handle.o host.o log.o ord.o rename.o \
 	retstring.o sin.o spcint.o spreal.o sqrt.o sset.o \
 	osopen.o sys.o tan.o tty.o inet.o bindresvport.o \
-	execute.o exists.o term.o findunit.o pty.o stdio_obj.o bufio_obj.o
+	execute.o exists.o term.o findunit.o ptyio_obj.o stdio_obj.o bufio_obj.o
 
 # requires amalgamation sqlite.[ch] in modules/sqlite3:
 ifneq (,$(wildcard modules/sqlite3/sqlite3.[ch]))
@@ -165,8 +165,8 @@ execute.o: $(SRCDIR)lib/dummy/execute.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/dummy/execute.c
 
 # dummy version for now!
-pty.o: $(SRCDIR)lib/dummy/pty.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib/dummy/pty.c
+ptyio_obj.o: $(SRCDIR)lib/dummy/ptyio_obj.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/dummy/ptyio_obj.c
 
 ################ generic
 

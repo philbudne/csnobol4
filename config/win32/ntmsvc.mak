@@ -6,19 +6,34 @@
 # tested 11/2005 w/ Visual Studio .NET 2003 (VC71)
 # tested  5/2010 w/ Visual C++ Express 2010
 
-CC=cl
-LINK=link
+################ settings
+
+WINSOCK=1
 
 # -O2 opt for speed
 OPT=-O2
 
-# can also use msdos version (less friendly in multitasking env)
-TTY_C=$(SRCDIR)lib\win32\tty.c
+################ conditionals based on settings:
 
-# crocks for winsock I/O on Win9x
-INET_DEFS=-DINET_IO
+# dummy internet support
+INET_OBJ=inet.obj
+INET_SRC=$(SRCDIR)lib\dummy\inet.c
+
+!IF $(WINSOCK) == 1
+INET_DEFS=-DHAVE_WINSOCK_H -DINET_IO
 # wsock32 present on both Win95 and WinNT
 INET_LIBS=wsock32.lib
+INET_OBJ=bufio_obj.obj inetio_obj.obj inet.obj
+INET_SRC=$(SRCDIR)lib\win32\inet.c
+!ELSEIF $(WINSOCK) == 2
+INET_DEFS=-DHAVE_WINSOCK2_H -DINET_IO -DHAVE_SOCKADDR_IN6
+INET_LIBS=ws2_32.lib
+INET_OBJ=bufio_obj.obj inetio_obj.obj inet6.obj
+!ENDIF
+
+################
+CC=cl
+LINK=link
 
 COMMON_CFLAGS=-nologo -DHAVE_CONFIG_H -DBITFIELDS_SAME_TYPE
 DL_CFLAGS=$(COMMON_CFLAGS)
@@ -28,16 +43,16 @@ CFLAGS=-c $(OPT) $(COMMON_CFLAGS) $(INET_DEFS) -I$(SRCDIR)config\win32 -I$(SRCDI
 SNOBOL4_C_CFLAGS=/wd4715
 
 OBJ=	isnobol4.obj data.obj data_init.obj main.obj syn.obj \
-	bal.obj break.obj bufio_obj.obj date.obj dump.obj endex.obj hash.obj \
+	bal.obj break.obj date.obj dump.obj endex.obj hash.obj \
 	intspc.obj io.obj lexcmp.obj ordvst.obj pair.obj \
-	pat.obj pml.obj pty.obj realst.obj replace.obj str.obj stream.obj \
+	pat.obj pml.obj ptyio_obj.obj realst.obj replace.obj str.obj stream.obj \
 	top.obj tree.obj dynamic.obj expops.obj \
 	getopt.obj init.obj load.obj loadx.obj mstime.obj \
 	atan.obj chop.obj cos.obj \
 	delete.obj environ.obj exit.obj file.obj getstring.obj handle.obj \
 	host.obj log.obj ord.obj rename.obj retstring.obj \
 	sin.obj spcint.obj spreal.obj sqrt.obj sset.obj tan.obj \
-	osopen.obj stdio_obj.obj sleep.obj sys.obj tty.obj inet.obj \
+	osopen.obj stdio_obj.obj sleep.obj sys.obj tty.obj $(INET_OBJ) \
 	bindresvport.obj execute.obj exists.obj term.obj findunit.obj exp.obj
 
 all:	cpuid.exe snobol4.exe build_modules docs
@@ -51,8 +66,8 @@ snobol4.exe : always $(OBJ)
 
 # kill leftovers from cygwin builds!!!
 always:
-	if EXIST config.h erase config.h
-	if EXIST config.sno erase config.sno
+	@if EXIST config.h erase config.h
+	@if EXIST config.sno erase config.sno
 
 data.obj : $(SRCDIR)data.c
 	$(CC) $(CFLAGS) $(SRCDIR)data.c
@@ -155,9 +170,9 @@ bindresvport.obj : $(SRCDIR)lib\auxil\bindresvport.c
 execute.obj : $(SRCDIR)lib\dummy\execute.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\dummy\execute.c
 
-# write win32 version using winpty!!!
-#pty.obj : $(SRCDIR)lib\dummy\pty.c
-#	$(CC) $(CFLAGS) $(SRCDIR)lib\dummy\pty.c
+# write win32 version using winptyio_obj!!!
+#ptyio_obj.obj : $(SRCDIR)lib\dummy\ptyio_obj.c
+#	$(CC) $(CFLAGS) $(SRCDIR)lib\dummy\ptyio_obj.c
 
 ################ generic
 
@@ -175,10 +190,19 @@ intspc.obj : $(SRCDIR)lib\generic\intspc.c
 bufio_obj.obj : $(SRCDIR)lib\auxil\bufio_obj.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\auxil\bufio_obj.c
 
+################ bsd!!!
+
+inet6.obj : $(SRCDIR)lib\bsd\inet6.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\bsd\inet6.c
+
 ################ win32!
 
-inet.obj : $(SRCDIR)lib\win32\inet.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\inet.c
+# or dummy:
+inet.obj : $(INET_SRC)
+	$(CC) $(CFLAGS) $(INET_SRC)
+
+inetio_obj.obj : $(SRCDIR)lib\win32\inetio_obj.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\inetio_obj.c
 
 load.obj : $(SRCDIR)lib\win32\load.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\load.c
@@ -189,8 +213,8 @@ mstime.obj : $(SRCDIR)lib\win32\mstime.c
 osopen.obj : $(SRCDIR)lib\win32\osopen.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\osopen.c
 
-pty.obj : $(SRCDIR)lib\win32\pty.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\pty.c
+ptyio_obj.obj : $(SRCDIR)lib\win32\ptyio_obj.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\ptyio_obj.c
 
 sleep.obj : $(SRCDIR)lib\win32\sleep.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\sleep.c
@@ -201,8 +225,8 @@ sys.obj : $(SRCDIR)lib\win32\sys.c
 term.obj : $(SRCDIR)lib\win32\term.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\term.c
 
-tty.obj : $(TTY_C)
-	$(CC) $(CFLAGS) $(TTY_C)
+tty.obj : $(SRCDIR)lib\win32\tty.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\tty.c
 
 exists.obj : $(SRCDIR)lib\win32\exists.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\exists.c
