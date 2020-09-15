@@ -248,22 +248,17 @@ static int
 ioo_close(struct io_obj *iop) {
     const struct io_ops *op;
     int ret = TRUE;
-    int called = 0;
 
     if (!iop)
 	return FALSE;
 
-    /* NOTE! special case! all layers called for cleanup */
     for (op = iop->ops; op; op = op->io_super) {
 	if (op->io_close) {
-	    called++;
-	    if (!(op->io_close)(iop))
-		ret = FALSE;
+	    ret = (op->io_close)(iop);
+	    break;
 	}
     }
     free(iop);
-    if (called == 0)
-	return FALSE;			/* no methods found! abort?? */
     return ret;
 }
 
@@ -813,14 +808,13 @@ io_print_str(fp, cp, len, needfill, eol)
 
     /* XXX check ret first? */
 
-    if (eol && (fp->flags & FL_EOL))
+    if (ret && eol && (fp->flags & FL_EOL))
 	ret = io_write(fp, "\n", 1);
 
 #ifdef NO_UNBUF_RW
     if ((fp->flags & FL_UNBUF)) {
 	/* simulate unbuffered I/O */
-	if (io_fflush(f) == -1)
-	    ret = FALSE;
+	ret = ioo_flush(f);
     }
 #endif /* NO_UNBUF_RW defined */
     return ret;
