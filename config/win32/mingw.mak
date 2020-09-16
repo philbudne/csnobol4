@@ -15,7 +15,8 @@ WINSOCK=2
 
 ifdef WINSOCK
 INET_DEFS=-DINET_IO
-INET_O=inetio_obj.o bindresvport.o 
+INET_O=inetio_obj.o bindresvport.o
+BUFIO_OBJ_O=bufio_obj.o
 ifeq ($(WINSOCK),1)
 # wsock32 present on both Win95 and WinNT
 INET_C=lib/win32/inet.c
@@ -33,12 +34,18 @@ INET_O=inet.o
 INET_C=lib/dummy/inet.c
 endif
 
+# not yet in MINGW includes.
+ifdef PTYIO
+BUFIO_OBJ_O=bufio_obj.o
+PTYIO_OBJ_C=lib/win32/ptyio_obj.o
+endif
+
 CFLAGS=	-c $(OPT) -I$(SRCDIR)config/win32 -I$(SRCDIR)include -I$(SRCDIR). \
 	-DHAVE_CONFIG_H $(INET_DEFS)
 
 LDFLAGS=-Wl,--out-implib,libsnobol4.a
 
-OBJ=	$(INET_O) atan.o bal.o break.o bufio_obj.o chop.o \
+OBJ=	$(BUFIO_OBJ_O) $(INET_O) atan.o bal.o break.o chop.o \
 	cos.o data.o data_init.o date.o delete.o dump.o \
 	dynamic.o endex.o environ.o execute.o exists.o \
 	exit.o exp.o expops.o file.o findunit.o getopt.o \
@@ -185,9 +192,9 @@ bufio_obj.o: $(SRCDIR)lib/auxil/bufio_obj.c
 execute.o: $(SRCDIR)lib/dummy/execute.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/dummy/execute.c
 
-# dummy version for now!
-ptyio_obj.o: $(SRCDIR)lib/dummy/ptyio_obj.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib/dummy/ptyio_obj.c
+# dummy version for now (not in MINGW include files)
+ptyio_obj.o: $(SRCDIR)$(PTYIO_OBJ_C)
+	$(CC) $(CFLAGS) $(SRCDIR)$(PTYIO_OBJ_C)
 
 ################ generic
 

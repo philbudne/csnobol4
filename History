@@ -6,6 +6,7 @@ XXX TODO make sure new files have Id:
 
 9/16/2020:
 	Clean compilation under MINGW w/ WS2, WS1, or NOTA
+	Conditionalize ptyio as well
 	config/win32/config.h
 	config/win32/{mingw,ntmsvc}.mak
 	lib/io.c

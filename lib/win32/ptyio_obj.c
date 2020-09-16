@@ -237,7 +237,7 @@ ptyio_open(path, flags, dir)
     if (!piop)
 	return NULL;
 
-#if 0 // from EchoCon.cpp:
+#if 1 // from EchoCon.cpp:
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
     // Enable Console VT Processing (so child output interpreted correctly?)
@@ -251,7 +251,6 @@ ptyio_open(path, flags, dir)
 	size.X = csbi.srWindow.Right - csbi.srWindow.Left + 1;
 	size.Y = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
     }
-    CloseHandle(hConsole);		/* added by PLB */
 #endif
 	    
     // https://docs.microsoft.com/en-us/windows/console/creating-a-pseudoconsole-session
