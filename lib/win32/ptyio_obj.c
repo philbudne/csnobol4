@@ -30,6 +30,7 @@
 
 #include <Windows.h>
 #include <process.h>
+//#include <consoleapi2.h>	/* CONSOLE_SCREEN_BUFFER_INFO */
 
 #include <stdio.h>		/* NULL, size_t */
 #include <malloc.h>
@@ -99,13 +100,12 @@ ptyio_read_raw(struct io_obj *iop, char *buf, size_t len) {
     struct ptyio_obj *piop = (struct ptyio_obj *)iop;
     DWORD rcvd;
 
-    printf("ptyio_read_raw %zd\n", len);
     if (!ReadFile(piop->readh, buf, len, &rcvd, NULL)) {
         puts("ptyio_read_raw EOF");
 	piop->eof = 1;
 	return -1;
     }
-    printf("ptyio_read_raw got %ld\n", rcvd);
+    printf("ptyio_read_raw %zd got %ld\n", len, rcvd);
 #if 0
     buf[rcvd] = '\0';
     printf("<<<%s>>>\n", buf);
@@ -162,8 +162,10 @@ ptyio_close(struct io_obj *iop) {
     while ((cc = ptyio_read_raw(iop, buf, sizeof(buf))) > 0)
 	printf("read %d\n", cc);
 #endif
+#if 0
     printf("close read %p\n", piop->readh);
     CloseHandle(piop->readh);
+#endif
 
     return 1;				/* OK */
 }
@@ -243,7 +245,7 @@ ptyio_open(path, flags, dir)
     // Enable Console VT Processing (so child output interpreted correctly?)
     DWORD consoleMode;
     GetConsoleMode(hConsole, &consoleMode);
-    (void) SetConsoleMode(hConsole, consoleMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING)
+    (void) SetConsoleMode(hConsole, consoleMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
 
     // from EchoCon.cpp CreatePseudoConsoleAndPipes
     CONSOLE_SCREEN_BUFFER_INFO csbi;

@@ -1,17 +1,22 @@
 # $Id$
 
 # make file for MINGW - P. Budne 2/14/2002
-# tested with MINGW 1.7.33 (w/ gcc 4.8.3)
+# tested with MINGW 1.0.19(?) w/ gcc 9.2.0
 # from nmake file for VC++ 5.0 on WinNT 4.0 P. Budne 2/4/1998
 # from batch file by David Feustel
 
 CC=gcc
-# includes -finline-functions (and others in gcc v3)
+# includes -finline-functions (and others in gcc v3):
 OPT=-O3 -g
 
 # Winsock version: define as 1 or 2.
 # comment out for no inet support
 WINSOCK=2
+
+# not yet in MINGW includes?
+#PTYIO=1
+
+################################################################
 
 ifdef WINSOCK
 INET_DEFS=-DINET_IO
@@ -34,10 +39,11 @@ INET_O=inet.o
 INET_C=lib/dummy/inet.c
 endif
 
-# not yet in MINGW includes.
 ifdef PTYIO
 BUFIO_OBJ_O=bufio_obj.o
-PTYIO_OBJ_C=lib/win32/ptyio_obj.o
+PTYIO_OBJ_C=lib/win32/ptyio_obj.c
+else
+PTYIO_OBJ_C=lib/dummy/ptyio_obj.c
 endif
 
 CFLAGS=	-c $(OPT) -I$(SRCDIR)config/win32 -I$(SRCDIR)include -I$(SRCDIR). \

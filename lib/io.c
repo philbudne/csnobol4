@@ -915,7 +915,6 @@ io_read( dp, sp )			/* STREAD */
     int_t err_count = D_A(UINTCL);	/* ^C count */
 #endif
 
-    puts("io_read");
     unit = INTERN(D_A(dp));
     if (BADUNIT(unit) || (up = FINDUNIT(unit)) == NULL || up->curr == NULL) {
 	if (COMPILING(unit)) {

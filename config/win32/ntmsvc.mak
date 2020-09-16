@@ -5,10 +5,15 @@
 
 # tested 11/2005 w/ Visual Studio .NET 2003 (VC71)
 # tested  5/2010 w/ Visual C++ Express 2010
+# tested  9/2020 w/ Visual C++ 2019(?) (MSC 1926)
 
 ################ settings
 
-WINSOCK=1
+# 1, 2 or undefined for no internet support
+WINSOCK=2
+
+# experimental Windows Pseudo Console support
+WINPTY=1
 
 # -O2 opt for speed
 OPT=-O2
@@ -19,17 +24,39 @@ OPT=-O2
 INET_OBJ=inet.obj
 INET_SRC=$(SRCDIR)lib\dummy\inet.c
 
+!ifdef WINSOCK
+######## WINSOCK defined
 !IF $(WINSOCK) == 1
+#### winsock1
 INET_DEFS=-DHAVE_WINSOCK_H -DINET_IO
+INET_OBJ=inet.obj
+INET_SRC=$(SRCDIR)lib\win32\inet.c
+BUFIO_OBJ=bufio_obj.obj
 # wsock32 present on both Win95 and WinNT
 INET_LIBS=wsock32.lib
-INET_OBJ=bufio_obj.obj inetio_obj.obj inet.obj
-INET_SRC=$(SRCDIR)lib\win32\inet.c
 !ELSEIF $(WINSOCK) == 2
-INET_DEFS=-DHAVE_WINSOCK2_H -DINET_IO -DHAVE_SOCKADDR_IN6
+#### winsock2
+INET_DEFS=-DHAVE_WINSOCK2_H -DINET_IO
+INET_OBJ=inet6.obj
+INET_SRC=$(SRCDIR)lib\bsd\inet6.c
+BUFIO_OBJ=bufio_obj.obj
+!endif
+# here with WINSOCK defined
+# auxillary objects requires for both WS1 & WS2:
+INET_OBJS=bindresvport.obj inetio_obj.obj
 INET_LIBS=ws2_32.lib
-INET_OBJ=bufio_obj.obj inetio_obj.obj inet6.obj
+!ELSE
+######## WINSOCK not defined
+INET_SRC=$(SRCDIR)lib\dummy\inet.c
+INET_OBJ=inet.obj
 !ENDIF
+
+!ifdef WINPTY
+PTYIO_OBJ_SRC=lib\win32\ptyio_obj.c
+BUFIO_OBJ=bufio_obj.obj
+!else
+PTYIO_OBJ_SRC=lib\dummy\ptyio_obj.c
+!endif
 
 ################
 CC=cl
@@ -42,18 +69,22 @@ CFLAGS=-c $(OPT) $(COMMON_CFLAGS) $(INET_DEFS) -I$(SRCDIR)config\win32 -I$(SRCDI
 # switch/enum warning?
 SNOBOL4_C_CFLAGS=/wd4715
 
-OBJ=	isnobol4.obj data.obj data_init.obj main.obj syn.obj \
-	bal.obj break.obj date.obj dump.obj endex.obj hash.obj \
-	intspc.obj io.obj lexcmp.obj ordvst.obj pair.obj \
-	pat.obj pml.obj ptyio_obj.obj realst.obj replace.obj str.obj stream.obj \
-	top.obj tree.obj dynamic.obj expops.obj \
-	getopt.obj init.obj load.obj loadx.obj mstime.obj \
-	atan.obj chop.obj cos.obj \
-	delete.obj environ.obj exit.obj file.obj getstring.obj handle.obj \
-	host.obj log.obj ord.obj rename.obj retstring.obj \
-	sin.obj spcint.obj spreal.obj sqrt.obj sset.obj tan.obj \
-	osopen.obj stdio_obj.obj sleep.obj sys.obj tty.obj $(INET_OBJ) \
-	bindresvport.obj execute.obj exists.obj term.obj findunit.obj exp.obj
+OBJ=	$(BUFIO_OBJ) $(INET_OBJ) $(INET_OBJS) \
+	atan.obj bal.obj \
+	break.obj chop.obj cos.obj data.obj \
+	data_init.obj date.obj delete.obj dump.obj \
+	dynamic.obj endex.obj environ.obj execute.obj \
+	exists.obj exit.obj exp.obj expops.obj file.obj \
+	findunit.obj getopt.obj getstring.obj handle.obj \
+	hash.obj host.obj init.obj intspc.obj io.obj \
+	isnobol4.obj lexcmp.obj load.obj loadx.obj log.obj \
+	main.obj mstime.obj ord.obj ordvst.obj osopen.obj \
+	pair.obj pat.obj pml.obj ptyio_obj.obj realst.obj \
+	rename.obj replace.obj retstring.obj sin.obj \
+	sleep.obj spcint.obj spreal.obj sqrt.obj sset.obj \
+	stdio_obj.obj str.obj stream.obj syn.obj sys.obj \
+	tan.obj term.obj top.obj tree.obj tty.obj
+
 
 all:	cpuid.exe snobol4.exe build_modules docs
 
@@ -186,15 +217,10 @@ intspc.obj : $(SRCDIR)lib\generic\intspc.c
 bufio_obj.obj : $(SRCDIR)lib\auxil\bufio_obj.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\auxil\bufio_obj.c
 
-################ bsd!!!
-
-inet6.obj : $(SRCDIR)lib\bsd\inet6.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib\bsd\inet6.c
-
 ################ win32!
 
-# or dummy:
-inet.obj : $(INET_SRC)
+# or dummy, or bsd/inet6.c!!
+$(INET_OBJ) : $(INET_SRC)
 	$(CC) $(CFLAGS) $(INET_SRC)
 
 inetio_obj.obj : $(SRCDIR)lib\win32\inetio_obj.c
@@ -209,8 +235,8 @@ mstime.obj : $(SRCDIR)lib\win32\mstime.c
 osopen.obj : $(SRCDIR)lib\win32\osopen.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\osopen.c
 
-ptyio_obj.obj : $(SRCDIR)lib\win32\ptyio_obj.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\ptyio_obj.c
+ptyio_obj.obj : $(SRCDIR)$(PTYIO_OBJ_SRC)
+	$(CC) $(CFLAGS) $(SRCDIR)$(PTYIO_OBJ_SRC)
 
 sleep.obj : $(SRCDIR)lib\win32\sleep.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\sleep.c
