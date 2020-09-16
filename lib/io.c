@@ -152,6 +152,8 @@ static struct iovars iov;
  * all access to units array hidden, so it can be made sparse
  */
 #define FINDUNIT(N) (iov.units + (N))
+
+struct io_obj nomatch;			/* for NOMATCH */
 
 /****************
  * io_obj wrappers

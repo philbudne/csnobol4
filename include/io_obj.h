@@ -102,7 +102,7 @@ struct io_obj *io_alloc __P((int size, const struct io_ops *ops, int flags));
 int inet_parse __P((char *path, char **hostp, char **servicep, int *flagp));
 
 // return value for _open routines (NULL means open attempted and failed)
-struct io_obj nomatch;
+extern struct io_obj nomatch;
 #define NOMATCH &nomatch
 
 struct io_obj *memio_open(char *buf, size_t len, int flags);
