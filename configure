@@ -1203,7 +1203,7 @@ if [ "$NEED_PATHS_H" ]; then
 fi
 
 if [ "x$HAVE_FORKPTY" = x1 ]; then
-    echo 'PTY_C=lib/bsd/pty.c'		>> $CONFIG_M4
+    echo 'PTYIO_OBJ_C=$(SRCDIR)lib/bsd/ptyio_obj.c'	>> $CONFIG_M4
     if config/check "unistd.h" "closefrom(3);"; then
 	# FreeBSD, OpenBSD
 	echo 'using closefrom() from unistd.h' 1>&2
