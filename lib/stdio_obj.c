@@ -184,8 +184,18 @@ stdio_read(struct io_obj *iop, char *buf, size_t len) {
 		buf[len] = c;
 		len++;
 	    } /* not EOL or not hiding EOL */
-	} /* extra char not EOF */
 
+	    /* no EOL, breaking up long lines, and no EOL: */
+	    if ((iop->flags & FL_BREAK) && c != '\n' && c != EOF) {
+		/* discard EOL characters if they follow */
+		c = getc(siop->f);
+		if (c == '\r')		/* CR? */
+		    c = getc(siop->f);	/* toss it */
+		if (c != '\n' && c != EOF) /* other than newline or EOF? */
+		    ungetc(c, siop->f);	/* stash for next time */
+	    }
+	} /* extra char not EOF */
+	    
 	if (!(iop->flags & FL_BREAK)) {	/* not breaking up lines? */
 	    /* if not at EOL or EOF, discard rest of "record" */
 	    while (c != EOF && c != '\n')

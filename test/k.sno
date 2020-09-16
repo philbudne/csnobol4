@@ -1,0 +1,3 @@
+	input(.i, 10, '5k', 'k.in')
+loop	output = '>' i		:s(loop)
+end

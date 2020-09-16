@@ -3,6 +3,9 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 XXX TODO make sure new files have Id:
+9/16/2020:
+	lib/io_stdio.c: handle line breaking for full-record size lines
+	new: test/k.{in,sno}
 
 9/16/2020:
 	Clean compilation under MINGW w/ WS2, WS1, or NOTA
