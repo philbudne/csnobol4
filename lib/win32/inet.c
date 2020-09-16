@@ -29,18 +29,7 @@
 #define INADDR_NONE ((unsigned long)0xffffffff)	/* want u_int32_t! */
 #endif /* INADDR_NONE not defined */
 
-#ifndef SD_BOTH
-#define SD_BOTH 2
-#endif
-
-/*
- * Request API version 1.1 (first official release); shipped with Win95
- */
-#define VMAJOR 1
-#define VMINOR 1
-WORD wVersionRequested = MAKEWORD(VMAJOR,VMINOR);
-
-static SOCKET
+static sock_t
 inet_socket( host, service, port, flags, type )
     char *host, *service;
     int type;
@@ -50,7 +39,7 @@ inet_socket( host, service, port, flags, type )
     struct hostent *hp;
     struct sockaddr_in sin;
     struct servent *sp;
-    SOCKET s;
+    sock_t s;
     int true = 1;
 
     if (!host || !service)
@@ -131,7 +120,7 @@ inet_socket( host, service, port, flags, type )
     return INVALID_SOCKET;
 } /* inet_socket */
 
-SOCKET
+sock_t
 tcp_socket( host, service, port, flags )
     char *host, *service;
     int port, flags;
@@ -139,7 +128,7 @@ tcp_socket( host, service, port, flags )
     return inet_socket( host, service, port, flags, SOCK_STREAM );
 }
 
-SOCKET
+sock_t
 udp_socket( host, service, port, flags )
     char *host, *service;
     int port, flags;

@@ -10,22 +10,33 @@
 #endif /* HAVE_CONFIG_H defined */
 
 #include <stdio.h>			/* NULL, size_t */
+#include <stdlib.h>			/* malloc/free */
 
-#if defined(HAVE_WINSOCK2_H)
+#ifdef HAVE_WINSOCK2_H
 #include <winsock2.h>
-#elif defined(HAVE_WINSOCK_H)
-#include <win.h>
+#define WS_MAJOR 2
+#define WS_MINOR 0
+#else
+#include <winsock.h>
+// first public release?
+#define WS_MAJOR 1
+#define WS_MINOR 1
 #endif
 
 #include "h.h"				/* __P, TRUE */
 #include "io_obj.h"
 #include "bufio_obj.h"
+#include "inet.h"			/* {tc,ud}p_socket */
 
 #ifdef NO_STATIC_VARS
 #include "vars.h"
 #else  /* NO_STATIC_VARS not defined */
 static int wsock_init_done;
 #endif /* NO_STATIC_VARS not defined */
+
+#ifndef SD_BOTH
+#define SD_BOTH 2
+#endif
 
 #define SUPER bufio_ops
 
@@ -38,7 +49,9 @@ struct inetio_obj {
 static ssize_t
 inetio_read_raw(struct io_obj *iop, char *buf, size_t len) {
     struct inetio_obj *iiop = (struct inetio_obj *) iop;
-    return recv(iiop->s, buf, len, 0);
+    ssize_t ret = recv(iiop->s, buf, len, 0);
+    //printf("inetio_read_raw %zd\n", ret);
+    return ret;
 }
 
 static ssize_t
@@ -77,13 +90,13 @@ inetio_close(struct io_obj *iop) {
 
 MAKE_OPS(inetio, &SUPER);
 
-/* extern WORD wVersionRequested; */
 static void
 wsock_init(void) {
-    if (wsock_init != 0)
+    if (wsock_init_done != 0)
 	return;
 
     WSADATA wsaData;
+    WORD wVersionRequested = MAKEWORD(WS_MAJOR,WS_MINOR);
     long ret = WSAStartup(wVersionRequested, &wsaData);
     if (ret != 0) {
 	wsock_init_done = -1;
@@ -95,20 +108,22 @@ wsock_init(void) {
      */
     wsock_init_done = 1;
 
+#ifdef SO_SYNCHRONOUS_NONALERT
     /*
-     * For WinNT; switch to blocking/non-overlapped I/O
+     * For WS1/WinNT; switch to blocking/non-overlapped I/O
      * see http://www.telicsolutions.com/techsupport/WinFAQ.htm
      */
     int opt = SO_SYNCHRONOUS_NONALERT;
     setsockopt(INVALID_SOCKET, SOL_SOCKET, SO_OPENTYPE,
 	       (char *)&opt, sizeof(opt));
+#endif
 }
 
 void
 inet_cleanup() {
     if (wsock_init_done > 0)
 	WSACleanup();
-    wsock_init_done = 0
+    wsock_init_done = 0;
 }
 
 struct io_obj *

@@ -64,12 +64,12 @@ struct ptyio_obj {
  * do runtime lookups for C{reate,lose}PseudoConsole
  * (first supported in Windows 10 1809 (win10 nov. update) / Windows Server 2019)
  */
-HRESULT (WINAPI *CreatePseudoConsole)(COORD, HANDLE, HANDLE, DWORD, HPCON*);
-VOID (WINAPI *ClosePseudoConsole)(HPCON);
+HRESULT (WINAPI *pCreatePseudoConsole)(COORD, HANDLE, HANDLE, DWORD, HPCON*);
+VOID (WINAPI *pClosePseudoConsole)(HPCON);
 
 static int
 pty_init() {
-    if (CreatePseudoConsole && ClosePseudoConsole)
+    if (pCreatePseudoConsole && pClosePseudoConsole)
 	return TRUE;
 
     HMODULE h = GetModuleHandle("kernel32.dll");
@@ -79,13 +79,13 @@ pty_init() {
     FARPROC f = GetProcAddress(h, "CreatePseudoConsole");
     if (f == NULL)
 	return FALSE;
-    CreatePseudoConsole = 
+    pCreatePseudoConsole = 
 	(HRESULT (WINAPI *)(COORD, HANDLE, HANDLE, DWORD, HPCON*))f;
 
     f = GetProcAddress(h, "ClosePseudoConsole");
     if (f == NULL)
 	return FALSE;
-    ClosePseudoConsole = (VOID (WINAPI *)(HPCON))f;
+    pClosePseudoConsole = (VOID (WINAPI *)(HPCON))f;
 
     return TRUE;
 }
@@ -148,7 +148,7 @@ ptyio_close(struct io_obj *iop) {
     //
     // EchoCon.cpp-- "will terminate child process if running"
     printf("ClosePseudoConsole %p\n", piop->hpc);
-    (*ClosePseudoConsole)(piop->hpc);
+    (*pClosePseudoConsole)(piop->hpc);
 
     printf("close write %p\n", piop->writeh);
     CloseHandle(piop->writeh);
@@ -277,8 +277,7 @@ ptyio_open(path, flags, dir)
 
     HPCON hPC;
     HRESULT hr;
-    hr = (*CreatePseudoConsole)(size, inputReadSide, outputWriteSide, 0, &hPC);
-    printf("CreatePseudoConsole %ld\n", hr);
+    hr = (*pCreatePseudoConsole)(size, inputReadSide, outputWriteSide, 0, &hPC);
     if (hr != 0) {
 	printf("CreatePseudoConsole failed %#lx\n", hr);
 	CloseHandle(outputReadSide);

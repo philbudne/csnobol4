@@ -20,10 +20,7 @@
 /* datatypes; */
 #define SIGFUNC_T	void __cdecl
 #define SOCKLEN_T	int
-#if defined(HAVE_WINSOCK_H) || defined(HAVE_WINSOCK2_H) /* from command line */
-#define sock_t SOCKET
 #define SETSOCKOPT_ARG_CAST (const char *)
-#endif
 
 /* paths; */
 #define SNOLIB_FILE	"snolib.dll"
@@ -38,13 +35,20 @@
 #define HAVE_STDARG_H
 #define HAVE_STDLIB_H
 #define HAVE_SDBM_H
+#define HAVE_IO_H		/* _read,.... */
 
 #define WIN32_LEAN_AND_MEAN
 
-#define NEED_BINDRESVPORT
+#define UNLINK_IN_STDIO_H
 #define OSDEP_OPEN
 #define TTY_READ_RAW
 #define HAVE_GETVERSIONEX
+#define GETPID_IN_PROCESS_H
+#ifdef HAVE_WINSOCK2_H
+#define NEED_BINDRESVPORT_SA
+#else
+#define NEED_BINDRESVPORT_SA
+#endif
 
 #ifdef __GNUC__
 /* declarations for gcc builtins? */
@@ -73,6 +77,9 @@
 //#define isnan		_isnan		/* 2020: not needed w/ VSC or MINGW */
 #define popen		_popen
 #define pclose		_pclose
+#define dup		_dup
+#define read		_read
+#define write		_write
 
 /*
  * POSIX.1-2001/C90
@@ -110,10 +117,12 @@
 #define SIZEOF_INT_T 8
 #define SIZEOF_REAL_T 8
 #define ssize_t INT_T
+#define sock_t __int64 // SOCKET: unsigned that can hold a pointer
 #else
 #define SIZEOF_INT_T 4
 #define SIZEOF_REAL_T 4
 #define size_t long
+#define sock_t long // SOCKET: unsigned that can hold a pointer
 #endif
 
 /* use native routines */

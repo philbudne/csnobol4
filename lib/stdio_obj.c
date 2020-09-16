@@ -33,6 +33,10 @@ void free();
 #include <unixio.h>			/* read(), lseek(), etc */
 #endif /* HAVE_UNIXIO_H defined */
 
+#ifdef HAVE_IO_H
+#include <io.h>				/* _dup */
+#endif /* HAVE_IO_H */
+
 #include "h.h"				/* __P */
 #include "snotypes.h"
 

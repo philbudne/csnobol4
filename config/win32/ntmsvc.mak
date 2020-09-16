@@ -170,10 +170,6 @@ bindresvport.obj : $(SRCDIR)lib\auxil\bindresvport.c
 execute.obj : $(SRCDIR)lib\dummy\execute.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\dummy\execute.c
 
-# write win32 version using winptyio_obj!!!
-#ptyio_obj.obj : $(SRCDIR)lib\dummy\ptyio_obj.c
-#	$(CC) $(CFLAGS) $(SRCDIR)lib\dummy\ptyio_obj.c
-
 ################ generic
 
 dynamic.obj : $(SRCDIR)lib\generic\dynamic.c

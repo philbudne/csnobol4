@@ -9,26 +9,47 @@ CC=gcc
 # includes -finline-functions (and others in gcc v3)
 OPT=-O3 -g
 
-# crocks for winsock I/O on Win9x
+# Winsock version: define as 1 or 2.
+# comment out for no inet support
+WINSOCK=2
+
+ifdef WINSOCK
 INET_DEFS=-DINET_IO
+INET_O=inetio_obj.o bindresvport.o 
+ifeq ($(WINSOCK),1)
 # wsock32 present on both Win95 and WinNT
+INET_C=lib/win32/inet.c
+INET_DEFS += -DHAVE_WINSOCK_H
+INET_O += inet.o
 INET_LIBS=-lwsock32
+else
+INET_C=lib/bsd/inet6.c
+INET_DEFS += -DHAVE_WINSOCK2_H
+INET_O += inet6.o
+INET_LIBS=-lws2_32
+endif
+else
+INET_O=inet.o
+INET_C=lib/dummy/inet.c
+endif
 
 CFLAGS=	-c $(OPT) -I$(SRCDIR)config/win32 -I$(SRCDIR)include -I$(SRCDIR). \
 	-DHAVE_CONFIG_H $(INET_DEFS)
 
 LDFLAGS=-Wl,--out-implib,libsnobol4.a
 
-OBJ=	isnobol4.o data.o data_init.o main.o syn.o bal.o break.o \
-	date.o dump.o endex.o hash.o intspc.o io.o lexcmp.o ordvst.o \
-	pair.o pat.o pml.o realst.o replace.o str.o stream.o top.o \
-	tree.o dynamic.o expops.o getopt.o init.o \
-	load.o loadx.o mstime.o atan.o chop.o cos.o delete.o \
-	environ.o exit.o exp.o \
-	file.o getstring.o handle.o host.o log.o ord.o rename.o \
-	retstring.o sin.o spcint.o spreal.o sqrt.o sset.o \
-	osopen.o sys.o tan.o tty.o inet.o bindresvport.o \
-	execute.o exists.o term.o findunit.o ptyio_obj.o stdio_obj.o bufio_obj.o
+OBJ=	$(INET_O) atan.o bal.o break.o bufio_obj.o chop.o \
+	cos.o data.o data_init.o date.o delete.o dump.o \
+	dynamic.o endex.o environ.o execute.o exists.o \
+	exit.o exp.o expops.o file.o findunit.o getopt.o \
+	getstring.o handle.o hash.o host.o init.o intspc.o \
+	io.o isnobol4.o lexcmp.o load.o loadx.o log.o main.o \
+	mstime.o ord.o ordvst.o osopen.o pair.o pat.o pml.o \
+	ptyio_obj.o realst.o rename.o replace.o retstring.o \
+	sin.o spcint.o spreal.o sqrt.o sset.o stdio_obj.o \
+	str.o stream.o syn.o sys.o tan.o term.o top.o tree.o \
+	tty.o
+
 
 # requires amalgamation sqlite.[ch] in modules/sqlite3:
 ifneq (,$(wildcard modules/sqlite3/sqlite3.[ch]))
@@ -179,10 +200,18 @@ expops.o: $(SRCDIR)lib/generic/expops.c
 intspc.o: $(SRCDIR)lib/generic/intspc.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/generic/intspc.c
 
+################ bsd!!
+
+inet6.o: $(SRCDIR)lib/bsd/inet6.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/bsd/inet6.c
+
 ################ win32!
 
-inet.o:	$(SRCDIR)lib/win32/inet.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib/win32/inet.c
+inet.o:	$(SRCDIR)$(INET_C)
+	$(CC) $(CFLAGS) $(SRCDIR)$(INET_C)
+
+inetio_obj.o:	$(SRCDIR)lib/win32/inetio_obj.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/win32/inetio_obj.c
 
 load.o:	$(SRCDIR)lib/win32/load.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/win32/load.c

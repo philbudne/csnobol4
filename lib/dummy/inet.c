@@ -9,7 +9,7 @@
 #include <stdio.h>
 
 #include "h.h"				/* TRUE, __P */
-#incldde "inet.h"			/* prototypes */
+#include "inet.h"			/* prototypes */
 
 sock_t
 tcp_socket( host, service, port, priv )

@@ -2,7 +2,20 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
-XXX TODO: conditionalize mingw.mak for WS2, make sure new files have Id:
+XXX TODO make sure new files have Id:
+
+9/16/2020:
+	Clean compilation under MINGW w/ WS2, WS1, or NOTA
+	config/win32/config.h
+	config/win32/{mingw,ntmsvc}.mak
+	lib/io.c
+	lib/init.c
+	lib/stdio_obj.c
+	lib/bsd/inet6.c
+	lib/dummy/inet.c
+	lib/snolib/delete.c
+	lib/auxil/bindresvport.c
+	lib/win32/{exists,inet,inetio_obj,ptyio_obj}.c
 
 9/15/2020:
 	renamed all/pty.c to all/ptyio_obj.c

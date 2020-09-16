@@ -20,6 +20,10 @@
 #include <stdlib.h>			/* for free() */
 #endif
 
+#ifdef UNLINK_IN_STDIO_H		/* Windoze! */
+#include <stdio.h>
+#endif
+
 #include "h.h"
 #include "equ.h"
 #include "snotypes.h"

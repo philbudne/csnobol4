@@ -6,6 +6,7 @@
 
 #include <windows.h>
 #include <stdio.h>
+#include <ctype.h>
 
 #include "h.h"
 #include "snotypes.h"

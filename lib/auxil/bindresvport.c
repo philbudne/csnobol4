@@ -1,4 +1,4 @@
-M/* modified from OpenSSH distribution -plb 5/22/2003 */
+/* modified from OpenSSH distribution -plb 5/22/2003 */
 
 /* This file has be modified from the original OpenBSD source */
 
@@ -45,35 +45,36 @@ static char *rcsid = "$OpenBSD: bindresvport.c,v 1.13 2000/01/26 03:43:21 deraad
  * Portions Copyright(C) 1996, Jason Downs.  All rights reserved.
  */
 
-#if defined(HAVE_WINSOCK2_H)
-#include <winsock2.h>
-#elif defined(HAVE_WINSOCK_H)
+#ifdef HAVE_WINSOCK_H
 #include <winsock.h>
-#elif defined(OLD_UCX_INCLUDES)		/* may not have handled #elif! */
+#include <process.h>		/* getpid() */
+#define HAVE_INCLUDES
+#endif /* HAVE_WINSOCK_H defined */
+
+#ifdef HAVE_WINSOCK2_H
+#include <winsock2.h>
+#include <process.h>		/* getpid() */
+#define HAVE_INCLUDES
+#endif /* HAVE_WINSOCK_H defined */
+
+#ifdef OLD_UCX_INCLUDES
 #include <types.h>
 #include <socket.h>
 #include <in.h>
-#else
+#define HAVE_INCLUDES
+#endif /* OLD_UCX_INCLUDES defined */
+
+#ifndef HAVE_INCLUDES
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#endif
+#endif /* HAVE_INCLUDES not defined */
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif /* HAVE_UNISTD_H defined */
 
 #include <errno.h>
-
-#if !defined(EADDRINUSE) && defined(WSAEADDRINUSE)
-#define EADDRINUSE WSAEADDRINUSE
-#define get_errno WSAGetLastError()
-#else
-#define get_errno errno
-#endif
-#if !defined(EPFNOSUPPORT) && defined(WSAEPFNOSUPPORT)
-#define EPFNOSUPPORT WSAEPFNOSUPPORT
-#endif
 
 #if !defined(IPPORT_RESERVED) && !defined(__GLIBC__)
 /*
@@ -92,12 +93,19 @@ static char *rcsid = "$OpenBSD: bindresvport.c,v 1.13 2000/01/26 03:43:21 deraad
 #define ENDPORT (IPPORT_RESERVED - 1)
 #define NPORTS	(ENDPORT - STARTPORT + 1)
 
+#if !defined(EADDRINUSE) && defined(WSAEADDRINUSE)
+#define EADDRINUSE WSAEADDRINUSE
+#endif
+#if !defined(EPFNOSUPPORT) && defined(WSAEPFNOSUPPORT)
+#define EPFNOSUPPORT WSAEPFNOSUPPORT
+#endif
+
 /*
  * Bind a socket to a privileged IP port
  */
 int
 bindresvport_sa(sd, sa)
-	sock_t sd;
+	int sd;
 	struct sockaddr *sa;
 {
 	int error, af;
@@ -132,7 +140,7 @@ bindresvport_sa(sd, sa)
 		break;
 #endif /* HAVE_SOCKADDR_IN6 defined */
 	default:
-		errno = EPFNOSUPPORT;	/* bogus w/ WinSockets?! */
+		errno = EPFNOSUPPORT;
 		return (-1);
 	}
 	sa->sa_family = af;
@@ -154,8 +162,7 @@ bindresvport_sa(sd, sa)
 			break;
 			
 		/* Terminate on errors, except "address already in use" */
-		if ((error < 0) &&
-		    !((get_errno == EADDRINUSE) || (get_errno == EINVAL)))
+		if ((error < 0) && !((errno == EADDRINUSE) || (errno == EINVAL)))
 			break;
 			
 		port++;
@@ -169,7 +176,7 @@ bindresvport_sa(sd, sa)
 #ifdef NEED_BINDRESVPORT
 int
 bindresvport(sd, sin)
-	sock_t sd;
+	int sd;
 	struct sockaddr_in *sin;
 {
 	return bindresvport_sa(sd, (struct sockaddr *)sin);

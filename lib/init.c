@@ -17,6 +17,10 @@ extern void *malloc();
 #include <unistd.h>			/* xxx_FILENO */
 #endif /* HAVE_UNISTD_H defined */
 
+#ifdef HAVE_IO_H
+#include <io.h>				/* _dup */
+#endif /* HAVE_IO_H */
+
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
