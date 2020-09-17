@@ -1,3 +1,10 @@
+/*
+ * $Id$
+ * I/O object using stdio
+ * Phil Budne
+ * 9/11/2020
+ */
+
 struct stdio_obj {
     struct io_obj io;
     FILE *f;

@@ -1,8 +1,8 @@
 /*
  * $Id$
- * ptyio -- using Windows Pseudo-Console
+ * ptyio I/O Object using Windows Pseudo-Console
  * Phil Budne
- * 2020-09-12 (compiles)
+ * 2020-09-12
  */
 
 /*

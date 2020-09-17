@@ -11,7 +11,7 @@
 
 #include <stdio.h>
 
-#include "h.h"				/* TRUE, __P */
+#include "h.h"				/* __P */
 #include "io_obj.h"
 
 struct io_obj *

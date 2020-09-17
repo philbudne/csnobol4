@@ -1,4 +1,5 @@
 /*
+ * $Id$
  * base class for line buffered input
  * for things that can't be wrapped using fdopen (winsock)
  * child class MUST define io_read_raw & io_write, but not io_read!!

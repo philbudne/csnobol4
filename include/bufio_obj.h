@@ -1,5 +1,9 @@
-
-/* base class for I/O that can't be input buffered using stdio/fdopen */
+/*
+ * $Id$
+ * base class for I/O that can't be input buffered using stdio/fdopen
+ * Phil Budne
+ * 9/13/2020
+ */
 
 /*
  * NOTE!! Any class using this as a base must define:

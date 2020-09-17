@@ -1,4 +1,5 @@
 /*
+ * $Id$
  * *A* memio implementation
  * for systems without POSIX.1-2008 fmemopen
  * (eg; Windows DLL)

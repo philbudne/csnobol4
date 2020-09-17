@@ -1,6 +1,11 @@
-/* $Id$ */
+/*
+ * $Id$
+ * I/O Object defines
+ * Phil Budne
+ * 9/11/2020
+ */
 
-/* superclass */
+/* base class */
 struct io_obj {
     const struct io_ops *ops;
     int flags;

@@ -2,10 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
-XXX TODO make sure new files have Id:
-
 9/16/2020:
 	configure: fix for ptyio_obj.c
+	cleanup new file headers
 
 9/16/2020:
 	include/io_obj.h: make nomatch extern

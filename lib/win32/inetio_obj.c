@@ -1,6 +1,6 @@
 /*
  * $Id$
- * Internet I/O object using WinSockets
+ * Internet I/O object using WinSockets (both)
  * Phil Budne
  * 2020-09-15
  */
@@ -14,8 +14,9 @@
 
 #ifdef HAVE_WINSOCK2_H
 #include <winsock2.h>
+// first public release?
 #define WS_MAJOR 2
-#define WS_MINOR 0
+#define WS_MINOR 1
 #else
 #include <winsock.h>
 // first public release?
@@ -160,7 +161,7 @@ inetio_open(char *path, int flags, int dir) {
 
     iiop = (struct inetio_obj *) io_alloc(sizeof(*iiop), &inetio_ops, flags);
     if (!iiop) {
-	closesocket(s);			/* XXX call into inet(6).c? */
+	closesocket(s);
 	return NULL;
     }
     iiop->s = s;

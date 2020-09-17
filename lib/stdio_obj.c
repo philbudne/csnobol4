@@ -1,6 +1,8 @@
 /*
+ * $Id$
  * I/O object using stdio
- * Phil Budne 9/11/2020
+ * Phil Budne
+ * 9/11/2020
  *
  * _COULD_ write to POSIX open/close/read/write system call API,
  * and perhaps avoid copying, but trust that stdio libraries are
@@ -285,10 +287,11 @@ static int
 stdio_close(struct io_obj *iop) {
     struct stdio_obj *siop = (struct stdio_obj *)iop;
 
-    if (siop->io.flags & FL_NOCLOSE)
-	return 1;
+    if (siop->io.flags & FL_TTY)
+	tty_close(siop->f);		/* advisory */
 
-    /* XXX tty_close (advisory) call? */
+    if (siop->io.flags & FL_NOCLOSE)
+	return TRUE;
 
     return fclose(siop->f) == 0;
 }

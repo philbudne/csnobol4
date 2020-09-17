@@ -2,6 +2,8 @@
  * $Id$
  * generic v7 thru POSIX.1-2001 tty test
  * as of 2020 only Windows can't use this
+ * Phil Budne
+ * 9/13/2020
  */
 
 #ifdef HAVE_CONFIG_H

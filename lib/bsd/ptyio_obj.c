@@ -42,7 +42,7 @@ struct ptyio_obj {
     pid_t pid;
 };
 
-int
+static int
 ptyio_close(struct io_obj *iop) {
     struct ptyio_obj *piop = (struct ptyio_obj *)iop;
     pid_t pid;
