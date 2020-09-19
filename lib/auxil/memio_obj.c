@@ -1,8 +1,7 @@
 /*
  * $Id$
  * *A* memio implementation
- * for systems without POSIX.1-2008 fmemopen
- * (eg; Windows DLL)
+ * for systems without POSIX.1-2008 fmemopen (eg; Windows DLL)
  * Phil Budne
  * 9/13/2020 (not tested!)
  */
@@ -16,12 +15,15 @@
 
 #include "h.h"				/* TRUE */
 #include "io_obj.h"
+#include "bufio_obj.h"
+
+#define SUPER bufio_ops
 
 struct memio_obj {
-    struct io_obj io;
-    char *ptr;                /* pointer to buffer */
-    size_t len;		      /* length of buffer */
-    off_t pos;                /* current position in buffer */
+    struct bufio_obj bio;	/* line buffered input */
+    char *ptr;			/* pointer to buffer */
+    size_t len;			/* length of buffer */
+    off_t pos;			/* current position in buffer */
 };
 
 static ssize_t
@@ -38,43 +40,21 @@ memio_write(struct io_obj *iop, char *buf, size_t len) {
     return -1;
 }
 
+/*
+ * sadly, copies data, but avoids ANOTHER implementation of
+ * line-oriented I/O
+ */
 static ssize_t
-memio_read(struct io_obj *iop, char *buf, size_t len) {
+memio_read_raw(struct io_obj *iop, char *buf, size_t len) {
     struct memio_obj *miop = (struct memio_obj *)iop;
-
-    if (iop->flags & FL_BINARY) {
-	int rem = miop->len - miop->pos;
-	if (rem == 0)
-	    return -1;			/* 0? */
-	if (len > rem)
-	    len = rem;
-	memcpy(buf, miop->ptr + miop->pos, len);
-	miop->pos += len;
-	return len;
-    }
-    else {				/* line oriented */
-	/* XXX could layer on bufio */
-	int cc = 0;
-	int nread = 0;
-	int eol = FALSE;
-
-	while (cc < len && !eol && miop->pos < miop->len) {
-	    char c = miop->ptr[miop->pos++];
-	    nread++;
-	    if (c == '\r')
-		continue;
-	    if (c == '\n') {
-		eol = TRUE;
-		if (iop->flags & FL_EOL) /* normal EOL behavior (strip)? */
-		    break;
-	    }
-	    *buf++ = c;
-	    cc++;
-	}
-	if (nread == 0)
-	    return -1;
-	return cc;
-    } /* line oriented */
+    int rem = miop->len - miop->pos;
+    if (rem == 0)
+	return -1;			/* 0? */
+    if (len > rem)
+	len = rem;
+    memcpy(buf, miop->ptr + miop->pos, len);
+    miop->pos += len;
+    return len;
 }
 
 static off_t
@@ -87,19 +67,20 @@ memio_tello(struct io_obj *iop) {
 static int
 memio_seeko(struct io_obj *iop, off_t off, int whence) {
     struct memio_obj *miop = (struct memio_obj *)iop;
+    int ret = FALSE;
 
     switch (whence) {
     case SEEK_SET:
 	if (off <= miop->len) {
 	    miop->pos = off;
-	    return TRUE;
+	    ret = TRUE;
 	}
 	break;
     case SEEK_CUR:
 	if (miop->pos + off <= miop->len &&
 	    miop->pos + off >= 0) {
 	    miop->pos += off;
-	    return TRUE;
+	    ret = TRUE;
 	}
 	break;
     case SEEK_END:
@@ -107,10 +88,11 @@ memio_seeko(struct io_obj *iop, off_t off, int whence) {
 	if (miop->len + off <= miop->len &&
 	    miop->len + off >= 0) {
 	    miop->pos = miop->len + off;
-	    return TRUE;
+	    ret = TRUE;
 	}
 	break;
     }
+    /* XXX if (ret) SUPER.io_seek() to invalidate line buffer? */
     return FALSE;
 }
 
@@ -120,31 +102,12 @@ memio_flush(struct io_obj *iop) {
     return TRUE;
 }
 
-static int
-memio_eof(struct io_obj *iop) {
-    struct memio_obj *miop = (struct memio_obj *)iop;
+#define memio_read NULL		/* use bufio */
+#define memio_eof NULL		/* use bufio */
+#define memio_clearerr NULL	/* use bufio */
+#define memio_close NULL	/* use bufio */
 
-    if (miop->len == 0)
-	return TRUE;
-
-    return miop->pos == miop->len;	/* ?? */
-}
-
-static void
-memio_clearerr(struct io_obj *iop) {
-    (void) iop;
-}
-
-static int
-memio_close(struct io_obj *iop) {
-    (void) iop;
-    return TRUE;
-}
-
-/* NOTE! defines all methods, since is used alone */
-#define memio_read_raw NULL		/* only w/ bufio */
-
-MAKE_OPS(memio, NULL);
+MAKE_OPS(memio, &SUPER);
 
 struct io_obj *
 memio_open(char *buf, size_t len, int flags) {
@@ -163,6 +126,6 @@ memio_open(char *buf, size_t len, int flags) {
     miop->ptr = buf;
     miop->len = len;
 
-    return &miop->io;
+    return &miop->bio.io;
 }
 

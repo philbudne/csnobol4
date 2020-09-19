@@ -5,6 +5,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 9/19/2020:
 	lib/win32/mstime.c: fix(?) HIGHMS
 	config/win32/config.h: clean up(?)
+	lib/auxil/memio.h: use bufio
+	config/win32/ntmsvc.mak: moved BITFIELDS_SAME_TYPE to win32/config.h
 
 9/16/2020:
 	configure: fix for ptyio_obj.c

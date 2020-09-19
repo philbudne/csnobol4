@@ -136,6 +136,9 @@
 
 #if defined(_MSC_VER)			/* *** Microsoft C */
 
+/* ignored if NO_BITFIELDS defined (64-bits) */
+#define BITFIELDS_SAME_TYPE		/* or else won't pack them! */
+
 #define OBJECT_EXT ".obj"
 #define SETUP_SYS "win.msc"
 /* from ntmsvc.mak: CC, COPT, SO_LD, DL_LD, DL_CFLAGS */

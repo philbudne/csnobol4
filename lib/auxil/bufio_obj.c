@@ -128,11 +128,10 @@ bufio_write(struct io_obj *iop, char *buf, size_t len) {
     abort();
 }
 
-/* XXX use common dummyio_seeko? */
 static int
 bufio_seeko(struct io_obj *iop, off_t off, int whence) {
     (void) iop;
-    // fail silently?
+    /* XXX invalidate input buffer */
     return FALSE;
 }
 
