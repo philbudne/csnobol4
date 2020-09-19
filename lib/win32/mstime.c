@@ -25,8 +25,8 @@
 /* divisor for low 32 */
 #define TICKSPERMS 10000.0
 
-/* multiplier for high 32; */
-#define HIGHMS 429496.0			/* (2**32)/TICKSPERMS */
+/* multiplier for high 32 (PLB 2020-09-19: was 429496.0) */
+#define HIGHMS 429496.7296	 /* (2**32)/TICKSPERMS (4.97 days!) */
 
 real_t
 mstime()
