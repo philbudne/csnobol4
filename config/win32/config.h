@@ -116,14 +116,13 @@
 #define REALST_FORMAT "%.15lg"
 #define SIZEOF_INT_T 8
 #define SIZEOF_REAL_T 8
-#define ssize_t INT_T
-#define sock_t __int64 // SOCKET: unsigned that can hold a pointer
 #else
+// 32-bits:
 #define SIZEOF_INT_T 4
 #define SIZEOF_REAL_T 4
-#define size_t long
-#define sock_t long // SOCKET: unsigned that can hold a pointer
 #endif
+#define ssize_t INT_T
+#define sock_t unsigned INT_T // SOCKET: unsigned that can hold a pointer
 
 /* use native routines */
 #define USE_MEMMOVE
