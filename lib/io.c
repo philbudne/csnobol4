@@ -913,7 +913,7 @@ io_read( dp, sp )			/* STREAD */
     struct file *fp;
     struct unit *up;
     struct io_obj *iop;
-#ifdef _MSC_VER
+#ifdef _MSC_VER				/* XXX what about mingw? */
     int_t err_count = D_A(UINTCL);	/* ^C count */
 #endif
 
