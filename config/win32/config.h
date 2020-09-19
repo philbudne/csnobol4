@@ -44,14 +44,11 @@
 #define TTY_READ_RAW
 #define HAVE_GETVERSIONEX
 #define GETPID_IN_PROCESS_H
+
 #ifdef HAVE_WINSOCK2_H
 #define NEED_BINDRESVPORT_SA
 #else
-#define NEED_BINDRESVPORT_SA
-#endif
-
-#ifdef __GNUC__
-/* declarations for gcc builtins? */
+#define NEED_BINDRESVPORT
 #endif
 
 /* DLL import/export macros */
@@ -62,7 +59,10 @@
 #define EXPORT(TYPE) TYPE _export
 #endif /* defined(__BORLANDC__) */
 
-/* only define IMPORT when building a loadable DLL?? */
+/*
+ * IMPORT (external) symbols when building a DLL
+ * load.h defines SNOEXP(X) as IMPORT(X) when DLL defined
+ */
 #ifdef DLL
 #if defined(_MSC_VER) || defined(__MINGW32__)
 #define IMPORT(TYPE) __declspec(dllimport) TYPE
@@ -72,7 +72,6 @@
 #endif /* DLL defined */
 
 /* non-standard functions; */
-#define close_socket	closesocket
 #define finite		_finite
 //#define isnan		_isnan		/* 2020: not needed w/ VSC or MINGW */
 #define popen		_popen
@@ -82,8 +81,7 @@
 #define write		_write
 
 /*
- * POSIX.1-2001/C90
- * 64-bit windows is an LLP64 system (long is 32-bits)
+ * C90 & POSIX.1-2001:
  */
 #define HAVE_FSEEKO			/* now we do! */
 #define ftello(FP) _ftelli64(FP)
@@ -94,10 +92,14 @@
  */
 #define HAVE_SLEEP
 
-#ifndef __GNUC__
-#define HAVE_TIMEGM			/* not in MINGW 1.0.7(0.48/3/2) */
+/*
+ * in MINGW 1.0.19 time.h, which says:
+ * "introduced in MSVCR80.DLL, and they subsequently
+ *  appeared in MSVCRT.DLL, from Windows-Vista onwards."
+ */
+#define HAVE_TIMEGM			
 #define timegm		_mkgmtime
-#endif
+
 /*
  * end for time module
  ****/
@@ -121,32 +123,43 @@
 #define SIZEOF_INT_T 4
 #define SIZEOF_REAL_T 4
 #endif
+
+/* INT_T should always be large enough to hold a pointer */
 #define ssize_t INT_T
+
 #define sock_t unsigned INT_T // SOCKET: unsigned that can hold a pointer
+#define close_socket	closesocket
 
 /* use native routines */
 #define USE_MEMMOVE
 #define USE_MEMSET
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER)			/* *** Microsoft C */
+
 #define OBJECT_EXT ".obj"
 #define SETUP_SYS "win.msc"
-/* DL_CFLAGS from ntmsvc.mak */
+/* from ntmsvc.mak: CC, COPT, SO_LD, DL_LD, DL_CFLAGS */
 #define DL_LDFLAGS "/DLL /NOLOGO"
 #define CC_IS "msc"
-#elif defined(__GNUC__)
+
+#elif defined(__GNUC__)			/* *** MINGW */
+
 #define OBJECT_EXT ".o"
-#define USE_WCHAR_H
-#define SETUP_SYS "posix"		/* !!! */
+#define USE_WCHAR_H	  /* for com.cpp */
+#define SETUP_SYS "posix" /* !!! */
+/* from mingw.mak: CC, COPT, SO_LD, DL_LD */
 #define DL_CFLAGS ""
 #define DL_LDFLAGS "-shared -shared-libgcc"
 #define CC_IS "gcc"
-#elif defined(__BORLANDC__)
+
+#elif defined(__BORLANDC__)		/* *** Borland */
+
 #define OBJECT_EXT ".obj"
 #define SETUP_SYS "win.borland"
 #define CCOMPILER "bcc32"
 #define DL_LDFLAGS "-tWD"
 #define CC_IS "borland"
+
 #endif /* defined(__BORLANDC__) */
 
 #define SO_CFLAGS DL_CFLAGS
