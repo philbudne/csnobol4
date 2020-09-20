@@ -115,7 +115,7 @@ ordvst_strcmp(s1,l1, s2,l2)
  */
 static int
 #ifdef __STDC__
-ordvst_cmp(void *v1, void *v2)
+ordvst_cmp(const void *v1, const void *v2)
 #else
 ordvst_cmp(v1, v2)
     const void *v1, *v2;
