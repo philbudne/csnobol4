@@ -11,7 +11,7 @@ struct stdio_obj {
     enum { LAST_NONE, LAST_OUTPUT, LAST_INPUT } last;
 };
 
-#define MAXMODE 8
+#define MAXMODE 8			/* X+bex<NUL> */
 void flags2mode __P((int flags, char *mode, char dir));
 
 struct io_obj *stdio_wrap __P((char *path, FILE *, size_t, const struct io_ops *, int flags));
