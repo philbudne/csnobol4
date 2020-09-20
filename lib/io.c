@@ -17,14 +17,14 @@
  *	(see if can be fixed using 'L' returns as with LOAD)
  * * Multiple layers of I/O:
  *  A single disk file or device might be associated with one or more:
- *  + SNOBOL variable associations
+ *  + SNOBOL variable associations (w/ record length)
  *  + FORTRAN unit numbers
  *  + stdio FILE streams
  *  + POSIX file descriptors
  *  + (possible C runtime system handles/channels)
  *  + open file object in system space
- *  + Interactions of (excessive) I/O options/flags
- *  + Handling file lists.
+ * * Interactions of (extensive/excessive) I/O options/flags
+ * * Handling file lists.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -65,7 +65,7 @@ extern char *getenv();
 #include "data.h"			/* for FILENM */
 #include "proc.h"			/* UNDF() */
 
-#ifdef COMPILER_READLINE			/* after proc.h */
+#ifdef COMPILER_READLINE		/* after proc.h */
 #undef RETURN
 #include <readline/readline.h>
 #include <readline/history.h>
@@ -1941,7 +1941,7 @@ io_alloc(int size, const struct io_ops *ops, int flags) {
 }
 
 /*
- * code excised from io_fopen2. called from stdio_obj.c (& winsock support?)
+ * code excised from io_fopen2. called from stdio_obj.c (& winsock inetio)
  * NOTE!! path must be writable, and point AFTER the initial prefix
  * returned pointers will point inside path buffer.
  */
