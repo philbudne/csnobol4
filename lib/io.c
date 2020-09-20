@@ -84,7 +84,7 @@ struct unit {
     struct file *curr;			/* ptr to current file */
     /* for rewind; */
     struct file *head;			/* first file in list */
-    off_t offset;			/* offset in "head" to rewind to */
+    io_off_t offset;			/* offset in "head" to rewind to */
     /*
      * PLB 2020-09-11 keep flags & recl HERE??
      * would only matter if INPUT/OUTPUT calls allowed lists of files
@@ -199,7 +199,7 @@ ioo_flush(iop)
 }
 
 static int
-ioo_seeko(struct io_obj *iop, off_t off, int whence) {
+ioo_seeko(struct io_obj *iop, io_off_t off, int whence) {
     const struct io_ops *op;
 
     for (op = iop->ops; op; op = op->io_super)
@@ -209,7 +209,7 @@ ioo_seeko(struct io_obj *iop, off_t off, int whence) {
     return FALSE;
 }
 
-static off_t
+static io_off_t
 ioo_tello(struct io_obj *iop) {
     const struct io_ops *op;
 
@@ -1479,7 +1479,7 @@ io_seek(dunit, doff, dwhence)
     struct descr *dunit, *doff, *dwhence;
 {
     int unit, whence;
-    off_t off;
+    io_off_t off;
     struct file *fp;
     struct unit *up;
 
@@ -1491,7 +1491,7 @@ io_seek(dunit, doff, dwhence)
     if (fp == NULL)
 	return FALSE;
 
-    off = (off_t) D_A(doff);
+    off = (io_off_t) D_A(doff);
     whence = D_A(dwhence);
     if (whence < 0 || whence > 2)
 	return FALSE;
@@ -1516,7 +1516,7 @@ int
 io_sseek(unit, soff, whence, scale, oof )
     int_t unit, soff, whence, scale, *oof;
 {
-    off_t off;
+    io_off_t off;
     struct file *fp;
     struct unit *up;
     struct io_obj *iop;
@@ -1529,7 +1529,7 @@ io_sseek(unit, soff, whence, scale, oof )
     if (fp == NULL)
 	return FALSE;
 
-    off = soff * (off_t)scale;
+    off = soff * (io_off_t)scale;
     if (whence < 0 || whence > 2)
 	return FALSE;
 

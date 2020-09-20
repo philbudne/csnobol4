@@ -51,13 +51,17 @@ typedef long off_t;
 #include <sys/types.h>			/* off_t */
 #endif /* NEED_OFF_T not defined */
 
+#ifndef io_off_t
+#define io_off_t off_t
+#endif
+
 struct io_ops {
     const char *io_name;
     const struct io_ops *io_super;	/* superclass */
     ssize_t (*io_read) __P((struct io_obj *, char *, size_t));
     ssize_t (*io_write) __P((struct io_obj *, char *, size_t));
-    int (*io_seeko) __P((struct io_obj *, off_t, int)); /* bool */
-    off_t (*io_tello) __P((struct io_obj *));
+    int (*io_seeko) __P((struct io_obj *, io_off_t, int)); /* bool */
+    io_off_t (*io_tello) __P((struct io_obj *));
     int (*io_flush) __P((struct io_obj *)); /* bool */
     int (*io_eof) __P((struct io_obj *));   /* bool */
     void (*io_clearerr) __P((struct io_obj *));

@@ -23,7 +23,7 @@ struct memio_obj {
     struct bufio_obj bio;	/* line buffered input */
     char *ptr;			/* pointer to buffer */
     size_t len;			/* length of buffer */
-    off_t pos;			/* current position in buffer */
+    io_off_t pos;			/* current position in buffer */
 };
 
 static ssize_t
@@ -57,7 +57,7 @@ memio_read_raw(struct io_obj *iop, char *buf, size_t len) {
     return len;
 }
 
-static off_t
+static io_off_t
 memio_tello(struct io_obj *iop) {
     struct memio_obj *miop = (struct memio_obj *)iop;
 
@@ -65,7 +65,7 @@ memio_tello(struct io_obj *iop) {
 }
 
 static int
-memio_seeko(struct io_obj *iop, off_t off, int whence) {
+memio_seeko(struct io_obj *iop, io_off_t off, int whence) {
     struct memio_obj *miop = (struct memio_obj *)iop;
     int ret = FALSE;
 

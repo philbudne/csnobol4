@@ -94,7 +94,7 @@ stdio_read(struct io_obj *iop, char *buf, size_t len) {
      * between output and input.
      */
     if ((iop->flags & FL_UPDATE) && siop->last == LAST_OUTPUT)
-	fseeko(siop->f, (off_t)0, SEEK_CUR); /* seek relative by zero */
+	fseeko(siop->f, (io_off_t)0, SEEK_CUR); /* seek relative by zero */
     siop->last = LAST_INPUT;
 
     /*printf("%s siop@%p f@%p fd %d fl %#o\n",
@@ -227,14 +227,14 @@ stdio_write(struct io_obj *iop, char *buf, size_t len) {
      * This may have been added out of an excess of caution!!
      */
     if ((iop->flags & FL_UPDATE) && siop->last == LAST_INPUT)
-	fseeko(siop->f, (off_t)0, SEEK_CUR);	/* seek relative by zero */
+	fseeko(siop->f, (io_off_t)0, SEEK_CUR);	/* seek relative by zero */
 
     siop->last = LAST_OUTPUT;
     return fwrite(buf, 1, len, siop->f);
 }
 
 static int
-stdio_seeko(struct io_obj *iop, off_t off, int whence) {
+stdio_seeko(struct io_obj *iop, io_off_t off, int whence) {
     struct stdio_obj *siop = (struct stdio_obj *)iop;
 
 #ifndef NO_UNBUF_RW
@@ -242,7 +242,7 @@ stdio_seeko(struct io_obj *iop, off_t off, int whence) {
 	/* optimized stdio libraries might try to optimize away
 	 * the an fseek[o] if they've seen no read/write ops?!
 	 */
-	return lseek(fileno(siop->f), off, whence) != (off_t)-1;
+	return lseek(fileno(siop->f), off, whence) != (io_off_t)-1;
     }
 #endif /* NO_UNBUF_RW not defined */
 
@@ -250,7 +250,7 @@ stdio_seeko(struct io_obj *iop, off_t off, int whence) {
     return fseeko(siop->f, off, whence) == 0;
 }
 
-static off_t
+static io_off_t
 stdio_tello(struct io_obj *iop) {
     struct stdio_obj *siop = (struct stdio_obj *)iop;
 
