@@ -5,7 +5,7 @@
 
 # tested 11/2005 w/ Visual Studio .NET 2003 (VC71)
 # tested  5/2010 w/ Visual C++ Express 2010
-# tested  9/2020 w/ Visual C++ 2019(?) (MSC 1926)
+# tested  9/2020 w/ Visual Studio Community Edition 2019 (v16.6.3)
 
 ################ settings
 
