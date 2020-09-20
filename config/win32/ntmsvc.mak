@@ -28,23 +28,23 @@ INET_SRC=$(SRCDIR)lib\dummy\inet.c
 ######## WINSOCK defined
 !IF $(WINSOCK) == 1
 #### winsock1
-INET_DEFS=-DHAVE_WINSOCK_H -DINET_IO
-INET_OBJ=inet.obj
+WINSOCK_DEF=-DHAVE_WINSOCK_H
 INET_SRC=$(SRCDIR)lib\win32\inet.c
-BUFIO_OBJ=bufio_obj.obj
+INET_OBJ=inet.obj
 # wsock32 present on both Win95 and WinNT
 INET_LIBS=wsock32.lib
 !ELSEIF $(WINSOCK) == 2
 #### winsock2
-INET_DEFS=-DHAVE_WINSOCK2_H -DINET_IO
-INET_OBJ=inet6.obj
+WINSOCK_DEF=-DHAVE_WINSOCK2_H
 INET_SRC=$(SRCDIR)lib\bsd\inet6.c
-BUFIO_OBJ=bufio_obj.obj
+INET_OBJ=inet6.obj
+INET_LIBS=ws2_32.lib
 !endif
 # here with WINSOCK defined
+INET_DEFS=$(WINSOCK_DEF) -DINET_IO
 # auxillary objects requires for both WS1 & WS2:
 INET_OBJS=bindresvport.obj inetio_obj.obj
-INET_LIBS=ws2_32.lib
+BUFIO_OBJ=bufio_obj.obj
 !ELSE
 ######## WINSOCK not defined
 INET_SRC=$(SRCDIR)lib\dummy\inet.c
@@ -66,7 +66,7 @@ COMMON_CFLAGS=-nologo -DHAVE_CONFIG_H
 DL_CFLAGS=$(COMMON_CFLAGS)
 CFLAGS=-c $(OPT) $(COMMON_CFLAGS) $(INET_DEFS) -I$(SRCDIR)config\win32 -I$(SRCDIR)include -I$(SRCDIR).
 
-# switch/enum warning?
+# disable switch/enum warning for isnobol4.c:
 SNOBOL4_C_CFLAGS=/wd4715
 
 OBJ=	$(BUFIO_OBJ) $(INET_OBJ) $(INET_OBJS) \
