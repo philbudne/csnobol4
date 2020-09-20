@@ -3,6 +3,9 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/19/2020:
+	config/djgpp/config.h: add sock_t
+
+9/19/2020:
 	Conditionally ansify for MSVC:
 	lib/init.c: SIGFUNC_ARG[_DECL]
 	lib/ordvst.c: ordvst_cmp

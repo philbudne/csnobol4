@@ -22,9 +22,8 @@
 #define FOLD_HOSTNAMES
 #define NEED_BINDRESVPORT
 #define SOCKLEN_T int
-#define udp_open myudp_open
-#define tcp_open mytcp_open
 #endif /* HAVE_WATTCP defined */
+#define sock_t int
 
 #define PATH_SEP	";"
 #define DIR_SEP		"\\"
