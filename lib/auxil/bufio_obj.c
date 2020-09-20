@@ -129,14 +129,14 @@ bufio_write(struct io_obj *iop, char *buf, size_t len) {
 }
 
 static int
-bufio_seeko(struct io_obj *iop, off_t off, int whence) {
+bufio_seeko(struct io_obj *iop, io_off_t off, int whence) {
     (void) iop;
     /* XXX invalidate input buffer */
     return FALSE;
 }
 
 /* XXX use common dummyio_tello? */
-static off_t
+static io_off_t
 bufio_tello(struct io_obj *iop) {
     (void) iop;
     // fail silently?
