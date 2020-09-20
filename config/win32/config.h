@@ -121,6 +121,7 @@
 #define SIZEOF_REAL_T 8
 #else
 // 32-bits:
+#define INT_T long			/* default, but used below */
 #define SIZEOF_INT_T 4
 #define SIZEOF_REAL_T 4
 #endif
