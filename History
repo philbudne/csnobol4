@@ -3,6 +3,11 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/19/2020:
+	Conditionally ansify for MSVC:
+	lib/init.c: SIGFUNC_ARG[_DECL]
+	lib/ordvst.c: ordvst_cmp
+
+9/19/2020:
 	include/io_obj.h: default io_off_t
 	lib/io.c, lib/stdio_obj.c, lib/auxil/memio_obj.c: use io_off_t
 	config/win32/config.h: define io_off_t

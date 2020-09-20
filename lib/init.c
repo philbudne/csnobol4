@@ -40,6 +40,14 @@ extern void *malloc();
 #define SIGFUNC_T void
 #endif /* SIGFUNC_T not defined */
 
+#ifdef __STDC__
+#define SIGFUNC_ARG int sig
+#define SIGFUNC_ARG_DECL
+#else
+#define SIGFUNC_ARG sig
+#define SIGFUNC_ARG_DECL int sig;
+#endif
+
 #ifndef NDYNAMIC
 #define NDYNAMIC (512*1024)		/* default dynamic region size */
 #endif /* NDYNAMIC not defined */
@@ -572,8 +580,8 @@ volatile int math_error;		/* see macros.h */
 #endif /* NO_STATIC_VARS not defined */
 
 static SIGFUNC_T
-math_catch(sig)
-    int sig;
+math_catch(SIGFUNC_ARG)
+    SIGFUNC_ARG_DECL
 {
 #ifdef SIGFPE
     signal(SIGFPE, math_catch);
@@ -588,8 +596,8 @@ math_catch(sig)
 
 /* handle fatal errors */
 static SIGFUNC_T
-err_catch(sig)
-    int sig;
+err_catch(SIGFUNC_ARG)
+    SIGFUNC_ARG_DECL
 {
     D_A(SIGNCL) = sig;			/* save signal number for output */
     SYSCUT(NORET);
@@ -597,8 +605,8 @@ err_catch(sig)
 
 /* handle ^C (SIGINT) here */
 static SIGFUNC_T
-sig_catch(sig)
-    int sig;
+sig_catch(SIGFUNC_ARG)
+    SIGFUNC_ARG_DECL
 {
     if (D_A(COMPCL) || D_A(ERRLCL) == 0) /* in compiler or &ERRLIMIT == 0*/
 	err_catch(sig);			/* treat as before */
@@ -614,8 +622,8 @@ sig_catch(sig)
 
 #ifdef SIGTSTP
 static SIGFUNC_T
-suspend(sig)
-    int sig;
+suspend(SIGFUNC_ARG)
+    SIGFUNC_ARG_DECL
 {
     tty_suspend();			/* restore tty mode(s) */
 
