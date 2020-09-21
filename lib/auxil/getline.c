@@ -48,8 +48,8 @@ getline(char **bufp, size_t *lenp, FILE *fp) {
 	    nbuf = realloc(*bufp, nsize);
 	    if (!nbuf)
 		return EOF;
-	    *linebuf = nbuf;
-	    *linebufsize = nsize;
+	    *bufp = nbuf;
+	    *lenp = nsize;
 	    cp = nbuf + count;
 	    avail = nsize - count;
 	}
