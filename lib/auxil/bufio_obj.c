@@ -102,7 +102,7 @@ bufio_getline(struct io_obj *iop) {
     if (count == 0)
 	return EOF;
     *cp = '\0';
-    return count;
+    return count;			/* excluding NUL */
 }
 
 static ssize_t

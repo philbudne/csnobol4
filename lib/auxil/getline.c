@@ -25,21 +25,19 @@ getline(char **bufp, size_t *lenp, FILE *fp) {
     size_t count = 0;
     ssize_t avail;
     char *cp;
+    int c;
 
     if (!bufp || !lenp || !fp)
 	return EOF;
 
     if (!*bufp) {
-	if (*lenp < MINSIZE)
-	    *lenp = MINSIZE;
-	cp = *bufp = malloc(*lenp);
-	if (cp)
+	*bufp = malloc(*lenp = MINSIZE);
+	if (!*bufp)
 	    return EOF;
     }
+    cp = *bufp;
     avail = *lenp - count;
-    for (;;) {
-	int c;
-
+    do {
 	if (avail < 2) {
 	    size_t nsize = *lenp * 2;	/* overflow unlikely?! */
 	    char *nbuf;
@@ -58,9 +56,21 @@ getline(char **bufp, size_t *lenp, FILE *fp) {
 	    break;
 	*cp++ = c;
 	count++;
-    }
+    } while (c != '\n');
     if (count == 0)
 	return EOF;
     *cp = '\0';
-    return count;
+    return count;			/* excluding NUL */
 }
+
+#ifdef TEST
+int
+main() {
+    char *buf = NULL;
+    size_t len = 0;
+
+    printf("getline: %zd\n", getline(&buf, &len, stdin));
+    printf("line: %s", buf);
+}
+#endif
+
