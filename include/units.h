@@ -1,6 +1,11 @@
 /* $Id$ */
 
-/* NOTE: must be .GE. 1 and .LE. 99!! */
+#define NUNITS 256			/* XXX set at runtime? */
+
+/*
+ * "external" unit numbers (one-based)
+ * (modern FORTRAN seems to use unit zero for stderr!)
+ */
 #define UNITI	5		/* INPUT: stdin */
 #define UNITO	6		/* OUTPUT: stdout */
 #define UNITP	7		/* TERMINAL output: stderr */

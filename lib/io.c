@@ -71,8 +71,6 @@ extern char *getenv();
 #include <readline/history.h>
 #endif /* COMPILER_READLINE */
 
-#define NUNITS 256			/* XXX set at runtime? */
-
 #ifndef PRELOAD_FILENAME
 #define PRELOAD_FILENAME "preload.sno"
 #endif
@@ -144,7 +142,7 @@ static struct iovars iov;
 /* convert to internal (zero based) unit number; */
 #define INTERN(U) ((U)-1)
 
-/* check an internal (zero based) unit number; */
+/* check a (zero based) unit number; */
 #define BADUNIT(U) ((U) < 0 || (U) >= NUNITS)
 
 /*
@@ -164,13 +162,25 @@ struct io_obj nomatch;			/* for NOMATCH */
  * Currently, only oddball things like pipes, ptys and winsock are layered.
  */
 
+/* leaves input in iop->linebuf (expanded as needed) */
 static ssize_t
-ioo_read(struct io_obj *iop, char *buf, size_t len) {
+ioo_getline(struct io_obj *iop) {
     const struct io_ops *op;
 
     for (op = iop->ops; op; op = op->io_super)
-	if (op->io_read)
-	    return (op->io_read)(iop, buf, len);
+	if (op->io_getline)
+	    return (op->io_getline)(iop);
+
+    return -1;
+}
+
+static ssize_t
+ioo_read_raw(struct io_obj *iop, char *buf, size_t len) {
+    const struct io_ops *op;
+
+    for (op = iop->ops; op; op = op->io_super)
+	if (op->io_read_raw)
+	    return (op->io_read_raw)(iop, buf, len);
 
     return -1;
 }
@@ -206,6 +216,7 @@ ioo_seeko(struct io_obj *iop, io_off_t off, int whence) {
 	if (op->io_seeko)
 	    return (op->io_seeko)(iop, off, whence);
 
+    /* in case not implemented: the expected response */
     return FALSE;
 }
 
@@ -217,7 +228,8 @@ ioo_tello(struct io_obj *iop) {
 	if (op->io_tello)
 	    return (op->io_tello)(iop);
 
-    return -1;				/* SNH */
+    /* in case not implemented: the expected response */
+    return -1;
 }
 
 static int
@@ -259,6 +271,8 @@ ioo_close(struct io_obj *iop) {
 	    break;
 	}
     }
+    if (iop->linebuf)
+	free(iop->linebuf);
     free(iop);
     return ret;
 }
@@ -771,18 +785,11 @@ io_print_str(fp, cp, len, needfill, eol)
     int needfill;
     int eol;
 {
-    int ret;
+    int ret = TRUE;
 
     if (fp == NULL)
 	return FALSE;
 
-    /*
-     * ANSI C requires that a file positioning function intervene
-     * between output and input. Would not be needed if UPDATE I/O
-     * performed using read()/write() (ie; FL_UNBUF)
-     */
-
-    ret = TRUE;
     if (cp && len) {
 	if (needfill) {
 	    char *ep;
@@ -814,7 +821,7 @@ io_print_str(fp, cp, len, needfill, eol)
 
 #ifdef NO_UNBUF_RW
     if ((fp->flags & FL_UNBUF)) {
-	/* simulate unbuffered I/O */
+	/* simulate unbuffered I/O (noop now that setvbuf used) */
 	ret = ioo_flush(f);
     }
 #endif /* NO_UNBUF_RW defined */
@@ -907,14 +914,14 @@ io_read( dp, sp )			/* STREAD */
     struct spec *sp;
 {
     int unit;
-    int recl;
-    int len;
+    int_t recl;
+    ssize_t len;
     char *cp;
     struct file *fp;
     struct unit *up;
     struct io_obj *iop;
-#ifdef _MSC_VER				/* XXX what about mingw? */
-    int_t err_count = D_A(UINTCL);	/* ^C count */
+#ifdef SIGINT_EOF_CHECK
+    int_t user_interrupt_count = D_A(UINTCL); /* ^C count */
 #endif
 
     unit = INTERN(D_A(dp));
@@ -936,8 +943,14 @@ io_read( dp, sp )			/* STREAD */
 		return IO_ERR;
 	}
 
-	if (0)
-	    ;
+	if (iop->flags & FL_BINARY) {
+	    if (recl == 0)		/* XXX use equ.h TXRECL? */
+		return IO_ERR;
+
+	    len = ioo_read_raw(iop, cp, recl);
+	    if (len == recl)
+		break;
+	}
 #ifdef COMPILER_READLINE
 	else if (ISTTY(fp) && COMPILING(unit)) {
 	    char *tp;
@@ -958,30 +971,70 @@ io_read( dp, sp )			/* STREAD */
 	}
 #endif /* COMPILER_READLINE defined */
 	else {			/* normal, cooked (line) I/O */
-	    len = ioo_read(iop, cp, recl);
-	    if (len >= 0)
-		break;
-	}
+	    len = ioo_getline(iop);
+	    if (len > 0) {
+		/* if normal EOL processing, discard newline */
+		if ((iop->flags & FL_EOL) && iop->linebuf[len-1] == '\n') {
+		    len--;
+		    if (len && iop->linebuf[len-1] == '\r')
+			len--;
+		}
+
+		/*
+		 * PLB 2020-09-21
+		 * XXX _COULD_ always honor recl (if != equ.h:TXRECL)
+		 * even if not compiling.  This would mean programs
+		 * which explicitly set the record length to some
+		 * large number would ONLY see that many, and without
+		 * the K flag being honored.
+		 *
+		 * Keeping the old behavior would mean either
+		 * implementing it here (character at a time,
+		 * or pushing it down into multiple classes.
+		 *
+		 * NOTE! The old implementation of FL_KEEP had the
+		 * bug that a line of exactly RECL characters would
+		 * be followed by read of an empty line.
+		 */
+		if (COMPILING(unit)) {
+		    /* compiler expects data in-place, so copy it */
+		    if (!recl)
+			return IO_ERR;
+		    if (len > recl)
+			len = recl;
+		    /* NOTE! truncates line (discards rest of record) */
+		    bcopy(iop->linebuf, cp, len);
+		    break;
+		}
+		else {			/* not compiling */
+		    /*
+		     * 2020-09-20: point at malloc'ed line buffer!!!
+		     * no more truncation (at the cost of another copy)
+		     */
+		    S_A(sp) = (int_t) iop->linebuf;
+		    S_O(sp) = 0;	/* offset */
+		    S_F(sp) = 0;	/* flags S_A not PTR!! */
+		    /* S_L(sp) set below */
+		    break;
+		}
+	    }
+	} /* else (normal, cooked) */
 
 	/* here when read failed; see if non-EOF error */
 	if (!ioo_eof(iop) )
 	    return IO_ERR;	/* error wasn't EOF */
 
 	/* here with EOF */
-#ifdef _MSC_VER			/* (MINGW too??) */
+#ifdef SIGINT_EOF_CHECK
 	/*
-	 * [can't be moved to stdio_obj, because currently no way
-	 *  to signal "continue big loop" -- io_read could return -2?]
-	 *
-	 * Control C causes EOF to be set in VS10;
+	 * Control C causes EOF to be set in Windows runtime.
 	 * SIGINT catcher increments UINTCL, so hopefully
 	 * combinations of ^C and ^Z won't cause infinite loop!
-	 *
-	 * (checks if UNITCL increased while in this routine)
-	 *
-	 * XXX add ISTTY(fp)?  Want "ISCONSOLE" (ctty)??
+	 * [could push this down into stdio_obj at the cost
+	 *  of introducing a "big loop" there as well]
+	 * XXX add ISTTY(fp)?
 	 */
-	if (++err_count == D_A(UINTCL)) {
+	if (++user_interrupt_count == D_A(UINTCL)) {
 	    ioo_clearerr(iop);
 	    continue;			/* try again */
 	}
@@ -1241,12 +1294,13 @@ io_options( op, rp, fp )
 	}
     } /* while *op */
 
+    *fp = flags;
     if (rp)
 	*rp = recl;
-    *fp = flags;
     return TRUE;
 }
 
+/* here via XCALL IO_OPENI */
 int
 io_openi(dunit, sfile, sopts, drecl)	/* called from SNOBOL INPUT() */
     struct descr *dunit;		/* IN: unit */
@@ -1258,19 +1312,21 @@ io_openi(dunit, sfile, sopts, drecl)	/* called from SNOBOL INPUT() */
     char opts[MAXOPTS];			/* XXX malloc(S_L(sopts)+1)? */
     struct file *fp;
     struct unit *up;
-    int unit;
+    int xunit, unit;
     int recl;
 
-    unit = INTERN(D_A(dunit));
+    xunit = D_A(dunit);			/* external unit number */
+    unit = INTERN(xunit);		/* internal unit number */
     if (BADUNIT(unit))
 	return FALSE;			/* fail */
     up = FINDUNIT(unit);
 
+    /* XXX handle arbitrary length strings? */
     spec2str( sfile, fname, sizeof(fname) );
     spec2str( sopts, opts, sizeof(opts) );
 
     /* XXX if no sopts;
-     * extract options suffix (if any) from filename here?
+     * extract spitbol stule options suffix (if any) from filename here?
      */
 
     if (fname[0]) {
@@ -1287,6 +1343,17 @@ io_openi(dunit, sfile, sopts, drecl)	/* called from SNOBOL INPUT() */
     if (!io_options(opts, &recl, &fp->flags)) {
 	free(fp);
 	return FALSE;
+    }
+
+    if (recl && !(fp->flags & FL_BINARY)) {
+	static char recl_ignored_warning = 0;
+	/* just once per run: have an environment variable suppress this?? */
+	if (!recl_ignored_warning) {
+	    fprintf(stderr, "Ignoring record length %d on I/O unit %d\n",
+		    recl, xunit);
+	    recl_ignored_warning = 1;
+	}
+	recl = VLRECL;			/* Keep PUTIN from pre-allocating */
     }
 
     /* open it now, so we can return status! */
@@ -1307,6 +1374,7 @@ io_openi(dunit, sfile, sopts, drecl)	/* called from SNOBOL INPUT() */
     return TRUE;
 } /* io_openi */
 
+/* here via XCALL IO_OPENO */
 int
 io_openo(dunit, sfile, sopts)		/* called from SNOBOL OUTPUT() */
     struct descr *dunit;		/* IN: unit */
@@ -1573,7 +1641,7 @@ io_flushall(dummy)			/* called w/ SIL XCALLC */
  * for PML functions; return a free unit number, returns -1 on failure
  * (use io_mkfile() to attach open file to unit)
  *
- * available in SNOBOL via snolib/findunit.c (PML'ed)
+ * available in SNOBOL via snolib/findunit.c (PML'ed) as IO_FINDUNIT()
  */
 
 #define MINFIND 20			/* minimum unit to return */
@@ -1617,9 +1685,7 @@ io_findunit()
 /*
  * only stdio_obj subclass of io_obj has FILE pointer.
  * COULD implement a getfp io_obj method
- * BUT in some subclasses (Windows PTY) that's only for one direction
- *   (win32/pty.c could implement it as return NULL.)
- *   and all files implementing io_obj interface already include <stdio.h>
+ * and all files implementing io_obj interface already include <stdio.h>
  *	(for NULL and size_t)
  */
 #if 0

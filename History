@@ -2,6 +2,40 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+9/21/2020:
+	Another I/O Overhaul: Remove record length limits from text I/O.
+	v311.sil: [PLB129] Add VLRECL (variable length record length(!))
+		as default/TERMINAL input record length.  io_read will
+		poke address of malloc'ed buffer into IOSP, and must
+		generate variable (and copy) each line.
+	config/win32/config.h: add SIGINT_EOF_CHECK
+	include/io_obj.h: add linebuf, linebufsize, io_getline
+		removed io_read. Update MSVC comments.
+		Use C99 designated initializers when detected available.
+		Add comments for inet_parse
+	include/lib.h: add names/comments for tty_mode, tty_read args
+	include/units.h: add NUNITS, comments
+	lib/io.c: moved NUNITS to units.h
+		add, use ioo_getline; remove ioo_read
+		io_close frees io_linebuf
+		use SIGINT_EOF_CHECK define
+		call ioo_read_raw directly for FL_BINARY read
+		io_openi: issue warning if recl given outside binary mode
+	lib/stdio_obj.c: remove stdio_read; add stdio_getline, stdio_read_setup
+		remove direct read/write/lseek for FL_UNBUF
+		use setvbuf _IONBF for FL_UNBUF
+		replace pipeio_read NULL define w/ pipeio_getline
+	lib/auxil/bufio_obj.c: replace bufio_read w/ bufio_getline
+		remove abort from bufio_write; remove bufio_read_raw
+	lib/auxil/memio_obj.c: memio_seek call SUPER.io_seek to invalidate buf
+		if opened in FL_APPEND(!!), preset pos to len
+	lib/bsd/ptyio_obj.c: replace ptyio_read w/ ptyio_getline
+	lib/generic/popen.c: retuen FILE pointer!!!
+	lib/vms/tty.c: add ttyio_obj comment
+	snolib/http.sno: add HTTP.MODE argument to HTTP.OPEN
+	test/longrec.ref: include full record!!!
+	test/tests.in: obsolete breakline.sno, k.sno tests!!!
+
 9/19/2020:
 	config/djgpp/config.h: add sock_t
 

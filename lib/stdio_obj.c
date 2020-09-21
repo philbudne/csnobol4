@@ -82,130 +82,71 @@ extern int unbuffer_all;
  * methods
  */
 
+/* helper for stdio_read_raw and stdio_getline */
+static void
+stdio_read_setup(struct stdio_obj *siop, int len) {
+    /*
+     * ANSI C requires that a file positioning function intervene
+     * between output and input.
+     */
+    if ((siop->io.flags & FL_UPDATE) && siop->last == LAST_OUTPUT)
+	fseeko(siop->f, 0, SEEK_CUR); /* seek relative by zero */
+    siop->last = LAST_INPUT;
+
+    /*printf("%s siop@%p f@%p fd %d fl %#o\n",
+	   iop->fname, siop, siop->f, fileno(siop->f), iop->flags);*/
+
+    if (ISTTY(&siop->io))
+	tty_mode(siop->f,
+		 (siop->io.flags & FL_BINARY) != 0,
+		 (siop->io.flags & FL_NOECHO) != 0,
+		 len);
+}
+
 static ssize_t
-stdio_read(struct io_obj *iop, char *buf, size_t len) {
+stdio_read_raw(struct io_obj *iop, char *buf, size_t len) {
     struct stdio_obj *siop = (struct stdio_obj *)iop;
 
     if (len == 0)
 	return 0;
 
-    /*
-     * ANSI C requires that a file positioning function intervene
-     * between output and input.
-     */
-    if ((iop->flags & FL_UPDATE) && siop->last == LAST_OUTPUT)
-	fseeko(siop->f, (io_off_t)0, SEEK_CUR); /* seek relative by zero */
-    siop->last = LAST_INPUT;
+    stdio_read_setup(siop, len);
 
-    /*printf("%s siop@%p f@%p fd %d fl %#o\n",
-	   iop->fname, siop, siop->f, fileno(siop->f), iop->flags);*/
-    if (ISTTY(iop))
-	tty_mode(siop->f,
-		 (siop->io.flags & FL_BINARY) != 0,
-		 (siop->io.flags & FL_NOECHO) != 0,
-		 len);
-
-    if (iop->flags & FL_BINARY) {
-#ifndef NO_UNBUF_RW
-	if (iop->flags & FL_UNBUF)
-	    return read(fileno(siop->f), buf, len);
-#endif /* NO_UNBUF_RW */
-
-#ifdef TTY_READ_RAW
-	if (ISTTY(iop))
-	    return tty_read(siop->f, buf, len,
-			   TRUE,	/* "raw" */
-			   (iop->flags & FL_NOECHO) != 0, /* "noecho" */
-			   FALSE,	/* "keepeol" */
-			   iop->fname);
-#endif /* TTY_READ_RAW defined */
-
-	return fread(buf, 1, len, siop->f);
-    } /* binary */
-
-    /*
-     * not binary.
-     */
-
-#ifdef TTY_READ_COOKED			/* used on VMS */
+#ifdef TTY_READ_RAW			/* Windows, VMS */
     if (ISTTY(iop))
 	return tty_read(siop->f, buf, len,
+			TRUE,	/* "cbreak" */
+			(iop->flags & FL_NOECHO) != 0, /* "noecho" */
+			FALSE,	/* "keepeol" */
+			iop->fname);
+#endif /* TTY_READ_RAW defined */
+
+    return fread(buf, 1, len, siop->f);
+}
+
+static ssize_t
+stdio_getline(struct io_obj *iop) {
+    struct stdio_obj *siop = (struct stdio_obj *)iop;
+
+    stdio_read_setup(siop, 0);		/* len?? */
+
+#ifdef TTY_READ_COOKED			/* used on VMS */
+    if (ISTTY(iop)) {
+	/* XXX YUK!!! need tty_getline! */
+	if (!iop->linebuf) {
+	    iop->linebufsize = 1024;
+	    iop->linebuf = malloc(iop->linebufsize);
+	    /* XXX check return */
+	}
+	return tty_read(siop->f, iop->linebuf, iop->linebufsize,
 			FALSE,	/* "raw" */
 			(iop->flags & FL_NOECHO) != 0, /* "noecho" */
 			(iop->flags & FL_EOL) == 0, /* "keepeol" */
 			iop->fname);
+    }
 #endif /* TTY_READ_COOKED defined */
 
-    /*
-     * fgets() returns at most recl-1 characters + NUL; we
-     * want exactly recl characters, and don't want the NUL.
-     * But the buffer (passed in from SIL) doesn't have room
-     * for recl+1 characters.  Use fgets(), then fudge the
-     * last character, since fgets() can be much more
-     * efficient than a getc() loop (good implementations can
-     * block transfer characters from stdio buffers to ours).
-     *
-     * Don't treat carriage return as an EOL; just discard it.
-     */
-    if (fgets(buf, len, siop->f) == NULL)
-	return -1;
-
-    len = strlen(buf);
-
-    /* ASSERT(len > 0) ??? */
-    if (buf[len-1] == '\n') {		/* saw EOL */
-	if (iop->flags & FL_EOL) {	/* hide eol? */
-	    len--;			/* yes. */
-
-	    if (len > 0 && buf[len-1] == '\r')
-		len--;
-	} /* hiding EOL (default) */
-	else if (len > 1 && buf[len-2] == '\r') {
-	    /*
-	     * If not hiding EOL, and saw CRLF
-	     * replace CRLF with just NL
-	     */
-	    len--;
-	    buf[len-1] = '\n';
-	}
-    }
-    else {				/* no EOL seen */
-	/* ASSERT(len == recl-1) ??? */
-
-	/* read one more character, to fill in for NUL byte */
-	int c = getc(siop->f);
-
-	if (c == '\r')			/* CR? */
-	    c = getc(siop->f);		/* toss it */
-
-	if (c != EOF) {
-	    /* save additional character if not EOL
-	     * or if EOL should be returned
-	     */
-	    if (c != '\n' || !(iop->flags & FL_EOL)) {
-		buf[len] = c;
-		len++;
-	    } /* not EOL or not hiding EOL */
-
-	    /* no EOL, breaking up long lines, and no EOL: */
-	    if ((iop->flags & FL_BREAK) && c != '\n' && c != EOF) {
-		/* discard EOL characters if they follow */
-		c = getc(siop->f);
-		if (c == '\r')		/* CR? */
-		    c = getc(siop->f);	/* toss it */
-		if (c != '\n' && c != EOF) /* other than newline or EOF? */
-		    ungetc(c, siop->f);	/* stash for next time */
-	    }
-	} /* extra char not EOF */
-	    
-	if (!(iop->flags & FL_BREAK)) {	/* not breaking up lines? */
-	    /* if not at EOL or EOF, discard rest of "record" */
-	    while (c != EOF && c != '\n')
-		c = getc(siop->f);
-	}
-	/* don't care if line terminated by EOL or EOF? */
-    } /* no EOL */
-    return len;
+    return getline(&iop->linebuf, &iop->linebufsize, siop->f);
 }
 
 static ssize_t
@@ -214,11 +155,6 @@ stdio_write(struct io_obj *iop, char *buf, size_t len) {
 
     if (len == 0)
 	return 0;
-
-#ifndef NO_UNBUF_RW
-    if (iop->flags & FL_UNBUF)
-	return write(fileno(siop->f), buf, len);
-#endif
 
     /*
      * ANSI C requires that a file positioning function intervene
@@ -237,15 +173,6 @@ static int
 stdio_seeko(struct io_obj *iop, io_off_t off, int whence) {
     struct stdio_obj *siop = (struct stdio_obj *)iop;
 
-#ifndef NO_UNBUF_RW
-    if (iop->flags & FL_UNBUF) {
-	/* optimized stdio libraries might try to optimize away
-	 * the an fseek[o] if they've seen no read/write ops?!
-	 */
-	return lseek(fileno(siop->f), off, whence) != (io_off_t)-1;
-    }
-#endif /* NO_UNBUF_RW not defined */
-
     siop->last = LAST_NONE;		/* reset last I/O type */
     return fseeko(siop->f, off, whence) == 0;
 }
@@ -253,11 +180,6 @@ stdio_seeko(struct io_obj *iop, io_off_t off, int whence) {
 static io_off_t
 stdio_tello(struct io_obj *iop) {
     struct stdio_obj *siop = (struct stdio_obj *)iop;
-
-#ifndef NO_UNBUF_RW
-    if (iop->flags & FL_UNBUF)
-	return lseek(fileno(siop->f), 0, SEEK_CUR);
-#endif /* NO_UNBUF_RW not defined */
 
     return ftello(siop->f);
 }
@@ -295,8 +217,6 @@ stdio_close(struct io_obj *iop) {
 
     return fclose(siop->f) == 0;
 }
-
-#define stdio_read_raw NULL		/* only for bufio */
 
 MAKE_OPS(stdio, NULL);
 
@@ -344,12 +264,13 @@ stdio_wrap(char *path, FILE *f, size_t size, const struct io_ops *ops, int flags
     siop = (struct stdio_obj *) io_alloc(size, ops, flags);
 
     /* Windoze doesn't have line buffer, so go Full Monty */
-    if (unbuffer_all)
+    if (unbuffer_all || (flags & FL_UNBUF))
 	setvbuf(f, (char *)NULL, _IONBF, 0);
 
     siop->io.fname = path;		/* borrowed from fp */
     siop->f = f;
     siop->last = LAST_NONE;
+
     return &siop->io;
 }
 
@@ -464,14 +385,14 @@ pipeio_close(struct io_obj *iop) {
     return pclose(siop->f) == 0;
 }
 
-#define pipeio_read NULL
+#define pipeio_read_raw NULL
+#define pipeio_getline NULL
 #define pipeio_write NULL
 #define pipeio_seeko NULL
 #define pipeio_tello NULL
 #define pipeio_flush NULL
 #define pipeio_eof NULL
 #define pipeio_clearerr NULL
-#define pipeio_read_raw NULL		/* only for bufio */
 
 MAKE_OPS(pipeio, &stdio_ops);
 

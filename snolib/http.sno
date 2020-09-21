@@ -10,9 +10,6 @@
 
 	HTTP.CRLF = CHAR(13) CHAR(10)
 
-*	record length (and data mode) for HTTP.OPEN/POST
-	HTTP.RECL = 32767
-
 ****************
 *	HTTP.OPEN()
 *
@@ -21,13 +18,13 @@
 *	Internet hostname
 *	Filename (needs to start with "/"?)
 *	TCP port (or null)
-
-	DEFINE("HTTP.OPEN(HTTP.NAME,HTTP.HOST,HTTP.FILE,HTTP.PORT)")
+*	I/O mode (pass 'B,<recl>' for binary file)
+	DEFINE("HTTP.OPEN(HTTP.NAME,HTTP.HOST,HTTP.FILE,HTTP.PORT,HTTP.MODE)")
 +							:(HTTP.OPEN.END)
 
 HTTP.OPEN
 	HTTP.PORT = IDENT(HTTP.PORT) "80" 
-	TCP.OPEN(HTTP.NAME,HTTP.HOST,HTTP.PORT,HTTP.RECL)	:F(FRETURN)
+	TCP.OPEN(HTTP.NAME,HTTP.HOST,HTTP.PORT,HTTP.MODE)	:F(FRETURN)
 	$HTTP.NAME = "GET " HTTP.FILE " HTTP/1.0" HTTP.CRLF
 +		"User-Agent: " HOST() HTTP.CRLF
 +		"Host: " HTTP.HOST HTTP.CRLF

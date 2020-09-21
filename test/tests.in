@@ -170,10 +170,10 @@ trace trfunc.sno
 # 1/2/2015
 trace base.sno
 # 8/4/2015
-trace breakline.sno
+# trace breakline.sno
 # 2/8/2020
 reg labelcode.sno
 # 8/8/2020
 reg setexit7.sno
 # 9/16/2020
-reg k.sno
+# reg k.sno

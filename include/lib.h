@@ -177,11 +177,19 @@ FILE * term_input __P((void));
 
 /* from tty.c */
 int fisatty __P((FILE *));		/* or fisatty.c */
-void tty_mode __P((FILE *, int, int, int));
+/*
+ * cbreak means don't wait for CR (binary/raw)
+ * recl only meaningful in cbreak mode
+ */
+void tty_mode __P((FILE *, int cbreak, int noecho, int recl));
 void tty_close __P((FILE *));		/* advisory! */
 void tty_suspend __P((void));		/* SIG_TSTP */
-/* if TTY_READ_RAW or TTY_READ_COOKED defined; */
-int tty_read __P((FILE *,char *,int,int,int,int,char *));
+/*
+ * if TTY_READ_RAW or TTY_READ_COOKED defined (Windows, VMS)
+ * cbreak means don't wait for CR (binary/raw)
+ * keepeol only meaningful if !cbreak
+ */
+int tty_read __P((FILE *,char *buf,int len, int cbreak,int noecho,int keepeol,char * fname));
 
 /*
  * other functions we provide on some systems:

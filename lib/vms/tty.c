@@ -4,6 +4,8 @@
  * tty mode, echo
  * VMS version
  * started 9/17/97 -pb
+ *
+ * 9/20/2020 (23y3d later!): perhaps could be implemented aa a ttyio_obj?
  */
 
 #ifdef HAVE_CONFIG_H

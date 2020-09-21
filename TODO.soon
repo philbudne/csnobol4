@@ -1,6 +1,9 @@
 $Id$
 
-Seek to end at open in append mode for "tell"?
+remove io_eof/io_clearerr (push Windoze ^C lossage down)?
+Add io_getfp method?
+
+Remove "time" check from timing.sno???
 
 snobol4.1, snobol4ext man pages: include CSNOBOL4 versions for changes
 
@@ -9,10 +12,6 @@ Add SITBOL &ERRPARM variable for error info (undefined label or function)?
 ***** show failed include statement
       like a syntax error?!!!
       Show filename for failed include???
-
-Windows:
-	switch to winsock2 (getaddrinfo available)
-	Use Windows conpty for "||cmd"??
 
 Add snobol4load man page (replace load.txt)??
 	add mgetstr

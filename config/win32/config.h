@@ -51,6 +51,9 @@
 #define NEED_BINDRESVPORT
 #endif
 
+/* trap of ^C sets EOF */
+#define SIGINT_EOF_CHECK
+
 /* DLL import/export macros */
 
 #if defined(_MSC_VER) || defined(__MINGW32__)

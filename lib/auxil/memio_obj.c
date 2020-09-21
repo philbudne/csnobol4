@@ -92,8 +92,9 @@ memio_seeko(struct io_obj *iop, io_off_t off, int whence) {
 	}
 	break;
     }
-    /* XXX if (ret) SUPER.io_seek() to invalidate line buffer? */
-    return FALSE;
+    if (ret)
+	SUPER.io_seek(iop, off, whence); /* invalidate line buffer */
+    return ret;
 }
 
 static int
@@ -122,7 +123,10 @@ memio_open(char *buf, size_t len, int flags) {
     if (!miop)
 	return NULL;
 
-    miop->pos = 0;
+    if (flags & FL_APPEND)		/* unlikely!! */
+	miop->pos = len;		/* for initial "tell" */
+    else
+	miop->pos = 0;
     miop->ptr = buf;
     miop->len = len;
 

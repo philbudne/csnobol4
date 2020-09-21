@@ -66,6 +66,7 @@ popen(file, mode)
 
     /* XXX setup an onexit() handler (first time)? */
     pipes = pp;				/* link into list */
+    return pp->file;
 }
 
 int

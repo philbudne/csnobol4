@@ -10,16 +10,17 @@ struct io_obj {
     const struct io_ops *ops;
     int flags;
     char *fname;		 /* DO NOT FREE (part of struct file) */
+
+    /* for io_getline: NOTE! no concurrency, could get by with global buffer */
+    char *linebuf;
+    size_t linebufsize;
 };
 
 /*
- * Per-file (unit) flags.
- *
- * ** NOTE **
- *
- * multiple units may refer to same stdio stream (via "-" and
- * /dev/std{in,out,err} magic files) or the same file descriptors (via
- * /dev/fd/N magic pathname) and have different behaviors.
+ * NOTE!! multiple units may refer to same stdio stream
+ * (via "-" and /dev/std{in,out,err} magic paths)
+ * or the same file descriptors (via the /dev/fd/N magic path)
+ * on different stdio streams and have different behaviors.
  */
 #define FL_EOL		01		/* strip EOL on input, add on output */
 #define FL_BINARY	02		/* binary: no EOL; use recl */
@@ -32,6 +33,7 @@ struct io_obj {
 #define FL_EXCL		0400		/* eXclusive open (fail if eXists) */
 #define FL_CLOEXEC	01000		/* mark for close on exec */
 #define FL_TTY		02000		/* NOTE! only in io_obj.flags!! */
+/* XXX reserve some FL_OBJ[123] bits for private per-class use? */
 
 #ifndef SEEK_SET
 #define SEEK_SET 0
@@ -58,7 +60,8 @@ typedef long off_t;
 struct io_ops {
     const char *io_name;
     const struct io_ops *io_super;	/* superclass */
-    ssize_t (*io_read) __P((struct io_obj *, char *, size_t));
+    ssize_t (*io_read_raw) __P((struct io_obj *, char *, size_t));
+    ssize_t (*io_getline) __P((struct io_obj *));
     ssize_t (*io_write) __P((struct io_obj *, char *, size_t));
     int (*io_seeko) __P((struct io_obj *, io_off_t, int)); /* bool */
     io_off_t (*io_tello) __P((struct io_obj *));
@@ -66,7 +69,6 @@ struct io_ops {
     int (*io_eof) __P((struct io_obj *));   /* bool */
     void (*io_clearerr) __P((struct io_obj *));
     int (*io_close) __P((struct io_obj *)); /* bool */
-    ssize_t (*io_read_raw) __P((struct io_obj *, char *, size_t)); /* 4bufio */
 };
 
 /*
@@ -74,13 +76,18 @@ struct io_ops {
  *
  * This allows the order of fields to be kept in this file alone.
  * Would perhaps prefer to use C99 named/designated initializers, but
- * MS VSC is so prehistoric that it doesn't support support C99 named
- * initializers in 2020 (but they only seem to care about the subset
- * of C that is common with C++).
+ * MS VSC is so prehistoric that it doesn't support support C99
+ * designated initializers in 2020, so it's COMPLETELY out of the question
+ * (and 99% of the code is still K&R C compatible).
+ *
+ * 2020-09-20: Just learned that Visual Studio 16.8 will include
+ * support for C11 and C17 (where they admit "for many years Visual
+ * Studio has only supported C to the extent of it being required for
+ * C++"), but still won't support C99 variable length arrays.
  *
  * The Super pointer allows subclassing (if a method pointer is NULL
  * the superclass is consulted, and so on, and so on).  To make NULL
- * entries just "#define myio_method NULL"
+ * entries just "#define myio_method NULL".
  *
  * It's currently a goal to keep io_obj (XXXio_obj) struct definitions
  * private to one file.  If it becomes necessary to have subclasses in
@@ -92,22 +99,42 @@ struct io_ops {
  * longer reachable.
  */
 
-#define MAKE_OPS(NAME, SUPER) \
+#if __STDC_VERSION__ >= 199901L
+/* see if diagnostics more helpful */
+#define MAKE_OPS(NAME, SUPERPTR) \
+const struct io_ops NAME##_ops = { \
+    .io_name = #NAME,	\
+    .io_super = SUPERPTR, \
+    .io_read_raw = NAME##_read_raw, \
+    .io_getline = NAME##_getline, \
+    .io_write = NAME##_write, \
+    .io_seeko = NAME##_seeko, \
+    .io_tello = NAME##_tello, \
+    .io_flush = NAME##_flush, \
+    .io_eof = NAME##_eof, \
+    .io_clearerr = NAME##_clearerr, \
+    .io_close = NAME##_close \
+}
+#else
+#define MAKE_OPS(NAME, SUPERPTR) \
 const struct io_ops NAME##_ops = { \
     #NAME, \
-    SUPER, \
-    NAME##_read, \
+    SUPERPTR, \
+    NAME##_read_raw, \
+    NAME##_getline, \
     NAME##_write, \
     NAME##_seeko, \
     NAME##_tello, \
     NAME##_flush, \
     NAME##_eof, \
     NAME##_clearerr, \
-    NAME##_close, \
-    NAME##_read_raw \
+    NAME##_close \
 }
+#endif
 
 struct io_obj *io_alloc __P((int size, const struct io_ops *ops, int flags));
+
+/* flagp: INET_xxx flags (in inet.h) */
 int inet_parse __P((char *path, char **hostp, char **servicep, int *flagp));
 
 // return value for _open routines (NULL means open attempted and failed)

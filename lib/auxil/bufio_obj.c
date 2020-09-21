@@ -15,6 +15,7 @@
 #include <stdlib.h>			/* malloc, abort */
 #else  /* HAVE_STDLIB_H not defined */
 extern void *malloc();
+extern void *realloc();
 #endif /* HAVE_STDLIB_H not defined */
 #include <stdio.h>			/* NULL, size_t */
 
@@ -22,8 +23,13 @@ extern void *malloc();
 #include "io_obj.h"
 #include "bufio_obj.h"
 
-#define MINBUFLEN 4096
+static ssize_t
+bufio_read_raw(struct io_obj *iop, char *buf, size_t len) {
+    fprintf(stderr, "%s io_read_raw not overridden\n", iop->ops->io_name);
+    return -1;
+}
 
+/* helper for bufio_getc, a helper for bufio_getline */
 static ssize_t
 ioo_read_raw(struct bufio_obj *biop, char *buf, size_t len) {
     const struct io_ops *op;
@@ -40,10 +46,9 @@ ioo_read_raw(struct bufio_obj *biop, char *buf, size_t len) {
     return ret;
 }
 
+/* helper for bufio_getline */
 static int
-bufio_getc(biop)
-    struct bufio_obj *biop;
-{
+bufio_getc(struct bufio_obj *biop) {
     if (biop->count <= 0) {
 	/*
 	 * ASSuMEs that read_raw provider is like a socket
@@ -59,80 +64,59 @@ bufio_getc(biop)
     return *biop->bp++ & 0xff;
 }
 
-/****************************************************************
- * I/O methods
- * (child MUST supply io_write, io_read_raw)
- */
-
+/* NOTE!!! Similar code appears in lib/auxil/getline.c!!! */
 static ssize_t
-bufio_read(struct io_obj *iop, char *buf, size_t len) {
-    struct bufio_obj *biop = (struct bufio_obj *)iop;
-    int c;				/* character or -1 */
-    int n = 0;				/* characters kept */
-    int nread = 0;			/* characters read */
-    int eol = FALSE;			/* eol seen */
+bufio_getline(struct io_obj *iop) {
+    struct bufio_obj *biop = (struct bufio_obj *) iop;
+    int count = 0;
+    int avail;
+    int c;
+    char *cp;
 
-    if (len == 0)
-	return 0;
-
-    if (iop->flags & (FL_BINARY|FL_UNBUF))
-	return ioo_read_raw(biop, buf, len); /* uncut */
-
-    if (biop->buflen == 0) {	       /* first time? */
-	/* assumes recl can't change */
-	if (len < MINBUFLEN)
-	    biop->buflen = MINBUFLEN;
-	else
-	    biop->buflen = len;
-	biop->buffer = malloc(biop->buflen); 
-	if (!biop->buffer)
-	    return -1;
+    if (!iop->linebuf) {
+	if (iop->linebufsize < 128)
+	    iop->linebufsize = 128;
+	cp = iop->linebuf = malloc(iop->linebufsize);
+	if (cp)
+	    return EOF;
     }
-
-    while (n < len && !eol && (c = bufio_getc(biop)) != -1) {
-	/* guard against empty lines looking like read failures! */
-	nread++;
-
-	if (c == '\r')
-	    continue;			/* always discard CR */
-
-	if (c == '\n') {
-	    eol = TRUE;
-	    if (iop->flags & FL_EOL)	/* dropping EOL? */
-		break;			/* done */
-	    /* fall thru to store char, exit at top */
+    avail = iop->linebufsize;
+    do {
+	if (avail < 2) {		/* need room for newline, NUL */
+	    size_t nsize = iop->linebufsize * 2;
+	    char *nbuf = realloc(iop->linebuf, nsize);
+	    if (!nbuf)
+		return EOF;
+	    iop->linebuf = nbuf;
+	    iop->linebufsize = nsize;
+	    cp = iop->linebuf + count;
+	    avail = iop->linebufsize - count;
 	}
+	c = bufio_getc(biop);
+	if (c == EOF)
+	    break;
 
-	*buf++ = c;
-	n++;
-    } /* while */
-
-    if (nread == 0)			/* did not see ANYTHING? */
-	return -1;			/* return error */
-
-    /*
-     * maintain record flavoredness; if EOL not seen, the line
-     * was longer than our record length.  Discard rest of "record"
-     */
-    if (!eol && !(iop->flags & FL_BREAK)) { /* didn't see EOL */
-	while ((c = bufio_getc(biop)) != EOF && c != '\n')
-	    ;
-    }
-    return n;
+	*cp++ = c;
+	count++;
+    } while (c != '\n');
+    if (count == 0)
+	return EOF;
+    *cp = '\0';
+    return count;
 }
 
-/* XXX use common dummyio_write? */
 static ssize_t
 bufio_write(struct io_obj *iop, char *buf, size_t len) {
-    printf("%s io_write not overridden\n", iop->ops->io_name);
-    abort();
+    fprintf(stderr, "%s io_write not overridden\n", iop->ops->io_name);
+    return -1;
 }
 
 static int
 bufio_seeko(struct io_obj *iop, io_off_t off, int whence) {
-    (void) iop;
-    /* XXX invalidate input buffer */
-    return FALSE;
+    struct bufio_obj *biop = (struct bufio_obj *) iop;
+
+    biop->count = 0;		     /* invalidate input buffer */
+    return TRUE;
 }
 
 /* XXX use common dummyio_tello? */
@@ -145,7 +129,7 @@ bufio_tello(struct io_obj *iop) {
 
 static int
 bufio_flush(struct io_obj *iop) {
-    printf("%s io_flush not overridden\n", iop->ops->io_name);
+    fprintf(stderr, "%s io_flush not overridden\n", iop->ops->io_name);
     return TRUE;
 }
 
@@ -169,13 +153,6 @@ bufio_close(struct io_obj *iop) {
 	biop->buffer = NULL;
     }
     return TRUE;
-}
-
-/* XXX use common dummyio_read_raw? */
-static ssize_t
-bufio_read_raw(struct io_obj *iop, char *buf, size_t len) {
-    printf("%s io_read_raw not overridden\n", iop->ops->io_name);
-    abort();
 }
 
 MAKE_OPS(bufio, NULL);

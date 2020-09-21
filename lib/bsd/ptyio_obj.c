@@ -59,14 +59,14 @@ ptyio_close(struct io_obj *iop) {
     return ret;
 }
 
-#define ptyio_read NULL
+#define ptyio_getline NULL
+#define ptyio_read_raw NULL
 #define ptyio_write NULL
 #define ptyio_seeko NULL
 #define ptyio_tello NULL
 #define ptyio_flush NULL
 #define ptyio_eof NULL
 #define ptyio_clearerr NULL
-#define ptyio_read_raw NULL
 
 MAKE_OPS(ptyio, &stdio_ops);
 
