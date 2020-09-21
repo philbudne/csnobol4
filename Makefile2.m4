@@ -108,6 +108,7 @@ BZERO_C=$(SRCDIR)lib/auxil/bzero.c
 BCOPY_C=$(SRCDIR)lib/auxil/bcopy.c
 GETOPT_C=$(SRCDIR)lib/auxil/getopt.c
 BINDRESVPORT_C=$(SRCDIR)lib/auxil/bindresvport.c
+GETLINE_C=$(SRCDIR)lib/auxil/getline.c
 
 # dummy sources
 EXECL_C=$(SRCDIR)lib/dummy/execl.c
@@ -467,6 +468,9 @@ closefrom.o: lib/bsd/closefrom.c
 
 getdtablesize.o: $(GETDTABLESIZE_C)
 	$(CC) $(CFLAGS) -c $(GETDTABLESIZE_C)
+
+getline.o: $(GETLINE_C)
+	$(CC) $(CFLAGS) -c $(GETLINE_C)
 
 ################
 # SDBM files -- only when needed

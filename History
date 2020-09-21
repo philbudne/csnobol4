@@ -3,6 +3,14 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/21/2020:
+	Cleanup:
+	configure: detect getline, or use auxil version
+	Makefile2.m4: auxil/getline.c (if needed)
+	include/lib.h: add getline (if needed)
+	lib/auxil/getline.c: fix!
+	lib/win32/{inet,pty}io_obj.o: s/XXXio_read /XXXio_getline /
+
+9/21/2020:
 	Another I/O Overhaul: Remove record length limits from text I/O.
 	v311.sil: [PLB129] Add VLRECL (variable length record length(!))
 		as default/TERMINAL input record length.  io_read will

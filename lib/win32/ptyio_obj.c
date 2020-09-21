@@ -170,7 +170,7 @@ ptyio_close(struct io_obj *iop) {
     return 1;				/* OK */
 }
 
-#define ptyio_read NULL			/* use bufio */
+#define ptyio_getline NULL		/* use bufio */
 #define ptyio_seeko NULL		/* use bufio */
 #define ptyio_tello NULL		/* use bufio */
 #define ptyio_eof NULL			/* use bufio */

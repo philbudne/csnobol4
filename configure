@@ -1274,6 +1274,17 @@ else
     echo 'ADD_SRCS([$(GETOPT_C)])'		>> $CONFIG_M4
 fi
 
+# POSIX-1.2008 (from glibc)
+if config/check stdio.h 'char *buf; size_t len; getline(&buf, &len, stdin)'; then
+    echo 'using system provided getline()' 1>&2
+    echo '#define HAVE_GETLINE'			>> $CONFIG_H
+else
+    echo 'using private getline()' 1>&2
+    echo 'ADD_OBJS([getline.o])'		>> $CONFIG_M4
+    echo 'ADD_SRCS([$(GETLINE_C)])'		>> $CONFIG_M4
+
+fi
+
 # look for dynamic library support for "load";
 # overrides "dummy" and "bsd" style
 # look for sun/unix98 style dlopen()

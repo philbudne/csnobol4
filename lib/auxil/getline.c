@@ -19,18 +19,19 @@ void *realloc()
 #include <stdio.h>
 
 /* NOTE!!! Similar code appears in lib/auxil/bufio_obj.c!!! */
+#define MINSIZE 128
 ssize_t
 getline(char **bufp, size_t *lenp, FILE *fp) {
-    int count = 0;
-    int avail;
+    size_t count = 0;
+    ssize_t avail;
     char *cp;
 
     if (!bufp || !lenp || !fp)
 	return EOF;
 
     if (!*bufp) {
-	if (*lenp < 128)
-	    *lenp = 128;
+	if (*lenp < MINSIZE)
+	    *lenp = MINSIZE;
 	cp = *bufp = malloc(*lenp);
 	if (cp)
 	    return EOF;
@@ -40,12 +41,15 @@ getline(char **bufp, size_t *lenp, FILE *fp) {
 	int c;
 
 	if (avail < 2) {
-	    size_t nsize = iop->linebufsize * 2;
-	    char *nbuf = realloc(iop->linebuf, nsize);
+	    size_t nsize = *lenp * 2;	/* overflow unlikely?! */
+	    char *nbuf;
+	    if (nsize < MINSIZE)
+		nsize = MINSIZE;
+	    nbuf = realloc(*bufp, nsize);
 	    if (!nbuf)
 		return EOF;
-	    iop->linebuf = nbuf;
-	    iop->linebufsize = nsize;
+	    *linebuf = nbuf;
+	    *linebufsize = nsize;
 	    cp = nbuf + count;
 	    avail = nsize - count;
 	}

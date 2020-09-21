@@ -224,3 +224,6 @@ extern void closefrom __P((int minfd));
 #ifndef HAVE_GETDTABLESIZE
 extern int getdtablesize __P((void));
 #endif
+#ifndef HAVE_GETLINE
+extern ssize_t getline __P((char **bufp, size_t *lenp, FILE *fp));
+#endif

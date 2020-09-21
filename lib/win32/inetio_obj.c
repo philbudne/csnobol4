@@ -83,7 +83,7 @@ inetio_close(struct io_obj *iop) {
     return closesocket(iiop->s) == 0;
 } /* inetio_close */
 
-#define inetio_read NULL		/* use bufio */
+#define inetio_getline NULL		/* use bufio */
 #define inetio_seeko NULL		/* use bufio */
 #define inetio_tello NULL		/* use bufio */
 #define inetio_eof NULL			/* use bufio */
