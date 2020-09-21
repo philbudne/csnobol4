@@ -1,6 +1,10 @@
 * $Id$
 *
 * $Log$
+* Revision 1.144  2020/08/08 22:45:22  phil
+* [PLB128] add &FATALLIMIT
+* enables trapping some otherwise fatal errors for sdb
+*
 * Revision 1.143  2020/02/09 04:55:04  phil
 * [PLB127] v311.sil, globals, test/labelcode.{sno,ref}, test/tests.in,
 *    doc/snobol4func.1.pea:
@@ -832,6 +836,13 @@ SPDLSZ EQU     8000		   Descriptors of pattern stack        [PLB104]
 STSIZE EQU     4000		   Descriptors of interpreter stack    [PLB104]
 SPDR   EQU     SPEC+DESCR	   Descriptor plus specifier
 OBOFF  EQU     OBSIZ-2		   Offset length in bins
+*
+* [PLB129] default text input record length.  Depends on the property
+*	that (when not compiling) io_read will use getline, and malloc
+*	a buffer large enough for the whole line, and put the pointer
+*	in the output specifier.  This means an additional copy, but
+*	no truncation!!
+VLRECL EQU     0		   "variable length record length"	[PLB129]
 *
 *      Equivalences
 *
@@ -5365,19 +5376,32 @@ PUTIN  PROC    ,		   Input procedure
        GETDC   IO3PTR,IO1PTR,DESCR Get unit
        GETDC   IO1PTR,IO1PTR,2*DESCR
 *				   Get length
+       AEQLC   IO1PTR,VLRECL,,PUTIN0				[PLB129]
+* Here with record length specified on INPUT()			[PLB129]
+* preallocate variable space.  SHOULD only be used for binary	[PLB129]
+* I/O (io_read ignores recl when not compiling, and returns	[PLB129]
+* pointer to malloc'ed buffer in IOSP.				[PLB129]
        RCALL   IO4PTR,CONVAR,(IO1PTR)
 *				   Get space for string
        LOCSP   IOSP,IO4PTR	   Get specifier
+PUTIN0 MOVD    XCL,IO1PTR          Save recl			[PLB129]
        INCRA   RSTAT,1		   Increment count of reads
        STREAD  IOSP,IO3PTR,FAIL,COMP5
 *				   Perform read
-       AEQLC   TRIMCL,0,,PUTIN1	   Check &INPUT
+       AEQLC   TRIMCL,0,,PUTIN1	   Check &TRIM
        TRIMSP  IOSP,IOSP	   Trim string
 PUTIN1 GETLG   IO1PTR,IOSP	   Get length			[PLB19]
        ACOMP   IO1PTR,MLENCL,INTR8				E3.9.2 [PLB19]
        VEQLC   IO2PTR,K,,PUTIN3	   CHECK FOR KEYWORD		E3.10.2
-       RCALL   IO1PTR,GNVARS,IO1PTR				E3.9.2
-*				   Form variable for string
+       AEQLC   XCL,VLRECL,PUTIN4   Check recl			[PLB129]
+* Here with pointer to malloced buffer in IOSP with full line. 	[PLB129]
+* Need to generate variable (and copy)				[PLB129]
+       RCALL   IO1PTR,GENVAR,ISPPTR				[PLB129]
+       BRANCH  PUTIN2						[PLB129]
+* Here with pre-allocated variable (known/fixed recl):		[PLB129]
+PUTIN4 LHERE							[PLB129]
+       RCALL   IO1PTR,GNVARS,IO1PTR                             E3.9.2
+*                                  Form variable for string
 PUTIN2 PUTDC   IO2PTR,DESCR,IO1PTR				E3.10.2
        RRTURN  IO1PTR,2		   Return value
 PUTIN3 LOCSP   XSP,IO1PTR					E3.10.2
@@ -10568,9 +10592,9 @@ PUNCH  DESCR   UNITP,0,I	   PUNCH unit
 PCHFST DESCR   CRDFSP,0,0	   PUNCH format
 INSATL DESCR   INSATL,TTL+MARK,2*DESCR
 INPUT  DESCR   UNITI,0,I	   INPUT unit
-DFLSIZ DESCR   1024,0,I		   INPUT length			[PLB21]
+DFLSIZ DESCR   VLRECL,0,I	   INPUT length			[PLB129]
 TERMIN DESCR   UNITT,0,I	   TERMINAL input unit		[PLB36]
-       DESCR   1024,0,I		   TERMINAL input length	[PLB36]
+       DESCR   VLRECL,0,I	   TERMINAL input length	[PLB129]
 *
 TRLIST DESCR   TRLIST,TTL+MARK,20*DESCR
        DESCR   TVALL,0,0	   VALUE trace
@@ -10803,6 +10827,7 @@ XSPPTR DESCR   XSP,0,0
 YSPPTR DESCR   YSP,0,0
 ZSPPTR DESCR   ZSP,0,0
 TSPPTR DESCR   TSP,0,0
+ISPPTR DESCR   IOSP,0,0						[PLB129]
 *
 *      Permanent Attribute List Pointers
 *
