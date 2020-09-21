@@ -5,6 +5,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 9/21/2020:
 	Cleanup:
 	configure: detect getline, or use auxil version
+		fix missing g++ test under cygwin
 	Makefile2.m4: auxil/getline.c (if needed)
 	include/lib.h: add getline (if needed)
 	lib/auxil/getline.c: fix!

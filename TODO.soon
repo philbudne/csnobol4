@@ -3,6 +3,18 @@ $Id$
 remove io_eof/io_clearerr (push Windoze ^C lossage down)?
 Add io_getfp method?
 
+Test compilation under gcc 10 under cygwin
+	complaints:
+		init.c: redeclaration of optind, optarg
+		lib/io.c: isdigit w/ char
+		lib/realst.c: isdigit w/ char
+		lib/str.c: isspace,islower w/ char
+		lib/snolib/serv.c: isdigit w/ char
+
+Use win32/ptyio_obj.c on cygwin (if includes have support)!
+
+See about building pure windows binaries under cygwin
+
 Remove "time" check from timing.sno???
 
 snobol4.1, snobol4ext man pages: include CSNOBOL4 versions for changes

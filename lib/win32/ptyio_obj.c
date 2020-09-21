@@ -30,6 +30,9 @@
 
 #include <Windows.h>
 #include <process.h>
+#include <wincon.h>		/* cygwin: needed for HPCON */
+#include <winbase.h>		/* cygwin: needed for STARTUPINFOEXA */
+
 //#include <consoleapi2.h>	/* CONSOLE_SCREEN_BUFFER_INFO */
 
 #include <stdio.h>		/* NULL, size_t */
@@ -150,7 +153,7 @@ ptyio_close(struct io_obj *iop) {
     printf("ClosePseudoConsole %p\n", piop->hpc);
     (*pClosePseudoConsole)(piop->hpc);
 
-    printf("close write %p\n", piop->writeh);
+    printf("close write pipe %p\n", piop->writeh);
     CloseHandle(piop->writeh);
 
 #if 0
@@ -163,7 +166,7 @@ ptyio_close(struct io_obj *iop) {
 	printf("read %d\n", cc);
 #endif
 #if 0
-    printf("close read %p\n", piop->readh);
+    printf("close read pipe %p\n", piop->readh);
     CloseHandle(piop->readh);
 #endif
 
@@ -339,7 +342,7 @@ ptyio_open(path, flags, dir)
 	puts("@free_cmd_line");
 	free(cmd_line);
     close_parent_pipes_and_console:
-	(*ClosePseudoConsole)(hPC);
+	(*pClosePseudoConsole)(hPC);
 	CloseHandle(inputWriteSide);
 	CloseHandle(outputReadSide);
 	free(piop);
