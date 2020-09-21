@@ -35,6 +35,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	snolib/http.sno: add HTTP.MODE argument to HTTP.OPEN
 	test/longrec.ref: include full record!!!
 	test/tests.in: obsolete breakline.sno, k.sno tests!!!
+	(new) lib/auxil/getline.c: for them that don't
 
 9/19/2020:
 	config/djgpp/config.h: add sock_t
