@@ -75,7 +75,7 @@ OBJ=	$(BUFIO_OBJ) $(INET_OBJ) $(INET_OBJS) \
 	data_init.obj date.obj delete.obj dump.obj \
 	dynamic.obj endex.obj environ.obj execute.obj \
 	exists.obj exit.obj exp.obj expops.obj file.obj \
-	findunit.obj getopt.obj getstring.obj handle.obj \
+	findunit.obj getline.obj getopt.obj getstring.obj handle.obj \
 	hash.obj host.obj init.obj intspc.obj io.obj \
 	isnobol4.obj lexcmp.obj load.obj loadx.obj log.obj \
 	main.obj mstime.obj ord.obj ordvst.obj osopen.obj \
@@ -189,6 +189,9 @@ spreal.obj : $(SRCDIR)lib\ansi\spreal.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\ansi\spreal.c
 
 ################ auxil
+
+getline.obj : $(SRCDIR)lib\auxil\getline.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\auxil\getline.c
 
 getopt.obj : $(SRCDIR)lib\auxil\getopt.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\auxil\getopt.c

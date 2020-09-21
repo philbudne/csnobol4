@@ -54,7 +54,7 @@ LDFLAGS=-Wl,--out-implib,libsnobol4.a
 OBJ=	$(BUFIO_OBJ_O) $(INET_O) atan.o bal.o break.o chop.o \
 	cos.o data.o data_init.o date.o delete.o dump.o \
 	dynamic.o endex.o environ.o execute.o exists.o \
-	exit.o exp.o expops.o file.o findunit.o getopt.o \
+	exit.o exp.o expops.o file.o findunit.o getline.o getopt.o \
 	getstring.o handle.o hash.o host.o init.o intspc.o \
 	io.o isnobol4.o lexcmp.o load.o loadx.o log.o main.o \
 	mstime.o ord.o ordvst.o osopen.o pair.o pat.o pml.o \
@@ -183,6 +183,9 @@ bcopy.o: $(SRCDIR)lib/auxil/bcopy.c
 
 bzero.o: $(SRCDIR)lib/auxil/bzero.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/auxil/bzero.c
+
+getline.o: $(SRCDIR)lib/auxil/getline.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/auxil/getline.c
 
 getopt.o: $(SRCDIR)lib/auxil/getopt.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/auxil/getopt.c

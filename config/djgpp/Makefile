@@ -56,7 +56,7 @@ OBJ=	isnobol4.o data.o data_init.o main.o syn.o \
 	bal.o break.o date.o dump.o endex.o hash.o \
 	intspc.o io.o lexcmp.o ordvst.o pair.o pat.o \
 	pml.o realst.o replace.o stdio_obj.o str.o stream.o top.o \
-	tree.o bcopy.o bzero.o dynamic.o expops.o getopt.o \
+	tree.o bcopy.o bzero.o dynamic.o expops.o getline.o getopt.o \
 	init.o load.o mstime.o chop.o cos.o delete.o \
 	exit.o exp.o file.o getstring.o handle.o \
 	host.o log.o ord.o ptyio_obj.o rename.o retstring.o sin.o \
@@ -162,6 +162,9 @@ bcopy.o: $(SRCDIR)lib/auxil/bcopy.c
 
 bzero.o: $(SRCDIR)lib/auxil/bzero.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/auxil/bzero.c
+
+getline.o: $(SRCDIR)lib/auxil/getline.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/auxil/getline.c
 
 getopt.o: $(SRCDIR)lib/auxil/getopt.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/auxil/getopt.c
