@@ -165,6 +165,8 @@ inetio_open(char *path, int flags, int dir) {
 	return NULL;
     }
     iiop->s = s;
+    iiop->bio.buffer = malloc(iiop->bio.buflen = 1024);
+    /* XXX check result! */
 
     return &iiop->bio.io;
 } /* inetio_open */
