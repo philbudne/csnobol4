@@ -13,10 +13,11 @@
 struct bufio_obj {
     struct io_obj io;
 
-    int buflen;				/* size of buffer */
+    size_t buflen;			/* size of buffer */
     char *buffer;			/* start of buffer */
 
-    int count;				/* valid characters in buffer */
+    /* volatile needed for reader in thread? */
+    size_t count;			/* valid characters in buffer */
     char *bp;				/* next valid character */
 
     int eof;				/* read_raw failed */
