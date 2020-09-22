@@ -23,6 +23,12 @@ extern void *realloc();
 #include "io_obj.h"
 #include "bufio_obj.h"
 
+#ifdef BUFIO_DEBUG
+#define DPRINTF(X) printf X
+#else
+#define DPRINTF(X)
+#endif
+
 static ssize_t
 bufio_read_raw(struct io_obj *iop, char *buf, size_t len) {
     fprintf(stderr, "%s io_read_raw not overridden\n", iop->ops->io_name);
@@ -55,7 +61,9 @@ bufio_getc(struct bufio_obj *biop) {
 	 * and won't block until the entire request is filled.
 	 * (if it won't, will have to restrict reads to 1 byte):
 	 */
+	DPRINTF(("bufio_getc: buffer %p len %zd\n", biop->buffer, biop->buflen));
 	biop->count = ioo_read_raw(biop, biop->buffer, biop->buflen);
+	DPRINTF(("bufio_getc: read_raw returned %zd\n", biop->count));
 	if (biop->count <= 0)
 	    return -1;			/* EOF, or something like it */
 	biop->bp = biop->buffer;	/* reset buffer pointer */
@@ -74,10 +82,8 @@ bufio_getline(struct io_obj *iop) {
     char *cp;
 
     if (!iop->linebuf) {
-	if (iop->linebufsize < 128)
-	    iop->linebufsize = 128;
-	cp = iop->linebuf = malloc(iop->linebufsize);
-	if (cp)
+	cp = iop->linebuf = malloc(iop->linebufsize = 128);
+	if (!cp)
 	    return EOF;
     }
     avail = iop->linebufsize;
