@@ -31,10 +31,6 @@
 #include <windows.h>
 #include <process.h>
 
-//#include <wincon.h>		/* cygwin: needed for HPCON */
-//#include <winbase.h>		/* cygwin: needed for STARTUPINFOEXA */
-//#include <consoleapi2.h>	/* CONSOLE_SCREEN_BUFFER_INFO */
-
 #include <stdio.h>		/* NULL, size_t */
 #include <malloc.h>
 
@@ -65,33 +61,48 @@ struct ptyio_obj {
 };
 
 /*
- * do runtime lookups for C{reate,lose}PseudoConsole
- * (first supported in Windows 10 1809 (win10 nov. update) / Windows Server 2019)
+ * perform runtime lookups for symbols that may not be available
+ * (and keep executable from even running)
  */
-HRESULT (WINAPI *pCreatePseudoConsole)(COORD, HANDLE, HANDLE, DWORD, HPCON*);
-VOID (WINAPI *pClosePseudoConsole)(HPCON);
+#define SYMBOLS \
+    SYM(HRESULT, CreatePseudoConsole,
+	(COORD, HANDLE, HANDLE, DWORD, HPCON*)); \
+    SYM(VOID, ClosePseudoConsole, (HPCON)); \
+
+/* create storage for pointers to functions */
+#define SYM(RET, NAME, PROTO) RET (WINAPI *p##NAME) PROTO;
+SYMBOLS
+#undef SYM
+
+int pty_init_done = 0;
 
 static int
 pty_init() {
-    if (pCreatePseudoConsole && pClosePseudoConsole)
-	return TRUE;
+    if (pty_init_done)			/* done this already? */
+	return pty_init_done;		/* return old result */
 
     HMODULE h = GetModuleHandle("kernel32.dll");
-    if (h == INVALID_HANDLE_VALUE)
+    if (h == INVALID_HANDLE_VALUE) {
+	pty_init_done = -1;
 	return FALSE;
+    }
 
-    FARPROC f = GetProcAddress(h, "CreatePseudoConsole");
-    if (f == NULL)
-	return FALSE;
-    pCreatePseudoConsole = 
-	(HRESULT (WINAPI *)(COORD, HANDLE, HANDLE, DWORD, HPCON*))f;
+    do {
+	FARPROC f;
 
-    f = GetProcAddress(h, "ClosePseudoConsole");
-    if (f == NULL)
-	return FALSE;
-    pClosePseudoConsole = (VOID (WINAPI *)(HPCON))f;
+	/* generate code for symbol lookups */
+#define SYM(RET, NAME, PROTO)			\
+	f = GetProcAddress(h, #NAME);		\
+	if (f == NULL)				\
+	    break;				\
+	p##NAME = (RET (WINAPI *) PROTO) f
 
-    return TRUE;
+	SYMBOLS
+
+	return (pty_init_done = 1);
+    } while (0);
+    /* here from break (symbol lookup failed) */
+    return (pty_init_done = -1);
 }
 
 /****************************************************************
@@ -190,7 +201,7 @@ PrepareStartupInformation(HPCON hpc, STARTUPINFOEX* psi) {
     psi->StartupInfo.cb = sizeof(STARTUPINFOEX);
 
     // Discover the size required for the list
-    size_t bytesRequired;
+    SIZE_T bytesRequired;
     InitializeProcThreadAttributeList(NULL, 1, 0, &bytesRequired);
     
     // Allocate memory to represent the list
@@ -224,12 +235,12 @@ struct io_obj *
 ptyio_open(path, flags, dir)
     char *path;
     int flags;
-    int dir;				/* 'r' or 'w' */
+    int dir;				/* 'r' or 'w' (ignored!) */
 {
     if (path[0] != '|' || path[1] != '|')
 	return NOMATCH;
 
-    if (!pty_init())
+    if (pty_init() < 0)
 	return FALSE;
 
     // XXX first time only: try finding necessary symbols dynamically

@@ -1229,11 +1229,6 @@ if [ "x$HAVE_FORKPTY" = x1 ]; then
 	    echo 'GETDTABLESIZE_C=lib/dummy/getdtablesize.c' >> $CONFIG_M4
 	fi
     fi
-elif [ "x$CYGWIN" != x ]; then
-    # XXX use config/check to check for PseudoConsole headers?!
-    # not currently able to get it to compile:
-    # missing STARTUPINFOEXA, PrepareStartupInformation in w32api-headers v8.0.0-1
-    true
 endif
 
 if config/check termios.h 'struct termios t; tcgetattr(0, &t)'; then
@@ -1794,7 +1789,7 @@ if [ ! "$FORCE_PML" ]; then
 fi
 
 # Include COM support under Cygwin!
-if [ "$CYGWIN" ]; then
+if [ "x$CYGWIN" != x ]; then
   cat << EOF > $TMP.cpp
 #include <iostream>
 
@@ -1823,7 +1818,7 @@ EOF
     if grep CoGetObject $INCDIR/w32api/objbase.h >/dev/null; then
 	echo '/* found CoGetObject in w32api/objbase.h */' >> $CONFIG_H
     else
-	echo '#define NEED_COGETOBJECT'		>> $CONFIG_H
+	echo '#define NEED_COGETOBJECT'	>> $CONFIG_H
     fi
 
     # -L/usr/lib/w32api needed on Windows 7 (thanks to Robert Shanley!)
@@ -1832,6 +1827,12 @@ EOF
     # -lstdc++ needed w/ gcc 3.3.1 cygwin 1.5.9 (0.122/4/2)
     echo '	COM_LIBS = "ole32,uuid,oleaut32,stdc++"' >> $CONFIG_SNO
   fi
+
+  echo 'PTYIO_OBJ_C=$(SRCDIR)lib/win32/ptyio_obj.c'	>> $CONFIG_M4
+  # dunno if there's a real/better way
+  # Works 2020-09 with w32api-headers 8.0.0-1
+  echo '#define _WIN32_WINNT _WIN32_WINNT_WIN10'	>> $CONFIG_H
+  echo '#define NTDDI_VERSION NTDDI_WIN10_RS5'		>> $CONFIG_H
 fi
 
 if [ "$INITIAL_CFLAGS" ]; then
