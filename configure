@@ -1229,6 +1229,16 @@ if [ "x$HAVE_FORKPTY" != x ]; then
 	    echo 'GETDTABLESIZE_C=lib/dummy/getdtablesize.c' >> $CONFIG_M4
 	fi
     fi
+elif [ "$xCYGWIN" != x ]; then
+    # cygwin64 3.1.7 has working forkpty (in pty.h), so this shouldn't be reached!
+    # as of 2020-09-21, PseudoConsole support isn't fully debugged!
+    # The following compiles with w32api-headers 8.0.0-1
+    echo 'using Win32 ptyio_obj.c' 1>&2
+    echo 'PTYIO_OBJ_C=$(SRCDIR)lib/win32/ptyio_obj.c' >> $CONFIG_M4
+    # dunno if there's a real/better way
+    echo '#define _WIN32_WINNT _WIN32_WINNT_WIN10' >> $CONFIG_H
+    echo '#define NTDDI_VERSION NTDDI_WIN10_RS5'	>> $CONFIG_H
+    NEED_BUFIO=1
 fi
 
 if config/check termios.h 'struct termios t; tcgetattr(0, &t)'; then
@@ -1827,13 +1837,6 @@ EOF
     # -lstdc++ needed w/ gcc 3.3.1 cygwin 1.5.9 (0.122/4/2)
     echo '	COM_LIBS = "ole32,uuid,oleaut32,stdc++"' >> $CONFIG_SNO
   fi
-
-  echo 'PTYIO_OBJ_C=$(SRCDIR)lib/win32/ptyio_obj.c' >> $CONFIG_M4
-  # dunno if there's a real/better way
-  # Works 2020-09 with w32api-headers 8.0.0-1
-  echo '#define _WIN32_WINNT _WIN32_WINNT_WIN10' >> $CONFIG_H
-  echo '#define NTDDI_VERSION NTDDI_WIN10_RS5'	>> $CONFIG_H
-  NEED_BUFIO=1
 fi
 
 if [ "x$NEED_BUFIO" != x ]; then
