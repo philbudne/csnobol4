@@ -28,11 +28,11 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#include <Windows.h>
+#include <windows.h>
 #include <process.h>
-#include <wincon.h>		/* cygwin: needed for HPCON */
-#include <winbase.h>		/* cygwin: needed for STARTUPINFOEXA */
 
+//#include <wincon.h>		/* cygwin: needed for HPCON */
+//#include <winbase.h>		/* cygwin: needed for STARTUPINFOEXA */
 //#include <consoleapi2.h>	/* CONSOLE_SCREEN_BUFFER_INFO */
 
 #include <stdio.h>		/* NULL, size_t */
