@@ -119,7 +119,7 @@ ptyio_read_raw(struct io_obj *iop, char *buf, size_t len) {
 	piop->eof = 1;
 	return -1;
     }
-    printf("ptyio_read_raw %zd got %ld\n", len, rcvd);
+    printf("ptyio_read_raw %zd got %u\n", len, rcvd);
 #if 0
     buf[rcvd] = '\0';
     printf("<<<%s>>>\n", buf);
@@ -294,7 +294,7 @@ ptyio_open(path, flags, dir)
     HRESULT hr;
     hr = (*pCreatePseudoConsole)(size, inputReadSide, outputWriteSide, 0, &hPC);
     if (hr != 0) {
-	printf("CreatePseudoConsole failed %#lx\n", hr);
+	printf("CreatePseudoConsole failed %#x\n", hr);
 	CloseHandle(outputReadSide);
 	CloseHandle(outputWriteSide);
     close_input_pipes:
@@ -346,7 +346,7 @@ ptyio_open(path, flags, dir)
                         NULL,	// use current dir
                         &si.StartupInfo, // point to first (non-extended) member
                         &pi)) {	// process information
-	printf("CreateProcessA: %#lx\n", GetLastError());
+	printf("CreateProcessA: %#x\n", GetLastError());
 	DeleteProcThreadAttributeList(si.lpAttributeList);
         free(si.lpAttributeList);
     free_cmd_line:

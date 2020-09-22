@@ -109,6 +109,7 @@ BCOPY_C=$(SRCDIR)lib/auxil/bcopy.c
 GETOPT_C=$(SRCDIR)lib/auxil/getopt.c
 BINDRESVPORT_C=$(SRCDIR)lib/auxil/bindresvport.c
 GETLINE_C=$(SRCDIR)lib/auxil/getline.c
+BUFIO_OBJ_C=$(SRCDIR)lib/auxil/bufio_obj.c
 
 # dummy sources
 EXECL_C=$(SRCDIR)lib/dummy/execl.c
@@ -471,6 +472,9 @@ getdtablesize.o: $(GETDTABLESIZE_C)
 
 getline.o: $(GETLINE_C)
 	$(CC) $(CFLAGS) -c $(GETLINE_C)
+
+bufio_obj.o: $(BUFIO_OBJ_C)
+	$(CC) $(CFLAGS) -c $(BUFIO_OBJ_C)
 
 ################
 # SDBM files -- only when needed

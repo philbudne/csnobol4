@@ -1202,7 +1202,7 @@ if [ "$NEED_PATHS_H" ]; then
     fi
 fi
 
-if [ "x$HAVE_FORKPTY" = x1 ]; then
+if [ "x$HAVE_FORKPTY" != x ]; then
     echo 'PTYIO_OBJ_C=$(SRCDIR)lib/bsd/ptyio_obj.c'	>> $CONFIG_M4
     if config/check "unistd.h" "closefrom(3);"; then
 	# FreeBSD, OpenBSD
@@ -1229,7 +1229,7 @@ if [ "x$HAVE_FORKPTY" = x1 ]; then
 	    echo 'GETDTABLESIZE_C=lib/dummy/getdtablesize.c' >> $CONFIG_M4
 	fi
     fi
-endif
+fi
 
 if config/check termios.h 'struct termios t; tcgetattr(0, &t)'; then
     echo 'using termios.h for tty modes' 1>&2
@@ -1799,7 +1799,7 @@ main() {
     return 0;
 }
 EOF
-  if g++ -o $TMP $TMP.cpp -a `./$TMP` = 'Hello' ]; then
+  if g++ -o $TMP $TMP.cpp 2>/dev/null && [ `./$TMP` = 'Hello' ]; then
       true
   else
       echo 'could not find C++ compiler: Win32 COM support disabled' 1>&2
@@ -1828,14 +1828,20 @@ EOF
     echo '	COM_LIBS = "ole32,uuid,oleaut32,stdc++"' >> $CONFIG_SNO
   fi
 
-  echo 'PTYIO_OBJ_C=$(SRCDIR)lib/win32/ptyio_obj.c'	>> $CONFIG_M4
+  echo 'PTYIO_OBJ_C=$(SRCDIR)lib/win32/ptyio_obj.c' >> $CONFIG_M4
   # dunno if there's a real/better way
   # Works 2020-09 with w32api-headers 8.0.0-1
-  echo '#define _WIN32_WINNT _WIN32_WINNT_WIN10'	>> $CONFIG_H
-  echo '#define NTDDI_VERSION NTDDI_WIN10_RS5'		>> $CONFIG_H
+  echo '#define _WIN32_WINNT _WIN32_WINNT_WIN10' >> $CONFIG_H
+  echo '#define NTDDI_VERSION NTDDI_WIN10_RS5'	>> $CONFIG_H
+  NEED_BUFIO=1
 fi
 
-if [ "$INITIAL_CFLAGS" ]; then
+if [ "x$NEED_BUFIO" != x ]; then
+    echo 'ADD_OBJS([bufio_obj.o])'		>> $CONFIG_M4
+    echo 'ADD_SRCS([$(BUFIO_OBJ_C)])'		>> $CONFIG_M4
+fi
+
+if [ "x$INITIAL_CFLAGS" != x ]; then
      # stolen from getconf handling... make into function?
      echo 'using CFLAGS environment variable' 1>&2
      echo '/* from CFLAGS: */' >> $CONFIG_H
