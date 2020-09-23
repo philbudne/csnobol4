@@ -189,6 +189,9 @@ static ssize_t
 ioo_write(struct io_obj *iop, char *buf, size_t len) {
     const struct io_ops *op;
 
+    if (!iop)
+	return -1;
+
     for (op = iop->ops; op; op = op->io_super)
 	if (op->io_write)
 	    return (op->io_write)(iop, buf, len);
@@ -402,6 +405,7 @@ io_close(unit)				/* internal (zero-based unit) */
 	return TRUE;
 
     if (fp->iop) {
+	printf("io_close %p\n", fp->iop);
 	ret = ioo_close(fp->iop);
 	fp->iop = NULL;
     }
@@ -1213,7 +1217,7 @@ io_options( op, rp, fp )
 		return FALSE;		/* boing! */
 #endif /* 0 */
 	    recl = 0;
-	    while (isdigit(*op)) {
+	    while (isdigit((unsigned char)*op)) {
 		recl = recl * 10 + *op - '0'; /* XXX works for ASCII */
 		op++;
 	    }
