@@ -18,7 +18,6 @@
 #endif /* HAVE_UNISTD_H defined */
 
 #include <stdio.h>
-#include <ctype.h>
 #include <fcntl.h>
 
 #ifdef HAVE_WINSOCK2_H

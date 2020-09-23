@@ -40,7 +40,7 @@ trimsp( sp1, sp2 )
     len = S_L(sp2);
     cp = S_SP(sp2) + len - 1;
 
-    while (len > 0 && isspace(*cp)) {
+    while (len > 0 && isspace((unsigned char)*cp)) {
 	len--;
 	cp--;
     }
@@ -60,8 +60,8 @@ raise1( sp )
     cp = S_SP(sp);
 
     while (len-- > 0) {
-	if (islower(*cp))
-	    *cp = toupper(*cp);
+	if (islower((unsigned char)*cp))
+	    *cp = toupper((unsigned char)*cp);
 	cp++;
     }
 }
@@ -81,8 +81,8 @@ raise2( sp1, sp2 )
     raised = 0;
 
     while (len-- > 0) {
-	if (islower(*sp)) {
-	    *dp++ = toupper(*sp);
+	if (islower((unsigned char)*sp)) {
+	    *dp++ = toupper((unsigned char)*sp);
 	    sp++;
 	    raised++;
 	}

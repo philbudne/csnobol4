@@ -53,7 +53,7 @@ inet_socket( host, service, port, flags, type )
 	if (sp != NULL) {
 	    sin.sin_port = sp->s_port;
 	}
-	else if (isdigit(*service)) {
+	else if (isdigit((unsigned char)*service)) {
 	    port = atoi(service);
 	    if (port < 0 || port > 0xffff)
 		return INVALID_SOCKET;
@@ -105,7 +105,7 @@ inet_socket( host, service, port, flags, type )
 		return s;
 	}
     } /* have hostname */
-    else if (isdigit(*host)) {		/* possible host addr? */
+    else if (isdigit((unsigned char)*host)) { /* possible host addr? */
 	u_long addr;
 
 	/* XXX use inet_aton() if available?? */

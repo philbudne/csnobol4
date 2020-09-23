@@ -2,6 +2,12 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+9/22/2020:
+	bsdtsort.c lib/{io,realst,str}.c lib/bsd/inet[6].c
+	    lib/snolib/serv.c lib/win32/{exists,inet}.c
+	    modules/ndbm/sdbm/dbe.c: 
+		cast ctype args to unsigned char
+
 9/21/2020:
 	Cleanup:
 	configure: detect getline, or use auxil version

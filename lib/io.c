@@ -405,7 +405,6 @@ io_close(unit)				/* internal (zero-based unit) */
 	return TRUE;
 
     if (fp->iop) {
-	printf("io_close %p\n", fp->iop);
 	ret = ioo_close(fp->iop);
 	fp->iop = NULL;
     }

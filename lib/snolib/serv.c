@@ -131,7 +131,7 @@ SERV_LISTEN( LA_ALIST ) LA_DCL
 	sp = getservbyname(sserv, proto);
 	if (sp)
 	    nport = sp->s_port;
-	else if (isdigit(sserv[0])) {
+	else if (isdigit((unsigned char)sserv[0])) {
 	    int port;
 	    port = atoi(sserv);
 	    if (port < 1 || port > 0xffff)

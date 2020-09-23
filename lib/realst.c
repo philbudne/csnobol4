@@ -46,7 +46,7 @@ realst(sp, dp)
      * %#g may add dot, but also trailing zeroes!
      */
     bp = strbuf;
-    while (*bp && isdigit(*bp))
+    while (*bp && isdigit((unsigned char)*bp))
 	bp++;
 
     if (*bp == '\0') {

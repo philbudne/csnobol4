@@ -202,7 +202,7 @@ main(argc, argv)
 
 	/* parse input and build the graph */
 	for (n = 0, c = getc(fp);;) {
-		while (c != EOF && isspace(c))
+		while (c != EOF && isspace((unsigned char)c))
 			c = getc(fp);
 		if (c == EOF)
 			break;
@@ -215,7 +215,7 @@ main(argc, argv)
 			if (nused == bsize)
 				b->b_buf = grow_buf(b->b_buf, bsize *= 2);
 			c = getc(fp);
-		} while (c != EOF && !isspace(c));
+		} while (c != EOF && !isspace((unsigned char)c));
 
 		b->b_buf[nused] = '\0';
 		b->b_bsize = bsize;
