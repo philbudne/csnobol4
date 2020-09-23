@@ -97,7 +97,7 @@ memio_seeko(struct io_obj *iop, io_off_t off, int whence) {
 	break;
     }
     if (ret)
-	SUPER.io_seek(iop, off, whence); /* invalidate line buffer */
+	SUPER.io_seeko(iop, off, whence); /* invalidate line buffer */
     return ret;
 }
 
@@ -107,7 +107,7 @@ memio_flush(struct io_obj *iop) {
     return TRUE;
 }
 
-#define memio_read NULL		/* use bufio */
+#define memio_getline NULL	/* use bufio */
 #define memio_eof NULL		/* use bufio */
 #define memio_clearerr NULL	/* use bufio */
 #define memio_close NULL	/* use bufio */
