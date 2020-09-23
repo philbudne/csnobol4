@@ -13,13 +13,16 @@
 struct bufio_obj {
     struct io_obj io;
 
+    /*
+     * info set by subclass _open call or _read_raw method
+     * (specific meaning, and ownership rules may vary)
+     */
+    void *buffer;			/* object to be freed on close */
     size_t buflen;			/* size of buffer */
-    char *buffer;			/* start of buffer */
 
-    /* volatile needed for reader in thread? */
+    /* for use by bufio_getc: */
     size_t count;			/* valid characters in buffer */
     char *bp;				/* next valid character */
-
     int eof;				/* read_raw failed */
 };
 

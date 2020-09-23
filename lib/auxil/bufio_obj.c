@@ -1,3 +1,4 @@
+#define BUFIO_DEBUG
 /*
  * $Id$
  * base class for line buffered input
@@ -99,6 +100,7 @@ bufio_getline(struct io_obj *iop) {
 	    avail = iop->linebufsize - count;
 	}
 	c = bufio_getc(biop);
+	//DPRINTF(("bufio_getc returned %d '%c'\n", c, c));
 	if (c == EOF)
 	    break;
 
@@ -153,10 +155,10 @@ bufio_clearerr(struct io_obj *iop) {
 
 static int
 bufio_close(struct io_obj *iop) {
-    struct bufio_obj *biop = (struct bufio_obj *) iop;
-    if (biop->buffer) {
-	free(biop->buffer);
-	biop->buffer = NULL;
+    //struct bufio_obj *biop = (struct bufio_obj *) iop;
+    if (iop->linebuf) {
+	free(iop->linebuf);
+	iop->linebuf = NULL;
     }
     return TRUE;
 }
