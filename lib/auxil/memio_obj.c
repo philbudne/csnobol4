@@ -23,26 +23,30 @@ struct memio_obj {
     struct bufio_obj bio;	/* line buffered input */
     char *ptr;			/* pointer to buffer */
     size_t len;			/* length of buffer */
-    io_off_t pos;			/* current position in buffer */
+    io_off_t pos;		/* current position in buffer */
 };
 
 static ssize_t
 memio_write(struct io_obj *iop, char *buf, size_t len) {
     struct memio_obj *miop = (struct memio_obj *)iop;
-
-    if (len + miop->pos + 1 <= miop->len) {
-	memcpy(miop->ptr + miop->pos, buf, len);
-	miop->pos += len;
+    size_t avail = miop->len - miop->pos;
+    if (len > avail)
+	len = avail;
+    if (len > 1) {		/* leave room for NUL */
+	memcpy(miop->ptr + miop->pos, buf, len - 1);
+	miop->pos += len - 1;
 	miop->ptr[miop->pos] = '\0';
-	return len;
+	return len - 1;
     }
-    /* XXX copy as much as possible? */
     return -1;
 }
 
 /*
  * sadly, copies data, but avoids ANOTHER implementation of
- * line-oriented I/O
+ * line-oriented I/O.
+ *
+ * XXX jam our pointer into iop->bio.buffer & bp on first read,
+ *	and if called again, return -1??
  */
 static ssize_t
 memio_read_raw(struct io_obj *iop, char *buf, size_t len) {
