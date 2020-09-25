@@ -1,4 +1,4 @@
-#define BUFIO_DEBUG
+//#define BUFIO_DEBUG
 /*
  * $Id$
  * base class for line buffered input
