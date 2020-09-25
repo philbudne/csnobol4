@@ -4,6 +4,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/24/2020:
 	lib/auxil/bufio_obj.c: fix memory corruption
+	lib/win32/ptyio_obj.c: version with threads (broken)
 
 9/22/2020:
 	bsdtsort.c lib/{io,realst,str}.c lib/bsd/inet[6].c
