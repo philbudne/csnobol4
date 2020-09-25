@@ -65,6 +65,19 @@ bufio_getc(struct bufio_obj *biop) {
 	DPRINTF(("bufio_getc: buffer %p len %zd\n", biop->buffer, biop->buflen));
 	biop->count = ioo_read_raw(biop, biop->buffer, biop->buflen);
 	DPRINTF(("bufio_getc: read_raw returned %zd\n", biop->count));
+#ifdef DEBUG_BUFIO_READ_RAW
+	{
+	    printf("bufio_getc read_raw: ");
+	    int i = biop->count;
+	    char *cp = biop->buffer;
+	    while (i-- > 0) {
+		char c = *cp++;
+		if (c < ' ') printf(" %#o", c);
+		else printf(" %c", c);
+	    }
+	    putchar('\n');
+	}
+#endif
 	if (biop->count <= 0)
 	    return -1;			/* EOF, or something like it */
 	biop->bp = biop->buffer;	/* reset buffer pointer */
@@ -110,6 +123,19 @@ bufio_getline(struct io_obj *iop) {
     if (count == 0)
 	return EOF;
     *cp = '\0';
+#ifdef DEBUG_BUFIO_GETLINE
+    {
+	printf("bufio_getline: ");
+	int i = count;
+	char *cp = biop->io.linebuf;
+	while (i-- > 0) {
+	    char c = *cp++;
+	    if (c < ' ') printf(" %#o", c & 0xff);
+	    else printf(" %c", c);
+	}
+	putchar('\n');
+    }
+#endif
     return count;			/* excluding NUL */
 }
 
