@@ -1,9 +1,22 @@
-#define PTYIO_DEBUG // TEMP
+//#define PTYIO_DEBUG // TEMP
 /*
  * $Id$
  * ptyio I/O Object using Windows Pseudo-Console
  * Phil Budne
  * 2020-09-12
+ *
+ * NOTE!! PseudoConsole output stream filled with escape sequences:
+ * Have a state machine to eat them??  In read_raw??????
+ * <ESC>[2J	clear screen
+ * <ESC>[?25h	hide cursor
+ * <ESC>[?25l	show cursor
+ * <ESC>[H	home
+ * <ESC>[<ROW>;<COL>H	abs position
+ * <ESC>[<N>X	erase <N>
+ * <ESC>[<N>C	forward <N>
+ * <ESC>[m	turn off char attrs
+ * <ESC>[6n	report cursor position (expects response!)
+ * <ESC>]0; ... window title .... <BEL>
  */
 
 /*
@@ -44,8 +57,8 @@
 #define DEFAULT_X_SIZE 24
 #define DEFAULT_Y_SIZE 80
 
-// XXX needed?  Find at runtime??
-#define CMD "C:\\Windows\\system32\\cmd.exe"
+// Allow commands like "dir"
+// do getenv("COMSPEC") in case default command interpreter is PowerShell?
 #define CMD_OPT "cmd.exe /c "
 
 #ifdef PTYIO_DEBUG
@@ -57,7 +70,7 @@
 #endif
 
 // pty buffer (Seagate/KIP/FastPath had pbufs!)
-#define PBUF_SIZE 128
+#define PBUF_SIZE 512
 struct pbuf {
     struct pbuf *next;
     char *rp;				/* read ptr */
@@ -76,6 +89,7 @@ struct ptyio_obj {
     HANDLE readh, writeh;		// pipes to pseudoconsole
     HPCON pconsoleh;			// pseudoconsole handle
     HANDLE processh;			// subprocess handle
+    HANDLE sthreadh;			// subprocess main thread handle
     HANDLE rthreadh;			// pty_read_thread handle
     HANDLE pthreadh;			// pty_process_thread handle
 
@@ -84,13 +98,13 @@ struct ptyio_obj {
     struct pbuf *head, *tail;		// queue, guarded by readmutex
     struct pbuf *rrbuf;			// currently owned by read_raw
 
-    HANDLE readmutex;
+    HANDLE mutex;
     HANDLE readable;			// event: queue non-empty
 };
 
 #define GETMUTEX(PIOP) \
-    (WaitForSingleObject((PIOP)->readmutex, INFINITE) == WAIT_OBJECT_0)
-#define RELMUTEX(PIOP) ReleaseMutex((PIOP)->readmutex)
+    (WaitForSingleObject((PIOP)->mutex, INFINITE) == WAIT_OBJECT_0)
+#define RELMUTEX(PIOP) ReleaseMutex((PIOP)->mutex)
 
 /*
  * perform runtime lookups for symbols that may not be available
@@ -114,7 +128,7 @@ pty_init() {
     if (pty_init_done)			// done this already?
 	return pty_init_done;		// return old result
 
-    // XXX cygwin checks "legacy mode"??
+    // XXX cygwin checks if "legacy mode" set (and punts)
 
     pty_init_done = -1;			// assume the worst
     HMODULE kh = GetModuleHandle("kernel32.dll");
@@ -135,7 +149,7 @@ pty_init() {
 	// here with all symbols
 	pty_init_done = 1;
     } while (0);
-    CloseHandle(kh);
+    CloseHandle(kh);		// library handle
     return pty_init_done;
 }
 
@@ -162,6 +176,7 @@ pty_read_thread(LPVOID arg) {
 	    p->next = NULL;
 	    p->count = 0;
 	    p->rp = p->buf;
+	    DPUTS("thread: releasing mutex");
 	    RELMUTEX(piop);
 	}
 	// blocking read: can't hold mutex!!!
@@ -176,26 +191,37 @@ pty_read_thread(LPVOID arg) {
 
 	if (piop->closing)
 	    break;
-
-	//DPRINTF(("thread: read <<%*.*s>>\n", p->count, p->count, p->buf));
+#ifdef DEBUG_PTY_READ_THREAD
+	{
+	    int i = p->count;
+	    char *cp = p->buf;
+	    while (i-- > 0) {
+		char c = *cp++;
+		if (c < ' ') printf(" %#o", c);
+		else printf(" %c", c);
+	    }
+	    putchar('\n');
+	}
+#endif
 	DPUTS("thread: waiting for mutex to enqueue");
 	if (!GETMUTEX(piop)) {
-	    DPUTS("thread: readmutex wait failed");
+	    DPUTS("thread: mutex wait failed");
 	    break;
 	}
 
 	if (piop->tail) {
-	    DPRINTF(("setting buf %p next (& tail) to %p\n", piop->tail, p));
+	    DPRINTF(("thread: setting buf %p next (& tail) to %p\n", piop->tail, p));
 	    piop->tail->next = p;
 	    piop->tail = p;
 	}
 	else {
-	    DPRINTF(("setting head & tail to %p\n", p));
+	    DPRINTF(("thread: setting head & tail to %p\n", p));
 	    piop->head = piop->tail = p;
 	}
 	piop->threadbuf = NULL;
 	DPUTS("thread: setting readable");
 	SetEvent(piop->readable);
+	DPUTS("thread: releasing mutex");
 	RELMUTEX(piop);
     }
     DPUTS("thread: exiting");
@@ -206,22 +232,28 @@ pty_read_thread(LPVOID arg) {
 }
 
 /****************
- * worker thread to wait on process
+ * worker thread to wait on process (or process main thread)
  */
 static DWORD WINAPI
 pty_process_thread(LPVOID arg) {
     struct ptyio_obj *piop = (struct ptyio_obj *)arg;
 
-    if (WaitForSingleObject(piop->processh, INFINITE) == WAIT_OBJECT_0) {
+    DPUTS(("process_thread"));
+    // wait on main thread of subprocess:
+    if (WaitForSingleObject(piop->sthreadh, INFINITE) == WAIT_OBJECT_0) {
 	// "A final painted frame may arrive on hOutput from the
 	// pseudoconsole when (ClosePseudoConsole) is called."
 	if (piop->pconsoleh) {
-	    DPRINTF(("ppt: closing pseudoconsole %p\n", piop->pconsoleh));
+	    DPRINTF(("process_thread: closing pseudoconsole %p ******\n",
+		     piop->pconsoleh));
 	    (*pClosePseudoConsole)(piop->pconsoleh);
 	    piop->pconsoleh = NULL;
 	}
+	else
+	    puts("process_thread: saw null pconsole handle"); /* XXX TEMP */
     }
-    DPUTS("ppt: exiting");
+    else
+	puts("process_thread: wait failed?"); /* XXX TEMP? */
     piop->process_exited = 1;
     return 0;
 }
@@ -248,15 +280,15 @@ ptyio_read_raw(struct io_obj *iop, char *buf, size_t len) {
 	    WaitForSingleObject(piop->readable, INFINITE);
 	}
 	// here with p pointing to head of queue
+	DPRINTF(("read_raw p = %p\n", p));
 	if (!GETMUTEX(piop)) {
 	    DPUTS("read_raw: getmutex failed");
-	    // XXX more here???
 	    return -1;
 	}
 	DPRINTF(("read_raw: got mutex. setting head to %p\n", p->next));
 	piop->head = p->next;		// unlink from queue
 	if (!piop->head) {
-	    DPUTS("read_raw: empty queue, clearing readable");
+	    DPUTS("read_raw: clearing readable");
 	    piop->tail = NULL;
 	    ResetEvent(piop->readable);
 	}
@@ -317,42 +349,47 @@ ptyio_close(struct io_obj *iop) {
     //
     // EchoCon.cpp-- "will terminate child process if running"
 
-    // RACE: may have been nulled by process_thread
+    // kill process watcher to avoid race for ClosePC
+    DPUTS("ptyio_close: terminating process_thread");
+    TerminateThread(piop->pthreadh, 0);
+
+    // this causes reader to exit (w/o draining pipe)!!!!
+    //piop->closing = 1;
+
     if (piop->pconsoleh) {
 	DPRINTF(("ptyio_close: ClosePseudoConsole %p\n", piop->pconsoleh));
 	(*pClosePseudoConsole)(piop->pconsoleh);
     }
-    DPRINTF(("ptyio_close: close write pipe %p\n", piop->writeh));
-    CloseHandle(piop->writeh);
 
-#if 0
-    /* try draining: */
-    char buf[1024];
-
-    DPUTS("ptyio_close: before loop");
-    int cc;
-    while ((cc = ptyio_read_raw(iop, buf, sizeof(buf))) > 0)
-	printf("ptyio_close: loop read %d\n", cc);
-#endif
-
-    piop->closing = 1;
+    // ClosePseudoConsole should cause pipe thread & process to exit
+    if (!piop->process_exited) {
+	DPUTS("ptyio_close: waiting for process");
+	if (WaitForSingleObject(piop->processh, 10000) != WAIT_OBJECT_0)
+	    DPUTS("ptyio_close: process wait failed");
+    }
+    // XXX do a WaitForMultipleObjects
+    // always wait for reader to exit (make sure pipe is drained)???
 
     DPRINTF(("ptyio_close: close read pipe %p\n", piop->readh));
     CloseHandle(piop->readh);
+    DPRINTF(("ptyio_close: close write pipe %p\n", piop->writeh));
+    CloseHandle(piop->writeh);
 
+    // get mutex before terminating reader thread to avoid
+    // losing threadbuf:
     DPUTS("ptyio_close: getting mutex");
     (void) GETMUTEX(piop);
 
-    DPUTS("ptyio_close: terminating threads");
+    DPUTS("ptyio_close: terminating reader");
     TerminateThread(piop->rthreadh, 0);
-    TerminateThread(piop->pthreadh, 0);
 
     DPUTS("ptyio_close: closing handles");
     CloseHandle(piop->rthreadh);
     CloseHandle(piop->pthreadh);
-    CloseHandle(piop->readmutex);
+    CloseHandle(piop->mutex);
     CloseHandle(piop->readable);
     CloseHandle(piop->processh);
+    CloseHandle(piop->sthreadh);
 
     DPUTS("ptyio_close: freeing pbufs");
     if (piop->threadbuf)
@@ -388,8 +425,6 @@ ptyio_open(path, flags, dir)
     if (pty_init() < 0)
 	return FALSE;
 
-    // XXX first time only: try finding necessary symbols dynamically
-    // so executable more universal??
     COORD size = { DEFAULT_X_SIZE, DEFAULT_Y_SIZE };
 
     // allocate ptyio_obj early to avoid late disappointment
@@ -404,19 +439,19 @@ ptyio_open(path, flags, dir)
 	return NULL;
     }
 
-    piop->readmutex = CreateMutex(NULL, FALSE, NULL); /* defsec, unowned, no name */
-    if (!piop->readmutex)
+    piop->mutex = CreateMutex(NULL, FALSE, NULL); /* defsec, unowned, no name */
+    if (!piop->mutex)
 	goto free_piop;
 
     // default security, manual-reset event, init: not signalling, no name
     piop->readable = CreateEvent(NULL, TRUE, FALSE, NULL);
     if (!piop->readable)
-	goto close_readmutex;
+	goto close_mutex;
 
-#if 1 // from EchoCon.cpp:
+#if 0 // from EchoCon.cpp
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
-    // Enable Console VT Processing (so child output interpreted correctly?)
+    // Enable Console VT (escape) Processing
     DWORD consoleMode;
     GetConsoleMode(hConsole, &consoleMode);
     (void) SetConsoleMode(hConsole, consoleMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
@@ -450,9 +485,10 @@ ptyio_open(path, flags, dir)
 	goto close_input_pipes;
     DPRINTF(("output pipes %p %p\n", outputReadSide, outputWriteSide));
 
-    const DWORD inherit_cursor = 1;	/* from cygwin */
+    // cygwin passes 1 (INHERIT_CURSOR) in flags
+    // which causes output of cursor query sequence <ESC>[6n
     HRESULT hr =
-	(*pCreatePseudoConsole)(size, inputReadSide, outputWriteSide, inherit_cursor,
+	(*pCreatePseudoConsole)(size, inputReadSide, outputWriteSide, 0,
 				&piop->pconsoleh);
     if (hr != 0) {
 	DPRINTF(("CreatePseudoConsole failed %#x\n", hr));
@@ -463,8 +499,8 @@ ptyio_open(path, flags, dir)
 	CloseHandle(inputWriteSide);
     close_readable:
 	CloseHandle(piop->readable);
-    close_readmutex:
-	CloseHandle(piop->readmutex);
+    close_mutex:
+	CloseHandle(piop->mutex);
     free_piop:
 	if (piop->bio.buffer)
 	    free(piop->bio.buffer);
@@ -472,7 +508,7 @@ ptyio_open(path, flags, dir)
 	return NULL;
     }
 
-    printf("pconsoleh %p\n", piop->pconsoleh);
+    DPRINTF(("pconsoleh %p\n", piop->pconsoleh));
 
     // EchoCon.cpp frees child side pipes here
     CloseHandle(inputReadSide);
@@ -481,7 +517,8 @@ ptyio_open(path, flags, dir)
     piop->writeh = inputWriteSide;
     piop->readh  = outputReadSide;
 
-    int cmd_line_size = sizeof(CMD_OPT) + strlen(path+2) + 100;
+    // truncates w/o extra byte???
+    int cmd_line_size = sizeof(CMD_OPT) + strlen(path+2) + 1;
     char *cmd_line = malloc(cmd_line_size);
     if (!cmd_line)
 	goto close_parent_pipes_and_console;
@@ -531,7 +568,7 @@ ptyio_open(path, flags, dir)
     PROCESS_INFORMATION pi;
     ZeroMemory(&pi, sizeof(pi));
 
-    if (!CreateProcessA(CMD,	// app name
+    if (!CreateProcessA(NULL,	// get executable from command line
                         cmd_line,
                         NULL,	// process attrs
                         NULL,	// thread attrs
@@ -552,18 +589,17 @@ ptyio_open(path, flags, dir)
 	CloseHandle(inputWriteSide);
 	CloseHandle(outputReadSide);
 	CloseHandle(piop->readable);
-	CloseHandle(piop->readmutex);
+	CloseHandle(piop->mutex);
 	free(piop->bio.buffer);
 	free(piop);
 	return NULL;
     }
     piop->processh = pi.hProcess;
+    piop->sthreadh = pi.hThread;
 
     // safe now?? else locate in piop until close.
     free(cmd_line);
 
-    // never used, must be freed: now ok??
-    CloseHandle(pi.hThread);
     //DeleteProcThreadAttributeList(si.lpAttributeList);
     free(si.lpAttributeList);
 
@@ -575,7 +611,7 @@ ptyio_open(path, flags, dir)
 	piop,              // thread parameter
 	0,                 // default startup flags
 	&threadid);
-    printf("open: rthreadh %p id %u\n", piop->rthreadh, threadid);
+    DPRINTF(("open: rthreadh %p id %u\n", piop->rthreadh, threadid));
     // XXX check return
 
     piop->pthreadh = CreateThread(
@@ -585,7 +621,7 @@ ptyio_open(path, flags, dir)
 	piop,              // thread parameter
 	0,                 // default startup flags
 	&threadid);
-    printf("open: pthreadh %p id %u\n", piop->pthreadh, threadid);
+    DPRINTF(("open: pthreadh %p id %u\n", piop->pthreadh, threadid));
     // XXX check return
 
     return &piop->bio.io;

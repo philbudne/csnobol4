@@ -1202,6 +1202,9 @@ if [ "$NEED_PATHS_H" ]; then
     fi
 fi
 
+# uncomment to debug win32/ptyio_obj.c under cygwin
+#HAVE_FORKPTY=
+
 if [ "x$HAVE_FORKPTY" != x ]; then
     echo 'PTYIO_OBJ_C=$(SRCDIR)lib/bsd/ptyio_obj.c'	>> $CONFIG_M4
     if config/check "unistd.h" "closefrom(3);"; then
@@ -1230,13 +1233,13 @@ if [ "x$HAVE_FORKPTY" != x ]; then
 	fi
     fi
 elif [ "$xCYGWIN" != x ]; then
-    # cygwin64 3.1.7 has working forkpty (in pty.h), so this shouldn't be reached!
-    # as of 2020-09-21, PseudoConsole support isn't fully debugged!
-    # The following compiles with w32api-headers 8.0.0-1
+    # cygwin64 3.1.7 has working forkpty (in pty.h)
+    # so this is here only for debugging!
+    # as of 2020-09-21, the following compiles with w32api-headers 8.0.0-1
     echo 'using Win32 ptyio_obj.c' 1>&2
-    echo 'PTYIO_OBJ_C=$(SRCDIR)lib/win32/ptyio_obj.c' >> $CONFIG_M4
-    # dunno if there's a real/better way
-    echo '#define _WIN32_WINNT _WIN32_WINNT_WIN10' >> $CONFIG_H
+    echo 'PTYIO_OBJ_C=$(SRCDIR)lib/win32/ptyio_obj.c'	>> $CONFIG_M4
+    # M$ says you can wack them:
+    echo '#define _WIN32_WINNT _WIN32_WINNT_WIN10'	>> $CONFIG_H
     echo '#define NTDDI_VERSION NTDDI_WIN10_RS5'	>> $CONFIG_H
     NEED_BUFIO=1
 fi
