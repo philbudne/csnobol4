@@ -54,8 +54,8 @@
 
 #define SUPER bufio_ops
 
-#define DEFAULT_X_SIZE 24
-#define DEFAULT_Y_SIZE 80
+#define DEFAULT_X_SIZE 80
+#define DEFAULT_Y_SIZE 24
 
 // Allow commands like "dir"
 // do getenv("COMSPEC") in case default command interpreter is PowerShell?
