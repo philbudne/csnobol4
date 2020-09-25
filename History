@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+9/24/2020:
+	lib/auxil/bufio_obj.c: fix memory corruption
+
 9/22/2020:
 	bsdtsort.c lib/{io,realst,str}.c lib/bsd/inet[6].c
 	    lib/snolib/serv.c lib/win32/{exists,inet}.c
@@ -15,7 +18,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	Makefile2.m4: auxil/getline.c (if needed)
 	include/lib.h: add getline (if needed)
 	lib/auxil/getline.c: fix!
-	lib/win32/{inet,pty}io_obj.o: s/XXXio_read /XXXio_getline /
+	lib/win32/{inet,pty}io_obj.c: s/XXXio_read /XXXio_getline /
 	config/win32/{ntmsvc,mingw}.mak: use auxil/getline.c
 	config/djgpp/Makefile: use auxil/getline.c
 

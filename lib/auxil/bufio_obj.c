@@ -80,9 +80,9 @@ bufio_getline(struct io_obj *iop) {
     int count = 0;
     int avail;
     int c;
-    char *cp;
+    char *cp = iop->linebuf;
 
-    if (!iop->linebuf) {
+    if (!cp) {
 	cp = iop->linebuf = malloc(iop->linebufsize = 128);
 	if (!cp)
 	    return EOF;
