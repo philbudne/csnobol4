@@ -65,7 +65,7 @@ struct ptyio_obj {
  * (and keep executable from even running)
  */
 #define SYMBOLS \
-    SYM(HRESULT, CreatePseudoConsole,
+    SYM(HRESULT, CreatePseudoConsole, \
 	(COORD, HANDLE, HANDLE, DWORD, HPCON*)); \
     SYM(VOID, ClosePseudoConsole, (HPCON)); \
 
