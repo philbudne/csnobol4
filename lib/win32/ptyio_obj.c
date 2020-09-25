@@ -93,12 +93,11 @@ struct ptyio_obj {
     HANDLE rthreadh;			// pty_read_thread handle
     HANDLE pthreadh;			// pty_process_thread handle
 
-    // **************** read buffering
-    struct pbuf *threadbuf;		// being read into/owned by read_thread
-    struct pbuf *head, *tail;		// queue, guarded by readmutex
+    struct pbuf *threadbuf;		// being read into by read_thread
+    struct pbuf *head, *tail;		// queue, guarded by mutex
     struct pbuf *rrbuf;			// currently owned by read_raw
 
-    HANDLE mutex;
+    HANDLE mutex;			// guards head/tail/threadbuf pointers
     HANDLE readable;			// event: queue non-empty
 };
 
@@ -394,6 +393,8 @@ ptyio_close(struct io_obj *iop) {
     DPUTS("ptyio_close: freeing pbufs");
     if (piop->threadbuf)
 	free(piop->threadbuf);
+    if (piop->rrbuf)
+	free(piop->rrbuf);
     for (struct pbuf *next, *p = piop->head; p; p = next) {
 	next = p->next;
 	free(p);
