@@ -1,11 +1,12 @@
-#define PTYIO_DEBUG // TEMP
+//#define PTYIO_DEBUG // TEMP
 /*
  * $Id$
  * ptyio I/O Object using Windows Pseudo-Console
  * Phil Budne
  * 2020-09-12
  *
- * NOTE!! PseudoConsole output stream filled with escape sequences:
+ * NOTE!! PseudoConsole output stream filled with escape sequences
+ * painting the state of the (virtual) console window.
  * Have a state machine to eat them??  In read_raw??????
  * <ESC>[2J	clear screen
  * <ESC>[?25h	hide cursor
@@ -15,7 +16,7 @@
  * <ESC>[<N>X	erase <N>
  * <ESC>[<N>C	forward <N>
  * <ESC>[m	turn off char attrs
- * <ESC>[6n	report cursor position (expects response!)
+ * <ESC>[6n	query cursor position (expects <ESC>[<line>;<col>R)
  * <ESC>]0; ... window title .... <BEL>
  */
 
@@ -45,7 +46,7 @@
 #include <windows.h>
 #include <process.h>
 
-#include <stdio.h>		/* NULL, size_t */
+#include <stdio.h>			/* NULL, size_t */
 #include <malloc.h>
 
 #include "h.h"
@@ -54,11 +55,11 @@
 
 #define SUPER bufio_ops
 
-#define DEFAULT_X_SIZE 80
-#define DEFAULT_Y_SIZE 24
+#define DEFAULT_X_SIZE 80		/* width */
+#define DEFAULT_Y_SIZE 24		/* height */
 
 // Allow commands like "dir"
-// do getenv("COMSPEC") in case default command interpreter is PowerShell?
+// do getenv("COMSPEC") in case default command interpreter changes??
 #define CMD_OPT "cmd.exe /c "
 
 #ifdef PTYIO_DEBUG
@@ -168,6 +169,7 @@ pty_read_thread(LPVOID arg) {
 		puts("thread: threadbuf getmutex failed");
 		break;
 	    }
+	    // check a freelist (if global will need another lock)
 	    p = piop->threadbuf = malloc(sizeof(struct pbuf));
 	    p->next = NULL;
 	    p->count = 0;
@@ -307,7 +309,7 @@ ptyio_read_raw(struct io_obj *iop, char *buf, size_t len) {
     p->count -= len;
     DPRINTF(("read_raw: %zd copied, p->count = %d\n", len, p->count));
     if (p->count == 0) {	// buffer drained
-	free(p);
+	free(p);		// put on a free list?
 	piop->rrbuf = NULL;
     }
     else
@@ -434,6 +436,8 @@ ptyio_open(path, flags, dir)
     if (!piop)
 	return NULL;
 
+    // must be able to hold a PBUF's worth of data
+    // (_could_ have read_raw play pointer games instead of copying)
     piop->bio.buffer = malloc(piop->bio.buflen = PBUF_SIZE);
     if (!piop->bio.buffer) {
 	free(piop);
@@ -450,6 +454,13 @@ ptyio_open(path, flags, dir)
 	goto close_mutex;
 
 #if 0 // from EchoCon.cpp
+    // [PLB: See comments below.  Copying actual console window size,
+    // and enabling escape sequence (VT processing) makes sense
+    // primarily if the output is going to be displayed in the window
+    // that snobol4.exe was invoked in (as EchoCon does), which I'm
+    // not convinced is the likely case.  BSD/POSIX/Linux/Un*x forkpty
+    // call defaults to an unsized pseudo terminal.]
+
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
     // Enable Console VT (escape) Processing
@@ -463,7 +474,7 @@ ptyio_open(path, flags, dir)
 	size.X = csbi.srWindow.Right - csbi.srWindow.Left + 1;
 	size.Y = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
     }
-#endif
+#endif // code from EchoCon
 	    
     // https://docs.microsoft.com/en-us/windows/console/creating-a-pseudoconsole-session
 
@@ -487,7 +498,27 @@ ptyio_open(path, flags, dir)
     DPRINTF(("output pipes %p %p\n", outputReadSide, outputWriteSide));
 
     // cygwin passes 1 (INHERIT_CURSOR) in flags
-    // which causes output of cursor query sequence <ESC>[6n
+    // which causes pseudoconsole output of cursor query sequence <ESC>[6n
+    // (and expects a response!!)
+
+    // https://github.com/microsoft/terminal/issues/235#issuecomment-414375514
+    // (ConPTY repeats character at top left of buffer during every operation)
+    // where zadjii-msft commented on Aug 20, 2018
+    //   You can however disable this feature by passing the
+    //   INHERIT_CURSOR flag to CreatePseudoConsole - though be
+    //   warned, you'll need to make sure that the console is first
+    //   set to ENABLE_VIRTUAL_TERMINAL_PROCESSING, or your
+    //   application is running in a terminal capable of responding to
+    //   a DSR. That'll trick conpty into using the terminal's current
+    //   cursor position as a starting place for it's own cursor.
+    //
+    // Not yet sure what this wins, but I have to say it seems to me
+    // that MS is unclear on why pty's are useful: yes, you might
+    // display the output in a (real console) window [if you're
+    // implementing a "screen" program], but it's just as (or more)
+    // likely that you're invoking a program under program control,
+    // and the output isn't going to be displayed ANYWHERE!
+
     HRESULT hr =
 	(*pCreatePseudoConsole)(size, inputReadSide, outputWriteSide, 0,
 				&piop->pconsoleh);
@@ -518,20 +549,20 @@ ptyio_open(path, flags, dir)
     piop->writeh = inputWriteSide;
     piop->readh  = outputReadSide;
 
-    // truncates w/o extra byte???
+    // truncates w/o extra byte (but sizeof should include NUL byte?!)??
     int cmd_line_size = sizeof(CMD_OPT) + strlen(path+2) + 1;
     char *cmd_line = malloc(cmd_line_size);
     if (!cmd_line)
 	goto close_parent_pipes_and_console;
     snprintf(cmd_line, cmd_line_size, "%s %s", CMD_OPT, path+2);
-    printf("cmd_line: %s\n", cmd_line);
-
-    STARTUPINFOEXA si;	// STARTUPINFOA StartupInfo +
-			// LPPROC_THREAD_ATTRIBUTE_LIST lpAttributeList
+    DPRINTF(("cmd_line: %s\n", cmd_line));
 
     // https://docs.microsoft.com/en-us/windows/console/creating-a-pseudoconsole-session
 
     // Prepare Startup Information structure
+    STARTUPINFOEXA si;	// STARTUPINFOA StartupInfo +
+			// LPPROC_THREAD_ATTRIBUTE_LIST lpAttributeList
+
     ZeroMemory(&si, sizeof(si));
     si.StartupInfo.cb = sizeof(STARTUPINFOEX);
 
@@ -545,12 +576,12 @@ ptyio_open(path, flags, dir)
 	if (!si.lpAttributeList)
 	    goto free_cmd_line;
 
-	// Initialize the list memory location
+	// Initialize the list memory
 	if (!InitializeProcThreadAttributeList(si.lpAttributeList,
 					       1, 0, &bytesRequired))
 	    goto free_si_attrlist;
     }
-    // Set the pseudoconsole information into the list
+    // Set the pseudoconsole information in the attribute list
     if (!UpdateProcThreadAttribute(si.lpAttributeList,
                                    0,
                                    PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE,
@@ -563,10 +594,9 @@ ptyio_open(path, flags, dir)
     // here down from SetUpPseudoConsole
     // https://docs.microsoft.com/en-us/windows/console/creating-a-pseudoconsole-session
 
-    // never used!! handles must be released!!
-    // HANDLE hProcess, hThread
-    // DWORD dwProcessId, dwThreadId
-    PROCESS_INFORMATION pi;
+    PROCESS_INFORMATION pi;	// HANDLE hProcess, hThread;
+				// DWORD dwProcessId, dwThreadId;
+
     ZeroMemory(&pi, sizeof(pi));
 
     if (!CreateProcessA(NULL,	// get executable from command line
@@ -579,7 +609,7 @@ ptyio_open(path, flags, dir)
                         NULL,	// use current dir
                         &si.StartupInfo, // point to first (non-extended) member
                         &pi)) {	// process information
-	printf("open: CreateProcessA: %#x\n", GetLastError());
+	DPRINTF(("ptyio_open: CreateProcessA: %#x\n", GetLastError()));
     free_si_attrlist:
         free(si.lpAttributeList);
     free_cmd_line:
@@ -601,6 +631,7 @@ ptyio_open(path, flags, dir)
     // safe now?? else locate in piop until close.
     free(cmd_line);
 
+    // not called in cygwin:
     //DeleteProcThreadAttributeList(si.lpAttributeList);
     free(si.lpAttributeList);
 
@@ -626,4 +657,4 @@ ptyio_open(path, flags, dir)
     // XXX check return
 
     return &piop->bio.io;
-}
+} // ptyio_open
