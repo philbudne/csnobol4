@@ -73,9 +73,9 @@ static int
 inetio_close(struct io_obj *iop) {
     struct inetio_obj *iiop = (struct inetio_obj *) iop;
 
-    if (iop->bio.buffer) {
-	free(iop->bio.buffer);
-	iop->bio.buffer = NULL;
+    if (iiop->bio.buffer) {
+	free(iiop->bio.buffer);
+	iiop->bio.buffer = NULL;
     }
 
     /* ensure all data has been sent? does not block?? */
