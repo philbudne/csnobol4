@@ -4,6 +4,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/26/2020:
 	timing: check for systeminfo.exe!
+	modules/random/random.c: use GETPID_IN_PROCESS_H
+		expect getpid() to be available!!
 
 9/26/2020:
 	bufio/ptyio cleanup:

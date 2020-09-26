@@ -56,6 +56,10 @@ typedef int int32_t;
 #include <unistd.h>            /* for srandomdev() */
 #endif
 
+#ifdef GETPID_IN_PROCESS_H
+#include <process.h>		/* windows */
+#endif
+
 #ifndef DEV_RANDOM
 #define DEV_RANDOM "/dev/random"
 #endif
@@ -354,10 +358,14 @@ bsd_srandomdev()
 		struct timeval tv;
 
 		gettimeofday(&tv, NULL);
-		bsd_srandom((getpid() << 16) ^ tv.tv_sec ^ tv.tv_usec ^ junk);
+		junk ^= tv.tv_sec ^ tv.tv_usec;
 #else
-		bsd_srandom(time(0) ^ junk); /* safe for win32 */
+		junk ^= time(0);	/* safe for win32 */
 #endif
+		/* available in DJGPP (DOS), and VMS?! */
+		junk ^= getpid();
+
+		bsd_srandom(junk);
 		return;
 	}
 
