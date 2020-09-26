@@ -1,4 +1,4 @@
-//#define PTYIO_DEBUG // TEMP
+#define PTYIO_DEBUG // TEMP
 /*
  * $Id$
  * ptyio I/O Object using Windows Pseudo-Console
@@ -81,11 +81,8 @@ struct pbuf {
 struct ptyio_obj {
     struct bufio_obj bio;
 
-    char closing;			// ptyio_close in progress
     char reader_exited;			// reader thread exited
-    char process_exited;		// child process & proc thread exited
-    char unused;
-
+    
     HANDLE readh, writeh;		// pipes to pseudoconsole
     HPCON pconsoleh;			// pseudoconsole handle
     HANDLE processh;			// subprocess handle
@@ -160,15 +157,15 @@ static DWORD WINAPI
 pty_read_thread(LPVOID arg) {
     struct ptyio_obj *piop = (struct ptyio_obj *)arg;
 
-    while (!piop->closing) {
+    for (;;) {
 	struct pbuf *p;
 
 	if (!(p = piop->threadbuf)) {
 	    // ptyio_close takes mutex before killing threads
 	    // so this avoids leaking a buffer on close.
-	    DPUTS("thread: getting mutex to set threadbuf");
+	    DPUTS("thread: getting mutex to malloc threadbuf");
 	    if (!GETMUTEX(piop)) {
-		DPUTS("thread: getmutex failed");
+		puts("thread: threadbuf getmutex failed");
 		break;
 	    }
 	    p = piop->threadbuf = malloc(sizeof(struct pbuf));
@@ -181,19 +178,18 @@ pty_read_thread(LPVOID arg) {
 	// blocking read: can't hold mutex!!!
 	DPUTS("thread: reading");
 	if (!ReadFile(piop->readh, p->buf, sizeof(p->buf), &p->count, NULL)) {
-	    DPUTS("thread: ReadFile failed");
+	    DPUTS("thread: ReadFile failed ****************");
 	    break;
 	}
-	DPRINTF(("thread: Read %u to %p ****** p@%p\n", p->count, p->buf, p));
+	DPRINTF(("thread: Read %u to %p (p@%p)\n", p->count, p->buf, p));
 	if (!p->count)
 	    continue;
 
-	if (piop->closing)
-	    break;
 #ifdef DEBUG_PTY_READ_THREAD
 	{
 	    int i = p->count;
 	    char *cp = p->buf;
+	    printf("thread: ");
 	    while (i-- > 0) {
 		char c = *cp++;
 		if (c < ' ') printf(" %#o", c);
@@ -202,14 +198,16 @@ pty_read_thread(LPVOID arg) {
 	    putchar('\n');
 	}
 #endif
-	DPUTS("thread: waiting for mutex to enqueue");
+	DPRINTF(("thread: waiting for mutex to enqueue %d p@%p\n",
+		 p->count, p));
 	if (!GETMUTEX(piop)) {
-	    DPUTS("thread: mutex wait failed");
+	    puts("thread: enqueue getmutex failed");
 	    break;
 	}
 
 	if (piop->tail) {
-	    DPRINTF(("thread: setting buf %p next (& tail) to %p\n", piop->tail, p));
+	    DPRINTF(("thread: setting tail, buf %p next to %p\n",
+		     piop->tail, p));
 	    piop->tail->next = p;
 	    piop->tail = p;
 	}
@@ -223,15 +221,18 @@ pty_read_thread(LPVOID arg) {
 	DPUTS("thread: releasing mutex");
 	RELMUTEX(piop);
     }
-    DPUTS("thread: exiting");
+    DPUTS("thread: exiting ********************************");
     piop->reader_exited = 1;
     SetEvent(piop->readable);
-
+#ifdef PTYIO_DEBUG
+    fflush(stdout);
+#endif
     return 0;
 }
 
 /****************
- * worker thread to wait on process (or process main thread)
+ * worker thread to wait on process main thread
+ * and shut down pseudoconsole
  */
 static DWORD WINAPI
 pty_process_thread(LPVOID arg) {
@@ -240,10 +241,11 @@ pty_process_thread(LPVOID arg) {
     DPUTS(("process_thread"));
     // wait on main thread of subprocess:
     if (WaitForSingleObject(piop->sthreadh, INFINITE) == WAIT_OBJECT_0) {
-	// "A final painted frame may arrive on hOutput from the
+	DPUTS("process_thread: awake *************************************");
+	// "A final painted frame may arrive from the
 	// pseudoconsole when (ClosePseudoConsole) is called."
 	if (piop->pconsoleh) {
-	    DPRINTF(("process_thread: closing pseudoconsole %p ******\n",
+	    DPRINTF(("process_thread: closing pseudoconsole %p\n",
 		     piop->pconsoleh));
 	    (*pClosePseudoConsole)(piop->pconsoleh);
 	    piop->pconsoleh = NULL;
@@ -253,7 +255,6 @@ pty_process_thread(LPVOID arg) {
     }
     else
 	puts("process_thread: wait failed?"); /* XXX TEMP? */
-    piop->process_exited = 1;
     return 0;
 }
 
@@ -279,7 +280,7 @@ ptyio_read_raw(struct io_obj *iop, char *buf, size_t len) {
 	    WaitForSingleObject(piop->readable, INFINITE);
 	}
 	// here with p pointing to head of queue
-	DPRINTF(("read_raw p = %p\n", p));
+	DPRINTF(("read_raw: got %d (p@%p)\n", p->count, p));
 	if (!GETMUTEX(piop)) {
 	    DPUTS("read_raw: getmutex failed");
 	    return -1;
@@ -352,35 +353,33 @@ ptyio_close(struct io_obj *iop) {
     DPUTS("ptyio_close: terminating process_thread");
     TerminateThread(piop->pthreadh, 0);
 
-    // this causes reader to exit (w/o draining pipe)!!!!
-    //piop->closing = 1;
-
     if (piop->pconsoleh) {
 	DPRINTF(("ptyio_close: ClosePseudoConsole %p\n", piop->pconsoleh));
 	(*pClosePseudoConsole)(piop->pconsoleh);
     }
 
     // ClosePseudoConsole should cause pipe thread & process to exit
-    if (!piop->process_exited) {
-	DPUTS("ptyio_close: waiting for process");
-	if (WaitForSingleObject(piop->processh, 10000) != WAIT_OBJECT_0)
-	    DPUTS("ptyio_close: process wait failed");
+    DPUTS("ptyio_close: waiting for process");
+    // XXX do a WaitForMultipleObjects w/ rthread as well?
+    if (WaitForSingleObject(piop->processh, 10000) != WAIT_OBJECT_0) {
+	DPUTS("ptyio_close: process wait failed");
     }
-    // XXX do a WaitForMultipleObjects
-    // always wait for reader to exit (make sure pipe is drained)???
 
     DPRINTF(("ptyio_close: close read pipe %p\n", piop->readh));
     CloseHandle(piop->readh);
     DPRINTF(("ptyio_close: close write pipe %p\n", piop->writeh));
     CloseHandle(piop->writeh);
 
+    // Unless/until we know rthread has exited (see above)
     // get mutex before terminating reader thread to avoid
     // losing threadbuf:
-    DPUTS("ptyio_close: getting mutex");
-    (void) GETMUTEX(piop);
+    if (!piop->reader_exited) {
+	DPUTS("ptyio_close: getting mutex");
+	(void) GETMUTEX(piop);
 
-    DPUTS("ptyio_close: terminating reader");
-    TerminateThread(piop->rthreadh, 0);
+	DPUTS("ptyio_close: terminating reader");
+	TerminateThread(piop->rthreadh, 0);
+    }
 
     DPUTS("ptyio_close: closing handles");
     CloseHandle(piop->rthreadh);
@@ -400,9 +399,10 @@ ptyio_close(struct io_obj *iop) {
 	free(p);
     }
 
-    DPUTS("ptyio_close: calling SUPER.io_close");
-    SUPER.io_close(iop);		/* free buffer */
-
+    if (piop->bio.buffer) {
+	free(piop->bio.buffer);
+	piop->bio.buffer = NULL;
+    }
     return 1;				/* OK */
 }
 

@@ -14,11 +14,12 @@ struct bufio_obj {
     struct io_obj io;
 
     /*
-     * info set by subclass _open call or _read_raw method
-     * (specific meaning, and ownership rules may vary)
+     * buffer for read_raw to read into (and bufio_getc to fetch out of)
+     * owned/set by subclass xxxio_open function or xxxio_read_raw method
+     * subclass io_close method MUST free (or not (memio))!!!
      */
-    void *buffer;			/* object to be freed on close */
-    size_t buflen;			/* size of buffer */
+    char *buffer;			/* used to reset 'bp' */
+    size_t buflen;			/* size of buffer (for read_raw) */
 
     /* for use by bufio_getc: */
     size_t count;			/* valid characters in buffer */

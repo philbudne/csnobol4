@@ -45,7 +45,7 @@ ioo_read_raw(struct bufio_obj *biop, char *buf, size_t len) {
     for (op = biop->io.ops; op; op = op->io_super) {
 	if (op->io_read_raw) {
 	    ret = (op->io_read_raw)(&biop->io, biop->buffer, biop->buflen);
-	    if (ret <= 0)		/* zero is socket EOF */
+	    if (ret < 0)
 		biop->eof = 1;
 	    return ret;
 	}
@@ -56,14 +56,14 @@ ioo_read_raw(struct bufio_obj *biop, char *buf, size_t len) {
 /* helper for bufio_getline */
 static int
 bufio_getc(struct bufio_obj *biop) {
-    if (biop->count <= 0) {
+    if (biop->count == 0) {
 	/*
 	 * ASSuMEs that read_raw provider is like a socket
 	 * and won't block until the entire request is filled.
 	 * (if it won't, will have to restrict reads to 1 byte):
 	 */
 	DPRINTF(("bufio_getc: buffer %p len %zd\n", biop->buffer, biop->buflen));
-	biop->count = ioo_read_raw(biop, biop->buffer, biop->buflen);
+	ssize_t count = ioo_read_raw(biop, biop->buffer, biop->buflen);
 	DPRINTF(("bufio_getc: read_raw returned %zd\n", biop->count));
 #ifdef DEBUG_BUFIO_READ_RAW
 	{
@@ -78,9 +78,14 @@ bufio_getc(struct bufio_obj *biop) {
 	    putchar('\n');
 	}
 #endif
-	if (biop->count <= 0)
+	/*
+	 * NOTE! inetio read_raw returns -1 for EOF,
+	 * so _COULD_ loop here (ie; continue if count == 0)
+	 */
+	if (count <= 0)
 	    return -1;			/* EOF, or something like it */
 	biop->bp = biop->buffer;	/* reset buffer pointer */
+	biop->count = count;
     }
     biop->count--;
     return *biop->bp++ & 0xff;
@@ -182,10 +187,9 @@ bufio_clearerr(struct io_obj *iop) {
 static int
 bufio_close(struct io_obj *iop) {
     //struct bufio_obj *biop = (struct bufio_obj *) iop;
-    if (iop->linebuf) {
-	free(iop->linebuf);
-	iop->linebuf = NULL;
-    }
+    // NOTE! linebuf freed in io.c:ioo_close()
+    // child classes allocate & free bio.buffer (or not (memio))
+    fprintf(stderr, "%s io_close not overridden\n", iop->ops->io_name);
     return TRUE;
 }
 

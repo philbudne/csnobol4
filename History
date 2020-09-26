@@ -2,6 +2,13 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+9/26/2020:
+	bufio/ptyio cleanup:
+	include/bufio_obj.h: comments
+	lib/auxil/bufio_obj.c: read_raw == 0 no longer EOF
+	lib/win32/inetio_obj.c: read_raw return -1 on EOF
+	lib/win32/ptyio_obj.c: flush flags, free buffer
+
 9/25/2020:
 	configure: comments for debugging win32/ptyio
 	lib/auxil/bufio_obj.c: DEBUG_BUFIO_{READ_RAW,GETLINE}

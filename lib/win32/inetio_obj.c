@@ -52,6 +52,8 @@ inetio_read_raw(struct io_obj *iop, char *buf, size_t len) {
     struct inetio_obj *iiop = (struct inetio_obj *) iop;
     ssize_t ret = recv(iiop->s, buf, len, 0);
     //printf("inetio_read_raw %zd\n", ret);
+    if (ret == 0)			/* zero is socket EOF */
+	return -1;
     return ret;
 }
 
@@ -71,7 +73,10 @@ static int
 inetio_close(struct io_obj *iop) {
     struct inetio_obj *iiop = (struct inetio_obj *) iop;
 
-    SUPER.io_close(iop);		/* free buffer */
+    if (iop->bio.buffer) {
+	free(iop->bio.buffer);
+	iop->bio.buffer = NULL;
+    }
 
     /* ensure all data has been sent? does not block?? */
     shutdown(iiop->s, SD_BOTH);
