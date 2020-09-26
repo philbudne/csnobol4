@@ -2,10 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
-9/24/2020:
+9/25/2020:
 	configure: comments for debugging win32/ptyio
 	lib/auxil/bufio_obj.c: DEBUG_BUFIO_{READ_RAW,GETLINE}
 	lib/win32/ptyio_obj.c: working?
+	timing: look for smbios on Solaris
 
 9/24/2020:
 	lib/auxil/bufio_obj.c: fix memory corruption

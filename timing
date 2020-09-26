@@ -217,6 +217,15 @@ if [ "$UNAME" ]; then
 		echo ''
 		echo 'sunmodel:'
 		./sunmodel 2>&1
+
+		if [ -f /usr/sbin/smbios ]; then
+		    echo ''
+		    for x in BASEBOARD SYSTEM; do
+			echo "smbios $x:"
+			/usr/sbin/smbios -t SMB_TYPE_$x
+		    done
+		    echo 'end smbios'
+		fi
 		;;
 	esac
 else
