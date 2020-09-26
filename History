@@ -3,6 +3,9 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/26/2020:
+	timing: check for systeminfo.exe!
+
+9/26/2020:
 	bufio/ptyio cleanup:
 	include/bufio_obj.h: comments
 	lib/auxil/bufio_obj.c: read_raw == 0 no longer EOF
