@@ -43,13 +43,13 @@
  */
 
 #ifndef lint
-static char copyright[] =
+char copyright[] =
 "@(#) Copyright (c) 1989, 1993, 1994\n\
 	The Regents of the University of California.  All rights reserved.\n";
 #endif /* not lint */
 
 #ifndef lint
-static char sccsid[] = "@(#)tsort.c	8.3 (Berkeley) 5/4/95";
+char sccsid[] = "@(#)tsort.c	8.3 (Berkeley) 5/4/95";
 #endif /* not lint */
 
 #include <ctype.h>
@@ -404,7 +404,7 @@ remove_node(NODE *n) {
 
 /* look for the longest? cycle from node from to node to. */
 int
-find_cycle(NODE *from, NODE *to, int depth, int longest_len) {
+find_cycle(NODE *from, NODE *to, int longest_len, int depth) {
 	register NODE **np;
 	register int i, len;
 

@@ -54,7 +54,7 @@ char	**argv, *opts;
 	register int c;
 	register char *cp;
 
-	if(sp == 1)
+	if(sp == 1) {
 		if(optind >= argc ||
 		   argv[optind][0] != '-' || argv[optind][1] == '\0')
 			return(EOF);
@@ -62,8 +62,9 @@ char	**argv, *opts;
 			optind++;
 			return(EOF);
 		}
+	}
 	optopt = c = argv[optind][sp];
-	if(c == ':' || (cp=index(opts, c)) == NULL) {
+	if(c == ':' || (cp=strchr(opts, c)) == NULL) {
 		ERR(": illegal option -- ", c);
 		if(argv[optind][++sp] == '\0') {
 			optind++;
