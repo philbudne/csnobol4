@@ -95,10 +95,11 @@ char *snolib_vlocal;			/* BASE/VERSION/local */
 static int xflag;
 #endif /* NO_STATIC_VARS not defined */
 
+#ifndef HAVE_GETOPT_EXTERNS
 /* from getopt() */
 extern int optind;
 extern char *optarg;
-extern int getopt();			/* in unistd.h now? */
+#endif
 
 static void
 p( flag, str )

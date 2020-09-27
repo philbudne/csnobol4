@@ -219,11 +219,18 @@ extern int sleepf __P((real_t));
 extern int chk_break __P((int));
 
 #ifndef HAVE_CLOSEFROM
+/* from closefrom.c */
 extern void closefrom __P((int minfd));
 #endif
 #ifndef HAVE_GETDTABLESIZE
+/* from getdtablesize.c */
 extern int getdtablesize __P((void));
 #endif
 #ifndef HAVE_GETLINE
+/* from getline.c */
 extern ssize_t getline __P((char **bufp, size_t *lenp, FILE *fp));
+#endif
+#ifndef HAVE_GETOPT
+/* from getopt.c */
+extern int getopt __P((int argc, char **argv, char *opts));
 #endif
