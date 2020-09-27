@@ -110,8 +110,9 @@ SQLITE3=sqlite3
 endif
 
 DEPEND=depend.mingw
-# NOTE! snobol4 target forces "make depend"
-all:	cpuid.exe snobol4 mods
+
+all:	$(DEPEND)
+	$(MAKE) -f config/win32/mingw.mak snobol4.exe mods
 
 cpuid.exe: cpuid.c
 	$(CC) -o cpuid cpuid.c
@@ -122,10 +123,6 @@ mods:	snobol4.exe
 	    (cd modules/$$M; ../../snobol4 -N -I.. -I../.. -I../../snolib \
 		-I../../config/win32 setup.sno build); \
 	done
-
-# create depend file, and recurse to include it
-snobol4: $(DEPEND)
-	$(MAKE) -f config/win32/mingw.mak snobol4.exe
 
 snobol4.exe: always $(OBJ)
 	$(CC) -shared-libgcc -o snobol4 $(OBJ) $(INET_LIBS) $(LDFLAGS)
