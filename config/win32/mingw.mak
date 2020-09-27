@@ -45,7 +45,7 @@ ifdef PTYIO
 BUFIO_OBJ_O=bufio_obj.o
 PTYIO_OBJ_C=$(SRCDIR)lib/win32/ptyio_obj.c
 else
-PTYIO_OBJ_C=(SRCDIR)lib/dummy/ptyio_obj.c
+PTYIO_OBJ_C=$(SRCDIR)lib/dummy/ptyio_obj.c
 endif
 
 CFLAGS=-c $(OPT) -I$(SRCDIR)config/win32 -I$(SRCDIR)include -I$(SRCDIR). \
