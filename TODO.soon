@@ -1,18 +1,16 @@
 $Id$
 
+Add 1969(!) factor.sno to tests
+	other tests from DEC-10 and VAX SNOBOL?
+	arbitrary precision lib??
+
+Better Windows default directory??  ask on list???
+
 cygwin installs libsnobol4.a in /usr/local/lib/snobol4/
 	(not versioned)
 
 remove io_eof/io_clearerr (push Windoze ^C lossage down)?
 Add io_getfp method?
-
-Test compilation under gcc 10 under cygwin
-	complaints:
-		init.c: redeclaration of optind, optarg
-
-Use win32/ptyio_obj.c on cygwin (if includes have support)!
-
-See about building pure windows binaries under cygwin
 
 Remove "time" check from timing.sno???
 

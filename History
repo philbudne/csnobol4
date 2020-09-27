@@ -3,6 +3,9 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/26/2020:
+	modules/stat/funcs.sno: missing comment chars!!!!
+
+9/26/2020:
 	Make cygwin w/ gcc 10 happy:
 	configure: add HAVE_GETOPT[_EXTERNS]
 	include/lib.h: add getopt()

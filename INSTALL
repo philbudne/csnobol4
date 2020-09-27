@@ -420,8 +420,11 @@ The non-unix ports are less well tested.
 Windows
 -------
 
-The Windows port has been tested with Visual Studio 2019 (free
-Community Edition) on 64-bit Windows 10.
+The Windows port has been tested with Visual Studio 2019
+(free Community Edition) on 64-bit Windows 10.
+
+These instructions are for building on Windows.
+If you're installing binaries, see pkg/win32/README.win32
 
 In the VS installer, there should be a "Workloads" tab.  The only tool
 set needed is "Desktop development with C++".
@@ -447,7 +450,7 @@ and then
 
 NOTE: Not all DLL loadable code has been tested.
 
-To compile using MINGW (http://www.mingw.org):
+To compile a native Windows binary using MINGW (http://www.mingw.org):
 	make -f config/win32/mingw.mak
 
 To compile using Borland C (not tested in a long time, almost certainly broken):
@@ -460,7 +463,7 @@ DJGPP (http://www.delorie.com/djgpp/) is a free 32-bit C/C++ MS-DOS
 development system, for Intel 80386 (and higher) PCs running DOS based
 on GCC.  Burkhard Meissner has ported CSNOBOL4 to DJGPP.
 
-To compile using GNU make (not updated/tested recently):
+To compile using GNU make:
 
 	make -f config/djgpp/Makefile
 
@@ -470,12 +473,13 @@ external function loading, see the commented out lines in the Makefile.
 VMS
 ---
 
-VMS support has has not been tested recently. CSNOBOL4 has been run
-on VMS (VAX, Alpha, and IA64), config/vms/descrip.mms is an MMS
+VMS support has has not been tested in a long time. CSNOBOL4 has been
+run on VMS (VAX, Alpha, and IA64), config/vms/descrip.mms is an MMS
 description file, which can be used by typing:
 
 	MMS /DESCRIP=[.CONFIG.VMS]DESCRIP.MMS
 
+Some update will be required to get it to build!
 If using VAXC, /MACRO=(VAX_C=1) should be appended to the command line.
 If using an older version of Alpha DECC, try adding /MACRO=(DECC4=1)
 
