@@ -26,26 +26,26 @@ INET_AUX_SRC = $(SRCDIR)lib/win32/inetio_obj.c \
 BUFIO_OBJ_O=bufio_obj.o
 ifeq ($(WINSOCK),1)
 # wsock32 present on both Win95 and WinNT
-INET_C=lib/win32/inet.c
+INET_C=$(SRCDIR)lib/win32/inet.c
 INET_DEFS += -DHAVE_WINSOCK_H
 INET_O=inet.o
 INET_LIBS=-lwsock32
 else
-INET_C=lib/bsd/inet6.c
+INET_C=$(SRCDIR)lib/bsd/inet6.c
 INET_DEFS += -DHAVE_WINSOCK2_H
 INET_O=inet6.o
 INET_LIBS=-lws2_32
 endif
 else
 INET_O=inet.o
-INET_C=lib/dummy/inet.c
+INET_C=$(SRCDIR)lib/dummy/inet.c
 endif
 
 ifdef PTYIO
 BUFIO_OBJ_O=bufio_obj.o
-PTYIO_OBJ_C=lib/win32/ptyio_obj.c
+PTYIO_OBJ_C=$(SRCDIR)lib/win32/ptyio_obj.c
 else
-PTYIO_OBJ_C=lib/dummy/ptyio_obj.c
+PTYIO_OBJ_C=(SRCDIR)lib/dummy/ptyio_obj.c
 endif
 
 CFLAGS=-c $(OPT) -I$(SRCDIR)config/win32 -I$(SRCDIR)include -I$(SRCDIR). \
