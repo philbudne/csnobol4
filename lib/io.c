@@ -246,7 +246,7 @@ ioo_eof(struct io_obj *iop) {
     return FALSE;			/* treat as non-EOF I/O error */
 }
 
-#ifdef _MSC_VER
+#ifdef SIGINT_EOF_CHECK
 static void
 ioo_clearerr(struct io_obj *iop) {
     const struct io_ops *op;

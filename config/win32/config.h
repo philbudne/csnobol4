@@ -86,10 +86,12 @@
 /*
  * C90 & POSIX.1-2001:
  */
+#ifndef __MINGW32__ /* in mingw stdio.h! */
 #define HAVE_FSEEKO			/* now we do! */
 #define io_off_t __int64
 #define ftello(FP) _ftelli64(FP)
 #define fseeko(FP,OFF,WHENCE) _fseeki64(FP,OFF,WHENCE)
+#endif
 
 /****
  * for time module

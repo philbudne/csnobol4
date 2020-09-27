@@ -3,6 +3,11 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/26/2020:
+	mingw compile cleanup (under Linux!)
+	config/win32/config.h: wrap fseeko/ftello in infdef __MINGW32__
+	lib/io.c: use SIGINT_EOF_CHECK instead of _MSC_VER
+
+9/26/2020:
 	timing: check for systeminfo.exe!
 	modules/random/random.c: use GETPID_IN_PROCESS_H
 		expect getpid() to be available!!
