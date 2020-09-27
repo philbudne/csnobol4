@@ -3,6 +3,12 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/27/2020:
+	Remove old cygwin COM crockery
+	config/win32/config.h
+	modules/com/com.cpp
+	configure
+
+9/27/2020:
 	First pass at ANSIfication
 	Assumes all systems have string.h, stdlib.h
 	Too many files to name.

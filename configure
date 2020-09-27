@@ -1792,17 +1792,6 @@ EOF
   if [ "x$WITHOUT_COM" = x -a -f $INCDIR/w32api/objbase.h ]; then
     echo 'using Win32 COM support' 1>&2
     MODULES="$MODULES com"
-    if grep wcschr $INCDIR/wchar.h >/dev/null 2>&1; then
-	echo '#define USE_WCHAR_H'		>> $CONFIG_H
-    else
-	# XXX look in $INCDIR/w32api??
-	echo '#define NEED_WCSCHR'		>> $CONFIG_H
-    fi
-    if grep CoGetObject $INCDIR/w32api/objbase.h >/dev/null; then
-	echo '/* found CoGetObject in w32api/objbase.h */' >> $CONFIG_H
-    else
-	echo '#define NEED_COGETOBJECT'	>> $CONFIG_H
-    fi
 
     # -L/usr/lib/w32api needed on Windows 7 (thanks to Robert Shanley!)
     echo '	COM_LIBDIRS = "/usr/lib/w32api"' >> $CONFIG_SNO

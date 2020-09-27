@@ -18,44 +18,11 @@
 #define DEBUGF(X)
 #endif
 
+// compiles w/ VC 2019, cygwin64 3.1.7 9/2020
 #include <windows.h>
-
-#if defined(__MINGW32__) || defined(__CYGWIN__)
-// tested w/
-//	MINGW 2.95.3-6
-//	CygWIN CYGWIN_98-4.10 PC 1.3.3(0.46/3/2) 2001-09-12 23:54
-#include <ole2.h>
-#else
-// visual studio
-#define HAVE_I8
 #include <objbase.h>
 #include <oleauto.h>
-#endif
-
-#ifdef USE_WCHAR_H
 #include <wchar.h>
-#endif
-
-#ifdef NEED_COGETOBJECT
-WINOLEAPI CoGetObject(const LPWSTR name, BIND_OPTS *pbo, REFIID riid, void **ppv);
-#endif
-
-// needed w/ MINGW 2.95.3-6
-#ifndef V_I1
-#define V_I1(X) V_UNION(X,cVal)
-#endif
-#ifndef V_I8
-#define V_I8(X) V_UNION(X,llVal)
-#endif
-#ifndef V_UI1
-#define V_UI1(X) V_UNION(X,bVal)
-#endif
-#ifndef V_UI2
-#define V_UI2(X) V_UNION(X,uiVal)
-#endif
-#ifndef V_UI4
-#define V_UI4(X) V_UNION(X,ulVal)
-#endif
 
 #define LA_DISP(N) (LPDISPATCH)lookup_handle(&com_handles, LA_HANDLE(N))
 
@@ -70,18 +37,6 @@ extern "C"
 #include "handle.h"
 
 static handle_handle_t com_handles;
-
-#ifdef NEED_WCSCHR
-// for CYGWIN:
-WCHAR *
-wcschr(WCHAR *str, WCHAR ch)
-{
-    for (; *str; str++)
-	if (ch == *str)
-	    return str;
-    return 0;
-}
-#endif /* NEED_WCSCHR defined */
 
 // return a wide (OLE) string for an external function argument
 // must call freeolestring to release after use
@@ -196,14 +151,12 @@ descr_to_variant(struct descr *dp, VARIANTARG *vp)
     VariantInit(vp);
     switch (D_V(dp)) {
     case I:
-#ifdef HAVE_I8
 	if (sizeof(int_t) == 8) {
 	    V_VT(vp) = VT_I8;
 	    V_I8(vp) = D_A(dp);
 	    return true;
 	}
 	else
-#endif
 	{
 	    V_VT(vp) = VT_I4;
 	    V_I4(vp) = D_A(dp);

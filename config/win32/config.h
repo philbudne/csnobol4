@@ -153,7 +153,6 @@
 #elif defined(__GNUC__)			/* *** MINGW */
 
 #define OBJECT_EXT ".o"
-#define USE_WCHAR_H	  /* for com.cpp */
 #define SETUP_SYS "posix" /* !!! */
 /* from mingw.mak: CC, COPT, SO_LD, DL_LD */
 #define DL_CFLAGS ""
