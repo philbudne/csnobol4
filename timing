@@ -268,12 +268,13 @@ if [ -x /usr/sbin/system_profiler ]; then
 	echo END_SYSTEM_PROFILER
 fi
 
-# cygwin, mingw
+# cygwin (& mingw?)
 for DIR in /cygdrive/c /c; do
-    if [ -x $DIR/systeminfo.exe ]; then
+    FULL=$DIR/windows/system32/systeminfo.exe
+    if [ -x $FULL ]; then
 	echo ''
-	echo $DIR/systeminfo.exe:
-	$DIR/systeminfo.exe | egrep 'OS|System [MT]'
+	echo $FULL:
+	$FULL 2>/dev/null | egrep 'OS|System [MT]'
 	break
     fi
 done
