@@ -3,6 +3,12 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/27/2020:
+	Clobber // comment by compiling with -stc=c90
+	lib/bsd/inet6.c
+	include/io_obj.h
+	lib/bsd/ptyio_obj.c
+
+9/27/2020:
 	Remove old cygwin COM crockery
 	config/win32/config.h
 	modules/com/com.cpp

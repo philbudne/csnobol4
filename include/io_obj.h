@@ -137,7 +137,7 @@ struct io_obj *io_alloc(int size, const struct io_ops *ops, int flags);
 /* flagp: INET_xxx flags (in inet.h) */
 int inet_parse(char *path, char **hostp, char **servicep, int *flagp);
 
-// return value for _open routines (NULL means open attempted and failed)
+/* return value for _open routines (NULL means open attempted and failed) */
 extern struct io_obj nomatch;
 #define NOMATCH &nomatch
 

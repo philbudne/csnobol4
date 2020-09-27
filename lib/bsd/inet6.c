@@ -9,8 +9,6 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-//#include <stdlib.h>			/* atoi() */
-
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>			/* close() */
 #endif /* HAVE_UNISTD_H defined */

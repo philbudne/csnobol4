@@ -50,7 +50,7 @@ ptyio_close(struct io_obj *iop) {
 
     ret = fclose(piop->sio.f) == 0;
 
-    // issue kill() if needed????
+    /* issue kill() if needed???? */
     do {
 	pid = waitpid(piop->pid, NULL, 0);
     } while (pid == -1 && errno == EINTR);
