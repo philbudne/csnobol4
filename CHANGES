@@ -2,6 +2,21 @@ $Id$
 
 For detailed revision history see History file
 
+Changes since 2.1 release;
+=========================
+	I/O code refactored.
+	Text input no longer limited by "record length" (K flag obsolete).
+	Compilation now requires an ANSI/ISO (C89/C90) C compiler.
+	Fix "stat" module.
+	All output unbuffered with -U option,
+		or SNOBOL4UNBUFFERED environment variable non-null.
+	Portability fixes.
+	Windows:
+		Experimental support for "Pseudo Consoles" on Windows 10
+		Can be built with Winsock2 support
+			(available in Win98 and NT 4.0) for IPv6 support.
+		Fix test for g++ compiler under cygwin
+
 Changes since 2.0 release;
 =========================
 	Debugger improvements:

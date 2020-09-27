@@ -3,6 +3,9 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/27/2020:
+	CHANGES: update with changes since 2.1.6
+
+9/27/2020:
 	configure: install cygwin libsnobol4.a in a versioned dir
 
 9/27/2020:
