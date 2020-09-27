@@ -12,9 +12,12 @@ OPT=-O3 -g
 
 # Winsock version: define as 1 or 2.
 # comment out for no inet support
+# Winsock v1 available on Win95 and NT 3.5
+# Winsock v2 available on Win98 and NT 4.0
 WINSOCK=2
 
-# not yet in MINGW includes?
+# not in mingw-w64-common 7.0.0-2 headers
+# need STARTUPINFOEX, HPCON, PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE
 #PTYIO=1
 
 ################################################################

@@ -10,6 +10,8 @@
 ################ settings
 
 # 1, 2 or undefined for no internet support
+# Winsock v1 available on Win95 and NT 3.5
+# Winsock v2 available on Win98 and NT 4.0
 WINSOCK=2
 
 # experimental Windows Pseudo Console support
