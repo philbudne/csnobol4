@@ -25,10 +25,7 @@ static char strbuf[32];			/* 2^64 is only 21 chars! */
 #endif /* NO_STATIC_VARS not defined */
 
 void
-intspc(sp, dp)
-    struct spec *sp;
-    struct descr *dp;
-{
+intspc(struct spec *sp, struct descr *dp) {
     char *bp;
     int_t x;
     unsigned INT_T u;

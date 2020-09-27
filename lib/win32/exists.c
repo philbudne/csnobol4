@@ -13,17 +13,13 @@
 #include "lib.h"
 
 int
-exists(path)
-    char *path;
-{
+exists(char *path) {
     // XXX convert UTF-8 to UCS-2/UTF-16???
     return GetFileAttributesA(path) != INVALID_FILE_ATTRIBUTES;
 }
 
 int
-isdir(path)
-    char *path;
-{
+isdir(char *path) {
     // XXX convert UTF-8 to UCS-2/UTF-16???
     DWORD attr = GetFileAttributesA(path);
 
@@ -32,9 +28,7 @@ isdir(path)
 }
 
 int
-abspath(path)
-    char *path;
-{
+abspath(char *path) {
 #define BS DIR_SEP[0]
     return (*path == '/' ||
 	    *path == BS ||

@@ -36,9 +36,7 @@ static struct save *list;
 #endif /* NO_STATIC_VARS not defined */
 
 int
-fisatty(f)
-    FILE *f;
-{
+fisatty(FILE *f) {
     DWORD flags;
     HANDLE h;
 
@@ -57,10 +55,7 @@ fisatty(f)
 }
 
 void
-tty_mode( fp, cbreak, noecho, recl )
-    FILE *fp;
-    int cbreak, noecho, recl;
-{
+tty_mode(FILE *fp, int cbreak, int noecho, int recl) {
     DWORD new;
     HANDLE h;
     struct save *sp;
@@ -116,9 +111,7 @@ tty_mode( fp, cbreak, noecho, recl )
  *	(ie; in use by a child proc, or has been dup'ed)
  */
 static void
-tty_close_handle(h)
-    HANDLE h;
-{
+tty_close_handle(HANDLE h) {
     struct save *sp, *pp;
 
     for (pp = NULL, sp = list; sp; pp = sp, sp = sp->next) {
@@ -137,23 +130,14 @@ tty_close_handle(h)
 
 /* advisory notice */
 void
-tty_close(f)
-    FILE *f;
-{
+tty_close(FILE *f) {
     tty_close_handle((HANDLE)_get_osfhandle(fileno(f)));
 }
 
 /* called for raw tty reads if TTY_READ_RAW defined */
 int
-tty_read(f, buf, len, raw, noecho, keepeol, fname)
-    FILE *f;
-    char *buf;
-    int len;
-    int raw;
-    int noecho;
-    int keepeol;
-    char *fname;
-{
+tty_read(FILE *f, char *buf, int len,
+	 int raw, int noecho, int keepeol, char *fname) {
     HANDLE h;
 
     if (!raw)

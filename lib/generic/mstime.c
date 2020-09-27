@@ -24,7 +24,7 @@
 #endif /* HZ not defined */
 
 real_t
-mstime() {
+mstime(void) {
     struct tms tms;
 
     times(&tms);

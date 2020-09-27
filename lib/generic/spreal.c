@@ -31,10 +31,7 @@
 #define EXTRA 2				/* NUL + terminator */
 
 int
-spreal(dp, sp)
-    struct descr *dp;
-    struct spec *sp;
-{
+spreal(struct descr *dp, struct spec *sp) {
     char buffer[64];			/* ??? */
     int len;
     char *cp;

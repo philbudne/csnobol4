@@ -31,10 +31,7 @@
 #define EXTRA 2				/* NUL + terminator */
 
 int
-spcint(dp, sp)
-    struct descr *dp;
-    struct spec *sp;
-{
+spcint(struct descr *dp, struct spec *sp) {
     char buffer[64];			/* ??? */
     int_t len;
     char *cp;

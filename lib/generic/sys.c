@@ -14,15 +14,11 @@
 #include "str.h"
 
 void
-hwname(cp)
-    char *cp;
-{
+hwname(char *cp) {
     strcpy(cp, HWNAME);
 }
 
 void
-osname(cp)
-    char *cp;
-{
+osname(char *cp) {
     strcpy(cp, OSNAME);
 }

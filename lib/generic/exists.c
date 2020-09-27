@@ -13,27 +13,21 @@
 #include "lib.h"
 
 int
-exists(path)
-    char *path;
-{
+exists(char *path) {
     struct stat st;
 
     return stat(path, &st) >= 0;
 }
 
 int
-isdir(path)
-    char *path;
-{
+isdir(char *path) {
     struct stat st;
 
     return stat(path, &st) >= 0 && S_ISDIR(st.st_mode);
 }
 
 int
-abspath(path)
-    char *path;
-{
+abspath(char *path) {
 #ifdef ABSPATH
     return ABSPATH(path);
 #else

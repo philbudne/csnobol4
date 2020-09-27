@@ -40,9 +40,7 @@ static struct func *funcs;
 #endif /* NO_STATIC_VARS not defined */
 
 loadable_func_t *
-os_load(fname, lname)
-     char *fname, *lname;
-{
+os_load(char *fname, char *lname) {
     HMODULE handle;
     loadable_func_t *entry;		/* function entry point */
     struct func *fp; 
@@ -79,9 +77,7 @@ os_load(fname, lname)
 }
 
 void
-unload(sp)
-    struct spec *sp;
-{
+unload(struct spec *sp) {
     struct func *fp, *pp;
     char name[1024];			/* XXX */
 

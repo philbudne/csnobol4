@@ -20,7 +20,7 @@
  */
 
 real_t
-mstime() {
+mstime(void) {
     static clockid_t clockid;
     static int status = 0;
     struct timespec ts;

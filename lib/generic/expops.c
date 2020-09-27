@@ -26,9 +26,7 @@
 # endif /* NO_STATIC_VARS defined */
 
 int
-expint(result,x,y)
-    struct descr *result, *x, *y;
-{
+expint(struct descr *result, struct descr *x, struct descr *y) {
     int_t ix, iy;
     int_t p;
 
@@ -75,9 +73,7 @@ expint(result,x,y)
 }
 
 int
-exreal(result,x,y)
-    struct descr *result, *x, *y;
-{
+exreal(struct descr *result, struct descr *x, struct descr *y) {
     real_t r;
 
     /* XXX use repeated mutiplies? */

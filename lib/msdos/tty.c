@@ -17,9 +17,7 @@
 #include "lib.h"
 
 int
-fisatty(f)
-    FILE *f;
-{
+fisatty(FILE *f) {
     /*
      * XXX we can only do tty_read() on keyboard so this better not
      * return true for opens on COM: devices. If so replace "isatty"
@@ -29,41 +27,27 @@ fisatty(f)
 }
 
 void
-tty_save()
-{
+tty_save(void) {
 }
 
 void
-tty_restore()
-{
+tty_restore(void) {
 }
 
 void
-tty_mode( fp, cbreak, noecho, recl )
-    FILE *fp;
-    int cbreak, noecho, recl;
-{
+tty_mode(FILE *fp, int cbreak, int noecho, int recl) {
 }
 
 /* advisory notice */
 void
-tty_close(f)
-    FILE *f;
-{
+tty_close(FILE *f) {
     /* should not be called (fisatty returns FALSE) */
 }
 
 /* called for raw tty reads if TTY_READ_RAW defined */
 int
-tty_read(f, buf, len, raw, noecho, keepeol, fname)
-    FILE *f;
-    char *buf;
-    int len;
-    int raw;
-    int noecho;
-    int keepeol;
-    char *fname;
-{
+tty_read(FILE *f, char *buf, int len,
+	 int raw, int noecho, int keepeol, char *fname) {
     int cc;
 
     if (!raw)				/* paranoia */

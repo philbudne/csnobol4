@@ -18,7 +18,6 @@
 #include "lib.h"
 
 void
-proc_suspend()
-{
+proc_suspend(void) {
     kill(getpid(), SIGSTOP);		/* use 0 for process group? */
 }

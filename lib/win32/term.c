@@ -16,6 +16,6 @@
  */
 
 FILE *
-term_input() {
+term_input(void) {
     return fopen("CONIN$", "r");
 }

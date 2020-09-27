@@ -9,6 +9,7 @@
 #endif /* HAVE_UNISTD_H defined */
 
 #include <stdio.h>
+
 #include "h.h"
 #include "snotypes.h"
 #include "lib.h"
@@ -22,9 +23,7 @@
 #endif /* SH_PATH2 not defined */
 
 void
-execute(buf)
-    char *buf;
-{
+execute(char *) {
     execl(SH_PATH, "sh", "-c", buf, NULL); /* XXX SH_NAME? */
 
     /* must not have found shell; try alternate */

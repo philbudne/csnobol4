@@ -29,8 +29,7 @@
 #define HIGHMS 429496.7296	 /* (2**32)/TICKSPERMS (4.97 days!) */
 
 real_t
-mstime()
-{
+mstime(void) {
     FILETIME start, texit, kernel, user;
 
     /*

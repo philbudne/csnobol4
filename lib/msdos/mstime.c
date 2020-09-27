@@ -19,7 +19,7 @@ static long start_time;
  */
 
 real_t
-mstime() {
+mstime(void) {
     clock_t t;
 
     if (first_time == -1) {

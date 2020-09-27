@@ -28,10 +28,7 @@
 #endif /* NO_STATIC_VARS defined */
 
 int
-spcint(dp, sp)
-    struct descr *dp;
-    struct spec *sp;
-{
+spcint(struct descr *dp, struct spec *sp) {
     int_t len;
     char *cp;
     int_t temp;
