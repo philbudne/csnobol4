@@ -1,5 +1,8 @@
 $Id$
 
+test2/char2.sno fails (newline returned on line I/O)
+	mashed flags??
+
 remove io_eof/io_clearerr (push Windoze ^C lossage down)?
 Add io_getfp method?
 

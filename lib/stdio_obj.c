@@ -141,7 +141,7 @@ stdio_getline(struct io_obj *iop) {
 	return tty_read(siop->f, iop->linebuf, iop->linebufsize,
 			FALSE,	/* "raw" */
 			(iop->flags & FL_NOECHO) != 0, /* "noecho" */
-			(iop->flags & FL_EOL) == 0, /* "keepeol" */
+			(iop->flags & FL_KEEPEOL) != 0, /* "keepeol" */
 			iop->fname);
     }
 #endif /* TTY_READ_COOKED defined */

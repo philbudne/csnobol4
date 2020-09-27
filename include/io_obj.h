@@ -22,7 +22,7 @@ struct io_obj {
  * or the same file descriptors (via the /dev/fd/N magic path)
  * on different stdio streams and have different behaviors.
  */
-#define FL_EOL		01		/* strip EOL on input, add on output */
+#define FL_KEEPEOL	01		/* keep EOL on input, none on output */
 #define FL_BINARY	02		/* binary: no EOL; use recl */
 #define FL_UPDATE	04		/* update: read+write */
 #define FL_UNBUF	010		/* unbuffered write */

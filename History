@@ -3,6 +3,10 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/26/2020:
+	lib/io.c: FL_KEEPEOL, fix io_mkfile2 to preseve flags.
+	include/io_obj.h, lib/io.c, lib/stdio_obj.c: FL_KEEPEOL
+
+9/26/2020:
 	doc/snobol4io.1.pea: update for 2.2, add tcp/udp flags.
 
 9/26/2020:

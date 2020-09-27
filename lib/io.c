@@ -310,7 +310,6 @@ io_newfile( path )
 
     bzero( (char *)fp, sizeof (struct file) );
     strcpy(fp->fname,path);
-    fp->flags = FL_EOL;			/* normal */
     return fp;
 }
 
@@ -561,8 +560,8 @@ io_mkfile2( unit, f, fname, flags )
     fp = io_newfile(fname);
     if (fp == NULL)
 	return FALSE;
-    fp->iop = stdio_wrap(fp->fname, f, 0, NULL, flags);
     fp->flags |= flags;
+    fp->iop = stdio_wrap(fp->fname, f, 0, NULL, fp->flags);
     io_setfile(unit, fp);
     return TRUE;
 }
@@ -819,7 +818,7 @@ io_print_str(fp, cp, len, needfill, eol)
 
     /* XXX check ret first? */
 
-    if (ret && eol && (fp->flags & FL_EOL))
+    if (ret && eol && !(fp->flags & FL_KEEPEOL))
 	ret = io_write(fp, "\n", 1);
 
 #ifdef NO_UNBUF_RW
@@ -977,7 +976,7 @@ io_read( dp, sp )			/* STREAD */
 	    len = ioo_getline(iop);
 	    if (len > 0) {
 		/* if normal EOL processing, discard newline */
-		if ((iop->flags & FL_EOL) && iop->linebuf[len-1] == '\n') {
+		if (!(iop->flags & FL_KEEPEOL) && iop->linebuf[len-1] == '\n') {
 		    len--;
 		    if (len && iop->linebuf[len-1] == '\r')
 			len--;
@@ -1230,15 +1229,13 @@ io_options( op, rp, fp )
 
 	case 'B':			/* SITBOL/SNOBOL4+: binary */
 	case 'b':
-	    flags |= FL_BINARY;
-	    flags &= ~(FL_EOL|FL_BREAK);
+	    flags |= FL_BINARY|FL_KEEPEOL;
 	    op++;
 	    break;
 
 	case 'C':			/* SITBOL/SPITBOL: character */
 	case 'c':
-	    flags |= FL_BINARY;
-	    flags &= ~(FL_EOL|FL_BREAK);
+	    flags |= FL_BINARY|FL_KEEPEOL;
 #if 0
 	    if (recl)			/* already have recl? */
 		return FALSE;		/* fail */
@@ -1262,8 +1259,7 @@ io_options( op, rp, fp )
 
 	case 'T':			/* SITBOL: "terminal" (no EOL) */
 	case 't':
-	    flags &= ~FL_EOL;
-	    flags |= FL_UNBUF;		/* force prompt output */
+	    flags |= FL_UNBUF|FL_KEEPEOL; /* force prompt output */
 	    op++;
 	    break;
 
