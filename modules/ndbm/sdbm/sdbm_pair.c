@@ -29,7 +29,7 @@
 /* 
  * forward 
  */
-static int seepair proto((char *, int, char *, int));
+static int seepair(char *, int, char *, int);
 
 /*
  * page format:

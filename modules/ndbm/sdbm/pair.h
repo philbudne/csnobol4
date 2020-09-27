@@ -1,10 +1,10 @@
-extern int fitpair proto((char *, int));
-extern void  putpair proto((char *, datum, datum));
-extern datum	getpair proto((char *, datum));
-extern int  delpair proto((char *, datum));
-extern int  chkpage proto((char *));
-extern datum getnkey proto((char *, int));
-extern void splpage proto((char *, char *, long));
+extern int fitpair(char *, int);
+extern void  putpair(char *, datum, datum);
+extern datum	getpair(char *, datum);
+extern int  delpair(char *, datum);
+extern int  chkpage(char *);
+extern datum getnkey(char *, int);
+extern void splpage(char *, char *, long);
 #ifdef SEEDUPS
-extern int duppair proto((char *, datum));
+extern int duppair(char *, datum);
 #endif
