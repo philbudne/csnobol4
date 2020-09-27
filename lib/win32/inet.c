@@ -16,6 +16,7 @@
 #include "lib.h"
 #include "inet.h"			/* {tcp,udp}_socket */
 #include "str.h"			/* bcopy */
+#include "bindresvport.h"
 
 /*
  * fcntl.h and io.h included for borland BCC32 v5.5
@@ -83,7 +84,7 @@ inet_socket( host, service, port, flags, type )
 #define TRYOPT(FLAG,LAYER,OPT) \
 	((flags & FLAG) && setsockopt(s,LAYER,OPT,(const void *)&true,sizeof(true)) < 0)
 
-    if ((flags & INET_PRIV) && bindresvport(s) < 0 ||
+    if (((flags & INET_PRIV) && bindresvport(s, &sin) < 0) ||
 	TRYOPT(INET_BROADCAST,SOL_SOCKET,SO_BROADCAST) ||
 	TRYOPT(INET_REUSEADDR,SOL_SOCKET,SO_REUSEADDR) ||
 	TRYOPT(INET_DONTROUTE,SOL_SOCKET,SO_DONTROUTE) ||

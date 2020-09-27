@@ -20,18 +20,20 @@ WINSOCK=2
 
 ifdef WINSOCK
 INET_DEFS=-DINET_IO
-INET_O=inetio_obj.o bindresvport.o
+INET_AUX=inetio_obj.o bindresvport.o
+INET_AUX_SRC = $(SRCDIR)lib/win32/inetio_obj.c \
+	$(SRCDIR)lib/auxil/bindresvport.c
 BUFIO_OBJ_O=bufio_obj.o
 ifeq ($(WINSOCK),1)
 # wsock32 present on both Win95 and WinNT
 INET_C=lib/win32/inet.c
 INET_DEFS += -DHAVE_WINSOCK_H
-INET_O += inet.o
+INET_O=inet.o
 INET_LIBS=-lwsock32
 else
 INET_C=lib/bsd/inet6.c
 INET_DEFS += -DHAVE_WINSOCK2_H
-INET_O += inet6.o
+INET_O=inet6.o
 INET_LIBS=-lws2_32
 endif
 else
@@ -52,8 +54,8 @@ SNOBOL4_CFLAGS=$(CFLAGS) -Wno-return-type -Wno-switch
 
 LDFLAGS=-Wl,--out-implib,libsnobol4.a
 
-OBJ=	$(BUFIO_OBJ_O) $(INET_O) atan.o bal.o break.o chop.o \
-	cos.o data.o data_init.o date.o delete.o dump.o \
+OBJ=	$(BUFIO_OBJ_O) $(INET_O) $(INET_AUX) atan.o bal.o break.o \
+	chop.o cos.o data.o data_init.o date.o delete.o dump.o \
 	dynamic.o endex.o environ.o execute.o exists.o \
 	exit.o exp.o expops.o file.o findunit.o getline.o getopt.o \
 	getstring.o handle.o hash.o host.o init.o intspc.o \
@@ -64,13 +66,49 @@ OBJ=	$(BUFIO_OBJ_O) $(INET_O) atan.o bal.o break.o chop.o \
 	str.o stream.o syn.o sys.o tan.o term.o top.o tree.o \
 	tty.o
 
+SRC=	$(INET_AUX_SRC) $(INET_C) $(PTYIO_OBJ_C) $(SRCDIR)$(INET_C) \
+	$(SRCDIR)$(PTYIO_OBJ_C) $(SRCDIR)data.c $(SRCDIR)data_init.c \
+	$(SRCDIR)isnobol4.c $(SRCDIR)lib/ansi/spcint.c \
+	$(SRCDIR)lib/ansi/spreal.c $(SRCDIR)lib/auxil/bcopy.c \
+	$(SRCDIR)lib/auxil/bzero.c \
+	$(SRCDIR)lib/auxil/getline.c $(SRCDIR)lib/auxil/getopt.c \
+	$(SRCDIR)lib/bal.c $(SRCDIR)lib/break.c $(SRCDIR)lib/date.c \
+	$(SRCDIR)lib/dummy/execute.c $(SRCDIR)lib/dump.c \
+	$(SRCDIR)lib/endex.c $(SRCDIR)lib/generic/dynamic.c \
+	$(SRCDIR)lib/generic/expops.c $(SRCDIR)lib/generic/intspc.c \
+	$(SRCDIR)lib/hash.c $(SRCDIR)lib/init.c $(SRCDIR)lib/io.c \
+	$(SRCDIR)lib/lexcmp.c $(SRCDIR)lib/loadx.c \
+	$(SRCDIR)lib/ordvst.c $(SRCDIR)lib/pair.c $(SRCDIR)lib/pat.c \
+	$(SRCDIR)lib/pml.c $(SRCDIR)lib/realst.c \
+	$(SRCDIR)lib/replace.c $(SRCDIR)lib/snolib/atan.c \
+	$(SRCDIR)lib/snolib/chop.c $(SRCDIR)lib/snolib/cos.c \
+	$(SRCDIR)lib/snolib/delete.c $(SRCDIR)lib/snolib/environ.c \
+	$(SRCDIR)lib/snolib/exit.c $(SRCDIR)lib/snolib/exp.c \
+	$(SRCDIR)lib/snolib/file.c $(SRCDIR)lib/snolib/findunit.c \
+	$(SRCDIR)lib/snolib/getstring.c $(SRCDIR)lib/snolib/handle.c \
+	$(SRCDIR)lib/snolib/host.c $(SRCDIR)lib/snolib/log.c \
+	$(SRCDIR)lib/snolib/ord.c $(SRCDIR)lib/snolib/rename.c \
+	$(SRCDIR)lib/snolib/retstring.c $(SRCDIR)lib/snolib/sin.c \
+	$(SRCDIR)lib/snolib/sqrt.c $(SRCDIR)lib/snolib/sset.c \
+	$(SRCDIR)lib/snolib/tan.c $(SRCDIR)lib/stdio_obj.c \
+	$(SRCDIR)lib/str.c $(SRCDIR)lib/stream.c $(SRCDIR)lib/top.c \
+	$(SRCDIR)lib/tree.c $(SRCDIR)lib/win32/exists.c \
+	$(SRCDIR)lib/win32/load.c $(SRCDIR)lib/win32/mstime.c \
+	$(SRCDIR)lib/win32/osopen.c $(SRCDIR)lib/win32/sys.c \
+	$(SRCDIR)lib/win32/term.c $(SRCDIR)lib/win32/tty.c \
+	$(SRCDIR)main.c $(SRCDIR)syn.c
+
+ifdef BUFIO_OBJ_O
+SRC += $(SRCDIR)lib/auxil/bufio_obj.c
+endif
 
 # requires amalgamation sqlite.[ch] in modules/sqlite3:
 ifneq (,$(wildcard modules/sqlite3/sqlite3.[ch]))
 SQLITE3=sqlite3
 endif
 
-all:	cpuid.exe snobol4.exe mods
+# NOTE! snobol4 target forces "make depend"
+all:	cpuid.exe snobol4 mods
 
 cpuid.exe: cpuid.c
 	$(CC) -o cpuid cpuid.c
@@ -81,6 +119,10 @@ mods:	snobol4.exe
 	    (cd modules/$$M; ../../snobol4 -N -I.. -I../.. -I../../snolib \
 		-I../../config/win32 setup.sno build); \
 	done
+
+# create depend file, and recurse to include it
+snobol4: depend
+	$(MAKE) -f config/win32/mingw.mak snobol4.exe
 
 snobol4.exe: always $(OBJ)
 	$(CC) -shared-libgcc -o snobol4 $(OBJ) $(INET_LIBS) $(LDFLAGS)
@@ -217,15 +259,12 @@ expops.o: $(SRCDIR)lib/generic/expops.c
 intspc.o: $(SRCDIR)lib/generic/intspc.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/generic/intspc.c
 
-################ bsd!!
+################ win32 or bsd!!
 
-inet6.o: $(SRCDIR)lib/bsd/inet6.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib/bsd/inet6.c
+$(INET_O): $(INET_C)
+	$(CC) $(CFLAGS) $(INET_C)
 
 ################ win32!
-
-inet.o:	$(SRCDIR)$(INET_C)
-	$(CC) $(CFLAGS) $(SRCDIR)$(INET_C)
 
 inetio_obj.o:	$(SRCDIR)lib/win32/inetio_obj.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/win32/inetio_obj.c
@@ -312,3 +351,18 @@ sset.o:	$(SRCDIR)lib/snolib/sset.c
 
 tan.o:	$(SRCDIR)lib/snolib/tan.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/tan.c
+
+################ housekeeping
+
+clean:
+	-rm -f *.o *.exe
+
+depend:
+	@echo Depending...
+	-$(CC) -MM -MG $(CFLAGS) $(SRC) > depend.tmp
+	mv depend.tmp depend
+
+ifneq ($(wildcard depend),)
+include depend
+endif
+

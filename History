@@ -4,11 +4,12 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/26/2020:
 	mingw compile cleanup (under Linux!)
-	config/win32/mingw.mak: enable warnings
+	config/win32/mingw.mak: enable warnings, add depend, clean
 	config/win32/config.h: wrap fseeko/ftello in infdef __MINGW32__
 		add HAVE_STRFTIME
 	lib/io.c: use SIGINT_EOF_CHECK instead of _MSC_VER
 	lib/win32/sys.c: quiet DWORD formatting complaints
+	lib/win32/inet.c: caught bindresvport usage error
 
 9/26/2020:
 	timing: check for systeminfo.exe!
