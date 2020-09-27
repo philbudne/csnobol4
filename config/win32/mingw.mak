@@ -111,6 +111,7 @@ endif
 
 DEPEND=depend.mingw
 
+# make DEPEND file (once) and recurse
 all:	$(DEPEND)
 	$(MAKE) -f config/win32/mingw.mak snobol4.exe mods
 
