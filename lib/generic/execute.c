@@ -23,7 +23,7 @@
 #endif /* SH_PATH2 not defined */
 
 void
-execute(char *) {
+execute(char *buf) {
     execl(SH_PATH, "sh", "-c", buf, NULL); /* XXX SH_NAME? */
 
     /* must not have found shell; try alternate */
