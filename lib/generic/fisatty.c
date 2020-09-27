@@ -21,8 +21,6 @@
 #include "lib.h"
 
 int
-fisatty(f)
-    FILE *f;
-{
+fisatty(FILE *f) {
     return isatty(fileno(f));
 }
