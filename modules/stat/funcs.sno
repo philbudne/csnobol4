@@ -25,7 +25,7 @@
 **B<'s'> for a local (Unix) domain socket,
 **B<'w'> for a whiteout,
 **B<'?'> for none of the above.
-I<(new in CSNOBOL4 2.1)>
+**I<(new in CSNOBOL4 2.1)>
 **=item B<ST_TYPE>
 **Is an B<INTEGER> identifiying the file type
 **(ordinal value of ST_TYPE_STR result, for backwards compatibility).
