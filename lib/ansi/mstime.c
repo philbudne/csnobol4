@@ -24,7 +24,7 @@
 #endif /* CLK_TCK not defined */
 
 real_t
-mstime() {
+mstime(void) {
     clock_t t;
     int ticks;
 
