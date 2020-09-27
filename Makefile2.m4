@@ -61,6 +61,8 @@ SNOBOL4=isnobol4
 # default flags for install of binaries:
 INSTALL_BIN_FLAGS=-s
 
+all:	build_all timing.out
+
 ########
 # default lib source files
 
@@ -243,8 +245,6 @@ GENERATED_DOCS=	$(GENERATED_DOCS_DOCDIR)
 # link, regression test & timing
 
 .PRECIOUS: $(SNOBOL4).o data_init.o snobol4
-
-all:	build_all timing.out
 
 BUILD_ALL=sdb snobol4 snopea docs
 build_all: $(BUILD_ALL)
