@@ -1276,15 +1276,15 @@ fi
 # doesn't include them, but avoid compiling our own if system version
 # available).
 
-# cygwin gcc10 unhappy with externs
 if config/check unistd.h 'int x = getopt(argc, argv, "t"), y=optind'; then
-    echo 'using system provided getopt() function w/o externs' 1>&2
+    # cygwin gcc10 unhappy with externs. Only check POSIX location.
+    echo 'using system provided getopt() function' 1>&2
     echo '#define HAVE_GETOPT'			>> $CONFIG_H
     echo '#define HAVE_GETOPT_EXTERNS'		>> $CONFIG_H
 elif config/check stdio.h 'getopt(argc, argv, "")' || \
    config/check stdlib.h 'getopt(argc, argv, "")' || \
    config/check unistd.h 'getopt(argc, argv, "")'; then
-    echo 'using system provided getopt() function' 1>&2
+    echo 'using system provided getopt() function w/ externs' 1>&2
     echo '#define HAVE_GETOPT'			>> $CONFIG_H
 else
     # may not be needed, but should compile without error!
