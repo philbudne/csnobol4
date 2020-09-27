@@ -3,6 +3,9 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/26/2020:
+	doc/snobol4io.1.pea: update for 2.2, add tcp/udp flags.
+
+9/26/2020:
 	mingw compile cleanup (under Linux!)
 	config/win32/mingw.mak: enable warnings, add depend, clean
 	config/win32/config.h: wrap fseeko/ftello in ifndef __MINGW32__
