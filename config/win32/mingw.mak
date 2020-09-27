@@ -46,8 +46,9 @@ else
 PTYIO_OBJ_C=lib/dummy/ptyio_obj.c
 endif
 
-CFLAGS=	-c $(OPT) -I$(SRCDIR)config/win32 -I$(SRCDIR)include -I$(SRCDIR). \
-	-DHAVE_CONFIG_H $(INET_DEFS)
+CFLAGS=-c $(OPT) -I$(SRCDIR)config/win32 -I$(SRCDIR)include -I$(SRCDIR). \
+	-DHAVE_CONFIG_H $(INET_DEFS) -Wall
+SNOBOL4_CFLAGS=$(CFLAGS) -Wno-return-type -Wno-switch
 
 LDFLAGS=-Wl,--out-implib,libsnobol4.a
 
@@ -95,7 +96,7 @@ data_init.o: $(SRCDIR)data_init.c
 	$(CC) $(CFLAGS) $(SRCDIR)data_init.c
 
 isnobol4.o: $(SRCDIR)isnobol4.c
-	$(CC) $(CFLAGS) $(SRCDIR)isnobol4.c
+	$(CC) $(SNOBOL4_CFLAGS) $(SRCDIR)isnobol4.c
 
 main.o:	$(SRCDIR)main.c
 	$(CC) $(CFLAGS) $(SRCDIR)main.c

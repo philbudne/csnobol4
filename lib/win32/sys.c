@@ -227,14 +227,14 @@ osname(cp)
 	break;
 
     default:
-	sprintf(osname, "Win#%d", osv.dwPlatformId);
+	sprintf(osname, "Win#%d", (int)osv.dwPlatformId);
 	os = osname;
 	vnum = 1;
 	break;
     } // dwPlatformId
 
     if (vnum) {
-	sprintf(cp, "%s %d.%d", os, osv.dwMajorVersion, osv.dwMinorVersion);
+	sprintf(cp, "%s %d.%d", os, (int)osv.dwMajorVersion, (int)osv.dwMinorVersion);
 	if (build) {
 	    cp += strlen(cp);
 	    sprintf(cp, ".%d", build);
