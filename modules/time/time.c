@@ -8,6 +8,9 @@
 #define _XOPEN_SOURCE			/* glibc: enable strptime() */
 #define _BSD_SOURCE			/* glibc: keep tm_gmtoff */
 #define _DEFAULT_SOURCE	/* replaces above in glibc 2.20, quashes warnings */
+#elif defined(__CYGWIN__)
+#define _XOPEN_SOURCE			/* cygwin: enable strptime() */
+#define __TM_GMTOFF tm_gmtoff		/* cygwin: add tm_gmtoff! */
 #endif
 
 #ifdef HAVE_GETTIMEOFDAY
