@@ -5,6 +5,7 @@
 #endif /* HAVE_CONFIG_H defined */
 
 #include <stdio.h>
+
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #else  /* HAVE_UNISTD_H not defined */
@@ -21,6 +22,6 @@
  */
 
 FILE *
-term_input() {
+term_input(void) {
     return fdopen(STDERR_FILENO, "r");
 }

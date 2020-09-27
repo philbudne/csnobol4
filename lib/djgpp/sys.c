@@ -14,16 +14,12 @@
 #include "lib.h"
 
 void
-hwname(cp)
-    char *cp;
-{
+hwname(char *cp) {
     strcpy(cp, "x86");
 }
 
 void
-osname(cp)
-    char *cp;
-{
+osname(char *cp) {
     sprintf(cp, "%s %d.%d", _os_flavor, _osmajor, _osminor);
 #ifdef HAVE_DXE2
     strcat(cp, "+DXE2");

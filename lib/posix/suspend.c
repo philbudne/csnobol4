@@ -18,7 +18,7 @@
 #include "lib.h"
 
 void
-proc_suspend()
+proc_suspend(void)
 {
     sigset_t set;
     

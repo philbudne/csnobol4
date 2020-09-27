@@ -19,7 +19,7 @@
  */
 
 real_t
-mstime() {
+mstime(void) {
     struct tms tms;
     int hz;
 

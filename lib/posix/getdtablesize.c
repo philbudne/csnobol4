@@ -12,6 +12,6 @@
 #include "lib.h"
 
 int
-getdtablesize() {
+getdtablesize(void) {
     return sysconf(_SC_OPEN_MAX);
 }

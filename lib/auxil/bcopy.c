@@ -70,19 +70,16 @@ typedef	int word;		/* "word" used for optimal copy speed */
  */
 #ifdef MEMCOPY
 void *
-memcpy(dst0, src0, length)
+memcpy(void *dst0, const void *src0, register size_t length)
 #else
 #ifdef MEMMOVE
 void *
-memmove(dst0, src0, length)
+memmove(void *dst0, const void *src0, register size_t length)
 #else
 void
-bcopy(src0, dst0, length)
+bcopy(const void *src0, void *dst0, register size_t length)
 #endif
 #endif
-	void *dst0;
-	const void *src0;
-	register size_t length;
 {
 	register char *dst = dst0;
 	register const char *src = src0;

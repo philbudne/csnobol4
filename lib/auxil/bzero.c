@@ -27,10 +27,7 @@ typedef long word_t;
  */
 
 void
-bzero(cp, length)
-    register char *cp;
-    size_t length;
-{
+bzero(register char *cp, size_t length) {
     if (length >= 2*WSIZE) {		/* enough to bother? */
 	register word_t *wp;
 	register size_t t;

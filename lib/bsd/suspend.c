@@ -18,8 +18,7 @@
 
 
 void
-proc_suspend()
-{
+proc_suspend(void) {
     /* let default action occur */
     signal(SIGTSTP, SIG_DFL);
 

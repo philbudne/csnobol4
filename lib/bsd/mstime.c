@@ -24,7 +24,7 @@ static real_t last_mstime = 0.0;	/* XXX belongs in vars.h? */
 #endif /* GETRUSAGE_BUG defined */
 
 real_t
-mstime() {
+mstime(void) {
     struct rusage ru;
     register real_t x;
 

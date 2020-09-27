@@ -348,7 +348,6 @@ DXE_EXPORT_TABLE_AUTO(exports)
 DXE_EXPORT_END
 
 void
-os_init()
-{
+os_init(void) {
     dlregsym(exports);
 }

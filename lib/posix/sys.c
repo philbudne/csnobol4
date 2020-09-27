@@ -15,9 +15,7 @@
 #include "str.h"
 
 void
-hwname(cp)
-    char *cp;
-{
+hwname(char *cp) {
 #ifdef HWNAME
     strcpy(cp, HWNAME);
 #else  /* HWNAME not defined */
@@ -31,9 +29,7 @@ hwname(cp)
 }
 
 void
-osname(cp)
-    char *cp;
-{
+osname(char *cp) {
 #ifdef OSNAME
     strcpy(cp, OSNAME);
 #else  /* OSNAME not defined */

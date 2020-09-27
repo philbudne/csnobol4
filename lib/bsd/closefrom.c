@@ -12,9 +12,7 @@
 #include "lib.h"
 
 void
-closefrom(minfd)
-    int minfd;
-{
+closefrom(int minfd) {
     int i;
     for (i = getdtablesize(); i >= minfd; i--)
 	close(i);
