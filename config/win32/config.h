@@ -31,9 +31,6 @@
 #define DL_EXT		".dll"
 
 /* includes; */
-#define HAVE_STRING_H
-#define HAVE_STDARG_H
-#define HAVE_STDLIB_H
 #define HAVE_SDBM_H
 #define HAVE_IO_H		/* _read,.... */
 

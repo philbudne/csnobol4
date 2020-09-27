@@ -7,7 +7,7 @@ genc:
 
 Modernize:
     use mspec2str in io.c
-    convert remaining library routines
+    convert rest of library routines
     Replace bzero, bcopy
 
 Add 1969(!) factor.sno to tests

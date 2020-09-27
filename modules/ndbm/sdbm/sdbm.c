@@ -22,45 +22,22 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
-#ifdef BSD42
-#include <sys/file.h>
-#else
-#include <fcntl.h>
-#include <memory.h>
-#endif
+
+#include <fcntl.h>			/* open() */
 #include <errno.h>
-#include <string.h>
+#include <string.h>			/* memcpy() */
 
 #ifdef HAVE_UNISTD_H
-#include <unistd.h>			/* POSIX.1 SEEK_SET */
-#else
-#include <stdio.h>			/* MSVC SEEK_SET */
+#include <unistd.h>			/* POSIX.1 lseek, SEEK_SET */
 #endif
 
-#ifdef __STDC__
+#include <stdio.h>			/* NULL, MSVC SEEK_SET */
 #include <stddef.h>
 #include <stdlib.h>			/* phil: for malloc */
-#endif
-
-#ifndef NULL
-#define NULL	0
-#endif
 
 /*
  * externals
  */
-
-#if 0	/* phil: universally unnecessary? complaints on VS10 */
-#ifndef sun
-extern int errno;
-#endif
-#endif
-
-#if 0	/* phil: DJGPP complains; all unnecessary? */
-extern char *malloc proto((unsigned int));
-extern void free proto((void *));
-extern long lseek();
-#endif
 
 /* phil 10/13/2014 */
 static int myerrno;
@@ -68,11 +45,11 @@ static int myerrno;
 /*
  * forward
  */
-static int getdbit proto((DBM *, long));
-static int setdbit proto((DBM *, long));
-static int getpage proto((DBM *, long));
-static datum getnext proto((DBM *));
-static int makroom proto((DBM *, long, int));
+static int getdbit(DBM *, long);
+static int setdbit(DBM *, long);
+static int getpage(DBM *, long);
+static datum getnext(DBM *);
+static int makroom(DBM *, long, int);
 
 /*
  * useful macros
