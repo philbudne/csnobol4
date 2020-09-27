@@ -9,18 +9,8 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#ifdef HAVE_STDLIB_H			/* before stdio */
-#include <stdlib.h>
-#else  /* HAVE_STDLIB_H not defined */
-extern void *malloc();
-#endif
-
-#ifdef __STDC__
+#include <stdlib.h>		       /* before stdio(?) */
 #include <stdarg.h>
-#else
-#include <varargs.h>
-#endif
-
 #include <ctype.h>
 #include <stdio.h>			/* for lib.h */
 
@@ -31,9 +21,7 @@ extern void *malloc();
 #include "str.h"
 
 void
-trimsp( sp1, sp2 )
-    struct spec *sp1, *sp2;
-{
+trimsp(struct spec *sp1, struct spec *sp2) {
     register char *cp;
     register int len;
 
@@ -50,9 +38,7 @@ trimsp( sp1, sp2 )
 }
 
 void
-raise1( sp )
-    struct spec *sp;
-{
+raise1(struct spec *sp) {
     register char *cp;
     register int len;
 
@@ -68,9 +54,7 @@ raise1( sp )
 
 /* 8/19/96 -- for GENVUP/VPXPTR */
 int
-raise2( sp1, sp2 )
-    struct spec *sp1, *sp2;
-{
+raise2(struct spec *sp1, struct spec *sp2) {
     register char *sp, *dp;
     register int len;
     register int raised;
@@ -94,10 +78,10 @@ raise2( sp1, sp2 )
 
 /* support for LPAD/RPAD 8/26/96 */
 int
-pad(dir,out,subj,pad)
-    struct descr *dir;			/* LPAD=0,RPAD=1 */
-    struct spec *out, *subj, *pad;
-{
+pad(struct descr *dir,			/* LPAD=0,RPAD=1 */
+    struct spec *out,
+    struct spec *subj,
+    struct spec *pad) {
     int npad, slen;
     char *dp;
     char pc;
@@ -129,9 +113,7 @@ pad(dir,out,subj,pad)
 
 /* support for REVERSE 9/18/96 */
 int
-reverse(dest, src)
-    struct spec *dest, *src;
-{
+reverse(struct spec *dest, struct spec *src) {
     register char *sp, *dp;
     register int len;
 
@@ -147,10 +129,7 @@ reverse(dest, src)
 
 /* support for SUBSTR 9/18/96 */
 int
-substr(dest, src, pos)
-    struct spec *dest, *src;
-    struct descr *pos;
-{
+substr(struct spec *dest, struct spec *src, struct descr *pos) {
     register char *sp, *dp;
     register int len;
 
@@ -166,11 +145,7 @@ substr(dest, src, pos)
 
 /* copy from specifier to c-string */
 void
-spec2str(sp, dest, size)
-    struct spec *sp;
-    char *dest;
-    int size;
-{
+spec2str(struct spec *sp, char *dest, int size) {
     int l;
 
     l = S_L(sp);
@@ -184,9 +159,7 @@ spec2str(sp, dest, size)
 /* 2/15/2012 */
 /* copy from specifier to c-string */
 char *
-mspec2str(sp)
-    struct spec *sp;
-{
+mspec2str(struct spec *sp) {
     int l = S_L(sp) + 1;
     char *str = malloc(l);
     if (str)
@@ -202,9 +175,7 @@ int apdsp_lens[APDSP_NLENS];
 #endif /* APDSP_NLENS defined */
 
 void
-apdsp(base, str)
-    struct spec *base, *str;
-{
+apdsp(struct spec *base, struct spec *str) {
     register int len;
     register char *src, *dst;
 
@@ -236,25 +207,12 @@ apdsp(base, str)
 
 /* added 3/4/2012 */
 char *
-strjoin
-#ifdef __STDC__
-	(char *str0, ...)
-#else
-	(va_alist) va_dcl
-#endif
-{
+strjoin(char *str0, ...) {
     va_list vp;
     int len;
     char *str, *tp;
 
-#ifdef __STDC__
     va_start(vp, str0);
-#else  /* __STDC__ not defined */
-    char *str0;
-    va_start(vp);
-
-    str0 = va_arg(vp, char *);
-#endif /* __STDC__ not defined */
     len = strlen(str0) + 1;
     while ((tp = va_arg(vp, char *)))
 	len += strlen(tp);
@@ -264,12 +222,7 @@ strjoin
     if (!str)
 	return NULL;
 
-#ifdef __STDC__
     va_start(vp, str0);
-#else  /* __STDC__ not defined */
-    va_start(vp);
-    str0 = va_arg(vp, char *);
-#endif
     strcpy(str, str0);
     while ((tp = va_arg(vp, char *)))
 	strcat(str, tp);
@@ -286,10 +239,7 @@ strjoin
 #ifdef DEBUG_MERGSP2
 #define DUMP(S,L) dump(#S, S, L)
 static void
-dump(n, s, l)
-     char *n, *s;
-     int l;
-{
+dump(char *n, char *s, int l) {
     fprintf(stderr, "%-4s '", n);
     while (l-- > 0) {
 	char c = *s++;
@@ -303,9 +253,7 @@ dump(n, s, l)
 #endif
 
 void
-mergsp(sp1, sp2, sp3)
-    struct spec *sp1, *sp2, *sp3;
-{
+mergsp(struct spec *sp1, struct spec *sp2, struct spec *sp3) {
     int len = S_L(sp2);			/* GR1 "length" */
     char *dest = S_SP(sp1);		/* GR2 "first string" */
     char *src = S_SP(sp2);		/* GR3 "2nd string" */
@@ -329,10 +277,7 @@ mergsp(sp1, sp2, sp3)
 
 /* 10/11/2013 BLOCKS BLAND routine requires BLT-like behavior! */
 void
-movblk2(d1, d2, len)
-    struct descr *d1, *d2;
-    int_t len;
-{
+movblk2(struct descr *d1, struct descr *d2, int_t len) {
     while (len > 0) {
 	*++d1 = *++d2;
 	len -= DESCR;

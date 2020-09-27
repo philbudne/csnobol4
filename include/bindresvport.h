@@ -8,8 +8,8 @@
 /* should be in lib.h, but would require socket.h! */
 
 #ifdef NEED_BINDRESVPORT
-extern int bindresvport __P((int, struct sockaddr_in *));
+extern int bindresvport(int, struct sockaddr_in *);
 #endif /* NEED_BINDRESVPORT defined */
 #ifdef NEED_BINDRESVPORT_SA
-extern int bindresvport_sa __P((int, struct sockaddr *));
+extern int bindresvport_sa(int, struct sockaddr *);
 #endif /* NEED_BINDRESVPORT_SA defined */

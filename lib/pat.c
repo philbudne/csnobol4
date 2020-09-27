@@ -21,9 +21,7 @@
 #endif /* STATIC_PAT not defined */
 
 STATIC_PAT void
-linkor( d1, d2 )
-    struct descr *d1, *d2;
-{
+linkor(struct descr *d1, struct descr *d2) {
     int_t a, i, j;
 
     a = D_A(d1);
@@ -39,9 +37,8 @@ linkor( d1, d2 )
 
 /* S4D58 pp42-43 */
 STATIC_PAT void
-maknod(d1, d2, d3, d4, d5, d6)
-    struct descr *d1, *d2, *d3, *d4, *d5, *d6;
-{
+maknod(struct descr *d1, struct descr *d2, struct descr *d3,
+       struct descr *d4, struct descr *d5, struct descr *d6) {
     int_t a2;
 
     a2 = D_A(d2);
@@ -57,9 +54,7 @@ maknod(d1, d2, d3, d4, d5, d6)
 }
 
 STATIC_PAT void
-lvalue(d1,d2)
-    struct descr *d1, *d2;
-{
+lvalue(struct descr *d1, struct descr *d2) {
     int_t i, a, offset;
 
     a = D_A(d2);
@@ -83,9 +78,8 @@ lvalue(d1,d2)
 
 /* S4D58 pp19-20 */
 STATIC_PAT void
-cpypat(d1, d2, d3, d4, d5, d6)
-    struct descr *d1, *d2, *d3, *d4, *d5, *d6;
-{
+cpypat(struct descr *d1, struct descr *d2, struct descr *d3,
+       struct descr *d4, struct descr *d5, struct descr *d6) {
     int_t r1, r2, r3;
     int_t a3, a4, a5;
 

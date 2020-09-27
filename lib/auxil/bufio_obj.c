@@ -12,12 +12,7 @@
 #include "config.h"
 #endif
 
-#ifdef HAVE_STDLIB_H			/* before stdio */
 #include <stdlib.h>			/* malloc, abort */
-#else  /* HAVE_STDLIB_H not defined */
-extern void *malloc();
-extern void *realloc();
-#endif /* HAVE_STDLIB_H not defined */
 #include <stdio.h>			/* NULL, size_t */
 
 #include "h.h"				/* TRUE */

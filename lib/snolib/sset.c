@@ -21,9 +21,8 @@
  * Returns;	scaled file position
  */
 
-int
-SSET( LA_ALIST ) LA_DCL
-{
+lret_t
+SSET( LA_ALIST ) {
     int_t unit, offset, whence, scale, oof;
 
     unit = LA_INT(0);

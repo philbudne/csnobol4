@@ -31,19 +31,8 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#ifdef __STDC__
 #include <stdarg.h>
-#else  /* __STDC__ not defined */
-#include <varargs.h>
-#endif /* __STDC__ not defined */
-
-#ifdef HAVE_STDLIB_H			/* before stdio */
-#include <stdlib.h>
-#else  /* HAVE_STDLIB_H not defined */
-extern void *malloc();
-extern char *getenv();
-#endif /* HAVE_STDLIB_H not defined */
-
+#include <stdlib.h>		       /* before stdio(?) */
 #include <stdio.h>
 #include <ctype.h>
 
@@ -117,8 +106,12 @@ struct iovars {
     struct file *lib_dir_last;	  /* tail of include directory list */
 };
 
-/* private, r/o array of pointers to io_open functions returning pointers to io_obj */
-static struct io_obj *(*const io_open_funcs[]) __P((char *, int, int)) = {
+/*
+ * private, r/o array of pointers to io_open functions
+ * returning pointers to io_obj
+ */
+static struct io_obj *(*const io_open_funcs[])(char *fname, int flags, int rw) =
+{
 #ifdef OSDEPIO_OBJ
     osdepio_open,			/* local I/O that can't be wrapped */
 #endif
@@ -517,10 +510,7 @@ io_input_file( path )
 
 #ifdef MEM_IO
 void
-io_input_string( name, str )
-    char *name;
-    char *str;
-{
+io_input_string(char *name, char *str) {
     struct file *fp;
 
     fp = io_memfile(name, str, strlen(str));
@@ -533,10 +523,7 @@ io_input_string( name, str )
 
 /* attach a "struct file" to a unit (external) */
 static void
-io_setfile(unit, fp)
-    int unit;
-    struct file *fp;
-{
+io_setfile(int unit, struct file *fp) {
     struct unit *up;
 
     unit = INTERN(unit);
@@ -549,12 +536,10 @@ io_setfile(unit, fp)
 
 /* setup a unit given an open stdio stream and a "filename" */
 static int
-io_mkfile2( unit, f, fname, flags )
-    int unit;				/* external (1-based) unit */
-    FILE *f;
-    char *fname;			/* "filename" for error reports */
-    int flags;
-{
+io_mkfile2(int unit,			/* external (1-based) unit */
+    FILE *f,
+    char *fname,			/* "filename" for error reports */
+    int flags) {
     struct file *fp;
 
     fp = io_newfile(fname);
@@ -567,28 +552,22 @@ io_mkfile2( unit, f, fname, flags )
 }
 
 EXPORT(int)
-io_mkfile( unit, f, fname )
-    int unit;				/* external (1-based) unit */
-    FILE *f;
-    char *fname;			/* "filename" for error reports */
-{
+io_mkfile(int unit,			/* external (1-based) unit */
+	  FILE *f,
+	  char *fname) {		/* "filename" for error reports */
     return io_mkfile2( unit, f, fname, 0 );
 }
 
 EXPORT(int)
-io_mkfile_noclose( unit, f, fname )
-    int unit;				/* external (1-based) unit */
-    FILE *f;
-    char *fname;			/* "filename" for error reports */
-{
+io_mkfile_noclose(int unit,		/* external (1-based) unit */
+		  FILE *f,
+		  char *fname) {	/* "filename" for error reports */
     return io_mkfile2( unit, f, fname, FL_NOCLOSE );
 }
 
 /* return true if unit attached */
 EXPORT(int)
-io_attached( unit )
-    int unit;
-{
+io_attached(int unit) {
     struct unit *up = FINDUNIT(INTERN(unit));
     return up->curr != NULL;
 }
@@ -599,12 +578,10 @@ io_attached( unit )
  * pass in a char ** to be filled with a malloced buffer?
  */
 EXPORT(int)
-io_output_string( unit, fname, buf, len )
-    int unit;				/* external (1-based) unit */
-    char *fname;			/* "filename" for error reports */
-    char *buf;
-    int len;
-{
+io_output_string(int unit,		/* external (1-based) unit */
+		 char *fname,		/* "filename" for error reports */
+		 char *buf,
+		 int len) {
     struct file *fp;
 
     fp = io_memfile(fname, buf, len);
@@ -639,13 +616,7 @@ io_output_string( unit, fname, buf, len )
  *	orignally "format" was in FORTRAN FORMAT format!!
  */
 void
-io_printf
-#ifdef __STDC__
-    (int_t unit, ...)
-#else  /* __STDC__ not defined */
-    (va_alist) va_dcl
-#endif /* __STDC__ not defined */
-{
+io_printf(int_t unit, ...) {
     va_list vp;
     char *format;
     register char c;
@@ -653,17 +624,10 @@ io_printf
     size_t space;
     char *lp;
     struct file *fp;
-#ifdef __STDC__
+
     va_start(vp,unit);
-#else  /* __STDC__ not defined */
-    int_t unit;
-    va_start(vp);
-
-    unit = va_arg(vp, int_t);
-#endif /* __STDC__ not defined */
-
     fp = findfile((int)INTERN(unit));
-    if (!fp)
+    if (!fp || !fp->iop)
 	return;
 
     /* keep output in line buffer, in case output unbuffered (ie; stderr) */
@@ -763,16 +727,11 @@ io_printf
     va_end(vp);
     *lp = '\0';
 
-    if (fp->iop)
-	ioo_write(fp->iop, line, strlen(line));	/* was fputs */
+    ioo_write(fp->iop, line, strlen(line));	/* was fputs */
 } /* io_printf */
 
 static int
-io_write(fp, cp, len)
-     struct file *fp;
-     char *cp;
-     int_t len;
-{
+io_write(struct file *fp, char *cp, int_t len) {
     if (len == 0)
 	return TRUE;
 
@@ -780,13 +739,11 @@ io_write(fp, cp, len)
 }
 
 static int				/* bool */
-io_print_str(fp, cp, len, needfill, eol)
-    struct file *fp;
-    char *cp;
-    int_t len;
-    int needfill;
-    int eol;
-{
+io_print_str(struct file *fp,
+	     char *cp,
+	     int_t len,
+	     int needfill,
+	     int eol) {
     int ret = TRUE;
 
     if (fp == NULL)
@@ -831,11 +788,7 @@ io_print_str(fp, cp, len, needfill, eol)
 } /* io_print_str */
 
 void
-io_print( iokey, iob, sp )		/* STPRNT */
-    struct descr *iokey;
-    struct descr *iob;
-    struct spec *sp;
-{
+io_print(struct descr *iokey, struct descr *iob, struct spec *sp) { /* STPRNT */
     /* IOB->
      * title descr
      * integer unit number
@@ -847,9 +800,7 @@ io_print( iokey, iob, sp )		/* STPRNT */
 }
 
 int
-io_endfile(unit)			/* ENFILE */
-    int_t unit;
-{
+io_endfile(int_t unit) {		/* ENFILE */
     struct unit *up;
 
     unit = INTERN(unit);
@@ -873,7 +824,7 @@ static Keymap initial_keymap, compile_keymap;
 #endif
 
 static void
-init_readline() {
+init_readline(void) {
     rl_initialize();
 #ifdef HAVE_RL_SET_KEYMAP
     initial_keymap = rl_get_keymap();
@@ -887,7 +838,7 @@ init_readline() {
 }
 
 static void
-restore_readline() {
+restore_readline(void) {
     if (!readline_inited)
 	return;
 #ifdef HAVE_RL_SET_KEYMAP
@@ -911,10 +862,7 @@ restore_readline() {
 #endif /* ifdef COMPILER_READLINE */
 
 enum io_read_ret
-io_read( dp, sp )			/* STREAD */
-    struct descr *dp;
-    struct spec *sp;
-{
+io_read(struct descr *dp, struct spec *sp) {	/* STREAD */
     int unit;
     int_t recl;
     ssize_t len;
@@ -1069,17 +1017,13 @@ io_read( dp, sp )			/* STREAD */
  * (might as well just remove from the SIL code!)
  */
 void
-io_backspace(unit)			/* SIL BKSPCE op */
-    int_t unit;
-{
+io_backspace(int_t unit) {		/* SIL BKSPCE op */
     (void) unit;
     UNDF(NORET);
 }
 
 void
-io_rewind(unit)				/* SIL REWIND op */
-    int_t unit;
-{
+io_rewind(int_t unit) {			/* SIL REWIND op */
     struct file *fp;
     struct unit *up;
 
@@ -1106,8 +1050,7 @@ io_rewind(unit)				/* SIL REWIND op */
 
 /* here at end of compilation */
 void
-io_ecomp()				/* SIL XECOMP op */
-{
+io_ecomp(void) {			/* SIL XECOMP op */
     struct unit *up;
     struct file *fp;
 
@@ -1177,11 +1120,9 @@ io_ecomp()				/* SIL XECOMP op */
 
 /* process I/O option strings for io_openi and io_openo */
 static int
-io_options( op, rp, fp )
-    char *op;				/* IN: options */
-    int *rp;				/* OUT: recl (optional) */
-    int *fp;				/* OUT: flags */
-{
+io_options(char *op,			/* IN: options */
+	   int *rp,			/* OUT: recl (optional) */
+	   int *fp) {			/* OUT: flags */
     int flags;
     int recl;
 
@@ -1300,15 +1241,14 @@ io_options( op, rp, fp )
 }
 
 /* here via XCALL IO_OPENI */
+/* called from SNOBOL INPUT() */
 int
-io_openi(dunit, sfile, sopts, drecl)	/* called from SNOBOL INPUT() */
-    struct descr *dunit;		/* IN: unit */
-    struct spec *sfile;			/* IN: filename */
-    struct spec *sopts;			/* IN: options */
-    struct descr *drecl;		/* OUT: rec len */
-{
-    char fname[MAXFNAME];		/* XXX malloc(S_L(sfile)+1)? */
-    char opts[MAXOPTS];			/* XXX malloc(S_L(sopts)+1)? */
+io_openi(struct descr *dunit,		/* IN: unit */
+	 struct spec *sfile,		/* IN: filename */
+	 struct spec *sopts,		/* IN: options */
+	 struct descr *drecl) {		/* OUT: rec len */
+    char fname[MAXFNAME];		/* XXX */
+    char opts[MAXOPTS];			/* XXX */
     struct file *fp;
     struct unit *up;
     int xunit, unit;
@@ -1321,15 +1261,18 @@ io_openi(dunit, sfile, sopts, drecl)	/* called from SNOBOL INPUT() */
     up = FINDUNIT(unit);
 
     /* XXX handle arbitrary length strings? */
-    spec2str( sfile, fname, sizeof(fname) );
-    spec2str( sopts, opts, sizeof(opts) );
+    spec2str( sfile, fname, sizeof(fname) ); /* XXX mspec2str */
+    spec2str( sopts, opts, sizeof(opts) );   /* XXX mspec2str */
 
     /* XXX if no sopts;
-     * extract spitbol stule options suffix (if any) from filename here?
+     * extract spitbol style options suffix (if any) from filename here?
      */
 
     if (fname[0]) {
-	/* SITBOL takes comma seperated file list */
+	/*
+	 * SITBOL takes comma seperated file list
+	 * would need to keep flags per-unit
+	 */
 	fp = io_newfile(fname);
     }
     else {
@@ -1428,10 +1371,8 @@ io_openo(dunit, sfile, sopts)		/* called from SNOBOL OUTPUT() */
 } /* io_openo */
 
 enum io_include_ret
-io_include( dp, sp )
-    struct descr *dp;			/* input unit */
-    struct spec *sp;			/* file name (with quotes) */
-{
+io_include(struct descr *dp,		/* input unit */
+	   struct spec *sp) {		/* file name (with quotes) */
     int l;
     char fname[MAXFNAME];		/* XXX */
     struct file *fp;
@@ -1488,9 +1429,7 @@ io_include( dp, sp )
  * data only valid while current file open
  */
 char *
-io_fname( unit )
-    int unit;
-{
+io_fname(int unit) {			/* takes external (1-based) unit */
     struct unit *up;
     struct file *fp;
 
@@ -1514,10 +1453,8 @@ io_fname( unit )
  * used by compiler to pick up filenames from command line
  */
 int
-io_file( dp, sp )
-    struct descr *dp;			/* IN: unit number */
-    struct spec *sp;			/* OUT: filename */
-{
+io_file(struct descr *dp,		/* IN: unit number */
+	struct spec *sp) {		/* OUT: filename */
     char *fname;
 
     fname = io_fname(D_A(dp));
@@ -1542,9 +1479,7 @@ io_file( dp, sp )
  */
 
 int
-io_seek(dunit, doff, dwhence)
-    struct descr *dunit, *doff, *dwhence;
-{
+io_seek(struct descr *dunit, struct descr *doff, struct descr *dwhence) {
     int unit, whence;
     io_off_t off;
     struct file *fp;
@@ -1580,9 +1515,7 @@ io_seek(dunit, doff, dwhence)
  * (not needed on 64-bit systems)
  */
 int
-io_sseek(unit, soff, whence, scale, oof )
-    int_t unit, soff, whence, scale, *oof;
-{
+io_sseek(int_t unit, int_t soff, int_t whence, int_t scale, int_t *oof ) {
     io_off_t off;
     struct file *fp;
     struct unit *up;
@@ -1616,9 +1549,7 @@ io_sseek(unit, soff, whence, scale, oof )
 
 /* flush all pending output before system(), exec(), or death */
 int
-io_flushall(dummy)			/* called w/ SIL XCALLC */
-    int dummy;
-{
+io_flushall(int dummy) {		/* called w/ SIL XCALLC */
     int i;
 
     (void) dummy;
@@ -1647,8 +1578,7 @@ io_flushall(dummy)			/* called w/ SIL XCALLC */
 #define MAXFIND NUNITS			/* maximum unit to return */
 
 EXPORT(int)
-io_findunit()
-{
+io_findunit(void) {
     int start;
 
     for (;;) {
@@ -1690,9 +1620,7 @@ io_findunit()
 #if 0
 /* for PML functions; get current fp on a unit */
 EXPORT(FILE *)
-io_getfp(unit)
-    int unit;				/* "external" unit */
-{
+io_getfp(int unit) {			/* "external" unit */
     struct unit *up;
 
     unit = INTERN(unit);
@@ -1716,10 +1644,7 @@ io_getfp(unit)
  */
 
 int
-io_pad(sp, len)
-    struct spec *sp;
-    int len;
-{
+io_pad(struct spec *sp, int len) {
     register char *cp;
     register int i;
 
@@ -1733,7 +1658,7 @@ io_pad(sp, len)
 
 /* new 9/21/97 called from lib/endex.c (which is called from main.c) */
 int
-io_finish() {
+io_finish(void) {
     int i;
     
     /* should visit from most recently opened to least recent? */
@@ -1750,9 +1675,7 @@ io_finish() {
 
 /* new 1/12/2012 called to add a dir to include dir list (from init.c) */
 int
-io_add_lib_dir(dirname)
-     char *dirname;
-{
+io_add_lib_dir(char *dirname) {
     struct file *fp = io_newfile(dirname);
     if (!fp)
 	return FALSE;
@@ -1768,18 +1691,15 @@ io_add_lib_dir(dirname)
  * (called from init.c)
  */
 int
-io_add_lib_path(path)
-    char *path;
-{
-    char *p2 = malloc(strlen(path)+1);
+io_add_lib_path(char *path) {
+    char *p2 = strdup(path);
     char *pp = p2;
     if (!p2)
 	return FALSE;
-    strcpy(p2, path);			/* XXX strdup */
 
     while (pp) {
 	/* XXX need strstr if sizeof(PATH_SEP) != 2 */
-	char *tpp = index(pp, PATH_SEP[0]);
+	char *tpp = strchr(pp, PATH_SEP[0]);
 	if (tpp)
 	    *tpp++ = '\0';		/* tie off and advance */
 	io_add_lib_dir(pp);
@@ -1791,7 +1711,7 @@ io_add_lib_path(path)
 
 /* called from init.c to display paths (for -z option) */
 void
-io_show_paths()
+io_show_paths(void)
 {
     struct file *fp;
     for (fp = iov.lib_dirs; fp; fp = fp->next)
@@ -1805,12 +1725,10 @@ io_show_paths()
 
 /* helper */
 static char *
-trypath(dir, subdir, file, ext)
-    char *dir;
-    char *subdir;			/* optional: may be NULL */
-    char *file;
-    char *ext;				/* optional: may be NULL */
-{
+trypath(char *dir,
+	char *subdir,			/* optional: may be NULL */
+	char *file,
+	char *ext) {			/* optional: may be NULL */
     int l = strlen(dir) + strlen(file) + sizeof(DIR_SEP);
     char *path;
 
@@ -1841,11 +1759,7 @@ trypath(dir, subdir, file, ext)
 
 /* used by io_include(), lib/loadx.c, -L option */
 char *
-io_lib_find(subdir, file, ext)
-    char *subdir;
-    char *file;
-    char *ext;
-{
+io_lib_find(char *subdir, char *file, char *ext) {
     struct file *ip;
 
     if (abspath(file))
@@ -1882,9 +1796,7 @@ io_lib_find(subdir, file, ext)
 
 /* 12/13/14 return n'th lib directory for HOST() */
 char *
-io_lib_dir(n)
-    int n;
-{
+io_lib_dir(int n) {
     struct file *ip = iov.lib_dirs;
 
     while (ip && n > 0) {
@@ -1898,9 +1810,7 @@ io_lib_dir(n)
 
 /* helper for io_preload (adds to input file list) */
 static void
-try_preload(path)
-    char *path;
-{
+try_preload(char *path) {
     if (!exists(path))
 	return;
 
@@ -1922,14 +1832,14 @@ try_preload(path)
 
 /* called from init.c to preload source files */
 void
-io_preload() {
+io_preload(void) {
     char *env = getenv("SNOBOL_PRELOAD_PATH");
     if (env) {
 	char *tmp, *tp;
-	tmp = tp = malloc(strlen(env)+1); /* want strdup */
+	tmp = tp = strdup(env);
 	strcpy(tmp, env);
 	while (tp) {
-	    char *np = index(tp, PATH_SEP[0]); /* strstr? */
+	    char *np = strchr(tp, PATH_SEP[0]); /* strstr? */
 	    if (np)
 		*np++ = '\0';
 	    try_preload(tp);
@@ -1953,10 +1863,8 @@ io_preload() {
  * 9/26/2013
  */
 void
-io_fastpr(iokey, unit, ccfp, sp1, sp2)
-    struct descr *iokey, *unit, *ccfp;
-    struct spec *sp1, *sp2;
-{
+io_fastpr(struct descr *iokey, struct descr *unit, struct descr *ccfp,
+	  struct spec *sp1, struct spec *sp2) {
     int_t len = S_L(sp1);
     char *src = S_SP(sp1);
     int xunit = D_A(unit);		/* external */
@@ -2018,20 +1926,20 @@ inet_parse(char *path, char **hostp, char **servicep, int *inet_flagp) {
     flags = 0;
 
     host = path;
-    service = index(host, '/');
+    service = strchr(host, '/');
     if (service == NULL)
 	return -1;
     *service++ = '\0';
 
     /* look for option suffixes, ignore if unknown */
-    cp = index(service, '/');
+    cp = strchr(service, '/');
     if (cp) {
 	char *op;
 
 	*cp++ = '\0';
 	do {
 	    op = cp;
-	    cp = index(cp, '/');
+	    cp = strchr(cp, '/');
 	    if (cp)
 		*cp++ = '\0';
 

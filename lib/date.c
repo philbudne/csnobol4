@@ -4,11 +4,8 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#ifdef VAXC
-#include <types.h>			/* time_t */
-#else  /* VAXC not defined */
 #include <sys/types.h>			/* time_t */
-#endif /* VAXC not defined */
+
 #include <time.h>			/* struct tm */
 #include <stdio.h>			/* for sprintf() */
 
@@ -37,10 +34,7 @@ static char strbuf[21];
 #endif /* NO_STATIC_VARS not defined */
 
 void
-date( sp, dp )
-    struct spec *sp;
-    struct descr *dp;
-{
+date(struct spec *sp, struct descr *dp) {
     time_t t;
     struct tm *tm;
     enum { OLD=0, NEW=1, ISO=2 } format;

@@ -5,32 +5,22 @@
  */
 
 /* prototype for external (LOADed) functions */
-#ifdef __STDC__
 #define LOAD_PROTO struct descr *retval, int nargs, struct descr *args
 #define PML_FIND_ARG char *
-#else  /* __STDC__ not defined */
-#define LOAD_PROTO
-#define PML_FIND_ARG
-#endif /* __STDC__ not defined */
 
 /* macros for loadable user functions;
  *
  * ie;
  * lret_t
- * myfunc(LA_ALIST) LA_DCL
- * {
+ * myfunc(LA_ALIST) {
+ *   RETFAIL;
  * }
  */
 
 #define lret_t EXPORT(int)
 
-#ifdef __STDC__
 #define LA_ALIST LOAD_PROTO
-#define LA_DCL
-#else  /* __STDC__ not defined */
-#define LA_ALIST retval, nargs, args
-#define LA_DCL struct descr *retval, *args; int nargs;
-#endif /* __STDC__ not defined */
+#define LA_DCL				/* __STDC__ flush */
 
 /*
  * macros to fetch arguments
@@ -125,17 +115,17 @@ int (*pml_find(PML_FIND_ARG))(LOAD_PROTO);
 
 /* extern/prototypes for functions; */
 /* lib/snolib/getstring.c; */
-SNOEXP(void) getstring __P((const void *, char *, int));
-SNOEXP(char *) mgetstring __P((const void *));
+SNOEXP(void) getstring(const void *, char *, int);
+SNOEXP(char *) mgetstring(const void *);
 
 /* lib/snolib/retstring.c; */
-SNOEXP(void) retstring __P((struct descr *retval, const char *cp, int len));
+SNOEXP(void) retstring(struct descr *retval, const char *cp, int len);
 
 /* lib/io.c; */
-SNOEXP(int) io_findunit __P((void));	/* find a free (external) unit */
-SNOEXP(int) io_closeall __P((int));	/* internal (zero-based unit) */
+SNOEXP(int) io_findunit(void);	/* find a free (external) unit */
+SNOEXP(int) io_closeall(int);	/* internal (zero-based unit) */
 
 #ifdef EOF				/* stdio included */
-SNOEXP(FILE *) io_getfp __P((int));	/* external (1-based unit) */
-SNOEXP(int) io_mkfile __P((int, FILE *, char*)); /* external (1-based unit) */
+SNOEXP(FILE *) io_getfp(int);	/* external (1-based unit) */
+SNOEXP(int) io_mkfile(int, FILE *, char*); /* external (1-based unit) */
 #endif /* EOF defined */

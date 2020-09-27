@@ -18,8 +18,7 @@
 #include "load.h"
 #include "equ.h"
 
-int
-SIN( LA_ALIST ) LA_DCL
-{
+lret_t
+SIN( LA_ALIST ) {
     RETREAL( sin( LA_REAL(0) ) );
 }

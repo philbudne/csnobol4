@@ -6,9 +6,7 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#ifdef HAVE_STDLIB_H			/* before stdio */
 #include <stdlib.h>			/* atoi() */
-#endif /* HAVE_STDLIB_H defined */
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>			/* close() */

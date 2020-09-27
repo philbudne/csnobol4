@@ -9,9 +9,7 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#ifdef HAVE_STDLIB_H			/* before stdio */
 #include <stdlib.h>
-#endif /* HAVE_STDLIB_H defined */
 #include <stdio.h>
 #include <errno.h>
 
@@ -30,10 +28,7 @@
 #endif /* NO_STATIC_VARS defined */
 
 int
-spcint(dp, sp)
-    struct descr *dp;
-    struct spec *sp;
-{
+spcint(struct descr *dp, struct spec *sp) {
     char buffer[64];			/* ??? */
     int_t len;
     char *cp;

@@ -17,9 +17,8 @@
 #include "load.h"
 #include "equ.h"
 
-int
-SQRT( LA_ALIST ) LA_DCL
-{
+lret_t
+SQRT( LA_ALIST ) {
     real_t x;
 
     x = LA_REAL(0);

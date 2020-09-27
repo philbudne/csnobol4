@@ -16,10 +16,7 @@
 
 #include <stdio.h>			/* sprintf() */
 #include <dlfcn.h>
-
-#ifdef HAVE_STDLIB_H			/* before stdio */
 #include <stdlib.h>			/* malloc(), getenv() */
-#endif /* HAVE_STDLIB_H defined */
 
 #include "h.h"
 #include "snotypes.h"
@@ -44,9 +41,7 @@ static struct func *funcs;
 
 /* called from loadx.c */
 loadable_func_t *
-os_load(fname, lname)
-    char *fname, *lname;
-{
+os_load(char *fname, char *lname) {
     void *handle;
     loadable_func_t *entry;
     struct func *fp; 
@@ -101,9 +96,7 @@ os_load(fname, lname)
 }
 
 void
-unload(sp)
-    struct spec *sp;
-{
+unload(struct spec *sp) {
     struct func *fp, *pp;
     char name[1024];			/* XXX */
 

@@ -49,8 +49,7 @@
 #include "equ.h"			/* I & R */
 
 lret_t
-SPRINTF( LA_ALIST ) LA_DCL
-{
+SPRINTF( LA_ALIST ) {
     char fmt[1024];			/* XXX */
     char buf[2048];			/* XXX */
 

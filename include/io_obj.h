@@ -60,15 +60,15 @@ typedef long off_t;
 struct io_ops {
     const char *io_name;
     const struct io_ops *io_super;	/* superclass */
-    ssize_t (*io_read_raw) __P((struct io_obj *, char *, size_t));
-    ssize_t (*io_getline) __P((struct io_obj *));
-    ssize_t (*io_write) __P((struct io_obj *, char *, size_t));
-    int (*io_seeko) __P((struct io_obj *, io_off_t, int)); /* bool */
-    io_off_t (*io_tello) __P((struct io_obj *));
-    int (*io_flush) __P((struct io_obj *)); /* bool */
-    int (*io_eof) __P((struct io_obj *));   /* bool */
-    void (*io_clearerr) __P((struct io_obj *));
-    int (*io_close) __P((struct io_obj *)); /* bool */
+    ssize_t (*io_read_raw)(struct io_obj *, char *, size_t);
+    ssize_t (*io_getline)(struct io_obj *);
+    ssize_t (*io_write)(struct io_obj *, char *, size_t);
+    int (*io_seeko)(struct io_obj *, io_off_t, int); /* bool */
+    io_off_t (*io_tello)(struct io_obj *);
+    int (*io_flush)(struct io_obj *); /* bool */
+    int (*io_eof)(struct io_obj *);   /* bool */
+    void (*io_clearerr)(struct io_obj *);
+    int (*io_close)(struct io_obj *); /* bool */
 };
 
 /*
@@ -132,10 +132,10 @@ const struct io_ops NAME##_ops = { \
 }
 #endif
 
-struct io_obj *io_alloc __P((int size, const struct io_ops *ops, int flags));
+struct io_obj *io_alloc(int size, const struct io_ops *ops, int flags);
 
 /* flagp: INET_xxx flags (in inet.h) */
-int inet_parse __P((char *path, char **hostp, char **servicep, int *flagp));
+int inet_parse(char *path, char **hostp, char **servicep, int *flagp);
 
 // return value for _open routines (NULL means open attempted and failed)
 extern struct io_obj nomatch;
@@ -143,5 +143,8 @@ extern struct io_obj nomatch;
 
 struct io_obj *memio_open(char *buf, size_t len, int flags);
 #ifdef INET_IO
-struct io_obj *inetio_open __P((char *path, int flags, int dir));
+struct io_obj *inetio_open(char *path, int flags, int dir);
+#endif
+#ifdef OSDEPIO_OBJ
+struct io_obj *osdepio_open(char *path, int flags, int dir);
 #endif

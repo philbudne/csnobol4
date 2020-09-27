@@ -18,9 +18,7 @@
 #include <signal.h>
 #include <errno.h>
 
-#ifdef HAVE_STDLIB_H			/* before stdio */
 #include <stdlib.h>			/* atoi() */
-#endif /* HAVE_STDLIB_H defined */
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>			/* close() */
@@ -53,9 +51,7 @@
 #endif /* UNIX_PATH_MAX not defined */
 
 static SIGFUNC_T
-fireman(sig)
-    int sig;
-{				/* catch falling babies */
+fireman(int sig) {			/* catch falling babies */
     int w;
     while( wait(&w) > 0 )
 	;
@@ -80,8 +76,7 @@ fireman(sig)
  *
  */
 int
-SERV_LISTEN( LA_ALIST ) LA_DCL
-{
+SERV_LISTEN( LA_ALIST ) {
     char sfam[128];
     char stype[128];
     char sserv[UNIX_PATH_MAX];

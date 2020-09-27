@@ -15,10 +15,7 @@
 #endif /* HAVE_CONFIG_H defined */
 
 #include <stdio.h>			/* for lib.h */
-
-#ifdef HAVE_STDLIB_H
 #include <stdlib.h>			/* for free() */
-#endif
 
 #include "h.h"
 #include "snotypes.h"
@@ -29,8 +26,7 @@
 #include "lib.h"			/* io_flushall(),execute() */
 
 int
-EXIT( LA_ALIST ) LA_DCL
-{
+EXIT( LA_ALIST ) {
     char *str;
 
     if (LA_TYPE(0) == S) {		/* EXIT("command") */

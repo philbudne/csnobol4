@@ -23,7 +23,7 @@ enum stream_ret {
 };
 
 /* from lib/stream.c */
-enum stream_ret stream __P((struct spec *,struct spec *,struct syntab *));
-void clertb __P((struct syntab *,enum action));
-void plugtb __P((struct syntab *,enum action,struct spec *));
-int any __P((struct spec *,struct descr *));
+enum stream_ret stream(struct spec *,struct spec *,struct syntab *);
+void clertb(struct syntab *,enum action);
+void plugtb(struct syntab *,enum action,struct spec *);
+int any(struct spec *,struct descr *);

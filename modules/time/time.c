@@ -17,6 +17,7 @@
 #include <sys/time.h>
 #endif
 
+#include <stdlib.h>			/* for free() */
 #include <stdio.h>			/* for lib.h */
 #include <time.h>			/* time_t, time(), strptime() */
 
@@ -59,8 +60,7 @@ enum tm_member {
  * LOAD("GETTIMEOFDAY_(TIMEVAL)", TIME_DL)
  */
 lret_t
-GETTIMEOFDAY_( LA_ALIST ) LA_DCL
-{
+GETTIMEOFDAY_( LA_ALIST ) {
     struct descr *dp = LA_PTR(0);
 #ifdef HAVE_GETTIMEOFDAY
     struct timeval tv;
@@ -82,8 +82,7 @@ GETTIMEOFDAY_( LA_ALIST ) LA_DCL
 }
 
 static int
-tm2sno(struct tm *tmp, struct descr *dp)
-{
+tm2sno(struct tm *tmp, struct descr *dp) {
     if (!dp || COUNT(dp) != TM_COUNT)
 	return 0;
     SETINT(dp,TM_SEC,tmp->tm_sec);
@@ -104,8 +103,7 @@ tm2sno(struct tm *tmp, struct descr *dp)
 }
 
 static int
-sno2tm(struct descr *dp, struct tm *tmp)
-{
+sno2tm(struct descr *dp, struct tm *tmp) {
     if (!dp || COUNT(dp) != TM_COUNT)
 	return 0;
     memset(tmp, 0, sizeof(struct tm));
@@ -133,8 +131,7 @@ sno2tm(struct descr *dp, struct tm *tmp)
  * LOAD("LOCALTIME_(INTEGER,TM)", TIME_DL)
  */
 lret_t
-LOCALTIME_( LA_ALIST ) LA_DCL
-{
+LOCALTIME_( LA_ALIST ) {
     time_t t = LA_INT(0);
     struct tm *tmp = localtime(&t);
     if (LA_TYPE(1) < DATSTA || !tm2sno(tmp, LA_PTR(1)))
@@ -146,8 +143,7 @@ LOCALTIME_( LA_ALIST ) LA_DCL
  * LOAD("GMTIME_(INTEGER,TM)", TIME_DL)
  */
 lret_t
-GMTIME_( LA_ALIST ) LA_DCL
-{
+GMTIME_( LA_ALIST ) {
     time_t t = LA_INT(0);
     struct tm *tmp = gmtime(&t);
     if (!tm2sno(tmp, LA_PTR(1)))
@@ -160,8 +156,7 @@ GMTIME_( LA_ALIST ) LA_DCL
  * LOAD("STRFTIME(STRING,TM)STRING", TIME_DL)
  */
 lret_t
-STRFTIME( LA_ALIST ) LA_DCL
-{
+STRFTIME( LA_ALIST ) {
     char format[1024];
     char output[1024];
     struct tm tm;
@@ -179,8 +174,7 @@ STRFTIME( LA_ALIST ) LA_DCL
  */
 
 lret_t
-MKTIME( LA_ALIST ) LA_DCL
-{
+MKTIME( LA_ALIST ) {
     struct tm tm;
     time_t ret;
 
@@ -197,8 +191,7 @@ MKTIME( LA_ALIST ) LA_DCL
  * LOAD("SLEEP(REAL)", TIME_DL)
  */
 lret_t
-SLEEP( LA_ALIST ) LA_DCL
-{
+SLEEP( LA_ALIST ) {
     if (sleepf(LA_REAL(0)) < 0)
 	RETFAIL;			/* did not sleep full period */
     RETNULL;
@@ -210,17 +203,20 @@ SLEEP( LA_ALIST ) LA_DCL
  * LOAD("STRPTIME_(STRING,STRING,TM)", TIME_DL)
  */
 lret_t
-STRPTIME_( LA_ALIST ) LA_DCL
-{
-    char input[1024];
-    char format[1024];
+STRPTIME_( LA_ALIST ) {
     struct tm tm;
     char *ret;
-
-    getstring(LA_PTR(0), input, sizeof(input));
-    getstring(LA_PTR(1), format, sizeof(format));
+    char *format;
+    char *input = mgetstring(LA_PTR(0));
+    if (!input)
+	RETFAIL;
+    format = mgetstring(LA_PTR(1));
+    if (!format)
+	RETFAIL;
     memset(&tm, 0, sizeof(tm));		/* sno2tm(LA_PTR(2), &tm); ? */
     ret = strptime(input, format, &tm);
+    free(input);
+    free(format);
     if (ret && tm2sno(&tm, LA_PTR(2)))
 	RETSTR(ret);			/* return remaining string */
     RETFAIL;
@@ -233,8 +229,7 @@ STRPTIME_( LA_ALIST ) LA_DCL
  */
 
 lret_t
-TIMEGM( LA_ALIST ) LA_DCL
-{
+TIMEGM( LA_ALIST ) {
     struct tm tm;
     time_t ret;
 

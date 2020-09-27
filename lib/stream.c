@@ -24,11 +24,10 @@
 #endif /* DEBUG not defined */
 
 enum stream_ret
-stream( sp1, sp2, tp )
-    struct spec *sp1;			/* OUT: prefix */
-    struct spec *sp2;			/* IN: string OUT: remainder */
-    struct syntab *tp;
-{
+stream(
+    struct spec *sp1,			/* OUT: prefix */
+    struct spec *sp2,			/* IN: string OUT: remainder */
+    struct syntab *tp) {
     register unsigned char *cp;
     enum stream_ret ret;
     register int len;
@@ -125,10 +124,7 @@ stream( sp1, sp2, tp )
 
 /* new 9/9/97; hide CONTIN crock */
 static int
-findact(act, tp)
-    enum action act;    
-    struct syntab *tp;
-{
+findact(enum action act, struct syntab *tp) {
     const struct acts *ap;
     register int j;
 
@@ -146,10 +142,7 @@ findact(act, tp)
 
 /* 10/28/93 */
 void
-clertb(tp, act)
-    struct syntab *tp;
-    enum action act;
-{
+clertb(struct syntab *tp, enum action act) {
     int i, j;
     union {
 	long l;
@@ -182,11 +175,7 @@ clertb(tp, act)
 
 /* 10/28/93 */
 void
-plugtb(tp, act, sp)
-    struct syntab *tp;
-    enum action act;
-    struct spec *sp;
-{
+plugtb(struct syntab *tp, enum action act, struct spec *sp) {
     register unsigned char *cp;
     register int len;
     register int j;
@@ -203,10 +192,8 @@ plugtb(tp, act, sp)
 
 /* 8/5/97 [PLB59] */
 int
-any(sp, dp)
-    struct spec *sp;			/* subject */
-    struct descr *dp;			/* (not)any arg str */
-{
+any(struct spec *sp,			/* subject */
+    struct descr *dp) {			/* (not)any arg str */
     register unsigned char c, *cp;
     struct descr *vp;
     register int i;

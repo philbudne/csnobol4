@@ -19,7 +19,6 @@
 #include "equ.h"
 
 int
-COS( LA_ALIST ) LA_DCL
-{
+COS( LA_ALIST ) {
     RETREAL( cos( LA_REAL(0) ) );
 }

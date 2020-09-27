@@ -53,10 +53,7 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#ifdef HAVE_STDLIB_H                    /* before stdio, h.h */
 #include <stdlib.h>                     /* for strtol() */
-#endif
-
 #include <fcntl.h>
 
 /* only one will be set: */
@@ -113,8 +110,7 @@ static handle_handle_t dbm_files;
  * return handle, or failure
  */
 lret_t
-DBM_OPEN( LA_ALIST ) LA_DCL
-{
+DBM_OPEN( LA_ALIST ) {
     snohandle_t h;
     char *base;
     char modestr[1024];
@@ -185,8 +181,7 @@ DBM_OPEN( LA_ALIST ) LA_DCL
  * return null string or failure
  */
 lret_t
-DBM_CLOSE( LA_ALIST ) LA_DCL
-{
+DBM_CLOSE( LA_ALIST ) {
     DBM *f = lookup_handle(&dbm_files, LA_HANDLE(0));
     if (!f)
 	RETFAIL;
@@ -220,8 +215,7 @@ DBM_CLOSE( LA_ALIST ) LA_DCL
  *
  */
 lret_t
-DBM_STORE( LA_ALIST ) LA_DCL
-{
+DBM_STORE( LA_ALIST ) {
     datum key, data;
     DBM *f = lookup_handle(&dbm_files, LA_HANDLE(0));
     int flags;
@@ -263,8 +257,7 @@ DBM_STORE( LA_ALIST ) LA_DCL
  * datum or failure
  */
 lret_t
-DBM_FETCH( LA_ALIST ) LA_DCL
-{
+DBM_FETCH( LA_ALIST ) {
     datum key, data;
     DBM *f = lookup_handle(&dbm_files, LA_HANDLE(0));
     if (!f)
@@ -297,8 +290,7 @@ DBM_FETCH( LA_ALIST ) LA_DCL
  * failure: error
  */
 lret_t
-DBM_DELETE( LA_ALIST ) LA_DCL
-{
+DBM_DELETE( LA_ALIST ) {
     datum key;
     DBM *f = lookup_handle(&dbm_files, LA_HANDLE(0));
     int ret;
@@ -333,8 +325,7 @@ DBM_DELETE( LA_ALIST ) LA_DCL
  * datum or failure
  */
 lret_t
-DBM_FIRSTKEY( LA_ALIST ) LA_DCL
-{
+DBM_FIRSTKEY( LA_ALIST ) {
     datum key;
     DBM *f = lookup_handle(&dbm_files, LA_HANDLE(0));
     if (!f)
@@ -356,8 +347,7 @@ DBM_FIRSTKEY( LA_ALIST ) LA_DCL
  * data or failure
  */
 lret_t
-DBM_NEXTKEY( LA_ALIST ) LA_DCL
-{
+DBM_NEXTKEY( LA_ALIST ) {
     datum key;
     DBM *f = lookup_handle(&dbm_files, LA_HANDLE(0));
     if (!f)
@@ -384,8 +374,7 @@ DBM_NEXTKEY( LA_ALIST ) LA_DCL
  */
 
 lret_t
-DBM_ERROR( LA_ALIST ) LA_DCL
-{
+DBM_ERROR( LA_ALIST ) {
     DBM *f = lookup_handle(&dbm_files, LA_HANDLE(0));
     if (f && dbm_error(f))
 	RETNULL;
@@ -405,8 +394,7 @@ DBM_ERROR( LA_ALIST ) LA_DCL
  */
 
 lret_t
-DBM_CLEARERR( LA_ALIST ) LA_DCL
-{
+DBM_CLEARERR( LA_ALIST ) {
     DBM *f = lookup_handle(&dbm_files, LA_HANDLE(0));
     if (!f)
 	RETFAIL;

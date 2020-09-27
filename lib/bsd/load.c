@@ -25,12 +25,7 @@
 #include <fcntl.h>
 #include <a.out.h>
 
-#ifdef HAVE_STDLIB_H			/* before stdio */
 #include <stdlib.h>			/* for malloc, getenv */
-#else  /* HAVE_STDLIB_H not defined */
-extern void *malloc();
-extern char *getenv();
-#endif /* HAVE_STDLIB_H not defined */
 #include <stdio.h>
 
 #include "h.h"
@@ -69,12 +64,7 @@ struct func {
 static struct func *funcs;
 
 static int
-ld( output, addr, func, input )
-    char *output;
-    char *addr;
-    char *func;
-    char *input;
-{
+ld(char *output, char *addr, char *func, char *input) {
     char command[1024];			/* XXX */
 
     /*
@@ -98,10 +88,9 @@ ld( output, addr, func, input )
 #define PATHLEN 256			/* XXX use MAXPATHLEN from param.h? */
 
 int
-load(addr, sp1, sp2)
-    struct descr *addr;			/* OUT */
-    struct spec *sp1, *sp2;		/* function, library */
-{
+load(struct descr *addr,		/* OUT */
+     struct spec *sp1,			/* function */
+     struct spec *sp2) {		/* library */
     struct func *fp; 
     int l1;
 
@@ -239,9 +228,8 @@ load(addr, sp1, sp2)
 
 /* support for SIL "LINK" opcode -- call external function */
 int
-callx(retval, args, nargs, addr)
-    struct descr *retval, *args, *nargs, *addr;
-{
+callx(struct descr *retval, struct descr *args,
+      struct descr *nargs, struct descr *addr) {
     struct func *fp;
 
     fp = (struct func *) D_A(addr);
@@ -255,13 +243,11 @@ callx(retval, args, nargs, addr)
 }
 
 void
-unload(sp)
-    struct spec *sp;
-{
+unload(struct spec *sp) {
     struct func *fp, *pp;
     char name[1024];			/* XXX */
 
-    spec2str( sp, name, sizeof(name) );
+    spec2str( sp, name, sizeof(name) );	/* XXX mspec2str */
 
     for (pp = NULL, fp = funcs; fp != NULL; pp = fp, fp = fp->next) {
 	if (strcmp(fp->name, name) == 0)

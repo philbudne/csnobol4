@@ -32,7 +32,7 @@
 void parray();
 
 void
-more() {
+more(void) {
     static count;
     char buf[128];
 
@@ -44,9 +44,7 @@ more() {
 }
 
 void
-pdescr(dp)
-    struct descr *dp;
-{
+pdescr(struct descr *dp) {
     int unit;
 
     unit = res.punch[0].a.i;
@@ -139,7 +137,7 @@ pdescr(dp)
 }
 
 void
-dump_dyn() {
+dump_dyn(void) {
     int a;
 
     a = D_A(HDSGPT);
@@ -164,7 +162,7 @@ dump_dyn() {
 
 /* dump all strings/names */
 void
-dump_vars() {
+dump_vars(void) {
     int i;
     int unit;
 
@@ -196,9 +194,7 @@ dump_vars() {
 }
 
 void
-ptable(dp)
-    struct descr *dp;
-{
+ptable(struct descr *dp) {
     int d;
 
 #ifdef DEBUG
@@ -223,10 +219,7 @@ ptable(dp)
 }
 
 void
-parray(ap,elements)
-    struct array *ap;
-    int elements;
-{
+parray(struct array *ap, int elements) {
     int s, n;
     int unit;
 
@@ -259,9 +252,7 @@ parray(ap,elements)
 }
 
 void
-indent( level )
-    int level;
-{
+indent(int level) {
     level *= 4;
 
     while (level > 8) {
@@ -278,11 +269,7 @@ indent( level )
 /* dump code trees (as passed to TREPUB) */
 
 void
-pcode2( cp, level )
-    struct codenode *cp;
-    int level;
-{
-
+pcode2(struct codenode *cp, int level) {
     while (cp && cp != (struct codenode *)1) {
 	int n;
 
@@ -305,17 +292,13 @@ pcode2( cp, level )
 }
 
 void
-pcode( dp )
-    struct descr *dp;
-{
+pcode(struct descr *dp) {
     pcode2( dp, 0 );
 }
 #endif /* DEBUG defined */
 
 static void
-dump_keys( ptr )
-    struct pairblock *ptr;
-{
+dump_keys(struct pairblock *ptr) {
     int i, n;
     int unit;
 
@@ -332,21 +315,19 @@ dump_keys( ptr )
 
 /* dump unprotected keywords */
 void
-dump_ukeys() {
+dump_ukeys(void) {
     dump_keys(res.knatl[0].a.ptr);	/* D_A(KNATL) */
 }
 
 /* dump protected keywords */
 void
-dump_pkeys() {
+dump_pkeys(void) {
     dump_keys(res.kvatl[0].a.ptr);	/* D_A(KVATL) */
 }
 
 /* dump fields of a user datatype */
 void
-puser(dp)
-    struct descr *dp;			/* pointer to block pointer */
-{
+puser(struct descr *dp) {;		/* pointer to block pointer */
     /* 
      * 1. lookup dp->v in DTATL table (see pdescr()) to get type name
      * 2. lookup name in FNCPL (function table) to get pointer

@@ -59,12 +59,9 @@ static char sccsid[] = "@(#)tsort.c	8.3 (Berkeley) 5/4/95";
 #include "config.h"
 #endif
 
-#ifdef HAVE_STDLIB_H
 #include <stdlib.h>
-#endif
-#ifdef HAVE_STRING_H
 #include <string.h>
-#endif
+
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -91,14 +88,6 @@ static char sccsid[] = "@(#)tsort.c	8.3 (Berkeley) 5/4/95";
 #define	NF_ACYCLIC	0x2		/* this node is cycle free */
 #define	NF_NODEST	0x4		/* Unreachable */
 
-#ifndef __P
-#ifdef __STDC__
-#define __P(X) X
-#else
-#define __P(X) ()
-#endif
-#endif
-
 typedef struct node_str NODE;
 
 struct node_str {
@@ -123,20 +112,16 @@ int debug, longest, quiet;
 
 struct node_str *hashtab[HASHSIZE];
     
-void	 add_arc __P((char *, char *));
-int	 find_cycle __P((NODE *, NODE *, int, int));
-NODE	*get_node __P((char *));
-void	*grow_buf __P((void *, int));
-void	 remove_node __P((NODE *));
-void	 tsort __P((void));
-void	 usage __P((void));
+void	 add_arc(char *, char *);
+int	 find_cycle(NODE *, NODE *, int, int);
+NODE	*get_node(char *);
+void	*grow_buf(void *, int);
+void	 remove_node(NODE *);
+void	 tsort(void);
+void	 usage(void);
 
 void
-err(stat, fmt, arg)
-    int stat;
-    char *fmt;
-    char *arg;
-{
+err(int stat, char *fmt, char *arg) {
     char buf[1024];
     char *bp;
 
@@ -152,17 +137,15 @@ err(stat, fmt, arg)
 }
 
 int
-main(argc, argv)
-	int argc;
-	char *argv[];
-{
+main(int argc, char *argv[]) {
 	register BUF *b;
 	register int c, n;
 	FILE *fp;
-	int bsize, ch, nused;
+	int bsize, nused;
 	BUF bufs[2];
 
 #if 0
+	int ch;
 	while ((ch = getopt(argc, argv, "dlq")) != -1)
 		switch (ch) {
 		case 'd':
@@ -236,10 +219,7 @@ main(argc, argv)
 
 /* double the size of oldbuf and return a pointer to the new buffer. */
 void *
-grow_buf(bp, size)
-	void *bp;
-	int size;
-{
+grow_buf(void *bp, int size) {
 	if (bp == NULL) {
 	    if ((bp = (void *)malloc(size)) == NULL)
 		err(1, NULL, NULL);
@@ -255,9 +235,7 @@ grow_buf(bp, size)
  * the graph, then add them.
  */
 void
-add_arc(s1, s2)
-	char *s1, *s2;
-{
+add_arc(char *s1, char *s2) {
 	register NODE *n1;
 	NODE *n2;
 	int bsize, i;
@@ -291,9 +269,7 @@ add_arc(s1, s2)
 
 /* Find a node in the graph (insert if not found) and return a pointer to it. */
 NODE *
-get_node(name)
-	char *name;
-{
+get_node(char *name) {
 	NODE *n;
 	unsigned int hash;
 	char *cp;
@@ -337,8 +313,7 @@ get_node(name)
  * Clear the NODEST flag from all nodes.
  */
 void
-clear_cycle()
-{
+clear_cycle(void) {
 	NODE *n;
 
 	for (n = graph; n != NULL; n = n->n_next)
@@ -347,8 +322,7 @@ clear_cycle()
 
 /* do topological sort on graph */
 void
-tsort()
-{
+tsort(void) {
 	register NODE *n, *next;
 	register int cnt, i;
 
@@ -414,9 +388,7 @@ tsort()
 
 /* print node and remove from graph (does not actually free node) */
 void
-remove_node(n)
-	register NODE *n;
-{
+remove_node(NODE *n) {
 	register NODE **np;
 	register int i;
 
@@ -432,10 +404,7 @@ remove_node(n)
 
 /* look for the longest? cycle from node from to node to. */
 int
-find_cycle(from, to, longest_len, depth)
-	NODE *from, *to;
-	int depth, longest_len;
-{
+find_cycle(NODE *from, NODE *to, int depth, int longest_len) {
 	register NODE **np;
 	register int i, len;
 
@@ -480,8 +449,7 @@ find_cycle(from, to, longest_len, depth)
 }
 
 void
-usage()
-{
+usage(void) {
 	(void)fprintf(stderr, "usage: tsort [-dlq] [file]\n");
 	exit(1);
 }

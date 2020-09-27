@@ -6,10 +6,7 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-# ifdef HAVE_STDLIB_H
 # include <stdlib.h>			/* for malloc */
-# endif /* HAVE_STDLIB_H defined */
-
 # include <stdio.h>			/* for lib.h */
 # include "h.h"
 # include "snotypes.h"
@@ -54,10 +51,7 @@ const char vdate[] = VERSION_DATE;
 const char snoname[] = SNONAME;
 
 int
-main(argc, argv)
-    int argc;
-    char *argv[];
-{
+main(int argc, char *argv[]) {
 # ifdef NO_STATIC_VARS
 # ifdef ENDEX_LONGJMP
     jmp_buf _endex_jmpbuf;

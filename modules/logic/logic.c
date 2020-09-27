@@ -16,11 +16,7 @@
 #include "config.h"			/* before ANYTHING */
 #endif /* HAVE_CONFIG_H defined */
 
-#ifdef HAVE_STDLIB_H			/* before stdio, h.h */
 #include <stdlib.h>			/* for malloc(), strtol() */
-#else  /* HAVE_STDLIB_H not defined */
-extern void *malloc();
-#endif /* HAVE_STDLIB_H not defined */
 #include <ctype.h>
 
 #include "h.h"
@@ -65,10 +61,7 @@ typedef unsigned INT_T u_int_t;
 
 /* declare as "inline"? */
 static unsigned char
-logic_byte( op, arg2, arg3 )
-    int op;
-    unsigned char arg2, arg3;
-{
+logic_byte(int op, unsigned int arg2, unsigned int arg3) {
     switch (op) {
     case OP_AND:
 	return(arg2 & arg3);
@@ -108,8 +101,7 @@ static const char alphabet[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
  * LOAD("LOGIC(INTEGER,,)", LOGIC_DL)
  */
 lret_t
-LOGIC( LA_ALIST ) LA_DCL
-{
+LOGIC( LA_ALIST ) {
     int_t op = LA_INT(0);
     int a2type, a3type;
     u_int_t arg2, arg3;

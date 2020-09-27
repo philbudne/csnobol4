@@ -6,22 +6,9 @@ genc:
     Turn SELBRA & STREAM with single label into if
 
 Modernize:
-    Use strdup in io.c
-    eliminate ifdef __STDC__ HAVE_STDLIB_H
-    Get rid of __P in includes (and includes of h.h)
-    Use cproto to convert library code
-    genc.sno: output ANSI code
-    Use ANSI strchr/strchr in ndbm/sdbm/dbe.c ffi/ffi.c
-    Remove stdlib ifdefs?
-    Replace varargs
-    Replace bzero in: auxil/bindresvport.c bsd/inet(6).c bsd/load.c
-	snolib/handle.c snolib/serv.c win32/inet.c break.c init.c io.c
-	ordvst.c ffi/ffi.c
-    Replace bcopy (consider spec2str):
-	str.h ansi/spcint.c ansi/spreal.c auxil/bcopy.c bsd/inet6.c
-	bsd/inet.c c99/spcint.c generic/spcint.c generic/spreal.c
-	snolib/getstring.c snolib/retstring.c win32/inet.c io.c str.c
-    Replace bcmp in ndbm/sdbm/tune.h include/macros.h
+    use mspec2str in io.c
+    convert remaining library routines
+    Replace bzero, bcopy
 
 Add 1969(!) factor.sno to tests
 	other tests from DEC-10 and VAX SNOBOL?

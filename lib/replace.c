@@ -20,12 +20,7 @@
 #endif /* ALPHSZ & MASK */
 
 void
-rplace(sp1, sp2, sp3)
-    struct spec *sp1, *sp2, *sp3;
-{
-#if 0
-    INTR10();
-#else  /* not 0 */
+rplace(struct spec *sp1, struct spec *sp2, struct spec *sp3) {
     int l1, l2, l3;
     char *cp1, *cp2, *cp3;
     char table[ALPHSZ];
@@ -54,5 +49,4 @@ rplace(sp1, sp2, sp3)
 	*cp1 = table[ *cp1 & MASK ];
 	cp1++;
     }	
-#endif /* not 0 */
 }

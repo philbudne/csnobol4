@@ -243,11 +243,7 @@ MB99	OUTPUT(.OUTPUT,99,,INLINE_DIR NAME)
 BPROC2	STATIC = "static "
 	STATIC = DIFFER(GLOBAL<NAME>)
 	OUTPUT = STATIC PROCTYPE
-	OUTPUT = F_ NAME '(retval)'
-	INDENT()
-	OUTPUT = IND 'ret_t retval;'
-	UNINDENT()
-	OUTPUT = '{'
+	OUTPUT = F_ NAME '(ret_t retval) {'
 	INDENT()
 * for call depth tracing, top of function label
 	OUTPUT = IND 'ENTRY(' NAME ')'
@@ -571,7 +567,7 @@ ESPEC
 
 	DEFINE("MKPROC(PROC)STAT")			:(EMKPROC)
 MKPROC	DIFFER(ISPROC<PROC>)				:S(RETURN)
-	STATIC.H = IDENT(GLOBAL<PROC>) 'static ' PROCTYPE ' ' PROC ' __P((ret_t));'
+	STATIC.H = IDENT(GLOBAL<PROC>) 'static ' PROCTYPE ' ' PROC '(ret_t);'
 	THAW(ISPROC)
 	ISPROC<PROC> = 1
 	FREEZE(ISPROC)					:(RETURN)
@@ -662,7 +658,7 @@ GLOBLOP	PROC = GLOB					:F(GLOBEND)
 *	skip comments!
 	PROC '*'					:S(GLOBLOP)
 	GLOBAL<PROC> = 1
-	PROC.H = 'extern ' PROCTYPE ' ' PROC ' __P((ret_t));'
+	PROC.H = 'extern ' PROCTYPE ' ' PROC '(ret_t);'
 *	make sure it's a proc!
 	MKPROC(PROC)					:(GLOBLOP)
 GLOBEND	FREEZE(GLOBAL)

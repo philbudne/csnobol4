@@ -16,9 +16,7 @@
 /* NS: /NextDeveloper/Headers/mach-o/dyld.h */
 #include <mach-o/dyld.h>
 
-#ifdef HAVE_STDLIB_H			/* before stdio */
 #include <stdlib.h>			/* malloc(), getenv() */
-#endif /* HAVE_STDLIB_H defined */
 #include <stdio.h>
 
 #include "h.h"
@@ -46,10 +44,9 @@ static struct func *funcs;
 #define PATHLEN 256			/* XXX use MAXPATHLEN from param.h? */
 
 int
-load(addr, sp1, sp2)
-    struct descr *addr;			/* OUT */
-    struct spec *sp1, *sp2;		/* function, library */
-{
+load(struct descr *addr,		/* OUT */
+     struct spec *sp1,			/* function */
+     struct spec *sp2) {		/* library */
     struct func *fp; 
     int l1;
 
@@ -173,9 +170,8 @@ load(addr, sp1, sp2)
 
 /* support for SIL "LINK" opcode -- call external function */
 int
-callx(retval, args, nargs, addr)
-    struct descr *retval, *args, *nargs, *addr;
-{
+callx(struct descr *retval, struct descr *args,
+      struct descr *nargs, struct descr *addr) {
     struct func *fp;
 
     /* XXX check for zero V & F fields?? */
@@ -190,9 +186,7 @@ callx(retval, args, nargs, addr)
 }
 
 void
-unload(sp)
-    struct spec *sp;
-{
+unload(struct spec *sp) {
     struct func *fp, *pp;
     char name[1024];			/* XXX */
     int opt;

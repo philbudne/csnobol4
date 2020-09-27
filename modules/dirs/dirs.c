@@ -11,10 +11,7 @@
 
 #include <sys/types.h>
 #include <dirent.h>
-
-#ifdef HAVE_STDLIB_H
 #include <stdlib.h>			/* free() */
-#endif
 
 #include "h.h"
 #include "equ.h"
@@ -49,8 +46,7 @@ static handle_handle_t dir_handles;
  * return handle, or failure
  */
 lret_t
-OPENDIR( LA_ALIST ) LA_DCL
-{
+OPENDIR( LA_ALIST ) {
     char *fname = mgetstring(LA_PTR(0));
     DIR *d = opendir(fname);
     snohandle_t h;
@@ -81,8 +77,7 @@ OPENDIR( LA_ALIST ) LA_DCL
  * return name or failure
  */
 lret_t
-READDIR( LA_ALIST ) LA_DCL
-{
+READDIR( LA_ALIST ) {
     DIR *d = lookup_handle(&dir_handles, LA_HANDLE(0));
     struct dirent *dp;
 
@@ -109,8 +104,7 @@ READDIR( LA_ALIST ) LA_DCL
  * returns: null string or failure
  */
 lret_t
-REWINDDIR( LA_ALIST ) LA_DCL
-{
+REWINDDIR( LA_ALIST ) {
     snohandle_t h = LA_HANDLE(0);
     DIR *d = lookup_handle(&dir_handles, LA_HANDLE(0));
 
@@ -134,8 +128,7 @@ REWINDDIR( LA_ALIST ) LA_DCL
  * returns: integer or failure
  */
 lret_t
-TELLDIR( LA_ALIST ) LA_DCL
-{
+TELLDIR( LA_ALIST ) {
     snohandle_t h = LA_HANDLE(0);
     DIR *d = lookup_handle(&dir_handles, LA_HANDLE(0));
 
@@ -156,8 +149,7 @@ TELLDIR( LA_ALIST ) LA_DCL
  * returns: null string or failure
  */
 lret_t
-SEEKDIR( LA_ALIST ) LA_DCL
-{
+SEEKDIR( LA_ALIST ) {
     snohandle_t h = LA_HANDLE(0);
     DIR *d = lookup_handle(&dir_handles, LA_HANDLE(0));
     if (!d)
@@ -179,8 +171,7 @@ SEEKDIR( LA_ALIST ) LA_DCL
  * returns: null string or failure
  */
 lret_t
-CLOSEDIR( LA_ALIST ) LA_DCL
-{
+CLOSEDIR( LA_ALIST ) {
     snohandle_t h = LA_HANDLE(0);
     DIR *d = lookup_handle(&dir_handles, LA_HANDLE(0));
 

@@ -17,11 +17,7 @@
 #endif /* HAVE_CONFIG_H defined */
 
 #include <stdio.h>			/* for lib.h */
-#ifdef HAVE_STDLIB_H
 #include <stdlib.h>
-#else
-extern void *malloc();
-#endif
 
 #include "h.h"
 #include "equ.h"
@@ -31,8 +27,7 @@ extern void *malloc();
 #include "lib.h"			/* exists() */
 
 int
-FILE2( LA_ALIST ) LA_DCL		/* avoid stdio name collision */
-{
+FILE2( LA_ALIST ) {			/* avoid stdio name collision */
     char *path = mgetstring(LA_PTR(0));
     int succ = exists(path);
     free(path);
@@ -40,8 +35,7 @@ FILE2( LA_ALIST ) LA_DCL		/* avoid stdio name collision */
 }
 
 int
-FILE_ISDIR( LA_ALIST ) LA_DCL
-{
+FILE_ISDIR( LA_ALIST ) {
     char *path = mgetstring(LA_PTR(0));
     int succ = isdir(path);
     free(path);
@@ -49,8 +43,7 @@ FILE_ISDIR( LA_ALIST ) LA_DCL
 }
 
 int
-FILE_ABSPATH( LA_ALIST ) LA_DCL
-{
+FILE_ABSPATH( LA_ALIST ) {
     char *path = mgetstring(LA_PTR(0));
     int succ = abspath(path);
     free(path);

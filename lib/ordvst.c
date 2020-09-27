@@ -18,13 +18,9 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#ifdef HAVE_STDLIB_H			/* before stdio, h.h */
 #include <stdlib.h>			/* for malloc */
-#else  /* HAVE_STDLIB_H not defined */
-extern void *malloc();
-#endif /* HAVE_STDLIB_H not defined */
-
 #include <stdio.h>
+
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
@@ -114,13 +110,7 @@ ordvst_strcmp(s1,l1, s2,l2)
  *
  */
 static int
-#ifdef __STDC__
-ordvst_cmp(const void *v1, const void *v2)
-#else
-ordvst_cmp(v1, v2)
-    const void *v1, *v2;
-#endif
-{
+ordvst_cmp(const void *v1, const void *v2) {
     int l1,l2;				/* Length variables */
     char *n1, *n2;			/* Name pointers */
     const struct descr **d1 = (const struct descr **)v1;
@@ -143,8 +133,7 @@ ordvst_cmp(v1, v2)
  *	list of string structures will be left unchanged.
  */
 void
-ordvst()
-{
+ordvst(void) {
     int bc;				/* Bin count */
     int i;				/* Looping variable */
     struct descr *bd;			/* Descriptor from the bins */

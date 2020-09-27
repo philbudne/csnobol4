@@ -7,9 +7,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#ifdef HAVE_STDLIB_H
 #include <stdlib.h>
-#endif
 
 #include "h.h"
 #include "equ.h"
@@ -58,10 +56,7 @@ enum st_member {
 };
 
 static void
-st2sno(st, dp)
-    struct stat *st;
-    struct descr *dp;
-{
+st2sno(struct stat *st, struct descr *dp) {
     int type;
     switch (st->st_mode & S_IFMT) {
 #ifdef S_IFIFO
@@ -111,8 +106,7 @@ st2sno(st, dp)
  * LOAD("STAT_(STRING,ST)STRING", STAT_DL)
  */
 lret_t
-STAT_( LA_ALIST ) LA_DCL
-{
+STAT_( LA_ALIST ) {
     char *path;
     struct descr *dp = LA_PTR(1);
     struct stat st;
@@ -137,8 +131,7 @@ STAT_( LA_ALIST ) LA_DCL
  * LOAD("LSTAT_(STRING,ST)STRING", STAT_DL)
  */
 lret_t
-LSTAT_( LA_ALIST ) LA_DCL
-{
+LSTAT_( LA_ALIST ) {
 #ifdef HAVE_LSTAT
     char *path;
     struct descr *dp = LA_PTR(1);
@@ -167,8 +160,7 @@ LSTAT_( LA_ALIST ) LA_DCL
  * LOAD("FSTAT_(INTEGER,ST)STRING", STAT_DL)
  */
 lret_t
-FSTAT_( LA_ALIST ) LA_DCL
-{
+FSTAT_( LA_ALIST ) {
     struct descr *dp = LA_PTR(1);
     struct stat st;
     int ret;

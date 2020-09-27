@@ -18,9 +18,7 @@
 #include "lib.h"
 
 void
-addsib( d1, d2 )
-    struct descr *d1, *d2;
-{
+addsib(struct descr *d1, struct descr *d2) {
     int_t a1, a2, a3;
 
     a1 = D_A(d1);
@@ -34,9 +32,7 @@ addsib( d1, d2 )
 }
 
 void
-addson( d1, d2 )
-    struct descr *d1, *d2;
-{
+addson(struct descr *d1, struct descr *d2) {
     int_t a1, a2;
 
     a1 = D_A(d1);
@@ -49,9 +45,7 @@ addson( d1, d2 )
 }
 
 void
-insert( d1, d2 )
-    struct descr *d1, *d2;
-{
+insert(struct descr *d1, struct descr *d2) {
     int_t a1, a2, a3, a4, x, y;
 
     a1 = D_A(d1);

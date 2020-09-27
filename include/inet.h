@@ -11,12 +11,12 @@
 #define SETSOCKOPT_ARG_CAST
 #endif
 
-sock_t tcp_socket __P((char *, char *, int, int));
-sock_t udp_socket __P((char *, char *, int, int));
-void inet_cleanup __P((void));
+sock_t tcp_socket(char *, char *, int, int);
+sock_t udp_socket(char *, char *, int, int);
+void inet_cleanup(void);
 
 /*
- * flags returned by inet_parse,
+ * flags returned by inet_parse (in io.h)
  * used by tcp_socket, udp_socket
  */
 

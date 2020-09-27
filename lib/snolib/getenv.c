@@ -22,9 +22,7 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#ifdef HAVE_STDLIB_H
 #include <stdlib.h>			/* for free() */
-#endif
 
 #include "h.h"
 #include "equ.h"
@@ -35,8 +33,7 @@
 extern char *getenv();
 
 int
-GETENV( LA_ALIST ) LA_DCL
-{
+GETENV( LA_ALIST ) {
     char *var, *val;
 
     var = mgetstring(LA_PTR(0));

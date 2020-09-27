@@ -19,12 +19,7 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#ifdef HAVE_STDLIB_H			/* before stdio */
 #include <stdlib.h>			/* for malloc */
-#else  /* HAVE_STDLIB_H not defined */
-extern void *malloc();
-#endif /* HAVE_STDLIB_H not defined */
-
 #include <stdio.h>
 
 #ifdef USE_TERMIO			/* old SVID interface */
@@ -73,18 +68,13 @@ enum action { FIND, CREATE, REMOVE };
 
 /* invalid last mode; insure next use sets to "curr" state */
 static void
-tty_invalidate(sp)
-    struct save *sp;
-{
+tty_invalidate(struct save *sp) {
     /* see VALID() above */
     sp->noecho = sp->cbreak = sp->recl = -1;
 }
 
 static struct save *
-find_by_fd(fd, action)
-    int fd;
-    enum action action;
-{
+find_by_fd(int fd, enum action action) {
     struct stat st;
     struct save *sp, *pp;
 
@@ -123,10 +113,7 @@ find_by_fd(fd, action)
 }
 
 void
-tty_mode( fp, cbreak, noecho, recl )
-    FILE *fp;
-    int cbreak, noecho, recl;
-{
+tty_mode(FILE *fp, int cbreak, int noecho, int recl) {
     struct save *sp;
     static dev_t last;
     int fd;
@@ -179,9 +166,7 @@ tty_mode( fp, cbreak, noecho, recl )
 
 /* advisory notice (does not perform close) */
 void
-tty_close(f)
-    FILE *f;
-{
+tty_close(FILE *f) {
     struct save *sp;
     int fd;
 
@@ -209,8 +194,7 @@ tty_close(f)
 
 #ifdef SIGTSTP
 void
-tty_suspend()
-{
+tty_suspend(void) {
     struct save *sp;
     int fd;
 

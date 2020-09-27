@@ -20,12 +20,7 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#ifdef HAVE_STDLIB_H			/* before stdio */
 #include <stdlib.h>			/* getenv(),system(),free() */
-#else  /* HAVE_STDLIB_H not defined */
-extern char *getenv();
-#endif /* HAVE_STDLIB_H not defined */
-
 #include <stdio.h>			/* for lib.h, sprintf() */
 #include <ctype.h>			/* isdigit() */
 
@@ -63,8 +58,7 @@ extern const char build_dir[];
 #endif /* HAVE_BUILD_VARS defined */
 
 int
-HOST( LA_ALIST ) LA_DCL
-{
+HOST( LA_ALIST ) {
     char buf[1024];			/* XXX */
     char *str;
     int_t n;

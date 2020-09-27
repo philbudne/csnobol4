@@ -28,10 +28,7 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#ifdef HAVE_STDLIB_H			/* before stdio.h */
 #include <stdlib.h>			/* exit() */
-#endif /* HAVE_STDLIB_H defined */
-
 #include <stdio.h>
 #include <errno.h>
 #ifdef __DECC
@@ -47,9 +44,7 @@
 #endif /* W_OK not defined */
 
 int
-getredirection(argc, argv)
-int		argc;
-char		**argv;
+getredirection(int argc, char **argv) {
 /*
  * Process vms redirection arg's.  Exit if any error is seen.
  * If getredirection() processes an argument, it is erased

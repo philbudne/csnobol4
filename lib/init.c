@@ -4,12 +4,7 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#ifdef HAVE_STDLIB_H			/* before stdio */
 #include <stdlib.h>			/* for malloc */
-#else  /* HAVE_STDLIB_H not defined */
-extern void *malloc();
-#endif /* HAVE_STDLIB_H not defined */
-
 #include <stdio.h>
 #include <signal.h>
 
@@ -40,13 +35,9 @@ extern void *malloc();
 #define SIGFUNC_T void
 #endif /* SIGFUNC_T not defined */
 
-#ifdef __STDC__
+#ifndef SIGFUNC_ARG
 #define SIGFUNC_ARG int sig
-#define SIGFUNC_ARG_DECL
-#else
-#define SIGFUNC_ARG sig
-#define SIGFUNC_ARG_DECL int sig;
-#endif
+#endif /* SIGFUNC_ARG not defined */
 
 #ifndef NDYNAMIC
 #define NDYNAMIC (512*1024)		/* default dynamic region size */
@@ -96,23 +87,18 @@ static int xflag;
 #endif /* NO_STATIC_VARS not defined */
 
 #ifndef HAVE_GETOPT_EXTERNS
-/* from getopt() */
+/* needed w/ own getopt & on SunOS4?! */
 extern int optind;
 extern char *optarg;
 #endif
 
 static void
-p( flag, str )
-    char flag;
-    char *str;
-{
+p(int flag, char *str) {
     fprintf(stderr, "-%c\t%s\n", flag, str);
 }
 
 static char *
-showk( n )
-    int n;
-{
+showk(int n) {
     static char buf[32];
     int k, m;
 
@@ -130,10 +116,7 @@ showk( n )
 }
 
 static void
-usage( jname, justversion )
-    char *jname;
-    int justversion;
-{
+usage(char *jname, int justversion) {
     extern const char snoname[], vers[], vdate[];
     fprintf( stderr, "%s version %s (%s)\n", snoname, vers, vdate );
 #ifdef HAVE_BUILD_VARS
@@ -181,10 +164,7 @@ usage( jname, justversion )
 }
 
 static int
-getk( str, out )
-    char *str;
-    size_t *out;
-{
+getk(char *str, size_t *out) {
     char suff;
     unsigned long val;
     switch (sscanf(str, "%lu%c", &val, &suff)) {
@@ -211,10 +191,8 @@ getk( str, out )
  */
 
 static char *
-getargs(start, sp)
-    int start;				/* which argument to start on */
-    struct spec *sp;			/* dest spec, or NULL */
-{
+getargs(int start,			/* which argument to start on */
+	struct spec *sp) {		/* dest spec, or NULL */
     int i;
     char *parms;
     register char *pp;
@@ -253,9 +231,7 @@ getargs(start, sp)
 }
 
 static void
-io_init(stdinc)				/* here from init_args() */
-    int stdinc;
-{
+io_init(int stdinc) {			/* here from init_args() */
     FILE *termin;
 
     io_initvars();
@@ -348,10 +324,7 @@ pathinit(int stdinc) {
 
 /* called from main.c after init_data, before xfer to SIL BEGIN label */
 void
-init_args( ac, av )
-    int ac;
-    char *av[];
-{
+init_args(int ac, char *av[]) {
     int errs;
     int c;
     int multifile;
@@ -581,9 +554,7 @@ volatile int math_error;		/* see macros.h */
 #endif /* NO_STATIC_VARS not defined */
 
 static SIGFUNC_T
-math_catch(SIGFUNC_ARG)
-    SIGFUNC_ARG_DECL
-{
+math_catch(SIGFUNC_ARG) {
 #ifdef SIGFPE
     signal(SIGFPE, math_catch);
 #endif /* SIGFPE defined */
@@ -597,18 +568,14 @@ math_catch(SIGFUNC_ARG)
 
 /* handle fatal errors */
 static SIGFUNC_T
-err_catch(SIGFUNC_ARG)
-    SIGFUNC_ARG_DECL
-{
+err_catch(SIGFUNC_ARG) {
     D_A(SIGNCL) = sig;			/* save signal number for output */
     SYSCUT(NORET);
 }
 
 /* handle ^C (SIGINT) here */
 static SIGFUNC_T
-sig_catch(SIGFUNC_ARG)
-    SIGFUNC_ARG_DECL
-{
+sig_catch(SIGFUNC_ARG) {
     if (D_A(COMPCL) || D_A(ERRLCL) == 0) /* in compiler or &ERRLIMIT == 0*/
 	err_catch(sig);			/* treat as before */
 
@@ -623,9 +590,7 @@ sig_catch(SIGFUNC_ARG)
 
 #ifdef SIGTSTP
 static SIGFUNC_T
-suspend(SIGFUNC_ARG)
-    SIGFUNC_ARG_DECL
-{
+suspend(SIGFUNC_ARG) {
     tty_suspend();			/* restore tty mode(s) */
 
     /* reestablish handler (does any system with job control,

@@ -9,13 +9,7 @@
 #include "config.h"
 #endif
 
-#ifdef HAVE_STDLIB_H
 #include <stdlib.h>
-#else
-void *malloc();
-void *realloc()
-#endif
-
 #include <stdio.h>
 
 /* NOTE!!! Similar code appears in lib/auxil/bufio_obj.c!!! */

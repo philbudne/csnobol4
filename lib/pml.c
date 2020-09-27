@@ -25,7 +25,7 @@ struct pmlfunc {
 };
 
 /* shorthand for function with same name for LOAD() and entry point */
-#define PMLFUNC(NAME) PMLFUNC2(STRING(NAME),NAME)
+#define PMLFUNC(NAME) PMLFUNC2(#NAME,NAME)
 
 #define PMPROTO(PROTO)
 #define PMLFUNC2(NAME,ADDR) extern int ADDR(LOAD_PROTO);
@@ -49,19 +49,8 @@ static const char *pm_prototypes[] = {
 
 #define NPROTO (sizeof(pm_prototypes)/sizeof(pm_prototypes[0]))-1
 
-#ifdef __STDC__
-/* necessary on nextstep? */
-#define NAME1 char *name
-#define NAME2
-#else  /* __STDC__ not defined */
-#define NAME1 name
-#define NAME2 char *name;
-#endif /* __STDC__ not defined */
-
 /* function of char *name which returns pointer to "loaded" function */
-int (*pml_find(NAME1))(LOAD_PROTO)
-    NAME2
-{
+int (*pml_find(char *name))(LOAD_PROTO) {
     const struct pmlfunc *fp;
 
     for (fp = pmltab; fp->name; fp++) {
@@ -74,10 +63,8 @@ int (*pml_find(NAME1))(LOAD_PROTO)
 
 /* return n'th prototype for function to auto-load */
 int
-getpmproto(sp,dp)
-    struct spec *sp;			/* OUT: spec */
-    struct descr *dp;			/* IN: which prototype */
-{
+getpmproto(struct spec *sp,		/* OUT: spec */
+	   struct descr *dp) {		/* IN: which prototype */
     if (D_A(dp) >= NPROTO)
 	return FALSE;
 

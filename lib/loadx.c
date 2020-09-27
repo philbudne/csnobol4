@@ -7,9 +7,7 @@
 #endif
 
 #include <stdio.h>
-#ifdef HAVE_STDLIB_H
 #include <stdlib.h>			/* free() */
-#endif
 
 #include "h.h"
 #include "snotypes.h"
@@ -21,10 +19,9 @@
 
 /* support for SIL "LOAD" opcode -- load external function */
 int
-load(addr, sp1, sp2)
-    struct descr *addr;			/* OUT */
-    struct spec *sp1, *sp2;		/* function, library */
-{
+load(struct descr *addr,		/* OUT */
+     struct spec *sp1,			/* function */
+     struct spec *sp2) {		/* library */
     char *fname = mspec2str(sp1);
     char *lname = mspec2str(sp2);	/* XXX sub SNOLIB_FILE if empty? */
     int (*entry)(LOAD_PROTO);		/* function entry point */
@@ -69,9 +66,8 @@ load(addr, sp1, sp2)
 
 /* support for SIL "LINK" opcode -- call external function */
 int
-callx(retval, args, nargs, addr)
-    struct descr *retval, *args, *nargs, *addr;
-{
+callx(struct descr *retval, struct descr *args,
+      struct descr *nargs, struct descr *addr) {
     int (*entry)(LOAD_PROTO) = (int (*)(LOAD_PROTO))D_A(addr);
 
     /* XXX check for zero V & F fields?? */

@@ -906,12 +906,6 @@ fi
 echo '#define SIZEOF_INT_T	'$SIZEOF_INT_T'	/* for use in ifdefs */' >> $CONFIG_H
 echo '#define SIZEOF_REAL_T	'$SIZEOF_REAL_T'	/* for use in ifdefs */' >> $CONFIG_H
 
-if config/check stdlib.h; then
-    echo 'using ANSI stdlib.h' 1>&2
-    echo '#define HAVE_STDLIB_H'		>> $CONFIG_H
-    HAVE_STDLIB_H=1
-fi
-
 if config/check unistd.h; then
     echo 'using POSIX unistd.h' 1>&2
     echo '#define HAVE_UNISTD_H'		>> $CONFIG_H
@@ -967,7 +961,7 @@ elif config/check sys/times.h "struct tms tt; times(&tt)"; then
 	echo '#define HZ 50'			>> $CONFIG_H
 	;;
     esac
-elif [ "$HAVE_STDLIB_H" ]; then
+elif check time.h 'clock_t t = clock()'; then
     echo 'using clock() for runtimes' 1>&2
     # least preferable; includes system time (or may be wall clock time)
     # may need to guess tick size
@@ -1009,48 +1003,20 @@ else
     echo 'SYS_C=$(SRCDIR)lib/generic/sys.c'	>> $CONFIG_M4
 fi
 
-# prefer v7/berkeley string functions
-# These days strings.h may be just the "bstring" functions (bzero, bcopy)
-# and the index/rindex functions, and not include the basic str* functions.
-# Or, it may be indentical to string.h (one just includes the other), or
-# it might be a superset of string.h.  I haven't (yet) seen a situation
-# where it's fatal to include both.
-
-if config/check strings.h 'rindex("", 65)'; then
-    echo '#define HAVE_STRINGS_H'		>> $CONFIG_H
-    echo 'using BSD strings.h' 1>&2
-    HAVE_STRINGS_H=1
-fi
-
-if config/check string.h 'strchr("", 65)'; then
-    echo 'using ANSI string.h' 1>&2
-    echo '#define HAVE_STRING_H'		>> $CONFIG_H
-    if [ "$HAVE_STRINGS_H" ]; then
-	true
-    elif grep bcopy $INCDIR/string.h >/dev/null; then
-	echo 'using system provided bcopy() function' 1>&2
-    elif test "$FORCE_MEMMOVE" && \
-        grep memmove $INCDIR/string.h >/dev/null; then
-	# The only system with no bcopy() which has memmove()
-	# is Solaris 2.4, and our bcopy() beats memmove()?!
-	echo 'using system provided memmove() function' 1>&2
-	echo '#define USE_MEMMOVE'		>> $CONFIG_H
-    else
-	echo 'using private bcopy() function' 1>&2
-	echo 'ADD_OBJS([bcopy.o])'		>> $CONFIG_M4
-	echo 'ADD_SRCS([$(BCOPY_C)])'		>> $CONFIG_M4
-	echo '#define NEED_BCOPY'		>> $CONFIG_H
-    fi
-
-    # memset may be optimized for zeroing, or may not!
-    if [ "$HAVE_STRINGS_H" ] || grep bzero $INCDIR/string.h >/dev/null; then
-	echo 'using system provided bzero() function' 1>&2
-    else
-	echo 'using private bzero() function' 1>&2
-	echo 'ADD_OBJS([bzero.o])'		>> $CONFIG_M4
-	echo 'ADD_SRCS([$(BZERO_C)])'		>> $CONFIG_M4
-	echo '#define NEED_BZERO'		>> $CONFIG_H
-    fi
+if config/check strings.h 'bcopy("", "", 0)'; then
+    echo 'using system provided bcopy() function' 1>&2
+    echo '#define HAVE_BCOPY'		>> $CONFIG_H
+elif test "$FORCE_MEMMOVE" && \
+	config/check string.h 'memove("", "", 0)'; then
+    # The only system with no bcopy() which has memmove()
+    # is Solaris 2.4, and our bcopy() beats memmove()?!
+    echo 'using system provided memmove() function' 1>&2
+    echo '#define USE_MEMMOVE'		>> $CONFIG_H
+else
+    echo 'using private bcopy() function' 1>&2
+    echo 'ADD_OBJS([bcopy.o])'		>> $CONFIG_M4
+    echo 'ADD_SRCS([$(BCOPY_C)])'	>> $CONFIG_M4
+    echo '#define NEED_BCOPY'		>> $CONFIG_H
 fi
 
 if config/check 'sys/types.h sys/socket.h' ""; then
@@ -1281,9 +1247,7 @@ if config/check unistd.h 'int x = getopt(argc, argv, "t"), y=optind'; then
     echo 'using system provided getopt() function' 1>&2
     echo '#define HAVE_GETOPT'			>> $CONFIG_H
     echo '#define HAVE_GETOPT_EXTERNS'		>> $CONFIG_H
-elif config/check stdio.h 'getopt(argc, argv, "")' || \
-   config/check stdlib.h 'getopt(argc, argv, "")' || \
-   config/check unistd.h 'getopt(argc, argv, "")'; then
+elif config/check stdio.h 'getopt(argc, argv, "")'; then
     echo 'using system provided getopt() function w/ externs' 1>&2
     echo '#define HAVE_GETOPT'			>> $CONFIG_H
 else
@@ -1293,7 +1257,7 @@ else
     echo 'ADD_SRCS([$(GETOPT_C)])'		>> $CONFIG_M4
 fi
 
-# POSIX-1.2008 (from glibc)
+# POSIX-1.2008 (via glibc)
 if config/check stdio.h 'char *buf; size_t len; getline(&buf, &len, stdin)'; then
     echo 'using system provided getline() function' 1>&2
     echo '#define HAVE_GETLINE'			>> $CONFIG_H

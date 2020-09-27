@@ -12,13 +12,7 @@
 #include "lib.h"			/* getbal() prototype */
 
 int
-getbal(sp, dp)
-    struct spec *sp;
-    struct descr *dp;
-{
-#if 0
-    UNDF(NORET);
-#else  /* not 0 */
+getbal(struct spec *sp, struct descr *dp) {
     int len;
     char *cp;
     int count, j;
@@ -50,6 +44,5 @@ getbal(sp, dp)
 	return 0;
     S_L(sp) += j;
     return 1;				/* true (success) */
-#endif /* not 0 */
 }
 

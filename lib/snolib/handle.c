@@ -9,12 +9,7 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#ifdef HAVE_STDLIB_H                    /* before stdio */
 #include <stdlib.h>                     /* for malloc */
-#else  /* HAVE_STDLIB_H not defined */
-extern void *malloc();
-#endif /* HAVE_STDLIB_H not defined */
-
 #include <stdio.h>			/* for NULL */
 
 #include "snotypes.h"
@@ -50,10 +45,7 @@ struct handle_table {
 static const struct descr bad_handle;
 
 SNOEXP(void *)
-lookup_handle(hhp, h)
-    handle_handle_t *hhp;
-    snohandle_t h;
-{
+lookup_handle(handle_handle_t *hhp, snohandle_t h) {
     struct handle_table *htp = *hhp;
     struct handle_entry *hp;
 
@@ -72,11 +64,7 @@ lookup_handle(hhp, h)
 }
 
 SNOEXP(snohandle_t)
-new_handle(hhp, vp, tname)
-    handle_handle_t *hhp;
-    void *vp;
-    const char *tname;
-{
+new_handle(handle_handle_t *hhp, void *vp, const char *tname) {
     struct handle_table *htp = *hhp;
     struct handle_entry *hp;
     struct descr h;
@@ -118,10 +106,7 @@ new_handle(hhp, vp, tname)
 }
 
 SNOEXP(void)
-remove_handle(hhp, h)
-    handle_handle_t *hhp;
-    snohandle_t h;
-{
+remove_handle(handle_handle_t *hhp, snohandle_t h) {
     struct handle_table *htp = *hhp;
     struct handle_entry *hp, *pp;
     int hash = HANDLE_HASH(h.a.i);

@@ -4,9 +4,7 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#ifdef HAVE_STDLIB_H			/* before stdio */
 #include <stdlib.h>			/* for exit(), abort() */
-#endif /* HAVE_STDLIB_H defined */
 #include <stdio.h>			/* for lib.h */
 
 #include "h.h"				/* for data.h */
@@ -35,9 +33,7 @@ int returns[MAX_DEPTH];
 #endif /* TRACE_DEPTH defined */
 
 void
-endex( x )
-    int x;
-{
+endex(int x) {
 #ifdef TRACE_DEPTH
     int i;
 #endif /* TRACE_DEPTH defined */

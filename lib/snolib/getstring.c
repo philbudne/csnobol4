@@ -4,11 +4,7 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#ifdef HAVE_STDLIB_H			/* before stdio, h.h */
 #include <stdlib.h>			/* for malloc */
-#else  /* HAVE_STDLIB_H not defined */
-extern void *malloc();
-#endif /* HAVE_STDLIB_H not defined */
 
 #include "str.h"			/* before h.h to get system __P */
 #include "h.h"
@@ -18,11 +14,9 @@ extern void *malloc();
 #include "load.h"			/* prototypes */
 
 EXPORT(void)
-getstring( vp, dp, len )
-    const void *vp;			/* pointer to "natural variable" */
-    char *dp;
-    int len;
-{
+getstring(const void *vp,		/* pointer to "natural variable" */
+	  char *dp,
+	  int len) {
     int dlen;
     char *sp;
 
@@ -42,9 +36,7 @@ getstring( vp, dp, len )
 
 /* perform malloc, getstring */
 EXPORT(char *)
-mgetstring( vp )
-    const void *vp;			/* pointer to "natural variable" */
-{
+mgetstring(const void *vp) {		/* pointer to "natural variable" */
     char *cp;
     int len;
 

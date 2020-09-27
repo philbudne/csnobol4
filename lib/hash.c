@@ -87,10 +87,7 @@ mix() was built out of 36 single-cycle latency instructions in a
 typedef unsigned int ub4;
 
 STATIC_HASH void
-hash(dp, sp)
-    struct descr *dp;
-    struct spec *sp;
-{
+hash(struct descr *dp, struct spec *sp) {
     unsigned char *cp;
     int length, len;
     ub4 a, b, c;

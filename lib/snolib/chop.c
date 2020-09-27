@@ -26,8 +26,7 @@
  */
 
 int
-CHOP( LA_ALIST ) LA_DCL
-{
+CHOP( LA_ALIST ) {
     double x;
     x = LA_REAL(0);
     if (x >= 0) {

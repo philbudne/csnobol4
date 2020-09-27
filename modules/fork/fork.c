@@ -59,9 +59,8 @@
  */
 
 lret_t
-FORK( LA_ALIST ) LA_DCL
-{
-    int pid;
+FORK( LA_ALIST ) {
+    pid_t pid;
 
     pid = fork();
     if (pid == -1)
@@ -73,8 +72,7 @@ FORK( LA_ALIST ) LA_DCL
  * LOAD("WAITPID(,STRING)STRING", FORK_DL)
  */
 lret_t
-WAITPID( LA_ALIST) LA_DCL
-{
+WAITPID( LA_ALIST) {
     pid_t pid, wpid;
     int options = 0;
     int status = 0;

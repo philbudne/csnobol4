@@ -18,9 +18,8 @@
 #include "load.h"
 #include "equ.h"
 
-int
-TAN( LA_ALIST ) LA_DCL
-{
+lret_t
+TAN( LA_ALIST ) {
     real_t ret = tan(LA_REAL(0));
     if (!REAL_ISFINITE(ret))
 	RETFAIL;

@@ -28,10 +28,7 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#ifdef HAVE_STDLIB_H
 #include <stdlib.h>			/* for free() */
-#endif
-
 #include <stdint.h>			/* was inttypes.h */
 #include <stdio.h>			/* for debug, test function */
 #include <ffi.h>
@@ -118,9 +115,7 @@ const struct ffi_type_name {
 
 #ifdef DEBUG_FFI
 static char *
-ffi_str(ftp)
-    ffi_type *ftp;
-{
+ffi_str(ffi_type *ftp) {
     const struct ffi_type_name *ftnp;
     for (ftnp = ffi_type_names; ftnp->name; ftnp++)
 	if (ftnp->ptr == ftp)
@@ -130,10 +125,7 @@ ffi_str(ftp)
 #endif
 
 static ffi_type *
-ffi_convert(cp, ret)
-    char *cp;
-    int ret;
-{
+ffi_convert(char *cp, int ret) {
     const struct ffi_type_name *ftnp;
     for (ftnp = ffi_type_names; ftnp->name; ftnp++) {
 	/* only allow "return only" when called for return type! */
@@ -153,8 +145,7 @@ ffi_convert(cp, ret)
  * XXX handle trailing ... on args!!
  */
 lret_t
-FFI_PREP_CIF( LA_ALIST ) LA_DCL
-{
+FFI_PREP_CIF( LA_ALIST ) {
     struct cifplus *cpp = NULL;
     char *cp = mgetstring(LA_PTR(0));
     ffi_type *rtype, **atypes = NULL;
@@ -165,12 +156,12 @@ FFI_PREP_CIF( LA_ALIST ) LA_DCL
     if (!cp || *cp != '(') goto fail;
 
     comma = cp + 1;			/* skip open paren */
-    rp = index(comma, ')');
+    rp = strchr(comma, ')');
     if (!rp) goto fail;
     *rp++ = '\0';
 
     for (;;) {
-	comma = index(comma, ',');
+	comma = strchr(comma, ',');
 	n++;
 	if (!comma)
 	    break;
@@ -184,7 +175,7 @@ FFI_PREP_CIF( LA_ALIST ) LA_DCL
     xp = cp + 1;
     i = 0;
     for (;;) {
-	comma = index(xp, ',');
+	comma = strchr(xp, ',');
 	if (comma)
 	    *comma = '\0';
 #ifdef DEBUG_FFI
@@ -201,7 +192,7 @@ FFI_PREP_CIF( LA_ALIST ) LA_DCL
     cpp = malloc(sizeof(struct cifplus));
     if (!cpp)
 	goto fail;
-    bzero(cpp, sizeof(struct cifplus));
+    memset(cpp, 0, sizeof(struct cifplus));
 
 #ifdef DEBUG_FFI
 	printf("ret %s\n", rp);
@@ -242,8 +233,7 @@ foo(double a, double b) {
  * args 3+: arguments to pass to function
  */
 lret_t
-FFI_CALL( LA_ALIST ) LA_DCL
-{
+FFI_CALL( LA_ALIST ) {
     struct cifplus *cpp = lookup_handle(&ffi_cifplus, LA_HANDLE(0));
     void *func = lookup_handle(&ffi_dlsyms, LA_HANDLE(1));
     void **arg_pointers = NULL;
@@ -263,11 +253,11 @@ FFI_CALL( LA_ALIST ) LA_DCL
 
     arg_pointers = malloc(sizeof(void *) * cif->nargs);
     if (!arg_pointers) goto ret;
-    bzero(arg_pointers, sizeof(void *) * cif->nargs);
+    memset(arg_pointers, 0, sizeof(void *) * cif->nargs);
 
     cargs = malloc(sizeof(union argval) * cif->nargs);
     if (!cargs) goto ret;
-    bzero(cargs, sizeof(union argval) * cif->nargs);
+    memset(cargs, 0, sizeof(union argval) * cif->nargs);
 
 #define ARG_OFFSET 2
     for (i = 0; i < cif->nargs; i++) {
@@ -360,8 +350,7 @@ FFI_CALL( LA_ALIST ) LA_DCL
  * LOAD("FFI_FREE_CIF(EXTERNAL)STRING", FFI_DL)
  */
 lret_t
-FFI_FREE_CIF( LA_ALIST ) LA_DCL
-{
+FFI_FREE_CIF( LA_ALIST ) {
     struct cifplus *cpp = lookup_handle(&ffi_cifplus, LA_HANDLE(0));
 
     if (!cpp)
@@ -391,8 +380,7 @@ FFI_FREE_CIF( LA_ALIST ) LA_DCL
  * LOAD("FFI_DLOPEN(STRING)", FFI_DL)
  */
 lret_t
-FFI_DLOPEN( LA_ALIST ) LA_DCL
-{
+FFI_DLOPEN( LA_ALIST ) {
     snohandle_t h;
     // take empty string to mean NULL pointer
     char *str = LA_PTR(0) ? mgetstring(LA_PTR(0)) : NULL;
@@ -423,8 +411,7 @@ FFI_DLOPEN( LA_ALIST ) LA_DCL
  * returns a handle for FFI_CALL
  */
 lret_t
-FFI_DLSYM( LA_ALIST ) LA_DCL
-{
+FFI_DLSYM( LA_ALIST ) {
     snohandle_t ret;
     char *str;
     void *val;
@@ -457,8 +444,7 @@ FFI_DLSYM( LA_ALIST ) LA_DCL
  * XXX("FFI_DLCLOSE(EXTERNAL)STRING", FFI_DL)
  */
 lret_t
-FFI_DLCLOSE( LA_ALIST ) LA_DCL
-{
+FFI_DLCLOSE( LA_ALIST ) {
     void *dlp = lookup_handle(&ffi_dlibs, LA_HANDLE(0));
     if (!dlp)
 	RETFAIL;
@@ -474,8 +460,7 @@ FFI_DLCLOSE( LA_ALIST ) LA_DCL
  * (could also use C program to output include file line)
  */
 lret_t
-FFI_RTLD_NEXT( LA_ALIST ) LA_DCL
-{
+FFI_RTLD_NEXT( LA_ALIST ) {
 #ifdef RTLD_NEXT
     RETINT((int_t)RTLD_NEXT);
 #else
@@ -494,8 +479,7 @@ FFI_RTLD_NEXT( LA_ALIST ) LA_DCL
  * (could also use C program to output include file line)
  */
 lret_t
-FFI_RTLD_DEFAULT( LA_ALIST ) LA_DCL
-{
+FFI_RTLD_DEFAULT( LA_ALIST ) {
     RETINT((int_t)RTLD_DEFAULT);
 }
 
@@ -505,8 +489,7 @@ FFI_RTLD_DEFAULT( LA_ALIST ) LA_DCL
  * (could also use C program to output include file line)
  */
 lret_t
-FFI_RTLD_SELF( LA_ALIST ) LA_DCL
-{
+FFI_RTLD_SELF( LA_ALIST ) {
 #ifdef RTLD_SELF
     RETINT((int_t)RTLD_SELF);
 #else

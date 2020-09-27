@@ -51,9 +51,7 @@
 #include <paths.h>
 #endif /* HAVE_PATHS_H defined */
 #include <signal.h>
-#ifdef HAVE_STDLIB_H
 #include <stdlib.h>
-#endif /* HAVE_STDLIB_H defined */
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif /* HAVE_UNISTD_H defined */
@@ -88,9 +86,7 @@ static struct pid {
 } *pidlist; 
 	
 FILE *
-popen(command, type)
-	const char *command, *type;
-{
+popen(const char *command, const char *type) {
 	struct pid *cur, *old;
 	FILE *iop;
 	int pdes[2], pid, twoway, serrno;
@@ -182,9 +178,7 @@ popen(command, type)
  *	if already `pclosed', or waitpid returns an error.
  */
 int
-pclose(iop)
-	FILE *iop;
-{
+pclose(FILE *iop) {
 	struct pid *cur, *last;
 	int pstat;
 	pid_t pid;

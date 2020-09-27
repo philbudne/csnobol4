@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+9/27/2020:
+	First pass at ANSIfication
+	Assumes all systems have string.h, stdlib.h
+	Too many files to name.
+
 9/26/2020:
 	modules/stat/funcs.sno: missing comment chars!!!!
 
@@ -9,7 +14,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	Make cygwin w/ gcc 10 happy:
 	configure: add HAVE_GETOPT[_EXTERNS]
 	include/lib.h: add getopt()
-	lib/init.c: honot HAVE_GETOPT_EXTERNS, remove getopt()
+	lib/init.c: honor HAVE_GETOPT_EXTERNS, remove getopt()
 	modules/time/time.c: define magic for strptime, tm_gmtoff
 
 9/26/2020:

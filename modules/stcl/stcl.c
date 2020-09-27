@@ -37,9 +37,7 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#ifdef HAVE_STDLIB_H
 #include <stdlib.h>			/* for free() */
-#endif
 
 #include <tcl.h>
 #ifdef STCL_USE_TK
@@ -72,8 +70,7 @@ static handle_handle_t tcl_objs;	/* Objects NOT per-interp!! */
  * return handle, or failure
  */
 lret_t
-STCL_CREATEINTERP( LA_ALIST ) LA_DCL
-{
+STCL_CREATEINTERP( LA_ALIST ) {
     snohandle_t h;
     Tcl_Interp *interp = Tcl_CreateInterp();
 
@@ -114,8 +111,7 @@ STCL_CREATEINTERP( LA_ALIST ) LA_DCL
  * return result string, or failure
  */
 lret_t
-STCL_EVALFILE( LA_ALIST ) LA_DCL
-{
+STCL_EVALFILE( LA_ALIST ) {
     char *file;
     int ret;
 
@@ -143,8 +139,7 @@ STCL_EVALFILE( LA_ALIST ) LA_DCL
  * return value of a Tcl variable (all Tcl variables are strings)
  */
 lret_t
-STCL_GETVAR( LA_ALIST ) LA_DCL
-{
+STCL_GETVAR( LA_ALIST ) {
     char *name;
     const char *val;
     Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_HANDLE(0));
@@ -169,8 +164,7 @@ STCL_GETVAR( LA_ALIST ) LA_DCL
  * returns null string or failure 
 */
 lret_t
-STCL_SETVAR( LA_ALIST ) LA_DCL
-{
+STCL_SETVAR( LA_ALIST ) {
     char *name;
     char *value;
     const char *ret;
@@ -201,8 +195,7 @@ STCL_SETVAR( LA_ALIST ) LA_DCL
  * returns result string or failure
  */
 lret_t
-STCL_EVAL( LA_ALIST ) LA_DCL
-{
+STCL_EVAL( LA_ALIST ) {
     char *cmd;
     int ret;
     Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_HANDLE(0));
@@ -231,8 +224,7 @@ STCL_EVAL( LA_ALIST ) LA_DCL
  * return null string, or failure
  */
 lret_t
-STCL_DELETEINTERP( LA_ALIST ) LA_DCL
-{
+STCL_DELETEINTERP( LA_ALIST ) {
     Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_HANDLE(0));
     if (!interp)
 	RETFAIL;
@@ -257,8 +249,7 @@ STCL_DELETEINTERP( LA_ALIST ) LA_DCL
  * Create new string object, returns handle
  */
 lret_t
-STCL_NEWSTRINGOBJ( LA_ALIST ) LA_DCL
-{
+STCL_NEWSTRINGOBJ( LA_ALIST ) {
     Tcl_Obj *obj;
     snohandle_t h;
 
@@ -285,8 +276,7 @@ STCL_NEWSTRINGOBJ( LA_ALIST ) LA_DCL
  * LOAD("STCL_GETSTRINGFROMOBJ(EXTERNAL)STRING", STCL_DL)
  */
 lret_t
-STCL_GETSTRINGFROMOBJ( LA_ALIST ) LA_DCL
-{
+STCL_GETSTRINGFROMOBJ( LA_ALIST ) {
     int length;
     Tcl_Obj *obj;
     char *val;
@@ -311,8 +301,7 @@ STCL_GETSTRINGFROMOBJ( LA_ALIST ) LA_DCL
  * LOAD("STCL_APPENDTOOBJ(EXTERNAL,STRING)STRING", STCL_DL)
  */
 lret_t
-STCL_APPENDTOOBJ( LA_ALIST ) LA_DCL
-{
+STCL_APPENDTOOBJ( LA_ALIST ) {
     Tcl_Obj *obj;
 
     obj = lookup_handle(&tcl_objs, LA_HANDLE(0));
@@ -334,8 +323,7 @@ STCL_APPENDTOOBJ( LA_ALIST ) LA_DCL
  * LOAD("STCL_EVALOBJEX(EXTERNAL,EXTERNAL,INTEGER)STRING", STCL_DL)
  */
 lret_t
-STCL_EVALOBJEX( LA_ALIST ) LA_DCL
-{
+STCL_EVALOBJEX( LA_ALIST ) {
     Tcl_Interp *interp = lookup_handle(&tcl_objs, LA_HANDLE(0));
     Tcl_Obj *obj = lookup_handle(&tcl_objs, LA_HANDLE(1));
     int ret;
@@ -357,8 +345,7 @@ STCL_EVALOBJEX( LA_ALIST ) LA_DCL
  * LOAD("STCL_GETOBJRESULT(EXTERNAL)", STCL_DL)
  */
 lret_t
-STCL_GETOBJRESULT(LA_ALIST ) LA_DCL
-{
+STCL_GETOBJRESULT(LA_ALIST ) {
     Tcl_Interp *interp = lookup_handle(&tcl_objs, LA_HANDLE(0));
     Tcl_Obj *obj = Tcl_GetObjResult(interp);
     snohandle_t h;
@@ -383,8 +370,7 @@ STCL_GETOBJRESULT(LA_ALIST ) LA_DCL
  * LOAD("STCL_OBJSETVAR2(HANDLE,HANDLE,HANDLE,HANDLE,INTEGER)STRING", STCL_DL)
  */
 lret_t
-STCL_OBJSETVAR2( LA_ALIST ) LA_DCL
-{
+STCL_OBJSETVAR2( LA_ALIST ) {
     Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_HANDLE(0));
     Tcl_Obj *part1 = lookup_handle(&tcl_objs, LA_HANDLE(1));
     Tcl_Obj *part2 = lookup_handle(&tcl_objs, LA_HANDLE(2)); /* index */
@@ -416,8 +402,7 @@ STCL_OBJSETVAR2( LA_ALIST ) LA_DCL
  * LOAD("STCL_OBJGETVAR2(HANDLE,HANDLE,HANDLE,INTEGER)STRING", STCL_DL)
  */
 lret_t
-STCL_OBJGETVAR2( LA_ALIST ) LA_DCL
-{
+STCL_OBJGETVAR2( LA_ALIST ) {
     Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_HANDLE(0));
     Tcl_Obj *part1 = lookup_handle(&tcl_objs, LA_HANDLE(1));
     Tcl_Obj *part2 = lookup_handle(&tcl_objs, LA_HANDLE(2));
@@ -449,8 +434,7 @@ STCL_OBJGETVAR2( LA_ALIST ) LA_DCL
  * LOAD("STCL_RELEASEOBJ(HANDLE)STRING", STCL_DL)
  */
 lret_t
-STCL_RELEASEOBJ( LA_ALIST ) LA_DCL
-{
+STCL_RELEASEOBJ( LA_ALIST ) {
     Tcl_Obj *obj = lookup_handle(&tcl_objs, LA_HANDLE(0));
     if (!obj)
 	RETFAIL;

@@ -4,9 +4,7 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#ifdef HAVE_STDLIB_H
-#include <stdlib.h>			/* system() */
-#endif /* HAVE_STDLIB_H defined */
+#include <stdlib.h>			/* system(), free() */
 
 #include "h.h"
 #include "equ.h"
@@ -21,10 +19,9 @@
  * Returns;	exit status
  */
 
-SYSTEM( LA_ALIST ) LA_DCL
-{
-    char cmd[256];			/* XXX */
-
-    getstring( LA_PTR(0), cmd, sizeof(cmd) );
-    RETINT( system(cmd) );
+SYSTEM( LA_ALIST ) {
+    char *cmd = getstring(LA_PTR(0));
+    int ret = system(cmd);
+    free(cmd);
+    RETINT(ret);
 }

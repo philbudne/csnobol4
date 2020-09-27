@@ -19,8 +19,7 @@
 #include "equ.h"
 
 int
-EXP( LA_ALIST ) LA_DCL
-{
+EXP( LA_ALIST ) {
     real_t ret = exp(LA_REAL(0));
     if (!REAL_ISFINITE(ret))
 	RETFAIL;

@@ -4,12 +4,7 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#ifdef HAVE_STDLIB_H			/* before stdio, h.h */
 #include <stdlib.h>			/* for malloc */
-#else  /* HAVE_STDLIB_H not defined */
-extern void *malloc();
-#endif /* HAVE_STDLIB_H not defined */
-
 #include <stdio.h>			/* for perror() */
 
 #include "h.h"
@@ -28,12 +23,7 @@ static int retbuflen;
 #endif /* NO_STATIC_VARS not defined */
 
 EXPORT(void)
-retstring( retval, cp, len )
-    struct descr *retval;
-    const char *cp;
-    int len;
-{
-
+retstring(struct descr *retval, const char *cp, int len) {
     if (len > retbuflen) {
 	if (retbuf)
 	    free(retbuf);
@@ -45,7 +35,8 @@ retstring( retval, cp, len )
 	retbuflen = len;
     }
 
-    bcopy( cp, retbuf, len );		/* copy to buffer! */
+
+    memcpy( retbuf, cp, len );		/* copy to buffer! */
 
     /* set up (static) specifier for string */
     S_A(retspec) = (int_t) retbuf;
@@ -59,6 +50,4 @@ retstring( retval, cp, len )
     D_F(retval) = 0;			/* NOTE: not marked as PTR! */
     D_V(retval) = L;			/* "linked string" */
     D_A(retval) = (int_t) retspec;
-
 }
-

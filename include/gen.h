@@ -3,7 +3,7 @@
 /* prototypes for generated functions */
 
 /* from data_init.c */
-void init_data __P((void));
+void init_data(void);
 
 /* from syn.c */
-void init_syntab __P((void));
+void init_syntab(void);

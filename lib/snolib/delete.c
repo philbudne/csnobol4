@@ -16,9 +16,7 @@
 #include <unistd.h>			/* unlink() */
 #endif /* HAVE_UNISTD_H defined */
 
-#ifdef HAVE_STDLIB_H
 #include <stdlib.h>			/* for free() */
-#endif
 
 #ifdef UNLINK_IN_STDIO_H		/* Windoze! */
 #include <stdio.h>
@@ -31,8 +29,7 @@
 #include "load.h"
 
 int
-DELETE( LA_ALIST ) LA_DCL
-{
+DELETE( LA_ALIST ) {
     char *path;
     int ret;
 

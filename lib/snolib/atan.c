@@ -19,8 +19,7 @@
 #include "equ.h"
 
 int
-ATAN( LA_ALIST ) LA_DCL
-{
+ATAN( LA_ALIST ) {
     real_t ret = atan(LA_REAL(0));
     if (!REAL_ISFINITE(ret))
 	RETFAIL;

@@ -16,30 +16,15 @@
 #include "config.h"
 #endif
 
-#ifdef HAVE_STDLIB_H			/* before stdio */
-#include <stdlib.h>
-#else  /* HAVE_STDLIB_H not defined */
-/* have HAVE_MALLOC_H? */
-extern void *malloc();
-void free();
-#endif /* HAVE_STDLIB_H not defined */
-
+#include <stdlib.h>		       /* before stdio(?) */
 #include <stdio.h>
 #include <string.h>
 
 #ifdef HAVE_UNISTD_H
-#include <unistd.h>			/* read, write, SEEK_xxx, xxx_FILENO */
+#include <unistd.h>			/* SEEK_xxx, xxx_FILENO */
 #endif /* HAVE_UNISTD_H defined */
 
-#ifdef HAVE_UNIXIO_H			/* DECC v4 */
-#include <unixio.h>			/* read(), lseek(), etc */
-#endif /* HAVE_UNIXIO_H defined */
-
-#ifdef HAVE_IO_H
-#include <io.h>				/* _dup */
-#endif /* HAVE_IO_H */
-
-#include "h.h"				/* __P */
+#include "h.h"				/* EXPORT */
 #include "snotypes.h"
 
 #include "io_obj.h"			/* struct io_obj, io_ops, MAKEOPS */
@@ -275,11 +260,9 @@ stdio_wrap(char *path, FILE *f, size_t size, const struct io_ops *ops, int flags
 }
 
 struct io_obj *
-stdio_open(path, flags, dir)
-    char *path;
-    int flags;
-    int dir;				/* 'r' or 'w' */
-{
+stdio_open(char *path,
+	   int flags,
+	   int dir) {			/* 'r' or 'w' */
     FILE *f;
     char mode[MAXMODE];
 

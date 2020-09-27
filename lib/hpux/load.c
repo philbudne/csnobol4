@@ -12,10 +12,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <dl.h>
-
-#ifdef HAVE_STDLIB_H			/* before stdio */
 #include <stdlib.h>			/* for malloc, getenv */
-#endif /* HAVE_STDLIB_H defined */
 #include <stdio.h>
 
 #include "h.h"
@@ -54,9 +51,7 @@ static struct lib *libs;
 /* create refcounted lib interface */
 
 static struct lib *
-libopen(path)
-    char *path;
-{
+libopen(char *path) {
     shl_t handle;
     struct lib *lp;
 
@@ -84,9 +79,7 @@ libopen(path)
 }
 
 int
-libclose(lib)
-    struct lib *lib;
-{
+libclose(struct lib *lib) {
     struct lib *lp, *pp;
     int ret;
 
@@ -116,9 +109,9 @@ libclose(lib)
 /*****************/
 
 int
-load(addr, sp1, sp2)
-    struct descr *addr;			/* OUT */
-    struct spec *sp1, *sp2;		/* function, library */
+load(struct descr *addr,		/* OUT */
+     struct spec *sp1,			/* function */
+     struct spec *sp2) {		/* library */
 {
     struct func *fp; 
     shl_t handle;
@@ -189,9 +182,8 @@ load(addr, sp1, sp2)
 
 /* support for SIL "LINK" opcode -- call external function */
 int
-callx(retval, args, nargs, addr)
-    struct descr *retval, *args, *nargs, *addr;
-{
+callx(struct descr *retval, struct descr *args,
+      struct descr *nargs, struct descr *addr) {
     struct func *fp;
 #ifdef DUMP
     int i;
@@ -222,13 +214,11 @@ callx(retval, args, nargs, addr)
 }
 
 void
-unload(sp)
-    struct spec *sp;
-{
+unload(struct spec *sp) {
     struct func *fp, *pp;
     char name[128];			/* XXX */
 
-    spec2str(sp, name, sizeof(name));
+    spec2str(sp, name, sizeof(name));	/* XXX mspec2str */
 
     for (pp = NULL, fp = funcs; fp != NULL; pp = fp, fp = fp->next) {
 	if (strcmp(fp->name, name) == 0)

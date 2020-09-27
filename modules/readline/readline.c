@@ -31,21 +31,16 @@
 #include "macros.h"
 #include "load.h"
 #include "equ.h"
-#include "str.h"			/* strlen() */
 #undef RETURN
 
 #include <stdio.h>
+#include <stdlib.h>			/* free() */
+#include <string.h>			/* strlen() */
+
 #ifdef HAVE_READLINE
 #include <readline/readline.h>
 #include <readline/history.h>
-#else  /* not HAVE_READLINE */
-#ifdef HAVE_STRING_H
-#include <string.h>			/* strlen() */
-#endif
 #endif /* not HAVE_READLINE */
-#ifdef HAVE_STDLIB_H
-#include <stdlib.h>			/* for free() */
-#endif
 
 /*
 **=pea
@@ -57,8 +52,7 @@
  * LOAD("READLINE(STRING)STRING", READLINE_DL)
  */
 lret_t
-READLINE( LA_ALIST ) LA_DCL
-{
+READLINE( LA_ALIST ) {
     char *prompt = mgetstring(LA_PTR(0));
 #ifdef HAVE_READLINE
     char *ret = readline(prompt);
@@ -99,8 +93,7 @@ READLINE( LA_ALIST ) LA_DCL
  * LOAD("ADD_HISTORY(STRING)", READLINE_DL)
  */
 lret_t
-ADD_HISTORY( LA_ALIST ) LA_DCL
-{
+ADD_HISTORY( LA_ALIST ) {
 #ifdef HAVE_READLINE
     char *line;
 
@@ -123,8 +116,7 @@ ADD_HISTORY( LA_ALIST ) LA_DCL
  * LOAD("HISTORY_EXPAND(STRING)STRING", READLINE_DL)
  */
 lret_t
-HISTORY_EXPAND( LA_ALIST ) LA_DCL
-{
+HISTORY_EXPAND( LA_ALIST ) {
 #ifdef HAVE_READLINE
     char *line;
     char *exp;

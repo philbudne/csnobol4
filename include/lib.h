@@ -3,193 +3,193 @@
 /* prototypes for "lib" functions */
 
 /* from bal.c */
-int getbal __P((struct spec *,struct descr *));
+int getbal(struct spec *,struct descr *);
 
 /* from date.c */
-void date __P((struct spec *,struct descr *));
+void date(struct spec *,struct descr *);
 
 /* from endex.c */
-void endex __P((int));
+void endex(int);
 
 /* from hash.c */
 #ifndef STATIC_HASH
-void hash __P((struct descr *,struct spec *));
+void hash(struct descr *,struct spec *);
 #endif /* STATIC_HASH not defined */
 
 /* from init.c */
-int getparm __P((struct spec *));
-void init_args __P((int, char *[]));
-void init __P((void));
+int getparm(struct spec *);
+void init_args(int, char *[]);
+void init(void);
 
 /* from io.c */
-void io_initvars __P((void));
-void io_backspace __P((int_t));
-EXPORT(int) io_closeall __P((int));
-EXPORT(int) io_skip __P((int));
-EXPORT(void) io_input_file __P((char *));
+void io_initvars(void);
+void io_backspace(int_t);
+EXPORT(int) io_closeall(int);
+EXPORT(int) io_skip(int);
+EXPORT(void) io_input_file(char *);
 #ifdef MEM_IO
-EXPORT(void) io_input_string __P((char *));
+EXPORT(void) io_input_string(char *);
 #endif
-EXPORT(int) io_mkfile __P((int, FILE *, char *));
-EXPORT(int) io_mkfile_noclose __P((int, FILE *, char *));
-EXPORT(int) io_attached __P((int));
+EXPORT(int) io_mkfile(int, FILE *, char *);
+EXPORT(int) io_mkfile_noclose(int, FILE *, char *);
+EXPORT(int) io_attached(int);
 #ifdef MEM_IO
-EXPORT(int) io_output_string __P((int, char *, char *, int));
+EXPORT(int) io_output_string(int, char *, char *, int);
 #endif
-void io_printf __P((int_t,...));
-void io_print __P((struct descr *,struct descr *,struct spec *));
-int io_endfile __P((int_t));
+void io_printf(int_t,...);
+void io_print(struct descr *,struct descr *,struct spec *);
+int io_endfile(int_t);
 /* io_read() in libret.h */
-void io_rewind __P((int_t));
-void io_ecomp __P((void));
-int io_openi __P((struct descr *,struct spec *,struct spec *,struct descr *));
-int io_openo __P((struct descr *,struct spec *,struct spec *));
+void io_rewind(int_t);
+void io_ecomp(void);
+int io_openi(struct descr *,struct spec *,struct spec *,struct descr *);
+int io_openo(struct descr *,struct spec *,struct spec *);
 /* io_include() in libret.h */
-EXPORT(char *)io_fname __P((int));
-int io_file __P((struct descr *,struct spec *));
-int io_seek __P((struct descr *,struct descr *,struct descr *));
-int io_sseek __P((int_t,int_t,int_t,int_t,int_t *));
-int io_flushall __P((int));
-EXPORT(int) io_findunit __P((void));
-EXPORT(FILE *) io_getfp __P((int));
-int io_pad __P((struct spec *,int));
-int io_finish __P((void));
-int io_add_lib_dir __P((char *));
-int io_add_lib_path __P((char *));
-char *io_lib_find __P((char *, char *, char *));
-char *io_lib_dir __P((int n));
-void io_preload __P((void));
-void io_show_paths __P((void));
-void io_fastpr __P((struct descr *,struct descr *,struct descr *,struct spec *,struct spec *));
+EXPORT(char *)io_fname(int);
+int io_file(struct descr *,struct spec *);
+int io_seek(struct descr *,struct descr *,struct descr *);
+int io_sseek(int_t,int_t,int_t,int_t,int_t *);
+int io_flushall(int);
+EXPORT(int) io_findunit(void);
+EXPORT(FILE *) io_getfp(int);
+int io_pad(struct spec *,int);
+int io_finish(void);
+int io_add_lib_dir(char *);
+int io_add_lib_path(char *);
+char *io_lib_find(char *, char *, char *);
+char *io_lib_dir(int n);
+void io_preload(void);
+void io_show_paths(void);
+void io_fastpr(struct descr *,struct descr *,struct descr *,struct spec *,struct spec *);
 
 /* from lexcmp.c */
-int lexcmp __P((struct spec *,struct spec *));
+int lexcmp(struct spec *,struct spec *);
 
 /* from ordvst.c */
-void ordvst __P((void));
+void ordvst(void);
 
 /* from pair.c */
 #ifndef STATIC_PAIR
-int locapt __P((struct descr *,struct descr *,struct descr *));
-int locapv __P((struct descr *,struct descr *,struct descr *));
+int locapt(struct descr *,struct descr *,struct descr *);
+int locapv(struct descr *,struct descr *,struct descr *);
 #endif /* STATIC_PAIR not defined */
 
 /* from pat.c */
 #ifndef STATIC_PAT
-void cpypat __P((struct descr *,struct descr *,struct descr *,struct descr *,struct descr *,struct descr *));
-void linkor __P((struct descr *,struct descr *));
-void lvalue __P((struct descr *,struct descr *));
-void maknod __P((struct descr *,struct descr *,struct descr *,struct descr *,struct descr *,struct descr *));
+void cpypat(struct descr *,struct descr *,struct descr *,struct descr *,struct descr *,struct descr *);
+void linkor(struct descr *,struct descr *);
+void lvalue(struct descr *,struct descr *);
+void maknod(struct descr *,struct descr *,struct descr *,struct descr *,struct descr *,struct descr *);
 #endif /* STATIC_PAT not defined */
 
 /* from pml.c */
-int getpmproto __P((struct spec *,struct descr *));
+int getpmproto(struct spec *,struct descr *);
 
 /* from realst.c */
-void realst __P((struct spec *,struct descr *));
+void realst(struct spec *,struct descr *);
 
 /* from replace.c */
-void rplace __P((struct spec *,struct spec *,struct spec *));
+void rplace(struct spec *,struct spec *,struct spec *);
 
 /* from str.c */
-int pad __P((struct descr *,struct spec *,struct spec *,struct spec *));
-void raise1 __P((struct spec *));
-int raise2 __P((struct spec *,struct spec *));
-int reverse __P((struct spec *,struct spec *));
-int substr __P((struct spec *,struct spec *,struct descr *));
-void trimsp __P((struct spec *,struct spec *));
-void spec2str __P((struct spec *,char *,int));
-char *mspec2str __P((struct spec *));
-void apdsp __P((struct spec *, struct spec *));
-char *strjoin __P((char *str0, ...));
-void mergsp __P((struct spec *,struct spec *,struct spec *));
-void movblk2 __P((struct descr *,struct descr *,int_t));
+int pad(struct descr *,struct spec *,struct spec *,struct spec *);
+void raise1(struct spec *);
+int raise2(struct spec *,struct spec *);
+int reverse(struct spec *,struct spec *);
+int substr(struct spec *,struct spec *,struct descr *);
+void trimsp(struct spec *,struct spec *);
+void spec2str(struct spec *,char *,int);
+char *mspec2str(struct spec *);
+void apdsp(struct spec *, struct spec *);
+char *strjoin(char *str0, ...);
+void mergsp(struct spec *,struct spec *,struct spec *);
+void movblk2(struct descr *,struct descr *,int_t);
 
 /* stream.c declarations in include/syntab.h */
 
 /* from top.c */
 #ifndef STATIC_TOP
-void top __P((struct descr *,struct descr *,struct descr *));
+void top(struct descr *,struct descr *,struct descr *);
 #endif /* STATIC_TOP not defined */
 
 /* from tree.c */
-void addsib __P((struct descr *,struct descr *));
-void addson __P((struct descr *,struct descr *));
-void insert __P((struct descr *,struct descr *));
+void addsib(struct descr *,struct descr *);
+void addson(struct descr *,struct descr *);
+void insert(struct descr *,struct descr *);
 
 /* from version.c */
-void version __P((void));
+void version(void);
 
 /****************************************************************
  * system dependant functions
  */
 
 /* from spcint.c */
-int spcint __P((struct descr *,struct spec *));
+int spcint(struct descr *,struct spec *);
 
 /* from intspc.c */
-void intspc __P((struct spec *, struct descr *));
+void intspc(struct spec *, struct descr *);
 
 /* from spreal.c */
-int spreal __P((struct descr *,struct spec *));
+int spreal(struct descr *,struct spec *);
 
 /* from dynamic.c */
-char *dynamic __P((size_t));
-void vm_gc_advise __P((int));
+char *dynamic(size_t);
+void vm_gc_advise(int);
 
 /* from execute.c */
-void execute __P((char *));
+void execute(char *);
 
 /* from exists.c */
-int exists __P((char *));
-int isdir __P((char *));
-int abspath __P((char *));
+int exists(char *);
+int isdir(char *);
+int abspath(char *);
 
 /* from expops.c */
-int expint __P((struct descr *,struct descr *,struct descr *));
-int exreal __P((struct descr *,struct descr *,struct descr *));
+int expint(struct descr *,struct descr *,struct descr *);
+int exreal(struct descr *,struct descr *,struct descr *);
 
 /* from load.c */
-void unload __P((struct spec *));
+void unload(struct spec *);
 #ifdef LOAD_PROTO
 typedef int (loadable_func_t)(LOAD_PROTO); /* function entry point */
-loadable_func_t *os_load __P((char *, char *));
+loadable_func_t *os_load(char *, char *);
 #endif
 
 /* from loadx.c (or load.c) */
-int callx __P((struct descr *,struct descr *,struct descr *,struct descr *));
-int load __P((struct descr *,struct spec *,struct spec *));
+int callx(struct descr *,struct descr *,struct descr *,struct descr *);
+int load(struct descr *,struct spec *,struct spec *);
 
 /* from mstime.c */
-real_t mstime __P((void));
+real_t mstime(void);
 
 /* from syspend.c */
-void proc_suspend __P((void));
+void proc_suspend(void);
 
 /* from sys.c */
-void hwname __P((char *));
-void osname __P((char *));
+void hwname(char *);
+void osname(char *);
 
 /* from term.c */
-FILE * term_input __P((void));
+FILE * term_input(void);
 
 /* {tc,ud}p_socket moved to inet.h */
 
 /* from tty.c */
-int fisatty __P((FILE *));		/* or fisatty.c */
+int fisatty(FILE *);		/* or fisatty.c */
 /*
  * cbreak means don't wait for CR (binary/raw)
  * recl only meaningful in cbreak mode
  */
-void tty_mode __P((FILE *, int cbreak, int noecho, int recl));
-void tty_close __P((FILE *));		/* advisory! */
-void tty_suspend __P((void));		/* SIG_TSTP */
+void tty_mode(FILE *, int cbreak, int noecho, int recl);
+void tty_close(FILE *);		/* advisory! */
+void tty_suspend(void);		/* SIG_TSTP */
 /*
  * if TTY_READ_RAW or TTY_READ_COOKED defined (Windows, VMS)
  * cbreak means don't wait for CR (binary/raw)
  * keepeol only meaningful if !cbreak
  */
-int tty_read __P((FILE *,char *buf,int len, int cbreak,int noecho,int keepeol,char * fname));
+int tty_read(FILE *,char *buf,int len, int cbreak,int noecho,int keepeol,char * fname);
 
 /*
  * other functions we provide on some systems:
@@ -199,38 +199,38 @@ int tty_read __P((FILE *,char *buf,int len, int cbreak,int noecho,int keepeol,ch
 
 /* from getredirect.c */
 #ifdef vms
-int getredirection __P((int, char **));
+int getredirection(int, char **);
 #endif /* vms defined */
 
 /* from popen.c */
 #ifdef NEED_POPEN
-extern FILE *popen __P((char *, char *)); /* from {generic,vms}/popen.c */
-extern int pclose __P((FILE *));
+extern FILE *popen(char *, char *); /* from {generic,vms}/popen.c */
+extern int pclose(FILE *);
 #endif /* NEED_POPEN defined */
 
 #ifdef OSDEP_OPEN
-extern int osdep_open __P((const char *, const char *, FILE **));
+extern int osdep_open(const char *, const char *, FILE **);
 #endif /* OSDEP_OPEN defined */
 
 /* from sleep.c */
-extern int sleepf __P((real_t));
+extern int sleepf(real_t);
 
 /* from break.c */
-extern int chk_break __P((int));
+extern int chk_break(int);
 
 #ifndef HAVE_CLOSEFROM
 /* from closefrom.c */
-extern void closefrom __P((int minfd));
+extern void closefrom(int minfd);
 #endif
 #ifndef HAVE_GETDTABLESIZE
 /* from getdtablesize.c */
-extern int getdtablesize __P((void));
+extern int getdtablesize(void);
 #endif
 #ifndef HAVE_GETLINE
 /* from getline.c */
-extern ssize_t getline __P((char **bufp, size_t *lenp, FILE *fp));
+extern ssize_t getline(char **bufp, size_t *lenp, FILE *fp);
 #endif
 #ifndef HAVE_GETOPT
 /* from getopt.c */
-extern int getopt __P((int argc, char **argv, char *opts));
+extern int getopt(int argc, char **argv, char *opts);
 #endif

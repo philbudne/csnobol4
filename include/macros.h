@@ -116,7 +116,7 @@
 		      (S_L(A) == 1 ||			\
 		       (S_SP(A)[1] == S_SP(B)[1] &&	\
 			(S_L(A) == 2 ||			\
-			 (bcmp(S_SP(A)+2,S_SP(B)+2,(long)S_L(A)-2) == 0)))))))
+			 (memcmp(S_SP(A)+2,S_SP(B)+2,(long)S_L(A)-2) == 0)))))))
 
 /* 11/4/97 - get length for string structure */
 #define X_GETLTH(A) (DESCR * (3 + ((S_L(A) - 1) / CPD + 1)))

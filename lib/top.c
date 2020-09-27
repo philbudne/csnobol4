@@ -18,9 +18,7 @@
 /*# define DEBUG_TOP*/
 
 STATIC_TOP void
-top( d1, d2, d3 )
-   register struct descr *d1, *d2, *d3;
-{
+top(struct descr *d1, struct descr *d2, struct descr *d3) {
    int_t a;
 
    a = D_A(d3);

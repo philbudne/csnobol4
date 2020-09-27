@@ -9,12 +9,7 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#ifdef HAVE_STDLIB_H			/* before stdio */
 #include <stdlib.h>			/* for malloc */
-#else  /* HAVE_STDLIB_H not defined */
-extern void *malloc();
-#endif /* HAVE_STDLIB_H not defined */
-
 #include <stdio.h>
 
 struct pipe {
@@ -29,9 +24,7 @@ struct pipe {
 static struct pipe *pipes;
 
 FILE *
-popen(file, mode)
-    char *file, *mode;
-{
+popen(char *file, char *mode) {
     struct pipe *pp;
 
     if (!file || !mode)
@@ -70,9 +63,7 @@ popen(file, mode)
 }
 
 int
-pclose(f)
-    FILE *f;
-{
+pclose(FILE *f) {
     struct pipe *pp, *ppp;
     int ret;
 
@@ -105,6 +96,7 @@ pclose(f)
 }
 
 #ifdef TEST
+int
 main() {
     FILE *f;
 
@@ -123,5 +115,6 @@ main() {
 	fprintf(f, "hello world\n");
 	pclose(f);
     }
+    return 0;
 }
 #endif /* TEST defined */

@@ -12,9 +12,7 @@
 #include "lib.h"
 
 int
-lexcmp(a,b)
-    struct spec *a, *b;
-{
+lexcmp(struct spec *a, struct spec *b) {
     char *x, *y;
     int i, j;
 

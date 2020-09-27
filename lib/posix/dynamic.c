@@ -9,11 +9,7 @@
 #include <sys/types.h>
 #include <sys/mman.h>
 
-#ifdef HAVE_STDLIB_H                    /* before stdio */
 #include <stdlib.h>                     /* for malloc */
-#else  /* HAVE_STDLIB_H not defined */
-extern void *malloc();
-#endif /* HAVE_STDLIB_H not defined */
 
 /* prefer standard POSIX interface; fall back to BSD */
 #if !defined(POSIX_MADV_RANDOM) && defined(MADV_RANDOM)
@@ -32,18 +28,14 @@ static char *dbase;
 static size_t dsize;
 
 char *
-dynamic( size )
-    size_t size;
-{
+dynamic(size_t size) {
     dsize = size;
     dbase = malloc(size);
     return dbase;
 }
 
 void
-vm_gc_advise(gc)
-    int gc;
-{
+vm_gc_advise(int gc) {
     if (gc)
 	posix_madvise(dbase, dsize,  POSIX_MADV_RANDOM); /* random during GC */
     else

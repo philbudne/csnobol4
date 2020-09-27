@@ -28,9 +28,7 @@
 
 /* locate attribute pair by type */
 STATIC_PAIR int
-locapt( d1, d2, d3 )
-    struct descr *d1, *d2, *d3;
-{
+locapt(struct descr *d1, struct descr *d2, struct descr *d3) {
     register int_t a;
     int_t end;
 
@@ -50,9 +48,7 @@ locapt( d1, d2, d3 )
 }
 
 STATIC_PAIR int
-locapv( d1, d2, d3 )
-    struct descr *d1, *d2, *d3;
-{
+locapv(struct descr *d1, struct descr *d2, struct descr *d3) {
     register int_t a;
     int_t end;
 

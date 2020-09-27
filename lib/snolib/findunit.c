@@ -17,9 +17,8 @@
 #include "equ.h"
 #include "lib.h"
 
-int
-IO_FINDUNIT( LA_ALIST ) LA_DCL
-{
+lret_t
+IO_FINDUNIT( LA_ALIST ) {
     int i;
 
     i = io_findunit();			/* from lib/io.c */

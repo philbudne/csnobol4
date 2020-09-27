@@ -8,11 +8,7 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#ifdef HAVE_STDLIB_H			/* before stdio */
 #include <stdlib.h>			/* for malloc */
-#else  /* HAVE_STDLIB_H not defined */
-extern void *malloc();
-#endif /* HAVE_STDLIB_H not defined */
 #include <stdio.h>
 
 #include "h.h"
@@ -36,9 +32,7 @@ static break_t *breakpoints;
  * non-zero return will cause KEYWORD TRACE event for "STNO"
  */
 int
-chk_break(x)
-    int x;
-{
+chk_break(int x) {
     int stn = D_A(STNOCL);
     if (!breakpoints || stn > break_max || stn == 0)
 	return 0;
@@ -58,8 +52,7 @@ chk_break(x)
  * Returns;	old value or failure
  */
 int
-BREAKPOINT( LA_ALIST ) LA_DCL
-{
+BREAKPOINT( LA_ALIST ) {
     int stn = LA_INT(0);
     int enab = LA_INT(1);
     int save;
