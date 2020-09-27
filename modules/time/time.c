@@ -8,19 +8,17 @@
 #define _XOPEN_SOURCE			/* glibc: enable strptime() */
 #define _BSD_SOURCE			/* glibc: keep tm_gmtoff */
 #define _DEFAULT_SOURCE	/* replaces above in glibc 2.20, quashes warnings */
-#elif defined(__CYGWIN__)
-#define _XOPEN_SOURCE			/* cygwin: enable strptime() */
-#define __TM_GMTOFF tm_gmtoff		/* cygwin: add tm_gmtoff! */
+#elif defined(__CYGWIN__)		/* cygwin64 3.1.7 */
+#define _XOPEN_SOURCE			/* cygwin64: enable strptime() */
+#define __TM_GMTOFF tm_gmtoff		/* cygwin64: add tm_gmtoff! */
 #endif
 
 #ifdef HAVE_GETTIMEOFDAY
 #include <sys/time.h>
 #endif
 
-#define __XSI_VISIBLE 1			/* needed for strptime on cygwin64 */
-
 #include <stdio.h>			/* for lib.h */
-#include <time.h>			/* time_t, strptime() */
+#include <time.h>			/* time_t, time(), strptime() */
 
 #include "h.h"
 #include "equ.h"
