@@ -7,6 +7,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	configure: add HAVE_GETOPT[_EXTERNS]
 	include/lib.h: add getopt()
 	lib/init.c: honot HAVE_GETOPT_EXTERNS, remove getopt()
+	modules/time/time.c: define __XSI_VISIBLE for strptime
 
 9/26/2020:
 	lib/io.c: FL_KEEPEOL, fix io_mkfile2 to preseve flags.

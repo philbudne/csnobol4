@@ -14,6 +14,8 @@
 #include <sys/time.h>
 #endif
 
+#define __XSI_VISIBLE 1			/* needed for strptime on cygwin64 */
+
 #include <stdio.h>			/* for lib.h */
 #include <time.h>			/* time_t, strptime() */
 
