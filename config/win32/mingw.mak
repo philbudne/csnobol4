@@ -1,7 +1,8 @@
 # $Id$
 
 # make file for MINGW - P. Budne 2/14/2002
-# tested with MINGW 1.0.19(?) w/ gcc 9.2.0
+# tested (under Linux) with MINGW gcc 9.3 9/27/2020
+#	w/ mingw-w64-common 7.0.0-2 
 # from nmake file for VC++ 5.0 on WinNT 4.0 P. Budne 2/4/1998
 # from batch file by David Feustel
 
@@ -25,12 +26,13 @@ INET_AUX_SRC = $(SRCDIR)lib/win32/inetio_obj.c \
 	$(SRCDIR)lib/auxil/bindresvport.c
 BUFIO_OBJ_O=bufio_obj.o
 ifeq ($(WINSOCK),1)
-# wsock32 present on both Win95 and WinNT
+# wsock32 present on both Win95 and WinNT 3.x
 INET_C=$(SRCDIR)lib/win32/inet.c
 INET_DEFS += -DHAVE_WINSOCK_H
 INET_O=inet.o
 INET_LIBS=-lwsock32
 else
+# Winsock2 present on both Win98 and NT 4.0
 INET_C=$(SRCDIR)lib/bsd/inet6.c
 INET_DEFS += -DHAVE_WINSOCK2_H
 INET_O=inet6.o
@@ -107,6 +109,7 @@ ifneq (,$(wildcard modules/sqlite3/sqlite3.[ch]))
 SQLITE3=sqlite3
 endif
 
+DEPEND=depend.mingw
 # NOTE! snobol4 target forces "make depend"
 all:	cpuid.exe snobol4 mods
 
@@ -121,7 +124,7 @@ mods:	snobol4.exe
 	done
 
 # create depend file, and recurse to include it
-snobol4: depend
+snobol4: $(DEPEND)
 	$(MAKE) -f config/win32/mingw.mak snobol4.exe
 
 snobol4.exe: always $(OBJ)
@@ -357,12 +360,11 @@ tan.o:	$(SRCDIR)lib/snolib/tan.c
 clean:
 	-rm -f *.o *.exe
 
-depend:
+$(DEPEND):
 	@echo Depending...
 	-$(CC) -MM -MG $(CFLAGS) $(SRC) > depend.tmp
-	mv depend.tmp depend
+	mv depend.tmp $(DEPEND)
 
-ifneq ($(wildcard depend),)
-include depend
+ifneq ($(wildcard $(DEPEND)),)
+include $(DEPEND)
 endif
-
