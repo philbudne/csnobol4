@@ -16,12 +16,12 @@
 #include "snotypes.h"
 #include "macros.h"
 #include "load.h"			/* LOAD_PROTO */
-#include "lib.h"
+#include "lib.h"			/* after load.h */
 #include "str.h"
 
 struct pmlfunc {
     char *name;
-    int (*addr)(LOAD_PROTO);
+    loadable_func_t *addr;
 };
 
 /* shorthand for function with same name for LOAD() and entry point */
@@ -50,7 +50,8 @@ static const char *pm_prototypes[] = {
 #define NPROTO (sizeof(pm_prototypes)/sizeof(pm_prototypes[0]))-1
 
 /* function of char *name which returns pointer to "loaded" function */
-int (*pml_find(char *name))(LOAD_PROTO) {
+loadable_func_t *
+pml_find(char *name) {
     const struct pmlfunc *fp;
 
     for (fp = pmltab; fp->name; fp++) {

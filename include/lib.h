@@ -153,8 +153,11 @@ int exreal(struct descr *,struct descr *,struct descr *);
 void unload(struct spec *);
 #ifdef LOAD_PROTO
 typedef int (loadable_func_t)(LOAD_PROTO); /* function entry point */
-loadable_func_t *os_load(char *, char *);
-#endif
+loadable_func_t *os_load(char *function, char *file);
+
+/* from pml.c */
+loadable_func_t *pml_find(char *);
+#endif /* LOAD_PROTO defined */
 
 /* from loadx.c (or load.c) */
 int callx(struct descr *,struct descr *,struct descr *,struct descr *);
