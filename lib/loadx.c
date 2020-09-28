@@ -24,7 +24,7 @@ load(struct descr *addr,		/* OUT */
      struct spec *sp2) {		/* library */
     char *fname = mspec2str(sp1);
     char *lname = mspec2str(sp2);	/* XXX sub SNOLIB_FILE if empty? */
-    loadable_func_t *addr;		/* entry */
+    loadable_func_t *entry;		/* function address */
 
     /* always try PML first? Only if lname is empty?? */
     entry = pml_find(fname);
