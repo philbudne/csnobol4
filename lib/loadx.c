@@ -24,7 +24,7 @@ load(struct descr *addr,		/* OUT */
      struct spec *sp2) {		/* library */
     char *fname = mspec2str(sp1);
     char *lname = mspec2str(sp2);	/* XXX sub SNOLIB_FILE if empty? */
-    int (*entry)(LOAD_PROTO);		/* function entry point */
+    loadable_func_t *addr;		/* entry */
 
     /* always try PML first? Only if lname is empty?? */
     entry = pml_find(fname);
@@ -68,8 +68,7 @@ load(struct descr *addr,		/* OUT */
 int
 callx(struct descr *retval, struct descr *args,
       struct descr *nargs, struct descr *addr) {
-    int (*entry)(LOAD_PROTO) = (int (*)(LOAD_PROTO))D_A(addr);
-
+    loadable_func_t *entry = (loadable_func_t *)D_A(addr);
     /* XXX check for zero V & F fields?? */
     if (!entry)
 	return FALSE;			/* fail (fatal error??) */
