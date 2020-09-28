@@ -20,7 +20,7 @@
 #define lret_t EXPORT(int)
 
 #define LA_ALIST LOAD_PROTO
-#define LA_DCL				/* __STDC__ flush */
+#define LA_DCL				/* K&R artifact */
 
 /*
  * macros to fetch arguments
