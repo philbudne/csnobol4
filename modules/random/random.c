@@ -64,7 +64,7 @@ typedef int int32_t;
 #define DEV_RANDOM "/dev/random"
 #endif
 
-uint32_t bsd_random();
+uint32_t bsd_random(void);
 
 /*
  * random.c:
@@ -287,9 +287,7 @@ static uint32_t good_rand (x)
  * for default usage relies on values produced by this routine.
  */
 void
-bsd_srandom(x)
-	unsigned long x;
-{
+bsd_srandom(unsigned long x) {
 	int i, lim;
 
 	state[0] = (uint32_t)x;
@@ -335,8 +333,7 @@ bsd_srandom(x)
 #pragma warning( disable : 4700 )
 #endif
 void
-bsd_srandomdev()
-{
+bsd_srandomdev(void) {
 	int done = 0;
 	int fd;
 	int len;
@@ -408,11 +405,9 @@ bsd_srandomdev()
  * complain about mis-alignment, but you should disregard these messages.
  */
 char *
-bsd_initstate(seed, arg_state, n)
-	unsigned long seed;		/* seed for R.N.G. */
-	char *arg_state;		/* pointer to state array */
-	long n;				/* # bytes of state info */
-{
+bsd_initstate(unsigned long seed,	/* seed for R.N.G. */
+	      char *arg_state,		/* pointer to state array */
+	      long n) {			/* # bytes of state info */
 	char *ostate = (char *)(&state[-1]);
 	uint32_t *int_arg_state = (uint32_t *)arg_state;
 
@@ -476,9 +471,7 @@ bsd_initstate(seed, arg_state, n)
  * complain about mis-alignment, but you should disregard these messages.
  */
 char *
-bsd_setstate(arg_state)
-	char *arg_state;		/* pointer to state array */
-{
+bsd_setstate(char *arg_state) {		/* pointer to state array */
 	uint32_t *new_state = (uint32_t *)arg_state;
 	uint32_t type = new_state[0] % MAX_TYPES;
 	uint32_t rear = new_state[0] / MAX_TYPES;
@@ -529,7 +522,7 @@ bsd_setstate(arg_state)
  * Returns a 31-bit random number.
  */
 uint32_t
-bsd_random()
+bsd_random(void)
 {
 	uint32_t i;
 	uint32_t *f, *r;
