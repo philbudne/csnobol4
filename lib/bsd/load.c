@@ -3,6 +3,8 @@
 /*
  * load and run external functions for systems using v7/BSD style a.out
  * -plb 11/9/93
+ *
+ * converted to loadx/os_load client 9/27/2020 -- not compiled
  */
 
 /*
@@ -49,14 +51,11 @@
 #define SYM_PREFIX "_"			/* XXX most (all?) a.out systems? */
 #endif /* SYM_PREFIX not defined */
 
-/* external function returning pointer to loaded function */
-extern int (*pml_find())(LOAD_PROTO);
-
 /* keep list of loaded functions (for UNLOAD) */
 struct func {
     struct func *next;
     struct func *self;
-    int (*entry)(LOAD_PROTO);
+    loadable_func_t *entry;
     char *data;
     char name[1];
 };
@@ -87,159 +86,96 @@ ld(char *output, char *addr, char *func, char *input) {
 
 #define PATHLEN 256			/* XXX use MAXPATHLEN from param.h? */
 
-int
-load(struct descr *addr,		/* OUT */
-     struct spec *sp1,			/* function */
-     struct spec *sp2) {		/* library */
-    struct func *fp; 
-    int l1;
+/* "file" may include loader options (libs) after filename!! */
+loadable_func_t *
+os_load(char *func, char *file) {
+    struct exec a;
+    struct func *fp;
+    char temp[PATHLEN];
+    char *data;
+    long len;				/* size of code+data */
+    int f;
 
-    l1 = S_L(sp1);
-    fp = (struct func *) malloc( sizeof (struct func) + l1 );
-    if (fp == NULL)
-	return FALSE;			/* fail */
+    sprintf( temp, "%s/snoXXXXXX", TMP_DIR);
+    mktemp( temp );			/* exists in v6 */
 
-    strncpy( fp->name, S_SP(sp1), l1 );
-    fp->name[l1] = '\0';
-    fp->data = NULL;			/* assume internal! */
+    /* link once to get total size! */
+    if (!ld( temp, 0, func, file)) {
+	goto ld_error;
+    }
 
-    /* try "poor mans load" first!!! */
-    fp->entry = pml_find(fp->name);
-    if (fp->entry == NULL) {		/* not found by pml */
-	char path[PATHLEN];
-	char temp[PATHLEN];
-	struct exec a;
-	char *snolib;
-	long len;			/* size of code+data */
-	int f;
+    f = open(temp, O_RDONLY);
+    if (f < 0) {
+	/* XXX error message? */
+	goto ld_error;
+    }
 
-	snolib = getenv("SNOLIB");
-	if (snolib == NULL)
-	    snolib = SNOLIB_DIR;
+    if (read( f, &a, sizeof(a)) != sizeof(a)) {
+	/* XXX error message? */
+	goto header_error;
+    }
 
-	if (sp2 && S_A(sp2) && S_L(sp2)) {
-	    char temp2[sizeof(temp)];
-	    char *tp;
-	    struct stat st;
-
-	    spec2str( sp2, temp, sizeof(temp) ); /* get libname [+ options] */
-	    strcpy(temp2, temp);	/* save copy with options */
-	    tp = index(temp, ' ');	/* look for space */
-	    if (tp)
-		*tp = '\0';		/* blot out space */
-
-	    if (temp[0] != '/' && stat(temp, &st) < 0) {
-		/* not absolute and no file; prepend libdir */
-		/* XXX watch snolib length?? */
-		sprintf( path, "%s/%s", snolib, temp2 );
-	    }
-	    else
-		strcpy( path, temp2 );
-	}
-	else {				/* no path */
-	    /* XXX watch snolib length */
-	    sprintf( path, "%s/%s", snolib, SNOLIB_FILE );
-	}
-
-	sprintf( temp, "%s/snoXXXXXX", TMP_DIR);
-	mktemp( temp );			/* exists in v6 */
-	/* XXX check for error (empty string, or "/")?! */
-
-	/* link once to get total size! */
-	if (!ld( temp, 0, fp->name, path )) {
-	    goto ld_error;
-	}
-
-	f = open(temp, O_RDONLY);
-	if (f < 0) {
-	    /* XXX error message? */
-	    goto ld_error;
-
-	}
-
-	if (read( f, &a, sizeof(a)) != sizeof(a)) {
-	    /* XXX error message? */
-	    goto header_error;
-	}
-
-	if (N_GETMAGIC(a) != OMAGIC) {
-	    /* XXX error message? */
-	header_error:
-	    close(f);
-	ld_error:
-	    unlink(temp);
-	    free(fp);
-	    return FALSE;		/* fail */
-	}
+    if (N_GETMAGIC(a) != OMAGIC) {
+	/* XXX error message? */
+    header_error:
 	close(f);
+    ld_error:
 	unlink(temp);
+	return NULL;			/* fail */
+    }
+    close(f);
+    unlink(temp);
 
-	len = N_SIZE(a);		/* total size (code+data+bss) */
+    len = N_SIZE(a);		      /* total size (code+data+bss) */
 
-	/* fix here for NMAGIC or ZMAGIC;  use valloc? */
-	fp->data = malloc(len);
-	if (fp->data == NULL) {
-	    free(fp);
-	    return FALSE;
-	}
+    /* fix here for NMAGIC or ZMAGIC;  use valloc? */
+    data = malloc(len);
+    if (data == NULL) {
+	return NULL;
+    }
 
-	/* XXX need only zero bss! */
-	bzero( fp->data, len );
+    /* XXX need only zero bss! */
+    bzero( data, len );
 
-	/*
-	 * could chain all of the following together in one big if stmt,
-	 * but it would be a pain to debug!
-	 */
+    /*
+     * could chain all of the following together in one big if stmt,
+     * but it would be a pain to debug!
+     */
 
-	/* re-link at new addr */
-	if (!ld( temp, fp->data, fp->name, path ) || (f = open(temp, 0)) < 0) {
-	    goto file_open_error;
-	}
+    /* re-link at new addr */
+    if (!ld( temp, data, fp->name, file) || (f = open(temp, 0)) < 0)
+	goto file_open_error;
 
-	if (read( f, &a, sizeof(a)) != sizeof(a)) {
-	data_read_error:
-	    close(f);
-	file_open_error:
-	    unlink(temp);
-	    free(fp->data);
-	    free(fp);
-	    return FALSE;
-	}
+    if (read( f, &a, sizeof(a)) != sizeof(a))
+	goto data_read_error;
 
-	if (N_GETMAGIC(a) != OMAGIC || a.a_entry == 0 || N_SIZE(a) > len) {
-	    goto data_read_error;
-	}
+    if (N_GETMAGIC(a) != OMAGIC || a.a_entry == 0 || N_SIZE(a) > len)
+	goto data_read_error;
 
-	if (read(f, fp->data, len) != len) {
-	    goto data_read_error;
-	}
-
-	fp->entry = (int (*)(LOAD_PROTO)) a.a_entry;
+    if (read(f, data, len) != len) {
+    data_read_error:
 	close(f);
-    } /* not found by pml */
+    file_open_error:
+	unlink(temp);
+	free(data);
+	return NULL;
+    }
+    close(f);
+
+    fp = (struct func *) malloc( sizeof (struct func) + strlen(func) );
+    if (fp == NULL) {
+	free(data);
+	return NULL;			/* fail */
+    }
+    strcpy(fp->name, func);
+    fp->entry = (loadable_func_t *) a.a_entry;
+    fp->data = data;
     fp->self = fp;			/* make valid */
 
     fp->next = funcs;			/* link into list (for unload) */
     funcs = fp;
 
-    D_A(addr) = (int_t) fp;
-    return TRUE;			/* success */
-}
-
-/* support for SIL "LINK" opcode -- call external function */
-int
-callx(struct descr *retval, struct descr *args,
-      struct descr *nargs, struct descr *addr) {
-    struct func *fp;
-
-    fp = (struct func *) D_A(addr);
-    if (fp == NULL)
-	return FALSE;
-
-    if (fp->self != fp)			/* validate! */
-	return FALSE;			/* fail */
-
-    return (fp->entry)( retval, D_A(nargs), (struct descr *)D_A(args) );
+    return fp->entry;
 }
 
 void
@@ -266,7 +202,7 @@ unload(struct spec *sp) {
     }
 
     fp->self = 0;			/* invalidate self pointer!! */
-    if (fp->data)			/* may be internal (PML) */
+    if (fp->data)
 	free(fp->data);
     free(fp);				/* free name block */
 }
