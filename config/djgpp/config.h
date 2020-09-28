@@ -1,7 +1,5 @@
 /* $Id$ */
 
-#define HAVE_STRINGS_H 
-#define HAVE_STDLIB_H 
 #define HAVE_UNISTD_H 
 
 #define SNOLIB_BASE "/usr/lib/snobol4"
