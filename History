@@ -3,6 +3,9 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/27/2020:
+	doc/snobol4.1.pea: add SNOBOL4UNBUFFERED
+
+9/27/2020:
 	CHANGES: update with changes since 2.1.6
 
 9/27/2020:

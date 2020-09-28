@@ -139,6 +139,10 @@ The B<LOAD()> function will also check for the file in B<shared>
 subdirectory in each directory in the search path.
 
 =sect ENVIRONMENT
+=item B<SNOBOL4UNBUFFERED>
+If set to a non-null value, all stdio output will be unbuffered,
+and will be written immediately.
+
 =item B<SNOPATH>
 Is a list of directories delimited by colons (semi-colons on VMS and
 Windows) appended to the Directory Search List (see above).
