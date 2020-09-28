@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+9/28/2020:
+	timing: add /etc/os-release (for arch)
+
 9/27/2020:
 	doc/snobol4.1.pea: add SNOBOL4UNBUFFERED
 
