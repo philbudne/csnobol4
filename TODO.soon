@@ -16,9 +16,6 @@ Add 1969(!) factor.sno to tests
 
 Better Windows default directory??  ask on list???
 
-cygwin installs libsnobol4.a in /usr/local/lib/snobol4/
-	(not versioned)
-
 remove io_eof/io_clearerr (push Windoze ^C lossage down)?
 Add io_getfp method?
 
@@ -31,6 +28,8 @@ Add SITBOL &ERRPARM variable for error info (undefined label or function)?
 ***** show failed include statement
       like a syntax error?!!!
       Show filename for failed include???
+
+Convert next, vms, hpux load.c to os_load()
 
 Add snobol4load man page (replace load.txt)??
 	add mgetstr
