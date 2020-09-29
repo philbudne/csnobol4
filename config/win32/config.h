@@ -46,6 +46,10 @@
 #define GETPID_IN_PROCESS_H
 #define HAVE_STRFTIME
 
+#ifdef _MSC_VER
+#define HAVE_TIMESPEC_GET // in ucrt 10.0.18362.0?
+#endif
+
 #ifdef HAVE_WINSOCK2_H
 #define NEED_BINDRESVPORT_SA
 #else

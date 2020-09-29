@@ -14,6 +14,8 @@ cat >>$CROSS_CONFIG <<EOF
 
 * override defaults from native (Linux) snobol4 binary!!
 	CC = 'x86_64-w64-mingw32-gcc -D_WIN64'
+* speed up sqlite3 compile!
+	COPT = ''
 	DL_EXT = '.dll'
 	DL_LD = CC
 	mingw = 1
