@@ -3,6 +3,14 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/28/2020:
+	Cross compile for Windows/MINGW under Linux
+	NOTE!!! Binaries not tested.  Will have funny CC name!
+	(new) config/win32/linux-mingw.sh
+	config/win32/mingw.mak: add overrides for cross-compile
+	lib/win32/ptyio_obj.c, configure:
+		moved cygwin WIN32_WINNT, NTDDI_VERSION defines
+
+9/28/2020:
 	snolib/setup.sno: prefetch HOST vars
 		(allow override by config.sno)
 	modules/*/setup.sno: remove unneeded setup.sno include

@@ -18,7 +18,7 @@ WINSOCK=2
 
 # not in mingw-w64-common 7.0.0-2 headers
 # need STARTUPINFOEX, HPCON, PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE
-#PTYIO=1
+PTYIO=1
 
 ################################################################
 
@@ -52,6 +52,8 @@ PTYIO_OBJ_C=$(SRCDIR)lib/win32/ptyio_obj.c
 else
 PTYIO_OBJ_C=$(SRCDIR)lib/dummy/ptyio_obj.c
 endif
+
+CONFIG_SNO=config/win32/config.sno.mingw
 
 CFLAGS=-c $(OPT) -I$(SRCDIR)config/win32 -I$(SRCDIR)include -I$(SRCDIR). \
 	-DHAVE_CONFIG_H $(INET_DEFS) -Wall
@@ -107,7 +109,7 @@ ifdef BUFIO_OBJ_O
 SRC += $(SRCDIR)lib/auxil/bufio_obj.c
 endif
 
-# requires amalgamation sqlite.[ch] in modules/sqlite3:
+# requires amalgamation sqlite3.[ch] in modules/sqlite3:
 ifneq (,$(wildcard modules/sqlite3/sqlite3.[ch]))
 SQLITE3=sqlite3
 endif
@@ -122,18 +124,24 @@ cpuid.exe: cpuid.c
 	$(CC) -o cpuid cpuid.c
 
 MODULES=com dirs logic ndbm sprintf stat time $(SQLITE3)
+
+# SNOBOL4 binary to use to build modules (override on cross builds!)
+MOD_SNOBOL4=../../snobol4
+
 mods:	snobol4.exe
 	for M in $(MODULES); do \
-	    (cd modules/$$M; ../../snobol4 -N -I.. -I../.. -I../../snolib \
-		-I../../config/win32 setup.sno build); \
+	  (cd modules/$$M; \
+	   $(MOD_SNOBOL4) -N -I.. -I../.. -I../../snolib setup.sno build); \
 	done
 
 snobol4.exe: always $(OBJ)
 	$(CC) -shared-libgcc -o snobol4 $(OBJ) $(INET_LIBS) $(LDFLAGS)
 
 # kill leftovers from cygwin builds!!!
+# CONFIG_SNO can be overridden for cross-platform builds
 always:
-	rm -f config.h config.sno
+	rm -f config.h
+	cp -f $(CONFIG_SNO) config.sno
 
 data.o:	$(SRCDIR)data.c
 	$(CC) $(CFLAGS) $(SRCDIR)data.c
@@ -358,8 +366,14 @@ tan.o:	$(SRCDIR)lib/snolib/tan.c
 
 ################ housekeeping
 
-clean:
-	-rm -f *.o *.exe
+mod_clean:
+	for M in $(MODULES); do \
+	  (cd modules/$$M; \
+	   $(MOD_SNOBOL4) -N -I.. -I../.. -I../../snolib setup.sno clean); \
+	done
+
+clean:	mod_clean
+	-rm -f *.o *.exe libsnobol4.a
 
 $(DEPEND):
 	@echo Depending...

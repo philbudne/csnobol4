@@ -43,6 +43,13 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
+#if defined(__CYGWIN_) || defined(__MINGW32__)
+// works with w32api-headers 8.0.0-1
+// and mingw-w64-x86-64-dev 7.0 headers
+#define NTDDI_VERSION NTDDI_WIN10_RS5
+#define _WIN32_WINNT _WIN32_WINNT_WIN10
+#endif
+
 #include <windows.h>
 #include <process.h>
 

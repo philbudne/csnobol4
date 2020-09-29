@@ -15,6 +15,9 @@
 #define __STDC__	0
 #endif /* __STDC__ not defined */
 
+/* needed under mingw */
+#define NTDDI_VERSION NTDDI_WIN10_RS5
+
 #define BLOCKS
 
 /* datatypes; */
