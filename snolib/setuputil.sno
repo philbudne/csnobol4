@@ -358,7 +358,6 @@ setup.posix.buildcmd2
 +		' ' t['cflags']
 +		' -DHAVE_CONFIG_H' iflags
 +		' ' sources
-	terminal = 'here: ' compile
 	setup.posix.system(compile)		 :f(FRETURN)
 
 	libdirs = t['library_dirs']
