@@ -106,6 +106,7 @@ INIT_C=[.lib]init.c
 INTSPC_C=[.lib.generic]intspc.c
 IO_C=[.lib]io.c
 LEXCMP_C=[.lib]lexcmp.c
+LOADX_C=[.lib]loadx.c
 LOAD_C=[.lib.vms]load.c
 ORDVST_C=[.lib]ordvst.c
 OSOPEN_C=[.lib.vms]osopen.c
@@ -174,7 +175,7 @@ CFLAGS=	$(CCFLAGS) /DEFINE=(HAVE_CONFIG_H$(CCDEFS)$(INETDEFS)$(NDBM_DEFS)) \
 OBJS=	main.obj, $(SNOBOL4).obj, data.obj, data_init.obj, syn.obj, \
 	bal.obj, break.obj, date.obj, dynamic.obj, endex.obj, exists.obj, \
 	expops.obj, hash.obj, init.obj, $(INETOBJ), intspc.obj, \
-	io.obj, lexcmp.obj, load.obj, mstime.obj, ordvst.obj, \
+	io.obj, lexcmp.obj, load.obj, loadx.obj, mstime.obj, ordvst.obj, \
 	osopen.obj, pair.obj, pat.obj, pml.obj, realst.obj, \
 	replace.obj, spcint.obj, spreal.obj, str.obj, stream.obj, \
 	term.obj, top.obj, tty.obj, tree.obj, \
@@ -233,6 +234,9 @@ lexcmp.obj : $(LEXCMP_C)
 
 load.obj : $(LOAD_C)
 	$(CC) $(CFLAGS) $(LOAD_C)
+
+loadx.obj : $(LOADX_C)
+	$(CC) $(CFLAGS) $(LOADX_C)
 
 mstime.obj : $(MSTIME_C)
 	$(CC) $(CFLAGS) $(MSTIME_C)

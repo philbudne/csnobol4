@@ -19,9 +19,7 @@
 #include "lib.h"
 
 int
-exists(path)
-    char *path;
-{
+exists(char *path) {
     struct stat st;
 
     return stat(path, &st) >= 0;

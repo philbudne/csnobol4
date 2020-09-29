@@ -29,7 +29,7 @@
 #endif /* CLK_TCK not defined */
 
 real_t
-mstime() {
+mstime(void) {
     struct tbuffer tbuff;
 
     times(&tbuff);

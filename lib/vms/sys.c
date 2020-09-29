@@ -25,7 +25,11 @@
 #ifdef __ALPHA
 #define HWNAME "Alpha"
 #else  /* __ALPHA not defined */
+#ifdef __ia64
+#define "ia64"
+#else /* __ia64 not defined */
 #define HWNAME "???"
+#endif /* __ia64 not defined */
 #endif /* __ALPHA not defined */
 #endif /* vax not defined */
 
@@ -42,7 +46,7 @@ static char _hwname[MAXSTR];
 static char _osname[MAXSTR+1+MAXSTR];
 
 static void
-sys_init() {
+sys_init(void) {
     static int inited;
     struct item items[2];
     char temp[MAXSTR];
@@ -89,26 +93,24 @@ sys_init() {
 }
 
 void
-hwname(cp)
-    char *cp;
-{
+hwname(char *cp) {
     sys_init();
     strcpy(cp, _hwname);
 }
 
 void
-osname(cp)
-    char *cp;
-{
+osname(char *cp) {
     sys_init();
     strcpy(cp, _osname);
 }
 
 #ifdef TEST
+int
 main() {
     sys_init();
 
     printf("OS: %s\n", _osname);
     printf("HW: %s\n", _hwname);
+    return 0;
 }
 #endif /* TEST defined */

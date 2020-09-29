@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+9/20/2020:
+	ansify vms(!) files, convert to os_load
+	config/vms/descrip.mms: add loadx
+	lib/vms/*.c: convert to ansi, os_load
+
 9/28/2020:
 	Cross compile for Windows/MINGW under Linux
 	NOTE!!! Binaries not tested.  Will have funny CC name!

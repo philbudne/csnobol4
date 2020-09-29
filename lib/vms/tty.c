@@ -49,9 +49,7 @@ struct ttychan {
 static struct ttychan *chans;
 
 int
-fisatty(f)
-    FILE *f;
-{
+fisatty(FILE *f) {
     /* should only return true for files that tty_read() works with! */
     return isatty(fileno(f));
 }
@@ -64,17 +62,12 @@ fisatty(f)
  */
 
 void
-tty_mode( fp, cbreak, noecho, recl )
-    FILE *fp;
-    int cbreak, noecho, recl;
-{
+tty_mode(FILE *fp, int cbreak, int noecho, int recl) {
 } /* tty_mode */
 
 /* advisory notice */
 void
-tty_close(f)
-    FILE *f;
-{
+tty_close(FILE *f) {
     register struct ttychan *tp, *pp;
     int fd;
 
@@ -106,15 +99,8 @@ tty_close(f)
  */
 
 int
-tty_read(f, buf, len, raw, noecho, keepeol, fname)
-    FILE *f;
-    char *buf;
-    int len;
-    int raw;
-    int noecho;
-    int keepeol;
-    char *fname;
-{
+tty_read(FILE *f, char *buf, int len,
+	 int raw, int noecho, int keepeol, char *fname) {
     int chan;
     int fd;
     int op;				/* QIO op & flags */
@@ -196,12 +182,13 @@ tty_read(f, buf, len, raw, noecho, keepeol, fname)
 } /* tty_read */
 
 void
-tty_suspend()
+tty_suspend(void)
 {
 } /* tty_suspend */
 
 #ifdef TEST
 #define TRUE 1
+int
 main() {
   char buf[3];
   int cc;
@@ -223,5 +210,6 @@ main() {
   if (cc) printf("%d\n", buf[0]);
 
   tty_close(stdin);
+  return 0;
 }
 #endif /* TEST defined */

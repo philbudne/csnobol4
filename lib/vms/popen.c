@@ -44,10 +44,7 @@ static struct pipe {
  */
 
 FILE *
-popen(cmd, mode)
-    char *cmd;
-    char *mode;
-{
+popen(char *cmd, char *mode) {
     FILE *pfile;			/* the Pfile */
     int fd;				/* underlying fd */
     struct pipe *pd;			/* pipe database pointer */
@@ -153,9 +150,7 @@ popen(cmd, mode)
  *
  */
 int
-pclose(pfile)
-    FILE *pfile;
-{
+pclose(FILE *pfile) {
     struct pipe *pd;
     int fd;
 
@@ -185,6 +180,7 @@ pclose(pfile)
 }
 
 #ifdef TEST
+int
 main() {
     for (;;) {
 	int l;
@@ -211,5 +207,6 @@ main() {
 	else
 	    printf("popen failed");
     }
+    return 0;
 }
 #endif /* TEST defined */

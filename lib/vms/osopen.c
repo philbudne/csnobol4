@@ -16,10 +16,7 @@
 #include "str.h"			/* strcmp */
 
 int
-osdep_open(fname, mode, fpp)
-    const char *fname, *mode;
-    FILE **fpp;
-{
+osdep_open(const char *fname, const char *mode, FILE **fpp) {
     if (strcmp(fname, "/dev/tty") == 0) {
 	*fpp = fopen("TT:", mode);
 	return TRUE;			/* matched */

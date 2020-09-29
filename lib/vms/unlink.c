@@ -4,8 +4,6 @@
  */
 
 int
-unlink(fname)
-    char *fname;
-{
+unlink(char *fname) {
     return delete(fname);
 }
