@@ -373,7 +373,7 @@ mod_clean:
 	done
 
 clean:	mod_clean
-	-rm -f *.o *.exe libsnobol4.a
+	-rm -f *.o *.exe libsnobol4.a $(DEPEND)
 
 $(DEPEND):
 	@echo Depending...
