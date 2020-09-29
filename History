@@ -2,20 +2,23 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
-9/20/2020:
+9/28/2020:
+	config/win32/mingw.mak: improve module builds
+
+9/28/2020:
 	config/djgpp/Makefile: always include loadx.o
 
-9/20/2020:
+9/28/2020:
 	ansify next dir (one file, for a (hopefully) dead interface)
 	lib/next/load.c: ansify, convert to os_load
 	Makefile2.m4: always include loadx.o
 	configure: never need to add loadx.o
 
-9/20/2020:
+9/28/2020:
 	ansify hpux dir (one file, for a (hopefully) dead interface)
 	lib/hpux/load.c: ansify, convert to os_load
 
-9/20/2020:
+9/28/2020:
 	ansify vms(!) files, convert to os_load
 	config/vms/descrip.mms: add loadx
 	lib/vms/*.c: convert to ansi, os_load

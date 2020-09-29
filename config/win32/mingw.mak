@@ -109,32 +109,18 @@ ifdef BUFIO_OBJ_O
 SRC += $(SRCDIR)lib/auxil/bufio_obj.c
 endif
 
-# requires amalgamation sqlite3.[ch] in modules/sqlite3:
-ifneq (,$(wildcard modules/sqlite3/sqlite3.[ch]))
-SQLITE3=sqlite3
-endif
-
 DEPEND=depend.mingw
 
 # make DEPEND file (once) and recurse
 all:	$(DEPEND)
-	$(MAKE) -f config/win32/mingw.mak snobol4.exe mods
+	$(MAKE) -f config/win32/mingw.mak sub_all
+
+sub_all: always cpuid.exe snobol4.exe mods
 
 cpuid.exe: cpuid.c
 	$(CC) -o cpuid cpuid.c
 
-MODULES=com dirs logic ndbm sprintf stat time $(SQLITE3)
-
-# SNOBOL4 binary to use to build modules (override on cross builds!)
-MOD_SNOBOL4=../../snobol4
-
-mods:	snobol4.exe
-	for M in $(MODULES); do \
-	  (cd modules/$$M; \
-	   $(MOD_SNOBOL4) -N -I.. -I../.. -I../../snolib setup.sno build); \
-	done
-
-snobol4.exe: always $(OBJ)
+snobol4.exe: $(OBJ)
 	$(CC) -shared-libgcc -o snobol4 $(OBJ) $(INET_LIBS) $(LDFLAGS)
 
 # kill leftovers from cygwin builds!!!
@@ -363,6 +349,66 @@ sset.o:	$(SRCDIR)lib/snolib/sset.c
 
 tan.o:	$(SRCDIR)lib/snolib/tan.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/tan.c
+
+################ modules
+
+MODULES=com dirs logic ndbm random sprintf stat time
+
+# copied from (machine generated) Unix Makefile2:
+# (hand added .c sources), removed xsnobol4, generated docs
+
+MODULES_LOADABLE= modules/dirs/dirs.dll modules/logic/logic.dll modules/random/random.dll modules/stat/stat.dll modules/time/time.dll modules/sprintf/sprintf.dll modules/ndbm/ndbm.dll 
+
+# requires amalgamation sqlite3.[ch] in modules/sqlite3:
+ifneq (,$(wildcard modules/sqlite3/sqlite3.[ch]))
+MODULES += sqlite3
+MODULES_LOADABLE += modules/sqlite3/sqlite3.dll
+endif
+
+mods: $(MODULES_LOADABLE)
+
+#mods:	snobol4.exe
+#	for M in $(MODULES); do \
+#	  (cd modules/$$M; \
+#	   $(MOD_SNOBOL4) -N -I.. -I../.. -I../../snolib setup.sno build); \
+#	done
+
+# SNOBOL4 binary to use to build modules (override on cross builds!)
+MOD_SNOBOL4=../../snobol4
+
+# XXX try SNOPATH=..:......?
+RUNSETUP=$(MOD_SNOBOL4) -N -I.. -I../.. -I../../snolib setup.sno
+
+MODDEP=snolib/setuputil.sno libsnobol4.a
+
+modules/com/com.dll: $(MODDEP) modules/com/setup.sno modules/com/com.cpp
+	cd modules/com; $(RUNSETUP) build
+
+modules/dirs/dirs.dll: $(MODDEP) modules/dirs/setup.sno modules/dirs/dirs.c
+	cd modules/dirs; $(RUNSETUP) build
+
+SDBM=modules/ndbm/sdbm
+NDBM_SRC=modules/ndbm/ndbm.c $(SDBM)/sdbm.c $(SDBM)/sdbm_hash.c $(SDBM)/sdbm_pair.c
+modules/ndbm/ndbm.dll: $(MODDEP) modules/ndbm/setup.sno $(NSBM_SRC)
+	cd modules/ndbm; $(RUNSETUP) build
+
+modules/logic/logic.dll: $(MODDEP) modules/logic/setup.sno modules/logic/logic.c
+	cd modules/logic; $(RUNSETUP) build
+
+modules/random/random.dll: $(MODDEP) modules/random/setup.sno modules/random/random.c
+	cd modules/random; $(RUNSETUP) build
+
+modules/sqlite3/sqlite3.dll: $(MODDEP) modules/sqlite3/setup.sno modules/sqlite3/sqlite3.c modules/sqlite3/sqlite3mod.c
+	cd modules/sqlite3; $(RUNSETUP) build
+
+modules/stat/stat.dll: $(MODDEP) modules/stat/setup.sno modules/stat/stat.c
+	cd modules/stat; $(RUNSETUP) build
+
+modules/time/time.dll: $(MODDEP) modules/time/setup.sno modules/time/time.c
+	cd modules/time; $(RUNSETUP) build
+
+modules/sprintf/sprintf.dll: $(MODDEP) modules/sprintf/setup.sno modules/sprintf/sprintf.c
+	cd modules/sprintf; $(RUNSETUP) build
 
 ################ housekeeping
 
