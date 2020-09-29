@@ -3,6 +3,9 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/20/2020:
+	config/djgpp/Makefile: always include loadx.o
+
+9/20/2020:
 	ansify next dir (one file, for a (hopefully) dead interface)
 	lib/next/load.c: ansify, convert to os_load
 	Makefile2.m4: always include loadx.o

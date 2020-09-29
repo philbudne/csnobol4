@@ -22,12 +22,10 @@ CC=gcc
 OPT=-O3
 
 ifdef HAVE_DXE2
-#
 DXE_DEFS=-DHAVE_DXE2
 LOAD_C=$(SRCDIR)lib/unix98/load.c
-DXE_OBJS=osinit.o loadx.o
+DXE_OBJS=osinit.o
 DXE_LIBS=-ldl
-#
 # "DXE3" now part of DJGPP distribution (as of April 2003)
 #	Didn't find it in a basic install of v2 -phil
 else
@@ -54,7 +52,7 @@ LIBS=$(WATTCP_LIBS) -lm -lc -lpc $(DXE_LIBS)
 
 OBJ=	isnobol4.o data.o data_init.o main.o syn.o \
 	bal.o break.o date.o dump.o endex.o hash.o \
-	intspc.o io.o lexcmp.o ordvst.o pair.o pat.o \
+	intspc.o io.o lexcmp.o loadx.o ordvst.o pair.o pat.o \
 	pml.o realst.o replace.o stdio_obj.o str.o stream.o top.o \
 	tree.o bcopy.o bzero.o dynamic.o expops.o getline.o getopt.o \
 	init.o load.o mstime.o chop.o cos.o delete.o \
