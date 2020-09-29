@@ -3,6 +3,13 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/28/2020:
+	configure: detect clock_gettime(CLOCK_REALTIME,&ts)
+		and timespec_get(&ts, TIME_UTC)
+	modules/random/random.c, modules/time/time.c:
+		use timespec (need a .h file to paper it over)
+		GETTIMEOFDAY TV_USEC can be a REAL!
+
+9/28/2020:
 	config/win32/mingw.mak: improve module builds
 
 9/28/2020:

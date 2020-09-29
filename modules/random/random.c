@@ -39,10 +39,20 @@ __FBSDID("$FreeBSD: src/lib/libc/stdlib/random.c,v 1.25 2007/01/09 00:28:10 imp 
 #include "config.h"
 #endif
 
-#ifdef HAVE_GETTIMEOFDAY
-#include <sys/time.h>          /* for srandomdev() */
+/* for srandomdev()... */
+#if defined(HAVE_CLOCK_GETTIME)
+#define TIMESPEC(TS) clock_gettime(CLOCK_REALTIME, TS)
+#include <time.h>
+#elif defined(HAVE_TIMESPEC_GET)
+#define TIMESPEC(TS) timespec_get(TS, TIME_UTC)
+#include <time.h>
+#elif defined(HAVE_GETTIMEOFDAY)
+#include <sys/time.h>
+#else
+#include <time.h>		/* time() */
 #endif
-#include <fcntl.h>             /* for srandomdev() */
+
+#include <fcntl.h>		/* for srandomdev() */
 #ifdef HAVE_STDINT_H
 #include <stdint.h>
 #else
@@ -351,13 +361,18 @@ bsd_srandomdev(void) {
 	}
 	if (!done) {
 		unsigned long junk;	/* intentionally used uninitialized! */
-#ifdef HAVE_GETTIMEOFDAY
+#if defined(TIMESPEC)
+		struct timespec ts;
+
+		TIMESPEC(&ts);
+		junk ^= ts.tv_sec ^ ts.tv_nsec; /* couldn't they have changed tv to ts? */
+#elif defined(HAVE_GETTIMEOFDAY)
 		struct timeval tv;
 
 		gettimeofday(&tv, NULL);
 		junk ^= tv.tv_sec ^ tv.tv_usec;
 #else
-		junk ^= time(0);	/* safe for win32 */
+		junk ^= time(0);
 #endif
 		/* available in DJGPP (DOS), and VMS?! */
 		junk ^= getpid();

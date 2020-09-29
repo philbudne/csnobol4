@@ -13,7 +13,11 @@
 #define __TM_GMTOFF tm_gmtoff		/* cygwin64: add tm_gmtoff! */
 #endif
 
-#ifdef HAVE_GETTIMEOFDAY
+#if defined(HAVE_CLOCK_GETTIME)
+#define TIMESPEC(TS) (clock_gettime(CLOCK_REALTIME, TS) == 0)
+#elif defined(HAVE_TIMESPEC_GET)
+#define TIMESPEC(TS) (timespec_get(TS, TIME_UTC) == TIME_UTC)
+#elif defined(HAVE_GETTIMEOFDAY)
 #include <sys/time.h>
 #endif
 
@@ -30,6 +34,7 @@
 #include "str.h"
 
 #define SETINT(DP,N,VAL) (DP)[N].a.i = (VAL); (DP)[N].f = 0; (DP)[N].v = I
+#define SETREAL(DP,N,VAL) (DP)[N].a.f = (VAL); (DP)[N].f = 0; (DP)[N].v = R
 #define SETNULL(DP,N) (DP)[N].a.i = 0; (DP)[N].f = 0; (DP)[N].v = S
 
 enum tv_member {
@@ -62,14 +67,20 @@ enum tm_member {
 lret_t
 GETTIMEOFDAY_( LA_ALIST ) {
     struct descr *dp = LA_PTR(0);
-#ifdef HAVE_GETTIMEOFDAY
+#if defined(TIMESPEC)
+    struct timespec ts;
+#elif defined(HAVE_GETTIMEOFDAY)
     struct timeval tv;
 #endif
 
     if (!dp || LA_TYPE(0) < DATSTA || COUNT(dp) != TV_COUNT)
 	RETNULL;
     /* validate dp[TV_DESCR] */
-#ifdef HAVE_GETTIMEOFDAY
+#if defined(TIMESPEC)
+    TIMESPEC(&ts);
+    SETINT(dp,TV_SEC,ts.tv_sec);
+    SETREAL(dp,TV_USEC,ts.tv_nsec/1000.0);
+#elif defined(HAVE_GETTIMEOFDAY)
     if (gettimeofday(&tv, NULL) < 0)
 	RETFAIL;
     SETINT(dp,TV_SEC,tv.tv_sec);
