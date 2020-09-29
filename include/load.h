@@ -6,7 +6,6 @@
 
 /* prototype for external (LOADed) functions */
 #define LOAD_PROTO struct descr *retval, int nargs, struct descr *args
-#define PML_FIND_ARG char *
 
 /* macros for loadable user functions;
  *
@@ -103,9 +102,6 @@
 	if (SUCC) RETNULL; \
 	else RETFAIL; \
     } while (0)
-
-/* lib/pml.c; used by system load.c files */
-int (*pml_find(PML_FIND_ARG))(LOAD_PROTO);
 
 #ifdef DLL
 #define SNOEXP(X) IMPORT(X)

@@ -2,6 +2,12 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+9/29/2020:
+	Final(?) pml_find cleanup
+	include/load.h
+	lib/hpux/load.c
+	lib/win32/load.c
+
 9/28/2020:
 	configure: detect clock_gettime(CLOCK_REALTIME,&ts)
 		and timespec_get(&ts, TIME_UTC)

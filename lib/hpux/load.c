@@ -32,7 +32,7 @@ struct lib {
 struct func {
     struct func *next;			/* next in loaded function list */
     struct func *self;			/* for validity check */
-    int (*entry)(LOAD_PROTO);		/* function entry point */
+    loadable_func_t *entry;		/* function entry point */
     struct lib *lib;
     char name[1];			/* for unload (MUST BE LAST)! */
 };

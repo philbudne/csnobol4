@@ -22,9 +22,6 @@
 #include "lib.h"
 #include "str.h"
 
-/* external function returning pointer to loaded function */
-extern int (*pml_find())(LOAD_PROTO);
-
 struct func {
     struct func *next;			/* next in loaded function list */
     HMODULE handle;			/* from LoadLibrary() */
@@ -52,7 +49,6 @@ os_load(char *fname, char *lname) {
      * windows dir, and dirs in PATH var)
      */
 
-    // XXX convert UTF-8 to UCS-2/UTF-16???
     handle = LoadLibrary(lname);
     if (!handle)
 	return NULL;
