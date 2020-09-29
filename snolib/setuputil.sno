@@ -10,7 +10,6 @@
 
 -INCLUDE 'host.sno'
 -INCLUDE 'snopea.sno'
--INCLUDE 'config.sno'
 -INCLUDE 'basename.sno'
 
 * TODO
@@ -81,25 +80,47 @@
 *	tab
 	setup.t = '	'
 
+**************** prefetch config, so config.sno can override!
+* (I really should NEVER have built the toolchain particulars
+*  into the binary)
 
+* get switch presets from envionment
+	setup.verbose = DIFFER(HOST(HOST_GETENV, 'SETUPUTIL_VERBOSE')) 1
+	setup.debug = HOST(HOST_GETENV, 'SETUPUTIL_DEBUG')
+
+	DEFINE('fetch(name)')			:(fetch.end)
+fetch	$name = HOST($('HOST_' name))		:f(freturn)
+	terminal = differ(setup.verbose) 'HOST_' name ' = ' $name
+	:(return)
+fetch.end
+
+	fetch('CC')
+	fetch('COPT')
+	fetch('DL_CFLAGS')
+	fetch('DL_EXT')
+	fetch('DL_LD')
+	fetch('DL_LDFLAGS')
+	fetch('INCLUDE_DIR')
+	fetch('OBJ_EXT')
+	fetch('SETUP_SYS')
+
+	cygwin = DIFFER(HOST() ? POS(0) BREAK(':') ':CYGWIN') 1
+	windows = DIFFER(HOST() ? POS(0) BREAK(':') ':Win') 1
+	mingw = DIFFER(windows) IDENT(SETUP_SYS, "posix") 1
+
+-INCLUDE 'config.sno'
+
+****************
 	DEFINE('setup(t)')			:(setup.end)
 setup	TERMINAL = DIFFER(DATATYPE(t),'TABLE') 'setup needs TABLE'
 +						:s(setup.fatal)
 	podseen =
-
-	objext = HOST(HOST_OBJ_EXT)
-	sys = HOST(HOST_SETUP_SYS)
-
-	cygwin = DIFFER(HOST() ? POS(0) BREAK(':') ':CYGWIN') 1
-	windows = DIFFER(HOST() ? POS(0) BREAK(':') ':Win') 1
-	mingw = DIFFER(windows) IDENT(sys, "posix") 1
 
 * build against distribution include files
 	dist_build = FILE("../../snolib/setuputil.sno") FILE("../../config.h") 1
 	dist_build = 
 +		FILE("..\..\snolib\setuputil.sno") FILE("..\..\config\win32\config.h") 1
 
-*	XXX parse options!!
 	i = HOST(HOST_FIRSTARG)
 setup.switches
 	cmd = HOST(HOST_ARGN, i)		:f(setup.usage)
@@ -111,15 +132,16 @@ setup.switches
 	:(setup.usage)
 
 setup.cmd
+
 	IDENT(cmd, 'help')			:s(setup.usage)
 
-	lbl = 'setup.' sys '.' cmd 'cmd'
+	lbl = 'setup.' SETUP_SYS '.' cmd 'cmd'
 	FUNCTION(lbl)				:f(setup.not.found)
 	TERMINAL = APPLY(lbl, t) t['module'] ' ' cmd ' succeeded.' :s(return)
 	TERMINAL = t['module'] ' ' cmd ' failed.' :(setup.fatal)
 
 setup.not.found
-+	TERMINAL = sys ' ' cmd ' not found'
++	TERMINAL = SETUP_SYS ' ' cmd ' not found'
 setup.usage
 +	TERMINAL = 'Usage: snobol4 setup.sno [-v] [-d] COMMAND'
 	TERMINAL = 'Commands: build install clean help'
@@ -142,7 +164,7 @@ setup.repl.end
 *	return name of Dynamic Library file
 	DEFINE('setup.dlname(t)')		:(setup.dlname.end)
 setup.dlname
-	setup.dlname = t['module'] HOST(HOST_DL_EXT) :(return)
+	setup.dlname = t['module'] DL_EXT	:(return)
 setup.dlname.end
 
 *	return name of snobol include file
@@ -305,7 +327,7 @@ setup.posix.system.end
 
 	DEFINE('setup.posix.objs(t)srcs,file')	:(setup.posix.objs.end)
 setup.posix.objs
-	srcs = setup.repl(t['sources'] setup.c, '.c,', objext ' ')
+	srcs = setup.repl(t['sources'] setup.c, '.c,', OBJ_EXT ' ')
 setup.posix.objs.loop
 	IDENT(srcs)				:s(RETURN)
 	srcs (break(' ') ' ') . file =		:f(RETURN)
@@ -320,7 +342,7 @@ setup.posix.objs.end
 
 	DEFINE('setup.posix.buildcmd(t)')	:(setup.posix.buildcmd.end)
 setup.posix.buildcmd
-  	iflags = ' -I' HOST(HOST_INCLUDE_DIR)
+  	iflags = ' -I' INCLUDE_DIR
 	iflags = DIFFER(dist_build) ' -I../.. -I../../include'
 	iflags = DIFFER(dist_build) DIFFER(mingw) iflags ' -I../../config/win32'
 
@@ -331,12 +353,12 @@ setup.posix.buildcmd2
 	sources = setup.repl(t['sources'], setup.c, setup.s)
 
 * build "dynamic library" (DL) -- something attached at runtime
-	compile = HOST(HOST_CC) ' -c ' HOST(HOST_COPT)
-+		' ' HOST(HOST_DL_CFLAGS) setup.debug
+	compile = CC ' -c ' COPT
++		' ' DL_CFLAGS setup.debug
 +		' ' t['cflags']
 +		' -DHAVE_CONFIG_H' iflags
 +		' ' sources
-
+	terminal = 'here: ' compile
 	setup.posix.system(compile)		 :f(FRETURN)
 
 	libdirs = t['library_dirs']
@@ -348,8 +370,8 @@ setup.posix.buildcmd2
 	libs = DIFFER(libs) setup.repl(setup.c libs, setup.c, ' -l')
 	libs = DIFFER(mingw cygwin) libs ' -lsnobol4'
 
-	link = HOST(HOST_DL_LD)
-+		' ' HOST(HOST_DL_LDFLAGS)
+	link = DL_LD
++		' ' DL_LDFLAGS
 +		' -o ' setup.dlname(t) ' ' setup.posix.objs(t) libdirs libs
 +		' ' t['ldflags']
 
@@ -437,8 +459,8 @@ setup.win.msc.basename.end
 
 	DEFINE('setup.win.msc.objs(t)srcs,file') :(setup.win.msc.objs.end)
 setup.win.msc.objs
-	srcs = setup.repl(t['sources'] setup.c, '.c,', objext ' ')
-	srcs = setup.repl(srcs setup.c, '.cpp,', objext ' ')
+	srcs = setup.repl(t['sources'] setup.c, '.c,', OBJ_EXT ' ')
+	srcs = setup.repl(srcs setup.c, '.cpp,', OBJ_EXT ' ')
 
 setup.win.msc.objs.loop
 	IDENT(srcs)				:s(RETURN)
@@ -452,7 +474,7 @@ setup.win.msc.objs.end
 
 	DEFINE('setup.win.msc.buildcmd(t)')	:(setup.win.msc.buildcmd.end)
 setup.win.msc.buildcmd
-  	iflags = (IDENT(dist_build) ' -I' HOST(HOST_INCLUDE_DIR),
+  	iflags = (IDENT(dist_build) ' -I' INCLUDE_DIR,
 +			' -I..\.. -I..\..\include -I..\..\config\win32')
 
 setup.win.msc.buildcmd2
@@ -462,12 +484,11 @@ setup.win.msc.buildcmd2
 	sources = setup.repl(t['sources'], setup.c, setup.s)
 
 * build "dynamic library" (DL) -- something attached at runtime
-	compile = HOST(HOST_CC) ' -c -DHAVE_CONFIG_H ' HOST(HOST_COPT)
-+		' ' HOST(HOST_DL_CFLAGS)
+	compile = CC ' -c -DHAVE_CONFIG_H ' COPT
++		' ' DL_CFLAGS
 +		' ' t['cflags']
 +		' ' iflags
 +		' ' sources
-
 	setup.posix.system(compile)		 :f(FRETURN)
 
 	libdirs = t['library_dirs']
@@ -481,8 +502,8 @@ setup.win.msc.buildcmd2
 	libs = t['libraries']
 	libs = DIFFER(libs) setup.repl(libs setup.c, setup.c, '.lib ')
 
-	link = HOST(HOST_DL_LD)
-+		' ' HOST(HOST_DL_LDFLAGS)
+	link = DL_LD
++		' ' DL_LDFLAGS
 +		' /OUT:' setup.dlname(t)
 +		' ' t['ldflags']
 +		' ' setup.win.msc.objs(t)

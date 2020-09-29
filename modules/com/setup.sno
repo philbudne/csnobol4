@@ -1,5 +1,4 @@
 -INCLUDE 'setuputil.sno'
--INCLUDE 'config.sno'
 
 	t = TABLE()
 	t['module'] = 'com'

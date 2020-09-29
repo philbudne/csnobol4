@@ -1,6 +1,5 @@
 # $Id$
 -INCLUDE 'setuputil.sno'
--INCLUDE 'config.sno'
 
 	t = TABLE()
 	t['module'] = 'readline'

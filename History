@@ -3,6 +3,11 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/28/2020:
+	snolib/setup.sno: prefetch HOST vars
+		(allow override by config.sno)
+	modules/*/setup.sno: remove unneeded setup.sno include
+
+9/28/2020:
 	timing: add /etc/os-release (for arch)
 
 9/27/2020:

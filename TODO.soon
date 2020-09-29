@@ -1,7 +1,5 @@
 $Id$
 
-Try building com.cpp with fewer ifdefs
-
 genc:
     Turn SELBRA & STREAM with single label into if
 
