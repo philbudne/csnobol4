@@ -11,7 +11,6 @@
 #endif /* HAVE_CONFIG_H defined */
 
 #include <sys/types.h>
-#include <sys/stat.h>
 
 /* NS: /NextDeveloper/Headers/mach-o/dyld.h */
 #include <mach-o/dyld.h>
@@ -27,13 +26,9 @@
 #include "lib.h"
 #include "str.h"
 
-/* external function returning pointer to loaded function */
-extern int (*pml_find())(LOAD_PROTO);
-
 struct func {
     struct func *next;			/* next in loaded function list */
-    struct func *self;			/* for validity check */
-    int (*entry)(LOAD_PROTO);		/* function entry point */
+    loadable_func_t *entry;		/* function entry point */
     NSModule handle;			/* from NSLinkModule */
     char name[1];			/* for unload (MUST BE LAST)! */
 };
@@ -43,147 +38,86 @@ static struct func *funcs;
 
 #define PATHLEN 256			/* XXX use MAXPATHLEN from param.h? */
 
-int
-load(struct descr *addr,		/* OUT */
-     struct spec *sp1,			/* function */
-     struct spec *sp2) {		/* library */
+loadable_func_t
+os_load(char *func, char *file) {
     struct func *fp; 
-    int l1;
+    NSObjectFileImage ofi;
+    NSSymbol sym;
+    int opt;
 
-    l1 = S_L(sp1);
-    fp = (struct func *) malloc( sizeof (struct func) + l1 );
+    fp = (struct func *) malloc( sizeof (struct func) + strlen(func) );
     if (fp == NULL)
 	return FALSE;			/* fail */
 
-    strncpy( fp->name, S_SP(sp1), l1 );
-    fp->name[l1] = '\0';
-    fp->handle = NULL;			/* assume internal! */
+    strcpy(fp->name, func);
 
-    /* try "poor mans load" first!!! */
-    fp->entry = pml_find(fp->name);
-    if (fp->entry == NULL) {		/* not found by pml */
-	NSObjectFileImage ofi;
-	NSSymbol sym;
-	char path[PATHLEN*2];		/* room for directory name */
-	char *pp;			/* path pointer */
-	char *snolib;
 
-	snolib = getenv("SNOLIB");
-	if (snolib == NULL)
-	    snolib = SNOLIB_DIR;
-
-	if (sp2 && S_A(sp2) && S_L(sp2)) {
-	    struct stat st;
-	    char temp[PATHLEN];
-
-	    spec2str(sp2, temp, sizeof(temp));
-
-	    /* XXX just try dlopen() ?? */
-	    if (temp[0] != '/' && stat(temp, &st) < 0) {
-		/* not absolute and file does not exist; prepend libdir */
-		/* XXX limit length of snolib?? */
-		sprintf( path, "%s/%s", snolib, temp );
-	    }
-	    else
-		strcpy( path, temp );
-	    pp = path;
-	}
-	else {				/* no path */
-	    /* XXX limit length of snolib?? */
-	    sprintf( path, "%s/%s", snolib, SNOLIB_FILE );
-	    /* XXX just pass NULL pathname to dlopen (search main program)? */
-	    pp = path;
-	}
-
-	if (NSCreateObjectFileImageFromFile(pp, &ofi) ==
-	    NSObjectFileImageSuccess) {
-	    int opt;
-#ifdef NSLINKMODULE_OPTION_PRIVATE
-	    /* MacOS X; avoid symbol clashes */
-	    opt = NSLINKMODULE_OPTION_PRIVATE | NSLINKMODULE_OPTION_BINDNOW;
-#else  /* NSLINKMODULE_OPTION_PRIVATE not defined */
-	    opt = TRUE;			/* old "bindnow" */
-#endif /* NSLINKMODULE_OPTION_PRIVATE not defined */
-	    fp->handle = NSLinkModule(ofi, pp, opt);
-	    if (!fp->handle) {
-		/* XXX NSDestroyObjectFileImage(ofi); ? keep ref count?? */
-		free(fp);
-		return FALSE;		/* fail */
-	    }
-	}
-	else {
-	    free(fp);
-	    return FALSE;		/* fail */
-	}
+    if (NSCreateObjectFileImageFromFile(file, &ofi) !=
+	NSObjectFileImageSuccess) {
+	free(fp);
+	return FALSE;			/* fail */
+    }
 
 #ifdef NSLINKMODULE_OPTION_PRIVATE
-	sym = NSLookupSymbolInModule(fp->handle, fp->name);
+    /* MacOS X; avoid symbol clashes */
+    opt = NSLINKMODULE_OPTION_PRIVATE | NSLINKMODULE_OPTION_BINDNOW;
 #else  /* NSLINKMODULE_OPTION_PRIVATE not defined */
-	sym = NSLookupAndBindSymbol(fp->name);
+    opt = TRUE;		 /* old "bindnow" */
 #endif /* NSLINKMODULE_OPTION_PRIVATE not defined */
-	/* XXX check return?? */
+    fp->handle = NSLinkModule(ofi, file, opt);
+    if (!fp->handle) {
+	/* XXX NSDestroyObjectFileImage(ofi); ? keep ref count?? */
+	free(fp);
+	return NULL;			/* fail */
+    }
 
-	fp->entry = (int (*)(LOAD_PROTO)) NSAddressOfSymbol(sym);
-	if (fp->entry == NULL) {
-	    int opt;
+#ifdef NSLINKMODULE_OPTION_PRIVATE
+    sym = NSLookupSymbolInModule(fp->handle, fp->name);
+#else  /* NSLINKMODULE_OPTION_PRIVATE not defined */
+    sym = NSLookupAndBindSymbol(fp->name);
+#endif /* NSLINKMODULE_OPTION_PRIVATE not defined */
+    /* XXX check return?? */
+
+    fp->entry = (loadable_func_t *) NSAddressOfSymbol(func);
+    if (fp->entry == NULL) {
+	int opt;
 #ifdef TRY_UNDERSCORE
-	    char name2[1024];		/* XXX */
+	char name2[1024];		/* XXX */
 
-	    name2[0] = '_';
-	    strncpy(name2+1, fp->name, sizeof(name2)-2);
-	    name2[sizeof(name2)-1] = '\0';
+	name2[0] = '_';
+	strncpy(name2+1, fp->name, sizeof(name2)-2);
+	name2[sizeof(name2)-1] = '\0';
 
 #ifdef NSLINKMODULE_OPTION_PRIVATE
-	    sym = NSLookupSymbolInModule(fp->handle, name2);
+	sym = NSLookupSymbolInModule(fp->handle, name2);
 #else  /* NSLINKMODULE_OPTION_PRIVATE not defined */
-	    sym = NSLookupAndBindSymbol(name2);
+	sym = NSLookupAndBindSymbol(name2);
 #endif /* NSLINKMODULE_OPTION_PRIVATE not defined */
 	/* XXX check return?? */
 
-	    fp->entry = (int (*)(LOAD_PROTO)) NSAddressOfSymbol(sym);
-	    if (fp->entry != NULL)
-		goto found;
+	fp->entry = (loadable_func_t *) NSAddressOfSymbol(sym);
+	if (fp->entry != NULL)
+	    goto found;
 #endif /* TRY_UNDERSCORE defined */
 #ifdef NSUNLINKMODULE_OPTION_NONE
-	    opt = NSUNLINKMODULE_OPTION_NONE;
+	opt = NSUNLINKMODULE_OPTION_NONE;
 #else  /* NSUNLINKMODULE_OPTION_NONE not defined */
-	    opt = FALSE;
+	opt = FALSE;
 #endif /* NSUNLINKMODULE_OPTION_NONE not defined */
-	    NSUnLinkModule(fp->handle, opt);
-	    /* XXX NSDestroyObjectFileImage(ofi); ? keep ref count?? */
-	    free(fp);
-	    return FALSE;
-	} /* dlsym failed */
-    } /* not found by pml */
+	NSUnLinkModule(fp->handle, opt);
+	/* XXX NSDestroyObjectFileImage(ofi); ? keep ref count?? */
+	free(fp);
+	return NULL;
+    } /* not found w/o underscore */
 #ifdef TRY_UNDERSCORE
  found:
 #endif /* TRY_UNDERSCORE defined */
-    fp->self = fp;			/* make valid */
 
     fp->next = funcs;			/* link into list (for unload) */
     funcs = fp;
 
-    D_A(addr) = (int_t) fp;
-    D_F(addr) = D_V(addr) = 0;		/* clear flags, type */
-    return TRUE;			/* success */
-}
-
-/* support for SIL "LINK" opcode -- call external function */
-int
-callx(struct descr *retval, struct descr *args,
-      struct descr *nargs, struct descr *addr) {
-    struct func *fp;
-
-    /* XXX check for zero V & F fields?? */
-    fp = (struct func *) D_A(addr);
-    if (fp == NULL)
-	return FALSE;
-
-    if (fp->self != fp)			/* validate, in case unloaded */
-	return FALSE;			/* fail (fatal error??) */
-
-    return (fp->entry)( retval, D_A(nargs), (struct descr *)D_A(args) );
-}
+    return fp->entry;
+} /* os_load */
 
 void
 unload(struct spec *sp) {
@@ -191,7 +125,7 @@ unload(struct spec *sp) {
     char name[1024];			/* XXX */
     int opt;
 
-    spec2str(sp, name, sizeof(name));
+    spec2str(sp, name, sizeof(name));	/* XXX mspec2str */
     for (pp = NULL, fp = funcs; fp != NULL; pp = fp, fp = fp->next) {
 	if (strcmp(fp->name, name) == 0)
 	    break;
@@ -215,6 +149,5 @@ unload(struct spec *sp) {
 #endif /* NSUNLINKMODULE_OPTION_NONE not defined */
     NSUnLinkModule(fp->handle, FALSE);
 
-    fp->self = 0;			/* invalidate self pointer!! */
     free(fp);				/* free name block */
 }

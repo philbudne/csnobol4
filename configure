@@ -1315,8 +1315,6 @@ if config/check dlfcn.h 'dlopen("", 0)' || \
 	if [ "$TRY_UNDERSCORE" ]; then
 	    echo '#define TRY_UNDERSCORE'	>> $CONFIG_H
 	fi
-	# new load support (honors SNOPATH)
-	echo 'ADD_OBJS([loadx.o])'		>> $CONFIG_M4
 elif config/check dl.h 'shl_load("", BIND_DEFERRED, 0L)'; then
 	LOAD=hpux
 	echo 'using HP-UX shl_load() for LOAD() support' 1>&2
@@ -1347,8 +1345,6 @@ elif config/check a.out.h 'struct exec a; int x = OMAGIC'; then
 	    echo '#define LD_PATH "/bin/ld"'	>> $CONFIG_H
 	fi
 	SNOLIB_FILE=snolib.a
-	# new load support (honors SNOPATH)
-	echo 'ADD_OBJS([loadx.o])'		>> $CONFIG_M4
 fi
 
 # used to construct default SNOPATH
@@ -1368,7 +1364,6 @@ fi
 if [ ! "$LOAD" ]; then
     echo 'using dummy LOAD() support' 1>&2
     echo 'LOAD_C=$(SRCDIR)lib/dummy/load.c'	>> $CONFIG_M4
-    echo 'ADD_OBJS([loadx.o])'			>> $CONFIG_M4
 fi
 
 # Seperate from LARGEFILE;  BSD4.4 systems have large file

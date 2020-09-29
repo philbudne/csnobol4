@@ -3,7 +3,13 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/20/2020:
-	ansify hpux dir (one file, for a (hopefully) dead interface
+	ansify next dir (one file, for a (hopefully) dead interface)
+	lib/next/load.c: ansify, convert to os_load
+	Makefile2.m4: always include loadx.o
+	configure: never need to add loadx.o
+
+9/20/2020:
+	ansify hpux dir (one file, for a (hopefully) dead interface)
 	lib/hpux/load.c: ansify, convert to os_load
 
 9/20/2020:

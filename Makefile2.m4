@@ -209,7 +209,7 @@ CFLAGS=[]_CFLAGS $(COPT) $(MYCPPFLAGS)
 
 OBJS=	main.o $(SNOBOL4).o data.o data_init.o syn.o bal.o break.o \
 	date.o dump.o dynamic.o endex.o expops.o fisatty.o hash.o \
-	$(INET_O) init.o intspc.o io.o lexcmp.o load.o mstime.o \
+	$(INET_O) init.o intspc.o io.o lexcmp.o load.o loadx.o mstime.o \
 	ordvst.o pair.o pat.o pml.o ptyio_obj.o realst.o replace.o spcint.o \
 	spreal.o stdio_obj.o str.o stream.o suspend.o term.o top.o \
 	tree.o tty.o $(EXTRA_OBJS) $(SNOLIB_A)
