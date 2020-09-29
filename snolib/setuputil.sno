@@ -117,9 +117,8 @@ setup	TERMINAL = DIFFER(DATATYPE(t),'TABLE') 'setup needs TABLE'
 	podseen =
 
 * build against distribution include files
-	dist_build = FILE("../../snolib/setuputil.sno") FILE("../../config.h") 1
-	dist_build = 
-+		FILE("..\..\snolib\setuputil.sno") FILE("..\..\config\win32\config.h") 1
+	dist_build = FILE("../../snolib/setuputil.sno") 1
+	dist_build = FILE("..\..\snolib\setuputil.sno") 1
 
 	i = HOST(HOST_FIRSTARG)
 setup.switches
