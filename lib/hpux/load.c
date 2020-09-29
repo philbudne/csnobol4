@@ -23,9 +23,6 @@
 #include "lib.h"
 #include "str.h"
 
-/* external function returning pointer to loaded function */
-extern int (*pml_find())(LOAD_PROTO);
-
 struct lib {
     struct lib *next;
     shl_t handle;			/* from shl_load() */
@@ -108,109 +105,36 @@ libclose(struct lib *lib) {
 
 /*****************/
 
-int
-load(struct descr *addr,		/* OUT */
-     struct spec *sp1,			/* function */
-     struct spec *sp2) {		/* library */
-{
+loadable_func_t *
+os_load(char *function, char *file) {
     struct func *fp; 
     shl_t handle;
-    int l1;
 
-    l1 = S_L(sp1);
-    fp = (struct func *) malloc( sizeof (struct func) + l1 );
+    fp = (struct func *) malloc( sizeof (struct func) + strlen(function) );
     if (fp == NULL)
-	return FALSE;			/* fail */
+	return NULL;			/* fail */
 
-    strncpy( fp->name, S_SP(sp1), l1 );
-    fp->name[l1] = '\0';
-    fp->lib = NULL;			/* assume internal! */
+    strcpy( fp->name, function);
+    fp->lib = libopen(path);
+    if (fp->lib == NULL) {
+	free(fp);
+	return NULL;			/* fail */
+    }
 
-    /* try "poor mans load" first!!! */
-    fp->entry = pml_find(fp->name);
-    if (fp->entry == NULL) {		/* not found by pml */
-	char path[PATHLEN*2];		/* room for directory name */
-	char *snolib;
+    handle = fp->lib->handle;		/* get writable copy */
+    if (shl_findsym(&handle, fp->name,
+		    TYPE_PROCEDURE, (void *)&fp->entry) < 0 ||
+	fp->entry == NULL) {
+	libclose(fp->lib);
+	free(fp);
+	return NULL;
+    }
 
-	snolib = getenv("SNOLIB");
-	if (snolib == NULL)
-	    snolib = SNOLIB_DIR;
-
-	if (sp2 && S_A(sp2) && S_L(sp2)) {
-	    struct stat st;
-	    char temp[PATHLEN];
-
-	    spec2str( sp2, temp, sizeof(temp) );
-	    if (temp[0] != '/' && stat(temp, &st) < 0) {
-		/* not absolute and file does not exist; prepend libdir */
-		/* XXX limit length of snolib??? */
-		sprintf( path, "%s/%s", snolib, temp );
-	    }
-	    else
-		strcpy( path, temp );
-	}
-	else {				/* no path */
-	    /* XXX use special "self" handle (search main program)?? */
-	    /* XXX limit length of snolib??? */
-	    sprintf( path, "%s/%s", snolib, SNOLIB_FILE );
-	}
-
-	fp->lib = libopen(path);
-	if (fp->lib == NULL) {
-	    free(fp);
-	    return FALSE;		/* fail */
-	}
-
-	handle = fp->lib->handle;	/* get writable copy */
-	if (shl_findsym(&handle, fp->name,
-			TYPE_PROCEDURE, (void *)&fp->entry) < 0 ||
-	    fp->entry == NULL) {
-	    libclose(fp->lib);
-	    free(fp);
-	    return FALSE;
-	}
-    } /* not found by pml */
     fp->self = fp;			/* make valid */
-
     fp->next = funcs;			/* link into list (for unload) */
     funcs = fp;
 
-    D_A(addr) = (int_t) fp;
-    D_F(addr) = D_V(addr) = 0;		/* clear flags, type */
-    return TRUE;			/* success */
-}
-
-/* support for SIL "LINK" opcode -- call external function */
-int
-callx(struct descr *retval, struct descr *args,
-      struct descr *nargs, struct descr *addr) {
-    struct func *fp;
-#ifdef DUMP
-    int i;
-    struct shl_descriptor *dp;
-#endif /* DUMP defined */
-
-    /* XXX check for zero V & F fields?? */
-    fp = (struct func *) D_A(addr);
-    if (fp == NULL)
-	return FALSE;
-
-    if (fp->self != fp)			/* validate, in case unloaded */
-	return FALSE;			/* fail (fatal error??) */
-
-#ifdef DUMP
-    printf("calling %s entry %x lib %x handle %x\n",
-	   fp->name, fp->entry, fp->lib, (fp->lib ? fp->lib->handle : 0));
-    i = 0;
-    while (shl_get(i++, &dp) == 0 && dp) {
-	printf("%s text %x-%x data %x-%x handle %x\n",
-	       dp->filename,
-	       dp->tstart, dp->tend,
-	       dp->dstart, dp->dend,
-	       dp->handle);
-    }
-#endif /* DUMP defined */
-    return (fp->entry)( retval, D_A(nargs), (struct descr *)D_A(args) );
+    return fp->entry;
 }
 
 void
@@ -241,4 +165,3 @@ unload(struct spec *sp) {
     fp->self = 0;			/* invalidate self pointer!! */
     free(fp);				/* free name block */
 }
-

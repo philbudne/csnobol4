@@ -3,6 +3,10 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/20/2020:
+	ansify hpux dir (one file, for a (hopefully) dead interface
+	lib/hpux/load.c: ansify, convert to os_load
+
+9/20/2020:
 	ansify vms(!) files, convert to os_load
 	config/vms/descrip.mms: add loadx
 	lib/vms/*.c: convert to ansi, os_load
