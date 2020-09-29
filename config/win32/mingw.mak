@@ -16,8 +16,8 @@ OPT=-O3 -g
 # Winsock v2 available on Win98 and NT 4.0
 WINSOCK=2
 
-# not in mingw-w64-common 7.0.0-2 headers
-# need STARTUPINFOEX, HPCON, PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE
+# goods are in mingw-w64-common 7.0.0-2 headers
+# does dynamic symbol lookup so can run on old systems
 PTYIO=1
 
 ################################################################
