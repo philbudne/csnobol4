@@ -431,7 +431,8 @@ esac
 case "$CC_IS" in
 gcc|clang|icc)
     CCVERS=-v
-    echo 'CCM=$(CC) -M'				>> $CONFIG_M4
+    # was -M: -MM existed in gcc 3.4
+    echo 'CCM=$(CC) -MM'			>> $CONFIG_M4
     OPT=-O3
 
     # on by default in clang??
@@ -784,7 +785,7 @@ gcc)
     if [ "$LP64" -a ! "$LP64_NATIVE" ]; then
 	ARCH_CFLAGS="$GCC64"
 	# for "check" script
-	CFLAGS="$GCC64"
+	CFLAGS="$CFLAGS $GCC64"
 	export CFLAGS
     fi
     ;;
