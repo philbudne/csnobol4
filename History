@@ -3,6 +3,15 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/29/2020:
+	mingw attempt to get fractional seconds (failed)
+	config/win32/config.h: use timspec_get w/ MSVC
+		getpid() in unistd.h on mingw
+			 in process.h on msvc
+		getopt() in unistd.h on mingw
+	config/win32/linux-mingw.sh: try using -lpthread
+	modules/{time,random}/setup.sno: ldflags from config.sno
+
+9/29/2020:
 	HAVE_CLOCK_GETTIME_REALTIME
 	configure
 	modules/time/time.c

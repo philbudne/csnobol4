@@ -19,6 +19,10 @@ cat >>$CROSS_CONFIG <<EOF
 	DL_EXT = '.dll'
 	DL_LD = CC
 	mingw = 1
+
+* attempt to find clock_gettime()
+*	TIME_LDFLAGS = '-lpthread'
+*	RANDOM_LDFLAGS = '-lpthread'
 EOF
 
 make -f config/win32/mingw.mak \

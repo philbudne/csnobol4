@@ -63,7 +63,7 @@ typedef int int32_t;
 #include <stdio.h>
 #include <stdlib.h>
 #ifdef HAVE_UNISTD_H
-#include <unistd.h>            /* for srandomdev() */
+#include <unistd.h>		/* for srandomdev() */
 #endif
 
 #ifdef GETPID_IN_PROCESS_H

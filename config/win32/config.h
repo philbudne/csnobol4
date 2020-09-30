@@ -43,12 +43,7 @@
 #define OSDEP_OPEN
 #define TTY_READ_RAW
 #define HAVE_GETVERSIONEX
-#define GETPID_IN_PROCESS_H
 #define HAVE_STRFTIME
-
-#ifdef _MSC_VER
-#define HAVE_TIMESPEC_GET // in ucrt 10.0.18362.0?
-#endif
 
 #ifdef HAVE_WINSOCK2_H
 #define NEED_BINDRESVPORT_SA
@@ -99,8 +94,23 @@
 #endif
 
 /****
- * for time module
+ * for time & random modules
  */
+
+#if defined(_MSC_VER)
+
+#define HAVE_TIMESPEC_GET		// in ucrt 10.0.18362.0?
+#define GETPID_IN_PROCESS_H
+
+#elif defined(__MINGW32__)
+
+// in -lpthread w/ mingw-w64-x86-64-dev 7.0.0 (does not work?)
+//#define HAVE_CLOCK_GETTIME_REALTIME 
+#define HAVE_UNISTD_H			// getpid !!!
+#define HAVE_GETOPT
+
+#endif
+
 #define HAVE_SLEEP
 
 /*
