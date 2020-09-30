@@ -1474,7 +1474,7 @@ if config/check time.h \
     'struct timespec ts; long x; clock_gettime(CLOCK_REALTIME, &ts); x = ts.tv_nsec'; then
     # may have needed -lrt at some point w/ glibc.  No big loss.
     echo 'using POSIX.1b clock_gettime(CLOCK_REALTIME,..) for time of day' 1>&2
-    echo '#define HAVE_CLOCK_GETTIME'		>> $CONFIG_H
+    echo '#define HAVE_CLOCK_GETTIME_REALTIME'	>> $CONFIG_H
     # XXX use c11/mstime.c!!
 elif config/check time.h \
     'struct timespec ts; long x; timespec_get(&ts,TIME_UTC); x = ts.tv_nsec'; then

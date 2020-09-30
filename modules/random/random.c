@@ -40,7 +40,7 @@ __FBSDID("$FreeBSD: src/lib/libc/stdlib/random.c,v 1.25 2007/01/09 00:28:10 imp 
 #endif
 
 /* for srandomdev()... */
-#if defined(HAVE_CLOCK_GETTIME)
+#if defined(HAVE_CLOCK_GETTIME_REALTIME)
 #define TIMESPEC(TS) clock_gettime(CLOCK_REALTIME, TS)
 #include <time.h>
 #elif defined(HAVE_TIMESPEC_GET)

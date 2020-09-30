@@ -13,7 +13,7 @@
 #define __TM_GMTOFF tm_gmtoff		/* cygwin64: add tm_gmtoff! */
 #endif
 
-#if defined(HAVE_CLOCK_GETTIME)
+#if defined(HAVE_CLOCK_GETTIME_REALTIME)
 #define TIMESPEC(TS) (clock_gettime(CLOCK_REALTIME, TS) == 0)
 #elif defined(HAVE_TIMESPEC_GET)
 #define TIMESPEC(TS) (timespec_get(TS, TIME_UTC) == TIME_UTC)

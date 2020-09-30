@@ -3,6 +3,12 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/29/2020:
+	HAVE_CLOCK_GETTIME_REALTIME
+	configure
+	modules/time/time.c
+	modules/random/random.c
+
+9/29/2020:
 	Final(?) pml_find cleanup
 	include/load.h
 	lib/hpux/load.c
