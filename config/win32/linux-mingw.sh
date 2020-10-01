@@ -27,6 +27,7 @@ EOF
 
 make -f config/win32/mingw.mak \
      CC=x86_64-w64-mingw32-gcc \
+     TCC=gcc \
      OPT=-O \
      CONFIG_SNO=$CROSS_CONFIG \
      MOD_SNOBOL4=snobol4 \

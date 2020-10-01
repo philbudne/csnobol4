@@ -58,6 +58,9 @@ CONFIG_SNO=config/win32/config.sno
 CFLAGS=-c $(OPT) -I$(SRCDIR)config/win32 -I$(SRCDIR)include -I$(SRCDIR). \
 	-DHAVE_CONFIG_H $(INET_DEFS) -Wall
 SNOBOL4_CFLAGS=$(CFLAGS) -Wno-return-type -Wno-switch
+# target C compiler (overridden for cross-compiles)
+TCC=$(CC)
+HOST_CFLAGS=$(CFLAGS) -DCC=\""$(TCC)"\" -DCOPT=\""$(OPT)"\" -DSO_LD=\""$(TCC)"\" -DDL_LD=\""$(TCC)"\"
 
 LDFLAGS=-Wl,--out-implib,libsnobol4.a
 
@@ -79,7 +82,7 @@ SRC=	$(BUFIO_OBJ_C) $(INET_AUX_SRC) $(INET_C) $(PTYIO_OBJ_C) \
 	$(SRCDIR)lib/snolib/exit.c $(SRCDIR)lib/snolib/exp.c \
 	$(SRCDIR)lib/snolib/file.c $(SRCDIR)lib/snolib/findunit.c \
 	$(SRCDIR)lib/snolib/getstring.c $(SRCDIR)lib/snolib/handle.c \
-	$(SRCDIR)lib/snolib/host.c $(SRCDIR)lib/snolib/log.c \
+	$(SRCDIR)lib/snolib/log.c \
 	$(SRCDIR)lib/snolib/ord.c $(SRCDIR)lib/snolib/rename.c \
 	$(SRCDIR)lib/snolib/retstring.c $(SRCDIR)lib/snolib/sin.c \
 	$(SRCDIR)lib/snolib/sqrt.c $(SRCDIR)lib/snolib/sset.c \
@@ -96,7 +99,7 @@ SRC += $(SRCDIR)lib/auxil/bufio_obj.c
 endif
 
 # generate list	of baz.o from list of foo/bar/baz.c
-OBJ=$(addsuffix .o,$(basename $(notdir $(SRC)))) isnobol4.o
+OBJ=$(addsuffix .o,$(basename $(notdir $(SRC)))) isnobol4.o host.o
 
 all:	cpuid.exe snobol4.exe mods
 
@@ -109,8 +112,10 @@ RULES=rules.mingw
 # (or else need to pass in name of per-file-group CFLAGS)
 # so RULES file depends on Makefile (so it's remade)
 $(RULES): config/win32/mingw.mak
-	CC="$(CC)" CFLAGS="$(CFLAGS)" ./config/makerulesdep $(SRC) > $(RULES)
-	CC="$(CC)" CFLAGS="$(SNOBOL4_CFLAGS)" ./config/makerulesdep isnobol4.c >> $(RULES)
+	CC="$(CC)" CFLAGS='$(CFLAGS)' ./config/makerulesdep $(SRC) > $(RULES)
+	CC="$(CC)" CFLAGS='$(SNOBOL4_CFLAGS)' ./config/makerulesdep isnobol4.c >> $(RULES)
+	CC="$(CC)" CFLAGS='$(HOST_CFLAGS)' ./config/makerulesdep \
+		$(SRCDIR)lib/snolib/host.c >> $(RULES)
 
 # implicitly depends on RULES (above)
 include $(RULES)
