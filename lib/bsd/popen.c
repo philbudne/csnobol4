@@ -96,7 +96,7 @@ popen(const char *command, const char *type) {
 	(void) &cur; (void) &twoway; (void) &type;
 #endif /* __GNUC__ defined */
 
-	if (index(type, '+')) {
+	if (strchr(type, '+')) {
 		twoway = 1;
 		type = "r+";
 		if (socketpair(AF_UNIX, SOCK_STREAM, 0, pdes) < 0)
