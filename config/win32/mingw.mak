@@ -58,9 +58,10 @@ CONFIG_SNO=config/win32/config.sno
 CFLAGS=-c $(OPT) -I$(SRCDIR)config/win32 -I$(SRCDIR)include -I$(SRCDIR). \
 	-DHAVE_CONFIG_H $(INET_DEFS) -Wall
 SNOBOL4_CFLAGS=$(CFLAGS) -Wno-return-type -Wno-switch
+HOST_CFLAGS=$(CFLAGS) -DCC=\"$(TCC)\" -DCOPT=\"$(OPT)\" -DSO_LD=\"$(TCC)\" -DDL_LD=\"$(TCC)\"
+
 # target C compiler (overridden for cross-compiles)
 TCC=$(CC)
-HOST_CFLAGS=$(CFLAGS) -DCC=\""$(TCC)"\" -DCOPT=\""$(OPT)"\" -DSO_LD=\""$(TCC)"\" -DDL_LD=\""$(TCC)"\"
 
 LDFLAGS=-Wl,--out-implib,libsnobol4.a
 
