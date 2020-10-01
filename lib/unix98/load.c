@@ -11,18 +11,12 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#include <sys/types.h>
-#include <sys/stat.h>
-
 #include <stdio.h>			/* sprintf() */
 #include <dlfcn.h>
 #include <stdlib.h>			/* malloc(), getenv() */
 
 #include "h.h"
 #include "snotypes.h"
-#include "macros.h"
-#include "path.h"
-#include "load.h"
 #include "lib.h"			/* spec2str() */
 #include "str.h"
 

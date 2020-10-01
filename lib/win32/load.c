@@ -10,17 +10,11 @@
 #endif /* HAVE_CONFIG_H defined */
 
 #include <windows.h>
-#include <string.h>			/* strcmp() */
-#include <stdlib.h>			/* malloc(), getenv() */
 #include <stdio.h>			/* for lib.h */
 
 #include "h.h"
 #include "snotypes.h"
-#include "macros.h"
-#include "path.h"
-#include "load.h"
 #include "lib.h"
-#include "str.h"
 
 void *
 os_load_library(const char *lname) {
