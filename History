@@ -3,6 +3,10 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/30/2020:
+	new config/makerulesdep
+	config/win32/mingw.mak: use makerulesdep
+
+9/30/2020:
 	configure: use -MM for dependency generation
 
 9/29/2020:

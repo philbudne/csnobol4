@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# could be embedded in Makefile, but would be ugly
+# and harder to deal with dynamically selecting compiler
+# to run based on source file extension.
+
+# CC and CFLAGS need to be passed in via environment!!
+
+for SRCFILE in $*; do
+    # outputs rule, with all dependencies, but no command:
+    $CC -M -MM $CFLAGS $SRCFILE
+    # add the command:
+    echo "	$CC $CFLAGS -c $SRCFILE"
+    echo ''
+done
