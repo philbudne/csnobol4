@@ -186,5 +186,5 @@ os_find_symbol(void *lib, char *func) {
 
 void
 unload(void *lib) {
-    /* no way to get back to fp. oh well */
+    /* no way to get back to fp. oh well. need os_unload_func */
 }
