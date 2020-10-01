@@ -33,7 +33,7 @@ os_load_library(const char *lname) {
     return LoadLibrary(lname);
 }
 
-void *
+void
 os_unload_library(void *handle) {
     FreeLibrary(handle);
 }
