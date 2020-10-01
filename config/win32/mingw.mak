@@ -102,7 +102,7 @@ endif
 # generate list	of baz.o from list of foo/bar/baz.c
 OBJ=$(addsuffix .o,$(basename $(notdir $(SRC)))) isnobol4.o host.o
 
-all:	cpuid.exe snobol4.exe mods
+all:	always cpuid.exe snobol4.exe mods
 
 # generated file with explicit rules to make .o files
 # only made once, so need to remove if adding a source file,
