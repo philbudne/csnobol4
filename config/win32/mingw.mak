@@ -63,7 +63,8 @@ HOST_CFLAGS=$(CFLAGS) -DCC=\"$(TCC)\" -DCOPT=\"$(OPT)\" -DSO_LD=\"$(TCC)\" -DDL_
 # target C compiler (overridden for cross-compiles)
 TCC=$(CC)
 
-LDFLAGS=-Wl,--out-implib,libsnobol4.a
+IMPLIB=libsnobol4.a
+LDFLAGS=-Wl,--out-implib,$(IMPLIB)
 
 SRC=	$(BUFIO_OBJ_C) $(INET_AUX_SRC) $(INET_C) $(PTYIO_OBJ_C) \
 	$(SRCDIR)data.c $(SRCDIR)data_init.c \
@@ -124,7 +125,7 @@ include $(RULES)
 cpuid.exe: cpuid.c
 	$(CC) -o cpuid cpuid.c
 
-snobol4.exe libsnobol4.a: $(OBJ)
+snobol4.exe $(IMPLIB): $(OBJ)
 	$(CC) -shared-libgcc -o snobol4 $(OBJ) $(INET_LIBS) $(LDFLAGS)
 
 # kill leftovers from cygwin builds!!!
@@ -162,7 +163,7 @@ MOD_SNOBOL4=../../snobol4
 # XXX try SNOPATH=..:......?
 RUNSETUP=$(MOD_SNOBOL4) -N -I.. -I../.. -I../../snolib setup.sno
 
-MODDEP=snolib/setuputil.sno libsnobol4.a
+MODDEP=snolib/setuputil.sno $(IMPLIB)
 
 modules/com/com.dll: $(MODDEP) modules/com/setup.sno modules/com/com.cpp
 	cd modules/com; $(RUNSETUP) build
@@ -202,4 +203,4 @@ mod_clean:
 	done
 
 clean:	mod_clean
-	-rm -f *.o *.exe libsnobol4.a $(RULES)
+	-rm -f *.o *.exe $(IMPLIB) $(RULES)

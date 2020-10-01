@@ -2,8 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/1/2020:
+	config/win32/mingw.mak: add IMPLIB variable
+
 9/30/2020:
-	time module: make TV_USEC int again, add TV_USEC!
+	time module: make TV_USEC int again, add TV_NSEC!
 
 9/30/2020:
 	one more bash at load
@@ -13,7 +16,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/30/2020:
 	new config/makerulesdep
-	config/win32/mingw.mak: use makerulesdep
+	config/win32/mingw.mak: use makerulesdep to generate rules(!!)
 
 9/30/2020:
 	configure: use -MM for dependency generation
