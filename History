@@ -3,9 +3,12 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/30/2020:
+	time module: make TV_USEC int again, add TV_USEC!
+
+9/30/2020:
 	one more bash at load
 	lib/loadx.c: maintain lib & func structs
-	include/lib.h: os_unload, os_find_symbol
+	include/lib.h: os_(un)load_library, os_find_symbol
 	lib/{bsd,dummy,hpux,next,unix98,vms,win32}/load.c: rake
 
 9/30/2020:

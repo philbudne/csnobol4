@@ -17,10 +17,12 @@
 **=sect DESCRIPTION
 **=item B<GETTIMEOFDAY()>
 **function returns a B<DATA()> object of type B<TIMEVAL> with members
-**B<TV_SEC> (seconds since 1/1/1970 GMT) and B<TV_USEC> (microseconds
-**since start of day).
+**B<TV_SEC> (seconds since 1/1/1970 GMT)
+**and B<TV_NSEC> (nanoseconds since start of day I<starting in CSNOBOL4 2.2>).
+**For compatibility with older versions of CSNOBOL,
+* B<TV_USEC> contains microseconds since start of day).
 **=cut
-	DATA("TIMEVAL(TV_SEC,TV_USEC)")
+	DATA("TIMEVAL(TV_SEC,TV_USEC,TV_NSEC)")
 	DEFINE("GETTIMEOFDAY()TIMEVAL")	:(E.GETTIMEOFDAY)
 GETTIMEOFDAY
 	GETTIMEOFDAY = TIMEVAL()

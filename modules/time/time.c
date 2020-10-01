@@ -41,6 +41,7 @@ enum tv_member {
     TV_DESCR,
     TV_SEC,
     TV_USEC,
+    TV_NSEC,
     TV_COUNT				/* must be last */
 };
 
@@ -79,15 +80,18 @@ GETTIMEOFDAY_( LA_ALIST ) {
 #if defined(TIMESPEC)
     TIMESPEC(&ts);
     SETINT(dp,TV_SEC,ts.tv_sec);
-    SETREAL(dp,TV_USEC,ts.tv_nsec/1000.0);
+    SETINT(dp,TV_USEC,(ts.tv_nsec+500)/1000);
+    SETINT(dp,TV_NSEC,ts.tv_nsec);
 #elif defined(HAVE_GETTIMEOFDAY)
     if (gettimeofday(&tv, NULL) < 0)
 	RETFAIL;
     SETINT(dp,TV_SEC,tv.tv_sec);
     SETINT(dp,TV_USEC,tv.tv_usec);
+    SETINT(dp,TV_NSEC,ts.tv_usec*1000);
 #else
     SETINT(dp,TV_SEC,time(0));
     SETINT(dp,TV_USEC,0);
+    SETINT(dp,TV_NSEC,0);
 #endif
     RETNULL;
 }
