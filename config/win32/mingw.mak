@@ -124,7 +124,7 @@ include $(RULES)
 cpuid.exe: cpuid.c
 	$(CC) -o cpuid cpuid.c
 
-snobol4.exe: $(OBJ)
+snobol4.exe libsnobol4.a: $(OBJ)
 	$(CC) -shared-libgcc -o snobol4 $(OBJ) $(INET_LIBS) $(LDFLAGS)
 
 # kill leftovers from cygwin builds!!!
