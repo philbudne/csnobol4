@@ -149,13 +149,18 @@ int abspath(char *);
 int expint(struct descr *,struct descr *,struct descr *);
 int exreal(struct descr *,struct descr *,struct descr *);
 
-/* from load.c */
+/* from loadx.c */
+int load(struct descr *, struct spec *, struct spec *);
 void unload(struct spec *);
-#ifdef LOAD_PROTO
-typedef int (loadable_func_t)(LOAD_PROTO); /* function entry point */
-loadable_func_t *os_load(char *function, char *file);
+
+/* from load.c */
+void *os_load_library(const char *name);
+void os_unload_library(void *lib);
+void *os_find_symbol(void *lib, const char *name);
 
 /* from pml.c */
+#ifdef LOAD_PROTO
+typedef int (loadable_func_t)(LOAD_PROTO); /* function entry point */
 loadable_func_t *pml_find(char *);
 #endif /* LOAD_PROTO defined */
 
@@ -200,18 +205,19 @@ int tty_read(FILE *,char *buf,int len, int cbreak,int noecho,int keepeol,char * 
  * isnan
  */
 
-/* from getredirect.c */
 #ifdef vms
+/* from getredirect.c */
 int getredirection(int, char **);
 #endif /* vms defined */
 
-/* from popen.c */
 #ifdef NEED_POPEN
+/* from popen.c */
 extern FILE *popen(char *, char *); /* from {generic,vms}/popen.c */
 extern int pclose(FILE *);
 #endif /* NEED_POPEN defined */
 
 #ifdef OSDEP_OPEN
+/* from osdep.c */
 extern int osdep_open(const char *, const char *, FILE **);
 #endif /* OSDEP_OPEN defined */
 
@@ -225,14 +231,17 @@ extern int chk_break(int);
 /* from closefrom.c */
 extern void closefrom(int minfd);
 #endif
+
 #ifndef HAVE_GETDTABLESIZE
 /* from getdtablesize.c */
 extern int getdtablesize(void);
 #endif
+
 #ifndef HAVE_GETLINE
 /* from getline.c */
 extern ssize_t getline(char **bufp, size_t *lenp, FILE *fp);
 #endif
+
 #ifndef HAVE_GETOPT
 /* from getopt.c */
 extern int getopt(int argc, char **argv, char *opts);

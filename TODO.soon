@@ -1,5 +1,7 @@
 $Id$
 
+config/check: enable warnings, Werror?!!!
+
 genc:
     Turn SELBRA & STREAM with single label into if
 

@@ -28,16 +28,20 @@
 
 #define MAXSTR 512			/* XXX */
 
-loadable_func_t *
-os_load(char *function, char *file) {
-    loadable_func_t *entry = NULL;
-    int status;
+void *
+os_load_library(char *file) {
+    return strdup(file);
+}
+
+void *
+os_find_symbol(void *lib, char *function) {
     struct vms_descr {
 	int len;
 	char *ptr;
     } dfile, dsym;
+    void *value;
 
-    dfile.len = strlen(file);
+    dfile.len = strlen(lib);		/* string! */
     dfile.ptr = file;
 
     dsym.len = strlen(function);
@@ -46,14 +50,15 @@ os_load(char *function, char *file) {
     /* XXX LIB$ESTABLISH() "signal" handler??? */
 
     /* XXX pass LIB$M_FIS_MIXEDCASE flag? */
-    status = LIB$FIND_IMAGE_SYMBOL(&dfile, &dsym, &entry);
-    if (SUCCESS(status) && entry)
-	return entry;
+    status = LIB$FIND_IMAGE_SYMBOL(&dfile, &dsym, &value);
+    if (SUCCESS(status) && value)
+	return value;
 
     return NULL;
 }
 
 void
-unload(struct spec *sp) {
+os_unload_library(void *lib) {
     /* can this be done?  need to keep track of items in use!! */
+    free(lib);				/* strdup'ed name */
 }

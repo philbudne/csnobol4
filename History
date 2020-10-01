@@ -3,6 +3,12 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 9/30/2020:
+	one more bash at load
+	lib/loadx.c: maintain lib & func structs
+	include/lib.h: os_unload, os_find_symbol
+	lib/{bsd,dummy,hpux,next,unix98,vms,win32}/load.c: rake
+
+9/30/2020:
 	new config/makerulesdep
 	config/win32/mingw.mak: use makerulesdep
 

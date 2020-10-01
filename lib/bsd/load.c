@@ -55,7 +55,7 @@
 struct func {
     struct func *next;
     struct func *self;
-    loadable_func_t *entry;
+    void *entry;
     char *data;
     char name[1];
 };
@@ -87,9 +87,15 @@ ld(char *output, char *addr, char *func, char *input) {
 #define PATHLEN 256			/* XXX use MAXPATHLEN from param.h? */
 
 /* "file" may include loader options (libs) after filename!! */
-loadable_func_t *
-os_load(char *func, char *file) {
+void *
+os_load_library(char *file) {
+    return strdup(file);
+}
+
+void *
+os_find_symbol(void *lib, char *func) {
     struct exec a;
+    char *file = lib;			/* strdup'ed above */
     struct func *fp;
     char temp[PATHLEN];
     char *data;
@@ -179,30 +185,6 @@ os_load(char *func, char *file) {
 }
 
 void
-unload(struct spec *sp) {
-    struct func *fp, *pp;
-    char name[1024];			/* XXX */
-
-    spec2str( sp, name, sizeof(name) );	/* XXX mspec2str */
-
-    for (pp = NULL, fp = funcs; fp != NULL; pp = fp, fp = fp->next) {
-	if (strcmp(fp->name, name) == 0)
-	    break;
-    }
-
-    if (fp == NULL)			/* not found */
-	return;
-
-    /* unlink from list */
-    if (pp == NULL) {			/* first */
-	funcs = fp->next;
-    }
-    else {				/* not first */
-	pp->next = fp->next;
-    }
-
-    fp->self = 0;			/* invalidate self pointer!! */
-    if (fp->data)
-	free(fp->data);
-    free(fp);				/* free name block */
+unload(void *lib) {
+    /* no way to get back to fp. oh well */
 }

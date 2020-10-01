@@ -17,11 +17,20 @@
 #include "load.h"
 #include "lib.h"
 
-loadable_func_t
-os_load(char *func, char *file) {
+void *
+os_load_library(char *file) {
+    (void) file;
     return NULL;
-} /* os_load */
+}
+
+void *
+os_find_symbol(void *lib, char *func) {
+    (void) lib;
+    (void) func;
+    return NULL;
+}
 
 void
-unload(struct spec *sp) {
+os_unload_library(void *lib) {
+    (void) lib;
 }
