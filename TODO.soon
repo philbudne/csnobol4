@@ -5,10 +5,12 @@ config/check: enable warnings, Werror?!!!
 genc:
     Turn SELBRA & STREAM with single label into if
 
+Look at Python tkinter??
+
 Modernize:
     use mspec2str in io.c
     convert rest of library routines
-    Replace bzero, bcopy
+    Replace bcopy, bzero
 
 Add 1969(!) factor.sno to tests
 	other tests from DEC-10 and VAX SNOBOL?
