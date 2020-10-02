@@ -3,6 +3,10 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/1/2020:
+	lib/win32/inetio_obj.c: turn off SO_OPENTYPE (added 1999/05/02!)
+		add comments
+
+10/1/2020:
 	configure: fix memmove test, put first
 	include/str.h: guard all function redefines
 

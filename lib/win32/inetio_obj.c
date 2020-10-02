@@ -114,10 +114,26 @@ wsock_init(void) {
      */
     wsock_init_done = 1;
 
-#ifdef SO_SYNCHRONOUS_NONALERT
+#if 0
     /*
-     * For WS1/WinNT; switch to blocking/non-overlapped I/O
-     * see http://www.telicsolutions.com/techsupport/WinFAQ.htm
+     * I don't remember what exact problem caused me to add this.
+     * The comment from the time (1999/05/02 -- version 1.3 of file) is:
+     *   For WS1/WinNT; switch to blocking/non-overlapped I/O
+     *   see http://www.telicsolutions.com/techsupport/WinFAQ.htm
+     * (but that page no longer exists, and was not archived)
+     *
+     * https://support.microsoft.com/en-us/help/181611/socket-overlapped-i-o-versus-blocking-nonblocking-mode
+     * says:
+     *    you can call the setsockopt API with SO_OPENTYPE option on
+     *    any socket handles including an INVALID_SOCKET to change the
+     *    overlapped attributes for all successive socket calls in the
+     *    same thread. The default SO_OPENTYPE option value is 0,
+     *    which sets the overlapped attribute. All nonzero option
+     *    values make the socket synchronous and make it so that you
+     *    cannot use a completion function.
+     *
+     * Also:
+     * https://docs.microsoft.com/en-us/windows/win32/winsock/sol-socket-socket-options
      */
     int opt = SO_SYNCHRONOUS_NONALERT;
     setsockopt(INVALID_SOCKET, SOL_SOCKET, SO_OPENTYPE,
