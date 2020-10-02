@@ -165,7 +165,7 @@ load(struct descr *addr,		/* OUT */
 	    l2 = strjoin("_", fname, NULL);
 	    if (!l2)
 		goto freelib;
-	    entry = os_find_symbol(lib->oslib, l2, &stash);
+	    entry = os_find_symbol(lp->oslib, l2, &stash);
 	    free(l2);
 	    if (!entry)
 #endif
