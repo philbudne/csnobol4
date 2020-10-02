@@ -31,6 +31,7 @@ struct func {
     struct func *self;			/* for validity check */
     loadable_func_t *entry;		/* function entry point */
     struct lib *lib;
+    void *stash;			/* set by os_find_symbol */
     char name[1];			/* for unload (MUST BE LAST)! */
 };
 
@@ -111,6 +112,7 @@ load(struct descr *addr,		/* OUT */
     struct func *fp = NULL;
     struct lib *lp = NULL;
     int ret = FALSE;
+    void *stash = NULL;
 
     /* always try PML first. Only if lname is empty?? */
     /*if (!lname || !*lname)*/
@@ -157,13 +159,13 @@ load(struct descr *addr,		/* OUT */
 		goto quit;
 	} // !abspath
     found_lib:
-	entry = os_find_symbol(lp->oslib, fname);
+	entry = os_find_symbol(lp->oslib, fname, &stash);
 	if (!entry) {
 #ifdef TRY_UNDERSCORE
 	    l2 = strjoin("_", fname, NULL);
 	    if (!l2)
 		goto freelib;
-	    entry = os_find_symbol(lib->oslib, l2);
+	    entry = os_find_symbol(lib->oslib, l2, &stash);
 	    free(l2);
 	    if (!entry)
 #endif
@@ -181,6 +183,7 @@ load(struct descr *addr,		/* OUT */
     strcpy(fp->name, fname);
     fp->lib = lp;
     fp->entry = entry;
+    fp->stash = stash;
     fp->self = fp;			/* make valid */
 
     fp->next = funcs;			/* link into list */
@@ -241,11 +244,14 @@ unload(struct spec *sp) {
 	pp->next = fp->next;
     }
 
+    os_unload_function(fp->name, fp->stash);
+
     libclose(fp->lib);
 
     fp->self = NULL;			/* invalidate self pointer!! */
 #if 1
     /* NOT FREEING: makes sure address stays invalid!! */
+    /* XXX keep in a list? */
     fp->lib = NULL;
     fp->next = fp->prev = NULL;
 #else

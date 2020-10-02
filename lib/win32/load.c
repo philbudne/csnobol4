@@ -33,6 +33,13 @@ os_unload_library(void *handle) {
 }
 
 void *
-os_find_symbol(void *handle, const char *symbol) {
+os_find_symbol(void *handle, const char *symbol, void **stash) {
+    (void) stash;
     return GetProcAddress(handle, symbol);
+}
+
+void
+os_unload_function(const char *name, void *stash) {
+    (void) name;
+    (void) stash;
 }

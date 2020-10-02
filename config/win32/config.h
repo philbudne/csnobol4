@@ -1,10 +1,11 @@
 /* $Id$ */
 
 /*
- * Windows32 config.h 1/27/2002
+ * Native Windows32 config.h 1/27/2002
  * Windows64 too! 9/23/2013
  *
  * Used for Borland, MINGW, and MSVC
+ * (builds using native Windows runtime)
  */
 
 #ifndef __STDC__
@@ -35,7 +36,7 @@
 
 /* includes; */
 #define HAVE_SDBM_H
-#define HAVE_IO_H		/* _read,.... */
+#define HAVE_IO_H		/* _dup */
 
 #define WIN32_LEAN_AND_MEAN
 
@@ -46,9 +47,9 @@
 #define HAVE_STRFTIME
 
 #ifdef HAVE_WINSOCK2_H
-#define NEED_BINDRESVPORT_SA
+#define NEED_BINDRESVPORT_SA		/* checked in bindresvport.h */
 #else
-#define NEED_BINDRESVPORT
+#define NEED_BINDRESVPORT		/* checked in bindresvport.[ch] */
 #endif
 
 /* trap of ^C sets EOF */

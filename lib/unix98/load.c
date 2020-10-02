@@ -53,7 +53,13 @@ os_unload_library(void *osval) {
 }
 
 void *
-os_find_symbol(void *osval, const char *function) {
+os_find_symbol(void *osval, const char *function, void **stash) {
+    (void) stash;
     return dlsym(osval, function);
 }
 
+void
+os_unload_function(const char *name, void *stash) {
+    (void) name;
+    (void) stash;
+}

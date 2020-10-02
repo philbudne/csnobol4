@@ -156,7 +156,8 @@ void unload(struct spec *);
 /* from load.c */
 void *os_load_library(const char *name);
 void os_unload_library(void *lib);
-void *os_find_symbol(void *lib, const char *name);
+void *os_find_symbol(void *lib, const char *name, void **stash);
+void os_unload_function(const char *name, void *stash);
 
 /* from pml.c */
 #ifdef LOAD_PROTO

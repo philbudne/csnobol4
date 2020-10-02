@@ -3,6 +3,13 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/1/2020:
+	yet ANOTHER bash at load
+	include/lib.h: os_unload_function, stash ptr to os_find_symbol
+	lib/loadx.c: call os_unload function with stash ptr from os_find_symbol
+	lib/{bsd,dummy,hpux,next,unix98,vms,win32}/load.c: rake again
+		bsd no longer keeps function list
+
+10/1/2020:
 	config/win32/mingw.mak: add IMPLIB variable
 
 9/30/2020:

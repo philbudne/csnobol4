@@ -49,7 +49,6 @@ static char *rcsid = "$OpenBSD: bindresvport.c,v 1.13 2000/01/26 03:43:21 deraad
 #include <winsock.h>
 #include <process.h>		/* getpid() */
 #define HAVE_INCLUDES
-#define NEED_BINDRESVPORT
 #endif /* HAVE_WINSOCK_H defined */
 
 #ifdef HAVE_WINSOCK2_H

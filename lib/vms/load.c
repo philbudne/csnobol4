@@ -34,7 +34,7 @@ os_load_library(char *file) {
 }
 
 void *
-os_find_symbol(void *lib, char *function) {
+os_find_symbol(void *lib, char *function, void **stash) {
     struct vms_descr {
 	int len;
 	char *ptr;
@@ -55,6 +55,12 @@ os_find_symbol(void *lib, char *function) {
 	return value;
 
     return NULL;
+}
+
+void
+os_unload_function(const char *name, void *stash) {
+    (void) name;
+    (void) stash;
 }
 
 void

@@ -29,10 +29,17 @@ os_unload_library(void *lib) {
 }
 
 void *
-os_find_symbol(void *lib, char *func) {
+os_find_symbol(void *lib, char *func, void **stash) {
     void *entry;
 
+    (void) stash;
     if (shl_findsym(&lib, func, TYPE_PROCEDURE, (void *)&entry) < 0)
 	return NULL;
     return entry;
+}
+
+void
+os_unload_function(const char *name, void *stash) {
+    (void) name;
+    (void) stash;
 }

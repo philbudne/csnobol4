@@ -24,10 +24,17 @@ os_load_library(char *file) {
 }
 
 void *
-os_find_symbol(void *lib, char *func) {
+os_find_symbol(void *lib, char *func, void **stash) {
     (void) lib;
     (void) func;
+    (void) stash;
     return NULL;
+}
+
+void
+os_unload_function(const char *name, void *stash) {
+    (void) name;
+    (void) stash;
 }
 
 void

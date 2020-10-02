@@ -52,9 +52,10 @@ os_load_library(char *file) {
 }
 
 void *
-os_find_symbol(void *lib, char *func) {
+os_find_symbol(void *lib, char *func, void **stash) {
     NSSymbol sym;
 
+    (void) stash;
 #ifdef NSLINKMODULE_OPTION_PRIVATE
     sym = NSLookupSymbolInModule(lib, func);
 #else  /* NSLINKMODULE_OPTION_PRIVATE not defined */
@@ -64,6 +65,12 @@ os_find_symbol(void *lib, char *func) {
 
     return NSAddressOfSymbol(sym);
 } /* os_find_symbol */
+
+void
+os_unload_function(const char *name, void *stash) {
+    (void) name;
+    (void) stash;
+}
 
 void
 os_unload_library(void *lib) {

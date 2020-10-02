@@ -51,17 +51,6 @@
 #define SYM_PREFIX "_"			/* XXX most (all?) a.out systems? */
 #endif /* SYM_PREFIX not defined */
 
-/* keep list of loaded functions (for UNLOAD) */
-struct func {
-    struct func *next;
-    struct func *self;
-    void *entry;
-    char *data;
-    char name[1];
-};
-
-static struct func *funcs;
-
 static int
 ld(char *output, char *addr, char *func, char *input) {
     char command[1024];			/* XXX */
@@ -93,12 +82,12 @@ os_load_library(char *file) {
 }
 
 void *
-os_find_symbol(void *lib, char *func) {
+os_find_symbol(void *lib, char *func, void **stash) {
     struct exec a;
     char *file = lib;			/* strdup'ed above */
-    struct func *fp;
     char temp[PATHLEN];
     char *data;
+    void *entry;
     long len;				/* size of code+data */
     int f;
 
@@ -168,23 +157,18 @@ os_find_symbol(void *lib, char *func) {
     }
     close(f);
 
-    fp = (struct func *) malloc( sizeof (struct func) + strlen(func) );
-    if (fp == NULL) {
-	free(data);
-	return NULL;			/* fail */
-    }
-    strcpy(fp->name, func);
-    fp->entry = (loadable_func_t *) a.a_entry;
-    fp->data = data;
-    fp->self = fp;			/* make valid */
-
-    fp->next = funcs;			/* link into list (for unload) */
-    funcs = fp;
-
-    return fp->entry;
+    *stash = data;			/* for os_unload_function */
+    return (void *)a.a_entry;
 }
 
 void
-unload(void *lib) {
-    /* no way to get back to fp. oh well. need os_unload_func */
+os_unload_function(const char *name, void *stash) {
+    (void) name;
+    if (stash)
+	free(stash);
+}
+
+void
+os_unload_library(void *lib) {
+    free(lib);				/* strdup'ed */
 }

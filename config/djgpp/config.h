@@ -1,6 +1,7 @@
 /* $Id$ */
 
-#define HAVE_UNISTD_H 
+#define HAVE_UNISTD_H 			/* POSIX!! */
+#define HAVE_STRFTIME
 
 #define SNOLIB_BASE "/usr/lib/snobol4"
 #define SNOLIB_DIR SNOLIB_BASE "/" VERSION "/lib"
