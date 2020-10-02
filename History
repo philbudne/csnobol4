@@ -4,6 +4,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/1/2020:
 	configure: fix memmove test, put first
+	include/str.h: guard all function redefines
 
 10/1/2020:
 	yet ANOTHER bash at load
