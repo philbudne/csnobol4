@@ -1004,14 +1004,14 @@ else
     echo 'SYS_C=$(SRCDIR)lib/generic/sys.c'	>> $CONFIG_M4
 fi
 
-if config/check strings.h 'char d; bcopy("", &d, 0)'; then
-    echo 'using system bcopy()/bzero() functions' 1>&2
-    echo '#define HAVE_BCOPY'		>> $CONFIG_H
-elif config/check string.h 'char d; memove(&d, "", 0)'; then
+if config/check string.h 'char d; memmove(&d, "", 0)'; then
     # The only system with no bcopy() which has memmove()
     # is Solaris 2.4, and our bcopy() beats memmove()?!
     echo 'using system memmove()/memset() functions' 1>&2
     echo '#define USE_MEMMOVE'		>> $CONFIG_H
+elif config/check strings.h 'char d; bcopy("", &d, 0)'; then
+    echo 'using system bcopy()/bzero() functions' 1>&2
+    echo '#define HAVE_BCOPY'		>> $CONFIG_H
 else
     echo 'using private bcopy()/zero() functions' 1>&2
     echo 'ADD_OBJS([bcopy.o bzero.o])'	>> $CONFIG_M4
