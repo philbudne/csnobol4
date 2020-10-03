@@ -1510,6 +1510,7 @@ if [ "x$WITHOUT_MODULES" = x ]; then
         echo 'using POSIX nanosleep() w/ _POSIX_C_SOURCE=199309' 1>&2
         SLEEP_C=posix/sleep.c
 	# needed w/ glibc 2.5 (RHEL5)
+	# may need to collect in a variable (along with flags for strptime)
 	echo '	TIME_CFLAGS = "-D_POSIX_C_SOURCE=199309"' >> $CONFIG_SNO
     elif config/check sys/select.h "$SELECT_FRAG"; then
 	echo 'using posix select() for sleep'	1>&2
