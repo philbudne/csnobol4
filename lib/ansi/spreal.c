@@ -10,6 +10,7 @@
 #endif /* HAVE_CONFIG_H defined */
 
 #include <stdio.h>
+#include <stdlib.h>			/* strtod */
 
 #include "h.h"
 #include "snotypes.h"
@@ -31,7 +32,6 @@ spreal(struct descr *dp, struct spec *sp) {
     int len;
     char *cp;
     real_t temp;
-    double strtod();
 
     len = S_L(sp);
     cp = S_SP(sp);

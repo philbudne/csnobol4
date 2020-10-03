@@ -81,10 +81,7 @@ ordvst_dnv(nv)
  *	if s1 < s2, s1 = s2, or s1 > s2.
  */
 static int
-ordvst_strcmp(s1,l1, s2,l2)
-    char *s1, *s2;
-    int l1, l2;
-{
+ordvst_strcmp(char *s1, int l1, char *s2, int l2) {
     int i;
 
     i = l1;

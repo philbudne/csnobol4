@@ -142,7 +142,7 @@ wsock_init(void) {
 }
 
 void
-inet_cleanup() {
+inet_cleanup(void) {
     if (wsock_init_done > 0)
 	WSACleanup();
     wsock_init_done = 0;

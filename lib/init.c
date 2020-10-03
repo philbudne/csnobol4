@@ -604,8 +604,7 @@ suspend(SIGFUNC_ARG) {
 
 /* called by SIL INIT macro (first SIL op executed) */
 void
-init()
-{
+init(void) {
     char *ptr;
 
     /****************
@@ -719,8 +718,6 @@ init()
 
 /* 9/21/96 - set specifier to point to entire command line for &PARM */
 int
-getparm( sp )
-    struct spec *sp;
-{
+getparm(struct spec *sp) {
     return getargs(0, sp) != NULL;
 }

@@ -128,7 +128,7 @@ struct spec {				/* (new: qualifier) */
 #define SPEC (sizeof(struct spec))
 
 /* for generated code which deals with function pointers */
-typedef int (*func_t)();
+typedef int (*func_t)(ret_t);
 
 #ifndef BPC
 #define BPC 8				/* 8 bits/char */

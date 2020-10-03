@@ -193,9 +193,7 @@ ioo_write(struct io_obj *iop, char *buf, size_t len) {
 }
 
 static int
-ioo_flush(iop)
-    struct io_obj *iop;
-{
+ioo_flush(struct io_obj *iop) {
     const struct io_ops *op;
     for (op = iop->ops; op; op = op->io_super)
 	if (op->io_flush)
@@ -275,9 +273,7 @@ ioo_close(struct io_obj *iop) {
 
 /* internal helper; take internal unit, return struct file *, or NULL */
 static struct file *
-findfile( iunit )
-    int iunit;
-{
+findfile(int iunit) {
     struct unit *up;
 
     if (BADUNIT(iunit))
@@ -292,9 +288,7 @@ findfile( iunit )
  * (so only free(fp) is needed)
  */
 static struct file *
-io_newfile( path )
-    char *path;
-{
+io_newfile(char *path) {
     struct file *fp;
 
     fp = (struct file *) malloc( sizeof( struct file ) + strlen(path) );
@@ -330,7 +324,7 @@ io_memfile(name, data, len)
 #endif /* MEM_IO defined */
 
 void
-io_initvars() {
+io_initvars(void) {
 #ifdef NO_STATIC_VARS
     if (!varp->v_iov) {
 	varp->v_iov = (struct iovars *)malloc(sizeof(struct iovars));
@@ -346,11 +340,7 @@ io_initvars() {
 /* add file to input list */
 /* calls made here BEFORE io_init() called! */
 static int
-io_addfile( unit, fp, append )
-    int unit;
-    struct file *fp;
-    int append;
-{
+io_addfile(int unit, struct file *fp, int append) {
     /* XXX check for commas in path? */
     struct unit *up;
 
@@ -384,9 +374,7 @@ io_addfile( unit, fp, append )
 /* close currently open file on a unit */
 /* XXX take flag: to free struct file, or not? */
 static int
-io_close(unit)				/* internal (zero-based unit) */
-    int unit;
-{
+io_close(int unit) {		      /* internal (zero-based unit) */
     struct file *fp;
     struct unit *up;
     int ret = TRUE;
@@ -406,9 +394,7 @@ io_close(unit)				/* internal (zero-based unit) */
 
 /* close a unit, flush current file list */
 EXPORT(int)
-io_closeall(unit)			/* internal (zero-based unit) */
-    int unit;
-{
+io_closeall(int unit) {			/* internal (zero-based unit) */
     struct file *fp, *next;
     struct unit *up;
     int ret;
@@ -433,10 +419,8 @@ io_closeall(unit)			/* internal (zero-based unit) */
 }
 
 static struct io_obj *
-io_fopen( fp, dir )
-    struct file *fp;
-    int dir;				/* 'r' or 'w' */
-{
+io_fopen(struct file *fp,
+	 int dir) {			/* 'r' or 'w' */
     int i;
 
     for (i = 0; i < N_OPEN_FUNCS; i++) {
@@ -455,9 +439,7 @@ io_fopen( fp, dir )
 
 /* skip to next input file */
 static int
-io_next( unit )				/* internal (zero-based unit) */
-    int unit;
-{
+io_next(int unit) {		      /* internal (zero-based unit) */
     struct file *fp;
     struct unit *up;
 
@@ -488,17 +470,13 @@ io_next( unit )				/* internal (zero-based unit) */
 
 /* skip to next file, for external use, takes external unit */
 EXPORT(int)
-io_skip( unit )
-    int unit;
-{
+io_skip(int unit) {
     return io_next(INTERN(unit));
 }
 
 /* here with filename from command line */
 EXPORT(void)
-io_input_file( path )
-    char *path;
-{
+io_input_file(char *path) {
     struct file *fp;
 
     fp = io_newfile(path);
@@ -1317,12 +1295,11 @@ io_openi(struct descr *dunit,		/* IN: unit */
 } /* io_openi */
 
 /* here via XCALL IO_OPENO */
+/* called from SNOBOL OUTPUT() */
 int
-io_openo(dunit, sfile, sopts)		/* called from SNOBOL OUTPUT() */
-    struct descr *dunit;		/* IN: unit */
-    struct spec *sfile;			/* IN: filename */
-    struct spec *sopts;			/* IN: options */
-{
+io_openo(struct descr *dunit,		/* IN: unit */
+	 struct spec *sfile,		/* IN: filename */
+	 struct spec *sopts) {		/* IN: options */
     char fname[MAXFNAME];		/* XXX malloc(S_L(sfile)+1)? */
     char opts[MAXOPTS];			/* XXX malloc(S_L(sopts)+1)? */
     struct file *fp;

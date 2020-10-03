@@ -128,7 +128,7 @@ SYMBOLS
 int pty_init_done = 0;			// 1 if done, -1 if failed
 
 static int
-pty_init() {
+pty_init(void) {
     if (pty_init_done)			// done this already?
 	return pty_init_done;		// return old result
 

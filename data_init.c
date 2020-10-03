@@ -82,6 +82,6 @@ const char LCASE[] = "abcdefghijklmnopqrstuvwxyz";
 const char DIGITS[] = "0123456789";
 
 void
-init_data() {
+init_data(void) {
 # include "data_init.h"
 } /* init_data */

@@ -353,7 +353,7 @@ DUMPEND
 
 INIT	SYN.C =
 	SYN.C = 'void'
-	SYN.C = 'init_syntab() {'
+	SYN.C = 'init_syntab(void) {'
 	SYN.C = '# include "syn_init.h"'
 	SYN.C = '}'
 

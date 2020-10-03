@@ -43,12 +43,7 @@
 #endif /* INADDR_NONE not defined */
 
 static int
-inet_socket2( host, service, port, flags, type )
-    char *host, *service;
-    int type;
-    int flags;
-    int port;
-{
+inet_socket2(char *host, char *service, int type, int flags, int port) {
     struct hostent *hp;
     struct sockaddr_in sin;
     struct servent *sp;
@@ -139,10 +134,8 @@ inet_socket2( host, service, port, flags, type )
 }
 
 static int
-inet_socket( host, service, port, flags, type )
-    char *host, *service;
-    int port, flags, type;
-{
+inet_socket(char *host, char *service,
+	    int port, int flags, int type) {
     int s;
 
 #ifdef FOLD_HOSTNAMES
@@ -161,22 +154,16 @@ inet_socket( host, service, port, flags, type )
 
 /* called from stdio_obj.c */
 int
-tcp_socket( host, service, port, flags )
-    char *host, *service;
-    int port, flags;
-{
+tcp_socket(char *host, char *service, int port, int flags) {
     return inet_socket( host, service, port, flags, SOCK_STREAM );
 }
 
 /* called from stdio_obj.c */
 int
-udp_socket( host, service, port, flags )
-    char *host, *service;
-    int port, flags;
-{
+udp_socket(char *host, char *service, int port, int flags) {
     return inet_socket( host, service, port, flags, SOCK_DGRAM );
 }
 
 void
-inet_cleanup() {
+inet_cleanup(void) {
 }

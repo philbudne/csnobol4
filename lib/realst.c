@@ -32,10 +32,7 @@ static char strbuf[64];
 #endif
 
 void
-realst(sp, dp)
-    struct spec *sp;
-    struct descr *dp;
-{
+realst(struct spec *sp, struct descr *dp) {
     char *bp;
 
     sprintf( strbuf, REALST_FORMAT, D_RV(dp) );

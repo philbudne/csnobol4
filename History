@@ -2,6 +2,21 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/2/2020:
+	more ansification!
+	data_init.c
+	gensyn.sno
+	include/snotypes.h
+	lib/init.c
+	lib/io.c
+	lib/ordvst.c
+	lib/realst.c
+	lib/ansi/spreal.c
+	lib/auxil/getopt.c
+	lib/bsd/inet.c
+	lib/win32/inetio_obj.c
+	lib/win32/ptyio_obj.c
+
 10/1/2020:
 	lib/bsd/inet6.c: ansify
 	lib/win32/inetio_obj.c: turn off SO_OPENTYPE (added 1999/05/02!)
