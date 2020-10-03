@@ -40,7 +40,11 @@ echo "}"		>> $TMP_C
 
 test "$DEBUG_CHECK" && cat $TMP_C
 
-if ${CC:-cc} $CFLAGS -o $TMP $TMP_C $LIBS >/dev/null 2>&1; then
+if [ "x$CHECK_OUT" = x ]; then
+    CHECK_OUT=/dev/null
+fi
+
+if ${CC:-cc} $CFLAGS -o $TMP $TMP_C $LIBS >$CHECK_OUT 2>&1; then
     if [ "$RUN" ]; then
 	$TMP
 	exit $?
