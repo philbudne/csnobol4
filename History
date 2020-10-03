@@ -3,6 +3,15 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/2/2020:
+	Make configure fussier about checking for functions
+	config/check: add -i flag
+		(make impl. function decl fatal for gcc-like compilers)
+	configure:
+		Use config/check -i (via CHECK)
+		Fix glibc check for Ubuntu
+		Fix glibc 2.1 check (not to hop on 2.11)
+
+10/2/2020:
 	Makefile2.m4 configure pml.h:
 		cleanup/simplify: no more --force-pml, snolib.a, NO_PML_X
 	removed: lib/{bsd,generic,posix,win32}/sleep.c

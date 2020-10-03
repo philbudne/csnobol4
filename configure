@@ -409,9 +409,14 @@ case "$MORV" in
     fi
 esac
 
+CHECK="config/check"
+
 # compiler options
 case "$CC_IS" in
 gcc|clang|icc)
+    # make implicit function declaration fatal in "check"
+    CHECK="$CHECK -i"
+
     CCVERS=-v
     # was -M: -MM existed in gcc 3.4
     echo 'CCM=$(CC) -MM'			>> $CONFIG_M4
@@ -837,7 +842,7 @@ if [ "$LONGLONG" ]; then
 	# add any flags necessary to enable "long long"
 	echo 'ADD_CFLAGS(['$CFLAGS_LONGLONG'])' >> $CONFIG_M4
     fi
-    if config/check stdlib.h 'strtoll("", 0, 0)'; then
+    if $CHECK stdlib.h 'strtoll("", 0, 0)'; then
 	# XXX try running a program to verify??
 	echo 'using C99 printf %lld' 1>&2
 	echo 'SPCINT_C=$(SRCDIR)lib/c99/spcint.c' >> $CONFIG_M4
@@ -889,13 +894,13 @@ fi
 echo '#define SIZEOF_INT_T	'$SIZEOF_INT_T'	/* for use in ifdefs */' >> $CONFIG_H
 echo '#define SIZEOF_REAL_T	'$SIZEOF_REAL_T'	/* for use in ifdefs */' >> $CONFIG_H
 
-if config/check unistd.h; then
+if $CHECK unistd.h; then
     echo 'using POSIX unistd.h' 1>&2
     echo '#define HAVE_UNISTD_H'		>> $CONFIG_H
     HAVE_UNISTD_H=1
 fi
 
-if config/check stdint.h; then
+if $CHECK stdint.h; then
     echo 'using C99 stdint.h' 1>&2
     echo '#define HAVE_STDINT_H'		>> $CONFIG_H
 fi
@@ -908,15 +913,15 @@ if [ "x$CYGWIN" != x ]; then
     # Win32 native mstime.c, which will fall back to Win9x compatibility.
     echo 'using Win32 native calls for runtimes' 1>&2
     echo 'MSTIME_C=$(SRCDIR)lib/win32/mstime.c'	>> $CONFIG_M4
-elif config/check -r "time.h" "$GETTIME"; then
+elif $CHECK -r "time.h" "$GETTIME"; then
     # -lrt not needed w/ kernel 3.9 and libc 2.17?
     echo 'using POSIX.1b clock_getcpuclockid()/clock_gettime() for runtimes' 1>&2
     echo 'MSTIME_C=$(SRCDIR)lib/posix2001/mstime.c' >> $CONFIG_M4
-elif config/check -r "time.h" "$GETTIME" "-lrt"; then
+elif $CHECK -r "time.h" "$GETTIME" "-lrt"; then
     echo 'using POSIX.1b clock_getcpuclockid()/clock_gettime() for runtimes (with -lrt)' 1>&2
     echo 'MSTIME_C=$(SRCDIR)lib/posix2001/mstime.c' >> $CONFIG_M4
     LIBRT=-lrt
-elif config/check "sys/time.h sys/resource.h" \
+elif $CHECK "sys/time.h sys/resource.h" \
     "struct rusage r; getrusage(&r, RUSAGE_SELF)"; then
     echo 'using getrusage() for runtimes' 1>&2
     echo 'MSTIME_C=$(SRCDIR)lib/bsd/mstime.c'	>> $CONFIG_M4
@@ -932,7 +937,7 @@ elif config/check "sys/time.h sys/resource.h" \
 elif [ "$HAVE_UNISTD_H" ]; then
     echo 'using times() + sysconf() for runtimes' 1>&2
     echo 'MSTIME_C=$(SRCDIR)lib/posix/mstime.c'	>> $CONFIG_M4
-elif config/check sys/times.h "struct tms tt; times(&tt)"; then
+elif $CHECK sys/times.h "struct tms tt; times(&tt)"; then
     # V7 had times(), but not times.h!!!
     echo 'using times() for runtimes' 1>&2
     # XXX warning????
@@ -957,14 +962,14 @@ fi
 
 # prefer C99 "isfinite" function:
 # hpux9 and hpux10 have finite(). hpux11 has isfinite().
-if config/check math.h 'float f; isfinite(f)'; then
+if $CHECK math.h 'float f; isfinite(f)'; then
     echo 'using system isfinite()' 1>&2
     echo '#define HAVE_ISFINITE'		>> $CONFIG_H
 fi
 
 # prefer uname(2/3)
 # NeXT/Open Step have $INCDIR/bsd/sys/utsname.h?? transparent??
-if config/check sys/utsname.h "struct utsname u; uname(&u)"; then
+if $CHECK sys/utsname.h "struct utsname u; uname(&u)"; then
     echo 'using uname() for system name information' 1>&2
 else
     OSNAME="$OS $OSREL"
@@ -978,12 +983,12 @@ else
     echo 'SYS_C=$(SRCDIR)lib/generic/sys.c'	>> $CONFIG_M4
 fi
 
-if config/check string.h 'char d; memmove(&d, "", 0)'; then
+if $CHECK string.h 'char d; memmove(&d, "", 0)'; then
     # The only system with no bcopy() which has memmove()
     # is Solaris 2.4, and our bcopy() beats memmove()?!
     echo 'using system memmove()/memset() functions' 1>&2
     echo '#define USE_MEMMOVE'		>> $CONFIG_H
-elif config/check strings.h 'char d; bcopy("", &d, 0)'; then
+elif $CHECK strings.h 'char d; bcopy("", &d, 0)'; then
     echo 'using system bcopy()/bzero() functions' 1>&2
     echo '#define HAVE_BCOPY'		>> $CONFIG_H
 else
@@ -993,19 +998,19 @@ else
     echo '#define NEED_BCOPY'		>> $CONFIG_H
 fi
 
-if config/check 'sys/types.h sys/socket.h' ""; then
+if $CHECK 'sys/types.h sys/socket.h' ""; then
     echo 'using sockets for TCP/IP support' 1>&2
 
     # check if network libraries needed
     SOCKINC='sys/types.h sys/socket.h netdb.h'
     SOCKFRAG='int s = socket(AF_INET, SOCK_STREAM, 0); struct hostent *hp = gethostbyname("")'
-    if config/check "$SOCKINC" "$SOCKFRAG"; then
+    if $CHECK "$SOCKINC" "$SOCKFRAG"; then
 	NETLIBS=
-    elif config/check "$SOCKINC" "$SOCKFRAG" -lsocket; then
+    elif $CHECK "$SOCKINC" "$SOCKFRAG" -lsocket; then
 	echo 'using libsocket' 1>&2
 	echo 'ADD_LDFLAGS([-lsocket])'		>> $CONFIG_M4
 	NETLIBS=-lsocket
-    elif config/check "$SOCKINC" "$SOCKFRAG" '-lsocket -lnsl'; then
+    elif $CHECK "$SOCKINC" "$SOCKFRAG" '-lsocket -lnsl'; then
 	echo 'using libsocket' 1>&2
 	echo 'ADD_LDFLAGS([-lsocket])'		>> $CONFIG_M4
 	echo 'using libnsl' 1>&2
@@ -1013,17 +1018,17 @@ if config/check 'sys/types.h sys/socket.h' ""; then
 	NETLIBS='-lsocket -lnsl'
     fi
 
-    if config/check "$SOCKINC" \
+    if $CHECK "$SOCKINC" \
 	'struct addrinfo aa[2], *ap; getaddrinfo("", "", aa, &ap)' \
 	"$NETLIBS"; then
 	echo 'using getaddrinfo() for IPv6' 1>&2
 	echo 'INET_O=inet6.o'			>> $CONFIG_M4
-	if config/check 'sys/types.h rpc/rpc.h' 'struct sockaddr sa; bindresvport_sa(0, &sa);' >/dev/null 2>&1; then
+	if $CHECK 'sys/types.h rpc/rpc.h' 'struct sockaddr sa; bindresvport_sa(0, &sa);' >/dev/null 2>&1; then
 	    # FreeBSD 4-7, NetBSD, MacOS
 	    echo 'using system bindresvport_sa() function (with rpc/rpc.h)' 1>&2
 	    echo '#define BINDRESVPORT_IN_RPC_H' >> $CONFIG_H
 	    # OpenBSD 5.6
-	elif config/check 'sys/types.h sys/socket.h netinet/in.h unistd.h' 'struct sockaddr sa; bindresvport_sa(0, &sa);' >/dev/null 2>&1; then
+	elif $CHECK 'sys/types.h sys/socket.h netinet/in.h unistd.h' 'struct sockaddr sa; bindresvport_sa(0, &sa);' >/dev/null 2>&1; then
 	    echo 'using system bindresvport_sa() function' 1>&2
 	else
 	    echo 'using private bindresvport_sa() function' 1>&2
@@ -1032,11 +1037,11 @@ if config/check 'sys/types.h sys/socket.h' ""; then
 	fi
     else # no getaddrinfo/IPv6
 	BINDRESVTEST='struct sockaddr_in sin; bindresvport(0, &sin)'
-	if config/check 'sys/types.h rpc/rpc.h' "$BINDRESVTEST" >/dev/null 2>&1; then
+	if $CHECK 'sys/types.h rpc/rpc.h' "$BINDRESVTEST" >/dev/null 2>&1; then
 	    # FreeBSD 3.x
 	    echo 'using system bindresvport() function (with rpc/rpc.h)' 1>&2
 	    echo '#define BINDRESVPORT_IN_RPC_H' >> $CONFIG_H
-	elif config/check 'netinet/in.h unistd.h' "$BINDRESVTEST" >/dev/null 2>&1; then
+	elif $CHECK 'netinet/in.h unistd.h' "$BINDRESVTEST" >/dev/null 2>&1; then
 	    echo 'using system bindresvport() function' 1>&2
 	else
 	    echo 'using private bindresvport() function' 1>&2
@@ -1049,13 +1054,13 @@ if config/check 'sys/types.h sys/socket.h' ""; then
 	echo 'ADD_SRCS([$(BINDRESVPORT_C)])'	>> $CONFIG_M4
     fi
 
-    if config/check netinet/in.h 'struct sockaddr_in6 in6' || \
-	config/check netinet6/in.h 'struct sockaddr_in6 in6'; then
+    if $CHECK netinet/in.h 'struct sockaddr_in6 in6' || \
+	$CHECK netinet6/in.h 'struct sockaddr_in6 in6'; then
 	echo '#define HAVE_SOCKADDR_IN6' >> $CONFIG_H
     fi
 
     # use socklen_t if avaialble
-    if config/check sys/socket.h 'socklen_t len'; then
+    if $CHECK sys/socket.h 'socklen_t len'; then
 	echo '#define SOCKLEN_T socklen_t'	>> $CONFIG_H
     else
 	echo '#define SOCKLEN_T int'		>> $CONFIG_H
@@ -1063,19 +1068,19 @@ if config/check 'sys/types.h sys/socket.h' ""; then
 
     # use BSD bidirectional popen if socketpair available
     # (could try to use two pipes??)
-    if config/check sys/socket.h \
+    if $CHECK sys/socket.h \
 	'int s[2]; socketpair(AF_UNIX, SOCK_STREAM, 0, s)'; then
 	echo 'using private popen() function' 1>&2
 	echo 'ADD_OBJS([popen.o])'		>> $CONFIG_M4
 	echo 'ADD_SRCS([$(POPEN_C)])'		>> $CONFIG_M4
 	NEED_PATHS_H=1
-	if config/check vfork.h 'vfork()'; then
+	if $CHECK vfork.h 'vfork()'; then
 	    echo 'using vfork() from vfork.h' 1>&2
 	    echo '#define HAVE_VFORK_H'		>> $CONFIG_H
-	elif config/check unistd.h 'vfork()'; then
+	elif $CHECK unistd.h 'vfork()'; then
 	    echo 'using vfork() (with unistd.h)' 1>&2
 	    echo '/* vfork() in unistd.h */'	>> $CONFIG_H
-	elif config/check '' 'vfork()'; then
+	elif $CHECK '' 'vfork()'; then
 	    echo 'using vfork()' 1>&2
 	    echo '/* vfork() */'		>> $CONFIG_H
 	else
@@ -1092,27 +1097,27 @@ else
 fi
 
 FORKPTY="int f; pid_t pid = forkpty(&f, 0, 0, 0);"
-if config/check "sys/types.h libutil.h" "$FORKPTY" -lutil; then
+if $CHECK "sys/types.h libutil.h" "$FORKPTY" -lutil; then
     # FreeBSD
     echo 'using forkpty() with libutil.h and -lutil' 1>&2
     echo '#define HAVE_LIBUTIL_H'	>> $CONFIG_H
     echo "ADD_LDFLAGS([-lutil])"	>> $CONFIG_M4
     NEED_PATHS_H=1
     HAVE_FORKPTY=1
-elif config/check "sys/types.h util.h" "$FORKPTY"; then
+elif $CHECK "sys/types.h util.h" "$FORKPTY"; then
     # OSX
     echo 'using forkpty() with util.h' 1>&2
     echo '#define HAVE_UTIL_H'		>> $CONFIG_H
     NEED_PATHS_H=1
     HAVE_FORKPTY=1
-elif config/check "sys/types.h util.h" "$FORKPTY" -lutil; then
+elif $CHECK "sys/types.h util.h" "$FORKPTY" -lutil; then
     # NetBSD, OpenBSD
     echo 'using forkpty() with util.h and -lutil' 1>&2
     echo '#define HAVE_UTIL_H'		>> $CONFIG_H
     echo "ADD_LDFLAGS([-lutil])"	>> $CONFIG_M4
     NEED_PATHS_H=1
     HAVE_FORKPTY=1
-elif config/check "sys/types.h pty.h" "$FORKPTY" -lutil; then
+elif $CHECK "sys/types.h pty.h" "$FORKPTY" -lutil; then
     # Linux
     echo 'using forkpty() with pty.h and -lutil' 1>&2
     echo '#define HAVE_PTY_H'		>> $CONFIG_H
@@ -1122,7 +1127,7 @@ elif config/check "sys/types.h pty.h" "$FORKPTY" -lutil; then
 fi
 
 if [ "$NEED_PATHS_H" ]; then
-    if config/check paths.h 'char *foo = _PATH_BSHELL'; then
+    if $CHECK paths.h 'char *foo = _PATH_BSHELL'; then
 	echo 'using paths.h for shell path' 1>&2
 	echo '#define HAVE_PATHS_H'	>> $CONFIG_H
     else
@@ -1147,11 +1152,11 @@ fi
 
 if [ "x$HAVE_FORKPTY" != x ]; then
     echo 'PTYIO_OBJ_C=$(SRCDIR)lib/bsd/ptyio_obj.c'	>> $CONFIG_M4
-    if config/check "unistd.h" "closefrom(3);"; then
+    if $CHECK "unistd.h" "closefrom(3);"; then
 	# FreeBSD, OpenBSD
 	echo 'using closefrom() from unistd.h' 1>&2
 	echo '#define HAVE_CLOSEFROM'	>> $CONFIG_H
-    elif config/check "stdlib.h" "closefrom(3);"; then
+    elif $CHECK "stdlib.h" "closefrom(3);"; then
 	# Solaris
 	echo 'using closefrom() from stdlib.h' 1>&2
 	echo '#define HAVE_CLOSEFROM'	>> $CONFIG_H
@@ -1159,10 +1164,10 @@ if [ "x$HAVE_FORKPTY" != x ]; then
 	echo 'using private closefrom() function' 1>&2
 	echo 'ADD_OBJS([closefrom.o])'	>> $CONFIG_M4
 	echo 'ADD_SRCS([lib/bsd/closefrom.c])'	>> $CONFIG_M4
-	if config/check "unistd.h" 'getdtablesize();'; then
+	if $CHECK "unistd.h" 'getdtablesize();'; then
 	    echo '#define HAVE_GETDTABLESIZE'	>> $CONFIG_H
 	    echo 'using getdtablesize() from unistd.h' 1>&2
-	elif config/check "unistd.h" 'sysconf(_SC_OPEN_MAX)'; then
+	elif $CHECK "unistd.h" 'sysconf(_SC_OPEN_MAX)'; then
 	    echo 'using private getdtablesize() with sysconf()' 1>&2
 	    echo 'ADD_OBJS([getdtablesize.o])'	>> $CONFIG_M4
 	    echo 'GETDTABLESIZE_C=lib/posix/getdtablesize.c' >> $CONFIG_M4
@@ -1180,19 +1185,19 @@ elif [ "$xCYGWIN" != x ]; then
     NEED_BUFIO=1
 fi
 
-if config/check termios.h 'struct termios t; tcgetattr(0, &t)'; then
+if $CHECK termios.h 'struct termios t; tcgetattr(0, &t)'; then
     echo 'using termios.h for tty modes' 1>&2
     echo 'TTY_C=$(SRCDIR)lib/posix/tty.c'	>> $CONFIG_M4
-elif config/check termio.h 'struct termio t; ioctl(0, TCGETA, &t)'; then
+elif $CHECK termio.h 'struct termio t; ioctl(0, TCGETA, &t)'; then
     echo 'using termio.h for tty modes' 1>&2
     echo '#define USE_TERMIO'			>> $CONFIG_H
     echo 'TTY_C=$(SRCDIR)lib/posix/tty.c'	>> $CONFIG_M4
-elif config/check sgtty.h 'struct sgtty s; gtty(0, &s)'; then
+elif $CHECK sgtty.h 'struct sgtty s; gtty(0, &s)'; then
     # systems with both termio/termios and sgtty usually
     # are simulating sgtty, so it's the last check.
     echo 'using sgtty.h for tty modes' 1>&2
     echo 'TTY_C=$(SRCDIR)lib/bsd/tty.c'		>> $CONFIG_M4
-elif config/check sys/ttyio.h 'struct sgtty s; gtty(0, &s)'; then
+elif $CHECK sys/ttyio.h 'struct sgtty s; gtty(0, &s)'; then
     # Bell Research Unix
     echo 'using sys/ttyio.h for tty modes' 1>&2
     echo 'TTY_C=$(SRCDIR)lib/bsd/tty.c'		>> $CONFIG_M4
@@ -1212,12 +1217,12 @@ fi
 # doesn't include them, but avoid compiling our own if system version
 # available).
 
-if config/check unistd.h 'int x = getopt(argc, argv, "t"), y=optind'; then
+if $CHECK unistd.h 'int x = getopt(argc, argv, "t"), y=optind'; then
     # cygwin gcc10 unhappy with externs. Only check POSIX location.
     echo 'using system getopt() function' 1>&2
     echo '#define HAVE_GETOPT'			>> $CONFIG_H
     echo '#define HAVE_GETOPT_EXTERNS'		>> $CONFIG_H
-elif config/check stdio.h 'getopt(argc, argv, "")'; then
+elif $CHECK stdio.h 'getopt(argc, argv, "")'; then
     echo 'using system getopt() function w/ externs' 1>&2
     echo '#define HAVE_GETOPT'			>> $CONFIG_H
 else
@@ -1228,7 +1233,7 @@ else
 fi
 
 # POSIX-1.2008 (via glibc)
-if config/check stdio.h 'char *buf; size_t len; getline(&buf, &len, stdin)'; then
+if $CHECK stdio.h 'char *buf; size_t len; getline(&buf, &len, stdin)'; then
     echo 'using system getline() function' 1>&2
     echo '#define HAVE_GETLINE'			>> $CONFIG_H
 else
@@ -1241,8 +1246,8 @@ fi
 # look for dynamic library support for "load";
 # overrides "dummy" and "bsd" style
 # look for sun/unix98 style dlopen()
-if config/check dlfcn.h 'dlopen("", 0)' || \
-	  config/check dlfcn.h 'dlopen("", 0)' -ldl; then
+if $CHECK dlfcn.h 'dlopen("", 0)' || \
+	  $CHECK dlfcn.h 'dlopen("", 0)' -ldl; then
 	LOAD=unix98
 	echo 'using dlopen() for LOAD() support' 1>&2
 	HAVE_DLOPEN=1
@@ -1287,7 +1292,7 @@ if config/check dlfcn.h 'dlopen("", 0)' || \
 	if [ "$TRY_UNDERSCORE" ]; then
 	    echo '#define TRY_UNDERSCORE'	>> $CONFIG_H
 	fi
-elif config/check dl.h 'shl_load("", BIND_DEFERRED, 0L)'; then
+elif $CHECK dl.h 'shl_load("", BIND_DEFERRED, 0L)'; then
 	LOAD=hpux
 	echo 'using HP-UX shl_load() for LOAD() support' 1>&2
 	echo 'undefine([hpux])'			>> $CONFIG_M4
@@ -1295,14 +1300,14 @@ elif config/check dl.h 'shl_load("", BIND_DEFERRED, 0L)'; then
 	# export all symbols
 	echo 'ADD_LDFLAGS([-Wl,-E])'		>> $CONFIG_M4
 	echo 'ADD_LDFLAGS([-ldld])'		>> $CONFIG_M4
-elif config/check mach-o/dyld.h 'NSObjectFileImage ofi'; then
+elif $CHECK mach-o/dyld.h 'NSObjectFileImage ofi'; then
 	LOAD=next
 	echo 'using NextStep/Darwin LOAD() support' 1>&2
 	echo 'LOAD_C=$(SRCDIR)lib/next/load.c'	>> $CONFIG_M4
 	if [ "$OS" = Darwin ]; then
 	    echo '#define TRY_UNDERSCORE'	>> $CONFIG_H
 	fi
-elif config/check a.out.h 'struct exec a; int x = OMAGIC'; then
+elif $CHECK a.out.h 'struct exec a; int x = OMAGIC'; then
 	LOAD=aout
 	echo 'using a.out ld for LOAD() support' 1>&2
 	echo 'LOAD_C=$(SRCDIR)lib/bsd/load.c'	>> $CONFIG_M4
@@ -1330,16 +1335,16 @@ fi
 
 # fseeko isn't needed if "long" (the offset type used by fseek)
 # is 64 bits, but should be safe in any case (famous last words).
-if config/check stdio.h 'fseeko(stdout, 0, 0)'; then
+if $CHECK stdio.h 'fseeko(stdout, 0, 0)'; then
     echo 'using fseeko() for file positioning' 1>&2
     echo '#define HAVE_FSEEKO'			>> $CONFIG_H
 fi
 
 # detect GNU libc (glibc) -- run in subshell to redirect error output
 # if --version not a valid option.  Future versions might not print
-# version as last item on line (currently it's the 4th), but at this
-# moment, I only care about detecting version 2.1;
-GLIBC=`(getconf --version)2>&1 | awk '/GNU libc/ || /EGLIBC/ { print $NF }'`
+# version as last item on line (deal with it if any version than 2.1
+# needs special handling):
+GLIBC=`(getconf --version)2>&1 | awk '/GNU libc/ || /GLIBC/ { print $NF }'`
 
 if [ "x$GLIBC" != x ]; then
     echo "# GLIBC version $GLIBC"		>> $CONFIG_M4
@@ -1348,10 +1353,14 @@ if [ "x$GLIBC" != x ]; then
 
     # glibc 2.1 is broken; fseeko() cannot be used
     case "$GLIBC" in
-    2.1*)
+    2.1|2.1.*)
 	LARGEFILE_OK=
 	;;
     esac
+
+    # for config/check testing:
+    CFLAGS="$CFLAGS -D_XOPEN_SOURCE -D_BSD_SOURCE -D_DEFAULT_SOURCE"
+    export CFLAGS
 fi
 
 # if using a native 64bit data model no options should be needed
@@ -1400,11 +1409,11 @@ if [ "$LARGEFILE_OK" ] &&
 fi
 
 # RedHat 6.0 has mman.h, but not madvise()
-if config/check sys/mman.h 'madvise(0, 0, MADV_RANDOM)' || \
-    config/check sys/mman.h 'posix_madvise(0, 0, POSIX_MADV_RANDOM)'; then
+if $CHECK sys/mman.h 'madvise(0, 0, MADV_RANDOM)' || \
+    $CHECK sys/mman.h 'posix_madvise(0, 0, POSIX_MADV_RANDOM)'; then
     echo 'using madvise() during GC' 1>&2
     echo 'DYNAMIC_C=$(SRCDIR)lib/posix/dynamic.c' >> $CONFIG_M4
-elif config/check sys/vadvise.h 'vadvise(VA_ANOM)'; then
+elif $CHECK sys/vadvise.h 'vadvise(VA_ANOM)'; then
     echo 'using vadvise() during GC' 1>&2
     echo 'DYNAMIC_C=$(SRCDIR)lib/bsd/dynamic.c'	>> $CONFIG_M4
 else
@@ -1413,10 +1422,10 @@ else
 fi
 
 # just give in & compile a little program that uses SIGTSTP??
-if config/check signal.h 'int i = SIGTSTP'; then
-    if config/check signal.h 'sigset_t ss; sigemptyset(&ss)'; then
+if $CHECK signal.h 'int i = SIGTSTP'; then
+    if $CHECK signal.h 'sigset_t ss; sigemptyset(&ss)'; then
 	echo 'using POSIX suspend.c' 1>&2
-    elif config/check signal.h 'sigmask(0)'; then
+    elif $CHECK signal.h 'sigmask(0)'; then
 	echo 'using BSD suspend.c' 1>&2
 	echo 'SUSPEND_C=$(SRCDIR)lib/bsd/suspend.c'	>> $CONFIG_M4
     else
@@ -1429,24 +1438,24 @@ else
     echo 'SUSPEND_C=$(SRCDIR)lib/dummy/suspend.c' >> $CONFIG_M4
 fi
 
-if config/check time.h \
+if $CHECK time.h \
     'struct timespec ts; long x; clock_gettime(CLOCK_REALTIME, &ts); x = ts.tv_nsec'; then
     # may have needed -lrt at some point w/ glibc.  No big loss.
     echo 'using POSIX.1b clock_gettime(CLOCK_REALTIME,..) for time of day' 1>&2
     echo '#define HAVE_CLOCK_GETTIME_REALTIME'	>> $CONFIG_H
     # XXX use c11/mstime.c!!
-elif config/check time.h \
+elif $CHECK time.h \
     'struct timespec ts; long x; timespec_get(&ts,TIME_UTC); x = ts.tv_nsec'; then
     echo 'using C11 timespec_get(..,TIME_UTC) for time of day' 1>&2
     echo '#define HAVE_TIMESPEC_GET'		>> $CONFIG_H
-elif config/check sys/time.h \
+elif $CHECK sys/time.h \
     'struct timeval tv; int x; gettimeofday(&tv,0); x = tv.tv_sec'; then
     echo 'using gettimeofday()' 1>&2
     echo '#define HAVE_GETTIMEOFDAY'		>> $CONFIG_H
 else
     echo 'using time()' 1>&2
 fi
-if config/check time.h 'struct tm tm; int i = tm.tm_gmtoff'; then
+if $CHECK time.h 'struct tm tm; int i = tm.tm_gmtoff'; then
     echo 'using tm_gmtoff' 1>&2
     echo '#define HAVE_TM_GMTOFF'		>> $CONFIG_H
 fi
@@ -1454,13 +1463,13 @@ fi
 SLEEP_C=bsd/sleep.c
 echo '#define HAVE_SLEEP'			>> $CONFIG_H
 SELECT_FRAG='fd_set x; struct timeval tv; select(0,&x,&x,&x,&tv);'
-if config/check time.h 'struct timespec ts; nanosleep(&ts,0)'; then
+if $CHECK time.h 'struct timespec ts; nanosleep(&ts,0)'; then
     echo 'using POSIX nanosleep()' 1>&2
     SLEEP_C=posix/sleep.c
-elif config/check sys/select.h "$SELECT_FRAG"; then
+elif $CHECK sys/select.h "$SELECT_FRAG"; then
     echo 'using posix select() for sleep'	1>&2
     echo '#define HAVE_SELECT_H'		>> $CONFIG_H
-elif config/check 'sys/time.h sys/types.h' "$SELECT_FRAG"; then
+elif $CHECK 'sys/time.h sys/types.h' "$SELECT_FRAG"; then
     echo 'using select() for sleep' 1>&2
 else
     echo 'using generic sleep()' 1>&2
@@ -1469,17 +1478,17 @@ fi
 echo 'SLEEP_C=$(SRCDIR)'$SLEEP_C		>> $CONFIG_M4
 echo "	SLEEP_C = '$SLEEP_C'"			>> $CONFIG_SNO
 
-if config/check "time.h" 'char buf[1024]; strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", localtime(time(0)));'; then
+if $CHECK "time.h" 'char buf[1024]; time_t t = time(0); strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", localtime(&t));'; then
     echo 'using strftime()' 1>&2
     echo '#define HAVE_STRFTIME'		>> $CONFIG_H
 fi
 
-if config/check time.h 'struct tm tm; strptime("", "", &tm)'; then
+if $CHECK time.h 'struct tm tm; strptime("", "", &tm)'; then
     echo 'using strptime()' 1>&2
     echo '#define HAVE_STRPTIME'		>> $CONFIG_H
 fi
 
-if config/check time.h 'struct tm tm; timegm(&tm)'; then
+if $CHECK time.h 'struct tm tm; timegm(&tm)'; then
     echo 'using timegm()' 1>&2
     echo '#define HAVE_TIMEGM'			>> $CONFIG_H
 fi
@@ -1555,19 +1564,19 @@ if true; then
     if [ "$FORCE_SDBM" ]; then
 	# bypass checks
 	USE_SDBM=1
-    elif config/check ndbm.h "$DBM_FRAG"; then
+    elif $CHECK ndbm.h "$DBM_FRAG"; then
 	echo "using ndbm.h for DBM support" 1>&2
 	echo '#define HAVE_NDBM_H'		>> $CONFIG_H
-    elif config/check ndbm.h "$DBM_FRAG" -ldb; then
+    elif $CHECK ndbm.h "$DBM_FRAG" -ldb; then
 	echo "using ndbm.h for DBM support (with -ldb)" 1>&2
 	echo '#define HAVE_NDBM_H'		>> $CONFIG_H
 	NDBM_LIBS='-ldb'
-    elif config/check db.h "$DBM_FRAG" '-DDB_DBM_HSEARCH'; then
+    elif $CHECK db.h "$DBM_FRAG" '-DDB_DBM_HSEARCH'; then
 	# check for Berkeley DB in libc
 	echo "using db.h for DBM support" 1>&2
 	echo '#define DB_DBM_HSEARCH 1'		>> $CONFIG_H
 	echo '#define HAVE_DB_H'		>> $CONFIG_H
-    elif config/check db.h "$DBM_FRAG" '-ldb -DDB_DBM_HSEARCH'; then
+    elif $CHECK db.h "$DBM_FRAG" '-ldb -DDB_DBM_HSEARCH'; then
 	# works with libdb4.8
 	echo "using db.h for DBM support (with -ldb)" 1>&2
 	echo '#define DB_DBM_HSEARCH 1'		>> $CONFIG_H
@@ -1583,18 +1592,18 @@ if true; then
 	# the right (dev) packages not installed!!!
 	for COMPAT in '' ' -lgdbm_compat'; do
 	    NDBM_LIBS="-lgdbm$COMPAT"
-	    if config/check ndbm.h "$DBM_FRAG" "$NDBM_LIBS"; then
+	    if $CHECK ndbm.h "$DBM_FRAG" "$NDBM_LIBS"; then
 		# cygwin
 		USE_GDBM=1
 		echo "using ndbm.h for DBM support (with $NDBM_LIBS)" 1>&2
 		echo '#define HAVE_NDBM_H'	>> $CONFIG_H
 		break
-	    elif config/check gdbm/ndbm.h "$DBM_FRAG" "$NDBM_LIBS"; then
+	    elif $CHECK gdbm/ndbm.h "$DBM_FRAG" "$NDBM_LIBS"; then
 		USE_GDBM=1
 		echo "using gdbm/ndbm.h for DBM support (with $NDBM_LIBS)" 1>&2
 		echo '#define HAVE_GDBM_SLASH_NDBM_H'	>> $CONFIG_H
 		break
-	    elif config/check gdbm-ndbm.h "$DBM_FRAG" "$NDBM_LIBS"; then
+	    elif $CHECK gdbm-ndbm.h "$DBM_FRAG" "$NDBM_LIBS"; then
 		USE_GDBM=1
 		echo "using gdbm-ndbm.h for DBM support (with $NDBM_LIBS)" 1>&2
 		echo '#define HAVE_GDBM_DASH_NDBM_H'	>> $CONFIG_H	
@@ -1639,15 +1648,15 @@ fi
 if [ ! "$WITHOUT_READLINE" ]; then
     RL_INC='stdio.h readline/readline.h readline/history.h'
     RL_FRAG='readline("?")'
-    if config/check "$RL_INC" "$RL_FRAG" -lreadline; then
+    if $CHECK "$RL_INC" "$RL_FRAG" -lreadline; then
 	RL_LIBS="-lreadline"
-    elif config/check "$RL_INC" "$RL_FRAG" '-lreadline -lncurses'; then
+    elif $CHECK "$RL_INC" "$RL_FRAG" '-lreadline -lncurses'; then
 	RL_LIBS="-lreadline -lncurses"
-    elif config/check "$RL_INC" "$RL_FRAG" '-lreadline -lncursesw'; then
+    elif $CHECK "$RL_INC" "$RL_FRAG" '-lreadline -lncursesw'; then
 	RL_LIBS="-lreadline -lncursesw"
-    elif config/check "$RL_INC" "$RL_FRAG" '-ledit'; then
+    elif $CHECK "$RL_INC" "$RL_FRAG" '-ledit'; then
 	RL_LIBS="-ledit"
-    elif config/check "$RL_INC" "$RL_FRAG" '-ledit -I/usr/include/edit'; then
+    elif $CHECK "$RL_INC" "$RL_FRAG" '-ledit -I/usr/include/edit'; then
 	# FreeBSD 12
 	RL_LIBS="-ledit"
 	RL_INCDIR="/usr/include/edit"
@@ -1673,7 +1682,7 @@ if [ ! "$WITHOUT_READLINE" ]; then
 	echo '#define COMPILER_READLINE'	>> $CONFIG_H
 	# NetBSD/OSX have rl_[gs]et_keymap, but they're noops,
 	# rl_copy_keymap() isn't even faked.
-	if config/check "$RL_INC" "rl_copy_keymap()" $RL_LIBS; then
+	if $CHECK "$RL_INC" "rl_copy_keymap()" $RL_LIBS; then
 	    echo "using rl_set_keymap()" 1>&2
 	    echo '#define HAVE_RL_SET_KEYMAP'	>> $CONFIG_H
 	fi
@@ -1687,7 +1696,7 @@ if [ "x$RL_LIBS" = x ]; then
 fi
 
 # test lstat() for "stat" package
-if config/check 'sys/types.h sys/stat.h' 'struct stat st; lstat("foo", &st)'; then
+if $CHECK 'sys/types.h sys/stat.h' 'struct stat st; lstat("foo", &st)'; then
     echo '#define HAVE_LSTAT'	>> $CONFIG_H
     echo 'using lstat()' 1>&2
 fi
@@ -1699,12 +1708,12 @@ if [ ! "$FORCE_PML" ]; then
     if [ -f modules/sqlite3/sqlite3.c -a -f modules/sqlite3/sqlite3.h ]; then
 	echo 'using sqlite3 amalgamation sources' 1>&2
 	MODULES="$MODULES sqlite3"
-    elif config/check 'sqlite3.h' "$SQLITE_FRAG" '-lsqlite3'; then
+    elif $CHECK 'sqlite3.h' "$SQLITE_FRAG" '-lsqlite3'; then
 	echo 'using sqlite3' 1>&2
 	MODULES="$MODULES sqlite3"
     else
 	for DIR in $SEARCH_DIRS; do
-	    if config/check sqlite3.h "$SQLITE3_FRAG" "-I$DIR/include -L$DIR/lib -lsqlite3"; then
+	    if $CHECK sqlite3.h "$SQLITE3_FRAG" "-I$DIR/include -L$DIR/lib -lsqlite3"; then
 	        echo "using sqlite3 from $DIR" 1>&2
 		echo "	SQLITE_INCLUDE = '$DIR/include'" >> $CONFIG_SNO
 		echo "	SQLITE_LIBDIR = '$DIR/lib'" >> $CONFIG_SNO
@@ -1716,14 +1725,14 @@ if [ ! "$FORCE_PML" ]; then
 
     if [ "$HAVE_DLOPEN" ]; then
 	FFI_FRAG='ffi_cif cif; ffi_prep_cif(&cif, FFI_DEFAULT_ABI, 0, 0, 0)'
-	if config/check 'ffi.h' "$FFI_FRAG" '-lffi'; then
+	if $CHECK 'ffi.h' "$FFI_FRAG" '-lffi'; then
 	    echo 'using ffi' 1>&2
 	    MODULES="$MODULES ffi"
 	    FFI_INCLUDE=
 	    FFI_LIBDIR=
 	else
 	    for DIR in $SEARCH_DIRS; do
-		if config/check ffi.h "$FFI_FRAG" "-I$DIR/include -L$DIR/lib -lffi"; then
+		if $CHECK ffi.h "$FFI_FRAG" "-I$DIR/include -L$DIR/lib -lffi"; then
 		    echo "using ffi from $DIR" 1>&2
 		    echo "	FFI_INCLUDE = '$DIR/include'" >> $CONFIG_SNO
 		    echo "	FFI_LIBDIR = '$DIR/lib'" >> $CONFIG_SNO
