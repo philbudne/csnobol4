@@ -87,7 +87,7 @@ GETTIMEOFDAY_( LA_ALIST ) {
 	RETFAIL;
     SETINT(dp,TV_SEC,tv.tv_sec);
     SETINT(dp,TV_USEC,tv.tv_usec);
-    SETINT(dp,TV_NSEC,ts.tv_usec*1000);
+    SETINT(dp,TV_NSEC,tv.tv_usec*1000);
 #else
     SETINT(dp,TV_SEC,time(0));
     SETINT(dp,TV_USEC,0);
