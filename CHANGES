@@ -16,6 +16,11 @@ Changes since 2.1 release;
 		Can be built with Winsock2 support
 			(available in Win98 and NT 4.0) for IPv6 support.
 		Fix test for g++ compiler under cygwin
+	configure changes:
+		--force-pml removed
+		--without-modules added
+		made more strict about include file checks.
+	time module gettimeofday TIMEVAL now has TV_NSEC member
 
 Changes since 2.0 release;
 =========================
