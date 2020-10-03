@@ -3,6 +3,9 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/2/2020:
+	configure: --without-modules
+
+10/2/2020:
 	lib/win32/inet.c: VERY last file to ansify?
 		(leaving ancient dummy files)
 

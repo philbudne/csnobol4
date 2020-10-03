@@ -101,11 +101,6 @@ if [ "x$HOST" != x ]; then
 fi
 echo '#define CONFIG_DATE "'$DATE'"'		>> $CONFIG_H
 
-# 2020-02-01 -- start with a default?!
-if [ -f /usr/lib/tclConfig.sh ]; then
-    TCONF=/usr/lib/tclConfig.sh
-fi
-
 ADD_DEFINE_USED=
 while [ $# -gt 0 ]; do
     case "$1" in
@@ -205,6 +200,9 @@ while [ $# -gt 0 ]; do
     --without-com)
 	WITHOUT_COM=1
 	;;
+    --without-modules)
+	WITHOUT_MODULES=1
+	;;
     --without-readline)
 	WITHOUT_READLINE=1
 	;;
@@ -255,7 +253,7 @@ Optional items;
 	--with-tcl=/path/to/tclConfig.sh
 	--without-blocks	--force-pml
 	--without-readline	--force-sdbm
-	--without-com
+	--without-com		--without-modules
 EOF
 
 	rm -f $CONFIG_M4 $CONFIG_H
@@ -322,8 +320,6 @@ echo '#define SHARED_OBJ_SUBDIR "shared"'	>> $CONFIG_H
 
 # safe on all Unix systems (requires "fork")
 echo '#define PML_SERV'				>> $CONFIG_H
-
-MODULES='dirs logic random stat time sprintf fork'
 
 if [ "$CC" ]; then
     echo 'using CC environment variable' 1>&2
@@ -1528,34 +1524,32 @@ if [ "x$DL_EXT" != x ]; then
     echo "#define DL_LDFLAGS \"$DL_LDFLAGS\"" >> $CONFIG_H
 fi
 
-if [ "x$TCONF" = x ]; then
-    # Tcl auto-detect is only easy on Mac (system supplied, no version in path)
-    FRAMEWORK=/System/Library/Frameworks/Tcl.framework/tclConfig.sh
-    if [ -f $FRAMEWORK ]; then
-	TCONF=$FRAMEWORK
-    fi
-fi
-# Include STCL (tcl) support, if available/requested
-# (Tk loads as package in 8.4+)
-if [ "$TCONF" -a -f "$TCONF" ]; then
-  . "$TCONF"
-  if [ "$TCL_VERSION" ]; then
-    echo "using Tcl version $TCL_VERSION" 1>&2
-    if [ "$FORCE_PML" ]; then
-	echo '#define PML_STCL'	>> $CONFIG_H
-	echo "ADD_LDFLAGS([$TCL_LIB_SPEC])" >> $CONFIG_M4
-	echo 'ADD_OBJS([stcl.o])'	>> $CONFIG_M4
-	echo 'ADD_SRCS([$(STCL_C)])' >> $CONFIG_M4
-	echo "ADD_CPPFLAGS([$TCL_INCLUDE_SPEC])" >> $CONFIG_M4
-    else
-	MODULES="$MODULES stcl"
-	echo "	TCL_LIB_SPEC = '$TCL_LIB_SPEC'" >> $CONFIG_SNO
-	echo "	TCL_INCLUDE_SPEC = '$TCL_INCLUDE_SPEC'" >> $CONFIG_SNO
-    fi
-  fi
-fi
+if [ "x$WITHOUT_MODULES" = x ]; then
+    MODULES='dirs logic random stat time sprintf fork'
 
-if true; then
+    if [ "x$TCONF" = x ]; then
+	for X in /usr/lib/tclConfig.sh \
+		 /System/Library/Frameworks/Tcl.framework/tclConfig.sh; do
+	    if [ -f $X ]; then
+		echo found $X
+		TCONF=$X
+		break
+	    fi
+	done
+    fi
+
+    # Include STCL (tcl) support, if available/requested
+    # (Tk loads as package in 8.4+)
+    if [ "$TCONF" -a -f "$TCONF" ]; then
+	. "$TCONF"
+	if [ "$TCL_VERSION" ]; then
+	    echo "using Tcl version $TCL_VERSION" 1>&2
+	    MODULES="$MODULES stcl"
+	    echo "	TCL_LIB_SPEC = '$TCL_LIB_SPEC'" >> $CONFIG_SNO
+	    echo "	TCL_INCLUDE_SPEC = '$TCL_INCLUDE_SPEC'" >> $CONFIG_SNO
+	fi
+    fi
+
     NDBM_LIBS=
     DBM_FRAG='DBM *db = dbm_open("", 0, 0)'
     if [ "$FORCE_SDBM" ]; then
@@ -1614,32 +1608,17 @@ if true; then
 	fi
     fi
 
-    if [ "$FORCE_PML" ]; then
-	echo '#define PML_NDBM'		>> $CONFIG_H
-	echo 'ADD_OBJS([ndbm.o])'	>> $CONFIG_M4
-	echo 'ADD_SRCS([$(NDBM_C)])'	>> $CONFIG_M4
-	if [ "x$NDBM_LIBS" != x ]; then
-	    echo "ADD_LDFLAGS([$NDBM_LIBS])" >> $CONFIG_M4
-	fi
-    else
-	echo "	NDBM_LDFLAGS = '$NDBM_LIBS'" >> $CONFIG_SNO
-	MODULES="$MODULES ndbm"
-    fi
+    echo "	NDBM_LDFLAGS = '$NDBM_LIBS'" >> $CONFIG_SNO
+    MODULES="$MODULES ndbm"
     if [ "$USE_SDBM" ]; then
 	echo "using SDBM for DBM support" 1>&2
-	if [ "$FORCE_PML" ]; then
-	    echo 'ADD_CPPFLAGS([-Imodules/ndbm/sdbm])' >> $CONFIG_M4
-	    echo 'ADD_SRCS([$(SDBM_C)$(SDBM_HASH_C) $(SDBM_PAIR_C)])' >> $CONFIG_M4
-	    echo 'ADD_OBJS([sdbm.o sdbm_hash.o sdbm_pair.o])' >> $CONFIG_M4
-	else
-	    # for modules/ndbm/setup.sno:
-	    echo '	NDBM_INCLUDE = "sdbm"' >> $CONFIG_SNO
-	    echo '	NDBM_SRCS = ",sdbm/sdbm.c,sdbm/sdbm_hash.c,sdbm/sdbm_pair.c"' >> $CONFIG_SNO
-	fi
+	# for modules/ndbm/setup.sno:
+	echo '	NDBM_INCLUDE = "sdbm"' >> $CONFIG_SNO
+	echo '	NDBM_SRCS = ",sdbm/sdbm.c,sdbm/sdbm_hash.c,sdbm/sdbm_pair.c"' >> $CONFIG_SNO
 	echo '#define HAVE_SDBM_H'	>> $CONFIG_H
 	echo '#define DUFF'		>> $CONFIG_H
     fi
-fi
+fi # modules
 
 # Include readline support, if found
 if [ ! "$WITHOUT_READLINE" ]; then
@@ -1662,14 +1641,8 @@ if [ ! "$WITHOUT_READLINE" ]; then
     if [ "x$RL_LIBS" != x ]; then
 	echo "using readline (with $RL_LIBS)" 1>&2
 	echo '#define HAVE_READLINE'		>> $CONFIG_H
-	if [ "$FORCE_PML" ]; then
-	    echo 'ADD_OBJS([readline.o])'	>> $CONFIG_M4
-	    echo 'ADD_SRCS([$(READLINE_C)])'	>> $CONFIG_M4
-	    echo '#define PML_READLINE'		>> $CONFIG_H
-	else
-	    echo "	READLINE_LDFLAGS = '$RL_LIBS'" >> $CONFIG_SNO
-	    MODULES="$MODULES readline"
-	fi
+	echo "	READLINE_LDFLAGS = '$RL_LIBS'" >> $CONFIG_SNO
+	MODULES="$MODULES readline"
 	echo "ADD_LDFLAGS([$RL_LIBS])"		>> $CONFIG_M4
 	if [ "x$RL_INCDIR" != x ]; then
 	    echo "ADD_CPPFLAGS([-I$RL_INCDIR])"	>> $CONFIG_M4
@@ -1686,21 +1659,23 @@ if [ ! "$WITHOUT_READLINE" ]; then
     fi
 fi
 
-if [ "x$RL_LIBS" = x ]; then
-    # not if FORCE_PML??
-    echo "using dummy readline (for sdb)" 1>&2
-    MODULES="$MODULES readline"
-fi
-
 # test lstat() for "stat" package
 if config/check 'sys/types.h sys/stat.h' 'struct stat st; lstat("foo", &st)'; then
     echo '#define HAVE_LSTAT'	>> $CONFIG_H
     echo 'using lstat()' 1>&2
 fi
 
-# MacPorts: /opt/local
-SEARCH_DIRS='/usr/local /opt/local'
-if [ ! "$FORCE_PML" ]; then
+if [ "x$WITHOUT_MODULES" = x ]; then
+    # places to look for sqlite and ffi
+    # /opt/local on MacPorts
+    SEARCH_DIRS='/usr/local /opt/local'
+
+    if [ "x$RL_LIBS" = x ]; then
+	# XXX build in if WITHOUT_MODULES (for sdb)
+	echo "using dummy readline (for sdb)" 1>&2
+	MODULES="$MODULES readline"
+    fi
+
     SQLITE_FRAG='sqlite3 *db; sqlite3_open("foo", &db)'
     if [ -f modules/sqlite3/sqlite3.c -a -f modules/sqlite3/sqlite3.h ]; then
 	echo 'using sqlite3 amalgamation sources' 1>&2
@@ -1739,11 +1714,9 @@ if [ ! "$FORCE_PML" ]; then
 	    done
 	fi
     fi
-fi
-
-# Include COM support under Cygwin!
-if [ "x$CYGWIN" != x ]; then
-  cat << EOF > $TMP.cpp
+    # Include COM support under Cygwin!
+    if [ "x$CYGWIN" != x ]; then
+	cat << EOF > $TMP.cpp
 #include <iostream>
 
 int
@@ -1752,24 +1725,25 @@ main() {
     return 0;
 }
 EOF
-  if g++ -o $TMP $TMP.cpp 2>/dev/null && [ `./$TMP` = 'Hello' ]; then
-      true
-  else
-      echo 'could not find C++ compiler: Win32 COM support disabled' 1>&2
-      WITHOUT_COM=1
-  fi
-  rm -f $TMP $TMP.exe $TMP.cpp
-  if [ "x$WITHOUT_COM" = x -a -f $INCDIR/w32api/objbase.h ]; then
-    echo 'using Win32 COM support' 1>&2
-    MODULES="$MODULES com"
+	if g++ -o $TMP $TMP.cpp 2>/dev/null && [ `./$TMP` = 'Hello' ]; then
+	    true
+	else
+	    echo 'could not find C++ compiler: Win32 COM support disabled' 1>&2
+	    WITHOUT_COM=1
+	fi
+	rm -f $TMP $TMP.exe $TMP.cpp
+	if [ "x$WITHOUT_COM" = x -a -f $INCDIR/w32api/objbase.h ]; then
+	    echo 'using Win32 COM support' 1>&2
+	    MODULES="$MODULES com"
 
-    # -L/usr/lib/w32api needed on Windows 7 (thanks to Robert Shanley!)
-    echo '	COM_LIBDIRS = "/usr/lib/w32api"' >> $CONFIG_SNO
+	    # -L/usr/lib/w32api needed on Windows 7 (thanks to Robert Shanley!)
+	    echo '	COM_LIBDIRS = "/usr/lib/w32api"' >> $CONFIG_SNO
 
-    # -lstdc++ needed w/ gcc 3.3.1 cygwin 1.5.9 (0.122/4/2)
-    echo '	COM_LIBS = "ole32,uuid,oleaut32,stdc++"' >> $CONFIG_SNO
-  fi
-fi
+	    # -lstdc++ needed w/ gcc 3.3.1 cygwin 1.5.9 (0.122/4/2)
+	    echo '	COM_LIBS = "ole32,uuid,oleaut32,stdc++"' >> $CONFIG_SNO
+	fi
+    fi # cygwin
+fi # modules
 
 if [ "x$NEED_BUFIO" != x ]; then
     echo 'ADD_OBJS([bufio_obj.o])'		>> $CONFIG_M4
