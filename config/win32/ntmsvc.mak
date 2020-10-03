@@ -83,7 +83,7 @@ OBJ=	$(BUFIO_OBJ) $(INET_OBJ) $(INET_OBJS) \
 	main.obj mstime.obj ord.obj ordvst.obj osopen.obj \
 	pair.obj pat.obj pml.obj ptyio_obj.obj realst.obj \
 	rename.obj replace.obj retstring.obj sin.obj \
-	sleep.obj spcint.obj spreal.obj sqrt.obj sset.obj \
+	spcint.obj spreal.obj sqrt.obj sset.obj \
 	stdio_obj.obj str.obj stream.obj syn.obj sys.obj \
 	tan.obj term.obj top.obj tree.obj tty.obj
 
@@ -242,9 +242,6 @@ osopen.obj : $(SRCDIR)lib\win32\osopen.c
 
 ptyio_obj.obj : $(SRCDIR)$(PTYIO_OBJ_SRC)
 	$(CC) $(CFLAGS) $(SRCDIR)$(PTYIO_OBJ_SRC)
-
-sleep.obj : $(SRCDIR)lib\win32\sleep.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\sleep.c
 
 sys.obj : $(SRCDIR)lib\win32\sys.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\sys.c
