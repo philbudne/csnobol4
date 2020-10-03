@@ -408,7 +408,8 @@ esac
 
 # make implicit function declaration fatal in "check"
 case "$CC_IS" in
-gcc|clang) CFLAGS="$CFLAGS -Werror=implicit-function-declaration";;
+gcc|clang) CFLAGS="$CFLAGS -Werror -Wimplicit-function-declaration";;
+# guessing here:
 icc)	   CFLAGS="$CFLAGS -Werror -Wall -Wno-unused-variable";;
 esac
 
@@ -1505,6 +1506,11 @@ if [ "x$WITHOUT_MODULES" = x ]; then
     if config/check time.h 'struct timespec ts; nanosleep(&ts,0)'; then
 	echo 'using POSIX nanosleep()' 1>&2
 	SLEEP_C=posix/sleep.c
+    elif config/check time.h 'struct timespec ts; nanosleep(&ts,0)' -D_POSIX_C_SOURCE=199309; then
+        echo 'using POSIX nanosleep() w/ _POSIX_C_SOURCE=199309' 1>&2
+        SLEEP_C=posix/sleep.c
+	# needed w/ glibc 2.5 (RHEL5)
+	echo '	TIME_CFLAGS = "-D_POSIX_C_SOURCE=199309"' >> $CONFIG_SNO
     elif config/check sys/select.h "$SELECT_FRAG"; then
 	echo 'using posix select() for sleep'	1>&2
 	echo '#define HAVE_SELECT_H'		>> $CONFIG_H

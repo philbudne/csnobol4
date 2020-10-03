@@ -3,6 +3,7 @@
 	t = TABLE()
 	t['module'] = 'time'
 	t['sources'] = 'time.c,' SLEEP_C
+	t['cflags'] = TIME_CFLAGS
 	t['ldflags'] = TIME_LDFLAGS
 
 	t['author'] = t['maintainer'] = 'Phil Budne'
