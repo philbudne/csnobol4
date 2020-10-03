@@ -50,7 +50,8 @@ CONFIG_M4=config.m4.tmp
 CONFIG_SNO=config.sno.tmp
 
 # DANGER: It's no longer safe to try to grep include files
-# (too many systems move them around), use sparingly!!
+# (too many systems move them around), do not add new usage,
+# use config/check instead!!
 INCDIR=/usr/include
 
 rm -f $CONFIG_H $CONFIG_M4 $VERSION_H $CONFIG_SNO
@@ -158,9 +159,6 @@ while [ $# -gt 0 ]; do
     --fast)
 	FAST=true
 	;;
-    --force-memmove)
-	FORCE_MEMMOVE=true
-	;;
     --force-sdbm)
 	FORCE_SDBM=true
 	;;
@@ -201,6 +199,7 @@ while [ $# -gt 0 ]; do
 	WITHOUT_COM=1
 	;;
     --without-modules)
+	# breaks tests, sdb (debugger)!!!
 	WITHOUT_MODULES=1
 	;;
     --without-readline)
@@ -241,7 +240,7 @@ SNOBOL4 Datatype selection;
 	--lp64			--no-bitfields
 
 C Library support selection;
-	--force-memmove		--no-largefile
+	--no-largefile
 
 Install location;
 	--prefix=PATH		[default: /usr/local]
@@ -250,9 +249,9 @@ Install location;
 	--snolibdir=PATH	[default: PREFIX/lib/snobol4]
 
 Optional items;
+	--force-sdbm
 	--with-tcl=/path/to/tclConfig.sh
-	--without-blocks	--force-pml
-	--without-readline	--force-sdbm
+	--without-blocks	--without-readline
 	--without-com		--without-modules
 EOF
 
@@ -405,11 +404,16 @@ case "$MORV" in
     fi
 esac
 
-# compiler options
+################# compiler options
+
+# make implicit function declaration fatal in "check"
+case "$CC_IS" in
+gcc|clang) CFLAGS="$CFLAGS -Werror=implicit-function-declaration";;
+icc)	   CFLAGS="$CFLAGS -Werror -Wall -Wno-unused-variable";;
+esac
+
 case "$CC_IS" in
 gcc|clang|icc)
-    # make implicit function declaration fatal in "check"
-    CFLAGS="$CFLAGS -Werror -Wimplicit-function-declaration"
     CCVERS=-v
     # was -M: -MM existed in gcc 3.4
     echo 'CCM=$(CC) -MM'			>> $CONFIG_M4
@@ -1060,26 +1064,19 @@ if config/check 'sys/types.h sys/socket.h' ""; then
     fi
 
     # use BSD bidirectional popen if socketpair available
-    # (could try to use two pipes??)
     if config/check sys/socket.h \
 	'int s[2]; socketpair(AF_UNIX, SOCK_STREAM, 0, s)'; then
 	echo 'using private popen() function' 1>&2
 	echo 'ADD_OBJS([popen.o])'		>> $CONFIG_M4
 	echo 'ADD_SRCS([$(POPEN_C)])'		>> $CONFIG_M4
 	NEED_PATHS_H=1
-	if config/check vfork.h 'vfork()'; then
-	    echo 'using vfork() from vfork.h' 1>&2
-	    echo '#define HAVE_VFORK_H'		>> $CONFIG_H
-	elif config/check unistd.h 'vfork()'; then
+	if config/check unistd.h 'vfork()'; then
 	    echo 'using vfork() (with unistd.h)' 1>&2
 	    echo '/* vfork() in unistd.h */'	>> $CONFIG_H
-	elif config/check '' 'vfork()'; then
-	    echo 'using vfork()' 1>&2
-	    echo '/* vfork() */'		>> $CONFIG_H
+	elif config/check vfork.h 'vfork()'; then
+	    echo 'using vfork() from vfork.h' 1>&2
+	    echo '#define HAVE_VFORK_H'		>> $CONFIG_H
 	else
-	    NO_VFORK=1
-	fi
-	if [ "$NO_VFORK" ]; then
 	    echo 'using fork() for vfork()' 1>&2
 	    echo '#define vfork fork'		>> $CONFIG_H
 	fi
@@ -1226,9 +1223,14 @@ else
 fi
 
 # POSIX-1.2008 (via glibc)
-if config/check stdio.h 'char *buf; size_t len; getline(&buf, &len, stdin)'; then
+GETLINE_TEST='char *buf; size_t len; getline(&buf, &len, stdin)'
+if config/check stdio.h "$GETLINE_TEST"; then
     echo 'using system getline() function' 1>&2
     echo '#define HAVE_GETLINE'			>> $CONFIG_H
+elif config/check stdio.h "$GETLINE_TEST" -D_GNU_SOURCE; then
+    echo 'using system getline() function w/ -D_GNU_SOURCE' 1>&2
+    echo '#define HAVE_GETLINE'			>> $CONFIG_H
+    echo '#define _GNU_SOURCE'			>> $CONFIG_H
 else
     echo 'using private getline() function' 1>&2
     echo 'ADD_OBJS([getline.o])'		>> $CONFIG_M4
@@ -1431,61 +1433,6 @@ else
     echo 'SUSPEND_C=$(SRCDIR)lib/dummy/suspend.c' >> $CONFIG_M4
 fi
 
-if config/check time.h \
-    'struct timespec ts; long x; clock_gettime(CLOCK_REALTIME, &ts); x = ts.tv_nsec'; then
-    # may have needed -lrt at some point w/ glibc.  No big loss.
-    echo 'using POSIX.1b clock_gettime(CLOCK_REALTIME,..) for time of day' 1>&2
-    echo '#define HAVE_CLOCK_GETTIME_REALTIME'	>> $CONFIG_H
-    # XXX use c11/mstime.c!!
-elif config/check time.h \
-    'struct timespec ts; long x; timespec_get(&ts,TIME_UTC); x = ts.tv_nsec'; then
-    echo 'using C11 timespec_get(..,TIME_UTC) for time of day' 1>&2
-    echo '#define HAVE_TIMESPEC_GET'		>> $CONFIG_H
-elif config/check sys/time.h \
-    'struct timeval tv; int x; gettimeofday(&tv,0); x = tv.tv_sec'; then
-    echo 'using gettimeofday()' 1>&2
-    echo '#define HAVE_GETTIMEOFDAY'		>> $CONFIG_H
-else
-    echo 'using time()' 1>&2
-fi
-if config/check time.h 'struct tm tm; int i = tm.tm_gmtoff'; then
-    echo 'using tm_gmtoff' 1>&2
-    echo '#define HAVE_TM_GMTOFF'		>> $CONFIG_H
-fi
-
-SLEEP_C=bsd/sleep.c
-echo '#define HAVE_SLEEP'			>> $CONFIG_H
-SELECT_FRAG='fd_set x; struct timeval tv; select(0,&x,&x,&x,&tv);'
-if config/check time.h 'struct timespec ts; nanosleep(&ts,0)'; then
-    echo 'using POSIX nanosleep()' 1>&2
-    SLEEP_C=posix/sleep.c
-elif config/check sys/select.h "$SELECT_FRAG"; then
-    echo 'using posix select() for sleep'	1>&2
-    echo '#define HAVE_SELECT_H'		>> $CONFIG_H
-elif config/check 'sys/time.h sys/types.h' "$SELECT_FRAG"; then
-    echo 'using select() for sleep' 1>&2
-else
-    echo 'using generic sleep()' 1>&2
-    SLEEP_C=generic/sleep.c			>> $CONFIG_M4
-fi
-echo 'SLEEP_C=$(SRCDIR)'$SLEEP_C		>> $CONFIG_M4
-echo "	SLEEP_C = '$SLEEP_C'"			>> $CONFIG_SNO
-
-if config/check "time.h" 'char buf[1024]; time_t t = time(0); strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", localtime(&t));'; then
-    echo 'using strftime()' 1>&2
-    echo '#define HAVE_STRFTIME'		>> $CONFIG_H
-fi
-
-if config/check time.h 'struct tm tm; strptime("", "", &tm)'; then
-    echo 'using strptime()' 1>&2
-    echo '#define HAVE_STRPTIME'		>> $CONFIG_H
-fi
-
-if config/check time.h 'struct tm tm; timegm(&tm)'; then
-    echo 'using timegm()' 1>&2
-    echo '#define HAVE_TIMEGM'			>> $CONFIG_H
-fi
-
 # output SO/DL defines
 
 # on everything except Darwin, one format suffices
@@ -1527,6 +1474,71 @@ fi
 if [ "x$WITHOUT_MODULES" = x ]; then
     MODULES='dirs logic random stat time sprintf fork'
 
+    ################################################################
+    echo "checking features for modules:"
+
+    if config/check time.h \
+	'struct timespec ts; long x; clock_gettime(CLOCK_REALTIME, &ts); x = ts.tv_nsec'; then
+	# may have needed -lrt at some point w/ glibc.  No big loss.
+	echo 'using POSIX.1b clock_gettime(CLOCK_REALTIME,..) for time of day' 1>&2
+	echo '#define HAVE_CLOCK_GETTIME_REALTIME'	>> $CONFIG_H
+	# XXX use c11/mstime.c!!
+    elif config/check time.h \
+	'struct timespec ts; long x; timespec_get(&ts,TIME_UTC); x = ts.tv_nsec'; then
+	echo 'using C11 timespec_get(..,TIME_UTC) for time of day' 1>&2
+	echo '#define HAVE_TIMESPEC_GET'		>> $CONFIG_H
+    elif config/check sys/time.h \
+	'struct timeval tv; int x; gettimeofday(&tv,0); x = tv.tv_sec'; then
+	echo 'using gettimeofday()' 1>&2
+	echo '#define HAVE_GETTIMEOFDAY'		>> $CONFIG_H
+    else
+	echo 'using time()' 1>&2
+    fi
+    if config/check time.h 'struct tm tm; int i = tm.tm_gmtoff'; then
+	echo 'using tm_gmtoff' 1>&2
+	echo '#define HAVE_TM_GMTOFF'		>> $CONFIG_H
+    fi
+
+    SLEEP_C=bsd/sleep.c
+    echo '#define HAVE_SLEEP'			>> $CONFIG_H
+    SELECT_FRAG='fd_set x; struct timeval tv; select(0,&x,&x,&x,&tv);'
+    if config/check time.h 'struct timespec ts; nanosleep(&ts,0)'; then
+	echo 'using POSIX nanosleep()' 1>&2
+	SLEEP_C=posix/sleep.c
+    elif config/check sys/select.h "$SELECT_FRAG"; then
+	echo 'using posix select() for sleep'	1>&2
+	echo '#define HAVE_SELECT_H'		>> $CONFIG_H
+    elif config/check 'sys/time.h sys/types.h' "$SELECT_FRAG"; then
+	echo 'using select() for sleep' 1>&2
+    else
+	echo 'using generic sleep()' 1>&2
+	SLEEP_C=generic/sleep.c			>> $CONFIG_M4
+    fi
+    echo 'SLEEP_C=$(SRCDIR)'$SLEEP_C		>> $CONFIG_M4
+    echo "	SLEEP_C = '$SLEEP_C'"			>> $CONFIG_SNO
+
+    if config/check "time.h" 'char buf[1024]; time_t t = time(0); strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", localtime(&t));'; then
+	echo 'using strftime()' 1>&2
+	echo '#define HAVE_STRFTIME'		>> $CONFIG_H
+    fi
+
+    if config/check time.h 'struct tm tm; strptime("", "", &tm)'; then
+	echo 'using strptime()' 1>&2
+	echo '#define HAVE_STRPTIME'		>> $CONFIG_H
+    fi
+
+    if config/check time.h 'struct tm tm; timegm(&tm)'; then
+	echo 'using timegm()' 1>&2
+	echo '#define HAVE_TIMEGM'			>> $CONFIG_H
+    elif config/check time.h 'struct tm tm; timegm(&tm)' -D__USE_MISC; then
+	echo 'using timegm() with -D__USE_MISC' 1>&2
+	echo '#define HAVE_TIMEGM'			>> $CONFIG_H
+	echo '#define __USE_MISC'			>> $CONFIG_H
+    fi
+
+
+    ################################################################
+    # stcl
     if [ "x$TCONF" = x ]; then
 	for X in /usr/lib/tclConfig.sh \
 		 /System/Library/Frameworks/Tcl.framework/tclConfig.sh; do
@@ -1549,6 +1561,9 @@ if [ "x$WITHOUT_MODULES" = x ]; then
 	    echo "	TCL_INCLUDE_SPEC = '$TCL_INCLUDE_SPEC'" >> $CONFIG_SNO
 	fi
     fi
+
+    ################################################################
+    # ndbm module
 
     NDBM_LIBS=
     DBM_FRAG='DBM *db = dbm_open("", 0, 0)'
@@ -1652,26 +1667,28 @@ if [ ! "$WITHOUT_READLINE" ]; then
 	echo '#define COMPILER_READLINE'	>> $CONFIG_H
 	# NetBSD/OSX have rl_[gs]et_keymap, but they're noops,
 	# rl_copy_keymap() isn't even faked.
-	if config/check "$RL_INC" "rl_copy_keymap()" $RL_LIBS; then
+	if config/check "$RL_INC" "Keymap m; rl_copy_keymap(m)" $RL_LIBS; then
 	    echo "using rl_set_keymap()" 1>&2
 	    echo '#define HAVE_RL_SET_KEYMAP'	>> $CONFIG_H
 	fi
     fi
 fi
 
-# test lstat() for "stat" package
-if config/check 'sys/types.h sys/stat.h' 'struct stat st; lstat("foo", &st)'; then
-    echo '#define HAVE_LSTAT'	>> $CONFIG_H
-    echo 'using lstat()' 1>&2
-fi
-
 if [ "x$WITHOUT_MODULES" = x ]; then
+    ################################################################
+    # stat module
+    # test lstat() for "stat" package
+    if config/check 'sys/types.h sys/stat.h' 'struct stat st; lstat("foo", &st)'; then
+	echo '#define HAVE_LSTAT'	>> $CONFIG_H
+	echo 'using lstat()' 1>&2
+    fi
+
     # places to look for sqlite and ffi
     # /opt/local on MacPorts
     SEARCH_DIRS='/usr/local /opt/local'
 
     if [ "x$RL_LIBS" = x ]; then
-	# XXX build in if WITHOUT_MODULES (for sdb)
+	# XXX build in if WITHOUT_MODULES (for sdb)???
 	echo "using dummy readline (for sdb)" 1>&2
 	MODULES="$MODULES readline"
     fi
@@ -1714,6 +1731,8 @@ if [ "x$WITHOUT_MODULES" = x ]; then
 	    done
 	fi
     fi
+
+    ################################################################
     # Include COM support under Cygwin!
     if [ "x$CYGWIN" != x ]; then
 	cat << EOF > $TMP.cpp

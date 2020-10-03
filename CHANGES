@@ -2,25 +2,26 @@ $Id$
 
 For detailed revision history see History file
 
-Changes since 2.1 release;
-=========================
-	I/O code refactored.
-	Text input no longer limited by "record length" (K flag obsolete).
+Changes since 2.1.6 release;
+===========================
 	Compilation now requires an ANSI/ISO (C89/C90) C compiler.
+	Text input no longer limited by "record length" (K flag obsolete).
+	I/O code cleanup/refactor.
 	Fix "stat" module.
 	All output unbuffered with -U option,
 		or SNOBOL4UNBUFFERED environment variable non-null.
-	Portability fixes.
-	Windows:
-		Experimental support for "Pseudo Consoles" on Windows 10
-		Can be built with Winsock2 support
-			(available in Win98 and NT 4.0) for IPv6 support.
-		Fix test for g++ compiler under cygwin
+	time module GETTIMEOFDAY return now has TV_NSEC member
 	configure changes:
-		--force-pml removed
-		--without-modules added
-		made more strict about include file checks.
-	time module gettimeofday TIMEVAL now has TV_NSEC member
+		--force-pml removed (must use modules)
+		--without-modules added (breaks tests, sdb)
+		more strict about feature tests
+	Windows:
+		Can be built with Winsock2 support
+			(available in Win98 and NT 4.0)
+			for IPv6 support (available in WinXP)
+		Fixed test for C++ compiler under cygwin
+		Experimental support for "Pseudo Consoles" on Windows 10
+	Portability fixes for Android.
 
 Changes since 2.0 release;
 =========================

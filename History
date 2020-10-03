@@ -2,6 +2,12 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/3/2020:
+	configure: remove --force-memmove from help
+		move module support checks together
+	config/check: honor CHECK_OUT
+	CHANGES: update, organize
+
 10/2/2020:
 	configure: --without-modules
 
