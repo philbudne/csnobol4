@@ -166,9 +166,6 @@ while [ $# -gt 0 ]; do
     --force-memmove)
 	FORCE_MEMMOVE=true
 	;;
-    --force-pml)
-	FORCE_PML=true
-	;;
     --force-sdbm)
 	FORCE_SDBM=true
 	;;
@@ -326,22 +323,7 @@ echo '#define SHARED_OBJ_SUBDIR "shared"'	>> $CONFIG_H
 # safe on all Unix systems (requires "fork")
 echo '#define PML_SERV'				>> $CONFIG_H
 
-# should work on all Unix systems:
-if [ "$FORCE_PML" ]; then
-    # NOTE! Only includes v1.5 extensions!!
-    echo '#define PML_LOGIC'			>> $CONFIG_H
-    echo '#define PML_RANDOM'			>> $CONFIG_H
-    echo '#define PML_TIME'			>> $CONFIG_H
-    echo 'ADD_OBJS([logic.o random.o time.o sleep.o])'	>> $CONFIG_M4
-else
-    MODULES='dirs logic random stat time sprintf fork'
-    # force common routines to be linked into snobol4 executable:
-    echo 'EXTRA_OBJS=getstring.o retstring.o handle.o' >> $CONFIG_M4
-    echo 'ADD_SRCS([$(GETSTRING_C) $(RETSTRING_C) $(HANDLE_C)])' >> $CONFIG_M4
-fi
-
-# Unix Makefile2 created build.c
-echo '#define HAVE_BUILD_VARS'			>> $CONFIG_H
+MODULES='dirs logic random stat time sprintf fork'
 
 if [ "$CC" ]; then
     echo 'using CC environment variable' 1>&2
@@ -980,14 +962,6 @@ if config/check math.h 'float f; isfinite(f)'; then
     echo '#define HAVE_ISFINITE'		>> $CONFIG_H
 fi
 
-# prefer ranlib
-if [ -f /usr/bin/ranlib -o -f /bin/ranlib ]; then
-    echo 'using ranlib' 1>&2
-else
-    # dummy out RANLIB
-    echo 'RANLIB=true'				>> $CONFIG_M4
-fi
-
 # prefer uname(2/3)
 # NeXT/Open Step have $INCDIR/bsd/sys/utsname.h?? transparent??
 if config/check sys/utsname.h "struct utsname u; uname(&u)"; then
@@ -1273,8 +1247,6 @@ if config/check dlfcn.h 'dlopen("", 0)' || \
 	echo 'using dlopen() for LOAD() support' 1>&2
 	HAVE_DLOPEN=1
 	echo 'LOAD_C=$(SRCDIR)lib/unix98/load.c' >> $CONFIG_M4
-	# XXX use .dll under Cygwin??
-	SNOLIB_FILE=snolib.so
 
 	case "${OS}${OSREL}" in
 	Darwin*)
@@ -1286,7 +1258,6 @@ if config/check dlfcn.h 'dlopen("", 0)' || \
 		echo 'ADD_LDFLAGS([-L/sw/lib -ldl])' >> $CONFIG_M4
 	    fi
 	    TRY_UNDERSCORE=true
-	    SNOLIB_FILE=snolib.bundle
 	    ;;
 	*BSD*)
 	    if file /bin/ls | grep -i elf >/dev/null; then
@@ -1321,7 +1292,6 @@ elif config/check dl.h 'shl_load("", BIND_DEFERRED, 0L)'; then
 	echo 'using HP-UX shl_load() for LOAD() support' 1>&2
 	echo 'undefine([hpux])'			>> $CONFIG_M4
 	echo 'LOAD_C=$(SRCDIR)lib/hpux/load.c'	>> $CONFIG_M4
-	SNOLIB_FILE=snolib.sl
 	# export all symbols
 	echo 'ADD_LDFLAGS([-Wl,-E])'		>> $CONFIG_M4
 	echo 'ADD_LDFLAGS([-ldld])'		>> $CONFIG_M4
@@ -1331,9 +1301,6 @@ elif config/check mach-o/dyld.h 'NSObjectFileImage ofi'; then
 	echo 'LOAD_C=$(SRCDIR)lib/next/load.c'	>> $CONFIG_M4
 	if [ "$OS" = Darwin ]; then
 	    echo '#define TRY_UNDERSCORE'	>> $CONFIG_H
-	    SNOLIB_FILE=snolib.bundle
-	else
-	    SNOLIB_FILE=snolib.dyld
 	fi
 elif config/check a.out.h 'struct exec a; int x = OMAGIC'; then
 	LOAD=aout
@@ -1345,22 +1312,13 @@ elif config/check a.out.h 'struct exec a; int x = OMAGIC'; then
 	    echo 'found /bin/ld' 1>&2
 	    echo '#define LD_PATH "/bin/ld"'	>> $CONFIG_H
 	fi
-	SNOLIB_FILE=snolib.a
 fi
 
 # used to construct default SNOPATH
 echo '#define SNOLIB_BASE "'"$SNOLIB_BASE"'"'	>> $CONFIG_H
-# used by old load.c functions and host.c:
-echo '#define SNOLIB_DIR "'"$SNOLIB_LIB"'"'	>> $CONFIG_H
 # host.c:
+echo '#define SNOLIB_DIR "'"$SNOLIB_LIB"'"'	>> $CONFIG_H
 echo '#define INCLUDE_DIR "'"$INCLUDE_DIR"'"'	>> $CONFIG_H
-
-if [ "$SNOLIB_FILE" ]; then
-    echo '# NOTE: SNOLIB_FILE in config.h too!'	>> $CONFIG_M4
-    echo 'SNOLIB_FILE='$SNOLIB_FILE		>> $CONFIG_M4
-    echo '/* NOTE: SNOLIB_FILE in config.m4 too! */' >> $CONFIG_H
-    echo '#define SNOLIB_FILE "'$SNOLIB_FILE'"' >> $CONFIG_H
-fi
 
 if [ ! "$LOAD" ]; then
     echo 'using dummy LOAD() support' 1>&2

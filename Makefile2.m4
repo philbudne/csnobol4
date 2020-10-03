@@ -41,15 +41,6 @@ MATHLIB=-lm
 SH=sh
 SHELL=/bin/sh
 
-# library random accessifier
-RANLIB=ranlib
-
-# filename for external function library
-SNOLIB_A=snolib.a
-
-# default file to load
-SNOLIB_FILE=snolib.a
-
 # either snobol4 or isnobol4;
 # isnobol4 has had functions reordered for better inlining.
 # if compiler does not perform inlining, snobol4 can be used
@@ -120,11 +111,6 @@ GETENV_C=$(SRCDIR)lib/dummy/getenv.c
 ISNAN_C=$(SRCDIR)lib/dummy/isnan.c
 SYSTEM_C=$(SRCDIR)lib/dummy/system.c
 
-# SDBM sources
-SDBM_C=$(SRCDIR)modules/sdbm/sdbm.c
-SDBM_PAIR_C=$(SRCDIR)modules/sdbm/sdbm_pair.c
-SDBM_HASH_C=$(SRCDIR)modules/sdbm/sdbm_hash.c
-
 # snolib sources
 ATAN_C=$(SRCDIR)lib/snolib/atan.c
 CHOP_C=$(SRCDIR)lib/snolib/chop.c
@@ -136,7 +122,6 @@ EXIT_C=$(SRCDIR)lib/snolib/exit.c
 EXP_C=$(SRCDIR)lib/snolib/exp.c
 FILE_C=$(SRCDIR)lib/snolib/file.c
 FINDUNIT_C=$(SRCDIR)lib/snolib/findunit.c
-FORK_C=$(SRCDIR)modules/fork/fork.c
 GETSTRING_C=$(SRCDIR)lib/snolib/getstring.c
 HANDLE_C=$(SRCDIR)lib/snolib/handle.c
 HOST_C=$(SRCDIR)lib/snolib/host.c
@@ -150,14 +135,12 @@ RENAME_C=$(SRCDIR)lib/snolib/rename.c
 RETSTRING_C=$(SRCDIR)lib/snolib/retstring.c
 SERV_C=$(SRCDIR)lib/snolib/serv.c
 SIN_C=$(SRCDIR)lib/snolib/sin.c
-# SLEEP_C set by configure
 SPRINTF_C=$(SRCDIR)modules/sprintf/sprintf.c
 SQRT_C=$(SRCDIR)lib/snolib/sqrt.c
 SSET_C=$(SRCDIR)lib/snolib/sset.c
 STCL_C=$(SRCDIR)lib/snolib/stcl.c
 SYS_C=$(SRCDIR)lib/posix/sys.c
 TAN_C=$(SRCDIR)lib/snolib/tan.c
-TIME_C=$(SRCDIR)modules/time/time.c
 # for cygwin!
 COM_CPP=$(SRCDIR)lib/win32/com.cpp
 
@@ -183,7 +166,7 @@ include(config.m4)
 # end of local config
 ################################################################
 
-CMT([tk wants math routines, so add them last])
+# for PML functions.
 ADD_LDFLAGS([$(MATHLIB)])
 
 # after local config
@@ -202,28 +185,44 @@ CFLAGS=[]_CFLAGS $(COPT) $(MYCPPFLAGS)
 
 ################
 
-# XXX replace SNOLIB_A with SNOLIB_FILE??
-#	need to add rules to make shared libraries (to config/xxx.m4 files)
-
 # add to new files to SRCS too!
 
-OBJS=	main.o $(SNOBOL4).o data.o data_init.o syn.o bal.o break.o \
-	date.o dump.o dynamic.o endex.o expops.o fisatty.o hash.o \
-	$(INET_O) init.o intspc.o io.o lexcmp.o load.o loadx.o mstime.o \
-	ordvst.o pair.o pat.o pml.o ptyio_obj.o realst.o replace.o spcint.o \
-	spreal.o stdio_obj.o str.o stream.o suspend.o term.o top.o \
-	tree.o tty.o $(EXTRA_OBJS) $(SNOLIB_A)
+# from configure ADD_OBJS:
+AUX_OBJS=[]_OBJS
 
+OBJS=	main.o $(SNOBOL4).o data.o data_init.o syn.o bal.o \
+	break.o date.o dump.o dynamic.o endex.o expops.o \
+	fisatty.o hash.o getstring.o handle.o $(INET_O) \
+	init.o intspc.o io.o lexcmp.o load.o loadx.o \
+	mstime.o ordvst.o pair.o pat.o pml.o ptyio_obj.o \
+	realst.o replace.o retstring.o spcint.o spreal.o \
+	stdio_obj.o str.o stream.o suspend.o term.o top.o \
+	tree.o tty.o \
+	atan.o chop.o cos.o delete.o environ.o execute.o exists.o \
+	exit.o exp.o file.o findunit.o host.o ord.o log.o rename.o \
+	serv.o sin.o sqrt.o sset.o sys.o tan.o \
+	$(AUX_OBJS)
+
+# from configure ADD_SRCS
 AUX_SRCS=[]_SRCS
 
-SRCS=	main.c $(SNOBOL4).c data.c data_init.c syn.c $(BAL_C) $(BREAK_C) \
-	$(DATE_C) $(DUMP_C) $(DYNAMIC_C) $(ENDEX_C) $(EXPOPS_C) \
-	$(FISATTY_C) $(HASH_C) $(INET_C) $(INIT_C) $(INTSPC_C) $(IO_C) \
-	$(LEXCMP_C) $(LOAD_C) $(MSTIME_C) $(ORDVST_C) $(PAIR_C) \
-	$(PAT_C) $(PML_C) $(PTYIO_OBJ_C) $(REALST_C) $(REPLACE_C) $(SPCINT_C) \
-	$(SPREAL_C) $(STDIO_OBJ_C) $(STR_C) $(STREAM_C) $(SUSPEND_C) \
-	$(TERM_C) $(TOP_C) $(TREE_C) $(TTY_C) $(AUX_SRCS) \
-	$(SNOLIB_SRCS)
+SRCS=	main.c $(SNOBOL4).c data.c data_init.c syn.c $(BAL_C) \
+	$(BREAK_C) $(DATE_C) $(DUMP_C) $(DYNAMIC_C) \
+	$(ENDEX_C) $(EXPOPS_C) $(FISATTY_C) $(GETSTRING_C) \
+	$(HANDLE_C) $(HASH_C) $(INET_C) $(INIT_C) \
+	$(INTSPC_C) $(IO_C) $(LEXCMP_C) $(LOAD_C) \
+	$(MSTIME_C) $(ORDVST_C) $(PAIR_C) $(PAT_C) $(PML_C) \
+	$(PTYIO_OBJ_C) $(REALST_C) $(REPLACE_C) \
+	$(RETSTRING_C) $(SPCINT_C) $(SPREAL_C) \
+	$(STDIO_OBJ_C) $(STR_C) $(STREAM_C) $(SUSPEND_C) \
+	$(TERM_C) $(TOP_C) $(TREE_C) $(TTY_C) \
+	$(ATAN_C) $(CHOP_C) $(COS_C) $(DELETE_C) $(ENVIRON_C) \
+	$(EXISTS_C) $(EXIT_C) $(EXECUTE_C) $(EXP_C) $(FILE_C) \
+	$(FINDUNIT_C) $(HOST_C) $(LOG_C) \
+	$(LOGIC_C) $(ORD_C) $(RANDOM_C) $(RENAME_C) \
+	$(SERV_C) $(SIN_C) $(SPRINTF_C) $(SQRT_C) \
+	$(SSET_C) $(SYS_C) $(TAN_C) \
+	$(AUX_SRCS)
 
 GENERATED_DOCS_DOCDIR1=doc/sdb.1 doc/snobol4.1 doc/snopea.1 \
 	doc/snobol4blocks.1 doc/snobol4cmd.1 doc/snobol4ctrl.1 \
@@ -503,31 +502,9 @@ system.o: $(SYSTEM_C)
 	$(CC) $(CFLAGS) -c $(SYSTEM_C)
 
 ################################################################
-# snolib -- library of external functions (and their support functions)
-# all loaded by default w/ "PML" and available w/o LOAD()
+# Used to be snolib.a
+# "external" functions that are always built-in via pml.h
 # everything else is now built as a module!
-
-AUX_OBJS=[]_OBJS
-
-SNOLIB_OBJS=atan.o chop.o cos.o delete.o environ.o execute.o exists.o \
-	exit.o exp.o file.o findunit.o host.o ord.o log.o rename.o \
-	serv.o sin.o sqrt.o sset.o sys.o tan.o $(AUX_OBJS) \
-	retstring.o getstring.o handle.o
-
-$(SNOLIB_A): $(SNOLIB_OBJS)
-	rm -f $(SNOLIB_A)
-	ar $(ARXFLAGS) rv $(SNOLIB_A) $(SNOLIB_OBJS)
-	$(RANLIB) $(SNOLIB_A)
-
-################
-# snolib files
-
-SNOLIB_SRCS=$(ATAN_C) $(CHOP_C) $(COS_C) $(DELETE_C) $(ENVIRON_C) \
-	$(EXISTS_C) $(EXIT_C) $(EXECUTE_C) $(EXP_C) $(FILE_C) \
-	$(FINDUNIT_C) $(FORK_C) $(GETSTRING_C) $(HOST_C) $(LOG_C) \
-	$(LOGIC_C) $(ORD_C) $(RANDOM_C) $(RENAME_C) \
-	$(RETSTRING_C) $(SERV_C) $(SIN_C) $(SPRINTF_C) $(SQRT_C) \
-	$(SSET_C) $(SYS_C) $(TAN_C) $(TIME_C)
 
 atan.o:	$(ATAN_C)
 	$(CC) $(CFLAGS) -c $(ATAN_C)
@@ -568,7 +545,7 @@ getstring.o: $(GETSTRING_C)
 handle.o: $(HANDLE_C)
 	$(CC) $(CFLAGS) -c $(HANDLE_C)
 
-HOST_C_CFLAGS=-DCC=\""$(CC)"\" -DCOPT=\""$(COPT)"\"
+HOST_C_CFLAGS=-DCC=\""$(CC)"\" -DCOPT=\""$(COPT)"\" -DHAVE_BUILD_VARS
 host.o: $(HOST_C)
 	$(CC) $(CFLAGS) $(HOST_C_CFLAGS) -c $(HOST_C)
 
