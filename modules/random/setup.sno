@@ -3,6 +3,7 @@
 	t = TABLE()
 	t['module'] = 'random'
 	t['sources'] = 'random.c'
+	t['cflags'] = RANDOM_CFLAGS
 	t['ldflags'] = RANDOM_LDFLAGS
 
 	t['author'] = t['maintainer'] = 'Phil Budne'

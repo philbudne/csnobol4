@@ -7,7 +7,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 		move module support checks together
 		use nanosleep w/ _POSIX_C_SOURCE=199309
 		fix -Werror= for gcc 4.1.2
-		set {NDBM,TIME}_CFLAGS in config.sno
+		set {NDBM,TIME,RANDOM}_CFLAGS in config.sno
 	config/check: honor CHECK_OUT
 	CHANGES: update, organize
 	modules/ndbm/setup.sno: honor NDBM_CFLAGS

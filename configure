@@ -1474,37 +1474,82 @@ if [ "x$DL_EXT" != x ]; then
     echo "#define DL_LDFLAGS \"$DL_LDFLAGS\"" >> $CONFIG_H
 fi
 
+# Include readline support, if found
+if [ ! "$WITHOUT_READLINE" ]; then
+    RL_INC='stdio.h readline/readline.h readline/history.h'
+    RL_FRAG='readline("?")'
+    if config/check "$RL_INC" "$RL_FRAG" -lreadline; then
+	RL_LIBS="-lreadline"
+    elif config/check "$RL_INC" "$RL_FRAG" '-lreadline -lncurses'; then
+	RL_LIBS="-lreadline -lncurses"
+    elif config/check "$RL_INC" "$RL_FRAG" '-lreadline -lncursesw'; then
+	RL_LIBS="-lreadline -lncursesw"
+    elif config/check "$RL_INC" "$RL_FRAG" '-ledit'; then
+	RL_LIBS="-ledit"
+    elif config/check "$RL_INC" "$RL_FRAG" '-ledit -I/usr/include/edit'; then
+	# FreeBSD 12
+	RL_LIBS="-ledit"
+	RL_INCDIR="/usr/include/edit"
+    fi
+
+    if [ "x$RL_LIBS" != x ]; then
+	echo "using readline (with $RL_LIBS)" 1>&2
+	echo '#define HAVE_READLINE'		>> $CONFIG_H
+	echo "	READLINE_LDFLAGS = '$RL_LIBS'" >> $CONFIG_SNO
+	MODULES="$MODULES readline"
+	echo "ADD_LDFLAGS([$RL_LIBS])"		>> $CONFIG_M4
+	if [ "x$RL_INCDIR" != x ]; then
+	    echo "ADD_CPPFLAGS([-I$RL_INCDIR])"	>> $CONFIG_M4
+	    echo "	READLINE_INCLUDE = '$RL_INCDIR'" >> $CONFIG_SNO
+	fi
+	# Make optional?
+	echo '#define COMPILER_READLINE'	>> $CONFIG_H
+	# NetBSD/OSX have rl_[gs]et_keymap, but they're noops,
+	# rl_copy_keymap() isn't even faked.
+	if config/check "$RL_INC" "Keymap m; rl_copy_keymap(m)" $RL_LIBS; then
+	    echo "using rl_set_keymap()" 1>&2
+	    echo '#define HAVE_RL_SET_KEYMAP'	>> $CONFIG_H
+	fi
+    fi
+fi
+
 if [ "x$WITHOUT_MODULES" = x ]; then
     MODULES='dirs logic random stat time sprintf fork'
 
     ################################################################
     echo "checking features for modules:"
 
-    if config/check time.h \
-	'struct timespec ts; long x; clock_gettime(CLOCK_REALTIME, &ts); x = ts.tv_nsec'; then
-	# may have needed -lrt at some point w/ glibc.  No big loss.
+    # MUST BE AT TOP!
+    TIME_CFLAGS="-DHAVE_SLEEP"
+    SLEEP_C=bsd/sleep.c
+
+    # time-of-day code in both time and random modules!
+    CLOCK_REALTIME='struct timespec ts; long x; clock_gettime(CLOCK_REALTIME, &ts); x = ts.tv_nsec'
+    if config/check time.h "$CLOCK_REALTIME"; then
 	echo 'using POSIX.1b clock_gettime(CLOCK_REALTIME,..) for time of day' 1>&2
-	echo '#define HAVE_CLOCK_GETTIME_REALTIME'	>> $CONFIG_H
-	# XXX use c11/mstime.c!!
+	TR_CFLAGS="$TR_CFLAGS -DHAVE_CLOCK_GETTIME_REALTIME"
+    elif config/check time.h "$CLOCK_REALTIME" -lrt; then
+	# glibc 2.5 (on RHEL5), for example...
+	echo 'using POSIX.1b clock_gettime(CLOCK_REALTIME,..) w/ -lrt for TOD' 1>&2
+	TR_CFLAGS="$TR_CFLAGS -DHAVE_CLOCK_GETTIME_REALTIME"
+	TR_LDFLAGS="$TR_LDFLAGS -lrt"
     elif config/check time.h \
 	'struct timespec ts; long x; timespec_get(&ts,TIME_UTC); x = ts.tv_nsec'; then
 	echo 'using C11 timespec_get(..,TIME_UTC) for time of day' 1>&2
-	echo '#define HAVE_TIMESPEC_GET'		>> $CONFIG_H
+	TR_CFLAGS="$TR_CFLAGS -DHAVE_TIMESPEC_GET"
     elif config/check sys/time.h \
 	'struct timeval tv; int x; gettimeofday(&tv,0); x = tv.tv_sec'; then
 	echo 'using gettimeofday()' 1>&2
-	echo '#define HAVE_GETTIMEOFDAY'		>> $CONFIG_H
+	TR_CFLAGS="$TR_CFLAGS -DHAVE_GETTIMEOFDAY"
     else
 	echo 'using time()' 1>&2
     fi
     if config/check time.h 'struct tm tm; int i = tm.tm_gmtoff'; then
 	echo 'using tm_gmtoff' 1>&2
-	echo '#define HAVE_TM_GMTOFF'		>> $CONFIG_H
+	TIME_CFLAGS="$TIME_CFLAGS -DHAVE_TM_GMTOFF"
     fi
-    # XXX try -D__TM_GMTOFF=tm_gmtoff (cygwin64??)
+    # XXX need to try -D__TM_GMTOFF=tm_gmtoff on cygwin64???
 
-    SLEEP_C=bsd/sleep.c
-    echo '#define HAVE_SLEEP'			>> $CONFIG_H
     SELECT_FRAG='fd_set x; struct timeval tv; select(0,&x,&x,&x,&tv);'
     if config/check time.h 'struct timespec ts; nanosleep(&ts,0)'; then
 	echo 'using POSIX nanosleep()' 1>&2
@@ -1516,7 +1561,7 @@ if [ "x$WITHOUT_MODULES" = x ]; then
 	TIME_CFLAGS="$TIME_CFLAGS -D_POSIX_C_SOURCE=199309"
     elif config/check sys/select.h "$SELECT_FRAG"; then
 	echo 'using posix select() for sleep'	1>&2
-	echo '#define HAVE_SELECT_H'		>> $CONFIG_H
+	TIME_CFLAGS="$TIME_CFLAGS -DHAVE_SELECT_H"
     elif config/check 'sys/time.h sys/types.h' "$SELECT_FRAG"; then
 	echo 'using select() for sleep' 1>&2
     else
@@ -1528,12 +1573,12 @@ if [ "x$WITHOUT_MODULES" = x ]; then
 
     if config/check time.h 'struct tm tm; strptime("", "", &tm)'; then
 	echo 'using strptime()' 1>&2
-	echo '#define HAVE_STRPTIME'		>> $CONFIG_H
+	TIME_CFLAGS="$TIME_CFLAGS -DHAVE_STRPTIME"
     else
 	for DEF in _DEFAULT_SOURCE _XOPEN_SOURCE; do
 	    if config/check time.h 'struct tm tm; strptime("", "", &tm)' -D$DEF; then
 		echo "'using strptime() w/ -D$DEF" 1>&2
-		echo '#define HAVE_STRPTIME'		>> $CONFIG_H
+		TIME_CFLAGS="$TIME_CFLAGS -DHAVE_STRPTIME"
 		TIME_CFLAGS="$TIME_CFLAGS -D$DEF"
 		break
 	    fi
@@ -1542,15 +1587,23 @@ if [ "x$WITHOUT_MODULES" = x ]; then
 
     if config/check time.h 'struct tm tm; timegm(&tm)'; then
 	echo 'using timegm()' 1>&2
-	echo '#define HAVE_TIMEGM'			>> $CONFIG_H
+	TIME_CFLAGS="$TIME_CFLAGS -DHAVE_TIMEGM"
     elif config/check time.h 'struct tm tm; timegm(&tm)' -D__USE_MISC; then
 	echo 'using timegm() with -D__USE_MISC' 1>&2
-	echo '#define HAVE_TIMEGM'			>> $CONFIG_H
-	TIME_CFLAGS="$TIME_CFLAGS -D__USE_MISC"
+	TIME_CFLAGS="$TIME_CFLAGS -DHAVE_TIMEGM -D__USE_MISC"
     fi
 
-    if [ "x$TIME_CFLAGS" != x ]; then
-	echo "	TIME_CFLAGS = '$TIME_CFLAGS'"		>> $CONFIG_SNO
+    if [ "x$TIME_CFLAGS$TR_CFLAGS" != x ]; then
+	echo "	TIME_CFLAGS = '$TIME_CFLAGS $TR_CFLAGS'"	>> $CONFIG_SNO
+    fi
+    if [ "x$TIME_LDFLAGS$TR_LDFLAGS" != x ]; then
+	echo "	TIME_LDFLAGS = '$TIME_LDFLAGS $TR_LDFLAGS'"	>> $CONFIG_SNO
+    fi
+    if [ "x$RANDOM_CFLAGS$TR_CFLAGS" != x ]; then
+	echo "	RANDOM_CFLAGS = '$RANDOM_CFLAGS $TR_CFLAGS'"	>> $CONFIG_SNO
+    fi
+    if [ "x$RANDOM_LDFLAGS$TR_LDFLAGS" != x ]; then
+	echo "	RANDOM_LDFLAGS = '$RANDOM_LDFLAGS $TR_LDFLAGS'"	>> $CONFIG_SNO
     fi
     ################################################################
     # stcl
@@ -1649,48 +1702,7 @@ if [ "x$WITHOUT_MODULES" = x ]; then
     if [ "x$NDBM_LIBS" != x ]; then
 	echo "	NDBM_LDFLAGS = '$NDBM_LIBS'" >> $CONFIG_SNO
     fi
-fi # modules
 
-# Include readline support, if found
-if [ ! "$WITHOUT_READLINE" ]; then
-    RL_INC='stdio.h readline/readline.h readline/history.h'
-    RL_FRAG='readline("?")'
-    if config/check "$RL_INC" "$RL_FRAG" -lreadline; then
-	RL_LIBS="-lreadline"
-    elif config/check "$RL_INC" "$RL_FRAG" '-lreadline -lncurses'; then
-	RL_LIBS="-lreadline -lncurses"
-    elif config/check "$RL_INC" "$RL_FRAG" '-lreadline -lncursesw'; then
-	RL_LIBS="-lreadline -lncursesw"
-    elif config/check "$RL_INC" "$RL_FRAG" '-ledit'; then
-	RL_LIBS="-ledit"
-    elif config/check "$RL_INC" "$RL_FRAG" '-ledit -I/usr/include/edit'; then
-	# FreeBSD 12
-	RL_LIBS="-ledit"
-	RL_INCDIR="/usr/include/edit"
-    fi
-
-    if [ "x$RL_LIBS" != x ]; then
-	echo "using readline (with $RL_LIBS)" 1>&2
-	echo '#define HAVE_READLINE'		>> $CONFIG_H
-	echo "	READLINE_LDFLAGS = '$RL_LIBS'" >> $CONFIG_SNO
-	MODULES="$MODULES readline"
-	echo "ADD_LDFLAGS([$RL_LIBS])"		>> $CONFIG_M4
-	if [ "x$RL_INCDIR" != x ]; then
-	    echo "ADD_CPPFLAGS([-I$RL_INCDIR])"	>> $CONFIG_M4
-	    echo "	READLINE_INCLUDE = '$RL_INCDIR'" >> $CONFIG_SNO
-	fi
-	# Make optional?
-	echo '#define COMPILER_READLINE'	>> $CONFIG_H
-	# NetBSD/OSX have rl_[gs]et_keymap, but they're noops,
-	# rl_copy_keymap() isn't even faked.
-	if config/check "$RL_INC" "Keymap m; rl_copy_keymap(m)" $RL_LIBS; then
-	    echo "using rl_set_keymap()" 1>&2
-	    echo '#define HAVE_RL_SET_KEYMAP'	>> $CONFIG_H
-	fi
-    fi
-fi
-
-if [ "x$WITHOUT_MODULES" = x ]; then
     ################################################################
     # stat module
     # test lstat() for "stat" package
