@@ -3,6 +3,10 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/2/2020:
+	lib/win32/inet.c: VERY last file to ansify?
+		(leaving ancient dummy files)
+
+10/2/2020:
 	Make configure fussier about checking for functions
 	config/check: add -i flag
 		(make impl. function decl fatal for gcc-like compilers)
