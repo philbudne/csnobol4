@@ -249,6 +249,7 @@ unload(struct spec *sp) {
     libclose(fp->lib);
 
     fp->self = NULL;			/* invalidate self pointer!! */
+    fp->entry = NULL;			/* invalidate function pointer */
 #if 1
     /* NOT FREEING: makes sure address stays invalid!! */
     /* XXX keep in a list? */
