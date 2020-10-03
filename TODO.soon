@@ -1,6 +1,7 @@
 $Id$
 
-config/check: enable warnings, Werror?!!!
+--without-modules breaks tests:
+	move sleep/ndbm tests to module dirs
 
 genc:
     Turn SELBRA & STREAM with single label into if

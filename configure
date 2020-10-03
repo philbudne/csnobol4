@@ -1353,10 +1353,6 @@ if [ "x$GLIBC" != x ]; then
 	LARGEFILE_OK=
 	;;
     esac
-
-    # for config/check testing:
-    CFLAGS="$CFLAGS -D_XOPEN_SOURCE -D_BSD_SOURCE -D_DEFAULT_SOURCE"
-    export CFLAGS
 fi
 
 # if using a native 64bit data model no options should be needed
@@ -1434,6 +1430,12 @@ else
     echo 'SUSPEND_C=$(SRCDIR)lib/dummy/suspend.c' >> $CONFIG_M4
 fi
 
+# used in date.c as well as time module
+if config/check "time.h" 'char buf[1024]; time_t t = time(0); strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", localtime(&t));'; then
+    echo 'using strftime()' 1>&2
+    echo '#define HAVE_STRFTIME'		>> $CONFIG_H
+fi
+
 # output SO/DL defines
 
 # on everything except Darwin, one format suffices
@@ -1499,6 +1501,7 @@ if [ "x$WITHOUT_MODULES" = x ]; then
 	echo 'using tm_gmtoff' 1>&2
 	echo '#define HAVE_TM_GMTOFF'		>> $CONFIG_H
     fi
+    # XXX try -D__TM_GMTOFF=tm_gmtoff (cygwin64??)
 
     SLEEP_C=bsd/sleep.c
     echo '#define HAVE_SLEEP'			>> $CONFIG_H
@@ -1510,8 +1513,7 @@ if [ "x$WITHOUT_MODULES" = x ]; then
         echo 'using POSIX nanosleep() w/ _POSIX_C_SOURCE=199309' 1>&2
         SLEEP_C=posix/sleep.c
 	# needed w/ glibc 2.5 (RHEL5)
-	# may need to collect in a variable (along with flags for strptime)
-	echo '	TIME_CFLAGS = "-D_POSIX_C_SOURCE=199309"' >> $CONFIG_SNO
+	TIME_CFLAGS="$TIME_CFLAGS -D_POSIX_C_SOURCE=199309"
     elif config/check sys/select.h "$SELECT_FRAG"; then
 	echo 'using posix select() for sleep'	1>&2
 	echo '#define HAVE_SELECT_H'		>> $CONFIG_H
@@ -1521,17 +1523,21 @@ if [ "x$WITHOUT_MODULES" = x ]; then
 	echo 'using generic sleep()' 1>&2
 	SLEEP_C=generic/sleep.c			>> $CONFIG_M4
     fi
-    echo 'SLEEP_C=$(SRCDIR)'$SLEEP_C		>> $CONFIG_M4
+    echo 'SLEEP_C=$(SRCDIR)'$SLEEP_C			>> $CONFIG_M4
     echo "	SLEEP_C = '$SLEEP_C'"			>> $CONFIG_SNO
-
-    if config/check "time.h" 'char buf[1024]; time_t t = time(0); strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", localtime(&t));'; then
-	echo 'using strftime()' 1>&2
-	echo '#define HAVE_STRFTIME'		>> $CONFIG_H
-    fi
 
     if config/check time.h 'struct tm tm; strptime("", "", &tm)'; then
 	echo 'using strptime()' 1>&2
 	echo '#define HAVE_STRPTIME'		>> $CONFIG_H
+    else
+	for DEF in _DEFAULT_SOURCE _XOPEN_SOURCE; do
+	    if config/check time.h 'struct tm tm; strptime("", "", &tm)' -D$DEF; then
+		echo "'using strptime() w/ -D$DEF" 1>&2
+		echo '#define HAVE_STRPTIME'		>> $CONFIG_H
+		TIME_CFLAGS="$TIME_CFLAGS -D$DEF"
+		break
+	    fi
+	done
     fi
 
     if config/check time.h 'struct tm tm; timegm(&tm)'; then
@@ -1540,10 +1546,12 @@ if [ "x$WITHOUT_MODULES" = x ]; then
     elif config/check time.h 'struct tm tm; timegm(&tm)' -D__USE_MISC; then
 	echo 'using timegm() with -D__USE_MISC' 1>&2
 	echo '#define HAVE_TIMEGM'			>> $CONFIG_H
-	echo '#define __USE_MISC'			>> $CONFIG_H
+	TIME_CFLAGS="$TIME_CFLAGS -D__USE_MISC"
     fi
 
-
+    if [ "x$TIME_CFLAGS" != x ]; then
+	echo "	TIME_CFLAGS = '$TIME_CFLAGS'"		>> $CONFIG_SNO
+    fi
     ################################################################
     # stcl
     if [ "x$TCONF" = x ]; then
@@ -1630,15 +1638,16 @@ if [ "x$WITHOUT_MODULES" = x ]; then
 	fi
     fi
 
-    echo "	NDBM_LDFLAGS = '$NDBM_LIBS'" >> $CONFIG_SNO
     MODULES="$MODULES ndbm"
     if [ "$USE_SDBM" ]; then
 	echo "using SDBM for DBM support" 1>&2
 	# for modules/ndbm/setup.sno:
 	echo '	NDBM_INCLUDE = "sdbm"' >> $CONFIG_SNO
 	echo '	NDBM_SRCS = ",sdbm/sdbm.c,sdbm/sdbm_hash.c,sdbm/sdbm_pair.c"' >> $CONFIG_SNO
-	echo '#define HAVE_SDBM_H'	>> $CONFIG_H
-	echo '#define DUFF'		>> $CONFIG_H
+	echo "	NDBM_CFLAGS = '-DHAVE_SDBM_H -DDUFF'" >> $CONFIG_SNO
+    fi
+    if [ "x$NDBM_LIBS" != x ]; then
+	echo "	NDBM_LDFLAGS = '$NDBM_LIBS'" >> $CONFIG_SNO
     fi
 fi # modules
 

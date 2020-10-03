@@ -4,6 +4,7 @@
 	t['module'] = 'ndbm'
 	t['sources'] = 'ndbm.c' NDBM_SRCS
 	t['include_dirs'] = NDBM_INCLUDE
+	t['cflags'] = NDBM_CFLAGS
 	t['ldflags'] = NDBM_LDFLAGS
 	
 	t['author'] = t['maintainer'] = 'Phil Budne'
