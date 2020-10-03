@@ -424,11 +424,9 @@ ptyio_close(struct io_obj *iop) {
 MAKE_OPS(ptyio, &SUPER);
 
 struct io_obj *
-ptyio_open(path, flags, dir)
-    char *path;
-    int flags;
-    int dir;				/* 'r' or 'w' (ignored!) */
-{
+ptyio_open(char *path,
+	   int flags,
+	   int dir) {			/* 'r' or 'w' (ignored!) */
     if (path[0] != '|' || path[1] != '|')
 	return NOMATCH;
 

@@ -302,11 +302,7 @@ io_newfile(char *path) {
 
 #ifdef MEM_IO
 static struct file *
-io_memfile(name, data, len)
-    char *name;
-    char *data;
-    int len;
-{
+io_memfile(char *name, char *data, int len) {
     struct file *fp;
 
     fp = io_newfile(name);
