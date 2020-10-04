@@ -94,9 +94,10 @@ cpuid.exe: cpuid.c
 	$(CC) -c cpuid.c
 	$(LINK) /out:cpuid.exe cpuid.obj
 
-snobol4.exe : always $(OBJ)
+MANIFEST=config\win32\snobol4.exe.manifest
+snobol4.exe : always $(OBJ) $(MANIFEST)
 	$(LINK) /out:snobol4.exe $(OBJ) $(INET_LIBS)
-	mt -manifest config\win32\snobol4.exe.manifest -outputresource:snobol4.exe;1
+	mt -manifest $(MANIFEST) -outputresource:snobol4.exe;1
 
 # kill leftovers from cygwin builds!!!
 always:

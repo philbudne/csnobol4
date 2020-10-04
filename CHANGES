@@ -21,6 +21,8 @@ Changes since 2.1.6 release;
 			for IPv6 support (available in WinXP)
 		Fixed test for C++ compiler under cygwin
 		Experimental support for "Pseudo Consoles" on Windows 10
+		Executable manifested for Windows 10
+			(previously HOST() only showed "Win8" on Windows 10)
 	Portability fixes for Android.
 
 Changes since 2.0 release;
