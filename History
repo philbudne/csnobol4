@@ -3,7 +3,6 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/4/2020:
-	configure: add manifest under cygwin
 	config/win32/mingw.mak: use windres to compile manifest.rc
 		take TOOLCHAIN prefix
 	config/win32/ntmsvc.mak: use rc to compile manifest.rc
