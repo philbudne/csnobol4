@@ -7,8 +7,10 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	config/win32/snobol4.exe.manifest (new)
 		Manifest file necessary to get Windows version
 		(upto latest version binary manifested for)
+	lib/win32/sys.c: restore build, server
 
 10/4/2020:
+	configure: just set _GNU_SOURCE if glibc detected
 	modules/ffi/ffi.c: remove _GNU_SOURCE __USE_GNU
 	parms.h: move config.h back to top
 	parms.h, include/macros.h: move ieeefp.h include to parms.h
@@ -16,7 +18,6 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 10/3/2020:
 	configure: remove --force-memmove from help
 		move module support checks together
-		use nanosleep w/ _POSIX_C_SOURCE=199309
 		fix -Werror= for gcc 4.1.2
 		set {NDBM,TIME,RANDOM}_CFLAGS in config.sno
 		fix getrusage

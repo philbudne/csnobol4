@@ -80,12 +80,11 @@ osname(cp)
     char *cp;
 {
     char osname[32], *os;
-    OSVERSIONINFO osv;
+    OSVERSIONINFOEXA osv;
     int server = 0;
     int build = 0;
-    int vnum;
+    int vnum = 0;
 
-    vnum = 0;
     ZeroMemory(&osv, sizeof(osv));
     osv.dwOSVersionInfoSize = sizeof(osv);
     /*
@@ -98,10 +97,12 @@ osname(cp)
      * does not specifically target Windows 8.1 or Windows 10, the
      * functions will return the Windows 8 version (6.2).
      */
-    if (!GetVersionEx(&osv)) { /* takes OSVERSIONINFO, not OSVERSIONINFOEX!!! */
+    if (!GetVersionExA((LPOSVERSIONINFO)&osv)) {
 	strcpy(cp, "Win????");
 	return;
     }
+    build = osv.dwBuildNumber;
+    server = (osv.wProductType != VER_NT_WORKSTATION);
     switch (osv.dwPlatformId) {
     case VER_PLATFORM_WIN32s:
 	os = "Win32s";
@@ -188,17 +189,17 @@ osname(cp)
 		else
 		    os = "Win8";
 		break;
-	    case 3:			/* not returned unless manifested (see above) */
+	    case 3:	/* not returned unless manifested (see above) */
 		if (server)
 		    os = "WinServer2012R2";
 		else
 		    os = "Win8.1";
 		break;
-	    case 4:
+	    case 4:	/* prior to build 9926 (only if manifested) */
 		if (server)
 		    os = "WinServer2016";
 		else
-		    os = "Win10";	/* first tech preview */
+		    os = "Win10";
 		break;
 	    default:
 		vnum = 1;
@@ -210,11 +211,14 @@ osname(cp)
 	    switch (osv.dwMinorVersion) {
 	    case 0:
 		if (server)
-		    os = "WinServer2016";
+		    os = "WinServer2016"; /* 2019 if build >=1809? */
 		else
 		    os = "Win10";
 		break;
-
+	    /*
+	     * anything added here will not be seen unless snobol4.exe.manifest
+	     * updated with guid of new OS
+	     */
 	    default:
 		vnum = 1;
 		break;
