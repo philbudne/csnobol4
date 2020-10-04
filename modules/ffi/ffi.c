@@ -28,15 +28,14 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
+/* NOTE: need _GNU_SOURCE for RTLD_{DEFAULT,NEXT} w/ glibc */
+
 #include <stdlib.h>			/* for free() */
 #include <stdint.h>			/* was inttypes.h */
 #include <stdio.h>			/* for debug, test function */
-#include <ffi.h>
+#include <dlfcn.h>			/* XXX call out to load.c?? */
 
-/* XXX call out to load.c?? */
-#define _GNU_SOURCE			/* for RTLD_{DEFAULT,NEXT} */
-#define __USE_GNU
-#include <dlfcn.h>
+#include <ffi.h>
 
 #include "h.h"
 #include "equ.h"

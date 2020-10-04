@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/4/2020:
+	modules/ffi/ffi.c: remove _GNU_SOURCE __USE_GNU
+
 10/3/2020:
 	configure: remove --force-memmove from help
 		move module support checks together
