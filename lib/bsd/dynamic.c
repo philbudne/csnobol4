@@ -19,16 +19,12 @@
 /* on SunOS use valloc(3) + madvise(2)?? */
 
 char *
-dynamic( size )
-    size_t size;
-{
+dynamic(size_t size) {
     return malloc(size);
 }
 
 void
-vm_gc_advise(gc)
-    int gc;
-{
+vm_gc_advise(int gc) {
     if (gc)
 	vadvise(VA_ANOM);		/* warn VM we're random during GC */
     else

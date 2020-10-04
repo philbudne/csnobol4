@@ -15,9 +15,7 @@
 #include "str.h"
 
 void
-hwname(cp)
-    char *cp;
-{
+hwname(char *cp) {
     char *hw;
     SYSTEM_INFO si;
 
@@ -76,9 +74,7 @@ hwname(cp)
 }
 
 void
-osname(cp)
-    char *cp;
-{
+osname(char *cp) {
     char osname[32], *os;
     OSVERSIONINFOEXA osv;
     int server = 0;
@@ -101,6 +97,17 @@ osname(cp)
 	strcpy(cp, "Win????");
 	return;
     }
+#ifdef DEBUG_SYS
+    printf("plat %ld %ld.%ld.%ld ptype %d\n",
+	   osv.dwPlatformId,
+	   osv.dwMajorVersion,
+	   osv.dwMinorVersion,
+	   osv.dwBuildNumber,
+	   osv.wProductType);
+#define HERE printf("line %d\n", __LINE__)
+#else
+#define HERE (void)0
+#endif
     build = osv.dwBuildNumber;
     server = (osv.wProductType != VER_NT_WORKSTATION);
     switch (osv.dwPlatformId) {
@@ -143,6 +150,7 @@ osname(cp)
 		break;
 	    default:
 		vnum = 1;
+		HERE;
 		break;
 	    }
 	}
@@ -165,6 +173,7 @@ osname(cp)
 		break;
 	    default:
 		vnum = 1;
+		HERE;
 		break;
 	    } // 5
 	    break;
@@ -203,6 +212,7 @@ osname(cp)
 		break;
 	    default:
 		vnum = 1;
+		HERE;
 		break;
 	    } // 6
 	    break;
@@ -221,11 +231,14 @@ osname(cp)
 	     */
 	    default:
 		vnum = 1;
+		HERE;
 		break;
 	    } // 10
+	    break;
 
 	default:
 	    vnum = 1;
+	    HERE;
 	    break;
 	} // dwMajorVersion
 	break;
@@ -234,6 +247,7 @@ osname(cp)
 	sprintf(osname, "Win#%d", (int)osv.dwPlatformId);
 	os = osname;
 	vnum = 1;
+	HERE;
 	break;
     } // dwPlatformId
 
