@@ -1920,6 +1920,14 @@ echo ''						>> $CONFIG_M4
 echo 'build_modules: $(MODULES_GENERATED)'	>> $CONFIG_M4
 echo ''						>> $CONFIG_M4
 
+if [ "x$CYGWIN" != x ]; then
+    echo 'ADD_OBJS([manifest.o])'		>> $CONFIG_M4
+    echo '# manifest needed on Win8.1+ to get actual O/S version!' >> $CONFIG_M4
+    echo 'MANIFEST=config/win32/manifest.rc'	>> $CONFIG_M4
+    echo 'manifest.o: $(MANFEST)'		>> $CONFIG_M4
+    echo '	windres $(MANIFEST) manifest.o' >> $CONFIG_M4
+fi
+
 if [ -f local-config ]; then
     echo 'using local-config' 1>&2
     echo '################'			>> $CONFIG_M4
