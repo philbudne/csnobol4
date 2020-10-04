@@ -923,6 +923,8 @@ elif config/check -r "time.h" "$GETTIME" "$PSX93"; then
     # needed on RHEL7 (GLIBC 2.17)
     echo 'MSTIME_C=$(SRCDIR)lib/posix2001/mstime.c' >> $CONFIG_M4
     POSIX_C_SOURCE="PSX93VAL"
+    TIME_CFLAGS="-D_POSIX_C_SOURCE=$POSIX_C_SOURCE"
+    RANDOM_CFLAGS="-D_POSIX_C_SOURCE=$POSIX_C_SOURCE"
     # move this elsewhere if needed?!
     echo "#define _POSIX_C_SOURCE $POSIX_C_SOURCE"
 elif config/check -r "time.h" "$GETTIME" "-lrt"; then
@@ -930,7 +932,8 @@ elif config/check -r "time.h" "$GETTIME" "-lrt"; then
     echo 'using POSIX.1b clock_getcpuclockid()/clock_gettime() with -lrt' 1>&2
     echo 'MSTIME_C=$(SRCDIR)lib/posix2001/mstime.c' >> $CONFIG_M4
     LIBRT=-lrt
-    # XXX set TIME_LDFLAGS??
+    TIME_LDFLAGS="$LIBRT"
+    RANDOM_LDFLAGS="$LIBRT"
 elif config/check "sys/time.h sys/resource.h" \
     "struct rusage r; getrusage(&r, RUSAGE_SELF)"; then
     echo 'using getrusage() for runtimes' 1>&2
@@ -1531,8 +1534,7 @@ if [ "x$WITHOUT_MODULES" = x ]; then
     ################################################################
     echo "checking features for modules:"
 
-    # MUST BE AT TOP!
-    TIME_CFLAGS="-DHAVE_SLEEP"
+    TIME_CFLAGS="$TIME_CFLAGS -DHAVE_SLEEP"
     SLEEP_C=bsd/sleep.c
 
     # time-of-day code in both time and random modules!
