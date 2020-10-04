@@ -3,6 +3,12 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/4/2020:
+	config/win32/ntmsvc.mak: run mt to insert manifest
+	config/win32/snobol4.exe.manifest (new)
+		Manifest file necessary to get Windows version
+		(upto latest version binary manifested for)
+
+10/4/2020:
 	modules/ffi/ffi.c: remove _GNU_SOURCE __USE_GNU
 	parms.h: move config.h back to top
 	parms.h, include/macros.h: move ieeefp.h include to parms.h

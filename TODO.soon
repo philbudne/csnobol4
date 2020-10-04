@@ -5,6 +5,8 @@ clock_gettime include system time?  go back to getrusage()??
 --without-modules breaks tests:
 	move sleep/ndbm tests to module dirs
 
+setuputil: generate Makefile for module?
+
 genc:
     Turn SELBRA & STREAM with single label into if
 
