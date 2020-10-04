@@ -4,19 +4,10 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#if defined(HAVE_GLIBC) || defined(linux) /* linux test for safety */
-#define _XOPEN_SOURCE			/* glibc: enable strptime() */
-#define _BSD_SOURCE			/* glibc: keep tm_gmtoff */
-#define _DEFAULT_SOURCE	/* replaces above in glibc 2.20, quashes warnings */
-#elif defined(__CYGWIN__)		/* cygwin64 3.1.7 */
-#define _XOPEN_SOURCE			/* cygwin64: enable strptime() */
-#define __TM_GMTOFF tm_gmtoff		/* cygwin64: add tm_gmtoff! */
-#endif
-
 #if defined(HAVE_CLOCK_GETTIME_REALTIME)
-#define TIMESPEC(TS) (clock_gettime(CLOCK_REALTIME, TS) == 0)
+#define GETTIMESPEC(TS) (clock_gettime(CLOCK_REALTIME, TS) == 0)
 #elif defined(HAVE_TIMESPEC_GET)
-#define TIMESPEC(TS) (timespec_get(TS, TIME_UTC) == TIME_UTC)
+#define GETTIMESPEC(TS) (timespec_get(TS, TIME_UTC) == TIME_UTC)
 #elif defined(HAVE_GETTIMEOFDAY)
 #include <sys/time.h>
 #endif
@@ -68,7 +59,7 @@ enum tm_member {
 lret_t
 GETTIMEOFDAY_( LA_ALIST ) {
     struct descr *dp = LA_PTR(0);
-#if defined(TIMESPEC)
+#if defined(GETTIMESPEC)
     struct timespec ts;
 #elif defined(HAVE_GETTIMEOFDAY)
     struct timeval tv;
@@ -77,8 +68,8 @@ GETTIMEOFDAY_( LA_ALIST ) {
     if (!dp || LA_TYPE(0) < DATSTA || COUNT(dp) != TV_COUNT)
 	RETNULL;
     /* validate dp[TV_DESCR] */
-#if defined(TIMESPEC)
-    TIMESPEC(&ts);
+#if defined(GETTIMESPEC)
+    GETTIMESPEC(&ts);
     SETINT(dp,TV_SEC,ts.tv_sec);
     SETINT(dp,TV_USEC,(ts.tv_nsec+500)/1000);
     SETINT(dp,TV_NSEC,ts.tv_nsec);
