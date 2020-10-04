@@ -911,11 +911,12 @@ GETTIME="struct timespec ts;clockid_t c;clock_getcpuclockid(0,&c);clock_gettime(
 if [ "x$CYGWIN" != x ]; then
     # Cygwin has getrusage(), but it only works under NT, so use the
     # Win32 native mstime.c, which will fall back to Win9x compatibility
-    # XXX but we no longer care about non NT system!!!
+    # XXX but I no longer care about non NT system!!!
     echo 'using Win32 native calls for runtimes' 1>&2
     echo 'MSTIME_C=$(SRCDIR)lib/win32/mstime.c'	>> $CONFIG_M4
 elif config/check -r "time.h" "$GETTIME"; then
-    # no defines/libs needed on FreeBSD 12, Ubuntu 20.04
+    # no defines/libs needed on FreeBSD 12,
+    #	glibc 2.17 (RHEL7), glibc 2.31 (Ubuntu 20.04)
     echo 'using POSIX.1b clock_getcpuclockid()/clock_gettime() for runtimes' 1>&2
     echo 'MSTIME_C=$(SRCDIR)lib/posix2001/mstime.c' >> $CONFIG_M4
 elif config/check -r "time.h" "$GETTIME" "-lrt"; then
@@ -987,8 +988,6 @@ else
 fi
 
 if config/check string.h 'char d; memmove(&d, "", 0)'; then
-    # The only system with no bcopy() which has memmove()
-    # is Solaris 2.4, and our bcopy() beats memmove()?!
     echo 'using system memmove()/memset() functions' 1>&2
     echo '#define USE_MEMMOVE'		>> $CONFIG_H
 elif config/check strings.h 'char d; bcopy("", &d, 0)'; then
@@ -1233,10 +1232,6 @@ GETLINE_TEST='char *buf; size_t len; getline(&buf, &len, stdin)'
 if config/check stdio.h "$GETLINE_TEST"; then
     echo 'using system getline() function' 1>&2
     echo '#define HAVE_GETLINE'			>> $CONFIG_H
-elif config/check stdio.h "$GETLINE_TEST" -D_GNU_SOURCE; then
-    echo 'using system getline() function w/ -D_GNU_SOURCE' 1>&2
-    echo '#define HAVE_GETLINE'			>> $CONFIG_H
-    echo '#define _GNU_SOURCE'			>> $CONFIG_H
 else
     echo 'using private getline() function' 1>&2
     echo 'ADD_OBJS([getline.o])'		>> $CONFIG_M4
