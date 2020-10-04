@@ -3,11 +3,13 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/4/2020:
-	config/win32/ntmsvc.mak: run mt to insert manifest
-		add manifest as dependency
-	config/win32/snobol4.exe.manifest (new)
+	config/win32/mingw.mak: use windres to compile manifest.rc
+		take TOOLCHAIN prefix
+	config/win32/ntmsvc.mak: use rc to compile manifest.rc
+	config/win32/manifest.rc (new)
 		Manifest file necessary to get Windows version
 		(upto latest version binary manifested for)
+	config/win32/linux-mingw.sh: pass TOOLCHAIN
 	lib/win32/sys.c: restore build, server, add back break, ansify
 	lib/bsd/dynamic.c: ansify
 

@@ -94,10 +94,12 @@ cpuid.exe: cpuid.c
 	$(CC) -c cpuid.c
 	$(LINK) /out:cpuid.exe cpuid.obj
 
-MANIFEST=config\win32\snobol4.exe.manifest
-snobol4.exe : always $(OBJ) $(MANIFEST)
-	$(LINK) /out:snobol4.exe $(OBJ) $(INET_LIBS)
-	mt -manifest $(MANIFEST) -outputresource:snobol4.exe;1
+snobol4.exe : always $(OBJ) manifest.obj
+	$(LINK) /out:snobol4.exe $(OBJ) manifest.obj $(INET_LIBS)
+
+MANIFEST=config\win32\manifest.rc
+manifest.obj: $(MANIFEST)
+	rc /r $(MANIFEST) manifest.obj
 
 # kill leftovers from cygwin builds!!!
 always:

@@ -6,7 +6,12 @@
 # from nmake file for VC++ 5.0 on WinNT 4.0 P. Budne 2/4/1998
 # from batch file by David Feustel
 
-CC=gcc
+# set TOOLCHAIN= on command line (ie; x86_64-w64-mingw32-)
+# for cross-compiles
+
+CC=$(TOOLCHAIN)gcc
+WINDRES=$(TOOLCHAIN)windres
+
 # includes -finline-functions (and others in gcc v3):
 OPT=-O3 -g
 
@@ -55,8 +60,9 @@ endif
 
 CONFIG_SNO=config/win32/config.sno
 
+# DEFS set on command line for cross-builds, as needed
 CFLAGS=-c $(OPT) -I$(SRCDIR)config/win32 -I$(SRCDIR)include -I$(SRCDIR). \
-	-DHAVE_CONFIG_H $(INET_DEFS) -Wall
+	-DHAVE_CONFIG_H $(INET_DEFS) $(DEFS) -Wall
 SNOBOL4_CFLAGS=$(CFLAGS) -Wno-return-type -Wno-switch
 HOST_CFLAGS=$(CFLAGS) -DCC=\"$(TCC)\" -DCOPT=\"$(OPT)\" -DSO_LD=\"$(TCC)\" -DDL_LD=\"$(TCC)\"
 
@@ -125,8 +131,12 @@ include $(RULES)
 cpuid.exe: cpuid.c
 	$(CC) -o cpuid cpuid.c
 
-snobol4.exe $(IMPLIB): $(OBJ)
-	$(CC) -shared-libgcc -o snobol4 $(OBJ) $(INET_LIBS) $(LDFLAGS)
+snobol4.exe $(IMPLIB): $(OBJ) manifest.o
+	$(CC) -shared-libgcc -o snobol4 $(OBJ) manifest.o $(INET_LIBS) $(LDFLAGS)
+
+MANIFEST=config/win32/manifest.rc
+manifest.o: $(MANIFEST)
+	rc /r $(MANIFEST) manifest.o
 
 # kill leftovers from cygwin builds!!!
 # CONFIG_SNO can be overridden for cross-platform builds
