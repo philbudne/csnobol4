@@ -11,6 +11,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	config/check: honor CHECK_OUT
 	CHANGES: update, organize
 	modules/ndbm/setup.sno: honor NDBM_CFLAGS
+	modules/random/setup.sno: honor RANDOM_CFLAGS
 	modules/time/setup.sno: honor TIME_CFLAGS
 
 10/2/2020:
