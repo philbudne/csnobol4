@@ -4,10 +4,6 @@
  * macros for data access and implementation of SIL ops
  */
 
-#ifdef FINITE_IN_IEEEFP_H
-#include <ieeefp.h>
-#endif
-
 /* descriptor at address x */
 #define D(x)	(*(struct descr *)(x))
 

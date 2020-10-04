@@ -9,6 +9,9 @@
 
 #include <stdio.h>			/* for lib.h */
 #include <math.h>			/* finite(), isnan() */
+#ifdef FINITE_IN_IEEEFP_H
+#include <ieeefp.h>
+#endif
 
 #include "snotypes.h"
 #include "h.h"

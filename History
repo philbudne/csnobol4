@@ -5,6 +5,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 10/4/2020:
 	modules/ffi/ffi.c: remove _GNU_SOURCE __USE_GNU
 	parms.h: move config.h back to top
+	parms.h, include/macros.h: move ieeefp.h include to parms.h
 
 10/3/2020:
 	configure: remove --force-memmove from help
