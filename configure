@@ -914,12 +914,12 @@ if [ "x$CYGWIN" != x ]; then
     # XXX but I no longer care about non NT system!!!
     echo 'using Win32 native calls for runtimes' 1>&2
     echo 'MSTIME_C=$(SRCDIR)lib/win32/mstime.c'	>> $CONFIG_M4
-elif config/check -r "time.h" "$GETTIME"; then
+elif config/check "time.h" "$GETTIME"; then
     # no defines/libs needed on FreeBSD 12,
     #	glibc 2.17 (RHEL7), glibc 2.31 (Ubuntu 20.04)
     echo 'using POSIX.1b clock_getcpuclockid()/clock_gettime() for runtimes' 1>&2
     echo 'MSTIME_C=$(SRCDIR)lib/posix2001/mstime.c' >> $CONFIG_M4
-elif config/check -r "time.h" "$GETTIME" "-lrt"; then
+elif config/check "time.h" "$GETTIME" "-lrt"; then
     # glibc 2.5 (on RHEL5), for example...
     echo 'using POSIX.1b clock_getcpuclockid()/clock_gettime() with -lrt' 1>&2
     echo 'MSTIME_C=$(SRCDIR)lib/posix2001/mstime.c' >> $CONFIG_M4
