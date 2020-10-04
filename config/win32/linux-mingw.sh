@@ -14,7 +14,7 @@ cp -f config/win32/config.sno $CROSS_CONFIG
 cat >>$CROSS_CONFIG <<EOF
 
 * override defaults from native (Linux) snobol4 binary!!
-	CC = '$(TOOLCHAIN)gcc $(DEFS)'
+	CC = '${TOOLCHAIN}gcc ${DEFS}'
 * speed up sqlite3 compile!
 	COPT = ''
 	DL_EXT = '.dll'

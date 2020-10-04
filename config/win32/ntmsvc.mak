@@ -94,12 +94,14 @@ cpuid.exe: cpuid.c
 	$(CC) -c cpuid.c
 	$(LINK) /out:cpuid.exe cpuid.obj
 
-snobol4.exe : always $(OBJ) manifest.obj
-	$(LINK) /out:snobol4.exe $(OBJ) manifest.obj $(INET_LIBS)
+MANIFEST_RC=config\win32\manifest.rc
+MANIFEST_RES=manifest.res
 
-MANIFEST=config\win32\manifest.rc
-manifest.obj: $(MANIFEST)
-	rc /r $(MANIFEST) manifest.obj
+snobol4.exe : always $(OBJ) $(MANIFEST_RES)
+	$(LINK) /out:snobol4.exe $(OBJ) $(MANIFEST_RES) $(INET_LIBS)
+
+$(MANIFEST_RES): $(MANIFEST_RC)
+	rc /r $(MANIFEST_RC)
 
 # kill leftovers from cygwin builds!!!
 always:
@@ -344,6 +346,6 @@ tar:
 
 clean:
 	config\win32\modules.bat clean
-	erase *.obj *.exe
+	erase *.obj *.exe *.res
 	erase doc\*.html
 	erase snolib4.lib snobol4.exp

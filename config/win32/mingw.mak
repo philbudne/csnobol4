@@ -136,7 +136,7 @@ snobol4.exe $(IMPLIB): $(OBJ) manifest.o
 
 MANIFEST=config/win32/manifest.rc
 manifest.o: $(MANIFEST)
-	rc /r $(MANIFEST) manifest.o
+	$(WINDRES) $(MANIFEST) manifest.o
 
 # kill leftovers from cygwin builds!!!
 # CONFIG_SNO can be overridden for cross-platform builds
