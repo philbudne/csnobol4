@@ -820,6 +820,28 @@ if [ ! "$INLINE_OK" ]; then
     echo 'SNOBOL4=snobol4'			>> $CONFIG_M4
 fi
 
+# moved to before first use of config/check
+# detect GNU libc (glibc) -- run in subshell to redirect error output
+# if --version not a valid option.  Future versions might not print
+# version as last item on line (deal with it if any version than 2.1
+# needs special handling):
+GLIBC=`(getconf --version)2>&1 | awk '/GNU libc/ || /GLIBC/ { print $NF }'`
+if [ "x$GLIBC" != x ]; then
+    echo "# GLIBC version $GLIBC"		>> $CONFIG_M4
+    echo '#define HAVE_GLIBC'			>> $CONFIG_H
+    echo '#define _GNU_SOURCE'			>> $CONFIG_H
+    CFLAGS="$CFLAGS -D_GNU_SOURCE"
+    export CFLAGS
+    echo "detected GNU libc version $GLIBC" 1>&2
+
+    # glibc 2.1 is broken; fseeko() cannot be used
+    case "$GLIBC" in
+    2.1|2.1.*)
+	LARGEFILE_OK=
+	;;
+    esac
+fi
+
 if [ "$LONGLONG" ]; then
     # Force use of 64-bit int and real types on ILP32 systems.
     # Not tested in all environments (some compilers
@@ -1323,25 +1345,6 @@ if config/check stdio.h 'fseeko(stdout, 0, 0)'; then
     echo '#define HAVE_FSEEKO'			>> $CONFIG_H
 fi
 
-# detect GNU libc (glibc) -- run in subshell to redirect error output
-# if --version not a valid option.  Future versions might not print
-# version as last item on line (deal with it if any version than 2.1
-# needs special handling):
-GLIBC=`(getconf --version)2>&1 | awk '/GNU libc/ || /GLIBC/ { print $NF }'`
-
-if [ "x$GLIBC" != x ]; then
-    echo "# GLIBC version $GLIBC"		>> $CONFIG_M4
-    echo '#define HAVE_GLIBC'			>> $CONFIG_H
-    echo "detected GNU libc version $GLIBC" 1>&2
-
-    # glibc 2.1 is broken; fseeko() cannot be used
-    case "$GLIBC" in
-    2.1|2.1.*)
-	LARGEFILE_OK=
-	;;
-    esac
-fi
-
 # if using a native 64bit data model no options should be needed
 # for large file support
 if [ "$LP64" ]; then
@@ -1534,21 +1537,13 @@ if [ "x$WITHOUT_MODULES" = x ]; then
     if config/check time.h 'struct tm tm; int i = tm.tm_gmtoff' "$TR_CFLAGS"; then
 	echo 'using tm_gmtoff' 1>&2
 	TIME_CFLAGS="$TIME_CFLAGS -DHAVE_TM_GMTOFF"
-    else
-	for DEF in  _DEFAULT_SOURCE _GNU_SOURCE; do
-	    if config/check time.h 'struct tm tm; int i = tm.tm_gmtoff' "-D$DEF"; then
-		echo "using tm_gmtoff w/ -D$DEF" 1>&2
-		TIME_CFLAGS="$TIME_CFLAGS -DHAVE_TM_GMTOFF -D$DEF"
-		break
-	    fi
-	done
     fi
 
     if config/check time.h 'struct tm tm; strptime("", "", &tm)'; then
 	echo 'using strptime()' 1>&2
 	TIME_CFLAGS="$TIME_CFLAGS -DHAVE_STRPTIME"
     else
-	for DEF in _GNU_SOURCE _DEFAULT_SOURCE _XOPEN_SOURCE; do
+	for DEF in _DEFAULT_SOURCE _XOPEN_SOURCE; do
 	    if config/check time.h 'struct tm tm; strptime("", "", &tm)' -D$DEF; then
 		echo "using strptime() w/ -D$DEF" 1>&2
 		TIME_CFLAGS="$TIME_CFLAGS -DHAVE_STRPTIME -D$DEF"
