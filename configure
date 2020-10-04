@@ -906,19 +906,31 @@ fi
 # N.B. This works on FreeBSD10, but by default offers no additional
 # resolution, and might suffer the same issues as getrusage()?!
 GETTIME="struct timespec ts;clockid_t c;clock_getcpuclockid(0,&c);clock_gettime(c,&ts)"
+PSX93VAL="199309L"
+PSX93="-D_POSIX_C_SOURCE=$PSX93VAL"
 if [ "x$CYGWIN" != x ]; then
     # Cygwin has getrusage(), but it only works under NT, so use the
-    # Win32 native mstime.c, which will fall back to Win9x compatibility.
+    # Win32 native mstime.c, which will fall back to Win9x compatibility
+    # XXX but we no longer care about non NT system!!!
     echo 'using Win32 native calls for runtimes' 1>&2
     echo 'MSTIME_C=$(SRCDIR)lib/win32/mstime.c'	>> $CONFIG_M4
 elif config/check -r "time.h" "$GETTIME"; then
-    # -lrt not needed w/ kernel 3.9 and libc 2.17?
+    # no defines/libs needed (where?)
     echo 'using POSIX.1b clock_getcpuclockid()/clock_gettime() for runtimes' 1>&2
     echo 'MSTIME_C=$(SRCDIR)lib/posix2001/mstime.c' >> $CONFIG_M4
+elif config/check -r "time.h" "$GETTIME" "$PSX93"; then
+    echo "using POSIX.1b clock_getcpuclockid()/clock_gettime() w/ $PSX93" 1>&2
+    # needed on RHEL7 (GLIBC 2.17)
+    echo 'MSTIME_C=$(SRCDIR)lib/posix2001/mstime.c' >> $CONFIG_M4
+    POSIX_C_SOURCE="PSX93VAL"
+    # move this elsewhere if needed?!
+    echo "#define _POSIX_C_SOURCE $POSIX_C_SOURCE"
 elif config/check -r "time.h" "$GETTIME" "-lrt"; then
-    echo 'using POSIX.1b clock_getcpuclockid()/clock_gettime() for runtimes (with -lrt)' 1>&2
+    # glibc 2.5 (on RHEL5), for example...
+    echo 'using POSIX.1b clock_getcpuclockid()/clock_gettime() with -lrt' 1>&2
     echo 'MSTIME_C=$(SRCDIR)lib/posix2001/mstime.c' >> $CONFIG_M4
     LIBRT=-lrt
+    # XXX set TIME_LDFLAGS??
 elif config/check "sys/time.h sys/resource.h" \
     "struct rusage r; getrusage(&r, RUSAGE_SELF)"; then
     echo 'using getrusage() for runtimes' 1>&2
