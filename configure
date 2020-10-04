@@ -926,7 +926,7 @@ elif config/check -r "time.h" "$GETTIME" "-lrt"; then
     LIBRT=-lrt
     TR_LDFLAGS="$LIBRT"
 elif config/check "sys/time.h sys/resource.h" \
-    "struct rusage r; getrusage(&r, RUSAGE_SELF)"; then
+    "struct rusage r; getrusage(RUSAGE_SELF, &r)"; then
     echo 'using getrusage() for runtimes' 1>&2
     echo 'MSTIME_C=$(SRCDIR)lib/bsd/mstime.c'	>> $CONFIG_M4
 
