@@ -9,6 +9,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 		fix -Werror= for gcc 4.1.2
 		set {NDBM,TIME,RANDOM}_CFLAGS in config.sno
 		fix getrusage
+		removed clock_gettime for runtime (user+sys)
 	config/check: honor CHECK_OUT
 	CHANGES: update, organize
 	modules/ndbm/setup.sno: honor NDBM_CFLAGS
