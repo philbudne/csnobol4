@@ -412,7 +412,7 @@ esac
 case "$CC_IS" in
 gcc|clang) CFLAGS="$CFLAGS -Werror -Wimplicit-function-declaration"; export CFLAGS;;
 # guessing here:
-icc)	   CFLAGS="$CFLAGS -Werror -Wall -Wno-unused-variable"; export CFLAGS;;
+#icc)	   CFLAGS="$CFLAGS -Werror -Wall -Wno-unused-variable"; export CFLAGS;;
 esac
 
 case "$CC_IS" in
