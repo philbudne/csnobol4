@@ -1,6 +1,6 @@
 $Id$
 
-clock_gettime include system time?  go back to getrusage()??
+Implement "M" datatype -- like L, but free after!
 
 --without-modules breaks tests:
 	move sleep/ndbm tests to module dirs
