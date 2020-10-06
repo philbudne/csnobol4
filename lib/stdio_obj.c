@@ -109,6 +109,32 @@ stdio_read_raw(struct io_obj *iop, char *buf, size_t len) {
     return fread(buf, 1, len, siop->f);
 }
 
+#ifdef SIGINT_EOF_CHECK
+/*
+ * Windows getc() (and thereforer getline) returns (permenant) EOF on
+ * caught ^C while Unix doesn't return at ALL.  Make Windows imitate
+ * Unix.  Returning transient error on Unix would require a setjmp and
+ * a longjmp in sig_catch (if waiting for line from tty).
+ */
+static ssize_t
+mygetline(char **bufp, size_t *lenp, FILE *f) {
+    for (;;) {
+	int_t user_interrupt_count = D_A(UINTCL); /* ^C count */
+	size_t ret = getline(bufp, lenp, f);
+	if (ret > 0)
+	    return ret;
+	/* error return, SIGINT seen, stream showing EOF */
+	/* XXX check ISTTY too? */
+	if (user_interrupt_count != D_A(UINTCL) && feof(f))
+	    clearerr(f);
+	else
+	    return -1;
+    }
+    return ret;
+}
+#define getline my_getline
+#endif
+
 static ssize_t
 stdio_getline(struct io_obj *iop) {
     struct stdio_obj *siop = (struct stdio_obj *)iop;
