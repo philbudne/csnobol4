@@ -2,6 +2,8 @@ $Id$
 
 Implement "M" datatype -- like L, but free after!
 
+setjmp/longjmp for ^C on TTY read??
+
 --without-modules breaks tests:
 	move sleep/ndbm tests to module dirs
 
