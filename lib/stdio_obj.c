@@ -32,6 +32,11 @@
 #include "lib.h"			/* tty_mode */
 #include "stdio_obj.h"			/* MAXMODE, our own prototypes! */
 
+#ifdef SIGINT_EOF_CHECK
+#include "equ.h"			/* for BCDFLD (for X_LOCSP), res.h */
+#include "res.h"			/* needed on VAX/VMS for data.h */
+#endif
+
 #ifndef HAVE_FSEEKO
 /*
  * fseeko/ftello arose on ILP 32-bit systems with "LARGE FILE" access,
