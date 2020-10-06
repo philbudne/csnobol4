@@ -429,3 +429,4 @@ pipeio_open(char *path, int flags, int dir) {
 
     return stdio_wrap(path, p, 0, &pipeio_ops, flags);
 }
+
