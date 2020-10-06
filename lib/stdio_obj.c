@@ -33,8 +33,10 @@
 #include "stdio_obj.h"			/* MAXMODE, our own prototypes! */
 
 #ifdef SIGINT_EOF_CHECK
-#include "equ.h"			/* for BCDFLD (for X_LOCSP), res.h */
-#include "res.h"			/* needed on VAX/VMS for data.h */
+#include "equ.h"			/* for res.h */
+#include "res.h"			/* UINTCL */
+#include "data.h"			/* res */
+#include "macros.h"			/* D_A */
 #endif
 
 #ifndef HAVE_FSEEKO
@@ -117,27 +119,31 @@ stdio_read_raw(struct io_obj *iop, char *buf, size_t len) {
 #ifdef SIGINT_EOF_CHECK
 /*
  * Windows getc() (and thereforer getline) returns (permenant) EOF on
- * caught ^C while Unix doesn't return at ALL.  Make Windows imitate
- * Unix.  Returning transient error on Unix would require a setjmp and
- * a longjmp in sig_catch (if waiting for line from tty).
+ * caught ^C, while Unix doesn't return *AT ALL*.
+ * Make Windows imitate Unix.
+ *
+ * Might prefer temporary error (statement failure on read) but would
+ * require setjmp here (if TTY), longjmp (if flag set) in
+ * sig_catch on Unix (along with possible TTY related crockery in io.c).
  */
 static ssize_t
 mygetline(char **bufp, size_t *lenp, FILE *f) {
     for (;;) {
 	int_t user_interrupt_count = D_A(UINTCL); /* ^C count */
-	size_t ret = getline(bufp, lenp, f);
+	ssize_t ret = getline(bufp, lenp, f);
 	if (ret > 0)
 	    return ret;
-	/* error return, SIGINT seen, stream showing EOF */
+
+	/* check if SIGINT seen, stream showing EOF */
 	/* XXX check ISTTY too? */
-	if (user_interrupt_count != D_A(UINTCL) && feof(f))
+	if (user_interrupt_count != D_A(UINTCL) && feof(f)) {
 	    clearerr(f);
-	else
-	    return -1;
+	    continue;
+	}
+	return -1;
     }
-    return ret;
 }
-#define getline my_getline
+#define getline mygetline
 #endif
 
 static ssize_t
