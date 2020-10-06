@@ -1,6 +1,13 @@
 $Id$
 
+Use HAVE_PATHS_H/<paths.h>, path.h in generic/execute.c, bsd/popen.c??
+	Not on Android! include/path.h:#define TMP_DIR "/tmp" /* exists on all systems?! */
+
 Implement "M" datatype -- like L, but free after!
+	check contents of retptr for versioning??
+
+remove io_clearerr?
+re-implement io_getfp w/ stdio_obj_getfp??
 
 setjmp/longjmp for ^C on TTY read??
 
@@ -24,9 +31,6 @@ Add 1969(!) factor.sno to tests
 	arbitrary precision lib??
 
 Better Windows default directory??  ask on list???
-
-remove io_eof/io_clearerr (push Windoze ^C lossage down)?
-Add io_getfp method?
 
 Remove "time" check from timing.sno???
 

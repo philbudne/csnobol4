@@ -4,6 +4,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/5/2020:
 	lib/{io,stdio_obj}.c: try pulling ^C handling down
+		removed ioo_clearerr -- flush??
 
 10/5/2020:
 	config/win32/config.h: always define HAVE_FSEEKO
