@@ -237,20 +237,6 @@ ioo_eof(struct io_obj *iop) {
     return FALSE;			/* treat as non-EOF I/O error */
 }
 
-#ifdef SIGINT_EOF_CHECK
-static void
-ioo_clearerr(struct io_obj *iop) {
-    const struct io_ops *op;
-
-    for (op = iop->ops; op; op = op->io_super) {
-	if (op->io_clearerr) {
-	    (op->io_clearerr)(iop);
-	    return;
-	}
-    }
-}
-#endif
-
 static int
 ioo_close(struct io_obj *iop) {
     const struct io_ops *op;
@@ -943,17 +929,17 @@ io_read(struct descr *dp, struct spec *sp) {	/* STREAD */
 
 	/* here when read failed; see if non-EOF error */
 	if (!ioo_eof(iop) )
-	    return IO_ERR;	/* error wasn't EOF */
+	    return IO_ERR;		/* error wasn't EOF */
 
 	/* here with EOF */
 	if (!io_next(unit)) {		/* skip to next file, if any */
-	    /* XXX perror? */
 	    return IO_EOF;		/* no more files */
 	}
 	if (COMPILING(unit)) {
 	    /* force call to INCCK to pop old FILENM and LNNOCL */
 	    return IO_EOF;
 	}
+	/* here with next file, if not compiling (command line -r?) */
     } /* forever */
 
     /* here on successful read */

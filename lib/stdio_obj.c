@@ -5,11 +5,9 @@
  * 9/11/2020
  *
  * _COULD_ write to POSIX open/close/read/write system call API,
- * and perhaps avoid copying, but trust that stdio libraries are
- * well tuned, and that it's hard to beat them.
- * Also, on non-Un*x systems read/write won't be the native operations.
- *
- * NOTE: written using some ANSI (C89) declarations (gasp!)
+ * instead of using stdio, but trust that libraries are well tuned,
+ * and that it's hard to beat them.  On non-Un*x systems read/write
+ * won't be the native operations.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -68,7 +66,7 @@
 
 #define ISTTY(IOP) ((IOP)->flags & FL_TTY)
 
-extern int unbuffer_all;
+extern int unbuffer_all;		/* command line: -U */
 
 /****************************************************************
  * methods
@@ -154,14 +152,14 @@ stdio_getline(struct io_obj *iop) {
 
 #ifdef TTY_READ_COOKED			/* used on VMS */
     if (ISTTY(iop)) {
-	/* XXX YUK!!! need tty_getline! */
+	/* XXX YUK!!! need tty_getline (use bufio_obj?)! */
 	if (!iop->linebuf) {
 	    iop->linebufsize = 1024;
 	    iop->linebuf = malloc(iop->linebufsize);
 	    /* XXX check return */
 	}
 	return tty_read(siop->f, iop->linebuf, iop->linebufsize,
-			FALSE,	/* "raw" */
+			FALSE,				/* "raw" */
 			(iop->flags & FL_NOECHO) != 0, /* "noecho" */
 			(iop->flags & FL_KEEPEOL) != 0, /* "keepeol" */
 			iop->fname);
