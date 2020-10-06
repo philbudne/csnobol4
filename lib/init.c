@@ -576,7 +576,6 @@ err_catch(SIGFUNC_ARG) {
 /* handle ^C (SIGINT) here */
 static SIGFUNC_T
 sig_catch(SIGFUNC_ARG) {
-    printf("sig_catch\n");
     if (D_A(COMPCL) || D_A(ERRLCL) == 0) /* in compiler or &ERRLIMIT == 0*/
 	err_catch(sig);			/* treat as before */
 
@@ -586,7 +585,6 @@ sig_catch(SIGFUNC_ARG) {
      * Keep count, so windoze code in io.c can detect ^C vs EOF
      */
     D_A(UINTCL)++;
-    printf("sig_catch UINTCL %ld\n", D_A(UINTCL));
     signal( SIGINT, sig_catch );	/* re-arm for Win32/VC10 */
 }
 

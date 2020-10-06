@@ -893,7 +893,6 @@ io_read(struct descr *dp, struct spec *sp) {	/* STREAD */
 #endif /* COMPILER_READLINE defined */
 	else {			/* normal, cooked (line) I/O */
 	    len = ioo_getline(iop);
-	    printf("getline return %zd @ %d\n", len, __LINE__);
 	    if (len > 0) {
 		/* if normal EOL processing, discard newline */
 		if (!(iop->flags & FL_KEEPEOL) && iop->linebuf[len-1] == '\n') {
@@ -943,12 +942,10 @@ io_read(struct descr *dp, struct spec *sp) {	/* STREAD */
 	} /* else (normal, cooked) */
 
 	/* here when read failed; see if non-EOF error */
-	printf("here @ %d\n", __LINE__);
 	if (!ioo_eof(iop) )
 	    return IO_ERR;	/* error wasn't EOF */
 
 	/* here with EOF */
-	printf("here @ %d\n", __LINE__);
 	if (!io_next(unit)) {		/* skip to next file, if any */
 	    /* XXX perror? */
 	    return IO_EOF;		/* no more files */
