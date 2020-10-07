@@ -1,6 +1,10 @@
 * $Id$
 *
 * $Log$
+* Revision 1.145  2020/09/21 21:46:01  phil
+* [PLB129] VLRECL: eliminate text file record lengths!
+* 	(at the cost of copying data)
+*
 * Revision 1.144  2020/08/08 22:45:22  phil
 * [PLB128] add &FATALLIMIT
 * enables trapping some otherwise fatal errors for sdb
@@ -882,6 +886,7 @@ E      EQU     11		   EXPRESSION
 I      EQU     6		   INTEGER
 K      EQU     10		   KEYWORD (NAME)
 L      EQU     12		   LINKED STRING (internal)
+M      EQU     14		   Malloc'ed Linked String	[PLB130]
 N      EQU     9		   NAME
 P      EQU     3		   PATTERN
 R      EQU     7		   REAL
@@ -4602,9 +4607,19 @@ LNKF5  GETSIZ  WCL,ZCL		   Get size of definition block
        INCRA   YPTR,2*DESCR	   Get pointer to argument list
        LINK    ZPTR,YPTR,WPTR,ZCL,FAIL
 *				   Link to external function
+       VEQLC   ZPTR,M,,LNKF7	   Branch for malloc'ed linked string [PLB130]
        VEQLC   ZPTR,L,RTZPTR	   Check for linked string
        GETSPC  ZSP,ZPTR,0	   Get specifier
        BRANCH  GENVRZ		   Go generate variable
+*_
+* here with malloc'ed linked string from external function	[PLB130]
+LNKF7  PUSH    ZPTR		   Save ext func return value	[PLB130]
+* copied from GENVRZ:						[PLB130]
+       GETSPC  ZSP,ZPTR,0	   Get specifier		[PLB130]
+       RCALL   ZPTR,GENVAR,ZSPPTR  Generate variable		[PLB130]
+       POP     XPTR		   Get return value back	[PLB130]
+       XCALLC  RELSTRING,(XPTR)	   Release string memory	[PLB130]
+       BRANCH  RTZPTR		   Return variable		[PLB130]
 *_
 *---------------------------------------------------------------------*
        TITLE   'Arrays, Tables, and Defined Data Objects'
