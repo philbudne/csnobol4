@@ -56,9 +56,24 @@
 #define RETREAL(x) SETRETVAL(D_RV(retval) = (x), R)
 #define RETNULL SETRETVAL(D_A(retval) = 0, S)
 
-/* strings */
-#define RETSTR2(CP,LEN) \
-    do { retstring(retval, (CP), (LEN)); return TRUE; } while(0)
+/*
+ * return a string from loaded function.
+ * need not be a NUL terminated C-string.
+ * buffer will be malloc'ed by retstring, and freed by relstring
+ */
+#define RETSTR2(CP,LEN) do { \
+	retstring(retval, CP, LEN); \
+	return TRUE;		\
+    } while (0)
+
+/*
+ * return a counted (possibly non-NUL terminated) string in malloc'ed
+ * memory.  Memory will be freed by call to relstring.
+ */
+#define RETSTR2_FREE(CP,LEN) do { \
+	retstring_free(retval, CP, LEN); \
+	return TRUE;		\
+    } while (0)
 
 /*
  * improved!! old version now called RETSTR2().
@@ -74,19 +89,16 @@
     } while (0)
 
 /*
- * return (& free) a malloc'ed C-string
- *
- * This is a quick and dirty implementation.  If this is used a lot, a
- * better implementation might be a retstring_free() function that
- * free'ed its existing buffer, and kept the new string and avoided
- * copying the data.
+ * return (& free) a malloc'ed C-string.
+ * Returns pointer to SNOBOL as type 'M' (malloc'ed linked string)
+ * After string "interned" (variable generated), relstring is called.
+ * (used by ffi & readline)
  */
 #define RETSTR_FREE(CP) \
     do { \
 	char *cp = (CP); \
         if (cp == NULL) RETNULL; \
-	retstring(retval, (cp), strlen(cp)); \
-	free(cp); \
+	retstring_free(retval, (cp), strlen(cp)); \
 	return TRUE; \
     } while (0)
 
@@ -116,6 +128,7 @@ SNOEXP(char *) mgetstring(const void *);
 
 /* lib/snolib/retstring.c; */
 SNOEXP(void) retstring(struct descr *retval, const char *cp, int len);
+SNOEXP(void) retstring_free(struct descr *retval, const char *cp, int len);
 
 /* lib/io.c; */
 SNOEXP(int) io_findunit(void);	/* find a free (external) unit */

@@ -247,3 +247,6 @@ extern ssize_t getline(char **bufp, size_t *lenp, FILE *fp);
 /* from getopt.c */
 extern int getopt(int argc, char **argv, char *opts);
 #endif
+
+/* from retstring.c */
+extern int relstring(struct descr *);

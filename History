@@ -6,6 +6,15 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	v311.sil: [PLB130] implement handling for type "M"
 		(malloc'ed linked string) in LNKFNC.
 		Calls relstring after variable generated.
+	include/lib.h: add relstring
+	include/macros.h: RELSTRING wrapper for relstring
+	include/load.h: add RETSTR2_FREE, RETSTR_FREE: call retstring_free
+		add extern/export for retstring_free
+	lib/retstring.c: flush static retbuf[len] vars:
+		add retstring_free which returns string via type "M"
+		retstring also returns via type "M" (unless RETSTRING_STATIC)
+		add relstring function called back on type "M" after interning
+	include/vars.h: flush retbuf[len]
 
 10/5/2020:
 	lib/{io,stdio_obj}.c: try pulling ^C handling down

@@ -294,3 +294,5 @@ S4_EXTERN struct descr _NORET[1];
 #define FASTPR(A,B,C,S,T) \
 	io_fastpr((struct descr *)(A),(struct descr *)(B),(struct descr *)(C),\
 		  (struct spec *)(S),(struct spec *)(T))
+
+#define RELSTRING(A) relstring((struct descr *)(A))

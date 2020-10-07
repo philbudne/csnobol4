@@ -18,28 +18,20 @@
 #include "vars.h"
 #else  /* NO_STATIC_VARS not defined */
 static struct spec retspec[1];
-static char *retbuf;
-static int retbuflen;
 #endif /* NO_STATIC_VARS not defined */
 
 EXPORT(void)
 retstring(struct descr *retval, const char *cp, int len) {
-    if (len > retbuflen) {
-	if (retbuf)
-	    free(retbuf);
-	retbuf = malloc(len);
-	if (!retbuf) {
-	    perror("retstring malloc");
-	    exit(1);
-	}
-	retbuflen = len;
-    }
-
-
-    memcpy( retbuf, cp, len );		/* copy to buffer! */
-
+#ifdef RETSTRING_STATIC			/* NOTE! not thread safe! */
+    char *buf = cp;
+#define STYPE L				/* ordinary linked string */
+#else
+    char *buf = malloc(len);
+    memcpy(buf, cp, len);		/* copy to buffer! */
+#define STYPE M				/* malloc'ed linked string */
+#endif
     /* set up (static) specifier for string */
-    S_A(retspec) = (int_t) retbuf;
+    S_A(retspec) = (int_t) buf;
     S_F(retspec) = 0;			/* NOTE: *not* a PTR! */
     S_V(retspec) = 0;
     S_O(retspec) = 0;
@@ -48,6 +40,56 @@ retstring(struct descr *retval, const char *cp, int len) {
 
     /* point to specifier */
     D_F(retval) = 0;			/* NOTE: not marked as PTR! */
-    D_V(retval) = L;			/* "linked string" */
+    D_V(retval) = STYPE;		/* "malloc'ed linked string" */
     D_A(retval) = (int_t) retspec;
+#ifdef DEBUG_RETSTRING
+    printf("retstring buf@%p retspec@%p\n", buf, retspec);
+#endif
+}
+
+/*
+ * return a string which resides in malloc'ed memory using type "M"
+ * memory will be freed via a call to relstring (below)
+ */
+EXPORT(void)
+retstring_free(struct descr *retval, const char *cp, int len) {
+    /* set up (static) specifier for string */
+    S_A(retspec) = (int_t) cp;
+    S_F(retspec) = 0;			/* NOTE: *not* a PTR! */
+    S_V(retspec) = 0;
+    S_O(retspec) = 0;
+    S_L(retspec) = len;
+    CLR_S_UNUSED(retspec);
+
+    /* point to specifier */
+    D_F(retval) = 0;			/* NOTE: not marked as PTR! */
+    D_V(retval) = M;			/* "malloc'ed linked string" */
+    D_A(retval) = (int_t) retspec;
+#ifdef DEBUG_RETSTRING
+    printf("retstring_free buf@%p retspec@%p\n", buf, retspec);
+#endif
+}
+
+/*
+ * Called from LNKFNC after generating variable.  retval
+ * SHOULD be pointing at retspec (above), but if someone had
+ * their OWN copy of retstring it wouldn't be visible to us,
+ * so follow the gourd, er retval.  (Two gourd meanings: the
+ * spiritual "follow the drinking gourd", and the market
+ * scene in "Life of Brian")
+ */
+int
+relstring(struct descr *retval) {
+    struct spec *sptr;
+    void *buf;
+    if (D_V(retval) != M)
+	return 0;
+    sptr = D_PTR(retval);
+    buf = (void *)S_A(sptr);		/* get buf pointer back */
+#ifdef DEBUG_RETSTRING
+    printf("relstring buf@%p spec@%p\n", buf, sptr);
+#endif
+    if (buf)
+	free(buf);
+    return 1;
 }

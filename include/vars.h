@@ -35,8 +35,6 @@ struct vars {
 
     /* lib/snolib/retstring.c */
     struct spec v_retspec[1];
-    char *v_retbuf;
-    int v_retbuflen;
 
     /* lib/X/tty.c */
     void *v_ttylist;
@@ -72,8 +70,6 @@ struct vars {
 #define rflag	(varp->v_rflag)
 #define iov	(*varp->v_iov)
 #define retspec	(varp->v_retspec)
-#define retbuf	(varp->v_retbuf)
-#define retbuflen (varp->v_retbuflen)
 #define ttylist	(varp->v_ttylist)
 #define loadptr (varp->v_loadptr)
 #define timeptr	(varp->v_timeptr)
