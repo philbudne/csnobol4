@@ -4,8 +4,9 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#include <process.h>
+#include <process.h>			/* execl */
 #include <stdio.h>			/* NULL */
+#include <stdlib.h>			/* getenv */
 
 #include "h.h"
 #include "snotypes.h"
@@ -13,5 +14,8 @@
 
 void
 execute(char *buf) {
-    execl("cmd.exe", "cmd", "/c", buf, NULL);
+    char *cmd = getenv("COMSPEC");
+    if (!cmd)
+	cmd = "C:\\Windows\\System32\\cmd.exe";
+    execl(cmd, "cmd", "/c", buf, NULL);
 }
