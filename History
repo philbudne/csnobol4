@@ -3,6 +3,10 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/6/2020:
+	lib/win32/execute.c: Windows runtime implements execl
+	config/win32/{ntmsvc,mingw}.mak: use lib/win32/execute.c
+
+10/6/2020:
 	v311.sil: [PLB130] implement handling for type "M"
 		(malloc'ed linked string) in LNKFNC.
 		Calls relstring after variable generated.

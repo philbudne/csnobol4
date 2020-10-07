@@ -77,7 +77,7 @@ SRC=	$(BUFIO_OBJ_C) $(INET_AUX_SRC) $(INET_C) $(PTYIO_OBJ_C) \
 	$(SRCDIR)lib/ansi/spcint.c $(SRCDIR)lib/ansi/spreal.c \
 	$(SRCDIR)lib/auxil/getline.c $(SRCDIR)lib/auxil/getopt.c \
 	$(SRCDIR)lib/bal.c $(SRCDIR)lib/break.c $(SRCDIR)lib/date.c \
-	$(SRCDIR)lib/dummy/execute.c $(SRCDIR)lib/dump.c \
+	$(SRCDIR)lib/win32/execute.c $(SRCDIR)lib/dump.c \
 	$(SRCDIR)lib/endex.c $(SRCDIR)lib/generic/dynamic.c \
 	$(SRCDIR)lib/generic/expops.c $(SRCDIR)lib/generic/intspc.c \
 	$(SRCDIR)lib/hash.c $(SRCDIR)lib/init.c $(SRCDIR)lib/io.c \

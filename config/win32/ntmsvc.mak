@@ -207,11 +207,6 @@ getopt.obj : $(SRCDIR)lib\auxil\getopt.c
 bindresvport.obj : $(SRCDIR)lib\auxil\bindresvport.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\auxil\bindresvport.c
 
-################ dummy
-
-execute.obj : $(SRCDIR)lib\dummy\execute.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib\dummy\execute.c
-
 ################ generic
 
 dynamic.obj : $(SRCDIR)lib\generic\dynamic.c
@@ -229,6 +224,9 @@ bufio_obj.obj : $(SRCDIR)lib\auxil\bufio_obj.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\auxil\bufio_obj.c
 
 ################ win32!
+
+execute.obj : $(SRCDIR)lib\win32\execute.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\execute.c
 
 # or dummy, or bsd/inet6.c!!
 $(INET_OBJ) : $(INET_SRC)
