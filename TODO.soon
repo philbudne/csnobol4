@@ -3,9 +3,6 @@ $Id$
 Use HAVE_PATHS_H/<paths.h>, path.h in generic/execute.c, bsd/popen.c??
 	Not on Android! include/path.h:#define TMP_DIR "/tmp" /* exists on all systems?! */
 
-Implement "M" datatype -- like L, but free after!
-	check contents of retptr for versioning??
-
 remove io_clearerr?
 re-implement io_getfp w/ stdio_obj_getfp??
 
