@@ -2,16 +2,13 @@
 
 # nmake file for VC++ 5.0 on WinNT 4.0 by P. Budne 2/4/1998
 # from batch file by David Feustel
-
-# tested 11/2005 w/ Visual Studio .NET 2003 (VC71)
-# tested  5/2010 w/ Visual C++ Express 2010
-# tested  9/2020 w/ Visual Studio Community Edition 2019 (v16.6.3)
+# tested 10/2020 w/ Visual Studio Community Edition 2019 (v16.6.3)
 
 ################ settings
 
 # 1, 2 or undefined for no internet support
 # Winsock v1 available on Win95 and NT 3.5
-# Winsock v2 available on Win98 and NT 4.0
+# Winsock v2 available on Win98 and NT 4.0 (IPv6 available in WinXP?)
 WINSOCK=2
 
 # experimental Windows Pseudo Console support

@@ -18,7 +18,7 @@ OPT=-O3 -g
 # Winsock version: define as 1 or 2.
 # comment out for no inet support
 # Winsock v1 available on Win95 and NT 3.5
-# Winsock v2 available on Win98 and NT 4.0
+# Winsock v2 available on Win98 and NT 4.0 (IPv6 available in WinXP?)
 WINSOCK=2
 
 # goods are in mingw-w64-common 7.0.0-2 headers
