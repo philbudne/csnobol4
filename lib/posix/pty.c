@@ -55,7 +55,6 @@ __SCCSID("@(#)pty.c	8.3 (Berkeley) 5/16/94");
 #include <errno.h>
 #include <fcntl.h>
 #include <grp.h>
-#include <libutil.h>
 #include <stdlib.h>
 #include <string.h>
 #include <termios.h>
