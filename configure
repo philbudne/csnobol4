@@ -381,20 +381,6 @@ echo '#define CC_IS "'$CC_IS'"'			>> $CONFIG_H
 # nearly generic gcc3 option for LP64
 GCC64=-m64
 
-# prefer C99 "isfinite" function:
-# hpux9 and hpux10 have finite(). hpux11 has isfinite().
-if config/check math.h 'float f; isfinite(f)'; then
-    echo 'using system isfinite()' 1>&2
-    echo '#define HAVE_ISFINITE'		>> $CONFIG_H
-    HAVE_ISFINITE=1
-elif config/check math.h 'double d; finite(x)'; then
-    echo 'using system finite() in math.h' 1>&2
-elif [ "${OS}" = SunOS ] && config/check ieeefp.h 'double d; finite(x)'; then
-    # SunOS4?
-    echo 'using finite() in ieeefp.h' 1>&2
-    echo '#define FINITE_IN_IEEEFP_H'	>> $CONFIG_H
-fi
-
 # machine, os, release, version
 MORV="${MACHINE}:${OS}:${OSREL}:${OSVERS}"
 
@@ -958,11 +944,26 @@ if config/check stdint.h; then
     echo '#define HAVE_STDINT_H'		>> $CONFIG_H
 fi
 
-# clock_gettime() reports combined user/system time, so removed it.
+# prefer C99 "isfinite" function:
+# hpux9 and hpux10 have finite(). hpux11 has isfinite().
+if config/check math.h 'float f; isfinite(f)'; then
+    echo 'using C99 isfinite()' 1>&2
+    echo '#define HAVE_ISFINITE'		>> $CONFIG_H
+    HAVE_ISFINITE=1
+elif config/check math.h 'double d; finite(x)'; then
+    echo 'using finite() from math.h' 1>&2
+elif [ "${OS}" = SunOS ] && config/check ieeefp.h 'double d; finite(x)'; then
+    # SunOS4?
+    echo 'using finite() from ieeefp.h' 1>&2
+    echo '#define FINITE_IN_IEEEFP_H'	>> $CONFIG_H
+# XXX else use dummy version???
+fi 
+
+# clock_gettime() reports combined user/system time, so removed it
 if [ "x$CYGWIN" != x ]; then
     # Cygwin has getrusage(), but it only works under NT, so use the
     # Win32 native mstime.c, which will fall back to Win9x compatibility
-    # XXX but I no longer care about non NT system!!!
+    # XXX but I no longer care about non NT systems!!!
     echo 'using Win32 native calls for runtimes' 1>&2
     echo 'MSTIME_C=$(SRCDIR)lib/win32/mstime.c'	>> $CONFIG_M4
 elif config/check "sys/time.h sys/resource.h" \
@@ -1010,8 +1011,9 @@ if config/check sys/utsname.h "struct utsname u; uname(&u)"; then
     echo 'using uname() for system name information' 1>&2
 else
     # XXX only source for MACHINE & OSNAME is uname command!!
+    #	(haven't used config.guess since 2003!)
     # so unlikely to get here with anything but "unknown"!!!
-    # add command line options to allow setting them??
+    # add command line options to allow setting them?? force it???
     OSNAME="$OS $OSREL"
     if [ "$OSNAME" = 'unknown unknown' ]; then
 	OSNAME='unknown'
@@ -1038,6 +1040,7 @@ fi
 
 if config/check 'sys/types.h sys/socket.h' ""; then
     # check if network libraries needed
+    # XXX don't check for gethostbyname unless getaddrinfo not available?!
     SOCKINC='sys/types.h sys/socket.h netdb.h'
     SOCKFRAG='int s = socket(AF_INET, SOCK_STREAM, 0); struct hostent *hp = gethostbyname("")'
     if config/check "$SOCKINC" "$SOCKFRAG"; then
