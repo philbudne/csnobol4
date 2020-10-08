@@ -1266,6 +1266,7 @@ if config/check unistd.h 'int x = getopt(argc, argv, "t"), y=optind'; then
 elif config/check stdio.h 'getopt(argc, argv, "")'; then
     # here on SunOS4
     # illumos (SunOS 5.11) without _XPG4 or __EXTENSIONS__
+    #	but hardly worth detecting/setting for just this!
     echo 'using system getopt() function w/ externs' 1>&2
     echo '#define NEED_GETOPT_EXTERNS'		>> $CONFIG_H
 else
