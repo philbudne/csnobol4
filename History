@@ -3,6 +3,11 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/7/2020:
+	config/win32/config.h: add NTDDI_VERSION and _WIN32_WINNT again
+	lib/bsd/inet6.c: moved _WIN32_WINNT
+	lib/win32/ptyio_obj.c: moved NTDDI_VERSION and _WIN32_WINNT again
+
+10/7/2020:
 	configure: define (s)size_t if needed
 	config/win32/config.h: use WS2 socklen_t
 

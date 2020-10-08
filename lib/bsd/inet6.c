@@ -17,8 +17,6 @@
 #include <fcntl.h>
 
 #ifdef HAVE_WINSOCK2_H
-#undef _WIN32_WINNT
-#define _WIN32_WINNT _WIN32_WINNT_WINXP /* getaddrinfo */
 #include <ws2tcpip.h>			/* getaddrinfo */
 #else
 #include <sys/types.h>

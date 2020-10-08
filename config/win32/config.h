@@ -17,6 +17,11 @@
 #define __STDC__	0
 #endif /* __STDC__ not defined */
 
+// needed for ptyio
+#define NTDDI_VERSION NTDDI_WIN10_RS5
+#define _WIN32_WINNT _WIN32_WINNT_WIN10	// min WINXP for getaddrinfo
+
+
 #define BLOCKS
 
 /* datatypes; */
