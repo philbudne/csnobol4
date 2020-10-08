@@ -228,22 +228,22 @@ extern int sleepf(real_t);
 /* from break.c */
 extern int chk_break(int);
 
-#ifndef HAVE_CLOSEFROM
+#ifdef NEED_CLOSEFROM
 /* from closefrom.c */
 extern void closefrom(int minfd);
 #endif
 
-#ifndef HAVE_GETDTABLESIZE
+#ifdef NEED_GETDTABLESIZE
 /* from getdtablesize.c */
 extern int getdtablesize(void);
 #endif
 
-#ifndef HAVE_GETLINE
+#ifdef NEED_GETLINE
 /* from getline.c */
 extern ssize_t getline(char **bufp, size_t *lenp, FILE *fp);
 #endif
 
-#ifndef HAVE_GETOPT
+#ifdef NEED_GETOPT
 /* from getopt.c */
 extern int getopt(int argc, char **argv, char *opts);
 #endif

@@ -86,7 +86,7 @@ char *snolib_vlocal;			/* BASE/VERSION/local */
 static int xflag;
 #endif /* NO_STATIC_VARS not defined */
 
-#ifndef HAVE_GETOPT_EXTERNS
+#ifdef NEED_GETOPT_EXTERNS
 /* needed w/ own getopt & on SunOS4?! */
 extern int optind;
 extern char *optarg;

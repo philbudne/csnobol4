@@ -14,8 +14,12 @@
 #include <errno.h>
 
 #ifdef HAVE_UNISTD_H
-#include <unistd.h>			/* _exit */
+#include <unistd.h>			/* _exit, Free/OpenBSD: closefrom */
 #endif /* HAVE_UNISTD_H defined */
+
+#ifdef CLOSEFROM_IN_STDLIB_H
+#include <stdlib.h>			/* Solaris: closefrom */
+#endif /* CLOSEFROM_IN_STDLIB_H defined */
 
 #ifdef HAVE_LIBUTIL_H
 #include <libutil.h>			/* FreeBSD: forkpty */

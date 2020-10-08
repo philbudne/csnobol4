@@ -2,6 +2,18 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/8/2020:
+	fixes for OpenIndiana (illumos/OpenSolaris 11)
+	configure: change HAVE_ to NEED_
+		check if can use lib/posix/pty.c
+		add CLOSEFROM_IN_STDLIB_H
+	lib/posix/pty.c (new): forkpty from FreeBSD
+	include/pty.h (new): forkpty prototype
+	Makefile2.m4: add rule for pty.o
+	include/lib.h: use NEED_ defines
+	lib/init.c: use NEED_GETOPT_EXTERNS define
+	lib/bsd/ptyio_obj.c: use CLOSEFROM_IN_STDLIB_H
+
 10/7/2020:
 	config/win32/config.h: add NTDDI_VERSION and _WIN32_WINNT again
 	lib/bsd/inet6.c: moved _WIN32_WINNT

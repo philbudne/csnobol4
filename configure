@@ -917,8 +917,10 @@ echo '#define SIZEOF_REAL_T	'$SIZEOF_REAL_T'	/* for use in ifdefs */' >> $CONFIG
 
 # size_t is C99, ssize_t from POSIX?
 if [ "$SPTR" = "$SINT" ]; then
+    # ILP32?
     SSIZE_T=int
 elif [ "$SPTR" = "$SLONG" ]; then
+    # LP64?
     SSIZE_T=long
 else
     # LLP64???
@@ -1033,21 +1035,19 @@ else
 fi
 
 if config/check 'sys/types.h sys/socket.h' ""; then
-    echo 'using sockets for TCP/IP support' 1>&2
-
     # check if network libraries needed
     SOCKINC='sys/types.h sys/socket.h netdb.h'
     SOCKFRAG='int s = socket(AF_INET, SOCK_STREAM, 0); struct hostent *hp = gethostbyname("")'
     if config/check "$SOCKINC" "$SOCKFRAG"; then
+	echo 'using sockets for TCP/IP support' 1>&2
 	NETLIBS=
     elif config/check "$SOCKINC" "$SOCKFRAG" -lsocket; then
-	echo 'using libsocket' 1>&2
+	echo 'using sockets for TCP/IP support w/ -lsocket' 1>&2
 	echo 'ADD_LDFLAGS([-lsocket])'		>> $CONFIG_M4
 	NETLIBS=-lsocket
     elif config/check "$SOCKINC" "$SOCKFRAG" '-lsocket -lnsl'; then
-	echo 'using libsocket' 1>&2
+	echo 'using sockets for TCP/IP support w/ -lsocket & -lnsl' 1>&2
 	echo 'ADD_LDFLAGS([-lsocket])'		>> $CONFIG_M4
-	echo 'using libnsl' 1>&2
 	echo 'ADD_LDFLAGS([-lnsl])'		>> $CONFIG_M4
 	NETLIBS='-lsocket -lnsl'
     fi
@@ -1151,7 +1151,15 @@ elif config/check "sys/types.h pty.h" "$FORKPTY" -lutil; then
     echo "ADD_LDFLAGS([-lutil])"	>> $CONFIG_M4
     NEED_PATHS_H=1
     HAVE_FORKPTY=1
-fi
+elif config/check 'fcntl.h stdlib.h' 'int fd = posix_openpt(O_RDWR|O_NOCTTY); int x = grantpt(fd), y = unlockpt(fd); char *name = ptsname(fd)'; then
+    echo 'using private forkpty()' 1>&2
+    # our own(!):
+    echo '#define HAVE_PTY_H'		>> $CONFIG_H
+    echo 'ADD_OBJS([pty.o])'		>> $CONFIG_M4
+    echo 'ADD_SRCS([lib/posix/pty.c])'	>> $CONFIG_M4
+    NEED_PATHS_H=1
+    HAVE_FORKPTY=1
+fi    
 
 if [ "$NEED_PATHS_H" ]; then
     if config/check paths.h 'char *foo = _PATH_BSHELL'; then
@@ -1182,31 +1190,34 @@ if [ "x$HAVE_FORKPTY" != x ]; then
     if config/check "unistd.h" "closefrom(3);"; then
 	# FreeBSD, OpenBSD
 	echo 'using closefrom() from unistd.h' 1>&2
-	echo '#define HAVE_CLOSEFROM'	>> $CONFIG_H
     elif config/check "stdlib.h" "closefrom(3);"; then
 	# Solaris
 	echo 'using closefrom() from stdlib.h' 1>&2
-	echo '#define HAVE_CLOSEFROM'	>> $CONFIG_H
+	echo '#define CLOSEFROM_IN_STDLIB_H'	>> $CONFIG_H
     else
 	echo 'using private closefrom() function' 1>&2
+	echo '#define NEED_CLOSEFROM'	>> $CONFIG_H
 	echo 'ADD_OBJS([closefrom.o])'	>> $CONFIG_M4
 	echo 'ADD_SRCS([lib/bsd/closefrom.c])'	>> $CONFIG_M4
 	if config/check "unistd.h" 'getdtablesize();'; then
-	    echo '#define HAVE_GETDTABLESIZE'	>> $CONFIG_H
 	    echo 'using getdtablesize() from unistd.h' 1>&2
-	elif config/check "unistd.h" 'sysconf(_SC_OPEN_MAX)'; then
-	    echo 'using private getdtablesize() with sysconf()' 1>&2
-	    echo 'ADD_OBJS([getdtablesize.o])'	>> $CONFIG_M4
-	    echo 'GETDTABLESIZE_C=lib/posix/getdtablesize.c' >> $CONFIG_M4
 	else
-	    echo 'using dummy getdtablesize()' 1>&2
-	    echo 'ADD_OBJS([getdtablesize.o])'	>> $CONFIG_M4
-	    echo 'GETDTABLESIZE_C=lib/dummy/getdtablesize.c' >> $CONFIG_M4
+	    echo '#define NEED_GETDTABLESIZE'	>> $CONFIG_H
+	    if config/check "unistd.h" 'sysconf(_SC_OPEN_MAX)'; then
+		echo 'using private getdtablesize() with sysconf()' 1>&2
+		echo 'ADD_OBJS([getdtablesize.o])'	>> $CONFIG_M4
+		echo 'GETDTABLESIZE_C=lib/posix/getdtablesize.c' >> $CONFIG_M4
+	    else
+		echo 'using dummy getdtablesize()' 1>&2
+		echo 'ADD_OBJS([getdtablesize.o])'	>> $CONFIG_M4
+		echo 'GETDTABLESIZE_C=lib/dummy/getdtablesize.c' >> $CONFIG_M4
+	    fi
 	fi
     fi
-elif [ "$xCYGWIN" != x ]; then
+elif [ "x$CYGWIN" != x ]; then
     # cygwin64 3.1.7 has working forkpty (in pty.h)
     # so this is here only for debugging!
+    # XXX may need to set NTDDI &c?
     echo 'using Win32 ptyio_obj.c' 1>&2
     echo 'PTYIO_OBJ_C=$(SRCDIR)lib/win32/ptyio_obj.c'	>> $CONFIG_M4
     NEED_BUFIO=1
@@ -1247,28 +1258,28 @@ fi
 if config/check unistd.h 'int x = getopt(argc, argv, "t"), y=optind'; then
     # cygwin gcc10 unhappy with externs. Only check POSIX location.
     echo 'using system getopt() function' 1>&2
-    echo '#define HAVE_GETOPT'			>> $CONFIG_H
-    echo '#define HAVE_GETOPT_EXTERNS'		>> $CONFIG_H
 elif config/check stdio.h 'getopt(argc, argv, "")'; then
+    # here on SunOS4 (& SunOS 5.11!!)
     echo 'using system getopt() function w/ externs' 1>&2
-    echo '#define HAVE_GETOPT'			>> $CONFIG_H
+    echo '#define NEED_GETOPT_EXTERNS'		>> $CONFIG_H
 else
     # may not be needed, but should compile without error!
     echo 'using private getopt() function' 1>&2
     echo 'ADD_OBJS([getopt.o])'			>> $CONFIG_M4
     echo 'ADD_SRCS([$(GETOPT_C)])'		>> $CONFIG_M4
+    echo '#define NEED_GETOPT'			>> $CONFIG_H
+    echo '#define NEED_GETOPT_EXTERNS'		>> $CONFIG_H
 fi
 
 # POSIX-1.2008 (via glibc)
 GETLINE_TEST='char *buf; size_t len; getline(&buf, &len, stdin)'
 if config/check stdio.h "$GETLINE_TEST"; then
     echo 'using system getline() function' 1>&2
-    echo '#define HAVE_GETLINE'			>> $CONFIG_H
 else
     echo 'using private getline() function' 1>&2
     echo 'ADD_OBJS([getline.o])'		>> $CONFIG_M4
     echo 'ADD_SRCS([$(GETLINE_C)])'		>> $CONFIG_M4
-
+    echo '#define NEED_GETLINE'			>> $CONFIG_H
 fi
 
 # look for dynamic library support for "load";

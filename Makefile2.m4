@@ -129,6 +129,7 @@ LOG_C=$(SRCDIR)lib/snolib/log.c
 LOGIC_C=$(SRCDIR)modules/logic/logic.c
 NDBM_C=$(SRCDIR)modules/ndbm/ndbm.c
 ORD_C=$(SRCDIR)lib/snolib/ord.c
+PTY_C=$(SRCDIR)lib/posix/pty.c
 RANDOM_C=$(SRCDIR)modules/random/random.c
 READLINE_C=$(SRCDIR)modules/readline/readline.c
 RENAME_C=$(SRCDIR)lib/snolib/rename.c
@@ -560,6 +561,9 @@ ndbm.o: $(NDBM_C)
 
 ord.o: $(ORD_C)
 	$(CC) $(CFLAGS) -c $(ORD_C)
+
+pty.o:	$(PTY_C)
+	$(CC) $(CFLAGS) -c $(PTY_C)
 
 random.o: $(RANDOM_C)
 	$(CC) $(CFLAGS) -c $(RANDOM_C)
