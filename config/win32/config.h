@@ -17,13 +17,12 @@
 #endif /* __STDC__ not defined */
 
 /* needed under mingw */
-#define NTDDI_VERSION NTDDI_WIN10_RS5
+//#define NTDDI_VERSION NTDDI_WIN10_RS5
 
 #define BLOCKS
 
 /* datatypes; */
 #define SIGFUNC_T	void __cdecl
-#define SOCKLEN_T	int
 #define SETSOCKOPT_ARG_CAST (const char *)
 
 /* paths; */
@@ -47,8 +46,10 @@
 #define HAVE_STRFTIME
 
 #ifdef HAVE_WINSOCK2_H
+#define SOCKLEN_T socklen_t
 #define NEED_BINDRESVPORT_SA		/* checked in bindresvport.h */
 #else
+#define SOCKLEN_T int
 #define NEED_BINDRESVPORT		/* checked in bindresvport.[ch] */
 #endif
 

@@ -4,6 +4,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/7/2020:
 	configure: define (s)size_t if needed
+	config/win32/config.h: use WS2 socklen_t
 
 10/7/2020:
 	config/win32/{ntmsvc,mingw}.mak: winsock ipv6 comment
