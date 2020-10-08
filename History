@@ -7,6 +7,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	configure: change HAVE_ to NEED_
 		check if can use lib/posix/pty.c
 		add CLOSEFROM_IN_STDLIB_H
+		use config/check for finite
+	config/win32/config.h: update
 	lib/posix/pty.c (new): forkpty from FreeBSD
 	include/pty.h (new): forkpty prototype
 	Makefile2.m4: add rule for pty.o

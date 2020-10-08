@@ -47,6 +47,7 @@
 #define TTY_READ_RAW
 #define HAVE_GETVERSIONEX
 #define HAVE_STRFTIME
+#define NEED_GETLINE
 
 #ifdef HAVE_WINSOCK2_H
 #define SOCKLEN_T socklen_t
@@ -106,13 +107,15 @@
 
 #define HAVE_TIMESPEC_GET		// in ucrt 10.0.18362.0?
 #define GETPID_IN_PROCESS_H
+#define NEED_GETOPT
+#define NEED_GETOPT_EXTERNS
 
 #elif defined(__MINGW32__)
 
 // in -lpthread w/ mingw-w64-x86-64-dev 7.0.0 (does not work?)
 //#define HAVE_CLOCK_GETTIME_REALTIME 
 #define HAVE_UNISTD_H			// getpid !!!
-#define HAVE_GETOPT
+/* have getopt?! */
 
 #endif
 
