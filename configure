@@ -1156,7 +1156,7 @@ elif config/check "sys/types.h pty.h" "$FORKPTY" -lutil; then
 elif config/check 'fcntl.h stdlib.h' 'int fd = posix_openpt(O_RDWR|O_NOCTTY); int x = grantpt(fd), y = unlockpt(fd); char *name = ptsname(fd)'; then
     echo 'using private forkpty()' 1>&2
     # our own(!):
-    echo '#define HAVE_PTY_H'		>> $CONFIG_H
+    echo '#define HAVE_LIBPTY_H'	>> $CONFIG_H
     echo 'ADD_OBJS([pty.o])'		>> $CONFIG_M4
     echo 'ADD_SRCS([lib/posix/pty.c])'	>> $CONFIG_M4
     NEED_PATHS_H=1

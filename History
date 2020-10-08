@@ -10,7 +10,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 		use config/check for finite
 	config/win32/config.h: update
 	lib/posix/pty.c (new): forkpty from FreeBSD
-	include/pty.h (new): forkpty prototype
+	include/libpty.h (new): forkpty prototype
 	Makefile2.m4: add rule for pty.o
 	include/lib.h: use NEED_ defines
 	lib/init.c: use NEED_GETOPT_EXTERNS define

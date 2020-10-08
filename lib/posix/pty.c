@@ -60,7 +60,7 @@ __SCCSID("@(#)pty.c	8.3 (Berkeley) 5/16/94");
 #include <termios.h>
 #include <unistd.h>
 
-#include "pty.h"
+#include "libpty.h"			/* Ubuntu has <pty.h> */
 
 int
 openpty(int *amaster, int *aslave, char *name, struct termios *termp,

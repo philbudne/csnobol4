@@ -41,6 +41,10 @@
 #include "io_obj.h"
 #include "stdio_obj.h"			/* stdio_wrap, flags2mode */
 
+#ifdef HAVE_LIBPTY_H
+#include "libpty.h"			/* private forkpty() */
+#endif
+
 struct ptyio_obj {
     struct stdio_obj sio;
     pid_t pid;
