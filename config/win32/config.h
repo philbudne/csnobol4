@@ -8,6 +8,7 @@
  * (builds using native Windows runtime)
  */
 
+// no longer needed?
 #ifndef __STDC__
 /*
  * MSVC: by default __STDC__ is undefined!?
@@ -15,9 +16,6 @@
  */
 #define __STDC__	0
 #endif /* __STDC__ not defined */
-
-/* needed under mingw */
-//#define NTDDI_VERSION NTDDI_WIN10_RS5
 
 #define BLOCKS
 
