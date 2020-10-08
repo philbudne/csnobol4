@@ -3,6 +3,10 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/8/2020:
+	test/tests.in: add factor.sno
+	test/factor.{sno,ref}: from green book (via DEC-10,VAX ports)
+
+10/8/2020:
 	fixes for OpenIndiana (illumos/OpenSolaris 11)
 	configure: change HAVE_ to NEED_
 		check if can use lib/posix/pty.c

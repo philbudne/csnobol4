@@ -177,3 +177,5 @@ reg labelcode.sno
 reg setexit7.sno
 # 9/16/2020
 # reg k.sno
+# 10/8/2020 -- test file date 1969!
+reg factor.sno
