@@ -4,6 +4,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/7/2020:
 	config/win32/{ntmsvc,mingw}.mak: winsock ipv6 comment
+	configure: fix readline module
 
 10/6/2020:
 	lib/win32/execute.c: Windows runtime implements execl

@@ -1489,7 +1489,7 @@ if [ ! "$WITHOUT_READLINE" ]; then
 	echo "using readline (with $RL_LIBS)" 1>&2
 	echo '#define HAVE_READLINE'		>> $CONFIG_H
 	echo "	READLINE_LDFLAGS = '$RL_LIBS'" >> $CONFIG_SNO
-	MODULES="$MODULES readline"
+	READLINE_MODULE="readline"
 	echo "ADD_LDFLAGS([$RL_LIBS])"		>> $CONFIG_M4
 	if [ "x$RL_INCDIR" != x ]; then
 	    echo "ADD_CPPFLAGS([-I$RL_INCDIR])"	>> $CONFIG_M4
@@ -1507,7 +1507,7 @@ if [ ! "$WITHOUT_READLINE" ]; then
 fi
 
 if [ "x$WITHOUT_MODULES" = x ]; then
-    MODULES='dirs logic random stat time sprintf fork'
+    MODULES="dirs logic random stat time sprintf fork $READLINE_MODULE"
 
     ################################################################
     echo "checking features for modules:"
