@@ -13,7 +13,7 @@
 #include <stdio.h>
 
 #ifdef HAVE_UNISTD_H
-#include <unistd.h>			/* here w/ glibc */
+#include <unistd.h>
 #endif
 
 #include "h.h"
