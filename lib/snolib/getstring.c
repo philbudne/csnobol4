@@ -17,7 +17,7 @@ EXPORT(void)
 getstring(const void *vp,		/* pointer to "natural variable" */
 	  char *dp,
 	  int len) {
-    int dlen;
+    size_t dlen;
     char *sp;
 
     if (!vp) {				/* null string? */
@@ -30,7 +30,7 @@ getstring(const void *vp,		/* pointer to "natural variable" */
     if (dlen > len-1)
 	dlen = len-1;
 
-    bcopy( sp, dp, dlen );
+    memcpy(dp, sp, dlen);
     dp[dlen] = '\0';
 }
 

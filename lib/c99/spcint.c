@@ -46,7 +46,7 @@ spcint(struct descr *dp, struct spec *sp) {
 
     if (len > sizeof(buffer)-1)
 	len = sizeof(buffer)-1;
-    bcopy( cp, buffer, (long)len );	/* XXX SIZE_T */
+    memcpy(buffer, cp, (size_t)len);
     buffer[len] = '\0';
 
     errno = 0;

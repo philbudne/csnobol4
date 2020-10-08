@@ -15,7 +15,7 @@
 #include "snotypes.h"			/* needed on VAX/VMS for macros.h */
 #include "lib.h"
 #include "inet.h"			/* {tcp,udp}_socket */
-#include "str.h"			/* bcopy */
+#include "str.h"
 #include "bindresvport.h"
 
 /*
@@ -97,7 +97,7 @@ inet_socket(char *host, char *service,
 
 	/* try each addr in turn */
 	for (ap = hp->h_addr_list; *ap; ap++) {
-	    bcopy( *ap, &sin.sin_addr.s_addr, sizeof(sin.sin_addr.s_addr));
+	    memcpy(&sin.sin_addr.s_addr, *ap, sizeof(sin.sin_addr.s_addr));
 	    if (connect(s, (struct sockaddr *)&sin, sizeof(sin)) == 0)
 		return s;
 	}

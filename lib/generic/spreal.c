@@ -33,7 +33,7 @@
 int
 spreal(struct descr *dp, struct spec *sp) {
     char buffer[64];			/* ??? */
-    int len;
+    size_t len;
     char *cp;
     double d;
     char t;
@@ -59,7 +59,7 @@ spreal(struct descr *dp, struct spec *sp) {
     if (len > sizeof(buffer)-EXTRA)
 	len = sizeof(buffer)-EXTRA;
 
-    bcopy( cp, buffer, len );
+    memcpy(buffer, cp, len);
     buffer[len++] = TC;
     buffer[len] = '\0';
     if (sscanf(buffer, "%lf%c", &d, &t) != 2 || t != TC)

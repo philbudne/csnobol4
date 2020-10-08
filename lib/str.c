@@ -82,7 +82,8 @@ pad(struct descr *dir,			/* LPAD=0,RPAD=1 */
     struct spec *out,
     struct spec *subj,
     struct spec *pad) {
-    int npad, slen;
+    int npad;
+    size_t slen;
     char *dp;
     char pc;
 
@@ -100,7 +101,7 @@ pad(struct descr *dir,			/* LPAD=0,RPAD=1 */
 	    *dp++ = pc;
     }
 
-    bcopy(S_SP(subj), dp, (long)slen);	/* XXX SIZE_T */
+    memcpy(dp, S_SP(subj), slen);
     dp += slen;
 
     if (D_A(dir) != 0) {		/* RPAD */
@@ -176,7 +177,7 @@ int apdsp_lens[APDSP_NLENS];
 
 void
 apdsp(struct spec *base, struct spec *str) {
-    register int len;
+    size_t len;
     register char *src, *dst;
 
     len = S_L(str);
@@ -194,8 +195,7 @@ apdsp(struct spec *base, struct spec *str) {
 
 #define THRESH 4
     if (len >= THRESH) {		/* XXX also check alignment? */
-	/* XXX non-overlap version here? */
-	bcopy(src, dst, (long)len);	/* XXX SIZE_T */
+	memcpy(dst, src, len);
     }
     else {
 	while (len > 0) {

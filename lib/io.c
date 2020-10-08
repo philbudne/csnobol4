@@ -910,7 +910,7 @@ io_read(struct descr *dp, struct spec *sp) {	/* STREAD */
 		    if (len > recl)
 			len = recl;
 		    /* NOTE! truncates line (discards rest of record) */
-		    bcopy(iop->linebuf, cp, len);
+		    memcpy(cp, iop->linebuf, len);
 		    break;
 		}
 		else {			/* not compiling */

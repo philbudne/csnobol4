@@ -6,6 +6,10 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	config/win32/{ntmsvc,mingw}.mak: winsock ipv6 comment
 	configure: fix readline module
 	include/macros.h: convert MOVBLK from bcopy to memmove
+	lib/{io,str}.c lib/ansi/sp{cint,real}.c	lib/bsd/inet(6).c
+	    lib/c99/spcint.c lib/generic/sp{cint,real}.c
+	    lib/snolib/getstring.c lib/win32/inet.c:
+		convert bcopy to memcpy
 
 10/6/2020:
 	lib/win32/execute.c: Windows runtime implements execl

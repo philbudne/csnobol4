@@ -30,7 +30,7 @@
 
 #include "h.h"				/* TRUE/FALSE, __P */
 #include "inet.h"			/* own prototypes */
-#include "str.h"			/* bcopy() */
+#include "str.h"			/* bzero */
 #include "bindresvport.h"
 
 /* NOTE!! Ignores "port" arg!! */

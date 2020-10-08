@@ -35,7 +35,7 @@
 
 #include "h.h"				/* TRUE/FALSE, __P */
 #include "inet.h"			/* own prototypes */
-#include "str.h"			/* bcopy() */
+#include "str.h"			/* memcpy() */
 #include "bindresvport.h"
 
 #ifndef INADDR_NONE
@@ -113,7 +113,7 @@ inet_socket2(char *host, char *service, int type, int flags, int port) {
 
 	/* try each addr in turn */
 	for (ap = hp->h_addr_list; *ap; ap++) {
-	    bcopy( *ap, &sin.sin_addr.s_addr, sizeof(sin.sin_addr.s_addr));
+	    memcpy(&sin.sin_addr.s_addr, *ap, sizeof(sin.sin_addr.s_addr));
 	    if (connect(s, (struct sockaddr *)&sin, sizeof(sin)) == 0)
 		return s;
 	}
