@@ -889,7 +889,6 @@ else
     SIZEOF_INT_T=$SLONG
 fi
 
-
 if [ "$NO_BITFIELDS" ]; then
     echo '#define NO_BITFIELDS'			>> $CONFIG_H
 
@@ -915,6 +914,27 @@ fi
 
 echo '#define SIZEOF_INT_T	'$SIZEOF_INT_T'	/* for use in ifdefs */' >> $CONFIG_H
 echo '#define SIZEOF_REAL_T	'$SIZEOF_REAL_T'	/* for use in ifdefs */' >> $CONFIG_H
+
+# size_t is C99, ssize_t from POSIX?
+if [ "$SPTR" = "$SINT" ]; then
+    SSIZE_T=int
+elif [ "$SPTR" = "$SLONG" ]; then
+    SSIZE_T=long
+else
+    # LLP64???
+    SSIZE_T='long long'
+fi
+
+# check stddef.h?
+if ! config/check stdio.h 'size_t x = sizeof(int)'; then
+    echo "using own size_t" 1>&2
+    echo "typedef unsigned $SSIZE_T size_t;"	>> $CONFIG_H
+fi
+
+if ! config/check unistd.h 'ssize_t x = 1234'; then
+    echo "using own ssize_t" 1>&2
+    echo "typedef $SSIZE_T ssize_t;"		>> $CONFIG_H
+fi
 
 if config/check unistd.h; then
     echo 'using POSIX unistd.h' 1>&2

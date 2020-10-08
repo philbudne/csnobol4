@@ -3,6 +3,9 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/7/2020:
+	configure: define (s)size_t if needed
+
+10/7/2020:
 	config/win32/{ntmsvc,mingw}.mak: winsock ipv6 comment
 	configure: fix readline module
 	include/macros.h: convert MOVBLK from bcopy to memmove
