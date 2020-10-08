@@ -41,7 +41,7 @@
  * NOTE: may overlap!!
  * (bcopy deals with this but some memcpy's do not)!!!
  */
-#define MOVBLK(A,B,C) bcopy((void *)((B)+DESCR),(void *)((A)+DESCR),(long)(C) )
+#define MOVBLK(A,B,C) memmove((void *)((A)+DESCR),(void *)((B)+DESCR),(size_t)(C) )
 #ifdef BLOCKS
 #define MOVBLK2(A,B,C) movblk2((struct descr *)(A),(struct descr *)(B),(C))
 #endif
