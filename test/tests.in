@@ -27,7 +27,6 @@ reg openo2.sno
 reg 100func.sno
 reg alt1.sno
 reg alt2.sno
-# reg atn.sno
 reg bal.sno
 reg collect.sno
 reg comment.sno
@@ -170,12 +169,19 @@ trace trfunc.sno
 # 1/2/2015
 trace base.sno
 # 8/4/2015
+# obsolete in 2.2 (no truncation)
 # trace breakline.sno
 # 2/8/2020
 reg labelcode.sno
 # 8/8/2020
 reg setexit7.sno
 # 9/16/2020
+# obsolete in 2.2 (no truncation)
 # reg k.sno
-# 10/8/2020 -- test file date 1969!
+# 10/8/2020 -- test file date Dec 31, 1969 from DEC-10 SNOBOL4
+# from green book
 reg factor.sno
+# 10/8/2020 -- test file dated Jan 15, 1971 from DEC-10 SNOBOL4
+# from green book (run time 5159ms) c.1970
+# 2020 runtime on 2017 vintage Intel i5 was 2.429ms (2124x faster)
+reg alis.sno

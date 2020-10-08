@@ -3,8 +3,11 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/8/2020:
-	test/tests.in: add factor.sno
+	test/tests.in: add factor.sno, alis.sno
 	test/factor.{sno,ref}: from green book (via DEC-10,VAX ports)
+	test/alis.{sno,ref}: from green book (via DEC-10 port)
+		Execution time in green book was 5159ms
+		time on 2017 vintage Intel i5 was   2.429ms (2124x faster)
 
 10/8/2020:
 	fixes for OpenIndiana (illumos/OpenSolaris 11)
