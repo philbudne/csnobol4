@@ -739,6 +739,10 @@ if ${CCPATH-cc} $CFLAGS -o $TMP $TMP.c && ./$TMP > $TMP.out &&
 	echo 'native programming model is LP64' 1>&2
 	LP64=true
 	LP64_NATIVE=true
+    elif [ "$SINT" = 4 -a "$SPTR" = 4 -a "$SLONG" = 4 ]; then
+	echo 'native programming model is ILP32' 1>&2
+    else
+	echo 'odd programming model!!!' 1>&2
     fi
 fi
 if [ "$LONGLONG" -a "x$LP64_NATIVE" = x ]; then
