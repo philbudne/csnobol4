@@ -79,6 +79,7 @@ DXE_EXPORT_TABLE_AUTO(exports)
 
 	DXE_EXPORT(getstring)
 	DXE_EXPORT(retstring)
+	DXE_EXPORT(relstring)
 
 	/* stdio.h */
 	DXE_EXPORT(fopen)

@@ -3,6 +3,9 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/8/2020:
+	lib/djgpp/osinit.c: add export of relstring
+
+10/8/2020:
 	configure: note ILP32, funny programming models
 
 10/8/2020:

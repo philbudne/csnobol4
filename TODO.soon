@@ -1,5 +1,7 @@
 $Id$
 
+jj.sno: no "at END" under sdb??
+
 snobol4func: EXIT -- added in CSNOBOL version ??
 
 Use HAVE_PATHS_H/<paths.h>, path.h in generic/execute.c, bsd/popen.c??
