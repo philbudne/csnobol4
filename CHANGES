@@ -28,7 +28,7 @@ Changes since 2.1.6 release;
 		via RETSTR[2]_FREE (and silently by RETSTR[2]),
 		using new datatype "M"; CSNOBOL4 calls relstring
 		after variable generated (string interned) in SNOBOL memory
-	Portability fixes for Android.
+	Portability fixes for Android, illumos (Solaris).
 
 Changes since 2.0 release;
 =========================
