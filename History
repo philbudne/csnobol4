@@ -3,6 +3,9 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/8/2020:
+	snolib/sdb.sno: add SDB.RETVAL (can't concatenate DATA types)
+
+10/8/2020:
 	test/tests.in: add factor.sno, alis.sno
 	test/factor.{sno,ref}: from green book (via DEC-10,VAX ports)
 	test/alis.{sno,ref}: from green book (via DEC-10 port)
