@@ -8,6 +8,7 @@ Changes since 2.1.6 release;
 	Text input no longer limited by "record length" (K flag obsolete).
 	I/O code cleanup/refactor.
 	Fix "stat" module.
+	Switch back to less precise runtime reports of JUST user time.
 	All output unbuffered with -U option,
 		or SNOBOL4UNBUFFERED environment variable non-null.
 	time module GETTIMEOFDAY return now has TV_NSEC member
