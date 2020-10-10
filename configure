@@ -1548,6 +1548,16 @@ if [ ! "$WITHOUT_READLINE" ]; then
     fi
 fi
 
+# support for shared library
+if config/check stdio.h 'FILE *f = fmemopen("hello\n", 6, "r")'; then
+    echo 'MEMIO_OBJ_C=$(SRCDIR)lib/posix/memio_obj.c' >> $CONFIG_M4
+    echo 'MEMIO_OBJ=memio_obj.o'		>> $CONFIG_M4
+    echo 'MEMIO_SRC=$(MEMIO_OBJ_C)'		>> $CONFIG_M4
+else
+    echo 'MEMIO_OBJ=memio_obj.o bufio_obj.o'	>> $CONFIG_M4
+    echo 'MEMIO_SRC=$(MEMIO_OBJ_C) $(BUFIO_OBJ_C)' >> $CONFIG_M4
+fi
+
 if [ "x$WITHOUT_MODULES" = x ]; then
     MODULES="dirs logic random stat time sprintf fork $READLINE_MODULE"
 

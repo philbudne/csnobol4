@@ -96,10 +96,12 @@ SOEXT=.so
 $(SO)Makefile2: config.m4 Makefile2.m4
 	-test -d $(SO) || mkdir $(SO)
 	cp config.m4 $(SO)
-	echo 'ADD_CFLAGS([-fPIC])' >> $(SO)/config.m4
-	echo 'ADD_CFLAGS([-DENDEX_LONGJMP])' >> $(SO)/config.m4
-	echo 'SRCDIR=../'	 >> $(SO)/config.m4
-	echo 'MAINFLAGS=-Dmain=snobol4_main' >> $(SO)/config.m4
+	echo 'ADD_CFLAGS([-fPIC])'		>> $(SO)/config.m4
+	echo 'ADD_CFLAGS([-DENDEX_LONGJMP])'	>> $(SO)/config.m4
+	echo 'SRCDIR=../'			>> $(SO)/config.m4
+	echo 'MAINFLAGS=-Dmain=snobol4_main'	>> $(SO)/config.m4
+	echo 'ADD_OBJS([$$(MEMIO_OBJ)])'	>> $(SO)/config.m4
+	echo 'ADD_SRCS([$$(MEMIO_SRC)])'	>> $(SO)/config.m4
 	echo '# DO NOT EDIT. machine generated from Makefile2.m4' > $(SO)$(M2TMP)
 	echo '# add local changes to local-config'		>> $(SO)$(M2TMP)
 	(cd $(SO); $(M4) -I.. ../Makefile2.m4 >> $(M2TMP))
