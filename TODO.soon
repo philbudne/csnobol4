@@ -1,5 +1,7 @@
 $Id$
 
+configure: select memio
+
 expand snobol4.h (.so API)
 	EXPORT(snobol4_main)?
 	snobol4_init
