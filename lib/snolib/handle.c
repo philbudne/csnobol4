@@ -30,6 +30,7 @@ typedef int_t handle_number_t;
 struct handle_entry {
     struct handle_entry *next;
     handle_number_t handle_number;
+    void *value;
 };
 
 struct handle_table {
@@ -58,7 +59,7 @@ lookup_handle(handle_handle_t *hhp, snohandle_t h) {
 
     for (hp = htp->hash[HANDLE_HASH(h.a.i)]; hp; hp = hp->next) {
 	if (hp->handle_number == h.a.i)
-	    return (void *)hp->handle_number;
+	    return hp->value;
     }
     return NULL;
 }
@@ -87,26 +88,23 @@ new_handle(handle_handle_t *hhp, void *vp, const char *tname) {
 	*hhp = htp;
     }
 
-    h.f = 0;
-    h.v = htp->datatype;
-    h.a.i = htp->next++;
-
-    /* if it already exists, just return handle */
-    if (lookup_handle(hhp, h) != NULL)
-	return h;
-
     /* allocate block */
     hp = malloc(sizeof(struct handle_entry));
     if (!hp)
 	return bad_handle;
 
-    hash = HANDLE_HASH(h.a.i);
 
+    hp->handle_number = htp->next++;
+    hash = HANDLE_HASH(hp->handle_number);
     hp->next = htp->hash[hash];
-    hp->handle_number = h.a.i;
+    hp->value = vp;
 
     htp->hash[hash] = hp;
     htp->entries++;
+
+    h.f = 0;
+    h.v = htp->datatype;
+    h.a.i = hp->handle_number;
 
     return h;
 }
