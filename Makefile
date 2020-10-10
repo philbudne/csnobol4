@@ -87,6 +87,40 @@ Makefile2 .depend: config.m4 Makefile2.m4
 	rm -f .depend
 	touch .depend
 
+################ EXPERIMENTAL SHARED LIBRARY
+
+# make shared object Makefile2
+SO=so/
+SOEXT=.so
+
+$(SO)Makefile2: config.m4 Makefile2.m4
+	-test -d $(SO) || mkdir $(SO)
+	cp config.m4 $(SO)
+	echo 'ADD_CFLAGS([-fPIC])' >> $(SO)/config.m4
+	echo 'ADD_CFLAGS([-DENDEX_LONGJMP])' >> $(SO)/config.m4
+	echo 'SRCDIR=../'	 >> $(SO)/config.m4
+	echo 'MAINFLAGS=-Dmain=snobol4_main' >> $(SO)/config.m4
+	echo '# DO NOT EDIT. machine generated from Makefile2.m4' > $(SO)$(M2TMP)
+	echo '# add local changes to local-config'		>> $(SO)$(M2TMP)
+	(cd $(SO); $(M4) -I.. ../Makefile2.m4 >> $(M2TMP))
+	echo '# DO NOT DELETE THIS LINE. make depend uses it.' >> $(SO)$(M2TMP)
+	$(MAKE) -C $(SO) -f $(M2TMP) depend MAKEFILE2=$(M2TMP) SRCDIR=../
+	mv -f $(SO)$(M2TMP) $(SO)Makefile2
+	rm -f $(SO).depend
+	touch $(SO).depend
+
+#### make shared library (invoked from Makefile2!)
+
+# avoid knowledge of library filename or extension!!!
+
+shared_library: $(SO)Makefile2
+	$(MAKE) -C $(SO) -f Makefile2 shared_library SRCDIR=../
+
+#### make main program using shared library
+
+ssnobol4: ALWAYS Makefile2
+	$(MAKE) -f Makefile2 ssnobol4
+
 ################
 # code
 
@@ -197,7 +231,7 @@ tidy:
 # remove objects, turds; leave generated sources, final binary.
 
 DISP=*.o *.a prolog bsplitu vers build.c bsdtsort \
-	config.m4 config.h Makefile2 .depend *.1 *.html
+	config.m4 config.h Makefile2 .depend *.1 *.html $(SO)*.o
 
 cleanmostly: tidy
 	rm -f $(DISP)
@@ -211,9 +245,10 @@ cleanmostly: tidy
 clean:	cleanmostly
 	(cd doc; make clean)
 	rm -f snobol4 xsnobol4 cpuid timing.out tested *.ln sdb *.exe
+	rm -rf ssnobol4 $(SO)
 
-# DANGER: requires installed binary to rebuild!!
 # remove objects, generated files (clean as a fresh CVS checkout)
+# DANGER: requires installed binary to rebuild!!
 spotless: clean
 	(cd doc; make spotless)
 	rm -f $(GENERATED) $(G2) snobol4.c isnobol4.c snobol4 xsnobol4

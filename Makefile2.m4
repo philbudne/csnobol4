@@ -173,7 +173,7 @@ ADD_LDFLAGS([$(MATHLIB)])
 # after local config
 
 # NOTE: NOT named CPPFLAGS; some versions of make include CPPFLAGS in cc cmd
-MYCPPFLAGS=-Iinclude -I. _CPPFLAGS
+MYCPPFLAGS=-I$(SRCDIR)include -I$(SRCDIR). _CPPFLAGS
 
 COPT=[]_OPT
 
@@ -207,7 +207,8 @@ OBJS=	main.o $(SNOBOL4).o data.o data_init.o syn.o bal.o \
 # from configure ADD_SRCS
 AUX_SRCS=[]_SRCS
 
-SRCS=	main.c $(SNOBOL4).c data.c data_init.c syn.c $(BAL_C) \
+SRCS=	$(SRCDIR)main.c $(SRCDIR)$(SNOBOL4).c $(SRCDIR)data.c \
+	$(SRCDIR)data_init.c $(SRCDIR)syn.c $(BAL_C) \
 	$(BREAK_C) $(DATE_C) $(DUMP_C) $(DYNAMIC_C) \
 	$(ENDEX_C) $(EXPOPS_C) $(FISATTY_C) $(GETSTRING_C) \
 	$(HANDLE_C) $(HASH_C) $(INET_C) $(INIT_C) \
@@ -249,9 +250,16 @@ GENERATED_DOCS=	$(GENERATED_DOCS_DOCDIR)
 BUILD_ALL=sdb snobol4 snopea docs
 build_all: $(BUILD_ALL)
 
-changequote(@,@)dnl
 
 xsnobol4: $(OBJS)
+	rm -f xsnobol4$(EXT)
+	$(MAKE) -f Makefile2 build.o
+	$(CC) -o xsnobol4 $(OBJS) build.o $(LDFLAGS)
+
+changequote(@,@)dnl
+
+# invoked in submake by xsnobol4, $(SOFILENAME) rules
+build.o: always
 	rm -f build.c
 	echo '/* MACHINE GENERATED.  EDITING IS FUTILE */'	> build.c
 	echo '#include "h.h"'					>> build.c
@@ -259,14 +267,49 @@ xsnobol4: $(OBJS)
 	echo 'const char build_date[] = "'`date`'";'		>> build.c
 	echo 'const char build_dir[] = "'`pwd`'";'		>> build.c
 	$(CC) $(CFLAGS) -c build.c
-	rm -f xsnobol4$(EXT)
-	$(CC) -o xsnobol4 $(OBJS) build.o $(LDFLAGS)
-
 changequote([,])dnl
+
+always:
+
 
 # avoid CFLAGS: -O causes crash on gcc 4.4.6 x86_64?
 cpuid:	cpuid.c
 	$(CC) -o cpuid cpuid.c
+
+################ shared library
+
+SO=so
+SOEXT=.so
+SOFILENAME=libsnobol4$(SOEXT)
+
+# do actual work to make shared library
+# here from top level Makefile invoking $(SO)/Makefile2 to make libsnobol4.so
+# with SRCDIR=../
+
+$(SOFILENAME): $(OBJS)
+	$(MAKE) -f Makefile2 build.o
+	$(SO_LD) -o $(SOFILENAME) $(SO_LDFLAGS) $(OBJS) build.o $(LDFLAGS)
+
+# for Makefile, so it is agnostic about filename/extension:
+
+shared_library: $(SOFILENAME)
+
+#### make shared library for ssnobol4 rule (below)
+
+# for ssnobol4, from here (Makefile2), in top directory
+# ask top level Makefile to build so/Makefile2 and run
+# to make shared library.
+
+$(SO)/$(SOFILENAME): always
+	$(MAKE) $(SO)/$(SOFILENAME)
+
+#### snobol4 executable using shared library
+
+# invoked from Makefile, in top directory
+# ask top level Makefile to build so/Makefile2 and run it
+
+ssnobol4: $(SO)/$(SOFILENAME) smain.c
+	$(CC) -o ssnobol4 smain.c -L$(SO) -lsnobol4
 
 ################
 # run regression tests.
@@ -296,7 +339,7 @@ $(SNOBOL4).o: $(SRCDIR)$(SNOBOL4).c
 	$(CC) $(CFLAGS) $(SNOBOL4_C_CFLAGS) -c $(SRCDIR)$(SNOBOL4).c
 
 main.o: $(SRCDIR)main.c
-	$(CC) $(CFLAGS) -c $(SRCDIR)main.c
+	$(CC) $(CFLAGS) $(MAINFLAGS) -c $(SRCDIR)main.c
 
 data.o: $(SRCDIR)data.c
 	$(CC) $(CFLAGS) -c $(SRCDIR)data.c
@@ -464,8 +507,9 @@ getopt.o: $(GETOPT_C)
 bindresvport.o: $(BINDRESVPORT_C)
 	$(CC) $(CFLAGS) -c $(BINDRESVPORT_C)
 
-closefrom.o: lib/bsd/closefrom.c
-	$(CC) $(CFLAGS) -c lib/bsd/closefrom.c
+CLOSEFROM_C=$(SRCDIR)lib/bsd/closefrom.c
+closefrom.o: $(CLOSEFROM_C)
+	$(CC) $(CFLAGS) -c $(CLOSEFROM_C)
 
 getdtablesize.o: $(GETDTABLESIZE_C)
 	$(CC) $(CFLAGS) -c $(GETDTABLESIZE_C)

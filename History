@@ -3,6 +3,17 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/10/2020:
+	Experiment to build libsnobol4.so
+	No lines of code changed!
+	Makefile: rules to make so/Makefile2 (creates private config.m4)
+		runs it to make shared_library
+	Makefile2.m4: split out rule (run in submake) for build.o
+		added rules to make shared library, ssnobol4 executable using it
+		added missing $(SRCDIR): MYCPPFLAGS, top level files
+	configure: add missing $(SRCDIR) prefixes
+	ssnobol4.c: one line main program to invoke shared library!
+
+10/10/2020:
 	lib/snolib/handle.c: hand out handle numbers sequentially
 
 10/10/2020:
