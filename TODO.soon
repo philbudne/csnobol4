@@ -1,5 +1,14 @@
 $Id$
 
+expand snobol4.h (.so API)
+	EXPORT(snobol4_main)?
+	snobol4_init
+	snobol4_run
+	move from lib.h?
+	io_input_file
+	io_output_string
+	io_input_string
+
 snobol4func: EXIT -- added in CSNOBOL version ??
 
 Use HAVE_PATHS_H/<paths.h>, path.h in generic/execute.c, bsd/popen.c??
