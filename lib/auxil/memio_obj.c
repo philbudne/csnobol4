@@ -115,7 +115,7 @@ memio_flush(struct io_obj *iop) {
 MAKE_OPS(memio, &SUPER);
 
 struct io_obj *
-memio_open(char *buf, size_t len, int flags, inr dir) {
+memio_open(char *buf, size_t len, int flags, int dir) {
     struct memio_obj *miop;
 
     (void) dir;
