@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/10/2020:
+	lib/posix/memio_obj.c: memio_open using POSIX fmemopen
+
 10/8/2020:
 	lib/djgpp/osinit.c: add export of relstring
 
