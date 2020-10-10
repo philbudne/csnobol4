@@ -3,6 +3,9 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/10/2020:
+	lib/snolib/handle.c: hand out handle numbers sequentially
+
+10/10/2020:
 	lib/posix/memio_obj.c: memio_open using POSIX fmemopen
 	include/io_obj.h, lib/auxil/memio_obj.c: make memio_open take dir
 	lib/io.c: pass dir to memio_open, fix some comments

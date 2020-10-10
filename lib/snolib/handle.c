@@ -2,7 +2,9 @@
 /* $Id$ */
 
 /*
- * manage lists of handles
+ * manage lists of handles for loadable code.
+ * entries from each handle table are assigned a different
+ * EXTERNAL datatype, validated on lookup.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -32,15 +34,13 @@ struct handle_entry {
 
 struct handle_table {
     long entries;
-    const char *name;
-    handle_datatype_t datatype;
+    const char *name;			/* for debug */
+    handle_datatype_t datatype;		/* SNOBOL4 EXTERNAL datatype */
+    handle_number_t next;		/* next handle to hand out */
     struct handle_entry *hash[HANDLE_HASH_SIZE];
 };
 
 #define HANDLE_HASH(H) (((int)(H)) & (HANDLE_HASH_SIZE-1))
-
-/* void pointer to handle_number */
-#define VP2HANDLENUM(VP) ((handle_number_t)(VP))
 
 static const struct descr bad_handle;
 
@@ -63,6 +63,12 @@ lookup_handle(handle_handle_t *hhp, snohandle_t h) {
     return NULL;
 }
 
+/*
+ * user passes "handle handle", a pointer to a place for us to store a
+ * pointer to a handle table (on the first lookup attempt).  Assign
+ * datatype numbers from high to low (DATA types are assigned from low
+ * to high)
+ */
 SNOEXP(snohandle_t)
 new_handle(handle_handle_t *hhp, void *vp, const char *tname) {
     struct handle_table *htp = *hhp;
@@ -83,7 +89,7 @@ new_handle(handle_handle_t *hhp, void *vp, const char *tname) {
 
     h.f = 0;
     h.v = htp->datatype;
-    h.a.i = VP2HANDLENUM(vp);
+    h.a.i = htp->next++;
 
     /* if it already exists, just return handle */
     if (lookup_handle(hhp, h) != NULL)
