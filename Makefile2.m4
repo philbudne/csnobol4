@@ -280,7 +280,8 @@ cpuid:	cpuid.c
 
 SO=so
 SOEXT=.so
-SOFILENAME=libsnobol4$(SOEXT)
+SONAME=snobol4
+SOFILENAME=lib$(SONAME)$(SOEXT)
 
 # do actual work to make shared library
 # here from top level Makefile invoking $(SO)/Makefile2 to make libsnobol4.so
@@ -301,15 +302,15 @@ shared_library: $(SOFILENAME)
 # to make shared library.
 
 $(SO)/$(SOFILENAME): always
-	$(MAKE) $(SO)/$(SOFILENAME)
+	$(MAKE) shared_library
 
 #### snobol4 executable using shared library
 
 # invoked from Makefile, in top directory
 # ask top level Makefile to build so/Makefile2 and run it
 
-ssnobol4: $(SO)/$(SOFILENAME) smain.c
-	$(CC) -o ssnobol4 smain.c -L$(SO) -lsnobol4
+ssnobol4: $(SO)/$(SOFILENAME) ssnobol4.c
+	$(CC) -Iinclude -o ssnobol4 ssnobol4.c -L$(SO) -l$(SONAME)
 
 ################
 # run regression tests.
