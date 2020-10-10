@@ -7,7 +7,6 @@ Use HAVE_PATHS_H/<paths.h>, path.h in generic/execute.c, bsd/popen.c??
 
 remove io_clearerr?
 re-implement io_getfp w/ stdio_obj_getfp??
-implement lib/posix/memio_obj.c?
 
 setjmp/longjmp for ^C on TTY read??
 
