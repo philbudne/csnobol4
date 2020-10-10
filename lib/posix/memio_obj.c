@@ -18,15 +18,14 @@
 #include "stdio_obj.h"
 
 struct io_obj *
-memio_open(char *buf, size_t len, int flags) {
+memio_open(char *buf, size_t len, int flags, int dir) {
     char mode[MAXMODE];
     FILE *f;
 
     if (!buf || len == 0)
 	return NULL;
 
-    flags |= FL_UPDATE;
-    flags2mode(flags, mode, 'r');
+    flags2mode(flags, mode, dir);
     f = fmemopen(buf, len, mode);	/* honors 'b'?! */
     if (!f)
 	return NULL;

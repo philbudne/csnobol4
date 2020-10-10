@@ -141,7 +141,7 @@ int inet_parse(char *path, char **hostp, char **servicep, int *flagp);
 extern struct io_obj nomatch;
 #define NOMATCH &nomatch
 
-struct io_obj *memio_open(char *buf, size_t len, int flags);
+struct io_obj *memio_open(char *buf, size_t len, int flags, int dir);
 #ifdef INET_IO
 struct io_obj *inetio_open(char *path, int flags, int dir);
 #endif

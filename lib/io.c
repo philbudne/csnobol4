@@ -12,16 +12,13 @@
  * due to a number of factors:
  *
  * Assumptions built into the SIL source (both compiler and runtime) e.g.
- * * compiler insists lines end with a space
- * * runtime passes in fixed (record) length buffers for input
- *	(see if can be fixed using 'L' returns as with LOAD)
+ * * compiler insists lines end with a space, appear in designated buffer
  * * Multiple layers of I/O:
  *  A single disk file or device might be associated with one or more:
- *  + SNOBOL variable associations (w/ record length)
+ *  + SNOBOL variable associations (w/ record length, unit number)
  *  + FORTRAN unit numbers
  *  + stdio FILE streams
- *  + POSIX file descriptors
- *  + (possible C runtime system handles/channels)
+ *  + POSIX file descriptors and/or C runtime system handles/channels
  *  + open file object in system space
  * * Interactions of (extensive/excessive) I/O options/flags
  * * Handling file lists.
@@ -103,11 +100,12 @@ struct iovars {
     struct file *includes;		/* list of included files */
     int finger;				/* for io_findunit */
     struct file *lib_dirs;		/* list of include directories */
-    struct file *lib_dir_last;	  /* tail of include directory list */
+    struct file *lib_dir_last;		/* tail of include directory list */
 };
 
 /*
  * private, r/o array of pointers to io_open functions
+ * taking filename, flags, 'r' or 'w'
  * returning pointers to io_obj
  */
 static struct io_obj *(*const io_open_funcs[])(char *fname, int flags, int rw) =
@@ -118,7 +116,7 @@ static struct io_obj *(*const io_open_funcs[])(char *fname, int flags, int rw) =
     ptyio_open,				/* dummy ptyio_open available */
     pipeio_open,			/* dummy popen available */
 #ifdef INET_IO
-    inetio_open,			/* winsockets */
+    inetio_open,			/* e.g. winsockets */
 #endif
     stdio_open				/* LAST! Never returns NOMATCH!! */
 };
@@ -269,9 +267,10 @@ findfile(int iunit) {
     return up->curr;			/* may be NULL */
 }
 
-/* the ONE place that allocates a "struct file"
+/*
+ * this is the ONE place that allocates a "struct file"
  * path is saved at the end of the struct
- * (so only free(fp) is needed)
+ * (so only one free(fp) is needed)
  */
 static struct file *
 io_newfile(char *path) {
@@ -288,14 +287,14 @@ io_newfile(char *path) {
 
 #ifdef MEM_IO
 static struct file *
-io_memfile(char *name, char *data, int len) {
+io_memfile(char *name, char *data, int len, int dir) {
     struct file *fp;
 
     fp = io_newfile(name);
     if (!fp)
 	return NULL;
 
-    fp->iop = memio_open(data, len, FL_EOF);
+    fp->iop = memio_open(data, len, FL_EOF, dir);
     if (!fp->iop) {
 	free(fp);
 	return NULL;
@@ -473,7 +472,7 @@ void
 io_input_string(char *name, char *str) {
     struct file *fp;
 
-    fp = io_memfile(name, str, strlen(str));
+    fp = io_memfile(name, str, strlen(str), 'r');
     if (fp == NULL)
 	return;
 
@@ -544,7 +543,7 @@ io_output_string(int unit,		/* external (1-based) unit */
 		 int len) {
     struct file *fp;
 
-    fp = io_memfile(fname, buf, len);
+    fp = io_memfile(fname, buf, len, 'w');
     if (fp == NULL)
 	return FALSE;
     io_setfile(unit, fp);
