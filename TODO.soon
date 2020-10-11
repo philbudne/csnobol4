@@ -1,8 +1,6 @@
 $Id$
 
-debug memio
-
-rename io_ to snobol4_ in snobol4.h
+rename io_ to snobol4_ in snobol4.h?
 
 snobol4func: EXIT -- added in CSNOBOL version ??
 

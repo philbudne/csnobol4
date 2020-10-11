@@ -11,6 +11,7 @@
 #endif
 
 #include <stdio.h>			/* NULL, size_t */
+#include <stdlib.h>			/* malloc */
 #include <string.h>			/* memcpy */
 
 #include "h.h"				/* TRUE */
@@ -30,13 +31,13 @@ static ssize_t
 memio_write(struct io_obj *iop, char *buf, size_t len) {
     struct memio_obj *miop = (struct memio_obj *)iop;
     size_t avail = miop->len - miop->pos;
-    if (len > avail)
-	len = avail;
-    if (len > 1) {		/* leave room for NUL */
-	memcpy(miop->ptr + miop->pos, buf, len - 1);
-	miop->pos += len - 1;
+    if (len > avail - 1)	/* need to truncate? */
+	len = avail - 1;	/* leave room for NUL */
+    if (len > 0) {
+	memcpy(miop->ptr + miop->pos, buf, len);
+	miop->pos += len;
 	miop->ptr[miop->pos] = '\0';
-	return len - 1;
+	return len;
     }
     return -1;
 }
@@ -51,13 +52,15 @@ memio_write(struct io_obj *iop, char *buf, size_t len) {
 static ssize_t
 memio_read_raw(struct io_obj *iop, char *buf, size_t len) {
     struct memio_obj *miop = (struct memio_obj *)iop;
+
     int rem = miop->len - miop->pos;
     if (rem == 0)
-	return -1;			/* 0? */
+ 	return -1;
     if (len > rem)
-	len = rem;
+ 	len = rem;
     memcpy(buf, miop->ptr + miop->pos, len);
     miop->pos += len;
+
     return len;
 }
 
@@ -132,6 +135,8 @@ memio_open(char *buf, size_t len, int flags, int dir) {
     if (!miop)
 	return NULL;
 
+    miop->bio.buffer = malloc(miop->bio.buflen = 1024); /* ugh! */
+    
     if (flags & FL_APPEND)		/* unlikely!! */
 	miop->pos = len;		/* for initial "tell" */
     else

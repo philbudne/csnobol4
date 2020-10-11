@@ -12,7 +12,7 @@
 
 int
 main() {
-    char *program = "\tOUTPUT = 'Hello ' INPUT\nEND\n";
+    char *program = "\tOUTPUT = 'Hello ' INPUT\n\tTERMINAL = 'tty'\nEND\n";
     char *input = "World!\n";
     char output[1024];
     char terminal[1024];
@@ -24,7 +24,7 @@ main() {
 
     terminal[0] = output[0] = '\0';
     io_output_string(UNITO, "output", output, sizeof(output));
-    io_output_string(UNITT, "terminal", terminal, sizeof(terminal));
+    io_output_string(UNITP, "terminal", terminal, sizeof(terminal));
 
     status = snobol4_run();
     
