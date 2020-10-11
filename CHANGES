@@ -16,6 +16,7 @@ Changes since 2.1.6 release;
 		--force-pml removed (must use modules)
 		--without-modules added (breaks tests, sdb)
 		more strict about feature tests
+	Unix/Linux systems can build libsnobol4.so shared library
 	Windows:
 		Can be built with Winsock2 support
 			(available in Win98 and NT 4.0)
