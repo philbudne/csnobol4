@@ -3,6 +3,9 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/10/2020:
+	config/win32/ntmsvc.mak: missing a few $(SRCDIR)s
+
+10/10/2020:
 	lib/auxil/memio_obj.c: fix
 	tlib.c: test output to TERMINAL
 	main.c: add -b to non-interactive init

@@ -51,10 +51,10 @@ INET_OBJ=inet.obj
 !ENDIF
 
 !ifdef WINPTY
-PTYIO_OBJ_SRC=lib\win32\ptyio_obj.c
+PTYIO_OBJ_SRC=$(SRCDIR)lib\win32\ptyio_obj.c
 BUFIO_OBJ=bufio_obj.obj
 !else
-PTYIO_OBJ_SRC=lib\dummy\ptyio_obj.c
+PTYIO_OBJ_SRC=$(SRCDIR)lib\dummy\ptyio_obj.c
 !endif
 
 ################
