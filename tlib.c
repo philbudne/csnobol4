@@ -16,6 +16,7 @@ main() {
     char *input = "World!\n";
     char output[1024];
     char terminal[1024];
+    int status;
 
     snobol4_init_ni();
     io_input_string("program", program);
@@ -25,9 +26,11 @@ main() {
     io_output_string(UNITO, "output", output, sizeof(output));
     io_output_string(UNITT, "terminal", terminal, sizeof(terminal));
 
-    snobol4_run();
+    status = snobol4_run();
     
     fputs(terminal, stderr);
 
     fputs(output, stdout);
+
+    return status;
 }
