@@ -1,15 +1,8 @@
 $Id$
 
-configure: select memio
+debug memio
 
-expand snobol4.h (.so API)
-	EXPORT(snobol4_main)?
-	snobol4_init
-	snobol4_run
-	move from lib.h?
-	io_input_file
-	io_output_string
-	io_input_string
+rename io_ to snobol4_ in snobol4.h
 
 snobol4func: EXIT -- added in CSNOBOL version ??
 
