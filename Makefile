@@ -96,7 +96,7 @@ SOEXT=.so
 $(SO)Makefile2: config.m4 Makefile2.m4
 	-test -d $(SO) || mkdir $(SO)
 	cp config.m4 $(SO)
-	echo 'ADD_CFLAGS([-fPIC])'		>> $(SO)/config.m4
+	echo 'ADD_CFLAGS([$$(SO_CFLAGS)])'	>> $(SO)/config.m4
 	echo 'ADD_CFLAGS([-DSHARED])'		>> $(SO)/config.m4
 	echo 'SRCDIR=../'			>> $(SO)/config.m4
 	echo 'ADD_OBJS([$$(MEMIO_OBJ)])'	>> $(SO)/config.m4

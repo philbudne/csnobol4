@@ -2,6 +2,21 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/11/2020:
+	shared library cleanup
+	Makefile: use SO_CFLAGS instead of -fPIC
+	Makefile2.m4: use SNOBOL4_LDFLAGS
+		use SO_EXT from configure instead of .so
+		add rule to make tlib test
+	configure: put -rdynamic in SNOBOL4_LDFLAGS
+		define DYNAMIC in DL_CFLAGS
+	main.c: define SNOBOL4_PROVIDER for snobol4.h
+	include/load.h: honor DYNAMIC define
+		add iunit/xunit arg names
+	include/snobol4.h: check SNOBOL4_PROVIDER instead of DYNAMIC
+		remove many io functions (KISS), explain UNITx
+	lib/init.c: define SNOBOL4_PROVIDER for snobol4.h
+
 10/10/2020:
 	config/win32/ntmsvc.mak: missing a few $(SRCDIR)s
 

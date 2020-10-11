@@ -41,6 +41,7 @@ struct vars *varp;
 # include "version.h"			/* VERSION, VERSION_DATE */
 
 # include "h.h"				/* IMPORT/EXPORT */
+# define SNOBOL4_PROVIDER
 # include "snobol4.h"			/* prototypes */
 
 #ifdef BLOCKS

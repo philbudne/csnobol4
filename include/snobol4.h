@@ -1,9 +1,9 @@
 /*
  * $Id$
- * Interface to experimental snobol4 shared library
+ * Interface to *EXPERIMENTAL* snobol4 shared library
  */
 
-#ifdef SHARED	/* building shared library */
+#ifdef SNOBOL4_PROVIDER	/* building snobol4 or libsnobol4.so shared library */
 #define SNOEXP(X) EXPORT(X)
 #else		/* shared library user */
 #define SNOEXP(X) IMPORT(X)
@@ -14,18 +14,16 @@ SNOEXP(int) snobol4_main(int argc, char *argv[]);
 /* or */
 #define INIT_OK -1
 SNOEXP(int) snobol4_init(int argc, char *argv[], int interactive);
+/* or */
 SNOEXP(int) snobol4_init_ni(void);	/* non-interactive */
+/* then */
 SNOEXP(int) snobol4_run(void);
 
 /* lib/io.c */
-SNOEXP(int) io_closeall(int);
-SNOEXP(int) io_skip(int);
-SNOEXP(void) io_input_file(char *);
-SNOEXP(void) io_input_string(char *name, char *);
-SNOEXP(int) io_mkfile(int, FILE *, char *);
-SNOEXP(int) io_mkfile_noclose(int, FILE *, char *);
-SNOEXP(int) io_attached(int);
+/* unit number definitions in unit.h */
+/* add files to UNITI (INPUT) file list */
+SNOEXP(void) io_input_file(char *);	/* named file */
+SNOEXP(void) io_input_string(char *name, char *); /* string */
+
+/* attach output buffer to unit UNITO for OUTPUT, UNITP for TERMINAL */
 SNOEXP(int) io_output_string(int unit, char *name, char *buf, int);
-SNOEXP(char *)io_fname(int);
-SNOEXP(int) io_findunit(void);
-SNOEXP(FILE *) io_getfp(int);

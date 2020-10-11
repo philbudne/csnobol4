@@ -90,9 +90,11 @@
 
 /*
  * return (& free) a malloc'ed C-string.
- * Returns pointer to SNOBOL as type 'M' (malloc'ed linked string)
+ * As of v2.2, returns pointer to SNOBOL as type 'M' (malloc'ed linked string)
  * After string "interned" (variable generated), relstring is called.
- * (used by ffi & readline)
+ * (used by ffi & readline).  Binaries built with this .h file are not
+ * backwards compatible (returned string will appear as EXTERNAL,
+ * memory will not be freed).
  */
 #define RETSTR_FREE(CP) \
     do { \
@@ -115,9 +117,9 @@
 	else RETFAIL; \
     } while (0)
 
-#ifdef DLL
+#if defined(DYNAMIC) || defined(DLL) /* building dynamically loadable module */
 #define SNOEXP(X) IMPORT(X)
-#else
+#else			/* building snobol4 executable (or shared library) */
 #define SNOEXP(X) EXPORT(X)
 #endif
 
@@ -131,10 +133,15 @@ SNOEXP(void) retstring(struct descr *retval, const char *cp, int len);
 SNOEXP(void) retstring_free(struct descr *retval, const char *cp, int len);
 
 /* lib/io.c; */
-SNOEXP(int) io_findunit(void);	/* find a free (external) unit */
-SNOEXP(int) io_closeall(int);	/* internal (zero-based unit) */
+SNOEXP(int) io_findunit(void);		/* find a free (external) unit */
+SNOEXP(int) io_closeall(int iunit);	/* **INTERNAL** (zero-based unit) */
+SNOEXP(int) io_attached(int xunit);	/* boolean */
+EXPORT(char *) io_fname(int xunit);
+EXPORT(int) io_skip(int xunit);
 
 #ifdef EOF				/* stdio included */
-SNOEXP(FILE *) io_getfp(int);	/* external (1-based unit) */
-SNOEXP(int) io_mkfile(int, FILE *, char*); /* external (1-based unit) */
+SNOEXP(int) io_mkfile(int xunit, FILE *, char*); /* external (1-based unit) */
+SNOEXP(int) io_mkfile_noclose(int xunit, FILE *, char *name);
+/* temporarily(?) unavailable in 2.2: */
+SNOEXP(FILE *) io_getfp(int xunit);	/* external (1-based unit) */
 #endif /* EOF defined */

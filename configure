@@ -1316,8 +1316,9 @@ if config/check dlfcn.h 'dlopen("", 0)' || \
 	    ;;
 	*BSD*)
 	    if file /bin/ls | grep -i elf >/dev/null; then
-		# only on ELF systems with GNU ld:
-		echo 'ADD_LDFLAGS([-rdynamic])' >> $CONFIG_M4
+		# only on ELF systems
+		# (make all symbols visible to dynamically loaded code)
+		SNOBOL4_LDFLAGS=-rdynamic
 	    else
 		# old a.out systems:
 		# COFF may not, but this should be mostly harmless
@@ -1327,8 +1328,9 @@ if config/check dlfcn.h 'dlopen("", 0)' || \
 	Linux*)
 	    # XXX detect a.out systems?
 	    echo 'ADD_LDFLAGS([-ldl])'		>> $CONFIG_M4
-	    # only on ELF systems with GNU ld:
-	    echo 'ADD_LDFLAGS([-rdynamic])' >> $CONFIG_M4
+	    # only on ELF systems with GNU ld
+	    # (make all symbols visible to dynamically loaded code)
+	    SNOBOL4_LDFLAGS=-rdynamic
 	    ;;
 	SunOS4*)
 	    echo 'ADD_LDFLAGS([-ldl])'		>> $CONFIG_M4
@@ -1471,6 +1473,10 @@ if config/check "time.h" 'char buf[1024]; time_t t = time(0); strftime(buf, size
     echo '#define HAVE_STRFTIME'		>> $CONFIG_H
 fi
 
+if [ "x$SNOBOL4_LDFLAGS" != x ]; then
+    echo "SNOBOL4_LDFLAGS=$SNOBOL4_LDFLAGS"	>> $CONFIG_M4
+fi
+
 # output SO/DL defines
 
 # on everything except Darwin, one format suffices
@@ -1480,6 +1486,7 @@ if [ "x$SO_EXT" != x -a "x$DL_EXT" = x ]; then
     DL_LD="$SO_LD"
     DL_LDFLAGS="$SO_LDFLAGS"
 fi
+DL_CFLAGS="-DDYNAMIC $DL_CFLAGS"
 
 if [ "x$SO_EXT" != x ]; then
 # not used:

@@ -27,6 +27,8 @@
 #include "res.h"			/* for data.h */
 #include "data.h"			/* SIL data */
 #include "proc.h"			/* for SYSCUT() */
+#include "load.h"			/* io_init_mkfile, io_fname */
+# define SNOBOL4_PROVIDER
 #include "snobol4.h"			/* INIT_OK */
 
 #include "version.h"

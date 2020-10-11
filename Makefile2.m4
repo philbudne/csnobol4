@@ -255,7 +255,7 @@ build_all: $(BUILD_ALL)
 xsnobol4: $(OBJS)
 	rm -f xsnobol4$(EXT)
 	$(MAKE) -f Makefile2 build.o
-	$(CC) -o xsnobol4 $(OBJS) build.o $(LDFLAGS)
+	$(CC) -o xsnobol4 $(OBJS) build.o $(LDFLAGS) $(SNOBOL4_LDFLAGS)
 
 changequote(@,@)dnl
 
@@ -280,21 +280,20 @@ cpuid:	cpuid.c
 ################ shared library
 
 SO=so
-SOEXT=.so
 SONAME=snobol4
-SOFILENAME=lib$(SONAME)$(SOEXT)
+SOFILENAME=lib$(SONAME)$(SO_EXT)
 
-# do actual work to make shared library
-# here from top level Makefile invoking $(SO)/Makefile2 to make libsnobol4.so
-# with SRCDIR=../
+# do actual work to make shared library.
+# invoked by top level Makefile
+# in so directory, running so/Makefile2 (created with custom config.m4)
+# with target shared_library and SRCDIR=../
+
+# for Makefile, so it is agnostic about filename/extension:
+shared_library: $(SOFILENAME)
 
 $(SOFILENAME): $(OBJS)
 	$(MAKE) -f Makefile2 build.o
 	$(SO_LD) -o $(SOFILENAME) $(SO_LDFLAGS) $(OBJS) build.o $(LDFLAGS)
-
-# for Makefile, so it is agnostic about filename/extension:
-
-shared_library: $(SOFILENAME)
 
 #### make shared library for ssnobol4 rule (below)
 
@@ -310,8 +309,17 @@ $(SO)/$(SOFILENAME): always
 # invoked from Makefile, in top directory
 # ask top level Makefile to build so/Makefile2 and run it
 
+# unless $(SOFILENAME) is installed a well-known location
+# you'll likely need to set LD_LIBRARY_PATH
+# (or DYLD_LIBRARY path on OSX)
+
+# snobol4 interpreter using shared library (may be up to 8% slower)
 ssnobol4: $(SO)/$(SOFILENAME) ssnobol4.c
 	$(CC) -Iinclude -o ssnobol4 ssnobol4.c -L$(SO) -l$(SONAME)
+
+# tiny test of invoking SNOBOL4 in a program:
+tlib: $(SO)/$(SOFILENAME) tlib.c
+	$(CC) -Iinclude -o tlib tlib.c -L$(SO) -l$(SONAME)
 
 ################
 # run regression tests.
