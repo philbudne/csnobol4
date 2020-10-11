@@ -1549,7 +1549,7 @@ if [ ! "$WITHOUT_READLINE" ]; then
 fi
 
 # support for shared library
-if config/check stdio.h 'FILE *f = fmemopen("hello\n", 6, "r")'; then
+if config/check stdio.h 'FILE *f = fmemopen("hello", 5, "r")'; then
     echo 'MEMIO_OBJ_C=$(SRCDIR)lib/posix/memio_obj.c' >> $CONFIG_M4
     echo 'MEMIO_OBJ=memio_obj.o'		>> $CONFIG_M4
     echo 'MEMIO_SRC=$(MEMIO_OBJ_C)'		>> $CONFIG_M4
