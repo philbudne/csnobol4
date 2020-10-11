@@ -18,24 +18,12 @@ void hash(struct descr *,struct spec *);
 
 /* from init.c */
 int getparm(struct spec *);
-void init_args(int, char *[]);
-void init(void);
+int init_args(int argc, char *argv[], int interactuve);
+void init(void);			/* SIL INIT op */
 
 /* from io.c */
 void io_initvars(void);
 void io_backspace(int_t);
-EXPORT(int) io_closeall(int);
-EXPORT(int) io_skip(int);
-EXPORT(void) io_input_file(char *);
-#ifdef MEM_IO
-EXPORT(void) io_input_string(char *);
-#endif
-EXPORT(int) io_mkfile(int, FILE *, char *);
-EXPORT(int) io_mkfile_noclose(int, FILE *, char *);
-EXPORT(int) io_attached(int);
-#ifdef MEM_IO
-EXPORT(int) io_output_string(int, char *, char *, int);
-#endif
 void io_printf(int_t,...);
 void io_print(struct descr *,struct descr *,struct spec *);
 int io_endfile(int_t);
@@ -45,13 +33,10 @@ void io_ecomp(void);
 int io_openi(struct descr *,struct spec *,struct spec *,struct descr *);
 int io_openo(struct descr *,struct spec *,struct spec *);
 /* io_include() in libret.h */
-EXPORT(char *)io_fname(int);
 int io_file(struct descr *,struct spec *);
 int io_seek(struct descr *,struct descr *,struct descr *);
 int io_sseek(int_t,int_t,int_t,int_t,int_t *);
 int io_flushall(int);
-EXPORT(int) io_findunit(void);
-EXPORT(FILE *) io_getfp(int);
 int io_pad(struct spec *,int);
 int io_finish(void);
 int io_add_lib_dir(char *);

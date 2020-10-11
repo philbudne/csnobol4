@@ -19,7 +19,7 @@
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
-#include "lib.h"			/* io_init(), io_input() protos */
+#include "lib.h"			/* io_input() protos */
 #include "str.h"			/* strlen() */
 #include "units.h"			/* UNIT[IOPT] */
 
@@ -27,6 +27,7 @@
 #include "res.h"			/* for data.h */
 #include "data.h"			/* SIL data */
 #include "proc.h"			/* for SYSCUT() */
+#include "snobol4.h"			/* INIT_OK */
 
 #include "version.h"
 
@@ -92,6 +93,8 @@ extern int optind;
 extern char *optarg;
 #endif
 
+static void init_signals(void);
+
 static void
 p(int flag, char *str) {
     fprintf(stderr, "-%c\t%s\n", flag, str);
@@ -115,7 +118,7 @@ showk(int n) {
     return buf;
 }
 
-static void
+static int
 usage(char *jname, int justversion) {
     extern const char snoname[], vers[], vdate[];
     fprintf( stderr, "%s version %s (%s)\n", snoname, vers, vdate );
@@ -123,7 +126,7 @@ usage(char *jname, int justversion) {
     fprintf( stderr, "built %s\n", build_date);
 #endif /* HAVE_BUILD_VARS defined */
     if (justversion)
-	exit(1);
+	return 0;
 
     fprintf( stderr,
 	    "Usage: %s [options...] [files...] [parameters...]\n", jname );
@@ -160,7 +163,7 @@ usage(char *jname, int justversion) {
     fprintf(stderr, "\n");
     fprintf(stderr, "For memory region sizes a suffix of 'k' (1024) and 'm' (1024*1024)\n");
     fprintf(stderr, "can be used. A descriptor takes up %d bytes.\n", (int)DESCR );
-    exit(1);
+    return 1;
 }
 
 static int
@@ -230,28 +233,21 @@ getargs(int start,			/* which argument to start on */
     return parms;
 }
 
-static void
-io_init(int stdinc) {			/* here from init_args() */
+/* return zero on failure */
+static int
+io_init(int std_includes, int interactive) {	/* here from init_args() */
     FILE *termin;
 
     io_initvars();
 
+    if (!interactive)
+	return 1;
+
+    init_signals();
+
     if (nfiles == 0) {			/* no input file(s)? */
-#ifdef MEM_IO_TEST
-	char *str = "\tOUTPUT = 'Hello World'\n\tOUTPUT = INPUT\nEND\nFOO\n";
-	io_input_string( "input", str );
-#else  /* MEM_IO_TEST not defined */
-	/* read code from stdin.... Macro SPITBOL requires '-' for this */
-#if 1
+	/* note: io_mkfile blows away preload list */
 	io_input_file("-");		/* implicit "-"! */
-#else
-	/* blows away preload list */
-	if (!io_mkfile_noclose(UNITI, stdin, STDIN_NAME)) {
-	    perror("could not attach stdin to INPUT");
-	    exit(1);
-	}
-#endif
-#endif /* MEM_IO_TEST not defined */
     }
     else {
 	if (!io_skip(UNITI)) {		/* force file open */
@@ -260,7 +256,7 @@ io_init(int stdinc) {			/* here from init_args() */
 	    if (!fname)
 		fname = "unknown input file";
 	    perror(fname);
-	    exit(1);
+	    return 0;
 	}
     }
 
@@ -268,24 +264,25 @@ io_init(int stdinc) {			/* here from init_args() */
 
     if (!D_A(LISTCL) && !io_mkfile_noclose(UNITO, stdout, STDOUT_NAME)) {
 	perror("could not attach stdout to OUTPUT");
-	exit(1);
+	return 0;
     }
 
     if (!io_mkfile_noclose(UNITP, stderr, STDERR_NAME)) {
 	perror("could not attach stderr to TERMINAL");
-	exit(1);
+	return 0;
     }
 
     termin = term_input();		/* call system dependant function */
     if (termin && !io_mkfile_noclose(UNITT, termin, TERMIN_NAME)) {
 	perror("could not open TERMINAL for input");
-	exit(1);
+	return 0;
     }
+    return 1;
 } /* io_init */
 
 /* called after -I paths have already been added, before preload, sources */
 static void
-pathinit(int stdinc) {
+pathinit(int std_includes) {
     char *env;
 
     /* generate directory names for HOST() even if not in search path */
@@ -310,27 +307,28 @@ pathinit(int stdinc) {
     if (env) {
 	io_add_lib_path(env);
     }
-    else if (stdinc) {
+    else if (std_includes) {
 	io_add_lib_dir(snolib_vlib);	/* dist, (version-specific) */
 	io_add_lib_dir(snolib_vlocal);	/* local, version-specific */
 	io_add_lib_dir(snolib_local);	/* local -- all versions */
 	io_add_lib_dir(snolib_base);	/* old directory */
     }
 #ifdef EXTRA_SNOPATH
-    if (stdinc)
+    if (std_includes)
 	io_add_lib_path(EXTRA_SNOPATH);
 #endif
 }
 
 /* called from main.c after init_data, before xfer to SIL BEGIN label */
-void
-init_args(int ac, char *av[]) {
+/* returns exit status, or INIT_OK on success */
+int
+init_args(int ac, char *av[], int interactive) {
     int errs;
     int c;
     int multifile;
     int justversion;
     int showpaths = 0;
-    int stdinc = 1;
+    int std_includes = 1;
 
     ndynamic = NDYNAMIC;
     pmstack = PSSIZE;
@@ -406,7 +404,7 @@ init_args(int ac, char *av[]) {
 		D_A(LISTCL) = lflag = 1;
 		if (!listfile || !io_mkfile(UNITO, listfile, optarg)) {
 		    perror(optarg);
-		    exit(1);
+		    return 1;
 		}
 	    }
 	    break;
@@ -465,7 +463,7 @@ init_args(int ac, char *av[]) {
 		    io_input_file(path);
 		else {
 		    fprintf(stderr, "%s: file not found\n", optarg);
-		    exit(1);
+		    return 1;
 		}
 	    }
 	    break;
@@ -475,7 +473,7 @@ init_args(int ac, char *av[]) {
 	    break;
 
 	case 'N':			/* no standard includes */
-	    stdinc = 0;
+	    std_includes = 0;
 	    break;
 
 	case 'P':			/* pattern match stack size */
@@ -497,7 +495,7 @@ init_args(int ac, char *av[]) {
 	}
     } /* while getopt */
 
-    pathinit(stdinc);
+    pathinit(std_includes);
 
     /* XXX option to disable? */
     io_preload();
@@ -533,20 +531,22 @@ init_args(int ac, char *av[]) {
 
     firstarg = optind;			/* save for HOST(3) */
 
-    if (errs) {
-	usage(argv[0], justversion);
-    }
+    if (errs)
+	return usage(argv[0], justversion);
 
-    io_init(stdinc);			/* AFTER io_input calls! */
+    if (!io_init(std_includes, interactive)) /* AFTER io_input calls! */
+	return 1;
 
     if (showpaths) {			/* after io_init() */
 	io_show_paths();
-	exit(0);
+	return 0;
     }
 
 #ifdef HAVE_OS_INIT
     os_init();
 #endif /* HAVE_OS_INIT defined */
+
+    return INIT_OK;
 }
 
 #ifndef NO_STATIC_VARS
@@ -676,8 +676,11 @@ init(void) {
 
     /* pointer to end of stack, for overflow checks */
     D_A(STKEND) = (int_t) ptr + istack;
+}
 
-    /****************
+static void
+init_signals(void) {
+    /*
      * setup signal handlers
      */
 
@@ -714,7 +717,7 @@ init(void) {
 #ifdef SIGTSTP
     signal(SIGTSTP, suspend);
 #endif /* SIGTSTP defined */
-}
+} /* init_signals */
 
 /* 9/21/96 - set specifier to point to entire command line for &PARM */
 int

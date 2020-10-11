@@ -14,17 +14,17 @@
 # include "gen.h"
 # include "macros.h"
 
-# if defined(ENDEX_LONGJMP) || defined(NO_STATIC_VARS)
+# if defined(SHARED) || defined(NO_STATIC_VARS)
 # include "equ.h"
 # include "res.h"
-# endif /* defined(ENDEX_LONGJMP) || defined(NO_STATIC_VARS) */
+# endif /* defined(SHARED) || defined(NO_STATIC_VARS) */
 
-# ifdef ENDEX_LONGJMP
+# ifdef SHARED
 # include <setjmp.h>
 # ifndef NO_STATIC_VARS
 jmp_buf endex_jmpbuf;
 # endif /* NO_STATIC_VARS not defined */
-# endif /* ENDEX_LONGJMP defined */
+# endif /* SHARED defined */
 
 # ifdef NO_STATIC_VARS
 # include "vars.h"
@@ -40,6 +40,9 @@ struct vars *varp;
 # include "res.h"			/* BANRCL */
 # include "version.h"			/* VERSION, VERSION_DATE */
 
+# include "h.h"				/* IMPORT/EXPORT */
+# include "snobol4.h"			/* prototypes */
+
 #ifdef BLOCKS
 #define SNONAME "CSNOBOL4B"
 #else
@@ -50,25 +53,58 @@ const char vers[] = VERSION;
 const char vdate[] = VERSION_DATE;
 const char snoname[] = SNONAME;
 
-int
-main(int argc, char *argv[]) {
+/* returns exit status, or -1 on success!! */
+SNOEXP(int)
+snobol4_init(int argc, char *argv[], int interactive) {
 # ifdef NO_STATIC_VARS
-# ifdef ENDEX_LONGJMP
+# ifdef SHARED
     jmp_buf _endex_jmpbuf;
-# endif /* ENDEX_LONGJMP defined */
+# endif /* SHARED defined */
 
     varp = (struct vars *)malloc(sizeof(struct vars));
     if (!varp) {
 	perror("could not allocate vars");
-	exit(1);
+	return 1;
     }
-# ifdef ENDEX_LONGJMP
+# ifdef SHARED
     varp->v_endex_jmpbuf = _endex_jmpbuf;
-# endif /* ENDEX_LONGJMP defined */
+# endif /* SHARED defined */
 # endif /* NO_STATIC_VARS defined */
     init_data();
     init_syntab();
-    init_args( argc, argv );
+    return init_args( argc, argv, interactive );
+}
+
+#ifdef SHARED
+static char *ni_argv[] = { "snobol4", "-r" };
+#define NI_ARGC sizeof(ni_argv)/sizeof(ni_argv[0])
+
+EXPORT(int)
+snobol4_init_ni(void) {			/* non-interactive init */
+    return snobol4_init(NI_ARGC, ni_argv, 0);
+}
+#endif
+
+SNOEXP(int)
+snobol4_run(void) {
+# ifdef SHARED
+    if (setjmp(endex_jmpbuf))
+	return(D_A(RETCOD));
+# endif /* SHARED defined */
+    BEGIN(NORET);
+    /* NOTREACHED */
+    return( 0 );
+}
+
+#ifdef SHARED
+#define main snobol4_main
+#endif
+
+SNOEXP(int)
+main(int argc, char *argv[]) {
+    int ret = snobol4_init(argc, argv, 1);
+    if (ret != INIT_OK)
+	return ret;
 
     if( D_A(BANRCL) != 0 ) {
 	io_printf(D_A(PUNCH),
@@ -79,10 +115,5 @@ main(int argc, char *argv[]) {
 # endif /* MODIFIED_BANNER defined */
     }
 
-# ifdef ENDEX_LONGJMP
-    if (setjmp(endex_jmpbuf))
-	return(D_A(RETCOD));
-# endif /* ENDEX_LONGJMP defined */
-    BEGIN(NORET);
-    return( 0 );
+    return snobol4_run();
 }

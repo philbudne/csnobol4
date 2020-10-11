@@ -3,6 +3,23 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/10/2020:
+	Second round of shared library fun
+	Makefile: just define SHARED
+	Makefile2.m4: no MAINFLAGS
+	main.c: add snobol4_init, snobol4_init_ni, snobol4_run
+	ssnobol4.c: need stdio.h, h.h
+	config/win32/config.h: comment
+	include/lib.h: move stuff to snobol4.h
+	include/snobol4.h: stuff from lib.h
+	lib/endex.c: s/ENDEX_LONGJMP/SHARED/
+	lib/init.c: s/stdinc/std_includes/
+		init_args takes interactive argument
+		create signal_init, call from io_init (instead of SIL INIT)
+	lib/io.c: s/MEM_IO/SHARED/
+		fix io_memfile
+		EXPORT io_input_string
+
+10/10/2020:
 	Experiment to build libsnobol4.so
 	No lines of code changed!
 	Makefile: rules to make so/Makefile2 (creates private config.m4)

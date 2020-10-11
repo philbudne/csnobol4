@@ -69,7 +69,7 @@
 #endif /* defined(__BORLANDC__) */
 
 /*
- * IMPORT (external) symbols when building a DLL
+ * IMPORT (external) symbols when building a LOADable DLL
  * load.h defines SNOEXP(X) as IMPORT(X) when DLL defined
  */
 #ifdef DLL

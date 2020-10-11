@@ -341,7 +341,7 @@ $(SNOBOL4).o: $(SRCDIR)$(SNOBOL4).c
 	$(CC) $(CFLAGS) $(SNOBOL4_C_CFLAGS) -c $(SRCDIR)$(SNOBOL4).c
 
 main.o: $(SRCDIR)main.c
-	$(CC) $(CFLAGS) $(MAINFLAGS) -c $(SRCDIR)main.c
+	$(CC) $(CFLAGS) -c $(SRCDIR)main.c
 
 data.o: $(SRCDIR)data.c
 	$(CC) $(CFLAGS) -c $(SRCDIR)data.c

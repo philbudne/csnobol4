@@ -3,6 +3,9 @@
  * tiny main program using libsnobol4.so shared library
  */
 
+#include <stdio.h>
+
+#include "h.h"
 #include "snobol4.h"			/* shared library API */
 
 int

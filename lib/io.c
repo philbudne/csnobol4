@@ -285,7 +285,7 @@ io_newfile(char *path) {
     return fp;
 }
 
-#ifdef MEM_IO
+#ifdef SHARED
 static struct file *
 io_memfile(char *name, char *data, int len, int dir) {
     struct file *fp;
@@ -294,7 +294,7 @@ io_memfile(char *name, char *data, int len, int dir) {
     if (!fp)
 	return NULL;
 
-    fp->iop = memio_open(data, len, FL_EOF, dir);
+    fp->iop = memio_open(data, len, 0, dir);
     if (!fp->iop) {
 	free(fp);
 	return NULL;
@@ -302,7 +302,7 @@ io_memfile(char *name, char *data, int len, int dir) {
     fp->iop->fname = fp->fname;		/* "borrowed" */
     return fp;
 }
-#endif /* MEM_IO defined */
+#endif /* SHARED defined */
 
 void
 io_initvars(void) {
@@ -467,8 +467,8 @@ io_input_file(char *path) {
     io_addfile( INTERN(UNITI), fp, TRUE );	/* append to list! */
 }
 
-#ifdef MEM_IO
-void
+#ifdef SHARED
+EXPORT(void)
 io_input_string(char *name, char *str) {
     struct file *fp;
 
@@ -478,7 +478,7 @@ io_input_string(char *name, char *str) {
 
     io_addfile( INTERN(UNITI), fp, TRUE );	/* append to list! */
 }
-#endif /* MEM_IO defined */
+#endif /* SHARED defined */
 
 /* attach a "struct file" to a unit (external) */
 static void
@@ -531,7 +531,7 @@ io_attached(int unit) {
     return up->curr != NULL;
 }
 
-#ifdef MEM_IO
+#ifdef SHARED
 /*
  * create a memory based output file and attach for output
  * pass in a char ** to be filled with a malloced buffer?
@@ -549,7 +549,7 @@ io_output_string(int unit,		/* external (1-based) unit */
     io_setfile(unit, fp);
     return TRUE;
 }
-#endif
+#endif /* SHARED defined */
 
 /*
  * implement SIL operations;

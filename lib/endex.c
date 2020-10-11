@@ -19,10 +19,10 @@
 #ifdef NO_STATIC_VARS
 #include "vars.h"
 #else  /* NO_STATIC_VARS not defined */
-#ifdef ENDEX_LONGJMP
+#ifdef SHARED
 #include <setjmp.h>
 extern jmp_buf endex_jmpbuf;
-#endif /* ENDEX_LONGJMP defined */
+#endif /* SHARED defined */
 #endif /* NO_STATIC_VARS not defined */
 
 #ifdef TRACE_DEPTH
@@ -52,10 +52,10 @@ endex(int x) {
 	    fprintf( stderr, "%8d %8d\n", i, returns[i]);
 #endif /* TRACE_DEPTH defined */
 
-#ifdef ENDEX_LONGJMP
+#ifdef SHARED
     longjmp(endex_jmpbuf, 1);
-#else  /* ENDEX_LONGJMP not defined */
+#else  /* SHARED not defined */
     /* else exit w/ &CODE */
     exit(D_A(RETCOD));
-#endif /* ENDEX_LONGJMP not defined */
+#endif /* SHARED not defined */
 }
