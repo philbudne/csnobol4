@@ -117,6 +117,9 @@ $(SO)Makefile2: config.m4 Makefile2.m4
 shared_library: $(SO)Makefile2
 	$(MAKE) -C $(SO) -f Makefile2 shared_library SRCDIR=../
 
+debug_shared_library: $(SO)Makefile2
+	$(MAKE) -C $(SO) -f Makefile2 shared_library SRCDIR=../ OPT=-g
+
 #### make main program using shared library
 
 ssnobol4: ALWAYS Makefile2
