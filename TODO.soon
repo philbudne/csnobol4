@@ -1,7 +1,9 @@
 $Id$
 
-rename io_ to snobol4_ in snobol4.h?
-
+shared library:
+	rename io_ to snobol4_ in snobol4.h?
+	-rdynamic not needed when building library
+	gcc -shared -Wl,-soname,libxx.so.1 -o libxx.so.1.0.1
 snobol4func: EXIT -- added in CSNOBOL version ??
 
 Use HAVE_PATHS_H/<paths.h>, path.h in generic/execute.c, bsd/popen.c??
