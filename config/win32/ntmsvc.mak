@@ -17,6 +17,9 @@ WINPTY=1
 # -O2 opt for speed
 OPT=-O2
 
+# this file!
+MAKEFILE=config/win32/ntmsvc.mak
+
 ################ conditionals based on settings:
 
 # dummy internet support
@@ -41,9 +44,9 @@ INET_LIBS=ws2_32.lib
 !endif
 # here with WINSOCK defined
 INET_DEFS=$(WINSOCK_DEF) -DINET_IO
-# auxillary objects requires for both WS1 & WS2:
+# auxillary objects required for both WS1 & WS2:
 INET_OBJS=bindresvport.obj inetio_obj.obj
-BUFIO_OBJ=bufio_obj.obj
+BUFIO=1
 !ELSE
 ######## WINSOCK not defined
 INET_SRC=$(SRCDIR)lib\dummy\inet.c
@@ -52,9 +55,18 @@ INET_OBJ=inet.obj
 
 !ifdef WINPTY
 PTYIO_OBJ_SRC=$(SRCDIR)lib\win32\ptyio_obj.c
-BUFIO_OBJ=bufio_obj.obj
+BUFIO=1
 !else
 PTYIO_OBJ_SRC=$(SRCDIR)lib\dummy\ptyio_obj.c
+!endif
+
+!ifdef MEMIO
+BUFIO_OBJ=memio_obj.obj
+BUFIO=1
+!endif
+
+!ifdef BUFIO
+BUFIO_OBJ=bufio_obj.obj
 !endif
 
 ################
@@ -63,12 +75,12 @@ LINK=link
 
 COMMON_CFLAGS=-nologo -DHAVE_CONFIG_H
 DL_CFLAGS=$(COMMON_CFLAGS)
-CFLAGS=-c $(OPT) $(COMMON_CFLAGS) $(INET_DEFS) -I$(SRCDIR)config\win32 -I$(SRCDIR)include -I$(SRCDIR).
+CFLAGS=-c $(OPT) $(COMMON_CFLAGS) $(INET_DEFS) -I$(SRCDIR)config\win32 -I$(SRCDIR)include -I$(SRCDIR). $(DEFS)
 
 # disable switch/enum warning for isnobol4.c:
 SNOBOL4_C_CFLAGS=/wd4715
 
-OBJ=	$(BUFIO_OBJ) $(INET_OBJ) $(INET_OBJS) \
+OBJ=	$(BUFIO_OBJ) $(INET_OBJ) $(INET_OBJS) $(MEMIO_OBJ) \
 	atan.obj bal.obj \
 	break.obj chop.obj cos.obj data.obj \
 	data_init.obj date.obj delete.obj dump.obj \
@@ -104,6 +116,23 @@ $(MANIFEST_RES): $(MANIFEST_RC)
 always:
 	@if EXIST config.h erase config.h
 	@if EXIST config.sno erase config.sno
+
+################ DLL (not tested!)
+
+DLLDIR=dllobj
+DLLNAME=snobol4.dll
+
+# NOTE -DDLL not defined!! That's for loadable modules!!
+dll $(DLLDIR)\$(DLLNAME): always
+	if NOT EXIST $(DLLDIR) mkdir $(DLLDIR)
+	cd $(DLLDIR) $(MAKE) -f ../$(MAKEFILE) DEFS='-DSHARED' MEMIO=1 SRCDIR=..\ _dll
+
+# invoked by above, in dll directory, with tweaked variables
+# target NOT named snobol4.dll, 'cause someone might try "make snobol4.dll"!
+_dll:	$(OBJ) $(MANIFEST_RES)
+	$(LINK) /DLL /out:$(DLLNAME) $(OBJ) $(MANIFEST_RES) $(INET_LIBS)
+
+################
 
 data.obj : $(SRCDIR)data.c
 	$(CC) $(CFLAGS) $(SRCDIR)data.c
@@ -219,6 +248,9 @@ intspc.obj : $(SRCDIR)lib\generic\intspc.c
 
 bufio_obj.obj : $(SRCDIR)lib\auxil\bufio_obj.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\auxil\bufio_obj.c
+
+memio_obj.obj : $(SRCDIR)lib\auxil\memio_obj.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\auxil\memio_obj.c
 
 ################ win32!
 

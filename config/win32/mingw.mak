@@ -12,6 +12,9 @@
 CC=$(TOOLCHAIN)gcc
 WINDRES=$(TOOLCHAIN)windres
 
+# THIS file!
+MAKEFILE=config/win32/mingw.mak
+
 # includes -finline-functions (and others in gcc v3):
 OPT=-O3 -g
 
@@ -69,7 +72,7 @@ HOST_CFLAGS=$(CFLAGS) -DCC=\"$(TCC)\" -DCOPT=\"$(OPT)\" -DSO_LD=\"$(TCC)\" -DDL_
 # target C compiler (overridden for cross-compiles)
 TCC=$(CC)
 
-IMPLIB=libsnobol4.a
+IMPLIB=snobol4.lib
 LDFLAGS=-Wl,--out-implib,$(IMPLIB)
 
 SRC=	$(BUFIO_OBJ_C) $(INET_AUX_SRC) $(INET_C) $(PTYIO_OBJ_C) \
@@ -102,6 +105,11 @@ SRC=	$(BUFIO_OBJ_C) $(INET_AUX_SRC) $(INET_C) $(PTYIO_OBJ_C) \
 	$(SRCDIR)lib/win32/term.c $(SRCDIR)lib/win32/tty.c \
 	$(SRCDIR)main.c $(SRCDIR)syn.c
 
+ifdef MEMIO
+SRC += $(SRCDIR)lib/auxil/memio_obj.c
+NEED_BUFIO=1
+endif
+
 ifdef NEED_BUFIO
 SRC += $(SRCDIR)lib/auxil/bufio_obj.c
 endif
@@ -119,10 +127,12 @@ RULES=rules.mingw
 # NOTE! CFLAGS get baked into RULES file
 # (or else need to pass in name of per-file-group CFLAGS)
 # so RULES file depends on Makefile (so it's remade)
-$(RULES): config/win32/mingw.mak
-	CC="$(CC)" CFLAGS='$(CFLAGS)' ./config/makerulesdep $(SRC) > $(RULES)
-	CC="$(CC)" CFLAGS='$(SNOBOL4_CFLAGS)' ./config/makerulesdep isnobol4.c >> $(RULES)
-	CC="$(CC)" CFLAGS='$(HOST_CFLAGS)' ./config/makerulesdep \
+MAKERULESDEP=$(SRCDIR)config/makerulesdep
+
+$(RULES): $(SRCDIR)$(MAKEFILE)
+	CC="$(CC)" CFLAGS='$(CFLAGS)' $(MAKERULESDEP) $(SRC) > $(RULES)
+	CC="$(CC)" CFLAGS='$(SNOBOL4_CFLAGS)' $(MAKERULESDEP) $(SRCDIR)isnobol4.c >> $(RULES)
+	CC="$(CC)" CFLAGS='$(HOST_CFLAGS)' $(MAKERULESDEP) \
 		$(SRCDIR)lib/snolib/host.c >> $(RULES)
 
 # implicitly depends on RULES (above)
@@ -134,7 +144,7 @@ cpuid.exe: cpuid.c
 snobol4.exe $(IMPLIB): $(OBJ) manifest.o
 	$(CC) -shared-libgcc -o snobol4 $(OBJ) manifest.o $(INET_LIBS) $(LDFLAGS)
 
-MANIFEST=config/win32/manifest.rc
+MANIFEST=$(SRCDIR)config/win32/manifest.rc
 manifest.o: $(MANIFEST)
 	$(WINDRES) $(MANIFEST) manifest.o
 
@@ -203,6 +213,22 @@ modules/time/time.dll: $(MODDEP) modules/time/setup.sno modules/time/time.c
 
 modules/sprintf/sprintf.dll: $(MODDEP) modules/sprintf/setup.sno modules/sprintf/sprintf.c
 	cd modules/sprintf; $(RUNSETUP) build
+
+################ DLL
+
+DLLDIR=dllobj
+DLLNAME=snobol4.dll
+
+# NOTE -DDLL not defined!! That's for loadable modules!!
+dll $(DLLDIR)/$(DLLNAME): always
+	-test -d $(DLLDIR) || mkdir $(DLLDIR)
+	$(MAKE) -C $(DLLDIR) -f ../$(MAKEFILE) \
+		DEFS='-DSHARED' MEMIO=1 SRCDIR=../ _dll
+
+# invoked by above, in dll directory, with tweaked variables
+# target NOT named snobol4.dll, 'cause someone might try "make snobol4.dll"!
+_dll:	$(OBJ) manifest.o
+	$(CC) -shared -o $(DLLNAME) $(OBJ) manifest.o $(INET_LIBS) $(LDFLAGS)
 
 ################ housekeeping
 
