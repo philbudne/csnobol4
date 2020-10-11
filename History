@@ -9,7 +9,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 		mattered in ancient days when getrusage wasn't widely
 		available, and clock tick size was often a a result of
 		divination)
-
+	    Turns out to be a feature (System Integrity Protection)
 	timing: comment out time
 	timing.sno: add, check CHECK_TIMING setting
 

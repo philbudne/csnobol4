@@ -4,9 +4,12 @@ For detailed revision history see History file
 
 Changes since 2.1.6 release;
 ===========================
-	Compilation now requires an ANSI/ISO (C89/C90) C compiler.
+	Compilation now requires an ANSI/ISO (C89/C90) C compiler,
+		will use C99 language extensions (soon to be available
+		in MicroSoft compilers!).  Have been using include files,
+		and runtime functions when available for a long time.
 	Text input no longer limited by "record length" (K flag obsolete).
-	I/O code cleanup/refactor.
+	I/O code cleanup/refactor (wish list item since 2002!)
 	Fix "stat" module.
 	Switch back to less precise runtime reports of JUST user time.
 	All output unbuffered with -U option,
@@ -17,19 +20,27 @@ Changes since 2.1.6 release;
 		--without-modules added (breaks tests, sdb)
 		more strict about feature tests
 	Unix/Linux systems can build libsnobol4.so shared library
-	Windows:
-		Can be built with Winsock2 support
-			(available in Win98 and NT 4.0)
-			for IPv6 support (available in WinXP)
-		Fixed test for C++ compiler under cygwin
-		Experimental support for "Pseudo Consoles" on Windows 10
-		Executable manifested for Windows 10
-			(previously HOST() only showed "Win8" on Windows 10)
-		Implement EXIT('command to run')
+		ssnobol4 executable is an executable using it
+		(up to 8% performance penalty (for Position Indpendant Code)
+		 except perhaps on MacOS, where PIC is the default)
+		tlib.c is a small demo of invoking interpreter from a C
+		program.  I'm not sure I see the point, since it's easy
+		enough to write temporary files, and invoke a subprocess!?
+		Shared library API is in include/snobol4.h
+		No promises on future availability or stability!
 	Loadable functions may now return strings in malloc'ed memory
 		via RETSTR[2]_FREE (and silently by RETSTR[2]),
 		using new datatype "M"; CSNOBOL4 calls relstring
 		after variable generated (string interned) in SNOBOL memory
+	Windows:
+		Builds by default with Winsock2 support
+			for IPv6 support (available since in WinXP)
+		Fixed test for C++ compiler under cygwin
+		Experimental support for "Pseudo Consoles" on Windows 10
+			(output will contain ANSI escape sequences)
+		Executable manifested for Windows 10
+			(previously HOST() only showed "Win8" on Windows 10)
+		Implement EXIT('command to run')
 	Portability fixes for Android, illumos (Solaris).
 
 Changes since 2.0 release;
