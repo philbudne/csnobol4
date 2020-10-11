@@ -240,3 +240,4 @@ mod_clean:
 
 clean:	mod_clean
 	-rm -f *.o *.exe $(IMPLIB) $(RULES)
+	-rm -rf $(DLLDIR)

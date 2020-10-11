@@ -376,3 +376,5 @@ clean:
 	erase *.obj *.exe *.res
 	erase doc\*.html
 	erase snolib4.lib snobol4.exp
+	erase $(DLLDIR)\*
+	rmdir $(DLLDIR)
