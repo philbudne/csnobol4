@@ -107,10 +107,14 @@ memio_flush(struct io_obj *iop) {
     return TRUE;
 }
 
+static  int
+memio_close(struct io_obj *iop) {
+    return 0;
+}
+
 #define memio_getline NULL	/* use bufio */
 #define memio_eof NULL		/* use bufio */
 #define memio_clearerr NULL	/* use bufio */
-#define memio_close NULL	/* use bufio */
 
 MAKE_OPS(memio, &SUPER);
 
