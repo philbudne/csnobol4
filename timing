@@ -374,7 +374,12 @@ LNFILES='../test/procs ../test/globals ../host.sno'
 
 	# need eval on Debian 3.0 (no "time" binary)
 	# stderr to file "stderr", all but first line of stdout to "$OUT"
-	eval "$TIME ./snobol4 -x $ARGS -s ../test/bench.sno ../test/v311.sil" 2>stderr
+# /usr/bin/time interferes with DYLD_LIBRARY path on MacOS 10.15
+# (has long caused more pain than it's worth, now that getrusage
+#  is widely available, no need to check that clock ticks correctly divined)
+#	eval "$TIME ./snobol4 -x $ARGS -s ../test/bench.sno ../test/v311.sil" 2>stderr
+
+	./snobol4 -x $ARGS -s ../test/bench.sno ../test/v311.sil 2>stderr
 )
 # use snobol program to process output!!
 $SNOBOL $ARGS timing.sno < $TDIR/stderr

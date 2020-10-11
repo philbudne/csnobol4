@@ -23,6 +23,10 @@
 	DARK = BREAKX(SP TAB)
 	NUM = FLOAT | INT
 
+*	settings
+* off 2020-10-11
+	CHECK_TIMING =
+
 ****************************************************************
 * functions
 
@@ -172,6 +176,8 @@ ALOP	LINE = INPUT					:F(NOSTAT)
 * deal with shell "time" output (but not on windoze)
 
 GETTIME	HOST() BREAK(':') ':Win'			:S(DONE)
+*	timing check disabled?
+	IDENT(CHECK_TIMING)				:S(DONE)
 
 GETTIME2
 	LINE = INPUT					:F(NOTIME)

@@ -3,6 +3,17 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/11/2020:
+	turn off shell timing of genc.sno run
+	    interferes with DYLD_LIBRARY_PATH on MacOS 10.15?
+		(was just looking for a reason to kill it, it only
+		mattered in ancient days when getrusage wasn't widely
+		available, and clock tick size was often a a result of
+		divination)
+
+	timing: comment out time
+	timing.sno: add, check CHECK_TIMING setting
+
+10/11/2020:
 	shared library cleanup
 	Makefile: use SO_CFLAGS instead of -fPIC
 	Makefile2.m4: use SNOBOL4_LDFLAGS
