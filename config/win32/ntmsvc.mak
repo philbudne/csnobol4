@@ -91,7 +91,7 @@ cpuid.exe: cpuid.c
 	$(CC) -c cpuid.c
 	$(LINK) /out:cpuid.exe cpuid.obj
 
-MANIFEST_RC=config\win32\manifest.rc
+MANIFEST_RC=$(SRCDIR)config\win32\manifest.rc
 MANIFEST_RES=manifest.res
 
 snobol4.exe : always $(OBJ) $(MANIFEST_RES)
