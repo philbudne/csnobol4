@@ -18,6 +18,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	lib/io.c: s/MEM_IO/SHARED/
 		fix io_memfile
 		EXPORT io_input_string
+	tlib.c (new): demo/test
 
 10/10/2020:
 	Experiment to build libsnobol4.so
