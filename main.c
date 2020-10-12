@@ -58,19 +58,13 @@ const char snoname[] = SNONAME;
 SNOEXP(int)
 snobol4_init(int argc, char *argv[], int interactive) {
 # ifdef NO_STATIC_VARS
-# ifdef SHARED
-    jmp_buf _endex_jmpbuf;
-# endif /* SHARED defined */
-
     varp = (struct vars *)malloc(sizeof(struct vars));
     if (!varp) {
 	perror("could not allocate vars");
 	return 1;
     }
-# ifdef SHARED
-    varp->v_endex_jmpbuf = _endex_jmpbuf;
-# endif /* SHARED defined */
-# endif /* NO_STATIC_VARS defined */
+    bzero(varp, sizeof(struct vars));
+# endif /* NO_STATIC_VARS */
     init_data();
     init_syntab();
     return init_args( argc, argv, interactive );
@@ -89,6 +83,10 @@ snobol4_init_ni(void) {			/* non-interactive init */
 SNOEXP(int)
 snobol4_run(void) {
 # ifdef SHARED
+# ifdef NO_STATIC_VARS
+    jmp_buf _endex_jmpbuf;
+    varp->v_endex_jmpbuf = _endex_jmpbuf;
+# endif /* NO_STATIC_VARS defined */
     if (setjmp(endex_jmpbuf))
 	return(D_A(RETCOD));
 # endif /* SHARED defined */
