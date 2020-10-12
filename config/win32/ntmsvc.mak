@@ -373,9 +373,9 @@ tar:
 	pkg\win32\maketar.bat
 
 clean:
-	config\win32\modules.bat clean
-	erase *.obj *.exe *.res
-	erase doc\*.html
-	erase snolib4.lib snobol4.exp
-	erase $(DLLDIR)\*
-	rmdir $(DLLDIR)
+	if EXIST snobol5.exe config\win32\modules.bat clean
+	erase /f/q/s *.obj *.exe *.res
+	erase /f/q/s doc\*.html
+	erase /f/q/s snolib4.lib snobol4.exp
+	if EXIST $(DLLDIR) erase /f/q/s $(DLLDIR)\*
+	if EXIST $(DLLDIR) rmdir $(DLLDIR)
