@@ -3,6 +3,9 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/11/2020:
+	configure: fix ICC check
+
+10/11/2020:
 	config/win32/mingw.mak: tweak to build snobol4.dll (not tested!)
 	config/win32/ntmsvc.mak: first swipe at DLL build (not run)
 

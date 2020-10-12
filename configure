@@ -337,12 +337,13 @@ echo "checking $CCPATH" 1>&2
 #include <stdio.h>
 int
 main() {
-#if defined(__clang__)
-#define COMPILER "clang"
+/* before clang, gcc */
+#if (defined(__ICC) || defined(__INTEL_COMPILER))
+#define COMPILER "icc"
 #endif
 
-#if !defined(COMPILER) && (defined(__ICC) || defined(__INTEL_COMPILER))
-#define COMPILER "icc"
+#if !defined(COMPILER) && defined(__clang__)
+#define COMPILER "clang"
 #endif
 
 /* after anything that might imitate gcc for compatibility */
