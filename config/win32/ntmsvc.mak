@@ -117,11 +117,12 @@ always:
 
 DLLDIR=dllobj
 DLLNAME=snobol4.dll
+DLLLIB=snobol4.lib
 
 MAKEFILE=$(MAKEDIR)\config\win32\ntmsvc.mak
 
 # NOTE -DDLL not defined!! That's for loadable modules!!
-dll $(DLLDIR)\$(DLLNAME): always
+dll $(DLLDIR)\$(DLLNAME) $(DLLDIR)\$(DLLLIB): always
 	if NOT EXIST $(DLLDIR) mkdir $(DLLDIR)
 	cd $(DLLDIR)
 	nmake -f $(MAKEFILE) DEFS=-DSHARED MEMIO=1 SRCDIR=..\ dll2
@@ -131,6 +132,20 @@ dll $(DLLDIR)\$(DLLNAME): always
 # at top level, which would pick up the wrong .obj files
 dll2:	$(OBJ) $(MANIFEST_RES)
 	$(LINK) /DLL /out:$(DLLNAME) $(OBJ) $(MANIFEST_RES) $(INET_LIBS)
+
+# DLL test programs
+
+ssnobol4.o: ssnobol4.c include\snobol4.h
+	$(CC) -c -Iinclude ssnobol4.c
+
+ssnobol4.exe: ssnobol4.o $(DLLDIR)\$(DLLLIB)
+	$(LINK) /out:ssnobol4.exe ssnobol4.o $(DLLDIR)\$(DLLLIB)
+
+tlib.o: tlib.c include\snobol4.h
+	$(CC) -c -Iinclude tlib.c
+
+tlib.exe: tlib.o $(DLLDIR)\$(DLLLIB)
+	$(LINK) /out:tlib.exe tlib.o $(DLLDIR)\$(DLLLIB)
 
 ################
 

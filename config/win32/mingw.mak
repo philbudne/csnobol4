@@ -131,7 +131,8 @@ MAKERULESDEP=$(SRCDIR)config/makerulesdep
 
 $(RULES): $(SRCDIR)$(MAKEFILE)
 	CC="$(CC)" CFLAGS='$(CFLAGS)' $(MAKERULESDEP) $(SRC) > $(RULES)
-	CC="$(CC)" CFLAGS='$(SNOBOL4_CFLAGS)' $(MAKERULESDEP) $(SRCDIR)isnobol4.c >> $(RULES)
+	CC="$(CC)" CFLAGS='$(SNOBOL4_CFLAGS)' $(MAKERULESDEP) \
+		$(SRCDIR)isnobol4.c >> $(RULES)
 	CC="$(CC)" CFLAGS='$(HOST_CFLAGS)' $(MAKERULESDEP) \
 		$(SRCDIR)lib/snolib/host.c >> $(RULES)
 
@@ -218,17 +219,28 @@ modules/sprintf/sprintf.dll: $(MODDEP) modules/sprintf/setup.sno modules/sprintf
 
 DLLDIR=dllobj
 DLLNAME=snobol4.dll
+DLLLIB=snobol4.lib
 
 # NOTE -DDLL not defined!! That's for loadable modules!!
-dll $(DLLDIR)/$(DLLNAME): always
+dll $(DLLDIR)/$(DLLNAME) $(DLLDIR)/$(DLLLIB): always
 	-test -d $(DLLDIR) || mkdir $(DLLDIR)
 	$(MAKE) -C $(DLLDIR) -f ../$(MAKEFILE) \
-		DEFS='-DSHARED' MEMIO=1 SRCDIR=../ _dll
+		DEFS='-DSHARED' MEMIO=1 SRCDIR=../ dll2
 
-# invoked by above, in dll directory, with tweaked variables
-# target NOT named snobol4.dll, 'cause someone might try "make snobol4.dll"!
-_dll:	$(OBJ) manifest.o
+# invoked by above, in DLLDIR, with tweaked variables
+# target NOT named snobol4.dll, 'cause someone might try "make snobol4.dll"
+# at top level, which would pick up the wrong .obj files
+
+dll2:	$(OBJ) manifest.o
 	$(CC) -shared -o $(DLLNAME) $(OBJ) manifest.o $(INET_LIBS) $(LDFLAGS)
+
+# DLL test programs
+
+ssnobol4.exe: ssnobol4.c $(DLLDIR)/$(DLLLIB)
+	$(CC) -o ssnobol4.exe -Iinclude ssnobol4.c $(DLLDIR)/$(DLLLIB)
+
+tlib.exe: tlib.c $(DLLDIR)/$(DLLLIB)
+	$(CC) -o tlib.exe -Iinclude tlib.c $(DLLDIR)/$(DLLLIB)
 
 ################ housekeeping
 
