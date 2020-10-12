@@ -2,13 +2,14 @@ $Id$
 
 shared library:
 	rename io_ to snobol4_ in snobol4.h?
-	-rdynamic not needed when building library
 	gcc -shared -Wl,-soname,libxx.so.1 -o libxx.so.1.0.1
-snobol4func: EXIT -- added in CSNOBOL version ??
+
+snobol4func: added in CSNOBOL version ??
+	EXIT
 
 Use HAVE_PATHS_H/<paths.h>, path.h in generic/execute.c, bsd/popen.c??
-	Not on Android! include/path.h:#define TMP_DIR "/tmp" /* exists on all systems?! */
 
+Not on Android! include/path.h:#define TMP_DIR "/tmp" /* exists on all systems?!
 remove io_clearerr?
 re-implement io_getfp w/ stdio_obj_getfp??
 
