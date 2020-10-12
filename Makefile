@@ -114,16 +114,19 @@ $(SO)Makefile2: config.m4 Makefile2.m4
 
 # avoid knowledge of library filename or extension!!!
 
-shared_library: $(SO)Makefile2
+shared_library: $(SO)Makefile2 $(GENERATED)
 	$(MAKE) -C $(SO) -f Makefile2 shared_library SRCDIR=../
 
-debug_shared_library: $(SO)Makefile2
+debug_shared_library: $(SO)Makefile2 $(GENERATED)
 	$(MAKE) -C $(SO) -f Makefile2 shared_library SRCDIR=../ OPT=-g
 
-#### make main program using shared library
-
-ssnobol4: ALWAYS Makefile2
+# main program using shared library
+ssnobol4: ALWAYS Makefile2 $(GENERATED)
 	$(MAKE) -f Makefile2 ssnobol4
+
+# test/demo of embedded interpreter
+tlib: ALWAYS Makefile2 $(GENERATED)
+	$(MAKE) -f Makefile2 tlib
 
 ################
 # code
