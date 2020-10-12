@@ -17,9 +17,6 @@ WINPTY=1
 # -O2 opt for speed
 OPT=-O2
 
-# this file!
-MAKEFILE=config/win32/ntmsvc.mak
-
 ################ conditionals based on settings:
 
 # dummy internet support
@@ -61,7 +58,7 @@ PTYIO_OBJ_SRC=$(SRCDIR)lib\dummy\ptyio_obj.c
 !endif
 
 !ifdef MEMIO
-BUFIO_OBJ=memio_obj.obj
+MEMIO_OBJ=memio_obj.obj
 BUFIO=1
 !endif
 
@@ -81,18 +78,17 @@ CFLAGS=-c $(OPT) $(COMMON_CFLAGS) $(INET_DEFS) -I$(SRCDIR)config\win32 -I$(SRCDI
 SNOBOL4_C_CFLAGS=/wd4715
 
 OBJ=	$(BUFIO_OBJ) $(INET_OBJ) $(INET_OBJS) $(MEMIO_OBJ) \
-	atan.obj bal.obj \
-	break.obj chop.obj cos.obj data.obj \
+	atan.obj bal.obj break.obj chop.obj cos.obj data.obj \
 	data_init.obj date.obj delete.obj dump.obj \
 	dynamic.obj endex.obj environ.obj execute.obj \
 	exists.obj exit.obj exp.obj expops.obj file.obj \
-	findunit.obj getline.obj getopt.obj getstring.obj handle.obj \
-	hash.obj host.obj init.obj intspc.obj io.obj \
-	isnobol4.obj lexcmp.obj load.obj loadx.obj log.obj \
-	main.obj mstime.obj ord.obj ordvst.obj osopen.obj \
-	pair.obj pat.obj pml.obj ptyio_obj.obj realst.obj \
-	rename.obj replace.obj retstring.obj sin.obj \
-	spcint.obj spreal.obj sqrt.obj sset.obj \
+	findunit.obj getline.obj getopt.obj getstring.obj \
+	handle.obj hash.obj host.obj init.obj intspc.obj \
+	io.obj isnobol4.obj lexcmp.obj load.obj loadx.obj \
+	log.obj main.obj mstime.obj ord.obj ordvst.obj \
+	osopen.obj pair.obj pat.obj pml.obj ptyio_obj.obj \
+	realst.obj rename.obj replace.obj retstring.obj \
+	sin.obj spcint.obj spreal.obj sqrt.obj sset.obj \
 	stdio_obj.obj str.obj stream.obj syn.obj sys.obj \
 	tan.obj term.obj top.obj tree.obj tty.obj
 
@@ -109,8 +105,8 @@ MANIFEST_RES=manifest.res
 snobol4.exe : always $(OBJ) $(MANIFEST_RES)
 	$(LINK) /out:snobol4.exe $(OBJ) $(MANIFEST_RES) $(INET_LIBS)
 
-$(MANIFEST_RES): $(MANIFEST_RC)
-	rc /r $(MANIFEST_RC)
+$(MANIFEST_RES) : $(MANIFEST_RC)
+	rc /r /fo $(MANIFEST_RES) $(MANIFEST_RC)
 
 # kill leftovers from cygwin builds!!!
 always:
@@ -122,14 +118,18 @@ always:
 DLLDIR=dllobj
 DLLNAME=snobol4.dll
 
+MAKEFILE=$(MAKEDIR)\config\win32\ntmsvc.mak
+
 # NOTE -DDLL not defined!! That's for loadable modules!!
 dll $(DLLDIR)\$(DLLNAME): always
 	if NOT EXIST $(DLLDIR) mkdir $(DLLDIR)
-	cd $(DLLDIR) $(MAKE) -f ../$(MAKEFILE) DEFS='-DSHARED' MEMIO=1 SRCDIR=..\ _dll
+	cd $(DLLDIR)
+	nmake -f $(MAKEFILE) DEFS=-DSHARED MEMIO=1 SRCDIR=..\ dll2
 
-# invoked by above, in dll directory, with tweaked variables
-# target NOT named snobol4.dll, 'cause someone might try "make snobol4.dll"!
-_dll:	$(OBJ) $(MANIFEST_RES)
+# invoked by above, in DLLDIR, with tweaked variables
+# target NOT named snobol4.dll, 'cause someone might try "make snobol4.dll"
+# at top level, which would pick up the wrong .obj files
+dll2:	$(OBJ) $(MANIFEST_RES)
 	$(LINK) /DLL /out:$(DLLNAME) $(OBJ) $(MANIFEST_RES) $(INET_LIBS)
 
 ################
@@ -273,8 +273,8 @@ mstime.obj : $(SRCDIR)lib\win32\mstime.c
 osopen.obj : $(SRCDIR)lib\win32\osopen.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\osopen.c
 
-ptyio_obj.obj : $(SRCDIR)$(PTYIO_OBJ_SRC)
-	$(CC) $(CFLAGS) $(SRCDIR)$(PTYIO_OBJ_SRC)
+ptyio_obj.obj : $(PTYIO_OBJ_SRC)
+	$(CC) $(CFLAGS) $(PTYIO_OBJ_SRC)
 
 sys.obj : $(SRCDIR)lib\win32\sys.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\sys.c
@@ -323,7 +323,8 @@ getstring.obj : $(SRCDIR)lib\snolib\getstring.c
 handle.obj : $(SRCDIR)lib\snolib\handle.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\handle.c
 
-host.obj : $(SRCDIR)lib\snolib\host.c config\win32\ntmsvc.mak config\win32\config.h
+# had depended on $(MAKEFILE) -- causing grief in dll make
+host.obj : $(SRCDIR)lib\snolib\host.c $(SRCDIR)config\win32\config.h
 	$(CC) $(CFLAGS) $(SRCDIR)lib\snolib\host.c -DCC=\"$(CC)\" -DCOPT=\"$(OPT)\" -DSO_LD=\"$(LINK)\" -DDL_LD=\"$(LINK)\" -DDL_CFLAGS=\""$(DL_CFLAGS)\""
 
 log.obj : $(SRCDIR)lib\snolib\log.c
