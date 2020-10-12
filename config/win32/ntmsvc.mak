@@ -135,17 +135,17 @@ dll2:	$(OBJ) $(MANIFEST_RES)
 
 # DLL test programs
 
-ssnobol4.o: ssnobol4.c include\snobol4.h
+ssnobol4.obj: ssnobol4.c include\snobol4.h
 	$(CC) -c -Iinclude ssnobol4.c
 
-ssnobol4.exe: ssnobol4.o $(DLLDIR)\$(DLLLIB)
-	$(LINK) /out:ssnobol4.exe ssnobol4.o $(DLLDIR)\$(DLLLIB)
+ssnobol4.exe: ssnobol4.obj $(DLLDIR)\$(DLLLIB)
+	$(LINK) /out:ssnobol4.exe ssnobol4.obj $(DLLDIR)\$(DLLLIB)
 
-tlib.o: tlib.c include\snobol4.h
+tlib.obj: tlib.c include\snobol4.h
 	$(CC) -c -Iinclude tlib.c
 
-tlib.exe: tlib.o $(DLLDIR)\$(DLLLIB)
-	$(LINK) /out:tlib.exe tlib.o $(DLLDIR)\$(DLLLIB)
+tlib.exe: tlib.obj $(DLLDIR)\$(DLLLIB)
+	$(LINK) /out:tlib.exe tlib.obj $(DLLDIR)\$(DLLLIB)
 
 ################
 
