@@ -125,27 +125,23 @@ MAKEFILE=$(MAKEDIR)\config\win32\ntmsvc.mak
 dll $(DLLDIR)\$(DLLNAME) $(DLLDIR)\$(DLLLIB): always
 	if NOT EXIST $(DLLDIR) mkdir $(DLLDIR)
 	cd $(DLLDIR)
-	nmake -f $(MAKEFILE) DEFS=-DSHARED MEMIO=1 SRCDIR=..\ dll2
+	nmake -f $(MAKEFILE) DEFS=-DSHARED MEMIO=1 SRCDIR=..\ dll2 dlltests
 
+################
 # invoked by above, in DLLDIR, with tweaked variables
+
 # target NOT named snobol4.dll, 'cause someone might try "make snobol4.dll"
-# at top level, which would pick up the wrong .obj files
-dll2:	$(OBJ) $(MANIFEST_RES)
-	$(LINK) /DLL /out:$(DLLNAME) $(OBJ) $(MANIFEST_RES) $(INET_LIBS)
+# at top level, which would pick up the wrong .obj files.
+# tried adding MANIFEST_RES to .dll, doesn't seem to work.
+dll2:	$(OBJ)
+	$(LINK) /DLL /out:$(DLLNAME) $(OBJ) $(INET_LIBS)
 
-# DLL test programs
-
-ssnobol4.obj: ssnobol4.c include\snobol4.h
-	$(CC) -c -Iinclude ssnobol4.c
-
-ssnobol4.exe: ssnobol4.obj $(DLLDIR)\$(DLLLIB)
-	$(LINK) /out:ssnobol4.exe ssnobol4.obj $(DLLDIR)\$(DLLLIB)
-
-tlib.obj: tlib.c include\snobol4.h
-	$(CC) -c -Iinclude tlib.c
-
-tlib.exe: tlib.obj $(DLLDIR)\$(DLLLIB)
-	$(LINK) /out:tlib.exe tlib.obj $(DLLDIR)\$(DLLLIB)
+# DLL test programs. Seem to need manifest.res file here:
+# ssnobol4.exe is the regular main program using snobol4.dll
+# tlib.exe is a test invoking interpreter with tiny (hello world) program
+dlltests: dll2 $(MANIFEST_RES)
+	$(CC) /Fe:ssnobol4.exe -I..\include ..\ssnobol4.c $(MANIFEST_RES) $(DLLLIB)
+	$(CC) /Fe:tlib.exe -I..\include ..\tlib.c $(MANIFEST_RES) $(DLLLIB)
 
 ################
 

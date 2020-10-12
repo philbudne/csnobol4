@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/12/2020:
+	config/win32/mingw.mak: DLL/tests tested.
+
 10/11/2020:
 	configure: fix ICC check
 
