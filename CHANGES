@@ -20,14 +20,15 @@ Changes since 2.1.6 release;
 		--without-modules added (breaks tests, sdb)
 		more strict about feature tests
 	Unix/Linux systems can build libsnobol4.so shared library
-		ssnobol4 executable is an executable using it
-		(up to 8% performance penalty (for Position Indpendant Code)
-		 except perhaps on MacOS, where PIC is the default)
+		ssnobol4 executable using it is up to 8% slower
+		(due to position independent code?)
+		except perhaps on MacOS, where PIC is the default.
 		tlib.c is a small demo of invoking interpreter from a C
 		program.  I'm not sure I see the point, since it's easy
 		enough to write temporary files, and invoke a subprocess!?
 		Shared library API is in include/snobol4.h
 		No promises on future availability or stability!
+		Able to build DLL on Windows, not yet tested.
 	Loadable functions may now return strings in malloc'ed memory
 		via RETSTR[2]_FREE (and silently by RETSTR[2]),
 		using new datatype "M"; CSNOBOL4 calls relstring
