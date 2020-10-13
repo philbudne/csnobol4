@@ -3,6 +3,11 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/13/2020:
+	First cut at MSVC VAR support
+	include/h.h: include msvc/vars.h
+	include/msvc/vars.h: a start
+
+10/13/2020:
 	Implement zeroing VAR variables in SHARED lib builds
 	data_init.c: include str.h, invoke ZERO_VARS to do the work
 	include/gcc/vars.h (new): put VAR into own section with gcc-like

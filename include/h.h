@@ -42,9 +42,11 @@
 #ifdef SHARED
 #if defined(__gcc__) || defined(__GNUC__) /* gcc-like? (clang, icc?) */
 #include "gcc/vars.h"			  /* include/gcc/vars.h */
-#else  /* not gcc-like */
+#elif defined(_MSC_VER)
+#include "msvc/vars.h"
+#else  /* unknown compiler */
 #error "don't know how to build shared library with your compiler"
-#endif /* not gcc-like */
+#endif /* unknown compiler */
 #else  /* not SHARED library */
 #define VAR
 #endif /* not SHARED library */
