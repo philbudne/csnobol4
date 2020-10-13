@@ -33,7 +33,7 @@ void parray();
 
 void
 more(void) {
-    static count;
+    static VAR count;
     char buf[128];
 
     if (count++ < 20)			/* XXX */

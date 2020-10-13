@@ -31,10 +31,6 @@
 #include "res.h"
 #include "data.h"
 
-#ifdef NO_STATIC_VARS
-#include "vars.h"
-#endif /* NO_STATIC_VARS defined */
-
 #ifdef ORDVST_DEBUG
 /* PLB: dump a descriptor */
 static void

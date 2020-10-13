@@ -16,14 +16,10 @@
 #include "lib.h"			/* for io_finish() */
 #include "inet.h"			/* inet_cleanup() */
 
-#ifdef NO_STATIC_VARS
-#include "vars.h"
-#else  /* NO_STATIC_VARS not defined */
 #ifdef SHARED
 #include <setjmp.h>
-extern jmp_buf endex_jmpbuf;
+extern VAR jmp_buf endex_jmpbuf;	/* UGH! */
 #endif /* SHARED defined */
-#endif /* NO_STATIC_VARS not defined */
 
 #ifdef TRACE_DEPTH
 #define MAX_DEPTH 50000

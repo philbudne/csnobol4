@@ -52,13 +52,15 @@
  * keep settings for each device in a list (by dev_t rather than fd
  * since multiple fd's can be open to same device (stdin/out/err))
  */
-static struct save {
+struct save {
     struct save *next;
     dev_t dev;
     struct termios save, curr;
     int cbreak, noecho;
     int recl;
-} *list;
+};
+
+static VAR struct save *list;		/* XXX need to free */
 
 enum action { FIND, CREATE, REMOVE };
 
@@ -115,7 +117,7 @@ find_by_fd(int fd, enum action action) {
 void
 tty_mode(FILE *fp, int cbreak, int noecho, int recl) {
     struct save *sp;
-    static dev_t last;
+    static VAR dev_t last;
     int fd;
     
     fd = fileno(fp);

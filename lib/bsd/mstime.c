@@ -20,7 +20,7 @@
  */
 
 #ifdef GETRUSAGE_BUG
-static real_t last_mstime = 0.0;	/* XXX belongs in vars.h? */
+static VAR real_t last_mstime = 0.0;
 #endif /* GETRUSAGE_BUG defined */
 
 real_t

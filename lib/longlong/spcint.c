@@ -23,10 +23,6 @@
 #include "res.h"
 #include "data.h"
 
-#ifdef NO_STATIC_VARS
-#include "vars.h"
-#endif /* NO_STATIC_VARS defined */
-
 int
 spcint(struct descr *dp, struct spec *sp) {
     int_t len;

@@ -20,11 +20,6 @@
 # include "macros.h"
 # include "lib.h"			/* own prototypes */
 
-# ifdef NO_STATIC_VARS
-# include "equ.h"
-# include "vars.h"
-# endif /* NO_STATIC_VARS defined */
-
 int
 expint(struct descr *result, struct descr *x, struct descr *y) {
     int_t ix, iy;

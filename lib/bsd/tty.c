@@ -37,7 +37,7 @@
  * keep settings for each device in a list (by dev_t rather than fd
  * since multiple fd's can be open to same device (stdin/out/err))
  */
-static struct save {
+struct save {
     struct save *next;
     dev_t dev;
     struct state {
@@ -47,10 +47,12 @@ static struct save {
 #endif /* TTY_RAW_PASS8 defined */
     } save, curr;
     int cbreak, noecho;
-} *list;
+};
+
+static VAR *list;			/* XXX need to free */
 
 #ifdef TTY_RAW_PASS8
-static int lflags;
+static VAR int lflags;
 #endif /* TTY_RAW_PASS8 defined */
 
 #define STDIN_FILENO 0
@@ -125,7 +127,7 @@ tty_set(int fd, struct state *stp) {
 void
 tty_mode(FILE *fp, int cbreak, int noecho, int recl) {
     struct save *sp;
-    static dev_t last;
+    static VAR dev_t last;
     int fd;
 
     fd = fileno(fp);

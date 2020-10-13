@@ -14,11 +14,7 @@
 #include "load.h"			/* prototypes */
 #include "str.h"
 
-#ifdef NO_STATIC_VARS
-#include "vars.h"
-#else  /* NO_STATIC_VARS not defined */
-static struct spec retspec[1];
-#endif /* NO_STATIC_VARS not defined */
+static VAR struct spec retspec[1];
 
 EXPORT(void)
 retstring(struct descr *retval, const char *cp, int len) {

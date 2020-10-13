@@ -33,29 +33,7 @@
 #include "host.h"			/* HOST() function codes */
 #include "lib.h"			/* osname(),hwname(),io_flushall() */
 #include "str.h"
-
-#ifdef NO_STATIC_VARS
-#include "vars.h"
-#else  /* NO_STATIC_VARS not defined */
-extern int argc, firstarg;
-extern int pmstack, ndynamic, istack;
-extern char **argv;
-extern char *params;
-extern char *snolib_base;		/* BASE */
-extern char *snolib_local;		/* BASE/local */
-extern char *snolib_vers;		/* BASE/VERSION */
-extern char *snolib_vlib;		/* BASE/VERSION/lib */
-extern char *snolib_vlocal;		/* BASE/VERSION/local */
-#endif /* NO_STATIC_VARS not defined */
-
-extern const char snoname[], vers[], vdate[];
-
-#ifdef HAVE_BUILD_VARS
-extern const char build_files[];
-extern const char build_lib[];
-extern const char build_date[];
-extern const char build_dir[];
-#endif /* HAVE_BUILD_VARS defined */
+#include "globals.h"
 
 int
 HOST( LA_ALIST ) {

@@ -13,10 +13,6 @@
 #include "snotypes.h"
 #include "lib.h"
 
-#ifdef NO_STATIC_VARS
-#include "vars.h"
-#endif /* NO_STATIC_VARS defined */
-
 /*
  * The FILETIME data structure contains two 32-bit values that combine to
  * form a 64-bit count of 100-nanosecond time units.
@@ -45,8 +41,7 @@ mstime(void) {
 	 * so it doesn't track runtime!! Use time of day instead??
 	 * XXX just use ANSI clock() function???
 	 */
-#ifndef NO_STATIC_VARS
-	static FILETIME t0;
+	static VAR FILETIME t0;
 
 	if (t0.dwHighDateTime || t0.dwLowDateTime) {
 	    FILETIME t;
@@ -59,21 +54,5 @@ mstime(void) {
 	    GetSystemTimeAsFileTime(&t0);
 	    return 0;
 	}
-#else  /* NO_STATIC_VARS defined */
-	FILETIME *t0p;
-	if (timevars) {
-	    FILETIME t;
-
-	    t0p = timevars;
-	    GetSystemTimeAsFileTime(&t);
-	    return ((t.dwHighDateTime - t0p->dwHighDateTime) * HIGHMS +
-		    (t.dwLowDateTime - t0p->dwLowDateTime) / TICKSPERMS);
-	}
-	else {
-	    timevars = t0p = malloc(sizeof(FILETIME));
-	    GetSystemTimeAsFileTime(t0p);
-	    return 0;
-	}
-#endif /* NO_STATIC_VARS defined */
     }
 }

@@ -13,10 +13,6 @@
 #include "res.h"
 #include "data.h"			/* for STYPE */
 
-#ifdef NO_STATIC_VARS
-#include "vars.h"
-#endif /* NO_STATIC_VARS defined */
-
 #ifdef DEBUG
 #define DEBUGF(lev, x) if (lev <= DEBUG) printf x
 #else  /* DEBUG not defined */

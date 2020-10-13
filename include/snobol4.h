@@ -3,6 +3,7 @@
  * Interface to *EXPERIMENTAL* snobol4 shared library
  */
 
+/* SHAREDEXP??? XXX define as noop if building monolithic snobol4? */
 #ifdef SNOBOL4_PROVIDER	/* building snobol4 or libsnobol4.so shared library */
 #define SNOEXP(X) EXPORT(X)
 #else		/* shared library user */

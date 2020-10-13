@@ -335,13 +335,9 @@ EOF	MK_LBL('foo','descr',0)
 
 	EQU.H = '# endif'
 
-	DATA.C = '# ifndef NO_STATIC_VARS'
-	DATA.C = 'struct res ' RES ';'
-	DATA.C = '# endif'
+	DATA.C = 'VAR struct res ' RES ';'
 
-	DATA.H = '# ifndef NO_STATIC_VARS'
-	DATA.H = 'extern struct res ' RES ';'
-	DATA.H = '# endif'
+	DATA.H = 'extern VAR struct res ' RES ';'
 
 	DIFFER(HERE)						:S(ERROR)
 END

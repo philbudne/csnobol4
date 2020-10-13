@@ -47,7 +47,7 @@ static char _osname[MAXSTR+1+MAXSTR];
 
 static void
 sys_init(void) {
-    static int inited;
+    static VAR int inited;		/* OK if not cleared (idempotent) */
     struct item items[2];
     char temp[MAXSTR];
     long len;

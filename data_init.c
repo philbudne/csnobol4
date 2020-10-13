@@ -24,10 +24,6 @@
 # include "data.h"
 # include "proc.h"
 
-# ifdef NO_STATIC_VARS
-# include "vars.h"
-# endif /* NO_STATIC_VARS defined */
-
 # define STRLEN(s) (sizeof(s)-1)	/* support for SIL STRING opr */
 
 const char AMPST[] = "&";

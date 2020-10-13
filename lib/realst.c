@@ -20,11 +20,7 @@
 
 #include "equ.h"
 
-#ifdef NO_STATIC_VARS
-#include "vars.h"
-#else  /* NO_STATIC_VARS not defined */
-static char strbuf[64];
-#endif /* NO_STATIC_VARS not defined */
+static VAR char strbuf[64];
 
 #ifndef REALST_FORMAT
 /* "l" is always redundant? */

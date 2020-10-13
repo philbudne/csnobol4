@@ -11,8 +11,8 @@
 #include "snotypes.h"
 #include "lib.h"
 
-static int first_time = -1;
-static long start_time;
+static VAR int first_time = -1;
+static VAR long start_time;
 
 /*
  * sigh; use ansi-ish clock() -- returns Time Of Day!

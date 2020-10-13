@@ -28,12 +28,7 @@ struct save {
     int cbreak, noecho;			/* current state */
 };
 
-#ifdef NO_STATIC_VARS
-#include "vars.h"
-#define list ttylist
-#else  /* NO_STATIC_VARS not defined */
-static struct save *list;
-#endif /* NO_STATIC_VARS not defined */
+static VAR struct save *list;
 
 int
 fisatty(FILE *f) {

@@ -27,11 +27,7 @@
  * localtime() exists in v6, but "struct tm" doesn't!
  */
 
-#ifdef NO_STATIC_VARS
-#include "vars.h"
-#else  /* NO_STATIC_VARS not defined */
-static char strbuf[21];
-#endif /* NO_STATIC_VARS not defined */
+static VAR char strbuf[21];
 
 void
 date(struct spec *sp, struct descr *dp) {

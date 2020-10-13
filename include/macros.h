@@ -125,14 +125,12 @@
  * system stack
  */
 
-#ifndef NO_STATIC_VARS
 #ifndef S4_EXTERN
 #define S4_EXTERN extern
 #endif /* S4_EXTERN not defined */
 
-S4_EXTERN struct descr *cstack;
-S4_EXTERN struct descr ostack[1];	/* old stack pointer */
-#endif /* NO_STATIC_VARS not defined */
+S4_EXTERN VAR struct descr *cstack;
+S4_EXTERN VAR struct descr ostack[1];	/* old stack pointer */
 
 /* RCALL support */
 /* by the book, no C local ostack */
@@ -170,9 +168,7 @@ S4_EXTERN struct descr ostack[1];	/* old stack pointer */
 
 /****************/
 
-#ifndef NO_STATIC_VARS
-extern volatile int math_error;
-#endif /* NO_STATIC_VARS not defined */
+extern VAR volatile int math_error;
 
 #define CLR_MATH_ERROR() math_error = FALSE
 #define MATH_ERROR() math_error

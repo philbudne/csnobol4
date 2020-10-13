@@ -22,10 +22,6 @@
 #include "res.h"
 #include "data.h"
 
-#ifdef NO_STATIC_VARS
-#include "vars.h"
-#endif /* NO_STATIC_VARS defined */
-
 int
 spreal(struct descr *dp, struct spec *sp) {
     char buffer[64];			/* ??? */

@@ -23,10 +23,6 @@
 #include "res.h"
 #include "data.h"			/* for SPITCL */
 
-#ifdef NO_STATIC_VARS
-#include "vars.h"
-#endif /* NO_STATIC_VARS defined */
-
 #define TC '|'
 #define EXTRA 2				/* NUL + terminator */
 

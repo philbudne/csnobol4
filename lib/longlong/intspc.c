@@ -18,11 +18,7 @@
 
 #include "equ.h"
 
-#ifdef NO_STATIC_VARS
-#include "vars.h"
-#else  /* NO_STATIC_VARS not defined */
-static char strbuf[32];			/* 2^64 is only 21 chars! */
-#endif /* NO_STATIC_VARS not defined */
+static VAR char strbuf[32];	      /* 2^64 is only 21 chars! */
 
 void
 intspc(struct spec *sp, struct descr *dp) {

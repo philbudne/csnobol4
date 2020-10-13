@@ -24,8 +24,8 @@
 #include "data.h"			/* SIL data */
 
 typedef unsigned char break_t;		/* one byte/break for fast access */
-static int break_max = -1;
-static break_t *breakpoints;
+static VAR int break_max;
+static VAR break_t *breakpoints;	/* XXX need to free! */
 
 /*
  * called from "INIT" routine if: &TRACE > 0, &STCOUNT > 0
@@ -70,7 +70,7 @@ BREAKPOINT( LA_ALIST ) {
 	bzero(breakpoints, break_max * sizeof(break_t));
     }
     else if (stn > break_max) {
-	static break_t *nbreak;
+	static VAR break_t *nbreak;	/* XXX why static?? */
 	int new_max;
 	int new_slots;
 	if (stn > D_A(CSTNCL))		/* only allow break on existing stmt */

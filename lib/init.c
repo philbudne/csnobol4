@@ -28,8 +28,9 @@
 #include "data.h"			/* SIL data */
 #include "proc.h"			/* for SYSCUT() */
 #include "load.h"			/* io_init_mkfile, io_fname */
-# define SNOBOL4_PROVIDER
+#define SNOBOL4_PROVIDER
 #include "snobol4.h"			/* INIT_OK */
+#include "globals.h"
 
 #include "version.h"
 
@@ -54,10 +55,6 @@
 #define ISSIZE STSIZE
 #endif /* ISSIZE not defined */
 
-#ifdef NO_STATIC_VARS
-#include "vars.h"
-#else  /* NO_STATIC_VARS not defined */
-
 #ifdef HAVE_BUILD_VARS
 extern const char build_date[];		/* from build.c */
 #endif /* HAVE_BUILD_VARS defined */
@@ -66,34 +63,14 @@ extern const char build_date[];		/* from build.c */
 #define STDOUT_FILENO 1
 #endif /* STDOUT_FILENO not defined */
 
-/* global for access by io.c; */
-int rflag;
-int lflag;
-int unbuffer_all;
-
-/* global for access by host.c; */
-size_t ndynamic;
-size_t pmstack;
-size_t istack;
-char *params;
-char **argv;
-int firstarg;
-int argc;
-int nfiles;
-char *snolib_base;			/* BASE */
-char *snolib_local;			/* BASE/local */
-char *snolib_vers;			/* BASE/VERSION */
-char *snolib_vlib;			/* BASE/VERSION/lib */
-char *snolib_vlocal;			/* BASE/VERSION/local */
-
-static int xflag;
-#endif /* NO_STATIC_VARS not defined */
-
 #ifdef NEED_GETOPT_EXTERNS
+/* UGH! not thread safe!!! use private vers w/ VAR? */
 /* needed w/ own getopt & on SunOS4?! */
 extern int optind;
 extern char *optarg;
 #endif
+
+static VAR int xflag;
 
 static void init_signals(void);
 
@@ -104,7 +81,7 @@ p(int flag, char *str) {
 
 static char *
 showk(int n) {
-    static char buf[32];
+    static VAR char buf[32];		/* XXX VAR shouldn't matter? */
     int k, m;
 
     k = n / 1024;
@@ -287,6 +264,8 @@ static void
 pathinit(int std_includes) {
     char *env;
 
+    /* XXX SHARED FIX: some of this only needs to be done once */
+
     /* generate directory names for HOST() even if not in search path */
     snolib_base = getenv("SNOLIB");	/* old variable */
     if (!snolib_base)
@@ -332,6 +311,8 @@ init_args(int ac, char *av[], int interactive) {
     int showpaths = 0;
     int std_includes = 1;
 
+    /* in globals.h */
+    rflag = lflag = unbuffer_all = nfiles = firstarg = 0;
     ndynamic = NDYNAMIC;
     pmstack = PSSIZE;
     istack = ISSIZE;
@@ -339,6 +320,7 @@ init_args(int ac, char *av[], int interactive) {
     /* save in globals for HOST(), getparm(), init() */
     argc = ac;
     argv = av;
+    /* end in globals.h */
 
 #ifdef vms
     argc = getredirection(argc, argv);
@@ -347,7 +329,6 @@ init_args(int ac, char *av[], int interactive) {
     errs = 0;
     multifile = 0;			/* SITBOL behavior */
     justversion = 0;
-
     io_add_lib_dir(".");		/* XXX but not if set-uid??? */
 
     /*
@@ -551,9 +532,7 @@ init_args(int ac, char *av[], int interactive) {
     return INIT_OK;
 }
 
-#ifndef NO_STATIC_VARS
-volatile int math_error;		/* see macros.h */
-#endif /* NO_STATIC_VARS not defined */
+volatile VAR int math_error;		/* see macros.h */
 
 static SIGFUNC_T
 math_catch(SIGFUNC_ARG) {

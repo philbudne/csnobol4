@@ -21,8 +21,8 @@
 
 real_t
 mstime(void) {
-    static clockid_t clockid;
-    static int status = 0;
+    static VAR clockid_t clockid;
+    static VAR int status;
     struct timespec ts;
 
     if (status == 0) {

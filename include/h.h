@@ -28,3 +28,7 @@
 #ifndef IMPORT
 #define IMPORT(TYPE) TYPE
 #endif /* IMPORT not defined */
+
+#ifndef VAR
+#define VAR
+#endif

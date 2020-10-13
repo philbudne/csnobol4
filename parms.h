@@ -29,10 +29,6 @@
 #include "proc.h"			/* global procs */
 #include "static.h"			/* static procs */
 
-#ifdef NO_STATIC_VARS
-#include "vars.h"
-#endif /* NO_STATIC_VARS defined */
-
 #ifdef TRACE_DEPTH
 extern int cdepth;
 extern int tdepth[];

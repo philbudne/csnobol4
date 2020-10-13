@@ -94,14 +94,12 @@ struct file {
 #define MAXFNAME	1024		/* XXX use MAXPATHLEN? POSIX?? */
 #define MAXOPTS		1024
 
-struct iovars {
-    /* XXX malloc at runtime? */
-    struct unit units[NUNITS];
-    struct file *includes;		/* list of included files */
-    int finger;				/* for io_findunit */
-    struct file *lib_dirs;		/* list of include directories */
-    struct file *lib_dir_last;		/* tail of include directory list */
-};
+/* XXX malloc at runtime? */
+static VAR struct unit units[NUNITS];
+static VAR struct file *includes;	/* list of included files */
+static VAR int finger;			/* for io_findunit */
+struct VAR file *lib_dirs;		/* list of include directories */
+struct VAR file *lib_dir_last;		/* tail of include directory list */
 
 /*
  * private, r/o array of pointers to io_open functions
@@ -122,13 +120,8 @@ static struct io_obj *(*const io_open_funcs[])(char *fname, int flags, int rw) =
 };
 #define N_OPEN_FUNCS (sizeof(io_open_funcs)/sizeof(io_open_funcs[0]))
 
-#ifdef NO_STATIC_VARS
-#include "vars.h"
-#else  /* NO_STATIC_VARS not defined */
-extern int rflag;			/* from init.c */
-extern int lflag;			/* from init.c */
-static struct iovars iov;
-#endif /* NO_STATIC_VARS not defined */
+extern VAR int rflag;			/* from init.c */
+extern VAR int lflag;			/* from init.c */
 
 /* convert to internal (zero based) unit number; */
 #define INTERN(U) ((U)-1)
@@ -140,7 +133,7 @@ static struct iovars iov;
  * take internal (zero-based) unit number; return "struct unit *"
  * all access to units array hidden, so it can be made sparse
  */
-#define FINDUNIT(N) (iov.units + (N))
+#define FINDUNIT(N) (units + (N))
 
 struct io_obj nomatch;			/* for NOMATCH */
 
@@ -306,16 +299,7 @@ io_memfile(char *name, char *data, int len, int dir) {
 
 void
 io_initvars(void) {
-#ifdef NO_STATIC_VARS
-    if (!varp->v_iov) {
-	varp->v_iov = (struct iovars *)malloc(sizeof(struct iovars));
-	if (!varp->v_iov) {
-	    perror("iovars malloc failed");
-	    exit(1);
-	}
-	bzero(varp->v_iov, sizeof(struct iovars));
-    }
-#endif /* NO_STATIC_VARS defined */
+    /* XXX cleanup here? */
 }
 
 /* add file to input list */
@@ -777,9 +761,9 @@ io_endfile(int_t unit) {		/* ENFILE */
 #define COMPILING(UNIT) ((UNIT) == INTERN(UNITI) && D_A(COMPCL))
 
 #ifdef COMPILER_READLINE
-static int readline_inited;
+static VAR int readline_inited;
 #ifdef HAVE_RL_SET_KEYMAP
-static Keymap initial_keymap, compile_keymap;
+static VAR Keymap initial_keymap, compile_keymap;
 #endif
 
 static void
@@ -1039,25 +1023,15 @@ io_ecomp(void) {			/* SIL XECOMP op */
     up->offset = ioo_tello(up->curr->iop); /* save offset for rewind */
 
     /* free list of included filenames */
-    while (iov.includes) {
+    while (includes) {
 	struct file *tp;
 
-	tp = iov.includes->next;
-	free(iov.includes);
-	iov.includes = tp;
+	tp = includes->next;
+	free(includes);
+	includes = tp;
     }
 
-#if 0			   /* need for LOAD()!! */
-    /* free list of include file directories */
-    while (iov.lib_dirs) {
-	struct file *tp;
-
-	tp = iov.lib_dirs->next;
-	free(iov.lib_dirs);
-	iov.lib_dirs = tp;
-    }
-    iov.lib_dir_last = NULL;
-#endif
+    /* loadx.c uses list of include directories, cannot free!! */
 }
 
 /* process I/O option strings for io_openi and io_openo */
@@ -1230,7 +1204,7 @@ io_openi(struct descr *dunit,		/* IN: unit */
     }
 
     if (recl && !(fp->flags & FL_BINARY)) {
-	static char recl_ignored_warning = 0;
+	static VAR char recl_ignored_warning = 0;
 	/* just once per run: have an environment variable suppress this?? */
 	if (!recl_ignored_warning) {
 	    fprintf(stderr, "Ignoring record length %d on I/O unit %d\n",
@@ -1323,7 +1297,7 @@ io_include(struct descr *dp,		/* input unit */
     spec2str( sp, fname, sizeof(fname) );
 
     /* search includes list to see if file already included!! */
-    for (fp = iov.includes; fp; fp = fp->next)
+    for (fp = includes; fp; fp = fp->next)
 	if (strcmp(fname, fp->fname) == 0) /* found it!!! */
 	    return INC_SKIP;		/* as you were! */
 
@@ -1359,8 +1333,8 @@ io_include(struct descr *dp,		/* input unit */
     /* add base filename to list of files already included */
     fp = io_newfile(fname);		/* reuse struct file!! */
     if (fp) {
-	fp->next = iov.includes;
-	iov.includes = fp;		/* XXX keep per unit? nah. */
+	fp->next = includes;
+	includes = fp;		/* XXX keep per unit? nah. */
     }
     return INC_OK;
 } /* io_include */
@@ -1523,18 +1497,18 @@ io_findunit(void) {
     int start;
 
     for (;;) {
-	if (iov.finger < MINFIND)
-	    iov.finger = MAXFIND;
+	if (finger < MINFIND)
+	    finger = MAXFIND;
 
-	start = iov.finger;
-	while (iov.finger >= MINFIND) {
+	start = finger;
+	while (finger >= MINFIND) {
 	    int u;
 	    struct unit *up;
 	    int ret;
 
-	    u = INTERN(iov.finger);
+	    u = INTERN(finger);
 	    up = FINDUNIT(u);
-	    ret = iov.finger--;
+	    ret = finger--;
 	    if (up->curr == NULL && up->head == NULL)
 		return ret;		/* found a free unit */
 	}
@@ -1606,10 +1580,14 @@ io_finish(void) {
     for (i = 0; i < NUNITS; i++)
 	io_closeall(i);
 
-#ifdef NO_STATIC_VARS
-    free(varp->v_iov);
-    varp->v_iov = NULL;
-#endif /* NO_STATIC_VARS defined */
+    while (lib_dirs) {
+	struct file *tp;
+
+	tp = lib_dirs->next;
+	free(lib_dirs);
+	lib_dirs = tp;
+    }
+    lib_dir_last = NULL;
 
     return TRUE;
 }
@@ -1620,11 +1598,11 @@ io_add_lib_dir(char *dirname) {
     struct file *fp = io_newfile(dirname);
     if (!fp)
 	return FALSE;
-    if (iov.lib_dir_last)
-	iov.lib_dir_last->next = fp;
+    if (lib_dir_last)
+	lib_dir_last->next = fp;
     else
-	iov.lib_dirs = fp;		/* new list */
-    iov.lib_dir_last = fp;
+	lib_dirs = fp;		/* new list */
+    lib_dir_last = fp;
     return TRUE;
 }
 
@@ -1655,7 +1633,7 @@ void
 io_show_paths(void)
 {
     struct file *fp;
-    for (fp = iov.lib_dirs; fp; fp = fp->next)
+    for (fp = lib_dirs; fp; fp = fp->next)
 	puts(fp->fname);
 }
 
@@ -1706,7 +1684,7 @@ io_lib_find(char *subdir, char *file, char *ext) {
     if (abspath(file))
 	return NULL;			/* absolute path */
 
-    for (ip = iov.lib_dirs; ip; ip = ip->next) {
+    for (ip = lib_dirs; ip; ip = ip->next) {
 	char *path;
 
 	path = trypath(ip->fname, subdir, file, ext);
@@ -1738,7 +1716,7 @@ io_lib_find(char *subdir, char *file, char *ext) {
 /* 12/13/14 return n'th lib directory for HOST() */
 char *
 io_lib_dir(int n) {
-    struct file *ip = iov.lib_dirs;
+    struct file *ip = lib_dirs;
 
     while (ip && n > 0) {
 	n--;
@@ -1792,7 +1770,7 @@ io_preload(void) {
 	struct file *ip;
 
 	/* use include search path */
-	for (ip = iov.lib_dirs; ip; ip = ip->next)
+	for (ip = lib_dirs; ip; ip = ip->next)
 	    try_preload(ip->fname);
     }
 } /* io_preload */

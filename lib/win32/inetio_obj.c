@@ -29,11 +29,7 @@
 #include "bufio_obj.h"
 #include "inet.h"			/* {tc,ud}p_socket */
 
-#ifdef NO_STATIC_VARS
-#include "vars.h"
-#else  /* NO_STATIC_VARS not defined */
-static int wsock_init_done;
-#endif /* NO_STATIC_VARS not defined */
+static VAR int wsock_init_done;
 
 #ifndef SD_BOTH
 #define SD_BOTH 2

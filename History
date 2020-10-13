@@ -3,6 +3,15 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/12/2020:
+	flush NO_STATIC_VARS, replace with VAR declaration
+	globals.h (new): declare all globals using VAR
+	include/h.h: default VAR to empty (could be TLS or __attr__(secton))
+	gendata.sno: output VAR
+	main.c: declare all globals
+	include/vars.h: removed
+	32 other .c files
+
+10/12/2020:
 	config/win32/mingw.mak: DLL/tests tested.
 
 10/11/2020:
