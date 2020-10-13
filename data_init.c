@@ -12,6 +12,10 @@
 # include "config.h"
 # endif /* HAVE_CONFIG_H defined */
 
+# ifdef SHARED
+# define NEED_ZERO_VARS
+# endif
+
 # include "snotypes.h"
 # include "h.h"
 # include "macros.h"
@@ -83,7 +87,11 @@ const char DIGITS[] = "0123456789";
 void
 init_data(void) {
 #ifdef SHARED
-    ZERO_VARS;				/* clear everything marked "VAR" */
+    static VAR char dirty;
+    if (dirty) {
+	ZERO_VARS;		   /* clear everything marked "VAR" */
+    }
+    dirty = 1;
 #endif /* SHARED library */
 # include "data_init.h"
 } /* init_data */
