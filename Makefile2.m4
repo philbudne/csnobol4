@@ -759,7 +759,9 @@ printenv:
 
 ################
 MAKEFILE2=Makefile2
-DEPENDFLAGS=$(MYCPPFLAGS)
+
+# was MYCPPFLAGS, changed to pick up -DSHARED
+DEPENDFLAGS=$(CFLAGS)
 
 depend:
 	sed '/^# DO NOT DELETE THIS LINE/q' $(MAKEFILE2) > $(MAKEFILE2).tmp
