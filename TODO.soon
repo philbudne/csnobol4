@@ -4,16 +4,12 @@ include jjson.sno as ssjson.sno???
 	fix/handle string quoting
 
 shared library:
+	**** ensure all TLS & globals cleared on restart!!
 	move all startup banner output to main.c (snobol4_banners?)?
 	snobol4.h SHAREDEXP -- noop when monolithic?
-	ensure all TLS & globals cleared on (re)start!
-		register hooks?
-		xgrep '[   ]static.*;' 
-
 	rename io_ to snobol4_ in snobol4.h?
-
-	versioning:
-		gcc -shared -Wl,-soname,libxx.so.1 -o libxx.so.1.0.1
+	getopt not thread safe!
+	versioning: gcc -shared -Wl,-soname,libxx.so.1 -o libxx.so.1.0.1
 
 load.h:
 	lret_t: don't IMPORT/EXPORT PML'ed functions????
