@@ -25,6 +25,7 @@
 #include "h.h"				/* EXPORT */
 #include "snotypes.h"
 
+#include "globals.h"			/* unbuffer_all */
 #include "io_obj.h"			/* struct io_obj, io_ops, MAKEOPS */
 #include "inet.h"			/* {tcp,udp}_socket */
 #include "lib.h"			/* tty_mode */
@@ -65,8 +66,6 @@
 #endif /* STDERR_FILENO not defined */
 
 #define ISTTY(IOP) ((IOP)->flags & FL_TTY)
-
-extern int unbuffer_all;		/* command line: -U */
 
 /****************************************************************
  * methods

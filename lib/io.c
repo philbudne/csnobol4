@@ -44,6 +44,7 @@
 #include "str.h"
 #include "io_obj.h"			/* io_obj, FL_xxx */
 #include "stdio_obj.h"			/* stdio_{wrap,obj} */
+#include "globals.h"			/* rflag, lflag */
 
 /* generated */
 #include "equ.h"			/* for BCDFLD (for X_LOCSP), res.h */
@@ -94,12 +95,11 @@ struct file {
 #define MAXFNAME	1024		/* XXX use MAXPATHLEN? POSIX?? */
 #define MAXOPTS		1024
 
-/* XXX malloc at runtime? */
-static VAR struct unit units[NUNITS];
+static VAR struct unit units[NUNITS];	/* XXX malloc at runtime? */
 static VAR struct file *includes;	/* list of included files */
 static VAR int finger;			/* for io_findunit */
-struct VAR file *lib_dirs;		/* list of include directories */
-struct VAR file *lib_dir_last;		/* tail of include directory list */
+static VAR struct file *lib_dirs;	/* list of include directories */
+static VAR struct file *lib_dir_last;	/* tail of include directory list */
 
 /*
  * private, r/o array of pointers to io_open functions
@@ -119,9 +119,6 @@ static struct io_obj *(*const io_open_funcs[])(char *fname, int flags, int rw) =
     stdio_open				/* LAST! Never returns NOMATCH!! */
 };
 #define N_OPEN_FUNCS (sizeof(io_open_funcs)/sizeof(io_open_funcs[0]))
-
-extern VAR int rflag;			/* from init.c */
-extern VAR int lflag;			/* from init.c */
 
 /* convert to internal (zero based) unit number; */
 #define INTERN(U) ((U)-1)
