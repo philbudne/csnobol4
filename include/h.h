@@ -29,6 +29,23 @@
 #define IMPORT(TYPE) TYPE
 #endif /* IMPORT not defined */
 
+/*
+ * all statically allocated variables (both global and private)
+ * *MUST* be marked as "VAR" (which should always appear AFTER
+ * "static" or "extern", but before the data type (so that C99
+ * __tls can be used), and SHOULD *NEVER* have an initializer
+ * (other than zero), so that the state of static storage can
+ * be reset for a shared library on (re)entry!!!
+ */
+
 #ifndef VAR
+#ifdef SHARED
+#if defined(__gcc__) || defined(__GNUC__) /* gcc-like? (clang, icc?) */
+#include "config/gcc/vars.h"
+#else  /* not gcc-like */
+#error "don't know how to build shared library with your compiler"
+#endif /* not gcc-like */
+#else  /* not SHARED library */
 #define VAR
-#endif
+#endif /* not SHARED library */
+#endif /* VAR not defined */

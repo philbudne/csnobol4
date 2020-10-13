@@ -17,6 +17,9 @@
 # include "macros.h"
 # include "units.h"
 # include "gen.h"
+# ifdef SHARED
+# include "str.h"			/* bzero */
+# endif /* SHARED library */
 
 /* machine generated */
 # include "equ.h"
@@ -79,5 +82,8 @@ const char DIGITS[] = "0123456789";
 
 void
 init_data(void) {
+#ifdef SHARED
+    ZERO_VARS;				/* clear everything marked "VAR" */
+#endif /* SHARED library */
 # include "data_init.h"
 } /* init_data */

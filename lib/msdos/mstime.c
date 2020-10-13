@@ -11,25 +11,27 @@
 #include "snotypes.h"
 #include "lib.h"
 
-static VAR int first_time = -1;
 static VAR long start_time;
 
 /*
- * sigh; use ansi-ish clock() -- returns Time Of Day!
+ * sigh; use ansi-ish clock() defined as user + system,
+ *	but wall clock on on MS-DOS?
  */
 
 real_t
 mstime(void) {
     clock_t t;
 
-    if (first_time == -1) {
-	start_time = (clock_t) clock();
-	first_time = -first_time;
+    if (start_time == 0) {
+	start_time = clock();
+	if (start_time == 0)
+	    start_time = 1;		/* must be non-zero */
 	return 0.0;
     }
 
-    t = (clock_t) clock();
-
+    t = clock();
+    if (t == 0 && start_time == 1)
+	t = 1;
     if (t < start_time)
 	t += 86400L * CLOCKS_PER_SEC;	/* sec/day * clocks/sec */
 
