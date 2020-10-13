@@ -16,6 +16,5 @@ __declspec(allocate(".snob4$z")) char end_vars[1];
 #define ZERO_VARS bzero(start_vars, end_vars - start_vars)
 #endif /* NEED_ZERO_VARS */
 
-// ruh-roh needs to be before storage class?
-// if so, define STATIC_VAR and EXTERN_VAR??
+// seems fine after data (storage) class, like C99 __thread
 #define VAR __declspec(allocate(".snob4"))
