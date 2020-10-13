@@ -1,16 +1,36 @@
 $Id$
 
+include jjson.sno as ssjson.sno???
+	fix/handle string quoting
+
 shared library:
+	move all startup banner output to main.c (snobol4_banners?)?
+	snobol4.h SHAREDEXP -- noop when monolithic?
+	ensure all TLS & globals cleared on (re)start!
+		register hooks?
+		xgrep '[   ]static.*;' 
+
 	rename io_ to snobol4_ in snobol4.h?
-	gcc -shared -Wl,-soname,libxx.so.1 -o libxx.so.1.0.1
+
+	versioning:
+		gcc -shared -Wl,-soname,libxx.so.1 -o libxx.so.1.0.1
+
+load.h:
+	lret_t: don't IMPORT/EXPORT PML'ed functions????
+	snolib/: findunit.c log.c ord.c sin.c sqrt.c sset.c tan.c use pml_t
+		14 others do not!!
+		always use int??
+	everything in snolib/ PML'ed (except system.sno-broken)? add README??
 
 snobol4func: added in CSNOBOL version ??
-	EXIT
+	EXIT (others??)
 
 Use HAVE_PATHS_H/<paths.h>, path.h in generic/execute.c, bsd/popen.c??
 
 Not on Android! include/path.h:#define TMP_DIR "/tmp" /* exists on all systems?!
+
 remove io_clearerr?
+
 re-implement io_getfp w/ stdio_obj_getfp??
 
 setjmp/longjmp for ^C on TTY read??
