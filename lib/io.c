@@ -3,12 +3,12 @@
 /*
  * I/O support for CSNOBOL4
  *
- * FINALLY refactored in 2020 (last attempted in 2002, but never
- * debugged) this file is now an adaptation layer over 
- * I/O Objects (and much nastiness has thus moved to stdio_obj.c!)
+ * FINALLY refactored in 2020 (last attempted in 2002, but never debugged)
+ * this file is now an adaptation layer over 
+ * I/O Objects (and some nastiness has moved to stdio_obj.c!)
  *
- * Still the largest file in the support library, and the one with the
- * most ifdefs.  The complexity (and fragility) of the I/O support is
+ * Still the largest file in the support library, and still has manu
+ * ifdefs.  The complexity (and fragility) of the I/O support is
  * due to a number of factors:
  *
  * Assumptions built into the SIL source (both compiler and runtime) e.g.
@@ -834,7 +834,7 @@ io_read(struct descr *dp, struct spec *sp) {	/* STREAD */
 	}
 
 	if (iop->flags & FL_BINARY) {
-	    if (recl == 0)		/* XXX use equ.h TXRECL? */
+	    if (recl == 0)
 		return IO_ERR;
 
 	    len = ioo_read_raw(iop, cp, recl);
@@ -870,22 +870,6 @@ io_read(struct descr *dp, struct spec *sp) {	/* STREAD */
 			len--;
 		}
 
-		/*
-		 * PLB 2020-09-21
-		 * XXX _COULD_ always honor recl (if != equ.h:TXRECL)
-		 * even if not compiling.  This would mean programs
-		 * which explicitly set the record length to some
-		 * large number would ONLY see that many, and without
-		 * the K flag being honored.
-		 *
-		 * Keeping the old behavior would mean either
-		 * implementing it here (character at a time,
-		 * or pushing it down into multiple classes.
-		 *
-		 * NOTE! The old implementation of FL_KEEP had the
-		 * bug that a line of exactly RECL characters would
-		 * be followed by read of an empty line.
-		 */
 		if (COMPILING(unit)) {
 		    /* compiler expects data in-place, so copy it */
 		    if (!recl)
@@ -898,7 +882,7 @@ io_read(struct descr *dp, struct spec *sp) {	/* STREAD */
 		}
 		else {			/* not compiling */
 		    /*
-		     * 2020-09-20: point at malloc'ed line buffer!!!
+		     * 2020-09-20: point at getline buffer!!!
 		     * no more truncation (at the cost of another copy)
 		     */
 		    S_A(sp) = (int_t) iop->linebuf;
@@ -1107,12 +1091,9 @@ io_options(char *op,			/* IN: options */
 	    op++;
 	    break;
 
-	case 'K':			/* Local/experimental: breaK long lines */
+	case 'K':	    /* Local/experimental: breaK long lines */
 	case 'k':
-	    flags |= FL_BREAK;
-	    flags &= ~FL_BINARY;
-	    op++;
-	    break;
+	    break;			/* dead in 2.2 */
 
 	case 'T':			/* SITBOL: "terminal" (no EOL) */
 	case 't':
@@ -1138,7 +1119,7 @@ io_options(char *op,			/* IN: options */
 	    op++;
 	    break;
 
-	case 'X':			/* extension: eXclusive (fail if eXists) */
+	case 'X':	   /* extension: eXclusive (fail if eXists) */
 	case 'x':
 	    flags |= FL_EXCL;
 	    op++;
