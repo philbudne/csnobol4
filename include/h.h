@@ -41,7 +41,7 @@
 #ifndef VAR
 #ifdef SHARED
 #if defined(__gcc__) || defined(__GNUC__) /* gcc-like? (clang, icc?) */
-#include "config/gcc/vars.h"
+#include "gcc/vars.h"			  /* include/gcc/vars.h */
 #else  /* not gcc-like */
 #error "don't know how to build shared library with your compiler"
 #endif /* not gcc-like */

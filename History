@@ -5,9 +5,9 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 10/13/2020:
 	Implement zeroing VAR variables in SHARED lib builds
 	data_init.c: include str.h, invoke ZERO_VARS to do the work
-	config/gcc/vars.h (new): put VAR into own section with gcc-like
+	include/gcc/vars.h (new): put VAR into own section with gcc-like
 		compilers, include goo for OSX
-	include/h.h: include config/gcc/vars.h in SHARED build with "gcc"
+	include/h.h: include gcc/vars.h in SHARED build with "gcc"
 	lib/msdos/mstime.c: fix non-zero initializer
 
 10/13/2020:
