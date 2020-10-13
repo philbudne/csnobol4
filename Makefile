@@ -103,7 +103,7 @@ $(SO)Makefile2: config.m4 Makefile2.m4
 	echo 'ADD_SRCS([$$(MEMIO_SRC)])'	>> $(SO)/config.m4
 	echo '# DO NOT EDIT. machine generated from Makefile2.m4' > $(SO)$(M2TMP)
 	echo '# add local changes to local-config'		>> $(SO)$(M2TMP)
-	(cd $(SO); $(M4) -I.. ../Makefile2.m4 >> $(M2TMP))
+	(cd $(SO); $(M4) ../Makefile2.m4 >> $(M2TMP))
 	echo '# DO NOT DELETE THIS LINE. make depend uses it.' >> $(SO)$(M2TMP)
 	$(MAKE) -C $(SO) -f $(M2TMP) depend MAKEFILE2=$(M2TMP) SRCDIR=../
 	mv -f $(SO)$(M2TMP) $(SO)Makefile2
