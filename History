@@ -2,10 +2,13 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/14/2020:
+	lib/auxil/memio_obj.c: close: free buffer, return TRUE
+
 10/13/2020:
-	First cut at MSVC VAR support
+	MSVC VAR support
 	include/h.h: include msvc/vars.h
-	include/msvc/vars.h: a start
+	include/msvc/vars.h: surprisingly reasonable/easy!
 
 10/13/2020:
 	Implement zeroing VAR variables in SHARED lib builds

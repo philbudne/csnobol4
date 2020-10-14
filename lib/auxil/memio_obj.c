@@ -110,9 +110,16 @@ memio_flush(struct io_obj *iop) {
     return TRUE;
 }
 
-static  int
+static int
 memio_close(struct io_obj *iop) {
-    return 0;
+    struct memio_obj *miop = (struct memio_obj *)iop;
+
+    if (miop->bio.buffer) {
+	free(miop->bio.buffer);
+	miop->bio.buffer = NULL;
+    }
+
+    return TRUE;
 }
 
 #define memio_getline NULL	/* use bufio */
@@ -146,4 +153,3 @@ memio_open(char *buf, size_t len, int flags, int dir) {
 
     return &miop->bio.io;
 }
-
