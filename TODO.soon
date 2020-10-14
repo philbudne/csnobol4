@@ -5,6 +5,8 @@ include jjson.sno as ssjson.sno???
 
 shared library:
 	SHARED: need to free malloc'ed memory on exit: register hooks?
+	loadx libs/funcs: need to be VAR?
+		if not, need to be cleaned up on DL unload!
 	move all startup banner output to main.c (snobol4_banners?)?
 	snobol4.h SHAREDEXP -- noop when monolithic?
 	rename io_ to snobol4_ in snobol4.h?
