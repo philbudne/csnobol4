@@ -1,6 +1,11 @@
 * $Id$
 *
 * $Log$
+* Revision 1.146  2020/10/07 00:45:00  phil
+* [PLB130] implement handling for type "M"
+* (malloc'ed linked string) in LNKFNC.
+* Calls relstring after variable generated.
+*
 * Revision 1.145  2020/09/21 21:46:01  phil
 * [PLB129] VLRECL: eliminate text file record lengths!
 * 	(at the cost of copying data)
@@ -968,6 +973,7 @@ INITD1 GETDC   XPTR,INITB,0	   Get specifier to convert
        XCALLC  GETPARM,(XSP)	   Get user parameters		[PLB39][PLB86]
        RCALL   PARMVL,GENVAR,XSPPTR				[PLB39]
 *				   Convert to string for &PARM	[PLB39]
+       XCALLC  FREEPARM,(XSP)	   Free allocated memory	[PLB131]
 *
        PUTDC   ABRTKY,DESCR,ABOPAT Initial value of ABORT
        PUTDC   ARBKY,DESCR,ARBPAT  Initial value of ARB
