@@ -18,6 +18,7 @@ void hash(struct descr *,struct spec *);
 
 /* from init.c */
 int getparm(struct spec *);
+int freeparm(struct spec *);
 int init_args(int argc, char *argv[], int interactuve);
 void init(void);			/* SIL INIT op */
 

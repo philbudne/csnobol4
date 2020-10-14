@@ -64,7 +64,6 @@ extern const char build_date[];		/* from build.c */
 #endif /* STDOUT_FILENO not defined */
 
 #ifdef NEED_GETOPT_EXTERNS
-/* UGH! not thread safe!!! use private vers w/ VAR? */
 /* needed w/ own getopt & on SunOS4?! */
 extern int optind;
 extern char *optarg;
@@ -214,7 +213,7 @@ getargs(int start,			/* which argument to start on */
 
 /* return zero on failure */
 static int
-io_init(int std_includes, int interactive) {	/* here from init_args() */
+io_init(int interactive) {		/* here from init_args() */
     FILE *termin;
 
     io_initvars();
@@ -346,6 +345,7 @@ init_args(int ac, char *av[], int interactive) {
      *		added, but it better not want an argument!)
      */
 
+    /* getopt not thread safe!!! use private vers that takes optind/optarg? */
     while ((c = getopt(argc, argv, "+bd:fghkl:nprsu:vxzBI:L:MNP:S:U")) != -1) {
 	switch (c) {
 	case 'b':
@@ -517,7 +517,7 @@ init_args(int ac, char *av[], int interactive) {
     if (errs)
 	return usage(argv[0], justversion);
 
-    if (!io_init(std_includes, interactive)) /* AFTER io_input calls! */
+    if (!io_init(interactive))		/* AFTER io_input calls! */
 	return 1;
 
     if (showpaths) {			/* after io_init() */
@@ -705,3 +705,12 @@ int
 getparm(struct spec *sp) {
     return getargs(0, sp) != NULL;
 }
+
+/* 10/14/2020! -- free memory allocated in getparm */
+int
+freeparm(struct spec *sp) {
+    if (S_A(sp))
+	free((void *)S_A(sp));
+    return 0;
+}
+

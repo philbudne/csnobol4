@@ -1,7 +1,6 @@
 $Id$
 
 include jjson.sno as ssjson.sno???
-	fix/handle string quoting
 
 shared library:
 	SHARED: need to free malloc'ed memory on exit: register hooks?
@@ -9,13 +8,14 @@ shared library:
 	loadx libs/funcs: need to be VAR?
 		if not, need to be cleaned up on DL unload!
 	move all startup banner output to main.c (snobol4_banners?)?
-	snobol4.h SHAREDEXP -- noop when monolithic?
-	rename io_ to snobol4_ in snobol4.h?
+	snobol4.h SNOEXP->SHAREDEXP? -- noop when monolithic?
+	rename public io_ to snobol4_ (for snobol4.h)?
 	per-thread?
 		getopt not thread safe!
 		shared library list should be shared (needs locking!)
 	versioning: gcc -shared -Wl,-soname,libxx.so.1 -o libxx.so.1.0.1
 	all SHARED-specific code in one file?
+	dynamic loadables: need _fini/DllMain for cleanup??
 
 load.h:
 	lret_t: don't IMPORT/EXPORT PML'ed functions????

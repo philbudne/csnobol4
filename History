@@ -3,6 +3,12 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/14/2020:
+	include/lib.h: add freeparm extern
+	include/macros.h: add FREEPARM
+	v311.sil: [PLB131] call FREEPARM
+	lib/init.c: add freeparm function
+
+10/14/2020:
 	lib/auxil/memio_obj.c: close: free buffer, return TRUE
 
 10/13/2020:

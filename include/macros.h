@@ -237,6 +237,7 @@ S4_EXTERN struct descr _NORET[1];
 #define RAISE1(A) raise1((struct spec *)(A))
 #define _UNLOAD(A) unload((struct spec *)(A))
 #define GETPARM(A) getparm((struct spec *)(A))
+#define FREEPARM(A) freeparm((struct spec *)(A))
 
 #define RAISE2(A,B) raise2((struct spec *)(A),(struct spec *)(B))
 #define LEXCMP(A,B) lexcmp((struct spec *)(A),(struct spec *)(B))
