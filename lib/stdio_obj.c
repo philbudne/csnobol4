@@ -231,6 +231,8 @@ stdio_close(struct io_obj *iop) {
     if (siop->io.flags & FL_TTY)
 	tty_close(siop->f);		/* advisory */
 
+    /* linebuf belongs to io_obj. freed in io.c */
+
     if (siop->io.flags & FL_NOCLOSE)
 	return TRUE;
 
