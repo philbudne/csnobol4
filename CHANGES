@@ -19,7 +19,7 @@ Changes since 2.1.6 release;
 		--force-pml removed (must use modules)
 		--without-modules added (breaks tests, sdb)
 		more strict about feature tests
-	Unix/Linux systems can build libsnobol4.so shared library
+	Can build libsnobol4.so shared library / snobol4.dll;
 		ssnobol4 executable using it is up to 8% slower
 		(due to position independent code?)
 		except perhaps on MacOS, where PIC is the default.
@@ -28,7 +28,7 @@ Changes since 2.1.6 release;
 		enough to write temporary files, and invoke a subprocess!?
 		Shared library API is in include/snobol4.h
 		No promises on future availability or stability!
-		Able to build DLL on Windows, not yet tested.
+		NOTE!!! Does NOT free allocated memory!!!
 	Loadable functions may now return strings in malloc'ed memory
 		via RETSTR[2]_FREE (and silently by RETSTR[2]),
 		using new datatype "M"; CSNOBOL4 calls relstring
