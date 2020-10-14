@@ -4,7 +4,7 @@ include jjson.sno as ssjson.sno???
 	fix/handle string quoting
 
 shared library:
-	**** ensure all TLS & globals cleared on restart!!
+	SHARED: need to free malloc'ed memory on exit: register hooks?
 	move all startup banner output to main.c (snobol4_banners?)?
 	snobol4.h SHAREDEXP -- noop when monolithic?
 	rename io_ to snobol4_ in snobol4.h?
