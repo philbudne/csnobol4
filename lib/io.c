@@ -1263,16 +1263,13 @@ io_openo(struct descr *dunit,		/* IN: unit */
     return TRUE;
 } /* io_openo */
 
-enum io_include_ret
-io_include(struct descr *dp,		/* input unit */
-	   struct spec *sp) {		/* file name (with quotes) */
+static enum io_include_ret
+io_include2(struct descr *dp,		/* input unit */
+	    char *fname) {		/* file name (with quotes) */
     int l;
-    char fname[MAXFNAME];		/* XXX */
     struct file *fp;
     struct unit *up;
     char *fn2;
-
-    spec2str( sp, fname, sizeof(fname) );
 
     /* search includes list to see if file already included!! */
     for (fp = includes; fp; fp = fp->next)
@@ -1280,7 +1277,7 @@ io_include(struct descr *dp,		/* input unit */
 	    return INC_SKIP;		/* as you were! */
 
     /* strip off trailing spaces after uniqueness test */
-    l = S_L(sp);
+    l = strlen(fname);
     while (l > 0 && fname[l-1] == ' ') {
 	l--;
     }
@@ -1315,6 +1312,15 @@ io_include(struct descr *dp,		/* input unit */
 	includes = fp;		/* XXX keep per unit? nah. */
     }
     return INC_OK;
+} /* io_include2 */
+
+enum io_include_ret
+io_include(struct descr *dp,		/* input unit */
+	   struct spec *sp) {		/* file name (with quotes) */
+    char *fname = mspec2str(sp);
+    enum io_include_ret ret = io_include2(dp, fname);
+    free(fname);
+    return ret;
 } /* io_include */
 
 /*

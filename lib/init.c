@@ -71,6 +71,7 @@ extern char *optarg;
 
 static VAR int xflag;
 static VAR void *ppmstack;
+static FILE *termin;
 
 static void init_signals(void);
 
@@ -215,8 +216,6 @@ getargs(int start,			/* which argument to start on */
 /* return zero on failure */
 static int
 io_init(int interactive) {		/* here from init_args() */
-    FILE *termin;
-
     io_initvars();
 
     if (!interactive)
@@ -755,5 +754,12 @@ cleanup(void) {
     free((void *)D_A(HDSGPT));		/* free dynamic region */
     free((void *)D_A(STKHED));		/* stack */
     free(ppmstack);			/* pattern match stack */
+
+    free(snolib_local);
+    free(snolib_vers);
+    free(snolib_vlib);
+    free(snolib_vlocal);
+
+    fclose(termin);			/* last: may be stderr! */
 }
 #endif

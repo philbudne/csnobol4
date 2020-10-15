@@ -3,6 +3,10 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/14/2020:
+	lib/io.c: use mstrdup in io_include (wrapper for io_include2)
+	lib/init.c: free snolib_{local,v{ers,lib,local}}, fclose termin
+
+10/14/2020:
 	Implement reg_cleanup for shared library cleanup
 	lib/init.c: add reg_cleanup, cleanup
 	lib/endex.c: call cleanup if SHARED
@@ -40,7 +44,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 10/12/2020:
 	flush NO_STATIC_VARS, replace with VAR declaration
 	globals.h (new): declare all globals using VAR
-	include/h.h: default VAR to empty (could be TLS or __attr__(secton))
+	include/h.h: default VAR to empty (could be TLS or __attr__(section))
 	gendata.sno: output VAR
 	main.c: declare all globals
 	include/vars.h: removed
