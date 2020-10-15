@@ -91,6 +91,7 @@ struct file {
     /* MUST BE LAST!! */
     char fname[1];
 };
+#define FL_INCLUDE	0x80000000	/* internal */
 
 #define MAXFNAME	1024		/* XXX use MAXPATHLEN? POSIX?? */
 #define MAXOPTS		1024
@@ -351,6 +352,8 @@ io_close(int unit) {		      /* internal (zero-based unit) */
 	fp->iop = NULL;
     }
     up->curr = fp->next;
+    if (fp->flags & FL_INCLUDE)
+	free(fp);
     return ret;
 } /* io_close */
 
@@ -1303,6 +1306,7 @@ io_include2(struct descr *dp,		/* input unit */
 
     /* push new file onto top of input list */
     fp->next = up->curr;
+    fp->flags |= FL_INCLUDE;
     up->curr = fp;
 
     /* add base filename to list of files already included */

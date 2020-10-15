@@ -3,6 +3,9 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/14/2020:
+	lib/io.c: add FL_INCLUDE flag, free include file file struct
+
+10/14/2020:
 	lib/io.c: use mstrdup in io_include (wrapper for io_include2)
 	lib/init.c: free snolib_{local,v{ers,lib,local}}, fclose termin
 
