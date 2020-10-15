@@ -51,3 +51,6 @@
 #define VAR
 #endif /* not SHARED library */
 #endif /* VAR not defined */
+
+/* reminder for variables that need to be per-thread! */
+#define TLS

@@ -70,6 +70,7 @@ extern char *optarg;
 #endif
 
 static VAR int xflag;
+static VAR void *ppmstack;
 
 static void init_signals(void);
 
@@ -616,7 +617,7 @@ init(void) {
 
     pmstack *= DESCR;			/* get bytes */
 
-    ptr = malloc(pmstack);		/* NOTE: malloc(), not dynamic() */
+    ptr = ppmstack = malloc(pmstack);	/* NOTE: malloc(), not dynamic() */
     if (ptr == NULL) {
 	fprintf(stderr, "%s: could not allocate pattern stack of %lu bytes\n",
 		argv[0], (unsigned long)pmstack);
@@ -714,3 +715,45 @@ freeparm(struct spec *sp) {
     return 0;
 }
 
+#ifdef SHARED
+struct cleanup {
+    struct cleanup *next;
+    void (*func)(void);
+};
+
+static TLS struct cleanup *cleanups;
+#endif
+
+/* void function taking pointer to void function with no args */
+void
+reg_cleanup(void (*func)(void)) {
+#ifdef SHARED
+    struct cleanup *cp = malloc(sizeof(struct cleanup));
+    cp->next = cleanups;
+    cp->func = func;
+    cleanups = cp;
+#endif
+}
+
+#ifdef SHARED
+/* cleanup for shared library */
+void
+cleanup(void) {
+    struct cleanup *cp, *next;
+
+    if (params)
+	free(params);
+
+    for (cp = cleanups; cp; cp = next) {
+	next = cp->next;
+	if (cp->func)
+	    (cp->func)();
+	free(cp);
+    }
+    cleanups = NULL;
+
+    free((void *)D_A(HDSGPT));		/* free dynamic region */
+    free((void *)D_A(STKHED));		/* stack */
+    free(ppmstack);			/* pattern match stack */
+}
+#endif

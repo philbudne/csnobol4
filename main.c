@@ -19,14 +19,15 @@
 VAR jmp_buf endex_jmpbuf;
 # endif /* SHARED defined */
 
+/* generated */
 # include "proc.h"			/* BEGIN() */
-
 # include "equ.h"			/* for res.h */
 # include "data.h"
 # include "res.h"			/* BANRCL */
-# include "version.h"			/* VERSION, VERSION_DATE */
 
+# include "version.h"			/* VERSION, VERSION_DATE */
 # include "h.h"				/* IMPORT/EXPORT */
+
 # define SNOBOL4_PROVIDER
 # include "snobol4.h"			/* prototypes */
 

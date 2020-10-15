@@ -36,6 +36,9 @@ endex(int x) {
 
     io_finish();
     inet_cleanup();
+#ifdef SHARED
+    cleanup();
+#endif
 
     /* if &ABEND set, dump core?! */
     if (x) {

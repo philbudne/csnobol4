@@ -3,6 +3,13 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/14/2020:
+	Implement reg_cleanup for shared library cleanup
+	lib/init.c: add reg_cleanup, cleanup
+	lib/endex.c: call cleanup if SHARED
+	include/lib.h: add reg_cleanup, cleanup
+	lib/loadx.c: register for cleanup, unload all functions
+
+10/14/2020:
 	include/lib.h: add freeparm extern
 	include/macros.h: add FREEPARM
 	v311.sil: [PLB131] call FREEPARM

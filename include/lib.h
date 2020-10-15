@@ -21,6 +21,9 @@ int getparm(struct spec *);
 int freeparm(struct spec *);
 int init_args(int argc, char *argv[], int interactuve);
 void init(void);			/* SIL INIT op */
+void cleanup(void);
+/* void function taking pointer to void function with no args */
+void reg_cleanup(void (*func)(void));
 
 /* from io.c */
 void io_initvars(void);

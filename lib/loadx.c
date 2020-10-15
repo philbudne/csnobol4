@@ -36,10 +36,15 @@ struct func {
 };
 
 /* keep list of loaded functions (for UNLOAD) */
+/* XXX keep TLS (per-thread) or need use count?! */
 static struct func *funcs;
 
-/* list of loaded libs */
+/* list of loaded libs XXX threads need locking? */
 static struct lib *libs;
+
+#ifdef SHARED
+static void loadx_cleanup(void);
+#endif
 
 /* create refcounted lib interface */
 
@@ -113,7 +118,13 @@ load(struct descr *addr,		/* OUT */
     struct lib *lp = NULL;
     int ret = FALSE;
     void *stash = NULL;
-
+#ifdef SHARED
+    static VAR char registered;
+    if (!registered) {
+	reg_cleanup(loadx_cleanup);
+	registered = 1;
+    }
+#endif
     /* always try PML first. Only if lname is empty?? */
     /*if (!lname || !*lname)*/
     entry = pml_find(fname);
@@ -220,10 +231,9 @@ callx(struct descr *retval, struct descr *args,
     return (fp->entry)( retval, D_A(nargs), (struct descr *)D_A(args) );
 }
 
-void
-unload(struct spec *sp) {
+static void
+funload(char *fname) {
     struct func *fp, *pp;
-    char *fname = mspec2str(sp);
 
     if (!fname)
 	return;
@@ -250,12 +260,21 @@ unload(struct spec *sp) {
 
     fp->self = NULL;			/* invalidate self pointer!! */
     fp->entry = NULL;			/* invalidate function pointer */
-#if 1
-    /* NOT FREEING: makes sure address stays invalid!! */
-    /* XXX keep in a list? */
     fp->lib = NULL;
-    fp->next = fp->prev = NULL;
-#else
     free(fp);				/* free name block */
-#endif
 }
+
+void
+unload(struct spec *sp) {
+    char *fname = mspec2str(sp);
+    funload(fname);
+    free(fname);
+}
+
+#ifdef SHARED
+static void
+loadx_cleanup(void) {
+    while (funcs)
+	funload(funcs->name);
+}
+#endif
