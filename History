@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/15/2020:
+	lib/io.c, include/io_obj.h: move FL_INCLUDE to io_obj.h
+
 10/14/2020:
 	lib/io.c: add FL_INCLUDE flag, free include file file struct
 

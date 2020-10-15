@@ -86,12 +86,11 @@ struct unit {
 struct file {
     struct file *next;			/* next input file */
     struct io_obj *iop;
-    int flags;				/* XXX temp? pull up?? */
+    int flags;				/* XXX per unit?? (need FL_INCLUDE) */
 
     /* MUST BE LAST!! */
     char fname[1];
 };
-#define FL_INCLUDE	0x80000000	/* internal */
 
 #define MAXFNAME	1024		/* XXX use MAXPATHLEN? POSIX?? */
 #define MAXOPTS		1024
@@ -1313,7 +1312,7 @@ io_include2(struct descr *dp,		/* input unit */
     fp = io_newfile(fname);		/* reuse struct file!! */
     if (fp) {
 	fp->next = includes;
-	includes = fp;		/* XXX keep per unit? nah. */
+	includes = fp;
     }
     return INC_OK;
 } /* io_include2 */

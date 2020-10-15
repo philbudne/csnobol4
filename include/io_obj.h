@@ -33,6 +33,8 @@ struct io_obj {
 #define FL_EXCL		0400		/* eXclusive open (fail if eXists) */
 #define FL_CLOEXEC	01000		/* mark for close on exec */
 #define FL_TTY		02000		/* NOTE! only in io_obj.flags!! */
+#define FL_INCLUDE	04000		/* only in struct file */
+
 /* XXX reserve some FL_OBJ[123] bits for private per-class use? */
 
 #ifndef SEEK_SET
