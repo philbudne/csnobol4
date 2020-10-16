@@ -476,9 +476,19 @@ gcc|clang|icc)
 	SO_EXT=.so
 	SO_CFLAGS=-fPIC
 	SO_LD=$CCPATH
-	# gcc: "For predictable results, you must also specify the
-	# same set of options that were used to generate code (-fpic,-fPIC)
-	# when you specify -shared"
+	# NOTE: LDFLAGS includes -fPIC on purpose:
+	# https://gcc.gnu.org/onlinedocs/gcc-10.2.0/gcc/Link-Options.html#index-shared
+	#   "For predictable results, you must also specify the same set of
+	#   options that were used to generate code (-fpic,-fPIC) when you
+	#   specify -shared"
+	# and
+	# https://gcc.gnu.org/onlinedocs/gcc-10.2.0/gcc/Link-Options.html#FOOT1
+	#   "On some systems, ‘gcc -shared’ needs to build supplementary
+	#   stub code for constructors to work. On multi-libbed systems,
+	#   ‘gcc -shared’ must select the correct support libraries to link
+	#   against. Failing to supply the correct flags may lead to subtle
+	#   defects. Supplying them in cases where they are not necessary
+	#   is innocuous."
 	SO_LDFLAGS="-shared $SO_CFLAGS"
 	;;
     esac # morv
