@@ -16,9 +16,13 @@ shared library:
 	versioning: gcc -shared -Wl,-soname,libxx.so.1 -o libxx.so.1.0.1
 	all SHARED-specific code in one file?
 	dynamic loadables: need _fini/DllMain for cleanup??
+	traverse handle tables to close/free entries?
+
+CFFI:
+	use loadx code for function lookup (ref counting)
 
 load.h:
-	lret_t: don't IMPORT/EXPORT PML'ed functions????
+	pmlret_t: don't IMPORT/EXPORT PML'ed functions????
 	snolib/: findunit.c log.c ord.c sin.c sqrt.c sset.c tan.c use pml_t
 		14 others do not!!
 		always use int??
