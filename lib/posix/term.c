@@ -23,5 +23,5 @@
 
 FILE *
 term_input(void) {
-    return fdopen(STDERR_FILENO, "r");
+    return fdopen(dup(STDERR_FILENO), "r");
 }
