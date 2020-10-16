@@ -760,6 +760,7 @@ cleanup(void) {
     free(snolib_vlib);
     free(snolib_vlocal);
 
-    fclose(termin);			/* last: may be stderr! */
+    if (termin)
+	fclose(termin);			/* last, in case. should be a dup */
 }
 #endif
