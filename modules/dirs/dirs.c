@@ -47,6 +47,12 @@ static handle_handle_t dir_handles;
  *	filename
  * return handle, or failure
  */
+
+static void
+free_dir(void *dir) {
+    closedir(dir);
+}
+
 lret_t
 OPENDIR( LA_ALIST ) {
     char *fname = mgetstring(LA_PTR(0));
@@ -58,7 +64,7 @@ OPENDIR( LA_ALIST ) {
     if (!d)
 	RETFAIL;
 
-    h = new_handle(&dir_handles, d, "dir_handles");
+    h = new_handle2(&dir_handles, d, "dir_handles", free_dir, &module);
     if (!OK_HANDLE(h)) {
 	closedir(d);
 	RETFAIL;

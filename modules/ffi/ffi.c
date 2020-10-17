@@ -145,6 +145,16 @@ ffi_convert(char *cp, int ret) {
  * return handle, or failure
  * XXX handle trailing ... on args!!
  */
+
+static void
+free_cifplus(void *x) {
+    struct cifplus *cpp = x;
+
+    if (cpp->arg_types)
+	free(cpp->arg_types);		/* ??? */
+    free(cpp);
+}
+
 lret_t
 FFI_PREP_CIF( LA_ALIST ) {
     struct cifplus *cpp = NULL;
@@ -200,7 +210,8 @@ FFI_PREP_CIF( LA_ALIST ) {
 #endif
     if ((rtype = ffi_convert(rp, 1)) &&
 	ffi_prep_cif(&cpp->cif, FFI_DEFAULT_ABI, n, rtype, atypes) == FFI_OK) {
-	snohandle_t h = new_handle(&ffi_cifplus, cpp, "ffi_cifplus");
+	snohandle_t h = new_handle2(&ffi_cifplus, cpp, "ffi_cifplus",
+				    free_cifplus, &module);
 	if (OK_HANDLE(h)) {
 	    if (strcmp(rp, RETSTRING) == 0)
 		cpp->pret = STR;
@@ -338,7 +349,7 @@ FFI_CALL( LA_ALIST ) {
 	    printf("pret %c\n", cpp->pret);
 #endif
 	    switch (cpp->pret) {
-	    case STR:	RETSTR2(ptr, strlen(ptr));
+	    case STR:	RETSTR2(ptr, strlen(ptr)); /* RETSTR? */
 	    case FREESTR: RETSTR_FREE(ptr);
 	    case NOTSTR: RETINT((int_t)ptr); /* UGH!!! */
 	    }
@@ -380,6 +391,12 @@ FFI_FREE_CIF( LA_ALIST ) {
 /*
  * LOAD("FFI_DLOPEN(STRING)", FFI_DL)
  */
+
+static void
+release_dl(void *dl) {
+    dlclose(dl);
+}
+
 lret_t
 FFI_DLOPEN( LA_ALIST ) {
     snohandle_t h;
@@ -390,7 +407,7 @@ FFI_DLOPEN( LA_ALIST ) {
     void *dl = dlopen(str, RTLD_LAZY);	/* XXX take mode arg??? */
     if (str) free(str);
     if (!dl) RETFAIL;
-    h = new_handle(&ffi_dlibs, dl, "ffi_dlibs");
+    h = new_handle2(&ffi_dlibs, dl, "ffi_dlibs", release_dl, &module);
     if (!OK_HANDLE(h)) {
 	dlclose(dl);
 	RETFAIL;
@@ -435,7 +452,7 @@ FFI_DLSYM( LA_ALIST ) {
     val = dlsym(dl, str);
     if (str) free(str);
     if (!val) RETFAIL;
-    ret = new_handle(&ffi_dlsyms, val, "ffi_dlsyms");
+    ret = new_handle2(&ffi_dlsyms, val, "ffi_dlsyms", NULL, NULL);
     if (!OK_HANDLE(ret)) RETFAIL;
     RETHANDLE(ret);
 }

@@ -2,6 +2,13 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/17/2020:
+	Add cleanup routines
+	modules/dirs/dirs.c
+	modules/ffi/ffi.c
+	modules/sqlite3/sqlite3mod.c
+	modules/stcl/stcl.c (add new_obj too!)
+
 10/16/2020:
 	First cut at releasing handles
 	configure: set MOD_SUPPORT in config.sno

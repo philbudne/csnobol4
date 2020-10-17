@@ -3,6 +3,7 @@ $Id$
 include jjson.sno as ssjson.sno???
 
 shared library:
+	detect/prevent multi-threading if not compiled for it??
 	convert to new_handle2:
 		modules/dirs/dirs.c
 		modules/ffi/ffi.c
@@ -12,7 +13,7 @@ shared library:
 		handle for MSVC
 		build library w/ "module"?
 	SHARED: need to free malloc'ed memory on exit: register hooks?
-		including dynamic, pmstack, stack!!
+		only hook user is loadx? just call directly?
 	loadx libs/funcs: need to be VAR?
 		if not, need to be cleaned up on DL unload!
 	move all startup banner output to main.c (snobol4_banners?)?

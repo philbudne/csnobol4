@@ -57,6 +57,12 @@ static handle_handle_t sqlite3_stmts;
  *	filename
  * return db_handle, or failure
  */
+
+static void
+free_sqlite3(void *db) {
+    sqlite3_close(db);
+}
+
 lret_t
 SQLITE3_OPEN( LA_ALIST ) {
     sqlite3 *db;
@@ -69,7 +75,7 @@ SQLITE3_OPEN( LA_ALIST ) {
     if (ret != SQLITE_OK)
 	RETFAIL;
 
-    h = new_handle(&sqlite3_dbs, db, "sqlite3_dbs");
+    h = new_handle2(&sqlite3_dbs, db, "sqlite3_dbs", free_sqlite3, &module);
     if (!OK_HANDLE(h)) {
 	sqlite3_close(db);
 	RETFAIL;
@@ -160,6 +166,11 @@ SQLITE3_LAST_INSERT_ROWID( LA_ALIST ) {
  * or failure
  *
  */
+static void
+free_stmt(void *stmt) {
+    sqlite3_finalize(stmt);
+}
+
 lret_t
 SQLITE3_PREPARE( LA_ALIST ) {
     sqlite3 *db = lookup_handle(&sqlite3_dbs, LA_HANDLE(0));
@@ -178,7 +189,7 @@ SQLITE3_PREPARE( LA_ALIST ) {
 
     DEBUGF(("PREP: dbh %ld db %p stp %p\n", LA_INT(0), db, st));
 
-    sh = new_handle(&sqlite3_stmts, st, "sqlite3_stmts");
+    sh = new_handle2(&sqlite3_stmts, st, "sqlite3_stmts", free_stmt, &module);
     if (!OK_HANDLE(sh)) {
 	sqlite3_finalize(st);
 	RETFAIL;

@@ -57,6 +57,16 @@ MODULE(stcl);
 static handle_handle_t tcl_interps;
 static handle_handle_t tcl_objs;	/* Objects NOT per-interp!! */
 
+static void
+free_obj(void *x) {
+    Tcl_DecrRefCount(x);
+}
+
+static snohandle_t h
+new_obj(Tcl_Obj *obj) {
+    return new_handle2(&tcl_objs, obj, "tcl_objs", free_obj, &module);
+}
+
 /*
 **=pea
 **=item I<tclhandle> = B<STCL_CREATEINTERP()>
@@ -64,6 +74,11 @@ static handle_handle_t tcl_objs;	/* Objects NOT per-interp!! */
 **the remaining functions.
 **=cut
 */
+
+static void
+free_interp(void *x) {
+    Tcl_DeleteInterp(x);
+}
 
 /*
  * LOAD("STCL_CREATEINTERP()INTEGER", STCL_DL)
@@ -89,7 +104,7 @@ STCL_CREATEINTERP( LA_ALIST ) {
     Tk_Init(interp);			/* XXX check return? */
 #endif
 
-    h = new_handle(&tcl_interps, interp, "tcl_interps");
+    h = new_handle2(&tcl_interps, interp, "tcl_interps", free_interp, &module);
     if (!OK_HANDLE(h)) {
 	Tcl_DeleteInterp(interp);
 	/* XXX Release? */
@@ -260,7 +275,7 @@ STCL_NEWSTRINGOBJ( LA_ALIST ) {
     if (!obj)
 	RETFAIL;
 
-    h = new_handle(&tcl_objs, obj, "tcl_objs");
+    h = new_obj(obj);
     if (!OK_HANDLE(h))
 	RETFAIL;
 
@@ -355,7 +370,7 @@ STCL_GETOBJRESULT(LA_ALIST ) {
     if (!interp || !obj)
 	RETFAIL;
 
-    h = new_handle(&tcl_objs, obj, "tcl_objs");
+    h = new_obj(obj);
     if (!OK_HANDLE(h))
 	RETFAIL;
 
@@ -387,7 +402,7 @@ STCL_OBJSETVAR2( LA_ALIST ) {
     if (!res)
 	RETFAIL;
 
-    h = new_handle(&tcl_objs, res, "tcl_objs");
+    h = new_obj(res);
     if (!OK_HANDLE(h))
 	RETFAIL;
 
@@ -418,7 +433,7 @@ STCL_OBJGETVAR2( LA_ALIST ) {
     if (!res)
 	RETFAIL;
 
-    h = new_handle(&tcl_objs, res, "tcl_objs");
+    h = new_obj(res);
     if (!OK_HANDLE(h))
 	RETFAIL;
 
