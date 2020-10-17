@@ -200,7 +200,7 @@ OBJS=	main.o $(SNOBOL4).o data.o data_init.o syn.o bal.o \
 	realst.o replace.o retstring.o spcint.o spreal.o \
 	stdio_obj.o str.o stream.o suspend.o term.o top.o \
 	tree.o tty.o \
-	atan.o chop.o cos.o delete.o environ.o execute.o exists.o \
+	atan.o chop.o cos.o delete.o execute.o exists.o \
 	exit.o exp.o file.o findunit.o host.o ord.o log.o rename.o \
 	serv.o sin.o sqrt.o sset.o sys.o tan.o \
 	$(AUX_OBJS)
@@ -219,7 +219,7 @@ SRCS=	$(SRCDIR)main.c $(SRCDIR)$(SNOBOL4).c $(SRCDIR)data.c \
 	$(RETSTRING_C) $(SPCINT_C) $(SPREAL_C) \
 	$(STDIO_OBJ_C) $(STR_C) $(STREAM_C) $(SUSPEND_C) \
 	$(TERM_C) $(TOP_C) $(TREE_C) $(TTY_C) \
-	$(ATAN_C) $(CHOP_C) $(COS_C) $(DELETE_C) $(ENVIRON_C) \
+	$(ATAN_C) $(CHOP_C) $(COS_C) $(DELETE_C) \
 	$(EXISTS_C) $(EXIT_C) $(EXECUTE_C) $(EXP_C) $(FILE_C) \
 	$(FINDUNIT_C) $(HOST_C) $(LOG_C) \
 	$(LOGIC_C) $(ORD_C) $(RANDOM_C) $(RENAME_C) \
