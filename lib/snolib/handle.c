@@ -95,8 +95,8 @@ new_handle2(handle_handle_t *hhp, void *vp,
 
 	/* link into list of tables to pass to cleanup */
 	if (mp) {
-	    htp->next_table = mp->hhlist;
-	    mp->hhlist = htp;
+	    htp->next_table = mp->htlist;
+	    mp->htlist = htp;
 	}
     }
 
@@ -181,14 +181,10 @@ handle_cleanup_table(struct handle_table *htp) {
 
 /* called on module unload */
 SNOEXP(void)
-handle_cleanup(handle_handle_t *hhp) {
-    struct handle_table *htp, *next;
-
-    if (!hhp)
-	return;
-
-    for (htp = *hhp; htp; htp = next) {
-	next = htp->next_table;
+handle_cleanup(struct handle_table *htp) {
+    while (htp) {
+	struct handle_table *next = htp->next_table;
 	handle_cleanup_table(htp);
+	htp = next;
     }
 }

@@ -20,19 +20,19 @@ DllMain(HINSTANCE dllinst, DWORD reason, LPVOID reserved) {
     switch (reason) {
     case DLL_PROCESS_ATTACH:
 	if (!module.threaded)
-	    module.hhlist = NULL;
+	    module.htlist = NULL;
 	break;
     case DLL_THREAD_ATTACH:
 	if (module.threaded)
-	    module.hhlist = NULL;
+	    module.htlist = NULL;
 	break;
     case DLL_THREAD_DETACH:
 	if (module.threaded)
-	    handle_cleanup(module.hhlist);
+	    handle_cleanup(module.htlist);
 	break;
     case DLL_PROCESS_DETACH:
 	if (!module.threaded)
-	    handle_cleanup(module.hhlist);
+	    handle_cleanup(module.htlist);
 	break;
     }
     return 1;

@@ -150,7 +150,7 @@ SNOEXP(FILE *) io_getfp(int xunit);	/* external (1-based unit) */
 /* new in 2.2: */
 struct module {
     const char *name;
-    void **hhlist;			/* list of handle handles! */
+    struct handle_table *htlist;
     short api_major, api_minor;
     char threaded;
 };

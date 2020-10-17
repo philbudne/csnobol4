@@ -13,10 +13,10 @@ extern struct module module;
 
 static void __attribute__((constructor))
 module_init(void) {
-    module.hhlist = NULL;
+    module.htlist = NULL;
 }
 
 static void __attribute__((destructor))
 module_cleanup(void) {
-    handle_cleanup(module.hhlist);
+    handle_cleanup(module.htlist);
 }

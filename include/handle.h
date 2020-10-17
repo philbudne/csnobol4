@@ -1,7 +1,7 @@
 /* $Id$ */
 
 typedef struct descr snohandle_t;	/* type of handles returned */
-typedef void *handle_handle_t;		/* handle for handle.c internal use */
+typedef struct handle_table *handle_handle_t;
 
 #define LA_HANDLE(n) (*LA_DESCR(n))	/* returns snohandle_t */
 #define OK_HANDLE(h) ((h).v != 0 && (h).a.i >= 0)
@@ -19,4 +19,4 @@ SNOEXP(snohandle_t) new_handle2(handle_handle_t *table,
 SNOEXP(snohandle_t) new_handle(handle_handle_t *, void *, const char *);
 
 /* NOT FOR USER USE!! (called from modsupp.c) */
-SNOEXP(void) handle_cleanup(handle_handle_t *);
+SNOEXP(void) handle_cleanup(handle_handle_t);
