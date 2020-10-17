@@ -406,6 +406,7 @@ esac
 
 # make implicit function declaration fatal in "check"
 case "$CC_IS" in
+# NOTE! implicit-function-declaration not valid w/ C++!
 gcc|clang) CFLAGS="$CFLAGS -Werror -Wimplicit-function-declaration"; export CFLAGS;;
 # guessing here:
 #icc)	   CFLAGS="$CFLAGS -Werror -Wall -Wno-unused-variable"; export CFLAGS;;

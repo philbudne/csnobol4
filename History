@@ -4,6 +4,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/17/2020:
 	Clean up some g++ complaints
+		basic tests pass w/ -fpermissive & w/o -Werror
+		punted on modules (need to pick API for helpers)
 	configure: guard around setting _GNU_SOURCE
 	include/snotypes.h: cast DESCR SPEC sizes to int
 	include/stdio_obj.h: put enum last_direction at top level
