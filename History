@@ -20,6 +20,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	lib/stdio_obj.c: stdio_write take const char *
 	lib/auxil/bufio_obj.c: bufio_write take const char *
 	lib/auxil/memio_obj.c: memio_write take const char *
+	gendata.sno: output constant strings as char* not char[]
 
 10/17/2020:
 	Add cleanup routines

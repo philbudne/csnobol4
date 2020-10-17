@@ -295,8 +295,8 @@ XEQU	EQU.H = '# define ' LBL TAB '(' ARGS ')'		:(NEXT)
 
 ****************
 XFORMAT	ARGS = REPLACE(ARGS, "'", '"')
-	DATA.C = 'const char ' LBL '[] = ' ARGS ';' SP FMT
-	DATA.H = 'extern const char ' LBL '[];' TAB TAB FMT	:(NEXT)
+	DATA.C = 'const char *' LBL ' = ' ARGS ';' SP FMT
+	DATA.H = 'extern const char *' LBL ';' TAB TAB FMT	:(NEXT)
 ****************
 XLHERE HERE = LBL						:(NEXT)
 
