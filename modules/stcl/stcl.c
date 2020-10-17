@@ -62,7 +62,7 @@ free_obj(void *x) {
     Tcl_DecrRefCount(x);
 }
 
-static snohandle_t h
+static snohandle_t
 new_obj(Tcl_Obj *obj) {
     return new_handle2(&tcl_objs, obj, "tcl_objs", free_obj, &module);
 }

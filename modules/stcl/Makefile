@@ -1,8 +1,8 @@
 MOD=stcl
 
-INC=-I..
+INC=-N -I../.. -I../../snolib
 SNOBOL4=../../snobol4
-SETUP=$(SNOBOL4) $(INC) setup.sno
+SETUP=$(SNOBOL4) $(INC) setup.sno $(OPT)
 
 all:	$(MOD).sno $(MOD).so
 
