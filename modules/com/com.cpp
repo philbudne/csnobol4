@@ -66,7 +66,7 @@ free_obj(void *x) {
 	pdisp->Release();
 }
 
-static handle_t *
+static snohandle_t
 new_obj(LPDISPATCH pdisp) {
     return new_handle2(&com_handles, pdisp, "com_handles", free_obj, &module);
 }
