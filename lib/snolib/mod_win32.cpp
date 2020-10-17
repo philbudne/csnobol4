@@ -5,14 +5,15 @@
 
 extern "C" {
 #include "snotypes.h"
-#include "h.h"				/* __P() */
-#include "load.h"			/* SNOEXP() */
+#include "h.h"
+#include "load.h"		// SNOEXP
 #include "handle.h"
 
 extern struct module module;
 }
 
 #include <process.h>
+#include <windef.h>		// BOOL
 
 BOOL WINAPI
 DllMain(HINSTANCE dllinst, DWORD reason, LPVOID reserved) {
@@ -27,11 +28,11 @@ DllMain(HINSTANCE dllinst, DWORD reason, LPVOID reserved) {
 	break;
     case DLL_THREAD_DETACH:
 	if (module.threaded)
-	    handle_cleanup(&module);
+	    handle_cleanup(module.hhlist);
 	break;
     case DLL_PROCESS_DETACH:
 	if (!module.threaded)
-	    handle_cleanup(&module);
+	    handle_cleanup(module.hhlist);
 	break;
     }
     return 1;
