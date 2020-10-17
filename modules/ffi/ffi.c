@@ -150,8 +150,8 @@ static void
 free_cifplus(void *x) {
     struct cifplus *cpp = x;
 
-    if (cpp->arg_types)
-	free(cpp->arg_types);		/* ??? */
+    if (cpp->cif.arg_types)
+	free(cpp->cif.arg_types);
     free(cpp);
 }
 
