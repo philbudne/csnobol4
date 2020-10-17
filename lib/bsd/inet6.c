@@ -35,7 +35,7 @@
 static sock_t
 inet_socket(char *host, char *service, int type, int flags, int port) {
     struct addrinfo hint, *res0, *res;
-    int true = 1;
+    int yes = 1;
     int error;
     sock_t s;
 
@@ -76,7 +76,7 @@ inet_socket(char *host, char *service, int type, int flags, int port) {
 /* set a boolean option: TRUE iff flag set and attempt fails */
 #define TRYOPT(FLAG,LAYER,OPT) \
 	((flags & FLAG) && \
-	 setsockopt(s,LAYER,OPT,SETSOCKOPT_ARG_CAST &true,sizeof(true)) < 0)
+	 setsockopt(s,LAYER,OPT,SETSOCKOPT_ARG_CAST &yes,sizeof(yes)) < 0)
 
 	if (((flags & INET_PRIV) && bindresvport_sa(s, NULL) < 0) ||
 	    TRYOPT(INET_BROADCAST,SOL_SOCKET,SO_BROADCAST) ||

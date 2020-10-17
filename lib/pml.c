@@ -20,7 +20,7 @@
 #include "str.h"
 
 struct pmlfunc {
-    char *name;
+    const char *name;
     loadable_func_t *addr;
 };
 
@@ -47,7 +47,7 @@ static const char *pm_prototypes[] = {
     ""
 };
 
-#define NPROTO (sizeof(pm_prototypes)/sizeof(pm_prototypes[0]))-1
+#define NPROTO (int)(sizeof(pm_prototypes)/sizeof(pm_prototypes[0]))-1
 
 /* function of char *name which returns pointer to "loaded" function */
 loadable_func_t *

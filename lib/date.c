@@ -33,10 +33,10 @@ void
 date(struct spec *sp, struct descr *dp) {
     time_t t;
     struct tm *tm;
-    enum { OLD=0, NEW=1, ISO=2 } format;
+    enum date_format { OLD=0, NEW=1, ISO=2 } format;
 
     if (D_V(dp) == I)
-	format = D_A(dp);
+	format = (enum date_format) D_A(dp);
     else
 	format = NEW;			/* default */
 

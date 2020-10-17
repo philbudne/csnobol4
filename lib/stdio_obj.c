@@ -169,7 +169,7 @@ stdio_getline(struct io_obj *iop) {
 }
 
 static ssize_t
-stdio_write(struct io_obj *iop, char *buf, size_t len) {
+stdio_write(struct io_obj *iop, const char *buf, size_t len) {
     struct stdio_obj *siop = (struct stdio_obj *)iop;
 
     if (len == 0)

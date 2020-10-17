@@ -64,7 +64,7 @@ struct io_ops {
     const struct io_ops *io_super;	/* superclass */
     ssize_t (*io_read_raw)(struct io_obj *, char *, size_t);
     ssize_t (*io_getline)(struct io_obj *);
-    ssize_t (*io_write)(struct io_obj *, char *, size_t);
+    ssize_t (*io_write)(struct io_obj *, const char *, size_t);
     int (*io_seeko)(struct io_obj *, io_off_t, int); /* bool */
     io_off_t (*io_tello)(struct io_obj *);
     int (*io_flush)(struct io_obj *); /* bool */

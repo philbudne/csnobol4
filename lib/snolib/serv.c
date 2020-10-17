@@ -108,7 +108,7 @@ SERV_LISTEN( LA_ALIST ) {
 	struct sockaddr_in6 sin6;
 #endif /* HAVE_SOCKADDR_IN6 defined */
 	SOCKLEN_T slen;
-	char *proto;
+	const char *proto;
 	unsigned short nport;		/* port in network order */
 	int on;
 

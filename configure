@@ -839,7 +839,9 @@ GLIBC=`(getconf --version)2>&1 | awk '/GNU libc/ || /GLIBC/ { print $NF }'`
 if [ "x$GLIBC" != x ]; then
     echo "# GLIBC version $GLIBC"		>> $CONFIG_M4
     echo '#define HAVE_GLIBC'			>> $CONFIG_H
+    echo '#ifndef _GNU_SOURCE'			>> $CONFIG_H
     echo '#define _GNU_SOURCE'			>> $CONFIG_H
+    echo '#endif'				>> $CONFIG_H
     CFLAGS="$CFLAGS -D_GNU_SOURCE"
     export CFLAGS
     echo "detected GNU libc version $GLIBC" 1>&2

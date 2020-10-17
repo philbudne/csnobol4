@@ -167,7 +167,7 @@ ioo_read_raw(struct io_obj *iop, char *buf, size_t len) {
 }
 
 static ssize_t
-ioo_write(struct io_obj *iop, char *buf, size_t len) {
+ioo_write(struct io_obj *iop, const char *buf, size_t len) {
     const struct io_ops *op;
 
     if (!iop)
@@ -673,7 +673,7 @@ io_printf(int_t unit, ...) {
 } /* io_printf */
 
 static int
-io_write(struct file *fp, char *cp, int_t len) {
+io_write(struct file *fp, const char *cp, int_t len) {
     if (len == 0)
 	return TRUE;
 
@@ -1631,10 +1631,10 @@ io_show_paths(void)
 
 /* helper */
 static char *
-trypath(char *dir,
-	char *subdir,			/* optional: may be NULL */
-	char *file,
-	char *ext) {			/* optional: may be NULL */
+trypath(const char *dir,
+	const char *subdir,		/* optional: may be NULL */
+	const char *file,
+	const char *ext) {		/* optional: may be NULL */
     int l = strlen(dir) + strlen(file) + sizeof(DIR_SEP);
     char *path;
 
@@ -1665,7 +1665,7 @@ trypath(char *dir,
 
 /* used by io_include(), lib/loadx.c, -L option */
 char *
-io_lib_find(char *subdir, char *file, char *ext) {
+io_lib_find(const char *subdir, char *file, const char *ext) {
     struct file *ip;
 
     if (abspath(file))

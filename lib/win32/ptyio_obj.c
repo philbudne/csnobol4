@@ -318,7 +318,7 @@ ptyio_read_raw(struct io_obj *iop, char *buf, size_t len) {
 }
 
 static ssize_t
-ptyio_write(struct io_obj *iop, char *buf, size_t len) {
+ptyio_write(struct io_obj *iop, const char *buf, size_t len) {
     struct ptyio_obj *piop = (struct ptyio_obj *)iop;
     DWORD sent;
 

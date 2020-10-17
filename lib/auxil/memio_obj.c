@@ -28,7 +28,7 @@ struct memio_obj {
 };
 
 static ssize_t
-memio_write(struct io_obj *iop, char *buf, size_t len) {
+memio_write(struct io_obj *iop, const char *buf, size_t len) {
     struct memio_obj *miop = (struct memio_obj *)iop;
     size_t avail = miop->len - miop->pos;
     if (len > avail - 1)	/* need to truncate? */

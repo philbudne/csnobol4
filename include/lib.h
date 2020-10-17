@@ -45,7 +45,7 @@ int io_pad(struct spec *,int);
 int io_finish(void);
 int io_add_lib_dir(char *);
 int io_add_lib_path(char *);
-char *io_lib_find(char *, char *, char *);
+char *io_lib_find(const char *, char *, const char *);
 char *io_lib_dir(int n);
 void io_preload(void);
 void io_show_paths(void);

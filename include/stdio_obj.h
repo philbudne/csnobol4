@@ -5,10 +5,12 @@
  * 9/11/2020
  */
 
+enum last_direction { LAST_NONE, LAST_OUTPUT, LAST_INPUT };
+
 struct stdio_obj {
     struct io_obj io;
     FILE *f;
-    enum { LAST_NONE, LAST_OUTPUT, LAST_INPUT } last;
+    enum last_direction last;
 };
 
 #define MAXMODE 8			/* X+bex<NUL> */

@@ -10,7 +10,7 @@ struct acts {
 
 #define CHARSET 256			/* XXX */
 struct syntab {
-    char *name;				/* table name */
+    const char *name;			/* table name */
     char chrs[CHARSET];			/* index into actions */
     /* XXX include count of entries in actions array? */
     const struct acts *actions;		/* pointer to action table */

@@ -54,7 +54,7 @@ inetio_read_raw(struct io_obj *iop, char *buf, size_t len) {
 }
 
 static ssize_t
-inetio_write(struct io_obj *iop, char *buf, size_t len) {
+inetio_write(struct io_obj *iop, const char *buf, size_t len) {
     struct inetio_obj *iiop = (struct inetio_obj *) iop;
     return send(iiop->s, buf, len, 0);
 }

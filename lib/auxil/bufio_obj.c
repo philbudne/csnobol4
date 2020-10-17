@@ -140,7 +140,7 @@ bufio_getline(struct io_obj *iop) {
 }
 
 static ssize_t
-bufio_write(struct io_obj *iop, char *buf, size_t len) {
+bufio_write(struct io_obj *iop, const char *buf, size_t len) {
     fprintf(stderr, "%s io_write not overridden\n", iop->ops->io_name);
     return -1;
 }

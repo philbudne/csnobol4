@@ -3,6 +3,25 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/17/2020:
+	Clean up some g++ complaints
+	configure: guard around setting _GNU_SOURCE
+	include/snotypes.h: cast DESCR SPEC sizes to int
+	include/stdio_obj.h: put enum last_direction at top level
+	include/syntab.h: const char *
+	include/io_obj.h: io_write take const char *
+	include/lib.h: io_lib_find take const char *
+	lib/date.c: cast int to enum
+	lib/io.c: io_write, ioo_write, io_lib_find, trypath take const char *
+	lib/pml.c: const char *
+	lib/bsd/inet6.c: true => yes
+	lib/snolib/serv.c: const char *
+	lib/win32/ptyio_obj.c: ptyio_write take const char *
+	lib/win32/inetio_obj.c: inetio_write take const char *
+	lib/stdio_obj.c: stdio_write take const char *
+	lib/auxil/bufio_obj.c: bufio_write take const char *
+	lib/auxil/memio_obj.c: memio_write take const char *
+
+10/17/2020:
 	Add cleanup routines
 	modules/dirs/dirs.c
 	modules/ffi/ffi.c

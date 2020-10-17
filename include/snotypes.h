@@ -103,7 +103,7 @@ struct descr {
     VFLD(v);				/* value (new: t) data-type/size */
 };
 
-#define DESCR (sizeof(struct descr))
+#define DESCR ((int)sizeof(struct descr))
 
 /*
  * string specifier (qualifier)
@@ -125,7 +125,7 @@ struct spec {				/* (new: qualifier) */
     struct descr d[2];
 #endif /* SPEC_FIELD_NAMES not defined */
 };
-#define SPEC (sizeof(struct spec))
+#define SPEC ((int)sizeof(struct spec))
 
 /* for generated code which deals with function pointers */
 typedef int (*func_t)(ret_t);
