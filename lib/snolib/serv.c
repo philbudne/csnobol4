@@ -75,7 +75,7 @@ fireman(int sig) {			/* catch falling babies */
  *	unix: pathname
  *
  */
-int
+pmlret_t
 SERV_LISTEN( LA_ALIST ) {
     char sfam[128];
     char stype[128];

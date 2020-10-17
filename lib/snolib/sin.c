@@ -18,7 +18,7 @@
 #include "load.h"
 #include "equ.h"
 
-lret_t
+pmlret_t
 SIN( LA_ALIST ) {
     RETREAL( sin( LA_REAL(0) ) );
 }

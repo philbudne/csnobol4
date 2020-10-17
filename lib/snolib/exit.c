@@ -25,7 +25,7 @@
 #include "equ.h"			/* datatypes I/S */
 #include "lib.h"			/* io_flushall(),execute() */
 
-int
+pmlret_t
 EXIT( LA_ALIST ) {
     char *str;
 

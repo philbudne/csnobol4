@@ -18,7 +18,7 @@
 #include "load.h"
 #include "equ.h"
 
-lret_t
+pmlret_t
 ORD( LA_ALIST ) {
     if (LA_PTR(0) == NULL || LA_STR_LEN(0) == 0)
 	RETFAIL;

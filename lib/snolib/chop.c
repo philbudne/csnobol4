@@ -25,7 +25,7 @@
  *	(and were in v7 and BSD4.2)
  */
 
-int
+pmlret_t
 CHOP( LA_ALIST ) {
     double x;
     x = LA_REAL(0);

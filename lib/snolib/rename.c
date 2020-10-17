@@ -21,7 +21,7 @@
 #include "macros.h"
 #include "load.h"
 
-int
+pmlret_t
 RENAME( LA_ALIST ) {
     char *path1;
     char *path2;

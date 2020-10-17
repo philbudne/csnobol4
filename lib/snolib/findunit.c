@@ -17,7 +17,7 @@
 #include "equ.h"
 #include "lib.h"
 
-lret_t
+pmlret_t
 IO_FINDUNIT( LA_ALIST ) {
     int i;
 

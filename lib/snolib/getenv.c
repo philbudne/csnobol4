@@ -32,7 +32,7 @@
 
 extern char *getenv();
 
-int
+lret_t
 GETENV( LA_ALIST ) {
     char *var, *val;
 

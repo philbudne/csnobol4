@@ -18,7 +18,7 @@
 #include "load.h"
 #include "equ.h"
 
-lret_t
+pmlret_t
 TAN( LA_ALIST ) {
     real_t ret = tan(LA_REAL(0));
     if (!REAL_ISFINITE(ret))

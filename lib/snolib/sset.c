@@ -21,7 +21,7 @@
  * Returns;	scaled file position
  */
 
-lret_t
+pmlret_t
 SSET( LA_ALIST ) {
     int_t unit, offset, whence, scale, oof;
 

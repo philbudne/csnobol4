@@ -6,6 +6,11 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	COPYING: update Copyright dates!
 	configure: more gcc doc quotes, include URLs
 	lib/posix/term.c: dup stderr so cleanup from DLL doesn't close fd 2
+	include/load.h: add pmlret_t, new_handle2
+	lib/snolib/LOTS: use (pm)lret_t
+	lib/snolib/handle.c: add new_handle2 (takes release)
+		add handle_release for cleanup
+		complain once if old new_handle called
 
 10/15/2020:
 	lib/io.c, include/io_obj.h: move FL_INCLUDE to io_obj.h

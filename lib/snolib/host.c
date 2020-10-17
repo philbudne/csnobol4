@@ -35,7 +35,7 @@
 #include "str.h"
 #include "globals.h"
 
-int
+pmlret_t
 HOST( LA_ALIST ) {
     char buf[1024];			/* XXX */
     char *str;

@@ -18,7 +18,7 @@
 #include "load.h"
 #include "equ.h"
 
-int
+pmlret_t
 COS( LA_ALIST ) {
     RETREAL( cos( LA_REAL(0) ) );
 }

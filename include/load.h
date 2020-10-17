@@ -16,7 +16,8 @@
  * }
  */
 
-#define lret_t EXPORT(int)
+#define pmlret_t int
+#define lret_t EXPORT(pmlret_t)
 
 #define LA_ALIST LOAD_PROTO
 #define LA_DCL				/* K&R artifact */

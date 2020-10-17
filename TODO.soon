@@ -17,6 +17,11 @@ shared library:
 	all SHARED-specific code in one file?
 	dynamic loadables: need _fini/DllMain for cleanup??
 	traverse handle tables to close/free entries?
+		gcc destructor function
+		MODULE macro: declare variable with API vers?
+			declare module local new_handle2
+				takes release func, makes chain?
+				MSVC: call atexit first time?
 
 CFFI:
 	use loadx code for function lookup (ref counting)

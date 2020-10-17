@@ -17,7 +17,7 @@
 #include "load.h"
 #include "equ.h"
 
-lret_t
+pmlret_t
 SQRT( LA_ALIST ) {
     real_t x;
 

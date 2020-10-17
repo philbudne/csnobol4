@@ -18,7 +18,7 @@
 #include "load.h"
 #include "equ.h"
 
-lret_t
+pmlret_t
 LOG( LA_ALIST ) {
     RETREAL( log( LA_REAL(0) ) );
 }

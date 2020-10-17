@@ -18,7 +18,7 @@
 #include "load.h"
 #include "equ.h"
 
-int
+pmlret_t
 ATAN( LA_ALIST ) {
     real_t ret = atan(LA_REAL(0));
     if (!REAL_ISFINITE(ret))

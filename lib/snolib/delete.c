@@ -28,7 +28,7 @@
 #include "macros.h"
 #include "load.h"
 
-int
+pmlret_t
 DELETE( LA_ALIST ) {
     char *path;
     int ret;

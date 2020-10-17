@@ -19,6 +19,7 @@
  * Returns;	exit status
  */
 
+lret_t
 SYSTEM( LA_ALIST ) {
     char *cmd = getstring(LA_PTR(0));
     int ret = system(cmd);

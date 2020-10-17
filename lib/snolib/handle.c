@@ -24,6 +24,7 @@
 
 typedef unsigned int handle_datatype_t;	/* must fit in vfld */
 static handle_datatype_t next_handle_datatype = SIZLIM;
+static TLS char in_handle_release;
 
 typedef int_t handle_number_t;
 
@@ -38,6 +39,7 @@ struct handle_table {
     const char *name;			/* for debug */
     handle_datatype_t datatype;		/* SNOBOL4 EXTERNAL datatype */
     handle_number_t next;		/* next handle to hand out */
+    void (*release)(void *value);
     struct handle_entry *hash[HANDLE_HASH_SIZE];
 };
 
@@ -71,7 +73,8 @@ lookup_handle(handle_handle_t *hhp, snohandle_t h) {
  * to high)
  */
 SNOEXP(snohandle_t)
-new_handle(handle_handle_t *hhp, void *vp, const char *tname) {
+new_handle2(handle_handle_t *hhp, void *vp,
+	   const char *tname, void (*release)(void *)) {
     struct handle_table *htp = *hhp;
     struct handle_entry *hp;
     struct descr h;
@@ -85,6 +88,7 @@ new_handle(handle_handle_t *hhp, void *vp, const char *tname) {
 	bzero(htp, sizeof(struct handle_table));
 	htp->datatype = --next_handle_datatype; /* assign datatype */
 	htp->name = tname;
+	htp->release = release;
 	*hhp = htp;
     }
 
@@ -109,13 +113,23 @@ new_handle(handle_handle_t *hhp, void *vp, const char *tname) {
     return h;
 }
 
+SNOEXP(snohandle_t)
+new_handle(handle_handle_t *hhp, void *vp, const char *tname) {
+    static char complained = 0;
+    if (!complained) {
+	fprintf(stderr, "new_handle is deprecated, call new_handle2\n");
+	complained = 1;
+    }
+    return new_handle2(hhp, vp, tname, NULL);
+}
+
 SNOEXP(void)
 remove_handle(handle_handle_t *hhp, snohandle_t h) {
     struct handle_table *htp = *hhp;
     struct handle_entry *hp, *pp;
     int hash = HANDLE_HASH(h.a.i);
 
-    if (!htp)
+    if (!htp || in_handle_release)
 	return;
 
     pp = NULL;
@@ -130,4 +144,28 @@ remove_handle(handle_handle_t *hhp, snohandle_t h) {
 	    return;
 	}
     }
+}
+
+/* call to cleanup table */
+SNOEXP(void)
+handle_release(handle_handle_t *hhp) {
+    struct handle_table *htp = *hhp;
+    int i;
+
+    if (!htp->release)
+	return;
+
+    in_handle_release = 1;	/* guard against remove_handle! */
+    for (i = 0; i < HANDLE_HASH_SIZE; i++) {
+	struct handle_entry *hp, *next;
+	for (hp = htp->hash[i]; hp; hp = next) {
+	    next = hp->next;
+	    /* SHOULD NOT call remove_handle! */
+	    (htp->release)(hp->value);
+	    free(hp);
+	}
+	htp->hash[i] = NULL;
+    }
+    htp->entries = 0;
+    in_handle_release = 0;
 }

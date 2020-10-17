@@ -26,7 +26,7 @@
 #include "load.h"
 #include "lib.h"			/* exists() */
 
-int
+pmlret_t
 FILE2( LA_ALIST ) {			/* avoid stdio name collision */
     char *path = mgetstring(LA_PTR(0));
     int succ = exists(path);
