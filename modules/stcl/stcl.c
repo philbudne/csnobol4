@@ -52,6 +52,8 @@
 #include "handle.h"
 #include "str.h"
 
+MODULE(stcl);
+
 static handle_handle_t tcl_interps;
 static handle_handle_t tcl_objs;	/* Objects NOT per-interp!! */
 

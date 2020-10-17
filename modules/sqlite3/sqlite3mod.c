@@ -32,6 +32,8 @@
 #include "handle.h"
 #include "str.h"			/* strlen, for RETSTR */
 
+MODULE(sqlite3);
+
 static handle_handle_t sqlite3_dbs;
 static handle_handle_t sqlite3_stmts;
 

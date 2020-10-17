@@ -21,6 +21,8 @@
 #include "handle.h"
 #include "str.h"			/* strlen, for RETSTR */
 
+MODULE(dirs);
+
 static handle_handle_t dir_handles;
 
 /*

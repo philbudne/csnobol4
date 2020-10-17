@@ -53,6 +53,8 @@ enum tm_member {
 
 #define COUNT(DP) ((DP)->v/DESCR+1)
 
+MODULE(time);
+
 /*
  * LOAD("GETTIMEOFDAY_(TIMEVAL)", TIME_DL)
  */

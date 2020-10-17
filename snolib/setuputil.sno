@@ -349,6 +349,13 @@ setup.posix.buildcmd2
 	idirs = t['include_dirs']
 	iflags = DIFFER(idirs) iflags setup.repl(setup.c idirs, setup.c, ' -I')
 
+	IDENT(MOD_SUPPORT)				:s(setup.posix.nosupp)
+	tmp = "../../lib/snolib/" MOD_SUPPORT
+	MOD_SUPPORT = FILE(tmp) tmp
+# XXX use library path!!!
+	t['sources'] = DIFFER(MOD_SUPPORT) t['sources'] ',' MOD_SUPPORT
+setup.posix.nosupp
+
 	sources = setup.repl(t['sources'], setup.c, setup.s)
 
 * build "dynamic library" (DL) -- something attached at runtime

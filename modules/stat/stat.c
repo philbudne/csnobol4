@@ -55,6 +55,8 @@ enum st_member {
     ST_COUNT				/* MUST BE LAST */
 };
 
+MODULE(stat);
+
 static void
 st2sno(struct stat *st, struct descr *dp) {
     int type;

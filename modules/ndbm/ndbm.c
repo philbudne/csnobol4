@@ -92,6 +92,8 @@
 #include "load.h"
 #include "handle.h"
 
+MODULE(ndbm);
+
 static handle_handle_t dbm_files;
 
 /*
@@ -103,6 +105,11 @@ static handle_handle_t dbm_files;
 **handle which can be passed to the remaining functions.
 **=cut
 */
+
+static void
+ndbm_cleanup(void *ptr) {
+    dbm_close(ptr);
+}
 
 /*
  * LOAD("DBM_OPEN(STRING,STRING,STRING)INTEGER", NDBM_DL)
@@ -159,7 +166,7 @@ DBM_OPEN( LA_ALIST ) {
     if (!f)
 	RETFAIL;
 
-    h = new_handle(&dbm_files, f, "dbm_files");
+    h = new_handle2(&dbm_files, f, "dbm_files", ndbm_cleanup, &module);
     if (!OK_HANDLE(h)) {
 	dbm_close(f);
 	RETFAIL;

@@ -19,6 +19,8 @@
 #include "equ.h"
 #include "str.h"			/* for strlen */
 
+MODULE(fork);
+
 /*
 **=pea
 **=sect NAME

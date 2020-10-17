@@ -3,14 +3,24 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/16/2020:
+	First cut at releasing handles
+	configure: set MOD_SUPPORT in config.sno
+	config/win32/config.sno: set MOD_SUPPORT
+	include/h.h: define TLS as VAR
+	lib/snolib/handle.c: add new_handle2 (takes release, module ptr)
+		add handle_cleanup for cleanup
+		complain once if old new_handle called
+	include/load.h: add struct module, MODULE
+	modules/*/*.c: add MODULE invocations
+	modules/ndbm/ndbm.c: use new_handle2, add ndbm_cleanup
+	snolib/setuputil.sno: ugly mashing to include MOD_SUPPORT
+
+10/16/2020:
 	COPYING: update Copyright dates!
 	configure: more gcc doc quotes, include URLs
 	lib/posix/term.c: dup stderr so cleanup from DLL doesn't close fd 2
 	include/load.h: add pmlret_t, new_handle2
 	lib/snolib/LOTS: use (pm)lret_t
-	lib/snolib/handle.c: add new_handle2 (takes release)
-		add handle_release for cleanup
-		complain once if old new_handle called
 
 10/15/2020:
 	lib/io.c, include/io_obj.h: move FL_INCLUDE to io_obj.h

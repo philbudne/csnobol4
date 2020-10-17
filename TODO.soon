@@ -3,6 +3,14 @@ $Id$
 include jjson.sno as ssjson.sno???
 
 shared library:
+	convert to new_handle2:
+		modules/dirs/dirs.c
+		modules/ffi/ffi.c
+		modules/sqlite3/sqlite3mod.c
+		modules/stcl/stcl.c (single call for tcl_objs?)
+	install MOD_SUPPORT source file?
+		handle for MSVC
+		build library w/ "module"?
 	SHARED: need to free malloc'ed memory on exit: register hooks?
 		including dynamic, pmstack, stack!!
 	loadx libs/funcs: need to be VAR?

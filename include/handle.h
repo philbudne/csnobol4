@@ -7,9 +7,16 @@ typedef void *handle_handle_t;		/* handle for handle.c internal use */
 #define OK_HANDLE(h) ((h).v != 0 && (h).a.i >= 0)
 #define RETHANDLE(h) do { *retval = h; return TRUE; } while(0)
 
-/* deprecated: */
-SNOEXP(snohandle_t) new_handle(handle_handle_t *, void *, const char *);
-SNOEXP(snohandle_t) new_handle2(handle_handle_t *, void *,
-				const char *, void (*release)(void*));
 SNOEXP(void *) lookup_handle(handle_handle_t *, snohandle_t);
 SNOEXP(void) remove_handle(handle_handle_t *, snohandle_t);
+SNOEXP(snohandle_t) new_handle2(handle_handle_t *table,
+				void *value,
+				const char *name,
+				void (*release)(void*),
+				struct module *mp);
+
+/* deprecated: */
+SNOEXP(snohandle_t) new_handle(handle_handle_t *, void *, const char *);
+
+/* NOT FOR USER USE!! (called from modsupp.c) */
+SNOEXP(void) handle_cleanup(handle_handle_t *);

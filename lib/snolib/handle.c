@@ -24,7 +24,7 @@
 
 typedef unsigned int handle_datatype_t;	/* must fit in vfld */
 static handle_datatype_t next_handle_datatype = SIZLIM;
-static TLS char in_handle_release;
+static TLS char in_handle_cleanup;
 
 typedef int_t handle_number_t;
 
@@ -40,6 +40,7 @@ struct handle_table {
     handle_datatype_t datatype;		/* SNOBOL4 EXTERNAL datatype */
     handle_number_t next;		/* next handle to hand out */
     void (*release)(void *value);
+    struct handle_table *next_table;
     struct handle_entry *hash[HANDLE_HASH_SIZE];
 };
 
@@ -74,7 +75,8 @@ lookup_handle(handle_handle_t *hhp, snohandle_t h) {
  */
 SNOEXP(snohandle_t)
 new_handle2(handle_handle_t *hhp, void *vp,
-	   const char *tname, void (*release)(void *)) {
+	    const char *tname, void (*release)(void *),
+	    struct module *mp) {
     struct handle_table *htp = *hhp;
     struct handle_entry *hp;
     struct descr h;
@@ -90,6 +92,12 @@ new_handle2(handle_handle_t *hhp, void *vp,
 	htp->name = tname;
 	htp->release = release;
 	*hhp = htp;
+
+	/* link into list of tables to pass to cleanup */
+	if (mp) {
+	    htp->next_table = mp->hhlist;
+	    mp->hhlist = htp;
+	}
     }
 
     /* allocate block */
@@ -120,7 +128,7 @@ new_handle(handle_handle_t *hhp, void *vp, const char *tname) {
 	fprintf(stderr, "new_handle is deprecated, call new_handle2\n");
 	complained = 1;
     }
-    return new_handle2(hhp, vp, tname, NULL);
+    return new_handle2(hhp, vp, tname, NULL, NULL);
 }
 
 SNOEXP(void)
@@ -129,7 +137,7 @@ remove_handle(handle_handle_t *hhp, snohandle_t h) {
     struct handle_entry *hp, *pp;
     int hash = HANDLE_HASH(h.a.i);
 
-    if (!htp || in_handle_release)
+    if (!htp || in_handle_cleanup)
 	return;
 
     pp = NULL;
@@ -146,16 +154,16 @@ remove_handle(handle_handle_t *hhp, snohandle_t h) {
     }
 }
 
-/* call to cleanup table */
-SNOEXP(void)
-handle_release(handle_handle_t *hhp) {
-    struct handle_table *htp = *hhp;
+/* call to cleanup one table */
+static void
+handle_cleanup_table(struct handle_table *htp) {
     int i;
 
     if (!htp->release)
 	return;
 
-    in_handle_release = 1;	/* guard against remove_handle! */
+    /* XXX keep per-table? nah */
+    in_handle_cleanup = 1;	/* guard against remove_handle! */
     for (i = 0; i < HANDLE_HASH_SIZE; i++) {
 	struct handle_entry *hp, *next;
 	for (hp = htp->hash[i]; hp; hp = next) {
@@ -167,5 +175,20 @@ handle_release(handle_handle_t *hhp) {
 	htp->hash[i] = NULL;
     }
     htp->entries = 0;
-    in_handle_release = 0;
+    in_handle_cleanup = 0;
+    free(htp);
+}
+
+/* called on module unload */
+SNOEXP(void)
+handle_cleanup(handle_handle_t *hhp) {
+    struct handle_table *htp, *next;
+
+    if (!hhp)
+	return;
+
+    for (htp = *hhp; htp; htp = next) {
+	next = htp->next_table;
+	handle_cleanup_table(htp);
+    }
 }

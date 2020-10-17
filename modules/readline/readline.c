@@ -42,6 +42,8 @@
 #include <readline/history.h>
 #endif /* not HAVE_READLINE */
 
+MODULE(readline);
+
 /*
 **=pea
 **=item B<READLINE(>I<prompt>B<)>
