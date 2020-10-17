@@ -118,7 +118,6 @@ setup	TERMINAL = DIFFER(DATATYPE(t),'TABLE') 'setup needs TABLE'
 
 * build against distribution include files
 	dist_build = FILE("../../snolib/setuputil.sno") 1
-	dist_build = FILE("..\..\snolib\setuputil.sno") 1
 
 	i = HOST(HOST_FIRSTARG)
 setup.switches
@@ -309,6 +308,16 @@ smi.done
 smi.openerr
 	TERMINAL = "Could not open " file	:(freturn)
 setup.makeinclude.end
+****************
+*	get sourcefile list
+	DEFINE('setup.sources(t)tmp')		:(setup.sources.end)
+setup.sources
++	setup.sources = t['sources']
+	setup.sources = DIFFER(MOD_SUPPORT) setup.sources ',' 
++		(DIFFER(dist_build) "../../lib/snolib/", 'PATH/HERE') MOD_SUPPORT
++	:(return)
+setup.sources.end
+
 *
 ****************************************************************
 *	POSIX
@@ -326,7 +335,7 @@ setup.posix.system.end
 
 	DEFINE('setup.posix.objs(t)srcs,file')	:(setup.posix.objs.end)
 setup.posix.objs
-	srcs = setup.repl(t['sources'] setup.c, '.c,', OBJ_EXT ' ')
+	srcs = setup.repl(setup.sources(t) setup.c, '.c,', OBJ_EXT ' ')
 setup.posix.objs.loop
 	IDENT(srcs)				:s(RETURN)
 	srcs (break(' ') ' ') . file =		:f(RETURN)
@@ -349,14 +358,8 @@ setup.posix.buildcmd2
 	idirs = t['include_dirs']
 	iflags = DIFFER(idirs) iflags setup.repl(setup.c idirs, setup.c, ' -I')
 
-	IDENT(MOD_SUPPORT)				:s(setup.posix.nosupp)
-	tmp = "../../lib/snolib/" MOD_SUPPORT
-	MOD_SUPPORT = FILE(tmp) tmp
-# XXX use library path!!!
-	t['sources'] = DIFFER(MOD_SUPPORT) t['sources'] ',' MOD_SUPPORT
-setup.posix.nosupp
 
-	sources = setup.repl(t['sources'], setup.c, setup.s)
+	sources = setup.repl(setup.sources(t), setup.c, setup.s)
 
 * build "dynamic library" (DL) -- something attached at runtime
 	compile = CC ' -c ' COPT
@@ -464,7 +467,7 @@ setup.win.msc.basename.end
 
 	DEFINE('setup.win.msc.objs(t)srcs,file') :(setup.win.msc.objs.end)
 setup.win.msc.objs
-	srcs = setup.repl(t['sources'] setup.c, '.c,', OBJ_EXT ' ')
+	srcs = setup.repl(setup.sources(t) setup.c, '.c,', OBJ_EXT ' ')
 	srcs = setup.repl(srcs setup.c, '.cpp,', OBJ_EXT ' ')
 
 setup.win.msc.objs.loop
@@ -486,7 +489,7 @@ setup.win.msc.buildcmd2
 	idirs = t['include_dirs']
 	iflags = DIFFER(idirs) iflags setup.repl(setup.c idirs, setup.c, ' -I')
 
-	sources = setup.repl(t['sources'], setup.c, setup.s)
+	sources = setup.repl(setup.sources(t), setup.c, setup.s)
 
 * build "dynamic library" (DL) -- something attached at runtime
 	compile = CC ' -c -DHAVE_CONFIG_H ' COPT

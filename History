@@ -9,6 +9,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	modules/sqlite3/sqlite3mod.c
 	modules/stcl/stcl.c (add new_obj too!)
 	Makefile2.m4: remove ancient dummy environ.o from OBJS
+	snolib/setuputil.sno: add setup.sources()
 
 10/16/2020:
 	First cut at releasing handles
