@@ -61,12 +61,12 @@ freeolestring(LPOLESTR ptr)
 
 static void
 free_obj(void *x) {
-    LPDISPATCH pdisp = x;
+    LPDISPATCH pdisp = (LPDISPATCH) x;
     if (pdisp)
 	pdisp->Release();
 }
 
-static handle_t
+static handle_t *
 new_obj(LPDISPATCH pdisp) {
     return new_handle2(&com_handles, pdisp, "com_handles", free_obj, &module);
 }
