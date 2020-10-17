@@ -10,6 +10,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	modules/stcl/stcl.c (add new_obj too!)
 	Makefile2.m4: remove ancient dummy environ.o from OBJS
 	snolib/setuputil.sno: add setup.sources()
+	modules/com/com.cpp: add MODULE(), add new_obj (use new_handle2)
 
 10/16/2020:
 	First cut at releasing handles

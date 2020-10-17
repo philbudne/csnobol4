@@ -36,6 +36,8 @@ extern "C"
 #include "equ.h"			/* datatypes I/S */
 #include "handle.h"
 
+MODULE(com);
+
 static handle_handle_t com_handles;
 
 // return a wide (OLE) string for an external function argument
@@ -55,6 +57,18 @@ static void
 freeolestring(LPOLESTR ptr)
 {
     delete [] ptr;
+}
+
+static void
+free_obj(void *x) {
+    LPDISPATCH pdisp = x;
+    if (pdisp)
+	pdisp->Release();
+}
+
+static handle_t
+new_obj(LPDISPATCH pdisp) {
+    return new_handle2(&com_handles, pdisp, "com_handles", free_obj, &module);
 }
 
 //
@@ -135,7 +149,7 @@ COM_LOAD( LA_ALIST ) LA_DCL
     if (FAILED(hr))
 	RETFAIL;
 
-    h = new_handle(&com_handles, pdisp, "com_handles");
+    h = new_obj(pdisp);
     if (!OK_HANDLE(h)) {
 	pdisp->Release();
 	RETFAIL;
@@ -266,11 +280,11 @@ retvariant(struct descr *retval, VARIANTARG *vp)
     case VT_DISPATCH:			// pointer to IDispatch object
 	{
 	LPDISPATCH pdisp = V_DISPATCH(vp);
-	snohandle_t h = new_handle(&com_handles, pdisp, "com_handles");
+	snohandle_t h = new_obj(pdisp);
 	if (!OK_HANDLE(h))
 	    RETFAIL;
 	pdisp->AddRef();
-	RETTYPE = I;
+	// RETTYPE = I;			// removed 2020-10-17 leave as EXTERN
 	RETHANDLE(h);
 	}
     }
