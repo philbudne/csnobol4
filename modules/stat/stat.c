@@ -54,6 +54,8 @@ enum st_member {
     ST_MTIMENSEC,
     ST_CTIME,
     ST_CTIMENSEC,
+    ST_BTIME,
+    ST_BTIMENSEC,
     ST_COUNT				/* MUST BE LAST */
 };
 
@@ -102,6 +104,11 @@ st2sno(struct stat *st, struct descr *dp) {
     SETINT(dp,ST_ATIMENSEC,st->st_atimensec);
     SETINT(dp,ST_MTIMENSEC,st->st_mtimensec);
     SETINT(dp,ST_CTIMENSEC,st->st_ctimensec);
+#endif
+#ifdef st_birthtime /* defined on FreeBSD 12, NetBSD 9, OSX 10.15 */
+    SETINT(dp,ST_BTIME,st->st_birthtime);
+    /* NetBSD9 has st_birthtimensec, FreeBSD 12 does not */
+    SETINT(dp,ST_BTIMENSEC,st->st_birthtimespec.tv_nsec);
 #endif
 }
 

@@ -10,7 +10,7 @@ Changes since 2.1.6 release;
 		and runtime functions when available for a long time.
 	Text input no longer limited by "record length" (K flag obsolete).
 	I/O code cleanup/refactor (wish list item since 2002!)
-	Fix "stat" module.
+	Fix "stat" module.  Add "btime" (birth time), available on BSDs/OSX.
 	Switch back to less precise runtime reports of JUST user time.
 	All output unbuffered with -U option,
 		or SNOBOL4UNBUFFERED environment variable non-null.
