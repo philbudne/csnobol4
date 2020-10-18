@@ -154,7 +154,7 @@ typedef int (loadable_func_t)(LOAD_PROTO); /* function entry point */
 loadable_func_t *pml_find(char *);
 #endif /* LOAD_PROTO defined */
 
-/* from loadx.c (or load.c) */
+/* from loadx.c */
 int callx(struct descr *,struct descr *,struct descr *,struct descr *);
 int load(struct descr *,struct spec *,struct spec *);
 
