@@ -20,15 +20,17 @@
  */
 
 #ifdef S_IFWHT				/* OSX/BSD */
+#ifndef st_atimensec			/* predefined on NetBSD 9 */
 #define st_atimensec st_atimespec.tv_nsec
 #define st_mtimensec st_mtimespec.tv_nsec
 #define st_ctimensec st_ctimespec.tv_nsec
-#endif
+#endif /* st_atimensec not defined */
+#endif /* S_IFWHT defined */
 #ifdef linux
 #define st_atimensec st_atim.tv_nsec
 #define st_mtimensec st_mtim.tv_nsec
 #define st_ctimensec st_ctim.tv_nsec
-#endif
+#endif /* linux */
 
 #define SETINT(DP,N,VAL) (DP)[N].a.i = (VAL); (DP)[N].f = 0; (DP)[N].v = I
 #define COUNT(DP) ((DP)->v/DESCR+1)

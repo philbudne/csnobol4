@@ -4,6 +4,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/17/2020:
 	include/handle.h: add sizes, reserved bytes
+	modules/stat/stat.c: st_atimensec defined on NetBSD 9
 
 10/17/2020:
 	gcc 9.3-win32
