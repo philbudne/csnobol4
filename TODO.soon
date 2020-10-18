@@ -5,6 +5,7 @@ include jjson.sno as ssjson.sno???
 stat:	add st_gen??
 
 shared library:
+	move argument processing to main.c???
 	detect/prevent multi-threading if not compiled for it??
 	install MOD_SUPPORT source file so setuputil can find it
 	SHARED: need to free malloc'ed memory on exit: register hooks?
