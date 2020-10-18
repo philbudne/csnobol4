@@ -79,7 +79,7 @@ ptyio_close(struct io_obj *iop) {
 MAKE_OPS(ptyio, &stdio_ops);
 
 struct io_obj *
-ptyio_open(char *path, int flags, int dir) {
+ptyio_open(const char *path, int flags, int dir) {
     int master;
     pid_t pid;
 

@@ -270,7 +270,8 @@ flags2mode(int flags, char *mode, char dir) {
  * this is the one only place for creating an io object from a stdio stream
  */
 struct io_obj *
-stdio_wrap(char *path, FILE *f, size_t size, const struct io_ops *ops, int flags) {
+stdio_wrap(const char *path, FILE *f, size_t size,
+	   const struct io_ops *ops, int flags) {
     struct stdio_obj *siop;
 
     if (!ops)
@@ -296,7 +297,7 @@ stdio_wrap(char *path, FILE *f, size_t size, const struct io_ops *ops, int flags
 }
 
 struct io_obj *
-stdio_open(char *path,
+stdio_open(const char *path,
 	   int flags,
 	   int dir) {			/* 'r' or 'w' */
     FILE *f;
@@ -416,7 +417,7 @@ pipeio_close(struct io_obj *iop) {
 MAKE_OPS(pipeio, &stdio_ops);
 
 struct io_obj *
-pipeio_open(char *path, int flags, int dir) {
+pipeio_open(const char *path, int flags, int dir) {
     FILE *p;
     char mode[MAXMODE];			/* X+bex<NUL> */
 

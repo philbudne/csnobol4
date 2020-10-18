@@ -106,7 +106,8 @@ static VAR struct file *lib_dir_last;	/* tail of include directory list */
  * taking filename, flags, 'r' or 'w'
  * returning pointers to io_obj
  */
-static struct io_obj *(*const io_open_funcs[])(char *fname, int flags, int rw) =
+static struct io_obj *(*const io_open_funcs[])(const char *fname,
+					       int flags, int rw) =
 {
 #ifdef OSDEPIO_OBJ
     osdepio_open,			/* local I/O that can't be wrapped */

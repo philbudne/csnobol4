@@ -53,7 +53,7 @@ snobol4_init(int argc, char *argv[], int interactive) {
 }
 
 #ifdef SHARED
-static char *ni_argv[] = { "snobol4", "-rb" };
+static char *ni_argv[] = { (char *)"snobol4", (char *)"-rb" };
 #define NI_ARGC sizeof(ni_argv)/sizeof(ni_argv[0])
 
 EXPORT(int)

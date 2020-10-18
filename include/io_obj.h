@@ -9,7 +9,7 @@
 struct io_obj {
     const struct io_ops *ops;
     int flags;
-    char *fname;		 /* DO NOT FREE (part of struct file) */
+    const char *fname;		 /* DO NOT FREE (part of struct file) */
 
     /* for io_getline: NOTE! no concurrency, could get by with global buffer */
     char *linebuf;

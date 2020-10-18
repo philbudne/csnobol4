@@ -16,10 +16,10 @@ struct stdio_obj {
 #define MAXMODE 8			/* X+bex<NUL> */
 void flags2mode(int flags, char *mode, char dir);
 
-struct io_obj *stdio_wrap(char *path, FILE *, size_t objsize,
+struct io_obj *stdio_wrap(const char *path, FILE *, size_t objsize,
 			  const struct io_ops *, int flags);
-struct io_obj *stdio_open(char *path, int flags, int dir);
-struct io_obj *pipeio_open(char *path, int flags, int dir);
-struct io_obj *ptyio_open(char *path, int flags, int dir);
+struct io_obj *stdio_open(const char *path, int flags, int dir);
+struct io_obj *pipeio_open(const char *path, int flags, int dir);
+struct io_obj *ptyio_open(const char *path, int flags, int dir);
 
 extern const struct io_ops stdio_ops;	/* for use as SUPER */

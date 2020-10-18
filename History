@@ -3,6 +3,15 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/17/2020:
+	gcc 9.3 write-string warnings
+	main.c: ni_argv (crock)
+	include/io_obj.h: fname
+	include/stdio_obj.h: stdio_wrap {std,pipe,pty}io_open
+	lib/io.c: io_open_funcs
+	lib/stdio_obj.c: stdio_wrap, {std,pipe}io_open
+	lib/{bsd,win32}/ptyio_obj.c: ptyio_open
+
+10/17/2020:
 	More const char *
 	include/load.h: io_fname
 	include/snobol4.h: io_output_string (name)
