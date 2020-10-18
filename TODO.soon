@@ -1,10 +1,17 @@
 $Id$
 
+remove __P comments
+
 include jjson.sno as ssjson.sno???
 
 stat:	add st_gen??
 
 shared library:
+	Define SNOBOL4_LOAD_PROVIDER before including load.h?
+		and eliminate -DDYNAMIC?!!
+	build w/ -fvisibility=hidden if available +
+		__attribute__ ((visibility ("default")))
+		__attribute__ ((visibility ("hidden")))
 	split INTERP call out of BEGIN?
 	detect/prevent multi-threading if not compiled for it??
 	install MOD_SUPPORT source file so setuputil can find it
