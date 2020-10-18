@@ -1501,8 +1501,15 @@ if [ "x$SO_EXT" != x -a "x$DL_EXT" = x ]; then
     DL_LDFLAGS="$SO_LDFLAGS"
 fi
 
+# check if GNU C visibility available (silently for now) for shared library
+DEFVIS='__attribute__ ((__visibility__("default")))'
+if config/check 'stdio.h' "$DEFVIS extern int foo(void)"; then
+    SO_CFLAGS="$SO_CFLAGS -fvisibility=hidden"
+    echo "#define EXPORT(TYPE) $DEFVIS TYPE" >> $CONFIG_H
+fi
+
+
 if [ "x$SO_EXT" != x ]; then
-# not used:
     echo '# Shared Object Libraries'	>> $CONFIG_M4
     echo "SO_EXT=$SO_EXT"		>> $CONFIG_M4
     echo "SO_CFLAGS=$SO_CFLAGS"		>> $CONFIG_M4
@@ -1568,7 +1575,7 @@ if [ ! "$WITHOUT_READLINE" ]; then
     fi
 fi
 
-# support for shared library
+# support for shared library: silent for now. make a configure option?
 if config/check stdio.h 'FILE *f = fmemopen("hello", 5, "r")'; then
     echo 'MEMIO_OBJ_C=$(SRCDIR)lib/posix/memio_obj.c' >> $CONFIG_M4
     echo 'MEMIO_OBJ=memio_obj.o'		>> $CONFIG_M4

@@ -3,6 +3,9 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/18/2020:
+	configure: test for, use GNU C visibility for SO build!
+
+10/18/2020:
 	API cleanup
 	include/snotypes.h: moved LOAD_PROTO here (avoid internal use of load.h)
 	include/load.h: moved LOAD_PROTO
