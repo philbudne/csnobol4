@@ -181,7 +181,8 @@ handle_cleanup_table(struct handle_table *htp) {
 
 /* called on module unload */
 SNOEXP(void)
-handle_cleanup(struct handle_table *htp) {
+module_cleanup(struct module *mp) {
+    struct handle_table *htp = mp->htlist;
     while (htp) {
 	struct handle_table *next = htp->next_table;
 	handle_cleanup_table(htp);

@@ -23,8 +23,8 @@ SNOEXP(int) snobol4_run(void);
 /* lib/io.c */
 /* unit number definitions in unit.h */
 /* add files to UNITI (INPUT) file list */
-SNOEXP(void) io_input_file(char *);	/* named file */
-SNOEXP(void) io_input_string(char *name, char *); /* string */
+SNOEXP(void) io_input_file(const char *);	  /* named file */
+SNOEXP(void) io_input_string(const char *name, char *); /* string */
 
 /* attach output buffer to unit UNITO for OUTPUT, UNITP for TERMINAL */
 SNOEXP(int) io_output_string(int unit, char *name, char *buf, int);

@@ -42,7 +42,6 @@
 #include <readline/history.h>
 #endif /* not HAVE_READLINE */
 
-MODULE(readline);
 
 /*
 **=pea

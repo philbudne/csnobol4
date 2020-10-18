@@ -3,6 +3,23 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/17/2020:
+	Clean compile with -Wwrite-string (const paranoia)
+	globals.h: snolib_base
+	include/lib.h: io_add_lib_dir, strjoin
+	include/snobol4.h: io_input_{file,string}
+	lib/init.c: p
+	lib/io.c: lots
+	lib/str.c: strjoin
+
+10/17/2020:
+	Another module go-round; instantiate module in support file
+	include/load.h: moved struct module to handle.h
+	include/handle.h: struct module here
+		wrapped support stuff in "ifdef MODULE_SUPPORT"
+	modules/LOTS: removed MODULE invocations
+	lib/snolib/mod_xxx: add module, use MODULE_INIT, MODULE_CLEANUP
+
+10/17/2020:
 	Clean up some g++ complaints
 		basic tests pass w/ -fpermissive & w/o -Werror
 		punted on modules (need to pick API for helpers)

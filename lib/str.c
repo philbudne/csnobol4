@@ -207,14 +207,15 @@ apdsp(struct spec *base, struct spec *str) {
 
 /* added 3/4/2012 */
 char *
-strjoin(char *str0, ...) {
+strjoin(const char *str0, ...) {
     va_list vp;
     int len;
-    char *str, *tp;
+    char *str;
+    const char *tp;
 
     va_start(vp, str0);
     len = strlen(str0) + 1;
-    while ((tp = va_arg(vp, char *)))
+    while ((tp = va_arg(vp, const char *)))
 	len += strlen(tp);
     va_end(vp);
 
@@ -224,7 +225,7 @@ strjoin(char *str0, ...) {
 
     va_start(vp, str0);
     strcpy(str, str0);
-    while ((tp = va_arg(vp, char *)))
+    while ((tp = va_arg(vp, const char *)))
 	strcat(str, tp);
     va_end(vp);
     return str;

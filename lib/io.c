@@ -263,7 +263,7 @@ findfile(int iunit) {
  * (so only one free(fp) is needed)
  */
 static struct file *
-io_newfile(char *path) {
+io_newfile(const char *path) {
     struct file *fp;
 
     fp = (struct file *) malloc( sizeof( struct file ) + strlen(path) );
@@ -277,7 +277,7 @@ io_newfile(char *path) {
 
 #ifdef SHARED
 static struct file *
-io_memfile(char *name, char *data, int len, int dir) {
+io_memfile(const char *name, char *data, int len, int dir) {
     struct file *fp;
 
     fp = io_newfile(name);
@@ -440,7 +440,7 @@ io_skip(int unit) {
 
 /* here with filename from command line */
 EXPORT(void)
-io_input_file(char *path) {
+io_input_file(const char *path) {
     struct file *fp;
 
     fp = io_newfile(path);
@@ -480,7 +480,7 @@ io_setfile(int unit, struct file *fp) {
 static int
 io_mkfile2(int unit,			/* external (1-based) unit */
     FILE *f,
-    char *fname,			/* "filename" for error reports */
+    const char *fname,			/* "filename" for error reports */
     int flags) {
     struct file *fp;
 
@@ -496,14 +496,14 @@ io_mkfile2(int unit,			/* external (1-based) unit */
 EXPORT(int)
 io_mkfile(int unit,			/* external (1-based) unit */
 	  FILE *f,
-	  char *fname) {		/* "filename" for error reports */
+	  const char *fname) {		/* "filename" for error reports */
     return io_mkfile2( unit, f, fname, 0 );
 }
 
 EXPORT(int)
 io_mkfile_noclose(int unit,		/* external (1-based) unit */
 		  FILE *f,
-		  char *fname) {	/* "filename" for error reports */
+		  const char *fname) { /* "filename" for error reports */
     return io_mkfile2( unit, f, fname, FL_NOCLOSE );
 }
 
@@ -1581,7 +1581,7 @@ io_finish(void) {
 
 /* new 1/12/2012 called to add a dir to include dir list (from init.c) */
 int
-io_add_lib_dir(char *dirname) {
+io_add_lib_dir(const char *dirname) {
     struct file *fp = io_newfile(dirname);
     if (!fp)
 	return FALSE;

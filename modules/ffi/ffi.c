@@ -45,7 +45,6 @@
 #include "handle.h"
 #include "str.h"
 
-MODULE(ffi);
 
 static handle_handle_t ffi_cifplus;
 static handle_handle_t ffi_dlibs;

@@ -141,20 +141,8 @@ EXPORT(char *) io_fname(int xunit);
 EXPORT(int) io_skip(int xunit);
 
 #ifdef EOF				/* stdio included */
-SNOEXP(int) io_mkfile(int xunit, FILE *, char*); /* external (1-based unit) */
-SNOEXP(int) io_mkfile_noclose(int xunit, FILE *, char *name);
+SNOEXP(int) io_mkfile(int xunit, FILE *, const char*); /* external (1-based unit) */
+SNOEXP(int) io_mkfile_noclose(int xunit, FILE *, const char *name);
 /* temporarily(?) unavailable in 2.2: */
 SNOEXP(FILE *) io_getfp(int xunit);	/* external (1-based unit) */
 #endif /* EOF defined */
-
-/* new in 2.2: */
-struct module {
-    const char *name;
-    struct handle_table *htlist;
-    short api_major, api_minor;
-    char threaded;
-};
-
-#define IS_THREADED 0			/* 1 if VAR is thread-local storage */
-
-#define MODULE(NAME) VAR struct module module = { #NAME, NULL, 1, 0, IS_THREADED }

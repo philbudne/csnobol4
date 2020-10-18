@@ -43,7 +43,7 @@ int io_sseek(int_t,int_t,int_t,int_t,int_t *);
 int io_flushall(int);
 int io_pad(struct spec *,int);
 int io_finish(void);
-int io_add_lib_dir(char *);
+int io_add_lib_dir(const char *);
 int io_add_lib_path(char *);
 char *io_lib_find(const char *, char *, const char *);
 char *io_lib_dir(int n);
@@ -90,7 +90,7 @@ void trimsp(struct spec *,struct spec *);
 void spec2str(struct spec *,char *,int);
 char *mspec2str(struct spec *);
 void apdsp(struct spec *, struct spec *);
-char *strjoin(char *str0, ...);
+char *strjoin(const char *str0, ...);
 void mergsp(struct spec *,struct spec *,struct spec *);
 void movblk2(struct descr *,struct descr *,int_t);
 

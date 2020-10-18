@@ -76,7 +76,7 @@ static FILE *termin;
 static void init_signals(void);
 
 static void
-p(int flag, char *str) {
+p(int flag, const char *str) {
     fprintf(stderr, "-%c\t%s\n", flag, str);
 }
 
@@ -229,7 +229,7 @@ io_init(int interactive) {		/* here from init_args() */
     }
     else {
 	if (!io_skip(UNITI)) {		/* force file open */
-	    char *fname;
+	    const char *fname;
 	    fname = io_fname(UNITI);
 	    if (!fname)
 		fname = "unknown input file";

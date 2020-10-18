@@ -59,7 +59,6 @@ typedef unsigned INT_T u_int_t;
 #define OP_IDB	17
 #define OP_MAXOP OP_IDB
 
-MODULE(logic);
 
 /* declare as "inline"? */
 static unsigned char

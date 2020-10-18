@@ -573,7 +573,6 @@ bsd_random(void)
 #include "macros.h"
 #include "load.h"
 
-MODULE(random);
 
 static int seeded = 0;			/* XXX VAR? TLS?? */
 

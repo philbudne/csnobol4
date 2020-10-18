@@ -18,7 +18,7 @@ GLOBAL_EXTERN VAR char **argv;
 GLOBAL_EXTERN VAR int firstarg;
 GLOBAL_EXTERN VAR int argc;
 GLOBAL_EXTERN VAR int nfiles;
-GLOBAL_EXTERN VAR char *snolib_base;	/* BASE */
+GLOBAL_EXTERN VAR const char *snolib_base; /* BASE */
 GLOBAL_EXTERN VAR char *snolib_local;	/* BASE/local */
 GLOBAL_EXTERN VAR char *snolib_vers;	/* BASE/VERSION */
 GLOBAL_EXTERN VAR char *snolib_vlib;	/* BASE/VERSION/lib */

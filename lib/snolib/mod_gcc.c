@@ -1,22 +1,23 @@
-#include "snotypes.h"
-#include "h.h"				/* __P() */
-#include "load.h"			/* SNOEXP() */
-#include "handle.h"
-
-extern struct module module;
-
 /*
- * Once upon a time user code declared _fini but that no longer seems
- * possible (now used to call desctructors?)  create mod_fini.c if
- * it's needed for older platforms.
+ * $Id$
+ * SNOBOL4 loadable module support
+ * using GNU C __attribute__
  */
 
+#include "snotypes.h"			/* struct descr */
+#include "h.h"				/* EXPOIRT/IMPORT, TLS */
+#include "load.h"			/* SNOEXP */
+#define MODULE_SUPPORT
+#include "handle.h"			/* struct module, MODULE_xxx */
+
+TLS struct module module = { MODULE_STRUCT_INIT };
+
 static void __attribute__((constructor))
-module_init(void) {
-    module.htlist = NULL;
+init(void) {
+    MODULE_INIT(module);
 }
 
 static void __attribute__((destructor))
-module_cleanup(void) {
-    handle_cleanup(module.htlist);
+cleanup(void) {
+    MODULE_CLEANUP(module);
 }

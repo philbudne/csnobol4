@@ -48,7 +48,6 @@
 /* machine generated: */
 #include "equ.h"			/* I & R */
 
-MODULE(sprintf);
 
 lret_t
 SPRINTF( LA_ALIST ) {

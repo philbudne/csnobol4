@@ -92,7 +92,6 @@
 #include "load.h"
 #include "handle.h"
 
-MODULE(ndbm);
 
 static handle_handle_t dbm_files;
 
