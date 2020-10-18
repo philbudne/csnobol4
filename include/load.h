@@ -137,12 +137,12 @@ SNOEXP(void) retstring_free(struct descr *retval, const char *cp, int len);
 SNOEXP(int) io_findunit(void);		/* find a free (external) unit */
 SNOEXP(int) io_closeall(int iunit);	/* **INTERNAL** (zero-based unit) */
 SNOEXP(int) io_attached(int xunit);	/* boolean */
-EXPORT(char *) io_fname(int xunit);
+EXPORT(const char *) io_fname(int xunit);
 EXPORT(int) io_skip(int xunit);
 
 #ifdef EOF				/* stdio included */
-SNOEXP(int) io_mkfile(int xunit, FILE *, const char*); /* external (1-based unit) */
+SNOEXP(int) io_mkfile(int xunit, FILE *, const char*); /* external unit */
 SNOEXP(int) io_mkfile_noclose(int xunit, FILE *, const char *name);
 /* temporarily(?) unavailable in 2.2: */
-SNOEXP(FILE *) io_getfp(int xunit);	/* external (1-based unit) */
+SNOEXP(FILE *) io_getfp(int xunit);	/* external unit */
 #endif /* EOF defined */

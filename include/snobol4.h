@@ -27,4 +27,4 @@ SNOEXP(void) io_input_file(const char *);	  /* named file */
 SNOEXP(void) io_input_string(const char *name, char *); /* string */
 
 /* attach output buffer to unit UNITO for OUTPUT, UNITP for TERMINAL */
-SNOEXP(int) io_output_string(int unit, char *name, char *buf, int);
+SNOEXP(int) io_output_string(int unit, const char *name, char *buf, int);

@@ -3,6 +3,12 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/17/2020:
+	More const char *
+	include/load.h: io_fname
+	include/snobol4.h: io_output_string (name)
+	lib/io.c: io_input_string (name), io_fname (EXPORT it)
+
+10/17/2020:
 	Clean compile with -Wwrite-string (const paranoia)
 	globals.h: snolib_base
 	include/lib.h: io_add_lib_dir, strjoin

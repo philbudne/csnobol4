@@ -452,7 +452,7 @@ io_input_file(const char *path) {
 
 #ifdef SHARED
 EXPORT(void)
-io_input_string(char *name, char *str) {
+io_input_string(const char *name, char *str) {
     struct file *fp;
 
     fp = io_memfile(name, str, strlen(str), 'r');
@@ -1330,7 +1330,7 @@ io_include(struct descr *dp,		/* input unit */
  * retrieve file name currently associated with a unit, or NULL.
  * data only valid while current file open
  */
-char *
+EXPORT(const char *)
 io_fname(int unit) {			/* takes external (1-based) unit */
     struct unit *up;
     struct file *fp;
@@ -1357,7 +1357,7 @@ io_fname(int unit) {			/* takes external (1-based) unit */
 int
 io_file(struct descr *dp,		/* IN: unit number */
 	struct spec *sp) {		/* OUT: filename */
-    char *fname;
+    const char *fname;
 
     fname = io_fname(D_A(dp));
     if (fname == NULL)
