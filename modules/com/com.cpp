@@ -36,8 +36,6 @@ extern "C"
 #include "equ.h"			/* datatypes I/S */
 #include "handle.h"
 
-MODULE(com);
-
 static handle_handle_t com_handles;
 
 // return a wide (OLE) string for an external function argument
