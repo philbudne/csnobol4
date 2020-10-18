@@ -29,7 +29,7 @@ os_unload_library(void *lib) {
 }
 
 void *
-os_find_symbol(void *lib, char *func, void **stash) {
+os_find_symbol(void *lib, const char *func, void **stash) {
     void *entry;
 
     (void) stash;

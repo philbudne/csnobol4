@@ -22,12 +22,11 @@
 #include "snotypes.h"
 #include "macros.h"
 #include "path.h"
-#include "load.h"
 #include "lib.h"
 #include "str.h"
 
 void *
-os_load_library(char *file) {
+os_load_library(const char *file) {
     NSObjectFileImage ofi;
     NSSymbol sym;
     int opt;
@@ -52,7 +51,7 @@ os_load_library(char *file) {
 }
 
 void *
-os_find_symbol(void *lib, char *func, void **stash) {
+os_find_symbol(void *lib, const char *func, void **stash) {
     NSSymbol sym;
 
     (void) stash;

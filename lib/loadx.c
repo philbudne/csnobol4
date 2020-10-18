@@ -14,7 +14,6 @@
 #include "snotypes.h"
 #include "macros.h"
 #include "path.h"
-#include "load.h"
 #include "lib.h"			/* mspec2str() */
 #include "str.h"
 

@@ -32,11 +32,9 @@
 
 #include "h.h"
 #include "snotypes.h"
-#include "macros.h"
-#include "path.h"
-#include "load.h"
-#include "lib.h"
-#include "str.h"
+#include "path.h"			/* LD_PATH */
+#include "lib.h"			/* prototypes */
+#include "str.h"			/* strdup */
 
 /* is this right? -- ok for OMAGIC */
 #undef N_SIZE				/* defined in NetBSD nlist.h */
@@ -52,7 +50,7 @@
 #endif /* SYM_PREFIX not defined */
 
 static int
-ld(char *output, char *addr, char *func, char *input) {
+ld(char *output, char *addr, const char *func, char *input) {
     char command[1024];			/* XXX */
 
     /*
@@ -77,12 +75,12 @@ ld(char *output, char *addr, char *func, char *input) {
 
 /* "file" may include loader options (libs) after filename!! */
 void *
-os_load_library(char *file) {
+os_load_library(const char *file) {
     return strdup(file);
 }
 
 void *
-os_find_symbol(void *lib, char *func, void **stash) {
+os_find_symbol(void *lib, const char *func, void **stash) {
     struct exec a;
     char *file = lib;			/* strdup'ed above */
     char temp[PATHLEN];

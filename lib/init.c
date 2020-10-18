@@ -23,13 +23,13 @@
 #include "str.h"			/* strlen() */
 #include "units.h"			/* UNIT[IOPT] */
 
-#include "equ.h"			/* SIL equ's */
-#include "res.h"			/* for data.h */
-#include "data.h"			/* SIL data */
+#include "equ.h"			/* {PS,IS,ST}SIZE NODESZ SPDLSZ */
+#include "res.h"			/* UC SIL var names */
+#include "data.h"			/* res */
 #include "proc.h"			/* for SYSCUT() */
-#include "load.h"			/* io_init_mkfile, io_fname */
+#include "load.h"			/* io_fname  */
 #define SNOBOL4_PROVIDER
-#include "snobol4.h"			/* INIT_OK */
+#include "snobol4.h"	      /* INIT_OK, io_input_file, io_mkfile(_noclose) */
 #include "globals.h"
 
 #include "version.h"

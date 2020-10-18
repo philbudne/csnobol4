@@ -15,8 +15,7 @@
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
-#include "load.h"			/* LOAD_PROTO */
-#include "lib.h"			/* after load.h */
+#include "lib.h"
 #include "str.h"
 
 struct pmlfunc {
@@ -28,7 +27,7 @@ struct pmlfunc {
 #define PMLFUNC(NAME) PMLFUNC2(#NAME,NAME)
 
 #define PMPROTO(PROTO)
-#define PMLFUNC2(NAME,ADDR) extern int ADDR(LOAD_PROTO);
+#define PMLFUNC2(NAME,ADDR) extern loadable_func_t ADDR;
 #include "pml.h"
 #undef PMLFUNC2
 

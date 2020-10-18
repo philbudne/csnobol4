@@ -14,17 +14,16 @@
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
-#include "load.h"
 #include "lib.h"
 
 void *
-os_load_library(char *file) {
+os_load_library(const char *file) {
     (void) file;
     return NULL;
 }
 
 void *
-os_find_symbol(void *lib, char *func, void **stash) {
+os_find_symbol(void *lib, const char *func, void **stash) {
     (void) lib;
     (void) func;
     (void) stash;

@@ -1500,7 +1500,6 @@ if [ "x$SO_EXT" != x -a "x$DL_EXT" = x ]; then
     DL_LD="$SO_LD"
     DL_LDFLAGS="$SO_LDFLAGS"
 fi
-DL_CFLAGS="-DDYNAMIC $DL_CFLAGS"
 
 if [ "x$SO_EXT" != x ]; then
 # not used:

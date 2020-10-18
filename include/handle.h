@@ -24,22 +24,22 @@ struct module {
 
 extern struct module module;		/* for loadables */
 
-SNOEXP(void *) lookup_handle(handle_handle_t *, snohandle_t);
-SNOEXP(void) remove_handle(handle_handle_t *, snohandle_t);
-SNOEXP(snohandle_t) new_handle2(handle_handle_t *table,
-				void *value,
-				const char *name,
-				void (*release)(void*),
-				struct module *mp);
+SNOLOAD_API(void *) lookup_handle(handle_handle_t *, snohandle_t);
+SNOLOAD_API(void) remove_handle(handle_handle_t *, snohandle_t);
+SNOLOAD_API(snohandle_t) new_handle2(handle_handle_t *table,
+				     void *value,
+				     const char *name,
+				     void (*release)(void*),
+				     struct module *mp);
 
 /* deprecated: */
-SNOEXP(snohandle_t) new_handle(handle_handle_t *, void *, const char *);
+SNOLOAD_API(snohandle_t) new_handle(handle_handle_t *, void *, const char *);
 
 /*
  * NOT FOR USER USE!! (called from mod_XXX.c)
  */
 #ifdef MODULE_SUPPORT
-SNOEXP(void) module_cleanup(struct module *);
+SNOLOAD_API(void) module_cleanup(struct module *);
 #define IS_THREADED 0			/* 1 if TLS is thread-local storage */
 
 #define MODULE_STRUCT_INIT \

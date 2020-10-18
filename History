@@ -3,6 +3,20 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/18/2020:
+	API cleanup
+	include/snotypes.h: moved LOAD_PROTO here (avoid internal use of load.h)
+	include/load.h: moved LOAD_PROTO
+		define/use SNOLOAD_API instead of SNOEXP
+		look at SNOLOAD_API_PROVIDER instead of lack of DYNAMIC
+	include/handle.h: use SNOLOAD_API
+	lib/break.c: use pmlret_t, remove static
+	lib/init.c: update include comments
+	lib/loadx.c, pml.c: remove load.h
+	lib/{bsd,dummy,vms,hpux}/load.c: trim includes, use const
+	lib/snolib/[gr]etstring.c: SNOLOAD_API_PROVIDER, SNOLOAD_API
+	mod_*.c(pp): include comments, config.h
+
+10/18/2020:
 	include/snobol4.h: SNOBOL4_API macro, noop if not PROVIDER && SHARED
 	main.c: use SNOBOL4_API
 

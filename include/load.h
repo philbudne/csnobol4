@@ -1,11 +1,12 @@
 /* $Id$ */
 
 /*
- * plb 6/2/94
+ * API for LOADable function modules
  */
 
-/* prototype for external (LOADed) functions */
-#define LOAD_PROTO struct descr *retval, int nargs, struct descr *args
+/*
+ * plb 6/2/94
+ */
 
 /* macros for loadable user functions;
  *
@@ -118,31 +119,34 @@
 	else RETFAIL; \
     } while (0)
 
-#if defined(DYNAMIC) || defined(DLL) /* building dynamically loadable module */
-#define SNOEXP(X) IMPORT(X)
-#else			/* building snobol4 executable (or shared library) */
-#define SNOEXP(X) EXPORT(X)
+#ifdef SNOLOAD_API_PROVIDER /* building snobol4 (or shared library) */
+#define SNOLOAD_API(TYPE) EXPORT(TYPE)
+#else				/* building dynamically loadable module */
+#define SNOLOAD_API(TYPE) IMPORT(TYPE)
 #endif
 
-/* extern/prototypes for functions; */
-/* lib/snolib/getstring.c; */
-SNOEXP(void) getstring(const void *, char *, int);
-SNOEXP(char *) mgetstring(const void *);
+/* lib/snolib/retstring.c (not for direct use: use RETSTR[2]_FREE) */
+SNOLOAD_API(void) retstring(struct descr *retval, const char *cp, int len);
+SNOLOAD_API(void) retstring_free(struct descr *retval, const char *cp, int len);
 
-/* lib/snolib/retstring.c; */
-SNOEXP(void) retstring(struct descr *retval, const char *cp, int len);
-SNOEXP(void) retstring_free(struct descr *retval, const char *cp, int len);
+/*
+ * functions for use by loadable code
+ */
+
+/* lib/snolib/getstring.c; */
+SNOLOAD_API(void) getstring(const void *, char *, int); /* use mgetstring!! */
+SNOLOAD_API(char *) mgetstring(const void *); /* must free after use! */
 
 /* lib/io.c; */
-SNOEXP(int) io_findunit(void);		/* find a free (external) unit */
-SNOEXP(int) io_closeall(int iunit);	/* **INTERNAL** (zero-based unit) */
-SNOEXP(int) io_attached(int xunit);	/* boolean */
+SNOLOAD_API(int) io_findunit(void);  /* find a free (external) unit */
+SNOLOAD_API(int) io_closeall(int iunit); /* **INTERNAL** (zero-based unit) */
+SNOLOAD_API(int) io_attached(int xunit);	/* boolean */
 EXPORT(const char *) io_fname(int xunit);
 EXPORT(int) io_skip(int xunit);
 
 #ifdef EOF				/* stdio included */
-SNOEXP(int) io_mkfile(int xunit, FILE *, const char*); /* external unit */
-SNOEXP(int) io_mkfile_noclose(int xunit, FILE *, const char *name);
+SNOLOAD_API(int) io_mkfile(int xunit, FILE *, const char*); /* external unit */
+SNOLOAD_API(int) io_mkfile_noclose(int xunit, FILE *, const char *name);
 /* temporarily(?) unavailable in 2.2: */
-SNOEXP(FILE *) io_getfp(int xunit);	/* external unit */
+SNOLOAD_API(FILE *) io_getfp(int xunit); /* external unit */
 #endif /* EOF defined */

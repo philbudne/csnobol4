@@ -18,23 +18,20 @@
 
 #include "h.h"
 #include "snotypes.h"
-#include "macros.h"
-#include "path.h"
-#include "load.h"
-#include "lib.h"			/* spec2str() */
-#include "str.h"
+#include "lib.h"			/* prototypes */
+#include "str.h"			/* strdup, strlen */
 
 #define SUCCESS(_STAT) ((_STAT) & STS$M_SUCCESS)
 
 #define MAXSTR 512			/* XXX */
 
 void *
-os_load_library(char *file) {
+os_load_library(const char *file) {
     return strdup(file);
 }
 
 void *
-os_find_symbol(void *lib, char *function, void **stash) {
+os_find_symbol(void *lib, const char *function, void **stash) {
     struct vms_descr {
 	int len;
 	char *ptr;
@@ -42,10 +39,10 @@ os_find_symbol(void *lib, char *function, void **stash) {
     void *value;
 
     dfile.len = strlen(lib);		/* string! */
-    dfile.ptr = file;
+    dfile.ptr = (char *)lib;
 
     dsym.len = strlen(function);
-    dsym.ptr = function;
+    dsym.ptr = (char *)function;
 
     /* XXX LIB$ESTABLISH() "signal" handler??? */
 

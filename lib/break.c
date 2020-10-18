@@ -51,13 +51,13 @@ chk_break(int x) {
  * Usage;	BREAKPOINT(statement, enable)
  * Returns;	old value or failure
  */
-int
+pmlret_t
 BREAKPOINT( LA_ALIST ) {
-    int stn = LA_INT(0);
+    int stn = LA_INT(0);		/* unlikely to exceed 2^32-1! */
     int enab = LA_INT(1);
     int save;
 
-    if (stn == 0)
+    if (stn <= 0)
 	RETFAIL;
 
     if (!breakpoints) {
@@ -70,7 +70,7 @@ BREAKPOINT( LA_ALIST ) {
 	bzero(breakpoints, break_max * sizeof(break_t));
     }
     else if (stn > break_max) {
-	static VAR break_t *nbreak;	/* XXX why static?? */
+	break_t *nbreak;		/* was static?!? */
 	int new_max;
 	int new_slots;
 	if (stn > D_A(CSTNCL))		/* only allow break on existing stmt */

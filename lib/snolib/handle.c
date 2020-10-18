@@ -15,10 +15,10 @@
 #include <stdio.h>			/* for NULL */
 
 #include "snotypes.h"
-#include "h.h"				/* __P() */
-#include "load.h"			/* SNOEXP() */
-#include "handle.h"
-#include "str.h"
+#include "h.h"
+#include "load.h"			/* SNOLOAD_API */
+#include "handle.h"			/* prototypes */
+#include "str.h"			/* bzero */
 
 #define HANDLE_HASH_SIZE (1<<8)		/* power of two */
 
@@ -48,7 +48,7 @@ struct handle_table {
 
 static const struct descr bad_handle;
 
-SNOEXP(void *)
+SNOLOAD_API(void *)
 lookup_handle(handle_handle_t *hhp, snohandle_t h) {
     struct handle_table *htp = *hhp;
     struct handle_entry *hp;
@@ -73,7 +73,7 @@ lookup_handle(handle_handle_t *hhp, snohandle_t h) {
  * datatype numbers from high to low (DATA types are assigned from low
  * to high)
  */
-SNOEXP(snohandle_t)
+SNOLOAD_API(snohandle_t)
 new_handle2(handle_handle_t *hhp, void *vp,
 	    const char *tname, void (*release)(void *),
 	    struct module *mp) {
@@ -123,7 +123,7 @@ new_handle2(handle_handle_t *hhp, void *vp,
     return h;
 }
 
-SNOEXP(snohandle_t)
+SNOLOAD_API(snohandle_t)
 new_handle(handle_handle_t *hhp, void *vp, const char *tname) {
     static char complained = 0;
     if (!complained) {
@@ -133,7 +133,7 @@ new_handle(handle_handle_t *hhp, void *vp, const char *tname) {
     return new_handle2(hhp, vp, tname, NULL, NULL);
 }
 
-SNOEXP(void)
+SNOLOAD_API(void)
 remove_handle(handle_handle_t *hhp, snohandle_t h) {
     struct handle_table *htp = *hhp;
     struct handle_entry *hp, *pp;
@@ -181,8 +181,8 @@ handle_cleanup_table(struct handle_table *htp) {
     free(htp);
 }
 
-/* called on module unload (initiated by module) */
-SNOEXP(void)
+/* called on module unload (initiated by mod_xxx, not user) */
+SNOLOAD_API(void)
 module_cleanup(struct module *mp) {
     struct handle_table *htp = mp->htlist;
 #ifdef DEBUG
