@@ -409,7 +409,7 @@ init_args(int ac, char *av[], int interactive) {
 	    break;
 
 	case 'u':			/* parameter data */
-	    params = optarg;
+	    params = strdup(optarg);
 	    break;
 
 	case 'v':			/* version */
