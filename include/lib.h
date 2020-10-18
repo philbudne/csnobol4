@@ -187,7 +187,9 @@ void tty_suspend(void);		/* SIG_TSTP */
  * cbreak means don't wait for CR (binary/raw)
  * keepeol only meaningful if !cbreak
  */
-int tty_read(FILE *,char *buf,int len, int cbreak,int noecho,int keepeol,char * fname);
+int tty_read(FILE *, char *buf, int len,
+	     int cbreak, int noecho, int keepeol,
+	     const char * fname);
 
 /*
  * other functions we provide on some systems:

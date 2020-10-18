@@ -100,7 +100,7 @@ tty_close(FILE *f) {
 
 int
 tty_read(FILE *f, char *buf, int len,
-	 int raw, int noecho, int keepeol, char *fname) {
+	 int raw, int noecho, int keepeol, const char *fname) {
     int chan;
     int fd;
     int op;				/* QIO op & flags */

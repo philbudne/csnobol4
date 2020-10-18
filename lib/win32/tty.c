@@ -132,7 +132,7 @@ tty_close(FILE *f) {
 /* called for raw tty reads if TTY_READ_RAW defined */
 int
 tty_read(FILE *f, char *buf, int len,
-	 int raw, int noecho, int keepeol, char *fname) {
+	 int raw, int noecho, int keepeol, const char *fname) {
     HANDLE h;
 
     if (!raw)

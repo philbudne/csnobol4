@@ -145,7 +145,7 @@ inet_cleanup(void) {
 }
 
 struct io_obj *
-inetio_open(char *path, int flags, int dir) {
+inetio_open(const char *path, int flags, int dir) {
     char *fn2, *host, *service;
     struct inetio_obj *iiop;
     int inet_flags;
