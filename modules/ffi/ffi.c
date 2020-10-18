@@ -76,7 +76,7 @@ union argval {
 #define FFI_TYPE(NAME) { #NAME, &ffi_type_##NAME, 0 }
 
 const struct ffi_type_name {
-    char *name;
+    const char *name;
     ffi_type *ptr;
     int ret;
 } ffi_type_names[] = {
