@@ -5,9 +5,13 @@
  */
 
 extern "C" {
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "snotypes.h"			/* struct descr */
-#include "h.h"				/* EXPOIRT/IMPORT, TLS */
-#include "load.h"			/* SNOEXP */
+#include "h.h"				/* EXPORT/IMPORT, TLS */
+#include "load.h"			/* SNOLOAD_API */
 #define MODULE_SUPPORT
 #include "handle.h"			/* struct module, MODULE_xxx */
 
