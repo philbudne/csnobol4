@@ -11,12 +11,13 @@
 #include "equ.h"			/* BCDFLD, etc */
 #include "snotypes.h"			/* DESCR, etc */
 #include "macros.h"			/* D_A() etc */
+#define SNOLOAD_API_PROVIDER
 #include "load.h"			/* prototypes */
 #include "str.h"
 
 static VAR struct spec retspec[1];
 
-EXPORT(void)
+SNOLOAD_API(void)
 retstring(struct descr *retval, const char *cp, int len) {
 #ifdef RETSTRING_STATIC			/* NOTE! not thread safe! */
     char *buf = cp;
@@ -47,7 +48,7 @@ retstring(struct descr *retval, const char *cp, int len) {
  * return a string which resides in malloc'ed memory using type "M"
  * memory will be freed via a call to relstring (below)
  */
-EXPORT(void)
+SNOLOAD_API(void)
 retstring_free(struct descr *retval, const char *cp, int len) {
     /* set up (static) specifier for string */
     S_A(retspec) = (int_t) cp;

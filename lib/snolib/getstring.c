@@ -11,9 +11,10 @@
 #include "equ.h"			/* BCDFLD, etc */
 #include "snotypes.h"			/* DESCR, etc */
 #include "macros.h"			/* D_A() etc */
+#define SNOLOAD_API_PROVIDER
 #include "load.h"			/* prototypes */
 
-EXPORT(void)
+SNOLOAD_API(void)
 getstring(const void *vp,		/* pointer to "natural variable" */
 	  char *dp,
 	  int len) {
@@ -35,7 +36,7 @@ getstring(const void *vp,		/* pointer to "natural variable" */
 }
 
 /* perform malloc, getstring */
-EXPORT(char *)
+SNOLOAD_API(char *)
 mgetstring(const void *vp) {		/* pointer to "natural variable" */
     char *cp;
     int len;
