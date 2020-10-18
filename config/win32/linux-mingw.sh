@@ -15,6 +15,8 @@ cat >>$CROSS_CONFIG <<EOF
 
 * override defaults from native (Linux) snobol4 binary!!
 	CC = '${TOOLCHAIN}gcc ${DEFS}'
+	MOD_SUPPORT = 'mod_msvc.cpp'
+
 * speed up sqlite3 compile!
 	COPT = ''
 	DL_EXT = '.dll'

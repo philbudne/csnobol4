@@ -336,6 +336,7 @@ setup.posix.system.end
 	DEFINE('setup.posix.objs(t)srcs,file')	:(setup.posix.objs.end)
 setup.posix.objs
 	srcs = setup.repl(setup.sources(t) setup.c, '.c,', OBJ_EXT ' ')
+	srcs = setup.repl(srcs setup.c, '.cpp,', OBJ_EXT ' ')
 setup.posix.objs.loop
 	IDENT(srcs)				:s(RETURN)
 	srcs (break(' ') ' ') . file =		:f(RETURN)
