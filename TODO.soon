@@ -2,6 +2,8 @@ $Id$
 
 include jjson.sno as ssjson.sno???
 
+stat:	add st_gen??
+
 shared library:
 	detect/prevent multi-threading if not compiled for it??
 	convert to new_handle2:
@@ -36,10 +38,6 @@ CFFI:
 	use loadx code for function lookup (ref counting)
 
 load.h:
-	pmlret_t: don't IMPORT/EXPORT PML'ed functions????
-	snolib/: findunit.c log.c ord.c sin.c sqrt.c sset.c tan.c use pml_t
-		14 others do not!!
-		always use int??
 	everything in snolib/ PML'ed (except system.sno-broken)? add README??
 
 snobol4func: added in CSNOBOL version ??
