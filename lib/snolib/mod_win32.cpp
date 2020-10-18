@@ -1,3 +1,4 @@
+#define DEBUG
 /*
  * $Id$
  * module destructor for Windows native DLL (MSVC and MINGW)
@@ -16,6 +17,13 @@ TLS struct module module = { MODULE_STRUCT_INIT };
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
+#ifdef DEBUG
+#include <stdio.h>
+#define PUT(S) puts(S)
+#else
+#define PUT(S) (void)0
+#endif
+
 // NOTE! DllMain is a C++ API, or I wouldn't have had to make a
 // .cpp file for this!
 BOOL WINAPI
@@ -27,6 +35,7 @@ DllMain(HINSTANCE dllinst, DWORD reason, LPVOID reserved) {
 #if !IS_THREADED
 	 MODULE_INIT(module);
 #endif
+	 PUT("DLL_PROCESS_ATTACH");
 	// can return FALSE on init failure,
 	// system will immediately call back w/ DLL_PROCESS_DETACH
 	break;
@@ -34,11 +43,13 @@ DllMain(HINSTANCE dllinst, DWORD reason, LPVOID reserved) {
 #if IS_THREADED
 	 MODULE_INIT(module);
 #endif
+	 PUT("DLL_THREAD_ATTACH");
 	 break;
     case DLL_THREAD_DETACH:
 #if IS_THREADED
 	 MODULE_CLEANUP(module);
 #endif
+	 PUT("DLL_THREAD_DETACH");
 	 break;
     case DLL_PROCESS_DETACH:
 	// "reserved is NULL if FreeLibrary has been called or the DLL
@@ -46,6 +57,7 @@ DllMain(HINSTANCE dllinst, DWORD reason, LPVOID reserved) {
 #if !IS_THREADED
 	 MODULE_CLEANUP(module);
 #endif
+	 PUT("DLL_PROCESS_DETACH");
 	 break;
     }
     // only honored for DLL_PROCESS_ATTACH:

@@ -179,10 +179,13 @@ handle_cleanup_table(struct handle_table *htp) {
     free(htp);
 }
 
-/* called on module unload */
+/* called on module unload (initiated by module) */
 SNOEXP(void)
 module_cleanup(struct module *mp) {
     struct handle_table *htp = mp->htlist;
+#ifdef DEBUG
+    printf("module_cleanup\n");
+#endif
     while (htp) {
 	struct handle_table *next = htp->next_table;
 	handle_cleanup_table(htp);
