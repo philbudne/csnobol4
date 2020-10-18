@@ -4,6 +4,11 @@
 #define GLOBAL_EXTERN extern
 #endif
 
+/*
+ * NOTE! VAR after storage class (extern) but before type!
+ * (C99 rules for TLS)
+ */
+
 /* set by init.c, global for access by io.c; */
 GLOBAL_EXTERN VAR int rflag;
 GLOBAL_EXTERN VAR int lflag;

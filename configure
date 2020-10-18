@@ -1502,6 +1502,8 @@ if [ "x$SO_EXT" != x -a "x$DL_EXT" = x ]; then
 fi
 
 # check if GNU C visibility available (silently for now) for shared library
+# hard(er) to detect if pragma form available (could ASSuME) and drop in
+# config.h (no CFLAGS needed)?
 DEFVIS='__attribute__ ((__visibility__("default")))'
 if config/check 'stdio.h' "$DEFVIS extern int foo(void)"; then
     SO_CFLAGS="$SO_CFLAGS -fvisibility=hidden"
