@@ -5,9 +5,7 @@ For detailed revision history see History file
 Changes since 2.1.6 release;
 ===========================
 	Compilation now requires an ANSI/ISO (C89/C90) C compiler,
-		will use C99 language extensions (soon to be available
-		in MicroSoft compilers!).  Have been using include files,
-		and runtime functions when available for a long time.
+		will use C99 language extensions (available soon in MSC!)
 	Text input no longer limited by "record length" (K flag obsolete).
 	I/O code cleanup/refactor (wish list item since 2002!)
 	Fix "stat" module.  Add "btime" (birth time), available on BSDs/OSX.

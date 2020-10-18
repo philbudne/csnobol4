@@ -24,8 +24,8 @@
 #include "snotypes.h"
 #include "lib.h"			/* own prototypes */
 
-static char *dbase;
-static size_t dsize;
+static VAR char *dbase;
+static VAR size_t dsize;
 
 char *
 dynamic(size_t size) {

@@ -23,7 +23,7 @@
 #define HANDLE_HASH_SIZE (1<<8)		/* power of two */
 
 typedef unsigned int handle_datatype_t;	/* must fit in vfld */
-static handle_datatype_t next_handle_datatype = SIZLIM;
+static VAR handle_datatype_t next_handle_datatype;
 static TLS char in_handle_cleanup;
 
 typedef int_t handle_number_t;
@@ -88,6 +88,8 @@ new_handle2(handle_handle_t *hhp, void *vp,
 	if (!htp)
 	    return bad_handle;
 	bzero(htp, sizeof(struct handle_table));
+	if (next_handle_datatype == 0)	/* first call? */
+	    next_handle_datatype = SIZLIM;
 	htp->datatype = --next_handle_datatype; /* assign datatype */
 	htp->name = tname;
 	htp->release = release;

@@ -36,11 +36,11 @@ struct func {
 };
 
 /* keep list of loaded functions (for UNLOAD) */
-/* XXX keep TLS (per-thread) or need use count?! */
-static struct func *funcs;
+static VAR struct func *funcs;
 
-/* list of loaded libs XXX threads need locking? */
-static struct lib *libs;
+/* list of loaded libs */
+/* XXX needs os_load_library to be ref-counted for threads */
+static VAR struct lib *libs;
 
 #ifdef SHARED
 static void loadx_cleanup(void);

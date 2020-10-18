@@ -71,7 +71,7 @@ extern char *optarg;
 
 static VAR int xflag;
 static VAR void *ppmstack;
-static FILE *termin;
+static VAR FILE *termin;
 
 static void init_signals(void);
 

@@ -2,6 +2,14 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/18/2020:
+	more VAR declarations (only statics left are in VMS code?)
+	lib/init.c
+	lib/loadx.c
+	lib/generic/popen.c
+	lib/posix/dynamic.c
+	lib/snolib/handle.c
+
 10/17/2020:
 	include/handle.h: add sizes, reserved bytes
 	modules/stat/stat.c: st_atimensec predefined on NetBSD 9

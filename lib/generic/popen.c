@@ -21,7 +21,7 @@ struct pipe {
     int status;
 };
 
-static struct pipe *pipes;
+static VAR struct pipe *pipes;
 
 FILE *
 popen(char *file, char *mode) {
