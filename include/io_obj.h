@@ -145,8 +145,8 @@ extern struct io_obj nomatch;
 
 struct io_obj *memio_open(char *buf, size_t len, int flags, int dir);
 #ifdef INET_IO
-struct io_obj *inetio_open(char *path, int flags, int dir);
+struct io_obj *inetio_open(const char *path, int flags, int dir);
 #endif
 #ifdef OSDEPIO_OBJ
-struct io_obj *osdepio_open(char *path, int flags, int dir);
+struct io_obj *osdepio_open(const char *path, int flags, int dir);
 #endif
