@@ -6,18 +6,10 @@ stat:	add st_gen??
 
 shared library:
 	detect/prevent multi-threading if not compiled for it??
-	convert to new_handle2:
-		modules/dirs/dirs.c
-		modules/ffi/ffi.c
-		modules/sqlite3/sqlite3mod.c
-		modules/stcl/stcl.c (single call for tcl_objs?)
-	install MOD_SUPPORT source file?
-		handle for MSVC
-		build library w/ "module"?
+	install MOD_SUPPORT source file so setuputil can find it
 	SHARED: need to free malloc'ed memory on exit: register hooks?
 		only hook user is loadx? just call directly?
-	loadx libs/funcs: need to be VAR?
-		if not, need to be cleaned up on DL unload!
+	loadx libs/funcs: need to be VAR (works if os_lib_open is ref counted)
 	move all startup banner output to main.c (snobol4_banners?)?
 	snobol4.h SNOEXP->SHAREDEXP? -- noop when monolithic?
 	rename public io_ to snobol4_ (for snobol4.h)?
@@ -25,14 +17,6 @@ shared library:
 		getopt not thread safe!
 		shared library list should be shared (needs locking!)
 	versioning: gcc -shared -Wl,-soname,libxx.so.1 -o libxx.so.1.0.1
-	all SHARED-specific code in one file?
-	dynamic loadables: need _fini/DllMain for cleanup??
-	traverse handle tables to close/free entries?
-		gcc destructor function
-		MODULE macro: declare variable with API vers?
-			declare module local new_handle2
-				takes release func, makes chain?
-				MSVC: call atexit first time?
 
 CFFI:
 	use loadx code for function lookup (ref counting)
