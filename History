@@ -3,6 +3,10 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/18/2020:
+	include/snobol4.h: SNOBOL4_API macro, noop if not PROVIDER && SHARED
+	main.c: use SNOBOL4_API
+
+10/18/2020:
 	lib/init.c: strdup -u argument
 
 10/18/2020:

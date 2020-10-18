@@ -1,30 +1,55 @@
 /*
  * $Id$
- * Interface to *EXPERIMENTAL* snobol4 shared library
+ * API for *EXPERIMENTAL* snobol4 shared library
  */
 
-/* SHAREDEXP??? XXX define as noop if building monolithic snobol4? */
 #ifdef SNOBOL4_PROVIDER	/* building snobol4 or libsnobol4.so shared library */
-#define SNOEXP(X) EXPORT(X)
+#ifdef SHARED
+#define SNOBOL4_API(RETTYPE) EXPORT(RETTYPE)
+#else  /* PROVIDER (main.c), not SHARED */
+#define SNOBOL4_API(RETTYPE) RETTYPE
+#endif /* PROVIDER (main.c), not SHARED */
 #else		/* shared library user */
-#define SNOEXP(X) IMPORT(X)
+#define SNOBOL4_API(RETTYPE) IMPORT(RETTYPE)
 #endif
 
 /* main.c */
-SNOEXP(int) snobol4_main(int argc, char *argv[]);
+SNOBOL4_API(int) snobol4_main(int argc, char *argv[]);
+
 /* or */
+
 #define INIT_OK -1
-SNOEXP(int) snobol4_init(int argc, char *argv[], int interactive);
+SNOBOL4_API(int) snobol4_init(int argc, char *argv[], int interactive);
 /* or */
-SNOEXP(int) snobol4_init_ni(void);	/* non-interactive */
+SNOBOL4_API(int) snobol4_init_ni(void);	/* simple, non-interactive */
+/* (and calls to attach "files") */
+
 /* then */
-SNOEXP(int) snobol4_run(void);
+
+SNOBOL4_API(int) snobol4_run(void);
+
+/*
+ * calls to set input and output files after calling
+ * snobol4_init w/ interactive == 0, or snobol4_init_ni
+ */
 
 /* lib/io.c */
-/* unit number definitions in unit.h */
-/* add files to UNITI (INPUT) file list */
-SNOEXP(void) io_input_file(const char *);	  /* named file */
-SNOEXP(void) io_input_string(const char *name, char *); /* string */
+/* NOTE!!unit number definitions in unit.h */
 
-/* attach output buffer to unit UNITO for OUTPUT, UNITP for TERMINAL */
-SNOEXP(int) io_output_string(int unit, const char *name, char *buf, int);
+/*
+ * add file named "fname" to UNITI (INPUT) file list
+ */
+SNOBOL4_API(void) io_input_file(const char *fname);	  /* named file */
+
+/*
+ * add a C string "buf" as an input file to UNITI (INPUT) file list
+ * "fname" is for diagnostic output
+ */
+SNOBOL4_API(void) io_input_string(const char *fname, char *bif); /* string */
+
+/*
+ * attach fixed size output buffer "buf" to an I/O unit "unit"
+ * UNITO for OUTPUT, UNITP for TERMINAL (former PUNCH variable!)
+ * fname argument is for diagnostic output
+ */
+SNOBOL4_API(int) io_output_string(int unit, const char *fname, char *buf, int);

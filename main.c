@@ -1,6 +1,9 @@
 /* $Id$ */
 
-/* snobol4 main program (make this mlink.c??) */
+/*
+ * snobol4 main program (make this mlink.c??)
+ * included in SHARED library
+ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -16,6 +19,7 @@
 
 # ifdef SHARED
 # include <setjmp.h>
+
 VAR jmp_buf endex_jmpbuf;
 # endif /* SHARED defined */
 
@@ -45,7 +49,7 @@ const char vdate[] = VERSION_DATE;
 const char snoname[] = SNONAME;
 
 /* returns exit status, or -1 on success!! */
-SNOEXP(int)
+SNOBOL4_API(int)
 snobol4_init(int argc, char *argv[], int interactive) {
     init_data();
     init_syntab();
@@ -62,7 +66,7 @@ snobol4_init_ni(void) {			/* non-interactive init */
 }
 #endif
 
-SNOEXP(int)
+SNOBOL4_API(int)
 snobol4_run(void) {
 # ifdef SHARED
     if (setjmp(endex_jmpbuf))
@@ -77,7 +81,7 @@ snobol4_run(void) {
 #define main snobol4_main
 #endif
 
-SNOEXP(int)
+SNOBOL4_API(int)
 main(int argc, char *argv[]) {
     int ret = snobol4_init(argc, argv, 1);
     if (ret != INIT_OK)

@@ -5,12 +5,11 @@ include jjson.sno as ssjson.sno???
 stat:	add st_gen??
 
 shared library:
-	move argument processing to main.c???
+	split INTERP call out of BEGIN?
 	detect/prevent multi-threading if not compiled for it??
 	install MOD_SUPPORT source file so setuputil can find it
 	SHARED: need to free malloc'ed memory on exit: register hooks?
-		only hook user is loadx? just call directly?
-	loadx libs/funcs: need to be VAR (works if os_lib_open is ref counted)
+		only caller is loadx? just call directly??
 	move all startup banner output to main.c (snobol4_banners?)?
 	snobol4.h SNOEXP->SHAREDEXP? -- noop when monolithic?
 	rename public io_ to snobol4_ (for snobol4.h)?
