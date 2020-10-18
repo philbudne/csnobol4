@@ -3,6 +3,9 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/17/2020:
+	include/handle.h: add sizes, reserved bytes
+
+10/17/2020:
 	gcc 9.3-win32
 	include/lib.h, lib/{msdos,vms,win32}/tty.c: tty_read
 	lib/win32/inetio_obj.c: inetio_open

@@ -13,9 +13,13 @@ typedef struct handle_table *handle_handle_t;
  */
 
 struct module {
-    struct handle_table *htlist;
     unsigned short api_version;		/* major*100 + minor */
+    unsigned short sizeof_module;
+    unsigned short sizeof_long;
+    unsigned short sizeof_ptr;
     char threaded;
+    char reserved[7];
+    struct handle_table *htlist;
 };
 
 extern struct module module;		/* for loadables */
@@ -38,7 +42,15 @@ SNOEXP(snohandle_t) new_handle(handle_handle_t *, void *, const char *);
 SNOEXP(void) module_cleanup(struct module *);
 #define IS_THREADED 0			/* 1 if TLS is thread-local storage */
 
-#define MODULE_STRUCT_INIT NULL, 100, IS_THREADED
+#define MODULE_STRUCT_INIT \
+	100, \
+	(unsigned short)sizeof(struct module), \
+	(unsigned short)sizeof(long), \
+	(unsigned short)sizeof(void *), \
+	IS_THREADED, 0, 0, 0, \
+	0, 0, 0, 0, \
+	NULL
+
 #define MODULE_INIT(MOD) (MOD).htlist = NULL
 #define MODULE_CLEANUP(MOD) module_cleanup(&(MOD))
 #endif
