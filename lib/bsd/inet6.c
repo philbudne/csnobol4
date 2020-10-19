@@ -26,7 +26,6 @@
 #include <netinet/tcp.h>		/* TCP_NODELAY */
 #endif
 
-#include "h.h"				/* TRUE/FALSE, __P */
 #include "inet.h"			/* own prototypes */
 #include "str.h"			/* bzero */
 #include "bindresvport.h"

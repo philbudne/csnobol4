@@ -8,22 +8,15 @@
 
 #include <stdio.h>
 
-#include "h.h"				/* TRUE, __P */
-#include "inet.h"			/* prototypes */
+#include "inet.h"			/* prototypes, sock_t */
 
 sock_t
-tcp_socket( host, service, port, priv )
-    char *host, *service;
-    int port, priv;
-{
+tcp_socket(char *host, char *service, int port, int priv) {
     return -1;
 }
 
 sock_t
-udp_socket( host, service, port, priv )
-    char *host, *service;
-    int port, priv;
-{
+udp_socket(char *host, char *service, int port, int priv) {
     return -1;
 }
 

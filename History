@@ -3,6 +3,16 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/18/2020:
+	flush mentions of __P
+	lib/auxil/getopt.c
+	lib/bsd/inet.c
+	lib/bsd/inet6.c
+	lib/djgpp/osinit.c
+	lib/dummy/inet.c
+	lib/dummy/ptyio_obj.c
+	lib/win32/inetio_obj.c
+
+10/18/2020:
 	modules/stat/stat.c: try to deal with Cygwin/Apple birth time mess
 
 10/18/2020:

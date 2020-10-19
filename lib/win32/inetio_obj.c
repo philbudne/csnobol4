@@ -24,7 +24,7 @@
 #define WS_MINOR 1
 #endif
 
-#include "h.h"				/* __P, TRUE */
+#include "h.h"				/* TRUE */
 #include "io_obj.h"
 #include "bufio_obj.h"
 #include "inet.h"			/* {tc,ud}p_socket */

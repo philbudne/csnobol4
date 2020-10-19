@@ -11,8 +11,7 @@
 
 #include <stdio.h>
 
-#include "h.h"				/* __P */
-#include "io_obj.h"
+#include "io_obj.h"			/* prototype */
 
 struct io_obj *
 ptyio_open(char *path, int flags, int dir) {

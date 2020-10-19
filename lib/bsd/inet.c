@@ -33,7 +33,6 @@
 #include <netdb.h>
 #include <fcntl.h>
 
-#include "h.h"				/* TRUE/FALSE, __P */
 #include "inet.h"			/* own prototypes */
 #include "str.h"			/* memcpy() */
 #include "bindresvport.h"
@@ -88,7 +87,7 @@ inet_socket2(char *host, char *service, int type, int flags, int port) {
 	((flags & FLAG) && \
 	 setsockopt(s,LAYER,OPT,(const void *)&true,sizeof(true)) < 0)
 
-    if ((flags & INET_PRIV) && bindresvport(s, NULL) < 0 ||
+    if (((flags & INET_PRIV) && bindresvport(s, NULL) < 0) ||
 	TRYOPT(INET_BROADCAST,SOL_SOCKET,SO_BROADCAST) ||
 	TRYOPT(INET_REUSEADDR,SOL_SOCKET,SO_REUSEADDR) ||
 	TRYOPT(INET_DONTROUTE,SOL_SOCKET,SO_DONTROUTE) ||

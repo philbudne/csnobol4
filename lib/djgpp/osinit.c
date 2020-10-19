@@ -41,7 +41,7 @@
 #include <sys/socket.h>
 #endif /* HAVE_WATTCP defined */
 
-#include "h.h"                          /* __P */
+#include "h.h"
 #include "snotypes.h"                   /* struct descr */
 #include "lib.h"                        /* io_flushall */
 #include "bindresvport.h"
