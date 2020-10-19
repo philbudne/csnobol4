@@ -30,7 +30,7 @@ INET_LIBS=wsock32.lib
 
 CFLAGS= -c $(OPT) -WC -Tml -w- \
 	-I$(SRCDIR)config\win32 -I$(SRCDIR)include -I$(SRCDIR). \
-	-DHAVE_CONFIG_H $(NO_BITFIELDS) $(INET_DEFS)
+	-DHAVE_CONFIG_H $(NO_BITFIELDS) $(INET_DEFS) -DSNOBOL4
 
 OBJ=	isnobol4.obj data.obj data_init.obj main.obj syn.obj \
 	bal.obj break.obj date.obj dump.obj endex.obj hash.obj \

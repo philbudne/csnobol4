@@ -65,13 +65,16 @@ CONFIG_SNO=config/win32/config.sno
 
 # DEFS set on command line for cross-builds, as needed
 CFLAGS=-c $(OPT) -I$(SRCDIR)config/win32 -I$(SRCDIR)include -I$(SRCDIR). \
-	-DHAVE_CONFIG_H $(INET_DEFS) $(DEFS) -Wall
+	-DHAVE_CONFIG_H $(INET_DEFS) $(DEFS) -DSNOBOL4 -Wall
 SNOBOL4_CFLAGS=$(CFLAGS) -Wno-return-type -Wno-switch
 HOST_CFLAGS=$(CFLAGS) -DCC=\"$(TCC)\" -DCOPT=\"$(OPT)\" -DSO_LD=\"$(TCC)\" -DDL_LD=\"$(TCC)\"
 
 # target C compiler (overridden for cross-compiles)
 TCC=$(CC)
 
+# maybe less confusing if this was snobol4imp?
+# but snobol4.lib is the default output w/ MSVC
+# -lsnobol4 built into setuputil.sno XXX should honor a config.sno setting
 IMPLIB=snobol4.lib
 LDFLAGS=-Wl,--out-implib,$(IMPLIB)
 
@@ -182,7 +185,8 @@ mods: $(MODULES_LOADABLE)
 MOD_SNOBOL4=../../snobol4
 
 # XXX try SNOPATH=..:......?
-RUNSETUP=$(MOD_SNOBOL4) -N -I.. -I../.. -I../../snolib setup.sno
+RUNSETUP=$(MOD_SNOBOL4) -N -I.. -I../.. -I../../snolib setup.sno $(SETUPFLAGS)
+SETUPFLAGS=-v
 
 MODDEP=snolib/setuputil.sno $(IMPLIB)
 

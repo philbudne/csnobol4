@@ -174,7 +174,7 @@ ADD_LDFLAGS([$(MATHLIB)])
 # after local config
 
 # NOTE: NOT named CPPFLAGS; some versions of make include CPPFLAGS in cc cmd
-MYCPPFLAGS=-I$(SRCDIR)include -I$(SRCDIR). _CPPFLAGS
+MYCPPFLAGS=-I$(SRCDIR)include -I$(SRCDIR). _CPPFLAGS -DSNOBOL4
 
 COPT=[]_OPT
 

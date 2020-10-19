@@ -4,15 +4,14 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#include <stdlib.h>			/* for malloc */
+#include <stdlib.h>			/* malloc */
 
-#include "str.h"			/* before h.h to get system __P */
 #include "h.h"
-#include "equ.h"			/* BCDFLD, etc */
-#include "snotypes.h"			/* DESCR, etc */
-#include "macros.h"			/* D_A() etc */
-#define SNOLOAD_API_PROVIDER
+#include "equ.h"			/* BCDFLD */
+#include "snotypes.h"			/* DESCR */
+#include "macros.h"			/* D_V() etc */
 #include "load.h"			/* prototypes */
+#include "str.h"			/* memcpy */
 
 SNOLOAD_API(void)
 getstring(const void *vp,		/* pointer to "natural variable" */

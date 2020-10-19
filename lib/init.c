@@ -28,7 +28,6 @@
 #include "data.h"			/* res */
 #include "proc.h"			/* for SYSCUT() */
 #include "load.h"			/* io_fname  */
-#define SNOBOL4_PROVIDER
 #include "snobol4.h"	      /* INIT_OK, io_input_file, io_mkfile(_noclose) */
 #include "globals.h"
 

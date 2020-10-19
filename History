@@ -3,6 +3,22 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/18/2020:
+	one more import/export go-around
+	Makefile2.m4: add -DSNOBOL4 to MYCPPFLAGS
+	main.c: flush SNOBOL4_PROVIDER
+	config/vms/descrip.mms: define SNOBOL4
+	config/win32/borland.mak: add -DSNOBOL4 to CFLAGS
+	config/win32/config.h: use ifndef SNOBOL4 for IMPORT action
+	config/win32/mingw.mak: add -DSNOBOL4 to CFLAGS
+		add IMPLIB comment, SETUPFLAGS
+	config/win32/ntmsvc.mak: add -DSNOBOL4 to CFLAGS
+	include/load.h: use SNOBOL4 to select SNOLOAD_API IMPORT vs EXPORT
+	include/snobol4.h: use SNOBOL4 & SHARED to select SNOBOL4_API behav.
+	lib/init: flush SNOBOL4_PROVIDER
+	lib/snolib/getstring.c: include comments, flush SNOLOAD_API_PROVIDER
+	lib/snolib/retstring.c: flush SNOLOAD_API_PROVIDER
+
+10/18/2020:
 	configure: test for, use GNU C visibility for SO build!
 
 10/18/2020:

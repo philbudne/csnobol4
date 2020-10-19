@@ -119,9 +119,9 @@
 	else RETFAIL; \
     } while (0)
 
-#ifdef SNOLOAD_API_PROVIDER /* building snobol4 (or shared library) */
+#ifdef SNOBOL4 /* building snobol4 (or shared library) */
 #define SNOLOAD_API(TYPE) EXPORT(TYPE)
-#else				/* building dynamically loadable module */
+#else		/* building dynamically loadable module */
 #define SNOLOAD_API(TYPE) IMPORT(TYPE)
 #endif
 

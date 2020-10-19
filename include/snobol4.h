@@ -3,15 +3,15 @@
  * API for *EXPERIMENTAL* snobol4 shared library
  */
 
-#ifdef SNOBOL4_PROVIDER	/* building snobol4 or libsnobol4.so shared library */
+#ifdef SNOBOL4	/* building snobol4 or libsnobol4.so shared library */
 #ifdef SHARED
 #define SNOBOL4_API(RETTYPE) EXPORT(RETTYPE)
-#else  /* PROVIDER (main.c), not SHARED */
+#else  /* not SHARED (building snobol4.exe) */
 #define SNOBOL4_API(RETTYPE) RETTYPE
-#endif /* PROVIDER (main.c), not SHARED */
-#else		/* shared library user */
+#endif /* not SHARED (building snobol4.exe) */
+#else  /* SNOBOL4 not defined (shared library user) */
 #define SNOBOL4_API(RETTYPE) IMPORT(RETTYPE)
-#endif
+#endif /* SNOBOL4 not defined (shared library user) */
 
 /* main.c */
 SNOBOL4_API(int) snobol4_main(int argc, char *argv[]);

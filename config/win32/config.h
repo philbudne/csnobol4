@@ -72,13 +72,13 @@
  * IMPORT (external) symbols when building a LOADable DLL
  * load.h defines SNOEXP(X) as IMPORT(X) when DLL defined
  */
-#ifdef DLL
+#ifndef SNOBOL4
 #if defined(_MSC_VER) || defined(__MINGW32__)
 #define IMPORT(TYPE) __declspec(dllimport) TYPE
 #elif defined(__BORLANDC__)
 #define IMPORT(TYPE) TYPE _import	/* ??? */
-#endif /* defined(__BORLANDC__) */
-#endif /* DLL defined */
+#endif  /* defined(__BORLANDC__) */
+#endif /* SNOBOL4 not defined */
 
 /* non-standard functions; */
 #define finite		_finite

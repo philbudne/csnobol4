@@ -72,7 +72,7 @@ LINK=link
 
 COMMON_CFLAGS=-nologo -DHAVE_CONFIG_H
 DL_CFLAGS=$(COMMON_CFLAGS)
-CFLAGS=-c $(OPT) $(COMMON_CFLAGS) $(INET_DEFS) -I$(SRCDIR)config\win32 -I$(SRCDIR)include -I$(SRCDIR). $(DEFS)
+CFLAGS=-c $(OPT) $(COMMON_CFLAGS) $(INET_DEFS) -I$(SRCDIR)config\win32 -I$(SRCDIR)include -I$(SRCDIR). $(DEFS) -DSNOBOL4
 
 # disable switch/enum warning for isnobol4.c:
 SNOBOL4_C_CFLAGS=/wd4715

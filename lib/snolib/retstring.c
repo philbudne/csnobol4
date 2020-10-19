@@ -11,7 +11,6 @@
 #include "equ.h"			/* BCDFLD, etc */
 #include "snotypes.h"			/* DESCR, etc */
 #include "macros.h"			/* D_A() etc */
-#define SNOLOAD_API_PROVIDER
 #include "load.h"			/* prototypes */
 #include "str.h"
 
