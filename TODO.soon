@@ -1,7 +1,5 @@
 $Id$
 
-remove __P comments
-
 include jjson.sno as ssjson.sno???
 
 stat:	add st_gen??
