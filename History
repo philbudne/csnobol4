@@ -3,6 +3,9 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/18/2020:
+	modules/stat/stat.c: try to deal with Cygwin/Apple birth time mess
+
+10/18/2020:
 	one more import/export go-around
 	Makefile2.m4: add -DSNOBOL4 to MYCPPFLAGS
 	main.c: flush SNOBOL4_PROVIDER

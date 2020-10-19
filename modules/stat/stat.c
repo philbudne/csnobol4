@@ -105,11 +105,18 @@ st2sno(struct stat *st, struct descr *dp) {
     SETINT(dp,ST_MTIMENSEC,st->st_mtimensec);
     SETINT(dp,ST_CTIMENSEC,st->st_ctimensec);
 #endif
-#ifdef st_birthtime /* defined on FreeBSD 12, NetBSD 9, OSX 10.15 */
+#ifdef st_birthtime /* defined on FreeBSD 12, NetBSD 9, OSX 10.15, Cygwin64 */
     SETINT(dp,ST_BTIME,st->st_birthtime);
-    /* NetBSD9 has st_birthtimensec, FreeBSD 12 does not */
-    SETINT(dp,ST_BTIMENSEC,st->st_birthtimespec.tv_nsec);
+// NetBSD, Cygwin, FreeBSD data struct is st_birthtim
+// MacOS uses st_birthtimespec
+// NetBSD, FreeBSD have st_birthtimespec define, but Cygwin does not!
+// NetBSD has st_birthtimensec define, FreeBSD, OSX, Cygwin do not.
+// really should have configure script suss this out
+#ifdef __APPLE__
+#define st_birthtim st_birthtimespec
 #endif
+    SETINT(dp,ST_BTIMENSEC,st->st_birthtim.tv_nsec);
+#endif /* st_birthtime */
 }
 
 /*
