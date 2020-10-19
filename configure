@@ -468,8 +468,8 @@ gcc|clang|icc)
 	SO_LD=$CCPATH
 	SO_LDFLAGS=-shared
 	echo 'ADD_LDFLAGS([-Wl,--out-implib,libsnobol4.a])' >> $CONFIG_M4
-	# libsnobol4.a not created unless this given???:
-	echo 'ADD_LDFLAGS([-Wl,--export-all-symbols])' >> $CONFIG_M4
+	# 2020-10-18: no longer needed:
+	#echo 'ADD_LDFLAGS([-Wl,--export-all-symbols])' >> $CONFIG_M4
 	echo 'define([INSTALL_SYSDEP],[$(INSTALL) -m 644 libsnobol4.a $(SNOLIB_LIB)])' >> $CONFIG_M4
 	;;
 
