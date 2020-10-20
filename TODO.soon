@@ -2,7 +2,7 @@ $Id$
 
 include jjson.sno as ssjson.sno???
 
-add base64 sub-flavors (URL safe, etc)
+add base64 sub-flavors (URL safe, etc), snopea docs!!!!
 
 setuputils: extract SNOBOL4 code from module.c?
 
