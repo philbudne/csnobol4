@@ -1,0 +1,15 @@
+-INCLUDE 'setuputil.sno'
+
+	t = TABLE()
+	t['module'] = 'base64'
+	t['sources'] = 'base64.c'
+
+	t['author'] = t['maintainer'] = 'Phil Budne'
+	t['author_email'] = t['maintainer_email'] = 'phil@snobol4.org'
+	t['license'] = 'ISC'
+* description
+* long_description
+* version (get from RCS ID?)
+
+	setup(t)
+end

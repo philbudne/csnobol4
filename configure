@@ -1588,7 +1588,7 @@ else
 fi
 
 if [ "x$WITHOUT_MODULES" = x ]; then
-    MODULES="dirs logic random stat time sprintf fork $READLINE_MODULE"
+    MODULES="base64 dirs logic random stat time sprintf fork $READLINE_MODULE"
 
     ################################################################
     echo "checking features for modules:"
