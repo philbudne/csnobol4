@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/19/2020:
+	modules/stat/stat.c: swap to ifdef __CYGWIN__
+
 10/18/2020:
 	flush mentions of __P
 	lib/auxil/getopt.c
