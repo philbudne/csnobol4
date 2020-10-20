@@ -7,6 +7,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	configure
 	modules/base64/base64.c
 	modules/base64/setup.sno
+	modules/base64/funcs.sno
 
 10/19/2020:
 	rename mod_msvc.cpp to mod_win32.cpp
