@@ -5,50 +5,53 @@ For detailed revision history see History file
 Changes since 2.1.6 release;
 ===========================
 	Compilation now requires an ANSI/ISO (C89/C90) C compiler,
-		will use C99 language extensions (available soon in MSC!)
+	    will use C99 language extensions (available soon in MSC!)
 	Text input no longer limited by "record length" (K flag obsolete).
-	I/O code cleanup/refactor (wish list item since 2002!)
-	Fixed "stat" module.
-		Added "btime" (birth time), available on BSDs/OSX.
-	Added "base64" module.
-	Switch back to less precise MSTIME reports of JUST user time.
-		This will effect timing reports.
+	I/O code cleanup/refactor (wish list item since / last attempted 2002!)
+	Switch back to less precise MSTIME (runtime) reports of JUST user time.
+	    This will effect timing reports.
 	All output unbuffered with -U option,
-		or SNOBOL4UNBUFFERED environment variable non-null.
-	time module GETTIMEOFDAY return now has TV_NSEC member
+	    or SNOBOL4UNBUFFERED environment variable non-null.
+	Modules:
+	    1. Fixed "stat" module.
+	       Added "btime" (birth time),available on BSDs/OSX/Cygwin.
+	    2. Added "base64" module.
+	    3. time module GETTIMEOFDAY return now has TV_NSEC member
 	configure changes:
-		--force-pml removed (must use modules)
-		--without-modules added (breaks tests, sdb)
-		more strict about feature tests
-	Can build libsnobol4.so shared library / snobol4.dll;
-		EXPERIMENTAL
-		ssnobol4 executable using it is up to 8% slower
-		(likely due to position independent code
-		except perhaps on MacOS, where PIC is the default).
-		tlib.c is a small demo of invoking interpreter from a C
-		program.  (I'm not sure I see the point, since it's easy
-		enough to write temporary files, and invoke a subprocess!?)
-		Shared library API is in include/snobol4.h
-		No promises on future availability or stability!
-		May not free all allocated memory!!!
-		Loadable modules need to be compiled with -DDYNAMIC
-			(best to use setuputil.sno to build)
-	Changes to loadable function module API:
-		Allow return of strings in malloc'ed memory
-			via RETSTR[2]_FREE (and silently by RETSTR[2]).
-			No longer copies into persistent malloc'ed memory.
-		Compiles of loadable code must define DYNAMIC
-			Best to use setuputil.sno to build 
+	    --force-pml removed (must use modules)
+	    --without-modules added (breaks tests, sdb)
+	    more strict about feature tests
 	Windows:
-		Builds by default with Winsock2 support
-			for IPv6 support (available since in WinXP)
-		Fixed test for C++ compiler under cygwin
-		Experimental support for "Pseudo Consoles" on Windows 10
-			(output will contain ANSI escape sequences)
-		Executable manifested for Windows 10
-			(previously HOST() only showed "Win8" on Windows 10)
-		Implement EXIT('command to run')
+	    Builds by default with Winsock2 support
+		for IPv6 support (available since in WinXP)
+	    Fixed test for C++ compiler under cygwin
+	    Experimental support for "Pseudo Consoles" on Windows 10
+		(output will contain ANSI escape sequences)
+	    Executable manifested for Windows 10
+		(previously HOST() only showed "Win8" on Windows 10)
+	    Implement EXIT('command to run')
 	Portability fixes for Android, illumos (Solaris).
+	Can build libsnobol4.so shared library / snobol4.dll;
+	    EXPERIMENTAL
+	    ssnobol4 executable using it is up to 8% slower
+	    (likely due to position independent code
+	    except perhaps on MacOS, where PIC is the default).
+	    tlib.c is a small demo of invoking interpreter from a C
+	    program.  (I'm not sure I see the point, since it's easy
+	    enough to write temporary files, and invoke a subprocess!?)
+	    Shared library API is in include/snobol4.h
+	    No promises on future availability or stability!
+	    May not free all allocated memory!!!
+	    Loadable modules need to be compiled with -DDYNAMIC
+		(best to use setuputil.sno to build)
+	Changes to loadable function module API:
+	    Allows return of strings in malloc'ed memory
+		via RETSTR[2]_FREE (and silently by RETSTR[2]).
+		No longer copies into persistent malloc'ed memory.
+	    Each handle pool can register a cleanup function when
+		using new new_handle2() function.  Requires support
+		code added automatically when setuputil.sno used to
+		build modules!!!
 
 Changes since 2.0 release;
 =========================
