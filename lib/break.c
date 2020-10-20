@@ -51,6 +51,14 @@ chk_break(int x) {
  * Usage;	BREAKPOINT(statement, enable)
  * Returns;	old value or failure
  */
+#ifdef SHARED
+void
+break_cleanup(void) {
+    free(breakpoints);
+    breakpoints = NULL;
+}
+#endif
+
 pmlret_t
 BREAKPOINT( LA_ALIST ) {
     int stn = LA_INT(0);		/* unlikely to exceed 2^32-1! */
@@ -68,6 +76,9 @@ BREAKPOINT( LA_ALIST ) {
 	if (!breakpoints)
 	    RETFAIL;
 	bzero(breakpoints, break_max * sizeof(break_t));
+#ifdef SHARED
+	reg_cleanup(break_cleanup);
+#endif
     }
     else if (stn > break_max) {
 	break_t *nbreak;		/* was static?!? */
