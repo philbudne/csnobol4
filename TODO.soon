@@ -2,7 +2,9 @@ $Id$
 
 include jjson.sno as ssjson.sno???
 
-stat:	add st_gen??
+add base64 sub-flavors (URL safe, etc)
+
+setuputils: extract SNOBOL4 code from module.c?
 
 shared library:
 	split INTERP call out of BEGIN?
@@ -27,9 +29,11 @@ Use HAVE_PATHS_H/<paths.h>, path.h in generic/execute.c, bsd/popen.c??
 
 Not on Android! include/path.h:#define TMP_DIR "/tmp" /* exists on all systems?!
 
+re-implement io_getfp w/ stdio_obj_getfp??
+
 remove io_clearerr?
 
-re-implement io_getfp w/ stdio_obj_getfp??
+stat:	add st_gen??
 
 setjmp/longjmp for ^C on TTY read??
 

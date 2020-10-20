@@ -8,8 +8,11 @@ Changes since 2.1.6 release;
 		will use C99 language extensions (available soon in MSC!)
 	Text input no longer limited by "record length" (K flag obsolete).
 	I/O code cleanup/refactor (wish list item since 2002!)
-	Fix "stat" module.  Add "btime" (birth time), available on BSDs/OSX.
-	Switch back to less precise runtime reports of JUST user time.
+	Fixed "stat" module.
+		Added "btime" (birth time), available on BSDs/OSX.
+	Added "base64" module.
+	Switch back to less precise MSTIME reports of JUST user time.
+		This will effect timing reports.
 	All output unbuffered with -U option,
 		or SNOBOL4UNBUFFERED environment variable non-null.
 	time module GETTIMEOFDAY return now has TV_NSEC member
