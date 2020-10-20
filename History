@@ -3,6 +3,11 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/19/2020:
+	rename mod_msvc.cpp to mod_win32.cpp
+	config/win32/linux-mingw.sh
+	config/win32/config.sno
+
+10/19/2020:
 	modules/stat/stat.c: swap to ifdef __CYGWIN__
 	lib/break.c: register for cleanup on first malloc
 
