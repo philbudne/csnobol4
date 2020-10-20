@@ -160,7 +160,7 @@ always:
 
 ################ modules
 
-MODULES=com dirs logic ndbm random sprintf stat time
+MODULES=base64 com dirs logic ndbm random sprintf stat time
 
 # copied from (machine generated) Unix Makefile2:
 # (hand added .c sources), removed xsnobol4, generated docs
