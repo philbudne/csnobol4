@@ -1,0 +1,285 @@
+* $Id$
+* A simple SNOBOL4 JSON package.
+* Implements an improper subset of JSON [https://tools.ietf.org/html/rfc8259]
+*	(in very unstylish code)
+* Arrays MUST have at least one element,
+*	representing a SNOBOL4 single-dimensioned zero-based ARRAY.
+*	Attempting to encode any other ARRAY will fail.
+* Boolean (true/false) and Null (null) values are forbidden.
+* Only accepts/outputs UTF-8 (transparently)
+* \uXXXX escapes can only be used for ASCII characters
+*	more would require UTF-16 decode and UTF-8 encode
+*	\U escapes would only require UTF-8 encode,
+
+* NOTE!! does not check/enforce that "upper half" (0x80 and above)
+*	are all legal UTF-8 sequences!!!
+* attempting to encode or decode arbitrary sequences of upper half
+* characters should fail!!! binary data should be base64 encoded!!!
+
+* hex to integer (HI)
+-include 'logic.sno'
+-include 'sprintf.sno'
+
+	json.nul = CHAR(0)
+	json.bs = CHAR(8)
+	json.ht = CHAR(9)
+	json.lf = CHAR(10)
+	json.ff = CHAR(12)
+	json.cr = CHAR(13)
+	json.ctrl = SUBSTR(&ALPHABET,1,32)
+	json.ws = SPAN(' ' json.ht json.lf json.cr)
+
+	DATA("json.token(json.tokval)")
+	DATA("json.cons(json.car,json.cdr)")
+
+**************** json.descape
+* de-escape backslash escaped string
+
+* for decode:
+* single character escape codes
+	json.escapes = '\"btnfr'
+* escape sequence:
+	json.eseq = '\' ANY(json.escapes)
+* match string not containing an escape sequence:
+	json.escbreak = BREAK('\"')
+
+	json.hd = ANY('0123456789abcdefABCDEF')
+	json.hexesc = '\u00' (ANY('01234567') json.hd) . x
+
+	json.q2char = TABLE()
+	json.q2char['\b'] = json.bs
+	json.q2char['\t'] = json.ht
+	json.q2char['\n'] = json.lf
+	json.q2char['\f'] = json.ff
+	json.q2char['\r'] = json.cr
+	json.q2char['\\'] = '\'
+	json.q2char['\"'] = '"'
+	FREEZE(json.q2char)
+
+	DEFINE("json.descape(in)x")			:(e.json.descape)
+* append a marker must be something that can't appear in a quoted string
+* (bare ctrl char, or an un-escaped quote)
+json.descape
++	in = in '"'
+json.descape.loop
+	IDENT(in, '"')					:S(RETURN)
+	in POS(0) json.eseq . x =			:S(json.descape.esc)
+	in POS(0) json.hexesc =				:S(json.descape.hex)
+	in POS(0) BREAK('\"') . x (ANY('\"') REM) . in	:S(json.descape.str)
+	:(freturn)
+json.descape.esc
++	x = json.q2char[x]				:(json.descape.str)
+json.descape.hex
++	x = CHAR(HI(x))
+json.descape.str
+	json.descape = json.descape x			:(json.descape.loop)
+e.json.descape
+
+**************** json.gtok ****************
+* returns simple values as SNOBOL4 values,
+* other elements returned as JSON.TOKEN('X')
+
+	json.int = ('-' | '') SPAN('123456789') (SPAN(&DIGITS) | '')
+	json.number = json.int
++		(('.' (SPAN(&DIGITS) | '')) | '')
++		((('e' | 'E') json.int) | '')
+
+	json.string = '"' ARBNO(json.escbreak |
++				json.eseq |
++				'\u00' json.hd json.hd) . json.gtok '"'
+
+	DEFINE("json.gtok()")				:(e.json.gtok)
+json.gtok
++	json.subject POS(0) json.ws =			:S(json.gtok)
+	IDENT(json.subject)				:S(FRETURN)
+	json.subject POS(0) json.number . json.gtok =	:S(json.gtok.num)
+	json.subject POS(0) ANY('[],{}:') . json.gtok =	:S(json.gtok.tok)
+	json.subject pos(0) json.string =		:F(FRETURN)
+* here with string to de-escape
+	json.gtok = json.descape(json.gtok)		:S(RETURN)F(FRETURN)
+*
+* here with number
+json.gtok.num
++	json.gtok = json.gtok + 0
++	:(RETURN)
+*
+* here with a syntax element
+json.gtok.tok
++	json.gtok = json.token(json.gtok)
+	:(RETURN)
+e.json.gtok
+**************** json.istok ****************
+* predicate: only true if tok is a JSON.TOKEN instance (not a value)
+* if val non-empty token must match
+	DEFINE("json.istok(tok,val)")			:(e.json.istok)
+json.istok
++	IDENT(datatype(tok),.json.token)		:F(FRETURN)
+	IDENT(val)					:S(RETURN)
+	IDENT(json.tokval(tok), val)			:S(RETURN)F(FRETURN)
+e.json.istok
+**************** json.value ****************
+* inner worker, parses a json.value from json.subject
+* called from json.loads, and from self
+	DEFINE("json.value()tok,n,list")		:(e.json.value)
+json.value
++	json.value = json.gtok()			:F(FRETURN)
+	json.istok(json.value)				:F(RETURN)
+* here with a json.token
+	json.istok(json.value, '[')			:S(json.array)
+	json.istok(json.value, '{')			:S(json.object)
+	:(FRETURN)
+****
+* here when '[' seen; return as array (MUST have at least one datum)
+json.array
++	list =
+	n = -1
+* loop creating LIFO list of items, keeping (zero-based) count
+json.array.loop
++	list = json.cons(json.value(),list)		:F(FRETURN)
+	n = n + 1
+	tok = json.gtok()				:F(FRETURN)
+	json.istok(tok,',')				:S(json.array.loop)
+	json.istok(tok,']')				:F(FRETURN)
+* here at end of array with reverse order list
+* create ARRAY, and fill in entries from last to first!
+	json.value = ARRAY('0:' n)
+json.array.loop2
+	json.value[n] = json.car(list)
+	list = json.cdr(list)
+	n = n - 1
+	DIFFER(list)					:S(json.array.loop2)
+	:(RETURN)
+****
+* here when '{' seen
+json.object
++	json.value = TABLE()
+json.object.loop
++	n = json.gtok()					:F(FRETURN)
+* allow empty table, trailing comma
+	json.istok(n,'}')				:S(RETURN)
+*	key must be string
+	IDENT(DATATYPE(n),'STRING')			:F(FRETURN)
+	json.istok(json.gtok(),':')			:F(FRETURN)
+	json.value[n] = json.value()			:F(FRETURN)
+*	OUTPUT = n '=>' json.value[n]
+	tok = json.gtok()				:F(FRETURN)
+	json.istok(tok)					:F(FRETURN)
+	json.istok(tok, ',')				:S(json.object.loop)
+	json.istok(tok, '}')				:F(FRETURN)
+	:(RETURN)
+e.json.value
+**************** json.loads (decoder entry point)
+* enter here with subject string in json.subject
+* (establishes context for json.value, and calls it)
+	define("json.loads(json.subject)")		:(e.json.loads)
+json.loads
++	json.loads = json.value()			:F(FRETURN)
+* any additional tokens are error:
+* XXX change to DIFFER(json.subject) ???
+	json.gtok()					:S(FRETURN)
+	:(RETURN)
+
+e.json.loads
+
+****************************************************************
+**************** encode
+
+	json.ord2q = ARRAY('0:255')
+	i = 0
+json.init.loop
+	json.ord2q[i] = SPRINTF('\u%04x', i)
+	i = i + 1
+	le(i, 31)					:S(json.init.loop)
+	json.ord2q[ORD(json.bs)] = '\b'
+	json.ord2q[ORD(json.ht)] = '\t'
+	json.ord2q[ORD(json.lf)] = '\n'
+	json.ord2q[ORD(json.ff)] = '\f'
+	json.ord2q[ORD(json.cr)] = '\r'
+	json.ord2q[ORD('\')] = '\\'
+	json.ord2q[ORD('"')] = '\"'
+
+	json.escaped = '\"' json.ctrl
+	json.brk.esc.p0 = POS(0) BREAK(json.escaped)
+	json.any.esc.p0 = POS(0) ANY(json.escaped)
+	json.any.esc.rem = ANY(json.escaped) REM
+
+* helper for json.dumps
+* encode string, escaping TAB, CR, LF, \, " and ctrl chars
+	define("json.escape(s)x")			:(e.json.escape)
+* appends a marker, could be any quoted byte
+json.escape
++	s = s json.nul
+json.escape.loop
++	IDENT(s, json.nul)				:S(json.escape.done)
+	s json.any.esc.p0 . x =				:S(json.escape.escape)
+	s json.brk.esc.p0 . x json.any.esc.rem . s	:S(json.escape.append)
+	:(FRETURN)
+json.escape.escape
+	output 'here: ' ord(x)
+	x = json.ord2q[ORD(x)]
+	IDENT(x)					:S(FRETURN)
+json.escape.append
++	json.escape = json.escape x			:(json.escape.loop)
+
+json.escape.done
++	json.escape = '"' json.escape '"'		:(RETURN)
+e.json.escape
+
+****************
+	define("json.dumps(j)d,a,i,k,v,s")		:(e.json.dumps)
+json.dumps
++	d = DATATYPE(j)
+	IDENT(d, 'STRING')				:S(json.dumps.str)
+	IDENT(d, 'INTEGER')				:S(json.dumps.num)
+	IDENT(d, 'REAL')				:S(json.dumps.num)
+	IDENT(d, 'TABLE')				:S(json.dumps.tab)
+	IDENT(d, 'ARRAY')				:S(json.dumps.arr)
+	TERMINAL = 'json.dumps: illegal datatype ' d
++	:(FRETURN)
+
+* XXX quoting!!!
+json.dumps.str
++	json.dumps = json.escape(j)			:(RETURN)
+
+json.dumps.num
++	json.dumps = CONVERT(j, 'STRING')		:(RETURN)
+
+json.dumps.tab
++	a = convert(j, 'ARRAY')				:F(json.dumps.tab.mt)
+	s = '{'
+	i = 1
+json.dumps.tab.loop
++	k = a[i,1]					:F(json.dumps.tab.done)
+	v = a[i,2]					:F(json.dumps.tab.done)
+	json.dumps = json.dumps s  json.escape(k) ':' json.dumps(v)
++		 					:F(FRETURN)
+	i = i + 1
+	s = ','						:(json.dumps.tab.loop)
+json.dumps.tab.mt
++	json.dumps = '{'
+json.dumps.tab.done
++	json.dumps = json.dumps '}'
++	:(RETURN)
+
++	
+json.dumps.arr
++	a = PROTOTYPE(j)
+	a pos(0) break(',') ','				:S(json.dumps.arr.bad)
+	a pos(0) '0:'					:F(json.dumps.arr.bad)
+	i = 0
+	s = '['
+json.dumps.arr.loop
+	a = j[i]					:F(json.dumps.arr.done)
+	json.dumps = json.dumps s json.dumps(a)		:F(FRETURN)
+	i = i + 1
+	s = ','						:(json.dumps.arr.loop)
+
+json.dumps.arr.done
++	json.dumps = json.dumps ']'
++	:(RETURN)
+
+json.dumps.arr.bad
++	TERMINAL = 'json.dumps: bad array prototype ' a
++	:(FRETURN)
+
+e.json.dumps
