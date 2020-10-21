@@ -137,14 +137,14 @@ static const char Pad64 = '=';
 
 /*
  * 'encode'
- * PLB 2020-10-20 don't write trailing NUL, renamed, replaced u_char
+ * PLB 2020-10-20 don't store terminating NUL, renamed, replaced u_char
  */
 #ifdef DEBUG
-#define FAIL do { printf("here %d\n", __LINE__); return -1; } while (0)
+#define FAIL do { printf("FAIL@%d\n", __LINE__); return -1; } while (0)
 #define DEBUGF(X) printf X
 #else
 #define FAIL return -1
-#define DEBUGF(X)
+#define DEBUGF(X) (void)0
 #endif
 
 static int
@@ -199,10 +199,13 @@ csnobol4_b64_ntop(src, srclength, target, targsize)
 			target[datalength++] = Base64[output[2]];
 		target[datalength++] = Pad64;
 	}
+#if 0 /* PLB 2020-10-20 off for CSNOBOL4 */
 	if (datalength >= targsize)
 		FAIL;
-#if 0				   /* PLB 2020-10-20 */
 	target[datalength] = '\0';	/* Returned value doesn't count \0. */
+#else
+	if (datalength > targsize)	/* YIKES! */
+		FAIL;
 #endif
 	return (datalength);
 }
@@ -380,7 +383,7 @@ lret_t
 BASE64_ENCODE( LA_ALIST ) {
     size_t slen = LA_STR_LEN(0);
     unsigned char *src = (unsigned char *)LA_STR_PTR(0);
-    size_t tsize = 4 * ((slen + 2) / 3) + 1; /* room for NUL */
+    size_t tsize = 4 * ((slen + 2) / 3) + 1; /* extra room for NUL */
     DEBUGF(("encode slen %zu tsize %zu\n", slen, tsize));
     char *target = malloc(tsize);
     ssize_t ret = csnobol4_b64_ntop(src, slen, target, tsize);
