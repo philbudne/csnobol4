@@ -34,8 +34,8 @@ I/O: Not implemented!! See B<SET()> and B<SSET()>.
 I<Standard>.
 
 =item B<BREAK(>I<charset>B<)>
-Pattern: Returns a pattern that matches the longest run of one or more
-characters NOT in string I<charset>.
+Pattern: Returns a pattern that matches successively longer runs
+(zero or more) characters NOT in string I<charset>.
 I<Standard>.
 
 =item B<BREAKX(>I<charset>B<)>
