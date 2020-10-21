@@ -1,6 +1,9 @@
 $Id$
 
-include jjson.sno as ssjson.sno???
+--without-modules breaks tests:
+	move sleep/ndbm tests to module dirs
+
+json.sno needs snopea docs
 
 shared library:
 	split INTERP call out of BEGIN?
@@ -32,9 +35,6 @@ remove io_clearerr?
 stat:	add st_gen??
 
 setjmp/longjmp for ^C on TTY read??
-
---without-modules breaks tests:
-	move sleep/ndbm tests to module dirs
 
 setuputil: generate Makefile for module?
 

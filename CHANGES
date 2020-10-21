@@ -12,11 +12,13 @@ Changes since 2.1.6 release;
 	    This will effect timing reports.
 	All output unbuffered with -U option,
 	    or SNOBOL4UNBUFFERED environment variable non-null.
+	Library files:
+	    json.sno
 	Modules:
-	    1. Fixed "stat" module.
-	       Added "btime" (birth time),available on BSDs/OSX/Cygwin.
-	    2. Added "base64" module.
-	    3. time module GETTIMEOFDAY return now has TV_NSEC member
+	    stat: fixed.
+	       added "btime" (birth time),available on BSDs/OSX/Cygwin.
+	    base64: new!
+	    time: GETTIMEOFDAY return now has TV_NSEC member
 	configure changes:
 	    --force-pml removed (must use modules)
 	    --without-modules added (breaks tests, sdb)
