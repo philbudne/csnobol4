@@ -3,6 +3,10 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/20/2020:
+	configure: deal with OSX stat st_Xtimespec
+	modules/stat/stat.c: use config.sno STAT_CFLAGS
+
+10/20/2020:
 	add snolib/json.sno
 
 10/20/2020:

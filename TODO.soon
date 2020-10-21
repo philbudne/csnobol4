@@ -2,8 +2,10 @@ $Id$
 
 --without-modules breaks tests:
 	move sleep/ndbm tests to module dirs
+	enable existing tests (via tests variable?)
 
 json.sno needs snopea docs
+	add json1.sno tests
 
 shared library:
 	split INTERP call out of BEGIN?

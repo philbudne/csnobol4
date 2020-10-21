@@ -1579,10 +1579,12 @@ fi
 
 # support for shared library: silent for now. make a configure option?
 if config/check stdio.h 'FILE *f = fmemopen("hello", 5, "r")'; then
+#   echo 'using POSIX.1-2008 fmemopen'		1>&2
     echo 'MEMIO_OBJ_C=$(SRCDIR)lib/posix/memio_obj.c' >> $CONFIG_M4
     echo 'MEMIO_OBJ=memio_obj.o'		>> $CONFIG_M4
     echo 'MEMIO_SRC=$(MEMIO_OBJ_C)'		>> $CONFIG_M4
 else
+#   echo 'using memio_obj.c'			1>&2
     echo 'MEMIO_OBJ=memio_obj.o bufio_obj.o'	>> $CONFIG_M4
     echo 'MEMIO_SRC=$(MEMIO_OBJ_C) $(BUFIO_OBJ_C)' >> $CONFIG_M4
 fi
@@ -1610,6 +1612,18 @@ if [ "x$WITHOUT_MODULES" = x ]; then
 
     TIME_CFLAGS="$TIME_CFLAGS -DHAVE_SLEEP"
     SLEEP_C=bsd/sleep.c
+
+    if config/check sys/stat.h \
+	    'struct stat st; long l = st.st_mtim.tv_nsec'; then
+	# FreeBSD 12, NetBSD 9, Cygwin, Linux
+	echo 'using stat st_mtim.tv_nsec'		1>&2
+	STAT_CFLAGS="-DHAVE_ST_MTIM_NSEC"
+    elif config/check sys/stat.h \
+	    'struct stat st; long l = st.st_mtimespec.tv_nsec'; then
+	# OSX (FreeBSD 12, NetBSD 9 have as a define)
+	echo 'using stat st_mtimespec.tv_nsec'		1>&2
+	STAT_CFLAGS="-DHAVE_ST_MTIMESPEC_NSEC"
+    fi
 
     # time-of-day code in both time and random modules!
     CLOCK_REALTIME='struct timespec ts; long x; clock_gettime(CLOCK_REALTIME, &ts); x = ts.tv_nsec'
@@ -1680,6 +1694,9 @@ if [ "x$WITHOUT_MODULES" = x ]; then
     echo 'SLEEP_C=$(SRCDIR)'$SLEEP_C			>> $CONFIG_M4
     echo "	SLEEP_C = '$SLEEP_C'"			>> $CONFIG_SNO
 
+    if [ "x$STAT_CFLAGS" != x ]; then
+	echo "	STAT_CFLAGS = '$STAT_CFLAGS'"		>> $CONFIG_SNO
+    fi
     if [ "x$TIME_CFLAGS$TR_CFLAGS" != x ]; then
 	echo "	TIME_CFLAGS = '$TIME_CFLAGS $TR_CFLAGS'"	>> $CONFIG_SNO
     fi
