@@ -58,7 +58,8 @@ static handle_handle_t tcl_objs;	/* Objects NOT per-interp!! */
 
 static void
 free_obj(void *x) {
-    Tcl_DecrRefCount(x);
+    Tcl_Obj *obj = x;
+    Tcl_DecrRefCount(obj);
 }
 
 static snohandle_t
