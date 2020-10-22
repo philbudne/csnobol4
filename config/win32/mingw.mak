@@ -175,51 +175,10 @@ MODULES += sqlite3
 MODULES_LOADABLE += modules/sqlite3/sqlite3.dll
 endif
 
-mods: $(MODULES_LOADABLE)
-
-#mods:	snobol4.exe
-#	for M in $(MODULES); do \
-#	  (cd modules/$$M; \
-#	   $(MOD_SNOBOL4) -N -I.. -I../.. -I../../snolib setup.sno build); \
-#	done
-
-# SNOBOL4 binary to use to build modules (override on cross builds!)
-MOD_SNOBOL4=../../snobol4
-
-# XXX try SNOPATH=..:......?
-RUNSETUP=$(MOD_SNOBOL4) -N -I.. -I../.. -I../../snolib setup.sno $(SETUPFLAGS)
-SETUPFLAGS=-v
-
-MODDEP=snolib/setuputil.sno $(IMPLIB)
-
-modules/com/com.dll: $(MODDEP) modules/com/setup.sno modules/com/com.cpp
-	cd modules/com; $(RUNSETUP) build
-
-modules/dirs/dirs.dll: $(MODDEP) modules/dirs/setup.sno modules/dirs/dirs.c
-	cd modules/dirs; $(RUNSETUP) build
-
-SDBM=modules/ndbm/sdbm
-NDBM_SRC=modules/ndbm/ndbm.c $(SDBM)/sdbm.c $(SDBM)/sdbm_hash.c $(SDBM)/sdbm_pair.c
-modules/ndbm/ndbm.dll: $(MODDEP) modules/ndbm/setup.sno $(NSBM_SRC)
-	cd modules/ndbm; $(RUNSETUP) build
-
-modules/logic/logic.dll: $(MODDEP) modules/logic/setup.sno modules/logic/logic.c
-	cd modules/logic; $(RUNSETUP) build
-
-modules/random/random.dll: $(MODDEP) modules/random/setup.sno modules/random/random.c
-	cd modules/random; $(RUNSETUP) build
-
-modules/sqlite3/sqlite3.dll: $(MODDEP) modules/sqlite3/setup.sno modules/sqlite3/sqlite3.c modules/sqlite3/sqlite3mod.c
-	cd modules/sqlite3; $(RUNSETUP) build
-
-modules/stat/stat.dll: $(MODDEP) modules/stat/setup.sno modules/stat/stat.c
-	cd modules/stat; $(RUNSETUP) build
-
-modules/time/time.dll: $(MODDEP) modules/time/setup.sno modules/time/time.c
-	cd modules/time; $(RUNSETUP) build
-
-modules/sprintf/sprintf.dll: $(MODDEP) modules/sprintf/setup.sno modules/sprintf/sprintf.c
-	cd modules/sprintf; $(RUNSETUP) build
+mods:	snobol4.exe
+	for M in $(MODULES); do \
+	  make -C modules/$M all 
+	done
 
 ################ DLL
 
