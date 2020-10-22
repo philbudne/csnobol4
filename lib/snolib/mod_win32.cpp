@@ -1,4 +1,3 @@
-#define DEBUG
 /*
  * $Id$
  * module destructor for Windows native DLL (MSVC and MINGW)
@@ -16,7 +15,7 @@ extern "C" {
 #include "handle.h"			/* struct module, MODULE_xxx */
 
 TLS struct module module = { MODULE_STRUCT_INIT };
-}
+} // extern "C"
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
