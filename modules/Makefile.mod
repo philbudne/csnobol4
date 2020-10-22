@@ -1,7 +1,7 @@
 all:	$(MOD).sno $(MOD).so
 
 INC=-N -I../.. -I../../snolib
-SNOBOL4=../../xsnobol4
+SNOBOL4?=../../xsnobol4
 SETUP=$(SNOBOL4) $(INC) setup.sno
 
 all: $(MOD).so $(MOD).sno
