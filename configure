@@ -1883,6 +1883,7 @@ EOF
 	    WITHOUT_COM=1
 	fi
 	rm -f $TMP $TMP.exe $TMP.cpp
+	# XXX use config/check for include file?
 	if [ "x$WITHOUT_COM" = x -a -f $INCDIR/w32api/objbase.h ]; then
 	    echo 'using Win32 COM support' 1>&2
 	    MODULES="$MODULES com"
@@ -1890,8 +1891,7 @@ EOF
 	    # -L/usr/lib/w32api needed on Windows 7 (thanks to Robert Shanley!)
 	    echo '	COM_LIBDIRS = "/usr/lib/w32api"' >> $CONFIG_SNO
 
-	    # -lstdc++ needed w/ gcc 3.3.1 cygwin 1.5.9 (0.122/4/2)
-	    echo '	COM_LIBS = "ole32,uuid,oleaut32,stdc++"' >> $CONFIG_SNO
+	    # COM_LIBS defaulted in modules/com/setup.sno
 	fi
     fi # cygwin
 fi # modules

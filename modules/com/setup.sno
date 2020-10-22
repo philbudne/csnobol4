@@ -11,15 +11,17 @@
 * long_description
 * version (get from RCS ID?)
 
+	COM_LIBS = IDENT(COM_LIBS) "ole32,uuid,oleaut32,stdc++"
+
 	HOST() ':Win'					:s(setup.win)
 
-	t['library_dirs'] = COM_LIBDIRS
-	t['libraries'] = COM_LIBS
-	:(setup.go)
+* Here for mingw, cygwin, Linux/mingw cross compiles.  But actually
+* gcc specific (would be needed for native Win32 compile with gcc?)
+	COM_LIBS = COM_LIBS ',stdc++'
 
 setup.win
-	t['libraries'] = 'ole32,uuid,oleaut32'
+	t['library_dirs'] = COM_LIBDIRS
+	t['libraries'] = COM_LIBS
 
-setup.go
 	setup(t)
 end
