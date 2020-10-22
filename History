@@ -5,9 +5,9 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 10/20/2020:
 	Makefile2 => modules/X/Makefile => modules/Makefile.mod
 	configure: output {build,clean,install,test}_modules to config.m4
-	modules/Makefile.mod: common makefile, has test target
+	modules/Makefile.mod (new): common makefile, has test target
 	modules/*/Makefile: invoke ../Makefile.mod
-	check in some modules/.../test.sno programs
+	modules/{base64,dirs,logic,ndbm,sprintf,stat}/test.sno (new)
 
 10/20/2020:
 	Add FILE_NEWER (for use by setuptil.sno)
