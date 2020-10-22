@@ -1,20 +1,24 @@
 * $Id$
 * A simple SNOBOL4 JSON package.
-* Implements an improper subset of JSON [https://tools.ietf.org/html/rfc8259]
+* Implements a proper subset of JSON [https://tools.ietf.org/html/rfc8259]
 *	(in very unstylish code)
 * Arrays MUST have at least one element,
 *	representing a SNOBOL4 single-dimensioned zero-based ARRAY.
 *	Attempting to encode any other ARRAY will fail.
 * Boolean (true/false) and Null (null) values are forbidden.
 * Only accepts/outputs UTF-8 (transparently)
-* \uXXXX escapes can only be used for ASCII characters
-*	more would require UTF-16 decode and UTF-8 encode
-*	\U escapes would only require UTF-8 encode,
+* \uXXXX escapes can only be used for ASCII (7-bit) characters
+*	more would require transcoding between UTF-8 and UTF-16
+*	(due to surrogate pairs).  Encoding each half of the
+*	surrogate pair as UTF-8 is "CESU-8", which is discouraged.
+*	\U escapes would only require UTF-8 encode.
 
-* NOTE!! does not check/enforce that "upper half" (0x80 and above)
+* NOTE!!
+* does not check/enforce that "upper half" (0x80 and above)
 *	are all legal UTF-8 sequences!!!
 * attempting to encode or decode arbitrary sequences of upper half
-* characters should fail!!! binary data should be base64 encoded!!!
+*	characters SHOULD (but does not) fail!!! Any binary data
+*	should be base64 encoded!!!
 
 * hex to integer (HI)
 -include 'logic.sno'
