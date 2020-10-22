@@ -162,22 +162,23 @@ always:
 
 ################ modules
 
-MODULES=base64 com dirs logic ndbm random sprintf stat time
+MODULES=base64 dirs logic ndbm random sprintf stat time
 
 # copied from (machine generated) Unix Makefile2:
 # (hand added .c sources), removed xsnobol4, generated docs
 
-MODULES_LOADABLE= modules/dirs/dirs.dll modules/logic/logic.dll modules/random/random.dll modules/stat/stat.dll modules/time/time.dll modules/sprintf/sprintf.dll modules/ndbm/ndbm.dll 
-
 # requires amalgamation sqlite3.[ch] in modules/sqlite3:
 ifneq (,$(wildcard modules/sqlite3/sqlite3.[ch]))
 MODULES += sqlite3
-MODULES_LOADABLE += modules/sqlite3/sqlite3.dll
+endif
+
+ifneq ($(shell uname),Linux)
+MODULES += com
 endif
 
 mods:	snobol4.exe
 	for M in $(MODULES); do \
-	  make -C modules/$M all 
+	  make -C modules/$$M all; \
 	done
 
 ################ DLL
@@ -186,7 +187,6 @@ DLLDIR=dllobj
 DLLNAME=snobol4.dll
 DLLLIB=snobol4.lib
 
-# NOTE -DDLL not defined!! That's for loadable modules!!
 dll $(DLLDIR)/$(DLLNAME) $(DLLDIR)/$(DLLLIB): always
 	-test -d $(DLLDIR) || mkdir $(DLLDIR)
 	$(MAKE) -C $(DLLDIR) -f ../$(MAKEFILE) \
