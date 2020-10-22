@@ -335,9 +335,10 @@ timing.out: tested xsnobol4 timing timing.sno test/bench.sno test/v311.sil
 	@echo 'And you will be notified when test versions are available.' 1>&2
 	@echo '********************************************************' 1>&2
 
-tested snobol4: xsnobol4 test/tests.in cpuid $(MODULES_GENERATED)
+tested snobol4: xsnobol4 test/tests.in cpuid
 	@echo Running regression tests...
 	(cd test; BLOCKS=$(BLOCKS) SNOPATH="$(TEST_SNOPATH)" ./run.sh ../xsnobol4 -N)
+	$(MAKE) -f Makefile2 test_modules
 	@echo Passed regression tests.
 	-rm -f snobol4$(EXT)
 	cp xsnobol4$(EXT) snobol4$(EXT)
