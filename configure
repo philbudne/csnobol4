@@ -2023,6 +2023,16 @@ for M in $MODULES; do
     echo "	\$(MAKE) -C modules/$M all"	>> $CONFIG_M4
 done
 echo ''						>> $CONFIG_M4
+echo 'install_modules:'				>> $CONFIG_M4
+for M in $MODULES; do
+    echo "	\$(MAKE) -C modules/$M install"	>> $CONFIG_M4
+done
+echo ''						>> $CONFIG_M4
+echo 'test_modules:'				>> $CONFIG_M4
+for M in $MODULES; do
+    echo "	\$(MAKE) -C modules/$M test"	>> $CONFIG_M4
+done
+echo ''						>> $CONFIG_M4
 
 if [ -f local-config ]; then
     echo 'using local-config' 1>&2
