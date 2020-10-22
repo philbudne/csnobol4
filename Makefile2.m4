@@ -249,9 +249,8 @@ GENERATED_DOCS=	$(GENERATED_DOCS_DOCDIR)
 
 .PRECIOUS: $(SNOBOL4).o data_init.o snobol4
 
-BUILD_ALL=sdb snobol4 snopea docs
+BUILD_ALL=sdb snobol4 build_modules snopea docs
 build_all: $(BUILD_ALL)
-
 
 xsnobol4: $(OBJS)
 	rm -f xsnobol4$(EXT)
@@ -707,7 +706,7 @@ GENSNOLIB=host.sno config.sno
 
 SNOLIB_FILES=snolib/*.sno $(GENSNOLIB) $(MODULES_INCLUDE)
 
-install: snobol4 sdb timing.out $(GENERATED_DOCS)
+install: snobol4 sdb timing.out $(GENERATED_DOCS) build_modules
 	$(INSTALL) -d $(BINDIR)
 	$(INSTALL) $(INSTALL_BIN_FLAGS) snobol4 $(BINDIR)/snobol4-$(VERS)
 	$(INSTALL) sdb $(BINDIR)/sdb-$(VERS)
@@ -742,9 +741,7 @@ install: snobol4 sdb timing.out $(GENERATED_DOCS)
 	for F in $(SNOLIB_FILES); do \
 		$(INSTALL) -m 644 $$F $(SNOLIB_LIB); \
 	done
-	for M in $(MODULES); do \
-		(cd modules/$$M; $(RUNSETUP) install); \
-	done
+	$(MAKE) -f Makefile2 install_modules
 	$(INSTALL) -d $(INCLUDE_DIR)
 	for F in $(INSTALL_H); do \
 		$(INSTALL) -m 644 $$F $(INCLUDE_DIR); \
