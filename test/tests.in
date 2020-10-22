@@ -115,7 +115,7 @@ dump diag1.sno
 dump diag2.sno
 reg unsc.sno
 # 11/16/2005
-reg ndbm.sno
+#reg ndbm.sno
 # 8/29/2009
 reg collect2.sno
 # 12/16/2010
@@ -127,7 +127,7 @@ reg setexit2.sno
 # 12/29/2011
 reg setexit3.sno
 # 1/4/2012
-reg sleep.sno
+#reg sleep.sno
 # 1/10/2012
 reg random.sno
 # 2/3/2012

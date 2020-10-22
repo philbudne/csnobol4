@@ -3,6 +3,10 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/20/2020:
+	turn off tests/sleep.sno tests/ndbm.sno
+	modules/time/time.sno: copy of sleep.sno
+
+10/20/2020:
 	Makefile2 => modules/X/Makefile => modules/Makefile.mod
 	configure: output {build,clean,install,test}_modules to config.m4
 	modules/Makefile.mod (new): common makefile, has test target
