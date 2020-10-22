@@ -72,13 +72,9 @@ HOST_CFLAGS=$(CFLAGS) -DCC=\"$(TCC)\" -DCOPT=\"$(OPT)\" -DSO_LD=\"$(TCC)\" -DDL_
 # target C compiler (overridden on command line for cross-compiles)
 TCC=$(CC)
 
-# snobol4 binary to use to build modules
-# set in environment in cross-compiles
-SNOBOL4?=../../snobol4
-
 # maybe less confusing if this was snobol4imp?
 # but snobol4.lib is the default output w/ MSVC
-# -lsnobol4 built into setuputil.sno XXX should honor a config.sno setting
+# NOTE -lsnobol4 built into setuputil.sno XXX should honor a config.sno setting
 IMPLIB=snobol4.lib
 LDFLAGS=-Wl,--out-implib,$(IMPLIB)
 
