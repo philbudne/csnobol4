@@ -1,8 +1,6 @@
 $Id$
 
---without-modules breaks tests:
-	move sleep/ndbm tests to module dirs
-	enable existing tests (via tests variable?)
+check module test results!!
 
 json.sno needs snopea docs
 	add json1.sno tests
@@ -23,7 +21,7 @@ shared library:
 FFI:
 	use loadx code for function lookup (ref counting)
 
-snobol4func: added in CSNOBOL version ??
+snobol4func: add "added in CSNOBOL version ..."
 	EXIT (others??)
 
 Use HAVE_PATHS_H/<paths.h>, path.h in generic/execute.c, bsd/popen.c??
