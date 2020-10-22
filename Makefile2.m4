@@ -76,6 +76,7 @@ LEXCMP_C=$(SRCDIR)lib/lexcmp.c
 LOAD_C=$(SRCDIR)lib/bsd/load.c
 LOADX_C=$(SRCDIR)lib/loadx.c
 MSTIME_C=$(SRCDIR)lib/bsd/mstime.c
+NEWER_C=$(SRCDIR)lib/generic/newer.c
 ORDVST_C=$(SRCDIR)lib/ordvst.c
 PAIR_C=$(SRCDIR)lib/pair.c
 PAT_C=$(SRCDIR)lib/pat.c
@@ -196,7 +197,7 @@ OBJS=	main.o $(SNOBOL4).o data.o data_init.o syn.o bal.o \
 	break.o date.o dump.o dynamic.o endex.o expops.o \
 	fisatty.o hash.o getstring.o handle.o $(INET_O) \
 	init.o intspc.o io.o lexcmp.o load.o loadx.o \
-	mstime.o ordvst.o pair.o pat.o pml.o ptyio_obj.o \
+	mstime.o newer.o ordvst.o pair.o pat.o pml.o ptyio_obj.o \
 	realst.o replace.o retstring.o spcint.o spreal.o \
 	stdio_obj.o str.o stream.o suspend.o term.o top.o \
 	tree.o tty.o \
@@ -214,7 +215,7 @@ SRCS=	$(SRCDIR)main.c $(SRCDIR)$(SNOBOL4).c $(SRCDIR)data.c \
 	$(ENDEX_C) $(EXPOPS_C) $(FISATTY_C) $(GETSTRING_C) \
 	$(HANDLE_C) $(HASH_C) $(INET_C) $(INIT_C) \
 	$(INTSPC_C) $(IO_C) $(LEXCMP_C) $(LOAD_C) \
-	$(MSTIME_C) $(ORDVST_C) $(PAIR_C) $(PAT_C) $(PML_C) \
+	$(MSTIME_C) $(NEWER_C) $(ORDVST_C) $(PAIR_C) $(PAT_C) $(PML_C) \
 	$(PTYIO_OBJ_C) $(REALST_C) $(REPLACE_C) \
 	$(RETSTRING_C) $(SPCINT_C) $(SPREAL_C) \
 	$(STDIO_OBJ_C) $(STR_C) $(STREAM_C) $(SUSPEND_C) \
@@ -444,6 +445,9 @@ loadx.o: $(LOADX_C)
 
 mstime.o: $(MSTIME_C)
 	$(CC) $(CFLAGS) -c $(MSTIME_C)
+
+newer.o: $(NEWER_C)
+	$(CC) $(CFLAGS) -c $(NEWER_C)
 
 ordvst.o: $(ORDVST_C)
 	$(CC) $(CFLAGS) -c $(ORDVST_C)

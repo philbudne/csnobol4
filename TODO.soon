@@ -38,8 +38,6 @@ stat:	add st_gen??
 
 setjmp/longjmp for ^C on TTY read??
 
-setuputil: generate Makefile for module?
-
 genc:
     Turn SELBRA & STREAM with single label into if
 
@@ -50,20 +48,19 @@ Modernize:
     convert rest of library routines
     Replace bcopy, bzero
 
-Add 1969(!) factor.sno to tests
-	other tests from DEC-10 and VAX SNOBOL?
+other tests from DEC-10 and VAX SNOBOL?
 	arbitrary precision lib??
 
 Better Windows default directory??  ask on list???
 
-Remove "time" check from timing.sno???
-
 snobol4.1, snobol4ext man pages: include CSNOBOL4 versions for changes
 
-Add SITBOL &ERRPARM variable for error info (undefined label or function)?
+Add SITBOL &ERRPARM variable for error info
+	undefined label
+	undefined function
+	failed include
 
-***** show failed include statement
-      like a syntax error?!!!
+make failed include a syntax error
       Show filename for failed include???
 
 Add snobol4load man page (replace load.txt)??
@@ -72,6 +69,7 @@ Add snobol4load man page (replace load.txt)??
 snobol4.1, snobol4ext man pages: include CSNOBOL4 versions for changes
 
 setuputils: extract SNOBOL4 code from module.c?
+	can swear I've seen this Perl C code, using =cut for the ending
 
 handle more fatal errors (return from level zero?)
 

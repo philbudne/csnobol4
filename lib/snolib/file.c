@@ -34,7 +34,7 @@ FILE2( LA_ALIST ) {			/* avoid stdio name collision */
     RETPRED(succ);
 }
 
-int
+pmlret_t
 FILE_ISDIR( LA_ALIST ) {
     char *path = mgetstring(LA_PTR(0));
     int succ = isdir(path);
@@ -42,10 +42,21 @@ FILE_ISDIR( LA_ALIST ) {
     RETPRED(succ);
 }
 
-int
+pmlret_t
 FILE_ABSPATH( LA_ALIST ) {
     char *path = mgetstring(LA_PTR(0));
     int succ = abspath(path);
     free(path);
     RETPRED(succ);
+}
+
+/* 2020-10-21 for setuputil.sno (before stat module available!) */
+pmlret_t
+FILE_NEWER( LA_ALIST ) {
+    char *p1 = mgetstring(LA_PTR(0));
+    char *p2 = mgetstring(LA_PTR(1));
+    int ret = newer(p1, p2);
+    free(p1);
+    free(p2);
+    RETINT(ret);
 }

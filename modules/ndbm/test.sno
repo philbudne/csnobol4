@@ -1,0 +1,98 @@
+* Phil Budne
+* Test program for ndbm/SNOBOL interface (13 September 2004)
+*
+* NDBM function calls:
+*
+* DBM_OPEN(STRING,STRING,INTEGER)
+*   DBM_OPEN(filename,flags,permissions)
+*     R for read
+*     W for write (fail if non-existant)
+*     CW for create+write
+*     NOTE!! NDBM is NOT spec'ed to allow concurrent read/write!!!
+* DBM_CLOSE(INTEGER)
+*   DBM_CLOSE(filepointer)
+* DBM_STORE(INTEGER,STRING,STRING,INTEGER)
+*   DBM_STORE(filepointer,key,value,0=insert|1=replace)
+* DBM_FETCH(INTEGER,STRING)
+*   DBM_FETCH(filepointer,key)
+* DBM_FIRSTKEY(INTEGER)
+*   DBM_FIRSTKEY(filepointer)
+* DBM_NEXTKEY(INTEGER)
+*   DBM_NEXTKEY(filepointer)
+* DBM_DELETE(filepointer,key)
+* 
+
+-INCLUDE 'ndbm.sno'
+
+* store a key/datum pair, remember in table
+	DEFINE("STORE(F,KEY,DATUM,T)")			:(ESTORE)
+STORE	DBM_STORE(F,KEY,DATUM)				:F(FRETURN)
+	T[KEY] = DATUM					:(RETURN)
+ESTORE
+
+* walk and count key/datum pairs
+	DEFINE("WALKDB(F,T)")				:(EWALKDB)
+WALKDB	WALKDB = 0
+	KEY = DBM_FIRSTKEY(F)				:F(RETURN)
+LOOP	DATUM = DBM_FETCH(F, KEY)			:F(RETURN)
+	WALKDB = WALKDB + 1
+	OUTPUT = DIFFER(T[KEY], DATUM) KEY " -> " DATUM
+	KEY = DBM_NEXTKEY(F)				:S(LOOP)F(RETURN)
+EWALKDB
+
+* cleanup data files
+	DEFINE("CLEANUP()")				:(ECLEANUP)
+CLEANUP	DELETE("foo.db")
+	DELETE("foo.dir")
+	DELETE("foo.pag")				:(RETURN)
+ECLEANUP
+
+****************
+* test if DBM functions available.....
+	FUNCTION("DBM_OPEN")				:F(END)
+
+****************
+* remove existing files
+
+	CLEANUP()
+
+****************
+* create database, remember values
+
+	F = DBM_OPEN("foo", "CW")			:F(FAIL)
+	TT = TABLE()
+
+	OUTPUT = "HERE"
+	STORE(F, "this", "that", TT)
+	STORE(F, "a longer key", "a longer datum", TT)
+* show binary data (include embeded nul?!)
+	STORE(F, CHAR(1), CHAR(7) CHAR(0) CHAR(7), TT)
+	DBM_CLOSE(F)
+
+****************
+* reopen
+
+* walk, output count
+	F = DBM_OPEN("foo", "CW")			:F(FAIL)
+	OUTPUT = "WALK1"
+	OUTPUT = WALKDB(F,TT)
+
+* remove a key (wish we could remove table element!)
+	DBM_DELETE(F,"this")
+* close
+	DBM_CLOSE(F)
+
+****************
+* reopen, read only
+
+* walk, output count
+	F = DBM_OPEN("foo", "CW")			:F(FAIL)
+	OUTPUT = "WALK2"
+	OUTPUT = WALKDB(F,TT)
+        DBM_CLOSE(F)
+
+	CLEANUP()					:(END)
+
+FAIL	OUTPUT = "FAILED"
+
+END

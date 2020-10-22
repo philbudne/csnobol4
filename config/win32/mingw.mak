@@ -82,11 +82,12 @@ SRC=	$(BUFIO_OBJ_C) $(INET_AUX_SRC) $(INET_C) $(PTYIO_OBJ_C) \
 	$(SRCDIR)data.c $(SRCDIR)data_init.c \
 	$(SRCDIR)lib/ansi/spcint.c $(SRCDIR)lib/ansi/spreal.c \
 	$(SRCDIR)lib/auxil/getline.c $(SRCDIR)lib/auxil/getopt.c \
-	$(SRCDIR)lib/bal.c $(SRCDIR)lib/break.c $(SRCDIR)lib/date.c \
-	$(SRCDIR)lib/win32/execute.c $(SRCDIR)lib/dump.c \
+	$(SRCDIR)lib/bal.c $(SRCDIR)lib/break.c \
+	$(SRCDIR)lib/date.c $(SRCDIR)lib/dump.c \
 	$(SRCDIR)lib/endex.c $(SRCDIR)lib/generic/dynamic.c \
 	$(SRCDIR)lib/generic/expops.c $(SRCDIR)lib/generic/intspc.c \
-	$(SRCDIR)lib/hash.c $(SRCDIR)lib/init.c $(SRCDIR)lib/io.c \
+	$(SRCDIR)lib/generic/newer.c $(SRCDIR)lib/hash.c \
+	$(SRCDIR)lib/init.c $(SRCDIR)lib/io.c \
 	$(SRCDIR)lib/lexcmp.c $(SRCDIR)lib/loadx.c \
 	$(SRCDIR)lib/ordvst.c $(SRCDIR)lib/pair.c $(SRCDIR)lib/pat.c \
 	$(SRCDIR)lib/pml.c $(SRCDIR)lib/realst.c \
@@ -102,7 +103,8 @@ SRC=	$(BUFIO_OBJ_C) $(INET_AUX_SRC) $(INET_C) $(PTYIO_OBJ_C) \
 	$(SRCDIR)lib/snolib/sqrt.c $(SRCDIR)lib/snolib/sset.c \
 	$(SRCDIR)lib/snolib/tan.c $(SRCDIR)lib/stdio_obj.c \
 	$(SRCDIR)lib/str.c $(SRCDIR)lib/stream.c $(SRCDIR)lib/top.c \
-	$(SRCDIR)lib/tree.c $(SRCDIR)lib/win32/exists.c \
+	$(SRCDIR)lib/tree.c $(SRCDIR)lib/win32/execute.c \
+	$(SRCDIR)lib/win32/exists.c \
 	$(SRCDIR)lib/win32/load.c $(SRCDIR)lib/win32/mstime.c \
 	$(SRCDIR)lib/win32/osopen.c $(SRCDIR)lib/win32/sys.c \
 	$(SRCDIR)lib/win32/term.c $(SRCDIR)lib/win32/tty.c \

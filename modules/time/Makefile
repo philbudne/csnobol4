@@ -1,16 +1,5 @@
 MOD=time
 
-all:	$(MOD).sno $(MOD).so
-
-INC=-I..
-SNOBOL4=../../snobol4
-SETUP=$(SNOBOL4) $(INC) setup.sno
-
-$(MOD).sno $(MOD).so: setup.sno
-	$(SETUP) build
-
-install:
-	$(SETUP) install
-
-clean:
-	$(SETUP) clean
+# XXX doesn't express sys/sleep.c dependency
+all install clean test:
+	$(MAKE) -f ../Makefile.mod $@ MOD=$(MOD) SRC="time.c funcs.sno"

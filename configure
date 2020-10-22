@@ -2006,34 +2006,22 @@ BUILD_INC=
 TEST_SNOPATH=..
 echo 'RUNSETUP=SNOLIB=$(SNOLIB) SNOPATH=../..:../../snolib ../../xsnobol4 -N setup.sno' >> $CONFIG_M4
 for M in $MODULES; do
-    DL="modules/$M/$M$DL_EXT"
-    INC="modules/$M/$M.sno"
-    MAN="modules/$M/snobol4$M.3"
-    HTML="modules/$M/snobol4$M.3.html"
-    BUILD_DL="$BUILD_DL $DL"
-    BUILD_INC="$BUILD_INC $INC"
-    BUILD_MAN="$BUILD_MAN $MAN"
-    BUILD_HTML="$BUILD_HTML $HTML"
     TEST_SNOPATH="$TEST_SNOPATH:../modules/$M"
-    echo ''					>> $CONFIG_M4
-    echo "$DL $INC $MAN $HTML: xsnobol4 snolib/setuputil.sno modules/$M/setup.sno" >> $CONFIG_M4
-    echo "	cd modules/$M; \$(RUNSETUP) build" >> $CONFIG_M4
 done
 TEST_SNOPATH="$TEST_SNOPATH:../snolib:."
 echo ''						>> $CONFIG_M4
 echo "MODULES=$MODULES"				>> $CONFIG_M4
-echo "MODULES_LOADABLE=$BUILD_DL"		>> $CONFIG_M4
-echo "MODULES_INCLUDE=$BUILD_INC"		>> $CONFIG_M4
-echo "MODULES_MAN=$BUILD_MAN"			>> $CONFIG_M4
-echo "MODULES_HTML=$BUILD_HTML"			>> $CONFIG_M4
-# omitting  $(MODULES_MAN) $(MODULES_HTML) until all modules contain pea/POD docs
-echo 'MODULES_GENERATED=$(MODULES_LOADABLE) $(MODULES_INCLUDE)' >> $CONFIG_M4
 echo "TEST_SNOPATH=$TEST_SNOPATH"		>> $CONFIG_M4
 echo ''						>> $CONFIG_M4
 echo 'clean_modules:'				>> $CONFIG_M4
-echo '	rm -f $(MODULES_GENERATED)'		>> $CONFIG_M4
+for M in $MODULES; do
+    echo "	\$(MAKE) -C modules/$M clean"	>> $CONFIG_M4
+done
 echo ''						>> $CONFIG_M4
-echo 'build_modules: $(MODULES_GENERATED)'	>> $CONFIG_M4
+echo 'build_modules: xsnobol4'			>> $CONFIG_M4
+for M in $MODULES; do
+    echo "	\$(MAKE) -C modules/$M all"	>> $CONFIG_M4
+done
 echo ''						>> $CONFIG_M4
 
 if [ -f local-config ]; then

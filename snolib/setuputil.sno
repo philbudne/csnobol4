@@ -204,7 +204,8 @@ smi.nopre
 
 ***** loop for each C source file
 * look at each source line for LOAD(....) prototypes, POD docs
-
+* XXX maybe copy arbitrary code between two snopea markers
+*	got the idea from Perl, which reused =cut for the end marker!
 	files = t['sources'] setup.c
 	lines = 0
 smi.floop

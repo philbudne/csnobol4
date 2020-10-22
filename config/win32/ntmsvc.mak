@@ -85,7 +85,7 @@ OBJ=	$(BUFIO_OBJ) $(INET_OBJ) $(INET_OBJS) $(MEMIO_OBJ) \
 	findunit.obj getline.obj getopt.obj getstring.obj \
 	handle.obj hash.obj host.obj init.obj intspc.obj \
 	io.obj isnobol4.obj lexcmp.obj load.obj loadx.obj \
-	log.obj main.obj mstime.obj ord.obj ordvst.obj \
+	log.obj main.obj mstime.obj newer.obj ord.obj ordvst.obj \
 	osopen.obj pair.obj pat.obj pml.obj ptyio_obj.obj \
 	realst.obj rename.obj replace.obj retstring.obj \
 	sin.obj spcint.obj spreal.obj sqrt.obj sset.obj \
@@ -254,6 +254,9 @@ expops.obj : $(SRCDIR)lib\generic\expops.c
 
 intspc.obj : $(SRCDIR)lib\generic\intspc.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\generic\intspc.c
+
+newer.obj : $(SRCDIR)lib\generic\newer.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\generic\newer.c
 
 ################ auxil
 

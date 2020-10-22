@@ -3,6 +3,16 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/20/2020:
+	Add FILE_NEWER (for use by setuptil.sno)
+	pml.h: add FILE_NEWER
+	include/lib.h: newer
+	Makefile2.m4: newer.o
+	config/win32/{mingw,ntmsvc}.mak: newer.o(bj)
+	config/djgpp/Makefile: newer.o
+	lib/generic/newer.c (new): newer function
+	lib/snolib/file.c: FILE_NEWER function
+
+10/20/2020:
 	configure: deal with OSX stat st_Xtimespec
 	modules/stat/stat.c: use config.sno STAT_CFLAGS
 

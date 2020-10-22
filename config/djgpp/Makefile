@@ -55,7 +55,7 @@ OBJ=	isnobol4.o data.o data_init.o main.o syn.o \
 	intspc.o io.o lexcmp.o loadx.o ordvst.o pair.o pat.o \
 	pml.o realst.o replace.o stdio_obj.o str.o stream.o top.o \
 	tree.o bcopy.o bzero.o dynamic.o expops.o getline.o getopt.o \
-	init.o load.o mstime.o chop.o cos.o delete.o \
+	init.o load.o mstime.o newer.o chop.o cos.o delete.o \
 	exit.o exp.o file.o getstring.o handle.o \
 	host.o log.o ord.o ptyio_obj.o rename.o retstring.o sin.o \
 	spcint.o spreal.o sqrt.o sset.o \
@@ -191,6 +191,9 @@ expops.o: $(SRCDIR)lib/generic/expops.c
 
 intspc.o: $(SRCDIR)lib/generic/intspc.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/generic/intspc.c
+
+newer.o: $(SRCDIR)lib/generic/newer.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/generic/newer.c
 
 ################ posix!
 
