@@ -69,8 +69,12 @@ CFLAGS=-c $(OPT) -I$(SRCDIR)config/win32 -I$(SRCDIR)include -I$(SRCDIR). \
 SNOBOL4_CFLAGS=$(CFLAGS) -Wno-return-type -Wno-switch
 HOST_CFLAGS=$(CFLAGS) -DCC=\"$(TCC)\" -DCOPT=\"$(OPT)\" -DSO_LD=\"$(TCC)\" -DDL_LD=\"$(TCC)\"
 
-# target C compiler (overridden for cross-compiles)
+# target C compiler (overridden on command line for cross-compiles)
 TCC=$(CC)
+
+# snobol4 binary to use to build modules
+# set in environment in cross-compiles
+SNOBOL4?=../../snobol4
 
 # maybe less confusing if this was snobol4imp?
 # but snobol4.lib is the default output w/ MSVC
@@ -207,8 +211,7 @@ tlib.exe: tlib.c $(DLLDIR)/$(DLLLIB)
 
 mod_clean:
 	for M in $(MODULES); do \
-	  (cd modules/$$M; \
-	   $(MOD_SNOBOL4) -N -I.. -I../.. -I../../snolib setup.sno clean); \
+	  make -C modules/$$M clean; \
 	done
 
 clean:	mod_clean
