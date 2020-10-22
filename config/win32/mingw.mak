@@ -162,7 +162,7 @@ always:
 
 ################ modules
 
-MODULES=base64 dirs logic ndbm random sprintf stat time
+MODULES=base64 com dirs logic ndbm random sprintf stat time
 
 # copied from (machine generated) Unix Makefile2:
 # (hand added .c sources), removed xsnobol4, generated docs
@@ -170,10 +170,6 @@ MODULES=base64 dirs logic ndbm random sprintf stat time
 # requires amalgamation sqlite3.[ch] in modules/sqlite3:
 ifneq (,$(wildcard modules/sqlite3/sqlite3.[ch]))
 MODULES += sqlite3
-endif
-
-ifneq ($(shell uname),Linux)
-MODULES += com
 endif
 
 mods:	snobol4.exe
