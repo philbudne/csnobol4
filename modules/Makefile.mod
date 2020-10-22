@@ -1,19 +1,25 @@
-all:	$(MOD).sno $(MOD).so
+# $Id$
+# invoked from module/X/Makefiles as ../Makefile.mod
+
+# may be overriden on command line
+SRC=$(MOD).c
+
+# binary output extension may differ (so, dylib, dll)
+OUT=$(MOD).sno
+
+all:	$(OUT)
 
 INC=-N -I../.. -I../../snolib
 SNOBOL4?=../../xsnobol4
 SETUP=$(SNOBOL4) $(INC) setup.sno
 
-all: $(MOD).so $(MOD).sno
-
-SRC=$(MOD).c
-$(MOD).sno $(MOD).so: setup.sno $(SRC) ../../snolib/setuputil.sno
+$(OUT): setup.sno $(SRC) ../../snolib/setuputil.sno
 	$(SETUP) build
 
-test: $(MOD).sno $(MOD).so
+test:	$(OUT)
 	if [ -f test.sno ]; then $(SNOBOL4) $(INC) -I. test.sno; else true; fi
 
-install: $(MOD).sno $(MOD).so
+install: $(OUT)
 	$(SETUP) install
 
 clean:
