@@ -3,6 +3,9 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/22/2020:
+	modules/base64/base64.c: remove debug
+
+10/22/2020:
 	modules/Makefile.mod: remove .so output/dependency
 		(wrong when dynamic library isn't a .so file)
 

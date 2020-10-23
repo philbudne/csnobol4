@@ -1,5 +1,5 @@
 /*
- * http://cvsweb.openbsd.org/cgi-bin/cvsweb/~checkout~/src/lib/libc/net/base64.c?rev=1.7&content-type=text/plain
+ * http://cvsweb.openbsd.org/cgi-bin/cvsweb/~checkout~/src/lib/libc/net/base64.c?rev=1.7
  * Downloaded 2020-10-20
  */
 
@@ -137,15 +137,8 @@ static const char Pad64 = '=';
 
 /*
  * 'encode'
- * PLB 2020-10-20 don't store terminating NUL, renamed, replaced u_char
+ * PLB 2020-10-20 renamed, replaced u_char
  */
-#ifdef DEBUG
-#define FAIL do { printf("FAIL@%d\n", __LINE__); return -1; } while (0)
-#define DEBUGF(X) printf X
-#else
-#define FAIL return -1
-#define DEBUGF(X) (void)0
-#endif
 
 static int
 csnobol4_b64_ntop(src, srclength, target, targsize)
@@ -171,7 +164,7 @@ csnobol4_b64_ntop(src, srclength, target, targsize)
 		output[3] = input[2] & 0x3f;
 
 		if (datalength + 4 > targsize)
-			FAIL;
+			return (-1);
 		target[datalength++] = Base64[output[0]];
 		target[datalength++] = Base64[output[1]];
 		target[datalength++] = Base64[output[2]];
@@ -190,7 +183,7 @@ csnobol4_b64_ntop(src, srclength, target, targsize)
 		output[2] = ((input[1] & 0x0f) << 2) + (input[2] >> 6);
 
 		if (datalength + 4 > targsize)
-			FAIL;
+			return (-1);
 		target[datalength++] = Base64[output[0]];
 		target[datalength++] = Base64[output[1]];
 		if (srclength == 1)
@@ -199,14 +192,9 @@ csnobol4_b64_ntop(src, srclength, target, targsize)
 			target[datalength++] = Base64[output[2]];
 		target[datalength++] = Pad64;
 	}
-#if 0 /* PLB 2020-10-20 off for CSNOBOL4 */
 	if (datalength >= targsize)
-		FAIL;
+		return (-1);
 	target[datalength] = '\0';	/* Returned value doesn't count \0. */
-#else
-	if (datalength > targsize)	/* YIKES! */
-		FAIL;
-#endif
 	return (datalength);
 }
 
@@ -242,13 +230,13 @@ csnobol4_b64_pton(src, srcsize, target, targsize)
 
 		pos = strchr(Base64, ch);
 		if (pos == 0) 		/* A non-base64 character. */
-			FAIL;
+			return (-1);
 
 		switch (state) {
 		case 0:
 			if (target) {
 				if (tarindex >= targsize)
-					FAIL;
+					return (-1);
 				target[tarindex] = (pos - Base64) << 2;
 			}
 			state = 1;
@@ -256,13 +244,13 @@ csnobol4_b64_pton(src, srcsize, target, targsize)
 		case 1:
 			if (target) {
 				if (tarindex >= targsize)
-					FAIL;
+					return (-1);
 				target[tarindex]   |=  (pos - Base64) >> 4;
 				nextbyte = ((pos - Base64) & 0x0f) << 4;
 				if (tarindex + 1 < targsize)
 					target[tarindex+1] = nextbyte;
 				else if (nextbyte)
-					FAIL;
+					return (-1);
 			}
 			tarindex++;
 			state = 2;
@@ -270,13 +258,13 @@ csnobol4_b64_pton(src, srcsize, target, targsize)
 		case 2:
 			if (target) {
 				if (tarindex >= targsize)
-					FAIL;
+					return (-1);
 				target[tarindex]   |=  (pos - Base64) >> 2;
 				nextbyte = ((pos - Base64) & 0x03) << 6;
 				if (tarindex + 1 < targsize)
 					target[tarindex+1] = nextbyte;
 				else if (nextbyte)
-					FAIL;
+					return (-1);
 			}
 			tarindex++;
 			state = 3;
@@ -284,7 +272,7 @@ csnobol4_b64_pton(src, srcsize, target, targsize)
 		case 3:
 			if (target) {
 				if (tarindex >= targsize)
-					FAIL;
+					return (-1);
 				target[tarindex] |= (pos - Base64);
 			}
 			tarindex++;
@@ -303,7 +291,7 @@ csnobol4_b64_pton(src, srcsize, target, targsize)
 		switch (state) {
 		case 0:		/* Invalid = in first position */
 		case 1:		/* Invalid = in second position */
-			FAIL;
+			return (-1);
 
 		case 2:		/* Valid, means one byte of info */
 			/* Skip any number of spaces. */
@@ -312,7 +300,7 @@ csnobol4_b64_pton(src, srcsize, target, targsize)
 					break;
 			/* Make sure there is another trailing = sign. */
 			if (ch != Pad64)
-				FAIL;
+				return (-1);
 			ch = (unsigned char)*src++;		/* Skip the = */
 			/* Fall through to "single trailing =" case. */
 			/* FALLTHROUGH */
@@ -324,7 +312,7 @@ csnobol4_b64_pton(src, srcsize, target, targsize)
 			 */
 			for (; ch != '\0'; ch = (unsigned char)*src++)
 				if (!isspace(ch))
-					FAIL;
+					return (-1);
 
 			/*
 			 * Now make sure for cases 2 and 3 that the "extra"
@@ -334,7 +322,7 @@ csnobol4_b64_pton(src, srcsize, target, targsize)
 			 */
 			if (target && tarindex < targsize &&
 			    target[tarindex] != 0)
-				FAIL;
+				return (-1);
 		}
 	} else {
 		/*
@@ -342,7 +330,7 @@ csnobol4_b64_pton(src, srcsize, target, targsize)
 		 * have no partial bytes lying around.
 		 */
 		if (state != 0)
-			FAIL;
+			return (-1);
 	}
 
 	return (tarindex);
@@ -366,7 +354,6 @@ BASE64_DECODE( LA_ALIST ) {
     size_t slen = LA_STR_LEN(0);
     char *src = LA_STR_PTR(0);
     size_t tsize = ((slen + 3) / 4) * 3;
-    DEBUGF(("encode slen %zu tsize %zu\n", slen, tsize));
     unsigned char *target = malloc(tsize);
     ssize_t ret = csnobol4_b64_pton(src, slen, target, tsize);
     if (ret < 0)
@@ -384,7 +371,6 @@ BASE64_ENCODE( LA_ALIST ) {
     size_t slen = LA_STR_LEN(0);
     unsigned char *src = (unsigned char *)LA_STR_PTR(0);
     size_t tsize = 4 * ((slen + 2) / 3) + 1; /* extra room for NUL */
-    DEBUGF(("encode slen %zu tsize %zu\n", slen, tsize));
     char *target = malloc(tsize);
     ssize_t ret = csnobol4_b64_ntop(src, slen, target, tsize);
     if (ret < 0)
