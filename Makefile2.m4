@@ -249,7 +249,7 @@ GENERATED_DOCS=	$(GENERATED_DOCS_DOCDIR)
 
 .PRECIOUS: $(SNOBOL4).o data_init.o snobol4
 
-BUILD_ALL=sdb snobol4 build_modules snopea docs
+BUILD_ALL=sdb snobol4 snopea docs
 build_all: $(BUILD_ALL)
 
 xsnobol4: $(OBJS)
@@ -324,7 +324,7 @@ tlib: $(SO)/$(SOFILENAME) tlib.c
 ################
 # run regression tests.
 
-timing.out: tested xsnobol4 timing timing.sno test/bench.sno test/v311.sil
+timing.out: tested timing timing.sno test/bench.sno test/v311.sil
 	@echo Running timing script...
 	./timing > timing.out.tmp
 	mv timing.out.tmp timing.out
@@ -334,7 +334,7 @@ timing.out: tested xsnobol4 timing timing.sno test/bench.sno test/v311.sil
 	@echo 'And you will be notified when test versions are available.' 1>&2
 	@echo '********************************************************' 1>&2
 
-tested snobol4: xsnobol4 test/tests.in cpuid
+tested snobol4: xsnobol4 build_modules test/tests.in cpuid
 	@echo Running regression tests...
 	(cd test; BLOCKS=$(BLOCKS) SNOPATH="$(TEST_SNOPATH)" ./run.sh ../xsnobol4 -N)
 	$(MAKE) -f Makefile2 test_modules
