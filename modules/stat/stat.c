@@ -77,7 +77,7 @@ st2sno(struct stat *st, struct descr *dp) {
 #ifdef S_IFLNK
     case S_IFLNK: type = 'l'; break;
 #endif
-#ifdef S_ISOCK
+#ifdef S_IFSOCK
     case S_IFSOCK: type = 's'; break;
 #endif
 #ifdef S_ISWHT

@@ -1,6 +1,6 @@
 -include 'stat.sno'
 
-	ELTS =	"ST_DEV,ST_INO,ST_TYPE,ST_MODE,ST_NLINK,"
+	ELTS =	"ST_DEV,ST_INO,ST_TYPE,ST_TYPE_STR,ST_MODE,ST_NLINK,"
 +               "ST_UID,ST_GID,ST_RDEV,ST_SIZE,ST_BLKSIZE,ST_BLOCKS,"
 +               "ST_ATIME,ST_ATIMENSEC,"
 +               "ST_MTIME,ST_MTIMENSEC,"
