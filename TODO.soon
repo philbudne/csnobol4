@@ -1,6 +1,8 @@
 $Id$
 
-made MOD_INIT call function in snobol4 executable?
+Better Windows default directory??  ask on list???
+
+make MOD_INIT call function in snobol4 executable?
 
 check module test results!!
 
@@ -8,14 +10,12 @@ json.sno needs snopea docs
 	add json1.sno tests
 
 shared library:
-	split INTERP call out of BEGIN?
-	detect/prevent multi-threading if not compiled for it??
-	install MOD_SUPPORT source file so setuputil can find it
-	SHARED: need to free malloc'ed memory on exit: register hooks?
-		only caller is loadx? just call directly??
+	*** install MOD_SUPPORT source file so setuputil can find it
+	split INTERP call out of BEGIN (allow I/O reconfig after compile)?
+	detect/prevent re-entry if not compiled for threads?
 	move all startup banner output to main.c (snobol4_banners?)?
 	rename public io_ to snobol4_ (for snobol4.h)?
-	per-thread?
+	thread enable:
 		getopt not thread safe!
 		shared library list should be shared (needs locking!)
 	versioning: gcc -shared -Wl,-soname,libxx.so.1 -o libxx.so.1.0.1
@@ -50,8 +50,6 @@ Modernize:
 
 other tests from DEC-10 and VAX SNOBOL?
 	arbitrary precision lib??
-
-Better Windows default directory??  ask on list???
 
 snobol4.1, snobol4ext man pages: include CSNOBOL4 versions for changes
 
