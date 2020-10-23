@@ -1593,7 +1593,7 @@ if [ "x$WITHOUT_MODULES" = x ]; then
     MODULES="base64 dirs logic random stat time sprintf fork $READLINE_MODULE"
 
     ################################################################
-    echo "checking features for modules:"
+    echo "checking features for modules:"	1>&2
 
     # if this requires knowledge of bundled compilers,
     # move (back) to the top of the file!!
@@ -1715,7 +1715,7 @@ if [ "x$WITHOUT_MODULES" = x ]; then
 	for X in /usr/lib/tclConfig.sh \
 		 /System/Library/Frameworks/Tcl.framework/tclConfig.sh; do
 	    if [ -f $X ]; then
-		echo found $X
+		echo found $X 1>&2
 		TCONF=$X
 		break
 	    fi

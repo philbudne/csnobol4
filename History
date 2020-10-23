@@ -4,6 +4,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/22/2020:
 	modules/base64/base64.c: remove debug
+	configure: fix a few echo redirects
 
 10/22/2020:
 	modules/Makefile.mod: remove .so output/dependency
