@@ -960,6 +960,10 @@ fi
 if config/check stdint.h; then
     echo 'using C99 stdint.h' 1>&2
     echo '#define HAVE_STDINT_H'		>> $CONFIG_H
+elif config/check inttypes.h; then
+    # present on FreeBSD 4.9 w/o stdint
+    echo 'using SUSv2 inttypes.h' 1>&2
+    echo '#define HAVE_INTTYPES_H'		>> $CONFIG_H
 fi
 
 # prefer C99 "isfinite" function:

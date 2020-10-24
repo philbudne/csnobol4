@@ -3,6 +3,10 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/23/2020:
+	modules/random/random.c: use inttypes.h, if available
+	configure: check for inttypes.h if stdint not available (FreeBSD 4.9)
+
+10/23/2020:
 	cpuid.c: gcc 2.95.4 (FreeBSD 4.9) doesn't define __GNUC_PATCHLEVEL__(!)
 
 10/23/2020:

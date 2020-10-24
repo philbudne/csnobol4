@@ -53,10 +53,11 @@ __FBSDID("$FreeBSD: src/lib/libc/stdlib/random.c,v 1.25 2007/01/09 00:28:10 imp 
 #endif
 
 #include <fcntl.h>		/* for srandomdev() */
-#ifdef HAVE_STDINT_H
-#include <stdint.h>
+#if defined(HAVE_STDINT_H)
+#include <stdint.h>		/* C99 */
+#elif defined(HAVE_INTTYPES_H)
+#include <inttypes.h>		/* also C99?! */
 #else
-/* use INT32_T define? */
 typedef unsigned int uint32_t;
 typedef int int32_t;
 #endif
