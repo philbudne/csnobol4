@@ -3,6 +3,9 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/23/2020:
+	cpuid.c: gcc 2.95.4 (FreeBSD 4.9) doesn't define __GNUC_PATCHLEVEL__(!)
+
+10/23/2020:
 	Include <unistd.h> if available for ssize_t (FreeBSD 4.9!)
 	include/lib.h (if getline needed)
 	lib/io.c
