@@ -39,19 +39,15 @@ main(int argc, char *argv[]) {
     printf("CLANG: %d.%d.%d\n",
 	   __clang_major__, __clang_minor__, __clang_patchlevel__);
 #elif defined(__GNUC__)
-    printf("GNUC: %d.%d.%d\n",
-	   __GNUC__, __GNUC_MINOR__,
+    printf("GNUC: %d.%d", __GNUC__, __GNUC_MINOR__);
 #ifdef __GNUC_PATCHLEVEL__
-	   __GNUC_PATCHLEVEL__
+    printf(".%d\n", __GNUC_PATCHLEVEL__);
 #else
-	   0				/* gcc 2.95.4 doesn't have patchlevel! */
+    putchar('\n');			/* gcc 2.95.4 doesn't have patchlevel! */
 #endif
-	   );
-#endif
-#ifdef __SUNPRO_C
+#elif defined(__SUNPRO_C)
     printf("__SUNPRO_C: %#x\n", __SUNPRO_C);
-#endif
-#ifdef _MSC_VER
+#elif defined(_MSC_VER)
     printf("_MSC_VER: %d\n", _MSC_VER);
 #endif
 
