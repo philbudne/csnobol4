@@ -13,7 +13,7 @@ INC=-N -I../.. -I../../snolib
 SNOBOL4?=../../xsnobol4
 SETUP=$(SNOBOL4) $(INC) setup.sno
 
-$(OUT): setup.sno $(SRC) ../../snolib/setuputil.sno
+$(OUT): setup.sno $(SRC) ../../snolib/setuputil.sno $(SNOBOL4)
 	$(SETUP) build
 
 test:	$(OUT)
@@ -24,4 +24,4 @@ install: $(OUT)
 
 clean:
 	$(SETUP) clean
-	 rm -f *~
+	rm -f *~

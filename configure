@@ -2018,8 +2018,15 @@ for M in $MODULES; do
     echo "	\$(MAKE) -C modules/$M clean"	>> $CONFIG_M4
 done
 echo ''						>> $CONFIG_M4
-echo 'build_modules: xsnobol4'			>> $CONFIG_M4
 for M in $MODULES; do
+    MODULES_GENERATED="$MODULES_GENERATED modules/$M/$M.sno"
+done
+echo "MODULES_GENERATED=$MODULES_GENERATED"	>> $CONFIG_M4
+echo 'build_modules: $(MODULES_GENERATED)'	>> $CONFIG_M4
+
+for M in $MODULES; do
+    echo ''					>> $CONFIG_M4
+    echo "modules/$M/$M.sno: xsnobol4"		>> $CONFIG_M4
     echo "	\$(MAKE) -C modules/$M all"	>> $CONFIG_M4
 done
 echo ''						>> $CONFIG_M4
