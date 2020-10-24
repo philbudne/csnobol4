@@ -65,6 +65,9 @@
 
 #include <stdlib.h>
 #include <string.h>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>			/* ssize_t */
+#endif
 
 #define isspace(C) (strchr(" \t\r\n\f", (char)(C)) != NULL)
 

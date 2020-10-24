@@ -14,6 +14,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	lib/posix/memio_obj.c
 	lib/win32/inetio_obj.c
 	lib/win32/ptyio_obj.c
+	modules/base64/base64.c
 
 10/23/2020:
 	Makefile2.m4, configure: back to MODULES_GENERATED
