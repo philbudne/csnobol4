@@ -10,7 +10,7 @@ json.sno needs snopea docs
 	add json1.sno tests
 
 shared library:
-	*** install MOD_SUPPORT source file so setuputil can find it
+	*** setuputil.sno get mod_XXX from include dir
 	split INTERP call out of BEGIN (allow I/O reconfig after compile)?
 	detect/prevent re-entry if not compiled for threads?
 	move all startup banner output to main.c (snobol4_banners?)?

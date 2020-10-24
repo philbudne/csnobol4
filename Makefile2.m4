@@ -743,7 +743,7 @@ install: snobol4 sdb timing.out $(GENERATED_DOCS) build_modules
 	done
 	$(MAKE) -f Makefile2 install_modules
 	$(INSTALL) -d $(INCLUDE_DIR)
-	for F in $(INSTALL_H); do \
+	for F in $(INSTALL_H) $(MOD_SUPPORT_C); do \
 		$(INSTALL) -m 644 $$F $(INCLUDE_DIR); \
 	done
 	$(INSTALL) -d $(DOC_DIR)

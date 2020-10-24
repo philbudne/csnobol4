@@ -1604,14 +1604,15 @@ if [ "x$WITHOUT_MODULES" = x ]; then
     case "$CC_IS" in
     gcc|clang|icc)
 	# use __attribute__((destructor))
-	# XXX should check if it works (and if not, try declaring _fini)
+	# XXX should check if it works (and if not, try declaring _fini??)
 	MOD_SUPP=mod_gcc.c
 	;;
     esac
     if [ "x$MOD_SUPP" != x ]; then
 	echo "	MOD_SUPPORT = '$MOD_SUPP'"	>> $CONFIG_SNO
-	# for building a library
-	#echo 'MOD_SUPPORT=$(SRCDIR)lib/snolib/'$MOD_SUPP >> $CONFIG_M4
+	# for building a library or installing (
+	# XXX may need m4 define for conditionalization?
+	echo 'MOD_SUPPORT_C=$(SRCDIR)lib/snolib/'$MOD_SUPP >> $CONFIG_M4
     fi
 
     TIME_CFLAGS="$TIME_CFLAGS -DHAVE_SLEEP"
@@ -1624,12 +1625,12 @@ if [ "x$WITHOUT_MODULES" = x ]; then
 	STAT_CFLAGS="-DHAVE_ST_MTIM_NSEC"
     elif config/check sys/stat.h \
 	    'struct stat st; long l = st.st_mtimespec.tv_nsec'; then
-	# OSX (FreeBSD 12, NetBSD 9 have as a define)
+	# OSX (FreeBSD 12, NetBSD 9 have as a compat define)
 	echo 'using stat st_mtimespec.tv_nsec'		1>&2
 	STAT_CFLAGS="-DHAVE_ST_MTIMESPEC_NSEC"
     fi
 
-    # time-of-day code in both time and random modules!
+    # UGH! time-of-day code in both time and random modules!
     CLOCK_REALTIME='struct timespec ts; long x; clock_gettime(CLOCK_REALTIME, &ts); x = ts.tv_nsec'
     if config/check time.h "$CLOCK_REALTIME" "$TR_LDFLAGS"; then
 	echo 'using POSIX.1b clock_gettime(CLOCK_REALTIME,..) for time of day' 1>&2

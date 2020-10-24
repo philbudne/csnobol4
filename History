@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/24/2020:
+	configure: rename MOD_SUPPORT to MOD_SUPPORT_C
+	Makefile2.m4: install MOD_SUPPORT_C in INCLUDE_DIR
+
 10/23/2020:
 	modules/random/random.c: use inttypes.h, if available
 	configure: check for inttypes.h if stdint not available (FreeBSD 4.9)
