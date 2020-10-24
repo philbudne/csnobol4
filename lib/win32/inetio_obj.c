@@ -11,6 +11,9 @@
 
 #include <stdio.h>			/* NULL, size_t */
 #include <stdlib.h>			/* malloc/free */
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>			/* ssize_t */
+#endif
 
 #ifdef HAVE_WINSOCK2_H
 #include <winsock2.h>

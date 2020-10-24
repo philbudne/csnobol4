@@ -47,6 +47,9 @@
 
 #include <stdio.h>			/* NULL, size_t */
 #include <malloc.h>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>			/* ssize_t */
+#endif
 
 #include "h.h"
 #include "io_obj.h"

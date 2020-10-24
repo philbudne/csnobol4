@@ -32,6 +32,9 @@
 #include <stdlib.h>		       /* before stdio(?) */
 #include <stdio.h>
 #include <ctype.h>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>			/* ssize_t */
+#endif
 
 #include "h.h"
 #include "units.h"

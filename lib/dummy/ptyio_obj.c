@@ -10,6 +10,9 @@
 #endif
 
 #include <stdio.h>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>			/* ssize_t */
+#endif
 
 #include "io_obj.h"			/* prototype */
 

@@ -12,6 +12,9 @@
 
 #include <stdio.h>			/* NULL, size_t */
 #include <string.h>			/* memcpy */
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>			/* ssize_t */
+#endif
 
 #include "h.h"				/* TRUE */
 #include "io_obj.h"

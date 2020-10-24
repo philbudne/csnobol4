@@ -14,7 +14,7 @@
 #include <errno.h>
 
 #ifdef HAVE_UNISTD_H
-#include <unistd.h>			/* _exit, Free/OpenBSD: closefrom */
+#include <unistd.h>			/* _exit, ssize_t; Free/OpenBSD: closefrom */
 #endif /* HAVE_UNISTD_H defined */
 
 #ifdef CLOSEFROM_IN_STDLIB_H

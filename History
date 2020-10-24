@@ -3,6 +3,17 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/23/2020:
+	Include <unistd.h> if available for ssize_t (FreeBSD 4.9!)
+	lib/io.c
+	lib/auxil/bufio_obj.c
+	lib/auxil/memio_obj.c
+	lib/bsd/ptyio_obj.c
+	lib/dummy/ptyio_obj.c
+	lib/posix/memio_obj.c
+	lib/win32/inetio_obj.c
+	lib/win32/ptyio_obj.c
+
+10/23/2020:
 	Makefile2.m4, configure: back to MODULES_GENERATED
 
 10/22/2020:
