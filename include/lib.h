@@ -230,6 +230,9 @@ extern int getdtablesize(void);
 #endif
 
 #ifdef NEED_GETLINE
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>			/* ssize_t */
+#endif
 /* from getline.c */
 extern ssize_t getline(char **bufp, size_t *lenp, FILE *fp);
 #endif

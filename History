@@ -4,8 +4,10 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/23/2020:
 	Include <unistd.h> if available for ssize_t (FreeBSD 4.9!)
+	include/lib.h (if getline needed)
 	lib/io.c
 	lib/auxil/bufio_obj.c
+	lib/auxil/getline.c
 	lib/auxil/memio_obj.c
 	lib/bsd/ptyio_obj.c
 	lib/dummy/ptyio_obj.c

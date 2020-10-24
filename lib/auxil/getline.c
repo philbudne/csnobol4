@@ -11,6 +11,9 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>			/* ssize_t */
+#endif
 
 /* NOTE!!! Similar code appears in lib/auxil/bufio_obj.c!!! */
 #define MINSIZE 128
