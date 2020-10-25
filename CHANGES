@@ -10,18 +10,17 @@ Changes since 2.1.6 release;
 	I/O code cleanup/refactor (wish list item since / last attempted 2002!)
 	Switch back to less precise MSTIME (runtime) reports of JUST user time.
 	    This will effect timing reports.
-	All output unbuffered with -U option,
-	    or SNOBOL4UNBUFFERED environment variable non-null.
+	All output unbuffered with -U option, or SNOBOL4UNBUFFERED set.
 	Library files:
-	    json.sno
+	    json.sno -- JSON subset
 	Modules:
+	    base64: base64 encode/decode.
 	    stat: fixed.
 	       added "btime" (birth time),available on BSDs/OSX/Cygwin.
-	    base64: new!
 	    time: GETTIMEOFDAY return now has TV_NSEC member
 	configure changes:
 	    --force-pml removed (must use modules)
-	    --without-modules added (breaks tests, sdb)
+	    --without-modules added
 	    more strict about feature tests
 	Windows:
 	    Builds by default with Winsock2 support
@@ -43,17 +42,12 @@ Changes since 2.1.6 release;
 	    enough to write temporary files, and invoke a subprocess!?)
 	    Shared library API is in include/snobol4.h
 	    No promises on future availability or stability!
-	    May not free all allocated memory!!!
-	    Loadable modules need to be compiled with -DDYNAMIC
-		(best to use setuputil.sno to build)
 	Changes to loadable function module API:
 	    Allows return of strings in malloc'ed memory
-		via RETSTR[2]_FREE (and silently by RETSTR[2]).
 		No longer copies into persistent malloc'ed memory.
 	    Each handle pool can register a cleanup function when
-		using new new_handle2() function.  Requires support
-		code added automatically when setuputil.sno used to
-		build modules!!!
+		using new new_handle2() function
+		(needed for shared library cleanup)
 
 Changes since 2.0 release;
 =========================
