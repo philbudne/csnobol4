@@ -11,13 +11,13 @@ all:	$(OUT)
 
 INC=-N -I../.. -I../../snolib
 SNOBOL4?=../../xsnobol4
-SETUP=$(SNOBOL4) $(INC) setup.sno
+SETUP=$(SNOBOL4) $(INC) setup.sno $(SETUPOPT)
 
 $(OUT): setup.sno $(SRC) ../../snolib/setuputil.sno $(SNOBOL4)
 	$(SETUP) build
 
 test:	$(OUT)
-	if [ -f test.sno ]; then $(SNOBOL4) $(INC) -I. test.sno; else true; fi
+	$(SETUP) test
 
 install: $(OUT)
 	$(SETUP) install

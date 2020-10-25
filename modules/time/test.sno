@@ -1,14 +1,15 @@
 -INCLUDE "time.sno"
-	s = 2
-	tries = 5
+	s = 0.25
+	tries = 1 / s
 	&code = 1
+	t0 = tv_sec(gettimeofday())
+
 top	output = lt(tries, 1) 'failed'			:s(end)
 	tries = tries - 1
-	t0 = tv_sec(gettimeofday())
 	sleep(s)					:f(top)
 	t1 = tv_sec(gettimeofday())
 	delta = t1 - t0
-	ge(delta, s)					:f(top)
+	eq(delta, 0)					:s(top)
 	&code = 0
 end
 

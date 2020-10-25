@@ -1,6 +1,21 @@
 -include 'dirs.sno'
 
-	 d = OPENDIR(".")
-loop	 OUTPUT = READDIR(d)		:S(loop)
-	 CLOSEDIR(d)
+	DEFINE('uc(in)')		:(uc.end)
+uc	uc = REPLACE(in, &UPPER, &LOWER)
+uc.end
+
+	DEFINE('test(fn)')		:(test.end)
+test	OUTPUT = DIFFER(t[fn]) fn	:S(RETURN)F(FRETURN)
+test.end
+
+	t = TABLE()
+	d = OPENDIR(".")
+loop	t[READDIR(d)] = 1		:S(loop)
+	CLOSEDIR(d)
+
+	test('.')
+	test('Makefile')
+	test('dirs.c')
+	test('dirs.sno')
+	test('test.sno')
 END

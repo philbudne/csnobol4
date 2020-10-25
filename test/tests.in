@@ -114,12 +114,12 @@ reg func2.sno
 dump diag1.sno
 dump diag2.sno
 reg unsc.sno
-# 11/16/2005
+# 11/16/2005; off 10/22/2020 (moved to module)
 # reg ndbm.sno
 # 8/29/2009
 reg collect2.sno
-# 12/16/2010
-reg time.sno
+# 12/16/2010; off 10/25/2020 (moved to module)
+# reg time.sno
 # 1/21/2011
 err setexit.sno
 # 1/22/2011
@@ -128,8 +128,8 @@ reg setexit2.sno
 reg setexit3.sno
 # 1/4/2012
 # reg sleep.sno
-# 1/10/2012
-reg random.sno
+# 1/10/2012; off 10/10/2020 (moved to module)
+# reg random.sno
 # 2/3/2012
 reg loaderr.sno
 # 2/12/2012

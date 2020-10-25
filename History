@@ -2,6 +2,23 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/25/2020:
+	Implement setup.sno test command
+	Makefile: add test_modules
+	lib/snolib/handle.c: debug ifdefs
+	modules/Makefile.mod: add SETUPOPT for debug
+		use setup.sno test command!
+	modules/dirs/test.sno: create & check table
+	modules/sqlite3/setup.sno: add tests entry
+	modules/sqlite3/sqlite3.mod: remove stmt handles!!
+		test.sno: just check type_str
+	modules/sqlite3/setup.sno: add tests entry
+	modules/time/test.sno: fix sleep test to run faster (most of the time)
+		time/generic/sleep.c: sleep a whole second if any fration given
+	modules/*/*.ref (new)
+	snolib/setuputil.sno: add "test" command (for posix)
+	test/tests.in: turned off random.sno
+
 10/24/2020:
 	configure: Solaris make doesn't have ?=
 

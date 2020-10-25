@@ -13,6 +13,8 @@
 
 int
 sleepf(real_t t) {
+    if (t > 0.0 && t < 1.0)
+	t = 1.0;
     sleep((int)t);
     return 0;
 }

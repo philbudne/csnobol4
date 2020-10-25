@@ -57,7 +57,9 @@ lookup_handle(handle_handle_t *hhp, snohandle_t h) {
     if (!htp)
 	return NULL;
 
-    /* printf("lookup_handle %s %#lx\n", htp->name, h.a.i); */
+#ifdef DEBUG_HANDLE2
+    printf("lookup_handle %s %d\n", htp->name, (long)h.a.i);
+#endif
     if (h.v != htp->datatype)
 	return NULL;
 
@@ -103,16 +105,24 @@ new_handle2(handle_handle_t *hhp, void *vp,
 	}
     }
 
+    /*
+     * no longer hashing on pointer/value; an error to double enter?
+     * would have to search entire table!!!
+     */
+    
     /* allocate block */
     hp = malloc(sizeof(struct handle_entry));
     if (!hp)
 	return bad_handle;
 
-
     hp->handle_number = htp->next++;
     hash = HANDLE_HASH(hp->handle_number);
     hp->next = htp->hash[hash];
     hp->value = vp;
+
+#ifdef DEBUG_HANDLES
+    printf("new_handle2 %s %p => %ld\n", htp->name, vp, (long)hp->handle_number);
+#endif
 
     htp->hash[hash] = hp;
     htp->entries++;
@@ -126,9 +136,9 @@ new_handle2(handle_handle_t *hhp, void *vp,
 
 SNOLOAD_API(snohandle_t)
 new_handle(handle_handle_t *hhp, void *vp, const char *tname) {
-    static char complained = 0;
+    static char complained = 0;		/* global: complain just once! */
     if (!complained) {
-	fprintf(stderr, "new_handle is deprecated, call new_handle2\n");
+	fprintf(stderr, "snobol4: new_handle is deprecated, use new_handle2\n");
 	complained = 1;
     }
     return new_handle2(hhp, vp, tname, NULL, NULL);
@@ -143,9 +153,17 @@ remove_handle(handle_handle_t *hhp, snohandle_t h) {
     if (!htp || in_handle_cleanup)
 	return;
 
+#ifdef DEBUG_HANDLES
+    printf("remove_handle %s %ld\n", htp->name, (long)h.a.i);
+#endif
+
     pp = NULL;
     for (hp = htp->hash[hash]; hp; pp = hp, hp = hp->next) {
 	if (hp->handle_number == h.a.i) {
+#ifdef DEBUG_HANDLES
+	    printf(" found %ld => %p\n",
+		   (long)hp->handle_number, hp->value);
+#endif
 	    if (pp)
 		pp->next = hp->next;
 	    else

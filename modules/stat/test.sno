@@ -1,23 +1,12 @@
 -include 'stat.sno'
 
-	ELTS =	"ST_DEV,ST_INO,ST_TYPE,ST_TYPE_STR,ST_MODE,ST_NLINK,"
-+               "ST_UID,ST_GID,ST_RDEV,ST_SIZE,ST_BLKSIZE,ST_BLOCKS,"
-+               "ST_ATIME,ST_ATIMENSEC,"
-+               "ST_MTIME,ST_MTIMENSEC,"
-+               "ST_CTIME,ST_CTIMENSEC,"
-+               "ST_BTIME,ST_BTIMENSEC,"
-
-	DEFINE("dump(fn)ss,e1,e2")	:(dump.end)
-dump	e1 = ELTS
-	ss = STAT(fn)
-	OUTPUT = '========== ' fn
-dump.loop
-	IDENT(e1)			:S(RETURN)
-	e1 pos(0) break(',') . e2 ',' =	:f(FRETURN)
-	OUTPUT = e2 ':	' APPLY(e2,ss)	:(dump.loop)
+	DEFINE("test(fn,type)ss")	:(test.end)
+test	ss = STAT(fn)			:F(FRETURN)
+	OUTPUT = IDENT(ST_TYPE_STR(ss), type) fn ': OK' :(RETURN)
+	OUTPUT = fn ': got ' ST_TYPE_STR(ss) ' exp ' type
 	:(RETURN)
 
-dump.end
-	dump("stat.c")
-	dump(".")
+test.end
+	test("stat.c", "-")
+	test(".", "d")
 END

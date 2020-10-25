@@ -630,11 +630,13 @@ SQLITE3_RESET( LA_ALIST ) {
  */
 lret_t
 SQLITE3_FINALIZE( LA_ALIST ) {
-    sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_HANDLE(0));
+    snohandle_t h = LA_HANDLE(0);
+    sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, h);
 
     if (!st)
 	RETFAIL;
 
+    remove_handle(&sqlite3_stmts, h);
     if (sqlite3_finalize(st) == SQLITE_OK)
 	RETNULL;
     RETFAIL;

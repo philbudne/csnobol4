@@ -18,6 +18,8 @@ uselib	t['libraries'] = 'sqlite3'
 skiplib	t['author'] = t['maintainer'] = 'Phil Budne'
 	t['author_email'] = t['maintainer_email'] = 'phil@snobol4.org'
 	t['license'] = 'BSD'
+	t['tests'] = 'testdbm.sno'
+
 * description
 * long_description
 * version (get from RCS ID?)
