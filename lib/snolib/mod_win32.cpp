@@ -14,7 +14,10 @@ extern "C" {
 #include "module.h"			/* struct module, MODULE_xxx */
 
 static TLS struct module m = { MODULE_STRUCT_INIT };
-struct TLS module *const module = &m;	/* read only pointer to mutable struct */
+
+// name mangled when declare "module *const"?!
+// (but OK if extern first?)
+struct TLS module *module = &m; /* read only pointer to mutable struct */
 } // extern "C"
 
 #define WIN32_LEAN_AND_MEAN

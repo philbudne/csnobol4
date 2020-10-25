@@ -28,7 +28,7 @@ cat >>$CROSS_CONFIG <<EOF
 EOF
 
 # use system SNOBOL4 binary to build modules
-export SNOBOL4=snobol4
+export SNOBOL4=`which snobol4`
 make -f config/win32/mingw.mak \
      TOOLCHAIN=x86_64-w64-mingw32- \
      DEFS=-D_WIN64 \
