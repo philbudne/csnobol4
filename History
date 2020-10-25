@@ -14,7 +14,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 		test.sno: just check type_str
 	modules/sqlite3/setup.sno: add tests entry
 	modules/time/test.sno: fix sleep test to run faster (most of the time)
-		time/generic/sleep.c: sleep a whole second if any fration given
+		    /generic/sleep.c: sleep a whole second if any fration given
+		    /test2.sno: copied from tests/time.sno
 	modules/*/*.ref (new)
 	snolib/cmp.sno (new)
 	snolib/setuputil.sno: add "test" command (for posix)
