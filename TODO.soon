@@ -2,7 +2,7 @@ $Id$
 
 Better Windows default directory??  ask on list???
 
-check module test results!!
+Run modules build in a recursive make?
 
 json.sno needs snopea docs
 	add json1.sno tests (depends on logic and sprintf)
