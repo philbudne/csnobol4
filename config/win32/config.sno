@@ -7,4 +7,4 @@
 	DIRS_INCLUDE = "win32"
 	DIRS_SRCS = ",win32/dirent.c"
 
-	MOD_SUPPORT = "mod_win32.cpp"
+	MOD_SUPPORT_SRC = "mod_win32.cpp"

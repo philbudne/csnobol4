@@ -1609,10 +1609,10 @@ if [ "x$WITHOUT_MODULES" = x ]; then
 	;;
     esac
     if [ "x$MOD_SUPP" != x ]; then
-	echo "	MOD_SUPPORT_C = '$MOD_SUPP'"	>> $CONFIG_SNO
+	echo "	MOD_SUPPORT_SRC = '$MOD_SUPP'"	>> $CONFIG_SNO
 	# for building a library or installing (
 	# XXX may need m4 define for conditionalization?
-	echo 'MOD_SUPPORT_C=$(SRCDIR)lib/snolib/'$MOD_SUPP >> $CONFIG_M4
+	echo 'MOD_SUPPORT_SRC=$(SRCDIR)lib/snolib/'$MOD_SUPP >> $CONFIG_M4
     fi
 
     TIME_CFLAGS="$TIME_CFLAGS -DHAVE_SLEEP"
