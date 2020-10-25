@@ -2005,6 +2005,11 @@ fi
 ################################
 # should be last thing done;
 
+# SunOS make doesn't have ?=
+case `uname -sr` do
+SunOS 5.*) MODSNO="SNOBOL4=../../xsnobol4";;
+esac
+
 BUILD_DL=
 BUILD_INC=
 # for host.sno:
@@ -2020,7 +2025,7 @@ echo "TEST_SNOPATH=$TEST_SNOPATH"		>> $CONFIG_M4
 echo ''						>> $CONFIG_M4
 echo 'clean_modules:'				>> $CONFIG_M4
 for M in $MODULES; do
-    echo "	\$(MAKE) -C modules/$M clean"	>> $CONFIG_M4
+    echo "	\$(MAKE) -C modules/$M clean $MODSNO" >> $CONFIG_M4
 done
 echo ''						>> $CONFIG_M4
 for M in $MODULES; do
@@ -2032,17 +2037,17 @@ echo 'build_modules: $(MODULES_GENERATED)'	>> $CONFIG_M4
 for M in $MODULES; do
     echo ''					>> $CONFIG_M4
     echo "modules/$M/$M.sno: xsnobol4"		>> $CONFIG_M4
-    echo "	\$(MAKE) -C modules/$M all"	>> $CONFIG_M4
+    echo "	\$(MAKE) -C modules/$M all $MODSNO" >> $CONFIG_M4
 done
 echo ''						>> $CONFIG_M4
 echo 'install_modules:'				>> $CONFIG_M4
 for M in $MODULES; do
-    echo "	\$(MAKE) -C modules/$M install"	>> $CONFIG_M4
+    echo "	\$(MAKE) -C modules/$M install $MODSNO"	>> $CONFIG_M4
 done
 echo ''						>> $CONFIG_M4
 echo 'test_modules:'				>> $CONFIG_M4
 for M in $MODULES; do
-    echo "	\$(MAKE) -C modules/$M test"	>> $CONFIG_M4
+    echo "	\$(MAKE) -C modules/$M test $MODSNO" >> $CONFIG_M4
 done
 echo ''						>> $CONFIG_M4
 

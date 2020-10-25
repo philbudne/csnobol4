@@ -3,6 +3,9 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/24/2020:
+	configure: Solaris make doesn't have ?=
+
+10/24/2020:
 	include/load.h: "module" now a pointer
 	include/module.h (new): move module ABI here, add module_init function
 	lib/snolib/mod_gcc.c, mod_win32.cpp: export module pointer.
