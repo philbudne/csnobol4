@@ -11,10 +11,10 @@ extern "C" {
 #include "snotypes.h"			/* struct descr */
 #include "h.h"				/* EXPORT/IMPORT, TLS */
 #include "load.h"			/* SNOLOAD_API */
-#define MODULE_SUPPORT
-#include "handle.h"			/* struct module, MODULE_xxx */
+#include "module.h"			/* struct module, MODULE_xxx */
 
-TLS struct module module = { MODULE_STRUCT_INIT };
+static TLS struct module m = { MODULE_STRUCT_INIT };
+struct TLS module *const module = &m;	/* read only pointer to mutable struct */
 } // extern "C"
 
 #define WIN32_LEAN_AND_MEAN

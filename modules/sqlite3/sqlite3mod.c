@@ -74,7 +74,7 @@ SQLITE3_OPEN( LA_ALIST ) {
     if (ret != SQLITE_OK)
 	RETFAIL;
 
-    h = new_handle2(&sqlite3_dbs, db, "sqlite3_dbs", free_sqlite3, &module);
+    h = new_handle2(&sqlite3_dbs, db, "sqlite3_dbs", free_sqlite3, module);
     if (!OK_HANDLE(h)) {
 	sqlite3_close(db);
 	RETFAIL;
@@ -188,7 +188,7 @@ SQLITE3_PREPARE( LA_ALIST ) {
 
     DEBUGF(("PREP: dbh %ld db %p stp %p\n", LA_INT(0), db, st));
 
-    sh = new_handle2(&sqlite3_stmts, st, "sqlite3_stmts", free_stmt, &module);
+    sh = new_handle2(&sqlite3_stmts, st, "sqlite3_stmts", free_stmt, module);
     if (!OK_HANDLE(sh)) {
 	sqlite3_finalize(st);
 	RETFAIL;

@@ -7,22 +7,7 @@ typedef struct handle_table *handle_handle_t;
 #define OK_HANDLE(h) ((h).v != 0 && (h).a.i >= 0)
 #define RETHANDLE(h) do { *retval = h; return TRUE; } while(0)
 
-/*
- * new in 2.2
- * here because new_handle2 needs module extern
- */
-
-struct module {
-    unsigned short api_version;		/* major*100 + minor */
-    unsigned short sizeof_module;
-    unsigned short sizeof_long;
-    unsigned short sizeof_ptr;
-    char threaded;
-    char reserved[7];
-    struct handle_table *htlist;
-};
-
-extern struct module module;		/* for loadables */
+extern struct module *const module;	/* from mod_xxx  */
 
 SNOLOAD_API(void *) lookup_handle(handle_handle_t *, snohandle_t);
 SNOLOAD_API(void) remove_handle(handle_handle_t *, snohandle_t);
@@ -34,23 +19,3 @@ SNOLOAD_API(snohandle_t) new_handle2(handle_handle_t *table,
 
 /* deprecated: */
 SNOLOAD_API(snohandle_t) new_handle(handle_handle_t *, void *, const char *);
-
-/*
- * NOT FOR USER USE!! (called from mod_XXX.c)
- */
-#ifdef MODULE_SUPPORT
-SNOLOAD_API(void) module_cleanup(struct module *);
-#define IS_THREADED 0			/* 1 if TLS is thread-local storage */
-
-#define MODULE_STRUCT_INIT \
-	100, \
-	(unsigned short)sizeof(struct module), \
-	(unsigned short)sizeof(long), \
-	(unsigned short)sizeof(void *), \
-	IS_THREADED, 0, 0, 0, \
-	0, 0, 0, 0, \
-	NULL
-
-#define MODULE_INIT(MOD) (MOD).htlist = NULL
-#define MODULE_CLEANUP(MOD) module_cleanup(&(MOD))
-#endif

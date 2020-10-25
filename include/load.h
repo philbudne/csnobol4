@@ -17,11 +17,11 @@
  * }
  */
 
-#define pmlret_t int
+#define pmlret_t int			/* built-in functions (PML) */
 #define lret_t EXPORT(pmlret_t)
 
 #define LA_ALIST LOAD_PROTO
-#define LA_DCL				/* K&R artifact */
+#define LA_DCL				/* K&R compat artifact */
 
 /*
  * macros to fetch arguments
@@ -96,7 +96,9 @@
  * After string "interned" (variable generated), relstring is called.
  * (used by ffi & readline).  Binaries built with this .h file are not
  * backwards compatible (returned string will appear as EXTERNAL,
- * memory will not be freed).
+ * memory will not be freed).  Old version kept static pointer to a malloc'ed
+ * buffer that was large enough to hold the largest string returned
+ * (and was not freed unless a larger buffer was needed).
  */
 #define RETSTR_FREE(CP) \
     do { \

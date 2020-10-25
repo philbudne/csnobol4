@@ -3,6 +3,18 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/24/2020:
+	include/load.h: "module" now a pointer
+	include/module.h (new): move module ABI here, add module_init function
+	lib/snolib/mod_gcc.c, mod_win32.cpp: export module pointer.
+	lib/snolib/handle.c: add module_init function
+	modules/dirs/dirs.c
+	modules/ffi/ffi.c
+	modules/ndbm/ndbm.c
+	modules/sqlite3/sqlite3mod.c
+	modules/stcl/stcl.c
+	    module now a pointer
+
+10/24/2020:
 	configure: rename MOD_SUPPORT to MOD_SUPPORT_C
 	Makefile2.m4: install MOD_SUPPORT_C in INCLUDE_DIR
 	snolib/setuputil.sno: use MOD_SUPPORT_C, look in INCLUDE_DIR

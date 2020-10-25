@@ -63,7 +63,7 @@ OPENDIR( LA_ALIST ) {
     if (!d)
 	RETFAIL;
 
-    h = new_handle2(&dir_handles, d, "dir_handles", free_dir, &module);
+    h = new_handle2(&dir_handles, d, "dir_handles", free_dir, module);
     if (!OK_HANDLE(h)) {
 	closedir(d);
 	RETFAIL;

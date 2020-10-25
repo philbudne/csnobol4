@@ -210,7 +210,7 @@ FFI_PREP_CIF( LA_ALIST ) {
     if ((rtype = ffi_convert(rp, 1)) &&
 	ffi_prep_cif(&cpp->cif, FFI_DEFAULT_ABI, n, rtype, atypes) == FFI_OK) {
 	snohandle_t h = new_handle2(&ffi_cifplus, cpp, "ffi_cifplus",
-				    free_cifplus, &module);
+				    free_cifplus, module);
 	if (OK_HANDLE(h)) {
 	    if (strcmp(rp, RETSTRING) == 0)
 		cpp->pret = STR;
@@ -406,7 +406,7 @@ FFI_DLOPEN( LA_ALIST ) {
     void *dl = dlopen(str, RTLD_LAZY);	/* XXX take mode arg??? */
     if (str) free(str);
     if (!dl) RETFAIL;
-    h = new_handle2(&ffi_dlibs, dl, "ffi_dlibs", release_dl, &module);
+    h = new_handle2(&ffi_dlibs, dl, "ffi_dlibs", release_dl, module);
     if (!OK_HANDLE(h)) {
 	dlclose(dl);
 	RETFAIL;

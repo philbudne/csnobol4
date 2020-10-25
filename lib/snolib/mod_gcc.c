@@ -11,11 +11,10 @@
 #include "snotypes.h"			/* struct descr */
 #include "h.h"				/* EXPOIRT/IMPORT, TLS */
 #include "load.h"			/* SNOLOAD_API */
-#define MODULE_SUPPORT			/* MODULE_{STRUCT_INIT,INIT,CLEANUP} */
-#include "handle.h"			/* struct module, MODULE_... */
+#include "module.h"			/* struct module, MODULE_xxx */
 
-// EXPORT???
-TLS struct module module = { MODULE_STRUCT_INIT };
+static TLS struct module m = { MODULE_STRUCT_INIT };
+struct TLS module *const module = &m;	/* read only pointer to mutable struct */
 
 static void __attribute__((constructor))
 init(void) {

@@ -165,7 +165,7 @@ DBM_OPEN( LA_ALIST ) {
     if (!f)
 	RETFAIL;
 
-    h = new_handle2(&dbm_files, f, "dbm_files", ndbm_cleanup, &module);
+    h = new_handle2(&dbm_files, f, "dbm_files", ndbm_cleanup, module);
     if (!OK_HANDLE(h)) {
 	dbm_close(f);
 	RETFAIL;

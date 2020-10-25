@@ -18,6 +18,7 @@
 #include "h.h"
 #include "load.h"			/* SNOLOAD_API */
 #include "handle.h"			/* prototypes */
+#include "module.h"			/* struct module */
 #include "str.h"			/* bzero */
 
 #define HANDLE_HASH_SIZE (1<<8)		/* power of two */
@@ -181,7 +182,28 @@ handle_cleanup_table(struct handle_table *htp) {
     free(htp);
 }
 
-/* called on module unload (initiated by mod_xxx, not user) */
+/****************
+ * called from module support (mod_xxx) files
+ * move to module.c?
+ */
+
+/*
+ * called on module load (or thread creation?)
+ * called from mod_xxx, not user code
+ */
+SNOLOAD_API(void)
+module_init(struct module *mp) {
+    mp->htlist = NULL;
+    /*
+     * NOTE!!
+     * must check abi version & struct size before touching anything else!
+     */
+}
+
+/*
+ * called on module unload (or thread exit?)
+ * called from mod_xxx, not user code
+ */
 SNOLOAD_API(void)
 module_cleanup(struct module *mp) {
     struct handle_table *htp = mp->htlist;

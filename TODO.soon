@@ -10,15 +10,14 @@ json.sno needs snopea docs
 	add json1.sno tests
 
 shared library:
-	*** setuputil.sno get mod_XXX from include dir
-	split INTERP call out of BEGIN (allow I/O reconfig after compile)?
+	versioning: gcc -shared -Wl,-soname,libxx.so.1 -o libxx.so.1.0.1
 	detect/prevent re-entry if not compiled for threads?
 	move all startup banner output to main.c (snobol4_banners?)?
-	rename public io_ to snobol4_ (for snobol4.h)?
 	thread enable:
 		getopt not thread safe!
 		shared library list should be shared (needs locking!)
-	versioning: gcc -shared -Wl,-soname,libxx.so.1 -o libxx.so.1.0.1
+	split INTERP call out of BEGIN (allow I/O reconfig after compile)?
+	rename public io_ to snobol4_ (for snobol4.h)?
 
 FFI:
 	use loadx code for function lookup (ref counting)

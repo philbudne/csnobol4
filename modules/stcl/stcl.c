@@ -64,7 +64,7 @@ free_obj(void *x) {
 
 static snohandle_t
 new_obj(Tcl_Obj *obj) {
-    return new_handle2(&tcl_objs, obj, "tcl_objs", free_obj, &module);
+    return new_handle2(&tcl_objs, obj, "tcl_objs", free_obj, module);
 }
 
 /*
@@ -104,7 +104,7 @@ STCL_CREATEINTERP( LA_ALIST ) {
     Tk_Init(interp);			/* XXX check return? */
 #endif
 
-    h = new_handle2(&tcl_interps, interp, "tcl_interps", free_interp, &module);
+    h = new_handle2(&tcl_interps, interp, "tcl_interps", free_interp, module);
     if (!OK_HANDLE(h)) {
 	Tcl_DeleteInterp(interp);
 	/* XXX Release? */
