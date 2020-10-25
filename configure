@@ -2006,7 +2006,7 @@ fi
 # should be last thing done;
 
 # SunOS make doesn't have ?=
-case `uname -sr` do
+case `uname -sr` in
 SunOS 5.*) MODSNO="SNOBOL4=../../xsnobol4";;
 esac
 
