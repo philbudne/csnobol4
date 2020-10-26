@@ -1,5 +1,7 @@
 $Id$
 
+Use FILE_NEWER
+
 Better Windows default directory??  ask on list???
 
 Run modules build in a recursive make?
@@ -64,13 +66,12 @@ Add snobol4load man page (replace load.txt)??
 snobol4.1, snobol4ext man pages: include CSNOBOL4 versions for changes
 
 setuputils: extract SNOBOL4 code from module.c?
-	can swear I've seen this Perl C code, using =cut for the ending
+		can swear I've seen this Perl C code, using =cut for the ending
+	add doc man html commands
 
 handle more fatal errors (return from level zero?)
 
 branch to (F)RETURN in SETEXIT handler should clear XOCBSC????
-
-setuputil.sno: add doc man html commands
 
 repl.sno (read/eval/print loop)?? run if -R given???
 
@@ -79,11 +80,6 @@ snobol4key: document if TRACEable
 snobol4key/func: document &STNO trace / BREAKPOINT()???
 
 snobol4key.1: Where does STLIMIT < 0 extension come from???
-
-setuputil.sno:
-	"test" command!!!!
-		logic(!!), sqlite3, stat, dirs, sprintf, fork, ffi
-	run regular regression tests BEFORE generating modules!!!!
 
 allow too few function arguments to APPLY?
 
