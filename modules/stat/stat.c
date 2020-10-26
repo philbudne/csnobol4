@@ -31,6 +31,12 @@
 #define st_ctimensec st_ctimespec.tv_nsec
 #define st_birthtimensec st_birthtimespec.tv_nsec
 #endif
+#else  /* st_atimensec defined */
+#ifdef __st_birthtimensec		/* oh, that crazy OpenBSD! */
+/* field present, but both tv_sec and tv_nsec zero on OpenBSD 6.8 ffs?!!! */
+#define st_birthtimensec __st_birthtimensec
+#define st_birthtime __st_birthtime
+#endif /* __st_birthtimensec defined */
 #endif /* st_atimensec not defined */
 
 #define SETINT(DP,N,VAL) (DP)[N].a.i = (VAL); (DP)[N].f = 0; (DP)[N].v = I

@@ -3,6 +3,9 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/25/2020:
+	modules/stat/stat.c: fetch OpenBSD birthtime (zero in OBSD 6.8?!)
+
+10/25/2020:
 	Implement setup.sno test command
 	Makefile: add test_modules
 	lib/snolib/handle.c: debug ifdefs
