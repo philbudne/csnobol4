@@ -1,9 +1,6 @@
 *	test out RCERSX error processing for merged scanner
 *	10/29/97
 
-	&TRACE = 100
-	TRACE('ERRTEXT', 'KEYWORD')
-
 	&ERRLIMIT = 100
 
 	X = -1
