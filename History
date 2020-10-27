@@ -3,6 +3,9 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/26/2020:
+	configure: back to generated build_modules list
+
+10/26/2020:
 	Makefile2.m4: remove sleep.o sdbm*.o rules
 
 10/26/2020:
