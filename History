@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/26/2020:
+	config/win32/config.h: changed SNOLIB_BASE to C:\Program Files\CSNOBOL4
+	pkg/win32/README.win32: update base
+
 10/25/2020:
 	modules/stat/stat.c: fetch OpenBSD birthtime (zero in OBSD 6.8?!)
 

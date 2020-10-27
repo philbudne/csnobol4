@@ -21,7 +21,6 @@
 #define NTDDI_VERSION NTDDI_WIN10_RS5
 #define _WIN32_WINNT _WIN32_WINNT_WIN10	// min WINXP for getaddrinfo
 
-
 #define BLOCKS
 
 /* datatypes; */
@@ -30,7 +29,7 @@
 
 /* paths; */
 #define SNOLIB_FILE	"snolib.dll"
-#define SNOLIB_BASE	"C:\\snobol4"
+#define SNOLIB_BASE	"C:\\Program Files\\CSNOBOL4"
 #define SHARED_OBJ_SUBDIR "shared"
 #define DIR_SEP		"\\"
 #define PATH_SEP	";"
@@ -62,17 +61,28 @@
 
 /* DLL import/export macros */
 
+/*
+ * SNOBOL4 defined if building snobol4.exe or (experimental) snobol4.dll
+ * SNOBOL4 & SHARED defined if building snobol4.dll
+ * neither defined when building LOADable module
+ *		shared library client (ssnobol.exe, tlib.exe)
+ *
+ * load.h (LOADable module API) defines SNOLOAD_API as:
+ *	EXPORT if SNOBOL4 defined (building snobol4.exe, snobol4.dll)
+ *	IMPORT otherwise (building LOADable module DLL)
+ * snobol4.h (DLL API) defines SNOBOL4_API as:
+ *	noop   if SNOBOL4 defined and SHARED not defined (building snobol4.exe)
+ *	EXPORT if SNOBOL4 defined and SHARED defined (building snobol4.dll)
+ *	IMPORT if neither defined (ssnobol4.exe tlib.exe , other DLL client)
+ */
+
 #if defined(_MSC_VER) || defined(__MINGW32__)
 #define EXPORT(TYPE) __declspec(dllexport) TYPE
 #elif defined(__BORLANDC__)
 #define EXPORT(TYPE) TYPE _export
 #endif /* defined(__BORLANDC__) */
 
-/*
- * IMPORT (external) symbols when building a LOADable DLL
- * load.h defines SNOEXP(X) as IMPORT(X) when DLL defined
- */
-#ifndef SNOBOL4
+#ifndef SNOBOL4	  /* building LOADable module DLL, snobol4.dll user */
 #if defined(_MSC_VER) || defined(__MINGW32__)
 #define IMPORT(TYPE) __declspec(dllimport) TYPE
 #elif defined(__BORLANDC__)
@@ -92,12 +102,12 @@
 /*
  * C90 & POSIX.1-2001:
  */
-#define HAVE_FSEEKO			/* now we do! */
 #ifndef __MINGW32__ /* fseeko in mingw stdio.h! */
 #define io_off_t __int64
 #define ftello(FP) _ftelli64(FP)
 #define fseeko(FP,OFF,WHENCE) _fseeki64(FP,OFF,WHENCE)
 #endif
+#define HAVE_FSEEKO			/* now we do! */
 
 /****
  * for time & random modules
