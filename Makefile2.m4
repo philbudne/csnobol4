@@ -249,7 +249,7 @@ GENERATED_DOCS=	$(GENERATED_DOCS_DOCDIR)
 
 .PRECIOUS: $(SNOBOL4).o data_init.o snobol4
 
-BUILD_ALL=sdb snobol4 snopea docs
+BUILD_ALL=sdb snobol4 snopea docs build_modules
 build_all: $(BUILD_ALL)
 
 xsnobol4: $(OBJS)
@@ -470,9 +470,6 @@ realst.o: $(REALST_C)
 replace.o: $(REPLACE_C)
 	$(CC) $(CFLAGS) -c $(REPLACE_C)
 
-sleep.o: modules/time/$(SLEEP_C)
-	$(CC) $(CFLAGS) -c modules/time/$(SLEEP_C)
-
 spcint.o: $(SPCINT_C)
 	$(CC) $(CFLAGS) -c $(SPCINT_C)
 
@@ -536,18 +533,6 @@ bufio_obj.o: $(BUFIO_OBJ_C)
 
 memio_obj.o: $(MEMIO_OBJ_C)
 	$(CC) $(CFLAGS) -c $(MEMIO_OBJ_C)
-
-################
-# SDBM files -- only when needed
-
-sdbm.o: $(SDBM_C)
-	$(CC) $(CFLAGS) -c $(SDBM_C)
-
-sdbm_hash.o: $(SDBM_HASH_C)
-	$(CC) $(CFLAGS) -c $(SDBM_HASH_C)
-
-sdbm_pair.o: $(SDBM_PAIR_C)
-	$(CC) $(CFLAGS) -c $(SDBM_PAIR_C)
 
 ################
 # dummy files
@@ -706,7 +691,7 @@ GENSNOLIB=host.sno config.sno
 
 SNOLIB_FILES=snolib/*.sno $(GENSNOLIB) $(MODULES_INCLUDE)
 
-install: snobol4 sdb timing.out $(GENERATED_DOCS) build_modules
+install: snobol4 sdb timing.out $(GENERATED_DOCS) build_modules docs
 	$(INSTALL) -d $(BINDIR)
 	$(INSTALL) $(INSTALL_BIN_FLAGS) snobol4 $(BINDIR)/snobol4-$(VERS)
 	$(INSTALL) sdb $(BINDIR)/sdb-$(VERS)

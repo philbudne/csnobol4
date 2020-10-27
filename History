@@ -3,6 +3,9 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/26/2020:
+	Makefile2.m4: remove sleep.o sdbm*.o rules
+
+10/26/2020:
 	config/win32/config.h: changed SNOLIB_BASE to C:\Program Files\CSNOBOL4
 	pkg/win32/README.win32: update base
 
