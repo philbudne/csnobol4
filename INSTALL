@@ -438,11 +438,11 @@ file to, ie:
 
      cd C:\Users\Myname\Downloads
 
-Extract the tar file (where x is the current version):
-    tar -x -z -f snobol-2.1.x.tar.gz
+Extract the tar file (where x.y.z is the current version):
+    tar -x -z -f snobol-x.y.z.tar.gz
 
-and type (where x is the current version):
-    cd snobol-2.1.x
+and type (where x.y.z is the current version):
+    cd snobol-x.y.z
     make.bat
 
 and then
