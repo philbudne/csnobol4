@@ -250,12 +250,12 @@ cleanmostly: tidy
 # clean as a freshly unpacked kit; remove binaries, timing;
 # leave version.h, version for Windoze
 clean:	cleanmostly
-	(cd doc; make clean)
+	$(MAKE) -C doc clean
 	rm -f snobol4 xsnobol4 cpuid timing.out tested *.ln sdb *.exe
 	rm -rf ssnobol4 $(SO)
 
 # remove objects, generated files (clean as a fresh CVS checkout)
 # DANGER: requires installed binary to rebuild!!
 spotless: clean
-	(cd doc; make spotless)
+	$(MAKE) -C doc spotless
 	rm -f $(GENERATED) $(G2) snobol4.c isnobol4.c snobol4 xsnobol4

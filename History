@@ -3,6 +3,9 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/27/2020:
+	Makefile, Makefile2.m4: use $(MAKE) -C doc ....
+
+10/27/2020:
 	snolib/json.sno: use own hex conversions, so can test
 	test/tests.in: add json1.sno
 	test/json1.{sno,ref} (new): test program for json.sno
