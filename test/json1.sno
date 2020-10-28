@@ -1,0 +1,46 @@
+-include 'json.sno'
+
+	DEFINE('loadump(x,x2)y,y2')			:(e.loadump)
+loadump
+	y = json.loads(x)				:F(loadump.df)
+	y2 = json.dumps(y)				:F(loadump.lf)
+	x2 = ident(x2) x
+	output = ident(x2,y2) 'OK: ' x			:S(RETURN)
+	OUTPUT = 'ERROR: <' x '> got <' y2 '> exp <' x2 '>' :(loadump.fail)
+loadump.df OUTPUT = 'ERROR: dump failed: ' x		:(loadump.fail)
+loadump.lf OUTPUT = 'ERROR: load failed: ' y
+loadump.fail &CODE = &CODE + 1				:(FRETURN)
+e.loadump
+
+	OUTPUT = json.escape('hello world')
+	OUTPUT = json.escape(json.bs json.ht json.lf json.ff json.cr '"\')
+	OUTPUT = json.escape(json.ctrl)
+
+	loadump('1')
+	loadump('-1')
+	loadump('1.')
+	loadump('2.0', '2.')
+	loadump('3e2', '300.')
+	loadump('1.234e3', '1234.')
+	loadump('-1234e-3', '-1.234')
+	loadump('"foo"')
+	loadump('["foo"]')
+	loadump('[1,2,3]')
+	loadump('{"a":"hello","z":"goodbye"}')
+	loadump('[{"a":1.,"b":-2},{"c":3,"d":[4,5,6]}]')
+	loadump('{}')
+	loadump('"\b\t\n\f\r\"\\"')
+	loadump('"hello\nworld"')
+	loadump('"hello\u000Aworld"','"hello\nworld"')
+	loadump(json.dumps(json.ctrl))
+	loadump('"hello world"')
+* http://doc.cat-v.org/plan_9/4th_edition/papers/utf (1993)
+	loadump('"Καλημέρα κόσμε"')
+	loadump('"こんにちは 世界"')
+* all emoji are off the "Basic Multilingual Plane"
+	loadump('"👍😊🥺😉😍😘😚😜😂😝😳😁😣😢😭😰🥰🥴😏🍆🍑"')
+
+* errors:
+*	OUTPUT = json.dumps(json.cons())
+*	OUTPUT = json.dumps(ARRAY('1:10'))
+END

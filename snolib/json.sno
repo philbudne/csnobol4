@@ -20,10 +20,6 @@
 *	characters SHOULD (but does not) fail!!! Any binary data
 *	should be base64 encoded!!!
 
-* hex to integer (HI)
--include 'logic.sno'
--include 'sprintf.sno'
-
 	json.nul = CHAR(0)
 	json.bs = CHAR(8)
 	json.ht = CHAR(9)
@@ -36,6 +32,30 @@
 	DATA("json.token(json.tokval)")
 	DATA("json.cons(json.car,json.cdr)")
 
+* hex alphabet
+	json.ha = '0123456789abcdef'
+
+**************** json.hi
+* convert two digit hex string to integer
+* (HI available in logic module)
+
+	DEFINE("json.hi(xx)i,j")			:(e.json.hi)
+json.hi	xx = REPLACE(xx, 'ABCDEF', 'abcdef')
+	json.ha POS(0) ARB SUBSTR(xx, 1, 1) @i		:F(FRETURN)
+	json.ha POS(0) ARB SUBSTR(xx, 2, 1) @j		:F(FRETURN)
+	json.hi = (i - 1) * 16 + j - 1
++	:(RETURN)
+e.json.hi
+
+**************** json.hex
+* convert 8 bit number to two hex digits
+
+	DEFINE("json.hex(n)")				:(e.json.hex)
+json.hex
++	json.hex = SUBSTR(json.ha, n / 16 + 1, 1)
++		   SUBSTR(json.ha, remdr(n,16) + 1, 1)
++	:(RETURN)
+e.json.hex
 **************** json.descape
 * de-escape backslash escaped string
 
@@ -74,7 +94,7 @@ json.descape.loop
 json.descape.esc
 +	x = json.q2char[x]				:(json.descape.str)
 json.descape.hex
-+	x = CHAR(HI(x))
++	x = CHAR(json.hi(x))
 json.descape.str
 	json.descape = json.descape x			:(json.descape.loop)
 e.json.descape
@@ -191,7 +211,7 @@ e.json.loads
 	json.ord2q = ARRAY('0:255')
 	i = 0
 json.init.loop
-	json.ord2q[i] = SPRINTF('\u%04x', i)
+	json.ord2q[i] = '\u00' json.hex(i)
 	i = i + 1
 	le(i, 31)					:S(json.init.loop)
 	json.ord2q[ORD(json.bs)] = '\b'

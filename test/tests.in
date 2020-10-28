@@ -178,10 +178,12 @@ reg setexit7.sno
 # 9/16/2020
 # obsolete in 2.2 (no truncation)
 # reg k.sno
-# 10/8/2020 -- test file date Dec 31, 1969 from DEC-10 SNOBOL4
+# 10/8/2020 -- test file date Dec 31, 1969(-1?!) from DEC-10 SNOBOL4
 # from green book
 reg factor.sno
 # 10/8/2020 -- test file dated Jan 15, 1971 from DEC-10 SNOBOL4
 # from green book (run time 5159ms) c.1970
 # 2020 runtime on 2017 vintage Intel i5 was 2.429ms (2124x faster)
 reg alis.sno
+# 10/27/2020
+reg json1.sno
