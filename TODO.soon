@@ -1,9 +1,8 @@
 $Id$
 
-Use FILE_NEWER
-
 json.sno needs snopea docs
 	add json1.sno tests (depends on logic and sprintf)
+		add "atoi" to sprintf, and put test in sprintf module??
 
 shared library:
 	versioning: gcc -shared -Wl,-soname,libxx.so.1 -o libxx.so.1.0.1
@@ -18,18 +17,22 @@ shared library:
 FFI:
 	use loadx code for function lookup (ref counting)
 
+Add snobol4load man page (replace load.txt)??
+	add mgetstr
+
+snobol4.1, snobol4ext man pages: include CSNOBOL4 versions for changes
+
 snobol4func: add "added in CSNOBOL version ..."
 	EXIT (others??)
 
 Use HAVE_PATHS_H/<paths.h>, path.h in generic/execute.c, bsd/popen.c??
 
-Not on Android! include/path.h:#define TMP_DIR "/tmp" /* exists on all systems?!
+Not on Android:
+    include/path.h:#define TMP_DIR "/tmp" /* exists on all systems?!
 
 re-implement io_getfp w/ stdio_obj_getfp??
 
-remove io_clearerr?
-
-stat:	add st_gen??
+remove io_clearerr method?
 
 setjmp/longjmp for ^C on TTY read??
 
@@ -56,14 +59,10 @@ Add SITBOL &ERRPARM variable for error info
 make failed include a syntax error
       Show filename for failed include???
 
-Add snobol4load man page (replace load.txt)??
-	add mgetstr
-
-snobol4.1, snobol4ext man pages: include CSNOBOL4 versions for changes
-
 setuputils: extract SNOBOL4 code from module.c?
 		can swear I've seen this Perl C code, using =cut for the ending
 	add doc man html commands
+	Use (and document) FILE_NEWER
 
 handle more fatal errors (return from level zero?)
 
@@ -71,7 +70,7 @@ branch to (F)RETURN in SETEXIT handler should clear XOCBSC????
 
 repl.sno (read/eval/print loop)?? run if -R given???
 
-snobol4key: document if TRACEable
+snobol4key: document TRACEable keywords
 
 snobol4key/func: document &STNO trace / BREAKPOINT()???
 
@@ -86,6 +85,8 @@ Newer GUI options (by embedding lua?)
     GTK+
     Qt
     comparisons: https://wiki.wxwidgets.org/WxWidgets_Compared_To_Other_Toolkits
+
+stat: add st_gen??
 
 ================
 

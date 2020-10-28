@@ -5,7 +5,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 10/27/2020:
 	snolib/json.sno: use own hex conversions, so can test
 	test/tests.in: add json1.sno
-	test/json1.sno (new): test program for json.sno
+	test/json1.{sno,ref} (new): test program for json.sno
 
 10/27/2020:
 	config/win32/ntmsvc.mak: detect x64, use C99 long long conversions
