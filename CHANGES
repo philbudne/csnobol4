@@ -23,7 +23,7 @@ Changes since 2.1.6 release;
 	    --without-modules added
 	    more strict about feature tests
 	Windows:
-	    Builds by default with Winsock2 support
+	    Builds by default with Winsock2 library
 		for IPv6 support (available since in WinXP)
 	    Fixed test for C++ compiler under cygwin
 	    Experimental support for "Pseudo Consoles" on Windows 10
@@ -31,15 +31,16 @@ Changes since 2.1.6 release;
 	    Executable manifested for Windows 10
 		(previously HOST() only showed "Win8" on Windows 10)
 	    Implement EXIT('command to run')
+	    Decode and format 64-bit integers on 64-bit MSVC compiles
 	Portability fixes for Android, illumos (Solaris).
 	Can build libsnobol4.so shared library / snobol4.dll;
 	    EXPERIMENTAL
 	    ssnobol4 executable using it is up to 8% slower
 	    (likely due to position independent code
-	    except perhaps on MacOS, where PIC is the default).
+	     except perhaps on MacOS, where PIC is the default).
 	    tlib.c is a small demo of invoking interpreter from a C
-	    program.  (I'm not sure I see the point, since it's easy
-	    enough to write temporary files, and invoke a subprocess!?)
+	     program.  (I'm not sure I see the point, since it's easy
+	     enough to write temporary files, and invoke a subprocess!?)
 	    Shared library API is in include/snobol4.h
 	    No promises on future availability or stability!
 	Changes to loadable function module API:
