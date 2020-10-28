@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/27/2020:
+	config/win32/ntmsvc.mak: detect x64, use C99 long long conversions
+
 10/26/2020:
 	configure: back to generated build_modules list
 

@@ -27,6 +27,7 @@ INET_SRC=$(SRCDIR)lib\dummy\inet.c
 ######## WINSOCK defined
 !IF $(WINSOCK) == 1
 #### winsock1
+!MESSAGE using WS1
 WINSOCK_DEF=-DHAVE_WINSOCK_H
 INET_SRC=$(SRCDIR)lib\win32\inet.c
 INET_OBJ=inet.obj
@@ -34,6 +35,7 @@ INET_OBJ=inet.obj
 INET_LIBS=wsock32.lib
 !ELSEIF $(WINSOCK) == 2
 #### winsock2
+!MESSAGE using WS2
 WINSOCK_DEF=-DHAVE_WINSOCK2_H
 INET_SRC=$(SRCDIR)lib\bsd\inet6.c
 INET_OBJ=inet6.obj
@@ -64,6 +66,15 @@ BUFIO=1
 
 !ifdef BUFIO
 BUFIO_OBJ=bufio_obj.obj
+!endif
+
+!if "$(VSCMD_ARG_TGT_ARCH)" == "x64"
+!MESSAGE using C99 long long support
+INTSPC_C=$(SRCDIR)lib\c99\intspc.c
+SPCINT_C=$(SRCDIR)lib\c99\spcint.c
+!else
+INTSPC_C=$(SRCDIR)lib\generic\intspc.c
+SPCINT_C=$(SRCDIR)lib\ansi\spcint.c
 !endif
 
 ################
@@ -227,8 +238,13 @@ tree.obj : $(SRCDIR)lib\tree.c
 
 ################ ansi
 
-spcint.obj : $(SRCDIR)lib\ansi\spcint.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib\ansi\spcint.c
+# generic or c99
+intspc.obj : $(INTSPC_C)
+	$(CC) $(CFLAGS) $(INTSPC_C)
+
+# ansi or c99
+spcint.obj : $(SPCINT_C)
+	$(CC) $(CFLAGS) $(SPCINT_C)
 
 spreal.obj : $(SRCDIR)lib\ansi\spreal.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\ansi\spreal.c
@@ -251,9 +267,6 @@ dynamic.obj : $(SRCDIR)lib\generic\dynamic.c
 
 expops.obj : $(SRCDIR)lib\generic\expops.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\generic\expops.c
-
-intspc.obj : $(SRCDIR)lib\generic\intspc.c
-	$(CC) $(CFLAGS) $(SRCDIR)lib\generic\intspc.c
 
 newer.obj : $(SRCDIR)lib\generic\newer.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\generic\newer.c
