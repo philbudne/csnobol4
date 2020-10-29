@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/28/2020:
+	Makefile: cleanup remove config.sno
+
 10/27/2020:
 	Makefile, Makefile2.m4: use $(MAKE) -C doc ....
 

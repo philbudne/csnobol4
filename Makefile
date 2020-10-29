@@ -238,7 +238,7 @@ tidy:
 # remove objects, turds; leave generated sources, final binary.
 
 DISP=*.o *.a prolog bsplitu vers build.c bsdtsort \
-	config.m4 config.h Makefile2 .depend *.1 *.html $(SO)*.o
+	config.m4 config.h config.sno Makefile2 .depend *.1 *.html $(SO)*.o
 
 cleanmostly: tidy
 	rm -f $(DISP)
