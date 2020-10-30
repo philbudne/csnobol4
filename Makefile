@@ -105,7 +105,7 @@ $(SO)Makefile2: config.m4 Makefile2.m4
 	echo '# add local changes to local-config'		>> $(SO)$(M2TMP)
 	(cd $(SO); $(M4) ../Makefile2.m4 >> $(M2TMP))
 	echo '# DO NOT DELETE THIS LINE. make depend uses it.' >> $(SO)$(M2TMP)
-	$(MAKE) -C $(SO) -f $(M2TMP) depend MAKEFILE2=$(M2TMP) SRCDIR=../
+	cd $(SO); $(MAKE) -f $(M2TMP) depend MAKEFILE2=$(M2TMP) SRCDIR=../
 	mv -f $(SO)$(M2TMP) $(SO)Makefile2
 	rm -f $(SO).depend
 	touch $(SO).depend
@@ -115,10 +115,10 @@ $(SO)Makefile2: config.m4 Makefile2.m4
 # avoid knowledge of library filename or extension!!!
 
 shared_library: $(SO)Makefile2 $(GENERATED)
-	$(MAKE) -C $(SO) -f Makefile2 shared_library SRCDIR=../
+	cd $(SO); $(MAKE) -f Makefile2 shared_library SRCDIR=../
 
 debug_shared_library: $(SO)Makefile2 $(GENERATED)
-	$(MAKE) -C $(SO) -f Makefile2 shared_library SRCDIR=../ OPT=-g
+	cd $(SO); $(MAKE) -f Makefile2 shared_library SRCDIR=../ OPT=-g
 
 # main program using shared library
 ssnobol4: ALWAYS Makefile2 $(GENERATED)
@@ -250,12 +250,12 @@ cleanmostly: tidy
 # clean as a freshly unpacked kit; remove binaries, timing;
 # leave version.h, version for Windoze
 clean:	cleanmostly
-	$(MAKE) -C doc clean
+	cd doc; $(MAKE) clean
 	rm -f snobol4 xsnobol4 cpuid timing.out tested *.ln sdb *.exe
 	rm -rf ssnobol4 $(SO)
 
 # remove objects, generated files (clean as a fresh CVS checkout)
 # DANGER: requires installed binary to rebuild!!
 spotless: clean
-	$(MAKE) -C doc spotless
+	cd doc; $(MAKE) spotless
 	rm -f $(GENERATED) $(G2) snobol4.c isnobol4.c snobol4 xsnobol4

@@ -674,7 +674,7 @@ snopea.1.html: snopea snolib/snopea.sno snobol4
 	$(SNOPEA) snopea snopea.1.html
 
 docs $(GENERATED_DOCS_DOCDIR): snopea snolib/snopea.sno snobol4 always
-	$(MAKE) -C doc all
+	cd doc; $(MAKE) all
 
 always:
 

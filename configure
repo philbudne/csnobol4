@@ -2024,23 +2024,24 @@ echo "MODULES=$MODULES"				>> $CONFIG_M4
 echo "TEST_SNOPATH=$TEST_SNOPATH"		>> $CONFIG_M4
 echo ''						>> $CONFIG_M4
 echo 'clean_modules:'				>> $CONFIG_M4
+# FreeBSD 3.2 make does not have -C!
 for M in $MODULES; do
-    echo "	\$(MAKE) -C modules/$M clean $MODSNO" >> $CONFIG_M4
+    echo "	cd modules/$M; \$(MAKE) clean $MODSNO" >> $CONFIG_M4
 done
 echo ''						>> $CONFIG_M4
 echo 'build_modules:'				>> $CONFIG_M4
 for M in $MODULES; do
-    echo "	\$(MAKE) -C modules/$M all $MODSNO" >> $CONFIG_M4
+    echo "	cd modules/$M; \$(MAKE) all $MODSNO" >> $CONFIG_M4
 done
 echo ''						>> $CONFIG_M4
 echo 'install_modules:'				>> $CONFIG_M4
 for M in $MODULES; do
-    echo "	\$(MAKE) -C modules/$M install $MODSNO"	>> $CONFIG_M4
+    echo "	cd modules/$M; \$(MAKE) install $MODSNO" >> $CONFIG_M4
 done
 echo ''						>> $CONFIG_M4
 echo 'test_modules:'				>> $CONFIG_M4
 for M in $MODULES; do
-    echo "	\$(MAKE) -C modules/$M test $MODSNO" >> $CONFIG_M4
+    echo "	cd modules/$M; \$(MAKE) test $MODSNO" >> $CONFIG_M4
 done
 echo ''						>> $CONFIG_M4
 

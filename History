@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/29/2020:
+	Remove all use of make -C (missing in FreeBSD 3.2!)!!
+	Makefile, Makefile.m4, configure
+
 10/28/2020:
 	Makefile: cleanup remove config.sno
 

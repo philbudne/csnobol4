@@ -3,6 +3,8 @@ $Id$
 json.sno needs snopea docs
 	add json1.sno tests (depends on logic and sprintf)
 		add "atoi" to sprintf, and put test in sprintf module??
+	json.dumps: take optional indent argument (pretty print)
+	json.load?
 
 shared library:
 	versioning: gcc -shared -Wl,-soname,libxx.so.1 -o libxx.so.1.0.1
