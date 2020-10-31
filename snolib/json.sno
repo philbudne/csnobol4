@@ -24,30 +24,19 @@
 *=bull arrays must have at least one item.
 *=bull \u escapes can only be used for ASCII (00-7F) characters.
 *=bull B<true> and B<false> are not accepted.
+*
+*NOTE!!! JSON is defined to use UTF-8 encoding, but this is not enforced
+*by this library.  To exchange binary data with other software which
+*may enforce use of only UTF-8 sequences, the binary strings should
+*be encoded (eg with base64) to ASCII sequences.
 *=sect COMPATIBILITY
 *L<https://tools.ietf.org/html/rfc8259>
 *=sect SEE ALSO
-*B<snobol4>(1)
+*B<snobol4>(1),
+*B<snobol4base64>(3)
 *=sect AUTHORS
 *Philip L. Budne
 *=cut
-* Implements a proper subset of JSON [https://tools.ietf.org/html/rfc8259]
-* Arrays MUST have at least one element,
-*	representing a SNOBOL4 single-dimensioned zero-based ARRAY.
-*	Attempting to encode any other ARRAY will fail.
-* Boolean (true/false) and Null (null) values are forbidden.
-* \uXXXX escapes can only be used for ASCII (7-bit) characters
-*	more would require transcoding between UTF-8 and UTF-16
-*	(due to surrogate pairs).  Encoding each half of the
-*	surrogate pair as UTF-8 is "CESU-8", which is discouraged.
-
-* NOTE!!
-* does not check/enforce that "upper half" (0x80 and above)
-*	are all legal UTF-8 sequences!!!
-* attempting to encode or decode arbitrary sequences of upper half
-*	characters SHOULD (but does not) fail!!! Any binary data
-*	should be base64 encoded!!!
-
 -include 'utf.sno'
 
 	json.nul = CHAR(0)
