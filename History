@@ -4,11 +4,15 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/30/2020:
 	Makefile: add tested to M2TARGETS
+	doc/Makefile: add snobol4json.3[.html]
 	snolib/utf.sno: use CHAR; make RUNE check for UTF-16 surrogate range
 	snolib/json.sno: implement \Uxxxxxxxx
 		change functions names to JSON_{EN,DE}CODE
+		add documentation
+		accept "null"
 	test/json1.{sno,ref}: add \U test
 		change function names
+		add null tests
 
 10/30/2020:
 	test/loaderr.sno: add library args to LOADs

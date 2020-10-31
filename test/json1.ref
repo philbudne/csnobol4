@@ -8,8 +8,10 @@ OK: 2.0
 OK: 3e2
 OK: 1.234e3
 OK: -1234e-3
+OK: null
 OK: "foo"
 OK: ["foo"]
+OK: [null]
 OK: [1,2,3]
 OK: {"a":"hello","z":"goodbye"}
 OK: [{"a":1.,"b":-2},{"c":3,"d":[4,5,6]}]

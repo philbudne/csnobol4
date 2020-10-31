@@ -1,7 +1,37 @@
 * $Id$
 * A simple SNOBOL4 JSON package.
-* Implements a proper subset of JSON [https://tools.ietf.org/html/rfc8259]
 *	(in very unstylish code)
+*=pea
+*=sect NAME
+*JSON Encoding and Decoding
+*=sect SYNOPSYS
+*=code
+*B<-INCLUDE 'json.sno'>
+*      string = B<JSON_ENCODE(>I<data>B<)>
+*      data = B<JSON_DECODE(>I<string>B<)>
+*=ecode
+*=sect DESCRIPTION
+*B<JSON_ENCODE(>I<data>B<)> accepts a subset of SNOBOL4 data types:
+*=bull B<STRING>
+*=bull B<INTEGER>
+*=bull B<REAL>
+*=bull B<ARRAY>
+*MUST be singly-dimensioned and zero-based.
+*=bull B<TABLE>
+*
+*B<JSON_DECODE(>I<json_string>B<)> accepts a proper subset of JSON
+*with the following limits and omissions:
+*=bull arrays must have at least one item.
+*=bull \u escapes can only be used for ASCII (00-7F) characters.
+*=bull B<true> and B<false> are not accepted.
+*=sect COMPATIBILITY
+*L<https://tools.ietf.org/html/rfc8259>
+*=sect SEE ALSO
+*B<snobol4>(1)
+*=sect AUTHORS
+*Philip L. Budne
+*=cut
+* Implements a proper subset of JSON [https://tools.ietf.org/html/rfc8259]
 * Arrays MUST have at least one element,
 *	representing a SNOBOL4 single-dimensioned zero-based ARRAY.
 *	Attempting to encode any other ARRAY will fail.
@@ -50,7 +80,7 @@ json.hi.loop
 e.json.hi
 
 **************** json.hex
-* convert 8 bit number to two hex digits
+* convert 8 bit number to two hex digits (for control characters)
 
 	DEFINE("json.hex(n)")				:(e.json.hex)
 json.hex
@@ -127,19 +157,21 @@ json.gtok
 	IDENT(json.subject)				:S(FRETURN)
 	json.subject POS(0) json.number . json.gtok =	:S(json.gtok.num)
 	json.subject POS(0) ANY('[],{}:') . json.gtok =	:S(json.gtok.tok)
-	json.subject pos(0) json.string =		:F(FRETURN)
+	json.subject POS(0) json.string =		:S(json.gtok.str)
+	json.subject POS(0) 'null' =			:S(RETURN)F(FRETURN)
 * here with string to de-escape
-	json.gtok = json.descape(json.gtok)		:S(RETURN)F(FRETURN)
+json.gtok.str
++	json.gtok = json.descape(json.gtok)		:S(RETURN)F(FRETURN)
 *
 * here with number
 json.gtok.num
 +	json.gtok = json.gtok + 0
 +	:(RETURN)
 *
-* here with a syntax element
+* here with a terminal syntax element
 json.gtok.tok
 +	json.gtok = json.token(json.gtok)
-	:(RETURN)
++	:(RETURN)
 e.json.gtok
 **************** json.istok ****************
 * predicate: only true if tok is a JSON.TOKEN instance (not a value)
