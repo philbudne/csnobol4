@@ -3,6 +3,14 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/30/2020:
+	Makefile: add tested to M2TARGETS
+	snolib/utf.sno: use CHAR
+	snolib/json.sno: implement \Uxxxxxxxx
+		change functions names to JSON_{EN,DE}CODE
+	test/json1.{sno,ref}: add \U test
+		change function names
+
+10/30/2020:
 	test/loaderr.sno: add library args to LOADs
 		(unloading "self" is fatal on FreeBSD 3.2!)
 

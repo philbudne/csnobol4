@@ -5,6 +5,8 @@
 *	Phil Budne <phil@Ultimate.COM>
 *	September 1996
 *	updated for 4/5/6 byte runes June 1997
+*	updated to note 5/6 byte runes illegal, October 2020
+*		outlawed in https://tools.ietf.org/html/rfc3629#section-3	
 
 *	Most of this is just AWFUL, but this is just a proof of
 *	concept, and like all SNOBOL there is always a smaller, faster
@@ -21,26 +23,21 @@
 ****************
 *	Pattern to match one UTF encoded rune
 
-*	SNOBOL4 lacks CHAR(), SPITBOL CHAR() loses on CHAR(0)!
-	DEFINE("XCHAR(N)")				:(EXCHAR)
-XCHAR	&ALPHABET ARB POS(N) LEN(1) . XCHAR		:S(RETURN)F(FRETURN)
-EXCHAR
-
 *	helper function to pattern that matches a range of byte values.
 *	the true SNO-head might implement this as a function that
 *	takes strings of SPAN('01') ARBNO('x') directly!!
 	DEFINE("RANGE(START,END)")			:(ERANGE)
 RANGE	
 *	SPITBOL compiles ANY() into a bitmap;
-	&ALPHABET ARB (XCHAR(START) ARB XCHAR(END)) . RANGE :F(FRETURN)
+	&ALPHABET ARB (CHAR(START) ARB CHAR(END)) . RANGE :F(FRETURN)
 *	SPITBOL compiles tables once;
 	RANGE = ANY(RANGE)				:(RETURN)
 *	for SNOBOL4; create big pattern
 *	GE(START,END)					:S(FRETURN)
-*	RANGE = XCHAR(START)
+*	RANGE = CHAR(START)
 *RANGE1	GE(STAT,END)					:S(RETURN)
 *	START = START + 1
-*	RANGE = RANGE | XCHAR(START)			:(RANGE1)
+*	RANGE = RANGE | CHAR(START)			:(RANGE1)
 *
 ERANGE
 
@@ -57,10 +54,14 @@ ERANGE
 
 *	four-byte leader: 11110xxx	values 0x10000..0x1fffff
 	UTF.T4 = RANGE(240,247)
-	
+
+* described in https://tools.ietf.org/html/rfc2279
+* outlawed in https://tools.ietf.org/html/rfc3629#section-3	
 *	five-byte leader: 111110xx	values 0x200000..0x3ffffff
 	UTF.T5 = RANGE(248,251)
-	
+
+* described in https://tools.ietf.org/html/rfc2279
+* outlawed in https://tools.ietf.org/html/rfc3629#section-3	
 *	five-byte leader: 1111110x	values 0x4000000..0x7fffffff
 	UTF.T6 = RANGE(252,253)
 	
@@ -80,7 +81,7 @@ ERANGE
 
 	UTF.RUNE0 = POS(0) UTF.RUNE
 
-*	pattern to move to nexy sync char;
+*	pattern to move to next sync char;
 *	UTF.SYNC = BREAKX(UTF.T1 UTF.T2 UTF.T3 UTF.T4 UTF.T5 UTF.T6)
 
 
@@ -114,37 +115,37 @@ EUTFANY
 RUNE	LT(N,0)						:S(FRETURN)
 	GT(N,127)					:S(RUNE2)
 *	single byte rune;
-	RUNE = XCHAR(N)					:(RETURN)
+	RUNE = CHAR(N)					:(RETURN)
 RUNE2	GT(N,2047)					:S(RUNE3)
 *	two-byte rune;
-	RUNE = XCHAR(192 + (N / 64))
-+		XCHAR(128 + REMDR(N, 64))		:(RETURN)
+	RUNE = CHAR(192 + (N / 64))
++		CHAR(128 + REMDR(N, 64))		:(RETURN)
 *	three-byte rune;
 RUNE3	GT(N,65535)					:S(RUNE4)
-	RUNE = XCHAR(224 + N / 4096)
-+		XCHAR(128 + REMDR(N / 64, 64))
-+		XCHAR(128 + REMDR(N, 64))		:(RETURN)
+	RUNE = CHAR(224 + N / 4096)
++		CHAR(128 + REMDR(N / 64, 64))
++		CHAR(128 + REMDR(N, 64))		:(RETURN)
 * four-byte rune;
 RUNE4	GT(N,2097151)					:S(RUNE5)
-	RUNE = XCHAR(240 + N / 262144)
-+		XCHAR(128 + REMDR(N / 65536, 64))
-+		XCHAR(128 + REMDR(N / 64, 64))
-+		XCHAR(128 + REMDR(N, 64))		:(RETURN)
-* five-byte rune;
+	RUNE = CHAR(240 + N / 262144)
++		CHAR(128 + REMDR(N / 4096, 64))
++		CHAR(128 + REMDR(N / 64, 64))
++		CHAR(128 + REMDR(N, 64))		:(RETURN)
+* five-byte rune (no longer legal);
 RUNE5	GT(N,67108863)					:S(RUNE6)
-	RUNE = XCHAR(248 + N / 16777216)
-+		XCHAR(128 + REMDR(N / 262144, 64))
-+		XCHAR(128 + REMDR(N / 4096, 64))
-+		XCHAR(128 + REMDR(N / 64, 64))
-+		XCHAR(128 + REMDR(N, 64))		:(RETURN)
-* six-byte rune;
+	RUNE = CHAR(248 + N / 16777216)
++		CHAR(128 + REMDR(N / 262144, 64))
++		CHAR(128 + REMDR(N / 4096, 64))
++		CHAR(128 + REMDR(N / 64, 64))
++		CHAR(128 + REMDR(N, 64))		:(RETURN)
+* six-byte rune (no longer legal);
 RUNE6	GT(N,2147483647)				:S(FRETURN)
-	RUNE = XCHAR(252 + N / 1073741824)
-+		XCHAR(128 + REMDR(N / 16777216, 64))
-+		XCHAR(128 + REMDR(N / 262144, 64))
-+		XCHAR(128 + REMDR(N / 4096, 64))
-+		XCHAR(128 + REMDR(N / 64, 64))
-+		XCHAR(128 + REMDR(N, 64))		:(RETURN)
+	RUNE = CHAR(252 + N / 1073741824)
++		CHAR(128 + REMDR(N / 16777216, 64))
++		CHAR(128 + REMDR(N / 262144, 64))
++		CHAR(128 + REMDR(N / 4096, 64))
++		CHAR(128 + REMDR(N / 64, 64))
++		CHAR(128 + REMDR(N, 64))		:(RETURN)
 ERUNE
 
 ****************

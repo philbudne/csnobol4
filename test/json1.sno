@@ -2,8 +2,8 @@
 
 	DEFINE('loadump(x,x2)y,y2')			:(e.loadump)
 loadump
-	y = json.loads(x)				:F(loadump.df)
-	y2 = json.dumps(y)				:F(loadump.lf)
+	y = JSON_DECODE(x)				:F(loadump.df)
+	y2 = JSON_ENCODE(y)				:F(loadump.lf)
 	x2 = ident(x2) x
 	output = ident(x2,y2) 'OK: ' x			:S(RETURN)
 	OUTPUT = 'ERROR: <' x '> got <' y2 '> exp <' x2 '>' :(loadump.fail)
@@ -12,6 +12,7 @@ loadump.lf OUTPUT = 'ERROR: load failed: ' y
 loadump.fail &CODE = &CODE + 1				:(FRETURN)
 e.loadump
 
+* NOTE! Internal function!
 	OUTPUT = json.escape('hello world')
 	OUTPUT = json.escape(json.bs json.ht json.lf json.ff json.cr '"\')
 	OUTPUT = json.escape(json.ctrl)
@@ -32,7 +33,7 @@ e.loadump
 	loadump('"\b\t\n\f\r\"\\"')
 	loadump('"hello\nworld"')
 	loadump('"hello\u000Aworld"','"hello\nworld"')
-	loadump(json.dumps(json.ctrl))
+	loadump(JSON_ENCODE(json.ctrl))
 	loadump('"hello world"')
 * http://doc.cat-v.org/plan_9/4th_edition/papers/utf (1993)
 * greek (two-byte UTF-8 sequences)
@@ -42,8 +43,8 @@ e.loadump
 * all emoji are off the "Basic Multilingual Plane"
 * (and are four-byte UTF-8 sequences)
 	loadump('"👍😊🥺😉😍😘😚😜😂😝😳😁😣😢😭😰🥰🥴😏🍆🍑"')
-
+	loadump('"\U0001F44D"', '"👍"')
 * errors:
-*	OUTPUT = json.dumps(json.cons())
-*	OUTPUT = json.dumps(ARRAY('1:10'))
+*	OUTPUT = JSON_ENCODE(json.cons())
+*	OUTPUT = JSON_ENCODE(ARRAY('1:10'))
 END
