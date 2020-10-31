@@ -122,6 +122,8 @@ RUNE2	GT(N,2047)					:S(RUNE3)
 +		CHAR(128 + REMDR(N, 64))		:(RETURN)
 *	three-byte rune;
 RUNE3	GT(N,65535)					:S(RUNE4)
+* illegal to encode D800-DFFF -- reserved for UTF-16 surrogates
+	GE(N,55296) LE(N,57343)				:S(FRETURN)
 	RUNE = CHAR(224 + N / 4096)
 +		CHAR(128 + REMDR(N / 64, 64))
 +		CHAR(128 + REMDR(N, 64))		:(RETURN)
