@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/31/2020:
+	modules/Makefile.mod: make build depend on ../../config.sno
+
 10/30/2020:
 	Makefile: add tested to M2TARGETS
 	doc/Makefile: add snobol4json.3[.html]

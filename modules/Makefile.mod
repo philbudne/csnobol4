@@ -11,7 +11,7 @@ all:	$(OUT)
 
 INC=-N -I../.. -I../../snolib
 SNOBOL4?=../../xsnobol4
-SETUP=$(SNOBOL4) $(INC) setup.sno $(SETUPOPT)
+SETUP=$(SNOBOL4) $(INC) setup.sno $(SETUPOPT) ../../config.sno
 
 $(OUT): setup.sno $(SRC) ../../snolib/setuputil.sno $(SNOBOL4)
 	$(SETUP) build
