@@ -1,5 +1,5 @@
 * load leaves function undefined
-	LOAD("ZZZ()")
+	LOAD("ZZZ()", "xyzzy")
 	OUTPUT = FUNCTION(.ZZZ) "ZZZ"
 
 * load leaves defined function in place
@@ -8,6 +8,6 @@ QQQ	QQQ = X						:(RETURN)
 EQQQ
 
 	OUTPUT = FUNCTION(.QQQ) QQQ("QQQ1")
-	LOAD("QQQ()")
+	LOAD("QQQ()", "xyzzy")
 	OUTPUT = FUNCTION(.QQQ) QQQ("QQQ2")
 END

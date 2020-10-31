@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/30/2020:
+	test/loaderr.sno: add library args to LOADs
+		(unloading "self" is fatal on FreeBSD 3.2!)
+
 10/29/2020:
 	Remove all use of make -C (missing in FreeBSD 3.2!)!!
 	Makefile, Makefile.m4, configure
