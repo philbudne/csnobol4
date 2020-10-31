@@ -1618,6 +1618,8 @@ if [ "x$WITHOUT_MODULES" = x ]; then
     TIME_CFLAGS="$TIME_CFLAGS -DHAVE_SLEEP"
     SLEEP_C=bsd/sleep.c
 
+    # what a PITA!
+    # NetBSD 9 & FreeBSD 13 have st_mtimensec
     if config/check sys/stat.h \
 	    'struct stat st; long l = st.st_mtim.tv_nsec'; then
 	# FreeBSD 12, NetBSD 9, Cygwin, Linux
@@ -1625,12 +1627,14 @@ if [ "x$WITHOUT_MODULES" = x ]; then
 	STAT_CFLAGS="-DHAVE_ST_MTIM_NSEC"
     elif config/check sys/stat.h \
 	    'struct stat st; long l = st.st_mtimespec.tv_nsec'; then
-	# OSX (FreeBSD 12, NetBSD 9 have as a compat define)
+	# OSX 10.15 (FreeBSD 12, NetBSD 9 have as a compat define)
+	# in some settings st_mtime is a time_t, followed by st_mtimensec long.
 	echo 'using stat st_mtimespec.tv_nsec'		1>&2
 	STAT_CFLAGS="-DHAVE_ST_MTIMESPEC_NSEC"
     fi
 
-    # UGH! time-of-day code in both time and random modules!
+    # UGH! time-of-day code in both "time" and "random" modules!
+    # need a common library for modules?!
     CLOCK_REALTIME='struct timespec ts; long x; clock_gettime(CLOCK_REALTIME, &ts); x = ts.tv_nsec'
     if config/check time.h "$CLOCK_REALTIME" "$TR_LDFLAGS"; then
 	echo 'using POSIX.1b clock_gettime(CLOCK_REALTIME,..) for time of day' 1>&2

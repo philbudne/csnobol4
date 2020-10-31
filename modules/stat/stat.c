@@ -25,19 +25,22 @@
 #define st_mtimensec st_mtim.tv_nsec
 #define st_ctimensec st_ctim.tv_nsec
 #define st_birthtimensec st_birthtim.tv_nsec /* not on Linux */
-#elif defined(HAVE_ST_MTIMESPEC_NSEC)	/* OSX is behind the times */
+#elif defined(HAVE_ST_MTIMESPEC_NSEC)
+/*
+ * "struct timespec st_mtimespec" is the default on OSX 10.15
+ * has st_mtime + st_mtimensec members in alt settings
+ * does not have st_mtim under ANY compat setting?!
+ */
 #define st_atimensec st_atimespec.tv_nsec
 #define st_mtimensec st_mtimespec.tv_nsec
 #define st_ctimensec st_ctimespec.tv_nsec
 #define st_birthtimensec st_birthtimespec.tv_nsec
-#endif
-#else  /* st_atimensec defined */
-#ifdef __st_birthtimensec		/* oh, that crazy OpenBSD! */
+#endif /* HAVE_ST_MTIM_NSEC not defined, HAVE_ST_MTIMESPEC_NSEC defined */
+#elif defined(__st_birthtimensec)	/* oh, that crazy OpenBSD! */
 /* field present, but both tv_sec and tv_nsec zero on OpenBSD 6.8 ffs?!!! */
 #define st_birthtimensec __st_birthtimensec
 #define st_birthtime __st_birthtime
-#endif /* __st_birthtimensec defined */
-#endif /* st_atimensec not defined */
+#endif /* st_atimensec not defined & __st_birthtimensec defined */
 
 #define SETINT(DP,N,VAL) (DP)[N].a.i = (VAL); (DP)[N].f = 0; (DP)[N].v = I
 #define COUNT(DP) ((DP)->v/DESCR+1)
