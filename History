@@ -3,6 +3,9 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 10/31/2020:
+	configure: change version to 2.2-pre1
+
+10/31/2020:
 	modules/Makefile.mod: make build depend on ../../config.sno
 
 10/30/2020:
