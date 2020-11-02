@@ -14,13 +14,11 @@
 
 int
 exists(char *path) {
-    // XXX convert UTF-8 to UCS-2/UTF-16???
     return GetFileAttributesA(path) != INVALID_FILE_ATTRIBUTES;
 }
 
 int
 isdir(char *path) {
-    // XXX convert UTF-8 to UCS-2/UTF-16???
     DWORD attr = GetFileAttributesA(path);
 
     return (attr != INVALID_FILE_ATTRIBUTES && 
