@@ -93,6 +93,19 @@ osname(char *cp) {
      * does not specifically target Windows 8.1 or Windows 10, the
      * functions will return the Windows 8 version (6.2).
      */
+
+    /*
+     * PLB 11/2/2020:
+     * Aparently there's an undocumented interface in NTDLL that's used my the MSVCRT:
+     * extern VOID WINAPI RtlGetNtVersionNumbers(LPDWORD pMajor, LPDWORD pMinor, LPDWORD pBuild);
+     *
+     * Also "the kernel-mode equivalent of the user-mode GetVersionEx function in the Windows SDK":
+     * RtlGetVersion
+     */
+
+    /* uncharmingly, GetVersionExA wants a OSVERSIONINFOA
+     * but OSVERSIONINFOEXA doesn't start with one!!
+     */
     if (!GetVersionExA((LPOSVERSIONINFO)&osv)) {
 	strcpy(cp, "Win????");
 	return;
