@@ -49,7 +49,6 @@
 #define TIME	XTIME
 #define UNLOAD	XUNLOAD
 
-#define PML_NDBM
 #define DBM_OPEN XDBM_OPEN
 #define DBM_CLOSE XDBM_CLOSE
 #define DBM_STORE XDBM_STORE
