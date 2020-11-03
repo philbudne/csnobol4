@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/2/2020:
+	config/vms/config.h: flush PML_NDBM
+	lib/win32/sys.c: comments
+	lib/win32/exists.c: remove UTF-16 comments
+
 *** 2.2-pre1 (tag REL_2_2_PRE1)
 
 10/31/2020:
