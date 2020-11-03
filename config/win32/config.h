@@ -29,7 +29,7 @@
 
 /* paths; */
 #define SNOLIB_FILE	"snolib.dll"
-#define SNOLIB_BASE	"C:\\Program Files\\CSNOBOL4"
+#define SNOLIB_BASE	"C:\\Program Files\\SNOBOL4"
 #define SHARED_OBJ_SUBDIR "shared"
 #define DIR_SEP		"\\"
 #define PATH_SEP	";"

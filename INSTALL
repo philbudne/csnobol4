@@ -13,9 +13,8 @@ In most cases all you need to type is "make".  The "m4" macro
 processor is required, and on some Linux distributions a package may
 need to be installed for the "time" command.
 
-NOTE!!! CSNOBOL 2.1 has been tested on Linux, FreeBSD, Mac OS X.
-Expect that most other proprietary Unix systems (Solaris, AIX, HP-UX
-and older systems) may require some work.
+CSNOBOL 2.2 has been tested on Linux, FreeBSD, MacOS, NetBSD, OpenBSD
+and OpenIndiana.
 
 Some extensions will only be built if necessary support is found
 (in some Linux distributions this requires both library and
@@ -25,12 +24,14 @@ Some extensions will only be built if necessary support is found
 * sqlite depends on libsqlite3 (or "amalgamation" source in module/sqlite3).
 * tcl depends on libtcl
 * ndbm will fall back to a provided "sdbm" library if no system version
-	of Berkeley DB or GNU DBM can be found.
+	of Berkeley DB or GNU DBM can be found. GDBM support may require
+	"compat" package(s) as well.
 
 The top level makefile will run the "configure" script to create
-config.m4 and config.h. config.m4 is used to create Makefile2, which
-is then run, creating a test version of snobol4 (named "xsnobol4")
-which is then regression tested and timed, and finally named "snobol4".
+config.m4, config.sno and config.h. config.m4 is used to create
+Makefile2, which is then run, creating a test version of snobol4
+(named "xsnobol4") which is then regression tested and timed, and
+finally named "snobol4".
 
 The "configure" script tries to use the available C compiler which
 works best.  If you wish to alter configure's decision process, you
@@ -95,7 +96,8 @@ with "--add-" can appear);
 		--longlong), or the maximum object size (see
 		--no-bitfields).
 
-		NOTE! THIS IS UNLIKELY TO WORK!
+		NOTE! THIS IS UNLIKELY TO WORK,
+		AND HAS NOT BEEN TRIED RECENTLY.
 
 		It will probably fail the regression test diag1 when
 		it tries to use IDENT() to compare two REAL values.
@@ -164,8 +166,7 @@ with "--add-" can appear);
 		Expect to see large numbers of C compiler warnings when
 		using this option with GCC.
 
-		This option is experimental, and has not been extensively
-		tested, particularly with vendor supplied C compilers.
+		THIS HAS NOT BEEN RECENTLY TESTED.
 
 	--lp64
 		Force the use of defines for LP64 (64-bit long and
@@ -180,10 +181,8 @@ with "--add-" can appear);
 		Under the LP64 model, SNOBOL4 INTEGERs are represented
 		by C longs and REALs are represented C doubles.  The
 		LP64 model doubles the size of each SIL descriptor,
-		and while it allows larger strings (4GB vs. 16MB) and
-		compound objects (128M descriptors vs.  2M), the
-		increased descriptor and arithmetic type sizes may
-		degrade performance on some systems.
+		and allows larger strings (4GB vs. 16MB) and
+		compound objects (128M descriptors vs.  2M).
 
 		If the underlying C compiler does not implement the
 		LP64 model, this option may have disastrous results.
@@ -217,12 +216,6 @@ with "--add-" can appear);
 		4GB, the largest array from 2M entries to over 256M
 		entries, and the largest table from 1M entries to over
 		128M entries.
-
-		In many cases the larger descriptor size will decrease
-		performance. Despite not having to deal with packing
-		and unpacking a 24-bit field, the larger descriptor
-		means increased memory bandwidth use, and less
-		efficient use of the CPU data cache.
 
 	--no-dynlib
 		Disable use of all dynamic LOAD() support mechanisms
@@ -436,7 +429,7 @@ should be in a CMD window with the proper environment variables set.
 Use the cd command to navigate to where you downloaded the snobol-2.1.x.tar.gz
 file to, ie:
 
-     cd C:\Users\Myname\Downloads
+    cd C:\Users\Myname\Downloads
 
 Extract the tar file (where x.y.z is the current version):
     tar -x -z -f snobol-x.y.z.tar.gz
@@ -453,7 +446,8 @@ NOTE: Not all DLL loadable code has been tested.
 To compile a native Windows binary using MINGW (http://www.mingw.org):
 	make -f config/win32/mingw.mak
 
-To compile using Borland C (not tested in a long time, almost certainly broken):
+To compile using Borland C
+(not tested in a long time, almost certainly broken):
 	nmake -f config\win32\borland.mak
 
 DJGPP under DOS

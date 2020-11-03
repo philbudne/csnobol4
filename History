@@ -3,6 +3,11 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 11/2/2020:
+	config.h: SNOLIB_BASE "C:\Program Files\SNOBOL4"
+	pkg/win32/README.win32: ditto
+	INSTALL: update
+
+11/2/2020:
 	config/vms/config.h: flush PML_NDBM
 	lib/win32/sys.c: comments
 	lib/win32/exists.c: remove UTF-16 comments

@@ -1,6 +1,6 @@
-This package was built to be installed as C:\Program Files\CSNOBOL4
+This package was built to be installed as C:\Program Files\SNOBOL4
 If you place it elsewhere, define evironment variable SNOLIB to point
-to the the CSNOBOL4 directory.
+to the the SNOBOL4 directory.
 
 The \bin directory contains an sdb.bat file to run the debugger,
 and also a benchmarking script:
