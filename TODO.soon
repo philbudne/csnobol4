@@ -1,5 +1,16 @@
 $Id$
 
+Mac:
+	Mac OS X 10.5.8 running version:
+	powerpc-apple-darwin9-gcc-4.0.1
+	stat.c:120: error: ‘struct stat’ has no member named ‘st_birthtimespec’
+	stat.c:121: error: ‘struct stat’ has no member named ‘st_birthtimespec‘
+
+Windows:
+	Default SNOLIB from argv[0]
+	Test timing.bat
+	CSNOBOL4 or SNOBOL4??
+
 JSON_ENCODE: take optional indent argument (pretty print)
 
 shared library:
