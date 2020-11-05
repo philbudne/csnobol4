@@ -7,7 +7,7 @@ Mac:
 	stat.c:121: error: ‘struct stat’ has no member named ‘st_birthtimespec‘
 
 Windows:
-	Default SNOLIB from argv[0]
+	Default SNOLIB from argv[0] -- dirname(dirname(av[0])) + DIR_SEP + "lib"??
 	Test timing.bat
 	CSNOBOL4 or SNOBOL4??
 
