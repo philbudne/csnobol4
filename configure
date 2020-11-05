@@ -1622,7 +1622,7 @@ if [ "x$WITHOUT_MODULES" = x ]; then
     # FreeBSD/NetBSD/Cygwin have st_birthtim
     # FreeBSD/NetBSD/MacOS have st_birthtimespec
     NSEC='struct stat st; st.st_atimensec = st.st_ctimensec = st.st_mtimensec = 0'
-    BIRTHNEC='struct stat st; st.st_birthtimensec = 0'
+    BIRTHNSEC='struct stat st; st.st_birthtimensec = 0'
     MTIM_NSEC='-Dst_atimensec=st_mtim.tv_nsec -Dst_ctimensec=st_ctim.tv_nsec -Dst_mtimensec=st_mtim.tv_nsec'
     BIRTHTIM_NSEC='-Dst_birthtimensec=st_birthtim.tv_nsec'
     # MacOS
