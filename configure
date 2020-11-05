@@ -1603,34 +1603,62 @@ if [ "x$WITHOUT_MODULES" = x ]; then
     # move (back) to the top of the file!!
     case "$CC_IS" in
     gcc|clang|icc)
-	# use __attribute__((destructor))
-	# XXX should check if it works (and if not, try declaring _fini??)
+	# gcc support for module load/unload
+	# use _init/_fini on systems with dlopen and older gcc??
 	MOD_SUPP=mod_gcc.c
 	;;
     esac
     if [ "x$MOD_SUPP" != x ]; then
+	# for setup(util).sno build command:
 	echo "	MOD_SUPPORT_SRC = '$MOD_SUPP'"	>> $CONFIG_SNO
-	# for building a library or installing (
-	# XXX may need m4 define for conditionalization?
+	# for Makefile2.m4 install:
 	echo 'MOD_SUPPORT_SRC=$(SRCDIR)lib/snolib/'$MOD_SUPP >> $CONFIG_M4
     fi
 
     TIME_CFLAGS="$TIME_CFLAGS -DHAVE_SLEEP"
     SLEEP_C=bsd/sleep.c
 
-    # what a PITA!
-    # NetBSD 9 & FreeBSD 13 have st_mtimensec
-    if config/check sys/stat.h \
-	    'struct stat st; long l = st.st_mtim.tv_nsec'; then
-	# FreeBSD 12, NetBSD 9, Cygwin, Linux
-	echo 'using stat st_mtim.tv_nsec'		1>&2
-	STAT_CFLAGS="-DHAVE_ST_MTIM_NSEC"
-    elif config/check sys/stat.h \
-	    'struct stat st; long l = st.st_mtimespec.tv_nsec'; then
-	# OSX 10.15 (FreeBSD 12, NetBSD 9 have as a compat define)
-	# in some settings st_mtime is a time_t, followed by st_mtimensec long.
-	echo 'using stat st_mtimespec.tv_nsec'		1>&2
-	STAT_CFLAGS="-DHAVE_ST_MTIMESPEC_NSEC"
+    # what a PITA! TRY to hide the birthtime mess.
+    # FreeBSD/NetBSD/Cygwin have st_birthtim
+    # FreeBSD/NetBSD/MacOS have st_birthtimespec
+    NSEC='struct stat st; st.st_atimensec = st.st_ctimensec = st.st_mtimensec = 0'
+    BIRTHNEC='struct stat st; st.st_birthtimensec = 0'
+    MTIM_NSEC='-Dst_atimensec=st_mtim.tv_nsec -Dst_ctimensec=st_ctim.tv_nsec -Dst_mtimensec=st_mtim.tv_nsec'
+    BIRTHTIM_NSEC='-Dst_birthtimensec=st_birthtim.tv_nsec'
+    # MacOS
+    TIMESPEC_NSEC='-Dst_atimensec=st_mtimespec.tv_nsec -Dst_ctimensec=st_ctimespec.tv_nsec -Dst_mtimensec=st_mtimespec.tv_nsec'
+
+    OPENBSD_BIRTH='-Dst_birthtime=__st_birthtim.tv_sec -Dst_birthtimensec=__st_birthtim.tv_nsec'
+
+    if config/check sys/stat.h "$NSEC"; then
+	# NetBSD 9, FreeBSD 13(will?) have st_mtimensec
+	echo 'using stat st_[acm]timensec'		1>&2
+	if config/check sys/stat.h "$BIRTHNSEC"; then
+	    echo 'using stat st_birthtimensec'		1>&2
+	elif config/check sys/stat.h "$BIRTHNSEC" "$OPENBSD_BIRTH"; then
+	    # __st_birthtim present since OpenBSD 3.6, but always zero in 6.8?!
+	    echo 'using stat __st_birthtim'		1>&2
+	    STAT_CFLAGS="$OPENBSD_BIRTH"
+	fi
+    elif config/check sys/stat.h "$NSEC" "$MTIM_NSEC"; then
+	# FreeBSD 12, Cygwin, Linux
+	echo 'using stat st_[acm]tim.tv_nsec'		1>&2
+	STAT_CFLAGS="$MTIM_NSEC"
+	BIRTHTIM_NSEC='-Dst_birthtimensec=st_birthtim.tv_nsec'
+	if config/check sys/stat.h "$BIRTHNSEC" "$BIRTHTIM_NSEC"; then
+	    # FreeBSD 12, Cygwin
+	    echo 'using stat st_birthtim.tv_nsec'		1>&2
+	    STAT_CFLAGS="$STAT_CFLAGS $BIRTHTIM_NSEC"
+	fi
+    elif config/check sys/stat.h "$NSEC" "$TIMESPEC_NSEC"; then
+	# OSX 10.15
+	echo 'using stat st_[acm]timespec.tv_nsec'	1>&2
+	STAT_CFLAGS="$TIMESPEC_NSEC"
+	BIRTHTIMESPEC_NSEC='-Dst_birthtimensec=st_birthtimespec.tv_nsec'
+	if config/check sys/stat.h "$BIRTHNSEC" "$BIRTHTIMESPEC_NSEC"; then
+	    echo 'using stat st_birthtimespec.tv_nsec'	1>&2
+	    STAT_CFLAGS="$STAT_CFLAGS $BIRTHTIMESPEC_NSEC"
+	fi
     fi
 
     # UGH! time-of-day code in both "time" and "random" modules!

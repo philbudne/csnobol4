@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/5/2020:
+	Move birthtime & nsec ugliness to configure script
+	configure: set STAT_CFLAGS
+	modules/stat/stat.c: just depend on st_{a,c,m,birth}time(nsec) defines
+
 11/2/2020:
 	config.h: SNOLIB_BASE "C:\Program Files\SNOBOL4"
 	pkg/win32/README.win32: ditto
