@@ -20,7 +20,7 @@
 #include "str.h"			/* strlen(), strdup() */
 
 void
-find_snolib_dir(const char *av0, char **vdirp, char **vlibp) {
+find_snolib_directory(const char *av0, char **vdirp, char **vlibp) {
     if (vlibp && isdir(*vlibp))
 	return;
 

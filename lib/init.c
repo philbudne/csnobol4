@@ -278,7 +278,7 @@ pathinit(char *av0, int std_includes) {
     /* distribution files (version-specific) */
     snolib_vlib = strjoin(snolib_vers, DIR_SEP, "lib", NULL);
 
-#ifdef FIND_SNOLIB_DIRECTORY
+#ifdef HAVE_FIND_SNOLIB_DIRECTORY
     /* see if directories exist, if not, find via argv[0] */
     find_snolib_directory(av0, &snolib_vers, &snolib_vlib);
 #endif

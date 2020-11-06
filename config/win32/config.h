@@ -120,6 +120,7 @@
 #define GETPID_IN_PROCESS_H
 #define NEED_GETOPT
 #define NEED_GETOPT_EXTERNS
+#define NEED_DIRNAME
 
 #elif defined(__MINGW32__)
 

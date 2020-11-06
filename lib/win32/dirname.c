@@ -82,7 +82,7 @@ dirname(char *path)
 	 * If path does not contain a '/', then dirname() shall return a
 	 * pointer to the string ".".
 	 */
-	if (end == pp && !ISSLASH(path[2])) { /* PLB ?? */
+	if (end == pp) {
 		pp[0] = '.';
 		pp[1] = '\0';
 		return (path);		/* PLB ?? */
