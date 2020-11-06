@@ -3,6 +3,9 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 11/6/2020:
+	configure: change version to 2.2-pre2
+
+11/6/2020:
 	Try to find library directory on Windows
 	Makefile2.m4: add DIRNAME_C, dirname.o rule (not (yet?) used)
 	configure: comment out dirname test (for now?)
