@@ -46,9 +46,11 @@ find_snolib_directory(const char *av0, char **vdirp, char **vlibp) {
 	    *vlibp = strdup(vlibdir);
 	}
     }
+#if 0
     else {
 	/* XXX TEMP? will complain during build */
 	fprintf(stderr, "No library directory at %s\n", vlibdir);
     }
+#endif
     free(av0dup);
 }
