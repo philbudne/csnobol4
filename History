@@ -2,6 +2,19 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/6/2020:
+	Try to find library directory on Windows
+	Makefile2.m4: add DIRNAME_C, dirname.o rule (not (yet?) used)
+	configure: comment out dirname test (for now?)
+	config/djgpp/Makefile: add dirname.o rule (not (yet?) used)
+	config/win32/config.h: add HAVE_FIND_SNOLIB_DIRECTORY
+		add NEED_DIRNAME (MSVC)
+		add HAVE_DIRNAME, HAVE_GETOPT (MINGW)
+	config/win32/mingw.mak: add lib/win32/dirname.c, lib/win32/findlib.c
+	config/win32/ntmsvc.mak: add dirname.{c,obj} findlib.{c,obj}
+	include/lib.h: add NEED_DIRNAME/dirname HAVE_FIND_SNOLIB_DIR/find_snolib_dir
+	lib/init.c: pass argv[0] to pathinit, add HAVE_FIND_SNOLIB_DIR/find_snolib_dir
+
 11/5/2020:
 	Move birthtime & nsec ugliness to configure script
 	configure: set STAT_CFLAGS

@@ -91,6 +91,9 @@ break.o: $(SRCDIR)lib/break.c
 date.o:	$(SRCDIR)lib/date.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/date.c
 
+dirname.o: $(SRCDIR)lib/win32/dirname.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/win32/dirname.c
+
 dump.o:	$(SRCDIR)lib/dump.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/dump.c
 

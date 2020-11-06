@@ -90,10 +90,10 @@ SNOBOL4_C_CFLAGS=/wd4715
 
 OBJ=	$(BUFIO_OBJ) $(INET_OBJ) $(INET_OBJS) $(MEMIO_OBJ) \
 	atan.obj bal.obj break.obj chop.obj cos.obj data.obj \
-	data_init.obj date.obj delete.obj dump.obj \
+	data_init.obj date.obj delete.obj dirname.obj dump.obj \
 	dynamic.obj endex.obj environ.obj execute.obj \
 	exists.obj exit.obj exp.obj expops.obj file.obj \
-	findunit.obj getline.obj getopt.obj getstring.obj \
+	findlib.obj findunit.obj getline.obj getopt.obj getstring.obj \
 	handle.obj hash.obj host.obj init.obj intspc.obj \
 	io.obj isnobol4.obj lexcmp.obj load.obj loadx.obj \
 	log.obj main.obj mstime.obj newer.obj ord.obj ordvst.obj \
@@ -281,8 +281,14 @@ memio_obj.obj : $(SRCDIR)lib\auxil\memio_obj.c
 
 ################ win32!
 
+dirname.obj : $(SRCDIR)lib\win32\dirname.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\dirname.c
+
 execute.obj : $(SRCDIR)lib\win32\execute.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\execute.c
+
+findlib.obj : $(SRCDIR)lib\win32\findlib.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib\win32\findlib.c
 
 # or dummy, or bsd/inet6.c!!
 $(INET_OBJ) : $(INET_SRC)

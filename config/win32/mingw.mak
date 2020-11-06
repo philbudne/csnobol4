@@ -103,8 +103,9 @@ SRC=	$(BUFIO_OBJ_C) $(INET_AUX_SRC) $(INET_C) $(PTYIO_OBJ_C) \
 	$(SRCDIR)lib/snolib/sqrt.c $(SRCDIR)lib/snolib/sset.c \
 	$(SRCDIR)lib/snolib/tan.c $(SRCDIR)lib/stdio_obj.c \
 	$(SRCDIR)lib/str.c $(SRCDIR)lib/stream.c $(SRCDIR)lib/top.c \
-	$(SRCDIR)lib/tree.c $(SRCDIR)lib/win32/execute.c \
-	$(SRCDIR)lib/win32/exists.c \
+	$(SRCDIR)lib/tree.c \
+	$(SRCDIR)lib/win32/execute.c $(SRCDIR)lib/win32/exists.c \
+	$(SRCDIR)lib/win32/findlib.c \
 	$(SRCDIR)lib/win32/load.c $(SRCDIR)lib/win32/mstime.c \
 	$(SRCDIR)lib/win32/osopen.c $(SRCDIR)lib/win32/sys.c \
 	$(SRCDIR)lib/win32/term.c $(SRCDIR)lib/win32/tty.c \

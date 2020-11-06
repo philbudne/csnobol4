@@ -1491,6 +1491,16 @@ if config/check "time.h" 'char buf[1024]; time_t t = time(0); strftime(buf, size
     echo '#define HAVE_STRFTIME'		>> $CONFIG_H
 fi
 
+# currently only used in Native windows builds/installs
+#if config/check "libgen.h" 'char path[] = "/a/b/c"; char *s = dirname(path)'; then
+#    echo 'using XPG4.2 dirname()' 1>&2
+#    echo '#define HAVE_DIRNAME'		>> $CONFIG_H
+#else
+#    echo 'using private dirname()' 1>&2
+#    echo '#define NEED_DIRNAME'		>> $CONFIG_H
+#    echo 'ADD_OBJS([dirname.o])'		>> $CONFIG_M4
+#fi
+
 if [ "x$SNOBOL4_LDFLAGS" != x ]; then
     echo "SNOBOL4_LDFLAGS=$SNOBOL4_LDFLAGS"	>> $CONFIG_M4
 fi

@@ -259,21 +259,29 @@ io_init(int interactive) {		/* here from init_args() */
 
 /* called after -I paths have already been added, before preload, sources */
 static void
-pathinit(int std_includes) {
+pathinit(char *av0, int std_includes) {
     char *env;
 
     /* XXX SHARED FIX: some of this only needs to be done once */
 
     /* generate directory names for HOST() even if not in search path */
+
+    /* /usr/local/lib/snobol4 or C:\Program Files\SNOBOL4 */
     snolib_base = getenv("SNOLIB");	/* old variable */
     if (!snolib_base)
 	snolib_base = SNOLIB_BASE;
 
     /* versioned directory */
+    /* /usr/local/lib/snobol4/x.y or C:\Program Files\SNOBOL4\x.y */
     snolib_vers = strjoin(snolib_base, DIR_SEP, VERSION, NULL);
 
     /* distribution files (version-specific) */
     snolib_vlib = strjoin(snolib_vers, DIR_SEP, "lib", NULL);
+
+#ifdef FIND_SNOLIB_DIRECTORY
+    /* see if directories exist, if not, find via argv[0] */
+    find_snolib_directory(av0, &snolib_vers, &snolib_vlib);
+#endif
 
     /* local, version-specific */
     snolib_vlocal = strjoin(snolib_vers, DIR_SEP, "local", NULL);
@@ -477,7 +485,7 @@ init_args(int ac, char *av[], int interactive) {
 	}
     } /* while getopt */
 
-    pathinit(std_includes);
+    pathinit(av[0], std_includes);
 
     /* XXX option to disable? */
     io_preload();

@@ -175,6 +175,7 @@ FILE * term_input(void);
 
 /* from tty.c */
 int fisatty(FILE *);		/* or fisatty.c */
+
 /*
  * cbreak means don't wait for CR (binary/raw)
  * recl only meaningful in cbreak mode
@@ -247,3 +248,13 @@ int newer(char *p1, char *p2);
 
 /* from retstring.c */
 extern int relstring(struct descr *);
+
+#ifdef NEED_DIRNAME
+/* from dirname.c */
+char *dirname(char *);
+#endif
+
+#ifdef HAVE_FIND_SNOLIB_DIR
+/* from findlib.c */
+void find_snolib_dir(const char *av0, char **vdirp, char **vlibp);
+#endif

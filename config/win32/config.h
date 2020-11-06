@@ -47,6 +47,7 @@
 #define HAVE_GETVERSIONEX
 #define HAVE_STRFTIME
 #define NEED_GETLINE
+#define HAVE_FIND_SNOLIB_DIRECTORY
 
 #ifdef HAVE_WINSOCK2_H
 #define SOCKLEN_T socklen_t
@@ -122,12 +123,14 @@
 
 #elif defined(__MINGW32__)
 
+#define HAVE_UNISTD_H			// getpid !!!
+#define HAVE_DIRNAME
+#define HAVE_GETOPT
+
 // in -lpthread w/ mingw-w64-x86-64-dev 7.0.0 (does not work?)
 //#define HAVE_CLOCK_GETTIME_REALTIME 
-#define HAVE_UNISTD_H			// getpid !!!
-/* have getopt?! */
 
-#endif
+#endif // end __MINGW32__
 
 #define HAVE_SLEEP
 

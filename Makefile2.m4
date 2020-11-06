@@ -60,6 +60,7 @@ all:	build_all timing.out
 BAL_C=$(SRCDIR)lib/bal.c
 BREAK_C=$(SRCDIR)lib/break.c
 DATE_C=$(SRCDIR)lib/date.c
+DIRNAME_C=$(SRCDIR)lib/generic/dirname.c
 DUMP_C=$(SRCDIR)lib/dump.c
 DYNAMIC_C=$(SRCDIR)lib/bsd/dynamic.c
 ENDEX_C=$(SRCDIR)lib/endex.c
@@ -397,6 +398,9 @@ break.o: $(BREAK_C)
 
 date.o:	$(DATE_C)
 	$(CC) $(CFLAGS) -c $(DATE_C)
+
+dirname.o: $(DIRNAME_C)
+	$(CC) $(CFLAGS) -c $(DIRNAME_C)
 
 dump.o:	$(DUMP_C)
 	$(CC) $(CFLAGS) -c $(DUMP_C)
