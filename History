@@ -3,6 +3,9 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 11/6/2020:
+	configure: Try treating MSYS same as CYGWIN
+
+11/6/2020:
 	include/lib.h: fix find_snolib_directory
 
 *** 2.2-pre2 (tag REL_2_2_PRE2)

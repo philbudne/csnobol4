@@ -400,6 +400,12 @@ case "$MORV" in
     echo 'EXT=.exe'				>> $CONFIG_M4
     CYGWIN=1
     ;;
+
+*:MSYS*:*:*)
+    # MSYS2 (fork of Cygwin)
+    echo 'EXT=.exe'				>> $CONFIG_M4
+    CYGWIN=1
+    ;;
 esac
 
 ################# compiler options
