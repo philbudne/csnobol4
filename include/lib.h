@@ -256,5 +256,5 @@ char *dirname(char *);
 
 #ifdef HAVE_FIND_SNOLIB_DIR
 /* from findlib.c */
-void find_snolib_dir(const char *av0, char **vdirp, char **vlibp);
+void find_snolib_directory(const char *av0, char **vdirp, char **vlibp);
 #endif
