@@ -1,3 +1,12 @@
+/* $Id$ */
+
+/*
+ * find libdir
+ */
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #include <stdio.h>			/* for lib.h */
 #include <stdlib.h>			/* free */
@@ -22,7 +31,7 @@ find_snolib_dir(const char *av0, char **vdirp, char **vlibp) {
     char *vbindir = dirname(av0dup);
 
     /* C:\Program Files\SNOBOL4\x.y */
-    char *vdir = dirname(bindir);
+    char *vdir = dirname(vbindir);
 
     char *vlibdir = strjoin(vdir, DIR_SEP, "lib", NULL);
     if (isdir(vlibdir)) {
@@ -43,4 +52,3 @@ find_snolib_dir(const char *av0, char **vdirp, char **vlibp) {
     }
     free(av0dup);
 }
-#endif
