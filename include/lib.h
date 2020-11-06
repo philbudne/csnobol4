@@ -254,7 +254,7 @@ extern int relstring(struct descr *);
 char *dirname(char *);
 #endif
 
-#ifdef HAVE_FIND_SNOLIB_DIR
+#ifdef HAVE_FIND_SNOLIB_DIRECTORY
 /* from findlib.c */
 void find_snolib_directory(const char *av0, char **vdirp, char **vlibp);
 #endif
