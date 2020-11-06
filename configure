@@ -1496,8 +1496,9 @@ if [ "x$SNOBOL4_LDFLAGS" != x ]; then
 fi
 
 # output SO/DL defines
-
 # on everything except Darwin, one format suffices
+
+# "Dynamic Library" -- code LOADed by user request
 if [ "x$SO_EXT" != x -a "x$DL_EXT" = x ]; then
     DL_EXT="$SO_EXT"
     DL_CFLAGS="$SO_CFLAGS"
@@ -1505,16 +1506,17 @@ if [ "x$SO_EXT" != x -a "x$DL_EXT" = x ]; then
     DL_LDFLAGS="$SO_LDFLAGS"
 fi
 
-# check if GNU C visibility available (silently for now) for shared library
-# hard(er) to detect if pragma form available (could ASSuME) and drop in
-# config.h (no CFLAGS needed)?
+# check if GNU C visibility available (silently for now) for shared library.
+# Harder to detect if pragma form available.
+# NOTE! AFTER above defaulting of DL_CFLAGS, because not used for LOADable code.
 DEFVIS='__attribute__ ((__visibility__("default")))'
 if config/check 'stdio.h' "$DEFVIS extern int foo(void)"; then
+    # first available in gcc 4.0?
     SO_CFLAGS="$SO_CFLAGS -fvisibility=hidden"
     echo "#define EXPORT(TYPE) $DEFVIS TYPE" >> $CONFIG_H
 fi
 
-
+# "Shared Object" -- Dynamically Loaded Library loaded at startup
 if [ "x$SO_EXT" != x ]; then
     echo '# Shared Object Libraries'	>> $CONFIG_M4
     echo "SO_EXT=$SO_EXT"		>> $CONFIG_M4
@@ -1621,8 +1623,12 @@ if [ "x$WITHOUT_MODULES" = x ]; then
     # what a PITA! TRY to hide the birthtime mess.
     # FreeBSD/NetBSD/Cygwin have st_birthtim
     # FreeBSD/NetBSD/MacOS have st_birthtimespec
-    NSEC='struct stat st; st.st_atimensec = st.st_ctimensec = st.st_mtimensec = 0'
-    BIRTHNSEC='struct stat st; st.st_birthtimensec = 0'
+    # Put defines in config.h (so FILE_NEWER can use them?)
+    #   would mean moving this outside "modules" tests
+    # TESTS:
+    ACMNSEC_TEST='struct stat st; st.st_atimensec = st.st_ctimensec = st.st_mtimensec = 0'
+    BIRTHNSEC_TEST='struct stat st; st.st_birthtimensec = 0'
+    # DEFINES:
     MTIM_NSEC='-Dst_atimensec=st_mtim.tv_nsec -Dst_ctimensec=st_ctim.tv_nsec -Dst_mtimensec=st_mtim.tv_nsec'
     BIRTHTIM_NSEC='-Dst_birthtimensec=st_birthtim.tv_nsec'
     # MacOS
@@ -1630,32 +1636,32 @@ if [ "x$WITHOUT_MODULES" = x ]; then
 
     OPENBSD_BIRTH='-Dst_birthtime=__st_birthtim.tv_sec -Dst_birthtimensec=__st_birthtim.tv_nsec'
 
-    if config/check sys/stat.h "$NSEC"; then
+    if config/check sys/stat.h "$ACMNSEC_TEST"; then
 	# NetBSD 9, FreeBSD 13(will?) have st_mtimensec
 	echo 'using stat st_[acm]timensec'		1>&2
-	if config/check sys/stat.h "$BIRTHNSEC"; then
+	if config/check sys/stat.h "$BIRTHNSEC_TEST"; then
 	    echo 'using stat st_birthtimensec'		1>&2
-	elif config/check sys/stat.h "$BIRTHNSEC" "$OPENBSD_BIRTH"; then
+	elif config/check sys/stat.h "$BIRTHNSEC_TEST" "$OPENBSD_BIRTH"; then
 	    # __st_birthtim present since OpenBSD 3.6, but always zero in 6.8?!
 	    echo 'using stat __st_birthtim'		1>&2
 	    STAT_CFLAGS="$OPENBSD_BIRTH"
 	fi
-    elif config/check sys/stat.h "$NSEC" "$MTIM_NSEC"; then
+    elif config/check sys/stat.h "$ACMNSEC_TEST" "$MTIM_NSEC"; then
 	# FreeBSD 12, Cygwin, Linux
 	echo 'using stat st_[acm]tim.tv_nsec'		1>&2
 	STAT_CFLAGS="$MTIM_NSEC"
 	BIRTHTIM_NSEC='-Dst_birthtimensec=st_birthtim.tv_nsec'
-	if config/check sys/stat.h "$BIRTHNSEC" "$BIRTHTIM_NSEC"; then
+	if config/check sys/stat.h "$BIRTHNSEC_TEST" "$BIRTHTIM_NSEC"; then
 	    # FreeBSD 12, Cygwin
 	    echo 'using stat st_birthtim.tv_nsec'		1>&2
 	    STAT_CFLAGS="$STAT_CFLAGS $BIRTHTIM_NSEC"
 	fi
-    elif config/check sys/stat.h "$NSEC" "$TIMESPEC_NSEC"; then
+    elif config/check sys/stat.h "$ACMNSEC_TEST" "$TIMESPEC_NSEC"; then
 	# OSX 10.15
 	echo 'using stat st_[acm]timespec.tv_nsec'	1>&2
 	STAT_CFLAGS="$TIMESPEC_NSEC"
 	BIRTHTIMESPEC_NSEC='-Dst_birthtimensec=st_birthtimespec.tv_nsec'
-	if config/check sys/stat.h "$BIRTHNSEC" "$BIRTHTIMESPEC_NSEC"; then
+	if config/check sys/stat.h "$BIRTHNSEC_TEST" "$BIRTHTIMESPEC_NSEC"; then
 	    echo 'using stat st_birthtimespec.tv_nsec'	1>&2
 	    STAT_CFLAGS="$STAT_CFLAGS $BIRTHTIMESPEC_NSEC"
 	fi
