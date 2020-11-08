@@ -1,15 +1,53 @@
 $Id$
 
+================ 2.2
+
+DJGPP: inet6 problems?
+
+Windows: permissions??
+
+MINGW2: export problems?
+
 Mac:
 	Mac OS X 10.5.8 running version:
 	powerpc-apple-darwin9-gcc-4.0.1
 	stat.c:120: error: ‘struct stat’ has no member named ‘st_birthtimespec’
 	stat.c:121: error: ‘struct stat’ has no member named ‘st_birthtimespec‘
 
-Windows:
-	Default SNOLIB from argv[0] -- dirname(dirname(av[0])) + DIR_SEP + "lib"??
-	Test timing.bat
-	CSNOBOL4 or SNOBOL4??
+modules: export "struct module"? (current "mod" is TLS)
+	pointer to struct module in loadx.c:struct lib?
+	use count field?? honor on unload??
+
+handleio_obj?? handle to io_obj? need handle_table!!
+	need handle_table for handle_tables?
+	go back to using addresses for handles?
+	need to closeall BEFORE unloading all functions
+
+================
+
+function to return handle_table name for an EXTERNAL type?
+	 traverse list of modules, and table list for each module?
+
+compression:
+    I/O option??
+	'z' I/O option -- zlibio_obj wraps around another io_obj
+	'j' I/O for bzip2?
+	'J' I/O for xz??
+    module:
+	ZLIB_(UN)COMPRESS, (ADLER)CRC32
+	ZLIB_{INPUT,OUTPUT} -- underlying ZLIB_{IN,OUT}PUT_UNIT??
+	prevent unload of module while I/O obj in use????
+
+mem i/o:
+    I/O option? 'm' -- take string instead of filename for input
+    or MEMIO_OPEN???
+    function to get output given unit number
+
+    open_memstream -- POSIX.1-2008
+	auxil/memio_obj.c -- need to allow expansion (caller must free)
+
+hashes:
+	md5, sha{1,224,256,384,512}sum
 
 JSON_ENCODE: take optional indent argument (pretty print)
 
