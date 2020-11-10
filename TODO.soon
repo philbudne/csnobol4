@@ -22,6 +22,12 @@ Windows: permissions??
 MINGW2: export problems?
 
 
+Msys2:
+	undefined reference to `retstring_free'
+	undefined symbol `module_init'
+	undefined reference to `module_cleanup'
+	====> need -Wl,--out-implib,libsnobol4.a ??
+
 Mac:
 	Mac OS X 10.5.8 running version:
 	powerpc-apple-darwin9-gcc-4.0.1

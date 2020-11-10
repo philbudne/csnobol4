@@ -35,6 +35,9 @@ extern "C"
 #include "load.h"			/* LA_xxx macros */
 #include "equ.h"			/* datatypes I/S */
 #include "handle.h"
+#include "module.h"
+
+SNOBOL4_MODULE(COM)
 
 static handle_handle_t com_handles;
 

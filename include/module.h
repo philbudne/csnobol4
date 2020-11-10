@@ -29,7 +29,7 @@ struct module_instance_private ;
 struct module_instance {
     struct module *mod;
     struct module_instance *next;
-    struct module_instance_private *private;
+    struct module_instance_private *priv;
 };
 
 #define MF_INITIALIZED	0x00000001
@@ -71,7 +71,7 @@ struct module_instance {
 
 #define SNOBOL4_MODULE(NAME) \
     MODULE_INSTANCE_FORWARDS \
-    struct module module = { MODULE_STRUCT_INIT(NAME) }; \
+    EXPORT(struct module) module = { MODULE_STRUCT_INIT(NAME) }; \
     static TLS struct module_instance mi = { MODULE_INSTANCE_STRUCT_INIT }; \
     struct TLS module_instance *const modinst = &mi; \
     MODULE_INSTANCE_FUNCTIONS

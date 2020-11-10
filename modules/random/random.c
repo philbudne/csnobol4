@@ -369,9 +369,7 @@ bsd_srandomdev(void) {
 		close(fd);
 	}
 	if (!done) {
-		unsigned long junk;	/* intentionally used uninitialized! */
-		if (sizeof(long) > sizeof(uint32_t))
-		    junk = (junk>>32) ^ (junk & 0xffffffff);
+		unsigned long junk; /* intentionally used uninitialized! */
 #if defined(TIMESPEC)
 		struct timespec ts;
 
@@ -391,6 +389,9 @@ bsd_srandomdev(void) {
 		/* available in DJGPP (DOS), and VMS?! */
 		junk ^= getpid();
 
+#if SIZEOF_LONG > 4
+		junk = (junk>>32) ^ (junk & 0xffffffff);
+#endif
 		bsd_srandom(junk);
 		return;
 	}

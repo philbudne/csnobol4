@@ -107,10 +107,10 @@ new_handle2(handle_handle_t *hhp, void *vp,
 	*hhp = htp;
 
 	/* link into list of tables to pass to cleanup */
-	if (mip && mip->private) {
+	if (mip && mip->priv) {
 	    /* XXX lazy alloc private here? */
-	    htp->next_table = mip->private->htlist;
-	    mip->private->htlist = htp;
+	    htp->next_table = mip->priv->htlist;
+	    mip->priv->htlist = htp;
 	}
     }
 
@@ -215,10 +215,10 @@ const char *
 handle_table_name(struct descr *dp, struct module_instance *mip) {
     struct handle_table *htp;
 
-    if (!mip->private)
+    if (!mip->priv)
 	return NULL;
 
-    htp = mip->private->htlist;
+    htp = mip->priv->htlist;
     while (htp) {
 	if (dp->v == htp->datatype)
 	    return htp->name;
@@ -261,16 +261,16 @@ module_instance_init(struct module *mp) {
 
 
     /* XXX increment mip->module->usecount?? */
-    if (!mip->private) {
+    if (!mip->priv) {
 	mip->next = mp->instances;
 	mp->instances = mip;
 
-	mip->private = malloc(sizeof(struct module_instance_private));
-	if (!mip->private)
+	mip->priv = malloc(sizeof(struct module_instance_private));
+	if (!mip->priv)
 	    return 0;
-	bzero(mip->private, sizeof(struct module_instance_private));
+	bzero(mip->priv, sizeof(struct module_instance_private));
     }
-    mip->private->htlist = NULL;
+    mip->priv->htlist = NULL;
 
     /*
      * NOTE!!
@@ -294,11 +294,11 @@ module_instance_cleanup(struct module *mp) {
 
     /* XXX decrement mip->module->usecount?? */
     
-    if (mip->private) {
-	handle_cleanup_tables(mip->private->htlist);
-	free(mip->private);
+    if (mip->priv) {
+	handle_cleanup_tables(mip->priv->htlist);
+	free(mip->priv);
 
-	mip->private = NULL;
+	mip->priv = NULL;
     }
 
     /* unlink  from instances list in struct module */

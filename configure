@@ -737,6 +737,7 @@ if ${CCPATH-cc} $CFLAGS -o $TMP $TMP.c && ./$TMP > $TMP.out &&
 
     echo 'sizeof(long) = '$SLONG	1>&2
     echo '# sizeof(long) = '$SLONG	>> $CONFIG_M4
+    echo "#define SIZEOF_LONG $SLONG"	>> $CONFIG_H
 
     echo 'sizeof(float) = '$SFLOAT	1>&2
     echo '# sizeof(float) = '$SFLOAT	>> $CONFIG_M4
