@@ -1,0 +1,19 @@
+* without SRANDOMDEV() call, results should always be identical!
+-include 'random.sno'
+	bins = array('0:99')
+	n = sn = 10000
+	t = 0
+loop	ident(n,0)				:s(done)
+	n = n - 1
+	i = remdr(random(), 100)
+	t = t + i
+	bins[i] = bins[i] + 1			:(loop)
+
+* ??? avoiding floating point formatting vagaries?
+done	output = 'avg: ' ((t * 100) / sn)
+	i = 0
+dloop	ident(i,100)				:s(end)
+	output = bins[i]
+	i = i + 1				:(dloop)
+
+end

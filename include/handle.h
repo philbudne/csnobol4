@@ -7,7 +7,7 @@ typedef struct handle_table *handle_handle_t;
 #define OK_HANDLE(h) ((h).v != 0 && (h).a.i >= 0)
 #define RETHANDLE(h) do { *retval = h; return TRUE; } while(0)
 
-extern struct module *const module;	/* from mod_xxx  */
+extern struct module_instance *const modinst; /* from SNOBOL4_MODULE */
 
 SNOLOAD_API(void *) lookup_handle(handle_handle_t *, snohandle_t);
 SNOLOAD_API(void) remove_handle(handle_handle_t *, snohandle_t);
@@ -15,7 +15,4 @@ SNOLOAD_API(snohandle_t) new_handle2(handle_handle_t *table,
 				     void *value,
 				     const char *name,
 				     void (*release)(void*),
-				     struct module *mp);
-
-/* deprecated: */
-SNOLOAD_API(snohandle_t) new_handle(handle_handle_t *, void *, const char *);
+				     struct module_instance *mip);

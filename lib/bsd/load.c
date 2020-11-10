@@ -89,6 +89,19 @@ os_find_symbol(void *lib, const char *func, void **stash) {
     long len;				/* size of code+data */
     int f;
 
+    /*
+     * "module" lookup does not pass "stash" pointer.
+     * To implement would need to:
+     * 1. link object file ONCE (on load), return pointer to struct
+     * 2. keep either: executable file, namelist file, or namelist in memory
+     *
+     * All of this only REALLY matters for snobol4 shared library, and
+     * the only a.out "BSD" systems I can think of that used a.out .so
+     * files (SunOS4, FreeBSD, NetBSD) had dlopen.
+     */
+    if (!stash)
+	return NULL;
+
     sprintf( temp, "%s/snoXXXXXX", TMP_DIR);
     mktemp( temp );			/* exists in v6 */
 

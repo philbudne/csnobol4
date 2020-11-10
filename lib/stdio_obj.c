@@ -251,12 +251,13 @@ flags2mode(int flags, char *mode, char dir) {
 	*mp++ = 'a';
     else
 	*mp++ = dir;
-    if (flags & FL_UPDATE)
-	*mp++ = '+';
 #ifndef NO_FOPEN_B
+    /* glibc 2.9 to 2.21 fmemopen required 'b' as second character */
     if (flags & FL_BINARY)
 	*mp++ = 'b';
 #endif /* NO_FOPEN_B not defined */
+    if (flags & FL_UPDATE)
+	*mp++ = '+';
 
     if (flags & FL_EXCL)
 	*mp++ = 'x';  /* C11: FreeBSD 10, OpenBSD 5.7, glibc 2.0.94 */

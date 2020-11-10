@@ -346,6 +346,10 @@ csnobol4_b64_pton(src, srcsize, target, targsize)
 #include "equ.h"
 #include "macros.h"
 
+#include "module.h"
+SNOBOL4_MODULE(base64)
+
+
 /*
  * decode BASE64 to binary (4:3)
  *

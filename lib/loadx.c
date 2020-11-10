@@ -13,32 +13,33 @@
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
+#include "load.h"			/* SNOLOAD_API (for module.h) */
+#include "module.h"			/* structs */
 #include "path.h"
 #include "lib.h"			/* mspec2str() */
 #include "str.h"
 
 struct lib {
-    struct lib *next;
+    struct lib *next;			/* libs list */
     void *oslib;			/* object from os_load_library */
+    struct module *module;		/* see module.h */
     int refcount;
-    int abivers;
     char name[1];			/* MUST BE LAST */
 };
 
 struct func {
-    struct func *next, *prev;		/* loaded function list */
+    struct func *next;			/* funcs list */
     struct func *self;			/* for validity check */
     loadable_func_t *entry;		/* function entry point */
     struct lib *lib;
-    void *stash;			/* set by os_find_symbol */
+    void *stash;			/* for use by os_find_symbol */
     char name[1];			/* for unload (MUST BE LAST)! */
 };
 
-/* keep list of loaded functions (for UNLOAD) */
+/* list of loaded functions (for UNLOAD) */
 static VAR struct func *funcs;
 
-/* list of loaded libs */
-/* XXX needs os_load_library to be ref-counted for threads */
+/* list of loaded libraries (depends on system ref-counting) */
 static VAR struct lib *libs;
 
 #ifdef SHARED
@@ -48,33 +49,49 @@ static void loadx_cleanup(void);
 /* create refcounted lib interface */
 
 static struct lib *
-libopen(char *path) {
+libopen(char *path) {	    /* XXX take original name (for module?) */
     void *oslib;
     struct lib *lp;
 
-    /* see if it's one we've already mapped */
-    for (lp = libs; lp; lp = lp->next) {
-	if (strcmp(path, lp->name) == 0) {
-	    lp->refcount++;
-	    return lp;
+    /*
+     * see if it's one we've already mapped
+     *
+     * if paths differ, could end up calling os_load_library more than once
+     * (and will call module_cleanup prematurely)
+     * could dlopen and Windows return same pointer on multiple loads
+     * and check by pointer??
+     *
+     * (what about VMS, old NeXT/Mac, HP-UX interfaces????)
+     */
+
+    for (lp = libs; lp; lp = lp->next)
+	if (strcmp(path, lp->name) == 0)
+	    break;
+
+    if (!lp) {
+	oslib = os_load_library(path);
+	if (oslib == NULL)
+	    return NULL;
+
+	lp = (struct lib *) malloc(sizeof(struct lib) + strlen(path));
+	lp->oslib = oslib;
+	lp->refcount = 0;
+	strcpy(lp->name, path);
+	lp->module = os_find_symbol(oslib, "module", NULL);
+
+	/* XXX error if lookup fails when SHARED (&& THREADS)? */
+	/* XXX complain regardless? */
+	/* XXX poke lp->module->lib(name)? */
+
+	lp->next = libs;
+	libs = lp;
+
+	if (lp->module) {
+	    module_init(lp->module);	/* XXX move to module_inst_init?? */
+	    module_instance_init(lp->module);
 	}
     }
-
-    oslib = os_load_library(path);
-    if (oslib == NULL)
-	return NULL;
-
-    /* a new one; add to list */
-    lp = (struct lib *) malloc(sizeof(struct lib) + strlen(path));
-    lp->next = libs;
-    lp->oslib = oslib;
-    lp->refcount = 1;
-    strcpy(lp->name, path);
-
-    /* do a symbol lookup to find module ABI version?? */
-    lp->abivers = 0;
-
-    libs = lp;
+    lp->refcount++;
     return lp;
 }
 
@@ -90,8 +107,14 @@ libclose(struct lib *lib) {
     if (!lp)
 	return 0;			/* not found */
 
+    if (lp->module)
+	module_instance_cleanup(lp->module);
+
     ret = 1;
     if (--(lp->refcount) <= 0) {
+	if (lp->module)
+	    module_cleanup(lp->module);
+
 	/* detach library */
 	os_unload_library(lp->oslib);
 
@@ -277,3 +300,32 @@ loadx_cleanup(void) {
 	funload(funcs->name);
 }
 #endif
+
+#include "equ.h"
+#include "handle.h"
+
+pmlret_t
+EXTERNAL_DATATYPE( LA_ALIST ) {
+    struct descr *dp = LA_DESCR(0);
+    struct lib *lp;
+
+    if (!dp)
+	RETFAIL;
+
+    for (lp = libs; lp; lp = lp->next) {
+	struct module_instance *mip;
+	if (!lp->module)
+	    continue;
+	for (mip = lp->module->instances; mip; mip = mip->next) {
+	    const char *type_name = handle_table_name(dp, mip);
+	    if (type_name) {
+		/*
+		 * using "|" in case ever switch to lp->name (path)
+		 * '|' is unlikely to appear in a path!!
+		 */
+		RETSTR_FREE(strjoin(lp->module->name, "|", type_name, NULL));
+	    }
+	}	    
+    }
+    RETFAIL;
+}

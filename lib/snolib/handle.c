@@ -1,10 +1,11 @@
-
 /* $Id$ */
 
 /*
- * manage lists of handles for loadable code.
+ * manage lists of "handles" for loadable code (SNOBOL4 EXTERNAL types)
  * entries from each handle table are assigned a different
  * EXTERNAL datatype, validated on lookup.
+ *
+ * Also module management
  */
 
 #ifdef HAVE_CONFIG_H
@@ -24,7 +25,7 @@
 #define HANDLE_HASH_SIZE (1<<8)		/* power of two */
 
 typedef unsigned int handle_datatype_t;	/* must fit in vfld */
-static VAR handle_datatype_t next_handle_datatype;
+static VAR handle_datatype_t next_handle_datatype; /* TLS?? */
 static TLS char in_handle_cleanup;
 
 typedef int_t handle_number_t;
@@ -37,7 +38,7 @@ struct handle_entry {
 
 struct handle_table {
     long entries;
-    const char *name;			/* for debug */
+    const char *name;
     handle_datatype_t datatype;		/* SNOBOL4 EXTERNAL datatype */
     handle_number_t next;		/* next handle to hand out */
     void (*release)(void *value);
@@ -46,6 +47,13 @@ struct handle_table {
 };
 
 #define HANDLE_HASH(H) (((int)(H)) & (HANDLE_HASH_SIZE-1))
+
+/* private to this file (pointer to it in module_instance_data)
+ * allows per-instance data to grow without recompiling modules
+ */
+struct module_instance_private {
+    struct handle_table *htlist;
+};
 
 static const struct descr bad_handle;
 
@@ -58,7 +66,7 @@ lookup_handle(handle_handle_t *hhp, snohandle_t h) {
 	return NULL;
 
 #ifdef DEBUG_HANDLE2
-    printf("lookup_handle %s %d\n", htp->name, (long)h.a.i);
+    fprintf(stderr, "lookup_handle %s %d\n", htp->name, (long)h.a.i);
 #endif
     if (h.v != htp->datatype)
 	return NULL;
@@ -79,7 +87,7 @@ lookup_handle(handle_handle_t *hhp, snohandle_t h) {
 SNOLOAD_API(snohandle_t)
 new_handle2(handle_handle_t *hhp, void *vp,
 	    const char *tname, void (*release)(void *),
-	    struct module *mp) {
+	    struct module_instance *mip) {
     struct handle_table *htp = *hhp;
     struct handle_entry *hp;
     struct descr h;
@@ -99,9 +107,10 @@ new_handle2(handle_handle_t *hhp, void *vp,
 	*hhp = htp;
 
 	/* link into list of tables to pass to cleanup */
-	if (mp) {
-	    htp->next_table = mp->htlist;
-	    mp->htlist = htp;
+	if (mip && mip->private) {
+	    /* XXX lazy alloc private here? */
+	    htp->next_table = mip->private->htlist;
+	    mip->private->htlist = htp;
 	}
     }
 
@@ -121,7 +130,8 @@ new_handle2(handle_handle_t *hhp, void *vp,
     hp->value = vp;
 
 #ifdef DEBUG_HANDLES
-    printf("new_handle2 %s %p => %ld\n", htp->name, vp, (long)hp->handle_number);
+    fprintf(stderr, "new_handle2 %s %p => %ld\n",
+	    htp->name, vp, (long)hp->handle_number);
 #endif
 
     htp->hash[hash] = hp;
@@ -134,16 +144,6 @@ new_handle2(handle_handle_t *hhp, void *vp,
     return h;
 }
 
-SNOLOAD_API(snohandle_t)
-new_handle(handle_handle_t *hhp, void *vp, const char *tname) {
-    static char complained = 0;		/* global: complain just once! */
-    if (!complained) {
-	fprintf(stderr, "snobol4: new_handle is deprecated, use new_handle2\n");
-	complained = 1;
-    }
-    return new_handle2(hhp, vp, tname, NULL, NULL);
-}
-
 SNOLOAD_API(void)
 remove_handle(handle_handle_t *hhp, snohandle_t h) {
     struct handle_table *htp = *hhp;
@@ -154,14 +154,14 @@ remove_handle(handle_handle_t *hhp, snohandle_t h) {
 	return;
 
 #ifdef DEBUG_HANDLES
-    printf("remove_handle %s %ld\n", htp->name, (long)h.a.i);
+    fprintf(stderr, "remove_handle %s %ld\n", htp->name, (long)h.a.i);
 #endif
 
     pp = NULL;
     for (hp = htp->hash[hash]; hp; pp = hp, hp = hp->next) {
 	if (hp->handle_number == h.a.i) {
 #ifdef DEBUG_HANDLES
-	    printf(" found %ld => %p\n",
+	    fprintf(stderr, " found %ld => %p\n",
 		   (long)hp->handle_number, hp->value);
 #endif
 	    if (pp)
@@ -200,37 +200,114 @@ handle_cleanup_table(struct handle_table *htp) {
     free(htp);
 }
 
-/****************
- * called from module support (mod_xxx) files
- * move to module.c?
- */
-
-/*
- * called on module load (or thread creation?)
- * called from mod_xxx, not user code
- */
-SNOLOAD_API(void)
-module_init(struct module *mp) {
-    mp->htlist = NULL;
-    /*
-     * NOTE!!
-     * must check abi version & struct size before touching anything else!
-     */
-}
-
-/*
- * called on module unload (or thread exit?)
- * called from mod_xxx, not user code
- */
-SNOLOAD_API(void)
-module_cleanup(struct module *mp) {
-    struct handle_table *htp = mp->htlist;
-#ifdef DEBUG
-    printf("module_cleanup\n");
-#endif
+static void
+handle_cleanup_tables(struct handle_table *htp) {
+    /* XXX decrement mip->module->usecount?? */
     while (htp) {
 	struct handle_table *next = htp->next_table;
 	handle_cleanup_table(htp);
 	htp = next;
+    }
+}
+
+/* for EXTERNAL_DATATYPE */
+const char *
+handle_table_name(struct descr *dp, struct module_instance *mip) {
+    struct handle_table *htp;
+
+    if (!mip->private)
+	return NULL;
+
+    htp = mip->private->htlist;
+    while (htp) {
+	if (dp->v == htp->datatype)
+	    return htp->name;
+	htp = htp->next_table;
+    }
+    return NULL;
+}
+
+
+/*
+ * module support
+ */
+
+/*
+ * called on module load
+ */
+void
+module_init(struct module *mp) {
+    /* XXX increment mp->refcount (while holding lock on loadx.c:libs?) */
+}
+
+/*
+ * called on module unload
+ */
+void
+module_cleanup(struct module *mp) {
+    /* XXX decrement mp->refcount (while holding lock on loadx.c:libs?) */
+}
+
+/*
+ * called for each thread entering (on load)
+ * called via module->call_module_instance_init
+ */
+int
+module_instance_init(struct module *mp) {
+    struct module_instance *mip = (mp->get_module_instance)();
+#ifdef DEBUG
+    fprintf(stderr, "module_instance_init\n");
+#endif
+
+
+    /* XXX increment mip->module->usecount?? */
+    if (!mip->private) {
+	mip->next = mp->instances;
+	mp->instances = mip;
+
+	mip->private = malloc(sizeof(struct module_instance_private));
+	if (!mip->private)
+	    return 0;
+	bzero(mip->private, sizeof(struct module_instance_private));
+    }
+    mip->private->htlist = NULL;
+
+    /*
+     * NOTE!!
+     * check abi version & module struct size before touching anything else!
+     */
+    return 1;
+}
+
+/*
+ * called on thread exit (from unload or cleanup)
+ * called via module->call_module_instance_cleanup
+ */
+void
+module_instance_cleanup(struct module *mp) {
+    struct module_instance *mip = (mp->get_module_instance)();
+    struct module_instance *tp, *pp;
+
+#ifdef DEBUG
+    fprintf(stderr, "module_instance_CLEANUP\n");
+#endif
+
+    /* XXX decrement mip->module->usecount?? */
+    
+    if (mip->private) {
+	handle_cleanup_tables(mip->private->htlist);
+	free(mip->private);
+
+	mip->private = NULL;
+    }
+
+    /* unlink  from instances list in struct module */
+    for (tp = mp->instances, pp = NULL; tp && tp != mip; pp = tp, tp = tp->next)
+	;
+    if (tp) {
+	if (pp == NULL)
+	    mp->instances = tp->next;
+	else
+	    pp->next = tp->next;
     }
 }

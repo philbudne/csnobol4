@@ -20,7 +20,9 @@
 #include "load.h"
 #include "handle.h"
 #include "str.h"			/* strlen, for RETSTR */
+#include "module.h"
 
+SNOBOL4_MODULE(dirs)
 
 static handle_handle_t dir_handles;
 
@@ -39,7 +41,7 @@ static handle_handle_t dir_handles;
 */
 
 /*
- * LOAD("OPENDIR(STRING)", DIRS_DL)
+ * LOAD("OPENDIR(STRING)EXTERNAL", DIRS_DL)
  * Open a directory
  *
  * first arg:
@@ -63,7 +65,7 @@ OPENDIR( LA_ALIST ) {
     if (!d)
 	RETFAIL;
 
-    h = new_handle2(&dir_handles, d, "dir_handles", free_dir, module);
+    h = new_handle2(&dir_handles, d, "DIR", free_dir, modinst);
     if (!OK_HANDLE(h)) {
 	closedir(d);
 	RETFAIL;
@@ -107,7 +109,7 @@ READDIR( LA_ALIST ) {
 **=cut
 */
 /*
- * LOAD("REWINDDIR()STRING", DIRS_DL)
+ * LOAD("REWINDDIR(EXTERNAL)STRING", DIRS_DL)
  * returns: null string or failure
  */
 lret_t
@@ -131,7 +133,7 @@ REWINDDIR( LA_ALIST ) {
 **=cut
 */
 /*
- * LOAD("TELLDIR()INTEGER", DIRS_DL)
+ * LOAD("TELLDIR(EXTERNAL)INTEGER", DIRS_DL)
  * returns: integer or failure
  */
 lret_t
@@ -152,7 +154,7 @@ TELLDIR( LA_ALIST ) {
 **=cut
 */
 /*
- * LOAD("SEEKDIR(,INTEGER)STRING", DIRS_DL)
+ * LOAD("SEEKDIR(EXTERNAL,INTEGER)STRING", DIRS_DL)
  * returns: null string or failure
  */
 lret_t
@@ -174,7 +176,7 @@ SEEKDIR( LA_ALIST ) {
 **=cut
 */
 /*
- * LOAD("CLOSEDIR()STRING", DIRS_DL)
+ * LOAD("CLOSEDIR(EXTERNAL)STRING", DIRS_DL)
  * returns: null string or failure
  */
 lret_t

@@ -2,11 +2,25 @@ $Id$
 
 ================ 2.2
 
+change call_..... to get_instance_data
+
+flush os_find_symbol stash!
+
+cvs add modules/random/test.sno
+cvs rm test/ndbm.sno test/random.sno test/sleep.sno test/time.sno
+
+document EXTERNAL_DATATYPE (give credit)
+
+GLOBAL define (non-VAR)????
+
+rename mod_gcc.c to mod_helper.c
+
 DJGPP: inet6 problems?
 
 Windows: permissions??
 
 MINGW2: export problems?
+
 
 Mac:
 	Mac OS X 10.5.8 running version:
@@ -14,14 +28,13 @@ Mac:
 	stat.c:120: error: ‘struct stat’ has no member named ‘st_birthtimespec’
 	stat.c:121: error: ‘struct stat’ has no member named ‘st_birthtimespec‘
 
-modules: export "struct module"? (current "mod" is TLS)
+modules: export "struct module"? (current "mod" is TLS -- call modinst??)
 	pointer to struct module in loadx.c:struct lib?
 	use count field?? honor on unload??
 
-handleio_obj?? handle to io_obj? need handle_table!!
+	handleio_obj?? handle to io_obj? need handle_table!!
 	need handle_table for handle_tables?
-	go back to using addresses for handles?
-	need to closeall BEFORE unloading all functions
+	cleanup: need to closeall BEFORE unloading all functions
 
 ================
 

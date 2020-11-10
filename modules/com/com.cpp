@@ -66,11 +66,11 @@ free_obj(void *x) {
 
 static snohandle_t
 new_obj(LPDISPATCH pdisp) {
-    return new_handle2(&com_handles, pdisp, "com_handles", free_obj, module);
+    return new_handle2(&com_handles, pdisp, "COM_Dispatch", free_obj, module);
 }
 
 //
-// LOAD("COM_LOAD(STRING)INTEGER", COM_DL)
+// LOAD("COM_LOAD(STRING)EXTERNAL", COM_DL)
 //
 // returns integer handle to object, or fails
 int
@@ -294,7 +294,7 @@ retvariant(struct descr *retval, VARIANTARG *vp)
 //
 // Invoke as method
 // Polymorphic!! Takes arbitrary list of args!
-// LOAD("COM_INVOKE(INTEGER,STRING)", COM_DL)
+// LOAD("COM_INVOKE(EXTERNAL,STRING)", COM_DL)
 //
 // does not handle in-out parameters
 // could have a version which takes an array?
@@ -372,7 +372,7 @@ COM_INVOKE( LA_ALIST ) LA_DCL
     return retvariant(retval, &result);
 } // COM_INVOKE
 
-// LOAD("COM_GETPROP(INTEGER,STRING,)", COM_DL)
+// LOAD("COM_GETPROP(EXTERNAL,STRING,)", COM_DL)
 // Polymorphic!! Takes arbitrary list of args!
 int
 COM_GETPROP( LA_ALIST ) LA_DCL
@@ -441,7 +441,7 @@ COM_GETPROP( LA_ALIST ) LA_DCL
     return retvariant(retval, &result);
 } // COM_GETPROP
 
-// LOAD("COM_PUTPROP(INTEGER,STRING,)STRING", COM_DL)
+// LOAD("COM_PUTPROP(EXTERNAL,STRING,)STRING", COM_DL)
 // Polymorphic!! Takes arbitrary list of args!
 int
 COM_PUTPROP( LA_ALIST ) LA_DCL
@@ -487,7 +487,7 @@ COM_PUTPROP( LA_ALIST ) LA_DCL
     RETNULL;
 } // COM_PUTPROP
 
-// LOAD("COM_RELEASE(INTEGER)STRING", COM_DL)
+// LOAD("COM_RELEASE(EXTERNAL)STRING", COM_DL)
 int
 COM_RELEASE( LA_ALIST ) LA_DCL
 {

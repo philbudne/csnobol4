@@ -25,6 +25,9 @@
 
 #include "load.h"			/* LA_xxx macros */
 #include "equ.h"			/* datatypes I/S */
+#include "module.h"
+
+SNOBOL4_MODULE(logic)
 
 /* move to snotypes.h? */
 typedef unsigned INT_T u_int_t;

@@ -31,6 +31,8 @@
 #include "macros.h"
 #include "load.h"
 #include "equ.h"
+#include "module.h"
+
 #undef RETURN
 
 #include <stdio.h>
@@ -42,6 +44,7 @@
 #include <readline/history.h>
 #endif /* not HAVE_READLINE */
 
+SNOBOL4_MODULE(readline)
 
 /*
 **=pea

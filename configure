@@ -1612,22 +1612,6 @@ if [ "x$WITHOUT_MODULES" = x ]; then
     ################################################################
     echo "checking features for modules:"	1>&2
 
-    # if this requires knowledge of bundled compilers,
-    # move (back) to the top of the file!!
-    case "$CC_IS" in
-    gcc|clang|icc)
-	# gcc support for module load/unload
-	# use _init/_fini on systems with dlopen and older gcc??
-	MOD_SUPP=mod_gcc.c
-	;;
-    esac
-    if [ "x$MOD_SUPP" != x ]; then
-	# for setup(util).sno build command:
-	echo "	MOD_SUPPORT_SRC = '$MOD_SUPP'"	>> $CONFIG_SNO
-	# for Makefile2.m4 install:
-	echo 'MOD_SUPPORT_SRC=$(SRCDIR)lib/snolib/'$MOD_SUPP >> $CONFIG_M4
-    fi
-
     TIME_CFLAGS="$TIME_CFLAGS -DHAVE_SLEEP"
     SLEEP_C=bsd/sleep.c
 

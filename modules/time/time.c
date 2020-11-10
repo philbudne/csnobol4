@@ -20,9 +20,12 @@
 #include "equ.h"
 #include "snotypes.h"
 #include "macros.h"
+#include "module.h"
 #include "load.h"
 #include "lib.h"			/* sleepf() */
 #include "str.h"
+
+SNOBOL4_MODULE(time)
 
 #define SETINT(DP,N,VAL) (DP)[N].a.i = (VAL); (DP)[N].f = 0; (DP)[N].v = I
 #define SETREAL(DP,N,VAL) (DP)[N].a.f = (VAL); (DP)[N].f = 0; (DP)[N].v = R
@@ -52,7 +55,6 @@ enum tm_member {
 };
 
 #define COUNT(DP) ((DP)->v/DESCR+1)
-
 
 /*
  * LOAD("GETTIMEOFDAY_(TIMEVAL)", TIME_DL)

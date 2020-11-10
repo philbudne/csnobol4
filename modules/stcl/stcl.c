@@ -48,10 +48,12 @@
 #include "equ.h"
 #include "snotypes.h"
 #include "macros.h"
+#include "module.h"
 #include "load.h"
 #include "handle.h"
 #include "str.h"
 
+SNOBOL4_MODULE(stcl)
 
 static handle_handle_t tcl_interps;
 static handle_handle_t tcl_objs;	/* Objects NOT per-interp!! */
@@ -64,7 +66,7 @@ free_obj(void *x) {
 
 static snohandle_t
 new_obj(Tcl_Obj *obj) {
-    return new_handle2(&tcl_objs, obj, "tcl_objs", free_obj, module);
+    return new_handle2(&tcl_objs, obj, "Tcl_Obj", free_obj, modinst);
 }
 
 /*
@@ -104,7 +106,7 @@ STCL_CREATEINTERP( LA_ALIST ) {
     Tk_Init(interp);			/* XXX check return? */
 #endif
 
-    h = new_handle2(&tcl_interps, interp, "tcl_interps", free_interp, module);
+    h = new_handle2(&tcl_interps, interp, "Tcl_Interp", free_interp, modinst);
     if (!OK_HANDLE(h)) {
 	Tcl_DeleteInterp(interp);
 	/* XXX Release? */
@@ -384,7 +386,7 @@ STCL_GETOBJRESULT(LA_ALIST ) {
 **=cut
 */
 /*
- * LOAD("STCL_OBJSETVAR2(HANDLE,HANDLE,HANDLE,HANDLE,INTEGER)STRING", STCL_DL)
+ * LOAD("STCL_OBJSETVAR2(EXTERNAL,EXTERNAL,EXTERNAL,EXTERNAL,INTEGER)STRING", STCL_DL)
  */
 lret_t
 STCL_OBJSETVAR2( LA_ALIST ) {

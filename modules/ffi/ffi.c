@@ -44,7 +44,9 @@
 #include "load.h"
 #include "handle.h"
 #include "str.h"
+#include "module.h"
 
+SNOBOL4_MODULE(dirs)
 
 static handle_handle_t ffi_cifplus;
 static handle_handle_t ffi_dlibs;
@@ -209,8 +211,8 @@ FFI_PREP_CIF( LA_ALIST ) {
 #endif
     if ((rtype = ffi_convert(rp, 1)) &&
 	ffi_prep_cif(&cpp->cif, FFI_DEFAULT_ABI, n, rtype, atypes) == FFI_OK) {
-	snohandle_t h = new_handle2(&ffi_cifplus, cpp, "ffi_cifplus",
-				    free_cifplus, module);
+	snohandle_t h = new_handle2(&ffi_cifplus, cpp, "ffi_cif",
+				    free_cifplus, modinst);
 	if (OK_HANDLE(h)) {
 	    if (strcmp(rp, RETSTRING) == 0)
 		cpp->pret = STR;
@@ -406,7 +408,7 @@ FFI_DLOPEN( LA_ALIST ) {
     void *dl = dlopen(str, RTLD_LAZY);	/* XXX take mode arg??? */
     if (str) free(str);
     if (!dl) RETFAIL;
-    h = new_handle2(&ffi_dlibs, dl, "ffi_dlibs", release_dl, module);
+    h = new_handle2(&ffi_dlibs, dl, "ffi_dl", release_dl, modinst);
     if (!OK_HANDLE(h)) {
 	dlclose(dl);
 	RETFAIL;
@@ -451,7 +453,7 @@ FFI_DLSYM( LA_ALIST ) {
     val = dlsym(dl, str);
     if (str) free(str);
     if (!val) RETFAIL;
-    ret = new_handle2(&ffi_dlsyms, val, "ffi_dlsyms", NULL, NULL);
+    ret = new_handle2(&ffi_dlsyms, val, "ffi_dlsym", NULL, NULL);
     if (!OK_HANDLE(ret)) RETFAIL;
     RETHANDLE(ret);
 }

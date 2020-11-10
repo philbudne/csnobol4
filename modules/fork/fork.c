@@ -18,7 +18,9 @@
 #include "load.h"
 #include "equ.h"
 #include "str.h"			/* for strlen */
+#include "module.h"
 
+SNOBOL4_MODULE(fork)
 
 /*
 **=pea
@@ -70,6 +72,7 @@ FORK( LA_ALIST ) {
 }
 
 /*
+ * (first/pid argument is optional)
  * LOAD("WAITPID(,STRING)STRING", FORK_DL)
  */
 lret_t

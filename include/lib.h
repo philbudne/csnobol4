@@ -258,3 +258,12 @@ char *dirname(char *);
 /* from findlib.c */
 void find_snolib_directory(const char *av0, char **vdirp, char **vlibp);
 #endif
+
+/* from handle.c */
+struct module ;
+struct module_instance ;
+const char *handle_table_name(struct descr *dp, struct module_instance *mip);
+void module_init(struct module *);
+void module_cleanup(struct module *);
+void module_instance_init(struct module *);
+void module_instance_cleanup(struct module *);

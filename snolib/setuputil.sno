@@ -315,8 +315,6 @@ setup.makeinclude.end
 	DEFINE('setup.sources(t)tmp')		:(setup.sources.end)
 setup.sources
 +	setup.sources = t['sources']
-	setup.sources = DIFFER(MOD_SUPPORT_SRC) setup.sources ',' 
-+	    (DIFFER(dist_build) "../../lib/snolib/", INCLUDE_DIR) MOD_SUPPORT_SRC
 +	:(return)
 setup.sources.end
 

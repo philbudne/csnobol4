@@ -91,7 +91,9 @@
 #include "macros.h"
 #include "load.h"
 #include "handle.h"
+#include "module.h"
 
+SNOBOL4_MODULE(logic)
 
 static handle_handle_t dbm_files;
 
@@ -111,7 +113,7 @@ ndbm_cleanup(void *ptr) {
 }
 
 /*
- * LOAD("DBM_OPEN(STRING,STRING,STRING)INTEGER", NDBM_DL)
+ * LOAD("DBM_OPEN(STRING,STRING,STRING)EXTERNAL", NDBM_DL)
  * Open or create an indexed data file
  * return handle, or failure
  */
@@ -165,7 +167,7 @@ DBM_OPEN( LA_ALIST ) {
     if (!f)
 	RETFAIL;
 
-    h = new_handle2(&dbm_files, f, "dbm_files", ndbm_cleanup, module);
+    h = new_handle2(&dbm_files, f, "DBM", ndbm_cleanup, modinst);
     if (!OK_HANDLE(h)) {
 	dbm_close(f);
 	RETFAIL;

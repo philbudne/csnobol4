@@ -2,6 +2,48 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/10/2020:
+	Revamp module ABI once again!
+	Create SNOBOL4_MODULE macro, no more mod_xxx.c
+	Create module_instance_private
+	Makefile.m4: remove MOD_SUPPORT_SRC install
+	modules/random/test.sno
+	configure: remove MOD_SUPPORT_SRC
+	config/win32/config.sno: remove MOD_SUPPORT_SRC
+	include/handle.h: remove new_handle
+	include/lib.h: add module(_instance)_{init,cleanup}
+	include/module.h: add get_module_instance method
+		replace htlist with module_instance_private
+		add SNOBOL4_MODULE macro
+	lib/loadx.c: EXTERNAL_DATATYPE returns module|type
+	lib/snolib/handle.c: add module_instance_private
+		remove new_handle
+		add handle_cleanup_tables
+	snolib/setuputil.c: remove MOD_SUPPORT_SRC
+
+11/8/2020:
+	Revamp module ABI, again; create EXTERNAL_DATATYPE
+	pml.h: add EXTERNAL_DATATYPE
+	include/handle.h: new_handle2: take modinst again
+	include/lib.h: add handle_table_name
+	include/module.h: remove unused prev from struct lib
+	lib/loadx.c: do os_find_symbol for "module"
+		add EXTERNAL_DATATYPE
+	lib/stdio_obj.c: put 'b' second for glibc 2.9 thru 21 fmemopen
+	lib/bsd/load.c: put in crock for module lookup (time to kill it?)
+	lib/snolib/handle.c: debug to stderr
+		new_handle2: take modinst again
+		add handle_table_name
+		module_(instance_){init,cleanup} no longer SNOLOAD_ABI
+	module/lots/module.c: add SNOBOL4_MODULE invocations
+		pick presentable table names
+	modules/com/com.cpp: change INTEGER to EXTERNAL in LOAD calls
+	modules/dirs/dirs.c: change INTEGER to EXTERNAL in LOAD calls
+	modules/random/random.c: try /dev/urandom before /dev/random
+		shift usec or nsec up to cover high order bits
+	pkg/win32/install.bat: "C:\Program Files\SNOBOL4
+	snolib/sdb.sno: don't display RETVAL on FRETURN
+
 11/6/2020:
 	configure: Try treating MSYS same as CYGWIN
 

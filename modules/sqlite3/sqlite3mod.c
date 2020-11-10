@@ -28,10 +28,12 @@
 #include "equ.h"
 #include "snotypes.h"
 #include "macros.h"
+#include "module.h"
 #include "load.h"
 #include "handle.h"
 #include "str.h"			/* strlen, for RETSTR */
 
+SNOBOL4_MODULE(sprintf)
 
 static handle_handle_t sqlite3_dbs;
 static handle_handle_t sqlite3_stmts;
@@ -74,7 +76,7 @@ SQLITE3_OPEN( LA_ALIST ) {
     if (ret != SQLITE_OK)
 	RETFAIL;
 
-    h = new_handle2(&sqlite3_dbs, db, "sqlite3_dbs", free_sqlite3, module);
+    h = new_handle2(&sqlite3_dbs, db, "sqlite3", free_sqlite3, modinst);
     if (!OK_HANDLE(h)) {
 	sqlite3_close(db);
 	RETFAIL;
@@ -188,7 +190,7 @@ SQLITE3_PREPARE( LA_ALIST ) {
 
     DEBUGF(("PREP: dbh %ld db %p stp %p\n", LA_INT(0), db, st));
 
-    sh = new_handle2(&sqlite3_stmts, st, "sqlite3_stmts", free_stmt, module);
+    sh = new_handle2(&sqlite3_stmts, st, "sqlite3_stmt", free_stmt, modinst);
     if (!OK_HANDLE(sh)) {
 	sqlite3_finalize(st);
 	RETFAIL;

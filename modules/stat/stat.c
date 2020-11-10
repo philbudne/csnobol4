@@ -13,7 +13,10 @@
 #include "equ.h"
 #include "snotypes.h"
 #include "macros.h"
+#include "module.h"
 #include "load.h"
+
+SNOBOL4_MODULE(stat)
 
 /*
  * TODO: chmod, fchmod, mkfifo, mkdir

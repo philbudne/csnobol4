@@ -42,12 +42,14 @@
 #include "h.h"
 #include "snotypes.h"
 #include "macros.h"
+#include "module.h"
 #include "load.h"
 #include "str.h"
 
 /* machine generated: */
 #include "equ.h"			/* I & R */
 
+SNOBOL4_MODULE(sprintf)
 
 lret_t
 SPRINTF( LA_ALIST ) {

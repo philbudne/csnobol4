@@ -5,7 +5,7 @@ setlocal
 
 if NOT "%1" == "" set SNOLIB=%1
 rem Default set in config\win32\config.h:
-if not DEFINED SNOLIB set SNOLIB=C:\snobol4
+if not DEFINED SNOLIB set SNOLIB="C:\Program Files\SNOBOL4"
 
 if not exist %SNOLIB% mkdir %SNOLIB%
 if not exist %SNOLIB%\local mkdir %SNOLIB%\local

@@ -75,6 +75,10 @@ typedef int int32_t;
 #define DEV_RANDOM "/dev/random"
 #endif
 
+#ifndef DEV_URANDOM
+#define DEV_URANDOM "/dev/urandom"
+#endif
+
 uint32_t bsd_random(void);
 
 /*
@@ -232,6 +236,7 @@ static uint32_t randtbl[DEG_3 + 1] = {
  * in the initialization of randtbl) because the state table pointer is set
  * to point to randtbl[1] (as explained below).
  */
+/* NOTE!!!! NOT THREAD-SAFE!!!! */
 static uint32_t *fptr = &randtbl[SEP_3 + 1];
 static uint32_t *rptr = &randtbl[1];
 
@@ -354,7 +359,10 @@ bsd_srandomdev(void) {
 	else
 		len = rand_deg * sizeof state[0];
 
-	fd = open(DEV_RANDOM, O_RDONLY, 0);
+	fd = open(DEV_URANDOM, O_RDONLY, 0); /* non-blocing, entropy seeded */
+	if (fd < 0)
+	    fd = open(DEV_RANDOM, O_RDONLY, 0); /* blocking, pure entropy */
+
 	if (fd >= 0) {
 		if (read(fd, (void *) state, len) == len)
 			done = 1;
@@ -362,16 +370,21 @@ bsd_srandomdev(void) {
 	}
 	if (!done) {
 		unsigned long junk;	/* intentionally used uninitialized! */
+		if (sizeof(long) > sizeof(uint32_t))
+		    junk = (junk>>32) ^ (junk & 0xffffffff);
 #if defined(TIMESPEC)
 		struct timespec ts;
 
 		TIMESPEC(&ts);
-		junk ^= ts.tv_sec ^ ts.tv_nsec; /* couldn't they have changed tv to ts? */
+		/* couldn't they have changed tv_ to ts_? */
+		/* nsec only 29+ bits */
+		junk ^= ts.tv_sec ^ (ts.tv_nsec << 2);
 #elif defined(HAVE_GETTIMEOFDAY)
 		struct timeval tv;
 
 		gettimeofday(&tv, NULL);
-		junk ^= tv.tv_sec ^ tv.tv_usec;
+		/* usec only 19+ bits */
+		junk ^= tv.tv_sec ^ (tv.tv_usec << 12);
 #else
 		junk ^= time(0);
 #endif
@@ -573,7 +586,9 @@ bsd_random(void)
 #include "snotypes.h"
 #include "macros.h"
 #include "load.h"
+#include "module.h"
 
+SNOBOL4_MODULE(random)
 
 static int seeded = 0;			/* XXX VAR? TLS?? */
 
