@@ -69,7 +69,7 @@ free_obj(void *x) {
 
 static snohandle_t
 new_obj(LPDISPATCH pdisp) {
-    return new_handle2(&com_handles, pdisp, "COM_Dispatch", free_obj, module);
+    return new_handle2(&com_handles, pdisp, "COM_Dispatch", free_obj, modinst);
 }
 
 //
