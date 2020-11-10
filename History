@@ -16,6 +16,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 		replace htlist with module_instance_private
 		add SNOBOL4_MODULE macro
 	lib/loadx.c: EXTERNAL_DATATYPE returns module|type
+		pass original name/path to libopen, save as name
+		check oslib pointers for dups
 	lib/snolib/handle.c: add module_instance_private
 		remove new_handle
 		add handle_cleanup_tables

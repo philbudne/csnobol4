@@ -49,23 +49,13 @@ static void loadx_cleanup(void);
 /* create refcounted lib interface */
 
 static struct lib *
-libopen(char *path) {	    /* XXX take original name (for module?) */
+libopen(char *name, char *path) {
     void *oslib;
     struct lib *lp;
 
-    /*
-     * see if it's one we've already mapped
-     *
-     * if paths differ, could end up calling os_load_library more than once
-     * (and will call module_cleanup prematurely)
-     * could dlopen and Windows return same pointer on multiple loads
-     * and check by pointer??
-     *
-     * (what about VMS, old NeXT/Mac, HP-UX interfaces????)
-     */
-
+    /* check for duplicate by ORIGINAL name/path */
     for (lp = libs; lp; lp = lp->next)
-	if (strcmp(path, lp->name) == 0)
+	if (strcmp(name, lp->name) == 0)
 	    break;
 
     if (!lp) {
@@ -73,15 +63,22 @@ libopen(char *path) {	    /* XXX take original name (for module?) */
 	if (oslib == NULL)
 	    return NULL;
 
+	/* defend against multiple paths & windoze behavior */
+	for (lp = libs; lp; lp = lp->next) {
+	    if (oslib == lp->oslib) {
+		os_unload_library(oslib); /* reduce use count */
+		goto found;
+	    }
+	}
+
 	lp = (struct lib *) malloc(sizeof(struct lib) + strlen(path));
 	lp->oslib = oslib;
 	lp->refcount = 0;
-	strcpy(lp->name, path);
-	lp->module = os_find_symbol(oslib, "module", NULL);
 
+	strcpy(lp->name, name);		/* save ORIGINAL name/path */
+	lp->module = os_find_symbol(oslib, "module", NULL);
 	/* XXX error if lookup fails when SHARED (&& THREADS)? */
 	/* XXX complain regardless? */
-	/* XXX poke lp->module->lib(name)? */
 
 	lp->next = libs;
 	libs = lp;
@@ -91,6 +88,7 @@ libopen(char *path) {	    /* XXX take original name (for module?) */
 	    module_instance_init(lp->module);
 	}
     }
+ found:
     lp->refcount++;
     return lp;
 }
@@ -154,14 +152,14 @@ load(struct descr *addr,		/* OUT */
     if (!entry) {
 	char *l2;
 
-	lp = libopen(lname);
+	lp = libopen(lname, lname);
 	if (lp)
 	    goto found_lib;
 
 	l2 = strjoin(lname, DL_EXT, NULL);
 	if (!l2)
 	    return FALSE;
-	lp = libopen(l2);
+	lp = libopen(lname, l2);
 	free(l2);
 	if (lp)
 	    goto found_lib;
@@ -169,7 +167,7 @@ load(struct descr *addr,		/* OUT */
 	if (!abspath(lname)) {
 	    l2 = io_lib_find("shared", lname, DL_EXT);
 	    if (l2) {
-		lp = libopen(l2);
+		lp = libopen(lname, l2);
 		free(l2);
 		if (lp)
 		    goto found_lib;
@@ -177,7 +175,7 @@ load(struct descr *addr,		/* OUT */
 
 	    l2 = io_lib_find("dynload", lname, DL_EXT);
 	    if (l2) {
-		lp = libopen(l2);
+		lp = libopen(lname, l2);
 		free(l2);
 		if (lp)
 		    goto found_lib;
@@ -185,7 +183,7 @@ load(struct descr *addr,		/* OUT */
 
 	    l2 = io_lib_find(NULL, lname, DL_EXT);
 	    if (l2) {
-		lp = libopen(l2);
+		lp = libopen(lname, l2);
 		free(l2);
 	    }
 	    if (!lp)

@@ -2,9 +2,7 @@ $Id$
 
 ================ 2.2
 
-change call_..... to get_instance_data
-
-flush os_find_symbol stash!
+flush os_find_symbol stash (& bsd/load.c?)
 
 cvs add modules/random/test.sno
 cvs rm test/ndbm.sno test/random.sno test/sleep.sno test/time.sno
@@ -13,14 +11,9 @@ document EXTERNAL_DATATYPE (give credit)
 
 GLOBAL define (non-VAR)????
 
-rename mod_gcc.c to mod_helper.c
-
 DJGPP: inet6 problems?
 
-Windows: permissions??
-
-MINGW2: export problems?
-
+Windows: tarball permissions??
 
 Msys2:
 	undefined reference to `retstring_free'

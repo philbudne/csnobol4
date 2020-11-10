@@ -23,6 +23,9 @@ os_load_library(const char *lname) {
      * system will scan various directories
      * (including appl dir, cwd, SYSTEM(32),
      * windows dir, and dirs in PATH var)
+     *
+     * after LoadLibrary("foo/bar.dll"),
+     * LoadLibrary("bar") finds same library
      */
     return LoadLibrary(lname);
 }
