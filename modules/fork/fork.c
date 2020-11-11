@@ -7,7 +7,7 @@
 #ifdef HAVE_UNISTD_H
 #include <sys/types.h>			/* pid_t */
 #include <sys/wait.h>			/* wait(), waitpid() */
-#include <unistd.h>			/* fork() */
+#include <unistd.h>			/* fork(), get[p]pid() */
 #endif /* HAVE_UNISTD_H defined */
 
 #include <stdio.h>			/* sprintf */
@@ -33,9 +33,44 @@ SNOBOL4_MODULE(fork)
 **        pid = B<FORK()>
 **
 **        status = B<WAITPID(>[I<pid>][,I<options>]B<)>
+**
+**        pid = B<GETPID()>
+**
+**        parent = B<GETPPID()>
 **=ecode
 **=sect DESCRIPTION
+**=cut
+*/
+
+/*
+ * LOAD("FORK()INTEGER", FORK_DL)
+ *
+ * Usage;	FORK()
+ * Returns;	0 if child, pid if parent, fails if fork() does
+ */
+/*
+**=pea
+**
 **B<FORK()> creates a process: returns 0 in child, process ID in parent.
+**
+**=cut
+*/
+lret_t
+FORK( LA_ALIST ) {
+    pid_t pid;
+
+    pid = fork();
+    if (pid == -1)
+	RETFAIL;
+    RETINT( pid );
+}
+
+/*
+ * (first/pid argument is optional)
+ * LOAD("WAITPID(,STRING)STRING", FORK_DL)
+ */
+/*
+**=pea
 **
 **B<WAITPID()> takes an optional process id to wait for, and returns a string
 **with the process id, status, and additional status about the child.
@@ -51,30 +86,9 @@ SNOBOL4_MODULE(fork)
 **WUNTRACED
 **=item w
 **NOWAIT
+**
 **=cut
 */
-
-/*
- * LOAD("FORK()INTEGER", FORK_DL)
- *
- * Usage;	FORK()
- * Returns;	0 if child, pid if parent, fails if fork() does
- */
-
-lret_t
-FORK( LA_ALIST ) {
-    pid_t pid;
-
-    pid = fork();
-    if (pid == -1)
-	RETFAIL;
-    RETINT( pid );
-}
-
-/*
- * (first/pid argument is optional)
- * LOAD("WAITPID(,STRING)STRING", FORK_DL)
- */
 lret_t
 WAITPID( LA_ALIST) {
     pid_t pid, wpid;
@@ -133,9 +147,38 @@ WAITPID( LA_ALIST) {
 }
 
 /*
+**	LOAD("GETPID()INTEGER", FORK_DL)
+**=pea
+**=break
+**B<GETPID()> returns the current process ID.  It never fails.
+**
+**=cut
+*/
+
+lret_t
+GETPID( LA_ALIST ) {
+    RETINT(getpid());
+}
+
+/*
+**	LOAD("GETPPID()INTEGER", FORK_DL)
+**=pea
+**=break
+**B<GETPPID()> returns the parent process ID.  It never fails.
+**
+**=cut
+*/
+
+lret_t
+GETPPID( LA_ALIST ) {
+    RETINT(getppid());
+}
+
+
+/*
 **=pea
 **=sect SEE ALSO
-**B<snobol4>(1), B<fork>(2), B<waitpid>(2)
+**B<snobol4>(1), B<fork>(2), B<waitpid>(2), B<getpid>(2), B<getppid>(2)
 **=sect AUTHOR
 **Philip L. Budne
 **=cut
