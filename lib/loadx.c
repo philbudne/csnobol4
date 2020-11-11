@@ -39,7 +39,10 @@ struct func {
 /* list of loaded functions (for UNLOAD) */
 static VAR struct func *funcs;
 
-/* list of loaded libraries (depends on system ref-counting) */
+/*
+ * list of loaded libraries (depends on system ref-counting)
+ * COULD keep just one, but would require a lock
+ */
 static VAR struct lib *libs;
 
 #ifdef SHARED
@@ -83,10 +86,8 @@ libopen(char *name, char *path) {
 	lp->next = libs;
 	libs = lp;
 
-	if (lp->module) {
-	    module_init(lp->module);	/* XXX move to module_inst_init?? */
+	if (lp->module)
 	    module_instance_init(lp->module);
-	}
     }
  found:
     lp->refcount++;
@@ -98,6 +99,9 @@ libclose(struct lib *lib) {
     struct lib *lp, *pp;
     int ret;
 
+    if (--lib->refcount > 0)
+	return 1;
+
     /* find previous, if any */
     for (lp = libs, pp = NULL; lp && lp != lib; pp = lp, lp = lp->next)
 	;
@@ -108,22 +112,17 @@ libclose(struct lib *lib) {
     if (lp->module)
 	module_instance_cleanup(lp->module);
 
-    ret = 1;
-    if (--(lp->refcount) <= 0) {
-	if (lp->module)
-	    module_cleanup(lp->module);
+    /* detach library */
+    os_unload_library(lp->oslib);
 
-	/* detach library */
-	os_unload_library(lp->oslib);
+    /* unlink from list */
+    if (pp)
+	pp->next = lp->next;
+    else
+	libs = lp->next;
+    free(lp);
 
-	/* unlink from list */
-	if (pp)
-	    pp->next = lp->next;
-	else
-	    libs = lp->next;
-	free(lp);
-    }
-    return ret;
+    return 1;
 }
 
 /* support for SIL "LOAD" opcode -- load external function */
@@ -312,9 +311,11 @@ EXTERNAL_DATATYPE( LA_ALIST ) {
 
     for (lp = libs; lp; lp = lp->next) {
 	struct module_instance *mip;
+
 	if (!lp->module)
 	    continue;
-	for (mip = lp->module->instances; mip; mip = mip->next) {
+	mip = (lp->module->get_module_instance)();
+	if (mip) {
 	    const char *type_name = handle_table_name(dp, mip);
 	    if (type_name) {
 		/*

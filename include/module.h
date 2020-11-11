@@ -18,7 +18,6 @@ struct module {
     const char *name;
     int flags;
     int refcount;			/* needs locking! */
-    struct module_instance *instances;	/* list of all instances */
     struct module_instance *(*get_module_instance)(void);
     /* end of data in abi_version == 0x100 */
 };
@@ -55,7 +54,7 @@ struct module_instance {
 	0, 0, 0, \
         #NAME, \
 	MODULE_FLAGS, 0, \
-	NULL, get_module_instance
+	get_module_instance
 
 #define MODULE_INSTANCE_STRUCT_INIT \
 	&module, \

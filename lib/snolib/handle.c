@@ -95,6 +95,7 @@ new_handle2(handle_handle_t *hhp, void *vp,
 
     if (!htp) {
 	/* first time thru? create hash table */
+	fprintf(stderr, "malloc handle_table\n");
 	htp = malloc(sizeof(struct handle_table));
 	if (!htp)
 	    return bad_handle;
@@ -107,6 +108,7 @@ new_handle2(handle_handle_t *hhp, void *vp,
 	*hhp = htp;
 
 	/* link into list of tables to pass to cleanup */
+	fprintf(stderr, "mip->priv %p\n", mip->priv);
 	if (mip && mip->priv) {
 	    /* XXX lazy alloc private here? */
 	    htp->next_table = mip->priv->htlist;
@@ -233,45 +235,24 @@ handle_table_name(struct descr *dp, struct module_instance *mip) {
  */
 
 /*
- * called on module load
- */
-void
-module_init(struct module *mp) {
-    /* XXX increment mp->refcount (while holding lock on loadx.c:libs?) */
-}
-
-/*
- * called on module unload
- */
-void
-module_cleanup(struct module *mp) {
-    /* XXX decrement mp->refcount (while holding lock on loadx.c:libs?) */
-}
-
-/*
  * called for each thread entering (on load)
  * called via module->call_module_instance_init
  */
 int
 module_instance_init(struct module *mp) {
     struct module_instance *mip = (mp->get_module_instance)();
-#ifdef DEBUG
+#ifdef DEBUG_MODULES
     fprintf(stderr, "module_instance_init\n");
 #endif
 
+    /* XXX increment mip->module->refcount?? */
 
-    /* XXX increment mip->module->usecount?? */
     if (!mip->priv) {
-	mip->next = mp->instances;
-	mp->instances = mip;
-
 	mip->priv = malloc(sizeof(struct module_instance_private));
 	if (!mip->priv)
 	    return 0;
 	bzero(mip->priv, sizeof(struct module_instance_private));
     }
-    mip->priv->htlist = NULL;
-
     /*
      * NOTE!!
      * check abi version & module struct size before touching anything else!
@@ -279,35 +260,20 @@ module_instance_init(struct module *mp) {
     return 1;
 }
 
-/*
- * called on thread exit (from unload or cleanup)
- * called via module->call_module_instance_cleanup
- */
 void
 module_instance_cleanup(struct module *mp) {
     struct module_instance *mip = (mp->get_module_instance)();
-    struct module_instance *tp, *pp;
 
-#ifdef DEBUG
-    fprintf(stderr, "module_instance_CLEANUP\n");
+#ifdef DEBUG_MODULES
+    fprintf(stderr, "module_instance_cleanup\n");
 #endif
 
-    /* XXX decrement mip->module->usecount?? */
+    /* XXX decrement mip->module->refcount?? */
     
     if (mip->priv) {
 	handle_cleanup_tables(mip->priv->htlist);
+	/* add other private data cleanup here */
 	free(mip->priv);
-
 	mip->priv = NULL;
-    }
-
-    /* unlink  from instances list in struct module */
-    for (tp = mp->instances, pp = NULL; tp && tp != mip; pp = tp, tp = tp->next)
-	;
-    if (tp) {
-	if (pp == NULL)
-	    mp->instances = tp->next;
-	else
-	    pp->next = tp->next;
     }
 }
