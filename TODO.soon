@@ -7,12 +7,13 @@ flush os_find_symbol stash (& bsd/load.c?)
 cvs rm test/ndbm.sno test/random.sno test/sleep.sno test/time.sno
 
 document EXTERNAL_DATATYPE (give credit)
+	decide whether to have separate EXTERNAL_MODULE function?
 
 GLOBAL define (non-VAR)????
 
 DJGPP: inet6 problems?
 
-Windows: tarball permissions??
+Windows: permissions issue??
 
 Mac:
 	Mac OS X 10.5.8 running version:
