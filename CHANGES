@@ -10,13 +10,14 @@ Changes since 2.1.6 release;
 	I/O code cleanup/refactor (wish list item since / last attempted 2002!)
 	Switch back to less precise MSTIME (runtime) reports of JUST user time.
 	    This will effect timing reports.
-	All output unbuffered with -U option, or SNOBOL4UNBUFFERED set.
+	All output unbuffered with -U option, or SNOBOL4UNBUFFERED set in env.
 	Library files:
 	    json.sno -- JSON subset
 	Modules:
 	    base64: base64 encode/decode.
+	    fork: add GETPID, GETPPID functions
 	    stat: fixed.
-	       added "btime" (birth time),available on BSDs/OSX/Cygwin.
+	       added "btime" (birth time),available on BSDs/OSX/Cygwin/MSYS2
 	    time: GETTIMEOFDAY return now has TV_NSEC member
 	configure changes:
 	    --force-pml removed (must use modules)
@@ -32,7 +33,7 @@ Changes since 2.1.6 release;
 		(previously HOST() only showed "Win8" on Windows 10)
 	    Implement EXIT('command to run')
 	    Decode and format 64-bit integers on 64-bit MSVC compiles
-	Portability fixes for Android, illumos (Solaris).
+	Portability fixes for Android, illumos (Solaris), MSYS2.
 	Can build libsnobol4.so shared library / snobol4.dll;
 	    EXPERIMENTAL
 	    ssnobol4 executable using it is up to 8% slower
