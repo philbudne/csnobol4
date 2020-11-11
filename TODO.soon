@@ -15,20 +15,14 @@ DJGPP: inet6 problems?
 
 Windows: tarball permissions??
 
-Msys2:
-	undefined reference to `retstring_free'
-	undefined symbol `module_init'
-	undefined reference to `module_cleanup'
-	====> need -Wl,--out-implib,libsnobol4.a ??
-
 Mac:
 	Mac OS X 10.5.8 running version:
 	powerpc-apple-darwin9-gcc-4.0.1
 	stat.c:120: error: ‘struct stat’ has no member named ‘st_birthtimespec’
 	stat.c:121: error: ‘struct stat’ has no member named ‘st_birthtimespec‘
 
-modules: export "struct module"? (current "mod" is TLS -- call modinst??)
-	pointer to struct module in loadx.c:struct lib?
+modules:
+	global lib list (need lock)?
 	use count field?? honor on unload??
 
 	handleio_obj?? handle to io_obj? need handle_table!!
@@ -36,9 +30,6 @@ modules: export "struct module"? (current "mod" is TLS -- call modinst??)
 	cleanup: need to closeall BEFORE unloading all functions
 
 ================
-
-function to return handle_table name for an EXTERNAL type?
-	 traverse list of modules, and table list for each module?
 
 compression:
     I/O option??
