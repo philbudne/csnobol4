@@ -97,7 +97,6 @@ libopen(char *name, char *path) {
 static int
 libclose(struct lib *lib) {
     struct lib *lp, *pp;
-    int ret;
 
     if (--lib->refcount > 0)
 	return 1;

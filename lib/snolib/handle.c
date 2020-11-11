@@ -57,6 +57,17 @@ struct module_instance_private {
 
 static const struct descr bad_handle;
 
+/* for lazy allocation! never fetch mip->priv!!! */
+static struct module_instance_private *
+get_mip_priv(struct module_instance *mip) {
+    if (!mip->priv) {
+	mip->priv = malloc(sizeof(struct module_instance_private));
+	if (mip->priv)
+	    bzero(mip->priv, sizeof(struct module_instance_private));
+    }
+    return mip->priv;
+}
+
 SNOLOAD_API(void *)
 lookup_handle(handle_handle_t *hhp, snohandle_t h) {
     struct handle_table *htp = *hhp;
@@ -95,7 +106,6 @@ new_handle2(handle_handle_t *hhp, void *vp,
 
     if (!htp) {
 	/* first time thru? create hash table */
-	fprintf(stderr, "malloc handle_table\n");
 	htp = malloc(sizeof(struct handle_table));
 	if (!htp)
 	    return bad_handle;
@@ -108,11 +118,10 @@ new_handle2(handle_handle_t *hhp, void *vp,
 	*hhp = htp;
 
 	/* link into list of tables to pass to cleanup */
-	fprintf(stderr, "mip->priv %p\n", mip->priv);
-	if (mip && mip->priv) {
-	    /* XXX lazy alloc private here? */
-	    htp->next_table = mip->priv->htlist;
-	    mip->priv->htlist = htp;
+	if (mip) {
+	    struct module_instance_private *priv = get_mip_priv(mip);
+	    htp->next_table = priv->htlist;
+	    priv->htlist = htp;
 	}
     }
 
@@ -204,7 +213,6 @@ handle_cleanup_table(struct handle_table *htp) {
 
 static void
 handle_cleanup_tables(struct handle_table *htp) {
-    /* XXX decrement mip->module->usecount?? */
     while (htp) {
 	struct handle_table *next = htp->next_table;
 	handle_cleanup_table(htp);
@@ -217,6 +225,7 @@ const char *
 handle_table_name(struct descr *dp, struct module_instance *mip) {
     struct handle_table *htp;
 
+    /* direct access! avoid lazy alloc */
     if (!mip->priv)
 	return NULL;
 
@@ -230,8 +239,11 @@ handle_table_name(struct descr *dp, struct module_instance *mip) {
 }
 
 
-/*
+/*****************
  * module support
+ * belongs in module.c
+ * here to avoid private data getters/setters
+ * (or letting struct module_instance_private outside this file)
  */
 
 /*
@@ -240,19 +252,12 @@ handle_table_name(struct descr *dp, struct module_instance *mip) {
  */
 int
 module_instance_init(struct module *mp) {
-    struct module_instance *mip = (mp->get_module_instance)();
 #ifdef DEBUG_MODULES
     fprintf(stderr, "module_instance_init\n");
 #endif
 
-    /* XXX increment mip->module->refcount?? */
+    /* XXX increment mip->module->refcount (while holding lock?)?? */
 
-    if (!mip->priv) {
-	mip->priv = malloc(sizeof(struct module_instance_private));
-	if (!mip->priv)
-	    return 0;
-	bzero(mip->priv, sizeof(struct module_instance_private));
-    }
     /*
      * NOTE!!
      * check abi version & module struct size before touching anything else!
