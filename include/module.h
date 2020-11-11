@@ -3,13 +3,13 @@
  */
 
 /*
- * Not a public interface, but is part of the module/snobol4 ABI
- * On the loadable side, this file should only be included by module
- * support files.
+ * The only part of this file that should be considered public
+ * is the SNOBOL4_MODULE macro.  Please ignore the rest!
  */
+
 struct module {
     /* NOTE: all new data types start on x8 boundary */
-    unsigned short abi_version;		/* major*0x100 + minor */
+    unsigned short abi_version;		/* major*100 + minor */
     unsigned short sizeof_module;
     unsigned short sizeof_long;
     unsigned short sizeof_ptr;
@@ -19,7 +19,7 @@ struct module {
     int flags;
     int refcount;			/* needs locking! */
     struct module_instance *(*get_module_instance)(void);
-    /* end of data in abi_version == 0x100 */
+    /* end of data in abi_version == 100 */
 };
 
 
