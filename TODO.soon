@@ -4,7 +4,6 @@ $Id$
 
 flush os_find_symbol stash (& bsd/load.c?)
 
-cvs add modules/random/test.sno
 cvs rm test/ndbm.sno test/random.sno test/sleep.sno test/time.sno
 
 document EXTERNAL_DATATYPE (give credit)
