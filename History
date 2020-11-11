@@ -4,6 +4,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 11/10/2020:
 	modules/fork/fork.c: add GETPID, GETPPID
+	lib/bsd/inet.c: fix typo
 
 11/10/2020:
 	snolib/setuputil.sno: Fix for MSYS2

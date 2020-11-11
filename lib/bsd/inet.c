@@ -146,7 +146,7 @@ inet_socket(char *host, char *service,
 	;
 #endif /* FOLD_HOSTNAMES defined */
 
-    s = inet_socket(host, service, port, flags, type );
+    s = inet_socket2(host, service, port, flags, type );
 
     return s;
 }
