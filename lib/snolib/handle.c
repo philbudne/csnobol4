@@ -253,15 +253,19 @@ handle_table_name(struct descr *dp, struct module_instance *mip) {
 int
 module_instance_init(struct module *mp) {
 #ifdef DEBUG_MODULES
-    fprintf(stderr, "module_instance_init\n");
+    fprintf(stderr, "module_instance_init %s\n", mp->name);
 #endif
-
-    /* XXX increment mip->module->refcount (while holding lock?)?? */
 
     /*
      * NOTE!!
      * check abi version & module struct size before touching anything else!
+     * could return false if invalid ABI version:
+     * too old (no longer supported)
+     * too new (change in major version means incompatible change)
      */
+
+    /* XXX increment mip->module->refcount (while holding global lock?)?? */
+
     return 1;
 }
 
@@ -270,7 +274,7 @@ module_instance_cleanup(struct module *mp) {
     struct module_instance *mip = (mp->get_module_instance)();
 
 #ifdef DEBUG_MODULES
-    fprintf(stderr, "module_instance_cleanup\n");
+    fprintf(stderr, "module_instance_cleanup %s\n", mp->name);
 #endif
 
     /* XXX decrement mip->module->refcount?? */
