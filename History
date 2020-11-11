@@ -3,6 +3,10 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 11/10/2020:
+	snolib/setuputil.sno: Fix for MSYS2
+	configure: define IMPORT/EXPORT on Cygwin/MSYS
+
+11/10/2020:
 	Revamp module ABI once again!
 	Create SNOBOL4_MODULE macro, no more mod_xxx.c
 	Create module_instance_private

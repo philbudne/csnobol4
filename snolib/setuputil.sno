@@ -105,7 +105,7 @@ fetch.end
 	fetch('OBJ_EXT')
 	fetch('SETUP_SYS')
 
-	cygwin = DIFFER(HOST() ? POS(0) BREAK(':') ':CYGWIN') 1
+	cygwin = DIFFER(HOST() ? POS(0) BREAK(':') (':CYGWIN' | ':MSYS')) 1
 	windows = DIFFER(HOST() ? POS(0) BREAK(':') ':Win') 1
 	mingw = DIFFER(windows) IDENT(SETUP_SYS, "posix") 1
 

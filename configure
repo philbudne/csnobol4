@@ -469,8 +469,14 @@ gcc|clang|icc)
 	SO_LD=$CCPATH
 	SO_LDFLAGS=-shared
 	echo 'ADD_LDFLAGS([-Wl,--out-implib,libsnobol4.a])' >> $CONFIG_M4
-	# 2020-10-18: ndbm doesn't work without it:
-	echo 'ADD_LDFLAGS([-Wl,--export-all-symbols])' >> $CONFIG_M4
+
+	# also available as  __attribute__ ((dll{im,ex}port))?
+	echo '#define IMPORT(TYPE) __declspec(dllimport) TYPE' >> $CONFIG_H
+	echo '#define EXPORT(TYPE) __declspec(dllexport) TYPE' >> $CONFIG_H
+
+#	# Equivalent to -rdynamic? IMPORT/EXPORT seem to do the trick!
+#	echo 'ADD_LDFLAGS([-Wl,--export-all-symbols])' >> $CONFIG_M4
+
 	echo 'define([INSTALL_SYSDEP],[$(INSTALL) -m 644 libsnobol4.a $(SNOLIB_LIB)])' >> $CONFIG_M4
 	;;
 
@@ -1521,11 +1527,13 @@ fi
 # check if GNU C visibility available (silently for now) for shared library.
 # Harder to detect if pragma form available.
 # NOTE! AFTER above defaulting of DL_CFLAGS, because not used for LOADable code.
-DEFVIS='__attribute__ ((__visibility__("default")))'
-if config/check 'stdio.h' "$DEFVIS extern int foo(void)"; then
-    # first available in gcc 4.0?
-    SO_CFLAGS="$SO_CFLAGS -fvisibility=hidden"
-    echo "#define EXPORT(TYPE) $DEFVIS TYPE" >> $CONFIG_H
+if [ "x$CYGWIN" = x ]; then
+    DEFVIS='__attribute__ ((__visibility__("default")))'
+    if config/check 'stdio.h' "$DEFVIS extern int foo(void)"; then
+	# first available in gcc 4.0?
+	SO_CFLAGS="$SO_CFLAGS -fvisibility=hidden"
+	echo "#define EXPORT(TYPE) $DEFVIS TYPE" >> $CONFIG_H
+    fi
 fi
 
 # "Shared Object" -- Dynamically Loaded Library loaded at startup
