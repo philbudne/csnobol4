@@ -37,11 +37,12 @@
 **=item build
 **Compiles and links a dynamicly loadable executable file
 **named I<modulename> (with the appropriate extension for the local system).
-**I<modulename>B<.sno> will be created from
-**B<pre.sno> (if it exists),
-**any I<LOAD()> present in comments 
-**and any lines starting with B<*=pea> and ending with B<*=cut>
-**in I<sourcefiles>,
+**I<modulename>B<.sno> will be created from:
+**B<pre.sno> (if it exists), followed by lines from I<sourcefiles>:
+**any instances of I<LOAD(...)> present in B<*> comments,
+**any groups of lines starting with B<*=pea> and ending with B<*=cut> (inclusive),
+**and any comment lines bracketed by B<*=snobol4> and B<*=cut> (exclusive)
+**will be copied without the leading B<*>,
 **and finally B<funcs.sno> (if it exists).
 **
 **=item install
@@ -220,6 +221,7 @@ smi.iloop
 * copy SNOPOD sections to output
 	differ(inpea)				:s(smi.inpea)
 	line POS(0) span('*') '='		:f(smi.lloop)
+	line POS(0) span('*') '=snobol4'	:s(smi.insno)
 	runpea = 1
 	inpea = 1
 smi.inpea
@@ -232,6 +234,15 @@ smi.lloop
 +	line BREAKX('L') ('LOAD' BAL) . load =	:f(smi.iloop)
 	lines = lines + 1
 	out = setup.t load    	 		:(smi.lloop)
+
+* here in after =snobol4 (new in 2.2)
+* copy lines (without leading stars) to out until =cut seen
+* (I can SWEAR I got the idea from Perl!)
+smi.insno
+	line = in				:f(smi.eof)
+	line POS(0) span('*') '=cut'		:s(smi.iloop)
+	line POS(0) span('*') rem . out		:f(smi.insno)s(smi.insno)
+
 smi.eof
 
 ***** copy funcs.sno, if it exists

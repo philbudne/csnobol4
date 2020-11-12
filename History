@@ -6,6 +6,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	lib/compio_obj.c, lib/io.c: Implement compression level
 	    (digit after compression option)
 	Makefile2.m4: fix "make install" problem reported by Phillip Thomas
+	snolib/setuputil.sno: copy lines bracketed by *=snobol4 and *=cut
 	
 11/11/2020:
 	Implement compressed file I/O as an I/O object layer
