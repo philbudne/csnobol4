@@ -1979,7 +1979,7 @@ fi
 if [ "x$NEED_COMPIO" != x ]; then
     echo '#define USE_COMPIO'			>> $CONFIG_H
     echo 'ADD_OBJS([compio_obj.o])'		>> $CONFIG_M4
-    echo 'ADD_SRCS([lib/compio_obj.c])'		>> $CONFIG_M4
+    echo 'ADD_SRCS([$(COMPIO_OBJ_C)])'		>> $CONFIG_M4
 fi
 
 if [ "x$INITIAL_CFLAGS" != x ]; then

@@ -59,6 +59,7 @@ all:	build_all timing.out
 
 BAL_C=$(SRCDIR)lib/bal.c
 BREAK_C=$(SRCDIR)lib/break.c
+COMPIO_OBJ_C=$(SRCDIR)lib/compio_obj.c
 DATE_C=$(SRCDIR)lib/date.c
 DIRNAME_C=$(SRCDIR)lib/generic/dirname.c
 DUMP_C=$(SRCDIR)lib/dump.c
@@ -395,6 +396,9 @@ bal.o:	$(BAL_C)
 
 break.o: $(BREAK_C)
 	$(CC) $(CFLAGS) -c $(BREAK_C)
+
+compio_obj.o:	$(COMPIO_OBJ_C)
+	$(CC) $(CFLAGS) -c $(COMPIO_OBJ_C)
 
 date.o:	$(DATE_C)
 	$(CC) $(CFLAGS) -c $(DATE_C)
