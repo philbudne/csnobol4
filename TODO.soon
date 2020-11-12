@@ -2,6 +2,8 @@ $Id$
 
 ================ 2.2
 
+take digit after compression char?
+
 update README, CHANGELOG
 
 flush os_find_symbol stash (& bsd/load.c?)

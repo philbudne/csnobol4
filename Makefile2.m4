@@ -692,7 +692,7 @@ always:
 # install .h files for dynamicly loaded functions
 INSTALL_H=[include]/h.h [include]/snotypes.h [include]/macros.h \
 	[include]/load.h [include]/dt.h [include]/str.h [include]/handle.h \
-	config.h equ.h version.h
+	[include]/module.h config.h equ.h version.h
 
 # generated SNOLIB files (host.sno generated at top level)
 GENSNOLIB=host.sno config.sno
@@ -736,7 +736,7 @@ install: snobol4 sdb timing.out $(GENERATED_DOCS) build_modules docs
 	done
 	$(MAKE) -f Makefile2 install_modules
 	$(INSTALL) -d $(INCLUDE_DIR)
-	for F in $(INSTALL_H) do \
+	for F in $(INSTALL_H); do \
 		$(INSTALL) -m 644 $$F $(INCLUDE_DIR); \
 	done
 	$(INSTALL) -d $(DOC_DIR)

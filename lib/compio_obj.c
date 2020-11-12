@@ -22,15 +22,14 @@
 
 #define SUPER bufio_ops
 
-enum format { GZIP, BZIP2, XZ };
-
 struct compio_obj {
     struct bufio_obj bio;	/* line buffered input */
     struct io_obj *wiop;	/* wrapped I/O pointer */
     char dir;
     char done;			/* decompressor says done */
+    char level;
+    char unused_char;
     /* everything below in subclass? */
-    enum format fmt : 8;
     void *private;
     ssize_t (*reader)(struct compio_obj *iop, const char *buf, size_t len);
     ssize_t (*writer)(struct compio_obj *iop, const char *buf, size_t len);
@@ -93,7 +92,6 @@ zlib_reader(struct compio_obj *iop, const char *buf, size_t len) {
             return -1;
         if (ret == Z_STREAM_END) {
             inflateReset(stream);
-	    ciop->done = 1;
 	}
     } while (stream->avail_out);
     return len - stream->avail_out;
@@ -154,8 +152,19 @@ zlib_open(struct compio_obj *ciop) {
 	}
     }
     else {
-	/* magic numbers from minigzip.c example */
-	if (deflateInit2(stream, -1, 8, 15 + 16, 8, 0) == Z_OK) {
+	/*
+	 * for window bits:
+	 * FreeBSD gzip.c uses -15 "32K LZ77 window", "suppress zlib wrapper"
+	 * minigzip.c, gzwrite.c use 15+16 32K, "write gzip wrapper instead"
+	 */
+	int level = 6;			/* gzip default */
+	if (ciop->level >= '0' && ciop->level <= '9')
+	    level = ciop->level = '0';
+	if (deflateInit2(stream, level,
+			 8,		/* method: Z_DEFLATED */
+			 15 + 16,	/* window bits (see above) */
+			 8,		/* mem level */
+			 0) == Z_OK) {	/* Z_DEFAULT_STRATEGY */
 	    ciop->writer = zlib_writer;
 	    return TRUE;
 	}
@@ -198,7 +207,6 @@ bzlib_reader(struct compio_obj *iop, const char *buf, size_t len) {
             return -1;
         if (ret == BZ_STREAM_END) {
 	    /* XXX reset?? */
-	    ciop->done = 1;
 	}
     } while (stream->avail_out);
     return len - stream->avail_out;
@@ -259,7 +267,14 @@ bzlib_open(struct compio_obj *ciop) {
 	}
     }
     else {
-	if (BZ2_bzCompressInit(stream, 5, 0, 0) == BZ_OK) {
+	/*
+	 * -9 (or --best) "merely selects the default behavior"
+	 * -1 (or --fast) "isn't much faster"
+	 */
+	int level = 9;
+	if (ciop->level >= '1' && ciop->level <= '9')
+	    level = ciop->level - '0';
+	if (BZ2_bzCompressInit(stream, level, 0, 0) == BZ_OK) {
 	    ciop->writer = bzlib_writer;
 	    return TRUE;
 	}
@@ -302,7 +317,6 @@ lzma_reader(struct compio_obj *iop, const char *buf, size_t len) {
             return -1;
         if (ret == LZMA_STREAM_END) {
 	    /* XXX reset?? */
-	    ciop->done = 1;
 	}
     } while (stream->avail_out);
     return len - stream->avail_out;
@@ -363,8 +377,22 @@ lzma_open(struct compio_obj *ciop) {
 	}
     }
     else {
-	/* CRC64 is xz default? */
-	if (lzma_easy_encoder(stream, 5, LZMA_CHECK_CRC64) == LZMA_OK) {
+	/* CRC64 is xz default
+	 *
+	 * zero:
+	 * "sometimes faster than gzip -9 while compressing much better"
+	 *
+	 * six: "is the default, which is usually a good choice e.g. for
+	 * distributing files that need to be decompressible even on
+	 * systems with only 16 MiB RAM."
+	 *
+	 * levels 7, 8, 9: "These are useful only when compressing
+	 * files bigger than 8 MiB, 16 MiB, and 32 MiB, respectively.
+	 */
+	int level = 6;
+	if (ciop->level >= '0' && ciop->level <= '9')
+	    level = ciop->level - '0';
+	if (lzma_easy_encoder(stream, level, LZMA_CHECK_CRC64) == LZMA_OK) {
 	    ciop->writer = lzma_writer;
 	    return TRUE;
 	}
@@ -437,33 +465,36 @@ compio_close(struct io_obj *iop) {
 MAKE_OPS(compio, &SUPER);
 
 struct io_obj *
-compio_open(struct io_obj *iop, int flags, char format, int dir) {
+compio_open(struct io_obj *iop, int flags, int format, int lvl, int dir) {
     struct compio_obj *ciop;
-    enum format fmt;
+    int (*opener)(struct compio_obj *) = NULL;
 
     switch (format) {			/* ala tar options */
 #ifdef USE_ZLIB
     case 'z':
-	fmt = GZIP;
 	/* appending is legal in .gz files? */
+	opener = zlib_open;
 	break;
 #endif /* USE_ZLIB */
 #ifdef USE_BZLIB
     case 'j':
-	fmt = BZIP2;
 	/* is appending is legal as in .gz files?? */
+	opener = bzlib_open;
 	break;
 #endif /* USE_ZLIB */
 #ifdef USE_LZMA
     case 'J':
-	fmt = XZ;
 	/* appending is legal. */
+	opener = lzma_open;
 	break;
 #endif /* USE_LZMA */
     default:
 	return NULL;
     }
-    
+
+    if (!opener)			/* paranoia */
+	return NULL;
+
     ciop = (struct compio_obj *)
 	io_alloc(sizeof(struct compio_obj), &compio_ops, flags);
 
@@ -472,36 +503,14 @@ compio_open(struct io_obj *iop, int flags, char format, int dir) {
 
     ciop->wiop = iop;
     ciop->dir = dir;
-    ciop->fmt = fmt;
-    switch (fmt) {
-#ifdef USE_ZLIB
-    case GZIP:
-	if (!zlib_open(ciop)) {
-	    free(ciop);
-	    return NULL;
-	}
-	break;
-#endif
-#ifdef USE_BZLIB
-    case BZIP2:
-	if (!bzlib_open(ciop)) {
-	    free(ciop);
-	    return NULL;
-	}
-	break;
-#endif
-#ifdef USE_LZMA
-    case XZ:
-	if (!lzma_open(ciop)) {
-	    free(ciop);
-	    return NULL;
-	}
-	break;
-#endif
-    default:
-	break;				/* should not happen! */
+    /* '0' legal for xz:
+     */
+    if (lvl >= '0' && lvl <= '9')	/* works for ASCII! */
+	ciop->level = lvl - '0';
+    if (!(opener)(ciop)) {
+	free(ciop);
+	return NULL;
     }
-
     ciop->bio.buffer = malloc(ciop->bio.buflen = 1024); /* ugh! */
 
     return &ciop->bio.io;

@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/12/2020:
+	lib/compio_obj.c, lib/io.c: Implement compression level
+	    (digit after compression option)
+	Makefile2.m4: fix "make install" problem reported by Phillip Thomas
+	
 11/11/2020:
 	Implement compressed file I/O as an I/O object layer
 	configure: detect libz, bzip2, lzma libraries

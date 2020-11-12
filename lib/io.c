@@ -91,7 +91,8 @@ struct file {
     struct file *next;			/* next input file */
     struct io_obj *iop;
     int flags;				/* XXX per unit?? (need FL_INCLUDE) */
-    char compression;
+    char compression;			/* compression option (jJzZ) */
+    char complvl;			/* '0' thru '9' */
     /* MUST BE LAST!! */
     char fname[1];
 };
@@ -407,7 +408,8 @@ io_fopen(struct file *fp,
 	    continue;
 #ifdef USE_COMPIO
 	if (iop && fp->compression) {
-	    struct io_obj *ciop = compio_open(iop, fp->flags, fp->compression, dir);
+	    struct io_obj *ciop =
+		compio_open(iop, fp->flags, fp->compression, fp->complvl, dir);
 	    if (!ciop) {
 		ioo_close(iop);
 		return NULL;
@@ -1109,16 +1111,13 @@ io_options(char *op,			/* IN: options */
 	    op++;
 	    break;
 
-	case 'E':			/* extension: close on Exec */
+	case 'E':			/* 2.1 extension: close on Exec */
 	case 'e':
 	    flags |= FL_CLOEXEC;
 	    op++;
 	    break;
 
-	case 'J':	/* reserved for .xz compression */
-	case 'j':	/* reserved for .bzip2 compression */
-	    fp->compression = *op++;
-	    break;
+	/* J, j see below */
 
 	case 'K':	    /* Local/experimental: breaK long lines */
 	case 'k':
@@ -1150,18 +1149,22 @@ io_options(char *op,			/* IN: options */
 	    op++;
 	    break;
 
-	case 'X':	   /* extension: eXclusive (fail if eXists) */
+	case 'X':	   /* 2.1 extension: eXclusive (fail if eXists) */
 	case 'x':
 	    flags |= FL_EXCL;
 	    op++;
 	    break;
 
-	case 'Z': /* reserved for old compress (.Z file) format???? */
-	case 'z': /* zlib (.gzip file) */
+	case 'J':			/* 2.2: xz compression */
+	case 'j':			/* 2.2: bzip2 compression */
+	case 'Z':			/* 2.2: compress compression */
+	case 'z':			/* 2.2: zlib (gzip) compression */
 	    fp->compression = *op++;
+	    if (isdigit(*op))
+		fp->complvl = *op++;
 	    break;
 
-	case '{':			/* reserved for long names */
+	case '{':			/* 2.2: reserved for long names */
 	    op++;
 	    while (*op) {
 		if (*op == '}') {
