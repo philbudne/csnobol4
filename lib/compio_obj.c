@@ -76,7 +76,6 @@ zlib_reader(struct compio_obj *iop, const char *buf, size_t len) {
     stream->next_out = (void *)buf;
     stream->avail_out = len;
     do {
-	/* PLB: read larger chunks (keep buffer in ciop)?! */
 	char in[1];
 	int ret;
 
@@ -145,28 +144,39 @@ zlib_open(struct compio_obj *ciop) {
     ciop->closer = zlib_closer;
 
     if (ciop->dir == 'r') {
-	/* +16 means accept gzip; +32 means accept gzip + zlib */
-	if (inflateInit2(stream, 15 + 16) == Z_OK) {
+	/* +16 means accept gzip, +32 means accept gzip + zlib */
+	int err = inflateInit2(stream, 15 + 16);
+	if (err == Z_OK) {
 	    ciop->reader = zlib_reader;
 	    return TRUE;
+	}
+	else if (err != Z_MEM_ERROR) {
+	    /* per Python 2.7.15 zlibmodule.c */
+	    inflateEnd(stream);
 	}
     }
     else {
 	/*
-	 * for window bits:
-	 * FreeBSD gzip.c uses -15 "32K LZ77 window", "suppress zlib wrapper"
-	 * minigzip.c, gzwrite.c use 15+16 32K, "write gzip wrapper instead"
+	 * parameters from minigzip.c;
+	 * wbits 15+16 means: 32K, "write gzip wrapper instead of zlib"
+	 * (FreeBSD gzip uses -15: 32K, "suppress zlib wrapper")
 	 */
 	int level = 6;			/* gzip default */
+	int err;
 	if (ciop->level >= '0' && ciop->level <= '9')
 	    level = ciop->level = '0';
-	if (deflateInit2(stream, level,
-			 8,		/* method: Z_DEFLATED */
-			 15 + 16,	/* window bits (see above) */
-			 8,		/* mem level */
-			 0) == Z_OK) {	/* Z_DEFAULT_STRATEGY */
+	err = deflateInit2(stream, level,
+			   8,		/* method: Z_DEFLATED */
+			   15 + 16,	/* window bits (see above) */
+			   8,		/* mem level */
+			   0);		/* Z_DEFAULT_STRATEGY */
+	if (err == Z_OK) {
 	    ciop->writer = zlib_writer;
 	    return TRUE;
+	}
+	else if (err != Z_MEM_ERROR) {
+	    /* per Python 2.7.15 zlibmodule.c */
+	    deflateEnd(stream);
 	}
     }
 
@@ -265,6 +275,7 @@ bzlib_open(struct compio_obj *ciop) {
 	    ciop->reader = bzlib_reader;
 	    return TRUE;
 	}
+	/* Python 2.7.15 doesn't have any cleanup */
     }
     else {
 	/*
@@ -278,6 +289,7 @@ bzlib_open(struct compio_obj *ciop) {
 	    ciop->writer = bzlib_writer;
 	    return TRUE;
 	}
+	/* Python 2.7.15 doesn't have any cleanup */
     }
 
     free(ciop->private);
