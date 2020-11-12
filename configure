@@ -1623,7 +1623,7 @@ fi
 
 # XXX could have --with-liblzma=basepath
 if config/check lzma.h \
-	'lzma_stream lz; (void)lzma_code(&lz, LZMA_RUN)' -llzma; then
+	'lzma_stream lz; int x = lzma_code(&lz, LZMA_RUN)' -llzma; then
     echo 'using lzmalib to read/write .xz format files' 1>&2
     echo '#define USE_LZMA'			>> $CONFIG_H
     echo 'ADD_LDFLAGS([-llzma])'		>> $CONFIG_M4
@@ -1642,10 +1642,9 @@ else
     echo 'MEMIO_OBJ=memio_obj.o'		>> $CONFIG_M4
     echo 'MEMIO_SRC=$(MEMIO_OBJ_C)'		>> $CONFIG_M4
     if [ "x$NEED_BUFIO" = x ]; then
-	# some platforms don't have +=? Solaris??
+	# this may lose.
 	echo 'MEMIO_OBJ+=bufio_obj.o'		>> $CONFIG_M4
-	echo 'MEMIO_SRC+=$(MEMIO_OBJ_C)		>> $CONFIG_M4
-    else
+	echo 'MEMIO_SRC+=$(MEMIO_OBJ_C)'	>> $CONFIG_M4
     fi
 fi
 
