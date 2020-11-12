@@ -323,7 +323,7 @@ lzma_writer(struct compio_obj *iop, const char *buf, size_t len) {
     do {
         stream->next_out = (void *)out;
         stream->avail_out = sizeof(out);
-	/* gcc 7.5 complains ignoring result: */
+	/* gcc 7.4, 7.5 complain ignoring result: */
         (void)lzma_code(stream, buf ? LZMA_RUN : LZMA_FINISH);
 	/* XXX check return: */
 	if (stream->avail_out != sizeof(out))
