@@ -48,6 +48,7 @@
 #include "io_obj.h"			/* io_obj, FL_xxx */
 #include "stdio_obj.h"			/* stdio_{wrap,obj} */
 #include "globals.h"			/* rflag, lflag */
+#include "compio_obj.h"			/* compio_open */
 
 /* generated */
 #include "equ.h"			/* for BCDFLD (for X_LOCSP), res.h */
@@ -90,7 +91,7 @@ struct file {
     struct file *next;			/* next input file */
     struct io_obj *iop;
     int flags;				/* XXX per unit?? (need FL_INCLUDE) */
-
+    char compression;
     /* MUST BE LAST!! */
     char fname[1];
 };
@@ -229,7 +230,7 @@ ioo_eof(struct io_obj *iop) {
     return FALSE;			/* treat as non-EOF I/O error */
 }
 
-static int
+int
 ioo_close(struct io_obj *iop) {
     const struct io_ops *op;
     int ret = TRUE;
@@ -390,11 +391,31 @@ static struct io_obj *
 io_fopen(struct file *fp,
 	 int dir) {			/* 'r' or 'w' */
     int i;
+    int flags = fp->flags;
+
+    if (fp->compression) {
+#ifdef USE_COMPIO
+	flags |= FL_BINARY;		/* force binary I/O on underlying file */
+#else
+	return NULL;
+#endif
+    }
 
     for (i = 0; i < N_OPEN_FUNCS; i++) {
-	struct io_obj *iop = (io_open_funcs[i])(fp->fname, fp->flags, dir);
+	struct io_obj *iop = (io_open_funcs[i])(fp->fname, flags, dir);
 	if (iop == NOMATCH)
 	    continue;
+#ifdef USE_COMPIO
+	if (iop && fp->compression) {
+	    struct io_obj *ciop = compio_open(iop, fp->flags, fp->compression, dir);
+	    if (!ciop) {
+		ioo_close(iop);
+		return NULL;
+	    }
+	    iop->fname = fp->fname;	/* borrow pointer (in case) */
+	    iop = ciop;
+	}
+#endif
 	fp->iop = iop;
 	if (iop)
 	    iop->fname = fp->fname;	/* borrow pointer */
@@ -1025,11 +1046,11 @@ io_ecomp(void) {			/* SIL XECOMP op */
 static int
 io_options(char *op,			/* IN: options */
 	   int *rp,			/* OUT: recl (optional) */
-	   int *fp) {			/* OUT: flags */
+	   struct file *fp) {		/* OUT: flags & comp */
     int flags;
     int recl;
 
-    flags = *fp;
+    flags = fp->flags;
     recl = 0;
 
     /* XXX check here for leading hyphen; process SPITBOL style options? */
@@ -1094,8 +1115,15 @@ io_options(char *op,			/* IN: options */
 	    op++;
 	    break;
 
+	case 'J':	/* reserved for .xz compression */
+	case 'j':	/* reserved for .bzip2 compression */
+	    fp->compression = *op++;
+	    break;
+
 	case 'K':	    /* Local/experimental: breaK long lines */
 	case 'k':
+	    /* XXX complain? once?? */
+	    op++;
 	    break;			/* dead in 2.2 */
 
 	case 'T':			/* SITBOL: "terminal" (no EOL) */
@@ -1128,13 +1156,18 @@ io_options(char *op,			/* IN: options */
 	    op++;
 	    break;
 
+	case 'Z': /* reserved for old compress (.Z file) format???? */
+	case 'z': /* zlib (.gzip file) */
+	    fp->compression = *op++;
+	    break;
+
 	default:
 	    op++;
 	    break;
 	}
     } /* while *op */
 
-    *fp = flags;
+    fp->flags = flags;
     if (rp)
 	*rp = recl;
     return TRUE;
@@ -1182,7 +1215,7 @@ io_openi(struct descr *dunit,		/* IN: unit */
 	return FALSE;
 
     /* process options */
-    if (!io_options(opts, &recl, &fp->flags)) {
+    if (!io_options(opts, &recl, fp)) {
 	free(fp);
 	return FALSE;
     }
@@ -1252,7 +1285,7 @@ io_openo(struct descr *dunit,		/* IN: unit */
 	return FALSE;			/* fail; no harm done! */
 
     /* process options */
-    if (!io_options(opts, NULL, &fp->flags)) { /* XXX error if recl set?? */
+    if (!io_options(opts, NULL, fp)) {	/* XXX error if recl set?? */
 	free(fp);
 	return FALSE;
     }

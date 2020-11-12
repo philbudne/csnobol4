@@ -3,6 +3,15 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 11/11/2020:
+	Implement compressed file I/O as an I/O object layer
+	configure: detect libz, bzip2, lzma libraries
+	lib/compio_obj.c (new)
+	lib/io.c: add file compression
+		make ioo_close public
+	include/compio_obj.h (new)
+	include/io_obj.h: add ioo_close
+
+11/11/2020:
 	lib/loadx.c: keep lib name & path, add EXTERNAL_MODULE_{NAME,PATH}
 	pml.h: add EXTERNAL_MODULE_{NAME,PATH}
 

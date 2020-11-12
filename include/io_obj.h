@@ -134,6 +134,8 @@ const struct io_ops NAME##_ops = { \
 }
 #endif
 
+int ioo_close(struct io_obj *iop);
+
 struct io_obj *io_alloc(int size, const struct io_ops *ops, int flags);
 
 /* flagp: INET_xxx flags (in inet.h) */

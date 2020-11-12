@@ -1603,6 +1603,34 @@ if [ ! "$WITHOUT_READLINE" ]; then
     fi
 fi
 
+# XXX could have --with-zlib=basepath
+if config/check zlib.h 'z_stream z; inflate(&z, Z_NO_FLUSH)' -lz; then
+    echo 'using zlib to read/write .gz format files' 1>&2
+    echo '#define USE_ZLIB'			>> $CONFIG_H
+    echo 'ADD_LDFLAGS([-lz])'			>> $CONFIG_M4
+    NEED_COMPIO=1
+    NEED_BUFIO=1
+fi
+
+# XXX could have --with-bzlib=basepath
+if config/check bzlib.h 'bz_stream bz; BZ2_bzCompressInit(&bz,5,0,0)' -lbz2; then
+    echo 'using bzlib to read/write .bz2 format files' 1>&2
+    echo '#define USE_BZLIB'			>> $CONFIG_H
+    echo 'ADD_LDFLAGS([-lbz2])'			>> $CONFIG_M4
+    NEED_COMPIO=1
+    NEED_BUFIO=1
+fi
+
+# XXX could have --with-liblzma=basepath
+if config/check lzma.h \
+	'lzma_stream lz; (void)lzma_code(&lz, LZMA_RUN)' -llzma; then
+    echo 'using lzmalib to read/write .xz format files' 1>&2
+    echo '#define USE_LZMA'			>> $CONFIG_H
+    echo 'ADD_LDFLAGS([-llzma])'		>> $CONFIG_M4
+    NEED_COMPIO=1
+    NEED_BUFIO=1
+fi
+
 # support for shared library: silent for now. make a configure option?
 if config/check stdio.h 'FILE *f = fmemopen("hello", 5, "r")'; then
 #   echo 'using POSIX.1-2008 fmemopen'		1>&2
@@ -1946,6 +1974,12 @@ fi # modules
 if [ "x$NEED_BUFIO" != x ]; then
     echo 'ADD_OBJS([bufio_obj.o])'		>> $CONFIG_M4
     echo 'ADD_SRCS([$(BUFIO_OBJ_C)])'		>> $CONFIG_M4
+fi
+
+if [ "x$NEED_COMPIO" != x ]; then
+    echo '#define USE_COMPIO'			>> $CONFIG_H
+    echo 'ADD_OBJS([compio_obj.o])'		>> $CONFIG_M4
+    echo 'ADD_SRCS([lib/compio_obj.c])'		>> $CONFIG_M4
 fi
 
 if [ "x$INITIAL_CFLAGS" != x ]; then

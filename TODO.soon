@@ -2,12 +2,16 @@ $Id$
 
 ================ 2.2
 
+update README, CHANGELOG
+
 flush os_find_symbol stash (& bsd/load.c?)
 
 cvs rm test/ndbm.sno test/random.sno test/sleep.sno test/time.sno
 
-document EXTERNAL_DATATYPE (give credit)
-	decide whether to have separate EXTERNAL_MODULE function?
+document:
+	EXTERNAL_DATATYPE (inspired by Fred Weigel's DATACODE)
+	EXTERNAL_MODULE_{NAME,PATH}
+	File compression I/O options
 
 GLOBAL define (non-VAR)????
 
@@ -15,11 +19,7 @@ DJGPP: inet6 problems?
 
 Windows: permissions issue??
 
-Mac:
-	Mac OS X 10.5.8 running version:
-	powerpc-apple-darwin9-gcc-4.0.1
-	stat.c:120: error: ‘struct stat’ has no member named ‘st_birthtimespec’
-	stat.c:121: error: ‘struct stat’ has no member named ‘st_birthtimespec‘
+Mac OS X 10.5.8: birthtimespec
 
 modules:
 	global lib list (need lock)?
