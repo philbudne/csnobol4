@@ -8,16 +8,17 @@ Changes since 2.1.6 release;
 	    will use C99 language extensions (available soon in MSC!)
 	Text input no longer limited by "record length" (K flag obsolete).
 	I/O code cleanup/refactor (wish list item since / last attempted 2002!)
+	    read/write gzip/bzip2/xz format compressed files.
 	Switch back to less precise MSTIME (runtime) reports of JUST user time.
 	    This will effect timing reports.
 	All output unbuffered with -U option, or SNOBOL4UNBUFFERED set in env.
 	Library files:
 	    json.sno -- JSON subset
 	Modules:
-	    base64: base64 encode/decode.
+	    base64 (new): base64 encode/decode.
 	    fork: add GETPID, GETPPID functions
 	    stat: fixed.
-	       added "btime" (birth time),available on BSDs/OSX/Cygwin/MSYS2
+	       added "btime" (birth time), available on BSDs/MacOS/Cygwin/MSYS2
 	    time: GETTIMEOFDAY return now has TV_NSEC member
 	configure changes:
 	    --force-pml removed (must use modules)
