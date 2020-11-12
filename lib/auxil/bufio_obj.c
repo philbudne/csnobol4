@@ -55,14 +55,14 @@ ioo_read_raw(struct bufio_obj *biop, char *buf, size_t len) {
 static int
 bufio_getc(struct bufio_obj *biop) {
     if (biop->count == 0) {
+	ssize_t count = ioo_read_raw(biop, biop->buffer, biop->buflen);
 	/*
 	 * ASSuMEs that read_raw provider is like a socket
 	 * and won't block until the entire request is filled.
 	 * (if it won't, will have to restrict reads to 1 byte):
 	 */
-	DPRINTF(("bufio_getc: buffer %p len %zd\n", biop->buffer, biop->buflen));
-	ssize_t count = ioo_read_raw(biop, biop->buffer, biop->buflen);
-	DPRINTF(("bufio_getc: read_raw returned %zd\n", biop->count));
+	DPRINTF(("bufio_getc: buffer %p len %zd count %zd\n",
+		 biop->buffer, biop->buflen, biop->count));
 #ifdef DEBUG_BUFIO_READ_RAW
 	{
 	    printf("bufio_getc read_raw: ");
