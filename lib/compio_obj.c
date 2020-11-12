@@ -16,6 +16,7 @@
 #endif
 
 #include "h.h"				/* TRUE */
+#include "str.h"			/* bzero */
 #include "io_obj.h"
 #include "bufio_obj.h"
 
