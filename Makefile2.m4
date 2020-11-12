@@ -397,7 +397,7 @@ bal.o:	$(BAL_C)
 break.o: $(BREAK_C)
 	$(CC) $(CFLAGS) -c $(BREAK_C)
 
-compio_obj.o:	$(COMPIO_OBJ_C)
+compio_obj.o: $(COMPIO_OBJ_C)
 	$(CC) $(CFLAGS) -c $(COMPIO_OBJ_C)
 
 date.o:	$(DATE_C)
