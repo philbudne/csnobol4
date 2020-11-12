@@ -1161,6 +1161,17 @@ io_options(char *op,			/* IN: options */
 	    fp->compression = *op++;
 	    break;
 
+	case '{':			/* reserved for long names */
+	    op++;
+	    while (*op) {
+		if (*op == '}') {
+		    op++;
+		    break;
+		}
+		else
+		    op++;
+	    }
+	    break;
 	default:
 	    op++;
 	    break;
