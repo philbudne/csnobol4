@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/11/2020:
+	lib/loadx.c: keep lib name & path, add EXTERNAL_MODULE_{NAME,PATH}
+	pml.h: add EXTERNAL_MODULE_{NAME,PATH}
+
 11/10/2020:
 	modules/fork/fork.c: add GETPID, GETPPID
 	lib/bsd/inet.c: fix typo

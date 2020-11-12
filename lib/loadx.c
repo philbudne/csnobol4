@@ -24,7 +24,8 @@ struct lib {
     void *oslib;			/* object from os_load_library */
     struct module *module;		/* see module.h */
     int refcount;
-    char name[1];			/* MUST BE LAST */
+    char *name;
+    char *path;
 };
 
 struct func {
@@ -65,8 +66,11 @@ libopen(char *name, char *path) {
 	oslib = os_load_library(path);
 	if (oslib == NULL)
 	    return NULL;
-
-	/* defend against multiple paths & windoze behavior */
+	/*
+	 * defend against multiple paths to same file
+	 * Also defend against Windows, where once foo/bar.dll is loaded,
+	 * "bar" seems to suffice
+	 */
 	for (lp = libs; lp; lp = lp->next) {
 	    if (oslib == lp->oslib) {
 		os_unload_library(oslib); /* reduce use count */
@@ -74,11 +78,12 @@ libopen(char *name, char *path) {
 	    }
 	}
 
-	lp = (struct lib *) malloc(sizeof(struct lib) + strlen(path));
+	lp = (struct lib *) malloc(sizeof(struct lib));
 	lp->oslib = oslib;
 	lp->refcount = 0;
 
-	strcpy(lp->name, name);		/* save ORIGINAL name/path */
+	lp->name = strdup(name);	/* save ORIGINAL name/path */
+	lp->path = strdup(path);
 	lp->module = os_find_symbol(oslib, "module", NULL);
 	/* XXX error if lookup fails when SHARED (&& THREADS)? */
 	/* XXX complain regardless? */
@@ -87,7 +92,7 @@ libopen(char *name, char *path) {
 	libs = lp;
 
 	if (lp->module)
-	    module_instance_init(lp->module);
+	    module_instance_init(lp->module); /* XXX check return? */
     }
  found:
     lp->refcount++;
@@ -119,6 +124,8 @@ libclose(struct lib *lib) {
 	pp->next = lp->next;
     else
 	libs = lp->next;
+    free(lp->name);
+    free(lp->path);
     free(lp);
 
     return 1;
@@ -316,13 +323,53 @@ EXTERNAL_DATATYPE( LA_ALIST ) {
 	mip = (lp->module->get_module_instance)();
 	if (mip) {
 	    const char *type_name = handle_table_name(dp, mip);
-	    if (type_name) {
-		/*
-		 * using "|" in case ever switch to lp->name (path)
-		 * '|' is unlikely to appear in a path!!
-		 */
-		RETSTR_FREE(strjoin(lp->module->name, "|", type_name, NULL));
-	    }
+	    if (type_name)
+		RETSTR(type_name);
+	}	    
+    }
+    RETFAIL;
+}
+
+pmlret_t
+EXTERNAL_MODULE_NAME( LA_ALIST ) {
+    struct descr *dp = LA_DESCR(0);
+    struct lib *lp;
+
+    if (!dp)
+	RETFAIL;
+
+    for (lp = libs; lp; lp = lp->next) {
+	struct module_instance *mip;
+
+	if (!lp->module)
+	    continue;
+	mip = (lp->module->get_module_instance)();
+	if (mip) {
+	    if (handle_table_name(dp, mip))
+		RETSTR(lp->module->name);
+	}	    
+    }
+    RETFAIL;
+}
+
+/* what was used to load; may not be full path */
+pmlret_t
+EXTERNAL_MODULE_PATH( LA_ALIST ) {
+    struct descr *dp = LA_DESCR(0);
+    struct lib *lp;
+
+    if (!dp)
+	RETFAIL;
+
+    for (lp = libs; lp; lp = lp->next) {
+	struct module_instance *mip;
+
+	if (!lp->module)
+	    continue;
+	mip = (lp->module->get_module_instance)();
+	if (mip) {
+	    if (handle_table_name(dp, mip))
+		RETSTR(lp->path);
 	}	    
     }
     RETFAIL;
