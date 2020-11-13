@@ -1160,7 +1160,7 @@ io_options(char *op,			/* IN: options */
 	case 'Z':			/* 2.2: compress compression */
 	case 'z':			/* 2.2: zlib (gzip) compression */
 	    fp->compression = *op++;
-	    if (isdigit(*op))
+	    if (isdigit((unsigned char)*op))
 		fp->complvl = *op++;
 	    break;
 
