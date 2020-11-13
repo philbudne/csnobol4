@@ -11,8 +11,6 @@ flush os_find_symbol stash (& bsd/load.c?)
 cvs rm test/ndbm.sno test/random.sno test/sleep.sno test/time.sno
 
 document:
-	EXTERNAL_DATATYPE (inspired by Fred Weigel's DATACODE)
-	EXTERNAL_MODULE_{NAME,PATH}
 	File compression I/O options
 
 GLOBAL define (non-VAR)????

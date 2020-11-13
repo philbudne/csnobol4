@@ -165,8 +165,25 @@ I<Macro SPITBOL extension(?), added in CSNOBOL>.
 Does B<NOT> implement ``save file'' feature of B<SPITBOL>.
 
 =item B<EXP(>I<x>B<)>
-Math: returns the value B<e **> I<x>.
+Math: Returns the value B<e **> I<x>.
 I<Catspaw SNOBOL4+ extension, added in CSNOBOL4 version 0.98.4>.
+
+=item B<EXTERNAL_DATATYPE(>I<x>B<)>
+Functions: Returns a string for the datatype name for an B<EXTERNAL>
+type returned by an external function created by B<LOAD()>. Inspired
+by the B<DATACODE()> function in Fred Weigel's SNOBOL4X extensions.
+I<CSNOBOL4 extension, added in CSNOBOL4 version 2.2>.
+
+=item B<EXTERNAL_MODULE_NAME(>I<x>B<)>
+Functions: Returns a string for (internal) module name for an
+B<EXTERNAL> type returned by an external function created by B<LOAD()>.
+I<CSNOBOL4 extension, added in CSNOBOL4 version 2.2>.
+
+=item B<EXTERNAL_MODULE_PATH(>I<x>B<)>
+Functions: returns a string for the path to an object file for the
+module for an B<EXTERNAL> type returned by an external function
+created by B<LOAD()>.
+I<CSNOBOL4 extension, added in CSNOBOL4 version 2.2>.
 
 =item B<FIELD(>I<name,n>B<)>
 Data: Returns a string with the name of the I<n>th member of
