@@ -10,9 +10,6 @@ flush os_find_symbol stash (& bsd/load.c?)
 
 cvs rm test/ndbm.sno test/random.sno test/sleep.sno test/time.sno
 
-document:
-	File compression I/O options
-
 GLOBAL define (non-VAR)????
 
 DJGPP: inet6 problems?

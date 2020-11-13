@@ -133,11 +133,30 @@ Depends on support by the C library B<fopen>(3) call for 'e' in the
 mode string for regular files.  Honored for sockets regardless, (but
 not on Windows).
 
+=item B<J>
+Read and write compressed data in B<.xz> format, using liblzma, as
+written by B<xz>(1).  If a digit 0 through 9 immediately follows the
+option, it will be interpreted as the compression level to use when
+writing. It's claimed that level zero is "sometimes faster than gzip
+-9 while compressing much better".  The default compression level is
+6, larger numbers will require more than 16MiB of memory to
+decompress, and are only useful only when compressing files bigger
+than 8 MiB (level 7), 16 MiB (level 8), and 32 MiB (level 9).  Matches
+the B<tar>(1) command line option.
+I<Added in CSNOBOL4 2.2>.
+
+=item B<j>
+Read and write compressed data in B<.bz2> format, using B<libbz2>, as
+created by B<bzip2>(1).  If a digit 1 through 9 immediately follows
+the option, it will be interpreted as the compression level to use
+when writing.  Matches the B<tar>(1) command line option.
+I<Added in CSNOBOL4 2.2>.
+
 =item B<K>
 If an input line is longer than the input record length,
 return the line in multiple reads (breaK up the line)
 instead of discarding the extra characters.
-I<Added in CSNOBOL4 2.0.  Obsolete in CSNOBOL4 2.2.>
+I<Added in CSNOBOL4 2.0.  Obsolete in CSNOBOL4 2.2>.
 
 =item B<T>
 Terminal mode.  Writes are performed ``unbuffered'' (see below), and
@@ -179,7 +198,19 @@ rather than collecting the data in a buffer for efficiency.
 =item B<X>
 Open fails if file exists (meaningless for I</dev/fd/>I<n>).
 Depends on support by the C library B<fopen>(3) call for
-'x' in the mode string. I<CSNOBOL4 extension added in 2.1 where it was ignored for sockets. In CSNOBOL4 2.2 means don't allow local socket address reuse.>
+'x' in the mode string.
+I<Added in CSNOBOL4 2.1 where it was ignored for sockets.>
+I<In CSNOBOL4 2.2 applies to sockets, and means don't allow local socket address reuse.>
+
+=item B<Z>
+Reserved for B<.Z> (B<compress>(1)) style compression?!
+
+=item B<z>
+Read and write compressed data in B<.gz> format using B<zlib>(3),
+as created by B<gzip>(1).  If a digit 0 through 9 immediately follows
+the option, it will be interpreted as the compression level to use
+when writing.  Matches the B<tar>(1) command line option.
+I<Added in CSNOBOL4 2.2>.
 
 =subsect Other I/O extensions
 =item B<SERV_LISTEN()>, B<SET()>, B<SSET()>
