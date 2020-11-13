@@ -2,7 +2,7 @@ $Id$
 
 ================ 2.2
 
-take digit after compression char?
+write tests for compressed I/O
 
 update README, CHANGELOG
 
