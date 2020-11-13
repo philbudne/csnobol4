@@ -3,6 +3,12 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 11/12/2020:
+	configure: test for SHA512 in libcrypto for digest module
+	modules/digest (new): MD5, SHA{1,224,256,384,512}
+	modules/*/Makefile: add debug
+	modules/Makefile.mod: add debug target
+
+11/12/2020:
 	lib/compio_obj.c, lib/io.c: Implement compression level
 	    (digit after compression option)
 	Makefile2.m4: fix "make install" problem reported by Phillip Thomas

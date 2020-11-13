@@ -16,6 +16,11 @@ SETUP=$(SNOBOL4) $(INC) setup.sno $(SETUPOPT)
 $(OUT): setup.sno $(SRC) ../../snolib/setuputil.sno $(SNOBOL4) ../../config.sno
 	$(SETUP) build
 
+debug:
+	$(SETUP) -d -v build
+
+
+
 test:	$(OUT)
 	$(SETUP) test
 

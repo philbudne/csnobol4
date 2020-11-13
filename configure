@@ -1586,7 +1586,6 @@ if [ ! "$WITHOUT_READLINE" ]; then
 	echo "using readline (with $RL_LIBS)" 1>&2
 	echo '#define HAVE_READLINE'		>> $CONFIG_H
 	echo "	READLINE_LDFLAGS = '$RL_LIBS'" >> $CONFIG_SNO
-	READLINE_MODULE="readline"
 	echo "ADD_LDFLAGS([$RL_LIBS])"		>> $CONFIG_M4
 	if [ "x$RL_INCDIR" != x ]; then
 	    echo "ADD_CPPFLAGS([-I$RL_INCDIR])"	>> $CONFIG_M4
@@ -1649,7 +1648,7 @@ else
 fi
 
 if [ "x$WITHOUT_MODULES" = x ]; then
-    MODULES="base64 dirs logic random stat time sprintf fork $READLINE_MODULE"
+    MODULES="base64 dirs logic random stat time sprintf fork readline"
 
     ################################################################
     echo "checking features for modules:"	1>&2
@@ -1922,6 +1921,11 @@ if [ "x$WITHOUT_MODULES" = x ]; then
 		break
 	    fi
 	done
+    fi
+
+    if config/check 'openssl/sha.h' 'SHA512_CTX x; SHA512_Init(&x)' -lcrypto; then
+	echo 'using libcrypto for message digests' 1>&2
+	MODULES="$MODULES digest"
     fi
 
     if [ "$HAVE_DLOPEN" ]; then

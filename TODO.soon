@@ -8,6 +8,11 @@ update README, CHANGELOG
 
 flush os_find_symbol stash (& bsd/load.c?)
 
+zlib module:
+	ZLIB_(UN)COMPRESS, ADLER32, CRC32
+
+document digest module
+
 cvs rm test/ndbm.sno test/random.sno test/sleep.sno test/time.sno
 
 GLOBAL define (non-VAR)????
@@ -27,16 +32,6 @@ modules:
 	cleanup: need to closeall BEFORE unloading all functions
 
 ================
-
-compression:
-    I/O option??
-	'z' I/O option -- zlibio_obj wraps around another io_obj
-	'j' I/O for bzip2?
-	'J' I/O for xz??
-    module:
-	ZLIB_(UN)COMPRESS, (ADLER)CRC32
-	ZLIB_{INPUT,OUTPUT} -- underlying ZLIB_{IN,OUT}PUT_UNIT??
-	prevent unload of module while I/O obj in use????
 
 mem i/o:
     I/O option? 'm' -- take string instead of filename for input
