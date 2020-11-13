@@ -161,6 +161,7 @@ load(struct descr *addr,		/* OUT */
 	if (lp)
 	    goto found_lib;
 
+#ifdef DL_EXT
 	l2 = strjoin(lname, DL_EXT, NULL);
 	if (!l2)
 	    return FALSE;
@@ -194,6 +195,7 @@ load(struct descr *addr,		/* OUT */
 	    if (!lp)
 		goto quit;
 	} // !abspath
+#endif
     found_lib:
 	entry = os_find_symbol(lp->oslib, fname, &stash);
 	if (!entry) {

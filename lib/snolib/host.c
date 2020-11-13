@@ -34,6 +34,7 @@
 #include "lib.h"			/* osname(),hwname(),io_flushall() */
 #include "str.h"
 #include "globals.h"
+#include "version.h"			/* needed under DJGPP */
 
 pmlret_t
 HOST( LA_ALIST ) {

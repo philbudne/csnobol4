@@ -2,6 +2,7 @@
 
 #define HAVE_UNISTD_H 			/* POSIX!! */
 #define HAVE_STRFTIME
+#define NEED_GETLINE
 
 #define SNOLIB_BASE "/usr/lib/snobol4"
 #define SNOLIB_DIR SNOLIB_BASE "/" VERSION "/lib"
@@ -19,10 +20,8 @@
 /* WATTCP support */
 #ifdef HAVE_WATTCP
 #define FOLD_HOSTNAMES
-#define NEED_BINDRESVPORT
 #define SOCKLEN_T int
 #endif /* HAVE_WATTCP defined */
-#define sock_t int
 
 #define PATH_SEP	";"
 #define DIR_SEP		"\\"

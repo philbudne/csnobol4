@@ -16,6 +16,10 @@
 #include <stdio.h>
 #include <fcntl.h>
 
+#ifdef FOLD_HOSTNAMES
+#include <ctype.h>
+#endif /* FOLD_HOSTNAMES defined */
+
 #ifdef HAVE_WINSOCK2_H
 #include <ws2tcpip.h>			/* getaddrinfo */
 #else

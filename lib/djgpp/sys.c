@@ -8,6 +8,7 @@
 
 #include <dos.h>
 #include <stdio.h>
+#include <string.h>			/* strcpy */
 
 #include "h.h"
 #include "snotypes.h"

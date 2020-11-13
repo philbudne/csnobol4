@@ -14,15 +14,20 @@
 #HAVE_DXE=1
 
 # Uncomment for TCP/IP support with WATTCP (www.wattcp.com)
-#HAVE_WATTCH=1
+#HAVE_WATTCP=1
 # edit as needed for your installation;
-WATTCP_DIR=/djgpp/wattcp
+#WATTCP_DIR=/djgpp/wattcp
 
-CC=gcc
+TOOLCHAIN=
+CC=$(TOOLCHAIN)gcc
 OPT=-O3
 
+ifdef BLOCKS
+DEFS+=-DBLOCKS
+endif
+
 ifdef HAVE_DXE2
-DXE_DEFS=-DHAVE_DXE2
+DEFS+=-DHAVE_DXE2
 LOAD_C=$(SRCDIR)lib/unix98/load.c
 DXE_OBJS=osinit.o
 DXE_LIBS=-ldl
@@ -36,21 +41,30 @@ ifdef HAVE_WATTCP
 WATTCP_INCDIR=${WATTCP_DIR}/inc
 WATTCP_LIBDIR=${WATTCP_DIR}/lib
 #
-WATTCP_DEFS=-I${WATTCP_INCDIR} -DHAVE_WATTCP
+DEFS+=-I${WATTCP_INCDIR} -DHAVE_WATTCP
+ifdef USE_OLD_INET
 INET_C=$(SRCDIR)lib/bsd/inet.c
+INET_O=inet.o
+DEFS+=-DNEED_BINDRESVPORT
+else
+INET_C=$(SRCDIR)lib/bsd/inet6.c
+INET_O=inet6.o
+DEFS+=-DNEED_BINDRESVPORT_SA
+endif
 INET_OBJS=bindresvport.o
 WATTCP_LIBS=-L${WATTCP_LIBDIR} -lwatt
 else
 INET_C=$(SRCDIR)lib/dummy/inet.c
+INET_O=inet.o
 endif
 
 CFLAGS=	-c $(OPT) -I$(SRCDIR)config/djgpp -I$(SRCDIR)include -I$(SRCDIR). \
-	-DHAVE_CONFIG_H $(WATTCP_DEFS) $(DXE_DEFS)
+	-DHAVE_CONFIG_H $(DEFS)
 
 # WATTCP must be first!
 LIBS=$(WATTCP_LIBS) -lm -lc -lpc $(DXE_LIBS) 
 
-OBJ=	isnobol4.o data.o data_init.o main.o syn.o \
+OBJ=	isnobol4.o atan.o data.o data_init.o main.o syn.o \
 	bal.o break.o date.o dump.o endex.o hash.o \
 	intspc.o io.o lexcmp.o loadx.o ordvst.o pair.o pat.o \
 	pml.o realst.o replace.o stdio_obj.o str.o stream.o top.o \
@@ -59,7 +73,7 @@ OBJ=	isnobol4.o data.o data_init.o main.o syn.o \
 	exit.o exp.o file.o getstring.o handle.o \
 	host.o log.o ord.o ptyio_obj.o rename.o retstring.o sin.o \
 	spcint.o spreal.o sqrt.o sset.o \
-	tan.o sys.o tty.o inet.o execute.o exists.o \
+	tan.o sys.o tty.o $(INET_O) execute.o exists.o fisatty.o \
 	term.o findunit.o $(DXE_OBJS) $(INET_OBJS)
 
 snobol4.exe: $(OBJ)
@@ -212,7 +226,7 @@ tty.o:	$(SRCDIR)lib/posix/tty.c
 ################ misc
 
 # bsd or dummy
-inet.o:	$(INET_C)
+$(INET_O): $(INET_C)
 	$(CC) $(CFLAGS) $(INET_C)
 
 # unix98 or dummy
@@ -224,7 +238,13 @@ load.o:	$(LOAD_C)
 exists.o: $(SRCDIR)lib/generic/exists.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/generic/exists.c
 
+fisatty.o: $(SRCDIR)lib/generic/fisatty.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/generic/fisatty.c
+
 ################ snolib
+
+atan.o:	$(SRCDIR)lib/snolib/atan.c
+	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/atan.c
 
 chop.o:	$(SRCDIR)lib/snolib/chop.c
 	$(CC) $(CFLAGS) $(SRCDIR)lib/snolib/chop.c
