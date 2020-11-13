@@ -1,3 +1,8 @@
+/*
+ * $Id$
+ * Message Digests using OpenSSL high level "Envelope" API
+ */
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -20,6 +25,7 @@ SNOBOL4_MODULE(digest)
 
 #define MAX_DIGEST_LENGTH (512/8)
 
+static int once;			/* global */
 static VAR handle_handle_t digest_handles;
 
 /*
@@ -30,6 +36,17 @@ static VAR handle_handle_t digest_handles;
 **=cut
 */
 
+#if OPENSSL_VERSION_NUMBER < 0x10100000L /* renamed in 1.1.0 */
+#define EVP_MD_CTX_new EVP_MD_CTX_create
+#define EVP_MD_CTX_free EVP_MD_CTX_destroy
+#endif
+
+#ifdef DEBUG_DIGEST
+#define DEBUGF(x) printf x
+#else
+#define DEBUGF(x)
+#endif
+
 static void
 free_ctx(void *ctx) {
     EVP_MD_CTX_free(ctx);
@@ -37,30 +54,40 @@ free_ctx(void *ctx) {
 
 lret_t
 DIGEST_INIT( LA_ALIST ) {
+    char *alg;
     snohandle_t h;
-    EVP_MD_CTX *ctx = EVP_MD_CTX_new();
-    char *alg = mgetstring(LA_PTR(0));
     const EVP_MD *md;
+    EVP_MD_CTX *ctx = EVP_MD_CTX_new();
 
-    ctx = EVP_MD_CTX_new();
+    if (!once) {
+	/* needed w/ 0.9.8b, but not 1.1.1d */
+	OpenSSL_add_all_digests();
+	once = 1;
+    }
+    DEBUGF(("line %d\n", __LINE__));
     if (!ctx)
 	RETFAIL;
 
+    DEBUGF(("line %d\n", __LINE__));
     alg = mgetstring(LA_PTR(0));
     if (!alg)
 	goto fail;
     
+    DEBUGF(("line %d: %s\n", __LINE__, alg));
     md = EVP_get_digestbyname(alg);
     free(alg);
+    DEBUGF(("line %d: md %p\n", __LINE__, md));
     if (!md || !EVP_DigestInit(ctx, md))
 	goto fail;
 
+    DEBUGF(("line %d\n", __LINE__));
     h = new_handle2(&digest_handles, ctx, "DIGEST", free_ctx, modinst);
     if (!OK_HANDLE(h)) {
     fail:
 	EVP_MD_CTX_free(ctx);
 	RETFAIL;
     }
+    DEBUGF(("line %d\n", __LINE__));
     RETHANDLE(h);
 }
 

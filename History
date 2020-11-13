@@ -5,6 +5,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 11/13/2020:
 	modules/digest: revamp using EVP, digest lookup by name
 		makes SHA3 algorithms available
+		tweak to build on OpenSSL older than 1.1.0
+	configure: tweak to build on OpenSSL older than 1.1.0
 
 11/12/2020:
 	configure: test for SHA512 in libcrypto for digest module
