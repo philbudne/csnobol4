@@ -16,6 +16,7 @@ Changes since 2.1.6 release;
 	    json.sno -- JSON subset
 	Modules:
 	    base64 (new): base64 encode/decode.
+	    digest (new): Message Digest algorithms, using OpenSSL
 	    fork: add GETPID, GETPPID functions
 	    stat: fixed.
 	       added "btime" (birth time), available on BSDs/MacOS/Cygwin/MSYS2
