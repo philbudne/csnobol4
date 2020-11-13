@@ -315,7 +315,6 @@ lzma_reader(struct compio_obj *iop, const char *buf, size_t len) {
     do {
 	/* PLB: read larger chunks (keep buffer in ciop)?! */
 	char in[1];
-	int ret;
 
         if (ciop->bio.eof || ioo_read_raw(ciop->wiop, in, 1) < 1) {
 	    ciop->bio.eof = 1;
@@ -324,11 +323,12 @@ lzma_reader(struct compio_obj *iop, const char *buf, size_t len) {
 
 	stream->next_in = (void *)in;
 	stream->avail_in = 1;
-	ret = lzma_code(stream, LZMA_RUN); /* also LZMA_FINISH */
-        if (ret == LZMA_DATA_ERROR)
+	switch (lzma_code(stream, LZMA_RUN)) {
+        case LZMA_DATA_ERROR:
             return -1;
-        if (ret == LZMA_STREAM_END) {
+        case LZMA_STREAM_END:
 	    /* XXX reset?? */
+	    break;
 	}
     } while (stream->avail_out);
     return len - stream->avail_out;
@@ -349,8 +349,8 @@ lzma_writer(struct compio_obj *iop, const char *buf, size_t len) {
     do {
         stream->next_out = (void *)out;
         stream->avail_out = sizeof(out);
-	/* gcc 7.4, 7.5 complain ignoring result: */
-        (void)lzma_code(stream, buf ? LZMA_RUN : LZMA_FINISH);
+        if (lzma_code(stream, buf ? LZMA_RUN : LZMA_FINISH) != LZMA_OK)
+	    return -1;
 	/* XXX check return: */
 	if (stream->avail_out != sizeof(out))
 	    ioo_write(ciop->wiop, out, sizeof(out) - stream->avail_out);
