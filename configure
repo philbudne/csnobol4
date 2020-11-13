@@ -1923,7 +1923,7 @@ if [ "x$WITHOUT_MODULES" = x ]; then
 	done
     fi
 
-    if config/check 'openssl/sha.h' 'SHA512_CTX x; SHA512_Init(&x)' -lcrypto; then
+    if config/check 'openssl/evp.h' 'EVP_MD_CTX_new()' -lcrypto; then
 	echo 'using libcrypto for message digests' 1>&2
 	MODULES="$MODULES digest"
     fi
