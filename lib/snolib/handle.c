@@ -140,17 +140,17 @@ new_handle2(handle_handle_t *hhp, void *vp,
     hp->next = htp->hash[hash];
     hp->value = vp;
 
-#ifdef DEBUG_HANDLES
-    fprintf(stderr, "new_handle2 %s %p => %ld\n",
-	    htp->name, vp, (long)hp->handle_number);
-#endif
-
     htp->hash[hash] = hp;
     htp->entries++;
 
     h.f = 0;
     h.v = htp->datatype;
     h.a.i = hp->handle_number;
+
+#ifdef DEBUG_HANDLES
+    fprintf(stderr, "new_handle2 %s dt %d %p => %ld\n",
+	    htp->name, h.v, vp, (long)h.a.i);
+#endif
 
     return h;
 }
