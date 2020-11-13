@@ -328,6 +328,7 @@ lzma_reader(struct compio_obj *iop, const char *buf, size_t len) {
             return -1;
         case LZMA_STREAM_END:
 	    /* XXX reset?? */
+	default:
 	    break;
 	}
     } while (stream->avail_out);
