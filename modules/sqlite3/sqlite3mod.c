@@ -183,8 +183,24 @@ SQLITE3_PREPARE( LA_ALIST ) {
     if (!db)
 	RETFAIL;
 
-    /* DANGER!! won't make a copy if it sees a NUL byte before len reached! */
-    ret = sqlite3_prepare_v2(db, LA_STR_PTR(1), LA_STR_LEN(1), &st, NULL);
+#if SQLITE_VERSION_NUMBER >= 3003011	/* stable in 3.3.11? */
+    /*
+     * allows use of sqlite3_normalized_sql.
+     * won't make a copy if it sees a NUL byte before len reached!
+     * ... _COULD_ do a memchr to check for NUL
+     */
+    {
+	char *stmt = mgetstring(LA_PTR(1));
+	if (!stmt)
+	    RETFAIL;
+	/* supposedly faster to call with strlen(stmt)+1 */
+	ret = sqlite3_prepare_v2(db, stmt, -1, &st, NULL);
+	free(stmt);
+    }
+#else
+    /* legacy interface (not (yet) deprecated) */
+    ret = sqlite3_prepare(db, LA_STR_PTR(1), LA_STR_LEN(1), &st, NULL);
+#endif
     if (ret != SQLITE_OK)
 	RETFAIL;
 

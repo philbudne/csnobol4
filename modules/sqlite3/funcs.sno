@@ -89,7 +89,7 @@ SQLITE3_BIND_TABLE.END
 ****************
 **=pea
 **=sect SEE ALSO
-**B<snobol4>(1)
+**B<snobol4>(1), B<sqlite3>(1)
 **=break
 **=link http://www.sqlite.org
 **=break

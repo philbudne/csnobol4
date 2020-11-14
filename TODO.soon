@@ -2,6 +2,9 @@ $Id$
 
 ================ 2.2
 
+setuputil "make"
+	run make w/ MOD= (& SRC=)
+
 write tests for compressed I/O
 
 update README, CHANGELOG
