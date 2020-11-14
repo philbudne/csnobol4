@@ -3,7 +3,7 @@
 	TEST = "This is a test string" CHAR(10)
 
 * fails if algorithm unknown
-* exits on any other error
+* exits (w/ exit status 1) on any other error
 	DEFINE("T(ALG,REF)CTX,TMP")		:(ET)
 T	CTX = DIGEST_INIT(ALG)			:F(FRETURN)
 	DIGEST_UPDATE(CTX,TEST)			:F(T.ERR)
@@ -14,19 +14,6 @@ T	CTX = DIGEST_INIT(ALG)			:F(FRETURN)
 	OUTPUT = "EXP: " REF			:(END)
 T.ERR	OUTPUT = ALG " error"			:(END)
 ET
-
-* OpenSSL 0.9.6 24 Sept 2000 (RH7.2)
-* OpenSSL 0.9.7c 30 Sep 2003 (FreeBSD 4.9)
-*	md2 md4 md5 mdc2 rmd160 sha sha1
-* OpenSSL 0.9.8b 04 May 2006 (RHEL5)
-* OpenSSL 1.0.2k-fips  26 Jan 2017 (RHEL7)
-*	md2 md4 md5 rmd160 sha sha1
-* OpenSSL 1.1.1c FIPS  28 May 2019 (RHEL8)
-* OpenSSL 1.1.1d-freebsd  10 Sep 2019 (FreeBSD 12.1)
-* OpenSSL 1.1.1f  31 Mar 2020 (Ubuntu 20.04)
-*	blake2b512 blake2s256 gost md2 md4 md5 rmd160 sha1 sha224 sha256
-*	sha3-224 sha3-256 sha3-384 sha3-512 sha384 sha512 sha512-224
-*	sha512-256 shake128 shake256 sm3
 
 ****************
 * MD5 and SHA-1: MUST PASS
