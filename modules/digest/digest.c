@@ -36,7 +36,21 @@ static VAR handle_handle_t digest_handles;
 **=cut
 */
 
-#if OPENSSL_VERSION_NUMBER < 0x10100000L /* renamed in 1.1.0 */
+#if OPENSSL_VERSION_NUMBER < 0x00090700L /* create added in 0.9.7? */
+static EVP_MD_CTX *
+EVP_MD_CTX_new(void) {
+    EVP_MD_CTX *ctx = malloc(sizeof(EVP_MD_CTX));
+    /* new in 0.9.7? changed to _reset in the great renaming of 1.1.0?? */
+    EVP_MD_CTX_init(ctx);
+    return ctx;
+}
+
+void
+EVP_MD_CTX_free(EVP_MD_CTX *ctx) {
+    EVP_MD_CTX_cleanup(ctx);
+    free(ctx);
+}
+#elif OPENSSL_VERSION_NUMBER < 0x10100000L /* renamed in 1.1.0 */
 #define EVP_MD_CTX_new EVP_MD_CTX_create
 #define EVP_MD_CTX_free EVP_MD_CTX_destroy
 #endif
