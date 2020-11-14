@@ -11,6 +11,7 @@
 #include <stdlib.h>			/* free */
 
 #include <openssl/evp.h>
+#include <openssl/opensslv.h>
 
 #include "h.h"
 #include "equ.h"
