@@ -2,6 +2,8 @@
 	&CODE = 1
 	TEST = "This is a test string" CHAR(10)
 
+* fails if algorithm unknown
+* exits on any other error
 	DEFINE("T(ALG,REF)CTX,TMP")		:(ET)
 T	CTX = DIGEST_INIT(ALG)			:F(FRETURN)
 	DIGEST_UPDATE(CTX,TEST)			:F(T.ERR)
