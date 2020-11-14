@@ -37,18 +37,17 @@ static VAR handle_handle_t digest_handles;
 **=cut
 */
 
-#if OPENSSL_VERSION_NUMBER < 0x00090700L /* create added in 0.9.7? */
+#if OPENSSL_VERSION_NUMBER < 0x00907000L /* create added in 0.9.7? */
 static EVP_MD_CTX *
 EVP_MD_CTX_new(void) {
     EVP_MD_CTX *ctx = malloc(sizeof(EVP_MD_CTX));
-    /* new in 0.9.7? changed to _reset in the great renaming of 1.1.0?? */
-    EVP_MD_CTX_init(ctx);
+    bzero(ctx, sizeof(EVP_MD_CTX));
     return ctx;
 }
 
 void
 EVP_MD_CTX_free(EVP_MD_CTX *ctx) {
-    EVP_MD_CTX_cleanup(ctx);
+    /* cleanup?? */
     free(ctx);
 }
 #elif OPENSSL_VERSION_NUMBER < 0x10100000L /* renamed in 1.1.0 */
@@ -92,8 +91,14 @@ DIGEST_INIT( LA_ALIST ) {
     md = EVP_get_digestbyname(alg);
     free(alg);
     DEBUGF(("line %d: md %p\n", __LINE__, md));
-    if (!md || !EVP_DigestInit(ctx, md))
+    if (!md)
 	goto fail;
+#if OPENSSL_VERSION_NUMBER < 0x00907000L
+    EVP_DigestInit(ctx, md);		/* void in 0.9.6 */
+#else
+    if (!EVP_DigestInit(ctx, md))
+	goto fail;
+#endif
 
     DEBUGF(("line %d\n", __LINE__));
     h = new_handle2(&digest_handles, ctx, "DIGEST", free_ctx, modinst);
@@ -110,8 +115,12 @@ lret_t
 DIGEST_UPDATE( LA_ALIST ) {
     EVP_MD_CTX *ctx = lookup_handle(&digest_handles, LA_HANDLE(0));
     if (!ctx) RETFAIL;
+#if OPENSSL_VERSION_NUMBER < 0x00907000L
+    EVP_DigestUpdate(ctx, LA_STR_PTR(1), LA_STR_LEN(1));
+#else
     if (!EVP_DigestUpdate(ctx, LA_STR_PTR(1), LA_STR_LEN(1)))
 	RETFAIL;
+#endif
     RETNULL;
 }
 
@@ -125,7 +134,12 @@ DIGEST_FINAL( LA_ALIST ) {
     if (!ctx)
 	RETFAIL;
 
+#if OPENSSL_VERSION_NUMBER < 0x00907000L
+    EVP_DigestFinal(ctx, out, &s);
+    ret = 1;
+#else
     ret = EVP_DigestFinal(ctx, out, &s);
+#endif
     EVP_MD_CTX_free(ctx);
     remove_handle(&digest_handles, LA_HANDLE(0));
 
