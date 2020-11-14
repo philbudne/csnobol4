@@ -26,7 +26,6 @@ SNOBOL4_MODULE(digest)
 
 #define MAX_DIGEST_LENGTH (512/8)
 
-static int once;			/* global */
 static VAR handle_handle_t digest_handles;
 
 /*
@@ -72,25 +71,25 @@ DIGEST_INIT( LA_ALIST ) {
     snohandle_t h;
     const EVP_MD *md;
     EVP_MD_CTX *ctx = EVP_MD_CTX_new();
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
+    static int once;			/* global */
 
     if (!once) {
-	/* needed w/ 0.9.8b, but not 1.1.1d */
 	OpenSSL_add_all_digests();
 	once = 1;
     }
-    DEBUGF(("line %d\n", __LINE__));
+#endif
+
     if (!ctx)
 	RETFAIL;
 
-    DEBUGF(("line %d\n", __LINE__));
     alg = mgetstring(LA_PTR(0));
     if (!alg)
 	goto fail;
     
-    DEBUGF(("line %d: %s\n", __LINE__, alg));
     md = EVP_get_digestbyname(alg);
     free(alg);
-    DEBUGF(("line %d: md %p\n", __LINE__, md));
+
     if (!md)
 	goto fail;
 #if OPENSSL_VERSION_NUMBER < 0x00907000L
@@ -100,14 +99,12 @@ DIGEST_INIT( LA_ALIST ) {
 	goto fail;
 #endif
 
-    DEBUGF(("line %d\n", __LINE__));
     h = new_handle2(&digest_handles, ctx, "DIGEST", free_ctx, modinst);
     if (!OK_HANDLE(h)) {
     fail:
 	EVP_MD_CTX_free(ctx);
 	RETFAIL;
     }
-    DEBUGF(("line %d\n", __LINE__));
     RETHANDLE(h);
 }
 
@@ -116,7 +113,7 @@ DIGEST_UPDATE( LA_ALIST ) {
     EVP_MD_CTX *ctx = lookup_handle(&digest_handles, LA_HANDLE(0));
     if (!ctx) RETFAIL;
 #if OPENSSL_VERSION_NUMBER < 0x00907000L
-    EVP_DigestUpdate(ctx, LA_STR_PTR(1), LA_STR_LEN(1));
+    EVP_DigestUpdate(ctx, LA_STR_PTR(1), LA_STR_LEN(1)); /* void */
 #else
     if (!EVP_DigestUpdate(ctx, LA_STR_PTR(1), LA_STR_LEN(1)))
 	RETFAIL;
@@ -135,7 +132,7 @@ DIGEST_FINAL( LA_ALIST ) {
 	RETFAIL;
 
 #if OPENSSL_VERSION_NUMBER < 0x00907000L
-    EVP_DigestFinal(ctx, out, &s);
+    EVP_DigestFinal(ctx, out, &s);	/* void */
     ret = 1;
 #else
     ret = EVP_DigestFinal(ctx, out, &s);
