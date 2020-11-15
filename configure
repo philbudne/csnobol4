@@ -1937,7 +1937,7 @@ if [ "x$WITHOUT_MODULES" = x ]; then
     fi
 
     if config/check 'openssl/evp.h' 'EVP_get_digestbyname("md5")' -lcrypto; then
-	echo 'using libcrypto for message digests' 1>&2
+	echo 'using OpenSSL libcrypto for message digests' 1>&2
 	MODULES="$MODULES digest"
     fi
 
