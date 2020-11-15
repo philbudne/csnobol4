@@ -221,6 +221,7 @@ csnobol4_b64_pton(src, srcsize, target, targsize)
 	unsigned char nextbyte;
 	char *pos;
 
+	ch = 0;				/* PLB quiet compiler warning */
 	state = 0;
 	tarindex = 0;
 

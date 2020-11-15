@@ -3,6 +3,13 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 11/15/2020:
+	Eliminate module warnings:
+	modules/base64/base64.c
+	modules/ffi/ffi.c
+	modules/sqlite3/sqlite3mod.c
+	modules/time/time.c
+
+11/15/2020:
 	Make it possible to configure to use MacPorts libraries
 	INSTALL: update
 	Makefile2.m4: add ADD_SNOBOL4_LDFLAGS macro,

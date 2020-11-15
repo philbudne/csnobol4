@@ -251,7 +251,11 @@ FFI_CALL( LA_ALIST ) {
     void *func = lookup_handle(&ffi_dlsyms, LA_HANDLE(1));
     void **arg_pointers = NULL;
     union argval *cargs = NULL;
-    ffi_arg result;
+    /* avoid strict-alias warnings: almost certainly violates rules! */
+    union {
+	ffi_arg fa;
+	union argval av;
+    } result;
     ffi_cif *cif;
     int fail = 1;
     int i;
@@ -314,7 +318,7 @@ FFI_CALL( LA_ALIST ) {
 #ifdef DEBUG_FFI
     printf("calling\n");
 #endif
-    ffi_call(cif, FFI_FN(func), &result, arg_pointers);
+    ffi_call(cif, FFI_FN(func), &result.fa, arg_pointers);
     fail = 0;
 
  ret:
@@ -329,21 +333,21 @@ FFI_CALL( LA_ALIST ) {
 
     if (!fail) {
 	ffi_type *a = cif->rtype;
-#define RET(FFI,RETMACRO,CTYPE) \
-	else if (a == &ffi_type_##FFI) RETMACRO(*(CTYPE *)&result)
+#define RET(FFI,RETMACRO,FIELD) \
+	else if (a == &ffi_type_##FFI) RETMACRO(result.av.FIELD);
 
 	if (0) ;
-	RET(uint8,RETINT,uint8_t);
-	RET(sint8,RETINT,int8_t);
-	RET(uint16,RETINT,uint16_t);
-	RET(sint16,RETINT,int16_t);
-	RET(uint32,RETINT,uint32_t);
-	RET(sint32,RETINT,int32_t);
-	RET(uint64,RETINT,uint64_t);
-	RET(sint64,RETINT,int64_t);
-	RET(float,RETREAL,float);
-	RET(double,RETREAL,double);
-	RET(longdouble,RETREAL,long double);
+	RET(uint8,RETINT,u8)
+	RET(sint8,RETINT,s8)
+	RET(uint16,RETINT,u16)
+	RET(sint16,RETINT,s16)
+	RET(uint32,RETINT,u32)
+	RET(sint32,RETINT,s32)
+	RET(uint64,RETINT,u64)
+	RET(sint64,RETINT,s64)
+	RET(float,RETREAL,f)
+	RET(double,RETREAL,d)
+	RET(longdouble,RETREAL,ld)
 	else if (a == &ffi_type_pointer) {
 	    char *ptr = *(char **)&result;
 #ifdef DEBUG_FFI
@@ -352,7 +356,7 @@ FFI_CALL( LA_ALIST ) {
 	    switch (cpp->pret) {
 	    case STR:	RETSTR2(ptr, strlen(ptr)); /* RETSTR? */
 	    case FREESTR: RETSTR_FREE(ptr);
-	    case NOTSTR: RETINT((int_t)ptr); /* UGH!!! */
+	    case NOTSTR: RETINT((int_t)ptr); /* UGH!!! wrap in handle??? */
 	    }
 	}
     }

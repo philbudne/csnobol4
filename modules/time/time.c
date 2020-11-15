@@ -72,7 +72,8 @@ GETTIMEOFDAY_( LA_ALIST ) {
 	RETNULL;
     /* validate dp[TV_DESCR] */
 #if defined(GETTIMESPEC)
-    GETTIMESPEC(&ts);
+    if (!GETTIMESPEC(&ts))
+	RETFAIL;
     SETINT(dp,TV_SEC,ts.tv_sec);
     SETINT(dp,TV_USEC,(ts.tv_nsec+500)/1000);
     SETINT(dp,TV_NSEC,ts.tv_nsec);

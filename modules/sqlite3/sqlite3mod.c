@@ -244,6 +244,8 @@ SQLITE3_PREPARE( LA_ALIST ) {
 #if 0
 	if (ret != SQLITE_OK)
 	    RETFAIL;
+#else
+	(void) ret;
 #endif
     }
     RETHANDLE(sh);
@@ -302,6 +304,8 @@ SQLITE3_BIND_ANY( LA_ALIST ) {
 #if 0
     if (ret == SQLITE_MISUSE)
 	RETFAIL;
+#else
+    (void) ret;
 #endif
     RETNULL;
 }
@@ -344,6 +348,8 @@ SQLITE3_BIND_BLOB( LA_ALIST ) {
 #if 0
     if (ret == SQLITE_MISUSE)
 	RETFAIL;
+#else
+    (void) ret;
 #endif
     RETNULL;
 }
@@ -403,6 +409,8 @@ SQLITE3_BIND_MANY( LA_ALIST ) {
 #if 0
 	if (ret != SQLITE_OK)
 	    RETFAIL;
+#else
+	(void) ret;
 #endif
     }
     RETNULL;
