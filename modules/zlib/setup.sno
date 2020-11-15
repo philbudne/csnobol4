@@ -1,0 +1,16 @@
+-INCLUDE 'setuputil.sno'
+
+	t = TABLE()
+	t['module'] = 'zlib'
+	t['sources'] = 'zlib.c'
+	t['libraries'] = 'z'
+
+	t['author'] = t['maintainer'] = 'Phil Budne'
+	t['author_email'] = t['maintainer_email'] = 'phil@snobol4.org'
+	t['license'] = 'zlib'
+* description
+* long_description
+* version (get from RCS ID?)
+
+	setup(t)
+end

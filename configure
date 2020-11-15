@@ -1609,6 +1609,7 @@ if config/check zlib.h 'z_stream z; inflate(&z, Z_NO_FLUSH)' -lz; then
     echo 'ADD_LDFLAGS([-lz])'			>> $CONFIG_M4
     NEED_COMPIO=1
     NEED_BUFIO=1
+    HAVE_ZLIB=1
 fi
 
 # XXX could have --with-bzlib=basepath
@@ -1649,6 +1650,10 @@ fi
 
 if [ "x$WITHOUT_MODULES" = x ]; then
     MODULES="base64 dirs logic random stat time sprintf fork readline"
+    # if other compression modules created, have COMP_MODULES?
+    if [ "x$HAVE_ZLIB" != x ]; then
+	MODULES="$MODULES zlib"
+    fi
 
     ################################################################
     echo "checking features for modules:"	1>&2
