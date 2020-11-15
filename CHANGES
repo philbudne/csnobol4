@@ -21,10 +21,12 @@ Changes since 2.1.6 release;
 	    stat: fixed.
 	       added "btime" (birth time), available on BSDs/MacOS/Cygwin/MSYS2
 	    time: GETTIMEOFDAY return now has TV_NSEC member
+	    zlib (new): (un)compress & checksum strings
 	configure changes:
 	    --force-pml removed (must use modules)
 	    --without-modules added
 	    more strict about feature tests
+	MacOS: can now build modules w/ MacPorts libraries.
 	Windows:
 	    Builds by default with Winsock2 library
 		for IPv6 support (available since in WinXP)
