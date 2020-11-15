@@ -25,11 +25,10 @@
 struct compio_obj {
     struct bufio_obj bio;	/* line buffered input */
     struct io_obj *wiop;	/* wrapped I/O pointer */
-    char dir;
-    char done;			/* decompressor says done */
-    char level;
-    char unused_char;
-    /* everything below in subclass? */
+    char dir;			/* 'r' or 'w' */
+    char level;			/* compression level '0' to '9' (or 0) */
+    char buf[512];		/* for read (malloc it?) */
+    /* everything below in subclass? or use a union for private?? */
     void *private;
     ssize_t (*reader)(struct compio_obj *iop, const char *buf, size_t len);
     ssize_t (*writer)(struct compio_obj *iop, const char *buf, size_t len);
@@ -76,21 +75,25 @@ zlib_reader(struct compio_obj *iop, const char *buf, size_t len) {
     stream->next_out = (void *)buf;
     stream->avail_out = len;
     do {
-	char in[1];
-	int ret;
-
-        if (ciop->bio.eof || ioo_read_raw(ciop->wiop, in, 1) < 1) {
-	    ciop->bio.eof = 1;
+        if (ciop->bio.eof)
 	    break;
+
+	if (stream->avail_in == 0) {
+	    stream->avail_in =
+		ioo_read_raw(ciop->wiop, ciop->buf, sizeof(ciop->buf));
+	    if (stream->avail_in < 1) {
+		ciop->bio.eof = 1;
+		break;
+	    }
+	    stream->next_in = (unsigned char *)ciop->buf;
 	}
 
-	stream->next_in = (unsigned char *)in;
-	stream->avail_in = 1;
-	ret = inflate(stream, Z_NO_FLUSH);
-        if (ret == Z_DATA_ERROR)
+	switch (inflate(stream, Z_NO_FLUSH)) {
+        case Z_DATA_ERROR:
             return -1;
-        if (ret == Z_STREAM_END) {
-            inflateReset(stream);
+	case Z_STREAM_END:
+	    inflateReset(stream);
+	    break;
 	}
     } while (stream->avail_out);
     return len - stream->avail_out;
@@ -101,7 +104,6 @@ static ssize_t
 zlib_writer(struct compio_obj *iop, const char *buf, size_t len) {
     struct compio_obj *ciop = (struct compio_obj *)iop;
     z_stream *stream = (z_stream *)ciop->private;
-    char out[16384];
 
     if (!stream)
 	return -1;
@@ -109,6 +111,7 @@ zlib_writer(struct compio_obj *iop, const char *buf, size_t len) {
     stream->next_in = (void *)buf;
     stream->avail_in = len;
     do {
+	char out[16384];
         stream->next_out = (unsigned char *)out;
         stream->avail_out = sizeof(out);
         (void)deflate(stream, buf ? Z_NO_FLUSH : Z_FINISH);
@@ -129,8 +132,6 @@ zlib_closer(struct compio_obj *ciop) {
 	inflateEnd(stream);
     else
         deflateEnd(stream);
-    free(ciop->private);
-    ciop->private = NULL;
     return TRUE;
 }
 
@@ -180,7 +181,6 @@ zlib_open(struct compio_obj *ciop) {
 	}
     }
 
-    free(ciop->private);
     return FALSE;
 }
 
@@ -197,27 +197,23 @@ bzlib_reader(struct compio_obj *iop, const char *buf, size_t len) {
     if (!stream)
 	return -1;
 
-    /* from minigzip.c gzread */
     stream->next_out = (void *)buf;
     stream->avail_out = len;
     do {
-	/* PLB: read larger chunks (keep buffer in ciop)?! */
-	char in[1];
-	int ret;
-
-        if (ciop->bio.eof || ioo_read_raw(ciop->wiop, in, 1) < 1) {
-	    ciop->bio.eof = 1;
+        if (ciop->bio.eof)
 	    break;
-	}
 
-	stream->next_in = in;
-	stream->avail_in = 1;
-	ret = BZ2_bzDecompress(stream);
-        if (ret == BZ_DATA_ERROR)
-            return -1;
-        if (ret == BZ_STREAM_END) {
-	    /* XXX reset?? */
+	if (stream->avail_in == 0) {
+	    stream->avail_in =
+		ioo_read_raw(ciop->wiop, ciop->buf, sizeof(ciop->buf));
+	    if (stream->avail_in < 1) {
+		ciop->bio.eof = 1;
+		break;
+	    }
+	    stream->next_in = ciop->buf;
 	}
+	if (BZ2_bzDecompress(stream) == BZ_DATA_ERROR)
+            return -1;
     } while (stream->avail_out);
     return len - stream->avail_out;
 }
@@ -227,7 +223,6 @@ static ssize_t
 bzlib_writer(struct compio_obj *iop, const char *buf, size_t len) {
     struct compio_obj *ciop = (struct compio_obj *)iop;
     bz_stream *stream = (bz_stream *)ciop->private;
-    char out[16384];
 
     if (!stream)
 	return -1;
@@ -235,6 +230,7 @@ bzlib_writer(struct compio_obj *iop, const char *buf, size_t len) {
     stream->next_in = (void *)buf;
     stream->avail_in = len;
     do {
+	char out[16384];
         stream->next_out = out;
         stream->avail_out = sizeof(out);
         (void)BZ2_bzCompress(stream, buf ? BZ_RUN : BZ_FINISH);
@@ -255,8 +251,6 @@ bzlib_closer(struct compio_obj *ciop) {
 	BZ2_bzDecompressEnd(stream);
     else
         BZ2_bzCompressEnd(stream);
-    free(ciop->private);
-    ciop->private = NULL;
     return TRUE;
 }
 
@@ -313,24 +307,21 @@ lzma_reader(struct compio_obj *iop, const char *buf, size_t len) {
     stream->next_out = (void *)buf;
     stream->avail_out = len;
     do {
-	/* PLB: read larger chunks (keep buffer in ciop)?! */
-	char in[1];
-
-        if (ciop->bio.eof || ioo_read_raw(ciop->wiop, in, 1) < 1) {
-	    ciop->bio.eof = 1;
+        if (ciop->bio.eof)
 	    break;
+
+	if (stream->avail_in == 0) {
+	    stream->avail_in =
+		ioo_read_raw(ciop->wiop, ciop->buf, sizeof(ciop->buf));
+	    if (stream->avail_in < 1) {
+		ciop->bio.eof = 1;
+		break;
+	    }
+	    stream->next_in = (unsigned char *)ciop->buf;
 	}
 
-	stream->next_in = (void *)in;
-	stream->avail_in = 1;
-	switch (lzma_code(stream, LZMA_RUN)) {
-        case LZMA_DATA_ERROR:
+	if (lzma_code(stream, LZMA_RUN) == LZMA_DATA_ERROR)
             return -1;
-        case LZMA_STREAM_END:
-	    /* XXX reset?? */
-	default:
-	    break;
-	}
     } while (stream->avail_out);
     return len - stream->avail_out;
 }
@@ -340,7 +331,6 @@ static ssize_t
 lzma_writer(struct compio_obj *iop, const char *buf, size_t len) {
     struct compio_obj *ciop = (struct compio_obj *)iop;
     lzma_stream *stream = (lzma_stream *)ciop->private;
-    char out[16384];
 
     if (!stream)
 	return -1;
@@ -348,6 +338,7 @@ lzma_writer(struct compio_obj *iop, const char *buf, size_t len) {
     stream->next_in = (void *)buf;
     stream->avail_in = len;
     do {
+	char out[16384];
         stream->next_out = (void *)out;
         stream->avail_out = sizeof(out);
         if (lzma_code(stream, buf ? LZMA_RUN : LZMA_FINISH) != LZMA_OK)
@@ -366,8 +357,6 @@ lzma_closer(struct compio_obj *ciop) {
 	return FALSE;
 
     lzma_end(stream);			/* ?? */
-    free(ciop->private);
-    ciop->private = NULL;
     return TRUE;
 }
 
@@ -461,8 +450,11 @@ compio_close(struct io_obj *iop) {
     if (!(ciop->closer)(ciop))
 	return FALSE;
 
+    if (ciop->private) {
+	free(ciop->private);
+	ciop->private = NULL;
+    }
     ret = ciop->wiop && ioo_close(ciop->wiop);
-
     if (ciop->bio.buffer) {
 	free(ciop->bio.buffer);
 	ciop->bio.buffer = NULL;
