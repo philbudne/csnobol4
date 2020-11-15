@@ -114,7 +114,6 @@ READDIR( LA_ALIST ) {
  */
 lret_t
 REWINDDIR( LA_ALIST ) {
-    snohandle_t h = LA_HANDLE(0);
     DIR *d = lookup_handle(&dir_handles, LA_HANDLE(0));
 
     if (!d)
@@ -138,7 +137,6 @@ REWINDDIR( LA_ALIST ) {
  */
 lret_t
 TELLDIR( LA_ALIST ) {
-    snohandle_t h = LA_HANDLE(0);
     DIR *d = lookup_handle(&dir_handles, LA_HANDLE(0));
 
     if (!d)
@@ -159,7 +157,6 @@ TELLDIR( LA_ALIST ) {
  */
 lret_t
 SEEKDIR( LA_ALIST ) {
-    snohandle_t h = LA_HANDLE(0);
     DIR *d = lookup_handle(&dir_handles, LA_HANDLE(0));
     if (!d)
 	RETFAIL;

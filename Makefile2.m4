@@ -20,13 +20,17 @@ CMT([extra object files to snolib])
 define([ADD_OBJS],[divert(4) $1[]divert(0)dnl])dnl
 define([_OBJS],[undivert(4)])dnl
 CMT()
-CMT([extra C compiler flags for final link])
+CMT([extra C compiler flags for final link (for snobol4 AND loadable modules)])
 define([ADD_LDFLAGS],[divert(5) $1[]divert(0)dnl])dnl
 define([_LDFLAGS],[undivert(5)])dnl
 CMT()
 CMT([extra C compiler flags for all .c files])
 define([ADD_CFLAGS],[divert(6) $1[]divert(0)dnl])dnl
 define([_CFLAGS],[undivert(6)])dnl
+CMT()
+CMT([LDFLAGS for snobol4 (libs, MOSTLY)])
+define([ADD_SNOBOL4_LDFLAGS],[divert(7) $1[]divert(0)dnl])dnl
+define([_SNOBOL4_LDFLAGS],[undivert(7)])dnl
 
 ################################################################
 # defaults (may be overridden in config.m4)
@@ -172,21 +176,25 @@ include(config.m4)
 ################################################################
 
 # for PML functions.
-ADD_LDFLAGS([$(MATHLIB)])
+ADD_SNOBOL4_LDFLAGS([$(MATHLIB)])
 
 # after local config
 
+CONFIG_CPPFLAGS=[]_CPPFLAGS
+
 # NOTE: NOT named CPPFLAGS; some versions of make include CPPFLAGS in cc cmd
-MYCPPFLAGS=-I$(SRCDIR)include -I$(SRCDIR). _CPPFLAGS -DSNOBOL4
+MYCPPFLAGS=-I$(SRCDIR)include -I$(SRCDIR). $(CONFIG_CPPFLAGS) -DSNOBOL4
 
 COPT=[]_OPT
 
-LDFLAGS=[]_LDFLAGS
+CONFIG_LDFLAGS=[]_LDFLAGS
+LDFLAGS=$(CONFIG_LDFLAGS) _SNOBOL4_LDFLAGS
 
 ################
 # compiler flags
 
-CFLAGS=[]_CFLAGS $(COPT) $(MYCPPFLAGS) 
+CONFIG_CFLAGS=[]_CFLAGS
+CFLAGS=$(CONFIG_CFLAGS) $(COPT) $(MYCPPFLAGS) 
 
 ################
 
@@ -600,7 +608,11 @@ getstring.o: $(GETSTRING_C)
 handle.o: $(HANDLE_C)
 	$(CC) $(CFLAGS) -c $(HANDLE_C)
 
-HOST_C_CFLAGS=-DCC=\""$(CC)"\" -DCOPT=\""$(COPT)"\" -DHAVE_BUILD_VARS
+HOST_C_CFLAGS=-DCC=\""$(CC)"\" -DCOPT=\""$(COPT)"\" -DHAVE_BUILD_VARS \
+	-DCONFIG_CFLAGS="\"$(CONFIG_CFLAGS)\"" \
+	-DCONFIG_CPPFLAGS="\"$(CONFIG_CPPFLAGS)\"" \
+	-DCONFIG_LDFLAGS="\"$(CONFIG_LDFLAGS)\""
+
 host.o: $(HOST_C)
 	$(CC) $(CFLAGS) $(HOST_C_CFLAGS) -c $(HOST_C)
 

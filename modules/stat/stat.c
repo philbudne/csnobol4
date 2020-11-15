@@ -165,7 +165,6 @@ lret_t
 FSTAT_( LA_ALIST ) {
     struct descr *dp = LA_PTR(1);
     struct stat st;
-    int ret;
 
     if (!dp || LA_TYPE(1) < DATSTA || COUNT(dp) != ST_COUNT)
 	RETFAIL;

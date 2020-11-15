@@ -2,6 +2,21 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/15/2020:
+	Make it possible to configure to use MacPorts libraries
+	INSTALL: update
+	Makefile2.m4: add ADD_SNOBOL4_LDFLAGS macro,
+		add CONFIG_CPPFLAGS, LDFLAGS variables
+		define CONFIG_{C,CPP,LD}FLAGS for host.o
+	configure: add --add-snobol4-ldflags to use ADD_SNOBOL4_LDFLAGS
+		convert most ADD_LDFLAGS to ADD_SNOBOL4_LDFLAGS
+		export LDFLAGS for config/check
+	config/check: use LDFLAGS environment variable
+	include/module.h: eliminate warning from DECLARE_MODULE
+	host.[ch]: add HOST_CONFIG_{C,CPP,LD}FLAGS
+	module/dirs/dirs.c, module/stat/stat.c: eliminate unused variables
+	snolib/setuputil.sno: fetch, use HOST_CONFIG_{C,CPP,LD}FLAGS
+
 11/14/2020:
 	modules/zlib (new)
 	configure: add zlib module

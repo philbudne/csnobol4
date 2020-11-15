@@ -170,6 +170,7 @@ HOST( LA_ALIST ) {
 #endif /* HAVE_BUILD_VARS defined */
 
 /* defines, from Makefile */
+/* (created before config.sno existed) */
 #ifdef SNOLIB_DIR
     case HOST_SNOLIB_DIR:
 	RETSTR(SNOLIB_DIR);
@@ -264,6 +265,21 @@ HOST( LA_ALIST ) {
     case HOST_SHARED_OBJ_SUBDIR:
 	RETSTR(SHARED_OBJ_SUBDIR);
 #endif /* SHARED_OBJ_SUBDIR defined */
+
+#ifdef CONFIG_CFLAGS
+    case HOST_CONFIG_CFLAGS:
+	RETSTR(CONFIG_CFLAGS);
+#endif /* CONFIG_CFLAGS defined */
+
+#ifdef CONFIG_CPPFLAGS
+    case HOST_CONFIG_CPPFLAGS:
+	RETSTR(CONFIG_CPPFLAGS);
+#endif /* CONFIG_CPPFLAGS defined */
+
+#ifdef CONFIG_LDFLAGS
+    case HOST_CONFIG_LDFLAGS:
+	RETSTR(CONFIG_LDFLAGS);
+#endif /* CONFIG_LDFLAGS defined */
 
 /****************
  * integer constants;

@@ -324,6 +324,30 @@
 */
 #define HOST_SHARED_OBJ_SUBDIR	2218
 
+/*
+**=pea
+**=item B<HOST(HOST_CONFIG_CFLAGS)>
+**CSNOBOL4: CFLAGS from configure
+**=cut
+*/
+#define HOST_CONFIG_CFLAGS	2219
+
+/*
+**=pea
+**=item B<HOST(HOST_CONFIG_CPPFLAGS)>
+**CSNOBOL4: C preprocessor flags from configure
+**=cut
+*/
+#define HOST_CONFIG_CPPFLAGS	2220
+
+/*
+**=pea
+**=item B<HOST(HOST_CONFIG_LDFLAGS)>
+**CSNOBOL4: loader flags from configure
+**=cut
+*/
+#define HOST_CONFIG_LDFLAGS	2221
+
 /*****
  * integer constants;
  */

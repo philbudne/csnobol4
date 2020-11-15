@@ -54,7 +54,9 @@ with "--add-" can appear);
 		config.h (available to separately compiled loadable modules)
 
 	--add-ldflags=STRING
-		Add additional flags to final load command (ie; -lxxx)
+		Add additional flags to final load command
+		Used for snobol4, modules and DLL.
+		To specify libraries for snobol4 executable, see -add-snobol4-ldflags
 
 	--add-objs=STRING
 		Add additional object file to final load command
@@ -74,6 +76,10 @@ with "--add-" can appear);
 		below for how to get different optimization flags that
 		may help on your platform.
 		
+	--add-snobol4-ldflags=STRING
+		Add additional flags to final load command for snobol4 binary
+		(eg; -llibrary)
+
 	--add-srcs=STRING
 		Add additional source files for "make depend"
 
@@ -271,9 +277,6 @@ with "--add-" can appear);
 	--mandir=DIR
 		Supply a directory for man pages. Default is PREFIX/man
 
-	--universal
-		Mac OS X: build a universal (Power PC / Intel x86) binary.
-
 	--with-tcl=/path/to/tclConfig.sh
 		Compile in Tcl extension (see snobol4tcl man page)
 		Tk 8.4 or later is necessary to use Tcl/Tk.
@@ -287,10 +290,13 @@ with "--add-" can appear);
 		Do not compile in COM extension on CygWIN.
 
 	--without-readline
-		Do not compile in READLINE extension.
+		Do not compile in READLINE.
+
+	--without-modules
+		Do not compile any extension modules.
 
 	--without-ndbm
-		Do not try to compile in NDBM extension.
+		Do not try to compile NDBM extension module.
 		See --force-sdbm
 
 The configure script tries to select from among different versions
@@ -343,6 +349,11 @@ generated configuration would not build (please let me know if this
 happens)!  Another would be to customize your system (for example,
 adding new built-in functions, especially via the "Poor Mans LOAD()"
 facility (see doc/load.txt)).
+
+On systems where locally installed includes and libraries are in
+locations not automatically searched by the C compiler, for example on
+MacOS using MacPorts, run configure with --add-cppflags=-I/opt/local/include
+and --add-ldflags=-I/opt/local/lib
 
 local-config
 ------------

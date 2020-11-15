@@ -51,7 +51,7 @@ struct module_instance {
 	(unsigned short)sizeof(long), \
 	(unsigned short)sizeof(void *), \
 	(unsigned short)sizeof(struct module_instance), \
-	0, 0, 0, \
+	{ 0, 0, 0 }, \
         #NAME, \
 	MODULE_FLAGS, 0, \
 	get_module_instance

@@ -48,7 +48,7 @@ else
     CHECK_OUT=/dev/null
 fi
 
-if ${CC:-cc} $CFLAGS -o $TMP $TMP_C $LIBS >$CHECK_OUT 2>&1; then
+if ${CC:-cc} $CFLAGS -o $TMP $TMP_C $LDFLAGS $LIBS >$CHECK_OUT 2>&1; then
     if [ "$RUN" ]; then
 	$TMP
 	exit $?

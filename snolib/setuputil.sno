@@ -105,6 +105,9 @@ fetch.end
 	fetch('INCLUDE_DIR')
 	fetch('OBJ_EXT')
 	fetch('SETUP_SYS')
+	fetch('CONFIG_CFLAGS')
+	fetch('CONFIG_CPPFLAGS')
+	fetch('CONFIG_LDFLAGS')
 
 	cygwin = DIFFER(HOST() ? POS(0) BREAK(':') (':CYGWIN' | ':MSYS')) 1
 	windows = DIFFER(HOST() ? POS(0) BREAK(':') ':Win') 1
@@ -376,8 +379,10 @@ setup.posix.buildcmd2
 * build "dynamic library" (DL) -- something attached at runtime
 	compile = CC ' -c ' COPT
 +		' ' DL_CFLAGS setup.debug
-+		' ' t['cflags']
-+		' -DHAVE_CONFIG_H' iflags
++		(DIFFER(t['cflags']) ' ' t['cflags'], '')
++		(DIFFER(CONFIG_CFLAGS) ' ' CONFIG_CFLAGS, '')
++		(DIFFER(CONFIG_CPPFLAGS) ' ' CONFIG_CPPFLAGS, '')
++		iflags
 +		' ' sources
 	setup.posix.system(compile)		 :f(FRETURN)
 
@@ -392,7 +397,10 @@ setup.posix.buildcmd2
 
 	link = DL_LD
 +		' ' DL_LDFLAGS
-+		' -o ' setup.dlname(t) ' ' setup.posix.objs(t) libdirs libs
++		' -o ' setup.dlname(t) ' ' setup.posix.objs(t)
++		libdirs
++		' ' CONFIG_LDFLAGS
++		libs
 +		' ' t['ldflags']
 
 	setup.posix.system(link)		:f(FRETURN)

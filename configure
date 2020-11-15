@@ -122,8 +122,11 @@ while [ $# -gt 0 ]; do
 	echo '#define '"$STUFF"			>> $CONFIG_H
 	;;
     --add-ldflags=*)
+	# flags for snobol4 AND loadable modules
 	STUFF=`echo "$1" | sed 's/--add-ldflags=//'`
-	echo 'ADD_LDFLAGS(['"$STUFF"'])'	>> $CONFIG_M4
+	# make available to config/check script:
+	LDFLAGS="$LDFLAGS $STUFF"
+	export LDFLAGS
 	;;
     --add-objs=*)
 	STUFF=`echo "$1" | sed 's/--add-objs=//'`
@@ -132,6 +135,10 @@ while [ $# -gt 0 ]; do
     --add-opt=*)
 	STUFF=`echo "$1" | sed 's/--add-opt=//'`
 	echo 'ADD_OPT(['"$STUFF"'])'		>> $CONFIG_M4
+	;;
+    --add-snobol4-ldflags=*)
+	STUFF=`echo "$1" | sed 's/--add-snobol4-ldflags=//'`
+	echo 'ADD_SNOBOL4_LDFLAGS(['"$STUFF"'])' >> $CONFIG_M4
 	;;
     --add-srcs=*)
 	STUFF=`echo "$1" | sed 's/--add-srcs=//'`
@@ -231,6 +238,7 @@ Makefile additions;
 	--add-cflags=STR	--add-cppflags=STR	
 	--add-define=NAME[=VALUE] --add-ldflags=STR
 	--add-objs=STR		--add-srcs=STR
+	--add-snobol4-ldflags=STR
 
 C Compiler settings;
 	--add-cflags=STR	--opt=STR
@@ -468,14 +476,14 @@ gcc|clang|icc)
 	SO_CFLAGS=
 	SO_LD=$CCPATH
 	SO_LDFLAGS=-shared
-	echo 'ADD_LDFLAGS([-Wl,--out-implib,libsnobol4.a])' >> $CONFIG_M4
+	echo 'ADD_SNOBOL4_LDFLAGS([-Wl,--out-implib,libsnobol4.a])' >> $CONFIG_M4
 
 	# also available as  __attribute__ ((dll{im,ex}port))?
 	echo '#define IMPORT(TYPE) __declspec(dllimport) TYPE' >> $CONFIG_H
 	echo '#define EXPORT(TYPE) __declspec(dllexport) TYPE' >> $CONFIG_H
 
 #	# Equivalent to -rdynamic? IMPORT/EXPORT seem to do the trick!
-#	echo 'ADD_LDFLAGS([-Wl,--export-all-symbols])' >> $CONFIG_M4
+#	echo 'ADD_SNOBOL4_LDFLAGS([-Wl,--export-all-symbols])' >> $CONFIG_M4
 
 	echo 'define([INSTALL_SYSDEP],[$(INSTALL) -m 644 libsnobol4.a $(SNOLIB_LIB)])' >> $CONFIG_M4
 	;;
@@ -564,7 +572,7 @@ gcc|clang|icc)
 
 	    ARCH_LDFLAGS=`getconf XBS5_LP64_OFF64_LDFLAGS`
 	    if [ "x$ARCH_LDFLAGS" != x ]; then
-		echo 'ADD_LDFLAGS(['$ARCH_LDFLAGS'])'>> $CONFIG_M4
+		echo 'ADD_SNOBOL4_LDFLAGS(['$ARCH_LDFLAGS'])'>> $CONFIG_M4
 	    fi
 	    OPT=-O3
 	else
@@ -628,7 +636,7 @@ gcc|clang|icc)
 	# cc -o main -bE:main.exp $(MAIN_OBJS)
 	# cc -o module.so -bM:SRE -bI:main.exp -bE:module.exp -bnoentry $(OBJS)
 
-	echo 'ADD_LDFLAGS([-bE:snobol4.exp])'	>> $CONFIG_M4
+	echo 'ADD_SNOBOL4_LDFLAGS([-bE:snobol4.exp])'	>> $CONFIG_M4
 	SO_EXT=.so
 	SO_LD=ld
 	SO_LDFLAGS='-bM:SRE -bnoentry'
@@ -1078,12 +1086,12 @@ if config/check 'sys/types.h sys/socket.h' ""; then
 	NETLIBS=
     elif config/check "$SOCKINC" "$SOCKFRAG" -lsocket; then
 	echo 'using sockets for TCP/IP support w/ -lsocket' 1>&2
-	echo 'ADD_LDFLAGS([-lsocket])'		>> $CONFIG_M4
+	echo 'ADD_SNOBOL4_LDFLAGS([-lsocket])'	>> $CONFIG_M4
 	NETLIBS=-lsocket
     elif config/check "$SOCKINC" "$SOCKFRAG" '-lsocket -lnsl'; then
 	echo 'using sockets for TCP/IP support w/ -lsocket & -lnsl' 1>&2
-	echo 'ADD_LDFLAGS([-lsocket])'		>> $CONFIG_M4
-	echo 'ADD_LDFLAGS([-lnsl])'		>> $CONFIG_M4
+	echo 'ADD_SNOBOL4_LDFLAGS([-lsocket])'	>> $CONFIG_M4
+	echo 'ADD_SNOBOL4_LDFLAGS([-lnsl])'	>> $CONFIG_M4
 	NETLIBS='-lsocket -lnsl'
     fi
 
@@ -1163,7 +1171,7 @@ if config/check "sys/types.h libutil.h" "$FORKPTY" -lutil; then
     # FreeBSD
     echo 'using forkpty() with libutil.h and -lutil' 1>&2
     echo '#define HAVE_LIBUTIL_H'	>> $CONFIG_H
-    echo "ADD_LDFLAGS([-lutil])"	>> $CONFIG_M4
+    echo "ADD_SNOBOL4_LDFLAGS([-lutil])" >> $CONFIG_M4
     NEED_PATHS_H=1
     HAVE_FORKPTY=1
 elif config/check "sys/types.h util.h" "$FORKPTY"; then
@@ -1176,14 +1184,14 @@ elif config/check "sys/types.h util.h" "$FORKPTY" -lutil; then
     # NetBSD, OpenBSD
     echo 'using forkpty() with util.h and -lutil' 1>&2
     echo '#define HAVE_UTIL_H'		>> $CONFIG_H
-    echo "ADD_LDFLAGS([-lutil])"	>> $CONFIG_M4
+    echo "ADD_SNOBOL4_LDFLAGS([-lutil])" >> $CONFIG_M4
     NEED_PATHS_H=1
     HAVE_FORKPTY=1
 elif config/check "sys/types.h pty.h" "$FORKPTY" -lutil; then
     # Linux
     echo 'using forkpty() with pty.h and -lutil' 1>&2
     echo '#define HAVE_PTY_H'		>> $CONFIG_H
-    echo "ADD_LDFLAGS([-lutil])"	>> $CONFIG_M4
+    echo "ADD_SNOBOL4_LDFLAGS([-lutil])" >> $CONFIG_M4
     NEED_PATHS_H=1
     HAVE_FORKPTY=1
 elif config/check 'fcntl.h stdlib.h' 'int fd = posix_openpt(O_RDWR|O_NOCTTY); int x = grantpt(fd), y = unlockpt(fd); char *name = ptsname(fd)'; then
@@ -1334,9 +1342,9 @@ if config/check dlfcn.h 'dlopen("", 0)' || \
 	    # darwin dlopen() support in cctools/libdyld??
 	    if [ -f /usr/lib/libdl.dylib ]; then
 		# Darwin 7.9 (OS X 10.3) and later??
-		echo 'ADD_LDFLAGS([-ldl])'	>> $CONFIG_M4
+		echo 'ADD_SNOBOL4_LDFLAGS([-ldl])' >> $CONFIG_M4
 	    elif [ -f /sw/lib/libdl.dylib ]; then
-		echo 'ADD_LDFLAGS([-L/sw/lib -ldl])' >> $CONFIG_M4
+		echo 'ADD_SNOBOL4_LDFLAGS([-L/sw/lib -ldl])' >> $CONFIG_M4
 	    fi
 	    TRY_UNDERSCORE=true
 	    ;;
@@ -1353,18 +1361,18 @@ if config/check dlfcn.h 'dlopen("", 0)' || \
 	    ;;
 	Linux*)
 	    # XXX detect a.out systems?
-	    echo 'ADD_LDFLAGS([-ldl])'		>> $CONFIG_M4
+	    echo 'ADD_SNOBOL4_LDFLAGS([-ldl])'	>> $CONFIG_M4
 	    # only on ELF systems with GNU ld
 	    # (make all symbols visible to dynamically loaded code)
 	    SNOBOL4_LDFLAGS=-rdynamic
 	    ;;
 	SunOS4*)
-	    echo 'ADD_LDFLAGS([-ldl])'		>> $CONFIG_M4
+	    echo 'ADD_SNOBOL4_LDFLAGS([-ldl])'	>> $CONFIG_M4
 	    # a.out system; need underscore
 	    TRY_UNDERSCORE=true
 	    ;;
 	SunOS5*)
-	    echo 'ADD_LDFLAGS([-ldl])'		>> $CONFIG_M4
+	    echo 'ADD_SNOBOL4_LDFLAGS([-ldl])'	>> $CONFIG_M4
 	    ;;
 	esac
 	if [ "$TRY_UNDERSCORE" ]; then
@@ -1376,8 +1384,8 @@ elif config/check dl.h 'shl_load("", BIND_DEFERRED, 0L)'; then
 	echo 'undefine([hpux])'			>> $CONFIG_M4
 	echo 'LOAD_C=$(SRCDIR)lib/hpux/load.c'	>> $CONFIG_M4
 	# export all symbols
-	echo 'ADD_LDFLAGS([-Wl,-E])'		>> $CONFIG_M4
-	echo 'ADD_LDFLAGS([-ldld])'		>> $CONFIG_M4
+	echo 'ADD_SNOBOL4_LDFLAGS([-Wl,-E])'	>> $CONFIG_M4
+	echo 'ADD_SNOBOL4_LDFLAGS([-ldld])'	>> $CONFIG_M4
 elif config/check mach-o/dyld.h 'NSObjectFileImage ofi'; then
 	LOAD=next
 	echo 'using NextStep/Darwin LOAD() support' 1>&2
@@ -1586,7 +1594,7 @@ if [ ! "$WITHOUT_READLINE" ]; then
 	echo "using readline (with $RL_LIBS)" 1>&2
 	echo '#define HAVE_READLINE'		>> $CONFIG_H
 	echo "	READLINE_LDFLAGS = '$RL_LIBS'" >> $CONFIG_SNO
-	echo "ADD_LDFLAGS([$RL_LIBS])"		>> $CONFIG_M4
+	echo "ADD_SNOBOL4_LDFLAGS([$RL_LIBS])"	>> $CONFIG_M4
 	if [ "x$RL_INCDIR" != x ]; then
 	    echo "ADD_CPPFLAGS([-I$RL_INCDIR])"	>> $CONFIG_M4
 	    echo "	READLINE_INCLUDE = '$RL_INCDIR'" >> $CONFIG_SNO
@@ -1606,7 +1614,7 @@ fi
 if config/check zlib.h 'z_stream z; inflate(&z, Z_NO_FLUSH)' -lz; then
     echo 'using zlib to read/write .gz format files' 1>&2
     echo '#define USE_ZLIB'			>> $CONFIG_H
-    echo 'ADD_LDFLAGS([-lz])'			>> $CONFIG_M4
+    echo 'ADD_SNOBOL4_LDFLAGS([-lz])'		>> $CONFIG_M4
     NEED_COMPIO=1
     NEED_BUFIO=1
     HAVE_ZLIB=1
@@ -1616,7 +1624,7 @@ fi
 if config/check bzlib.h 'bz_stream bz; BZ2_bzCompressInit(&bz,5,0,0)' -lbz2; then
     echo 'using bzlib to read/write .bz2 format files' 1>&2
     echo '#define USE_BZLIB'			>> $CONFIG_H
-    echo 'ADD_LDFLAGS([-lbz2])'			>> $CONFIG_M4
+    echo 'ADD_SNOBOL4_LDFLAGS([-lbz2])'		>> $CONFIG_M4
     NEED_COMPIO=1
     NEED_BUFIO=1
 fi
@@ -1626,7 +1634,7 @@ if config/check lzma.h \
 	'lzma_stream lz; int x = lzma_code(&lz, LZMA_RUN)' -llzma; then
     echo 'using lzmalib to read/write .xz format files' 1>&2
     echo '#define USE_LZMA'			>> $CONFIG_H
-    echo 'ADD_LDFLAGS([-llzma])'		>> $CONFIG_M4
+    echo 'ADD_SNOBOL4_LDFLAGS([-llzma])'	>> $CONFIG_M4
     NEED_COMPIO=1
     NEED_BUFIO=1
 fi
@@ -2016,6 +2024,7 @@ if [ "x$INITIAL_CFLAGS" != x ]; then
 	 esac
      done
 fi
+# C preprocessor flags (not C++ flags) [make uses as the latter?]
 if [ "$CPPFLAGS" ]; then
     # stolen from getconf handling... make into function?
     echo 'using CPPFLAGS environment variable' 1>&2
@@ -2036,12 +2045,11 @@ if [ "$CPPFLAGS" ]; then
 	esac
     done
 fi
-if [ "$LDFLAGS" ]; then
-	echo 'using LDFLAGS environment variable' 1>&2
+if [ "x$LDFLAGS" != x ]; then
 	echo 'ADD_LDFLAGS(['$LDFLAGS'])'	>> $CONFIG_M4
 fi
 if [ "x$LIBRT" != x ]; then
-	echo 'ADD_LDFLAGS(['$LIBRT'])'		>> $CONFIG_M4
+	echo 'ADD_SNOBOL4_LDFLAGS(['$LIBRT'])'	>> $CONFIG_M4
 fi
 ## check if pow() available? use dummy/expops.c if not?
 
