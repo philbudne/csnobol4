@@ -152,3 +152,6 @@ struct io_obj *inetio_open(const char *path, int flags, int dir);
 #ifdef OSDEPIO_OBJ
 struct io_obj *osdepio_open(const char *path, int flags, int dir);
 #endif
+#ifdef TLS_IO
+struct io_obj *tlsio_open(const char *path, int flags, int dir);
+#endif

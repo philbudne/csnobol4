@@ -14,9 +14,8 @@
 #include "config.h"
 #endif
 
-#include <stdlib.h>		       /* before stdio(?) */
+#include <stdlib.h>			/* before stdio(?) */
 #include <stdio.h>
-#include <string.h>
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>			/* SEEK_xxx, xxx_FILENO */
@@ -29,6 +28,7 @@
 #include "io_obj.h"			/* struct io_obj, io_ops, MAKEOPS */
 #include "inet.h"			/* {tcp,udp}_socket */
 #include "lib.h"			/* tty_mode */
+#include "str.h"
 #include "stdio_obj.h"			/* MAXMODE, our own prototypes! */
 
 #ifdef SIGINT_EOF_CHECK
@@ -374,9 +374,9 @@ stdio_open(const char *path,
 	}
 
 	if (path[1] == 'u')
-	    s = udp_socket( host, service, -1, inet_flags );
+	    s = udp_socket(host, service, -1, inet_flags);
 	else
-	    s = tcp_socket( host, service, -1, inet_flags );
+	    s = tcp_socket(host, service, -1, inet_flags);
 
 	free(fn2);			/* free strdup'ed memory */
 

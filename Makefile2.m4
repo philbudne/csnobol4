@@ -98,6 +98,7 @@ STREAM_C=$(SRCDIR)lib/stream.c
 SUSPEND_C=$(SRCDIR)lib/posix/suspend.c
 STR_C=$(SRCDIR)lib/str.c
 TERM_C=$(SRCDIR)lib/posix/term.c
+TLSIO_OBJ_C=$(SRCDIR)lib/openssl/tlsio_obj.c
 TOP_C=$(SRCDIR)lib/top.c
 TREE_C=$(SRCDIR)lib/tree.c
 TTY_C=$(SRCDIR)lib/posix/tty.c
@@ -518,6 +519,9 @@ tty.o:	$(TTY_C)
 
 ptyio_obj.o: $(PTYIO_OBJ_C)
 	$(CC) $(CFLAGS) -c $(PTYIO_OBJ_C)
+
+tlsio_obj.o: $(TLSIO_OBJ_C)
+	$(CC) $(CFLAGS) -c $(TLSIO_OBJ_C)
 
 #################
 # aux files -- porting aids not used in all builds;

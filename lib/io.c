@@ -122,6 +122,9 @@ static struct io_obj *(*const io_open_funcs[])(const char *fname,
 #ifdef INET_IO
     inetio_open,			/* e.g. winsockets */
 #endif
+#ifdef TLS_IO
+    tlsio_open,
+#endif
     stdio_open				/* LAST! Never returns NOMATCH!! */
 };
 #define N_OPEN_FUNCS (sizeof(io_open_funcs)/sizeof(io_open_funcs[0]))

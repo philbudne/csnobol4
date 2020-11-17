@@ -1161,6 +1161,18 @@ if config/check 'sys/types.h sys/socket.h' ""; then
 	    echo '#define vfork fork'		>> $CONFIG_H
 	fi
     fi
+
+    if config/check 'openssl/ssl.h openssl/bio.h' \
+		    'BIO_new_ssl(SSL_CTX_new(0), 1)' \
+		    '-lssl -lcrypto'; then
+	echo 'using OpenSSL BIO API for TLS I/O' 1>&2
+	# XXX test if OpenSSL (or some other API) available!!!
+	echo 'TLSIO_OBJ_C=$(SRCDIR)lib/openssl/tlsio_obj.c' >> $CONFIG_M4
+	echo 'ADD_OBJS([tlsio_obj.o])'		>> $CONFIG_M4
+	echo 'ADD_SRCS([$(TLSIO_OBJ_C)])'	>> $CONFIG_M4   
+	echo '#define TLS_IO'			>> $CONFIG_H
+	echo 'ADD_SNOBOL4_LDFLAGS([-lssl -lcrypto])' >> $CONFIG_M4
+    fi
 else
     echo 'no sockets; TCP not available' 1>&2
     echo 'INET_C=$(SRCDIR)lib/dummy/inet.c'	>> $CONFIG_M4

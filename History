@@ -2,6 +2,18 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/17/2020:
+	Implement TLS I/O
+	Makefile2.m4: add TLSIO_OBJ_C default, tlsio_obj.o rule
+	configure: check for openssl/bio.h & ssl.h, enable TLS_IO
+	include/inet.h: add argument names
+	include/io_obj.h: add tlsio_open()
+	lib/io.c: add tlsio_open call if TLS_IO defined
+	lib/stdio_obj.c: switch to str.h
+	lib/bsd/inet(6).c: fix inet_socket args
+	lib/dummy/inet.c: fix tcp/udp_socket flags arg
+	lib/openssl/tls_io.c (new)
+
 11/15/2020:
 	Eliminate module warnings:
 	modules/base64/base64.c

@@ -2,19 +2,19 @@ $Id$
 
 ================ 2.2
 
-setuputil "make"
-	run make w/ MOD= (& SRC=)
+document digest module, TLS I/O
 
-write tests for compressed I/O
+setuputil "make"; run Makefile.mod w/ MOD= (& SRC=) args?
+	or use FILE_NEWER?!!
+
+TLS:
+	add inet flags to enable old protocol(s), disable cert verification
+
+write tests for compressed, (TLS?) I/O
 
 update README, CHANGELOG
 
 flush os_find_symbol stash (& bsd/load.c?)
-
-zlib module:
-	ZLIB_(UN)COMPRESS, ADLER32, CRC32
-
-document digest module
 
 cvs rm test/ndbm.sno test/random.sno test/sleep.sno test/time.sno
 

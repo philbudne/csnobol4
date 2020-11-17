@@ -36,7 +36,7 @@
 
 /* NOTE!! Ignores "port" arg!! */
 static sock_t
-inet_socket(char *host, char *service, int type, int flags, int port) {
+inet_socket(char *host, char *service, int port, int flags, int type) {
     struct addrinfo hint, *res0, *res;
     int yes = 1;
     int error;
@@ -56,10 +56,10 @@ inet_socket(char *host, char *service, int type, int flags, int port) {
 	;
 #endif /* FOLD_HOSTNAMES defined */
 
+    res0 = NULL;
     error = getaddrinfo(host, service, &hint, &res0);
     if (error)
 	return -1;
-
     s = -1;
     for (res = res0; res; res = res->ai_next) {
 	s = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
@@ -103,13 +103,13 @@ inet_socket(char *host, char *service, int type, int flags, int port) {
 /* NOTE!! Ignores "port" arg!! */
 sock_t
 tcp_socket(char *host, char *service, int port, int flags) {
-    return inet_socket( host, service, port, flags, SOCK_STREAM );
+    return inet_socket( host, service, SOCK_STREAM, port, flags);
 }
 
 /* NOTE!! Ignores "port" arg!! */
 sock_t
 udp_socket(char *host, char *service, int port, int flags) {
-    return inet_socket( host, service, port, flags, SOCK_DGRAM );
+    return inet_socket( host, service, SOCK_DGRAM, port, flags);
 }
 
 #ifndef INET_IO

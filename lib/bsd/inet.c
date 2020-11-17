@@ -42,7 +42,7 @@
 #endif /* INADDR_NONE not defined */
 
 static int
-inet_socket2(char *host, char *service, int type, int flags, int port) {
+inet_socket2(char *host, char *service, int type, int port, int flags) {
     struct hostent *hp;
     struct sockaddr_in sin;
     struct servent *sp;
@@ -133,8 +133,7 @@ inet_socket2(char *host, char *service, int type, int flags, int port) {
 }
 
 static int
-inet_socket(char *host, char *service,
-	    int port, int flags, int type) {
+inet_socket(char *host, char *service, int type, int port, int flags) {
     int s;
 
 #ifdef FOLD_HOSTNAMES
@@ -146,7 +145,7 @@ inet_socket(char *host, char *service,
 	;
 #endif /* FOLD_HOSTNAMES defined */
 
-    s = inet_socket2(host, service, port, flags, type );
+    s = inet_socket2(host, service, type, port, flags );
 
     return s;
 }
@@ -154,13 +153,13 @@ inet_socket(char *host, char *service,
 /* called from stdio_obj.c */
 int
 tcp_socket(char *host, char *service, int port, int flags) {
-    return inet_socket( host, service, port, flags, SOCK_STREAM );
+    return inet_socket( host, service, SOCK_STREAM, port, flags );
 }
 
 /* called from stdio_obj.c */
 int
 udp_socket(char *host, char *service, int port, int flags) {
-    return inet_socket( host, service, port, flags, SOCK_DGRAM );
+    return inet_socket( host, service, SOCK_DGRAM, port, flags);
 }
 
 void

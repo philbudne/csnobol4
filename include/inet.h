@@ -11,8 +11,8 @@
 #define SETSOCKOPT_ARG_CAST
 #endif
 
-sock_t tcp_socket(char *, char *, int, int);
-sock_t udp_socket(char *, char *, int, int);
+sock_t tcp_socket(char *host, char *service, int port, int flags);
+sock_t udp_socket(char *host, char *service, int port, int flags);
 void inet_cleanup(void);
 
 /*
