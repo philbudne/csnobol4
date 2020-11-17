@@ -9,6 +9,7 @@ Changes since 2.1.6 release;
 	Text input no longer limited by "record length" (K flag obsolete).
 	I/O code cleanup/refactor (wish list item since / last attempted 2002!)
 	    read/write gzip/bzip2/xz format compressed files.
+	    TLS (SSL) network connection I/O.
 	Switch back to less precise MSTIME (runtime) reports of JUST user time.
 	    This will effect timing reports.
 	All output unbuffered with -U option, or SNOBOL4UNBUFFERED set in env.
