@@ -36,7 +36,7 @@
 
 /* NOTE!! Ignores "port" arg!! */
 static sock_t
-inet_socket(char *host, char *service, int port, int flags, int type) {
+inet_socket(char *host, char *service, int type, int port, int flags) {
     struct addrinfo hint, *res0, *res;
     int yes = 1;
     int error;
