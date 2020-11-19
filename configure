@@ -433,7 +433,7 @@ gcc|clang|icc)
 
     # disable warnings enabled by default in code generated from SIL;
     # (unused-parameter enabled by -W(extra))
-    echo 'SNOBOL4_C_CFLAGS=-Wno-return-type -Wno-switch -Wno-unused-parameter' >> $CONFIG_M4
+    echo 'SNOBOL4_C_CFLAGS=-Wno-return-type -Wno-switch' >> $CONFIG_M4
 
     case "$MORV" in
     *:Darwin:*:*)
