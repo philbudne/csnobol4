@@ -79,6 +79,7 @@ DIGEST_INIT( LA_ALIST ) {
 	once = 1;
     }
 #endif
+    (void) nargs;
 
     if (!ctx)
 	RETFAIL;
@@ -111,6 +112,7 @@ DIGEST_INIT( LA_ALIST ) {
 lret_t
 DIGEST_UPDATE( LA_ALIST ) {
     EVP_MD_CTX *ctx = lookup_handle(&digest_handles, LA_HANDLE(0));
+    (void) nargs;
     if (!ctx) RETFAIL;
 #if OPENSSL_VERSION_NUMBER < 0x00907000L
     EVP_DigestUpdate(ctx, LA_STR_PTR(1), LA_STR_LEN(1)); /* void */
@@ -128,6 +130,7 @@ DIGEST_FINAL( LA_ALIST ) {
     unsigned int s;
     int ret;
 
+    (void) nargs;
     if (!ctx)
 	RETFAIL;
 
@@ -158,6 +161,7 @@ DIGEST_HEX( LA_ALIST ) {
     int i = LA_STR_LEN(0);
     unsigned char *cp = (unsigned char *)LA_STR_PTR(0);
     char *op = out;
+    (void) nargs;
     while (i-- > 0) {
 	sprintf(op, "%02x", *cp++);
 	op += 2;

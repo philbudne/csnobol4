@@ -68,6 +68,7 @@ GETTIMEOFDAY_( LA_ALIST ) {
     struct timeval tv;
 #endif
 
+    (void) nargs;
     if (!dp || LA_TYPE(0) < DATSTA || COUNT(dp) != TV_COUNT)
 	RETNULL;
     /* validate dp[TV_DESCR] */
@@ -144,6 +145,7 @@ lret_t
 LOCALTIME_( LA_ALIST ) {
     time_t t = LA_INT(0);
     struct tm *tmp = localtime(&t);
+    (void) nargs;
     if (LA_TYPE(1) < DATSTA || !tm2sno(tmp, LA_PTR(1)))
 	RETFAIL;
     RETNULL;
@@ -156,6 +158,7 @@ lret_t
 GMTIME_( LA_ALIST ) {
     time_t t = LA_INT(0);
     struct tm *tmp = gmtime(&t);
+    (void) nargs;
     if (!tm2sno(tmp, LA_PTR(1)))
 	RETFAIL;
     RETNULL;
@@ -171,6 +174,7 @@ STRFTIME( LA_ALIST ) {
     char output[1024];
     struct tm tm;
 
+    (void) nargs;
     getstring(LA_PTR(0), format, sizeof(format));
     if (!sno2tm(LA_PTR(1), &tm))
 	RETFAIL;
@@ -188,6 +192,7 @@ MKTIME( LA_ALIST ) {
     struct tm tm;
     time_t ret;
 
+    (void) nargs;
     if (!sno2tm(LA_PTR(0), &tm))
 	RETFAIL;
     ret = mktime(&tm);
@@ -202,6 +207,7 @@ MKTIME( LA_ALIST ) {
  */
 lret_t
 SLEEP( LA_ALIST ) {
+    (void) nargs;
     if (sleepf(LA_REAL(0)) < 0)
 	RETFAIL;			/* did not sleep full period */
     RETNULL;
@@ -218,6 +224,7 @@ STRPTIME_( LA_ALIST ) {
     char *ret;
     char *format;
     char *input = mgetstring(LA_PTR(0));
+    (void) nargs;
     if (!input)
 	RETFAIL;
     format = mgetstring(LA_PTR(1));
@@ -243,6 +250,7 @@ TIMEGM( LA_ALIST ) {
     struct tm tm;
     time_t ret;
 
+    (void) nargs;
     if (!sno2tm(LA_PTR(0), &tm))
 	RETFAIL;
     ret = timegm(&tm);

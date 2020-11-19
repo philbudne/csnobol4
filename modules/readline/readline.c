@@ -60,6 +60,7 @@ READLINE( LA_ALIST ) {
     char *prompt = mgetstring(LA_PTR(0));
 #ifdef HAVE_READLINE
     char *ret = readline(prompt);
+    (void) nargs;
     free(prompt);
     if (!ret)
 	RETFAIL;
@@ -101,6 +102,7 @@ ADD_HISTORY( LA_ALIST ) {
 #ifdef HAVE_READLINE
     char *line;
 
+    (void) nargs;
     line = mgetstring(LA_PTR(0));
     add_history(line);
     free(line);
@@ -126,6 +128,7 @@ HISTORY_EXPAND( LA_ALIST ) {
     char *exp;
     int ret;
 
+    (void) nargs;
     line = mgetstring(LA_PTR(0));
     ret = history_expand(line, &exp);
     if (ret < 0 || ret == 2)

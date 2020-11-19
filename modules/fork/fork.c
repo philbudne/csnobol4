@@ -59,6 +59,8 @@ lret_t
 FORK( LA_ALIST ) {
     pid_t pid;
 
+    (void) args;
+    (void) nargs;
     pid = fork();
     if (pid == -1)
 	RETFAIL;
@@ -96,6 +98,7 @@ WAITPID( LA_ALIST) {
     int status = 0;
     char str[512], *cp;
 
+    (void) nargs;
     wpid = -1;				/* default to any process (wait) */
     if (LA_TYPE(0) == I)
 	wpid = LA_INT(0);
@@ -157,6 +160,8 @@ WAITPID( LA_ALIST) {
 
 lret_t
 GETPID( LA_ALIST ) {
+    (void) args;
+    (void) nargs;
     RETINT(getpid());
 }
 
@@ -171,6 +176,8 @@ GETPID( LA_ALIST ) {
 
 lret_t
 GETPPID( LA_ALIST ) {
+    (void) args;
+    (void) nargs;
     RETINT(getppid());
 }
 

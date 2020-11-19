@@ -71,6 +71,7 @@ SQLITE3_OPEN( LA_ALIST ) {
     int ret = sqlite3_open(fname, &db);
     snohandle_t h;
 
+    (void) nargs;
     free(fname);
 
     if (ret != SQLITE_OK)
@@ -99,6 +100,7 @@ lret_t
 SQLITE3_CLOSE( LA_ALIST ) {
     snohandle_t h = LA_HANDLE(0);
     sqlite3 *db = lookup_handle(&sqlite3_dbs, h);
+    (void) nargs;
     if (!db)
 	RETFAIL;
 
@@ -121,6 +123,7 @@ SQLITE3_CLOSE( LA_ALIST ) {
 lret_t
 SQLITE3_ERRMSG( LA_ALIST ) {
     sqlite3 *db = lookup_handle(&sqlite3_dbs, LA_HANDLE(0));
+    (void) nargs;
     if (!db)
 	RETFAIL;
 
@@ -141,6 +144,7 @@ SQLITE3_ERRMSG( LA_ALIST ) {
 lret_t
 SQLITE3_LAST_INSERT_ROWID( LA_ALIST ) {
     sqlite3 *db = lookup_handle(&sqlite3_dbs, LA_HANDLE(0));
+    (void) nargs;
     if (!db)
 	RETFAIL;
 
@@ -180,6 +184,7 @@ SQLITE3_PREPARE( LA_ALIST ) {
     unsigned int arg;
     int ret;
 
+    (void) nargs;
     if (!db)
 	RETFAIL;
 
@@ -276,6 +281,7 @@ SQLITE3_BIND_ANY( LA_ALIST ) {
     int par = LA_INT(1);		/* parameter number */
     int ret;
 
+    (void) nargs;
     if (!st || nargs != 3)
 	RETFAIL;
 
@@ -335,6 +341,7 @@ SQLITE3_BIND_BLOB( LA_ALIST ) {
     int par = LA_INT(1);		/* parameter number */
     int ret;
 
+    (void) nargs;
     if (!st || nargs != 3)
 	RETFAIL;
 
@@ -377,6 +384,7 @@ SQLITE3_BIND_MANY( LA_ALIST ) {
     sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_HANDLE(0));
     unsigned int arg;
 
+    (void) nargs;
     if (!st)
 	RETFAIL;
 
@@ -431,6 +439,7 @@ lret_t
 SQLITE3_BIND_PARAMETER_COUNT( LA_ALIST ) {
     sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_HANDLE(0));
 
+    (void) nargs;
     if (st)
 	RETINT(sqlite3_bind_parameter_count(st));
     RETFAIL;
@@ -456,6 +465,7 @@ SQLITE3_BIND_PARAMETER_COUNT( LA_ALIST ) {
 lret_t
 SQLITE3_BIND_PARAMETER_NAME( LA_ALIST ) {
     sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_HANDLE(0));
+    (void) nargs;
     if (st)
 	RETSTR(sqlite3_bind_parameter_name(st, LA_INT(1)));
     RETFAIL;
@@ -484,6 +494,7 @@ SQLITE3_BIND_PARAMETER_INDEX( LA_ALIST ) {
     char *name;
     int ret;
 
+    (void) nargs;
     if (!st)
 	RETFAIL;
 
@@ -503,6 +514,7 @@ SQLITE3_STEP( LA_ALIST ) {
     sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_HANDLE(0));
     int val;
 
+    (void) nargs;
     if (!st)
 	RETFAIL;
 
@@ -527,6 +539,7 @@ lret_t
 SQLITE3_COLUMN_COUNT( LA_ALIST ) {
     sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_HANDLE(0));
 
+    (void) nargs;
     if (!st)
 	RETFAIL;
 
@@ -543,6 +556,7 @@ lret_t
 SQLITE3_COLUMN_NAME( LA_ALIST ) {
     sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_HANDLE(0));
 
+    (void) nargs;
     if (st)
 	RETSTR((char *)sqlite3_column_name(st, LA_INT(1)));
     RETFAIL;
@@ -557,6 +571,7 @@ SQLITE3_COLUMN_NAME( LA_ALIST ) {
 lret_t
 SQLITE3_COLUMN_TEXT( LA_ALIST ) {
     sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_HANDLE(0));
+    (void) nargs;
     if (st)
 	RETSTR((char *)sqlite3_column_text(st, LA_INT(1)));
     RETFAIL;
@@ -573,6 +588,7 @@ SQLITE3_COLUMN_VALUE( LA_ALIST ) {
     sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_HANDLE(0));
     int col = LA_INT(1);
 
+    (void) nargs;
     DEBUGF(("COLVAL: sth %ld stp %p col %d\n", LA_INT(0), st, col));
     if (!st)
 	RETFAIL;
@@ -610,6 +626,7 @@ lret_t
 SQLITE3_CLEAR_BINDINGS( LA_ALIST ) {
     sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_HANDLE(0));
 
+    (void) nargs;
     if (!st)
 	RETFAIL;
 
@@ -636,6 +653,7 @@ lret_t
 SQLITE3_RESET( LA_ALIST ) {
     sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_HANDLE(0));
 
+    (void) nargs;
     if (!st)
 	RETFAIL;
     if (sqlite3_reset(st) == SQLITE_OK)
@@ -659,6 +677,7 @@ SQLITE3_FINALIZE( LA_ALIST ) {
     snohandle_t h = LA_HANDLE(0);
     sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, h);
 
+    (void) nargs;
     if (!st)
 	RETFAIL;
 
@@ -697,6 +716,7 @@ SQLITE3_EXEC( LA_ALIST ) {
     char *sql;
     int ret;
 
+    (void) nargs;
     if (!db)
 	RETFAIL;
 

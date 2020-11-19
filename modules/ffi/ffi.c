@@ -165,6 +165,7 @@ FFI_PREP_CIF( LA_ALIST ) {
     int n = 0;
     int i;
 
+    (void) nargs;
     if (!cp || *cp != '(') goto fail;
 
     comma = cp + 1;			/* skip open paren */
@@ -260,6 +261,7 @@ FFI_CALL( LA_ALIST ) {
     int fail = 1;
     unsigned int i;
 
+    (void) nargs;
 #ifdef DEBUG_FFI
     printf("FFI_CALL %p %p\n", cpp, func);
 #endif
@@ -370,6 +372,7 @@ lret_t
 FFI_FREE_CIF( LA_ALIST ) {
     struct cifplus *cpp = lookup_handle(&ffi_cifplus, LA_HANDLE(0));
 
+    (void) nargs;
     if (!cpp)
 	RETFAIL;
 
@@ -410,6 +413,8 @@ FFI_DLOPEN( LA_ALIST ) {
 
     /* XXX should call out to load.c!!! */
     void *dl = dlopen(str, RTLD_LAZY);	/* XXX take mode arg??? */
+
+    (void) nargs;
     if (str) free(str);
     if (!dl) RETFAIL;
     h = new_handle2(&ffi_dlibs, dl, "ffi_dl", release_dl, modinst);
@@ -439,6 +444,8 @@ FFI_DLSYM( LA_ALIST ) {
     char *str;
     void *val;
     void *dl = NULL;
+
+    (void) nargs;
     if (LA_TYPE(0) == I)
 	dl = (void *)LA_INT(0);
 
@@ -469,6 +476,7 @@ FFI_DLSYM( LA_ALIST ) {
 lret_t
 FFI_DLCLOSE( LA_ALIST ) {
     void *dlp = lookup_handle(&ffi_dlibs, LA_HANDLE(0));
+    (void) nargs;
     if (!dlp)
 	RETFAIL;
     dlclose(dlp);
@@ -484,6 +492,8 @@ FFI_DLCLOSE( LA_ALIST ) {
  */
 lret_t
 FFI_RTLD_NEXT( LA_ALIST ) {
+    (void) args;
+    (void) nargs;
 #ifdef RTLD_NEXT
     RETINT((int_t)RTLD_NEXT);
 #else
@@ -503,6 +513,8 @@ FFI_RTLD_NEXT( LA_ALIST ) {
  */
 lret_t
 FFI_RTLD_DEFAULT( LA_ALIST ) {
+    (void) args;
+    (void) nargs;
     RETINT((int_t)RTLD_DEFAULT);
 }
 
@@ -513,6 +525,8 @@ FFI_RTLD_DEFAULT( LA_ALIST ) {
  */
 lret_t
 FFI_RTLD_SELF( LA_ALIST ) {
+    (void) args;
+    (void) nargs;
 #ifdef RTLD_SELF
     RETINT((int_t)RTLD_SELF);
 #else

@@ -114,6 +114,7 @@ STAT_( LA_ALIST ) {
     struct stat st;
     int ret;
 
+    (void) nargs;
     if (!dp || LA_TYPE(1) < DATSTA || COUNT(dp) != ST_COUNT)
 	RETFAIL;
 
@@ -140,6 +141,7 @@ LSTAT_( LA_ALIST ) {
     struct stat st;
     int ret;
 
+    (void) nargs;
     if (!dp || LA_TYPE(1) < DATSTA || COUNT(dp) != ST_COUNT)
 	RETFAIL;
 
@@ -166,6 +168,7 @@ FSTAT_( LA_ALIST ) {
     struct descr *dp = LA_PTR(1);
     struct stat st;
 
+    (void) nargs;
     if (!dp || LA_TYPE(1) < DATSTA || COUNT(dp) != ST_COUNT)
 	RETFAIL;
 

@@ -56,6 +56,7 @@ SPRINTF( LA_ALIST ) {
     char fmt[1024];			/* XXX */
     char buf[2048];			/* XXX */
 
+    (void) nargs;
     getstring(LA_PTR(0), fmt, sizeof(fmt));
     switch (LA_TYPE(1)) {
     case I:

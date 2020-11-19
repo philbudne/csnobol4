@@ -130,6 +130,7 @@ DBM_OPEN( LA_ALIST ) {
     int mode;
     DBM *f;
 
+    (void) nargs;
     cp = LA_STR_PTR(1);
     i = LA_STR_LEN(1);
     getstring(LA_PTR(2), modestr, sizeof(modestr));
@@ -191,6 +192,7 @@ DBM_OPEN( LA_ALIST ) {
 lret_t
 DBM_CLOSE( LA_ALIST ) {
     DBM *f = lookup_handle(&dbm_files, LA_HANDLE(0));
+    (void) nargs;
     if (!f)
 	RETFAIL;
 
@@ -229,6 +231,7 @@ DBM_STORE( LA_ALIST ) {
     int flags;
     int ret;
 
+    (void) nargs;
     if (!f)
 	RETFAIL;
 
@@ -268,6 +271,7 @@ lret_t
 DBM_FETCH( LA_ALIST ) {
     datum key, data;
     DBM *f = lookup_handle(&dbm_files, LA_HANDLE(0));
+    (void) nargs;
     if (!f)
 	RETFAIL;
 
@@ -303,6 +307,7 @@ DBM_DELETE( LA_ALIST ) {
     DBM *f = lookup_handle(&dbm_files, LA_HANDLE(0));
     int ret;
 
+    (void) nargs;
     if (!f)
 	RETFAIL;
 
@@ -336,6 +341,7 @@ lret_t
 DBM_FIRSTKEY( LA_ALIST ) {
     datum key;
     DBM *f = lookup_handle(&dbm_files, LA_HANDLE(0));
+    (void) nargs;
     if (!f)
 	RETFAIL;
 
@@ -358,6 +364,7 @@ lret_t
 DBM_NEXTKEY( LA_ALIST ) {
     datum key;
     DBM *f = lookup_handle(&dbm_files, LA_HANDLE(0));
+    (void) nargs;
     if (!f)
 	RETFAIL;
 
@@ -384,6 +391,7 @@ DBM_NEXTKEY( LA_ALIST ) {
 lret_t
 DBM_ERROR( LA_ALIST ) {
     DBM *f = lookup_handle(&dbm_files, LA_HANDLE(0));
+    (void) nargs;
     if (f && dbm_error(f))
 	RETNULL;
     RETFAIL;				/* fails if no error! */
@@ -404,6 +412,7 @@ DBM_ERROR( LA_ALIST ) {
 lret_t
 DBM_CLEARERR( LA_ALIST ) {
     DBM *f = lookup_handle(&dbm_files, LA_HANDLE(0));
+    (void) nargs;
     if (!f)
 	RETFAIL;
     dbm_clearerr(f);

@@ -43,6 +43,7 @@ ZLIB_COMPRESS( LA_ALIST ) {
     unsigned char *buf;
     int flush;
 
+    (void) nargs;
     bzero(&z, sizeof(z));
     z.avail_in = LA_STR_LEN(0);
     z.next_in = (unsigned char *)LA_STR_PTR(0);
@@ -105,6 +106,7 @@ ZLIB_UNCOMPRESS( LA_ALIST ) {
     unsigned char *buf;
     int flush;
 
+    (void) nargs;
     bzero(&z, sizeof(z));
     z.avail_in = LA_STR_LEN(0);
     z.next_in = (unsigned char *)LA_STR_PTR(0);
@@ -173,6 +175,7 @@ ZLIB_CRC32( LA_ALIST ) {
     int_t len = LA_STR_LEN(0);
     unsigned char *buf = (unsigned char *)LA_STR_PTR(0);
 
+    (void) nargs;
     if (LA_TYPE(1) == I)
 	val = LA_INT(1);
 
@@ -205,6 +208,7 @@ ZLIB_ADLER32( LA_ALIST ) {
     int_t len = LA_STR_LEN(0);
     unsigned char *buf = (unsigned char *)LA_STR_PTR(0);
 
+    (void) nargs;
     if (LA_TYPE(1) == I)
 	val = LA_INT(1);
 
