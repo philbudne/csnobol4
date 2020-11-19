@@ -21,6 +21,7 @@
 pmlret_t
 TAN( LA_ALIST ) {
     real_t ret = tan(LA_REAL(0));
+    (void) nargs;
     if (!REAL_ISFINITE(ret))
 	RETFAIL;
     RETREAL(ret);

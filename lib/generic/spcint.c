@@ -29,7 +29,7 @@
 int
 spcint(struct descr *dp, struct spec *sp) {
     char buffer[64];			/* ??? */
-    int_t len;
+    size_t len;
     char *cp;
     long l;
     char t;

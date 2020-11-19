@@ -20,5 +20,6 @@
 
 pmlret_t
 LOG( LA_ALIST ) {
+    (void) nargs;
     RETREAL( log( LA_REAL(0) ) );
 }

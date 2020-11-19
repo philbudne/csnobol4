@@ -112,7 +112,7 @@ const struct ffi_type_name {
     { RETSTRING, &ffi_type_pointer, 1 },
     { RETFREESTRING, &ffi_type_pointer, 1 },
     { "void", &ffi_type_void, 1 },
-    { NULL, NULL }
+    { NULL, NULL, 0 }
 };
 
 #ifdef DEBUG_FFI
@@ -258,7 +258,7 @@ FFI_CALL( LA_ALIST ) {
     } result;
     ffi_cif *cif;
     int fail = 1;
-    int i;
+    unsigned int i;
 
 #ifdef DEBUG_FFI
     printf("FFI_CALL %p %p\n", cpp, func);

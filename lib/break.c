@@ -36,6 +36,7 @@ chk_break(int x) {
     int stn = D_A(STNOCL);
     if (!breakpoints || stn > break_max || stn == 0)
 	return 0;
+    (void) x;
     /* XXX what to do with value?? could:
      * post-decrement if non-zero (limit number of hits)
      * if non-zero: pre-decrement, and return !value (pass count)
@@ -65,6 +66,7 @@ BREAKPOINT( LA_ALIST ) {
     int enab = LA_INT(1);
     int save;
 
+    (void) nargs;
     if (stn <= 0)
 	RETFAIL;
 

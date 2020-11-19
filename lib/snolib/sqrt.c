@@ -21,6 +21,7 @@ pmlret_t
 SQRT( LA_ALIST ) {
     real_t x;
 
+    (void) nargs;
     x = LA_REAL(0);
     if (x < 0) {
 	RETFAIL;

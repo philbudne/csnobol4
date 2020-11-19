@@ -29,6 +29,7 @@
 pmlret_t
 FILE2( LA_ALIST ) {			/* avoid stdio name collision */
     char *path = mgetstring(LA_PTR(0));
+    (void) nargs;
     int succ = exists(path);
     free(path);
     RETPRED(succ);
@@ -37,6 +38,7 @@ FILE2( LA_ALIST ) {			/* avoid stdio name collision */
 pmlret_t
 FILE_ISDIR( LA_ALIST ) {
     char *path = mgetstring(LA_PTR(0));
+    (void) nargs;
     int succ = isdir(path);
     free(path);
     RETPRED(succ);
@@ -45,6 +47,7 @@ FILE_ISDIR( LA_ALIST ) {
 pmlret_t
 FILE_ABSPATH( LA_ALIST ) {
     char *path = mgetstring(LA_PTR(0));
+    (void) nargs;
     int succ = abspath(path);
     free(path);
     RETPRED(succ);
@@ -56,6 +59,7 @@ FILE_NEWER( LA_ALIST ) {
     char *p1 = mgetstring(LA_PTR(0));
     char *p2 = mgetstring(LA_PTR(1));
     int ret = newer(p1, p2);
+    (void) nargs;
     free(p1);
     free(p2);
     RETINT(ret);

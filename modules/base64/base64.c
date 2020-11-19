@@ -153,7 +153,7 @@ csnobol4_b64_ntop(src, srclength, target, targsize)
 	size_t datalength = 0;
 	unsigned char input[3];
 	unsigned char output[4];
-	int i;
+	size_t i;
 
 	while (2 < srclength) {
 		input[0] = *src++;
@@ -217,7 +217,8 @@ csnobol4_b64_pton(src, srcsize, target, targsize)
 	unsigned char *target;
 	size_t targsize;
 {
-	int tarindex, state, ch;
+	size_t tarindex;
+	int state, ch;
 	unsigned char nextbyte;
 	char *pos;
 
@@ -364,6 +365,8 @@ BASE64_DECODE( LA_ALIST ) {
     size_t tsize = ((slen + 3) / 4) * 3;
     unsigned char *target = malloc(tsize);
     ssize_t ret = csnobol4_b64_pton(src, slen, target, tsize);
+
+    (void) nargs;
     if (ret < 0)
 	RETFAIL;
     RETSTR2_FREE((char *)target, ret);
@@ -381,6 +384,8 @@ BASE64_ENCODE( LA_ALIST ) {
     size_t tsize = 4 * ((slen + 2) / 3) + 1; /* extra room for NUL */
     char *target = malloc(tsize);
     ssize_t ret = csnobol4_b64_ntop(src, slen, target, tsize);
+    (void) nargs;
+
     if (ret < 0)
 	RETFAIL;
     RETSTR2_FREE(target, ret);

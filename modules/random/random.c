@@ -622,6 +622,8 @@ static int seeded = 0;			/* XXX VAR? TLS?? */
  */
 lret_t
 RANDOM( LA_ALIST ) {
+    (void) nargs;
+    (void) args;
     if (!seeded) {
 	bsd_srandom(1UL);
 	seeded = 1;
@@ -645,6 +647,7 @@ RANDOM( LA_ALIST ) {
  */
 lret_t
 SRANDOM( LA_ALIST ) {
+    (void) nargs;
     bsd_srandom(LA_INT(0));
     seeded = 1;
     RETNULL;
@@ -671,6 +674,8 @@ SRANDOM( LA_ALIST ) {
  */
 lret_t
 SRANDOMDEV( LA_ALIST ) {
+    (void) args;
+    (void) nargs;
     bsd_srandomdev();
     seeded = 1;
     RETNULL;

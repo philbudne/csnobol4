@@ -33,6 +33,7 @@ DELETE( LA_ALIST ) {
     char *path;
     int ret;
 
+    (void) nargs;
     path = mgetstring(LA_PTR(0));
     ret = unlink(path);
     free(path);

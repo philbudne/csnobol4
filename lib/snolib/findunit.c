@@ -21,6 +21,8 @@ pmlret_t
 IO_FINDUNIT( LA_ALIST ) {
     int i;
 
+    (void) args;
+    (void) nargs;
     i = io_findunit();			/* from lib/io.c */
     if (i < 0) {
 	RETFAIL;

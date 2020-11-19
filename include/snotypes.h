@@ -137,4 +137,4 @@ typedef int (*func_t)(ret_t);
 #define SMAXINT ((((unsigned INT_T)1)<<(sizeof(INT_T)*BPC-1))-1)
 
 /* here from load.h, for internal use w/o load.h */
-#define LOAD_PROTO struct descr *retval, int nargs, struct descr *args
+#define LOAD_PROTO struct descr *retval, unsigned nargs, struct descr *args

@@ -394,7 +394,7 @@ io_closeall(int unit) {			/* internal (zero-based unit) */
 static struct io_obj *
 io_fopen(struct file *fp,
 	 int dir) {			/* 'r' or 'w' */
-    int i;
+    unsigned int i;
     int flags = fp->flags;
 
     if (fp->compression) {

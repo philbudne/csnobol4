@@ -407,6 +407,7 @@ lzma_open(struct compio_obj *ciop) {
 
 static int
 compio_flush(struct io_obj *iop) {
+    (void) iop;
     return TRUE;			/* ??? */
 }
 
@@ -431,11 +432,15 @@ compio_read_raw(struct io_obj *iop, char *buf, size_t len) {
 
 static io_off_t
 compio_tello(struct io_obj *iop) {
+    (void) iop;
     return -1;
 }
 
 static int
 compio_seeko(struct io_obj *iop, io_off_t off, int whence) {
+    (void) iop;
+    (void) off;
+    (void) whence;
     return FALSE;
 }
 

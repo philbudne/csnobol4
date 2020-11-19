@@ -177,7 +177,7 @@ SQLITE3_PREPARE( LA_ALIST ) {
     sqlite3 *db = lookup_handle(&sqlite3_dbs, LA_HANDLE(0));
     sqlite3_stmt *st;
     snohandle_t sh;			/* stmt handle */
-    int arg;
+    unsigned int arg;
     int ret;
 
     if (!db)
@@ -375,7 +375,7 @@ SQLITE3_BIND_BLOB( LA_ALIST ) {
 lret_t
 SQLITE3_BIND_MANY( LA_ALIST ) {
     sqlite3_stmt *st = lookup_handle(&sqlite3_stmts, LA_HANDLE(0));
-    int arg;
+    unsigned int arg;
 
     if (!st)
 	RETFAIL;

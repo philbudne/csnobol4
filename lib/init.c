@@ -42,6 +42,10 @@
 #define SIGFUNC_ARG int sig
 #endif /* SIGFUNC_ARG not defined */
 
+#ifndef DISCARD_SIGFUNC_ARG
+#define DISCARD_SIGFUNC_ARG (void)sig
+#endif /* SIGFUNC_ARG not defined */
+
 #ifndef NDYNAMIC
 #define NDYNAMIC (512*1024)		/* default dynamic region size */
 #endif /* NDYNAMIC not defined */
@@ -281,6 +285,8 @@ pathinit(char *av0, int std_includes) {
 #ifdef HAVE_FIND_SNOLIB_DIRECTORY
     /* see if directories exist, if not, find via argv[0] */
     find_snolib_directory(av0, &snolib_vers, &snolib_vlib);
+#else
+    (void) av0;
 #endif
 
     /* local, version-specific */
@@ -549,6 +555,7 @@ math_catch(SIGFUNC_ARG) {
 #ifdef SIGOVER
     signal(SIGOVER, math_catch);
 #endif /* SIGOVER defined */
+    DISCARD_SIGFUNC_ARG;
 
     math_error = TRUE;
     /* XXX need to longjump out on some systems to avoid restarting insn? */
@@ -579,6 +586,8 @@ sig_catch(SIGFUNC_ARG) {
 #ifdef SIGTSTP
 static SIGFUNC_T
 suspend(SIGFUNC_ARG) {
+    DISCARD_SIGFUNC_ARG;
+
     tty_suspend();			/* restore tty mode(s) */
 
     /* reestablish handler (does any system with job control,
@@ -738,6 +747,8 @@ reg_cleanup(void (*func)(void)) {
     cp->next = cleanups;
     cp->func = func;
     cleanups = cp;
+#else
+    (void) func;
 #endif
 }
 

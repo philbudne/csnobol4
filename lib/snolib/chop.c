@@ -28,6 +28,7 @@
 pmlret_t
 CHOP( LA_ALIST ) {
     double x;
+    (void) nargs;
     x = LA_REAL(0);
     if (x >= 0) {
 	RETREAL( floor(x) );

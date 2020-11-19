@@ -27,6 +27,7 @@ RENAME( LA_ALIST ) {
     char *path2;
     int ret;
 
+    (void) nargs;
     path1 = mgetstring(LA_PTR(0));
     path2 = mgetstring(LA_PTR(1));
 

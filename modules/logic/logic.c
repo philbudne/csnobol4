@@ -109,10 +109,11 @@ LOGIC( LA_ALIST ) {
     int_t op = LA_INT(0);
     int a2type, a3type;
     u_int_t arg2, arg3;
-    int len, retlen;
+    size_t len, retlen;
     const unsigned char *cp;
     unsigned char *rp;
     unsigned char retbuf[MAXLEN];
+    (void) nargs;
 
     if (op < OP_MINOP || op > OP_MAXOP)
 	RETFAIL;

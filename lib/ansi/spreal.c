@@ -25,7 +25,7 @@
 int
 spreal(struct descr *dp, struct spec *sp) {
     char buffer[64];			/* ??? */
-    int len;
+    size_t len;
     char *cp;
     real_t temp;
 

@@ -136,7 +136,7 @@ SNOLOAD_API(void) retstring_free(struct descr *retval, const char *cp, int len);
  */
 
 /* lib/snolib/getstring.c; */
-SNOLOAD_API(void) getstring(const void *, char *, int); /* use mgetstring!! */
+SNOLOAD_API(void) getstring(const void *, char *, unsigned int); /* use mgetstring!! */
 SNOLOAD_API(char *) mgetstring(const void *); /* must free after use! */
 
 /* lib/io.c; */

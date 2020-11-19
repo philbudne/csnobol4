@@ -67,7 +67,7 @@ static ssize_t
 tlsio_getline(struct io_obj *iop) {
     struct tlsio_obj *tiop = (struct tlsio_obj *)iop;
     size_t bufsize;
-    ssize_t full = 0;
+    size_t full = 0;
     char *bp;
 
     if (!tiop->bio)
@@ -194,6 +194,7 @@ tlsio_open(const char *path,
     int inet_flags;
     int s;
 
+    (void) dir;
     if (strncmp(path, "/tls/", 5) != 0)
 	return NOMATCH;
 

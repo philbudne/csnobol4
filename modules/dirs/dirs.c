@@ -60,6 +60,7 @@ OPENDIR( LA_ALIST ) {
     DIR *d = opendir(fname);
     snohandle_t h;
 
+    (void) nargs;
     free(fname);
 
     if (!d)
@@ -90,6 +91,7 @@ READDIR( LA_ALIST ) {
     DIR *d = lookup_handle(&dir_handles, LA_HANDLE(0));
     struct dirent *dp;
 
+    (void) nargs;
     if (!d)
 	RETFAIL;
 
@@ -116,6 +118,7 @@ lret_t
 REWINDDIR( LA_ALIST ) {
     DIR *d = lookup_handle(&dir_handles, LA_HANDLE(0));
 
+    (void) nargs;
     if (!d)
 	RETFAIL;
     rewinddir(d);
@@ -139,6 +142,7 @@ lret_t
 TELLDIR( LA_ALIST ) {
     DIR *d = lookup_handle(&dir_handles, LA_HANDLE(0));
 
+    (void) nargs;
     if (!d)
 	RETFAIL;
     RETINT(telldir(d));
@@ -158,6 +162,8 @@ TELLDIR( LA_ALIST ) {
 lret_t
 SEEKDIR( LA_ALIST ) {
     DIR *d = lookup_handle(&dir_handles, LA_HANDLE(0));
+
+    (void) nargs;
     if (!d)
 	RETFAIL;
     seekdir(d, LA_INT(1));
@@ -181,6 +187,7 @@ CLOSEDIR( LA_ALIST ) {
     snohandle_t h = LA_HANDLE(0);
     DIR *d = lookup_handle(&dir_handles, LA_HANDLE(0));
 
+    (void) nargs;
     if (!d)
 	RETFAIL;
     remove_handle(&dir_handles, h);

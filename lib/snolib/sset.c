@@ -25,6 +25,7 @@ pmlret_t
 SSET( LA_ALIST ) {
     int_t unit, offset, whence, scale, oof;
 
+    (void) nargs;
     unit = LA_INT(0);
     offset = LA_INT(1);
     whence = LA_INT(2);

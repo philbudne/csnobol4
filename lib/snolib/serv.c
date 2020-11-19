@@ -53,6 +53,7 @@
 static SIGFUNC_T
 fireman(int sig) {			/* catch falling babies */
     int w;
+    (void) sig;
     while( wait(&w) > 0 )
 	;
     signal(SIGCHLD, fireman);
@@ -83,6 +84,7 @@ SERV_LISTEN( LA_ALIST ) {
     int type;
     int s;				/* "master" socket */
 
+    (void) nargs;
     getstring(LA_PTR(0), sfam, sizeof(sfam));
     getstring(LA_PTR(1), stype, sizeof(stype));
     getstring(LA_PTR(2), sserv, sizeof(sserv));

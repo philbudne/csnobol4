@@ -139,7 +139,8 @@ findact(enum action act, struct syntab *tp) {
 /* 10/28/93 */
 void
 clertb(struct syntab *tp, enum action act) {
-    int i, j;
+    unsigned int i;
+    int j;
     union {
 	long l;
 	char c[sizeof(long)];

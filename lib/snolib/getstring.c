@@ -16,7 +16,7 @@
 SNOLOAD_API(void)
 getstring(const void *vp,		/* pointer to "natural variable" */
 	  char *dp,
-	  int len) {
+	  unsigned int len) {
     size_t dlen;
     char *sp;
 

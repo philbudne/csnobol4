@@ -25,7 +25,7 @@
 
 int
 spcint(struct descr *dp, struct spec *sp) {
-    int_t len;
+    size_t len;
     char *cp;
     int_t temp;
     int signum;

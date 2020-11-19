@@ -31,6 +31,8 @@
 static ssize_t
 bufio_read_raw(struct io_obj *iop, char *buf, size_t len) {
     fprintf(stderr, "%s io_read_raw not overridden\n", iop->ops->io_name);
+    (void) buf;
+    (void) len;
     return -1;
 }
 
@@ -42,7 +44,7 @@ ioo_read_raw(struct bufio_obj *biop, char *buf, size_t len) {
 
     for (op = biop->io.ops; op; op = op->io_super) {
 	if (op->io_read_raw) {
-	    ret = (op->io_read_raw)(&biop->io, biop->buffer, biop->buflen);
+	    ret = (op->io_read_raw)(&biop->io, buf, len);
 	    if (ret < 0)
 		biop->eof = 1;
 	    return ret;
@@ -145,6 +147,8 @@ bufio_getline(struct io_obj *iop) {
 static ssize_t
 bufio_write(struct io_obj *iop, const char *buf, size_t len) {
     fprintf(stderr, "%s io_write not overridden\n", iop->ops->io_name);
+    (void) buf;
+    (void) len;
     return -1;
 }
 
@@ -152,6 +156,8 @@ static int
 bufio_seeko(struct io_obj *iop, io_off_t off, int whence) {
     struct bufio_obj *biop = (struct bufio_obj *) iop;
 
+    (void) off;
+    (void) whence;
     biop->count = 0;		     /* invalidate input buffer */
     return TRUE;
 }

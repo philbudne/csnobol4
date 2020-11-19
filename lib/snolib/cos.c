@@ -20,5 +20,6 @@
 
 pmlret_t
 COS( LA_ALIST ) {
+    (void) nargs;
     RETREAL( cos( LA_REAL(0) ) );
 }

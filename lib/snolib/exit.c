@@ -29,6 +29,8 @@ pmlret_t
 EXIT( LA_ALIST ) {
     char *str;
 
+    (void) retval;
+    (void) nargs;
     if (LA_TYPE(0) == S) {		/* EXIT("command") */
 	str = mgetstring(LA_PTR(0));
 	io_flushall(0);			/* flush output buffers */

@@ -20,5 +20,6 @@
 
 pmlret_t
 SIN( LA_ALIST ) {
+    (void) nargs;
     RETREAL( sin( LA_REAL(0) ) );
 }

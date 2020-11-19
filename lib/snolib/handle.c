@@ -254,6 +254,8 @@ int
 module_instance_init(struct module *mp) {
 #ifdef DEBUG_MODULES
     fprintf(stderr, "module_instance_init %s\n", mp->name);
+#else
+    (void) mp;
 #endif
 
     /*

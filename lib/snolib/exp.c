@@ -21,6 +21,7 @@
 pmlret_t
 EXP( LA_ALIST ) {
     real_t ret = exp(LA_REAL(0));
+    (void) nargs;
     if (!REAL_ISFINITE(ret))
 	RETFAIL;
     RETREAL(ret);

@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/18/2020:
+	LOTS: Quash -Wextra warnings
+	configure: add -Wno-unused-parameter
+
 11/17/2020:
 	Implement TLS I/O
 	Makefile2.m4: add TLSIO_OBJ_C default, tlsio_obj.o rule

@@ -20,6 +20,7 @@
 
 pmlret_t
 ORD( LA_ALIST ) {
+    (void) nargs;
     if (LA_PTR(0) == NULL || LA_STR_LEN(0) == 0)
 	RETFAIL;
     RETINT((unsigned char)*LA_STR_PTR(0));
