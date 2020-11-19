@@ -314,6 +314,7 @@ EXTERNAL_DATATYPE( LA_ALIST ) {
     struct descr *dp = LA_DESCR(0);
     struct lib *lp;
 
+    (void) nargs;
     if (!dp)
 	RETFAIL;
 
@@ -337,6 +338,7 @@ EXTERNAL_MODULE_NAME( LA_ALIST ) {
     struct descr *dp = LA_DESCR(0);
     struct lib *lp;
 
+    (void) nargs;
     if (!dp)
 	RETFAIL;
 
@@ -360,6 +362,7 @@ EXTERNAL_MODULE_PATH( LA_ALIST ) {
     struct descr *dp = LA_DESCR(0);
     struct lib *lp;
 
+    (void) nargs;
     if (!dp)
 	RETFAIL;
 

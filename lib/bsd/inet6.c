@@ -41,7 +41,8 @@ inet_socket(char *host, char *service, int type, int port, int flags) {
     int yes = 1;
     int error;
     sock_t s;
-
+ 
+    (void) port;
     if (!host || !service)
 	return -1;
 
