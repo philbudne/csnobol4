@@ -161,11 +161,11 @@ ZLIB_UNCOMPRESS( LA_ALIST ) {
 
 /*
 **=code
-**	B<ZLIB_CRC32(>I<string>B<)>
+**	B<ZLIB_CRC32(>I<string>[,I<starting_value>]B<)>
 **=ecode
 **=cut
 **=snobol4
-**	LOAD("ZLIB_CRC32(STRING)INTEGER", ZLIB_DL)
+**	LOAD("ZLIB_CRC32(STRING,)INTEGER", ZLIB_DL)
 **=cut
 */
 
@@ -198,7 +198,7 @@ ZLIB_CRC32( LA_ALIST ) {
 **=ecode
 **=cut
 **=snobol4
-**	LOAD("ZLIB_ADLER32(STRING)INTEGER", ZLIB_DL)
+**	LOAD("ZLIB_ADLER32(STRING,)INTEGER", ZLIB_DL)
 **=cut
 */
 
@@ -232,13 +232,22 @@ ZLIB_ADLER32( LA_ALIST ) {
 **
 **For compressed file I/O see B<snobol4io>(1).
 **
-**=sect COMPATIBILITY
-**L<http://tools.ietf.org/html/rfc1950> (zlib format),
-**L<http://tools.ietf.org/html/rfc1951> (deflate format),
-**L<http://tools.ietf.org/html/rfc1952> (gzip format)
+**B<ZLIB_COMPRESS> optional second argument is compression level, 0-9 or -1;
+**defaults to 6.
+**
+**B<ZLIB_UNCOMPRESS> optional second argument controls
+**(log2) window buffer size (and container format?).
+**Optional third argument
+**selects initial output buffer size (will be doubled as needed).
+**
+**B<ZLIB_CRC32> optional second argument is starting value
+**(for running CRC over multiple blocks of data), defaults to zero.
+**
+**B<ADLER_CRC32> optional second argument is starting value
+**(for running SUM over multiple blocks of data), defaults to one.
 **
 **=sect SEE ALSO
-**B<snobol4>(1), B<snobol4io>(1), L<http://zlib.net/>
+**B<snobol4>(1), B<snobol4io>(1), B<gzip>(1), B<zlib>(3), L<http://zlib.net/>
 **
 **=sect AUTHOR
 **Phil Budne
