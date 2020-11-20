@@ -1917,6 +1917,8 @@ inet_parse(char *path, char **hostp, char **servicep, int *inet_flagp) {
 		flags |= INET_KEEPALIVE;
 	    else if (strcmp(op, "nodelay") == 0)
 		flags |= INET_NODELAY;
+	    else if (strcmp(op, "verify") == 0)
+		flags |= INET_VERIFY;
 
 	    /* XXX more magic? non-booleans? linger?? */
 	} while (cp);

@@ -228,23 +228,46 @@ tlsio_open(const char *path,
 #else
     /* XXX check return: */
     tiop->ctx = SSL_CTX_new(TLS_client_method());
+    SSL_CTX_set_options(tiop->ctx,
+			SSL_OP_ALL |	/* "mostly harmless"? */
+			SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION |
+			SSL_OP_NO_SSLv2 |
+#ifdef SSL_OP_NO_COMPRESSION
+			SSL_OP_NO_COMPRESSION | /* not in 0.9.8b */
+#endif
+			0
+			);
     /*
-     * SSL_CTX_set_options(tiop->ctx, ....)
-     * possible flags:
-     * SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION
-     * SSL_OP_NO_SSLv2
-     * SSL_OP_NO_SSLv3
-     * SSL_OP_NO_COMPRESSION
-     *
-     * Enable trust chain verification:
-     * SSL_CTX_set_verify(tiop->ctx, SSL_VERIFY_PEER, NULL);
+     * also:
+     * SSL_OP_NO_SSLv3		in 0.9.7c
+     * SSL_OP_NO_TLSv1		in 0.9.7c
+     * SSL_OP_NO_TLSv1_1	in 1.0.2k
+     * SSL_OP_NO_TLSv1_2	in 1.0.2k
      */
+
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L /* new in 1.1.0 */
+    /* OpenSSL 1.1.0 released August, 25 2016 */
+    /* TLS SSLv3/TLS 1.0 EOL: June 30, 2018 */
+    /* TLS 1.1, 1.2 EOL: March 31, 2020 */
+    SSL_CTX_set_min_proto_version(tiop->ctx, TLS1_3_VERSION);
+    /*
+     *    SSL3_VERSION, TLS1_VERSION, TLS1_1_VERSION,
+     *    TLS1_2_VERSION, TLS1_3_VERSION
+     */
+#endif
+
+    /* Enable trust chain verification (unless disabled) */
+    if (inet_flags & INET_VERIFY)
+	SSL_CTX_set_verify(tiop->ctx, 
+			   SSL_VERIFY_PEER | SSL_VERIFY_FAIL_IF_NO_PEER_CERT,
+			   NULL);
+
     /* XXX check return: */
     tiop->bio = BIO_new_ssl(tiop->ctx, TRUE);	/* TRUE for client */
 
     /* XXX check return */
     BIO_push(tiop->bio, socket_bio);
-#endif
+#endif /* not plaintext test */
 
     /* XXX not if FL_BINARY set?! */
     /* XXX check return */

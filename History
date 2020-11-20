@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/19/2020:
+	Add inet "verify" option for TLS
+	tlsio_obj.c: add SSL_CTX_set_options, SSL_CTX_set_min_proto_version,
+		optional: SSL_CTX_set_verify
+
 11/18/2020:
 	LOTS: Quash -Wextra warnings
 	configure: add -Wno-unused-parameter
