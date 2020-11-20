@@ -2,13 +2,12 @@ $Id$
 
 ================ 2.2
 
-document digest module, TLS I/O
+document TLS I/O
 
 setuputil "make"; run Makefile.mod w/ MOD= (& SRC=) args?
 	or use FILE_NEWER?!!
 
-TLS:
-	add inet flags to enable old protocol(s), disable cert verification
+TLS: add inet flags to enable old protocol(s)?
 
 write tests for compressed, (TLS?) I/O
 
