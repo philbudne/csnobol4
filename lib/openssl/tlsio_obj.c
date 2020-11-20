@@ -232,11 +232,13 @@ tlsio_open(const char *path,
     /* XXX check return: */
     tiop->ctx = SSL_CTX_new(TLS_client_method());
     options = (SSL_OP_ALL |	/* "mostly harmless"? */
+#ifdef SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION
 	       SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION |
-	       SSL_OP_NO_SSLv2);
-#ifdef SSL_OP_NO_COMPRESSION
-    options |= SSL_OP_NO_COMPRESSION;	/* not in 0.9.8b */
 #endif
+#ifdef SSL_OP_NO_COMPRESSION
+	       SSL_OP_NO_COMPRESSION |	/* not in 0.9.8b */
+#endif
+	       SSL_OP_NO_SSLv2);
     SSL_CTX_set_options(tiop->ctx, options);
     /*
      * also:
