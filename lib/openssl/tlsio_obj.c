@@ -194,7 +194,9 @@ tlsio_open(const char *path,
     BIO *socket_bio;
     int inet_flags;
     long options;
+#if 0
     SSL *ssl;
+#endif
     int s;
 
     (void) dir;
@@ -273,7 +275,7 @@ tlsio_open(const char *path,
     SSL_set_connect_state(ssl);
     tiop->bio = BIO_new(BIO_f_ssl());
     BIO_set_ssl(tiop->bio, ssl, BIO_CLOSE);
-    /* X509_check_host handles SAN certs? */
+    /* need callback, X509_check_host handles SAN certs? */
 #else
     /* XXX check return: */
     tiop->bio = BIO_new_ssl(tiop->ctx, TRUE);	/* TRUE for client */
