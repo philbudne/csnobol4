@@ -243,8 +243,8 @@ ZLIB_ADLER32( LA_ALIST ) {
 **B<ZLIB_CRC32> optional second argument is starting value
 **(for running CRC over multiple blocks of data), defaults to zero.
 **
-**B<ADLER_CRC32> optional second argument is starting value
-**(for running SUM over multiple blocks of data), defaults to one.
+**B<ZLIB_ADLER32> optional second argument is starting value
+**(for running checksum over multiple blocks of data), defaults to one.
 **
 **=sect SEE ALSO
 **B<snobol4>(1), B<snobol4io>(1), B<gzip>(1), B<zlib>(3), L<http://zlib.net/>
