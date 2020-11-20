@@ -11,7 +11,7 @@
 #include <stdlib.h>			/* free */
 
 #include <openssl/evp.h>
-#include <openssl/opensslv.h>
+#include <openssl/opensslv.h>		/* OPENSSL_VERSION_NUMBER */
 
 #include "h.h"
 #include "equ.h"
@@ -29,6 +29,19 @@ SNOBOL4_MODULE(digest)
 static VAR handle_handle_t digest_handles;
 
 /*
+**=pea
+**=sect NAME
+**digest \- message digest library
+**=sect SYNOPSYS
+**=code
+**B<-INCLUDE 'digest.sno'>
+**	handle = B<DIGEST_INIT(>I<algorithm>B<)>
+**	B<DIGEST_UPDATE(>I<handle>,I<string>B<)>
+**	bytes = B<DIGEST_FINAL(>I<handle>B<)>
+**	string = B<DIGEST_HEX(>I<bytes>B<)>
+**	bytes = B<DIGEST(>I<algorithm>,I<string>B<)>
+**=ecode
+**=cut
 **=snobol4
 **	LOAD("DIGEST_INIT(STRING)EXTERNAL", DIGEST_DL)
 **	LOAD("DIGEST_UPDATE(EXTERNAL,STRING)STRING", DIGEST_DL)
@@ -178,4 +191,38 @@ DIGEST_HEX( LA_ALIST ) {
 *	DIGEST = DIGEST_FINAL(CTX)	:F(FRETURN)S(RETURN)
 *DIGEST.END
 *=cut
+*/
+
+/*
+**=pea
+**=sect DESCRIPTION
+**The digest module performs cryptographic Message Digest calculations.
+**
+**B<DIGEST_INIT> takes a digest algorithm name (as listed by
+B<openssl help>) and returns an opaque handle to an object.  Not all
+**algorithms are implemented by all versions of the openssl library.
+**Older algorithms have known collision weaknesses, Newer algorithms
+**(and longer hash outputs) are slower!
+**
+**B<DIGEST_UPDATE> incorporates the string into the hash.  Additional
+**calls should produce the same result as concatenating the input
+**strings to a single update call.
+**
+**B<DIGEST_FINAL> returns a string of binary bytes with the hash value
+**and deletes the object and handle.
+**
+**B<DIGEST_HEX> takes a string of binary bytes and returns a string
+**of lower case hex string.
+**
+**B<DIGEST> takes an algorithm name and a string to hash, and returns
+**binary bytes.
+**
+**See B<snobol4zlib>(3) for CRC32 and ADLER32 hash algorithms.
+**
+**=sect SEE ALSO
+**B<snobol4>(1), B<openssl>(1), B<snobol4zlib>(3).
+**
+**=sect AUTHOR
+**Phil Budne
+**=cut
 */
