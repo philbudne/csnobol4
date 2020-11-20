@@ -24,7 +24,7 @@ SNOBOL4_MODULE(zlib)
 /*
 **=pea
 **=sect NAME
-**zlib library compression
+**zlib \- compression/decompression library
 **=sect SYNOPSYS
 **=code
 **B<-INCLUDE 'zlib.sno'>
@@ -226,6 +226,7 @@ ZLIB_ADLER32( LA_ALIST ) {
 }
 
 /*
+**=pea
 **=sect DESCRIPTION
 **The zlib module implements direct (in memory) access to zlib compression
 **and checksum routines in the manner of the Python zlib module.
