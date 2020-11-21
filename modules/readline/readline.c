@@ -1,7 +1,7 @@
 /* $Id$ */
 
 /*
- * GNU readline() function
+ * GNU readline() function (or BSD libedit emulation)
  *
  * sdb depends on readline, and can't avoid the include,
  * so supply trivial functionality even if readline not available.
