@@ -165,7 +165,7 @@ zlib_open(struct compio_obj *ciop) {
 	int level = 6;			/* gzip default */
 	int err;
 	if (ciop->level >= '0' && ciop->level <= '9')
-	    level = ciop->level = '0';
+	    level = ciop->level - '0';	/* works for ASCII, EBCDIC */
 	err = deflateInit2(stream, level,
 			   8,		/* method: Z_DEFLATED */
 			   15 + 16,	/* window bits (see above) */

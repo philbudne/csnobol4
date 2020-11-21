@@ -1086,7 +1086,7 @@ io_options(char *op,			/* IN: options */
 #endif /* 0 */
 	    recl = 0;
 	    while (isdigit((unsigned char)*op)) {
-		recl = recl * 10 + *op - '0'; /* XXX works for ASCII */
+		recl = recl * 10 + *op - '0'; /* works for ASCII, EBDCIC */
 		op++;
 	    }
 	    break;
@@ -1127,6 +1127,8 @@ io_options(char *op,			/* IN: options */
 	    /* XXX complain? once?? */
 	    op++;
 	    break;			/* dead in 2.2 */
+
+	/* reserve 'M' for memory I/O (take input instead of filename?) */
 
 	case 'T':			/* SITBOL: "terminal" (no EOL) */
 	case 't':
@@ -1238,6 +1240,7 @@ io_openi(struct descr *dunit,		/* IN: unit */
     }
 
     if (recl && !(fp->flags & FL_BINARY)) {
+#if 0
 	static VAR char recl_ignored_warning = 0;
 	/* just once per run: have an environment variable suppress this?? */
 	if (!recl_ignored_warning) {
@@ -1245,6 +1248,7 @@ io_openi(struct descr *dunit,		/* IN: unit */
 		    recl, xunit);
 	    recl_ignored_warning = 1;
 	}
+#endif
 	recl = VLRECL;			/* Keep PUTIN from pre-allocating */
     }
 
