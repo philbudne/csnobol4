@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/20/2020:
+	doc/snobol4io.1.pea: add /tls
+	modules/digest/digest.c: add docs for snobol4digest.3
+
 11/19/2020:
 	Add inet "verify" option for TLS
 	tlsio_obj.c: add SSL_CTX_set_options, SSL_CTX_set_min_proto_version,
