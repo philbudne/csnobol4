@@ -199,7 +199,7 @@ DIGEST_HEX( LA_ALIST ) {
 **The digest module performs cryptographic Message Digest calculations.
 **
 **B<DIGEST_INIT> takes a digest algorithm name (as listed by
-B<openssl help>) and returns an opaque handle to an object.  Not all
+**B<openssl help>) and returns an opaque handle to an object.  Not all
 **algorithms are implemented by all versions of the openssl library.
 **Older algorithms have known collision weaknesses, Newer algorithms
 **(and longer hash outputs) are slower!
