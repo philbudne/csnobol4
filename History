@@ -3,7 +3,7 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 11/22/2020:
-	configure: change version to 2.2
+	configure: change version to 2.2-pre3
 	doc/snobol4io.1.pea: verify verbiage
 
 11/21/2020:
