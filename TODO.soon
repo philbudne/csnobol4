@@ -36,11 +36,8 @@ mem i/o:
     or MEMIO_OPEN???
     function to get output given unit number
 
-    open_memstream -- POSIX.1-2008
+    open_memstream -- POSIX.1-2008 (output only)
 	auxil/memio_obj.c -- need to allow expansion (caller must free)
-
-hashes:
-	md5, sha{1,224,256,384,512}sum
 
 JSON_ENCODE: take optional indent argument (pretty print)
 
