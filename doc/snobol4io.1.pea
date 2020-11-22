@@ -65,12 +65,14 @@ device entries exist.
 and B</tls/>I<hostname>/I<service>.
 B</tcp/>I<hostname>/I<service> can be used to open connection to a TCP
 server. B</udp/>I<hostname>/I<service> behaves similarly
-for UDP. B</tls/>I<hostname>/I<service> opens a TLS over TCP connection.
-Path can followed by a number of different slash separated flags:
+for UDP. B</tls/>I<hostname>/I<service> opens a TLS over TCP connection
+(NOTE! does not attempt to verify certificate unless "verify" option used,
+and even then does not handle SNI or SAN).
+Path can followed by a number of different slash separated options:
 =table 2i
 =row broadcast	Allow broadcast address (UDP only).
 =row dontroute	Enables routing bypass for outgoing messages.
-=row keepalive	Enables keeping connections alive.
+=row keepalive	Enables TCP connection keep alive messages.
 =row nodelay	Send TCP data without waiting.
 =row oobinline	Enables reception of out-of-band data in band.
 =row priv	Bind local port number under 1024 (if allowed).
