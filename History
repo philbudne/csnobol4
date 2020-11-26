@@ -2,12 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
-11/16/2020:
+11/26/2020:
 	lib/io.c: allow binary read less than full recl
 		Thanks to Burkhard Meißner!
 	lib/openssl/tlsio_obj.c: remove SSL_VERIFY_FAIL_IF_NO_PEER_CERT
 		(for server use?)
-
 
 11/25/2020:
 	modules/com/com.cpp: turn of DEBUG
