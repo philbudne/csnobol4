@@ -9,7 +9,7 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H defined */
 
-#define DEBUG
+//#define DEBUG
 
 #ifdef DEBUG
 #include <stdio.h>
@@ -98,7 +98,7 @@ COM_LOAD( LA_ALIST ) LA_DCL
 	hr = CoGetObject(progid,	// display name
 			NULL,		// BIND_OPTS*
 			IID_IUnknown, (void **)&punk);
-	DEBUGF(("CoGetObject hr %lx\n", hr));
+	DEBUGF(("CoGetObject hr %lx\n", (long)hr));
 	freeolestring(progid);
 	if (FAILED(hr))
 	    RETFAIL;
@@ -106,7 +106,7 @@ COM_LOAD( LA_ALIST ) LA_DCL
 	// See if it has a class factory
 	IClassFactory *pfact;
 	hr = punk->QueryInterface(IID_IClassFactory, (void **)&pfact);
-	DEBUGF(("QueryInterface hr %lx\n", hr));
+	DEBUGF(("QueryInterface hr %lx\n", (long)hr));
 	if (SUCCEEDED(hr)) {
 	    punk->Release();
 
@@ -114,7 +114,7 @@ COM_LOAD( LA_ALIST ) LA_DCL
 	    hr = pfact->CreateInstance(NULL,	// agregate object
 					IID_IUnknown,
 					(void **)&punk);
-	    DEBUGF(("CreateInstance hr %lx\n", hr));
+	    DEBUGF(("CreateInstance hr %lx\n", (long)hr));
 	    pfact->Release();
 	    if (FAILED(hr))
 		RETFAIL;
@@ -123,7 +123,7 @@ COM_LOAD( LA_ALIST ) LA_DCL
     else {
 	// lookup classid from program ID string
 	hr = CLSIDFromProgID(progid, &clsid);
-	DEBUGF(("CLSIDFromProgID hr %lx\n", hr));
+	DEBUGF(("CLSIDFromProgID hr %lx\n", (long)hr));
 	freeolestring(progid);
 	if (FAILED(hr))
 	    RETFAIL;
@@ -135,14 +135,14 @@ COM_LOAD( LA_ALIST ) LA_DCL
 			      CLSCTX_SERVER, // context
 			      IID_IUnknown, // interface identifier
 			      (void **)&punk); // out: interface pointer
-	DEBUGF(("CoCreateInstance hr %lx\n", hr));
+	DEBUGF(("CoCreateInstance hr %lx\n", (long)hr));
 	if (FAILED(hr))
 	    RETFAIL;
     }
 
     // get IDispatch (automation) interface pointer from IUnknown object
     hr = punk->QueryInterface(IID_IDispatch, (void **)&pdisp);
-    DEBUGF(("QueryInterface hr %lx\n", hr));
+    DEBUGF(("QueryInterface hr %lx\n", (long)hr));
 
     // undo AddRef performed by CoCreateInstance
     punk->Release();
@@ -320,7 +320,8 @@ COM_INVOKE( LA_ALIST ) LA_DCL
 			      1,		// name count
 			      LOCALE_SYSTEM_DEFAULT, // locale id
 			      &dispid);		// DISPID*
-    DEBUGF(("INVOKE GetIDsOfNames hr %lx dispid %lx\n", hr, dispid));
+    DEBUGF(("INVOKE GetIDsOfNames hr %lx dispid %lx\n",
+	    (long)hr, (long)dispid));
 
     freeolestring(name);
     if (FAILED(hr))
@@ -341,7 +342,7 @@ COM_INVOKE( LA_ALIST ) LA_DCL
 
 	// copy in reverse order
 	VARIANTARG* vp = dispparams.rgvarg;
-	for (int i = nargs-1; i > nargs-2; i--) {
+	for (unsigned i = nargs-1; i > nargs-2; i--) {
 	    descr_to_variant(LA_DESCR(i), vp); // XXX check return??
 	    vp++;
 	}
@@ -357,7 +358,7 @@ COM_INVOKE( LA_ALIST ) LA_DCL
 		       &result,		// VARIANT*
 		       NULL,		// EXCEPINFO*
 		       0);		// arg error pointer
-    DEBUGF(("INVOKE Invoke hr %lx\n", hr));
+    DEBUGF(("INVOKE Invoke hr %lx\n", (long)hr));
 
     // clean up argument array
     if (dispparams.cArgs) {
@@ -389,7 +390,8 @@ COM_GETPROP( LA_ALIST ) LA_DCL
     DISPID dispid= -1;
     hr = pdisp->GetIDsOfNames(IID_NULL, &name, 1,
 				LOCALE_SYSTEM_DEFAULT, &dispid);
-    DEBUGF(("GETPROP GetIDsOfNames hr %lx dispid %lx\n", hr, dispid));
+    DEBUGF(("GETPROP GetIDsOfNames hr %lx dispid %lx\n",
+	    (long)hr, (long)dispid));
     freeolestring(name);
     if (FAILED(hr))
 	RETFAIL;
@@ -409,7 +411,7 @@ COM_GETPROP( LA_ALIST ) LA_DCL
 
 	// copy in reverse order
 	VARIANTARG* vp = dispparams.rgvarg;
-	for (int i = nargs-1; i > nargs-2; i--) {
+	for (unsigned i = nargs-1; i > nargs-2; i--) {
 	    descr_to_variant(LA_DESCR(i), vp); // XXX check return??
 	    vp++;
 	}
@@ -437,7 +439,7 @@ COM_GETPROP( LA_ALIST ) LA_DCL
 	delete [] dispparams.rgvarg;
     }
 
-    DEBUGF(("GETPROP Invoke hr %lx\n", hr));
+    DEBUGF(("GETPROP Invoke hr %lx\n", (long)hr));
     if (FAILED(hr))
 	RETFAIL;
 

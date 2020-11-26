@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/25/2020:
+	modules/com/com.cpp: turn of DEBUG
+		try (again) to quiet format warnings
+
 *** 2.2-pre3 (tag REL_2_2_PRE3)
 
 11/22/2020:
