@@ -867,7 +867,7 @@ io_read(struct descr *dp, struct spec *sp) {	/* STREAD */
 		return IO_ERR;
 
 	    len = ioo_read_raw(iop, cp, recl);
-	    if (len == recl)
+	    if (len > 0)
 		break;
 	}
 #ifdef COMPILER_READLINE

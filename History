@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/16/2020:
+	lib/io.c: allow binary read less than full recl
+		Thanks to Burkhard Meißner!
+
 11/25/2020:
 	modules/com/com.cpp: turn of DEBUG
 		try (again) to quiet format warnings
