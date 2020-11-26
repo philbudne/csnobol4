@@ -265,9 +265,7 @@ tlsio_open(const char *path,
 
     /* Enable trust chain verification if requested */
     if (inet_flags & INET_VERIFY)
-	SSL_CTX_set_verify(tiop->ctx, 
-			   SSL_VERIFY_PEER | SSL_VERIFY_FAIL_IF_NO_PEER_CERT,
-			   NULL);
+	SSL_CTX_set_verify(tiop->ctx, SSL_VERIFY_PEER, NULL);
 
 #if 0
     ssl = SSL_new(tiop->ctx);
