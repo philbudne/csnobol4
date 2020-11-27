@@ -26,7 +26,7 @@
 * XXX allow /pathname and file://hostname/path?
 URL.OPEN
 	URL POS(0)
-+		((('http' | 'ftp') . URL.PROTO
++		((('http' | 'https' | 'ftp') . URL.PROTO
 +			'://'
 +			BREAK(':/') . URL.HOST
 +			((':' SPAN('0123456789') . URL.PORT) | '') |
@@ -42,6 +42,10 @@ URL.OPEN
 ****
 URL.OPEN.http
 	HTTP.OPEN(URL.NAME,URL.HOST,URL.FILE,URL.PORT)	:S(RETURN)F(FRETURN)
+
+****
+URL.OPEN.https
+	HTTPS.OPEN(URL.NAME,URL.HOST,URL.FILE,URL.PORT)	:S(RETURN)F(FRETURN)
 
 ****
 URL.OPEN.ftp
@@ -77,6 +81,7 @@ URL.CLOSE
 
 ****
 URL.CLOSE.http
+URL.CLOSE.https
 	HTTP.CLOSE(URL.NAME)				:(RETURN)
 ****
 URL.CLOSE.ftp
