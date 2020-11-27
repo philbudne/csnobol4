@@ -10,7 +10,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 		(for server use?)
 
 11/25/2020:
-	modules/com/com.cpp: turn of DEBUG
+	modules/com/com.cpp: turn off DEBUG
 		try (again) to quiet format warnings
 
 *** 2.2-pre3 (tag REL_2_2_PRE3)
