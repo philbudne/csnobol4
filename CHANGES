@@ -15,6 +15,7 @@ Changes since 2.1.6 release;
 	All output unbuffered with -U option, or SNOBOL4UNBUFFERED set in env.
 	Library files:
 	    json.sno -- JSON subset
+	    tcp.sno, http.sno, url.sno: support TLS, https, https URLs
 	Modules:
 	    base64 (new): base64 encode/decode.
 	    digest (new): Message Digest algorithms, using OpenSSL
@@ -23,6 +24,7 @@ Changes since 2.1.6 release;
 	       added "btime" (birth time), available on BSDs/MacOS/Cygwin/MSYS2
 	    time: GETTIMEOFDAY return now has TV_NSEC member
 	    zlib (new): (un)compress & checksum strings
+	    EXTERNAL_DATATYPE and EXTERNAL_MODULE_{NAME,PATH} functions
 	configure changes:
 	    --force-pml removed (must use modules)
 	    --without-modules added
