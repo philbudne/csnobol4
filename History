@@ -10,7 +10,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	snolib/{http,tcp,url}.sno: add https URL support
 	lib/io.c: allow binary read less than full recl
 		Thanks to Burkhard Meißner!
-	
+	lib/openssl/tlsio_obj.c: remove SSL_VERIFY_FAIL_IF_NO_PEER_CERT	
 		(for server use?)
 
 11/25/2020:
