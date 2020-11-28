@@ -2,11 +2,15 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/27/2020:
+	lib/openssl/tlsio_obj.c: TLS1_3_VERSION not in 1.1.0
+		found by Harald Arnesen on OpenBSD w/ LibreSSL
+
 11/26/2020:
 	snolib/{http,tcp,url}.sno: add https URL support
 	lib/io.c: allow binary read less than full recl
 		Thanks to Burkhard Meißner!
-	lib/openssl/tlsio_obj.c: remove SSL_VERIFY_FAIL_IF_NO_PEER_CERT
+	
 		(for server use?)
 
 11/25/2020:

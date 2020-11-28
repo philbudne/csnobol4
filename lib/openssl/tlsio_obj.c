@@ -252,16 +252,24 @@ tlsio_open(const char *path,
      * SSL_OP_NO_TLSv1_2	in 1.0.2k
      */
 
-#if OPENSSL_VERSION_NUMBER >= 0x10100000L /* new in 1.1.0 */
-    /* OpenSSL 1.1.0: August, 25 2016 */
-    /* SSLv3/TLS 1.0 EOL: June 30, 2018 */
-    /* TLS 1.1/TLS 1.2 EOL: March 31, 2020 */
-    SSL_CTX_set_min_proto_version(tiop->ctx, TLS1_3_VERSION);
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+    /*
+     * 2016-08-25 OpenSSL 1.1.0
+     * 2018-06-30 SSLv3/TLS 1.0 EOL
+     * 2018-09-11 TLS 1.3 in OpenSSL 1.1.1
+     * 2020-03-31 TLS 1.1/TLS 1.2 EOL
+     */
+#ifdef TLS1_3_VERSION
+#define MIN_TLS_VERSION TLS1_3_VERSION	/* new in 1.1.1 */
+#else
+#define MIN_TLS_VERSION TLS1_2_VERSION
+#endif
+    SSL_CTX_set_min_proto_version(tiop->ctx, MIN_TLS_VERSION); /* in 1.1.0 */
     /*
      *    SSL3_VERSION, TLS1_VERSION, TLS1_1_VERSION,
      *    TLS1_2_VERSION, TLS1_3_VERSION
      */
-#endif
+#endif /* OPENSSL_VERSION_NUMBER >= 0x10100000L */
 
     /* Enable trust chain verification if requested */
     if (inet_flags & INET_VERIFY)
