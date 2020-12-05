@@ -3,6 +3,11 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 12/5/2020:
+	modules/fork/fork.c, modules/sprintf/sprintf.c: fix NAME line
+
+*** 2.2 (tag REL_2_2)
+
+12/5/2020:
 	configure, lib/snolib/host.h: change version to 2.2
 
 11/30/2020:

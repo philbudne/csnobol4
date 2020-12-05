@@ -13,7 +13,7 @@
 /*
 **=pea
 **=sect NAME
-**snobol4sprintf - numeric formatting
+**snobol4sprintf \- numeric formatting
 **=sect SYNOPSYS
 **=code
 **-INCLUDE 'sprintf.sno'

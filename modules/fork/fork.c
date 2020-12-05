@@ -25,7 +25,7 @@ SNOBOL4_MODULE(fork)
 /*
 **=pea
 **=sect NAME
-**snobol4fork - POSIX fork for SNOBOL4
+**snobol4fork \- POSIX fork for SNOBOL4
 **=sect SYNOPSYS
 **=code
 **-INCLUDE 'fork.sno'
