@@ -83,6 +83,11 @@ if [ "$UNAME" ]; then
 			# mptable/acpi signatures may include hypervisor info:
 			egrep -i '^(cpu[0-9]*:|MPTable|acpi0:|bios0:|.*MHz)|vbox|xen' /var/run/dmesg.boot
 		fi
+		if [ -f /bin/kenv ]; then
+			echo ''
+			echo /bin/kenv:
+			/bin/kenv | grep ^smbios
+		fi
 		;;
 	HP-UX)
 		if [ -f /usr/bin/model ]; then

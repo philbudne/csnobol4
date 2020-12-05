@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/30/2020:
+	timing: add /bin/kenv for smbios on FreeBSD
+
 11/27/2020:
 	lib/openssl/tlsio_obj.c: TLS1_3_VERSION not in 1.1.0
 		found by Harald Arnesen on OpenBSD w/ LibreSSL
