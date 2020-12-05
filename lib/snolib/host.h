@@ -33,9 +33,9 @@
 **the B<uname>(3) library call, and may be different for the same
 **hardware when running different operating systems. Examples:
 **=break
-**\~\~\~\~B<amd64:FreeBSD 12.1-RELEASE-p1:CSNOBOL4B 2.1>
+**\~\~\~\~B<amd64:FreeBSD 12.1-RELEASE-p1:CSNOBOL4B 2.2>
 **=break
-**\~\~\~\~B<x86_64:Linux 5.4.0-12-generic:CSNOBOL4B 2.1>
+**\~\~\~\~B<x86_64:Linux 5.4.0-12-generic:CSNOBOL4B 2.2>
 **=cut
 */
 #define HOST_SYSINFO		""
