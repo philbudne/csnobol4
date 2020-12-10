@@ -721,9 +721,9 @@ install: snobol4 sdb timing.out $(GENERATED_DOCS) build_modules docs
 	$(INSTALL) sdb $(BINDIR)/sdb-$(VERS)
 	$(INSTALL) snopea $(BINDIR)/snopea-$(VERS)
 	rm -f $(BINDIR)/snobol4 $(BINDIR)/sdb $(BINDIR)/snopea
-	ln -s $(BINDIR)/snobol4-$(VERS) $(BINDIR)/snobol4
-	ln -s $(BINDIR)/sdb-$(VERS) $(BINDIR)/sdb
-	ln -s $(BINDIR)/snopea-$(VERS) $(BINDIR)/snopea
+	cd $(BINDIR) && ln -s snobol4-$(VERS) snobol4
+	cd $(BINDIR) && ln -s sdb-$(VERS) sdb
+	cd $(BINDIR) && ln -s snopea-$(VERS) snopea
 	$(INSTALL) -d $(MAN1DIR)
 	for F in $(GENERATED_DOCS_DOCDIR1); do \
 		$(INSTALL) -m 644 $$F $(MAN1DIR); \

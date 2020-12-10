@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/10/2020:
+	Makefile2.m4: create relative links, per FreeBSD port
+
 12/5/2020:
 	modules/fork/fork.c, modules/sprintf/sprintf.c: fix NAME line
 
