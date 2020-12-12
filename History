@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/12/2020:
+	Makefile: clean removes module .dll files
+
 12/10/2020:
 	Makefile2.m4: create relative links, per FreeBSD port
 

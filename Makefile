@@ -244,7 +244,7 @@ cleanmostly: tidy
 	rm -f $(DISP)
 	rm -rf timdir.*
 	cd modules; for m in [a-z]*; do \
-	    test -d $$m && (cd $$m; rm -f $$m.sno *.o *.so *.bundle *.3 *.html); \
+	    test -d $$m && (cd $$m; rm -f $$m.sno *.o *.so *.bundle *.dll *.3 *.html); \
 	done
 
 # clean as a freshly unpacked kit; remove binaries, timing;
