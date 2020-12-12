@@ -12,6 +12,11 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 		make OUT/debug depend on IN
 	modules/*/Makefile: add test_verbose
 	modules/base64/test.sno: remove /dev/tty output
+	configure Makefile2.m4: use for loop for module actions
+		pass PATH in for snobol4 binary
+		flush MODULES_GENERATED
+		copy xsnobol4 to snobol4 before module tests
+		add install_notiming
 
 12/10/2020:
 	Makefile2.m4: create relative links, per FreeBSD port

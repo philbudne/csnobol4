@@ -744,7 +744,9 @@ GENSNOLIB=host.sno config.sno
 
 SNOLIB_FILES=snolib/*.sno $(GENSNOLIB) $(MODULES_INCLUDE)
 
-install: snobol4 sdb build_all $(GENERATED_DOCS) build_modules docs
+install: snobol4 timing.out install_notiming
+
+install_notiming: snobol4 sdb build_all $(GENERATED_DOCS) build_modules docs
 	$(INSTALL) -d $(BINDIR)
 	$(INSTALL) $(INSTALL_BIN_FLAGS) snobol4 $(BINDIR)/snobol4-$(VERS)
 	$(INSTALL) sdb $(BINDIR)/sdb-$(VERS)
