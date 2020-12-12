@@ -432,7 +432,8 @@ setup.posix.testcmd.loop
 +	tests BREAK(',') . fn ',' =		:f(setup.posix.testcmd.done)
 	base = fn
 	base '.sno' =
-	setup.posix.system(snobol ' ' fn ' >' base '.tmp 2>/dev/null')
+	testerr = ident(setup.verbose) ' 2>/dev/null'
+	setup.posix.system(snobol ' ' fn ' >' base '.tmp' testerr)
 +						:f(setup.posix.testcmd.failed)
 	cmp(base '.tmp', base '.ref', 1)	:s(setup.posix.testcmd.ok)
 setup.posix.testcmd.failed

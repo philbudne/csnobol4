@@ -1,28 +1,32 @@
 # $Id$
-# invoked from module/X/Makefiles as ../Makefile.mod
+# invoked from module/X/Makefiles as "make -f ../Makefile.mod MOD=modname ..."
 
-# may be overriden on command line
+# may be overriden on command line; may be multiple files, incl. funcs.sno
 SRC=$(MOD).c
 
-# binary output extension may differ (so, dylib, dll)
+# binary output extension may differ (.so, .dylib, .dll)
 OUT=$(MOD).sno
 
 all:	$(OUT)
 
-INC=-N -I../.. -I../../snolib
-SNOBOL4?=../../xsnobol4
+INC=-N -I../.. -I../../snolib -I.
+SNOBOL4=snobol4
 SETUP=$(SNOBOL4) $(INC) setup.sno $(SETUPOPT)
 
-$(OUT): setup.sno $(SRC) ../../snolib/setuputil.sno $(SNOBOL4) ../../config.sno
+# removed ../../config.sno and ../../host.sno
+# to allow FreeBSD ports for individual modules
+IN=setup.sno $(SRC) ../../snolib/setuputil.sno
+$(OUT):	$(IN)
 	$(SETUP) build
 
-debug:
+debug:	$(IN)
 	$(SETUP) -d -v build
-
-
 
 test:	$(OUT)
 	$(SETUP) test
+
+test_verbose: $(OUT)
+	$(SETUP) -v test
 
 install: $(OUT)
 	$(SETUP) install

@@ -1,17 +1,16 @@
 -include 'base64.sno'
 
-	output(.tt, 10, 't', '/dev/tty')
 * uncomment for trace:
-*	output(.debug, 11,, '/dev/tty')
-
 	define('t(x)d,e')				:(et)
 t	total = total + 1
 	debug = x
 	debug = e = base64_encode(x)			:f(ef)
 	debug = d = base64_decode(e)			:f(df)
-	tt = ident(x, d) '.'				:s(return)
+	ident(x,d)					:(return)
 	errors = errors + 1
-	output = 'in: ' x ' enc: ' e ' dec: ' d		:(freturn)
+	terminal = 'in:  ' x
+	terminal = 'enc: ' e
+	terminal = 'dec: ' d				:(freturn)
 
 ef	output = 'encode failed: ' x			:(freturn)
 df	output = 'decode failed: ' e			:(freturn)

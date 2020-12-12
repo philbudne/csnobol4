@@ -2116,16 +2116,14 @@ fi
 ################################
 # should be last thing done;
 
-# SunOS make doesn't have ?=
-case "$MORV" in
-*:SunOS:5*:*) MODSNO="SNOBOL4=../../xsnobol4";;
-esac
-
 BUILD_DL=
 BUILD_INC=
+
+# build a SNOPATH that includes all module dirs, for module tests
+# (allow module tests to use other modules)
 # for host.sno:
 TEST_SNOPATH=..
-echo 'RUNSETUP=SNOLIB=$(SNOLIB) SNOPATH=../..:../../snolib ../../xsnobol4 -N setup.sno' >> $CONFIG_M4
+#
 for M in $MODULES; do
     TEST_SNOPATH="$TEST_SNOPATH:../modules/$M"
 done
@@ -2134,25 +2132,30 @@ echo ''						>> $CONFIG_M4
 echo "MODULES=$MODULES"				>> $CONFIG_M4
 echo "TEST_SNOPATH=$TEST_SNOPATH"		>> $CONFIG_M4
 echo ''						>> $CONFIG_M4
+echo 'SNOBIN=../..' >> $CONFIG_M4
+
+RUNMAKE="PATH=\$(SNOBIN):\$\$PATH \$(MAKE)"
 echo 'clean_modules:'				>> $CONFIG_M4
-# FreeBSD 3.2 make does not have -C!
+# FreeBSD 3.2 make does not have -C
+# NOTE!! modern FreeBSD make (bmake) executes multiple commands
+# in same shell (and in parallel).  Port uses gmake!
 for M in $MODULES; do
-    echo "	cd modules/$M; \$(MAKE) clean $MODSNO" >> $CONFIG_M4
+    echo "	cd modules/$M; $RUNMAKE clean" >> $CONFIG_M4
 done
 echo ''						>> $CONFIG_M4
-echo 'build_modules:'				>> $CONFIG_M4
+echo 'build_modules: snobol4'			>> $CONFIG_M4
 for M in $MODULES; do
-    echo "	cd modules/$M; \$(MAKE) all $MODSNO" >> $CONFIG_M4
+    echo "	cd modules/$M; $RUNMAKE all"	>> $CONFIG_M4
 done
 echo ''						>> $CONFIG_M4
-echo 'install_modules:'				>> $CONFIG_M4
+echo 'install_modules: snobol4'			>> $CONFIG_M4
 for M in $MODULES; do
-    echo "	cd modules/$M; \$(MAKE) install $MODSNO" >> $CONFIG_M4
+    echo "	cd modules/$M; $RUNMAKE install" >> $CONFIG_M4
 done
 echo ''						>> $CONFIG_M4
-echo 'test_modules:'				>> $CONFIG_M4
+echo 'test_modules: snobol4'			>> $CONFIG_M4
 for M in $MODULES; do
-    echo "	cd modules/$M; \$(MAKE) test $MODSNO" >> $CONFIG_M4
+    echo "	cd modules/$M; $RUNMAKE test"	>> $CONFIG_M4
 done
 echo ''						>> $CONFIG_M4
 

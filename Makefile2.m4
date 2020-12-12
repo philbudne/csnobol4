@@ -288,6 +288,33 @@ always:
 cpuid:	cpuid.c
 	$(CC) -o cpuid cpuid.c
 
+################ modules
+
+# NOTE! FreeBSD 3.2 (a pre-C99 test platform) does not have "make -C"
+# Alter PATH in environment so that "cd modules/X; make" uses
+#	installed snobol4 by default
+RUNMAKE=PATH=../..:$$PATH $(MAKE)
+
+clean_modules:
+	for M in $(MODULES); do \
+	    (cd modules/$$M; $(RUNMAKE) clean) \
+	done
+
+build_modules:
+	for M in $(MODULES); do \
+	    (cd modules/$$M; $(RUNMAKE) all) \
+	done
+
+test_modules:
+	for M in $(MODULES); do \
+	    (cd modules/$$M; $(RUNMAKE) test) \
+	done
+
+install_modules:
+	for M in $(MODULES); do \
+	    (cd modules/$$M; $(RUNMAKE) install) \
+	done
+
 ################ shared library
 
 SO=so
@@ -345,14 +372,16 @@ timing.out: tested timing timing.sno test/bench.sno test/v311.sil
 	@echo 'And you will be notified when test versions are available.' 1>&2
 	@echo '********************************************************' 1>&2
 
-tested snobol4: xsnobol4 $(MODULES_GENERATED) test/tests.in cpuid
+tested snobol4: xsnobol4 test/tests.in cpuid
 	@echo Running regression tests...
-	(cd test; BLOCKS=$(BLOCKS) SNOPATH="$(TEST_SNOPATH)" ./run.sh ../xsnobol4 -N)
-	$(MAKE) -f Makefile2 test_modules
-	@echo Passed regression tests.
+	(cd test; BLOCKS=$(BLOCKS) SNOPATH=..:../snolib ./run.sh ../xsnobol4 -N)
 	-rm -f snobol4$(EXT)
 	cp xsnobol4$(EXT) snobol4$(EXT)
+	$(MAKE) -f Makefile2 test_modules
+	@echo Passed regression tests.
 	date > tested
+
+#test_modules: xsnobol4
 
 ################
 
@@ -715,7 +744,7 @@ GENSNOLIB=host.sno config.sno
 
 SNOLIB_FILES=snolib/*.sno $(GENSNOLIB) $(MODULES_INCLUDE)
 
-install: snobol4 sdb timing.out $(GENERATED_DOCS) build_modules docs
+install: snobol4 sdb build_all $(GENERATED_DOCS) build_modules docs
 	$(INSTALL) -d $(BINDIR)
 	$(INSTALL) $(INSTALL_BIN_FLAGS) snobol4 $(BINDIR)/snobol4-$(VERS)
 	$(INSTALL) sdb $(BINDIR)/sdb-$(VERS)
