@@ -48,7 +48,7 @@ SIL=	v311.sil
 .PRECIOUS: snobol4 xsnobol4 Makefile2 $(GENERATED)
 
 M2TARGETS=all snobol4 xsnobol4 install lint sdb cpuid timing.out build_all \
-	clean_modules build_modules test_modules printenv tested
+	clean_modules build_modules test_modules printenv tested install_notiming
 $(M2TARGETS): $(GENERATED) Makefile2 ALWAYS .depend
 	$(MAKE) -f Makefile2 $@
 

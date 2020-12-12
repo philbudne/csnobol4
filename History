@@ -4,6 +4,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 12/12/2020:
 	Makefile: clean removes module .dll files
+		add install_notiming
 	setuputil.sno: honor -v for test
 	modules/Makefile.mod: test_verbose (test w/ -v)
 		run snobol4 from PATH
