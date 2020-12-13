@@ -9,9 +9,10 @@ OUT=$(MOD).sno
 
 all:	$(OUT)
 
-INC=-N -I../.. -I../../snolib -I.
-SNOBOL4=snobol4
-SETUP=$(SNOBOL4) $(INC) setup.sno $(SETUPOPT)
+# not supported in Solaris make:
+SNOBOL4?=snobol4
+
+SETUP=$(SNOBOL4) setup.sno $(SETUPOPT)
 
 # removed ../../config.sno and ../../host.sno
 # to allow FreeBSD ports for individual modules
