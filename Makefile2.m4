@@ -786,10 +786,12 @@ install_notiming: snobol4 sdb build_all $(GENERATED_DOCS) build_modules docs
 	for F in $(INSTALL_H); do \
 		$(INSTALL) -m 644 $$F $(INCLUDE_DIR); \
 	done
+ifdef([INSTALL_DOCS],[
 	$(INSTALL) -d $(DOC_DIR)
 	for F in doc/load.txt doc/*.html modules/*/*.html; do \
 		$(INSTALL) -m 644 $$F $(DOC_DIR); \
 	done
+],)dnl
 ifdef([INSTALL_SYSDEP],[	]INSTALL_SYSDEP
 ,)dnl
 	@echo '*********************************************************' 1>&2

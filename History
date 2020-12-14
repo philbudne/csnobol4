@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/13/2020:
+	configure: add --without-docs, remove SNOBIN
+	Makefile2.m4: honor INSTALL_DOCS
+
 12/12/2020:
 	Makefile2.m4: pass -N/-I to module makes in SNOBOL4
 	modules/Makefile.mod: default SNOBOL4 to snobol, remove INC

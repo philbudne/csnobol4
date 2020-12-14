@@ -103,6 +103,7 @@ fi
 echo '#define CONFIG_DATE "'$DATE'"'		>> $CONFIG_H
 
 ADD_DEFINE_USED=
+INSTALL_DOCS=
 while [ $# -gt 0 ]; do
     case "$1" in
     --add-cflags=*)
@@ -207,6 +208,9 @@ while [ $# -gt 0 ]; do
     --without-com)
 	WITHOUT_COM=1
 	;;
+    --without-docs)
+	INSTALL_DOCS=
+	;;
     --without-modules)
 	# breaks tests, sdb (debugger)!!!
 	WITHOUT_MODULES=1
@@ -263,6 +267,7 @@ Optional items;
 	--with-tcl=/path/to/tclConfig.sh
 	--without-blocks	--without-readline
 	--without-com		--without-modules
+	--without-docs
 EOF
 
 	rm -f $CONFIG_M4 $CONFIG_H
@@ -2101,6 +2106,10 @@ if [ ! -d /tmp ]; then
     echo '#define TMP_DIR "."'			>> $CONFIG_H
 fi
 
+if [ "x$INSTALL_DOCS" != x ]; then
+    echo 'define([INSTALL_DOCS],)'		>> $CONFIG_M4
+fi
+
 ################################
 # construct new "with" file
 
@@ -2113,14 +2122,10 @@ if [ ! "$WITHOUT_BLOCKS" ]; then
     echo ' --with BLOCKS'			>> $WITH
 fi
 
-################################
-# should be last thing done;
-
-BUILD_DL=
-BUILD_INC=
+echo "MODULES=$MODULES"				>> $CONFIG_M4
 
 # build a SNOPATH that includes all module dirs, for module tests
-# (allow module tests to use other modules)
+# (allow module tests to use other modules).  Not currently used.
 # for host.sno:
 TEST_SNOPATH=..
 #
@@ -2128,11 +2133,7 @@ for M in $MODULES; do
     TEST_SNOPATH="$TEST_SNOPATH:../modules/$M"
 done
 TEST_SNOPATH="$TEST_SNOPATH:../snolib:."
-echo ''						>> $CONFIG_M4
-echo "MODULES=$MODULES"				>> $CONFIG_M4
 echo "TEST_SNOPATH=$TEST_SNOPATH"		>> $CONFIG_M4
-echo ''						>> $CONFIG_M4
-echo 'SNOBIN=../..' >> $CONFIG_M4
 
 if [ -f local-config ]; then
     echo 'using local-config' 1>&2
