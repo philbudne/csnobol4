@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/14/2020:
+	doc/snobol4load.3.pea (new), from load.txt
+	doc/Makefile: add snobol4load.3
+
 12/13/2020:
 	configure: add --without-docs, remove SNOBIN
 	Makefile2.m4: honor INSTALL_DOCS
