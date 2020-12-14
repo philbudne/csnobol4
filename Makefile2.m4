@@ -56,6 +56,8 @@ SNOBOL4=isnobol4
 # default flags for install of binaries:
 INSTALL_BIN_FLAGS=-s
 
+MAN_COMPRESS=gzip -f
+
 all:	build_all timing.out
 
 ########
@@ -758,14 +760,17 @@ install_notiming: snobol4 sdb build_all $(GENERATED_DOCS) build_modules docs
 	$(INSTALL) -d $(MAN1DIR)
 	for F in $(GENERATED_DOCS_DOCDIR1); do \
 		$(INSTALL) -m 644 $$F $(MAN1DIR); \
+		$(MAN_COMPRESS) $(MAN1DIR)/$$F \
 	done
 	$(INSTALL) -d $(MAN3DIR)
 	for F in $(GENERATED_DOCS_DOCDIR3); do \
 		$(INSTALL) -m 644 $$F $(MAN3DIR); \
+		$(MAN_COMPRESS) $(MAN3DIR)/$$F \
 	done
 	$(INSTALL) -d $(MAN7DIR)
 	for F in $(GENERATED_DOCS_DOCDIR7); do \
 		$(INSTALL) -m 644 $$F $(MAN7DIR); \
+		$(MAN_COMPRESS) $(MAN7DIR)/$$F \
 	done
 	$(INSTALL) -d $(SNOLIB)
 	$(INSTALL) -d $(SNOLIB_DOC)

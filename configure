@@ -2100,6 +2100,13 @@ for DIR in /usr/bin /usr/ucb /usr/local/bin /bin .; do
     done
 done
 
+case "$MORV" in
+    *:SunOS:5*:*)
+	# make man page compression a noop:
+	echo 'MAN_COMPRESS=true'		>> $CONFIG_M4
+	;;
+esac
+
 #### Android
 
 if [ ! -d /tmp ]; then
