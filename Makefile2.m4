@@ -719,11 +719,11 @@ INSTALL_H=[include]/h.h [include]/snotypes.h [include]/macros.h \
 # generated SNOLIB files (host.sno generated at top level)
 GENSNOLIB=host.sno config.sno
 
-SNOLIB_FILES=snolib/*.sno $(GENSNOLIB) $(MODULES_INCLUDE)
+SNOLIB_FILES=snolib/*.sno $(GENSNOLIB)
 
 install: snobol4 timing.out install_notiming
 
-install_notiming: snobol4 sdb build_all docs build_modules docs
+install_notiming: build_all
 	$(INSTALL) -d $(BINDIR)
 	$(INSTALL) $(INSTALL_BIN_FLAGS) snobol4 $(BINDIR)/snobol4-$(VERS)
 	$(INSTALL) sdb $(BINDIR)/sdb-$(VERS)
@@ -737,21 +737,21 @@ install_notiming: snobol4 sdb build_all docs build_modules docs
 		$(INSTALL) -m 644 $$F $(MAN1DIR); \
 ifdef([COMPRESS_MAN_PAGES],[dnl
 		$(MAN_PAGE_COMPRESS) $(MAN1DIR)/$$F; \
-])dnl
+],)dnl
 	done
 	$(INSTALL) -d $(MAN3DIR)
 	for F in $(GENERATED_DOCS_DOCDIR3); do \
 		$(INSTALL) -m 644 $$F $(MAN3DIR); \
 ifdef([COMPRESS_MAN_PAGES],[dnl
 		$(MAN_PAGE_COMPRESS) $(MAN3DIR)/$$F; \
-])dnl
+],)dnl
 	done
 	$(INSTALL) -d $(MAN7DIR)
 	for F in $(GENERATED_DOCS_DOCDIR7); do \
 		$(INSTALL) -m 644 $$F $(MAN7DIR); \
 ifdef([COMPRESS_MAN_PAGES],[dnl
 		$(MAN_PAGE_COMPRESS) $(MAN7DIR)/$$F; \
-])dnl
+],)dnl
 	done
 	$(INSTALL) -d $(SNOLIB)
 	$(INSTALL) -d $(SNOLIB_DOC)
@@ -774,7 +774,7 @@ ifdef([COMPRESS_MAN_PAGES],[dnl
 	done
 ifdef([INSTALL_DOCS],[dnl
 	$(INSTALL) -d $(DOC_DIR)
-	for F in doc/load.txt doc/*.html modules/*/*.html; do \
+	for F in doc/*.html modules/*/*.html; do \
 		$(INSTALL) -m 644 $$F $(DOC_DIR); \
 	done
 ],)dnl

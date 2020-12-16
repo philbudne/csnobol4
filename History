@@ -7,6 +7,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	Makefile2.m4: man page compression
 		remove lint
 		savage GENERATED_DOCS
+		don't install load.txt
 	Makefile: cleanup, add comments
 
 12/14/2020:
