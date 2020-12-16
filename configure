@@ -103,7 +103,7 @@ fi
 echo '#define CONFIG_DATE "'$DATE'"'		>> $CONFIG_H
 
 ADD_DEFINE_USED=
-INSTALL_DOCS=
+INSTALL_DOCS=yes
 while [ $# -gt 0 ]; do
     case "$1" in
     --add-cflags=*)
@@ -450,7 +450,7 @@ gcc|clang|icc)
 
 	# MacOS has different file types for shared libraries (dylibs)
 	# and dynamicly loaded extensions (bundles)
-	# -fPIC is the default on OS X
+	# -fPIC is the default on macOS
 
 	SO_EXT=.dylib
 	SO_LD=$CCPATH
@@ -481,6 +481,7 @@ gcc|clang|icc)
 	SO_EXT=.dll
 	SO_CFLAGS=
 	SO_LD=$CCPATH
+	# make DLL file, is not PIC!
 	SO_LDFLAGS=-shared
 	echo 'ADD_SNOBOL4_LDFLAGS([-Wl,--out-implib,libsnobol4.a])' >> $CONFIG_M4
 
@@ -1564,7 +1565,7 @@ fi
 
 # "Shared Object" -- Dynamically Loaded Library loaded at startup
 if [ "x$SO_EXT" != x ]; then
-    echo '# Shared Object Libraries'	>> $CONFIG_M4
+    echo '# Shared Object Libraries (in config.h too)' >> $CONFIG_M4
     echo "SO_EXT=$SO_EXT"		>> $CONFIG_M4
     echo "SO_CFLAGS=$SO_CFLAGS"		>> $CONFIG_M4
     echo "SO_LD=$SO_LD"			>> $CONFIG_M4
@@ -1578,7 +1579,7 @@ if [ "x$SO_EXT" != x ]; then
 fi
 
 if [ "x$DL_EXT" != x ]; then
-    echo '# Dynamicly Loaded Extensions' >> $CONFIG_M4
+    echo '# Dynamicly Loaded Extensions (in config.h too)' >> $CONFIG_M4
     echo "DL_EXT=$DL_EXT"		>> $CONFIG_M4
     echo "DL_CFLAGS=$DL_CFLAGS"		>> $CONFIG_M4
     echo "DL_LD=$DL_LD"			>> $CONFIG_M4
@@ -1724,7 +1725,7 @@ if [ "x$WITHOUT_MODULES" = x ]; then
 	    STAT_CFLAGS="$STAT_CFLAGS $BIRTHTIM_NSEC"
 	fi
     elif config/check sys/stat.h "$ACMNSEC_TEST" "$TIMESPEC_NSEC"; then
-	# OSX 10.15
+	# macOS 10.15
 	echo 'using stat st_[acm]timespec.tv_nsec'	1>&2
 	STAT_CFLAGS="$TIMESPEC_NSEC"
 	BIRTHTIMESPEC_NSEC='-Dst_birthtimensec=st_birthtimespec.tv_nsec'
@@ -2100,12 +2101,17 @@ for DIR in /usr/bin /usr/ucb /usr/local/bin /bin .; do
     done
 done
 
-case "$MORV" in
-    *:SunOS:5*:*)
-	# make man page compression a noop:
-	echo 'MAN_COMPRESS=true'		>> $CONFIG_M4
-	;;
-esac
+# FreeBSD and Linux...
+if [ -f /usr/share/man/man1/ls.1.gz ]; then
+    for DIR in `echo $PATH | tr ':' ' '`; do
+	if [ -x $DIR/gzip ]; then
+	    echo "using $DIR/gzip to compress man pages" 1>&2
+	    echo "MAN_COMPRESS=$DIR/gzip -f"	>> $CONFIG_M4
+	    echo 'define([COMPRESS_MAN_PAGES],)' >> $CONFIG_M4
+	    break
+	fi
+    done
+fi
 
 #### Android
 
