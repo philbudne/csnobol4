@@ -735,20 +735,23 @@ install_notiming: snobol4 sdb build_all docs build_modules docs
 	$(INSTALL) -d $(MAN1DIR)
 	for F in $(GENERATED_DOCS_DOCDIR1); do \
 		$(INSTALL) -m 644 $$F $(MAN1DIR); \
-ifdef([COMPRESS_MAN_PAGES],[
-		$(MAN_PAGE_COMPRESS) $(MAN1DIR)/$$F; \])dnl
+ifdef([COMPRESS_MAN_PAGES],[dnl
+		$(MAN_PAGE_COMPRESS) $(MAN1DIR)/$$F; \
+])dnl
 	done
 	$(INSTALL) -d $(MAN3DIR)
 	for F in $(GENERATED_DOCS_DOCDIR3); do \
 		$(INSTALL) -m 644 $$F $(MAN3DIR); \
-ifdef([COMPRESS_MAN_PAGES],[
-		$(MAN_PAGE_COMPRESS) $(MAN3DIR)/$$F; \])dnl
+ifdef([COMPRESS_MAN_PAGES],[dnl
+		$(MAN_PAGE_COMPRESS) $(MAN3DIR)/$$F; \
+])dnl
 	done
 	$(INSTALL) -d $(MAN7DIR)
 	for F in $(GENERATED_DOCS_DOCDIR7); do \
 		$(INSTALL) -m 644 $$F $(MAN7DIR); \
-ifdef([COMPRESS_MAN_PAGES],[
-		$(MAN_PAGE_COMPRESS) $(MAN7DIR)/$$F; \])dnl
+ifdef([COMPRESS_MAN_PAGES],[dnl
+		$(MAN_PAGE_COMPRESS) $(MAN7DIR)/$$F; \
+])dnl
 	done
 	$(INSTALL) -d $(SNOLIB)
 	$(INSTALL) -d $(SNOLIB_DOC)
@@ -769,7 +772,7 @@ ifdef([COMPRESS_MAN_PAGES],[
 	for F in $(INSTALL_H); do \
 		$(INSTALL) -m 644 $$F $(INCLUDE_DIR); \
 	done
-ifdef([INSTALL_DOCS],[
+ifdef([INSTALL_DOCS],[dnl
 	$(INSTALL) -d $(DOC_DIR)
 	for F in doc/load.txt doc/*.html modules/*/*.html; do \
 		$(INSTALL) -m 644 $$F $(DOC_DIR); \
