@@ -56,8 +56,6 @@ SNOBOL4=isnobol4
 # default flags for install of binaries:
 INSTALL_BIN_FLAGS=-s
 
-MAN_COMPRESS=gzip -f
-
 all:	build_all timing.out
 
 ########
@@ -240,22 +238,6 @@ SRCS=	$(SRCDIR)main.c $(SRCDIR)$(SNOBOL4).c $(SRCDIR)data.c \
 	$(SERV_C) $(SIN_C) $(SPRINTF_C) $(SQRT_C) \
 	$(SSET_C) $(SYS_C) $(TAN_C) \
 	$(AUX_SRCS)
-
-GENERATED_DOCS_DOCDIR1=doc/sdb.1 doc/snobol4.1 doc/snopea.1 \
-	doc/snobol4blocks.1 doc/snobol4cmd.1 doc/snobol4ctrl.1 \
-	doc/snobol4error.1 doc/snobol4ext.1 doc/snobol4func.1 \
-	doc/snobol4io.1 doc/snobol4key.1 doc/snobol4op.1
-
-GENERATED_DOCS_DOCDIR3=doc/snobol4host.3 \
-	doc/snobol4setup.3 doc/snolib.3 doc/snobol4ezio.3
-
-GENERATED_DOCS_DOCDIR7=doc/snopea.7
-
-GENERATED_DOCS_DOCDIR=$(GENERATED_DOCS_DOCDIR1) \
-	$(GENERATED_DOCS_DOCDIR3) \
-	$(GENERATED_DOCS_DOCDIR7)
-
-GENERATED_DOCS=	$(GENERATED_DOCS_DOCDIR)
 
 ################
 # link, regression test & timing
@@ -708,19 +690,12 @@ time.o:	$(TIME_C)
 com.o:	$(COM_CPP)
 	$(CC) $(CFLAGS) -c $(COM_CPP)
 
-#################
-# lint picking
-
-lint:   llib-lf.ln
-	lint -h llib-lf.ln $(MYCPPFLAGS) $(SRCS) > LINT 2>&1
-
-llib-lf.ln:
-	lint -Cf $(MYCPPFLAGS) $(SRCS) > /dev/null 2>&1
-
 ################
 # GENERATED_DOCS:
 
 SNOPEA=./snobol4 -N -Isnolib -I. snopea.in
+
+GENERATED_DOCS=snopea.1 snopea.1.html
 
 snopea.1: snopea snolib/snopea.sno snobol4
 	$(SNOPEA) snopea snopea.1
@@ -728,7 +703,7 @@ snopea.1: snopea snolib/snopea.sno snobol4
 snopea.1.html: snopea snolib/snopea.sno snobol4
 	$(SNOPEA) snopea snopea.1.html
 
-docs $(GENERATED_DOCS_DOCDIR): snopea snolib/snopea.sno snobol4 always
+docs:	snobol4 $(GENERATED_DOCS) always
 	cd doc; $(MAKE) all
 
 always:
@@ -748,7 +723,7 @@ SNOLIB_FILES=snolib/*.sno $(GENSNOLIB) $(MODULES_INCLUDE)
 
 install: snobol4 timing.out install_notiming
 
-install_notiming: snobol4 sdb build_all $(GENERATED_DOCS) build_modules docs
+install_notiming: snobol4 sdb build_all docs build_modules docs
 	$(INSTALL) -d $(BINDIR)
 	$(INSTALL) $(INSTALL_BIN_FLAGS) snobol4 $(BINDIR)/snobol4-$(VERS)
 	$(INSTALL) sdb $(BINDIR)/sdb-$(VERS)
@@ -760,17 +735,20 @@ install_notiming: snobol4 sdb build_all $(GENERATED_DOCS) build_modules docs
 	$(INSTALL) -d $(MAN1DIR)
 	for F in $(GENERATED_DOCS_DOCDIR1); do \
 		$(INSTALL) -m 644 $$F $(MAN1DIR); \
-		$(MAN_COMPRESS) $(MAN1DIR)/$$F \
+ifdef([COMPRESS_MAN_PAGES],[dnl
+		$(MAN_PAGE_COMPRESS) $(MAN1DIR)/$$F; \])
 	done
 	$(INSTALL) -d $(MAN3DIR)
 	for F in $(GENERATED_DOCS_DOCDIR3); do \
 		$(INSTALL) -m 644 $$F $(MAN3DIR); \
-		$(MAN_COMPRESS) $(MAN3DIR)/$$F \
+ifdef([COMPRESS_MAN_PAGES],[dnl
+		$(MAN_PAGE_COMPRESS) $(MAN3DIR)/$$F; \])
 	done
 	$(INSTALL) -d $(MAN7DIR)
 	for F in $(GENERATED_DOCS_DOCDIR7); do \
 		$(INSTALL) -m 644 $$F $(MAN7DIR); \
-		$(MAN_COMPRESS) $(MAN7DIR)/$$F \
+ifdef([COMPRESS_MAN_PAGES],[dnl
+		$(MAN_PAGE_COMPRESS) $(MAN7DIR)/$$F; \])
 	done
 	$(INSTALL) -d $(SNOLIB)
 	$(INSTALL) -d $(SNOLIB_DOC)
@@ -791,7 +769,7 @@ install_notiming: snobol4 sdb build_all $(GENERATED_DOCS) build_modules docs
 	for F in $(INSTALL_H); do \
 		$(INSTALL) -m 644 $$F $(INCLUDE_DIR); \
 	done
-ifdef([INSTALL_DOCS],[
+ifdef([INSTALL_DOCS],[dnl
 	$(INSTALL) -d $(DOC_DIR)
 	for F in doc/load.txt doc/*.html modules/*/*.html; do \
 		$(INSTALL) -m 644 $$F $(DOC_DIR); \

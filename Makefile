@@ -2,19 +2,32 @@
 
 # TARGETS:
 #
-# snobol4	make xsnobol4 binary; regression test; link to snobol4
-# xsnobol4	make xsnobol4 binary; no regression test
+# commonly used:
+# all		snobol4, modules, timing.out
+# install	build, run timing script, and install all files
+# clean		clean as when unpacked (removes binary)
 #
+# for development:
+# xsnobol4	xsnobol4 binary; no regression test
+# snobol4	xsnobol4 binary; regression test; copy to snobol4
+# sdb		debugger
+# cpuid		x86 CPUID program, used by timing script
+# timing.out	run timing script
+# build_all	snobol4, modules, w/o timing
+# build_modules	build all modules files
+# test_modules	build_modules, run module self-tests
+# tested	run all tests
+# printenv	run env program in sub-make
+# docs		generate documentation files
+# install_notiming
+#		install without timing
 # tidy		remove turds (backup, temp files)
 # cleanmostly	removes objects, turds; leave generated sources, final binary
-# clean		clean as when unpacked (removes binary)
+# clean_modules	remove all generated module output
 # spotless	removes snobol4 generated files (requires binary to regenerate)
-#
-# tar		make distribution
-# uu		make uuencoded distribution
 
 # m4 macro processor; used to generate Makefile2
-# (largely to avoid depending on make '+=' operator)
+# (largely to avoid depending on include and += operator)
 M4=m4
 
 ################
@@ -35,21 +48,22 @@ GENERATED=data.c data_init.h proc.h static.h syn.h data.h callgraph \
 SIL=	v311.sil
 
 ################
-# AIX4 makes all targets, so added this;
-# must be named "all" for FreeBSD "ports"?
 
 # force GNU make to run top Makefile serially
 .NOTPARALLEL: foo
 
-# tell BSD make to use a single shell
+# once told BSD make to use a single shell??
 .SINGLESHELL: foo
 
 # files to avoid removing when interrupted
 .PRECIOUS: snobol4 xsnobol4 Makefile2 $(GENERATED)
 
-M2TARGETS=all snobol4 xsnobol4 install lint sdb cpuid timing.out build_all \
-	clean_modules build_modules test_modules printenv tested install_notiming
-$(M2TARGETS): $(GENERATED) Makefile2 ALWAYS .depend
+################ create & invoke Makefile2
+
+M2TARGETS=all snobol4 xsnobol4 install sdb cpuid timing.out build_all \
+	clean_modules build_modules test_modules printenv tested \
+	install_notiming docs
+$(M2TARGETS): $(GENERATED) Makefile2 ALWAYS
 	$(MAKE) -f Makefile2 $@
 
 # a rule depending on this target will always be run
@@ -77,15 +91,13 @@ with:
 # make second level makefile
 
 M2TMP=Makefile2.tmp
-Makefile2 .depend: config.m4 Makefile2.m4
+Makefile2: config.m4 Makefile2.m4
 	echo '# DO NOT EDIT. machine generated from Makefile2.m4' > $(M2TMP)
 	echo '# add local changes to local-config'		>> $(M2TMP)
 	$(M4) Makefile2.m4 >> $(M2TMP)
 	echo '# DO NOT DELETE THIS LINE. make depend uses it.' >> $(M2TMP)
 	$(MAKE) -f $(M2TMP) depend MAKEFILE2=$(M2TMP)
 	mv -f $(M2TMP) Makefile2
-	rm -f .depend
-	touch .depend
 
 ################ EXPERIMENTAL SHARED LIBRARY
 
@@ -107,8 +119,6 @@ $(SO)Makefile2: config.m4 Makefile2.m4
 	echo '# DO NOT DELETE THIS LINE. make depend uses it.' >> $(SO)$(M2TMP)
 	cd $(SO); $(MAKE) -f $(M2TMP) depend MAKEFILE2=$(M2TMP) SRCDIR=../
 	mv -f $(SO)$(M2TMP) $(SO)Makefile2
-	rm -f $(SO).depend
-	touch $(SO).depend
 
 #### make shared library (invoked from Makefile2!)
 

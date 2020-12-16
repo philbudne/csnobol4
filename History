@@ -2,9 +2,12 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
-12/14/2020:
-	Makefile2.m4: add/use MAN_COMPRESS, default to gzip -f
-	configure: make MAN_COMPRESS a noop on SunOS 5
+12/15/2020:
+	configure: check for compressed man pages
+	Makefile2.m4: man page compression
+		remove lint
+		savage GENERATED_DOCS
+	Makefile: cleanup, add comments
 
 12/14/2020:
 	doc/snobol4load.3.pea (new), from load.txt
