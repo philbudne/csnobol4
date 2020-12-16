@@ -41,7 +41,7 @@
 **B<pre.sno> (if it exists), followed by lines from I<sourcefiles>:
 **any instances of I<LOAD(...)> present in B<*> comments,
 **any groups of lines starting with B<*=pea> and ending with B<*=cut> (inclusive),
-**and any comment lines bracketed by B<*=snobol4> and B<*=cut> (exclusive)
+**any comment lines bracketed by B<*=snobol4> and B<*=cut> (exclusive)
 **will be copied without the leading B<*>,
 **and finally B<funcs.sno> (if it exists).
 **
@@ -66,14 +66,23 @@
 **        setup(t)
 **end
 **=ecode
+**
+**If B<LOAD()> functions appear as the first thing on a comment line
+**in the source files, they are output to the generated
+**I<modulename>.sno include file so that the module and its functions
+**are loaded when the include file is used.
+**
+**B<snopea>(7) directives in comments in the source files will be used
+**to generate B<man>(7) and .html documentation files.
+**
 **=sect NOT CONFORMING TO
 **Inspired by Python setuptools, easyinstall, et.al.
 **=sect AUTHOR
 **Philip L. Budne
 **=sect BUGS
-**Only tested under OS X, FreeBSD, Linux, CYGWIN, MINGW, Visual Studio.
+**Has not been tested with proprietary Un*x native toolchains.
 **=sect SEE ALSO
-**B<snobol4>(1), B<snopea>(1)
+**B<snobol4>(1), B<snobol4load>(3), B<snopea>(7)
 **=cut
 ****************
 * make code less confusing!

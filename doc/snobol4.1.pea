@@ -177,6 +177,7 @@ Using B<SNOBOL_PRELOAD_PATH> will make your code less portable.
 =row B<snobol4fork>(3)	subprocess interface functions
 =row B<snobol4host>(3)	HOST and O/S functions
 =row B<snobol4logic>(3)	bit logic &amp; formatting functions
+=row B<snobol4load>(3)	loading extension modules into SNOBOL4
 =row B<snobol4ndbm>(3)	keyed file access functions
 =row B<snobol4random>(3)	pseudo-random numbers functions
 =row B<snobol4readline>(3)	input with line editing

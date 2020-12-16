@@ -1,25 +1,42 @@
 $Id$
 =pea
 =sect NAME
-snobol4load \- Loading external functions into SNOBOL4
+snobol4load \- Loading extension modules into SNOBOL4
 
 =sect SYNOPSIS
 
+I<modulename.c>:
 =code
     #ifdef HAVE_CONFIG_H
     #include "config.h"
     #endif
+
     #include "h.h"
     #include "snotypes.h"
     #include "macros.h"
     #include "load.h"
     #include "equ.h"
 
-    SNOBOL_MODULE(modname)
+    SNOBOL_MODULE(modulename)
 
     /*
-     * LOAD("FUNC_NAME(ARG_TYPES,....)RET_TYPE", MODNAME_DL)
+    **\=pea
+    **\=sect NAME
+    **modulename \e- A SNOBOL4 extension module
+    **\=sect SYNOPSYS
+    **\=code
+    **-INCLUDE 'modulename.sno'
+    **\=cut
+    */
+
+    /*
+     * LOAD("FUNC_NAME(ARG_TYPES,....)RET_TYPE", MODULENAME_DL)
      */
+    /*
+    **\=code
+    **        result = B&lt;FUNC_NAME(ARG_TYPES,....)&gt;
+    **\=ecode
+    */
     lret_t
     FUNC_NAME(LA_ALIST) {
 	/* function body */
@@ -28,62 +45,64 @@ snobol4load \- Loading external functions into SNOBOL4
 
 =sect SYNOPSIS
 
-External C functions are loaded into SNOBOL4 via the LOAD() function.
-LOAD() is passed a prototype which names the function and describes
-the number and types of the parameters the function will be passed, as
-well as the return type.
+External C functions are loaded into SNOBOL4 via the B<LOAD()>
+function.  B<LOAD()> is passed a prototype which names the function
+and may describe the minimum number and types of the parameters the
+function will be passed, as well as the return type.
 
-The typedefs int_t and real_t should be used for all SNOBOL integer
-and real values.
+The typedefs B<int_t> and B<real_t> should be used in C code for all
+SNOBOL4 INTEGER and REAL values, or value truncation may occur.
 
 The function should use one of the following macros to return a value
 (the type of which should be compatible with the type in the prototype
 passed to the LOAD() function:
 
 =code
-        RETINT(i)                     /* return INTEGER (int_t) value */
-        RETREAL(a)                    /* return REAL (real_t) value */
-        RETNULL                       /* return null string, success */
-        RETSTR_FREE(buf)              /* return C string and free malloc'ed buf */
-        RETSTR2_FREE(buf,len)         /* return C string and free malloc'ed buf */
-        RETSTR2(buf,len)              /* return counted string from static buf */
-        RETSTR(buf)                   /* return C string from static buffer */
-        RETSTR2(buf,len)              /* return counted string from static buf */
-        RETFAIL                       /* return failure */
-        RETPRED(success)              /* return predicate value (NULL or failure */
+    RETINT(i)             /* return INTEGER (int_t) value */
+    RETREAL(a)            /* return REAL (real_t) value */
+    RETNULL               /* return null string */
+    RETSTR_FREE(buf)      /* return C string and free malloc'ed buf */
+    RETSTR2_FREE(buf,len) /* return counted str and free malloc'ed buf */
+    RETSTR(buf)           /* return C string from static buffer */
+    RETSTR2(buf,len)      /* return counted string from static buf */
+    RETPRED(success)      /* return predicate value (NULL or failure) */
+    RETFAIL               /* return failure */
 =ecode
 
 Parameters are accessed positionally via the following macros.  When a
-data type is specified in the LOAD() prototype, values passed to the
-function will automatically be CONVERT()ed to the specified data type.
+data type is specified in the B<LOAD()> prototype, values passed to the
+function will automatically be converted to the specified data type.
 The following macros do NOT perform data type conversion, and using the
 wrong macro to access a parameter will return garbage, or worse.
 
 =code
-	LA_INT(0)	/* gets value of 1st parameter; returns int_t */
-	LA_REAL(1)	/* gets value of 2nd parameter; returns real_t */
-	mgetstr(LA_PTR(2)); /* return string argument in malloc'ed buffer */
-	LA_STR_PTR(2)	/* return a (const char *) pointer (or NULL) */
-	LA_STR_LEN(2)	/* returns string length. */
+    int_t i = LA_INT(0);    /* gets value of 1st parameter; returns int_t */
+    real_t a = LA_REAL(1);  /* gets value of 2nd parameter; returns real_t */
+    char *s = mgetstring(LA_PTR(2)); /* get string argument as C string
+				      * in malloc'ed buffer. MUST be free'ed */
+    const char *sp = LA_STR_PTR(2); /* get pointer (or NULL) */
+    int sl = LA_STR_LEN(2); /* returns string length. */
 =ecode
 
 External functions can be written to take polymorphic parameters by
-leaving the type name blank in the prototype. For example
-B<"FOO(,STRING)INTEGER"> is a function with two parameters, the first is
-polymorphic.  The B<LA_TYPE(>I<n>B<)> macro must be used to
-determine the actual data type;
+leaving the type name blank in the prototype, or passing arguments in
+excess of those described in the prototype. For example
+B<"FOO(,STRING)INTEGER"> is a function with two parameters, the first
+is polymorphic.  The B<LA_TYPE(>I<n>B<)> macro must be used to
+determine the actual parameter data type;
 
-=item I
-arg I<n> is an integer of C type int_t (fetch with LA_INT(n))
+=item C<I>
+arg I<n> is an integer of C type B<int_t> (fetch with B<LA_INT(>I<n>B<)>)
 
-=item R
-arg I<n> is a real of C type real_t (fetch with LA_REAL(n))
+=item C<R>
+arg I<n> is a real of C type B<real_t> (fetch with B<LA_REAL(>I<n>B<)>)
 
-=item S
+=item C<S>
 arg I<n> references a string (fetch with B<mgetstring> etc).
 
-Loadable code can be compiled and installed using B<snobol4setup>(3).
+Loadable code can be compiled and installed using B<snobol4setup>(3),
+which generates a I<modulename>.sno include file.
 
 =sect SEE ALSO
-B<snobol4>(1), B<snobol4setup>(3)
+B<snobol4>(1), B<snobol4setup>(3), B<snopea>(7)
 =cut

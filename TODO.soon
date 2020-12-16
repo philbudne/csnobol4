@@ -2,6 +2,8 @@ $Id$
 
 ================ 2.2
 
+paired --with/--without?
+
 setuputil "make"; run Makefile.mod w/ MOD= (& SRC=) args?
 	or use FILE_NEWER?!!
 

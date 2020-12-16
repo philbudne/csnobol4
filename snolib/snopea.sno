@@ -12,7 +12,7 @@
 	snopea.charpats = TABLE()
 
 	snopea.charmaps = TABLE()
-	snopea.charpats['roff'] = "''" | "``" |
+	snopea.charpats['roff'] = "''" | "``" | '\=' |
 +			'&' ANY(&LCASE) SPAN(&LCASE) ';'
 *	Turn \- into \[en]?
 	snopea.charmaps['roff'] = snopea.charmap.roff = TABLE()
@@ -22,8 +22,9 @@
 	snopea.charmap.roff["&gt;"] = '>'
 	snopea.charmap.roff["&pi;"] = '\*(pi'
 	snopea.charmap.roff["&amp;"] = '&'
+	snopea.charmap.roff["\="] = '='
 
-	snopea.charpats['html'] = "''" | "``"  | '\' ANY("e-&|~'`")
+	snopea.charpats['html'] = "''" | "``"  | '\' ANY("e-&|~'`=")
 	snopea.charmaps['html'] = snopea.charmap.html = TABLE()
 	snopea.charmap.html["``"] = '&ldquo;'
 	snopea.charmap.html["''"] = '&rdquo;'
@@ -34,6 +35,7 @@
 	snopea.charmap.html["\~"] = '&nbsp;'
 	snopea.charmap.html["\'"] = "'"
 	snopea.charmap.html["\`"] = '`'
+	snopea.charmap.html["\="] = '='
 
 	snopea.tab = CHAR(9)
 	snopea.ws = SPAN(' ' snopea.tab)
@@ -290,7 +292,8 @@ sp.html.head
 	out = '<html>'
 	out = '<head>'
 	htext =  page '(' sect ') | ' snopea.snovers ' | ' date
-	out = '<title>' htext '</title>'
+	out = ' <title>' htext '</title>'
+* _COULD_ output <style> here, but trying to work with lynx!
 	out = '</head>'
 	out = '<body>'
 	out = '<h1>' htext '</h1>'

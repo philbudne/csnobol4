@@ -2,6 +2,13 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/16/2020:
+	doc/snobol4.1.pea: add snobol4load
+	doc/snobol4load.3.pea: clean up, add snopea to example
+	doc/snopea.7.pea: add \=
+	snolib/snopea.sno: add \=
+	snolib/setuputil.sno: add snopea docs for modulename.sno output
+
 12/15/2020:
 	configure: check for compressed man pages
 	Makefile2.m4: man page compression

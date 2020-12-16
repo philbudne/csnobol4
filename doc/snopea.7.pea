@@ -115,6 +115,9 @@ thin space
 =item \e~
 non-breaking space
 
+=item \e=
+equals-sign
+
 =sect NOT CONFORMING TO
 Inspired by (but not compatible with) Perl POD format.
 L<https://perldoc.perl.org/perlpod.html>
