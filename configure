@@ -221,6 +221,10 @@ while [ $# -gt 0 ]; do
     --without-blocks)
 	WITHOUT_BLOCKS=1
 	;;
+    --with-docs)
+	# symmetric, for FreeBSD ports
+	INSTALL_DOCS=1
+	;;
     --with-tcl=*)
 	TCONF=`echo "$1" | sed 's/--with-tcl=//'`
 	if [ "x$TCONF" = x ]; then

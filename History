@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/17/2020:
+	configure: add -with-docs, so symmetric for FreeBSD ports
+
 12/16/2020:
 	doc/snobol4.1.pea: add snobol4load
 	doc/snobol4load.3.pea: clean up, add snopea to example
