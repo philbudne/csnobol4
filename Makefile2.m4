@@ -736,21 +736,21 @@ install_notiming: build_all
 	for F in $(GENERATED_DOCS_DOCDIR1); do \
 		$(INSTALL) -m 644 $$F $(MAN1DIR); \
 ifdef([COMPRESS_MAN_PAGES],[dnl
-		$(MAN_PAGE_COMPRESS) $(MAN1DIR)/$$F; \
+		$(MAN_COMPRESS) $(MAN1DIR)/$$F; \
 ],)dnl
 	done
 	$(INSTALL) -d $(MAN3DIR)
 	for F in $(GENERATED_DOCS_DOCDIR3); do \
 		$(INSTALL) -m 644 $$F $(MAN3DIR); \
 ifdef([COMPRESS_MAN_PAGES],[dnl
-		$(MAN_PAGE_COMPRESS) $(MAN3DIR)/$$F; \
+		$(MAN_COMPRESS) $(MAN3DIR)/$$F; \
 ],)dnl
 	done
 	$(INSTALL) -d $(MAN7DIR)
 	for F in $(GENERATED_DOCS_DOCDIR7); do \
 		$(INSTALL) -m 644 $$F $(MAN7DIR); \
 ifdef([COMPRESS_MAN_PAGES],[dnl
-		$(MAN_PAGE_COMPRESS) $(MAN7DIR)/$$F; \
+		$(MAN_COMPRESS) $(MAN7DIR)/$$F; \
 ],)dnl
 	done
 	$(INSTALL) -d $(SNOLIB)
