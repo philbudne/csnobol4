@@ -499,7 +499,9 @@ setup.posix.instcmd.xdone
 
 	IDENT(manfiles)				:s(RETURN)
 	command = 'cp -f ' manfiles ' ' destdir MAN3DIR
-	setup.posix.system(command)		:f(FRETURN)s(RETURN)
+	setup.posix.system(command)		:f(FRETURN)
+	differ(MAN_COMPRESS) setup.posix.system("cd " destdir MAN3DIR "; " MAN_COMPRESS " " manfiles)
+	:(RETURN)
 setup.posix.installcmd.end
 
 ****************

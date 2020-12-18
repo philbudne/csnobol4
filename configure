@@ -2112,6 +2112,7 @@ if [ -f /usr/share/man/man1/ls.1.gz ]; then
 	    echo "using $DIR/gzip to compress man pages" 1>&2
 	    echo "MAN_COMPRESS=$DIR/gzip -f"	>> $CONFIG_M4
 	    echo 'define([COMPRESS_MAN_PAGES],)' >> $CONFIG_M4
+	    echo "	MAN_COMPRESS = '$DIR/gzip -f'" >> $CONFIG_SNO
 	    break
 	fi
     done
