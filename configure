@@ -10,8 +10,8 @@ ID='$Id$'
 OPTIONS="$*"
 
 # needed in Makefile2 and config.h
-VERSION=2.2
-VERSION_DATE="December 5, 2020"
+VERSION=2.2.1
+VERSION_DATE="December 18, 2020"
 
 # save any CFLAGS passed to us...
 INITIAL_CFLAGS="$CFLAGS"
@@ -240,7 +240,7 @@ while [ $# -gt 0 ]; do
 	;;
     *)
 	cat 1>&2 <<EOF
-See INSTALL for documentation on options;
+Unknown option $1
 
 Makefile additions;
 	--add-cflags=STR	--add-cppflags=STR	
@@ -269,9 +269,9 @@ Install location;
 Optional items;
 	--force-sdbm
 	--with-tcl=/path/to/tclConfig.sh
+	--with-docs		--without-docs
 	--without-blocks	--without-readline
 	--without-com		--without-modules
-	--without-docs
 EOF
 
 	rm -f $CONFIG_M4 $CONFIG_H

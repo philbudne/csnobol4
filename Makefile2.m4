@@ -723,6 +723,14 @@ SNOLIB_FILES=snolib/*.sno $(GENSNOLIB)
 
 install: snobol4 timing.out install_notiming
 
+define([INSTALL_MAN_PAGES],[(]cd $1; \
+	 for F in *.$2; do \
+		$(INSTALL) -m 644 $$F [$(MAN]$2[DIR)]; \
+ifdef([COMPRESS_MAN_PAGES],[dnl
+		$(MAN_COMPRESS) [$(MAN]$2[DIR)/$$F]; \
+],)dnl
+[	 done)])dnl
+
 install_notiming: build_all
 	$(INSTALL) -d $(BINDIR)
 	$(INSTALL) $(INSTALL_BIN_FLAGS) snobol4 $(BINDIR)/snobol4-$(VERS)
@@ -733,26 +741,10 @@ install_notiming: build_all
 	cd $(BINDIR) && ln -s sdb-$(VERS) sdb
 	cd $(BINDIR) && ln -s snopea-$(VERS) snopea
 	$(INSTALL) -d $(MAN1DIR)
-	for F in $(GENERATED_DOCS_DOCDIR1); do \
-		$(INSTALL) -m 644 $$F $(MAN1DIR); \
-ifdef([COMPRESS_MAN_PAGES],[dnl
-		$(MAN_COMPRESS) $(MAN1DIR)/$$F; \
-],)dnl
-	done
-	$(INSTALL) -d $(MAN3DIR)
-	for F in $(GENERATED_DOCS_DOCDIR3); do \
-		$(INSTALL) -m 644 $$F $(MAN3DIR); \
-ifdef([COMPRESS_MAN_PAGES],[dnl
-		$(MAN_COMPRESS) $(MAN3DIR)/$$F; \
-],)dnl
-	done
-	$(INSTALL) -d $(MAN7DIR)
-	for F in $(GENERATED_DOCS_DOCDIR7); do \
-		$(INSTALL) -m 644 $$F $(MAN7DIR); \
-ifdef([COMPRESS_MAN_PAGES],[dnl
-		$(MAN_COMPRESS) $(MAN7DIR)/$$F; \
-],)dnl
-	done
+	INSTALL_MAN_PAGES(.,1)
+	INSTALL_MAN_PAGES(doc,1)
+	INSTALL_MAN_PAGES(doc,3)
+	INSTALL_MAN_PAGES(doc,7)
 	$(INSTALL) -d $(SNOLIB)
 	$(INSTALL) -d $(SNOLIB_DOC)
 	$(INSTALL) -m 644 README $(SNOLIB_DOC)

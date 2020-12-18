@@ -3,6 +3,11 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 12/17/2020:
+	configure: display bad option; add --with-docs to help
+		update to version 2.2.1 (51 years since SNOBOL4 v3.7)
+	Makefile2.m4: define/use INSTALL_MAN_PAGES macro
+
+12/17/2020:
 	configure: add --with-docs, so symmetric for FreeBSD ports
 
 12/16/2020:
