@@ -1,8 +1,11 @@
 # $Id$
 
-# make file for MINGW - P. Budne 2/14/2002
+# GNU Make Makefile for MINGW - P. Budne 2/14/2002
+# revamped 9/2020
 # tested (under Linux) with MINGW gcc 9.3 9/27/2020
-#	w/ mingw-w64-common 7.0.0-2 
+# w/ mingw-w64-common 7.0.0-2 includes
+# see config/win32/linux-mingw.sh
+
 # from nmake file for VC++ 5.0 on WinNT 4.0 P. Budne 2/4/1998
 # from batch file by David Feustel
 

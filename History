@@ -8,6 +8,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 		update to version 2.2.1 (51 years since SNOBOL4 v3.7)
 	Makefile2.m4: define/use INSTALL_MAN_PAGES macro
 	snolib/setuputil.sno: honor MAN_COMPRESS
+	config/win32/linux-mingw.sh: update SNOBOL4 for new Makefile.mod
+	config/win32/mingw.mak: comments
 
 12/17/2020:
 	configure: add --with-docs, so symmetric for FreeBSD ports
