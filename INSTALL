@@ -289,6 +289,12 @@ with "--add-" can appear);
 	--without-com
 		Do not compile in COM extension on CygWIN.
 
+	--with-docs
+		Install HTML versions of manual pages.
+
+	--without-docs
+		Do not install HTML versions of manual pages.
+
 	--without-readline
 		Do not compile in READLINE.
 
