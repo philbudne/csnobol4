@@ -275,9 +275,7 @@ cpuid:	cpuid.c
 ################ modules
 
 # NOTE! FreeBSD 3.2 (a pre-C99 test platform) does not have "make -C"
-# Alter PATH in environment so that "cd modules/X; make" uses
-#	installed snobol4 by default
-RUNMAKE=PATH=../..:$$PATH SNOBOL4='snobol4 -N -I../.. -I../../snolib' $(MAKE)
+RUNMAKE=SNOBOL4='../../snobol4 -N -I../.. -I../../snolib' $(MAKE)
 
 clean_modules:
 	for M in $(MODULES); do \
