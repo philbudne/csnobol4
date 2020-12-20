@@ -3,7 +3,7 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 12/19/2020:
-	INSTALL: Add --with(out)--docs
+	INSTALL: Add --with(out)-docs
 
 *** 2.2.1 (tag REL_2_2_1)
 
