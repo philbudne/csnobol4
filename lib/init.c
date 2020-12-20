@@ -130,6 +130,8 @@ usage(char *jname, int justversion) {
     fprintf(stderr, "-u PARMS\n\tparameter data available via HOST(0)\n");
     p('v',"display version and exit");
     p('x',"force display of startup banner");
+    p('z',"show directory search path in use");
+
 #ifdef BLOCKS
     p('B',"toggle SNOBOL4B operators (-[NO]BLOCKS)");
 #endif

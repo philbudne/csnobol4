@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/20/2020:
+	lib/init.c: add -z to usage
+
 12/19/2020:
 	INSTALL: Add --with(out)-docs
 
