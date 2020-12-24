@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/23/2020:
+	lib/snolib/file.c, pml.h: add FILE_LIB_FIND
+
 12/20/2020:
 	lib/init.c: add -z to usage
 

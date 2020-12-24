@@ -25,6 +25,7 @@
 #include "macros.h"
 #include "load.h"
 #include "lib.h"			/* exists() */
+#include "str.h"			/* RETSTR_FREE */
 
 pmlret_t
 FILE2( LA_ALIST ) {			/* avoid stdio name collision */
@@ -63,4 +64,26 @@ FILE_NEWER( LA_ALIST ) {
     free(p1);
     free(p2);
     RETINT(ret);
+}
+
+/* 2020-12-23 for setuputil.sno (before stat module available!) */
+pmlret_t
+FILE_LIB_FIND( LA_ALIST ) {
+    char *fname = mgetstring(LA_PTR(1));
+
+    if (abspath(fname)) {
+	RETSTR_FREE(fname);
+    }
+    else {
+	char *dir = LA_PTR(0) ? mgetstring(LA_PTR(0)) : NULL;
+	char *ext = LA_PTR(2) ? mgetstring(LA_PTR(2)) : NULL;
+	char *ret = io_lib_find(dir, fname, ext);
+	if (dir)
+	    free(dir);
+	if (ext)
+	    free(ext);
+	if (ret)
+	    RETSTR_FREE(ret);
+	RETFAIL;
+    }
 }
