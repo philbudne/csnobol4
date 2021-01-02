@@ -287,6 +287,11 @@ build_modules:
 	    (cd modules/$$M; $(RUNMAKE) all) \
 	done
 
+debug_modules:
+	for M in $(MODULES); do \
+	    (cd modules/$$M; $(RUNMAKE) debug) \
+	done
+
 test_modules:
 	for M in $(MODULES); do \
 	    (cd modules/$$M; $(RUNMAKE) test) \

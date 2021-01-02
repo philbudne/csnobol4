@@ -156,7 +156,7 @@ setup.not.found
 +	TERMINAL = SETUP_SYS ' ' cmd ' not found'
 setup.usage
 +	TERMINAL = 'Usage: snobol4 setup.sno [-v] [-d] COMMAND'
-	TERMINAL = 'Commands: build install clean help'
+	TERMINAL = 'Commands: build test install clean help'
 setup.fatal
 +	&CODE = 1				:(freturn)
 setup.end
