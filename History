@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+1/10/2021:
+	snolib/ezio.sno: avoid ENDFILE(null)
+
 1/1/2021!
 	snolib/setuputil.sno: add help to usage message (12/18/2020)
 	Makefile2.m4: add debug_modules (12/21/2020)
