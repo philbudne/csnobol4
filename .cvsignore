@@ -8,6 +8,7 @@ build.c
 callgraph
 config.h
 config.m4
+config.sno
 cpuid
 data.c
 data.c2
@@ -19,6 +20,7 @@ equ.h
 equ.h2
 host.sno
 isnobol4.c
+local-config
 proc.h
 proc.h2
 res.h
@@ -27,6 +29,8 @@ sdb
 snobol4
 snobol4.c
 snopea
+snopea.1
+snopea.1.html
 static.h
 static.h2
 syn.c
