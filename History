@@ -2,6 +2,13 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+1/25/2021:
+	configure/check: honor CPPFLAGS environment variable
+		(set by FreeBSD ports framework with USE=readline)
+
+1/24/2021:
+	configure: add --without-lib{edit,readline}
+
 1/14/2021:
 	.cvsignore file additions
 	update TODO.soon
