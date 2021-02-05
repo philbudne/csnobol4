@@ -104,6 +104,8 @@ echo '#define CONFIG_DATE "'$DATE'"'		>> $CONFIG_H
 
 ADD_DEFINE_USED=
 INSTALL_DOCS=yes
+ALLOW_LIBREADLINE=true
+ALLOW_LIBEDIT=true
 while [ $# -gt 0 ]; do
     case "$1" in
     --add-cflags=*)
@@ -215,6 +217,12 @@ while [ $# -gt 0 ]; do
 	# breaks tests, sdb (debugger)!!!
 	WITHOUT_MODULES=1
 	;;
+    --without-libedit)
+	ALLOW_LIBEDIT=false
+	;;
+    --without-libreadline)
+	ALLOW_LIBREADLINE=false
+	;;
     --without-readline)
 	WITHOUT_READLINE=1
 	;;
@@ -270,8 +278,9 @@ Optional items;
 	--force-sdbm
 	--with-tcl=/path/to/tclConfig.sh
 	--with-docs		--without-docs
-	--without-blocks	--without-readline
-	--without-com		--without-modules
+	--without-blocks	--without-com
+	--without-libreadline	--without-libedit
+	--without-modules	--without-readline
 EOF
 
 	rm -f $CONFIG_M4 $CONFIG_H
@@ -1599,15 +1608,18 @@ fi
 if [ ! "$WITHOUT_READLINE" ]; then
     RL_INC='stdio.h readline/readline.h readline/history.h'
     RL_FRAG='readline("?")'
-    if config/check "$RL_INC" "$RL_FRAG" -lreadline; then
+    if $ALLOW_LIBREADLINE && \
+	    config/check "$RL_INC" "$RL_FRAG" -lreadline; then
 	RL_LIBS="-lreadline"
-    elif config/check "$RL_INC" "$RL_FRAG" '-lreadline -lncurses'; then
+    elif $ALLOW_LIBREADLINE && config/check "$RL_INC" "$RL_FRAG" '-lreadline -lncurses'; then
 	RL_LIBS="-lreadline -lncurses"
-    elif config/check "$RL_INC" "$RL_FRAG" '-lreadline -lncursesw'; then
+    elif $ALLOW_LIBREADLINE && \
+	    config/check "$RL_INC" "$RL_FRAG" '-lreadline -lncursesw'; then
 	RL_LIBS="-lreadline -lncursesw"
-    elif config/check "$RL_INC" "$RL_FRAG" '-ledit'; then
+    elif $ALLOW_LIBEDIT && config/check "$RL_INC" "$RL_FRAG" '-ledit'; then
 	RL_LIBS="-ledit"
-    elif config/check "$RL_INC" "$RL_FRAG" '-ledit -I/usr/include/edit'; then
+    elif $ALLOW_LIBEDIT && \
+	   config/check "$RL_INC" "$RL_FRAG" '-ledit -I/usr/include/edit'; then
 	# FreeBSD 12
 	RL_LIBS="-ledit"
 	RL_INCDIR="/usr/include/edit"
