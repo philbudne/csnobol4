@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+2/6/2021:
+	modules/ffi/ffi.c: fix for Solus Linux (reported by Neil Rowe)
+
 1/25/2021:
 	configure/check: honor CPPFLAGS environment variable
 		(set by FreeBSD ports framework with USE=readline)

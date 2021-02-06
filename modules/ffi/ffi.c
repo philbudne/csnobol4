@@ -434,6 +434,23 @@ FFI_DLOPEN( LA_ALIST ) {
 **=cut
 */
 
+static int
+magic_handle(void *dl) {
+#ifdef RTLD_DEFAULT
+    if (dl == RTLD_DEFAULT)
+	return 1;
+#endif
+#ifdef RTLD_NEXT			/* not in Cygwin or POSIX */
+    if (dl == RTLD_NEXT)
+	return 1;
+#endif
+#ifdef RTLD_SELF
+    if (dl == RTLD_SELF)
+	return 1;
+#endif
+    return 0;
+}
+
 /*
  * LOAD("FFI_DLSYM(,STRING)", FFI_DL)
  * returns a handle for FFI_CALL
@@ -449,14 +466,7 @@ FFI_DLSYM( LA_ALIST ) {
     if (LA_TYPE(0) == I)
 	dl = (void *)LA_INT(0);
 
-    if (dl != RTLD_DEFAULT
-#ifdef RTLD_NEXT			/* not in Cygwin or POSIX */
-	&& dl != RTLD_NEXT
-#endif
-#ifdef RTLD_SELF
-	&& dl != RTLD_SELF
-#endif
-	) {
+    if (!magic_handle(dl)) {
 	dl = lookup_handle(&ffi_dlibs, LA_HANDLE(0));
 	if (!dl) RETFAIL;
     }
@@ -515,7 +525,12 @@ lret_t
 FFI_RTLD_DEFAULT( LA_ALIST ) {
     (void) args;
     (void) nargs;
+#ifdef RTLD_DEFAULT
     RETINT((int_t)RTLD_DEFAULT);
+#else
+    /* see notes above in FFI_RTLD_NEXT */
+    RETFAIL;
+#endif
 }
 
 /*
