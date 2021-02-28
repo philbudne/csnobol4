@@ -727,12 +727,13 @@ SNOLIB_FILES=snolib/*.sno $(GENSNOLIB)
 install: snobol4 timing.out install_notiming
 
 define([INSTALL_MAN_PAGES],[(]cd $1; \
-	 for F in *.$2; do \
+	    $(INSTALL) -d [$(MAN]$2[DIR)]; \
+	    for F in *.$2; do \
 		$(INSTALL) -m 644 $$F [$(MAN]$2[DIR)]; \
 ifdef([COMPRESS_MAN_PAGES],[dnl
 		$(MAN_COMPRESS) [$(MAN]$2[DIR)/$$F]; \
 ],)dnl
-[	 done)])dnl
+[	    done)])dnl
 
 install_notiming: build_all
 	$(INSTALL) -d $(BINDIR)

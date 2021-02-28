@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+2/28/2021:
+	Makefile2.m4: add (back) man directory creation
+		(reported by Rafal M. Sulejman)
+
 2/6/2021:
 	modules/ffi/ffi.c: fix for Solus Linux (reported by Neil Rowe)
 
