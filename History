@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+6/10/2021:
+	INSTALL: note parallel make fails (suggested by hacksaw)
+		remove note about "time" package requirement
+
 2/28/2021:
 	Makefile2.m4: add (back) man directory creation
 		(reported by Rafal M. Sulejman)

@@ -9,9 +9,8 @@ Un*x/POSIX/Linux systems (including Cygwin)
 Compilation
 -----------
 
-In most cases all you need to type is "make".  The "m4" macro
-processor is required, and on some Linux distributions a package may
-need to be installed for the "time" command.
+The "m4" macro processor is required.  In most cases all you need to
+type is "make". NOTE: parallel make (-j option) will fail.
 
 CSNOBOL 2.2 has been tested on Linux, FreeBSD, MacOS, NetBSD, OpenBSD
 and OpenIndiana.
