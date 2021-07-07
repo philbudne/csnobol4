@@ -1,8 +1,10 @@
 $Id$
 
-announce 2.2 on comp.compilers
+announce 2.2.2 on comp.compilers!!
 
 ================ 2.2+
+
+use ffi.c.nomagic?
 
 paired --with/--without?
 
