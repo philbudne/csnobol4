@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+7/7/2021:
+	doc/snobol4func.1.pea: improve TRACE function info
+
 6/10/2021:
 	INSTALL: note parallel make fails (suggested by hacksaw)
 		remove note about "time" package requirement

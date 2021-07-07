@@ -580,11 +580,13 @@ Interpreter: Returns program execution time in milliseconds.
 I<Standard (returning INTEGER)>.
 Returns REAL since CSNOBOL4 0.99.44.
 
-=item B<TRACE(>I<name,type,id,func>B<)>
-Intrepreter: Associates I<name> for I<type> (VALUE, CALL, RETURN,
-FUNCTION, LABEL, KEYWORD) tracing;  I<id> is included in trace output;
-I<func> is optional name of function to call.  See B<snobol4key>(1) for
-B<&amp;TRACE> and B<&amp;FTRACE> keywords.
+=item B<TRACE(>I<name[,type[,tag[,func]]]>B<)>
+Intrepreter: Associates I<name> for I<type>
+	(B<'VALUE'> (default), B<'CALL'>, B<'RETURN'>,
+	B<'FUNCTION'>, B<'LABEL'>, B<'KEYWORD'>) tracing.
+I<tag> is included in trace output if I<name> is not a natural variable;
+I<func> is optional name of function to call with I<name> and I<tag> arguments.
+See B<snobol4key>(1) B<&amp;TRACE> (must be non-zero to enable B<TRACE>.
 I<Standard>.
 I<SPITBOL 360 extension of first letter of trace type accepted since CSNOBOL4 2.0>.
 
