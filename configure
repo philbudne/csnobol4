@@ -1033,7 +1033,7 @@ elif config/check "sys/time.h sys/resource.h" \
     # runtimes on BSD44 based systems; time deltas in &TRACE can
     # appear negative!!
     case "$OS" in
-    FreeBSD|NetBSD|BSD/OS|BSD/386|Darwin|4.4BSD|OpenBSD)
+    FreeBSD|NetBSD|BSD/OS|BSD/386|Darwin|4.4BSD|OpenBSD|DragonFly)
 	echo '#define GETRUSAGE_BUG'		>> $CONFIG_H
 	;;
     esac
@@ -1200,7 +1200,7 @@ fi
 
 FORKPTY="int f; pid_t pid = forkpty(&f, 0, 0, 0);"
 if config/check "sys/types.h libutil.h" "$FORKPTY" -lutil; then
-    # FreeBSD
+    # FreeBSD, DragonFly
     echo 'using forkpty() with libutil.h and -lutil' 1>&2
     echo '#define HAVE_LIBUTIL_H'	>> $CONFIG_H
     echo "ADD_SNOBOL4_LDFLAGS([-lutil])" >> $CONFIG_M4
@@ -1380,7 +1380,7 @@ if config/check dlfcn.h 'dlopen("", 0)' || \
 	    fi
 	    TRY_UNDERSCORE=true
 	    ;;
-	*BSD*)
+	*BSD*|DragonFly*)
 	    if file /bin/ls | grep -i elf >/dev/null; then
 		# only on ELF systems
 		# (make all symbols visible to dynamically loaded code)
