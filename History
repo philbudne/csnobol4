@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+*** 2.2.2-pre1 (tag REL_2_2_2_PRE1)
+
+11/17/2021:
+	configure: change version to 2.2.2-pre1
+
 7/7/2021:
 	doc/snobol4func.1.pea: improve TRACE function info
 
