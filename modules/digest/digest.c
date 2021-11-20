@@ -97,7 +97,7 @@ DIGEST_INIT( LA_ALIST ) {
     if (!ctx)
 	RETFAIL;
 
-    alg = mgetstring(LA_PTR(0));
+    alg = nmgetstring(LA_PTR(0));
     if (!alg)
 	goto fail;
     

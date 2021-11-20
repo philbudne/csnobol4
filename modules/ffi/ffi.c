@@ -159,7 +159,7 @@ free_cifplus(void *x) {
 lret_t
 FFI_PREP_CIF( LA_ALIST ) {
     struct cifplus *cpp = NULL;
-    char *cp = mgetstring(LA_PTR(0));
+    char *cp = nmgetstring(LA_PTR(0));
     ffi_type *rtype, **atypes = NULL;
     char *xp, *comma, *rp;
     int n = 0;
@@ -409,7 +409,7 @@ lret_t
 FFI_DLOPEN( LA_ALIST ) {
     snohandle_t h;
     // take empty string to mean NULL pointer
-    char *str = LA_PTR(0) ? mgetstring(LA_PTR(0)) : NULL;
+    char *str = nmgetstring(LA_PTR(0));
 
     /* XXX should call out to load.c!!! */
     void *dl = dlopen(str, RTLD_LAZY);	/* XXX take mode arg??? */

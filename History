@@ -2,6 +2,15 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/20/2021:
+	lib/snolib/getstring.c: add nmgetstring (check for, return NULL)
+	include/load.h: add nmgetstring prototype
+	Use nmgetstring in places checking for NULL before OR after
+	    (may cure some SMALL memory leaks (after a malloc failure?)
+		lib/snolib/file.c, modules/digest/digest.c
+		modules/ffi/ffi.c, modules/sqlite3/sqlite3mod.c
+		modules/time/time.c
+
 11/18/2021:
 	configure: add support for DragonFly (reported by Harald Arnesen)
 

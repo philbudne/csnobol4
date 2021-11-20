@@ -195,7 +195,7 @@ SQLITE3_PREPARE( LA_ALIST ) {
      * ... _COULD_ do a memchr to check for NUL
      */
     {
-	char *stmt = mgetstring(LA_PTR(1));
+	char *stmt = nmgetstring(LA_PTR(1));
 	if (!stmt)
 	    RETFAIL;
 	/* supposedly faster to call with strlen(stmt)+1 */

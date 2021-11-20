@@ -223,13 +223,15 @@ STRPTIME_( LA_ALIST ) {
     struct tm tm;
     char *ret;
     char *format;
-    char *input = mgetstring(LA_PTR(0));
+    char *input = nmgetstring(LA_PTR(0));
     (void) nargs;
     if (!input)
 	RETFAIL;
-    format = mgetstring(LA_PTR(1));
-    if (!format)
+    format = nmgetstring(LA_PTR(1));
+    if (!format) {
+	free(input);
 	RETFAIL;
+    }
     memset(&tm, 0, sizeof(tm));		/* sno2tm(LA_PTR(2), &tm); ? */
     ret = strptime(input, format, &tm);
     free(input);

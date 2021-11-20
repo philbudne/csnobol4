@@ -75,8 +75,8 @@ FILE_LIB_FIND( LA_ALIST ) {
 	RETSTR_FREE(fname);
     }
     else {
-	char *dir = LA_PTR(0) ? mgetstring(LA_PTR(0)) : NULL;
-	char *ext = LA_PTR(2) ? mgetstring(LA_PTR(2)) : NULL;
+	char *dir = nmgetstring(LA_PTR(0));
+	char *ext = nmgetstring(LA_PTR(2));
 	char *ret = io_lib_find(dir, fname, ext);
 	if (dir)
 	    free(dir);

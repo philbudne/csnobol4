@@ -54,3 +54,12 @@ mgetstring(const void *vp) {		/* pointer to "natural variable" */
 
     return cp;
 }
+
+/* perform malloc, getstring, return NULL if arg was null */
+SNOLOAD_API(char *)
+nmgetstring(const void *vp) {	   /* pointer to "natural variable" */
+    if (!vp)
+	return NULL;
+    return mgetstring(vp);
+}
+
