@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/04/2021:
+	COPYRIGHT, README: Update Copyright years
+
 11/20/2021:
 	lib/snolib/getstring.c: add nmgetstring (check for, return NULL)
 	include/load.h: add nmgetstring prototype
