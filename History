@@ -2,10 +2,15 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
-12/08/2021:
+*** 2.2.2 (tag REL_2_2_2)
+
+12/8/2021:
+	configure: change version to 2.2.2
+
+12/8/2021:
 	include/msvc/vars.h: add $v to VARS (v between a and z)
 
-12/04/2021:
+12/4/2021:
 	COPYRIGHT, README: Update Copyright years
 
 11/20/2021:
