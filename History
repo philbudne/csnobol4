@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/08/2021:
+	include/msvc/vars.h: add $v to VARS (v between a and z)
+
 12/04/2021:
 	COPYRIGHT, README: Update Copyright years
 
