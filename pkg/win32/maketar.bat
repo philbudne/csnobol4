@@ -5,7 +5,7 @@ rem Windows 10 comes with tar utility, but not zip?!
 setlocal
 set /P VERS=<version
 
-rmdir SNOBOL4 /Q /S
+if exist SNOBOL4 rmdir SNOBOL4 /Q /S
 mkdir SNOBOL4
 call pkg\win32\install.bat %CD%\SNOBOL4
 
