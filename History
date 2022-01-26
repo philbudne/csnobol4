@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+1/26/2022:
+	doc/snobol4func.1.pea: Fix description of COPY.
+
 12/8/2021:
 	pkg/win32/maketar.bat: add "if exist" before rmdir
 

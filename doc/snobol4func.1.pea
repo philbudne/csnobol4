@@ -85,8 +85,8 @@ Supports conversion to B<NUMERIC>,
 I<SPITBOL 360 extension, added in CSNOBOL4 version 0.99.4>.
 
 =item B<COPY(>I<value>B<)>
-Data: returns a copy of the supplied I<value>.  Copies of 
-B<ARRAY>, B<DATA> and B<TABLE> objects are ``shallow'': the returned
+Data: returns a copy of the supplied I<value>.  Must be an
+B<ARRAY> or a B<DATA> object. Copy is `shallow'': the returned
 object will point to the same objects as the source container.
 I<Standard>.
 
