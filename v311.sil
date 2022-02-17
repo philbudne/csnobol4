@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* Revision 1.147  2020-10-14 22:45:47  phil
+* [PLB131] call FREEPARM
+*
 * Revision 1.146  2020/10/07 00:45:00  phil
 * [PLB130] implement handling for type "M"
 * (malloc'ed linked string) in LNKFNC.
@@ -1209,7 +1212,7 @@ FATBLK RCALL   FBLOCK,BLOCK,FBLKRQ Allocate new function block
 *
 BLOCK  PROC    ,		   Procedure to allocate blocks
        POP     ARG1CL		   Restore size to allocate
-       ACOMP   ARG1CL,SIZLMT,SIZERR,SIZERR
+       PCOMP   ARG1CL,SIZLMT,SIZERR,SIZERR			[PLB132]
 *				   Check against size limit
 BLOCK1 MOVD    BLOCL,FRSGPT	   Position pointer to title
        MOVV    BLOCL,ARG1CL	   Move data type
@@ -1253,7 +1256,7 @@ LOCA2  MOVD    LSTPTR,BUKPTR	   Save working copy
 *_
 LOCA5  GETLG   AXPTR,SPECR1	   Get length of string
        GETLTH  BKLTCL,AXPTR	   Compute space required
-       ACOMP   BKLTCL,SIZLMT,SIZERR
+       PCOMP   BKLTCL,SIZLMT,SIZERR				[PLB132]
 *				   Check against size limit
 LOCA7  MOVD    LCPTR,FRSGPT	   Point to position in storage
        SETVC   LCPTR,S		   Set data type to STRING
@@ -1315,7 +1318,7 @@ CONVAR PROC    GENVAR		   Procedure to get space for variable
        AEQLC   AXPTR,0,,RT1NUL	   Avoid null string
        SETAC   CONVSW,1		   Note CONVAR entry
        GETLTH  BKLTCL,AXPTR	   Get space required
-       ACOMP   BKLTCL,SIZLMT,SIZERR
+       PCOMP   BKLTCL,SIZLMT,SIZERR				[PLB132]
 *				   Check against size limit
        SUM     TEMPCL,FRSGPT,BKLTCL
 *				   Skip required space
@@ -4708,7 +4711,7 @@ ASSOC  PROC    ,		   TABLE(N,M)
        RCALL   WPTR,INTVAL,,FAIL   Get secondary allocation
        MULT    ZPTR,WPTR,DSCRTW,SIZERR				E3.10.4
        INCRA   ZPTR,2*DESCR					E3.10.4
-       ACOMP   ZPTR,SIZLMT,SIZERR,SIZERR			E3.10.4
+       PCOMP   ZPTR,SIZLMT,SIZERR,SIZERR			E3.10.4 [PLB132]
        POP     XPTR		   Restore size
        ACOMPC  XPTR,0,ASSOC1,,LENERR
        SETAC   XPTR,EXTSIZ

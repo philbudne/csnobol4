@@ -22,6 +22,8 @@ LARGEFILE_OK=true
 # inline by default
 INLINE_OK=true
 
+VSIZE=32
+
 # debug this script
 DEBUG=
 
@@ -243,6 +245,13 @@ while [ $# -gt 0 ]; do
 	    echo "$TCONF is not a file or directory" 1>&2
 	    exit 1
 	fi
+	;;
+    --xxl)
+	# EXPERIMENTAL (undocumented):
+	# allow objects larger than 2^32 descriptors for Dani Richard.
+	# 64-bit V field on 64-bit systems (24 byte descriptors)
+	# Breaks loadable extension ABI (must recompile)
+	XXL=true
 	;;
     '')
 	;;
@@ -829,7 +838,7 @@ esac
 if [ "$LP64" ]; then
     # In 64-bit environments, alignment restrictions on int_t/pointer
     # data is likely to pad descriptors out to 16 bytes, so don't pack
-    # DESCR "v" field into 24 bits.
+    # DESCR "v" field into 24 bits. See also "xxl" (64-bit "v" field)
     NO_BITFIELDS=true
 
     # make real_t same size as int_t
@@ -940,13 +949,16 @@ fi
 
 if [ "$NO_BITFIELDS" ]; then
     echo '#define NO_BITFIELDS'			>> $CONFIG_H
-
-    if [ "$LONGLONG" -o "$LP64" ]; then
-	# int_t is wide, so should be safe to use all 32-bits of "v" field
+    if [ "$XXL" -a "$LP64" ]; then
+	echo '#define VFLD_T unsigned long'	>> $CONFIG_H
+	# avoids &MAXLNGTH displaying as -1:
+	echo '#define SIZLIM 0x7fffffffffffffff' >> $CONFIG_H
+    elif [ "$LONGLONG" -o "$LP64" ]; then
+	# int_t is wide, so should be safe to use all 32-bits of "v" (int) field
 	# (can't be confused for a negative int_t)
+	# otherwise snotypes uses 2^31-1 if NO_BITFIELDS defined.
 	echo '#define SIZLIM (~(VFLD_T)0)'	>> $CONFIG_H
     fi
-    # otherwise snotypes uses 2^31-1 if NO_BITFIELDS defined.
 fi
 
 if [ "$DOUBLE" ]; then

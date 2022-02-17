@@ -682,7 +682,6 @@ init_signals(void) {
     /*
      * setup signal handlers
      */
-
     signal( SIGINT, sig_catch );
 
     /* catch bad memory references */

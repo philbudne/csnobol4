@@ -70,6 +70,7 @@ union addr {
  * 24b	32b	8B	16MB	2MD	(default)
  * 32b	32b	12B**	2GB*	171MD
  * 32b 	64b	16B	4GB	256MD	(--lp64, --longlong)
+ * 64b  64b	24B	18.4EB	768.6PD (--lp64 + --xxl)
  *
  * (*) SIZLIM must not appear negative when stored in an int_t
  * (**) Alignment allowing

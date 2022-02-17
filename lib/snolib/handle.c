@@ -24,7 +24,7 @@
 
 #define HANDLE_HASH_SIZE (1<<8)		/* power of two */
 
-typedef unsigned int handle_datatype_t;	/* must fit in vfld */
+typedef VFLD_T handle_datatype_t;	/* must fit in vfld */
 static VAR handle_datatype_t next_handle_datatype; /* TLS?? */
 static TLS char in_handle_cleanup;
 
