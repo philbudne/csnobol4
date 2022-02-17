@@ -124,6 +124,8 @@ allow too few function arguments to APPLY?
 allow OPSYN of "[" ?  underlying function looks at arg count??
 
 Newer GUI options (by embedding lua?)
+    https://github.com/cimgui/cimgui ??
+	C interface is exposed by cimgui.h when you define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
     wxWidgets
     GTK+
     Qt
