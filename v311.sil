@@ -1,6 +1,13 @@
 * $Id$
 *
 * $Log$
+* Revision 1.148  2022-02-17 01:44:12  phil
+* EXPERIMENTAL: allow 64-bit V field on LP64 for Dani Richard
+* configure: add --xxl (defines VFLD_T as unsigned long)
+* v311.sil: [PLB132] use PCOMP for SIZLMT tests
+* include/snotypes.h: add comment for 64-bit v field
+* lib/snolib/handle.c: use VFLD_T for handle_datatype_t
+*
 * Revision 1.147  2020-10-14 22:45:47  phil
 * [PLB131] call FREEPARM
 *
