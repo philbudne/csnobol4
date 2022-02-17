@@ -3,6 +3,9 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 2/14/2022:
+	configure: change version to 2.2.2+
+
+2/14/2022:
 	EXPERIMENTAL: allow 64-bit V field on LP64 for Dani Richard
 	configure: add --xxl (defines VFLD_T as unsigned long)
 	v311.sil: [PLB132] use PCOMP for SIZLMT tests
