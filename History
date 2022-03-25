@@ -2,6 +2,12 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+*** 2.3 (tag REL_2_3)
+
+3/25/2022:
+	LOTS: switch to regressive.org for web & mail
+	configure: change version to 2.3
+
 2/14/2022:
 	configure: change version to 2.2.2+
 

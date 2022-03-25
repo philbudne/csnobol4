@@ -192,13 +192,13 @@ Using B<SNOBOL_PRELOAD_PATH> will make your code less portable.
 =row B<snopea>(7)	A little ``Plain Old Documentation'' format for SNOBOL4
 =etable
 
-=item L<http://www.snobol4.org>
+=item L<http://www.regressive.org/snobol4>
 All things SNOBOL4 related.
 
 =item L<http://www.snobol4.com>
 Catspaw: commercial SPITBOL implementations, Free SNOBOL4+ for DOS.
 
-=item L<http://www.snobol4.org/doc/burks/tutorial/contents.htm>
+=item L<http://www.regressive.org/snobol4/doc/burks/tutorial/contents.htm>
 SNOBOL4 language tutorial (from Catspaw Vanilla SNOBOL4)
 
 =anchor Griswold1971
@@ -206,22 +206,22 @@ SNOBOL4 language tutorial (from Catspaw Vanilla SNOBOL4)
 R. E. Griswold, J. F. Poage, and I. P. Polonsky,
 I<The SNOBOL4 Programming Language>, 2nd ed., Prentice-Hall Inc., 1971.
 I<(aka the ``green book'')>
-L<http://www.snobol4.org/docs/books.html#green>
+L<http://www.regressive.org/snobol4/docs/books.html#green>
 
 =anchor Griswold1972
 =item [Griswold1972]
 R. E. Griswold,
 I<The Macro Implementation of SNOBOL4>, W. H. Freeman and Co., 1972.
 Book describing the implementation techniques used in Macro SNOBOL4.
-L<http://www.snobol4.org/docs/books.html#macro>
+L<http://www.regressive.org/snobol4/docs/books.html#macro>
 
-=item L<http://www.snobol4.org/doc/burks/manual/contents.htm>
+=item L<http://www.regressive.org/snobol4/doc/burks/manual/contents.htm>
 Catspaw Vanilla SNOBOL4 manual.
 
 =item L<ftp://ftp.snobol4.com/spitman.pdf>
 Catspaw Macro SPITBOL manual
 
-=item L<http://www.snobol4.org/docs/books.html#orange>
+=item L<http://www.regressive.org/snobol4/docs/books.html#orange>
 I<Algorithms in SNOBOL4>, James F. Gimpel, Wiley, New York, 1976.
 
 =sect AUTHORS

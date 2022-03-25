@@ -7,8 +7,8 @@ and also a benchmarking script:
 	timing.bat >timing.txt
 
        ********************************************************
-       Please consider mailing timing.txt to timing@snobol4.org
-  Anonymized results are posted at http://www.snobol4.org/csnobol4/
+       Please consider mailing timing.txt to snobol4-timing@regressive.org
+  Anonymized results are posted at http://www.regressive.org/snobol4/csnobol4/
       And you will be notified when test versions are available.
        ********************************************************
 

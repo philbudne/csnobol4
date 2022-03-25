@@ -8,7 +8,7 @@
 	t['ldflags'] = NDBM_LDFLAGS
 	
 	t['author'] = t['maintainer'] = 'Phil Budne'
-	t['author_email'] = t['maintainer_email'] = 'phil@snobol4.org'
+	t['author_email'] = t['maintainer_email'] = 'phil@regressive.org'
 	t['license'] = 'BSD'
 * description
 * long_description

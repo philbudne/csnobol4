@@ -1,7 +1,7 @@
 PKG="CSNOBOL4"
 NAME="The Macro Implementation of SNOBOL4 in C"
 CATEGORY=application
-VENDOR="www.snobol4.org"
+VENDOR="www.regressive.org/snobol4"
 BASEDIR=/usr/local
 VERSION=1.1
 DESC="Portable implementation of SNOBOL4, with SPITBOL and SNOBOL4+ extensions"

@@ -5,7 +5,7 @@ Release: 1
 Copyright: distributable
 Group: Development/Languages
 Source: ftp://ftp.snobol4.org/snobol/snobol4-1.1.tar.gz
-URL: http://www.snobol4.org/csnobol4/
+URL: http://www.regressive.org/snobol4/csnobol4/
 
 %description
 A port of the original Macro implementation of SNOBOL4

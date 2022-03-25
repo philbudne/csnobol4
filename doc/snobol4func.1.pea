@@ -620,7 +620,7 @@ An ``accessor'' is a function which returns it's value by NAME
 Descriptions are too brief!!
 
 See 
-=link http://www.snobol4.org/docs/books.html#green
+=link http://www.regressive.org/snobol4/docs/books.html#green
 for I<Standard> function definitions.
 
 Need to research origins of Macro SPITBOL extensions.

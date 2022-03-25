@@ -1,7 +1,7 @@
 /*
  * $Id$
  * In-memory zlib compress/decompress/crc in the manner of Python zlib module
- * Phil Budne <phil@snobol4.org>
+ * Phil Budne <phil@regressive.org>
  * November 2020
  */
 #ifdef HAVE_CONFIG_H

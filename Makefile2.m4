@@ -354,8 +354,8 @@ timing.out: tested timing timing.sno test/bench.sno test/v311.sil
 	./timing > timing.out.tmp
 	mv timing.out.tmp timing.out
 	@echo '********************************************************' 1>&2
-	@echo 'Please consider mailing timing.out to timing@snobol4.org' 1>&2
-	@echo 'Anonymized results are posted at http://www.snobol4.org' 1>&2
+	@echo 'Please consider mailing timing.out to snobol4-timing@regressive.org' 1>&2
+	@echo 'Anonymized results are posted at http://www.regressive.org/snobol4' 1>&2
 	@echo 'And you will be notified when test versions are available.' 1>&2
 	@echo '********************************************************' 1>&2
 
@@ -777,7 +777,7 @@ ifdef([INSTALL_DOCS],[dnl
 ifdef([INSTALL_SYSDEP],[	]INSTALL_SYSDEP
 ,)dnl
 	@echo '*********************************************************' 1>&2
-	@echo 'Have you mailed a copy of timing.out to timing@snobol4.org ?' 1>&2
+	@echo 'Have you mailed a copy of timing.out to snobol4-timing@regressive.org ?' 1>&2
 	@echo '*********************************************************' 1>&2
 
 printenv:

@@ -16,7 +16,7 @@ uselib	t['libraries'] = 'sqlite3'
 	t['library_dirs'] = SQLITE_LIBDIR
 
 skiplib	t['author'] = t['maintainer'] = 'Phil Budne'
-	t['author_email'] = t['maintainer_email'] = 'phil@snobol4.org'
+	t['author_email'] = t['maintainer_email'] = 'phil@regressive.org'
 	t['license'] = 'BSD'
 	t['tests'] = 'testdbm.sno'
 

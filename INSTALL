@@ -312,7 +312,7 @@ If this occurs, or if the build does not succeed, you can consult
 doc/porting.txt (also available as html) for information on the
 available options for use in creating a system-specific config file.
 
-If you need assistance please contact me (phil@snobol4.org).
+If you need assistance please contact me (phil@regressive.org).
 
 I've spent MANY hours working on this release (time, which if I had
 billed a client would have been in the tens of thousands of dollars),
@@ -334,7 +334,7 @@ The snobol4 (PREFIX/bin/snobol4), library directory
 (PREFIX/lib/snobol4) and man page (PREFIX/man/man1/snobol4.1).  The
 default PREFIX is /usr/local, see --prefix= configure option above).
 
-Please mail timing.out files to timing@snobol4.org!!!
+Please mail timing.out files to snobol4-timing@regressive.org!!!
 
 For more information on configuration, see the next section:
 "Advanced configuration".
@@ -510,8 +510,8 @@ Let me know!
 
 Please let me know of your success and failures to bring up CSNOBOL4!
 
-Please mail timing.out files to timing@snobol4.org
-Anonymized results are published at http://www.snobol4.org/csnobol4/
+Please mail timing.out files to snobol4-timing@regressive.org
+Anonymized results are published at http://www.regressive.org/snobol4/csnobol4/
 And you will be notified when test versions are available.
 
 Announcements of new releases are made on the SNOBOL4 mailing list.

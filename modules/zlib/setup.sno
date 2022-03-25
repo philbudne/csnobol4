@@ -6,7 +6,7 @@
 	t['libraries'] = 'z'
 
 	t['author'] = t['maintainer'] = 'Phil Budne'
-	t['author_email'] = t['maintainer_email'] = 'phil@snobol4.org'
+	t['author_email'] = t['maintainer_email'] = 'phil@regressive.org'
 	t['license'] = 'zlib'
 * description
 * long_description

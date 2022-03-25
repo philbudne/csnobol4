@@ -5,7 +5,7 @@
 	t['sources'] = 'base64.c'
 
 	t['author'] = t['maintainer'] = 'Phil Budne'
-	t['author_email'] = t['maintainer_email'] = 'phil@snobol4.org'
+	t['author_email'] = t['maintainer_email'] = 'phil@regressive.org'
 	t['license'] = 'ISC'
 * description
 * long_description

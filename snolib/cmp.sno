@@ -1,7 +1,7 @@
 * $Id$
 * simple file compare (ala Un*x "cmp" command)
 * for tests
-* Phil Budne <phil@snobol4.org>
+* Phil Budne <phil@regressive.org>
 * October 25, 2020
 
 -INCLUDE 'ezio.sno'
