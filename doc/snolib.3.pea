@@ -19,16 +19,30 @@ in the local character set.
 
 =item dynamic.sno
 functions to compile and link dynamicly LOADable extensions.
+B<snobol4ffi>(3) provides similar functionality at run time.
+
+=item ezio.sno
+Alternative OPEN function, without the need for unit numbers, see
+B<snobol4ezio>(3).
 
 =item fence.sno, not.sno
 Emulation of SPITBOL B<FENCE()> and B<NOT()> functions
 thanks to Peter-Arno Coppen.
 
 =item host.sno
-Function codes for B<HOST()> function.
+Function codes for B<HOST()> function, see
+B<snobol4host>(3).
+
+=item json.sno
+Functions to read/write JSON subset, see
+B<snobol4json>(3).
 
 =item serv.sno
 Example TCP server program.
+
+=item setup.sno
+Helper for building loadable modules, see
+B<snobol4setup>(3).
 
 =item smtp.sno
 Example code to send mail via TCP/SMTP.
@@ -58,11 +72,15 @@ Experimental routines for handling UTF encoded (Unicode) data.
 Routines for creating C code wrappers for dynamicly loading code.
 
 =sect SEE ALSO
+
 B<snobol4>(1),
-B<snobol4dirs>(3), B<snobol4ffi>(3), B<snobol4fork>(3),
-B<snobol4logic>(3), B<snobol4ndbm>(3), B<snobol4random>(3),
+B<snobol4base64>(3), B<snobol4digest>(3), B<snobol4dirs>(3),
+B<snobol4ezio>(3), B<snobol4ffi>(3), B<snobol4fork>(3),
+B<snobol4host>(3), B<snobol4json>(3), B<snobol4logic>(3),
+B<snobol4ndbm>(3), B<snobol4random>(3), B<snobol4readline>(3),
 B<snobol4setup>(3), B<snobol4sprintf>(3), B<snobol4sqlite3>(3),
-B<snobol4stat>(3), B<snobol4tcl>(3), B<snobol4time>(3).
+B<snobol4stat>(3), B<snobol4stcl>(3), B<snobol4time>(3),
+B<snobol4zlib>(3).
 
 =sect AUTHOR
 Philip Budne

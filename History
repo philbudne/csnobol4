@@ -3,6 +3,9 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 3/31/2022:
+	doc/snolib.3.pea: update
+
+3/31/2022:
 	include/snotypes.h: fix 32-bit compilation!
 		reported by Neil Rowe
 
