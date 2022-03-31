@@ -31,13 +31,29 @@ union addr {
 #define FRZN	040			/* [PLB34] table frozen */
 /* only one bit left! */
 
-#ifdef NO_BITFIELDS
-#ifndef VFLD_T
-#define VFLD_T unsigned int		/* at least 32 bits */
-#endif /* VFLD_T not defined */
+/*
+ * At least 8 bits; making it larger would make descriptors
+ * larger on ILP32 systems where packed along with 24-bit V field.
+ * Relative expese of signed vs unsigned may depend on ISA?
+ */
+
 #ifndef FFLD_T
 #define FFLD_T char
 #endif /* FFLD_T not defined */
+
+/*
+ * type large enough to hold V field
+ * (actual field in struct descr may be smaller)
+ */
+#ifndef VFLD_T
+#define VFLD_T unsigned int		/* at least 32 bits */
+#endif /* VFLD_T not defined */
+
+#ifdef NO_BITFIELDS
+
+#define VFLD(name) VFLD_T name
+#define FFLD(name) FFLD_T name
+
 #ifndef SIZLIM
 /*
  * NOTE!! SIZLIM must not appear negative when stored in an int_t.
@@ -46,19 +62,21 @@ union addr {
 #define SIZLIM 0x7fffffff		/* maximum object size (31 bits) */
 #endif /* SIZLIM not defined */
 
-#define VFLD(name) VFLD_T name
-#define FFLD(name) FFLD_T name
-
 #else  /* NO_BITFIELDS not defined */
-#define VFLD(name) unsigned name : 24
+
+/* here with bitfields (ILP32 systems) */
+
+#define VFLD(name) VFLD_T name : 24
+#define SIZLIM 0xffffff
+
 #ifdef BITFIELDS_SAME_TYPE
 /* MicroSoft C won't pack fields unless  they're of the same base type!! */
 /* gcc 3.3.1 (SuSE Linux) produces broken executable with this!! */
-#define FFLD(name) unsigned name : 8
+#define FFLD(name) VFLD_T name : 8
 #else  /* BITFIELDS_SAME_TYPE not defined */
-#define FFLD(name) char name
+#define FFLD(name) FFLD_T name
 #endif /* BITFIELDS_SAME_TYPE not defined */
-#define SIZLIM 0xffffff
+
 #endif /* NO_BITFIELDS not defined */
 
 /*
