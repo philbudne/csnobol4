@@ -10,8 +10,8 @@
 
 	KSS = -1
 
-	OUTPUT(.TTY, IO_FINDUNIT(),, '/dev/tty')
-	TTY = 'Min runtime ' MIN_SEC 's.; Maximum: ' MAX_SEC 's.'
+*	OUTPUT(.TTY, IO_FINDUNIT(),, '/dev/tty')
+*	TTY = 'Min runtime ' MIN_SEC 's.; Maximum: ' MAX_SEC 's.'
 
 *
 *	Translator for the "Macro Implementation of SNOBOL" (aka MAINBOL)
@@ -1560,9 +1560,9 @@ XEND2	UNINDENT()
 	OSS = SS
 	SS = CONVERT((st / t) + 0.5, 'INTEGER')
 
-	TTY = LPAD(LOOPS,4) ' loops; ' 
-+		LPAD(TDISP,8) '; ' LPAD(st / 1000,7) ' Kstmts; '
-+		SS  ' Kst/sec'
+*	TTY = LPAD(LOOPS,4) ' loops; ' 
+*+		LPAD(TDISP,8) '; ' LPAD(st / 1000,7) ' Kstmts; '
+*+		SS  ' Kst/sec'
 
 * average at least ten loops:
 	LT(LOOPS, 10)					:S(AGAIN)

@@ -3,6 +3,9 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 4/4/2022:
+	test/bench.sno: comment out remaining TTY output
+
+4/4/2022:
 	Makefile2.m4: make *_modules depend on snobol4
 		BUT parallel make still fails
 
