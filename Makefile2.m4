@@ -277,27 +277,27 @@ cpuid:	cpuid.c
 # NOTE! FreeBSD 3.2 (a pre-C99 test platform) does not have "make -C"
 RUNMAKE=SNOBOL4='../../snobol4 -N -I../.. -I../../snolib' $(MAKE)
 
-clean_modules:
+clean_modules: snobol4
 	for M in $(MODULES); do \
 	    (cd modules/$$M; $(RUNMAKE) clean) \
 	done
 
-build_modules:
+build_modules: snobol4
 	for M in $(MODULES); do \
 	    (cd modules/$$M; $(RUNMAKE) all) \
 	done
 
-debug_modules:
+debug_modules: snobol4
 	for M in $(MODULES); do \
 	    (cd modules/$$M; $(RUNMAKE) debug) \
 	done
 
-test_modules:
+test_modules: snobol4
 	for M in $(MODULES); do \
 	    (cd modules/$$M; $(RUNMAKE) test) \
 	done
 
-install_modules:
+install_modules: snobol4
 	for M in $(MODULES); do \
 	    (cd modules/$$M; $(RUNMAKE) install) \
 	done

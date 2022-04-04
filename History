@@ -2,6 +2,12 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+4/4/2022:
+	Makefile2.m4: make *_modules depend on snobol4
+		BUT parallel make still fails
+
+*** 2.3.1 (tag REL_2_3_1)
+
 3/31/2022:
 	configure: change version to 2.3.1
 
