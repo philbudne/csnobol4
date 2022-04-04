@@ -349,7 +349,7 @@ tlib: $(SO)/$(SOFILENAME) tlib.c
 ################
 # run regression tests.
 
-timing.out: tested timing timing.sno test/bench.sno test/v311.sil
+timing.out: snobol4 timing timing.sno test/bench.sno test/v311.sil
 	@echo Running timing script...
 	./timing > timing.out.tmp
 	mv timing.out.tmp timing.out
@@ -359,6 +359,7 @@ timing.out: tested timing timing.sno test/bench.sno test/v311.sil
 	@echo 'And you will be notified when test versions are available.' 1>&2
 	@echo '********************************************************' 1>&2
 
+# unsafe to depend on "tested"; may run twice in parallel??
 tested snobol4: xsnobol4 test/tests.in cpuid
 	@echo Running regression tests...
 	(cd test; BLOCKS=$(BLOCKS) SNOPATH=..:../snolib ./run.sh ../xsnobol4 -N)
