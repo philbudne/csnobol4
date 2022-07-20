@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+7/20/2022:
+	doc/snobol4cmd.1.pea: note that -h displays descr size.
+
 4/4/2022:
 	Makefile2.m4: make timing.out depend on snobol4, instead of tested
 		MAY help parallel make failure (running tests twice in parallel)?

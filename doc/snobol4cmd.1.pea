@@ -23,7 +23,7 @@ when large amounts of garbage collect.  Most programs do not need an
 increased dynamic region to run.  If your program terminates with an
 ``Insufficient storage to continue'' message you need to increase the
 dynamic storage region size.  The B<-h> option displays the default
-dynamic region size.
+dynamic region size, and descriptor size in bytes.
 
 =item B<-f>
 Toggle folding of identifiers to upper case
