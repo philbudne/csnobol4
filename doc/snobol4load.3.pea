@@ -16,8 +16,9 @@ I<modulename.c>:
     #include "macros.h"
     #include "load.h"
     #include "equ.h"
+    #include "module.h"
 
-    SNOBOL_MODULE(modulename)
+    SNOBOL4_MODULE(modulename)
 
     /*
     **\=pea
@@ -101,7 +102,8 @@ arg I<n> is a real of C type B<real_t> (fetch with B<LA_REAL(>I<n>B<)>)
 arg I<n> references a string (fetch with B<mgetstring> etc).
 
 Loadable code can be compiled and installed using B<snobol4setup>(3),
-which generates a I<modulename>.sno include file.
+which generates a I<modulename>.sno include file, and compiles and
+links a loadable module.
 
 =sect SEE ALSO
 B<snobol4>(1), B<snobol4setup>(3), B<snopea>(7)

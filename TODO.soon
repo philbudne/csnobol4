@@ -1,12 +1,14 @@
 $Id$
 
-announce 2.2.2 on comp.compilers!!
+announce on comp.compilers!!
 
 ================ 2.2+
 
 use ffi.c.nomagic?
 
 paired --with/--without?
+
+	--with-ssl=path???
 
 setuputil "make"; run Makefile.mod w/ MOD= (& SRC=) args?
 	or use FILE_NEWER?!!

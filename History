@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+11/21/2022:
+	doc/snobol4load.3.pea: add module.h, fix SNOBOL4_MODULE
+		found by Fred Smith
+
 7/20/2022:
 	doc/snobol4cmd.1.pea: note that -h displays descr size.
 
