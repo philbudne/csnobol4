@@ -3,6 +3,14 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 1/3/2023:
+	fix use of setuputil.sno from non-distribution directories on Windoze
+		(problem found by Fred Smith)
+	config/win32/config.h: default SNOBOL_BASE to C:\SNOBOL4
+		compose INCLUDE_DIR path
+	pkg/win32/install.bat: default SNOLIB to C:\SNOBOL4
+		install include/{str,module,handle}.h
+
+1/3/2023:
 	fixes for gcc-11 w/ -Wall (gcc-12 too)
 	lib/hash.c: add FALLTHROUGH comments
 	lib/{init,stream}.c: update FALL to FALLTHROUGH

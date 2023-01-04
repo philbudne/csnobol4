@@ -5,7 +5,7 @@ setlocal
 
 if NOT "%1" == "" set SNOLIB=%1
 rem Default set in config\win32\config.h:
-if not DEFINED SNOLIB set SNOLIB="C:\Program Files\SNOBOL4"
+if not DEFINED SNOLIB set SNOLIB="C:\SNOBOL4"
 
 if not exist %SNOLIB% mkdir %SNOLIB%
 if not exist %SNOLIB%\local mkdir %SNOLIB%\local
@@ -49,8 +49,11 @@ if not exist %INCDIR% mkdir %INCDIR%
 copy /y equ.h %INCDIR%
 copy /y version.h %INCDIR%
 copy /y include\h.h %INCDIR%
+copy /y include\str.h %INCDIR%
 copy /y include\load.h %INCDIR%
 copy /y include\macros.h %INCDIR%
+copy /y include\module.h %INCDIR%
+copy /y include\handle.h %INCDIR%
 copy /y include\snotypes.h %INCDIR%
 copy /y config\win32\config.h %INCDIR%
 

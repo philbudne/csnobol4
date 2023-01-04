@@ -29,11 +29,13 @@
 
 /* paths; */
 #define SNOLIB_FILE	"snolib.dll"
-#define SNOLIB_BASE	"C:\\Program Files\\SNOBOL4"
+#define SNOLIB_BASE	"C:\\SNOBOL4"
 #define SHARED_OBJ_SUBDIR "shared"
 #define DIR_SEP		"\\"
 #define PATH_SEP	";"
 #define DL_EXT		".dll"
+
+#define INCLUDE_DIR	SNOLIB_BASE DIR_SEP VERSION DIR_SEP "include"
 
 /* includes; */
 #define HAVE_SDBM_H
