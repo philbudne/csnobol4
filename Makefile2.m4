@@ -31,6 +31,10 @@ CMT()
 CMT([LDFLAGS for snobol4 (libs, MOSTLY)])
 define([ADD_SNOBOL4_LDFLAGS],[divert(7) $1[]divert(0)dnl])dnl
 define([_SNOBOL4_LDFLAGS],[undivert(7)])dnl
+CMT()
+CMT([extra C compiler flags for (i)snobol4.c])
+define([ADD_SNOBOL4_C_CFLAGS],[divert(8) $1[]divert(0)dnl])dnl
+define([_SNOBOL4_C_CFLAGS],[undivert(8)])dnl
 
 ################################################################
 # defaults (may be overridden in config.m4)
@@ -196,6 +200,8 @@ LDFLAGS=$(CONFIG_LDFLAGS) _SNOBOL4_LDFLAGS
 
 CONFIG_CFLAGS=[]_CFLAGS
 CFLAGS=$(CONFIG_CFLAGS) $(COPT) $(MYCPPFLAGS) 
+
+SNOBOL4_C_CFLAGS=[]_SNOBOL4_C_CFLAGS
 
 ################
 

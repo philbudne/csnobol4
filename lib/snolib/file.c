@@ -71,6 +71,8 @@ pmlret_t
 FILE_LIB_FIND( LA_ALIST ) {
     char *fname = mgetstring(LA_PTR(1));
 
+    (void) nargs;
+
     if (abspath(fname)) {
 	RETSTR_FREE(fname);
     }
