@@ -85,6 +85,15 @@ static struct pid {
 	pid_t pid;
 } *pidlist; 
 	
+
+#if __GNUC__ > 4 
+/*
+ * gcc 11.3 complains type & twoway might be clobbered by longjmp or vfork
+ * push/pop added in gcc 4.6?
+ */
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wclobbered"
+#endif
 FILE *
 popen(const char *command, const char *type) {
 	struct pid *cur, *old;
@@ -171,6 +180,9 @@ popen(const char *command, const char *type) {
 
 	return (iop);
 }
+#if __GNUC__ > 4 
+#pragma GCC diagnostic pop
+#endif
 
 /*
  * pclose --

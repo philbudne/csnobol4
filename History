@@ -3,6 +3,12 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 1/3/2023:
+	fixes for gcc-11 w/ -Wall (gcc-12 too)
+	lib/hash.c: add FALLTHROUGH comments
+	lib/{init,stream}.c: update FALL to FALLTHROUGH
+	lib/bsd/popen.c: add pragmae for spurrious clobbered warning
+
+1/3/2023:
 	configure: emit ADD_SNOBOL4_C_CFLAGS
 	Makefile2.m4: add ADD_SNOBOL4_C_CFLAGS
 		my local-config now contains:

@@ -163,7 +163,7 @@ getk(char *str, size_t *out) {
 	    val *= 1024*1024;
 	else
 	    return 0;			/* bad suffix; fail */
-	/* FALL */
+	/*FALLTHROUGH*/
     case 1:				/* just number */
 	*out = val;
 	return 1;			/* return OK */

@@ -88,7 +88,7 @@ stream(
 	    break;
 	case AC_STOP:
 	    cp++; len--;		/* accept */
-	    /* FALL */
+	    /*FALLTHROUGH*/
 	case AC_STOPSH:
 	    ret = ST_STOP;
 	    goto break_loop;

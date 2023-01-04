@@ -116,17 +116,17 @@ hash(struct descr *dp, struct spec *sp) {
 
     c += length;
     switch (len) {
-    case 11: c+=((ub4)cp[10]<<24);
-    case 10: c+=((ub4)cp[9]<<16);
-    case 9:  c+=((ub4)cp[8]<<8);
+    case 11: c+=((ub4)cp[10]<<24);	/*FALLTHROUGH*/
+    case 10: c+=((ub4)cp[9]<<16);	/*FALLTHROUGH*/
+    case 9:  c+=((ub4)cp[8]<<8);	/*FALLTHROUGH*/
 	/* the first byte of c is reserved for the length */
-    case 8:  b+=((ub4)cp[7]<<24);
-    case 7:  b+=((ub4)cp[6]<<16);
-    case 6:  b+=((ub4)cp[5]<<8);
-    case 5:  b+=cp[4];
-    case 4:  a+=((ub4)cp[3]<<24);
-    case 3:  a+=((ub4)cp[2]<<16);
-    case 2:  a+=((ub4)cp[1]<<8);
+    case 8:  b+=((ub4)cp[7]<<24);	/*FALLTHROUGH*/
+    case 7:  b+=((ub4)cp[6]<<16);	/*FALLTHROUGH*/
+    case 6:  b+=((ub4)cp[5]<<8);	/*FALLTHROUGH*/
+    case 5:  b+=cp[4];			/*FALLTHROUGH*/
+    case 4:  a+=((ub4)cp[3]<<24);	/*FALLTHROUGH*/
+    case 3:  a+=((ub4)cp[2]<<16);	/*FALLTHROUGH*/
+    case 2:  a+=((ub4)cp[1]<<8);	/*FALLTHROUGH*/
     case 1:  a+=cp[0];
     /* case 0: nothing left to add */
     }
