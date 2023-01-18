@@ -19,6 +19,9 @@
 **-INCLUDE 'host.sno'
 **=ecode
 **=sect DESCRIPTION
+**The B<HOST> function is a Macro SPITBOL extension.
+**CSNOBOL4 aims to be compatible with Catspaw SPITBOL,
+**and also implements many CSNOBOL4 specific extensions.
 **=cut
 */
 
@@ -474,7 +477,7 @@
 
 /*
 **=pea
-**=item B<HOST(HOST_SNOPATH_DIR)>
+**=item B<HOST(HOST_SNOPATH_DIR, n)>
 **CSNOBOL4: return n'th element in search directory list
 **=cut
 */

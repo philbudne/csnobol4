@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+1/18/2023:
+	lib/snolib/host.h: fix HOST_SNOPATH_DIR documentation, add intro.
+
 1/3/2023:
 	fix use of setuputil.sno from non-distribution directories on Windoze
 		(problem found by Fred Smith)
