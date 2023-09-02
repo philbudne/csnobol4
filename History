@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+9/2/2023:
+	lib/snolib/host.h: fix HOST(4,...) formatting
+
 1/18/2023:
 	lib/snolib/host.h: fix HOST_SNOPATH_DIR documentation, add intro.
 

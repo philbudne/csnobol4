@@ -85,7 +85,7 @@
 
 /*
 **=pea
-**=item B<HOST(4, I<string>B<)>
+**=item B<HOST(4>, I<string>B<)>
 **Catspaw SPITBOL: returns the value of the environment variable
 **named by I<string>.
 **=cut
