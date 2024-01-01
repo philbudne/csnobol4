@@ -2,6 +2,36 @@ $Id$
 
 For detailed revision history see History file
 
+CSNOBOL4 version 2.3.2 released 1/1/2024
+On the 60th anniversary of first published article on SNOBOL in JACM 1/1/1964:
+   https://dl.acm.org/doi/10.1145/321203.321207
+In Honor of Mike Radow, a SNOBOL4 fan, who died 1/19/2023.
+
+Changes since 2.3.1 release;
+===========================
+
+	Documentation fixes:
+		snobol4host formatting
+		snobol4load missing module.h include
+	Portability:
+		Clean up warnings from gcc v11
+	Windows changes:
+		Fix use of setupuptil.sno from non-distribution directories
+		Change default install directory to C:\SNOBOL4
+	Other:
+		Fix Makefile2 dependencies: may allow parallel make?
+		Quiet test/bench.sno output
+
+Version 2.3.1
+
+Changes since 2.3.0 release;
+===========================
+
+	Fix 32-bit compilation.
+	Update snolib(3) man page
+
+Version 2.3.0
+
 Changes since 2.1.6 release;
 ===========================
 	Compilation now requires an ANSI/ISO (C89/C90) C compiler,

@@ -2,6 +2,15 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+** 2.3.2 (tag REL_2_3_2)
+
+12/31/2023 (123123!):
+	configure: update to version 2.3.2 for Jan 1, 2024 release
+		60th anniversary of 1/1/1964 JACM article
+		   https://dl.acm.org/doi/10.1145/321203.321207
+		In Honor of Mike Radow, a SNOBOL4 fan,
+		   who died 1/19/2023.
+
 9/2/2023:
 	lib/snolib/host.h: fix HOST(4,...) formatting
 
