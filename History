@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+3/26/2024
+	modules/stat/funcs.sno: add BTIME, mark fields not always available.
+
 ** 2.3.2 (tag REL_2_3_2)
 
 12/31/2023 (123123!):
