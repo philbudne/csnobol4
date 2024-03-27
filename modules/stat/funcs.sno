@@ -66,7 +66,7 @@
 **Values will be the empty string if the
 **data is not available.
 **=sect SEE ALSO
-**B<snobol4>(1), B<stat>(2), B<lstat>(2), B<fstat>(2)
+**B<snobol4>(1), B<stat>(2), B<lstat>(2), B<fstat>(2), B<snobol4time>(3)
 **=sect AUTHOR
 **Philip L. Budne
 **=cut
