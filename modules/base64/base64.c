@@ -141,15 +141,14 @@ static const char Pad64 = '=';
 /*
  * 'encode'
  * PLB 2020-10-20 renamed, replaced u_char
+ * PLB 2024-06-09 ansified for clang18
  */
 
 static int
-csnobol4_b64_ntop(src, srclength, target, targsize)
-	unsigned char const *src;
-	size_t srclength;
-	char *target;
-	size_t targsize;
-{
+csnobol4_b64_ntop(unsigned char const *src,
+		  size_t srclength,
+		  char *target,
+		  size_t targsize) {
 	size_t datalength = 0;
 	unsigned char input[3];
 	unsigned char output[4];
@@ -209,14 +208,13 @@ csnobol4_b64_ntop(src, srclength, target, targsize)
 
 /*
  * PLB 2020-10-20: modified to take srcsize to avoid copying, renamed, u_char
+ * PLB 2024-06-09: ansified for clang18
  */
 static int
-csnobol4_b64_pton(src, srcsize, target, targsize)
-	char const *src;
-	size_t srcsize;
-	unsigned char *target;
-	size_t targsize;
-{
+csnobol4_b64_pton(char const *src,
+		  size_t srcsize,
+		  unsigned char *target,
+		  size_t targsize) {
 	size_t tarindex;
 	int state, ch;
 	unsigned char nextbyte;

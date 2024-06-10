@@ -257,9 +257,8 @@ static int rand_sep = SEP_3;
 static uint32_t *end_ptr = &randtbl[DEG_3 + 1];
 
 
-static uint32_t good_rand (x)
-	int32_t x;
-{
+/* PLB 2024-06-09 ansified */
+static uint32_t good_rand (int32_t x) {
 #ifdef  USE_WEAK_SEEDING
 /*
  * Historic implementation compatibility.
