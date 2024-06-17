@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+6/16/2024
+	modules/stcl/stcl.c: eliminate unused argument warnings
+
 6/9/2024
 	ANSIfy modules/base64/base64.c and modules/random/random.c
 		for clang 18.1

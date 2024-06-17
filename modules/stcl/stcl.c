@@ -93,6 +93,8 @@ STCL_CREATEINTERP( LA_ALIST ) {
     snohandle_t h;
     Tcl_Interp *interp = Tcl_CreateInterp();
 
+    (void) nargs;
+    (void) args;
     if (!interp)
 	RETFAIL;
 
@@ -134,6 +136,7 @@ STCL_EVALFILE( LA_ALIST ) {
     char *file;
     int ret;
 
+    (void) nargs;
     Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_HANDLE(0));
     if (!interp)
 	RETFAIL;
@@ -162,6 +165,7 @@ STCL_GETVAR( LA_ALIST ) {
     char *name;
     const char *val;
     Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_HANDLE(0));
+    (void) nargs;
     if (!interp)
 	RETFAIL;
     name = mgetstring(LA_PTR(1));
@@ -188,6 +192,7 @@ STCL_SETVAR( LA_ALIST ) {
     char *value;
     const char *ret;
     Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_HANDLE(0));
+    (void) nargs;
     if (!interp)
 	RETFAIL;
     name = mgetstring(LA_PTR(1));
@@ -218,6 +223,7 @@ STCL_EVAL( LA_ALIST ) {
     char *cmd;
     int ret;
     Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_HANDLE(0));
+    (void) nargs;
     if (!interp)
 	RETFAIL;
     cmd = mgetstring(LA_PTR(1));
@@ -245,6 +251,7 @@ STCL_EVAL( LA_ALIST ) {
 lret_t
 STCL_DELETEINTERP( LA_ALIST ) {
     Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_HANDLE(0));
+    (void) nargs;
     if (!interp)
 	RETFAIL;
     Tcl_DeleteInterp(interp);
@@ -272,6 +279,7 @@ STCL_NEWSTRINGOBJ( LA_ALIST ) {
     Tcl_Obj *obj;
     snohandle_t h;
 
+    (void) nargs;
     obj = Tcl_NewStringObj(LA_STR_PTR(0), LA_STR_LEN(0));
 
     if (!obj)
@@ -300,6 +308,7 @@ STCL_GETSTRINGFROMOBJ( LA_ALIST ) {
     Tcl_Obj *obj;
     char *val;
 
+    (void) nargs;
     obj = lookup_handle(&tcl_objs, LA_HANDLE(0));
     if (!obj)
 	RETFAIL;
@@ -323,6 +332,7 @@ lret_t
 STCL_APPENDTOOBJ( LA_ALIST ) {
     Tcl_Obj *obj;
 
+    (void) nargs;
     obj = lookup_handle(&tcl_objs, LA_HANDLE(0));
     if (!obj)
 	RETFAIL;
@@ -347,6 +357,7 @@ STCL_EVALOBJEX( LA_ALIST ) {
     Tcl_Obj *obj = lookup_handle(&tcl_objs, LA_HANDLE(1));
     int ret;
 
+    (void) nargs;
     if (!interp || !obj)
 	RETFAIL;
 
@@ -369,6 +380,7 @@ STCL_GETOBJRESULT(LA_ALIST ) {
     Tcl_Obj *obj = Tcl_GetObjResult(interp);
     snohandle_t h;
 
+    (void) nargs;
     if (!interp || !obj)
 	RETFAIL;
 
@@ -397,6 +409,7 @@ STCL_OBJSETVAR2( LA_ALIST ) {
     Tcl_Obj *res;
     snohandle_t h;
 
+    (void) nargs;
     if (!interp)
 	RETFAIL;
 
@@ -428,6 +441,7 @@ STCL_OBJGETVAR2( LA_ALIST ) {
     Tcl_Obj *res;
     snohandle_t h;
 
+    (void) nargs;
     if (!interp)
 	RETFAIL;
 
@@ -455,6 +469,7 @@ STCL_OBJGETVAR2( LA_ALIST ) {
 lret_t
 STCL_RELEASEOBJ( LA_ALIST ) {
     Tcl_Obj *obj = lookup_handle(&tcl_objs, LA_HANDLE(0));
+    (void) nargs;
     if (!obj)
 	RETFAIL;
     Tcl_DecrRefCount(obj);
