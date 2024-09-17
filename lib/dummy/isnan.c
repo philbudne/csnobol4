@@ -1,8 +1,6 @@
 /* $Id$ */
 
 int
-isnan(x)
-    double x;
-{
+isnan(double x) {
     return 0;
 }

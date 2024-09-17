@@ -6,15 +6,11 @@
  */
 
 int
-expint(res,x,y)
-    struct descr *res, *x, *y;
-{
+expint(struct descr *res, struct descr *x, struct descr *y) {
     UNDF();
 }
 
 int
-exreal(res,x,y)
-    struct descr *res, *x, *y;
-{
+exreal(struct descr *res, struct descr *x, struct descr *y) {
     INTR10();
 }

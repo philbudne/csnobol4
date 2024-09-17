@@ -1,8 +1,6 @@
 /* $Id$ */
 
 int
-finite(x)
-    double x;
-{
+finite(double x) {
     return 1;
 }

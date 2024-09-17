@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+9/17/2024
+	lib/dummy/{expops,finite,getenv,inet,isnan,mstime,popen,suspend,system,tty}.c:
+		ANSIfy dummy functions
+
 6/16/2024
 	modules/stcl/stcl.c: eliminate unused argument warnings
 

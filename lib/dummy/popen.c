@@ -12,15 +12,11 @@
 #include <stdio.h>
 
 FILE *
-popen(file, mode)
-    char *file, *mode;
-{
+popen(char *file, char *mode) {
     return NULL;
 }
 
 int
-pclose(f)
-    FILE *f;
-{
+pclose(FILE *f) {
     return -1;
 }

@@ -21,5 +21,5 @@ udp_socket(char *host, char *service, int port, int flags) {
 }
 
 void
-inet_cleanup() {
+inet_cleanup(void) {
 }

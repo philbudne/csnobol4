@@ -1,7 +1,5 @@
 /* $Id$ */
 
 void
-execute(buf)
-    char *buf;
-{
+execute(char *buf) {
 }

@@ -3,8 +3,6 @@
 /* dummy system() function for snolib/host.c */
 
 int
-system( str )
-    char *str;
-{
+system(char *cmd) {
     return -1;
 }

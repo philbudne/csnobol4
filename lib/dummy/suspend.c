@@ -8,6 +8,5 @@
 /* just leave file empty? */
 
 void
-proc_suspend()
-{
+proc_suspend(void) {
 }

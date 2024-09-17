@@ -3,8 +3,6 @@
 /* dummy getenv() function for snolib/host.c */
 
 char *
-getenv( str )
-    char *str;
-{
+getenv(char *str) {
     return (char *)0;			/* NULL */
 }
