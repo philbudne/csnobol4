@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+5/18/2025:
+	configure: update for version 2.3.2 for May 19, 2025 release
+		(50th anniversary of the release of V3.11)
+
 9/17/2024
 	lib/dummy/{expops,finite,getenv,inet,isnan,mstime,popen,suspend,system,tty}.c:
 		ANSIfy dummy functions
