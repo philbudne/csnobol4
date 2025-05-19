@@ -2,6 +2,15 @@ $Id$
 
 For detailed revision history see History file
 
+CSNOBOL4 version 2.3.3 release 5/19/2025
+On the 50th anniversary of the release of SNOBOL4 V3.11
+
+Changes since 2.3.2 release;
+===========================
+
+	ANSIfied remaining source files
+	Update snobol4func documentation
+
 CSNOBOL4 version 2.3.2 released 1/1/2024
 On the 60th anniversary of first published article on SNOBOL in JACM 1/1/1964:
    https://dl.acm.org/doi/10.1145/321203.321207
