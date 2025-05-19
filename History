@@ -2,6 +2,16 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+5/19/2025:
+	configure, timing: prefer "grep -E" to "egrep"
+		Idiots who don't understand basic backwards
+		compatibility that's basicly free (two hard links)
+		have declared egrep & fgrep deprecated, and Fedora
+		now carps about use of the legacy commands.
+		Reported by Neil Rowe
+
+** 2.3.3 (tag REL_2_3_3)
+
 5/18/2025:
 	configure: update for version 2.3.2 for May 19, 2025 release
 		(50th anniversary of the release of V3.11)

@@ -1477,8 +1477,16 @@ if [ "$LP64" ]; then
     LARGEFILE_OK=
 fi
 
+# ~SIGH~ some idiots decided it was a good idea to deprecate
+# the egrep (and fgrep) commands.  Needed in timing as well.
+if echo 'FOOBAR' | grep -E '(FOO|XXX)(BAR|YYY)' >/dev/null 2>&1; then
+    EGREP='grep -E'
+else
+    EGREP=egrep
+fi
+
 if [ "$LARGEFILE_OK" ] &&
-   egrep 'LARGEFILE|LARGE_FILE' $INCDIR/stdio.h >/dev/null 2>&1; then
+   $EGREP 'LARGEFILE|LARGE_FILE' $INCDIR/stdio.h >/dev/null 2>&1; then
     echo 'using large file support' 1>&2
     if [ "x$GLIBC" = x -a -f /usr/bin/getconf ]; then
 	if getconf LFS_CFLAGS >/dev/null 2>&1; then

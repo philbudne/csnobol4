@@ -18,6 +18,14 @@ if [ -f ${SNOBOL}.exe ]; then
 fi
 SNOBOL=${SNOBOL}$EXT
 
+# ~SIGH~ some idiots decided it was a good idea to deprecate
+# the egrep (and fgrep) commands.  Needed in configure as well.
+if echo 'FOOBAR' | grep -E '(FOO|XXX)(BAR|YYY)' >/dev/null 2>&1; then
+    EGREP='grep -E'
+else
+    EGREP=egrep
+fi
+
 echo 'Date:'
 date
 
@@ -81,7 +89,7 @@ if [ "$UNAME" ]; then
 			echo ''
 			echo /var/run/dmesg.boot
 			# mptable/acpi signatures may include hypervisor info:
-			egrep -i '^(cpu[0-9]*:|MPTable|acpi0:|bios0:|.*MHz)|vbox|xen' /var/run/dmesg.boot
+			$EGREP -i '^(cpu[0-9]*:|MPTable|acpi0:|bios0:|.*MHz)|vbox|xen' /var/run/dmesg.boot
 		fi
 		if [ -f /bin/kenv ]; then
 			echo ''
@@ -193,7 +201,7 @@ if [ "$UNAME" ]; then
 		    if [ -x $p/lspci ]; then
 			echo ''
 			echo $p/lspci
-			$p/lspci -v | egrep '^[0-9]|Subsystem:'
+			$p/lspci -v | $EGREP '^[0-9]|Subsystem:'
 			echo 'END_LSPCI'
 			break
 		    fi
@@ -205,7 +213,7 @@ if [ "$UNAME" ]; then
 			echo ''
 			echo getprop
 			$x/getprop | \
-			    egrep 'ro\.(product\.vendor|build\.version)'
+			    $EGREP 'ro\.(product\.vendor|build\.version)'
 			break
 		    fi
 		done
@@ -279,7 +287,7 @@ for DIR in /cygdrive/c /c; do
     if [ -x $FULL ]; then
 	echo ''
 	echo $FULL:
-	$FULL 2>/dev/null | egrep 'OS|System [MT]'
+	$FULL 2>/dev/null | $EGREP 'OS|System [MT]'
 	break
     fi
 done
