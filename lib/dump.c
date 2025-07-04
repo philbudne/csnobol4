@@ -336,4 +336,8 @@ puser(struct descr *dp) {;		/* pointer to block pointer */
      *		which contains array of pointers to field names
      */
 }
-#endif /* DUMP defined */
+#else
+#ifdef NEED_NONEMPTY
+char _empty_dump_module;
+#endif
+#endif
