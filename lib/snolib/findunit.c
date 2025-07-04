@@ -16,6 +16,7 @@
 #include "load.h"
 #include "equ.h"
 #include "lib.h"
+#include "pmlproto.h"			/* for prototype */
 
 pmlret_t
 IO_FINDUNIT( LA_ALIST ) {

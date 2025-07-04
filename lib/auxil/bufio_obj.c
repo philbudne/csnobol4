@@ -1,4 +1,4 @@
-//#define BUFIO_DEBUG
+/* #define BUFIO_DEBUG */
 /*
  * $Id$
  * base class for line buffered input
@@ -118,7 +118,7 @@ bufio_getline(struct io_obj *iop) {
 	    avail = iop->linebufsize - count;
 	}
 	c = bufio_getc(biop);
-	//DPRINTF(("bufio_getc returned %d '%c'\n", c, c));
+	/* DPRINTF(("bufio_getc returned %d '%c'\n", c, c)); */
 	if (c == EOF)
 	    break;
 
@@ -166,7 +166,7 @@ bufio_seeko(struct io_obj *iop, io_off_t off, int whence) {
 static io_off_t
 bufio_tello(struct io_obj *iop) {
     (void) iop;
-    // fail silently?
+    /* fail silently? */
     return -1;
 }
 
@@ -190,9 +190,11 @@ bufio_clearerr(struct io_obj *iop) {
 
 static int
 bufio_close(struct io_obj *iop) {
-    //struct bufio_obj *biop = (struct bufio_obj *) iop;
-    // NOTE! linebuf freed in io.c:ioo_close()
-    // child classes allocate & free bio.buffer (or not (memio))
+    /*
+     * struct bufio_obj *biop = (struct bufio_obj *) iop;
+     * NOTE! linebuf freed in io.c:ioo_close()
+     * child classes allocate & free bio.buffer (or not (memio))
+     */
     fprintf(stderr, "%s io_close not overridden\n", iop->ops->io_name);
     return TRUE;
 }

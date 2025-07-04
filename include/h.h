@@ -29,6 +29,9 @@
 #define IMPORT(TYPE) TYPE
 #endif /* IMPORT not defined */
 
+#define pmlret_t int			/* built-in functions (PML) */
+#define lret_t EXPORT(pmlret_t)
+
 /*
  * all statically allocated variables (both global and private)
  * *MUST* be marked as "VAR" (which should always appear AFTER

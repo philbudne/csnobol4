@@ -194,10 +194,10 @@ load(struct descr *addr,		/* OUT */
 	    }
 	    if (!lp)
 		goto quit;
-	} // !abspath
+	} /* !abspath */
 #endif
     found_lib:
-	entry = os_find_symbol(lp->oslib, fname, &stash);
+	entry = (loadable_func_t *) os_find_symbol(lp->oslib, fname, &stash);
 	if (!entry) {
 #ifdef TRY_UNDERSCORE
 	    l2 = strjoin("_", fname, NULL);
@@ -308,6 +308,7 @@ loadx_cleanup(void) {
 
 #include "equ.h"
 #include "handle.h"
+#include "pmlproto.h"
 
 pmlret_t
 EXTERNAL_DATATYPE( LA_ALIST ) {

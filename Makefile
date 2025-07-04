@@ -250,9 +250,11 @@ tidy:
 DISP=*.o *.a prolog bsplitu vers build.c bsdtsort \
 	config.m4 config.h config.sno Makefile2 .depend *.1 *.html $(SO)*.o
 
-cleanmostly: tidy
+cleanmostly: tidy cleanmodules
 	rm -f $(DISP)
 	rm -rf timdir.*
+
+cleanmodules:
 	cd modules; for m in [a-z]*; do \
 	    test -d $$m && (cd $$m; rm -f $$m.sno *.o *.so *.bundle *.dll *.3 *.html); \
 	done

@@ -60,7 +60,7 @@ main(int argc, char *argv[]) {
     printf("cpuid vendor: %s\n", str);
     fflush(stdout);			/* in case we crash! */
 
-    // Get Highest Extended Function Supported
+    /* Get Highest Extended Function Supported */
     cpuid(0x80000000, v);
     if (v[0] >= 0x80000004) {
 	ip = (int *) str;
@@ -73,7 +73,7 @@ main(int argc, char *argv[]) {
 	fflush(stdout);
     }
 
-    // EAX=1: Processor Info and Feature Bits
+    /* EAX=1: Processor Info and Feature Bits */
     cpuid(1, v);
     xfam  = (v[0] >> 20) & 0xff;
     xmod  = (v[0] >> 16) & 0x0f;

@@ -21,6 +21,7 @@
 #include "handle.h"			/* prototypes */
 #include "module.h"			/* struct module */
 #include "str.h"			/* bzero */
+#include "lib.h"			/* prototypes */
 
 #define HANDLE_HASH_SIZE (1<<8)		/* power of two */
 

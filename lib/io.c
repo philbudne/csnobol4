@@ -49,6 +49,8 @@
 #include "stdio_obj.h"			/* stdio_{wrap,obj} */
 #include "globals.h"			/* rflag, lflag */
 #include "compio_obj.h"			/* compio_open */
+#include "load.h"			/* prototypes */
+#include "snobol4.h"			/* io_input_file prototype */
 
 /* generated */
 #include "equ.h"			/* for BCDFLD (for X_LOCSP), res.h */

@@ -150,7 +150,7 @@ void os_unload_function(const char *name, void *stash);
 
 /* from pml.c */
 #ifdef LOAD_PROTO
-typedef int (loadable_func_t)(LOAD_PROTO); /* function entry point */
+typedef pmlret_t (loadable_func_t)(LOAD_PROTO); /* function entry point */
 loadable_func_t *pml_find(char *);
 #endif /* LOAD_PROTO defined */
 
@@ -263,7 +263,7 @@ void find_snolib_directory(const char *av0, char **vdirp, char **vlibp);
 struct module ;
 struct module_instance ;
 const char *handle_table_name(struct descr *dp, struct module_instance *mip);
-void module_init(struct module *);
-void module_cleanup(struct module *);
-void module_instance_init(struct module *);
+void module_init(struct module *);	/* no longer used? */
+void module_cleanup(struct module *);	/* no longer used? */
+int module_instance_init(struct module *);
 void module_instance_cleanup(struct module *);

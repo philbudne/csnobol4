@@ -35,6 +35,7 @@
 #include "str.h"
 #include "globals.h"
 #include "version.h"			/* needed under DJGPP */
+#include "pmlproto.h"			/* prototype */
 
 pmlret_t
 HOST( LA_ALIST ) {

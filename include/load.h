@@ -17,8 +17,7 @@
  * }
  */
 
-#define pmlret_t int			/* built-in functions (PML) */
-#define lret_t EXPORT(pmlret_t)
+/* pmlret_t, lret_t moved to h.h */
 
 #define LA_ALIST LOAD_PROTO
 #define LA_DCL				/* K&R compat artifact */

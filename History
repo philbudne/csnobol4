@@ -2,6 +2,22 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+7/3/2025:
+	cleanup for strict C90 compilation, missing prototypes
+
+	local-config sets -Wwrite-strings -Werror -Wextra -Wpedantic
+	-Wno-empty-translation-unit -std=c90 -Wno-overlength-strings
+	-Wmissing-prototypes on FreeBSD 14.2 w/ clang 18.1.6
+
+	Makefile: add cleanmodules target, use from cleanmostly
+	Makefile2.m4: fix comment, add build_modules_verbose
+	MANY: get rid of // comments
+	include/lib.h: fix module_instance_init prototype, comment unused
+	lib/loadx.c: add os_find_symbol cast, eliminate // comments
+	lib/snolib/handle.c: include lib.h for prototypes
+	include/pmlproto.h: new: declare prototypes for PML functions
+	MANY: include pmlproto.h for prototypes
+
 5/19/2025:
 	configure, timing: prefer "grep -E" to "egrep"
 		Idiots who don't understand basic backwards

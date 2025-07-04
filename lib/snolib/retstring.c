@@ -13,6 +13,7 @@
 #include "macros.h"			/* D_A() etc */
 #include "load.h"			/* prototypes */
 #include "str.h"
+#include "lib.h"			/* prototypes */
 
 static VAR struct spec retspec[1];
 

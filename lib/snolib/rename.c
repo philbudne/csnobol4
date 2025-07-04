@@ -20,6 +20,8 @@
 #include "snotypes.h"
 #include "macros.h"
 #include "load.h"
+#include "lib.h"			/* for pmlproto.h */
+#include "pmlproto.h"			/* for prototype */
 
 pmlret_t
 RENAME( LA_ALIST ) {

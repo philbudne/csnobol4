@@ -315,7 +315,7 @@ FFI_CALL( LA_ALIST ) {
 	}
 	else
 	    goto ret;
-    } // for
+    } /* for */
 
 #ifdef DEBUG_FFI
     printf("calling\n");
@@ -408,7 +408,7 @@ release_dl(void *dl) {
 lret_t
 FFI_DLOPEN( LA_ALIST ) {
     snohandle_t h;
-    // take empty string to mean NULL pointer
+    /* take empty string to mean NULL pointer */
     char *str = nmgetstring(LA_PTR(0));
 
     /* XXX should call out to load.c!!! */

@@ -23,12 +23,7 @@ struct pmlfunc {
     loadable_func_t *addr;
 };
 
-/* shorthand for function with same name for LOAD() and entry point */
-#define PMLFUNC(NAME) PMLFUNC2(#NAME,NAME)
-
-#define PMPROTO(PROTO)
-#define PMLFUNC2(NAME,ADDR) extern loadable_func_t ADDR;
-#include "pml.h"
+#include "pmlproto.h"
 #undef PMLFUNC2
 
 static const struct pmlfunc pmltab[] = {

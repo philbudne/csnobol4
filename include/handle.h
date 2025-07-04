@@ -16,3 +16,7 @@ SNOLOAD_API(snohandle_t) new_handle2(handle_handle_t *table,
 				     const char *name,
 				     void (*release)(void*),
 				     struct module_instance *mip);
+
+/* for handle.c */
+const char *handle_table_name(struct descr *dp, struct module_instance *mip);
+

@@ -12,6 +12,7 @@
 #include "load.h"
 #include "equ.h"
 #include "lib.h"
+#include "pmlproto.h"			/* prototype */
 
 /*
  * Experimental:

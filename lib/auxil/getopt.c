@@ -34,7 +34,7 @@
 #include <stdio.h>
 
 /* phil 1/13/94 use h.h (for index) */
-//#include "h.h"
+/* #include "h.h" */
 
 /*LINTLIBRARY*/
 #define ERR(S, C) if(opterr){fprintf(stderr, "%s%s%c\n", argv[0], S, C);}

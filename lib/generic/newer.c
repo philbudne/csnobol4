@@ -25,15 +25,11 @@ int
 newer(char *p1, char *p2) {
     struct stat st1, st2;
 
-    //printf("p2 %s ", p2);
     if (stat(p2, &st2) < 0)
 	return -1;			/* input file missing */
-    //printf("p2.mtime %ld\n", st2.st_mtime);
 
-    //printf("p1 %s ", p1);
     if (stat(p1, &st1) < 0)
 	return 0;			/* output file missing */
-    //printf("p1.mtime %ld\n", st1.st_mtime);
 
     if (st1.st_mtime <= st2.st_mtime)	/* output not newer than input */
 	return 0;

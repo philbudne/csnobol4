@@ -19,6 +19,7 @@
 #include "str.h"			/* bzero */
 #include "io_obj.h"
 #include "bufio_obj.h"
+#include "compio_obj.h"			/* prototype */
 
 #define SUPER bufio_ops
 

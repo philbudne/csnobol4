@@ -17,6 +17,7 @@
 #include "lib.h"			/* chk_break prototype */
 #include "str.h"
 #include "load.h"
+#include "pmlproto.h"			/* prototype */
 
 /* generated */
 #include "equ.h"

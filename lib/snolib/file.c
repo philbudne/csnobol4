@@ -26,6 +26,7 @@
 #include "load.h"
 #include "lib.h"			/* exists() */
 #include "str.h"			/* RETSTR_FREE */
+#include "pmlproto.h"			/* for prototype */
 
 pmlret_t
 FILE2( LA_ALIST ) {			/* avoid stdio name collision */

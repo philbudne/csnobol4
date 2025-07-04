@@ -24,6 +24,7 @@
 #include "load.h"			/* LA_xxx macros */
 #include "equ.h"			/* datatypes I/S */
 #include "lib.h"			/* io_flushall(),execute() */
+#include "pmlproto.h"			/* for prototype */
 
 pmlret_t
 EXIT( LA_ALIST ) {

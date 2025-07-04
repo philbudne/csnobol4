@@ -177,7 +177,7 @@ ADD_OPT([$(OPT)])
 CMT()
 # config.m4:
 include(config.m4)
-# end of local config
+# end of config.m4
 ################################################################
 
 # for PML functions.
@@ -291,6 +291,12 @@ clean_modules: snobol4
 build_modules: snobol4
 	for M in $(MODULES); do \
 	    (cd modules/$$M; $(RUNMAKE) all) \
+	done
+
+# build modules with verbose setuputil output
+build_modules_verbose: snobol4
+	for M in $(MODULES); do \
+	    (cd modules/$$M; SETUPUTIL_VERBOSE=1 $(RUNMAKE) all) \
 	done
 
 debug_modules: snobol4

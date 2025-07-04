@@ -18,15 +18,15 @@
 
 #include <stdlib.h>			/* for free() */
 
-#ifdef UNLINK_IN_STDIO_H		/* Windoze! */
-#include <stdio.h>
-#endif
+#include <stdio.h>			/* lib.h, unlink on windows */
 
 #include "h.h"
 #include "equ.h"
 #include "snotypes.h"
 #include "macros.h"
 #include "load.h"
+#include "lib.h"			/* for pmlproto.h */
+#include "pmlproto.h"			/* for prototype */
 
 pmlret_t
 DELETE( LA_ALIST ) {
