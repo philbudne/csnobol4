@@ -4,6 +4,9 @@ ID='$Id$'
 
 # Create config.m4, config.sno and config.h for SNOBOL4 compilation
 #
+# NOTE!!! This script needs to run in non-GNU and pre-POSIX environments,
+# including BSD4 (no shell functions!)
+#
 # Phil Budne
 # August 24, 1996
 
@@ -23,25 +26,63 @@ LARGEFILE_OK=true
 # inline by default
 INLINE_OK=true
 
-VSIZE=32
-
 # debug this script
 DEBUG=
 
 PREFIX=/usr/local
 
-OS=`(uname -s || echo unknown) 2>/dev/null`
-OSREL=`(uname -r || echo unknown) 2>/dev/null`
-OSVERS=`(uname -v || echo unknown) 2>/dev/null`
-MACHINE=`(uname -m || echo unknown) 2>/dev/null`
+if [ "$CC" ]; then
+    echo "using CC environment variable: $CC" 1>&2
+    CCPATH="$CC"
+else
+    CCPATH=cc
+fi
 
-case "$OS" in
-MINGW*)
-    echo "MinGW detected; run make -f config/win32/mingw.mak"
-    exit 1
-    ;;
-esac
+TMP=conf$$
+# paranoia:
+if [ "x${TMP}" != x ]; then
+    trap "rm -f ${TMP}*" 0
+fi
 
+# ~SIGH~ some idiots decided it was a good idea to deprecate
+# the egrep (and fgrep) commands.  Needed in timing as well.
+if echo 'FOOBAR' | grep -E '(FOO|XXX)(BAR|YYY)' >/dev/null 2>&1; then
+    EGREP='grep -E'
+else
+    EGREP=egrep
+fi
+
+WASM=
+CC_IS=
+if $CCPATH -v > $TMP 2>&1 && $EGREP -i 'emscripten|wasm' $TMP >/dev/null; then
+    # XXX set OS{,REL,VERS}, MACHINE from Target: line, set CC_IS?
+    TARGET=`awk '/Target:/ { print $2 }' $TMP`
+    if [ "x$TARGET" = x ]; then
+	echo "No 'Target:' line in $CC -v output" 1>&2
+	exit 1
+    fi
+    OS=`(echo $TARGET | awk -F- '{ print $3 }' || echo unknown) 2>/dev/null`
+    OSREL=unknown
+    OSVERS=unknown
+    # emcc returns wasm32, unlkely to be used unless uname() unavailable
+    MACHINE=`(echo $TARGET | awk -F- '{ print $1 }' || echo wasm-unknown) 2>/dev/null`
+    CC_IS=$OS			# works for emescipten
+    echo "$CCPATH is $CC_IS" 1>&2
+    CROSS_COMPILER=1		# MUST support cc -dM -E - < /dev/null!
+else
+    OS=`(uname -s || echo unknown) 2>/dev/null`
+    OSREL=`(uname -r || echo unknown) 2>/dev/null`
+    OSVERS=`(uname -v || echo unknown) 2>/dev/null`
+    MACHINE=`(uname -m || echo unknown) 2>/dev/null`
+
+    case "$OS" in
+    MINGW*)
+	echo "MinGW detected; run make -f config/win32/mingw.mak"
+	exit 1
+	;;
+    esac
+fi
+    
 DATE=`date`
 
 # run hostname from subshell to redirect shell "not found message"
@@ -358,16 +399,8 @@ echo '#define SHARED_OBJ_SUBDIR "shared"'	>> $CONFIG_H
 # safe on all Unix systems (requires "fork")
 echo '#define PML_SERV'				>> $CONFIG_H
 
-if [ "$CC" ]; then
-    echo 'using CC environment variable' 1>&2
-    CCPATH="$CC"
-else
-    CCPATH=cc
-fi
-
-TMP=conf$$
-
 echo "checking $CCPATH" 1>&2
+if [ "x$CROSS_COMPILER" = x ]; then
     # vanilla bsd43 systems can't use <<- AND EOF must be in col 0!
     cat << EOF > $TMP.c
 #include <stdio.h>
@@ -400,19 +433,23 @@ main() {
     return 0;
 }
 EOF
-if $CCPATH -o $TMP $TMP.c; then
-    CC_IS=`./$TMP`
-    if [ "$CC_IS" ]; then
-	echo "$CCPATH is $CC_IS" 1>&2
-	echo "# $CCPATH is $CC_IS"		>> $CONFIG_M4
+    if $CCPATH -o $TMP $TMP.c; then
+	CC_IS=`./$TMP`
     fi
-    rm -f $TMP $TMP.c $TMP.exe
-else
-    echo $CCPATH failed: status=$? 1>&2
-    rm -f $TMP
-    exit 1
+else # cross compiler: 
+    if $CC -E -dM - < /dev/null > $TMP; then
+	if grep '#define __clang__ 1' $TMP >/dev/null; then
+	    CC_IS=clang
+	else
+	    CC_IS=gcc		# ??
+	fi
+    fi
 fi
 
+if [ "$CC_IS" ]; then
+    echo "$CCPATH is $CC_IS" 1>&2
+    echo "# $CCPATH is $CC_IS"		>> $CONFIG_M4
+fi
 echo '#define CC_IS "'$CC_IS'"'			>> $CONFIG_H
 
 # nearly generic gcc3 option for LP64
@@ -437,6 +474,11 @@ case "$MORV" in
     echo 'EXT=.exe'				>> $CONFIG_M4
     CYGWIN=1
     ;;
+*:emscripten:*:*)
+    echo 'EXT=.wasm'				>> $CONFIG_M4
+    # Untested!
+    GCC64=-sMEMORY64
+    ;;
 esac
 
 ################# compiler options
@@ -449,6 +491,7 @@ gcc|clang) CFLAGS="$CFLAGS -Werror -Wimplicit-function-declaration"; export CFLA
 #icc)	   CFLAGS="$CFLAGS -Werror -Wall -Wno-unused-variable"; export CFLAGS;;
 esac
 
+# deal with dynamic/shared library differences:
 case "$CC_IS" in
 gcc|clang|icc)
     CCVERS=-v
@@ -753,7 +796,9 @@ fi
 
 echo checking sizes of C types 1>&2
 # detect compilers/architectures where LP64 is the default
-# MUST be after compiler choice
+# MUST be after compiler choice AND CFLAGS set!!
+if [ "x$CROSS_COMPILER" = x ]; then
+    # vanilla bsd43 systems can't use <<- AND EOF must be in col 0!
 cat << EOF > $TMP.c
 #include <stdio.h>
 
@@ -771,37 +816,57 @@ main() {
     return 0;
 }
 EOF
-if ${CCPATH-cc} $CFLAGS -o $TMP $TMP.c && ./$TMP > $TMP.out &&
-  read SPTR SINT SLONG SFLOAT SDOUBLE ADOUBLE < $TMP.out; then
-    echo 'sizeof(int) = '$SINT		1>&2
-    echo '# sizeof(int) = '$SINT	>> $CONFIG_M4
-
-    echo 'sizeof(void *) = '$SPTR	1>&2
-    echo '# sizeof(void *) = '$SPTR	>> $CONFIG_M4
-
-    echo 'sizeof(long) = '$SLONG	1>&2
-    echo '# sizeof(long) = '$SLONG	>> $CONFIG_M4
-    echo "#define SIZEOF_LONG $SLONG"	>> $CONFIG_H
-
-    echo 'sizeof(float) = '$SFLOAT	1>&2
-    echo '# sizeof(float) = '$SFLOAT	>> $CONFIG_M4
-
-    echo 'sizeof(double) = '$SDOUBLE	1>&2
-    echo '# sizeof(double) = '$SDOUBLE	>> $CONFIG_M4
-
-    echo 'alignment(double) = '$ADOUBLE	1>&2
-    echo '# alignment(double) = '$ADOUBLE	>> $CONFIG_M4
-
-    # XXX ASSume sizeof(char) == 1 (8 bits)
-    if [ "$SPTR" = 8 -a "$SLONG" = 8 ]; then
-	echo 'native programming model is LP64' 1>&2
-	LP64=true
-	LP64_NATIVE=true
-    elif [ "$SINT" = 4 -a "$SPTR" = 4 -a "$SLONG" = 4 ]; then
-	echo 'native programming model is ILP32' 1>&2
+    if ${CCPATH-cc} $CFLAGS -o $TMP $TMP.c && ./$TMP > $TMP.out; then
+	true
     else
-	echo 'odd programming model!!!' 1>&2
+	echo "Could not get type sizes" 1>&2
+	exit 1
     fi
+    read SPTR SINT SLONG SFLOAT SDOUBLE ADOUBLE < $TMP.out
+else # cross compiler:
+    # now with CFLAGS
+    if $CC $CFLAGS -E -dM - < /dev/null > $TMP; then
+	SINT=`awk '$2 == "__SIZEOF_INT__" { print $3 }' $TMP`
+	SPTR=`awk '$2 == "__SIZEOF_POINTER__" { print $3 }' $TMP`
+	SLONG=`awk '$2 == "__SIZEOF_LONG__" { print $3 }' $TMP`
+	SFLOAT=`awk '$2 == "__SIZEOF_FLOAT__" { print $3 }' $TMP`
+	SDOUBLE=`awk '$2 == "__SIZEOF_DOUBLE__" { print $3 }' $TMP`
+	# wrong, but only alternative is __BIGGEST_ALIGNMENT__:
+	ADOUBLE=$SDOUBLE
+	# XXX check all of the above are set???
+    else
+	echo "Could not get cross compiler type sizes" 1>&2
+	exit 1
+    fi
+fi
+echo 'sizeof(int) = '$SINT		1>&2
+echo '# sizeof(int) = '$SINT	>> $CONFIG_M4
+
+echo 'sizeof(void *) = '$SPTR	1>&2
+echo '# sizeof(void *) = '$SPTR	>> $CONFIG_M4
+
+echo 'sizeof(long) = '$SLONG	1>&2
+echo '# sizeof(long) = '$SLONG	>> $CONFIG_M4
+echo "#define SIZEOF_LONG $SLONG"	>> $CONFIG_H
+
+echo 'sizeof(float) = '$SFLOAT	1>&2
+echo '# sizeof(float) = '$SFLOAT	>> $CONFIG_M4
+
+echo 'sizeof(double) = '$SDOUBLE	1>&2
+echo '# sizeof(double) = '$SDOUBLE	>> $CONFIG_M4
+
+echo 'alignment(double) = '$ADOUBLE	1>&2
+echo '# alignment(double) = '$ADOUBLE	>> $CONFIG_M4
+
+# XXX ASSume sizeof(char) == 1 (8 bits)
+if [ "$SPTR" = 8 -a "$SLONG" = 8 ]; then
+    echo 'native programming model is LP64' 1>&2
+    LP64=true
+    LP64_NATIVE=true
+elif [ "$SINT" = 4 -a "$SPTR" = 4 -a "$SLONG" = 4 ]; then
+    echo 'native programming model is ILP32' 1>&2
+else
+    echo 'odd programming model!!!' 1>&2
 fi
 if [ "$LONGLONG" -a "x$LP64_NATIVE" = x ]; then
 cat << EOF > $TMP.c
@@ -883,7 +948,7 @@ fi
 # version as last item on line (deal with it if any version than 2.1
 # needs special handling):
 GLIBC=`(getconf --version)2>&1 | awk '/GNU libc/ || /GLIBC/ { print $NF }'`
-if [ "x$GLIBC" != x ]; then
+if [ "x$GLIBC" != x -a "x$CROSS_COMPILER" = x ]; then
     echo "# GLIBC version $GLIBC"		>> $CONFIG_M4
     echo '#define HAVE_GLIBC'			>> $CONFIG_H
     echo '#ifndef _GNU_SOURCE'			>> $CONFIG_H
@@ -1030,13 +1095,21 @@ elif [ "${OS}" = SunOS ] && config/check ieeefp.h 'double d; finite(x)'; then
 # XXX else use dummy version???
 fi 
 
-# clock_gettime() reports combined user/system time, so removed it
+CLOCK_GETTIME="clockid_t c; timespec_t ts; clock_getcpuclockid(0, &c); clock_gettime(c, &ts)"
 if [ "x$CYGWIN" != x ]; then
     # Cygwin has getrusage(), but it only works under NT, so use the
     # Win32 native mstime.c, which will fall back to Win9x compatibility
     # XXX but I no longer care about non NT systems!!!
     echo 'using Win32 native calls for runtimes' 1>&2
     echo 'MSTIME_C=$(SRCDIR)lib/win32/mstime.c'	>> $CONFIG_M4
+elif [ $OS = emscripten ] ; then
+    # basically, nothing works?
+    # getrusage compiles, but gives runtime error
+    # clock_getcpuclockid returns CLOCK_PROCESS_CPUTIME_ID, but clock_gettime fails.
+    # clock() uses clock_gettime
+    # times zeroes buffer!
+    echo 'using dummy mstime.c on emscripten' 1>&2	
+    echo 'MSTIME_C=$(SRCDIR)lib/dummy/mstime.c'	>> $CONFIG_M4
 elif config/check "sys/time.h sys/resource.h" \
     "struct rusage r; getrusage(RUSAGE_SELF, &r)"; then
     echo 'using getrusage() for runtimes' 1>&2
@@ -1065,12 +1138,22 @@ elif config/check sys/times.h "struct tms tt; times(&tt)"; then
 	echo '#define HZ 50'			>> $CONFIG_H
 	;;
     esac
-elif check time.h 'clock_t t = clock()'; then
-    echo 'using clock() for runtimes' 1>&2
+elif check time.h "$CLOCK_GETTIME"; then
+    # includes system time, so less preferable than above, but better than clock()
+    echo 'using POSIX.1b clock_getcpuclockid()/clock_gettime() for runtimes' 1>&2
+    echo 'MSTIME_C=$(SRCDIR)lib/posix2001/mstime.c' >> $CONFIG_M4
+elif check time.h "$CLOCK_GETTIME" -lrt; then
+    # glibc 2.5 (on RHEL5), for example...
+    # includes system time, so less preferable than above, but better than clock()
+    echo 'using POSIX.1b clock_getcpuclockid()/clock_gettime() for runtimes with -lrt' 1>&2
+    echo 'MSTIME_C=$(SRCDIR)lib/posix2001/mstime.c' >> $CONFIG_M4
+    LIBRT=-lrt
+    TR_LDFLAGS="$LIBRT"
+elif check time.h "clock_t t = clock()"; then
     # least preferable; includes system time (or may be wall clock time)
     # may need to guess tick size
     echo 'MSTIME_C=$(SRCDIR)lib/ansi/mstime.c'	>> $CONFIG_M4
-else
+elsef
     echo 'using dummy mstime.c' 1>&2	
     echo 'MSTIME_C=$(SRCDIR)lib/dummy/mstime.c'	>> $CONFIG_M4
 fi
@@ -1177,7 +1260,8 @@ if config/check 'sys/types.h sys/socket.h' ""; then
     fi
 
     # use BSD bidirectional popen if socketpair available
-    if config/check sys/socket.h \
+    # empscipten ALWAYS includes dummy popen so ends up multiply defined
+    if [ $OS != emscripten ] && config/check sys/socket.h \
 	'int s[2]; socketpair(AF_UNIX, SOCK_STREAM, 0, s)'; then
 	echo 'using private popen() function' 1>&2
 	echo 'ADD_OBJS([popen.o])'		>> $CONFIG_M4
@@ -1477,14 +1561,6 @@ if [ "$LP64" ]; then
     LARGEFILE_OK=
 fi
 
-# ~SIGH~ some idiots decided it was a good idea to deprecate
-# the egrep (and fgrep) commands.  Needed in timing as well.
-if echo 'FOOBAR' | grep -E '(FOO|XXX)(BAR|YYY)' >/dev/null 2>&1; then
-    EGREP='grep -E'
-else
-    EGREP=egrep
-fi
-
 if [ "$LARGEFILE_OK" ] &&
    $EGREP 'LARGEFILE|LARGE_FILE' $INCDIR/stdio.h >/dev/null 2>&1; then
     echo 'using large file support' 1>&2
@@ -1705,11 +1781,6 @@ else
 #   echo 'using memio_obj.c'			1>&2
     echo 'MEMIO_OBJ=memio_obj.o'		>> $CONFIG_M4
     echo 'MEMIO_SRC=$(MEMIO_OBJ_C)'		>> $CONFIG_M4
-    if [ "x$NEED_BUFIO" = x ]; then
-	# this may lose.
-	echo 'MEMIO_OBJ+=bufio_obj.o'		>> $CONFIG_M4
-	echo 'MEMIO_SRC+=$(MEMIO_OBJ_C)'	>> $CONFIG_M4
-    fi
 fi
 
 if [ "x$WITHOUT_MODULES" = x ]; then
@@ -1859,7 +1930,7 @@ if [ "x$WITHOUT_MODULES" = x ]; then
     fi
     ################################################################
     # stcl
-    if [ "x$TCONF" = x ]; then
+    if [ "x$TCONF" = x -a "x$CROSS_COMPILER" = x ]; then
 	for X in /usr/lib/tclConfig.sh \
 		 /System/Library/Frameworks/Tcl.framework/tclConfig.sh; do
 	    if [ -f $X ]; then

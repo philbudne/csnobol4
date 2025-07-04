@@ -28,7 +28,8 @@ else
 fi
 TMP_C=${TMP}.c
 TMP_ERRS=${TMP}.errs
-trap "rm -f $TMP $TMP_C $TMP_ERRS" 0
+# deal with emscipten .wasm files (maybe make/remove subdir?)
+trap "rm -f $TMP $TMP.*" 0
 
 rm -f $TMP $TMP_C
 for I in $INCLUDES; do

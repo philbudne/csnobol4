@@ -15,8 +15,12 @@
 #include "lib.h"
 
 /*
- * use POSIX.1-2001 clock_gettime() call to get
- * better resolution than getrusage on Linux.
+ * use POSIX.1-2001 clock_gettime() call to get sum of user and system time
+ * in nanosecond units (clock_gettime is 1003.1b-1993 ("POSIX.1b")?
+ * Prefer getrusage (in usec) because it splits user and system times.
+ * 
+ * Emscripten 3.1.5 _LOOKS_ it has working/dummy clock_getcpuclockid
+ * but clock_gettime fails.
  */
 
 real_t
@@ -36,11 +40,16 @@ mstime(void) {
 	return ts.tv_sec * 1000.0 + ts.tv_nsec / 1000000.0;
     }
     else {
-	struct rusage ru;
-
-	status = -1;
-	if (getrusage( RUSAGE_SELF, &ru ) < 0)
-	    return 0.0;
-	return ru.ru_utime.tv_sec * 1000.0 + ru.ru_utime.tv_usec / 1000.0;
+#ifdef CLK_TCK
+	clock_t t = clock();
+	if (t != (clock_t)-1) {
+	    if (CLK_TCK == 1000)		/* milliseconds? */
+		return (real_t) t;		/* yes, just return */
+	    else
+		return t*(real_t)(1000/CLK_TCK);
+	}
+#else
+	return 0.0;
+#endif
     }
 }

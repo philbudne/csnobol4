@@ -2,6 +2,13 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+7/4/2025:
+	Detect Emscripten (emcc) and try to deal.
+	configure: semi-major mashing
+		reenable posix.1b mstime as better than clock()
+	config/check:  remove TMP.*
+	lib/posix2001/mstime.c: update comments, use clock() as fallback!
+
 7/3/2025:
 	cleanup for strict C90 compilation, missing prototypes
 
