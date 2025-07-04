@@ -79,7 +79,7 @@ typedef int int32_t;
 #define DEV_URANDOM "/dev/urandom"
 #endif
 
-uint32_t bsd_random(void);
+static uint32_t bsd_random(void);
 
 /*
  * random.c:
@@ -184,8 +184,10 @@ uint32_t bsd_random(void);
 #define NSHUFF 50       /* to drop some "seed -> 1st value" linearity */
 #endif  /* !USE_WEAK_SEEDING */
 
+#ifdef RANDOM_SETSTATE
 static const int degrees[MAX_TYPES] =	{ DEG_0, DEG_1, DEG_2, DEG_3, DEG_4 };
 static const int seps [MAX_TYPES] =	{ SEP_0, SEP_1, SEP_2, SEP_3, SEP_4 };
+#endif
 
 /*
  * Initially, everything is set up as if from:
@@ -301,7 +303,7 @@ static uint32_t good_rand (int32_t x) {
  * introduced by the L.C.R.N.G.  Note that the initialization of randtbl[]
  * for default usage relies on values produced by this routine.
  */
-void
+static void
 bsd_srandom(unsigned long x) {
 	int i, lim;
 
@@ -347,7 +349,7 @@ bsd_srandom(unsigned long x) {
 #pragma warning( push )
 #pragma warning( disable : 4700 )
 #endif
-void
+static void
 bsd_srandomdev(void) {
 	int done = 0;
 	int fd;
@@ -410,6 +412,7 @@ bsd_srandomdev(void) {
 #pragma warning( pop )
 #endif
 
+#ifdef RANDOM_STATE
 /*
  * initstate:
  *
@@ -433,7 +436,7 @@ bsd_srandomdev(void) {
  * word boundary; otherwise a bus error will occur. Even so, lint will
  * complain about mis-alignment, but you should disregard these messages.
  */
-char *
+static char *
 bsd_initstate(unsigned long seed,	/* seed for R.N.G. */
 	      char *arg_state,		/* pointer to state array */
 	      long n) {			/* # bytes of state info */
@@ -499,7 +502,7 @@ bsd_initstate(unsigned long seed,	/* seed for R.N.G. */
  * word boundary; otherwise a bus error will occur. Even so, lint will
  * complain about mis-alignment, but you should disregard these messages.
  */
-char *
+static char *
 bsd_setstate(char *arg_state) {		/* pointer to state array */
 	uint32_t *new_state = (uint32_t *)arg_state;
 	uint32_t type = new_state[0] % MAX_TYPES;
@@ -532,6 +535,7 @@ bsd_setstate(char *arg_state) {		/* pointer to state array */
 	end_ptr = &state[rand_deg];		/* set end_ptr too */
 	return(ostate);
 }
+#endif
 
 /*
  * random:
@@ -550,7 +554,7 @@ bsd_setstate(char *arg_state) {		/* pointer to state array */
  *
  * Returns a 31-bit random number.
  */
-uint32_t
+static uint32_t
 bsd_random(void)
 {
 	uint32_t i;
@@ -589,6 +593,10 @@ bsd_random(void)
 #include "module.h"
 
 SNOBOL4_MODULE(random)
+
+MFUNC(RANDOM);
+MFUNC(SRANDOM);
+MFUNC(SRANDOMDEV);
 
 static int seeded = 0;			/* XXX VAR? TLS?? */
 

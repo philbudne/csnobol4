@@ -22,6 +22,11 @@
 
 SNOBOL4_MODULE(fork)
 
+MFUNC(FORK);
+MFUNC(WAITPID);
+MFUNC(GETPID);
+MFUNC(GETPPID);
+
 /*
 **=pea
 **=sect NAME

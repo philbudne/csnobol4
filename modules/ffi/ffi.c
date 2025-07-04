@@ -48,6 +48,15 @@
 
 SNOBOL4_MODULE(dirs)
 
+MFUNC(FFI_PREP_CIF);
+MFUNC(FFI_CALL);
+MFUNC(FFI_FREE_CIF);
+MFUNC(FFI_DLOPEN);
+MFUNC(FFI_DLSYM);
+MFUNC(FFI_RTLD_NEXT);
+MFUNC(FFI_RTLD_DEFAULT);
+MFUNC(FFI_RTLD_SELF);
+
 static handle_handle_t ffi_cifplus;
 static handle_handle_t ffi_dlibs;
 static handle_handle_t ffi_dlsyms;
@@ -233,6 +242,8 @@ FFI_PREP_CIF( LA_ALIST ) {
 }
 
 /* test function */
+char *foo(double a, double b);
+
 char *
 foo(double a, double b) {
     char ret[512];

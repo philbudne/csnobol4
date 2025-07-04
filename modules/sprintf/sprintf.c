@@ -51,6 +51,8 @@
 
 SNOBOL4_MODULE(sprintf)
 
+MFUNC(SPRINTF);
+
 lret_t
 SPRINTF( LA_ALIST ) {
     char fmt[1024];			/* XXX */

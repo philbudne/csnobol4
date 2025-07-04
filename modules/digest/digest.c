@@ -24,6 +24,11 @@
 
 SNOBOL4_MODULE(digest)
 
+MFUNC(DIGEST_INIT);
+MFUNC(DIGEST_UPDATE);
+MFUNC(DIGEST_FINAL);
+MFUNC(DIGEST_HEX);
+
 #define MAX_DIGEST_LENGTH (512/8)
 
 static VAR handle_handle_t digest_handles;

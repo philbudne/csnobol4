@@ -27,6 +27,15 @@
 
 SNOBOL4_MODULE(time)
 
+MFUNC(GETTIMEOFDAY_);
+MFUNC(LOCALTIME_);
+MFUNC(GMTIME_);
+MFUNC(STRFTIME);
+MFUNC(MKTIME);
+MFUNC(SLEEP);
+MFUNC(STRPTIME_);
+MFUNC(TIMEGM);
+
 #define SETINT(DP,N,VAL) (DP)[N].a.i = (VAL); (DP)[N].f = 0; (DP)[N].v = I
 #define SETREAL(DP,N,VAL) (DP)[N].a.f = (VAL); (DP)[N].f = 0; (DP)[N].v = R
 #define SETNULL(DP,N) (DP)[N].a.i = 0; (DP)[N].f = 0; (DP)[N].v = S

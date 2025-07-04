@@ -18,6 +18,10 @@
 
 SNOBOL4_MODULE(stat)
 
+MFUNC(STAT_);
+MFUNC(LSTAT_);
+MFUNC(FSTAT_);
+
 /*
  * TODO: chmod, fchmod, mkfifo, mkdir
  */

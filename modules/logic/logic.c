@@ -29,6 +29,8 @@
 
 SNOBOL4_MODULE(logic)
 
+MFUNC(LOGIC);
+
 /* move to snotypes.h? */
 typedef unsigned INT_T u_int_t;
 

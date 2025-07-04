@@ -152,3 +152,10 @@ SNOLOAD_API(int) io_mkfile_noclose(int xunit, FILE *, const char *name);
 /* temporarily(?) unavailable in 2.2: */
 SNOLOAD_API(FILE *) io_getfp(int xunit); /* external unit */
 #endif /* EOF defined */
+
+/*
+ * for forward declarations of module exported functions
+ * (when compiling with -Wmissing-prototypes)
+ * move to per-compiler subdir include if needed?
+ */
+#define MFUNC(NAME) lret_t NAME( LA_ALIST )

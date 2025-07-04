@@ -13,10 +13,12 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	Makefile2.m4: fix comment, add build_modules_verbose
 	MANY: get rid of // comments
 	include/lib.h: fix module_instance_init prototype, comment unused
+	include/load.h: add MFUNC for module entry points
 	lib/loadx.c: add os_find_symbol cast, eliminate // comments
 	lib/snolib/handle.c: include lib.h for prototypes
 	include/pmlproto.h: new: declare prototypes for PML functions
 	MANY: include pmlproto.h for prototypes
+	module/*/*.c: use MFUNC
 
 5/19/2025:
 	configure, timing: prefer "grep -E" to "egrep"

@@ -24,6 +24,13 @@
 
 SNOBOL4_MODULE(dirs)
 
+MFUNC(OPENDIR);
+MFUNC(READDIR);
+MFUNC(REWINDDIR);
+MFUNC(TELLDIR);
+MFUNC(SEEKDIR);
+MFUNC(CLOSEDIR);
+
 static handle_handle_t dir_handles;
 
 /*

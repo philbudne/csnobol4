@@ -59,8 +59,6 @@
 #include "config.h"
 #endif
 
-/*#include <ctype.h>*/
-/*#include <resolv.h>*/
 #include <stdio.h>
 
 #include <stdlib.h>
@@ -349,6 +347,8 @@ csnobol4_b64_pton(char const *src,
 #include "module.h"
 SNOBOL4_MODULE(base64)
 
+MFUNC(BASE64_DECODE);
+MFUNC(BASE64_ENCODE);
 
 /*
  * decode BASE64 to binary (4:3)

@@ -46,6 +46,10 @@
 
 SNOBOL4_MODULE(readline)
 
+MFUNC(READLINE);
+MFUNC(ADD_HISTORY);
+MFUNC(HISTORY_EXPAND);
+
 /*
 **=pea
 **=item B<READLINE(>I<prompt>B<)>

@@ -21,6 +21,11 @@
 #include "module.h"
 SNOBOL4_MODULE(zlib)
 
+MFUNC(ZLIB_COMPRESS);
+MFUNC(ZLIB_UNCOMPRESS);
+MFUNC(ZLIB_CRC32);
+MFUNC(ZLIB_ADLER32);
+
 /*
 **=pea
 **=sect NAME
