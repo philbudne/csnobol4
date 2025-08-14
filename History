@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+8/14/2025:
+	timing: run systemd-detect-virt if found
+
 7/4/2025:
 	Detect Emscripten (emcc) and try to deal.
 	configure: semi-major mashing

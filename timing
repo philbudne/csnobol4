@@ -217,6 +217,11 @@ if [ "$UNAME" ]; then
 			break
 		    fi
 		done
+		if [ -f /usr/bin/systemd-detect-virt ]; then
+			echo ''
+			echo systemd-detect-virt
+			/usr/bin/systemd-detect-virt
+		fi
 		;;
 	OSF1)
 		if [ -f /usr/sbin/snmp_request ]; then
