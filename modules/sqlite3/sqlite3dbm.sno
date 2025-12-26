@@ -132,7 +132,7 @@ SQL3DBM.END
 **=sect COMPATIBILITY
 **database compatible with Python sqlite3dbm
 **=sect SEE ALSO
-**B<snobol4>(1), B<snobol4dbm>(3), B<sqlite3>(1)
+**B<snobol4>(1), B<snobol4ndbm>(3), B<sqlite3>(1)
 **=sect AUTHOR
 **Philip L. Budne
 **=cut

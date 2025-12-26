@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+12/26/2025:
+	modules/sqlite3/sqlite3dbm.sno: fix snobol4ndbm ref
+
 8/14/2025:
 	timing: run systemd-detect-virt if found
 
