@@ -4,6 +4,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 12/31/2025:
 	modules/stcl/stcl.c: fix decl ordering
+	doc/snobol4.1.pea: update SEE ALSO
 
 12/26/2025:
 	modules/sqlite3/sqlite3dbm.sno: fix snobol4ndbm ref
