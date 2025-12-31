@@ -150,9 +150,9 @@ lret_t
 STCL_EVALFILE( LA_ALIST ) {
     char *file;
     int ret;
+    Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_HANDLE(0));
 
     (void) nargs;
-    Tcl_Interp *interp = lookup_handle(&tcl_interps, LA_HANDLE(0));
     if (!interp)
 	RETFAIL;
 
