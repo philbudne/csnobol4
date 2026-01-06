@@ -39,6 +39,8 @@ realst(struct spec *sp, struct descr *dp) {
      * %#g may add dot, but also trailing zeroes!
      */
     bp = strbuf;
+    if (*bp == '-')
+	bp++;
     while (*bp && isdigit((unsigned char)*bp))
 	bp++;
 

@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+1/5/2026:
+	lib/realst.c: add dot to negative numbers
+		reported by DR
+
 12/31/2025:
 	modules/stcl/stcl.c: fix decl ordering
 	doc/snobol4.1.pea: update SEE ALSO
