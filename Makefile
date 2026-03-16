@@ -76,7 +76,8 @@ generated: $(GENERATED)
 ################
 # run configuration script
 
-config.m4 config.h config.sno version.h version: configure
+CONFIG_GENERATED=config.m4 config.h config.sno version.h version
+$(CONFIG_GENERATED): configure
 	./configure
 
 # ~~SIGH~~ adding "with" above would cause regeneration of source when
@@ -263,11 +264,12 @@ cleanmodules:
 # leave version.h, version for Windoze
 clean:	cleanmostly
 	cd doc; $(MAKE) clean
-	rm -f snobol4 xsnobol4 cpuid timing.out tested *.ln sdb *.exe
+	rm -f snobol4 xsnobol4 cpuid timing.out tested *.ln sdb snopea *.exe
 	rm -rf ssnobol4 $(SO)
 
 # remove objects, generated files (clean as a fresh CVS checkout)
 # DANGER: requires installed binary to rebuild!!
 spotless: clean
 	cd doc; $(MAKE) spotless
-	rm -f $(GENERATED) $(G2) snobol4.c isnobol4.c snobol4 xsnobol4
+	rm -f $(GENERATED) $(CONFIG_GENERATED) $(G2) \
+		snobol4.c isnobol4.c snobol4 xsnobol4
