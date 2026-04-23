@@ -13,9 +13,9 @@ ID='$Id$'
 OPTIONS="$*"
 
 # needed in Makefile2 and config.h
-VERSION=2.3.3
-# 50th Anniversary of release of V3.11, MAY 19, 1975.
-VERSION_DATE="May 19, 2025"
+VERSION=2.3.4
+# 60th Anniversary of SNOBOL4 running on IBM 7094
+VERSION_DATE="April 24, 2026"
 
 # save any CFLAGS passed to us...
 INITIAL_CFLAGS="$CFLAGS"

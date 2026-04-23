@@ -2,6 +2,16 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+4/23/2026:
+	First commits in git
+	00README.CVS renamed to 00README.git
+	timing: check for .git directory
+	README: updated
+	configure: update for version 2.3.4 for April 24 release
+		(60th Anniversary of SNOBOL4 first running on 7094)
+		In Honor of David J. Farber, who died 2/7/2026
+	CHANGES: update for version 2.3.4
+
 3/15/2026:
 	Makefile: clean up cleanups:
 		Have "make clean" remove snopea executable
@@ -57,7 +67,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 ** 2.3.3 (tag REL_2_3_3)
 
 5/18/2025:
-	configure: update for version 2.3.2 for May 19, 2025 release
+	configure: update for version 2.3.3 for May 19, 2025 release
 		(50th anniversary of the release of V3.11)
 
 9/17/2024
