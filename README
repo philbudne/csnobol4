@@ -1,20 +1,37 @@
 $Id$
 
-2.2 release of ``The Macro Implementation of SNOBOL4 in C'' (CSNOBOL4)
-
 This is a free port of the original SIL (SNOBOL4 Implementation
 Language) "macro" version of SNOBOL4 (developed at Bell Labs) with the
-`C' language as a target.
+`C' language as a target (aka CSNOBOL4).
 
 SNOBOL4, while known primarily as a string language excels at any task
 involving symbolic manipulations.  It provides dynamic typing, garbage
 collection, user data types, on the fly compilation.
 
-The latest release can always be found at http://www.regressive.org/snobol4/csnobol4
+The latest release can always be found at
+http://www.regressive.org/snobol4/csnobol4 and current development
+sources can be found at https://github.com/philbudne/csnobol4 (read
+00README.git for warnings)
+
+You can submit bugs and feature requests using the github issues page at
+https://github.com/philbudne/csnobol4/issues
+
+PLEASE NOTE: If you're requesting that it "work like in SPITBOL", and
+it's not a documented feature of SNOBOL4 or of this release, tagging
+your issue as a bug and not a feature-request will almost certainly
+irritate the maintainer!
+
+This software aims to be portable and contain friendly, useful features
+(within the constraints of being the only program (or at least the only
+surviving one) written in the SNOBOL4 Implementation Language (SIL)).
+
+Native ports of Macro SPITBOL or SNOBOL4 will almost certainly run
+programs faster.  This implementation continues to be maintained due
+to user and maintainer inertia!
 
 ****************************************************************
 
-Copyright © 1993-2021, Philip L. Budne
+Copyright © 1993-2026, Philip L. Budne
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -166,4 +183,4 @@ If you are interested in getting mailings about new releases, send me
 a timing report.  I'm always interested in knowing what people are
 using SNOBOL4 for!
 
-Phil Budne <phil@regressive.org>
+Phil Budne <phil _at_ regressive.org>
