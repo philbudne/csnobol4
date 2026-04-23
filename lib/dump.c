@@ -337,7 +337,5 @@ puser(struct descr *dp) {;		/* pointer to block pointer */
      */
 }
 #else
-#ifdef NEED_NONEMPTY
-char _empty_dump_module;
-#endif
+typedef int empty_dump_file;
 #endif
