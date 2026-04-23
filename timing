@@ -303,15 +303,10 @@ if [ -x cpuid ]; then
 	./cpuid
 fi
 
-if [ -f 00README.CVS ]; then
+if [ -d .git ]; then
 	echo ''
-	echo 'found 00README.CVS'
-	if [ -f CVS/Entries ]; then
-		echo ''
-		echo 'CVS/Entries:'
-		ls -l CVS/Entries
-		cat CVS/Entries
-	fi
+	echo 'found .git'
+	git log -n1
 fi
 
 echo ''
