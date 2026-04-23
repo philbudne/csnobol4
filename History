@@ -12,6 +12,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 		In Honor of David J. Farber, who died 2/7/2026
 	CHANGES: update for version 2.3.4
 	lib/dump.c: fix for gcc pedantic compilation
+	renamed .cvsignore to .gitignore
 
 3/15/2026:
 	Makefile: clean up cleanups:
