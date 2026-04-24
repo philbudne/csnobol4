@@ -13,7 +13,7 @@ ID='$Id$'
 OPTIONS="$*"
 
 # needed in Makefile2 and config.h
-VERSION=2.3.4
+VERSION=2.3.4+
 # 60th Anniversary of SNOBOL4 running on IBM 7094
 VERSION_DATE="April 24, 2026"
 

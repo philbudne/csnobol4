@@ -14,7 +14,6 @@ for command line editing/history when available.
 =item B<break> I<LABEL_OR_STATEMENT_NUMBER>
 Set a breakpoint.
 =item B<bt>
-=break
 Display call stack I<back trace>.
 =item B<commands> I<BREAKPOINT_NUMBER>
 Add sdb commands to execute (ie; print &amp; continue) to a breakpoint.
@@ -50,7 +49,6 @@ or set variables.
 =item B<quit>
 Exit debugger.
 =item B<run>
-=break
 Restart program (works by saving breakpoints and restarting snobol4).
 New in version 2.1, some restrictions may apply.
 =item B<save> I<FILENAME>
