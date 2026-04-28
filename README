@@ -10,8 +10,12 @@ collection, user data types, on the fly compilation.
 
 The latest release can always be found at
 http://www.regressive.org/snobol4/csnobol4 and current development
-sources can be found at https://github.com/philbudne/csnobol4 (read
-00README.git for warnings)
+sources can be found at https://github.com/philbudne/csnobol4
+(read 00README.git for warnings).  If you don't want to deal
+with the git command, you can get the current main branch at
+http://github.com/philbudne/csnobol4/archive/refs/heads/main.tar.gz
+
+Downloads from github will require a working snobol4 binary to build.
 
 You can submit bugs and feature requests using the github issues page at
 https://github.com/philbudne/csnobol4/issues

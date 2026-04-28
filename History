@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+4/28/2026:
+	update README to include github main.tar.gz URL
+
 4/24/2026:
 	doc/sdb.1.pea: remove two extra line breaks
 	configure: change version to 2.3.4+
