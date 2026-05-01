@@ -82,7 +82,6 @@ else
 	;;
     esac
 fi
-rm -f $TMP
     
 DATE=`date`
 
@@ -482,6 +481,10 @@ case "$MORV" in
     GCC64=-sMEMORY64
     ;;
 esac
+
+# get rid of any plain-text $TMP file, on cygwin
+# this takes precedence over $TMP.exe when trying to run ./$TMP
+rm -f $TMP
 
 ################# compiler options
 
