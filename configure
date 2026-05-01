@@ -54,9 +54,9 @@ fi
 
 WASM=
 CC_IS=
-if $CCPATH -v > $TMP 2>&1 && $EGREP -i 'emscripten|wasm' $TMP >/dev/null; then
+if $CCPATH -v > $TMP.out 2>&1 && $EGREP -i 'emscripten|wasm' $TMP >/dev/null; then
     # XXX set OS{,REL,VERS}, MACHINE from Target: line, set CC_IS?
-    TARGET=`awk '/Target:/ { print $2 }' $TMP`
+    TARGET=`awk '/Target:/ { print $2 }' $TMP.out`
     if [ "x$TARGET" = x ]; then
 	echo "No 'Target:' line in $CC -v output" 1>&2
 	exit 1
@@ -437,14 +437,13 @@ EOF
 	CC_IS=`./$TMP`
     fi
 else # cross compiler: 
-    if $CC -E -dM - < /dev/null > $TMP; then
-	if grep '#define __clang__ 1' $TMP >/dev/null; then
+    if $CC -E -dM - < /dev/null > $TMP.out; then
+	if grep '#define __clang__ 1' $TMP.out >/dev/null; then
 	    CC_IS=clang
 	else
 	    CC_IS=gcc		# ??
 	fi
     fi
-    rm  -f $TMP
 fi
 
 if [ "$CC_IS" ]; then
@@ -481,10 +480,6 @@ case "$MORV" in
     GCC64=-sMEMORY64
     ;;
 esac
-
-# get rid of any plain-text $TMP file, on cygwin
-# this takes precedence over $TMP.exe when trying to run ./$TMP
-rm -f $TMP
 
 ################# compiler options
 
@@ -830,12 +825,12 @@ EOF
     read SPTR SINT SLONG SFLOAT SDOUBLE ADOUBLE < $TMP.out
 else # cross compiler:
     # now with CFLAGS
-    if $CC $CFLAGS -E -dM - < /dev/null > $TMP; then
-	SINT=`awk '$2 == "__SIZEOF_INT__" { print $3 }' $TMP`
-	SPTR=`awk '$2 == "__SIZEOF_POINTER__" { print $3 }' $TMP`
-	SLONG=`awk '$2 == "__SIZEOF_LONG__" { print $3 }' $TMP`
-	SFLOAT=`awk '$2 == "__SIZEOF_FLOAT__" { print $3 }' $TMP`
-	SDOUBLE=`awk '$2 == "__SIZEOF_DOUBLE__" { print $3 }' $TMP`
+    if $CC $CFLAGS -E -dM - < /dev/null > $TMP.out; then
+	SINT=`awk '$2 == "__SIZEOF_INT__" { print $3 }' $TMP.out`
+	SPTR=`awk '$2 == "__SIZEOF_POINTER__" { print $3 }' $TMP.out`
+	SLONG=`awk '$2 == "__SIZEOF_LONG__" { print $3 }' $TMP.out`
+	SFLOAT=`awk '$2 == "__SIZEOF_FLOAT__" { print $3 }' $TMP.out`
+	SDOUBLE=`awk '$2 == "__SIZEOF_DOUBLE__" { print $3 }' $TMP.out`
 	# wrong, but only alternative is __BIGGEST_ALIGNMENT__:
 	ADOUBLE=$SDOUBLE
 	# XXX check all of the above are set???

@@ -6,7 +6,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	Fix Windoze VS, cygwin builds
 	config/win32/config.h: define SNOBOL4_API_NEEDS_EXPORT
 	include/snobol4.h: honor SNOBOL4_API_NEEDS_EXPORT
-	configure: cleanup $TMP after use for cygwin
+	configure: avoid writing bare $TMP path, for cygwin
 
 4/28/2026:
 	update README to include github main.tar.gz URL
