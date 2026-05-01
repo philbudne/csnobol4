@@ -4,7 +4,7 @@
  */
 
 #ifdef SNOBOL4	/* building snobol4 or libsnobol4.so shared library */
-#ifdef SHARED
+#if defined(SHARED) || defined(SNOBOL4_API_NEEDS_EXPORT)
 #define SNOBOL4_API(RETTYPE) EXPORT(RETTYPE)
 #else  /* not SHARED (building snobol4.exe) */
 #define SNOBOL4_API(RETTYPE) RETTYPE

@@ -88,6 +88,7 @@
 #ifndef SNOBOL4	  /* building LOADable module DLL, snobol4.dll user */
 #if defined(_MSC_VER) || defined(__MINGW32__)
 #define IMPORT(TYPE) __declspec(dllimport) TYPE
+#define SNOBOL4_API_NEEDS_EXPORT
 #elif defined(__BORLANDC__)
 #define IMPORT(TYPE) TYPE _import	/* ??? */
 #endif  /* defined(__BORLANDC__) */
