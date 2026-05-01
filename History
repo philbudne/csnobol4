@@ -3,6 +3,9 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 5/1/2026:
+	test/fout.{sno,ref}: test negative floats have a dot!
+
+5/1/2026:
 	Fix Windoze VS, cygwin builds
 	config/win32/config.h: define SNOBOL4_API_NEEDS_EXPORT
 	include/snobol4.h: honor SNOBOL4_API_NEEDS_EXPORT
