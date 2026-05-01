@@ -54,7 +54,7 @@ fi
 
 WASM=
 CC_IS=
-if $CCPATH -v > $TMP.out 2>&1 && $EGREP -i 'emscripten|wasm' $TMP >/dev/null; then
+if $CCPATH -v > $TMP.out 2>&1 && $EGREP -i 'emscripten|wasm' $TMP.out >/dev/null; then
     # XXX set OS{,REL,VERS}, MACHINE from Target: line, set CC_IS?
     TARGET=`awk '/Target:/ { print $2 }' $TMP.out`
     if [ "x$TARGET" = x ]; then
