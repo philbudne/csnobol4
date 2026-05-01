@@ -3,9 +3,10 @@ $Id$
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
 5/1/2026:
-	Fix Windoze VS build
+	Fix Windoze VS, cygwin builds
 	config/win32/config.h: define SNOBOL4_API_NEEDS_EXPORT
 	include/snobol4.h: honor SNOBOL4_API_NEEDS_EXPORT
+	configure: cleanup $TMP after use for cygwin
 
 4/28/2026:
 	update README to include github main.tar.gz URL

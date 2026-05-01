@@ -82,6 +82,7 @@ else
 	;;
     esac
 fi
+rm -f $TMP
     
 DATE=`date`
 
@@ -444,6 +445,7 @@ else # cross compiler:
 	    CC_IS=gcc		# ??
 	fi
     fi
+    rm  -f $TMP
 fi
 
 if [ "$CC_IS" ]; then
