@@ -1,6 +1,10 @@
 * $Id$
 *
 * $Log$
+* 2026-06-17 phil
+* [PLB133] If SPITBOL ops (PLUSOPS) enabled,
+* accept REAL values in VARVAL
+*
 * Revision 1.148  2022-02-17 01:44:12  phil
 * EXPERIMENTAL: allow 64-bit V field on LP64 for Dani Richard
 * configure: add --xxl (defines VFLD_T as unsigned long)
@@ -1300,6 +1304,17 @@ GNVARI PROC    GENVAR		   Procedure to generate string
        SETAC   CONVSW,0		   Note GENVAR entry
        POP     AXPTR		   Restore integer
        INTSPC  SPECR1,AXPTR	   Convert to string
+       BRANCH  LOCA1		   Join processing
+*_
+*---------------------------------------------------------------------*
+*
+* New [PLB133]
+*      Generation of Variable from Real
+*
+GNVARR PROC    GENVAR		   Procedure to generate string
+       SETAC   CONVSW,0		   Note GENVAR entry
+       POP     AXPTR		   Restore real
+       REALST  SPECR1,AXPTR	   Convert to string
        BRANCH  LOCA1		   Join processing
 *_
 *---------------------------------------------------------------------*
@@ -2843,7 +2858,9 @@ VARV1  AEQLC   INSW,0,,VARV4	   Check &INPUT
 *_
 VARV4  GETDC   XPTR,XPTR,DESCR	   Get value
 VARV2  VEQLC   XPTR,S,,RTXNAM	   Is it STRING?
-       VEQLC   XPTR,I,INTR1,GENVIX Convert INTEGER to STRING
+       VEQLC   XPTR,I,,GENVIX      Convert INTEGER to STRING	[PLB133]
+       AEQLC   SPITCL,0,,INTR1     SPITBOL ops enabled?		[PLB133]
+       VEQLC   XPTR,R,INTR1,GENVRX  REAL is acceptable		[PLB133]
 *_
 VARVC  RCALL   XPTR,INVOKE,(XPTR),(FAIL,VARV1,VARV2)
 *				   Evaluate function
@@ -10235,6 +10252,9 @@ GENVRZ RCALL   ZPTR,GENVAR,ZSPPTR,RTZPTR
 *_
 GENVIX RCALL   XPTR,GNVARI,XPTR,RTXNAM
 *				   Generate variable from integer
+*_
+GENVRX RCALL   XPTR,GNVARR,XPTR,RTXNAM				[PLB133]
+*				   Generate variable from real	[PLB133]
 *_
        TITLE   'Termination'
 END    ACOMPC  ERRLCL,0,,END0,END0 Check &ERRLIMIT		[PLB98][PLB110]

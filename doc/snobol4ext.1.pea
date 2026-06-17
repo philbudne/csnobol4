@@ -141,6 +141,16 @@ The type B<NUMERIC> with B<CONVERT()> and the removal of leading
 spaces from strings converted to numbers (implicitly or explicitly)
 are also legal when SPITBOL extensions are enabled.
 
+=item
+Allow B<REAL> values in as arguments where B<STRING> is expected, and
+standard SNOBOL4 accepts an B<INTEGER>.  Places (not all sane or
+useful) include: ARRAY first argument, CODE argument, DATA first
+argument, DEFINE first argument, DUPL first argument, INPUT and OUTPUT
+third and fourth arguments, LEQ,LGE,LGT,LLE,LLT,LNE both arguments,
+LOAD first and second arguments, REPLACE all three arguments, REVERSE
+argument RPAD/LPAD first and third arguments, SIZE argument, SUBSTR
+argument, TRIM argument, tracing related code.
+
 =item B<TERMINAL> I/O variable
 The variable B<TERMINAL> is associated with the standard error file
 descriptor for both input and output (replaces B<PUNCH> variable).

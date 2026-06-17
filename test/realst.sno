@@ -1,0 +1,6 @@
+	output = rpad(1.0, 10, 2.0)
+	output = lpad(1.0, 10, 2.0)
+	output = size(1.2345)
+	output = trim(3.14)
+	output = reverse(54321.0)
+end
