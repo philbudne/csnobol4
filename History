@@ -5,6 +5,9 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 6/17/2026:
 	v311.sil [PLB133] Accept REAL in VARVAL if PLUSOPS enabled
 	doc/snobol4ext.1.pea: document the places
+		XXX include version the change occurred in
+		when a release is pending, and this is scanned
+		for what has changed!!! XXX
 	procs: add GNVARR, GENVRX
 	tests/realst.sno: tests
 	tests/tests.in: add realst.sno
