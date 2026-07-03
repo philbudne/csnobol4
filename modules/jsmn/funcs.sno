@@ -1,0 +1,101 @@
+**=pea
+**=sect NAME
+**snobol4jsmn \- SNOBOL4 JSON parser using JSMN library
+**
+**=sect SYNOPSIS
+**=code
+**B<-INCLUDE 'jsmn.sno'>
+**	data = B<JSMN_DECODE(>I<string>B<)>
+**=ecode
+**
+**=sect DESCRIPTION
+**Parse JSON data using JSMN (pronounced "jasmine")
+**a minimalistic JSON parser written in C.
+**=pea
+**=sect SEE ALSO
+**B<snobol4>(1), B<snobol4json>(3)
+**
+**=sect AUTHOR
+**Philip L. Budne
+**=cut
+
+* token array elements (first array index):
+	JSMN.I.TYPE = 0
+	JSMN.I.START = 1
+	JSMN.I.END = 2
+	JSMN.I.SIZE = 3
+
+* JSMN.I.TYPE element values:
+	JSMN.T.ARRAY = ORD('a')
+	JSMN.T.OBJECT = ORD('o')
+	JSMN.T.PRIMITIVE = ORD('p')
+	JSMN.T.STRING = ORD('s')
+
+****************************************************************
+** take JSMN_TOKENS output, turn into SNOBOL4 types
+
+	DEFINE('JSMN_MAKE(JS,ARR,NTOK)T,V,ST,I,SZ') :(JSMN_MAKE_END)
+JSMN_MAKE
++	GE(JSMN_INDEX, NTOK)			:S(RETURN)
+	T = ARR[JSMN.I.TYPE, JSMN_INDEX]	:F(FRETURN)
+	OUTPUT = "MAKE " JSMN_INDEX "/" NTOK " TYPE " T
+	IDENT(T, JSMN.T.ARRAY)			:S(JSMN_MAKE_ARR)
+	IDENT(T, JSMN.T.OBJECT)			:S(JSMN_MAKE_OBJ)
+
+* get start
+	ST = ARR[JSMN.I.START, JSMN_INDEX]
+* extract string
+	V = SUBSTR(JS, ST + 1, ARR[JSMN.I.END, JSMN_INDEX] - ST)
+	JSMN_INDEX = JSMN_INDEX + 1
+	IDENT(T, JSMN.T.PRIMITIVE)		:S(JSMN_MAKE_PRIM)
+	IDENT(T, JSMN.T.STRING)			:S(JSMN_MAKE_STR)
+	TERMINAL = "BAD JSMN.I.TYPE " T " @ " JSMN_INDEX ': ' V :(FRETURN)
+****
+JSMN_MAKE_STR
++	JSMN_MAKE = V				:(RETURN)
+****
+JSMN_MAKE_PRIM
++	JSMN_MAKE = IDENT(V, "null")		:S(RETURN)
+	JSMN_MAKE = IDENT(V, "true") 1		:S(RETURN)
+	JSMN_MAKE = IDENT(V, "false") 0		:S(RETURN)
+* may cause fatal error (jsmn doesn't validate): increment &ERRLIMIT???
+	JSMN_MAKE = V + 0			:(RETURN)
+****
+JSMN_MAKE_ARR
++	SZ = ARR[JSMN.I.SIZE, JSMN_INDEX]
+	JSMN_INDEX = JSMN_INDEX + 1
+	JSMN_MAKE = ARRAY('0:' (SZ - 1))
+	I = 0
+JSMN_MAKE_ARR_LOOP
++	GE(I, SZ)				:S(RETURN)
+	V = JSMN_MAKE(JS, ARR, NTOK)		:F(FRETURN)
+	JSMN_MAKE[I] = V
+	I = I + 1				:(JSMN_MAKE_ARR_LOOP)
+****
+JSMN_MAKE_OBJ
++	SZ = ARR[JSMN.I.SIZE, JSMN_INDEX]
+	JSMN_MAKE = TABLE(SZ)
+	JSMN_INDEX = JSMN_INDEX + 1
+JSMN_MAKE_OBJ_LOOP
++	EQ(SZ, 0)				:S(RETURN)
+	I = JSMN_MAKE(JS, ARR, NTOK)		:F(FRETURN)
+	V = JSMN_MAKE(JS, ARR, NTOK)		:F(FRETURN)
+	JSMN_MAKE[I] = V
+	SZ = SZ - 1				:(JSMN_MAKE_OBJ_LOOP)
+JSMN_MAKE_END
+****************************************************************
+** user-callable function; parses to tokens, then assembles into SNOBOL4 types
+
+	DEFINE('JSMN_DECODE(JS,NTOK)ARR')	:(JSMN_PARSE_END)
+JSMN_DECODE
+	DIFFER(NTOK)				:S(JSMN_PARSE_SIZED)
+	NTOK = JSMN_TOKENS(JS)			:F(FRETURN)
+JSMN_PARSE_SIZED
++	OUTPUT = "NTOK: " NTOK
+	ARR = ARRAY('0:3,0:' (NTOK - 1))
+	NTOK = JSMN_TOKENS(JS, NTOK, ARR)
+* UGH!!! GLOBAL (want JSMN_MAKE to return data AND updated index!!!)
+	JSMN_INDEX = 0
+	JSMN_DECODE = JSMN_MAKE(JS, ARR, NTOK) :S(RETURN)F(FRETURN)
+JSMN_PARSE_END
+

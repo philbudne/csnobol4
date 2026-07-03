@@ -1,0 +1,10 @@
+-include 'jsmn.sno'
+
+****************************************************************
+	IN = '{"a": 1, "b": null, "c": true, "d":[1,2,3]}'
+	X = JSMN_DECODE(IN)
+	OUTPUT = DATATYPE(X)
+
+-include 'json.sno'
+	OUTPUT = JSON_ENCODE(X)
+end
