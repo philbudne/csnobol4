@@ -1,0 +1,19 @@
+before:
+a = foo
+$a = hello
+b:
+b = foo
+$b = hello
+yes
+after:
+a:
+a = foo
+$a = hello
+b:
+b = foo (expect foo)
+$b = hello
+yes
+b2:
+b = FOO
+$b = hello
+no

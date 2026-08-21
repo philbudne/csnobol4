@@ -1,0 +1,31 @@
+	a = 'foo'
+	$a = "hello"
+	OUTPUT = 'before:'
+	OUTPUT = 'a = ' a
+	OUTPUT = '$a = ' $a
+
+	OUTPUT = 'b:'
+	b = 'foo'
+	OUTPUT = "b = " b
+	OUTPUT = "$b = " $b
+	OUTPUT = (IDENT(a,b) 'yes', 'no')
+
+	CODE(a)
+
+	OUTPUT = 'after:'
+	OUTPUT = 'a:'
+	OUTPUT = "a = " a
+	OUTPUT = "$a = " $a
+
+	OUTPUT = 'b:'
+	b = 'foo'
+	OUTPUT = "b = " b " (expect foo)"
+	OUTPUT = "$b = " $b
+	OUTPUT = (IDENT(a,b) 'yes', 'no')
+
+	OUTPUT = 'b2:'
+	b = 'FOO'
+	OUTPUT = "b = " b
+	OUTPUT = "$b = " $b
+	OUTPUT = (IDENT(a,b) 'yes', 'no')
+END

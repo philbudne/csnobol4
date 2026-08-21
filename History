@@ -6,6 +6,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	snolib/json.sno: handle "empty" arrays
 	modules/jsmn/jsmn.sno: helper for jsmn.c
 	modules/jsmn/t.sno: add more test cases
+	test/case3.{sno,ref}: test
+	test/tests.in: add case3.sno
 
 7/2/2026:
 	modules/jsmn: add experimental jsmn module (C based JSON parser)
