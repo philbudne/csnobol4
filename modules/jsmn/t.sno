@@ -1,8 +1,9 @@
 -include 'jsmn.sno'
 
 ****************************************************************
-	IN = '{"a": 1, "b": null, "c": true, "d":[1,2,3]}'
-	X = JSMN_DECODE(IN)
+	IN = '{"a": 1, "b": null, "c": false, "d":[1,2,3], "e": [[1,2],[3,4]], "f":{}, "h": []}'
+
+	X = JSMN_DECODE(IN, "*NULL*")
 	OUTPUT = DATATYPE(X)
 
 -include 'json.sno'
