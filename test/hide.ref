@@ -1,7 +1,7 @@
         -LIST
-1       	OUTPUT = &STNO
-2       	OUTPUT = &STNO
-3       END
+1       	output = &stno
+2       	output = &stno
+3       end
 0
 0
 1

@@ -1,6 +1,9 @@
 * $Id$
 *
 * $Log$
+* 2026-07-25 phil
+* [PLB134] fix case folding
+*
 * 2026-06-17 phil
 * [PLB133] If SPITBOL ops (PLUSOPS) enabled,
 * accept REAL values in VARVAL
@@ -1325,10 +1328,15 @@ GNVARR PROC    GENVAR		   Procedure to generate string
 GENVUP PROC    GENVAR		   Procedure to generate string
        AEQLC   CASECL,0,,GENVAR	   Skip out if case sensitve
        POP     AXPTR		   Restore pointer to specifier
-       PUSH    AXPTR		   Put it back
        GETSPC  SPECR1,AXPTR,0	   Get specifier
-       XRAISP  SPECR1		   Force to upper case
-       BRANCH  GENVAR		   Join regular processing
+       LEQLC   SPECR1,0,,RT1NUL    Avoid null string			[PLB134]
+       GETLG   AXPTR,SPECR1	   Get string length			[PLB134]
+       RCALL   ,CONVAR,AXPTR       Allocate scratch space at FRSGPT	[PLB134]
+       LOCSP   SPECR2,FRSGPT	   Specifier to scratch area		[PLB134]
+       XCALLC  RAISE2,(SPECR1,SPECR2)					[PLB134]
+*				   Copy & raise; fails if no LC chars
+       LOCSP   SPECR1,FRSGPT	   Specifier to scratch area		[PLB134]
+       BRANCH  LOCA1		   Make natural variable		[PLB134]
 *
 *_
 *---------------------------------------------------------------------*
