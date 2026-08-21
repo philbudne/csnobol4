@@ -320,7 +320,8 @@ json.encode.arr
 	a pos(0) break(',') ','				:S(json.encode.arr.bad)
 	a pos(0) '0:'					:F(json.encode.arr.bad)
 	i = 0
-	s = '['
+	JSON_ENCODE = JSON_ENCODE '['
+	s =
 json.encode.arr.loop
 +	a = j[i]					:F(json.encode.arr.done)
 	JSON_ENCODE = JSON_ENCODE s JSON_ENCODE(a)	:F(FRETURN)
