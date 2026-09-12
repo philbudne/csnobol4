@@ -5,6 +5,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 9/11/2026:
 	snolib/setuputil.sno: put supplied 'cflags' last to avoid
 		picking up rogue macros.h from a Tcl install
+	modules/jsmn/jsmn.sno: remove generated file
 
 8/21/2026:
 	snolib/json.sno: handle "empty" arrays
