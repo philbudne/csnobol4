@@ -388,10 +388,10 @@ setup.posix.buildcmd2
 * build "dynamic library" (DL) -- something attached at runtime
 	compile = CC ' -c ' COPT
 +		' ' DL_CFLAGS setup.debug
-+		(DIFFER(t['cflags']) ' ' t['cflags'], '')
 +		(DIFFER(CONFIG_CFLAGS) ' ' CONFIG_CFLAGS, '')
 +		(DIFFER(CONFIG_CPPFLAGS) ' ' CONFIG_CPPFLAGS, '')
 +		iflags
++		(DIFFER(t['cflags']) ' ' t['cflags'], '')
 +		' ' sources
 	setup.posix.system(compile)		 :f(FRETURN)
 
