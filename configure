@@ -1301,27 +1301,28 @@ if config/check "sys/types.h libutil.h" "$FORKPTY" -lutil; then
     echo 'using forkpty() with libutil.h and -lutil' 1>&2
     echo '#define HAVE_LIBUTIL_H'	>> $CONFIG_H
     echo "ADD_SNOBOL4_LDFLAGS([-lutil])" >> $CONFIG_M4
-    NEED_PATHS_H=1
     HAVE_FORKPTY=1
 elif config/check "sys/types.h util.h" "$FORKPTY"; then
     # OSX
     echo 'using forkpty() with util.h' 1>&2
     echo '#define HAVE_UTIL_H'		>> $CONFIG_H
-    NEED_PATHS_H=1
     HAVE_FORKPTY=1
 elif config/check "sys/types.h util.h" "$FORKPTY" -lutil; then
     # NetBSD, OpenBSD
     echo 'using forkpty() with util.h and -lutil' 1>&2
     echo '#define HAVE_UTIL_H'		>> $CONFIG_H
     echo "ADD_SNOBOL4_LDFLAGS([-lutil])" >> $CONFIG_M4
-    NEED_PATHS_H=1
     HAVE_FORKPTY=1
 elif config/check "sys/types.h pty.h" "$FORKPTY" -lutil; then
     # Linux
     echo 'using forkpty() with pty.h and -lutil' 1>&2
     echo '#define HAVE_PTY_H'		>> $CONFIG_H
     echo "ADD_SNOBOL4_LDFLAGS([-lutil])" >> $CONFIG_M4
-    NEED_PATHS_H=1
+    HAVE_FORKPTY=1
+elif config/check "termios.h" "$FORKPTY"; then
+    # added in Solaris 11.4:
+    echo 'using forkpty() with termios.h' 1>&2
+    echo '#define FORKPTY_TERMIOS_H'	>> $CONFIG_H
     HAVE_FORKPTY=1
 elif config/check 'fcntl.h stdlib.h' 'int fd = posix_openpt(O_RDWR|O_NOCTTY); int x = grantpt(fd), y = unlockpt(fd); char *name = ptsname(fd)'; then
     echo 'using private forkpty()' 1>&2
@@ -1329,9 +1330,13 @@ elif config/check 'fcntl.h stdlib.h' 'int fd = posix_openpt(O_RDWR|O_NOCTTY); in
     echo '#define HAVE_LIBPTY_H'	>> $CONFIG_H
     echo 'ADD_OBJS([pty.o])'		>> $CONFIG_M4
     echo 'ADD_SRCS([$(SRCDIR)lib/posix/pty.c])'	>> $CONFIG_M4
-    NEED_PATHS_H=1
     HAVE_FORKPTY=1
 fi    
+
+# redundancy reduction!
+if [ "x$HAVE_FORKPTY" != x ]; then
+    NEED_PATHS_H=1
+fi
 
 if [ "$NEED_PATHS_H" ]; then
     if config/check paths.h 'char *foo = _PATH_BSHELL'; then
@@ -1946,7 +1951,7 @@ if [ "x$WITHOUT_MODULES" = x ]; then
     if [ "$TCONF" -a -f "$TCONF" ]; then
 	. "$TCONF"
 	if [ "$TCL_VERSION" ]; then
-	    echo "using Tcl version $TCL_VERSION" 1>&2
+	    echo "using Tcl version $TCL_VERSION (from $TCONF)" 1>&2
 	    MODULES="$MODULES stcl"
 	    echo "	TCL_LIB_SPEC = '$TCL_LIB_SPEC'" >> $CONFIG_SNO
 	    echo "	TCL_INCLUDE_SPEC = '$TCL_INCLUDE_SPEC'" >> $CONFIG_SNO

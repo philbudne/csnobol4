@@ -30,6 +30,9 @@
 #ifdef HAVE_PTY_H
 #include <pty.h>			/* linux: forkpty() */
 #endif
+#ifdef FORKPTY_TERMIOS_H
+#include <termios.h>			/* Solaris 11.4 */
+#endif
 
 #ifdef HAVE_PATHS_H
 #include <paths.h>			/* _PATH_BSHELL */

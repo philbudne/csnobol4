@@ -2,6 +2,11 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+9/13/2026:
+	configure: try to detect Solaris 11.4 forkpty
+		display Tcl config file path used
+	lib/bsd/ptyio_obj.c: add ifdef FORKPTY_TERMIOS_H
+
 9/11/2026:
 	snolib/setuputil.sno: put supplied 'cflags' last to avoid
 		picking up rogue macros.h from a Tcl install
