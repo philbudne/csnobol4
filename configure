@@ -13,9 +13,9 @@ ID='$Id$'
 OPTIONS="$*"
 
 # needed in Makefile2 and config.h
-VERSION=2.3.4+
+VERSION=2.3.5pre1
 # 60th Anniversary of SNOBOL4 running on IBM 7094
-VERSION_DATE="April 24, 2026"
+VERSION_DATE="September 25, 2026"
 
 # save any CFLAGS passed to us...
 INITIAL_CFLAGS="$CFLAGS"
@@ -1789,7 +1789,7 @@ else
 fi
 
 if [ "x$WITHOUT_MODULES" = x ]; then
-    MODULES="base64 dirs logic random stat time sprintf fork readline"
+    MODULES="base64 dirs logic random stat time sprintf fork readline jsmn"
     # if other compression modules created, have COMP_MODULES?
     if [ "x$HAVE_ZLIB" != x ]; then
 	MODULES="$MODULES zlib"

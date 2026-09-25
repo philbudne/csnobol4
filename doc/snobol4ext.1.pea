@@ -150,6 +150,7 @@ third and fourth arguments, LEQ,LGE,LGT,LLE,LLT,LNE both arguments,
 LOAD first and second arguments, REPLACE all three arguments, REVERSE
 argument RPAD/LPAD first and third arguments, SIZE argument, SUBSTR
 argument, TRIM argument, tracing related code.
+ I<added in CSNOBOL4 2.3.5>.
 
 =item B<TERMINAL> I/O variable
 The variable B<TERMINAL> is associated with the standard error file

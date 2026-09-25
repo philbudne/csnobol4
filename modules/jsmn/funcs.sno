@@ -15,8 +15,14 @@
 **=sect SEE ALSO
 **B<snobol4>(1), B<snobol4json>(3)
 **
+**=sect ISSUES
+**B<jsmn> returns quoted strings as they appear in the JSON file,
+**without interpreting escape sequences (\e" \e\e \e/ \eb \ef \en \er \eu).
+**
 **=sect AUTHOR
-**Philip L. Budne
+**Serge Zaitsev (jsmn library)
+**=break
+**Philip L. Budne (snobol4 plugin)
 **=cut
 
 * token array elements (first array index):

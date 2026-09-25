@@ -2,8 +2,18 @@ $Id$
 
 For detailed revision history see History file
 
-CSNOBOL4 version 2.3.4 released 4/24/2026
+CSNOBOL4 version 2.3.5 released ??/??/2026
 
+Changes since 2.3.4 release;
+===========================
+
+	Fix MSC, Cygwin, Solaris builds
+	Fix JSON_ENCODE of "empty" lists
+	Fix variable name case folding
+	Add experimental jsmn JSON parser
+	Accept REAL values where NAME/STRING expected
+
+CSNOBOL4 version 2.3.4 released 4/24/2026
 On the 60th anniversary of SNOBOL4 first running on the IBM 7094,
 and in Honor of David J. Farber, one of the authors of the original
 SNOBOL language, who died 2/7/2026.
