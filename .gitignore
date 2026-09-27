@@ -102,6 +102,10 @@ modules/fork/fork.sno
 modules/fork/fork.so
 modules/fork/snobol4fork.3
 modules/fork/snobol4fork.3.html
+modules/jsmn/jsmn.sno
+modules/jsmn/jsmn.so
+modules/jsmn/snobol4jsmn.3
+modules/jsmn/snobol4jsmn.3.html
 modules/logic/logic.sno
 modules/logic/logic.so
 modules/logic/snobol4logic.3
