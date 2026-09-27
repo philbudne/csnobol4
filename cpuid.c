@@ -3,9 +3,17 @@
 
 int debug = 0;
 
+
 #if defined(__i386__) || defined(__x86_64__) || defined(_M_IX86) || defined(_M_AMD64) || defined(__i386) || defined(__x86_64)
+#ifdef HAVE_CPUID_H
+#include <cpuid.h>
+#endif
+
 void
 cpuid(int f, int v[4]) {
+#ifdef HAVE_CPUID_H
+    __cpuid(f, v[0], v[1], v[2], v[3]);
+#else /* not HAVE_CPUID_H */
 #if defined(__GNUC__) || defined(__SUNPRO_C)
     /* http://en.wikipedia.org/wiki/CPUID */
     __asm__ __volatile__ (
@@ -21,6 +29,8 @@ cpuid(int f, int v[4]) {
     /* http://en.wikipedia.org/wiki/CPUID */
     __cpuid(v, f);			/* present in VS2005 */
 #endif /* _MSC_VER */
+#endif /* not HAVE_CPUID_H */
+
     if (debug)
 	printf("f %#x: %#x %#x %#x %#x\n", f, v[0],  v[1],  v[2],  v[3]);
 }

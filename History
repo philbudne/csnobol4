@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+9/26/2026:
+	configure cpuid.c Makefile2.m4: detect and use cpuid.h
+
 9/25/2026:
 	CHANGES: update for 2.3.5
 	configure: enable jsmn by default, update for 2.3.5pre1

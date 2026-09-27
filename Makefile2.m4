@@ -276,7 +276,7 @@ always:
 
 # avoid CFLAGS: -O causes crash on gcc 4.4.6 x86_64?
 cpuid:	cpuid.c
-	$(CC) -o cpuid cpuid.c
+	$(CC) $(CPUID_DEFINES) -o cpuid cpuid.c
 
 ################ modules
 
