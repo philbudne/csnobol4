@@ -5,6 +5,7 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 9/26/2026:
 	configure cpuid.c Makefile2.m4: detect and use cpuid.h
 	.gitignore: add jsmn files
+	Makefile: make Makefile2 depend on generated files
 
 9/25/2026:
 	CHANGES: update for 2.3.5
