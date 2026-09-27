@@ -1788,6 +1788,11 @@ else
     echo 'MEMIO_SRC=$(MEMIO_OBJ_C)'		>> $CONFIG_M4
 fi
 
+if config/check cpuid.h 'int a, b, c, d; __cpuid(0, a, b, c, d);'; then
+    echo 'using cpuid.h' 1>&2
+    echo 'CPUID_DEFINES=-DHAVE_CPUID_H'		>> $CONFIG_M4
+fi
+
 if [ "x$WITHOUT_MODULES" = x ]; then
     MODULES="base64 dirs logic random stat time sprintf fork readline jsmn"
     # if other compression modules created, have COMP_MODULES?
@@ -2124,11 +2129,6 @@ EOF
 	fi
     fi # cygwin
 fi # modules
-
-if config/check cpuid.h 'int a, b, c, d; __cpuid(0, a, b, c, d);'; then
-    echo 'using cpuid.h' 1>&2
-    echo 'CPUID_DEFINES=-DHAVE_CPUID_H'		>> $CONFIG_M4
-fi
 
 if [ "x$NEED_BUFIO" != x ]; then
     echo 'ADD_OBJS([bufio_obj.o])'		>> $CONFIG_M4
