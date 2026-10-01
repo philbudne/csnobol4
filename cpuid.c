@@ -112,6 +112,24 @@ main(int argc, char *argv[]) {
 	ip[3] = 0;
 	printf("hypervisor: %s\n", str);
     }
+
+    /*
+     * When a hypervisor is emulating ANOTHER hypervisor (ie; "Hyper V
+     * Enlightenments") and the ID at HVBASE is fictional the actual
+     * identity will appear (at the first otherwise unused 0x100
+     * aligned boundary?)
+     */
+#define HVBASE2 0x40000100 /* "secondary base for hypervisor leaves" */
+    cpuid(HVBASE2, v);
+    if (v[0] >= HVBASE2 && v[0] <= HVBASE2+0xff) {
+	ip = (int *) str;
+	ip[0] = v[1];
+	ip[1] = v[2];
+	ip[2] = v[3];
+	ip[3] = 0;
+	printf("hypervisor2: %s\n", str);
+    }
+
     return 0;
 }
 #else

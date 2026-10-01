@@ -2,6 +2,9 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/1/2026:
+	cpuid.c: add hypervisor2
+
 9/26/2026:
 	configure cpuid.c Makefile2.m4: detect and use cpuid.h
 	.gitignore: add jsmn files
