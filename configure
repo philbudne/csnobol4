@@ -14,7 +14,7 @@ OPTIONS="$*"
 
 # needed in Makefile2 and config.h
 VERSION=2.3.5-pre1
-VERSION_DATE="September 27, 2026"
+VERSION_DATE="October 4, 2026"
 
 # save any CFLAGS passed to us...
 INITIAL_CFLAGS="$CFLAGS"
