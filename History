@@ -6,6 +6,8 @@ The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 	lib/io.c: fix VC build
 	lib/win32/sys.c: update for Win11 detection
 
+** 2.3.5-pre1 (tag REL_2_3_5_PRE1)
+
 10/4/2026:
 	configure: update VERSION_DATE
 
