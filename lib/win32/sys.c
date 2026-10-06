@@ -85,7 +85,7 @@ static int
 rtl_osname(char *cp) {
     // https://stackoverflow.com/questions/36543301/detecting-windows-10-version
     HMODULE hMod = GetModuleHandleA("ntdll.dll");
-    RTL_OSVERSIONINFOEXW rovi;	/* non-extended version */
+    RTL_OSVERSIONINFOEXW rovi;	/* extended version */
     RtlGetVersionPtr fptr;
     int workstation;
     int build;
