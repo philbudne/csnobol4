@@ -471,7 +471,7 @@ io_skip(int unit) {
 }
 
 /* here with filename from command line */
-EXPORT(void)
+SNOBOL4_API(void)
 io_input_file(const char *path) {
     struct file *fp;
 
@@ -483,7 +483,7 @@ io_input_file(const char *path) {
 }
 
 #ifdef SHARED
-EXPORT(void)
+SNOBOL4_API(void)
 io_input_string(const char *name, char *str) {
     struct file *fp;
 
@@ -551,7 +551,7 @@ io_attached(int unit) {
  * create a memory based output file and attach for output
  * pass in a char ** to be filled with a malloced buffer?
  */
-EXPORT(int)
+SNOBOL4_API(int)
 io_output_string(int unit,		/* external (1-based) unit */
 		 char *fname,		/* "filename" for error reports */
 		 char *buf,

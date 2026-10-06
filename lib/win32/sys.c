@@ -50,7 +50,7 @@ hwname(char *cp) {
 
 #ifdef PROCESSOR_ARCHITECTURE_AMD64
     case PROCESSOR_ARCHITECTURE_AMD64:
-	hw = "amd64";
+	hw = "amd64";			/* aka x64 */
 	break;
 #endif
 
@@ -66,11 +66,106 @@ hwname(char *cp) {
 	break;
 #endif
 
+#ifdef PROCESSOR_ARCHITECTURE_ARM64
+    case PROCESSOR_ARCHITECTURE_ARM64:
+	hw = "arm64";
+	break;
+#endif
+
     default:
 	sprintf(cp, "arch#%d", si.wProcessorArchitecture);
 	return;
     }
     strcpy(cp, hw);
+}
+
+typedef int (WINAPI* RtlGetVersionPtr)(PRTL_OSVERSIONINFOEXW);
+
+static int
+rtl_osname(char *cp) {
+    // https://stackoverflow.com/questions/36543301/detecting-windows-10-version
+    HMODULE hMod = GetModuleHandleA("ntdll.dll");
+    RTL_OSVERSIONINFOEXW rovi;	/* non-extended version */
+    RtlGetVersionPtr fptr;
+    int workstation;
+    int build;
+    char *os = NULL;
+
+    if (!hMod)
+	return 0;
+
+    // https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/wdm/nf-wdm-rtlgetversion
+    // "RtlGetVersion is the kernel-mode equivalent of the user-mode GetVersionEx function in the Windows SDK."
+    // Available starting with Windows 2000. Unlike GetVersion(Ex)[AW], not deprecated.
+    // BUT may still lie if program run in compatibility mode!
+    // ONLY available in Wide character version.
+    fptr = (RtlGetVersionPtr) GetProcAddress(hMod, "RtlGetVersion");
+    if (!fptr)
+	return 0;
+
+    ZeroMemory(&rovi, sizeof(rovi));
+    rovi.dwOSVersionInfoSize = sizeof(rovi);
+    if (fptr(&rovi))
+	return 0;
+
+#ifdef DEBUG_SYS
+    printf("rovi plat %ld %ld.%ld.%ld ptype %d\n",
+	   rovi.dwPlatformId,
+	   rovi.dwMajorVersion,
+	   rovi.dwMinorVersion,
+	   rovi.dwBuildNumber,
+	   rovi.wProductType);
+#endif
+
+    if (rovi.dwPlatformId != VER_PLATFORM_WIN32_NT)
+	return 0;
+
+    // https://stackoverflow.com/questions/74645458/how-to-detect-windows-11-programmatically
+    if (rovi.dwMajorVersion < 10)
+	return 0;
+
+    workstation = rovi.wProductType == VER_NT_WORKSTATION;
+    build = rovi.dwBuildNumber & 0xffff;
+    // Both Win10 & 11, and all server releases have major == 10 and minor == 0
+    os = NULL;
+    if (rovi.dwMajorVersion == 10 && rovi.dwMinorVersion == 0) {
+	if (workstation) {
+	    if (build >= 29000)		/* "vNext" */
+		;
+	    else if (build >= 21996)
+		os = "Win11";
+	    else
+		os = "Win10";
+	}
+	else {
+	    // https://learn.microsoft.com/en-us/windows/release-health/windows-server-release-info
+	    if (build >= 29000)	 // 26525 was an insider vNext preview
+		;
+	    else if (build >= 26100)
+		os = "WinServer2025"; /* Win11 based */
+	    else if (build >= 20348)
+		os = "WinServer2022";
+	    else if (build >= 17763)
+		os = "WinServer2019";
+	    else		/* start 14393 */
+		os = "WinServer2016";
+	}
+    } // 10.0
+
+    if (os) {
+	strcpy(cp, os);
+    }
+    else {				/* unknown major/minor */
+	sprintf(cp, "Win?? %d.%d",
+		(int)rovi.dwMajorVersion, (int)rovi.dwMinorVersion);
+	if (build) {
+	    cp += strlen(cp);
+	    sprintf(cp, ".%d", build);
+	}
+	if (!workstation)
+	    strcat(cp, " server");
+    }
+    return 1;
 }
 
 void
@@ -80,6 +175,9 @@ osname(char *cp) {
     int server = 0;
     int build = 0;
     int vnum = 0;
+
+    if (rtl_osname(cp))			/* handle 10 and newer */
+	return;
 
     ZeroMemory(&osv, sizeof(osv));
     osv.dwOSVersionInfoSize = sizeof(osv);
@@ -111,7 +209,7 @@ osname(char *cp) {
 	return;
     }
 #ifdef DEBUG_SYS
-    printf("plat %ld %ld.%ld.%ld ptype %d\n",
+    printf("osv plat %ld %ld.%ld.%ld ptype %d\n",
 	   osv.dwPlatformId,
 	   osv.dwMajorVersion,
 	   osv.dwMinorVersion,
@@ -230,7 +328,8 @@ osname(char *cp) {
 	    } // 6
 	    break;
 
-	case 10: /* not returned unless binary manifested for Win10 (else 6.2) */
+	case 10: /* should now be handled in rtl_osname */
+	    /* not returned unless binary manifested for Win10 (else 6.2) */
 	    switch (osv.dwMinorVersion) {
 	    case 0:
 		if (server)
