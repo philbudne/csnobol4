@@ -126,37 +126,40 @@ rtl_osname(char *cp) {
 
     workstation = rovi.wProductType == VER_NT_WORKSTATION;
     build = rovi.dwBuildNumber & 0xffff;
-    // Both Win10 & 11, and all server releases have major == 10 and minor == 0
-    os = NULL;
-    if (rovi.dwMajorVersion == 10 && rovi.dwMinorVersion == 0) {
-	if (workstation) {
-	    if (build >= 29000)		/* "vNext" */
-		;
-	    else if (build >= 21996)
-		os = "Win11";
-	    else
-		os = "Win10";
-	}
-	else {
-	    // https://learn.microsoft.com/en-us/windows/release-health/windows-server-release-info
-	    if (build >= 29000)	 // 26525 was an insider vNext preview
-		;
-	    else if (build >= 26100)
-		os = "WinServer2025"; /* Win11 based */
-	    else if (build >= 20348)
-		os = "WinServer2022";
-	    else if (build >= 17763)
-		os = "WinServer2019";
-	    else		/* start 14393 */
-		os = "WinServer2016";
-	}
-    } // 10.0
+    switch (rovi.dwMajorVersion) {
+    case 10:
+	switch (rovi.dwMinorVersion) {
+	case 0:
+	    if (workstation) {
+		if (build >= 29000)		/* "vNext" */
+		    ;
+		else if (build >= 21996)
+		    os = "Win11";
+		else
+		    os = "Win10";
+	    } // 10.0 workstation
+	    else {
+		// https://learn.microsoft.com/en-us/windows/release-health/windows-server-release-info
+		if (build >= 29000)	 // 26525 was an insider vNext preview
+		    ;
+		else if (build >= 26100)
+		    os = "WinServer2025"; /* Win11 based */
+		else if (build >= 20348)
+		    os = "WinServer2022";
+		else if (build >= 17763)
+		    os = "WinServer2019";
+		else		/* start 14393 */
+		    os = "WinServer2016";
+	    } // 10.0 server
+	} // 10.x
+	break;
+    } // switch on dwMajorVersion
 
     if (os) {
 	strcpy(cp, os);
     }
     else {				/* unknown major/minor */
-	sprintf(cp, "Win?? %d.%d",
+	sprintf(cp, "WinNT %d.%d",
 		(int)rovi.dwMajorVersion, (int)rovi.dwMinorVersion);
 	if (build) {
 	    cp += strlen(cp);
