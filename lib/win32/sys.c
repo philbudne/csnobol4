@@ -14,6 +14,46 @@
 #include "lib.h"
 #include "str.h"
 
+/*
+ * WIN32_NT versions returned by RtlGetVersion for rtl_osname
+ * https://learn.microsoft.com/en-us/windows/release-health/windows-server-release-info
+ * https://learn.microsoft.com/en-us/windows/release-health/windows11-release-information
+ * https://learn.microsoft.com/en-us/windows/release-health/release-information?source=recommendations
+ */
+static
+struct winbuild {
+    unsigned short major, minor;
+    int build;
+    unsigned char workstation;
+    char *name;
+} winbuilds[] = {
+    // MUST be sorted by major, minor, build!!
+    // NOTE!! Only contains build numbers for marketing name changes
+    { 10, 0, 29000, 0, NULL },	// 26525 was an insider vNext preview
+    { 10, 0, 26100, 0, "WinServer2025" }, // Win11 based
+    { 10, 0, 21996, 1, "Win11" }, // officially starts at 22000
+    { 10, 0, 20348, 0, "WinServer2022" },
+    { 10, 0, 17763, 0, "WinServer2019" },
+    { 10, 0, 0, 1, "Win10" },
+    { 10, 0, 0, 0, "WinServer2016" },
+    {  6, 4, 0, 1, "Win10" },	// before build 9926
+    {  6, 4, 0, 0, "WinServer2016" }, // before build 9926
+    {  6, 3, 0, 1, "Win8.1" },
+    {  6, 3, 0, 0, "WinServer2012R2" },
+    {  6, 2, 0, 1, "Win8" },
+    {  6, 2, 0, 0, "WinServer2012" },
+    {  6, 1, 0, 1, "Win7" },
+    {  6, 1, 0, 0, "WinServer2008R2" },
+    {  6, 0, 0, 1, "WinVista" },
+    {  6, 0, 0, 0, "WinServer2008" },
+    {  5, 2, 0, 0, "WinServer2003" },
+    {  5, 2, 0, 1, "WinXP 64bit" },
+    {  5, 1, 0, 1, "WinXP" },
+    {  5, 0, 0, 0, "Win2K" },
+    {  0, 0, 0, 0, NULL }
+};
+
+
 void
 hwname(char *cp) {
     char *hw;
@@ -87,12 +127,16 @@ rtl_osname(char *cp) {
     HMODULE hMod = GetModuleHandleA("ntdll.dll");
     RTL_OSVERSIONINFOEXW rovi;	/* extended version */
     RtlGetVersionPtr fptr;
-    int workstation;
+    struct winbuild *wp;
+    unsigned short major, minor;
+    unsigned char workstation;
     int build;
     char *os = NULL;
 
     if (!hMod)
 	return 0;
+
+    // https://stackoverflow.com/questions/74645458/how-to-detect-windows-11-programmatically
 
     // https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/wdm/nf-wdm-rtlgetversion
     // "RtlGetVersion is the kernel-mode equivalent of the user-mode GetVersionEx function in the Windows SDK."
@@ -120,54 +164,51 @@ rtl_osname(char *cp) {
     if (rovi.dwPlatformId != VER_PLATFORM_WIN32_NT)
 	return 0;
 
-    // https://stackoverflow.com/questions/74645458/how-to-detect-windows-11-programmatically
-    if (rovi.dwMajorVersion < 10)
-	return 0;
+    if (rovi.dwMajorVersion < 5)	/* before Win2K???? */
+	return 0; /* should not happen (call did not exist before then?)! */
 
     workstation = rovi.wProductType == VER_NT_WORKSTATION;
-    build = rovi.dwBuildNumber & 0xffff;
-    switch (rovi.dwMajorVersion) {
-    case 10:
-	switch (rovi.dwMinorVersion) {
-	case 0:
-	    if (workstation) {
-		if (build >= 29000)		/* "vNext" */
-		    ;
-		else if (build >= 21996)
-		    os = "Win11";
-		else
-		    os = "Win10";
-	    } // 10.0 workstation
-	    else {
-		// https://learn.microsoft.com/en-us/windows/release-health/windows-server-release-info
-		if (build >= 29000)	 // 26525 was an insider vNext preview
-		    ;
-		else if (build >= 26100)
-		    os = "WinServer2025"; /* Win11 based */
-		else if (build >= 20348)
-		    os = "WinServer2022";
-		else if (build >= 17763)
-		    os = "WinServer2019";
-		else		/* start 14393 */
-		    os = "WinServer2016";
-	    } // 10.0 server
-	} // 10.x
-	break;
-    } // switch on dwMajorVersion
+    major = rovi.dwMajorVersion;
+    minor = rovi.dwMinorVersion;
+    build = rovi.dwBuildNumber;
+
+    for (wp = winbuilds; wp->major != 0; wp++) {
+	if (wp->workstation != workstation) /* XXX allow wildcard? */
+	    continue;
+	if (major < wp->major)
+	    break;			/* too far */
+	if (major > wp->major)
+	    continue;			/* not far enough */
+
+	/* here with major == minor */
+	if (minor > wp->minor)
+	    break;			/* too far */
+
+	if (minor == wp->minor && build >= wp->build) {
+	    /*
+	     * NOTE! no check for NULL;
+	     * allows creation of barriers when "vNext" builds known
+	     */
+	    os = wp->name;
+	    break;
+	}
+    }
 
     if (os) {
 	strcpy(cp, os);
     }
     else {				/* unknown major/minor */
-	sprintf(cp, "WinNT %d.%d",
-		(int)rovi.dwMajorVersion, (int)rovi.dwMinorVersion);
+	if (workstation)
+	    os = "WinNT";
+	else
+	    os = "WinServer";
+	sprintf(cp, "%s %d.%d", os, major, minor);
 	if (build) {
 	    cp += strlen(cp);
 	    sprintf(cp, ".%d", build);
 	}
-	if (!workstation)
-	    strcat(cp, " server");
     }
+    /* NOTE! does not append szCSDVersion (wide chars)!! */
     return 1;
 }
 
