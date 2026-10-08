@@ -44,5 +44,8 @@ cd ..\stat
 cd ..\time
 %SETUP% %CMD%
 
+cd ..\jsmn
+%SETUP% %CMD%
+
 cd ..\..
 
