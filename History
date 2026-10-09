@@ -2,6 +2,10 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
+10/8/2026:
+	lib/win32/sys.c: winbuilds table
+	config/win32/modules.bat: add jsmn
+
 10/5/2026:
 	lib/io.c: fix VC build
 	lib/win32/sys.c: update for Win11 detection
