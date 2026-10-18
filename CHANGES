@@ -2,14 +2,16 @@ $Id$
 
 For detailed revision history see History file
 
-CSNOBOL4 version 2.3.5 released ??/??/2026
+CSNOBOL4 version 2.3.5 released 10/18/2026
+On the 63rd anniversary of the first public discussion of SNOBOL
+by Dave Farber at University of Michigan, Ann Arbor
 
 Changes since 2.3.4 release;
 ===========================
 
+	Fix variable name case folding
 	Fix MSC, Cygwin, Solaris builds
 	Fix JSON_ENCODE of "empty" lists
-	Fix variable name case folding
 	Add experimental jsmn JSON parser
 	Accept REAL values where NAME/STRING expected
 
