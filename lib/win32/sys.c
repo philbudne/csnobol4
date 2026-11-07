@@ -220,7 +220,7 @@ osname(char *cp) {
     int build = 0;
     int vnum = 0;
 
-    if (rtl_osname(cp))			/* handle 10 and newer */
+    if (rtl_osname(cp))			/* handle Win2K and newer */
 	return;
 
     ZeroMemory(&osv, sizeof(osv));
@@ -238,7 +238,7 @@ osname(char *cp) {
 
     /*
      * PLB 11/2/2020:
-     * Aparently there's an undocumented interface in NTDLL that's used my the MSVCRT:
+     * Aparently there's an undocumented interface in NTDLL that's used by the MSVCRT:
      * extern VOID WINAPI RtlGetNtVersionNumbers(LPDWORD pMajor, LPDWORD pMinor, LPDWORD pBuild);
      *
      * Also "the kernel-mode equivalent of the user-mode GetVersionEx function in the Windows SDK":
