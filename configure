@@ -13,7 +13,7 @@ ID='$Id$'
 OPTIONS="$*"
 
 # needed in Makefile2 and config.h
-VERSION=2.3.5
+VERSION=2.3.5+
 VERSION_DATE="October 18, 2026"
 
 # save any CFLAGS passed to us...
