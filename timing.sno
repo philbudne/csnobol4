@@ -137,7 +137,7 @@ GETSTAT	LINE = INPUT					:F(NOSTAT)
 * calculate usec/stmt
 	A1 = EXEC * 1000000.0 / STMTS
 
-	OUTPUT = 'Nanoseconds per statement: ' PREC(A1)
+	OUTPUT = 'Microseconds per statement: ' PREC(A1)
 
 * get SNOBOL time in 10ths
 NOET	SNOBOL = (COMP + EXEC) / SNODIV

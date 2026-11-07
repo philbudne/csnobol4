@@ -2,7 +2,12 @@ $Id$
 
 The Macro Implementation of SNOBOL4 in C (CSNOBOL4) history
 
-10/17/2027:
+11/7/2026:
+	timing.sno: Microseconds!
+
+** 2.3.5 (tag REL_2_3_5)
+
+10/17/2026:
 	CHANGES, configure: Update for 2.3.5 release
 
 10/8/2026:
